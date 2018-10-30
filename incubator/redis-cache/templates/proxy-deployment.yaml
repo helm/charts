@@ -1,0 +1,89 @@
+{{- if .Values.enableProxy }}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "redis-cache.proxyFullname" . }}
+  labels:
+    app: {{ template "redis-cache.proxyName" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  replicas: {{ .Values.haproxy.replicaCount }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: {{ template "redis-cache.proxyName" . }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        release: "{{ .Release.Name }}"
+        heritage: "{{ .Release.Service }}"
+    spec:
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+        {{ .Values.nodeSelector | toYaml }}
+      {{- end }}
+      containers:
+      - name: ha-proxy
+        image: {{ .Values.haproxy.image.repository }}:{{ .Values.haproxy.image.tag }}
+        imagePullPolicy: {{ .Values.haproxy.image.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.haproxy.port }}
+          port: {{ .Values.haproxy.port }}
+          name: {{ .Values.haproxy.portName }}
+        - containerPort: {{ .Values.service.port }}
+          port: {{ .Values.service.port }}
+          name: {{ .Values.service.name }}
+        volumeMounts:
+        - name: proxy
+          mountPath: /usr/local/etc/haproxy
+      volumes:
+      - name: proxy
+        configMap:
+          name: {{ .Release.Name }}-config-proxy
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ default (printf "%s-proxy" .Release.Name) .Values.haproxy.serviceName }}
+  labels:
+    app: {{ template "redis-cache.proxyName" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  ports:
+  - name: {{ .Values.haproxy.portName }}
+    port: {{ .Values.haproxy.port }}
+  - name: {{ .Values.service.name }}
+    port: {{ .Values.service.port }}
+  selector:
+    app: {{ template "redis-cache.proxyName" . }}
+
+{{/* Create a service per statefulset pod to be addressed by ha-proxy */}}
+{{ $self := . }}
+{{- range $i := until (.Values.replicaCount|int) }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
+  name: {{ template "redis-cache.fullname" $self }}-individual-{{ $i }}
+  labels:
+    app: {{ template "redis-cache.name" $self }}
+    chart: "{{ $self.Chart.Name }}-{{ $self.Chart.Version }}"
+    release: "{{ $self.Release.Name }}"
+    heritage: "{{ $self.Release.Service }}"
+spec:
+  ports:
+  - port: {{ $self.Values.service.port }}
+    name: {{ $self.Values.service.name }}
+  selector:
+    statefulset.kubernetes.io/pod-name: {{ template "redis-cache.fullname" $self }}-{{ $i }}
+{{- end }}
+{{- end }}

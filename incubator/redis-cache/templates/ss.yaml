@@ -19,6 +19,14 @@ spec:
         heritage: "{{ .Release.Service }}"
     spec:
       terminationGracePeriodSeconds: 60 
+      {{- if .Values.pullSecrets }}
+      imagePullSecrets:
+      {{ .Values.pullSecrets | toYaml }}
+      {{- end }}
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+        {{ .Values.nodeSelector | toYaml }}
+      {{- end }}
       affinity:
         podAntiAffinity:
         {{- if eq .Values.antiAffinity "hard" }}

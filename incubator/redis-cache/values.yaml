@@ -5,6 +5,23 @@
 ## Statefulset related configurations ss.yaml
 antiAffinity: "hard"
 replicaCount: 3
+enableProxy: false
+# nodeSelector:
+#  key: value
+# pullSecrets:
+# - name: #secret-name
+haproxy:
+  image:
+    repository: haproxy
+    tag: 1.8-alpine
+    pullPolicy: IfNotPresent
+  port: 9000
+  portName: proxy
+  replicaCount: 2
+  includeStats: false
+  # serviceName:
+  # username: admin
+  # password: password
 redis:
   image:
     repository: redis
@@ -17,8 +34,8 @@ redis:
       memory: 128Mi
 microSentinel:
   image:
-    repository: dhilipkumars/redis-sentinel-k8s
-    tag: 0.1.0
+    repository: invivolink/redis-sentinel-k8s
+    tag: 0.2.1
     pullPolicy: IfNotPresent
   resources: {}
     # limits:
@@ -29,8 +46,8 @@ microSentinel:
     #   memory: 20Mi
 makeSlave:
   image:
-    repository: dhilipkumars/mk-redis-slave
-    tag: 0.1.0
+    repository: invivolink/mk-redis-slave
+    tag: 0.2.1
     pullPolicy: IfNotPresent
   resources: {}
     # limits:

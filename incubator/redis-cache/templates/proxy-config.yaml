@@ -1,0 +1,44 @@
+{{- if .Values.enableProxy }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-config-proxy
+data:
+  haproxy.cfg: |
+    defaults
+      mode tcp
+      timeout connect 3s
+      timeout server 6s
+      timeout client 6s
+    {{- if and .Values.haproxy .Values.haproxy.includeStats }}
+    listen stats
+      mode http
+      bind :{{ .Values.haproxy.port }}
+      stats enable
+      stats hide-version
+      stats realm Haproxy\ Statistics
+      stats uri /haproxy_stats
+      {{- if and .Values.haproxy.username .Values.haproxy.password }}
+      stats auth {{ .Values.haproxy.username }}:{{ .Values.haproxy.password }}
+      {{- end }}
+    {{- end }}
+    frontend ft_redis
+      mode tcp
+      bind *:{{ .Values.service.port }}
+      default_backend bk_redis
+    backend bk_redis
+      mode tcp
+      option tcplog
+      option tcp-check
+      tcp-check send PING\r\n
+      tcp-check expect string +PONG
+      tcp-check send info\ replication\r\n
+      tcp-check expect string role:master
+      tcp-check send QUIT\r\n
+      tcp-check expect string +OK
+
+    {{ $self := . }}
+    {{- range $i := until (.Values.replicaCount|int) }}
+     server redis-backend-{{ $i }} {{ template "redis-cache.fullname" $self }}-individual-{{ $i }}:{{ $self.Values.service.port }} maxconn 1024 check inter 1s
+    {{- end }}
+{{- end }}
