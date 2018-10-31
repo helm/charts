@@ -72,6 +72,7 @@ The following table lists the configurable parameters of the Vault chart and the
 | `consulAgent.tag`                 | Container image tag for consul agent     | `1.2.3`                             |
 | `consulAgent.pullPolicy`          | Container pull policy for consul agent   | `IfNotPresent`                      |
 | `consulAgent.gossipKeySecretName` | k8s secret containing gossip key         | `nil` (see values.yaml for details) |
+| `consulAgent.datacenter`          | consul datacenter to join                | `dc1` (default from consul)         |
 | `consulAgent.HttpPort`            | HTTP port for consul agent API           | `8500`                              |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
@@ -93,6 +94,7 @@ vault:
         address: "localhost:8500"
 consulAgent:
   join: consul.service.consul
+  datacenter: QADataCenter
 ```
 
 If you are using the `stable/consul` helm chart, consul communications
