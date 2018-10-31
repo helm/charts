@@ -1,0 +1,45 @@
+{{- if and .Values.agent.prometheus.scrape .Values.agent.prometheus.service.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ template "kiam.name" . }}
+    chart: {{ template "kiam.chart" . }}
+    component: "{{ .Values.agent.name }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "kiam.fullname" . }}-agent-metrics
+spec:
+  selector:
+    app: {{ template "kiam.name" . }}
+    component: "{{ .Values.agent.name }}"
+    release: {{ .Release.Name }}
+  ports:
+    - name: metrics
+      port: {{ .Values.agent.prometheus.port }}
+      targetPort: {{ .Values.agent.prometheus.port }}
+      protocol: TCP
+{{- end }}
+{{- if and .Values.server.prometheus.scrape .Values.server.prometheus.service.enabled -}}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ template "kiam.name" . }}
+    chart: {{ template "kiam.chart" . }}
+    component: "{{ .Values.server.name }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "kiam.fullname" . }}-server-metrics
+spec:
+  selector:
+    app: {{ template "kiam.name" . }}
+    component: "{{ .Values.server.name }}"
+    release: {{ .Release.Name }}
+  ports:
+    - name: metrics
+      port: {{ .Values.server.prometheus.port }}
+      targetPort: {{ .Values.server.prometheus.port }}
+      protocol: TCP
+{{- end }}
