@@ -1,0 +1,15 @@
+apiVersion: v1
+appVersion: "0.1.0"
+description: A Helm chart for prometheus mongodb-exporter
+name: prometheus-mongodb-exporter
+version: 0.1.0
+home: https://github.com/percona/mongodb_exporter
+sources:
+- https://github.com/percona/mongodb_exporter
+keywords:
+- mongodb
+- prometheus
+- exporter
+maintainers:
+- email: ananthurv666@hotmail.com
+  name: ananthunair
