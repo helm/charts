@@ -109,6 +109,15 @@ The following table lists the configurable parameters of the Moodle chart and th
 | `readinessProbe.timeoutSeconds`       | When the probe times out                                                                     | 5                                                       |
 | `readinessProbe.failureThreshold`     | Minimum consecutive failures for the probe to be considered failed after having succeeded.   | 6                                                       |
 | `readinessProbe.successThreshold`     | Minimum consecutive successes for the probe to be considered successful after having failed. | 1                                                       |
+| `podAnnotations`                | Pod annotations                                   | `{}`                                                       |
+| `metrics.enabled`                          | Start a side-car prometheus exporter                                                                           | `false`                                              |
+| `metrics.image.registry`                   | Apache exporter image registry                                                                                  | `docker.io`                                          |
+| `metrics.image.repository`                 | Apache exporter image name                                                                                      | `lusotycoon/apache-exporter`                           |
+| `metrics.image.tag`                        | Apache exporter image tag                                                                                       | `v0.5.0`                                            |
+| `metrics.image.pullPolicy`                 | Image pull policy                                                                                              | `IfNotPresent`                                       |
+| `metrics.image.pullSecrets`                | Specify docker-registry secret names as an array                                                               | `nil`                                                |
+| `metrics.podAnnotations`                   | Additional annotations for Metrics exporter pod                                                                | `{prometheus.io/scrape: "true", prometheus.io/port: "9117"}`                                                   |
+| `metrics.resources`                        | Exporter resource requests/limit                                                                               | {}                        |
 
 The above parameters map to the env variables defined in [bitnami/moodle](http://github.com/bitnami/bitnami-docker-moodle). For more information please refer to the [bitnami/moodle](http://github.com/bitnami/bitnami-docker-moodle) image documentation.
 
