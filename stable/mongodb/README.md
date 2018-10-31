@@ -101,6 +101,14 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `readinessProbe.failureThreshold`       | Minimum consecutive failures for the probe to be considered failed after having succeeded.   | `6`                                         |
 | `readinessProbe.successThreshold`       | Minimum consecutive successes for the probe to be considered successful after having failed. | `1`                                         |
 | `configmap`                             | MongoDB configuration file to be used                                                        | `nil`                                       |
+| `metrics.enabled`                          | Start a side-car prometheus exporter                                                                           | `false`                                              |
+| `metrics.image.registry`                   | MongoDB exporter image registry                                                                                  | `docker.io`                                          |
+| `metrics.image.repository`                 | MongoDB exporter image name                                                                                      | `forekshub/percona-mongodb-exporter`                           |
+| `metrics.image.tag`                        | MongoDB exporter image tag                                                                                       | `latest`                                            |
+| `metrics.image.pullPolicy`                 | Image pull policy                                                                                              | `IfNotPresent`                                       |
+| `metrics.image.pullSecrets`                | Specify docker-registry secret names as an array                                                               | `nil`                                                |
+| `metrics.podAnnotations`                   | Additional annotations for Metrics exporter pod                                                                | {}                                                   |
+| `metrics.resources`                        | Exporter resource requests/limit                                                                               | Memory: `256Mi`, CPU: `100m`                         |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
