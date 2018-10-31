@@ -1,3 +1,4 @@
+{{- if not .Values.statefulset.enabled }}
 {{- if .Values.persistence.pdName -}}
 apiVersion: v1
 kind: PersistentVolume
@@ -11,8 +12,10 @@ spec:
   accessModes:
     - ReadWriteOnce
   claimRef:
+    namespace: {{ .Release.Namespace }}
     name: {{ template "nexus.fullname" . }}-data
   gcePersistentDisk:
     pdName: {{ .Values.persistence.pdName }}
     fsType: {{ .Values.persistence.fsType }}
+{{- end }}
 {{- end }}
