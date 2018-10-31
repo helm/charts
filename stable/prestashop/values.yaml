@@ -161,10 +161,6 @@ sessionAffinity: "None"
 ##
 persistence:
   enabled: true
-## Pod annotations
-## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
-##
-podAnnotations: {}
   ## Prestashop Data Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>
   ## If set to "-", storageClassName: "", which disables dynamic provisioning
