@@ -2,7 +2,7 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: {{ template "sparkoperator.fullname" . }}-webhook
+  name: {{ include "sparkoperator.fullname" . }}-webhook
   labels:
     app.kubernetes.io/name: {{ include "sparkoperator.name" . }}
     helm.sh/chart: {{ include "sparkoperator.chart" . }}
