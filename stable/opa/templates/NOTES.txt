@@ -1,0 +1,3 @@
+Please wait while the OPA is deployed on your cluster.
+
+For example policies that you can enforce with OPA see https://www.openpolicyagent.org.
