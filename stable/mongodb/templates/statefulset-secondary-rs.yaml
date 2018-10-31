@@ -25,6 +25,9 @@ spec:
         chart: {{ template "mongodb.chart" . }}
         release: {{ .Release.Name }}
         component: secondary
+      {{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels | indent 8 }}
+      {{- end }}
       {{- if or .Values.podAnnotations .Values.metrics.enabled }}
       annotations:
 {{- if .Values.podAnnotations }}

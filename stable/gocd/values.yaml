@@ -48,6 +48,10 @@ server:
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
   nodeSelector: {}
 
+  ## Affinity for assigning pods to specific nodes
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+  affinity: {}
+
   healthCheck:
     # server.healthCheck.initialDelaySeconds is the initial delays in seconds to start the health checks
     initialDelaySeconds: 90
@@ -279,3 +283,7 @@ agent:
   ## Additional GoCD agent pod labels
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
   nodeSelector: {}
+
+  ## Affinity for assigning pods to specific nodes
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+  affinity: {}
