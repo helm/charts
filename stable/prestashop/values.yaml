@@ -23,10 +23,6 @@ image:
   # pullSecrets:
   #   - myRegistrKeySecretName
 
-## Pod annotations
-## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
-##
-podAnnotations: {}
 ## PrestaShop host to create application URLs
 ## ref: https://github.com/bitnami/bitnami-docker-prestashop#configuration
 ##
@@ -213,6 +209,7 @@ readinessProbe:
 ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
 ##
 podAnnotations: {}
+
 ## Prometheus Exporter / Metrics
 ##
 metrics:
