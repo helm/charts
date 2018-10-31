@@ -75,6 +75,9 @@ spec:
 {{- range $port := .Values.service.ports }}
           - name: {{ $port.name }}
             containerPort: {{ $port.port }}
+{{- if $port.protocol }}
+            protocol: {{ $port.protocol }}
+{{- end }}
 {{- end }}
 {{- if .Values.livenessProbe.enabled }}
         # Liveness probe is aimed to help in situarions where fluentd
