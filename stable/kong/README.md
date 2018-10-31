@@ -102,7 +102,7 @@ Postgres is enabled by default.
 | Parameter                         | Description                                                            | Default               |
 | ------------------------------    | --------------------------------------------------------------------   | -------------------   |
 | cassandra.enabled                 | Spin up a new cassandra cluster for Kong                               | `false`               |
-| postgresql.enabled                  | Spin up a new postgres instance for Kong                               | `true `               |
+| postgresql.enabled                | Spin up a new postgres instance for Kong                               | `true`                |
 | postgresql.waitImage.repository   | Image used to wait for postgresql to become ready                      | `busybox`             |
 | postgresql.waitImage.tag          | Tag for image used to wait for postgresql to become ready              | `latest`              |
 | env.database                      | Choose either `postgres` or `cassandra`                                | `postgres`            |
