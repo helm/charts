@@ -12,6 +12,8 @@ $ helm install stable/nats
 
 This chart bootstraps a [NATS](https://github.com/bitnami/bitnami-docker-nats) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
+Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters.
+
 ## Prerequisites
 
 - Kubernetes 1.4+ with Beta APIs enabled
@@ -45,6 +47,7 @@ The following table lists the configurable parameters of the NATS chart and thei
 
 | Parameter                            | Description                                                                                  | Default                           |
 |--------------------------------------|----------------------------------------------------------------------------------------------|-----------------------------------|
+| `global.imageRegistry`               | Global Docker image registry                                                                 | `nil`                             |
 | `image.registry`                     | NATS image registry                                                                          | `docker.io`                       |
 | `image.repository`                   | NATS Image name                                                                              | `bitnami/nats`                    |
 | `image.tag`                          | NATS Image tag                                                                               | `{VERSION}`                       |

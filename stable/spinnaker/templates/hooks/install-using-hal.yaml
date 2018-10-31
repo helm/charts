@@ -30,10 +30,25 @@ spec:
       - name: halyard-config
         configMap:
           name: {{ template "spinnaker.fullname" . }}-halyard-config
-      {{- if .Values.halyard.additionalConfig.enabled }}
+      {{- if .Values.halyard.additionalScripts.enabled }}
       - name: additional-config
         configMap:
-          name: {{ .Values.halyard.additionalConfig.configMapName }}
+          name: {{ .Values.halyard.additionalScripts.configMapName }}
+      {{- end }}
+      {{- if .Values.halyard.additionalSecrets.create }}
+      - name: additional-secrets
+        secret:
+          secretName: {{ template "spinnaker.fullname" . }}-additional-secrets
+      {{- end }}
+      {{- if .Values.halyard.additionalConfigMaps.create }}
+      - name: additional-config-maps
+        configMap:
+          name: {{ template "spinnaker.fullname" . }}-additional-config-maps
+      {{- end }}
+      {{- if .Values.halyard.additionalScripts.create }}
+      - name: additional-scripts
+        configMap:
+          name: {{ template "spinnaker.fullname" . }}-additional-scripts
       {{- end }}
       {{- if .Values.gcs.enabled }}
       - name: gcs-key
@@ -51,9 +66,21 @@ spec:
         volumeMounts:
         - name: halyard-config
           mountPath: /opt/halyard/scripts
-        {{- if .Values.halyard.additionalConfig.enabled }}
+        {{- if .Values.halyard.additionalScripts.enabled }}
         - name: additional-config
           mountPath: /opt/halyard/additional
+        {{- end }}
+        {{- if .Values.halyard.additionalSecrets.create }}
+        - name: additional-secrets
+          mountPath: /opt/halyard/additionalSecrets
+        {{- end }}
+        {{- if .Values.halyard.additionalConfigMaps.create }}
+        - name: additional-config-maps
+          mountPath: /opt/halyard/additionalConfigMaps
+        {{- end }}
+        {{- if .Values.halyard.additionalScripts.create }}
+        - name: additional-scripts
+          mountPath: /opt/halyard/additionalScripts
         {{- end }}
         {{- if .Values.gcs.enabled }}
         - name: gcs-key
