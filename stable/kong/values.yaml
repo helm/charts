@@ -70,11 +70,6 @@ proxy:
 # Set runMigrations to run Kong migrations
 runMigrations: true
 
-migrations:
-  image:
-    repository: busybox
-    tag: latest
-
 # Specify Kong configurations
 # Kong configurations guide https://getkong.org/docs/latest/configuration/
 env:
@@ -153,3 +148,6 @@ postgresql:
   postgresDatabase: kong
   service:
     port: 5432
+  waitImage:
+    repository: busybox
+    tag: latest

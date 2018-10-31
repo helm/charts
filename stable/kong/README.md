@@ -79,8 +79,6 @@ and their default values.
 | proxy.ingress.annotations         | Ingress annotations. See documentation for your ingress controller for details | `{}`          |
 | env                               | Additional [Kong configurations](https://getkong.org/docs/latest/configuration/)               |
 | runMigrations                     | Run Kong migrations job                                                | `true`                |
-| migrations.image.repository       | Busybox image to run Kong migration                                    | `busybox`             |
-| migrations.image.tag              | Busybox image tag                                                      | `latest`              |
 | readinessProbe                    | Kong readiness probe                                                   |                       |
 | livenessProbe                     | Kong liveness probe                                                    |                       |
 | affinity                          | Node/pod affinities                                                    |                       |
@@ -105,6 +103,8 @@ Postgres is enabled by default.
 | ------------------------------    | --------------------------------------------------------------------   | -------------------   |
 | cassandra.enabled                 | Spin up a new cassandra cluster for Kong                               | `false`               |
 | postgresql.enabled                  | Spin up a new postgres instance for Kong                               | `true `               |
+| postgresql.waitImage.repository   | Image used to wait for postgresql to become ready                      | `busybox`             |
+| postgresql.waitImage.tag          | Tag for image used to wait for postgresql to become ready              | `latest`              |
 | env.database                      | Choose either `postgres` or `cassandra`                                | `postgres`            |
 | env.pg_user                       | Postgres username                                                      | `kong`                |
 | env.pg_database                   | Postgres database name                                                 | `kong`                |

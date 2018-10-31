@@ -27,7 +27,7 @@ spec:
       {{- if .Values.postgresql.enabled }}
       initContainers:
       - name: wait-for-postgres
-        image: "{{ .Values.migrations.image.repository }}:{{ .Values.migrations.image.tag }}"
+        image: "{{ .Values.postgresql.waitImage.repository }}:{{ .Values.postgresql.waitImage.tag }}"
         env:
         - name: KONG_PG_HOST
           value: {{ template "kong.postgresql.fullname" . }}
