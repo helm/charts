@@ -1,10 +1,10 @@
 image:
   repository: "docker.elastic.co/kibana/kibana-oss"
-  tag: "6.4.1"
+  tag: "6.4.2"
   pullPolicy: "IfNotPresent"
 
 commandline:
-  args:
+  args: []
 
 env: {}
   # All Kibana configuration options are adjustable via env vars.
@@ -44,12 +44,14 @@ service:
   ## Default: nil
   ##
   # loadBalancerIP: 10.2.2.2
-  annotations:
+  annotations: {}
     # Annotation example: setup ssl with aws cert when service.type is LoadBalancer
     # service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-1:EXAMPLE_CERT
-  labels:
+  labels: {}
     ## Label example: show service URL in `kubectl cluster-info`
     # kubernetes.io/cluster-service: "true"
+  ## Limit load balancer source ips to list of CIDRs (where available)
+  # loadBalancerSourceRanges: []
 
 ingress:
   enabled: false
@@ -63,8 +65,13 @@ ingress:
     #   hosts:
     #     - chart-example.local
 
-# service account that will run the pod. Leave commented to use the default service account.
-# serviceAccountName: kibana
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: false
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  # If set and create is false, the service account must be existing
+  name:
 
 livenessProbe:
   enabled: false
@@ -118,15 +125,17 @@ podAnnotations: {}
 replicaCount: 1
 revisionHistoryLimit: 3
 
-# to export a dashboard from a running kibana 6.3.x use:
+# To export a dashboard from a running Kibana 6.3.x use:
 # curl --user <username>:<password> -XGET https://kibana.yourdomain.com:5601/api/kibana/dashboards/export?dashboard=<some-dashboard-uuid> > my-dashboard.json
-# you can find an example dashboard for kubernests with fluentd-elasticsearch chart here: https://github.com/monotek/kibana-dashboards/blob/master/k8s-fluentd-elasticsearch.json
+# A dashboard is defined by a name and a string with the json payload or the download url
 dashboardImport:
+  timeout: 60
   xpackauth:
     enabled: false
     username: myuser
     password: mypass
   dashboards: {}
+    # k8s: https://raw.githubusercontent.com/monotek/kibana-dashboards/master/k8s-fluentd-elasticsearch.json
 
 # List of pluginns to install using initContainer
 plugins:

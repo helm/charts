@@ -83,6 +83,10 @@ Master:
   #   -Dcom.sun.management.jmxremote.authenticate=false
   #   -Dcom.sun.management.jmxremote.ssl=false
   # JMXPort: 4000
+  # Optionally configure other ports to expose in the Master container
+  ExtraPorts:
+  # - name: BuildInfoProxy
+  #   port: 9000
   # List of plugins to be install during Jenkins master start
   InstallPlugins:
     - kubernetes:1.12.4
@@ -201,8 +205,6 @@ NetworkPolicy:
 rbac:
   install: false
   serviceAccountName: default
-  # RBAC api version (currently either v1, v1beta1, or v1alpha1)
-  apiVersion: v1
   # Role reference
   roleRef: cluster-admin
   # Role kind (RoleBinding or ClusterRoleBinding)
