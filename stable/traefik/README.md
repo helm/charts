@@ -335,7 +335,7 @@ acme:
 
 #### Example: AWS Route 53
 
-Route 53 requires the [following configuration variables to be set](https://github.com/helm/charts/blob/68da43ea17582b6c74d8b8956b1b20ee49d8d420/stable/traefik/values.yaml#L230-L232):
+Route 53 requires the [following configuration variables to be set](https://docs.traefik.io/configuration/acme/#provider):
 - `AWS_ACCESS_KEY_ID`
 - `AWS_SECRET_ACCESS_KEY`
 - `AWS_REGION`
