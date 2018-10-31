@@ -440,7 +440,7 @@ nodeExporter:
 
   service:
     annotations:
-      prometheus.io/scrape: "true"
+      prometheus.io/scrape: true
     labels: {}
 
     # Exposed as a headless service:
