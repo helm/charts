@@ -1,0 +1,149 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ template "redis-ha.fullname" . }}-server
+  labels:
+{{ include "labels.standard" . | indent 4 }}
+spec:
+  selector:
+    matchLabels:
+      release: {{ .Release.Name }}
+      app: {{ template "redis-ha.name" . }}
+  serviceName: {{ template "redis-ha.fullname" . }}
+  replicas: {{ .Values.replicas }}
+  podManagementPolicy: OrderedReady
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/redis-ha-configmap.yaml") . | sha256sum }}
+      {{- if .Values.podAnnotations }}
+{{ toYaml .Values.podAnnotations . | indent 8 }}
+      {{- end }}
+      labels:
+        release: {{ .Release.Name }}
+        app: {{ template "redis-ha.name" . }}
+    spec:
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ tpl . $ | indent 8 }}
+    {{- end }}
+      securityContext:
+{{ toYaml .Values.securityContext | indent 8 }}
+      initContainers:
+      - name: config-init
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command:
+        - bash
+        args:
+        - /readonly-config/init.bash
+        env:
+{{- if .Values.auth }}
+        - name: AUTH
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "redis-ha.fullname" . }}
+              key: auth
+{{- end }}
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        volumeMounts:
+        - name: config
+          mountPath: /readonly-config
+          readOnly: true
+        - name: data
+          mountPath: /data
+      containers:
+      - name: redis
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command:
+        - redis-server
+        args:
+        - /data/conf/redis.conf
+        livenessProbe:
+          exec:
+            command: ["redis-cli", "ping"]
+          initialDelaySeconds: 15
+          periodSeconds: 5
+        readinessProbe:
+          exec:
+            command: ["redis-cli", "ping"]
+          initialDelaySeconds: 15
+          periodSeconds: 5
+        resources:
+{{ toYaml .Values.redis.resources | indent 10 }}
+        ports:
+        - name: redis
+          containerPort: {{ .Values.redis.port }}
+        volumeMounts:
+        - mountPath: /data
+          name: data
+      - name: sentinel
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command:
+          - redis-sentinel
+        args:
+          - /data/conf/sentinel.conf
+        livenessProbe:
+          exec:
+            command: ["redis-cli", "-p", "{{ .Values.sentinel.port }}", "ping"]
+          initialDelaySeconds: 15
+          periodSeconds: 5
+        readinessProbe:
+          exec:
+            command: ["redis-cli", "-p", "{{ .Values.sentinel.port }}", "ping"]
+          initialDelaySeconds: 15
+          periodSeconds: 5
+        resources:
+{{ toYaml .Values.sentinel.resources | indent 10 }}
+        ports:
+          - name: sentinel
+            containerPort: {{ .Values.sentinel.port }}
+        volumeMounts:
+        - mountPath: /data
+          name: data
+      volumes:
+      - name: config
+        configMap:
+          name: {{ template "redis-ha.fullname" . }}-configmap
+{{- if .Values.persistentVolume.enabled }}
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+      annotations:
+      {{- range $key, $value := .Values.persistentVolume.annotations }}
+        {{ $key }}: {{ $value }}
+      {{- end }}
+    spec:
+      accessModes:
+      {{- range .Values.persistentVolume.accessModes }}
+        - {{ . | quote }}
+      {{- end }}
+      resources:
+        requests:
+          storage: {{ .Values.persistentVolume.size | quote }}
+    {{- if .Values.persistentVolume.storageClass }}
+    {{- if (eq "-" .Values.persistentVolume.storageClass) }}
+      storageClassName: ""
+    {{- else }}
+      storageClassName: "{{ .Values.persistentVolume.storageClass }}"
+    {{- end }}
+    {{- end }}
+{{- else }}
+      - name: data
+        emptyDir: {}
+{{- end }}
