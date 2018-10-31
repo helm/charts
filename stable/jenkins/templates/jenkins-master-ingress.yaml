@@ -15,6 +15,9 @@ spec:
       - backend:
           serviceName: {{ template "jenkins.fullname" . }}
           servicePort: {{ .Values.Master.ServicePort }}
+{{- if .Values.Master.Ingress.Path }}
+        path: {{ .Values.Master.Ingress.Path }}
+{{- end -}}
 {{- if .Values.Master.Ingress.TLS }}
   tls:
 {{ toYaml .Values.Master.Ingress.TLS | indent 4 }}

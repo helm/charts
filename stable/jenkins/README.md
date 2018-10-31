@@ -66,6 +66,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `Master.CustomConfigMap`          | Use a custom ConfigMap               | `false`                                                                      |
 | `Master.OverwriteConfig`          | Replace config w/ ConfigMap on boot  | `false`                                                                      |
 | `Master.Ingress.Annotations`      | Ingress annotations                  | `{}`                                                                         |
+| `Master.Ingress.Path`             | Ingress path                         | Not set                                                                         |
 | `Master.Ingress.TLS`              | Ingress TLS configuration            | `[]`                                                                         |
 | `Master.InitScripts`              | List of Jenkins init scripts         | Not set                                                                      |
 | `Master.CredentialsXmlSecret`     | Kubernetes secret that contains a 'credentials.xml' file | Not set                                                  |
