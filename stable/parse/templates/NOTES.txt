@@ -20,7 +20,7 @@ Parse Server
   NOTE: It may take a few minutes for the LoadBalancer IP to be available.
         Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "parse.fullname" . }}'
 
-  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "parse.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}'):{{ .Values.server.port }}
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "parse.fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}"):{{ .Values.server.port }}
 
 {{- else if contains "ClusterIP"  .Values.serviceType }}
 

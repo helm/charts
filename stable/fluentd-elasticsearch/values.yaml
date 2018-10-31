@@ -45,6 +45,8 @@ tolerations: {}
   #   operator: Exists
   #   effect: NoSchedule
 
+nodeSelector: {}
+
 service: {}
   # type: ClusterIP
   # ports:
