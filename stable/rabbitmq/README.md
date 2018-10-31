@@ -60,7 +60,7 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `rabbitmq.erlangCookie`              | Erlang cookie                                    | _random 32 character long alphanumeric string_          |
 | `rabbitmq.amqpPort`                  | Amqp port                                        | `5672`                                                  |
 | `rabbitmq.distPort`                  | Erlang distribution server port                  | `25672`                                                 |
-| `rabbitmq.nodePort`                  | Node port override, if serviceType NodePort      | _random avaliable between 30000-32767_                  |
+| `rabbitmq.nodePort`                  | Node port override, if serviceType NodePort      | _random available between 30000-32767_                  |
 | `rabbitmq.managerPort`               | RabbitMQ Manager port                            | `15672`                                                 |
 | `rabbitmq.diskFreeLimit`             | Disk free limit                                  | `"6GiB"`                                                |
 | `rabbitmq.plugins`                   | configuration file for plugins to enable         | `[rabbitmq_management,rabbitmq_peer_discovery_k8s].`    |

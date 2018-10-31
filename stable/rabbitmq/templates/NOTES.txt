@@ -38,7 +38,7 @@ NOTE: It may take a few minutes for the LoadBalancer IP to be available.
 
 To Access the RabbitMQ AMQP port:
 
-    echo "URL : amqp://$SERVICE_IP:{{ .Values.rabbitmq.nodePort }}/"
+    echo "URL : amqp://$SERVICE_IP:{{ .Values.rabbitmq.amqpPort }}/"
 
 To Access the RabbitMQ Management interface:
 
@@ -48,8 +48,8 @@ To Access the RabbitMQ Management interface:
 
 To Access the RabbitMQ AMQP port:
 
-    kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "rabbitmq.fullname" . }} {{ .Values.rabbitmq.nodePort }}:{{ .Values.rabbitmq.nodePort }}
-    echo "URL : amqp://127.0.0.1:{{ .Values.rabbitmq.nodePort }}/"
+    kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "rabbitmq.fullname" . }} {{ .Values.rabbitmq.amqpPort }}:{{ .Values.rabbitmq.amqpPort }}
+    echo "URL : amqp://127.0.0.1:{{ .Values.rabbitmq.amqpPort }}/"
 
 To Access the RabbitMQ Management interface:
 
