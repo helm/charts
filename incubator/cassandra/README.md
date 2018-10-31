@@ -81,7 +81,7 @@ The following table lists the configurable parameters of the Cassandra chart and
 | Parameter                  | Description                                     | Default                                                    |
 | -----------------------    | ---------------------------------------------   | ---------------------------------------------------------- |
 | `image.repo`                         | `cassandra` image repository                    | `cassandra`                                                |
-| `image.tag`                          | `cassandra` image tag                           | `3`                                                        |
+| `image.tag`                          | `cassandra` image tag                           | `3.11.3`                                                        |
 | `image.pullPolicy`                   | Image pull policy                               | `Always` if `imageTag` is `latest`, else `IfNotPresent`    |
 | `image.pullSecrets`                  | Image pull secrets                              | `nil`                                                      |
 | `config.cluster_name`                | The name of the cluster.                        | `cassandra`                                                |
@@ -97,6 +97,7 @@ The following table lists the configurable parameters of the Cassandra chart and
 | `config.ports.thrift`                | Initdb Arguments                                | `9160`                                                     |
 | `config.ports.agent`                 | The port of the JVM Agent (if any)              | `nil`                                                      |
 | `config.start_rpc`                   | Initdb Arguments                                | `false`                                                    |
+| `env`                                | Custom env variables                            | `{}`                                                       |
 | `persistence.enabled`                | Use a PVC to persist data                       | `true`                                                     |
 | `persistence.storageClass`           | Storage class of backing PVC                    | `nil` (uses alpha storage class annotation)                |
 | `persistence.accessMode`             | Use volume as ReadOnly or ReadWrite             | `ReadWriteOnce`                                            |
@@ -104,6 +105,8 @@ The following table lists the configurable parameters of the Cassandra chart and
 | `resources`                          | CPU/Memory resource requests/limits             | Memory: `4Gi`, CPU: `2`                                    |
 | `service.type`                       | k8s service type exposing ports, e.g. `NodePort`| `ClusterIP`                                                |
 | `podManagementPolicy`                | podManagementPolicy of the StatefulSet          | `OrderedReady`                                             |
+| `podDisruptionBudget`                | Pod distruption budget                          | `{}`                                                       |
+| `podAnnotations`                     | pod annotations for the StatefulSet             | `{}`                                                       |
 | `updateStrategy.type`                | UpdateStrategy of the StatefulSet               | `OnDelete`                                                 |
 | `livenessProbe.initialDelaySeconds`  | Delay before liveness probe is initiated        | `90`                                                       |
 | `livenessProbe.periodSeconds`        | How often to perform the probe                  | `30`                                                       |
@@ -116,7 +119,7 @@ The following table lists the configurable parameters of the Cassandra chart and
 | `readinessProbe.successThreshold`    | Minimum consecutive successes for the probe to be considered successful after having failed.           | `1` |
 | `readinessProbe.failureThreshold`    | Minimum consecutive failures for the probe to be considered failed after having succeeded.             | `3` |
 | `rbac.create`                        | Specifies whether RBAC resources should be created                                                  | `true` |
-| `serviceAccount.create`              | Specifies whether a ServiceAccount should be created                                               | `false` |
+| `serviceAccount.create`              | Specifies whether a ServiceAccount should be created                                                | `true` |
 | `serviceAccount.name`                | The name of the ServiceAccount to use           |                                                            |
 | `backup.enabled`                     | Enable backup on chart installation             | `false`                                                    |
 | `backup.schedule`                    | Keyspaces to backup, each with cron time        |                                                            |
@@ -126,6 +129,11 @@ The following table lists the configurable parameters of the Cassandra chart and
 | `backup.env`                         | Backup environment variables                    | AWS_REGION: `us-east-1`                                    |
 | `backup.resources`                   | Backup CPU/Memory resource requests/limits      | Memory: `1Gi`, CPU: `1`                                    |
 | `backup.destination`                 | Destination to store backup artifacts           | `s3://bucket/cassandra`                                    |
+| `exporter.enabled`                   | Enable Cassandra exporter                       | `false`                                                    |
+| `exporter.image.repo`                | Exporter image repository                       | `criteord/cassandra_exporter`                              |
+| `exporter.image.tag`                 | Exporter image tag                              | `2.0.2`                                                    |
+| `exporter.port`                      | Exporter port                                   | `5556`                                                     |
+| `exporter.jvmOpts`                   | Exporter additional JVM options                 |                                                            |
 
 ## Scale cassandra
 When you want to change the cluster size of your cassandra, you can use the helm upgrade command.

@@ -63,9 +63,10 @@ The following table lists the configurable parameters of the Fluentd elasticsear
 | `resources.requests.memory`        | Memory request                             | `200Mi`                                                    |
 | `service`                          | Service definition                         | `{}`                                                       |
 | `serviceAccount.create`            | Specifies whether a service account should be created.| `true`                                          |
-| `serviceAccount.name`              | Name of the service account.               |                                                            |   
-| `livenessProbe.enabled`            | Whether to enable livenessProbe             | `true`                                                    |   
-| `tolerations`                      | Optional daemonset tolerations             | `NULL`                                                     |
+| `serviceAccount.name`              | Name of the service account.               |                                                            |
+| `livenessProbe.enabled`            | Whether to enable livenessProbe            | `true`                                                     |
+| `tolerations`                      | Optional daemonset tolerations             | `{}`                                                       |
+| `nodeSelector`                     | Optional daemonset nodeSelector            | `{}`                                                       |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
