@@ -2,8 +2,6 @@ replicaCount: 1
 
 rbac:
   create: true
-  clusterRole:
-  clusterRoleBinding:
 
 serviceAccount:
   create: true

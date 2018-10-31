@@ -136,22 +136,22 @@ bin/spark-submit \
     --conf spark.eventLog.enabled=true \
     --conf spark.eventLog.dir=file:/mnt \
     --conf spark.executor.instances=2 \
-    --conf spark.kubernetes.container.image=lightbend/spark-history-server:2.3.1 \
+    --conf spark.kubernetes.container.image=lightbend/spark:k8s-rc-2.4 \
     --conf spark.kubernetes.container.image.pullPolicy=Always \
-    --conf spark.kubernetes.driver.volumes.persistentVolumeClaim.checkpointpvc.options.claimName=spark-hs-pvc \
+    --conf spark.kubernetes.driver.volumes.persistentVolumeClaim.checkpointpvc.options.claimName=nfs-pvc \
     --conf spark.kubernetes.driver.volumes.persistentVolumeClaim.checkpointpvc.mount.path=/mnt \
     --conf spark.kubernetes.driver.volumes.persistentVolumeClaim.checkpointpvc.mount.readOnly=false \
-    --conf spark.kubernetes.executor.volumes.persistentVolumeClaim.checkpointpvc.options.claimName=spark-hs-pvc \
+    --conf spark.kubernetes.executor.volumes.persistentVolumeClaim.checkpointpvc.options.claimName=nfs-pvc \
     --conf spark.kubernetes.executor.volumes.persistentVolumeClaim.checkpointpvc.mount.path=/mnt \
     --conf spark.kubernetes.executor.volumes.persistentVolumeClaim.checkpointpvc.mount.readOnly=false \
-    local:///opt/spark/examples/jars/spark-examples_2.11-2.3.1.jar
+    local:///opt/spark/examples/jars/spark-examples_2.11-2.4.0.jar
 ```
 
 Points worth noting are
 
-* The PVC `spark-hs-pvc` needs to be present and bound to a PV.
+* The PVC `nfs-pvc` needs to be present and bound to a PV.
 * The mount path `/mnt` is just an example, it should be where your volume is mounted. 
-* The underlying volume needs to have sharing capability. Otherwise, when the above `spark-submit` command is executed, you would see an error saying that the PVC `spark-hs-pvc` is already mounted by another pod (i.e. the Spark history server pod).
+* The underlying volume needs to have sharing capability. Otherwise, when the above `spark-submit` command is executed, you would see an error saying that the PVC `nfs-pvc` is already mounted by another pod (i.e. the Spark history server pod).
 
 ##### HDFS
 
