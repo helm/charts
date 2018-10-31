@@ -899,7 +899,7 @@ spec:
               mountPath: /concourse-vault
               readOnly: true
             {{- end }}
-            {{- if not (eq (default "disable" .Values.concourse.web.postgres.sslmode) "disable") }}
+            {{- if or (or .Values.secrets.postgresCaCert .Values.secrets.postgresClientCert) .Values.secrets.postgresClientKey }}
             - name: postgresql-keys
               mountPath: /concourse-postgresql
               readOnly: true
@@ -945,18 +945,24 @@ spec:
                 path: client.key
             {{- end }}
         {{- end }}
-        {{- if not (eq (default "disable" .Values.concourse.web.postgres.sslmode) "disable") }}
+        {{- if or (or .Values.secrets.postgresCaCert .Values.secrets.postgresClientCert) .Values.secrets.postgresClientKey }}
         - name: postgresql-keys
           secret:
             secretName: {{ template "concourse.concourse.fullname" . }}
             defaultMode: 0400
             items:
+            {{- if .Values.secrets.postgresCaCert }}
               - key: postgresql-ca-cert
                 path: ca.cert
+            {{- end }}
+            {{- if .Values.secrets.postgresClientCert }}
               - key: postgresql-client-cert
                 path: client.cert
+            {{- end }}
+            {{- if .Values.secrets.postgresClientKey }}
               - key: postgresql-client-key
                 path: client.key
+            {{- end }}
         {{- end }}
         {{- if .Values.concourse.web.syslog.enabled }}
         - name: syslog-keys
