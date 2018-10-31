@@ -36,6 +36,7 @@ Master:
   # Set min/max heap here if needed with:
   # JavaOpts: "-Xms512m -Xmx512m"
   # JenkinsOpts: ""
+  # If you set this prefix and use ingress controller then you might want to set the ingress path below
   # JenkinsUriPrefix: "/jenkins"
   # Enable pod security context (must be `true` if RunAsUser or FsGroup are set)
   UsePodSecurityContext: true
@@ -129,6 +130,9 @@ Master:
     Annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
+
+    # Set this path to JenkinsUriPrefix above or use annotations to rewrite path
+    # Path: "/jenkins"
 
     TLS:
     # - secretName: jenkins.cluster.local
