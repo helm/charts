@@ -656,13 +656,6 @@ prometheus:
 
     ## Rules CRD selector
     ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/design.md
-    ##
-    ## 1. If `matchLabels` is used, `rules.additionalLabels` must contain all the labels from
-    ##    `matchLabels` in order to be be matched by Prometheus
-    ## 2. If `matchExpressions` is used `rules.additionalLabels` must contain at least one label
-    ##    from `matchExpressions` in order to be matched by Prometheus
-    ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels
-    ##
     ## If unspecified the release `app` and `release` will be used as the label selector
     ## to load rules
     ##
