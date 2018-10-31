@@ -189,19 +189,19 @@ alertmanager:
     ##
     routePrefix:
 
-    ## If set to true all actions on the underlaying managed objects are not goint to be performed, except for delete actions.
+    ## If set to true all actions on the underlying managed objects are not going to be performed, except for delete actions.
     ##
     paused: false
 
     ## Define which Nodes the Pods are scheduled on.
     ## ref: https://kubernetes.io/docs/user-guide/node-selection/
     ##
-    nodeSelector: []
+    nodeSelector: {}
 
     ## Define resources requests and limits for single Pods.
     ## ref: https://kubernetes.io/docs/user-guide/compute-resources/
     ##
-    resources:
+    resources: {}
     # requests:
     #   memory: 400Mi
 
@@ -420,7 +420,7 @@ nodeExporter:
 ##
 prometheus-node-exporter:
   podLabels:
-    ## Add the 'node-exporter' label to be used by serviceMonitor to match standard common usage in rules and grafana dasboards
+    ## Add the 'node-exporter' label to be used by serviceMonitor to match standard common usage in rules and grafana dashboards
     ##
     jobLabel: node-exporter
   extraArgs:
@@ -476,12 +476,12 @@ prometheusOperator:
   ## Define which Nodes the Pods are scheduled on.
   ## ref: https://kubernetes.io/docs/user-guide/node-selection/
   ##
-  nodeSelector: []
+  nodeSelector: {}
 
   ## Tolerations for use with node taints
   ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
   ##
-  tolerations: {}
+  tolerations: []
   # - key: "key"
   #   operator: "Equal"
   #   value: "value"
@@ -608,7 +608,7 @@ prometheus:
     ## Tolerations for use with node taints
     ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
     ##
-    tolerations: {}
+    tolerations: []
     #  - key: "key"
     #    operator: "Equal"
     #    value: "value"
@@ -617,7 +617,7 @@ prometheus:
     ## Alertmanagers to which alerts will be sent
     ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#alertmanagerendpoints
     ##
-    ## Default configuration will connect to the alertmanager deployed as part of this relase
+    ## Default configuration will connect to the alertmanager deployed as part of this release
     ##
     alertingEndpoints: []
     # - name: ""
@@ -636,7 +636,7 @@ prometheus:
     ## Define which Nodes the Pods are scheduled on.
     ## ref: https://kubernetes.io/docs/user-guide/node-selection/
     ##
-    nodeSelector: []
+    nodeSelector: {}
 
     ## Secrets is a list of Secrets in the same namespace as the Prometheus object, which shall be mounted into the Prometheus Pods.
     ## The Secrets are mounted into /etc/prometheus/secrets/. Secrets changes after initial creation of a Prometheus object are not
@@ -725,7 +725,7 @@ prometheus:
     remoteRead: {}
     # - url: http://remote1/read
 
-    ## The remote_write spec configuriation for Prometheus.
+    ## The remote_write spec configuration for Prometheus.
     ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#remotewritespec
     remoteWrite: {}
       # remoteWrite:
