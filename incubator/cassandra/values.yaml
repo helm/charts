@@ -66,6 +66,10 @@ config:
     # If a JVM Agent is in place
     # agent: 61621
 
+## Custom env variables.
+## ref: https://hub.docker.com/_/cassandra/
+env: {}
+
 ## Liveness and Readiness probe values.
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/
 livenessProbe:
@@ -99,6 +103,11 @@ podLabels: {}
 podSettings:
   # Change this to give pods more time to properly leave the cluster when not using persistent storage.
   terminationGracePeriodSeconds: 30
+
+## Pod distruption budget
+podDisruptionBudget: {}
+  # maxUnavailable: 1
+  # minAvailable: 2
 
 podManagementPolicy: OrderedReady
 updateStrategy:

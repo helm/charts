@@ -49,6 +49,7 @@ The following table lists the configurable parameters of the PrestaShop chart an
 
 |               Parameter               |                                         Description                                          |                         Default                         |
 |---------------------------------------|----------------------------------------------------------------------------------------------|---------------------------------------------------------|
+| `global.imageRegistry`                | Global Docker image registry                                                                 | `nil`                                                   |
 | `image.registry`                      | PrestaShop image registry                                                                    | `docker.io`                                             |
 | `image.repository`                    | PrestaShop image name                                                                        | `bitnami/prestashop`                                    |
 | `image.tag`                           | PrestaShop image tag                                                                         | `{VERSION}`                                             |
@@ -82,12 +83,10 @@ The following table lists the configurable parameters of the PrestaShop chart an
 | `externalTrafficPolicy`               | Set to `Local` to preserve the client source IP                                              | `Local`                                                 |
 | `sessionAffinity`                     | Configures the session affinity                                                              | `None`                                                  |
 | `persistence.enabled`                 | Enable persistence using PVC                                                                 | `true`                                                  |
-| `persistence.apache.storageClass`     | PVC Storage Class for Apache volume                                                          | `nil` (uses alpha storage class annotation)             |
-| `persistence.apache.accessMode`       | PVC Access Mode for Apache volume                                                            | `ReadWriteOnce`                                         |
-| `persistence.apache.size`             | PVC Storage Request for Apache volume                                                        | `1Gi`                                                   |
-| `persistence.prestashop.storageClass` | PVC Storage Class for PrestaShop volume                                                      | `nil` (uses alpha storage class annotation)             |
-| `persistence.prestashop.accessMode`   | PVC Access Mode for PrestaShop volume                                                        | `ReadWriteOnce`                                         |
-| `persistence.prestashop.size`         | PVC Storage Request for PrestaShop volume                                                    | `8Gi`                                                   |
+| `persistence.storageClass`            | PVC Storage Class for PrestaShop volume                                                      | `nil` (uses alpha storage class annotation)             |
+| `persistence.existingClaim`           | An Existing PVC name for Apache volume                                                       | `nil` (uses alpha storage class annotation)             |
+| `persistence.accessMode`              | PVC Access Mode for PrestaShop volume                                                        | `ReadWriteOnce`                                         |
+| `persistence.size`                    | PVC Storage Request for PrestaShop volume                                                    | `8Gi`                                                   |
 | `resources`                           | CPU/Memory resource requests/limits                                                          | Memory: `512Mi`, CPU: `300m`                            |
 | `livenessProbe.initialDelaySeconds`   | Delay before liveness probe is initiated                                                     | 600                                                     |
 | `livenessProbe.periodSeconds`         | How often to perform the probe                                                               | 3                                                       |
@@ -99,6 +98,15 @@ The following table lists the configurable parameters of the PrestaShop chart an
 | `readinessProbe.timeoutSeconds`       | When the probe times out                                                                     | 5                                                       |
 | `readinessProbe.failureThreshold`     | Minimum consecutive failures for the probe to be considered failed after having succeeded.   | 6                                                       |
 | `readinessProbe.successThreshold`     | Minimum consecutive successes for the probe to be considered successful after having failed. | 1                                                       |
+| `podAnnotations`                | Pod annotations                                   | `{}`                                                       |
+| `metrics.enabled`                          | Start a side-car prometheus exporter                                                                           | `false`                                              |
+| `metrics.image.registry`                   | Apache exporter image registry                                                                                  | `docker.io`                                          |
+| `metrics.image.repository`                 | Apache exporter image name                                                                                      | `lusotycoon/apache-exporter`                           |
+| `metrics.image.tag`                        | Apache exporter image tag                                                                                       | `v0.5.0`                                            |
+| `metrics.image.pullPolicy`                 | Image pull policy                                                                                              | `IfNotPresent`                                       |
+| `metrics.image.pullSecrets`                | Specify docker-registry secret names as an array                                                               | `nil`                                                |
+| `metrics.podAnnotations`                   | Additional annotations for Metrics exporter pod                                                                | `{prometheus.io/scrape: "true", prometheus.io/port: "9117"}`                                                   |
+| `metrics.resources`                        | Exporter resource requests/limit                                                                               | {}                        |
 
 The above parameters map to the env variables defined in [bitnami/prestashop](http://github.com/bitnami/bitnami-docker-prestashop). For more information please refer to the [bitnami/prestashop](http://github.com/bitnami/bitnami-docker-prestashop) image documentation.
 
