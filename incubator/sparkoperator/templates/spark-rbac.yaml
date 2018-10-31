@@ -3,7 +3,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   namespace: {{ .Values.sparkJobNamespace }}
-  name: {{ template "sparkoperator.fullname" . }}
+  name: {{ include "sparkoperator.fullname" . }}
   labels:
     app.kubernetes.io/name: {{ include "sparkoperator.name" . }}
     helm.sh/chart: {{ include "sparkoperator.chart" . }}
@@ -26,7 +26,7 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: {{ template "sparkoperator.fullname" . }}
+  name: {{ include "sparkoperator.fullname" . }}
   namespace: {{ .Values.sparkJobNamespace }}
   labels:
     app.kubernetes.io/name: {{ include "sparkoperator.name" . }}
@@ -39,6 +39,6 @@ subjects:
   namespace: {{ .Values.sparkJobNamespace }}
 roleRef:
   kind: Role
-  name: {{ template "sparkoperator.fullname" . }}
+  name: {{ include "sparkoperator.fullname" . }}
   apiGroup: rbac.authorization.k8s.io
 {{- end }}
