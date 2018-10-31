@@ -7,7 +7,7 @@ While custom resources provide storage for new types of objects, custom controll
 ## TL;DR;
 
 ```console
-$ helm install incubator/metacontroller
+$ helm install stable/metacontroller
 ```
 
 ## Introduction
@@ -19,7 +19,7 @@ This chart bootstraps a metacontroller on a [Kubernetes](http://kubernetes.io) c
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install incubator/metacontroller --name my-release
+$ helm install stable/metacontroller --name my-release
 ```
 
 The command deploys metacontroller on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation. There is a high likelihood that you will want the default configuration.
@@ -52,14 +52,14 @@ Parameter | Description | Default
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```console
-$ helm install incubator/metacontroller --name my-release \
+$ helm install stable/metacontroller --name my-release \
   --set=image.tag=0.2,resources.limits.cpu=200m
 ```
 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install incubator/metacontroller --name my-release -f values.yaml
+$ helm install stable/metacontroller --name my-release -f values.yaml
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
