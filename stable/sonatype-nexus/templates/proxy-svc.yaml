@@ -1,7 +1,12 @@
+{{- if .Values.nexusProxy.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
+{{- if .Values.nexusProxy.svcName }}
+  name: {{ .Values.nexusProxy.svcName }}
+{{- else }}
   name: {{ template "nexus.fullname" . }}
+{{- end }}
   labels:
 {{ include "nexus.labels" . | indent 4 }}
 {{- if .Values.nexus.labels }}
@@ -23,4 +28,8 @@ spec:
   selector:
     app: {{ template "nexus.name" . }}
     release: {{ .Release.Name }}
-  type: {{ .Values.nexus.serviceType }}
+  type: {{ .Values.nexus.service.type }}
+  {{- if and (eq .Values.nexus.service.type "ClusterIP") .Values.nexus.service.clusterIP }}
+  clusterIP: {{ .Values.nexus.service.clusterIP }}
+  {{- end }}
+{{- end }}

@@ -49,6 +49,7 @@ The following table lists the configurable parameters of the Drupal chart and th
 
 | Parameter                         | Description                                | Default                                                   |
 | --------------------------------- | ------------------------------------------ | --------------------------------------------------------- |
+| `global.imageRegistry`            | Global Docker image registry               | `nil`                                                     |
 | `image.registry`                  | Drupal image registry                      | `docker.io`                                               |
 | `image.repository`                | Drupal Image name                          | `bitnami/drupal`                                          |
 | `image.tag`                       | Drupal Image tag                           | `{VERSION}`                                               |

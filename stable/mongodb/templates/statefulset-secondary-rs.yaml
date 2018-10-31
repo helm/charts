@@ -25,6 +25,9 @@ spec:
         chart: {{ template "mongodb.chart" . }}
         release: {{ .Release.Name }}
         component: secondary
+      {{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels | indent 8 }}
+      {{- end }}
       {{- if .Values.podAnnotations }}
       annotations:
 {{ toYaml .Values.podAnnotations | indent 8 }}
@@ -121,6 +124,8 @@ spec:
               mountPath: /opt/bitnami/mongodb/conf/mongodb.conf
               subPath: mongodb.conf
             {{- end }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
       volumes:
         {{- if .Values.configmap }}
         - name: config

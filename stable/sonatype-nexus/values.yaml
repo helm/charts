@@ -1,3 +1,5 @@
+statefulset:
+  enabled: false
 replicaCount: 1
 # By default deploymentStrategy is set to rollingUpdate with maxSurge of 25% and maxUnavailable of 25% . you can change type to `Recreate` or can uncomment `rollingUpdate` specification and adjust them to your usage.
 deploymentStrategy: {}
@@ -30,11 +32,14 @@ nexus:
   # The ports should only be changed if the nexus image uses a different port
   dockerPort: 5003
   nexusPort: 8081
-  serviceType: NodePort
+  service:
+    type: NodePort
+    # clusterIP: None
   # annotations: {}
   # labels: {}
   # securityContext:
   #   fsGroup: 2000
+  podAnnotations: {}
   livenessProbe:
     initialDelaySeconds: 30
     periodSeconds: 30
@@ -56,6 +61,7 @@ nexus:
 
 nexusProxy:
   enabled: true
+  # svcName: proxy-svc
   imageName: quay.io/travelaudience/docker-nexus-proxy
   imageTag: 2.3.0
   imagePullPolicy: IfNotPresent
@@ -170,8 +176,9 @@ secret:
 
 # # To use an additional service, set enable to true
 service:
+  # name: additional-svc
   enabled: false
-  name: nexus-service
+  portName: nexus-service
   labels: {}
   annotations: {}
   targetPort: 80
