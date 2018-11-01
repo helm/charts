@@ -9,9 +9,9 @@ metadata:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
   annotations:
-    seccomp.security.alpha.kubernetes.io/allowedProfileNames: '*'
-    seccomp.security.alpha.kubernetes.io/defaultProfileName: 'docker/default'
-    apparmor.security.beta.kubernetes.io/defaultProfileName: 'runtime/default'
+{{- if .Values.podSecurityPolicy.annotations }}
+{{ toYaml .Values.podSecurityPolicy.annotations | indent 4 }}
+{{- end }}
 spec:
   privileged: true
   allowPrivilegeEscalation: true
