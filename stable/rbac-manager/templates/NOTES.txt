@@ -1,0 +1,7 @@
+Thanks for installing RBAC Manager! To see what it's doing, use `kubectl logs` for your new RBAC Manager pod.
+
+If you haven't already installed an RBAC Definition to configure your authorization, visit https://reactiveops.github.io/rbac-manager/rbacdefinitions.html for more information.
+
+For more information on integrating RBAC with common authentication patterns, visit https://reactiveops.github.io/rbac-manager/.
+
+If you run into any problems or find something missing in the documentation, don't hesitate to open an issue here: https://github.com/reactiveops/rbac-manager/issues.
