@@ -9,10 +9,10 @@ home: https://reactiveops.github.io/rbac-manager/
 sources:
 - https://github.com/reactiveops/rbac-manager
 maintainers:
-- name: Andrew Suderman
+- name: ejether
   email: ej@reactiveops.com
-- name: EJ Etherington
-  email: ej@reactiveops.com
-- name: Rob Scott
+- name: robscott
   email: rob@reactiveops.com
+- name: sudermanjr
+  email: andy@reactiveops.com
 engine: gotpl
