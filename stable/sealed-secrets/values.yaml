@@ -5,7 +5,7 @@ image:
 resources: {}
 nodeSelector: {}
 tolerations: []
-affinity: {}  
+affinity: {}
 
 serviceAccount:
   # serviceAccount.create: Whether to create a service account or not
