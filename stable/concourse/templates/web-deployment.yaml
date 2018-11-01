@@ -94,21 +94,21 @@ spec:
             - name: CONCOURSE_DEBUG_BIND_PORT
               value: {{ .Values.concourse.web.debugBindPort | quote }}
             {{- end }}
-            {{- if .Values.web.interceptIdleTimeout }}
+            {{- if .Values.concourse.web.interceptIdleTimeout }}
             - name: CONCOURSE_INTERCEPT_IDLE_TIMEOUT
-              value: {{ .Values.web.interceptIdleTimeout | quote }}
+              value: {{ .Values.concourse.web.interceptIdleTimeout | quote }}
             {{- end }}
-            {{- if .Values.web.globalResourceCheckTimeout }}
+            {{- if .Values.concourse.web.globalResourceCheckTimeout }}
             - name: CONCOURSE_GLOBAL_RESOURCE_CHECK_TIMEOUT
-              value: {{ .Values.web.globalResourceCheckTimeout | quote }}
+              value: {{ .Values.concourse.web.globalResourceCheckTimeout | quote }}
             {{- end }}
-            {{- if .Values.web.resourceCheckingInterval }}
+            {{- if .Values.concourse.web.resourceCheckingInterval }}
             - name: CONCOURSE_RESOURCE_CHECKING_INTERVAL
-              value: {{ .Values.concourse.resourceCheckingInterval | quote }}
+              value: {{ .Values.concourse.web.resourceCheckingInterval | quote }}
             {{- end }}
-            {{- if .Values.web.resourceTypeCheckingInterval }}
+            {{- if .Values.concourse.web.resourceTypeCheckingInterval }}
             - name: CONCOURSE_RESOURCE_TYPE_CHECKING_INTERVAL
-              value: {{ .Values.web.resourceTypeCheckingInterval | quote }}
+              value: {{ .Values.concourse.web.resourceTypeCheckingInterval | quote }}
             {{- end }}
             {{- if .Values.concourse.web.containerPlacementStrategy }}
             - name: CONCOURSE_CONTAINER_PLACEMENT_STRATEGY
@@ -120,7 +120,7 @@ spec:
             {{- end }}
             {{- if .Values.concourse.web.cliArtifactsDir }}
             - name: CONCOURSE_CLI_ARTIFACTS_DIR
-              value: {{ .Values.web.cliArtifactsDir | quote }}
+              value: {{ .Values.concourse.web.cliArtifactsDir | quote }}
             {{- end }}
             {{- if .Values.concourse.web.logDbQueries }}
             - name: CONCOURSE_LOG_DB_QUERIES
