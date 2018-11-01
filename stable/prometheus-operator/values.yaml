@@ -49,6 +49,10 @@ alertmanager:
     create: true
     name: ""
 
+  service:
+    type: ClusterIP
+    nodePort: 30903
+
   ## Configure pod disruption budgets for Alertmanager
   ## ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/#specifying-a-poddisruptionbudget
   ## This configuration is immutable once created and will require the PDB to be deleted to be changed
@@ -449,6 +453,10 @@ prometheusOperator:
     create: true
     name: ""
 
+  service:
+    type: ClusterIP
+    nodePort: 38080
+
   ## Deploy CRDs used by Prometheus Operator.
   ##
   createCustomResource: true
@@ -548,6 +556,10 @@ prometheus:
   serviceAccount:
     create: true
     name: ""
+
+  service:
+    type: ClusterIP
+    nodePort: 39090
 
   rbac:
     ## Create role bindings in the specified namespaces, to allow Prometheus monitoring
