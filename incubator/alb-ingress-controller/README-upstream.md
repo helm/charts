@@ -48,7 +48,7 @@ The following tables lists the configurable parameters of the alb-ingress-contro
 | `awsRegion`               | (REQUIRED) AWS region in which this ingress controller will operate                                            | `us-west-1`                                    |
 | `clusterName`             | (REQUIRED) Resources created by the ALB Ingress controller will be prefixed with this string                   | `k8s`                                          |
 | `image.repository`        | controller container image repository                                                                          | `quay.io/coreos/alb-ingress-controller`        |
-| `image.tag`               | controller container image tag                                                                                 | `1.0-beta.6`                                   |
+| `image.tag`               | controller container image tag                                                                                 | `1.0-beta.7`                                   |
 | `image.pullPolicy`        | controller container image pull policy                                                                         | `IfNotPresent`                                 |
 | `extraEnv`                | map of environment variables to be injected into the controller pod                                            | `{}`                                           |
 | `nodeSelector`            | node labels for controller pod assignment                                                                      | `{}`                                           |

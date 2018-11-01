@@ -64,7 +64,7 @@ spec:
               path: /healthz
               port: 10254
               scheme: HTTP
-            initialDelaySeconds: 30
+            initialDelaySeconds: {{ .Values.readinessProbeInitialDelay }}
             periodSeconds: {{ .Values.readinessProbeInterval }}
             timeoutSeconds: {{ .Values.readinessProbeTimeout }}
           livenessProbe:
@@ -72,7 +72,7 @@ spec:
               path: /healthz
               port: 10254
               scheme: HTTP
-            initialDelaySeconds: 30
+            initialDelaySeconds: {{ add .Values.livenessProbeInitialDelay .Values.readinessProbeInitialDelay }}
             periodSeconds: 60
         {{- if .Values.resources }}
           resources:
