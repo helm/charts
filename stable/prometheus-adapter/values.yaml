@@ -48,6 +48,7 @@ rules:
 #     matches: ""
 #     as: "my_custom_metric"
 #   metricsQuery: sum(<<.Series>>{<<.LabelMatchers>>}) by (<<.GroupBy>>)
+  existing:
 
 service:
   annotations: {}
