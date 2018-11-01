@@ -1,7 +1,5 @@
 # Elastic-stack Helm Chart
 
-**Note - this chart has been deprecated and [moved to stable](../../stable/elastic-stack)**.
-
 This chart installs an elasticsearch cluster with kibana and logstash by default.
 You can optionally disable logstash and install Fluentd if you prefer. It also optionally installs filebeat, nginx-ldapauth-proxy and elasticsearch-curator.
 
@@ -22,8 +20,7 @@ This chart will do the following:
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
-$ helm install --name my-release incubator/elastic-stack
+$ helm install --name my-release stable/elastic-stack
 ```
 
 ## Deleting the Charts
