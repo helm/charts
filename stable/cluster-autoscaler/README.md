@@ -130,6 +130,10 @@ Parameter | Description | Default
 `spotinst.image.tag` | Image tag (used if `cloudProvider=spotinst`) | `v0.6.0`
 `spotinst.image.pullPolicy` | Image pull policy (used if `cloudProvider=spotinst`) | `IfNotPresent`
 `tolerations` | List of node taints to tolerate (requires Kubernetes >= 1.6) | `[]`
+`serviceMonitor.enabled` | if `true`, creates a Prometheus Operator ServiceMonitor | `false`
+`serviceMonitor.interval` | Interval that Prometheus scrapes Cluster Autoscaler metrics | `10s`
+`serviceMonitor.namespace` | Namespace which Prometheus is running in | `monitoring`
+`serviceMonitor.selector` | Default to kube-prometheus install (CoreOS recommended), but should be set according to Prometheus install | `{ prometheus: kube-prometheus }`
 
 
 Specify each parameter you'd like to override using a YAML file as described above in the [installation](#installing-the-chart) section or by using the `--set key=value[,key=value]` argument to `helm install`. For example, to change the region and [expander](https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/FAQ.md#what-are-expanders):
