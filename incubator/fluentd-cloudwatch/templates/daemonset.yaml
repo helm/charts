@@ -16,7 +16,7 @@ spec:
       annotations:
         {{ if .Values.awsRole }}iam.amazonaws.com/role: {{ .Values.awsRole }}{{ end }}
 {{- if .Values.podAnnotations }}
-{{ toYaml .Values.annotations | indent 8 }}
+{{ toYaml .Values.podAnnotations | indent 8 }}
 {{- end }}
     spec:
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "fluentd-cloudwatch.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
