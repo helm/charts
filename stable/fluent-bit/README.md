@@ -81,6 +81,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `extraInputs`                      | Add extra Input sections to config         | ``                    |
 | `extraFilters`                     | Add extra Filter sections to config        | ``                    |
 | `extraOutputs`                     | Add extra Output sections to config        | ``                    |
+| `extraPorts`                       | List of extra ports                        |                       |
 | `extraVolumeMounts`                | Mount an extra volume, required to mount ssl certificates when elasticsearch has tls enabled |          |
 | `extraVolume`                      | Extra volume                               |                                                |
 | `filter.kubeURL`                   | Optional custom configmaps                 | `https://kubernetes.default.svc:443`            |

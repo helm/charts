@@ -103,6 +103,9 @@ extraFilters: |-
 ## Add extra outputs
 extraOutputs: |-
 
+## Extra ports to add to the daemonset ports section
+extraPorts: []
+
 ## Extra volumes containing additional files required for fluent-bit to work
 ## (eg. CA certificates)
 ## Ref: https://kubernetes.io/docs/concepts/storage/volumes/
