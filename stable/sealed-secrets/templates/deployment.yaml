@@ -22,7 +22,7 @@ spec:
           command:
             - controller
           args: ["--key-name", "{{ .Values.secretName }}"]
-          image: quay.io/bitnami/{{ template "sealed-secrets.fullname" . }}:{{ .Values.image.tag }}
+          image: quay.io/bitnami/sealed-secrets-controller:{{ .Values.image.tag }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - containerPort: 8080
