@@ -5,7 +5,7 @@ metadata:
   name: sealed-secrets-key-admin
   namespace: {{ .Release.Namespace }}
   labels:
-    app: sealed-secrets-controller
+    app: {{ template "sealed-secrets.fullname" . }}
     chart: {{ template "sealed-secrets.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}

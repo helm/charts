@@ -2,10 +2,10 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: sealed-secrets-controller
+  name: {{ template "sealed-secrets.fullname" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-    app: sealed-secrets-controller
+    app: {{ template "sealed-secrets.fullname" . }}
     chart: {{ template "sealed-secrets.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
@@ -16,6 +16,6 @@ roleRef:
 subjects:
   - apiGroup: ""
     kind: ServiceAccount
-    name: {{ .Values.serviceAccount.name }}
+    name: {{ template "sealed-secrets.serviceAccountName" . }}
     namespace: {{ .Release.Namespace }}
 {{ end }}

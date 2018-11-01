@@ -4,7 +4,7 @@ kind: ClusterRole
 metadata:
   name: secrets-unsealer
   labels:
-    app: sealed-secrets-controller
+    app: {{ template "sealed-secrets.fullname" . }}
     chart: {{ template "sealed-secrets.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}

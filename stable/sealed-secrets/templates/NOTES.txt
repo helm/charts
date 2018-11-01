@@ -9,7 +9,7 @@ sudo install -m 755 kubeseal-$GOOS-$GOARCH /usr/local/bin/kubeseal
 
 2. Create a sealed secret file
 
-# note the use of `--dry-run` - this does not have the side effect of creating a secret in your cluster
+# note the use of `--dry-run` - this does not create a secret in your cluster
 kubectl create secret generic secret-name --dry-run --from-literal=foo=bar -o [json|yaml] | kubeseal --format [json|yaml] > mysealedsecret.[json|yaml]
 
 The file mysealedsecret.[json|yaml] is a commitable file.
@@ -27,6 +27,8 @@ kubectl create secret generic secret-name --dry-run --from-literal=foo=bar -o [j
 kubectl create -f mysealedsecret.[json|yaml]
 
 Running 'kubectl get secret secret-name -o [json|yaml]' will show the decrypted secret that was generated from the sealed secret.
+
+Both the SealedSecret and generated Secret must have the same name and namespace.
 
 {{ if not (eq .Release.Namespace "kube-system") }}
 --------------------------------------------------------------------------------------------------

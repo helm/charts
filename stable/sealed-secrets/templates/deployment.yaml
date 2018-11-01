@@ -1,10 +1,10 @@
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
-  name: sealed-secrets-controller
+  name: {{ template "sealed-secrets.fullname" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-    app: sealed-secrets-controller
+    app: {{ template "sealed-secrets.fullname" . }}
     chart: {{ template "sealed-secrets.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
@@ -12,17 +12,17 @@ spec:
   template:
     metadata:
       labels:
-        app: sealed-secrets-controller
+        app: {{ template "sealed-secrets.fullname" . }}
     spec:
       {{ if .Values.rbacEnabled }}
-      serviceAccountName: {{ .Values.serviceAccount.name }}
+      serviceAccountName: {{ template "sealed-secrets.serviceAccountName" . }}
       {{ end }}
       containers:
-        - name: sealed-secrets-controller
+        - name: {{ template "sealed-secrets.fullname" . }}
           command:
             - controller
           args: ["--key-name", "{{ .Values.secretName }}"]
-          image: quay.io/bitnami/sealed-secrets-controller:{{ .Values.image.tag }}
+          image: quay.io/bitnami/{{ template "sealed-secrets.fullname" . }}:{{ .Values.image.tag }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - containerPort: 8080
