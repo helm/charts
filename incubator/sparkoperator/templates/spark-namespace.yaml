@@ -1,0 +1,11 @@
+{{ if .Values.createSparkJobNamespace }}
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ .Values.sparkJobNamespace }}
+  labels:
+    app.kubernetes.io/name: {{ include "sparkoperator.name" . }}
+    helm.sh/chart: {{ include "sparkoperator.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{ end }}
