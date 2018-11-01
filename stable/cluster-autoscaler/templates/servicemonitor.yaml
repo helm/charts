@@ -16,7 +16,7 @@ spec:
       app: {{ template "cluster-autoscaler.name" . }}
       release: {{ .Release.Name }}
   endpoints:
-  - port: http
+  - port: {{ .Values.service.portName }}
     interval: {{ .Values.serviceMonitor.interval }}
   namespaceSelector:
     any: true
