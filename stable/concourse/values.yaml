@@ -54,6 +54,8 @@ concourse:
     # debugBindPort: 8079
     ## Length of time for a intercepted session to be idle before terminating.
     # interceptIdleTimeout: 0m
+    ## Time limit on checking for new versions of resources.
+    # globalResourceCheckTimeout: 1h
     ## Interval on which to check for new versions of resources.
     # resourceCheckingInterval: 1m
     ## Interval on which to check for new versions of resource types.
