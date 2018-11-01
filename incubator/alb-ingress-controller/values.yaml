@@ -48,10 +48,10 @@ readinessProbeInterval: 10
 readinessProbeTimeout: 1
 
 # How long to wait (in seconds) before checking the readiness probe
-readinessProbeInitialDelay : 30
+readinessProbeInitialDelay: 30
 
 # How long to wait (in seconds) before checking the liveness probe
-livenessProbeInitialDelay : 30
+livenessProbeInitialDelay: 30
 
 resources:
   {}
