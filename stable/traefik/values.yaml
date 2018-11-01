@@ -63,7 +63,7 @@ ssl:
   enabled: false
   # Set secretName to use an externally defined secret
   # must have keys "tls.crt", and "tls.key"
-  secretName: ""
+  # secretName: "traefik-default-cert"
   enforced: false
   permanentRedirect: false
   upstream: false
