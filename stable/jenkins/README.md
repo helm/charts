@@ -139,6 +139,43 @@ Install helm chart with network policy enabled:
 
     $ helm install stable/jenkins --set NetworkPolicy.Enabled=true
 
+## Adding customized securityRealm
+
+`Master.SecurityRealm` in values can be used to support custom security realm instead of default `LegacySecurityRealm`. For example, you can add a security realm to authenticate via keycloak.
+
+```yaml
+SecurityRealm: |-
+  <securityRealm class="org.jenkinsci.plugins.oic.OicSecurityRealm" plugin="oic-auth@1.0">
+    <clientId>testId</clientId>
+    <clientSecret>testsecret</clientSecret>
+    <tokenServerUrl>https:testurl</tokenServerUrl>
+    <authorizationServerUrl>https:testAuthUrl</authorizationServerUrl>
+    <userNameField>email</userNameField>
+    <scopes>openid email</scopes>
+  </securityRealm>
+```
+
+## Adding additional configs
+
+`Master.AdditionalConfig` can be used to add additional config files in `config.yaml`. For example, it can be used to add additional config files for keycloak authentication.
+
+```yaml
+AdditionalConfig:
+  testConfig.txt: |-
+    - name: testName
+      clientKey: testKey
+      clientURL: testUrl
+```
+
+## Adding customized labels
+
+`Master.ServiceLabels` can be used to add custom labels in `jenkins-master-svc.yaml`. For example,
+
+```yaml
+ServiceLabels:
+  expose: true
+```
+
 ## Persistence
 
 The Jenkins image stores persistence under `/var/jenkins_home` path of the container. A dynamically managed Persistent Volume
