@@ -32,16 +32,6 @@ Create chart name and version as used by the chart label.
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
-{{/* Generate basic labels */}}
-{{- define "node-problem-detector.labels" }}
-app: {{ template "node-problem-detector.name" . }}
-heritage: {{.Release.Service }}
-release: {{.Release.Name }}
-{{- if .Values.podLabels }}
-{{ toYaml .Values.podLabels }}
-{{- end }}
-{{- end }}
-
 {{/* Create the name of the service account to use */}}
 {{- define "node-problem-detector.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create -}}
