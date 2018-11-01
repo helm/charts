@@ -264,6 +264,8 @@ service:
   loadBalancerSourceRanges: []
   type: ClusterIP
 
+podManagementPolicy: OrderedReady
+
 ## Statefulsets rolling update update strategy
 ## Ref: https://kubernetes.io/docs/tutorials/stateful-application/basic-stateful-set/#rolling-update
 ##
