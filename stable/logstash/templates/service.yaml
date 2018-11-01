@@ -13,6 +13,9 @@ metadata:
 {{- end }}
 spec:
   type: {{ .Values.service.type }}
+{{- if .Values.service.externalTrafficPolicy }}
+  externalTrafficPolicy: {{ .Values.service.externalTrafficPolicy }}
+{{- end }}
   ports:
   {{- range $key, $value := .Values.service.ports }}
     - name: {{ $key }}
