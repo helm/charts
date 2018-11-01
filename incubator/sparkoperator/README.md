@@ -12,10 +12,10 @@ The chart can be installed by running:
 
 ```bash
 $ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
-$ helm install incubator/sparkoperator
+$ helm install incubator/sparkoperator --namespace spark-operator
 ```
 
-By default, the chart creates a namespace called "spark-operator" and installs the operator there. Alternatively, you can choose to install the operator in an existing namespace or in a new namespace with your custom name.
+Note that you need to use the `--namespace` flag during `helm install` to specify in which namespace you want to install the operator. The namespace can be existing or not. When it's not available, Helm would take care of creating the namespace. Note that this namespace has no relation to the namespace where you would like to deploy Spark jobs (i.e. the setting `sparkJobNamespace` shown in the table below). They can be the same namespace or different ones. 
 
 #### Configuration
 
@@ -25,9 +25,7 @@ The following table lists the configurable parameters of the Spark operator char
 | ------------------------- | ----------------------------------------------------- | -------------------------------------- |
 | `operatorImageName`       | The name of the operator image                        | `gcr.io/spark-operator/spark-operator` |
 | `operatorVersion`         | The version of the operator to install                | `v2.3.1-v1alpha1-latest`               |
-| `operatorNamespace`       | K8s namespace where operator is installed             | `spark-operator`                       |
-| `sparkJobNamespace`       | K8s namespace where Spark jobs are to be deployed     | `default`                              |
-| `createOperatorNamespace` | Whether to create the operator namespace              | true                                   |
+| `sparkJobNamespace`       | K8s namespace where Spark jobs are to be deployed.    | `default`                              |
 | `createSparkJobNamespace` | Whether to create the Spark job namespace             | false                                  |
 | `enableWebhook`           | Whether to enable mutating admission webhook          | true                                   |
 | `enableMetrics`           | Whether to expose metrics to be scraped by Premetheus | true                                   |
