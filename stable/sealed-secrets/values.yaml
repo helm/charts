@@ -1,3 +1,12 @@
+image:
+  tag: v0.7.0
+  pullPolicy: IfNotPresent
+
+resources: {}
+nodeSelector: {}
+tolerations: []
+affinity: {}  
+
 serviceAccount:
   # serviceAccount.create: Whether to create a service account or not
   create: true
