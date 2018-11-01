@@ -18,7 +18,7 @@ spec:
       restartPolicy: OnFailure
       containers:
       - name: main
-        image: lightbend/curl:7.47.0
+        image: {{ .Values.operatorImageName }}:{{ .Values.operatorVersion }}
         imagePullPolicy: IfNotPresent
         command:
         - "/bin/sh"
