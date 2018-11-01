@@ -10,7 +10,7 @@ dependencies:
   repository: https://kubernetes-charts.storage.googleapis.com/
   condition: filebeat.enabled
 - name: logstash
-  version: ^1.0.0
+  version: ^1.1.0
   repository: https://kubernetes-charts.storage.googleapis.com/
   condition: logstash.enabled
 - name: fluentd
