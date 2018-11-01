@@ -43,15 +43,14 @@ retry_until() {
     local host="${1}"
     local command="${2}"
     local expected="${3}"
-    local creds="${admin_creds[@]}"
+    local creds=("${admin_creds[@]}")
 
     # Don't need credentials for admin user creation and pings that run on localhost
     if [[ "${host}" =~ ^localhost ]]; then
-        creds=
+        creds=()
     fi
 
-    until [[ $(mongo admin --host "${host}" ${creds} "${ssl_args[@]}" --quiet --eval "${command}") == "${expected}" ]]; do
-        log "Retrying ${command}"
+    until [[ $(mongo admin --host "${host}" "${creds[@]}" "${ssl_args[@]}" --quiet --eval "${command}") == "${expected}" ]]; do
         sleep 1
 
         if (! ps "${pid}" &>/dev/null); then
@@ -62,6 +61,8 @@ retry_until() {
             log "Timed out after ${timeout}s attempting to bootstrap mongod"
             exit 1
         fi
+
+        log "Retrying ${command} on ${host}"
     done
 }
 

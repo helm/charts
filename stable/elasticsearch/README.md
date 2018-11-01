@@ -110,6 +110,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `data.resources`                     | Data node resources requests & limits                               | `{} - cpu limit must be an integer`                 |
 | `data.priorityClassName`             | Data priorityClass                                                  | `nil`                                               |
 | `data.heapSize`                      | Data node heap size                                                 | `1536m`                                             |
+| `data.hooks.drain.enabled            | Data nodes: Enable drain pre-stop and post-start hook               | `true`                                              |
 | `data.persistence.enabled`           | Data persistent enabled/disabled                                    | `true`                                              |
 | `data.persistence.name`              | Data statefulset PVC template name                                  | `data`                                              |
 | `data.persistence.size`              | Data persistent volume size                                         | `30Gi`                                              |
@@ -122,7 +123,8 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `data.antiAffinity`                  | Data anti-affinity policy                                           | `soft`                                              |
 | `data.nodeAffinity`                  | Data node affinity policy                                           | `{}`                                                |
 | `extraInitContainers`                | Additional init container passed through the tpl 	                 | ``                                                  |
-| `podSecurityPolicy.enabled`          | Specify if a Pod Security Policy must be created                    | `false`                                             |
+| `podSecurityPolicy.annotations`      | Specify pod annotations in the pod security policy                  | `{}`                                                |
+| `podSecurityPolicy.enabled`          | Specify if a pod security policy must be created                    | `false`                                             |
 | `serviceAccounts.client.create`      | If true, create the client service account                          | `true`                                              |
 | `serviceAccounts.client.name`        | Name of the client service account to use or create                 | `{{ elasticsearch.client.fullname }}`               |
 | `serviceAccounts.master.create`      | If true, create the master service account                          | `true`                                              |
