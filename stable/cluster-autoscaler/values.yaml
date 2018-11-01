@@ -122,6 +122,7 @@ spotinst:
 ## Are you using Prometheus Operator?
 serviceMonitor:
   enabled: false
+  interval: "10s"
    # Namespace Prometheus is installed in
   namespace: monitoring
    ## Defaults to whats used if you follow CoreOS [Prometheus Install Instructions](https://github.com/coreos/prometheus-operator/tree/master/helm#tldr)
