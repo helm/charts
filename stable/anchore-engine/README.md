@@ -273,6 +273,22 @@ To launch with more than one worker you can either modify values.yaml or run wit
  ## Adding Enterprise Components
 
  The following features are available to Anchore Enterprise customers.
-   * On premises feed service
-   * Graphical User Interface
-   * Role Based Access Control
+   * On premises feeds service
+   * Graphical user interface
+   * Role based access control
+
+### Enabling Enterprise Services
+Enterprise services require an Anchore Enterprise license, as well as credentials with
+permission to the private docker repositories that contain the enterprise images.
+
+To use this Helm chart with the enterprise services enabled, perform these steps.
+
+1. Create a kubernetes secret containing your license file.
+    * `kubectl create secret generic anchore-license --from-file=license.yaml=license.yaml`
+1. Create a kubernetes secret containing dockerhub credentials with access to the private anchore enterprise repositories.
+    * `kubectl create secret docker-registry anchore-dockerhub-creds --docker-server=docker.io --docker-username=<DOCKERHUB_USER> --docker-password=<DOCKERHUB_PASSWORD> --docker-email=<EMAIL_ADDRESS>`
+1. Enable the desired services in the values.yml file.
+    * enterpriseGlobal.enabled: true
+    * enterpriseFeeds.enabled: true
+    * enterpriseUi.enabled: true
+    * enterpriseRbac.enabled: true

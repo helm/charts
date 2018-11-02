@@ -1,0 +1,153 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: "{{ template "anchore-engine.fullname" . }}"
+  labels:
+    app: "{{ template "anchore-engine.fullname" . }}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+data:
+  ANCHORE_DB_NAME: {{ index .Values "anchore-db" "postgresDatabase" }}
+  {{- if ( index .Values "anchore-db" "enabled" ) }}
+  ANCHORE_DB_HOST: {{ template "postgres.anchore-db.fullname" . }}
+  {{- else }}
+  ANCHORE_DB_HOST: {{ index .Values "anchore-db" "externalEndpoint" }}
+  {{- end }}
+  ANCHORE_DB_USER: {{ index .Values "anchore-db" "postgresUser" | quote }}
+
+  config.yaml: |
+    # Anchore Service Configuration File from ConfigMap
+
+    service_dir: {{ .Values.global.configDir }}
+    tmp_dir: "/scratch"
+    log_level: {{ .Values.global.logLevel }}
+    cleanup_images: {{ .Values.global.cleanupImages }}
+
+    allow_awsecr_iam_auto: {{ .Values.global.allowECRUseIAMRole }}
+    host_id: ${ANCHORE_POD_NAME}
+    internal_ssl_verify: {{ .Values.global.internalServicesSslVerifyCerts }}
+    auto_restart_services: false
+
+    metrics:
+      enabled: {{ .Values.global.enableMetrics }}
+
+    # Uncomment if you have a local endpoint that can accept
+    # notifications from the anchore-engine, as configured below
+    #
+    {{ if .Values.global.webhooks.enabled }}
+    webhooks:
+{{ toYaml .Values.global.webhooks.config | indent 6 }}
+    {{ end }}
+
+    # Configure what feeds to sync. The 'admin' anchoreIO credentials are used if present, but not required.
+    # The 'anonymous' user is used for the sync otherwise.
+    # The sync will hit http://ancho.re/feeds, if any outbound firewall config needs to be set in your environment.
+    feeds:
+      sync_enabled: True
+      selective_sync:
+        # If enabled only sync specific feeds instead of all that are found.
+        enabled: True
+        feeds:
+          # Vulnerabilities feed is the feed for distro cve sources (redhat, debian, ubuntu, oracle, alpine....)
+          vulnerabilities: True
+          # NVD Data is used for non-distro CVEs (jars, npm, etc) that are not packaged and released by distros as rpms, debs, etc
+          nvd: True
+          # Warning: enabling the package sync causes the service to require much
+          #   more memory to do process the significant data volume. We recommend at least 4GB available for the container
+          packages: False
+          # Enabling snyk syncs snyk vulnerability data from an on-premise anchore enterprise feeds service. Please contact
+          # anchore support for finding out more about this service
+          {{- if and .Values.enterpriseFeeds.enabled (not .Values.enterpriseFeeds.snyk_disabled) }}
+          snyk: True
+          {{- else }}
+          snyk: False
+          {{- end }}
+      {{- if .Values.enterpriseFeeds.enabled }}
+      url: 'http://{{ template "anchore-engine.enterprise-feeds.fullname" . }}:8448/v1/feeds'
+      {{- else }}
+      client_url: 'https://ancho.re/v1/account/users'
+      token_url: 'https://ancho.re/oauth/token'
+      {{- end }}
+      anonymous_user_username: anon@ancho.re
+      anonymous_user_password: pbiU2RYZ2XrmYQ
+      connection_timeout_seconds: 3
+      read_timeout_seconds: 60
+
+    default_admin_password: ${ANCHORE_ADMIN_PASSWORD}
+    default_admin_email: {{ .Values.global.default_admin_email }}
+
+    credentials:
+      database:
+        db_connect: 'postgresql+pg8000://${ANCHORE_DB_USER}:${ANCHORE_DB_PASSWORD}@${ANCHORE_DB_HOST}:5432/${ANCHORE_DB_NAME}'
+        db_connect_args:
+          timeout: {{ .Values.global.dbConfig.timeout }}
+          ssl: {{ .Values.global.dbConfig.ssl }}
+        db_pool_size: {{ .Values.global.dbConfig.connectionPoolSize }}
+        db_pool_max_overflow: {{ .Values.global.dbConfig.connectionPoolSize }}
+
+    services:
+      apiext:
+        enabled: True
+        require_auth: True
+        endpoint_hostname: {{ template "anchore-engine.core.fullname" . }}
+        listen: '0.0.0.0'
+        port: {{ .Values.service.ports.extApi }}
+        ssl_enable: {{ .Values.global.internalServicesSslEnabled }}
+        ssl_cert: {{ .Values.core.ssl.certDir -}}/{{- .Values.core.ssl.certSecretCertName }}
+        ssl_key: {{ .Values.core.ssl.certDir -}}/{{- .Values.core.ssl.certSecretKeyName }}
+      analyzer:
+        enabled: true
+        endpoint_hostname: {{ template "anchore-engine.analyzer.fullname" . }}
+        listen: '0.0.0.0'
+        port: {{ .Values.service.ports.analyzer }}
+        cycle_timer_seconds: {{ .Values.analyzer.cycleTimerSeconds }}
+        max_threads: {{ .Values.analyzer.concurrentTasksPerWorker }}
+        analyzer_driver: 'nodocker'
+        ssl_cert: {{ .Values.analyzer.ssl.certDir -}}/{{- .Values.analyzer.ssl.certSecretCertName }}
+        ssl_key: {{ .Values.analyzer.ssl.certDir -}}/{{ .Values.analyzer.ssl.certSecretKeyName }}
+        ssl_enable: {{ .Values.global.internalServicesSslEnabled }}
+      kubernetes_webhook:
+        enabled: True
+        require_auth: False
+        endpoint_hostname: {{ template "anchore-engine.kubernetes-webhook.fullname" . }}
+        listen: '0.0.0.0'
+        port: {{ .Values.service.ports.kubernetesWebhook }}
+        ssl_enable: {{ .Values.global.internalServicesSslEnabled }}
+        ssl_cert: {{ .Values.core.ssl.certDir -}}/{{- .Values.core.ssl.certSecretCertName }}
+        ssl_key: {{ .Values.core.ssl.certDir -}}/{{- .Values.core.ssl.certSecretKeyName }}
+      catalog:
+        enabled: True
+        require_auth: True
+        endpoint_hostname: {{ template "anchore-engine.catalog.fullname" . }}
+        listen: '0.0.0.0'
+        port: {{ .Values.service.ports.catalog }}
+        use_db: True
+        cycle_timer_seconds: '1'
+        cycle_timers:
+{{ toYaml .Values.global.cycleTimers | indent 10 }}
+        ssl_enable: {{ .Values.global.internalServicesSslEnabled }}
+        ssl_cert: {{ .Values.catalog.ssl.certDir -}}/{{- .Values.catalog.ssl.certSecretCertName }}
+        ssl_key: {{ .Values.catalog.ssl.certDir -}}/{{- .Values.catalog.ssl.certSecretKeyName }}
+        event_log:
+{{ toYaml .Values.catalog.events | indent 10 }}
+        archive:
+{{ toYaml .Values.catalog.archive | indent 10 }}
+      simplequeue:
+        enabled: True
+        require_auth: True
+        endpoint_hostname: {{ template "anchore-engine.simplequeue.fullname" . }}
+        listen: '0.0.0.0'
+        port: {{ .Values.service.ports.simplequeue }}
+        ssl_enable: {{ .Values.global.internalServicesSslEnabled }}
+        ssl_cert: {{ .Values.simplequeue.ssl.certDir -}}/{{- .Values.simplequeue.ssl.certSecretCertName }}
+        ssl_key: {{ .Values.simplequeue.ssl.certDir -}}/{{- .Values.simplequeue.ssl.certSecretKeyName }}
+      policy_engine:
+        enabled: True
+        require_auth: True
+        endpoint_hostname: {{ template "anchore-engine.policy-engine.fullname" . }}
+        listen: '0.0.0.0'
+        port: {{ .Values.service.ports.policyEngine }}
+        ssl_cert: {{ .Values.policyEngine.ssl.certDir -}}/{{- .Values.policyEngine.ssl.certSecretCertName }}
+        ssl_key: {{ .Values.policyEngine.ssl.certDir -}}/{{- .Values.policyEngine.ssl.certSecretKeyName }}
+        ssl_enable: {{ .Values.global.internalServicesSslEnabled }}

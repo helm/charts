@@ -1,11 +1,11 @@
-{{- if .Values.enterpriseConfig.ui.enabled -}}
+{{- if .Values.enterpriseUi.enabled -}}
 
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "anchore-engine.enterprise-ui.fullname" . | quote }}
   labels:
-    app: {{ include "fullname" . | quote }}
+    app: {{ include "anchore-engine.fullname" . | quote }}
     component: "enterprise-ui"
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
@@ -13,61 +13,59 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: "{{ template "fullname" .}}"
+      app: "{{ template "anchore-engine.fullname" .}}"
       component: "enterprise-ui"
-  replicas: {{ .Values.enterpriseConfig.ui.replicaCount }}
+  replicas: {{ .Values.enterpriseUi.replicaCount }}
   template:
     metadata:
       labels:
-        app: "{{ template "fullname" . }}"
+        app: "{{ template "anchore-engine.fullname" . }}"
         component: "enterprise-ui"
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: "{{ .Release.Name }}"
         heritage: "{{ .Release.Service }}"
-{{- if .Values.enterpriseConfig.ui.annotations }}
+{{- if .Values.enterpriseUi.annotations }}
       annotations:
-{{ toYaml .Values.enterpriseConfig.ui.annotations | indent 8 }}
+{{ toYaml .Values.enterpriseUi.annotations | indent 8 }}
 {{- end }}
     spec:
       volumes:
-      - name: ui-config
-        configMap:
-          name: "{{ template "anchore-engine.enterprise-ui.fullname" . }}-configmap"
       - name: anchore-license
         secret:
-          secretName: {{ .Values.enterpriseConfig.licenseSecretName }}
+          secretName: {{ .Values.enterpriseGlobal.licenseSecretName }}
       imagePullSecrets:
-      - name: {{ .Values.enterpriseConfig.imagePullSecretName }}
+      - name: {{ .Values.enterpriseGlobal.imagePullSecretName }}
       containers:
       - name: {{ .Chart.Name }}-enterprise-ui
-        image: {{ .Values.enterpriseConfig.ui.image.repository }}:{{ .Values.enterpriseConfig.ui.image.tag }}
-        imagePullPolicy: {{ .Values.enterpriseConfig.ui.image.pullPolicy }}
+        image: {{ .Values.enterpriseUi.image.repository }}:{{ .Values.enterpriseUi.image.tag }}
+        imagePullPolicy: {{ .Values.enterpriseUi.image.pullPolicy }}
         env:
         - name: REDIS_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "redis.fullname" . }}
               key: redis-password
+        - name: ANCHORE_REDIS_URI
+          value: {{ printf "redis://:$(REDIS_PASSWORD)@%s-master:6379" ( include "redis.fullname" . ) }}
         - name: ANCHORE_ENGINE_URI
-          value: "{{ template "fullname" . }}:8228"
-        - name: ANCHORE_ENABLE_PROXY
-          value: "{{ .Values.enterpriseConfig.ui.enableProxy }}"
-        - name: ANCHORE_ENABLE_SSL
-          value: "{{ .Values.enterpriseConfig.ui.enableSsl }}"
+          value: 'http://{{ template "anchore-engine.core.fullname" . }}:{{ .Values.service.ports.extApi }}/v1'
         - name: ANCHORE_LICENSE_PATH
-          value: "/config"
-        - name: ANCHORE_REDIS_URL
-          value: "redis://:$(REDIS_PASSWORD)@{{ template "redis.fullname" . }}-master:6379"
+          value: '/'
+        - name: ANCHORE_RBAC_URI
+          value: 'http://{{ template "anchore-engine.core.fullname" . }}:{{ .Values.enterpriseRbac.service.apiPort }}/v1'
+        - name: ANCHORE_ENABLE_SSL
+          value: '{{ .Values.enterpriseUi.enableSsl }}'
+        - name: ANCHORE_ENABLE_PROXY
+          value: '{{ .Values.enterpriseUi.enableProxy }}'
+        - name: ANCHORE_ALLOW_SHARED_LOGIN
+          value: '{{ .Values.enterpriseUi.enableSharedLogin }}'
         ports:
         - containerPort: 3000
           protocol: TCP
           name: enterprise-ui
         volumeMounts:
-        - name: ui-config
-          mountPath: "/config/config-ui.yaml"
-          subPath: config-ui.yaml
         - name: anchore-license
-          mountPath: "/config/license.yaml"
+          mountPath: "/license.yaml"
           subPath: license.yaml
         readinessProbe:
           httpGet:
@@ -86,18 +84,40 @@ spec:
           periodSeconds: 30
           failureThreshold: 10
         resources:
-{{ toYaml .Values.enterpriseConfig.ui.resources | indent 10 }}
-    {{- if .Values.enterpriseConfig.ui.nodeSelector }}
+{{ toYaml .Values.enterpriseUi.resources | indent 10 }}
+    {{- if .Values.enterpriseUi.nodeSelector }}
       nodeSelector:
-{{ toYaml .Values.enterpriseConfig.ui.nodeSelector | indent 8 }}
+{{ toYaml .Values.enterpriseUi.nodeSelector | indent 8 }}
     {{- end }}
-    {{- with .Values.enterpriseConfig.ui.affinity }}
+    {{- with .Values.enterpriseUi.affinity }}
       affinity:
 {{ toYaml . | indent 8 }}
     {{- end }}
-    {{- with .Values.enterpriseConfig.ui.tolerations }}
+    {{- with .Values.enterpriseUi.tolerations }}
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "anchore-engine.enterprise-ui.fullname" . | quote }}
+  labels:
+    app: "{{ template "anchore-engine.fullname" . }}"
+    component: "enterprise-ui"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  type: {{ .Values.enterpriseUi.service.type }}
+  ports:
+    - name: enterprise-ui
+      port: {{ .Values.enterpriseUi.service.httpPort }}
+      protocol: TCP
+      targetPort: 3000
+  selector:
+    app: "{{ template "anchore-engine.fullname" . }}"
+    component: "enterprise-ui"
 
 {{- end -}}

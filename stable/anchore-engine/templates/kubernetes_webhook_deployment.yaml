@@ -1,0 +1,116 @@
+{{- $component := "kubernetes-webhook" -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{ template "anchore-engine.kubernetes-webhook.fullname" . }}"
+  labels:
+    app: "{{ template "anchore-engine.fullname" . }}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+    component: {{ $component }}
+spec:
+  selector:
+    matchLabels:
+      app: "{{ template "anchore-engine.fullname" . }}"
+      component: {{ $component }}
+  replicas: {{ .Values.kubernetesWebhook.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: "{{ template "anchore-engine.fullname" . }}"
+        component: {{ $component }}
+{{- if .Values.kubernetesWebhook.annotations }}
+      annotations:
+{{ toYaml .Values.kubernetesWebhook.annotations | indent 8 }}
+{{- end }}
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}-{{ $component }}
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command: ["/usr/local/bin/anchore-manager"]
+        args: ["service", "start", "kubernetes_webhook"]
+        envFrom:
+        - secretRef:
+            name: {{ template "anchore-engine.fullname" . }}
+        - configMapRef:
+            name: {{ template "anchore-engine.fullname" . }}
+        env:
+        - name: ANCHORE_POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        ports:
+        - name: k8s-webhook
+          containerPort: {{ .Values.service.ports.kubernetesWebhook }}
+        volumeMounts:
+        - name: config-volume
+          mountPath: /config/config.yaml
+          subPath: config.yaml
+        {{- if .Values.global.internalServicesSslEnabled }}
+        - name: certs
+          mountPath: {{ default "/certs" .Values.kubernetesWebhook.ssl.CertDir }}
+          readOnly: true
+        {{- end }}
+        livenessProbe:
+          exec:
+            command:
+            - pgrep
+            - twistd
+          initialDelaySeconds: 10
+          periodSeconds: 60
+          failureThreshold: 5
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: k8s-webhook
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 10
+          failureThreshold: 10
+        resources:
+{{ toYaml .Values.kubernetesWebhook.resources | indent 10 }}
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ template "anchore-engine.fullname" .}}
+        {{- if .Values.global.internalServicesSslEnabled }}
+        - name: certs
+          secret:
+            secretName: {{ .Values.kubernetesWebhook.ssl.certSecret }}
+        {{- end }}
+    {{- if .Values.kubernetesWebhook.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.kubernetesWebhook.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- with .Values.kubernetesWebhook.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.kubernetesWebhook.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "anchore-engine.kubernetes-webhook.fullname" . }}
+  labels:
+    app: {{ template "anchore-engine.fullname" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: {{ $component }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - name: anchore-external-api
+      port: {{ .Values.service.ports.kubernetesWebhook }}
+      targetPort: {{ .Values.service.ports.kubernetesWebhook }}
+      protocol: TCP
+  selector:
+    app: {{ template "anchore-engine.fullname" . }}
+    component: {{ $component }}

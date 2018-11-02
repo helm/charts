@@ -2,9 +2,9 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: "{{ template "fullname" . }}"
+  name: "{{ template "anchore-engine.core.fullname" . }}"
   labels:
-    app: "{{ template "fullname" . }}"
+    app: "{{ template "anchore-engine.fullname" . }}"
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -32,12 +32,12 @@ spec:
         paths:
           - path: {{ $.Values.ingress.path }}
             backend:
-              serviceName: "{{ template "fullname" $ }}"
-              servicePort: {{ $.Values.service.ports.api }}
+              serviceName: "{{ template "anchore-engine.core.fullname" $ }}"
+              servicePort: {{ $.Values.service.ports.extApi }}
   {{- end }}
 {{- else }}
   backend:
-    serviceName: {{ template "fullname" . }}
-    servicePort: {{ .Values.service.ports.api }}
+    serviceName: {{ template "anchore-engine.core.fullname" . }}
+    servicePort: {{ .Values.service.ports.extApi }}
 {{- end }}
 {{- end -}}
