@@ -94,7 +94,7 @@ spec:
             - /work-dir/peer-finder
           args:
             - -on-start=/init/on-start.sh
-            - "-service={{ template "mongodb-replicaset.fullname" . }}"
+            - "-service={{ template "mongodb-replicaset.fullname" . }}-discovery"
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           env:
             - name: POD_NAMESPACE

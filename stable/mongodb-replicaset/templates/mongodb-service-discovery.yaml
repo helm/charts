@@ -2,8 +2,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  {{- if .Values.serviceAnnotations }}
   annotations:
+    service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
+  {{- if .Values.serviceAnnotations }}
 {{ toYaml .Values.serviceAnnotations | indent 4 }}
   {{- end }}
   labels:
@@ -14,19 +15,14 @@ metadata:
 {{- if .Values.extraLabels }}
 {{ toYaml .Values.extraLabels | indent 4 }}
 {{- end }}
-  name: {{ template "mongodb-replicaset.fullname" . }}
+  name: {{ template "mongodb-replicaset.fullname" . }}-discovery
 spec:
   type: ClusterIP
   clusterIP: None
   ports:
     - name: mongodb
       port: {{ .Values.port }}
-{{- if .Values.metrics.enabled }}
-    - name: metrics
-      port: {{ .Values.metrics.port }}
-      targetPort: metrics
-{{- end }}
   selector:
     app: {{ template "mongodb-replicaset.name" . }}
     release: {{ .Release.Name }}
-  publishNotReadyAddresses: false
+  publishNotReadyAddresses: true
