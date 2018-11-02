@@ -79,6 +79,13 @@ password:
 ## Use existing secret (ignores previous password)
 # existingSecret:
 
+## Persist data to a persistent volume
+persistence: {}
+  ## A manually managed Persistent Volume and Claim
+  ## Requires persistence.enabled: true
+  ## If defined, PVC must be created manually before volume will be bound
+  # existingClaim:
+
 ##
 ## Redis Master parameters
 ##
@@ -119,6 +126,10 @@ master:
   #   requests:
   #     memory: 256Mi
   #     cpu: 100m
+  ## Use an alternate scheduler, e.g. "stork".
+  ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+  ##
+  # schedulerName:
 
   ## Configure extra options for Redis Master liveness and readiness probes
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes)
@@ -152,6 +163,7 @@ master:
   service:
     ##  Redis Master Service type
     type: ClusterIP
+    port: 6379
 
     ## Specify the nodePort value for the LoadBalancer and NodePort service types.
     ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
@@ -176,14 +188,12 @@ master:
   ##
   persistence:
     enabled: true
-
     ## The path the volume will be mounted at, useful when using different
     ## Redis images.
     path: /bitnami/redis/data
-
-    ## The subdirectory of the volume to mount to, useful in dev environments and one PV for multiple services.
+    ## The subdirectory of the volume to mount to, useful in dev environments
+    ## and one PV for multiple services.
     subPath: ""
-
     ## redis data Persistent Volume Storage Class
     ## If defined, storageClassName: <storageClass>
     ## If set to "-", storageClassName: "", which disables dynamic provisioning
@@ -203,6 +213,7 @@ master:
     ## Partition update strategy
     ## https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#partitions
     # rollingUpdatePartition:
+
 
 ##
 ## Redis Slave properties
@@ -225,8 +236,6 @@ slave:
     ##
     annotations: {}
     loadBalancerIP:
-
-  ## Redis slave optional overrides
 
   ## Redis port
   # port: 6379
@@ -268,6 +277,11 @@ slave:
   ## Redis slave selectors and tolerations for pod assignment
   # nodeSelector: {"beta.kubernetes.io/arch": "amd64"}
   # tolerations: []
+
+  ## Use an alternate scheduler, e.g. "stork".
+  ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+  ##
+  # schedulerName:
 
   ## Redis slave pod Annotation and Labels
   # podLabels: {}
