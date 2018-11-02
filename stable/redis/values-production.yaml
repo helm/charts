@@ -217,8 +217,8 @@ master:
 
 ##
 ## Redis Slave properties
-## Note: serviceType and service are mandatory parameters
-## The rest of the parameters, if undefined, will inherit those declared in Redis Master
+## Note: service.type is a mandatory parameter
+## The rest of the parameters are either optional or, if undefined, will inherit those declared in Redis Master
 ##
 slave:
   ## Slave Service properties
