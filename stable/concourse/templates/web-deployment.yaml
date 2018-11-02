@@ -26,7 +26,11 @@ spec:
 {{ toYaml .Values.web.tolerations | indent 8 }}
       containers:
         - name: {{ template "concourse.web.fullname" . }}
+          {{- if .Values.imageDigest }}
+          image: "{{ .Values.image }}@{{ .Values.imageDigest }}"
+          {{- else }}
           image: "{{ .Values.image }}:{{ .Values.imageTag }}"
+          {{- end }}
           imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
           args:
             - "web"
