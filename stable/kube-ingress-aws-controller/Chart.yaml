@@ -1,0 +1,17 @@
+apiVersion: v1
+appVersion: 0.1
+name: kube-ingress-aws-controller
+version: 0.0.1
+description: The ALB Ingress Controller satisfies Kubernetes ingress resources by provisioning Application Load Balancers.
+home: https://github.com/zalando-incubator/kube-ingress-aws-controller
+engine: gotpl
+icon: https://avatars2.githubusercontent.com/u/18533786?s=200&v=4
+sources:
+  - https://github.com/zalando-incubator/kube-ingress-aws-controller
+keywords:
+- aws
+- ingress
+- controller
+maintainers:
+- name: julianxhokaxhiu
+  email: info@julianxhokaxhiu.com

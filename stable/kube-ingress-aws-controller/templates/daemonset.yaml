@@ -1,0 +1,53 @@
+apiVersion: apps/v1beta2
+kind: DaemonSet
+metadata:
+  name: {{ template "kube-ingress-aws-controller.fullname" . }}
+  labels:
+    app: {{ template "kube-ingress-aws-controller.name" . }}
+    chart: {{ template "kube-ingress-aws-controller.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    component: daemonset
+{{- if .Values.daemonset.annotations }}
+  annotations:
+{{ toYaml .Values.daemonset.annotations | indent 4 }}
+{{- end }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "kube-ingress-aws-controller.name" . }}
+      release: {{ .Release.Name }}
+      component: daemonset
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      name: {{ template "kube-ingress-aws-controller.fullname" . }}
+      labels:
+        app: {{ template "kube-ingress-aws-controller.name" . }}
+        release: {{ .Release.Name }}
+        component: daemonset
+    spec:
+      serviceAccountName: {{ template "kube-ingress-aws-controller.serviceAccountName" . }}
+      hostNetwork: true
+      containers:
+      - name: {{ template "kube-ingress-aws-controller.name" . }}
+        image: "{{ .Values.daemonset.image.repository }}:{{ .Values.daemonset.image.tag }}"
+        imagePullPolicy: "{{ .Values.daemonset.image.pullPolicy }}"
+        ports:
+        - name: ingress-port
+          containerPort: 9999
+          hostPort: 9999
+        args:
+          - "skipper"
+          {{- range $arg := .Values.daemonset.args }}
+          - {{ $arg }}
+          {{- end }}
+        resources:
+{{ toYaml .Values.daemonset.resources | indent 12 }}
+        readinessProbe:
+          httpGet:
+            path: /kube-system/healthz
+            port: 9999
+          initialDelaySeconds: 5
+          timeoutSeconds: 5

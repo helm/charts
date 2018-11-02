@@ -1,0 +1,61 @@
+{{- if .Values.rbac.create }}
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  labels:
+    app: {{ template "kube-ingress-aws-controller.name" . }}
+    chart: {{ template "kube-ingress-aws-controller.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "kube-ingress-aws-controller.fullname" . }}
+rules:
+- apiGroups:
+  - ""
+  - "extensions"
+  resources:
+  - configmaps
+  - secrets
+  - services
+  - endpoints
+  - ingresses
+  - nodes
+  - pods
+  verbs:
+  - list
+  - get
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - services
+  verbs:
+  - create
+- apiGroups:
+  - "extensions"
+  - ""
+  resources:
+  - ingresses
+  - ingresses/status
+  verbs:
+  - get
+  - update
+  - create
+  - list
+  - patch
+  - delete
+  - watch
+- apiGroups:
+  - "*"
+  - ""
+  resources:
+  - events
+  - certificates
+  - secrets
+  verbs:
+  - create
+  - list
+  - update
+  - get
+  - patch
+  - watch
+{{- end }}

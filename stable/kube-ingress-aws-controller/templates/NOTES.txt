@@ -1,0 +1,1 @@
+For more information on how to use this Chart, feel free to visit https://github.com/zalando-incubator/kube-ingress-aws-controller

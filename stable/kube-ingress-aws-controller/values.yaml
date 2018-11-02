@@ -1,0 +1,53 @@
+controller:
+  ## AWS region in which this ingress controller will operate
+  awsRegion: us-west-1
+  ## Container image used for the Ingress Controller
+  image:
+    repository: registry.opensource.zalan.do/teapot/kube-ingress-aws-controller
+    tag: "v0.6.8"
+    pullPolicy: IfNotPresent
+  ## Annotations for the controller
+  annotations: null
+
+daemonset:
+  ## Container image used for the Daemon set
+  image:
+    repository: registry.opensource.zalan.do/pathfinder/skipper
+    tag: "v0.9.202"
+    pullPolicy: IfNotPresent
+  # Resource configuration for limits and requests
+  resources: {}
+    # limits:
+    #   cpu: 200m
+    #   memory: 200Mi
+    # requests:
+    #   cpu: 25m
+    #   memory: 25Mi
+  ## Annotations for the daemonset
+  annotations: null
+  ## Arguments given
+  args:
+    - "-kubernetes"
+    - "-kubernetes-in-cluster"
+    - "-address=:9999"
+    - "-proxy-preserve-host"
+    - "-serve-host-metrics"
+    - "-enable-ratelimits"
+    - "-experimental-upgrade"
+    - "-metrics-exp-decay-sample"
+    - "-kubernetes-https-redirect=true"
+    - "-lb-healthcheck-interval=3s"
+    - "-metrics-flavour=codahale,prometheus"
+    - "-enable-connection-metrics"
+
+## RBAC support
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:

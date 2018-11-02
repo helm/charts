@@ -1,0 +1,36 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "kube-ingress-aws-controller.name" . }}
+  labels:
+    app: {{ template "kube-ingress-aws-controller.name" . }}
+    chart: {{ template "kube-ingress-aws-controller.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    component: deployment
+{{- if .Values.controller.annotations }}
+  annotations:
+{{ toYaml .Values.controller.annotations | indent 4 }}
+{{- end }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ template "kube-ingress-aws-controller.name" . }}
+      release: {{ .Release.Name }}
+      component: deployment
+  template:
+    metadata:
+      labels:
+        app: {{ template "kube-ingress-aws-controller.name" . }}
+        release: {{ .Release.Name }}
+        component: deployment
+    spec:
+      serviceAccountName: {{ template "kube-ingress-aws-controller.serviceAccountName" . }}
+      containers:
+      - name: {{ template "kube-ingress-aws-controller.name" . }}
+        image: "{{ .Values.controller.image.repository }}:{{ .Values.controller.image.tag }}"
+        imagePullPolicy: "{{ .Values.controller.image.pullPolicy }}"
+        env:
+        - name: AWS_REGION
+          value: {{ .Values.controller.awsRegion }}
