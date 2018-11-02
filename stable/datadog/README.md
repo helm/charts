@@ -12,16 +12,35 @@ Kubernetes 1.4+ or OpenShift 3.4+ (1.3 support is currently partial, full suppor
 
 ## Installing the Chart
 
-To install the chart with the release name `my-release`, retrieve your DataDog API key from your [Agent Installation Instructions](https://app.datadoghq.com/account/settings#agent/kubernetes) and run:
+To install the chart with the release name `my-release`, retrieve your Datadog API key from your [Agent Installation Instructions](https://app.datadoghq.com/account/settings#agent/kubernetes) and run:
 
 ```bash
 $ helm install --name my-release \
     --set datadog.apiKey=YOUR-KEY-HERE stable/datadog
 ```
 
-After a few minutes, you should see hosts and metrics being reported in DataDog.
+After a few minutes, you should see hosts and metrics being reported in Datadog.
 
 **Tip**: List all releases using `helm list`
+
+### Enabling the Datadog Cluster Agent ###
+
+Read about the Datadog Cluster Agent in the [official documentation](https://docs.datadoghq.com/agent/kubernetes/cluster/).
+
+Run the following if you want to deploy the chart with the Datadog Cluster Agent.
+Note that specifying `clusterAgent.metricsProvider.enabled=true` will enable the External Metrics Server.
+If you want to learn to use this feature, you can check out this [walkthrough](https://github.com/DataDog/datadog-agent/blob/master/docs/cluster-agent/CUSTOM_METRICS_SERVER.md).
+The Leader Election is enabled by default in the chart for the Cluster Agent. Only the Cluster Agent(s) participate in the election, in case you have several replicas configured (using `clusterAgent.replicas`.
+You can specify the token used to secure the communication between the Cluster Agent(s)q and the Agents with `clusterAgent.token`. If not specified, a random one will be generated and you will be prompted a warning when installing the chart.
+
+```bash
+helm install --name datadog-monitoring \
+    --set datadog.apiKey=YOUR-API-KEY-HERE \
+    --set datadog.appKey=YOUR-APP-KEY-HERE \
+    --set clusterAgent.enabled=true \
+    --set clusterAgent.metricsProvider.enabled=true \
+    stable/datadog
+```
 
 ## Uninstalling the Chart
 
@@ -44,7 +63,7 @@ The following table lists the configurable parameters of the Datadog chart and t
 | `datadog.appKey`            | Datadog APP key required to use metricsProvider |  `Nil` You must provide your own key      |
 | `datadog.appKeyExistingSecret` | If set, use the secret with a provided name instead of creating a new one |`nil` |
 | `image.repository`          | The image repository to pull from  | `datadog/agent`                           |
-| `image.tag`                 | The image tag to pull              | `6.5.2`                                   |
+| `image.tag`                 | The image tag to pull              | `6.6.0`                                   |
 | `image.pullPolicy`          | Image pull policy                  | `IfNotPresent`                            |
 | `image.pullSecrets`         | Image pull secrets                 |  `nil`                                    |
 | `rbac.create`               | If true, create & use RBAC resources | `true`                                  |
@@ -86,10 +105,10 @@ The following table lists the configurable parameters of the Datadog chart and t
 | `kube-state-metrics.rbac.create`| If true, create & use RBAC resources for kube-state-metrics | `true`       |
 | `kube-state-metrics.rbac.serviceAccount` | existing ServiceAccount to use (ignored if rbac.create=true) for kube-state-metrics | `default` |
 | `clusterAgent.enabled`                   | Use the cluster-agent for cluster metrics (Kubernetes 1.10+ only) | `false`                           |
-| `clusterAgent.token`                     | A cluster-internal secret for agent-to-agent communication. Must be 32+ characters a-zA-Z | `Nil` You must provide your own token|
+| `clusterAgent.token`                     | A cluster-internal secret for agent-to-agent communication. Must be 32+ characters a-zA-Z | Generates a random value |
 | `clusterAgent.containerName`             | The container name for the Cluster Agent  | `cluster-agent`                           |
 | `clusterAgent.image.repository`          | The image repository for the cluster-agent | `datadog/cluster-agent`                           |
-| `clusterAgent.image.tag`                 | The image tag to pull              | `0.10.0`                                   |
+| `clusterAgent.image.tag`                 | The image tag to pull              | `1.0.0`                                   |
 | `clusterAgent.image.pullPolicy`          | Image pull policy                  | `IfNotPresent`                            |
 | `clusterAgent.image.pullSecrets`         | Image pull secrets                 |  `nil`                                    |
 | `clusterAgent.metricsProvider.enabled`   | Enable Datadog metrics as a source for HPA scaling |  `false`                  |
@@ -171,6 +190,7 @@ For more details, please refer to [the documentation](https://docs.datadoghq.com
 
 To enable event collection, you will need to set the `datadog.leaderElection`, `datadog.collectEvents` and `rbac.create` options to `true`.
 
+It is now recommended to use the Datadog Cluster Agent to collect the events - Refer to the [Enabling the Datadog Cluster Agent](#enabling-the-datadog-cluster-agent) section.
 Please read [the official documentation](https://docs.datadoghq.com/agent/kubernetes/event_collection/) for more context.
 
 ### Kubernetes Labels and Annotations
