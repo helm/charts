@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "scdf.fullname" . }}-server
@@ -9,6 +9,10 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "scdf.name" . }}
+      component: server
   replicas: 1
   template:
     metadata:
@@ -21,28 +25,19 @@ spec:
       - name: {{ template "scdf.fullname" . }}-server
         image: {{ .Values.server.image }}:{{ .Values.server.version }}
         imagePullPolicy: {{ .Values.server.imagePullPolicy }}
-        volumeMounts: [
-          {
-            name: data-flow,
-            mountPath: /etc/secrets/data-flow,
+        volumeMounts:
+          - name: data-flow
+            mountPath: /etc/secrets/data-flow
             readOnly: true
-          },
-          {
-            name: rabbitmq,
-            mountPath: /etc/secrets/rabbitmq,
+          - name: rabbitmq
+            mountPath: /etc/secrets/rabbitmq
             readOnly: true
-          },
-          {
-            name: mysql,
-            mountPath: /etc/secrets/mysql,
+          - name: mysql
+            mountPath: /etc/secrets/mysql
             readOnly: true
-          },
-          {
-            name: redis,
-            mountPath: /etc/secrets/redis,
+          - name: redis
+            mountPath: /etc/secrets/redis
             readOnly: true
-          }
-        ]
         ports:
         - containerPort: 8080
           name: http
@@ -108,30 +103,17 @@ spec:
           # Maven repo for metadata artifact resolution plus metrics destination for all stream apps
         - name: SPRING_APPLICATION_JSON
           value: "{ \"maven\": { \"local-repository\": null, \"remote-repositories\": { \"repo1\": { \"url\": \"https://repo.spring.io/libs-snapshot\"} } }, \"spring.cloud.dataflow.application-properties.stream.spring.cloud.stream.bindings.applicationMetrics.destination\": \"metrics\" }"
-      volumes: [
-        {
-          name: data-flow,
-          secret: {
+      volumes:
+        - name: data-flow
+          secret:
             secretName: {{ template "scdf.fullname" . }}
-          }
-        },
-        {
-          name: rabbitmq,
-          secret: {
+        - name: rabbitmq
+          secret:
             secretName: {{ printf "%s-%s" .Release.Name "rabbitmq" | trunc 63 | trimSuffix "-" }}
-          }
-        },
-        {
-          name: mysql,
-          secret: {
+        - name: mysql
+          secret:
             secretName: {{ printf "%s-%s" .Release.Name "mysql" | trunc 63 | trimSuffix "-" }}
-          }
-        },
-        {
-          name: redis,
-          secret: {
+        - name: redis
+          secret:
             secretName: {{ printf "%s-%s" .Release.Name "redis" | trunc 63 | trimSuffix "-" }}
-          }
-        }
-      ]
       serviceAccountName: {{ template "scdf.serviceAccountName" . }}
