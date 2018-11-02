@@ -15,6 +15,11 @@ image: concourse/concourse
 ##
 imageTag: "4.2.1"
 
+## Specific image digest to use in place of a tag.
+## ref: https://kubernetes.io/docs/concepts/configuration/overview/#container-images
+##
+# imageDigest: sha256:54ea351808b55ecc14af6590732932e2a6a0ed8f6d10f45e8be3b51165d5526a
+
 ## Specify a imagePullPolicy: 'Always' if imageTag is 'latest', else set to 'IfNotPresent'.
 ## ref: https://kubernetes.io/docs/user-guide/images/#pre-pulling-images
 ##
