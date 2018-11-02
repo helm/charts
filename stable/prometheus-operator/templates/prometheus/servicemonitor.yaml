@@ -17,4 +17,5 @@ spec:
   endpoints:
   - port: web
     interval: 30s
+    path: "{{ trimSuffix "/" .Values.prometheus.prometheusSpec.routePrefix }}/metrics"
 {{- end }}

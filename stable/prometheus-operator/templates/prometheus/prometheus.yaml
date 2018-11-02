@@ -15,6 +15,9 @@ spec:
       - namespace: {{ .Release.Namespace }}
         name: {{ template "prometheus-operator.fullname" . }}-alertmanager
         port: web
+        {{- if .Values.alertmanager.alertmanagerSpec.routePrefix }}
+        pathPrefix: "{{ .Values.alertmanager.alertmanagerSpec.routePrefix }}"
+        {{- end }}
 {{- end }}
 {{- if .Values.prometheus.prometheusSpec.image }}
   baseImage: {{ .Values.prometheus.prometheusSpec.image.repository }}
