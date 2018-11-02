@@ -590,6 +590,14 @@ prometheus:
   service:
     annotations: {}
 
+    ## Node Port (only used if service type is NodePort)
+    ##
+    # nodePort: 30816
+
+    ## Service type
+    ##
+    type: ClusterIP
+
   serviceMonitor:
     selfMonitor: true
 

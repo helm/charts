@@ -14,8 +14,12 @@ spec:
   ports:
   - name: web
     port: 9090
+    {{- if eq .Values.prometheus.service.type "NodePort" }}
+    nodePort: {{ .Values.prometheus.service.nodePort }}
+    {{- end }}
     targetPort: web
   selector:
     app: prometheus
     prometheus: {{ template "prometheus-operator.fullname" . }}-prometheus
+  type: "{{ .Values.prometheus.service.type }}"
 {{- end }}
