@@ -31,7 +31,11 @@ spec:
       terminationGracePeriodSeconds: {{ .Values.worker.terminationGracePeriodSeconds }}
       containers:
         - name: {{ template "concourse.worker.fullname" . }}
+          {{- if .Values.imageDigest }}
+          image: "{{ .Values.image }}@{{ .Values.imageDigest }}"
+          {{- else }}
           image: "{{ .Values.image }}:{{ .Values.imageTag }}"
+          {{- end }}
           imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
           command:
             - /bin/sh
