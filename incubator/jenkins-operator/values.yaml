@@ -11,11 +11,7 @@ chartCrds: true
 args:
 - --alsologtostderr
 - --install-crds=false
-resources: {
-  }
-nodeSelector: {
-  }
-tolerations: [
-  ]
-affinity: {
-  }
+resources: {}
+nodeSelector: {}
+tolerations: []
+affinity: {}
