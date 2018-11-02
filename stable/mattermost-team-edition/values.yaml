@@ -1,0 +1,116 @@
+# Default values for mattermost-team-edition.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+image:
+  repository: mattermost/mattermost-team-edition
+  tag: 5.4.0
+  imagePullPolicy: IfNotPresent
+
+## How many old ReplicaSets for Mattermost Deployment you want to retain
+revisionHistoryLimit: 1
+
+## Enable persistence using Persistent Volume Claims
+## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+## ref: https://docs.gitlab.com/ee/install/requirements.html#storage
+##
+persistence:
+  ## This volume persists generated data from users, like images, attachments...
+  ##
+  data:
+    enabled: true
+    size: 10Gi
+    ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
+    ## Default: volume.alpha.kubernetes.io/storage-class: default
+    ##
+    # storageClass:
+    accessMode: ReadWriteOnce
+  # existingClaim: ""
+
+# Mattermost configuration:
+config:
+  siteUrl: ""
+  siteName: "Mattermost"
+  filesAccessKey:
+  filesSecretKey:
+  fileBucketName:
+  smtpServer:
+  smtpPort:
+  # empty, TLS, or STARTTLS
+  smtpConnection:
+  smtpUsername:
+  smtpPassword:
+  feedbackEmail:
+  feedbackName:
+
+service:
+  type: ClusterIP
+  externalPort: 8065
+  internalPort: 8065
+
+ingress:
+  enabled: false
+  path: /
+  annotations:
+    # kubernetes.io/ingress.class: nginx
+    # nginx.ingress.kubernetes.io/proxy-body-size: 50m
+    # nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
+    # nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+    # nginx.ingress.kubernetes.io/proxy-buffering: "on"
+    # nginx.ingress.kubernetes.io/configuration-snippet: |
+    #   proxy_cache mattermost_cache;
+    #   proxy_cache_revalidate on;
+    #   proxy_cache_min_uses 2;
+    #   proxy_cache_use_stale timeout;
+    #   proxy_cache_lock on;
+    #### To use the nginx cache you will need to set an http-snippet in the ingress-nginx configmap
+    #### http-snippet: |
+    ####     proxy_cache_path /var/cache/nginx levels=1:2 keys_zone=mattermost_cache:10m max_size=3g inactive=120m use_temp_path=off;
+
+
+  hosts:
+    - mattermost.example.com
+  tls:
+    # - secretName: mattermost.example.com-tls
+    #   hosts:
+    #     - mattermost.example.com
+
+auth:
+  gitlab:
+  #   Enable: "false"
+  #   Secret: ""
+  #   Id: ""
+  #   Scope: ""
+  #   AuthEndpoint:
+  #   TokenEndpoint:
+  #   UserApiEndpoint:
+
+## If use this please disable the mysql chart, setting the config mysql.enable to false
+externalDB:
+  enabled: false
+  # externalDriverType: "postgres" #or mysql
+  # externalConnectionString: "postgres://<USERNAME>:<PASSWORD>@<HOST>:5432/<DATABASE_NAME>?sslmode=disable&connect_timeout=10"
+  # for mysql: "<USERNAME>:<PASSWORD>@tcp(<HOST>:3306)/<DATABASE_NAME>?charset=utf8mb4,utf8&readTimeout=30s&writeTimeout=30s"
+
+mysql:
+  enabled: true
+  mysqlRootPassword: ""
+  mysqlUser: ""
+  mysqlPassword: ""
+  mysqlDatabase: mattermost
+
+  repository: mysql
+  tag: 5.7
+  imagePullPolicy: IfNotPresent
+
+  persistence:
+    enabled: true
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
+    ##
+    storageClass: ""
+    accessMode: ReadWriteOnce
+    size: 10Gi
+  # existingClaim: ""

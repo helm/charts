@@ -49,8 +49,9 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `hub.port` | The port the hub listens on | `4444` |
 | `hub.javaOpts` | The java options for the selenium hub JVM, default sets the maximum heap size to 1,000 mb | `-Xmx1000m` |
 | `hub.resources` | The resources for the hub container, defaults to minimum half a cpu and maximum 1,000 mb RAM | `{"limits":{"cpu":".5", "memory":"1000Mi"}}` |
-| `hub.serviceType` | The Service type | `NodePort` |
+| `hub.serviceType` | The Service type | `LoadBalancer` |
 | `hub.serviceLoadBalancerIP` | The Public IP for the Load Balancer | `nil` |
+| `hub.loadBalancerSourceRanges` | A list of IP CIDRs allowed access to load balancer (if supported) | `[]` |
 | `hub.serviceSessionAffinity` | The session affinity for the hub service| `None` |
 | `hub.gridNewSessionWaitTimeout` | | `nil` |
 | `hub.gridJettyMaxThreads` | | `nil` |
@@ -63,6 +64,11 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `hub.seOpts` | Command line arguments to pass to hub | `nil` |
 | `hub.timeZone` | The time zone for the container | `nil` |
 | `hub.nodeselector` | Node label to use for scheduling of the hub if set this takes precedence over the global value | `nil` |
+| `hub.ingress.enabled` | Configure an ingress for the selenium hub | `false` |
+| `hub.ingress.annotations` | Annotations for the ingress for the selenium hub | `nil` |
+| `hub.ingress.path` | The path for this ingress from which to route the traffic to the selenium hub | `/` |
+| `hub.ingress.hosts` | The list hosts for which this ingress should resolve the selenium hub | `[selenium-hub.local]` |
+| `hub.ingress.tls` | The tls secret to configure ssl for this ingress | `[]` |
 | `chrome.enabled` | Schedule a chrome node pod | `false` |
 | `chrome.image` | The selenium node chrome image | `selenium/node-chrome` |
 | `chrome.tag` | The selenium node chrome tag | `3.14.0` |

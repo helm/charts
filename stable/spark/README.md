@@ -76,28 +76,30 @@ The following table lists the configurable parameters of the Spark chart and the
 
 ### Zeppelin
 
-|       Parameter                          |           Description                |                         Default            |
-|------------------------------------------|--------------------------------------|--------------------------------------------|
-| `Zeppelin.Name`                          | Zeppelin name                        | `zeppelin-controller`                      |
-| `Zeppelin.Image`                         | Container image name                 | `apache/zeppelin`                          |
-| `Zeppelin.ImageTag`                      | Container image tag                  | `0.7.3`                                    |
-| `Zeppelin.Replicas`                      | k8s deployment replicas              | `1`                                        |
-| `Zeppelin.Component`                     | k8s selector key                     | `zeppelin`                                 |
-| `Zeppelin.Cpu`                           | container requested cpu              | `100m`                                     |
-| `Zeppelin.ServicePort`                   | k8s service port                     | `8080`                                     |
-| `Zeppelin.ContainerPort`                 | Container listening port             | `8080`                                     |
-| `Zeppelin.Ingress.Enabled`               | if `true`, an ingress is created     | `false`                                    |
-| `Zeppelin.Ingress.Annotations`           | annotations for the ingress          | `{}`                                       |
-| `Zeppelin.Ingress.Path`                  | the ingress path                     | `/`                                        |
-| `Zeppelin.Ingress.Hosts`                 | a list of ingress hosts              | `[zeppelin.example.com]`                   |
-| `Zeppelin.Ingress.Tls`                   | a list of [IngressTLS](https://v1-8.docs.kubernetes.io/docs/api-reference/v1.8/#ingresstls-v1beta1-extensions) items | `[]`
-| `Zeppelin.ServiceType `                  | Kubernetes Service type              | `LoadBalancer`                             |
-| `Zeppelin.Persistence.Config.Enabled`    | Enable Persistence for configuration | `false`                                    |
-| `Zeppelin.Persistence.Config.Size`       | Configuration Persistence Size       | `10G`                                      |
-| `Zeppelin.Persistence.Config.Size`       | Configuration Persistence AccessMode | `ReadWriteOnce`                            |
-| `Zeppelin.Persistence.Notebook.Enabled`  | Enable Persistence for notebook      | `false`                                    |
-| `Zeppelin.Persistence.Notebook.Size`     | Notebook Persistence Size            | `10G`                                      |
-| `Zeppelin.Persistence.Notebook.Size`     | Notebook Persistence AccessMode      | `ReadWriteOnce`                            |
+|          Parameter                           |           Description                |                         Default            |
+|----------------------------------------------|--------------------------------------|--------------------------------------------|
+| `Zeppelin.Name`                              | Zeppelin name                        | `zeppelin-controller`                      |
+| `Zeppelin.Image`                             | Container image name                 | `apache/zeppelin`                          |
+| `Zeppelin.ImageTag`                          | Container image tag                  | `0.7.3`                                    |
+| `Zeppelin.Replicas`                          | k8s deployment replicas              | `1`                                        |
+| `Zeppelin.Component`                         | k8s selector key                     | `zeppelin`                                 |
+| `Zeppelin.Cpu`                               | container requested cpu              | `100m`                                     |
+| `Zeppelin.ServicePort`                       | k8s service port                     | `8080`                                     |
+| `Zeppelin.ContainerPort`                     | Container listening port             | `8080`                                     |
+| `Zeppelin.Ingress.Enabled`                   | if `true`, an ingress is created     | `false`                                    |
+| `Zeppelin.Ingress.Annotations`               | annotations for the ingress          | `{}`                                       |
+| `Zeppelin.Ingress.Path`                      | the ingress path                     | `/`                                        |
+| `Zeppelin.Ingress.Hosts`                     | a list of ingress hosts              | `[zeppelin.example.com]`                   |
+| `Zeppelin.Ingress.Tls`                       | a list of [IngressTLS](https://v1-8.docs.kubernetes.io/docs/api-reference/v1.8/#ingresstls-v1beta1-extensions) items | `[]`
+| `Zeppelin.ServiceType `                      | Kubernetes Service type              | `LoadBalancer`                             |
+| `Zeppelin.Persistence.Config.Enabled`        | Enable Persistence for configuration | `false`                                    |
+| `Zeppelin.Persistence.Config.StorageClass`   | Volume storageClassName              | `-` (no dynamic provisioning)              |
+| `Zeppelin.Persistence.Config.Size`           | Configuration Persistence Size       | `10G`                                      |
+| `Zeppelin.Persistence.Config.AccessMode`     | Configuration Persistence AccessMode | `ReadWriteOnce`                            |
+| `Zeppelin.Persistence.Notebook.Enabled`      | Enable Persistence for notebook      | `false`                                    |
+| `Zeppelin.Persistence.Notebook.StorageClass` | Volume storageClassName              | `-` (no dynamic provisioning)              |
+| `Zeppelin.Persistence.Notebook.Size`         | Notebook Persistence Size            | `10G`                                      |
+| `Zeppelin.Persistence.Notebook.AccessMode`   | Notebook Persistence AccessMode      | `ReadWriteOnce`                            |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.

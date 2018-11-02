@@ -5,7 +5,7 @@ name: chaoskube
 image: quay.io/linki/chaoskube
 
 # docker image tag
-imageTag: v0.9.0
+imageTag: v0.10.0
 
 # number of replicas to run
 replicas: 1
@@ -39,6 +39,8 @@ excludedDaysOfYear:
 
 # Set specific Timezone for Actions to take place
 timezone: UTC
+
+minimumAge: 0s
 
 priorityClassName: ""
 

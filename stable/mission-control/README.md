@@ -1,4 +1,10 @@
-# JFrog Mission-Control Helm Chart
+# JFrog Mission-Control Helm Chart - DEPRECATED
+**This chart is deprecated! You can find the new chart in:**
+- **Sources:** https://github.com/jfrog/charts
+- **Charts repository:** https://charts.jfrog.io
+```bash
+helm repo add jfrog https://charts.jfrog.io
+```
 
 ## Prerequisites Details
 
@@ -264,7 +270,7 @@ The following table lists the configurable parameters of the distribution chart 
 | `missionControl.name`                        | Mission Control name                            | `mission-control`                     |
 | `missionControl.replicaCount`                | Mission Control replica count                   | `1`                                   |
 | `missionControl.image`                       | Container image                                 | `docker.jfrog.io/jfrog/mission-control`     |
-| `missionControl.version`                     | Container image tag                             | `3.1.1`                               |
+| `missionControl.version`                     | Container image tag                             | `3.1.2`                               |
 | `missionControl.service.type`                | Mission Control service type                    | `LoadBalancer`                        |
 | `missionControl.externalPort`                | Mission Control service external port           | `80`                                  |
 | `missionControl.internalPort`                | Mission Control service internal port           | `8080`                                |
@@ -281,7 +287,7 @@ The following table lists the configurable parameters of the distribution chart 
 | `insightServer.name`                         | Insight Server name                             | `insight-server`                      |
 | `insightServer.replicaCount`                 | Insight Server replica count                    | `1`                                   |
 | `insightServer.image`                        | Container image                                 | `docker.jfrog.io/jfrog/insight-server`|
-| `insightServer.version`                      | Container image tag                             | `3.1.1`                               |
+| `insightServer.version`                      | Container image tag                             | `3.1.2`                               |
 | `insightServer.service.type`                 | Insight Server service type                     | `ClusterIP`                           |
 | `insightServer.externalHttpPort`             | Insight Server service external port            | `8082`                                |
 | `insightServer.internalHttpPort`             | Insight Server service internal port            | `8082`                                |
@@ -290,14 +296,14 @@ The following table lists the configurable parameters of the distribution chart 
 | `insightScheduler.name`                      | Insight Scheduler name                          | `insight-scheduler`                   |
 | `insightScheduler.replicaCount`              | Insight Scheduler replica count                 | `1`                                   |
 | `insightScheduler.image`                     | Container image                                 | `docker.jfrog.io/jfrog/insight-scheduler`  |
-| `insightScheduler.version`                   | Container image tag                             | `3.1.1`                               |
+| `insightScheduler.version`                   | Container image tag                             | `3.1.2`                               |
 | `insightScheduler.service.type`              | Insight Scheduler service type                  | `ClusterIP`                           |
 | `insightScheduler.externalPort`              | Insight Scheduler service external port         | `8080`                                |
 | `insightScheduler.internalPort`              | Insight Scheduler service internal port         | `8080`                                |
 | `insightExecutor.name`                       | Insight Executor name                           | `insight-scheduler`                   |
 | `insightExecutor.replicaCount`               | Insight Executor replica count                  | `1`                                   |
 | `insightExecutor.image`                      | Container image                                 | `docker.jfrog.io/jfrog/insight-executor`   |
-| `insightExecutor.version`                    | Container image tag                             | `3.1.1`                               |
+| `insightExecutor.version`                    | Container image tag                             | `3.1.2`                               |
 | `insightExecutor.service.type`               | Insight Executor service type                   | `ClusterIP`                           |
 | `insightExecutor.externalPort`               | Insight Executor service external port          | `8080`                                |
 | `insightExecutor.internalPort`               | Insight Executor service internal port          | `8080`                                |
