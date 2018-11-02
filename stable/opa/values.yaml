@@ -3,22 +3,13 @@
 #
 # The 'opa' key embeds an OPA configuration file. See
 # https://www.openpolicyagent.org/docs/configuration.html for more details.
-#
-# You MUST set the controller URL and credentials below.
 opa:
   services:
     controller:
-      url: ""
-      credentials:
-        bearer:
-          token: ""
+      url: "https://www.openpolicyagent.org"
   bundle:
     service: controller
     name: "kubernetes/admission"
-  decision_logs:
-    service: controller
-  status:
-    service: controller
 
 # To enforce mutating policies, change to MutatingWebhookConfiguration.
 admissionControllerKind: ValidatingWebhookConfiguration
