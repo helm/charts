@@ -47,8 +47,8 @@ serviceAccount:
   ## Specifies whether a ServiceAccount should be created
   ##
   create: false
-  # The name of the ServiceAccount to use.
-  # If not set and create is true, a name is generated using the fullname template
+  ## The name of the ServiceAccount to use.
+  ## If not set and create is true, a name is generated using the fullname template
   name:
 
 rbac:
@@ -178,7 +178,6 @@ master:
     loadBalancerIP:
 
   ## Redis Master Pod Security Context
-  ##
   securityContext:
     enabled: true
     fsGroup: 1001
@@ -224,7 +223,7 @@ master:
 slave:
   ## Slave Service properties
   service:
-    ##  Redis Slave Service type
+    ## Redis Slave Service type
     type: ClusterIP
     ## Specify the nodePort value for the LoadBalancer and NodePort service types.
     ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
