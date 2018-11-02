@@ -12,7 +12,6 @@ ingressMonitorController:
     apiKey: your-api-key
     apiURL: https://api.uptimerobot.com/v2
     alertContacts: some-alert-contacts
-  
   enableMonitorDeletion: true
   configFilePath: /etc/IngressMonitorController/config.yaml
   monitorNameTemplate: "{{.Namespace}}-{{.IngressName}}"
