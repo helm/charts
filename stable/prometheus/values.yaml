@@ -816,7 +816,22 @@ alertmanagerFiles:
 ## Prometheus server ConfigMap entries
 ##
 serverFiles:
+
+  ## Alerts configuration
+  ## Ref: https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/
   alerts: {}
+  # groups:
+  #   - name: Instances
+  #     rules:
+  #       - alert: InstanceDown
+  #         expr: up == 0
+  #         for: 5m
+  #         labels:
+  #           severity: page
+  #         annotations:
+  #           description: '{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 5 minutes.'
+  #           summary: 'Instance {{ $labels.instance }} down'
+
   rules: {}
 
   prometheus.yml:
