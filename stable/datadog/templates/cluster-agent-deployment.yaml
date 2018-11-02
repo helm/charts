@@ -57,10 +57,8 @@ spec:
           - name: DD_LOG_LEVEL
             value: {{ .Values.datadog.logLevel | quote }}
           {{- end }}
-          {{- if .Values.datadog.leaderElection }}
           - name: DD_LEADER_ELECTION
-            value: {{ .Values.datadog.leaderElection | quote}}
-          {{- end }}
+            value: {{ .Values.datadog.leaderElection | default "true" | quote}}
           {{- if .Values.datadog.leaderLeaseDuration }}
           - name: DD_LEADER_LEASE_DURATION
             value: {{ .Values.datadog.leaderLeaseDuration | quote }}
