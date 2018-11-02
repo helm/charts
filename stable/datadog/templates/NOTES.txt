@@ -47,7 +47,7 @@ Create an application key at https://app.datadoghq.com/account/settings#api
   {{- if not .Values.clusterAgent.token }}
 
 ##############################################################################
-####               WARNING: You did not set a clusterAgent.token            ####
+####               INFO: You did not set a clusterAgent.token            ####
 ##############################################################################
 
 Because you enabled the Cluster Agent but did not provide a token, a random token was generated.

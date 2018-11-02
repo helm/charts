@@ -30,7 +30,7 @@ Read about the Datadog Cluster Agent in the [official documentation](https://doc
 Run the following if you want to deploy the chart with the Datadog Cluster Agent.
 Note that specifying `clusterAgent.metricsProvider.enabled=true` will enable the External Metrics Server.
 If you want to learn to use this feature, you can check out this [walkthrough](https://github.com/DataDog/datadog-agent/blob/master/docs/cluster-agent/CUSTOM_METRICS_SERVER.md).
-The Leader Election is enabled by default in the chart for the Cluster Agent. Only the Cluster Agent(s) participate in the election, in case you have several replicas configred (using `clusterAgent.replicas`.
+The Leader Election is enabled by default in the chart for the Cluster Agent. Only the Cluster Agent(s) participate in the election, in case you have several replicas configured (using `clusterAgent.replicas`.
 You can specify the token used to secure the communication between the Cluster Agent(s)q and the Agents with `clusterAgent.token`. If not specified, a random one will be generated and you will be prompted a warning when installing the chart.
 
 ```bash
