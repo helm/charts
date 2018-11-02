@@ -3,7 +3,7 @@ image:
   # This chart is compatible with different images, please choose one
   repository: datadog/agent               # Agent6
   # repository: datadog/dogstatsd         # Standalone DogStatsD6
-  tag: 6.5.2  # Use 6.5.2-jmx to enable jmx fetch collection
+  tag: 6.6.0  # Use 6.6.0-jmx to enable jmx fetch collection
   pullPolicy: IfNotPresent
   ## It is possible to specify docker registry credentials
   ## See https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
@@ -140,7 +140,7 @@ datadog:
   ## Note: For Agent6 (image `datadog/agent`) the valid log levels are
   ## trace, debug, info, warn, error, critical, and off
   ##
-  logLevel: WARNING
+  logLevel: INFO
 
   ## Un-comment this to make each node accept non-local statsd traffic.
   ## ref: https://github.com/DataDog/docker-dd-agent#environment-variables
@@ -199,7 +199,7 @@ datadog:
 
   ## Enable leader election mechanism for event collection
   ##
-  leaderElection: false
+  # leaderElection: false
 
   ## Set the lease time for leader election
   ##
