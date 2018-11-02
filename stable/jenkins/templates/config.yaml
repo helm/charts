@@ -221,6 +221,7 @@ data:
 {{- end }}
 {{- if .Values.Master.SecretsFilesSecret }}
     cp -n /var/jenkins_secrets/* /usr/share/jenkins/ref/secrets;
+    cp -n /var/jenkins_secrets/* /run/secrets;
 {{- end }}
 {{- if .Values.Master.Jobs }}
     for job in $(ls /var/jenkins_jobs); do

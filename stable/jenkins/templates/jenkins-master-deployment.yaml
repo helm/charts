@@ -56,7 +56,7 @@ spec:
       serviceAccountName: {{ if .Values.rbac.install }}{{ template "jenkins.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
 {{- if .Values.Master.HostNetworking }}
       hostNetwork: true
-      dnsPolicy: ClusterFirstWithHostNet 
+      dnsPolicy: ClusterFirstWithHostNet
 {{- end }}
       initContainers:
         - name: "copy-default-config"
@@ -87,6 +87,9 @@ spec:
               mountPath: /var/jenkins_secrets
               name: jenkins-secrets
               readOnly: true
+            -
+              mountPath: /run/secrets/
+              name: jenkins-casc-secrets
             {{- end }}
             {{- if .Values.Master.Jobs }}
             -
@@ -190,6 +193,10 @@ spec:
               mountPath: /var/jenkins_secrets
               name: jenkins-secrets
               readOnly: true
+            -
+              mountPath: /run/secrets/
+              name: jenkins-casc-secrets
+              readOnly: false
             {{- end }}
             {{- if .Values.Master.Jobs }}
             -
@@ -223,6 +230,8 @@ spec:
       - name: jenkins-secrets
         secret:
           secretName: {{ .Values.Master.SecretsFilesSecret }}
+      - name: jenkins-casc-secrets
+        emptyDir: {}
       {{- end }}
       {{- if .Values.Master.Jobs }}
       - name: jenkins-jobs
