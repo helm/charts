@@ -1,5 +1,5 @@
 {{- if and .Values.alertmanager.enabled .Values.alertmanager.ingress.enabled }}
-{{- $routePrefix := .Values.routePrefix }}
+{{- $routePrefix := .Values.alertmanager.alertmanagerSpec.routePrefix }}
 {{- $serviceName := printf "%s-%s" (include "prometheus-operator.fullname" .) "alertmanager" }}
 apiVersion: extensions/v1beta1
 kind: Ingress
