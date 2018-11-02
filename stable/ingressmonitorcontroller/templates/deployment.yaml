@@ -1,0 +1,48 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    configmap.reloader.stakater.com/reload: {{ template "name" . }}
+  labels:
+    app: {{ template "name" . }}
+    version: {{ .Chart.Version }}
+    group: {{ .Values.ingressMonitorController.labels.group }}
+    provider: {{ .Values.ingressMonitorController.labels.provider }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+  name: {{ template "name" . }}
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: {{ template "name" . }}
+      group: {{ .Values.ingressMonitorController.labels.group }}
+      provider: {{ .Values.ingressMonitorController.labels.provider }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "name" . }}
+        group: {{ .Values.ingressMonitorController.labels.group }}
+        provider: {{ .Values.ingressMonitorController.labels.provider }}
+    spec:
+      containers:
+      - env:
+      {{- if .Values.ingressMonitorController.watchNamespace }}
+        - name: KUBERNETES_NAMESPACE
+          value: {{ .Values.ingressMonitorController.watchNamespace | quote }}
+      {{- end }}
+        - name: CONFIG_FILE_PATH
+          value: {{ .Values.ingressMonitorController.configFilePath }}
+        image: "{{ .Values.ingressMonitorController.image.name }}:{{ .Values.ingressMonitorController.image.tag }}"
+        imagePullPolicy: {{ .Values.ingressMonitorController.image.pullPolicy }}
+        name: {{ template "name" . }}
+        volumeMounts:
+        - mountPath: /etc/IngressMonitorController
+          name: config-volume
+      serviceAccountName: {{ template "name" . }}
+      volumes:
+      - configMap:
+          name: {{ template "name" . }}
+        name: config-volume

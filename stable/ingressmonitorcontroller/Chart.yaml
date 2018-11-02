@@ -1,0 +1,11 @@
+apiVersion: v1
+name: ingressmonitorcontroller
+description: IngressMonitorController chart that runs on kubernetes
+version: 1.0.46
+keywords:
+  - IngressMonitorController
+  - kubernetes
+home: https://github.com/stakater/IngressMonitorController
+maintainers:
+- name: Stakater
+  email: hello@stakater.com

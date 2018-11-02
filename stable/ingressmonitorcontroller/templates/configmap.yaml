@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  annotations:
+    fabric8.io/target-platform: kubernetes
+  labels:
+    app: {{ template "name" . }}
+    version: {{ .Chart.Version }}
+    group: {{ .Values.ingressMonitorController.labels.group }}
+    provider: {{ .Values.ingressMonitorController.labels.provider }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+  name: {{ template "name" . }}
+data:
+  config.yaml: |-
+    providers:
+    {{- range .Values.ingressMonitorController.providers }}
+    - name: {{ .name }}
+      apiKey: {{ .apiKey }}
+      apiURL: {{ .apiURL }}
+      username: {{ .username | default "null" }}
+      password: {{ .password | default "null" }}
+      alertContacts: {{ .alertContacts }}
+    {{- end }}
+    enableMonitorDeletion: {{ .Values.ingressMonitorController.enableMonitorDeletion }}
+    monitorNameTemplate: "{{ .Values.ingressMonitorController.monitorNameTemplate }}"
