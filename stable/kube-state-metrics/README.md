@@ -21,6 +21,7 @@ $ helm install stable/kube-state-metrics
 | `prometheusScrape`                    | Whether or not enable prom scrape                       | True                                        |
 | `rbac.create`                         | If true, create & use RBAC resources                    | False                                       |
 | `rbac.serviceAccountName`             | ServiceAccount to be used (ignored if rbac.create=true) | default                                     |
+| `imagePullSecrets`                    | Reference to secrets to be used when pulling images     | []                                          |
 | `nodeSelector`                        | Node labels for pod assignment                          | {}                                          |
 | `tolerations`                         | Tolerations for pod assignment	                      | []                                          |
 | `podAnnotations`                      | Annotations to be added to the pod                      | {}                                          |
