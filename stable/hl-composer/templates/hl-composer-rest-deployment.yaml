@@ -1,0 +1,59 @@
+---
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ include "hl-composer.fullname" . }}-rest
+  labels:
+    name: {{ include "hl-composer.fullname" . }}-rest
+{{ include "labels.standard" . | indent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ include "hl-composer.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      name: {{ include "hl-composer.fullname" . }}-rest
+      labels:
+        name: {{ include "hl-composer.fullname" . }}-rest
+{{ include "labels.standard" . | indent 8 }}
+    spec:
+      volumes:
+        - name: persistent-volume
+        {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.existingClaim | default (include "hl-composer.fullname" .) }}
+        {{- else }}
+          emptyDir: {}
+        {{- end }}
+      containers:
+        - name: rest-server
+          image: "{{ .Values.rest.image.repository }}:{{ .Values.rest.image.tag }}"
+          imagePullPolicy: {{ .Values.rest.image.pullPolicy }}
+          # TODO: Add liveness and readiness probes
+          envFrom:
+            - secretRef:
+                name: {{ include "hl-composer.fullname" . }}-rest
+          env:
+            - name: COMPOSER_CARD
+              value: {{ .Values.rest.config.composerRestServerCard }}
+            - name: COMPOSER_NAMESPACES
+              value: never
+          volumeMounts:
+            - name: persistent-volume
+              mountPath: /home/composer/.composer
+          resources:
+{{ toYaml .Values.rest.resources | indent 12 }}
+    {{- with .Values.rest.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.rest.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.rest.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
