@@ -30,10 +30,11 @@ Read about the Datadog Cluster Agent in the [official documentation](https://doc
 Run the following if you want to deploy the chart with the Datadog Cluster Agent.
 You can also specify `clusterAgent.metricsProvider.enabled=true` if you want to enable the External Metrics Server.
 If you want to learn to use this feature, you can check out this [walkthrough](https://github.com/DataDog/datadog-agent/blob/master/docs/cluster-agent/CUSTOM_METRICS_SERVER.md).
-The Leader Election is enabled by default in the chart for the Cluster Agent.
+The Leader Election is enabled by default in the chart for the Cluster Agent. Only the Cluster Agent(s) participate in the election, in case you have several replicas configred (using `clusterAgent.replicas`.
+You can specify the token used to secure the communication between the Cluster Agent and the Agents with `clusterAgent.token`. If not specified, a random one will be generated and you will be prompted a warning when installing the chart.
+
 ```bash
 helm install --name datadog-monitoring \
-    --set clusterAgent.token=YOUR-32-CHARACTERS-TOKEN \
     --set datadog.apiKey=YOUR-API-KEY-HERE \
     --set datadog.appKey=YOUR-APP-KEY-HERE \
     --set clusterAgent.enabled=true \
@@ -104,7 +105,7 @@ The following table lists the configurable parameters of the Datadog chart and t
 | `kube-state-metrics.rbac.create`| If true, create & use RBAC resources for kube-state-metrics | `true`       |
 | `kube-state-metrics.rbac.serviceAccount` | existing ServiceAccount to use (ignored if rbac.create=true) for kube-state-metrics | `default` |
 | `clusterAgent.enabled`                   | Use the cluster-agent for cluster metrics (Kubernetes 1.10+ only) | `false`                           |
-| `clusterAgent.token`                     | A cluster-internal secret for agent-to-agent communication. Must be 32+ characters a-zA-Z | `Nil` You must provide your own token|
+| `clusterAgent.token`                     | A cluster-internal secret for agent-to-agent communication. Must be 32+ characters a-zA-Z | Generates a random value |
 | `clusterAgent.containerName`             | The container name for the Cluster Agent  | `cluster-agent`                           |
 | `clusterAgent.image.repository`          | The image repository for the cluster-agent | `datadog/cluster-agent`                           |
 | `clusterAgent.image.tag`                 | The image tag to pull              | `1.0.0`                                   |
