@@ -30,12 +30,12 @@ Read about the Datadog Cluster Agent in the [official documentation](https://doc
 Run the following if you want to deploy the chart with the Datadog Cluster Agent.
 You can also specify `clusterAgent.metricsProvider.enabled=true` if you want to enable the External Metrics Server.
 If you want to learn to use this feature, you can check out this [walkthrough](https://github.com/DataDog/datadog-agent/blob/master/docs/cluster-agent/CUSTOM_METRICS_SERVER.md).
+The Leader Election is enabled by default in the chart for the Cluster Agent.
 ```bash
 helm install --name datadog-monitoring \
     --set clusterAgent.token=YOUR-32-CHARACTERS-TOKEN \
     --set datadog.apiKey=YOUR-API-KEY-HERE \
     --set datadog.appKey=YOUR-APP-KEY-HERE \
-    --set datadog.leaderElection=true \
     --set clusterAgent.enabled=true \
     --set clusterAgent.metricsProvider.enabled=true \
     stable/datadog
