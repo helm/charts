@@ -1,0 +1,19 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  creationTimestamp: null
+  name: '{{ include "jenkins-operator.name" . }}-rolebinding'
+  labels:
+    helm.sh/chart: {{ include "jenkins-operator.chart" . }}
+    app.kubernetes.io/name: {{ include "jenkins-operator.name" . }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion | replace "+" "_" | trunc 63 | trimSuffix "-" }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: '{{ include "jenkins-operator.name" . }}-role'
+subjects:
+- kind: ServiceAccount
+  name: '{{ include "jenkins-operator.name" . }}'
+  namespace: '{{ .Release.Namespace}}'

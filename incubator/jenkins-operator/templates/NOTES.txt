@@ -1,0 +1,8 @@
+1.  jenkins-operator deployed.
+
+    Check the jenkins-operator logs:
+        export POD=$(kubectl get pods -l app={{ template "jenkins-operator.name" . }} --namespace {{ .Release.Namespace }} --output name)
+        kubectl logs $POD --namespace={{ .Release.Namespace }}
+
+2.  If want to deploy a jenkins instance, please create Custom Resource objects, as described in jenkins operator documentation
+        https://github.com/samsung-cnct/jenkins-operator

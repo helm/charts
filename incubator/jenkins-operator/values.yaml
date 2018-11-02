@@ -1,0 +1,21 @@
+replicaCount: 1
+image:
+  repository: quay.io/samsung_cnct/jenkins-operator
+  tag: 0.1.7
+  pullPolicy: IfNotPresent
+nameOverride: ''
+fullnameOverride: ''
+keepCRDs: false
+rbac: true
+chartCrds: true
+args:
+- --alsologtostderr
+- --install-crds=false
+resources: {
+  }
+nodeSelector: {
+  }
+tolerations: [
+  ]
+affinity: {
+  }
