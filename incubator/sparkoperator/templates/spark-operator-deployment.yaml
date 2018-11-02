@@ -4,60 +4,20 @@
 # In the post-install hook, the token corresponding to the operator service account
 # is used to authenticate with the Kubernetes API server to install the secret bundle.
 
-{{ if .Values.createOperatorNamespace }}
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: {{ .Values.operatorNamespace }}
-{{ end }}
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: sparkoperator
-  namespace: {{ .Values.operatorNamespace }}
----
-{{ if .Values.enableWebhook }}
-apiVersion: batch/v1
-kind: Job
-metadata:
-  name: sparkoperator-init
-  namespace: {{ .Values.operatorNamespace }}
-  annotations:
-    "helm.sh/hook": post-install
-    "helm.sh/hook-delete-policy": hook-succeeded
-  labels:
-    app.kubernetes.io/name: sparkoperator
-    app.kubernetes.io/version: {{ .Values.operatorVersion }}
-spec:
-  template:
-    metadata:
-      labels:
-        app.kubernetes.io/name: sparkoperator
-        app.kubernetes.io/version: {{ .Values.operatorVersion }}
-    spec:
-      serviceAccountName: sparkoperator
-      restartPolicy: OnFailure
-      containers:
-      - name: main
-        image: {{ .Values.operatorImageName }}:{{ .Values.operatorVersion }}
-        imagePullPolicy: IfNotPresent
-        command: ["/usr/bin/gencerts.sh", "-n", "{{ .Values.operatorNamespace }}", "-p"]
-{{ end }}
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: sparkoperator
-  namespace: {{ .Values.operatorNamespace }}
+  name: {{ include "sparkoperator.fullname" . }}
   labels:
-    app.kubernetes.io/name: sparkoperator
-    app.kubernetes.io/version: {{ .Values.operatorVersion }}
+    app.kubernetes.io/name: {{ include "sparkoperator.name" . }}
+    helm.sh/chart: {{ include "sparkoperator.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app.kubernetes.io/name: sparkoperator
+      app.kubernetes.io/name: {{ include "sparkoperator.name" . }}
       app.kubernetes.io/version: {{ .Values.operatorVersion }}
   strategy:
     type: Recreate
@@ -70,12 +30,12 @@ spec:
         prometheus.io/path: "/metrics"
       {{- end }}
       labels:
-        app.kubernetes.io/name: sparkoperator
+        app.kubernetes.io/name: {{ include "sparkoperator.name" . }}
         app.kubernetes.io/version: {{ .Values.operatorVersion }}
       initializers:
         pending: []
     spec:
-      serviceAccountName: sparkoperator
+      serviceAccountName: {{ include "sparkoperator.serviceAccountName" . }}
       {{- if .Values.enableWebhook }}
       volumes:
         - name: webhook-certs
@@ -101,7 +61,7 @@ spec:
         - -enable-metrics=true
         - -metrics-labels=app_type
         - -enable-webhook=true
-        - -webhook-svc-namespace={{ .Values.operatorNamespace }}
+        - -webhook-svc-namespace={{ .Release.Namespace }}
         - -logtostderr
         {{- else if (.Values.enableMetrics) }}
         args:
@@ -111,25 +71,9 @@ spec:
         {{- else if (.Values.enableWebhook) }}
         args:
         - -enable-webhook=true
-        - -webhook-svc-namespace={{ .Values.operatorNamespace }}
+        - -webhook-svc-namespace={{ .Release.Namespace }}
         - -logtostderr
         {{- else }}
         args:
         - -logtostderr
         {{- end }}
----
-{{ if .Values.enableWebhook }}
-kind: Service
-apiVersion: v1
-metadata:
-  name: spark-webhook
-  namespace: {{ .Values.operatorNamespace }}
-spec:
-  ports:
-    - port: 443
-      targetPort: 8080
-      name: webhook
-  selector:
-    app.kubernetes.io/name: sparkoperator
-    app.kubernetes.io/version: {{ .Values.operatorVersion }}
-{{ end }}
