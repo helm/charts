@@ -216,6 +216,11 @@ data:
     mkdir -p /var/jenkins_home/init.groovy.d/;
     cp -n /var/jenkins_config/*.groovy /var/jenkins_home/init.groovy.d/
 {{- end }}
+{{- if .Values.Master.ConfigScripts }}
+    mkdir -p /var/jenkins_home/casc_configs;
+    rm -rf /var/jenkins_home/casc_configs/*
+    cp -v /var/jenkins_config/*.yaml /var/jenkins_home/casc_configs
+{{- end }}
 {{- if .Values.Master.CredentialsXmlSecret }}
     cp -n /var/jenkins_credentials/credentials.xml /var/jenkins_home;
 {{- end }}
@@ -230,6 +235,10 @@ data:
 {{- end }}
 {{- range $key, $val := .Values.Master.InitScripts }}
   init{{ $key }}.groovy: |-
+{{ $val | indent 4 }}
+{{- end }}
+{{- range $key, $val := .Values.Master.ConfigScripts }}
+  {{ $key }}.yaml: |-
 {{ $val | indent 4 }}
 {{- end }}
   plugins.txt: |-

@@ -95,6 +95,8 @@ Master:
     - workflow-aggregator:2.5
     - credentials-binding:1.16
     - git:3.9.1
+    - configuration-as-code:1.2
+    - configuration-as-code-support:1.2 
   # Used to approve a list of groovy functions in pipelines used the script-security plugin. Can be viewed under /scriptApproval
   # ScriptApproval:
   #   - "method groovy.json.JsonSlurperClassic parseText java.lang.String"
@@ -113,6 +115,21 @@ Master:
   # Jobs: |-
   #   test: |-
   #     <<xml here>>
+
+  # Below is an implementation of Jenkins Configuration as Code.  Add a key under ConfigScripts for each configuration area, each of which correspond to a plugin or section of the UI.  Each key (prior to | character) are just labels, and can be any value.  They are used to give the section a meaningful name.  Each key will become the name of a configuration yaml file on the master in /var/jenkins_home/casc_configs and will be processed by the Configuration as Code Plugin during Jenkins startup.  The lines after each | become the content of the configuration yaml file.  The first line after this is a JCasC root element, eg jenkins, credentials, etc.  Best reference is https://<jenkins_url>/configuration-as-code/reference.  The commented example creates ldap settings.
+  ConfigScripts:
+#    ldap-settings: |
+#      jenkins:
+#        securityRealm:
+#          ldap:
+#            configurations:
+#              - groupMembershipStrategy:
+#                  fromUserRecord:
+#                    attributeName: "memberOf"
+#                inhibitInferRootDN: false
+#                rootDN: "dc=acme,dc=org"
+#                server: "ldaps://ldap.acme.org:1636"
+
   CustomConfigMap: false
   # By default, the configMap is only used to set the initial config the first time
   # that the chart is installed.  Setting `OverwriteConfig` to `true` will overwrite
