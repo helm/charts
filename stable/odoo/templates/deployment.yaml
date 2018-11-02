@@ -38,7 +38,7 @@ spec:
           valueFrom:
             secretKeyRef:
               name: {{ template "odoo.postgresql.fullname" . }}
-              key: postgres-password
+              key: postgresql-password
         - name: ODOO_EMAIL
           value: {{ .Values.odooEmail | quote }}
         - name: ODOO_PASSWORD

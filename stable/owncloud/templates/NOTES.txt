@@ -23,16 +23,17 @@ host. To configure ownCloud with the URL of your service:
   export APP_HOST=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "owncloud.fullname" . }} --template "{{ "{{ range (index .status.loadBalancer.ingress 0) }}{{ . }}{{ end }}" }}")
   export APP_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "owncloud.fullname" . }} -o jsonpath="{.data.owncloud-password}" | base64 --decode)
   {{- if .Values.mariadb.mariadbRootPassword }}
-  export APP_DATABASE_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "owncloud.mariadb.fullname" . }} -o jsonpath="{.data.mariadb-root-password}" | base64 --decode)
+  export DATABASE_ROOT_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "owncloud.mariadb.fullname" . }} -o jsonpath="{.data.mariadb-root-password}" | base64 --decode)
   {{- end }}
   {{- end }}
+  export APP_DATABASE_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "owncloud.mariadb.fullname" . }} -o jsonpath="{.data.mariadb-password}" | base64 --decode)
 
 2. Complete your ownCloud deployment by running:
 
 {{- if .Values.mariadb.enabled }}
 
   helm upgrade {{ .Release.Name }} stable/owncloud \
-    --set owncloudHost=$APP_HOST,owncloudPassword=$APP_PASSWORD{{ if .Values.mariadb.mariadbRootPassword }},mariadb.mariadbRootPassword=$APP_DATABASE_PASSWORD{{ end }}
+    --set owncloudHost=$APP_HOST,owncloudPassword=$APP_PASSWORD{{ if .Values.mariadb.mariadbRootPassword }},mariadb.mariadbRootPassword=$DATABASE_ROOT_PASSWORD{{ end }},mariadb.db.password=$APP_DATABASE_PASSWORD
 {{- else }}
 
   ## PLEASE UPDATE THE EXTERNAL DATABASE CONNECTION PARAMETERS IN THE FOLLOWING COMMAND AS NEEDED ##
