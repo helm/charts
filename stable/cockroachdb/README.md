@@ -97,7 +97,7 @@ The following table lists the configurable parameters of the CockroachDB chart a
 | `Tolerations`                  | List of node taints to tolerate                  | `{}`                                      |
 | `Secure.Enabled`               | Whether to run securely using TLS certificates   | `false`                                   |
 | `Secure.RequestCertsImage`     | Image to use for requesting TLS certificates     | `cockroachdb/cockroach-k8s-request-cert`  |
-| `Secure.RequestCertsImageTag`  | Image tag to use for requesting TLS certificates | `0.3`                                     |
+| `Secure.RequestCertsImageTag`  | Image tag to use for requesting TLS certificates | `0.4`                                     |
 | `Secure.ServiceAccount.Create` | Whether to create a new RBAC service account     | `true`                                    |
 | `Secure.ServiceAccount.Name`   | Name of RBAC service account to use              | `""`                                      |
 | `JoinExisting`                 | List of already-existing cockroach instances     | `[]`                                      |
