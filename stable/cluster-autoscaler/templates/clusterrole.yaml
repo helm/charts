@@ -78,6 +78,7 @@ rules:
   - apiGroups:
     - apps
     resources:
+    - replicasets
     - statefulsets
     verbs:
     - watch
