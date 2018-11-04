@@ -60,6 +60,10 @@ spec:
   secrets:
 {{ toYaml .Values.prometheus.prometheusSpec.secrets | indent 4 }}
 {{- end }}
+{{- if .Values.prometheus.prometheusSpec.configMaps }}
+  configMaps:
+{{ toYaml .Values.prometheus.prometheusSpec.configMaps | indent 4 }}
+{{- end }}
 {{- if .Values.global.rbac.create }}
   serviceAccountName: {{ template "prometheus-operator.prometheus.serviceAccountName" . }}
 {{- end }}
@@ -148,6 +152,11 @@ spec:
   additionalAlertManagerConfigs:
     name: {{ template "prometheus-operator.fullname" . }}-prometheus-am-confg
     key: additional-alertmanager-configs.yaml
+{{- end }}
+{{- if .Values.prometheus.prometheusSpec.additionalAlertRelabelConfigs }}
+  additionalAlertRelabelConfigs:
+    name: {{ template "prometheus-operator.fullname" . }}-prometheus-am-relabel-confg
+    key: additional-alert-relabel-configs.yaml
 {{- end }}
 {{- if .Values.prometheus.prometheusSpec.containers }}
   containers:
