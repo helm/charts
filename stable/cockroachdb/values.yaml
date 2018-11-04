@@ -55,7 +55,7 @@ Tolerations: {}
 Secure:
   Enabled: false
   RequestCertsImage: "cockroachdb/cockroach-k8s-request-cert"
-  RequestCertsImageTag: "0.3"
+  RequestCertsImageTag: "0.4"
   ServiceAccount:
     # Specifies whether a service account should be created.
     Create: true
