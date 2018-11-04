@@ -12,7 +12,8 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - port: {{ .Values.service.port }}
+    - name: redis-exporter
+      port: {{ .Values.service.port }}
       targetPort: exporter-port
       protocol: TCP
   selector:
