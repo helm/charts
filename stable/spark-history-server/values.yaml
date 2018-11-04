@@ -1,0 +1,54 @@
+replicaCount: 1
+
+rbac:
+  create: true
+
+serviceAccount:
+  create: true
+  name:
+
+image:
+  repository: gcr.io/spark-operator/spark
+  tag: v2.3.1
+  pullPolicy: IfNotPresent
+
+service:
+  type: LoadBalancer
+  port: 18080
+
+environment:
+# Note: do not configure Spark history events directory using SPARK_HISTORY_OPTS. It will be
+# configured by this chart based on the values in "pvc", "gcs" or "hdfs" attribute.
+  # SPARK_HISTORY_OPTS: ...
+  # SPARK_DAEMON_MEMORY: 1g
+  # SPARK_DAEMON_JAVA_OPTS: ...
+  # SPARK_DAEMON_CLASSPATH: ...
+  # SPARK_PUBLIC_DNS: ...
+
+pvc:
+  # to use a file system path for Spark events dir, set 'enablePVC' to true and mention the
+  # name of an already created persistent volume claim in existingClaimName.
+  # The volume will be mounted on /data in the pod
+  enablePVC: true
+  existingClaimName: nfs-pvc
+  eventsDir: "/"
+
+# Settings for the sub-chart
+# When pvc.enablePVC is true, make sure:
+# pvc.existingClaimName == nfs.pvcName
+nfs:
+  enableExampleNFS: true
+  pvName: nfs-pv
+  pvcName: nfs-pvc
+
+gcs:
+  enableGCS: false
+  secret: history-secrets
+  key: sparkonk8s.json
+  logDirectory: gs://spark-hs/
+
+hdfs:
+  hdfsSiteConfigMap: hdfs-site
+  coreSiteConfigMap: core-site
+  logDirectory: hdfs://hdfs/history/
+  HADOOP_CONF_DIR: /etc/hadoop
