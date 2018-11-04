@@ -3,6 +3,7 @@ name: puppetboard
 appVersion: 0.3.0
 description: Puppetboard is a dashboard for PuppetDB
 version: 0.1.0
+home: https://github.com/bootc/puppetboard-docker
 keywords:
   - puppetboard
   - puppet
