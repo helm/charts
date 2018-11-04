@@ -34,6 +34,11 @@ tolerations: []
 #    value: "value"
 #    effect: "NoSchedule|PreferNoSchedule|NoExecute"
 
+## Affinity
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+affinity: {}
+
+
 service:
   type: ClusterIP
   externalPort: 443
