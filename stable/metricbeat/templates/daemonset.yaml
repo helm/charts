@@ -109,6 +109,7 @@ spec:
       terminationGracePeriodSeconds: 60
       serviceAccountName: {{ template "metricbeat.serviceAccountName" . }}
       hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
       tolerations:
       - key: node-role.kubernetes.io/master
         operator: Exists
