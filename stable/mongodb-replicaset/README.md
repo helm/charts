@@ -55,6 +55,7 @@ The following table lists the configurable parameters of the mongodb chart and t
 | `tls.enabled`                       | Enable MongoDB TLS support including authentication                       | `false`                                             |
 | `tls.cacert`                        | The CA certificate used for the members                                   | Our self signed CA certificate                      |
 | `tls.cakey`                         | The CA key used for the members                                           | Our key for the self signed CA certificate          |
+| `init.resources`                    | Pod resource requests and limits (for init containers)                    | `{}`                                                |
 | `metrics.enabled`                   | Enable Prometheus compatible metrics for pods and replicasets             | `false`                                             |
 | `metrics.image.repository`           | Image name for metrics exporter                                           | `ssalaues/mongodb-exporter`                         |
 | `metrics.image.tag`                  | Image tag for metrics exporter                                            | `0.6.1`                                             |
