@@ -22,12 +22,14 @@ secrets:
   # your Puppet CA into a Kubernetes Secret resource.
   clientTlsSecret: ""
 
-  # Optional extra CA certificate(s) for PuppetDB. This needs to include the
-  # Puppet CA unless SSL verification is disabled. This should be a generic
-  # Kubernetes secret whose keys end with '.crt' and whose values are
-  # PEM-encoded certificates. For example:
+  # Optional CA certificate for PuppetDB. This is usually the Puppet CA. This
+  # should be a generic Kubernetes secret containing a PEM-encoded certificate.
+  # For example:
   # kubectl create secret generic puppet-ca --from-file=puppet-ca.crt=ca.pem
-  caCertsSecret: ""
+  caCertSecret: ""
+
+  # Name of the key within the above secret that contains the CA certificate.
+  caCertKey: ""
 
   # Flask session secret key. Auto-generated if not provided here.
   # See: http://flask.pocoo.org/docs/1.0/config/#SECRET_KEY

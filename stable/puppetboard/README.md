@@ -48,7 +48,8 @@ and their default values.
 | `puppetDbHost`                | PuppetDB host                                                     | `puppetdb`            |
 | `puppetDbPort`                | PuppetDB port number                                              | `8080`                |
 | `secrets.clientTlsSecret`     | Kubernetes secret containing PuppetDB client certificate          |                       |
-| `secrets.caCertsSecret`       | Kubernetes secret containing CA certificates for PuppetDB         |                       |
+| `secrets.caCertSecret`        | Kubernetes secret containing CA certificate for PuppetDB          |                       |
+| `secrets.caCertKey`           | Key in `caCertSecret` to obtain CA certificate from               |                       |
 | `secrets.secretKey`           | Secret key used by Flask for session cookie integrity validation  |                       |
 | `extraEnv`                    | Extra environment variables to pass to Puppetboard                |                       |
 | `service.type`                | Kubernetes service type                                           | `ClusterIP`           |

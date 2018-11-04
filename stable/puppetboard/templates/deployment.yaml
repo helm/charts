@@ -29,9 +29,6 @@ spec:
             - /bin/sh
             - -c
             - >-
-            {{- if .Values.secrets.caCertsSecret }}
-              update-ca-certificates &&
-            {{- end }}
               /usr/bin/gunicorn
               -b 0.0.0.0:${PUPPETBOARD_PORT}
               --access-logfile -
@@ -54,6 +51,10 @@ spec:
             - name: PUPPETDB_CERT
               value: /etc/ssl/puppetboard/tls.crt
           {{- end }}
+          {{- if and .Values.secrets.caCertSecret .Values.secrets.caCertKey }}
+            - name: PUPPETDB_SSL_VERIFY
+              value: {{ printf "/usr/local/share/ca-certificates/%s" .Values.secrets.caCertKey | quote }}
+          {{- end }}
           {{- if .Values.extraEnv }}
 {{ toYaml .Values.extraEnv | indent 12 }}
           {{- end }}
@@ -69,10 +70,10 @@ spec:
             httpGet:
               path: /static/css/puppetboard.css
               port: http
-          {{- if or .Values.secrets.caCertsSecret .Values.secrets.clientTlsSecret  }}
+          {{- if or .Values.secrets.caCertSecret .Values.secrets.clientTlsSecret  }}
           volumeMounts:
-            {{- if .Values.secrets.caCertsSecret }}
-            - name: ca-certs
+            {{- if .Values.secrets.caCertSecret }}
+            - name: ca-cert
               mountPath: /usr/local/share/ca-certificates
               readOnly: true
             {{- end }}
@@ -84,12 +85,12 @@ spec:
           {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
-      {{- if or .Values.secrets.caCertsSecret .Values.secrets.clientTlsSecret  }}
+      {{- if or .Values.secrets.caCertSecret .Values.secrets.clientTlsSecret  }}
       volumes:
-        {{- if .Values.secrets.caCertsSecret }}
-        - name: ca-certs
+        {{- if .Values.secrets.caCertSecret }}
+        - name: ca-cert
           secret:
-            secretName: {{ .Values.secrets.caCertsSecret | quote }}
+            secretName: {{ .Values.secrets.caCertSecret | quote }}
         {{- end }}
         {{- if .Values.secrets.clientTlsSecret }}
         - name: puppetboard-tls
