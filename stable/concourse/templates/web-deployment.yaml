@@ -49,7 +49,10 @@ spec:
             {{- end }}
             {{- if .Values.concourse.web.localAuth.enabled }}
             - name: CONCOURSE_ADD_LOCAL_USER
-              value: {{ .Values.secrets.localUsers | quote }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: local-users
             {{- end }}
             {{- if .Values.concourse.web.tlsBindPort }}
             - name: CONCOURSE_TLS_BIND_PORT
