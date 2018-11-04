@@ -1,0 +1,15 @@
+apiVersion: v1
+name: puppetboard
+appVersion: 0.3.0
+description: Puppetboard is a dashboard for PuppetDB
+version: 0.1.0
+keywords:
+  - puppetboard
+  - puppet
+  - puppetdb
+sources:
+  - https://github.com/bootc/puppetboard-docker
+  - https://github.com/voxpupuli/puppetboard
+maintainers:
+  - name: bootc
+    email: bootc@bootc.net

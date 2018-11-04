@@ -1,0 +1,111 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ include "puppetboard.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "puppetboard.name" . }}
+    helm.sh/chart: {{ include "puppetboard.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "puppetboard.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      annotations:
+        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+      labels:
+        app.kubernetes.io/name: {{ include "puppetboard.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - /bin/sh
+            - -c
+            - >-
+            {{- if .Values.secrets.caCertsSecret }}
+              update-ca-certificates &&
+            {{- end }}
+              /usr/bin/gunicorn
+              -b 0.0.0.0:${PUPPETBOARD_PORT}
+              --access-logfile -
+              puppetboard.app:app
+          env:
+            - name: PUPPETBOARD_PORT
+              value: "8000"
+            - name: PUPPETDB_HOST
+              value: {{ .Values.puppetDbHost | quote }}
+            - name: PUPPETDB_PORT
+              value: {{ .Values.puppetDbPort | quote }}
+            - name: SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "puppetboard.fullname" . }}
+                  key: secretKey
+          {{- if .Values.secrets.clientTlsSecret }}
+            - name: PUPPETDB_KEY
+              value: /etc/ssl/puppetboard/tls.key
+            - name: PUPPETDB_CERT
+              value: /etc/ssl/puppetboard/tls.crt
+          {{- end }}
+          {{- if .Values.extraEnv }}
+{{ toYaml .Values.extraEnv | indent 12 }}
+          {{- end }}
+          ports:
+            - name: http
+              containerPort: 8000
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /static/css/puppetboard.css
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /static/css/puppetboard.css
+              port: http
+          {{- if or .Values.secrets.caCertsSecret .Values.secrets.clientTlsSecret  }}
+          volumeMounts:
+            {{- if .Values.secrets.caCertsSecret }}
+            - name: ca-certs
+              mountPath: /usr/local/share/ca-certificates
+              readOnly: true
+            {{- end }}
+            {{- if .Values.secrets.clientTlsSecret }}
+            - name: puppetboard-tls
+              mountPath: /etc/ssl/puppetboard
+              readOnly: true
+            {{- end }}
+          {{- end }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+      {{- if or .Values.secrets.caCertsSecret .Values.secrets.clientTlsSecret  }}
+      volumes:
+        {{- if .Values.secrets.caCertsSecret }}
+        - name: ca-certs
+          secret:
+            secretName: {{ .Values.secrets.caCertsSecret | quote }}
+        {{- end }}
+        {{- if .Values.secrets.clientTlsSecret }}
+        - name: puppetboard-tls
+          secret:
+            secretName: {{ .Values.secrets.clientTlsSecret | quote }}
+        {{- end }}
+      {{- end }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
