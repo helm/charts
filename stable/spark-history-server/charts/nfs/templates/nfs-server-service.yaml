@@ -1,0 +1,22 @@
+{{- if .Values.enableExampleNFS }}
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ include "nfs.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "nfs.name" . }}
+    helm.sh/chart: {{ include "nfs.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  ports:
+    - name: nfs
+      port: 2049
+    - name: mountd
+      port: 20048
+    - name: rpcbind
+      port: 111
+  selector:
+    app.kubernetes.io/name: {{ include "nfs.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
