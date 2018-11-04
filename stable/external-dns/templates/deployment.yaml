@@ -91,7 +91,7 @@ spec:
           - name: GOOGLE_APPLICATION_CREDENTIALS
             value: /etc/secrets/service-account/credentials.json
         {{- end }}
-        {{- if eq .Values.provider "aws" }}
+        {{- if or (eq .Values.provider "aws") (eq .Values.provider "aws-sd") }}
         {{- if .Values.aws.region }}
           - name: AWS_DEFAULT_REGION
             value: {{ .Values.aws.region }}
