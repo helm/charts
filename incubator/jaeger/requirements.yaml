@@ -7,3 +7,7 @@ dependencies:
     version: ^0.4.1
     repository: https://kubernetes-charts-incubator.storage.googleapis.com/
     condition: provisionDataStore.elasticsearch
+  - name: elasticsearch-curator
+    version: ^0.4.3
+    repository: https://kubernetes-charts-incubator.storage.googleapis.com/
+    condition: elasticsearch-curator.install

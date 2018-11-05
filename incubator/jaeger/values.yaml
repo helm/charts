@@ -74,6 +74,14 @@ elasticsearch:
   rbac:
     create: false
 
+elasticsearch-curator:
+  install: false
+  config:
+    elasticsearch:
+      hosts:
+        - CHANGEME.host
+      port: 9200
+    
 agent:
   enabled: true
   annotations: {}

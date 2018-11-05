@@ -175,6 +175,9 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `elasticsearch.data.persistence.enabled` | To enable storage persistence       |  false (Highly recommended to enable)  |
 | `elasticsearch.image.tag`                | Elasticsearch image tag             |  "5.4"                                 |
 | `elasticsearch.rbac.create`              | To enable RBAC                      |  false                                 |
+| `elasticsearch-curator.install`          | Install elasticsearch-curator chart |  false                                 |
+| `elasticsearch-curator.config.elasticsearch.hosts` | Array of Elasticsearch hosts to curate | - CHANGEME.host           |
+| `elasticsearch-curator.config.elasticsearch.port`  | Elasticsearch port to connect too |  9200                          |
 | `hotrod.enabled`                         | Enables the Hotrod demo app         |  false                                 |
 | `hotrod.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`      |
 | `provisionDataStore.cassandra`           | Provision Cassandra Data Store      |  true                                  |
