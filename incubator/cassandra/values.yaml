@@ -43,9 +43,10 @@ resources: {}
 ## Change cassandra configuration parameters below:
 ## ref: http://docs.datastax.com/en/cassandra/3.0/cassandra/configuration/configCassandra_yaml.html
 ## Recommended max heap size is 1/2 of system memory
-## Recommeneed heap new size is 1/4 of max heap size
+## Recommended heap new size is 1/4 of max heap size
 ## ref: http://docs.datastax.com/en/cassandra/3.0/cassandra/operations/opsTuneJVM.html
 config:
+  cluster_domain: cluster.local
   cluster_name: cassandra
   cluster_size: 3
   seed_size: 2
