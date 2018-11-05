@@ -93,7 +93,7 @@ $ helm install stable/kibana --name my-release \
   --set=image.tag=v0.0.2,resources.limits.cpu=200m
 ```
 
-Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
+Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example :
 
 ```console
 $ helm install stable/kibana --name my-release -f values.yaml
