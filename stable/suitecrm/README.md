@@ -49,6 +49,7 @@ The following table lists the configurable parameters of the SuiteCRM chart and 
 
 |              Parameter              |                   Description                   |                         Default                         |
 |-------------------------------------|-------------------------------------------------|---------------------------------------------------------|
+| `global.imageRegistry`              | Global Docker image registry                    | `nil`                                                   |
 | `image.registry`                    | SuiteCRM image registry                         | `docker.io`                                             |
 | `image.repository`                  | SuiteCRM image name                             | `bitnami/suitecrm`                                      |
 | `image.tag`                         | SuiteCRM image tag                              | `{VERSION}`                                             |
@@ -79,15 +80,21 @@ The following table lists the configurable parameters of the SuiteCRM chart and 
 | `mariadb.rootUser.password`         | MariaDB admin password                          | `nil`                                                   |
 | `serviceType`                       | Kubernetes Service type                         | `LoadBalancer`                                          |
 | `externalTrafficPolicy`             | Set to `Local` to preserve the client source IP | `Cluster`                                               |
-| `sessionAffinity`                   | Configures the session affinity                 | `ClientIP`                                              |
 | `persistence.enabled`               | Enable persistence using PVC                    | `true`                                                  |
-| `persistence.apache.storageClass`   | PVC Storage Class for apache volume             | `nil` (uses alpha storage class annotation)             |
-| `persistence.apache.accessMode`     | PVC Access Mode for apache volume               | `ReadWriteOnce`                                         |
-| `persistence.apache.size`           | PVC Storage Request for apache volume           | `1Gi`                                                   |
-| `persistence.suitecrm.storageClass` | PVC Storage Class for SuiteCRM volume           | `nil` (uses alpha storage class annotation)             |
-| `persistence.suitecrm.accessMode`   | PVC Access Mode for SuiteCRM volume             | `ReadWriteOnce`                                         |
-| `persistence.suitecrm.size`         | PVC Storage Request for SuiteCRM volume         | `8Gi`                                                   |
+| `persistence.storageClass`          | PVC Storage Class for SuiteCRM volume           | `nil` (uses alpha storage class annotation)             |
+| `persistence.existingClaim`         | An Existing PVC name for SuiteCRM volume        | `nil` (uses alpha storage class annotation)             |
+| `persistence.accessMode`            | PVC Access Mode for SuiteCRM volume             | `ReadWriteOnce`                                         |
+| `persistence.size`                  | PVC Storage Request for SuiteCRM volume         | `8Gi`                                                   |
 | `resources`                         | CPU/Memory resource requests/limits             | Memory: `512Mi`, CPU: `300m`                            |
+| `podAnnotations`                | Pod annotations                                   | `{}`                                                       |
+| `metrics.enabled`                          | Start a side-car prometheus exporter                                                                           | `false`                                              |
+| `metrics.image.registry`                   | Apache exporter image registry                                                                                  | `docker.io`                                          |
+| `metrics.image.repository`                 | Apache exporter image name                                                                                      | `lusotycoon/apache-exporter`                           |
+| `metrics.image.tag`                        | Apache exporter image tag                                                                                       | `v0.5.0`                                            |
+| `metrics.image.pullPolicy`                 | Image pull policy                                                                                              | `IfNotPresent`                                       |
+| `metrics.image.pullSecrets`                | Specify docker-registry secret names as an array                                                               | `nil`                                                |
+| `metrics.podAnnotations`                   | Additional annotations for Metrics exporter pod                                                                | `{prometheus.io/scrape: "true", prometheus.io/port: "9117"}`                                                   |
+| `metrics.resources`                        | Exporter resource requests/limit                                                                               | {}                        |
 
 The above parameters map to the env variables defined in [bitnami/suitecrm](http://github.com/bitnami/bitnami-docker-suitecrm). For more information please refer to the [bitnami/suitecrm](http://github.com/bitnami/bitnami-docker-suitecrm) image documentation.
 

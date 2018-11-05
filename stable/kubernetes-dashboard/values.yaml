@@ -34,6 +34,11 @@ tolerations: []
 #    value: "value"
 #    effect: "NoSchedule|PreferNoSchedule|NoExecute"
 
+## Affinity
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+affinity: {}
+
+
 service:
   type: ClusterIP
   externalPort: 443
@@ -105,3 +110,9 @@ serviceAccount:
   # The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
   name:
+
+livenessProbe:
+  # Number of seconds to wait before sending first probe
+  initialDelaySeconds: 30
+  # Number of seconds to wait for probe response
+  timeoutSeconds: 30

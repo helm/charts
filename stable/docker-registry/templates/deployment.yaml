@@ -86,6 +86,22 @@ spec:
 {{- if eq .Values.storage "filesystem" }}
             - name: REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY
               value: "/var/lib/registry"
+{{- else if eq .Values.storage "azure" }}
+            - name: REGISTRY_STORAGE_AZURE_ACCOUNTNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "docker-registry.fullname" . }}-secret
+                  key: azureAccountName
+            - name: REGISTRY_STORAGE_AZURE_ACCOUNTKEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "docker-registry.fullname" . }}-secret
+                  key: azureAccountKey
+            - name: REGISTRY_STORAGE_AZURE_CONTAINER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "docker-registry.fullname" . }}-secret
+                  key: azureContainer
 {{- else if eq .Values.storage "s3" }}
             {{- if and .Values.secrets.s3.secretKey .Values.secrets.s3.accessKey }}
             - name: REGISTRY_STORAGE_S3_ACCESSKEY
