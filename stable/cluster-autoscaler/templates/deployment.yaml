@@ -109,7 +109,7 @@ spec:
       volumes:
         - name: ssl-certs
           hostPath:
-            path: {{ .Values.sslCertPath }}
+            path: {{ .Values.sslCertHostPath }}
         {{- if eq .Values.cloudProvider "gce" }}
         - name: cloudconfig
           hostPath:
