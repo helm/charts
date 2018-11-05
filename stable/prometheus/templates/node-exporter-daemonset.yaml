@@ -73,6 +73,10 @@ spec:
               mountPath: {{ .mountPath }}
               readOnly: {{ .readOnly }}
           {{- end }}
+    {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+      {{ toYaml .Values.imagePullSecrets | indent 2 }}
+    {{- end }}
     {{- if .Values.nodeExporter.hostNetwork }}
       hostNetwork: true
     {{- end }}
