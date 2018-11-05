@@ -141,6 +141,10 @@ spec:
               subPath: {{ .subPath }}
               readOnly: {{ .readOnly }}
           {{- end }}
+    {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+       {{ toYaml .Values.imagePullSecrets | indent 2 }}
+    {{- end }}
     {{- if .Values.server.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.server.nodeSelector | indent 8 }}

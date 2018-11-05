@@ -48,6 +48,10 @@ spec:
             timeoutSeconds: 10
           resources:
 {{ toYaml .Values.pushgateway.resources | indent 12 }}
+    {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+      {{ toYaml .Values.imagePullSecrets | indent 2 }}
+    {{- end }}
     {{- if .Values.pushgateway.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.pushgateway.nodeSelector | indent 8 }}
