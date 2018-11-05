@@ -81,7 +81,7 @@ elasticsearch-curator:
       hosts:
         - CHANGEME.host
       port: 9200
-    
+
 agent:
   enabled: true
   annotations: {}
