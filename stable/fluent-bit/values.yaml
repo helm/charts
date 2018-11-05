@@ -135,6 +135,10 @@ tolerations: []
 ##
 nodeSelector: {}
 
+input:
+  tail:
+    memBufLimit: 5MB
+
 filter:
   kubeURL: https://kubernetes.default.svc:443
   kubeCAFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
