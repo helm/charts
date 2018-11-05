@@ -14,33 +14,33 @@ spec:
     matchLabels:
       app: "{{ template "anchore-engine.fullname" . }}"
       component: {{ $component }}
-  replicas: {{ .Values.core.replicaCount }}
+  replicas: {{ .Values.anchoreCore.replicaCount }}
   template:
     metadata:
       labels:
         app: "{{ template "anchore-engine.fullname" . }}"
         component: {{ $component }}
-{{- if .Values.core.annotations }}
+{{- if .Values.anchoreCore.annotations }}
       annotations:
-{{ toYaml .Values.core.annotations | indent 8 }}
+{{ toYaml .Values.anchoreCore.annotations | indent 8 }}
 {{- end }}
     spec:
       volumes:
         - name: config-volume
           configMap:
             name: {{ template "anchore-engine.fullname" .}}
-        {{- if .Values.enterpriseRbac.enabled }}
+        {{- if and .Values.anchoreEnterpriseGlobal.enabled .Values.anchoreEnterpriseRbac.enabled }}
         - name: anchore-license
           secret:
-            secretName: {{ .Values.enterpriseGlobal.licenseSecretName }}
+            secretName: {{ .Values.anchoreEnterpriseGlobal.licenseSecretName }}
         - name: rbac-config-volume
           configMap:
             name: {{ template "anchore-engine.enterprise.fullname" . }}
         {{- end}}
-        {{- if .Values.global.internalServicesSslEnabled }}
+        {{- if .Values.anchoreGlobal.internalServicesSslEnabled }}
         - name: certs
           secret:
-            secretName: {{ .Values.core.ssl.certSecret }}
+            secretName: {{ .Values.anchoreCore.ssl.certSecret }}
         {{- end }}
       containers:
       - name: {{ .Chart.Name }}-{{ $component }}
@@ -65,9 +65,9 @@ spec:
         - name: config-volume
           mountPath: /config/config.yaml
           subPath: config.yaml
-        {{- if .Values.global.internalServicesSslEnabled }}
+        {{- if .Values.anchoreGlobal.internalServicesSslEnabled }}
         - name: certs
-          mountPath: {{ default "/certs" .Values.core.ssl.certDir }}
+          mountPath: {{ default "/certs" .Values.anchoreCore.ssl.certDir }}
           readOnly: true
         {{- end }}
         readinessProbe:
@@ -87,12 +87,12 @@ spec:
           periodSeconds: 30
           failureThreshold: 10
         resources:
-{{ toYaml .Values.core.resources | indent 10 }}
+{{ toYaml .Values.anchoreCore.resources | indent 10 }}
 
-      {{- if .Values.enterpriseRbac.enabled }}
+      {{- if and .Values.anchoreEnterpriseGlobal.enabled .Values.anchoreEnterpriseRbac.enabled }}
       - name: {{ .Chart.Name }}-rbac-manager
-        image: "{{ .Values.enterpriseGlobal.image.repository }}:{{ .Values.enterpriseGlobal.image.tag }}"
-        imagePullPolicy: {{ .Values.enterpriseGlobal.image.pullPolicy }}
+        image: "{{ .Values.anchoreEnterpriseGlobal.image.repository }}:{{ .Values.anchoreEnterpriseGlobal.image.tag }}"
+        imagePullPolicy: {{ .Values.anchoreEnterpriseGlobal.image.pullPolicy }}
         command: ["/usr/local/bin/anchore-enterprise-manager"]
         args: ["service", "start", "rbac_manager"]
         envFrom:
@@ -106,7 +106,7 @@ spec:
             fieldRef:
               fieldPath: metadata.name
         ports:
-        - containerPort: {{ .Values.enterpriseRbac.service.apiPort }}
+        - containerPort: {{ .Values.anchoreEnterpriseRbac.service.apiPort }}
           name: rbac-manager
         volumeMounts:
         - name: anchore-license
@@ -115,9 +115,9 @@ spec:
         - name: rbac-config-volume
           mountPath: /config/config.yaml
           subPath: config.yaml
-        {{- if .Values.global.internalServicesSslEnabled }}
+        {{- if .Values.anchoreGlobal.internalServicesSslEnabled }}
         - name: certs
-          mountPath: {{ default "/certs" .Values.core.ssl.certDir }}
+          mountPath: {{ default "/certs" .Values.anchoreCore.ssl.certDir }}
           readOnly: true
         {{- end }}
         readinessProbe:
@@ -138,8 +138,8 @@ spec:
           failureThreshold: 10
 
       - name: {{ .Chart.Name }}-rbac-authorizer
-        image: "{{ .Values.enterpriseGlobal.image.repository }}:{{ .Values.enterpriseGlobal.image.tag }}"
-        imagePullPolicy: {{ .Values.enterpriseGlobal.image.pullPolicy }}
+        image: "{{ .Values.anchoreEnterpriseGlobal.image.repository }}:{{ .Values.anchoreEnterpriseGlobal.image.tag }}"
+        imagePullPolicy: {{ .Values.anchoreEnterpriseGlobal.image.pullPolicy }}
         command: ["/usr/local/bin/anchore-enterprise-manager"]
         args: ["service", "start", "rbac_authorizer"]
         envFrom:
@@ -153,7 +153,7 @@ spec:
             fieldRef:
               fieldPath: metadata.name
         ports:
-        - containerPort: {{ .Values.enterpriseRbac.service.authPort }}
+        - containerPort: {{ .Values.anchoreEnterpriseRbac.service.authPort }}
           name: rbac-auth
         volumeMounts:
         - name: anchore-license
@@ -162,16 +162,16 @@ spec:
         - name: rbac-config-volume
           mountPath: /config/config.yaml
           subPath: config.yaml
-        {{- if .Values.global.internalServicesSslEnabled }}
+        {{- if .Values.anchoreGlobal.internalServicesSslEnabled }}
         - name: certs
-          mountPath: {{ default "/certs" .Values.core.ssl.certDir }}
+          mountPath: {{ default "/certs" .Values.anchoreCore.ssl.certDir }}
           readOnly: true
         {{- end }}
         readinessProbe:
           exec:
             command:
               - curl
-              - 'localhost:{{ .Values.enterpriseRbac.service.authPort }}/health'
+              - 'localhost:{{ .Values.anchoreEnterpriseRbac.service.authPort }}/health'
           initialDelaySeconds: 60
           periodSeconds: 10
           timeoutSeconds: 10
@@ -180,24 +180,24 @@ spec:
           exec:
             command:
               - curl
-              - 'localhost:{{ .Values.enterpriseRbac.service.authPort }}/health'
+              - 'localhost:{{ .Values.anchoreEnterpriseRbac.service.authPort }}/health'
           timeoutSeconds: 10
           initialDelaySeconds: 60
           periodSeconds: 30
           failureThreshold: 10
       imagePullSecrets:
-      - name: {{ .Values.enterpriseGlobal.imagePullSecretName }}
+      - name: {{ .Values.anchoreEnterpriseGlobal.imagePullSecretName }}
       {{- end }}
 
-      {{- if .Values.core.nodeSelector }}
+      {{- if .Values.anchoreCore.nodeSelector }}
       nodeSelector:
-{{ toYaml .Values.core.nodeSelector | indent 8 }}
+{{ toYaml .Values.anchoreCore.nodeSelector | indent 8 }}
       {{- end }}
-      {{- with .Values.core.affinity }}
+      {{- with .Values.anchoreCore.affinity }}
       affinity:
 {{ toYaml . | indent 8 }}
       {{- end }}
-      {{- with .Values.core.tolerations }}
+      {{- with .Values.anchoreCore.tolerations }}
       tolerations:
 {{ toYaml . | indent 8 }}
       {{- end }}
@@ -220,10 +220,10 @@ spec:
       port: {{ .Values.service.ports.extApi }}
       targetPort: {{ .Values.service.ports.extApi }}
       protocol: TCP
-  {{- if .Values.enterpriseRbac.enabled }}
+  {{- if and .Values.anchoreEnterpriseGlobal.enabled .Values.anchoreEnterpriseRbac.enabled }}
     - name: anchore-rbac-manager
-      port: {{ .Values.enterpriseRbac.service.apiPort }}
-      targetPort: {{ .Values.enterpriseRbac.service.apiPort }}
+      port: {{ .Values.anchoreEnterpriseRbac.service.apiPort }}
+      targetPort: {{ .Values.anchoreEnterpriseRbac.service.apiPort }}
       protocol: TCP
   {{- end }}
   selector:

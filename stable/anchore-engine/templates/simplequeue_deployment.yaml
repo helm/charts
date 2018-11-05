@@ -14,15 +14,15 @@ spec:
     matchLabels:
       app: "{{ template "anchore-engine.fullname" . }}"
       component: {{ $component }}
-  replicas: {{ .Values.simplequeue.replicaCount }}
+  replicas: {{ .Values.anchoreSimplequeue.replicaCount }}
   template:
     metadata:
       labels:
         app: "{{ template "anchore-engine.fullname" . }}"
         component: {{ $component }}
-{{- if .Values.simplequeue.annotations }}
+{{- if .Values.anchoreSimplequeue.annotations }}
       annotations:
-{{ toYaml .Values.simplequeue.annotations | indent 8 }}
+{{ toYaml .Values.anchoreSimplequeue.annotations | indent 8 }}
 {{- end }}
     spec:
       containers:
@@ -48,9 +48,9 @@ spec:
         - name: config-volume
           mountPath: /config/config.yaml
           subPath: config.yaml
-        {{- if .Values.global.internalServicesSslEnabled }}
+        {{- if .Values.anchoreGlobal.internalServicesSslEnabled }}
         - name: certs
-          mountPath: {{ default "/certs" .Values.simplequeue.ssl.CertDir }}
+          mountPath: {{ default "/certs" .Values.anchoreSimplequeue.ssl.CertDir }}
           readOnly: true
         {{- end }}
         livenessProbe:
@@ -70,25 +70,25 @@ spec:
           timeoutSeconds: 10
           failureThreshold: 10
         resources:
-{{ toYaml .Values.simplequeue.resources | indent 10 }}
+{{ toYaml .Values.anchoreSimplequeue.resources | indent 10 }}
       volumes:
         - name: config-volume
           configMap:
             name: {{ template "anchore-engine.fullname" .}}
-        {{- if .Values.global.internalServicesSslEnabled }}
+        {{- if .Values.anchoreGlobal.internalServicesSslEnabled }}
         - name: certs
           secret:
-            secretName: {{ .Values.simplequeue.ssl.certSecret }}
+            secretName: {{ .Values.anchoreSimplequeue.ssl.certSecret }}
         {{- end }}
-    {{- if .Values.simplequeue.nodeSelector }}
+    {{- if .Values.anchoreSimplequeue.nodeSelector }}
       nodeSelector:
-{{ toYaml .Values.simplequeue.nodeSelector | indent 8 }}
+{{ toYaml .Values.anchoreSimplequeue.nodeSelector | indent 8 }}
     {{- end }}
-    {{- with .Values.simplequeue.affinity }}
+    {{- with .Values.anchoreSimplequeue.affinity }}
       affinity:
 {{ toYaml . | indent 8 }}
     {{- end }}
-    {{- with .Values.simplequeue.tolerations }}
+    {{- with .Values.anchoreSimplequeue.tolerations }}
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}

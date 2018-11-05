@@ -14,15 +14,15 @@ spec:
     matchLabels:
       app: "{{ template "anchore-engine.fullname" . }}"
       component: {{ $component }}
-  replicas: {{ .Values.kubernetesWebhook.replicaCount }}
+  replicas: {{ .Values.anchoreKubernetesWebhook.replicaCount }}
   template:
     metadata:
       labels:
         app: "{{ template "anchore-engine.fullname" . }}"
         component: {{ $component }}
-{{- if .Values.kubernetesWebhook.annotations }}
+{{- if .Values.anchoreKubernetesWebhook.annotations }}
       annotations:
-{{ toYaml .Values.kubernetesWebhook.annotations | indent 8 }}
+{{ toYaml .Values.anchoreKubernetesWebhook.annotations | indent 8 }}
 {{- end }}
     spec:
       containers:
@@ -48,9 +48,9 @@ spec:
         - name: config-volume
           mountPath: /config/config.yaml
           subPath: config.yaml
-        {{- if .Values.global.internalServicesSslEnabled }}
+        {{- if .Values.anchoreGlobal.internalServicesSslEnabled }}
         - name: certs
-          mountPath: {{ default "/certs" .Values.kubernetesWebhook.ssl.CertDir }}
+          mountPath: {{ default "/certs" .Values.anchoreKubernetesWebhook.ssl.CertDir }}
           readOnly: true
         {{- end }}
         livenessProbe:
@@ -70,25 +70,25 @@ spec:
           timeoutSeconds: 10
           failureThreshold: 10
         resources:
-{{ toYaml .Values.kubernetesWebhook.resources | indent 10 }}
+{{ toYaml .Values.anchoreKubernetesWebhook.resources | indent 10 }}
       volumes:
         - name: config-volume
           configMap:
             name: {{ template "anchore-engine.fullname" .}}
-        {{- if .Values.global.internalServicesSslEnabled }}
+        {{- if .Values.anchoreGlobal.internalServicesSslEnabled }}
         - name: certs
           secret:
-            secretName: {{ .Values.kubernetesWebhook.ssl.certSecret }}
+            secretName: {{ .Values.anchoreKubernetesWebhook.ssl.certSecret }}
         {{- end }}
-    {{- if .Values.kubernetesWebhook.nodeSelector }}
+    {{- if .Values.anchoreKubernetesWebhook.nodeSelector }}
       nodeSelector:
-{{ toYaml .Values.kubernetesWebhook.nodeSelector | indent 8 }}
+{{ toYaml .Values.anchoreKubernetesWebhook.nodeSelector | indent 8 }}
     {{- end }}
-    {{- with .Values.kubernetesWebhook.affinity }}
+    {{- with .Values.anchoreKubernetesWebhook.affinity }}
       affinity:
 {{ toYaml . | indent 8 }}
     {{- end }}
-    {{- with .Values.kubernetesWebhook.tolerations }}
+    {{- with .Values.anchoreKubernetesWebhook.tolerations }}
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}

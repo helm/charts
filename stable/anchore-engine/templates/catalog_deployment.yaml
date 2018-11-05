@@ -14,15 +14,15 @@ spec:
     matchLabels:
       app: "{{ template "anchore-engine.fullname" . }}"
       component: {{ $component }}
-  replicas: {{ .Values.catalog.replicaCount }}
+  replicas: {{ .Values.anchoreCatalog.replicaCount }}
   template:
     metadata:
       labels:
         app: "{{ template "anchore-engine.fullname" . }}"
         component: {{ $component }}
-{{- if .Values.catalog.annotations }}
+{{- if .Values.anchoreCatalog.annotations }}
       annotations:
-{{ toYaml .Values.catalog.annotations | indent 8 }}
+{{ toYaml .Values.anchoreCatalog.annotations | indent 8 }}
 {{- end }}
     spec:
       containers:
@@ -48,9 +48,9 @@ spec:
         - name: config-volume
           mountPath: /config/config.yaml
           subPath: config.yaml
-        {{- if .Values.global.internalServicesSslEnabled }}
+        {{- if .Values.anchoreGlobal.internalServicesSslEnabled }}
         - name: certs
-          mountPath: {{ default "/certs" .Values.catalog.ssl.CertDir }}
+          mountPath: {{ default "/certs" .Values.anchoreCatalog.ssl.CertDir }}
           readOnly: true
         {{- end }}
         livenessProbe:
@@ -70,25 +70,25 @@ spec:
           timeoutSeconds: 10
           failureThreshold: 10
         resources:
-{{ toYaml .Values.catalog.resources | indent 10 }}
+{{ toYaml .Values.anchoreCatalog.resources | indent 10 }}
       volumes:
         - name: config-volume
           configMap:
             name: {{ template "anchore-engine.fullname" .}}
-        {{- if .Values.global.internalServicesSslEnabled }}
+        {{- if .Values.anchoreGlobal.internalServicesSslEnabled }}
         - name: certs
           secret:
-            secretName: {{ .Values.catalog.ssl.certSecret }}
+            secretName: {{ .Values.anchoreCatalog.ssl.certSecret }}
         {{- end }}
-    {{- if .Values.catalog.nodeSelector }}
+    {{- if .Values.anchoreCatalog.nodeSelector }}
       nodeSelector:
-{{ toYaml .Values.catalog.nodeSelector | indent 8 }}
+{{ toYaml .Values.anchoreCatalog.nodeSelector | indent 8 }}
     {{- end }}
-    {{- with .Values.catalog.affinity }}
+    {{- with .Values.anchoreCatalog.affinity }}
       affinity:
 {{ toYaml . | indent 8 }}
     {{- end }}
-    {{- with .Values.catalog.tolerations }}
+    {{- with .Values.anchoreCatalog.tolerations }}
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}

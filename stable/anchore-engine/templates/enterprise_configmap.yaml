@@ -1,4 +1,4 @@
-{{- if or .Values.enterpriseFeeds.enabled .Values.enterpriseRbac.enabled -}}
+{{- if and .Values.anchoreEnterpriseGlobal.enabled (or .Values.anchoreEnterpriseFeeds.enabled .Values.anchoreEnterpriseRbac.enabled) -}}
 
 apiVersion: v1
 kind: ConfigMap
@@ -16,19 +16,19 @@ data:
     # General system-wide configuration options, these should not need to
     # be altered for basic operation
     #
-    service_dir: {{ .Values.global.configDir | quote }}
+    service_dir: {{ .Values.anchoreGlobal.serviceDir | quote }}
     tmp_dir: "/scratch"
-    log_level: {{ .Values.global.logLevel | quote }}
+    log_level: {{ .Values.anchoreGlobal.logLevel | quote }}
     cleanup_images: true
 
-    allow_awsecr_iam_auto: {{ .Values.global.allowECRUseIAMRole }}
+    allow_awsecr_iam_auto: {{ .Values.anchoreGlobal.allowECRUseIAMRole }}
     host_id: "${ANCHORE_POD_NAME}"
-    internal_ssl_verify: {{ .Values.global.internalServicesSslVerifyCerts }}
+    internal_ssl_verify: {{ .Values.anchoreGlobal.internalServicesSslVerifyCerts }}
     auto_restart_services: false
     license_file: "/license.yaml"
 
     metrics:
-      enabled: {{ .Values.global.enableMetrics }}
+      enabled: {{ .Values.anchoreGlobal.enableMetrics }}
 
     credentials:
       database:
@@ -40,69 +40,82 @@ data:
         db_pool_max_overflow: 100
 
     services:
-    {{- if .Values.enterpriseRbac.enabled }}
+    {{- if .Values.anchoreEnterpriseRbac.enabled }}
       # This should never be exposed outside of linked containers/localhost. It is used only for internal service access
       rbac_authorizer:
         enabled: true
         require_auth: true
         endpoint_hostname: localhost
         listen: '127.0.0.1'
-        port: {{ .Values.enterpriseRbac.service.authPort }}
+        port: {{ .Values.anchoreEnterpriseRbac.service.authPort }}
+        ssl_cert: {{ .Values.anchoreGlobal.internalServicesSsl.certDir -}}/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretCertName }}
+        ssl_key: {{ .Values.anchoreGlobal.internalServicesSsl.certDir -}}/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretKeyName }}
+        ssl_enable: {{ .Values.anchoreGlobal.internalServicesSslEnabled }}
       rbac_manager:
         enabled: true
         require_auth: true
         endpoint_hostname: {{ template "anchore-engine.core.fullname" . }}
         listen: '0.0.0.0'
-        port: {{ .Values.enterpriseRbac.service.apiPort }}
+        port: {{ .Values.anchoreEnterpriseRbac.service.apiPort }}
         authorization_handler: external
         authorization_handler_config:
-          endpoint: 'http://localhost:{{ .Values.enterpriseRbac.service.authPort }}'
+          endpoint: 'http://localhost:{{ .Values.anchoreEnterpriseRbac.service.authPort }}'
+        ssl_cert: {{ .Values.anchoreGlobal.internalServicesSsl.certDir -}}/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretCertName }}
+        ssl_key: {{ .Values.anchoreGlobal.internalServicesSsl.certDir -}}/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretKeyName }}
+        ssl_enable: {{ .Values.anchoreGlobal.internalServicesSslEnabled }}
     {{- end }}
-    {{- if .Values.enterpriseFeeds.enabled }}
+    {{- if .Values.anchoreEnterpriseFeeds.enabled }}
       feeds:
         enabled: true
         require_auth: false
         endpoint_hostname: {{ template "anchore-engine.enterprise-feeds.fullname" . }}
         listen: '0.0.0.0'
-        port: {{ .Values.enterpriseFeeds.service.apiPort }}
+        port: {{ .Values.anchoreEnterpriseFeeds.service.apiPort }}
+
         # Time delay in seconds between consecutive driver runs for processing data
         cycle_timers:
-          driver_sync: {{ .Values.enterpriseFeeds.cycle_timer_seconds }}
+          driver_sync: {{ .Values.anchoreEnterpriseFeeds.cycleTimerSeconds }}
+
         # Staging space for holding normalized output from drivers.
-        local_workspace: "{{ .Values.enterpriseFeeds.local_workspace }}"
+        local_workspace: "{{ .Values.anchoreEnterpriseFeeds.localWorkspace }}"
+
         # Drivers process data from external sources and store normalized data in local_workspace. Processing large data sets
         # is a time consuming process for some drivers. To speed it up the container is shipped with pre-loaded data which is used
         # by default if local_workspace is empty.
         workspace_preload:
           # Do not use pre-loaded data if local_workspace is empty. Drivers will generate normalized data from scratch
-          disabled: {{ .Values.enterpriseFeeds.workspace_preload_disabled }}
+          # disabled: true
           # To load the workspace from a different location, uncomment and configure workspace_preload_file property to point to the tar.gz file
-          workspace_preload_file: "{{ .Values.enterpriseFeeds.workspace_preload_file }}"
+          workspace_preload_file: "/workspace_preload/data.tar.gz"
+
         # If api_only is set to True, the service will not update feed data in the system.
         # API end points will be functional and serve feed data if any is available.
-        api_only: {{ .Values.enterpriseFeeds.api_only }}
+        api_only: {{ .Values.anchoreEnterpriseFeeds.apiOnly }}
+
         drivers:
           # Configuration section for drivers collecting and processing feed data.
           # All drivers are enabled by default unless explicitly disabled. npm and gem drivers are explicitly disabled out of the box
           npm:
-            enabled: {{ .Values.enterpriseFeeds.npm_enabled }}
+            enabled: {{ .Values.anchoreEnterpriseFeeds.npmDriverEnabled }}
           gem:
             # rubygem data comes packaged as a PostgreSQL dump file. gem driver loads the pg dump and normalizes the data.
-            # To enable gem driver comment the enabled property and uncomment the db_connect property. In addition,
-            # uncomment the anchore-gem-db section in docker-compose.yaml
-            enabled: {{ .Values.enterpriseFeeds.gem_enabled }}
-            db_connect: {{ .Values.enterpriseFeeds.gem_db_connect }}
+            # To enable gem driver comment the enabled property and uncomment the db_connect property.
+            enabled: {{ .Values.anchoreEnterpriseFeeds.gemDriverEnabled }}
+            db_connect: {{ .Values.anchoreEnterpriseFeeds.gemDbEndpoint }}
           centos:
-            enabled: {{ .Values.enterpriseFeeds.centos_enabled }}
+            enabled: {{ .Values.anchoreEnterpriseFeeds.osDriversEnabled }}
           debian:
-            enabled: {{ .Values.enterpriseFeeds.debian_enabled }}
+            enabled: {{ .Values.anchoreEnterpriseFeeds.osDriversEnabled }}
           ubuntu:
-            enabled: {{ .Values.enterpriseFeeds.ubuntu_enabled }}
+            enabled: {{ .Values.anchoreEnterpriseFeeds.osDriversEnabled }}
           ol:
-            enabled: {{ .Values.enterpriseFeeds.ol_enabled }}
+            enabled: {{ .Values.anchoreEnterpriseFeeds.osDriversEnabled }}
           alpine:
-            enabled: {{ .Values.enterpriseFeeds.alpine_enabled }}
+            enabled: {{ .Values.anchoreEnterpriseFeeds.osDriversEnabled }}
           snyk:
-            enabled: {{ .Values.enterpriseFeeds.snyk_enabled }}
+            enabled: {{ .Values.anchoreEnterpriseFeeds.snykDriverEnabled }}
+        ssl_cert: {{ .Values.anchoreGlobal.internalServicesSsl.certDir -}}/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretCertName }}
+        ssl_key: {{ .Values.anchoreGlobal.internalServicesSsl.certDir -}}/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretKeyName }}
+        ssl_enable: {{ .Values.anchoreGlobal.internalServicesSslEnabled }}
     {{- end }}
 {{- end -}}

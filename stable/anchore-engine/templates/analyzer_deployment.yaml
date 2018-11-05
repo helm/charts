@@ -14,15 +14,15 @@ spec:
     matchLabels:
       app: "{{ template "anchore-engine.fullname" . }}"
       component: {{ $component }}
-  replicas: {{ .Values.analyzer.replicaCount }}
+  replicas: {{ .Values.anchoreAnalyzer.replicaCount }}
   template:
     metadata:
       labels:
         app: "{{ template "anchore-engine.fullname" . }}"
         component: {{ $component }}
-{{- if .Values.analyzer.annotations }}
+{{- if .Values.anchoreAnalyzer.annotations }}
       annotations:
-{{ toYaml .Values.analyzer.annotations | indent 8 }}
+{{ toYaml .Values.anchoreAnalyzer.annotations | indent 8 }}
 {{- end }}
     spec:
       containers:
@@ -48,18 +48,17 @@ spec:
         - name: config-volume
           mountPath: /config/config.yaml
           subPath: config.yaml
-        {{- if .Values.global.internalServicesSslEnabled }}
+        {{- if .Values.anchoreGlobal.internalServicesSslEnabled }}
         - name: certs
-          mountPath: {{ default "/certs" .Values.analyzer.ssl.CertDir }}
+          mountPath: {{ default "/certs" .Values.anchoreAnalyzer.ssl.CertDir }}
           readOnly: true
         {{- end }}
         - name: analysis-scratch
-          mountPath: {{ .Values.analyzer.analysisScratchVolume.mountPath }}
+          mountPath: {{ .Values.anchoreAnalyzer.analysisScratchVolume.mountPath }}
         livenessProbe:
-          exec:
-            command:
-            - pgrep
-            - twistd
+          httpGet:
+            path: /health
+            port: analyzer-api
           initialDelaySeconds: 10
           periodSeconds: 60
           failureThreshold: 5
@@ -72,27 +71,27 @@ spec:
           timeoutSeconds: 10
           failureThreshold: 10
         resources:
-{{ toYaml .Values.analyzer.resources | indent 10 }}
+{{ toYaml .Values.anchoreAnalyzer.resources | indent 10 }}
       volumes:
         - name: config-volume
           configMap:
             name: {{ template "anchore-engine.fullname" .}}
-        {{- if .Values.global.internalServicesSslEnabled }}
+        {{- if .Values.anchoreGlobal.internalServicesSslEnabled }}
         - name: certs
           secret:
-            secretName: {{ .Values.analyzer.ssl.certSecret }}
+            secretName: {{ .Values.anchoreAnalyzer.ssl.certSecret }}
         {{- end }}
         - name: analysis-scratch
-          {{ toYaml .Values.analyzer.analysisScratchVolume.details -}}
-    {{- if .Values.analyzer.nodeSelector }}
+          {{ toYaml .Values.anchoreAnalyzer.analysisScratchVolume.details -}}
+    {{- if .Values.anchoreAnalyzer.nodeSelector }}
       nodeSelector:
-{{ toYaml .Values.analyzer.nodeSelector | indent 8 }}
+{{ toYaml .Values.anchoreAnalyzer.nodeSelector | indent 8 }}
     {{- end }}
-    {{- with .Values.analyzer.affinity }}
+    {{- with .Values.anchoreAnalyzer.affinity }}
       affinity:
 {{ toYaml . | indent 8 }}
     {{- end }}
-    {{- with .Values.analyzer.tolerations }}
+    {{- with .Values.anchoreAnalyzer.tolerations }}
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
