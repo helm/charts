@@ -65,7 +65,11 @@ spec:
       volumes:
       - name: config
         configMap:
+{{- if not .Values.customConfigMap }}
           name: {{ template "verdaccio.fullname" . }}
+{{- else }}
+          name: "{{ .Values.customConfigMap }}"
+{{- end }}
 {{- if .Values.persistence.volumes }}
 {{ toYaml .Values.persistence.volumes | indent 6 }}
 {{- end }}

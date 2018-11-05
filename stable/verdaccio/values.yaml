@@ -44,6 +44,8 @@ ingress:
 #     hosts:
 #       - npm.blah.com
 
+customConfigMap: false
+
 configMap: |
   # This is the config file used for the docker images.
   # It allows all users to do anything, so don't use it on production systems.
