@@ -54,6 +54,10 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `image.pullPolicy`                   | PostgreSQL Image pull policy                       | `Always`                                                  |
 | `image.pullSecrets`                  | Specify Image pull secrets                         | `nil` (does not add image pull secrets to deployed pods)  |
 | `image.debug`                        | Specify if debug values should be set              | `false`                                                   |
+| `volumePermissions.image.registry`   | Init container volume-permissions image registry   | `docker.io`                                               |
+| `volumePermissions.image.repository` | Init container volume-permissions image name       | `bitnami/minideb`                                         |
+| `volumePermissions.image.tag`        | Init container volume-permissions image tag        | `latest`                                                  |
+| `volumePermissions.image.pullPolicy` | Init container volume-permissions image pull policy| `Always`                                            |
 | `replication.enabled`                | Would you like to enable replication               | `false`                                                   |
 | `replication.user`                   | Replication user                                   | `repl_user`                                               |
 | `replication.password`               | Replication user password                          | `repl_password`                                           |
