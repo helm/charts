@@ -28,6 +28,7 @@ awsRegion: us-east-1
 cloudProvider: aws
 
 sslCertPath: /etc/ssl/certs/ca-certificates.crt
+sslCertHostPath: /etc/ssl/certs/ca-certificates.crt
 
 # Configuration file for cloud provider
 cloudConfigPath: /etc/gce.conf
