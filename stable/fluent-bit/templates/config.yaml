@@ -30,7 +30,7 @@ data:
         Parser           docker
         Tag              {{ .Values.filter.kubeTag }}.*
         Refresh_Interval 5
-        Mem_Buf_Limit    5MB
+        Mem_Buf_Limit    {{ .Values.input.tail.memBufLimit }}
         Skip_Long_Lines  On
 {{- if .Values.trackOffsets }}
         DB               /tail-db/tail-containers-state.db
