@@ -19,7 +19,7 @@ $ helm install stable/kube-state-metrics
 | `image.pullPolicy`                    | Image pull policy                                       | IfNotPresent                                |
 | `service.port`                        | The port of the container                               | 8080                                        |
 | `prometheusScrape`                    | Whether or not enable prom scrape                       | True                                        |
-| `rbac.create`                         | If true, create & use RBAC resources                    | False                                       |
+| `rbac.create`                         | If true, create & use RBAC resources                    | True                                        |
 | `rbac.serviceAccountName`             | ServiceAccount to be used (ignored if rbac.create=true) | default                                     |
 | `securityContext.enabled`             | Enable security context                                 | `true`                                      |
 | `securityContext.fsGroup`             | Group ID for the container                              | `65534`                                     |
