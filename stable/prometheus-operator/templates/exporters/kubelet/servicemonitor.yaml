@@ -30,7 +30,8 @@ spec:
   - port: http-metrics
     interval: 30s
     honorLabels: true
-  - port: cadvisor
+  - port: http-metrics
+    path: /metrics/cadvisor
     interval: 30s
     honorLabels: true
   {{- end }}
