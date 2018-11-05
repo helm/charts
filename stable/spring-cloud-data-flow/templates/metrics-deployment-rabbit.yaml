@@ -13,6 +13,7 @@ spec:
     matchLabels:
       app: {{ template "scdf.name" . }}
       component: metrics
+      release: "{{ .Release.Name }}"
   replicas: 1
   template:
     metadata:
