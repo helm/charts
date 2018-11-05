@@ -60,6 +60,8 @@ The following table lists the configurable parameters of the Blackbox-Exporter c
 | `ingress.hosts`                        | Ingress accepted hostnames                      | None                          |
 | `ingress.tls`                          | Ingress TLS configuration                       | None                          |
 | `nodeSelector`                         | node labels for pod assignment                  | `{}`                          |
+| `tolerations`                          | node tolerations for pod assignment             | `[]`                          |
+| `affinity`                             | node affinity for pod assignment                | `{}`                          |
 | `podAnnotations`                       | annotations to add to each pod                  | `{}`                          |
 | `resources`                            | pod resource requests & limits                  | `{}`                          |
 | `restartPolicy`                        | container restart policy                        | `Always`                      |
