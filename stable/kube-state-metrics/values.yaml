@@ -16,6 +16,11 @@ rbac:
   # Ignored if rbac.create is true
   serviceAccountName: default
 
+securityContext:
+  enabled: true
+  runAsUser: 65534
+  fsGroup: 65534
+
 ## Node labels for pod assignment
 ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
 nodeSelector: {}
