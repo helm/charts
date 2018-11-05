@@ -21,6 +21,7 @@ s3:
 ## Google Cloud credentials
 google:
  bucketName: ""
+ credentials: ""
 
 ## Amazon Web Services credentials
 amazon:
