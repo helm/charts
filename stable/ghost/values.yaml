@@ -23,13 +23,16 @@ image:
   # pullSecrets:
   #   - myRegistrKeySecretName
 
-## Busybox image used to configure volume permissions
+##
+## Init containers parameters:
+## volumePermissions: Change the owner of the persist volume mountpoint to RunAsUser:fsGroup
 ##
 volumePermissions:
   image:
-    name: busybox
-    tag: 1.28.3
-#    pullPolicy:
+    registry: docker.io
+    repository: bitnami/minideb
+    tag: latest
+    pullPolicy: Always
 
 ## Ghost host and path to create application URLs
 ## ref: https://github.com/bitnami/bitnami-docker-ghost#configuration
