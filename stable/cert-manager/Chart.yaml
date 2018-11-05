@@ -1,0 +1,15 @@
+name: cert-manager
+version: v0.5.0
+appVersion: v0.5.0
+description: A Helm chart for cert-manager
+home: https://github.com/jetstack/cert-manager
+keywords:
+  - cert-manager
+  - kube-lego
+  - letsencrypt
+  - tls
+sources:
+  - https://github.com/jetstack/cert-manager
+maintainers:
+  - name: munnerz
+    email: james@jetstack.io

@@ -10,18 +10,20 @@ metadata:
 {{- end }}
   labels:
     app: {{ template "mailhog.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    chart: {{ template "mailhog.chart" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
   name: {{ $fullName }}
 spec:
-{{- if .Values.ingress.tls.enabled }}
+{{- if .Values.ingress.tls }}
   tls:
+  {{- range .Values.ingress.tls }}
     - hosts:
-      {{- range .Values.ingress.hosts }}
+      {{- range .hosts }}
         - {{ . }}
       {{- end }}
-      secretName: {{ template "mailhog.tlsSecret" . }}
+      secretName: {{ .secretName }}
+  {{- end }}
 {{- end }}
   rules:
   {{- range .Values.ingress.hosts }}

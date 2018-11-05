@@ -1,0 +1,26 @@
+{{- if .Values.sidecar.dashboards.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app: {{ template "grafana.name" . }}
+    chart: {{ template "grafana.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+{{- with .Values.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
+  name: {{ template "grafana.fullname" . }}-config-dashboards
+data:
+  provider.yaml: |-
+    apiVersion: 1
+    providers:
+    - name: 'default'
+      orgId: 1
+      folder: ''
+      type: file
+      disableDeletion: false
+      options:
+        path: {{ .Values.sidecar.dashboards.folder }}
+{{- end}}

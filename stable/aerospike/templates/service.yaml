@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "aerospike.fullname" . }}
+  labels:
+    app: {{ template "aerospike.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  annotations:
+    service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
+    {{- range $key, $value := .Values.service.annotations }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+spec:
+{{ if .Values.service.clusterIP }}
+  clusterIP: {{ .Values.service.clusterIP | quote  }}
+{{ end }}
+  type: {{ .Values.service.type }}
+  {{ if eq .Values.service.type "LoadBalancer" -}} {{ if .Values.service.loadBalancerIP -}}
+  loadBalancerIP: {{ .Values.service.loadBalancerIP }}
+  {{ end -}}
+  {{- end -}}
+  ports:
+    - port: 3000
+      protocol: TCP
+      name: aerospike-client
+    - port: 3002
+      protocol: TCP
+      name: aerospike-mesh
+  selector:
+    app: {{ template "aerospike.name" . }}
+    release: {{ .Release.Name }}

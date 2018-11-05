@@ -21,15 +21,19 @@ The following table lists the configurable parameters of the Spotify Docker GC c
 
 See the [spotify/docker-gc GitHub repository][] for more settings which may be added to this chart as needed.
 
-| Parameter                         | Description                              | Default                                 |
-| --------------------------------- | ---------------------------------------- | --------------------------------------- |
-| `cron.schedule`                   | cron schedule                            | `0 0 * * *` (daily at 12:00AM UTC)      |
-| `cron.log`                        | cron log name                            | `/var/logs/cron.log`                    |
-| `env.gracePeriodSeconds`          | grace period in seconds before gc occurs | `0`                                     |
-| `env.dockerAPIVersion`            | Docker API Version for docker-gc client  | Not set                                 |
-| `exclude.images`                  | images to be excluded                    | Not set                                 |
-| `exclude.containers`              | containers to be excluded                | Not set                                 |
-
+| Parameter                         | Description                                  | Default                            |
+| --------------------------------- | -------------------------------------------- | ---------------------------------- |
+| `cron.schedule`                   | cron schedule                                | `0 0 * * *` (daily at 12:00AM UTC) |
+| `cron.log`                        | cron log name                                | `/var/logs/cron.log`               |
+| `env.gracePeriodSeconds`          | grace period in seconds before gc occurs     | `0`                                |
+| `env.dockerAPIVersion`            | Docker API Version for docker-gc client      | Not set                            |
+| `exclude.images`                  | images to be excluded                        | Not set                            |
+| `exclude.containers`              | containers to be excluded                    | Not set                            |
+| `serviceAccount`                  | service account to attach to daemonset       | Not set                            |
+| `imagePullSecrets`                | Specify image pull secrets                   | Not set                            |
+| `tolerations`                     | Daemonset tolerations                        | Not set                            |
+| `nodeSelector`                    | Node labels for daemonset pod assignment     | Not set                            |
+| `resources`                       | Resources for the container in the daemonset | Not set                            | 
 
 ## Design/Evolution
 

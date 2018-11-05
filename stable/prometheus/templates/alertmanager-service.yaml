@@ -41,6 +41,12 @@ spec:
     {{- if .Values.alertmanager.service.nodePort }}
       nodePort: {{ .Values.alertmanager.service.nodePort }}
     {{- end }}
+{{- if .Values.alertmanager.service.enableMeshPeer }}
+    - name: meshpeer
+      port: 6783
+      protocol: TCP
+      targetPort: 6783
+{{- end }}
   selector:
     app: {{ template "prometheus.name" . }}
     component: "{{ .Values.alertmanager.name }}"

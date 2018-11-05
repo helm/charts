@@ -1,0 +1,126 @@
+{{- if .Values.replicaSet.enabled }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: {{ template "mongodb.name" . }}
+    chart: {{ template "mongodb.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "mongodb.fullname" . }}-arbiter
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "mongodb.name" . }}
+      release: {{ .Release.Name }}
+      chart: {{ template "mongodb.chart" . }}
+      component: arbiter
+  serviceName: {{ template "mongodb.fullname" . }}-headless
+  replicas: {{ .Values.replicaSet.replicas.arbiter }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "mongodb.name" . }}
+        chart: {{ template "mongodb.chart" . }}
+        release: {{ .Release.Name }}
+        component: arbiter
+      {{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels | indent 8 }}
+      {{- end }}
+      {{- if .Values.podAnnotations }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8 }}
+      {{- end }}
+    spec:
+      {{- if .Values.securityContext.enabled }}
+      securityContext:
+        fsGroup: {{ .Values.securityContext.fsGroup }}
+        runAsUser: {{ .Values.securityContext.runAsUser }}
+      {{- end }}
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end}}
+      {{- end }}
+      containers:
+        - name: {{ template "mongodb.name" . }}-arbiter
+          image: {{ template "mongodb.image" . }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+          - containerPort: {{ .Values.service.port }}
+            name: mongodb
+          env:
+          - name: MONGODB_POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: MONGODB_REPLICA_SET_MODE
+            value: "arbiter"
+          - name: MONGODB_PRIMARY_HOST
+            value: {{ template "mongodb.fullname" . }}
+          - name: MONGODB_REPLICA_SET_NAME
+            value: {{ .Values.replicaSet.name | quote }}
+            {{- if .Values.replicaSet.useHostnames }}
+          - name: MONGODB_ADVERTISED_HOSTNAME
+            value: "$(MONGODB_POD_NAME).{{ template "mongodb.fullname" . }}-headless.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}"
+            {{- end }}
+            {{- if .Values.usePassword }}
+          - name: MONGODB_PRIMARY_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ if .Values.existingSecret }}{{ .Values.existingSecret }}{{- else }}{{ template "mongodb.fullname" . }}{{- end }}
+                key: mongodb-root-password
+          - name: MONGODB_REPLICA_SET_KEY
+            valueFrom:
+              secretKeyRef:
+                name: {{ if .Values.existingSecret }}{{ .Values.existingSecret }}{{- else }}{{ template "mongodb.fullname" . }}{{- end }}
+                key: mongodb-replica-set-key
+            {{- end }}
+          - name: MONGODB_ENABLE_IPV6
+          {{- if .Values.mongodbEnableIPv6 }}
+            value: "yes"
+          {{- else }}
+            value: "no"
+          {{- end }}
+          - name: MONGODB_EXTRA_FLAGS
+            value: {{ default "" .Values.mongodbExtraFlags | join " " }}
+          {{- if .Values.livenessProbe.enabled }}
+          livenessProbe:
+            tcpSocket:
+              port: mongodb
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.livenessProbe.successThreshold }}
+            failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+          {{- end }}
+          {{- if .Values.readinessProbe.enabled }}
+          readinessProbe:
+            tcpSocket:
+              port: mongodb
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.readinessProbe.successThreshold }}
+            failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+          {{- end }}
+          volumeMounts:
+          {{- if .Values.configmap }}
+            - name: config
+              mountPath: /opt/bitnami/mongodb/conf/mongodb.conf
+              subPath: mongodb.conf
+          {{- end }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+      volumes:
+      {{- if .Values.configmap }}
+        - name: config
+          configMap:
+            name: {{ template "mongodb.fullname" . }}
+      {{- end }}
+{{- end }}

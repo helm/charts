@@ -1,0 +1,18 @@
+{{- if .Values.customResources.createBackupCRD }}
+---
+apiVersion: "etcd.database.coreos.com/v1beta2"
+kind: "EtcdBackup"
+metadata:
+  name: {{ template "etcd-backup-operator.fullname" . }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: {{ template "etcd-backup-operator.name" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  annotations:
+    "helm.sh/hook": "post-install"
+    "helm.sh/hook-delete-policy": "before-hook-creation"
+spec:
+  clusterName: {{ .Values.etcdCluster.name }}
+{{ toYaml .Values.backupOperator.spec | indent 2 }}
+{{- end}}

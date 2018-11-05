@@ -1,5 +1,6 @@
 name: spark
-version: 0.1.4
+version: 0.2.1
+appVersion: 1.5.1
 description: Fast and general-purpose cluster computing system.
 home: http://spark.apache.org
 icon: http://spark.apache.org/images/spark-logo-trademark.png
@@ -7,5 +8,5 @@ sources:
   - https://github.com/kubernetes/kubernetes/tree/master/examples/spark
   - https://github.com/apache/spark
 maintainers:
-  - name: Lachlan Evenson
+  - name: lachie83
     email: lachlan.evenson@gmail.com

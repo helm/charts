@@ -24,3 +24,29 @@ env:
 #   containers: |-
 #     mariadb-data
 #     inimitable_quokka
+
+# Optionally specify an array of imagePullSecrets.
+# Secrets must be manually created in the namespace.
+# ref: https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
+#
+# imagePullSecrets:
+#   - name: myRegistryKeySecretName
+
+## Resource requirements for spotify-docker-gc container
+## Ref: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/
+##
+resources: {}
+
+## Node tolerations for spotify-docker-gc scheduling to nodes with taints
+## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+##
+tolerations: []
+# - key: "key"
+#  operator: "Equal|Exists"
+#  value: "value"
+#  effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
+
+## Node labels for spotify-docker-gc pod assignment
+## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+##
+nodeSelector: {}

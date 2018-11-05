@@ -26,7 +26,17 @@ spec:
         component: "{{ .Values.alertmanager.name }}"
         release: {{ .Release.Name }}
     spec:
-      serviceAccountName: {{ if .Values.rbac.create }}{{ template "prometheus.alertmanager.fullname" . }}{{ else }}"{{ .Values.alertmanager.serviceAccountName }}"{{ end }}
+{{- if .Values.alertmanager.affinity }}
+      affinity:
+{{ toYaml .Values.alertmanager.affinity | indent 8 }}
+{{- end }}
+{{- if .Values.alertmanager.schedulerName }}
+      schedulerName: "{{ .Values.alertmanager.schedulerName }}"
+{{- end }}
+      serviceAccountName: {{ template "prometheus.serviceAccountName.alertmanager" . }}
+{{- if .Values.alertmanager.priorityClassName }}
+      priorityClassName: "{{ .Values.alertmanager.priorityClassName }}"
+{{- end }}
       containers:
         - name: {{ template "prometheus.name" . }}-{{ .Values.alertmanager.name }}
           image: "{{ .Values.alertmanager.image.repository }}:{{ .Values.alertmanager.image.tag }}"
@@ -36,17 +46,27 @@ spec:
             - name: {{ $key }}
               value: {{ $value }}
             {{- end }}
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: status.podIP
           args:
             - --config.file=/etc/config/alertmanager.yml
             - --storage.path={{ .Values.alertmanager.persistentVolume.mountPath }}
+            - --cluster.advertise-address=$(POD_IP):6783
           {{- range $key, $value := .Values.alertmanager.extraArgs }}
             - --{{ $key }}={{ $value }}
           {{- end }}
+          {{- if .Values.alertmanager.baseURL }}
+            - --web.external-url={{ .Values.alertmanager.baseURL }}
+          {{- end }}
+
           ports:
             - containerPort: 9093
           readinessProbe:
             httpGet:
-              path: {{ .Values.alertmanager.baseURL }}/#/status
+              path: {{ .Values.alertmanager.prefixURL }}/#/status
               port: 9093
             initialDelaySeconds: 30
             timeoutSeconds: 30
@@ -64,7 +84,7 @@ spec:
           imagePullPolicy: "{{ .Values.configmapReload.image.pullPolicy }}"
           args:
             - --volume-dir=/etc/config
-            - --webhook-url=http://localhost:9093{{ .Values.alertmanager.baseURL }}/-/reload
+            - --webhook-url=http://localhost:9093{{ .Values.alertmanager.prefixURL }}/-/reload
           resources:
 {{ toYaml .Values.configmapReload.resources | indent 12 }}
           volumeMounts:
@@ -74,6 +94,18 @@ spec:
     {{- if .Values.alertmanager.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.alertmanager.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- if .Values.alertmanager.securityContext }}
+      securityContext:
+{{ toYaml .Values.alertmanager.securityContext | indent 8 }}
+    {{- end }}
+    {{- if .Values.alertmanager.tolerations }}
+      tolerations:
+{{ toYaml .Values.alertmanager.tolerations | indent 8 }}
+    {{- end }}
+    {{- if .Values.alertmanager.affinity }}
+      affinity:
+{{ toYaml .Values.alertmanager.affinity | indent 8 }}
     {{- end }}
       volumes:
         - name: config-volume

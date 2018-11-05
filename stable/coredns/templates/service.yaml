@@ -10,38 +10,20 @@ metadata:
     k8s-app: {{ .Chart.Name | quote }}
     kubernetes.io/cluster-service: "true"
     kubernetes.io/name: "CoreDNS"
-    {{- else }}
-    app: {{ template "coredns.fullname" . }}
     {{- end }}
+    app: {{ template "coredns.name" . }}
   annotations:
-    {{- if .Values.middleware.prometheus.enabled }}
-    prometheus.io/scrape: "true"
-    prometheus.io/port: {{ .Values.middleware.prometheus.port | quote }}
-    {{- end }}
+{{ toYaml .Values.service.annotations | indent 4 }}
 spec:
   selector:
-  {{- if .Values.isClusterService }}
+    release: {{ .Release.Name | quote }}
+    {{- if .Values.isClusterService }}
     k8s-app: {{ .Chart.Name | quote }}
-  {{- else }}
-    app: {{ template "coredns.fullname" . }}
-  {{- end }}
-  {{- if .Values.isClusterService }}
-  clusterIP: {{ .Values.middleware.kubernetes.clusterIP }}
+    {{- end }}
+    app: {{ template "coredns.name" . }}
+  {{- if .Values.service.clusterIP }}
+  clusterIP: {{ .Values.service.clusterIP }}
   {{- end }}
   ports:
-  {{- if or (eq .Values.serviceProtocol "UDPNTCP") (eq .Values.serviceProtocol "UDP") }}
-  - name: dns
-    port: 53
-    protocol: UDP
-  {{- end }}
-  {{- if or (eq .Values.serviceProtocol "UDPNTCP") (eq .Values.serviceProtocol "TCP") }}
-  - name: dns-tcp
-    port: 53
-    protocol: TCP
-  {{- end }}
-  {{- if .Values.middleware.prometheus.enabled }}
-  - name: metrics
-    port: {{ .Values.middleware.prometheus.port }}
-    protocol: TCP
-  {{- end }}
+{{ include "coredns.servicePorts" . | indent 2 -}}
   type: {{ default "ClusterIP" .Values.serviceType }}

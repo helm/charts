@@ -1,0 +1,20 @@
+{{- if or .Values.init.clone.release .Values.wordpress.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{template "lamp.fullname" .}}-init
+  labels:
+    app: {{ template "lamp.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+data:
+  {{- if .Values.init.clone.release }}
+{{ (.Files.Glob "files/init/init_clone.sh").AsConfig | indent 2 }}
+{{ (.Files.Glob "files/init/init_db_clone.sh").AsConfig | indent 2 }}
+  {{- end }}
+  {{- if .Values.wordpress.enabled }}
+{{ (.Files.Glob "files/init/init_wp.sh").AsConfig | indent 2 }}
+{{ (.Files.Glob "files/init/init_wp_db.sh").AsConfig | indent 2 }}
+  {{- end }}
+{{- end }}

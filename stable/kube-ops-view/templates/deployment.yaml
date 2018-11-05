@@ -10,6 +10,9 @@ spec:
     metadata:
       labels:
         app: {{ template "kube-ops-view.fullname" . }}
+{{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels | indent 8 }}
+{{- end }}
     spec:
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "kube-ops-view.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
       containers:

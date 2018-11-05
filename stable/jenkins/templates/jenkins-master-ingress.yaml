@@ -1,5 +1,5 @@
 {{- if .Values.Master.HostName }}
-apiVersion: {{ .Values.NetworkPolicy.ApiVersion }}
+apiVersion: {{ .Values.Master.Ingress.ApiVersion }}
 kind: Ingress
 metadata:
 {{- if .Values.Master.Ingress.Annotations }}
@@ -15,6 +15,9 @@ spec:
       - backend:
           serviceName: {{ template "jenkins.fullname" . }}
           servicePort: {{ .Values.Master.ServicePort }}
+{{- if .Values.Master.Ingress.Path }}
+        path: {{ .Values.Master.Ingress.Path }}
+{{- end -}}
 {{- if .Values.Master.Ingress.TLS }}
   tls:
 {{ toYaml .Values.Master.Ingress.TLS | indent 4 }}

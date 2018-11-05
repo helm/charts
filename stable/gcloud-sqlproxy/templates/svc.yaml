@@ -9,9 +9,11 @@ metadata:
     heritage: "{{ .Release.Service }}"
 spec:
   ports:
-  - name: sqlproxy
+  {{- range .Values.cloudsql.instances }}
+  - name: {{ .instance }}
     protocol: TCP
-    port: {{ .Values.cloudsql.port }}
-    targetPort: sqlproxy
+    port: {{ .port }}
+    targetPort: {{ .instanceShortName | default (.instance | trunc 15) }}
+  {{- end }}
   selector:
     app: {{ template "gcloud-sqlproxy.fullname" . }}

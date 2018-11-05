@@ -10,44 +10,62 @@ metadata:
 data:
   elasticsearch.yml: |-
     cluster.name: {{ .Values.cluster.name }}
-    
+
     node.data: ${NODE_DATA:true}
     node.master: ${NODE_MASTER:true}
 {{- if hasPrefix "5." .Values.appVersion }}
+    node.ingest: ${NODE_INGEST:true}
+{{- else if hasPrefix "6." .Values.appVersion }}
     node.ingest: ${NODE_INGEST:true}
 {{- end }}
     node.name: ${HOSTNAME}
 
     network.host: 0.0.0.0
 
-    cloud:
-      kubernetes:
-        service: ${SERVICE}
-        namespace: ${KUBERNETES_NAMESPACE}
-
 {{- if hasPrefix "2." .Values.appVersion }}
     # see https://github.com/kubernetes/kubernetes/issues/3595
     bootstrap.mlockall: ${BOOTSTRAP_MLOCKALL:false}
 
     discovery:
-      type: kubernetes
       zen:
+        ping.unicast.hosts: ${DISCOVERY_SERVICE:}
         minimum_master_nodes: ${MINIMUM_MASTER_NODES:2}
-{{- end }}
-{{- if hasPrefix "5." .Values.appVersion }}
+{{- else if hasPrefix "5." .Values.appVersion }}
     # see https://github.com/kubernetes/kubernetes/issues/3595
     bootstrap.memory_lock: ${BOOTSTRAP_MEMORY_LOCK:false}
 
     discovery:
       zen:
-        hosts_provider: kubernetes
+        ping.unicast.hosts: ${DISCOVERY_SERVICE:}
         minimum_master_nodes: ${MINIMUM_MASTER_NODES:2}
 
+{{- if .Values.cluster.xpackEnable }}
     # see https://www.elastic.co/guide/en/x-pack/current/xpack-settings.html
     xpack.ml.enabled: ${XPACK_ML_ENABLED:false}
     xpack.monitoring.enabled: ${XPACK_MONITORING_ENABLED:false}
     xpack.security.enabled: ${XPACK_SECURITY_ENABLED:false}
     xpack.watcher.enabled: ${XPACK_WATCHER_ENABLED:false}
+{{- end }}
+{{- else if hasPrefix "6." .Values.appVersion }}
+    # see https://github.com/kubernetes/kubernetes/issues/3595
+    bootstrap.memory_lock: ${BOOTSTRAP_MEMORY_LOCK:false}
+
+    discovery:
+      zen:
+        ping.unicast.hosts: ${DISCOVERY_SERVICE:}
+        minimum_master_nodes: ${MINIMUM_MASTER_NODES:2}
+
+{{- if (.Values.cluster.xpackEnable) and .Values.appVersion gt 6.3  }}
+    # see https://www.elastic.co/guide/en/x-pack/current/xpack-settings.html
+    # After 6.3 xpack systems changed and are enabled by default and different configs manage them this enables monitoring
+    xpack.monitoring.collection.enabled: ${XPACK_MONITORING_ENABLED:false}
+{{- else if .Values.cluster.xpackEnable }}
+    # see https://www.elastic.co/guide/en/x-pack/current/xpack-settings.html
+    xpack.ml.enabled: ${XPACK_ML_ENABLED:false}
+    xpack.monitoring.enabled: ${XPACK_MONITORING_ENABLED:false}
+    xpack.security.enabled: ${XPACK_SECURITY_ENABLED:false}
+    xpack.watcher.enabled: ${XPACK_WATCHER_ENABLED:false}
+{{- end }}
 {{- end }}
 
     # see https://github.com/elastic/elasticsearch-definitive-guide/pull/679
@@ -59,9 +77,10 @@ data:
     gateway.recover_after_time: ${RECOVER_AFTER_TIME:5m}
     gateway.recover_after_master_nodes: ${RECOVER_AFTER_MASTER_NODES:2}
     gateway.recover_after_data_nodes: ${RECOVER_AFTER_DATA_NODES:1}
-{{- if .Values.cluster.config }}
-{{ toYaml .Values.cluster.config | indent 4 }}
+{{- with .Values.cluster.config }}
+{{ toYaml . | indent 4 }}
 {{- end }}
+{{- if hasPrefix "2." .Values.image.tag }}
   logging.yml: |-
     # you can override this using by setting a system property, for example -Des.logger.level=DEBUG
     es.logger.level: INFO
@@ -71,69 +90,68 @@ data:
       action: DEBUG
       # reduce the logging for aws, too much is logged under the default INFO
       com.amazonaws: WARN
-
     appender:
       console:
         type: console
         layout:
           type: consolePattern
           conversionPattern: "[%d{ISO8601}][%-5p][%-25c] %m%n"
+{{- else if hasPrefix "5." .Values.image.tag }}
+  log4j2.properties: |-
+    status = error
+    appender.console.type = Console
+    appender.console.name = console
+    appender.console.layout.type = PatternLayout
+    appender.console.layout.pattern = [%d{ISO8601}][%-5p][%-25c{1.}] %marker%m%n
+    rootLogger.level = info
+    rootLogger.appenderRef.console.ref = console
+    logger.searchguard.name = com.floragunn
+    logger.searchguard.level = info
+{{- else if hasPrefix "6." .Values.image.tag }}
+  log4j2.properties: |-
+    status = error
+    appender.console.type = Console
+    appender.console.name = console
+    appender.console.layout.type = PatternLayout
+    appender.console.layout.pattern = [%d{ISO8601}][%-5p][%-25c{1.}] %marker%m%n
+    rootLogger.level = info
+    rootLogger.appenderRef.console.ref = console
+    logger.searchguard.name = com.floragunn
+    logger.searchguard.level = info
+{{- end }}
   pre-stop-hook.sh: |-
     #!/bin/bash
-    set -e
-
-    SERVICE_ACCOUNT_PATH=/var/run/secrets/kubernetes.io/serviceaccount
-    KUBE_TOKEN=$(<${SERVICE_ACCOUNT_PATH}/token)
-    KUBE_NAMESPACE=$(<${SERVICE_ACCOUNT_PATH}/namespace)
-
-    STATEFULSET_NAME=$(echo "${HOSTNAME}" | sed 's/-[0-9]*$//g')
-    INSTANCE_ID=$(echo "${HOSTNAME}" | grep -o '[0-9]*$')
-
-    echo "Prepare stopping of Pet ${KUBE_NAMESPACE}/${HOSTNAME} of StatefulSet ${KUBE_NAMESPACE}/${STATEFULSET_NAME} instance_id ${INSTANCE_ID}"
-
-    INSTANCES_DESIRED=$(curl -s \
-      --cacert ${SERVICE_ACCOUNT_PATH}/ca.crt \
-      -H "Authorization: Bearer $KUBE_TOKEN" \
-      "https://${KUBERNETES_SERVICE_HOST}:${KUBERNETES_PORT_443_TCP_PORT}/apis/apps/v1beta1/namespaces/${KUBE_NAMESPACE}/statefulsets/${STATEFULSET_NAME}/status" | jq -r '.spec.replicas')
-
-    echo "Desired instance count is ${INSTANCES_DESIRED}"
-
-    if [ "${INSTANCE_ID}" -lt "${INSTANCES_DESIRED}" ]; then
-      echo "No data migration needed"
-      exit 0
-    fi
-
-    echo "Prepare to migrate data of the node"
-
-    NODE_STATS=$(curl -s -XGET 'http://localhost:9200/_nodes/stats')
-    NODE_IP=$(echo "${NODE_STATS}" | jq -r ".nodes[] | select(.name==\"${HOSTNAME}\") | .host")
-
-    echo "Move all data from node ${NODE_IP}"
-
-    curl -s -XPUT localhost:9200/_cluster/settings -d "{
+    exec &> >(tee -a "/var/log/elasticsearch-hooks.log")
+    NODE_NAME=${HOSTNAME}
+    echo "Prepare to migrate data of the node ${NODE_NAME}"
+    echo "Move all data from node ${NODE_NAME}"
+    curl -s -XPUT -H 'Content-Type: application/json' '{{ template "elasticsearch.client.fullname" . }}:9200/_cluster/settings' -d "{
       \"transient\" :{
-          \"cluster.routing.allocation.exclude._ip\" : \"${NODE_IP}\"
+          \"cluster.routing.allocation.exclude._name\" : \"${NODE_NAME}\"
       }
     }"
-    echo
+    echo ""
 
-    echo "Wait for node to become empty"
-    DOC_COUNT=$(echo "${NODE_STATS}" | jq ".nodes[] | select(.name==\"${HOSTNAME}\") | .indices.docs.count")
-    while [ "${DOC_COUNT}" -gt 0 ]; do
-      NODE_STATS=$(curl -s -XGET 'http://localhost:9200/_nodes/stats')
-      DOC_COUNT=$(echo "${NODE_STATS}" | jq -r ".nodes[] | select(.name==\"${HOSTNAME}\") | .indices.docs.count")
-      echo "Node contains ${DOC_COUNT} documents"
+    while true ; do
+      echo -e "Wait for node ${NODE_NAME} to become empty"
+      SHARDS_ALLOCATION=$(curl -s -XGET 'http://{{ template "elasticsearch.client.fullname" . }}:9200/_cat/shards')
+      if ! echo "${SHARDS_ALLOCATION}" | grep -E "${NODE_NAME}"; then
+        break
+      fi
       sleep 1
     done
-
-    echo "Wait for node shards to become empty"
-    SHARD_STATS=$(curl -s -XGET 'http://localhost:9200/_cat/shards?format=json')
-    SHARD_COUNT=$(echo "${SHARD_STATS}" | jq "[.[] | select(.node==\"${HOSTNAME}\")] | length")
-    while [ "${SHARD_COUNT}" -gt 0 ]; do
-      SHARD_STATS=$(curl -s -XGET 'http://localhost:9200/_cat/shards?format=json')
-      SHARD_COUNT=$(echo "${SHARD_STATS}" | jq "[.[] | select(.node==\"${HOSTNAME}\")] | length")
-      echo "Node contains ${SHARD_COUNT} shards"
-      sleep 1
-    done
-
-    echo "Node clear to shutdown"
+    echo "Node ${NODE_NAME} is ready to shutdown"
+  post-start-hook.sh: |-
+    #!/bin/bash
+    exec &> >(tee -a "/var/log/elasticsearch-hooks.log")
+    NODE_NAME=${HOSTNAME}
+    CLUSTER_SETTINGS=$(curl -s -XGET "http://{{ template "elasticsearch.client.fullname" . }}:9200/_cluster/settings")
+    if echo "${CLUSTER_SETTINGS}" | grep -E "${NODE_NAME}"; then
+      echo "Activate node ${NODE_NAME}"
+      curl -s -XPUT -H 'Content-Type: application/json' "http://{{ template "elasticsearch.client.fullname" . }}:9200/_cluster/settings" -d "{
+        \"transient\" :{
+            \"cluster.routing.allocation.exclude._name\" : null
+        }
+      }"
+    fi
+    echo "Node ${NODE_NAME} is ready to be used"

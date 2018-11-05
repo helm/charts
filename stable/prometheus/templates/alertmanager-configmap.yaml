@@ -10,5 +10,9 @@ metadata:
     release: {{ .Release.Name }}
   name: {{ template "prometheus.alertmanager.fullname" . }}
 data:
-{{ toYaml .Values.alertmanagerFiles | indent 2 }}
-{{- end }}
+{{- $root := . -}}
+{{- range $key, $value := .Values.alertmanagerFiles }}
+  {{ $key }}: |
+{{ toYaml $value | default "{}" | indent 4 }}
+{{- end -}}
+{{- end -}}

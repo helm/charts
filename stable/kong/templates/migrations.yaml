@@ -1,0 +1,71 @@
+{{- if .Values.runMigrations }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ template "kong.fullname" . }}-migrations
+  labels:
+    app: {{ template "kong.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+    component: migrations
+spec:
+  template:
+    metadata:
+      name: {{ template "kong.name" . }}-migrations
+      labels:
+        app: {{ template "kong.name" . }}
+        release: "{{ .Release.Name }}"
+        component: migrations
+    spec:
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end }}
+      {{- end }}
+      {{- if .Values.postgresql.enabled }}
+      initContainers:
+      - name: wait-for-postgres
+        image: busybox
+        env:
+        - name: KONG_PG_HOST
+          value: {{ template "kong.postgresql.fullname" . }}
+        - name: KONG_PG_PORT
+          value: "{{ .Values.postgresql.service.port }}"
+        - name: KONG_PG_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "kong.postgresql.fullname" . }}
+              key: postgres-password
+        command: [ "/bin/sh", "-c", "until nc -zv $KONG_PG_HOST $KONG_PG_PORT -w1; do echo 'waiting for db'; sleep 1; done" ]
+      {{- end }}
+      containers:
+      - name: {{ template "kong.name" . }}-migrations
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+        - name: KONG_NGINX_DAEMON
+          value: "off"
+        {{- range $key, $val := .Values.env }}
+        - name: KONG_{{ $key | upper}}
+          value: {{ $val | quote }}
+        {{- end}}
+        {{- if .Values.postgresql.enabled }}
+        - name: KONG_PG_HOST
+          value: {{ template "kong.postgresql.fullname" . }}
+        - name: KONG_PG_PORT
+          value: "{{ .Values.postgresql.service.port }}"
+        - name: KONG_PG_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "kong.postgresql.fullname" . }}
+              key: postgres-password
+        {{- end }}
+        {{- if .Values.cassandra.enabled }}
+        - name: KONG_CASSANDRA_CONTACT_POINTS
+          value: {{ template "kong.cassandra.fullname" . }}
+        {{- end }}
+        command: [ "/bin/sh", "-c", "kong migrations up" ]
+      restartPolicy: OnFailure
+{{- end }}

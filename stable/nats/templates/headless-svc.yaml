@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "nats.fullname" . }}-headless
+  labels:
+    app: {{ template "nats.name" . }}
+    chart: {{ template "nats.chart" . }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+  - name: client
+    port: 4222
+    targetPort: client
+  - name: cluster
+    port: 6222
+    targetPort: cluster
+  selector:
+    app: {{ template "nats.name" . }}
+    release: {{ .Release.Name | quote }}

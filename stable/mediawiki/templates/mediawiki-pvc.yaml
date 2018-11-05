@@ -4,20 +4,21 @@ apiVersion: v1
 metadata:
   name: {{ template "mediawiki.fullname" . }}-mediawiki
   labels:
-    app: {{ template "mediawiki.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
-  annotations:
-  {{- if .Values.persistence.mediawiki.storageClass }}
-    volume.beta.kubernetes.io/storage-class: {{ .Values.persistence.mediawiki.storageClass | quote }}
-  {{- else }}
-    volume.alpha.kubernetes.io/storage-class: default
-  {{- end }}
+    app: {{ template "mediawiki.name" . }}
+    chart: {{ template "mediawiki.chart" . }}
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
 spec:
   accessModes:
-    - {{ .Values.persistence.mediawiki.accessMode | quote }}
+    - {{ .Values.persistence.accessMode | quote }}
   resources:
     requests:
-      storage: {{ .Values.persistence.mediawiki.size | quote }}
+      storage: {{ .Values.persistence.size | quote }}
+{{- if .Values.persistence.storageClass }}
+{{- if (eq "-" .Values.persistence.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: {{ .Values.persistence.storageClass | quote }}
+{{- end }}
+{{- end }}
 {{- end -}}

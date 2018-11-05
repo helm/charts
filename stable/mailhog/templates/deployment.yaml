@@ -1,9 +1,9 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
   labels:
     app: {{ template "mailhog.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    chart: {{ template "mailhog.chart" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
   name: {{ template "mailhog.fullname" . }}
@@ -18,6 +18,8 @@ spec:
         app: {{ template "mailhog.name" . }}
         release: {{ .Release.Name }}
     spec:
+      securityContext:
+        runAsUser: 1000
       containers:
         - name: {{ template "mailhog.name" . }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"

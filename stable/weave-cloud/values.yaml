@@ -1,1 +1,22 @@
-# ServiceToken: ""
+# Default values for weave-cloud.
+
+token: ""
+
+agent:
+  name: weave-agent
+
+image:
+  repository: quay.io/weaveworks/launcher-agent
+  tag: 1.1.0
+  pullPolicy: IfNotPresent
+
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:

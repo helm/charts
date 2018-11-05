@@ -1,0 +1,13 @@
+description: Apache Superset (incubating) is a modern, enterprise-ready business intelligence web application
+name: superset
+version: 0.1.2
+appVersion: "0.24.0"
+keywords:
+- bi
+home: https://github.com/apache/incubator-superset
+icon: https://superset.incubator.apache.org/_images/s.png
+sources:
+- https://github.com/apache/incubator-superset
+maintainers:
+- name: alitari
+  email: alitari67@gmail.com

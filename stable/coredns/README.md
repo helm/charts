@@ -1,7 +1,7 @@
 CoreDNS
 =======
 
-CoreDNS is a DNS server that chains middleware and provides DNS Services
+CoreDNS is a DNS server that chains plugins and provides DNS Services
 
 TL;DR;
 ------
@@ -17,19 +17,7 @@ This chart bootstraps a [CoreDNS](https://github.com/coredns/coredns) deployment
 
  - CoreDNS as a cluster dns service and a drop-in replacement for Kube/SkyDNS. This is the default mode and CoreDNS is deployed as cluster-service in kube-system namespace. This mode is chosen by setting `isClusterService` to true.
  - CoreDNS as an external dns service. In this mode CoreDNS is deployed as any kubernetes app in user specified namespace. The CoreDNS service can be exposed outside the cluster by using using either the NodePort or LoadBalancer type of service. This mode is chosen by setting `isClusterService` to false.
- - CoreDNS as an external dns provider for kubernetes federation. This is a sub case of 'external dns service' which uses etcd middleware for CoreDNS backend. This deployment mode as a dependency on `etcd-operator` chart, which needs to be pre-installed. To use this deployment mode use below configuration file to override default values.
-```
-isClusterService: false
-   serviceType: "NodePort"
-   middleware:
-     kubernetes:
-       enabled: false
-     etcd:
-       enabled: true
-       zones:
-       - "<example.io>"
-       endpoint: "http://<etcd-cluster>:2379"
-```
+ - CoreDNS as an external dns provider for kubernetes federation. This is a sub case of 'external dns service' which uses etcd plugin for CoreDNS backend. This deployment mode as a dependency on `etcd-operator` chart, which needs to be pre-installed.
 
 Prerequisites
 -------------
@@ -67,11 +55,11 @@ See `values.yaml` for configuration notes. Specify each parameter using the `--s
 
 ```console
 $ helm install --name coredns \
-  --set middleware.prometheus.enabled=false \
+  --set rbac.create=false \
     stable/coredns
 ```
 
-The above command disables the Prometheus middleware.
+The above command disables automatic creation of RBAC rules.
 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
@@ -85,9 +73,11 @@ $ helm install --name coredns -f values.yaml stable/coredns
 Caveats
 -------
 
-CoreDNS service, by default is deployed to listen on both "TCP" and "UDP".
+The chart will automatically determine which protocols to listen on based on
+the protocols you define in your zones. This means that you could potentially
+use both "TCP" and "UDP" on a single port.
 Some cloud environments like "GCE" or "Azure container service" cannot
 create external loadbalancers with both "TCP" and "UDP" protocols. So
 When deploying CoreDNS with `serviceType="LoadBalancer"` on such cloud
-environments, it is preferred to use either "TCP" or "UDP" by setting
-`serviceProtocol` parameter.
+environments, make sure you do not attempt to use both protocols at the same
+time.

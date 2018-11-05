@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app: {{ template "kubewatch.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+  name: {{ template "kubewatch.fullname" . }}-config
+data:
+  .kubewatch.yaml: |
+    handler:
+      slack:
+{{ toYaml .Values.slack | indent 8 }}
+    resource:
+{{ toYaml .Values.resourcesToWatch | indent 6 }}

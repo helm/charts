@@ -24,6 +24,9 @@ data:
     DOMAIN = {{ .Values.service.gogs.serverDomain }}
     ROOT_URL = {{ .Values.service.gogs.serverRootUrl }}
     LANDING_PAGE = {{ .Values.service.gogs.serverLandingPage }}
+    SSH_DOMAIN = {{ default .Values.service.gogs.serverDomain .Values.service.sshDomain }}
+    SSH_PORT = {{ .Values.service.sshPort }}
+    SSH_LISTEN_PORT = {{ .Values.service.sshPort }}
 
     [service]
     ENABLE_CAPTCHA = {{ .Values.service.gogs.serviceEnableCaptcha }}
@@ -66,6 +69,27 @@ data:
     [log]
     MODE = {{ .Values.service.gogs.logMode }}
     LEVEL = {{ .Values.service.gogs.logLevel }}
+
+    [cron]
+    ENABLED = {{ .Values.service.gogs.cronEnabled }}
+    RUN_AT_START = {{ .Values.service.gogs.cronRunAtStart }}
+
+    [cron.update_mirrors]
+    SCHEDULE = {{ .Values.service.gogs.cronUpdateMirrorsSchedule }}
+
+    [cron.repo_health_check]
+    SCHEDULE = {{ .Values.service.gogs.cronRepoHealthCheckSchedule }}
+    TIMEOUT = {{ .Values.service.gogs.cronRepoHealthCheckTimeout }}
+    ARGS = {{ .Values.service.gogs.cronRepoHealthCheckArgs }}
+
+    [cron.check_repo_stats]
+    RUN_AT_START = {{ .Values.service.gogs.cronCheckRepoStatsRunAtStart }}
+    SCHEDULE = {{ .Values.service.gogs.cronCheckRepoStatsSchedule }}
+
+    [cron.repo_archive_cleanup]
+    RUN_AT_START = {{ .Values.service.gogs.cronRepoArchiveCleanupRunAtStart }}
+    SCHEDULE = {{ .Values.service.gogs.cronRepoArchiveCleanupSchedule }}
+    OLDER_THAN = {{ .Values.service.gogs.cronRepoArchiveCleanupOlderThan }}
 
     [other]
     SHOW_FOOTER_BRANDING = {{ .Values.service.gogs.otherShowFooterBranding }}

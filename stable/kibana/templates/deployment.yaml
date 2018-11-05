@@ -1,0 +1,200 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ template "kibana.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "kibana.fullname" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+{{- if .Values.podAnnotations }}
+{{ toYaml .Values.podAnnotations | indent 8 }}
+{{- end }}
+      labels:
+        app: {{ template "kibana.name" . }}
+        release: "{{ .Release.Name }}"
+    spec:
+      serviceAccountName: {{ template "kibana.serviceAccountName" . }}
+      {{- if .Values.priorityClassName }}
+      priorityClassName: "{{ .Values.priorityClassName }}"
+      {{- end }}
+{{- if or (.Values.dashboardImport.dashboards) (.Values.plugins.enabled) }}
+      initContainers:
+{{- if .Values.dashboardImport.dashboards }}
+      - name: {{ .Chart.Name }}-dashboardimport
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command: ["/bin/bash"]
+        args:
+          - "-c"
+          - "/tmp/dashboardImport.sh"
+{{- if .Values.commandline.args }}
+{{ toYaml .Values.commandline.args | indent 10 }}
+{{- end }}
+        env:
+        {{- range $key, $value := .Values.env }}
+        - name: "{{ $key }}"
+          value: "{{ $value }}"
+        {{- end }}
+        ports:
+        - containerPort: {{ .Values.service.internalPort }}
+          name: {{ template "kibana.name" . }}
+          protocol: TCP
+        volumeMounts:
+        - name: {{ template "kibana.fullname" . }}-dashboards
+          mountPath: "/kibanadashboards"
+        - name: {{ template "kibana.fullname" . }}-importscript
+          mountPath: "/tmp/dashboardImport.sh"
+          subPath: dashboardImport.sh
+        {{- range $configFile := (keys .Values.files) }}
+        - name: {{ template "kibana.name" $ }}
+          mountPath: "/usr/share/kibana/config/{{ $configFile }}"
+          subPath: {{ $configFile }}
+        {{- end }}
+{{- end }}
+{{- if .Values.plugins.enabled}}
+      - name: {{ .Chart.Name }}-plugins-install
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command:
+          - /bin/bash
+          - "-c"
+          - |
+            set -e
+            plugins=(
+            {{- range .Values.plugins.values }}
+            {{ . }}
+            {{- end }}
+            )
+            if {{ .Values.plugins.reset }}
+            then
+              for p in $(./bin/kibana-plugin list | cut -d "@" -f1)
+              do
+                ./bin/kibana-plugin remove ${p}
+              done
+            fi
+            for i in "${plugins[@]}"
+            do
+              IFS=',' read -ra PLUGIN <<< "$i"
+              pluginInstalledCheck=$(./bin/kibana-plugin list | grep "${PLUGIN[0]}" | cut -d '@' -f1 || true)
+              pluginVersionCheck=$(./bin/kibana-plugin list | grep "${PLUGIN[0]}" | cut -d '@' -f2 || true)
+              if [ "${pluginInstalledCheck}" = "${PLUGIN[0]}" ]
+              then
+                if [ "${pluginVersionCheck}" != "${PLUGIN[1]}" ]
+                then
+                  ./bin/kibana-plugin remove "${PLUGIN[0]}"
+                  ./bin/kibana-plugin install "${PLUGIN[2]}"
+                fi
+              else
+                ./bin/kibana-plugin install "${PLUGIN[2]}"
+              fi
+            done
+        env:
+        {{- range $key, $value := .Values.env }}
+        - name: "{{ $key }}"
+          value: "{{ $value }}"
+        {{- end }}
+        ports:
+        - containerPort: {{ .Values.service.internalPort }}
+          name: {{ template "kibana.name" . }}
+          protocol: TCP
+        volumeMounts:
+        - name: plugins
+          mountPath: /usr/share/kibana/plugins
+        {{- range $configFile := (keys .Values.files) }}
+        - name: {{ template "kibana.name" $ }}
+          mountPath: "/usr/share/kibana/config/{{ $configFile }}"
+          subPath: {{ $configFile }}
+        {{- end }}
+{{- end }}
+{{- end }}
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        {{- if .Values.commandline.args }}
+        args:
+          - "/bin/bash"
+          - "/usr/local/bin/kibana-docker"
+{{ toYaml .Values.commandline.args | indent 10 }}
+        {{- end }}
+        env:
+        {{- range $key, $value := .Values.env }}
+        - name: "{{ $key }}"
+          value: "{{ $value }}"
+        {{- end }}
+{{- if (not .Values.authProxyEnabled) }}
+        ports:
+        - containerPort: {{ .Values.service.internalPort }}
+          name: {{ template "kibana.name" . }}
+          protocol: TCP
+{{- end }}
+{{- if .Values.livenessProbe.enabled }}
+        livenessProbe:
+          httpGet:
+            path: /status
+            port: {{ .Values.service.internalPort }}
+          initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+          timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+{{- end }}
+{{- if .Values.readinessProbe.enabled }}
+        readinessProbe:
+          httpGet:
+            path: /status
+            port: {{ .Values.service.internalPort }}
+          initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+          timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+{{- end }}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        volumeMounts:
+        {{- range $configFile := (keys .Values.files) }}
+        - name: {{ template "kibana.name" $ }}
+          mountPath: "/usr/share/kibana/config/{{ $configFile }}"
+          subPath: {{ $configFile }}
+        {{- end }}
+{{- if .Values.plugins.enabled}}
+        - name: plugins
+          mountPath: /usr/share/kibana/plugins
+{{- end }}
+{{- with .Values.extraContainers }}
+{{ tpl . $ | indent 6 }}
+{{- end }}
+    {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.image.pullSecrets | indent 8 }}
+    {{- end }}
+    {{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+    {{- end }}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+      volumes:
+        - name: {{ template "kibana.name" . }}
+          configMap:
+            name: {{ template "kibana.fullname" . }}
+{{- if .Values.plugins.enabled}}
+        - name: plugins
+          emptyDir: {}
+{{- end }}
+{{- if .Values.dashboardImport.dashboards }}
+        - name: {{ template "kibana.fullname" . }}-dashboards
+          configMap:
+            name: {{ template "kibana.fullname" . }}-dashboards
+        - name: {{ template "kibana.fullname" . }}-importscript
+          configMap:
+            name: {{ template "kibana.fullname" . }}-importscript
+            defaultMode: 0777
+{{- end }}

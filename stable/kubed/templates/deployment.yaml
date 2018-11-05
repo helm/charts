@@ -1,0 +1,62 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "kubed.fullname" . }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: "{{ template "kubed.name" . }}"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: "{{ template "kubed.name" . }}"
+        release: "{{ .Release.Name }}"
+{{- if and .Values.criticalAddon (eq .Release.Namespace "kube-system") }}
+      annotations:
+        scheduler.alpha.kubernetes.io/critical-pod: ''
+{{- end }}
+    spec:
+      serviceAccountName: {{ if .Values.rbac.create }}{{ template "kubed.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+      containers:
+      - name: kubed
+        args:
+        - run
+        - --v={{ .Values.logLevel }}
+        - --api.address=:8080
+        - --web.address=:56790
+        image: '{{ .Values.kubed.image }}:{{ .Values.kubed.tag }}'
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        {{- if .Values.imagePullSecrets }}
+        imagePullSecrets:
+{{ toYaml .Values.imagePullSecrets | indent 8 }}
+        {{- end }}
+        ports:
+        - containerPort: 8080
+          name: api
+          protocol: TCP
+        - containerPort: 56790
+          name: web
+          protocol: TCP
+        volumeMounts:
+          - name: config
+            mountPath: /srv/kubed
+          - name: scratch
+            mountPath: /tmp
+      volumes:
+        - name: config
+          secret:
+            secretName: {{ template "kubed.fullname" . }}
+        - name: scratch
+          emptyDir: {}
+{{- if and .Values.criticalAddon (eq .Release.Namespace "kube-system") }}
+      tolerations:
+      - key: "CriticalAddonsOnly"
+        operator: "Exists"
+{{- end -}}
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end -}}

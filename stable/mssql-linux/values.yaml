@@ -1,0 +1,49 @@
+acceptEula:
+  value: "n"
+edition:
+  value: Express
+collation: SQL_Latin1_General_CP1_CI_AS
+lcid: 1033
+hadr: 0
+# Override sapassword in templates/secret.yaml
+# sapassword: "MyStrongPassword1234"
+image:
+  repository: microsoft/mssql-server-linux
+  tag: 2017-CU5
+  pullPolicy: IfNotPresent
+service:
+  type: ClusterIP
+  port: 1433
+  annotations: {}
+deployment:
+  annotations: {}
+persistence:
+  enabled: true
+  # existingDataClaim:
+  # existingTransactionLogClaim:
+  # existingBackupClaim:
+  # existingMasterClaim:
+  storageClass: ""
+  dataAccessMode: ReadWriteOnce
+  dataSize: 1Gi
+  transactionLogAccessMode: ReadWriteOnce
+  transactionLogSize: 1Gi
+  backupAccessMode: ReadWriteOnce
+  backupSize: 1Gi
+  masterAccessMode: ReadWriteOnce
+  masterSize: 1Gi
+livenessprobe:
+  initialDelaySeconds: 15
+  periodSeconds: 20
+readinessprobe:
+  initialDelaySeconds: 5
+  periodSeconds: 10
+resources: {}
+  # limits:
+  #  cpu: 100m
+  #  memory: 2Gi
+  # requests:
+  #  cpu: 100m
+  #  memory: 2Gi
+nodeSelector: {}
+  # kubernetes.io/hostname: minikube

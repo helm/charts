@@ -1,42 +1,57 @@
-{{ if .Values.rbac.install }}
-{{- $serviceName := include "fullname" . -}}
-apiVersion: rbac.authorization.k8s.io/{{ required "A valid .Values.rbac.apiVersion entry required!" .Values.rbac.apiVersion }}
+{{ if .Values.rbac.create }}
+apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: {{ $serviceName }}
+  name: {{ template "stash.fullname" . }}
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    app: "{{ template "name" . }}"
+    app: "{{ template "stash.name" . }}"
     heritage: "{{ .Release.Service }}"
     release: "{{ .Release.Name }}"
 rules:
 - apiGroups:
+  - apiextensions.k8s.io
+  resources:
+  - customresourcedefinitions
+  verbs:
+  - "*"
+- apiGroups:
   - extensions
   resources:
   - thirdpartyresources
-  verbs: ["get", "create"]
+  verbs:
+  - "*"
 - apiGroups:
   - stash.appscode.com
-  resources:
-  - restics
+  resources: ["*"]
   verbs: ["*"]
-- apiGroups:
-  - extensions
-  resources:
-  - deployments
-  - replicasets
-  - daemonsets
-  verbs: ["list", "watch", "update"]
 - apiGroups:
   - apps
   resources:
   - deployments
-  verbs: ["list", "watch", "update"]
+  - statefulsets
+  verbs: ["get", "list", "watch", "patch"]
+- apiGroups:
+  - batch
+  resources:
+  - jobs
+  - cronjobs
+  verbs: ["get", "list", "watch", "create", "delete", "patch"]
+- apiGroups:
+  - extensions
+  resources:
+  - replicasets
+  - daemonsets
+  verbs: ["get", "list", "watch", "patch"]
 - apiGroups: [""]
   resources:
   - namespaces
   - replicationcontrollers
-  verbs: ["list", "watch", "update"]
+  verbs: ["get", "list", "watch", "patch"]
+- apiGroups: [""]
+  resources:
+  - configmaps
+  verbs: ["create", "update", "get", "delete"]
 - apiGroups: [""]
   resources:
   - secrets
@@ -47,6 +62,21 @@ rules:
   verbs: ["create"]
 - apiGroups: [""]
   resources:
+  - nodes
+  verbs: ["list"]
+- apiGroups: [""]
+  resources:
   - pods
-  verbs: ["list", delete"]
+  verbs: ["get", "create", "list", "delete", "deletecollection"]
+- apiGroups: [""]
+  resources:
+  - serviceaccounts
+  verbs: ["get", "create", "patch", "delete"]
+- apiGroups:
+  - rbac.authorization.k8s.io
+  resources:
+  - clusterroles
+  - roles
+  - rolebindings
+  verbs: ["get", "create", "delete", "patch"]
 {{ end }}

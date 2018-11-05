@@ -15,6 +15,11 @@ spec:
         app: {{ template "rocketchat.name" . }}
         release: "{{ .Release.Name }}"
     spec:
+      {{- if .Values.securityContext.enabled }}
+      securityContext:
+        fsGroup: {{ .Values.securityContext.fsGroup }}
+        runAsUser: {{ .Values.securityContext.runAsUser }}
+      {{- end }}
       containers:
       - name: {{ template "rocketchat.fullname" . }}
         image: "{{ .Values.image }}"
@@ -55,7 +60,7 @@ spec:
           httpGet:
             path: /
             port: http
-          initialDelaySeconds: 20
+          initialDelaySeconds: 60
           timeoutSeconds: 5
         resources:
 {{ toYaml .Values.resources | indent 10 }}

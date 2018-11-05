@@ -1,0 +1,15 @@
+apiVersion: v1
+description: Envoy is an open source edge and service proxy, designed for cloud-native applications.
+name: envoy
+version: 1.1.1
+appVersion: 1.6
+keywords:
+- envoy
+- proxy
+home: https://www.envoyproxy.io/
+sources:
+- https://github.com/envoyproxy/envoy
+maintainers:
+- name: josdotso
+  email: josdotso@cisco.com
+icon: https://avatars0.githubusercontent.com/u/30125649

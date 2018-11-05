@@ -1,0 +1,130 @@
+{{- if .Values.server.enabled }}
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "gocd.fullname" . }}-server
+  labels:
+    app: {{ template "gocd.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+    component: server
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: {{ template "gocd.name" . }}
+      release: {{ .Release.Name | quote }}
+      component: server
+  template:
+    metadata:
+      labels:
+        app: {{ template "gocd.name" . }}
+        release: {{ .Release.Name | quote }}
+        component: server
+    spec:
+      serviceAccountName: {{ template "gocd.serviceAccountName" . }}
+      {{- if or .Values.server.shouldPreconfigure (or .Values.server.persistence.enabled .Values.server.security.ssh.enabled) }}
+      volumes:
+      {{- end }}
+      {{- if .Values.server.shouldPreconfigure }}
+        - name: config-vol
+          configMap:
+            name: {{ template "gocd.fullname" . }}
+      {{- end }}
+      {{- if .Values.server.persistence.enabled }}
+        - name: goserver-vol
+          persistentVolumeClaim:
+            claimName: {{ .Values.server.persistence.existingClaim | default (printf "%s-%s" (include "gocd.fullname" .) "server") }}
+        {{- if ne (len .Values.server.persistence.extraVolumes) 0 }}
+{{ toYaml .Values.server.persistence.extraVolumes | indent 8 }}
+        {{- end }}
+      {{- end }}
+      {{- if .Values.server.security.ssh.enabled }}
+        - name: ssh-secrets
+          secret:
+            secretName: {{ .Values.server.security.ssh.secretName }}
+      {{- end }}
+      containers:
+        - name: {{ template "gocd.name" . }}-server
+          {{- if .Values.server.image.tag }}
+          image: "{{ .Values.server.image.repository }}:{{ .Values.server.image.tag }}"
+          {{- else }}
+          image: "{{ .Values.server.image.repository }}:v{{ .Chart.AppVersion }}"
+          {{- end }}
+          imagePullPolicy: {{ .Values.server.image.pullPolicy }}
+          env:
+            {{- if .Values.server.env.goServerSystemProperties }}
+            - name: GO_SERVER_SYSTEM_PROPERTIES
+              value: {{ .Values.server.env.goServerSystemProperties }}
+            {{- end }}
+            {{- if .Values.server.env.extraEnvVars }}
+{{ toYaml .Values.server.env.extraEnvVars | indent 12 }}
+            {{- end }}
+          ports:
+            - containerPort: 8153
+            - containerPort: 8154
+          livenessProbe:
+            httpGet:
+              path: /go/api/v1/health
+              port: 8153
+            initialDelaySeconds: {{ .Values.server.healthCheck.initialDelaySeconds }}
+            periodSeconds: {{ .Values.server.healthCheck.periodSeconds }}
+            failureThreshold: {{ .Values.server.healthCheck.failureThreshold }}
+          readinessProbe:
+            httpGet:
+              path: /go/api/v1/health
+              port: 8153
+            initialDelaySeconds: {{ .Values.server.healthCheck.initialDelaySeconds }}
+            periodSeconds: {{ .Values.server.healthCheck.periodSeconds }}
+            failureThreshold: {{ .Values.server.healthCheck.failureThreshold }}
+          {{- if or .Values.server.shouldPreconfigure (or .Values.server.persistence.enabled .Values.server.security.ssh.enabled) }}
+          volumeMounts:
+          {{- end }}
+          {{- if .Values.server.shouldPreconfigure }}
+            - name: config-vol
+              mountPath: /preconfigure_server.sh
+              subPath: preconfigure_server.sh
+          {{- end }}
+          {{- if .Values.server.persistence.enabled }}
+            - name: goserver-vol
+              mountPath: /godata
+              subPath: {{ .Values.server.persistence.subpath.godata }}
+            - name: goserver-vol
+              mountPath: /home/go
+              subPath: {{ .Values.server.persistence.subpath.homego }}
+            - name: {{ .Values.server.persistence.name.dockerEntryPoint }}
+              mountPath: /docker-entrypoint.d
+              subPath: {{ .Values.server.persistence.subpath.dockerEntryPoint }}
+            {{- if ne (len .Values.server.persistence.extraVolumeMounts) 0 }}
+{{ toYaml .Values.server.persistence.extraVolumeMounts | indent 12 }}
+            {{- end }}
+          {{- end }}
+          {{- if .Values.server.security.ssh.enabled }}
+            - name: ssh-secrets
+              readOnly: true
+              mountPath: /home/go/.ssh
+          {{- end }}
+          {{- if .Values.server.shouldPreconfigure }}
+          lifecycle:
+            postStart:
+              exec:
+                command: ["/bin/bash","/preconfigure_server.sh"]
+          {{- end }}
+          resources:
+{{ toYaml .Values.server.resources | indent 12 }}
+    {{- if .Values.server.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.server.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- if .Values.server.affinity }}
+      affinity:
+{{ toYaml .Values.server.affinity | indent 8 }}
+    {{- end }}
+    {{- if .Values.server.hostAliases }}
+      hostAliases:
+{{ toYaml .Values.server.hostAliases | indent 8 }}
+    {{- end }}
+{{- end}}

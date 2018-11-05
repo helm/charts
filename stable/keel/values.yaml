@@ -3,8 +3,8 @@
 # Declare variables to be passed into your templates.
 
 image:
-  repository: karolisr/keel
-  tag: 0.4.2
+  repository: keelhq/keel
+  tag: 0.9.5
   pullPolicy: IfNotPresent
 
 # Polling is enabled by default,
@@ -20,7 +20,7 @@ helmProvider:
 # GCP Project ID
 gcr:
   enabled: false
-  projectId:  ""
+  projectId: ""
   pubSub:
     enabled: false
 
@@ -35,6 +35,8 @@ slack:
   enabled: false
   token: ""
   channel: ""
+  botName: ""
+  approvalsChannel: ""
 
 # Keel service
 # Enable to receive webhooks from Docker registries
@@ -55,11 +57,11 @@ webhookRelay:
   # webhookrelay docker image
   image:
     repository: webhookrelay/webhookrelayd
-    tag: 0.2.7
+    tag: 0.6.3
     pullPolicy: IfNotPresent
 
 # Keel self-update
-# Comment lines below if you do not want Keel to automaticly
+# Comment lines below if you do not want Keel to automatically
 # self-update to the latest release version
 keel:
   # keel policy (all/major/minor/patch/force)
@@ -70,11 +72,11 @@ keel:
   pollSchedule: "@every 3m"
   # images to track and update
   images:
-   - repository: image.repository
-     tag: image.tag
+    - repository: image.repository
+      tag: image.tag
 
 # Resources
-#resources:
+# resources:
 #  limits:
 #    cpu: 100m
 #    memory: 128Mi

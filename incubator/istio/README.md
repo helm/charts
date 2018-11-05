@@ -1,11 +1,13 @@
 # Istio
 
+**This chart has been deprecated as of version 0.2.12-chart4 and will not be updated. Please use the upstream charts found [here](https://github.com/istio/istio/tree/master/install/kubernetes/helm/istio) instead.**
+
 [Istio](https://istio.io/), Istio is an open platform that provides a uniform way to connect, manage, and secure microservices. Istio supports managing traffic flows between microservices, enforcing access policies, and aggregating telemetry data, all without requiring changes to the microservice code.
 
 ## TL;DR;
 
 ```console
-$ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
+$ helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com
 $ helm install incubator/istio
 ```
 
@@ -104,7 +106,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Istio chart and their default values.
+The following table lists the configurable parameters of the Istio chart and their default values.
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
@@ -115,7 +117,7 @@ Parameter | Description | Default
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```console
-$ helm install stable/istio --name my-release \
+$ helm install incubator/istio --name my-release \
     --set auth.enabled=false
 ```
 
@@ -148,5 +150,5 @@ These addons can be selectively installed by setting `addons.<addon-name>.enable
 If you are running a Kubernetes 1.7+ and have the Initializers api enabled you may choose to enable the Initializer to be installed. See the [docs](https://kubernetes.io/docs/admin/extensible-admission-controllers/) on how to enable.
 
 ```console
-helm install --name istio . --namespace istio-system --set istio.install=true,initializer.enabled=true
+helm install --name my-release --devel incubator/istio --namespace istio-system --set istio.install=true,initializer.enabled=true
 ```

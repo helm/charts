@@ -1,9 +1,0 @@
-You can connect to the cluster using the Cypher shell by running:
-
-    kubectl run -it --rm cypher-shell \
-        --image=neo4j:3.2.1-enterprise \
-        --restart=Never \
-        --namespace {{ .Release.Namespace }} \
-        --command -- ./bin/cypher-shell -u neo4j -p neo4j --a {{ printf "%s-%s" .Release.Name .Values.name | trunc 56 }}.default.svc.cluster.local "call dbms.cluster.overview()"
-
-This will print out the addresses of the members of the cluster.

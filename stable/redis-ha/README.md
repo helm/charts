@@ -8,16 +8,22 @@
 $ helm install stable/redis-ha
 ```
 
-By default this chart install one master pod containing redis master container and sentinel container, 2 sentinels and 1 redis slave.
+By default this chart install 3 pods total:
+ * one pod containing a redis master and sentinel containers
+ * two pods each containing redis slave and sentinel containers.
 
 ## Introduction
 
-This chart bootstraps a [Redis](https://github.com/bitnami/bitnami-docker-redis) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
+This chart bootstraps a [Redis](https://redis.io) highly available master/slave statefulset in a [Kubernetes](http://kubernetes.io) cluster using the Helm package manager. 
 
 ## Prerequisites
 
-- Kubernetes 1.5+ with Beta APIs enabled
+- Kubernetes 1.8+ with Beta APIs enabled
 - PV provisioner support in the underlying infrastructure
+
+## Upgrading the Chart
+
+Please note that there have been a number of changes simplifying the redis management strategy (for better failover and elections) in the 3.x version of this chart. These changes allow the use of official [redis](https://hub.docker.com/_/redis/) images that do not require special RBAC or ServiceAccount roles. As a result when upgrading from version >=2.0.1 to >=3.0.0 of this chart, `Role`, `RoleBinding`, and `ServiceAccount` resources should be deleted manually.
 
 ## Installing the Chart
 
@@ -27,7 +33,7 @@ To install the chart
 $ helm install stable/redis-ha
 ```
 
-The command deploys Redis on the Kubernetes cluster in the default configuration. By default this chart install one master pod containing redis master container and sentinel container, 2 sentinels and 1 redis slave. The [configuration](#configuration) section lists the parameters that can be configured during installation.
+The command deploys Redis on the Kubernetes cluster in the default configuration. By default this chart install one master pod containing redis master container and sentinel container along with 2 redis slave pods each containing their own sentinel sidecars. The [configuration](#configuration) section lists the parameters that can be configured during installation.
 
 > **Tip**: List all releases using `helm list`
 
@@ -43,33 +49,36 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Redis chart and their default values.
+The following table lists the configurable parameters of the Redis chart and their default values.
 
-| Parameter                        | Description                                           | Default                                                   |
-| -------------------------------- | ----------------------------------------------------- | --------------------------------------------------------- |
-| `redis_image`                    | Redis image                                           | `gcr.io/google_containers/redis:v1`                       |
-| `persistentVolume.enabled`       | Use a PVC to persist data                             | `false`                                                   |
-| `persistentVolume.storageClass`  | Storage class of backing PVC                          | `generic`                                                 |
-| `persistentVolume.accessMode`    | Use volume as ReadOnly or ReadWrite                   | `ReadWriteOnce`                                           |
-| `persistentVolume.size`          | Size of data volume                                   | `8Gi`                                                     |
-| `persistentVolume.annotations`   | Redis data Persistent Volume Claim annotations        | `{}`                                                      |
-| `persistentVolume.existingClaim` | Redis data Persistent Volume existing claim name      | ``                                                        |
-| `persistentVolume.mountPath`     | Redis data Persistent Volume mount root path          | `/data`                                                   |
-| `persistentVolume.subPath`       | Subdirectory of redis data Persistent Volume to mount | ``                                                        |
-| `resources.master`               | CPU/Memory for master nodes resource requests/limits  | Memory: `200Mi`, CPU: `100m`                              |
-| `resources.slave`                | CPU/Memory for slave nodes  resource requests/limits  | Memory: `200Mi`, CPU: `100m`                              |
-| `resources.sentinel`             | CPU/Memory for sentinel node resource requests/limits | Memory: `200Mi`, CPU: `100m`                              |
-| `replicas.master`                | Number of master pods                                 | 1                                                         |
-| `replicas.slave`                 | Number of slave pods                                  | 1                                                         |
-| `replicas.sentinel`              | Number of sentinel pods                               | 3                                                         |
-
+| Parameter                        | Description                                                                                                                  | Default                                                   |
+| -------------------------------- | -----------------------------------------------------                                                                        | --------------------------------------------------------- |
+| `image`                          | Redis image                                                                                                                  | `redis`                                                   |
+| `tag`                            | Redis tag                                                                                                                    | `4.0.11-stretch`                                          |
+| `replicas`                       | Number of redis master/slave pods                                                                                            | `3`                                                       |
+| `redis.port`                     | Port to access the redis service                                                                                             | `6379`                                                    |
+| `redis.masterGroupName`          | Redis convention for naming the cluster group                                                                                | `mymaster`                                                |
+| `redis.config`                   | Any valid redis config options in this section will be applied to each server (see below)                                    | see values.yaml                                           |
+| `redis.customConfig`             | Allows for custom redis.conf files to be applied. If this is used then `redis.config` is ignored                             | ``                                                        |
+| `redis.resources`                | CPU/Memory for master/slave nodes resource requests/limits                                                                   | `{}`                                                      |
+| `sentinel.port`                  | Port to access the sentinel service                                                                                          | `26379`                                                   |
+| `sentinel.quorum`                | Minimum number of servers necessary to maintain quorum                                                                       | `2`                                                       |
+| `sentinel.config`                | Valid sentinel config options in this section will be applied as config options to each sentinel (see below)                 | see values.yaml                                           |
+| `sentinel.customConfig`          | Allows for custom sentinel.conf files to be applied. If this is used then `sentinel.config` is ignored                       | ``                                                        |
+| `sentinel.resources`             | CPU/Memory for sentinel node resource requests/limits                                                                        | `{}`                                                      |
+| `auth`                           | Enables or disables redis AUTH (Requires `redisPassword` to be set)                                                          | `false`                                                   |
+| `redisPassword`                  | A password that configures a `requirepass` and `masterauth` in the conf parameters (Requires `auth: enabled`)                | ``                                                        |
+| `nodeSelector`                   | Node labels for pod assignment                                                                                               | `{}`                                                      |
+| `tolerations`                    | Toleration labels for pod assignment                                                                                         | `[]`                                                      |
+| `podAntiAffinity.server`         | Antiaffinity for pod assignment of servers, `hard` or `soft`                                                                 | `Hard node and soft zone anti-affinity`                   |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```bash
 $ helm install \
-  --set redis_image=gcr.io/google_containers/redis:v1 \
+  --set image=redis \
+  --set tag=4.0.11-stretch \
     stable/redis-ha
 ```
 
@@ -83,6 +92,24 @@ $ helm install -f values.yaml stable/redis-ha
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
-## Persistence
+## Custom Redis and Sentinel config options
 
-The chart mounts a [Persistent Volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) volume at this location. The volume is created using dynamic volume provisioning.
+This chart allows for most redis or sentinel config options to be passed as a key value pair through the `values.yaml` under `redis.config` and `sentinel.config`. See links below for all available options.
+
+[Example redis.conf](http://download.redis.io/redis-stable/redis.conf)
+[Example sentinel.conf](http://download.redis.io/redis-stable/sentinel.conf)
+
+For example `repl-timeout 60` would be added to the `redis.config` section of the `values.yaml` as:
+
+```yml
+    repl-timeout: "60"
+```
+
+Sentinel options supported must be in the the `sentinel <option> <master-group-name> <value>` format. For example, `sentinel down-after-milliseconds 30000` would be added to the `sentinel.config` section of the `values.yaml` as:
+
+```yml
+    down-after-milliseconds: 30000
+```
+
+If more control is needed from either the redis or sentinel config then an entire config can be defined under `redis.customConfig` or `sentinel.customConfig`. Please note that these values will override any configuration options under their respective section. For example, if you define `sentinel.customConfig` then the `sentinel.config` is ignored.
+

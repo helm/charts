@@ -1,0 +1,39 @@
+# replicaCount is expected to be 1 right now. Riemann
+# does not support horizontal scaling out of the box.
+replicaCount: 1
+image:
+  repository: raykrueger/riemann
+  tag: 0.2.14
+  pullPolicy: IfNotPresent
+service:
+  type: ClusterIP
+  ports:
+    udp: 5555
+    tcp: 5555
+    websocket: 5556
+resources: {}
+# This is close to the default config. It has been modified to log to console.
+# Customize as needed, just make sure you indent correctly.
+riemann:
+  config: |
+    ;Init Logging
+    (logging/init {:console true})
+
+    ; Listen on the local interface over TCP (5555), UDP (5555), and websockets
+    ; (5556)
+    (let [host "0.0.0.0"]
+      (tcp-server {:host host})
+      (udp-server {:host host})
+      (ws-server  {:host host}))
+
+    ; Expire old events from the index every 5 seconds.
+    (periodically-expire 5 {:keep-keys [:host :service :tags]})
+
+    (let [index (index)]
+      ; Inbound events will be passed to these streams:
+      (streams
+        (default :ttl 60
+          ; Index all events immediately.
+          index
+          #(info %)
+    )))

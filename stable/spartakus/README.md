@@ -39,12 +39,12 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Spartakus chart and their default values.
+The following table lists the configurable parameters of the Spartakus chart and their default values.
 
 Parameter | Description | Default
 --- | --- | ---
 `extraArgs` | Additional container arguments | `{}`
-`image.repository` | Image | `gcr.io/google_containers/spartakus-amd64`
+`image.repository` | Image | `k8s.gcr.io/spartakus-amd64`
 `image.tag` | Image tag | `v1.0.0`
 `image.pullPolicy` | Image pull policy | `Always` if `image.tag` is `latest`, else `IfNotPresent`
 `nodeSelector` | node labels for pod assignment | `{}`

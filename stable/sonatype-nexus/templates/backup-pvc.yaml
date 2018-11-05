@@ -1,0 +1,27 @@
+{{- if not .Values.statefulset.enabled }}
+{{- if and .Values.nexusBackup.enabled (and .Values.nexusBackup.persistence.enabled (not .Values.nexusBackup.persistence.existingClaim)) }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ template "nexus.fullname" . }}-backup
+  labels:
+{{ include "nexus.labels" . | indent 4 }}
+{{- if .Values.nexusBackup.persistence.annotations }}
+  annotations:
+{{ toYaml .Values.nexusBackup.persistence.annotations | indent 4 }}
+{{- end }}
+spec:
+  accessModes:
+    - {{ .Values.nexusBackup.persistence.accessMode }}
+  resources:
+    requests:
+      storage: {{ .Values.nexusBackup.persistence.storageSize | quote }}
+{{- if .Values.nexusBackup.persistence.storageClass }}
+{{- if (eq "-" .Values.nexusBackup.persistence.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ .Values.nexusBackup.persistence.storageClass }}"
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}

@@ -1,5 +1,5 @@
 {{- if .Values.rbac.create -}}
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/{{ .Values.rbac.apiVersion }}
 kind: ClusterRole
 metadata:
   labels: {{ include "external-dns.labels" . | indent 4 }}
@@ -9,9 +9,13 @@ rules:
   - apiGroups:
       - ""
       - extensions
+      - networking.istio.io
     resources:
       - ingresses
       - services
+      - pods
+      - nodes
+      - gateways
     verbs:
       - get
       - list

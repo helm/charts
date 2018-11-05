@@ -1,0 +1,130 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "mssql.fullname" . }}
+  labels:
+    app: {{ template "mssql.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+{{- if .Values.deployment.annotations }}
+  annotations:
+{{ toYaml .Values.deployment.annotations | indent 4 }}
+{{- end }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "mssql.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "mssql.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: ACCEPT_EULA
+              value: "{{ .Values.acceptEula.value | upper }}"
+            - name: MSSQL_PID
+              value: "{{ .Values.edition.value }}"
+            - name: SA_PASSWORD
+              valueFrom:
+               secretKeyRef:
+                 name: {{ template "mssql.fullname" . }}-secret
+                 key: sapassword
+            - name: MSSQL_DATA_DIR
+              value: /mssql-data/data
+            - name: MSSQL_LOG_DIR
+              value: /mssql-translog/translog
+            - name: MSSQL_TCP_PORT
+              value: "{{ .Values.service.port }}"
+            - name: MSSQL_BACKUP_DIR
+              value: "/mssql-backup/backup"
+            - name: MSSQL_COLLATION
+              value: "{{ .Values.collation }}"
+            - name: MSSQL_LCID
+              value: "{{ .Values.lcid }}"
+            - name: MSSQL_MASTER_DATA_FILE
+              value: /mssql-data/master/master.mdf
+            - name: MSSQL_MASTER_LOG_FILE
+              value: /mssql-data/master/mastlog.ldf
+            - name: MSSQL_ENABLE_HADR
+              value: "{{ .Values.hadr }}"
+          ports:
+            - name: mssql
+              containerPort: {{ .Values.service.port }}
+          volumeMounts:
+            - name: data
+              mountPath: /mssql-data/data
+            - name: transactionlog
+              mountPath: /mssql-translog/translog
+            - name: backup
+              mountPath: /mssql-backup/backup
+            - name: master
+              mountPath: /mssql-data/master
+          livenessProbe:
+             tcpSocket:
+               port: mssql
+             initialDelaySeconds: {{ .Values.livenessprobe.initialDelaySeconds }}
+             periodSeconds: {{ .Values.livenessprobe.periodSeconds }}
+          readinessProbe:
+             tcpSocket:
+               port: mssql
+             initialDelaySeconds: {{ .Values.readinessprobe.initialDelaySeconds }}
+             periodSeconds: {{ .Values.readinessprobe.periodSeconds }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+      volumes:
+      - name: data
+      {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          {{- if .Values.persistence.existingDataClaim }}
+          claimName: {{ .Values.persistence.existingDataClaim }}
+          {{- else }}
+          claimName: {{ template "mssql.fullname" . }}-data
+          {{- end -}}
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+      - name: transactionlog
+      {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          {{- if .Values.persistence.existingTransactionLogClaim }}
+          claimName: {{ .Values.persistence.existingTransactionLogClaim }}
+          {{- else }}
+          claimName: {{ template "mssql.fullname" . }}-translog
+          {{- end }}
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+      - name: backup
+      {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          {{- if .Values.persistence.existingBackupClaim }}
+          claimName: {{ .Values.persistence.existingBackupClaim }}
+          {{- else }}
+          claimName: {{ template "mssql.fullname" . }}-backup
+          {{- end }}
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+      - name: master
+      {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          {{- if .Values.persistence.existingMasterClaim }}
+          claimName: {{ .Values.persistence.existingMasterClaim }}
+          {{- else }}
+          claimName: {{ template "mssql.fullname" . }}-master
+          {{- end }}
+      {{- else }}
+        emptyDir: {}
+      {{- end }}

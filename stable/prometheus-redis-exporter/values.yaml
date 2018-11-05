@@ -1,0 +1,35 @@
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+  # Specifies whether a PodSecurityPolicy should be created
+  pspEnabled: true
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+replicaCount: 1
+image:
+  repository: oliver006/redis_exporter
+  tag: v0.21.1
+  pullPolicy: IfNotPresent
+extraArgs: {}
+# Additional Environment variables
+env: {}
+  # - name: REDIS_PASSWORD
+  #   valueFrom:
+  #     secretKeyRef:
+  #       key: redis-password
+  #       name: redis-config-0.0.2
+service:
+  type: ClusterIP
+  port: 9121
+  annotations: {}
+resources: {}
+redisAddress: redis://myredis:6379
+annotations: {}
+#  prometheus.io/path: /metrics
+#  prometheus.io/port: "9121"
+#  prometheus.io/scrape: "true"

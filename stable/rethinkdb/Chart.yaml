@@ -1,6 +1,7 @@
 name: rethinkdb
 description: The open-source database for the realtime web
-version: 0.1.0
+version: 0.2.0
+appVersion: 0.1.0
 keywords:
 - rethinkdb
 - database

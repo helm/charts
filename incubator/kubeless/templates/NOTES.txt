@@ -1,0 +1,33 @@
+{{- if .Values.ui.enabled }}
+== Access the Kubeless UI URL:
+
+{{- if contains "LoadBalancer" .Values.ui.service.type }}
+
+  NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+        Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w ui'
+
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "kubeless.fullname" . }}-ui --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
+  export SERVICE_PORT=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "kubeless.fullname" . }}-ui -o jsonpath='{.spec.ports[0].port}')
+  echo http://$SERVICE_IP:$SERVICE_PORT/
+{{- else if contains "ClusterIP"  .Values.ui.service.type }}
+
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "controller={{ template "kubeless.fullname" . }}-ui" -o jsonpath="{.items[0].metadata.name}")
+  echo http://127.0.0.1:3000
+  kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME 3000:3000
+
+{{- end }}
+
+{{- if contains "NodePort" .Values.ui.service.type }}
+
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "kubeless.fullname" . }}-ui)
+  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo http://$NODE_IP:$NODE_PORT
+
+{{- end }}
+{{- end }}
+== Deploy function
+
+In order to deploy a function you need the kubeless binary.
+You can download it from the kubeless repo:
+
+https://github.com/kubeless/kubeless

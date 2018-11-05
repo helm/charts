@@ -3,7 +3,7 @@ kind: DaemonSet
 metadata:
   name: {{ template "name" . }}
 spec:
-  {{- if ge .Capabilities.KubeVersion.Minor "6" }}
+  {{- if semverCompare "^1.6-0" .Capabilities.KubeVersion.GitVersion }}
   updateStrategy:
     type: RollingUpdate
   {{- end }}
@@ -12,6 +12,13 @@ spec:
       labels:
         daemonset: {{ template "name" . }}
     spec:
+      {{- if .Values.serviceAccount }}
+      serviceAccountName: {{ .Values.serviceAccount }}
+      {{- end }}
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.imagePullSecrets | indent 8 }}
+      {{- end }}
       containers:
       - name: {{ template "name" . }}
         image: "{{ .Values.image.registry }}/{{ .Values.image.org }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -34,7 +41,19 @@ spec:
         volumeMounts:
         - name: docker-socket
           mountPath: /var/run/docker.sock
+        {{- if .Values.resources }}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        {{- end }}
       volumes:
       - name: docker-socket
         hostPath:
           path: /var/run/docker.sock
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+    {{- end }}

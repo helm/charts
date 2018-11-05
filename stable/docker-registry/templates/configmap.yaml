@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "docker-registry.fullname" . }}-config
+  labels:
+    app: {{ template "docker-registry.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+data:
+  config.yml: |-
+{{ toYaml .Values.configData | indent 4 }}

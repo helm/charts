@@ -1,0 +1,46 @@
+{{- $highAvailability := gt (int .Values.keycloak.replicas) 1 -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "keycloak.fullname" . }}
+  labels:
+    app: {{ template "keycloak.name" . }}
+    chart: {{ template "keycloak.chart" . }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+data:
+  keycloak.sh: |
+    #!/usr/bin/env bash
+
+    set -eu
+
+    /opt/jboss/keycloak/bin/jboss-cli.sh --file=/scripts/keycloak.cli
+
+  {{- with .Values.keycloak.preStartScript }}
+    echo 'Running custom pre-start script...'
+{{ . | indent 4 }}
+  {{- end }}
+
+    exec /opt/jboss/docker-entrypoint.sh -b 0.0.0.0 {{- if $highAvailability }} --server-config standalone-ha.xml{{ end }}
+    exit "$?"
+
+  keycloak.cli: |
+    embed-server {{- if $highAvailability }} --server-config=standalone-ha.xml{{ end }} --std-out=echo
+
+{{- $cli := .Values.keycloak.cli }}
+
+{{ $cli.nodeIdentifier | indent 4 }}
+
+{{ $cli.logging | indent 4 }}
+
+{{ $cli.reverseProxy | indent 4 }}
+
+{{- if $highAvailability }}
+{{ $cli.discovery | indent 4 }}
+{{- end }}
+
+{{- with $cli.custom }}
+{{ . | indent 4 }}
+{{- end }}
+
+    stop-embedded-server

@@ -14,12 +14,6 @@ metadata:
     kubernetes.io/tls-acme: "true"
 {{- end }}
 spec:
-{{- if .Values.ingress.tls }}
-  tls:
-  - hosts:
-    - {{ .Values.host }}
-    secretName: {{ template "rocketchat.fullname" . }}-tls
-{{- end }}
   rules:
   - host: {{ .Values.host }}
     http:
@@ -28,4 +22,8 @@ spec:
         backend:
           serviceName: {{ template "rocketchat.fullname" . }}
           servicePort: 3000
+{{- if .Values.ingress.tls }}
+  tls:
+{{ toYaml .Values.ingress.tls | indent 4 }}
+{{- end }}
 {{- end -}}

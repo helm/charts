@@ -1,0 +1,150 @@
+# Default values for kong.
+# Declare variables to be passed into your templates.
+
+image:
+  repository: kong
+  tag: 0.14.1
+  pullPolicy: IfNotPresent
+  ## Optionally specify an array of imagePullSecrets.
+  ## Secrets must be manually created in the namespace.
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  ##
+  # pullSecrets:
+  #   - myRegistrKeySecretName
+
+# Specify Kong admin and proxy services configurations
+admin:
+  # If you want to specify annotations for the admin service, uncomment the following
+  # line, add additional or adjust as needed, and remove the curly braces after 'annotations:'.
+  annotations: {}
+  #  service.beta.kubernetes.io/aws-load-balancer-proxy-protocol: "*"
+
+  # HTTPS traffic on the admin port
+  # if set to false also set readinessProbe and livenessProbe httpGet scheme's to 'HTTP'
+  useTLS: true
+  servicePort: 8444
+  containerPort: 8444
+  # Kong admin service type
+  type: NodePort
+  # Set a nodePort which is available
+  # nodePort: 32444
+  # Kong admin ingress settings.
+  ingress:
+    # Enable/disable exposure using ingress.
+    enabled: false
+    # TLS secret name.
+    # tls: kong-admin.example.com-tls
+    # Array of ingress hosts.
+    hosts: []
+    # Map of ingress annotations.
+    annotations: {}
+    # Ingress path.
+    path: /
+
+proxy:
+  # If you want to specify annotations for the proxy service, uncomment the following
+  # line, add additional or adjust as needed, and remove the curly braces after 'annotations:'.
+  annotations: {}
+  #  service.beta.kubernetes.io/aws-load-balancer-proxy-protocol: "*"
+
+  # HTTPS traffic on the proxy port
+  useTLS: true
+  servicePort: 8443
+  containerPort: 8443
+  type: NodePort
+  # Set a nodePort which is available
+  # nodePort: 32443
+  # Kong proxy ingress settings.
+  ingress:
+    # Enable/disable exposure using ingress.
+    enabled: false
+    # TLS secret name.
+    # tls: kong-proxy.example.com-tls
+    # Array of ingress hosts.
+    hosts: []
+    # Map of ingress annotations.
+    annotations: {}
+    # Ingress path.
+    path: /
+
+# Set runMigrations to run Kong migrations
+runMigrations: true
+
+# Specify Kong configurations
+# Kong configurations guide https://getkong.org/docs/latest/configuration/
+env:
+  database: postgres
+
+# If you want to specify resources, uncomment the following
+# lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+resources: {}
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+# readinessProbe for Kong pods
+readinessProbe:
+  httpGet:
+    path: "/status"
+    port: admin
+    scheme: HTTPS
+  initialDelaySeconds: 30
+  timeoutSeconds: 1
+  periodSeconds: 10
+  successThreshold: 1
+  failureThreshold: 5
+
+# livenessProbe for Kong pods
+livenessProbe:
+  httpGet:
+    path: "/status"
+    port: admin
+    scheme: HTTPS
+  initialDelaySeconds: 30
+  timeoutSeconds: 5
+  periodSeconds: 30
+  successThreshold: 1
+  failureThreshold: 5
+
+# Affinity for pod assignment
+# Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+# affinity: {}
+
+# Tolerations for pod assignment
+# Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+tolerations: []
+
+# Node labels for pod assignment
+# Ref: https://kubernetes.io/docs/user-guide/node-selection/
+nodeSelector: {}
+
+# Annotation to be added to Kong pods
+podAnnotations: {}
+
+# Kong pod count
+replicaCount: 1
+
+# Kong has a choice of either Postgres or Cassandra as a backend datatstore.
+# This chart allows you to choose either of them with the `database.type`
+# parameter.  Postgres is chosen by default.
+
+# Additionally, this chart allows you to use your own database or spin up a new
+# instance by using the `postgres.enabled` or `cassandra.enabled` parameters.
+# Enabling both will create both databases in your cluster, but only one
+# will be used by Kong based on the `env.database` parameter.
+# Postgres is enabled by default.
+
+# Cassandra chart configs
+cassandra:
+  enabled: false
+
+# PostgreSQL chart configs
+postgresql:
+  enabled: true
+  postgresUser: kong
+  postgresDatabase: kong
+  service:
+    port: 5432

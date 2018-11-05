@@ -1,0 +1,128 @@
+apiVersion: apps/v1beta2
+kind: StatefulSet
+metadata:
+  name: {{ template "nats.fullname" . }}
+  labels:
+    app: "{{ template "nats.name" . }}"
+    chart: "{{ template "nats.chart" . }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+spec:
+  serviceName: {{ template "nats.fullname" . }}-headless
+  replicas: {{ .Values.replicaCount }}
+  updateStrategy:
+    type: {{ .Values.statefulset.updateStrategy }}
+    {{- if .Values.statefulset.rollingUpdatePartition }}
+    rollingUpdate:
+      partition: {{ .Values.statefulset.rollingUpdatePartition }}
+    {{- end }}
+  selector:
+    matchLabels:
+      app: "{{ template "nats.name" . }}"
+      release: {{ .Release.Name | quote }}
+  template:
+    metadata:
+      labels:
+        app: "{{ template "nats.name" . }}"
+        chart: "{{ template "nats.chart" . }}"
+        release: {{ .Release.Name | quote }}
+        {{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels | indent 8 }}
+        {{- end }}
+      {{- if .Values.podAnnotations }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8 }}
+      {{- end }}
+    spec:
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.image.pullSecrets | indent 8 }}
+      {{- end }}
+      {{- if .Values.securityContext.enabled }}
+      securityContext:
+        fsGroup: {{ .Values.securityContext.fsGroup }}
+        runAsUser: {{ .Values.securityContext.runAsUser }}
+      {{- end }}
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+      {{- end }}
+      {{- if .Values.schedulerName }}
+      schedulerName: {{ .Values.schedulerName | quote }}
+      {{- end }}
+      {{- if eq .Values.antiAffinity "hard" }}
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - topologyKey: "kubernetes.io/hostname"
+              labelSelector:
+                matchLabels:
+                  app: "{{ template "nats.name" . }}"
+                  release: {{ .Release.Name | quote }}
+      {{- else if eq .Values.antiAffinity "soft" }}
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            podAffinityTerm:
+              topologyKey: kubernetes.io/hostname
+              labelSelector:
+                matchLabels:
+                  app: "{{ template "nats.name" . }}"
+                  release: {{ .Release.Name | quote }}
+      {{- end }}
+      containers:
+      - name: {{ template "nats.name" . }}
+        image: {{ template "nats.image" . }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command:
+        - gnatsd
+        args:
+        - -c
+        - /opt/bitnami/nats/gnatsd.conf
+        ports:
+        - name: client
+          containerPort: {{ .Values.clientService.port }}
+        - name: cluster
+          containerPort: {{ .Values.clusterService.port }}
+        - name: monitoring
+          containerPort: {{ .Values.monitoringService.port }}
+        {{- if .Values.livenessProbe.enabled }}
+        livenessProbe:
+          httpGet:
+            path: /
+            port: monitoring
+          initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.livenessProbe.successThreshold }}
+          failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+        {{- end }}
+        {{- if .Values.readinessProbe.enabled }}
+        readinessProbe:
+          httpGet:
+            path: /
+            port: monitoring
+          initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.readinessProbe.successThreshold }}
+          failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+        {{- end }}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        volumeMounts:
+          - name: config
+            mountPath: /opt/bitnami/nats/gnatsd.conf
+            subPath: gnatsd.conf
+        {{- if .Values.sidecars }}
+{{ toYaml .Values.sidecars | indent 6 }}
+        {{- end }}
+      volumes:
+      - name: config
+        configMap:
+          name: {{ template "nats.fullname" . }}

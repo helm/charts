@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "kubedb.fullname" . }}
+  labels:
+    app: "{{ template "kubedb.name" . }}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  ports:
+  - name: api
+    port: 443
+    targetPort: 8443
+  selector:
+    app: "{{ template "kubedb.name" . }}"
+    release: "{{ .Release.Name }}"

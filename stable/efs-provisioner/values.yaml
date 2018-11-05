@@ -1,0 +1,67 @@
+#
+# Default values for EFS provisioner service
+# https://github.com/kubernetes-incubator/external-storage/tree/master/aws/efs
+#
+
+## Deploy environment label, e.g. dev, test, prod
+##
+global:
+  deployEnv: dev
+
+## Containers
+##
+replicaCount: 1
+revisionHistoryLimit: 10
+image:
+  repository: quay.io/external_storage/efs-provisioner
+  tag: v0.1.2
+  pullPolicy: IfNotPresent
+
+busyboxImage:
+  repository: gcr.io/google_containers/busybox
+  tag: 1.27
+  pullPolicy: IfNotPresent
+
+## Configure provisioner
+## https://github.com/kubernetes-incubator/external-storage/tree/master/aws/efs#deployment
+##
+efsProvisioner:
+  efsFileSystemId: fs-12345678
+  awsRegion: us-east-2
+  path: /example-pv
+  provisionerName: example.com/aws-efs
+  storageClass:
+    name: efs
+    isDefault: false
+    gidAllocate:
+      enabled: true
+      gidMin: 40000
+      gidMax: 50000
+    reclaimPolicy: Delete
+
+## Enable RBAC
+##
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+
+## Create or use ServiceAccount
+##
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+## Configure resources
+##
+resources: {}
+  # To specify resources, uncomment the following lines, adjust them as necessary,
+  # and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 200m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi

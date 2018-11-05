@@ -1,0 +1,223 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "elasticsearch.fullname" . }}-setup-script
+  labels:
+    app: {{ template "elasticsearch.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+data:
+  setup.sh: |
+    #!/bin/bash
+    # Startup script for preparing ElasticSearch pod for running with Mission Control
+
+    echo "Waiting for ElasticSearch to be ready"
+    until [[ "$(curl -s -o /dev/null -w \"%{http_code}\" ${ELASTIC_SEARCH_URL}/_cluster/health?local=true)" =~ "200" ]]; do
+    echo "Waiting for ElasticSearch availability"
+    sleep 2
+    done
+
+    mkdir -p /var/log/elasticsearch
+    bash /scripts/createIndices.sh  > /var/log/elasticsearch/createIndices.sh.log 2>&1
+
+  createIndices.sh: |
+    #!/bin/bash
+    ELASTIC_SEARCH_LABEL='Elasticsearch'
+
+    #Print the input with additional formatting to indicate a section/title
+    title () {
+        echo
+        echo "-----------------------------------------------------"
+        printf "| %-50s|\n" "$1"
+        echo "-----------------------------------------------------"
+    }
+
+    # This function prints the echo with color.
+    #If invoked with a single string, treats it as INFO level
+    #Valid inputs for the second parameter are DEBUG and INFO
+    log() {
+        echo ""
+        echo -e $1
+        echo ""
+    }
+
+    # Utility method to display warnings and important information
+    warn() {
+        echo ""
+        echo -e "\033[33m $1 \033[0m"
+        echo ""
+    }
+
+    errorExit() {
+        echo; echo -e "\033[31mERROR:$1\033[0m"; echo
+        exit 1
+    }
+
+    attempt_number=0
+    elasticSearchIsNotReady(){
+        #echo "in method isElasticSearchReady"
+        curl "$ELASTIC_SEARCH_URL" > /dev/null 2>&1
+        if [ $? -ne 0 ]; then
+            if [ $attempt_number -gt 10 ]; then
+                errorExit "Unable to proceed. $ELASTIC_SEARCH_LABEL is not reachable. The command [curl $ELASTIC_SEARCH_URL] is failing. Gave up after $attempt_number attempts"
+            fi
+            let "attempt_number=attempt_number+1"
+            return 0
+        else
+            return 1
+        fi
+    }
+
+    runCommand() {
+        curl_response=
+        local operation=$1
+        local commandToRun=$2
+        local request_body=$3
+        local params=$4
+        local waitTime=$5
+
+        if [[ ! -z "$waitTime" && "$waitTime" != "" ]]; then
+            sleep $waitTime
+        fi
+
+        commandToRun="\"$ELASTIC_SEARCH_URL/$commandToRun\""
+        if [[ ! -z "$ELASTIC_SEARCH_USERNAME" && ! -z "$ELASTIC_SEARCH_PASSWORD" ]]; then
+            commandToRun="$commandToRun --user $ELASTIC_SEARCH_USERNAME:$ELASTIC_SEARCH_PASSWORD"
+        fi
+
+        if [[ ! -z "$params" ]]; then
+            commandToRun="$commandToRun $params"
+        fi
+
+        if [[ ! -z "$request_body" ]]; then
+            commandToRun="$commandToRun -d '"$request_body"'"
+        fi
+        if [[ "$operation" == "GET" ]]; then
+            commandToRun="curl --silent -XGET $commandToRun"
+            curl_response=$(eval "${commandToRun}")
+        else
+            eval "curl --silent -X $operation ${commandToRun}" || errorExit "could not update Elastic Search"
+        fi
+    }
+
+    setElasticSearchParams() {
+        log "Waiting for $ELASTIC_SEARCH_LABEL to get ready (using the command: [curl $ELASTIC_SEARCH_URL])"
+        while elasticSearchIsNotReady
+        do
+                sleep 5
+                echo -n '.'
+        done
+        log "$ELASTIC_SEARCH_LABEL is ready. Executing commands"
+        runCommand "GET" "_template/storage_insight_template" "" "" 10
+        #echo "$ELASTIC_SEARCH_LABEL curl response: $curl_response"
+        if [[ $curl_response = {} ]]; then
+            migrateToElastic61
+            runCommand "GET" "_template/active_insight_data"
+            if [[ $curl_response = {} ]]; then
+              log "Creating new template"
+              runCommand "PUT" "_template/storage_insight_template" '{"template":"active_insight_data_*","aliases":{"active_insight_data":{},"search_insight_data":{}},"mappings":{"artifacts_storage":{"properties":{"used_space":{"type":"double"},"timestamp":{"type":"date"},"artifacts_size":{"type":"double"}}}}}' '-H "Content-Type: application/json"' > /dev/null 2>&1
+              runCommand "PUT" "%3Cactive_insight_data_%7Bnow%2Fd%7D-1%3E" > /dev/null 2>&1
+
+            else
+               performUpgrade
+            fi
+
+        fi
+        runCommand "GET" "_template/build_info_template" "" "" 10
+        if [[ $curl_response = {} ]]; then
+            log "Create Build Info template"
+            createBuildInfoTemplate
+        fi
+
+        updateBuildInfoTemplate
+        log "$ELASTIC_SEARCH_LABEL setup is now complete"
+
+        log "Created build info templates"
+    }
+
+    performUpgrade(){
+        log "Performing upgrade"
+        runCommand "DELETE" "_template/active_insight_data" > /dev/null 2>&1
+        runCommand "PUT" "_template/storage_insight_template" '{"template":"active_insight_data_*","aliases":{"active_insight_data":{},"search_insight_data":{}},"mappings":{"artifacts_storage":{"properties":{"used_space":{"type":"double"},"timestamp":{"type":"date"},"artifacts_size":{"type":"double"}}}}}' '-H "Content-Type: application/json"' > /dev/null 2>&1
+        log "Created new template"
+        runCommand "GET" "_alias/active_insight_data"
+        if [[ $curl_response = *missing* ]]; then
+            runCommand "PUT" "%3Cactive_insight_data_%7Bnow%2Fd%7D-1%3E" > /dev/null 2>&1
+        else
+            indexname=$(echo $curl_response |cut -d'"' -f 2)
+            log "Old index $indexname"
+            curl_response=$(runCommand "PUT" "%3Cactive_insight_data_%7Bnow%2Fd%7D-1%3E")
+            if [[ "$curl_response" = *"resource_already_exists_exception"* ]]; then
+                log "Index with same name exists, creating with different name"
+                runCommand "PUT" "%3Cactive_insight_data_%7Bnow%2Fd%7D-2%3E" > /dev/null 2>&1
+            fi
+            log "Created new index"
+            runCommand "GET" "_alias/active_insight_data"
+            runCommand "POST" "_aliases" '{"actions":[{"remove":{"index":"'$indexname'","alias":"active_insight_data"}}]}' '-H "Content-Type: application/json"' > /dev/null 2>&1
+            log "Removed the old index from active alias"
+        fi
+    }
+
+    createBuildInfoTemplate(){
+        runCommand "PUT" "_template/build_info_template" '{"template":"active_build_data_*","aliases":{"active_build_data":{},"search_build_data":{}},"mappings":{"build_info":{"properties":{"created_time":{"type":"date"},"timestamp":{"type":"date"},"build_name":{"type":"keyword"},"build_number":{"type":"integer"},"build_URL":{"type":"keyword"},"build_created_by":{"type":"keyword"},"project_name":{"type":"keyword"},"project_id":{"type":"keyword"},"service_id":{"type":"keyword"},"access_service_id":{"type":"keyword"},"build_promotion":{"type":"keyword"},"build_status":{"type":"keyword"},"build_duration_seconds":{"type":"integer"},"total_no_of_commits":{"type":"short"},"total_no_of_modules":{"type":"short"},"total_dependency_count":{"type":"short"},"total_artifact_count":{"type":"short"},"total_artifact_count_downloaded":{"type":"short"},"total_artifact_count_not_downloaded":{"type":"short"},"total_artifact_size":{"type":"double"},"total_dependency_size":{"type":"double"},"module_dependency":{"type":"nested","properties":{"module_name":{"type":"keyword"},"dependency_name":{"type":"keyword"},"dependency_type":{"type":"keyword"},"dependency_size":{"type":"double"}}},"module_artifacts":{"type":"nested","properties":{"module_name":{"type":"keyword"},"artifact_name":{"type":"keyword"},"artifact_size":{"type":"double"},"no_of_downloads":{"type":"short"},"last_download_by":{"type":"keyword"}}},"commits":{"type":"nested","properties":{"repo":{"type":"keyword"},"branch":{"type":"keyword"},"commit_message":{"type":"text"},"revision_no":{"type":"keyword"}}},"total_vulnerability":{"properties":{"low":{"type":"short"},"medium":{"type":"short"},"high":{"type":"short"}}},"total_open_source_violoation":{"properties":{"low":{"type":"short"},"medium":{"type":"short"},"high":{"type":"short"}}},"major_xray_issues":{"type":"long"},"minor_xray_issues":{"type":"long"},"unknown_xray_issues":{"type":"long"},"critical_xray_issues":{"type":"long"}}}}}' '-H "Content-Type: application/json"' > /dev/null 2>&1
+        runCommand "PUT" "%3Cactive_build_data_%7Bnow%2Fd%7D-1%3E" > /dev/null 2>&1
+    }
+
+    updateBuildInfoTemplate(){
+        runCommand "PUT"  "active_build*/_mapping/build_info"  '{"properties":{"created_time":{"type":"date"},"timestamp":{"type":"date"},"build_name":{"type":"keyword"},"build_number":{"type":"integer"},"build_URL":{"type":"keyword"},"build_created_by":{"type":"keyword"},"project_name":{"type":"keyword"},"project_id":{"type":"keyword"},"service_id":{"type":"keyword"},"access_service_id":{"type":"keyword"},"build_promotion":{"type":"keyword"},"build_status":{"type":"keyword"},"build_duration_seconds":{"type":"integer"},"total_no_of_commits":{"type":"short"},"total_no_of_modules":{"type":"short"},"total_dependency_count":{"type":"short"},"total_artifact_count":{"type":"short"},"total_artifact_count_downloaded":{"type":"short"},"total_artifact_count_not_downloaded":{"type":"short"},"total_artifact_size":{"type":"double"},"total_dependency_size":{"type":"double"},"module_dependency":{"type":"nested","properties":{"module_name":{"type":"keyword"},"dependency_name":{"type":"keyword"},"dependency_type":{"type":"keyword"},"dependency_size":{"type":"double"}}},"module_artifacts":{"type":"nested","properties":{"module_name":{"type":"keyword"},"artifact_name":{"type":"keyword"},"artifact_size":{"type":"double"},"no_of_downloads":{"type":"short"},"last_download_by":{"type":"keyword"}}},"commits":{"type":"nested","properties":{"repo":{"type":"keyword"},"branch":{"type":"keyword"},"commit_message":{"type":"text"},"revision_no":{"type":"keyword"}}},"total_vulnerability":{"properties":{"low":{"type":"short"},"medium":{"type":"short"},"high":{"type":"short"}}},"total_open_source_violoation":{"properties":{"low":{"type":"short"},"medium":{"type":"short"},"high":{"type":"short"}}},"major_xray_issues":{"type":"long"},"minor_xray_issues":{"type":"long"},"unknown_xray_issues":{"type":"long"},"critical_xray_issues":{"type":"long"}}}'  '-H "Content-Type: application/json"' > /dev/null 2>&1
+        log "Updated build info indices"
+    }
+
+    migrateToElastic61(){
+        local activeIndexPrefix="active_insight_data"
+        local repoStorageName="migrate-repostorage"
+        local storageSummaryName="migrate-storage"
+        local index=""
+
+        log "Getting current indices with name : ${activeIndexPrefix}"
+        result=$(curl --silent "$ELASTIC_SEARCH_URL/_cat/indices/${activeIndexPrefix}*")
+        if [[ "$result" = *"${activeIndexPrefix}"* ]]; then
+            echo $result | while read indices ; do
+                index=$(echo $indices | awk -F " " '{print $3}')
+                log "Attempting migrate of index : ${index}"
+                indexDate=$(echo "${index}" | sed -e "s#${activeIndexPrefix}##g")
+                modifiedRepoStorageName=${repoStorageName}${indexDate}
+                modifiedStorageSummaryName=${storageSummaryName}${indexDate}
+
+                # Reindex from each type
+                runCommand 'POST' '_reindex' '{"source":{"index":"'${index}'","type":"repo_storage_info"},"dest":{"index":"'${modifiedRepoStorageName}'"}}' '-H "Content-Type: application/json"' 2 > /dev/null 2>&1
+                runCommand 'POST' '_reindex' '{"source":{"index":"'${index}'","type":"storage_summary_info"},"dest":{"index":"'${modifiedStorageSummaryName}'"}}' '-H "Content-Type: application/json"' 2 > /dev/null 2>&1
+
+                # Add type field
+                runCommand 'POST' ${modifiedRepoStorageName}'/_update_by_query' '{"script": {"inline": "ctx._source.type = \"repo_storage_info\"","lang": "painless"}}'  '-H "Content-Type: application/json"' 2 > /dev/null 2>&1
+                runCommand 'POST' ${modifiedStorageSummaryName}'/_update_by_query' '{"script": {"inline": "ctx._source.type = \"storage_summary_info\"","lang": "painless"}}'  '-H "Content-Type: application/json"' 2 > /dev/null 2>&1
+
+                # Add the new indices to search alias
+                runCommand 'POST' '_aliases' '{"actions" : [{ "add" : { "index" : "'${modifiedRepoStorageName}'", "alias" : "search_insight_data" } }]}' '-H "Content-Type: application/json"' 2 > /dev/null 2>&1
+                runCommand 'POST' '_aliases' '{"actions" : [{ "add" : { "index" : "'${modifiedStorageSummaryName}'", "alias" : "search_insight_data" } }]}'  '-H "Content-Type: application/json"' 2 > /dev/null 2>&1
+
+                # Delete the old index
+                log "Deleting index : ${index}"
+                runCommand 'DELETE' "${index}" > /dev/null 2>&1
+            done
+        fi
+    }
+
+    main() {
+        if [[ -z $ELASTIC_SEARCH_URL ]]; then
+            title "$ELASTIC_SEARCH_LABEL Manual Setup"
+            log "This script will attempt to seed $ELASTIC_SEARCH_LABEL with the templates and indices needed by JFrog Mission Control"
+
+            warn "Please enter the same details as you entered during installation. If the details are incorrect, you may need to rerun the installation"
+
+            local DEFAULT_URL="http://docker.for.mac.localhost:9200"
+            read -p  "Please enter the $ELASTIC_SEARCH_LABEL URL [$DEFAULT_URL]:" choice
+            : ${choice:=$DEFAULT_URL}
+            ELASTIC_SEARCH_URL=$choice
+        fi
+        echo "Beginning $ELASTIC_SEARCH_LABEL bootstrap"
+        setElasticSearchParams
+    }
+
+    main

@@ -1,17 +1,18 @@
+{{- if .Values.agent.enabled -}}
 apiVersion: v1
 kind: Service
 metadata:
-  name: "{{ template "jaeger.fullname" . }}-agent"
+  name: {{ template "jaeger.agent.name" . }}
   labels:
-    app: "{{ template "jaeger.name" . }}"
-    jaeger-infra: {{ .Values.agent.name }}
+    app: {{ template "jaeger.name" . }}
+    jaeger-infra: agent-service
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    component: "agent"
-    heritage: "{{ .Release.Service }}"
-    release: "{{ .Release.Name }}"
+    component: agent
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
 {{- if .Values.agent.service.annotations }}
   annotations:
-{{ toYaml .Values.agent.service.annotations | indent 6 }}
+{{ toYaml .Values.agent.service.annotations | indent 4 }}
 {{- end }}
 spec:
   ports:
@@ -27,9 +28,15 @@ spec:
     port: {{ .Values.agent.service.binaryPort }}
     protocol: UDP
     targetPort: {{ .Values.agent.service.binaryPort }}
-  clusterIP: None
+  - name: agent-sampling
+    port: {{ .Values.agent.service.samplingPort }}
+    protocol: TCP
+    targetPort: {{ .Values.agent.service.samplingPort }}
+  type: {{ .Values.agent.service.type }}
   selector:
-    app: "{{ template "jaeger.name" . }}"
-    component: "agent"
-    release: "{{ .Release.Name }}"
+    app: {{ template "jaeger.name" . }}
+    component: agent
+    release: {{ .Release.Name }}
     jaeger-infra: agent-instance
+{{- template "loadBalancerSourceRanges" .Values.agent }}
+{{- end -}}

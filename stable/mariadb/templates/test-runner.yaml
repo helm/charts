@@ -20,16 +20,15 @@ spec:
         name: tools
   containers:
     - name: mariadb-test
-      image: {{.Values.image}}
+      image: {{ template "mariadb.image" . }}
+      imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
       command: ["/tools/bats/bats", "-t", "/tests/run.sh"]
-      {{- if .Values.usePassword }}
       env:
         - name: MARIADB_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "mariadb.fullname" . }}
               key: mariadb-root-password
-      {{- end }}
       volumeMounts:
       - mountPath: /tests
         name: tests

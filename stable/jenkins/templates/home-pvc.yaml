@@ -2,6 +2,10 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
+{{- if .Values.Persistence.Annotations }}
+  annotations:
+{{ toYaml .Values.Persistence.Annotations | indent 4 }}
+{{- end }}
   name: {{ template "jenkins.fullname" . }}
   labels:
     app: {{ template "jenkins.fullname" . }}

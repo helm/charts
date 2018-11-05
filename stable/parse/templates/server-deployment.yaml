@@ -1,26 +1,38 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}-server
+  name: {{ template "parse.fullname" . }}-server
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "parse.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
     component: "server"
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "parse.name" . }}
+      release: "{{ .Release.Name }}"
+      component: "server"
   replicas: 1
   template:
     metadata:
       labels:
-        app: {{ template "name" . }}
+        app: {{ template "parse.name" . }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: "{{ .Release.Name }}"
         component: "server"
     spec:
+      {{- if .Values.server.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.server.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end}}
+      {{- end }}
       containers:
-      - name: {{ template "fullname" . }}
-        image: "{{ .Values.server.image }}"
-        imagePullPolicy: {{ .Values.server.imagePullPolicy | quote }}
+      - name: {{ template "parse.fullname" . }}
+        image: {{ template "parse.server.image" . }}
+        imagePullPolicy: {{ .Values.server.image.pullPolicy | quote }}
         env:
         - name: PARSE_HOST
           value: "0.0.0.0"
@@ -33,12 +45,19 @@ spec:
         - name: PARSE_MASTER_KEY
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "parse.fullname" . }}
               key: master-key
         - name: MONGODB_HOST
-          value: {{ template "mongodb.fullname" . }}
+          value: {{ template "parse.mongodb.fullname" . }}
         - name: MONGODB_PORT
           value: "27017"
+        {{- if .Values.mongodb.usePassword }}
+        - name: MONGODB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "parse.mongodb.fullname" . }}
+              key: mongodb-root-password
+        {{- end }}
         ports:
         - name: server-http
           containerPort: {{ .Values.server.port }}
@@ -67,7 +86,7 @@ spec:
       - name: parse-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "fullname" . }}
+          claimName: {{ template "parse.fullname" . }}
       {{- else }}
         emptyDir: {}
       {{- end }}

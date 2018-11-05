@@ -1,0 +1,89 @@
+{{- if .Values.spark.enabled -}}
+{{- if or (.Capabilities.APIVersions.Has "batch/v1beta1") (.Capabilities.APIVersions.Has "batch/v2alpha1") -}}
+apiVersion: {{ template "cronjob.apiVersion" $ }}
+kind: CronJob
+metadata:
+  name: {{ template "jaeger.fullname" . }}-spark
+  labels:
+    app: {{ template "jaeger.name" . }}
+    jaeger-infra: spark-cronjob
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    component: spark
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+{{- if .Values.spark.annotations }}
+  annotations:
+{{ toYaml .Values.spark.annotations | indent 4 }}
+{{- end }}
+spec:
+  schedule: {{ .Values.spark.schedule | quote }}
+  successfulJobsHistoryLimit: {{ .Values.spark.successfulJobsHistoryLimit }}
+  failedJobsHistoryLimit: {{ .Values.spark.failedJobsHistoryLimit }}
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: {{ template "jaeger.name" . }}
+            component: spark
+            release: {{ .Release.Name }}
+            jaeger-infra: spark-instance
+            {{- if .Values.spark.podLabels }}
+{{ toYaml .Values.spark.podLabels | indent 12 }}
+            {{- end }}
+        spec:
+          nodeSelector:
+{{ toYaml .Values.spark.nodeSelector | indent 12 }}
+{{- if .Values.spark.tolerations }}
+      tolerations:
+{{ toYaml .Values.spark.tolerations | indent 8 }}
+{{- end }}
+          containers:
+          - name: {{ template "jaeger.fullname" . }}-spark
+            image: {{ .Values.spark.image }}:{{ .Values.spark.tag }}
+            imagePullPolicy: {{ .Values.spark.pullPolicy }}
+            env:
+            - name: STORAGE
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "jaeger.fullname" . }}
+                  key: span-storage.type
+            {{- if eq .Values.storage.type "cassandra" }}
+            - name: CASSANDRA_CONTACT_POINTS
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "jaeger.fullname" . }}
+                  key: cassandra.contact-points
+            - name: CASSANDRA_KEYSPACE
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "jaeger.fullname" . }}
+                  key: cassandra.keyspace
+              {{- end }}
+            {{- if eq .Values.storage.type "elasticsearch" }}
+            - name: ES_NODES
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "jaeger.fullname" . }}
+                  key: es.server-urls
+            - name: ES_NODES_WAN_ONLY
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "jaeger.fullname" . }}
+                  key: es.nodes-wan-only
+            - name: ES_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "jaeger.fullname" . }}
+                  key: es.password
+            - name: ES_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "jaeger.fullname" . }}
+                  key: es.username
+            {{- end }}
+            resources:
+{{ toYaml .Values.spark.resources | indent 14 }}
+          restartPolicy: OnFailure
+{{- end -}}
+{{- end -}}

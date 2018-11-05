@@ -1,0 +1,22 @@
+{{- if .Values.service }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "fluentd-elasticsearch.fullname" . }}
+  labels:
+    app: {{ template "fluentd-elasticsearch.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+  {{- range $port := .Values.service.ports }}
+    - name: {{ $port.name }}
+      port: {{ $port.port }}
+      targetPort: {{ $port.port }}
+  {{- end }}
+  selector:
+    app: {{ template "fluentd-elasticsearch.fullname" . }}
+    release: {{ .Release.Name }}
+{{- end }}

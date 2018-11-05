@@ -1,0 +1,83 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "prometheus-postgres-exporter.fullname" . }}
+  labels:
+    app: {{ template "prometheus-postgres-exporter.name" . }}
+    chart: {{ template "prometheus-postgres-exporter.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "prometheus-postgres-exporter.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "prometheus-postgres-exporter.name" . }}
+        release: {{ .Release.Name }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+{{- if .Values.annotations }}
+{{ toYaml .Values.annotations | indent 8 }}
+{{- end}}
+    spec:
+      serviceAccountName: {{ template "prometheus-postgres-exporter.serviceAccountName" . }}
+      containers:
+        - name: {{ .Chart.Name }}
+          args:
+          - "--extend.query-path=/etc/config.yaml"
+          {{- if .Values.config.disableDefaultMetrics }}
+          - "--disable-default-metrics"
+          {{- end }}
+          env:
+            - name: DATA_SOURCE_NAME
+              valueFrom:
+                secretKeyRef:
+                  key: data_source_name
+                  name: {{ template "prometheus-postgres-exporter.fullname" . }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.targetPort }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+          volumeMounts:
+            - name: queries
+              mountPath: /etc/config.yaml
+              subPath: config.yaml
+{{- with .Values.extraContainers }}
+{{ tpl . $ | indent 8 }}
+{{- end }}
+     {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+      volumes:
+      - configMap:
+          defaultMode: 420
+          name: {{ template "prometheus-postgres-exporter.fullname" . }}
+        name: queries
+{{- with .Values.extraVolumes }}
+{{ tpl . $ | indent 6 }}
+{{- end }}
