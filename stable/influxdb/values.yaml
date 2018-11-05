@@ -231,3 +231,5 @@ config:
     log_enabled: true
     enabled: true
     run_interval: 1s
+
+exposeRpcService: true
