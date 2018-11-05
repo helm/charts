@@ -13,8 +13,13 @@ metadata:
     heritage: "{{ .Release.Service }}"
 spec:
   type: {{ .Values.proxy.type }}
-  {{- if and (eq .Values.proxy.type "LoadBalancer") .Values.proxy.loadBalancerIP }}
+  {{- if eq .Values.proxy.type "LoadBalancer" }}
+  {{- if .Values.proxy.loadBalancerIP }}
   loadBalancerIP: {{ .Values.proxy.loadBalancerIP }}
+  {{- end }}
+  {{- if .Values.proxy.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges: {{ .Values.proxy.loadBalancerSourceRanges }}
+  {{- end }}
   {{- end }}
   ports:
   - name: kong-proxy
