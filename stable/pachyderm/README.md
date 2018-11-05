@@ -77,6 +77,7 @@ Google Cloud
 | Parameter                | Description           | Default           |
 |--------------------------|-----------------------|-------------------|
 | `google.bucketName`      | GCS bucket name       | `""`              |
+| `google.credentials`     | GCP credentials       | `""`              |
 
 
 Amazon Web Services
