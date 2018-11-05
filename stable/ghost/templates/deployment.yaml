@@ -28,8 +28,8 @@ spec:
       {{- else }}
       initContainers:
       - name: volume-permissions
-        image: "{{ .Values.volumePermissions.image.name }}:{{ .Values.volumePermissions.image.tag }}"
-        imagePullPolicy: {{ .Values.volumePermissions.image.pullPolicy | quote }}
+        image: {{ template "ghost.volumePermissions.image" . }}
+        imagePullPolicy: "{{ .Values.volumePermissions.image.pullPolicy }}"
         command: ['sh', '-c', 'chmod -R g+rwX {{ .Values.persistence.path }}']
         volumeMounts:
         - mountPath: {{ .Values.persistence.path }}
