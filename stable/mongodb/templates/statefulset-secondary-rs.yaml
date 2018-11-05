@@ -28,9 +28,14 @@ spec:
       {{- if .Values.podLabels }}
 {{ toYaml .Values.podLabels | indent 8 }}
       {{- end }}
-      {{- if .Values.podAnnotations }}
+      {{- if or .Values.podAnnotations .Values.metrics.enabled }}
       annotations:
+{{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
+{{- end }}
+{{- if .Values.metrics.enabled }}
+{{ toYaml .Values.metrics.podAnnotations | indent 8 }}
+{{- end }}
       {{- end }}
     spec:
       {{- if .Values.securityContext.enabled }}
@@ -126,6 +131,35 @@ spec:
             {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
+{{- if .Values.metrics.enabled }}
+        - name: metrics
+          image: {{ template "metrics.image" . }}
+          imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
+          env:
+          - name: MONGODB_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ if .Values.existingSecret }}{{ .Values.existingSecret }}{{- else }}{{ template "mongodb.fullname" . }}{{- end }}
+                key: mongodb-root-password
+          command: [ 'sh', '-c', '/bin/mongodb_exporter --mongodb.uri mongodb://root:${MONGODB_ROOT_PASSWORD}@localhost:{{ .Values.service.port }}/admin' ]
+          ports:
+          - name: metrics
+            containerPort: 9216
+          livenessProbe:
+            httpGet:
+              path: /metrics
+              port: metrics
+            initialDelaySeconds: 15
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /metrics
+              port: metrics
+            initialDelaySeconds: 5
+            timeoutSeconds: 1
+          resources:
+  {{ toYaml .Values.metrics.resources | indent 10 }}
+{{- end }}
       volumes:
         {{- if .Values.configmap }}
         - name: config

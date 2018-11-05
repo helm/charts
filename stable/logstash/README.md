@@ -82,6 +82,7 @@ The following table lists the configurable parameters of the chart and its defau
 | `service.ports`                 | Ports exposed by service                           | beats                                            |
 | `service.loadBalancerIP`        | The load balancer IP for the service               | unset                                            |
 | `service.clusterIP`             | The cluster IP for the service                     | unset                                            |
+| `service.externalTrafficPolicy` | Set externalTrafficPolicy                          | unset                                            |
 | `ports`                         | Ports exposed by logstash container                | beats                                            |
 | `ingress.enabled`               | Enables Ingress                                    | `false`                                          |
 | `ingress.annotations`           | Ingress annotations                                | `{}`                                             |
