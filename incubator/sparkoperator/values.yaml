@@ -1,5 +1,5 @@
 operatorImageName: gcr.io/spark-operator/spark-operator
-operatorVersion: v2.3.1-v1alpha1-latest
+operatorVersion: v2.4.0-v1alpha1-latest
 sparkJobNamespace: default
 
 rbac:
@@ -17,3 +17,12 @@ createSparkJobNamespace: false
 
 enableWebhook: true
 enableMetrics: true
+
+controllerThreads: 10
+installCrds: true
+metricsPort: "10254"
+metricsEndpoint: "/metrics"
+metricsPrefix: ""
+resyncInterval: 30
+submissionThreads: 3
+webhookPort: 8080
