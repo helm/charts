@@ -1,0 +1,37 @@
+{{ if .Values.crds.cleanup }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ template "metacontroller.fullname" . }}-crd-cleanup
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    "helm.sh/hook": pre-delete
+    "helm.sh/hook-weight": "3"
+    "helm.sh/hook-delete-policy": hook-succeeded
+  labels:
+    app: {{ template "metacontroller.name" . }}-operator
+
+spec:
+  template:
+    metadata:
+      name: {{ template "metacontroller.fullname" . }}-crd-cleanup
+      labels:
+        app: {{ template "metacontroller.fullname" . }}-crd-cleanup
+{{ include "metacontroller.labels" . | indent 8 }}
+    spec:
+    {{- if .Values.rbac.create }}
+      serviceAccountName: {{ template "metacontroller.serviceAccountName" . }}
+    {{- end }}
+      containers:
+        - name: kubectl
+          image: "{{ .Values.hyperkubeImage.repository }}:{{ .Values.hyperkubeImage.tag }}"
+          imagePullPolicy: "{{ .Values.hyperkubeImage.pullPolicy }}"
+          command:
+          - /bin/sh
+          - -c
+          - >
+              kubectl delete crd compositecontrollers.metacontroller.k8s.io;
+              kubectl delete crd controllerrevisions.metacontroller.k8s.io;
+              kubectl delete crd decoratorcontrollers.metacontroller.k8s.io;
+      restartPolicy: OnFailure
+{{- end }}

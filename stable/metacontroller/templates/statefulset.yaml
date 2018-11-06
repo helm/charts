@@ -10,6 +10,7 @@ spec:
   selector:
     matchLabels:
       app: {{ template "metacontroller.fullname" . }}
+{{ include "metacontroller.labels" . | indent 6 }}
   serviceName: ""
   template:
     metadata:

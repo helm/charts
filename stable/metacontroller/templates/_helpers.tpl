@@ -38,3 +38,10 @@ Create chart name and version as used by the chart label.
     {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
+
+{{/* Generate basic labels */}}
+{{- define "metacontroller.labels" }}
+chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+release: {{ .Release.Name | quote }}
+heritage: {{ .Release.Service | quote }}
+{{- end }}
