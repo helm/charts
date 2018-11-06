@@ -19,6 +19,8 @@ image:
 service:
   type: ClusterIP
   # clusterIP: None
+  # Set this to local, to preserve client source ip.  Default stripes out the source ip
+  # externalTrafficPolicy: Local
   annotations: {}
     ## AWS example for use with LoadBalancer service type.
     # external-dns.alpha.kubernetes.io/hostname: logstash.cluster.local
