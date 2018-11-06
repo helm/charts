@@ -1,3 +1,4 @@
+{{- if not .Values.alertmanager.statefulSet.enabled -}}
 {{- if and .Values.alertmanager.enabled .Values.alertmanager.persistentVolume.enabled -}}
 {{- if not .Values.alertmanager.persistentVolume.existingClaim -}}
 apiVersion: v1
@@ -27,5 +28,6 @@ spec:
   resources:
     requests:
       storage: "{{ .Values.alertmanager.persistentVolume.size }}"
+{{- end -}}
 {{- end -}}
 {{- end -}}
