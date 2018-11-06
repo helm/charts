@@ -14,6 +14,7 @@ $ helm install stable/kube-state-metrics
 
 | Parameter                             | Description                                             | Default                                     |
 |---------------------------------------|---------------------------------------------------------|---------------------------------------------|
+| `global.imagePullSecrets`                    | Reference to secrets to be used when pulling images     | []                                          |
 | `image.repository`                    | The image repository to pull from                       | quay.io/coreos/kube-state-metrics           |
 | `image.tag`                           | The image tag to pull from                              | `v1.4.0`                                    |
 | `image.pullPolicy`                    | Image pull policy                                       | IfNotPresent                                |
