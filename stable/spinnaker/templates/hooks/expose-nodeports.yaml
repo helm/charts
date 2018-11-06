@@ -22,6 +22,10 @@ spec:
       {{- else }}
       serviceAccountName: {{ template "spinnaker.fullname" . }}-halyard
       {{- end }}
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end }}
       restartPolicy: OnFailure
       containers:
       - name: patch-services
