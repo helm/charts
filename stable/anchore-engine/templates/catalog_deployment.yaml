@@ -54,10 +54,9 @@ spec:
           readOnly: true
         {{- end }}
         livenessProbe:
-          exec:
-            command:
-            - pgrep
-            - twistd
+          httpGet:
+            path: /health
+            port: catalog
           initialDelaySeconds: 10
           periodSeconds: 60
           failureThreshold: 5
@@ -107,7 +106,7 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - name: anchore-external-api
+    - name: anchore-catalog-api
       port: {{ .Values.service.ports.catalog }}
       targetPort: {{ .Values.service.ports.catalog }}
       protocol: TCP

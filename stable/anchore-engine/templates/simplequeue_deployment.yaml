@@ -54,10 +54,9 @@ spec:
           readOnly: true
         {{- end }}
         livenessProbe:
-          exec:
-            command:
-            - pgrep
-            - twistd
+          httpGet:
+            path: /health
+            port: simplequeue
           initialDelaySeconds: 10
           periodSeconds: 60
           failureThreshold: 5
@@ -107,7 +106,7 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - name: anchore-external-api
+    - name: anchore-simplequeue-api
       port: {{ .Values.service.ports.simplequeue }}
       targetPort: {{ .Values.service.ports.simplequeue }}
       protocol: TCP

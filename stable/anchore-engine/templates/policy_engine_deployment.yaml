@@ -107,7 +107,7 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - name: anchore-external-api
+    - name: anchore-policy-api
       port: {{ .Values.service.ports.policyEngine }}
       targetPort: {{ .Values.service.ports.policyEngine }}
       protocol: TCP

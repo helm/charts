@@ -54,10 +54,9 @@ spec:
           readOnly: true
         {{- end }}
         livenessProbe:
-          exec:
-            command:
-            - pgrep
-            - twistd
+          httpGet:
+            path: /health
+            port: k8s-webhook
           initialDelaySeconds: 10
           periodSeconds: 60
           failureThreshold: 5
@@ -107,7 +106,7 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - name: anchore-external-api
+    - name: anchore-kubernetes-webhook
       port: {{ .Values.service.ports.kubernetesWebhook }}
       targetPort: {{ .Values.service.ports.kubernetesWebhook }}
       protocol: TCP
