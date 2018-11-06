@@ -69,6 +69,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `Master.Ingress.Path`             | Ingress path                         | Not set                                                                         |
 | `Master.Ingress.TLS`              | Ingress TLS configuration            | `[]`                                                                         |
 | `Master.InitScripts`              | List of Jenkins init scripts         | Not set                                                                      |
+| `Master.ConfigScripts`            | List of Jenkins Config as Code scripts | Not set                                                                    |
 | `Master.CredentialsXmlSecret`     | Kubernetes secret that contains a 'credentials.xml' file | Not set                                                  |
 | `Master.SecretsFilesSecret`       | Kubernetes secret that contains 'secrets' files | Not set                                                           |
 | `Master.Jobs`                     | Jenkins XML job configs              | Not set                                                                      |
@@ -164,6 +165,24 @@ It is possible to mount several volumes using `Persistence.volumes` and `Persist
 
 ```bash
 $ helm install --name my-release --set Persistence.ExistingClaim=PVC_NAME stable/jenkins
+```
+
+## Configuration as Code
+Jenkins Configuration as Code is now a top-level Jenkins project.  Add a key under ConfigScripts for each configuration area, each of which corresponds to a plugin or section of the UI.  Each key (prior to | character) are just labels, and can be any value.  They are used to give the section a meaningful name.  Each key will become the name of a configuration yaml file on the master in /var/jenkins_home/casc_configs and will be processed by the Configuration as Code Plugin during Jenkins startup.  The lines after each | become the content of the configuration yaml file.  The first line after this is a JCasC root element, eg jenkins, credentials, etc.  Best reference is https://<jenkins_url>/configuration-as-code/reference.  The example below creates ldap settings:
+
+```yaml
+ConfigScripts:
+  ldap-settings: |
+    jenkins:
+      securityRealm:
+        ldap:
+          configurations:
+            - groupMembershipStrategy:
+                fromUserRecord:
+                  attributeName: "memberOf"
+              inhibitInferRootDN: false
+              rootDN: "dc=acme,dc=org"
+              server: "ldaps://ldap.acme.org:1636"
 ```
 
 ## Custom ConfigMap
