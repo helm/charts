@@ -11,17 +11,17 @@ image:
   registry: docker.io
   repository: bitnami/rabbitmq
   tag: 3.7.8
-  ## Specify a imagePullPolicy
-  ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
-  ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
-  ##
-  pullPolicy: IfNotPresent
 
   ## set to true if you would like to see extra information on logs
   ## it turns BASH and NAMI debugging in minideb
   ## ref:  https://github.com/bitnami/minideb-extras/#turn-on-bash-debugging
   debug: false
 
+  ## Specify a imagePullPolicy
+  ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
+  ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+  ##
+  pullPolicy: IfNotPresent
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
@@ -29,8 +29,7 @@ image:
   # pullSecrets:
   #   - myRegistrKeySecretName
 
-
-## does your cluster have rbac enabled?
+## does your cluster have rbac enabled? assume yes by default
 rbacEnabled: true
 
 ## section of specific values for rabbitmq
@@ -54,6 +53,16 @@ rabbitmq:
   ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
   ##
   nodePort: 5672
+
+  ## Amqp port
+  ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
+  ##
+  amqpPort: 5672
+
+  ## Dist port
+  ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
+  ##
+  distPort: 25672
 
   ## Node name to cluster with. e.g.: `clusternode@hostname`
   ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
@@ -79,7 +88,7 @@ rabbitmq:
 
   ## Plugins to enable
   plugins: |-
-      [rabbitmq_management,rabbitmq_peer_discovery_k8s].
+      [rabbitmq_management, rabbitmq_peer_discovery_k8s].
 
   ## Clustering settings
   clustering:
@@ -114,6 +123,7 @@ securityContext:
   runAsUser: 1001
 
 persistence:
+  ## this enables PVC templates that will create one per pod
   enabled: true
 
   ## rabbitmq data Persistent Volume Storage Class
@@ -148,6 +158,9 @@ nodeSelector:
 tolerations: []
 affinity: {}
 
+## annotations for rabbitmq pods
+podAnnotations: {}
+
 ## Configure the ingress resource that allows you to access the
 ## Wordpress installation. Set up the URL
 ## ref: http://kubernetes.io/docs/user-guide/ingress/
@@ -179,7 +192,7 @@ ingress:
   #  kubernetes.io/ingress.class: nginx
   #  kubernetes.io/tls-acme: true
 
-  #The following settings are to configure the frequency of the lifeness and readiness probes
+## The following settings are to configure the frequency of the lifeness and readiness probes
 livenessProbe:
   enabled: true
   initialDelaySeconds: 120
