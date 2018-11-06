@@ -46,6 +46,10 @@ spec:
         - name: varlibdockercontainers
           mountPath: /var/lib/docker/containers
           readOnly: true
+{{- if .Values.fullConfigMap }}
+        - name: config
+          mountPath: /fluent-bit/etc
+{{- else }}
         - name: config
           mountPath: /fluent-bit/etc/fluent-bit.conf
           subPath: fluent-bit.conf
@@ -53,6 +57,7 @@ spec:
         - name: config
           mountPath: /fluent-bit/etc/parsers_custom.conf
           subPath: parsers.conf
+{{- end }}
 {{- end }}
 {{- if .Values.backend.es.tls_ca }}
         - name: es-tls-secret
