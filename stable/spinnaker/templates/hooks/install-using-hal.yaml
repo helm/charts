@@ -4,7 +4,6 @@ metadata:
   name: "{{ .Release.Name }}-install-using-hal"
   labels:
 {{ include "spinnaker.standard-labels" . | indent 4 }}
-    component: halyard
   annotations:
     "helm.sh/hook": "post-install,post-upgrade"
     "helm.sh/hook-delete-policy": "before-hook-creation"
@@ -14,7 +13,6 @@ spec:
     metadata:
       labels:
 {{ include "spinnaker.standard-labels" . | indent 8 }}
-        component: halyard
     spec:
       {{- if .Values.nodeSelector }}
       nodeSelector:
