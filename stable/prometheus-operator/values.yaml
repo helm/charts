@@ -852,6 +852,9 @@ prometheus:
     ##
     thanos: {}
 
+    ## Init containers allows injecting init containers.
+    initContainers: []
+
     ## Containers allows injecting additional containers. This is meant to allow adding an authentication proxy to a Prometheus pod.
     ##
     containers: []
