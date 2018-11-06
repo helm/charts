@@ -80,6 +80,10 @@ spec:
           - name: DD_APM_ENABLED
             value: {{ .Values.datadog.apmEnabled | quote }}
           {{- end }}
+          {{- if .Values.datadog.apmAnalyzedSpans }}
+          - name: DD_APM_ANALYZED_SPANS
+            value: {{ .Values.datadog.apmAnalyzedSpans | quote }}
+          {{- end }}
           {{- if .Values.datadog.processAgentEnabled }}
           - name: DD_PROCESS_AGENT_ENABLED
             value: {{ .Values.datadog.processAgentEnabled | quote }}
