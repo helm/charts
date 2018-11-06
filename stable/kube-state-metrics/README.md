@@ -22,6 +22,9 @@ $ helm install stable/kube-state-metrics
 | `rbac.create`                         | If true, create & use RBAC resources                    | False                                       |
 | `rbac.serviceAccountName`             | ServiceAccount to be used (ignored if rbac.create=true) | default                                     |
 | `imagePullSecrets`                    | Reference to secrets to be used when pulling images     | []                                          |
+| `securityContext.enabled`             | Enable security context                                 | `true`                                      |
+| `securityContext.fsGroup`             | Group ID for the container                              | `65534`                                     |
+| `securityContext.runAsUser`           | User ID for the container                               | `65534`                                     |
 | `nodeSelector`                        | Node labels for pod assignment                          | {}                                          |
 | `tolerations`                         | Tolerations for pod assignment	                      | []                                          |
 | `podAnnotations`                      | Annotations to be added to the pod                      | {}                                          |
