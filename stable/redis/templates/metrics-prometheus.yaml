@@ -1,0 +1,15 @@
+{{- if .Values.metrics.enabled -}}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: redis-metrics
+  labels:
+    prometheus/global: "true"
+spec:
+  endpoints:
+  - interval: 30s
+    port: "9121"
+  selector:
+    matchLabels:
+      app: {{ template "redis.name" . }}
+{{- end -}}
