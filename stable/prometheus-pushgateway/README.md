@@ -59,6 +59,7 @@ The following table lists the configurable parameters of the pushgateway chart a
 | `nodeSelector`          | Node labels for pod assignment                                                                                                | `{}`               |
 | `podAnnotations`        | Annotations for pod                                                                                                           | `{}`               |
 | `podLabels`             | Labels for pod                                                                                                                | `{}`               |
+| `serviceAccountLabels`  | Labels for service account                                                                                                    | `{}`               |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
