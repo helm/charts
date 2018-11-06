@@ -4,5 +4,5 @@ kind: ConfigMap
 metadata:
   name: {{ template "jenkins.fullname" . }}-jobs
 data:
-{{ .Values.Master.Jobs | indent 2 }}
+{{ toYaml .Values.Master.Jobs | indent 2 }}
 {{- end -}}
