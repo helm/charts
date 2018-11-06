@@ -6,7 +6,7 @@ global:
   ##
   imagePullSecrets: []
   # - name: "image-pull-secret"
-  
+
 prometheusScrape: true
 
 image:
@@ -26,9 +26,6 @@ rbac:
   create: true
   # Ignored if rbac.create is true
   serviceAccountName: default
-
-
-
 
 securityContext:
   enabled: true
