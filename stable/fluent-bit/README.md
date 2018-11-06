@@ -91,6 +91,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `image.fluent_bit.tag`             | Image tag                                  | `0.14.4`                                          |
 | `image.pullPolicy`                 | Image pull policy                          | `Always`                                          |
 | `image.pullSecrets`                | Specify image pull secrets                 | `nil`                                             |
+| `input.tail.memBufLimit`           | Specify Mem_Buf_Limit in tail input        | `5MB`                                             |
 | `rbac.create`                      | Specifies whether RBAC resources should be created.   | `true`                                 |
 | `serviceAccount.create`            | Specifies whether a ServiceAccount should be created. | `true`                                 |
 | `serviceAccount.name`              | The name of the ServiceAccount to use.     | `NULL`                                            |
@@ -101,6 +102,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `tolerations`                      | Optional daemonset tolerations             | `NULL`                                            |
 | `nodeSelector`                     | Node labels for fluent-bit pod assignment  | `NULL`                                            |
 | `metrics.enabled`                  | Specifies whether a service for metrics should be exposed | `false`                            |
+| `metrics.service.annotations`      | Optional metrics service annotations       | `NULL`                                            |
 | `metrics.service.port`             | Port on where metrics should be exposed    | `2020`                                            |
 | `metrics.service.type`             | Service type for metrics                   | `ClusterIP`                                       |
 | `trackOffsets`                     | Specify whether to track the file offsets for tailing docker logs. This allows fluent-bit to pick up where it left after pod restarts but requires access to a `hostPath` | `false` |
