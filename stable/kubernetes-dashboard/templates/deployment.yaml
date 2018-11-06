@@ -50,8 +50,8 @@ spec:
             scheme: HTTPS
             path: /
             port: 8443
-          initialDelaySeconds: 30
-          timeoutSeconds: 30
+          initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+          timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
     {{- if .Values.nodeSelector }}
@@ -67,4 +67,8 @@ spec:
     {{- if .Values.tolerations }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
+    {{- end }}
+    {{- if .Values.affinity }}
+        affinity:
+{{ toYaml .Values.affinity | indent 8 }}
     {{- end }}
