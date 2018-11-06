@@ -251,23 +251,6 @@ anchoreCore:
   tolerations: []
   affinity: {}
 
-# Pod configuration for the anchore engine kubernetes webhook service.
-anchoreKubernetesWebhook:
-  replicaCount: 1
-
-  # resources:
-  #  limits:
-  #    cpu: 100m
-  #    memory: 3Gi
-  #  requests:
-  #    cpu: 100m
-  #    memory: 2Gi
-
-  annotations: {}
-  nodeSelector: {}
-  tolerations: []
-  affinity: {}
-
 # Pod configuration for the anchore engine policy service.
 anchorePolicyEngine:
   replicaCount: 1

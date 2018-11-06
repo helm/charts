@@ -93,6 +93,11 @@ data:
         endpoint_hostname: {{ template "anchore-engine.core.fullname" . }}
         listen: '0.0.0.0'
         port: {{ .Values.service.ports.extApi }}
+        {{- if and .Values.anchoreEnterpriseGlobal.enabled .Values.anchoreEnterpriseRbac.enabled }}
+        authorization_handler: external
+        authorization_handler_config:
+          endpoint: "http://localhost:{{ .Values.anchoreEnterpriseRbac.service.authPort }}"
+        {{- end }}
         ssl_enable: {{ .Values.anchoreGlobal.internalServicesSslEnabled }}
         ssl_cert: {{ .Values.anchoreGlobal.internalServicesSsl.certDir -}}/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretCertName }}
         ssl_key: {{ .Values.anchoreGlobal.internalServicesSsl.certDir -}}/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretKeyName }}
@@ -110,9 +115,14 @@ data:
       kubernetes_webhook:
         enabled: True
         require_auth: False
-        endpoint_hostname: {{ template "anchore-engine.kubernetes-webhook.fullname" . }}
+        endpoint_hostname: {{ template "anchore-engine.core.fullname" . }}
         listen: '0.0.0.0'
         port: {{ .Values.service.ports.kubernetesWebhook }}
+        {{- if and .Values.anchoreEnterpriseGlobal.enabled .Values.anchoreEnterpriseRbac.enabled }}
+        authorization_handler: external
+        authorization_handler_config:
+          endpoint: "http://localhost:{{ .Values.anchoreEnterpriseRbac.service.authPort }}"
+        {{- end }}
         ssl_enable: {{ .Values.anchoreGlobal.internalServicesSslEnabled }}
         ssl_cert: {{ .Values.anchoreGlobal.internalServicesSsl.certDir -}}/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretCertName }}
         ssl_key: {{ .Values.anchoreGlobal.internalServicesSsl.certDir -}}/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretKeyName }}

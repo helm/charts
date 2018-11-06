@@ -77,7 +77,7 @@ spec:
           subPath: license.yaml
         readinessProbe:
           httpGet:
-            path: /
+            path: /service/health
             port: enterprise-ui
           initialDelaySeconds: 60
           periodSeconds: 10

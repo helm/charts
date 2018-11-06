@@ -50,7 +50,7 @@ spec:
           subPath: config.yaml
         {{- if .Values.anchoreGlobal.internalServicesSslEnabled }}
         - name: certs
-          mountPath: {{ default "/certs" .Values.anchoreAnalyzer.ssl.CertDir }}
+          mountPath: {{ default "/certs" .Values.anchoreGlobal.internalServicesSsl.certDir }}
           readOnly: true
         {{- end }}
         - name: analysis-scratch
@@ -79,7 +79,7 @@ spec:
         {{- if .Values.anchoreGlobal.internalServicesSslEnabled }}
         - name: certs
           secret:
-            secretName: {{ .Values.anchoreAnalyzer.ssl.certSecret }}
+            secretName: {{ .Values.anchoreGlobal.internalServicesSsl.certSecret }}
         {{- end }}
         - name: analysis-scratch
           {{ toYaml .Values.anchoreAnalyzer.analysisScratchVolume.details -}}

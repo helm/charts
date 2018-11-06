@@ -23,7 +23,7 @@ data:
 
     allow_awsecr_iam_auto: {{ .Values.anchoreGlobal.allowECRUseIAMRole }}
     host_id: "${ANCHORE_POD_NAME}"
-    internal_ssl_verify: {{ .Values.anchoreGlobal.internalServicesSslVerifyCerts }}
+    internal_ssl_verify: {{ .Values.anchoreGlobal.internalServicesSsl.verifyCerts }}
     auto_restart_services: false
     license_file: "/license.yaml"
 

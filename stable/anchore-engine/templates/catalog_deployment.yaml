@@ -50,7 +50,7 @@ spec:
           subPath: config.yaml
         {{- if .Values.anchoreGlobal.internalServicesSslEnabled }}
         - name: certs
-          mountPath: {{ default "/certs" .Values.anchoreCatalog.ssl.CertDir }}
+          mountPath: {{ default "/certs" .Values.anchoreGlobal.internalServicesSsl.certDir }}
           readOnly: true
         {{- end }}
         livenessProbe:
@@ -77,7 +77,7 @@ spec:
         {{- if .Values.anchoreGlobal.internalServicesSslEnabled }}
         - name: certs
           secret:
-            secretName: {{ .Values.anchoreCatalog.ssl.certSecret }}
+            secretName: {{ .Values.anchoreGlobal.internalServicesSsl.certSecret }}
         {{- end }}
     {{- if .Values.anchoreCatalog.nodeSelector }}
       nodeSelector:
