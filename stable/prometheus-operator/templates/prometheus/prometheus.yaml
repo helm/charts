@@ -158,6 +158,10 @@ spec:
     name: {{ template "prometheus-operator.fullname" . }}-prometheus-am-relabel-confg
     key: additional-alert-relabel-configs.yaml
 {{- end }}
+{{- if .Values.prometheus.prometheusSpec.initContainers }}
+  initContainers:
+{{ toYaml .Values.prometheus.prometheusSpec.initContainers | indent 4 }}
+{{- end }}
 {{- if .Values.prometheus.prometheusSpec.containers }}
   containers:
 {{ toYaml .Values.prometheus.prometheusSpec.containers | indent 4 }}
