@@ -36,7 +36,7 @@ The following table lists the configurable parameters of the Spark operator char
 | `metricsPrefix`           | Prefix for the metrics                                       | ""                                     |
 | `namespace`               | The Kubernetes namespace to manage. Will manage custom resource objects of the managed CRD types for the whole cluster if set to empty string. | ""                                     |
 | `resyncInterval`          | Informer resync interval in seconds                          | 30                                     |
-| `webhookPort`             | Service port of the webhook server                           | 8080                                   |
+| `webhookPort`             | Service port of the webhook server                           | 8080                                   |                                    |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. 
 

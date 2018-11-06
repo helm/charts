@@ -71,9 +71,11 @@ spec:
         - -webhook-port={{ .Values.webhookPort }}
         - -webhook-svc-name={{ include "sparkoperator.fullname" . }}-webhook
         - -webhook-config-name={{ include "sparkoperator.fullname" . }}-webhook-config
+        - -webhook-port={{ .Values.webhookPort }}
         {{- end }}
         - -install-crds={{ .Values.installCrds }}
-        - -namespace={{ .Values.namespace }}
         - -controller-threads={{ .Values.controllerThreads }}
+        - -controller-threads={{ .Values.controllerThreads }}
+        - -submission-threads={{ .Values.submissionThreads }}
         - -resync-interval={{ .Values.resyncInterval }}
         - -logtostderr
