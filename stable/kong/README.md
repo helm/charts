@@ -104,11 +104,11 @@ Postgres is enabled by default.
 | Parameter                         | Description                                                            | Default               |
 | ------------------------------    | --------------------------------------------------------------------   | -------------------   |
 | cassandra.enabled                 | Spin up a new cassandra cluster for Kong                               | `false`               |
-| postgresql.enabled                  | Spin up a new postgres instance for Kong                               | `true `               |
+| postgresql.enabled                | Spin up a new postgres instance for Kong                               | `true `               |
 | env.database                      | Choose either `postgres` or `cassandra`                                | `postgres`            |
 | env.pg_user                       | Postgres username                                                      | `kong`                |
 | env.pg_database                   | Postgres database name                                                 | `kong`                |
-| env.pg_password                   | Postgres database password (required if you are using your own database)| `kong`         |
+| env.pg_password                   | Postgres database password (required if you are using your own database)| `kong`               |
 | env.pg_host                       | Postgres database host (required if you are using your own database)   | ``                    |
 | env.pg_port                       | Postgres database port                                                 | `5432`                |
 | env.cassandra_contact_points      | Cassandra contact points (required if you are using your own database) | ``                    |
