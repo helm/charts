@@ -11,11 +11,13 @@ deploymentStrategy: RollingUpdate
 
 readinessProbe:
   httpGet:
+    scheme: http
     path: /api/health
     port: 3000
 
 livenessProbe:
   httpGet:
+    scheme: http
     path: /api/health
     port: 3000
   initialDelaySeconds: 60
@@ -275,3 +277,6 @@ sidecar:
     enabled: false
     # label that the configmaps with datasources are marked with
     label: grafana_datasource
+
+tls:
+  enabled: false

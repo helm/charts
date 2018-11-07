@@ -53,6 +53,10 @@ spec:
             - name: storage
               mountPath: "/var/lib/grafana"
               subPath: {{ .Values.persistence.subPath }}
+          {{- if .Values.tls.enabled }}
+            - name: tls
+              mountPath: {{ .Values.tls.certDirectory }}
+          {{- end }}
           {{- range .Values.extraSecretMounts }}
             - name: {{ .name }}
               mountPath: {{ .mountPath }}
@@ -270,6 +274,11 @@ spec:
         - name: sc-datasources-volume
           emptyDir: {}
       {{- end -}}
+      {{- if .Values.tls.enabled }}
+        - name: tls
+          secret:
+            secretName: {{ template "grafana.fullname" . }}-tls
+      {{- end }}
       {{- range .Values.extraSecretMounts }}
         - name: {{ .name }}
           secret:
