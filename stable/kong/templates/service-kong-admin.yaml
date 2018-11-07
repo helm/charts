@@ -18,7 +18,10 @@ spec:
   loadBalancerIP: {{ .Values.admin.loadBalancerIP }}
   {{- end }}
   {{- if .Values.admin.loadBalancerSourceRanges }}
-  loadBalancerSourceRanges: {{ .Values.admin.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+  {{- range $cidr := .Values.admin.loadBalancerSourceRanges }}
+  - {{ $cidr }}
+  {{- end }}
   {{- end }}
   {{- end }}
   ports:
