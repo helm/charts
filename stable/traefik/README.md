@@ -207,6 +207,10 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `tracing.datadog.localAgentHostPort`   | Location of the Datadog agent where spans will be sent                                                                       | `127.0.0.1:8126`                                  |
 | `tracing.datadog.debug`                | Enables Datadog debugging                                                                                                    | `false`                                           |
 | `tracing.datadog.globalTag`            | Apply shared tag in a form of Key:Value to all the traces                                                                    | `""`                                           |
+| `outboundProxy.enabled`                | Enabled setting of proxy variables for an outbound proxy                                                                     | `false`                                           |
+| `outboundProxy.http_proxy`             | sets the HTTP_PROXY environment variable                                                                                     | None                                              |
+| `outboundProxy.https_proxy`            | sets the HTTPS_PROXY environment variable                                                                                    | None                                              |
+| `outboundProxy.no_proxy`               | sets the NO_PROXY environment variable                                                                                       | `.local`                                          |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 
