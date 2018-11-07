@@ -1,3 +1,4 @@
+{{- if .Values.workers.enabled -}}
 apiVersion: v1
 kind: Service
 metadata:
@@ -16,3 +17,4 @@ spec:
     - name: flower
       protocol: TCP
       port: 5555
+{{- end }}

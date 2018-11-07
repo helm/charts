@@ -13,6 +13,10 @@ airflow:
   service:
     type: ClusterIP
   ##
+  ## The executor to use.
+  ##
+  exeuctor: Celery
+  ##
   ## set the max number of retries during container initialization
   initRetryLoop:
   ##
@@ -29,7 +33,7 @@ airflow:
     repository: puckel/docker-airflow
     ##
     ## image tag
-    tag: 1.9.0-4
+    tag: 1.10.0-4
     ##
     ## Image pull policy
     ## values: Always or IfNotPresent
@@ -80,9 +84,7 @@ airflow:
 ##
 ## Workers configuration
 workers:
-  ##
-  ## Service account name
-  serviceAccountName: "default"
+  enabled: true
   ##
   ## Number of workers pod to launch
   replicas: 1
@@ -266,6 +268,23 @@ dags:
     enabled: false
     ## install requirements.txt dependencies automatically
     installRequirements: true
+
+##
+##  Enable RBAC
+rbac:
+  ##
+  ## Specifies whether RBAC resources should be created
+  create: true
+
+##
+## Create or use ServiceAccount
+serviceAccount:
+  ##
+  ## Specifies whether a ServiceAccount should be created
+  create: true
+  ## The name of the ServiceAccount to use.
+  ## If not set and create is true, a name is generated using the fullname template
+  name:
 
 ##
 ## Configuration values for the postgresql dependency.

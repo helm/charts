@@ -204,16 +204,17 @@ The following table lists the configurable parameters of the Airflow chart and t
 |------------------------------------------|---------------------------------------------------------|---------------------------|
 | `airflow.fernetKey`                      | Ferney key (see `values.yaml` for example)              | (auto generated)          |
 | `airflow.service.type`                   | services type                                           | `ClusterIP`               |
+| `airflow.executor`                       | the executor to run                                     | `Celery`                  |
 | `airflow.initRetryLoop`                  | max number of retries during container init             |                           |
 | `airflow.image.repository`               | Airflow docker image                                    | `puckel/docker-airflow`   |
-| `airflow.image.tag`                      | Airflow docker tag                                      | `1.9.0-5`                 |
+| `airflow.image.tag`                      | Airflow docker tag                                      | `1.10.0-4`                |
 | `airflow.image.pullPolicy`               | Image pull policy                                       | `IfNotPresent`            |
 | `airflow.image.pullSecret`               | Image pull secret                                       |                           |
 | `airflow.schedulerNumRuns`               | -1 to loop indefinitively, 1 to restart after each exec |                           |
 | `airflow.webReplicas`                    | how many replicas for web server                        | `1`                       |
 | `airflow.config`                         | custom airflow configuration env variables              | `{}`                      |
 | `airflow.podDisruptionBudget`            | control pod disruption budget                           | `{'maxUnavailable': 1}`   |
-| `workers.serviceAccountName`             | worker service account                                  | `default`                 |
+| `workers.enabled`                        | enable workers                                          | `true`                    |
 | `workers.replicas`                       | number of workers pods to launch                        | `1`                       |
 | `workers.resources`                      | custom resource configuration for worker pod            | `{}`                      |
 | `workers.celery.instances`               | number of parallel celery tasks per worker              | `1`                       |
@@ -243,6 +244,9 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `dags.initContainer.installRequirements` | auto install requirements.txt deps                      | `true`                    |
 | `dags.git.url`                           | url to clone the git repository                         | nil                       |
 | `dags.git.ref`                           | branch name, tag or sha1 to reset to                    | `master`                  |
+| `rbac.create`                            | create RBAC resources                                   | `true`                    |
+| `serviceAccount.create`                  | create a service account                                | `true`                    |
+| `serviceAccount.name`                    | the service account name                                | ``                        |
 | `postgres.enabled`                       | create a postgres server                                | `true`                    |
 | `postgres.uri`                           | full URL to custom postgres setup                       | (undefined)               |
 | `postgres.postgresUser`                  | PostgreSQL User                                         | `postgres`                |

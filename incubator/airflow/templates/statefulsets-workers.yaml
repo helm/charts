@@ -1,3 +1,4 @@
+{{- if .Values.workers.enabled -}}
 ## Workers are not in deployment, but in StatefulSet, to allow each worker expose a mini-server
 ## that only serve logs, that will be used by the web server.
 
@@ -41,7 +42,7 @@ spec:
       {{- end }}
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
-      serviceAccountName: {{ .Values.workers.serviceAccountName }}
+      serviceAccountName: {{ template "airflow.serviceAccountName" . }}
       {{- if .Values.dags.initContainer.enabled }}
       initContainers:
         - name: git-clone
@@ -149,3 +150,4 @@ spec:
             name: {{ template "airflow.fullname" . }}-git-clone
             defaultMode: 0755
         {{- end }}
+{{- end }}
