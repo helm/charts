@@ -51,10 +51,12 @@ spec:
       {{- end }}
       {{- if and .Values.persistence.enabled .Values.securityContext.enabled}}
       initContainers:
-      - name: init-chown-data
+      - name: init-chmod-data
         image: {{ template "postgresql.volumePermissions.image" . }}
         imagePullPolicy: "{{ .Values.volumePermissions.image.pullPolicy }}"
         command: ['sh' , '-c' , 'if [ -d /bitnami/postgresql/data ]; then chmod  0700 /bitnami/postgresql/data; fi']
+        securityContext:
+          runAsUser: {{ .Values.volumePermissions.securityContext.runAsUser }}
         volumeMounts:
         - name: data
           mountPath: /bitnami/postgresql
