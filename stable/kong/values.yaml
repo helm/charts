@@ -12,6 +12,10 @@ image:
   # pullSecrets:
   #   - myRegistrKeySecretName
 
+waitImage:
+  repository: busybox
+  tag: latest
+
 # Specify Kong admin and proxy services configurations
 admin:
   # If you want to specify annotations for the admin service, uncomment the following
