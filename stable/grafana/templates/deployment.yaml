@@ -189,6 +189,14 @@ spec:
                   name: {{ .Values.smtp.existingSecret }}
                   key: password
             {{- end }}
+            {{- if eq (index .Values "grafana.ini").server.protocol "https" }}
+            - name: GF_SERVER_ROOT_URL
+              value: https://{{ .Values.root_url }}
+            - name: GF_SERVER_CERT_FILE
+              value: {{ .Values.tls.certDirectory }}/{{ .Values.tls.certFile }}
+            - name: GF_SERVER_CERT_KEY
+              value: {{ .Values.tls.certDirectory }}/{{ .Values.tls.keyFile }}
+            {{- end }}
 {{- range $key, $value := .Values.env }}
             - name: "{{ $key }}"
               value: "{{ $value }}"

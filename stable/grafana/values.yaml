@@ -214,6 +214,8 @@ grafana.ini:
     mode: console
   grafana_net:
     url: https://grafana.net
+  server:
+    protocol: http
 ## LDAP Authentication can be enabled with the following values on grafana.ini
 ## NOTE: Grafana will fail to start if the value for ldap.toml is invalid
   # auth.ldap:
