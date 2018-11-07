@@ -11,13 +11,13 @@ deploymentStrategy: RollingUpdate
 
 readinessProbe:
   httpGet:
-    scheme: http
+    scheme: HTTP
     path: /api/health
     port: 3000
 
 livenessProbe:
   httpGet:
-    scheme: http
+    scheme: HTTP
     path: /api/health
     port: 3000
   initialDelaySeconds: 60
