@@ -64,8 +64,8 @@ anchoreGlobal:
   enableMetrics: false
 
   # Sets the password & email address for the default anchore-engine admin user.
-  default_admin_password: foobar
-  default_admin_email: example@email.com
+  defaultAdminPassword: foobar
+  defaultAdminEmail: example@email.com
 
   # Configure the database connection within anchore-engine & enterprise-ui. This may get split into 2 different configurations based on service utilized.
   dbConfig:
@@ -287,13 +287,13 @@ anchoreSimplequeue:
 
 # This section is used for configuring anchore enterprise.
 anchoreEnterpriseGlobal:
-  enabled: true
+  enabled: false
   # Name of kubernetes secret containing your license.yaml file.
   # Create this secret with the following command - kubectl create secret generic anchore-license --from-file=license.yaml=<PATH TO LICENSE.YAML>
-  licenseSecretName: anchore-license
+  licenseSecretName: anchore-enterprise-license
   # Name of the kubernetes secret containing your dockerhub creds with access to the anchore enterprise images.
   # Create this secret with the following command - kubectl create secret docker-registry anchore-dockerhub-creds --docker-server=docker.io --docker-username=<USERNAME> --docker-password=<PASSWORD> --docker-email=<EMAIL_ADDRESS>
-  imagePullSecretName: anchore-dockerhub-creds
+  imagePullSecretName: anchore-enterprise-pullcreds
 
   image:
     repository: docker.io/anchore/enterprise-dev

@@ -75,7 +75,7 @@ data:
       read_timeout_seconds: 60
 
     default_admin_password: ${ANCHORE_ADMIN_PASSWORD}
-    default_admin_email: {{ .Values.anchoreGlobal.default_admin_email }}
+    default_admin_email: {{ .Values.anchoreGlobal.defaultAdminEmail }}
 
     credentials:
       database:

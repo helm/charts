@@ -284,11 +284,25 @@ permission to the private docker repositories that contain the enterprise images
 To use this Helm chart with the enterprise services enabled, perform these steps.
 
 1. Create a kubernetes secret containing your license file.
-    * `kubectl create secret generic anchore-license --from-file=license.yaml=license.yaml`
+    * `kubectl create secret generic anchore-enterprise-license --from-file=license.yaml=license.yaml`
 1. Create a kubernetes secret containing dockerhub credentials with access to the private anchore enterprise repositories.
-    * `kubectl create secret docker-registry anchore-dockerhub-creds --docker-server=docker.io --docker-username=<DOCKERHUB_USER> --docker-password=<DOCKERHUB_PASSWORD> --docker-email=<EMAIL_ADDRESS>`
-1. Enable the desired services in the values.yml file.
-    * enterpriseGlobal.enabled: true
-    * enterpriseFeeds.enabled: true
-    * enterpriseUi.enabled: true
-    * enterpriseRbac.enabled: true
+    * `kubectl create secret docker-registry anchore-enterprise-pullcreds --docker-server=docker.io --docker-username=<DOCKERHUB_USER> --docker-password=<DOCKERHUB_PASSWORD> --docker-email=<EMAIL_ADDRESS>`
+1. Install the helm chart.
+    * Using a custom values.yaml file (see examples below)
+        * `helm install -f path/to/custom/values.yaml stable/anchore-engine`
+
+#### Example values.yaml override file for installing Anchore Enterprise
+```
+anchore-db:
+  postgresPassword: <A_GOOD_PASSWORD>
+
+anchoreGlobal:
+  defaultAdminPassword: <A_GOOD_PASSWORD>
+  defaultAdminEmail: <YOUR_EMAIL>
+
+anchoreEnterpriseGlobal:
+  enabled: true
+
+anchore-feeds-db:
+  postgresPassword: <A_GOOD_PASSWORD>
+```
