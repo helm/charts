@@ -136,32 +136,32 @@ spec:
         resources:
 {{ toYaml .Values.resources | indent 10 }}
 {{- if .Values.metrics.enabled }}
+      - name: metrics
+        image: {{ template "metrics.image" . }}
+        imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
+        env:
+        - name: MONGODB_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ if .Values.existingSecret }}{{ .Values.existingSecret }}{{- else }}{{ template "mongodb.fullname" . }}{{- end }}
+              key: mongodb-root-password
+        command: [ 'sh', '-c', '/bin/mongodb_exporter --mongodb.uri mongodb://root:${MONGODB_ROOT_PASSWORD}@localhost:{{ .Values.service.port }}/admin' ]
+        ports:
         - name: metrics
-          image: {{ template "metrics.image" . }}
-          imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
-          env:
-          - name: MONGODB_ROOT_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: {{ if .Values.existingSecret }}{{ .Values.existingSecret }}{{- else }}{{ template "mongodb.fullname" . }}{{- end }}
-                key: mongodb-root-password
-          command: [ 'sh', '-c', '/bin/mongodb_exporter --mongodb.uri mongodb://root:${MONGODB_ROOT_PASSWORD}@localhost:{{ .Values.service.port }}/admin' ]
-          ports:
-          - name: metrics
-            containerPort: 9216
-          livenessProbe:
-            httpGet:
-              path: /metrics
-              port: metrics
-            initialDelaySeconds: 15
-            timeoutSeconds: 5
-          readinessProbe:
-            httpGet:
-              path: /metrics
-              port: metrics
-            initialDelaySeconds: 5
-            timeoutSeconds: 1
-          resources:
+          containerPort: 9216
+        livenessProbe:
+          httpGet:
+            path: /metrics
+            port: metrics
+          initialDelaySeconds: 15
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /metrics
+            port: metrics
+          initialDelaySeconds: 5
+          timeoutSeconds: 1
+        resources:
   {{ toYaml .Values.metrics.resources | indent 10 }}
 {{- end }}
       volumes:
