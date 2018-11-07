@@ -53,10 +53,6 @@ spec:
             - name: storage
               mountPath: "/var/lib/grafana"
               subPath: {{ .Values.persistence.subPath }}
-          {{- if .Values.tls.enabled }}
-            - name: tls
-              mountPath: {{ .Values.tls.certDirectory }}
-          {{- end }}
           {{- range .Values.extraSecretMounts }}
             - name: {{ .name }}
               mountPath: {{ .mountPath }}
@@ -110,6 +106,10 @@ spec:
             - name: ldap
               mountPath: "/etc/grafana/ldap.toml"
               subPath: ldap.toml
+          {{- if .Values.tls.enabled }}
+            - name: tls
+              mountPath: {{ .Values.tls.certDirectory }}
+          {{- end }}
 {{- if .Values.dashboards }}
   {{- range $provider, $dashboards := .Values.dashboards }}
     {{- range $key, $value := $dashboards }}
