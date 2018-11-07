@@ -39,6 +39,8 @@ volumePermissions:
     repository: bitnami/minideb
     tag: latest
     pullPolicy: Always
+  securityContext:
+    runAsUser: 0
 
 ## Pod Security Context
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
