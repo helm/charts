@@ -80,7 +80,7 @@ spec:
           periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 2
-        {{- if and .Values.acme.enabled (eq .Values.acme.challengeType "dns-01") .Values.acme.dnsProvider.name }}
+        {{- if or ( and  .Values.acme.enabled (eq .Values.acme.challengeType "dns-01") .Values.acme.dnsProvider.name ) .Values.outboundProxy.enabled }}
         env:
         {{- range $k, $_ := (index .Values.acme.dnsProvider .Values.acme.dnsProvider.name) }}
           - name: {{ $k }}
@@ -88,6 +88,14 @@ spec:
               secretKeyRef:
                 name: {{ template "traefik.fullname" $ }}-dnsprovider-config
                 key: {{ $k }}
+        {{- end }}
+        {{- if .Values.outboundProxy.enabled }}
+          - name: HTTP_PROXY
+            value: {{ .Values.outboundProxy.http_proxy }}
+          - name: HTTPS_PROXY
+            value: {{ .Values.outboundProxy.https_proxy | default .Values.outboundProxy.http_proxy }}
+          - name: NO_PROXY
+            value: {{ .Values.outboundProxy.no_proxy | default ".local" }}
         {{- end }}
         {{- end }}
         volumeMounts:

@@ -351,3 +351,10 @@ tracing:
   #   localAgentHostPort: "127.0.0.1:8126"
   #   debug: false
   #   globalTag: ""
+
+## If you are behind a corporate proxy for outbound traffic, you can set your proxy server here.
+outboundProxy:
+  enabled: false
+  http_proxy: http://proxy/
+  https_proxy: https://proxy/
+  no_proxy: .local
