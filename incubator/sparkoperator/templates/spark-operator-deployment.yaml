@@ -53,7 +53,7 @@ spec:
         {{- end }}
         {{- if .Values.enableMetrics }}
         ports:
-          - containerPort: {{ .Values.metricsPort }}
+          - containerPort: {{ int .Values.metricsPort }}
         {{ end }}
         command: ["/usr/bin/spark-operator"]
         args:
