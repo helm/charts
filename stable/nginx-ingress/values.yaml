@@ -7,6 +7,8 @@ controller:
     repository: quay.io/kubernetes-ingress-controller/nginx-ingress-controller
     tag: "0.20.0"
     pullPolicy: IfNotPresent
+    # www-data -> uid 33
+    runAsUser: 33
 
   config: {}
   # Will add custom header to Nginx https://github.com/kubernetes/ingress-nginx/tree/master/docs/examples/customization/custom-headers

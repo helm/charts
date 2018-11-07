@@ -1,5 +1,5 @@
 name: rabbitmq
-version: 3.4.1
+version: 3.6.3
 appVersion: 3.7.8
 description: Open source message broker software that implements the Advanced Message Queuing Protocol (AMQP)
 keywords:
@@ -13,4 +13,6 @@ sources:
 maintainers:
 - name: Bitnami
   email: containers@bitnami.com
+- name: desaintmartin
+  email: cedric@desaintmartin.fr
 engine: gotpl
