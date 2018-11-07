@@ -168,7 +168,7 @@ $ helm install --name my-release --set Persistence.ExistingClaim=PVC_NAME stable
 ```
 
 ## Configuration as Code
-Jenkins Configuration as Code is now a top-level Jenkins project.  Add a key under ConfigScripts for each configuration area, each of which corresponds to a plugin or section of the UI.  Each key (prior to | character) are just labels, and can be any value.  They are used to give the section a meaningful name.  Each key will become the name of a configuration yaml file on the master in /var/jenkins_home/casc_configs and will be processed by the Configuration as Code Plugin during Jenkins startup.  The lines after each | become the content of the configuration yaml file.  The first line after this is a JCasC root element, eg jenkins, credentials, etc.  Best reference is https://<jenkins_url>/configuration-as-code/reference.  The example below creates ldap settings:
+Jenkins Configuration as Code is now a top-level Jenkins project.  Add a key under ConfigScripts for each configuration area, where each corresponds to a plugin or section of the UI.  Each key (prior to | character) are just labels, and can be any value.  They are used to give the section a meaningful name.  Each key will become the name of a configuration yaml file on the master in /var/jenkins_home/casc_configs and will be processed by the Configuration as Code Plugin during Jenkins startup.  The lines after each | become the content of the configuration yaml file.  The first line after this is a JCasC root element, eg jenkins, credentials, etc.  Best reference is the Documentation link here: https://<jenkins_url>/configuration-as-code.  The example below creates ldap settings:
 
 ```yaml
 ConfigScripts:
