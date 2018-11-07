@@ -90,12 +90,18 @@ spec:
                 key: {{ $k }}
         {{- end }}
         {{- if .Values.outboundProxy.enabled }}
+        {{- if .Values.outboundProxy.http_proxy }}
           - name: HTTP_PROXY
             value: {{ .Values.outboundProxy.http_proxy }}
+        {{- end }}
+        {{- if .Values.outboundProxy.https_proxy }}
           - name: HTTPS_PROXY
-            value: {{ .Values.outboundProxy.https_proxy | default .Values.outboundProxy.http_proxy }}
+            value: {{ .Values.outboundProxy.https_proxy }}
+        {{- end }}
+        {{- if .Values.outboundProxy.no_proxy }}
           - name: NO_PROXY
-            value: {{ .Values.outboundProxy.no_proxy | default ".local" }}
+            value: {{ .Values.outboundProxy.no_proxy }}
+        {{- end }}
         {{- end }}
         {{- end }}
         volumeMounts:
