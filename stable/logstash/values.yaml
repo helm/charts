@@ -19,6 +19,7 @@ image:
 service:
   type: ClusterIP
   # clusterIP: None
+  # nodePort:
   # Set this to local, to preserve client source ip.  Default stripes out the source ip
   # externalTrafficPolicy: Local
   annotations: {}
