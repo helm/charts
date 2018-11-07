@@ -242,20 +242,20 @@ spec:
                 secretKeyRef:
                   name: {{ template "concourse.concourse.fullname" . }}
                   key: aws-secretsmanager-secret-key
-            {{- if .Values.secrets.awsSsmSessionToken }}
+            {{- if .Values.secrets.awsSecretsManagerSessionToken }}
             - name: CONCOURSE_AWS_SECRETSMANAGER_SESSION_TOKEN
               valueFrom:
                 secretKeyRef:
                   name: {{ template "concourse.concourse.fullname" . }}
                   key: aws-secretsmanager-session-token
             {{- end }}
-            {{- if .Values.concoures.web.awsSecretsManager.region }}
+            {{- if .Values.concourse.web.awsSecretsManager.region }}
             - name: AWS_REGION
-              value: {{ .Values.concoures.web.awsSecretsManager.region | quote }}
+              value: {{ .Values.concourse.web.awsSecretsManager.region | quote }}
             {{- end }}
-            {{- if .Values.concoures.web.awsSecretsManager.pipelineSecretTemplate }}
+            {{- if .Values.concourse.web.awsSecretsManager.pipelineSecretTemplate }}
             - name: CONCOURSE_AWS_SECRETSMANAGER_PIPELINE_SECRET_TEMPLATE
-              value: {{ .Values.concoures.web.awsSecretsManager.pipelineSecretTemplate | quote }}
+              value: {{ .Values.concourse.web.awsSecretsManager.pipelineSecretTemplate | quote }}
             {{- end }}
             {{- if .Values.concourse.web.awsSecretsManager.teamSecretTemplate }}
             - name: CONCOURSE_AWS_SECRETSMANAGER_TEAM_SECRET_TEMPLATE
@@ -282,9 +282,9 @@ spec:
                   name: {{ template "concourse.concourse.fullname" . }}
                   key: aws-ssm-session-token
             {{- end }}
-            {{- if .Values.concoures.web.awsSsm.region }}
+            {{- if .Values.concourse.web.awsSsm.region }}
             - name: AWS_REGION
-              value: {{ .Values.concoures.web.awsSsm.region | quote }}
+              value: {{ .Values.concourse.web.awsSsm.region | quote }}
             {{- end }}
             {{- if .Values.credentialManager.awsSsm.pipelineSecretTemplate }}
             - name: CONCOURSE_AWS_SSM_PIPELINE_SECRET_TEMPLATE
