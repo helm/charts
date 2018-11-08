@@ -97,6 +97,7 @@ The configuration parameters in this section control the resources requested and
 | service.type     | Service Type                                                                                   | `ClusterIP`                      |
 | service.port     | Service Port                                                                                   | `1433`                           |
 | service.annotations | Kubernetes service annotations                                                              | `{}`                             |
+| deployment.annotations | Kubernetes deployment annotations                                                        | `{}`                             |
 | collation        | Default collation for SQL Server                                                               | `SQL_Latin1_General_CP1_CI_AS`   |
 | lcid             | Default languages for SQL Server                                                               | `1033`                           |
 | hadr             | Enable Availability Group                                                                      | `0`                              |
