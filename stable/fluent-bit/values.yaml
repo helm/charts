@@ -85,14 +85,14 @@ parsers:
   ## is name.
   regex: []
   ##  json parser config can be defined by providing and array of commands.
-  ##  The following command list 
-  ##   
-  ##    commands: 
-  ##      - command: Decode_Field_As  escaped log do_next 
+  ##  The following command list
+  ##
+  ##    commands:
+  ##      - command: Decode_Field_As  escaped log do_next
   ##      - command: Decode_Field_As  json log
-  ##  
+  ##
   ##  translates into
-  ##  
+  ##
   ##   Command       |  Decoder  | Field | Optional Action   |
   ##   ==============|===========|=======|===================|
   ##   Decode_Field_As  escaped   log  do_next
