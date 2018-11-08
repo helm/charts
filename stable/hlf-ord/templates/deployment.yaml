@@ -118,10 +118,6 @@ spec:
             {{- end }}
             - configMapRef:
                 name: {{ include "hlf-ord.fullname" . }}--ord
-          ports:
-            - name: ord-port
-              containerPort: 7050
-              protocol: TCP
           volumeMounts:
             - mountPath: /var/hyperledger
               name: data
