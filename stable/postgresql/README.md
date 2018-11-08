@@ -68,6 +68,7 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `postgresqlDatabase`                          | PostgreSQL database                                | `nil`                                                     |
 | `postgresqlConfiguration`                     | Runtime Config Parameters                          | `nil`                                                     |
 | `pgHbaConfiguration`                          | Content of pg\_hba.conf                            | `nil (do not create pg_hba.conf)`                         |
+| `initdbScripts`                               | List of initdb scripts                             | `nil`                                                     |
 | `service.type`                                | Kubernetes Service type                            | `ClusterIP`                                               |
 | `service.port`                                | PostgreSQL port                                    | `5432`                                                    |
 | `service.nodePort`                            | Kubernetes Service nodePort                        | `nil`                                                     |
@@ -141,6 +142,8 @@ Alternatively, you can specify PostgreSQL configuration parameters using the `po
 ## Initialize a fresh instance
 
 The [Bitnami PostgreSQL](https://github.com/bitnami/bitnami-docker-postgresql) image allows you to use your custom scripts to initialize a fresh instance. In order to execute the scripts, they must be located inside the chart folder `files/docker-entrypoint-initdb.d` so they can be consumed as a ConfigMap.
+
+Alternatively, you can specify custom scripts using the `initdbScripts` parameter as dict.
 
 The allowed extensions are `.sh`, `.sql` and `.sql.gz`.
 

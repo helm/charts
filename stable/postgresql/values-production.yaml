@@ -87,6 +87,15 @@ postgresqlUsername: postgres
 #   host all all localhost trust
 #   host mydatabase mysuser 192.168.0.0/24 md5
 
+## initdb scripts
+## Specify dictionnary of scripts to be run at first boot
+## Alternatively, you can put your scripts under the files/docker-entrypoint-initdb.d directory
+##
+# initdbScripts:
+#   my_init_script.sh:|
+#      #!/bin/sh
+#      echo "Do something."
+
 ## PostgreSQL service configuration
 service:
   ## PosgresSQL service type
