@@ -8,7 +8,7 @@ metadata:
 {{ include "prometheus-operator.labels" . | indent 4 }}
 spec:
   groups:
-  - name: ./etcd3.rules
+  - name: etcd3.rules
     rules:
     - alert: InsufficientMembers
       expr: count(up{job="kube-etcd"} == 0) > (count(up{job="kube-etcd"}) / 2 - 1)
