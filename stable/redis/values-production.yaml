@@ -315,7 +315,7 @@ metrics:
     ## Use serviceLoadBalancerIP to request a specific static IP,
     ## otherwise leave blank
     # loadBalancerIP:
-    annotations: {}
+    annotations:
       prometheus.io/scrape: "true"
       prometheus.io/port: "9121"
 
