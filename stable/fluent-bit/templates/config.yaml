@@ -171,6 +171,9 @@ data:
 {{- if .timeFormat }}
         Time_Format {{ .timeFormat }}
 {{- end }}
+{{- if .decodeFieldAs  }}
+        Decode_Field_As {{ .decodeFieldAs }} {{ .decodeField | default "log" }}
+{{- end}}
 {{- if .commands }}
 {{- range .commands }}
         {{ .command }}
