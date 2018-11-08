@@ -1,3 +1,9 @@
+## Global Docker image registry
+## Please, note that this will override the image registry for all the images, including dependencies, configured to use the global value
+##
+# global:
+#   imageRegistry:
+
 image:
   ## Bitnami MongoDB registry
   ##
@@ -8,7 +14,7 @@ image:
   ## Bitnami MongoDB image tag
   ## ref: https://hub.docker.com/r/bitnami/mongodb/tags/
   ##
-  tag: 4.0.3-debian-9
+  tag: 4.0.3
 
   ## Specify a imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -67,6 +73,7 @@ clusterDomain: cluster.local
 service:
   annotations: {}
   type: ClusterIP
+  # clusterIP: None
   port: 27017
 
   ## Specify the nodePort value for the LoadBalancer and NodePort service types.
@@ -106,6 +113,9 @@ replicaSet:
 
 # Annotations to be added to MongoDB pods
 podAnnotations: {}
+
+# Additional pod labels to apply
+podLabels: {}
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -205,3 +215,31 @@ configmap:
 #  security:
 #    authorization: enabled
 #    keyFile: /opt/bitnami/mongodb/conf/keyfile
+
+## Prometheus Exporter / Metrics
+##
+metrics:
+  enabled: true
+
+  image:
+    registry: docker.io
+    repository: forekshub/percona-mongodb-exporter
+    tag: latest
+    pullPolicy: IfNotPresent
+    ## Optionally specify an array of imagePullSecrets.
+    ## Secrets must be manually created in the namespace.
+    ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+    ##
+    # pullSecrets:
+    #   - myRegistrKeySecretName
+
+  ## Metrics exporter resource requests and limits
+  ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  ##
+  # resources: {}
+
+  ## Metrics exporter pod Annotation
+  podAnnotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "9216"
+
