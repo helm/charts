@@ -45,7 +45,7 @@ persistence:
   enabled: true
 
   ## The path the volume will be mounted at, useful when using different
-  ## Redis images.
+  ## SEQ images.
   path: /data
 
   ## The subdirectory of the volume to mount to, useful in dev environments and one PV for multiple services.
@@ -56,7 +56,7 @@ persistence:
   ## If defined, PVC must be created manually before volume will be bound
   # existingClaim:
 
-  ## redis data Persistent Volume Storage Class
+  ## SEQ data Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>
   ## If set to "-", storageClassName: "", which disables dynamic provisioning
   ## If undefined (the default) or set to null, no storageClassName spec is
