@@ -949,42 +949,42 @@ spec:
         severity: warning
   - name: general.rules
     rules:
-      - alert: TargetDown
-        expr: 100 * (count(up == 0) BY (job) / count(up) BY (job)) > 10
-        for: 10m
-        labels:
-          severity: warning
-        annotations:
-          description: '{{`{{ $value }}`}}% of {{`{{ $labels.job }}`}} targets are down.'
-          summary: Targets are down
-      - alert: DeadMansSwitch
-        expr: vector(1)
-        labels:
-          severity: none
-        annotations:
-          description: This is a DeadMansSwitch meant to ensure that the entire Alerting
-            pipeline is functional.
-          summary: Alerting DeadMansSwitch
-      - record: fd_utilization
-        expr: process_open_fds / process_max_fds
-      - alert: FdExhaustionClose
-        expr: predict_linear(fd_utilization[1h], 3600 * 4) > 1
-        for: 10m
-        labels:
-          severity: warning
-        annotations:
-          description: '{{`{{ $labels.job }}`}}: {{`{{ $labels.namespace }}`}}/{{`{{ $labels.pod }}`}} instance
-            will exhaust in file/socket descriptors within the next 4 hours'
-          summary: file descriptors soon exhausted
-      - alert: FdExhaustionClose
-        expr: predict_linear(fd_utilization[10m], 3600) > 1
-        for: 10m
-        labels:
-          severity: critical
-        annotations:
-          description: '{{`{{ $labels.job }}`}}: {{`{{ $labels.namespace }}`}}/{{`{{ $labels.pod }}`}} instance
-            will exhaust in file/socket descriptors within the next hour'
-          summary: file descriptors soon exhausted
+    - alert: TargetDown
+      expr: 100 * (count(up == 0) BY (job) / count(up) BY (job)) > 10
+      for: 10m
+      labels:
+        severity: warning
+      annotations:
+        description: '{{`{{ $value }}`}}% of {{`{{ $labels.job }}`}} targets are down.'
+        summary: Targets are down
+    - alert: DeadMansSwitch
+      expr: vector(1)
+      labels:
+        severity: none
+      annotations:
+        description: This is a DeadMansSwitch meant to ensure that the entire Alerting
+          pipeline is functional.
+        summary: Alerting DeadMansSwitch
+    - record: fd_utilization
+      expr: process_open_fds / process_max_fds
+    - alert: FdExhaustionClose
+      expr: predict_linear(fd_utilization[1h], 3600 * 4) > 1
+      for: 10m
+      labels:
+        severity: warning
+      annotations:
+        description: '{{`{{ $labels.job }}`}}: {{`{{ $labels.namespace }}`}}/{{`{{ $labels.pod }}`}} instance
+          will exhaust in file/socket descriptors within the next 4 hours'
+        summary: file descriptors soon exhausted
+    - alert: FdExhaustionClose
+      expr: predict_linear(fd_utilization[10m], 3600) > 1
+      for: 10m
+      labels:
+        severity: critical
+      annotations:
+        description: '{{`{{ $labels.job }}`}}: {{`{{ $labels.namespace }}`}}/{{`{{ $labels.pod }}`}} instance
+          will exhaust in file/socket descriptors within the next hour'
+        summary: file descriptors soon exhausted
   - name: kube-prometheus-node-alerting.rules
     rules:
     - alert: NodeDiskRunningFull
