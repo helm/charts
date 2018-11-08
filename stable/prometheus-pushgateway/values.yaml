@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 image:
   repository: prom/pushgateway
-  tag: v0.4.0
+  tag: v0.6.0
   pullPolicy: IfNotPresent
 
 service:
@@ -13,6 +13,15 @@ service:
 
 # Optional pod annotations
 podAnnotations: {}
+
+# Optional pod labels
+podLabels: {}
+
+# Optional service labels
+serviceLabels: {}
+
+# Optional serviceAccount labels
+serviceAccountLabels: {}
 
 # Optional additional arguments
 extraArgs: []
