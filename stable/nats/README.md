@@ -118,6 +118,15 @@ The following table lists the configurable parameters of the NATS chart and thei
 | `networkPolicy.enabled`              | Enable NetworkPolicy                                                                         | `false`                           |
 | `networkPolicy.allowExternal`        | Allow external connections                                                                   | `true`                            |
 | `sidecars`                           | Attach additional containers to the pod.                                                     | `nil`                             |
+| `metrics.enabled`                          | Start a side-car prometheus exporter                                                                           | `false`                                              |
+| `metrics.image.registry`                   | MongoDB exporter image registry                                                                                  | `docker.io`                                          |
+| `metrics.image.repository`                 | MongoDB exporter image name                                                                                      | `appcelerator/prometheus-nats-exporter`                           |
+| `metrics.image.tag`                        | MongoDB exporter image tag                                                                                       | `0.17.0`                                            |
+| `metrics.image.pullPolicy`                 | Image pull policy                                                                                              | `IfNotPresent`                                       |
+| `metrics.image.pullSecrets`                | Specify docker-registry secret names as an array                                                               | `nil`                                                |
+| `metrics.podAnnotations`                   | Additional annotations for Metrics exporter pod                                                                | {}                                                   |
+| `metrics.resources`                        | Exporter resource requests/limit                                                                               | Memory: `256Mi`, CPU: `100m`                         |
+
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
