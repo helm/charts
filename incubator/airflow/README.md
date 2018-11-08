@@ -249,6 +249,7 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `serviceAccount.name`                    | the service account name                                | ``                        |
 | `postgres.enabled`                       | create a postgres server                                | `true`                    |
 | `postgres.uri`                           | full URL to custom postgres setup                       | (undefined)               |
+| `postgres.portgresHost`                  | PostgreSQL Hostname                                     | (undefined)               |
 | `postgres.postgresUser`                  | PostgreSQL User                                         | `postgres`                |
 | `postgres.postgresPassword`              | PostgreSQL Password                                     | `airflow`                 |
 | `postgres.postgresDatabase`              | PostgreSQL Database name                                | `airflow`                 |

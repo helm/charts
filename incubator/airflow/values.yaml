@@ -299,6 +299,8 @@ postgresql:
   ## e.g. postgres://airflow:changeme@my-postgres.com:5432/airflow?sslmode=disable
   # uri:
   ##
+  ## PostgreSQL hostname
+  ## postgresHost:
   ##
   ## PostgreSQL port
   postgresPort: 5432
