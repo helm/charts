@@ -1,8 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-{{- if .Values.service.annotations }}
   annotations:
+    service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
+{{- if .Values.service.annotations }}
 {{ toYaml .Values.service.annotations | indent 4 }}
 {{- end }}
   name: {{ template "rabbitmq-ha.fullname" . }}-discovery
@@ -64,6 +65,7 @@ spec:
       port: {{ .Values.rabbitmqAmqpsSupport.amqpsNodePort }}
       targetPort: amqps
     {{- end }}
+  publishNotReadyAddresses: true
   selector:
     app: {{ template "rabbitmq-ha.name" . }}
     release: {{ .Release.Name }}
