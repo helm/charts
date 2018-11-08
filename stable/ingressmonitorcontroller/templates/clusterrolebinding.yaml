@@ -1,6 +1,6 @@
 {{- if and ( .Values.ingressMonitorController.rbac.create ) (eq .Values.ingressMonitorController.watchNamespace "") }}
 kind: ClusterRoleBinding
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 metadata:
 {{- if .Values.ingressMonitorController.useFullName }}
   name: {{ template "fullname" . }}-role-binding
