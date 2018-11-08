@@ -80,6 +80,16 @@ The following table lists the configurable parameters of the kibana chart and th
 | `plugins.enabled`                             | Enable installation of plugins.            | `false`                                |
 | `plugins.reset`                               | Optional : Remove all installed plugins before installing all new ones | `false`                                   |
 | `plugins.values`                              | List of plugins to install. Format <pluginName,version,URL> with URLs pointing to zip files of Kibana plugins to install                                 | None:                                   |
+| `persistentVolumeClaim.enabled`               | Enable PVC for plugins                     | `false`                                 |
+| `persistentVolumeClaim.existingClaim`         | Use your own PVC for plugins               | `false`                                 |
+| `persistentVolumeClaim.annotations`           | Add your annotations for the PVC           | `{}`                                    |
+| `persistentVolumeClaim.accessModes`           | Acces mode to the PVC                      | `ReadWriteOnce`                         |
+| `persistentVolumeClaim.size`                  | Size of the PVC                            | `5Gi`                                   |
+| `persistentVolumeClaim.storageClass`          | Storage class of the PVC                   | None:                                   |
+| `securityContext.enabled`                     | Enable security context (should be true for PVC)                    | `false`                                  |
+| `securityContext.allowPrivilegeEscalation`    | Allow privilege escalation                 | `false`                                 |
+| `securityContext.runAsUser`                   | User id to run in pods                     | `1000`                                  |
+| `securityContext.fsGroup`                     | fsGroup id to run in pods                  | `2000`                                  |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
