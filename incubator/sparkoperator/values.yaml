@@ -20,7 +20,7 @@ enableMetrics: true
 
 controllerThreads: 10
 installCrds: true
-metricsPort: "10254"
+metricsPort: 10254
 metricsEndpoint: "/metrics"
 metricsPrefix: ""
 resyncInterval: 30
