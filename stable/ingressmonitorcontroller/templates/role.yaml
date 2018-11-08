@@ -1,0 +1,35 @@
+{{- if and ( .Values.ingressMonitorController.rbac.create ) (.Values.ingressMonitorController.watchNamespace) }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+{{- if .Values.ingressMonitorController.useFullName }}
+  name: {{ template "fullname" . }}-role
+{{- else }}
+  name: {{ template "name" . }}-role
+{{- end }}
+  namespace: {{ .Values.ingressMonitorController.watchNamespace | quote }}
+rules:
+  - apiGroups:
+      - ""
+      - "extensions"
+      - "route.openshift.io"
+    resources:
+      - ingresses
+      - routes
+    verbs:
+      - list
+      - get
+      - update
+      - patch
+      - watch
+      - delete
+  - apiGroups:
+      - ""
+    resources:
+      - services
+      - pods
+    verbs:
+      - list
+      - get
+      - watch
+{{- end }}

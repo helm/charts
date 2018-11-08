@@ -1,0 +1,23 @@
+{{- if and ( .Values.ingressMonitorController.rbac.create ) (.Values.ingressMonitorController.watchNamespace) }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+{{- if .Values.ingressMonitorController.useFullName }}
+  name: {{ template "fullname" . }}-role-binding
+{{- else }}
+  name: {{ template "name" . }}-role-binding
+{{- end }}
+  namespace: {{ .Values.ingressMonitorController.watchNamespace | quote }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+{{- if .Values.ingressMonitorController.useFullName }}
+  name: {{ template "fullname" . }}-role
+{{- else }}
+  name: {{ template "name" . }}-role
+{{- end }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ template "serviceAccountName" . }}
+    namespace: {{ .Release.Namespace | quote }}
+{{- end }}

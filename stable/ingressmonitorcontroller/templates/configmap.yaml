@@ -1,17 +1,26 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
+{{- if .Values.ingressMonitorController.useFullName }}
+  name: {{ template "fullname" . }}
+{{- else }}
+  name: {{ template "name" . }}
+{{- end }}
   annotations:
-    fabric8.io/target-platform: kubernetes
+{{- if .Values.ingressMonitorController.config.annotations }}
+{{ toYaml .Values.ingressMonitorController.config.annotations | indent 4 }}
+{{- end }}
   labels:
     app: {{ template "name" . }}
-    version: {{ .Chart.Version }}
-    group: {{ .Values.ingressMonitorController.labels.group }}
-    provider: {{ .Values.ingressMonitorController.labels.provider }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
-  name: {{ template "name" . }}
+{{- if .Values.ingressMonitorController.config.labels }}
+{{ toYaml .Values.ingressMonitorController.config.labels | indent 4 }}
+{{- end }}
+{{- if .Values.ingressMonitorController.matchLabels }}
+{{ toYaml .Values.ingressMonitorController.matchLabels | indent 4 }}
+{{- end }}
 data:
   config.yaml: |-
     providers:

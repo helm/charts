@@ -28,12 +28,25 @@ The following quickstart let's you set up Ingress Monitor Controller to register
 
 | Key           | Description                                                               | Example                            | Default Value                      |
 |---------------|---------------------------------------------------------------------------|------------------------------------|------------------------------------|
-| providers.name          | Name of the provider                                                      | UptimeRobot                        | UptimeRobot                        |
-| providers.apiKey        | ApiKey of the provider                                                    | u956-afus321g565fghr519            | your-api-key                       |
-| providers.apiURL        | Base url of the ApiProvider                                               | https://api.uptimerobot.com/v2/ | https://api.uptimerobot.com/v2/ |
-| providers.alertContacts | A `-` separated list of contact id's that you want to add to the monitors | 12345_0_0-23564_0_0                | some-alert-contacts                |
-| watchNamespace | Name of the namespace if you want to monitor ingresses/route only in that namespace. | dev               | null                |
-| enableMonitorDeletion | A safeguard flag that is used to enable or disable monitor deletion on ingress deletion (Useful for prod environments where you don't want to remove monitor on ingress deletion) | false               | false                |
+| useFullName          | Option to use full name containing release name for resources                                                      | `false`                        | `false`                        |
+| matchLabels          | Match labels for deployment selector                                                      | `{}`                        | `{}`
+| deployment.labels          | Labels for deployment                                                      | `{}`                        | `{}`
+| deployment.annotations           | Annotations for deployment                                                      | `{}`                        | `{}`
+| config.labels          | Labels for configmap                                                      | `{}`                        | `{}`
+| config.annotations          | Annotations for configmap                                                      | `fabric8.io/target-platform: kubernetes`                        | `fabric8.io/target-platform: kubernetes`
+| rbac.create          | Option to create rbac resources                                                      | `true`                        | `true`
+| serviceAccount.create          | Option to create service account                                                      | `true`                        | `true`
+| serviceAccount.labels          | Labels for serviceAccount                                                      | `{}`                        | `{}`
+| serviceAccount.name          | Name of serviceAccount                                                      | `ingressmonitorcontroller`                        | `ingressmonitorcontroller`
+| image.name          | Image of ingressMonitorController                                                      | `stakater/ingressmonitorcontroller`                        | `stakater/ingressmonitorcontroller`
+| image.tag          | Version of ingressMonitorController Image                                                      | `1.0.47`                        | `1.0.47`
+| image.pullPolicy          | Pull policy for image                                                      | `IfNotPresent`                        | `IfNotPresent`
+| providers.name          | Name of the provider                                                      | `UptimeRobot`                        | `UptimeRobot`                        |
+| providers.apiKey        | ApiKey of the provider                                                    | `u956-afus321g565fghr519`            | `your-api-key`                       |
+| providers.apiURL        | Base url of the ApiProvider                                               | `https://api.uptimerobot.com/v2/` | `https://api.uptimerobot.com/v2/` |
+| providers.alertContacts | A `-` separated list of contact id's that you want to add to the monitors | `12345_0_0-23564_0_0`               | `some-alert-contacts`                |
+| watchNamespace | Name of the namespace if you want to monitor ingresses/route only in that namespace. | `dev`               | `""`                |
+| enableMonitorDeletion | A safeguard flag that is used to enable or disable monitor deletion on ingress deletion (Useful for prod environments where you don't want to remove monitor on ingress deletion) | `false`               | `false`                |
 
 
 

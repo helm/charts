@@ -1,11 +1,27 @@
 ingressMonitorController:
-  watchNamespace: null
-  labels:
-    provider: stakater
-    group: com.stakater.platform
+  watchNamespace: ""
+  useFullName: false
+  matchLabels: {}
+  deployment:
+    labels: {}
+    annotations: {}
+  config:
+    labels: {}
+    annotations:
+      fabric8.io/target-platform: kubernetes
+  rbac:
+    create: true
+  # Service account config for the agent pods
+  serviceAccount:
+    # Specifies whether a ServiceAccount should be created
+    create: true
+    labels: {}
+    # The name of the ServiceAccount to use.
+    # If not set and create is true, a name is generated using the fullname template
+    name: ingressmonitorcontroller
   image:
     name: stakater/ingressmonitorcontroller
-    tag: "1.0.46"
+    tag: "1.0.47"
     pullPolicy: IfNotPresent
   providers:
   - name: UptimeRobot

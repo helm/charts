@@ -2,30 +2,48 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   annotations:
-    configmap.reloader.stakater.com/reload: {{ template "name" . }}
+{{- if .Values.ingressMonitorController.deployment.annotations }}
+{{ toYaml .Values.ingressMonitorController.deployment.annotations | indent 4 }}
+{{- end }}
   labels:
     app: {{ template "name" . }}
-    version: {{ .Chart.Version }}
-    group: {{ .Values.ingressMonitorController.labels.group }}
-    provider: {{ .Values.ingressMonitorController.labels.provider }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
+{{- if .Values.ingressMonitorController.deployment.labels }}
+{{ toYaml .Values.ingressMonitorController.deployment.labels | indent 4 }}
+{{- end }}
+{{- if .Values.ingressMonitorController.matchLabels }}
+{{ toYaml .Values.ingressMonitorController.matchLabels | indent 4 }}
+{{- end }}
+{{- if .Values.ingressMonitorController.useFullName }}
+  name: {{ template "fullname" . }}
+{{- else }}
   name: {{ template "name" . }}
+{{- end }}
 spec:
   replicas: 1
   revisionHistoryLimit: 2
   selector:
     matchLabels:
       app: {{ template "name" . }}
-      group: {{ .Values.ingressMonitorController.labels.group }}
-      provider: {{ .Values.ingressMonitorController.labels.provider }}
+      release: {{ .Release.Name | quote }}
+{{- if .Values.ingressMonitorController.matchLabels }}
+{{ toYaml .Values.ingressMonitorController.matchLabels | indent 6 }}
+{{- end }}
   template:
     metadata:
       labels:
         app: {{ template "name" . }}
-        group: {{ .Values.ingressMonitorController.labels.group }}
-        provider: {{ .Values.ingressMonitorController.labels.provider }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        release: {{ .Release.Name | quote }}
+        heritage: {{ .Release.Service | quote }}
+{{- if .Values.ingressMonitorController.deployment.labels }}
+{{ toYaml .Values.ingressMonitorController.deployment.labels | indent 8 }}
+{{- end }}
+{{- if .Values.ingressMonitorController.matchLabels }}
+{{ toYaml .Values.ingressMonitorController.matchLabels | indent 8 }}
+{{- end }}
     spec:
       containers:
       - env:
@@ -37,12 +55,20 @@ spec:
           value: {{ .Values.ingressMonitorController.configFilePath }}
         image: "{{ .Values.ingressMonitorController.image.name }}:{{ .Values.ingressMonitorController.image.tag }}"
         imagePullPolicy: {{ .Values.ingressMonitorController.image.pullPolicy }}
+      {{- if .Values.ingressMonitorController.useFullName }}
+        name: {{ template "fullname" . }}
+      {{- else }}
         name: {{ template "name" . }}
+      {{- end }}
         volumeMounts:
         - mountPath: /etc/IngressMonitorController
           name: config-volume
-      serviceAccountName: {{ template "name" . }}
+      serviceAccountName: {{ template "serviceAccountName" . }}
       volumes:
       - configMap:
+        {{- if .Values.ingressMonitorController.useFullName }}
+          name: {{ template "fullname" . }}
+        {{- else }}
           name: {{ template "name" . }}
+        {{- end }}
         name: config-volume

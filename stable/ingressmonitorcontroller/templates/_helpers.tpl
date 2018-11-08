@@ -14,3 +14,14 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- $name := default .Chart.Name .Values.nameOverride -}}
 {{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+
+{{/*
+Create the name of the service account to use
+*/}}
+{{- define "serviceAccountName" -}}
+{{- if .Values.ingressMonitorController.serviceAccount.create -}}
+    {{ default (include "fullname" .) .Values.ingressMonitorController.serviceAccount.name }}
+{{- else -}}
+    {{ default "default" .Values.ingressMonitorController.serviceAccount.name }}
+{{- end -}}
+{{- end -}}
