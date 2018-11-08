@@ -9,6 +9,11 @@ metadata:
     release: {{ .Release.Name | quote}}
     heritage: {{ .Release.Service | quote }}
 spec:
+  selector:
+    matchLabels:
+      release: {{ .Release.Name | quote }}
+      app: {{ template "postgresql.name" . }}
+      role: metrics
   template:
     metadata:
       labels:
