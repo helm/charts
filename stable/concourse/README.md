@@ -151,6 +151,7 @@ The following table lists the configurable parameters of the Concourse chart and
 | `secrets.vaultClientCert` | Vault Client Certificate | `nil` |
 | `secrets.vaultClientKey` | Vault Client Key | `nil` |
 | `secrets.vaultClientToken` | Vault periodic client token | `nil` |
+| `secrets.vaultAuthParam` | Paramter to pass when logging in via the backend | `nil` |
 | `secrets.influxdbPassword` | Password used to authenticate with influxdb | `nil` |
 | `secrets.syslogCaCert` | SSL certificate to verify Syslog server | `nil` |
 
