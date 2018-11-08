@@ -842,6 +842,15 @@ worker:
   #     hostPath:
   #       path: /dev/nvme0n1
   #       type: BlockDevice
+  #
+  # As a special exception, this allows taking over the `concourse-work-dir`
+  # volume (from the default emptyDir) if `persistence.enabled` is false:
+  #
+  # additionalVolumes:
+  #   - name: concourse-work-dir
+  #     hostPath:
+  #       path: /mnt/locally-mounted-fast-disk/concourse
+  #       type: DirectoryOrCreate
 
   ## Whether the workers should be forced to run on separate nodes.
   ## This is accomplished by setting their AntiAffinity with requiredDuringSchedulingIgnoredDuringExecution as opposed to preferred
