@@ -315,9 +315,9 @@ metrics:
     ## Use serviceLoadBalancerIP to request a specific static IP,
     ## otherwise leave blank
     # loadBalancerIP:
-    annotations: {}
-    # prometheus.io/scrape: "true"
-    # prometheus.io/port: "9121"
+    annotations:
+      prometheus.io/scrape: "true"
+      prometheus.io/port: "9121"
 
   ## Metrics exporter resource requests and limits
   ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
