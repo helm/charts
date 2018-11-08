@@ -1,0 +1,105 @@
+# Default values for konga.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: pantsel/konga
+  tag: 0.13.0
+  pullPolicy: IfNotPresent
+
+service:
+  type: LoadBalancer
+  port: 443
+  annotations: 
+    service.beta.kubernetes.io/aws-load-balancer-proxy-protocol: "*"
+    service.beta.kubernetes.io/aws-load-balancer-healthcheck-interval: "30"
+    service.beta.kubernetes.io/aws-load-balancer-healthcheck-timeout: "5"
+    service.beta.kubernetes.io/aws-load-balancer-healthcheck-unhealthy-threshold: "3"
+    service.beta.kubernetes.io/aws-load-balancer-connection-draining-enabled: "true"
+    service.beta.kubernetes.io/aws-load-balancer-connection-draining-timeout: "60"
+    service.beta.kubernetes.io/aws-load-balancer-internal: "0.0.0.0/0"
+    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
+    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: "arn:aws:acm:us-east-1:503648108054:certificate/e51b38b6-fad7-463b-82e2-fc280b8fc5d8"
+    service.beta.kubernetes.io/aws-load-balancer-backend-protocol: "http"
+    dns.alpha.kubernetes.io/internal: "api-dashboard.dev.bluecedar.com"
+
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  path: /
+  hosts:
+    - chart-example.local
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+# Specify Konga variables for configurations
+# https://hub.docker.com/r/pantsel/konga/
+env:
+  # Specify The port that will be used by Konga's server
+  port: 1337
+  # The database that Konga will use. If not set, the localDisk db will be used.
+  # Supported Values: mongo, mysql, postgres, sqlserver
+  database: postgres
+  # The full db connection string. Depends on `database`. If this is set, no other DB related var is needed.
+  #db_uri: postgres://konga:kongapassword@konga-db-postgresql.db:5432/konga_database
+  # If `db_uri` is not specified, this is the database host. Depends on `database`.
+  #db_host: konga-db-postgresql.db
+  # If `db_uri` is not specified, this is the database port. Depends on `database`.
+  #db_port: 5432
+  # If `db_uri` is not specified, this is the database user. Depends on `database`.
+  #db_user: konga
+  # If `db_uri` is not specified, this is the database user's password. Depends on `database`.
+  #db_password: kongapassword
+  # If `db_uri` is not specified, this is the name of Konga's db. Depends on `database`.
+  #db_database: konga_database
+  # If using postgres as a database, this is the schema that will be used.
+  #db_pg_schema: konga_database
+  # The environment production, development
+  environment: production
+  # The time in ms that Konga will wait for startup tasks to finish before exiting the process.
+  hook_timeout: 60000
+  # The logging level: silly, debug, info, warn, error
+  # Default Values: debug on dev environment & warn on prod.
+  # log_level:
+  # The secret that will be used to sign JWT tokens issued by Konga
+  # token_secret:
+  # If you want to use SSL, this will be the absolute path to the .key file. 
+  # Both ssl_key_path & ssl_crt_path must be set.
+  # ssl_key_path:
+  # If you want to use SSL, this will be the absolute path to the .crt file. 
+  # Both ssl_key_path & ssl_crt_path must be set.
+  # ssl_crt_path:
+
+# PostgreSQL chart configs
+postgresql:
+  enabled: true
+  postgresUser: konga
+  postgresPassword: kong4Pwd
+  postgresDatabase: konga_database
+  service:
+    port: 5432
+  prepareDb: true

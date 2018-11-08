@@ -1,0 +1,64 @@
+{{- if .Values.postgresql.prepareDb }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ template "konga.fullname" . }}-prepare
+  labels:
+    app: {{ template "konga.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+    component: prepare
+spec:
+  template:
+    metadata:
+      name: {{ template "konga.name" . }}-prepare
+      labels:
+        app: {{ template "konga.name" . }}
+        release: "{{ .Release.Name }}"
+        component: prepare
+    spec:
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end }}
+      {{- end }}
+      {{- if .Values.postgresql.enabled }}
+      initContainers:
+      - name: wait-for-postgres
+        image: busybox
+        env:
+        - name: KONGA_PG_HOST
+          value: {{ template "konga.postgresql.fullname" . }}
+        - name: KONGA_PG_PORT
+          value: "{{ .Values.postgresql.service.port }}"
+        - name: KONGA_PG_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "konga.postgresql.fullname" . }}
+              key: postgres-password
+        command: [ "/bin/sh", "-c", "until nc -zv $KONGA_PG_HOST $KONGA_PG_PORT -w1; do echo 'waiting for db'; sleep 1; done" ]
+      {{- end }}
+      containers:
+      - name: {{ template "konga.name" . }}-prepare
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+        - name: KONGA_PG_USER
+          value: {{ .Values.postgresql.postgresUser }}
+        - name: KONGA_PG_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "konga.postgresql.fullname" . }}
+              key: postgres-password
+        - name: KONGA_PG_HOST
+          value: {{ template "konga.postgresql.fullname" . }}
+        - name: KONGA_PG_PORT
+          value: "{{ .Values.postgresql.service.port }}"
+        - name: KONGA_PG_DBNAME
+          value: "{{ .Values.postgresql.postgresDatabase }}"
+
+        command: [ "/bin/sh", "-c", "node ./bin/konga.js prepare --adapter postgres --uri postgres://${KONGA_PG_USER}:${KONGA_PG_PASSWORD}@${KONGA_PG_HOST}:${KONGA_PG_PORT}/${KONGA_PG_DBNAME}" ]
+      restartPolicy: OnFailure
+{{- end }}

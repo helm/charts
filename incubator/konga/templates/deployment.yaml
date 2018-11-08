@@ -1,0 +1,102 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "konga.fullname" . }}
+  labels:
+    app: {{ template "konga.name" . }}
+    chart: {{ template "konga.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "konga.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "konga.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 1337
+              protocol: TCP
+          env:
+            - name: DB_ADAPTER
+              value: postgres
+            - name: DB_HOST
+              value: "{{ template "konga.postgresql.fullname" . }}"
+            #- name: DB_PORT
+            #  value: "{{ .Values.postgresql.service.port }}"
+            #- name: DB_DATABASE
+            #  value: "{{ .Values.postgresql.postgresDatabase }}"
+            - name: DB_USER
+              value: "{{ .Values.postgresql.postgresUser }}"
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "konga.postgresql.fullname" . }}
+                  key: postgres-password
+            #- name: DB_PG_SCHEMA
+            #  value: "{{ .Values.postgresql.postgresDatabase }}"
+            #- name: DB_URI
+            #  value: "postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_PG_SCHEMA}"
+
+            - name: DB_URI
+              value: "postgres://{{ .Values.postgresql.postgresUser }}:{{ .Values.postgresql.postgresPassword }}@{{ template "konga.postgresql.fullname" . }}:{{ .Values.postgresql.service.port }}/{{ .Values.postgresql.postgresDatabase }}"
+
+            {{- if .Values.env.environment }}
+            - name: NODE_ENV
+              value: "{{ .Values.env.environment }}"
+            {{- end }}
+            {{- if .Values.env.hook_timeout }}
+            - name: KONGA_HOOK_TIMEOUT
+              value: "{{ .Values.env.hook_timeout }}"
+            {{- end }}
+            {{- if .Values.env.log_level }}
+            - name: KONGA_LOG_LEVEL
+              value: "{{ .Values.env.log_level }}"
+            {{- end }}
+            {{- if .Values.env.token_secret }}
+            - name: TOKEN_SECRET
+              value: "{{ .Values.env.token_secret }}"
+            {{- end }}
+            {{- if .Values.env.ssl_key_path }}
+            - name: SSL_KEY_PATH
+              value: "{{ .Values.env.ssl_key_path }}"
+            {{- end }}
+            {{- if .Values.env.ssl_crt_path }}
+            - name: SSL_CRT_PATH
+              value: "{{ .Values.env.ssl_crt_path }}"
+            {{- end }}
+
+#          livenessProbe:
+#            httpGet:
+#              path: /
+#              port: http
+#          readinessProbe:
+#            httpGet:
+#              path: /
+#              port: http
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+
+
