@@ -30,3 +30,13 @@ Create chart name and version as used by the chart label.
 {{- define "opa.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+
+{{/*
+Define standard labels for frequently used metadata.
+*/}}
+{{- define "opa.labels.standard" -}}
+app: {{ template "opa.fullname" . }}
+chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+release: "{{ .Release.Name }}"
+heritage: "{{ .Release.Service }}"
+{{- end -}}

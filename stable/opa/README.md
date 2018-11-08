@@ -21,7 +21,7 @@ If you just want to see something run, install the chart without any
 configuration.
 
 ```bash
-helm install .
+helm install stable/opa
 ```
 
 Once installed, the OPA will download a sample bundle from
