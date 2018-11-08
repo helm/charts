@@ -76,11 +76,28 @@ spec:
       - name: "chown"
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+        env:
+        - name: ALLOW_CHOWN_FAILURE
+          value: {{ .Values.data.allow_chown_failure | quote }}
         command:
         - /bin/bash
         - -c
-        - chown -R elasticsearch:elasticsearch /usr/share/elasticsearch/data &&
-          chown -R elasticsearch:elasticsearch /usr/share/elasticsearch/logs
+        - >
+          chown_it() {
+            local user_group="$1"
+            local target="$2"
+            if ! chown -R ${user_group} ${target}; then
+              echo >&2 -n "Failed to \"chown -R ${user_group} ${target}\""
+              if [[ "${ALLOW_CHOWN_FAILURE}" != "true" ]]; then
+                echo >&2 ", exiting.."
+                exit 1
+              else
+                echo >&2 ", continuing.."
+              fi
+            fi
+          }
+          chown_it elasticsearch:elasticsearch /usr/share/elasticsearch/data
+          chown_it elasticsearch:elasticsearch /usr/share/elasticsearch/logs
         securityContext:
           runAsUser: 0
         volumeMounts:

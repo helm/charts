@@ -93,6 +93,7 @@ client:
 
 master:
   name: master
+  allow_chown_failure: false
   exposeHttp: false
   replicas: 3
   heapSize: "512m"
@@ -126,6 +127,7 @@ master:
 
 data:
   name: data
+  allow_chown_failure: false
   exposeHttp: false
   replicas: 2
   heapSize: "1536m"
