@@ -24,5 +24,4 @@ metricsPort: "10254"
 metricsEndpoint: "/metrics"
 metricsPrefix: ""
 resyncInterval: 30
-submissionThreads: 3
 webhookPort: 8080
