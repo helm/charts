@@ -1,0 +1,133 @@
+{{- if and .Values.defaultRules.create .Values.kubeEtcd.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: {{ printf "%s-%s" (include "prometheus-operator.fullname" .) "kube-etcd-rules" | trunc 63 | trimSuffix "-" }}
+  labels:
+    app: {{ template "prometheus-operator.name" . }}
+{{ include "prometheus-operator.labels" . | indent 4 }}
+spec:
+  groups:
+  - name: ./etcd3.rules
+    rules:
+    - alert: InsufficientMembers
+      expr: count(up{job="kube-etcd"} == 0) > (count(up{job="kube-etcd"}) / 2 - 1)
+      for: 3m
+      labels:
+        severity: critical
+      annotations:
+        description: If one more etcd member goes down the cluster will be unavailable
+        summary: etcd cluster insufficient members
+    - alert: NoLeader
+      expr: etcd_server_has_leader{job="kube-etcd"} == 0
+      for: 1m
+      labels:
+        severity: critical
+      annotations:
+        description: etcd member {{`{{ $labels.instance }}`}} has no leader
+        summary: etcd member has no leader
+    - alert: HighNumberOfLeaderChanges
+      expr: increase(etcd_server_leader_changes_seen_total{job="kube-etcd"}[1h]) > 3
+      labels:
+        severity: warning
+      annotations:
+        description: etcd instance {{`{{ $labels.instance }}`}} has seen {{`{{ $value }}`}} leader
+          changes within the last hour
+        summary: a high number of leader changes within the etcd cluster are happening
+    - alert: HighNumberOfFailedGRPCRequests
+      expr: sum(rate(grpc_server_handled_total{grpc_code!="OK",job="kube-etcd"}[5m])) BY (grpc_service, grpc_method)
+        / sum(rate(grpc_server_handled_total{job="kube-etcd"}[5m])) BY (grpc_service, grpc_method) > 0.01
+      for: 10m
+      labels:
+        severity: warning
+      annotations:
+        description: '{{`{{ $value }}`}}% of requests for {{`{{ $labels.grpc_method }}`}} failed
+          on etcd instance {{`{{ $labels.instance }}`}}'
+        summary: a high number of gRPC requests are failing
+    - alert: HighNumberOfFailedGRPCRequests
+      expr: sum(rate(grpc_server_handled_total{grpc_code!="OK",job="kube-etcd"}[5m])) BY (grpc_service, grpc_method)
+        / sum(rate(grpc_server_handled_total{job="kube-etcd"}[5m])) BY (grpc_service, grpc_method) > 0.05
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        description: '{{`{{ $value }}`}}% of requests for {{`{{ $labels.grpc_method }}`}} failed
+          on etcd instance {{`{{ $labels.instance }}`}}'
+        summary: a high number of gRPC requests are failing
+    - alert: GRPCRequestsSlow
+      expr: histogram_quantile(0.99, sum(rate(grpc_server_handling_seconds_bucket{job="kube-etcd",grpc_type="unary"}[5m])) by (grpc_service, grpc_method, le))
+        > 0.15
+      for: 10m
+      labels:
+        severity: critical
+      annotations:
+        description: on etcd instance {{`{{ $labels.instance }}`}} gRPC requests to {{`{{ $labels.grpc_method
+          }}`}} are slow
+        summary: slow gRPC requests
+    - alert: HighNumberOfFailedHTTPRequests
+      expr: sum(rate(etcd_http_failed_total{job="kube-etcd"}[5m])) BY (method) / sum(rate(etcd_http_received_total{job="kube-etcd"}[5m]))
+        BY (method) > 0.01
+      for: 10m
+      labels:
+        severity: warning
+      annotations:
+        description: '{{`{{ $value }}`}}% of requests for {{`{{ $labels.method }}`}} failed on etcd
+          instance {{`{{ $labels.instance }}`}}'
+        summary: a high number of HTTP requests are failing
+    - alert: HighNumberOfFailedHTTPRequests
+      expr: sum(rate(etcd_http_failed_total{job="kube-etcd"}[5m])) BY (method) / sum(rate(etcd_http_received_total{job="kube-etcd"}[5m]))
+        BY (method) > 0.05
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        description: '{{`{{ $value }}`}}% of requests for {{`{{ $labels.method }}`}} failed on etcd
+          instance {{`{{ $labels.instance }}`}}'
+        summary: a high number of HTTP requests are failing
+    - alert: HTTPRequestsSlow
+      expr: histogram_quantile(0.99, rate(etcd_http_successful_duration_seconds_bucket[5m]))
+        > 0.15
+      for: 10m
+      labels:
+        severity: warning
+      annotations:
+        description: on etcd instance {{`{{ $labels.instance }}`}} HTTP requests to {{`{{ $labels.method
+          }}`}} are slow
+        summary: slow HTTP requests
+    - alert: EtcdMemberCommunicationSlow
+      expr: histogram_quantile(0.99, rate(etcd_network_peer_round_trip_time_seconds_bucket[5m]))
+        > 0.15
+      for: 10m
+      labels:
+        severity: warning
+      annotations:
+        description: etcd instance {{`{{ $labels.instance }}`}} member communication with
+          {{`{{ $labels.To }}`}} is slow
+        summary: etcd member communication is slow
+    - alert: HighNumberOfFailedProposals
+      expr: increase(etcd_server_proposals_failed_total{job="kube-etcd"}[1h]) > 5
+      labels:
+        severity: warning
+      annotations:
+        description: etcd instance {{`{{ $labels.instance }}`}} has seen {{`{{ $value }}`}} proposal
+          failures within the last hour
+        summary: a high number of proposals within the etcd cluster are failing
+    - alert: HighFsyncDurations
+      expr: histogram_quantile(0.99, rate(etcd_disk_wal_fsync_duration_seconds_bucket[5m]))
+        > 0.5
+      for: 10m
+      labels:
+        severity: warning
+      annotations:
+        description: etcd instance {{`{{ $labels.instance }}`}} fync durations are high
+        summary: high fsync durations
+    - alert: HighCommitDurations
+      expr: histogram_quantile(0.99, rate(etcd_disk_backend_commit_duration_seconds_bucket[5m]))
+        > 0.25
+      for: 10m
+      labels:
+        severity: warning
+      annotations:
+        description: etcd instance {{`{{ $labels.instance }}`}} commit durations are high
+        summary: high commit durations
+{{- end }}
