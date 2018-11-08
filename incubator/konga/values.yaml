@@ -10,20 +10,9 @@ image:
   pullPolicy: IfNotPresent
 
 service:
-  type: LoadBalancer
-  port: 443
-  annotations: 
-    service.beta.kubernetes.io/aws-load-balancer-proxy-protocol: "*"
-    service.beta.kubernetes.io/aws-load-balancer-healthcheck-interval: "30"
-    service.beta.kubernetes.io/aws-load-balancer-healthcheck-timeout: "5"
-    service.beta.kubernetes.io/aws-load-balancer-healthcheck-unhealthy-threshold: "3"
-    service.beta.kubernetes.io/aws-load-balancer-connection-draining-enabled: "true"
-    service.beta.kubernetes.io/aws-load-balancer-connection-draining-timeout: "60"
-    service.beta.kubernetes.io/aws-load-balancer-internal: "0.0.0.0/0"
-    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
-    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: "arn:aws:acm:us-east-1:503648108054:certificate/e51b38b6-fad7-463b-82e2-fc280b8fc5d8"
-    service.beta.kubernetes.io/aws-load-balancer-backend-protocol: "http"
-    dns.alpha.kubernetes.io/internal: "api-dashboard.dev.bluecedar.com"
+  type: ClusterIP
+  port: 80
+  annotations: {}
 
 ingress:
   enabled: false
