@@ -45,9 +45,9 @@ The following tables lists the configurable parameters of the Konga chart and th
 
 | Parameter                  | Description                         | Default                                                   |
 | -------------------------- | ----------------------------------- | --------------------------------------------------------- |
-| `image.repository`                    | Konga image                         | `pantsel/konga`                                 |
+| `image.repository` | Konga image | `pantsel/konga` |
 | `image.tag`|Tag identifier|`0.13.0`|
-| `image.pullPolicy`          | Image pull policy                   | `IfNotPresent`                                            |
+| `image.pullPolicy` | Image pull policy | `IfNotPresent` |
 |`service.type`|Type of the service|`ClusterIP`|
 |`service.port`|Exposed Port|`80`|
 |`service.annotations`|Annotations|`{}`|
@@ -55,12 +55,12 @@ The following tables lists the configurable parameters of the Konga chart and th
 | `env.database` | The database that Konga will use. If not set, the localDisk db will be used. | `postgres` |
 | `env.environment` | production, development | `development` |
 | `env.hook_timeout` | Time in `ms` that Konga will wait for startup tasks to finish before exiting the process. | `60000` |
-| `postgresql.enabled`      | Use postgress database as storage backend           | `true`                                                    |
-| `postgresql.postgresUser` | DB user        | `postgres`                                                 |
-| `postgresql.postgresPassword`   | DB password | _random 10 character alphanumeric string_                                            |
-| `postgresql.postgresDatabase`                | DB Schema | `konga_database`                              |
-| `postgresql.service.port`                | DB port | `5432`                              |
-| `postgresql.prepareDb`                | DB migration required | `true`                              |
+| `postgresql.enabled` | Use postgress database as storage backend | `true` |
+| `postgresql.postgresUser` | DB user | `postgres` |
+| `postgresql.postgresPassword`   | DB password | _random 10 character alphanumeric string_ |
+| `postgresql.postgresDatabase` | DB Schema | `konga_database` |
+| `postgresql.service.port` | DB port | `5432` |
+| `postgresql.prepareDb` | DB migration required | `true` |
 
 The above parameters map to the env variables defined in [pantsel/konga](https://hub.docker.com/r/pantsel/konga/). For more information please refer to the [pantsel/konga](https://github.com/pantsel/konga) image documentation.
 
