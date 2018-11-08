@@ -54,12 +54,12 @@ spec:
           value: {{ printf "redis://:$(REDIS_PASSWORD)@%s-master:6379" ( include "redis.fullname" . ) }}
         {{- end }}
         - name: ANCHORE_ENGINE_URI
-          value: 'http://{{ template "anchore-engine.core.fullname" . }}:{{ .Values.service.ports.extApi }}/v1'
+          value: 'http://{{ template "anchore-engine.api.fullname" . }}:{{ .Values.anchoreGlobal.service.ports.extApi }}/v1'
         - name: ANCHORE_LICENSE_PATH
           value: '/'
         {{- if .Values.anchoreEnterpriseRbac.enabled }}
         - name: ANCHORE_RBAC_URI
-          value: 'http://{{ template "anchore-engine.core.fullname" . }}:{{ .Values.anchoreEnterpriseRbac.service.apiPort }}/v1'
+          value: 'http://{{ template "anchore-engine.api.fullname" . }}:{{ .Values.anchoreEnterpriseRbac.service.apiPort }}/v1'
         {{- end }}
         - name: ANCHORE_ENABLE_SSL
           value: '{{ .Values.anchoreEnterpriseUi.enableSsl }}'

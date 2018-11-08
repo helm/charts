@@ -1,0 +1,43 @@
+{{- if .Values.anchoreApi.ingress.enabled -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: "{{ template "anchore-engine.api.fullname" . }}"
+  labels:
+    app: "{{ template "anchore-engine.fullname" . }}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+    component: api
+{{- if .Values.anchoreApi.ingress.annotations }}
+  annotations:
+{{ toYaml .Values.anchoreApi.ingress.annotations | indent 4 }}
+{{- end }}
+spec:
+{{- if .Values.anchoreApi.ingress.tls }}
+  tls:
+  {{- range .Values.anchoreApi.ingress.tls }}
+    - hosts:
+      {{- range .hosts }}
+        - {{ . | quote }}
+      {{- end }}
+      secretName: {{ .secretName }}
+  {{- end }}
+{{- end }}
+{{- if .Values.anchoreApi.ingress.hosts }}
+  rules:
+  {{- range .Values.anchoreApi.ingress.hosts }}
+    - host: {{ . }}
+      http:
+        paths:
+          - path: {{ $.Values.anchoreApi.ingress.path }}
+            backend:
+              serviceName: "{{ template "anchore-engine.api.fullname" $ }}"
+              servicePort: {{ $.Values.anchoreGlobal.service.ports.extApi }}
+  {{- end }}
+{{- else }}
+  backend:
+    serviceName: {{ template "anchore-engine.api.fullname" . }}
+    servicePort: {{ .Values.anchoreGlobal.service.ports.extApi }}
+{{- end }}
+{{- end -}}

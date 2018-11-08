@@ -65,6 +65,8 @@ data:
           {{- end }}
       {{- if and .Values.anchoreEnterpriseGlobal.enabled .Values.anchoreEnterpriseFeeds.enabled }}
       url: 'http://{{ template "anchore-engine.enterprise-feeds.fullname" . }}:{{ .Values.anchoreEnterpriseFeeds.service.apiPort }}/v1/feeds'
+      client_url:
+      token_url:
       {{- else }}
       client_url: 'https://ancho.re/v1/account/users'
       token_url: 'https://ancho.re/oauth/token'
@@ -90,9 +92,9 @@ data:
       apiext:
         enabled: True
         require_auth: True
-        endpoint_hostname: {{ template "anchore-engine.core.fullname" . }}
+        endpoint_hostname: {{ template "anchore-engine.api.fullname" . }}
         listen: '0.0.0.0'
-        port: {{ .Values.service.ports.extApi }}
+        port: {{ .Values.anchoreGlobal.service.ports.extApi }}
         {{- if and .Values.anchoreEnterpriseGlobal.enabled .Values.anchoreEnterpriseRbac.enabled }}
         authorization_handler: external
         authorization_handler_config:
@@ -105,7 +107,7 @@ data:
         enabled: true
         endpoint_hostname: {{ template "anchore-engine.analyzer.fullname" . }}
         listen: '0.0.0.0'
-        port: {{ .Values.service.ports.analyzer }}
+        port: {{ .Values.anchoreGlobal.service.ports.analyzer }}
         cycle_timer_seconds: {{ .Values.anchoreAnalyzer.cycleTimerSeconds }}
         max_threads: {{ .Values.anchoreAnalyzer.concurrentTasksPerWorker }}
         analyzer_driver: 'nodocker'
@@ -115,9 +117,9 @@ data:
       kubernetes_webhook:
         enabled: True
         require_auth: False
-        endpoint_hostname: {{ template "anchore-engine.core.fullname" . }}
+        endpoint_hostname: {{ template "anchore-engine.api.fullname" . }}
         listen: '0.0.0.0'
-        port: {{ .Values.service.ports.kubernetesWebhook }}
+        port: {{ .Values.anchoreGlobal.service.ports.kubernetesWebhook }}
         {{- if and .Values.anchoreEnterpriseGlobal.enabled .Values.anchoreEnterpriseRbac.enabled }}
         authorization_handler: external
         authorization_handler_config:
@@ -131,11 +133,11 @@ data:
         require_auth: True
         endpoint_hostname: {{ template "anchore-engine.catalog.fullname" . }}
         listen: '0.0.0.0'
-        port: {{ .Values.service.ports.catalog }}
+        port: {{ .Values.anchoreGlobal.service.ports.catalog }}
         use_db: True
         cycle_timer_seconds: '1'
         cycle_timers:
-{{ toYaml .Values.anchoreGlobal.cycleTimers | indent 10 }}
+{{ toYaml .Values.anchoreCatalog.cycleTimers | indent 10 }}
         ssl_enable: {{ .Values.anchoreGlobal.internalServicesSslEnabled }}
         ssl_cert: {{ .Values.anchoreGlobal.internalServicesSsl.certDir -}}/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretCertName }}
         ssl_key: {{ .Values.anchoreGlobal.internalServicesSsl.certDir -}}/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretKeyName }}
@@ -148,7 +150,7 @@ data:
         require_auth: True
         endpoint_hostname: {{ template "anchore-engine.simplequeue.fullname" . }}
         listen: '0.0.0.0'
-        port: {{ .Values.service.ports.simplequeue }}
+        port: {{ .Values.anchoreGlobal.service.ports.simplequeue }}
         ssl_enable: {{ .Values.anchoreGlobal.internalServicesSslEnabled }}
         ssl_cert: {{ .Values.anchoreGlobal.internalServicesSsl.certDir -}}/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretCertName }}
         ssl_key: {{ .Values.anchoreGlobal.internalServicesSsl.certDir -}}/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretKeyName }}
@@ -157,7 +159,10 @@ data:
         require_auth: True
         endpoint_hostname: {{ template "anchore-engine.policy-engine.fullname" . }}
         listen: '0.0.0.0'
-        port: {{ .Values.service.ports.policyEngine }}
+        port: {{ .Values.anchoreGlobal.service.ports.policyEngine }}
+        cycle_timer_seconds: 1
+        cycle_timers:
+{{ toYaml .Values.anchorePolicyEngine.cycleTimers | indent 10 }}
         ssl_cert: {{ .Values.anchoreGlobal.internalServicesSsl.certDir -}}/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretCertName }}
         ssl_key: {{ .Values.anchoreGlobal.internalServicesSsl.certDir -}}/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretKeyName }}
         ssl_enable: {{ .Values.anchoreGlobal.internalServicesSslEnabled }}

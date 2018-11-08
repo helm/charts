@@ -27,8 +27,8 @@ spec:
     spec:
       containers:
       - name: {{ .Chart.Name }}-{{ $component }}
-        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
-        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        image: {{ .Values.anchoreGlobal.image.repository }}:{{ .Values.anchoreGlobal.image.tag }}
+        imagePullPolicy: {{ .Values.anchoreGlobal.image.pullPolicy }}
         command: ["/usr/local/bin/anchore-manager"]
         args: ["service", "start", "simplequeue"]
         envFrom:
@@ -43,7 +43,7 @@ spec:
               fieldPath: metadata.name
         ports:
         - name: simplequeue
-          containerPort: {{ .Values.service.ports.simplequeue }}
+          containerPort: {{ .Values.anchoreGlobal.service.ports.simplequeue }}
         volumeMounts:
         - name: config-volume
           mountPath: /config/config.yaml
@@ -104,11 +104,11 @@ metadata:
     heritage: {{ .Release.Service }}
     component: {{ $component }}
 spec:
-  type: {{ .Values.service.type }}
+  type: {{ .Values.anchoreGlobal.service.type }}
   ports:
     - name: anchore-simplequeue-api
-      port: {{ .Values.service.ports.simplequeue }}
-      targetPort: {{ .Values.service.ports.simplequeue }}
+      port: {{ .Values.anchoreGlobal.service.ports.simplequeue }}
+      targetPort: {{ .Values.anchoreGlobal.service.ports.simplequeue }}
       protocol: TCP
   selector:
     app: {{ template "anchore-engine.fullname" . }}

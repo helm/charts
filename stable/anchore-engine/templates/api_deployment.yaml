@@ -1,8 +1,8 @@
-{{- $component := "core" -}}
+{{- $component := "api" -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: "{{ template "anchore-engine.core.fullname" . }}"
+  name: "{{ template "anchore-engine.api.fullname" . }}"
   labels:
     app: "{{ template "anchore-engine.fullname" . }}"
     component: {{ $component }}
@@ -14,15 +14,15 @@ spec:
     matchLabels:
       app: "{{ template "anchore-engine.fullname" . }}"
       component: {{ $component }}
-  replicas: {{ .Values.anchoreCore.replicaCount }}
+  replicas: {{ .Values.anchoreApi.replicaCount }}
   template:
     metadata:
       labels:
         app: "{{ template "anchore-engine.fullname" . }}"
         component: {{ $component }}
-{{- if .Values.anchoreCore.annotations }}
+{{- if .Values.anchoreApi.annotations }}
       annotations:
-{{ toYaml .Values.anchoreCore.annotations | indent 8 }}
+{{ toYaml .Values.anchoreApi.annotations | indent 8 }}
 {{- end }}
     spec:
       volumes:
@@ -44,8 +44,8 @@ spec:
         {{- end }}
       containers:
       - name: {{ .Chart.Name }}-{{ $component }}
-        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
-        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        image: {{ .Values.anchoreGlobal.image.repository }}:{{ .Values.anchoreGlobal.image.tag }}
+        imagePullPolicy: {{ .Values.anchoreGlobal.image.pullPolicy }}
         command: ["/usr/local/bin/anchore-manager"]
         args: ["service", "start", "apiext"]
         envFrom:
@@ -59,7 +59,7 @@ spec:
             fieldRef:
               fieldPath: metadata.name
         ports:
-        - containerPort: {{ .Values.service.ports.extApi }}
+        - containerPort: {{ .Values.anchoreGlobal.service.ports.extApi }}
           name: external-api
         volumeMounts:
         - name: config-volume
@@ -87,11 +87,11 @@ spec:
           periodSeconds: 30
           failureThreshold: 10
         resources:
-{{ toYaml .Values.anchoreCore.resources | indent 10 }}
+{{ toYaml .Values.anchoreApi.resources | indent 10 }}
 
       - name: {{ .Chart.Name }}-kubernetes-webhook
-        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
-        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        image: {{ .Values.anchoreGlobal.image.repository }}:{{ .Values.anchoreGlobal.image.tag }}
+        imagePullPolicy: {{ .Values.anchoreGlobal.image.pullPolicy }}
         command: ["/usr/local/bin/anchore-manager"]
         args: ["service", "start", "kubernetes_webhook"]
         envFrom:
@@ -106,7 +106,7 @@ spec:
               fieldPath: metadata.name
         ports:
         - name: k8s-webhook
-          containerPort: {{ .Values.service.ports.kubernetesWebhook }}
+          containerPort: {{ .Values.anchoreGlobal.service.ports.kubernetesWebhook }}
         volumeMounts:
         - name: config-volume
           mountPath: /config/config.yaml
@@ -132,7 +132,7 @@ spec:
           timeoutSeconds: 10
           failureThreshold: 10
         resources:
-{{ toYaml .Values.anchoreCore.resources | indent 10 }}
+{{ toYaml .Values.anchoreApi.resources | indent 10 }}
 
       {{- if and .Values.anchoreEnterpriseGlobal.enabled .Values.anchoreEnterpriseRbac.enabled }}
       - name: {{ .Chart.Name }}-rbac-manager
@@ -234,15 +234,15 @@ spec:
       - name: {{ .Values.anchoreEnterpriseGlobal.imagePullSecretName }}
       {{- end }}
 
-      {{- if .Values.anchoreCore.nodeSelector }}
+      {{- if .Values.anchoreApi.nodeSelector }}
       nodeSelector:
-{{ toYaml .Values.anchoreCore.nodeSelector | indent 8 }}
+{{ toYaml .Values.anchoreApi.nodeSelector | indent 8 }}
       {{- end }}
-      {{- with .Values.anchoreCore.affinity }}
+      {{- with .Values.anchoreApi.affinity }}
       affinity:
 {{ toYaml . | indent 8 }}
       {{- end }}
-      {{- with .Values.anchoreCore.tolerations }}
+      {{- with .Values.anchoreApi.tolerations }}
       tolerations:
 {{ toYaml . | indent 8 }}
       {{- end }}
@@ -251,7 +251,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "anchore-engine.core.fullname" . }}
+  name: {{ template "anchore-engine.api.fullname" . }}
   labels:
     app: {{ template "anchore-engine.fullname" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
@@ -259,15 +259,15 @@ metadata:
     heritage: {{ .Release.Service }}
     component: {{ $component }}
 spec:
-  type: {{ .Values.service.type }}
+  type: {{ .Values.anchoreGlobal.service.type }}
   ports:
     - name: anchore-external-api
-      port: {{ .Values.service.ports.extApi }}
-      targetPort: {{ .Values.service.ports.extApi }}
+      port: {{ .Values.anchoreGlobal.service.ports.extApi }}
+      targetPort: {{ .Values.anchoreGlobal.service.ports.extApi }}
       protocol: TCP
     - name: anchore-kubernetes-webhook
-      port: {{ .Values.service.ports.kubernetesWebhook }}
-      targetPort: {{ .Values.service.ports.kubernetesWebhook }}
+      port: {{ .Values.anchoreGlobal.service.ports.kubernetesWebhook }}
+      targetPort: {{ .Values.anchoreGlobal.service.ports.kubernetesWebhook }}
       protocol: TCP
   {{- if and .Values.anchoreEnterpriseGlobal.enabled .Values.anchoreEnterpriseRbac.enabled }}
     - name: anchore-rbac-manager

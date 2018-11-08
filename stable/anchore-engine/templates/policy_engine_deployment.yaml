@@ -27,8 +27,8 @@ spec:
     spec:
       containers:
       - name: {{ .Chart.Name }}-{{ $component }}
-        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
-        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        image: {{ .Values.anchoreGlobal.image.repository }}:{{ .Values.anchoreGlobal.image.tag }}
+        imagePullPolicy: {{ .Values.anchoreGlobal.image.pullPolicy }}
         command: ["/usr/local/bin/anchore-manager"]
         args: ["service", "start", "policy_engine"]
         envFrom:
@@ -43,7 +43,7 @@ spec:
               fieldPath: metadata.name
         ports:
         - name: policy
-          containerPort: {{ .Values.service.ports.policyEngine }}
+          containerPort: {{ .Values.anchoreGlobal.service.ports.policyEngine }}
         volumeMounts:
         - name: config-volume
           mountPath: /config/config.yaml
@@ -105,11 +105,11 @@ metadata:
     heritage: {{ .Release.Service }}
     component: {{ $component }}
 spec:
-  type: {{ .Values.service.type }}
+  type: {{ .Values.anchoreGlobal.service.type }}
   ports:
     - name: anchore-policy-api
-      port: {{ .Values.service.ports.policyEngine }}
-      targetPort: {{ .Values.service.ports.policyEngine }}
+      port: {{ .Values.anchoreGlobal.service.ports.policyEngine }}
+      targetPort: {{ .Values.anchoreGlobal.service.ports.policyEngine }}
       protocol: TCP
   selector:
     app: {{ template "anchore-engine.fullname" . }}

@@ -27,8 +27,8 @@ spec:
     spec:
       containers:
       - name: {{ .Chart.Name }}-{{ $component }}
-        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
-        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        image: {{ .Values.anchoreGlobal.image.repository }}:{{ .Values.anchoreGlobal.image.tag }}
+        imagePullPolicy: {{ .Values.anchoreGlobal.image.pullPolicy }}
         command: ["/usr/local/bin/anchore-manager"]
         args: ["service", "start", "catalog"]
         envFrom:
@@ -43,7 +43,7 @@ spec:
               fieldPath: metadata.name
         ports:
         - name: catalog
-          containerPort: {{ .Values.service.ports.catalog }}
+          containerPort: {{ .Values.anchoreGlobal.service.ports.catalog }}
         volumeMounts:
         - name: config-volume
           mountPath: /config/config.yaml
@@ -104,11 +104,11 @@ metadata:
     heritage: {{ .Release.Service }}
     component: {{ $component }}
 spec:
-  type: {{ .Values.service.type }}
+  type: {{ .Values.anchoreGlobal.service.type }}
   ports:
     - name: anchore-catalog-api
-      port: {{ .Values.service.ports.catalog }}
-      targetPort: {{ .Values.service.ports.catalog }}
+      port: {{ .Values.anchoreGlobal.service.ports.catalog }}
+      targetPort: {{ .Values.anchoreGlobal.service.ports.catalog }}
       protocol: TCP
   selector:
     app: {{ template "anchore-engine.fullname" . }}

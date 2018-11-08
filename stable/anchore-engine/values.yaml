@@ -1,55 +1,38 @@
 # Default values for anchore_engine chart.
 
-# The configuration for anchore engine services, which must be reachable inside the cluster by other workers and users
-service:
-  type: ClusterIP
-  ports:
-    analyzer: 8084
-    extApi: 8228
-    simplequeue: 8083
-    catalog: 8082
-    policyEngine: 8087
-    kubernetesWebhook: 8338
-
-# Image used for all anchore engine deployments (excluding enterprise components).
-image:
-  # Can use 'latest' tag but not recommended
-  repository: "docker.io/anchore/anchore-engine"
-  tag: "dev"
-  pullPolicy: Always
-
-# Used to create Ingress record for the anchore engine external API (core service)
-# (should used with service.type: ClusterIP or NodePort depending on platform)
-ingress:
-  enabled: false
-  annotations: {}
-    # kubernetes.io/ingress.allow-http: False
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: true
-  path: /
-  # You can bound on specific hostnames
-  # hosts:
-  #   - chart-example.local
-  tls: []
-  # Secrets must be manually created in the namespace.
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
-
 # Anchore engine has a dependency on Postgresql, configure here
 anchore-db:
-  # To use an external DB, set 'enabled: false'.
-  enabled: true
   postgresUser: anchoreengine
   postgresPassword: anchore-postgres,123
   postgresDatabase: anchore
 
+  # To use an external DB, set 'enabled: false' and configure externalEndpoint.
+  enabled: true
   # Use this config if you set 'enabled: false' and want to specify an external (already existing) postres deployment for use.
   # Set this to the host and port. eg. mypostgres.myserver.io:5432
   externalEndpoint: Null
 
+
 # Global configuration shared by all anchore-engine services.
 anchoreGlobal:
+  # Image used for all anchore engine deployments (excluding enterprise components).
+  image:
+    # Can use 'latest' tag but not recommended
+    repository: docker.io/anchore/anchore-engine
+    tag: v0.3.0
+    pullPolicy: IfNotPresent
+
+  # K8s service configuration for all anchore engine APIs, must be reachable inside the cluster by all other services and users
+  service:
+    type: ClusterIP
+    ports:
+      analyzer: 8084
+      extApi: 8228
+      simplequeue: 8083
+      catalog: 8082
+      policyEngine: 8087
+      kubernetesWebhook: 8338
+
   # Set where default configs are placed at startup. This must be a writable location for the pod.
   serviceDir: /anchore_service_config
   logLevel: INFO
@@ -108,22 +91,6 @@ anchoreGlobal:
     error_event: {}
       # url: 'http://somehost:9090/error_event/'
 
-  # Intervals to run specific events on (seconds)
-  cycleTimers:
-    # Interval to check for an update to a tag
-    image_watcher: 3600
-    # Interval to re-run a policy eval on a tag
-    policy_eval: 3600
-    # Interval to run a feed sync to get latest cve data
-    feed_sync: 14400
-    # Interval workers check the queue
-    analyzer_queue: 1
-    # Interval notifications will be processed for state changes
-    notifications: 30
-    # Intervals service state updates are polled
-    service_watcher: 15
-    # Interval for policy bundle sync from anchore.io if enabled
-    policy_bundle_sync: 300
 
 # Configuration for the analyzer pods that perform image analysis
 # There may be many of these analyzers but best practice is to not have more than one per node since analysis
@@ -157,6 +124,43 @@ anchoreAnalyzer:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+
+
+# Pod configuration for the anchore engine api service.
+anchoreApi:
+  replicaCount: 1
+
+  # Used to create Ingress record for the anchore engine external API (api service)
+  # (should used with service.type: ClusterIP or NodePort depending on platform)
+  ingress:
+    enabled: false
+    annotations: {}
+      # kubernetes.io/ingress.allow-http: False
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: true
+    path: /
+    # You can bound on specific hostnames
+    # hosts:
+    #   - chart-example.local
+    tls: []
+    # Secrets must be manually created in the namespace.
+    #  - secretName: chart-example-tls
+    #    hosts:
+    #      - chart-example.local
+
+  # resources:
+  #  limits:
+  #    cpu: 100m
+  #    memory: 6Gi
+  #  requests:
+  #    cpu: 100m
+  #    memory: 4Gi
+
+  annotations: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
 
 anchoreCatalog:
   replicaCount: 1
@@ -218,6 +222,25 @@ anchoreCatalog:
       #     # Create the container if it is not already present
       #     create_container: False
 
+  # Intervals to run specific events on (seconds)
+  cycleTimers:
+    # Interval to check for an update to a tag
+    image_watcher: 3600
+    # Interval to re-run a policy eval on a tag
+    policy_eval: 3600
+    # Interval
+    vulnerability_scan: 14400
+    # Interval workers check the queue
+    analyzer_queue: 1
+    # Interval notifications will be processed for state changes
+    notifications: 30
+    # Intervals service state updates are polled
+    service_watcher: 15
+    # Interval for policy bundle sync from anchore.io if enabled
+    policy_bundle_sync: 300
+    # Interval between checks to repo for new tags
+    repo_watcher: 60
+
   # resources:
   #  limits:
   #    cpu: 100m
@@ -231,30 +254,18 @@ anchoreCatalog:
   tolerations: []
   affinity: {}
 
-# Pod configuration for the anchore engine core service.
-anchoreCore:
-  replicaCount: 1
-
-  # resources:
-  #  limits:
-  #    cpu: 100m
-  #    memory: 6Gi
-  #  requests:
-  #    cpu: 100m
-  #    memory: 4Gi
-
-  ## Node labels for pod assignment
-  ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
-  ##
-  annotations: {}
-  nodeSelector: {}
-  tolerations: []
-  affinity: {}
 
 # Pod configuration for the anchore engine policy service.
 anchorePolicyEngine:
   replicaCount: 1
 
+  cycleTimers:
+    # Interval to run a feed sync to get latest cve data
+    feed_sync: 14400 # every 4 hours
+    # Interval between checks to see if there needs to be a task queued
+    feed_sync_checker: 3600 # 1 hour
+
+
   # resources:
   #  limits:
   #    cpu: 100m
@@ -267,6 +278,7 @@ anchorePolicyEngine:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+
 
 # Pod configuration for the anchore engine simplequeue service.
 anchoreSimplequeue:
@@ -285,6 +297,7 @@ anchoreSimplequeue:
   tolerations: []
   affinity: {}
 
+
 # This section is used for configuring anchore enterprise.
 anchoreEnterpriseGlobal:
   enabled: false
@@ -296,9 +309,25 @@ anchoreEnterpriseGlobal:
   imagePullSecretName: anchore-enterprise-pullcreds
 
   image:
-    repository: docker.io/anchore/enterprise-dev
-    tag: master
-    pullPolicy: Always
+    repository: docker.io/anchore/enterprise-engine
+    tag: v0.3.0
+    pullPolicy: IfNotPresent
+
+
+# Configure the second postgres database instance for the enterprise feeds service.
+# Only utilized if the anchoreEnterpriseFeeds.enabled: true
+anchore-feeds-db:
+  postgresUser: anchoreengine
+  postgresPassword: anchore-postgres,123
+  postgresDatabase: anchore-feeds
+
+  # To use an external postgres endpoint, uncomment to set 'enabled: false'
+  # enabled: false
+
+  # If 'enabled: false' is set - specify an external (already existing) postres deployment for use.
+  # Set to the host and port. eg. mypostgres.myserver.io:5432
+  externalEndpoint: null
+
 
 # Configure & enable the Anchore Enterprise on-prem feeds service.
 anchoreEnterpriseFeeds:
@@ -330,29 +359,17 @@ anchoreEnterpriseFeeds:
   tolerations: []
   affinity: {}
 
-# Configure the second postgres database instance for the enterprise feeds service.
-# Only utilized if the anchoreEnterpriseFeeds.enabled: true
-anchore-feeds-db:
-  postgresUser: anchoreengine
-  postgresPassword: anchore-postgres,123
-  postgresDatabase: anchore-feeds
-
-  # To use an external postgres endpoint, uncomment to set 'enabled: false'
-  # enabled: false
-
-  # If 'enabled: false' is set - specify an external (already existing) postres deployment for use.
-  # Set to the host and port. eg. mypostgres.myserver.io:5432
-  externalEndpoint: null
 
 # Configure the Anchore Enterprise role based access control service.
-# This services consists of 2 containers that run as side-cars in the anchore engine core pod.
+# This services consists of 2 containers that run as side-cars in the anchore engine api pod.
 anchoreEnterpriseRbac:
   enabled: true
 
-  # RBAC uses the core anchore-engine core kubernetes service. Service type is defined in the top level services config.
+  # RBAC uses the anchore-engine api kubernetes service. Service type is defined in the top level services config.
   service:
     apiPort: 8229
     authPort: 8089
+
 
 # Configure the Anchore Enterprise UI.
 anchoreEnterpriseUi:
@@ -371,16 +388,16 @@ anchoreEnterpriseUi:
   enableSharedLogin: true
 
   image:
-    repository: docker.io/anchore/private_testing
-    tag: anchore-ui-dev
-    pullPolicy: Always
+    repository: docker.io/anchore/enterprise-ui
+    tag: v0.2.0
+    pullPolicy: IfNotPresent
 
   service:
     type: ClusterIP
     httpPort: 80
 
   ingress:
-    enabled: true
+    enabled: false
     annotations: {}
       # kubernetes.io/ingress.allow-http: False
       # kubernetes.io/ingress.class: nginx
@@ -403,9 +420,9 @@ anchoreEnterpriseUi:
 # Anchore Engine Enterprise UI is dependent on redis for storing sessions
 # Only utilized if 'anchoreEnterpriseUi.enabled: true'
 anchore-ui-redis:
+  password: anchore-redis,123
   # To use an external redis endpoint, uncomment to set 'enabled: false'
   # enabled: false
-
   # If 'enabled: false', specify an external redis endpoint -
   # eg redis://:<password>@hostname:6379
   externalEndpoint: null

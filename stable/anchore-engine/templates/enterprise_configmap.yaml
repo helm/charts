@@ -54,7 +54,7 @@ data:
       rbac_manager:
         enabled: true
         require_auth: true
-        endpoint_hostname: {{ template "anchore-engine.core.fullname" . }}
+        endpoint_hostname: {{ template "anchore-engine.api.fullname" . }}
         listen: '0.0.0.0'
         port: {{ .Values.anchoreEnterpriseRbac.service.apiPort }}
         authorization_handler: external
