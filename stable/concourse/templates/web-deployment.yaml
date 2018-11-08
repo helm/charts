@@ -303,14 +303,16 @@ spec:
               value: {{ .Values.concourse.web.vault.pathPrefix | quote }}
             - name: CONCOURSE_VAULT_AUTH_BACKEND
               value: {{ .Values.concourse.web.vault.authBackend | quote }}
+            {{- if .Values.concourse.web.vault.useCaCert }}
+            - name: CONCOURSE_VAULT_CA_CERT
+              value: "/concourse-vault/ca.cert"
+            {{- end }}
+            {{- if eq (default "" .Values.concourse.web.vault.authBackend) "token" }}
             - name: CONCOURSE_VAULT_CLIENT_TOKEN
               valueFrom:
                 secretKeyRef:
                   name: {{ template "concourse.concourse.fullname" . }}
                   key: vault-client-token
-            {{- if .Values.concourse.web.vault.useCaCert }}
-            - name: CONCOURSE_VAULT_CA_CERT
-              value: "/concourse-vault/ca.cert"
             {{- end }}
             {{- if eq (default "" .Values.concourse.web.vault.authBackend) "cert" }}
             - name: CONCOURSE_VAULT_CLIENT_CERT
@@ -318,13 +320,16 @@ spec:
             - name: CONCOURSE_VAULT_CLIENT_KEY
               value: "/concourse-vault/client.key"
             {{- end }}
+            {{- if eq (default "" .Values.concourse.web.vault.authBackend) "approle" }}
+            - name: CONCOURSE_VAULT_AUTH_PARAM
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: vault-client-auth-param
+            {{- end }}
             {{- if .Values.concourse.web.vault.authBackendMaxTtl }}
             - name: CONCOURSE_VAULT_AUTH_BACKEND_MAX_TTL
               value: {{ .Values.concourse.web.vault.authBackendMaxTtl | quote }}
-            {{- end }}
-            {{- if .Values.concourse.web.vault.authParam }}
-            - name: CONCOURSE_VAULT_AUTH_PARAM
-              value: {{ .Values.concourse.web.vault.authParam | quote }}
             {{- end }}
             {{- if .Values.concourse.web.vault.cache }}
             - name: CONCOURSE_VAULT_CACHE
