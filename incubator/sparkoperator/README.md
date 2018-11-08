@@ -35,7 +35,6 @@ The following table lists the configurable parameters of the Spark operator char
 | `metricsEndpoint`         | Metrics endpoint                                             | "/metrics"                             |
 | `metricsPrefix`           | Prefix for the metrics                                       | ""                                     |
 | `resyncInterval`          | Informer resync interval in seconds                          | 30                                     |
-| `submissionThreads`       | Number of worker threads used by the SparkApplication submission runner | 3                                      |
 | `webhookPort`             | Port for the metrics endpoint                                | 8080                                   |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. 
