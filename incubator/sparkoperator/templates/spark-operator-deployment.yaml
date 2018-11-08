@@ -74,6 +74,5 @@ spec:
         {{- end }}
         - -install-crds={{ .Values.installCrds }}
         - -controller-threads={{ .Values.controllerThreads }}
-        - -submission-threads={{ .Values.submissionThreads }}
         - -resync-interval={{ .Values.resyncInterval }}
         - -logtostderr
