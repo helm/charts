@@ -23,12 +23,17 @@ spec:
         release: {{ .Release.Name }}
     spec:
       serviceAccountName: {{ template "kured.serviceAccountName" . }}
+      hostPID: true
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if .Values.resources }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
+          {{- end }}
+          securityContext:
+            privileged: true
           command:
             - /usr/bin/kured
           args:
@@ -48,18 +53,8 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: spec.nodeName
-          volumeMounts:
-            # Needed for two purposes:
-            # * Testing for the existence of /var/run/reboot-required
-            # * Accessing /var/run/dbus/system_bus_socket to effect reboot
-            - name: hostrun
-              mountPath: /var/run
       restartPolicy: Always
       {{- with .Values.tolerations }}
       tolerations:
 {{ toYaml . | indent 8 }}
       {{- end }}
-      volumes:
-        - name: hostrun
-          hostPath:
-            path: /var/run
