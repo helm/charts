@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "scdf.fullname" . }}-skipper
+  labels:
+    app: {{ template "scdf.name" . }}
+    component: skipper
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+data:
+  spring.application.json: '{"spring.cloud.skipper.server.enableLocalPlatform" : false, "spring.cloud.skipper.server.platform.kubernetes.accounts.{{ .Values.skipper.platformName }}.environmentVariables" : "SPRING_RABBITMQ_HOST=${{ printf "{" }}{{ template "scdf.envrelease" . }}_RABBITMQ_SERVICE_HOST},SPRING_RABBITMQ_PORT=${{ printf "{" }}{{ template "scdf.envrelease" . }}_RABBITMQ_SERVICE_PORT_AMQP},SPRING_RABBITMQ_USERNAME={{ .Values.rabbitmq.rabbitmqUsername }},SPRING_RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}","spring.cloud.skipper.server.platform.kubernetes.accounts.{{ .Values.skipper.platformName }}.memory" : "{{ .Values.deployer.resourceLimits.memory }}","spring.cloud.skipper.server.platform.kubernetes.accounts.{{ .Values.skipper.platformName }}.cpu" : "{{ .Values.deployer.resourceLimits.cpu }}","spring.cloud.skipper.server.platform.kubernetes.accounts.{{ .Values.skipper.platformName }}.createDeployment" : true}'
