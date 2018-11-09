@@ -6,8 +6,6 @@
 
 This article describes how to set up and use [Azure Monitor - Containers](https://docs.microsoft.com/en-us/azure/monitoring/monitoring-container-health) to monitor the health and performance of your workloads deployed to Kubernetes environments. Monitoring your Kubernetes cluster and containers is critical, especially when running a production cluster, at scale, with multiple applications.
 
-*This is a private preview. If you like to be part of the private preview, please fill in the form* [here]((https://forms.office.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR5SUgbotTSlNh-jO0uLfw51UOVBTMzFCMVIyWVEzT09NWVpDOTc0UFhENC4u)).
-
 ---
 
 ## Pre-requisites
@@ -16,7 +14,7 @@ This article describes how to set up and use [Azure Monitor - Containers](https:
 
 - You will need to create a location to store your monitoring data.
 
-1. [Create Azure Log Analytics Workspace](https://docs.microsoft.com/en-us/azure/log-analytics/log-analytics-quick-create-workspace))
+1. [Create Azure Log Analytics Workspace](https://docs.microsoft.com/en-us/azure/log-analytics/log-analytics-quick-create-workspace)
 
 - You will need to add AzureMonitor-Containers solution to your workspace from #1 above
 
@@ -37,11 +35,11 @@ $ helm install --name myrelease-1 \
 
 ## Uninstalling the Chart
 
-To uninstall/delete the `azuremonitorcontainers` release:
+To uninstall/delete the `myrelease-1` release:
 
 ```bash
 
-$ helm del --purge azuremonitorcontainers
+$ helm del --purge myrelease-1
 
 ```
 
@@ -79,7 +77,7 @@ Alternatively, a YAML file that specifies the values for the parameters can be p
 
 ```bash
 
-$ helm install --name omsagent -f values.yaml incubator/azuremonitor-containers
+$ helm install --name myrelease-1 -f values.yaml incubator/azuremonitor-containers
 
 ```
 
