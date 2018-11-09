@@ -77,8 +77,6 @@ spec:
 {{- end }}
       containers:
       - name: elasticsearch
-        securityContext:
-          runAsUser: 1000
         env:
         - name: NODE_DATA
           value: "false"
