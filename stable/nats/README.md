@@ -73,7 +73,7 @@ The following table lists the configurable parameters of the NATS chart and thei
 | `securityContext.fsGroup`            | Group ID for the container                                                                   | `1001`                                                        |
 | `securityContext.runAsUser`          | User ID for the container                                                                    | `1001`                                                        |
 | `statefulset.updateStrategy`         | Statefulsets Update strategy                                                                 | `OnDelete`                                                    |
-| `rollingUpdatePartition`             | Partition for Rolling Update strategy                                                        | `nil`                                                         |
+| `statefulset.rollingUpdatePartition` | Partition for Rolling Update strategy                                                        | `nil`                                                         |
 | `podLabels`                          | Additional labels to be added to pods                                                        | {}                                                            |
 | `podAnnotations`                     | Annotations to be added to pods                                                              | {}                                                            |
 | `nodeSelector`                       | Node labels for pod assignment                                                               | `nil`                                                         |
