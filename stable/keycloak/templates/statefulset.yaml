@@ -94,7 +94,7 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /{{ .Values.keycloak.basepath }}/realms/master
+              path: /{{ .Values.keycloak.basepath }}/
               port: http
             initialDelaySeconds: {{ .Values.keycloak.livenessProbe.initialDelaySeconds }}
             timeoutSeconds: {{ .Values.keycloak.livenessProbe.timeoutSeconds }}
