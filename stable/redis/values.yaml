@@ -245,7 +245,6 @@ slave:
   # extraFlags: []
   ## Comma-separated list of Redis commands to disable
   # disableCommands: ""
-  
   ## deployment update stategy
   # updateStrategy:
   #   rollingUpdate:
