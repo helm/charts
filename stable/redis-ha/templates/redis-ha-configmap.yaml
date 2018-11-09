@@ -36,7 +36,7 @@ data:
 {{- end }}
 {{- end }}
 
-  init.bash: |
+  init.sh: |
     MASTER=`redis-cli -h {{ template "redis-ha.fullname" . }} -p {{ .Values.sentinel.port }} sentinel get-master-addr-by-name {{ .Values.redis.masterGroupName }} | grep -E '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}'`
     REDIS_CONF=/data/conf/redis.conf
     SENTINEL_CONF=/data/conf/sentinel.conf
