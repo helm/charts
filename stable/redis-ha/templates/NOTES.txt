@@ -9,7 +9,7 @@ To connect to your Redis server:
 
 2. Connect to the Redis master pod that you can use as a client. By default the {{ template "redis-ha.fullname" . }}-server-0 pod is configured as the master:
 
-   kubectl exec -it {{ template "redis-ha.fullname" . }}-server-0 bash -n {{ .Release.Namespace }}
+   kubectl exec -it {{ template "redis-ha.fullname" . }}-server-0 sh -n {{ .Release.Namespace }}
 
 3. Connect using the Redis CLI (inside container):
 
@@ -17,7 +17,7 @@ To connect to your Redis server:
 {{- else }}
 1. Run a Redis pod that you can use as a client:
 
-   kubectl exec -it {{ template "redis-ha.fullname" . }}-server-0 bash -n {{ .Release.Namespace }}
+   kubectl exec -it {{ template "redis-ha.fullname" . }}-server-0 sh -n {{ .Release.Namespace }}
 
 2. Connect using the Redis CLI:
 

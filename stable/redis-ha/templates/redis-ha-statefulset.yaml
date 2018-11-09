@@ -44,9 +44,9 @@ spec:
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         command:
-        - bash
+        - sh
         args:
-        - /readonly-config/init.bash
+        - /readonly-config/init.sh
         env:
 {{- if .Values.auth }}
         - name: AUTH
