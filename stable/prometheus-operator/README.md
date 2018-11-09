@@ -105,7 +105,7 @@ The following tables lists the configurable parameters of the prometheus-operato
 | `prometheus.ingress.labels` | Prometheus Ingress additional labels | `{}` |
 | `prometheus.ingress.hosts` | Prometheus Ingress hostnames | `[]` |
 | `prometheus.ingress.tls` | Prometheus Ingress TLS configuration (YAML) | `[]` |
-| `prometheus.service.type` |  Prometheus Service typre | `ClusterIP` |
+| `prometheus.service.type` |  Prometheus Service type | `ClusterIP` |
 | `prometheus.service.nodePort` |  Prometheus Service port for NodePort service type | `""` |
 | `prometheus.service.annotations` |  Prometheus Service Annotations | `{}` |
 | `prometheus.additionalServiceMonitors` | List of `serviceMonitor` objects to create. See https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#servicemonitorspec | `[]` |
