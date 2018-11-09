@@ -152,8 +152,6 @@ postgresql:
   postgresDatabase: kong
   service:
     port: 5432
-  persistence:
-    enabled: false
 
 # Kong Ingress Controller's primary purpose is to satisfy Ingress resources
 # created in k8s.  It uses CRDs for more fine grained control over routing and
