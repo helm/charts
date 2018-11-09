@@ -27,7 +27,7 @@ config:
   scaleTarget: "coredns-coredns"
   min: 1
   nodesPerReplica: 16
-  coresPerReplica: 256 
+  coresPerReplica: 256
 
 # expects input structure as per specification https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.11/#affinity-v1-core
 # for example:
