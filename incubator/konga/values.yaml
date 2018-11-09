@@ -53,21 +53,7 @@ env:
   # The database that Konga will use. If not set, the localDisk db will be used.
   # Supported Values: mongo, mysql, postgres, sqlserver
   database: postgres
-  # The full db connection string. Depends on `database`. If this is set, no other DB related var is needed.
-  #db_uri: postgres://konga:kongapassword@konga-db-postgresql.db:5432/konga_database
-  # If `db_uri` is not specified, this is the database host. Depends on `database`.
-  #db_host: konga-db-postgresql.db
-  # If `db_uri` is not specified, this is the database port. Depends on `database`.
-  #db_port: 5432
-  # If `db_uri` is not specified, this is the database user. Depends on `database`.
-  #db_user: konga
-  # If `db_uri` is not specified, this is the database user's password. Depends on `database`.
-  #db_password: kongapassword
-  # If `db_uri` is not specified, this is the name of Konga's db. Depends on `database`.
-  #db_database: konga_database
-  # If using postgres as a database, this is the schema that will be used.
-  #db_pg_schema: konga_database
-  # The environment production, development
+
   environment: production
   # The time in ms that Konga will wait for startup tasks to finish before exiting the process.
   hook_timeout: 60000
@@ -76,10 +62,10 @@ env:
   # log_level:
   # The secret that will be used to sign JWT tokens issued by Konga
   # token_secret:
-  # If you want to use SSL, this will be the absolute path to the .key file. 
+  # If you want to use SSL, this will be the absolute path to the .key file.
   # Both ssl_key_path & ssl_crt_path must be set.
   # ssl_key_path:
-  # If you want to use SSL, this will be the absolute path to the .crt file. 
+  # If you want to use SSL, this will be the absolute path to the .crt file.
   # Both ssl_key_path & ssl_crt_path must be set.
   # ssl_crt_path:
 
