@@ -95,8 +95,8 @@ spec:
                 echo >&2 ", continuing.."
               fi
             fi
-          }
-          chown_it elasticsearch:elasticsearch /usr/share/elasticsearch/data
+          };
+          chown_it elasticsearch:elasticsearch /usr/share/elasticsearch/data &&
           chown_it elasticsearch:elasticsearch /usr/share/elasticsearch/logs
         securityContext:
           runAsUser: 0
