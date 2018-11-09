@@ -106,6 +106,9 @@ spec:
             - name: ldap
               mountPath: "/etc/grafana/ldap.toml"
               subPath: ldap.toml
+            - name: storage
+              mountPath: "/var/lib/grafana"
+              subPath: {{ .Values.persistence.subPath }}
 {{- if .Values.dashboards }}
   {{- range $provider, $dashboards := .Values.dashboards }}
     {{- range $key, $value := $dashboards }}
@@ -144,9 +147,6 @@ spec:
             - name: sc-datasources-volume
               mountPath: "/etc/grafana/provisioning/datasources"
 {{- end}}
-            - name: storage
-              mountPath: "/var/lib/grafana"
-              subPath: {{ .Values.persistence.subPath }}
           {{- range .Values.extraSecretMounts }}
             - name: {{ .name }}
               mountPath: {{ .mountPath }}
