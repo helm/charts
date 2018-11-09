@@ -58,7 +58,7 @@ The following table lists the configurable parameters of the MSOMS chart and the
 | `omsagent.secret.wsid`     | Azure Log analytics workspace id                   | Does not have a default value, needs to be provided                              |
 | `omsagent.secret.key`      | Azure Log analytics workspace key                  | Does not have a default value, needs to be provided                              |
 | `omsagent.domain`          | Azure Log analytics cloud domain (public / govt)   | opinsights.azure.com (Public cloud as default), opinsights.azure.us (Govt Cloud) |
-| `omsagent.env.clusterName` | Name of your cluster      | Does not have a default value, needs to be provided. If ACS-engine cluster, recommended to provide Azure Resource group resource ID of ACS-Engine cluster, to be able to use Azure Container monitoring User experience (aka.ms/azmon-containers)    |
+| `omsagent.env.clusterName` | Name of your cluster      | Does not have a default value, needs to be provided. If ACS-engine cluster, it is recommended to provide either 1) Azure Resource group resource ID of ACS-Engine cluster, to be able to use Azure Container monitoring User experience (aka.ms/azmon-containers)  or 2) provide a friendly name here and ensure this name is used to 'tag' the cluster master node(s) - see step-3 in prerequisites above |
 |`omsagent.env.doNotCollectKubeSystemLogs`| Disable collecting logs from containers in 'kube-system' namespace | true|
 | `omsagent.rbac`             | rbac enabled/disabled      | true  (i.e enabled)     |
 
