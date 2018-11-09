@@ -1,0 +1,21 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ template "scdf.fullname" . }}-server
+  labels:
+    app: {{ template "scdf.name" . }}
+    component: server
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  # If you are running k8s on a local dev box, you can use type NodePort instead
+  type: {{ .Values.server.service.type }}
+  ports:
+    - port: {{ .Values.server.service.externalPort }}
+      targetPort: http
+      name: http
+  selector:
+    app: {{ template "scdf.name" . }}
+    component: server
+    release: {{ .Release.Name }}

@@ -1,16 +1,12 @@
 # Spring Cloud Data Flow Chart
 
-****
-**NOTE: This chart has been DEPRECATED. Please use stable/spring-cloud-data-flow.**
-****
-
 [Spring Cloud Data Flow](http://cloud.spring.io/spring-cloud-dataflow/) is a toolkit for building data integration and real-time data processing pipelines.
 
 Pipelines consist of [Spring Boot](http://projects.spring.io/spring-boot/) apps, built using the [Spring Cloud Stream](http://cloud.spring.io/spring-cloud-stream/) or [Spring Cloud Task](http://cloud.spring.io/spring-cloud-task/) microservice frameworks. This makes Spring Cloud Data Flow suitable for a range of data processing use cases, from import/export to event streaming and predictive analytics.
 
 ## Chart Details
-This chart will provision a fully functional and fully featured Spring Cloud Data Flow installation 
-that can deploy and manage data processing pipelines in the cluster that it is deployed to. 
+This chart will provision a fully functional and fully featured Spring Cloud Data Flow installation
+that can deploy and manage data processing pipelines in the cluster that it is deployed to.
 
 MySQL and Redis are used as the stores for Spring Cloud Data Flow state and RabbitMQ is used for the pipelines' messaging layer.
 
@@ -25,16 +21,16 @@ Assumes that serviceAccount credentials are available so the deployed Data Flow 
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release incubator/spring-cloud-data-flow
+$ helm install --name my-release stable/spring-cloud-data-flow
 ```
 
 If you are using a cluster that does not have a load balancer (like Minikube) then you can install using a NodePort:
 
 ```bash
-$ helm install --name my-release --set server.service.type=NodePort incubator/spring-cloud-data-flow
+$ helm install --name my-release --set server.service.type=NodePort stable/spring-cloud-data-flow
 ```
 
-Note that this chart pulls in many different Docker images so can take a while to fully install. 
+Note that this chart pulls in many different Docker images so can take a while to fully install.
 
 ## Configuration
 
@@ -68,7 +64,7 @@ The following tables list the configurable parameters and their default values.
 
 | Parameter                         | Description                                        | Default          |
 | --------------------------------- | -------------------------------------------------- | ---------------- |
-| server.version                    | The version/tag of the Data Flow server            | 1.6.2.RELEASE
+| server.version                    | The version/tag of the Data Flow server            | 1.7.0.RELEASE
 | server.imagePullPolicy            | The imagePullPolicy of the Data Flow server        | IfNotPresent
 | server.service.type               | The service type for the Data Flow server          | LoadBalancer
 | server.service.externalPort       | The external port for the Data Flow server         | 80
@@ -77,7 +73,7 @@ The following tables list the configurable parameters and their default values.
 
 | Parameter                          | Description                                       | Default          |
 | ---------------------------------- | ------------------------------------------------- | ---------------- |
-| skipper.version                    | The version/tag of the Skipper server             | 1.0.9.RELEASE
+| skipper.version                    | The version/tag of the Skipper server             | 1.1.0.RELEASE
 | skipper.imagePullPolicy            | The imagePullPolicy of the Skipper server         | IfNotPresent
 | skipper.platformName               | The name of the configured platform account       | minikube
 | skipper.service.type               | The service type for the Skipper server           | ClusterIP
