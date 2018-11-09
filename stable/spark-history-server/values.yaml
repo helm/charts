@@ -9,7 +9,7 @@ serviceAccount:
 
 image:
   repository: gcr.io/spark-operator/spark
-  tag: v2.3.1
+  tag: v2.4.0
   pullPolicy: IfNotPresent
 
 service:
