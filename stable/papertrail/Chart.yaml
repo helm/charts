@@ -11,3 +11,6 @@ keywords:
 sources:
 - https://github.com/solarwinds/fluent-plugin-papertrail
 - https://github.com/gliderlabs/logspout
+maintainers:
+- name: marccampbell
+  email: marc.e.campbell@gmail.com
