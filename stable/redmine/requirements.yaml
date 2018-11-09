@@ -4,6 +4,6 @@ dependencies:
   repository: https://kubernetes-charts.storage.googleapis.com/
   condition: databaseType.mariadb
 - name: postgresql
-  version: 0.x.x
+  version: 2.x.x
   repository: https://kubernetes-charts.storage.googleapis.com/
   condition: databaseType.postgresql

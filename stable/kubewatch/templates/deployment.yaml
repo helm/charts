@@ -30,7 +30,7 @@ spec:
     spec:
       containers:
       - name: {{ template "kubewatch.name" . }}
-        image: {{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}
+        image: {{ template "kubewatch.image" . }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         volumeMounts:
         - name: {{ template "kubewatch.name" . }}-config-map
@@ -54,4 +54,3 @@ spec:
       - name: {{ template "kubewatch.name" . }}-config-map
         configMap:
           name: {{ template "kubewatch.fullname" . }}-config
-
