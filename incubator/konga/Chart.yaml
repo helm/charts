@@ -7,9 +7,9 @@ keywords:
 - konga
 - dashboard
 - kong
+icon: https://pantsel.github.io/konga/img/konga-logo.png
 sources:
 - https://pantsel.github.io/konga
 maintainers:
 - name: xfrarod
   email: franciscoj.rodriguez@outlook.com
-icon: https://pantsel.github.io/konga/img/konga-logo.png
