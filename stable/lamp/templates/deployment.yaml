@@ -673,7 +673,7 @@ spec:
       {{ if .Values.phpmyadmin.enabled }}
       - image: phpmyadmin/phpmyadmin
         name: phpmyadmin
-        command: [sh, -c, sed -i 's/listen\ 80/listen 8080/g' /etc/nginx.conf && /run.sh phpmyadmin]
+        command: [sh, -c, sed -i 's/listen\ 80/listen 8080/g' /etc/nginx.conf && /run.sh supervisord -n]
         env:
         - name: PMA_HOST
           value: 127.0.0.1
