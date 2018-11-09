@@ -23,6 +23,7 @@ spec:
       labels:
         app: {{ template "kubewatch.name" . }}
         release: "{{ .Release.Name }}"
+        chart: {{ template "kubewatch.chart" . }}
       {{- if .Values.podLabels }}
 {{ toYaml .Values.podLabels | indent 8 }}
       {{- end }}
