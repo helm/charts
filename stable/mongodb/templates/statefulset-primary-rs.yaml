@@ -77,7 +77,7 @@ spec:
           - name: MONGODB_DATABASE
             value: {{ .Values.mongodbDatabase | quote }}
             {{- if .Values.usePassword }}
-            {{- if .Values.mongodbPassword }}
+            {{- if or .Values.mongodbPassword .Values.existingSecret }}
           - name: MONGODB_PASSWORD
             valueFrom:
               secretKeyRef:
