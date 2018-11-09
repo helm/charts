@@ -86,12 +86,6 @@ spec:
         {{- end }}
         - name: MONGODB_EXTRA_FLAGS
           value: {{ default "" .Values.mongodbExtraFlags | join " " }}
-        - name: MONGODB_ENABLE_IPV6
-        {{- if .Values.mongodbEnableIPv6 }}
-          value: "yes"
-        {{- else }}
-          value: "no"
-        {{- end }}
         ports:
         - name: mongodb
           containerPort: 27017
