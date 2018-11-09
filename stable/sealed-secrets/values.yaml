@@ -1,4 +1,5 @@
 image:
+  repository: quay.io/bitnami/sealed-secrets-controller
   tag: v0.7.0
   pullPolicy: IfNotPresent
 
@@ -11,10 +12,11 @@ serviceAccount:
   # serviceAccount.create: Whether to create a service account or not
   create: true
   # serviceAccount.name: The name of the service account to create or use
-  name: "sealed-secrets-controller"
+  name: ""
 
-# rbacEnabled: `true` if rbac is enabled on your cluster. Roles and bindings will be created if this is `true`, they will not if it is `false`
-rbacEnabled: true
+rbac:
+  # rbac.create: `true` if rbac resources should be created
+  create: true
 
 # secretName: The name of the TLS secret containing the key used to encrypt secrets
 secretName: "sealed-secrets-key"

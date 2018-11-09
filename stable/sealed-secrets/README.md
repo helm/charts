@@ -32,15 +32,15 @@ The command removes all the Kubernetes components associated with the chart and 
 
 | Parameter | Description | Default |
 |----------:|:------------|:--------|
-| **rbacEnabled** | `true` if rbac is enabled on your cluster. Roles and bindings will be created if this is `true`, they will not if it is `false` | `true` |
+| **rbac.create** | `true` if rbac resources should be created | `true` |
 | **serviceAccount.create** | Whether to create a service account or not | `true` |
 | **serviceAccount.name** | The name of the service account to create or use | `"sealed-secrets-controller"` |
 | **secretName** | The name of the TLS secret containing the key used to encrypt secrets | `"sealed-secrets-key"` |
 | **image.tag** | The `Sealed Secrets` image tag | `v0.7.0` |
 | **image.pullPolicy** | The image pull policy for the deployment | `IfNotPresent` |
+| **image.repository** | The repository to get the controller image from | `quay.io/bitnami/sealed-secrets-controller` |
 | **resources** | CPU/Memory resource requests/limits | `{}` |
 
-- In the case that **rbacEnabled** is `false` a service account will not be created or used regardless of the vaue of **serviceAccount.create**.
-- In the case that **serviceAccount.create** is `false` and **rbacEnabled** is `true` it is expected for a service account with the name **serviceAccount.name** to exist _in the same namespace as this chart_ before installation.
+- In the case that **serviceAccount.create** is `false` and **rbac.create** is `true` it is expected for a service account with the name **serviceAccount.name** to exist _in the same namespace as this chart_ before installation.
 - If **serviceAccount.create** is `true` there cannot be an existing service account with the name **serviceAccount.name**.
 - If a secret with name **secretName** does not exist _in the same namespace as this chart_, then on install one will be created. If a secret already exists with this name the keys inside will be used.

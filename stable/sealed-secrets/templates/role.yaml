@@ -1,9 +1,8 @@
-{{ if .Values.rbacEnabled }}
+{{ if .Values.rbac.create }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: sealed-secrets-key-admin
-  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "sealed-secrets.fullname" . }}
     chart: {{ template "sealed-secrets.chart" . }}
