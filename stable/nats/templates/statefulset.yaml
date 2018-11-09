@@ -34,8 +34,8 @@ spec:
 {{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
 {{- end }}
-{{- if .Values.metrics.podAnnotations }}
-{{ toYaml .Values.metrics.podAnnotations | indent 8 }}
+{{- if .Values.metrics.annotations }}
+{{ toYaml .Values.metrics.annotations | indent 8 }}
 {{- end }}
 {{- end }}
     spec:
@@ -131,10 +131,12 @@ spec:
       - name: metrics
         image: {{ template "metrics.image" . }}
         imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
-        command: [ '/prometheus-nats-exporter', '-varz', 'http://localhost:{{ .Values.monitoringService.port }}' ]
+        args:
+{{ toYaml .Values.metrics.args | indent 10 -}}
+          - "http://localhost:{{ .Values.monitoringService.port }}"
         ports:
         - name: metrics
-          containerPort: 7777
+          containerPort: {{ .Values.metrics.port }}
         livenessProbe:
           httpGet:
             path: /metrics
