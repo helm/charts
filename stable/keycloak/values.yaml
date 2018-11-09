@@ -49,10 +49,7 @@ keycloak:
   password: ""
 
   ## Allows the specification of additional environment variables for Keycloak
-  ## Set PROXY_ADDRESS_FORWARDING if using ingress
   extraEnv: |
-    # - name:  PROXY_ADDRESS_FORWARDING
-    #   value: "true"
     # - name: KEYCLOAK_LOGLEVEL
     #   value: DEBUG
     # - name: WILDFLY_LOGLEVEL
