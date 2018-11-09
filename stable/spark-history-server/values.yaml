@@ -8,7 +8,7 @@ serviceAccount:
   name:
 
 image:
-  repository: lightbend/spark
+  repository: lightbend/spark-history-server
   tag: 2.4.0
   pullPolicy: IfNotPresent
 
