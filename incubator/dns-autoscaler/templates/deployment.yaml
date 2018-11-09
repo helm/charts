@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dns-autoscaler
+  namespace: kube-system
+  labels:
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    app: {{ template "dnsAutoscaler.name" . }}
+spec:
+  selector:
+    matchLabels:
+        app: {{ template "dnsAutoscaler.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "dnsAutoscaler.name" . }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+    spec:
+      {{- if or .Values.rbac.create .Values.rbac.serviceAccountName }}
+      serviceAccountName: {{ if .Values.rbac.create }}{{ template "dnsAutoscaler.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+      {{- end }}
+      containers:
+      - name: autoscaler
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        command:
+          - /cluster-proportional-autoscaler
+          - --configmap={{ template "dnsAutoscaler.fullname" . }}
+          - --target=deployment/{{ .Values.config.scaleTarget }}
+          - --default-params={"linear":{"coresPerReplica":256,"nodesPerReplica":16,"min":1}}
+          - --namespace=kube-system
+          - --logtostderr=true
+          - --v=2

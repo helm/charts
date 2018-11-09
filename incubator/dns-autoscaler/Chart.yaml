@@ -1,0 +1,15 @@
+name: dns-autoscaler
+version: 0.0.1
+appVersion: 0.0.1
+description: Scales the number of DNS replicas according to the number of schedulable nodes and cores of the cluster.
+keywords:
+- autoscaler
+- dns
+- kubedns
+- coredns
+home: https://github.com/kubernetes-incubator/cluster-proportional-autoscaler/
+sources:
+- https://github.com/kubernetes-incubator/cluster-proportional-autoscaler
+maintainers:
+- name: Smana
+  email: smainklh@gmail.com

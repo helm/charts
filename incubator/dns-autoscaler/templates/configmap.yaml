@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "dnsAutoscaler.fullname" . }}
+  labels:
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    app: {{ template "dnsAutoscaler.name" . }}
+data:
+  linear: '{"coresPerReplica": {{ .Values.config.coresPerReplica }},"min": {{ .Values.config.min }},"nodesPerReplica": {{ .Values.config.nodesPerReplica }} }'

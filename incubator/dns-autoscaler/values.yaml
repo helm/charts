@@ -1,0 +1,56 @@
+# Default values for dns-autoscaler.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: k8s.gcr.io/cluster-proportional-autoscaler-amd64
+  tag: "1.1.1"
+  pullPolicy: IfNotPresent
+
+resources:
+  requests:
+    cpu: "40m"
+    memory: "32Mi"
+  limits:
+    cpu: "80m"
+    memory: "64Mi"
+
+rbac:
+  # If true, create & use RBAC resources
+  create: false
+  # Ignored if rbac.create is true
+  serviceAccountName: default
+
+config:
+  scaleTarget: "coredns-coredns"
+  min: 1
+  nodesPerReplica: 16
+  coresPerReplica: 256 
+
+# expects input structure as per specification https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.11/#affinity-v1-core
+# for example:
+#   affinity:
+#     nodeAffinity:
+#      requiredDuringSchedulingIgnoredDuringExecution:
+#        nodeSelectorTerms:
+#        - matchExpressions:
+#          - key: foo.bar.com/role
+#            operator: In
+#            values:
+#            - master
+affinity: {}
+
+# Node labels for pod assignment
+# Ref: https://kubernetes.io/docs/user-guide/node-selection/
+nodeSelector: {}
+
+# expects input structure as per specification https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.11/#toleration-v1-core
+# for example:
+#   tolerations:
+#   - key: foo.bar.com/role
+#     operator: Equal
+#     value: master
+#     effect: NoSchedule
+tolerations: []
