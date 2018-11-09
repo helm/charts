@@ -154,12 +154,19 @@ The worker running the cluster autoscaler will need access to certain resources 
                 "autoscaling:DescribeAutoScalingGroups",
                 "autoscaling:DescribeAutoScalingInstances",
                 "autoscaling:DescribeLaunchConfigurations",
-                "autoscaling:DescribeTags",
+                "autoscaling:DescribeTags"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
                 "autoscaling:SetDesiredCapacity",
                 "autoscaling:TerminateInstanceInAutoScalingGroup"
             ],
-            "Resource": "*"
+            "Resource": "<your-asg-arn>"
         }
+
     ]
 }
 ```
@@ -167,7 +174,7 @@ The worker running the cluster autoscaler will need access to certain resources 
   - `DescribeTags` is required for autodiscovery.
   - `DescribeLaunchconfigurations` is required to scale up an ASG from 0
 
-Unfortunately AWS does not support ARNs for autoscaling groups yet so you must use "*" as the resource. More information [here](http://docs.aws.amazon.com/autoscaling/latest/userguide/IAM.html#UsingWithAutoScaling_Actions).
+More information on ASG permissions [here](https://docs.aws.amazon.com/autoscaling/ec2/userguide/control-access-using-iam.html#resource-level-permissions-auto-scaling).
 
 ## Auto-discovery
 
