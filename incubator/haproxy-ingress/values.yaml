@@ -41,6 +41,9 @@ controller:
   # ConfigMap to configure haproxy ingress
   config: {}
 
+  # Name of the ingress class to route through this controller
+  ingressClass: haproxy
+
   service:
     annotations: {}
     labels: {}

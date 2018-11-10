@@ -31,6 +31,7 @@ spec:
             - --default-ssl-certificate={{ .Values.controller.defaultSslCertificate.secret.namespace | default .Release.Namespace }}/{{ .Values.controller.defaultSslCertificate.secret.name }}
           {{- end}}
             - --configmap={{ .Release.Namespace }}/{{ template "haproxy-ingress.fullname" . }}
+            - --ingress-class={{ .Values.controller.ingressClass }}
             - --sort-backends
           ports:
             - name: http
