@@ -43,6 +43,8 @@ The following table lists the configurable parameters of the Selenium chart and 
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
 | `global.nodeselector` | Node label to be useed globally for scheduling of all images | `nil` |
+| `global.affinity` | Deployemnt affinities to be used globally for scheduling of all images | `nil` |
+| `global.tolerations` | Deployment tolerations to be used globally for scheduling of all images | `nil` |
 | `hub.image` | The selenium hub image | `selenium/hub` |
 | `hub.tag` | The selenium hub image tag | `3.14.0` |
 | `hub.pullPolicy` | The pull policy for the hub image | `IfNotPresent` |
@@ -64,6 +66,8 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `hub.seOpts` | Command line arguments to pass to hub | `nil` |
 | `hub.timeZone` | The time zone for the container | `nil` |
 | `hub.nodeselector` | Node label to use for scheduling of the hub if set this takes precedence over the global value | `nil` |
+| `hub.affinity` | Deployemnt affinities to use for scheduling of the hub if set this takes precedence over the global value | `nil` |
+| `hub.tolerations` | Deployment tolerations to use for scheduling of the hub if set this takes precedence over the global value | `nil` |
 | `hub.ingress.enabled` | Configure an ingress for the selenium hub | `false` |
 | `hub.ingress.annotations` | Annotations for the ingress for the selenium hub | `nil` |
 | `hub.ingress.path` | The path for this ingress from which to route the traffic to the selenium hub | `/` |
@@ -90,6 +94,8 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `chrome.seOpts` | Command line arguments to pass to node | `nil` |
 | `chrome.timeZone` | The time zone for the container | `nil` |
 | `chrome.nodeselector` | Node label to use for scheduling of chrome images if set this takes precedence over the global value | `nil` |
+| `chrome.affinity` | Deployemnt affinities to use for scheduling of the chrome if set this takes precedence over the global value | `nil` |
+| `chrome.tolerations` | Deployment tolerations to use for scheduling of the chrome if set this takes precedence over the global value | `nil` |
 | `chromeDebug.enabled` | Schedule a selenium node chrome debug pod | `false` |
 | `chromeDebug.image` | The selenium node chrome debug image | `selenium/node-chrome-debug` |
 | `chromeDebug.tag` | The selenium node chrome debug tag | `3.14.0` |
@@ -111,6 +117,8 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `chromeDebug.seOpts` | Command line arguments to pass to node | `nil` |
 | `chromeDebug.timeZone` | The time zone for the container | `nil` |
 | `chromeDebug.nodeselector` | Node label to use for scheduling of chromeDebug images if set this takes precedence over the global value | `nil` |
+| `chromeDebug.affinity` | Deployemnt affinities to use for scheduling of the chromeDebug if set this takes precedence over the global value | `nil` |
+| `chromeDebug.tolerations` | Deployment tolerations to use for scheduling of the chromeDebug if set this takes precedence over the global value | `nil` |
 | `firefox.enabled` | Schedule a selenium node firefox pod | `false` |
 | `firefox.image` | The selenium node firefox image | `selenium/node-firefox` |
 | `firefox.tag` | The selenium node firefox tag | `3.14.0` |
@@ -130,6 +138,8 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `firefox.seOpts` | Command line arguments to pass to node | `nil` |
 | `firefox.timeZone` | The time zone for the container | `nil` |
 | `firefox.nodeselector` | Node label to use for scheduling of firefox images if set this takes precedence over the global value | `nil` |
+| `firefox.affinity` | Deployemnt affinities to use for scheduling of the firefox if set this takes precedence over the global value | `nil` |
+| `firefox.tolerations` | Deployment tolerations to use for scheduling of the firefox if set this takes precedence over the global value | `nil` |
 | `firefoxDebug.enabled` | Schedule a selenium node firefox debug pod | `false` |
 | `firefoxDebug.image` | The selenium node firefox debug image | `selenium/node-firefox-debug` |
 | `firefoxDebug.tag` | The selenium node firefox debug tag | `3.14.0` |
@@ -149,6 +159,8 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `firefoxDebug.seOpts` | Command line arguments to pass to node | `nil` |
 | `firefoxDebug.timeZone` | The time zone for the container | `nil` |
 | `firefoxDebug.nodeselector` | Node label to use for scheduling of firefoxDebug images if set this takes precedence over the global value | `nil` |
+| `firefoxDebug.affinity` | Deployemnt affinities to use for scheduling of the firefoxDebug if set this takes precedence over the global value | `nil` |
+| `firefoxDebug.tolerations` | Deployment tolerations to use for scheduling of the firefoxDebug if set this takes precedence over the global value | `nil` |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
