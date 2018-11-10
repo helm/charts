@@ -41,6 +41,13 @@ controller:
   # ConfigMap to configure haproxy ingress
   config: {}
 
+  # Use host ports http, http3, and any specified in tcp
+  useHostPort: false
+  hostPorts:
+    http: 80
+    https: 443
+
+
   # Name of the ingress class to route through this controller
   ingressClass: haproxy
 

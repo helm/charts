@@ -39,8 +39,14 @@ spec:
           ports:
             - name: http
               containerPort: 80
+            {{- if .Values.controller.useHostPort }}
+              hostPort: {{ .Values.controller.hostPorts.http }}
+            {{- end }}
             - name: https
               containerPort: 443
+            {{- if .Values.controller.useHostPort }}
+              hostPort: {{ .Values.controller.hostPorts.https }}
+            {{- end }}
             - name: stats
               containerPort: {{ .Values.controller.statsPort }}
             - name: healthz
@@ -49,6 +55,9 @@ spec:
             - name: "{{ $key }}-tcp"
               containerPort: {{ $key }}
               protocol: TCP
+            {{- if $.Values.controller.useHostPort }}
+              hostPort: {{ $key }}
+            {{- end }}
           {{- end }}
           livenessProbe:
             httpGet:
