@@ -56,6 +56,9 @@ controller:
     type: LoadBalancer
     loadBalancerIP: ""
 
+    enableHttp: true
+    enableHttps: true
+
     # type: NodePort
     # nodePorts:
     #   http: 32080
