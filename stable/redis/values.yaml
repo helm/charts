@@ -245,6 +245,10 @@ slave:
   # extraFlags: []
   ## Comma-separated list of Redis commands to disable
   # disableCommands: ""
+  ## deployment update stategy
+  # updateStrategy:
+  #   rollingUpdate:
+  #     maxUnavailable: 0
 
   ## Redis Slave pod/node affinity/anti-affinity
   ##
