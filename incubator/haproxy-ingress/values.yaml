@@ -28,7 +28,7 @@ controller:
   name: controller
   image:
     repository: quay.io/jcmoraisjr/haproxy-ingress
-    tag: "v0.5-beta.3"
+    tag: "v0.6"
     pullPolicy: IfNotPresent
 
   defaultSslCertificate:
