@@ -4,4 +4,4 @@ metadata:
   name: {{ template "haproxy-ingress.fullname" . }}
   namespace: {{ .Release.Namespace }}
 data:
-{{ toYaml .Values.controller.headers | indent 2 }}
+{{ toYaml .Values.controller.config | indent 2 }}
