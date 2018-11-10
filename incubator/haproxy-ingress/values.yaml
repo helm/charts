@@ -44,6 +44,9 @@ controller:
   # Name of the ingress class to route through this controller
   ingressClass: haproxy
 
+  healthzPort: 10253
+  statsPort: 1936
+
   service:
     annotations: {}
     labels: {}

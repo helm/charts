@@ -41,13 +41,25 @@ spec:
               containerPort: 80
             - name: https
               containerPort: 443
-            - name: stat
-              containerPort: 1936
+            - name: stats
+              containerPort: {{ .Values.controller.statsPort }}
+            - name: healthz
+              containerPort: {{ .Values.controller.healthzPort }}
           {{- range $key, $value := .Values.tcp }}
             - name: "{{ $key }}-tcp"
               containerPort: {{ $key }}
               protocol: TCP
           {{- end }}
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: {{ .Values.controller.healthzPort }}
+              scheme: HTTP
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: {{ .Values.controller.healthzPort }}
+              scheme: HTTP
           env:
             - name: POD_NAME
               valueFrom:
