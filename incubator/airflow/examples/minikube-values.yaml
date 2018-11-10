@@ -1,8 +1,7 @@
 airflow:
   image:
-    ## Test with stibbons31/docker-airflow-dev to allow mounting to other that root path
-    repository: stibbons31/docker-airflow-dev
-    tag: 2.0dev
+    repository: puckel/docker-airflow
+    tag: 1.10.0-4
     pull_policy: IfNotPresent
   service:
     type: NodePort
