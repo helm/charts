@@ -33,6 +33,9 @@ spec:
             - --configmap={{ .Release.Namespace }}/{{ template "haproxy-ingress.fullname" . }}
             - --ingress-class={{ .Values.controller.ingressClass }}
             - --sort-backends
+          {{- if .Values.tcp }}
+            - --tcp-services-configmap={{ .Release.Namespace }}/{{ template "haproxy-ingress.fullname" . }}-tcp
+          {{- end }}
           ports:
             - name: http
               containerPort: 80
@@ -40,6 +43,11 @@ spec:
               containerPort: 443
             - name: stat
               containerPort: 1936
+          {{- range $key, $value := .Values.tcp }}
+            - name: "{{ $key }}-tcp"
+              containerPort: {{ $key }}
+              protocol: TCP
+          {{- end }}
           env:
             - name: POD_NAME
               valueFrom:

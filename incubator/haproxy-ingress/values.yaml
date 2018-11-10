@@ -66,3 +66,9 @@ controller:
     nodePorts:
       http: ""
       https: ""
+
+# TCP service key:value pairs
+# <port>: <namespace>/<servicename>:<portnumber>[:[<in-proxy>][:<out-proxy>]]
+# https://github.com/jcmoraisjr/haproxy-ingress/tree/v0.6#tcp-services-configmap
+tcp: {}
+#  8080: "default/example-tcp-svc:9000"
