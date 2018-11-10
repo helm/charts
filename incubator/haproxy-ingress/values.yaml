@@ -54,6 +54,7 @@ controller:
       https: 443
 
     type: LoadBalancer
+    loadBalancerIP: ""
 
     # type: NodePort
     # nodePorts:

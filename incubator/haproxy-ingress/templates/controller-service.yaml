@@ -16,7 +16,12 @@ metadata:
   name: {{ template "haproxy-ingress.fullname" . }}
   namespace: {{ .Release.Namespace }}
 spec:
+{{- if .Values.controller.service.clusterIP }}
   clusterIP: "{{ .Values.controller.service.clusterIP }}"
+{{- end }}
+{{- if .Values.controller.service.loadBalancerIP }}
+  loadBalancerIP: "{{ .Values.controller.service.loadBalancerIP }}"
+{{- end }}
   ports:
     - name: http
       port: 80
