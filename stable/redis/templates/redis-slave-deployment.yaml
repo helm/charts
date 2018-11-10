@@ -9,6 +9,10 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
+{{- if .Values.slave.updateStrategy }}
+  strategy:
+{{ toYaml .Values.slave.updateStrategy | indent 4 }}
+{{- end }}
 {{- if .Values.cluster.slaveCount }}
   replicas: {{ .Values.cluster.slaveCount }}
 {{- end }}
