@@ -1,6 +1,6 @@
 image:
   repository: "docker.elastic.co/kibana/kibana-oss"
-  tag: "6.4.2"
+  tag: "6.4.3"
   pullPolicy: "IfNotPresent"
 
 commandline:
