@@ -7,4 +7,4 @@ excluded-charts:
   - common
 chart-repos:
   - incubator=https://kubernetes-charts-incubator.storage.googleapis.com/
-timeout: 10m
+helm-extra-args: --timeout 600
