@@ -89,3 +89,15 @@ spec:
 {{- else if .Values.global.nodeSelector }}
 {{ toYaml .Values.global.nodeSelector | indent 8  }}
 {{- end }}
+      affinity:
+{{- if .Values.hub.affinity }}
+{{ toYaml .Values.hub.affinity | indent 8  }}
+{{- else if .Values.global.affinity }}
+{{ toYaml .Values.global.affinity | indent 8  }}
+{{- end }}
+      tolerations:
+{{- if .Values.hub.tolerations }}
+{{ toYaml .Values.hub.tolerations | indent 8  }}
+{{- else if .Values.global.tolerations }}
+{{ toYaml .Values.global.tolerations | indent 8  }}
+{{- end }}
