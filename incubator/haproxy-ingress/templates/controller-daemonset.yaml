@@ -69,3 +69,5 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
+          resources:
+{{ toYaml .Values.controller.resources | indent 12 }}
