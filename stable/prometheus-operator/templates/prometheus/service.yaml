@@ -17,6 +17,9 @@ spec:
     nodePort: {{ .Values.prometheus.service.nodePort }}
     {{- end }}
     port: 9090
+    {{- if eq .Values.prometheus.service.type "NodePort" }}
+    nodePort: {{ .Values.prometheus.service.nodePort }}
+    {{- end }}
     targetPort: web
   selector:
     app: prometheus

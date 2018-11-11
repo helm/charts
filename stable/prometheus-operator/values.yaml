@@ -124,6 +124,7 @@ alertmanager:
   ## Configuration for Alertmanager service
   ##
   service:
+    annotations: {}
     ## Port to expose on each node
     ## Only used if service.type is 'NodePort'
     ##
@@ -564,6 +565,8 @@ prometheus:
   ## Configuration for Prometheus service
   ##
   service:
+    annotations: {}
+
     ## Port to expose on each node
     ## Only used if service.type is 'NodePort'
     ##

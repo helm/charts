@@ -124,6 +124,8 @@ alertmanager:
   ## Configuration for Alertmanager service
   ##
   service:
+    annotations: {}
+
     ## Port to expose on each node
     ## Only used if service.type is 'NodePort'
     ##
@@ -612,6 +614,17 @@ prometheus:
 
   serviceMonitor:
     selfMonitor: true
+
+  service:
+    annotations: {}
+
+    ## Node Port (only used if service type is NodePort)
+    ##
+    # nodePort: 30816
+
+    ## Service type
+    ##
+    type: ClusterIP
 
   ## Settings affecting prometheusSpec
   ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#prometheusspec
