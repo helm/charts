@@ -93,6 +93,11 @@ ingress:
   ##
   path: /
 
+  ## This is required in order to work with gce ingress
+  # paths:
+  #   - "/"
+  #   - "/*"
+
   ## Kubernetes Dashboard Ingress hostnames
   ## Must be provided if Ingress is enabled
   ##
