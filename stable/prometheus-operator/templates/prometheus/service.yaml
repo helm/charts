@@ -13,6 +13,9 @@ metadata:
 spec:
   ports:
   - name: web
+    {{- if eq .Values.prometheus.service.type "NodePort" }}
+    nodePort: {{ .Values.prometheus.service.nodePort }}
+    {{- end }}
     port: 9090
     {{- if eq .Values.prometheus.service.type "NodePort" }}
     nodePort: {{ .Values.prometheus.service.nodePort }}
