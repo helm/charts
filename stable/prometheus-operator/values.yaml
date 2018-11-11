@@ -565,6 +565,8 @@ prometheus:
   ## Configuration for Prometheus service
   ##
   service:
+    annotations: {}
+
     ## Port to expose on each node
     ## Only used if service.type is 'NodePort'
     ##
@@ -610,17 +612,6 @@ prometheus:
       # - secretName: prometheus-general-tls
       #   hosts:
       #     - prometheus.example.com
-
-  service:
-    annotations: {}
-
-    ## Node Port (only used if service type is NodePort)
-    ##
-    # nodePort: 30816
-
-    ## Service type
-    ##
-    type: ClusterIP
 
   serviceMonitor:
     selfMonitor: true
