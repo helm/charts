@@ -1,8 +1,8 @@
 ## Cassandra image version
 ## ref: https://hub.docker.com/r/library/cassandra/
 image:
-  repo: "cassandra"
-  tag: "3.11.2"
+  repo: cassandra
+  tag: 3.11.3
   pullPolicy: IfNotPresent
   ## Specify ImagePullSecrets for Pods
   ## ref: https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
@@ -43,9 +43,10 @@ resources: {}
 ## Change cassandra configuration parameters below:
 ## ref: http://docs.datastax.com/en/cassandra/3.0/cassandra/configuration/configCassandra_yaml.html
 ## Recommended max heap size is 1/2 of system memory
-## Recommeneed heap new size is 1/4 of max heap size
+## Recommended heap new size is 1/4 of max heap size
 ## ref: http://docs.datastax.com/en/cassandra/3.0/cassandra/operations/opsTuneJVM.html
 config:
+  cluster_domain: cluster.local
   cluster_name: cassandra
   cluster_size: 3
   seed_size: 2
@@ -65,6 +66,10 @@ config:
     thrift: 9160
     # If a JVM Agent is in place
     # agent: 61621
+
+## Custom env variables.
+## ref: https://hub.docker.com/_/cassandra/
+env: {}
 
 ## Liveness and Readiness probe values.
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/
@@ -87,6 +92,10 @@ readinessProbe:
   # nodeSelector:
     # cloud.google.com/gke-nodepool: pool-db
 
+## Additional pod annotations
+## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+podAnnotations: {}
+
 ## Additional pod labels
 ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
 podLabels: {}
@@ -95,6 +104,11 @@ podLabels: {}
 podSettings:
   # Change this to give pods more time to properly leave the cluster when not using persistent storage.
   terminationGracePeriodSeconds: 30
+
+## Pod distruption budget
+podDisruptionBudget: {}
+  # maxUnavailable: 1
+  # minAvailable: 2
 
 podManagementPolicy: OrderedReady
 updateStrategy:
@@ -162,3 +176,13 @@ backup:
   # Additional support can added.
   # Ref: https://github.com/maorfr/skbn
   destination: s3://bucket/cassandra
+
+## Cassandra exported configuration
+## ref: https://github.com/criteo/cassandra_exporter
+exporter:
+  enabled: false
+  image:
+    repo: criteord/cassandra_exporter
+    tag: 2.0.2
+  port: 5556
+  jvmOpts: ""

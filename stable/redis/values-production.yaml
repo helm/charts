@@ -1,3 +1,9 @@
+## Global Docker image registry
+## Please, note that this will override the image registry for all the images, including dependencies, configured to use the global value
+##
+# global:
+#   imageRegistry:
+
 ## Bitnami Redis image version
 ## ref: https://hub.docker.com/r/bitnami/redis/tags/
 ##
@@ -7,7 +13,7 @@ image:
   ## Bitnami Redis image tag
   ## ref: https://github.com/bitnami/bitnami-docker-redis#supported-tags-and-respective-dockerfile-links
   ##
-  tag: 4.0.11-debian-9
+  tag: 4.0.11
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -73,6 +79,13 @@ password:
 ## Use existing secret (ignores previous password)
 # existingSecret:
 
+## Persist data to a persistent volume
+persistence: {}
+  ## A manually managed Persistent Volume and Claim
+  ## Requires persistence.enabled: true
+  ## If defined, PVC must be created manually before volume will be bound
+  # existingClaim:
+
 ##
 ## Redis Master parameters
 ##
@@ -113,6 +126,10 @@ master:
   #   requests:
   #     memory: 256Mi
   #     cpu: 100m
+  ## Use an alternate scheduler, e.g. "stork".
+  ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+  ##
+  # schedulerName:
 
   ## Configure extra options for Redis Master liveness and readiness probes
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes)
@@ -146,6 +163,7 @@ master:
   service:
     ##  Redis Master Service type
     type: ClusterIP
+    port: 6379
 
     ## Specify the nodePort value for the LoadBalancer and NodePort service types.
     ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
@@ -170,14 +188,12 @@ master:
   ##
   persistence:
     enabled: true
-
     ## The path the volume will be mounted at, useful when using different
     ## Redis images.
     path: /bitnami/redis/data
-
-    ## The subdirectory of the volume to mount to, useful in dev environments and one PV for multiple services.
+    ## The subdirectory of the volume to mount to, useful in dev environments
+    ## and one PV for multiple services.
     subPath: ""
-
     ## redis data Persistent Volume Storage Class
     ## If defined, storageClassName: <storageClass>
     ## If set to "-", storageClassName: "", which disables dynamic provisioning
@@ -198,10 +214,11 @@ master:
     ## https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#partitions
     # rollingUpdatePartition:
 
+
 ##
 ## Redis Slave properties
-## Note: serviceType and service are mandatory parameters
-## The rest of the parameters, if undefined, will inherit those declared in Redis Master
+## Note: service.type is a mandatory parameter
+## The rest of the parameters are either optional or, if undefined, will inherit those declared in Redis Master
 ##
 slave:
   ## Slave Service properties
@@ -219,8 +236,6 @@ slave:
     ##
     annotations: {}
     loadBalancerIP:
-
-  ## Redis slave optional overrides
 
   ## Redis port
   # port: 6379
@@ -263,6 +278,11 @@ slave:
   # nodeSelector: {"beta.kubernetes.io/arch": "amd64"}
   # tolerations: []
 
+  ## Use an alternate scheduler, e.g. "stork".
+  ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+  ##
+  # schedulerName:
+
   ## Redis slave pod Annotation and Labels
   # podLabels: {}
   # podAnnotations: {}
@@ -295,9 +315,9 @@ metrics:
     ## Use serviceLoadBalancerIP to request a specific static IP,
     ## otherwise leave blank
     # loadBalancerIP:
-    annotations: {}
-    # prometheus.io/scrape: "true"
-    # prometheus.io/port: "9121"
+    annotations:
+      prometheus.io/scrape: "true"
+      prometheus.io/port: "9121"
 
   ## Metrics exporter resource requests and limits
   ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -321,11 +341,10 @@ metrics:
 ## Init containers parameters:
 ## volumePermissions: Change the owner of the persist volume mountpoint to RunAsUser:fsGroup
 ##
-
 volumePermissions:
   image:
     registry: docker.io
-    repository: busybox
+    repository: bitnami/minideb
     tag: latest
     pullPolicy: IfNotPresent
 

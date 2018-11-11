@@ -10,10 +10,12 @@ metadata:
     {{ $key }}: {{ $value | quote }}
   {{- end }}
   name: {{ template "kibana.fullname" . }}
+  {{- with .Values.service.annotations }}
   annotations:
-    {{- range $key, $value := .Values.service.annotations }}
+    {{- range $key, $value := . }}
       {{ $key }}: {{ $value | quote }}
     {{- end }}
+  {{- end }}
 spec:
   {{- if .Values.service.loadBalancerSourceRanges }}
   loadBalancerSourceRanges:
@@ -32,7 +34,7 @@ spec:
       protocol: TCP
 {{ if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.nodePort))) }}
       nodePort: {{ .Values.service.nodePort }}
-{{ end }}      
+{{ end }}
 {{- if .Values.service.externalIPs }}
   externalIPs:
 {{ toYaml .Values.service.externalIPs | indent 4 }}
