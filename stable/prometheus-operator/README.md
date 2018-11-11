@@ -99,9 +99,6 @@ The following tables lists the configurable parameters of the prometheus-operato
 | `prometheus.serviceMonitor.selfMonitor` | Create a `serviceMonitor` to automatically monitor the prometheus instance | `true` |
 | `prometheus.serviceAccount.create` | Create a default serviceaccount for prometheus to use | `true` |
 | `prometheus.serviceAccount.name` | Name for prometheus serviceaccount | `""` |
-| `prometheus.service.type` | Prometheus service type | `ClusterIP` |
-| `prometheus.service.nodePort` | Port to expose Prometheus service on each node | `39090` |
-| `prometheus.service.annotations` | Annotations to be added to the prometheus service | `{}` |
 | `prometheus.rbac.roleNamespaces` | Create role bindings in the specified namespaces, to allow Prometheus monitoring a role binding in the release namespace will always be created. | `["kube-system"]` |
 | `prometheus.podDisruptionBudget.enabled` | If true, create a pod disruption budget for prometheus pods. The created resource cannot be modified once created - it must be deleted to perform a change | `true` |
 | `prometheus.podDisruptionBudget.minAvailable` | Minimum number / percentage of pods that should remain scheduled | `1` |
@@ -112,7 +109,7 @@ The following tables lists the configurable parameters of the prometheus-operato
 | `prometheus.ingress.hosts` | Prometheus Ingress hostnames | `[]` |
 | `prometheus.ingress.tls` | Prometheus Ingress TLS configuration (YAML) | `[]` |
 | `prometheus.service.type` |  Prometheus Service type | `ClusterIP` |
-| `prometheus.service.nodePort` |  Prometheus Service port for NodePort service type | `""` |
+| `prometheus.service.nodePort` |  Prometheus Service port for NodePort service type | `39090` |
 | `prometheus.service.annotations` |  Prometheus Service Annotations | `{}` |
 | `prometheus.additionalServiceMonitors` | List of `serviceMonitor` objects to create. See https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#servicemonitorspec | `[]` |
 | `prometheus.prometheusSpec.podMetadata` | Standard object’s metadata. More info: https://github.com/kubernetes/community/blob/master/contributors/devel/api-conventions.md#metadata Metadata Labels and Annotations gets propagated to the prometheus pods. | `{}` |
@@ -157,9 +154,6 @@ The following tables lists the configurable parameters of the prometheus-operato
 | `alertmanager.enabled` | Deploy alertmanager | `true` |
 | `alertmanager.serviceAccount.create` | Create a `serviceAccount` for alertmanager | `true` |
 | `alertmanager.serviceAccount.name` | Name for Alertmanager service account | `""` |
-| alertmanager.service.type | Alertmanager service type | ClusterIP |
-| alertmanager.service.nodePort | Port to expose alertmanager service on each node | 39093 |
-| alertmanager.service.annotations | Annotations to be added to the alertmanager service | {} |
 | `alertmanager.podDisruptionBudget.enabled` | If true, create a pod disruption budget for Alertmanager pods. The created resource cannot be modified once created - it must be deleted to perform a change | `true` |
 | `alertmanager.podDisruptionBudget.minAvailable` | Minimum number / percentage of pods that should remain scheduled | `1` |
 | `alertmanager.podDisruptionBudget.maxUnavailable` | Maximum number / percentage of pods that may be made unavailable | `""` |
@@ -169,7 +163,7 @@ The following tables lists the configurable parameters of the prometheus-operato
 | `alertmanager.ingress.hosts` | Alertmanager Ingress hostnames | `[]` |
 | `alertmanager.ingress.tls` | Alertmanager Ingress TLS configuration (YAML) | `[]` |
 | `alertmanager.service.type` | Alertmanager Service type | `ClusterIP` |
-| `alertmanager.service.nodePort` | Alertmanager Service port for NodePort service type | `""` |
+| `alertmanager.service.nodePort` | Alertmanager Service port for NodePort service type | `30903` |
 | `alertmanager.service.annotations` | Alertmanager Service annotations | `{}` |
 | `alertmanager.config` | Provide YAML to configure Alertmanager. See https://prometheus.io/docs/alerting/configuration/#configuration-file. The default provided works to suppress the DeadMansSwitch alert from `defaultRules.create` | `{"global":{"resolve_timeout":"5m"},"route":{"group_by":["job"],"group_wait":"30s","group_interval":"5m","repeat_interval":"12h","receiver":"null","routes":[{"match":{"alertname":"DeadMansSwitch"},"receiver":"null"}]},"receivers":[{"name":"null"}]}` |
 | `alertmanager.alertmanagerSpec.podMetadata` | Standard object’s metadata. More info: https://github.com/kubernetes/community/blob/master/contributors/devel/api-conventions.md#metadata Metadata Labels and Annotations gets propagated to the prometheus pods. | `{}` |
