@@ -74,6 +74,9 @@ spec:
                   key: yourls-password
             - name: YOURLS_TABLE_PREFIX
               value: {{ .Values.yourlsTablePrefix | quote }}
+          {{- if .Values.extraEnv }}
+{{ toYaml .Values.extraEnv | indent 12 }}
+          {{- end }}
           ports:
             - name: http
               containerPort: 80

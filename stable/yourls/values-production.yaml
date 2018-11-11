@@ -33,6 +33,18 @@ yourlsTablePrefix: yourls_
 ## ref: https://hub.docker.com/_/yourls/
 allowEmptyPassword: "yes"
 
+# Extra environment variables which will be saved in a release-specific secret
+# or retrieved via valueFrom.
+# extraEnv:
+# - name: SECRET_TO_SAVE
+#   value: secret_value
+# - name: AWS_ACCESS_KEY_ID
+#   valueFrom:
+#     secretKeyRef:
+#       name: existing-secret
+#       key: access-key-id
+extraEnv: []
+
 replicaCount: 3
 
 externalDatabase:
