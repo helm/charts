@@ -61,7 +61,7 @@ spec:
 {{- end }}
         - name: set-permissions
           image: busybox
-          command: ["/bin/sh", "-c", "mkdir -m 777 /var/lib/grafana/plugins && chmod -R 777 /var/lib/grafana/"]
+          command: ["/bin/sh", "-c", "mkdir -m 472 /var/lib/grafana/plugins && chmod -R 472:472 /var/lib/grafana/"]
           securityContext:
               runAsUser: 0
           volumeMounts:
