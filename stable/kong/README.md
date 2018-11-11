@@ -61,6 +61,7 @@ and their default values.
 | admin.nodePort                    | Node port when service type is `NodePort`                              |                       |
 | admin.type                        | k8s service type, Options: NodePort, ClusterIP, LoadBalancer           | `NodePort`            |
 | admin.loadBalancerIP              | Will reuse an existing ingress static IP for the admin service         | `null`                |
+| admin.loadBalancerSourceRanges    | Limit admin access to CIDRs if set and service type is `LoadBalancer`  | `[]`                  |
 | admin.ingress.enabled             | Enable ingress resource creation (works with proxy.type=ClusterIP)     | `false`               |
 | admin.ingress.tls                 | Name of secret resource, containing TLS secret                         |                       |
 | admin.ingress.hosts               | List of ingress hosts.                                                 | `[]`                  |
@@ -72,6 +73,7 @@ and their default values.
 | proxy.nodePort                    | Node port when service type is `NodePort`                              |                       |
 | proxy.type                        | k8s service type. Options: NodePort, ClusterIP, LoadBalancer           | `NodePort`            |
 | proxy.loadBalancerIP              | To reuse an existing ingress static IP for the admin service           |                       |
+| proxy.loadBalancerSourceRanges    | Limit proxy access to CIDRs if set and service type is `LoadBalancer`  | `[]`                  |
 | proxy.ingress.enabled             | Enable ingress resource creation (works with proxy.type=ClusterIP)     | `false`               |
 | proxy.ingress.tls                 | Name of secret resource, containing TLS secret                         |                       |
 | proxy.ingress.hosts               | List of ingress hosts.                                                 | `[]`                  |
@@ -108,7 +110,7 @@ Postgres is enabled by default.
 | env.database                      | Choose either `postgres` or `cassandra`                                | `postgres`            |
 | env.pg_user                       | Postgres username                                                      | `kong`                |
 | env.pg_database                   | Postgres database name                                                 | `kong`                |
-| env.pg_password                   | Postgres database password (required if you are using your own database)| `kong`         |
+| env.pg_password                   | Postgres database password (required if you are using your own database)| `kong`               |
 | env.pg_host                       | Postgres database host (required if you are using your own database)   | ``                    |
 | env.pg_port                       | Postgres database port                                                 | `5432`                |
 | env.cassandra_contact_points      | Cassandra contact points (required if you are using your own database) | ``                    |
