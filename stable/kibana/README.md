@@ -22,6 +22,8 @@ $ helm install stable/kibana --name my-release
 
 The command deploys kibana on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
 
+NOTE : We notice that lower resource constraints given to the chart + plugins are likely not going to work well.
+
 ## Uninstalling the Chart
 
 To uninstall/delete the `my-release` deployment:
