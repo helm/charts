@@ -69,8 +69,8 @@ The following table lists the configurable parameters of the YOURLS chart and th
 | `externalDatabase.user`          | Existing username in the external db       | `yourls`                                                |
 | `externalDatabase.password`      | Password for the above username            | `nil`                                                   |
 | `externalDatabase.database`      | Name of the existing database              | `yourls`                                                |
-| `serviceType`                    | Kubernetes Service type                    | `LoadBalancer`                                          |
-| `serviceExternalTrafficPolicy`   | Enable client source IP preservation       | `Cluster`                                               |
+| `service.type`                   | Kubernetes Service type                    | `LoadBalancer`                                          |
+| `service.externalTrafficPolicy`  | Enable client source IP preservation       | `Cluster`                                               |
 | `nodePorts.http`                 | Kubernetes http node port                  | `""`                                                    |
 | `nodePorts.https`                | Kubernetes https node port                 | `""`                                                    |
 | `healthcheckHttps`               | Use https for liveliness and readiness     | `false`                                                 |
