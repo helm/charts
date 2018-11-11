@@ -1,0 +1,10 @@
+A CronJob will run with schedule {{ .Values.cronjob.schedule }}, denoted in UTC.
+
+It will keep {{ .Values.failedJobsHistoryLimit }} failed Job(s) and {{ .Values.successfulJobsHistoryLimit }} successful Job(s).
+See the logs of the Pod associated to each Job to see result.
+
+The Jobs will not be removed automagically when deleting this Helm chart.
+To remove these jobs, run the following :
+
+kubectl -n {{ .Release.Namespace }} delete job -l app={{ template "kube-hunter.name" . }},release={{ .Release.Name }}
+

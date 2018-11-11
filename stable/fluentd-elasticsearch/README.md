@@ -49,7 +49,7 @@ The following table lists the configurable parameters of the Fluentd elasticsear
 | `configMaps`                       | Fluentd configmaps                                                                           | `default conf files`                                       |
 | `elasticsearch.host`               | Elstaicsearch Host                                                                           | `elasticsearch-client`                                     |
 | `elasticsearch.port`               | Elasticsearch Port                                                                           | `9200`                                                     |
-| `elasticsearch.scheme`             | Elasticsearch Scheme                                                                         | `http`                                                 |
+| `elasticsearch.scheme`             | Elasticsearch Scheme                                                                         | `http`                                                     |
 | `elasticsearch.buffer_chunk_limit` | Elasticsearch buffer chunk limit                                                             | `2M`                                                       |
 | `elasticsearch.buffer_queue_limit` | Elasticsearch buffer queue limit                                                             | `8`                                                        |
 | `extraVolumeMounts`                | Mount an extra volume, required to mount ssl certificates when elasticsearch has tls enabled |                                                            |
@@ -66,7 +66,8 @@ The following table lists the configurable parameters of the Fluentd elasticsear
 | `serviceAccount.create`            | Specifies whether a service account should be created.                                       | `true`                                                     |
 | `serviceAccount.name`              | Name of the service account.                                                                 |                                                            |
 | `livenessProbe.enabled`            | Whether to enable livenessProbe                                                              | `true`                                                     |
-| `tolerations`                      | Optional daemonset tolerations                                                               | `NULL`                                                     |
+| `tolerations`                      | Optional daemonset tolerations                                                               | `{}`                                                       |
+| `nodeSelector`                     | Optional daemonset nodeSelector                                                              | `{}`                                                       |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,

@@ -7,6 +7,10 @@ metadata:
     chart: {{ template "rabbitmq.chart" .  }}
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
+{{- if .Values.metrics.enabled }}
+  annotations:
+{{ toYaml .Values.metrics.annotations | indent 4 }}
+{{- end }}
 spec:
   type: {{ .Values.serviceType }}
   ports:
@@ -25,6 +29,11 @@ spec:
   - name: stats
     port: {{ .Values.rabbitmq.managerPort }}
     targetPort: stats
+{{- if .Values.metrics.enabled }}
+  - name: metrics
+    port: 9090
+    targetPort: metrics
+{{- end }}
   selector:
     app: {{ template "rabbitmq.name" . }}
     release: "{{ .Release.Name }}"
