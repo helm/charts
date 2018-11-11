@@ -3,10 +3,10 @@
 apiVersion: "v1"
 kind: "PersistentVolumeClaim"
 metadata:
-  {{- if .Values.persistentVolumeClaim.annotations }}
+{{- if .Values.persistentVolumeClaim.annotations }}
   annotations:
 {{ toYaml .Values.persistentVolumeClaim.annotations | indent 4 }}
-  {{- end }}
+{{- end }}
   labels:
     app: {{ template "kibana.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}

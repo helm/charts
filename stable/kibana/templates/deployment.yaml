@@ -114,10 +114,10 @@ spec:
           mountPath: "/usr/share/kibana/config/{{ $configFile }}"
           subPath: {{ $configFile }}
         {{- end }}
-        {{- if .Values.securityContext.enabled }}
+{{- if .Values.securityContext.enabled }}
         securityContext:
           allowPrivilegeEscalation: {{ .Values.securityContext.allowPrivilegeEscalation }}
-        {{- end }}
+{{- end }}
 {{- end }}
 {{- end }}
       containers:
@@ -186,11 +186,11 @@ spec:
     {{- end }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
-      {{- if .Values.securityContext.enabled }}
+{{- if .Values.securityContext.enabled }}
       securityContext:
         runAsUser: {{ .Values.securityContext.runAsUser }}
         fsGroup: {{ .Values.securityContext.fsGroup }}
-      {{- end }}
+{{- end }}
       volumes:
         - name: {{ template "kibana.name" . }}
           configMap:
