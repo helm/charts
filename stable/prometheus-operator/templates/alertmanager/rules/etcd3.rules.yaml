@@ -1,4 +1,4 @@
-{{- if and .Values.defaultRules.create .Values.kubeEtcd.enabled }}
+{{- if and .Values.defaultRules.create }}
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
