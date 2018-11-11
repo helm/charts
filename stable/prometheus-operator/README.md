@@ -74,6 +74,9 @@ The following tables lists the configurable parameters of the prometheus-operato
 | `prometheusOperator.kubeletService.enabled` | If true, the operator will create and maintain a service for scraping kubelets | `true` |
 | `prometheusOperator.kubeletService.namespace` | Namespace to deploy kubelet service | `true` |
 | `prometheusOperator.serviceMonitor.selfMonitor` | Enable monitoring of prometheus operator | `true` |
+| `prometheusOperator.service.type` | Prometheus operator service type | `ClusterIP` |
+| `prometheusOperator.service.nodePort` | Port to expose prometheus operator service on each node | `38080` |
+| `prometheusOperator.service.annotations` | Annotations to be added to the prometheus operator service | `{}` |
 | `prometheusOperator.resources` | Resource limits for prometheus operator | `{}` |
 | `prometheusOperator.nodeSelector` | Prometheus operator node selector https://kubernetes.io/docs/user-guide/node-selection/ | `{}` |
 | `prometheusOperator.tolerations` | Tolerations for use with node taints https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/ | `[]` |
@@ -96,6 +99,9 @@ The following tables lists the configurable parameters of the prometheus-operato
 | `prometheus.serviceMonitor.selfMonitor` | Create a `serviceMonitor` to automatically monitor the prometheus instance | `true` |
 | `prometheus.serviceAccount.create` | Create a default serviceaccount for prometheus to use | `true` |
 | `prometheus.serviceAccount.name` | Name for prometheus serviceaccount | `""` |
+| `prometheus.service.type` | Prometheus service type | `ClusterIP` |
+| `prometheus.service.nodePort` | Port to expose Prometheus service on each node | `39090` |
+| `prometheus.service.annotations` | Annotations to be added to the prometheus service | `{}` |
 | `prometheus.rbac.roleNamespaces` | Create role bindings in the specified namespaces, to allow Prometheus monitoring a role binding in the release namespace will always be created. | `["kube-system"]` |
 | `prometheus.podDisruptionBudget.enabled` | If true, create a pod disruption budget for prometheus pods. The created resource cannot be modified once created - it must be deleted to perform a change | `true` |
 | `prometheus.podDisruptionBudget.minAvailable` | Minimum number / percentage of pods that should remain scheduled | `1` |
@@ -148,6 +154,9 @@ The following tables lists the configurable parameters of the prometheus-operato
 | `alertmanager.enabled` | Deploy alertmanager | `true` |
 | `alertmanager.serviceAccount.create` | Create a `serviceAccount` for alertmanager | `true` |
 | `alertmanager.serviceAccount.name` | Name for Alertmanager service account | `""` |
+| alertmanager.service.type | Alertmanager service type | ClusterIP |
+| alertmanager.service.nodePort | Port to expose alertmanager service on each node | 39093 |
+| alertmanager.service.annotations | Annotations to be added to the alertmanager service | {} |
 | `alertmanager.podDisruptionBudget.enabled` | If true, create a pod disruption budget for Alertmanager pods. The created resource cannot be modified once created - it must be deleted to perform a change | `true` |
 | `alertmanager.podDisruptionBudget.minAvailable` | Minimum number / percentage of pods that should remain scheduled | `1` |
 | `alertmanager.podDisruptionBudget.maxUnavailable` | Maximum number / percentage of pods that may be made unavailable | `""` |
