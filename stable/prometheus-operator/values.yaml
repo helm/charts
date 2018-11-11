@@ -449,6 +449,18 @@ prometheusOperator:
     create: true
     name: ""
 
+  ## Configuration for Prometheus operator service
+  ##
+  service:
+    ## Port to expose on each node
+    ## Only used if service.type is 'NodePort'
+    ##
+    nodePort: 38080
+
+    ## Service type
+    ##
+    type: ClusterIP
+
   ## Deploy CRDs used by Prometheus Operator.
   ##
   createCustomResource: true
@@ -548,6 +560,18 @@ prometheus:
   serviceAccount:
     create: true
     name: ""
+
+  ## Configuration for Prometheus service
+  ##
+  service:
+    ## Port to expose on each node
+    ## Only used if service.type is 'NodePort'
+    ##
+    nodePort: 39090
+
+    ## Service type
+    ##
+    type: ClusterIP
 
   rbac:
     ## Create role bindings in the specified namespaces, to allow Prometheus monitoring
