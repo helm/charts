@@ -73,7 +73,7 @@ spec:
         image: {{ template "postgresql.image" . }}
         imagePullPolicy: "{{ .Values.image.pullPolicy }}"
         resources:
-{{ toYaml .Values.Resources | indent 10 }}
+{{ toYaml .Values.resources | indent 10 }}
         env:
         {{- if .Values.replication.enabled }}
         - name: POSTGRESQL_REPLICATION_MODE
