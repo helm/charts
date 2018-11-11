@@ -76,6 +76,7 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `persistence.accessMode`                      | PVC Access Mode for PostgreSQL volume              | `ReadWriteOnce`                                           |
 | `persistence.size`                            | PVC Storage Request for PostgreSQL volume          | `8Gi`                                                     |
 | `persistence.annotations`                     | Annotations for the PVC                            | `{}`                                                      |
+| `resources`                                   | CPU/Memory resource requests/limits                | `nil`                                                     |
 | `nodeSelector`                                | Node labels for pod assignment                     | `{}`                                                      |
 | `tolerations`                                 | Toleration labels for pod assignment               | `[]`                                                      |
 | `terminationGracePeriodSeconds`               | Seconds the pod needs to terminate gracefully      | `nil`                                                     |
