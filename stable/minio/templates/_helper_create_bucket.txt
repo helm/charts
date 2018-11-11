@@ -5,14 +5,9 @@ set -e ; # Have script exit in the event of a failed command.
 # Use a check-sleep-check loop to wait for Minio service to be available
 connectToMinio() {
   ATTEMPTS=0 ; LIMIT=29 ; # Allow 30 attempts
-  set -e ; # fail if we can't read the keys.
   ACCESS=$(cat /config/accesskey) ; SECRET=$(cat /config/secretkey) ;
-  set +e ; # The connections to minio are allowed to fail.
   echo "Connecting to Minio server: http://$MINIO_ENDPOINT:$MINIO_PORT" ;
-  MC_COMMAND="mc config host add myminio http://$MINIO_ENDPOINT:$MINIO_PORT $ACCESS $SECRET" ;
-  $MC_COMMAND ;
-  STATUS=$? ;
-  until [ $STATUS = 0 ]
+  until mc config host add myminio http://$MINIO_ENDPOINT:$MINIO_PORT $ACCESS $SECRET ;
   do
     ATTEMPTS=`expr $ATTEMPTS + 1` ;
     echo \"Failed attempts: $ATTEMPTS\" ;
@@ -20,10 +15,7 @@ connectToMinio() {
       exit 1 ;
     fi ;
     sleep 2 ; # 1 second intervals between attempts
-    $MC_COMMAND ;
-    STATUS=$? ;
   done ;
-  set -e ; # reset `e` as active
   return 0
 }
 
@@ -47,9 +39,7 @@ createBucket() {
   if [ $PURGE = true ]; then
     if checkBucketExists $BUCKET ; then
       echo "Purging bucket '$BUCKET'."
-      set +e ; # don't exit if this fails
-      /usr/bin/mc rm -r --force myminio/$BUCKET
-      set -e ; # reset `e` as active
+      /usr/bin/mc rm -r --force myminio/$BUCKET || true
     else
       echo "Bucket '$BUCKET' does not exist, skipping purge."
     fi
