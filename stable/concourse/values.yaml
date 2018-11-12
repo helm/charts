@@ -15,6 +15,11 @@ image: concourse/concourse
 ##
 imageTag: "4.2.1"
 
+## Specific image digest to use in place of a tag.
+## ref: https://kubernetes.io/docs/concepts/configuration/overview/#container-images
+##
+# imageDigest: sha256:54ea351808b55ecc14af6590732932e2a6a0ed8f6d10f45e8be3b51165d5526a
+
 ## Specify a imagePullPolicy: 'Always' if imageTag is 'latest', else set to 'IfNotPresent'.
 ## ref: https://kubernetes.io/docs/user-guide/images/#pre-pulling-images
 ##
@@ -54,6 +59,8 @@ concourse:
     # debugBindPort: 8079
     ## Length of time for a intercepted session to be idle before terminating.
     # interceptIdleTimeout: 0m
+    ## Time limit on checking for new versions of resources.
+    # globalResourceCheckTimeout: 1h
     ## Interval on which to check for new versions of resources.
     # resourceCheckingInterval: 1m
     ## Interval on which to check for new versions of resource types.
@@ -189,8 +196,6 @@ concourse:
       retryMax: 5m
       ## The initial time between retries when logging in or reAuthing a secret.
       retryInitial: 1s
-      ## Paramter to pass when logging in via the backend. Can be specified multiple times.
-      # authParam: id=foo,secret_id=bar
     ## Don't actually do any automatic scheduling or checking.
     # noop:
     staticWorker:
@@ -835,6 +840,15 @@ worker:
   #     hostPath:
   #       path: /dev/nvme0n1
   #       type: BlockDevice
+  #
+  # As a special exception, this allows taking over the `concourse-work-dir`
+  # volume (from the default emptyDir) if `persistence.enabled` is false:
+  #
+  # additionalVolumes:
+  #   - name: concourse-work-dir
+  #     hostPath:
+  #       path: /mnt/locally-mounted-fast-disk/concourse
+  #       type: DirectoryOrCreate
 
   ## Whether the workers should be forced to run on separate nodes.
   ## This is accomplished by setting their AntiAffinity with requiredDuringSchedulingIgnoredDuringExecution as opposed to preferred
@@ -1141,6 +1155,14 @@ secrets:
   ## ref: https://www.vaultproject.io/docs/concepts/tokens.html#periodic-tokens
   ##
   # vaultClientToken:
+
+  ## vault authentication parameters
+  ## Paramter to pass when logging in via the backend
+  ## Required for "approle" authenication method
+  ## e.g. "role_id=x,secret_id=x"
+  ## ref: https://concourse-ci.org/creds.html#vault-auth-param=NAME=VALUE
+  ##
+  # vaultAuthParam:
 
   ## provide the client certificate for authenticating with the [TLS](https://www.vaultproject.io/docs/auth/cert.html) backend
   ## the value will be written to /concourse-vault/client.cert

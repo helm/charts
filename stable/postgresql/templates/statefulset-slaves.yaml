@@ -47,12 +47,31 @@ spec:
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
       {{- end }}
+      {{- if and .Values.persistence.enabled .Values.securityContext.enabled}}
+      initContainers:
+      - name: init-chmod-data
+        image: {{ template "postgresql.volumePermissions.image" . }}
+        imagePullPolicy: "{{ .Values.volumePermissions.image.pullPolicy }}"
+        command:
+          - sh
+          - -c
+          - |
+            chown -R {{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.fsGroup }} /bitnami
+            if [ -d /bitnami/postgresql/data ]; then
+              chmod  0700 /bitnami/postgresql/data;
+            fi
+        securityContext:
+          runAsUser: {{ .Values.volumePermissions.securityContext.runAsUser }}
+        volumeMounts:
+        - name: data
+          mountPath: /bitnami/postgresql
+      {{ end }}
       containers:
       - name: {{ template "postgresql.fullname" . }}
         image: {{ template "postgresql.image" . }}
         imagePullPolicy: "{{ .Values.image.pullPolicy }}"
         resources:
-{{ toYaml .Values.Resources | indent 10 }}
+{{ toYaml .Values.resources | indent 10 }}
         env:
         {{- if .Values.image.debug}}
         - name: BASH_DEBUG

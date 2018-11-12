@@ -1,4 +1,4 @@
-{{- if and .Values.prometheusOperator.enabled .Values.prometheusOperator.createCustomResource -}}
+{{- if and .Release.IsInstall .Values.prometheusOperator.enabled .Values.prometheusOperator.createCustomResource -}}
 # Source https://github.com/coreos/prometheus-operator/blob/master/contrib/kube-prometheus/manifests/0prometheus-operator-0prometheusCustomResourceDefinition.yaml
 apiVersion: apiextensions.k8s.io/v1beta1
 kind: CustomResourceDefinition
@@ -12,20 +12,10 @@ metadata:
     "helm.sh/hook": crd-install
     "helm.sh/hook-delete-policy": "before-hook-creation"
 spec:
-  additionalPrinterColumns:
-  - JSONPath: .metadata.creationTimestamp
-    description: |-
-      CreationTimestamp is a timestamp representing the server time when this object was created. It is not guaranteed to be set in happens-before order across separate operations. Clients may not set this value. It is represented in RFC3339 form and is in UTC.
-
-      Populated by the system. Read-only. Null for lists. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#metadata
-    name: Age
-    type: date
   group: monitoring.coreos.com
   names:
     kind: Prometheus
-    listKind: PrometheusList
     plural: prometheuses
-    singular: prometheus
   scope: Namespaced
   validation:
     openAPIV3Schema:
@@ -45,6 +35,21 @@ spec:
             of the Prometheus cluster. More info: https://github.com/kubernetes/community/blob/master/contributors/devel/api-conventions.md#spec-and-status'
           properties:
             additionalAlertManagerConfigs:
+              description: SecretKeySelector selects a key of a Secret.
+              properties:
+                key:
+                  description: The key of the secret to select from.  Must be a valid
+                    secret key.
+                  type: string
+                name:
+                  description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                  type: string
+                optional:
+                  description: Specify whether the Secret or it's key must be defined
+                  type: boolean
+              required:
+              - key
+            additionalAlertRelabelConfigs:
               description: SecretKeySelector selects a key of a Secret.
               properties:
                 key:
@@ -762,6 +767,13 @@ spec:
             baseImage:
               description: Base image to use for a Prometheus deployment.
               type: string
+            configMaps:
+              description: ConfigMaps is a list of ConfigMaps in the same namespace
+                as the Prometheus object, which shall be mounted into the Prometheus
+                Pods. The ConfigMaps are mounted into /etc/prometheus/configmaps/<configmap-name>.
+              items:
+                type: string
+              type: array
             containers:
               description: Containers allows injecting additional containers. This
                 is meant to allow adding an authentication proxy to a Prometheus pod.
@@ -1225,8 +1237,8 @@ spec:
                             to by services.
                           type: string
                         protocol:
-                          description: Protocol for port. Must be UDP or TCP. Defaults
-                            to "TCP".
+                          description: Protocol for port. Must be UDP, TCP, or SCTP.
+                            Defaults to "TCP".
                           type: string
                       required:
                       - containerPort
@@ -1379,6 +1391,13 @@ spec:
                           privileged containers are essentially equivalent to root
                           on the host. Defaults to false.
                         type: boolean
+                      procMount:
+                        description: procMount denotes the type of proc mount to use
+                          for the containers. The default is DefaultProcMount which
+                          uses the container runtime defaults for readonly paths and
+                          masked paths. This requires the ProcMountType feature flag
+                          to be enabled.
+                        type: string
                       readOnlyRootFilesystem:
                         description: Whether this container has a read-only root filesystem.
                           Default is false.
@@ -1501,8 +1520,8 @@ spec:
                         mountPropagation:
                           description: mountPropagation determines how mounts are
                             propagated from the host to container and the other way
-                            around. When not set, MountPropagationHostToContainer
-                            is used. This field is beta in 1.10.
+                            around. When not set, MountPropagationNone is used. This
+                            field is beta in 1.10.
                           type: string
                         name:
                           description: This must match the Name of a Volume.
@@ -1743,11 +1762,12 @@ spec:
                                 the server has more data available. The value is opaque
                                 and may be used to issue another request to the endpoint
                                 that served this list to retrieve the next set of
-                                available objects. Continuing a list may not be possible
-                                if the server configuration has changed or more than
-                                a few minutes have passed. The resourceVersion field
-                                returned when using this continue value will be identical
-                                to the value in the first response.
+                                available objects. Continuing a consistent list may
+                                not be possible if the server configuration has changed
+                                or more than a few minutes have passed. The resourceVersion
+                                field returned when using this continue value will
+                                be identical to the value in the first response, unless
+                                you have received this token from an error message.
                               type: string
                             resourceVersion:
                               description: 'String that identifies the server''s internal
@@ -2217,10 +2237,6 @@ spec:
               description: Secrets is a list of Secrets in the same namespace as the
                 Prometheus object, which shall be mounted into the Prometheus Pods.
                 The Secrets are mounted into /etc/prometheus/secrets/<secret-name>.
-                Secrets changes after initial creation of a Prometheus object are
-                not reflected in the running Pods. To change the secrets mounted into
-                the Prometheus Pods, the object must be deleted and recreated with
-                the new list of secrets.
               items:
                 type: string
               type: array
@@ -2686,12 +2702,14 @@ spec:
                                         available. The value is opaque and may be
                                         used to issue another request to the endpoint
                                         that served this list to retrieve the next
-                                        set of available objects. Continuing a list
-                                        may not be possible if the server configuration
+                                        set of available objects. Continuing a consistent
+                                        list may not be possible if the server configuration
                                         has changed or more than a few minutes have
                                         passed. The resourceVersion field returned
                                         when using this continue value will be identical
-                                        to the value in the first response.
+                                        to the value in the first response, unless
+                                        you have received this token from an error
+                                        message.
                                       type: string
                                     resourceVersion:
                                       description: 'String that identifies the server''s
@@ -2809,6 +2827,26 @@ spec:
                           items:
                             type: string
                           type: array
+                        dataSource:
+                          description: TypedLocalObjectReference contains enough information
+                            to let you locate the typed referenced object inside the
+                            same namespace.
+                          properties:
+                            apiGroup:
+                              description: APIGroup is the group for the resource
+                                being referenced. If APIGroup is not specified, the
+                                specified Kind must be in the core API group. For
+                                any other third-party types, APIGroup is required.
+                              type: string
+                            kind:
+                              description: Kind is the type of resource being referenced
+                              type: string
+                            name:
+                              description: Name is the name of resource being referenced
+                              type: string
+                          required:
+                          - kind
+                          - name
                         resources:
                           description: ResourceRequirements describes the compute
                             resource requirements.
@@ -3112,7 +3150,7 @@ spec:
               format: int32
               type: integer
             paused:
-              description: Represents whether any actions on the underlying managed
+              description: Represents whether any actions on the underlaying managed
                 objects are being performed. Only delete actions will be performed.
               type: boolean
             replicas:
