@@ -13,7 +13,7 @@ spec:
       release: "{{ .Release.Name }}"
       role: master
       app: {{ template "redis.name" . }}
-  serviceName: "redis-master"
+  serviceName: {{ template "redis.fullname" . }}-master
   template:
     metadata:
       labels:
