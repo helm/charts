@@ -176,7 +176,7 @@ backup:
   # Additional support can added.
   # Ref: https://github.com/nuvo/skbn
   destination: s3://bucket/cassandra
-  
+
   # Copy n files in parallel
   # 0 for full parallelism
   parallel: 1
