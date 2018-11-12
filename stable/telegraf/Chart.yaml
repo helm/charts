@@ -9,7 +9,4 @@ keywords:
 - timeseries
 - influxdata
 home: https://www.influxdata.com/time-series-platform/telegraf/
-maintainers:
-- name: Jack Zampolin
-  email: jack@influxdb.com
 engine: gotpl
