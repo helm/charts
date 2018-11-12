@@ -35,9 +35,9 @@ spec:
         #hostNetwork: {{ default false .Values.hostNetwork }}
         env:
         - name: GRAYLOG_HOST
-          value: {{ .Values.graylogHost }}
+          value: {{ quote .Values.graylogHost }}
         - name: GRAYLOG_PORT
-          value: {{ .Values.graylogPort }}
+          value: {{ quote .Values.graylogPort }}
 {{- range $env := .Values.extraVars }}
         - {{ $env  }}
 {{- end }}

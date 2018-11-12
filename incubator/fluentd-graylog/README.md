@@ -22,10 +22,9 @@ This chart bootstraps a [Fluentd](https://www.fluentd.org/) [Graylog](https://ww
 To install the chart with the release name `my-release`:
 
 ```console
-$ # use ec2 instance role credential
 $ helm install --name my-release incubator/fluentd-graylog
 $ # or add graylog host and port in the command line
-$ helm install --name my-release incubator/fluentd-graylog --set graylogHost=a<graylog host ip/domain> --set graylogPort=<graylog port>
+$ helm install --name my-release incubator/fluentd-graylog --set graylogHost=<graylog host ip/domain> --set graylogPort=<graylog port>
 ```
 
 The command deploys Fluentd Graylog on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
