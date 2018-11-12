@@ -9,3 +9,4 @@ maintainers:
     email: plummer574@gmail.com
 sources:
   - https://github.com/weaveworks/kured
+icon: https://raw.githubusercontent.com/weaveworks/kured/master/img/logo.png
