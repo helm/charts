@@ -1,0 +1,74 @@
+{{- if .Values.cronjob.enabled -}}
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  annotations:
+{{- with .Values.cronjob.annotations }}
+{{ toYaml . | indent 4 }}
+{{- end }}
+  name: {{ include "prometheus-postgresql-adapter.fullname" . | quote }}
+  labels:
+{{ include "prometheus-postgresql-adapter.labels.standard" . | indent 4 }}
+spec:
+  schedule: {{ .Values.cronjob.schedule | quote }}
+  failedJobsHistoryLimit: {{ .Values.cronjob.failedJobsHistoryLimit }}
+  successfulJobsHistoryLimit: {{ .Values.cronjob.successfulJobsHistoryLimit }}
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/instance: {{ .Release.Name | quote }}
+            app.kubernetes.io/name: {{ include "prometheus-postgresql-adapter.name" . | quote }}
+        spec:
+          {{- if .Values.cronjob.image.pullSecrets }}
+          imagePullSecrets:
+            {{- range .Values.cronjob.image.pullSecrets }}
+            - name: {{ . }}
+            {{- end }}
+          {{- end }}
+          containers:
+          - name: {{ .Chart.Name }}-data-retention
+            image: "{{ .Values.cronjob.image.repository }}:{{ .Values.cronjob.image.tag }}"
+            imagePullPolicy: {{ .Values.cronjob.image.pullPolicy | quote }}
+            command: ["psql"]
+            args:
+            - -c
+            - {{ .Values.cronjob.cleanQuery | quote }}
+            env:
+            - name: PGHOST
+              value: {{ required "A valid PostgreSQL endpoint .Values.adapter.pgHost is required!" .Values.adapter.pgHost | quote }}
+            - name: PGPASSWORD
+              value: {{ required "A valid PostgreSQL password .Values.adapter.pgPassword is required!" .Values.adapter.pgPassword | quote }}
+            - name: PGUSER
+              value: {{ required "A valid PostgreSQL user .Values.adapter.pgUser is required!" .Values.adapter.pgUser | quote }}
+            {{- if .Values.adapter.pgDatabase }}
+            - name: PGDATABASE
+              value: {{ .Values.adapter.pgDatabase | quote }}
+            {{- end }}
+            {{- if .Values.adapter.pgPort }}
+            - name: PGPORT
+              value: {{ .Values.adapter.pgPort | quote }}
+            {{- end }}
+            {{- if .Values.cronjob.extraEnv }}
+              {{- range $key, $value := .Values.cronjob.extraEnv }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+              {{- end }}
+            {{- end }}
+            resources:
+{{ toYaml .Values.cronjob.resources | indent 14 }}
+          restartPolicy: {{ .Values.cronjob.restartPolicy | quote }}
+    {{- with .Values.cronjob.nodeSelector }}
+          nodeSelector:
+{{ toYaml . | indent 12 }}
+    {{- end }}
+    {{- with .Values.cronjob.affinity }}
+          affinity:
+{{ toYaml . | indent 12 }}
+    {{- end }}
+    {{- with .Values.cronjob.tolerations }}
+          tolerations:
+{{ toYaml . | indent 12 }}
+    {{- end }}
+{{- end -}}

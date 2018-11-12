@@ -4,7 +4,8 @@ templates:
 tests:
   - it: should render sane deployment defaults if 'pgHost' is set
     set:
-      pgHost: postgres
+      adapter:
+        pgHost: postgres
     asserts:
       - isKind:
           of: Deployment
@@ -20,11 +21,12 @@ tests:
 
   - it: should set pull secrets if they are defined
     set:
-      pgHost: postgres
-      image:
-        pullSecrets:
-          - somepullsecret
-          - somepullsecret2
+      adapter:
+        pgHost: postgres
+        image:
+          pullSecrets:
+            - somepullsecret
+            - somepullsecret2
     asserts:
       - isKind:
           of: Deployment
@@ -37,30 +39,32 @@ tests:
 
   - it: should set extraArgs if they are defined
     set:
-      pgHost: postgres
-      extraArgs:
-        key1: value1
-        key2: value2
-        key3: ""
+      adapter:
+        pgHost: postgres
+        extraArgs:
+          key1: value1
+          key2: value2
+          key3: ""
     asserts:
       - isKind:
           of: Deployment
       - equal:
-          path: spec.template.spec.containers[0].args[3]
+          path: spec.template.spec.containers[0].args[7]
           value: "-key1=value1"
       - equal:
-          path: spec.template.spec.containers[0].args[4]
+          path: spec.template.spec.containers[0].args[8]
           value: "-key2=value2"
       - equal:
-          path: spec.template.spec.containers[0].args[5]
+          path: spec.template.spec.containers[0].args[9]
           value: "-key3"
 
   - it: should set extraEnv if they are defined
     set:
-      pgHost: postgres
-      extraEnv:
-        KEY1: VALUE1
-        KEY2: VALUE2
+      adapter:
+        pgHost: postgres
+        extraEnv:
+          KEY1: VALUE1
+          KEY2: VALUE2
     asserts:
       - isKind:
           of: Deployment
@@ -79,11 +83,12 @@ tests:
 
   - it: should disable livenessProbe and readinessProbe if disabled
     set:
-      pgHost: postgres
-      livenessProbe:
-        enabled: false
-      readinessProbe:
-        enabled: false
+      adapter:
+        pgHost: postgres
+        livenessProbe:
+          enabled: false
+        readinessProbe:
+          enabled: false
     asserts:
       - isNull:
           path: spec.template.spec.containers[0].livenessProbe

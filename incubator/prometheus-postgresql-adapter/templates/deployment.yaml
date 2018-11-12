@@ -2,14 +2,14 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   annotations:
-{{- with .Values.deploymentAnnotations }}
+{{- with .Values.adapter.deploymentAnnotations }}
 {{ toYaml . | indent 4 }}
 {{- end }}
   name: {{ include "prometheus-postgresql-adapter.fullname" . | quote }}
   labels:
 {{ include "prometheus-postgresql-adapter.labels.standard" . | indent 4 }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ .Values.adapter.replicaCount }}
   selector:
     matchLabels:
       app.kubernetes.io/instance: {{ .Release.Name | quote }}
@@ -17,13 +17,13 @@ spec:
   template:
     metadata:
       annotations:
-        {{- if .Values.prometheus.exporter.enabled }}
-        prometheus.io/path: {{ .Values.webTelemetryPath | quote }}
-        prometheus.io/port: {{ .Values.webListenAddress | quote }}
-        prometheus.io/probe: {{ .Values.prometheus.exporter.probe | quote }}
-        prometheus.io/scrape: {{ .Values.prometheus.exporter.scrape | quote }}
+        {{- if .Values.adapter.prometheus.exporter.enabled }}
+        prometheus.io/path: {{ .Values.adapter.webTelemetryPath | quote }}
+        prometheus.io/port: {{ .Values.adapter.webListenAddress | quote }}
+        prometheus.io/probe: {{ .Values.adapter.prometheus.exporter.probe | quote }}
+        prometheus.io/scrape: {{ .Values.adapter.prometheus.exporter.scrape | quote }}
         {{- end }}
-        {{- with .Values.podAnnotations }}
+        {{- with .Values.adapter.podAnnotations }}
 {{ toYaml . | indent 8 }}
         {{- end }}
       labels:
@@ -31,42 +31,44 @@ spec:
         app.kubernetes.io/name: {{ include "prometheus-postgresql-adapter.name" . | quote }}
         helm.sh/chart: {{ include "prometheus-postgresql-adapter.chart" . | quote }}
     spec:
-      {{- if .Values.image.pullSecrets }}
+      {{- if .Values.adapter.image.pullSecrets }}
       imagePullSecrets:
-        {{- range .Values.image.pullSecrets }}
+        {{- range .Values.adapter.image.pullSecrets }}
         - name: {{ . }}
         {{- end }}
       {{- end }}
       containers:
         - name: "{{ .Chart.Name }}"
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+          image: "{{ .Values.adapter.image.repository }}:{{ .Values.adapter.image.tag }}"
+          imagePullPolicy: {{ .Values.adapter.image.pullPolicy | quote }}
           command: ["/prometheus-postgresql-adapter"]
           args:
-          - -log.level={{ .Values.logLevel }}
-          {{- if .Values.pgDatabase }}
-          - -pg.database={{ .Values.pgDatabase }}
+          - -log.level={{ .Values.adapter.logLevel }}
+          - -web.listen-address=:{{ .Values.adapter.webListenAddress }}
+          - -web.telemetry-path={{ .Values.adapter.webTelemetryPath }}
+          {{- if .Values.adapter.pgDatabase }}
+          - -pg.database={{ .Values.adapter.pgDatabase }}
           {{- end }}
-          - -pg.host={{ required "A valid PostgreSQL endpoint .Values.pgHost is required!" .Values.pgHost }}
-          {{- if .Values.pgPassword }}
-          - -pg.password={{ .Values.pgPassword }}
+          {{- if .Values.adapter.pgHost }}
+          - -pg.host={{ .Values.adapter.pgHost }}
           {{- end }}
-          {{- if .Values.pgPort }}
-          - -pg.port={{ .Values.pgPort }}
+          {{- if .Values.adapter.pgPassword }}
+          - -pg.password={{ .Values.adapter.pgPassword }}
           {{- end }}
-          {{- if .Values.pgSchema }}
-          - -pg.schema={{ .Values.pgSchema }}
+          {{- if .Values.adapter.pgPort }}
+          - -pg.port={{ .Values.adapter.pgPort }}
           {{- end }}
-          {{- if .Values.pgTablePrefix }}
-          - -pg.table={{ .Values.pgTablePrefix }}
+          {{- if .Values.adapter.pgSchema }}
+          - -pg.schema={{ .Values.adapter.pgSchema }}
           {{- end }}
-          {{- if .Values.pgUser }}
-          - -pg.user={{ .Values.pgUser }}
+          {{- if .Values.adapter.pgTablePrefix }}
+          - -pg.table={{ .Values.adapter.pgTablePrefix }}
           {{- end }}
-          - -web.listen-address=:{{ .Values.webListenAddress }}
-          - -web.telemetry-path={{ .Values.webTelemetryPath }}
-          {{- if .Values.extraArgs }}
-            {{- range $key, $value := .Values.extraArgs }}
+          {{- if .Values.adapter.pgUser }}
+          - -pg.user={{ .Values.adapter.pgUser }}
+          {{- end }}
+          {{- if .Values.adapter.extraArgs }}
+            {{- range $key, $value := .Values.adapter.extraArgs }}
               {{- if $value }}
           - -{{ $key }}={{ $value }}
               {{- else }}
@@ -74,48 +76,48 @@ spec:
               {{- end }}
             {{- end }}
           {{- end }}
-          {{- if .Values.extraEnv }}
+          {{- if .Values.adapter.extraEnv }}
           env:
-            {{- range $key, $value := .Values.extraEnv }}
+            {{- range $key, $value := .Values.adapter.extraEnv }}
           - name: {{ $key }}
             value: {{ $value | quote }}
             {{- end }}
           {{- end }}
           ports:
             - name: http
-              containerPort: {{ .Values.webListenAddress }}
+              containerPort: {{ .Values.adapter.webListenAddress }}
               protocol: TCP
-          {{- if .Values.livenessProbe.enabled }}
+          {{- if .Values.adapter.livenessProbe.enabled }}
           livenessProbe:
             tcpSocket:
-              port: {{ .Values.webListenAddress }}
-            failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
-            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
-            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
-            successThreshold: {{ .Values.livenessProbe.successThreshold }}
-            timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+              port: {{ .Values.adapter.webListenAddress }}
+            failureThreshold: {{ .Values.adapter.livenessProbe.failureThreshold }}
+            initialDelaySeconds: {{ .Values.adapter.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.adapter.livenessProbe.periodSeconds }}
+            successThreshold: {{ .Values.adapter.livenessProbe.successThreshold }}
+            timeoutSeconds: {{ .Values.adapter.livenessProbe.timeoutSeconds }}
           {{- end }}
-          {{- if .Values.readinessProbe.enabled }}
+          {{- if .Values.adapter.readinessProbe.enabled }}
           readinessProbe:
             tcpSocket:
-              port: {{ .Values.webListenAddress }}
-            failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
-            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
-            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
-            successThreshold: {{ .Values.readinessProbe.successThreshold }}
-            timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+              port: {{ .Values.adapter.webListenAddress }}
+            failureThreshold: {{ .Values.adapter.readinessProbe.failureThreshold }}
+            initialDelaySeconds: {{ .Values.adapter.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.adapter.readinessProbe.periodSeconds }}
+            successThreshold: {{ .Values.adapter.readinessProbe.successThreshold }}
+            timeoutSeconds: {{ .Values.adapter.readinessProbe.timeoutSeconds }}
           {{- end }}
           resources:
-{{ toYaml .Values.resources | indent 12 }}
-    {{- with .Values.nodeSelector }}
+{{ toYaml .Values.adapter.resources | indent 12 }}
+    {{- with .Values.adapter.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
     {{- end }}
-    {{- with .Values.affinity }}
+    {{- with .Values.adapter.affinity }}
       affinity:
 {{ toYaml . | indent 8 }}
     {{- end }}
-    {{- with .Values.tolerations }}
+    {{- with .Values.adapter.tolerations }}
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}

@@ -1,0 +1,41 @@
+suite: test servicemonitor
+templates:
+  - servicemonitor.yaml
+tests:
+  - it: should be of type "ServiceMonitor" if enabled
+    set:
+      adapter:
+        prometheus:
+          operator:
+            enabled: true
+    asserts:
+      - isKind:
+          of: ServiceMonitor
+
+  - it: should change the namespace other than the default namespace for that deployment
+    set:
+      adapter:
+        prometheus:
+          operator:
+            enabled: true
+            namespace: blah
+    asserts:
+      - isKind:
+          of: ServiceMonitor
+      - equal:
+          path: spec.namespaceSelector.matchNames[0]
+          value: blah
+
+  - it: should change the webTelemetryPath if set
+    set:
+      adapter:
+        prometheus:
+          operator:
+            enabled: true
+        webTelemetryPath: /blah
+    asserts:
+      - isKind:
+          of: ServiceMonitor
+      - equal:
+          path: spec.endpoints[0].path
+          value: /blah

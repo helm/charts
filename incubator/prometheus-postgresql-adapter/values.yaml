@@ -2,98 +2,151 @@
 ## ref: https://hub.docker.com/r/timescale/prometheus-postgresql-adapter/tags/
 ##
 
-#######################
-# Kubernetes settings #
-#######################
+####################
+# Adapter settings #
+####################
 
-# Pod affinity definitions
-affinity: {}
+adapter:
+  # Default application values
+  logLevel: debug
+  pgDatabase: postgres
+  pgHost: localhost
+  pgPort: 5432
+  pgUser: postgres
+  webListenAddress: 9201
+  webTelemetryPath: /metrics
 
-# Deployment annotations
-deploymentAnnotations: {}
+  # Pod affinity definitions
+  affinity: {}
 
-# Extra key / value pairs for starting the application
-extraArgs: {}
+  # Deployment annotations
+  deploymentAnnotations: {}
 
-# Extra environment variables that should be present in the pod
-extraEnv: {}
+  # Extra key / value pairs
+  extraArgs: {}
 
-# Docker image information
-image:
-  repository: timescale/prometheus-postgresql-adapter
-  tag: 0.4.1
-  pullPolicy: IfNotPresent
+  # Extra environment variables
+  extraEnv: {}
 
-# Liveness probe settings
-livenessProbe:
-  enabled: true
-  failureThreshold: 3
-  initialDelaySeconds: 15
-  periodSeconds: 20
-  successThreshold: 1
-  timeoutSeconds: 2
+  # Docker image information
+  image:
+    repository: timescale/prometheus-postgresql-adapter
+    tag: 0.4.1
+    pullPolicy: IfNotPresent
 
-# Prometheus configuration
-prometheus:
-  # Enable standard Prometheus scrape annotations
-  exporter:
+  # Liveness probe settings
+  livenessProbe:
     enabled: true
-    probe: true
-    scrape: true
-  operator:
-    enabled: false
-    honorLabels: true
-    interval: "20s"
-    labels: {}
-    # namespace: ""
+    failureThreshold: 3
+    initialDelaySeconds: 15
+    periodSeconds: 20
+    successThreshold: 1
+    timeoutSeconds: 2
 
-# Node selector definitons
-nodeSelector: {}
+  # Node selector definitons
+  nodeSelector: {}
 
-# Deployment annotations
-podAnnotations: {}
+  # Deployment annotations
+  podAnnotations: {}
 
-# Readiness probe settings
-readinessProbe:
-  enabled: true
-  failureThreshold: 3
-  initialDelaySeconds: 5
-  periodSeconds: 10
-  successThreshold: 1
-  timeoutSeconds: 2
+  # Prometheus configuration
+  prometheus:
+    # Enable standard Prometheus scrape annotations
+    exporter:
+      enabled: true
+      probe: true
+      scrape: true
+    operator:
+      enabled: false
+      honorLabels: true
+      interval: "20s"
+      labels: {}
+      # namespace: ""
 
-# Number of pods
-replicaCount: 1
+  # Readiness probe settings
+  readinessProbe:
+    enabled: true
+    failureThreshold: 3
+    initialDelaySeconds: 5
+    periodSeconds: 10
+    successThreshold: 1
+    timeoutSeconds: 2
 
-# Default resource allocations
-resources:
-  limits:
-    cpu: 250m
-    memory: 256Mi
-  requests:
-    cpu: 100m
-    memory: 128Mi
+  # Number of pods
+  replicaCount: 1
 
-# Service settings
-service:
+  # Default resource allocations
+  resources:
+    limits:
+      cpu: 250m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+  # Service settings
+  service:
+    annotations: {}
+    clusterIP: ""
+    externalIPs: []
+    externalTrafficPolicy: Cluster
+    loadBalancerIP: ""
+    loadBalancerSourceRanges: []
+    nodePort: ""
+    type: ClusterIP
+
+  # Node tolerations
+  tolerations: []
+
+####################
+# CronJob settings #
+####################
+
+cronjob:
+  # Pod affinity definitions
+  affinity: {}
+
+  # Cronjob annotations
   annotations: {}
-  clusterIP: ""
-  externalIPs: []
-  externalTrafficPolicy: Cluster
-  loadBalancerIP: ""
-  loadBalancerSourceRanges: []
-  nodePort: ""
-  type: ClusterIP
 
-# Node tolerations
-tolerations: []
+  # Query to run for data retention
+  cleanQuery: "SELECT drop_chunks(interval '24 hours');"
 
-########################
-# Application settings #
-########################
+  # Enable / disable data retention cleanup functionality
+  enabled: false
 
-# Default application values
-logLevel: info
-pgHost: postgres
-webListenAddress: 9201
-webTelemetryPath: /metrics
+  # Extra environment variables
+  extraEnv: {}
+
+  # Limit of failed jobs to keep in history
+  failedJobsHistoryLimit: 5
+
+  # Docker image information
+  image:
+    pullPolicy: IfNotPresent
+    repository: postgres
+    tag: alpine
+
+  # Node selector definitons
+  nodeSelector: {}
+
+  # Default resource allocations
+  resources:
+    limits:
+      cpu: 250m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+  # Cron job restart policy
+  restartPolicy: OnFailure
+
+  # Cron job schedule
+  schedule: "*/5 * * * *"
+
+  # Limit of successful jobs to keep in history
+  successfulJobsHistoryLimit: 5
+
+  # Node tolerations
+  tolerations: []

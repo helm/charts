@@ -1,34 +1,34 @@
 1. Get the adapter endpoint by running these commands:
-{{- if contains "NodePort" .Values.service.type }}
+{{- if contains "NodePort" .Values.adapter.service.type }}
   export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "prometheus-postgresql-adapter.fullname" . }})
   export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
   echo http://$NODE_IP:$NODE_PORT
-{{- else if contains "LoadBalancer" .Values.service.type }}
+{{- else if contains "LoadBalancer" .Values.adapter.service.type }}
      NOTE: It may take a few minutes for the LoadBalancer IP to be available.
            You can watch the status of by running 'kubectl get svc -w {{ include "prometheus-postgresql-adapter.fullname" . }}'
     export SERVICE_ADDRESS=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "prometheus-postgresql-adapter.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
-  echo http://$SERVICE_ADDRESS:{{ .Values.service.port }}
-{{- else if contains "ClusterIP" .Values.service.type }}
+  echo http://$SERVICE_ADDRESS:{{ .Values.adapter.service.port }}
+{{- else if contains "ClusterIP" .Values.adapter.service.type }}
   export CLUSTER_ADDRESS="{{ include "prometheus-postgresql-adapter.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local"
-  echo http://$CLUSTER_ADDRESS:{{ .Values.webListenAddress }}
+  echo http://$CLUSTER_ADDRESS:{{ .Values.adapter.webListenAddress }}
 {{- end }}
 
 2. Add the following configuration to your Prometheus installation:
 global:
 [...]
-{{- if contains "NodePort" .Values.service.type }}
+{{- if contains "NodePort" .Values.adapter.service.type }}
   remote_write:
    - url: "http://$NODE_IP:$NODE_PORT/write"
   remote_read:
    - url: "http://$NODE_IP:$NODE_PORT/read"
-{{- else if contains "LoadBalancer" .Values.service.type }}
+{{- else if contains "LoadBalancer" .Values.adapter.service.type }}
   remote_write:
-   - url: "http://$SERVICE_ADDRESS:{{ .Values.service.port }}/write"
+   - url: "http://$SERVICE_ADDRESS:{{ .Values.adapter.service.port }}/write"
   remote_read:
-   - url: "http://$SERVICE_ADDRESS:{{ .Values.service.port }}/read"
-{{- else if contains "ClusterIP" .Values.service.type }}
+   - url: "http://$SERVICE_ADDRESS:{{ .Values.adapter.service.port }}/read"
+{{- else if contains "ClusterIP" .Values.adapter.service.type }}
   remote_write:
-   - url: "http://$CLUSTER_ADDRESS:{{ .Values.webListenAddress }}/write"
+   - url: "http://$CLUSTER_ADDRESS:{{ .Values.adapter.webListenAddress }}/write"
   remote_read:
-   - url: "http://$CLUSTER_ADDRESS:{{ .Values.webListenAddress }}/read"
+   - url: "http://$CLUSTER_ADDRESS:{{ .Values.adapter.webListenAddress }}/read"
 {{- end }}

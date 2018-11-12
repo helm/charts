@@ -4,7 +4,8 @@ templates:
 tests:
   - it: should be type 'ClusterIP' if nothing else is set
     set:
-      pgHost: postgres
+      adapter:
+        pgHost: postgres
     asserts:
       - isKind:
           of: Service
@@ -14,7 +15,8 @@ tests:
 
   - it: should be type 'ClusterIP' if nothing else is set
     set:
-      pgHost: postgres
+      adapter:
+        pgHost: postgres
     asserts:
       - isKind:
           of: Service
@@ -24,24 +26,21 @@ tests:
 
   - it: should correctly change service.port and webListenAddress
     set:
-      pgHost: postgres
-      service:
-        port: 12345
-      webListenAddress: 54321
+      adapter:
+        pgHost: postgres
+        webListenAddress: 54321
     asserts:
       - equal:
           path: spec.ports[0].port
-          value: 12345
-      - equal:
-          path: spec.ports[0].targetPort
           value: 54321
 
   - it: should correctly set NodePort settings
     set:
-      pgHost: postgres
-      service:
-        type: NodePort
-        nodePort: 6174
+      adapter:
+        pgHost: postgres
+        service:
+          type: NodePort
+          nodePort: 6174
     asserts:
       - equal:
           path: spec.type
@@ -55,14 +54,15 @@ tests:
 
   - it: should correctly set LoadBalancer settings
     set:
-      pgHost: postgres
-      service:
-        externalIPs:
-          - 80.11.12.10
-        loadBalancerIP: 78.11.24.19
-        loadBalancerSourceRanges:
-          - 143.231.0.0/16
-        type: LoadBalancer
+      adapter:
+        pgHost: postgres
+        service:
+          externalIPs:
+            - 80.11.12.10
+          loadBalancerIP: 78.11.24.19
+          loadBalancerSourceRanges:
+            - 143.231.0.0/16
+          type: LoadBalancer
     asserts:
       - equal:
           path: spec.type

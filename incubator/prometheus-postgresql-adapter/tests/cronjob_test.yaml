@@ -1,0 +1,64 @@
+suite: test cronjob
+templates:
+  - cronjob.yaml
+tests:
+  - it: should be of type "CronJob" if enabled
+    set:
+      adapter:
+        pgPassword: password
+      cronjob:
+        enabled: true
+    asserts:
+      - isKind:
+          of: CronJob
+
+  - it: should set pull secrets if they are defined
+    set:
+    set:
+      adapter:
+        pgPassword: password
+      cronjob:
+        enabled: true
+        image:
+          pullSecrets:
+            - somepullsecret
+            - somepullsecret2
+    asserts:
+      - isKind:
+          of: CronJob
+      - equal:
+          path: spec.jobTemplate.spec.template.spec.imagePullSecrets[0].name
+          value: somepullsecret
+      - equal:
+          path: spec.jobTemplate.spec.template.spec.imagePullSecrets[1].name
+          value: somepullsecret2
+
+  - it: should honor a new cron schedule, if set
+    set:
+    set:
+      adapter:
+        pgPassword: password
+      cronjob:
+        enabled: true
+        schedule: "*/10 * * * *"
+    asserts:
+      - isKind:
+          of: CronJob
+      - equal:
+          path: spec.schedule
+          value: "*/10 * * * *"
+
+  - it: should honor a new clean query, if set
+    set:
+    set:
+      adapter:
+        pgPassword: password
+      cronjob:
+        cleanQuery: "SELECT 1"
+        enabled: true
+    asserts:
+      - isKind:
+          of: CronJob
+      - equal:
+          path: spec.jobTemplate.spec.template.spec.containers[0].args[1]
+          value: "SELECT 1"
