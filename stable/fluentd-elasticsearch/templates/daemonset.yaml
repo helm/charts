@@ -89,7 +89,7 @@ spec:
           periodSeconds: 60
           exec:
             command:
-            - '/bin/sh'
+            - '/bin/bash'
             - '-c'
             - >
               LIVENESS_THRESHOLD_SECONDS=${LIVENESS_THRESHOLD_SECONDS:-300};
