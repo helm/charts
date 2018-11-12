@@ -35,6 +35,7 @@ The following quickstart let's you set up Ingress Monitor Controller to register
 | config.labels          | Labels for configmap                                                      | `{}`                        | `{}`
 | config.annotations          | Annotations for configmap                                                      | `fabric8.io/target-platform: kubernetes`                        | `fabric8.io/target-platform: kubernetes`
 | rbac.create          | Option to create rbac resources                                                      | `true`                        | `true`
+| rbac.labels          | Labels for rbac                                                      | `{}`                        | `{}`
 | serviceAccount.create          | Option to create service account                                                      | `true`                        | `true`
 | serviceAccount.labels          | Labels for serviceAccount                                                      | `{}`                        | `{}`
 | serviceAccount.name          | Name of serviceAccount                                                      | `ingressmonitorcontroller`                        | `ingressmonitorcontroller`

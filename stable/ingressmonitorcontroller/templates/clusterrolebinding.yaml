@@ -7,6 +7,17 @@ metadata:
 {{- else }}
   name: {{ template "name" . }}-role-binding
 {{- end }}
+  labels:
+    app: {{ template "name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+{{- if .Values.ingressMonitorController.rbac.labels }}
+{{ toYaml .Values.ingressMonitorController.rbac.labels | indent 4 }}
+{{- end }}
+{{- if .Values.ingressMonitorController.matchLabels }}
+{{ toYaml .Values.ingressMonitorController.matchLabels | indent 4 }}
+{{- end }}
 roleRef:
   kind: ClusterRole
 {{- if .Values.ingressMonitorController.useFullName }}
