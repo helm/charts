@@ -8,6 +8,7 @@
     {{- $externalListenerPort := add $root.Values.external.firstListenerPort $i }}
     {{- $responsiblePod := printf "%s-%d" (printf "%s" $fullName) $i }}
     {{- $distinctPrefix := printf "%s-%d" $dnsPrefix $i }}
+    {{- $loadBalancerIP := index $root.Values.external.loadBalancerIP $i }}
 ---
 apiVersion: v1
 kind: Service
@@ -40,6 +41,9 @@ metadata:
     pod: {{ $responsiblePod | quote }}
 spec:
   type: {{ $root.Values.external.type }}
+  {{- if eq $root.Values.external.type "LoadBalancer" }}
+  loadBalancerIP: {{ $loadBalancerIP }}
+  {{- end }}
   ports:
     - name: external-broker
       {{- if and (eq $root.Values.external.type "LoadBalancer") (not $root.Values.external.distinct) }}
