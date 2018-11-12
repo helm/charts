@@ -19,6 +19,11 @@ spec:
       - name: {{ template "fullname" . }}
         image: "{{ .Values.image.repo }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ default "" .Values.image.pullPolicy | quote }}
+        ports:
+        {{- range .Values.single.service.ports }}
+        - containerPort: {{ .containerPort }}
+          protocol: {{ if eq "" .protocol }}"TCP"{{else }}{{ .protocol }}{{ end }}
+        {{- end }}
         resources:
 {{ toYaml .Values.single.resources | indent 10 }}
         volumeMounts:

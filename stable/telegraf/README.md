@@ -80,7 +80,7 @@ This chart deploys the following by default:
   * [`prometheus`](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/prometheus)
   * [`influxdb`](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/influxdb)
   * [`statsd`](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/statsd)
-
+  > * `statsd` by default gets exposed at 8125/TCP, to configure it's port/protocol to custom values, can set required values at `single.service.ports[0].containerPort`, `single.service.ports[0].protocol`  and `single.config.inputs.statsd.protocol`
   
 ### Supported Outputs
 

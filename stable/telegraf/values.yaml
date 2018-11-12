@@ -148,6 +148,9 @@ single:
   service:
     enabled: true
     type: ClusterIP
+    ports:
+      - containerPort: 8125
+        protocol: TCP
   ## Exposed telegraf configuration
   ## For full list of possible values see `/docs/all-config-values.yaml` and `/docs/all-config-values.toml`
   ## ref: https://docs.influxdata.com/telegraf/v1.1/administration/configuration/
@@ -481,6 +484,7 @@ single:
 ##        max_body_size: 0
 ##        max_line_size: 0
       statsd:
+        protocol: TCP
         service_address: ":8125"
         percentiles:
           - 50

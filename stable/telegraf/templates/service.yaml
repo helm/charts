@@ -19,6 +19,7 @@ spec:
   - port: {{ trimPrefix ":" $value.service_address | int64 }}
     targetPort: {{ trimPrefix ":" $value.service_address | int64 }}
     name: "statsd"
+    protocol: {{ if eq "" $value.protocol }}"TCP"{{else }}{{ $value.protocol | upper }}{{ end }}
     {{- end }}
     {{- if eq $key "tcp-listener" }}
   - port: {{ trimPrefix ":" $value.service_address | int64 }}
