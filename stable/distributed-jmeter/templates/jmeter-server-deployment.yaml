@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-server
+  name: {{ template "distributed-jmeter.fullname" . }}-server
   labels:
     app.kubernetes.io/name: {{ include "distributed-jmeter.name" . }}
     helm.sh/chart: {{ include "distributed-jmeter.chart" . }}

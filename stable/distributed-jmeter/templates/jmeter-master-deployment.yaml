@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-master
+  name: {{ template "distributed-jmeter.fullname" . }}-master
   labels:
     app.kubernetes.io/name: {{ include "distributed-jmeter.name" . }}
     helm.sh/chart: {{ include "distributed-jmeter.chart" . }}
@@ -27,6 +27,7 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          args: ["master"]
+          args:
+            - master
           ports:
             - containerPort: 60000
