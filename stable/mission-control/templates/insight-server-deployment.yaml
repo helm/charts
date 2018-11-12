@@ -22,6 +22,7 @@ spec:
         component: {{ .Values.insightServer.name }}
         release: {{ .Release.Name }}
     spec:
+      serviceAccountName: {{ template "mission-control.serviceAccountName" . }}
     {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
       - name: {{ .Values.imagePullSecrets }}
@@ -40,7 +41,7 @@ spec:
           sleep 10
       containers:
       - name: {{ .Values.insightServer.name }}
-        image: {{ .Values.insightServer.image }}:{{ .Values.insightServer.version }}
+        image: {{ .Values.insightServer.image }}:{{ default .Chart.AppVersion .Values.insightServer.version }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         env:
         - name: CORE_URL
@@ -107,6 +108,12 @@ spec:
           mountPath: /var/cloudbox/core/_MASTER_/data/contexts/security/jfmc.crt
           subPath: jfmc.crt
         livenessProbe:
+          httpGet:
+            path: /api/status
+            port: 8082
+          initialDelaySeconds: 300
+          periodSeconds: 10
+        readinessProbe:
           httpGet:
             path: /api/status
             port: 8082

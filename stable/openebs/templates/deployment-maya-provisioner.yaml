@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "openebs.fullname" . }}-provisioner
@@ -10,6 +10,10 @@ metadata:
     component: provisioner
 spec:
   replicas: {{ .Values.provisioner.replicas }}
+  selector:
+    matchLabels:
+      app: {{ template "openebs.name" . }}
+      release: {{ .Release.Name }}
   template:
     metadata:
       labels:
@@ -17,7 +21,7 @@ spec:
         release: {{ .Release.Name }}
         component: provisioner
     spec:
-      serviceAccountName: {{ template "openebs.serviceAccountName". }}
+      serviceAccountName: {{ template "openebs.serviceAccountName" . }}
       containers:
       - name: {{ template "openebs.name" . }}-provisioner
         image: "{{ .Values.provisioner.image }}:{{ .Values.provisioner.imageTag }}"
@@ -64,6 +68,6 @@ spec:
 {{ toYaml .Values.provisioner.tolerations | indent 8 }}
 {{- end }}
 {{- if .Values.provisioner.affinity }}
-      tolerations:
+      affinity:
 {{ toYaml .Values.provisioner.affinity | indent 8 }}
 {{- end }}

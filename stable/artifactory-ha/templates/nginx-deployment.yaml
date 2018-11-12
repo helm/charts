@@ -25,6 +25,7 @@ spec:
         component: {{ .Values.nginx.name }}
         release: {{ .Release.Name }}
     spec:
+      serviceAccountName: {{ template "artifactory-ha.serviceAccountName" . }}
     {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
       - name: {{ .Values.imagePullSecrets }}
@@ -53,7 +54,7 @@ spec:
           done;
       containers:
       - name: {{ .Values.nginx.name }}
-        image: '{{ .Values.nginx.image.repository }}:{{ .Values.nginx.image.version }}'
+        image: '{{ .Values.nginx.image.repository }}:{{ default .Chart.AppVersion .Values.nginx.image.version }}'
         imagePullPolicy: {{ .Values.nginx.image.pullPolicy }}
         lifecycle:
           postStart:
@@ -62,6 +63,9 @@ spec:
               - '/bin/sh'
               - '-c'
               - >
+                {{- if .Values.nginx.customConfigMap }}
+                cp -Lrf /tmp/nginx.conf /etc/nginx/nginx.conf;
+                {{- end }}
                 if [ -f /tmp/replicator-nginx.conf ]; then
                 cp -fv /tmp/replicator-nginx.conf /etc/nginx/conf.d/replicator-nginx.conf;
                 fi;
@@ -108,6 +112,10 @@ spec:
         - name: ssl-secret-volume
           mountPath: "/tmp/ssl"
         {{- end }}
+        {{- if .Values.nginx.customConfigMap }}
+        - name: nginx-config
+          mountPath: "/tmp/"
+        {{- end }}
         resources:
 {{ toYaml .Values.nginx.resources | indent 10 }}
         {{- if .Values.nginx.readinessProbe.enabled }}
@@ -132,12 +140,29 @@ spec:
           failureThreshold: {{ .Values.nginx.livenessProbe.failureThreshold }}
           successThreshold: {{ .Values.nginx.livenessProbe.successThreshold }}
         {{- end }}
+    {{- with .Values.nginx.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.nginx.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.nginx.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
       volumes:
       {{- if .Values.artifactory.replicator.enabled }}
       - name: replicator-nginx-config
         configMap:
           name: {{ template "artifactory-ha.fullname" . }}-replicator-nginx-config
       {{- end}}
+      {{- if .Values.nginx.customConfigMap }}
+      - name: nginx-config
+        configMap:
+          name: {{ .Values.nginx.customConfigMap }}
+      {{- end }}
       - name: nginx-volume
       {{- if .Values.nginx.persistence.enabled }}
         persistentVolumeClaim:

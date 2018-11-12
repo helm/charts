@@ -58,6 +58,10 @@ spec:
               name: sysdig-agent-config
             - mountPath: /opt/draios/etc/kubernetes/secrets
               name: sysdig-agent-secrets
+            {{- if .Values.customAppChecks }}
+            - mountPath: /opt/draios/lib/python/checks.custom.d
+              name: custom-app-checks-volume
+            {{- end }}
       volumes:
         - name: dshm
           emptyDir:
@@ -87,5 +91,10 @@ spec:
         - name: sysdig-agent-secrets
           secret:
             secretName: {{ template "sysdig.fullname" . }}
+        {{- if .Values.customAppChecks }}
+        - name: custom-app-checks-volume
+          configMap:
+            name: {{ template "sysdig.fullname" . }}-custom-app-checks
+        {{- end }}
   updateStrategy:
     type: {{ default "OnDelete" .Values.daemonset.updateStrategy | quote }}

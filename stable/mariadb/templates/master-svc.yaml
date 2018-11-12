@@ -14,10 +14,22 @@ metadata:
 {{- end }}
 spec:
   type: {{ .Values.service.type }}
+  {{- if eq .Values.service.type "ClusterIP" }}
+  {{- if .Values.service.clusterIp }}
+  clusterIP: {{ .Values.service.clusterIp }}
+  {{- end }}
+  {{- end }}
   ports:
   - name: mysql
     port: {{ .Values.service.port }}
     targetPort: mysql
+{{- if eq .Values.service.type "NodePort" }}
+{{- if .Values.service.nodePort }}
+{{- if .Values.service.nodePort.master }}
+    nodePort: {{ .Values.service.nodePort.master }}
+{{- end }}
+{{- end }}
+{{- end }}
 {{- if .Values.metrics.enabled }}
   - name: metrics
     port: 9104

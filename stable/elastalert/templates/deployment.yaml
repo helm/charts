@@ -38,9 +38,20 @@ spec:
             mountPath: '/opt/config'
           - name: rules
             mountPath: '/opt/rules'
+{{- if .Values.elasticsearch.certsVolumeMounts }}          
+{{ toYaml .Values.elasticsearch.certsVolumeMounts | indent 10 }}
+{{- end }}
         resources:
 {{ toYaml .Values.resources | indent 12 }}
       restartPolicy: Always
+{{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+{{- end }}
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}
       volumes:
         - name: rules
           configMap:
@@ -56,4 +67,7 @@ spec:
             items:
             - key: elastalert_config
               path: elastalert_config.yaml
+{{- if .Values.elasticsearch.certsVolumes }}          
+{{ toYaml .Values.elasticsearch.certsVolumes | indent 8 }}
+{{- end }} 
 {{- end }}

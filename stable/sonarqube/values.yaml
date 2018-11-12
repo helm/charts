@@ -26,6 +26,8 @@ ingress:
   annotations:
   # kubernetes.io/ingress.class: nginx
   # kubernetes.io/tls-acme: "true"
+  # This property allows for reports up to a certain size to be uploaded to SonarQube
+  # nginx.ingress.kubernetes.io/proxy-body-size: "8m"
   tls:
   # Secrets must be manually created in the namespace.
   # - secretName: chart-example-tls
@@ -43,6 +45,13 @@ tolerations: []
 # Node labels for pod assignment
 # Ref: https://kubernetes.io/docs/user-guide/node-selection/
 nodeSelector: {}
+
+# hostAliases allows the modification of the hosts file inside a container
+hostAliases: []
+# - ip: "192.168.1.10"
+#   hostnames:
+#   - "example.com"
+#   - "www.example.com"
 
 readinessProbe:
   initialDelaySeconds: 60
@@ -130,6 +139,8 @@ mysql:
   mysqlUser: "sonarUser"
   mysqlPassword: "sonarPass"
   mysqlDatabase: "sonarDB"
+  # mysqlParams:
+  #   useSSL: "true"
   # Specify the TCP port that mySQL should use
   service:
     port: 3306

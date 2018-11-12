@@ -12,6 +12,8 @@ $ helm install stable/nats
 
 This chart bootstraps a [NATS](https://github.com/bitnami/bitnami-docker-nats) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
+Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters.
+
 ## Prerequisites
 
 - Kubernetes 1.4+ with Beta APIs enabled
@@ -45,6 +47,7 @@ The following table lists the configurable parameters of the NATS chart and thei
 
 | Parameter                            | Description                                                                                  | Default                           |
 |--------------------------------------|----------------------------------------------------------------------------------------------|-----------------------------------|
+| `global.imageRegistry`               | Global Docker image registry                                                                 | `nil`                             |
 | `image.registry`                     | NATS image registry                                                                          | `docker.io`                       |
 | `image.repository`                   | NATS Image name                                                                              | `bitnami/nats`                    |
 | `image.tag`                          | NATS Image tag                                                                               | `{VERSION}`                       |
@@ -69,13 +72,13 @@ The following table lists the configurable parameters of the NATS chart and thei
 | `securityContext.enabled`            | Enable security context                                                                      | `true`                            |
 | `securityContext.fsGroup`            | Group ID for the container                                                                   | `1001`                            |
 | `securityContext.runAsUser`          | User ID for the container                                                                    | `1001`                            |
-| `updateStrategy`                     | Replicaset Update strategy                                                                   | `OnDelete`                        |
+| `statefulset.updateStrategy`         | Statefulsets Update strategy                                                                | `OnDelete`                        |
 | `rollingUpdatePartition`             | Partition for Rolling Update strategy                                                        | `nil`                             |
 | `podLabels`                          | Additional labels to be added to pods                                                        | {}                                |
 | `podAnnotations`                     | Annotations to be added to pods                                                              | {}                                |
 | `nodeSelector`                       | Node labels for pod assignment                                                               | `nil`                             |
 | `schedulerName`                      | Name of an alternate                                                                         | `nil`                             |
-| `antiAffinity`                       | Anti-affinity for pod assignment                                                             | {}                                |
+| `antiAffinity`                       | Anti-affinity for pod assignment                                                             | `soft`                            |
 | `tolerations`                        | Toleration labels for pod assignment                                                         | `nil`                             |
 | `resources`                          | CPU/Memory resource requests/limits                                                          | {}                                |
 | `livenessProbe.initialDelaySeconds`  | Delay before liveness probe is initiated                                                     | `30`                              |
@@ -115,6 +118,15 @@ The following table lists the configurable parameters of the NATS chart and thei
 | `networkPolicy.enabled`              | Enable NetworkPolicy                                                                         | `false`                           |
 | `networkPolicy.allowExternal`        | Allow external connections                                                                   | `true`                            |
 | `sidecars`                           | Attach additional containers to the pod.                                                     | `nil`                             |
+| `metrics.enabled`                          | Start a side-car prometheus exporter                                                                           | `false`                                              |
+| `metrics.image.registry`                   | MongoDB exporter image registry                                                                                  | `docker.io`                                          |
+| `metrics.image.repository`                 | MongoDB exporter image name                                                                                      | `appcelerator/prometheus-nats-exporter`                           |
+| `metrics.image.tag`                        | MongoDB exporter image tag                                                                                       | `0.17.0`                                            |
+| `metrics.image.pullPolicy`                 | Image pull policy                                                                                              | `IfNotPresent`                                       |
+| `metrics.image.pullSecrets`                | Specify docker-registry secret names as an array                                                               | `nil`                                                |
+| `metrics.podAnnotations`                   | Additional annotations for Metrics exporter pod                                                                | {}                                                   |
+| `metrics.resources`                        | Exporter resource requests/limit                                                                               | Memory: `256Mi`, CPU: `100m`                         |
+
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
@@ -162,4 +174,15 @@ To horizontally scale this chart, run the following command to scale the number 
 
 ```console
 $ kubectl scale statefulset my-release-nats --replicas=3
+```
+
+## Upgrading
+
+### To 1.0.0
+
+Backwards compatibility is not guaranteed unless you modify the labels used on the chart's deployments.
+Use the workaround below to upgrade from versions previous to 1.0.0. The following example assumes that the release name is nats:
+
+```console
+$ kubectl delete statefulset nats-nats --cascade=false
 ```

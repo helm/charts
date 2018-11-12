@@ -20,7 +20,7 @@ spec:
   type: ClusterIP
   clusterIP: None
   ports:
-    - name: peer
+    - name: mongodb
       port: {{ .Values.port }}
 {{- if .Values.metrics.enabled }}
     - name: metrics

@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "hlf-peer.fullname" . }}--peer
+  labels:
+{{ include "labels.standard" . | indent 4 }}
+data:
+  CORE_PEER_ADDRESSAUTODETECT: "true"
+  CORE_PEER_NETWORKID: nid1
+  CORE_PEER_ADDRESS: {{ include "hlf-peer.fullname" . }}:7051
+  CORE_PEER_LISTENADDRESS: 0.0.0.0:7051
+  CORE_PEER_EVENTS_ADDRESS: 0.0.0.0:7053
+  CORE_PEER_COMMITTER_ENABLED: "true"
+  CORE_PEER_PROFILE_ENABLED: "true"
+  CORE_PEER_DISCOVERY_PERIOD: 60s
+  CORE_PEER_DISCOVERY_TOUCHPERIOD: 60s
+  CORE_VM_ENDPOINT: unix:///host/var/run/docker.sock
+  CORE_PEER_LOCALMSPID: {{ .Values.peer.mspID | quote }}
+  CORE_PEER_MSPCONFIGPATH: /var/hyperledger/msp
+  CORE_LOGGING_LEVEL: debug
+  CORE_LOGGING_PEER: debug
+  CORE_LOGGING_CAUTHDSL: debug
+  CORE_LOGGING_GOSSIP: debug
+  CORE_LOGGING_LEDGER: debug
+  CORE_LOGGING_MSP: info
+  CORE_LOGGING_POLICIES: debug
+  CORE_LOGGING_GRPC: debug
+  CORE_PEER_TLS_ENABLED: {{ .Values.peer.tls.server.enabled | quote }}
+  CORE_PEER_TLS_CERT_FILE: "/var/hyperledger/tls/tls.crt"
+  CORE_PEER_TLS_KEY_FILE: "/var/hyperledger/tls/tls.key"
+  CORE_PEER_TLS_ROOTCERT_FILE: "/var/hyperledger/msp_tls/cert.pem"
+  CORE_PEER_TLS_CLIENTAUTHREQUIRED: {{ .Values.peer.tls.client.enabled | quote }}
+  CORE_PEER_TLS_CLIENTROOTCAS_FILES: "/var/hyperledger/msp_tls/cert.pem"
+  CORE_PEER_TLS_CLIENTCERT_FILE: "/var/hyperledger/tls/tls.crt"
+  CORE_PEER_TLS_CLIENTKEY_FILE: "/var/hyperledger/tls/tls.key"
+  CORE_LEDGER_STATE_STATEDATABASE: {{ .Values.peer.databaseType | quote }}
+  # Containers in the same pod share the host
+  {{- if eq .Values.peer.databaseType "CouchDB" }}
+  CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS: {{ .Values.peer.couchdbInstance }}-hlf-couchdb:5984
+  {{- end }}
+  PEER_CFG_PATH: /var/hyperledger/config
+  FABRIC_CFG_PATH: /var/hyperledger/fabric_cfg
+  GODEBUG: "netdns=go"
+  ADMIN_MSP_PATH: /var/hyperledger/admin_msp
