@@ -47,3 +47,14 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- end -}}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Create the name of the service account
+*/}}
+{{- define "sonarqube.serviceAccountName" -}}
+{{- if .Values.serviceAccount.create -}}
+    {{ default (include "sonarqube.fullname" .) .Values.serviceAccount.name }}
+{{- else -}}
+    {{ default "default" .Values.serviceAccount.name }}
+{{- end -}}
+{{- end -}}

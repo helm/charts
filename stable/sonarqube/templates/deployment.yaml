@@ -15,6 +15,7 @@ spec:
         app: {{ template "sonarqube.name" . }}
         release: {{ .Release.Name }}
     spec:
+      serviceAccountName: {{ template "sonarqube.serviceAccountName" . }}
       {{- if .Values.plugins.install }}
       initContainers:
         - name: install-plugins

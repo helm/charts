@@ -1,6 +1,13 @@
 # Default values for sonarqube.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
+
+# If using an existing service account set create to false, and specify a name.
+# Uses the default SA if no name is specified
+serviceAccount:
+  create: false
+  name:
+
 replicaCount: 1
 image:
   repository: sonarqube
