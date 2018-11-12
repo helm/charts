@@ -134,8 +134,8 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 ```console
 $ helm upgrade \
   --install \
-  --set=extraArgs."pg\.prometheus-chunk-interval"=24h0m0s \
-  --set=pgSchema=timeseries \
+  --set=adapter.extraArgs."pg\.prometheus-chunk-interval"=24h0m0s \
+  --set=adapter.pgSchema=timeseries \
 prom-pg-adapter \
 incubator/prometheus-postgresql-adapter
 ```
