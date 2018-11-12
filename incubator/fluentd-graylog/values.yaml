@@ -191,4 +191,5 @@ fluentdConfig: |
      max_retry_wait 30
      disable_retry_limit
      num_threads 8
-  </match> 
+  </match>
+  
