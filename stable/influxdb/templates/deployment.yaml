@@ -13,6 +13,7 @@ spec:
     metadata:
       labels:
         app: {{ template "influxdb.fullname" . }}
+        release: "{{ .Release.Name }}"
     spec:
       containers:
       - name: {{ template "influxdb.fullname" . }}

@@ -4,6 +4,10 @@ global:
   ## can also be spceifed at chart level see below
   nodeSelector:
   #  label: value
+  affinity:
+  #  label: value
+  tolerations:
+  #  label: value
 
 hub:
   ## The repository and image
