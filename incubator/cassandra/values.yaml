@@ -154,7 +154,7 @@ backup:
     iam.amazonaws.com/role: cain
 
   image:
-    repos: maorfr/cain
+    repos: nuvo/cain
     tag: 0.1.0
 
   # Add additional environment variables
@@ -174,8 +174,12 @@ backup:
   # Destination to store the backup artifacts
   # Currently only s3 is supported
   # Additional support can added.
-  # Ref: https://github.com/maorfr/skbn
+  # Ref: https://github.com/nuvo/skbn
   destination: s3://bucket/cassandra
+  
+  # Copy n files in parallel
+  # 0 for full parallelism
+  parallel: 1
 
 ## Cassandra exported configuration
 ## ref: https://github.com/criteo/cassandra_exporter

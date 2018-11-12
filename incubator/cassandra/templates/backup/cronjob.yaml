@@ -41,7 +41,7 @@ spec:
             - --dst
             - {{ $backup.destination }}
             - --parallel
-            - "0"
+            - "{{ $backup.parallel }}"
           {{- with $backup.env }}
             env:
 {{ toYaml . | indent 12 }}
