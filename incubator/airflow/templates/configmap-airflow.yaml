@@ -15,7 +15,6 @@ data:
   ## Flower PORT
   FLOWER_PORT: "5555"
   # Configure puckel's docker-airflow entrypoint
-  # 1.9.0-2
   EXECUTOR: "{{ .Values.airflow.executor }}"
   FERNET_KEY: "{{ .Values.airflow.fernetKey }}"
   DO_WAIT_INITDB: "false"

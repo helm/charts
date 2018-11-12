@@ -5,7 +5,7 @@
 ## common settings and setting for the webserver
 airflow:
   ##
-  ## You will need to define your frenet key:
+  ## You will need to define your fernet key:
   ## Generate fernetKey with:
   ##    python -c "from cryptography.fernet import Fernet; FERNET_KEY = Fernet.generate_key().decode(); print(FERNET_KEY)"
   ## fernetKey: ABCDABCDABCDABCDABCDABCDABCDABCDABCDABCD
@@ -15,7 +15,7 @@ airflow:
   ##
   ## The executor to use.
   ##
-  exeuctor: Celery
+  executor: Celery
   ##
   ## set the max number of retries during container initialization
   initRetryLoop:
@@ -61,7 +61,7 @@ airflow:
   ## See the Airflow documentation for the --do_pickle argument: https://airflow.apache.org/cli.html#scheduler
   schedulerDoPickle: true
   ##
-  ## how many replicas for web server
+  ## Number of replicas for web server.
   ## For the moment, we recommend to leave this value to 1, since the webserver instance performs
   ## the 'initdb' operation, starting more replicas will cause all the web containers to execute
   ## it, which may cause unwanted issues on the database.
@@ -162,7 +162,7 @@ ingress:
   ## Configure the flower endpoind
   flower:
     ##
-    ## if flower is '/airflow/flower':
+    ## If flower is '/airflow/flower':
     ##  - Flower UI is at 'http://mycompany.com/airflow/flower'
     ## NOTE: you need to have a reverse proxy/load balancer able to do URL rewrite in order to have
     ## flower mounted on other path than root. Flower only does half the job in url prefixing: it
