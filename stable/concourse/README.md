@@ -182,6 +182,7 @@ ssh-keygen -t rsa -f session-signing-key  -N ''
 rm session-signing-key.pub
 printf "%s" "concourse" > basic-auth-username
 printf "%s" "$(openssl rand -base64 24)" > basic-auth-password
+printf "%s" "test:password" > local-users | base64
 ```
 
 You'll also need to create/copy secret values for optional features. See [templates/secrets.yaml](templates/secrets.yaml) for possible values. In the example below, we are not using the [PostgreSQL](#postgresql) chart dependency, and so we must set a `postgresql-uri` secret.
