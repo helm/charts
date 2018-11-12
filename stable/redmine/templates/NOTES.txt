@@ -17,7 +17,9 @@
 
 {{- else if .Values.ingress.enabled }}
 
-  echo "Redmine URL: http://{{ .Values.ingress.hostname }}/"
+  {{- range .Values.ingress.hosts }}
+    echo "Redmine URL: http://{{ .name }}/"
+  {{- end }}
 
 {{- else if contains "ClusterIP" .Values.serviceType }}
 
