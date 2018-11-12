@@ -85,10 +85,10 @@ Parameter | Description | Default
 `service.loadBalancerIP` | Kubernetes service LB Optional fixed external IP | None
 `service.loadBalancerSourceRanges` | Kubernetes service LB allowed inbound IP addresses | `[]`
 `service.nodePort` | Kubernetes service LB Optional fixed external IP | None
-`service.port` | Kubernetes service LB Optional fixed external IP | `9201`
 `service.type` | Kubernetes service type | `ClusterIP`
 `tolerations` | Toleration labels for pod assignment | `[]`
 `webListenAddress` | Address to listen on for web endpoints | `9201`
+`webTelemetryPath` | Path to use for scraping Prometheus metrics | `/metrics`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

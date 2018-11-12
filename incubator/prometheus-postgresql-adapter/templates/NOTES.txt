@@ -16,7 +16,7 @@
 2. Add the following configuration to your Prometheus installation:
 global:
 [...]
-  {{- if contains "NodePort" .Values.service.type }}
+{{- if contains "NodePort" .Values.service.type }}
   remote_write:
    - url: "http://$NODE_IP:$NODE_PORT/write"
   remote_read:

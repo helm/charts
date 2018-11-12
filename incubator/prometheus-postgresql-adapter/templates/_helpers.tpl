@@ -30,3 +30,13 @@ Create chart name and version as used by the chart label.
 {{- define "prometheus-postgresql-adapter.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+
+{{/*
+Print standard labels frequently used in metadata.
+*/}}
+{{- define "prometheus-postgresql-adapter.labels.standard" -}}
+app.kubernetes.io/instance: {{ .Release.Name | quote }}
+app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+app.kubernetes.io/name: {{ include "prometheus-postgresql-adapter.name" . | quote }}
+helm.sh/chart: {{ include "prometheus-postgresql-adapter.chart" . | quote }}
+{{- end -}}

@@ -5,12 +5,9 @@ metadata:
   annotations:
 {{ toYaml .Values.service.annotations | indent 4 }}
 {{- end }}
-  name: {{ include "prometheus-postgresql-adapter.fullname" . }}
+  name: {{ include "prometheus-postgresql-adapter.fullname" . | quote }}
   labels:
-    app.kubernetes.io/instance: "{{ .Release.Name }}"
-    app.kubernetes.io/managed-by: "{{ .Release.Service }}"
-    app.kubernetes.io/name: "{{ include "prometheus-postgresql-adapter.name" . }}"
-    helm.sh/chart: "{{ include "prometheus-postgresql-adapter.chart" . }}"
+{{ include "prometheus-postgresql-adapter.labels.standard" . | indent 4 }}
 spec:
   type: "{{ .Values.service.type }}"
   clusterIP: "{{ .Values.service.clusterIP }}"
@@ -19,23 +16,23 @@ spec:
 {{ toYaml .Values.service.externalIPs | indent 4 }}
 {{- end }}
 {{- if .Values.service.loadBalancerIP }}
-  loadBalancerIP: "{{ .Values.service.loadBalancerIP }}"
+  loadBalancerIP: {{ .Values.service.loadBalancerIP | quote }}
 {{- end }}
 {{- if .Values.service.loadBalancerSourceRanges }}
   loadBalancerSourceRanges:
 {{ toYaml .Values.service.loadBalancerSourceRanges | indent 4 }}
 {{- end }}
 {{- if (or (eq .Values.service.type "LoadBalancer") (eq .Values.service.type "NodePort")) }}
-  externalTrafficPolicy: "{{ .Values.service.externalTrafficPolicy }}"
+  externalTrafficPolicy: {{ .Values.service.externalTrafficPolicy | quote }}
 {{- end }}
   ports:
     - name: http
 {{- if and (eq "NodePort" .Values.service.type) (hasKey .Values.service "nodePort") }}
       nodePort: {{ .Values.service.nodePort }}
 {{- end }}
-      port: {{ .Values.service.port }}
-      protocol: "TCP"
-      targetPort: {{ .Values.webListenAddress }}
+      port: {{ .Values.webListenAddress }}
+      protocol: TCP
+      targetPort: http
   selector:
-    app.kubernetes.io/instance: "{{ .Release.Name }}"
-    app.kubernetes.io/name: "{{ include "prometheus-postgresql-adapter.name" . }}"
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    app.kubernetes.io/name: {{ include "prometheus-postgresql-adapter.name" . | quote }}

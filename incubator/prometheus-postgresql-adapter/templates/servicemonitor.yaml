@@ -1,0 +1,26 @@
+{{- if .Values.prometheus.operator.enabled -}}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "prometheus-postgresql-adapter.fullname" . | quote }}
+  namespace: {{ default .Release.Namespace .Values.prometheus.operator.namespace }}
+  labels:
+{{ include "prometheus-postgresql-adapter.labels.standard" . | indent 4 }}
+  {{- with .Values.prometheus.operator.labels }}
+{{ toYaml . | indent 4 }}
+  {{- end }}
+spec:
+  jobLabel: {{ include "prometheus-postgresql-adapter.fullname" . | quote }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: {{ .Release.Name | quote }}
+      app.kubernetes.io/name: {{ include "prometheus-postgresql-adapter.name" . | quote }}
+  namespaceSelector:
+    matchNames:
+    - {{ default .Release.Namespace .Values.prometheus.operator.namespace }}
+  endpoints:
+    - port: http
+      honorLabels: {{ .Values.prometheus.operator.honorLabels }}
+      interval: {{ .Values.prometheus.operator.interval }}
+      path: {{ .Values.webTelemetryPath }}
+{{- end -}}

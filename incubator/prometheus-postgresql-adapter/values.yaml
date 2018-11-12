@@ -2,25 +2,27 @@
 ## ref: https://hub.docker.com/r/timescale/prometheus-postgresql-adapter/tags/
 ##
 
+#######################
+# Kubernetes settings #
+#######################
+
+# Pod affinity definitions
+affinity: {}
+
+# Deployment annotations
+deploymentAnnotations: {}
+
 # Extra key / value pairs for starting the application
 extraArgs: {}
 
 # Extra environment variables that should be present in the pod
 extraEnv: {}
 
-# Number of pods
-replicaCount: 1
-
 # Docker image information
 image:
   repository: timescale/prometheus-postgresql-adapter
   tag: 0.4.1
   pullPolicy: IfNotPresent
-
-# Default application values
-logLevel: info
-pgHost: postgres
-webListenAddress: 9201
 
 # Liveness probe settings
 livenessProbe:
@@ -31,6 +33,26 @@ livenessProbe:
   successThreshold: 1
   timeoutSeconds: 2
 
+# Prometheus configuration
+prometheus:
+  # Enable standard Prometheus scrape annotations
+  exporter:
+    enabled: true
+    probe: true
+    scrape: true
+  operator:
+    enabled: false
+    honorLabels: true
+    interval: "20s"
+    labels: {}
+    # namespace: ""
+
+# Node selector definitons
+nodeSelector: {}
+
+# Deployment annotations
+podAnnotations: {}
+
 # Readiness probe settings
 readinessProbe:
   enabled: true
@@ -40,17 +62,8 @@ readinessProbe:
   successThreshold: 1
   timeoutSeconds: 2
 
-# Service settings
-service:
-  annotations: {}
-  clusterIP: ""
-  externalIPs: []
-  externalTrafficPolicy: Cluster
-  loadBalancerIP: ""
-  loadBalancerSourceRanges: []
-  nodePort: ""
-  port: 9201
-  type: ClusterIP
+# Number of pods
+replicaCount: 1
 
 # Default resource allocations
 resources:
@@ -61,11 +74,26 @@ resources:
     cpu: 100m
     memory: 128Mi
 
-# Pod affinity definitions
-affinity: {}
-
-# Node selector definitons
-nodeSelector: {}
+# Service settings
+service:
+  annotations: {}
+  clusterIP: ""
+  externalIPs: []
+  externalTrafficPolicy: Cluster
+  loadBalancerIP: ""
+  loadBalancerSourceRanges: []
+  nodePort: ""
+  type: ClusterIP
 
 # Node tolerations
 tolerations: []
+
+########################
+# Application settings #
+########################
+
+# Default application values
+logLevel: info
+pgHost: postgres
+webListenAddress: 9201
+webTelemetryPath: /metrics
