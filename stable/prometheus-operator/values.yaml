@@ -725,7 +725,8 @@ prometheus:
     #     role: example-rules
 
     ## serviceMonitorSelector will limit which servicemonitors are used to create scrape
-    ## configs in Prometheus. By default all are loaded
+    ## configs in Prometheus. By default it picks serviceMonitor having a label "release"
+    ## with a value equal to the release name of your prometheus operator chart.
     ##
     serviceMonitorSelector: {}
 
