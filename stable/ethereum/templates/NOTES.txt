@@ -31,7 +31,7 @@
     NOTE: It may take a few minutes for the LoadBalancer IP to be available.
           You can watch the status of by running 'kubectl get svc -w {{ template "ethereum.fullname" . }}-geth-tx'
   {{- else if contains "ClusterIP" .Values.geth.tx.service.type }}
-    export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "ethereum.fullname" . }}-geth-tx,release={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
+    export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "ethereum.name" . }},release={{ .Release.Name }},component=geth-tx" -o jsonpath="{.items[0].metadata.name}")
     kubectl port-forward $POD_NAME 8545:8545 8546:8546
   {{- end }}
 
