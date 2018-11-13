@@ -132,18 +132,18 @@ spec:
         - name: data
           mountPath: /bitnami/postgresql
         {{ end }}
-        {{ if  (.Files.Glob "files/postgresql.conf") }}
+        {{ if or (.Files.Glob "files/postgresql.conf") .Values.postgresqlConfiguration }}
         - name: postgresql-config
           mountPath: /opt/bitnami/postgresql/conf/postgresql.conf
           subPath: postgresql.conf
         {{ end }}
-        {{ if (.Files.Glob "files/pg_hba.conf") }}
+        {{ if or (.Files.Glob "files/pg_hba.conf") .Values.pgHbaConfiguration }}
         - name: postgresql-config
           mountPath: /opt/bitnami/postgresql/conf/pg_hba.conf
           subPath: pg_hba.conf
         {{ end }}
       volumes:
-      {{ if or (.Files.Glob "files/postgresql.conf") (.Files.Glob "files/pg_hba.conf") }}
+      {{ if or (.Files.Glob "files/postgresql.conf") (.Files.Glob "files/pg_hba.conf") .Values.postgresqlConfiguration .Values.pgHbaConfiguration }}
       - name: postgresql-config
         configMap:
           name: {{ template "postgresql.fullname" . }}-configuration
