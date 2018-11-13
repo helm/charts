@@ -2,7 +2,7 @@
 
 This chart deploys the Anchore Engine docker container image analysis system. Anchore Engine requires a PostgreSQL database (>=9.6) which may be handled by the chart or supplied externally, and executes in a service based architecture utilizing the following Anchore Engine services: External API, Simplequeue, Catalog, Policy Engine, and Analyzer.
 
-This chart can also be used to install the following Anchore Enterprise services: GUI, RBAC, On-prem Feeds. Enterprise services require a valid Anchore Enterprise License as well as credentials with access to the private dockerhub repository hosting the images.
+This chart can also be used to install the following Anchore Enterprise services: GUI, RBAC, On-prem Feeds. Enterprise services require a valid Anchore Enterprise License as well as credentials with access to the private dockerhub repository hosting the images. These are not enabled by default.
 
 Each of these services can be scaled and configured independently.
 
@@ -13,28 +13,7 @@ See [Anchore Engine](https://github.com/anchore/anchore-engine) for more project
 
 The chart is split into global and service specific configurations for the OSS Anchore Engine, as well as global and services specific configurations for the Enterprise components. The anchoreGlobal section is for configuration values required by all Anchore Engine components, the anchoreEnterpriseGlobal section is for configuration values required by all Anchore Engine Enterprise components. Service specific configuration values allow customization for each individual service.
 
-### API Component
-The API service provides the apis for the system. The external API can be utilized by the anchore-cli to perform administrative operations on Anchore Engine.
-
-The API service can provide webhook calls to external services for notifications of events:
-  * New images added
-  * CVE changes in images
-  * Policy evaluation state change for an image
-
-### Analyzer Component
-The analyzer downloads and analyzes images and upload results to the core services. The workers poll the queue service and
-do not have their own external api.
-
-### Catalog Component
-
-
-##### Configurable archive drivers
-Archive drivers allow Anchore Engine to store the large analysis results in storage other than the postgresql db (the default).
-The currently supported drivers are: S3 and OpenStack's Swift, as well as a localfs option for testing (not for production).
-
-### Policy Engine Component
-
-### Simple Queue Component
+For a description of each component, view the official documentation at: [Anchore Enterprise Service Overview](https://anchore.freshdesk.com/support/solutions/articles/36000098518-enterprise-service-overview-and-architecture)
 
 ## Installing the Anchore Engine OSS Chart
 
@@ -66,7 +45,7 @@ While the configuration options of Anchore Engine are extensive, the options pro
 
 Use ingress, which enables SSL termination at the LB:
   ```
-  anchoreApi:
+  anchoreGlobal:
     ingress:
       enabled: true
   ```
@@ -89,10 +68,7 @@ Use a LoadBalancer service type:
 
   anchoreGlobal:
     dbConfig:
-      timeout: 120
       ssl: true
-      connectionPoolSize: 30
-      connectionPoolMaxOverflow: 100
   ```
 
 ### Archive Driver
@@ -139,7 +115,7 @@ To toggle on/off (default is True), and set a minimum size for compression to be
           bucket: 'anchorearchive'
           create_bucket: True
       compression:
-      ... # Compression ocnfig here
+      ... # Compression config here
   ```
 
 #### Using Swift:
@@ -218,7 +194,7 @@ This is the default archive driver and requires no additional configuration.
 Anchore Engine supports exporting prometheus metrics form each container. To enable metrics:
   ```
   anchoreGlobal:
-    enableMetrics: true
+    enableMetrics: True
   ```
 
 When enabled, each service provides the metrics over the existing service port so your prometheus deployment will need to
@@ -233,22 +209,11 @@ done in the coreConfig.
 
 To configure the events:
   ```
-  coreConfig:
+  anchoreCatalog:
     events:
       notification:
         enabled:true
       level=error
-  ```
-
-### Policy Sync from anchore.io
-
-anchore.io is a hosted version of anchore engine that includes a UI and policy editor. You can configure a local anchore-engine
-to download and keep the policy bundles in sync (policies defining how to evaluate images).
-  ```
-  * coreConfig.policyBundleSyncEnabled=True
-  * globalConfig.users.admin.anchoreIOCredentials.useAnonymous=False
-  * globalConfig.users.admin.anchoreIOCredentials.user=username
-  * globalConfig.users.admin.anchoreIOCredentials.password=password
   ```
 
 ### Scaling Individual Components
@@ -271,10 +236,7 @@ To update the number in a running configuration:
 
 ## Adding Enterprise Components
 
- The following features are available to Anchore Enterprise customers.
-   * On premises feeds service
-   * Graphical user interface
-   * Role based access control
+ The following features are available to Anchore Enterprise customers. Please contact the Anchore team for more information about getting a license for the enterprise features. [Anchore Enterprise Demo](https://anchore.com/demo/)
 
 ### Enabling Enterprise Services
 Enterprise services require an Anchore Enterprise license, as well as credentials with

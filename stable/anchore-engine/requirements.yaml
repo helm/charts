@@ -12,7 +12,7 @@ dependencies:
     alias: anchore-feeds-db
 
   - name: redis
-    version: "*"
+    version: "4.2.7"
     repository: "alias:stable"
     condition: anchore-ui-redis.enabled,anchoreEnterpriseGlobal.enabled
     alias: anchore-ui-redis

@@ -15,7 +15,7 @@ spec:
     matchLabels:
       app: "{{ template "anchore-engine.fullname" . }}"
       component: {{ $component }}
-  replicas: {{ .Values.anchoreEnterpriseFeeds.replicaCount }}
+  replicas: 1
   template:
     metadata:
       labels:
@@ -29,7 +29,9 @@ spec:
       volumes:
         - name: config-volume
           configMap:
-            name: {{ template "anchore-engine.enterprise.fullname" .}}
+            name: {{ template "anchore-engine.enterprise-feeds.fullname" .}}
+        - name: scratch-volume
+{{ toYaml .Values.anchoreEnterpriseFeeds.scratchVolume.details | indent 10 }}
         - name: anchore-license
           secret:
             secretName: {{ .Values.anchoreEnterpriseGlobal.licenseSecretName }}
@@ -42,7 +44,7 @@ spec:
         command: ["/usr/local/bin/anchore-enterprise-manager"]
         args: ["service", "start", "feeds"]
         ports:
-        - containerPort: {{ .Values.anchoreEnterpriseFeeds.service.apiPort }}
+        - containerPort: {{ .Values.anchoreGlobal.service.ports.feedsApi }}
           name: feeds-api
         envFrom:
         - secretRef:
@@ -50,10 +52,10 @@ spec:
         env:
         {{- if and (index .Values "anchore-feeds-db" "externalEndpoint") (not (index .Values "anchore-feeds-db" "enabled")) }}
         - name: ANCHORE_DB_HOST
-          value: {{ index .Values "anchore-feeds-db" "externalEndpoint" | quote}}
+          value: {{ index .Values "anchore-feeds-db" "externalEndpoint" | quote }}
         {{- else}}
         - name: ANCHORE_DB_HOST
-          value: {{ template "postgres.anchore-feeds-db.fullname" . }}
+          value: "{{ template "postgres.anchore-feeds-db.fullname" . }}:5432"
         {{- end }}
         - name: ANCHORE_DB_NAME
           value: {{ index .Values "anchore-feeds-db" "postgresDatabase" | quote }}
@@ -72,6 +74,8 @@ spec:
         - name: config-volume
           mountPath: /config/config.yaml
           subPath: config.yaml
+        - name: scratch-volume
+          mountPath: {{ .Values.anchoreEnterpriseFeeds.scratchVolume.mountPath }}
         - name: anchore-license
           mountPath: /license.yaml
           subPath: license.yaml
@@ -118,11 +122,11 @@ metadata:
     heritage: {{ .Release.Service }}
     component: {{ $component }}
 spec:
-  type: {{ .Values.anchoreEnterpriseFeeds.service.type }}
+  type: {{ .Values.anchoreGlobal.service.type }}
   ports:
     - name: feeds-api
-      port: {{ .Values.anchoreEnterpriseFeeds.service.apiPort }}
-      targetPort: {{ .Values.anchoreEnterpriseFeeds.service.apiPort }}
+      port: {{ .Values.anchoreGlobal.service.ports.feedsApi }}
+      targetPort: {{ .Values.anchoreGlobal.service.ports.feedsApi }}
       protocol: TCP
   selector:
     app: {{ template "anchore-engine.fullname" . }}

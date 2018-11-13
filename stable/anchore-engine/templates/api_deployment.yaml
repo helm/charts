@@ -89,51 +89,6 @@ spec:
         resources:
 {{ toYaml .Values.anchoreApi.resources | indent 10 }}
 
-      - name: {{ .Chart.Name }}-kubernetes-webhook
-        image: {{ .Values.anchoreGlobal.image.repository }}:{{ .Values.anchoreGlobal.image.tag }}
-        imagePullPolicy: {{ .Values.anchoreGlobal.image.pullPolicy }}
-        command: ["/usr/local/bin/anchore-manager"]
-        args: ["service", "start", "kubernetes_webhook"]
-        envFrom:
-        - secretRef:
-            name: {{ template "anchore-engine.fullname" . }}
-        - configMapRef:
-            name: {{ template "anchore-engine.fullname" . }}
-        env:
-        - name: ANCHORE_POD_NAME
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.name
-        ports:
-        - name: k8s-webhook
-          containerPort: {{ .Values.anchoreGlobal.service.ports.kubernetesWebhook }}
-        volumeMounts:
-        - name: config-volume
-          mountPath: /config/config.yaml
-          subPath: config.yaml
-        {{- if .Values.anchoreGlobal.internalServicesSslEnabled }}
-        - name: certs
-          mountPath: {{ default "/certs" .Values.anchoreGlobal.internalServicesSsl.certDir }}
-          readOnly: true
-        {{- end }}
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: k8s-webhook
-          initialDelaySeconds: 10
-          periodSeconds: 60
-          failureThreshold: 5
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: k8s-webhook
-          initialDelaySeconds: 5
-          periodSeconds: 10
-          timeoutSeconds: 10
-          failureThreshold: 10
-        resources:
-{{ toYaml .Values.anchoreApi.resources | indent 10 }}
-
       {{- if and .Values.anchoreEnterpriseGlobal.enabled .Values.anchoreEnterpriseRbac.enabled }}
       - name: {{ .Chart.Name }}-rbac-manager
         image: "{{ .Values.anchoreEnterpriseGlobal.image.repository }}:{{ .Values.anchoreEnterpriseGlobal.image.tag }}"
@@ -151,7 +106,7 @@ spec:
             fieldRef:
               fieldPath: metadata.name
         ports:
-        - containerPort: {{ .Values.anchoreEnterpriseRbac.service.apiPort }}
+        - containerPort: {{ .Values.anchoreGlobal.service.ports.rbacApi }}
           name: rbac-manager
         volumeMounts:
         - name: anchore-license
@@ -181,6 +136,8 @@ spec:
           initialDelaySeconds: 60
           periodSeconds: 30
           failureThreshold: 10
+        resources:
+{{ toYaml .Values.anchoreEnterpriseRbac.managerResources | indent 10 }}
 
       - name: {{ .Chart.Name }}-rbac-authorizer
         image: "{{ .Values.anchoreEnterpriseGlobal.image.repository }}:{{ .Values.anchoreEnterpriseGlobal.image.tag }}"
@@ -198,7 +155,7 @@ spec:
             fieldRef:
               fieldPath: metadata.name
         ports:
-        - containerPort: {{ .Values.anchoreEnterpriseRbac.service.authPort }}
+        - containerPort: {{ .Values.anchoreGlobal.service.ports.rbacAuth }}
           name: rbac-auth
         volumeMounts:
         - name: anchore-license
@@ -216,7 +173,7 @@ spec:
           exec:
             command:
               - curl
-              - 'localhost:{{ .Values.anchoreEnterpriseRbac.service.authPort }}/health'
+              - 'localhost:{{ .Values.anchoreGlobal.service.ports.rbacAuth }}/health'
           initialDelaySeconds: 60
           periodSeconds: 10
           timeoutSeconds: 10
@@ -225,11 +182,14 @@ spec:
           exec:
             command:
               - curl
-              - 'localhost:{{ .Values.anchoreEnterpriseRbac.service.authPort }}/health'
+              - 'localhost:{{ .Values.anchoreGlobal.service.ports.rbacAuth }}/health'
           timeoutSeconds: 10
           initialDelaySeconds: 60
           periodSeconds: 30
           failureThreshold: 10
+        resources:
+{{ toYaml .Values.anchoreEnterpriseRbac.authResources | indent 10 }}
+
       imagePullSecrets:
       - name: {{ .Values.anchoreEnterpriseGlobal.imagePullSecretName }}
       {{- end }}
@@ -265,14 +225,10 @@ spec:
       port: {{ .Values.anchoreGlobal.service.ports.extApi }}
       targetPort: {{ .Values.anchoreGlobal.service.ports.extApi }}
       protocol: TCP
-    - name: anchore-kubernetes-webhook
-      port: {{ .Values.anchoreGlobal.service.ports.kubernetesWebhook }}
-      targetPort: {{ .Values.anchoreGlobal.service.ports.kubernetesWebhook }}
-      protocol: TCP
   {{- if and .Values.anchoreEnterpriseGlobal.enabled .Values.anchoreEnterpriseRbac.enabled }}
     - name: anchore-rbac-manager
-      port: {{ .Values.anchoreEnterpriseRbac.service.apiPort }}
-      targetPort: {{ .Values.anchoreEnterpriseRbac.service.apiPort }}
+      port: {{ .Values.anchoreGlobal.service.ports.rbacApi }}
+      targetPort: {{ .Values.anchoreGlobal.service.ports.rbacApi }}
       protocol: TCP
   {{- end }}
   selector:

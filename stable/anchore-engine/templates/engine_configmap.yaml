@@ -8,26 +8,26 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 data:
-  ANCHORE_DB_NAME: {{ index .Values "anchore-db" "postgresDatabase" }}
-  {{- if ( index .Values "anchore-db" "enabled" ) }}
-  ANCHORE_DB_HOST: {{ template "postgres.anchore-db.fullname" . }}
-  {{- else }}
-  ANCHORE_DB_HOST: {{ index .Values "anchore-db" "externalEndpoint" }}
-  {{- end }}
+  ANCHORE_DB_NAME: {{ index .Values "anchore-db" "postgresDatabase" | quote }}
   ANCHORE_DB_USER: {{ index .Values "anchore-db" "postgresUser" | quote }}
+  {{- if and (index .Values "anchore-db" "externalEndpoint") (not (index .Values "anchore-db" "enabled")) }}
+  ANCHORE_DB_HOST: {{ index .Values "anchore-db" "externalEndpoint" | quote }}
+  {{- else }}
+  ANCHORE_DB_HOST: "{{ template "postgres.anchore-db.fullname" . }}:5432"
+  {{- end }}
 
   config.yaml: |
     # Anchore Service Configuration File from ConfigMap
 
     service_dir: {{ .Values.anchoreGlobal.serviceDir }}
-    tmp_dir: "/scratch"
+    tmp_dir: {{ default "/scratch" .Values.anchoreAnalyzer.scratchVolume.mountPath }}
     log_level: {{ .Values.anchoreGlobal.logLevel }}
     cleanup_images: {{ .Values.anchoreGlobal.cleanupImages }}
 
     allow_awsecr_iam_auto: {{ .Values.anchoreGlobal.allowECRUseIAMRole }}
     host_id: ${ANCHORE_POD_NAME}
     internal_ssl_verify: {{ .Values.anchoreGlobal.internalServicesSsl.verifyCerts }}
-    auto_restart_services: false
+    auto_restart_services: False
 
     metrics:
       enabled: {{ .Values.anchoreGlobal.enableMetrics }}
@@ -50,21 +50,25 @@ data:
         enabled: True
         feeds:
           # Vulnerabilities feed is the feed for distro cve sources (redhat, debian, ubuntu, oracle, alpine....)
-          vulnerabilities: True
+          vulnerabilities: {{ default "True" .Values.anchoreGlobal.syncVulnerabilites }}
           # NVD Data is used for non-distro CVEs (jars, npm, etc) that are not packaged and released by distros as rpms, debs, etc
-          nvd: True
+          nvd: {{ default "True" .Values.anchoreGlobal.syncNvd }}
           # Warning: enabling the package sync causes the service to require much
           #   more memory to do process the significant data volume. We recommend at least 4GB available for the container
-          packages: False
+          {{- if and (and .Values.anchoreEnterpriseGlobal.enabled .Values.anchoreEnterpriseFeeds.enabled) (or .Values.anchoreEnterpriseFeeds.gemDriverEnabled .Values.anchoreEnterpriseFeeds.npmDriverEnabled) }}
+          packages: True
+          {{- else }}
+          packages: {{ default "False" .Values.anchoreGlobal.syncPackages }}
+          {{- end }}
           # Enabling snyk syncs snyk vulnerability data from an on-premise anchore enterprise feeds service. Please contact
           # anchore support for finding out more about this service
-          {{- if and .Values.anchoreEnterpriseGlobal.enabled (and .Values.anchoreEnterpriseFeeds.enabled .Values.anchoreEnterpriseFeeds.snykDriverEnabled) }}
-          snyk: True
+          {{- if and .Values.anchoreEnterpriseGlobal.enabled .Values.anchoreEnterpriseFeeds.enabled }}
+          snyk: {{ default "True" .Values.anchoreEnterpriseFeeds.synkDriverEnabled }}
           {{- else }}
           snyk: False
           {{- end }}
       {{- if and .Values.anchoreEnterpriseGlobal.enabled .Values.anchoreEnterpriseFeeds.enabled }}
-      url: 'http://{{ template "anchore-engine.enterprise-feeds.fullname" . }}:{{ .Values.anchoreEnterpriseFeeds.service.apiPort }}/v1/feeds'
+      url: 'http://{{ template "anchore-engine.enterprise-feeds.fullname" . }}:{{ .Values.anchoreGlobal.service.ports.feedsApi }}/v1/feeds'
       client_url:
       token_url:
       {{- else }}
@@ -73,15 +77,15 @@ data:
       anonymous_user_username: anon@ancho.re
       anonymous_user_password: pbiU2RYZ2XrmYQ
       {{- end }}
-      connection_timeout_seconds: 3
-      read_timeout_seconds: 60
+      connection_timeout_seconds: {{ default 3 .Values.anchoreGlobal.feedsConnectionTimeout }}
+      read_timeout_seconds: {{ default 60 .Values.anchoreGlobal.feedsReadTimeout }}
 
     default_admin_password: ${ANCHORE_ADMIN_PASSWORD}
     default_admin_email: {{ .Values.anchoreGlobal.defaultAdminEmail }}
 
     credentials:
       database:
-        db_connect: 'postgresql+pg8000://${ANCHORE_DB_USER}:${ANCHORE_DB_PASSWORD}@${ANCHORE_DB_HOST}:5432/${ANCHORE_DB_NAME}'
+        db_connect: 'postgresql+pg8000://${ANCHORE_DB_USER}:${ANCHORE_DB_PASSWORD}@${ANCHORE_DB_HOST}/${ANCHORE_DB_NAME}'
         db_connect_args:
           timeout: {{ .Values.anchoreGlobal.dbConfig.timeout }}
           ssl: {{ .Values.anchoreGlobal.dbConfig.ssl }}
@@ -98,43 +102,31 @@ data:
         {{- if and .Values.anchoreEnterpriseGlobal.enabled .Values.anchoreEnterpriseRbac.enabled }}
         authorization_handler: external
         authorization_handler_config:
-          endpoint: "http://localhost:{{ .Values.anchoreEnterpriseRbac.service.authPort }}"
+          endpoint: "http://localhost:{{ .Values.anchoreGlobal.service.ports.rbacAuth }}"
         {{- end }}
         ssl_enable: {{ .Values.anchoreGlobal.internalServicesSslEnabled }}
         ssl_cert: {{ .Values.anchoreGlobal.internalServicesSsl.certDir -}}/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretCertName }}
         ssl_key: {{ .Values.anchoreGlobal.internalServicesSsl.certDir -}}/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretKeyName }}
       analyzer:
-        enabled: true
+        enabled: True
+        require_auth: True
         endpoint_hostname: {{ template "anchore-engine.analyzer.fullname" . }}
         listen: '0.0.0.0'
         port: {{ .Values.anchoreGlobal.service.ports.analyzer }}
-        cycle_timer_seconds: {{ .Values.anchoreAnalyzer.cycleTimerSeconds }}
+        cycle_timer_seconds: 1
+        cycle_timers:
+{{ toYaml .Values.anchoreAnalyzer.cycleTimers | indent 10 }}
         max_threads: {{ .Values.anchoreAnalyzer.concurrentTasksPerWorker }}
         analyzer_driver: 'nodocker'
         ssl_cert: {{ .Values.anchoreGlobal.internalServicesSsl.certDir -}}/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretCertName }}
         ssl_key: {{ .Values.anchoreGlobal.internalServicesSsl.certDir -}}/{{ .Values.anchoreGlobal.internalServicesSsl.certSecretKeyName }}
         ssl_enable: {{ .Values.anchoreGlobal.internalServicesSslEnabled }}
-      kubernetes_webhook:
-        enabled: True
-        require_auth: False
-        endpoint_hostname: {{ template "anchore-engine.api.fullname" . }}
-        listen: '0.0.0.0'
-        port: {{ .Values.anchoreGlobal.service.ports.kubernetesWebhook }}
-        {{- if and .Values.anchoreEnterpriseGlobal.enabled .Values.anchoreEnterpriseRbac.enabled }}
-        authorization_handler: external
-        authorization_handler_config:
-          endpoint: "http://localhost:{{ .Values.anchoreEnterpriseRbac.service.authPort }}"
-        {{- end }}
-        ssl_enable: {{ .Values.anchoreGlobal.internalServicesSslEnabled }}
-        ssl_cert: {{ .Values.anchoreGlobal.internalServicesSsl.certDir -}}/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretCertName }}
-        ssl_key: {{ .Values.anchoreGlobal.internalServicesSsl.certDir -}}/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretKeyName }}
       catalog:
         enabled: True
         require_auth: True
         endpoint_hostname: {{ template "anchore-engine.catalog.fullname" . }}
         listen: '0.0.0.0'
         port: {{ .Values.anchoreGlobal.service.ports.catalog }}
-        use_db: True
         cycle_timer_seconds: '1'
         cycle_timers:
 {{ toYaml .Values.anchoreCatalog.cycleTimers | indent 10 }}

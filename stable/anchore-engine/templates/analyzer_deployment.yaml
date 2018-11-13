@@ -54,7 +54,7 @@ spec:
           readOnly: true
         {{- end }}
         - name: analysis-scratch
-          mountPath: {{ .Values.anchoreAnalyzer.analysisScratchVolume.mountPath }}
+          mountPath: {{ .Values.anchoreAnalyzer.scratchVolume.mountPath }}
         livenessProbe:
           httpGet:
             path: /health
@@ -82,7 +82,7 @@ spec:
             secretName: {{ .Values.anchoreGlobal.internalServicesSsl.certSecret }}
         {{- end }}
         - name: analysis-scratch
-          {{ toYaml .Values.anchoreAnalyzer.analysisScratchVolume.details -}}
+{{ toYaml .Values.anchoreAnalyzer.scratchVolume.details | indent 10 }}
     {{- if .Values.anchoreAnalyzer.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.anchoreAnalyzer.nodeSelector | indent 8 }}
@@ -95,22 +95,3 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
-
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: {{ template "anchore-engine.analyzer.fullname" . }}
-  labels:
-    app: {{ template "anchore-engine.fullname" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
-    component: {{ $component }}
-spec:
-  type: {{ .Values.anchoreGlobal.service.type }}
-  ports:
-    - name: anchore-analyzer-api
-      port: {{ .Values.anchoreGlobal.service.ports.analyzer }}
-      targetPort: {{ .Values.anchoreGlobal.service.ports.analyzer }}
-      protocol: TCP

@@ -16,7 +16,7 @@ spec:
     matchLabels:
       app: "{{ template "anchore-engine.fullname" .}}"
       component: {{ $component }}
-  replicas: {{ .Values.anchoreEnterpriseUi.replicaCount }}
+  replicas: 1
   template:
     metadata:
       labels:
@@ -59,7 +59,7 @@ spec:
           value: '/'
         {{- if .Values.anchoreEnterpriseRbac.enabled }}
         - name: ANCHORE_RBAC_URI
-          value: 'http://{{ template "anchore-engine.api.fullname" . }}:{{ .Values.anchoreEnterpriseRbac.service.apiPort }}/v1'
+          value: 'http://{{ template "anchore-engine.api.fullname" . }}:{{ .Values.anchoreGlobal.service.ports.rbacApi }}/v1'
         {{- end }}
         - name: ANCHORE_ENABLE_SSL
           value: '{{ .Values.anchoreEnterpriseUi.enableSsl }}'
@@ -118,10 +118,11 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
-  type: {{ .Values.anchoreEnterpriseUi.service.type }}
+  sessionAffinity: ClientIP
+  type: {{ .Values.anchoreGlobal.service.type }}
   ports:
     - name: enterprise-ui
-      port: {{ .Values.anchoreEnterpriseUi.service.httpPort }}
+      port: {{ .Values.anchoreGlobal.service.ports.uiHttp }}
       protocol: TCP
       targetPort: 3000
   selector:

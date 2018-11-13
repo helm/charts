@@ -14,15 +14,15 @@ spec:
     matchLabels:
       app: "{{ template "anchore-engine.fullname" . }}"
       component: {{ $component }}
-  replicas: {{ .Values.anchoreSimplequeue.replicaCount }}
+  replicas: {{ .Values.anchoreSimpleQueue.replicaCount }}
   template:
     metadata:
       labels:
         app: "{{ template "anchore-engine.fullname" . }}"
         component: {{ $component }}
-{{- if .Values.anchoreSimplequeue.annotations }}
+{{- if .Values.anchoreSimpleQueue.annotations }}
       annotations:
-{{ toYaml .Values.anchoreSimplequeue.annotations | indent 8 }}
+{{ toYaml .Values.anchoreSimpleQueue.annotations | indent 8 }}
 {{- end }}
     spec:
       containers:
@@ -69,7 +69,7 @@ spec:
           timeoutSeconds: 10
           failureThreshold: 10
         resources:
-{{ toYaml .Values.anchoreSimplequeue.resources | indent 10 }}
+{{ toYaml .Values.anchoreSimpleQueue.resources | indent 10 }}
       volumes:
         - name: config-volume
           configMap:
@@ -79,15 +79,15 @@ spec:
           secret:
             secretName: {{ .Values.anchoreGlobal.internalServicesSsl.certSecret }}
         {{- end }}
-    {{- if .Values.anchoreSimplequeue.nodeSelector }}
+    {{- if .Values.anchoreSimpleQueue.nodeSelector }}
       nodeSelector:
-{{ toYaml .Values.anchoreSimplequeue.nodeSelector | indent 8 }}
+{{ toYaml .Values.anchoreSimpleQueue.nodeSelector | indent 8 }}
     {{- end }}
-    {{- with .Values.anchoreSimplequeue.affinity }}
+    {{- with .Values.anchoreSimpleQueue.affinity }}
       affinity:
 {{ toYaml . | indent 8 }}
     {{- end }}
-    {{- with .Values.anchoreSimplequeue.tolerations }}
+    {{- with .Values.anchoreSimpleQueue.tolerations }}
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
