@@ -51,14 +51,23 @@ Parameter | Description | Default
 `controller.image.pullPolicy` | controller container image pullPolicy | `IfNotPresent`
 `controller.defaultSslCertificate.secret.namespace` | namespace of default certificate for controller | `{{ .Release.Namespace }}`
 `controller.defaultSslCertificate.secret.name` | name of the secret for default certificate of controller | `""`
-`controller.config` | haproxy ConfigMap entries | none
+`controller.config` | additional haproxy-ingress [ConfigMap entries](https://github.com/jcmoraisjr/haproxy-ingress/blob/v0.6/README.md#configmap) | `{}`
+`controller.healthzPort` | The port number for liveness and readiness checks | `10253`
+`controller.hostPorts.http` | If `controller.useHostPort` is `true` sets the hostPort | `"80"`
+`controller.hostPorts.https` | If `controller.useHostPort` is `true` sets the hostPort | `"443"`
+`controller.ingressClass` | name of the ingress class to route through this controller | `haproxy`
+`controller.resources` | controller pod resource requests & limits | `{}`
+`controller.statsPort` | The port number for haproxy statistics | `1936`
+`controller.useHostPort` | enable `hostPort` for http, https and any other tcp ports | `false`
 `controller.service.annotations` | annotations for controller service | `{}`
 `controller.service.labels` | labels for controller service | `{}`
 `controller.service.clusterIP` | internal controller cluster service IP | `""`
+`controller.service.enableHttp` | if port 80 should be opened for service | `true`
+`controller.service.enableHttps` | if port 443 should be opened for service | `true`
+`controller.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
 `controller.service.targetPorts.http` | Sets the targetPort that maps to the Ingress' port 80 | `80`
 `controller.service.targetPorts.https` | Sets the targetPort that maps to the Ingress' port 443 | `443`
 `controller.service.type` | type of controller service to create | `LoadBalancer`
 `controller.service.nodePorts.http` | If `controller.service.type` is `NodePort` and this is non-empty, it sets the nodePort that maps to the Ingress' port 80 | `""`
 `controller.service.nodePorts.https` | If `controller.service.type` is `NodePort` and this is non-empty, it sets the nodePort that maps to the Ingress' port 443 | `""`
-
-
+`tcp` | TCP [service ConfigMap](https://github.com/jcmoraisjr/haproxy-ingress/blob/v0.6/README.md#tcp-services-configmap): `<port>: <namespace>/<servicename>:<portnumber>[:[<in-proxy>][:<out-proxy>]]` | `{}`
