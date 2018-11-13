@@ -4,7 +4,8 @@ kind: CustomResourceDefinition
 metadata:
   name: kongingresses.configuration.konghq.com
   annotations:
-    "helm.sh/hook": crd-install
+    "helm.sh/hook": crd-install, post-delete
+    "helm.sh/hook-delete-policy": "before-hook-creation"
   labels:
     app: {{ template "kong.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
