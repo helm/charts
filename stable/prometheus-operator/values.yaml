@@ -20,6 +20,10 @@ commonLabels: {}
 ##
 defaultRules:
   create: true
+  ## Labels for default rules
+  labels: {}
+  ## Annotations for default rules
+  annotations: {}
 
 ##
 global:
