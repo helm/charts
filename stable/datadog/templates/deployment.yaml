@@ -22,6 +22,11 @@ spec:
         checksum/confd-config: {{ tpl (toYaml .Values.datadog.confd) . | sha256sum }}
         checksum/checksd-config: {{ tpl (toYaml .Values.datadog.checksd) . | sha256sum }}
     spec:
+      {{- if .Values.securityContext.seLinuxOptions }}
+        securityContext:
+            seLinuxOptions:
+  {{ toYaml .Values.image.securityContext.seLinuxOptions | indent 8 }}
+      {{- end }}
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
 {{ toYaml .Values.image.pullSecrets | indent 8 }}
