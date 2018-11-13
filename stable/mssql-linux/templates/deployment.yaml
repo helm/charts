@@ -27,6 +27,10 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if .Values.image.pullSecrets }}
+          imagePullSecrets:
+    {{ toYaml .Values.image.pullSecrets | indent 8 }}
+          {{- end }}
           env:
             - name: ACCEPT_EULA
               value: "{{ .Values.acceptEula.value | upper }}"
