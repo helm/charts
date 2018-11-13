@@ -169,7 +169,7 @@ spec:
           image: {{ .Values.prometheus.exporter.image.repository }}:{{ .Values.prometheus.exporter.image.tag }}
           imagePullPolicy: {{ .Values.prometheus.exporter.image.pullPolicy }}
           ports:
-          - name: exporter
+          - name: {{ .Values.prometheus.exporter.portName }}
             protocol: TCP
             containerPort: {{ .Values.prometheus.exporter.port }}
           env:
