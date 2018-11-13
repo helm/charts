@@ -44,7 +44,7 @@ spec:
 {{- end }}
 {{- if .Values.tolerations }}
       tolerations:
-{{ toYaml .Values.tolerations indent 8 }}
+{{ toYaml .Values.tolerations | indent 8 }}
 {{- end }}
       containers:
 {{- if .Values.exporter.enabled }}
