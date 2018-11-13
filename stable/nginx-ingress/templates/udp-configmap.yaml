@@ -1,4 +1,4 @@
-{{- if .Values.udp }}
+{{- if (or .Values.stream.udp.enable .Values.stream.udp.map) }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -10,5 +10,5 @@ metadata:
     release: {{ .Release.Name }}
   name: {{ template "nginx-ingress.fullname" . }}-udp
 data:
-{{ toYaml .Values.udp | indent 2 }}
+{{ toYaml .Values.stream.udp.map | indent 2 }}
 {{- end }}

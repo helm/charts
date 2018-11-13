@@ -62,10 +62,10 @@ spec:
           {{- else }}
             - --nginx-configmap={{ .Release.Namespace }}/{{ template "nginx-ingress.controller.fullname" . }}
           {{- end }}
-          {{- if .Values.tcp }}
+          {{- if (or .Values.stream.tcp.enable .Values.stream.tcp.map) }}
             - --tcp-services-configmap={{ .Release.Namespace }}/{{ template "nginx-ingress.fullname" . }}-tcp
           {{- end }}
-          {{- if .Values.udp }}
+          {{- if (or .Values.stream.udp.enable .Values.stream.udp.map) }}
             - --udp-services-configmap={{ .Release.Namespace }}/{{ template "nginx-ingress.fullname" . }}-udp
           {{- end }}
           {{- if .Values.controller.scope.enabled }}
@@ -132,12 +132,12 @@ spec:
               protocol: TCP
             {{- end }}
           {{- end }}
-          {{- range $key, $value := .Values.tcp }}
+          {{- range $key, $value := .Values.stream.tcp.map }}
             - name: "{{ $key }}-tcp"
               containerPort: {{ $key }}
               protocol: TCP
           {{- end }}
-          {{- range $key, $value := .Values.udp }}
+          {{- range $key, $value := .Values.stream.udp.map }}
             - name: "{{ $key }}-udp"
               containerPort: {{ $key }}
               protocol: UDP

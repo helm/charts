@@ -1,4 +1,4 @@
-{{- if .Values.tcp }}
+{{- if (or .Values.stream.tcp.enable .Values.stream.tcp.map) }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -10,5 +10,5 @@ metadata:
     release: {{ .Release.Name }}
   name: {{ template "nginx-ingress.fullname" . }}-tcp
 data:
-{{ toYaml .Values.tcp | indent 2 }}
+{{ toYaml .Values.stream.tcp.map | indent 2 }}
 {{- end }}

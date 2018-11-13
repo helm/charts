@@ -154,8 +154,10 @@ Parameter | Description | Default
 `serviceAccount.create` | if `true`, create a service account | ``
 `serviceAccount.name` | The name of the service account to use. If not set and `create` is `true`, a name is generated using the fullname template. | ``
 `revisionHistoryLimit` | The number of old history to retain to allow rollback. | `10`
-`tcp` | TCP service key:value pairs | `{}`
-`udp` | UDP service key:value pairs | `{}`
+`stream.tcp.enable` | If true, the --tcp-services-configmap flag will be applied and the tcp-configmap will be created | `false`
+`stream.tcp.map` | TCP service key:value pairs | `{}`
+`stream.udp.enable` | If true, the --udp-services-configmap flag will be applied and the udp-configmap will be created | `false`
+`stream.udp.map` | UDP service key:value pairs | `{}`
 
 ```console
 $ helm install stable/nginx-ingress --name my-release \

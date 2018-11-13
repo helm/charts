@@ -370,14 +370,22 @@ serviceAccount:
 imagePullSecrets: []
 # - name: secretName
 
-# TCP service key:value pairs
-# Ref: https://github.com/kubernetes/contrib/tree/master/ingress/controllers/nginx/examples/tcp
+## TCP/UDP services
+## Ref: https://github.com/kubernetes/contrib/tree/master/ingress/controllers/nginx/examples/tcp
+## Ref: https://github.com/kubernetes/contrib/tree/master/ingress/controllers/nginx/examples/udp
 ##
-tcp: {}
-#  8080: "default/example-tcp-svc:9000"
+stream:
 
-# UDP service key:value pairs
-# Ref: https://github.com/kubernetes/contrib/tree/master/ingress/controllers/nginx/examples/udp
-##
-udp: {}
-#  53: "kube-system/kube-dns:53"
+  tcp:
+    # If true, add --tcp-services-configmap flag for nginx-ingress-controller and create tcp-configmap
+    enable: false
+    # TCP service key:value pairs
+    map: {}
+    #  8080: "default/example-tcp-svc:9000"
+
+  udp:
+    # If true, add --udp-services-configmap flag for nginx-ingress-controller and create udp-configmap
+    enable: false
+    # UDP service key:value pairs
+    map: {}
+    #  53: "kube-system/kube-dns:53"
