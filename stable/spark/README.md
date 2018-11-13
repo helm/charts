@@ -54,6 +54,7 @@ The following table lists the configurable parameters of the Spark chart and the
 | `WebUi.Name`          | Spark webui name                 | `spark-webui`                                            |
 | `WebUi.ServicePort`   | k8s service port                 | `8080`                                                   |
 | `WebUi.ContainerPort` | Container listening port         | `8080`                                                   |
+| `WebUi.ServiceType`   | Kubernetes Service type          | `LoadBalancer`                                           |
 
 ### Spark Worker
 

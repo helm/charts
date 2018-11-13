@@ -13,6 +13,7 @@ spec:
       targetPort: {{ .Values.Master.ContainerPort }}
   selector:
     component: "{{ .Release.Name }}-{{ .Values.Master.Component }}"
+  type: {{ .Values.Master.ServiceType }}
 ---
 apiVersion: v1
 kind: Service
@@ -29,7 +30,7 @@ spec:
       targetPort: {{ .Values.WebUi.ContainerPort }}
   selector:
     component: "{{ .Release.Name }}-{{ .Values.Master.Component }}"
-  type: {{ .Values.Master.ServiceType }}
+  type: {{ .Values.WebUi.ServiceType }}
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment

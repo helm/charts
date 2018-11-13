@@ -24,6 +24,7 @@ WebUi:
   Name: webui
   ServicePort: 8080
   ContainerPort: 8080
+  ServiceType: LoadBalancer
 
 Worker:
   Name: worker
