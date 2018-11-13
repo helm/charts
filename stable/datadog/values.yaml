@@ -10,6 +10,12 @@ image:
   # pullSecrets:
   #    - name: regsecret
 
+# Ability to change the SELinux container label in case of an enviornment where a more restrictive
+# SELinux policy exists and we need to change the runtime container labels to let them work
+# securityContext:
+#   seLinuxOptions:
+#      - type: "container_runtime_t"
+
 # NB! Normally you need to keep Datadog DaemonSet enabled!
 # The exceptional case could be a situation when you need to run
 # single DataDog pod per every namespace, but you do not need to
