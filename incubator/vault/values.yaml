@@ -121,6 +121,10 @@ vault:
   #   - name: some-mount
   #     mountPath: /some/path
   extraVolumes: {}
+  extraVolumeMounts: {}
+  #   - name: es-certs
+  #     mountPath: /certs
+  #     readOnly: true
   # Log level
   # https://www.vaultproject.io/docs/commands/server.html#log-level
   logLevel: "info"
