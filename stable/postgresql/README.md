@@ -66,6 +66,9 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `postgresqlUsername`                          | PostgreSQL admin user                              | `postgres`                                                |
 | `postgresqlPassword`                          | PostgreSQL admin password                          | _random 10 character alphanumeric string_                 |
 | `postgresqlDatabase`                          | PostgreSQL database                                | `nil`                                                     |
+| `postgresqlConfiguration`                     | Runtime Config Parameters                          | `nil`                                                     |
+| `pgHbaConfiguration`                          | Content of pg\_hba.conf                            | `nil (do not create pg_hba.conf)`                         |
+| `initdbScripts`                               | List of initdb scripts                             | `nil`                                                     |
 | `service.type`                                | Kubernetes Service type                            | `ClusterIP`                                               |
 | `service.port`                                | PostgreSQL port                                    | `5432`                                                    |
 | `service.nodePort`                            | Kubernetes Service nodePort                        | `nil`                                                     |
@@ -128,15 +131,19 @@ $ helm install --name my-release -f values.yaml stable/postgresql
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
-### postgresql.conf file as configMap
+### postgresql.conf / pg_hba.conf files as configMap
 
-Instead of using specific variables for the PostgreSQL configuration, this helm chart also supports to customize the whole configuration file.
+This helm chart also supports to customize the whole configuration file.
 
 Add your custom file to "files/postgresql.conf" in your working directory. This file will be mounted as configMap to the containers and it will be used for configuring the PostgreSQL server.
+
+Alternatively, you can specify PostgreSQL configuration parameters using the `postgresqlConfiguration` parameter as a dict, using camelCase, e.g. {"sharedBuffers": "500MB"}.
 
 ## Initialize a fresh instance
 
 The [Bitnami PostgreSQL](https://github.com/bitnami/bitnami-docker-postgresql) image allows you to use your custom scripts to initialize a fresh instance. In order to execute the scripts, they must be located inside the chart folder `files/docker-entrypoint-initdb.d` so they can be consumed as a ConfigMap.
+
+Alternatively, you can specify custom scripts using the `initdbScripts` parameter as dict.
 
 The allowed extensions are `.sh`, `.sql` and `.sql.gz`.
 
