@@ -13,6 +13,12 @@ image:
   # pullSecrets:
   #   - myRegistrKeySecretName
 
+## Site of the application
+## Used to construct short URLs
+## ref: https://hub.docker.com/_/yourls/
+##
+yourlsSite: http://yourls
+
 ## User of the application
 ## ref: https://hub.docker.com/_/yourls/
 ##

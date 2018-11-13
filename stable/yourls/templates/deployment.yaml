@@ -65,15 +65,17 @@ spec:
                   name: {{ printf "%s-%s" .Release.Name "externaldb" }}
                   key: db-password
                 {{- end }}
-            - name: YOURLS_USERNAME
+            - name: YOURLS_DB_PREFIX
+              value: {{ .Values.yourlsTablePrefix | quote }}
+            - name: YOURLS_SITE
+              value: {{ .Values.yourlsSite | quote }}
+            - name: YOURLS_USER
               value: {{ .Values.yourlsUsername | quote }}
-            - name: YOURLS_PASSWORD
+            - name: YOURLS_PASS
               valueFrom:
                 secretKeyRef:
                   name: {{ template "fullname" . }}
                   key: yourls-password
-            - name: YOURLS_TABLE_PREFIX
-              value: {{ .Values.yourlsTablePrefix | quote }}
           {{- if .Values.extraEnv }}
 {{ toYaml .Values.extraEnv | indent 12 }}
           {{- end }}

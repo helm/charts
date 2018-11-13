@@ -54,6 +54,7 @@ The following table lists the configurable parameters of the YOURLS chart and th
 | `image.tag`                      | YOURLS image tag                           | `{VERSION}`                                             |
 | `image.pullPolicy`               | Image pull policy                          | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
 | `image.pullSecrets`              | Specify image pull secrets                 | `nil`                                                   |
+| `yourlsSite`                     | Short URLs site refering to the app        | `http://yourls`                                         |
 | `yourlsUsername`                 | User of the application                    | `user`                                                  |
 | `yourlsPassword`                 | Application password                       | _random 10 character long alphanumeric string_          |
 | `yourlsTablePrefix`              | Table prefix                               | `yourls_`                                               |
