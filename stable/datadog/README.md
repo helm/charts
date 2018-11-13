@@ -62,6 +62,7 @@ The following table lists the configurable parameters of the Datadog chart and t
 | `datadog.apiKeyExistingSecret` | If set, use the secret with a provided name instead of creating a new one |`nil` |
 | `datadog.appKey`            | Datadog APP key required to use metricsProvider |  `Nil` You must provide your own key      |
 | `datadog.appKeyExistingSecret` | If set, use the secret with a provided name instead of creating a new one |`nil` |
+| `securityContext.seLinuxOptions`         | Ability to overwrite the SELinux running label of the container  | `Commented`   |
 | `image.repository`          | The image repository to pull from  | `datadog/agent`                           |
 | `image.tag`                 | The image tag to pull              | `6.6.0`                                   |
 | `image.pullPolicy`          | Image pull policy                  | `IfNotPresent`                            |
