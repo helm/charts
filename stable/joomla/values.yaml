@@ -120,7 +120,7 @@ mariadb:
 ## Configure extra options for liveness and readiness probes
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes)
 livenessProbe:
-  enbaled: true
+  enabled: true
   initialDelaySeconds: 120
   periodSeconds: 10
   timeoutSeconds: 5
