@@ -23,6 +23,10 @@ spec:
       annotations:
 {{ toYaml .Values.podAnnotations | indent 8 }}
     spec:
+      {{- if .Values.vault.extraInitContainers }}
+      initContainers:
+{{ tpl .Values.vault.extraInitContainers . | indent 6 }}
+      {{- end }}
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
