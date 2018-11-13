@@ -78,6 +78,7 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `persistence.annotations`                     | Annotations for the PVC                            | `{}`                                                      |
 | `resources`                                   | CPU/Memory resource requests/limits                | `nil`                                                     |
 | `nodeSelector`                                | Node labels for pod assignment                     | `{}`                                                      |
+| `affinity`                                    | Affinity labels for pod assignment                 | `{}`                                                      |
 | `tolerations`                                 | Toleration labels for pod assignment               | `[]`                                                      |
 | `terminationGracePeriodSeconds`               | Seconds the pod needs to terminate gracefully      | `nil`                                                     |
 | `resources`                                   | CPU/Memory resource requests/limits                | Memory: `256Mi`, CPU: `250m`                              |
