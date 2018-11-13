@@ -123,8 +123,8 @@ The following table lists the configurable parameters of the NATS chart and thei
 | `metrics.image.tag`                  | Prometheus metrics exporter image tag                                                        | `0.1.0`                                                       |
 | `metrics.image.pullPolicy`           | Prometheus metrics image pull policy                                                         | `IfNotPresent`                                                |
 | `metrics.image.pullSecrets`          | Prometheus metrics image pull secrets                                                        | `nil`                                                         |
-| `metrics.port`                       | Prometheus metrics exporter annotations                                                      | `7777`                                                        |
-| `metrics.annotations`                | Prometheus metrics exporter annotations                                                      | `prometheus.io/scrape: "true"`,  `prometheus.io/port: "7777"` |
+| `metrics.port`                       | Prometheus metrics exporter port                                                             | `7777`                                                        |
+| `metrics.podAnnotations`             | Prometheus metrics exporter annotations                                                      | `prometheus.io/scrape: "true"`,  `prometheus.io/port: "7777"` |
 | `metrics.resources`                  | Prometheus metrics exporter resource requests/limit                                          | {}                                                            |
 | `sidecars`                           | Attach additional containers to the pod                                                      | `nil`                                                         |
 

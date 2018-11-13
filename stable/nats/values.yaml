@@ -273,7 +273,7 @@ metrics:
   ## Metrics exporter port
   port: 7777
   ## Metrics exporter annotations
-  annotations:
+  podAnnotations:
     prometheus.io/scrape: "true"
     prometheus.io/port: "7777"
   ## Metrics exporter flags
