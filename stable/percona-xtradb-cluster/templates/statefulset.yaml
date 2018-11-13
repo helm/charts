@@ -111,6 +111,10 @@ spec:
           mountPath: /root
         - name: var-log
           mountPath: /var/log
+        {{- if .Values.ssl.enabled }}
+        - name: certificates
+          mountPath: /ssl
+        {{- end }}
       {{ if .Values.logTail }}
       - name: "logs"
         image: "busybox:1.25.0"
@@ -159,6 +163,11 @@ spec:
       - name: mysql-data
         emptyDir: {}
       {{- end -}}
+      {{- if .Values.ssl.enabled }}
+      - name: certificates
+        secret:
+          secretName: {{ .Values.ssl.secret }}
+      {{- end }}
       {{- if .Values.tolerations }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
