@@ -23,6 +23,14 @@ spec:
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
 {{- end }}
+{{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+{{- end }}
+{{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 6 }}
+{{- end }}
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
