@@ -93,6 +93,7 @@ The configuration parameters in this section control the resources requested and
 | image.repository | The docker hub repo for SQL Server                                                             | `microsoft/mssql-server-linux`   |
 | image.tag        | The tag for the image                                                                          | `2017-CU5`                       |
 | image.pullPolicy | The pull policy for the deployment                                                             | `IfNotPresent`                   |
+| image.pullSecrets         | Docker credentials to use in order to pull the image  | `Commented`   |
 | nodeSelector     | Node labels for pod assignment                                                                 | `{}`                             |
 | service.type     | Service Type                                                                                   | `ClusterIP`                      |
 | service.port     | Service Port                                                                                   | `1433`                           |
