@@ -246,6 +246,9 @@ ingress:
   #   key:
   #   certificate:
 
+# Optional additional arguments
+extraArgs: []
+
 sidecars:
 ## Add sidecars to the pod.
 ## e.g.

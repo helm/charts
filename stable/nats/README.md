@@ -117,6 +117,7 @@ The following table lists the configurable parameters of the NATS chart and thei
 | `ingress.secrets[0].key`             | TLS Secret Key                                                                               | `nil`                             |
 | `networkPolicy.enabled`              | Enable NetworkPolicy                                                                         | `false`                           |
 | `networkPolicy.allowExternal`        | Allow external connections                                                                   | `true`                            |
+| `extraArgs`                          | Optional flags for NATS                                                                      | `[]`                              |
 | `sidecars`                           | Attach additional containers to the pod.                                                     | `nil`                             |
 | `metrics.enabled`                          | Start a side-car prometheus exporter                                                                           | `false`                                              |
 | `metrics.image.registry`                   | MongoDB exporter image registry                                                                                  | `docker.io`                                          |
