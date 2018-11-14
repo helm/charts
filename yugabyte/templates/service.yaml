@@ -179,6 +179,7 @@ spec:
           - "--server_broadcast_addresses=$(HOSTNAME).yb-masters:7100"
           - "--master_addresses={{range $index := until (int ($root.Values.replicas.master))}}{{if ne $index 0}},{{end}}yb-master-{{ $index }}.yb-masters:7100{{end}}"
           - "--master_replication_factor={{ $root.Values.replicas.master }}"
+          - "--metric_node_name=$(HOSTNAME)"
           {{- range $flag, $override := $root.Values.gflags.master }}
           - "--{{ $flag }}={{ $override }}"
           {{- end}}
@@ -188,6 +189,7 @@ spec:
           - "--server_broadcast_addresses=$(HOSTNAME).yb-tservers:9100"
           - "--tserver_master_addrs={{range $index := until (int ($root.Values.replicas.master))}}{{if ne $index 0}},{{end}}yb-master-{{ $index }}.yb-masters:7100{{end}}"
           - "--tserver_master_replication_factor={{ $root.Values.replicas.master }}"
+          - "--metric_node_name=$(HOSTNAME)"
           {{- range $flag, $override := $root.Values.gflags.tserver }}
           - "--{{ $flag }}={{ $override }}"
           {{- end}}
