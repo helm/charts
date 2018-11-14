@@ -125,7 +125,7 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name:
 
-## Specify if a Pod Security Policy for node-exporter must be created
+## Specify if a Pod Security Policy for filebeat must be created
 ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/
 ##
 podSecurityPolicy:
