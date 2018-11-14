@@ -1,0 +1,895 @@
+[debug] Created tunnel using local port: '51505'
+
+[debug] SERVER: "127.0.0.1:51505"
+
+[debug] Original chart version: ""
+[debug] CHART PATH: /Users/harry/helm-charts/stable/kong
+
+NAME:   trendsetting-gibbon
+REVISION: 1
+RELEASED: Tue Nov 13 17:47:54 2018
+CHART: kong-0.6.0
+USER-SUPPLIED VALUES:
+admin:
+  useTLS: false
+ingressController:
+  enabled: true
+livenessProbe:
+  httpGet:
+    scheme: HTTP
+readinessProbe:
+  httpGet:
+    scheme: HTTP
+
+COMPUTED VALUES:
+admin:
+  annotations: {}
+  containerPort: 8444
+  ingress:
+    annotations: {}
+    enabled: false
+    hosts: []
+    path: /
+  servicePort: 8444
+  type: NodePort
+  useTLS: false
+cassandra:
+  enabled: false
+env:
+  database: postgres
+image:
+  pullPolicy: IfNotPresent
+  repository: kong
+  tag: 0.14.1
+ingressController:
+  enabled: true
+  image:
+    repository: kong-docker-kubernetes-ingress-controller.bintray.io/kong-ingress-controller
+    tag: 0.2.0
+  livenessProbe:
+    failureThreshold: 3
+    httpGet:
+      path: /healthz
+      port: 10254
+      scheme: HTTP
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    successThreshold: 1
+    timeoutSeconds: 5
+  rbac:
+    create: true
+  readinessProbe:
+    failureThreshold: 3
+    httpGet:
+      initialDelaySeconds: 30
+      path: /healthz
+      port: 10254
+      scheme: HTTP
+    periodSeconds: 10
+    successThreshold: 1
+    timeoutSeconds: 5
+  replicaCount: 1
+  serviceAccount:
+    create: true
+    name: null
+livenessProbe:
+  failureThreshold: 5
+  httpGet:
+    path: /status
+    port: admin
+    scheme: HTTP
+  initialDelaySeconds: 30
+  periodSeconds: 30
+  successThreshold: 1
+  timeoutSeconds: 5
+nodeSelector: {}
+podAnnotations: {}
+postgresql:
+  affinity: {}
+  deploymentAnnotations: {}
+  enabled: true
+  global: {}
+  image: postgres
+  imageTag: 9.6.2
+  metrics:
+    enabled: false
+    image: wrouesnel/postgres_exporter
+    imagePullPolicy: IfNotPresent
+    imageTag: v0.4.6
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+  networkPolicy:
+    allowExternal: true
+    enabled: false
+  nodeSelector: {}
+  persistence:
+    accessMode: ReadWriteOnce
+    enabled: true
+    mountPath: /var/lib/postgresql/data/pgdata
+    resourcePolicy: null
+    size: 8Gi
+    subPath: postgresql-db
+  podAnnotations: {}
+  postgresDatabase: kong
+  postgresUser: kong
+  probes:
+    liveness:
+      failureThreshold: 6
+      initialDelay: 60
+      timeoutSeconds: 5
+    readiness:
+      initialDelay: 5
+      periodSeconds: 5
+      timeoutSeconds: 3
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+  service:
+    externalIPs: []
+    port: 5432
+    type: ClusterIP
+  tolerations: []
+  usePasswordFile: false
+proxy:
+  annotations: {}
+  containerPort: 8443
+  ingress:
+    annotations: {}
+    enabled: false
+    hosts: []
+    path: /
+  servicePort: 8443
+  type: NodePort
+  useTLS: true
+readinessProbe:
+  failureThreshold: 5
+  httpGet:
+    path: /status
+    port: admin
+    scheme: HTTP
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  successThreshold: 1
+  timeoutSeconds: 1
+replicaCount: 1
+resources: {}
+runMigrations: true
+tolerations: []
+waitImage:
+  repository: busybox
+  tag: latest
+
+HOOKS:
+---
+# trendsetting-gibbon-kong-upgrade-migrations
+# Why is this Job duplicated and not using only helm hooks?
+# See: https://github.com/helm/charts/pull/7362
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: trendsetting-gibbon-kong-upgrade-migrations
+  labels:
+    app: kong
+    chart: "kong-0.6.0"
+    release: "trendsetting-gibbon"
+    heritage: "Tiller"
+    component: migrations
+  annotations:
+    helm.sh/hook: "pre-upgrade"
+    helm.sh/hook-delete-policy: "before-hook-creation"
+spec:
+  template:
+    metadata:
+      name: kong-upgrade-migrations
+      labels:
+        app: kong
+        release: "trendsetting-gibbon"
+        component: migrations
+    spec:
+      initContainers:
+      - name: wait-for-postgres
+        image: busybox
+        env:
+        - name: KONG_PG_HOST
+          value: trendsetting-gibbon-postgresql
+        - name: KONG_PG_PORT
+          value: "5432"
+        - name: KONG_PG_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: trendsetting-gibbon-postgresql
+              key: postgres-password
+        command: [ "/bin/sh", "-c", "until nc -zv $KONG_PG_HOST $KONG_PG_PORT -w1; do echo 'waiting for db'; sleep 1; done" ]
+      containers:
+      - name: kong-upgrade-migrations
+        image: "kong:0.14.1"
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: KONG_NGINX_DAEMON
+          value: "off"
+        - name: KONG_DATABASE
+          value: "postgres"
+        - name: KONG_PG_HOST
+          value: trendsetting-gibbon-postgresql
+        - name: KONG_PG_PORT
+          value: "5432"
+        - name: KONG_PG_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: trendsetting-gibbon-postgresql
+              key: postgres-password
+        command: [ "/bin/sh", "-c", "kong migrations up" ]
+      restartPolicy: OnFailure
+MANIFEST:
+
+---
+# Source: kong/charts/postgresql/templates/secrets.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: trendsetting-gibbon-postgresql
+  labels:
+    app: postgresql
+    chart: postgresql-0.18.2
+    release: trendsetting-gibbon
+    heritage: Tiller
+type: Opaque
+data:
+  
+  postgres-password: "NnBCVk5GbVNHcw=="
+---
+# Source: kong/charts/postgresql/templates/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: trendsetting-gibbon-postgresql
+  labels:
+    app: postgresql
+    chart: postgresql-0.18.2
+    release: trendsetting-gibbon
+    heritage: Tiller
+data:
+---
+# Source: kong/charts/postgresql/templates/pvc.yaml
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: trendsetting-gibbon-postgresql
+  labels:
+    app: postgresql
+    chart: postgresql-0.18.2
+    release: trendsetting-gibbon
+    heritage: Tiller
+  annotations:
+    "helm.sh/resource-policy": 
+spec:
+  accessModes:
+    - "ReadWriteOnce"
+  resources:
+    requests:
+      storage: "8Gi"
+---
+# Source: kong/templates/controller-service-account.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: trendsetting-gibbon-kong
+  labels:
+    app: kong
+    chart: "kong-0.6.0"
+    release: "trendsetting-gibbon"
+    heritage: "Tiller"
+---
+# Source: kong/templates/controller-cluster-role.yaml
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  labels:
+    app: kong
+    chart: "kong-0.6.0"
+    release: "trendsetting-gibbon"
+    heritage: "Tiller"
+  name: kong-ingress-clusterrole
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - endpoints
+      - nodes
+      - pods
+      - secrets
+    verbs:
+      - list
+      - watch
+  - apiGroups:
+      - ""
+    resources:
+      - nodes
+    verbs:
+      - get
+  - apiGroups:
+      - ""
+    resources:
+      - services
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - "extensions"
+    resources:
+      - ingresses
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - ""
+    resources:
+        - events
+    verbs:
+        - create
+        - patch
+  - apiGroups:
+      - "extensions"
+    resources:
+      - ingresses/status
+    verbs:
+      - update
+  - apiGroups:
+      - "configuration.konghq.com"
+    resources:
+      - kongplugins
+      - kongcredentials
+      - kongconsumers
+      - kongingresses
+    verbs:
+      - get
+      - list
+      - watch
+---
+# Source: kong/templates/controller-rbac-cluster-role-binding.yaml
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: kong-ingress-clusterrole-nisa-binding
+  labels:
+    app: kong
+    chart: "kong-0.6.0"
+    release: "trendsetting-gibbon"
+    heritage: "Tiller"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: kong-ingress-clusterrole
+subjects:
+  - kind: ServiceAccount
+    name: trendsetting-gibbon-kong
+    namespace: yolo
+---
+# Source: kong/templates/controller-rbac-role.yaml
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: Role
+metadata:
+  name: kong-ingress-role
+  namespace: 
+  labels:
+    app: kong
+    chart: "kong-0.6.0"
+    release: "trendsetting-gibbon"
+    heritage: "Tiller"
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - configmaps
+      - pods
+      - secrets
+      - namespaces
+    verbs:
+      - get
+  - apiGroups:
+      - ""
+    resources:
+      - configmaps
+    resourceNames:
+      # Defaults to "<election-id>-<ingress-class>"
+      # Here: "<ingress-controller-leader>-<nginx>"
+      # This has to be adapted if you change either parameter
+      # when launching the nginx-ingress-controller.
+      - "ingress-controller-leader-nginx"
+    verbs:
+      - get
+      - update
+  - apiGroups:
+      - ""
+    resources:
+      - configmaps
+    verbs:
+      - create
+  - apiGroups:
+      - ""
+    resources:
+      - endpoints
+    verbs:
+      - get
+---
+# Source: kong/templates/controller-rbac-role-binding.yaml
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: RoleBinding
+metadata:
+  name: kong-ingress-role-nisa-binding
+  namespace: yolo
+  labels:
+    app: kong
+    chart: "kong-0.6.0"
+    release: "trendsetting-gibbon"
+    heritage: "Tiller"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: kong-ingress-role
+subjects:
+  - kind: ServiceAccount
+    name: trendsetting-gibbon-kong
+    namespace: yolo
+---
+# Source: kong/charts/postgresql/templates/svc.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: trendsetting-gibbon-postgresql
+  labels:
+    app: postgresql
+    chart: postgresql-0.18.2
+    release: trendsetting-gibbon
+    heritage: Tiller
+spec:
+  type: ClusterIP
+  ports:
+  - name: postgresql
+    port: 5432
+    targetPort: postgresql
+  selector:
+    app: postgresql
+    release: trendsetting-gibbon
+---
+# Source: kong/templates/service-kong-admin.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: trendsetting-gibbon-kong-admin
+  annotations:
+  labels:
+    app: kong
+    chart: "kong-0.6.0"
+    release: "trendsetting-gibbon"
+    heritage: "Tiller"
+spec:
+  type: NodePort
+  ports:
+  - name: kong-admin
+    port: 8444
+    targetPort: 8444
+    protocol: TCP
+  selector:
+    app: kong
+    release: trendsetting-gibbon
+---
+# Source: kong/templates/service-kong-proxy.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: trendsetting-gibbon-kong-proxy
+  annotations:
+  labels:
+    app: kong
+    chart: "kong-0.6.0"
+    release: "trendsetting-gibbon"
+    heritage: "Tiller"
+spec:
+  type: NodePort
+  ports:
+  - name: kong-proxy
+    port: 8443
+    targetPort: 8443
+    protocol: TCP
+  selector:
+    app: kong
+    release: trendsetting-gibbon
+---
+# Source: kong/charts/postgresql/templates/deployment.yaml
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: trendsetting-gibbon-postgresql
+  labels:
+    app: postgresql
+    chart: postgresql-0.18.2
+    release: trendsetting-gibbon
+    heritage: Tiller
+spec:
+  selector:
+    matchLabels:
+      app: postgresql
+      release: trendsetting-gibbon
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: postgresql
+        release: trendsetting-gibbon
+    spec:
+      containers:
+      - name: trendsetting-gibbon-postgresql
+        image: "postgres:9.6.2"
+        imagePullPolicy: ""
+        args:
+        env:
+        - name: POSTGRES_USER
+          value: "kong"
+          # Required for pg_isready in the health probes.
+        - name: PGUSER
+          value: "kong"
+        - name: POSTGRES_DB
+          value: "kong"
+        - name: POSTGRES_INITDB_ARGS
+          value: ""
+        - name: PGDATA
+          value: /var/lib/postgresql/data/pgdata
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: trendsetting-gibbon-postgresql
+              key: postgres-password
+        - name: POD_IP
+          valueFrom: { fieldRef: { fieldPath: status.podIP } }
+        ports:
+        - name: postgresql
+          containerPort: 5432
+        livenessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - exec pg_isready --host $POD_IP
+          initialDelaySeconds: 60
+          timeoutSeconds: 5
+          failureThreshold: 6
+        readinessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - exec pg_isready --host $POD_IP
+          initialDelaySeconds: 5
+          timeoutSeconds: 3
+          periodSeconds: 5
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi
+          
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/postgresql/data/pgdata
+          subPath: postgresql-db
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: trendsetting-gibbon-postgresql
+---
+# Source: kong/templates/controller-deployment.yaml
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: "trendsetting-gibbon-kong-controller"
+  labels:
+    app: "kong"
+    chart: "kong-0.6.0"
+    release: "trendsetting-gibbon"
+    heritage: "Tiller"
+    component: "controller"
+  namespace: yolo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kong
+      release: trendsetting-gibbon
+      component: "controller"
+  template:
+    metadata:
+      labels:
+        app: kong
+        release: trendsetting-gibbon
+        component: "controller"
+    spec:
+      serviceAccountName: kong-serviceaccount
+      initContainers:
+      - name: wait-for-db
+        image: "kong:0.14.1"
+        env:
+        - name: KONG_PROXY_ACCESS_LOG
+          value: "/dev/stdout"
+        - name: KONG_ADMIN_ACCESS_LOG
+          value: "/dev/stdout"
+        - name: KONG_PROXY_ERROR_LOG
+          value: "/dev/stderr"
+        - name: KONG_ADMIN_ERROR_LOG
+          value: "/dev/stderr"
+        - name: KONG_PG_HOST
+          value: trendsetting-gibbon-postgresql
+        - name: KONG_PG_PORT
+          value: "5432"
+        - name: KONG_PG_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: trendsetting-gibbon-postgresql
+              key: postgres-password
+        command: [ "/bin/sh", "-c", "until kong start; do echo 'waiting for db'; sleep 1; done; kong stop" ]
+      containers:
+      - name: admin-api
+        image: "kong:0.14.1"
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: KONG_PROXY_LISTEN
+          value: 'off'
+        - name: KONG_ADMIN_ACCESS_LOG
+          value: "/dev/stdout"
+        - name: KONG_ADMIN_ERROR_LOG
+          value: "/dev/stderr"
+        - name: KONG_ADMIN_LISTEN
+          value: 0.0.0.0:8444
+        - name: KONG_PG_HOST
+          value: trendsetting-gibbon-postgresql
+        - name: KONG_PG_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: trendsetting-gibbon-postgresql
+              key: postgres-password
+        ports:
+        - name: admin
+          containerPort: 8444
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 5
+          httpGet:
+            path: /status
+            port: admin
+            scheme: HTTP
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+          
+        livenessProbe:
+          failureThreshold: 5
+          httpGet:
+            path: /status
+            port: admin
+            scheme: HTTP
+          initialDelaySeconds: 30
+          periodSeconds: 30
+          successThreshold: 1
+          timeoutSeconds: 5
+          
+        resources:
+          {}
+          
+      - name: ingress-controller
+        args:
+        - /kong-ingress-controller
+        # the kong URL points to the kong admin api server
+        - --kong-url=http://localhost:8444
+        # the default service is the kong proxy service
+        - --default-backend-service=yolo/trendsetting-gibbon-kong-proxy
+        # Service from were we extract the IP address/es to use in Ingress status
+        - --publish-service=yolo/trendsetting-gibbon-kong-proxy
+        env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.name
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+        image: "kong-docker-kubernetes-ingress-controller.bintray.io/kong-ingress-controller:0.2.0"
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /healthz
+            port: 10254
+            scheme: HTTP
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /healthz
+            port: 10254
+            scheme: HTTP
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        resources:
+          null
+---
+# Source: kong/templates/deployment.yaml
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: "trendsetting-gibbon-kong"
+  labels:
+    app: "kong"
+    chart: "kong-0.6.0"
+    release: "trendsetting-gibbon"
+    heritage: "Tiller"
+    component: app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kong
+      release: trendsetting-gibbon
+      component: app
+  template:
+    metadata:
+      labels:
+        app: kong
+        release: trendsetting-gibbon
+        component: app
+    spec:
+      initContainers:
+      - name: wait-for-db
+        image: "kong:0.14.1"
+        env:
+        - name: KONG_PROXY_ACCESS_LOG
+          value: "/dev/stdout"
+        - name: KONG_ADMIN_ACCESS_LOG
+          value: "/dev/stdout"
+        - name: KONG_PROXY_ERROR_LOG
+          value: "/dev/stderr"
+        - name: KONG_ADMIN_ERROR_LOG
+          value: "/dev/stderr"
+        - name: KONG_PG_HOST
+          value: trendsetting-gibbon-postgresql
+        - name: KONG_PG_PORT
+          value: "5432"
+        - name: KONG_PG_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: trendsetting-gibbon-postgresql
+              key: postgres-password
+        - name: KONG_DATABASE
+          value: "postgres"
+        command: [ "/bin/sh", "-c", "until kong start; do echo 'waiting for db'; sleep 1; done; kong stop" ]
+      containers:
+      - name: kong
+        image: "kong:0.14.1"
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: KONG_ADMIN_LISTEN
+          value: 0.0.0.0:8444
+        - name: KONG_PROXY_LISTEN
+          value: "0.0.0.0:8443 ssl"
+        - name: KONG_NGINX_DAEMON
+          value: "off"
+        - name: KONG_PROXY_ACCESS_LOG
+          value: "/dev/stdout"
+        - name: KONG_ADMIN_ACCESS_LOG
+          value: "/dev/stdout"
+        - name: KONG_PROXY_ERROR_LOG
+          value: "/dev/stderr"
+        - name: KONG_ADMIN_ERROR_LOG
+          value: "/dev/stderr"
+        - name: KONG_DATABASE
+          value: "postgres"
+        - name: KONG_PG_HOST
+          value: trendsetting-gibbon-postgresql
+        - name: KONG_PG_PORT
+          value: "5432"
+        - name: KONG_PG_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: trendsetting-gibbon-postgresql
+              key: postgres-password
+        ports:
+        - name: admin
+          containerPort: 8444
+          protocol: TCP
+        - name: proxy
+          containerPort: 8443
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 5
+          httpGet:
+            path: /status
+            port: admin
+            scheme: HTTP
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+          
+        livenessProbe:
+          failureThreshold: 5
+          httpGet:
+            path: /status
+            port: admin
+            scheme: HTTP
+          initialDelaySeconds: 30
+          periodSeconds: 30
+          successThreshold: 1
+          timeoutSeconds: 5
+          
+        resources:
+          {}
+          
+      tolerations:
+        []
+---
+# Source: kong/templates/migrations.yaml
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: trendsetting-gibbon-kong-migrations
+  labels:
+    app: kong
+    chart: "kong-0.6.0"
+    release: "trendsetting-gibbon"
+    heritage: "Tiller"
+    component: migrations
+spec:
+  template:
+    metadata:
+      name: kong-migrations
+      labels:
+        app: kong
+        release: "trendsetting-gibbon"
+        component: migrations
+    spec:
+      initContainers:
+      - name: wait-for-postgres
+        image: "busybox:latest"
+        env:
+        - name: KONG_PG_HOST
+          value: trendsetting-gibbon-postgresql
+        - name: KONG_PG_PORT
+          value: "5432"
+        - name: KONG_PG_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: trendsetting-gibbon-postgresql
+              key: postgres-password
+        command: [ "/bin/sh", "-c", "until nc -zv $KONG_PG_HOST $KONG_PG_PORT -w1; do echo 'waiting for db'; sleep 1; done" ]
+      containers:
+      - name: kong-migrations
+        image: "kong:0.14.1"
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: KONG_NGINX_DAEMON
+          value: "off"
+        - name: KONG_DATABASE
+          value: "postgres"
+        - name: KONG_PG_HOST
+          value: trendsetting-gibbon-postgresql
+        - name: KONG_PG_PORT
+          value: "5432"
+        - name: KONG_PG_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: trendsetting-gibbon-postgresql
+              key: postgres-password
+        command: [ "/bin/sh", "-c", "kong migrations up" ]
+      restartPolicy: OnFailure
