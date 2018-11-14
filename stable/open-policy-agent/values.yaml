@@ -1,0 +1,121 @@
+replicaCount: 1
+
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  ## Specifies whether a ServiceAccount should be created
+  ##
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+rbac:
+  ## Specifies whether RBAC resources should be created
+  ##
+  create: true
+
+
+service:
+  type: ClusterIP
+
+  port: 80
+  targetPort: 8181
+
+  # This has no effect unless you provide a cert and key
+  tlsPort: 443
+  tlsTargetPort: 8443
+
+  annotations: {}
+
+
+
+tls: 
+  autoGenerate: true
+  # If we are not given tls key and certs, we generate. This is the expiry days
+  # for the CA Cert
+  caDays: 29691
+  
+  # If you wish to provide a CA Bundle, set it here. This is only used if 
+  # opa.deployWebhook is set to True
+  # ca: ""
+
+  # If a cert and key are not provided, we make one. This is the expiry in days
+  # of that cert.
+  certDays: 3650
+
+  # If you wish to provide a Key and Cert do it here.
+  # CAUTION: The CN of the cert *must* match the full service name.
+  # cert: ""
+  # key: ""
+
+opa:
+  image:
+    repository: openpolicyagent/opa
+    tag: 0.9.1
+    pullPolicy: IfNotPresent
+
+  # This has no effect unless you provide valid certs. However, if you do, this 
+  # controls if we should also listen for http connections as well as https
+  insecureEnabled: true
+
+  # Should we deploy the ValidatingWebhook?
+  deployWebhook: true
+
+  # Can be debug, info or error
+  logLevel: info
+
+  # Can be either text or json
+  logFormat: text
+
+  # Specify any config you want to pass to OPA here. There is a sane default inside the ConfigMap
+  # defaultConfig: |
+  #     package system
+  #     import data.kubernetes.admission
+  #     ... more ...
+
+  resources: {}
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+
+# Control various aspects of the kube-mgmt side car
+kubeMgmt:
+  image:
+    repository: openpolicyagent/kube-mgmt
+    tag: 0.6
+    pullPolicy: IfNotPresent
+
+  enabled: true # Should we deploy the kubernetes management sidecar helper
+  replicate:
+    - extensions/v1beta1/ingresses
+  replicateCluster:
+    - v1/namespaces
+    - v1/services
+    - v1/pods
+  replicatePath:
+  resources: {}
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

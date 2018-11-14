@@ -1,0 +1,33 @@
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: {{ include "open-policy-agent.fullname" . }}
+  labels: {{ include "open-policy-agent.labels" . | indent 4 }}
+data:
+  main: |-
+{{- if .Values.opa.defaultConfig }}
+{{ .Values.opa.defaultConfig | indent 4 }}
+{{- else }}
+    package system
+
+    import data.kubernetes.admission
+
+    main = {
+      "apiVersion": "admission.k8s.io/v1beta1",
+      "kind": "AdmissionReview",
+      "response": response,
+    }
+
+    default response = {"allowed": true}
+
+    response = {
+        "allowed": false,
+        "status": {
+            "reason": reason,
+        },
+    } {
+        reason = concat(", ", admission.deny)
+        reason != ""
+    }
+{{ end }}

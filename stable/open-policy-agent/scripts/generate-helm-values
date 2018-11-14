@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+set -euo pipefail
+IFS=$'\n\t'
+
+certFile="${1-}"
+keyFile="${2-}"
+
+if [[ -z "$certFile" ]] || [[ -z "$keyFile" ]]; then
+    echo "ERROR: Must provide cert filename and key filename as first two args"
+    echo ""
+    echo "$0 <cert filename> <key filename>"
+    exit 1
+fi
+
+certFileContents="$(sed 's/^/    /g' <  $certFile)"
+keyFileContents="$(sed 's/^/    /g' < $keyFile)"
+
+
+cat <<EOF
+---
+tls:
+  cert: |-
+$certFileContents
+
+  key: |-
+$keyFileContents
+EOF

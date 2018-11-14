@@ -1,0 +1,23 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ include "open-policy-agent.fullname" . }}
+  labels: {{ include "open-policy-agent.labels" . | indent 4 }}
+  annotations:
+{{ toYaml .Values.service.annotations | indent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.tlsPort }}
+      targetPort: {{ .Values.service.tlsTargetPort }}
+      protocol: TCP
+      name: https
+{{- if .Values.opa.insecureEnabled }}
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.targetPort }}
+      protocol: TCP
+      name: http
+{{- end }}
+  selector:
+{{- include "open-policy-agent.podLabels" . | indent 6 }}

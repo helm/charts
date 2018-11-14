@@ -1,0 +1,18 @@
+{{- if .Values.rbac.create -}}
+---
+# Grant OPA/kube-mgmt read-only access to resources. This let's kube-mgmt
+# replicate resources into OPA so they can be used in policies.
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ include "open-policy-agent.fullname" . }}
+  labels: {{ include "open-policy-agent.labels" . | indent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: view
+subjects:
+- kind: ServiceAccount
+  name: {{ template "open-policy-agent.serviceAccountName" . }}
+  namespace: {{ .Release.Namespace }}
+{{- end -}}

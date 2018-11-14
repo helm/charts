@@ -1,0 +1,75 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ include "open-policy-agent.fullname" . }}
+  labels: {{ include "open-policy-agent.labels" . | indent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels: {{ include "open-policy-agent.podLabels" . | indent 6 }}
+  template:
+    metadata:
+      labels: {{ include "open-policy-agent.podLabels" . | indent 8 }}
+    spec:
+      serviceAccount: {{ include "open-policy-agent.fullname" . }}
+      containers:
+        # WARNING: OPA is NOT running with an authorization policy configured. This
+        # means that clients can read and write policies in OPA. If you are
+        # deploying OPA in an insecure environment, be sure to configure
+        # authentication and authorization on the daemon. See the Security page for
+        # details: https://www.openpolicyagent.org/docs/security.html.
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.opa.image.repository }}:{{ .Values.opa.image.tag }}"
+          imagePullPolicy: {{ .Values.opa.image.pullPolicy }}
+          args:
+            - "run"
+            - "--log-level={{ .Values.opa.logLevel }}"
+            - "--log-format={{ .Values.opa.logFormat }}"
+            - "--server"
+            - "--addr=:{{ .Values.service.tlsTargetPort }}"
+{{- if .Values.opa.insecureEnabled }}
+            - "--insecure-addr=:{{ .Values.service.targetPort }}"
+{{- end }}
+            - "--tls-cert-file=/certs/tls.crt"
+            - "--tls-private-key-file=/certs/tls.key"
+          volumeMounts:
+            - readOnly: true
+              mountPath: /certs
+              name: opa-certs
+          resources:
+{{ toYaml .Values.opa.resources | indent 12 }}
+{{- if .Values.kubeMgmt.enabled }}
+        - name: kube-mgmt
+          image: "{{ .Values.kubeMgmt.image.repository }}:{{ .Values.kubeMgmt.image.tag }}"
+          imagePullPolicy: {{ .Values.kubeMgmt.image.pullPolicy }}
+          args:
+            - "--policies={{ .Release.Namespace }}"
+            {{- range .Values.kubeMgmt.replicate }}
+            - "--replicate={{.}}"
+            {{- end }}
+            {{- range .Values.kubeMgmt.replicateCluster }}
+            - "--replicate-cluster={{.}}"
+            {{- end }}
+            {{- range .Values.kubeMgmt.replicatePath }}
+            - "--replicate-path={{.}}"
+            {{- end }}
+{{- end }}
+          resources:
+{{ toYaml .Values.kubeMgmt.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+      volumes:
+        - name: opa-certs
+          secret:
+            secretName: {{ include "open-policy-agent.fullname" . }}

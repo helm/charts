@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+set -euo pipefail
+IFS=$'\n\t'
+
+name="${1-}"
+namespace="${2-}"
+
+if [[ -z "$namespace" ]] || [[ -z "$name" ]]; then
+    echo "ERROR: Must provide deployment name as first argument and namespace as second"
+    echo ""
+    echo "$0 <deployment name> <namespace>"
+    exit 1
+fi
+
+cat <<EOF
+---
+kind: ValidatingWebhookConfiguration
+apiVersion: admissionregistration.k8s.io/v1beta1
+metadata:
+  name: opa-validating-webhook
+webhooks:
+  - name: validating-webhook.openpolicyagent.org
+    rules:
+      - operations: ["CREATE", "UPDATE", "DELETE"]
+        apiGroups: ["*"]
+        apiVersions: ["*"]
+        resources: ["*"]
+    clientConfig:
+      caBundle: $(cat tls/ca.crt | base64 | tr -d '\n')
+      service:
+        namespace: $namespace
+        name: $name
+EOF
