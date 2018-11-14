@@ -31,6 +31,22 @@ apiVersion: v1
 kind: Service
 metadata:
   name: "{{ $endpoint.name }}"
+{{- if $root.Values.annotations }}
+  annotations:
+  {{ if eq .name "yb-master-service" }}
+    {{- if $root.Values.annotations.master }}
+    {{- if $root.Values.annotations.master.loadbalancer }}
+{{ toYaml $root.Values.annotations.master.loadbalancer | indent 4 }}
+    {{- end}}
+    {{- end}}
+  {{ else }}
+    {{- if $root.Values.annotations.tserver }}
+    {{- if $root.Values.annotations.tserver.loadbalancer }}
+{{ toYaml $root.Values.annotations.tserver.loadbalancer | indent 4 }}
+    {{- end}}
+    {{- end}}
+  {{- end}}
+  {{- end }}
   labels:
     app: "{{ $endpoint.app }}"
     heritage: {{ $root.Release.Service | quote }}
