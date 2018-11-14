@@ -73,6 +73,7 @@ spec:
         - -webhook-port={{ .Values.webhookPort }}
         {{- end }}
         - -install-crds={{ .Values.installCrds }}
+        - -namespace={{ .Values.namespace }}
         - -controller-threads={{ .Values.controllerThreads }}
         - -resync-interval={{ .Values.resyncInterval }}
         - -logtostderr
