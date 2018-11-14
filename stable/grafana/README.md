@@ -53,7 +53,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `tolerations`                   | Toleration labels for pod assignment          | `[]`                                                    |
 | `affinity`                      | Affinity settings for pod assignment          | `{}`                                                    |
 | `persistence.enabled`           | Use persistent volume to store data           | `false`                                                 |
-| `persistence.size`              | Size of persistent volume claim               | `10Gi`                                                  |
+| `persistence.size`              | Size of persistent volume claim               | `nil`                                                  |
 | `persistence.existingClaim`     | Use an existing PVC to persist data           | `nil`                                                   |
 | `persistence.storageClassName`  | Type of persistent volume claim               | `nil`                                                   |
 | `persistence.accessModes`       | Persistence access modes                      | `[]`                                                    |
