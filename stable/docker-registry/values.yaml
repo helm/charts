@@ -85,6 +85,22 @@ secrets:
 #  authurl: http://swift.example.com/
 #  container: my-container
 
+auth:
+  # enable token authentication
+  token:
+    enabled: false
+    # The realm in which the registry server authenticates.
+    realm: ""
+    # The service being authenticated.
+    service: ""
+    # The name of the token issuer. The issuer inserts this into the token so it must match the value configured for the issuer.
+    issuer: ""
+    # Public part of the certificates used to sign authentication tokens
+    rootcert: |-
+      -----BEGIN CERTIFICATE-----
+      xxxxxx
+      -----END CERTIFICATE-----
+
 configData:
   version: 0.1
   log:

@@ -10,3 +10,12 @@ metadata:
 data:
   config.yml: |-
 {{ toYaml .Values.configData | indent 4 }}
+{{- if .Values.auth.token.enabled }}
+    auth:
+      token:
+        realm: {{ required ".Values.auth.token.realm is required" .Values.auth.token.realm }}
+        service: {{ required ".Values.auth.token.service is required" .Values.auth.token.service }}
+        issuer: {{ required ".Values.auth.token.issuer is required" .Values.auth.token.issuer }}
+        rootcertbundle: /opt/certs/registry_trust_chain.pem
+
+{{- end}}

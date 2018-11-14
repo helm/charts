@@ -30,7 +30,7 @@ their default values.
 | `image.pullPolicy`          | Container pull policy                                                                      | `IfNotPresent`  |
 | `image.repository`          | Container image to use                                                                     | `registry`      |
 | `image.tag`                 | Container image tag to deploy                                                              | `2.6.2`         |
-| `imagePullSecrets`                 | Specify image pull secrets                                                          | `nil` (does not add image pull secrets to deployed pods)         |
+| `imagePullSecrets`          | Specify image pull secrets                                                          | `nil` (does not add image pull secrets to deployed pods)         |
 | `persistence.accessMode`    | Access mode to use for PVC                                                                 | `ReadWriteOnce` |
 | `persistence.enabled`       | Whether to use a PVC for the Docker storage                                                | `false`         |
 | `persistence.size`          | Amount of space to claim for PVC                                                           | `10Gi`          |
@@ -60,6 +60,11 @@ their default values.
 | `s3.secure`                 | Use HTTPS                                                                                  | `nil`           |
 | `swift.authurl`             | Swift authurl                                                                              | `nil`           |
 | `swift.container`           | Swift container                                                                            | `nil`           |
+| `auth.token.enable`         | Enable token authentication                                                                | `false`         |
+| `auth.token.realm`          | The realm in which the registry server authenticates                                       | `nil`           |
+| `auth.token.service`        | The service being authenticated                                                            | `nil`           |
+| `auth.token.issuer`         | The name of the token issuer                                                               | `nil`           |
+| `auth.token.rootcert`       | Public part of the certificates used to sign authentication tokens                         | `nil`           |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to
 `helm install`.
