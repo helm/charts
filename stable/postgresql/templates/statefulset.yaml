@@ -81,9 +81,9 @@ spec:
         env:
         {{- if .Values.image.debug}}
         - name: BASH_DEBUG
-          value: 1
+          value: "1"
         - name: NAMI_DEBUG
-          value: 1
+          value: "1"
         {{- end }}
         {{- if .Values.replication.enabled }}
         - name: POSTGRESQL_REPLICATION_MODE
