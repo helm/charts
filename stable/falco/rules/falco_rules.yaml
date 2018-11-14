@@ -1,3 +1,21 @@
+#
+# Copyright (C) 2016-2018 Draios Inc dba Sysdig.
+#
+# This file is part of falco.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
 # Currently disabled as read/write are ignored syscalls. The nearly
 # similar open_write/open_read check for files being opened for
 # reading/writing.
@@ -118,7 +136,7 @@
   items: [docker, dockerd, exe, docker-compose, docker-entrypoi, docker-runc-cur, docker-current]
 
 - list: k8s_binaries
-  items: [hyperkube, skydns, kube2sky, exechealthz]
+  items: [hyperkube, skydns, kube2sky, exechealthz, weave-net, loopback, bridge]
 
 - list: lxd_binaries
   items: [lxd, lxcfs]
@@ -152,7 +170,7 @@
 - list: rpm_binaries
   items: [dnf, rpm, rpmkey, yum, '"75-system-updat"', rhsmcertd-worke, subscription-ma,
           repoquery, rpmkeys, rpmq, yum-cron, yum-config-mana, yum-debug-dump,
-          abrt-action-sav, rpmdb_stat, microdnf]
+          abrt-action-sav, rpmdb_stat, microdnf, rhn_check, yumdb]
 
 - macro: rpm_procs
   condition: proc.name in (rpm_binaries) or proc.name in (salt-minion)
@@ -181,12 +199,12 @@
   items: [ca-certificates]
 
 - list: dhcp_binaries
-  items: [dhclient, dhclient-script]
+  items: [dhclient, dhclient-script, 11-dhclient]
 
 # A canonical set of processes that run other programs with different
 # privileges or as a different user.
 - list: userexec_binaries
-  items: [sudo, su, suexec]
+  items: [sudo, su, suexec, critical-stack]
 
 - list: known_setuid_binaries
   items: [
@@ -202,7 +220,7 @@
   items: [blkid, rename_device, update_engine, sgdisk]
 
 - list: hids_binaries
-  items: [aide]
+  items: [aide, aide.wrapper, update-aide.con, logcheck, syslog-summary, osqueryd, ossec-syscheckd]
 
 - list: vpn_binaries
   items: [openvpn]
@@ -224,7 +242,7 @@
   items: [
     update_conf, parse_mc, makemap_hash, newaliases, update_mk, update_tlsm4,
     update_db, update_mc, ssmtp.postinst, mailq, postalias, postfix.config.,
-    postfix.config, postfix-script
+    postfix.config, postfix-script, postconf
     ]
 
 - list: sensitive_file_names
@@ -343,6 +361,11 @@
   condition: >
     (proc.pname in (python, python2.7) and
     (proc.pcmdline contains /opt/draios/bin/sdchecks))
+
+- macro: python_running_sdchecks
+  condition: >
+    (proc.name in (python, python2.7) and
+    (proc.cmdline contains /opt/draios/bin/sdchecks))
 
 - macro: parent_linux_image_upgrade_script
   condition: proc.pname startswith linux-image-
@@ -511,6 +534,9 @@
 - macro: perl_running_centrifydc
   condition: (proc.cmdline startswith "perl /usr/share/centrifydc")
 
+- macro: runuser_reading_pam
+  condition: (proc.name=runuser and fd.directory=/etc/pam.d)
+
 - macro: parent_ucf_writing_conf
   condition: (proc.pname=ucf and proc.aname[2]=frontend)
 
@@ -558,6 +584,9 @@
 
 - macro: iscsi_writing_conf
   condition: (proc.name=iscsiadm and fd.name startswith /etc/iscsi)
+
+- macro: istio_writing_conf
+  condition: (proc.name=pilot-agent and fd.name startswith /etc/istio)
 
 - macro: symantec_writing_conf
   condition: >
@@ -651,6 +680,12 @@
 - macro: maven_writing_groovy
   condition: (proc.name=java and proc.cmdline contains "classpath /usr/local/apache-maven" and fd.name startswith /root/.groovy)
 
+- macro: chef_writing_conf
+  condition: (proc.name=chef-client and fd.name startswith /root/.chef)
+
+- macro: kubectl_writing_state
+  condition: (proc.name=kubectl and fd.name startswith /root/.kube)
+
 - rule: Write below binary dir
   desc: an attempt to write to any file below a set of binary directories
   condition: >
@@ -680,6 +715,13 @@
 - macro: user_ssh_directory
   condition: (fd.name startswith '/home' and fd.name contains '.ssh')
 
+# google_accounts_(daemon)
+- macro: google_accounts_daemon_writing_ssh
+  condition: (proc.name=google_accounts and user_ssh_directory)
+
+- macro: cloud_init_writing_ssh
+  condition: (proc.name=cloud-init and user_ssh_directory)
+
 - macro: mkinitramfs_writing_boot
   condition: (proc.pname in (mkinitramfs, update-initramf) and fd.directory=/boot)
 
@@ -698,6 +740,8 @@
     and not exe_running_docker_save
     and not python_running_get_pip
     and not python_running_ms_oms
+    and not google_accounts_daemon_writing_ssh
+    and not cloud_init_writing_ssh
   output: >
     File below a monitored directory opened for writing (user=%user.name
     command=%proc.cmdline file=%fd.name parent=%proc.pname pcmdline=%proc.pcmdline gparent=%proc.aname[2])
@@ -793,6 +837,9 @@
 # putting the full set of package management programs yet.
 - macro: dpkg_scripting
   condition: (proc.aname[2] in (dpkg-reconfigur, dpkg-preconfigu))
+
+- macro: ufw_writing_conf
+  condition: proc.name=ufw and fd.directory=/etc/ufw
 
 # Add conditions to this macro (probably in a separate file,
 # overwriting this macro) to allow for specific combinations of
@@ -894,6 +941,8 @@
     and not openldap_writing_conf
     and not ucpagent_writing_conf
     and not iscsi_writing_conf
+    and not istio_writing_conf
+    and not ufw_writing_conf
 
 - rule: Write below etc
   desc: an attempt to write to any file below /etc
@@ -905,7 +954,7 @@
 - list: known_root_files
   items: [/root/.monit.state, /root/.auth_tokens, /root/.bash_history, /root/.ash_history, /root/.aws/credentials,
           /root/.viminfo.tmp, /root/.lesshst, /root/.bzr.log, /root/.gitconfig.lock, /root/.babel.json, /root/.localstack,
-          /root/.node_repl_history, /root/.mongorc.js, /root/.dbshell, /root/.augeas/history, /root/.rnd, /root/.wget-hsts]
+          /root/.node_repl_history, /root/.mongorc.js, /root/.dbshell, /root/.augeas/history, /root/.rnd, /root/.wget-hsts, /health]
 
 - list: known_root_directories
   items: [/root/.oracle_jre_usage, /root/.ssh, /root/.subversion, /root/.nami]
@@ -960,6 +1009,8 @@
     and not airflow_writing_state
     and not rpm_writing_root_rpmdb
     and not maven_writing_groovy
+    and not chef_writing_conf
+    and not kubectl_writing_state
     and not known_root_conditions
   output: "File below / or /root opened for writing (user=%user.name command=%proc.cmdline parent=%proc.pname file=%fd.name program=%proc.name)"
   priority: ERROR
@@ -1022,6 +1073,7 @@
     and not perl_running_updmap
     and not veritas_driver_script
     and not perl_running_centrifydc
+    and not runuser_reading_pam
   output: >
     Sensitive file opened for reading by non-trusted program (user=%user.name program=%proc.name
     command=%proc.cmdline file=%fd.name parent=%proc.pname gparent=%proc.aname[2] ggparent=%proc.aname[3] gggparent=%proc.aname[4])
@@ -1105,6 +1157,7 @@
     and not proc.name in (user_known_change_thread_namespace_binaries)
     and not proc.name startswith "runc:"
     and not proc.pname in (sysdigcloud_binaries)
+    and not python_running_sdchecks
     and not java_running_sdjagent
     and not kubelet_running_loopback
   output: >
@@ -1259,6 +1312,32 @@
   priority: DEBUG
   tags: [shell]
 
+- macro: allowed_openshift_registry_root
+  condition: >
+    (container.image startswith openshift3/ or
+     container.image startswith registry.access.redhat.com/openshift3/)
+
+# Source: https://docs.openshift.com/enterprise/3.2/install_config/install/disconnected_install.html
+- macro: openshift_image
+  condition: >
+    (allowed_openshift_registry_root and
+      (container.image contains logging-deployment or
+       container.image contains logging-elasticsearch or
+       container.image contains logging-kibana or
+       container.image contains logging-fluentd or
+       container.image contains logging-auth-proxy or
+       container.image contains metrics-deployer or
+       container.image contains metrics-hawkular-metrics or
+       container.image contains metrics-cassandra or
+       container.image contains metrics-heapster or
+       container.image contains ose-haproxy-router or
+       container.image contains ose-deployer or
+       container.image contains ose-sti-builder or
+       container.image contains ose-docker-builder or
+       container.image contains ose-pod or
+       container.image contains ose-docker-registry or
+       container.image contains image-inspector))
+
 - macro: trusted_containers
   condition: (container.image startswith sysdig/agent or
               (container.image startswith sysdig/falco and
@@ -1270,13 +1349,7 @@
               container.image startswith gcr.io/google_containers/kube-proxy or
               container.image startswith calico/node or
               container.image startswith rook/toolbox or
-              container.image startswith registry.access.redhat.com/openshift3/logging-fluentd or
-              container.image startswith registry.access.redhat.com/openshift3/logging-elasticsearch or
-              container.image startswith registry.access.redhat.com/openshift3/metrics-cassandra or
-              container.image startswith openshift3/ose-sti-builder or
-              container.image startswith registry.access.redhat.com/openshift3/ose-sti-builder or
-              container.image startswith registry.access.redhat.com/openshift3/ose-docker-builder or
-              container.image startswith registry.access.redhat.com/openshift3/image-inspector or
+              openshift_image or
               container.image startswith cloudnativelabs/kube-router or
               container.image startswith "consul:" or
               container.image startswith mesosphere/mesos-slave or
@@ -1322,6 +1395,7 @@
 - macro: sensitive_mount
   condition: (container.mount.dest[/proc*] != "N/A" or
               container.mount.dest[/var/run/docker.sock] != "N/A" or
+              container.mount.dest[/var/lib/kubelet*] != "N/A" or
               container.mount.dest[/] != "N/A" or
               container.mount.dest[/etc] != "N/A" or
               container.mount.dest[/root*] != "N/A")
