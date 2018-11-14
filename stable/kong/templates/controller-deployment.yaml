@@ -28,7 +28,7 @@ spec:
         release: {{ .Release.Name }}
         component: "controller"
     spec:
-      serviceAccountName: kong-serviceaccount
+      serviceAccountName: {{ template "kong.serviceAccountName" . }}
 {{- if .Values.image.imagePullSecrets }}
       imagePullSecrets:
       - name: {{ .Values.image.imagePullSecrets }}
