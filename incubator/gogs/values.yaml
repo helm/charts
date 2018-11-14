@@ -55,6 +55,10 @@ service:
     ## disabled, users can only perform Git operations via SSH.
     ##
     disableHttpGit: false
+    
+    ## Lock the path /install to configure gogs
+    ##
+    installLock : true
 
     ## Indicates whether or not to enable repository file upload feature.
     ##
