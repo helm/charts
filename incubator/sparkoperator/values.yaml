@@ -23,5 +23,6 @@ installCrds: true
 metricsPort: 10254
 metricsEndpoint: "/metrics"
 metricsPrefix: ""
+namespace: ""
 resyncInterval: 30
 webhookPort: 8080
