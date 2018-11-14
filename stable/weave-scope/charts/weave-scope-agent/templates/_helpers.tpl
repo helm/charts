@@ -12,7 +12,7 @@ cloud.weave.works/launcher-info: |-
   {
     "server-version": "master-4fe8efe",
     "original-request": {
-      "url": "/k8s/v1.7/scope.yaml"
+      "url": "/k8s/v1.9/scope.yaml"
     },
     "email-address": "support@weave.works",
     "source-app": "weave-scope",

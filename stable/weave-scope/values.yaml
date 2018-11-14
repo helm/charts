@@ -40,6 +40,8 @@ weave-scope-frontend:
 # weave-scope-agent.* controls how the Weave Scope node agent pods are installed
 weave-scope-agent:
   enabled: true
+  # disable controls for frontend, like delete, reset, run shell, etc
+  disableFrontendControls: false
   # weave-scope-agent.dockerBridge: (required if agent.enabled == true) the name of the Docker bridge interface
   dockerBridge: "docker0"
   # weave-scope-agent.scopeFrontendAddr: the host:port of a Scope frontend to send data to
@@ -57,6 +59,8 @@ weave-scope-agent:
   serviceAccount:
     # Specifies whether a ServiceAccount should be created
     create: true
+    # Whether delete and update permissions for cluster role should be granted
+    # readonly: false
     # The name of the ServiceAccount to use.
     # If not set and create is true, a name is generated using the fullname template
     # name: "weave-scope"

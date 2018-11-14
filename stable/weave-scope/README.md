@@ -6,12 +6,6 @@ This chart contains two subcharts (*weave-scope-frontend* and *weave-scope-agent
 
 Either subchart can be deployed on its own (set the "enabled" value to "false" for the chart you want to suppress) or the two can be deployed together (the default).
 
-## Compatibility notes
-
-* This chart is designed and tested with Weave Scope 1.6.2 and 1.6.5 and Kubernetes 1.7.
-* Weave Scope 1.6.2 was originally released by WeaveWorks for Kubernetes 1.6 but seems to work fine on 1.7.
-* On Kubernetes 1.6 Weave Scope versions as old as 1.3.0 will probably work.
-
 ## Prerequisites
 
 * The service account, cluster role, cluster role binding and service specified in the rendered version of this chart must not already exist.
@@ -77,6 +71,7 @@ The **agent** section controls how the Weave Scope node agent pods are installed
 | Parameter | Description | Default |
 |----------:|:------------|:--------|
 | **enabled** | controls whether the agent is deployed | true |
+| **disableFrontendControls** | disable controls for frontend, like delete, reset, run shell, etc | false |
 | **dockerBridge** | the name of the Docker bridge interface | "docker0" |
 | **scopeFrontendAddr** | the host:port of a Scope frontend to send data to -- this is only needed in cases where the frontend is deployed separately from the agent (e.g. an install outside the cluster or a pre-existing install inside it) | |
 | **probeToken** | the token used to connect to Weave Cloud -- this is not needed for connecting to non-cloud Scope frontends | |
@@ -84,6 +79,7 @@ The **agent** section controls how the Weave Scope node agent pods are installed
 | **rbac.create** | whether RBAC resources should be created (required) -- this **must** be set to false if RBAC is not enabled in the cluster; it *may* be set to false in an RBAC-enabled cluster to allow for external management of RBAC | true |
 | **serviceAccount.create** | whether a new service account name that the agent will use should be created. | true |
 | **serviceAccount.name** | service account to be used.  If not set and serviceAccount.create is `true` a name is generated using the fullname template. |  |
+| **serviceAccount.readonly** | whether delete and update permissions for cluster role should be granted | false |
 | **resources.*** | controls requests/limits for the agent (these values are all optional) | |
 | **resources.requests.cpu** | CPU request in MHz (m) | |
 | **resources.requests.memory** | memory request in MiB (Mi)| |
