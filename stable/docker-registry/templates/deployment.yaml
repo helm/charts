@@ -160,6 +160,11 @@ spec:
               name: tls-cert
               readOnly: true
 {{- end }}
+{{- if .Values.auth.token.enabled }}
+            - name: rootcert
+              mountPath: "/opt/certs"
+              readOnly: true
+{{- end }}
 {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
@@ -176,6 +181,14 @@ spec:
             items:
             - key: htpasswd
               path: htpasswd
+{{- end }}
+{{- if .Values.auth.token.enabled  }}
+        - name: rootcert
+          secret:
+            secretName: {{ template "docker-registry.fullname" . }}-secret
+            items:
+            - key: rootcert
+              path: registry_trust_chain.pem
 {{- end }}
 {{- if eq .Values.storage "filesystem" }}
         - name: data

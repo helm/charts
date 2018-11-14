@@ -68,6 +68,11 @@ their default values.
 | `ingress.path`              | Ingress service path                                                                       | `/`            |
 | `ingress.hosts`             | Ingress hostnames                                                                          | `[]`            |
 | `ingress.tls`               | Ingress TLS configuration (YAML)                                                           | `[]`            |
+| `auth.token.enabled`         | Enable token authentication                                                                | `false`         |
+| `auth.token.realm`          | The realm in which the registry server authenticates                                       | `nil`           |
+| `auth.token.service`        | The service being authenticated                                                            | `nil`           |
+| `auth.token.issuer`         | The name of the token issuer                                                               | `nil`           |
+| `auth.token.rootcert`       | Public part of the certificates used to sign authentication tokens                         | `nil`           |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to
 `helm install`.
