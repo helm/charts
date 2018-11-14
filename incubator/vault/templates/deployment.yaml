@@ -28,6 +28,9 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         {{- if .Values.vault.dev }}
+        envFrom:
+        - configMapRef:
+            name: {{ template "vault.fullname" . }}-dev
         command: ["vault", "server", "-dev", "-dev-listen-address", "[::]:8200"]
         {{- else }}
         command: ["vault", "server", "-config", "/vault/config/config.json"]
