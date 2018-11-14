@@ -2,7 +2,7 @@
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: Role
 metadata:
-  name: kong-ingress-role
+  name:  {{ template "kong.fullname" . }}
   namespace: {{ .Release.namespace }}
   labels:
     app: {{ template "kong.name" . }}

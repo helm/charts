@@ -2,7 +2,7 @@
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: RoleBinding
 metadata:
-  name: kong-ingress-role-nisa-binding
+  name:  {{ template "kong.fullname" . }}
   namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "kong.name" . }}
@@ -12,7 +12,8 @@ metadata:
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: kong-ingress-role
+  name: {{ template "kong.fullname" . }}
+  namespace: {{ .Release.Namespace }}
 subjects:
   - kind: ServiceAccount
     name: {{ template "kong.serviceAccountName" . }}
