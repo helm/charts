@@ -54,7 +54,7 @@ The following table lists the configurable parameters of the Fluentd elasticsear
 | `extraVolumeMounts`                | Mount an extra volume, required to mount ssl certificates when elasticsearch has tls enabled |          |
 | `extraVolume`                      | Extra volume                               |                                                            |
 | `image.repository`                 | Image                                      | `gcr.io/google-containers/fluentd-elasticsearch`           |
-| `image.tag`                        | Image tag                                  | `v2.3.1`                                                   |
+| `image.tag`                        | Image tag                                  | `v2.3.2`                                                   |
 | `image.pullPolicy`                 | Image pull policy                          | `IfNotPresent`                                             |
 | `rbac.create`                      | RBAC                                       | `true`                                                     |
 | `resources.limits.cpu`             | CPU limit                                  | `100m`                                                     |
