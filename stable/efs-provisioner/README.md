@@ -103,4 +103,17 @@ resources: {}
   # requests:
   #  cpu: 100m
   #  memory: 128Mi
+
+## Configure nodeSelector
+##
+nodeSelector: {}
+
+## Configure tolerations
+##
+tolerations: []
+
+## Configure affinity
+##
+affinity: {}
 ```
+
