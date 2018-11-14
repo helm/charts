@@ -88,7 +88,6 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `client.loadBalancerSourceRanges`    | Client loadBalancerSourceRanges                                     | `{}`                                                |
 | `client.antiAffinity`                | Client anti-affinity policy                                         | `soft`                                              |
 | `client.nodeAffinity`                | Client node affinity policy                                         | `{}`                                                |
-| `master.allow_chown_failure`         | Allow init container chown command to fail                          |`false`                                              |
 | `master.exposeHttp`                  | Expose http port 9200 on master Pods for monitoring, etc            | `false`                                             |
 | `master.name`                        | Master component name                                               | `master`                                            |
 | `master.replicas`                    | Master node replicas (deployment)                                   | `2`                                                 |
@@ -106,7 +105,6 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `master.persistence.accessMode`      | Master persistent Access Mode                                       | `ReadWriteOnce`                                     |
 | `master.antiAffinity`                | Master anti-affinity policy                                         | `soft`                                              |
 | `master.nodeAffinity`                | Master node affinity policy                                         | `{}`                                                |
-| `data.allow_chown_failure`           | Allow init container chown command to fail                          |`false`                                              |
 | `data.exposeHttp`                    | Expose http port 9200 on data Pods for monitoring, etc              | `false`                                             |
 | `data.replicas`                      | Data node replicas (statefulset)                                    | `2`                                                 |
 | `data.resources`                     | Data node resources requests & limits                               | `{} - cpu limit must be an integer`                 |
@@ -229,6 +227,3 @@ The `tpl` function allows us to pass string values from `values.yaml` through th
 * `extraInitContainers`
 
 It is important that these values be configured as strings. Otherwise, installation will fail.
-
-### PersistentVolumes with external content
-Depending on [Storage Class](https://kubernetes.io/docs/concepts/storage/storage-classes/) used and specifics of your cluster, PV volumes may contain other data you are unable to manipulate. For example, NetApps export volumes with `.snapshot` directory in them, which is read-only. In this case, "chown" initContainers for "data" and "master" nodes will fail to change ownership of this metadata directory, resulting in failure to provision Elasticsearch cluster using this Helm chart. In that case `master.allow_chown_failure=true` and `data.allow_chown_failure=true` can be used.
