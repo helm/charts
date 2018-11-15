@@ -25,6 +25,7 @@ The following table lists the configurable parameters of the Spark operator char
 | ------------------------- | ------------------------------------------------------------ | -------------------------------------- |
 | `operatorImageName`       | The name of the operator image                               | `gcr.io/spark-operator/spark-operator` |
 | `operatorVersion`         | The version of the operator to install                       | `v2.4.0-v1alpha1-latest`               |
+| `imagePullPolicy`         | Docker image pull policy                                     | `IfNotPresent`                         |
 | `sparkJobNamespace`       | K8s namespace where Spark jobs are to be deployed            | `default`                              |
 | `createSparkJobNamespace` | Whether to create the Spark job namespace                    | false                                  |
 | `enableWebhook`           | Whether to enable mutating admission webhook                 | true                                   |
