@@ -8,12 +8,12 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 data:
-  ANCHORE_DB_NAME: {{ index .Values "anchore-db" "postgresDatabase" | quote }}
-  ANCHORE_DB_USER: {{ index .Values "anchore-db" "postgresUser" | quote }}
-  {{- if and (index .Values "anchore-db" "externalEndpoint") (not (index .Values "anchore-db" "enabled")) }}
-  ANCHORE_DB_HOST: {{ index .Values "anchore-db" "externalEndpoint" | quote }}
+  ANCHORE_DB_NAME: {{ index .Values "postgresql" "postgresDatabase" | quote }}
+  ANCHORE_DB_USER: {{ index .Values "postgresql" "postgresUser" | quote }}
+  {{- if and (index .Values "postgresql" "externalEndpoint") (not (index .Values "postgresql" "enabled")) }}
+  ANCHORE_DB_HOST: {{ index .Values "postgresql" "externalEndpoint" | quote }}
   {{- else }}
-  ANCHORE_DB_HOST: "{{ template "postgres.anchore-db.fullname" . }}:5432"
+  ANCHORE_DB_HOST: "{{ template "postgres.fullname" . }}:5432"
   {{- end }}
 
   config.yaml: |

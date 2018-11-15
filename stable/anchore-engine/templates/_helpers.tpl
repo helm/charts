@@ -91,8 +91,8 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 Create a default fully qualified dependency name for the db.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
-{{- define "postgres.anchore-db.fullname" -}}
-{{- printf "%s-%s" .Release.Name "anchore-db" | trunc 63 | trimSuffix "-" -}}
+{{- define "postgres.fullname" -}}
+{{- printf "%s-%s" .Release.Name "postgresql" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{/*

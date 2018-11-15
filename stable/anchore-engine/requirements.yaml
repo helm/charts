@@ -2,8 +2,7 @@ dependencies:
   - name: postgresql
     version: "1.0.0"
     repository: "alias:stable"
-    condition: anchore-db.enabled
-    alias: anchore-db
+    condition: postgresql.enabled
 
   - name: postgresql
     version: "1.0.0"

@@ -36,6 +36,18 @@ Note: It is highly recommended to set a non-default passwords when deploying. Th
     defaultAdminEmail: <EMAIL>
   ```
 
+## Upgrading to Chart version 0.9.0
+
+`helm upgrade <release_name> stable/anchore-engine`
+
+When upgrading the Chart to version 0.9.0 from 0.2.6, it will take approximately 5 minutes for anchore-engine to upgrade the database.
+To ensure that the upgrade has completed, run the `anchore-cli system status` command and verify the engine & db versions match the output below.
+
+```
+Engine DB Version: 0.0.8
+Engine Code Version: 0.3.0
+```
+
 ## Configuration
 
 All custom configurations should be appended to the anchore_values.yaml file and utilized when installing the chart.

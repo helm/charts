@@ -1,13 +1,13 @@
 # Default values for anchore_engine chart.
 
 # Anchore engine has a dependency on Postgresql, configure here
-anchore-db:
+postgresql:
   # To use an external DB, uncomment & set 'enabled: false'
   # externalEndpoint, postgresUser, postgresPassword & postgresDatabase are required values for external postgres
   # enabled: false
   postgresUser: anchoreengine
   postgresPassword: anchore-postgres,123
-  postgresDatabase: anchore-engine
+  postgresDatabase: anchore
 
   # Specify an external (already existing) postgres deployment for use.
   # Set to the host and port. eg. mypostgres.myserver.io:5432
@@ -16,7 +16,7 @@ anchore-db:
   # Configure size of the persitant volume used with helm managed chart.
   # This is ignored if using an external endpoint.
   persistence:
-    size: 20Gi
+    size: 8Gi
 
 # Global configuration shared by all anchore-engine services.
 anchoreGlobal:
