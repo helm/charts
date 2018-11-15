@@ -27,7 +27,7 @@ data:
     allow_awsecr_iam_auto: {{ .Values.anchoreGlobal.allowECRUseIAMRole }}
     host_id: ${ANCHORE_POD_NAME}
     internal_ssl_verify: {{ .Values.anchoreGlobal.internalServicesSsl.verifyCerts }}
-    auto_restart_services: False
+    auto_restart_services: false
 
     metrics:
       enabled: {{ .Values.anchoreGlobal.enableMetrics }}
@@ -44,28 +44,28 @@ data:
     # The 'anonymous' user is used for the sync otherwise.
     # The sync will hit http://ancho.re/feeds, if any outbound firewall config needs to be set in your environment.
     feeds:
-      sync_enabled: True
+      sync_enabled: true
       selective_sync:
         # If enabled only sync specific feeds instead of all that are found.
-        enabled: True
+        enabled: true
         feeds:
           # Vulnerabilities feed is the feed for distro cve sources (redhat, debian, ubuntu, oracle, alpine....)
-          vulnerabilities: {{ default "True" .Values.anchoreGlobal.syncVulnerabilites }}
+          vulnerabilities: {{ default "true" .Values.anchoreGlobal.syncVulnerabilites }}
           # NVD Data is used for non-distro CVEs (jars, npm, etc) that are not packaged and released by distros as rpms, debs, etc
-          nvd: {{ default "True" .Values.anchoreGlobal.syncNvd }}
+          nvd: {{ default "true" .Values.anchoreGlobal.syncNvd }}
           # Warning: enabling the package sync causes the service to require much
           #   more memory to do process the significant data volume. We recommend at least 4GB available for the container
           {{- if and (and .Values.anchoreEnterpriseGlobal.enabled .Values.anchoreEnterpriseFeeds.enabled) (or .Values.anchoreEnterpriseFeeds.gemDriverEnabled .Values.anchoreEnterpriseFeeds.npmDriverEnabled) }}
-          packages: True
+          packages: true
           {{- else }}
-          packages: {{ default "False" .Values.anchoreGlobal.syncPackages }}
+          packages: {{ default "false" .Values.anchoreGlobal.syncPackages }}
           {{- end }}
           # Enabling snyk syncs snyk vulnerability data from an on-premise anchore enterprise feeds service. Please contact
           # anchore support for finding out more about this service
           {{- if and .Values.anchoreEnterpriseGlobal.enabled .Values.anchoreEnterpriseFeeds.enabled }}
-          snyk: {{ default "True" .Values.anchoreEnterpriseFeeds.synkDriverEnabled }}
+          snyk: {{ default "true" .Values.anchoreEnterpriseFeeds.synkDriverEnabled }}
           {{- else }}
-          snyk: False
+          snyk: false
           {{- end }}
       {{- if and .Values.anchoreEnterpriseGlobal.enabled .Values.anchoreEnterpriseFeeds.enabled }}
       url: 'http://{{ template "anchore-engine.enterprise-feeds.fullname" . }}:{{ .Values.anchoreGlobal.service.ports.feedsApi }}/v1/feeds'
@@ -94,8 +94,8 @@ data:
 
     services:
       apiext:
-        enabled: True
-        require_auth: True
+        enabled: true
+        require_auth: true
         endpoint_hostname: {{ template "anchore-engine.api.fullname" . }}
         listen: '0.0.0.0'
         port: {{ .Values.anchoreGlobal.service.ports.extApi }}
@@ -108,8 +108,8 @@ data:
         ssl_cert: {{ .Values.anchoreGlobal.internalServicesSsl.certDir -}}/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretCertName }}
         ssl_key: {{ .Values.anchoreGlobal.internalServicesSsl.certDir -}}/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretKeyName }}
       analyzer:
-        enabled: True
-        require_auth: True
+        enabled: true
+        require_auth: true
         endpoint_hostname: {{ template "anchore-engine.analyzer.fullname" . }}
         listen: '0.0.0.0'
         port: {{ .Values.anchoreGlobal.service.ports.analyzer }}
@@ -122,8 +122,8 @@ data:
         ssl_key: {{ .Values.anchoreGlobal.internalServicesSsl.certDir -}}/{{ .Values.anchoreGlobal.internalServicesSsl.certSecretKeyName }}
         ssl_enable: {{ .Values.anchoreGlobal.internalServicesSslEnabled }}
       catalog:
-        enabled: True
-        require_auth: True
+        enabled: true
+        require_auth: true
         endpoint_hostname: {{ template "anchore-engine.catalog.fullname" . }}
         listen: '0.0.0.0'
         port: {{ .Values.anchoreGlobal.service.ports.catalog }}
@@ -138,8 +138,8 @@ data:
         archive:
 {{ toYaml .Values.anchoreCatalog.archive | indent 10 }}
       simplequeue:
-        enabled: True
-        require_auth: True
+        enabled: true
+        require_auth: true
         endpoint_hostname: {{ template "anchore-engine.simplequeue.fullname" . }}
         listen: '0.0.0.0'
         port: {{ .Values.anchoreGlobal.service.ports.simplequeue }}
@@ -147,8 +147,8 @@ data:
         ssl_cert: {{ .Values.anchoreGlobal.internalServicesSsl.certDir -}}/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretCertName }}
         ssl_key: {{ .Values.anchoreGlobal.internalServicesSsl.certDir -}}/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretKeyName }}
       policy_engine:
-        enabled: True
-        require_auth: True
+        enabled: true
+        require_auth: true
         endpoint_hostname: {{ template "anchore-engine.policy-engine.fullname" . }}
         listen: '0.0.0.0'
         port: {{ .Values.anchoreGlobal.service.ports.policyEngine }}

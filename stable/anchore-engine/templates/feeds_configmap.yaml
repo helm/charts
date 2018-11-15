@@ -24,7 +24,7 @@ data:
     allow_awsecr_iam_auto: {{ .Values.anchoreGlobal.allowECRUseIAMRole }}
     host_id: "${ANCHORE_POD_NAME}"
     internal_ssl_verify: {{ .Values.anchoreGlobal.internalServicesSsl.verifyCerts }}
-    auto_restart_services: False
+    auto_restart_services: false
     license_file: "/license.yaml"
 
     metrics:
@@ -41,8 +41,8 @@ data:
 
     services:
       feeds:
-        enabled: True
-        require_auth: True
+        enabled: true
+        require_auth: true
         endpoint_hostname: {{ template "anchore-engine.enterprise-feeds.fullname" . }}
         listen: '0.0.0.0'
         port: {{ .Values.anchoreGlobal.service.ports.feedsApi }}
@@ -59,31 +59,31 @@ data:
           # disabled: true
           # To load the workspace from a different location, uncomment and configure workspace_preload_file property to point to the tar.gz file
           workspace_preload_file: "/workspace_preload/data.tar.gz"
-        # If api_only is set to True, the service will not update feed data in the system.
+        # If api_only is set to true, the service will not update feed data in the system.
         # API end points will be functional and serve feed data if any is available.
-        api_only: {{ default "False" .Values.anchoreEnterpriseFeeds.apiOnly }}
+        api_only: {{ default "false" .Values.anchoreEnterpriseFeeds.apiOnly }}
         drivers:
           # Configuration section for drivers collecting and processing feed data.
           # All drivers are enabled by default unless explicitly disabled. npm and gem drivers are explicitly disabled out of the box
           npm:
-            enabled: {{ default "False" .Values.anchoreEnterpriseFeeds.npmDriverEnabled }}
+            enabled: {{ default "false" .Values.anchoreEnterpriseFeeds.npmDriverEnabled }}
           gem:
             # rubygem data comes packaged as a PostgreSQL dump file. gem driver loads the pg dump and normalizes the data.
             # To enable gem driver comment the enabled property and uncomment the db_connect property.
-            enabled: {{ default "False" .Values.anchoreEnterpriseFeeds.gemDriverEnabled }}
+            enabled: {{ default "false" .Values.anchoreEnterpriseFeeds.gemDriverEnabled }}
             db_connect: {{ default "'postgresql+pg8000://${ANCHORE_DB_USER}:${ANCHORE_DB_PASSWORD}@${ANCHORE_DB_HOST}/gems'" .Values.anchoreEnterpriseFeeds.gemDbEndpoint }}
           centos:
-            enabled: {{ default "True" .Values.anchoreEnterpriseFeeds.centosDriverEnabled }}
+            enabled: {{ default "true" .Values.anchoreEnterpriseFeeds.centosDriverEnabled }}
           debian:
-            enabled: {{ default "True" .Values.anchoreEnterpriseFeeds.debianDriverEnabled }}
+            enabled: {{ default "true" .Values.anchoreEnterpriseFeeds.debianDriverEnabled }}
           ubuntu:
-            enabled: {{ default "True" .Values.anchoreEnterpriseFeeds.ubuntuDriverEnabled }}
+            enabled: {{ default "true" .Values.anchoreEnterpriseFeeds.ubuntuDriverEnabled }}
           ol:
-            enabled: {{ default "True" .Values.anchoreEnterpriseFeeds.olDriverEnabled }}
+            enabled: {{ default "true" .Values.anchoreEnterpriseFeeds.olDriverEnabled }}
           alpine:
-            enabled: {{ default "True" .Values.anchoreEnterpriseFeeds.alpineDriverEnabled }}
+            enabled: {{ default "true" .Values.anchoreEnterpriseFeeds.alpineDriverEnabled }}
           snyk:
-            enabled: {{ default "True" .Values.anchoreEnterpriseFeeds.snykDriverEnabled }}
+            enabled: {{ default "true" .Values.anchoreEnterpriseFeeds.snykDriverEnabled }}
         ssl_cert: {{ .Values.anchoreGlobal.internalServicesSsl.certDir -}}/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretCertName }}
         ssl_key: {{ .Values.anchoreGlobal.internalServicesSsl.certDir -}}/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretKeyName }}
         ssl_enable: {{ .Values.anchoreGlobal.internalServicesSslEnabled }}
