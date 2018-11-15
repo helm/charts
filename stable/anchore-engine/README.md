@@ -11,25 +11,31 @@ See [Anchore Engine](https://github.com/anchore/anchore-engine) for more project
 
 ## Chart Details
 
-The chart is split into global and service specific configurations for the OSS Anchore Engine, as well as global and services specific configurations for the Enterprise components. The anchoreGlobal section is for configuration values required by all Anchore Engine components, the anchoreEnterpriseGlobal section is for configuration values required by all Anchore Engine Enterprise components. Service specific configuration values allow customization for each individual service.
+The chart is split into global and service specific configurations for the OSS Anchore Engine, as well as global and services specific configurations for the Enterprise components.
+
+  * The `anchoreGlobal` section is for configuration values required by all Anchore Engine components.
+  * The `anchoreEnterpriseGlobal` section is for configuration values required by all Anchore Engine Enterprise components.
+  * Service specific configuration values allow customization for each individual service.
 
 For a description of each component, view the official documentation at: [Anchore Enterprise Service Overview](https://anchore.freshdesk.com/support/solutions/articles/36000098518-enterprise-service-overview-and-architecture)
 
 ## Installing the Anchore Engine OSS Chart
+TL;DR - `helm install stable/anchore-engine`
 
-To install the Anchore Engine chart create a new anchore_values.yaml file to override any default values with your custom values.
-This file is merged into the default values.yaml file upon install.
+The recommended way to install the Anchore Engine Chart is with a customized values file and a custom release name. Create a new file named `anchore_values.yaml` and add all desired custom values (examples below); then run the following command:
 
-  `helm install stable/anchore-engine -f anchore_values.yaml`
+  `helm install --name <release_name> -f anchore_values.yaml stable/anchore-engine`
 
-Note: It is highly recommended to set a non-default passwords when deploying. The admin password is set to a default in the chart.
+Note: It is highly recommended to set non-default passwords when deploying. All passwords are set to defaults specified in the chart.
 
-##### Install using chart managed PostgreSQL service.
+##### Install using chart managed PostgreSQL service with custom passwords.
   ```
   ## anchore_values.yaml
 
-  anchore-db:
+  postgresql:
     postgresPassword: <PASSWORD>
+    persistence:
+      size: 50Gi
 
   anchoreGlobal:
     defaultAdminPassword: <PASSWORD>
@@ -38,9 +44,11 @@ Note: It is highly recommended to set a non-default passwords when deploying. Th
 
 ## Upgrading to Chart version 0.9.0
 
+Version 0.9.0 of the anchore-engine helm chart includes major changes to the architecture, values.yaml file, as well as introduced Anchore Enterprise components. Due to these changes, it is highly recommended that upgrades are handled with caution. Any custom values.yaml files will also need to be adjusted to match the new structure. Version upgrades have only been validated when upgrading from 0.2.6 -> 0.9.0.
+
 `helm upgrade <release_name> stable/anchore-engine`
 
-When upgrading the Chart to version 0.9.0 from 0.2.6, it will take approximately 5 minutes for anchore-engine to upgrade the database.
+When upgrading the Chart from version 0.2.6 to version 0.9.0, it will take approximately 5 minutes for anchore-engine to upgrade the database.
 To ensure that the upgrade has completed, run the `anchore-cli system status` command and verify the engine & db versions match the output below.
 
 ```
@@ -50,7 +58,7 @@ Engine Code Version: 0.3.0
 
 ## Configuration
 
-All custom configurations should be appended to the anchore_values.yaml file and utilized when installing the chart.
+All configurations should be appended to your custom `anchore_values.yaml` file and utilized when installing the chart.
 While the configuration options of Anchore Engine are extensive, the options provided by the chart are:
 
 #### Exposing the service outside the cluster:
@@ -71,7 +79,7 @@ Use a LoadBalancer service type:
 
 #### Install using an existing/external PostgreSQL service:
   ```
-  anchore-db:
+  postgresql:
     postgresPassword: <PASSWORD>
     postgresUser: <USER>
     postgresDatabase: <DATABASE>
@@ -264,22 +272,27 @@ To use this Helm chart with the enterprise services enabled, perform these steps
 
     `kubectl create secret docker-registry anchore-enterprise-pullcreds --docker-server=docker.io --docker-username=<DOCKERHUB_USER> --docker-password=<DOCKERHUB_PASSWORD> --docker-email=<EMAIL_ADDRESS>`
 
-1. Install the helm chart using a custom values.yaml file (see examples below)
+1. Install the helm chart using a custom anchore_values.yaml file (see examples below)
 
-    `helm install -f path/to/custom/values.yaml stable/anchore-engine`
+    `helm install --name <release_name> -f /path/to/anchore_values.yaml stable/anchore-engine`
 
-##### Example values.yaml file for installing Anchore Enterprise
+##### Example anchore_values.yaml file for installing Anchore Enterprise
 Note: This installs with chart managed PostgreSQL & Redis databases.
   ```
-  anchore-db:
+  ## anchore_values.yaml
+
+  postgresql:
     postgresPassword: <PASSWORD>
+    persistence:
+      size: 50Gi
 
   anchoreGlobal:
     defaultAdminPassword: <PASSWORD>
     defaultAdminEmail: <EMAIL>
+    enableMetrics: True
 
   anchoreEnterpriseGlobal:
-    enabled: true
+    enabled: True
 
   anchore-feeds-db:
     postgresPassword: <PASSWORD>
