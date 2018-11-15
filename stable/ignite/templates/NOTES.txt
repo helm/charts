@@ -1,3 +1,4 @@
+{{- if (.Values.ignite.dataStorage.enabled) }}
 You need to activate your ignite deployment. To do it please ensure all
 stateful set pods are in "Running" state :
 
@@ -7,6 +8,7 @@ and then execute:
 
   kubectl exec -n {{ .Release.Namespace }} {{ include "ignite.fullname" . }}-0 -- /opt/ignite/apache-ignite-fabric/bin/control.sh --activate
 
+{{- end }}
 To check cluster state please run:
 
   kubectl exec -n {{ .Release.Namespace }} {{ include "ignite.fullname" . }}-0 -- /opt/ignite/apache-ignite-fabric/bin/control.sh --state

@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ include "ignite.fullname" . }}
@@ -33,14 +33,10 @@ spec:
         env:
         - name: OPTION_LIBS
           value: ignite-kubernetes,ignite-rest-http
-        - name: CONFIG_URI
-          value: https://raw.githubusercontent.com/apache/ignite/master/modules/kubernetes/config/example-kube-persistence-and-wal.xml
         - name: IGNITE_QUIET
           value: "false"
         - name: JVM_OPTS
           value: "-Djava.net.preferIPv4Stack=true"
-        - name: CONFIG_URI
-          value: ""
         ports:
         - containerPort: 11211 # JDBC port number.
         - containerPort: 47100 # communication SPI port number.
@@ -50,11 +46,9 @@ spec:
         - containerPort: 8080 # REST port number.
         - containerPort: 10900 #Thin clients port number.
         volumeMounts:
-{{- if (.Values.wal_persistence.enabled) }}
+{{- if (.Values.ignite.dataStorage.enabled) }}
         - mountPath: "/wal"
           name: ignite-wal
-{{- end }}
-{{- if (.Values.persistence.enabled) }}
         - mountPath: "/persistence"
           name: ignite-persistence
 {{- end }}
@@ -73,7 +67,7 @@ spec:
 {{ toYaml . | indent 8 }}
     {{- end }}
   volumeClaimTemplates:
-{{- if (.Values.persistence.enabled) }}
+{{- if (.Values.ignite.dataStorage.enabled) }}
   - metadata:
       name: ignite-persistence
     spec:
@@ -81,9 +75,7 @@ spec:
       storageClassName: "{{ include "ignite.fullname" . }}-persistence-storage-class"
       resources:
         requests:
-          storage: {{ .Values.persistence.size }}
-{{- end }}
-{{- if (.Values.wal_persistence.enabled) }}
+          storage: {{ .Values.ignite.dataStorage.persistenceVolume.size }}
   - metadata:
       name: ignite-wal
     spec:
@@ -91,5 +83,5 @@ spec:
       storageClassName: "{{ include "ignite.fullname" . }}-wal-storage-class"
       resources:
         requests:
-          storage: {{ .Values.wal_persistence.size }}
+          storage: {{ .Values.ignite.dataStorage.walVolume.size }}
 {{- end }}
