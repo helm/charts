@@ -18,6 +18,11 @@ spec:
   ports:
   - name: mongodb
     port: {{ .Values.service.port }}
+{{- if .Values.metrics.enabled }}
+  - name: metrics
+    port: 9216
+    targetPort: metrics
+{{- end }}
   selector:
     app: {{ template "mongodb.name" . }}
     release: {{ .Release.Name }}

@@ -1,0 +1,28 @@
+{{- if .Values.prometheus.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "prometheus-operator.fullname" . }}-prometheus
+  labels:
+    app: {{ template "prometheus-operator.name" . }}-prometheus
+{{ include "prometheus-operator.labels" . | indent 4 }}
+{{- if .Values.prometheus.service.annotations }}
+  annotations:
+{{ toYaml .Values.prometheus.service.annotations | indent 4 }}
+{{- end }}
+spec:
+  ports:
+  - name: web
+    {{- if eq .Values.prometheus.service.type "NodePort" }}
+    nodePort: {{ .Values.prometheus.service.nodePort }}
+    {{- end }}
+    port: 9090
+    {{- if eq .Values.prometheus.service.type "NodePort" }}
+    nodePort: {{ .Values.prometheus.service.nodePort }}
+    {{- end }}
+    targetPort: web
+  selector:
+    app: prometheus
+    prometheus: {{ template "prometheus-operator.fullname" . }}-prometheus
+  type: "{{ .Values.prometheus.service.type }}"
+{{- end }}

@@ -64,6 +64,9 @@ spec:
           {{- range $key, $value := .Values.configmapReload.extraArgs }}
             - --{{ $key }}={{ $value }}
           {{- end }}
+          {{- range .Values.configmapReload.extraVolumeDirs }}
+            - --volume-dir={{ . }}
+          {{- end }}
           resources:
 {{ toYaml .Values.configmapReload.resources | indent 12 }}
           volumeMounts:
@@ -73,6 +76,7 @@ spec:
           {{- range .Values.configmapReload.extraConfigmapMounts }}
             - name: {{ $.Values.configmapReload.name }}-{{ .name }}
               mountPath: {{ .mountPath }}
+              subPath: {{ .subPath }}
               readOnly: {{ .readOnly }}
           {{- end }}
 
@@ -122,18 +126,25 @@ spec:
           {{- range .Values.server.extraHostPathMounts }}
             - name: {{ .name }}
               mountPath: {{ .mountPath }}
+              subPath: {{ .subPath }}
               readOnly: {{ .readOnly }}
           {{- end }}
           {{- range .Values.server.extraConfigmapMounts }}
             - name: {{ $.Values.server.name }}-{{ .name }}
               mountPath: {{ .mountPath }}
+              subPath: {{ .subPath }}
               readOnly: {{ .readOnly }}
           {{- end }}
           {{- range .Values.server.extraSecretMounts }}
             - name: {{ .name }}
               mountPath: {{ .mountPath }}
+              subPath: {{ .subPath }}
               readOnly: {{ .readOnly }}
           {{- end }}
+    {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+       {{ toYaml .Values.imagePullSecrets | indent 2 }}
+    {{- end }}
     {{- if .Values.server.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.server.nodeSelector | indent 8 }}

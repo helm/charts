@@ -187,6 +187,10 @@ spec:
             {{- end }}
           {{- end }}
         {{- end }}
+        {{- range $key, $value := .Values.envOverrides }}
+        - name: {{ printf "%s" $key | replace "." "_" | upper | quote }}
+          value: {{ $value | quote }}
+        {{- end }}
         # This is required because the Downward API does not yet support identification of
         # pod numbering in statefulsets. Thus, we are required to specify a command which
         # allows us to extract the pod ID for usage as the Kafka Broker ID.
@@ -204,10 +208,16 @@ spec:
           mountPath: {{ .Values.persistence.mountPath | quote }}
         {{- range $secret := .Values.secrets }}
           {{- if $secret.mountPath }}
-            {{- range $key := $secret.keys }}
+            {{- if $secret.keys }}
+              {{- range $key := $secret.keys }}
         - name: {{ include "kafka.fullname" $ }}-{{ $secret.name }}
           mountPath: {{ $secret.mountPath }}/{{ $key }}
           subPath: {{ $key }}
+          readOnly: true
+              {{- end }}
+            {{- else }}
+        - name: {{ include "kafka.fullname" $ }}-{{ $secret.name }}
+          mountPath: {{ $secret.mountPath }}
           readOnly: true
             {{- end }}
           {{- end }}
