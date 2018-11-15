@@ -68,6 +68,7 @@ spec:
           - "-c"
           - |
             set -e
+            rm -rf plugins/lost+found
             plugins=(
             {{- range .Values.plugins.values }}
             {{ . }}
@@ -113,6 +114,10 @@ spec:
           mountPath: "/usr/share/kibana/config/{{ $configFile }}"
           subPath: {{ $configFile }}
         {{- end }}
+{{- if .Values.securityContext.enabled }}
+        securityContext:
+          allowPrivilegeEscalation: {{ .Values.securityContext.allowPrivilegeEscalation }}
+{{- end }}
 {{- end }}
 {{- end }}
       containers:
@@ -181,13 +186,23 @@ spec:
     {{- end }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
+{{- if .Values.securityContext.enabled }}
+      securityContext:
+        runAsUser: {{ .Values.securityContext.runAsUser }}
+        fsGroup: {{ .Values.securityContext.fsGroup }}
+{{- end }}
       volumes:
         - name: {{ template "kibana.name" . }}
           configMap:
             name: {{ template "kibana.fullname" . }}
 {{- if .Values.plugins.enabled}}
         - name: plugins
+          {{- if .Values.persistentVolumeClaim.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ template "kibana.fullname" . }}
+          {{- else }}
           emptyDir: {}
+          {{- end }}
 {{- end }}
 {{- if .Values.dashboardImport.dashboards }}
         - name: {{ template "kibana.fullname" . }}-dashboards
