@@ -15,7 +15,6 @@ metadata:
   {{- end }}
   {{- end }}
 spec:
-  type: {{ .Values.dashboard.serviceType }}
   selector:
     app: {{ template "traefik.name" . }}
     release: {{ .Release.Name }}
