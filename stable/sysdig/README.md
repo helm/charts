@@ -40,9 +40,11 @@ The following table lists the configurable parameters of the Sysdig chart and th
 
 | Parameter               | Description                                    | Default                                     |
 | ---                     | ---                                            | ---                                         |
+| `image.registry`        | Sysdig Agent image registry                    | `docker.io`                                 |
 | `image.repository`      | The image repository to pull from              | `sysdig/agent`                              |
 | `image.tag`             | The image tag to pull                          | `latest`                                    |
 | `image.pullPolicy`      | The Image pull policy                          | `Always`                                    |
+| `image.pullSecrets`     | Image pull secrets                             | `nil`                                       |
 | `rbac.create`           | If true, create & use RBAC resources           | `true`                                      |
 | `serviceAccount.create` | Create serviceAccount                          | `true`                                      |
 | `serviceAccount.name`   | Use this value as serviceAccountName           | ` `                                         |

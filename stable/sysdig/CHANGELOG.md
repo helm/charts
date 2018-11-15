@@ -3,6 +3,12 @@
 This file documents all notable changes to Sysdig Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v1.2.0
+
+### Major Changes
+
+* Allow to use other Docker registries (ECR, Quay ...) to download the Sysdig Agent image.
+
 ## v1.1.0
 
 ### Major Changes
