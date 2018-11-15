@@ -22,6 +22,8 @@ $ helm install stable/kibana --name my-release
 
 The command deploys kibana on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
 
+NOTE : We notice that lower resource constraints given to the chart + plugins are likely not going to work well.
+
 ## Uninstalling the Chart
 
 To uninstall/delete the `my-release` deployment:
@@ -43,7 +45,7 @@ The following table lists the configurable parameters of the kibana chart and th
 | `files`                                       | Kibana configuration files                 | None                                   |
 | `image.pullPolicy`                            | Image pull policy                          | `IfNotPresent`                         |
 | `image.repository`                            | Image repository                           | `docker.elastic.co/kibana/kibana-oss`  |
-| `image.tag`                                   | Image tag                                  | `6.4.2`                                |
+| `image.tag`                                   | Image tag                                  | `6.4.3`                                |
 | `image.pullSecrets`                           | Specify image pull secrets                 | `nil`                                  |
 | `commandline.args`                            | add additional commandline args            | `nil`                                  |
 | `ingress.enabled`                             | Enables Ingress                            | `false`                                |
@@ -77,7 +79,19 @@ The following table lists the configurable parameters of the kibana chart and th
 | `dashboardImport.xpackauth.username`          | Optional Xpack username                    | `myuser`                               |
 | `dashboardImport.xpackauth.password`          | Optional Xpack password                    | `mypass`                               |
 | `dashboardImport.dashboards`                  | Dashboards                                 | `{}`                                   |
-| `plugins`                                     | List of URLs pointing to zip files of Kibana plugins to install                                 | None:                                   |
+| `plugins.enabled`                             | Enable installation of plugins.            | `false`                                |
+| `plugins.reset`                               | Optional : Remove all installed plugins before installing all new ones | `false`                                   |
+| `plugins.values`                              | List of plugins to install. Format <pluginName,version,URL> with URLs pointing to zip files of Kibana plugins to install                                 | None:                                   |
+| `persistentVolumeClaim.enabled`               | Enable PVC for plugins                     | `false`                                 |
+| `persistentVolumeClaim.existingClaim`         | Use your own PVC for plugins               | `false`                                 |
+| `persistentVolumeClaim.annotations`           | Add your annotations for the PVC           | `{}`                                    |
+| `persistentVolumeClaim.accessModes`           | Acces mode to the PVC                      | `ReadWriteOnce`                         |
+| `persistentVolumeClaim.size`                  | Size of the PVC                            | `5Gi`                                   |
+| `persistentVolumeClaim.storageClass`          | Storage class of the PVC                   | None:                                   |
+| `securityContext.enabled`                     | Enable security context (should be true for PVC)                    | `false`                                  |
+| `securityContext.allowPrivilegeEscalation`    | Allow privilege escalation                 | `false`                                 |
+| `securityContext.runAsUser`                   | User id to run in pods                     | `1000`                                  |
+| `securityContext.fsGroup`                     | fsGroup id to run in pods                  | `2000`                                  |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
@@ -91,7 +105,7 @@ $ helm install stable/kibana --name my-release \
   --set=image.tag=v0.0.2,resources.limits.cpu=200m
 ```
 
-Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
+Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example :
 
 ```console
 $ helm install stable/kibana --name my-release -f values.yaml
