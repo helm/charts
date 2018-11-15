@@ -125,8 +125,8 @@ The following table lists the configurable parameters of the Cassandra chart and
 | `backup.enabled`                     | Enable backup on chart installation             | `false`                                                    |
 | `backup.schedule`                    | Keyspaces to backup, each with cron time        |                                                            |
 | `backup.annotations`                 | Backup pod annotations                          | iam.amazonaws.com/role: `cain`                             |
-| `backup.image.repo`                  | Backup image repository                         | `maorfr/cain`                                              |
-| `backup.image.tag`                   | Backup image tag                                | `0.1.0`                                                    |
+| `backup.image.repo`                  | Backup image repository                         | `nuvo/cain`                                                |
+| `backup.image.tag`                   | Backup image tag                                | `0.2.0`                                                    |
 | `backup.env`                         | Backup environment variables                    | AWS_REGION: `us-east-1`                                    |
 | `backup.resources`                   | Backup CPU/Memory resource requests/limits      | Memory: `1Gi`, CPU: `1`                                    |
 | `backup.destination`                 | Destination to store backup artifacts           | `s3://bucket/cassandra`                                    |
