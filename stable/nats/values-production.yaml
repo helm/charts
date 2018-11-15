@@ -246,6 +246,39 @@ ingress:
   #   key:
   #   certificate:
 
+## Metrics / Prometheus NATS Exporter
+##
+## ref: https://github.com/nats-io/prometheus-nats-exporter
+metrics:
+  enabled: true
+  image:
+    registry: docker.io
+    repository: synadia/prometheus-nats-exporter
+    tag: 0.1.0
+    pullPolicy: IfNotPresent
+    ## Optionally specify an array of imagePullSecrets.
+    ## Secrets must be manually created in the namespace.
+    ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+    ##
+    # pullSecrets:
+    #   - myRegistrKeySecretName
+  ## Metrics exporter resource requests and limits
+  ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  ##
+  # resources: {}
+  ## Metrics exporter port
+  port: 7777
+  ## Metrics exporter annotations
+  podAnnotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "7777"
+  ## Metrics exporter flags
+  args:
+    - -connz
+    - -routez
+    - -subz
+    - -varz
+
 sidecars:
 ## Add sidecars to the pod.
 ## e.g.
@@ -255,27 +288,3 @@ sidecars:
   # ports:
   # - name: portname
   #   containerPort: 1234
-
-## Prometheus Exporter / Metrics
-##
-metrics:
-  enabled: true
-  image:
-    registry: docker.io
-    repository: appcelerator/prometheus-nats-exporter
-    tag: 0.17.0
-    pullPolicy: IfNotPresent
-    ## Optionally specify an array of imagePullSecrets.
-    ## Secrets must be manually created in the namespace.
-    ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
-    ##
-    # pullSecrets:
-    #   - myRegistrKeySecretName
-   ## Metrics exporter resource requests and limits
-  ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
-  ##
-  # resources: {}
-   ## Metrics exporter pod Annotation
-  podAnnotations:
-    prometheus.io/scrape: "true"
-    prometheus.io/port: "7777"

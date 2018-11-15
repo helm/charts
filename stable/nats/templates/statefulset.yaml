@@ -131,10 +131,12 @@ spec:
       - name: metrics
         image: {{ template "metrics.image" . }}
         imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
-        command: [ '/prometheus-nats-exporter', '-varz', 'http://localhost:{{ .Values.monitoringService.port }}' ]
+        args:
+{{ toYaml .Values.metrics.args | indent 10 -}}
+          - "http://localhost:{{ .Values.monitoringService.port }}"
         ports:
         - name: metrics
-          containerPort: 7777
+          containerPort: {{ .Values.metrics.port }}
         livenessProbe:
           httpGet:
             path: /metrics
