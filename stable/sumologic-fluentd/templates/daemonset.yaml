@@ -59,7 +59,7 @@ spec:
             - name: COLLECTOR_URL
               valueFrom:
                 secretKeyRef:
-                  name: "{{ template "sumologic-fluentd.fullname-secrets" . }}"
+                  name: "{{ template "sumologic-fluentd.fullname" . }}"
                   key: collector-url
             - name: FLUENTD_SOURCE
               value: {{ quote .Values.sumologic.fluentdSource }}
