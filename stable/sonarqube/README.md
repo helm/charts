@@ -40,7 +40,7 @@ The following table lists the configurable parameters of the Sonarqube chart and
 | Parameter                                   | Description                               | Default                                    |
 | ------------------------------------------  | ----------------------------------------  | -------------------------------------------|
 | `serviceAccount.create`                     | Creates a Service Account                 | `false`                                    |
-| `serviceAccount.name`                       | The service account name. Uses existing SA if create set to false                 | `false`                                    |
+| `serviceAccount.name`                       | The service account name. Uses existing SA if create set to false                 | `empty`                                    |
 | `image.repository`                          | image repository                          | `sonarqube`                                |
 | `image.tag`                                 | `sonarqube` image tag.                    | 6.5                                        |
 | `image.pullPolicy`                          | Image pull policy                         | `IfNotPresent`                             |
