@@ -9,7 +9,6 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
     component: "controller"
-  namespace: {{ .Release.Namespace }}
 spec:
   replicas: {{ .Values.ingressController.replicaCount }}
   selector:
