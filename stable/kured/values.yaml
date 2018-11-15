@@ -13,6 +13,11 @@ serviceAccount:
   create: true
   name:
 
+service:
+  ## Kubernetes service for Prometheus exporter
+  type: ClusterIP
+  port: 8080
+
 updateStrategy: OnDelete
 
 tolerations:

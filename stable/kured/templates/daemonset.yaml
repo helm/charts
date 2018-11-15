@@ -58,6 +58,9 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: spec.nodeName
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
       restartPolicy: Always
       {{- with .Values.tolerations }}
       tolerations:

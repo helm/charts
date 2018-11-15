@@ -9,6 +9,7 @@ See https://github.com/weaveworks/kured
 | `image.pullPolicy`      | Image pull policy                                                           | `IfNotPresent`             |
 | `extraArgs`             | Extra arguments to pass to `/usr/bin/kured`. See below.                     | `{}`                       |
 | `rbac.create`           | Create RBAC roles                                                           | `true`                     |
+| `service.port`          | Service port for Prometheus exporter                                        | `8080`                     |
 | `serviceAccount.create` | Create service account roles                                                | `true`                     |
 | `serviceAccount.name`   | Service account name to create (or use if `serviceAccount.create` is false) | (chart fullname)           |
 | `updateStrategy`        | Daemonset update strategy                                                   | `OnDelete`                 |

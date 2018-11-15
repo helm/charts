@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "kured.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "kured.name" . }}
+    chart: {{ template "kured.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+  - name: http
+    port: {{ default "8080" .Values.service.port }}
+    targetPort: http
+  selector:
+    app: {{ template "kured.name" . }}
