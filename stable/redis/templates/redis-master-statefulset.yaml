@@ -13,7 +13,7 @@ spec:
       release: "{{ .Release.Name }}"
       role: master
       app: {{ template "redis.name" . }}
-  serviceName: "redis-master"
+  serviceName: {{ template "redis.fullname" . }}-master
   template:
     metadata:
       labels:
@@ -134,6 +134,19 @@ spec:
           mountPath: /opt/bitnami/redis/etc/redis.conf
           subPath: redis.conf
         {{- end }}
+      {{- if and ( and .Values.master.persistence.enabled (not .Values.persistence.existingClaim) ) .Values.master.securityContext.enabled }}
+      initContainers:
+      - name: volume-permissions
+        image: "{{ template "volumePermissions.image" . }}"
+        imagePullPolicy: {{ default "" .Values.volumePermissions.image.pullPolicy | quote }}
+        command: ["/bin/chown", "-R", "{{ .Values.master.securityContext.runAsUser }}:{{ .Values.master.securityContext.fsGroup }}", "{{ .Values.master.persistence.path }}"]
+        securityContext:
+          runAsUser: 0
+        volumeMounts:
+        - name: redis-data
+          mountPath: {{ .Values.master.persistence.path }}
+          subPath: {{ .Values.master.persistence.subPath }}
+      {{- end }}
       volumes:
       - name: health
         configMap:

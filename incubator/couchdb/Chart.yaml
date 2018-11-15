@@ -1,5 +1,5 @@
 name: couchdb
-version: 0.2.1
+version: 0.2.2
 appVersion: 2.2.0
 description: A database featuring seamless multi-master sync, that scales from
   big data to mobile, with an intuitive HTTP/JSON API and designed for
