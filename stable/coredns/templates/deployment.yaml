@@ -62,7 +62,7 @@ spec:
         volumeMounts:
         - name: config-volume
           mountPath: /etc/coredns
-        {{- if .Values.kubernetesTls.enabled }}
+        {{- if .Values.kubernetesTLS.enabled }}
         - name: kubernetes-tls
           mountPath: /tls
         {{- end }}
@@ -80,7 +80,7 @@ spec:
           successThreshold: 1
           failureThreshold: 5
       volumes:
-        {{- if .Values.kubernetesTls.enabled }}
+        {{- if .Values.kubernetesTLS.enabled }}
         - name: kubernetes-tls
           secret:
             secretName: {{ template "coredns.fullname" . }}-kube-tls

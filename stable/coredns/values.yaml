@@ -76,7 +76,7 @@ servers:
 #      configBlock: |-
 #        endpoint https://1.2.3.4
 
-kubernetesTls:
+kubernetesTLS:
   enabled: false
   cert: ""
   key: ""
