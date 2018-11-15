@@ -74,5 +74,15 @@ To access the Monitoring svc from outside the cluster, follow the steps below:
     kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "nats.fullname" . }}-monitoring {{ .Values.monitoringService.port }}:{{ .Values.monitoringService.port }}
 {{- end }}
 
-2. Access the NATS monitoring opening the URL obtained on a browser.
+2. Access NATS monitoring by opening the URL obtained in a browser.
+{{- end }}
+
+{{- if .Values.metrics.enabled }}
+
+3. Get the NATS Prometheus Metrics URL by running:
+
+    echo "Prometheus Metrics URL: http://127.0.0.1:{{ .Values.metrics.port }}"
+    kubectl port-forward --namespace {{ .Release.Namespace }} {{ template "nats.fullname" . }}-0 {{ .Values.metrics.port }}:{{ .Values.metrics.port }}
+
+4. Access NATS Prometheus metrics by opening the URL obtained in a browser.
 {{- end }}
