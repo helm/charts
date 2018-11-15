@@ -5,11 +5,11 @@ metadata:
   name: {{ template "metacontroller.fullname" . }}-crd-cleanup
   namespace: {{ .Release.Namespace }}
   annotations:
-    "helm.sh/hook": pre-delete
+    "helm.sh/hook": post-delete
     "helm.sh/hook-weight": "3"
     "helm.sh/hook-delete-policy": hook-succeeded
   labels:
-    app: {{ template "metacontroller.name" . }}-operator
+    app: {{ template "metacontroller.name" . }}-crd-cleanup
 
 spec:
   template:
