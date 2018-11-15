@@ -94,6 +94,30 @@ $ helm install --name sysdig-agent-on-prem \
     stable/sysdig
 ```
 
+## Using private image registries
+
+To authenticate against an image registry you will need to store the credentials
+in a ConfigMap and add a reference to that ConfigMap.
+
+```bash
+kubectl create secret docker-registry NAME \
+ --docker-server=SERVER \
+ --docker-username=USERNAME \
+ --docker-password=TOKEN \
+ --docker-email=EMAIL
+```
+
+And you must pass its reference in a YAML value file which will be used when
+deploying the Sysdig Agent Helm chart (this cannot be done using the command-line):
+
+```yaml
+image:
+  pullSecrets:
+    - name: NAME
+```
+
+You can read more details about this in [Kubernetes Documentation](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/)
+
 ## Custom App Checks
 
 Application checks are integrations that allow the Sysdig agent to poll specific metrics exposed by any application. Sysdig Monitor has several built-in app checks, but sometimes you need to create your own.
