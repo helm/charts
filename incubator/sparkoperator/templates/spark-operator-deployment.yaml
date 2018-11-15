@@ -45,7 +45,7 @@ spec:
       containers:
       - name: sparkoperator
         image: {{ .Values.operatorImageName }}:{{ .Values.operatorVersion }}
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
         {{- if .Values.enableWebhook }}
         volumeMounts:
           - name: webhook-certs

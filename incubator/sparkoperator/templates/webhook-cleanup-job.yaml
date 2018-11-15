@@ -19,7 +19,7 @@ spec:
       containers:
       - name: main
         image: {{ .Values.operatorImageName }}:{{ .Values.operatorVersion }}
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
         command:
         - "/bin/sh"
         - "-c"
