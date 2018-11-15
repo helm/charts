@@ -16,18 +16,18 @@ spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      release: {{ .Release.Name | quote }}
       {{- if .Values.isClusterService }}
       k8s-app: {{ .Chart.Name | quote }}
       {{- end }}
       app: {{ template "coredns.name" . }}
+      release: {{ .Release.Name | quote }}
   template:
     metadata:
       labels:
         {{- if .Values.isClusterService }}
         k8s-app: {{ .Chart.Name | quote }}
         {{- end }}
-        app: {{ template "coredns.fullname" . }}
+        app: {{ template "coredns.name" . }}
         release: {{ .Release.Name | quote }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
