@@ -82,6 +82,8 @@ spec:
             - name: keydir
               mountPath: /keydir-readonly
           {{- end }}
+          resources:
+{{ toYaml .Values.init.resources | indent 12 }}
         - name: install
           image: "{{ .Values.installImage.repository }}:{{ .Values.installImage.tag }}"
           args:
@@ -90,6 +92,8 @@ spec:
           volumeMounts:
             - name: workdir
               mountPath: /work-dir
+          resources:
+{{ toYaml .Values.init.resources | indent 12 }}
         - name: bootstrap
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           command:
@@ -119,6 +123,7 @@ spec:
                 secretKeyRef:
                   name: "{{ template "mongodb-replicaset.adminSecret" . }}"
                   key: password
+
           {{- if .Values.metrics.enabled }}
             - name: METRICS
               value: "true"
@@ -143,6 +148,8 @@ spec:
               mountPath: /data/configdb
             - name: datadir
               mountPath: /data/db
+          resources:
+{{ toYaml .Values.init.resources | indent 12 }}        
       containers:
         - name: {{ template "mongodb-replicaset.name" . }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
