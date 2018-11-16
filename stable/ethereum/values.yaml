@@ -30,6 +30,8 @@ geth:
     replicaCount: 2
     service:
       type: ClusterIP
+    args:
+      rpcapi: 'eth,net,web3'
   miner:
     # miner nodes
     replicaCount: 3
