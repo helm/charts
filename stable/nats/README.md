@@ -81,6 +81,7 @@ The following table lists the configurable parameters of the NATS chart and thei
 | `antiAffinity`                       | Anti-affinity for pod assignment                                                             | `soft`                                                        |
 | `tolerations`                        | Toleration labels for pod assignment                                                         | `nil`                                                         |
 | `resources`                          | CPU/Memory resource requests/limits                                                          | {}                                                            |
+| `extraArgs`                          | Optional flags for NATS                                                                      | `[]`                                                          |
 | `livenessProbe.initialDelaySeconds`  | Delay before liveness probe is initiated                                                     | `30`                                                          |
 | `livenessProbe.periodSeconds`        | How often to perform the probe                                                               | `10`                                                          |
 | `livenessProbe.timeoutSeconds`       | When the probe times out                                                                     | `5`                                                           |

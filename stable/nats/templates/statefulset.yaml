@@ -89,6 +89,9 @@ spec:
         args:
         - -c
         - /opt/bitnami/nats/gnatsd.conf
+        {{- if .Values.extraArgs }}
+{{ toYaml .Values.extraArgs | indent 8 }}
+        {{- end }}
         ports:
         - name: client
           containerPort: {{ .Values.clientService.port }}
