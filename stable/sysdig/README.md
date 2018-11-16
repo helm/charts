@@ -173,10 +173,10 @@ $ ./scripts/appchecks2helm appChecks/solr.py appChecks/traefik.py appChecks/nats
 $ helm install --name sysdig -f custom-app-checks.yaml stable/sysdig
 ```
 
-## Using this chart with AWS Marketplace
+## Deploying the AWS Marketplace Sysdig agent image
 
 This is an use case similar to pull images from a private registry. You need to
-get the authorization token for the image registry:
+get the authorization token for the AWS Marketplace ECS image registry:
 
 ```bash
 aws ecr --region=us-east-1 get-authorization-token --output text --query authorizationData[].authorizationToken | base64 -d | cut -d: -f2
