@@ -449,3 +449,6 @@ prometheus:
       ## [Kube Prometheus Selector Label](https://github.com/coreos/prometheus-operator/blob/master/helm/kube-prometheus/values.yaml#L298)
       selector:
         prometheus: kube-prometheus
+
+## Kubernetes Cluster Domain
+clusterDomain: cluster.local
