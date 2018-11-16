@@ -33,6 +33,9 @@ fi
 readonly PULL_INFO
 
 main() {
+    cp test/test-results.xml "$ARTIFACTS"
+    echo "$GCS_ARTIFACTS_DIR"
+
     git remote add k8s https://github.com/helm/charts
     git fetch k8s master
 

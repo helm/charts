@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="ct" time="0.182" tests="7" errors="0" skipped="1" failures="1">
+  <testcase name="Validate Maintainers" classname="ct" time="0.059"/>
+  <testcase name="Check Version Increment" classname="ct" time="0.035">
+    <skipped />
+  </testcase>
+  <testcase name="Validate Chart Yaml" classname="ct" time="0"/>
+  <testcase name="Lint Chart Yaml" classname="ct" time="0"/>
+  <testcase name="Lint Values Yaml" classname="ct" time="0"/>
+  <testcase name="Install Chart" classname="ct" time="0"/>
+  <testcase name="Test Chart" classname="ct" time="42.42">
+    <failure>This is my failing test output! 😱</failure>
+  </testcase>
+</testsuite>
