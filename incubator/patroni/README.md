@@ -14,7 +14,6 @@ This directory contains a Kubernetes chart to deploy a five node [Patroni](https
 
 ## Todo
 * Make namespace configurable
-* K8S native DCS
 
 ## Chart Details
 This chart will do the following:
@@ -63,8 +62,8 @@ The following table lists the configurable parameters of the patroni chart and t
 | `nameOverride`                    | Override the name of the chart              | `nil`                                               |
 | `fullnameOverride`                | Override the fullname of the chart          | `nil`                                               |
 | `replicaCount`                    | Amount of pods to spawn                     | `5`                                                 |
-| `image.repository`                | The image to pull                       | `registry.opensource.zalan.do/acid/spilo-10`        |
-| `image.tag`                       | The version of the image to pull        | `1.4-p6`                                            |
+| `image.repository`                | The image to pull                           | `registry.opensource.zalan.do/acid/spilo-10`        |
+| `image.tag`                       | The version of the image to pull            | `1.4-p16`                                           |
 | `image.pullPolicy`                | The pull policy                             | `IfNotPresent`                                      |
 | `credentials.superuser`           | Password of the superuser                   | `tea`                                               |
 | `credentials.admin`               | Password of the admin                       | `cola`                                              |
