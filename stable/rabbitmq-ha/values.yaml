@@ -248,6 +248,11 @@ image:
   # pullSecrets:
   #   - myRegistrKeySecretName
 
+busyboxImage:
+  repository: busybox
+  tag: latest
+  pullPolicy: Always
+
 ## Duration in seconds the pod needs to terminate gracefully
 terminationGracePeriodSeconds: 10
 
