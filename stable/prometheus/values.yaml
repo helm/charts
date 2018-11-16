@@ -67,6 +67,10 @@ alertmanager:
   ##
   configMapOverrideName: ""
 
+  ## The configuration file name to be loaded to alertmanager.
+  ##
+  configFileName: alertmanager.yml
+
   ingress:
     ## If true, alertmanager Ingress will be created
     ##
