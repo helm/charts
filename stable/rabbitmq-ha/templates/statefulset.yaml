@@ -46,7 +46,8 @@ spec:
       serviceAccountName: {{ template "rabbitmq-ha.serviceAccountName" . }}
       initContainers:
         - name: copy-rabbitmq-config
-          image: busybox
+          image: {{ .Values.busyboxImage.repository}}:{{ .Values.busyboxImage.tag}}
+          imagePullPolicy: {{ .Values.busyboxImage.pullPolicy }}
           command: ['sh', '-c', 'cp /configmap/* /etc/rabbitmq; rm -f /var/lib/rabbitmq/.erlang.cookie']
           resources:
 {{ toYaml .Values.initContainer.resources | indent 12 }}
