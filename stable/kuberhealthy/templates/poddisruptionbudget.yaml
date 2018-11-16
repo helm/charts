@@ -1,10 +1,13 @@
 apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
-  name: kuberhealthy-pdb
-  namespace: kuberhealthy
+  name:  {{ template "kuberhealthy.name" . }}-pdb
+  namespace: {{ .Values.deployment.namespace }}
 spec:
   minAvailable: 1
   selector:
     matchLabels:
-      app: kuberhealthy
+      app: {{ template "kuberhealthy.name" . }}
+      chart: {{ .Chart.Name }}
+      release: {{ .Release.Name }}
+      heritage: {{ .Release.Service }}

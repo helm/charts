@@ -1,16 +1,19 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   annotations:
   labels:
-    app: kuberhealthy
-  name: kuberhealthy
-  namespace: kuberhealthy
+    app: {{ template "kuberhealthy.name" . }}
+    chart: {{ .Chart.Name }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  namespace: {{ .Values.deployment.namespace }}
 spec:
   replicas: {{ .Values.deployment.replicas }}
   selector:
     matchLabels:
-      app: kuberhealthy
+      app: {{ template "kuberhealthy.name" . }}
+      release: {{ .Release.Name }}
   strategy:
     rollingUpdate:
       maxSurge: {{ .Values.deployment.maxSurge }}
@@ -19,7 +22,10 @@ spec:
   template:
     metadata:
       labels:
-        app: kuberhealthy
+        app: {{ template "kuberhealthy.name" . }}
+        chart: {{ .Chart.Name }}
+        release: {{ .Release.Name }}
+        heritage: {{ .Release.Service }}
     spec:
       serviceAccountName: kuberhealthy
       automountServiceAccountToken: true
@@ -34,7 +40,7 @@ spec:
           tcpSocket:
             port: 8080
           timeoutSeconds: 1
-        name: kuberhealthy
+        name:  {{ template "kuberhealthy.name" . }}
         env:
           - name: MY_POD_NAME
             valueFrom:

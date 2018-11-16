@@ -30,13 +30,14 @@ deployment:
   maxSurge: 0
   maxUnavailable: 1
   imagePullPolicy: IfNotPresent
+  namespace: kuberhealthy
 
-# Please remember that changing the service type to LoadBalancer 
+# Please remember that changing the service type to LoadBalancer
 # will expose Kuberhealthy to the internet, which could cause
-# error messages shown by Kuberhealthy to be exposed to the 
+# error messages shown by Kuberhealthy to be exposed to the
 # public internet.  It is recommended to create the service
 # with ClusterIP, then to manually edit the service in order to
-# securely expose the port in an appropriate way for your 
+# securely expose the port in an appropriate way for your
 # specific environment.
 service:
   externalPort: 80

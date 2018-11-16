@@ -4,18 +4,21 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   labels:
-    component: kuberhealthy
+    app: {{ template "kuberhealthy.name" . }}
+    chart: {{ .Chart.Name }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
     prometheus: {{ .Values.prometheus.name }}
-  name: kuberhealthy
+  name: {{ template "kuberhealthy.name" . }}
 spec:
   jobLabel: component
   selector:
     matchLabels:
-      component: kuberhealthy
-      app: kuberhealthy
+      app: {{ .Chart.Name }}
+      chart: {{ .Chart.Name }}
   namespaceSelector:
     matchNames:
-      - "kuberhealthy"
+      - {{ .Release.Namespace }}
   endpoints:
   - port: http
     interval: 15s

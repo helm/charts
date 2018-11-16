@@ -2,8 +2,8 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: kuberhealthy
-    component: kuberhealthy
+    app: {{ template "kuberhealthy.name" . }}
+    release: {{ .Release.Name }}
   {{ if .Values.prometheus.enabled -}}
   {{ if .Values.prometheus.enableScraping -}}
   annotations:
@@ -12,8 +12,8 @@ metadata:
     prometheus.io/path: "/metrics"
   {{ end -}}
   {{ end -}}
-  name: kuberhealthy
-  namespace: kuberhealthy
+  name: {{ template "kuberhealthy.name" . }}
+  namespace: {{ .Values.deployment.namespace }}
 spec:
   type: {{ .Values.service.type }}
   ports:
@@ -21,4 +21,5 @@ spec:
     name: http
     targetPort: 8080
   selector:
-    app: kuberhealthy
+    app: {{ template "kuberhealthy.name" . }}
+    release: {{ .Release.Name }}

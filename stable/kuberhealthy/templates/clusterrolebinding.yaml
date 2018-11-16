@@ -1,15 +1,15 @@
 ---
-apiVersion: rbac.authorization.k8s.io/v1
+apiVersion: {{ template "rbac.apiVersion" . }}
 kind: ClusterRoleBinding
 metadata:
-  name: kuberhealthy
-  namespace: kube-system
+  name: {{ template "kuberhealthy.name" . }}
+  namespace: {{ .Values.deployment.namespace }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: kuberhealthy
+  name: {{ template "kuberhealthy.name" . }}
 subjects:
 - kind: ServiceAccount
-  name: kuberhealthy
-  namespace: kuberhealthy
+  name: {{ template "kuberhealthy.name" . }}
+  namespace: {{ .Values.deployment.namespace }}
   

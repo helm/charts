@@ -5,9 +5,9 @@ description: The official Helm chart for Kuberhealthy.
 name: kuberhealthy
 version: 0.1.1
 maintainers:
-  - name: Eric Greer
+  - name: integrii
     email: eric.greer@comcast.com
-  - name: Jake Martin
+  - name: lolimjake
     email: jacob.martin@comcast.com
 keywords:
 - kuberhealthy
@@ -20,4 +20,3 @@ keywords:
 sources:
 - https://github.com/Comcast/kuberhealthy
 icon: https://raw.githubusercontent.com/Comcast/kuberhealthy/helm/deploy/helm/kuberhealthy/kh-logo.png
-

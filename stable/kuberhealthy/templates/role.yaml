@@ -1,8 +1,8 @@
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: {{ template "rbac.apiVersion" . }}
 kind: Role
 metadata:
-  name: kuberhealthy
-  namespace: kuberhealthy
+  name: {{ template "kuberhealthy.name" . }}
+  namespace: {{ .Values.deployment.namespace }}
 rules:
   - apiGroups:
     - apps
