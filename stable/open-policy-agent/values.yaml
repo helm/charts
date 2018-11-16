@@ -16,7 +16,6 @@ rbac:
   ##
   create: true
 
-
 service:
   type: ClusterIP
 
@@ -29,15 +28,13 @@ service:
 
   annotations: {}
 
-
-
-tls: 
+tls:
   autoGenerate: true
   # If we are not given tls key and certs, we generate. This is the expiry days
   # for the CA Cert
   caDays: 29691
-  
-  # If you wish to provide a CA Bundle, set it here. This is only used if 
+
+  # If you wish to provide a CA Bundle, set it here. This is only used if
   # opa.deployWebhook is set to True
   # ca: ""
 
@@ -56,7 +53,7 @@ opa:
     tag: 0.9.1
     pullPolicy: IfNotPresent
 
-  # This has no effect unless you provide valid certs. However, if you do, this 
+  # This has no effect unless you provide valid certs. However, if you do, this
   # controls if we should also listen for http connections as well as https
   insecureEnabled: true
 
@@ -94,7 +91,8 @@ kubeMgmt:
     tag: 0.6
     pullPolicy: IfNotPresent
 
-  enabled: true # Should we deploy the kubernetes management sidecar helper
+  # Should we deploy the kubernetes management sidecar helper
+  enabled: true
   replicate:
     - extensions/v1beta1/ingresses
   replicateCluster:

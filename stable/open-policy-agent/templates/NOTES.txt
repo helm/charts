@@ -2,7 +2,7 @@ The Open Policy Agent has been installed.
 
 You can check the status of the pod(s) by running:
 
-    kubectl get pods -n {{ .Release.Namespace }} -l app.kubernetes.io/name={{ include "open-policy-agent.name" . }}
+    kubectl get pods -n {{ .Release.Namespace }} -l name={{ include "open-policy-agent.name" . }}
 
 If you wish to configure a ValidatingWebhookConfiguration then you will need the namespace name and the service name. These are shown below:
 
@@ -11,8 +11,8 @@ If you wish to configure a ValidatingWebhookConfiguration then you will need the
 
 If you wish to view the logs of the agent run the following:
 
-    kubectl logs -l app.kubernetes.io/name={{ include "open-policy-agent.name" . }} -c open-policy-agent -n {{ .Release.Namespace }}
+    kubectl logs -l name={{ include "open-policy-agent.name" . }} -c open-policy-agent -n {{ .Release.Namespace }}
 
 Or the logs of the kube-mgmt sidecar:
 
-    kubectl logs -l app.kubernetes.io/name={{ include "open-policy-agent.name" . }} -c kube-mgmt -n {{ .Release.Namespace }}
+    kubectl logs -l name={{ include "open-policy-agent.name" . }} -c kube-mgmt -n {{ .Release.Namespace }}

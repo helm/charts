@@ -1,9 +1,13 @@
+name: open-policy-agent
+version: 0.0.1
 apiVersion: v1
 appVersion: "0.9.1"
 description: A chart to deploy the Open Policy Agent
-name: open-policy-agent
-version: 0.0.1
 icon: https://www.openpolicyagent.org/images/opa-logo.svg
+keywords:
+- open-policy-agent
+- kubernetes
+home: https://www.openpolicyagent.org/
 maintainers:
   - name: rk295
     email: robin@kearney.co.uk

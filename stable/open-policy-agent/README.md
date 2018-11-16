@@ -5,7 +5,7 @@
 ## TL;DR;
 
 ```console
-$ helm install stable/open-policy-agent
+helm install stable/open-policy-agent
 ```
 
 ## Introduction
@@ -13,14 +13,15 @@ $ helm install stable/open-policy-agent
 This chart installs the Open Policy Agent, optionally deploying the `kube-mgmt` sidecar using the [Helm](https://helm.sh) package manager.
 
 ## Prerequisites
-  - Kubernetes 1.9+
+
+- Kubernetes 1.9+
 
 ## Installing the Chart
 
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release stable/open-policy-agent
+helm install --name my-release stable/open-policy-agent
 ```
 
 The command deploys open-policy-agent on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -32,14 +33,14 @@ The command deploys open-policy-agent on the Kubernetes cluster in the default c
 To uninstall/delete the `my-release` deployment:
 
 ```console
-$ helm delete my-release
+helm delete my-release
 ```
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
 ## Configuration
 
-The following table lists the configurable parameters of the nginx-ingress chart and their default values.
+The following table lists the configurable parameters of the open-policy-agent chart and their default values.
 
 Parameter | Description | Default
 --- | --- | ---
@@ -81,16 +82,15 @@ Parameter | Description | Default
 `tls.key` | The TLS key, if you wish to enable https (plain text, the chart base64 encodes) | `""`
 `tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
 
-
 ```console
-$ helm install stable/open-policy-agent --name my-release \
+helm install stable/open-policy-agent --name my-release \
     --set kubeMgmt.enabled=false
 ```
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install stable/open-policy-agent --name my-release -f values.yaml
+helm install stable/open-policy-agent --name my-release -f values.yaml
 ```
 
 ## Use as a Webhook Admission Controller
@@ -121,4 +121,4 @@ webhooks:
 
 The service name the chart deploys is named `{$Release.Name}-open-policy-agent` - please ensure you preserve `-open-policy-agent` on the end of the string.
 
-If you wish to make your certs outside of help, some helper scripts are provided inside the `scripts/` directory to generate the certs, a valid yaml for passing to this chart and a `ValidatingWebhookConfiguration` resource yaml file. Have a look at the [README](scripts/README.md) inside that directory.
+If you wish to make your certs outside of helm, some helper scripts are provided inside the `scripts/` directory to generate the certs, a valid yaml for passing to this chart and a `ValidatingWebhookConfiguration` resource yaml file. Have a look at the [README](scripts/README.md) inside that directory.
