@@ -8,7 +8,7 @@ nodeSelector: {}
 # Docker image repository, tag and a policy for Kubernetes to pull it.
 image:
   repo: darthsim/imgproxy
-  tag: v1.1.6
+  tag: v2.1.0
   pullPolicy: IfNotPresent
 
 # Kubernetes API version to use for imgproxy Deployment
@@ -80,6 +80,9 @@ maxClients: ""
 # Duration in seconds sent in Expires and Cache-Control: max-age headers.
 ttl: 3600
 
+# User-Agent header that will be sent with source image request. Default: imgproxy/%current_version
+userAgent: ""
+
 # When true, enables using ETag header for the cache control|`false`|
 useEtag: false
 
@@ -89,14 +92,17 @@ localFileSystemRoot: false
 # When set, enables CORS headers with provided origin. CORS headers are disabled by default.
 allowOrigin: ""
 
-# The maximum dimensions of the source image, in pixels, for both width and height. Images with larger real size will be rejected.
-maxSrcDimension: 8192
-
 # The maximum resolution of the source image, in megapixels. Images with larger real size will be rejected
 maxSrcResolution: "16.8"
 
+# The maximum of animated GIF frames to being processed
+maxGifFrames: 1
+
 # The authorization token. If specified, request should contain the `Authorization: Bearer %secret%` header
-secret: "changeme"
+secret: ""
+
+# When true, disables SSL verification
+ignoreSslVerification: false
 
 # Quality of the resulting image, percentage
 quality: 80
@@ -109,6 +115,69 @@ jpegProgressive: false
 
 # When true, enables interlaced compression of PNG
 pngInterlaced: false
+
+# Enables WebP support detection. When the file extension is omitted in the imgproxy URL and browser supports WebP, imgproxy will use it as the resulting format
+enableWebpDetection`: false
+
+# Enables WebP support detection and enforces WebP usage. If the browser supports WebP, it will be used as resulting format even if another extension is specified in the imgproxy URL
+enforceWebp`: false
+
+# Enables Client Hints support when the width is ommited for automatic responsive images
+enableClientHints: false
+
+# Base64-encoded image data
+watermarkData: ""
+
+# Path to the locally stored image
+watermarkPath: ""
+
+# Watermark image URL
+watermarkUrl: ""
+
+# Watermark base opacity
+watermarkOpacity: 1
+
+# Set of preset definitions, comma-divided
+presets: ""
+
+# When true, enables image fetching from Amazon S3 buckets
+useS3: false
+
+# AWS key
+awsKey: ""
+
+# AWS secret
+awsSecret: ""
+
+# AWS region
+awsRegion: ""
+
+# Custom S3 endpoint to being used by imgproxy
+s3Endpoint: ""
+
+# Google Cloud JSON key. When set, enables image fetching from Google Cloud Storage buckets
+gcsKey: ""
+
+# New Relic license key
+newRelicKey: ""
+
+# New Relic application name. Default: imgproxy
+newRelicAppName: ""
+
+# Enables Prometheus metrics
+enablePrometheus: false
+
+# Bugsnag API key. When provided, enables errors reporting to Bugsnag
+bugsnagKey: ""
+
+# Bugsnag stage to report to. Default: production
+bugsnagStage: ""
+
+# Honeybadger API key. When provided, enables errors reporting to Honeybadger
+honeybadgerKey: ""
+
+# Honeybadger env to report to. Default: production
+honeybadgerEnv: ""
 
 # Base URL part which will be added to every requestsd image URL. For example, if base URL is `http://example.com/images` and `/path/to/image.png` is requested, imgproxy will download the image from `http://example.com/images/path/to/image.png`
 baseUrl: ""

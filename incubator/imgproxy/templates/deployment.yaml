@@ -17,6 +17,12 @@ spec:
       labels:
         app: {{ template "imgproxy.fullname" . }}
         release: {{ .Release.Name | quote }}
+{{- if .Values.enablePrometheus }}
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: /metrics
+        prometheus.io/port: "8081"
+{{- end }}
     spec:
     {{- if .Values.nodeSelector }}
       nodeSelector:
@@ -53,9 +59,11 @@ spec:
         {{- end }}
         - name: IMGPROXY_TTL
           value: "{{ .Values.ttl }}"
+        - name: IMGPROXY_USER_AGENT
+          value: "{{ .Values.userAgent }}"
         {{- if .Values.useEtag }}
         - name: IMGPROXY_USE_ETAG
-          value: "{{ .Values.useEtag }}"
+          value: "true"
         {{- end }}
         {{- if .Values.localFileSystemRoot }}
         - name: IMGPROXY_LOCAL_FILESYSTEM_ROOT
@@ -65,10 +73,10 @@ spec:
         - name: IMGPROXY_ALLOW_ORIGIN
           value: "{{ .Values.allowOrigin }}"
         {{- end }}
-        - name: IMGPROXY_MAX_SRC_DIMENSION
-          value: "{{ .Values.maxSrcDimension }}"
         - name: IMGPROXY_MAX_SRC_RESOLUTION
           value: "{{ .Values.maxSrcResolution }}"
+        - name: IMGPROXY_MAX_GIF_FRAMES
+          value: "{{ .Values.maxGifFrames }}"
         {{- if .Values.secret }}
         - name: IMGPROXY_SECRET
           valueFrom:
@@ -76,18 +84,111 @@ spec:
               name: {{ template "imgproxy.fullname" . }}-secrets
               key: secret
         {{- end }}
+        {{- if .Values.ignoreSslVerification}}
+        - name: IMGPROXY_IGNORE_SSL_VERIFICATION
+          value: "true"
+        {{- end }}
         - name: IMGPROXY_QUALITY
           value: "{{ .Values.quality }}"
         - name: IMGPROXY_GZIP_COMPRESSION
           value: "{{ .Values.gzipCompression }}"
         {{- if .Values.jpegProgressive}}
         - name: IMGPROXY_JPEG_PROGRESSIVE
-          value: "{{ .Values.jpegProgressive }}"
+          value: "true"
         {{- end }}
         {{- if .Values.pngInterlaced }}
         - name: IMGPROXY_PNG_INTERLACED
-          value: "{{ .Values.pngInterlaced }}"
+          value: "true"
         {{- end }}
+        {{- if .Values.enableWebpDetection }}
+        - name: IMGPROXY_ENABLE_WEBP_DETECTION
+          value: "true"
+        {{- end }}
+        {{- if .Values.enforceWebp }}
+        - name: IMGPROXY_ENFORCE_WEBP
+          value: "true"
+        {{- end }}
+        {{- if .Values.enableClientHints }}
+        - name: IMGPROXY_ENABLE_CLIENT_HINTS
+          value: "true"
+        {{- end }}
+        - name: IMGPROXY_WATERMARK_DATA
+          value: "{{ .Values.watermarkData }}"
+        - name: IMGPROXY_WATERMARK_PATH
+          value: "{{ .Values.watermarkPath }}"
+        - name: IMGPROXY_WATERMARK_URL
+          value: "{{ .Values.watermarkUrl }}"
+        - name: IMGPROXY_WATERMARK_OPACITY
+          value: "{{ .Values.watermarkOpacity }}"
+        - name: IMGPROXY_PRESETS
+          value: "{{ .Values.presets }}"
+
+        {{- if .Values.useS3 }}
+        - name: IMGPROXY_USE_S3
+          value: "true"
+        {{- if .Values.awsKey }}
+        - name: AWS_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "imgproxy.fullname" . }}-secrets
+              key: awsKey
+        {{- end }}
+        {{- if .Values.awsSecret }}
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "imgproxy.fullname" . }}-secrets
+              key: awsSecret
+        {{- end }}
+        - name: IMGPROXY_S3_REGION
+          value: "{{ .Values.awsRegion }}"
+        - name: IMGPROXY_S3_ENDPOINT
+          value: "{{ .Values.s3Endpoint }}"
+        {{- end }}
+
+        {{- if .Values.gcsKey }}
+        - name: IMGPROXY_GCS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "imgproxy.fullname" . }}-secrets
+              key: gcsKey
+        {{- end }}
+
+        {{- if .Values.newRelicKey }}
+        - name: IMGPROXY_NEW_RELIC_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "imgproxy.fullname" . }}-secrets
+              key: newRelicKey
+        - name: IMGPROXY_NEW_RELIC_APP_NAME
+          value: "{{ .Values.newRelicAppName }}"
+        {{- end }}
+
+        {{- if .Values.enablePrometheus }}
+        - name: IMGPROXY_PROMETHEUS_BIND
+          value: ":8081"
+        {{- end }}
+
+        {{- if .Values.bugsnagKey }}
+        - name: IMGPROXY_BUGSNAG_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "imgproxy.fullname" . }}-secrets
+              key: bugsnagKey
+        - name: IMGPROXY_BUGSNAG_STAGE
+          value: "{{ .Values.bugsnagStage }}"
+        {{- end }}
+
+        {{- if .Values.honeybadgerKey }}
+        - name: IMGPROXY_HONEYBADGER_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "imgproxy.fullname" . }}-secrets
+              key: honeybadgerKey
+        - name: IMGPROXY_HONEYBADGER_ENV
+          value: "{{ .Values.honeybadgerEnv }}"
+        {{- end }}
+
         {{- if .Values.baseUrl }}
         - name: IMGPROXY_BASE_URL
           value: "{{ .Values.baseUrl }}"
