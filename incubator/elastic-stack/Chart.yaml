@@ -1,14 +1,9 @@
+# elastic-stack has been promoted to stable
+deprecated: true
 apiVersion: v1
 description: A Helm chart for ELK
 home: https://www.elastic.co/products
 icon: https://www.elastic.co/assets/bltb35193323e8f1770/logo-elastic-stack-lt.svg
 name: elastic-stack
-version: 0.9.2
+version: 0.11.1
 appVersion: 6.0
-maintainers:
-- name: rendhalver
-  email: pete.brown@powerhrg.com
-- name: jar361
-  email: jrodgers@powerhrg.com
-- name: christian-roggia
-  email: christian.roggia@gmail.com

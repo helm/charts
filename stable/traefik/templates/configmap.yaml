@@ -5,8 +5,8 @@ metadata:
   labels:
     app: {{ template "traefik.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
 data:
   traefik.toml: |
     # traefik.toml
@@ -70,7 +70,7 @@ data:
       {{- if not .Values.ssl.upstream }}
         [entryPoints.https.tls]
           {{- if .Values.ssl.tlsMinVersion }}
-          minVersion = "{{ .Values.ssl.tlsMinVersion }}"
+          minVersion = {{ .Values.ssl.tlsMinVersion | quote }}
           {{- end }}
           {{- if .Values.ssl.cipherSuites }}
           {{ template "traefik.ssl.cipherSuites" . }}
@@ -134,19 +134,21 @@ data:
         {{- end}}
         {{- if .Values.kubernetes.ingressEndpoint.publishedService }}
       publishedService = {{ .Values.kubernetes.ingressEndpoint.publishedService | quote }}
+        {{- else if .Values.kubernetes.ingressEndpoint.useDefaultPublishedService }}
+      publishedService = "{{ .Release.Namespace }}/{{ template "traefik.fullname" . }}"
         {{- end}}
       {{- end}}
     {{- end}}
     {{- if .Values.traefikLogFormat }}
     [traefikLog]
-      format = "{{ .Values.traefikLogFormat }}"
+      format = {{ .Values.traefikLogFormat | quote }}
     {{- end }}
     {{- if .Values.accessLogs.enabled }}
     [accessLog]
     {{- if .Values.accessLogs.filePath }}
-    filePath = "{{ .Values.accessLogs.filePath }}"
+    filePath = {{ .Values.accessLogs.filePath | quote }}
     {{- end}}
-      format = "{{ .Values.accessLogs.format }}"
+      format = {{ .Values.accessLogs.format | quote }}
     [accessLog.fields]
       defaultMode = {{ .Values.accessLogs.fields.defaultMode | quote }}
     [accessLog.fields.names]
@@ -162,9 +164,9 @@ data:
     {{- end}}
     {{- if .Values.kvprovider.etcd }}
     [etcd]
-    endpoint = "{{ .Values.kvprovider.etcd.endpoint }}"
+    endpoint = {{ .Values.kvprovider.etcd.endpoint | quote }}
     watch = {{ .Values.kvprovider.etcd.watch }}
-    prefix = "{{ .Values.kvprovider.etcd.prefix }}"
+    prefix = {{ .Values.kvprovider.etcd.prefix | quote }}
     useAPIV3 = {{ .Values.kvprovider.etcd.useAPIV3 }}
     {{- if .Values.kvprovider.etcd.username }}username = {{ .Values.kvprovider.etcd.username }}{{- end }}
     {{- if .Values.kvprovider.etcd.password }}password = {{ .Values.kvprovider.etcd.password }}{{- end }}
@@ -191,7 +193,7 @@ data:
     {{- end }}
     {{- if .Values.kvprovider.boltdb }}
     [boltdb]
-    endpoint = "{{ .Values.kvprovider.boltdb.endpoint }}"
+    endpoint = {{ .Values.kvprovider.boltdb.endpoint | quote }}
     watch = {{ .Values.kvprovider.boltdb.watch }}
     prefix = {{ .Values.kvprovider.boltdb.prefix }}
     {{- if .Values.kvprovider.boltdb.username }}username = {{ .Values.kvprovider.boltdb.username }}{{- end }}
@@ -205,9 +207,9 @@ data:
     {{- end }}
     {{- if .Values.kvprovider.zookeeper }}
     [zookeeper]
-    endpoint = "{{ .Values.kvprovider.zookeeper.endpoint }}"
+    endpoint = {{ .Values.kvprovider.zookeeper.endpoint | quote }}
     watch = {{ .Values.kvprovider.zookeeper.watch }}
-    prefix = {{ .Values.kvprovider.zookeeper.prefix }}
+    prefix = {{ .Values.kvprovider.zookeeper.prefix | quote }}
     {{- if .Values.kvprovider.zookeeper.username }}username = {{ .Values.kvprovider.zookeeper.username }}{{- end }}
     {{- if .Values.kvprovider.zookeeper.password }}password = {{ .Values.kvprovider.zookeeper.password }}{{- end }}
       {{- if .Values.kvprovider.zookeeper.tls }}
@@ -219,7 +221,7 @@ data:
     {{- end }}
     {{- if .Values.acme.enabled }}
     [acme]
-    email = "{{ .Values.acme.email }}"
+    email = {{ .Values.acme.email | quote }}
     {{- if .Values.kvprovider.storeAcme }}
     storage = "traefik/acme/account"
     {{- if .Values.kvprovider.importAcme }}
@@ -238,7 +240,7 @@ data:
     {{- end }}
     {{- if eq .Values.acme.challengeType "dns-01" }}
       [acme.dnsChallenge]
-      provider = "{{ .Values.acme.dnsProvider.name }}"
+      provider = {{ .Values.acme.dnsProvider.name | quote }}
       {{- if .Values.acme.delayBeforeCheck }}
       delayBeforeCheck = {{ .Values.acme.delayBeforeCheck }}
       {{- end }}

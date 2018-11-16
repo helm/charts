@@ -41,7 +41,7 @@ The following table lists the configurable parameters of the pushgateway chart a
 | `affinity`              | Affinity settings for pod assignment                                                                                          | `{}`               |
 | `extraArgs`             | Optional flags for pushgateway                                                                                                | `[]`               |
 | `image.repository`      | Image repository                                                                                                              | `prom/pushgateway` |
-| `image.tag`             | Image tag                                                                                                                     | `v0.4.0`           |
+| `image.tag`             | Image tag                                                                                                                     | `v0.6.0`           |
 | `image.pullPolicy`      | Image pull policy                                                                                                             | `IfNotPresent`     |
 | `ingress.enabled`       | Enables Ingress for pushgateway                                                                                               | `false`            |
 | `ingress.annotations`   | Ingress annotations                                                                                                           | `{}`               |
@@ -52,11 +52,14 @@ The following table lists the configurable parameters of the pushgateway chart a
 | `service.type`          | Service type                                                                                                                  | `ClusterIP`        |
 | `service.port`          | The service port                                                                                                              | `9091`             |
 | `service.targetPort`    | The target port of the container                                                                                              | `9091`             |
+| `serviceLabels`         | Labels for service                                                                                                            | `{}`               |
 | `serviceAccount.create` | Specifies whether a service account should be created.                                                                        | `true`             |
 | `serviceAccount.name`   | Service account to be used. If not set and `serviceAccount.create` is `true`, a name is generated using the fullname template |                    |
 | `tolerations`           | List of node taints to tolerate                                                                                               | `{}`               |
 | `nodeSelector`          | Node labels for pod assignment                                                                                                | `{}`               |
 | `podAnnotations`        | Annotations for pod                                                                                                           | `{}`               |
+| `podLabels`             | Labels for pod                                                                                                                | `{}`               |
+| `serviceAccountLabels`  | Labels for service account                                                                                                    | `{}`               |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

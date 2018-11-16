@@ -4,6 +4,10 @@ global:
   ## can also be spceifed at chart level see below
   nodeSelector:
   #  label: value
+  affinity:
+  #  label: value
+  tolerations:
+  #  label: value
 
 hub:
   ## The repository and image
@@ -21,10 +25,13 @@ hub:
   ## The port which the hub listens on
   port: 4444
 
-  ## Timeout for probe Hub readiness via HTTP request on Hub console
+  ## Timeout for probe Hub readiness via HTTP request on Hub status
   readinessTimeout: 1
 
-  ## Timeout for probe Hub liveness via HTTP request on Hub console
+  ## Initial delay before performing the first readinessProbe
+  readinessDelay: 15
+
+  ## Timeout for probe Hub liveness via HTTP request on Hub status
   livenessTimeout: 1
 
   ## Set the JAVA_TOOL_OPTIONS environment variable
