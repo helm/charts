@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "bitbucket.fullname" . }}
+  labels:
+    app: {{ template "bitbucket.name" . }}
+    chart: {{ template "bitbucket.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+{{ if .Values.service.annotations }}
+  annotations:
+{{ toYaml .Values.service.annotations | indent 4}}
+{{ end }}
+spec:
+{{if ne .Values.service.type "LoadBalancer"}}
+  {{ if .Values.service.clusterIP }}
+  clusterIP: {{ default "None" .Values.service.clusterIP }}
+  {{ end }}
+{{ end }}
+  type: {{ .Values.service.type }}
+  ports:
+      {{ if .Values.service.ports.httpPort }}
+    - name: http
+      port:  {{ .Values.service.ports.httpPort }}
+      targetPort: http
+      {{ end }}
+      {{ if .Values.service.ports.sshPort }}
+    - name: ssh
+      port:  {{ .Values.service.ports.sshPort }}
+      targetPort: ssh
+      {{ end }}
+    {{ if .Values.service.ports.clusterPort }}
+    - name: cluster
+      port:  {{ .Values.service.ports.clusterPort }}
+      targetPort: cluster
+    {{ end }}
+  selector:
+    app: {{ template "bitbucket.name" . }}
+    release: {{ .Release.Name }}

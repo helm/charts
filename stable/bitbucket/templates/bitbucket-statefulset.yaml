@@ -1,0 +1,139 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ template "bitbucket.fullname" . }}
+  labels:
+    app: {{ template "bitbucket.name" . }}
+    chart: {{ template "bitbucket.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  serviceName: {{ template "bitbucket.fullname" . }}
+{{ if .Values.serviceAccountName }}
+  serviceAccountName: {{ .Values.serviceAccountName }}
+{{ end }}
+  replicas: {{ .Values.bitbucket.replicas }}
+  selector:
+    matchLabels:
+      app: {{ template "bitbucket.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "bitbucket.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+    {{ if .Values.terminationGracePeriodSeconds }}
+      podManagementPolicy: {{ .Values.terminationGracePeriodSeconds }}
+    {{ end }}
+    {{ if .Values.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+    {{ end }}
+    {{ if .Values.updateStrategy }}
+      updateStrategy: {{ .Values.updateStrategy }}
+    {{ end }}
+    {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+      - name: {{ .Values.imagePullSecrets }}
+    {{- end }}
+{{ if .Values.postgresql.enabled }}
+      initContainers:
+      - name: postgres-checker
+        image: alpine
+        imagePullPolicy: IfNotPresent
+        command:
+          - sh
+          - -c
+          - |
+            for i in $(seq 1 200); do nc -z -w3 {{ .Release.Name }}-postgresql {{ .Values.postgresql.service.port }} && \
+            exit 0 || sleep 5; done; exit 1
+{{ end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.bitbucket.image.repository }}:{{ default .Chart.AppVersion .Values.bitbucket.image.version }}"
+          imagePullPolicy: {{ .Values.bitbucket.image.pullPolicy }}
+          ports:
+          - name: http
+            containerPort: {{ .Values.bitbucket.ports.httpPort}}
+          - name: ssh
+            containerPort: {{ .Values.bitbucket.ports.sshPort}}
+          - name: cluster
+            containerPort: {{ .Values.bitbucket.ports.clusterPort}}
+            
+    {{ if .Values.bitbucket.args }}
+          args: 
+{{ toYaml .Values.bitbucket.args | indent 12}}
+    {{ end }}
+    {{ if .Values.config }}      
+          env:
+{{ range $k, $v := .Values.config}}
+          - name: {{ $k }}
+            value: {{ $v | quote }}
+{{ end }}
+{{ if .Values.database }}
+{{ range $k, $v := .Values.database}}
+          - name: {{ $k }}
+            value: {{ $v | quote }}
+{{ end }}
+{{ end }}
+{{ if .Values.postgresql.enabled }}
+          - name: JDBC.DRIVER
+            value: org.postgresql.Driver 
+          - name: JDBC.URL
+            value: jdbc:postgresql://{{ .Release.Name }}-postgresql:{{ .Values.postgresql.service.port }}/{{ .Values.postgresql.postgresDatabase}}
+          - name: JDBC.PORT
+            value: {{ .Values.postgresql.service.port | quote }}
+          - name: JDBC.USER
+            value: {{ .Values.postgresql.postgresUser }}
+          - name: JDBC.PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Release.Name }}-postgresql
+                key: postgres-password
+{{ end }}
+{{ if .Values.elasticsearch.enabled }}
+            PLUGIN_SEARCH_ELASTICSEARCH_BASEURL: {{ .Release.Name }}-elasticsearch-client
+{{ end }}
+    {{ end }}
+      {{ if .Values.bitbucket.livenessProbe }}
+          livenessProbe:
+{{ toYaml .Values.bitbucket.livenessProbe | indent 12 }}
+      {{ end }}
+      {{ if .Values.bitbucket.readinessProbe }}
+          readinessProbe:
+{{ toYaml .Values.bitbucket.readinessProbe | indent 12 }}
+      {{ end }}
+    {{- if .Values.bitbucket.resources }}
+          resources:
+{{ toYaml .Values.bitbucket.resources | indent 12 }}
+    {{- end }}
+      {{ if .Values.bitbucket.nodeSelector }}
+        {{ with .Values.bitbucket.nodeSelector }}
+          nodeSelector:
+{{ toYaml . | indent 8 }}
+        {{ end }}
+      {{ end }}
+      {{ if .Values.bitbucket.affinity }}
+        {{ with .Values.bitbucket.affinity }}
+          affinity:
+{{ toYaml . | indent 12 }}
+        {{ end }}
+      {{ end }}
+      {{ if .Values.bitbucket.tolerations }}
+        {{ with .Values.bitbucket.tolerations }}  
+          tolerations:
+{{ toYaml . | indent 12 }}
+        {{ end }}
+      {{ end }}
+    {{ if .Values.persistence.enabled }}
+          volumeMounts:
+          - name: {{ template "bitbucket.name" . }}
+            mountPath: {{ .Values.persistence.mountPath }}
+    {{ end }}
+{{ if .Values.persistence.enabled }}
+      volumes:
+      - name: {{ template "bitbucket.name" . }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.persistence.existingClaim | default (include "bitbucket.fullname" .) }}
+{{ end }}
+

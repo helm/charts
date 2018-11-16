@@ -1,0 +1,21 @@
+{{ if and .Values.persistence.enabled (not .Values.persistence.existingClaim) }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ template "bitbucket.fullname" . }}
+  labels:
+    app: {{ template "bitbucket.name" . }}
+    chart: {{ template "bitbucket.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  storageClassName: {{ .Values.persistence.storageClassName }}
+  persistentVolumeReclaimPolicy: {{ .Values.persistence.persistentVolumeReclaimPolicy }}
+  accessModes:
+{{ range .Values.persistence.accessModes }}
+  - {{ . }}
+{{ end }}
+  resources:
+      requests:
+        storage: {{ .Values.persistence.storage }}
+{{ end }}

@@ -1,0 +1,125 @@
+# Default values for atlasian bitbucket.
+# This is a YAML-formatted file.
+# Beware when changing values here. You should know what you are doing!
+# Access the values with {{ .Values.key.subkey }}
+
+# Values for dependencies
+
+# Values for postgresql chart
+postgresql:
+  enabled: true
+  postgresDatabase: "bitbucket"
+  postgresUser: "bitbucket"
+  service:
+    port: 5432
+
+# Values for elasticsearch chart
+elasticsearch:
+  enabled: false
+
+# Common values
+disruptionBudget:
+  minUnavailable: 1
+  maxUnavailable: 1
+# imagePullSecrets:
+# serviceAccountName:
+terminationGracePeriodSeconds: 120
+updateStrategy: RollingUpdate
+podManagementPolicy: {}
+
+## If NOT using the PostgreSQL in this chart (postgresql.enabled=false),
+## you must specify the following database details
+# database:
+#   JDBC.DRIVER: org.postgresql.Driver
+#   JDBC.URL: jdbc:postgresql://pg-postgresql
+#   JDBC.PORT: 5432
+#   JDBC.USER: bitbucket
+#   JDBC.PASSWORD: GIFxD8Y2Yl
+
+# Bitbicket configuration
+config:
+  HAZELCAST_NETWORK_MULTICAST: 'true'
+  HAZELCAST_GROUP_PASSWORD: xxxxxxxxx
+  HAZELCAST_GROUP_NAME: bitbucket
+  HAZELCAST_HTTP_SESSIONS: replicated
+  JVM_MINIMUM_MEMORY: 1024m
+  JVM_MAXIMUM_MEMORY: 1024m
+
+# Ingress
+ingress: {}
+
+# Service
+service:
+  # annotations: {}
+  ports:
+    sshPort: 2222
+    httpPort: 80
+    # clusterPort:
+  type: LoadBalancer
+  clusterIP: None
+
+# Persistence settings
+persistence:
+  enabled: true
+  mountPath: /var/atlassian/application-data/bitbucket/shared
+  storageClassName: ""
+  persistentVolumeReclaimPolicy: Recycle
+  accessModes:
+  - ReadWriteMany
+  storage: 10Gi
+  existingClaim: ""
+
+# Bitbucket
+bitbucket:
+  replicas: 1
+  image:
+    repository: "atlassian/bitbucket-server"
+    # Note that by default we use appVersion to get image tag
+    # version: 5.9.0
+    pullPolicy: IfNotPresent
+  # args:
+  ports:
+    httpPort: 7990
+    sshPort: 7999
+    clusterPort: 5701
+  resources: {}
+    # limits:
+    #   memory: "2Gi"
+    #   cpu: "1"
+    # requests:
+    #   memory: "1Gi"
+    #   cpu: "500m"
+
+  livenessProbe:
+    failureThreshold: 3
+    httpGet:
+      path: /status
+      port: 7990
+    initialDelaySeconds: 600
+    periodSeconds: 60
+    successThreshold: 1
+    timeoutSeconds: 5
+  readinessProbe:
+    failureThreshold: 3
+    httpGet:
+      path: /status
+      port: 7990
+    initialDelaySeconds: 420
+    periodSeconds: 60
+    successThreshold: 1
+    timeoutSeconds: 5
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity:
+    podantiaffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchExpressions:
+          - key: app
+            operator: In
+            values:
+            - bitbucket
+        topologyKey: "kubernetes.io/hostname"

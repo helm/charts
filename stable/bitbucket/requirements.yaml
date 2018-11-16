@@ -1,0 +1,11 @@
+dependencies:
+- name: postgresql
+  repository: https://kubernetes-charts.storage.googleapis.com/
+  condition: postgresql.enabled
+  alias: postgresql
+  version: 0.8.7
+  
+- name: elasticsearch
+  version: 1.13.2
+  repository: https://kubernetes-charts.storage.googleapis.com/
+  condition: elasticsearch.enabled
