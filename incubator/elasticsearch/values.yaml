@@ -1,15 +1,20 @@
 # Default values for elasticsearch.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-appVersion: "6.4.0"
+appVersion: "6.4.2"
 
 image:
   repository: "docker.elastic.co/elasticsearch/elasticsearch-oss"
-  tag: "6.4.0"
+  tag: "6.4.2"
   pullPolicy: "IfNotPresent"
   # If specified, use these secrets to access the image
   # pullSecrets:
   #   - registry-secret
+
+initImage:
+  repository: "busybox"
+  tag: "latest"
+  pullPolicy: "Always"
 
 cluster:
   name: "elasticsearch"
@@ -20,6 +25,8 @@ cluster:
   # Use this setting to specify the name of the secret
   # keystoreSecret: eskeystore
   config: {}
+  # Custom parameters, as string, to be added to ES_JAVA_OPTS environment variable
+  additionalJavaOpts: ""
   env:
     # IMPORTANT: https://www.elastic.co/guide/en/elasticsearch/reference/current/important-settings.html#minimum_master_nodes
     # To prevent data loss, it is vital to configure the discovery.zen.minimum_master_nodes setting so that each master-eligible
@@ -37,6 +44,7 @@ client:
 #    example: client-svc-foo
   heapSize: "512m"
   antiAffinity: "soft"
+  nodeAffinity: {}
   nodeSelector: {}
   tolerations: []
   resources:
@@ -67,6 +75,7 @@ master:
     size: "4Gi"
     # storageClass: "ssd"
   antiAffinity: "soft"
+  nodeAffinity: {}
   nodeSelector: {}
   tolerations: []
   resources:
@@ -100,6 +109,7 @@ data:
     # storageClass: "ssd"
   terminationGracePeriodSeconds: 3600
   antiAffinity: "soft"
+  nodeAffinity: {}
   nodeSelector: {}
   tolerations: []
   resources:
@@ -119,3 +129,6 @@ data:
     maxUnavailable: 1
   updateStrategy:
     type: OnDelete
+
+## Additional init containers
+extraInitContainers: |

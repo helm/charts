@@ -1,7 +1,7 @@
 ## Rocket Chat image version
 ## ref: https://hub.docker.com/r/library/rocket.chat/tags/
 ##
-image: rocket.chat:0.68.5
+image: rocket.chat:0.69.1
 
 ## Specify a imagePullPolicy
 ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
@@ -103,6 +103,9 @@ serviceAccount:
 ###
 ingress:
   enabled: false
-  tls: false
   annotations:
     kubernetes.io/ingress.class: "nginx"
+  tls:
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
