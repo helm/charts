@@ -246,6 +246,9 @@ ingress:
   #   key:
   #   certificate:
 
+# Optional additional arguments
+extraArgs: []
+
 ## Metrics / Prometheus NATS Exporter
 ##
 ## ref: https://github.com/nats-io/prometheus-nats-exporter
