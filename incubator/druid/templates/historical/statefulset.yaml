@@ -69,14 +69,14 @@ spec:
         env:
         {{- if .Values.zookeeper.enabled }}
         - name: ZOOKEEPER_HOST
-          value: {{ template "zookeeper.fullname" . }}-headless:2181
+          value: {{ .Release.Name }}-zookeeper-headless:2181
         {{- else }}
         - name: ZOOKEEPER_HOST
           value: {{ .Values.zkHosts }}
         {{- end }}
         {{- if .Values.mysql.enabled }}
         - name: DB_HOST
-          value: {{ template "mysql.fullname" . }}
+          value: {{ .Release.Name }}-mysql
         - name: DB_TYPE
           value: mysql
         - name: DB_USERNAME
