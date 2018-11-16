@@ -40,7 +40,7 @@ The following table lists the configurable parameters of the Sysdig chart and th
 
 | Parameter               | Description                                    | Default                                     |
 | ---                     | ---                                            | ---                                         |
-| `image.registry`        | Sysdig Agent image registry                    | `docker.io`                                 |
+| `image.registry`        | Sysdig agent image registry                    | `docker.io`                                 |
 | `image.repository`      | The image repository to pull from              | `sysdig/agent`                              |
 | `image.tag`             | The image tag to pull                          | `latest`                                    |
 | `image.pullPolicy`      | The Image pull policy                          | `Always`                                    |
@@ -108,7 +108,7 @@ kubectl create secret docker-registry NAME \
 ```
 
 And you must pass its reference in a YAML value file which will be used when
-deploying the Sysdig Agent Helm chart (this cannot be done using the command-line):
+deploying the Sysdig agent Helm chart (this cannot be done using the command-line):
 
 ```yaml
 image:
@@ -175,15 +175,15 @@ $ helm install --name sysdig -f custom-app-checks.yaml stable/sysdig
 
 ## Deploying the AWS Marketplace Sysdig agent image
 
-This is an use case similar to pull images from a private registry. You need to
-get the authorization token for the AWS Marketplace ECS image registry:
+This is an use case similar to pull images from a private registry. First you
+need to get the authorization token for the AWS Marketplace ECS image registry:
 
 ```bash
 aws ecr --region=us-east-1 get-authorization-token --output text --query authorizationData[].authorizationToken | base64 -d | cut -d: -f2
 ```
 
-And use it for creating the ConfigMap. Please, don't forget to replace
-TOKEN and EMAIL with your own values:
+And then use it to create the Secret. Don't forget to replace TOKEN and EMAIL
+with your own values:
 
 ```bash
 kubectl create secret docker-registry aws-marketplace-credentials \
@@ -191,11 +191,11 @@ kubectl create secret docker-registry aws-marketplace-credentials \
  --docker-username=AWS \
  --docker-password="TOKEN" \
  --docker-email="EMAIL"
-j
 ```
 
-And the create a YAML file for passing it to Helm chart deployment, for example
-`aws-marketplace-values.yaml`:
+Next you need to create a values YAML file to pass the specific ECS registry
+configuration (you will find these values when you activate the software from
+the AWS Marketplace):
 
 ```yaml
 sysdig:
@@ -209,8 +209,8 @@ image:
     - name: aws-marketplace-credentials
 ```
 
-You only need to set the accessKey value with the Agent access key. And then,
-deploy the chart:
+Finally, set the accessKey value and you are ready to deploy the Sysdig agent
+using the Helm chart:
 
 ```bash
 helm install --name sysdig-agent -f aws-marketplace-values.yaml stable/sysdig
