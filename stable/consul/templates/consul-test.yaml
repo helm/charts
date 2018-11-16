@@ -5,6 +5,9 @@ metadata:
   annotations:
     "helm.sh/hook": test-success
 spec:
+  {{- if or .Values.test.rbac.create .Values.test.rbac.serviceAccountName }}
+  serviceAccountName: {{ if .Values.test.rbac.create }}{{ template "consul.fullname" . }}-test{{ else }}"{{ .Values.test.rbac.serviceAccountName }}"{{ end }}
+  {{- end }}
   initContainers:
     - name: test-framework
       image: dduportal/bats:0.4.0
