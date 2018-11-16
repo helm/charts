@@ -146,7 +146,9 @@ and their default values.
 | `updateStrategy`                               | Statefulset update strategy                                                                                                                                                                           | `OnDelete`                                                 |
 | `priorityClassName`                            | Statefulsets Pod Priority                                                                                                                                                                             | ``                                                         |
 | `extraLabels`                                  | Labels to add to the Resources                                                                                                                                                                        | `{}`                                                       |
-
+| `busyboxImage.repository`                      | Busybox initContainer image repo                                                                                                                                                                      | `busybox`                                                  |
+| `busyboxImage.tag`                             | Busybox initContainer image tag                                                                                                                                                                       | `latest`                                                   |
+| `busyboxImage.pullPolicy`                      | Busybox initContainer image pullPolicy                                                                                                                                                                | `Always`                                                   |
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```bash
