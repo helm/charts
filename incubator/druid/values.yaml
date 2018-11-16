@@ -79,7 +79,7 @@ coordinator:
   affinity: {}
 
   podAnnotations: {}
-  
+
 overlord:
   replicaCount: 1
 
@@ -112,7 +112,7 @@ overlord:
   affinity: {}
 
   podAnnotations: {}
-  
+
 historical:
   name: historical
   replicaCount: 1
@@ -156,7 +156,7 @@ historical:
 
   podDisruptionBudget:
     enabled: false
-    # minAvailable: 2 
+    # minAvailable: 2
     maxUnavailable: 1
 
   updateStrategy:
@@ -205,7 +205,7 @@ middleManager:
 
   podDisruptionBudget:
     enabled: false
-    # minAvailable: 2 
+    # minAvailable: 2
     maxUnavailable: 1
 
   updateStrategy:
