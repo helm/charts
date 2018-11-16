@@ -73,8 +73,8 @@ alertmanager:
   ##
   configFromSecret: ""
 
-  ## The configuration file name to be loaded to alertmanager.
-  ## Must match the key within configuration loaded from configMap/Secret
+  ## The configuration file name to be loaded to alertmanager
+  ## Must match the key within configuration loaded from ConfigMap/Secret
   ##
   configFileName: alertmanager.yml
 
