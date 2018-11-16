@@ -1,0 +1,108 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "keycloak-gatekeeper.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "keycloak-gatekeeper.name" . }}
+    helm.sh/chart: {{ include "keycloak-gatekeeper.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/configuration-checksum: {{ toJson .Values | sha256sum | trunc 48 | quote }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "keycloak-gatekeeper.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "keycloak-gatekeeper.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/configuration-checksum: {{ toJson .Values | sha256sum | trunc 48 | quote }}
+        app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/oauth/metrics"
+        prometheus.io/port: "3000"
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args:
+            - --listen=0.0.0.0:3000
+            - --discovery-url={{ .Values.discoveryURL }}
+            - --client-id=$(CLIENT_ID)
+            - --client-secret=$(CLIENT_SECRET)
+            - --upstream-url={{ .Values.upstreamURL }}
+            - --enable-default-deny
+            - --enable-logging
+            - --enable-refresh-tokens
+            - --enable-session-cookies
+            {{- if not .Values.ingress.tls }}
+            - --secure-cookie=false
+            {{- end }}
+            - --enable-metrics
+            - --enable-encrypted-token
+            - --encryption-key=$(ENCRYPTION_KEY)
+            {{- if .Values.addClaims }}
+            {{- range $i, $extraClaim := .Values.addClaims }}
+            - --add-claims={{ $extraClaim }}
+            {{ end -}}
+            {{- end }}
+            {{- if .Values.matchClaims }}
+            {{- range $key, $val := .Values.matchClaims }}
+            - --match-claims='{{ $key }}={{ $val }}'
+            {{ end -}}
+            {{- end }}
+            {{- if .Values.debug }}
+            - --verbose
+            {{- end }}
+            {{- if .Values.rules }}
+            {{- range $i, $rule := .Values.rules }}
+            - --resources="{{ $rule }}"
+            {{- end }}
+            {{- end }}
+            {{- if .Values.scopes }}
+            {{- range $i, $scope := .Values.scopes }}
+            - --scopes="{{ $scope }}"
+            {{- end }}
+            {{- end }}
+          envFrom:
+            - secretRef:
+                name: {{ include "keycloak-gatekeeper.fullname" . }}
+                optional: false
+          ports:
+            - name: http
+              containerPort: 3000
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /oauth/health
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /oauth/health
+              port: http
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

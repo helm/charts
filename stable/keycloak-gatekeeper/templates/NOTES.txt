@@ -1,0 +1,29 @@
+To setup inside keycloak
+
+  1) Create client in Keycloak with protocol 'openid-connect' and access-type: 'confidential'
+  {{- if .Values.ingress.enabled }}
+  2) Add a redirect URL to http{{ if .Values.ingress.tls }}s{{ end }}://{{ first .Values.ingress.hosts }}/oauth/callback
+  {{- else }}
+  2) Add a redirect URL to <SCHEME>://<HOSTNAME/ADDRESS>:<PORT>
+  {{- end }}
+  3) Get the client ID and secret
+
+{{- if or (not .Values.ClientID) (not .Values.ClientSecret) }}
+#######################################################
+# ERROR: No ClientID / ClientSecret has been provided #
+#######################################################
+{{- end }}
+{{- if not .Values.discoveryURL }}
+############################################
+# ERROR: No discoveryURL has been provided #
+############################################
+{{- end }}
+{{- if not .Values.upstreamURL }}
+###########################################
+# ERROR: No upstreamURL has been provided #
+###########################################
+{{- end }}
+
+Accessing logs
+
+  kubectl -n {{ .Release.Namespace }} logs deployments/{{ include "keycloak-gatekeeper.fullname" . }}

@@ -1,0 +1,15 @@
+apiVersion: v1
+appVersion: "4.6.0.Final"
+description: Keycloak gatekeeper
+name: keycloak-gatekeeper
+home: https://github.com/keycloak/keycloak-gatekeeper
+keywords:
+  - authentication
+  - authorization
+  - keycloak
+  - proxy
+version: 1.0.0
+engine: gotpl
+maintainers:
+  - name: gabibbo97
+    email: gabibbo97@gmail.com

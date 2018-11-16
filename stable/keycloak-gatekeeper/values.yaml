@@ -1,0 +1,87 @@
+# Default values for keycloak-gatekeeper.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: keycloak/keycloak-gatekeeper
+  tag: 4.6.0.Final
+  pullPolicy: IfNotPresent
+
+nameOverride: ""
+fullnameOverride: ""
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  path: /
+  hosts:
+    - chart-example.local
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+# URL for OpenID autoconfiguration
+# On Keycloak <server>/auth/realms/<realm_name>
+discoveryURL: ""
+
+# Service to proxy after successful authentication
+# upstreamURL: http://my-service.my-namespace.svc.cluster.local:8088
+upstreamURL: ""
+
+# OpenID ClientID and secret
+ClientID: ""
+ClientSecret: ""
+
+# Require the following scopes in the request
+scopes: []
+
+# The following claims will be added to the headers of the request
+# addClaims:
+# - username
+# - email
+# - some_claim
+# Will register three headers: X-Auth-Username, X-Auth-Email, X-Auth-Some-Claim
+addClaims: []
+
+# This allows to verify that a received JWT matches the expectations
+matchClaims: {}
+
+# These rules specify different authentication strategies for different URLs
+# they follow this pattern: "key1=value1|key2=value2"
+# Here is a non exhaustive list of key-value pairs
+#   uri=/private/*    require access to subpaths of /private
+#   roles=admin,user  require the user to have both roles to access
+#   require-any-role  combined with roles above, switches the conditional from AND to OR
+#   white-listed      allow anyone to have access
+#   methods=GET,POST  apply authentication to these methods
+rules: []
+
+# Print verbose logs
+debug: false
