@@ -149,6 +149,8 @@ and their default values.
 | `busyboxImage.repository`                      | Busybox initContainer image repo                                                                                                                                                                      | `busybox`                                                  |
 | `busyboxImage.tag`                             | Busybox initContainer image tag                                                                                                                                                                       | `latest`                                                   |
 | `busyboxImage.pullPolicy`                      | Busybox initContainer image pullPolicy                                                                                                                                                                | `Always`                                                   |
+| `clusterDomain`                                | The internal Kubernetes cluster domain                                                                                                                                                                | `cluster.local`                                            |
+
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```bash

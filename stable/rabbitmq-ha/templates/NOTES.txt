@@ -11,7 +11,7 @@
     ErLang Cookie : $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "rabbitmq-ha.fullname" . }} -o jsonpath="{.data.rabbitmq-erlang-cookie}" | base64 --decode)
     {{ end }}
 
-  RabbitMQ can be accessed within the cluster on port {{ .Values.rabbitmqNodePort }} at {{ template "rabbitmq-ha.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+  RabbitMQ can be accessed within the cluster on port {{ .Values.rabbitmqNodePort }} at {{ template "rabbitmq-ha.fullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}
 
   To access the cluster externally execute the following commands:
 
