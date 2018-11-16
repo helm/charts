@@ -152,3 +152,44 @@ postgresql:
   postgresDatabase: kong
   service:
     port: 5432
+
+# Kong Ingress Controller's primary purpose is to satisfy Ingress resources
+# created in k8s.  It uses CRDs for more fine grained control over routing and
+# for Kong specific configuration.
+ingressController:
+  enabled: false
+  image:
+    repository: kong-docker-kubernetes-ingress-controller.bintray.io/kong-ingress-controller
+    tag: 0.2.0
+  replicaCount: 1
+  livenessProbe:
+    failureThreshold: 3
+    httpGet:
+      path: "/healthz"
+      port: 10254
+      scheme: HTTP
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    successThreshold: 1
+    timeoutSeconds: 5
+  readinessProbe:
+    failureThreshold: 3
+    httpGet:
+      path: "/healthz"
+      port: 10254
+      scheme: HTTP
+      initialDelaySeconds: 30
+    periodSeconds: 10
+    successThreshold: 1
+    timeoutSeconds: 5
+
+  rbac:
+    # Specifies whether RBAC resources should be created
+    create: true
+
+  serviceAccount:
+    # Specifies whether a ServiceAccount should be created
+    create: true
+    # The name of the ServiceAccount to use.
+    # If not set and create is true, a name is generated using the fullname template
+    name:
