@@ -48,11 +48,3 @@ Then you can access the admin UI at https://localhost:{{ .Values.InternalHttpPor
 
 For more information on using CockroachDB, please see the project's docs at
 https://www.cockroachlabs.com/docs/
-
-{{- if eq .Values.Storage "1Gi" }}
-
-WARNING: Only 1 GiB of disk space is being requested for each pod. This will
-not be enough for a production custer. Re-install with a customized "Storage"
-parameter if you woud like more disk space.
-
-{{- end }}
