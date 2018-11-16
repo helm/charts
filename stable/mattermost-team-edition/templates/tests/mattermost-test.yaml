@@ -3,10 +3,10 @@ kind: Pod
 metadata:
   name: "{{ template  "mattermost-team-edition.fullname" . }}-test-{{ randAlphaNum 5 | lower }}"
   labels:
-    chart: {{ template "mattermost-team-edition.chart" . }}
-    app: {{ template "mattermost-team-edition.fullname" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ template "mattermost-team-edition.name" . }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    helm.sh/chart: {{ template "mattermost-team-edition.chart" . }}
   annotations:
     "helm.sh/hook": test-success
 spec:
