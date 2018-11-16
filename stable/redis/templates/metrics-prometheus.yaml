@@ -16,8 +16,10 @@ metadata:
     {{- end }}
 spec:
   endpoints:
-  - interval: {{ .Values.metrics.serviceMonitor.interval }}
-    port: metrics
+  - port: metrics
+    {{- if .Values.metrics.serviceMonitor.interval }}
+    interval: {{ .Values.metrics.serviceMonitor.interval }}
+    {{- end }}
   selector:
     matchLabels:
       app: {{ template "redis.name" . }}
