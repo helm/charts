@@ -172,3 +172,46 @@ $ cd stable/sysdig
 $ ./scripts/appchecks2helm appChecks/solr.py appChecks/traefik.py appChecks/nats.py > custom-app-checks.yaml
 $ helm install --name sysdig -f custom-app-checks.yaml stable/sysdig
 ```
+
+## Using this chart with AWS Marketplace
+
+This is an use case similar to pull images from a private registry. You need to
+get the authorization token for the image registry:
+
+```bash
+aws ecr --region=us-east-1 get-authorization-token --output text --query authorizationData[].authorizationToken | base64 -d | cut -d: -f2
+```
+
+And use it for creating the ConfigMap. Please, don't forget to replace
+TOKEN and EMAIL with your own values:
+
+```bash
+kubectl create secret docker-registry aws-marketplace-credentials \
+ --docker-server=217273820646.dkr.ecr.us-east-1.amazonaws.com \
+ --docker-username=AWS \
+ --docker-password="TOKEN" \
+ --docker-email="EMAIL"
+j
+```
+
+And the create a YAML file for passing it to Helm chart deployment, for example
+`aws-marketplace-values.yaml`:
+
+```yaml
+sysdig:
+  accessKey: XxxXXxXXxXXxxx
+
+image:
+  registry: 217273820646.dkr.ecr.us-east-1.amazonaws.com
+  repository: 2df5da52-6fa2-46f6-b164-5b879e86fd85/cg-3361214151/agent
+  tag: 0.85.1-latest
+  pullSecrets:
+    - name: aws-marketplace-credentials
+```
+
+You only need to set the accessKey value with the Agent access key. And then,
+deploy the chart:
+
+```bash
+helm install --name sysdig-agent -f aws-marketplace-values.yaml stable/sysdig
+```
