@@ -51,7 +51,7 @@ spec:
           - name: DB_DBNAME
             value: {{ .Values.mysql.mysqlDatabase }}
           - name: DB_PORT
-            value: 3306
+            value: "3306"
           {{- end }}
           - name: JAVA_OPTS
             value: {{ .Values.broker.javaOpts }}
