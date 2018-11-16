@@ -19,12 +19,12 @@ credentials:
 # Please note that only one of the following stores should be enabled.
 kubernetes:
   dcs:
-    enable: false
+    enable: true
   configmaps:
     enable: false
 etcd:
-  enable: true
-  deployChart: true
+  enable: false
+  deployChart: false
   # If not deploying etcd chart, fill-in value for etcd service
   # <service>.<namespace>.svc.cluster.local
   host:
