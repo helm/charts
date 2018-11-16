@@ -80,6 +80,7 @@ The following table lists the configurable parameters of the vault chart and the
 | `geth.image.tag`                  | geth container image tag to deploy            | `v1.7.3`                              |
 | `geth.tx.replicaCount`            | geth transaction nodes replica count          | `2`                                   |
 | `geth.tx.service.type`            | k8s service type for geth transaction nodes   | `ClusterIP`                           |
+| `geth.tx.args.rpcapi`             | APIs offered over the HTTP-RPC interface      | `eth,net,web3`                        |
 | `geth.miner.replicaCount`         | geth miner nodes replica count                | `3`                                   |
 | `geth.miner.account.secret`       | geth account secret                           | `my-secret-account-password`          |
 | `geth.genesis.networkId`          | Ethereum network id                           | `98052`                               |
