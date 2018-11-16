@@ -109,6 +109,12 @@ The following table lists the configurable parameters of the chart and its defau
 | `exporter.logstash.enabled`     | Enables Prometheus logstash-exporter               | `false`                                          |
 | `elasticsearch.host`            | ElasticSearch hostname                             | `elasticsearch-client.default.svc.cluster.local` |
 | `elasticsearch.port`            | ElasticSearch port                                 | `9200`                                           |
+| `elasticsearch.secret.name`     | Secret reference for ElasticSearch credentials     | unset                                            |
+| `elasticsearch.secret.userKey`  | Secret key for ElasticSearch username              | unset                                            |
+| `elasticsearch.secret.passwordKey` | Secret key for ElasticSearch password           | unset                                            |
+| `rabbitmq.secret.name`          | Secret reference for RabbitMQ credentials          | unset                                            |
+| `rabbitmq.secret.userKey`       | Secret key for RabbitMQ username                   | unset                                            |
+| `rabbitmq.secret.passwordKey`   | Secret key for RabbitMQ password                   | unset                                            |
 | `config`                        | Logstash configuration key-values                  | (see `values.yaml`)                              |
 | `patterns`                      | Logstash patterns configuration                    | `nil`                                            |
 | `inputs`                        | Logstash inputs configuration                      | beats                                            |

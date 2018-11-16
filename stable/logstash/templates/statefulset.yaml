@@ -68,6 +68,32 @@ spec:
               value: {{ .Values.elasticsearch.host | quote }}
             - name: ELASTICSEARCH_PORT
               value: {{ .Values.elasticsearch.port | quote }}
+          {{- if .Values.elasticsearch.secret }}
+            - name: ELASTICSEARCH_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.elasticsearch.secret.name }}
+                  key: {{ .Values.elasticsearch.secret.userKey }}
+            - name: ELASTICSEARCH_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.elasticsearch.secret.name }}
+                  key: {{ .Values.elasticsearch.secret.passwordKey }}
+          {{- end }}
+          {{- if .Values.rabbitmq -}}
+            {{- if .Values.rabbitmq.secret }}
+            - name: RABBITMQ_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.rabbitmq.secret.name }}
+                  key: {{ .Values.rabbitmq.secret.userKey }}
+            - name: RABBITMQ_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.rabbitmq.secret.name }}
+                  key: {{ .Values.rabbitmq.secret.passwordKey }}
+            {{- end }}
+          {{- end }}
             ## Additional env vars
           {{- range $key, $value := .Values.config }}
             - name: {{ $key | upper | replace "." "_" }}
