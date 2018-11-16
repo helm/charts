@@ -83,7 +83,11 @@ spec:
         {{- if .Values.kubernetesTLS.enabled }}
         - name: kubernetes-tls
           secret:
+            {{- if .Values.kubernetesTLS.secretName }}
+            secretName: {{ .Values.kubernetesTLS.secretName }}
+            {{- else }}
             secretName: {{ template "coredns.fullname" . }}-kube-tls
+            {{- end }}
         {{- end }}
         - name: config-volume
           configMap:
