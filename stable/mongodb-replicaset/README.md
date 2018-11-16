@@ -37,13 +37,13 @@ The following table lists the configurable parameters of the mongodb chart and t
 | `replicaSetName`                    | The name of the replica set                                               | `rs0`                                               |
 | `podDisruptionBudget`               | Pod disruption budget                                                     | `{}`                                                |
 | `port`                              | MongoDB port                                                              | `27017`                                             |
+| `imagePullSecrets`                  | Image pull secrets                                                        | ``                                                  |
 | `installImage.repository`           | Image name for the install container                                      | `k8s.gcr.io/mongodb-install`                        |
 | `installImage.tag`                  | Image tag for the install container                                       | `0.5`                                               |
 | `installImage.pullPolicy`           | Image pull policy for the init container that establishes the replica set | `IfNotPresent`                                      |
 | `image.repository`                  | MongoDB image name                                                        | `mongo`                                             |
 | `image.tag`                         | MongoDB image tag                                                         | `3.6`                                               |
 | `image.pullPolicy`                  | MongoDB image pull policy                                                 | `IfNotPresent`                                      |
-| `image.pullSecrets`                 | Image pull secrets                                                        | ``                                                  |
 | `podAnnotations`                    | Annotations to be added to MongoDB pods                                   | `{}`                                                |
 | `securityContext`                   | Security context for the pod                                              | `{runAsUser: 999, fsGroup: 999, runAsNonRoot: true}`|
 | `resources`                         | Pod resource requests and limits                                          | `{}`                                                |

@@ -36,9 +36,9 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
       {{- end }}
     spec:
-      {{- if .Values.image.pullSecrets }}
+      {{- if .Values.image.imagePullSecrets }}
       imagePullSecrets:
-      {{- range .Values.image.pullSecrets }}
+      {{- range .Values.image.imagePullSecrets }}
         - name: {{ . }}
       {{- end}}
       {{- end }}
