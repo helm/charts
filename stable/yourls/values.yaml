@@ -209,6 +209,17 @@ persistence:
   accessMode: ReadWriteOnce
   size: 10Gi
 
+## Enable additional Persistent Volumes
+##
+# volumes:
+#  - hostPath:
+#      path: /etc/passwd
+#    name: passwd
+# volumeMounts:
+#   - name: passwd
+#     mountPath: /etc/passwd
+#     readOnly: true
+
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 ##

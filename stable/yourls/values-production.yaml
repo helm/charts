@@ -219,6 +219,17 @@ resources:
     memory: 512Mi
     cpu: 300m
 
+## Enable additional Persistent Volumes
+##
+# volumes:
+#  - hostPath:
+#      path: /etc/passwd
+#    name: passwd
+# volumeMounts:
+#   - name: passwd
+#     mountPath: /etc/passwd
+#     readOnly: true
+
 ## Node labels for pod assignment
 ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
 ##

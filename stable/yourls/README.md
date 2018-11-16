@@ -90,6 +90,8 @@ The following table lists the configurable parameters of the YOURLS chart and th
 | `persistence.storageClass`       | PVC Storage Class                          | `nil` (uses alpha storage class annotation)             |
 | `persistence.accessMode`         | PVC Access Mode                            | `ReadWriteOnce`                                         |
 | `persistence.size`               | PVC Storage Request                        | `10Gi`                                                  |
+| `volumes`                        | Additional volumes                         | `nil`                                                   |
+| `volumeMounts`                   | Additional volumeMounts                    | `nil`                                                   |
 | `nodeSelector`                   | Node labels for pod assignment             | `{}`                                                    |
 | `tolerations`                    | List of node taints to tolerate            | `[]`                                                    |
 | `affinity`                       | Map of node/pod affinities                 | `{}`                                                    |

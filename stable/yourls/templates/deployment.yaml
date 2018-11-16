@@ -114,6 +114,9 @@ spec:
             - mountPath: /php
               name: yourls-data
               subPath: php
+          {{- if .Values.volumeMounts }}
+{{ toYaml .Values.volumeMounts | indent 12 }}
+          {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 10 }}
       volumes:
@@ -124,6 +127,9 @@ spec:
         {{- else }}
           emptyDir: {}
         {{ end }}
+      {{- if .Values.volumes }}
+{{ toYaml .Values.volumes | indent 8 }}
+      {{- end }}
       {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
