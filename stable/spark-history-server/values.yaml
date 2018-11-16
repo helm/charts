@@ -8,8 +8,8 @@ serviceAccount:
   name:
 
 image:
-  repository: gcr.io/spark-operator/spark
-  tag: v2.4.0
+  repository: lightbend/spark-history-server
+  tag: 2.4.0
   pullPolicy: IfNotPresent
 
 service:

@@ -1,10 +1,11 @@
 name: spark-history-server
-version: 0.1.1
+version: 0.2.0
 appVersion: 2.4.0
 description: A Helm chart for Spark History Server
 home: https://spark.apache.org
 sources:
   - https://github.com/apache/spark
+  - https://github.com/lightbend/spark-history-server-docker
 keywords:
 - spark
 - history-server
