@@ -4,10 +4,7 @@ kind: Service
 metadata:
   name: {{ template "redis.fullname" . }}-slave
   labels:
-    app: {{ template "redis.name" . }}
-    chart: {{ template "redis.chart" . }}
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+{{ include "redis.labels" . | indent 4 }}
 {{- if .Values.slave.service.annotations }}
   annotations:
 {{ toYaml .Values.slave.service.annotations | indent 4 }}
@@ -26,7 +23,6 @@ spec:
     nodePort: {{ .Values.slave.service.nodePort }}
     {{- end }}
   selector:
-    app: {{ template "redis.name" . }}
-    release: "{{ .Release.Name }}"
-    role: slave
+    redis.io/role: slave
+{{ include "redis.instance-name" . | indent 4 }}
 {{- end}}

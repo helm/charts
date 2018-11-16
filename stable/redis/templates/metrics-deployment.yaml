@@ -4,23 +4,17 @@ kind: Deployment
 metadata:
   name: {{ template "redis.fullname" . }}-metrics
   labels:
-    app: {{ template "redis.name" . }}
-    chart: {{ template "redis.chart" . }}
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+{{ include "redis.labels" . | indent 4 }}
 spec:
   selector:
     matchLabels:
-        release: "{{ .Release.Name }}"
-        role: metrics
-        app: {{ template "redis.name" . }}
+      app.kubernetes.io/component: metrics
+{{ include "redis.instance-name" . | indent 6 }}
   template:
     metadata:
       labels:
-        release: "{{ .Release.Name }}"
-        chart: {{ template "redis.chart" . }}
-        role: metrics
-        app: {{ template "redis.name" . }}
+        app.kubernetes.io/component: metrics
+{{ include "redis.labels" . | indent 8 }}
       {{- if .Values.metrics.podLabels }}
 {{ toYaml .Values.metrics.podLabels | indent 8 }}
       {{- end }}

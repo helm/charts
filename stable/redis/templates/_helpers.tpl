@@ -153,3 +153,23 @@ Create the name of the service account to use
     {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
+
+
+{{/*
+Return instance and name labels.
+*/}}
+{{- define "redis.instance-name" -}}
+app.kubernetes.io/instance: {{ .Release.Name | quote }}
+app.kubernetes.io/name: {{ include "redis.name" . | quote }}
+{{- end -}}
+
+
+{{/*
+Return labels, including instance and name.
+*/}}
+{{- define "redis.labels" -}}
+{{ include "redis.instance-name" . }}
+app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+helm.sh/chart: {{ include "redis.chart" . | quote }}
+{{- end -}}

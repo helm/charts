@@ -4,10 +4,7 @@ kind: Role
 metadata:
   name: {{ template "redis.fullname" . }}
   labels:
-    app: {{ template "redis.name" . }}
-    chart: {{ template "redis.chart" . }}
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+{{ include "redis.labels" . | indent 4 }}
 rules:
 {{ toYaml .Values.rbac.role.rules }}
 {{- end -}}

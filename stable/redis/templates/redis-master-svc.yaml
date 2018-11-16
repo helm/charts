@@ -3,10 +3,7 @@ kind: Service
 metadata:
   name: {{ template "redis.fullname" . }}-master
   labels:
-    app: {{ template "redis.name" . }}
-    chart: {{ template "redis.chart" . }}
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+{{ include "redis.labels" . | indent 4 }}
 {{- with .Values.master.service.annotations }}
   annotations:
 {{ toYaml . | indent 4 }}
@@ -25,6 +22,5 @@ spec:
     nodePort: {{ .Values.master.service.nodePort }}
     {{- end }}
   selector:
-    app: {{ template "redis.name" . }}
-    release: "{{ .Release.Name }}"
-    role: master
+    redis.io/role: master
+{{ include "redis.instance-name" . | indent 4 }}

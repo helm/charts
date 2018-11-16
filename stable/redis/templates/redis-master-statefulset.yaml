@@ -3,24 +3,18 @@ kind: StatefulSet
 metadata:
   name: {{ template "redis.fullname" . }}-master
   labels:
-    app: {{ template "redis.name" . }}
-    chart: {{ template "redis.chart" . }}
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+{{ include "redis.labels" . | indent 4 }}
 spec:
   selector:
     matchLabels:
-      release: "{{ .Release.Name }}"
-      role: master
-      app: {{ template "redis.name" . }}
+      redis.io/role: master
+{{ include "redis.instance-name" . | indent 6 }}
   serviceName: {{ template "redis.fullname" . }}-master
   template:
     metadata:
       labels:
-        release: "{{ .Release.Name }}"
-        chart: {{ template "redis.chart" . }}
-        role: master
-        app: {{ template "redis.name" . }}
+        redis.io/role: master
+{{ include "redis.labels" . | indent 8 }}
 {{- if .Values.master.podLabels }}
 {{ toYaml .Values.master.podLabels | indent 8 }}
 {{- end }}
@@ -172,10 +166,8 @@ spec:
     - metadata:
         name: redis-data
         labels:
-          app: "{{ template "redis.name" . }}"
-          component: "master"
-          release: {{ .Release.Name | quote }}
-          heritage: {{ .Release.Service | quote }}
+          app.kubernetes.io/component: server
+{{ include "redis.instance-name" . | indent 10 }}
       spec:
         accessModes:
         {{- range .Values.master.persistence.accessModes }}
