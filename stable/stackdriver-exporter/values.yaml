@@ -40,3 +40,9 @@ web:
   path: /metrics
 
 annotations: {}
+
+gcp:
+  credentials: {}
+    # volumeName: gcp-creds
+    # mountName: /var/secrets/google
+    # secretName: monitoring-service

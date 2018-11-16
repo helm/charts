@@ -47,6 +47,16 @@ spec:
               value: {{ .Values.web.listenAddress | quote }}
             - name: STACKDRIVER_EXPORTER_WEB_TELEMETRY_PATH
               value: {{ .Values.web.path | quote }}
+{{- if .Values.gcp.credentials }}
+            - name: GOOGLE_APPLICATION_CREDENTIALS
+              value: {{ .Values.gcp.credentials.mountPath }}/key.json
+{{- end }}
+{{- if .Values.gcp.credentials }}
+          volumeMounts:
+            - name: {{ .Values.gcp.credentials.volumeName }}
+              mountPath: {{ .Values.gcp.credentials.mountPath }}
+              readOnly: true
+{{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           ports:
@@ -64,3 +74,10 @@ spec:
               port: http
             initialDelaySeconds: 10
             timeoutSeconds: 10
+{{- if .Values.gcp.credentials }}
+      volumes:
+        - name: {{ .Values.gcp.credentials.volumeName }}
+          secret:
+            defaultMode: 420
+            secretName: {{ .Values.gcp.credentials.secretName }}
+{{- end }}
