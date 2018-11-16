@@ -6,12 +6,6 @@ image:
   pullPolicy: IfNotPresent
 
 env:
-  DB_HOST: druid-mysql
-  DB_TYPE: mysql
-  DB_USERNAME: druid
-  DB_PASSWORD: druid
-  DB_DBNAME: druid
-  DB_PORT: 3306
   DRUID_USE_CONTAINER_IP: true
 
 broker:
@@ -211,11 +205,13 @@ middleManager:
   updateStrategy:
     type: RollingUpdate
 
-zkHosts: druid-zookeeper-headless:2181
 
 # ------------------------------------------------------------------------------
 # Zookeeper:
 # ------------------------------------------------------------------------------
+
+# zkHosts: druid-zookeeper-headless:2181
+
 zookeeper:
   enabled: true
   ## Environmental variables to set in Zookeeper
