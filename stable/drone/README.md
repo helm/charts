@@ -42,6 +42,7 @@ The following table lists the configurable parameters of the drone charts and th
 | `images.dind.repository`    | Docker **dind** image                                                                         | `docker.io/library/docker`  |
 | `images.dind.tag`           | Docker **dind** image tag                                                                     | `18.06.1-ce-dind`           |
 | `images.dind.pullPolicy`    | Docker **dind** image pull policy                                                             | `IfNotPresent`              |
+| `service.annotations`       | Service annotations                                                                           | `{}`                        |
 | `service.httpPort`          | Drone's Web GUI HTTP port                                                                     | `80`                        |
 | `service.nodePort`          | If `service.type` is `NodePort` and this is non-empty, sets the http node port of the service | `32015`                     |
 | `service.type`              | Service type (ClusterIP, NodePort or LoadBalancer)                                            | `ClusterIP`                 |

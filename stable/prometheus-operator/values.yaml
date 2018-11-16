@@ -20,6 +20,10 @@ commonLabels: {}
 ##
 defaultRules:
   create: true
+  ## Labels for default rules
+  labels: {}
+  ## Annotations for default rules
+  annotations: {}
 
 ##
 global:
@@ -124,6 +128,7 @@ alertmanager:
   ## Configuration for Alertmanager service
   ##
   service:
+    annotations: {}
     ## Port to expose on each node
     ## Only used if service.type is 'NodePort'
     ##
@@ -172,7 +177,7 @@ alertmanager:
     replicas: 1
 
     ## Time duration Alertmanager shall retain data for. Default is '120h', and must match the regular expression
-    ## [0-9]+(ms|s|m|h|d|w|y) (milliseconds seconds minutes hours days weeks years).
+    ## [0-9]+(ms|s|m|h) (milliseconds seconds minutes hours).
     ##
     retention: 120h
 
@@ -449,6 +454,18 @@ prometheusOperator:
     create: true
     name: ""
 
+  ## Configuration for Prometheus operator service
+  ##
+  service:
+    ## Port to expose on each node
+    ## Only used if service.type is 'NodePort'
+    ##
+    nodePort: 38080
+
+    ## Service type
+    ##
+    type: ClusterIP
+
   ## Deploy CRDs used by Prometheus Operator.
   ##
   createCustomResource: true
@@ -548,6 +565,20 @@ prometheus:
   serviceAccount:
     create: true
     name: ""
+
+  ## Configuration for Prometheus service
+  ##
+  service:
+    annotations: {}
+
+    ## Port to expose on each node
+    ## Only used if service.type is 'NodePort'
+    ##
+    nodePort: 39090
+
+    ## Service type
+    ##
+    type: ClusterIP
 
   rbac:
     ## Create role bindings in the specified namespaces, to allow Prometheus monitoring

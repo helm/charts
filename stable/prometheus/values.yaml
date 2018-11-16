@@ -1,6 +1,9 @@
 rbac:
   create: true
 
+imagePullSecrets:
+# - name: "image-pull-secret"
+
 ## Define serviceAccount names for components. Defaults to component's fully qualified name.
 ##
 serviceAccounts:
@@ -33,7 +36,7 @@ alertmanager:
   ##
   image:
     repository: prom/alertmanager
-    tag: v0.15.2
+    tag: v0.15.3
     pullPolicy: IfNotPresent
 
   ## alertmanager priorityClassName
@@ -481,7 +484,7 @@ server:
   ##
   image:
     repository: prom/prometheus
-    tag: v2.4.3
+    tag: v2.5.0
     pullPolicy: IfNotPresent
 
   ## prometheus server priorityClassName
