@@ -97,7 +97,7 @@ $ helm install --name sysdig-agent-on-prem \
 ## Using private image registries
 
 To authenticate against an image registry you will need to store the credentials
-in a ConfigMap and add a reference to that ConfigMap.
+in a Secret:
 
 ```bash
 kubectl create secret docker-registry NAME \
@@ -107,8 +107,8 @@ kubectl create secret docker-registry NAME \
  --docker-email=EMAIL
 ```
 
-And you must pass its reference in a YAML value file which will be used when
-deploying the Sysdig agent Helm chart (this cannot be done using the command-line):
+The values YAML file will need to point to the Secret you just created (this
+cannot be done using the command-line):
 
 ```yaml
 image:
@@ -116,7 +116,15 @@ image:
     - name: NAME
 ```
 
-You can read more details about this in [Kubernetes Documentation](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/)
+Finally, set the accessKey value and you are ready to deploy the Sysdig agent
+using the Helm chart:
+
+
+```bash
+helm install --name sysdig-agent -f private-registry-values.yaml stable/sysdig
+```
+
+You can read more details about this in [Kubernetes Documentation](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/).
 
 ## Custom App Checks
 
@@ -175,7 +183,7 @@ $ helm install --name sysdig -f custom-app-checks.yaml stable/sysdig
 
 ## Deploying the AWS Marketplace Sysdig agent image
 
-This is an use case similar to pull images from a private registry. First you
+This is an use case similar to pulling images from a private registry. First you
 need to get the authorization token for the AWS Marketplace ECS image registry:
 
 ```bash
