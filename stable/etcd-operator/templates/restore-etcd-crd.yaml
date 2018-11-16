@@ -1,0 +1,28 @@
+{{- if .Values.customResources.createRestoreCRD }}
+---
+apiVersion: "etcd.database.coreos.com/v1beta2"
+kind: "EtcdRestore"
+metadata:
+  # An EtcdCluster with the same name will be created
+  name: {{ .Values.etcdCluster.name }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: {{ template "etcd-restore-operator.name" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  annotations:
+    "helm.sh/hook": "post-install"
+    "helm.sh/hook-delete-policy": "before-hook-creation"
+spec:
+  clusterSpec:
+    size: {{ .Values.etcdCluster.size }}
+    baseImage: "{{ .Values.etcdCluster.image.repository }}"
+    version: {{ .Values.etcdCluster.image.tag }}
+    pod:
+{{ toYaml .Values.etcdCluster.pod | indent 6 }}
+    {{- if .Values.etcdCluster.enableTLS }}
+    TLS:
+{{ toYaml .Values.etcdCluster.tls | indent 6 }}
+    {{- end }}
+{{ toYaml .Values.restoreOperator.spec | indent 2 }}
+{{- end}}

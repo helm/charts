@@ -1,0 +1,61 @@
+# Default values for dask.
+# This is a YAML-formatted file.
+# Declare name/value pairs to be passed into your templates.
+# name: value
+
+# nameOverride: dask
+
+scheduler:
+  name: scheduler
+  image: "daskdev/dask"
+  imageTag: "latest"
+  replicas: 1
+  component: "dask-scheduler"
+  serviceType: "LoadBalancer"
+  servicePort: 8786
+  containerPort: 8786
+  resources: {}
+  # limits:
+  #   cpu: 500m
+  #   memory: 512Mi
+  # requests:
+  #   cpu: 500m
+  #   memory: 512Mi
+
+webUI:
+  name: webui
+  servicePort: 80
+  containerPort: 8787
+
+worker:
+  name: worker
+  image: "daskdev/dask"
+  imageTag: "latest"
+  replicas: 3
+  component: "dask-worker"
+  containerPort: 8081
+  resources: {}
+  # limits:
+  #   cpu: 500m
+  #   memory: 512Mi
+  # requests:
+  #   cpu: 500m
+  #   memory: 512Mi
+
+jupyter:
+  name: jupyter
+  image: "jupyter/base-notebook"
+  imageTag: "11be019e4079"
+  replicas: 1
+  component: "jupyter-notebook"
+  serviceType: "LoadBalancer"
+  servicePort: 80
+  containerPort: 8888
+  password: 'sha1:aae8550c0a44:9507d45e087d5ee481a5ce9f4f16f37a0867318c'  # 'dask'
+  resources: {}
+  # limits:
+  #   cpu: 500m
+  #   memory: 512Mi
+  # requests:
+  #   cpu: 500m
+  #   memory: 512Mi

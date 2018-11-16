@@ -1,0 +1,195 @@
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: "{{ template "consul.fullname" . }}"
+  labels:
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: {{ template "consul.chart" . }}
+    component: "{{ .Release.Name }}-{{ .Values.Component }}"
+spec:
+  serviceName: "{{ template "consul.fullname" . }}"
+  replicas: {{ default 3 .Values.Replicas }}
+  updateStrategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      release: {{ .Release.Name | quote }}
+      component: "{{ .Release.Name }}-{{ .Values.Component }}"
+  template:
+    metadata:
+      name: "{{ template "consul.fullname" . }}"
+      labels:
+        heritage: {{ .Release.Service | quote }}
+        release: {{ .Release.Name | quote }}
+        chart: {{ template "consul.chart" . }}
+        component: "{{ .Release.Name }}-{{ .Values.Component }}"
+    spec:
+      securityContext:
+        fsGroup: 1000
+{{- if .Values.priorityClassName }}
+      priorityClassName: "{{ .Values.priorityClassName }}"
+{{- end }}
+    {{- if .Values.affinity }}
+      affinity:
+{{ tpl .Values.affinity . | indent 8 }}
+    {{- end }}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+    {{- end }}
+      containers:
+      - name: "{{ template "consul.fullname" . }}"
+        image: "{{ .Values.Image }}:{{ .Values.ImageTag }}"
+        imagePullPolicy: "{{ .Values.ImagePullPolicy }}"
+        ports:
+        - name: http
+          containerPort: {{ .Values.HttpPort }}
+        - name: rpc
+          containerPort: {{ .Values.RpcPort }}
+        - name: serflan-tcp
+          protocol: "TCP"
+          containerPort: {{ .Values.SerflanPort }}
+        - name: serflan-udp
+          protocol: "UDP"
+          containerPort: {{ .Values.SerflanUdpPort }}
+        - name: serfwan-tcp
+          protocol: "TCP"
+          containerPort: {{ .Values.SerfwanPort }}
+        - name: serfwan-udp
+          protocol: "UDP"
+          containerPort: {{ .Values.SerfwanUdpPort }}
+        - name: server
+          containerPort: {{.Values.ServerPort}}
+        - name: consuldns-tcp
+          containerPort: {{.Values.ConsulDnsPort}}
+        - name: consuldns-udp
+          protocol: "UDP"
+          containerPort: {{.Values.ConsulDnsPort}}
+        resources:
+{{ toYaml .Values.Resources | indent 10 }}
+        env:
+        - name: INITIAL_CLUSTER_SIZE
+          value: {{ default 3 .Values.Replicas | quote }}
+        - name: STATEFULSET_NAME
+          value: "{{ template "consul.fullname" . }}"
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: STATEFULSET_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: DNSPORT
+          value: "{{ .Values.ConsulDnsPort }}"
+        volumeMounts:
+        - name: datadir
+          mountPath: /var/lib/consul
+        - name: gossip-key
+          mountPath: /etc/consul/secrets
+          readOnly: true
+        {{ range .Values.ConsulConfig }}
+        - name: userconfig-{{ .name }}
+          readOnly: true
+          mountPath: /etc/consul/userconfig/{{ .name }}
+        {{ end }}
+        livenessProbe:
+          exec:
+            command:
+            - consul
+            - members
+          initialDelaySeconds: 300
+          timeoutSeconds: 5
+        command:
+          - "/bin/sh"
+          - "-ec"
+          - |
+            IP=$(hostname -i)
+
+            {{- if .Values.Gossip.Encrypt }}
+            if [ -e /etc/consul/secrets/gossip-key ]; then
+              echo "{\"encrypt\": \"$(base64 /etc/consul/secrets/gossip-key)\"}" > /etc/consul/encrypt.json
+              GOSSIP_KEY="-config-file /etc/consul/encrypt.json"
+            fi
+            {{- end }}
+
+            for i in $(seq 0 $((${INITIAL_CLUSTER_SIZE} - 1))); do
+                while true; do
+                    echo "Waiting for ${STATEFULSET_NAME}-${i}.${STATEFULSET_NAME} to come up"
+                    ping -W 1 -c 1 ${STATEFULSET_NAME}-${i}.${STATEFULSET_NAME}.${STATEFULSET_NAMESPACE}.svc > /dev/null && break
+                    sleep 1s
+                done
+            done
+
+            PEERS=""
+            for i in $(seq 0 $((${INITIAL_CLUSTER_SIZE} - 1))); do
+              NEXT_PEER="$(ping -c 1 ${STATEFULSET_NAME}-${i}.${STATEFULSET_NAME}.${STATEFULSET_NAMESPACE}.svc | awk -F'[()]' '/PING/{print $2}')"
+              if [ "${NEXT_PEER}" != "${POD_IP}" ]; then
+                PEERS="${PEERS}${PEERS:+ } -retry-join ${STATEFULSET_NAME}-${i}.${STATEFULSET_NAME}.${STATEFULSET_NAMESPACE}.svc"
+              fi
+            done
+
+            exec /bin/consul agent \
+            {{- range .Values.ConsulConfig }}
+              -config-dir /etc/consul/userconfig/{{ .name }} \
+            {{- end}}
+            {{- if .Values.uiService.enabled }}
+              -ui \
+            {{- end }}
+            {{- if .Values.DisableHostNodeId }}
+              -disable-host-node-id \
+            {{- end }}
+            {{- if .Values.DatacenterName }}
+              -datacenter {{ .Values.DatacenterName }} \
+            {{- end }}
+            {{- if .Values.Domain }}
+              -domain={{ .Values.Domain }} \
+            {{- end }}
+              -data-dir=/var/lib/consul \
+              -server \
+              -bootstrap-expect=${INITIAL_CLUSTER_SIZE} \
+              -disable-keyring-file \
+              -bind=0.0.0.0 \
+              -advertise=${IP} \
+              ${PEERS} \
+            {{- if .Values.Gossip.Encrypt }}
+              ${GOSSIP_KEY} \
+            {{- end }}
+              -client=0.0.0.0 \
+              -dns-port=${DNSPORT} \
+              -http-port={{ .Values.HttpPort }}
+      volumes:
+      - name: gossip-key
+        secret:
+          secretName: {{ template "consul.fullname" . }}-gossip-key
+      {{ range .Values.ConsulConfig }}
+      - name: userconfig-{{ .name }}
+        {{ .type }}:
+          {{- if (eq .type "configMap") }}
+          name: {{ .name }}
+          {{- else if (eq .type "secret") }}
+          secretName: {{ .name }}
+          {{- end}}
+      {{ end }}
+  volumeClaimTemplates:
+  - metadata:
+      name: datadir
+    spec:
+      accessModes:
+        - "ReadWriteOnce"
+      resources:
+        requests:
+          # upstream recommended max is 700M
+          storage: "{{ .Values.Storage }}"
+    {{- if .Values.StorageClass }}
+    {{- if (eq "-" .Values.StorageClass) }}
+      storageClassName: ""
+    {{- else }}
+      storageClassName: "{{ .Values.StorageClass }}"
+    {{- end }}
+    {{- end }}

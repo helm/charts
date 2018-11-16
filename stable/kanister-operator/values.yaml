@@ -1,0 +1,33 @@
+# Default values for kanister-operator.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+image:
+  repository: kanisterio/controller
+  tag: 0.10.0
+  pullPolicy: IfNotPresent
+rbac:
+  create: true
+serviceAccount:
+  create: true
+  name:
+# Configuration for the kanister profile dependency chart
+profile:
+  create: false
+  # Used to indicate whether to create a default profile
+  defaultProfile: false
+  # Profile name used when defaultProfile is true
+  defaultProfileName: default-profile
+  # If not creating a defaultProfile, should set the profile name
+  profileName:
+
+resources:
+# We usually recommend not to specify default resources and to leave this as a conscious
+# choice for the user. This also increases chances charts run on environments with little
+# resources, such as Minikube. If you do want to specify resources, uncomment the following
+# lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+# limits:
+#  cpu: 100m
+#  memory: 128Mi
+# requests:
+#  cpu: 100m
+#  memory: 128Mi

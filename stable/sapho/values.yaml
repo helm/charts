@@ -1,0 +1,41 @@
+# Default values for sapho.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+replicaCount: 1
+image: sapho/ops-docker-tomcat:8-jre8
+
+mysql:
+  persistence:
+    enabled: true
+    ## mysql data Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
+    ##
+    # storageClass: "-"
+    accessMode: ReadWriteOnce
+    size: 8Gi
+  resources:
+    requests:
+      memory: 512Mi
+      cpu: 250m
+
+service:
+  name: sapho
+  type: LoadBalancer
+  externalPort: 80
+  internalPort: 8080
+
+resources:
+#  limits:
+#    cpu: 500m
+#    memory: 2048Mi
+  requests:
+    cpu: 250m
+    memory: 2048Mi
+saphoVersion: 4.2.0
+saphoDBport: 3306
+saphoDBtype: mysql
+saphoDBuser: root

@@ -1,0 +1,57 @@
+# Default values for kube-state-metrics.
+prometheusScrape: true
+image:
+  repository: quay.io/coreos/kube-state-metrics
+  tag: v1.4.0
+  pullPolicy: IfNotPresent
+service:
+  port: 8080
+  # Default to clusterIP for backward compatibility
+  type: ClusterIP
+  nodePort: 0
+  loadBalancerIP: ""
+rbac:
+  # If true, create & use RBAC resources
+  create: true
+  # Ignored if rbac.create is true
+  serviceAccountName: default
+
+securityContext:
+  enabled: true
+  runAsUser: 65534
+  fsGroup: 65534
+
+## Node labels for pod assignment
+## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+nodeSelector: {}
+
+## Tolerations for pod assignment
+## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+tolerations: []
+
+# Annotations to be added to the pod
+podAnnotations: {}
+
+# Available collectors for kube-state-metrics. By default all available
+# collectors are enabled.
+collectors:
+  cronjobs: true
+  daemonsets: true
+  deployments: true
+  endpoints: true
+  horizontalpodautoscalers: true
+  jobs: true
+  limitranges: true
+  namespaces: true
+  nodes: true
+  persistentvolumeclaims: true
+  persistentvolumes: true
+  pods: true
+  replicasets: true
+  replicationcontrollers: true
+  resourcequotas: true
+  services: true
+  statefulsets: true
+
+# Namespace to be enabled for collecting resources. By default all namespaces are collected.
+# namespace: ""

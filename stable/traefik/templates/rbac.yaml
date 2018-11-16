@@ -1,0 +1,58 @@
+{{- if .Values.rbac.enabled }}
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  name: {{ template "traefik.fullname" . }}
+---
+kind: ClusterRole
+{{- if semverCompare "^1.8-0" .Capabilities.KubeVersion.GitVersion }}
+apiVersion: rbac.authorization.k8s.io/v1
+{{- else }}
+apiVersion: rbac.authorization.k8s.io/v1beta1
+{{- end }}
+metadata:
+  name: {{ template "traefik.fullname" . }}
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - pods
+      - services
+      - endpoints
+      - secrets
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - extensions
+    resources:
+      - ingresses
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - extensions
+    resources:
+      - ingresses/status
+    verbs:
+      - update
+---
+kind: ClusterRoleBinding
+{{- if semverCompare "^1.8-0" .Capabilities.KubeVersion.GitVersion }}
+apiVersion: rbac.authorization.k8s.io/v1
+{{- else }}
+apiVersion: rbac.authorization.k8s.io/v1beta1
+{{- end }}
+metadata:
+  name: {{ template "traefik.fullname" . }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ template "traefik.fullname" . }}
+subjects:
+- kind: ServiceAccount
+  name: {{ template "traefik.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+{{- end }}

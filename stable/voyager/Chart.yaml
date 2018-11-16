@@ -1,0 +1,12 @@
+apiVersion: v1
+# This chart is deprecated and moved to https://github.com/appscode/charts. For details deprecation,
+# including how to un-deprecate a chart see the PROCESSES.md file.
+deprecated: true
+description: DEPRECATED Voyager by AppsCode - Secure Ingress Controller for Kubernetes
+home: https://appscode.com/products/voyager/
+icon: https://cdn.appscode.com/images/icon/voyager.png
+name: voyager
+version: 3.2.4
+appVersion: 6.0.0
+sources:
+  - https://github.com/appscode/voyager

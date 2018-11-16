@@ -1,0 +1,23 @@
+name: sysdig
+version: 1.1.0
+appVersion: 0.81.0
+description: Sysdig Monitor and Secure agent
+keywords:
+  - monitoring
+  - security
+  - alerting
+  - metric
+  - troubleshooting
+  - run-time
+home: https://www.sysdig.com/
+icon: https://app.sysdigcloud.com/images/changelogs/sysdig_monitor.png
+sources:
+  - https://app.sysdigcloud.com/#/settings/user
+  - https://github.com/draios/sysdig
+maintainers:
+  - name: lachie83
+    email: lachlan@deis.com
+  - name: bencer
+    email: jorge.salamero@sysdig.com
+  - name: nestorsalceda
+    email: nestor.salceda@sysdig.com

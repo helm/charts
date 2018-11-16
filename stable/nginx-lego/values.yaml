@@ -1,0 +1,73 @@
+## nginx-lego spins up a scalable ingress provider that can also provision SSL certs
+## See https://github.com/jetstack/kube-lego/tree/master/examples/nginx for more information on implementation
+
+## Nginx configuration
+## ref: https://github.com/kubernetes/contrib/tree/master/ingress/controllers/nginx#automated-certificate-management-with-kube-lego
+##
+nginx:
+  replicaCount: 1
+  image:
+    repository: k8s.gcr.io/nginx-ingress-controller
+    tag: "0.8.3"
+    pullPolicy: IfNotPresent
+  service:
+    type: LoadBalancer
+  monitoring: false
+  resources:
+    limits:
+      cpu: 1
+      memory: 2Gi
+    requests:
+      cpu: 1
+      memory: 128Mi
+  configmap:
+    proxy_connect_timeout: "30"
+    proxy_read_timeout: "600"
+    proxy_send_imeout: "600"
+    hsts_include_subdomains: "false"
+    body_size: "64m"
+    server_name_hash_bucket_size: "256"
+    # TODO: figure out how to expose `{nginx_addr}:8080/nginx_status`, on existing service or create new one?
+    enable_vts_status: "false"
+
+## Default Backend configuration
+## To run a different 404 page for the managed domains please see the documentation below
+## ref: https://github.com/kubernetes/contrib/tree/master/404-server
+##
+default:
+  replicaCount: 1
+  image:
+    repository: k8s.gcr.io/defaultbackend
+    tag: "1.0"
+    pullPolicy: IfNotPresent
+  resources:
+    limits:
+      cpu: 1
+      memory: 2Gi
+    requests:
+      cpu: 1
+      memory: 128Mi
+
+## kube-lego configuration
+## ref: https://github.com/jetstack/kube-lego
+##
+lego:
+  enabled: false
+  replicaCount: 1
+  image:
+    repository: jetstack/kube-lego
+    tag: "0.1.3"
+    pullPolicy: IfNotPresent
+  configmap:
+    email: "my@email.tld"
+    # Production Let's Encrypt server
+    # url: "https://acme-v01.api.letsencrypt.org/directory"
+    # Test Let's Encrypt server
+    url: "https://acme-staging.api.letsencrypt.org/directory "
+  resources:
+    limits:
+      cpu: 1
+      memory: 2Gi
+    requests:
+      cpu: 1
+      memory: 128Mi

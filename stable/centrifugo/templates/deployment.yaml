@@ -1,0 +1,70 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "centrifugo.fullname" . }}
+  labels:
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    app: {{ template "centrifugo.name" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+      labels:
+        app: {{ template "centrifugo.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command:
+        - centrifugo
+        args:
+        {{- range $arg := .Values.args }}
+        - {{ $arg }}
+        {{- end }}
+        env:
+        - name: CENTRIFUGO_ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "centrifugo.fullname" . }}
+              key: admin-password
+        - name: CENTRIFUGO_ADMIN_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "centrifugo.fullname" . }}
+              key: admin-secret
+        - name: CENTRIFUGO_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "centrifugo.fullname" . }}
+              key: secret
+        volumeMounts:
+        - name: "{{ template "centrifugo.fullname" . }}-config"
+          mountPath: "/centrifugo"
+          readOnly: true
+        ports:
+        - name: http
+          containerPort: {{ .Values.service.port }}
+        livenessProbe:
+          httpGet:
+            path: /connection
+            port: {{ .Values.service.port }}
+        readinessProbe:
+          httpGet:
+            path: /connection
+            port: {{ .Values.service.port }}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+      volumes:
+      - name: {{ template "centrifugo.fullname" . }}-config
+        configMap:
+          name: {{ template "centrifugo.fullname" . }}-config

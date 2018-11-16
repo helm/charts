@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "coredns.fullname" . }}
+  labels:
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    {{- if .Values.isClusterService }}
+    k8s-app: {{ .Chart.Name | quote }}
+    kubernetes.io/cluster-service: "true"
+    kubernetes.io/name: "CoreDNS"
+    {{- end }}
+    app: {{ template "coredns.name" . }}
+data:
+  Corefile: |-
+    {{ range .Values.servers }}
+    {{- range $idx, $zone := .zones }}{{ if $idx }} {{ else }}{{ end }}{{ default "" $zone.scheme }}{{ default "." $zone.zone }}{{ else }}.{{ end -}}
+    {{- if .port }}:{{ .port }} {{ end -}}
+    {
+      {{- range .plugins }}
+        {{ .name }}{{ if .parameters }} {{ .parameters }}{{ end }}{{ if .configBlock }} {
+{{ .configBlock | indent 12 }}
+        }{{ end }}
+      {{- end }}
+    }
+    {{ end }}
+  {{- range .Values.zoneFiles }}
+  {{ .filename }}: {{ toYaml .contents | indent 4 }}
+  {{- end }}

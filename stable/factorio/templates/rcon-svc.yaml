@@ -1,0 +1,20 @@
+{{- if default "" .Values.factorioServer.rcon.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ template "factorio.fullname" . }}-rcon"
+  labels:
+    app: {{ template "factorio.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  type: {{ .Values.factorioServer.rcon.serviceType }}
+  ports:
+  - name: rcon
+    port: {{ .Values.factorioServer.rcon.port }}
+    targetPort: rcon
+    protocol: TCP
+  selector:
+    app: {{ template "factorio.fullname" . }}
+{{- end }}

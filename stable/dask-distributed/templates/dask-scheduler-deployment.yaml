@@ -1,0 +1,30 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "dask-distributed.scheduler-fullname" . }}
+  labels:
+    app: {{ template "dask-distributed.name" . }}
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    component: "{{ .Release.Name }}-{{ .Values.scheduler.component }}"
+spec:
+  replicas: {{ .Values.scheduler.replicas }}
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: {{ template "dask-distributed.name" . }}
+        release: {{ .Release.Name | quote }}
+        component: "{{ .Release.Name }}-{{ .Values.scheduler.component }}"
+    spec:
+      containers:
+        - name: {{ template "dask-distributed.scheduler-fullname" . }}
+          image: "{{ .Values.scheduler.image }}:{{ .Values.scheduler.imageTag }}"
+          command: ["dask-scheduler", "--port", "{{ .Values.scheduler.servicePort }}", "--bokeh-port", "{{ .Values.webUI.containerPort }}"]
+          ports:
+            - containerPort: {{ .Values.scheduler.containerPort }}
+            - containerPort: {{ .Values.webUI.containerPort }}
+          resources:
+{{ toYaml .Values.scheduler.resources | indent 12 }}

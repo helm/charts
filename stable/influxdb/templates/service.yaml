@@ -1,0 +1,67 @@
+apiVersion: v1
+kind: Service
+metadata:
+{{- if .Values.service.annotations }}
+  annotations:
+{{ toYaml .Values.service.annotations | indent 4 }}
+{{- end }}
+  name: {{ template "influxdb.fullname" . }}
+  labels:
+    app: {{ template "influxdb.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  type: {{ .Values.service.type }}
+  {{- if .Values.service.clusterIP }}
+  clusterIP: {{ .Values.service.clusterIP }}
+  {{- end }}
+  {{- if .Values.service.externalIPs }}
+  externalIPs:
+  {{ toYaml .Values.service.externalIPs | indent 4 }}
+  {{- end }}
+  {{- if .Values.service.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.service.loadBalancerIP }}
+  {{- end }}
+  {{- if .Values.service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+  {{ toYaml .Values.service.loadBalancerSourceRanges | indent 4 }}
+  {{- end }}
+  ports:
+  {{- if .Values.config.http.enabled }}
+  - name: api
+    port: {{ .Values.config.http.bind_address }}
+    targetPort: {{ .Values.config.http.bind_address }}
+  {{- end }}
+  {{- if .Values.config.admin.enabled }}
+  - name: admin
+    port: {{ .Values.config.admin.bind_address }}
+    targetPort: {{ .Values.config.admin.bind_address }}
+  {{- end }}
+  {{- if .Values.config.graphite.enabled }}
+  - name: graphite
+    port: {{ .Values.config.graphite.bind_address }}
+    targetPort: {{ .Values.config.graphite.bind_address }}
+  {{- end }}
+  {{- if .Values.config.collectd.enabled }}
+  - name: collectd
+    port: {{ .Values.config.collectd.bind_address }}
+    targetPort: {{ .Values.config.collectd.bind_address }}
+  {{- end }}
+  {{- if .Values.config.udp.enabled }}
+  - name: udp
+    port: {{ .Values.config.udp.bind_address }}
+    targetPort: {{ .Values.config.udp.bind_address }}
+  {{- end }}
+  {{- if .Values.config.opentsdb.enabled }}
+  - name: opentsdb
+    port: {{ .Values.config.opentsdb.bind_address }}
+    targetPort: {{ .Values.config.opentsdb.bind_address }}
+  {{- end }}
+  {{- if .Values.exposeRpcService }}
+  - name: rpc
+    port: {{ .Values.config.bind_address }}
+    targetPort: {{ .Values.config.bind_address }}
+  {{- end }}
+  selector:
+    app: {{ template "influxdb.fullname" . }}

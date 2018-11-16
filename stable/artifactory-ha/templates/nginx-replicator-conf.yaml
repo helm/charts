@@ -1,0 +1,27 @@
+{{- if .Values.artifactory.replicator.enabled -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "artifactory-ha.fullname" . }}-replicator-nginx-config
+  labels:
+    app: {{ template "artifactory-ha.name" . }}
+    chart: {{ template "artifactory-ha.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+data:
+  replicator-nginx.conf: |
+      ## Artifactory replicator
+      server {
+        listen         {{ .Values.nginx.externalPortReplicator }};
+        server_name    {{ include "artifactory-ha.fullname" . }};
+
+        client_max_body_size 0;
+
+        location / {
+          proxy_read_timeout  900;
+          proxy_pass_header   Server;
+          proxy_pass          http://{{ include "artifactory-ha.primary.name" . }}:{{ .Values.nginx.internalPortReplicator }};
+          proxy_http_version  1.1;
+        }
+      }
+{{- end -}}

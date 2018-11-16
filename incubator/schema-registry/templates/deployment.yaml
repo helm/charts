@@ -1,0 +1,132 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "schema-registry.fullname" . }}
+  labels:
+    app: {{ template "schema-registry.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "schema-registry.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+    {{- if .Values.sasl.scram.enabled }}
+      initContainers:
+      ## ref: https://github.com/Yolean/kubernetes-kafka/blob/master/kafka/50kafka.yml
+      - name: init-sasl
+        image: "{{ .Values.sasl.scram.init.image }}:{{ .Values.sasl.scram.init.imageTag }}"
+        imagePullPolicy: "{{ .Values.sasl.scram.init.imagePullPolicy }}"
+        command:
+          - sh
+          - -euc
+          - |
+            sed "s/\$SCRAM_CLIENT_USER/${SCRAM_CLIENT_USER}/g; s/\$SCRAM_CLIENT_PASSWORD/${SCRAM_CLIENT_PASSWORD}/g; s/\$ZOOKEEPER_CLIENT_USER/${ZOOKEEPER_CLIENT_USER}/g; s/\$ZOOKEEPER_CLIENT_PASSWORD/${ZOOKEEPER_CLIENT_PASSWORD}/g;" /tmp/kafka-template/kafka_client_jaas.conf > /etc/kafka-config/kafka_client_jaas.conf
+        env:
+          - name: ZOOKEEPER_CLIENT_USER
+            value: {{ .Values.sasl.scram.zookeeperClientUser }}
+          - name: ZOOKEEPER_CLIENT_PASSWORD
+            {{- if (hasKey .Values.sasl.scram "useExistingSecret") }}
+            valueFrom:
+{{ toYaml .Values.sasl.scram.useExistingSecret.zookeeperClientPassword | indent 14 -}}
+            {{- else }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "schema-registry.fullname" . }}-sasl-scram-secret
+                key: zookeeper-client-password
+            {{- end }}
+          - name: SCRAM_CLIENT_USER
+            value: {{ .Values.sasl.scram.clientUser }}
+          - name: SCRAM_CLIENT_PASSWORD
+            {{- if (hasKey .Values.sasl.scram "useExistingSecret") }}
+            valueFrom: 
+{{ toYaml .Values.sasl.scram.useExistingSecret.clientPassword | indent 14 -}}
+            {{- else }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "schema-registry.fullname" . }}-sasl-scram-secret
+                key: scram-client-password
+            {{- end }}
+        volumeMounts:
+        - name: jaastemplate
+          mountPath: "/tmp/kafka-template"
+        - name: jaasconfig
+          mountPath: {{ .Values.sasl.configPath | quote }}
+    {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image }}:{{ .Values.imageTag }}"
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
+          ports:
+            - containerPort: {{ .Values.servicePort }}
+          livenessProbe:
+            httpGet:
+              path: /
+              port: {{ .Values.servicePort }}
+            {{- if not .Values.livenessProbe }}
+            initialDelaySeconds: 10
+            timeoutSeconds: 5
+            {{- else }}
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds | default 10}}
+            {{- if .Values.livenessProbe.periodSeconds }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+            {{- end }}
+            timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds | default 5}}
+            {{- if .Values.livenessProbe.successThreshold }}
+            successThreshold: {{ .Values.livenessProbe.successThreshold }}
+            {{- end }}
+            {{- if .Values.livenessProbe.failureThreshold }}
+            failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+            {{- end }}
+            {{- end }}
+          readinessProbe:
+            httpGet:
+              path: /
+              port: {{ .Values.servicePort }}
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds | default 10}}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds | default 5}}
+            successThreshold: {{ .Values.readinessProbe.successThreshold }}
+            failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+          env:
+          - name: SCHEMA_REGISTRY_HOST_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
+          - name: SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS
+            value: {{ template "schema-registry.kafkaStore.bootstrapServers" . }}
+          - name: SCHEMA_REGISTRY_KAFKASTORE_GROUP_ID
+            value: {{ template "schema-registry.kafkaStore.groupId" . }}
+          - name: SCHEMA_REGISTRY_MASTER_ELIGIBILITY
+            value: "true"
+          {{ range $configName, $configValue := .Values.configurationOverrides }}
+          - name: SCHEMA_REGISTRY_{{ $configName | replace "." "_" | upper }}
+            value: {{ $configValue | quote }}
+          {{ end }}
+          {{- if .Values.schemaRegistryOpts }}
+          # The pre-flight checks use KAFKA_OPTS instead of SCHEMA_REGISTRY_OPTS.
+          - name: KAFKA_OPTS
+            value: "{{ .Values.schemaRegistryOpts }}"
+          - name: SCHEMA_REGISTRY_OPTS
+            value: "{{ .Values.schemaRegistryOpts }}"
+          {{- end }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+          volumeMounts:
+          {{- if .Values.sasl.scram.enabled }}
+          - name: jaasconfig
+            mountPath: {{ .Values.sasl.configPath | quote }}
+          {{- end }}
+      volumes:
+      {{- if .Values.sasl.scram.enabled }}
+      - name: jaasconfig
+        emptyDir: { medium: "Memory" }
+      - name: jaastemplate
+        configMap:
+          name: {{ template "schema-registry.fullname" . }}
+      {{- end }}
+          

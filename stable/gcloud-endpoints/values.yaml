@@ -1,0 +1,75 @@
+## Google Cloud Endpoints Runtime image
+## ref: https://cloud.google.com/endpoints/docs/quickstart-container-engine#deploying_the_sample_api_to_the_cluster
+image: b.gcr.io/endpoints/endpoints-runtime:1
+
+## Specify a imagePullPolicy
+## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
+## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+##
+# imagePullPolicy:
+
+## Set the application server address to which ESP proxies the requests. For
+## GRPC backends, please use grpc:// prefix, e.g. grpc://localhost:8081.
+## (default: localhost:8081)
+##
+# backend:
+
+## Set the name of the Endpoints service. If omitted and serviceConfigURL not
+## specified, ESP contacts the metadata service to fetch the service name.
+## (default: None)
+##
+# service:
+
+## Specify the URL to fetch the service configuration. (default: None)
+##
+# serviceConfigURL:
+
+## Expose a port to accept HTTP/1.x connections. Note that if you do not
+## specify httpPort, http2Port, and sslPort, then the default httpPort 8080 is
+## set. (default: None)
+##
+# httpPort: 8080
+
+## Expose a port to accept HTTP/2 connections. Note that this cannot be the
+## same port as HTTP/1.x port. (default: None)
+##
+# http2Port:
+
+## Expose a port for HTTPS requests. Accepts both HTTP/1.x and HTTP/2
+## connections. (default: None)
+##
+# sslPort:
+
+## Set the ESP status port. Status information is available at
+## /endpoints_status location over HTTP/1.x. (default: 8090)
+##
+statusPort: 8090
+
+## Set the config version of the Endpoints service. If omitted and
+## serviceConfigURL not specified, ESP contacts the metadata service to fetch
+## the service version. (default: None)
+##
+# version:
+
+## Set the service account key JSON file. Used to access the service control
+## and the service management. If the option is omitted, ESP contacts the
+## metadata service to fetch an access token. (default: None)
+##
+# serviceAccountKey:
+
+## Set a custom nginx config file. (default: None)
+##
+# nginxConfig:
+
+## Kubernetes configuration
+## For minikube, set this to NodePort, elsewhere use LoadBalancer
+##
+serviceType: ClusterIP
+
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+##
+resources:
+  requests:
+    memory: 128Mi
+    cpu: 100m

@@ -1,0 +1,176 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "sonarqube.fullname" . }}
+  labels:
+    app: {{ template "sonarqube.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "sonarqube.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      {{- if .Values.plugins.install }}
+      initContainers:
+        - name: install-plugins
+          image: joosthofman/wget:1.0
+          env:
+            {{- range $key, $value := .Values.extraEnv }}
+            - name: {{ $key }}
+              value: {{ $value }}
+            {{- end }}
+          command: ["sh",
+            "-c",
+            "mkdir -p /opt/sonarqube/extensions/plugins/ &&
+            cp /tmp/scripts/install_plugins.sh /opt/sonarqube/extensions/plugins/install_plugins.sh &&
+            chmod 0775 /opt/sonarqube/extensions/plugins/install_plugins.sh &&
+            /opt/sonarqube/extensions/plugins/install_plugins.sh
+            "
+           ]
+          volumeMounts:
+            - mountPath: /opt/sonarqube/extensions
+              name: sonarqube
+              subPath: extensions
+            - name: install-plugins
+              mountPath: /tmp/scripts/
+          resources:
+{{ toYaml .Values.plugins.resources | indent 12 }}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- if .Values.hostAliases }}
+      hostAliases:
+{{ toYaml .Values.hostAliases | indent 8 }}
+    {{- end }}
+    {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+    {{- end }}
+    {{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+    {{- end }}
+      {{- end }}
+      {{- if .Values.image.pullSecret }}
+      imagePullSecrets:
+      - name: {{ .Values.image.pullSecret }}
+      {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.service.internalPort }}
+          command: [
+              "sh",
+              "-ce",
+              "mkdir /scripts &&
+              cp /tmp-script/startup.sh /scripts/startup.sh &&
+              chmod 0755 /scripts/startup.sh &&
+              /scripts/startup.sh
+              "
+            ]
+          env:
+            {{- range $key, $value := .Values.extraEnv }}
+            - name: {{ $key }}
+              value: {{ $value }}
+            {{- end }}
+            - name: SONARQUBE_JDBC_USERNAME
+              {{- if eq .Values.database.type "postgresql" }}
+              value: {{ .Values.postgresql.postgresUser | quote }}
+              {{- else if eq .Values.database.type "mysql" }}
+              value: {{ .Values.mysql.mysqlUser | quote }}
+              {{- end }}
+            - name: SONARQUBE_JDBC_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  {{- if eq .Values.database.type "postgresql" }}
+                  name: {{- if .Values.postgresql.enabled }} {{ template "postgresql.fullname" .}} {{- else }} {{ template "sonarqube.fullname" . }} {{- end }}
+                  key: postgres-password
+                  {{- else if eq .Values.database.type "mysql" }}
+                  name: {{- if .Values.mysql.enabled }} {{ template "mysql.fullname" .}} {{- else }} {{ template "sonarqube.fullname" . }} {{- end }}
+                  key: mysql-password
+                  {{- end }}
+            - name: SONARQUBE_JDBC_URL
+              {{- if eq .Values.database.type "postgresql" }}
+              value: "jdbc:postgresql://{{ template "postgresql.hostname" . }}:{{- .Values.postgresql.service.port -}}/{{- .Values.postgresql.postgresDatabase -}}"
+              {{- else if eq .Values.database.type "mysql" }}
+              value: "jdbc:mysql://{{ template "mysql.hostname" . }}:{{ .Values.mysql.service.port }}/{{ .Values.mysql.mysqlDatabase }}?useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true{{- range $key, $value := .Values.mysql.mysqlParams }}&{{ $key }}={{ $value }}{{- end }}"
+              {{- end }}
+          livenessProbe:
+            httpGet:
+              path: /sessions/new
+              port: {{ .Values.service.internalPort }}
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+          readinessProbe:
+            httpGet:
+              path: /sessions/new
+              port: {{ .Values.service.internalPort }}
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+            failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+          volumeMounts:
+            - mountPath: /opt/sonarqube/conf
+              name: sonarqube
+              subPath: conf
+            - mountPath: /tmp-script/
+              name: startup
+            {{- if .Values.sonarProperties }}
+            - name: config
+              mountPath: /tmp/conf/
+            {{- end}}
+            - mountPath: /opt/sonarqube/data
+              name: sonarqube
+              subPath: data
+            - mountPath: /opt/sonarqube/extensions
+              name: sonarqube
+              subPath: extensions
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+    {{- end }}
+    {{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+    {{- end }}
+      volumes:
+      {{- if .Values.sonarProperties}}
+      - name: config
+        configMap:
+          name: {{ template "sonarqube.fullname" . }}-config
+          items:
+          - key: sonar.properties
+            path: sonar.properties
+      {{- end }}
+      - name: install-plugins
+        configMap:
+          name: {{ template "sonarqube.fullname" . }}-install-plugins
+          items:
+            - key: install_plugins.sh
+              path: install_plugins.sh
+      - name: startup
+        configMap:
+          name: {{ template "sonarqube.fullname" . }}-startup
+          items:
+            - key: startup.sh
+              path: startup.sh
+      - name: sonarqube
+        {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "sonarqube.fullname" . }}{{- end }}
+        {{- else }}
+        emptyDir: {}
+        {{- end  }}

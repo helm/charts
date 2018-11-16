@@ -1,0 +1,18 @@
+name: sumologic-fluentd
+version: 0.6.0
+appVersion: 1.16
+description: Sumologic Log Collector
+keywords:
+  - monitoring
+  - logging
+icon: https://www.sumologic.com/wp-content/uploads/logo_light-theme.png
+home: https://github.com/SumoLogic/fluentd-kubernetes-sumologic
+sources:
+  - https://github.com/SumoLogic/fluentd-kubernetes-sumologic
+maintainers:
+  - name: flah00
+    email: techops@adaptly.com
+  - name: frankreno
+    email: freno@sumologic.com
+  - name: darend
+    email: darend@gmail.com

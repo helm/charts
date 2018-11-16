@@ -1,0 +1,152 @@
+{{- if include "ghost.host" . -}}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "ghost.fullname" . }}
+  labels:
+    app: {{ template "ghost.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "ghost.fullname" . }}
+      release: "{{ .Release.Name }}"
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ template "ghost.fullname" . }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        release: "{{ .Release.Name }}"
+    spec:
+      {{- if .Values.securityContext.enabled }}
+      securityContext:
+        fsGroup: {{ .Values.securityContext.fsGroup }}
+        runAsUser: {{ .Values.securityContext.runAsUser }}
+      {{- else }}
+      initContainers:
+      - name: volume-permissions
+        image: {{ template "ghost.volumePermissions.image" . }}
+        imagePullPolicy: "{{ .Values.volumePermissions.image.pullPolicy }}"
+        command: ['sh', '-c', 'chmod -R g+rwX {{ .Values.persistence.path }}']
+        volumeMounts:
+        - mountPath: {{ .Values.persistence.path }}
+          name: ghost-data
+      {{- end }}
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end}}
+      {{- end }}
+      containers:
+      - name: {{ template "ghost.fullname" . }}
+        image: {{ template "ghost.image" . }}
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+        env:
+        - name: ALLOW_EMPTY_PASSWORD
+        {{- if .Values.allowEmptyPassword }}
+          value: "yes"
+        {{- else }}
+          value: "no"
+        {{- end }}
+        - name: MARIADB_HOST
+        {{- if .Values.mariadb.enabled }}
+          value: {{ template "ghost.mariadb.fullname" . }}
+        {{- else }}
+          value: {{ .Values.externalDatabase.host | quote }}
+        {{- end }}
+        - name: MARIADB_PORT_NUMBER
+        {{- if .Values.mariadb.enabled }}
+          value: "3306"
+        {{- else }}
+          value: {{ .Values.externalDatabase.port | quote }}
+        {{- end }}
+        - name: GHOST_DATABASE_NAME
+        {{- if .Values.mariadb.enabled }}
+          value: {{ .Values.mariadb.db.name | quote }}
+        {{- else }}
+          value: {{ .Values.externalDatabase.database | quote }}
+        {{- end }}
+        - name: GHOST_DATABASE_USER
+        {{- if .Values.mariadb.enabled }}
+          value: {{ .Values.mariadb.db.user | quote }}
+        {{- else }}
+          value: {{ .Values.externalDatabase.user | quote }}
+        {{- end }}
+        - name: GHOST_DATABASE_PASSWORD
+        {{- if .Values.mariadb.enabled }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "ghost.mariadb.fullname" . }}
+              key: mariadb-password
+        {{- else }}
+          value: {{ .Values.externalDatabase.password | quote }}
+        {{- end }}
+        - name: GHOST_HOST
+          value: {{ include "ghost.host" . | quote }}
+        - name: GHOST_PORT_NUMBER
+          value: {{ .Values.ghostPort | quote }}
+        - name: GHOST_USERNAME
+          value: {{ .Values.ghostUsername | quote }}
+        - name: GHOST_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "ghost.fullname" . }}
+              key: ghost-password
+        - name: GHOST_EMAIL
+          value: {{ .Values.ghostEmail | quote }}
+        - name: BLOG_TITLE
+          value: {{ .Values.ghostBlogTitle | quote }}
+        - name: SMTP_HOST
+          value: {{ .Values.smtpHost | quote }}
+        - name: SMTP_PORT
+          value: {{ .Values.smtpPort | quote }}
+        - name: SMTP_USER
+          value: {{ .Values.smtpUser | quote }}
+        - name: SMTP_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "ghost.fullname" . }}
+              key: smtp-password
+        - name: SMTP_SERVICE
+          value: {{ .Values.smtpService | quote }}
+        ports:
+        - name: http
+          containerPort: 2368
+        livenessProbe:
+          httpGet:
+            path: {{ .Values.ghostPath }}
+            port: http
+            httpHeaders:
+            - name: Host
+              value: {{ include "ghost.host" . | quote }}
+          initialDelaySeconds: 120
+          timeoutSeconds: 5
+          failureThreshold: 6
+        readinessProbe:
+          httpGet:
+            path: {{ .Values.ghostPath }}
+            port: http
+            httpHeaders:
+            - name: Host
+              value: {{ include "ghost.host" . | quote }}
+          initialDelaySeconds: 30
+          timeoutSeconds: 3
+          periodSeconds: 5
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        volumeMounts:
+        - name: ghost-data
+          mountPath: /bitnami/ghost
+      volumes:
+      - name: ghost-data
+      {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ template "ghost.fullname" . }}
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+{{- end -}}

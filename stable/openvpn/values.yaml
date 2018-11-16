@@ -1,0 +1,83 @@
+# Default values for openvpn.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+replicaCount: 1
+
+updateStrategy: {}
+  # type: RollingUpdate
+  # rollingUpdate:
+  #   maxSurge: 1
+  #   maxUnavailable: 0
+
+image:
+  repository: jfelten/openvpn-docker
+  tag: 1.1.0
+  pullPolicy: IfNotPresent
+service:
+  type: LoadBalancer
+  externalPort: 443
+  internalPort: 443
+  externalIPs: []
+  nodePort: 32085
+  # LoadBalancerSourceRanges: 0.0.0.0/0
+  # loadBalancerIP: 10.0.0.1
+
+  ## Here annotations can be added to the openvpn service
+  # annotations:
+  #   external-dns.alpha.kubernetes.io/hostname: vpn.example.com
+  annotations: {}
+
+resources:
+  limits:
+    cpu: 300m
+    memory: 128Mi
+  requests:
+    cpu: 300m
+    memory: 128Mi
+persistence:
+  enabled: true
+  # subPath: openvpn
+  ## A manually managed Persistent Volume and Claim
+  ## Requires persistence.enabled: true
+  ## If defined, PVC must be created manually before volume will be bound
+  # existingClaim:
+
+  ## openvpn data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  # storageClass: "-"
+  accessMode: ReadWriteOnce
+  size: 2M
+openvpn:
+  # Network allocated for openvpn clients (default: 10.240.0.0).
+  OVPN_NETWORK: 10.240.0.0
+  # Network subnet allocated for openvpn client (default: 255.255.0.0).
+  OVPN_SUBNET: 255.255.0.0
+  # Protocol used by openvpn tcp or udp (default: udp).
+  OVPN_PROTO: tcp
+  # Kubernetes pod network (optional).
+  OVPN_K8S_POD_NETWORK: "10.0.0.0"
+  # Kubernetes pod network subnet (optional).
+  OVPN_K8S_POD_SUBNET: "255.0.0.0"
+  # Kubernetes service network (optional).
+  # Define openvpn.OVPN_K8S_SVC_NETWORK and openvpn.OVPN_K8S_SVC_SUBNET if it's needed to create a separate route to Kubernates service subnet
+  # OVPN_K8S_SVC_NETWORK:
+  # Kubernetes service network subnet (optional).
+  # OVPN_K8S_SVC_SUBNET:
+  # Server certificate data
+  # keystoreSecret:
+  # secret with openvpn certificates. If specified, certificates are taken from the secret
+  # create secret with such command:
+  #    kubectl create secret generic openvpn-keystore-secret --from-file=./server.key --from-file=./ca.crt --from-file=./server.crt --from-file=./dh.pem
+  # Push a `dhcp-option DOMAIN` config
+  dhcpOptionDomain: true
+  # Redirect all client traffic through VPN
+  redirectGateway: true
+  # Arbitrary lines appended to the end of the server configuration file
+  # conf: |
+  #  max-clients 100
+  #  client-to-client

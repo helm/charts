@@ -1,0 +1,15 @@
+name: mongodb-replicaset
+home: https://github.com/mongodb/mongo
+version: 3.6.4
+appVersion: 3.6
+description: NoSQL document-oriented database that stores JSON-like documents with
+  dynamic schemas, simplifying the integration of data in content-driven applications.
+icon: https://webassets.mongodb.com/_com_assets/cms/mongodb-logo-rgb-j6w271g1xn.jpg
+sources:
+  - https://github.com/mongodb/mongo
+  - https://github.com/percona/mongodb_exporter
+maintainers:
+  - name: foxish
+    email: ramanathana@google.com
+  - name: unguiculus
+    email: unguiculus@gmail.com

@@ -1,0 +1,122 @@
+## Details about the image to be pulled.
+image:
+  name: registry.opensource.zalan.do/teapot/external-dns
+  tag: v0.5.7
+  pullSecrets: []
+  pullPolicy: IfNotPresent
+
+## This controls which types of resource external-dns should 'watch' for new
+## DNS entries.
+sources:
+  - service
+  - ingress
+
+# Allow external-dns to publish DNS records for ClusterIP services (optional)
+publishInternalServices: false
+
+## The DNS provider where the DNS records will be created (options: aws, google, inmemory, azure )
+provider: aws
+
+# AWS Access keys to inject as environment variables
+aws:
+  secretKey: ""
+  accessKey: ""
+  roleArn: ""
+  region: "us-east-1"
+  # Filter for zones of this type (optional, options: public, private)
+  zoneType: ""
+
+azure:
+# If you don't specify a secret to load azure.json from, you will get the host's /etc/kubernetes/azure.json
+  secretName: ""
+
+# Cloudflare keys to inject as environment variables
+cloudflare:
+  apiKey: ""
+  email: ""
+# When using the Google provider, specify the Google project (required when provider=google)
+google:
+  project: ""
+  serviceAccountSecret: ""
+
+## Limit possible target zones by domain suffixes (optional)
+domainFilters: []
+## Limit possible target zones by zone id (optional)
+zoneIdFilters: []
+# Filter sources managed by external-dns via annotation using label selector semantics (default: all sources)
+annotationFilter: ""
+
+# Registry to use for ownership (txt or noop)
+registry: "txt"
+
+# When using the TXT registry, a name that identifies this instance of ExternalDNS
+txtOwnerId: ""
+
+## Node labels for pod assignment
+## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+##
+nodeSelector: {}
+
+## List of node taints to tolerate (requires Kubernetes >= 1.6)
+tolerations: []
+
+## Modify how DNS records are sychronized between sources and providers (options: sync, upsert-only )
+policy: upsert-only
+
+## Annotations to be added to pods
+##
+podAnnotations: {}
+
+podLabels: {}
+
+# Verbosity of the logs (options: panic, debug, info, warn, error, fatal)
+logLevel: info
+
+extraArgs: {}
+
+# Extra environment variables which will be saved in a release-specific secret
+# or retrieved via valueFrom.
+# extraEnv:
+# - name: SECRET_TO_SAVE
+#   value: secret_value
+# - name: AWS_ACCESS_KEY_ID
+#   valueFrom:
+#     secretKeyRef:
+#       name: existing-secret
+#       key: access-key-id
+extraEnv: []
+
+## CPU and Memory limit and request for external-dns
+resources: {}
+#  limits:
+#    memory: 50Mi
+#  requests:
+#    memory: 50Mi
+#    cpu: 10m
+
+rbac:
+  ## If true, create & use RBAC resources
+  ##
+  create: false
+  # Beginning with Kubernetes 1.8, the api is stable and v1 can be used.
+  apiVersion: v1beta1
+
+  ## Ignored if rbac.create is true
+  ##
+  serviceAccountName: default
+
+service:
+  annotations: {}
+  clusterIP: ""
+
+  ## List of IP addresses at which the service is available
+  ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
+  ##
+  externalIPs: []
+
+  loadBalancerIP: ""
+  loadBalancerSourceRanges: []
+  servicePort: 7979
+  type: ClusterIP
+
+priorityClassName: ""

@@ -1,0 +1,50 @@
+{{- if .Values.collector.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "jaeger.collector.name" . }}
+  labels:
+    app: {{ template "jaeger.name" . }}
+    jaeger-infra: collector-service
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    component: collector
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+{{- if .Values.collector.service.annotations }}
+  annotations:
+{{ toYaml .Values.collector.service.annotations | indent 4 }}
+{{- end }}
+spec:
+  ports:
+  - name: jaeger-collector-tchannel
+    port: {{ .Values.collector.service.tchannelPort }}
+    protocol: TCP
+    {{- if eq .Values.collector.service.type "NodePort" }}
+    nodePort: {{ .Values.collector.service.tchannelPort }}
+    {{- else }}
+    targetPort: tchannel
+    {{- end }}
+  - name: jaeger-collector-http
+    port: {{ .Values.collector.service.httpPort }}
+    protocol: TCP
+    {{- if eq .Values.collector.service.type "NodePort" }}
+    nodePort: {{ .Values.collector.service.httpPort }}
+    {{- else }}
+    targetPort: http
+    {{- end }}
+  - name: jaeger-collector-zipkin
+    port: {{ .Values.collector.service.zipkinPort }}
+    protocol: TCP
+    {{- if eq .Values.collector.service.type "NodePort" }}
+    nodePort: {{ .Values.collector.service.zipkinPort }}
+    {{- else }}
+    targetPort: zipkin
+    {{- end }}
+  selector:
+    app: {{ template "jaeger.name" . }}
+    component: collector
+    release: {{ .Release.Name }}
+    jaeger-infra: collector-pod
+  type: {{ .Values.collector.service.type }}
+{{- template "loadBalancerSourceRanges" .Values.collector }}
+{{- end -}}

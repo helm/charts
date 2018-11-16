@@ -1,0 +1,19 @@
+{{- if .Values.rbac.create -}}
+apiVersion: {{ template "kube-slack.rbac.apiVersion" . }}
+kind: ClusterRoleBinding
+metadata:
+  name: {{ template "kube-slack.fullname" . }}
+  labels:
+    app: {{ template "kube-slack.name" . }}
+    chart: {{ template "kube-slack.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ template "kube-slack.fullname" . }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ template "kube-slack.serviceAccountName" . }}
+    namespace: {{ .Release.Namespace }}
+{{- end -}}

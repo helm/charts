@@ -1,0 +1,76 @@
+## Google Cloud SQL Proxy image
+## ref: https://cloud.google.com/sql/docs/mysql/sql-proxy
+## ref: https://cloud.google.com/sql/docs/postgres/sql-proxy
+image: b.gcr.io/cloudsql-docker/gce-proxy
+imageTag: "1.11"
+
+## Specify a imagePullPolicy
+## 'Always' if imageTag is 'latest', else set to 'IfNotPresent'
+## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+##
+imagePullPolicy: IfNotPresent
+
+## Replicas Set count
+replicasCount: 1
+
+## Set the GCP service account key JSON file.
+## Service account has access be set to Cloud SQL instances
+## the key must be encoded with base64
+## e.g. `cat service-account.json | base64`
+## only used if no existing secret is specified
+##
+serviceAccountKey: ""
+
+## Specify an existing secret holding the cloud-sql service account credentials
+existingSecret: ""
+## The key in the existing secret that stores the credenials
+existingSecretKey: ""
+
+
+## SQL connection settings
+##
+cloudsql:
+  ## PostgreSQL/MySQL instances:
+  ## update with your GCP project, the region of your Cloud SQL instance
+  ## and the name of your Cloud SQL instance
+  ## PostgreSQL port 5432 or MySQL port 3306, or other port you set for your SQL instance.
+  ## Use different ports for different instances.
+  instances:
+    # GCP instance name.
+  - instance: "instance"
+    # Optional abbreviation used to override the truncated instance name if the
+    # 15 character instance name prefix is not unique for use as a port
+    # identifier.
+    instanceShortName: ""
+    # GCP project where the instance exists.
+    project: "project"
+    # GCP region where the instance exists.
+    region: "region"
+    # Port number for the proxy to expose for this instance.
+    port: 5432
+
+rbac:
+  create: false
+
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+##
+resources:
+  requests:
+    cpu: 100m
+    memory: 100Mi
+  limits:
+    memory: 150Mi
+    cpu: 150m
+
+## Node selector
+nodeSelector: {}
+
+## Tolerations
+tolerations: []
+
+## Affinity
+affinity: {}
+
+podDisruptionBudget: |
+  maxUnavailable: 1

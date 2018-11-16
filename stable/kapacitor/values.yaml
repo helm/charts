@@ -1,0 +1,59 @@
+## influxdb image version
+## ref: https://hub.docker.com/r/library/influxdb/tags/
+##
+image:
+  repository: "kapacitor"
+  tag: "1.5.1-alpine"
+  pullPolicy: "IfNotPresent"
+
+## Specify a service type, defaults to NodePort
+## ref: http://kubernetes.io/docs/user-guide/services/
+##
+service:
+  type: ClusterIP
+
+## Persist data to a persistent volume
+## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+##
+persistence:
+  enabled: true
+  ## kapacitor data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  # storageClass: "-"
+  accessMode: ReadWriteOnce
+  size: 8Gi
+  # existingClaim: ""
+
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+##
+resources:
+  requests:
+    memory: 256Mi
+    cpu: 0.1
+  limits:
+    memory: 2Gi
+    cpu: 2
+
+## Set the environment variables for kapacitor (or anything else you want to use)
+## ref: https://hub.docker.com/_/kapacitor/
+##
+# Examples below
+#
+# envVars:
+#   KAPACITOR_SLACK_ENABLED: true
+#   KAPACITOR_SLACK_URL: "http://slack.com/xxxxx/xxxxx/xxxx/xxxxxxx"
+#
+# or, at your terminal, with
+#
+# helm install --name kapacitor-rls --set influxURL=http://influxurl.com,envVars.KAPACITOR_SLACK_ENABLED=true,envVars.KAPACITOR_SLACK_URL="http://slack.com/xxxxx/xxxxx/xxxx/xxxxxxx" stable/kapacitor
+
+## Set the URL of InfluxDB instance to create subscription on
+## ref: https://docs.influxdata.com/kapacitor/v1.1/introduction/getting_started/
+##
+# influxURL: http://influxdb-influxdb.tick:8086

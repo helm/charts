@@ -1,0 +1,26 @@
+Run the following commands to...
+1. Get the name of the pod running the Fabric Orderer:
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ include "hlf-ord.name" . }},release={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
+
+2. Get the application URL by running these commands:
+{{- if contains "NodePort" .Values.service.type }}
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "hlf-ord.fullname" . }})
+  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo http://$NODE_IP:$NODE_PORT
+{{- else if contains "LoadBalancer" .Values.service.type }}
+     NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+           You can watch the status of by running 'kubectl get svc -w {{ include "hlf-ord.fullname" . }}'
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "hlf-ord.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  echo http://$SERVICE_IP:{{ .Values.service.port }}
+{{- else if contains "ClusterIP" .Values.service.type }}
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ include "hlf-ord.name" . }},release={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
+  echo "Visit http://127.0.0.1:8080 to use your application"
+  kubectl port-forward $POD_NAME 8080:7050
+{{- end }}
+
+3. Obtain CA_USERNAME and CA_PASSWORD to register identity with CA:
+  export CA_USERNAME=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ include "hlf-ord.fullname" . }} -o jsonpath="{.data.CA_USERNAME}" | base64 --decode; echo)
+  export CA_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ include "hlf-ord.fullname" . }} -o jsonpath="{.data.CA_PASSWORD}" | base64 --decode; echo)
+
+4. Update the chart without resetting a password (requires running step 3):
+  helm upgrade {{ .Release.Name }} stable/hlf-ord --namespace {{ .Release.Namespace }} -f my-values.yaml --set caUsername=$CA_USERNAME,caPassword=$CA_PASSWORD

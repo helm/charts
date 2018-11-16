@@ -1,0 +1,16 @@
+name: kube-ops-view
+version: 0.4.3
+appVersion: 0.8.1
+description: Kubernetes Operational View - read-only system dashboard for multiple
+  K8s clusters
+keywords:
+- kubernetes
+- dashboard
+- operations
+home: https://github.com/hjacobs/kube-ops-view
+icon: https://raw.githubusercontent.com/hjacobs/kube-ops-view/master/kube-ops-view-logo.png
+sources:
+- https://github.com/hjacobs/kube-ops-view
+maintainers:
+- name: hjacobs
+  email: henning@jacobs1.de

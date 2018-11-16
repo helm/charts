@@ -1,0 +1,136 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "gocd.fullname" . }}-agent
+  labels:
+    app: {{ template "gocd.name" . }}
+    chart:  "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+    component: agent
+spec:
+  replicas: {{ .Values.agent.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "gocd.name" . }}
+      release: {{ .Release.Name | quote }}
+      component: agent
+  template:
+    metadata:
+      labels:
+        app: {{ template "gocd.name" . }}
+        release: {{ .Release.Name | quote }}
+        component: agent
+    spec:
+      {{- if or .Values.agent.persistence.enabled .Values.agent.security.ssh.enabled }}
+      volumes:
+      {{- end }}
+      {{- if .Values.agent.persistence.enabled }}
+        - name: goagent-vol
+          persistentVolumeClaim:
+            claimName: {{ .Values.agent.persistence.existingClaim | default (printf "%s-%s" (include "gocd.fullname" .) "agent")  }}
+        {{- if ne (len .Values.agent.persistence.extraVolumes) 0 }}
+{{ toYaml .Values.agent.persistence.extraVolumes | indent 8 }}
+        {{- end }}
+      {{- end }}
+      {{- if .Values.agent.security.ssh.enabled }}
+        - name: ssh-secrets
+          secret:
+            secretName: {{ .Values.agent.security.ssh.secretName }}
+      {{- end }}
+      containers:
+        - name: {{ template "gocd.name" . }}-agent
+          {{- if .Values.agent.image.tag }}
+          image: "{{ .Values.agent.image.repository }}:{{ .Values.agent.image.tag }}"
+          {{- else }}
+          image: "{{ .Values.agent.image.repository }}:v{{ .Chart.AppVersion }}"
+          {{- end }}
+          imagePullPolicy: {{ .Values.agent.image.pullPolicy }}
+          resources:
+{{ toYaml .Values.agent.resources | indent 12 }}
+          env:
+            - name: GO_SERVER_URL
+            {{- if .Values.agent.env.goServerUrl }}
+              value: {{ .Values.agent.env.goServerUrl }}
+            {{- else }}
+              value: "https://{{ template "gocd.fullname" . }}-server:{{ .Values.server.service.httpsPort }}/go"
+            {{- end }}
+
+            {{- if .Values.agent.env.agentAutoRegisterKey }}
+            - name: AGENT_AUTO_REGISTER_KEY
+              value: {{ .Values.agent.env.agentAutoRegisterKey }}
+            {{- end }}
+            {{- if .Values.agent.env.agentAutoRegisterResources }}
+            - name: AGENT_AUTO_REGISTER_RESOURCES
+              value: {{ .Values.agent.env.agentAutoRegisterResources }}
+            {{- end }}
+            {{- if .Values.agent.env.agentAutoRegisterEnvironemnts }}
+            - name: AGENT_AUTO_REGISTER_ENVIRONMENTS
+              value: {{ .Values.agent.env.agentAutoRegisterEnvironemnts }}
+            {{- end }}
+            {{- if .Values.agent.env.agentAutoRegisterHostname }}
+            - name: AGENT_AUTO_REGISTER_HOSTNAME
+              value: {{ .Values.agent.env.agentAutoRegisterHostname }}
+            {{- end }}
+            {{- if .Values.agent.env.goAgentSystemProperties }}
+            - name: GO_AGENT_SYSTEM_PROPERTIES
+              value: {{ .Values.agent.env.goAgentSystemProperties }}
+            {{- end }}
+            {{- if .Values.agent.env.goAgentBootstrapperJvmArgs }}
+            - name: AGENT_BOOTSTRAPPER_JVM_ARGS
+              value: {{ .Values.agent.env.goAgentBootstrapperJvmArgs }}
+            {{- end }}
+            {{- if .Values.agent.env.goAgentBootstrapperArgs }}
+            - name: AGENT_BOOTSTRAPPER_ARGS
+              value: {{ .Values.agent.env.goAgentBootstrapperArgs }}
+            {{- end }}
+            {{- if .Values.agent.env.extraEnvVars }}
+{{ toYaml .Values.agent.env.extraEnvVars | indent 12 }}
+            {{- end }}
+          {{- if .Values.agent.healthCheck.enabled }}
+          livenessProbe:
+            httpGet:
+              path: /health/v1/isConnectedToServer
+              port: 8152
+            initialDelaySeconds: {{ .Values.agent.healthCheck.initialDelaySeconds }}
+            failureThreshold: {{ .Values.agent.healthCheck.failureThreshold }}
+            periodSeconds: {{ .Values.agent.healthCheck.periodSeconds }}
+          readinessProbe:
+            httpGet:
+              path: /health/v1/isConnectedToServer
+              port: 8152
+            initialDelaySeconds: {{ .Values.agent.healthCheck.initialDelaySeconds }}
+          {{- end }}
+          {{- if or .Values.agent.persistence.enabled .Values.agent.security.ssh.enabled }}
+          volumeMounts:
+          {{- end }}
+          {{- if .Values.agent.persistence.enabled }}
+            - name: goagent-vol
+              mountPath: /home/go
+              subPath: {{ .Values.agent.persistence.subpath.homego }}
+            - name: {{ .Values.agent.persistence.name.dockerEntryPoint }}
+              mountPath: /docker-entrypoint.d
+              subPath: {{ .Values.agent.persistence.subpath.dockerEntryPoint }}
+            {{- if ne (len .Values.agent.persistence.extraVolumeMounts) 0 }}
+{{ toYaml .Values.agent.persistence.extraVolumeMounts | indent 12 }}
+            {{- end }}
+          {{- end }}
+          {{- if .Values.agent.security.ssh.enabled }}
+            - name: ssh-secrets
+              readOnly: true
+              mountPath: /home/go/.ssh
+          {{- end }}
+          securityContext:
+            privileged: {{ .Values.agent.privileged }}
+    {{- if .Values.agent.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.agent.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- if .Values.agent.affinity }}
+      affinity:
+{{ toYaml .Values.agent.affinity | indent 8 }}
+    {{- end }}
+    {{- if .Values.agent.hostAliases }}
+      hostAliases:
+{{ toYaml .Values.agent.hostAliases | indent 8 }}
+    {{- end }}

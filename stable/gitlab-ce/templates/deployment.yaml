@@ -1,0 +1,118 @@
+{{- if default "" .Values.externalUrl }}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "gitlab-ce.fullname" . }}
+  labels:
+    app: {{ template "gitlab-ce.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ template "gitlab-ce.fullname" . }}
+    spec:
+      containers:
+      - name: {{ template "gitlab-ce.fullname" . }}
+        image: {{ .Values.image }}
+        imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+        env:
+        ## General GitLab Configs
+        ##
+        # This is a free-form env var that GitLab Omnibus uses to configure
+        # everything. We're passing this in from a configmap and pulling some
+        # of the values from the env vars defined below. This is done to
+        # avoid leaving secrets visible in kubectl.
+        - name: GITLAB_OMNIBUS_CONFIG
+          valueFrom:
+            configMapKeyRef:
+              name: {{ template "gitlab-ce.fullname" . }}
+              key: gitlab_omnibus_config
+        - name: GITLAB_ROOT_PASSWORD
+        {{- if default "" .Values.gitlabRootPassword }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "gitlab-ce.fullname" . }}
+              key: gitlab-root-password
+        {{ end }}
+        - name: EXTERNAL_URL
+          value: {{ default "" .Values.externalUrl | quote }}
+        ## DB configuration
+        ##
+        - name: DB_HOST
+          value: {{ template "gitlab-ce.postgresql.fullname" . }}
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "gitlab-ce.fullname" . }}
+              key: db-user
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "gitlab-ce.fullname" . }}
+              key: db-password
+        - name: DB_DATABASE
+          value: {{ .Values.postgresql.postgresDatabase | quote }}
+        ## Redis configuration
+        ##
+        - name: REDIS_HOST
+          value: {{ template "gitlab-ce.redis.fullname" . }}
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "gitlab-ce.fullname" . }}
+              key: redis-password
+        ports:
+        - name: ssh
+          containerPort: 22
+        - name: http
+          containerPort: 80
+        - name: https
+          containerPort: 443
+        livenessProbe:
+          httpGet:
+            path: /help
+            port: {{ .Values.livenessPort }}
+          # This pod takes a very long time to start up. Be cautious when
+          # lowering this value to avoid Pod death during startup.
+          initialDelaySeconds: 200
+          timeoutSeconds: 1
+          periodSeconds: 10
+          successThreshold: 1
+          failureThreshold: 10
+        readinessProbe:
+          httpGet:
+            path: /help
+            port: {{ .Values.readinessPort }}
+          initialDelaySeconds: 30
+          timeoutSeconds: 1
+          periodSeconds: 10
+          successThreshold: 1
+          failureThreshold: 3
+        volumeMounts:
+        - name: gitlab-etc
+          mountPath: /etc/gitlab
+        - name: gitlab-data
+          mountPath: /gitlab-data
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+      volumes:
+      - name: gitlab-etc
+      {{- if .Values.persistence.gitlabEtc.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ template "gitlab-ce.fullname" . }}-etc
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+      - name: gitlab-data
+      {{- if .Values.persistence.gitlabData.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ template "gitlab-ce.fullname" . }}-data
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+{{ else }}
+{{ end }}

@@ -1,0 +1,64 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  labels:
+    app: {{ template "linkerd.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+  name: {{ template "linkerd.fullname" . }}
+spec:
+  template:
+    metadata:
+      annotations:
+      {{- range $key, $value := .Values.linkerd.annotations }}
+        {{ $key }}: {{ $value }}
+      {{- end }}
+      labels:
+        app: {{ template "linkerd.fullname" . }}
+        release: "{{ .Release.Name }}"
+    spec:
+      volumes:
+      - name: {{ template "linkerd.fullname" . }}-config
+        configMap:
+          name: "{{ template "linkerd.fullname" . }}-config"
+      containers:
+      - name: {{ .Values.linkerd.name }}
+        image: {{ .Values.linkerd.image }}
+        env:
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        args:
+        - /io.buoyant/linkerd/config/config.yaml
+        ports:
+        - name: incoming
+          containerPort: 4141
+          hostPort: 4141
+        - name: outgoing
+          containerPort: 4140
+          hostPort: 4140
+        - name: admin
+          containerPort: 9990
+          hostPort: 9990
+        resources:
+{{ toYaml .Values.linkerd.resources | indent 10 }}
+        livenessProbe:
+          httpGet:
+            path: /admin
+            port: 9990
+          initialDelaySeconds: 10
+          periodSeconds: 5
+        volumeMounts:
+        - name: "{{ template "linkerd.fullname" . }}-config"
+          mountPath: "/io.buoyant/linkerd/config"
+          readOnly: true
+      - name: kubectl
+        image: {{ .Values.kubectl.image }}
+        args:
+        - "proxy"
+        - "-p"
+        - "8001"
+        resources:
+{{ toYaml .Values.kubectl.resources | indent 10 }}

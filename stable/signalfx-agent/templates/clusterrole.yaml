@@ -1,0 +1,77 @@
+{{- if .Values.rbac.create -}}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ template "signalfx-agent.fullname" . }}
+  labels:
+    app: {{ template "signalfx-agent.name" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    chart: {{ template "signalfx-agent.chart" . }}
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - events
+  - namespaces
+  - namespaces/status
+  - nodes
+  - nodes/spec
+  - pods
+  - pods/status
+  - replicationcontrollers
+  - replicationcontrollers/status
+  - services
+  - resourcequotas
+  # Only need to be able to view secrets if using k8s annotation
+  # agent.signalfx.com/configWithSecret.*.  You can also whitelist specific
+  # secrets for finer-grain permission sets.
+  {{- if .Values.permitReadingSecrets }}
+  - secrets
+  {{- end }}
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  verbs:
+  - get
+  - update
+  - create
+- apiGroups:
+  - ""
+  resources:
+  - nodes/stats
+  verbs:
+  - get
+  - list
+  # We need create because kubelet takes a POST for the stat query
+  - create
+- apiGroups:
+  - apps
+  resources:
+  - daemonsets
+  - deployments
+  - replicasets
+  - statefulsets
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - extensions
+  resources:
+  - daemonsets
+  - deployments
+  - replicasets
+  verbs:
+  - get
+  - list
+  - watch
+{{- with .Values.rbac.customRules }}
+{{ toYaml . }}
+{{- end }}
+{{- end -}}

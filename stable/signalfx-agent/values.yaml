@@ -1,0 +1,202 @@
+# Version of the signalfx-agent to deploy.  This will be the default for the
+# docker image tag if not overridden with imageTag
+agentVersion: 3.6.1
+
+# The access token for SignalFx.  REQUIRED
+signalFxAccessToken: ""
+
+# Docker image configuration
+image:
+  # Image pull policy for the agent pod
+  pullPolicy: IfNotPresent
+  # The docker image to use for the agent
+  repository: quay.io/signalfx/signalfx-agent
+  # tag defaults to the agentVersion but can be overridden
+  tag:
+  # pullSecret is not needed for our standard image
+  pullSecret:
+
+# How many agent pods can be unavailable at a time when rolling out a new
+# version of the agent
+rollingUpdateMaxUnavailable: 1
+
+# Namespace to deploy agent in (Optional: Will default to release namespace)
+namespace:
+
+# RBAC config for the agent
+rbac:
+  create: true
+  # You might need custom rules if you are pulling secrets to configure
+  # monitors.
+  customRules: []
+
+# Service account config for the agent pods
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+# This adds some tolerations to the pods that the DaemonSet creates that
+# should allow the agent to run on the master nodes of newer versions of K8s
+# that are deployed with standard master taints (see daemonset.yaml).  If you
+# need custom tolerations, see the 'tolerations' config option below.
+runOnMaster: true
+
+# You can specify additional tolerations for the pods that the DaemonSet
+# creates.
+tolerations: []
+
+# Extra labels to put on agent pods.  Values must be strings per the k8s label
+# schema.
+extraPodLabels: {}
+
+# You can specify a custom agent config file with the agentConfig value.  If
+# you specify this, all of the options below here will no longer be applicable
+# since they are used to render a default config (see configmap.yaml template).
+agentConfig:
+
+# clusterName must be provided.  It is an arbitrary value that identifies this
+# K8s cluster in SignalFx.  This will be the value of the 'kubernetes_cluster'
+# dimension on every metric sent by the agent.
+clusterName:
+
+# How frequently to send metrics by default in the agent.  This can be
+# overridden by individual monitors.
+metricIntervalSeconds: 10
+
+# The log level of the agent.  Valid values are 'debug', 'info', 'warn', and
+# 'error'.  Info is a good default and won't be too spamy.  Note that 'debug'
+# may dump sensitive values in the provided configuration so use with care.
+logLevel: info
+
+# Whether to ignore TLS validation issue when connecting to the main K8s API
+# server.  This should almost never need to be set to true since the CA cert is
+# provided with the service account token automatically by K8s.
+apiServerSkipVerify: false
+
+# Additional options for connecting to the Kubelet.  These options are
+# equivalent to what is under the 'kubeletAPI' key of the 'kubelet-stats'
+# monitor.  By default, the agent tries to use its service account if kubelet
+# authentication is required.
+kubeletAPI:
+  authType: serviceAccount
+
+# Any values put in this object correspond to the 'collectd' config block of
+# the agent config
+collectd: {}
+
+# How often to send cAdvisor-based container metrics.  Defaults to whatever is
+# in metricIntervalSeconds.
+containerStatsIntervalSeconds:
+
+# If true, K8s cluster-level metrics will be collected (e.g. pod counts,
+# deployment status, etc).  The agents will decide amongst themselves which
+# instance should send the metrics so that they are only sent once.
+gatherClusterMetrics: true
+
+# Enables the docker-container-stats monitor with some specific config that
+# causes it to send container stats from Docker with certain dimensions from
+# container labels that makes it easy to correlate metrics between cadvisor and
+# docker. Note that docker metrics are not sent for pause containers by
+# default.
+gatherDockerMetrics: true
+
+# A list of metric names that are collected by monitors but are not to be sent
+# to SignalFx.  This default set include a lot of highly specific or duplicated
+# cAdvisor metrics that cause a large increase in DPM for little value for most
+# customers.
+metricNamesToExclude:
+  - container_cpu_user_seconds_total
+  - container_cpu_system_seconds_total
+  - container_cpu_utilization_per_core
+  - container_fs_reads_total
+  - container_fs_sector_reads_total
+  - container_fs_reads_merged_total
+  - container_fs_read_seconds_total
+  - container_fs_writes_total
+  - container_fs_sector_writes_total
+  - container_fs_writes_merged_total
+  - container_fs_write_seconds_total
+  - container_fs_io_current
+  - container_fs_io_time_seconds_total
+  - container_fs_io_time_weighted_seconds_total
+  - container_last_seen
+  - container_tasks_state
+  - pod_network_receive_packets_total
+  - pod_network_receive_packets_dropped_total
+  - pod_network_transmit_packets_total
+  - pod_network_transmit_packets_dropped_total
+  - machine_cpu_frequency_khz
+
+# A list of monitor configurations to include in the agent config.  These
+# values correspond exactly to what goes under 'monitors' in the agent config.
+# The following are a set of monitors with discovery rules that should cover
+# many standard deployments.  Most users will want to override this with their
+# own monitors and discovery rules.
+monitors:
+  - type: collectd/activemq
+    discoveryRule: container_image =~ "activemq" && private_port == 1099
+
+  - type: collectd/apache
+    discoveryRule: container_image =~ "apache" && private_port == 80
+
+  - type: collectd/cassandra
+    discoveryRule: container_image =~ "cassandra" && private_port == 7199
+
+  - type: collectd/consul
+    discoveryRule: container_image =~ "consul" && private_port == 8500
+
+  - type: collectd/elasticsearch
+    discoveryRule: container_image =~ "elasticsearch" && port == 9200
+
+  - type: collectd/etcd
+    discoveryRule: container_image =~ "etcd" && port == 2379
+    # REQUIRED
+    clusterName: my-cluster
+
+  - type: collectd/haproxy
+    discoveryRule: container_image =~ "haproxy" && port == 9000
+
+  - type: collectd/kafka
+    discoveryRule: container_image =~ "kafka" && private_port == 9092
+
+  - type: collectd/memcached
+    discoveryRule: container_image =~ "memcache" && private_port == 11211
+
+  - type: collectd/mongodb
+    discoveryRule: container_image =~ "mongo" && private_port == 27017
+    # REQUIRED
+    databases:
+    - mydatabase
+
+  - type: collectd/mysql
+    discoveryRule: container_image =~ "mysql" && private_port == 3306
+    # REQUIRED
+    username: admin
+    databases:
+    - name: mydb
+
+  - type: collectd/nginx
+    discoveryRule: container_image =~ "nginx" && private_port == 80
+
+  - type: collectd/rabbitmq
+    discoveryRule: container_image =~ "rabbitmq" && private_port == 15672
+
+  - type: collectd/redis
+    discoveryRule: container_image =~ "redis" && private_port == 6379
+
+  - type: collectd/spark
+    discoveryRule: container_image =~ "spark" && private_port == 8080
+    isMaster: true
+    collectApplicationMetrics: true
+    clusterType: Standalone
+
+  - type: collectd/spark
+    discoveryRule: container_image =~ "spark" && private_port >= 8081
+    isMaster: false
+    clusterType: Standalone
+
+  - type: collectd/zookeeper
+    discoveryRule: container_image =~ "zookeeper" && private_port == 2181

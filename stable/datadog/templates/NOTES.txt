@@ -1,0 +1,104 @@
+{{- if (or (.Values.datadog.apiKeyExistingSecret) (.Values.datadog.apiKey)) }}
+DataDog agents are spinning up on each node in your cluster. After a few
+minutes, you should see your agents starting in your event stream:
+
+    https://app.datadoghq.com/event/stream
+  {{- if .Values.datadog.apiKeyExistingSecret }}
+You disabled creation of Secret containing API key, therefore it is expected
+that you create Secret named '{{ .Values.datadog.apiKeyExistingSecret }}' which includes a key called 'api-key' containing the API key.
+  {{- else if (.Values.datadog.apiKey) }}
+  {{- end }}
+{{- else }}
+##############################################################################
+####               ERROR: You did not set a datadog.apiKey.               ####
+##############################################################################
+
+This deployment will be incomplete until you get your API key from Datadog.
+One can sign up for a free Datadog trial at https://app.datadoghq.com/signup
+
+Once registered you can request an API key at:
+
+    https://app.datadoghq.com/account/settings#agent/kubernetes
+
+Then run:
+
+    helm upgrade {{ .Release.Name }} \
+        --set datadog.apiKey=YOUR-KEY-HERE stable/datadog
+{{- end }}
+
+{{- if .Values.clusterAgent.enabled }}
+
+  {{- if .Values.clusterAgent.metricsProvider.enabled }}
+    {{- if .Values.datadog.appKeyExistingSecret }}
+You disabled creation of Secret containing APP key, therefore it is expected
+that you create a Secret named '{{ .Values.datadog.appKeyExistingSecret }}' which includes a key called 'app-key' containing the APP key.
+    {{- else if (.Values.datadog.appKey) }}
+    {{- else }}
+
+##############################################################################
+####               ERROR: You did not set a datadog.appKey.               ####
+##############################################################################
+
+This deployment will be incomplete until you get your APP key from Datadog.
+Create an application key at https://app.datadoghq.com/account/settings#api
+    {{- end }}
+  {{- end }}
+
+  {{- if not .Values.clusterAgent.token }}
+
+##############################################################################
+####               INFO: You did not set a clusterAgent.token            ####
+##############################################################################
+
+Because you enabled the Cluster Agent but did not provide a token, a random token was generated.
+This token is used to secure the communication between the Agents and the Cluster Agent.
+
+  {{- end }}
+
+{{- end }}
+
+{{- if .Values.datadog.apmEnabled }}
+The datadog agent is listening on port 8126.
+{{- end }}
+
+{{- if (and (.Values.daemonset.enabled) (.Values.deployment.enabled)) }}
+
+#################################################################
+####               WARNING: Deprecation notice               ####
+#################################################################
+
+Simultaneous DaemonSet + Deployment installation within a single
+release will be deprecated in a future version. You will still be
+able to run both as separate releases with separate value files.
+
+Running as a Deployment is not necessary for event collection
+anymore, thanks to the leader election feature.
+
+We encourage you to migrate to a single DaemonSet, or split your
+chart if your use case still requires a separate Deployment.
+{{- end }}
+
+{{- if .Values.datadog.autoconf }}
+
+#################################################################
+####               WARNING: Deprecation notice               ####
+#################################################################
+
+The autoconf value is deprecated, Autodiscovery templates can now
+be safely moved to the confd value. As a temporary measure, both
+values were merged into the {{ template "datadog.confd.fullname" . }} configmap,
+but this will be removed in a future chart release.
+Please note that duplicate file names may have conflicted during
+the merge. In that case, the confd entry will take precedence.
+{{- end }}
+
+{{- if eq .Values.image.repository "datadog/docker-dd-agent" }}
+
+######################################################################
+####               ERROR: Unsupported agent version               ####
+######################################################################
+
+This version of the chart does not support deploying Agent 5.x.
+If you cannot upgrade to Agent 6.x, you can use a previous version
+of the chart by calling helm install with `--version 0.18.0`.
+{{- end }}

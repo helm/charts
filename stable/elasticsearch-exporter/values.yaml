@@ -1,0 +1,80 @@
+## number of exporter instances
+##
+replicaCount: 1
+
+## restart policy for all containers
+##
+restartPolicy: Always
+
+image:
+  repository: justwatch/elasticsearch_exporter
+  tag: 1.0.2
+  pullPolicy: IfNotPresent
+
+resources: {}
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+priorityClassName: ""
+
+nodeSelector: {}
+
+tolerations: {}
+
+podAnnotations: {}
+
+service:
+  type: ClusterIP
+  httpPort: 9108
+  annotations: {}
+
+es:
+  ## Address (host and port) of the Elasticsearch node we should connect to.
+  ## This could be a local node (localhost:9200, for instance), or the address
+  ## of a remote Elasticsearch server. When basic auth is needed,
+  ## specify as: <proto>://<user>:<password>@<host>:<port>. e.g., http://admin:pass@localhost:9200.
+  ##
+  uri: localhost:9200
+
+  ## If true, query stats for all nodes in the cluster, rather than just the
+  ## node we connect to.
+  ##
+  all: true
+
+  ## If true, query stats for all indices in the cluster.
+  ##
+  indices: true
+
+  ## Timeout for trying to get stats from Elasticsearch. (ex: 20s)
+  ##
+  timeout: 30s
+
+  ssl:
+    ## If true, a secure connection to ES cluster is used (requires SSL certs below)
+    ##
+    enabled: false
+
+    ca:
+
+      ## PEM that contains trusted CAs used for setting up secure Elasticsearch connection
+      ##
+      # pem:
+
+    client:
+
+      ## PEM that contains the client cert to connect to Elasticsearch.
+      ##
+      # pem:
+
+      ## Private key for client auth when connecting to Elasticsearch
+      ##
+      # key:
+
+web:
+  ## Path under which to expose metrics.
+  ##
+  path: /metrics

@@ -1,0 +1,21 @@
+{{- if .Values.persistence.enabled -}}
+{{- if not .Values.persistence.apache.existingClaim -}}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ template "owncloud.fullname" . }}-apache
+spec:
+  accessModes:
+    - {{ .Values.persistence.apache.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.apache.size | quote }}
+{{- if .Values.persistence.apache.storageClass }}
+{{- if (eq "-" .Values.persistence.apache.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ .Values.persistence.apache.storageClass }}"
+{{- end }}
+{{- end }}
+{{- end -}}
+{{- end -}}

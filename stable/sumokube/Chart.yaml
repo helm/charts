@@ -1,0 +1,15 @@
+name: sumokube
+version: 0.1.4
+appVersion: latest
+home: https://www.sumologic.com/
+description: Sumologic Log Collector
+keywords:
+- monitoring
+- logging
+sources:
+- https://github.com/SumoLogic/sumologic-collector-docker
+maintainers:
+- name: Jason DuMars
+  email: jdumars+github@gmail.com
+- name: Sean Knox
+  email: knoxville+github@gmail.com

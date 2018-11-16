@@ -1,0 +1,78 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "xray.fullname" . }}-rabbitmq-ha
+  labels:
+    app: {{ template "xray.name" . }}
+    chart: {{ template "xray.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+data:
+  enabled_plugins: |
+    [
+      rabbitmq_consistent_hash_exchange,
+      rabbitmq_federation,
+      rabbitmq_federation_management,
+      rabbitmq_management,
+      rabbitmq_peer_discovery_k8s,
+      rabbitmq_shovel,
+      rabbitmq_shovel_management
+    ].
+
+  rabbitmq.conf: |
+    ## RabbitMQ configuration
+    ## Ref: https://github.com/rabbitmq/rabbitmq-server/blob/master/docs/rabbitmq.conf.example
+
+    ## Clustering
+    cluster_formation.peer_discovery_backend  = rabbit_peer_discovery_k8s
+    cluster_formation.k8s.host = kubernetes.default.svc.cluster.local
+    cluster_formation.k8s.address_type = hostname
+    cluster_formation.node_cleanup.interval = 10
+    cluster_formation.node_cleanup.only_log_warning = false
+    cluster_partition_handling = autoheal
+
+    ## The default "guest" user is only permitted to access the server
+    ## via a loopback interface (e.g. localhost)
+    loopback_users.guest = false
+
+    ## Memory-based Flow Control threshold
+    vm_memory_high_watermark.absolute = {{ index .Values "rabbitmq-ha" "rabbitmqMemoryHighWatermark" }}
+
+    management.load_definitions = /etc/rabbitmq/definitions.json
+  definitions.json: |
+    {
+      "users": [
+        {
+          "name": "{{ index .Values "rabbitmq-ha" "rabbitmqUsername" }}",
+          "password": "{{ index .Values "rabbitmq-ha" "rabbitmqPassword" }}",
+          "tags": "administrator"
+        }
+      ],
+      "permissions": [
+        {
+          "configure": ".*",
+          "read": ".*",
+          "user": "{{ index .Values "rabbitmq-ha" "rabbitmqUsername" }}",
+          "vhost": "/",
+          "write": ".*"
+        }
+      ],
+      "policies": [
+        {
+          "apply-to": "all",
+          "definition": {
+            "ha-mode": "all",
+            "ha-sync-mode": "automatic"
+          },
+          "name": "ha-all",
+          "pattern": ".",
+          "priority": 0,
+          "vhost": "/"
+        }
+      ],
+      "vhosts": [
+        {
+          "name": "/"
+        }
+      ]
+    }

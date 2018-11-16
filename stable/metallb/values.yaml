@@ -1,0 +1,79 @@
+# Default values for metallb.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# To configure MetalLB, you must specify ONE of the following two
+# options.
+
+# existingConfigMap specifies the name of an externally-defined
+# ConfigMap to use as the configuration. Helm will not manage the
+# contents of this ConfigMap, it is your responsibility to create it.
+existingConfigMap: metallb-config
+
+# configInline specifies MetalLB's configuration directly, in yaml
+# format. When configInline is used, Helm manages MetalLB's
+# configuration ConfigMap as part of the release, and
+# existingConfigMap is ignored.
+#
+# Refer to https://metallb.universe.tf/configuration/ for
+# available options.
+configInline:
+
+rbac:
+  # create specifies whether to install and use RBAC rules.
+  create: true
+
+prometheus:
+  # scrape annotations specifies whether to add Prometheus metric
+  # auto-collection annotations to pods. See
+  # https://github.com/prometheus/prometheus/blob/release-2.1/documentation/examples/prometheus-kubernetes.yml
+  # for a corresponding Prometheus configuration. Alternatively, you
+  # may want to use the Prometheus Operator
+  # (https://github.com/coreos/prometheus-operator) for more powerful
+  # monitoring configuration. If you use the Prometheus operator, this
+  # can be left at false.
+  scrapeAnnotations: false
+
+serviceAccounts:
+  controller:
+    # Specifies whether a ServiceAccount should be created
+    create: true
+    # The name of the ServiceAccount to use.  If not set and create is
+    # true, a name is generated using the fullname template
+    name: ""
+  speaker:
+    # Specifies whether a ServiceAccount should be created
+    create: true
+    # The name of the ServiceAccount to use.  If not set and create is
+    # true, a name is generated using the fullname template
+    name: ""
+
+# controller contains configuration specific to the MetalLB cluster
+# controller.
+controller:
+  image:
+    repository: metallb/controller
+    tag: v0.7.3
+    pullPolicy: IfNotPresent
+  resources: {}
+    # limits:
+      # cpu: 100m
+      # memory: 100Mi
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+# speaker contains configuration specific to the MetalLB speaker
+# daemonset.
+speaker:
+  image:
+    repository: metallb/speaker
+    tag: v0.7.3
+    pullPolicy: IfNotPresent
+  resources: {}
+    # limits:
+      # cpu: 100m
+      # memory: 100Mi
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}

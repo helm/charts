@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app: {{ template "namerd.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+  name: {{ template "namerd.fullname" . }}-config
+data:
+  config.yaml: |-
+    admin:
+      ip: 0.0.0.0
+      port: {{ .Values.service.adminPort }}
+    storage:
+      kind: io.l5d.k8s
+      experimental: true
+    namers:
+      - kind: io.l5d.k8s
+        host: 127.0.0.1
+        port: 8001
+    interfaces:
+      - kind: io.l5d.thriftNameInterpreter
+        ip: 0.0.0.0
+        port: {{ .Values.service.syncPort }}
+      - kind: io.l5d.httpController
+        ip: 0.0.0.0
+        port: {{ .Values.service.apiPort }}

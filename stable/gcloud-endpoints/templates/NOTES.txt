@@ -1,0 +1,32 @@
+THIS CHART IS DEPRECATED.
+
+For general information about Google Cloud Endpoints, see
+https://cloud.google.com/endpoints/
+
+For more details about running Cloud Endpoints on Kubernetes, see Google's
+documentation: https://cloud.google.com/endpoints/docs/kubernetes-concept
+
+For details about running Google Cloud Endpoints as a Docker container, see
+Google's documentation: https://cloud.google.com/endpoints/docs/quickstart-compute-engine-docker#running_the_api_and_extensible_service_proxy_in_a_docker_container
+
+1. Get the Endpoints URL by running:
+
+{{- if contains "NodePort" .Values.serviceType }}
+
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "fullname" . }})
+  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo http://$NODE_IP:$NODE_PORT/
+
+{{- else if contains "LoadBalancer" .Values.serviceType }}
+
+  NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+        Watch the status with: 'kubectl get svc -w {{ template "fullname" . }}'
+
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  echo http://$SERVICE_IP/
+{{- else if contains "ClusterIP"  .Values.serviceType }}
+
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "fullname" . }}" -o jsonpath="{.items[0].metadata.name}")
+  echo http://127.0.0.1:8080/
+  kubectl port-forward $POD_NAME 8080:80
+{{- end }}

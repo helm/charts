@@ -1,0 +1,23 @@
+name: concourse
+version: 3.0.0
+appVersion: 4.2.1
+description: Concourse is a simple and scalable CI system.
+icon: https://avatars1.githubusercontent.com/u/7809479
+keywords:
+- ci
+- concourse
+- concourse.ci
+home: https://concourse-ci.org/
+sources:
+- https://github.com/concourse/bin
+- https://github.com/kubernetes/charts
+maintainers:
+- name: frodenas
+  email: frodenas@gmail.com
+- name: viglesiasce
+  email: viglesias@google.com
+- name: william-tran
+  email: will@autonomic.ai
+- name: nexeck
+  email: marcel@beck.im
+engine: gotpl

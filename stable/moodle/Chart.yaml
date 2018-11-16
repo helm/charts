@@ -1,0 +1,18 @@
+name: moodle
+version: 3.3.1
+appVersion: 3.5.3
+description: Moodle is a learning platform designed to provide educators, administrators
+  and learners with a single robust, secure and integrated system to create personalised
+  learning environments
+keywords:
+- moodle
+- learning
+- php
+home: http://www.moodle.org/
+sources:
+- https://github.com/bitnami/bitnami-docker-moodle
+maintainers:
+- name: Bitnami
+  email: containers@bitnami.com
+engine: gotpl
+icon: https://bitnami.com/assets/stacks/moodle/img/moodle-stack-110x117.png

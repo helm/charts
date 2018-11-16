@@ -1,0 +1,21 @@
+{{ if .Values.disruptionBudget }}
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ template "bitbucket.fullname" . }}
+  labels:
+    app: {{ template "bitbucket.name" . }}
+    chart: {{ template "bitbucket.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+{{ if .Values.disruptionBudget.minAvailable }}
+  minAvailable: {{ .Values.disruptionBudget.minAvailable }}
+{{ end }}
+{{ if .Values.disruptionBudget.maxUnavailable }}
+  maxUnavailable: {{ .Values.disruptionBudget.maxUnavailable }}
+{{ end }}
+  selector:
+    matchLabels:
+      app: {{ template "bitbucket.fullname" . }}
+{{ end }}

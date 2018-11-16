@@ -1,0 +1,38 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "nginx-lego.fullname" . }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+spec:
+  replicas: {{ .Values.nginx.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "nginx-lego.fullname" . }}
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.nginx.image.repository }}:{{ .Values.nginx.image.tag }}"
+        imagePullPolicy: {{ .Values.nginx.image.pullPolicy }}
+        env:
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+        ports:
+        - containerPort: 80
+        - containerPort: 443
+{{- if .Values.nginx.monitoring }}
+        - containerPort: 8080
+{{- end }}
+        resources:
+{{ toYaml .Values.nginx.resources | indent 10 }}
+        args:
+        - /nginx-ingress-controller
+        - --default-backend-service={{ .Release.Namespace }}/{{ template "nginx-lego.fullname" . }}-default-backend
+        - --nginx-configmap={{ .Release.Namespace }}/{{ template "nginx-lego.fullname" . }}

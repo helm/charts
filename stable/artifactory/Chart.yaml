@@ -1,0 +1,17 @@
+apiVersion: v1
+name: artifactory
+home: https://www.jfrog.com/artifactory/
+version: 7.3.1
+appVersion: 6.1.0
+description: DEPRECATED Universal Repository Manager supporting all major packaging formats,
+  build tools and CI servers.
+keywords:
+- artifactory
+- jfrog
+sources:
+- https://bintray.com/jfrog/product/JFrog-Artifactory-Pro/view
+- https://github.com/JFrogDev
+icon: https://raw.githubusercontent.com/JFrogDev/artifactory-dcos/master/images/jfrog_med.png
+## Deprecated following https://github.com/helm/charts/blob/master/PROCESSES.md#deprecating-a-chart
+## Chart is now maintained in https://github.com/jfrog/charts
+deprecated: true

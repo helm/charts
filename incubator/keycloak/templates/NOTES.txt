@@ -1,0 +1,55 @@
+*********************************************************************
+* NOTE: This chart has been DEPRECATED. Please use stable/keycloak. *
+*********************************************************************
+
+Keycloak can be accessed:
+
+* Within your cluster, at the following DNS name at port {{ .Values.keycloak.service.port }}:
+
+  {{ template "keycloak.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+
+{{- if .Values.keycloak.ingress.enabled }}
+
+* From outside the cluster:
+
+{{- range .Values.keycloak.ingress.hosts }}
+  - http{{ if $.Values.keycloak.ingress.tls }}s{{ end }}://{{ . }}
+{{- end }}
+
+{{- else }}
+
+* From outside the cluster, run these commands in the same shell:
+
+{{- if contains "NodePort" .Values.keycloak.service.type }}
+
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "keycloak.fullname" . }})
+  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo http://$NODE_IP:$NODE_PORT
+
+{{- else if contains "LoadBalancer" .Values.keycloak.service.type }}
+
+  NOTE:
+  It may take a few minutes for the LoadBalancer IP to be available.
+  You can watch the status of by running 'kubectl get svc -w {{ template "keycloak.fullname" . }}'
+
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "keycloak.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  echo http://$SERVICE_IP:{{ .Values.keycloak.service.port }}
+
+{{- else if contains "ClusterIP" .Values.keycloak.service.type }}
+
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l app={{ template "keycloak.name" . }},release={{ .Release.Name }} -o jsonpath="{.items[0].metadata.name}")
+  echo "Visit http://127.0.0.1:8080 to use Keycloak"
+  kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME 8080
+
+{{- end }}
+
+{{- end }}
+
+{{- if .Release.IsInstall -}}
+Login with the following credentials:
+
+Username: {{ .Values.keycloak.username }}
+
+To retrieve the initial user password run:
+kubectl get secret --namespace {{ .Release.Namespace }} {{ template "keycloak.fullname" . }}-http -o jsonpath="{.data.password}" | base64 --decode; echo
+{{- end }}

@@ -1,0 +1,40 @@
+{{- if .Values.controller.stats.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+{{- if .Values.controller.stats.service.annotations }}
+  annotations:
+  {{- range $key, $value := .Values.controller.stats.service.annotations }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
+{{- end }}
+  labels:
+    app: {{ template "nginx-ingress.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: "{{ .Values.controller.name }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "nginx-ingress.controller.fullname" . }}-stats
+spec:
+  clusterIP: "{{ .Values.controller.stats.service.clusterIP }}"
+{{- if .Values.controller.stats.service.externalIPs }}
+  externalIPs:
+{{ toYaml .Values.controller.stats.service.externalIPs | indent 4 }}
+{{- end }}
+{{- if .Values.controller.stats.service.loadBalancerIP }}
+  loadBalancerIP: "{{ .Values.controller.stats.service.loadBalancerIP }}"
+{{- end }}
+{{- if .Values.controller.stats.service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+{{ toYaml .Values.controller.stats.service.loadBalancerSourceRanges | indent 4 }}
+{{- end }}
+  ports:
+    - name: stats
+      port: {{ .Values.controller.stats.service.servicePort }}
+      targetPort: stats
+  selector:
+    app: {{ template "nginx-ingress.name" . }}
+    component: "{{ .Values.controller.name }}"
+    release: {{ .Release.Name }}
+  type: "{{ .Values.controller.stats.service.type }}"
+{{- end }}

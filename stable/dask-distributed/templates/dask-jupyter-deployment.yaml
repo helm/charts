@@ -1,0 +1,35 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "dask-distributed.jupyter-fullname" . }}
+  labels:
+    app: {{ template "dask-distributed.name" . }}
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    component: "{{ .Release.Name }}-{{ .Values.jupyter.component }}"
+spec:
+  replicas: {{ .Values.jupyter.replicas }}
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: {{ template "dask-distributed.name" . }}
+        release: {{ .Release.Name | quote }}
+        component: "{{ .Release.Name }}-{{ .Values.jupyter.component }}"
+    spec:
+      containers:
+        - name: {{ template "dask-distributed.jupyter-fullname" . }}
+          image: "{{ .Values.jupyter.image }}:{{ .Values.jupyter.imageTag }}"
+          ports:
+            - containerPort: {{ .Values.jupyter.containerPort }}
+          resources:
+{{ toYaml .Values.jupyter.resources | indent 12 }}
+          volumeMounts:
+          - name: config-volume
+            mountPath: /home/jovyan/.jupyter
+      volumes:
+      - name: config-volume
+        configMap:
+          name: {{ template "dask-distributed.jupyter-fullname" . }}-config

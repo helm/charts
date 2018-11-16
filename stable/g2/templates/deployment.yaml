@@ -1,0 +1,41 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "g2.fullname" . }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: "{{ template "g2.name" . }}"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: "{{ template "g2.name" . }}"
+        release: "{{ .Release.Name }}"
+    spec:
+{{- if .Values.rbac.install }}
+      serviceAccountName: {{ template "g2.fullname" . }}
+{{- end }}
+      containers:
+      - args:
+        - run
+        - --storage-dir=/var/db
+        - --v=5
+        image: '{{ .Values.g2.image }}:{{ .Values.g2.tag }}'
+        imagePullPolicy: '{{ .Values.g2.pullPolicy }}'
+        name: gearman-server
+        ports:
+        - containerPort: 4730
+          name: http
+          protocol: TCP
+        - containerPort: 3000
+          name: restapi
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /var/db
+          name: data-volume
+      volumes:
+      - emptyDir: {}
+        name: data-volume

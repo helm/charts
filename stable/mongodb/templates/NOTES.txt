@@ -1,0 +1,66 @@
+{{- if contains .Values.service.type "LoadBalancer" }}
+{{- if not .Values.mongodbRootPassword }}
+-------------------------------------------------------------------------------
+ WARNING
+
+    By specifying "service.type=LoadBalancer" and not specifying "mongodbRootPassword"
+    you have most  likely exposed the MongoDB service externally without any
+    authentication mechanism.
+
+    For security reasons, we strongly suggest that you switch to "ClusterIP" or
+    "NodePort". As alternative, you can also specify a valid password on the
+    "mongodbRootPassword" parameter.
+
+-------------------------------------------------------------------------------
+{{- end }}
+{{- end }}
+
+** Please be patient while the chart is being deployed **
+
+MongoDB can be accessed via port 27017 on the following DNS name from within your cluster:
+
+    {{ template "mongodb.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+
+{{ if .Values.usePassword -}}
+
+To get the root password run:
+
+    export MONGODB_ROOT_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "mongodb.fullname" . }} -o jsonpath="{.data.mongodb-root-password}" | base64 --decode)
+
+{{- end }}
+{{- if and .Values.mongodbUsername .Values.mongodbDatabase }}
+{{- if .Values.mongodbPassword }}
+
+To get the password for "{{ .Values.mongodbUsername }}" run:
+
+    export MONGODB_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "mongodb.fullname" . }} -o jsonpath="{.data.mongodb-password}" | base64 --decode)
+
+{{- end }}
+{{- end }}
+
+To connect to your database run the following command:
+
+    kubectl run --namespace {{ .Release.Namespace }} {{ template "mongodb.fullname" . }}-client --rm --tty -i --image bitnami/mongodb --command -- mongo admin --host {{ template "mongodb.fullname" . }} {{- if .Values.usePassword }} --authenticationDatabase admin -u root -p $MONGODB_ROOT_PASSWORD{{- end }}
+
+To connect to your database from outside the cluster execute the following commands:
+
+{{- if contains "NodePort" .Values.service.type }}
+
+    export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+    export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "mongodb.fullname" . }})
+    mongo --host $NODE_IP --port $NODE_PORT {{- if .Values.usePassword }} --authenticationDatabase admin -p $MONGODB_ROOT_PASSWORD{{- end }}
+
+{{- else if contains "LoadBalancer" .Values.service.type }}
+
+  NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+        Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "mongodb.fullname" . }}'
+
+    export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "mongodb.fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
+    mongo --host $SERVICE_IP --port {{ .Values.service.nodePort }} {{- if .Values.usePassword }} --authenticationDatabase admin -p $MONGODB_ROOT_PASSWORD{{- end }}
+
+{{- else if contains "ClusterIP" .Values.service.type }}
+
+    kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "mongodb.fullname" . }} 27017:27017 &
+    mongo --host 127.0.0.1 {{- if .Values.usePassword }} --authenticationDatabase admin -p $MONGODB_ROOT_PASSWORD{{- end }}
+
+{{- end }}

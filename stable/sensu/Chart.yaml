@@ -1,0 +1,18 @@
+apiVersion: v1
+name: sensu
+version: 0.2.3
+appVersion: 0.28
+description: Sensu monitoring framework backed by the Redis transport
+keywords:
+- sensu
+- monitoring
+home: https://sensuapp.org/
+sources:
+- https://github.com/kubernetes/charts
+- https://github.com/sstarcher/docker-sensu
+- https://github.com/sensu/sensu
+maintainers:
+- name: Shane Starcher
+  email: shane.starcher@gmail.com
+icon: https://raw.githubusercontent.com/sensu/sensu/master/sensu-logo.png
+engine: gotpl

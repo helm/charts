@@ -1,0 +1,203 @@
+# Default values for falco.
+
+image:
+  repository: falcosecurity/falco
+  tag: latest
+  pullPolicy: Always
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 30m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 20m
+  #   memory: 128Mi
+
+rbac:
+  # Create and use rbac resources
+  create: true
+
+serviceAccount:
+  # Create and use serviceAccount resources
+  create: true
+  # Use this value as serviceAccountName
+  name:
+
+fakeEventGenerator:
+  enabled: false
+  replicas: 1
+
+daemonset: {}
+  # Allow the DaemonSet to perform a rolling update on helm update
+  # ref: https://kubernetes.io/docs/tasks/manage-daemon/update-daemon-set/
+  # If you do want to specify resources, uncomment the following lines, adjust
+  # them as necessary, and remove the curly braces after 'resources:'.
+  # updateStrategy: RollingUpdate
+
+# If is behind a proxy you can set the proxy server
+proxy:
+  httpProxy:
+  httpsProxy:
+  noProxy:
+
+ebpf:
+  # Enable eBPF support for Falco
+  enabled: false
+
+  settings:
+    # Needed to enable eBPF JIT at runtime for performance reasons.
+    # Can be skipped if eBPF JIT is enabled from outside the container
+    hostNetwork: true
+    # Needed to correctly detect the kernel version for the eBPF program
+    # Set to false if not running on Google COS
+    mountEtcVolume: true
+
+falco:
+  # The location of the rules file(s). This can contain one or more paths to
+  # separate rules files.
+  rulesFile:
+    - /etc/falco/falco_rules.yaml
+    - /etc/falco/falco_rules.local.yaml
+    - /etc/falco/rules.d
+
+  # Whether to output events in json or text
+  jsonOutput: false
+
+  # When using json output, whether or not to include the "output" property
+  # itself (e.g. "File below a known binary directory opened for writing
+  # (user=root ....") in the json output.
+  jsonIncludeOutputProperty: true
+
+  # Send information logs to stderr and/or syslog Note these are *not* security
+  # notification logs! These are just Falco lifecycle (and possibly error) logs.
+  logStderr: true
+  logSyslog: true
+
+  # Minimum log level to include in logs. Note: these levels are
+  # separate from the priority field of rules. This refers only to the
+  # log level of falco's internal logging. Can be one of "emergency",
+  # "alert", "critical", "error", "warning", "notice", "info", "debug".
+  logLevel: info
+
+  # Minimum rule priority level to load and run. All rules having a
+  # priority more severe than this level will be loaded/run.  Can be one
+  # of "emergency", "alert", "critical", "error", "warning", "notice",
+  # "info", "debug".
+  priority: debug
+
+  # Whether or not output to any of the output channels below is
+  # buffered.
+  bufferedOutputs: false
+
+  # A throttling mechanism implemented as a token bucket limits the
+  # rate of falco notifications. This throttling is controlled by the following configuration
+  # options:
+  #  - rate: the number of tokens (i.e. right to send a notification)
+  #    gained per second. Defaults to 1.
+  #  - max_burst: the maximum number of tokens outstanding. Defaults to 1000.
+  #
+  # With these defaults, falco could send up to 1000 notifications after
+  # an initial quiet period, and then up to 1 notification per second
+  # afterward. It would gain the full burst back after 1000 seconds of
+  # no activity.
+  outputs:
+    rate: 1
+    maxBurst: 1000
+
+  # Where security notifications should go.
+  # Multiple outputs can be enabled.
+  syslogOutput:
+    enabled: true
+
+  # If keep_alive is set to true, the file will be opened once and
+  # continuously written to, with each output message on its own
+  # line. If keep_alive is set to false, the file will be re-opened
+  # for each output message.
+  #
+  # Also, the file will be closed and reopened if falco is signaled with
+  # SIGUSR1.
+  fileOutput:
+    enabled: false
+    keepAlive: false
+    filename: ./events.txt
+
+  stdoutOutput:
+    enabled: true
+
+  # Possible additional things you might want to do with program output:
+  #   - send to a slack webhook:
+  #         program: "jq '{text: .output}' | curl -d @- -X POST https://hooks.slack.com/services/XXX"
+  #   - logging (alternate method than syslog):
+  #         program: logger -t falco-test
+  #   - send over a network connection:
+  #         program: nc host.example.com 80
+
+  # If keep_alive is set to true, the program will be started once and
+  # continuously written to, with each output message on its own
+  # line. If keep_alive is set to false, the program will be re-spawned
+  # for each output message.
+  #
+  # Also, the program will be closed and reopened if falco is signaled with
+  # SIGUSR1.
+  programOutput:
+    enabled: false
+    keepAlive: false
+    program: mail -s "Falco Notification" someone@example.com
+
+customRules: {}
+  # Although Falco comes with a nice default rule set for detecting weird
+  # behavior in containers, our users are going to customize the run-time
+  # security rule sets or policies for the specific container images and
+  # applications they run. This feature can be handled in this section.
+  #
+  # Example:
+  #
+  # rules-traefik.yaml: |-
+  #   [ rule body ]
+
+integrations:
+  # If Google Cloud Security Command Center integration is enabled, falco will
+  # be configured to use this integration as program_output and sets the following values:
+  # * json_output: true
+  # * program_output:
+  #     enabled: true
+  #     keep_alive: false
+  #     program: "\"curl -d @- -X POST --header 'Content-Type: application/json' --header 'Authorization: authentication_token' url \""
+  gcscc:
+    enabled: false
+    webhookUrl: http://sysdig-gcscc-connector.default.svc.cluster.local:8080/events
+    webhookAuthenticationToken: b27511f86e911f20b9e0f9c8104b4ec4
+  # If Nats Output integration is enabled, falco will be configured to use this
+  # integration as file_output and sets the following values:
+  # * json_output: true
+  # * json_include_output_property: true
+  # * file_output:
+  #     enabled: true
+  #     keep_alive: true
+  #     filename: /var/run/falco/nats
+  natsOutput:
+    enabled: false
+    natsUrl: "nats://nats.nats-io.svc.cluster.local:4222"
+  # If SNS Output integration is enabled, falco will be configured to use this
+  # integration as file_output and sets the following values:
+  # * json_output: true
+  # * json_include_output_property: true
+  # * file_output:
+  #     enabled: true
+  #     keep_alive: true
+  #     filename: /var/run/falco/nats
+  snsOutput:
+    enabled: false
+    topic: ""
+    aws_access_key_id: ""
+    aws_secret_access_key: ""
+    aws_default_region: ""
+
+# Allow falco to run on Kubernetes 1.6 masters.
+tolerations:
+  - effect: NoSchedule
+    key: node-role.kubernetes.io/master

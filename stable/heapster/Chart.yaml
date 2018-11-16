@@ -1,0 +1,17 @@
+apiVersion: v1
+description: Heapster enables Container Cluster Monitoring and Performance Analysis.
+name: heapster
+version: 0.3.2
+appVersion: 1.5.2
+home: https://github.com/kubernetes/heapster
+sources:
+- https://github.com/kubernetes/heapster
+- https://github.com/kubernetes/contrib/tree/master/addon-resizer
+keywords:
+- metrics
+- cadvisor
+- monitoring
+maintainers:
+- name: jose5918
+  email: jose.g.aguirre@intel.com
+engine: gotpl

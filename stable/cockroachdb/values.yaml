@@ -1,0 +1,70 @@
+# Default values for cockroachdb.
+# This is a YAML-formatted file.
+# Declare name/value pairs to be passed into your templates.
+# name: value
+
+Name: "cockroachdb"
+Image: "cockroachdb/cockroach"
+ImageTag: "v2.0.6"
+ImagePullPolicy: "Always"
+Replicas: 3
+MaxUnavailable: 1
+Component: "cockroachdb"
+
+# You can set a different external and internal GRPC port and service name. If using istio set InternalGrpcName to "cockroach"
+InternalGrpcPort: 26257
+ExternalGrpcPort: 26257
+
+# If the port numbers are different then then port names must be different as well.
+InternalGrpcName: grpc
+ExternalGrpcName: grpc
+
+InternalHttpPort: 8080
+ExternalHttpPort: 8080
+HttpName: http
+
+# Uncomment the following resources definitions or pass them from command line
+# to control the cpu and memory resources allocated by the Kubernetes cluster
+Resources: {}
+  # requests:
+  #   cpu: "100m"
+  #   memory: "512Mi"
+Storage: "1Gi"
+## Persistent Volume Storage Class for database data
+## If defined, storageClassName: <StorageClass>
+## If set to "-", storageClassName: "", which disables dynamic provisioning
+## If undefined or set to null, no storageClassName spec is
+##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+##   GKE, AWS & OpenStack)
+##
+StorageClass: null
+CacheSize: "25%"
+MaxSQLMemory: "25%"
+ClusterDomain: "cluster.local"
+NetworkPolicy:
+  Enabled: false
+  AllowExternal: true
+Service:
+  type: ClusterIP
+  annotations: {}
+PodManagementPolicy: Parallel
+UpdateStrategy:
+  type: RollingUpdate
+NodeSelector: {}
+Tolerations: {}
+Secure:
+  Enabled: false
+  RequestCertsImage: "cockroachdb/cockroach-k8s-request-cert"
+  RequestCertsImageTag: "0.4"
+  ServiceAccount:
+    # Specifies whether a service account should be created.
+    Create: true
+    # The name of the service account to use.
+    # If not set and create is true, a name is generated.
+    Name:
+
+# If you are deploying a second cockroach instance that should join a first, use the below list to join to the existing instance.
+# Each item in the array should be a FQDN (and port if needed) resolvable by the new pods.
+JoinExisting: []
+# Set a locality (e.g. "region=us-central1,datacenter=us-centra1-a") if you're doing multi-cluster so data is distributed properly
+Locality: ""

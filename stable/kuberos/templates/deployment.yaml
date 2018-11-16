@@ -1,0 +1,70 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "kuberos.fullname" . }}
+  labels:
+    app: {{ template "kuberos.name" . }}
+    chart: {{ template "kuberos.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . |  sha256sum | trunc 63 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "kuberos.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "kuberos.name" . }}
+        release: {{ .Release.Name }}
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . |  sha256sum | trunc 63 }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum | trunc 63 }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["/kuberos", "{{ .Values.kuberos.oidcClientURL }}", "{{ .Values.kuberos.oidcClientID }}", "/cfg/secret", "/cfg/template"]
+          ports:
+            - name: kuberos-port
+              containerPort: 10003
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: kuberos-port
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: kuberos-port
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+          volumeMounts:
+          - mountPath: /cfg/template
+            name: template
+            subPath: template
+          - mountPath: /cfg/secret
+            name: secret
+            subPath: oidcSecret
+      volumes:
+      - name: template
+        configMap:
+          name: {{ template "kuberos.fullname" . }}-config
+      - name: secret
+        secret:
+          secretName: {{ template "kuberos.name" . }}-secret
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

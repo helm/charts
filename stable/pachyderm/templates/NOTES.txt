@@ -1,0 +1,19 @@
+In order to use Pachyderm, you need to install the Pachyderm command line client: pachctl. Please note that the client version should correspond to the pachd service version. For more information please consult: http://pachyderm.readthedocs.io/en/latest/index.html.
+
+On Linux environments:
+
+$ curl -o /tmp/pachctl.deb -L https://github.com/pachyderm/pachyderm/releases/download/v{{ .Chart.AppVersion }}/pachctl_{{ .Chart.AppVersion }}_amd64.deb && sudo dpkg -i /tmp/pachctl.deb
+
+And on Mac:
+
+$ brew tap pachyderm/tap && brew install pachyderm/tap/pachctl@1.7
+
+To check that installation was successful, you can try running pachctl help, which should return a list of Pachyderm commands.  
+
+If you install the client on your master node, you should already be able to interact with the service. Also, if you have your kubernetes client properly configured to talk with your remote cluster, you can simply install pachctl on your local machine and execute: 
+
+$ pachctl --namespace={{ .Release.Namespace }} port-forward &
+
+To check if port forwarding was successfully completed, try:
+
+$ pachctl version

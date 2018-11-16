@@ -1,0 +1,24 @@
+{{- if .Values.persistence.enabled -}}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ template "osclass.fullname" . }}-osclass
+  labels:
+    app: {{ template "osclass.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  accessModes:
+    - {{ .Values.persistence.osclass.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.osclass.size | quote }}
+{{- if .Values.persistence.osclass.storageClass }}
+{{- if (eq "-" .Values.persistence.osclass.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ .Values.persistence.osclass.storageClass }}"
+{{- end }}
+{{- end }}
+{{- end -}}

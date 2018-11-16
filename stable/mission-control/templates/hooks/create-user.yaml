@@ -1,0 +1,59 @@
+{{- if .Values.mongodb.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ template "mission-control.fullname" . }}-create-user
+  labels:
+    app: {{ template "mission-control.name" . }}
+    chart: {{ template "mission-control.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    component: mongodb
+  annotations:
+    "helm.sh/hook": post-install
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  template:
+    metadata:
+      labels:
+        app: {{ template "mission-control.name" . }}
+        chart: {{ template "mission-control.chart" . }}
+        heritage: {{ .Release.Service }}
+        release: {{ .Release.Name }}
+    spec:
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end }}
+      restartPolicy: OnFailure
+      containers:
+      - name: post-install-job
+        image: "{{ .Values.postInstallHook.image.repository }}:{{ .Values.postInstallHook.image.tag }}"
+        env:
+        - name: MONGODB_ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "mission-control.fullname" . }}-mongodb-cred
+              key: adminPassword
+        - name: MONGODB_MC_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "mission-control.fullname" . }}-mongodb-cred
+              key: mcPassword
+        - name: MONGODB_INSIGHT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "mission-control.fullname" . }}-mongodb-cred
+              key: insightPassword
+        command:
+        - 'sh'
+        - '-c'
+        - 'sh /scripts/setup.sh'
+        volumeMounts:
+        - name: mongodb-setup
+          mountPath: "/scripts"
+      volumes:
+      - name: mongodb-setup
+        configMap:
+          name: {{ template "mission-control.fullname" . }}-setup-script
+{{- end }}

@@ -1,0 +1,66 @@
+## Memcached image and tag
+## ref: https://hub.docker.com/r/library/memcached/tags/
+##
+image: memcached:1.5.6-alpine
+
+## Specify a imagePullPolicy
+## 'Always' if imageTag is 'latest', else set to 'IfNotPresent'
+## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+##
+# imagePullPolicy:
+#
+
+## Replica count
+replicaCount: 3
+
+## Pod disruption budget minAvailable count
+## Ensure this value is lower than replicaCount in order to allow a worker
+## node to drain successfully
+pdbMinAvailable: 2
+
+## Select AntiAffinity as either hard or soft, default is hard
+AntiAffinity: "hard"
+
+memcached:
+  ## Various values that get set as command-line flags.
+  ## ref: https://github.com/memcached/memcached/wiki/ConfiguringServer#commandline-arguments
+  ##
+  maxItemMemory: 64
+  verbosity: v
+  extendedOptions: modern
+
+## Define various attributes of the service
+serviceAnnotations: {}
+#  prometheus.io/scrape: "true"
+
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+##
+resources:
+  requests:
+    memory: 64Mi
+    cpu: 50m
+
+nodeSelector: {}
+
+metrics:
+  ## Expose memcached metrics in Prometheus format
+  enabled: false
+
+  ## Memcached exporter image and tag
+  image: quay.io/prometheus/memcached-exporter:v0.4.1
+
+  ## Specify a imagePullPolicy
+  ## 'Always' if imageTag is 'latest', else set to 'IfNotPresent'
+  ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+  ##
+  # imagePullPolicy: IfNotPresent
+
+  ## Configure resource requests and limits
+  ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  ##
+  resources: {}
+
+extraContainers: |
+
+extraVolumes: |

@@ -1,0 +1,170 @@
+{{- if (empty .Values.existingConfigMap) -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "fluent-bit.fullname" . }}-config
+  labels:
+    app: {{ template "fluent-bit.fullname" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+data:
+  fluent-bit.conf: |-
+    [SERVICE]
+        Flush        1
+        Daemon       Off
+        Log_Level    info
+        Parsers_File parsers.conf
+{{- if .Values.parsers.enabled }}
+        Parsers_File parsers_custom.conf
+{{- end }}
+{{- if .Values.metrics.enabled }}
+        HTTP_Server  On
+        HTTP_Listen  0.0.0.0
+        HTTP_Port    2020
+{{- end }}
+
+    [INPUT]
+        Name             tail
+        Path             /var/log/containers/*.log
+        Parser           docker
+        Tag              {{ .Values.filter.kubeTag }}.*
+        Refresh_Interval 5
+        Mem_Buf_Limit    {{ .Values.input.tail.memBufLimit }}
+        Skip_Long_Lines  On
+{{- if .Values.trackOffsets }}
+        DB               /tail-db/tail-containers-state.db
+        DB.Sync          Normal
+{{- end }}
+{{ .Values.extraInputs | indent 8 }}
+
+    [FILTER]
+        Name                kubernetes
+        Match               {{ .Values.filter.kubeTag }}.*
+        Kube_URL            {{ .Values.filter.kubeURL }}
+        Kube_CA_File        {{ .Values.filter.kubeCAFile }}
+        Kube_Token_File     {{ .Values.filter.kubeTokenFile }}
+{{- if .Values.filter.mergeJSONLog }}
+        Merge_Log           On
+{{- end }}
+{{- if .Values.filter.enableParser }}
+        K8S-Logging.Parser  On
+{{- end }}
+{{- if .Values.filter.enableExclude }}
+        K8S-Logging.Exclude On
+{{- end }}
+{{ .Values.extraFilters | indent 8 }}
+
+{{ if eq .Values.backend.type "test" }}
+    [OUTPUT]
+        Name  file
+        Match *
+        Path /tmp/fluent-bit.log
+{{ else if eq .Values.backend.type "forward" }}
+    [OUTPUT]
+        Name          forward
+        Match         *
+        Host          {{ .Values.backend.forward.host }}
+        Port          {{ .Values.backend.forward.port }}
+        Retry_Limit False
+{{- if .Values.backend.forward.shared_key }}
+        Shared_Key    {{ .Values.backend.forward.shared_key }}
+{{- end }}
+{{ else if eq .Values.backend.type "es" }}
+    [OUTPUT]
+        Name  es
+        Match *
+        Host  {{ .Values.backend.es.host }}
+        Port  {{ .Values.backend.es.port }}
+        Logstash_Format On
+        Retry_Limit False
+        Type  {{ .Values.backend.es.type }}
+{{- if .Values.backend.es.time_key }}
+        Time_Key {{ .Values.backend.es.time_key }}
+{{- end }}
+{{- if .Values.backend.es.logstash_prefix }}
+        Logstash_Prefix {{ .Values.backend.es.logstash_prefix }}
+{{ else if .Values.backend.es.index }}
+        Index {{ .Values.backend.es.index }}
+{{- end }}
+{{- if .Values.backend.es.http_user }}
+        HTTP_User {{ .Values.backend.es.http_user }}
+        HTTP_Passwd {{ .Values.backend.es.http_passwd }}
+{{- end }}
+{{if eq .Values.backend.es.tls "on" }}
+        tls {{ .Values.backend.es.tls }}
+        tls.verify {{ .Values.backend.es.tls_verify }}
+        tls.debug {{ .Values.backend.es.tls_debug }}
+{{- if .Values.backend.es.tls_ca }}
+        tls.ca_file /secure/es-tls-ca.crt
+{{- end }}
+{{- end }}
+{{ else if eq .Values.backend.type "splunk" }}
+    [OUTPUT]
+        Name  splunk
+        Match *
+        Host  {{ .Values.backend.splunk.host }}
+        Port  {{ .Values.backend.splunk.port }}
+        Splunk_Token  {{ .Values.backend.splunk.token }}
+        Splunk_Send_Raw {{ .Values.backend.splunk.send_raw}}
+        TLS   {{ .Values.backend.splunk.tls }}
+        TLS.Verify   {{ .Values.backend.splunk.tls_verify }}
+        tls.debug {{ .Values.backend.splunk.tls_debug }}
+        Message_Key   {{ .Values.backend.splunk.message_key }}
+{{ else if eq .Values.backend.type "http" }}
+    [OUTPUT]
+        Name  http
+        Match *
+        Host {{ .Values.backend.http.host }}
+        Port {{ .Values.backend.http.port }}
+        URI {{ .Values.backend.http.uri }}
+{{- if .Values.backend.http.http_user }}
+        HTTP_User {{ .Values.backend.http.http_user }}
+        HTTP_Passwd {{ .Values.backend.http.http_passwd }}
+{{- end }}
+        tls {{ .Values.backend.http.tls }}
+        tls.verify {{ .Values.backend.http.tls_verify }}
+        tls.debug {{ .Values.backend.http.tls_debug }}
+{{- if .Values.backend.http.proxy }}
+        Proxy {{ .Values.backend.http.proxy }}
+{{- end }}
+        Format {{ .Values.backend.http.format }}
+{{- end }}
+{{ .Values.extraOutputs | indent 8 }}
+
+  parsers.conf: |-
+{{- if .Values.parsers.regex }}
+{{- range .Values.parsers.regex }}
+    [PARSER]
+        Name        {{ .name }}
+        Format      regex
+        Regex       {{ .regex }}
+{{- if .timeKey }}
+        Time_Key    {{ .timeKey }}
+{{- end }}
+{{- if .timeFormat }}
+        Time_Format {{ .timeFormat }}
+{{- end }}
+{{ end }}
+{{- end }}
+{{- if .Values.parsers.json }}
+{{- range .Values.parsers.json }}
+    [PARSER]
+        Name        {{ .name }}
+        Format      json
+{{- if .timeKeep }}
+        Time_Keep    {{ .timeKeep }}
+{{- end }}
+{{- if .timeKey }}
+        Time_Key    {{ .timeKey }}
+{{- end }}
+{{- if .timeFormat }}
+        Time_Format {{ .timeFormat }}
+{{- end }}
+{{- if .decodeFieldAs  }}
+        Decode_Field_As {{ .decodeFieldAs }} {{ .decodeField | default "log" }}
+{{- end }}
+{{ end }}
+{{- end }}
+
+{{- end -}}

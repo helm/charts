@@ -1,0 +1,105 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "kube-state-metrics.fullname" . }}
+  labels:
+    app: {{ template "kube-state-metrics.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ template "kube-state-metrics.name" . }}
+        release: "{{ .Release.Name }}"
+{{- if .Values.podAnnotations }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8 }}
+{{- end }}
+    spec:
+      serviceAccountName: {{ if .Values.rbac.create }}{{ template "kube-state-metrics.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+      {{- if .Values.securityContext.enabled }}
+      securityContext:
+        fsGroup: {{ .Values.securityContext.fsGroup }}
+        runAsUser: {{ .Values.securityContext.runAsUser }}
+      {{- end }}
+      containers:
+      - name: {{ .Chart.Name }}
+        args:
+{{  if .Values.collectors.cronjobs  }}
+        - --collectors=cronjobs
+{{  end  }}
+{{ if .Values.collectors.daemonsets  }}
+        - --collectors=daemonsets
+{{  end  }}
+{{  if .Values.collectors.deployments  }}
+        - --collectors=deployments
+{{  end  }}
+{{  if .Values.collectors.endpoints  }}
+        - --collectors=endpoints
+{{  end  }}
+{{  if .Values.collectors.horizontalpodautoscalers  }}
+        - --collectors=horizontalpodautoscalers
+{{  end  }}
+{{  if .Values.collectors.jobs  }}
+        - --collectors=jobs
+{{  end  }}
+{{  if .Values.collectors.limitranges  }}
+        - --collectors=limitranges
+{{  end  }}
+{{  if .Values.collectors.namespaces  }}
+        - --collectors=namespaces
+{{  end  }}
+{{  if .Values.collectors.nodes  }}
+        - --collectors=nodes
+{{  end  }}
+{{  if .Values.collectors.persistentvolumeclaims  }}
+        - --collectors=persistentvolumeclaims
+{{  end  }}
+{{  if .Values.collectors.persistentvolumes  }}
+        - --collectors=persistentvolumes
+{{  end  }}
+{{  if .Values.collectors.pods  }}
+        - --collectors=pods
+{{  end  }}
+{{  if .Values.collectors.replicasets  }}
+        - --collectors=replicasets
+{{  end  }}
+{{  if .Values.collectors.replicationcontrollers  }}
+        - --collectors=replicationcontrollers
+{{  end  }}
+{{  if .Values.collectors.resourcequotas  }}
+        - --collectors=resourcequotas
+{{  end  }}
+{{  if .Values.collectors.services  }}
+        - --collectors=services
+{{  end  }}
+{{  if .Values.collectors.statefulsets  }}
+        - --collectors=statefulsets
+{{  end  }}
+{{ if .Values.namespace }}
+        - --namespace={{ .Values.namespace }}
+{{ end }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        ports:
+        - containerPort: 8080
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
+          initialDelaySeconds: 5
+          timeoutSeconds: 5
+        resources:
+{{ toYaml .Values.resources | indent 12 }}
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}
+{{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+{{- end }}
+

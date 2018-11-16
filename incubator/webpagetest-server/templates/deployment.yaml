@@ -1,0 +1,70 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "webpagetest.fullname" . }}
+  labels:
+    app: {{ template "webpagetest.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "webpagetest.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "webpagetest.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.service.internalPort }}
+          livenessProbe:
+            httpGet:
+              path: /
+              port: {{ .Values.service.internalPort }}
+          readinessProbe:
+            httpGet:
+              path: /
+              port: {{ .Values.service.internalPort }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+          env:
+          {{- if .Values.ec2Locations.enabled }}
+          - name: EC2_INIT
+            value: 'true'
+          {{- end }}
+          volumeMounts:
+          {{- if .Values.ec2Locations.enabled }}
+          - name: wpt-user-data
+            mountPath: /user-data
+            readOnly: true
+          {{- end }}
+          {{- if .Values.persistence.enabled }}
+          - name: wpt-local-archive
+            mountPath: /data/archive
+          {{- end }}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+      volumes:
+      {{- if .Values.ec2Locations.enabled }}
+      - name: wpt-user-data
+        secret:
+        {{- if not .Values.ec2Locations.customUserDataSecret }}
+          secretName: {{ printf "%s-%s" .Release.Name "user-data"  }}
+        {{ else }}
+          secretName: {{ .Values.ec2Locations.customUserDataSecret }}
+        {{- end }}
+      {{- end }}
+      {{- if .Values.persistence.enabled }}
+      - name: wpt-local-archive
+        persistentVolumeClaim:
+          claimName: {{ template "webpagetest.fullname" . }}
+      {{- end }}

@@ -1,0 +1,3 @@
+To verify that kubewatch has started, run:
+
+  kubectl --namespace={{ .Release.Namespace }} get pods -l "app={{ template "kubewatch.name" . }},release={{ .Release.Name }}"

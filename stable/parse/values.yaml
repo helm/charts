@@ -1,0 +1,154 @@
+## Global Docker image registry
+## Please, note that this will override the image registry for all the images, including dependencies, configured to use the global value
+##
+# global:
+#   imageRegistry:
+
+## Kubernetes serviceType for Parse Deployment
+## ref: http://kubernetes.io/docs/user-guide/services/#publishing-services---service-types
+##
+serviceType: LoadBalancer
+
+## loadBalancerIP for the Parse Service (optional, cloud specific)
+## ref: http://kubernetes.io/docs/user-guide/services/#type-loadbalancer
+##
+# loadBalancerIP:
+
+server:
+  ## Bitnami Parse image version
+  ## ref: https://hub.docker.com/r/bitnami/parse/tags/
+  ##
+  image:
+    registry: docker.io
+    repository: bitnami/parse
+    tag: 3.1.1
+    ## Specify a imagePullPolicy
+    ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
+    ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+    ##
+    pullPolicy: IfNotPresent
+    ## Optionally specify an array of imagePullSecrets.
+    ## Secrets must be manually created in the namespace.
+    ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+    ##
+    # pullSecrets:
+    #   - myRegistrKeySecretName
+
+  ## Parse Server Port
+  ## ref: https://github.com/bitnami/bitnami-docker-parse#configuration
+  ##
+  port: 1337
+
+  ## Parse API mount path
+  ## ref: https://github.com/bitnami/bitnami-docker-parse#configuration
+  ##
+  mountPath: /parse
+
+  ## Parse Server App ID
+  ## ref: https://github.com/bitnami/bitnami-docker-parse#configuration
+  ##
+  appId: myappID
+
+  ## Parse Server Master Key
+  ## ref: https://github.com/bitnami/bitnami-docker-parse#configuration
+  ##
+  # masterKey:
+
+  ## Configure resource requests and limits
+  ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  ##
+  resources:
+    # requests:
+    #   memory: 512Mi
+    #   cpu: 300m
+
+dashboard:
+  ## Enable deployment of Parse Dashboard
+  ##
+  enabled: true
+
+  ## Bitnami Parse Dashboard image version
+  ## ref: https://hub.docker.com/r/bitnami/parse-dashboard/tags/
+  ##
+  image:
+    registry: docker.io
+    repository: bitnami/parse-dashboard
+    tag: 1.2.0
+    ## Specify a imagePullPolicy
+    ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
+    ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+    ##
+    pullPolicy: IfNotPresent
+    ## Optionally specify an array of imagePullSecrets.
+    ## Secrets must be manually created in the namespace.
+    ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+    ##
+    # pullSecrets:
+    #   - myRegistrKeySecretName
+
+  ## Parse Dashboard application username
+  ## ref: https://github.com/bitnami/bitnami-docker-parse-dashboard#configuration
+  ##
+  username: user
+
+  ## Parse Dashboard application password
+  ## Defaults to a random 10-character alphanumeric string if not set
+  ## ref: https://github.com/bitnami/bitnami-docker-parse-dashboard#configuration
+  ##
+  # password:
+
+  ## Parse Dashboard application name
+  ## ref: https://github.com/bitnami/bitnami-docker-parse-dashboard#configuration
+  ##
+  appName: MyDashboard
+
+  ## Configure resource requests and limits
+  ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  ##
+  resources: {}
+    # requests:
+    #   memory: 512Mi
+    #   cpu: 300m
+
+## Enable persistence using Persistent Volume Claims
+## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+##
+persistence:
+  enabled: true
+  ## parse data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  # storageClass: "-"
+  accessMode: ReadWriteOnce
+  size: 8Gi
+
+##
+## MongoDB chart configuration
+##
+## https://github.com/helm/charts/blob/master/stable/mongodb/values.yaml
+##
+mongodb:
+  ## MongoDB Password authentication
+  usePassword: true
+  ## If the password is not specified, MongoDB will generate a random password
+  ##
+  # mongodbRootPassword:
+  ## Enable persistence using Persistent Volume Claims
+  ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+  ##
+  persistence:
+    enabled: true
+    ## mongodb data Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
+    ##
+    # storageClass: "-"
+    accessMode: ReadWriteOnce
+    size: 8Gi

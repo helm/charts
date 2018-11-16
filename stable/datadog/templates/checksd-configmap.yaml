@@ -1,0 +1,15 @@
+{{- if .Values.datadog.checksd }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "datadog.checksd.fullname" . }}
+  labels:
+    app: "{{ template "datadog.fullname" . }}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+  annotations:
+    checksum/checksd-config: {{ tpl (toYaml .Values.datadog.checksd) . | sha256sum }}
+data:
+{{ tpl (toYaml .Values.datadog.checksd) . | indent 2 }}
+{{- end -}}

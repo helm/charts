@@ -1,0 +1,124 @@
+{{- if .Values.agent.enabled -}}
+apiVersion: apps/v1beta2
+kind: DaemonSet
+metadata:
+  labels:
+    app: {{ template "kiam.name" . }}
+    chart: {{ template "kiam.chart" . }}
+    component: "{{ .Values.agent.name }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "kiam.fullname" . }}-agent
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "kiam.name" . }}
+      component: "{{ .Values.agent.name }}"
+      release: {{ .Release.Name }}
+      {{- if .Values.agent.podLabels }}
+{{ toYaml .Values.agent.podLabels | indent 6 }}
+      {{- end }}
+  template:
+    metadata:
+      {{- if .Values.agent.podAnnotations }}
+      annotations:
+{{ toYaml .Values.agent.podAnnotations | indent 8 }}
+      {{- end }}
+      labels:
+        app: {{ template "kiam.name" . }}
+        component: "{{ .Values.agent.name }}"
+        release: {{ .Release.Name }}
+      {{- if .Values.agent.podLabels }}
+{{ toYaml .Values.agent.podLabels | indent 8 }}
+      {{- end }}
+    spec:
+      hostNetwork: true
+      dnsPolicy: {{ .Values.agent.dnsPolicy }}
+      serviceAccountName: {{ template "kiam.serviceAccountName.agent" . }}
+    {{- if .Values.agent.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.agent.nodeSelector | indent 8 }}
+    {{- end }}
+      tolerations:
+{{ toYaml .Values.agent.tolerations | indent 8 }}
+      volumes:
+        - name: tls
+          secret:
+            secretName: {{ template "kiam.fullname" . }}-agent
+        - name: xtables
+          hostPath:
+            path: /run/xtables.lock
+      {{- range .Values.agent.extraHostPathMounts }}
+        - name: {{ .name }}
+          hostPath:
+            path: {{ .hostPath }}
+      {{- end }}
+      containers:
+        - name: {{ template "kiam.name" . }}-{{ .Values.agent.name }}
+        {{- if .Values.agent.host.iptables }}
+          securityContext:
+            privileged: true
+        {{- end }}
+          image: "{{ .Values.agent.image.repository }}:{{ .Values.agent.image.tag }}"
+          imagePullPolicy: {{ .Values.agent.image.pullPolicy }}
+          command:
+            - /kiam
+            - agent
+          args:
+            {{- if .Values.agent.host.iptables }}
+            - --iptables
+            {{- end }}
+            - --host-interface={{ .Values.agent.host.interface }}
+            {{- if .Values.agent.log.jsonOutput }}
+            - --json-log
+            {{- end }}
+            - --level={{ .Values.agent.log.level }}
+            - --port={{ .Values.agent.host.port }}
+            - --cert=/etc/kiam/tls/cert
+            - --key=/etc/kiam/tls/key
+            - --ca=/etc/kiam/tls/ca
+            - --server-address={{ template "kiam.fullname" . }}-server:{{ .Values.server.service.port }}
+            {{- if .Values.agent.prometheus.scrape }}
+            - --prometheus-listen-addr=0.0.0.0:{{ .Values.agent.prometheus.port }}
+            - --prometheus-sync-interval={{ .Values.agent.prometheus.syncInterval }}
+            {{- end }}
+            - --gateway-timeout-creation={{ .Values.agent.gatewayTimeoutCreation }}
+          {{- range $key, $value := .Values.agent.extraArgs }}
+            {{- if $value }}
+            - --{{ $key }}={{ $value }}
+            {{- else }}
+            - --{{ $key }}
+            {{- end }}
+          {{- end }}
+          env:
+            - name: HOST_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+          {{- range $name, $value := .Values.agent.extraEnv }}
+            - name: {{ $name }}
+              value: {{ quote $value }}
+          {{- end }}
+          volumeMounts:
+            - mountPath: /etc/kiam/tls
+              name: tls
+            - mountPath: /var/run/xtables.lock
+              name: xtables
+          {{- range .Values.agent.extraHostPathMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              readOnly: {{ .readOnly }}
+          {{- end }}
+          livenessProbe:
+            httpGet:
+              path: /ping
+              port: {{ .Values.agent.host.port }}
+            initialDelaySeconds: 3
+            periodSeconds: 3
+        {{- if .Values.agent.resources }}
+          resources:
+{{ toYaml .Values.agent.resources | indent 12 }}
+        {{- end }}
+  updateStrategy:
+    type: {{ .Values.agent.updateStrategy }}
+{{- end }}

@@ -1,0 +1,9 @@
+dependencies:
+- name: postgresql
+  repository: https://kubernetes-charts.storage.googleapis.com/
+  version: 0.8.7
+- name: elasticsearch
+  repository: https://kubernetes-charts.storage.googleapis.com/
+  version: 1.13.2
+digest: sha256:aed70c223bcfb776eebee782ba9ff3f72310845b71d1670dab44ef4bfa1c3453
+generated: 2018-11-12T14:41:01.967667553+02:00

@@ -1,0 +1,10 @@
+To verify that Spartakus has started, run:
+
+  kubectl --namespace={{ .Release.Namespace }} get pods -l "app={{ template "name" . }},release={{ .Release.Name }}"
+
+THIS APPLICATION DOES NOT REPORT ANY PERSONAL INFORMATION. Anything that might be identifying,
+including things like IP addresses, container images, and object names are anonymized. We take
+this very seriously. If you think something we are collecting might be considered personal
+information, PLEASE let us know!
+
+https://github.com/kubernetes-incubator/spartakus

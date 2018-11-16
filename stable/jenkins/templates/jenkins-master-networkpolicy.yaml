@@ -1,0 +1,33 @@
+{{- if .Values.NetworkPolicy.Enabled }}
+kind: NetworkPolicy
+apiVersion: {{ .Values.NetworkPolicy.ApiVersion }}
+metadata:
+  name: "{{ .Release.Name }}-{{ .Values.Master.Component }}"
+spec:
+  podSelector:
+    matchLabels:
+      component: "{{ .Release.Name }}-{{ .Values.Master.Component }}"
+  ingress:
+    # Allow web access to the UI
+    - ports:
+      - port: 8080
+    # Allow inbound connections from slave
+    - from:
+      - podSelector:
+          matchLabels:
+            "jenkins/{{ .Release.Name }}-{{ .Values.Agent.Component }}": "true"
+      ports:
+      - port: {{ .Values.Master.SlaveListenerPort }}
+{{- if .Values.Agent.Enabled }}
+---
+kind: NetworkPolicy
+apiVersion: {{ .Values.NetworkPolicy.ApiVersion }}
+metadata:
+  name: "{{ .Release.Name }}-{{ .Values.Agent.Component }}"
+spec:
+  podSelector:
+    matchLabels:
+      # DefaultDeny
+      "jenkins/{{ .Release.Name }}-{{ .Values.Agent.Component }}": "true"
+{{- end }}
+{{- end }}

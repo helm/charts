@@ -1,0 +1,33 @@
+This chart installs kube-lego to generate TLS certs for Ingresses.
+
+NOTE:
+> kube-lego is in maintenance mode only. There is no plan to support any new
+>  features. The officially endorsed successor is cert-manager
+>  https://hub.kubeapps.com/charts/stable/cert-manager
+
+EXAMPLE INGRESS YAML:
+
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: example
+  namespace: foo
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    # Add to generate certificates for this ingress
+    kubernetes.io/tls-acme: 'true'
+spec:
+  rules:
+    - host: www.example.com
+      http:
+        paths:
+          - backend:
+              serviceName: exampleService
+              servicePort: 80
+            path: /
+  tls:
+    # With this configuration kube-lego will generate a secret in namespace foo called `example-tls`
+    # for the URL `www.example.com`
+    - hosts:
+        - "www.example.com"
+      secretName: example-tls

@@ -1,0 +1,77 @@
+# container name
+name: chaoskube
+
+# docker image
+image: quay.io/linki/chaoskube
+
+# docker image tag
+imageTag: v0.10.0
+
+# number of replicas to run
+replicas: 1
+
+# interval between pod terminations
+interval: 10m
+
+# label selector to filter pods by, e.g. app=foo,stage!=prod
+labels:
+
+# annotation selector to filter pods by, e.g. chaos.alpha.kubernetes.io/enabled=true
+annotations:
+
+# namespace selector to filter pods by, e.g. '!kube-system,!production' (use quotes)
+namespaces:
+
+# don't kill pods, only log what would have been done
+dryRun: true
+
+# Enable debug logging
+debug: false
+
+# Set values for exempting specific week days from Chaoskube Actions
+excludedWeekdays:
+
+# Set values for exempting specific times of day from Chaoskube Actions
+excludedTimesOfDay:
+
+# Set values for exempting specific days of the year from Chaoskube Actions (Dec24,Jan1)
+excludedDaysOfYear:
+
+# Set specific Timezone for Actions to take place
+timezone: UTC
+
+minimumAge: 0s
+
+priorityClassName: ""
+
+# create service account with permission to list and kill pods
+rbac:
+  create: false
+
+  # only used when create is false
+  serviceAccountName: default
+
+resources: {}
+  ## We usually recommend not to specify default resources and to leave this as a conscious
+  ## choice for the user. This also increases chances charts run on environments with little
+  ## resources, such as Minikube. If you do want to specify resources, uncomment the following
+  ## lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+  ## Suggested antiAffinity, as each CA should be on a separate Node for resilience
+  # podAntiAffinity:
+  #   requiredDuringSchedulingIgnoredDuringExecution:
+  #     - topologyKey: "kubernetes.io/hostname"
+  #       labelSelector:
+  #         matchLabels:
+  #           app: chaoskube

@@ -1,0 +1,18 @@
+{{- if and .Values.alertmanager.enabled (empty .Values.alertmanager.configMapOverrideName) -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app: {{ template "prometheus.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: "{{ .Values.alertmanager.name }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "prometheus.alertmanager.fullname" . }}
+data:
+{{- $root := . -}}
+{{- range $key, $value := .Values.alertmanagerFiles }}
+  {{ $key }}: |
+{{ toYaml $value | default "{}" | indent 4 }}
+{{- end -}}
+{{- end -}}

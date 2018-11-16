@@ -1,0 +1,16 @@
+name: selenium
+version: 0.12.0
+appVersion: 3.14.0
+description: Chart for selenium grid
+keywords:
+- qa
+home: http://www.seleniumhq.org/
+icon: http://docs.seleniumhq.org/images/big-logo.png
+sources:
+- https://github.com/SeleniumHQ/docker-selenium
+maintainers:
+- name: flah00
+  email: techops@adaptly.com
+- name: diemol
+  email: diemol@gmail.com
+engine: gotpl

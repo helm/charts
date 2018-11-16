@@ -1,0 +1,64 @@
+## kube-lego configuration
+## Ref: https://github.com/jetstack/kube-lego
+##
+config:
+  ## Email address to use for registration with Let's Encrypt
+  ##
+  LEGO_EMAIL: foo@example.com
+
+  ## Let's Encrypt API endpoint
+  ## Production: https://acme-v01.api.letsencrypt.org/directory
+  ## Staging: https://acme-staging.api.letsencrypt.org/directory
+  ##
+  LEGO_URL: https://acme-staging.api.letsencrypt.org/directory
+
+  ## kube-lego port
+  ##
+  LEGO_PORT: 8080
+
+  ## Specify which ingress class to watch
+  ##
+  # LEGO_SUPPORTED_INGRESS_CLASS: nginx
+
+  ## Specify which ingress provider should be watched
+  ## nginx and gce are the only two options presently
+  ##
+  # LEGO_SUPPORTED_INGRESS_PROVIDER: nginx
+
+  ## Specify what ingress class should something be
+  ## if no ingress class is specified
+  ##
+  # LEGO_DEFAULT_INGRESS_CLASS: nginx
+
+## kube-lego image
+##
+image:
+  repository: jetstack/kube-lego
+  tag: 0.1.6
+  pullPolicy: IfNotPresent
+
+## Node labels for pod assignment
+## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+##
+nodeSelector: {}
+
+## Annotations to be added to pods
+##
+podAnnotations: {}
+
+replicaCount: 1
+
+## kube-lego resource limits & requests
+## Ref: https://kubernetes.io/docs/user-guide/compute-resources/
+##
+resources: {}
+  # limits:
+  #   cpu: 20m
+  #   memory: 8Mi
+  # requests:
+  #   cpu: 20m
+  #   memory: 8Mi
+
+rbac:
+  create: false
+  serviceAccountName: default

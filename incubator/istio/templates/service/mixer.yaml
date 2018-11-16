@@ -1,0 +1,35 @@
+{{- if and .Values.istio.install (not .Release.IsInstall) -}}
+{{- $serviceName := include "istio.name" . -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $serviceName }}-{{ .Values.mixer.deployment.name }}
+  labels:
+{{ include "istio.labels.standard" . | indent 4 }}
+    istio: {{ $serviceName }}-{{ .Values.mixer.deployment.name }}
+  annotations:
+    {{- range $key, $value := .Values.mixer.service.annotations }}
+      {{ $key }}: {{ $value | quote }}
+    {{- end }}
+spec:
+  type: {{ .Values.mixer.service.type }}
+  ports:
+  - name: tcp
+    port: {{ .Values.mixer.service.externalTcpPort }}
+  - name: http-health
+    port: {{ .Values.mixer.service.externalHttpHeathPort }}
+  - name: configapi
+    port: {{ .Values.mixer.service.externalConfigApiPort }}
+  - name: statsd-prom
+    port: {{ .Values.mixer.service.externalStatsdPromPort }}
+  - name: statsd-udp
+    port: {{ .Values.mixer.service.externalStatsdUdpPort }}
+    protocol: UDP
+  - name: prometheus
+    port: {{ .Values.mixer.service.externalPrometheusPort }}
+  selector:
+    app: {{ include "istio.name" . }}
+    component: {{ $serviceName }}-{{ .Values.mixer.deployment.name }}
+    release: {{ .Release.Name }}
+    istio: {{ $serviceName }}-{{ .Values.mixer.deployment.name }}
+{{- end -}}

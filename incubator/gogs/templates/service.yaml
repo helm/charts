@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "gogs.fullname" . }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+{{- if .Values.service.annotations }}
+  annotations:
+{{ toYaml .Values.service.annotations | indent 4 }}
+{{- end }}
+spec:
+  type: {{ .Values.serviceType }}
+  ports:
+  - port: {{ .Values.service.httpPort | int }}
+    targetPort: 3000
+    name: {{ default "gogs" .Values.service.nameOverride }}-http
+  - port: {{ .Values.service.sshPort | int }}
+    targetPort: 22
+    name: {{ default "gogs" .Values.service.nameOverride }}-ssh
+  selector:
+    app: {{ template "gogs.fullname" . }}

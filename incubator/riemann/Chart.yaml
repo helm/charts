@@ -1,0 +1,16 @@
+apiVersion: v1
+description: Riemann monitors distributed systems. Riemann aggregates events from your servers and applications with a powerful stream processing language.
+name: riemann
+version: 0.1.2
+appVersion: 0.2.14
+keywords:
+- riemann
+- metrics
+- monitoring
+home: http://riemann.io/
+sources:
+- https://github.com/raykrueger/riemann-docker
+maintainers:
+- name: raykrueger
+  email: raykrueger@gmail.com
+engine: gotpl

@@ -1,0 +1,186 @@
+apiVersion: apps/v1beta2
+kind: StatefulSet
+metadata:
+  name: {{ template "percona-xtradb-cluster.fullname" . }}
+  labels:
+    app: {{ template "percona-xtradb-cluster.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      app: {{ template "percona-xtradb-cluster.fullname" . }}
+      release: "{{ .Release.Name }}"
+  serviceName: {{ template "percona-xtradb-cluster.fullname" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "percona-xtradb-cluster.fullname" . }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        release: "{{ .Release.Name }}"
+        heritage: "{{ .Release.Service }}"
+    {{- if .Values.podAnnotations }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8 }}
+    {{- end }}
+    spec:
+      initContainers:
+      - name: "remove-lost-found"
+        image: "busybox:1.25.0"
+        imagePullPolicy: IfNotPresent
+        command:
+        - "rm"
+        - "-fr"
+        - "/var/lib/mysql/lost+found"
+        volumeMounts:
+        - name: mysql-data
+          mountPath: /var/lib/mysql
+      containers:
+      - name: database
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+        command:
+        - "/bin/bash"
+        - "/startup-scripts/entrypoint.sh"
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        env:
+        {{- if .Values.mysqlAllowEmptyPassword }}
+        - name: MYSQL_ALLOW_EMPTY_PASSWORD
+          value: "true"
+        {{- else }}
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "percona-xtradb-cluster.fullname" . }}
+              key: mysql-root-password
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "percona-xtradb-cluster.fullname" . }}
+              key: mysql-password
+        {{- end }}
+        - name: XTRABACKUP_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "percona-xtradb-cluster.fullname" . }}
+              key: xtrabackup-password
+        - name: MYSQL_USER
+          value: {{ default "" .Values.mysqlUser | quote }}
+        - name: MYSQL_DATABASE
+          value: {{ default "" .Values.mysqlDatabase | quote }}
+        - name: ALLOW_ROOT_FROM
+          value: {{ .Values.allowRootFrom | quote }}
+        - name: CLUSTER_NAME
+          value: {{ template "percona-xtradb-cluster.fullname" . }}
+        - name: SHORT_CLUSTER_NAME
+          value: {{ template "percona-xtradb-cluster.shortname" . }}
+        - name: K8S_SERVICE_NAME
+          value: {{ template "percona-xtradb-cluster.fullname" . }}-repl
+        - name: DEBUG
+          value: "true"
+        ports:
+        - name: mysql
+          containerPort: 3306
+        - name: galera-repl
+          containerPort: 4567
+        - name: state-transfer
+          containerPort: 4568
+        - name: state-snapshot
+          containerPort: 4444
+        livenessProbe:
+          exec:
+            command: ["mysqladmin","ping"]
+          initialDelaySeconds: 30
+          timeoutSeconds: 2
+        readinessProbe:
+          exec:
+            command: ["mysql", "-h", "127.0.0.1", "-e", "SELECT 1"]
+          initialDelaySeconds: 30
+          timeoutSeconds: 2
+        volumeMounts:
+        - name: mysql-data
+          mountPath: /var/lib/mysql
+        - name: mysql-startup-scripts
+          mountPath: /startup-scripts
+        - name: mysql-config-files
+          mountPath: /etc/mysql/conf.d
+        - name: slash-root
+          mountPath: /root
+        - name: var-log
+          mountPath: /var/log
+      {{ if .Values.logTail }}
+      - name: "logs"
+        image: "busybox:1.25.0"
+        imagePullPolicy: IfNotPresent
+        command:
+        - "tail"
+        - "-f"
+        - "/var/log/mysqld.log"
+        volumeMounts:
+        - name: var-log
+          mountPath: /var/log
+      {{ end }}
+      {{ if .Values.metricsExporter }}
+      - name: metrics
+        image: prom/mysqld-exporter
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: metrics
+          containerPort: 9104
+        volumeMounts:
+        - name: slash-root
+          mountPath: /root
+        livenessProbe:
+          exec:
+            command: ["wget","-q","-O","-","localhost:9104"]
+          initialDelaySeconds: 30
+          timeoutSeconds: 2
+        readinessProbe:
+          exec:
+            command: ["wget","-q","-O","-","localhost:9104"]
+          initialDelaySeconds: 30
+          timeoutSeconds: 2
+      {{ end }}
+      volumes:
+      - name: slash-root
+        emptyDir: {}
+      - name: var-log
+        emptyDir: {}
+      - name: mysql-config-files
+        configMap:
+          name: {{ template "percona-xtradb-cluster.fullname" . }}-config-files
+      - name: mysql-startup-scripts
+        configMap:
+          name: {{ template "percona-xtradb-cluster.fullname" . }}-startup-scripts
+      {{- if not .Values.persistence.enabled }}
+      - name: mysql-data
+        emptyDir: {}
+      {{- end -}}
+      {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+      {{- end -}}
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end -}}
+  {{- if .Values.persistence.enabled }}
+  volumeClaimTemplates:
+  - metadata:
+      name: mysql-data
+    spec:
+      accessModes: [{{ .Values.persistence.accessMode | quote }}]
+      {{- if .Values.persistence.storageClass }}
+      {{- if (eq "-" .Values.persistence.storageClass) }}
+      storageClassName: ""
+      {{- else }}
+      storageClassName: "{{ .Values.persistence.storageClass }}"
+      {{- end }}
+      {{- end }}
+      resources:
+        requests:
+          storage: {{ .Values.persistence.size | quote }}
+  {{- end -}}

@@ -1,0 +1,8 @@
+The Aerospike can be accessed via port 3000 on the following DNS name from within your cluster:
+
+  {{ template "aerospike.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+
+You can connect to aeropike in your local machine using port-forwarding:
+
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "aerospike.name" . }},release={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
+  kubectl  --namespace {{ .Release.Namespace }} port-forward $POD_NAME 3000:3000

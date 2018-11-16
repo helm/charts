@@ -1,0 +1,15 @@
+{{- if .Values.php.fpmEnabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "lamp.fullname" . }}-httpd
+  labels:
+    app: {{ template "lamp.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+data:
+{{ (.Files.Glob "files/httpd/httpd.conf").AsConfig | indent 2 }}
+{{ (.Files.Glob "files/httpd/httpd-vhosts.conf").AsConfig | indent 2 }}
+{{ (.Files.Glob "files/httpd/httpd-vhosts-socket.conf").AsConfig | indent 2 }}
+{{- end }}

@@ -1,0 +1,84 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "sensu.fullname" . }}
+  labels:
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "sensu.fullname" . }}
+        release: {{ .Release.Name | quote }}
+    spec:
+      containers:
+      - name: server
+        image: "{{ .Values.image }}:{{ .Values.imageTag }}"
+        imagePullPolicy: {{ .Values.pullPolicy }}
+        args:
+          - server
+        resources:
+{{ toYaml .Values.server.resources | indent 10 }}
+        env:
+        - name: API_HOST
+          value: localhost
+        - name: API_PORT
+          value: '4567'
+        - name: REDIS_HOST
+          value: {{ template "sensu.redis.fullname" . }}
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "sensu.redis.fullname" . }}
+              key: redis-password
+        - name: REDIS_DB
+          value: {{ .Values.REDIS_DB | quote }}
+        - name: REDIS_AUTO_RECONNECT
+          value: {{ .Values.REDIS_AUTO_RECONNECT | quote }}
+        - name: REDIS_RECONNECT_ON_ERROR
+          value: {{ .Values.REDIS_RECONNECT_ON_ERROR | quote }}
+        - name: REDIS_PORT
+          value: {{ .Values.REDIS_PORT | quote }}
+      - name: api
+        image: "{{ .Values.image }}:{{ .Values.imageTag }}"
+        imagePullPolicy: {{ .Values.pullPolicy }}
+        args:
+          - api
+        resources:
+{{ toYaml .Values.api.resources | indent 10 }}
+        env:
+        - name: REDIS_HOST
+          value: {{ template "sensu.redis.fullname" . }}
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "sensu.redis.fullname" . }}
+              key: redis-password
+        - name: REDIS_DB
+          value: {{ .Values.REDIS_DB | quote }}
+        - name: REDIS_AUTO_RECONNECT
+          value: {{ .Values.REDIS_AUTO_RECONNECT | quote }}
+        - name: REDIS_RECONNECT_ON_ERROR
+          value: {{ .Values.REDIS_RECONNECT_ON_ERROR | quote }}
+        - name: REDIS_PORT
+          value: {{ .Values.REDIS_PORT | quote }}
+        ports:
+        - containerPort: 4567
+        readinessProbe:
+          httpGet:
+            path: /info
+            port: 4567
+          initialDelaySeconds: 30
+          timeoutSeconds: 1
+        livenessProbe:
+          httpGet:
+            path: /info
+            port: 4567
+          initialDelaySeconds: 30
+          timeoutSeconds: 1
+
+
+

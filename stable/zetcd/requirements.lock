@@ -1,0 +1,6 @@
+dependencies:
+- name: etcd-operator
+  repository: https://kubernetes-charts.storage.googleapis.com/
+  version: 0.4.3
+digest: sha256:769c1306d6c388ec19d119171b0c37c27a24ad93fc239506e3f4110563f8af2c
+generated: 2017-09-03T14:47:23.883138886-04:00

@@ -1,0 +1,70 @@
+extraArgs: {}
+#   base-role-arn: arn:aws:iam::0123456789:role/
+#   default-role: kube2iam-default
+#   api-server: ...
+#   api-token: ...
+
+extraEnv: {}
+#    http_proxy: http://example.com:8080
+#    NO_PROXY: localhost,127.0.0.1
+
+host:
+  ip: $(HOST_IP)
+  iptables: false
+  interface: docker0
+  port: 8181
+
+image:
+  repository: jtblin/kube2iam
+  tag: 0.10.0
+  pullPolicy: IfNotPresent
+
+# AWS Access keys to inject as environment variables
+aws:
+  secret_key: ""
+  access_key: ""
+  region: ""
+
+## Node labels for pod assignment
+## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+##
+nodeSelector: {}
+
+## Affinity configuration for pod assignment
+## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+##
+affinity: {}
+
+## Annotations to be added to pods
+##
+podAnnotations: {}
+
+podLabels: {}
+
+probe: true
+
+rbac:
+  ## If true, create & use RBAC resources
+  ##
+  create: false
+
+  ## Ignored if rbac.create is true
+  ##
+  serviceAccountName: default
+
+resources: {}
+  # limits:
+  #   cpu: 4m
+  #   memory: 16Mi
+  # requests:
+  #   cpu: 4m
+  #   memory: 16Mi
+
+## Strategy for DaemonSet updates (requires Kubernetes 1.6+)
+## Ref: https://kubernetes.io/docs/tasks/manage-daemon/update-daemon-set/
+##
+updateStrategy: OnDelete
+
+verbose: false
+
+tolerations: []

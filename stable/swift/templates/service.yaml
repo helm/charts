@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "swift.fullname" . }}
+  labels:
+    app: "{{ template "swift.name" . }}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  ports:
+  - name: pt
+    port: 9855
+    targetPort: pt
+  - name: tls
+    port: 50055
+    targetPort: tls
+  - name: ops
+    port: 56790
+    targetPort: ops
+  selector:
+    app: "{{ template "swift.name" . }}"
+    release: "{{ .Release.Name }}"

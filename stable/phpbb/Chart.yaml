@@ -1,0 +1,18 @@
+name: phpbb
+version: 3.2.0
+appVersion: 3.2.3
+description: Community forum that supports the notion of users and groups, file attachments,
+  full-text search, notifications and more.
+keywords:
+- phpbb
+- forum
+- http
+- php
+home: https://www.phpbb.com/
+icon: https://bitnami.com/assets/stacks/phpbb/img/phpbb-stack-220x234.png
+sources:
+- https://github.com/bitnami/bitnami-docker-phpbb
+maintainers:
+- name: Bitnami
+  email: containers@bitnami.com
+engine: gotpl

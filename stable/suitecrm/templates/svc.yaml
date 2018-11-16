@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "suitecrm.fullname" . }}
+  labels:
+    app: {{ template "suitecrm.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  type: {{ .Values.serviceType }}
+  {{- if (and (eq .Values.serviceType "LoadBalancer") (not (empty .Values.suitecrmLoadBalancerIP))) }}
+  loadBalancerIP: {{ .Values.suitecrmLoadBalancerIP }}
+  {{- end }}
+  {{- if (or (eq .Values.serviceType "LoadBalancer") (eq .Values.serviceType "NodePort")) }}
+  externalTrafficPolicy: {{ .Values.externalTrafficPolicy | quote }}
+  {{- end }}
+  ports:
+  - name: http
+    port: 80
+    targetPort: http
+  - name: https
+    port: 443
+    targetPort: https
+  selector:
+    app: {{ template "suitecrm.name" . }}
+    release: "{{ .Release.Name }}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"

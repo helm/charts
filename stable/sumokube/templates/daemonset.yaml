@@ -1,0 +1,68 @@
+{{- if and .Values.sumologic.accessId .Values.sumologic.accessKey -}}
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+spec:
+  template:
+    metadata:
+      name: {{ template "fullname" . }}
+      labels:
+        app: {{ template "fullname" . }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        release: "{{ .Release.Name }}"
+        heritage: "{{ .Release.Service }}"
+    spec:
+      serviceAccount: {{ template "fullname" . }}
+      containers:
+      - name: {{ template "fullname" . }}
+        image: "{{.Values.image.name}}:{{.Values.image.tag}}"
+        imagePullPolicy: {{.Values.image.pullPolicy}}
+        resources:
+{{ toYaml .Values.resources | indent 12 }}
+        securityContext:
+          privileged: true
+        volumeMounts:
+        - name: varlog
+          mountPath: /var/log
+        - name: varlibdockercontainers
+          mountPath: /var/lib/docker/containers
+          readOnly: true
+        - name: sumo-sources
+          mountPath: /etc/sumologic
+          readOnly: true
+        env:
+        - name: SUMO_ACCESS_ID
+          valueFrom:
+            secretKeyRef:
+              name: "{{ template "fullname" . }}-secrets-{{.Release.Time.Seconds }}"
+              key: access-id
+        - name: SUMO_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: "{{ template "fullname" . }}-secrets-{{.Release.Time.Seconds }}"
+              key: access-key
+        - name: SUMO_COLLECTOR_NAME
+          valueFrom:
+            secretKeyRef:
+              name: "{{ template "fullname" . }}-secrets-{{.Release.Time.Seconds }}"
+              key: collector-name
+        - name: SUMO_SOURCES_JSON
+          value: "/etc/sumologic/sumo-sources.json"
+      volumes:
+      - name: varlog
+        hostPath:
+          path: /var/log
+      - name: varlibdockercontainers
+        hostPath:
+          path: /var/lib/docker/containers
+      - name: sumo-sources
+        configMap:
+          name: "{{ template "fullname" . }}-config-{{.Release.Time.Seconds }}"
+      tolerations:
+{{ toYaml .Values.daemonset.tolerations | indent 8 }}
+  updateStrategy:
+    type: {{ default "OnDelete" .Values.daemonset.updateStrategy | quote }}
+{{ end }}

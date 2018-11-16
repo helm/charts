@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "ghost.fullname" . }}
+  labels:
+    app: {{ template "ghost.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  type: {{ .Values.serviceType }}
+  {{- if eq .Values.serviceType "LoadBalancer" }}
+  loadBalancerIP: {{ .Values.ghostLoadBalancerIP }}
+  {{- end }}
+  ports:
+  - name: http
+    port: {{ .Values.ghostPort }}
+    targetPort: http
+  selector:
+    app: {{ template "ghost.fullname" . }}

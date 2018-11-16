@@ -1,0 +1,81 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "openvpn.fullname" . }}
+  labels:
+    app: {{ template "openvpn.name" . }}
+    chart: {{ template "openvpn.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+{{- if .Values.updateStrategy }}
+  strategy:
+{{ toYaml .Values.updateStrategy | indent 4 }}
+{{- end }}
+  selector:
+    matchLabels:
+      app: {{ template "openvpn.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "openvpn.name" . }}
+        release: {{ .Release.Name }}
+      annotations:
+        checksum/config: {{ include (print .Template.BasePath "/config-openvpn.yaml") . | sha256sum }}
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command: ["/etc/openvpn/setup/configure.sh"]
+        ports:
+        - containerPort: {{ .Values.service.internalPort }}
+          name: openvpn
+        securityContext:
+          capabilities:
+            add:
+              - NET_ADMIN
+        resources:
+          requests:
+            cpu: "{{ .Values.resources.requests.cpu }}"
+            memory: "{{ .Values.resources.requests.memory }}"
+          limits:
+            cpu: "{{ .Values.resources.limits.cpu }}"
+            memory: "{{ .Values.resources.limits.memory }}"
+        volumeMounts:
+          - mountPath: /etc/openvpn/setup
+            name: openvpn
+            readOnly: false
+          - mountPath: /etc/openvpn/certs
+            {{- if .Values.persistence.subPath }}
+            subPath: {{ .Values.persistence.subPath }}
+            {{- end }}
+            name: certs
+            readOnly: {{ if .Values.openvpn.keystoreSecret }}true{{ else }}false{{ end }}
+      volumes:
+      - name: openvpn
+        configMap:
+          name: {{ template "openvpn.fullname" . }}
+          defaultMode: 0775
+      - name: certs
+        {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "openvpn.fullname" . }}{{- end }}
+        {{- else if .Values.openvpn.keystoreSecret }}
+        secret:
+          secretName: "{{ .Values.openvpn.keystoreSecret }}"
+          defaultMode: 448
+          items:
+          - key: "server.key"
+            path: "pki/private/server.key"
+          - key: "ca.crt"
+            path: "pki/ca.crt"
+          - key: "server.crt"
+            path: "pki/issued/server.crt"
+          - key: "dh.pem"
+            path: "pki/dh.pem"
+        {{- else }}
+        emptyDir: {}
+        {{- end -}}

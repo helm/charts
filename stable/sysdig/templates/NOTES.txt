@@ -1,0 +1,6 @@
+Sysdig Monitor agents are spinning up on each node in your cluster. After a few
+seconds, you should see your hosts appearing in the Explore tab:
+
+    https://app.sysdigcloud.com/#/explore/overview/l:10
+
+No further action should be required.

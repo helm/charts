@@ -1,0 +1,11 @@
+apiVersion: v1
+description: Service that manages routing for multiple linkerd instances
+name: namerd
+version: 0.2.0
+home: https://linkerd.io/in-depth/namerd/
+icon: https://pbs.twimg.com/profile_images/690258997237014528/KNgQd9GL_400x400.png
+sources:
+- https://github.com/linkerd/linkerd
+maintainers:
+- name: Sean Knox
+  email: knoxville@gmail.com

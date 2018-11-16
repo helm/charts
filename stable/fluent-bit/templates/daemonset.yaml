@@ -1,0 +1,111 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: fluent-bit
+  labels:
+    app: {{ template "fluent-bit.fullname" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+spec:
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: {{ template "fluent-bit.fullname" . }}
+        release: {{ .Release.Name }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
+{{- if .Values.podAnnotations }}
+{{ toYaml .Values.podAnnotations | indent 8 }}
+{{- end }}
+    spec:
+{{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.image.pullSecrets | indent 8 }}
+{{- end }}
+      serviceAccountName: {{ template "fluent-bit.serviceAccountName" . }}
+      containers:
+      - name: fluent-bit
+        image: "{{ .Values.image.fluent_bit.repository }}:{{ .Values.image.fluent_bit.tag }}"
+        imagePullPolicy: "{{ .Values.image.pullPolicy }}"
+        env:
+{{ toYaml .Values.env | indent 10 }}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+{{- if .Values.metrics.enabled }}
+        ports:
+          - name: metrics
+            containerPort: 2020
+            protocol: TCP
+{{- end }}
+        volumeMounts:
+        - name: varlog
+          mountPath: /var/log
+        - name: varlibdockercontainers
+          mountPath: /var/lib/docker/containers
+          readOnly: true
+        - name: config
+          mountPath: /fluent-bit/etc/fluent-bit.conf
+          subPath: fluent-bit.conf
+{{- if .Values.parsers.enabled }}
+        - name: config
+          mountPath: /fluent-bit/etc/parsers_custom.conf
+          subPath: parsers.conf
+{{- end }}
+{{- if .Values.backend.es.tls_ca }}
+        - name: es-tls-secret
+          mountPath: /secure/es-tls-ca.crt
+          subPath: es-tls-ca.crt
+{{- end }}
+{{- if .Values.trackOffsets }}
+        - name: tail-db
+          mountPath: /tail-db
+{{- end }}
+{{- if .Values.extraVolumeMounts }}
+{{ toYaml .Values.extraVolumeMounts | indent 8 }}
+{{- end }}
+{{ if .Values.on_minikube }}
+        - name: mnt
+          mountPath: /mnt
+          readOnly: true
+{{ end }}
+      terminationGracePeriodSeconds: 10
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+    {{- end }}
+      volumes:
+      - name: varlog
+        hostPath:
+          path: /var/log
+      - name: varlibdockercontainers
+        hostPath:
+          path: /var/lib/docker/containers
+{{- if .Values.backend.es.tls_ca }}
+      - name: es-tls-secret
+        secret:
+          secretName: "{{ template "fluent-bit.fullname" . }}-es-tls-secret"
+{{- end }}
+{{- if .Values.trackOffsets }}
+      - name: tail-db
+        hostPath:
+          path: /var/lib/fluent-bit
+          type: DirectoryOrCreate
+{{- end }}
+      - name: config
+        configMap:
+          name: {{ if .Values.existingConfigMap }}{{ .Values.existingConfigMap }}{{- else }}{{ template "fluent-bit.fullname" . }}-config{{- end }}
+{{- if .Values.extraVolumes }}
+{{ toYaml .Values.extraVolumes | indent 6 }}
+{{- end }}
+{{ if .Values.on_minikube }}
+      - name: mnt
+        hostPath:
+          path: /mnt
+{{ end }}

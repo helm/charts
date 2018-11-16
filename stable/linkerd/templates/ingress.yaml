@@ -1,0 +1,32 @@
+{{- if .Values.linkerd.ingress.enabled -}}
+{{- $globalContext := . -}}
+{{- $servicePort := .Values.linkerd.httpPort -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+  {{- range $key, $value := .Values.linkerd.ingress.annotations }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
+  labels:
+    app: {{ template "linkerd.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    component: "{{ .Values.linkerd.name }}"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+  name: {{ template "linkerd.fullname" . }}
+spec:
+  rules:
+  {{- range .Values.linkerd.ingress.hosts }}
+    - host: {{ . }}
+      http:
+        paths:
+          - backend:
+              serviceName: {{ template "linkerd.fullname" $globalContext }}
+              servicePort: {{ $servicePort }}
+  {{- end -}}
+  {{- if .Values.linkerd.ingress.tls }}
+  tls:
+{{ toYaml .Values.linkerd.ingress.tls | indent 4 }}
+  {{- end -}}
+{{- end -}}

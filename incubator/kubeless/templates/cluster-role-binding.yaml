@@ -1,0 +1,16 @@
+{{- if .Values.rbac.create }}
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ template "kubeless.fullname" . }}-controller-deployer
+  labels:
+{{ include "labels.standard" . | indent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ template "kubeless.fullname" . }}-controller-deployer
+subjects:
+- kind: ServiceAccount
+  name: controller-acct
+  namespace: {{ .Release.Namespace }}
+{{- end}}

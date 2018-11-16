@@ -1,0 +1,45 @@
+{{- if .Values.kubelet.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ template "prometheus-operator.fullname" . }}-kubelet
+  labels:
+    app: {{ template "prometheus-operator.name" . }}-kubelet
+{{ include "prometheus-operator.labels" . | indent 4 }}
+spec:
+  endpoints:
+  {{- if .Values.kubelet.serviceMonitor.https }}
+  - port: https-metrics
+    scheme: https
+    interval: 15s
+    tlsConfig:
+      caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+      insecureSkipVerify: true
+    bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+    honorLabels: true
+  - port: https-metrics
+    scheme: https
+    path: /metrics/cadvisor
+    interval: 30s
+    honorLabels: true
+    tlsConfig:
+      caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+      insecureSkipVerify: true
+    bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+  {{- else }}
+  - port: http-metrics
+    interval: 30s
+    honorLabels: true
+  - port: http-metrics
+    path: /metrics/cadvisor
+    interval: 30s
+    honorLabels: true
+  {{- end }}
+  jobLabel: k8s-app
+  namespaceSelector:
+    matchNames:
+    - {{ .Values.kubelet.namespace }}
+  selector:
+    matchLabels:
+      k8s-app: kubelet
+{{- end}}

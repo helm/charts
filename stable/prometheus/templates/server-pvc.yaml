@@ -1,0 +1,31 @@
+{{- if .Values.server.persistentVolume.enabled -}}
+{{- if not .Values.server.persistentVolume.existingClaim -}}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  {{- if .Values.server.persistentVolume.annotations }}
+  annotations:
+{{ toYaml .Values.server.persistentVolume.annotations | indent 4 }}
+  {{- end }}
+  labels:
+    app: {{ template "prometheus.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: "{{ .Values.server.name }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "prometheus.server.fullname" . }}
+spec:
+  accessModes:
+{{ toYaml .Values.server.persistentVolume.accessModes | indent 4 }}
+{{- if .Values.server.persistentVolume.storageClass }}
+{{- if (eq "-" .Values.server.persistentVolume.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ .Values.server.persistentVolume.storageClass }}"
+{{- end }}
+{{- end }}
+  resources:
+    requests:
+      storage: "{{ .Values.server.persistentVolume.size }}"
+{{- end -}}
+{{- end -}}

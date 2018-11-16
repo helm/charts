@@ -1,0 +1,35 @@
+{{- if .Values.ingress.enabled }}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "lamp.fullname" . }}-app
+  annotations:
+    {{- if .Values.ingress.ssl }}
+    kubernetes.io/tls-acme: "true"
+    {{- end }}
+    {{- if .Values.ingress.htpasswdString }}
+    ingress.kubernetes.io/auth-type: basic
+    ingress.kubernetes.io/auth-secret: {{ template "lamp.fullname" . }}
+    ingress.kubernetes.io/auth-realm: "Authenticate"
+    {{- end }}
+    {{- if .Values.ingress.subdomainWWW }}
+    ingress.kubernetes.io/configuration-snippet: |
+      rewrite ^(.*)$ $scheme://www.{{ template "lamp.domain" . }}$1;
+    {{- end }}
+{{ toYaml .Values.ingress.annotations | indent 4 }}
+spec:
+  {{- if .Values.ingress.ssl }}
+  tls:
+  - secretName: {{ template "lamp.fullname" . }}-tls-app
+    hosts:
+    - {{ template "lamp.domain" . }}
+  {{- end }}
+  rules:
+  - host: {{ template "lamp.domain" . }}
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: {{ template "lamp.fullname" . }}
+          servicePort: {{ .Values.service.HTTPPort }}
+{{- end }}

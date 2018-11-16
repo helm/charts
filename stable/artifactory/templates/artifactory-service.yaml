@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "artifactory.fullname" . }}
+  labels:
+    app: {{ template "artifactory.name" . }}
+    chart: {{ template "artifactory.chart" . }}
+    component: {{ .Values.artifactory.name }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+{{- if .Values.artifactory.service.annotations }}
+  annotations:
+{{ toYaml .Values.artifactory.service.annotations | indent 4 }}
+{{- end }}
+spec:
+  type: {{ .Values.artifactory.service.type }}
+  ports:
+  - port: {{ .Values.artifactory.externalPort }}
+    targetPort: {{ .Values.artifactory.internalPort }}
+    protocol: TCP
+    name: {{ .Release.Name }}
+  {{- if .Values.artifactory.replicator.enabled }}
+  - port: {{ .Values.artifactory.externalPortReplicator }}
+    targetPort: {{ .Values.artifactory.internalPortReplicator }}
+    protocol: TCP
+    name: replicator
+  {{- end}}
+  selector:
+    app: {{ template "artifactory.name" . }}
+    component: "{{ .Values.artifactory.name }}"
+    release: {{ .Release.Name }}

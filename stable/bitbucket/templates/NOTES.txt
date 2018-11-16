@@ -1,0 +1,45 @@
+{{- if .Values.postgresql.enabled }}
+PostgreSQL can be accessed via port {{ .Values.postgresql.service.port }} on the following DNS name from within your cluster:
+
+{{ .Release.Name }}-postgresql.{{ .Release.Namespace }}.svc.cluster.local
+
+To get the password for "{{ .Values.postgresqlUsername }}" run:
+
+    export POSTGRESQL_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ .Release.Name }}-postgresql  -o jsonpath="{.data.postgres-password}" | base64 --decode)
+
+{{- end }}
+
+{{- if .Values.elasticsearch.enabled }}
+
+Elasticsearch can be accessed:
+
+  * Within your cluster, at the following DNS name at port 9200:
+
+{{ .Release.Name }}-elasticsearch-client.{{ .Release.Namespace }}.svc.cluster.local
+
+{{- end }}
+
+Get Bibucket by running these commands:
+
+{{- if .Values.ingress.enabled }}
+{{- range .Values.ingress.hosts }}
+  http{{ if $.Values.ingress.tls }}s{{ end }}://{{ . }}{{ $.Values.ingress.path }}
+{{- end }}
+{{- else if contains "NodePort" .Values.service.type }}
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "bitbucket.fullname" . }})
+  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo http://$NODE_IP:$NODE_PORT
+{{- else if contains "LoadBalancer" .Values.service.type }}
+     NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+           You can watch the status of by running 'kubectl get svc -w {{ template "bitbucket.fullname" . }}'
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "bitbucket.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  echo http://$SERVICE_IP:{{ .Values.service.port }}
+{{- else if contains "ClusterIP" .Values.service.type }}
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "bitbucket.name" . }},release={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
+  echo "Visit http://127.0.0.1:8080 to use your application"
+  kubectl port-forward $POD_NAME 8080:80
+{{- end }}
+
+Or get Bibucket instance using local proxy:
+
+kubectl port-forward {{ template "bitbucket.fullname" . }} 8080:{{ .Values.bitbucket.ports.httpPort }} --namespace {{ .Release.Namespace }}

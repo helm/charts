@@ -1,0 +1,21 @@
+{{ if .Values.resizer.enabled -}}
+{{- if .Values.rbac.create -}}
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: RoleBinding
+metadata:
+  name: {{ template "heapster.fullname" . }}-pod-nanny
+  labels:
+    app: {{ template "heapster.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ template "heapster.fullname" . }}-pod-nanny
+subjects:
+- kind: ServiceAccount
+  name: {{ template "heapster.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+{{- end -}}
+{{- end -}}

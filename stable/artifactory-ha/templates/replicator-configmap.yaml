@@ -1,0 +1,16 @@
+{{- if .Values.artifactory.replicator.enabled -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "artifactory-ha.fullname" . }}-replicator-config
+  labels:
+    app: {{ template "artifactory-ha.name" . }}
+    chart: {{ template "artifactory-ha.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+data:
+  replicator.yaml: |-
+    externalUrl: {{ .Values.artifactory.replicator.publicUrl }}
+    internalUrl: http://localhost:6061
+    listenPort: 6061
+{{- end -}}

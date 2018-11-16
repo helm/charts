@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "gcloud-sqlproxy.fullname" . }}
+  labels:
+    app: {{ template "gcloud-sqlproxy.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  ports:
+  {{- range .Values.cloudsql.instances }}
+  - name: {{ .instance }}
+    protocol: TCP
+    port: {{ .port }}
+    targetPort: {{ .instanceShortName | default (.instance | trunc 15) }}
+  {{- end }}
+  selector:
+    app: {{ template "gcloud-sqlproxy.fullname" . }}

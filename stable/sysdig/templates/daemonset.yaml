@@ -1,0 +1,100 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: {{ template "sysdig.fullname" . }}
+  labels:
+    app: {{ template "sysdig.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  template:
+    metadata:
+      name: {{ template "sysdig.fullname" .}}
+      labels:
+        app: {{ template "sysdig.fullname" .}}
+        role: monitoring
+    spec:
+      serviceAccountName: {{ template "sysdig.serviceAccountName" .}}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      hostPID: true
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+          securityContext:
+            privileged: true
+          readinessProbe:
+            exec:
+              command: [ "test", "-e", "/opt/draios/logs/draios.log" ]
+            initialDelaySeconds: 10
+          volumeMounts:
+            - mountPath: /host/var/run/docker.sock
+              name: docker-sock
+              readOnly: false
+            - mountPath: /host/dev
+              name: dev-vol
+              readOnly: false
+            - mountPath: /host/proc
+              name: proc-vol
+              readOnly: true
+            - mountPath: /host/boot
+              name: boot-vol
+              readOnly: true
+            - mountPath: /host/lib/modules
+              name: modules-vol
+              readOnly: true
+            - mountPath: /host/usr
+              name: usr-vol
+              readOnly: true
+            - mountPath: /dev/shm
+              name: dshm
+            - mountPath: /opt/draios/etc/kubernetes/config
+              name: sysdig-agent-config
+            - mountPath: /opt/draios/etc/kubernetes/secrets
+              name: sysdig-agent-secrets
+            {{- if .Values.customAppChecks }}
+            - mountPath: /opt/draios/lib/python/checks.custom.d
+              name: custom-app-checks-volume
+            {{- end }}
+      volumes:
+        - name: dshm
+          emptyDir:
+            medium: Memory
+        - name: docker-sock
+          hostPath:
+            path: /var/run/docker.sock
+        - name: dev-vol
+          hostPath:
+            path: /dev
+        - name: proc-vol
+          hostPath:
+            path: /proc
+        - name: boot-vol
+          hostPath:
+            path: /boot
+        - name: modules-vol
+          hostPath:
+            path: /lib/modules
+        - name: usr-vol
+          hostPath:
+            path: /usr
+        - name: sysdig-agent-config
+          configMap:
+            name: {{ template "sysdig.fullname" . }}
+            optional: true
+        - name: sysdig-agent-secrets
+          secret:
+            secretName: {{ template "sysdig.fullname" . }}
+        {{- if .Values.customAppChecks }}
+        - name: custom-app-checks-volume
+          configMap:
+            name: {{ template "sysdig.fullname" . }}-custom-app-checks
+        {{- end }}
+  updateStrategy:
+    type: {{ default "OnDelete" .Values.daemonset.updateStrategy | quote }}

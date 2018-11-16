@@ -1,0 +1,256 @@
+# Default values for artifactory.
+# This is a YAML-formatted file.
+
+# Beware when changing values here. You should know what you are doing!
+# Access the values with {{ .Values.key.subkey }}
+
+# Common
+initContainerImage: "alpine:3.6"
+
+# For supporting pulling from private registries
+imagePullSecrets:
+
+## Role Based Access Control
+## Ref: https://kubernetes.io/docs/admin/authorization/rbac/
+rbac:
+  create: true
+  role:
+    ## Rules to create. It follows the role specification
+    rules:
+    - apiGroups:
+      - ''
+      resources:
+      - services
+      - endpoints
+      - pods
+      verbs:
+      - get
+      - watch
+      - list
+
+## Service Account
+## Ref: https://kubernetes.io/docs/admin/service-accounts-admin/
+##
+serviceAccount:
+  create: true
+  ## The name of the ServiceAccount to use.
+  ## If not set and create is true, a name is generated using the fullname template
+  name:
+
+ingress:
+  enabled: false
+  # Used to create an Ingress record.
+  hosts:
+    - artifactory.domain.example
+  annotations:
+  # kubernetes.io/ingress.class: nginx
+  # kubernetes.io/tls-acme: "true"
+  tls:
+  # Secrets must be manually created in the namespace.
+  # - secretName: chart-example-tls
+  #   hosts:
+  #     - artifactory.domain.example
+
+# Artifactory
+artifactory:
+  name: artifactory
+  image:
+    # repository: "docker.bintray.io/jfrog/artifactory-oss"
+    repository: "docker.bintray.io/jfrog/artifactory-pro"
+    # Note that by default we use appVersion to get image tag
+    # version: 6.1.0
+    pullPolicy: IfNotPresent
+
+  ## Artifactory license secret.
+  ## If artifactory.license.secret is passed, it will be mounted as
+  ## ARTIFACTORY_HOME/etc/artifactory.lic and loaded at run time.
+  ## The dataKey should be the name of the secret data key created.
+  license:
+    secret:
+    dataKey:
+  ## Create configMap with artifactory.config.import.xml and security.import.xml and pass name of configMap in following parameter
+  configMapName:
+
+  ## Extra postStart command to install JDBC driver for MySql/MariaDb/Oracle
+  # postStartCommand: "curl -L -o /opt/jfrog/artifactory/tomcat/lib/mysql-connector-java-5.1.41.jar https://jcenter.bintray.com/mysql/mysql-connector-java/5.1.41/mysql-connector-java-5.1.41.jar && chown 1030:1030 /opt/jfrog/artifactory/tomcat/lib/mysql-connector-java-5.1.41.jar"
+
+  service:
+    name: artifactory
+    type: ClusterIP
+    annotations: {}
+  externalPort: 8081
+  internalPort: 8081
+  internalPortReplicator: 6061
+  externalPortReplicator: 6061
+  uid: 1030
+  ## The following settings are to configure the frequency of the liveness and readiness probes
+  livenessProbe:
+    enabled: true
+    initialDelaySeconds: 180
+    failureThreshold: 10
+    timeoutSeconds: 10
+    periodSeconds: 10
+    successThreshold: 1
+
+  readinessProbe:
+    enabled: true
+    initialDelaySeconds: 60
+    failureThreshold: 10
+    timeoutSeconds: 10
+    periodSeconds: 10
+    successThreshold: 1
+  persistence:
+    mountPath: "/var/opt/jfrog/artifactory"
+    enabled: true
+    ## A manually managed Persistent Volume and Claim
+    ## Requires persistence.enabled: true
+    ## If defined, PVC must be created manually before volume will be bound with the name e.g `artifactory`
+    # existingClaim:
+
+    accessMode: ReadWriteOnce
+    size: 20Gi
+    ## artifactory data Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
+    ##
+    # storageClass: "-"
+    ## Annotations for the Persistent Volume Claim
+    annotations: {}
+  ## Uncomment the following resources definitions or pass them from command line
+  ## to control the cpu and memory resources allocated by the Kubernetes cluster
+  resources: {}
+  #  requests:
+  #    memory: "1Gi"
+  #    cpu: "500m"
+  #  limits:
+  #    memory: "2Gi"
+  #    cpu: "1"
+  ## The following Java options are passed to the java process running Artifactory.
+  ## You should set them according to the resources set above
+  javaOpts: {}
+  #  xms: "1g"
+  #  xmx: "2g"
+  #  other: ""
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
+  ## Artifactory Replicator is available only for Enterprise Plus
+  replicator:
+    enabled: false
+    publicUrl:
+  # Name of ConfigMap for Distribution Cert
+  distributionCerts:
+
+# Nginx
+nginx:
+  enabled: true
+  name: nginx
+  replicaCount: 1
+  image:
+    repository: "docker.bintray.io/jfrog/nginx-artifactory-pro"
+    # Note that by default we use appVersion to get image tag
+    # version: 6.1.0
+    pullPolicy: IfNotPresent
+  service:
+    ## For minikube, set this to NodePort, elsewhere use LoadBalancer
+    type: LoadBalancer
+    ## For supporting whitelist on the Nginx LoadBalancer service
+    ## Set this to a list of IP CIDR ranges
+    ## Example: loadBalancerSourceRanges: ['10.10.10.5/32', '10.11.10.5/32']
+    ## or pass from helm command line
+    ## Example: helm install ... --set nginx.service.loadBalancerSourceRanges='{10.10.10.5/32,10.11.10.5/32}'
+    loadBalancerSourceRanges: []
+    annotations: {}
+    ## Provide static ip address
+    loadBalancerIP:
+  externalPortHttp: 80
+  internalPortHttp: 80
+  externalPortHttps: 443
+  internalPortHttps: 443
+  internalPortReplicator: 6061
+  externalPortReplicator: 6061
+  ## The following settings are to configure the frequency of the liveness and readiness probes
+  livenessProbe:
+    enabled: true
+    initialDelaySeconds: 60
+    failureThreshold: 10
+    timeoutSeconds: 10
+    periodSeconds: 10
+    successThreshold: 1
+
+  readinessProbe:
+    enabled: true
+    initialDelaySeconds: 60
+    failureThreshold: 10
+    timeoutSeconds: 10
+    periodSeconds: 10
+    successThreshold: 1
+
+  ## The SSL secret that will be used by the Nginx pod
+  # tlsSecretName: chart-example-tls
+  env:
+    # artUrl: "http://artifactory:8081/artifactory"
+    ssl: true
+    skipAutoConfigUpdate: false
+  ## Custom ConfigMap for nginx.conf
+  customConfigMap:
+  persistence:
+    mountPath: "/var/opt/jfrog/nginx"
+    enabled: false
+    ## A manually managed Persistent Volume and Claim
+    ## Requires persistence.enabled: true
+    ## If defined, PVC must be created manually before volume will be bound
+    # existingClaim:
+
+    accessMode: ReadWriteOnce
+    size: 5Gi
+    ## nginx data Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
+    ##
+    # storageClass: "-"
+  resources: {}
+  #  requests:
+  #    memory: "250Mi"
+  #    cpu: "100m"
+  #  limits:
+  #    memory: "250Mi"
+  #    cpu: "500m"
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
+## Configuration values for the postgresql dependency
+## ref: https://github.com/kubernetes/charts/blob/master/stable/postgresql/README.md
+##
+postgresql:
+  enabled: true
+  postgresUser: "artifactory"
+  postgresPassword:
+  postgresDatabase: "artifactory"
+  postgresConfig:
+    maxConnections: "1500"
+  persistence:
+    enabled: true
+  service:
+    port: 5432
+
+## If NOT using the PostgreSQL in this chart (postgresql.enabled=false),
+## you must specify the following database details
+database:
+  type:
+  host:
+  port:
+  user:
+  password:

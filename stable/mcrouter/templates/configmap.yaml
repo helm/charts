@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  config.json: |-
+{{- if .Values.mcrouterCommandParams.configFile }}{{ range .Files.Lines .Values.mcrouterCommandParams.configFile }}
+    {{ . }}{{ end }}
+{{- else }}
+    {{- if .Values.memcached.enabled }}
+    {
+      "pools": {
+        "A": {
+          "servers": [
+            {{- $global := . }}
+            {{- range $i, $e := until (.Values.memcached.replicaCount | int) }}
+            "{{ $global.Release.Name }}-memcached-{{ $i }}.{{ $global.Release.Name }}-memcached.{{ $global.Release.Namespace }}.svc.cluster.local:11211",
+            {{- end }}
+          ]
+        }
+      },
+      "route": "PoolRoute|A"
+    }
+    {{- end }}
+{{- end }}

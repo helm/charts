@@ -1,0 +1,165 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels: {{ include "external-dns.labels" . | indent 4 }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+  name: {{ template "external-dns.fullname" . }}
+spec:
+  template:
+    metadata:
+    {{- if .Values.podAnnotations }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8}}
+    {{- end }}
+      labels: {{ include "external-dns.labels" . | indent 8 }}
+    spec:
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range $sec := .Values.image.pullSecrets }}
+        - name: {{$sec | quote }}
+      {{- end }}
+      {{- end }}
+      {{- if .Values.priorityClassName }}
+      priorityClassName: "{{ .Values.priorityClassName }}"
+      {{- end }}
+      containers:
+        - name: {{ template "external-dns.name" . }}
+          image: "{{.Values.image.name}}:{{ .Values.image.tag }}"
+          imagePullPolicy: "{{ .Values.image.pullPolicy }}"
+          args:
+          {{- if .Values.logLevel }}
+            - --log-level={{ .Values.logLevel }}
+          {{- end }}
+          {{- if .Values.publishInternalServices }}
+            - --publish-internal-services
+          {{- end }}
+          {{- range .Values.domainFilters }}
+            - --domain-filter={{ . }}
+          {{- end }}
+          {{- range .Values.zoneIdFilters }}
+            - --zone-id-filter={{ . }}
+          {{- end }}
+            - --policy={{ .Values.policy }}
+            - --provider={{ .Values.provider }}
+            - --registry={{ .Values.registry }}
+          {{- if .Values.txtOwnerId }}
+            - --txt-owner-id={{ .Values.txtOwnerId }}
+          {{- end }}
+          {{- if .Values.txtPrefix }}
+            - --txt-prefix={{ .Values.txtPrefix }}
+          {{- end }}
+          {{- if .Values.annotationFilter }}
+            - --annotation-filter={{ .Values.annotationFilter }}
+          {{- end }}
+          {{- range .Values.sources }}
+            - --source={{ . }}
+          {{- end }}
+          {{- range $key, $value := .Values.extraArgs }}
+            {{- if $value }}
+            - --{{ $key }}={{ $value }}
+            {{- else }}
+            - --{{ $key }}
+            {{- end }}
+          {{- end }}
+          {{- if .Values.aws.zoneType }}
+            - --aws-zone-type={{ .Values.aws.zoneType }}
+          {{- end }}
+          {{- if .Values.google.project }}
+            - --google-project={{ .Values.google.project }}
+          {{- end }}
+          volumeMounts:
+          {{- if .Values.google.serviceAccountSecret }}
+          - name: google-service-account
+            mountPath: /etc/secrets/service-account/
+          {{- end}}
+          {{- if eq .Values.provider "azure" }}
+          - name: azure-config-file
+            {{- if not .Values.azure.secretName }}
+            mountPath: /etc/kubernetes/azure.json
+            {{- else }}
+            mountPath: /etc/kubernetes/
+            {{- end }}
+            readOnly: true
+          {{- end }}
+          {{- if (and .Values.aws.secretKey .Values.aws.accessKey) }}
+          - name: aws-credentials
+            mountPath: /root/.aws
+            readOnly: true
+          {{- end }}
+          env:
+        {{- if .Values.google.serviceAccountSecret }}
+          - name: GOOGLE_APPLICATION_CREDENTIALS
+            value: /etc/secrets/service-account/credentials.json
+        {{- end }}
+        {{- if or (eq .Values.provider "aws") (eq .Values.provider "aws-sd") }}
+        {{- if .Values.aws.region }}
+          - name: AWS_DEFAULT_REGION
+            value: {{ .Values.aws.region }}
+        {{- end }}
+        {{- end }}
+        {{- if and .Values.cloudflare.apiKey .Values.cloudflare.email }}
+          - name: CF_API_KEY
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "external-dns.fullname" . }}
+                key: cloudflare_api_key
+          - name: CF_API_EMAIL
+            value: "{{ .Values.cloudflare.email }}"
+        {{- end }}
+        {{- $root := . -}}
+        {{- range .Values.extraEnv }}
+          - name: {{ .name }}
+            valueFrom:
+          {{- if .valueFrom }}
+{{ toYaml .valueFrom | indent 14 }}
+          {{- else }}
+              secretKeyRef:
+                name: {{ template "external-dns.fullname" $root }}
+                key: {{ .name }}
+          {{- end }}
+        {{- end }}
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 7979
+          ports:
+            - containerPort: 7979
+        {{- if .Values.resources }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+        {{- end }}
+      volumes:
+      {{- if .Values.google.serviceAccountSecret }}
+      - name: google-service-account
+        secret:
+          secretName: "{{.Values.google.serviceAccountSecret}}"
+      {{- end}}
+      {{- if eq .Values.provider "azure" }}
+      - name: azure-config-file
+        {{- if (not .Values.azure.secretName)}}
+        hostPath:
+          path: /etc/kubernetes/azure.json
+          type: File
+        {{- else}}
+        secret:
+          secretName: {{.Values.azure.secretName}}
+        {{- end}}
+      {{- end }}
+      {{- if (and .Values.aws.secretKey .Values.aws.accessKey) }}
+      - name: aws-credentials
+        secret:
+          secretName: {{ template "external-dns.fullname" . }}
+      {{- end }}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+    {{- end }}
+{{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+    {{- end }}
+      serviceAccountName: {{ if .Values.rbac.create }}{{ template "external-dns.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}

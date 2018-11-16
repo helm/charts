@@ -1,0 +1,24 @@
+{{- if .Values.persistence.enabled -}}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ template "phpbb.fullname" . }}-apache
+  labels:
+    app: {{ template "phpbb.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  accessModes:
+    - {{ .Values.persistence.apache.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.apache.size | quote }}
+{{- if .Values.persistence.apache.storageClass }}
+{{- if (eq "-" .Values.persistence.apache.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ .Values.persistence.apache.storageClass }}"
+{{- end }}
+{{- end }}
+{{- end -}}

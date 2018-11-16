@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "gitlab-ce.fullname" . }}
+  labels:
+    app: {{ template "gitlab-ce.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  type: {{ .Values.serviceType }}
+  ports:
+  - name: ssh
+    port: {{ .Values.sshPort | int }}
+    targetPort: ssh
+  - name: http
+    port: {{ .Values.httpPort | int }}
+    targetPort: http
+  - name: https
+    port: {{ .Values.httpsPort | int }}
+    targetPort: https
+  selector:
+    app: {{ template "gitlab-ce.fullname" . }}

@@ -1,0 +1,20 @@
+{{- if and .Values.istio.install (not .Release.IsInstall) -}}
+{{ if .Values.addons.servicegraph.enabled }}
+{{- $serviceName := include "istio.name" . -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $serviceName }}-{{ .Values.addons.servicegraph.deployment.name }}
+  labels:
+{{ include "istio.labels.standard" . | indent 4 }}
+spec:
+  type: {{ .Values.addons.servicegraph.service.type }}
+  ports:
+  - name: http
+    port: {{ .Values.addons.servicegraph.service.externalPort }}
+  selector:
+    app: {{ include "istio.name" . }}
+    component: {{ $serviceName }}-{{ .Values.addons.servicegraph.deployment.name }}
+    release: {{ .Release.Name }}
+{{ end }}
+{{- end -}}

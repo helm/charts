@@ -1,0 +1,18 @@
+name: joomla
+version: 3.4.0
+appVersion: 3.9.0
+description: PHP content management system (CMS) for publishing web content
+keywords:
+- joomla
+- cms
+- blog
+- http
+- php
+home: http://www.joomla.org/
+icon: https://bitnami.com/assets/stacks/joomla/img/joomla-stack-220x234.png
+sources:
+- https://github.com/bitnami/bitnami-docker-joomla
+maintainers:
+- name: Bitnami
+  email: containers@bitnami.com
+engine: gotpl

@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "dask-distributed.scheduler-fullname" . }}
+  labels:
+    app: {{ template "dask-distributed.name" . }}
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    component: "{{ .Release.Name }}-{{ .Values.scheduler.component }}"
+spec:
+  ports:
+    - name: {{ template "dask-distributed.scheduler-fullname" . }}
+      port: {{ .Values.scheduler.servicePort }}
+      targetPort: {{ .Values.scheduler.containerPort }}
+    - name: {{ template "dask-distributed.webui-fullname" . }}
+      port: {{ .Values.webUI.servicePort }}
+      targetPort: {{ .Values.webUI.containerPort }}
+  selector:
+    app: {{ template "dask-distributed.name" . }}
+    release: {{ .Release.Name | quote }}
+    component: "{{ .Release.Name }}-{{ .Values.scheduler.component }}"
+  type: {{ .Values.scheduler.serviceType }}

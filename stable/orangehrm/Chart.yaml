@@ -1,0 +1,21 @@
+name: orangehrm
+version: 3.2.1
+appVersion: 4.2.0-1
+description: OrangeHRM is a free HR management system that offers a wealth of modules
+  to suit the needs of your business.
+keywords:
+- orangehrm
+- http
+- https
+- web
+- application
+- php
+- human resources
+home: https://www.orangehrm.com
+sources:
+- https://github.com/bitnami/bitnami-docker-orangehrm
+maintainers:
+- name: Bitnami
+  email: containers@bitnami.com
+engine: gotpl
+icon: https://bitnami.com/assets/stacks/orangehrm/img/orangehrm-stack-110x117.png

@@ -1,0 +1,174 @@
+{{- if include "phabricator.host" . -}}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "phabricator.fullname" . }}
+  labels:
+    app: {{ template "phabricator.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "phabricator.fullname" . }}
+      release: "{{ .Release.Name }}"
+  template:
+    metadata:
+      labels:
+        app: {{ template "phabricator.fullname" . }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        release: "{{ .Release.Name }}"
+{{- if or .Values.podAnnotations .Values.metrics.enabled }}
+      annotations:
+  {{- if .Values.podAnnotations }}
+{{ toYaml .Values.podAnnotations | indent 8 }}
+  {{- end }}
+  {{- if .Values.metrics.podAnnotations }}
+{{ toYaml .Values.metrics.podAnnotations | indent 8 }}
+  {{- end }}
+{{- end }}
+    spec:
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end}}
+      {{- end }}
+      hostAliases:
+      - ip: "127.0.0.1"
+        hostnames:
+        - "status.localhost"
+      containers:
+      - name: {{ template "phabricator.fullname" . }}
+        image: {{ template "phabricator.image" . }}
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+        env:
+        - name: MARIADB_HOST
+          value: {{ template "phabricator.mariadb.fullname" . }}
+        - name: MARIADB_PORT_NUMBER
+          value: "3306"
+        - name: MARIADB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "phabricator.mariadb.fullname" . }}
+              key: mariadb-root-password
+        - name: PHABRICATOR_HOST
+          value: {{ include "phabricator.host" . | quote }}
+        {{- if .Values.phabricatorAlternateFileDomain }}
+        - name: PHABRICATOR_ALTERNATE_FILE_DOMAIN
+          value: {{ .Values.phabricatorAlternateFileDomain | quote }}
+        {{- end }}
+        - name: PHABRICATOR_USERNAME
+          value: {{ default "" .Values.phabricatorUsername | quote }}
+        - name: PHABRICATOR_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "phabricator.fullname" . }}
+              key: phabricator-password
+        {{- if .Values.phabricatorEmail }}
+        - name: PHABRICATOR_EMAIL
+          value: {{ .Values.phabricatorEmail | quote }}
+        {{- end }}
+        {{- if .Values.phabricatorFirstName }}
+        - name: PHABRICATOR_FIRSTNAME
+          value: {{ .Values.phabricatorFirstName | quote }}
+        {{- end }}
+        {{- if .Values.phabricatorLastName }}
+        - name: PHABRICATOR_LASTNAME
+          value: {{ .Values.phabricatorLastName | quote }}
+        {{- end }}
+        {{- if .Values.smtpHost }}
+        - name: SMTP_HOST
+          value: {{ .Values.smtpHost | quote }}
+        {{- end }}
+        {{- if .Values.smtpPort }}
+        - name: SMTP_PORT
+          value: {{ .Values.smtpPort | quote }}
+        {{- end }}
+        {{- if .Values.smtpUser }}
+        - name: SMTP_USER
+          value: {{ .Values.smtpUser | quote }}
+        {{- end }}
+        {{- if .Values.smtpPassword }}
+        - name: SMTP_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "phabricator.fullname" . }}
+              key: smtp-password
+        {{- end }}
+        {{- if .Values.smtpProtocol }}
+        - name: SMTP_PROTOCOL
+          value: {{ .Values.smtpProtocol | quote }}
+        {{- end }}
+        ports:
+        - name: http
+          containerPort: 80
+        - name: https
+          containerPort: 443
+        livenessProbe:
+          httpGet:
+            path: /auth/
+            port: http
+            httpHeaders:
+            - name: Host
+              value: {{ include "phabricator.host" . | quote }}
+          initialDelaySeconds: 180
+          timeoutSeconds: 5
+          failureThreshold: 6
+        readinessProbe:
+          httpGet:
+            path: /auth/
+            port: http
+            httpHeaders:
+            - name: Host
+              value: {{ include "phabricator.host" . | quote }}
+          initialDelaySeconds: 30
+          timeoutSeconds: 3
+          periodSeconds: 5
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        volumeMounts:
+        - name: phabricator-data
+          mountPath: /bitnami/phabricator
+        - name: apache-data
+          mountPath: /bitnami/apache
+{{- if .Values.metrics.enabled }}
+      - name: metrics
+        image: {{ template "metrics.image" . }}
+        imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
+        command: [ '/bin/apache_exporter', '-scrape_uri', 'http://status.localhost:80/server-status/?auto']
+        ports:
+        - name: metrics
+          containerPort: 9117
+        livenessProbe:
+          httpGet:
+            path: /metrics
+            port: metrics
+          initialDelaySeconds: 15
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /metrics
+            port: metrics
+          initialDelaySeconds: 5
+          timeoutSeconds: 1
+        resources:
+  {{ toYaml .Values.metrics.resources | indent 10 }}
+{{- end }}
+      volumes:
+      - name: phabricator-data
+      {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ template "phabricator.fullname" . }}-phabricator
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+      - name: apache-data
+      {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ template "phabricator.fullname" . }}-apache
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+{{- end -}}

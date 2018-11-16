@@ -1,0 +1,18 @@
+name: magento
+version: 3.3.0
+appVersion: 2.2.6
+description: A feature-rich flexible e-commerce solution. It includes transaction options, multi-store functionality, loyalty programs, product categorization and shopper filtering, promotion rules, and more.
+keywords:
+- magento
+- e-commerce
+- http
+- web
+- php
+home: https://magento.com/
+sources:
+- https://github.com/bitnami/bitnami-docker-magento
+maintainers:
+- name: Bitnami
+  email: containers@bitnami.com
+engine: gotpl
+icon: https://bitnami.com/assets/stacks/magento/img/magento-stack-110x117.png

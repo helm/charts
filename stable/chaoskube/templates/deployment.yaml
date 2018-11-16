@@ -1,0 +1,58 @@
+{{- if .Capabilities.APIVersions.Has "apps/v1beta1" }}
+apiVersion: apps/v1beta1
+{{- else }}
+apiVersion: apps/v1
+{{- end }}
+kind: Deployment
+metadata:
+  name: {{ include "chaoskube.fullname" . }}
+  labels:
+{{ include "labels.standard" . | indent 4 }}
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      app: {{ include "chaoskube.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+{{ include "labels.standard" . | indent 8 }}
+    spec:
+      containers:
+        - name: {{ .Values.name }}
+          image: {{ .Values.image }}:{{ .Values.imageTag }}
+          args:
+            - --interval={{ .Values.interval }}
+            - --labels={{ .Values.labels }}
+            - --annotations={{ .Values.annotations }}
+            - --namespaces={{ .Values.namespaces }}
+            {{- if not .Values.dryRun }}
+            - --no-dry-run
+            {{- end }}
+            - --excluded-weekdays={{ .Values.excludedWeekdays }}
+            - --excluded-times-of-day={{ .Values.excludedTimesOfDay }}
+            - --excluded-days-of-year={{ .Values.excludedDaysOfYear }}
+            - --timezone={{ .Values.timezone }}
+            {{- if .Values.debug }}
+            - --debug
+            {{- end }}
+            - --minimum-age={{ .Values.minimumAge }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+{{- if .Values.priorityClassName }}
+      priorityClassName: "{{ .Values.priorityClassName }}"
+{{- end }}
+      serviceAccountName: {{ if .Values.rbac.create }}{{ printf "%s-%s" .Release.Name .Values.name }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

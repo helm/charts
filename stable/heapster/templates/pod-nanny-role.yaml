@@ -1,0 +1,27 @@
+{{- if .Values.rbac.create -}}
+{{- if .Values.resizer.enabled -}}
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: Role
+metadata:
+  name: {{ template "heapster.fullname" . }}-pod-nanny
+  labels:
+    app: {{ template "heapster.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  verbs:
+  - get
+- apiGroups:
+  - "extensions"
+  resources:
+  - deployments
+  verbs:
+  - get
+  - update
+{{- end -}}
+{{- end -}}

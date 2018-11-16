@@ -1,0 +1,24 @@
+{{- if .Values.persistence.enabled -}}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ template "orangehrm.fullname" . }}-orangehrm
+  labels:
+    app: {{ template "orangehrm.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  accessModes:
+    - {{ .Values.persistence.orangehrm.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.orangehrm.size | quote }}
+{{- if .Values.persistence.orangehrm.storageClass }}
+{{- if (eq "-" .Values.persistence.orangehrm.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ .Values.persistence.orangehrm.storageClass }}"
+{{- end }}
+{{- end }}
+{{- end -}}
