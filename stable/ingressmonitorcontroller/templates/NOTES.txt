@@ -1,0 +1,13 @@
+- Follow below mentioned URL to view uptimerobot configuration
+    https://github.com/stakater/IngressMonitorController/blob/master/docs/uptimerobot-configuration.md
+
+- Follow below mentioned URL to view statuscake configuration
+    https://github.com/stakater/IngressMonitorController/blob/master/docs/statuscake-configuration.md
+
+- Follow below mentioned URL to view pingdom configuration
+    https://github.com/stakater/IngressMonitorController/blob/master/docs/pingdom-configuration.md
+
+- For further details, go through docs section of IngressMonitorController
+    https://github.com/stakater/IngressMonitorController/tree/master/docs
+
+- After successful setup of your provider, you will be able to receive notifications based on your provide configurations.
