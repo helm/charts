@@ -38,10 +38,10 @@ livenessprobe:
 readinessprobe:
   initialDelaySeconds: 5
   periodSeconds: 10
-resources: {}
-  # limits:
+resources:
+  limits:
   #  cpu: 100m
-  #  memory: 2Gi
+    memory: 2Gi
   # requests:
   #  cpu: 100m
   #  memory: 2Gi

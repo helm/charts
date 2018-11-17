@@ -220,6 +220,7 @@ To change the language of the MSSQL installation, change the `lcid` key in the `
 1>select substring(convert(varchar(30),serverproperty('Collation')),1,30), substring(convert(varchar(20),serverproperty('lcid')),1,20);
 2>go
 ```
+
 ## Master database files
 
 As part of this chart the `master` database is configured to be installed based in the `/mssql-data/master`.
