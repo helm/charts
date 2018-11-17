@@ -28,6 +28,12 @@ To install the chart with the release name `my-release`:
 helm install --name my-release stable/cockroachdb
 ```
 
+Note that for a production cluster, you are very likely to want to modify the
+`Storage` and `StorageClass` parameters. This chart defaults to just 1 GiB of
+disk space per pod in order for it to work in small environments like Minikube,
+and the default persistent volume `StorageClass` in your environment may not be
+what you want for a database (e.g. on GCE the default is not SSD).
+
 If you are running in secure mode (with configuration parameter `Secure.Enabled`
 set to `true`), then you will have to manually approve the cluster's security
 certificates as the pods are created. You can see the pending
@@ -91,7 +97,7 @@ The following table lists the configurable parameters of the CockroachDB chart a
 | `Tolerations`                  | List of node taints to tolerate                  | `{}`                                      |
 | `Secure.Enabled`               | Whether to run securely using TLS certificates   | `false`                                   |
 | `Secure.RequestCertsImage`     | Image to use for requesting TLS certificates     | `cockroachdb/cockroach-k8s-request-cert`  |
-| `Secure.RequestCertsImageTag`  | Image tag to use for requesting TLS certificates | `0.3`                                     |
+| `Secure.RequestCertsImageTag`  | Image tag to use for requesting TLS certificates | `0.4`                                     |
 | `Secure.ServiceAccount.Create` | Whether to create a new RBAC service account     | `true`                                    |
 | `Secure.ServiceAccount.Name`   | Name of RBAC service account to use              | `""`                                      |
 | `JoinExisting`                 | List of already-existing cockroach instances     | `[]`                                      |

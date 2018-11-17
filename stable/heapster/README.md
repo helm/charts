@@ -50,6 +50,8 @@ The default configuration values for this chart are listed in `values.yaml`.
 | `eventer.enabled`                     | If enabled, start eventer                                    | false                                             |
 | `podAnnotations`                      | Pod Annotations to be added to the heapster Pod              | `{}`                                              |
 | `nodeSelector`                        | Node labels for pod assignment                               | `{}`                                              |
+| `tolerations`                         | Tolerations for pod assignment                               | `[]`                                              |
+| `affinity`                            | Affinity for pod assignment                                  | `{}`                                              |
 
 The table below is only applicable if `resizer.enabled` is `true`. More information on resizer can be found [here](https://github.com/kubernetes/contrib/blob/master/addon-resizer/README.md).
 

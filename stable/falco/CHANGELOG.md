@@ -3,6 +3,15 @@
 This file documents all notable changes to Sysdig Falco Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v0.5.3
+
+* Update falco_rules.yaml file to use the same rules that Falco 0.13.0
+
+## v0.5.2
+
+* Falco was accepted as a CNCF project. Fix references and download image from
+  falcosecurity organization.
+
 ## v0.5.1
 
 * Allow falco to resolve cluster hostnames when running with ebpf.hostNetwork: true

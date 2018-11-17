@@ -22,6 +22,7 @@ spec:
 {{ toYaml .Values.master.podAnnotations | indent 8 }}
         {{- end }}
     spec:
+      serviceAccountName: {{ template "elasticsearch.serviceAccountName.master" . }}
 {{- if .Values.master.priorityClassName }}
       priorityClassName: "{{ .Values.master.priorityClassName }}"
 {{- end }}
