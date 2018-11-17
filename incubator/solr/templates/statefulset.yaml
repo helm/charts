@@ -54,7 +54,7 @@ spec:
             - name: SOLR_HOST
               value: $(SOLR_POD_NAME).{{ template "solr.fullname" . }}-headless
             - name: ZK_HOST
-              value: "{{ .Release.Name }}-zookeeper:{{ .Values.zookeeper.ports.client.containerPort }}"
+              value: "{{ template "zookeeper.hosts" . }}"
             - name: SOLR_TIMEZONE
               value: "{{ .Values.timeZone }}"
             - name: SOLR_HEAP
@@ -73,10 +73,6 @@ spec:
           - name: data
             mountPath: /opt/solr/server/data
             subPath: data
-          lifecycle:
-            preStop:
-              exec:
-                command: ["solr","stop", "-p", "{{ .Values.ports.client.containerPort }}"]
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}

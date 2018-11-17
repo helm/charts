@@ -30,3 +30,7 @@ Create chart name and version as used by the chart label.
 {{- define "solr.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+
+{{- define "zookeeper.hosts" -}}
+{{ $zkname := .Release.Name }}{{ $zkport := default "2181" .Values.zookeeper.ports.client.containerPort }}{{- range $zkcount, $e := until (int .Values.zookeeper.replicaCount) -}}{{- if ne $zkcount 0 }},{{ end }}{{ $zkname }}-zookeeper-{{ . }}.{{ $zkname }}-zookeeper-headless:{{$zkport}}{{ end }}
+{{- end -}}
