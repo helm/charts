@@ -33,9 +33,12 @@ serviceAccount:
 
 rbac:
   # If true, create & use RBAC resources
-  create: false
+  create: true
   # If true, create and use PodSecurityPolicy
   pspEnable: false
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  # name:
 
 # isClusterService specifies whether chart should be deployed as cluster-service or normal k8s app.
 isClusterService: true
