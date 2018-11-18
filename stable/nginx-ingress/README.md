@@ -15,7 +15,7 @@ $ helm install stable/nginx-ingress
 This chart bootstraps an nginx-ingress deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
 ## Prerequisites
-  - Kubernetes 1.6+
+  - Kubernetes 1.9+
 
 ## Installing the Chart
 
