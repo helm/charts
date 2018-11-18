@@ -80,6 +80,15 @@ agent:
   ##
   gatewayTimeoutCreation: 50ms
 
+  ## Configuration for agent healthchecks
+  probes:
+    liveness:
+      initialDelaySeconds: 3
+      periodSeconds: 3
+      timeoutSeconds: 1
+      successThreshold: 1
+      failureThreshold: 3
+
   ## Base64-encoded PEM values for agent's CA certificate(s), certificate and private key
   ##
   tlsFiles:
@@ -161,6 +170,20 @@ server:
   ## Server probe configuration
   probes:
     serverAddress: localhost
+    serverAddressRefresh: 2s
+    timeout: 5s
+    liveness:
+      initialDelaySeconds: 10
+      periodSeconds: 10
+      timeoutSeconds: 10
+      successThreshold: 1
+      failureThreshold: 3
+    readiness:
+      initialDelaySeconds: 10
+      periodSeconds: 10
+      timeoutSeconds: 10
+      successThreshold: 1
+      failureThreshold: 3
 
   ## Base64-encoded PEM values for server's CA certificate(s), certificate and private key
   ##

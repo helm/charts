@@ -113,8 +113,11 @@ spec:
             httpGet:
               path: /ping
               port: {{ .Values.agent.host.port }}
-            initialDelaySeconds: 3
-            periodSeconds: 3
+            initialDelaySeconds: {{ .Values.agent.probes.liveness.initialDelaySeconds }}
+            periodSeconds: {{ .Values.agent.probes.liveness.periodSeconds }}
+            timeoutSeconds: {{ .Values.agent.probes.liveness.timeoutSeconds }}
+            successThreshold: {{ .Values.agent.probes.liveness.successThreshold }}
+            failureThreshold: {{ .Values.agent.probes.liveness.failureThreshold }}
         {{- if .Values.agent.resources }}
           resources:
 {{ toYaml .Values.agent.resources | indent 12 }}
