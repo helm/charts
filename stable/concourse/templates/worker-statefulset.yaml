@@ -147,9 +147,9 @@ spec:
             - name: CONCOURSE_TSA_HOST
               value: "{{ template "concourse.web.fullname" . }}:{{ .Values.concourse.web.tsa.bindPort}}"
             - name: CONCOURSE_TSA_PUBLIC_KEY
-              value: "/concourse-keys/host_key.pub"
+              value: {{ printf "%s/host_key.pub" .Values.secrets.mountPath.worker.keys }}
             - name: CONCOURSE_TSA_WORKER_PRIVATE_KEY
-              value: "/concourse-keys/worker_key"
+              value: {{ printf "%s/worker_key" .Values.secrets.mountPath.worker.keys }}
 
             {{- if .Values.concourse.worker.garden.logLevel }}
             - name: CONCOURSE_GARDEN_LOG_LEVEL
@@ -456,7 +456,7 @@ spec:
             privileged: true
           volumeMounts:
             - name: concourse-keys
-              mountPath: /concourse-keys
+              mountPath: {{ .Values.secrets.mountPath.worker.keys | default "/concourse-keys" | quote }}
               readOnly: true
             - name: concourse-work-dir
               mountPath: {{ .Values.concourse.workingDirectory | default "/concourse-work-dir" | quote }}
