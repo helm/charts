@@ -94,7 +94,7 @@ spec:
         - name: SPRING_CLOUD_KUBERNETES_SECRETS_PATHS
           value: /etc/secrets
         - name: SPRING_CLOUD_DATAFLOW_FEATURES_SKIPPER_ENABLED
-          value: 'true'
+          value: {{ .Values.skipper.enabled | quote }}
         - name: SPRING_CLOUD_SKIPPER_CLIENT_SERVER_URI
           value: 'http://${{ printf "{" }}{{ template "scdf.envname" . }}_SKIPPER_SERVICE_HOST}/api'
         - name: SPRING_CLOUD_DATAFLOW_METRICS_COLLECTOR_URI

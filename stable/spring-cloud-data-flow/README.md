@@ -73,6 +73,7 @@ The following tables list the configurable parameters and their default values.
 
 | Parameter                          | Description                                       | Default          |
 | ---------------------------------- | ------------------------------------------------- | ---------------- |
+| skipper.enabled                    | Skipper enabled/disabled                          | true
 | skipper.version                    | The version/tag of the Skipper server             | 1.1.0.RELEASE
 | skipper.imagePullPolicy            | The imagePullPolicy of the Skipper server         | IfNotPresent
 | skipper.platformName               | The name of the configured platform account       | minikube

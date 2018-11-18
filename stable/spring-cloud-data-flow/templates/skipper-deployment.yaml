@@ -1,3 +1,4 @@
+{{- if .Values.skipper.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -82,3 +83,4 @@ spec:
               key: mysql-root-password
         command: ['sh', '-c', 'mysql -h {{ printf "%s-%s" .Release.Name "mysql" | trunc 63 | trimSuffix "-" }} -u root -e "CREATE DATABASE IF NOT EXISTS skipper;"']
       serviceAccountName: {{ template "scdf.serviceAccountName" . }}
+{{- end }}
