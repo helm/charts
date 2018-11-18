@@ -123,6 +123,12 @@ The following table lists the configurable parameters of the Concourse chart and
 | `rbac.workerServiceAccountName` | Name of the service account to use for workers if `rbac.create` is `false` | `default` |
 | `secrets.localUsers` | Create concourse local users. Default username and password are test:test *See [values.yaml](values.yaml)* |
 | `secrets.create` | Create the secret resource from the following values. *See [Secrets](#secrets)* | `true` |
+| `secrets.mountPath.worker.keys` | Specify the mount directory of the worker keys secrets | `/concourse-keys` |
+| `secrets.mountPath.web.keys` | Specify the mount directory of the web keys secrets | `/concourse-keys` |
+| `secrets.mountPath.web.postgresql` | Specify the mount directory of the web postgresql secrets | `/concourse-postgresql` |
+| `secrets.mountPath.web.vault` | Specify the mount directory of the web vault secrets | `/concourse-keys` |
+| `secrets.mountPath.web.syslog` | Specify the mount directory of the web syslog secrets | `/concourse-keys` |
+| `secrets.mountPath.web.auth` | Specify the mount directory of the web auth secrets | `/concourse-keys` |
 | `secrets.hostKey` | Concourse Host Private Key | *See [values.yaml](values.yaml)* |
 | `secrets.hostKeyPub` | Concourse Host Public Key | *See [values.yaml](values.yaml)* |
 | `secrets.sessionSigningKey` | Concourse Session Signing Private Key | *See [values.yaml](values.yaml)* |
