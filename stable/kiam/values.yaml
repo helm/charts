@@ -87,6 +87,10 @@ agent:
     cert:
     key:
 
+  # Use an existing k8s secret to retrieve the TLS files
+  useProvidedTlsSecret: false
+  tlsSecretName: null
+
 server:
   ## If false, server will not be installed
   ##
@@ -168,6 +172,10 @@ server:
     ca:
     cert:
     key:
+
+  # Use an existing k8s secret to retrieve the TLS files
+  useProvidedTlsSecret: false
+  tlsSecretName: null
 
   ## Base ARN for IAM roles
   ## If not specified use EC2 metadata service to detect ARN prefix

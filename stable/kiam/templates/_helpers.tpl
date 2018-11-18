@@ -88,3 +88,26 @@ Create the name of the server service account to use.
     {{ default "default" .Values.serviceAccounts.server.name }}
 {{- end -}}
 {{- end -}}
+
+
+{{/*
+Define the name of the server secret that contains our tls files.
+*/}}
+{{- define "kiam.server.secretName" -}}
+{{- if .Values.server.useProvidedTlsSecret -}}
+{{- .Values.server.tlsSecretName -}}
+{{- else -}}
+{{- printf "%s-server" (include "kiam.fullname" .) -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Define the name of the agent secret that contains our tls files.
+*/}}
+{{- define "kiam.agent.secretName" -}}
+{{- if .Values.agent.useProvidedTlsSecret -}}
+{{- .Values.agent.tlsSecretName -}}
+{{- else -}}
+{{- printf "%s-agent" (include "kiam.fullname" .) -}}
+{{- end -}}
+{{- end -}}

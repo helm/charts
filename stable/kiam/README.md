@@ -43,6 +43,19 @@ server:
     ca: LS0tL...
 ```
 
+Alternately, you can create the TLS files and add them to kubernetes secrets yourself as explained [here](https://github.com/uswitch/kiam/blob/master/docs/TLS.md).
+If you do so, specify the secret names in your chart values:
+
+```yaml
+agent:
+  useProvidedTlsSecret: true
+  tlsSecretName: agent-secret-name-you-defined
+
+server:
+  useProvidedTlsSecret: true
+  tlsSecretName: server-secret-name-you-defined
+```
+
 To install the chart with the release name `my-release`:
 
 ```console
@@ -93,8 +106,10 @@ Parameter | Description | Default
 `agent.tlsFiles.ca` | Base64 encoded string for the agent's CA certificate(s) | `null`
 `agent.tlsFiles.cert` | Base64 encoded strings for the agent's certificate | `null`
 `agent.tlsFiles.key` | Base64 encoded strings for the agent's private key | `null`
+`agent.tlsSecretName` | The name of the predefined secret when using `agent.useProvidedTlsSecret` | `null`
 `agent.tolerations` | Tolerations to be applied to agent pods | `[]`
 `agent.updateStrategy` | Strategy for agent DaemonSet updates (requires Kubernetes 1.6+) | `OnDelete`
+`agent.useProvidedTlsSecret` | Use a predefined secret that you created with the TLS files | `false`
 `server.enabled` | If true, create server | `true`
 `server.name` | Server container name | `server`
 `server.gatewayTimeoutCreation` | Server's timeout when creating the kiam gateway | `50ms`
@@ -123,9 +138,11 @@ Parameter | Description | Default
 `server.tlsFiles.ca` | Base64 encoded string for the server's CA certificate(s) | `null`
 `server.tlsFiles.cert` | Base64 encoded strings for the server's certificate | `null`
 `server.tlsFiles.key` | Base64 encoded strings for the server's private key | `null`
+`server.tlsSecretName` | The name of the predefined secret when using `server.useProvidedTlsSecret` | `null`
 `server.tolerations` | Tolerations to be applied to server pods | `[]`
 `server.updateStrategy` | Strategy for server DaemonSet updates (requires Kubernetes 1.6+) | `OnDelete`
 `server.useHostNetwork` | If true, use hostNetwork on server to bypass agent iptable rules | `false`
+`server.useProvidedTlsSecret` | Use a predefined secret that you created with the TLS files | `false`
 `rbac.create` | If `true`, create & use RBAC resources | `true`
 `serviceAccounts.agent.create` | If true, create the agent service account | `true`
 `serviceAccounts.agent.name` | Name of the agent service account to use or create | `{{ kiam.agent.fullname }}`
