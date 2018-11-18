@@ -484,6 +484,7 @@ spec:
 {{ toYaml .Values.worker.additionalVolumes | indent 8 }}
 {{- end }}
         - name: concourse-keys
+          {{- if .Values.secrets.mount }}
           secret:
             secretName: {{ template "concourse.concourse.fullname" . }}
             defaultMode: 0400
@@ -494,6 +495,9 @@ spec:
                 path: worker_key
               - key: worker-key-pub
                 path: worker_key.pub
+          {{ else }}
+          emptyDir: {}
+          {{- end }}
 {{- define "concourse.are-there-additional-volumes.with-the-name.concourse-work-dir" }}
   {{- range .Values.worker.additionalVolumes }}
     {{- if .name | eq "concourse-work-dir" }}

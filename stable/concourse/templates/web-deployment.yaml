@@ -930,6 +930,7 @@ spec:
 {{- end }}
       volumes:
         - name: concourse-keys
+          {{- if .Values.secrets.mount }}
           secret:
             secretName: {{ template "concourse.concourse.fullname" . }}
             defaultMode: 0400
@@ -940,8 +941,12 @@ spec:
                 path: session_signing_key
               - key: worker-key-pub
                 path: worker_key.pub
+          {{- else }}
+          emptyDir: {}
+          {{- end }}
         {{- if .Values.concourse.web.vault.enabled }}
         - name: vault-keys
+          {{- if .Values.secrets.mount }}
           secret:
             secretName: {{ template "concourse.concourse.fullname" . }}
             defaultMode: 0400
@@ -956,9 +961,13 @@ spec:
               - key: vault-client-key
                 path: client.key
             {{- end }}
+          {{ else }}
+          emptyDir: {}
+          {{- end }}
         {{- end }}
         {{- if not (eq (default "disable" .Values.concourse.web.postgres.sslmode) "disable") }}
         - name: postgresql-keys
+          {{- if .Values.secrets.mount }}
           secret:
             secretName: {{ template "concourse.concourse.fullname" . }}
             defaultMode: 0400
@@ -969,17 +978,25 @@ spec:
                 path: client.cert
               - key: postgresql-client-key
                 path: client.key
+          {{ else }}
+          emptyDir: {}
+          {{- end }}
         {{- end }}
         {{- if .Values.concourse.web.syslog.enabled }}
         - name: syslog-keys
+          {{- if .Values.secrets.mount }}
           secret:
             secretName: {{ template "concourse.concourse.fullname" . }}
             defaultMode: 0400
             items:
               - key: syslog-ca-cert
                 path: ca.cert
+          {{ else }}
+          emptyDir: {}
+          {{- end }}
         {{- end }}
         - name: auth-keys
+          {{- if .Values.secrets.mount }}
           secret:
             secretName: {{ template "concourse.concourse.fullname" . }}
             defaultMode: 0400
@@ -1004,3 +1021,6 @@ spec:
               - key: oidc-ca-cert
                 path: oidc_ca.cert
               {{- end }}
+          {{ else }}
+          emptyDir: {}
+          {{- end }}
