@@ -1017,18 +1017,15 @@ rbac:
 ##
 secrets:
 
-  # For managing where secrets should be mounted
-  mountPath:
-    # The directory to mount secret volumes to in the worker agent
-    worker:
-      keys: "/concourse-keys"
-    # The directory to mount secret volumes to in the web agent
-    web:
-      keys: "/concourse-keys"
-      auth: "/concourse-auth"
-      vault: "/concourse-vault"
-      postgresql: "/concourse-postgresql"
-      syslog: "/concourse-syslog"
+  ## For managing where secrets should be mounted for worker agents
+  # mountPathWorkerKeys: "concourse-keys"
+
+  ## For managing where secrets should be mounted for the web agents
+  # mountPathWebKeys: "/concourse-keys"
+  # mountPathWebAuth: "/concourse-auth"
+  # mountPathWebVault: "/concourse-vault"
+  # mountPathWebPostgresql: "/concourse-postgresql"
+  # mountPathWebSyslog: "/concourse-syslog"
 
   ## List of username:bcrypted_password combinations for all your local concourse users.
   localUsers: "test:$2a$10$sDB6AsH2HheOWHILrnHVJOCZq/GYtUYE02ypJJTQBmWJNivYNhP3y"
