@@ -74,14 +74,16 @@ For details about installing the chart to use HDFS or GCS, see configurations op
 
 The following tables lists the configurable parameters of the Spark History Sever chart and their default values.
 
+Note that the default image `lightbend/spark-history-server` is built using this [repo](https://github.com/lightbend/spark-history-server-docker).
+
 | Parameter                            | Description                                                       |Default                           |
 | ------------------------------------ |----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
 | hdfs.logDirectory                |The HDFS log directory that starts with "hdfs://"|hdfs://hdfs/history/|
 | hdfs.hdfsSiteConfigMap |The name of the ConfigMap for hdfs-site.xml|hdfs-site|
 | hdfs.coreSiteConfigMap |The name of the ConfigMap for core-site.xml|core-site|
 | hdfs.HADOOP_CONF_DIR |The directory containing core-site.xml and hdfs-site.xml in the image|/etc/hadoop|
-| image.repository |The Docker image used to start the history server daemon|gcr.io/spark-operator/spark|
-| image.tag |The tag of the image|v2.4.0|
+| image.repository |The Docker image used to start the history server daemon|lightbend/spark-history-server|
+| image.tag |The tag of the image|2.4.0|
 | service.type |The type of history server service that exposes the UI|LoadBalancer|
 | service.port |The port on which the service UI can be accessed.|18080|
 | pvc.enablePVC |Whether to use PVC storage|true|
@@ -136,7 +138,7 @@ bin/spark-submit \
     --conf spark.eventLog.enabled=true \
     --conf spark.eventLog.dir=file:/mnt \
     --conf spark.executor.instances=2 \
-    --conf spark.kubernetes.container.image=gcr.io/spark-operator/spark:v2.4.0 \
+    --conf spark.kubernetes.container.image=lightbend/spark-history-server:2.4.0 \
     --conf spark.kubernetes.container.image.pullPolicy=Always \
     --conf spark.kubernetes.driver.volumes.persistentVolumeClaim.checkpointpvc.options.claimName=nfs-pvc \
     --conf spark.kubernetes.driver.volumes.persistentVolumeClaim.checkpointpvc.mount.path=/mnt \
@@ -178,9 +180,9 @@ bin/spark-submit \
     --conf spark.hadoop.google.cloud.auth.service.account.json.keyfile=/etc/secrets/sparkonk8s.json \
     --conf spark.kubernetes.driver.secrets.history-secrets=/etc/secrets \
     --conf spark.kubernetes.executor.secrets.history-secrets=/etc/secrets \
-    --conf spark.kubernetes.container.image=lightbend/spark:2.4.0-gcs \
+    --conf spark.kubernetes.container.image=lightbend/spark-history-server:2.4.0 \
     local:///opt/spark/examples/jars/spark-examples_2.11-2.4.0.jar
 ```
 
-Note that the image for your Spark job (i.e. `spark.kubernetes.container.image`, `spark.kubernetes.driver.container.image` and `spark.kubernetes.executor.container.image`) needs to have the [GCS connector](https://cloud.google.com/dataproc/docs/concepts/connectors/cloud-storage) dependency, otherwise the `gs://` scheme won't be recognized.
+Note that the image for your Spark job (i.e. `spark.kubernetes.container.image`, `spark.kubernetes.driver.container.image` and `spark.kubernetes.executor.container.image`) needs to have the [GCS connector](https://cloud.google.com/dataproc/docs/concepts/connectors/cloud-storage) dependency, which is included in `lightbend/spark-history-server:2.4.0`, otherwise the `gs://` scheme won't be recognized.
 
