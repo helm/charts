@@ -15,4 +15,36 @@ spec:
   names:
     kind: KongPlugin
     plural: kongplugins
+    shortNames:
+    - kp
+  additionalPrinterColumns:
+  - name: Plugin-Type
+    type: string
+    description: Name of the plugin
+    JSONPath: .plugin
+  - name: Age
+    type: date
+    description: Age
+    JSONPath: .metadata.creationTimestamp
+  - name: Disabled
+    type: boolean
+    description: Indicates if the plugin is disabled
+    JSONPath: .disabled
+    priority: 1
+  - name: Config
+    type: string
+    description: Configuration of the plugin
+    JSONPath: .config
+    priority: 1
+  validation:
+    openAPIV3Schema:
+      required:
+      - plugin
+      properties:
+        plugin:
+          type: string
+        disabled:
+          type: boolean
+        config:
+          type: object
 {{- end -}}
