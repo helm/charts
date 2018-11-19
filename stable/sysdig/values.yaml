@@ -1,9 +1,19 @@
 # Default values for Sysdig Monitor and Secure Helm package.
 
 image:
+  registry: docker.io
   repository: sysdig/agent
   tag: latest
+  # Specify a imagePullPolicy
+  # Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
+  # ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
   pullPolicy: Always
+  # Optionally specify an array of imagePullSecrets.
+  # Secrets must be manually created in the namespace.
+  # ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  #
+  # pullSecrets:
+  #   - name: myRegistrKeySecretName
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
