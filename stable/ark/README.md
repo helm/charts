@@ -81,6 +81,9 @@ Parameter | Description | Default
 `credentials.existingSecret` | If specified and `useSecret` is `true`, uses an existing secret with this name instead of creating one | ``
 `credentials.useSecret` | Whether a secret should be used. Set this to `false` when using `kube2iam` | `true`
 `credentials.secretContents` | Contents for the credentials secret | `{}`
+`monitoring.enabled` | Set this to `true` to enable exporting Prometheus monitoring metrics | `false`
+`monitoring.containerPort` | By default Ark pod exposes Prometheus metrics on port 8085 | `8085`
+`monitoring.servicePort` | Port in the cluster Prometheus will access the metrics on | `5000`
 
 
 ## How to

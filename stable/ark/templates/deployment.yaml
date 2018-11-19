@@ -58,6 +58,11 @@ spec:
           {{- end }}
               value: /credentials/cloud
         {{- end }}
+          {{- if .Values.monitoring.enabled }}
+          ports:
+            - name: monitoring
+              containerPort: {{ .Values.monitoring.containerPort }}
+          {{- end }}
       volumes:
         {{- if and .Values.credentials.useSecret (or (eq $provider "aws") (eq $provider "gcp")) }}
         - name: cloud-credentials

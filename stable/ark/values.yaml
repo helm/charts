@@ -59,3 +59,8 @@ credentials:
   existingSecret:
   useSecret: true
   secretContents: {}
+
+monitoring:
+  enabled: false
+  containerPort: 8085
+  servicePort: 5000
