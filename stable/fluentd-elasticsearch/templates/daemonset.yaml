@@ -66,7 +66,7 @@ spec:
         - name: libsystemddir
           mountPath: /host/lib
           readOnly: true
-        - name: config-volume-{{ template "fluentd-elasticsearch.fullname" . }}
+        - name: config-volume
           mountPath: /etc/fluent/config.d
 {{- if .Values.extraVolumeMounts }}
 {{ toYaml .Values.extraVolumeMounts | indent 8 }}
@@ -75,6 +75,9 @@ spec:
 {{- range $port := .Values.service.ports }}
           - name: {{ $port.name }}
             containerPort: {{ $port.port }}
+{{- if $port.protocol }}
+            protocol: {{ $port.protocol }}
+{{- end }}
 {{- end }}
 {{- if .Values.livenessProbe.enabled }}
         # Liveness probe is aimed to help in situarions where fluentd
@@ -122,7 +125,7 @@ spec:
       - name: libsystemddir
         hostPath:
           path: /usr/lib64
-      - name: config-volume-{{ template "fluentd-elasticsearch.fullname" . }}
+      - name: config-volume
         configMap:
           name: {{ template "fluentd-elasticsearch.fullname" . }}
 {{- if .Values.extraVolumes }}
