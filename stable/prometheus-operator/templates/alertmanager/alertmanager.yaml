@@ -13,9 +13,7 @@ spec:
 {{- end }}
   replicas: {{ .Values.alertmanager.alertmanagerSpec.replicas }}
   listenLocal: {{ .Values.alertmanager.alertmanagerSpec.listenLocal }}
-{{- if .Values.global.rbac.create }}
   serviceAccountName: {{ template "prometheus-operator.alertmanager.serviceAccountName" . }}
-{{- end }}
 {{- if .Values.alertmanager.alertmanagerSpec.externalUrl }}
   externalUrl: "{{ .Values.alertmanager.alertmanagerSpec.externalUrl }}"
 {{- end }}
