@@ -58,6 +58,8 @@ The following tables lists the configurable parameters of the prometheus-operato
 | `fullNameOverride` | Provide a name to substitute for the full names of resources |`""`|
 | `commonLabels` | Labels to apply to all resources | `[]` |
 | `defaultRules.create` | Create default rules for monitoring the cluster | `true` |
+| `defaultRules.labels` | Labels for default rules for monitoring the cluster | `{}` |
+| `defaultRules.annotations` | Annotations for default rules for monitoring the cluster | `{}` |
 | `global.rbac.create` | Create RBAC resources | `true` |
 | `global.rbac.pspEnabled` | Create pod security policy resources | `true` |
 | `global.imagePullSecrets` | Reference to one or more secrets to be used when pulling images | `[]` |
@@ -72,7 +74,7 @@ The following tables lists the configurable parameters of the prometheus-operato
 | `prometheusOperator.cleanupCustomResource` | Attempt to delete CRDs when the release is removed. This option may be useful while testing but is not recommended, as deleting the CRD definition will delete resources and prevent the operator from being able to clean up resources that it manages | `false` |
 | `prometheusOperator.podLabels` | Labels to add to the operator pod | `{}` |
 | `prometheusOperator.kubeletService.enabled` | If true, the operator will create and maintain a service for scraping kubelets | `true` |
-| `prometheusOperator.kubeletService.namespace` | Namespace to deploy kubelet service | `true` |
+| `prometheusOperator.kubeletService.namespace` | Namespace to deploy kubelet service | `kube-system` |
 | `prometheusOperator.serviceMonitor.selfMonitor` | Enable monitoring of prometheus operator | `true` |
 | `prometheusOperator.service.type` | Prometheus operator service type | `ClusterIP` |
 | `prometheusOperator.service.nodePort` | Port to expose prometheus operator service on each node | `38080` |
