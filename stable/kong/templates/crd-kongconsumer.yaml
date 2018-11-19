@@ -15,4 +15,22 @@ spec:
   names:
     kind: KongConsumer
     plural: kongconsumers
+    shortNames:
+    - kc
+  additionalPrinterColumns:
+  - name: Username
+    type: string
+    description: Username of a Kong Consumer
+    JSONPath: .username
+  - name: Age
+    type: date
+    description: Age
+    JSONPath: .metadata.creationTimestamp
+  validation:
+    openAPIV3Schema:
+      properties:
+        username:
+          type: string
+        custom_id:
+          type: string
 {{- end -}}
