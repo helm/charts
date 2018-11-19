@@ -17,8 +17,9 @@ resources:
     cpu: 100m
     memory: 128Mi
 
+serviceType: "ClusterIP"
+
 service:
-  type: "ClusterIP"
 # clusterIP: ""
   annotations:
     prometheus.io/scrape: "true"

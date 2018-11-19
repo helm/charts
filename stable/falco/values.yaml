@@ -1,7 +1,7 @@
 # Default values for falco.
 
 image:
-  repository: sysdig/falco
+  repository: falcosecurity/falco
   tag: latest
   pullPolicy: Always
 
@@ -37,6 +37,12 @@ daemonset: {}
   # If you do want to specify resources, uncomment the following lines, adjust
   # them as necessary, and remove the curly braces after 'resources:'.
   # updateStrategy: RollingUpdate
+
+# If is behind a proxy you can set the proxy server
+proxy:
+  httpProxy:
+  httpsProxy:
+  noProxy:
 
 ebpf:
   # Enable eBPF support for Falco
@@ -176,6 +182,20 @@ integrations:
   natsOutput:
     enabled: false
     natsUrl: "nats://nats.nats-io.svc.cluster.local:4222"
+  # If SNS Output integration is enabled, falco will be configured to use this
+  # integration as file_output and sets the following values:
+  # * json_output: true
+  # * json_include_output_property: true
+  # * file_output:
+  #     enabled: true
+  #     keep_alive: true
+  #     filename: /var/run/falco/nats
+  snsOutput:
+    enabled: false
+    topic: ""
+    aws_access_key_id: ""
+    aws_secret_access_key: ""
+    aws_default_region: ""
 
 # Allow falco to run on Kubernetes 1.6 masters.
 tolerations:

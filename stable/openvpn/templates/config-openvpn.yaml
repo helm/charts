@@ -105,7 +105,7 @@ data:
 {{ if (.Values.openvpn.OVPN_K8S_POD_NETWORK) (.Values.openvpn.OVPN_K8S_POD_SUBNET) }}
       push "route {{ .Values.openvpn.OVPN_K8S_POD_NETWORK }} {{ .Values.openvpn.OVPN_K8S_POD_SUBNET }}"
 {{ end }}
-{{ if (.Values.openvpn.OVPN_K8S_SVC_NETWORK) (.Values.openvpn.OVPN_SVC_POD_SUBNET) }}
+{{ if (.Values.openvpn.OVPN_K8S_SVC_NETWORK) (.Values.openvpn.OVPN_K8S_SVC_SUBNET) }}
       push "route {{ .Values.openvpn.OVPN_K8S_SVC_NETWORK }} {{ .Values.openvpn.OVPN_K8S_SVC_SUBNET }}"
 {{ end }}
 

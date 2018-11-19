@@ -8,6 +8,10 @@ metadata:
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "odoo.name" . }}
+      release: "{{ .Release.Name }}"
   template:
     metadata:
       labels:
@@ -34,7 +38,7 @@ spec:
           valueFrom:
             secretKeyRef:
               name: {{ template "odoo.postgresql.fullname" . }}
-              key: postgres-password
+              key: postgresql-password
         - name: ODOO_EMAIL
           value: {{ .Values.odooEmail | quote }}
         - name: ODOO_PASSWORD
