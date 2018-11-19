@@ -1,4 +1,3 @@
-{{- if gt (len .Values.single.config.outputs.influxdb.urls) 0 }}
 {{- if .Values.single.enabled -}}
 apiVersion: v1
 kind: ConfigMap
@@ -15,5 +14,4 @@ data:
     {{ template "agent" .Values.single.config.agent }}
     {{ template "outputs" .Values.single.config.outputs }}
     {{ template "inputs" .Values.single.config.inputs -}}
-{{- end -}}
 {{- end -}}
