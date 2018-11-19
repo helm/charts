@@ -70,6 +70,14 @@ ssl:
   permanentRedirect: false
   upstream: false
   insecureSkipVerify: false
+  generateTLS: false
+  defaultCN: ""
+    # "example.com" or *.example.com
+  defaultSANList: []
+    # - example.com
+    # - test1.example.com
+  defaultIPList: []
+    # - 1.2.3.4
   # cipherSuites: []
   # https://docs.traefik.io/configuration/entrypoints/#specify-minimum-tls-version
   # tlsMinVersion: VersionTLS12
