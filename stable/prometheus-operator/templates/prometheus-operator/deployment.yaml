@@ -44,9 +44,7 @@ spec:
       securityContext:
         runAsNonRoot: true
         runAsUser: 65534
-    {{- if .Values.global.rbac.create }}
       serviceAccountName: {{ template "prometheus-operator.operator.serviceAccountName" . }}
-    {{- end }}
     {{- with .Values.prometheusOperator.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

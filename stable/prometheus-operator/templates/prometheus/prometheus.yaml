@@ -64,9 +64,7 @@ spec:
   configMaps:
 {{ toYaml .Values.prometheus.prometheusSpec.configMaps | indent 4 }}
 {{- end }}
-{{- if .Values.global.rbac.create }}
   serviceAccountName: {{ template "prometheus-operator.prometheus.serviceAccountName" . }}
-{{- end }}
 {{- if .Values.prometheus.prometheusSpec.serviceMonitorSelector }}
   serviceMonitorSelector:
 {{ toYaml .Values.prometheus.prometheusSpec.serviceMonitorSelector | indent 4 }}
