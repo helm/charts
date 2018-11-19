@@ -49,8 +49,8 @@ Due to having no explicit selector set for the StatefulSet before version 2.0.0 
 this chart, upgrading from any version that uses a version of kubernetes that locks
 the selector labels to any other version is impossible without deleting the StatefulSet.
 Luckily there is a way to do it without actually deleting all the resources managed
-by the StatefulSet. Use the workaround below to upgrade from versions previous to 2.0.0.
-The following example assumes that the release name is crdb:
+by the StatefulSet. Use the workaround below to upgrade from charts versions previous 
+to 2.0.0. The following example assumes that the release name is crdb:
 
 ```console
 $ kubectl delete statefulset crdb-cockroachdb --cascade=false
@@ -69,7 +69,7 @@ The following table lists the configurable parameters of the CockroachDB chart a
 | ------------------------------ | ------------------------------------------------ | ----------------------------------------- |
 | `Name`                         | Chart name                                       | `cockroachdb`                             |
 | `Image`                        | Container image name                             | `cockroachdb/cockroach`                   |
-| `ImageTag`                     | Container image tag                              | `v2.0.6`                                  |
+| `ImageTag`                     | Container image tag                              | `v2.1.1`                                  |
 | `ImagePullPolicy`              | Container pull policy                            | `Always`                                  |
 | `Replicas`                     | k8s statefulset replicas                         | `3`                                       |
 | `MaxUnavailable`               | k8s PodDisruptionBudget parameter                | `1`                                       |
