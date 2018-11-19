@@ -1,4 +1,4 @@
-{{- if .Values.rbac.create }}
+{{- if and .Values.nodeExporter.enabled .Values.rbac.create }}
 {{- if .Values.nodeExporter.podSecurityPolicy.enabled }}
 apiVersion: extensions/v1beta1
 kind: PodSecurityPolicy
