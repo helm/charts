@@ -81,9 +81,10 @@ The following table lists the configurable parameters of the Cassandra chart and
 | Parameter                  | Description                                     | Default                                                    |
 | -----------------------    | ---------------------------------------------   | ---------------------------------------------------------- |
 | `image.repo`                         | `cassandra` image repository                    | `cassandra`                                                |
-| `image.tag`                          | `cassandra` image tag                           | `3.11.3`                                                        |
+| `image.tag`                          | `cassandra` image tag                           | `3.11.3`                                                   |
 | `image.pullPolicy`                   | Image pull policy                               | `Always` if `imageTag` is `latest`, else `IfNotPresent`    |
 | `image.pullSecrets`                  | Image pull secrets                              | `nil`                                                      |
+| `config.cluster_domain`              | The name of the cluster domain.                 | `cluster.local`                                            |
 | `config.cluster_name`                | The name of the cluster.                        | `cassandra`                                                |
 | `config.cluster_size`                | The number of nodes in the cluster.             | `3`                                                        |
 | `config.seed_size`                   | The number of seed nodes used to bootstrap new clients joining the cluster.                            | `2` |
@@ -124,8 +125,8 @@ The following table lists the configurable parameters of the Cassandra chart and
 | `backup.enabled`                     | Enable backup on chart installation             | `false`                                                    |
 | `backup.schedule`                    | Keyspaces to backup, each with cron time        |                                                            |
 | `backup.annotations`                 | Backup pod annotations                          | iam.amazonaws.com/role: `cain`                             |
-| `backup.image.repo`                  | Backup image repository                         | `maorfr/cain`                                              |
-| `backup.image.tag`                   | Backup image tag                                | `0.1.0`                                                    |
+| `backup.image.repo`                  | Backup image repository                         | `nuvo/cain`                                                |
+| `backup.image.tag`                   | Backup image tag                                | `0.2.0`                                                    |
 | `backup.env`                         | Backup environment variables                    | AWS_REGION: `us-east-1`                                    |
 | `backup.resources`                   | Backup CPU/Memory resource requests/limits      | Memory: `1Gi`, CPU: `1`                                    |
 | `backup.destination`                 | Destination to store backup artifacts           | `s3://bucket/cassandra`                                    |
@@ -134,6 +135,9 @@ The following table lists the configurable parameters of the Cassandra chart and
 | `exporter.image.tag`                 | Exporter image tag                              | `2.0.2`                                                    |
 | `exporter.port`                      | Exporter port                                   | `5556`                                                     |
 | `exporter.jvmOpts`                   | Exporter additional JVM options                 |                                                            |
+| `affinity`                           | Kubernetes node affinity                        | `{}`                                                       |
+| `tolerations`                        | Kubernetes node tolerations                     | `[]`                                                       |
+
 
 ## Scale cassandra
 When you want to change the cluster size of your cassandra, you can use the helm upgrade command.

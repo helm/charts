@@ -1,7 +1,12 @@
-# Running Buildkite agent
+# Running Buildkite agent - DEPRECATED
 
-The [buildkite agent](https://buildkite.com/docs/agent) is a small, reliable and cross-platform build runner that makes it easy to run automated builds on your own infrastructure. Its main responsibilities are polling buildkite.com for work, running build jobs, reporting back the status code and output log of the job, and uploading the job's artefacts.
-It is simple, lightweight hosted [Buildkite](https://buildkite.com) CI/CD system which only requires to host agents in your Kubernetes cluster.
+**This chart is deprecated! You can find the new chart in:**
+- **Sources:** https://github.com/buildkite/charts
+- **Charts repository:** https://buildkite.github.io/charts/
+
+```bash
+helm repo add buildkite https://buildkite.github.io/charts/
+```
 
 ## Introduction
 
