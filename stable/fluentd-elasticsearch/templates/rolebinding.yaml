@@ -1,0 +1,22 @@
+
+{{- if .Values.podSecurityPolicy.enabled }}
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: RoleBinding
+metadata:
+  name: {{ template "fluentd-elasticsearch.fullname" . }}
+  labels:
+    app: {{ template "fluentd-elasticsearch.name" . }}
+    kubernetes.io/cluster-service: "true"
+    addonmanager.kubernetes.io/mode: Reconcile
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+roleRef:
+  kind: Role
+  name: {{ template "fluentd-elasticsearch.fullname" . }}
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+- kind: ServiceAccount
+  name: {{ template "fluentd-elasticsearch.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+{{- end }}
