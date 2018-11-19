@@ -151,6 +151,7 @@ external:
     image: "lwolf/kubectl_deployer"
     imageTag: "0.4"
     imagePullPolicy: "IfNotPresent"
+
   # Static IP's and used in conjunction with type "LoadBalancer" on GCP/AWS.
   # This will ensure if the helm chart is deployed again, it will use the same Static IP
   loadBalancerIP: []
