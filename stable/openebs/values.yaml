@@ -15,7 +15,7 @@ image:
 
 apiserver:
   image: "quay.io/openebs/m-apiserver"
-  imageTag: "0.7.1"
+  imageTag: "0.7.2"
   replicas: 1
   ports:
     externalPort: 5656
@@ -26,7 +26,7 @@ apiserver:
 
 provisioner:
   image: "quay.io/openebs/openebs-k8s-provisioner"
-  imageTag: "0.7.1"
+  imageTag: "0.7.2"
   replicas: 1
   nodeSelector: {}
   tolerations: []
@@ -35,10 +35,10 @@ provisioner:
 snapshotOperator:
   controller:
     image: "quay.io/openebs/snapshot-controller"
-    imageTag: "0.7.1"
+    imageTag: "0.7.2"
   provisioner:
     image: "quay.io/openebs/snapshot-provisioner"
-    imageTag: "0.7.1"
+    imageTag: "0.7.2"
   replicas: 1
   upgradeStrategy: "Recreate"
   nodeSelector: {}
@@ -60,25 +60,25 @@ ndm:
 
 jiva:
   image: "quay.io/openebs/jiva"
-  imageTag: "0.7.1"
+  imageTag: "0.7.2"
   replicas: 3
 
 cstor:
   pool:
     image: "quay.io/openebs/cstor-pool"
-    imageTag: "0.7.1"
+    imageTag: "0.7.2"
   poolMgmt:
     image: "quay.io/openebs/cstor-pool-mgmt"
-    imageTag: "0.7.1"
+    imageTag: "0.7.2"
   target:
     image: "quay.io/openebs/cstor-istgt"
-    imageTag: "0.7.1"
+    imageTag: "0.7.2"
   volumeMgmt:
     image: "quay.io/openebs/cstor-volume-mgmt"
-    imageTag: "0.7.1"
+    imageTag: "0.7.2"
 
 policies:
   monitoring:
     enabled: true
     image: "quay.io/openebs/m-exporter"
-    imageTag: "0.7.1"
+    imageTag: "0.7.2"
