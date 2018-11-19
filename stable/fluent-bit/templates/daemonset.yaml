@@ -31,7 +31,16 @@ spec:
         image: "{{ .Values.image.fluent_bit.repository }}:{{ .Values.image.fluent_bit.tag }}"
         imagePullPolicy: "{{ .Values.image.pullPolicy }}"
         env:
+{{- if .Values.backend.es.http_passwd_secret }}
+          - name: HTTP_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.backend.es.http_passwd_secret }}
+                key: {{ .Values.backend.es.http_passwd_secret_key }}
+{{- end }}
+{{- if or .Values.env (not .Values.backend.es.http_passwd_secret) }}
 {{ toYaml .Values.env | indent 10 }}
+{{- end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
 {{- if .Values.metrics.enabled }}
@@ -54,10 +63,10 @@ spec:
           mountPath: /fluent-bit/etc/parsers_custom.conf
           subPath: parsers.conf
 {{- end }}
-{{- if .Values.backend.es.tls_ca }}
+{{- if or .Values.backend.es.tls_ca .Values.backend.es.tls_secret }}
         - name: es-tls-secret
           mountPath: /secure/es-tls-ca.crt
-          subPath: es-tls-ca.crt
+          subPath: {{ .Values.backend.es.tls_secret_ca_key | default "es-tls-ca.crt" | quote }}
 {{- end }}
 {{- if .Values.trackOffsets }}
         - name: tail-db
@@ -87,7 +96,11 @@ spec:
       - name: varlibdockercontainers
         hostPath:
           path: /var/lib/docker/containers
-{{- if .Values.backend.es.tls_ca }}
+{{- if .Values.backend.es.tls_secret }}
+      - name: es-tls-secret
+        secret:
+          secretName: {{ .Values.backend.es.tls_secret }}
+{{- else if .Values.backend.es.tls_ca }}
       - name: es-tls-secret
         secret:
           secretName: "{{ template "fluent-bit.fullname" . }}-es-tls-secret"
