@@ -90,7 +90,7 @@ jet:
               <metrics-for-data-structures>false</metrics-for-data-structures>
           </metrics>
       </hazelcast-jet>
-      
+
 # nodeSelector is an array of Hazelcast Node labels for POD assignments
 # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
 nodeSelector: {}
