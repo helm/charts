@@ -246,6 +246,7 @@ Parameter | Description | Default
 `server.persistentVolume.annotations` | Prometheus server data Persistent Volume annotations | `{}`
 `server.persistentVolume.existingClaim` | Prometheus server data Persistent Volume existing claim name | `""`
 `server.persistentVolume.mountPath` | Prometheus server data Persistent Volume mount root path | `/data`
+`server.persistentVolume.reclaimPolicy` | Prometheus server data Persistent Volume reclaim policy | `Retain`
 `server.persistentVolume.size` | Prometheus server data Persistent Volume size | `8Gi`
 `server.persistentVolume.storageClass` | Prometheus server data Persistent Volume Storage Class |  `unset`
 `server.persistentVolume.subPath` | Subdirectory of Prometheus server data Persistent Volume to mount | `""`
