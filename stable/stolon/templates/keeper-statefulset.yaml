@@ -88,6 +88,10 @@ spec:
             mountPath: /stolon-data
           - name: stolon-secrets
             mountPath: /etc/secrets/stolon
+{{- range $key, $value := .Values.keeper.volumeMounts }}
+          - name: {{ $key }}
+{{ toYaml $value | indent 12 }}
+{{- end }}
 {{- with .Values.keeper.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
@@ -104,6 +108,10 @@ spec:
         - name: stolon-secrets
           secret:
             secretName: {{ template "stolon.fullname" . }}
+{{- range $key, $value := .Values.keeper.volumes }}
+        - name: {{ $key }}
+{{ toYaml $value | indent 10 }}
+{{- end }}
 {{- if .Values.persistence.enabled }}
   volumeClaimTemplates:
     - metadata:
