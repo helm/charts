@@ -38,7 +38,7 @@ rbac:
   serviceAccountName: default
 # Add extra environment variables if specified (must be specified as a single line object and be quoted)
 extraVars:
- - "{ name: FLUENT_UID, value: \"0\" }"
+  - "{ name: FLUENT_UID, value: \"0\" }"
 # - "{ name: NODE_NAME, valueFrom: { fieldRef: { fieldPath: spec.nodeName } } }"
 
 fluentdConfig: |
@@ -192,4 +192,3 @@ fluentdConfig: |
      disable_retry_limit
      num_threads 8
   </match>
-  
