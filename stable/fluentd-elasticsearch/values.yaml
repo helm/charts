@@ -22,6 +22,7 @@ elasticsearch:
   port: 9200
   buffer_chunk_limit: 2M
   buffer_queue_limit: 8
+  logstash_prefix: 'logstash'
 
 rbac:
   create: true
@@ -439,6 +440,7 @@ configMaps:
       host "#{ENV['OUTPUT_HOST']}"
       port "#{ENV['OUTPUT_PORT']}"
       logstash_format true
+      logstash_prefix "#{ENV['LOGSTASH_PREFIX']}"
       <buffer>
         @type file
         path /var/log/fluentd-buffers/kubernetes.system.buffer
