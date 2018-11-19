@@ -7,7 +7,7 @@ metadata:
   namespace: {{ .Values.serviceMonitor.namespace }}
   {{- end }}
   labels:
-    {{- range $key, $value := .Values.serviceMonitor.selector }}
+    {{- range $key, $value := .Values.serviceMonitor.labels }}
       {{ $key }}: {{ $value | quote }}
     {{- end }}
 spec:

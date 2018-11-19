@@ -69,7 +69,7 @@ Parameter | Description | Default
 `serviceMonitor.enabled` | if `true`, creates a Prometheus Operator ServiceMonitor | `false`
 `serviceMonitor.interval` | Interval that Prometheus scrapes Elasticsearch metrics | `10s`
 `serviceMonitor.namespace` | Namespace which Prometheus is running in | `monitoring`
-`serviceMonitor.selector` | Default to kube-prometheus install (CoreOS recommended), but should be set according to Prometheus install | `{ prometheus: kube-prometheus }`
+`serviceMonitor.labels` | Default to kube-prometheus install (CoreOS recommended), but should be set according to Prometheus install | `{ prometheus: kube-prometheus }`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
