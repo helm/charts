@@ -71,8 +71,8 @@ ssl:
   upstream: false
   insecureSkipVerify: false
   generateTLS: false
-  defaultCN: ""
-    # "example.com" or *.example.com
+  # defaultCN: "example.com"
+    # or *.example.com
   defaultSANList: []
     # - example.com
     # - test1.example.com
