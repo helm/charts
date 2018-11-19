@@ -662,6 +662,12 @@ server:
     ##
     subPath: ""
 
+    ## reclaimPolicy for the persistent volume.
+    ## See https://kubernetes.io/docs/tasks/administer-cluster/change-pv-reclaim-policy/
+    ## Can be Retain, Recycle, or Delete
+    ##
+    reclaimPolicy: Retain
+
   ## Annotations to be added to Prometheus server pods
   ##
   podAnnotations: {}
@@ -1026,6 +1032,9 @@ serverFiles:
           - source_labels: [__meta_kubernetes_service_name]
             action: replace
             target_label: kubernetes_name
+          - source_labels: [__meta_kubernetes_pod_node_name]
+            action: replace
+            target_label: kubernetes_node
 
       - job_name: 'prometheus-pushgateway'
         honor_labels: true
