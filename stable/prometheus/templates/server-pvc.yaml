@@ -24,6 +24,7 @@ spec:
   storageClassName: "{{ .Values.server.persistentVolume.storageClass }}"
 {{- end }}
 {{- end }}
+  persistentVolumeReclaimPolicy: {{ .Values.server.persistentVolume.reclaimPolicy | quote }}
   resources:
     requests:
       storage: "{{ .Values.server.persistentVolume.size }}"
