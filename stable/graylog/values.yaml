@@ -94,7 +94,7 @@ graylog:
     # tcp:
     #   service:
     #     type: LoadBalancer
-    #     loadBalancerIP: 
+    #     loadBalancerIP:
     #   ports:
     #     - name: gelf
     #       port: 12222
@@ -157,7 +157,7 @@ graylog:
   ## Graylog root user name
   ##
   rootUsername: "admin"
-  
+
   ## Graylog root password
   ## Defaults to a random 10-character alphanumeric string if not set
   ##
@@ -185,7 +185,6 @@ graylog:
     ## Also see http://docs.graylog.org/en/2.3/pages/configuration/index_model.html#index-set-configuration.
     rotationStrategy: time
     maxNumberOfIndices: "24w"
-    maxNumberOfIndices: 24
     retentionStrategy: delete
     shards: 5
     replicas: 1
@@ -202,7 +201,7 @@ graylog:
     maxConnections: 1000
 
   transportEmail:
-    ## If true, enable Email transport. 
+    ## If true, enable Email transport.
     enabled: false
     hostname: ""
     port: 2587
@@ -220,4 +219,3 @@ graylog:
   serverFiles: {}
     # graylog-server.key: |
     # graylog-server.cert: |
-
