@@ -1,7 +1,7 @@
 # Default values for elasticsearch.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-appVersion: "6.4.3"
+appVersion: "6.5.0"
 
 ## Define serviceAccount names for components. Defaults to component's fully qualified name.
 ##
@@ -33,7 +33,7 @@ podSecurityPolicy:
 
 image:
   repository: "docker.elastic.co/elasticsearch/elasticsearch-oss"
-  tag: "6.4.3"
+  tag: "6.5.0"
   pullPolicy: "IfNotPresent"
   # If specified, use these secrets to access the image
   # pullSecrets:
