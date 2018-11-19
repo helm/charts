@@ -1,0 +1,26 @@
+{{- if .Values.loadBalancer.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "apache-nifi.fullname" . }}-load-balancer
+  labels:
+    app: {{ include "apache-nifi.name" . | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+spec:
+  type: "LoadBalancer"
+  ports:
+{{- if .Values.properties.clusterSecure }}
+    - port: {{ .Values.loadBalancer.httpsPort }}
+      name: https
+      targetPort: {{ .Values.properties.httpsPort }}
+{{- else }}
+    - port: {{ .Values.loadBalancer.httpPort }}
+      name: http
+      targetPort: {{ .Values.properties.httpPort }}
+{{- end }}
+  selector:
+    app: {{ template "apache-nifi.name" . }}
+    release: {{ .Release.Name }}
+{{- end -}}

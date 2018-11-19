@@ -1,0 +1,13 @@
+properties:
+  clusterSecure: false
+  needClientAuth: null
+  httpPort: 8080
+  httpsPort: null
+  siteToSite:
+    secure: false
+
+ca:
+  enabled: false
+
+sts:
+  hostPort: null

@@ -1,0 +1,373 @@
+{{- if .Values.nifiSingleDisk }}
+{{- if .Values.nifiSingleDisk.enabled }}
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: {{ template "apache-nifi.fullname" . }}
+  labels:
+    app: {{ include "apache-nifi.name" . | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+spec:
+  podManagementPolicy: {{ .Values.sts.podManagementPolicy }}
+  serviceName: {{ template "apache-nifi.fullname" . }}-headless
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      annotations:
+        security.alpha.kubernetes.io/sysctls: net.ipv4.ip_local_port_range=10000 65000
+      labels:
+        app: {{ include "apache-nifi.name" . | quote }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        release: {{ .Release.Name | quote }}
+        heritage: {{ .Release.Service | quote }}
+    spec:
+      {{- if eq .Values.sts.AntiAffinity "hard"}}
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: "app"
+                    operator: In
+                    values:
+                    - {{ include "apache-nifi.name" . | quote }}
+              topologyKey: "kubernetes.io/hostname"
+      {{- else if eq .Values.sts.AntiAffinity "soft"}}
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+             - weight: 1
+               podAffinityTerm:
+                 labelSelector:
+                    matchExpressions:
+                      - key: "component"
+                        operator: In
+                        values:
+                         - {{ include "apache-nifi.name" . | quote }}
+                 topologyKey: "kubernetes.io/hostname"
+      {{- end}}
+{{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+{{- end }}
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}
+      securityContext:
+        runAsUser: 1000
+        fsGroup: 1000
+      initContainers:
+      - name: zookeeper
+        image: busybox
+        command:
+        - sh
+        - -c
+        - |
+          echo trying to contact {{ template "zookeeper.server" . }} {{ .Values.zookeeper.port }}
+          until nc -vzw 1 {{ template "zookeeper.server" . }} {{ .Values.zookeeper.port }}; do
+            echo "waiting for zookeeper..."
+            sleep 2
+          done
+{{- if .Values.ca.enabled }}
+      - name: cert
+        imagePullPolicy: {{ .Values.ca.image.pullPolicy | quote }}
+        image: "{{ .Values.ca.image.repository }}:{{ .Values.ca.image.tag }}"
+        command:
+        - bash
+        - -c
+        - |
+
+          CA_ADDRESS="{{ template "apache-nifi.fullname" . }}-ca:{{ .Values.ca.port }}"
+          until echo "" | timeout -t 2 openssl s_client -connect "${CA_ADDRESS}"; do
+            echo "Waiting for CA to be avaiable at ${CA_ADDRESS}"
+            sleep 2
+          done;
+
+          mkdir -p /data/cert
+          cd /data/cert
+
+          rm -rf /data/cert/*
+
+          ${NIFI_TOOLKIT_HOME}/bin/tls-toolkit.sh client\
+            -c "{{ template "apache-nifi.fullname" . }}-ca"\
+            -t "$(cat /etc/ca-mitm-token/token)"\
+{{- if .Values.properties.webProxyHost}}
+            --subjectAlternativeNames {{.Values.properties.webProxyHost}}\
+{{- end }}
+            -D "CN=$(hostname -f),OU=NIFI"\
+            -p {{ .Values.ca.port }}
+
+          # generate admin cert for operational use cases
+          mkdir -p /data/cert/admin
+          cd /data/cert/admin
+
+          ${NIFI_TOOLKIT_HOME}/bin/tls-toolkit.sh client\
+            -c "{{ template "apache-nifi.fullname" . }}-ca"\
+            -t "$(cat /etc/ca-mitm-token/token)"\
+{{- if .Values.properties.webProxyHost}}
+            --subjectAlternativeNames {{.Values.properties.webProxyHost}}\
+{{- end }}
+            -p {{ .Values.ca.port }}\
+            -D "CN={{ .Values.ca.admin.cn }},OU=NIFI"\
+            -T PKCS12
+
+          export PASS=$(jq -r .keyStorePassword config.json)
+
+          openssl pkcs12 -in "keystore.pkcs12" -out "key.pem" -nocerts -nodes -password "env:PASS"
+          openssl pkcs12 -in "keystore.pkcs12" -out "crt.pem" -clcerts -nokeys -password "env:PASS"
+        volumeMounts:
+          - name: "single-disk"
+            subPath: "data"
+            mountPath: /data
+          - name: ca-mitm-token
+            mountPath: /etc/ca-mitm-token
+{{- end }}
+      containers:
+      - name: server
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        command:
+        - bash
+        - -ce
+        - |
+          prop_replace () {
+            target_file=${NIFI_HOME}/conf/nifi.properties
+            echo 'replacing target file ' ${target_file}
+            sed -i -e "s|^$1=.*$|$1=$2|"  ${target_file}
+          }
+
+          FQDN=$(hostname -f)
+
+          cat "${NIFI_HOME}/conf/nifi.temp" > "${NIFI_HOME}/conf/nifi.properties"
+
+          if [[ $(grep $(hostname) conf/authorizers.temp) ]]; then
+            cat "${NIFI_HOME}/conf/authorizers.temp" > "${NIFI_HOME}/conf/authorizers.xml"
+          else
+            cat "${NIFI_HOME}/conf/authorizers.empty" > "${NIFI_HOME}/conf/authorizers.xml"
+          fi
+
+          prop_replace nifi.remote.input.host ${FQDN}
+          prop_replace nifi.cluster.node.address ${FQDN}
+          prop_replace nifi.zookeeper.connect.string ${NIFI_ZOOKEEPER_CONNECT_STRING}
+
+{{- if .Values.ca.enabled }}
+          prop_replace nifi.web.https.host ${FQDN}
+
+          prop_replace nifi.security.keystore ${NIFI_BASE_DIR}/data/cert/keystore.jks
+          prop_replace nifi.security.keystorePasswd $(jq -r .keyStorePassword ${NIFI_BASE_DIR}/data/cert/config.json)
+          prop_replace nifi.security.keyPasswd $(jq -r .keyPassword ${NIFI_BASE_DIR}/data/cert/config.json)
+
+          prop_replace nifi.security.truststore ${NIFI_BASE_DIR}/data/cert/truststore.jks
+          prop_replace nifi.security.truststorePasswd $(jq -r .trustStorePassword ${NIFI_BASE_DIR}/data/cert/config.json)
+{{- else }}
+          prop_replace nifi.web.http.host ${FQDN}
+{{- end }}
+
+          exec bin/nifi.sh run
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        ports:
+{{- if .Values.properties.httpsPort }}
+        - containerPort: {{ .Values.properties.httpsPort }}
+{{- if .Values.sts.hostPort }}
+          hostPort: {{ .Values.sts.hostPort }}
+{{- end }}
+          name: https
+          protocol: TCP
+{{- end }}
+{{- if .Values.properties.httpPort }}
+        - containerPort: {{ .Values.properties.httpPort }}
+          name: http
+          protocol: TCP
+{{- end }}
+        - containerPort: {{ .Values.properties.clusterPort }}
+          name: cluster
+          protocol: TCP
+        env:
+        - name: NIFI_ZOOKEEPER_CONNECT_STRING
+          value: {{ template "zookeeper.url" . }}
+        lifecycle:
+          preStop:
+            exec:
+              command:
+              - bash
+              - -c
+              - |
+                $NIFI_HOME/bin/nifi.sh stop
+        readinessProbe:
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          exec:
+            command:
+            - bash
+            - -c
+            - |
+{{- if .Values.properties.httpsPort }}
+              curl -kv \
+                --cert ${NIFI_BASE_DIR}/data/cert/admin/crt.pem --cert-type PEM \
+                --key ${NIFI_BASE_DIR}/data/cert/admin/key.pem --key-type PEM \
+                https://$(hostname -f):8443/nifi-api/controller/cluster > $NIFI_BASE_DIR/data/cluster.state
+{{- else }}
+              curl -kv \
+                http://$(hostname -f):{{ .Values.properties.httpPort }}/nifi-api/controller/cluster > $NIFI_BASE_DIR/data/cluster.state
+{{- end }}
+              STATUS=$(cat $NIFI_BASE_DIR/data/cluster.state | jq -r ".cluster.nodes[] | select(.address==\"$(hostname -f)\") | .status")
+
+              if [[ ! $STATUS = "CONNECTED" ]]; then
+                echo "Node not found with CONNECTED state. Full cluster state:"
+                jq . cluster.state
+                exit 1
+              fi
+        livenessProbe:
+          initialDelaySeconds: 90
+          periodSeconds: 60
+          tcpSocket:
+{{- if .Values.properties.httpsPort }}
+            port: {{ .Values.properties.httpsPort }}
+{{- else }}
+            port: {{ .Values.properties.httpPort }}
+{{- end }}
+        volumeMounts:
+          - name: "single-disk"
+            subPath: "data"
+            mountPath: /opt/nifi/data
+          - name: "single-disk"
+            subPath: "flowfile-repository"
+            mountPath: /opt/nifi/flowfile_repository
+          - name: "single-disk"
+            subPath: "content-repository"
+            mountPath: /opt/nifi/content_repository
+          - name: "single-disk"
+            subPath: "provenance-repository"
+            mountPath: /opt/nifi/provenance_repository
+          - name: "single-disk"
+            subPath: "logs"
+            mountPath: /opt/nifi/nifi-current/logs
+          - name: "bootstrap-conf"
+            mountPath: /opt/nifi/nifi-current/conf/bootstrap.conf
+            subPath: "bootstrap.conf"
+          - name: "nifi-properties"
+            mountPath: /opt/nifi/nifi-current/conf/nifi.temp
+            subPath: "nifi.temp"
+          - name: "authorizers-temp"
+            mountPath: /opt/nifi/nifi-current/conf/authorizers.temp
+            subPath: "authorizers.temp"
+          - name: "authorizers-empty"
+            mountPath: /opt/nifi/nifi-current/conf/authorizers.empty
+            subPath: "authorizers.empty"
+          - name: "bootstrap-notification-services-xml"
+            mountPath: /opt/nifi/nifi-current/conf/bootstrap-notification-services.xml
+            subPath: "bootstrap-notification-services.xml"
+          - name: "logback-xml"
+            mountPath: /opt/nifi/nifi-current/conf/logback.xml
+            subPath: "logback.xml"
+          - name: "login-identity-providers-xml"
+            mountPath: /opt/nifi/nifi-current/conf/login-identity-providers.xml
+            subPath: "login-identity-providers.xml"
+          - name: "state-management-xml"
+            mountPath: /opt/nifi/nifi-current/conf/state-management.xml
+            subPath: "state-management.xml"
+          - name: "zookeeper-properties"
+            mountPath: /opt/nifi/nifi-current/conf/zookeeper.properties
+            subPath: "zookeeper.properties"
+      - name: app-log
+        image: {{ .Values.sidecar.image }}
+        args: [tail, -n+1, -F, /var/log/nifi-app.log]
+        resources:
+{{ toYaml .Values.logresources | indent 10 }}
+        volumeMounts:
+        - name: "single-disk"
+          subPath: logs
+          mountPath: /var/log
+      - name: bootstrap-log
+        image: {{ .Values.sidecar.image }}
+        args: [tail, -n+1, -F, /var/log/nifi-bootstrap.log]
+        resources:
+{{ toYaml .Values.logresources | indent 10 }}
+        volumeMounts:
+        - name: "single-disk"
+          subPath: logs
+          mountPath: /var/log
+      - name: user-log
+        image: {{ .Values.sidecar.image }}
+        args: [tail, -n+1, -F, /var/log/nifi-user.log]
+        resources:
+{{ toYaml .Values.logresources | indent 10 }}
+        volumeMounts:
+        - name: "single-disk"
+          subPath: logs
+          mountPath: /var/log
+      volumes:
+      - name: "bootstrap-conf"
+        configMap:
+          name: {{ template "apache-nifi.fullname" . }}-config
+          items:
+            - key: "bootstrap.conf"
+              path: "bootstrap.conf"
+      - name: "nifi-properties"
+        configMap:
+          name: {{ template "apache-nifi.fullname" . }}-config
+          items:
+            - key: "nifi.properties"
+              path: "nifi.temp"
+      - name: "authorizers-temp"
+        configMap:
+          name: {{ template "apache-nifi.fullname" . }}-config
+          items:
+            - key: "authorizers.xml"
+              path: "authorizers.temp"
+      - name: "authorizers-empty"
+        configMap:
+          name: {{ template "apache-nifi.fullname" . }}-config
+          items:
+            - key: "authorizers-empty.xml"
+              path: "authorizers.empty"
+      - name: "bootstrap-notification-services-xml"
+        configMap:
+          name: {{ template "apache-nifi.fullname" . }}-config
+          items:
+            - key: "bootstrap-notification-services.xml"
+              path: "bootstrap-notification-services.xml"
+      - name: "logback-xml"
+        configMap:
+          name: {{ template "apache-nifi.fullname" . }}-config
+          items:
+            - key: "logback.xml"
+              path: "logback.xml"
+      - name: "login-identity-providers-xml"
+        configMap:
+          name: {{ template "apache-nifi.fullname" . }}-config
+          items:
+            - key: "login-identity-providers.xml"
+              path: "login-identity-providers.xml"
+      - name: "state-management-xml"
+        configMap:
+          name: {{ template "apache-nifi.fullname" . }}-config
+          items:
+            - key: "state-management.xml"
+              path: "state-management.xml"
+      - name: "zookeeper-properties"
+        configMap:
+          name: {{ template "apache-nifi.fullname" . }}-config
+          items:
+            - key: "zookeeper.properties"
+              path: "zookeeper.properties"
+{{- if .Values.ca.enabled }}
+      - name: ca-mitm-token
+        secret:
+          secretName: {{ template "apache-nifi.fullname" . }}-ca-mitm-token
+{{- end }}
+  volumeClaimTemplates:
+    - metadata:
+        name: "single-disk"
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: {{ .Values.nifiSingleDisk.storageClass |default .Values.storageClass | quote }}
+        resources:
+          requests:
+            storage: {{ .Values.nifiSingleDisk.storageSize }}
+{{- end }}
+{{- end }}

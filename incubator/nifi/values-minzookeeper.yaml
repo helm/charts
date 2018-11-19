@@ -1,0 +1,16 @@
+zookeeper:
+  # Number of ZooKeeper replicas
+  servers: 1
+
+  ## Configure Zookeeper resource requests and limits
+  ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  resources:
+    limits:
+      memory: "256Mi"
+    requests:
+      memory: "128Mi"
+
+  antiAffinity: "soft"
+
+  ## The JVM heap size to allocate to Zookeeper
+  heap: "128m"

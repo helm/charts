@@ -1,0 +1,138 @@
+{{- if .Values.ca.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "apache-nifi.fullname" . }}-ca
+  labels:
+    app: {{ template "apache-nifi.name" . }}-ca
+    chart: {{ template "apache-nifi.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.ca.service.type }}
+  ports:
+    - port: {{ .Values.ca.port }}
+      targetPort: {{ .Values.ca.port }}
+      name: ca-server
+  selector:
+    app: {{ template "apache-nifi.name" . }}-ca
+    release: {{ .Release.Name }}
+---
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "apache-nifi.fullname" . }}-ca
+  labels:
+    app: {{ template "apache-nifi.name" . }}-ca
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ template "apache-nifi.name" . }}-ca
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "apache-nifi.name" . }}-ca
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: ca
+        imagePullPolicy: {{ .Values.ca.image.pullPolicy | quote }}
+        image: "{{ .Values.ca.image.repository }}:{{ .Values.ca.image.tag }}"
+        command:
+        - sh
+        - -c
+        - |
+          exec ${NIFI_TOOLKIT_HOME}/bin/tls-toolkit.sh server -c "{{ template "apache-nifi.fullname" . }}-ca" -t "$(cat /etc/ca-mitm-token/token)" -p {{ .Values.ca.port }}
+        ports:
+        - containerPort: {{ .Values.ca.port }}
+        volumeMounts:
+          - name: ca-mitm-token
+            mountPath: /etc/ca-mitm-token
+      # needed until tls-toolkit.sh runs Java through exec
+      terminationGracePeriodSeconds: 0
+      volumes:
+        - name: ca-mitm-token
+          secret:
+            secretName: {{ template "apache-nifi.fullname" . }}-ca-mitm-token
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ template "apache-nifi.fullname" . }}-ca-certgen
+  labels:
+    app: {{ template "apache-nifi.name" . }}-certgen
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+spec:
+  backoffLimit: 0
+  template:
+    spec:
+      serviceAccountName: {{ template "apache-nifi.fullname" . }}-secret-creator
+      initContainers:
+      - name: ca-check
+        imagePullPolicy: {{ .Values.ca.image.pullPolicy | quote }}
+        image: "{{ .Values.ca.image.repository }}:{{ .Values.ca.image.tag }}"
+        command:
+        - bash
+        - -c
+        - |
+          CA_ADDRESS="{{ template "apache-nifi.fullname" . }}-ca:{{ .Values.ca.port }}"
+          for i in $(seq 1 10); do
+            echo "Waiting for CA to be avaiable at ${CA_ADDRESS}"
+            if echo "" | timeout -t 2 openssl s_client -connect "${CA_ADDRESS}"; then
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "CA is unavailable, exiting"
+          exit 1
+      containers:
+      - name: ca-cert-generator
+        image: "{{ .Values.ca.certgenImage.repository }}:{{ .Values.ca.certgenImage.tag }}"
+        imagePullPolicy: {{ .Values.ca.certgenImage.pullPolicy | quote }}
+        command:
+        - sh
+        - -c
+        - |
+          #!/bin/sh
+
+          mkdir -p /tmp/ca-cert-generator
+          cd /tmp/ca-cert-generator
+
+          TOKEN_FILE=${TOKEN_FILE:-}
+          if [[ -f  "${TOKEN_FILE}" ]]; then
+              TOKEN="$(cat ${TOKEN_FILE})"
+          fi
+
+          ${NIFI_TOOLKIT_HOME}/bin/tls-toolkit.sh client\
+              -c "{{ template "apache-nifi.fullname" . }}-ca"\
+              -p "{{ .Values.ca.port }}"\
+              -t "$(cat /ca-mitm-token/token)"\
+              -D "CN={{ .Values.ca.admin.cn }},OU=NIFI"\
+              -T "PKCS12"
+
+          ${NIFI_TOOLKIT_BASE_DIR}/kubectl create secret generic {{ template "apache-nifi.fullname" . }}-ca-cert-admin --from-file /tmp/ca-cert-generator
+
+          LABELS="
+            metadata:
+              labels:
+                release: {{ .Release.Name }}
+          "
+      
+          ${NIFI_TOOLKIT_BASE_DIR}/kubectl patch secret {{ template "apache-nifi.fullname" . }}-ca-cert-admin -p "$LABELS"
+
+        volumeMounts:
+          - name: ca-mitm-token
+            mountPath: /ca-mitm-token
+      restartPolicy: Never
+      volumes:
+        - name: ca-mitm-token
+          secret:
+            secretName: {{ template "apache-nifi.fullname" . }}-ca-mitm-token
+{{- end -}}

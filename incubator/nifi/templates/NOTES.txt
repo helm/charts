@@ -1,0 +1,20 @@
+Cluster endpoint IP address will be available at:
+{{- if .Values.loadBalancer.enabled }}
+kubectl get svc {{ .Release.Name }}-apache-nifi-load-balancer -n {{ .Release.Namespace }} -o jsonpath='{.status.loadBalancer.ingress[*].ip}'
+{{- else }}
+{{- if .Values.sts.hostPort }}
+kubectl get nodes -o jsonpath='{.items[*].status.addresses[].address}'
+{{- else }}
+Unavailable (need to specify loadBalancer or hostPort for the nifi container)
+{{- end }}
+{{- end }}
+
+Cluster endpoint domain name is: {{.Values.properties.webProxyHost}} - please update your DNS or /etc/hosts accordingly! 
+
+Once you are done, your NiFi instance will be available at:
+
+  {{ if .Values.properties.httpsPort }}https{{- else }}http{{ end }}://{{.Values.properties.webProxyHost}}/nifi
+
+To access a secure cluster, you will need an admin client certificate which can be obtained by running:
+
+  ./scripts/admincert.sh

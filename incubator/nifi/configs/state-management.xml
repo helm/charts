@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+      http://www.apache.org/licenses/LICENSE-2.0
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<!--
+  This file provides a mechanism for defining and configuring the State Providers
+  that should be used for storing state locally and across a NiFi cluster. In order
+  to use a specific provider, it must be configured here and its identifier
+  must be specified in the nifi.properties file.
+-->
+<stateManagement>
+    <!--
+        State Provider that stores state locally in a configurable directory. This Provider requires the following properties:
+        
+        Directory - the directory to store components' state in. If the directory being used is a sub-directory of the NiFi installation, it
+                    is important that the directory be copied over to the new version when upgrading NiFi.
+        Always Sync - If set to true, any change to the repository will be synchronized to the disk, meaning that NiFi will ask the operating system not to cache the information. This is very
+                expensive and can significantly reduce NiFi performance. However, if it is false, there could be the potential for data loss if either there is a sudden power loss or the
+                operating system crashes. The default value is false.
+        Partitions - The number of partitions.
+        Checkpoint Interval - The amount of time between checkpoints.
+     -->
+    <local-provider>
+        <id>local-provider</id>
+        <class>org.apache.nifi.controller.state.providers.local.WriteAheadLocalStateProvider</class>
+        <property name="Directory">../data/state/local</property>
+        <property name="Always Sync">false</property>
+        <property name="Partitions">16</property>
+        <property name="Checkpoint Interval">2 mins</property>
+    </local-provider>
+
+    <!--
+        State Provider that is used to store state in ZooKeeper. This Provider requires the following properties:
+        
+        Root Node - the root node in ZooKeeper where state should be stored. The default is '/nifi', but it is advisable to change this to a different value if not using
+                   the embedded ZooKeeper server and if multiple NiFi instances may all be using the same ZooKeeper Server.
+                   
+        Connect String - A comma-separated list of host:port pairs to connect to ZooKeeper. For example, myhost.mydomain:2181,host2.mydomain:5555,host3:6666
+        
+        Session Timeout - Specifies how long this instance of NiFi is allowed to be disconnected from ZooKeeper before creating a new ZooKeeper Session. Default value is "30 seconds"
+        
+        Access Control - Specifies which Access Controls will be applied to the ZooKeeper ZNodes that are created by this State Provider. This value must be set to one of:
+                            - Open  : ZNodes will be open to any ZooKeeper client.
+                            - CreatorOnly  : ZNodes will be accessible only by the creator. The creator will have full access to create children, read, write, delete, and administer the ZNodes.
+                                             This option is available only if access to ZooKeeper is secured via Kerberos or if a Username and Password are set.
+    -->
+    <cluster-provider>
+        <id>zk-provider</id>
+        <class>org.apache.nifi.controller.state.providers.zookeeper.ZooKeeperStateProvider</class>
+        <property name="Connect String"></property>
+        <property name="Root Node">/nifi</property>
+        <property name="Session Timeout">10 seconds</property>
+        <property name="Access Control">Open</property>
+    </cluster-provider>
+
+    <!--
+        Cluster State Provider that stores state in Redis. This can be used as an alternative to the ZooKeeper State Provider.
+        This provider requires the following properties:
+            Redis Mode - The type of Redis instance:
+                            - Standalone
+                            - Sentinel
+                            - Cluster (currently not supported for state-management due to use of WATCH command which Redis does not support in clustered mode)
+            Connection String - The connection string for Redis.
+                        - In a standalone instance this value will be of the form hostname:port.
+                        - In a sentinel instance this value will be the comma-separated list of sentinels, such as host1:port1,host2:port2,host3:port3.
+                        - In a clustered instance this value will be the comma-separated list of cluster masters, such as host1:port,host2:port,host3:port.
+        This provider has the following optional properties:
+            Key Prefix - The prefix for each key stored by this state provider. When sharing a single Redis across multiple NiFi instances, setting a unique
+                        value for the Key Prefix will make it easier to identify which instances the keys came from (default nifi/components/).
+            Database Index - The database index to be used by connections created from this connection pool.
+                        See the databases property in redis.conf, by default databases 0-15 will be available.
+            Communication Timeout - The timeout to use when attempting to communicate with Redis.
+            Cluster Max Redirects - The maximum number of redirects that can be performed when clustered.
+            Sentinel Master - The name of the sentinel master, require when Mode is set to Sentinel.
+            Password - The password used to authenticate to the Redis server. See the requirepass property in redis.conf.
+            Pool - Max Total - The maximum number of connections that can be allocated by the pool (checked out to clients, or idle awaiting checkout).
+                        A negative value indicates that there is no limit.
+            Pool - Max Idle - The maximum number of idle connections that can be held in the pool, or a negative value if there is no limit.
+            Pool - Min Idle - The target for the minimum number of idle connections to maintain in the pool. If the configured value of Min Idle is
+                    greater than the configured value for Max Idle, then the value of Max Idle will be used instead.
+            Pool - Block When Exhausted - Whether or not clients should block and wait when trying to obtain a connection from the pool when the pool
+                    has no available connections. Setting this to false means an error will occur immediately when a client requests a connection and
+                    none are available.
+            Pool - Max Wait Time - The amount of time to wait for an available connection when Block When Exhausted is set to true.
+            Pool - Min Evictable Idle Time - The minimum amount of time an object may sit idle in the pool before it is eligible for eviction.
+            Pool - Time Between Eviction Runs - The amount of time between attempting to evict idle connections from the pool.
+            Pool - Num Tests Per Eviction Run - The number of connections to tests per eviction attempt. A negative value indicates to test all connections.
+            Pool - Test On Create - Whether or not connections should be tested upon creation (default false).
+            Pool - Test On Borrow - Whether or not connections should be tested upon borrowing from the pool (default false).
+            Pool - Test On Return - Whether or not connections should be tested upon returning to the pool (default false).
+            Pool - Test While Idle - Whether or not connections should be tested while idle (default true).
+        <cluster-provider>
+            <id>redis-provider</id>
+            <class>org.apache.nifi.redis.state.RedisStateProvider</class>
+            <property name="Redis Mode">Standalone</property>
+            <property name="Connection String">localhost:6379</property>
+        </cluster-provider>
+    -->
+
+</stateManagement>

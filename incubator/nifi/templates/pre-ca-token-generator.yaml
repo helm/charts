@@ -1,0 +1,29 @@
+{{- if .Values.ca.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ template "apache-nifi.fullname" . }}-ca-token-generator
+  annotations:
+    "helm.sh/hook": "pre-install"
+    "helm.sh/hook-weight": "-5"
+    "helm.sh/hook-delete-policy": hook-succeeded,hook-failed
+  labels:
+    chart: {{ template "apache-nifi.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  template:
+    spec:
+      serviceAccountName: {{ template "apache-nifi.fullname" . }}-secret-creator
+      containers:
+      - name: ca-token-generator
+        image: {{ .Values.tokenGeneratorImage }}
+        command:
+        - /ca-token-generator
+        - {{ .Release.Name }}
+        - {{ .Release.Namespace }}
+        - {{ template "apache-nifi.fullname" . }}-ca-mitm-token
+        - token
+      restartPolicy: Never
+  backoffLimit: 0
+{{- end }}

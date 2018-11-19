@@ -1,0 +1,10 @@
+sts:
+  # hostPort is required for the secure setup because it does not work without host header checking
+  # and we need a deterministic port to access
+  hostPort: 443
+
+loadBalancer:
+  enabled:
+    false
+
+replicaCount: 1

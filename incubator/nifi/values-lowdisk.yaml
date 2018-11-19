@@ -1,0 +1,14 @@
+dataStorage: 1Gi
+
+flowfileRepoStorage: 2Gi
+contentRepoStorage: 2Gi
+
+provenanceRepoStorage: 2Gi
+properties:
+  provenanceStorage: "2 GB"
+
+logStorage: 1Gi
+
+zookeeper:
+  persistence:
+    size: 1Gi

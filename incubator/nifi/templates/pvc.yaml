@@ -1,0 +1,9 @@
+{{- if .Values.customStorageClass -}}
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: {{ .Values.storageClass }}
+provisioner: {{ .Values.storageProvisioner | quote }}
+parameters:
+  type: {{ .Values.storageType | quote }}
+{{- end -}}
