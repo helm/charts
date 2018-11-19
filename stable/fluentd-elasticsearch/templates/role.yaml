@@ -1,0 +1,19 @@
+{{- if .Values.podSecurityPolicy.enabled }}
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: Role
+metadata:
+  name: {{ template "fluentd-elasticsearch.fullname" . }}
+  labels:
+    app: {{ template "fluentd-elasticsearch.name" . }}
+    kubernetes.io/cluster-service: "true"
+    addonmanager.kubernetes.io/mode: Reconcile
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+rules:
+- apiGroups: ['extensions']
+  resources: ['podsecuritypolicies']
+  verbs:     ['use']
+  resourceNames:
+  - {{ template "fluentd-elasticsearch.fullname" . }}
+{{- end }}
