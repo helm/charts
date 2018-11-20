@@ -80,7 +80,12 @@ The following table lists the configurable parameters of the Drupal chart and th
 | `mariadb.db.name`                 | Database name to create                    | `bitnami_drupal`                                          |
 | `mariadb.db.user`                 | Database user to create                    | `bn_drupal`                                               |
 | `mariadb.db.password`             | Password for the database                  | _random 10 character long alphanumeric string_            |
-| `serviceType`                     | Kubernetes Service type                    | `LoadBalancer`                                            |
+| `service.type`                    | Kubernetes Service type                    | `LoadBalancer`                                          |
+| `service.port`                    | Service HTTP port                    | `80`                                          |
+| `service.httpsPort`                    | Service HTTPS port                    | `443`                                          |
+| `service.externalTrafficPolicy`   | Enable client source IP preservation       | `Cluster`                                               |
+| `service.nodePorts.http`                 | Kubernetes http node port                  | `""`                                                    |
+| `service.nodePorts.https`                | Kubernetes https node port                 | `""`                                                    |
 | `persistence.enabled`             | Enable persistence using PVC               | `true`                                                    |
 | `persistence.apache.storageClass` | PVC Storage Class for Apache volume        | `nil` (uses alpha storage class annotation)               |
 | `persistence.apache.accessMode`   | PVC Access Mode for Apache volume          | `ReadWriteOnce`                                           |
