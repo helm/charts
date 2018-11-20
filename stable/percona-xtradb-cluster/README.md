@@ -78,7 +78,9 @@ The following table lists the configurable parameters of the Percona chart and t
 | `ssl.certificates[0].cert`                   | Server certificate (public key)                                                              | `nil`                                                |
 | `ssl.certificates[0].key`                    | Server key (private key)                                                                     | `nil`                                                |
 | `logTail` | if set to true runs a container to tail /var/log/mysqld.log in the pod | true |
-| `metricsExporter` | if set to true runs a [mysql metrics exporter](https://github.com/prometheus/mysqld_exporter) container in the pod | false |
+| `metricsExporter.enabled` | if set to true runs a [mysql metrics exporter](https://github.com/prometheus/mysqld_exporter) container in the pod | false |
+| `metricsExporter.commandOverrides` | Overrides default docker command for metrics exporter | `[]` |
+| `metricsExporter.argsOverrides`   | Overrides default docker args for metrics exporter     | `[]` |
 | `podDisruptionBudget` | Pod disruption budget | `{enabled: false, maxUnavailable: 1}` |
 
 
