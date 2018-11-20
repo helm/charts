@@ -144,6 +144,10 @@ service:
   ## Use serviceLoadBalancerIP to request a specific static IP,
   ## otherwise leave blank
   ##
+  # HTTP Port
+  port: 80
+  # HTTPS Port
+  httpsPort: 443
   # loadBalancerIP:
   ## Use nodePorts to requets some specific ports when usin NodePort
   ## nodePorts:
