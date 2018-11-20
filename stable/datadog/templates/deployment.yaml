@@ -104,12 +104,14 @@ spec:
 {{- if .Values.datadog.volumeMounts }}
 {{ toYaml .Values.datadog.volumeMounts | indent 10 }}
 {{- end }}
+        {{- if (.Values.image.repository) and ne .Values.image.repository "datadog/dogstatsd" }}
         livenessProbe:
           exec:
             command:
             - ./probe.sh
           initialDelaySeconds: 15
           periodSeconds: 5
+        {{- end }}
       volumes:
         {{- if .Values.datadog.useCriSocketVolume }}
         - hostPath:
