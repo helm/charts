@@ -31,6 +31,9 @@ tolerations: []
 
 nodeSelector: {}
 
+service:
+  enabled: false
+
 ## Parameters for the ' default' Config resource
 ## See https://heptio.github.io/ark/v0.9.0/config-definition
 configuration:
