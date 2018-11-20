@@ -62,7 +62,12 @@ The following table lists the configurable parameters of the OrangeHRM chart and
 | `smtpUser`                           | SMTP user                                | `nil`                                                   |
 | `smtpPassword`                       | SMTP password                            | `nil`                                                   |
 | `smtpProtocol`                       | SMTP protocol [`ssl`, `none`]            | `nil`                                                   |
-| `serviceType`                        | Kubernetes Service type                  | `LoadBalancer`                                          |
+| `service.type`                    | Kubernetes Service type                    | `LoadBalancer`                                          |
+| `service.port`                    | Service HTTP port                    | `80`                                          |
+| `service.httpsPort`                    | Service HTTPS port                    | `443`                                          |
+| `service.externalTrafficPolicy`   | Enable client source IP preservation       | `Cluster`                                               |
+| `service.nodePorts.http`                 | Kubernetes http node port                  | `""`                                                    |
+| `service.nodePorts.https`                | Kubernetes https node port                 | `""`                                                    |
 | `resources`                          | CPU/Memory resource requests/limits      | Memory: `512Mi`, CPU: `300m`                            |
 | `persistence.enabled`                | Enable persistence using PVC             | `true`                                                  |
 | `persistence.apache.storageClass`    | PVC Storage Class for Apache volume      | `nil` (uses alpha storage class annotation)             |
