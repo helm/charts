@@ -53,12 +53,13 @@ Parameter | Description | Default
 `controller.defaultSslCertificate.secret.name` | name of the secret for default certificate of controller | `""`
 `controller.config` | additional haproxy-ingress [ConfigMap entries](https://github.com/jcmoraisjr/haproxy-ingress/blob/v0.6/README.md#configmap) | `{}`
 `controller.healthzPort` | The port number for liveness and readiness checks | `10253`
-`controller.hostPorts.http` | If `controller.useHostPort` is `true` sets the hostPort | `"80"`
-`controller.hostPorts.https` | If `controller.useHostPort` is `true` sets the hostPort | `"443"`
+`controller.hostPorts.enable` | Enable host-ports for selected ports | `false`
+`controller.hostPorts.http` | If `controller.hostPorts.enable` is `true` and this is non-empty sets the hostPort for http | `"80"`
+`controller.hostPorts.https` | If `controller.hostPorts.enable` is `true` and this is non-empty sets the hostPort for https | `"443"`
+`controller.hostPorts.tcp` | If `controller.hostPorts.enable` is `true` use hostport for these ports from `tcp` | `[]`
 `controller.ingressClass` | name of the ingress class to route through this controller | `haproxy`
 `controller.resources` | controller pod resource requests & limits | `{}`
 `controller.statsPort` | The port number for haproxy statistics | `1936`
-`controller.useHostPort` | enable `hostPort` for http, https and any other tcp ports | `false`
 `controller.service.annotations` | annotations for controller service | `{}`
 `controller.service.labels` | labels for controller service | `{}`
 `controller.service.clusterIP` | internal controller cluster service IP | `""`
