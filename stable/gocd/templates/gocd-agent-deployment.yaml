@@ -10,6 +10,10 @@ metadata:
     component: agent
 spec:
   replicas: {{ .Values.agent.replicaCount }}
+  {{- if .Values.agent.deployStrategy }}
+  strategy:
+{{ toYaml .Values.agent.deployStrategy | indent 4 }}
+  {{- end }}
   selector:
     matchLabels:
       app: {{ template "gocd.name" . }}
@@ -47,7 +51,7 @@ spec:
           {{- end }}
           imagePullPolicy: {{ .Values.agent.image.pullPolicy }}
           resources:
-{{ toYaml .Values.server.resources | indent 12 }}
+{{ toYaml .Values.agent.resources | indent 12 }}
           env:
             - name: GO_SERVER_URL
             {{- if .Values.agent.env.goServerUrl }}
@@ -122,9 +126,13 @@ spec:
           {{- end }}
           securityContext:
             privileged: {{ .Values.agent.privileged }}
-    {{- if .Values.nodeSelector }}
+    {{- if .Values.agent.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.agent.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- if .Values.agent.affinity }}
+      affinity:
+{{ toYaml .Values.agent.affinity | indent 8 }}
     {{- end }}
     {{- if .Values.agent.hostAliases }}
       hostAliases:

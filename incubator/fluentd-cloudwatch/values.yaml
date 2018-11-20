@@ -25,10 +25,12 @@ tolerations: []
 #     operator: Exists
 #     effect: NoSchedule
 
-annotations: {}
+podAnnotations: {}
 
 awsRegion: us-east-1
 awsRole:
+awsAccessKeyId:
+awsSecretAccessKey:
 logGroupName: kubernetes
 
 rbac:

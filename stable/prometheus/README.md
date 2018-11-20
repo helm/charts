@@ -95,7 +95,7 @@ Parameter | Description | Default
 `alertmanager.enabled` | If true, create alertmanager | `true`
 `alertmanager.name` | alertmanager container name | `alertmanager`
 `alertmanager.image.repository` | alertmanager container image repository | `prom/alertmanager`
-`alertmanager.image.tag` | alertmanager container image tag | `v0.15.2`
+`alertmanager.image.tag` | alertmanager container image tag | `v0.15.3`
 `alertmanager.image.pullPolicy` | alertmanager container image pull policy | `IfNotPresent`
 `alertmanager.prefixURL` | The prefix slug at which the server can be accessed | ``
 `alertmanager.baseURL` | The external url at which the server can be accessed | `/`
@@ -136,6 +136,7 @@ Parameter | Description | Default
 `configmapReload.image.tag` | configmap-reload container image tag | `v0.2.2`
 `configmapReload.image.pullPolicy` | configmap-reload container image pull policy | `IfNotPresent`
 `configmapReload.extraArgs` | Additional configmap-reload container arguments | `{}`
+`configmapReload.extraVolumeDirs` | Additional configmap-reload volume directories | `{}`
 `configmapReload.extraConfigmapMounts` | Additional configmap-reload configMap mounts | `[]`
 `configmapReload.resources` | configmap-reload pod resource requests & limits | `{}`
 `initChownData.enabled`  | If false, don't reset data ownership at startup | true
@@ -178,6 +179,8 @@ Parameter | Description | Default
 `nodeExporter.nodeSelector` | node labels for node-exporter pod assignment | `{}`
 `nodeExporter.podAnnotations` | annotations to be added to node-exporter pods | `{}`
 `nodeExporter.pod.labels` | labels to be added to node-exporter pods | `{}`
+`nodeExporter.podSecurityPolicy.annotations` | Specify pod annotations in the pod security policy | `{}` |
+`nodeExporter.podSecurityPolicy.enabled` | Specify if a Pod Security Policy for node-exporter must be created | `false`
 `nodeExporter.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
 `nodeExporter.priorityClassName` | node-exporter priorityClassName | `nil`
 `nodeExporter.resources` | node-exporter resource requests and limits (YAML) | `{}`
@@ -215,7 +218,7 @@ Parameter | Description | Default
 `rbac.create` | If true, create & use RBAC resources | `true`
 `server.name` | Prometheus server container name | `server`
 `server.image.repository` | Prometheus server container image repository | `prom/prometheus`
-`server.image.tag` | Prometheus server container image tag | `v2.4.3`
+`server.image.tag` | Prometheus server container image tag | `v2.5.0`
 `server.image.pullPolicy` | Prometheus server container image pull policy | `IfNotPresent`
 `server.enableAdminApi` |  If true, Prometheus administrative HTTP API will be enabled. Please note, that you should take care of administrative API access protection (ingress or some frontend Nginx with auth) before enabling it. | `false`
 `server.global.scrape_interval` | How frequently to scrape targets by default | `1m`
@@ -243,6 +246,7 @@ Parameter | Description | Default
 `server.persistentVolume.annotations` | Prometheus server data Persistent Volume annotations | `{}`
 `server.persistentVolume.existingClaim` | Prometheus server data Persistent Volume existing claim name | `""`
 `server.persistentVolume.mountPath` | Prometheus server data Persistent Volume mount root path | `/data`
+`server.persistentVolume.reclaimPolicy` | Prometheus server data Persistent Volume reclaim policy | `Retain`
 `server.persistentVolume.size` | Prometheus server data Persistent Volume size | `8Gi`
 `server.persistentVolume.storageClass` | Prometheus server data Persistent Volume Storage Class |  `unset`
 `server.persistentVolume.subPath` | Subdirectory of Prometheus server data Persistent Volume to mount | `""`
@@ -274,6 +278,7 @@ Parameter | Description | Default
 `serverFiles.alerts` | Prometheus server alerts configuration | `{}`
 `serverFiles.rules` | Prometheus server rules configuration | `{}`
 `serverFiles.prometheus.yml` | Prometheus server scrape configuration | example configuration
+`extraScrapeConfigs` | Prometheus server additional scrape configuration | ""
 `networkPolicy.enabled` | Enable NetworkPolicy | `false` |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,

@@ -1,3 +1,9 @@
+## Global Docker image registry
+## Please, note that this will override the image registry for all the images, including dependencies, configured to use the global value
+##
+# global:
+#   imageRegistry:
+
 ## Bitnami Redis image version
 ## ref: https://hub.docker.com/r/bitnami/redis/tags/
 ##
@@ -7,7 +13,7 @@ image:
   ## Bitnami Redis image tag
   ## ref: https://github.com/bitnami/bitnami-docker-redis#supported-tags-and-respective-dockerfile-links
   ##
-  tag: 4.0.11-debian-9
+  tag: 4.0.11
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -41,8 +47,8 @@ serviceAccount:
   ## Specifies whether a ServiceAccount should be created
   ##
   create: false
-  # The name of the ServiceAccount to use.
-  # If not set and create is true, a name is generated using the fullname template
+  ## The name of the ServiceAccount to use.
+  ## If not set and create is true, a name is generated using the fullname template
   name:
 
 rbac:
@@ -172,7 +178,6 @@ master:
     loadBalancerIP:
 
   ## Redis Master Pod Security Context
-  ##
   securityContext:
     enabled: true
     fsGroup: 1001
@@ -212,13 +217,13 @@ master:
 
 ##
 ## Redis Slave properties
-## Note: serviceType and service are mandatory parameters
-## The rest of the parameters, if undefined, will inherit those declared in Redis Master
+## Note: service.type is a mandatory parameter
+## The rest of the parameters are either optional or, if undefined, will inherit those declared in Redis Master
 ##
 slave:
   ## Slave Service properties
   service:
-    ##  Redis Slave Service type
+    ## Redis Slave Service type
     type: ClusterIP
     ## Specify the nodePort value for the LoadBalancer and NodePort service types.
     ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
@@ -240,6 +245,10 @@ slave:
   # extraFlags: []
   ## Comma-separated list of Redis commands to disable
   # disableCommands: ""
+  ## deployment update stategy
+  # updateStrategy:
+  #   rollingUpdate:
+  #     maxUnavailable: 0
 
   ## Redis Slave pod/node affinity/anti-affinity
   ##
@@ -310,9 +319,9 @@ metrics:
     ## Use serviceLoadBalancerIP to request a specific static IP,
     ## otherwise leave blank
     # loadBalancerIP:
-    annotations: {}
-    # prometheus.io/scrape: "true"
-    # prometheus.io/port: "9121"
+    annotations:
+      prometheus.io/scrape: "true"
+      prometheus.io/port: "9121"
 
   ## Metrics exporter resource requests and limits
   ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -336,11 +345,10 @@ metrics:
 ## Init containers parameters:
 ## volumePermissions: Change the owner of the persist volume mountpoint to RunAsUser:fsGroup
 ##
-
 volumePermissions:
   image:
     registry: docker.io
-    repository: busybox
+    repository: bitnami/minideb
     tag: latest
     pullPolicy: IfNotPresent
 
