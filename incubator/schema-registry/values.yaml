@@ -83,7 +83,7 @@ sasl:
     #   zookeeperClientPassword:
     #     secretKeyRef:
     #       name: "zookeeper-secret"
-    #       key: "zokeeper-client-password"
+    #       key: "zookeeper-client-password"
 
 ## Kafka Settings
 kafka:
