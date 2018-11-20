@@ -39,7 +39,7 @@ chart and deletes the release.
 `readinessProbe.enabled`        | Enables readinessProbe                 | `true`
 `affinity`                      | Node/pod affinities                    | `{}`
 `nodeSelector`                  | Node labels for pod assignment         | `{}`
-`resources`                     | Pod resource requests & limits         | `{"limits": {"cpu: "100m:, "memory": "64Mi"}, "requests": {"cpu": "100m", "memory": "64Mi"}}`
+`resources`                     | Pod resource requests & limits         | `{}`
 `tolerations`                   | List of node taints to tolerate        | `[]`
 `persistence.enabled`           | Use a PVC to persist data              | `true`
 `persistence.existingClaim`     | Use an existing PVC to persist data    | `nil`
