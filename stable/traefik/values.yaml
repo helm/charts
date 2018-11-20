@@ -333,7 +333,7 @@ sendAnonymousUsage: false
 tracing:
   enabled: false
   serviceName: traefik
-  # backend: choices are jaeger, zipkin
+  # backend: choices are jaeger, zipkin, datadog
   # jaeger:
   #   localAgentHostPort: "127.0.0.1:6831"
   #   samplingServerURL: http://localhost:5778/sampling
@@ -344,3 +344,7 @@ tracing:
   #   debug: false
   #   sameSpan: false
   #   id128bit: true
+  # datadog:
+  #   localAgentHostPort: "127.0.0.1:8126"
+  #   debug: false
+  #   globalTag: ""
