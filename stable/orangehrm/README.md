@@ -49,6 +49,7 @@ The following table lists the configurable parameters of the OrangeHRM chart and
 
 |              Parameter               |               Description                |                    Default                              |
 |--------------------------------------|------------------------------------------|-------------------------------------------------------- |
+| `global.imageRegistry`               | Global Docker image registry             | `nil`                                                   |
 | `image.registry`                     | OrangeHRM image registry                 | `docker.io`                                             |
 | `image.repository`                   | OrangeHRM Image name                     | `bitnami/orangehrm`                                     |
 | `image.tag`                          | OrangeHRM Image tag                      | `{VERSION}`                                             |
@@ -85,6 +86,15 @@ The following table lists the configurable parameters of the OrangeHRM chart and
 | `mariadb.persistence.storageClass`   | PVC Storage Class for MariaDB volume     | `nil` (uses alpha storage class annotation)             |
 | `mariadb.persistence.accessMode`     | PVC Access Mode for MariaDB volume       | `ReadWriteOnce`                                         |
 | `mariadb.persistence.size`           | PVC Storage Request for MariaDB volume   | `8Gi`                                                   |
+| `podAnnotations`                | Pod annotations                                   | `{}`                                                       |
+| `metrics.enabled`                          | Start a side-car prometheus exporter                                                                           | `false`                                              |
+| `metrics.image.registry`                   | Apache exporter image registry                                                                                  | `docker.io`                                          |
+| `metrics.image.repository`                 | Apache exporter image name                                                                                      | `lusotycoon/apache-exporter`                           |
+| `metrics.image.tag`                        | Apache exporter image tag                                                                                       | `v0.5.0`                                            |
+| `metrics.image.pullPolicy`                 | Image pull policy                                                                                              | `IfNotPresent`                                       |
+| `metrics.image.pullSecrets`                | Specify docker-registry secret names as an array                                                               | `nil`                                                |
+| `metrics.podAnnotations`                   | Additional annotations for Metrics exporter pod                                                                | `{prometheus.io/scrape: "true", prometheus.io/port: "9117"}`                                                   |
+| `metrics.resources`                        | Exporter resource requests/limit                                                                               | {}                        |
 
 The above parameters map to the env variables defined in [bitnami/orangehrm](http://github.com/bitnami/bitnami-docker-orangehrm). For more information please refer to the [bitnami/orangehrm](http://github.com/bitnami/bitnami-docker-orangehrm) image documentation.
 
@@ -110,7 +120,8 @@ $ helm install --name my-release -f values.yaml stable/orangehrm
 
 The [Bitnami OrangeHRM](https://github.com/bitnami/bitnami-docker-orangehrm) image stores the OrangeHRM data and configurations at the `/bitnami/orangehrm` and `/bitnami/apache` paths of the container.
 
-Persistent Volume Claims are used to keep the data across deployments. This is known to work in GCE, AWS, and minikube.
+Persistent Volume Claims are used to keep the data across deployments. There is a [known issue](https://github.com/kubernetes/kubernetes/issues/39178) in Kubernetes Clusters with EBS in different availability zones. Ensure your cluster is configured properly to create Volumes in the same availability zone where the nodes are running. Kuberentes 1.12 solved this issue with the [Volume Binding Mode](https://kubernetes.io/docs/concepts/storage/storage-classes/#volume-binding-mode).
+
 See the [Configuration](#configuration) section to configure the PVC or to disable persistence.
 
 ## Upgrading

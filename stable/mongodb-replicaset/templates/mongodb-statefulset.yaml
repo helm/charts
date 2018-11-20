@@ -26,6 +26,7 @@ spec:
 {{ toYaml .Values.extraLabels | indent 8 }}
 {{- end }}
       annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/mongodb-mongodb-configmap.yaml") . | sha256sum }}
       {{- if .Values.metrics.prometheusServiceDiscovery }}
         prometheus.io/scrape: "true"
         prometheus.io/port: {{ .Values.metrics.port | quote }}
@@ -37,6 +38,7 @@ spec:
     spec:
       securityContext:
 {{ toYaml .Values.securityContext | indent 8 }}
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       initContainers:
         - name: copy-config
           image: busybox
@@ -74,6 +76,8 @@ spec:
             - name: keydir
               mountPath: /keydir-readonly
           {{- end }}
+          resources:
+{{ toYaml .Values.init.resources | indent 12 }}
         - name: install
           image: "{{ .Values.installImage.repository }}:{{ .Values.installImage.tag }}"
           args:
@@ -82,6 +86,8 @@ spec:
           volumeMounts:
             - name: workdir
               mountPath: /work-dir
+          resources:
+{{ toYaml .Values.init.resources | indent 12 }}
         - name: bootstrap
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           command:
@@ -111,6 +117,7 @@ spec:
                 secretKeyRef:
                   name: "{{ template "mongodb-replicaset.adminSecret" . }}"
                   key: password
+
           {{- if .Values.metrics.enabled }}
             - name: METRICS
               value: "true"
@@ -139,6 +146,8 @@ spec:
               mountPath: /data/configdb
             - name: datadir
               mountPath: /data/db
+          resources:
+{{ toYaml .Values.init.resources | indent 12 }}        
       containers:
         - name: {{ template "mongodb-replicaset.name" . }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"

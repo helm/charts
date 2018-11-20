@@ -62,7 +62,7 @@ data:
 
     ## Clustering
     cluster_formation.peer_discovery_backend  = rabbit_peer_discovery_k8s
-    cluster_formation.k8s.host = kubernetes.default.svc.cluster.local
+    cluster_formation.k8s.host = kubernetes.default.svc.{{ .Values.clusterDomain }}
     cluster_formation.k8s.address_type = hostname
     cluster_formation.node_cleanup.interval = 10
     # Set to false if automatic cleanup of absent nodes is desired.

@@ -1,6 +1,6 @@
 name: phpmyadmin
-version: 1.1.2
-appVersion: 4.8.2
+version: 1.3.0
+appVersion: 4.8.3
 description: phpMyAdmin is an mysql administration frontend
 keywords:
 - mariadb
