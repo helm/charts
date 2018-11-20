@@ -75,7 +75,10 @@ The following table lists the configurable parameters of the JasperReports chart
 | `mariadb.db.user`         | Database user to create                      | `bn_jasperreports`                                       |
 | `mariadb.db.password`     | Password for the database                    | `nil`                                                    |
 | `mariadb.rootUser.password` | MariaDB admin password                       | `nil`                                                    |
-| `serviceType`                 | Kubernetes Service type                      | `LoadBalancer`                                           |
+| `service.type`                    | Kubernetes Service type                    | `LoadBalancer`                                          |
+| `service.externalTrafficPolicy`   | Enable client source IP preservation       | `Cluster`                                               |
+| `service.port`                    | Service HTTP port                    | `80`                                          |
+| `service.nodePorts.http`                 | Kubernetes http node port                  | `""`                                                    |
 | `persistence.enabled`         | Enable persistence using PVC                 | `true`                                                   |
 | `persistence.storageClass`    | PVC Storage Class for JasperReports volume   | `nil` (uses alpha storage annotation)                    |
 | `persistence.accessMode`      | PVC Access Mode for JasperReports volume     | `ReadWriteOnce`                                          |
