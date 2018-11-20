@@ -10,6 +10,10 @@ metadata:
     component: agent
 spec:
   replicas: {{ .Values.agent.replicaCount }}
+  {{- if .Values.agent.deployStrategy }}
+  strategy:
+{{ toYaml .Values.agent.deployStrategy | indent 4 }}
+  {{- end }}
   selector:
     matchLabels:
       app: {{ template "gocd.name" . }}
