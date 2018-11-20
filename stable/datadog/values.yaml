@@ -14,7 +14,7 @@ image:
 # SELinux policy exists and we need to change the runtime container labels to let them work
 # securityContext:
 #   seLinuxOptions:
-#      - type: "container_runtime_t"
+#      - type: "spc_t"
 
 # NB! Normally you need to keep Datadog DaemonSet enabled!
 # The exceptional case could be a situation when you need to run
