@@ -23,7 +23,7 @@ your cluster fail.
 
 Note that because the cluster is running in secure mode, any client application
 that you attempt to connect will either need to have a valid client certificate
-or a valid username and password. 
+or a valid username and password.
 {{- end }}
 
 {{- if and (.Values.NetworkPolicy.Enabled) (not .Values.NetworkPolicy.AllowExternal) }}
@@ -48,11 +48,3 @@ Then you can access the admin UI at https://localhost:{{ .Values.InternalHttpPor
 
 For more information on using CockroachDB, please see the project's docs at
 https://www.cockroachlabs.com/docs/
-
-{{- if eq .Values.Storage "1Gi" }}
-
-WARNING: Only 1 GiB of disk space is being requested for each pod. This will
-not be enough for a production custer. Re-install with a customized "Storage"
-parameter if you woud like more disk space.
-
-{{- end }}
