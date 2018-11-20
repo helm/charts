@@ -145,6 +145,9 @@ data:
 {{- if .timeFormat }}
         Time_Format {{ .timeFormat }}
 {{- end }}
+{{- if .types }}
+        Types       {{ .types }}
+{{- end }}
 {{ end }}
 {{- end }}
 {{- if .Values.parsers.json }}
