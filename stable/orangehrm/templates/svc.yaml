@@ -24,5 +24,6 @@ spec:
       targetPort: https
       {{- if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.nodePorts.https)))}}
       nodePort: {{ .Values.service.nodePorts.https }}
-      {{- end }}  selector:
+      {{- end }}  
+  selector:
     app: {{ template "orangehrm.fullname" . }}
