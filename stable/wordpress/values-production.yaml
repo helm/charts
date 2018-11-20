@@ -136,22 +136,27 @@ mariadb:
 ## Kubernetes configuration
 ## For minikube, set this to NodePort, elsewhere use LoadBalancer or ClusterIP
 ##
-serviceType: ClusterIP
-##
-## serviceType: NodePort
-## nodePorts:
-##   http: <to set explicitly, choose port between 30000-32767>
-##   https: <to set explicitly, choose port between 30000-32767>
-nodePorts:
-  http: ""
-  https: ""
-## Enable client source IP preservation
-## ref http://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip
-##
-serviceExternalTrafficPolicy: Local
+service:
+  type: ClusterIP
+  # HTTP Port
+  port: 80
+  # HTTPS Port
+  httpsPort: 443
+  ##
+  ## nodePorts:
+  ##   http: <to set explicitly, choose port between 30000-32767>
+  ##   https: <to set explicitly, choose port between 30000-32767>
+  nodePorts:
+    http: ""
+    https: ""
+  ## Enable client source IP preservation
+  ## ref http://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip
+  ##
+  externalTrafficPolicy: Local
 
 ## Allow health checks to be pointed at the https port
 healthcheckHttps: false
+
 
 ## Configure extra options for liveness and readiness probes
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes)
