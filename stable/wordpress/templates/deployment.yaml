@@ -130,6 +130,10 @@ spec:
             port: https
             scheme: HTTPS
           {{- end }}
+          {{- if .Values.livenessProbeHeaders }}
+            httpHeaders:
+{{ toYaml .Values.livenessProbeHeaders | indent 14 }}
+          {{- end }}
 {{ toYaml .Values.livenessProbe | indent 10 }}
         readinessProbe:
           httpGet:
@@ -139,6 +143,10 @@ spec:
           {{- else }}
             port: https
             scheme: HTTPS
+          {{- end }}
+          {{- if .Values.readinessProbeHeaders }}
+            httpHeaders:
+{{ toYaml .Values.readinessProbeHeaders | indent 14 }}
           {{- end }}
 {{ toYaml .Values.readinessProbe | indent 10 }}
         volumeMounts:
@@ -196,4 +204,3 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
-
