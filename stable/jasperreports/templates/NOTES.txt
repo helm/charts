@@ -16,7 +16,7 @@
 
   export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "jasperreports.fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
 
-{{- $port:=.Values.service.port | toString -}}
+{{- $port:=.Values.service.port | toString }}
   echo "JasperReports URL: http://$SERVICE_IP{{- if ne $port "80" }}:{{ .Values.service.port }}{{ end }}/jasperserver/"
 
 {{- else if contains "ClusterIP"  .Values.service.type }}
