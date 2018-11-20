@@ -80,10 +80,12 @@ The following table lists the configurable parameters of the WordPress chart and
 | `externalDatabase.password`      | Password for the above username            | `nil`                                                   |
 | `externalDatabase.database`      | Name of the existing database              | `bitnami_wordpress`                                     |
 | `externalDatabase.port`          | Database port number                       | `3306`                                                  |
-| `serviceType`                    | Kubernetes Service type                    | `LoadBalancer`                                          |
-| `serviceExternalTrafficPolicy`   | Enable client source IP preservation       | `Cluster`                                               |
-| `nodePorts.http`                 | Kubernetes http node port                  | `""`                                                    |
-| `nodePorts.https`                | Kubernetes https node port                 | `""`                                                    |
+| `service.type`                    | Kubernetes Service type                    | `LoadBalancer`                                          |
+| `service.port`                    | Service HTTP port                    | `80`                                          |
+| `service.httpsPort`                    | Service HTTPS port                    | `443`                                          |
+| `service.externalTrafficPolicy`   | Enable client source IP preservation       | `Cluster`                                               |
+| `service.nodePorts.http`                 | Kubernetes http node port                  | `""`                                                    |
+| `service.nodePorts.https`                | Kubernetes https node port                 | `""`                                                    |
 | `healthcheckHttps`               | Use https for liveliness and readiness     | `false`                                                 |
 | `ingress.enabled`                | Enable ingress controller resource         | `false`                                                 |
 | `ingress.hosts[0].name`          | Hostname to your WordPress installation    | `wordpress.local`                                       |
