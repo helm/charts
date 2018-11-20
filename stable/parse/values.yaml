@@ -25,7 +25,7 @@ service:
 ## loadBalancerIP for the Parse Service (optional, cloud specific)
 ## ref: http://kubernetes.io/docs/user-guide/services/#type-loadbalancer
 ##
-# 
+#
 
 server:
   ## Bitnami Parse image version
