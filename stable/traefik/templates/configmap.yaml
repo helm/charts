@@ -340,4 +340,16 @@ data:
         id128bit = {{ .Values.tracing.zipkin.id128bit }}
         {{- end }}
       {{- end }}
+      {{- if eq .Values.tracing.backend "datadog" }}
+      [tracing.datadog]
+        {{- if .Values.tracing.datadog.localAgentHostPort }}
+        localAgentHostPort = {{ .Values.tracing.datadog.localAgentHostPort | quote }}
+        {{- end }}
+        {{- if ne (.Values.tracing.datadog.debug | quote) "" }}
+        debug = {{ .Values.tracing.datadog.debug }}
+        {{- end }}
+        {{- if ne (.Values.tracing.datadog.globalTag | quote) "" }}
+        globalTag = {{ .Values.tracing.datadog.globalTag | quote }}
+        {{- end }}
+      {{- end }}
     {{- end }}
