@@ -93,6 +93,14 @@ data:
       {{- end }}
       address = ":8880"
       compress = {{ .Values.gzip.enabled }}
+      {{- if .Values.proxyProtocol.enabled }}
+        [entryPoints.httpn.proxyProtocol]
+        {{ template "traefik.trustedips" . }}
+      {{- end }}
+      {{- if .Values.forwardedHeaders.enabled }}
+        [entryPoints.httpn.forwardedHeaders]
+        {{ template "traefik.forwardedHeadersTrustedIPs" . }}
+      {{- end }}
       {{- end }}
       {{- if .Values.dashboard.enabled }}
       [entryPoints.traefik]
