@@ -71,9 +71,9 @@ The following table lists the configurable parameters of the Ghost chart and the
 | `securityContext.fsGroup`           | Group ID for the container                                    | `1001`                                                   |
 | `securityContext.runAsUser`         | User ID for the container                                     | `1001`                                                   |
 | `service.type`                    | Kubernetes Service type                    | `LoadBalancer`                                          |
-| `serviceExternalTrafficPolicy`   | Enable client source IP preservation       | `Cluster`                                               |	| `service.port`                    | Service HTTP port                    | `80`                                          |
-| `nodePorts.http`                 | Kubernetes http node port                  | `""`                                                    |	| `service.httpsPort`                    | Service HTTPS port                    | `443`                                          |
+| `service.port`                    | Service HTTP port                    | `80`                                          |
 | `service.nodePorts.http`                 | Kubernetes http node port                  | `""`                                                    |
+| `service.externalTrafficPolicy`      | Enable client source IP preservation                       | `Cluster`                                     |
 | `ingress.enabled`                   | Enable ingress controller resource                            | `false`                                                  |
 | `ingress.hosts[0].name`             | Hostname to your Ghost installation                           | `ghost.local`                                            |
 | `ingress.hosts[0].path`             | Path within the url structure                                 | `/`                                                      |
