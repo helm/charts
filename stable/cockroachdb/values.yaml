@@ -29,7 +29,7 @@ Resources: {}
   # requests:
   #   cpu: "100m"
   #   memory: "512Mi"
-Storage: "1Gi"
+Storage: "100Gi"
 ## Persistent Volume Storage Class for database data
 ## If defined, storageClassName: <StorageClass>
 ## If set to "-", storageClassName: "", which disables dynamic provisioning
