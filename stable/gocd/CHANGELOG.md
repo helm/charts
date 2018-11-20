@@ -1,6 +1,6 @@
 ### 1.5.6
 
-* [70237e50](https://github.com/kubernetes/charts/commit/70237e50)
+* [32de4923](https://github.com/kubernetes/charts/commit/32de4923)
   - Deployment strategy value
 
 ### 1.5.5
