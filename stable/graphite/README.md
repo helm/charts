@@ -37,7 +37,7 @@ The following table lists the configurable parameters of the Graphite chart and 
 |             Parameter          |            Description                       |                  Default               |
 |--------------------------------|----------------------------------------------|----------------------------------------|
 | `image.repository`             | Docker image repo                            | `graphiteapp/graphite-statsd`          |
-| `image.tag`                    | Docker image                                 | `1.1.4-3`                                |
+| `image.tag`                    | Docker image                                 | `1.1.4-10`                                |
 | `image.pullPolicy`             | Docker image pull policy                     | `IfNotPresent`                         |
 | `service.type`                 | Service type                                 | `ClusterIP`                            |
 | `service.port`                 | Service port of Graphite UI                  | `8080`                                 |
