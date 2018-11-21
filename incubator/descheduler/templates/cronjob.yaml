@@ -1,0 +1,76 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  labels:
+    app: {{ template "descheduler.name" . }}
+    chart: {{ template "descheduler.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  name: {{ template "descheduler.fullname" . }}
+{{- if .Values.cronjob.annotations }}
+  annotations:
+{{ toYaml .Values.cronjob.annotations | indent 4 }}
+{{- end }}
+spec:
+  schedule: "{{ .Values.cronjob.schedule }}"
+  {{- with .Values.cronjob.concurrencyPolicy }}
+  concurrencyPolicy: {{ . }}
+  {{- end }}
+  {{- with .Values.cronjob.failedJobsHistoryLimit }}
+  failedJobsHistoryLimit: {{ . }}
+  {{- end }}
+  {{- with .Values.cronjob.successfulJobsHistoryLimit }}
+  successfulJobsHistoryLimit: {{ . }}
+  {{- end }}
+  jobTemplate:
+    metadata:
+      labels:
+        app: {{ template "descheduler.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      template:
+        metadata:
+          labels:
+            app: {{ template "descheduler.name" . }}
+            release: {{ .Release.Name }}
+          annotations:
+            scheduler.alpha.kubernetes.io/critical-pod: ""
+{{- if .Values.pod.annotations }}
+{{ toYaml .Values.pod.annotations | indent 12 }}
+{{- end }}
+        spec:
+          volumes:
+          - name: policy-volume
+            configMap:
+              name: {{ template "descheduler.fullname" . }}
+          restartPolicy: "Never"
+{{- if .Values.priorityClassName }}
+          priorityClassName: "{{ .Values.priorityClassName }}"
+{{- end }}
+          containers:
+            - name: {{ .Chart.Name }}
+              image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+              imagePullPolicy: {{ .Values.image.pullPolicy }}
+              volumeMounts:
+              - mountPath: /policy-dir
+                name: policy-volume
+              command:
+                - "/bin/sh"
+                - "-ec"
+                - |
+                  /bin/descheduler --policy-config-file /policy-dir/policy.yaml {{- range $key, $value := .Values.extraArgs }} --{{ $key }}{{ if $value}}={{ $value }}{{ end }} {{- end }}
+              resources:
+{{ toYaml .Values.resources | indent 16 }}
+    {{- with .Values.nodeSelector }}
+          nodeSelector:
+{{ toYaml . | indent 12 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+          affinity:
+{{ toYaml . | indent 12 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+          tolerations:
+{{ toYaml . | indent 12 }}
+    {{- end }}
+          serviceAccountName: {{ template "descheduler.serviceAccountName" . }}
