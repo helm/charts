@@ -355,6 +355,14 @@ deployment:
     httpEnabled: false
     httpsEnabled: false
     dashboardEnabled: false
+  extraVolumeMounts: []
+  ## Additional volumeMounts to traefik main container.
+  #  - name: importedCerts
+  #   mountPath: /mycerts
+  extraVolumes: []
+  ## Additional volumes to traefik pod.
+  #  - name: importedCerts
+  #    emptyDir: {}
 sendAnonymousUsage: false
 tracing:
   enabled: false
