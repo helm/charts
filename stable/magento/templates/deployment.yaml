@@ -78,8 +78,9 @@ spec:
               name: {{ template "magento.fullname" . }}-externaldb
               key: db-password
               {{- end }}
+        {{- $port:=.Values.service.port | toString }}
         - name: MAGENTO_HOST
-          value: {{ include "magento.host" . | quote }}
+          value: "{{ include "magento.host" . }}{{- if ne $port "80" }}:{{ .Values.service.port }}{{ end }}"
         - name: MAGENTO_USERNAME
           value: {{ .Values.magentoUsername | quote }}
         - name: MAGENTO_PASSWORD
