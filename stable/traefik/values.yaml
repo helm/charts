@@ -324,7 +324,7 @@ metrics:
     # pushinterval: 10s
 deployment:
   # labels to add to the pod container metadata
-  # podLabels: 
+  # podLabels:
   #   key: value
   # podAnnotations:
   #   key: value
