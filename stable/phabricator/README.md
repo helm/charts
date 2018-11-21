@@ -57,7 +57,6 @@ The following table lists the configurable parameters of the Phabricator chart a
 | `image.pullSecrets`                    | Specify image pull secrets                   | `nil`                                                    |
 | `phabricatorHost`                      | Phabricator host to create application URLs  | `nil`                                                    |
 | `phabricatorAlternateFileDomain`       | Phabricator alternate domain to upload files | `nil`                                                    |
-| `phabricatorLoadBalancerIP`            | `loadBalancerIP` for the Phabricator Service | `nil`                                                    |
 | `phabricatorUsername`                  | User of the application                      | `user`                                                   |
 | `phabricatorPassword`                  | Application password                         | _random 10 character long alphanumeric string_           |
 | `phabricatorEmail`                     | Admin email                                  | `user@example.com`                                       |
@@ -69,7 +68,13 @@ The following table lists the configurable parameters of the Phabricator chart a
 | `smtpPassword`                         | SMTP password                                | `nil`                                                    |
 | `smtpProtocol`                         | SMTP protocol [`ssl`, `tls`]                 | `nil`                                                    |
 | `mariadb.rootUser.password`            | MariaDB admin password                       | `nil`                                                    |
-| `serviceType`                          | Kubernetes Service type                      | `LoadBalancer`                                           |
+| `service.type`                    | Kubernetes Service type                    | `LoadBalancer`                                          |
+| `service.port`                    | Service HTTP port                 | `80`                                          |
+| `service.httpsPort`                    | Service HTTP port                 | `443`                                          |
+| `service.loadBalancerIP`            | `loadBalancerIP` for the Phabricator Service | `nil`                                                    |
+| `service.externalTrafficPolicy`   | Enable client source IP preservation       | `Cluster`                                               |
+| `service.nodePorts.http`                 | Kubernetes http node port                  | `""`                                                    |
+| `service.nodePorts.https`                 | Kubernetes https node port                  | `""`                                                    |
 | `persistence.enabled`                  | Enable persistence using PVC                 | `true`                                                   |
 | `persistence.apache.storageClass`      | PVC Storage Class for Apache volume          | `nil` (uses alpha storage class annotation)              |
 | `persistence.apache.accessMode`        | PVC Access Mode for Apache volume            | `ReadWriteOnce`                                          |
