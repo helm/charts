@@ -95,7 +95,7 @@ Parameter | Description | Default
 `alertmanager.enabled` | If true, create alertmanager | `true`
 `alertmanager.name` | alertmanager container name | `alertmanager`
 `alertmanager.image.repository` | alertmanager container image repository | `prom/alertmanager`
-`alertmanager.image.tag` | alertmanager container image tag | `v0.15.2`
+`alertmanager.image.tag` | alertmanager container image tag | `v0.15.3`
 `alertmanager.image.pullPolicy` | alertmanager container image pull policy | `IfNotPresent`
 `alertmanager.prefixURL` | The prefix slug at which the server can be accessed | ``
 `alertmanager.baseURL` | The external url at which the server can be accessed | `/`
@@ -218,7 +218,7 @@ Parameter | Description | Default
 `rbac.create` | If true, create & use RBAC resources | `true`
 `server.name` | Prometheus server container name | `server`
 `server.image.repository` | Prometheus server container image repository | `prom/prometheus`
-`server.image.tag` | Prometheus server container image tag | `v2.4.3`
+`server.image.tag` | Prometheus server container image tag | `v2.5.0`
 `server.image.pullPolicy` | Prometheus server container image pull policy | `IfNotPresent`
 `server.enableAdminApi` |  If true, Prometheus administrative HTTP API will be enabled. Please note, that you should take care of administrative API access protection (ingress or some frontend Nginx with auth) before enabling it. | `false`
 `server.global.scrape_interval` | How frequently to scrape targets by default | `1m`
@@ -246,6 +246,7 @@ Parameter | Description | Default
 `server.persistentVolume.annotations` | Prometheus server data Persistent Volume annotations | `{}`
 `server.persistentVolume.existingClaim` | Prometheus server data Persistent Volume existing claim name | `""`
 `server.persistentVolume.mountPath` | Prometheus server data Persistent Volume mount root path | `/data`
+`server.persistentVolume.reclaimPolicy` | Prometheus server data Persistent Volume reclaim policy | `Retain`
 `server.persistentVolume.size` | Prometheus server data Persistent Volume size | `8Gi`
 `server.persistentVolume.storageClass` | Prometheus server data Persistent Volume Storage Class |  `unset`
 `server.persistentVolume.subPath` | Subdirectory of Prometheus server data Persistent Volume to mount | `""`

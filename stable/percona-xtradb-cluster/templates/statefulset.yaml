@@ -111,6 +111,10 @@ spec:
           mountPath: /root
         - name: var-log
           mountPath: /var/log
+        {{- if .Values.ssl.enabled }}
+        - name: certificates
+          mountPath: /ssl
+        {{- end }}
       {{ if .Values.logTail }}
       - name: "logs"
         image: "busybox:1.25.0"
@@ -123,10 +127,18 @@ spec:
         - name: var-log
           mountPath: /var/log
       {{ end }}
-      {{ if .Values.metricsExporter }}
+      {{ if .Values.metricsExporter.enabled }}
       - name: metrics
         image: prom/mysqld-exporter
         imagePullPolicy: IfNotPresent
+{{- if .Values.metricsExporter.commandOverrides }}
+        command:
+{{ toYaml .Values.metricsExporter.commandOverrides | indent 8 }}
+{{- end }}
+{{- if .Values.metricsExporter.argsOverrides }}
+        args:
+{{ toYaml .Values.metricsExporter.argsOverrides | indent 8 }}
+{{- end }}
         ports:
         - name: metrics
           containerPort: 9104
@@ -159,6 +171,11 @@ spec:
       - name: mysql-data
         emptyDir: {}
       {{- end -}}
+      {{- if .Values.ssl.enabled }}
+      - name: certificates
+        secret:
+          secretName: {{ .Values.ssl.secret }}
+      {{- end }}
       {{- if .Values.tolerations }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}

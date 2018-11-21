@@ -6,6 +6,10 @@ global:
   #  label: value
   ## Configure HostAliases
   hostAliases: []
+  affinity:
+  #  label: value
+  tolerations:
+  #  label: value
 
 hub:
   ## The repository and image
