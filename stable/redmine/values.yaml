@@ -148,10 +148,23 @@ postgresql:
 ##   ingress: ClusterIP
 ##   elsewhere: LoadBalancer
 ##
-serviceType: LoadBalancer
-## Control hosts connecting to "LoadBalancer" only
-serviceLoadBalancerSourceRanges:
-  - 0.0.0.0/0
+service:
+  type: LoadBalancer
+  # HTTP Port
+  port: 80
+  ## loadBalancerIP:
+  ## Control hosts connecting to "LoadBalancer" only
+  loadBalancerSourceRanges:
+    - 0.0.0.0/0
+  ##
+  ## nodePorts:
+  ##   http: <to set explicitly, choose port between 30000-32767>
+  nodePorts:
+    http: ""
+  ## Enable client source IP preservation
+  ## ref http://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip
+  ##
+  externalTrafficPolicy: Cluster
 
 ## Configure the ingress resource that allows you to access the
 ## Redmine installation. Set up the URL
