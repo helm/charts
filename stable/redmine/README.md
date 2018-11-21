@@ -77,8 +77,12 @@ The following table lists the configurable parameters of the Redmine chart and t
 | `databaseType.mariadb`              | Select mariadb database                    | `true`                                                  |
 | `mariadb.rootUser.password`         | MariaDB admin password                     | `nil`                                                   |
 | `postgresql.postgresqlPassword`     | PostgreSQL admin password                  | `nil`                                                   |
-| `serviceType`                       | Kubernetes Service type                    | `LoadBalancer`                                          |
-| `serviceLoadBalancerSourceRanges`   | An array of load balancer sources          | `0.0.0.0/0`                                             |
+| `service.type`                    | Kubernetes Service type                    | `LoadBalancer`                                          |
+| `service.port`                    | Service HTTP port                  | `80`                                          |
+| `service.nodePorts.http`                 | Kubernetes http node port                  | `""`                                                    |
+| `service.externalTrafficPolicy`   | Enable client source IP preservation       | `Cluster`                                               |
+| `service.loadBalancerIP`   | LoadBalancer service IP address       | `""`                                               |
+| `service.loadBalancerSourceRanges`   | An array of load balancer sources          | `0.0.0.0/0`                                             |
 | `ingress.enabled`                   | Enable or disable the ingress              | `false`                                                 |
 | `ingress.hosts[0].name`             | Hostname to your Redmine installation      | `redmine.local  `                                       |
 | `ingress.hosts[0].path`             | Path within the url structure              | `/`                                                     |
