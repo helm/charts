@@ -43,6 +43,7 @@ spec:
           args:
             - --path.procfs=/host/proc
             - --path.sysfs=/host/sys
+            - --path.rootfs=/host
           {{- range $key, $value := .Values.nodeExporter.extraArgs }}
           {{- if $value }}
             - --{{ $key }}={{ $value }}
@@ -57,6 +58,9 @@ spec:
           resources:
 {{ toYaml .Values.nodeExporter.resources | indent 12 }}
           volumeMounts:
+            - name: hostrootfs
+              mountPath: /host
+              readOnly: true
             - name: proc
               mountPath: /host/proc
               readOnly:  true
@@ -102,6 +106,9 @@ spec:
         - name: sys
           hostPath:
             path: /sys
+        - name: hostrootfs
+          hostPath:
+            path: /
       {{- range .Values.nodeExporter.extraHostPathMounts }}
         - name: {{ .name }}
           hostPath:
