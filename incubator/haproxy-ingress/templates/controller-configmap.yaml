@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "haproxy-ingress.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+data:
+  healthz-port: {{ .Values.controller.healthzPort | quote }}
+  stats-port: {{ .Values.controller.statsPort | quote }}
+{{- if .Values.controller.config }}
+{{ toYaml .Values.controller.config | indent 2 }}
+{{- end }}
