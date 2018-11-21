@@ -10,27 +10,27 @@ Commands should be run from the root folder of the repository.
 
 #### Orderer Org admin
 
-    ORG_CERT=$(ls ./EXTRA/crypto-config/ordererOrganizations/test.svc.cluster.local/users/Admin@test.svc.cluster.local/msp/admincerts/*.pem)
+    ORG_CERT=$(ls ./hlf-ord/tests/fixtures/crypto/admin/*.pem)
 
     kubectl create secret generic -n test hlf--ord-admincert --from-file=cert.pem=$ORG_CERT
 
-    CA_CERT=$(ls ./EXTRA/crypto-config/ordererOrganizations/test.svc.cluster.local/users/Admin@test.svc.cluster.local/msp/cacerts/*.pem)
+    CA_CERT=$(ls ./hlf-ord/tests/fixtures/crypto/ca/*.pem)
 
     kubectl create secret generic -n test hlf--ord-cacert --from-file=cacert.pem=$CA_CERT
 
 #### Orderer node
 
-    NODE_CERT=$(ls ./EXTRA/crypto-config/ordererOrganizations/test.svc.cluster.local/orderers/ord0-hlf-ord.test.svc.cluster.local/msp/signcerts/*.pem)
+    NODE_CERT=$(ls ./hlf-ord/tests/fixtures/crypto/orderer/*.pem)
 
     kubectl create secret generic -n test hlf--ord0-idcert --from-file=cert.pem=$NODE_CERT
 
-    NODE_KEY=$(ls ./EXTRA/crypto-config/ordererOrganizations/test.svc.cluster.local/orderers/ord0-hlf-ord.test.svc.cluster.local/msp/keystore/*_sk)
+    NODE_KEY=$(ls ./hlf-ord/tests/fixtures/crypto/orderer/*_sk)
 
     kubectl create secret generic -n test hlf--ord0-idkey --from-file=key.pem=$NODE_KEY
 
 #### Genesis block
 
-    kubectl create secret generic -n test hlf--genesis --from-file=./EXTRA/genesis.block
+    kubectl create secret generic -n test hlf--genesis --from-file=./hlf-ord/tests/fixtures/crypto/genesis.block
 
 ### Install
 
@@ -49,3 +49,7 @@ Check that server is running
 Delete charts we installed
 
     helm delete --purge ord0
+
+Delete the secrets we created
+
+    kubectl -n test delete secret hlf--ord-admincert hlf--ord-cacert hlf--ord0-idcert hlf--ord0-idkey hlf--genesis

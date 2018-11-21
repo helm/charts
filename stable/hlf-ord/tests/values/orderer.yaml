@@ -1,6 +1,5 @@
 ord:
   type: solo
-  ## MSP ID of the Orderer
   mspID: OrdererMSP
 
 secrets:
