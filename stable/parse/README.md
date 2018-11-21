@@ -47,8 +47,12 @@ The following table lists the configurable parameters of the Parse chart and the
 
 |             Parameter              |              Description               |                   Default                               |
 |------------------------------------|----------------------------------------|-------------------------------------------------------- |
-| `serviceType`                      | Kubernetes Service type                | `LoadBalancer`                                          |
-| `loadBalancerIP`                   | `loadBalancerIP` for the Parse Service | `nil`                                                   |
+| `global.imageRegistry`             | Global Docker image registry           | `nil`                                                   |
+| `service.type`                    | Kubernetes Service type                    | `LoadBalancer`                                          |
+| `service.port`                    | Service HTTP port (Dashboard)                   | `80`                                          |
+| `service.loadBalancerIP`                   | `loadBalancerIP` for the Parse Service | `nil`                                                   |
+| `service.externalTrafficPolicy`   | Enable client source IP preservation       | `Cluster`                                               |
+| `service.nodePorts.http`                 | Kubernetes http node port                  | `""`                                                    |
 | `server.image.registry`            | Parse image registry                   | `docker.io`                                             |
 | `server.image.repository`          | Parse image name                       | `bitnami/parse`                                         |
 | `server.image.tag`                 | Parse image tag                        | `{VERSION}`                                             |

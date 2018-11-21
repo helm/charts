@@ -5,13 +5,18 @@ on_minikube: false
 image:
   fluent_bit:
     repository: fluent/fluent-bit
-    tag: 0.14.4
+    tag: 0.14.6
   pullPolicy: Always
 
 # When enabled, exposes json and prometheus metrics on {{ .Release.Name }}-metrics service
 metrics:
   enabled: false
   service:
+    annotations: {}
+    # In order for Prometheus to consume metrics automatically use the following annotations:
+    # prometheus.io/path: "/api/v1/metrics/prometheus"
+    # prometheus.io/port: "2020"
+    # prometheus.io/scrape: "true"
     port: 2020
     type: ClusterIP
 
@@ -23,6 +28,10 @@ backend:
   forward:
     host: fluentd
     port: 24284
+    tls: "off"
+    tls_verify: "on"
+    tls_debug: 1
+    shared_key:
   es:
     host: elasticsearch
     port: 9200
@@ -40,7 +49,7 @@ backend:
     tls_verify: "on"
     # TLS certificate for the Elastic (in PEM format). Use if tls=on and tls_verify=on.
     tls_ca: ""
-    # TLS debugging levels = 1-5
+    # TLS debugging levels = 1-4
     tls_debug: 1
   splunk:
     host: 127.0.0.1
@@ -49,6 +58,7 @@ backend:
     send_raw: "on"
     tls: "on"
     tls_verify: "off"
+    tls_debug: 1
     message_key: "kubernetes"
 
   ##
@@ -58,6 +68,11 @@ backend:
     host: 127.0.0.1
     port: 80
     uri: "/"
+    http_user:
+    http_passwd:
+    tls: "off"
+    tls_verify: "on"
+    tls_debug: 1
     ## Specify the data format to be used in the HTTP request body
     ## Can be either 'msgpack' or 'json'
     format: msgpack
@@ -80,6 +95,13 @@ podAnnotations: {}
 ## to NOT generate a ConfigMap resource
 ##
 existingConfigMap: ""
+
+## Add extra input sources
+extraInputs: |-
+## Add extra filters
+extraFilters: |-
+## Add extra outputs
+extraOutputs: |-
 
 ## Extra volumes containing additional files required for fluent-bit to work
 ## (eg. CA certificates)
@@ -112,6 +134,10 @@ tolerations: []
 ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
 ##
 nodeSelector: {}
+
+input:
+  tail:
+    memBufLimit: 5MB
 
 filter:
   kubeURL: https://kubernetes.default.svc:443

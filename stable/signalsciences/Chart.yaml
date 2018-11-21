@@ -1,0 +1,15 @@
+name: signalsciences
+home: https://signalsciences.com
+icon: https://dashboard.signalsciences.net/static/images/logo-icon-color.svg
+version: 0.0.1
+appVersion: 3.12.1
+description: SignalSciences is a web application firewall. This chart is the installable agent.
+keywords:
+- signalsciences
+- signal-sciences
+- sigsci
+- agent
+- firewall
+- waf
+sources:
+- https://github.com/marccampbell/docker-sigsci

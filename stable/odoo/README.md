@@ -49,6 +49,7 @@ The following table lists the configurable parameters of the Odoo chart and thei
 
 |               Parameter               |                Description                                  |                   Default                      |
 |---------------------------------------|-------------------------------------------------------------|------------------------------------------------|
+| `global.imageRegistry`                | Global Docker image registry                                | `nil`                                          |
 | `image.registry`                      | Odoo image registry                                         | `docker.io`                                    |
 | `image.repository`                    | Odoo Image name                                             | `bitnami/odoo`                                 |
 | `image.tag`                           | Odoo Image tag                                              | `{VERSION}`                                    |
@@ -63,6 +64,7 @@ The following table lists the configurable parameters of the Odoo chart and thei
 | `smtpPassword`                        | SMTP password                                               | `nil`                                          |
 | `smtpProtocol`                        | SMTP protocol [`ssl`, `tls`]                                | `nil`                                          |
 | `service.type`                        | Kubernetes Service type                                     | `LoadBalancer`                                 |
+| `service.port`                    | Service HTTP port                    | `80`                                          |
 | `service.loadBalancer`                | Kubernetes LoadBalancerIP to request                        | `nil`                                          |
 | `service.externalTrafficPolicy`       | Enable client source IP preservation                        | `Cluster`                                      |
 | `service.nodePort`                    | Kubernetes http node port                                   | `""`                                           |

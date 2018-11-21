@@ -1,10 +1,16 @@
+## Global Docker image registry
+## Please, note that this will override the image registry for all the images, including dependencies, configured to use the global value
+##
+# global:
+#   imageRegistry:
+
 ## Bitnami RabbitMQ image version
 ## ref: https://hub.docker.com/r/bitnami/rabbitmq/tags/
 ##
 image:
   registry: docker.io
   repository: bitnami/rabbitmq
-  tag: 3.7.8-debian-9
+  tag: 3.7.8
 
   ## set to true if you would like to see extra information on logs
   ## it turns BASH and NAMI debugging in minideb
@@ -104,6 +110,9 @@ rabbitmq:
 
 ## Kubernetes service type
 serviceType: ClusterIP
+
+# Additional pod labels to apply
+podLabels: {}
 
 ## Pod Security Context
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/

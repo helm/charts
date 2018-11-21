@@ -87,7 +87,7 @@ The following table lists the configurable parameters of the Traefik chart and t
 | -------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
 | `fullnameOverride`                     | Override the full resource names                                                                                             | `{release-name}-traefik` (or traefik if release-name is traefik) |
 | `image`                                | Traefik image name                                                                                                           | `traefik`                                         |
-| `imageTag`                             | The version of the official Traefik image to use                                                                             | `1.7.2`                                           |
+| `imageTag`                             | The version of the official Traefik image to use                                                                             | `1.7.4`                                           |
 | `serviceType`                          | A valid Kubernetes service type                                                                                              | `LoadBalancer`                                    |
 | `loadBalancerIP`                       | An available static IP you have reserved on your cloud platform                                                              | None                                              |
 | `loadBalancerSourceRanges`             | List of IP CIDRs allowed access to load balancer (if supported)                                                              | None                                              |
@@ -113,6 +113,7 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `debug.enabled`                        | Turn on/off Traefik's debug mode. Enabling it will override the logLevel to `DEBUG` and provide `/debug/vars` endpoint that allows Go runtime stats to be inspected, such as number of Goroutines and memory stats | `false`                                   |
 | `ssl.enabled`                          | Whether to enable HTTPS                                                                                                      | `false`                                           |
 | `ssl.enforced`                         | Whether to redirect HTTP requests to HTTPS                                                                                   | `false`                                           |
+| `ssl.permanentRedirect`                | When ssl.enforced is set, use a permanent (301) redirect instead of a temporary redirect (302)                               | `false`                                           |
 | `ssl.upstream`                         | Whether to skip configuring certs (ie: SSL is terminated by L4 ELB)                                                          | `false`                                           |
 | `ssl.insecureSkipVerify`               | Whether to verify certs on SSL connections                                                                                   | `false`                                           |
 | `ssl.tlsMinVersion`                    | Minimum TLS version for https entrypoint                                                                                     | None                                              |
@@ -130,9 +131,9 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `acme.staging`                         | Whether to get certs from Let's Encrypt's staging environment                                                                | `true`                                            |
 | `acme.logging`                         | Display debug log messages from the ACME client library                                                                      | `false`                                           |
 | `acme.domains.enabled`                 | Enable certificate creation by default for specific domain                                                                   | `false`                                           |
-| `acme.domains.domainList`              | List of domains & (optional) subject names                                                                                   | `[]`                                              |
-| `acme.domains.domainList.main`         | Main domain name of the generated certificate                                                                                | *.example.com                                     |
-| `acme.domains.domainList.sans`         | optional list of alternative subject names to give to the certificate                                                        | `[]`                                              |
+| `acme.domains.domainsList`             | List of domains & (optional) subject names                                                                                   | `[]`                                              |
+| `acme.domains.domainsList.main`        | Main domain name of the generated certificate                                                                                | *.example.com                                     |
+| `acme.domains.domainsList.sans`        | optional list of alternative subject names to give to the certificate                                                        | `[]`                                              |
 | `acme.persistence.enabled`             | Create a volume to store ACME certs (if ACME is enabled)                                                                     | `true`                                            |
 | `acme.persistence.annotations`         | PVC annotations                                                                                                              | `{}`                                              |
 | `acme.persistence.storageClass`        | Type of `StorageClass` to request, will be cluster-specific                                                                  | `nil` (uses alpha storage class annotation)       |
@@ -170,6 +171,7 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `kubernetes.ingressEndpoint.hostname`  | Desired static hostname to update for ingress status spec                                                                    | None                                              |
 | `kubernetes.ingressEndpoint.ip`        | Desired static IP to update for ingress status spec                                                                          | None                                              |
 | `kubernetes.ingressEndpoint.publishedService` | Desired `namespace/service` to source ingress status spec from                                                        | None                                              |
+| `kubernetes.ingressEndpoint.useDefaultPublishedService` | Whether to source `namespace/service` status spec from the service created by this chart. Mutually exclusive with `kubernetes.ingressEndpoint.publishedService`                   | None                                              |
 | `accessLogs.enabled`                   | Whether to enable Traefik's access logs                                                                                      | `false`                                           |
 | `accessLogs.filePath`                  | The path to the log file. Logs to stdout if omitted                                                                          | None                                              |
 | `accessLogs.format`                    | What format the log entries should be in. Either `common` or `json`                                                          | `common`                                          |
@@ -191,7 +193,7 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `deployment.hostPort.dashboardEnabled` | Whether to enable hostPort binding to host for dashboard.                                                                    | `false`                                           |
 | `sendAnonymousUsage`                   | Send anonymous usage statistics.                                                                                             | `false`                                           |
 | `tracing.enabled`                      | Whether to enable request tracing                                                                                            | `false`                                           |
-| `tracing.backend`                      | Tracing backend to use, either `jaeger` or `zipkin`                                                                          | None                                              |
+| `tracing.backend`                      | Tracing backend to use, either `jaeger` or `zipkin` or `datadog`                                                             | None                                              |
 | `tracing.serviceName`                  | Service name to be used in tracing backend                                                                                   | `traefik`                                         |
 | `tracing.jaeger.localAgentHostPort`    | Location of the Jaeger agent where spans will be sent                                                                        | `127.0.0.1:6831`                                  |
 | `tracing.jaeger.samplingServerUrl`     | Address of the Jaeger agent HTTP sampling server                                                                             | `http://localhost:5778/sampling`                  |
@@ -201,6 +203,9 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `tracing.zipkin.debug`                 | Enables Zipkin debugging                                                                                                     | `false`                                           |
 | `tracing.zipkin.sameSpan`              | Use Zipkin SameSpan RPC style traces                                                                                         | `false`                                           |
 | `tracing.zipkin.id128Bit`              | Use Zipkin 128 bit root span IDs                                                                                             | `true`                                            |
+| `tracing.datadog.localAgentHostPort`   | Location of the Datadog agent where spans will be sent                                                                       | `127.0.0.1:8126`                                  |
+| `tracing.datadog.debug`                | Enables Datadog debugging                                                                                                    | `false`                                           |
+| `tracing.datadog.globalTag`            | Apply shared tag in a form of Key:Value to all the traces                                                                    | `""`                                           |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 
@@ -270,6 +275,8 @@ Given you have:
 
 Then you are good to migrate your old certs into the kvprovider and run traefik in HA/Cluster-Mode.
 
+
+### Dashboard Basic Auth
 
 [Basic auth](https://docs.traefik.io/toml/#api-backend) can be specified via `dashboard.auth.basic` as a map of usernames to passwords as below.
 See the linked Traefik documentation for accepted passwords encodings.

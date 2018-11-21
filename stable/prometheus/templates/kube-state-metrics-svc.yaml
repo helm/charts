@@ -1,4 +1,4 @@
-{{- if .Values.kubeStateMetrics.enabled -}}
+{{- if and .Values.kubeStateMetrics.enabled .Values.kubeStateMetrics.enabled -}}
 apiVersion: v1
 kind: Service
 metadata:
