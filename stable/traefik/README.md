@@ -131,9 +131,9 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `acme.staging`                         | Whether to get certs from Let's Encrypt's staging environment                                                                | `true`                                            |
 | `acme.logging`                         | Display debug log messages from the ACME client library                                                                      | `false`                                           |
 | `acme.domains.enabled`                 | Enable certificate creation by default for specific domain                                                                   | `false`                                           |
-| `acme.domains.domainList`              | List of domains & (optional) subject names                                                                                   | `[]`                                              |
-| `acme.domains.domainList.main`         | Main domain name of the generated certificate                                                                                | *.example.com                                     |
-| `acme.domains.domainList.sans`         | optional list of alternative subject names to give to the certificate                                                        | `[]`                                              |
+| `acme.domains.domainsList`             | List of domains & (optional) subject names                                                                                   | `[]`                                              |
+| `acme.domains.domainsList.main`        | Main domain name of the generated certificate                                                                                | *.example.com                                     |
+| `acme.domains.domainsList.sans`        | optional list of alternative subject names to give to the certificate                                                        | `[]`                                              |
 | `acme.persistence.enabled`             | Create a volume to store ACME certs (if ACME is enabled)                                                                     | `true`                                            |
 | `acme.persistence.annotations`         | PVC annotations                                                                                                              | `{}`                                              |
 | `acme.persistence.storageClass`        | Type of `StorageClass` to request, will be cluster-specific                                                                  | `nil` (uses alpha storage class annotation)       |
@@ -193,7 +193,7 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `deployment.hostPort.dashboardEnabled` | Whether to enable hostPort binding to host for dashboard.                                                                    | `false`                                           |
 | `sendAnonymousUsage`                   | Send anonymous usage statistics.                                                                                             | `false`                                           |
 | `tracing.enabled`                      | Whether to enable request tracing                                                                                            | `false`                                           |
-| `tracing.backend`                      | Tracing backend to use, either `jaeger` or `zipkin`                                                                          | None                                              |
+| `tracing.backend`                      | Tracing backend to use, either `jaeger` or `zipkin` or `datadog`                                                             | None                                              |
 | `tracing.serviceName`                  | Service name to be used in tracing backend                                                                                   | `traefik`                                         |
 | `tracing.jaeger.localAgentHostPort`    | Location of the Jaeger agent where spans will be sent                                                                        | `127.0.0.1:6831`                                  |
 | `tracing.jaeger.samplingServerUrl`     | Address of the Jaeger agent HTTP sampling server                                                                             | `http://localhost:5778/sampling`                  |
@@ -203,6 +203,9 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `tracing.zipkin.debug`                 | Enables Zipkin debugging                                                                                                     | `false`                                           |
 | `tracing.zipkin.sameSpan`              | Use Zipkin SameSpan RPC style traces                                                                                         | `false`                                           |
 | `tracing.zipkin.id128Bit`              | Use Zipkin 128 bit root span IDs                                                                                             | `true`                                            |
+| `tracing.datadog.localAgentHostPort`   | Location of the Datadog agent where spans will be sent                                                                       | `127.0.0.1:8126`                                  |
+| `tracing.datadog.debug`                | Enables Datadog debugging                                                                                                    | `false`                                           |
+| `tracing.datadog.globalTag`            | Apply shared tag in a form of Key:Value to all the traces                                                                    | `""`                                           |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 
