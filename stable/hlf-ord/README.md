@@ -102,7 +102,7 @@ The following table lists the configurable parameters of the Hyperledger Fabric 
 | `secrets.ord.caCert`               | CA Cert: as 'cacert.pem'                         | ``                                                         |
 | `secrets.ord.intCaCert`            | Int. CA Cert: as 'intermediatecacert.pem'        | ``                                                         |
 | `secrets.ord.tls`                  | TLS secret: as 'tls.crt' and 'tls.key'           | ``                                                         |
-| `secrets.ord.tlsRootCert`          | TLS root CA certificate: as 'cert.pem'           | ``                                                         |
+| `secrets.ord.tlsRootCert`          | TLS root CA certificate: as 'ca.crt'             | ``                                                         |
 | `secrets.genesis`                  | Secret containing Genesis Block for orderer      | ``                                                         |
 | `secrets.adminCert`                | Secret containing Orderer Org admin certificate  | ``                                                         |
 | `resources`                        | CPU/Memory resource requests/limits              | `{}`                                                       |
