@@ -1,0 +1,14 @@
+# CI test for Ingress controller basic installation
+
+admin:
+  useTLS: false
+
+readinessProbe:
+  httpGet:
+    scheme: HTTP
+livenessProbe:
+  httpGet:
+    scheme: HTTP
+
+ingressController:
+  enabled: true
