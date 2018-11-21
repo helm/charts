@@ -55,7 +55,7 @@ spec:
         {{- if .Values.secrets.ord.tlsRootCert }}
         - name: tls-rootcert
           secret:
-          secretName: {{ .Values.secrets.ord.tlsRootCert }}
+            secretName: {{ .Values.secrets.ord.tlsRootCert }}
         {{- end }}
         {{- if .Values.secrets.genesis }}
         - name: genesis
