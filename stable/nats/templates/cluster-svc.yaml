@@ -7,21 +7,21 @@ metadata:
     chart: "{{ template "nats.chart" . }}"
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
-  {{- if .Values.clusterService.annotations }}
+  {{- if .Values.cluster.service.annotations }}
   annotations:
-{{ toYaml .Values.clusterService.annotations | indent 4 }}
+{{ toYaml .Values.cluster.service.annotations | indent 4 }}
   {{- end }}
 spec:
-  type: {{ .Values.clusterService.type }}
-  {{- if and (eq .Values.clusterService.type "LoadBalancer") .Values.clusterService.loadBalancerIP -}}
-  loadBalancerIP: {{ .Values.clusterService.loadBalancerIP }}
+  type: {{ .Values.cluster.service.type }}
+  {{- if and (eq .Values.cluster.service.type "LoadBalancer") .Values.cluster.service.loadBalancerIP -}}
+  loadBalancerIP: {{ .Values.cluster.service.loadBalancerIP }}
   {{- end }}
   ports:
-    - port: {{ .Values.clusterService.port }}
+    - port: {{ .Values.cluster.service.port }}
       targetPort: cluster
       name: cluster
-      {{- if and (eq .Values.clusterService.type "NodePort") (not (empty .Values.clusterService.nodePort)) }}
-      nodePort: {{ .Values.clusterService.nodePort  }}
+      {{- if and (eq .Values.cluster.service.type "NodePort") (not (empty .Values.cluster.service.nodePort)) }}
+      nodePort: {{ .Values.cluster.service.nodePort  }}
       {{- end }}
   selector:
     app: "{{ template "nats.name" . }}"

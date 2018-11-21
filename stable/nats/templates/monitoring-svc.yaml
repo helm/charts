@@ -7,21 +7,21 @@ metadata:
     chart: "{{ template "nats.chart" . }}"
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
-  {{- if .Values.monitoringService.annotations }}
+  {{- if .Values.monitoring.service.annotations }}
   annotations:
-{{ toYaml .Values.monitoringService.annotations | indent 4 }}
+{{ toYaml .Values.monitoring.service.annotations | indent 4 }}
   {{- end }}
 spec:
-  type: {{ .Values.monitoringService.type }}
-  {{- if and (eq .Values.monitoringService.type "LoadBalancer") .Values.monitoringService.loadBalancerIP -}}
-  loadBalancerIP: {{ .Values.monitoringService.loadBalancerIP }}
+  type: {{ .Values.monitoring.service.type }}
+  {{- if and (eq .Values.monitoring.service.type "LoadBalancer") .Values.monitoring.service.loadBalancerIP -}}
+  loadBalancerIP: {{ .Values.monitoring.service.loadBalancerIP }}
   {{- end }}
   ports:
-    - port: {{ .Values.monitoringService.port }}
+    - port: {{ .Values.monitoring.service.port }}
       targetPort: monitoring
       name: monitoring
-      {{- if and (eq .Values.monitoringService.type "NodePort") (not (empty .Values.monitoringService.nodePort)) }}
-      nodePort: {{ .Values.monitoringService.nodePort  }}
+      {{- if and (eq .Values.monitoring.service.type "NodePort") (not (empty .Values.monitoring.service.nodePort)) }}
+      nodePort: {{ .Values.monitoring.service.nodePort  }}
       {{- end }}
   selector:
     app: "{{ template "nats.name" . }}"

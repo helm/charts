@@ -92,21 +92,21 @@ The following table lists the configurable parameters of the NATS chart and thei
 | `readinessProbe.timeoutSeconds`      | When the probe times out                                                                     | `5`                                                           |
 | `readinessProbe.failureThreshold`    | Minimum consecutive failures for the probe to be considered failed after having succeeded.   | `6`                                                           |
 | `readinessProbe.successThreshold`    | Minimum consecutive successes for the probe to be considered successful after having failed. | `1`                                                           |
-| `clientService.type`                 | Kubernetes Service type (NATS client)                                                        | `ClusterIP`                                                   |
-| `clientService.port`                 | NATS client port                                                                             | `4222`                                                        |
-| `clientService.nodePort`             | Port to bind to for NodePort service type (NATS client)                                      | `nil`                                                         |
-| `clientService.annotations`          | Annotations for NATS client service                                                          | {}                                                            |
-| `clientService.loadBalancerIP`       | loadBalancerIP if NATS client service type is `LoadBalancer`                                 | `nil`                                                         |
-| `clusterService.type`                | Kubernetes Service type (NATS cluster)                                                       | `ClusterIP`                                                   |
-| `clusterService.port`                | NATS cluster port                                                                            | `6222`                                                        |
-| `clusterService.nodePort`            | Port to bind to for NodePort service type (NATS cluster)                                     | `nil`                                                         |
-| `clusterService.annotations`         | Annotations for NATS cluster service                                                         | {}                                                            |
-| `clusterService.loadBalancerIP`      | loadBalancerIP if NATS cluster service type is `LoadBalancer`                                | `nil`                                                         |
-| `monitoringService.type`             | Kubernetes Service type (NATS monitoring)                                                    | `ClusterIP`                                                   |
-| `monitoringService.port`             | NATS monitoring port                                                                         | `8222`                                                        |
-| `monitoringService.nodePort`         | Port to bind to for NodePort service type (NATS monitoring)                                  | `nil`                                                         |
-| `monitoringService.annotations`      | Annotations for NATS monitoring service                                                      | {}                                                            |
-| `monitoringService.loadBalancerIP`   | loadBalancerIP if NATS monitoring service type is `LoadBalancer`                             | `nil`                                                         |
+| `client.service.type`                 | Kubernetes Service type (NATS client)                                                        | `ClusterIP`                                                   |
+| `client.service.port`                 | NATS client port                                                                             | `4222`                                                        |
+| `client.service.nodePort`             | Port to bind to for NodePort service type (NATS client)                                      | `nil`                                                         |
+| `client.service.annotations`          | Annotations for NATS client service                                                          | {}                                                            |
+| `client.service.loadBalancerIP`       | loadBalancerIP if NATS client service type is `LoadBalancer`                                 | `nil`                                                         |
+| `cluster.service.type`                | Kubernetes Service type (NATS cluster)                                                       | `ClusterIP`                                                   |
+| `cluster.service.port`                | NATS cluster port                                                                            | `6222`                                                        |
+| `cluster.service.nodePort`            | Port to bind to for NodePort service type (NATS cluster)                                     | `nil`                                                         |
+| `cluster.service.annotations`         | Annotations for NATS cluster service                                                         | {}                                                            |
+| `cluster.service.loadBalancerIP`      | loadBalancerIP if NATS cluster service type is `LoadBalancer`                                | `nil`                                                         |
+| `monitoring.service.type`             | Kubernetes Service type (NATS monitoring)                                                    | `ClusterIP`                                                   |
+| `monitoring.service.port`             | NATS monitoring port                                                                         | `8222`                                                        |
+| `monitoring.service.nodePort`         | Port to bind to for NodePort service type (NATS monitoring)                                  | `nil`                                                         |
+| `monitoring.service.annotations`      | Annotations for NATS monitoring service                                                      | {}                                                            |
+| `monitoring.service.loadBalancerIP`   | loadBalancerIP if NATS monitoring service type is `LoadBalancer`                             | `nil`                                                         |
 | `ingress.enabled`                    | Enable ingress controller resource                                                           | `false`                                                       |
 | `ingress.hosts[0].name`              | Hostname for NATS monitoring                                                                 | `nats.local`                                                  |
 | `ingress.hosts[0].path`              | Path within the url structure                                                                | `/`                                                           |
