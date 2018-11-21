@@ -58,7 +58,7 @@ spec:
         {{- if .Values.secrets.peer.tlsRootCert }}
         - name: tls-rootcert
           secret:
-          secretName: {{ .Values.secrets.peer.tlsRootCert }}
+            secretName: {{ .Values.secrets.peer.tlsRootCert }}
         {{- end }}
         {{- if .Values.secrets.channel }}
         - name: channel
