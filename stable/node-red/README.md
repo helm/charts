@@ -2,6 +2,8 @@
 
 Flow-based programming for the Internet of Things
 
+**This chart is not maintained by the Node-RED project and any issues with the chart should be raised [here](https://github.com/helm/charts/issues/new)**
+
 ## TL;DR;
 
 ```console

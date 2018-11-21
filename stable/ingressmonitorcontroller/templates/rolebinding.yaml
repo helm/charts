@@ -1,0 +1,34 @@
+{{- if and ( .Values.ingressMonitorController.rbac.create ) (.Values.ingressMonitorController.watchNamespace) }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+{{- if .Values.ingressMonitorController.useFullName }}
+  name: {{ template "fullname" . }}-role-binding
+{{- else }}
+  name: {{ template "name" . }}-role-binding
+{{- end }}
+  namespace: {{ .Values.ingressMonitorController.watchNamespace | quote }}
+  labels:
+    app: {{ template "name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+{{- if .Values.ingressMonitorController.rbac.labels }}
+{{ toYaml .Values.ingressMonitorController.rbac.labels | indent 4 }}
+{{- end }}
+{{- if .Values.ingressMonitorController.matchLabels }}
+{{ toYaml .Values.ingressMonitorController.matchLabels | indent 4 }}
+{{- end }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+{{- if .Values.ingressMonitorController.useFullName }}
+  name: {{ template "fullname" . }}-role
+{{- else }}
+  name: {{ template "name" . }}-role
+{{- end }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ template "serviceAccountName" . }}
+    namespace: {{ .Release.Namespace | quote }}
+{{- end }}
