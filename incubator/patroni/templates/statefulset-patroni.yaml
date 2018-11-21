@@ -151,7 +151,6 @@ spec:
         {{- end }}
         labels:
           app: {{ template "patroni.name" . }}
-          chart: {{ template "patroni.chart" . }}
           release: {{ .Release.Name }}
           heritage: {{ .Release.Service }}
       spec:
