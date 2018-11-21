@@ -63,7 +63,12 @@ The following table lists the configurable parameters of the Moodle chart and th
 | `smtpProtocol`                        | SMTP Protocol (options: ssl,tls, nil)                                                        | `nil`                                                   |
 | `smtpUser`                            | SMTP user                                                                                    | `nil`                                                   |
 | `smtpPassword`                        | SMTP password                                                                                | `nil`                                                   |
-| `serviceType`                         | Kubernetes Service type                                                                      | `LoadBalancer`                                          |
+| `service.type`                    | Kubernetes Service type                    | `LoadBalancer`                                          |
+| `service.port`                    | Service HTTP port                    | `80`                                          |
+| `service.httpsPort`                    | Service HTTPS port                    | `443`                                          |
+| `service.externalTrafficPolicy`   | Enable client source IP preservation       | `Cluster`                                               |
+| `service.nodePorts.http`                 | Kubernetes http node port                  | `""`                                                    |
+| `service.nodePorts.https`                | Kubernetes https node port                 | `""`                                                    |
 | `ingress.enabled`                     | Enable ingress controller resource                                                           | `false`                                                 |
 | `ingress.hosts[0].name`               | Hostname to your Moodle installation                                                         | `moodle.local`                                          |
 | `ingress.hosts[0].path`               | Path within the url structure                                                                | `/`                                                     |
