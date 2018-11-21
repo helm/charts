@@ -78,7 +78,8 @@ spec:
               key: db-password
         {{- end }}
         - name: SUITECRM_HOST
-          value: {{ include "host" . | quote }}
+{{- $port:=.Values.service.port | toString }}
+          value: "{{ include "host" . }}:{{- if ne $port "80" }}:{{ .Values.service.port }}{{ end }}"
         - name: SUITECRM_USERNAME
           value: {{ .Values.suitecrmUsername | quote }}
         - name: SUITECRM_PASSWORD
