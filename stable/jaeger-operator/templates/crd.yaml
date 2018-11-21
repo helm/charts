@@ -5,6 +5,7 @@ metadata:
 {{- if semverCompare ">=2.10-0" .Capabilities.TillerVersion.SemVer }}
   annotations:
     "helm.sh/hook": crd-install
+    "helm.sh/hook-delete-policy": "before-hook-creation"
 {{- end }}
   labels:
     app.kubernetes.io/name: {{ include "jaeger-operator.name" . }}
