@@ -49,30 +49,10 @@ rabbitmq:
   ##
   # erlangCookie:
 
-  ## Node port
-  ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
-  ##
-  nodePort: 5672
-
-  ## Amqp port
-  ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
-  ##
-  amqpPort: 5672
-
-  ## Dist port
-  ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
-  ##
-  distPort: 25672
-
   ## Node name to cluster with. e.g.: `clusternode@hostname`
   ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
   ##
   # rabbitmqClusterNodeName:
-
-  ## RabbitMQ Manager port
-  ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
-  ##
-  managerPort: 15672
 
   ## RabbitMQ Disk free limit
   ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
@@ -109,7 +89,26 @@ rabbitmq:
       loopback_users.guest = false
 
 ## Kubernetes service type
-serviceType: ClusterIP
+service:
+  type: ClusterIP
+  ## Node port
+  ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
+  ##
+  nodePort: 5672
+
+  ## Amqp port
+  ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
+  ##
+  amqpPort: 5672
+  ## Dist port
+  ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
+  ##
+  distPort: 25672
+
+  ## RabbitMQ Manager port
+  ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
+  ##
+  managerPort: 15672
 
 # Additional pod labels to apply
 podLabels: {}
