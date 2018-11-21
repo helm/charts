@@ -45,9 +45,11 @@ spec:
         - containerPort: 8201
           name: cluster-address
         livenessProbe:
-          # Alive if it is listening for clustering traffic
-          tcpSocket:
+          # Alive if in standby or active mode
+          httpGet:
+            path: /v1/sys/health?standbyok=true
             port: {{ .Values.service.port }}
+            scheme: {{ if .Values.vault.config.listener.tcp.tls_disable -}}HTTP{{- else -}}HTTPS{{- end }}
         readinessProbe:
           # Ready depends on preference
           httpGet:
