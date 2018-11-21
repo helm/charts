@@ -55,8 +55,14 @@ The following table lists the configurable parameters of the PrestaShop chart an
 | `image.tag`                           | PrestaShop image tag                                                                         | `{VERSION}`                                             |
 | `image.pullPolicy`                    | Image pull policy                                                                            | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
 | `image.pullSecrets`                   | Specify image pull secrets                                                                   | `nil`                                                   |
+| `service.type`                    | Kubernetes Service type                    | `LoadBalancer`                                          |
+| `service.port`                    | Service HTTP port                  | `80`                                          |
+| `service.httpsPort`                    | Service HTTPS port                   | `443`                                          |
+| `service.nodePorts.http`                 | Kubernetes http node port                  | `""`                                                    |
+| `service.nodePorts.https`                | Kubernetes https node port                 | `""`                                                    |
+| `service.externalTrafficPolicy`   | Enable client source IP preservation       | `Cluster`                                               |
+| `service.loadBalancerIP`   | LoadBalancer service IP address       | `""`                                               |
 | `prestashopHost`                      | PrestaShop host to create application URLs                                                   | `nil`                                                   |
-| `prestashopLoadBalancerIP`            | `loadBalancerIP` for the PrestaShop Service                                                  | `nil`                                                   |
 | `prestashopUsername`                  | User of the application                                                                      | `user@example.com`                                      |
 | `prestashopPassword`                  | Application password                                                                         | _random 10 character long alphanumeric string_          |
 | `prestashopEmail`                     | Admin email                                                                                  | `user@example.com`                                      |
@@ -79,8 +85,6 @@ The following table lists the configurable parameters of the PrestaShop chart an
 | `mariadb.db.user`                     | Database user to create                                                                      | `bn_prestashop`                                         |
 | `mariadb.db.password`                 | Password for the database                                                                    | `nil`                                                   |
 | `mariadb.rootUser.password`           | MariaDB admin password                                                                       | `nil`                                                   |
-| `serviceType`                         | Kubernetes Service type                                                                      | `LoadBalancer`                                          |
-| `externalTrafficPolicy`               | Set to `Local` to preserve the client source IP                                              | `Local`                                                 |
 | `sessionAffinity`                     | Configures the session affinity                                                              | `None`                                                  |
 | `persistence.enabled`                 | Enable persistence using PVC                                                                 | `true`                                                  |
 | `persistence.storageClass`            | PVC Storage Class for PrestaShop volume                                                      | `nil` (uses alpha storage class annotation)             |
