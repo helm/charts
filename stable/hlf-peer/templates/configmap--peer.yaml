@@ -28,9 +28,9 @@ data:
   CORE_PEER_TLS_ENABLED: {{ .Values.peer.tls.server.enabled | quote }}
   CORE_PEER_TLS_CERT_FILE: "/var/hyperledger/tls/tls.crt"
   CORE_PEER_TLS_KEY_FILE: "/var/hyperledger/tls/tls.key"
-  CORE_PEER_TLS_ROOTCERT_FILE: "/var/hyperledger/msp_tls/cert.pem"
+  CORE_PEER_TLS_ROOTCERT_FILE: "/var/hyperledger/tls_ca/ca.crt"
   CORE_PEER_TLS_CLIENTAUTHREQUIRED: {{ .Values.peer.tls.client.enabled | quote }}
-  CORE_PEER_TLS_CLIENTROOTCAS_FILES: "/var/hyperledger/msp_tls/cert.pem"
+  CORE_PEER_TLS_CLIENTROOTCAS_FILES: "/var/hyperledger/tls_ca/ca.crt"
   CORE_PEER_TLS_CLIENTCERT_FILE: "/var/hyperledger/tls/tls.crt"
   CORE_PEER_TLS_CLIENTKEY_FILE: "/var/hyperledger/tls/tls.key"
   CORE_LEDGER_STATE_STATEDATABASE: {{ .Values.peer.databaseType | quote }}

@@ -159,11 +159,11 @@ spec:
               name: intcacert
             {{- end }}
             {{- if .Values.secrets.peer.tls }}
-            - mountPath: /var/hyperledger/msp_tls
+            - mountPath: /var/hyperledger/tls
               name: tls
             {{- end }}
             {{- if .Values.secrets.peer.tlsRootCert }}
-            - mountPath: /var/hyperledger/msp_tls
+            - mountPath: /var/hyperledger/tls_ca
               name: tls-rootcert
             {{- end }}
             {{- if .Values.secrets.channel }}

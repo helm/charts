@@ -94,7 +94,7 @@ The following table lists the configurable parameters of the Hyperledger Fabric 
 | `secrets.peer.caCert`              | CA Cert: as 'cacert.pem'                             | ``                                                         |
 | `secrets.peer.intCaCert`           | Int. CA Cert: as 'intermediatecacert.pem'            | ``                                                         |
 | `secrets.peer.tls`                 | TLS secret: as 'tls.crt' and 'tls.key'               | ``                                                         |
-| `secrets.peer.tlsRootCert`         | TLS root CA certificate: as 'cert.pem'               | ``                                                         |
+| `secrets.peer.tlsRootCert`         | TLS root CA certificate: as 'ca.crt'                 | ``                                                         |
 | `secrets.channel`                  | Secret containing Channel tx for peer to create/join | ``                                                         |
 | `secrets.adminCert`                | Secret containing Peer Org admin certificate         | ``                                                         |
 | `secrets.adminCert`                | Secret containing Peer Org admin private key         | ``                                                         |
