@@ -124,6 +124,8 @@ The following table lists the configurable parameters of the Minio chart and the
 | `azuregateway.enabled`     | Use minio as an [azure gateway](https://docs.minio.io/docs/minio-gateway-for-azure)| `false`  |
 | `gcsgateway.enabled`       | Use minio as a [Google Cloud Storage gateway](https://docs.minio.io/docs/minio-gateway-for-gcs)| `false` |
 | `gcsgateway.gcsKeyJson`    | credential json file of service account key | `""` |
+| `gcsgateway.encodedJson`   | Base64 encoded string of service account key JSON | `""` |
+| `gcsgateway.fileJson`      | File path to json file of service account key | `""`|
 | `gcsgateway.projectId`     | Google cloud project id             | `""` |
 | `nasgateway.enabled`       | Use minio as a [NAS gateway](https://docs.minio.io/docs/minio-gateway-for-nas)             | `false` |
 | `nasgateway.replicas`      | Number of NAS gateway instances to be run in parallel on a PV            | `4` |
