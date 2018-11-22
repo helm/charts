@@ -693,6 +693,13 @@ web:
   #     value: "debug"
   #   - name: CONCOURSE_TSA_LOG_LEVEL
   #     value: "debug"
+  
+  ## For managing where secrets should be mounted for the web agents
+  # keySecretsPath: "/concourse-keys"
+  # authSecretsPath: "/concourse-auth"
+  # vaultSecretsPath: "/concourse-vault"
+  # postgresqlSecretsPath: "/concourse-postgresql"
+  # syslogSecretsPath: "/concourse-syslog"
 
   ## Additional affinities to add to the web pods.
   ##
@@ -833,6 +840,9 @@ worker:
   #   - name: CONCOURSE_GARDEN_ALLOW_HOST_ACCESS
   #     value: "true"
 
+
+  ## For managing where secrets should be mounted for worker agents
+  # keySecretsPath: "/concourse-keys"
 
   ## Configure additional volumeMounts for the
   ## worker container(s)
@@ -1017,15 +1027,7 @@ rbac:
 ##
 secrets:
 
-  ## For managing where secrets should be mounted for worker agents
-  # mountPathWorkerKeys: "concourse-keys"
 
-  ## For managing where secrets should be mounted for the web agents
-  # mountPathWebKeys: "/concourse-keys"
-  # mountPathWebAuth: "/concourse-auth"
-  # mountPathWebVault: "/concourse-vault"
-  # mountPathWebPostgresql: "/concourse-postgresql"
-  # mountPathWebSyslog: "/concourse-syslog"
 
   ## List of username:bcrypted_password combinations for all your local concourse users.
   localUsers: "test:$2a$10$sDB6AsH2HheOWHILrnHVJOCZq/GYtUYE02ypJJTQBmWJNivYNhP3y"
