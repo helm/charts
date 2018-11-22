@@ -1,3 +1,5 @@
+#### THIS CHART IS DEPRECATED! ####
+
 ** Please be patient while the chart is being deployed **
 
 {{ if not (or .Values.serviceAccountKey .Values.existingSecret) -}}
