@@ -125,3 +125,4 @@ A variety of other parameters are also configurable. See the comments in the
 | `service.enabled`               | true                                   |
 | `service.type`                  | ClusterIP                              |
 | `service.externalPort`          | 5984                                   |
+| `service.nodePort`              | 5984                                   |
