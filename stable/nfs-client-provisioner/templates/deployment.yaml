@@ -37,11 +37,13 @@ spec:
             - name: NFS_PATH
               value: {{ .Values.nfs.path }}
       volumes:
+        - name: nfs-client-root
 {{- if .Values.buildMode }}
-        - name: nfs-client-root
           emptyDir: {}
+{{- else if .Values.nfs.mountOptions }}
+          persistentVolumeClaim:
+            claimName: pvc-{{ template "nfs-client-provisioner.fullname" . }}
 {{- else }}
-        - name: nfs-client-root
           nfs:
             server: {{ .Values.nfs.server }}
             path: {{ .Values.nfs.path }}

@@ -26,6 +26,12 @@ spec:
         release: {{ .Release.Name }}
         component: app
     spec:
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end }}
+      {{- end }}
       initContainers:
       - name: wait-for-db
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -53,6 +59,10 @@ spec:
         - name: KONG_CASSANDRA_CONTACT_POINTS
           value: {{ template "kong.cassandra.fullname" . }}
         {{- end }}
+        {{- range $key, $val := .Values.env }}
+        - name: KONG_{{ $key | upper}}
+          value: {{ $val | quote }}
+        {{- end}}
         command: [ "/bin/sh", "-c", "until kong start; do echo 'waiting for db'; sleep 1; done; kong stop" ]
       containers:
       - name: {{ template "kong.name" . }}
