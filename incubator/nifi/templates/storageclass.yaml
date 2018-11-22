@@ -3,6 +3,11 @@ kind: StorageClass
 apiVersion: storage.k8s.io/v1
 metadata:
   name: {{ .Values.storageClass }}
+  labels:
+    app: {{ include "apache-nifi.name" . | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
 provisioner: {{ .Values.storageProvisioner | quote }}
 parameters:
   type: {{ .Values.storageType | quote }}
