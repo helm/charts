@@ -17,7 +17,7 @@ spec:
   tls:
     - hosts:
         - {{ $authDomain }}
-      secretName: sso-auth-tls-secret
+      secretName: {{ .Values.auth.tls.secretName -}}
   {{- range .Values.ingress.tls }}
     - hosts:
       {{- range .hosts }}
