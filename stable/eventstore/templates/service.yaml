@@ -1,0 +1,50 @@
+{{- if .Values.cluster.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "eventstore.fullname" . }}
+  labels:
+    app: {{ template "eventstore.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.service.type }}
+  clusterIP: None
+  ports:
+    - name: http
+      port: {{ default "2113" .Values.service.HTTPInterfacePort }}
+      targetPort: http
+      protocol: TCP
+    - name: tcp
+      port: {{ default "1113" .Values.service.TCPInterfacePort }}
+      targetPort: tcp
+      protocol: TCP
+  selector:
+    app: {{ template "eventstore.name" . }}
+    release: {{ .Release.Name }}
+{{- else -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "eventstore.fullname" . }}
+  labels:
+    app: {{ template "eventstore.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - name: http
+      port: {{ default "2113" .Values.service.HTTPInterfacePort }}
+      targetPort: http
+      protocol: TCP
+    - name: tcp
+      port: {{ default "1113" .Values.service.TCPInterfacePort }}
+      targetPort: tcp
+      protocol: TCP
+  selector:
+    app: {{ template "eventstore.name" . }}
+    release: {{ .Release.Name }}
+{{- end -}}
