@@ -1,5 +1,5 @@
 {{- if or (not .Values.nifiSingleDisk) (not .Values.nifiSingleDisk.enabled) }}
-apiVersion: apps/v1beta1
+apiVersion: apps/v1beta2
 kind: StatefulSet
 metadata:
   name: {{ template "apache-nifi.fullname" . }}
