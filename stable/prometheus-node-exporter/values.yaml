@@ -49,6 +49,9 @@ tolerations:
   - effect: NoSchedule
     operator: Exists
 
+## Assign a PriorityClassName to pods if set
+# priorityClassName: ""
+
 ## Additional container arguments
 ##
 extraArgs: {}
