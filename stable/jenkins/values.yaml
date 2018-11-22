@@ -123,6 +123,10 @@ Master:
   # Jobs:
   #   test: |-
   #     <<xml here>>
+  # Jenkins XML node configs to provision
+  # Nodes: |-
+  #   node: |-
+  #     <<xml here>>
   CustomConfigMap: false
   # By default, the configMap is only used to set the initial config the first time
   # that the chart is installed.  Setting `OverwriteConfig` to `true` will overwrite

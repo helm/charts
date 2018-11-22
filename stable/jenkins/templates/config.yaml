@@ -245,6 +245,12 @@ data:
       cp -n /var/jenkins_jobs/$job /var/jenkins_home/jobs/$job/config.xml
     done
 {{- end }}
+{{- if .Values.Master.Nodes }}
+    for node in $(ls /var/jenkins_nodes); do
+      mkdir -p /var/jenkins_home/nodes/$node
+      cp -n /var/jenkins_nodes/$node /var/jenkins_home/nodes/$node/config.xml
+    done
+{{- end }}
 {{- range $key, $val := .Values.Master.InitScripts }}
   init{{ $key }}.groovy: |-
 {{ $val | indent 4 }}

@@ -97,6 +97,12 @@ spec:
               name: jenkins-jobs
               readOnly: true
             {{- end }}
+            {{- if .Values.Master.Nodes }}
+            -
+              mountPath: /var/jenkins_nodes
+              name: jenkins-nodes
+              readOnly: true
+            {{- end }}
             {{- if .Values.Master.InstallPlugins }}
             -
               mountPath: /var/jenkins_plugins
@@ -203,6 +209,12 @@ spec:
               name: jenkins-jobs
               readOnly: true
             {{- end }}
+            {{- if .Values.Master.Nodes }}
+            -
+              mountPath: /var/jenkins_nodes
+              name: jenkins-nodes
+              readOnly: true
+            {{- end }}
             {{- if .Values.Master.InstallPlugins }}
             -
               mountPath: /usr/share/jenkins/ref/plugins/
@@ -234,6 +246,11 @@ spec:
       - name: jenkins-jobs
         configMap:
           name: {{ template "jenkins.fullname" . }}-jobs
+      {{- end }}
+      {{- if .Values.Master.Nodes }}
+      - name: jenkins-nodes
+        configMap:
+          name: {{ template "jenkins.fullname" . }}-nodes
       {{- end }}
       {{- if .Values.Master.InstallPlugins }}
       - name: plugin-dir

@@ -78,6 +78,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `Master.SecretsFilesSecret`       | Kubernetes secret that contains 'secrets' files | Not set                                                           |
 | `Master.Jobs`                     | Jenkins XML job configs              | Not set                                                                      |
 | `Master.InstallPlugins`           | List of Jenkins plugins to install   | `kubernetes:1.14.0 workflow-aggregator:2.6 credentials-binding:1.17 git:3.9.1 workflow-job:2.31` |
+| `Master.Nodes`                    | Jenkins XML node configs             | Not set                                                                      |
 | `Master.ScriptApproval`           | List of groovy functions to approve  | Not set                                                                      |
 | `Master.NodeSelector`             | Node labels for pod assignment       | `{}`                                                                         |
 | `Master.Affinity`                 | Affinity settings                    | `{}`                                                                         |
@@ -359,4 +360,37 @@ Master:
     -Dhttp.proxyPort=3128
     -Dhttps.proxyHost=192.168.64.1
     -Dhttps.proxyPort=3128
+```
+
+## Adding nodes
+
+If you need to add dedicated and permanent agent machine, you may need this.
+
+Plain, permanent agent(node) can be created in `values.yaml`. The keys of the map will become a directory within the nodes directory. The values of the map will become the `config.xml` file in the respective directory.
+
+Below is an example of a `values.yaml` file and the directory structure created:
+
+
+#### values.yaml
+```yaml
+Master:
+  Nodes:
+    node-1: |-
+      <?xml version='1.0' encoding='UTF-8'?>
+      <slave>
+        <name>node-1</name>
+        <description></description>
+        <remoteFS></remoteFS>
+        <numExecutors>1</numExecutors>
+        <mode>NORMAL</mode>
+        <retentionStrategy class="hudson.slaves.RetentionStrategy$Always"/>
+        <launcher class="hudson.slaves.JNLPLauncher">
+          <workDirSettings>
+            <disabled>false</disabled>
+            <internalDir>remoting</internalDir>
+            <failIfWorkDirIsMissing>false</failIfWorkDirIsMissing>
+          </workDirSettings>
+        </launcher>
+        <label></label>
+        <nodeProperties/>
 ```
