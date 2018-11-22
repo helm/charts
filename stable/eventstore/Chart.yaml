@@ -1,0 +1,15 @@
+apiVersion: v1
+description: A Helm chart for Kubernetes EventStore.
+name: eventstore
+home: https://eventstore.org/
+version: 0.3.0
+appVersion: 4.1.1-hotfix1
+keywords:
+- eventstore
+sources:
+- https://github.com/EventStore/eventstore-docker
+- https://github.com/EventStore/EventStore
+maintainers:
+- name: Aleksandr Grigorov
+  email: grigorov@me.com
+icon: https://www.brandeps.com/logo-download/E/Event-Store-01.png

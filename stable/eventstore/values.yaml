@@ -1,0 +1,62 @@
+# Default values for eventstore.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+replicaCount: 1
+image:
+  repository: eventstore/eventstore
+  tag: release-4.1.1-hotfix1
+  pullPolicy: IfNotPresent
+service:
+  name: eventstore
+  type: ClusterIP
+  HTTPInterfacePort: 2113
+  TCPInterfacePort: 1113
+
+cluster:
+  enabled: false
+  replicaCount: 3
+
+ingress:
+  enabled: false
+  # Used to create an Ingress record.
+  hosts:
+    - eventstore.test.example.com
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  tls:
+    # Secrets must be manually created in the namespace.
+    # - secretName: chart-example-tls
+    #   hosts:
+    #     - chart-example.local
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+persistence:
+  enabled: false
+  ## A manually managed Persistent Volume and Claim
+  ## Requires persistence.enabled: true
+  ## If defined, PVC must be created manually before volume will be bound
+  existingClaim: eventstore-linux
+
+  ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
+  ## Default: volume.alpha.kubernetes.io/storage-class: default
+  ##
+  # storageClass:
+  accessMode: ReadWriteOnce
+  size: 8Gi
+nodeSelector: {}
+tolerations: []
+affinity: {}
+envs:
+  EVENTSTORE_START_STANDARD_PROJECTIONS: True
+  EVENTSTORE_RUN_PROJECTIONS: "All"
+  EVENTSTORE_MEM_DB: True

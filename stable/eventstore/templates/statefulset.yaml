@@ -1,0 +1,189 @@
+{{- if .Values.cluster.enabled -}}
+{{- $replicaCount := .Values.cluster.replicaCount -}}
+apiVersion: apps/v1
+kind:  StatefulSet
+metadata:
+  name: {{ template "eventstore.fullname" . }}
+  labels:
+    app: {{ template "eventstore.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "eventstore.name" . }}
+      release: {{ .Release.Name }}
+  serviceName: {{ template "eventstore.fullname" . }}
+  replicas: {{ $replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "eventstore.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      terminationGracePeriodSeconds: 10
+{{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+      {{- end }}
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+      {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: EVENTSTORE_INT_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: EVENTSTORE_EXT_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: EVENTSTORE_CLUSTER_DNS
+              value: {{ template "eventstore.name" . }}
+            - name: EVENTSTORE_INT_TCP_PORT
+              value: "1111"
+            - name: EVENTSTORE_EXT_TCP_PORT
+              value: "1113"
+            - name: EVENTSTORE_INT_HTTP_PORT
+              value: "2111"
+            - name: EVENTSTORE_EXT_HTTP_PORT
+              value: "2113"
+            - name: EVENTSTORE_CLUSTER_SIZE
+              value: {{ .Values.cluster.replicaCount | quote }}
+            - name: EVENTSTORE_CLUSTER_GOSSIP_PORT
+              value: "2111"
+            - name: EVENTSTORE_GOSSIP_ALLOWED_DIFFERENCE_MS
+              value: "600000"
+            - name: EVENTSTORE_INT_HTTP_PREFIXES
+              value: "http://*:2111/"
+            - name: EVENTSTORE_EXT_HTTP_PREFIXES
+              value: "http://*:2113/"
+          {{- range $key, $value := .Values.envs }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+          {{- end }}
+          ports:
+          - name: http
+            containerPort: {{ default "2113" .Values.service.HTTPInterfacePort }}
+          - name: tcp
+            containerPort: {{ default "1113" .Values.service.TCPInterfacePort }}
+          - name: tcp-int
+            containerPort: 1111
+          - name: http-int
+            containerPort: 2111
+          volumeMounts:
+          - name: data
+            mountPath: /var/lib/eventstore
+          livenessProbe:
+            httpGet:
+              path: /stats
+              port: {{ .Values.service.HTTPInterfacePort }}
+            initialDelaySeconds: 5
+            timeoutSeconds: 5
+            periodSeconds: 15
+          readinessProbe:
+            httpGet:
+              path: /stats
+              port: {{ .Values.service.HTTPInterfacePort }}
+            initialDelaySeconds: 5
+            timeoutSeconds: 5
+            periodSeconds: 15
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+      volumes:
+      - name: data
+      {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.persistence.existingClaim | default (include "eventstore.fullname" .) }}
+      {{- else }}
+        emptyDir: {}
+      {{- end -}} 
+{{- else -}}
+{{- $replicaCount := .Values.replicaCount -}}
+apiVersion: apps/v1
+kind:  StatefulSet
+metadata:
+  name: {{ template "eventstore.fullname" . }}
+  labels:
+    app: {{ template "eventstore.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "eventstore.name" . }}
+      release: {{ .Release.Name }}
+  serviceName: {{ template "eventstore.fullname" . }}
+  replicas: {{ $replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "eventstore.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      terminationGracePeriodSeconds: 10
+{{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+      {{- end }}
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+      {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+          {{- range $key, $value := .Values.envs }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+          {{- end }}
+          ports:
+          - name: http
+            containerPort: {{ default "2113" .Values.service.HTTPInterfacePort }}
+          - name: tcp
+            containerPort: {{ default "1113" .Values.service.TCPInterfacePort }}
+          volumeMounts:
+          - name: data
+            mountPath: /var/lib/eventstore
+          livenessProbe:
+            httpGet:
+              path: /stats
+              port: {{ .Values.service.HTTPInterfacePort }}
+            initialDelaySeconds: 5
+            timeoutSeconds: 5
+            periodSeconds: 15
+          readinessProbe:
+            httpGet:
+              path: /stats
+              port: {{ .Values.service.HTTPInterfacePort }}
+            initialDelaySeconds: 5
+            timeoutSeconds: 5
+            periodSeconds: 15
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+      volumes:
+      - name: data
+      {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.persistence.existingClaim | default (include "eventstore.fullname" .) }}
+      {{- else }}
+        emptyDir: {}
+      {{- end -}} 
+{{- end -}}
