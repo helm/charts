@@ -121,12 +121,12 @@ spec:
         - mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
           name: config
           subPath: elasticsearch.yml
-{{- if hasPrefix "2." .Values.image.tag }}
+{{- if hasPrefix "2." .Values.appVersion }}
         - mountPath: /usr/share/elasticsearch/config/logging.yml
           name: config
           subPath: logging.yml
 {{- end }}
-{{- if hasPrefix "5." .Values.image.tag }}
+{{- if hasPrefix "5." .Values.appVersion }}
         - mountPath: /usr/share/elasticsearch/config/log4j2.properties
           name: config
           subPath: log4j2.properties
