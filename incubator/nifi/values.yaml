@@ -45,8 +45,9 @@ probe:
 
 # Separate image for tailing each log separately
 sidecar:
-  image: pepov/alpine-tini
-
+  image: ez123/alpine-tini
+  # image: pepov/alpine-tini
+  # #image: pygmy/alpine-tini:3.8
 
 ## Persistent Storage
 # When creating persistent storage, the NiFi helm chart can either reference an already-defined
