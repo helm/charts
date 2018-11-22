@@ -45,6 +45,11 @@ data:
     xpack.monitoring.enabled: ${XPACK_MONITORING_ENABLED:false}
     xpack.security.enabled: ${XPACK_SECURITY_ENABLED:false}
     xpack.watcher.enabled: ${XPACK_WATCHER_ENABLED:false}
+{{- else }}
+    xpack.ml.enabled: false
+    xpack.monitoring.enabled: false
+    xpack.security.enabled: false
+    xpack.watcher.enabled: false
 {{- end }}
 {{- else if hasPrefix "6." .Values.appVersion }}
     # see https://github.com/kubernetes/kubernetes/issues/3595
