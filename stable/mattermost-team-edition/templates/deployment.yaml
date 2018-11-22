@@ -42,9 +42,9 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.imagePullPolicy }}
         env:
-          {{- if .Values.extraEnvVars }}
-{{ toYaml .Values.extraEnvVars | indent 12 }}
-          {{- end }}
+        {{- if .Values.extraEnvVars }}
+{{ toYaml .Values.extraEnvVars | indent 10 }}
+        {{- end }}
         ports:
         - name: http
           containerPort: 80
