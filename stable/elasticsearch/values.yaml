@@ -72,6 +72,12 @@ client:
 #    example: client-svc-foo
   heapSize: "512m"
   antiAffinity: "soft"
+  additionalAntiAffinities: {}
+    # soft:
+    # - weight: 10
+    #   topologyKey: failure-domain.beta.kubernetes.io/zone
+    # hard:
+    # - topologyKey: failure-domain.beta.kubernetes.io/zone
   nodeAffinity: {}
   nodeSelector: {}
   tolerations: []
@@ -103,6 +109,12 @@ master:
     size: "4Gi"
     # storageClass: "ssd"
   antiAffinity: "soft"
+  additionalAntiAffinities: {}
+    # soft:
+    # - weight: 10
+    #   topologyKey: failure-domain.beta.kubernetes.io/zone
+    # hard:
+    # - topologyKey: failure-domain.beta.kubernetes.io/zone
   nodeAffinity: {}
   nodeSelector: {}
   tolerations: []
@@ -137,6 +149,12 @@ data:
     # storageClass: "ssd"
   terminationGracePeriodSeconds: 3600
   antiAffinity: "soft"
+  additionalAntiAffinities: {}
+    # soft:
+    # - weight: 10
+    #   topologyKey: failure-domain.beta.kubernetes.io/zone
+    # hard:
+    # - topologyKey: failure-domain.beta.kubernetes.io/zone
   nodeAffinity: {}
   nodeSelector: {}
   tolerations: []

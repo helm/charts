@@ -87,6 +87,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `client.loadBalancerIP`              | Client loadBalancerIP                                               | `{}`                                                |
 | `client.loadBalancerSourceRanges`    | Client loadBalancerSourceRanges                                     | `{}`                                                |
 | `client.antiAffinity`                | Client anti-affinity policy                                         | `soft`                                              |
+| `client.additionalAntiAffinities`    | Client additional anti-affinity policies                            | `{}`                                                |
 | `client.nodeAffinity`                | Client node affinity policy                                         | `{}`                                                |
 | `master.exposeHttp`                  | Expose http port 9200 on master Pods for monitoring, etc            | `false`                                             |
 | `master.name`                        | Master component name                                               | `master`                                            |
@@ -104,6 +105,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `master.persistence.storageClass`    | Master persistent volume Class                                      | `nil`                                               |
 | `master.persistence.accessMode`      | Master persistent Access Mode                                       | `ReadWriteOnce`                                     |
 | `master.antiAffinity`                | Master anti-affinity policy                                         | `soft`                                              |
+| `master.additionalAntiAffinities`    | Master additional anti-affinity policies                            | `{}`                                                |
 | `master.nodeAffinity`                | Master node affinity policy                                         | `{}`                                                |
 | `data.exposeHttp`                    | Expose http port 9200 on data Pods for monitoring, etc              | `false`                                             |
 | `data.replicas`                      | Data node replicas (statefulset)                                    | `2`                                                 |
@@ -121,6 +123,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `data.tolerations`                   | Data tolerations                                                    | `[]`                                                |
 | `data.terminationGracePeriodSeconds` | Data termination grace period (seconds)                             | `3600`                                              |
 | `data.antiAffinity`                  | Data anti-affinity policy                                           | `soft`                                              |
+| `data.additionalAntiAffinities`      | Data additional anti-affinity policies                              | `{}`                                                |
 | `data.nodeAffinity`                  | Data node affinity policy                                           | `{}`                                                |
 | `extraInitContainers`                | Additional init container passed through the tpl 	                 | ``                                                  |
 | `podSecurityPolicy.annotations`      | Specify pod annotations in the pod security policy                  | `{}`                                                |

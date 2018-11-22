@@ -30,18 +30,31 @@ spec:
       {{- if or .Values.client.antiAffinity .Values.client.nodeAffinity }}
       affinity:
       {{- end }}
-      {{- if eq .Values.client.antiAffinity "hard" }}
+      {{- if .Values.client.antiAffinity }}
         podAntiAffinity:
+      {{- $root := . -}}
+      {{- if or (eq .Values.client.antiAffinity "hard") (.Values.client.additionalAntiAffinities.hard) }}
           requiredDuringSchedulingIgnoredDuringExecution:
-            - topologyKey: "kubernetes.io/hostname"
-              labelSelector:
-                matchLabels:
-                  app: "{{ template "elasticsearch.name" . }}"
-                  release: "{{ .Release.Name }}"
-                  component: "{{ .Values.client.name }}"
-      {{- else if eq .Values.client.antiAffinity "soft" }}
-        podAntiAffinity:
+          {{- if eq .Values.client.antiAffinity "hard" }}
+          - topologyKey: "kubernetes.io/hostname"
+            labelSelector:
+              matchLabels:
+                app: "{{ template "elasticsearch.name" . }}"
+                release: "{{ .Release.Name }}"
+                component: "{{ .Values.client.name }}"
+          {{- end }}
+          {{- range $antiAffinity := .Values.client.additionalAntiAffinities.hard }}
+          - topologyKey: {{ $antiAffinity.topologyKey }}
+            labelSelector:
+              matchLabels:
+                app: "{{ template "elasticsearch.name" $root }}"
+                release: "{{ $root.Release.Name }}"
+                component: "{{ $root.Values.client.name }}"
+          {{- end }}
+      {{- end }}
+      {{- if or (eq .Values.client.antiAffinity "soft") (.Values.client.additionalAntiAffinities.soft) }}
           preferredDuringSchedulingIgnoredDuringExecution:
+          {{- if eq .Values.client.antiAffinity "soft" }}
           - weight: 1
             podAffinityTerm:
               topologyKey: kubernetes.io/hostname
@@ -50,6 +63,18 @@ spec:
                   app: "{{ template "elasticsearch.name" . }}"
                   release: "{{ .Release.Name }}"
                   component: "{{ .Values.client.name }}"
+          {{- end }}
+          {{- range $antiAffinity := .Values.client.additionalAntiAffinities.soft }}
+          - weight: {{ $antiAffinity.weight }}
+            podAffinityTerm:
+              topologyKey: {{ $antiAffinity.topologyKey }}
+              labelSelector:
+                matchLabels:
+                  app: "{{ template "elasticsearch.name" $root }}"
+                  release: "{{ $root.Release.Name }}"
+                  component: "{{ $root.Values.client.name }}"
+          {{- end }}
+      {{- end }}
       {{- end }}
       {{- with .Values.client.nodeAffinity }}
         nodeAffinity:
