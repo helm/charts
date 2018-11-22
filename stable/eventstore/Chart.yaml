@@ -10,6 +10,6 @@ sources:
 - https://github.com/EventStore/eventstore-docker
 - https://github.com/EventStore/EventStore
 maintainers:
-- name: Aleksandr Grigorov
+- name: grigorov
   email: grigorov@me.com
 icon: https://www.brandeps.com/logo-download/E/Event-Store-01.png
