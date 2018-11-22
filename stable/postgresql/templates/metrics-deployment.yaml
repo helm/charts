@@ -49,7 +49,11 @@ spec:
         imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
         env:
         - name: DATA_SOURCE_URI
+        {{- if .Values.postgresqlDatabase }}
+          value: {{ printf "%s:%d/%s?sslmode=disable" ( include "postgresql.fullname" . ) (int .Values.service.port) ( .Values.postgresqlDatabase ) | quote }}
+        {{- else }}
           value: {{ printf "%s:%d/?sslmode=disable" ( include "postgresql.fullname" . ) (int .Values.service.port) | quote }}
+        {{- end }}
         - name: DATA_SOURCE_PASS
           valueFrom:
             secretKeyRef:
