@@ -8,10 +8,7 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 data:
+{{- with .Values.upstreams }}
   upstream_configs.yml: |-
-  {{- range .Values.ingress.hosts }}
-    - service: {{ .serviceName }}
-      default:
-        from: {{ .domain }}
-        to: {{ .serviceUrl }}
-  {{- end }}
+{{ toYaml . | indent 4 }}
+{{- end }}

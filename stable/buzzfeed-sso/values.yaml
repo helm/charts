@@ -74,11 +74,24 @@ ingress:
     # certmanager.k8s.io/cluster-issuer: my-letsencrypt-issuer
     # ingress.kubernetes.io/ssl-redirect: "true"
   hosts: []
-  #  - serviceName: mybackend
-  #    serviceUrl: http://mybackend.mynamespace.svc.cluster.local:9091
-  #    domain: mybackend.mydomain.foo
-  #    path: /
+  #  - domain: mybackend.mydomain.foo
+  #  - path: /
   tls: []
   #  - secretName: mybackend-mydomain-tls
   #    hosts:
   #      - mybackend.mydomain.foo
+
+upstreams: []
+# See https://github.com/buzzfeed/sso/blob/f437f237ac977201f15868601c9bc0e9dff11f40/docs/sso_config.md#proxy-config
+# - service: mybackend
+#   default:
+#     from: mybackend.mydomain.foo
+#     to: http://mybackend.mynamespace.svc.cluster.local:9091
+#     options:
+#       allowed_groups:
+#         - sso-test-group-1@example.com
+#         - sso-test-group-2@example.com
+#       skip_auth_regex:
+#         - ^\/github-webhook\/$
+#       header_overrides:
+#         X-Frame-Options: DENY
