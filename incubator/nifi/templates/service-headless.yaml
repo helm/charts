@@ -10,6 +10,8 @@ metadata:
     annotations:
         service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
 spec:
+    type: {{ .Values.service.type }}
+    clusterIP: None
     ports:
 {{- if .Values.properties.clusterSecure }}
     - port: {{ .Values.properties.httpsPort }}
@@ -20,7 +22,6 @@ spec:
 {{- end }}
     - port: {{ .Values.properties.clusterPort }}
       name: cluster
-    clusterIP: None
     selector:
         app: {{ include "apache-nifi.name" . | quote }}
         release: {{ .Release.Name | quote }}
