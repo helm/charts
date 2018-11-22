@@ -48,8 +48,9 @@ spec:
         image: {{ template "metrics.image" . }}
         imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
         env:
+        {{- $database := required "In order to enable metrics you need to specify a database (.Values.postgresqlDatabase)" .Values.postgresqlDatabase }}
         - name: DATA_SOURCE_URI
-          value: {{ printf "%s:%d/?sslmode=disable" ( include "postgresql.fullname" . ) (int .Values.service.port) | quote }}
+          value: {{ printf "%s:%d/%s?sslmode=disable" ( include "postgresql.fullname" . ) (int .Values.service.port) $database | quote }}
         - name: DATA_SOURCE_PASS
           valueFrom:
             secretKeyRef:
