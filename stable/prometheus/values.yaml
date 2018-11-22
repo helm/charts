@@ -651,12 +651,6 @@ server:
     ##
     subPath: ""
 
-    ## reclaimPolicy for the persistent volume.
-    ## See https://kubernetes.io/docs/tasks/administer-cluster/change-pv-reclaim-policy/
-    ## Can be Retain, Recycle, or Delete
-    ##
-    reclaimPolicy: Retain
-
   ## Annotations to be added to Prometheus server pods
   ##
   podAnnotations: {}
