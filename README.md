@@ -60,7 +60,7 @@ Note: We use the same [workflow](https://github.com/kubernetes/community/blob/ma
 
 ## Owning and Maintaining A Chart
 
-Individual charts can be maintained by one or more members of the Kubernetes community. When someone maintains a chart they have the access to merge changes to that chart. To have merge access to a chart someone needs to:
+Individual charts can be maintained by one or more users of GitHub. When someone maintains a chart they have the access to merge changes to that chart. To have merge access to a chart someone needs to:
 
 1. Be listed on the chart, in the `Chart.yaml` file, as a maintainer. If you need sponsors and have contributed to the chart, please reach out to the existing maintainers, or if you are having trouble connecting with them, please reach out to one of the [OWNERS](OWNERS) of the charts repository.
 1. Be invited (and accept your invite) as a read-only collaborator on [this repo](https://github.com/helm/charts). This is required for @k8s-ci-robot [PR comment interaction](https://github.com/kubernetes/community/blob/master/contributors/guide/pull-requests.md).
