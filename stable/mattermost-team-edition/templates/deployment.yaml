@@ -27,17 +27,24 @@ spec:
         chart: {{ template "mattermost-team-edition.chart" . }}
         heritage: {{ .Release.Service }}
     spec:
-      {{ if not .Values.externalDB.enabled }}
       initContainers:
+      {{- if not .Values.externalDB.enabled }}
       - name: "init-mysql"
         image: "appropriate/curl:latest"
         imagePullPolicy: "IfNotPresent"
         command: ["sh", "-c", "until curl --max-time 5 http://{{ .Release.Name }}-mysql:3306; do echo waiting for {{ .Release.Name }}-mysql; sleep 5; done;"]
-      {{ end }}
+      {{- end }}
+      {{- if .Values.extraInitContainers }}
+{{ tpl .Values.extraInitContainers . | indent 6 }}
+      {{- end }}
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.imagePullPolicy }}
+        env:
+        {{- if .Values.extraEnvVars }}
+{{ toYaml .Values.extraEnvVars | indent 10 }}
+        {{- end }}
         ports:
         - name: http
           containerPort: 80
