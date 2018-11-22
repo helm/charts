@@ -59,6 +59,7 @@ Parameter                 | Description                       | Default
 `config.SMTPPassword`     | The password associated with the SMTP username                                                      | ``
 `config.FeedbackEmail`    | Address displayed on email account used when sending notification emails from Mattermost system     | ``
 `config.FeedbackName`     | Name displayed on email account used when sending notification emails from Mattermost system        | ``
+`config.enableSignUpWithEmail` | Allow team creation and account signup using email and password. | `true`
 `ingress.enabled`         | if `true`, an ingress is created                                                                    | `false`
 `ingress.hosts`           | a list of ingress hosts       | `[mattermost.example.com]`
 `ingress.tls`             | a list of [IngressTLS](https://v1-8.docs.kubernetes.io/docs/api-reference/v1.8/#ingresstls-v1beta1-extensions) items      | `[]`
@@ -66,12 +67,14 @@ Parameter                 | Description                       | Default
 `mysql.mysqlUser`         | Username for Mysql (Required)         |  ""
 `mysql.mysqlPassword`     | User Password for Mysql (Required)        |  ""
 `mysql.mysqlDatabase`     | Database name (Required)      |  "mattermost"
+`extraEnvVars` | Extra environments variables to be used in the deployments|
+`extraInitContainers` | Additional init containers. Passed through the `tpl` function| ``
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```bash
 $ helm install --name my-release \
-  --set image.tag=release-5.2.1 \
+  --set image.tag=5.5.0 \
   --set mysql.mysqlUser=sampleUser \
   --set mysql.mysqlPassword=samplePassword \
   stable/mattermost-team-edition
