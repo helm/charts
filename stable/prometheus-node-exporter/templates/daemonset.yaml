@@ -22,6 +22,9 @@ spec:
       securityContext:
         runAsNonRoot: true
         runAsUser: 65534
+{{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName }}
+{{- end }}
       containers:
         - name: node-exporter
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
