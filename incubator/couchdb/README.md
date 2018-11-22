@@ -67,6 +67,23 @@ $ helm delete my-release
 The command removes all the Kubernetes components associated with the chart and
 deletes the release.
 
+## Upgrading an existing Release to a new major version
+
+A major chart version change (like v0.2.3 -> v1.0.0) indicates that there is an
+incompatible breaking change needing manual actions.
+
+### 1.0.0
+
+This version removes the `chart` and `heritage` labels from the
+`volumeClaimTemplates` which is immutable and prevents chart from being upgraded
+(see https://github.com/helm/charts/issues/7803 for details).
+
+In order to upgrade, delete the CouchDB StatefulSet before upgrading:
+
+```bash
+$ kubectl delete statefulsets --cascade=false my-release-couchdb
+```
+
 ## Configuration
 
 The following table lists the most commonly configured parameters of the
