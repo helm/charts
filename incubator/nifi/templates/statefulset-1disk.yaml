@@ -163,7 +163,14 @@ spec:
           prop_replace nifi.security.truststore ${NIFI_BASE_DIR}/data/cert/truststore.jks
           prop_replace nifi.security.truststorePasswd $(jq -r .trustStorePassword ${NIFI_BASE_DIR}/data/cert/config.json)
 {{- else }}
-          prop_replace nifi.web.http.host ${FQDN}
+          # # disabling this for http
+          # # as of 1.8.0, it seems that host headers are checked with this setting,
+          # # even when log shows the following message:
+          # #    INFO [main] org.apache.nifi.web.server.JettyServer Running in HTTP mode; host headers not restricted
+          # # which is followed by
+          # #    INFO [main] org.apache.nifi.web.server.JettyServer NiFi has started. The UI is available at the following URLs:
+          # #    INFO [main] org.apache.nifi.web.server.JettyServer http://nnnnn-0.nnnnn-headless.nsnsns.svc.cluster.local:8080/nifi
+          # prop_replace nifi.web.http.host ${FQDN}
 {{- end }}
 
           exec bin/nifi.sh run
