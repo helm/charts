@@ -22,7 +22,7 @@ spec:
       {{- end }}
       containers:
       - name: {{ template "rocketchat.fullname" . }}
-        image: "{{ .Values.image }}"
+        image: {{ template "rocketchat.image" . }}
         imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
         env:
         - name: DEPLOY_PLATFORM
@@ -32,14 +32,10 @@ spec:
             fieldRef:
               fieldPath: status.podIP
         - name: MONGO_URL
-        {{ if .Values.mongodb.mongodbUsername }}
           valueFrom:
             secretKeyRef:
               name: {{ template "rocketchat.fullname" . }}
               key: mongo-uri
-        {{ else }}
-          value: mongodb://{{ template "rocketchat.mongodb.fullname" . }}:27017/rocketchat
-        {{ end }}
         {{ if .Values.host }}
         - name: ROOT_URL
           value: https://{{ .Values.host }}
