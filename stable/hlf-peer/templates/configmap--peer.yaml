@@ -7,7 +7,12 @@ metadata:
 data:
   CORE_PEER_ADDRESSAUTODETECT: "true"
   CORE_PEER_NETWORKID: nid1
+  # If we have an ingress, we set hostname to it
+  {{- if .Values.ingress.enabled }}
+  CORE_PEER_ADDRESS: {{ index .Values.ingress.hosts 0 }}:443
+  {{- else }}
   CORE_PEER_ADDRESS: {{ include "hlf-peer.fullname" . }}:7051
+  {{- end }}
   CORE_PEER_LISTENADDRESS: 0.0.0.0:7051
   CORE_PEER_EVENTS_ADDRESS: 0.0.0.0:7053
   CORE_PEER_COMMITTER_ENABLED: "true"
@@ -26,13 +31,14 @@ data:
   CORE_LOGGING_POLICIES: debug
   CORE_LOGGING_GRPC: debug
   CORE_PEER_TLS_ENABLED: {{ .Values.peer.tls.server.enabled | quote }}
-  CORE_PEER_TLS_CERT_FILE: "/var/hyperledger/tls/tls.crt"
-  CORE_PEER_TLS_KEY_FILE: "/var/hyperledger/tls/tls.key"
-  CORE_PEER_TLS_ROOTCERT_FILE: "/var/hyperledger/msp_tls/cert.pem"
+  CORE_PEER_TLS_CERT_FILE: "/var/hyperledger/tls/server/pair/tls.crt"
+  CORE_PEER_TLS_KEY_FILE: "/var/hyperledger/tls/server/pair/tls.key"
+  CORE_PEER_TLS_ROOTCERT_FILE: "/var/hyperledger/tls/server/cert/cacert.pem"
   CORE_PEER_TLS_CLIENTAUTHREQUIRED: {{ .Values.peer.tls.client.enabled | quote }}
-  CORE_PEER_TLS_CLIENTROOTCAS_FILES: "/var/hyperledger/msp_tls/cert.pem"
-  CORE_PEER_TLS_CLIENTCERT_FILE: "/var/hyperledger/tls/tls.crt"
-  CORE_PEER_TLS_CLIENTKEY_FILE: "/var/hyperledger/tls/tls.key"
+  # This is fixed prior to starting the peer
+  CORE_PEER_TLS_CLIENTROOTCAS_FILES: "/var/hyperledger/tls/client/cert/*"
+  CORE_PEER_TLS_CLIENTCERT_FILE: "/var/hyperledger/tls/client/pair/tls.crt"
+  CORE_PEER_TLS_CLIENTKEY_FILE: "/var/hyperledger/tls/client/pair/tls.key"
   CORE_LEDGER_STATE_STATEDATABASE: {{ .Values.peer.databaseType | quote }}
   # Containers in the same pod share the host
   {{- if eq .Values.peer.databaseType "CouchDB" }}
@@ -42,3 +48,4 @@ data:
   FABRIC_CFG_PATH: /var/hyperledger/fabric_cfg
   GODEBUG: "netdns=go"
   ADMIN_MSP_PATH: /var/hyperledger/admin_msp
+  ORD_TLS_PATH: /var/hyperledger/tls/ord/cert
