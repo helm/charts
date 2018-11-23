@@ -84,6 +84,7 @@ Parameter | Description | Default
 `monitoring.enabled` | Set this to `true` to enable exporting Prometheus monitoring metrics | `false`
 `monitoring.containerPort` | By default Ark pod exposes Prometheus metrics on port 8085 | `8085`
 `monitoring.servicePort` | Port in the cluster Prometheus will access the metrics on | `5000`
+`monitoring.scrapeInterval` | Scrape interval for the Prometheus ServiceMonitor | `30s`
 
 
 ## How to
