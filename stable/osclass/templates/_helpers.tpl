@@ -28,10 +28,10 @@ Get the user defined LoadBalancerIP for this release.
 Note, returns 127.0.0.1 if using ClusterIP.
 */}}
 {{- define "osclass.serviceIP" -}}
-{{- if eq .Values.serviceType "ClusterIP" -}}
+{{- if eq .Values.service.type "ClusterIP" -}}
 127.0.0.1
 {{- else -}}
-{{- index .Values (printf "%sLoadBalancerIP" .Chart.Name) | default "" -}}
+{{- .Values.service.loadBalancerIP | default "" -}}
 {{- end -}}
 {{- end -}}
 
@@ -65,4 +65,14 @@ Also, we can't use a single if because lazy evaluation is not an option
 {{- else -}}
     {{- printf "%s/%s:%s" $registryName $repositoryName $tag -}}
 {{- end -}}
+{{- end -}}
+
+{{/*
+Return the proper image name (for the metrics image)
+*/}}
+{{- define "metrics.image" -}}
+{{- $registryName :=  .Values.metrics.image.registry -}}
+{{- $repositoryName := .Values.metrics.image.repository -}}
+{{- $tag := .Values.metrics.image.tag | toString -}}
+{{- printf "%s/%s:%s" $registryName $repositoryName $tag -}}
 {{- end -}}

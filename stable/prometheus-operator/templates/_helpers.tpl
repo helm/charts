@@ -9,7 +9,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 The components in this chart create additional resources that expand the longest created name strings.
-The longest name that gets created adds and extra 37 charachters, so truncation should be 63-35=26.
+The longest name that gets created adds and extra 37 characters, so truncation should be 63-35=26.
 */}}
 {{- define "prometheus-operator.fullname" -}}
 {{- if .Values.fullnameOverride -}}
@@ -56,7 +56,7 @@ heritage: {{ .Release.Service | quote }}
 
 {{/* Create the name of prometheus-operator service account to use */}}
 {{- define "prometheus-operator.operator.serviceAccountName" -}}
-{{- if .Values.prometheusOperator.serviceAccount.create -}}
+{{- if and .Values.global.rbac.create .Values.prometheusOperator.serviceAccount.create -}}
     {{ default (include "prometheus-operator.operator.fullname" .) .Values.prometheusOperator.serviceAccount.name }}
 {{- else -}}
     {{ default "default" .Values.prometheusOperator.serviceAccount.name }}
@@ -65,7 +65,7 @@ heritage: {{ .Release.Service | quote }}
 
 {{/* Create the name of prometheus service account to use */}}
 {{- define "prometheus-operator.prometheus.serviceAccountName" -}}
-{{- if .Values.prometheus.serviceAccount.create -}}
+{{- if and .Values.global.rbac.create .Values.prometheus.serviceAccount.create -}}
     {{ default (include "prometheus-operator.prometheus.fullname" .) .Values.prometheus.serviceAccount.name }}
 {{- else -}}
     {{ default "default" .Values.prometheus.serviceAccount.name }}
@@ -74,7 +74,7 @@ heritage: {{ .Release.Service | quote }}
 
 {{/* Create the name of alertmanager service account to use */}}
 {{- define "prometheus-operator.alertmanager.serviceAccountName" -}}
-{{- if .Values.alertmanager.serviceAccount.create -}}
+{{- if and .Values.global.rbac.create .Values.alertmanager.serviceAccount.create -}}
     {{ default (include "prometheus-operator.alertmanager.fullname" .) .Values.alertmanager.serviceAccount.name }}
 {{- else -}}
     {{ default "default" .Values.alertmanager.serviceAccount.name }}

@@ -57,6 +57,9 @@ securityContext:
   fsGroup: 999
   runAsNonRoot: true
 
+init:
+  resources: {}
+
 resources: {}
 # limits:
 #   cpu: 500m
@@ -92,6 +95,8 @@ persistentVolume:
 
 # Annotations to be added to the service
 serviceAnnotations: {}
+
+terminationGracePeriodSeconds: 30
 
 tls:
   # Enable or disable MongoDB TLS support
