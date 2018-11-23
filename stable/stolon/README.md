@@ -26,10 +26,10 @@ Kubernetes is the default store backend. `consul`, `etcdv2` or `etcdv3` can also
 | Parameter                               | Description                                    | Default                                                      |
 | --------------------------------------- | ---------------------------------------------- | ------------------------------------------------------------ |
 | `image.repository`                      | `stolon` image repository                      | `sorintlab/stolon`                                           |
-| `image.tag`                             | `stolon` image tag                             | `v0.11.0-pg10`                                               |
+| `image.tag`                             | `stolon` image tag                             | `v0.12.0-pg10`                                               |
 | `image.pullPolicy`                      | `stolon` image pull policy                     | `IfNotPresent`                                               |
 | `etcdImage.repository`                  | `etcd` image repository                        | `k8s.gcr.io/etcd-amd64`                                      |
-| `etcdImage.tag`                         | `etcd` image tag                               | `2.2.5`                                                      |
+| `etcdImage.tag`                         | `etcd` image tag                               | `2.3.7`                                                      |
 | `etcdImage.pullPolicy`                  | `etcd` image pull policy                       | `IfNotPresent`                                               |
 | `debug`                                 | Debug mode                                     | `false`                                                      |
 | `persistence.enabled`                   | Use a PVC to persist data                      | `true`                                                       |
@@ -55,6 +55,8 @@ Kubernetes is the default store backend. `consul`, `etcdv2` or `etcdv3` can also
 | `keeper.nodeSelector`                   | Node labels for keeper pod assignment          | `{}`                                                         |
 | `keeper.affinity`                       | Affinity settings for keeper pod assignment    | `{}`                                                         |
 | `keeper.tolerations`                    | Toleration labels for keeper pod assignment    | `[]`                                                         |
+| `keeper.volumes`                        | Additional volumes                             | `[]`                                                         |
+| `keeper.volumeMounts`                   | Mount paths for `keeper.volumes`               | `[]`                                                         |
 | `proxy.replicaCount`                    | Number of proxy nodes                          | `2`                                                          |
 | `proxy.resources`                       | Proxy resource requests/limit                  | `{}`                                                         |
 | `proxy.priorityClassName`               | Proxy priorityClassName                        | `nil`                                                        |

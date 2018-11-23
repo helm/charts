@@ -14,11 +14,19 @@ kind: Service
 metadata:
   annotations:
     {{- if $root.Values.external.distinct }}
+      {{- if $root.Values.external.dns.useInternal }}
     dns.alpha.kubernetes.io/internal: "{{ $distinctPrefix }}.{{ $root.Values.external.domain }}"
+      {{- end }}
+      {{- if $root.Values.external.dns.useExternal }}
     external-dns.alpha.kubernetes.io/hostname: "{{ $distinctPrefix }}.{{ $root.Values.external.domain }}"
+      {{- end }}
     {{- else }}
+      {{- if $root.Values.external.dns.useInternal }}
     dns.alpha.kubernetes.io/internal: "{{ $dnsPrefix }}.{{ $root.Values.external.domain }}"
+      {{- end }}
+      {{- if $root.Values.external.dns.useExternal }}
     external-dns.alpha.kubernetes.io/hostname: "{{ $dnsPrefix }}.{{ $root.Values.external.domain }}"
+      {{- end }}
     {{- end }}
     {{- if $root.Values.external.annotations }}
 {{ toYaml $root.Values.external.annotations | indent 4 }}
@@ -34,12 +42,13 @@ spec:
   type: {{ $root.Values.external.type }}
   ports:
     - name: external-broker
-      {{- if eq $root.Values.external.type "LoadBalancer" }}
+      {{- if and (eq $root.Values.external.type "LoadBalancer") (not $root.Values.external.distinct) }}
       port: {{ $externalListenerPort }}
+      targetPort: {{ $externalListenerPort }}
       {{- else }}
       port: {{ $servicePort }}
+      targetPort: {{ $servicePort }}
       {{- end }}
-      targetPort: {{ $externalListenerPort }}
       {{- if eq $root.Values.external.type "NodePort" }}
       nodePort: {{ $externalListenerPort }}
       {{- end }}
