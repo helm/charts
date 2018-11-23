@@ -19,4 +19,4 @@
 {{- end }}
 
 2. Obtain COMPOSER_APIKEY to connect to REST server:
-  export COMPOSER_APIKEY=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ include "hl-composer.fullname" . }}-hl-composer-rest -o jsonpath="{.data.COMPOSER_APIKEY}" | base64 --decode; echo)
+  export COMPOSER_APIKEY=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ include "hl-composer.fullname" . }}-rest -o jsonpath="{.data.COMPOSER_APIKEY}" | base64 --decode; echo)
