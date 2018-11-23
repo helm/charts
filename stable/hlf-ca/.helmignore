@@ -22,3 +22,6 @@
 
 # OWNERS file for Helm repository
 OWNERS
+
+# Test files
+tests
