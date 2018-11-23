@@ -114,3 +114,6 @@ ingress:
   tls:
     enabled: false
     secretName: schema-registry-tls
+
+# configure node selector
+nodeSelector: {}
