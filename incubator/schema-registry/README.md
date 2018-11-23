@@ -90,4 +90,4 @@ The following table lists the configurable parameters of the SchemaRegistry char
 | `ingress.labels` | Additional labels for the ingress | `{}` |
 | `ingress.tls.enabled` | Enable TLS for the Ingress | `false` |
 | `ingress.tls.secretName` | Name of the Kubernetes `Secret` object to obtain the TLS certificate from | `schema-registry-tls` |
-
+| `nodeSelector` | Map of node labels for pod assignment | `{}` |
