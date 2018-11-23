@@ -21,6 +21,9 @@ spec:
 {{ toYaml .Values.prometheusOperator.podLabels | indent 8 }}
 {{- end }}
     spec:
+    {{- if .Values.prometheusOperator.priorityClassName }}
+      priorityClassName: {{ .Values.prometheusOperator.priorityClassName }}
+    {{- end }}
       containers:
         - name: {{ template "prometheus-operator.name" . }}
           image: "{{ .Values.prometheusOperator.image.repository }}:{{ .Values.prometheusOperator.image.tag }}"
