@@ -146,6 +146,7 @@ service:
   type: LoadBalancer
   # HTTP Port
   port: 80
+  ## loadBalancerIP:
   ##
   ## nodePorts:
   ##   http: <to set explicitly, choose port between 30000-32767>
