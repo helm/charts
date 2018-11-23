@@ -75,7 +75,14 @@ The following table lists the configurable parameters of the Magento chart and t
 | `mariadb.db.name`                    | Database name to create                    | `bitnami_magento`                                        |
 | `mariadb.db.user`                    | Database user to create                    | `bn_magento`                                             |
 | `mariadb.db.password`                | Password for the database                  | _random 10 character long alphanumeric string_           |
-| `serviceType`                        | Kubernetes Service type                    | `LoadBalancer`                                           |
+| `service.type`                    | Kubernetes Service type                    | `LoadBalancer`                                          |
+| `service.port`                    | Service HTTP port                    | `80`                                          |
+| `service.httpsPort`                    | Service HTTPS port                    | `443`                                          |
+| `nodePorts.https`                | Kubernetes https node port                 | `""`                                                    |
+| `service.externalTrafficPolicy`   | Enable client source IP preservation       | `Cluster`                                               |
+| `service.nodePorts.http`                 | Kubernetes http node port                  | `""`                                                    |
+| `service.nodePorts.https`                | Kubernetes https node port                 | `""`                                                    |
+| `service.loadBalancerIP`            | `loadBalancerIP` for the Magento Service | `nil`                                                    |
 | `livenessProbe.enabled`              | Turn on and off liveness probe             | `true`                                                   |
 | `livenessProbe.initialDelaySeconds`  | Delay before liveness probe is initiated   | `1000`                                                   |
 | `livenessProbe.periodSeconds`        | How often to perform the probe             | `10`                                                     |

@@ -147,6 +147,7 @@ service:
   # HTTPS Port
   httpsPort: 443
   ##
+  ## loadBalancerIP:
   ## nodePorts:
   ##   http: <to set explicitly, choose port between 30000-32767>
   ##   https: <to set explicitly, choose port between 30000-32767>
