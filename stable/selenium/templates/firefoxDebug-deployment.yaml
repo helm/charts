@@ -14,7 +14,7 @@ spec:
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: "{{ .Release.Name }}"
         heritage: "{{ .Release.Service }}"
-      annotations: 
+      annotations:
     spec:
       containers:
         - name: {{ .Chart.Name }}
@@ -26,7 +26,7 @@ spec:
               name: jmx
               protocol: TCP
             {{- end }}
-            - containerPort: 5900 
+            - containerPort: 5900
               name: vnc
           env:
             - name: HUB_PORT_4444_TCP_ADDR
@@ -77,8 +77,16 @@ spec:
             - name: TZ
               value: {{ .Values.firefoxDebug.timeZone | quote }}
             {{- end }}
+          volumeMounts:
+{{ if .Values.chrome.volumeMounts -}}
+{{ toYaml .Values.firefox.volumeMounts | indent 12 }}
+{{- end }}
           resources:
-{{ toYaml .Values.firefoxDebug.resources | indent 12 }}
+{{ toYaml .Values.firefox.resources | indent 12 }}
+      volumes:
+{{ if .Values.firefox.volumes -}}
+{{ toYaml .Values.firefox.volumes | indent 8 }}
+{{- end }}
       nodeSelector:
 {{- if .Values.firefoxDebug.nodeSelector }}
 {{ toYaml .Values.firefoxDebug.nodeSelector | indent 8  }}

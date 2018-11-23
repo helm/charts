@@ -14,7 +14,7 @@ spec:
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: "{{ .Release.Name }}"
         heritage: "{{ .Release.Service }}"
-      annotations: 
+      annotations:
     spec:
       containers:
         - name: {{ .Chart.Name }}
@@ -75,8 +75,16 @@ spec:
             - name: TZ
               value: {{ .Values.firefox.timeZone | quote }}
             {{- end }}
+          volumeMounts:
+{{ if .Values.chrome.volumeMounts -}}
+{{ toYaml .Values.firefox.volumeMounts | indent 12 }}
+{{- end }}
           resources:
 {{ toYaml .Values.firefox.resources | indent 12 }}
+      volumes:
+{{ if .Values.firefox.volumes -}}
+{{ toYaml .Values.firefox.volumes | indent 8 }}
+{{- end }}
       nodeSelector:
 {{- if .Values.firefox.nodeSelector }}
 {{ toYaml .Values.firefox.nodeSelector | indent 8  }}

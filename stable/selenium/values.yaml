@@ -298,6 +298,21 @@ firefox:
   ## ref: http://openjdk.java.net/groups/jmx/
   # jmxPort: 4000
 
+  ## User defined volumes
+  ## ref: https://kubernetes.io/docs/user-guide/volumes/
+  volumes:
+    ## https://github.com/kubernetes/kubernetes/pull/34928#issuecomment-277952723
+    ## https://bugzilla.mozilla.org/show_bug.cgi?id=1338771#c10
+    ## https://github.com/jlesage/docker-firefox#usage
+    ## http://stackoverflow.com/questions/39852716/chrome-driver-throwing-org-openqa-selenium-remote-sessionnotfoundexception-whe
+    ## Firefox wants more than 64mb of shared memory. Docker/k8s default to 64mb.
+    - name: dshm
+      emptyDir:
+        medium: Memory
+  volumeMounts:
+    - mountPath: /dev/shm
+      name: dshm
+
   ## Configure resource requests and limits
   ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
   resources:
@@ -359,6 +374,21 @@ firefoxDebug:
   ##   -Dcom.sun.management.jmxremote.ssl=false
   ## ref: http://openjdk.java.net/groups/jmx/
   # jmxPort: 4000
+
+  ## User defined volumes
+  ## ref: https://kubernetes.io/docs/user-guide/volumes/
+  volumes:
+    ## https://github.com/kubernetes/kubernetes/pull/34928#issuecomment-277952723
+    ## https://bugzilla.mozilla.org/show_bug.cgi?id=1338771#c10
+    ## https://github.com/jlesage/docker-firefox#usage
+    ## http://stackoverflow.com/questions/39852716/chrome-driver-throwing-org-openqa-selenium-remote-sessionnotfoundexception-whe
+    ## Firefox wants more than 64mb of shared memory. Docker/k8s default to 64mb.
+    - name: dshm
+      emptyDir:
+        medium: Memory
+  volumeMounts:
+    - mountPath: /dev/shm
+      name: dshm
 
   ## Configure resource requests and limits
   ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
