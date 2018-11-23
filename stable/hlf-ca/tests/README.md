@@ -6,6 +6,14 @@ Commands should be run from the root folder of the repository.
 
 ## Root CA
 
+### Pre-install
+
+Due to presence of dependencies, please run inside the chart dir:
+
+```
+helm dependency update
+```
+
 ### Install
 
 Install Root CA
