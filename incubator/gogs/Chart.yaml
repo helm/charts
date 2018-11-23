@@ -5,5 +5,7 @@ version: 0.7.2
 appVersion: 0.11.66
 home: https://gogs.io/
 icon: https://gogs.io/img/favicon.ico
+maintainers: 
+  - name: obeyler
 keywords:
 - git
