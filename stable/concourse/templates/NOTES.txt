@@ -5,6 +5,17 @@
 
     {{ template "concourse.web.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
 
+  {{- if .Values.concourse.web.localAuth.enabled }}
+
+  * Grab the local users credentials:
+
+    kubectl get \
+      --namespace {{ .Release.Namespace }} \
+      secrets {{ .Release.Name }}-concourse \
+      -o 'jsonpath={.data.local-users}' | base64 -D
+
+  {{- end -}}
+
   {{- if .Values.web.ingress.enabled }}
 
   * From outside the cluster, the URL(s) are:
@@ -33,6 +44,7 @@
     kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME 8080:{{ .Values.concourse.atcPort }}
     {{- end }}
   {{- end }}
+
 * If this is your first time using Concourse, follow the tutorials at https://concourse-ci.org/tutorials.html
 {{- if contains "naive" .Values.concourse.worker.baggageclaim.driver }}
 

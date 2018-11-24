@@ -116,7 +116,7 @@ The following table lists the configurable parameters of the Concourse chart and
 | `rbac.apiVersion` | RBAC version | `v1beta1` |
 | `rbac.webServiceAccountName` | Name of the service account to use for web pods if `rbac.create` is `false` | `default` |
 | `rbac.workerServiceAccountName` | Name of the service account to use for workers if `rbac.create` is `false` | `default` |
-| `secrets.localUsers` | Create concourse local users. Default username and password are test:test *See [values.yaml](values.yaml)* |
+| `secrets.localUsers` | Create concourse local users. Default username is `test` and default password is randomly generated. *See [values.yaml](values.yaml)* |
 | `secrets.create` | Create the secret resource from the following values. *See [Secrets](#secrets)* | `true` |
 | `secrets.hostKey` | Concourse Host Private Key | *See [values.yaml](values.yaml)* |
 | `secrets.hostKeyPub` | Concourse Host Public Key | *See [values.yaml](values.yaml)* |
