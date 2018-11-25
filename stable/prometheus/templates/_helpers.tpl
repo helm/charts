@@ -7,6 +7,49 @@ Expand the name of the chart.
 {{- end -}}
 
 {{/*
+Create unified labels for prometheus components
+*/}}
+{{- define "prometheus.alertmanager.labels" }}
+app: {{ template "prometheus.name" . }}
+chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+component: {{ .Values.alertmanager.name | quote }}
+heritage: {{ .Release.Service }}
+release: {{ .Release.Name }}
+{{- end }}
+
+{{- define "prometheus.kubeStateMetrics.labels" }}
+app: {{ template "prometheus.name" . }}
+chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+component: {{ .Values.kubeStateMetrics.name | quote }}
+heritage: {{ .Release.Service }}
+release: {{ .Release.Name }}
+{{- end }}
+
+{{- define "prometheus.nodeExporter.labels" }}
+app: {{ template "prometheus.name" . }}
+chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+component: {{ .Values.nodeExporter.name | quote }}
+heritage: {{ .Release.Service }}
+release: {{ .Release.Name }}
+{{- end }}
+
+{{- define "prometheus.pushgateway.labels" }}
+app: {{ template "prometheus.name" . }}
+chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+component: {{ .Values.pushgateway.name | quote }}
+heritage: {{ .Release.Service }}
+release: {{ .Release.Name }}
+{{- end }}
+
+{{- define "prometheus.server.labels" }}
+app: {{ template "prometheus.name" . }}
+chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+component: {{ .Values.server.name | quote }}
+heritage: {{ .Release.Service }}
+release: {{ .Release.Name }}
+{{- end }}
+
+{{/*
 Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}

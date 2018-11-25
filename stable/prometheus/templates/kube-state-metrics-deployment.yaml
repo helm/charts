@@ -7,11 +7,7 @@ metadata:
 {{ toYaml .Values.kubeStateMetrics.deploymentAnnotations | indent 4 }}
 {{- end }}
   labels:
-    app: {{ template "prometheus.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    component: "{{ .Values.kubeStateMetrics.name }}"
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    {{- include "prometheus.kubeStateMetrics.labels" . | indent 4 }}
   name: {{ template "prometheus.kubeStateMetrics.fullname" . }}
 spec:
   replicas: {{ .Values.kubeStateMetrics.replicaCount }}
@@ -22,9 +18,7 @@ spec:
 {{ toYaml .Values.kubeStateMetrics.podAnnotations | indent 8 }}
     {{- end }}
       labels:
-        app: {{ template "prometheus.name" . }}
-        component: "{{ .Values.kubeStateMetrics.name }}"
-        release: {{ .Release.Name }}
+        {{- include "prometheus.kubeStateMetrics.labels" . | indent 8 }}
 {{- if .Values.kubeStateMetrics.pod.labels }}
 {{ toYaml .Values.kubeStateMetrics.pod.labels | indent 8 }}
 {{- end }}

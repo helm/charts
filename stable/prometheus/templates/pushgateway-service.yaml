@@ -7,11 +7,7 @@ metadata:
 {{ toYaml .Values.pushgateway.service.annotations | indent 4}}
 {{- end }}
   labels:
-    app: {{ template "prometheus.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    component: "{{ .Values.pushgateway.name }}"
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    {{- include "prometheus.pushgateway.labels" . | indent 4 }}
 {{- if .Values.pushgateway.service.labels }}
 {{ toYaml .Values.pushgateway.service.labels | indent 4}}
 {{- end }}
