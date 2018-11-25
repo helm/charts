@@ -60,6 +60,10 @@ replication:
 ## ref: https://github.com/bitnami/bitnami-docker-postgresql/blob/master/README.md#setting-the-root-password-on-first-run
 postgresqlUsername: postgres
 
+## Use Existing secret instead of creating one
+## It must have a postgresql-password key containing the desired password and postgresql-replication-password if replication is enabled
+# existingSecret: 'secret'
+
 ## PostgreSQL password
 ## ref: https://github.com/bitnami/bitnami-docker-postgresql/blob/master/README.md#setting-the-root-password-on-first-run
 ##

@@ -65,6 +65,7 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `replication.slaveReplicas`                   | Number of slaves replicas                          | `1`                                                       |
 | `postgresqlUsername`                          | PostgreSQL admin user                              | `postgres`                                                |
 | `postgresqlPassword`                          | PostgreSQL admin password                          | _random 10 character alphanumeric string_                 |
+| `existingSecret`                              | Use Existing secret for postgresl passwords        | `nil`                                                     |
 | `postgresqlDatabase`                          | PostgreSQL database                                | `nil`                                                     |
 | `postgresqlConfiguration`                     | Runtime Config Parameters                          | `nil`                                                     |
 | `pgHbaConfiguration`                          | Content of pg\_hba.conf                            | `nil (do not create pg_hba.conf)`                         |
@@ -169,6 +170,10 @@ See the [Configuration](#configuration) section to configure the PVC or to disab
 The chart optionally can start a metrics exporter for [prometheus](https://prometheus.io). The metrics endpoint (port 9187) is not exposed and it is expected that the metrics are collected from inside the k8s cluster using something similar as the described in the [example Prometheus scrape configuration](https://github.com/prometheus/prometheus/blob/master/documentation/examples/prometheus-kubernetes.yml).
 
 The exporter allows to create custom metrics from additional SQL queries. See the Chart's `values.yaml` for an example and consult the [exporters documentation](https://github.com/wrouesnel/postgres_exporter#adding-new-metrics-via-a-config-file) for more details.
+
+## Passwords
+
+If you do not want to provide the postgresqlPassword variable you can use the existingSecret option to use a secret not managed by helm
 
 ## NetworkPolicy
 
