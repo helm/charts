@@ -38,6 +38,9 @@ securityContext:
   runAsUser: 472
   fsGroup: 472
 
+## Assign a PriorityClassName to pods if set
+# priorityClassName:
+
 downloadDashboardsImage:
   repository: appropriate/curl
   tag: latest
