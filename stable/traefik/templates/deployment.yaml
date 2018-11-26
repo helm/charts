@@ -106,9 +106,9 @@ spec:
         - mountPath: /acme
           name: acme
         {{- end }}
-{{- if .Values.deployment.extraVolumeMounts }}
+        {{- if .Values.deployment.extraVolumeMounts }}
 {{ toYaml .Values.deployment.extraVolumeMounts | indent 8 }}
-{{- end }}
+        {{- end }}
         ports:
         - name: http
           containerPort: 80
@@ -157,9 +157,9 @@ spec:
         emptyDir: {}
       {{- end }}
       {{- end }}
-{{- if .Values.deployment.extraVolumes }}
+      {{- if .Values.deployment.extraVolumes }}
 {{ toYaml .Values.deployment.extraVolumes | indent 6 }}
-{{- end }}
+      {{- end }}
       {{- if and (.Values.tolerations) (semverCompare "^1.6-0" .Capabilities.KubeVersion.GitVersion) }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 6 }}
