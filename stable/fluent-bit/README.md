@@ -80,6 +80,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `existingConfigMap`                | ConfigMap override                         | ``                    |
 | `extraInputs`                      | Add extra Input sections to config         | ``                    |
 | `extraFilters`                     | Add extra Filter sections to config        | ``                    |
+| `extraNewFilters`                  | Add extra New Filter sections to config within Kube filter       | ``                    |
 | `extraOutputs`                     | Add extra Output sections to config        | ``                    |
 | `extraVolumeMounts`                | Mount an extra volume, required to mount ssl certificates when elasticsearch has tls enabled |          |
 | `extraVolume`                      | Extra volume                               |                                                |
