@@ -1,4 +1,4 @@
-{{- if .Values.monitoring.enabled }}
+{{- if .Values.metrics.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -12,7 +12,7 @@ spec:
   type: ClusterIP
   ports:
     - name: monitoring
-      port: {{ .Values.monitoring.servicePort }}
+      port: 8085
       targetPort: monitoring
   selector:
     release: {{ .Release.Name }}

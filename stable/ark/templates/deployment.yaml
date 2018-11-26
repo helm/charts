@@ -20,10 +20,15 @@ spec:
       labels:
         release: {{ .Release.Name }}
         app: {{ template "ark.name" . }}
-    {{- with .Values.podAnnotations }}
+      {{- if or .Values.podAnnotations .Values.metrics.enabled }}
       annotations:
-{{ toYaml . | indent 8 }}
-    {{- end }}
+{{- if .Values.podAnnotations }}
+{{ toYaml .Values.podAnnotations | indent 8 }}
+{{- end }}
+{{- if .Values.metrics.enabled }}
+{{ toYaml .Values.metrics.podAnnotations | indent 8 }}
+{{- end }}
+      {{- end }}
     spec:
       restartPolicy: Always
       serviceAccountName: {{ template "ark.serverServiceAccount" . }}
@@ -58,10 +63,10 @@ spec:
           {{- end }}
               value: /credentials/cloud
         {{- end }}
-          {{- if .Values.monitoring.enabled }}
+          {{- if .Values.metrics.enabled }}
           ports:
             - name: monitoring
-              containerPort: {{ .Values.monitoring.containerPort }}
+              containerPort: 8085
           {{- end }}
       volumes:
         {{- if and .Values.credentials.useSecret (or (eq $provider "aws") (eq $provider "gcp")) }}

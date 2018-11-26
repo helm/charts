@@ -60,8 +60,15 @@ credentials:
   useSecret: true
   secretContents: {}
 
-monitoring:
+metrics:
   enabled: false
-  containerPort: 8085
-  servicePort: 5000
   scrapeInterval: 30s
+
+  # Pod annotations for Prometheus
+  podAnnotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "8085"
+
+  serviceMonitor:
+    enabled: false
+    additionalLabels: {}

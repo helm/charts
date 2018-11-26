@@ -1,4 +1,4 @@
-{{- if .Values.monitoring.enabled }}
+{{- if and .Values.metrics.enabled .Values.metrics.serviceMonitor.enabled }}
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
@@ -8,6 +8,9 @@ metadata:
     app: {{ template "ark.name" . }}
     chart: {{ template "ark.chart" . }}
     heritage: {{ .Release.Service }}
+    {{- if .Values.metrics.serviceMonitor.additionalLabels }}
+{{ toYaml .Values.metrics.serviceMonitor.additionalLabels | indent 4 }}
+    {{- end }}
 spec:
   selector:
     matchLabels:
@@ -15,5 +18,5 @@ spec:
       app: {{ template "ark.name" . }}
   endpoints:
   - port: monitoring
-    interval: {{ .Values.monitoring.scrapeInterval }}
+    interval: {{ .Values.metrics.scrapeInterval }}
 {{- end }}
