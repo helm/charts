@@ -183,6 +183,8 @@ ingressController:
     successThreshold: 1
     timeoutSeconds: 5
 
+  installCRDs: true
+
   rbac:
     # Specifies whether RBAC resources should be created
     create: true
