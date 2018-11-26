@@ -1,8 +1,8 @@
+enabled: true
+
 gceStorage: 5Gi
 pvcStorage: 1Mi
 pvStorage: 1Mi
 
 pv: nfs-pv
 pvc: nfs-pvc
-
-enabled: true

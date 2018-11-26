@@ -1,3 +1,4 @@
+{{- if .Values.enabled }}
 kind: StorageClass
 apiVersion: storage.k8s.io/v1
 metadata:
@@ -13,3 +14,4 @@ parameters:
   restuser: {{ .Values.restuser }}
   secretName: {{ .Values.secretName }}
   secretNamespace: {{ .Values.secretNamespace }}
+{{- end }}

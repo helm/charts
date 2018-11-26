@@ -1,3 +1,5 @@
+enabled: true
+
 storageClass: glusterfs-sc
 
 resturl: "http://10.42.0.0:8080"
