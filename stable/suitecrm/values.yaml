@@ -33,11 +33,6 @@ image:
 ##
 suitecrmValidateUserIP: "no"
 
-## loadBalancerIP for the SuiteCRM Service (optional, cloud specific)
-## ref: http://kubernetes.io/docs/user-guide/services/#type-loadbalancer
-##
-# suitecrmLoadBalancerIP:
-
 ## User of the application
 ## ref: https://github.com/bitnami/bitnami-docker-suitecrm#configuration
 ##
@@ -137,14 +132,27 @@ mariadb:
       accessMode: ReadWriteOnce
       size: 8Gi
 
-## Kubernetes configuration
-## For minikube, set this to NodePort, elsewhere use LoadBalancer
-##
-serviceType: LoadBalancer
-
-## Set external traffic policy to: "Local" to preserve source IP on providers supporting it
-## ref: https://kubernetes.io/docs/tutorials/services/source-ip/#source-ip-for-services-with-type-nodeport
-externalTrafficPolicy: Cluster
+service:
+  type: LoadBalancer
+  # HTTP Port
+  port: 80
+  # HTTPS Port
+  httpsPort: 443
+  ## loadBalancerIP for the SuiteCRM Service (optional, cloud specific)
+  ## ref: http://kubernetes.io/docs/user-guide/services/#type-loadbalancer
+  ##
+  ## loadBalancerIP:
+  ##
+  ## nodePorts:
+  ##   http: <to set explicitly, choose port between 30000-32767>
+  ##   https: <to set explicitly, choose port between 30000-32767>
+  nodePorts:
+    http: ""
+    https: ""
+  ## Enable client source IP preservation
+  ## ref http://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip
+  ##
+  externalTrafficPolicy: Cluster
 
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/

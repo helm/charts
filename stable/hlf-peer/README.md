@@ -83,6 +83,11 @@ The following table lists the configurable parameters of the Hyperledger Fabric 
 | `persistence.annotations`          | Persistent Volume annotations                        | `{}`                                                       |
 | `persistence.size`                 | Size of data volume (adjust for production!)         | `1Gi`                                                      |
 | `persistence.storageClass`         | Storage class of backing PVC                         | `default`                                                  |
+| `ingress.enabled`                  | If true, Ingress will be created                     | `false`                                                    |
+| `ingress.annotations`              | Ingress annotations                                  | `{}`                                                       |
+| `ingress.path`                     | Ingress path                                         | `/`                                                        |
+| `ingress.hosts`                    | Ingress hostnames                                    | `[]`                                                       |
+| `ingress.tls`                      | Ingress TLS configuration                            | `[]`                                                       |
 | `peer.databaseType`                | Database type to use (`goleveldb` or `CouchDB`)      | `goleveldb`                                                |
 | `peer.couchdbInstance              | CouchDB chart name to use `cdb-peer1`                | `cdb-peer1`                                                |
 | `peer.mspID`                       | ID of MSP the Peer belongs to                        | `Org1MSP`                                                  |
@@ -95,9 +100,12 @@ The following table lists the configurable parameters of the Hyperledger Fabric 
 | `secrets.peer.intCaCert`           | Int. CA Cert: as 'intermediatecacert.pem'            | ``                                                         |
 | `secrets.peer.tls`                 | TLS secret: as 'tls.crt' and 'tls.key'               | ``                                                         |
 | `secrets.peer.tlsRootCert`         | TLS root CA certificate: as 'cert.pem'               | ``                                                         |
+| `secrets.peer.tlsClient`           | TLS client secret: as 'tls.crt' and 'tls.key'        | ``                                                         |
+| `secrets.peer.tlsClientRootCerts`  | TLS Client root CA certificate files (any name)      | ``                                                         |
 | `secrets.channel`                  | Secret containing Channel tx for peer to create/join | ``                                                         |
 | `secrets.adminCert`                | Secret containing Peer Org admin certificate         | ``                                                         |
 | `secrets.adminCert`                | Secret containing Peer Org admin private key         | ``                                                         |
+| `secrets.ordTlsRootCert`           | Secret containing Orderer TLS root CA certificate    | ``                                                         |
 | `resources`                        | CPU/Memory resource requests/limits                  | `{}`                                                       |
 | `nodeSelector`                     | Node labels for pod assignment                       | `{}`                                                       |
 | `tolerations`                      | Toleration labels for pod assignment                 | `[]`                                                       |
