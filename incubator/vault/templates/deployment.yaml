@@ -76,10 +76,6 @@ spec:
           mountPath: /vault/config/
         - name: vault-root
           mountPath: /root/
-        {{- range .Values.vault.customSecrets }}
-        - name: {{ .secretName }}
-          mountPath: {{ .mountPath }}
-        {{- end }}
         {{- if .Values.vault.extraVolumeMounts }}
 {{ toYaml .Values.vault.extraVolumeMounts | indent 8 }}
         {{- end }}
