@@ -124,11 +124,6 @@ spec:
             name: "{{ template "vault.fullname" . }}-config"
         - name: vault-root
           emptyDir: {}
-        {{- range .Values.vault.customSecrets }}
-        - name: {{ .secretName }}
-          secret:
-            secretName: {{ .secretName }}
-        {{- end }}
 {{- if .Values.vault.extraVolumes }}
 {{ toYaml .Values.vault.extraVolumes | indent 8}}
 {{- end }}
