@@ -138,6 +138,7 @@ nodeSelector: {}
 input:
   tail:
     memBufLimit: 5MB
+    skipLongLines: On
 
 filter:
   kubeURL: https://kubernetes.default.svc:443
