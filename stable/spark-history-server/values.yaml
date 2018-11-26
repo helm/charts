@@ -30,15 +30,15 @@ pvc:
   # name of an already created persistent volume claim in existingPVC.
   # The volume will be mounted on /data in the pod
   enabled: true
-  existingPVC: nfs-pvc-1
+  existingPVC: nfs-pvc
   eventsDir: "/"
 
 # When both pvc.enabled and nfs.enabled are true, make sure:
 # pvc.existingPVC == nfs.pvc
 nfs:
   enabled: true
-  pv: nfs-pv-1
-  pvc: nfs-pvc-1
+  pv: nfs-pv
+  pvc: nfs-pvc
 
 # When both pvc.enabled and gluster.enabled are true, make sure:
 # pvc.existingPVC == gluster.pvc
