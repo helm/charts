@@ -44,6 +44,7 @@ data:
         Kube_URL            {{ .Values.filter.kubeURL }}
         Kube_CA_File        {{ .Values.filter.kubeCAFile }}
         Kube_Token_File     {{ .Values.filter.kubeTokenFile }}
+        Annotations         {{ .Values.filter.kubeAnnotations }}
 {{- if .Values.filter.mergeJSONLog }}
         Merge_Log           On
 {{- end }}
