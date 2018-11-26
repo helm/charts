@@ -129,7 +129,5 @@ spec:
         configMap:
           name: {{ template "schema-registry.fullname" . }}
       {{- end }}
-    {{- with .Values.nodeSelector }}
       nodeSelector:
-{{ toYaml . | indent 8 }}
-    {{- end }}
+{{ toYaml .Values.nodeSelector | indent 8 }}
