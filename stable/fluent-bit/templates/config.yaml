@@ -55,6 +55,8 @@ data:
 {{- end }}
 {{ .Values.extraFilters | indent 8 }}
 
+{{ .Values.extraNewFilters | indent 4 }}
+
 {{ if eq .Values.backend.type "test" }}
     [OUTPUT]
         Name  file
