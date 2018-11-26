@@ -86,26 +86,41 @@ spec:
                 fi
                 # Download plugins
               {{- if .Values.graylog.plugins }}
+                echo "Downloading Graylog Plugins..."
               {{- range .Values.graylog.plugins }}
-                wget -nv {{ .url }} -O /usr/share/graylog/plugin/{{ .name }}
+                echo "Downloading {{ .url }} ..."
+                curl -s --location --retry 3 -o /usr/share/graylog/plugin/{{ .name }} "{{ .url }}"
               {{- end }}
               {{- end }}
                 chown -R graylog:graylog /usr/share/graylog/plugin/
-                wgetreturn=0
-                for x in {1..3}; do
-                  echo "Downloading Maxmind GeoLite2. ${x}/3"
-                  wget -nv https://geolite.maxmind.com/download/geoip/database/GeoLite2-City.tar.gz -O /tmp/GeoLite2-City.tar.gz
-                  wgetreturn=$?
-                  if [[ $wgetreturn -eq 0 ]]; then
-                    mkdir -p /etc/geoip && cd /etc/geoip && tar xvzf /tmp/GeoLite2-City.tar.gz --wildcards "*.mmdb" --strip-components=1 -C /etc/geoip && chown -R graylog:graylog /etc/geoip
-                    break
-                  fi
-                  echo "Failed to download Maxmind GeoLite2. Try again..."
-                  sleep 1
-                done
+                echo "Downloading Maxmind GeoLite2 ..."
+                curl -s --location --retry 3 -o /tmp/GeoLite2-City.tar.gz "https://geolite.maxmind.com/download/geoip/database/GeoLite2-City.tar.gz"
+                curlreturn=$?
+                if [[ $curlreturn -eq 0 ]]; then
+                  mkdir -p /etc/geoip && cd /etc/geoip && tar xvzf /tmp/GeoLite2-City.tar.gz --wildcards "*.mmdb" --strip-components=1 -C /etc/geoip && chown -R graylog:graylog /etc/geoip
+                fi
                 # Start Graylog
                 echo "Starting graylog"
-                exec /docker-entrypoint.sh graylog
+                # Original docker-entrypoint.sh in Graylog Docker will error while executing since you can't chown readonly files in `config`
+                # exec /docker-entrypoint.sh graylog
+                GRAYLOG_HOME=/usr/share/graylog
+                GRAYLOG_USER=graylog
+                echo "Graylog Home ${GRAYLOG_HOME}"
+                echo "Graylog User ${GRAYLOG_USER}"
+                echo "JVM Options ${GRAYLOG_SERVER_JAVA_OPTS}"
+                # Create data directories
+                for d in journal log plugin config contentpacks; do
+                  dir=${GRAYLOG_HOME}/data/$d
+                  [[ -d "${dir}" ]] || mkdir -p "${dir}"
+                done
+                gosu ${GRAYLOG_USER} "${JAVA_HOME}/bin/java" ${GRAYLOG_SERVER_JAVA_OPTS} \
+                    -jar \
+                    -Dlog4j.configurationFile=${GRAYLOG_HOME}/config/log4j2.xml \
+                    -Djava.library.path=${GRAYLOG_HOME}/lib/sigar/ \
+                    -Dgraylog2.installation_source=docker \
+                    ${GRAYLOG_HOME}/graylog.jar \
+                    server \
+                    -f ${GRAYLOG_HOME}/config/graylog.conf ${GRAYLOG_SERVER_OPTS}
           env:
             - name: GRAYLOG_SERVER_JAVA_OPTS
               {{- $javaOpts := "-Djava.net.preferIPv4Stack=true -XX:NewRatio=1 -server -XX:+ResizeTLAB -XX:+UseConcMarkSweepGC -XX:+CMSConcurrentMTEnabled -XX:+CMSClassUnloadingEnabled -XX:+UseParNewGC -XX:-OmitStackTraceInFastThrow" }}
@@ -164,7 +179,7 @@ spec:
             - name: journal
               mountPath: /usr/share/graylog/data/journal
             - name: config
-              mountPath: /usr/share/graylog/data/config
+              mountPath: /usr/share/graylog/config
           {{- if .Values.graylog.serverFiles }}
             - name: files
               mountPath: /etc/graylog/server
