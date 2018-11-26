@@ -43,8 +43,8 @@ The following tables lists the configurable parameters of the Sentry chart and t
 | `service.annotations`      | Service annotations for the home-assistant GUI | `{}` |
 | `service.clusterIP`   | Cluster IP for the home-assistant GUI | `` |
 | `service.externalIPs`   | External IPs for the home-assistant GUI | `[]` |
-| `service.loadBalancerIP`   | Loadbalance IP for the home-assistant GUI | `` |
-| `service.loadBalancerSourceRanges`   | Loadbalance client IP restriction range for the home-assistant GUI | `[]` |
+| `service.loadBalancerIP`   | Loadbalancer IP for the home-assistant GUI | `` |
+| `service.loadBalancerSourceRanges`   | Loadbalancer client IP restriction range for the home-assistant GUI | `[]` |
 | `hostNetwork`              | Enable hostNetwork - might be needed for discovery to work | `false` |
 | `service.nodePort`   | nodePort to listen on for the home-assistant GUI | `` |
 | `ingress.enabled`              | Enables Ingress | `false` |
@@ -88,8 +88,8 @@ The following tables lists the configurable parameters of the Sentry chart and t
 | `configurator.service.labels`           | Service labels to use for the configurator UI | `{}` |
 | `configurator.service.clusterIP`        | Cluster IP for the configurator UI | `` |
 | `configurator.service.externalIPs`      | External IPs for the configurator UI | `[]` |
-| `configurator.service.loadBalancerIP`   | Loadbalance IP for the configurator UI | `` |
-| `configurator.service.loadBalancerSourceRanges`   | Loadbalance client IP restriction range for the configurator UI | `[]` |
+| `configurator.service.loadBalancerIP`   | Loadbalancer IP for the configurator UI | `` |
+| `configurator.service.loadBalancerSourceRanges`   | Loadbalancer client IP restriction range for the configurator UI | `[]` |
 | `resources`                | CPU/Memory resource requests/limits or the home-assistant GUI | `{}` |
 | `nodeSelector`             | Node labels for pod assignment or the home-assistant GUI | `{}` |
 | `tolerations`              | Toleration labels for pod assignment or the home-assistant GUI | `[]` |
@@ -111,8 +111,8 @@ helm install --name my-release -f values.yaml stable/home-assistant
 
 Read through the [values.yaml](values.yaml) file. It has several commented out suggested values.
 
-## Regarding configuring home assistnat
+## Regarding configuring home assistant
 
 Much of the home assistant configuration occurs inside the various files persisted to the `/config` directory.  This will require external access to the persistent storage location where the home assistant configuration data is stored.
 
-Because this may be a limitation, the [Home Assistant Configurator UI](https://github.com/danielperna84/hass-configurator) is added to the chart as an option to provide a webUI for editing the various configuration files
+Because this may be a limitation, the [Home Assistant Configurator UI](https://github.com/danielperna84/hass-configurator) is added to the chart as an option to provide a webUI for editing the various configuration files.

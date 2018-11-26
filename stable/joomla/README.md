@@ -77,6 +77,8 @@ The following table lists the configurable parameters of the Joomla! chart and t
 | `mariadb.db.password`                | Password for the database                                   | `nil`                                          |
 | `mariadb.root.password`              | MariaDB admin password                                      | `nil`                                          |
 | `service.type`                       | Kubernetes Service type                                     | `LoadBalancer`                                 |
+| `service.port`                    | Service HTTP port                    | `80`                                          |
+| `service.httpsPort`                    | Service HTTPS port                    | `443`                                          |
 | `service.loadBalancer`               | Kubernetes LoadBalancerIP to request                        | `nil`                                          |
 | `service.externalTrafficPolicy`      | Enable client source IP preservation                        | `Cluster`                                      |
 | `service.nodePorts.http`             | Kubernetes http node port                                   | `""`                                           |
