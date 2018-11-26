@@ -1,0 +1,15 @@
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: {{ .Values.storageClass }}
+  labels:
+    app.kubernetes.io/name: {{ include "gluster.name" . }}
+    helm.sh/chart: {{ include "gluster.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+provisioner: kubernetes.io/glusterfs
+parameters:
+  resturl: {{ .Values.resturl }}
+  restuser: {{ .Values.restuser }}
+  secretName: {{ .Values.secretName }}
+  secretNamespace: {{ .Values.secretNamespace }}

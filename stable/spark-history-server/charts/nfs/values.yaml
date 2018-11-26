@@ -2,7 +2,7 @@ gceStorage: 5Gi
 pvcStorage: 1Mi
 pvStorage: 1Mi
 
-pvName: nfs-pv
-pvcName: nfs-pvc
+pv: nfs-pv
+pvc: nfs-pvc
 
-enableExampleNFS: true
+enabled: true

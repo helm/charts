@@ -44,7 +44,7 @@ spec:
             export SPARK_HISTORY_OPTS="$SPARK_HISTORY_OPTS \
             -Dspark.hadoop.google.cloud.auth.service.account.json.keyfile=/etc/secrets/$key \
             -Dspark.history.fs.logDirectory=$logDirectory";
-          else:
+          else
             export SPARK_HISTORY_OPTS="$SPARK_HISTORY_OPTS \
             -Dspark.history.fs.logDirectory=$logDirectory";
           fi;
@@ -61,10 +61,10 @@ spec:
             path: /
             port: historyport
         volumeMounts:
-        {{- if .Values.pvc.enablePVC }}
+        {{- if .Values.pvc.enabled }}
         - name: data
           mountPath: /mnt/{{ .Values.pvc.eventsDir }}
-        {{- else if .Values.gcs.enableGCS }}
+        {{- else if .Values.gcs.enabled }}
         - name: secrets-volume
           mountPath: /etc/secrets
         {{- else }}
@@ -76,11 +76,11 @@ spec:
           subPath: hdfs-site.xml
         {{- end }}
       volumes:
-      {{- if .Values.pvc.enablePVC }}
+      {{- if .Values.pvc.enabled }}
       - name: data
         persistentVolumeClaim:
-          claimName: {{ .Values.pvc.existingClaimName }}
-      {{- else if .Values.gcs.enableGCS }}
+          claimName: {{ .Values.pvc.existingPVC }}
+      {{- else if .Values.gcs.enabled }}
       - name: secrets-volume
         secret:
           secretName: {{ .Values.gcs.secret }}
