@@ -94,7 +94,7 @@ data:
     echo "Trying to creating a hello world pipeline." >> /godata/logs/preconfigure.log
 
     (curl --fail -i 'http://localhost:8153/go/api/admin/pipelines' \
-      -H 'Accept: application/vnd.go.cd.v5+json' \
+      -H 'Accept: application/vnd.go.cd.v6+json' \
       -H 'Content-Type: application/json' \
       -X POST -d '{ "group": "sample",
                     "pipeline": {
