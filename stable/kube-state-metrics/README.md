@@ -15,7 +15,7 @@ $ helm install stable/kube-state-metrics
 | Parameter                             | Description                                             | Default                                     |
 |---------------------------------------|---------------------------------------------------------|---------------------------------------------|
 | `image.repository`                    | The image repository to pull from                       | quay.io/coreos/kube-state-metrics           |
-| `image.tag`                           | The image tag to pull from                              | `v1.4.0`                          |
+| `image.tag`                           | The image tag to pull from                              | `v1.4.0`                                    |
 | `image.pullPolicy`                    | Image pull policy                                       | IfNotPresent                                |
 | `service.port`                        | The port of the container                               | 8080                                        |
 | `prometheusScrape`                    | Whether or not enable prom scrape                       | true                                        |
@@ -24,8 +24,9 @@ $ helm install stable/kube-state-metrics
 | `securityContext.enabled`             | Enable security context                                 | `true`                                      |
 | `securityContext.fsGroup`             | Group ID for the container                              | `65534`                                     |
 | `securityContext.runAsUser`           | User ID for the container                               | `65534`                                     |
+| `priorityClassName`                   | Name of Priority Class to assign pods                   | `nil`                                       | 
 | `nodeSelector`                        | Node labels for pod assignment                          | {}                                          |
-| `tolerations`                         | Tolerations for pod assignment	                  | []                                          |
+| `tolerations`                         | Tolerations for pod assignment	                      | []                                          |
 | `podAnnotations`                      | Annotations to be added to the pod                      | {}                                          |
 | `resources`                           | kube-state-metrics resource requests and limits         | {}                                          |
 | `collectors.cronjobs`                 | Enable the cronjobs collector.                          | true                                        |

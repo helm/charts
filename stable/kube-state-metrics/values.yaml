@@ -32,6 +32,9 @@ tolerations: []
 # Annotations to be added to the pod
 podAnnotations: {}
 
+## Assign a PriorityClassName to pods if set
+# priorityClassName: ""
+
 # Available collectors for kube-state-metrics. By default all available
 # collectors are enabled.
 collectors:
