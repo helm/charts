@@ -30,3 +30,7 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+env:
+  # Empty value will enable the operator for all namespaces
+  WATCH_NAMESPACE: ""

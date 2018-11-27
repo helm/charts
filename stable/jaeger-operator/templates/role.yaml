@@ -1,4 +1,8 @@
+{{- if .Values.env.WATCH_NAMESPACE }}
 kind: Role
+{{- else }}
+kind: ClusterRole
+{{- end }}
 apiVersion: rbac.authorization.k8s.io/v1beta1
 metadata:
   name: {{ include "jaeger-operator.fullname" . }}

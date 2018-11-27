@@ -51,6 +51,7 @@ Parameter | Description | Default
 `nodeSelector` | Node labels for pod assignment | `{}`
 `tolerations` | Toleration labels for pod assignment | `[]`
 `affinity` | Affinity settings for pod assignment | `{}`
+'env.WATCH_NAMESPACE` | `Namespace to watch for jaeger resources` | `"" - all namespaces`
 
 
 Specify each parameter you'd like to override using a YAML file as described above in the [installation](#Installing the Chart) section.

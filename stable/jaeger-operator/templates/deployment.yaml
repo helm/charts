@@ -32,10 +32,10 @@ spec:
             name: metrics
           args: ["start"]
           env:
-            - name: WATCH_NAMESPACE
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.namespace
+            {{- range $key, $value := .Values.env }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+            {{- end }}
             - name: OPERATOR_NAME
               value: {{ include "jaeger-operator.fullname" . | quote }}
           resources:
