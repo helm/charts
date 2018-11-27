@@ -76,8 +76,9 @@ spec:
               name: {{ printf "%s-%s" .Release.Name "externaldb" }}
               key: db-password
         {{- end }}
+{{- $port:=.Values.service.port | toString }}
         - name: OWNCLOUD_HOST
-          value: {{ include "owncloud.host" . | quote }}
+          value: "{{ include "owncloud.host" . }}{{- if ne $port "80" }}:{{ .Values.service.port }}{{ end }}"
         - name: OWNCLOUD_USERNAME
           value: {{ default "" .Values.owncloudUsername | quote }}
         - name: OWNCLOUD_PASSWORD

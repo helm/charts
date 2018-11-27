@@ -1015,6 +1015,9 @@ serverFiles:
           - source_labels: [__meta_kubernetes_service_name]
             action: replace
             target_label: kubernetes_name
+          - source_labels: [__meta_kubernetes_pod_node_name]
+            action: replace
+            target_label: kubernetes_node
 
       - job_name: 'prometheus-pushgateway'
         honor_labels: true
