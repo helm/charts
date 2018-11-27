@@ -124,5 +124,5 @@ jmx:
 ## Pass any secrets to the pods. The secret will be mounted to a
 ## specific path (in addition to environment variable) if required.
 secrets: []
-#- name: myZkSecret
-#  mountPath: /opt/zookeeper/secret
+# - name: myZkSecret
+# mountPath: /opt/zookeeper/secret
