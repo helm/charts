@@ -19,6 +19,15 @@ spec:
         app: {{ template "prestashop.fullname" . }}
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: "{{ .Release.Name }}"
+{{- if or .Values.podAnnotations .Values.metrics.enabled }}
+      annotations:
+  {{- if .Values.podAnnotations }}
+{{ toYaml .Values.podAnnotations | indent 8 }}
+  {{- end }}
+  {{- if .Values.metrics.podAnnotations }}
+{{ toYaml .Values.metrics.podAnnotations | indent 8 }}
+  {{- end }}
+{{- end }}
     spec:
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
@@ -26,9 +35,13 @@ spec:
         - name: {{ . }}
       {{- end}}
       {{- end }}
+      hostAliases:
+      - ip: "127.0.0.1"
+        hostnames:
+        - "status.localhost"
       containers:
       - name: {{ template "prestashop.fullname" . }}
-        image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        image: {{ template "prestashop.image" . }}
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         env:
         - name: ALLOW_EMPTY_PASSWORD
@@ -64,8 +77,9 @@ spec:
               name: {{ printf "%s-%s" .Release.Name "externaldb" }}
               key: db-password
         {{- end }}
+{{- $port:=.Values.service.port | toString }}
         - name: PRESTASHOP_HOST
-          value: {{ include "prestashop.host" . | quote }}
+          value: "{{ include "prestashop.host" . }}{{- if ne $port "80" }}:{{ .Values.service.port }}{{ end }}"
         - name: PRESTASHOP_USERNAME
           value: {{ .Values.prestashopUsername | quote }}
         - name: PRESTASHOP_PASSWORD
@@ -128,22 +142,40 @@ spec:
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
-        - name: prestashop-data
-          mountPath: /bitnami/prestashop
-        - name: apache-data
-          mountPath: /bitnami/apache
+        - mountPath: /bitnami/apache
+          name: prestashop-data
+          subPath: apache
+        - mountPath: /bitnami/prestashop
+          name: prestashop-data
+          subPath: prestashop
+{{- if .Values.metrics.enabled }}
+      - name: metrics
+        image: {{ template "metrics.image" . }}
+        imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
+        command: [ '/bin/apache_exporter', '-scrape_uri', 'http://status.localhost:80/server-status/?auto']
+        ports:
+        - name: metrics
+          containerPort: 9117
+        livenessProbe:
+          httpGet:
+            path: /metrics
+            port: metrics
+          initialDelaySeconds: 15
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /metrics
+            port: metrics
+          initialDelaySeconds: 5
+          timeoutSeconds: 1
+        resources:
+{{ toYaml .Values.metrics.resources | indent 12 }}
+{{- end }}
       volumes:
       - name: prestashop-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "prestashop.fullname" . }}-prestashop
-      {{- else }}
-        emptyDir: {}
-      {{- end }}
-      - name: apache-data
-      {{- if .Values.persistence.enabled }}
-        persistentVolumeClaim:
-          claimName: {{ template "prestashop.fullname" . }}-apache
+          claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "prestashop.fullname" . }}-prestashop{{- end }}
       {{- else }}
         emptyDir: {}
       {{- end }}
