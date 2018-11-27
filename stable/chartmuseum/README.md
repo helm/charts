@@ -116,6 +116,7 @@ their default values. See values.yaml for all available options.
 | `gcp.secret.key`                       | Secret key for te GCP json file             | `credentials.json`                                  |
 | `service.type`                         | Kubernetes Service type                     | `ClusterIP`                                          |
 | `service.clusterIP`                    | Static clusterIP or None for headless services| `nil`                                              |
+| `service.customName`                   | Custom name for service                     | ``                                                  |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to
 `helm install`.
