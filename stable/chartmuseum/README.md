@@ -120,6 +120,7 @@ their default values. See values.yaml for all available options.
 | `service.clusterIP`                    | Static clusterIP or None for headless services| `nil`                                              |
 | `service.servicename`                  | Custom name for service                     | ``                                                  |
 | `deployment.labels`                    | Additional labels for deployment            | `{}`                                                |
+| `deployment.matchlabes`                | Match labels for deployment selector        | `{}`                                                |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to
 `helm install`.

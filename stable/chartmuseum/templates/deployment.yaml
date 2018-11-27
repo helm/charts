@@ -14,6 +14,11 @@ spec:
   strategy:
 {{ toYaml .Values.strategy | indent 4 }}
   revisionHistoryLimit: 10
+{{- if .Values.deployment.matchlabes }}
+  selector:
+    matchLabels:
+{{ toYaml .Values.deployment.matchlabes | indent 6 }}
+{{- end }}
   template:
     metadata:
       name: {{ include "chartmuseum.fullname" . }}

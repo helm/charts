@@ -94,7 +94,9 @@ deployment:
   annotations: {}
   #   name: value
   labels: {}
-  #  name: value
+  #   name: value
+  matchlabes: {}
+  #   name: value
 replica:
   ## Chartmuseum Replicas annotations
   annotations: {}
