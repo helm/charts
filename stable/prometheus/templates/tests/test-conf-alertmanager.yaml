@@ -1,0 +1,29 @@
+{{- if .Values.alertmanager.enabled -}}
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test-conf-{{ template "prometheus.alertmanager.fullname" . }}
+  labels:
+    {{- include "prometheus.alertmanager.test.labels" . | nindent 4 }}
+    test: test-config
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+  - name: test
+    image: "{{ .Values.alertmanager.image.repository }}:{{ .Values.alertmanager.image.tag }}"
+    command:
+      - amtool
+    args:
+      - check-config
+      - /etc/config/alertmanager.yml
+    volumeMounts:
+      - mountPath: /etc/config/
+        name: config-volume
+        readOnly: true
+  volumes:
+    - name: config-volume
+      configMap:
+        name: {{ if .Values.alertmanager.configMapOverrideName }}{{ .Release.Name }}-{{ .Values.alertmanager.configMapOverrideName }}{{- else }}{{ template "prometheus.alertmanager.fullname" . }}{{- end }}
+  restartPolicy: Never
+{{- end -}}

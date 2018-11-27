@@ -29,6 +29,12 @@ component: {{ .Values.alertmanager.name | quote }}
 {{ include "prometheus.common.matchLabels" . }}
 {{- end -}}
 
+{{- define "prometheus.alertmanager.test.labels" -}}
+component: {{ printf "test-%s" .Values.alertmanager.name | quote }}
+{{ include "prometheus.common.matchLabels" . }}
+{{ include "prometheus.common.metaLabels" . }}
+{{- end -}}
+
 {{- define "prometheus.kubeStateMetrics.labels" -}}
 {{ include "prometheus.kubeStateMetrics.matchLabels" . }}
 {{ include "prometheus.common.metaLabels" . }}
@@ -67,6 +73,12 @@ component: {{ .Values.pushgateway.name | quote }}
 {{- define "prometheus.server.matchLabels" -}}
 component: {{ .Values.server.name | quote }}
 {{ include "prometheus.common.matchLabels" . }}
+{{- end -}}
+
+{{- define "prometheus.server.test.labels" -}}
+component: {{ printf "test-%s" .Values.server.name | quote }}
+{{ include "prometheus.common.matchLabels" . }}
+{{ include "prometheus.common.metaLabels" . }}
 {{- end -}}
 
 {{/*
