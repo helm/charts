@@ -6,6 +6,9 @@ metadata:
 {{ toYaml .Values.deployment.annotations | indent 4 }}
   labels:
 {{ include "chartmuseum.labels.standard" . | indent 4 }}
+{{- if .Values.deployment.labels }}
+{{ toYaml .Values.deployment.labels | indent 4 }}
+{{- end }}
 spec:
   replicas: {{ .Values.replicaCount }}
   strategy:
@@ -19,6 +22,9 @@ spec:
       labels:
         app: {{ template "chartmuseum.name" . }}
         release: {{ .Release.Name | quote }}
+{{- if .Values.deployment.labels }}
+{{ toYaml .Values.deployment.labels | indent 8 }}
+{{- end }}
     spec:
       containers:
       - name: {{ .Chart.Name }}

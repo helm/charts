@@ -93,6 +93,8 @@ deployment:
   ## Chartmuseum Deployment annotations
   annotations: {}
   #   name: value
+  labels: {}
+  #  name: value
 replica:
   ## Chartmuseum Replicas annotations
   annotations: {}
