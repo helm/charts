@@ -2,7 +2,7 @@
 ## ref: https://hub.docker.com/r/library/cassandra/
 image:
   repo: "strapdata/elassandra"
-  tag: "6.2.3.7"
+  tag: "6.2.3.8"
   pullPolicy: Always
   ## Specify ImagePullSecrets for Pods
   ## ref: https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
@@ -65,6 +65,11 @@ config:
 elasticsearch:
   enabled: true
 
+# Enable JDWP for java debugging
+debug:
+  enabled: false
+  port: 4242
+
 ## Liveness and Readiness probe values.
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/
 livenessProbe:
@@ -93,9 +98,12 @@ securityContext:
   fsGroup: 999
   runAsUser: 999
 
+# Additional env variables
+env: {}
+
 ## Additional pod labels
 ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
-# podLabels: {}
+podLabels: {}
 
 ## Configure node selector. Edit code below for adding selector to pods
 ## ref: https://kubernetes.io/docs/user-guide/node-selection/

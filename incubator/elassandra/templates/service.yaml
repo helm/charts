@@ -1,4 +1,4 @@
-apiVersion: v1
+zapiVersion: v1
 kind: Service
 metadata:
   name: {{ template "elassandra.fullname" . }}
@@ -35,6 +35,11 @@ spec:
   - name: elasticsearch
     port: {{ default 9200 .Values.config.ports.elasticsearch }}
     targetPort: {{ default 9200 .Values.config.ports.elasticsearch }}
+{{- if .Values.debug.enabled }}
+  - name: jdwp
+    port: {{ default 4242 .Values.debug.port }}
+    targetPort: {{ default 4242 .Values.debug.port }}
+{{- end }}
   selector:
     app: {{ template "elassandra.name" . }}
     release: {{ .Release.Name }}

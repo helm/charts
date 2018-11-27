@@ -65,7 +65,7 @@ spec:
         - name: CASSANDRA_SEEDS
           value: "{{- range $i, $e := until $seed_size }}{{ template "elassandra.fullname" $global }}-{{ $i }}.{{ template "elassandra.fullname" $global }}.{{ $global.Release.Namespace }}.svc.cluster.local{{- if (lt ( add1 $i ) $seed_size ) }},{{- end }}{{- end }}"
         - name: MAX_HEAP_SIZE
-          value: {{ default "8192M" .Values.config.max_heap_size | quote }}
+          value: {{ default "2048M" .Values.config.max_heap_size | quote }}
         - name: HEAP_NEWSIZE
           value: {{ default "200M" .Values.config.heap_new_size | quote }}
         - name: CASSANDRA_ENDPOINT_SNITCH
@@ -80,8 +80,8 @@ spec:
           value: {{ default "false" .Values.config.start_rpc | quote }}
         - name: CASSANDRA_DAEMON
           value: {{- if .Values.elasticsearch.enabled }} "org.apache.cassandra.service.ElassandraDaemon" {{ else }} "org.apache.cassandra.service.CassandraDaemon" {{- end }}
-        - name: LOGBACK_org_elassandra_discovery
-          value: "DEBUG"
+        - name: JVM_DEBUG_PORT
+          value: {{ default "4242" .Values.debug.port | quote }}
         - name: POD_IP
           valueFrom:
             fieldRef:
@@ -94,6 +94,10 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath:  metadata.namespace
+        {{- range $key, $val := .Values.env }}
+        - name: {{ $key }}
+          value: {{ $val | quote }}
+        {{- end }}
         livenessProbe:
           tcpSocket:
             port: 7000
@@ -125,6 +129,11 @@ spec:
           containerPort: {{ default 9200 .Values.config.ports.elasticsearch }}
         - name: transport
           containerPort: {{ default 9300 .Values.config.ports.transport }}
+{{- if .Values.debug.enabled }}
+        - name: jdwp
+          containerPort: {{ default 4242 .Values.debug.port }}
+        args: ["-f", "-d" ]
+{{- end }}
         volumeMounts:
         - name: data
           mountPath: /var/lib/cassandra
