@@ -45,44 +45,50 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following table lists the configurable parameters of the Parse chart and their default values.
 
-|             Parameter              |              Description               |                   Default                               |
-|------------------------------------|----------------------------------------|-------------------------------------------------------- |
-| `global.imageRegistry`             | Global Docker image registry           | `nil`                                                   |
-| `service.type`                    | Kubernetes Service type                    | `LoadBalancer`                                          |
-| `service.port`                    | Service HTTP port (Dashboard)                   | `80`                                          |
-| `service.loadBalancerIP`                   | `loadBalancerIP` for the Parse Service | `nil`                                                   |
-| `service.externalTrafficPolicy`   | Enable client source IP preservation       | `Cluster`                                               |
-| `service.nodePorts.http`                 | Kubernetes http node port                  | `""`                                                    |
-| `server.image.registry`            | Parse image registry                   | `docker.io`                                             |
-| `server.image.repository`          | Parse image name                       | `bitnami/parse`                                         |
-| `server.image.tag`                 | Parse image tag                        | `{VERSION}`                                             |
-| `server.image.pullPolicy`          | Image pull policy                      | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
-| `server.image.pullSecrets`         | Specify image pull secrets             | `nil`                                                   |
-| `server.port`                      | Parse server server port               | `1337`                                                  |
-| `server.mountPath`                 | Parse server API mount path            | `/parse`                                                |
-| `server.appId`                     | Parse server App Id                    | `myappID`                                               |
-| `server.masterKey`                 | Parse server Master Key                | `random 10 character alphanumeric string`               |
-| `server.resources`                 | CPU/Memory resource requests/limits    | Memory: `512Mi`, CPU: `300m`                            |
-| `dashboard.enabled`                | Enable parse dashboard                 | `true`                                                  |
-| `dashboard.image.registry`         | Dashboard image registry               | `docker.io`                                             |
-| `dashboard.image.repository`       | Dashboard image name                   | `bitnami/parse-dashboard`                               |
-| `dashboard.image.tag`              | Dashboard image tag                    | `{VERSION}`                                             |
-| `dashboard.image.pullPolicy`       | Image pull policy                      | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
-| `dashboard.image.pullSecrets`      | Specify image pull secrets             | `nil`                                                   |
-| `dashboard.username`               | Dashboard username                     | `user`                                                  |
-| `dashboard.password`               | Dashboard user password                | `random 10 character alphanumeric string`               |
-| `dashboard.appName`                | Dashboard application name             | `MyDashboard`                                           |
-| `dashboard.resources`              | CPU/Memory resource requests/limits    | Memory: `512Mi`, CPU: `300m`                            |
-| `persistence.enabled`              | Enable Parse persistence using PVC     | `true`                                                  |
-| `persistence.storageClass`         | PVC Storage Class for Parse volume     | `nil` (uses alpha storage class annotation)             |
-| `persistence.accessMode`           | PVC Access Mode for Parse volume       | `ReadWriteOnce`                                         |
-| `persistence.size`                 | PVC Storage Request for Parse volume   | `8Gi`                                                   |
-| `mongodb.usePassword`              | Enable MongoDB password authentication | `true`                                                  |
-| `mongodb.password`                 | MongoDB admin password                 | `nil`                                                     |
-| `mongodb.persistence.enabled`      | Enable MongoDB persistence using PVC   | `true`                                                  |
-| `mongodb.persistence.storageClass` | PVC Storage Class for MongoDB volume   | `nil` (uses alpha storage class annotation)             |
-| `mongodb.persistence.accessMode`   | PVC Access Mode for MongoDB volume     | `ReadWriteOnce`                                         |
-| `mongodb.persistence.size`         | PVC Storage Request for MongoDB volume | `8Gi`                                                   |
+|             Parameter                 |              Description                 |                   Default                               |
+|---------------------------------------|------------------------------------------|-------------------------------------------------------- |
+| `global.imageRegistry`                | Global Docker image registry             | `nil`                                                   |
+| `service.type`                        | Kubernetes Service type                  | `LoadBalancer`                                          |
+| `service.port`                        | Service HTTP port (Dashboard)            | `80`                                                    |
+| `service.loadBalancerIP`              | `loadBalancerIP` for the Parse Service   | `nil`                                                   |
+| `service.externalTrafficPolicy`       | Enable client source IP preservation     | `Cluster`                                               |
+| `service.nodePorts.http`              | Kubernetes http node port                | `""`                                                    |
+| `server.image.registry`               | Parse image registry                     | `docker.io`                                             |
+| `server.image.repository`             | Parse image name                         | `bitnami/parse`                                         |
+| `server.image.tag`                    | Parse image tag                          | `{VERSION}`                                             |
+| `server.image.pullPolicy`             | Image pull policy                        | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
+| `server.image.pullSecrets`            | Specify image pull secrets               | `nil`                                                   |
+| `server.securityContext.enabled`      | Enable security context for Parse Server | `true`                                                  |
+| `server.securityContext.fsGroup`      | Group ID for Parse Server container      | `1001`                                                  |
+| `server.securityContext.runAsUser`    | User ID for Parse Server container       | `1001`                                                  |
+| `server.port`                         | Parse server server port                 | `1337`                                                  |
+| `server.mountPath`                    | Parse server API mount path              | `/parse`                                                |
+| `server.appId`                        | Parse server App Id                      | `myappID`                                               |
+| `server.masterKey`                    | Parse server Master Key                  | `random 10 character alphanumeric string`               |
+| `server.resources`                    | CPU/Memory resource requests/limits      | Memory: `512Mi`, CPU: `300m`                            |
+| `dashboard.enabled`                   | Enable parse dashboard                   | `true`                                                  |
+| `dashboard.image.registry`            | Dashboard image registry                 | `docker.io`                                             |
+| `dashboard.image.repository`          | Dashboard image name                     | `bitnami/parse-dashboard`                               |
+| `dashboard.image.tag`                 | Dashboard image tag                      | `{VERSION}`                                             |
+| `dashboard.image.pullPolicy`          | Image pull policy                        | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
+| `dashboard.securityContext.enabled`   | Enable security context for Dashboard    | `true`                                                  |
+| `dashboard.securityContext.fsGroup`   | Group ID for Dashboard container         | `1001`                                                  |
+| `dashboard.securityContext.runAsUser` | User ID for Dashboard container          | `1001`                                                  |
+| `dashboard.image.pullSecrets`         | Specify image pull secrets               | `nil`                                                   |
+| `dashboard.username`                  | Dashboard username                       | `user`                                                  |
+| `dashboard.password`                  | Dashboard user password                  | `random 10 character alphanumeric string`               |
+| `dashboard.appName`                   | Dashboard application name               | `MyDashboard`                                           |
+| `dashboard.resources`                 | CPU/Memory resource requests/limits      | Memory: `512Mi`, CPU: `300m`                            |
+| `persistence.enabled`                 | Enable Parse persistence using PVC       | `true`                                                  |
+| `persistence.storageClass`            | PVC Storage Class for Parse volume       | `nil` (uses alpha storage class annotation)             |
+| `persistence.accessMode`              | PVC Access Mode for Parse volume         | `ReadWriteOnce`                                         |
+| `persistence.size`                    | PVC Storage Request for Parse volume     | `8Gi`                                                   |
+| `mongodb.usePassword`                 | Enable MongoDB password authentication   | `true`                                                  |
+| `mongodb.password`                    | MongoDB admin password                   | `nil`                                                   |
+| `mongodb.persistence.enabled`         | Enable MongoDB persistence using PVC     | `true`                                                  |
+| `mongodb.persistence.storageClass`    | PVC Storage Class for MongoDB volume     | `nil` (uses alpha storage class annotation)             |
+| `mongodb.persistence.accessMode`      | PVC Access Mode for MongoDB volume       | `ReadWriteOnce`                                         |
+| `mongodb.persistence.size`            | PVC Storage Request for MongoDB volume   | `8Gi`                                                   |
 
 The above parameters map to the env variables defined in [bitnami/parse](http://github.com/bitnami/bitnami-docker-parse). For more information please refer to the [bitnami/parse](http://github.com/bitnami/bitnami-docker-parse) image documentation.
 
