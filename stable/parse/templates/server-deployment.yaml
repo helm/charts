@@ -27,7 +27,7 @@ spec:
       securityContext:
         fsGroup: {{ .Values.server.securityContext.fsGroup }}
         runAsUser: {{ .Values.server.securityContext.runAsUser }}
-      {{- else }}
+      {{- end }}
       {{- if .Values.server.image.pullSecrets }}
       imagePullSecrets:
       {{- range .Values.server.image.pullSecrets }}
