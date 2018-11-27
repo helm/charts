@@ -57,6 +57,11 @@ their default values. See values.yaml for all available options.
 | `persistence.enabled`                  | Whether to use a PVC for persistent storage | `false`                                             |
 | `persistence.size`                     | Amount of space to claim for PVC            | `8Gi`                                               |
 | `persistence.storageClass`             | Storage Class to use for PVC                | `-`                                                 |
+| `persistence.pv.enabled`               | Whether to use a PV for persistent storage  | `false`                                                 |
+| `persistence.pv.capacity.storage`      | Storage size to use for PV                  | `8Gi`                                                 |
+| `persistence.pv.accessMode`            | Access mode to use for PV                   | `ReadWriteOnce`                                                 |
+| `persistence.pv.nfs.server`            | NFS server for PV                           | ``                                                 |
+| `persistence.pv.nfs.path`              | Storage Path                                | ``                                                 |
 | `replicaCount`                         | k8s replicas                                | `1`                                                 |
 | `resources.limits.cpu`                 | Container maximum CPU                       | `100m`                                              |
 | `resources.limits.memory`              | Container maximum memory                    | `128Mi`                                             |
@@ -102,6 +107,7 @@ their default values. See values.yaml for all available options.
 | `env.open.CACHE`                       | Cache store, can be one of: redis           | ``                                                  |
 | `env.open.CACHE_REDIS_ADDR`            | Address of Redis service (host:port)        | ``                                                  |
 | `env.open.CACHE_REDIS_DB`              | Redis database to be selected after connect | `0`                                                 |
+| `env.field.KUBERNETES_NAMESPACE`       | Namespace name in which chartmuseum is deployed | ``                                              |
 | `env.secret.BASIC_AUTH_USER`           | Username for basic HTTP authentication      | ``                                                  |
 | `env.secret.BASIC_AUTH_PASS`           | Password for basic HTTP authentication      | ``                                                  |
 | `env.secret.CACHE_REDIS_PASSWORD`      | Redis requirepass server configuration      | ``                                                  |

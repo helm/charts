@@ -78,6 +78,8 @@ env:
     CACHE_REDIS_ADDR:
     # Redis database to be selected after connect
     CACHE_REDIS_DB: 0
+  field:
+    KUBERNETES_NAMESPACE:
   secret:
     # username for basic http authentication
     BASIC_AUTH_USER:
@@ -154,6 +156,14 @@ persistence:
   ##   GKE, AWS & OpenStack)
   ##
   # storageClass: "-"
+  pv:
+    enabled: false
+    capacity:
+      storage: 8Gi
+    accessMode: ReadWriteOnce
+    nfs:
+      server:
+      path:
 
 ## Ingress for load balancer
 ingress:

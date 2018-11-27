@@ -1,0 +1,17 @@
+{{- if .Values.persistence.pv.enabled -}}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ include "chartmuseum.fullname" . }}
+  labels:
+    app: {{ include "chartmuseum.fullname" . }}
+    release: {{ .Release.Name | quote }}
+spec:
+  capacity:
+    storage: {{ .Values.persistence.pv.capacity.storage }}
+  accessModes:
+    - {{ .Values.persistence.pv.accessMode | quote }}
+  nfs:
+    server: {{ .Values.persistence.pv.nfs.server }}
+    path: {{ .Values.persistence.pv.nfs.path | quote }}
+{{- end }}
