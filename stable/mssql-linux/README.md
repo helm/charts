@@ -60,6 +60,12 @@ $ printf $(kubectl get secret --namespace default mymssql-mssql-linux-secret -o 
 ...
 ```
 
+Windows Powershell
+
+```console
+PS [System.Text.Encoding]::ASCII.GetString([System.Convert]::FromBase64String($(kubectl get secret --namespace default mymssql-mssql-linux-secret -o jsonpath="{.data.sapassword}" )))
+```
+
 ## Connecting to SQL Server Instance
 
 1. Run the following command
