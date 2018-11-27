@@ -1,3 +1,7 @@
+### 1.5.7
+* [c663a531](https://github.com/kubernetes/charts/commit/c663a531):
+  - Bump up GoCD app version to 18.11.0
+
 ### 1.5.6
 
 * [32de4923](https://github.com/kubernetes/charts/commit/32de4923)
