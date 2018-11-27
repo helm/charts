@@ -114,3 +114,15 @@ ingress:
   tls:
     enabled: false
     secretName: schema-registry-tls
+
+## Provide JMX Port
+jmx:
+  enabled: true
+  port: 5555
+
+## Useful if using any Keystore/Trusttore for Authorization.
+## Pass any secrets to the pods. The secret will be mounted to a
+## specific path (in addition to environment variable) if required.
+secrets: []
+# - name: myZkSecret
+# mountPath: /opt/zookeeper/secret
