@@ -1,7 +1,8 @@
 ## Rocket Chat image version
 ## ref: https://hub.docker.com/r/library/rocket.chat/tags/
 ##
-image: rocket.chat:0.69.1
+defaultImage: rocket.chat
+version: latest
 
 ## Specify a imagePullPolicy
 ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
@@ -42,9 +43,9 @@ mongodb:
   ## MongoDB custom user and database
   ## ref: https://github.com/bitnami/bitnami-docker-mongodb/blob/master/README.md#creating-a-user-and-database-on-first-run
   ##
-  # mongodbUsername:
-  # mongodbPassword:
-  # mongodbDatabase:
+  mongodbUsername: rocketchat
+  mongodbPassword: rocketchat
+  mongodbDatabase: rocketchat
   ## Enable persistence using Persistent Volume Claims
   ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
   ##
