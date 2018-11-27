@@ -121,6 +121,7 @@ Parameter | Description | Default
 `image.repository` | Image | `k8s.gcr.io/cluster-autoscaler`
 `image.tag` | Image tag  | `v1.2.0`
 `image.pullPolicy` | Image pull policy  | `IfNotPresent`
+`image.pullSecrets` | Image pull secrets  | `None`
 `extraArgs` | additional container arguments | `{}`
 `podDisruptionBudget` | Pod disruption budget | `maxUnavailable: 1`
 `extraEnv` | additional container environment variables | `{}`
