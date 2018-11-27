@@ -90,4 +90,6 @@ The following table lists the configurable parameters of the SchemaRegistry char
 | `ingress.labels` | Additional labels for the ingress | `{}` |
 | `ingress.tls.enabled` | Enable TLS for the Ingress | `false` |
 | `ingress.tls.secretName` | Name of the Kubernetes `Secret` object to obtain the TLS certificate from | `schema-registry-tls` |
-
+| `jmx.enabled` | Enable JMX? | `true` |
+| `jmx.port` | set JMX port | `5555` |
+| `secrets` | Pass any secrets to the pods.The secret will be mounted to a specific path if required | `[]` |
