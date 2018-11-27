@@ -1,0 +1,22 @@
+{{- if .Values.rbac.create_scoped -}}
+apiVersion: rbac.authorization.k8s.io/{{ .Values.rbac.apiVersion }}
+kind: Role
+metadata:
+  labels: {{ include "external-dns.labels" . | indent 4 }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+  name: {{ template "external-dns.fullname" . }}
+rules:
+  - apiGroups:
+      - ""
+      - extensions
+      - networking.istio.io
+    resources:
+      - ingresses
+      - services
+      - pods
+      - gateways
+    verbs:
+      - get
+      - list
+      - watch
+{{- end -}}

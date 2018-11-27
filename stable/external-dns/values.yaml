@@ -112,10 +112,15 @@ rbac:
   ## If true, create & use RBAC resources
   ##
   create: false
+
+  ## If true, create & use RBAC resources scoped to the current namespace (i.e. Role and RoleBinding)
+  ##
+  create_scoped: false
+
   # Beginning with Kubernetes 1.8, the api is stable and v1 can be used.
   apiVersion: v1beta1
 
-  ## Ignored if rbac.create is true
+  ## Ignored if rbac.create or rbac.create_scoped are true
   ##
   serviceAccountName: default
 
