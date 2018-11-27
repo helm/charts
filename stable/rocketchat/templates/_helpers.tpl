@@ -35,13 +35,3 @@ Create the name of the service account to use
 {{- end -}}
 {{/*
 
-Create image string using tag if tag is provided by the user.
-*/}}
-{{- define "rocketchat.image" -}}
-{{- if .Values.imageTag -}}
-  {{- printf "%s:%s" "rocket.chat" .Values.imageTag | trunc 63 | trimSuffix "-" -}}
-{{- else -}}
-  {{ .Values.image }}
-{{- end -}}
-{{- end -}}
-
