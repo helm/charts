@@ -16,6 +16,7 @@ Master:
 # ImagePullSecret: jenkins
   Component: "jenkins-master"
   UseSecurity: true
+  # SecurityRealm
   HostNetworking: false
   AdminUser: admin
   # AdminPassword: <defaults to random>
@@ -50,6 +51,8 @@ Master:
   ServiceType: LoadBalancer
   # Master Service annotations
   ServiceAnnotations: {}
+  # Master Service Labels
+  ServiceLabels: {}
   #   service.beta.kubernetes.io/aws-load-balancer-backend-protocol: https
   # Used to create Ingress record (should used with ServiceType: ClusterIP)
   # HostName: jenkins.cluster.local
@@ -138,6 +141,7 @@ Master:
     # - secretName: jenkins.cluster.local
     #   hosts:
     #     - jenkins.cluster.local
+  AdditionalConfig: {}
 
 Agent:
   Enabled: true
