@@ -71,6 +71,9 @@ spec:
             - bash
             - -c
             - |
+                GRAYLOG_HOME=/usr/share/graylog
+                GRAYLOG_USER=graylog
+                GRAYLOG_GROUP=graylog
                 MASTER_NAME="{{ template "graylog.fullname" . }}-master.{{ .Release.Namespace }}.svc.cluster.local"
                 # Looking for Master IP
                 MASTER_IP=`/k8s/kubectl get pod -o jsonpath='{range .items[*]}{.metadata.name} {.status.podIP}{"\n"}{end}' -l graylog-role=master --field-selector=status.phase=Running|awk '{print $2}'`
@@ -89,10 +92,10 @@ spec:
                 echo "Downloading Graylog Plugins..."
               {{- range .Values.graylog.plugins }}
                 echo "Downloading {{ .url }} ..."
-                curl -s --location --retry 3 -o /usr/share/graylog/plugin/{{ .name }} "{{ .url }}"
+                curl -s --location --retry 3 -o ${GRAYLOG_HOME}/plugin/{{ .name }} "{{ .url }}"
               {{- end }}
               {{- end }}
-                chown -R graylog:graylog /usr/share/graylog/plugin/
+                chown -R ${GRAYLOG_USER}:${GRAYLOG_GROUP} ${GRAYLOG_HOME}/plugin/
                 echo "Downloading Maxmind GeoLite2 ..."
                 curl -s --location --retry 3 -o /tmp/GeoLite2-City.tar.gz "https://geolite.maxmind.com/download/geoip/database/GeoLite2-City.tar.gz"
                 curlreturn=$?
@@ -103,8 +106,6 @@ spec:
                 echo "Starting graylog"
                 # Original docker-entrypoint.sh in Graylog Docker will error while executing since you can't chown readonly files in `config`
                 # exec /docker-entrypoint.sh graylog
-                GRAYLOG_HOME=/usr/share/graylog
-                GRAYLOG_USER=graylog
                 echo "Graylog Home ${GRAYLOG_HOME}"
                 echo "Graylog User ${GRAYLOG_USER}"
                 echo "JVM Options ${GRAYLOG_SERVER_JAVA_OPTS}"
@@ -112,6 +113,7 @@ spec:
                 for d in journal log plugin config contentpacks; do
                   dir=${GRAYLOG_HOME}/data/$d
                   [[ -d "${dir}" ]] || mkdir -p "${dir}"
+                  chown -R ${GRAYLOG_USER}:${GRAYLOG_GROUP} ${dir}
                 done
                 gosu ${GRAYLOG_USER} "${JAVA_HOME}/bin/java" ${GRAYLOG_SERVER_JAVA_OPTS} \
                     -jar \
