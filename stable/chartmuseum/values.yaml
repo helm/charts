@@ -99,7 +99,7 @@ replica:
   ## Read more about kube2iam to provide access to s3 https://github.com/jtblin/kube2iam
   #   iam.amazonaws.com/role: role-arn
 service:
-  customName:
+  servicename:
   type: ClusterIP
   # clusterIP: None
   externalPort: 8080
@@ -157,8 +157,10 @@ persistence:
   ##   GKE, AWS & OpenStack)
   ##
   # storageClass: "-"
+  # volumeName:
   pv:
     enabled: false
+    pvname:
     capacity:
       storage: 8Gi
     accessMode: ReadWriteOnce

@@ -2,7 +2,11 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
+{{- if .Values.persistence.pv.pvname }}
+  name: {{ .Values.persistence.pv.pvname }}
+{{- else }}
   name: {{ include "chartmuseum.fullname" . }}
+{{- end }}
   labels:
     app: {{ include "chartmuseum.fullname" . }}
     release: {{ .Release.Name | quote }}

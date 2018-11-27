@@ -57,11 +57,13 @@ their default values. See values.yaml for all available options.
 | `persistence.enabled`                  | Whether to use a PVC for persistent storage | `false`                                             |
 | `persistence.size`                     | Amount of space to claim for PVC            | `8Gi`                                               |
 | `persistence.storageClass`             | Storage Class to use for PVC                | `-`                                                 |
+| `persistence.volumeName`               | Volume to use for PVC                       | ``                                                  |
 | `persistence.pv.enabled`               | Whether to use a PV for persistent storage  | `false`                                                 |
 | `persistence.pv.capacity.storage`      | Storage size to use for PV                  | `8Gi`                                                 |
 | `persistence.pv.accessMode`            | Access mode to use for PV                   | `ReadWriteOnce`                                                 |
 | `persistence.pv.nfs.server`            | NFS server for PV                           | ``                                                 |
 | `persistence.pv.nfs.path`              | Storage Path                                | ``                                                 |
+| `persistence.pv.pvname`                | Custom name for private volume              | ``                                                  |
 | `replicaCount`                         | k8s replicas                                | `1`                                                 |
 | `resources.limits.cpu`                 | Container maximum CPU                       | `100m`                                              |
 | `resources.limits.memory`              | Container maximum memory                    | `128Mi`                                             |
@@ -116,7 +118,7 @@ their default values. See values.yaml for all available options.
 | `gcp.secret.key`                       | Secret key for te GCP json file             | `credentials.json`                                  |
 | `service.type`                         | Kubernetes Service type                     | `ClusterIP`                                          |
 | `service.clusterIP`                    | Static clusterIP or None for headless services| `nil`                                              |
-| `service.customName`                   | Custom name for service                     | ``                                                  |
+| `service.servicename`                  | Custom name for service                     | ``                                                  |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to
 `helm install`.

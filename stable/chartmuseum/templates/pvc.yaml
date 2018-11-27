@@ -18,5 +18,7 @@ spec:
 {{- else }}
   storageClassName: "{{ .Values.persistence.storageClass }}"
 {{- end }}
+{{- else if and .Values.persistence.volumeName (.Values.persistence.pv.enabled) }}
+  volumeName: "{{ .Values.persistence.volumeName }}"
 {{- end }}
 {{- end }}
