@@ -40,7 +40,7 @@ To connect to your database from outside the cluster execute the following comma
 
     export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
     export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "postgresql.fullname" . }})
-    {{ if .Values.postgresqlPassword }}PGPASSWORD="{{ .Values.postgresqlPassword}}" {{- end }}psql --host $NODE_IP --port $NODE_PORT -U {{ .Values.postgresqlUsername }}
+    {{ if .Values.postgresqlPassword }}PGPASSWORD="{{ .Values.postgresqlPassword}}" {{ end }}psql --host $NODE_IP --port $NODE_PORT -U {{ .Values.postgresqlUsername }}
 
 {{- else if contains "LoadBalancer" .Values.service.type }}
 
@@ -48,11 +48,11 @@ To connect to your database from outside the cluster execute the following comma
         Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "postgresql.fullname" . }}'
 
     export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "postgresql.fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
-    {{ if .Values.postgresqlPassword }}PGPASSWORD="{{ .Values.postgresqlPassword}}" {{- end }}psql --host $SERVICE_IP --port {{ .Values.service.port }} -U {{ .Values.postgresqlUsername }}
+    {{ if .Values.postgresqlPassword }}PGPASSWORD="{{ .Values.postgresqlPassword}}" {{ end }}psql --host $SERVICE_IP --port {{ .Values.service.port }} -U {{ .Values.postgresqlUsername }}
 
 {{- else if contains "ClusterIP" .Values.service.type }}
 
     kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "postgresql.fullname" . }} 5432:5432 &
-    {{ if .Values.postgresqlPassword }}PGPASSWORD="{{ .Values.postgresqlPassword}}" {{- end }}psql --host 127.0.0.1 -U {{ .Values.postgresqlUsername }}
+    {{ if .Values.postgresqlPassword }}PGPASSWORD="{{ .Values.postgresqlPassword}}" {{ end }}psql --host 127.0.0.1 -U {{ .Values.postgresqlUsername }}
 
 {{- end }}
