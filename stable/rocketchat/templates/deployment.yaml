@@ -22,7 +22,11 @@ spec:
       {{- end }}
       containers:
       - name: {{ template "rocketchat.fullname" . }}
-        image: {{ template "rocketchat.image" . }}
+        {{- if .Values.image }}
+        image: {{ .Values.image }}
+        {{- else }}
+        image: {{ .Values.defaultImage }}:{{ .Values.version }}
+        {{- end }}
         imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
         env:
         - name: DEPLOY_PLATFORM
@@ -54,7 +58,7 @@ spec:
           containerPort: 3000
         livenessProbe:
           httpGet:
-            path: /
+            path: /api/info
             port: http
           initialDelaySeconds: 60
           timeoutSeconds: 5
