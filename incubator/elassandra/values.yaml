@@ -2,7 +2,7 @@
 ## ref: https://hub.docker.com/r/library/cassandra/
 image:
   repo: "strapdata/elassandra"
-  tag: "6.2.3.8"
+  tag: "6.2.3.7"
   pullPolicy: Always
   ## Specify ImagePullSecrets for Pods
   ## ref: https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
