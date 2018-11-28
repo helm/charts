@@ -6,6 +6,9 @@ metadata:
   labels:
     app: {{ include "chartmuseum.fullname" . }}
     release: {{ .Release.Name | quote }}
+{{- if .Values.persistence.labels }}
+{{ toYaml .Values.persistence.labels | indent 4 }}
+{{- end }}
 spec:
   accessModes:
     - {{ .Values.persistence.accessMode | quote }}
