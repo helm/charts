@@ -55,7 +55,11 @@ data:
         ping.unicast.hosts: ${DISCOVERY_SERVICE:}
         minimum_master_nodes: ${MINIMUM_MASTER_NODES:2}
 
-{{- if .Values.cluster.xpackEnable }}
+{{- if (.Values.cluster.xpackEnable) and .Values.appVersion gt 6.3  }}
+    # see https://www.elastic.co/guide/en/x-pack/current/xpack-settings.html
+    # After 6.3 xpack systems changed and are enabled by default and different configs manage them this enables monitoring
+    xpack.monitoring.collection.enabled: ${XPACK_MONITORING_ENABLED:false}
+{{- else if .Values.cluster.xpackEnable }}
     # see https://www.elastic.co/guide/en/x-pack/current/xpack-settings.html
     xpack.ml.enabled: ${XPACK_ML_ENABLED:false}
     xpack.monitoring.enabled: ${XPACK_MONITORING_ENABLED:false}
