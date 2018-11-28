@@ -43,9 +43,16 @@ spec:
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
       {{- end }}
+      {{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+      {{- end }}
       {{- if .Values.tolerations }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
+      {{- end }}
+      {{- if .Values.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       {{- end }}
       {{- if and .Values.persistence.enabled .Values.securityContext.enabled}}
       initContainers:
@@ -75,9 +82,9 @@ spec:
         env:
         {{- if .Values.image.debug}}
         - name: BASH_DEBUG
-          value: 1
+          value: "1"
         - name: NAMI_DEBUG
-          value: 1
+          value: "1"
         {{- end }}
         - name: POSTGRESQL_REPLICATION_MODE
           value: "slave"
@@ -128,18 +135,18 @@ spec:
         - name: data
           mountPath: /bitnami/postgresql
         {{ end }}
-        {{ if  (.Files.Glob "files/postgresql.conf") }}
+        {{ if or (.Files.Glob "files/postgresql.conf") .Values.postgresqlConfiguration }}
         - name: postgresql-config
           mountPath: /opt/bitnami/postgresql/conf/postgresql.conf
           subPath: postgresql.conf
         {{ end }}
-        {{ if (.Files.Glob "files/pg_hba.conf") }}
+        {{ if or (.Files.Glob "files/pg_hba.conf") .Values.pgHbaConfiguration }}
         - name: postgresql-config
           mountPath: /opt/bitnami/postgresql/conf/pg_hba.conf
           subPath: pg_hba.conf
         {{ end }}
       volumes:
-      {{ if or (.Files.Glob "files/postgresql.conf") (.Files.Glob "files/pg_hba.conf") }}
+      {{ if or (.Files.Glob "files/postgresql.conf") (.Files.Glob "files/pg_hba.conf") .Values.postgresqlConfiguration .Values.pgHbaConfiguration }}
       - name: postgresql-config
         configMap:
           name: {{ template "postgresql.fullname" . }}-configuration
@@ -148,10 +155,12 @@ spec:
   volumeClaimTemplates:
     - metadata:
         name: data
+      {{- with .Values.persistence.annotations }}
         annotations:
-        {{- range $key, $value := .Values.persistence.annotations }}
+        {{- range $key, $value := . }}
           {{ $key }}: {{ $value }}
         {{- end }}
+      {{- end }}
       spec:
         accessModes:
         {{- range .Values.persistence.accessModes }}

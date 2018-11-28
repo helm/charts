@@ -95,3 +95,6 @@ The following table lists the configurable parameters of the SchemaRegistry char
 | `external.servicePort` | set service port | `443` |
 | `external.loadBalancerIP` | set Static IP for LoadBalancer | `""` |
 | `external.nodePort` | set Nodeport (valid range depends on CLoud Provider) | `""` |
+| `jmx.enabled` | Enable JMX? | `true` |
+| `jmx.port` | set JMX port | `5555` |
+| `secrets` | Pass any secrets to the pods.The secret will be mounted to a specific path if required | `[]` |

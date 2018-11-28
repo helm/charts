@@ -31,14 +31,48 @@ spec:
             - --default-ssl-certificate={{ .Values.controller.defaultSslCertificate.secret.namespace | default .Release.Namespace }}/{{ .Values.controller.defaultSslCertificate.secret.name }}
           {{- end}}
             - --configmap={{ .Release.Namespace }}/{{ template "haproxy-ingress.fullname" . }}
+            - --ingress-class={{ .Values.controller.ingressClass }}
             - --sort-backends
+          {{- if .Values.tcp }}
+            - --tcp-services-configmap={{ .Release.Namespace }}/{{ template "haproxy-ingress.fullname" . }}-tcp
+          {{- end }}
           ports:
             - name: http
               containerPort: 80
+            {{- if (and .Values.controller.hostPorts.enable (not (empty .Values.controller.hostPorts.http))) }}
+              hostPort: {{ .Values.controller.hostPorts.http }}
+            {{- end }}
             - name: https
               containerPort: 443
-            - name: stat
-              containerPort: 1936
+            {{- if (and .Values.controller.hostPorts.enable (not (empty .Values.controller.hostPorts.https))) }}
+              hostPort: {{ .Values.controller.hostPorts.https }}
+            {{- end }}
+            - name: stats
+              containerPort: {{ .Values.controller.statsPort }}
+            - name: healthz
+              containerPort: {{ .Values.controller.healthzPort }}
+          {{- range $key, $value := .Values.tcp }}
+            - name: "{{ $key }}-tcp"
+              containerPort: {{ $key }}
+              protocol: TCP
+            {{- if $.Values.controller.hostPorts.enable }}
+              {{- range $p := $.Values.controller.hostPorts.tcp }}
+                {{- if eq $key $p }}
+              hostPort: {{ $key }}
+                {{- end }}
+              {{- end }}
+            {{- end }}
+          {{- end }}
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: {{ .Values.controller.healthzPort }}
+              scheme: HTTP
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: {{ .Values.controller.healthzPort }}
+              scheme: HTTP
           env:
             - name: POD_NAME
               valueFrom:
@@ -48,3 +82,5 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
+          resources:
+{{ toYaml .Values.controller.resources | indent 12 }}
