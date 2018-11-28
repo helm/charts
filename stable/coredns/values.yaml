@@ -17,8 +17,6 @@ resources:
     cpu: 100m
     memory: 128Mi
 
-serviceType: "ClusterIP"
-
 service:
   clusterIP: ""
   loadBalancerIP: ""
@@ -80,9 +78,12 @@ servers:
 #      parameters: primary.local
 #      configBlock: |-
 #        endpoint https://1.2.3.4
+#
+# If you would prefer to make your own secret, create a secret with tls.key, tls.pem, and cacert.pem and then put the name of the secret in kubernetesTLS.secretName
 
-kubernetesTls:
+kubernetesTLS:
   enabled: false
+  secretName: ""
   cert: ""
   key: ""
   cacert: ""
