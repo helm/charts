@@ -53,6 +53,12 @@ spec:
           value: {{ .Values.elasticsearch.buffer_chunk_limit | quote }}
         - name: OUTPUT_BUFFER_QUEUE_LIMIT
           value: {{ .Values.elasticsearch.buffer_queue_limit | quote }}
+        {{- if .Values.env }}
+        {{- range $key, $value := .Values.env }}
+        - name: {{ $key }}
+          value: {{ $value | quote }}
+        {{- end }}
+        {{- end }}
         - name: K8S_NODE_NAME
           valueFrom:
             fieldRef:
