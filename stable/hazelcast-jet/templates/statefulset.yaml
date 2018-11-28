@@ -29,6 +29,9 @@ spec:
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
       {{- end }}
+      {{- if .Values.gracefulShutdown.enabled }}
+      terminationGracePeriodSeconds: {{ .Values.gracefulShutdown.maxWaitSeconds }}
+      {{- end }}
       containers:
       - name: {{ template "hazelcast-jet.fullname" . }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -65,7 +68,7 @@ spec:
           mountPath: /data/hazelcast-jet
         env:
         - name: JAVA_OPTS
-          value: "-Dhazelcast.rest.enabled={{ .Values.jet.rest }} -Dhazelcast.config=/data/hazelcast-jet/hazelcast.xml -Dhazelcast.jet.config=/data/hazelcast-jet/hazelcast-jet.xml -DserviceName={{ template "hazelcast-jet.fullname" . }} -Dnamespace={{ .Release.Namespace }} {{ .Values.jet.javaOpts }}"
+          value: "-Dhazelcast.rest.enabled={{ .Values.jet.rest }} -Dhazelcast.config=/data/hazelcast-jet/hazelcast.xml -Dhazelcast.jet.config=/data/hazelcast-jet/hazelcast-jet.xml -DserviceName={{ template "hazelcast-jet.fullname" . }} -Dnamespace={{ .Release.Namespace }} {{ if .Values.gracefulShutdown.enabled }}-Dhazelcast.shutdownhook.policy=GRACEFUL -Dhazelcast.shutdownhook.enabled=true -Dhazelcast.graceful.shutdown.max.wait={{ .Values.gracefulShutdown.maxWaitSeconds }} {{ end }} {{ .Values.jet.javaOpts }}"
       serviceAccountName: {{ template "hazelcast-jet.serviceAccountName" . }}
       volumes:
       - name: hazelcast-jet-storage

@@ -95,6 +95,10 @@ jet:
 # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
 nodeSelector: {}
 
+gracefulShutdown:
+  enabled: true
+  maxWaitSeconds: 600
+
 # Hazelcast Liveness probe
 livenessProbe:
   # enabled is a flag to used to enable liveness probe
