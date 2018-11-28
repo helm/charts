@@ -16,7 +16,12 @@ Master:
 # ImagePullSecret: jenkins
   Component: "jenkins-master"
   UseSecurity: true
-  # SecurityRealm
+  # SecurityRealm:
+  # Optionally configure a different AuthorizationStrategy using Jenkins XML
+  # AuthorizationStrategy: |-
+  #    <authorizationStrategy class="hudson.security.FullControlOnceLoggedInAuthorizationStrategy">
+  #      <denyAnonymousReadAccess>true</denyAnonymousReadAccess>
+  #    </authorizationStrategy>
   HostNetworking: false
   AdminUser: admin
   # AdminPassword: <defaults to random>
