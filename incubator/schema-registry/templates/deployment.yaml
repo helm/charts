@@ -63,6 +63,10 @@ spec:
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           ports:
             - containerPort: {{ .Values.servicePort }}
+            {{- if .Values.external.enabled }}
+            - containerPort: {{ .Values.external.servicePort }}
+              name: external
+            {{- end }}
             {{- if .Values.jmx.enabled }}
             - containerPort: {{ .Values.jmx.port }}
               name: jmx
