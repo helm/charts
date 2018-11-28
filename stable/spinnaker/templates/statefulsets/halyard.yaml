@@ -117,7 +117,7 @@ spec:
   - metadata:
       name: halyard-home
       labels:
-{{ include "spinnaker.standard-selector-labels" . | indent 8 }}
+{{ include "spinnaker.standard-persistence-labels" . | indent 8 }}
     spec:
       accessModes: [ "ReadWriteOnce" ]
       resources:

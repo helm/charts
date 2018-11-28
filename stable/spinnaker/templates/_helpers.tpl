@@ -32,3 +32,12 @@ A set of common selector labels for resources.
 app: {{ include "spinnaker.fullname" . | quote }}
 release: {{ .Release.Name | quote }}
 {{- end -}}
+
+{{/*
+Labels for resources with immutable fields
+This template must not contain chart label or any other label changing over time.
+*/}}
+{{- define "spinnaker.standard-persistence-labels" -}}
+app: {{ include "spinnaker.fullname" . | quote }}
+release: {{ .Release.Name | quote }}
+{{- end -}}
