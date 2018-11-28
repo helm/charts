@@ -20,7 +20,6 @@ spec:
         release: {{ .Release.Name }}
       annotations:
         {{ if .Values.aws.role}}iam.amazonaws.com/role: {{ .Values.aws.role }}{{ end }}
-        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
     spec:
       containers:
         - name: {{ .Chart.Name }}
@@ -74,6 +73,18 @@ spec:
           volumeMounts:
             - name: vol-prometheus-cloudwatch-exporter
               mountPath: /config
+        - name: {{ .Values.configmapReload.name }}
+          image: "{{ .Values.configmapReload.image.repository }}:{{ .Values.configmapReload.image.tag }}"
+          imagePullPolicy: "{{ .Values.configmapReload.image.pullPolicy }}"
+          args:
+            - --volume-dir=/config
+            - --webhook-url=http://localhost:9106/-/reload
+          resources:
+{{ toYaml .Values.configmapReload.resources | indent 12 }}
+          volumeMounts:
+            - name: vol-prometheus-cloudwatch-exporter
+              mountPath: /config
+              readOnly: true
      {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
