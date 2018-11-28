@@ -115,6 +115,14 @@ ingress:
     enabled: false
     secretName: schema-registry-tls
 
+## External Nodeport/LoadBalancer for Cloud Providers
+external:
+  enabled: false
+  type: LoadBalancer
+  servicePort: 443
+  loadBalancerIP: ""
+  nodePort: ""
+
 ## Provide JMX Port
 jmx:
   enabled: true
