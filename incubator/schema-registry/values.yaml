@@ -22,7 +22,7 @@ configurationOverrides: {}
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 ## Confluent has production deployment guidelines here:
-## ref: https://github.com/confluentinc/schema-registry/blob//docs/deployment.rst
+## ref: https://github.com/confluentinc/schema-registry/blob/master/docs/deployment.rst
 ##
 resources: {}
   # limits:
