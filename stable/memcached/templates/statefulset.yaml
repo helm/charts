@@ -1,5 +1,5 @@
 apiVersion: apps/v1beta1
-kind: {{ .Values.statefulSet | ternary "StatefulSet" "Deployment" }}
+kind: {{ .Values.kind }}
 metadata:
   name: {{ template "memcached.fullname" . }}
   labels:
