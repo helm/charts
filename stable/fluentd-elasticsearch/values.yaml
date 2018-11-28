@@ -455,7 +455,27 @@ configMaps:
         overflow_action block
       </buffer>
     </match>
-
+# Specify custom resources to create in the form of an array
+# Values will be mapped to customResources.yaml
+# Example 
+# customResources: 
+# - apiVersion: custom-version
+#   kind: custom-kind
+#   any other property
+#
+# - apiVersion: custom-version
+#   kind: custom-kind
+#   any other property  
+customResources: []
+daemonset:
+  annotations: {}
+  env: []
+  securityContext:
+    privileged: true
+  updateStrategy:
+    type: RollingUpdate
+  hostNetwork: true
+  dnsPolicy: ClusterFirstWithHostNet
 # extraVolumes:
 #   - name: es-certs
 #     secret:

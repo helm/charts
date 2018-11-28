@@ -10,7 +10,15 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     heritage: "{{ .Release.Service }}"
     release: "{{ .Release.Name }}"
+{{- if .Values.daemonset.annotations }}
+  annotations:
+{{ toYaml .Values.daemonset.annotations | indent 4 }}
+{{- end }}
 spec:
+{{- if .Values.daemonset.updateStrategy }}
+  updateStrategy:
+{{toYaml .Values.daemonset.updateStrategy | indent 4}}
+{{- end}}
   selector:
     matchLabels:
       app: {{ template "fluentd-elasticsearch.fullname" . }}
@@ -35,6 +43,12 @@ spec:
 {{ toYaml .Values.annotations | indent 8 }}
 {{- end }}
     spec:
+{{- if .Values.daemonset.hostNetwork }}
+      hostNetwork : {{ .Values.daemonset.hostNetwork }}
+{{- end}}
+{{- if .Values.daemonset.dnsPolicy }}
+      dnsPolicy: {{ .Values.daemonset.dnsPolicy }}
+{{- end}}
       serviceAccountName: {{ template "fluentd-elasticsearch.fullname" . }}
       containers:
       - name: {{ template "fluentd-elasticsearch.fullname" . }}
@@ -57,8 +71,17 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: spec.nodeName
+{{- if .Values.daemonset.env }}
+{{ toYaml .Values.daemonset.env | indent 8 }}
+{{- end}}
+{{- if .Values.resources }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
+{{- end}}
+{{- if .Values.daemonset.updateStrategy }}
+        securityContext:
+{{toYaml .Values.daemonset.securityContext | indent 10}}
+{{- end}}
         volumeMounts:
         - name: varlog
           mountPath: /var/log
@@ -79,6 +102,9 @@ spec:
             containerPort: {{ $port.port }}
 {{- if $port.protocol }}
             protocol: {{ $port.protocol }}
+{{- end }}
+{{- if $port.hostPort }}
+            hostPort: {{ $port.hostPort }}
 {{- end }}
 {{- end }}
 {{- if .Values.livenessProbe.enabled }}
