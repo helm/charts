@@ -10,6 +10,10 @@ metadata:
     component: agent
 spec:
   replicas: {{ .Values.agent.replicaCount }}
+  {{- if .Values.agent.deployStrategy }}
+  strategy:
+{{ toYaml .Values.agent.deployStrategy | indent 4 }}
+  {{- end }}
   selector:
     matchLabels:
       app: {{ template "gocd.name" . }}
@@ -29,6 +33,9 @@ spec:
         - name: goagent-vol
           persistentVolumeClaim:
             claimName: {{ .Values.agent.persistence.existingClaim | default (printf "%s-%s" (include "gocd.fullname" .) "agent")  }}
+        {{- if ne (len .Values.agent.persistence.extraVolumes) 0 }}
+{{ toYaml .Values.agent.persistence.extraVolumes | indent 8 }}
+        {{- end }}
       {{- end }}
       {{- if .Values.agent.security.ssh.enabled }}
         - name: ssh-secrets
@@ -44,7 +51,7 @@ spec:
           {{- end }}
           imagePullPolicy: {{ .Values.agent.image.pullPolicy }}
           resources:
-{{ toYaml .Values.server.resources | indent 12 }}
+{{ toYaml .Values.agent.resources | indent 12 }}
           env:
             - name: GO_SERVER_URL
             {{- if .Values.agent.env.goServerUrl }}
@@ -105,9 +112,12 @@ spec:
             - name: goagent-vol
               mountPath: /home/go
               subPath: {{ .Values.agent.persistence.subpath.homego }}
-            - name: goagent-vol
+            - name: {{ .Values.agent.persistence.name.dockerEntryPoint }}
               mountPath: /docker-entrypoint.d
               subPath: {{ .Values.agent.persistence.subpath.dockerEntryPoint }}
+            {{- if ne (len .Values.agent.persistence.extraVolumeMounts) 0 }}
+{{ toYaml .Values.agent.persistence.extraVolumeMounts | indent 12 }}
+            {{- end }}
           {{- end }}
           {{- if .Values.agent.security.ssh.enabled }}
             - name: ssh-secrets
@@ -116,9 +126,13 @@ spec:
           {{- end }}
           securityContext:
             privileged: {{ .Values.agent.privileged }}
-    {{- if .Values.nodeSelector }}
+    {{- if .Values.agent.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.agent.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- if .Values.agent.affinity }}
+      affinity:
+{{ toYaml .Values.agent.affinity | indent 8 }}
     {{- end }}
     {{- if .Values.agent.hostAliases }}
       hostAliases:

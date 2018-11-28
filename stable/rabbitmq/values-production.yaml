@@ -1,21 +1,27 @@
+## Global Docker image registry
+## Please, note that this will override the image registry for all the images, including dependencies, configured to use the global value
+##
+# global:
+#   imageRegistry:
+
 ## Bitnami RabbitMQ image version
 ## ref: https://hub.docker.com/r/bitnami/rabbitmq/tags/
 ##
 image:
   registry: docker.io
   repository: bitnami/rabbitmq
-  tag: 3.7.7-debian-9
-  ## Specify a imagePullPolicy
-  ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
-  ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
-  ##
-  pullPolicy: IfNotPresent
+  tag: 3.7.9
 
   ## set to true if you would like to see extra information on logs
   ## it turns BASH and NAMI debugging in minideb
   ## ref:  https://github.com/bitnami/minideb-extras/#turn-on-bash-debugging
   debug: false
 
+  ## Specify a imagePullPolicy
+  ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
+  ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+  ##
+  pullPolicy: IfNotPresent
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
@@ -23,19 +29,18 @@ image:
   # pullSecrets:
   #   - myRegistrKeySecretName
 
-
-## does your cluster have rbac enabled?
+## does your cluster have rbac enabled? assume yes by default
 rbacEnabled: true
 
 ## section of specific values for rabbitmq
 rabbitmq:
   ## RabbitMQ application username
-  ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq/blob/master/README.md#creating-a-database-user-on-first-run
+  ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
   ##
   username: user
 
   ## RabbitMQ application password
-  ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq/blob/master/README.md#creating-a-database-user-on-first-run
+  ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
   ##
   # password:
 
@@ -44,20 +49,10 @@ rabbitmq:
   ##
   # erlangCookie:
 
-  ## Node port
-  ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
-  ##
-  nodePort: 5672
-
   ## Node name to cluster with. e.g.: `clusternode@hostname`
   ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
   ##
   # rabbitmqClusterNodeName:
-
-  ## RabbitMQ Manager port
-  ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
-  ##
-  managerPort: 15672
 
   ## RabbitMQ Disk free limit
   ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
@@ -65,16 +60,26 @@ rabbitmq:
   ##
   diskFreeLimit: '"6GiB"'
 
+  ## RabbitMQ Max File Descriptors
+  ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
+  ## ref: https://www.rabbitmq.com/install-debian.html#kernel-resource-limits
+  ##
+  ulimitNofiles: '65536'
+
   ## Plugins to enable
   plugins: |-
-      [rabbitmq_management,rabbitmq_peer_discovery_k8s].
+      [rabbitmq_management, rabbitmq_peer_discovery_k8s].
+
+  ## Clustering settings
+  clustering:
+    address_type: ip
+    k8s_domain: cluster.local
 
   ## Configution file content
   configuration: |-
       ## Clustering
       cluster_formation.peer_discovery_backend  = rabbit_peer_discovery_k8s
       cluster_formation.k8s.host = kubernetes.default.svc.cluster.local
-      cluster_formation.k8s.address_type = ip
       cluster_formation.node_cleanup.interval = 10
       cluster_formation.node_cleanup.only_log_warning = false
       cluster_partition_handling = autoheal
@@ -84,7 +89,29 @@ rabbitmq:
       loopback_users.guest = false
 
 ## Kubernetes service type
-serviceType: ClusterIP
+service:
+  type: ClusterIP
+  ## Node port
+  ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
+  ##
+  nodePort: 5672
+
+  ## Amqp port
+  ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
+  ##
+  amqpPort: 5672
+  ## Dist port
+  ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
+  ##
+  distPort: 25672
+
+  ## RabbitMQ Manager port
+  ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
+  ##
+  managerPort: 15672
+
+# Additional pod labels to apply
+podLabels: {}
 
 ## Pod Security Context
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
@@ -95,6 +122,7 @@ securityContext:
   runAsUser: 1001
 
 persistence:
+  ## this enables PVC templates that will create one per pod
   enabled: true
 
   ## rabbitmq data Persistent Volume Storage Class
@@ -129,6 +157,9 @@ nodeSelector:
 tolerations: []
 affinity: {}
 
+## annotations for rabbitmq pods
+podAnnotations: {}
+
 ## Configure the ingress resource that allows you to access the
 ## Wordpress installation. Set up the URL
 ## ref: http://kubernetes.io/docs/user-guide/ingress/
@@ -160,7 +191,7 @@ ingress:
   #  kubernetes.io/ingress.class: nginx
   #  kubernetes.io/tls-acme: true
 
-  #The following settings are to configure the frequency of the lifeness and readiness probes
+## The following settings are to configure the frequency of the lifeness and readiness probes
 livenessProbe:
   enabled: true
   initialDelaySeconds: 120
@@ -176,3 +207,15 @@ readinessProbe:
   periodSeconds: 5
   failureThreshold: 3
   successThreshold: 1
+
+metrics:
+  enabled: true
+  image:
+    registry: docker.io
+    repository: kbudde/rabbitmq-exporter
+    tag: v0.29.0
+    pullPolicy: IfNotPresent
+  resources: {}
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "9090"

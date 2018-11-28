@@ -78,8 +78,7 @@ This repository is used by Chart developers for maintaining the official charts 
 
 ## How to Contribute a Chart
 
-1. If you haven't already done so, sign a Contributor License Agreement (see details above).
-1. Fork this repository, develop and test your Chart.
+1. Fork this repository, develop and test your Chart. Remember to sign off your commits as described in the "Sign Your Work" chapter.
 1. Choose the correct folder for your chart based on the information in the [Repository Structure](README.md#repository-structure) section
 1. Ensure your Chart follows the [technical](#technical-requirements) and [documentation](#documentation-requirements) guidelines, described below.
 1. Submit a pull request.

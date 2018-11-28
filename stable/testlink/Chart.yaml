@@ -1,6 +1,6 @@
 name: testlink
-version: 2.0.3
-appVersion: 1.9.17
+version: 4.0.0
+appVersion: 1.9.18
 description: Web-based test management system that facilitates software quality assurance.
 icon: https://bitnami.com/assets/stacks/testlink/img/testlink-stack-220x234.png
 keywords:
@@ -12,6 +12,6 @@ home: http://www.testlink.org/
 sources:
 - https://github.com/bitnami/bitnami-docker-testlink
 maintainers:
-- name: bitnami-bot
+- name: Bitnami
   email: containers@bitnami.com
 engine: gotpl

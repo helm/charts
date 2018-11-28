@@ -1,5 +1,5 @@
 name: ethereum
-version: 0.1.2
+version: 0.1.4
 description: private Ethereum network Helm chart for Kubernetes
 keywords:
 - ethereum
