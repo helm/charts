@@ -208,6 +208,28 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `tracing.datadog.localAgentHostPort`   | Location of the Datadog agent where spans will be sent                                                                       | `127.0.0.1:8126`                                  |
 | `tracing.datadog.debug`                | Enables Datadog debugging                                                                                                    | `false`                                           |
 | `tracing.datadog.globalTag`            | Apply shared tag in a form of Key:Value to all the traces                                                                    | `""`                                           |
+| `readinessProbe.tcpSocket.enabled`            | Enable readinessProbe tcpsocket                                                                    | `true`                                           |
+| `readinessProbe.tcpSocket.port`            | Set readinessProbe tcp port                                                                    | `80`                                           |
+| `readinessProbe.httpGet.enabled`            | Enable readinessProbe httpGet                                                                    | `false`                                           |
+| `readinessProbe.httpGet.path`            | Set readinessProbe httpGet path                                                                    | `None`                                           |
+| `readinessProbe.httpGet.port`            | Set readinessProbe httpGet port                                                                    | `None`                                           |
+| `readinessProbe.httpGet.scheme`            | Set readinessProbe httpGet scheme `HTTP` or `HTTPS`                                                                    | `None`                                           |
+| `readinessProbe.failureThreshold`            | Set readinessProbe failure threshold tcpsocket                                                                    | `1`                                           |
+| `readinessProbe.initialDelaySeconds`            | Set readinessProbe initial delay in seconds                                                                    | `10`                                           |
+| `readinessProbe.periodSeconds`            | Set readinessProbe seconds between checks                                                                    | `10`                                           |
+| `readinessProbe.successThreshold`            | Set readinessProbe success threshold tcpsocket                                                                    | `1`                                           |
+| `readinessProbe.timeoutSeconds`            | Set readinessProbe timeout in seconds                                                                    | `2`                                           |
+| `livenessProbe.tcpSocket.enabled`            | Enable livenessProbe tcpsocket                                                                    | `true`                                           |
+| `livenessProbe.tcpSocket.port`            | Set livenessProbe tcp port                                                                    | `80`                                           |
+| `livenessProbe.httpGet.enabled`            | Enable livenessProbe httpGet                                                                    | `false`                                           |
+| `livenessProbe.httpGet.path`            | Set livenessProbe httpGet path                                                                    | `None`                                           |
+| `livenessProbe.httpGet.port`            | Set livenessProbe httpGet port                                                                    | `None`                                           |
+| `livenessProbe.httpGet.scheme`            | Set livenessProbe httpGet scheme `HTTP` or `HTTPS`                                                                    | `None`                                           |
+| `livenessProbe.failureThreshold`            | Set livenessProbe failure threshold tcpsocket                                                                    | `3`                                           |
+| `livenessProbe.initialDelaySeconds`            | Set livenessProbe initial delay in seconds                                                                    | `10`                                           |
+| `livenessProbe.periodSeconds`            | Set livenessProbe seconds between checks                                                                    | `10`                                           |
+| `livenessProbe.successThreshold`            | Set livenessProbe success threshold tcpsocket                                                                    | `1`                                           |
+| `livenessProbe.timeoutSeconds`            | Set livenessProbe timeout in seconds                                                                    | `2`                                           |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 

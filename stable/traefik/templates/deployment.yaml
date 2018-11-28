@@ -65,21 +65,49 @@ spec:
             cpu: {{ .Values.cpuLimit | quote }}
             memory: {{ .Values.memoryLimit | quote }}
         readinessProbe:
+          {{- if .Values.readinessProbe.tcpSocket.enabled }}
           tcpSocket:
-            port: 80
-          failureThreshold: 1
-          initialDelaySeconds: 10
-          periodSeconds: 10
-          successThreshold: 1
-          timeoutSeconds: 2
+            port: {{ .Values.readinessProbe.tcpSocket.port }}
+          {{- end }}
+          {{- if .Values.readinessProbe.httpGet.enabled }}
+          httpGet:
+            {{- if .Values.readinessProbe.httpGet.port }}
+            port: {{ .Values.readinessProbe.httpGet.port }}
+            {{- end }}
+            {{- if .Values.readinessProbe.httpGet.path }}
+            path: {{ .Values.readinessProbe.httpGet.path | quote }}
+            {{- end }}
+            {{- if .Values.readinessProbe.httpGet.scheme }}
+            scheme: {{ .Values.readinessProbe.httpGet.scheme | quote }}
+            {{- end }}
+          {{- end }}
+          failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+          initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+          successThreshold: {{ .Values.readinessProbe.successThreshold }}
+          timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
         livenessProbe:
+          {{- if .Values.livenessProbe.tcpSocket.enabled }}
           tcpSocket:
-            port: 80
-          failureThreshold: 3
-          initialDelaySeconds: 10
-          periodSeconds: 10
-          successThreshold: 1
-          timeoutSeconds: 2
+            port: {{ .Values.livenessProbe.tcpSocket.port }}
+          {{- end }}
+          {{- if .Values.livenessProbe.httpGet.enabled }}
+          httpGet:
+            {{- if .Values.livenessProbe.httpGet.port }}
+            port: {{ .Values.livenessProbe.httpGet.port }}
+            {{- end }}
+            {{- if .Values.livenessProbe.httpGet.path }}
+            path: {{ .Values.livenessProbe.httpGet.path | quote }}
+            {{- end }}
+            {{- if .Values.livenessProbe.httpGet.scheme }}
+            scheme: {{ .Values.livenessProbe.httpGet.scheme | quote }}
+            {{- end }}
+          {{- end }}
+          failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+          initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+          successThreshold: {{ .Values.livenessProbe.successThreshold }}
+          timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
         {{- if and .Values.acme.enabled (eq .Values.acme.challengeType "dns-01") .Values.acme.dnsProvider.name }}
         env:
         {{- range $k, $_ := (index .Values.acme.dnsProvider .Values.acme.dnsProvider.name) }}

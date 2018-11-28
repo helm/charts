@@ -354,3 +354,34 @@ tracing:
   #   localAgentHostPort: "127.0.0.1:8126"
   #   debug: false
   #   globalTag: ""
+
+# Health check overrides
+readinessProbe:
+  tcpSocket:
+    enabled: true
+    port: 80
+  httpGet:
+    enabled: false
+    # port: 80
+    # path: /
+    # scheme: HTTP
+  failureThreshold: 1
+  initialDelaySeconds: 10
+  periodSeconds: 10
+  successThreshold: 1
+  timeoutSeconds: 2
+
+livenessProbe:
+  tcpSocket:
+    enabled: true
+    port: 80
+  httpGet:
+    enabled: false
+    # port: 80
+    # path: /
+    # scheme: HTTP
+  failureThreshold: 3
+  initialDelaySeconds: 10
+  periodSeconds: 10
+  successThreshold: 1
+  timeoutSeconds: 2
