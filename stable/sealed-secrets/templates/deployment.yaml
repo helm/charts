@@ -28,7 +28,7 @@ spec:
           args:
             - "--key-name"
             - "{{ .Values.secretName }}"
-          image: quay.io/bitnami/sealed-secrets-controller:{{ .Values.image.tag }}
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - containerPort: 8080
