@@ -160,7 +160,7 @@ ingressController:
   enabled: false
   image:
     repository: kong-docker-kubernetes-ingress-controller.bintray.io/kong-ingress-controller
-    tag: 0.2.0
+    tag: 0.2.2
   replicaCount: 1
   livenessProbe:
     failureThreshold: 3
@@ -182,6 +182,8 @@ ingressController:
     periodSeconds: 10
     successThreshold: 1
     timeoutSeconds: 5
+
+  installCRDs: true
 
   rbac:
     # Specifies whether RBAC resources should be created

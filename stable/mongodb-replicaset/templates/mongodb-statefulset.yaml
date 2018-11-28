@@ -110,6 +110,8 @@ spec:
                   fieldPath: metadata.namespace
             - name: REPLICA_SET
               value: {{ .Values.replicaSetName }}
+            - name: TIMEOUT
+              value: "{{ .Values.init.timeout }}"
           {{- if .Values.auth.enabled }}
             - name: AUTH
               value: "true"

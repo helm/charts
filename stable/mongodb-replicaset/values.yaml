@@ -66,6 +66,7 @@ securityContext:
 
 init:
   resources: {}
+  timeout: 900
 
 resources: {}
 # limits:
