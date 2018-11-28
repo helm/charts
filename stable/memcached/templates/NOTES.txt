@@ -1,3 +1,6 @@
+{{- if not .Values.statefulSet }}
+Warning: Memcached has been deployed as deployment, state may not be preserved across node restarts!
+{{ end }}
 Memcached can be accessed via port 11211 on the following DNS name from within your cluster:
 {{ template "memcached.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
 

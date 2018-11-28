@@ -33,6 +33,9 @@ memcached:
 serviceAnnotations: {}
 #  prometheus.io/scrape: "true"
 
+## Set to false to release a Deployment, rather than a StatefulSet
+statefulSet: true
+
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 ##
