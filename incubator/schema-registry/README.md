@@ -90,4 +90,8 @@ The following table lists the configurable parameters of the SchemaRegistry char
 | `ingress.labels` | Additional labels for the ingress | `{}` |
 | `ingress.tls.enabled` | Enable TLS for the Ingress | `false` |
 | `ingress.tls.secretName` | Name of the Kubernetes `Secret` object to obtain the TLS certificate from | `schema-registry-tls` |
-
+| `external.enabled` | Enable LoadBalancer/Nodeport for Cloud Provider external load balancers | `false` |
+| `external.type` | set service type LoadBalancer/NodePort  | `LoadBalancer` |
+| `external.servicePort` | set service port | `443` |
+| `external.loadBalancerIP` | set Static IP for LoadBalancer | `""` |
+| `external.nodePort` | set Nodeport (valid range depends on CLoud Provider) | `""` |

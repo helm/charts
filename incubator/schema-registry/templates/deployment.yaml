@@ -43,7 +43,7 @@ spec:
             value: {{ .Values.sasl.scram.clientUser }}
           - name: SCRAM_CLIENT_PASSWORD
             {{- if (hasKey .Values.sasl.scram "useExistingSecret") }}
-            valueFrom: 
+            valueFrom:
 {{ toYaml .Values.sasl.scram.useExistingSecret.clientPassword | indent 14 -}}
             {{- else }}
             valueFrom:
@@ -63,6 +63,10 @@ spec:
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           ports:
             - containerPort: {{ .Values.servicePort }}
+          {{- if .Values.external.enabled }}
+            - containerPort: {{ .Values.external.servicePort }}
+              name: external
+          {{- end }}
           livenessProbe:
             httpGet:
               path: /
@@ -129,4 +133,3 @@ spec:
         configMap:
           name: {{ template "schema-registry.fullname" . }}
       {{- end }}
-          
