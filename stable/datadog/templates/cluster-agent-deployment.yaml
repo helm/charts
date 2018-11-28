@@ -91,7 +91,7 @@ spec:
         {{- end }}
       {{- if .Values.clusterAgent.tolerations }}
       tolerations:
-{{ toYaml .Values.deployment.tolerations | indent 8 }}
+{{ toYaml .Values.clusterAgent.tolerations | indent 8 }}
       {{- end }}
       {{- if .Values.clusterAgent.affinity }}
       affinity:
