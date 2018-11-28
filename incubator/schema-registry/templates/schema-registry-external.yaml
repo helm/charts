@@ -18,7 +18,7 @@ spec:
       nodePort: {{ .Values.external.nodePort }}
       {{- end }}
       protocol: TCP
-  {{- if eq Values.external.type "LoadBalancer" }}
+  {{- if eq .Values.external.type "LoadBalancer" }}
   loadBalancerIP: {{ .Values.external.loadBalancerIP }}
   {{- end }}
   selector:
