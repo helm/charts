@@ -11,16 +11,18 @@ metadata:
     kubernetes.io/cluster-service: "true"
     kubernetes.io/name: "CoreDNS"
     {{- end }}
-    app: {{ template "coredns.name" . }}
+    app: "{{ template "coredns.name" . }}"
 spec:
   replicas: {{ .Values.replicaCount }}
+  {{- if false }}
   selector:
     matchLabels:
       release: {{ .Release.Name | quote }}
       {{- if .Values.isClusterService }}
       k8s-app: {{ .Chart.Name | quote }}
       {{- end }}
-      app: {{ template "coredns.name" . }}
+      app: {{ template "coredns.fullname" . }}
+  {{- end }}
   template:
     metadata:
       labels:
@@ -62,7 +64,7 @@ spec:
         volumeMounts:
         - name: config-volume
           mountPath: /etc/coredns
-        {{- if .Values.kubernetesTLS.enabled }}
+        {{- if .Values.kubernetesTls.enabled }}
         - name: kubernetes-tls
           mountPath: /tls
         {{- end }}
@@ -80,14 +82,10 @@ spec:
           successThreshold: 1
           failureThreshold: 5
       volumes:
-        {{- if .Values.kubernetesTLS.enabled }}
+        {{- if .Values.kubernetesTls.enabled }}
         - name: kubernetes-tls
           secret:
-            {{- if .Values.kubernetesTLS.secretName }}
-            secretName: {{ .Values.kubernetesTLS.secretName }}
-            {{- else }}
             secretName: {{ template "coredns.fullname" . }}-kube-tls
-            {{- end }}
         {{- end }}
         - name: config-volume
           configMap:

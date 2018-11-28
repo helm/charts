@@ -17,10 +17,15 @@ resources:
     cpu: 100m
     memory: 128Mi
 
+serviceType: "ClusterIP"
 
 service:
-# clusterIP: ""
-  type: ClusterIP
+  clusterIP: ""
+  loadBalancerIP: ""
+  type: "ClusterIP"
+  # Set the protocol if using type LoadBalancer
+  # type: "LoadBalancer"
+  # protocol: "UDP" 
   annotations:
     prometheus.io/scrape: "true"
     prometheus.io/port: "9153"
@@ -75,11 +80,9 @@ servers:
 #      parameters: primary.local
 #      configBlock: |-
 #        endpoint https://1.2.3.4
-#
-# If you prefer, you may specify a secretName instead which must have tls.pem, tls.key, cacert.pem
-kubernetesTLS:
+
+kubernetesTls:
   enabled: false
-  secretName: ""
   cert: ""
   key: ""
   cacert: ""

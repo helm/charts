@@ -21,6 +21,8 @@ Generate the list of ports automatically from the server definitions
 {{- define "coredns.servicePorts" -}}
     {{/* Set ports to be an empty dict */}}
     {{- $ports := dict -}}
+    {{- $serviceType := .Values.service.type -}}
+    {{- $serviceProto := .Values.service.protocol -}}
     {{/* Iterate through each of the server blocks */}}
     {{- range .Values.servers -}}
         {{/* Capture port to avoid scoping awkwardness */}}
@@ -62,10 +64,10 @@ Generate the list of ports automatically from the server definitions
 
     {{/* Write out the ports according to the info collected above */}}
     {{- range $port, $innerdict := $ports -}}
-        {{- if index $innerdict "isudp" -}}
+        {{- if and ( index $innerdict "isudp" ) ( or ( ne $serviceType "LoadBalancer" ) ( eq $serviceProto "UDP" ) ) -}}
             {{- printf "- {port: %v, protocol: UDP, name: udp-dns }\n" $port -}}
         {{- end -}}
-        {{- if index $innerdict "istcp" -}}
+        {{- if and ( index $innerdict "istcp" ) ( or ( ne $serviceType "LoadBalancer" ) ( eq $serviceProto "TCP" ) ) -}}
             {{- printf "- {port: %v, protocol: TCP, name: tcp-dns }\n" $port -}}
         {{- end -}}
     {{- end -}}
