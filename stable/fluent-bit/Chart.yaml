@@ -1,5 +1,5 @@
 name: fluent-bit
-version: 0.16.1
+version: 0.16.2
 appVersion: 0.14.6
 description: Fast and Lightweight Log/Data Forwarder for Linux, BSD and OSX
 keywords:
