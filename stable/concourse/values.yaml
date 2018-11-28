@@ -991,7 +991,7 @@ secrets:
   ## Use kubernetes secrets to store the secrets. Setting this to false will mount an
   ## empty directory to the secrets paths. Only set this to false if you intend to inject
   ## the secrets to the secrets paths outside of kubernetes
-  # mount: true
+  mount: true
 
   ## Concourse Host Keys.
   ## ref: https://concourse-ci.org/install.html#generating-keys

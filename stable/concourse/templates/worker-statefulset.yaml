@@ -484,7 +484,7 @@ spec:
 {{ toYaml .Values.worker.additionalVolumes | indent 8 }}
 {{- end }}
         - name: concourse-keys
-          {{- if .Values.secrets.mount | default true }}
+          {{- if .Values.secrets.mount }}
           secret:
             secretName: {{ template "concourse.concourse.fullname" . }}
             defaultMode: 0400
