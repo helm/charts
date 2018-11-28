@@ -13,9 +13,13 @@ data:
       <numExecutors>0</numExecutors>
       <mode>NORMAL</mode>
       <useSecurity>{{ .Values.Master.UseSecurity }}</useSecurity>
+{{- if not (empty .Values.Master.AuthorizationStrategy ) }}
+{{ .Values.Master.AuthorizationStrategy | indent 6 }}
+{{- else }}
       <authorizationStrategy class="hudson.security.FullControlOnceLoggedInAuthorizationStrategy">
         <denyAnonymousReadAccess>true</denyAnonymousReadAccess>
       </authorizationStrategy>
+{{- end }}
 {{- if .Values.Master.SecurityRealm }}
 {{ .Values.Master.SecurityRealm | indent 6 }}
 {{- else }}
