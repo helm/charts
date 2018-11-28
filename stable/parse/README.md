@@ -133,6 +133,20 @@ See the [Configuration](#configuration) section to configure the PVC or to disab
 
 ## Upgrading
 
+### To 5.1.0
+
+Parse & Parse Dashboard containers were moved to a non-root approach. There shouldn't be any issue when upgrading since the corresponding `securityContext` is enabled by default. Both container images and chart can be upgraded by running the command below:
+
+```
+$ helm upgrade my-release stable/parse
+```
+
+If you use a previous container image (previous to **3.1.2-r** for Parse or **1.2.0-r** for Parse Dashboard), disable the `securityContext` by running the command below:
+
+```
+$ helm upgrade my-release stable/parse --set securityContext.enabled=fase,server.image.tag=XXX,dashboard.image.tag=YYY
+```
+
 ### To 3.0.0
 
 Backwards compatibility is not guaranteed unless you modify the labels used on the chart's deployments.
