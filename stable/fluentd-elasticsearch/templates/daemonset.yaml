@@ -78,7 +78,7 @@ spec:
         resources:
 {{ toYaml .Values.resources | indent 10 }}
 {{- end}}
-{{- if .Values.daemonset.updateStrategy }}
+{{- if .Values.daemonset.securityContext }}
         securityContext:
 {{toYaml .Values.daemonset.securityContext | indent 10}}
 {{- end}}

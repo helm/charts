@@ -76,6 +76,13 @@ The following table lists the configurable parameters of the Fluentd elasticsear
 | `serviceAccount.create`            | Specifies whether a service account should be created.| `true`                                          |
 | `serviceAccount.name`              | Name of the service account.               |                                                            |
 | `tolerations`                      | Optional daemonset tolerations             | `{}`                                                       |
+| `customResources`                  | Custom kubernetes resources to apply       | `[]`                                                       |
+| `daemonset.annotations`            | Annotations for daemonset                  | `{}`                                                       |
+| `daemonset.env`                    | Extra environment variables for daemonset  | `{}`                                                       |
+| `daemonset.securityContext`        | Security context for daemonset             | `{}`                                                       |
+| `daemonset.updateStrategy`         | Update strategy for daemonset              | `{}`                                                       |
+| `daemonset.hostNetwork`            | Host network for daemonset                 | `{}`                                                       |
+| `daemonset.dnsPolicy`              | DNS policy for daemonset                   | `{}`                                                       |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,

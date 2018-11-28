@@ -470,10 +470,8 @@ customResources: []
 daemonset:
   annotations: {}
   env: []
-  securityContext:
-    privileged: true
-  updateStrategy:
-    type: RollingUpdate
+  securityContext: {}
+  updateStrategy: {}
   hostNetwork: true
   dnsPolicy: ClusterFirstWithHostNet
 # extraVolumes:
