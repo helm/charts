@@ -8,6 +8,7 @@
     {{- $externalListenerPort := add $root.Values.external.firstListenerPort $i }}
     {{- $responsiblePod := printf "%s-%d" (printf "%s" $fullName) $i }}
     {{- $distinctPrefix := printf "%s-%d" $dnsPrefix $i }}
+    {{- $loadBalancerIP := index $root.Values.external.loadBalancerIP $i }}
 ---
 apiVersion: v1
 kind: Service
@@ -53,6 +54,9 @@ spec:
       nodePort: {{ $externalListenerPort }}
       {{- end }}
       protocol: TCP
+  {{- if eq $root.Values.external.type "LoadBalancer" }}
+  loadBalancerIP: {{ $loadBalancerIP }}
+  {{- end }}
   selector:
     app: {{ include "kafka.name" $root }}
     release: {{ $root.Release.Name }}
