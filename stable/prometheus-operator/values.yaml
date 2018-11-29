@@ -20,6 +20,10 @@ commonLabels: {}
 ##
 defaultRules:
   create: true
+  ## Labels for default rules
+  labels: {}
+  ## Annotations for default rules
+  annotations: {}
 
 ##
 global:
@@ -473,6 +477,9 @@ prometheusOperator:
   ## Labels to add to the operator pod
   ##
   podLabels: {}
+
+  ## Assign a PriorityClassName to pods if set
+  # priorityClassName: ""
 
   ## If true, the operator will create and maintain a service for scraping kubelets
   ## ref: https://github.com/coreos/prometheus-operator/blob/master/helm/prometheus-operator/README.md
