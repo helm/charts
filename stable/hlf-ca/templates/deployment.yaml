@@ -99,7 +99,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: {{ template "postgresql.fullname" . }}
-                  key: postgres-password
+                  key: postgresql-password
             {{- end }}
             {{- if .Values.mysql.enabled }}
             # MySQL Database
@@ -122,12 +122,12 @@ spec:
             - name: PARENT_CA_ADMIN
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.config.intermediate.parent.chart | quote }}
+                  name: {{ .Values.config.intermediate.parent.chart }}--ca
                   key: CA_ADMIN
             - name: PARENT_CA_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.config.intermediate.parent.chart | quote }}
+                  name: {{ .Values.config.intermediate.parent.chart }}--ca
                   key: CA_PASSWORD
             {{- end}}
           ports:
@@ -151,7 +151,7 @@ spec:
             {{- if (and .Values.config.mountTLS .Values.ingress.tls) }}
             - name: tls-secret
               readOnly: true
-              mountPath: /var/hyperledger/tls_secret
+              mountPath: /var/hyperledger/tls/secret
             {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}

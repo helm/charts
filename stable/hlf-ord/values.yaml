@@ -4,13 +4,28 @@
 
 image:
   repository: hyperledger/fabric-orderer
-  tag: 1.2.0
+  tag: 1.3.0
   pullPolicy: IfNotPresent
 
 service:
   # Cluster IP or LoadBalancer
   type: ClusterIP
   port: 7050
+
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    # nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
+    # certmanager.k8s.io/cluster-issuer: "letsencrypt-staging"
+  path: /
+  hosts:
+    - hlf-ord.local
+  tls: []
+  #  - secretName: hlf-ord-tls
+  #    hosts:
+  #      - hlf-ord.local
 
 persistence:
   enabled: true
@@ -27,32 +42,46 @@ persistence:
   # existingClaim: ""
 
 ##################################
-## Further configuration options #
+## Orderer configuration options #
 ##################################
-## Address of Certificate Authority where O
-caAddress: hlf-ca.local
-## Username for registering/enrolling with CA
-caUsername: ord1
-## Password for registering/enrolling with CA  (defaults to random 24 alphanumeric)
-# caPassword:
-
 ord:
-  # Tools version
-  hlfToolsVersion: 1.2.0
   ## Type of Orderer, `solo` or `kafka`
   type: solo
   ## MSP ID of the Orderer
   mspID: OrdererMSP
+  # TLS
+  tls:
+    server:
+      enabled: "false"
+    client:
+      enabled: "false"
 
-secrets: {}
+
+secrets:
+  ## These secrets should contain the Orderer crypto materials and credentials
+  ord: {}
+    ## Credentials, saved under keys 'CA_USERNAME' and 'CA_PASSWORD'
+    # cred: hlf--ord1-cred
+    ## Certificate, saved under key 'cert.pem'
+    # cert: hlf--ord1-idcert
+    ## Key, saved under 'key.pem'
+    # key: hlf--ord1-idkey
+    ## CA Cert, saved under 'cacert.pem'
+    # caCert: hlf--ord1-cacert
+    ## Intermediate CA Cert (optional), saved under 'intermediatecacert.pem'
+    # intCaCert: hlf--ord1-caintcert
+    ## TLS secret, saved under keys 'tls.crt' and 'tls.key' (to conform with K8S nomenclature)
+    # tls: hlf--ord1-tls
+    ## TLS root CA certificate saved under key 'cert.pem'
+    # tlsRootCert: hlf--ord-tlsrootcert
+    ## TLS client root CA certificates saved under any names (as there may be multiple)
+    # tlsClientRootCerts: hlf--peer-tlsrootcert
   ## This should contain "genesis" block derived from a configtx.yaml
   ## configtxgen -profile OrdererGenesis -outputBlock genesis.block
   # genesis: hlf--genesis
   ## This should contain the Certificate of the Orderer Organisation admin
   ## This is necessary to successfully run the orderer
   # adminCert: hlf--ord-admincert
-  ## This should contain the CA server's TLS details under the key tls.crt (e.g. a Let's Encrypt Certificate PEM)
-  # caServerTls: ca--tls
 
 resources: {}
   ## We usually recommend not to specify default resources and to leave this as a conscious

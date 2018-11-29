@@ -10,9 +10,9 @@ data:
   # PostgreSQL Database
   DB_TYPE: "postgres"
   DB_HOST: {{ template "postgresql.fullname" . }}
-  DB_PORT: {{ .Values.postgresql.port | quote }}
-  DB_USERNAME: {{ .Values.postgresql.postgresUser | quote }}
-  DB_DATABASE: {{ .Values.postgresql.postgresDatabase  | quote }}
+  DB_PORT: {{ .Values.postgresql.service.port | quote }}
+  DB_USERNAME: {{ .Values.postgresql.postgresqlUsername | quote }}
+  DB_DATABASE: {{ .Values.postgresql.postgresqlDatabase  | quote }}
   {{- end }}
   {{- if .Values.mysql.enabled }}
   # MySQL Database

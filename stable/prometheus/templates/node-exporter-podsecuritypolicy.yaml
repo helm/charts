@@ -1,4 +1,4 @@
-{{- if .Values.rbac.create }}
+{{- if and .Values.nodeExporter.enabled .Values.rbac.create }}
 {{- if .Values.nodeExporter.podSecurityPolicy.enabled }}
 apiVersion: extensions/v1beta1
 kind: PodSecurityPolicy
@@ -10,6 +10,10 @@ metadata:
     component: "{{ .Values.nodeExporter.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
+  annotations:
+{{- if .Values.nodeExporter.podSecurityPolicy.annotations }}
+{{ toYaml .Values.nodeExporter.podSecurityPolicy.annotations | indent 4 }}
+{{- end }}
 spec:
   privileged: false
   allowPrivilegeEscalation: false
