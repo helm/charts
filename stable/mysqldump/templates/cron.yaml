@@ -26,4 +26,4 @@ spec:
       template:
 {{- $file := .Files.Get "files/job.tpl" }}
 {{ tpl $file . | indent 8 }}
-{{- end -}}
+{{ end }}
