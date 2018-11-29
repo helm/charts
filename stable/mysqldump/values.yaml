@@ -28,7 +28,7 @@ options: "--opt --single-transaction"
 
 ## set to `now` to get a one time job, or a cronjob schedule like `0 0 * * *`
 ## to get a cronjob.
-schedule: "0/5 * * * *"
+schedule: "0 3 * * *"
 
 ## enable some debug options
 debug: false
