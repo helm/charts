@@ -1,0 +1,67 @@
+## General
+fullnameOverride: ""
+imagePullSecrets: "" # Provide the name of secret for accessing private docker registry
+image: citusdata/citus
+imageTag: 7.5.1
+imagePullPolicy: IfNotPresent
+
+## Citus Worker
+worker:
+  port: 5432
+  replicaCount: 2
+  resources: {}
+  #  limits: 
+  #    cpu: 1
+  #    memory: 15Gi
+  #  requests:
+  #    cpu: 250m
+  #    memory: 1Gi
+  pvc:
+    size: 50Gi
+
+## Citus Master
+master:
+  port: 5432
+  resources: {}
+  #  limits:
+  #    cpu: 4
+  #    memory: 15Gi
+  #  requests:
+  #    cpu: 500m
+  #    memory: 1Gi
+  pvc:
+    size: 10Gi
+
+## Citus Master Service
+service:
+  externalPort: 5432
+  type: ClusterIP
+  annotations: {}
+
+
+## SSL encryption of TCP/IP connections
+ssl:
+  enabled: false
+  cert:
+  key:
+
+
+## Monitoring: Prometheus Exporter Configuration
+## ref: https://prometheus.io/docs/instrumenting/exporters/
+prometheus:
+  enabled: true
+  image: wrouesnel/postgres_exporter
+  imageTag: v0.4.6
+  port: 9187
+  resources:
+    limits:
+      cpu: 100m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 256Mi
+
+## Secrets
+superuser:
+  password: "0987654321"
+  username: "postgres"

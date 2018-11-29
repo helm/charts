@@ -1,0 +1,11 @@
+name: citus-postgresql
+description: Deploys Citus PostgreSQL cluster
+version: 0.1.0
+appVersion: 7.5.1
+home: https://www.citusdata.com
+sources:
+  - https://github.com/citusdata
+maintainers:
+  - name: Jochen Huelss
+    email: jochen.huelss@alvary.io
+icon: https://raw.githubusercontent.com/citusdata/citus/master/github-banner.png

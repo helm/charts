@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "citus-postgresql.fullname" . }}-master
+  labels:
+    app: {{ template "citus-postgresql.name" . }}-master
+    chart: {{ template "citus-postgresql.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  ports:
+  - port: {{ .Values.master.port }}
+    protocol: TCP  
+    name: psql
+  clusterIP: None
+  selector:
+    app: {{ template "citus-postgresql.name" . }}-master
+    release: {{ .Release.Name }}

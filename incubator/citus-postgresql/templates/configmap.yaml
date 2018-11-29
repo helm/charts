@@ -1,0 +1,24 @@
+{{- if .Values.ssl.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "citus-postgresql.fullname" . }}-ssl-settings
+  labels:
+    app: {{ template "citus-postgresql.name" . }}
+    chart: {{ template "citus-postgresql.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  002-configure-ssl.sh: |+
+    #!/usr/bin/env bash
+    # make bash behave
+    set -euo pipefail
+    IFS=$'\n\t'
+
+    echo "citus.node_conninfo = 'sslmode=require'" >> "${PGDATA}/postgresql.conf"
+    sed -i '/^host all all all md5/c\hostssl all all 0.0.0.0/0 md5' "${PGDATA}/pg_hba.conf"
+    sed -i '/^#ssl = off/c\ssl = on' "${PGDATA}/postgresql.conf"
+    sed -i "/^#ssl_cert_file.*/c\ssl_cert_file = '/home/postgres/ssl/citus.crt'" "${PGDATA}/postgresql.conf"
+    sed -i "/^#ssl_key_file.*/c\ssl_key_file = '/home/postgres/ssl/citus.key'" "${PGDATA}/postgresql.conf"
+    pg_ctl -D "${PGDATA}" reload -s
+{{- end }}
