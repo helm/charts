@@ -69,25 +69,25 @@ data:
     {{- end -}}
 
     {{- if (.Values.upload.googlestoragebucket.enabled) or (.Values.upload.ssh.enabled) -}}
-    for FILE in $(find ${BACKUP_DIR} -maxdepth 1 -regex "^${BACKUP_DIR}/${TIMESTAMP}_.*\.sql\.gz$" -type f | sed -e 's#.*/##g'); do
-      {{ if .Values.upload.ssh.enabled -}}
-      echo "upload ${FILE} via ssh"
-      ssh -o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=/dev/null {{ .Values.upload.ssh.user }}@{{ .Values.upload.ssh.host }} "cat > {{ .Values.upload.ssh.dir }}/${FILE}" < ${BACKUP_DIR}/${FILE}
-      rcu=$?
-      {{ end }}
-      {{- if .Values.upload.googlestoragebucket.enabled }}
-      echo "upload ${FILE} to google storage bucket"
-      gcloud auth activate-service-account --key-file /root/gcloud/keyfile.json
-      gsutil cp ${BACKUP_DIR}/${FILE} {{ .Values.upload.googlestoragebucket.bucketname }}/${FILE}
-      rcu=$?
-      {{ end }}
-      if [ "$rcu" != "0" ]; then
-        echo "upload failed"
-        exit 1
-      fi
-      {{ end }}
-    done
+    {{ if .Values.upload.ssh.enabled -}}
+    echo "upload files via ssh"
+    rsync -av --delete -e 'ssh -o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=/dev/null' ${BACKUP_DIR}/ {{ .Values.upload.ssh.user }}@{{ .Values.upload.ssh.host }}:/{{ .Values.upload.ssh.dir }}
+    rcu=$?
+    {{- end -}}
 
+    {{ if .Values.upload.googlestoragebucket.enabled }}
+    echo "upload files to google storage bucket"
+    gcloud auth activate-service-account --key-file /root/gcloud/keyfile.json
+    gsutil rsync -d ${BACKUP_DIR}/ {{ .Values.upload.googlestoragebucket.bucketname }}
+    rcu=$?
+    {{- end -}}
+
+    if [ "$rcu" != "0" ]; then
+      echo "upload failed"
+      exit 1
+    fi
+    done
+    {{- end -}}
     {{- else }}
     mysqldump ${MYSQL_OPTS} -h ${MYSQL_HOST} -P ${MYSQL_PORT} -u ${MYSQL_USERNAME}{{ if .Values.mysql.password }} -p${MYSQL_PASSWORD}{{ end }} --all-databases
     rc=$?

@@ -47,7 +47,7 @@ The following tables lists the configurable parameters of the mysqldump chart an
 Parameter                       | Description                               | Default
 ------------------------------- | ----------------------------------------- | ------------------------------
 image.repository                | Name of image to use                      | monotek/gcloud-mysql
-image.tag                       | Version of image to use                   | "latest"
+image.tag                       | Version of image to use                   | "6"
 image.pullPolicy                | Pull Policy to use for image              | IfNotPresent
 mysql.db                        | single mysql db to backup (optional)      | mysql
 mysql.host                      | mysql host to backup                      | mysql
