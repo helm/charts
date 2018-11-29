@@ -18,6 +18,7 @@ spec:
       labels:
         app: {{ include "ignite.fullname" . }}
     spec:
+      serviceAccountName: {{ include "ignite.fullname" . }}
       volumes:
         - name: config-volume
           configMap:
