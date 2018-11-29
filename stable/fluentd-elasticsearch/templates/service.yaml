@@ -4,7 +4,7 @@ kind: Service
 metadata:
   name: {{ template "fluentd-elasticsearch.fullname" . }}
   labels:
-    app: {{ template "fluentd-elasticsearch.fullname" . }}
+    app: {{ template "fluentd-elasticsearch.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     heritage: "{{ .Release.Service }}"
     release: "{{ .Release.Name }}"
