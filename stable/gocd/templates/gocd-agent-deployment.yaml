@@ -26,7 +26,13 @@ spec:
         release: {{ .Release.Name | quote }}
         component: agent
     spec:
-      {{- if or .Values.agent.persistence.enabled (or .Values.agent.security.ssh.enabled .Values.agent.persistence.extraVolumes) }}
+      {{- if .Values.agent.serviceAccount.reuseTopLevelServiceAccount }}
+      serviceAccountName: {{ template "gocd.serviceAccountName" . }}
+      {{- else if .Values.agent.serviceAccount.name }}
+      serviceAccountName: {{ .Values.agent.serviceAccount.name }}
+      {{- end }}
+
+      {{- if or .Values.agent.persistence.enabled .Values.agent.security.ssh.enabled }}
       volumes:
       {{- end }}
       {{- if .Values.agent.persistence.enabled }}
