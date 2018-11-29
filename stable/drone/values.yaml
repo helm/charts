@@ -29,9 +29,9 @@ images:
   ## ref: https://docs.drone.io/extend/secrets/
   ##
   secrets:
-    #repository: "docker.io/drone/amazon-secrets"
+    # repository: "docker.io/drone/amazon-secrets"
     repository: "docker.io/drone/kubernetes-secrets"
-    #repository: "docker.io/drone/vault-secrets"
+    # repository: "docker.io/drone/vault-secrets"
     tag: latest
     pullPolicy: Always
 
@@ -247,9 +247,9 @@ secrets:
     ## vault
     # DEBUG: "false"
     # SERVER_ADDR: ":3000"
-    # VAULT_ADDR: 
+    # VAULT_ADDR:
     # VAULT_TOKEN_RENEWAL:
-    # VAULT_TOKEN_TTL: 
+    # VAULT_TOKEN_TTL:
     # VAULT_AUTH_TYPE:
     # VAULT_AUTH_MOUNT_POINT:
     # VAULT_KUBERNETES_ROLE:
