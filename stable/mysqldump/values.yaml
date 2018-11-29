@@ -4,7 +4,7 @@
 
 image:
   repository: monotek/gcloud-mysql
-  tag: "6"
+  tag: "8"
   pullPolicy: IfNotPresent
 
 mysql:
