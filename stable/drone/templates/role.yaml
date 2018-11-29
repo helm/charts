@@ -18,4 +18,12 @@ rules:
       - list
       - patch
       - update
+{{- if .Values.secrets.enabled }}
+  - apiGroups:
+      - ""
+    resources:
+      - secrets
+    verbs:
+      - get
+{{- end }}
 {{ end }}

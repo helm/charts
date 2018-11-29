@@ -1,4 +1,3 @@
-{{- if hasKey .Values.server.env "DRONE_PROVIDER" }}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -44,7 +43,7 @@ spec:
         image: "{{ .Values.images.server.repository }}:{{ .Values.images.server.tag }}"
         imagePullPolicy: {{ .Values.images.server.pullPolicy }}
         env:
-          - name: DRONE_SECRET
+          - name: DRONE_RPC_SECRET
             valueFrom:
               secretKeyRef:
                 name: {{ template "drone.fullname" . }}
@@ -58,27 +57,35 @@ spec:
                 key: {{ . | quote }}
           {{- end }}
           {{- end }}
-          - name: DRONE_HOST
+          - name: DRONE_TLS_AUTOCERT
+            value: "{{ .Values.server.letsEncrypt }}"
+          - name: DRONE_SERVER_HOST
           {{- if hasKey .Values.server "host" }}
             value: "{{ .Values.server.host }}"
           {{- else }}
-            value: "http://{{ template "drone.fullname" . }}"
+            value: "{{ template "drone.fullname" . }}"
           {{- end }}
+          - name: DRONE_SERVER_PROTO
+            value: {{ template "drone.publicScheme" . }}
           {{- range $key, $value := .Values.server.env }}
           - name: {{ $key }}
             value: {{ $value | quote }}
           {{- end }}
         ports:
+        {{- if .Values.server.letsEncrypt }}
+        - name: https
+          containerPort: 443
+          protocol: TCP
+        {{- else }}
         - name: http
-          containerPort: 8000
+          containerPort: 80
           protocol: TCP
-        - name: grpc
-          containerPort: 9000
-          protocol: TCP
+        {{- end }}
         livenessProbe:
           httpGet:
             path: /
-            port: http
+            port: {{ include "drone.privateScheme" . }}
+          initialDelaySeconds: 60
         resources:
 {{ toYaml .Values.server.resources | indent 10 }}
         volumeMounts:
@@ -98,4 +105,3 @@ spec:
 {{- with .Values.server.extraVolumes }}
 {{ tpl . $ | indent 6 }}
 {{- end }}
-{{ end }}

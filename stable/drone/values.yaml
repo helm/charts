@@ -1,4 +1,4 @@
-appVersion: "0.8.6"
+appVersion: "1.0.0-rc.1"
 
 images:
   ## The official drone (server) image, change tag to use a different version.
@@ -6,7 +6,7 @@ images:
   ##
   server:
     repository: "docker.io/drone/drone"
-    tag: 0.8.6
+    tag: 1.0.0-rc.1
     pullPolicy: IfNotPresent
 
   ## The official drone (agent) image, change tag to use a different version.
@@ -14,7 +14,7 @@ images:
   ##
   agent:
     repository: "docker.io/drone/agent"
-    tag: 0.8.6
+    tag: 1.0.0-rc.1
     pullPolicy: IfNotPresent
 
   ## The official docker (dind) image, change tag to use a different version.
@@ -25,9 +25,17 @@ images:
     tag: 18.06.1-ce-dind
     pullPolicy: IfNotPresent
 
-service:
-  httpPort: 80
+  ## The official drone (secrets) images, change repository or tag to use a different version.
+  ## ref: https://docs.drone.io/extend/secrets/
+  ##
+  secrets:
+    #repository: "docker.io/drone/amazon-secrets"
+    repository: "docker.io/drone/kubernetes-secrets"
+    #repository: "docker.io/drone/vault-secrets"
+    tag: latest
+    pullPolicy: Always
 
+service:
   ## If service.type is not set to NodePort, the following statement
   ## will be ignored.
   ##
@@ -36,13 +44,6 @@ service:
   ## Service type can be set to ClusterIP, NodePort or LoadBalancer.
   ##
   type: ClusterIP
-
-  ## Drone Service annotations
-  ##
-  # annotations:
-  #   service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
-  #   service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:xx-xxxx-x:xxxxxxxxxxx:certificate/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx
-  #   external-dns.alpha.kubernetes.io/hostname: drone.domain.tld.
 
 ingress:
   ## If true, Drone Ingress will be created.
@@ -70,16 +71,21 @@ ingress:
 
 server:
   ## If not set, it will be autofilled with the cluster host.
-  ## Host must be in "<scheme>://<hostname>" format.
+  ## Host must be the public hostname of the server
+  ## Scheme must match the public hostname, ie if ingress TLS or let's encrypt
+  ## are enabled, scheme must be https.
   ##
-  # host: "https://drone.domain.io"
+  # host: "drone.domain.io"
+  # scheme: "https"
+  letsEncrypt: false
 
   ## Drone server configuration.
   ## Values in here get injected as environment variables.
-  ## ref: http://readme.drone.io/admin/installation-reference
+  ## ref: https://docs.drone.io/reference/server/
+  ## ref: https://docs.drone.io/reference/environ/
   ##
   env:
-    DRONE_DEBUG: "false"
+    DRONE_LOGS_DEBUG: "false"
     DRONE_DATABASE_DRIVER: "sqlite3"
     DRONE_DATABASE_DATASOURCE: "/var/lib/drone/drone.sqlite"
 
@@ -87,12 +93,7 @@ server:
     ## git service or it won't start up.
     ## Uncomment this and add your own custom configuration.
     ##
-    # DRONE_PROVIDER: "github"
-    # DRONE_OPEN: "true"
-    # DRONE_GITHUB: "true"
-    # DRONE_ORGS: "my-github-org,my-other-github-org"
-    # DRONE_ADMIN:"admin-1,admin-2"
-    # DRONE_GITHUB_CLIENT: "github-oauth2-client-id"
+    # DRONE_GITHUB_CLIENT_ID: "github-oauth2-client-id"
 
   ## Secret environment variables are configured in `server.envSecrets`.
   ## Each item in `server.envSecrets` references a Kubernetes Secret.
@@ -102,7 +103,7 @@ server:
   #   # The name of a Kubernetes Secret
   #   drone-server-secrets:
   #     # A list of Secret keys to include as environment variables
-  #     - DRONE_GITHUB_SECRET
+  #     - DRONE_GITHUB_CLIENT_SECRET
 
   ## Additional server annotations.
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
@@ -146,10 +147,12 @@ server:
 agent:
   ## Drone agent configuration.
   ## Values in here get injected as environment variables.
-  ## ref: http://readme.drone.io/admin/installation-reference
+  ## ref: https://docs.drone.io/reference/agent/
+  ## ref: https://docs.drone.io/reference/environ/
   ##
   env:
-    DRONE_DEBUG: "false"
+    DRONE_LOGS_DEBUG: "false"
+    DRONE_RPC_DEBUG: "false"
 
   ## Number of drone agent replicas
   replicas: 1
@@ -168,23 +171,6 @@ agent:
   #  limits:
   #    memory: 2Gi
   #    cpu: 1
-
-  ## Liveness and readiness probe values
-  ## Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-probes
-  livenessProbe:
-    enabled: true
-    failureThreshold: 3
-    initialDelaySeconds: 0
-    periodSeconds: 10
-    successThreshold: 1
-    timeoutSeconds: 1
-  readinessProbe:
-    enabled: true
-    failureThreshold: 3
-    initialDelaySeconds: 0
-    periodSeconds: 10
-    successThreshold: 1
-    timeoutSeconds: 1
 
   ## Use an alternate scheduler, e.g. "stork".
   ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
@@ -212,7 +198,7 @@ dind:
   ## ref: http://readme.drone.io/admin/installation-reference
   ##
   #  env:
-  #    DRONE_DEBUG: "false"
+  #    DRONE_LOGS_DEBUG: "false"
 
   ## Allowing custom command and args to DinD
   ## ref: https://discourse.drone.io/t/docker-mtu-problem/1207
@@ -235,6 +221,81 @@ dind:
   #  limits:
   #    memory: 2Gi
   #    cpu: 1
+
+## Allow drone to access kubernetes secrets
+## ref: https://docs.drone.io/extend/secrets/
+secrets:
+  enabled: false
+
+  ## Drone secrets configuration.
+  ## Values in here get injected as environment variables.
+  ## As of this writing, environment variables are not documented
+  ## ref: https://github.com/drone/drone-kubernetes-secrets/blob/master/cmd/drone-kubernetes-secrets/main.go
+  ## ref: https://github.com/drone/drone-vault/blob/master/cmd/drone-vault/main.go
+  ## https://github.com/drone/drone-amazon-secrets/blob/master/cmd/drone-amazon-secrets/main.go
+  ##
+  env:
+    ## aws
+    # DEBUG: "false"
+    # SERVER_ADDR: ":3000"
+
+    ## kubernetes
+    DEBUG: "false"
+    KUBERNETES_CONFIG: "/etc/kubernetes/config"
+    # KUBERNETES_NAMESPACE: # defined automatically
+
+    ## vault
+    # DEBUG: "false"
+    # SERVER_ADDR: ":3000"
+    # VAULT_ADDR: 
+    # VAULT_TOKEN_RENEWAL:
+    # VAULT_TOKEN_TTL: 
+    # VAULT_AUTH_TYPE:
+    # VAULT_AUTH_MOUNT_POINT:
+    # VAULT_KUBERNETES_ROLE:
+
+  ## Additional secret server annotations.
+  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+  ##
+  annotations: {}
+
+  ## CPU and memory limits for drone secret server
+  ##
+  resources: {}
+  #  requests:
+  #    memory: 32Mi
+  #    cpu: 40m
+  #  limits:
+  #    memory: 128Mi
+  #    cpu: 500m
+
+  ## Use an alternate scheduler, e.g. "stork".
+  ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+  ##
+  # schedulerName:
+
+  ## Pod scheduling preferences.
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  ##
+  affinity: {}
+
+  ## Node labels for pod assignment
+  ## ref: https://kubernetes.io/docs/user-guide/node-selection
+  ##
+  nodeSelector: {}
+
+  ## additional siecar containers, e. g. for a database proxy, such as Google's cloudsql-proxy.
+  ## ex: https://github.com/kubernetes/charts/tree/master/stable/keycloak
+  ##
+  extraContainers: |
+
+  ## additional volumes, e. g. for kubernetes config secrets
+  ##
+  extraVolumes: |
+
+  ## additional volumes mounts, e. g. for kubernetes config secrets
+  ##
+  extraVolumeMounts: |
 
 ## Enable scraping of the /metrics endpoint for Prometheus
 metrics:

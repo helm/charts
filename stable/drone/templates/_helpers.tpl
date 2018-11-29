@@ -24,3 +24,21 @@ Create the name of the service account to use
     {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
+
+{{- define "drone.publicScheme" -}}
+{{- if eq .Values.server.letsEncrypt true -}}
+https
+{{- else if hasKey .Values.server "scheme" -}}
+{{ .Values.server.scheme }}
+{{- else -}}
+http
+{{- end -}}
+{{- end -}}
+
+{{- define "drone.privateScheme" -}}
+{{- if eq .Values.server.letsEncrypt true -}}
+https
+{{- else -}}
+http
+{{- end -}}
+{{- end }}
