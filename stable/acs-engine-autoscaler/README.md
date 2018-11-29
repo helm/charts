@@ -45,7 +45,7 @@ acsenginecluster:
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install stable/acs-engine-autoscaler
+$ helm install --name my-release stable/acs-engine-autoscaler
 ```
 
 The command deploys acs-engine-autoscaler on the Kubernetes cluster using the supplied configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
