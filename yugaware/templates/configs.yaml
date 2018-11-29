@@ -56,7 +56,7 @@ data:
       releases.path = "/opt/releases"
       docker.release = "/opt/yugabyte/release"
       thirdparty.packagePath = /opt/third-party
-      helm.package = "/opt/yugabyte/helm/yugabyte-1.0.5.tgz"
+      helm.package = "/opt/yugabyte/helm/yugabyte-latest.tgz"
       health.check_interval_ms = 300000
       health.status_interval_ms = 43200000
       health.default_email = "alerts@yugabyte.com"
