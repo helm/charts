@@ -22,11 +22,12 @@ spec:
         release: {{ .Release.Name | quote }}
         component: agent
     spec:
-      {{- if .Values.agent.serviceAccountName }}
-      serviceAccountName: {{ .Values.agent.serviceAccountName }}
-      {{- else if .Values.serviceAccount.create }}
+      {{- if .Values.agent.serviceAccount.reuseTopLevelServiceAccount }}
       serviceAccountName: {{ template "gocd.serviceAccountName" . }}
+      {{- else if .Values.agent.serviceAccount.name }}
+      serviceAccountName: {{ .Values.agent.serviceAccount.name }}
       {{- end }}
+
       {{- if or .Values.agent.persistence.enabled .Values.agent.security.ssh.enabled }}
       volumes:
       {{- end }}
