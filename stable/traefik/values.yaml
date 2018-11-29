@@ -1,6 +1,6 @@
 ## Default values for Traefik
 image: traefik
-imageTag: 1.7.2
+imageTag: 1.7.4
 ## can switch the service type to NodePort if required
 serviceType: LoadBalancer
 # loadBalancerIP: ""
@@ -48,6 +48,7 @@ tolerations: []
   #   hostname: "localhost"
   #   ip: "127.0.0.1"
   #   publishedService: "namespace/servicename"
+  #   useDefaultPublishedService: false
 proxyProtocol:
   enabled: false
   # trustedIPs is required when enabled
@@ -322,6 +323,9 @@ metrics:
     # address: localhost:8125
     # pushinterval: 10s
 deployment:
+  # labels to add to the pod container metadata
+  # podLabels:
+  #   key: value
   # podAnnotations:
   #   key: value
   hostPort:
@@ -332,7 +336,7 @@ sendAnonymousUsage: false
 tracing:
   enabled: false
   serviceName: traefik
-  # backend: choices are jaeger, zipkin
+  # backend: choices are jaeger, zipkin, datadog
   # jaeger:
   #   localAgentHostPort: "127.0.0.1:6831"
   #   samplingServerURL: http://localhost:5778/sampling
@@ -343,3 +347,7 @@ tracing:
   #   debug: false
   #   sameSpan: false
   #   id128bit: true
+  # datadog:
+  #   localAgentHostPort: "127.0.0.1:8126"
+  #   debug: false
+  #   globalTag: ""

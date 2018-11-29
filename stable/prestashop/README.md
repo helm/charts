@@ -55,8 +55,14 @@ The following table lists the configurable parameters of the PrestaShop chart an
 | `image.tag`                           | PrestaShop image tag                                                                         | `{VERSION}`                                             |
 | `image.pullPolicy`                    | Image pull policy                                                                            | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
 | `image.pullSecrets`                   | Specify image pull secrets                                                                   | `nil`                                                   |
+| `service.type`                    | Kubernetes Service type                    | `LoadBalancer`                                          |
+| `service.port`                    | Service HTTP port                  | `80`                                          |
+| `service.httpsPort`                    | Service HTTPS port                   | `443`                                          |
+| `service.nodePorts.http`                 | Kubernetes http node port                  | `""`                                                    |
+| `service.nodePorts.https`                | Kubernetes https node port                 | `""`                                                    |
+| `service.externalTrafficPolicy`   | Enable client source IP preservation       | `Cluster`                                               |
+| `service.loadBalancerIP`   | LoadBalancer service IP address       | `""`                                               |
 | `prestashopHost`                      | PrestaShop host to create application URLs                                                   | `nil`                                                   |
-| `prestashopLoadBalancerIP`            | `loadBalancerIP` for the PrestaShop Service                                                  | `nil`                                                   |
 | `prestashopUsername`                  | User of the application                                                                      | `user@example.com`                                      |
 | `prestashopPassword`                  | Application password                                                                         | _random 10 character long alphanumeric string_          |
 | `prestashopEmail`                     | Admin email                                                                                  | `user@example.com`                                      |
@@ -79,8 +85,6 @@ The following table lists the configurable parameters of the PrestaShop chart an
 | `mariadb.db.user`                     | Database user to create                                                                      | `bn_prestashop`                                         |
 | `mariadb.db.password`                 | Password for the database                                                                    | `nil`                                                   |
 | `mariadb.rootUser.password`           | MariaDB admin password                                                                       | `nil`                                                   |
-| `serviceType`                         | Kubernetes Service type                                                                      | `LoadBalancer`                                          |
-| `externalTrafficPolicy`               | Set to `Local` to preserve the client source IP                                              | `Local`                                                 |
 | `sessionAffinity`                     | Configures the session affinity                                                              | `None`                                                  |
 | `persistence.enabled`                 | Enable persistence using PVC                                                                 | `true`                                                  |
 | `persistence.storageClass`            | PVC Storage Class for PrestaShop volume                                                      | `nil` (uses alpha storage class annotation)             |
@@ -98,6 +102,15 @@ The following table lists the configurable parameters of the PrestaShop chart an
 | `readinessProbe.timeoutSeconds`       | When the probe times out                                                                     | 5                                                       |
 | `readinessProbe.failureThreshold`     | Minimum consecutive failures for the probe to be considered failed after having succeeded.   | 6                                                       |
 | `readinessProbe.successThreshold`     | Minimum consecutive successes for the probe to be considered successful after having failed. | 1                                                       |
+| `podAnnotations`                | Pod annotations                                   | `{}`                                                       |
+| `metrics.enabled`                          | Start a side-car prometheus exporter                                                                           | `false`                                              |
+| `metrics.image.registry`                   | Apache exporter image registry                                                                                  | `docker.io`                                          |
+| `metrics.image.repository`                 | Apache exporter image name                                                                                      | `lusotycoon/apache-exporter`                           |
+| `metrics.image.tag`                        | Apache exporter image tag                                                                                       | `v0.5.0`                                            |
+| `metrics.image.pullPolicy`                 | Image pull policy                                                                                              | `IfNotPresent`                                       |
+| `metrics.image.pullSecrets`                | Specify docker-registry secret names as an array                                                               | `nil`                                                |
+| `metrics.podAnnotations`                   | Additional annotations for Metrics exporter pod                                                                | `{prometheus.io/scrape: "true", prometheus.io/port: "9117"}`                                                   |
+| `metrics.resources`                        | Exporter resource requests/limit                                                                               | {}                        |
 
 The above parameters map to the env variables defined in [bitnami/prestashop](http://github.com/bitnami/bitnami-docker-prestashop). For more information please refer to the [bitnami/prestashop](http://github.com/bitnami/bitnami-docker-prestashop) image documentation.
 

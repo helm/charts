@@ -8,6 +8,8 @@
 
 This chart bootstraps a single node GoCD server and GoCD agents on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
+To quickly build your first pipeline while learning key GoCD concepts, visit the [Intro to GoCD guide](https://www.gocd.org/getting-started/part-1/).
+
 ## Prerequisites
 
 - Kubernetes 1.8+ with Beta APIs enabled
@@ -74,6 +76,7 @@ The following tables list the configurable parameters of the GoCD chart and thei
 | `server.image.pullPolicy`                  | Image pull policy                                                                                             | `IfNotPresent`      |
 | `server.resources`                         | GoCD server resource requests and limits                                                                      | `{}`                |
 | `server.nodeSelector`                      | GoCD server nodeSelector for pod labels                                                                       | `{}`                |
+| `server.affinity`                         | GoCD server affinity                                                                                           | `{}`                |
 | `server.env.goServerSystemProperties`      | GoCD Server system properties                                                                                 | `nil`               |
 | `server.env.extraEnvVars`                  | GoCD Server extra Environment variables                                                                       | `nil`               |
 | `server.service.type`                      | Type of GoCD server Kubernetes service                                                                        | `NodePort`          |
@@ -153,11 +156,13 @@ $ kubectl create secret generic gocd-server-ssh \
 | Parameter                                 | Description                                                                                                                                                                      | Default                      |
 | ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- |
 | `agent.replicaCount`                      | GoCD Agent replicas Count. By default, no agents are provided.                                                                                                                   | `0`                          |
+| `agent.deployStrategy`                      | GoCD Agent [deployment strategy](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy).                                                                                                                   | `{}`                          |
 | `agent.image.repository`                  | GoCD agent image                                                                                                                                                                 | `gocd/gocd-agent-alpine-3.6` |
 | `agent.image.tag`                         | GoCD agent image tag                                                                                                                                                             | `.Chart.appVersion`          |
 | `agent.image.pullPolicy`                  | Image pull policy                                                                                                                                                                | `IfNotPresent`               |
 | `agent.resources`                         | GoCD agent resource requests and limits                                                                                                                                          | `{}`                |
 | `agent.nodeSelector`                      | GoCD agent nodeSelector for pod labels                                                                                                                                           | `{}`                |
+| `agent.affinity`                         | GoCD agent affinity                                                                                                                                                               | `{}`                |
 | `agent.env.goServerUrl`                   | GoCD Server Url. If nil, discovers the GoCD server service if its available on the Kubernetes cluster                                                                            | `nil`                        |
 | `agent.env.agentAutoRegisterKey`          | GoCD Agent autoregister key                                                                                                                                                      | `nil`                        |
 | `agent.env.agentAutoRegisterResources`    | Comma separated list of GoCD Agent resources                                                                                                                                     | `nil`                        |

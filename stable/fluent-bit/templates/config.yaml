@@ -30,12 +30,13 @@ data:
         Parser           docker
         Tag              {{ .Values.filter.kubeTag }}.*
         Refresh_Interval 5
-        Mem_Buf_Limit    5MB
+        Mem_Buf_Limit    {{ .Values.input.tail.memBufLimit }}
         Skip_Long_Lines  On
 {{- if .Values.trackOffsets }}
         DB               /tail-db/tail-containers-state.db
         DB.Sync          Normal
 {{- end }}
+{{ .Values.extraInputs | indent 8 }}
 
     [FILTER]
         Name                kubernetes
@@ -44,7 +45,7 @@ data:
         Kube_CA_File        {{ .Values.filter.kubeCAFile }}
         Kube_Token_File     {{ .Values.filter.kubeTokenFile }}
 {{- if .Values.filter.mergeJSONLog }}
-        Merge_JSON_Log      On
+        Merge_Log           On
 {{- end }}
 {{- if .Values.filter.enableParser }}
         K8S-Logging.Parser  On
@@ -52,6 +53,8 @@ data:
 {{- if .Values.filter.enableExclude }}
         K8S-Logging.Exclude On
 {{- end }}
+{{ .Values.extraFilters | indent 8 }}
+
 {{ if eq .Values.backend.type "test" }}
     [OUTPUT]
         Name  file
@@ -64,6 +67,9 @@ data:
         Host          {{ .Values.backend.forward.host }}
         Port          {{ .Values.backend.forward.port }}
         Retry_Limit False
+{{- if .Values.backend.forward.shared_key }}
+        Shared_Key    {{ .Values.backend.forward.shared_key }}
+{{- end }}
 {{ else if eq .Values.backend.type "es" }}
     [OUTPUT]
         Name  es
@@ -76,18 +82,6 @@ data:
 {{- if .Values.backend.es.time_key }}
         Time_Key {{ .Values.backend.es.time_key }}
 {{- end }}
-{{ else if eq .Values.backend.type "splunk" }}
-    [OUTPUT]
-        Name  splunk
-        Match *
-        Host  {{ .Values.backend.splunk.host }}
-        Port  {{ .Values.backend.splunk.port }}
-        Splunk_Token  {{ .Values.backend.splunk.token }}
-        Splunk_Send_Raw {{ .Values.backend.splunk.send_raw}}
-        TLS   {{ .Values.backend.splunk.tls }}
-        TLS.Verify   {{ .Values.backend.splunk.tls_verify }}
-        Message_Key   {{ .Values.backend.splunk.message_key }}
-
 {{- if .Values.backend.es.logstash_prefix }}
         Logstash_Prefix {{ .Values.backend.es.logstash_prefix }}
 {{ else if .Values.backend.es.index }}
@@ -105,7 +99,18 @@ data:
         tls.ca_file /secure/es-tls-ca.crt
 {{- end }}
 {{- end }}
-
+{{ else if eq .Values.backend.type "splunk" }}
+    [OUTPUT]
+        Name  splunk
+        Match *
+        Host  {{ .Values.backend.splunk.host }}
+        Port  {{ .Values.backend.splunk.port }}
+        Splunk_Token  {{ .Values.backend.splunk.token }}
+        Splunk_Send_Raw {{ .Values.backend.splunk.send_raw}}
+        TLS   {{ .Values.backend.splunk.tls }}
+        TLS.Verify   {{ .Values.backend.splunk.tls_verify }}
+        tls.debug {{ .Values.backend.splunk.tls_debug }}
+        Message_Key   {{ .Values.backend.splunk.message_key }}
 {{ else if eq .Values.backend.type "http" }}
     [OUTPUT]
         Name  http
@@ -113,11 +118,20 @@ data:
         Host {{ .Values.backend.http.host }}
         Port {{ .Values.backend.http.port }}
         URI {{ .Values.backend.http.uri }}
+{{- if .Values.backend.http.http_user }}
+        HTTP_User {{ .Values.backend.http.http_user }}
+        HTTP_Passwd {{ .Values.backend.http.http_passwd }}
+{{- end }}
+        tls {{ .Values.backend.http.tls }}
+        tls.verify {{ .Values.backend.http.tls_verify }}
+        tls.debug {{ .Values.backend.http.tls_debug }}
 {{- if .Values.backend.http.proxy }}
         Proxy {{ .Values.backend.http.proxy }}
 {{- end }}
         Format {{ .Values.backend.http.format }}
 {{- end }}
+{{ .Values.extraOutputs | indent 8 }}
+
   parsers.conf: |-
 {{- if .Values.parsers.regex }}
 {{- range .Values.parsers.regex }}

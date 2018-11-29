@@ -48,6 +48,10 @@ server:
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
   nodeSelector: {}
 
+  ## Affinity for assigning pods to specific nodes
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+  affinity: {}
+
   healthCheck:
     # server.healthCheck.initialDelaySeconds is the initial delays in seconds to start the health checks
     initialDelaySeconds: 90
@@ -168,6 +172,8 @@ server:
 agent:
   # agent.replicaCount is the GoCD Agent replicas Count. Specify the number of GoCD agents to run
   replicaCount: 0
+  # agent.deployStrategy is the strategy explained in detail at https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
+  deployStrategy: {}
   image:
     # agent.image.repository is the GoCD Agent image name
     repository: "gocd/gocd-agent-alpine-3.6"
@@ -279,3 +285,7 @@ agent:
   ## Additional GoCD agent pod labels
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
   nodeSelector: {}
+
+  ## Affinity for assigning pods to specific nodes
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+  affinity: {}

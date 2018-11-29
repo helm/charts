@@ -58,7 +58,7 @@ This version removes the `chart` label from the `spec.selector.matchLabels`
 which is immutable since `StatefulSet apps/v1beta2`. It has been inadvertently
 added, causing any subsequent upgrade to fail. See https://github.com/helm/charts/issues/7726.
 
-It also fixes https://github.com/helm/charts/issues/7726 where a deployment `extensions/v1beta1` can not be upgraded if `spec.selector` is not explicitely set.
+It also fixes https://github.com/helm/charts/issues/7726 where a deployment `extensions/v1beta1` can not be upgraded if `spec.selector` is not explicitly set.
 
 Finally, it fixes https://github.com/helm/charts/issues/7803 by removing mutable labels in `spec.VolumeClaimTemplate.metadata.labels` so that it is upgradable.
 
@@ -105,10 +105,14 @@ The following table lists the configurable parameters of the Redis chart and the
 | `metrics.extraArgs`                        | Extra arguments for the binary; possible values [here](https://github.com/oliver006/redis_exporter#flags)      | {}                                                   |
 | `metrics.podLabels`                        | Additional labels for Metrics exporter pod                                                                     | {}                                                   |
 | `metrics.podAnnotations`                   | Additional annotations for Metrics exporter pod                                                                | {}                                                   |
-| `metrics.service.type`                     | Kubernetes Service type (redis metrics)                                                                        | `LoadBalancer`                                       |
+| `metrics.service.type`                     | Kubernetes Service type (redis metrics)                                                                        | `ClusterIP`                                          |
 | `metrics.service.annotations`              | Annotations for the services to monitor  (redis master and redis slave service)                                | {}                                                   |
 | `metrics.service.loadBalancerIP`           | loadBalancerIP if redis metrics service type is `LoadBalancer`                                                 | `nil`                                                |
 | `metrics.resources`                        | Exporter resource requests/limit                                                                               | Memory: `256Mi`, CPU: `100m`                         |
+| `metrics.serviceMonitor.enabled`           | if `true`, creates a Prometheus Operator ServiceMonitor (also requires `metrics.enabled` to be `true`)         | `false`                                              |
+| `metrics.serviceMonitor.namespace`         | Namespace which Prometheus is running in                                                                       | `monitoring`                                         |
+| `metrics.serviceMonitor.interval`          | How frequently to scrape metrics (use by default, falling back to Prometheus' default)                         |  `nil`                                               |
+| `metrics.serviceMonitor.selector`          | Default to kube-prometheus install (CoreOS recommended), but should be set according to Prometheus install     | `{ prometheus: kube-prometheus }`                    |
 | `persistence.existingClaim`                | Provide an existing PersistentVolumeClaim                                                                      | `nil`                                                |
 | `master.persistence.enabled`               | Use a PVC to persist data (master node)                                                                        | `true`                                               |
 | `master.persistence.path`                  | Path to mount the volume at, to use other images                                                               | `/bitnami`                                           |
@@ -150,10 +154,10 @@ The following table lists the configurable parameters of the Redis chart and the
 | `master.readinessProbe.successThreshold`   | Minimum consecutive successes for the probe to be considered successful after having failed (redis master pod) | `1`                                                  |
 | `master.readinessProbe.failureThreshold`   | Minimum consecutive failures for the probe to be considered failed after having succeeded.                     | `5`                                                  |
 | `volumePermissions.image.registry`         | Init container volume-permissions image registry                                                               | `docker.io`                                          |
-| `volumePermissions.image.repository`       | Init container volume-permissions image name                                                                   | `alpine`                                             |
-| `volumePermissions.image.tag`              | Init container volume-permissions image tag                                                                    | `3.8`                                                |
+| `volumePermissions.image.repository`       | Init container volume-permissions image name                                                                   | `bitnami/minideb`                                    |
+| `volumePermissions.image.tag`              | Init container volume-permissions image tag                                                                    | `latest`                                             |
 | `volumePermissions.image.pullPolicy`       | Init container volume-permissions image pull policy                                                            | `IfNotPresent`                                       |
-| `slave.serviceType`                        | Kubernetes Service type (redis slave)                                                                          | `LoadBalancer`                                       |
+| `slave.service.type`                       | Kubernetes Service type (redis slave)                                                                          | `ClusterIP`                                          |
 | `slave.service.nodePort`                   | Kubernetes Service nodePort (redis slave)                                                                      | `nil`                                                |
 | `slave.service.annotations`                | annotations for redis slave service                                                                            | {}                                                   |
 | `slave.service.loadBalancerIP`             | LoadBalancerIP if Redis slave service type is `LoadBalancer`                                                   | `nil`                                                |
