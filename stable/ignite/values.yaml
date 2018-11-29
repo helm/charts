@@ -10,6 +10,10 @@ nameOverride: ""
 fullnameOverride: ""
 
 ignite:
+  env:
+    OPTION_LIBS: "ignite-kubernetes,ignite-rest-http"
+    IGNITE_QUIET: "false"
+    JVM_OPTS: "-Djava.net.preferIPv4Stack=true"
   peerClassLoadingEnabled: false
   dataStorage:
     enabled: false

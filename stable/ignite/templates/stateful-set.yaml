@@ -30,13 +30,13 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         resources:
 {{ toYaml .Values.resources | indent 10 }}
+{{- if .Values.ignite.env }}
         env:
-        - name: OPTION_LIBS
-          value: ignite-kubernetes,ignite-rest-http
-        - name: IGNITE_QUIET
-          value: "false"
-        - name: JVM_OPTS
-          value: "-Djava.net.preferIPv4Stack=true"
+{{- range $name, $value := .Values.ignite.env }}
+        - name: "{{ $name }}"
+          value: "{{ $value }}"
+{{- end }}
+{{- end }}
         ports:
         - containerPort: 11211 # JDBC port number.
         - containerPort: 47100 # communication SPI port number.
