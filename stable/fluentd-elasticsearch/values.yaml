@@ -457,15 +457,15 @@ configMaps:
     </match>
 # Specify custom resources to create in the form of an array
 # Values will be mapped to customResources.yaml
-# Example 
-# customResources: 
+# Example
+# customResources:
 # - apiVersion: custom-version
 #   kind: custom-kind
 #   any other property
 #
 # - apiVersion: custom-version
 #   kind: custom-kind
-#   any other property  
+#   any other property
 customResources: []
 daemonset:
   annotations: {}
