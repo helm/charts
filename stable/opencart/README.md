@@ -58,9 +58,7 @@ The following table lists the configurable parameters of the OpenCart chart and 
 | `opencartHost`                      | OpenCart host to create application URLs  | `nil`                                                    |
 | `service.type`                    | Kubernetes Service type                    | `LoadBalancer`                                          |
 | `service.port`                    | Service HTTP port                    | `80`                                          |
-| `nodePorts.http`                 | Kubernetes http node port                  | `""`                                                    |
 | `service.httpsPort`                    | Service HTTPS port                    | `443`                                          |
-| `nodePorts.https`                | Kubernetes https node port                 | `""`                                                    |
 | `service.externalTrafficPolicy`   | Enable client source IP preservation       | `Cluster`                                               |
 | `service.nodePorts.http`                 | Kubernetes http node port                  | `""`                                                    |
 | `service.nodePorts.https`                | Kubernetes https node port                 | `""`                                                    |
