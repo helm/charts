@@ -19,7 +19,6 @@ spec:
     metadata:
       labels:
         app: {{ template "fluentd-elasticsearch.name" . }}
-        version: {{ .Values.image.tag }}
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         heritage: "{{ .Release.Service }}"
         kubernetes.io/cluster-service: "true"
