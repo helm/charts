@@ -323,6 +323,9 @@ metrics:
     # address: localhost:8125
     # pushinterval: 10s
 deployment:
+  # labels to add to the pod container metadata
+  # podLabels:
+  #   key: value
   # podAnnotations:
   #   key: value
   hostPort:
