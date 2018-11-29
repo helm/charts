@@ -21,7 +21,7 @@ mysql:
 allDatabases:
   enabled: true
   # creates single backup file with all databases
-  SingleSqlFile: false
+  singleBackupFile: false
 
 ## options to pass to mysqldump
 options: "--opt --single-transaction"

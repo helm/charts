@@ -3,10 +3,10 @@ kind: ConfigMap
 metadata:
   name: {{ template "mysqldump.fullname" . }}
   labels:
-    app: {{ template "mysqldump.name" . }}
-    chart: {{ template "mysqldump.chart" . }}
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app.kubernetes.io/name: {{ include "mysqldump.name" . }}
+    helm.sh/chart: {{ include "mysqldump.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 data:
   MYSQL_HOST: {{ .Values.mysql.host | quote }}
   MYSQL_USERNAME: {{ .Values.mysql.username | quote }}
@@ -19,10 +19,10 @@ kind: ConfigMap
 metadata:
   name: {{ template "mysqldump.fullname" . }}-script
   labels:
-    app: {{ template "mysqldump.name" . }}
-    chart: {{ template "mysqldump.chart" . }}
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app.kubernetes.io/name: {{ include "mysqldump.name" . }}
+    helm.sh/chart: {{ include "mysqldump.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 data:
   backup.sh: |-
     #!/bin/sh
@@ -55,14 +55,14 @@ data:
     echo "Backing up single db ${MYSQL_DB}"
     mysqldump ${MYSQL_OPTS} -h ${MYSQL_HOST} -P ${MYSQL_PORT} -u ${MYSQL_USERNAME}{{ if .Values.mysql.password }} -p${MYSQL_PASSWORD}{{ end }} ${MYSQL_DB} | gzip > ${BACKUP_DIR}/${TIMESTAMP}_${MYSQL_DB}.sql.gz
 
-    {{ else if and (.Values.allDatabases.enabled) (eq .Values.allDatabases.SingleSqlFile false)}}
+    {{ else if and (.Values.allDatabases.enabled) (eq .Values.allDatabases.singleBackupFile false)}}
     for MYSQL_DB in $(mysql -h "${MYSQL_HOST}" -u ${MYSQL_USERNAME}{{ if .Values.mysql.password }} -p${MYSQL_PASSWORD}{{ end }} -B -N -e "SHOW DATABASES;"|egrep -v '^(information|performance)_schema$'); do
       echo "Backing up db ${MYSQL_DB}"
       mysqldump ${MYSQL_OPTS} -h ${MYSQL_HOST} -u ${MYSQL_USERNAME}{{ if .Values.mysql.password }} -p${MYSQL_PASSWORD}{{ end }} ${MYSQL_DB} | gzip > ${BACKUP_DIR}/${TIMESTAMP}_${MYSQL_DB}.sql.gz
       rc=$?
     done
 
-    {{ else if and (.Values.allDatabases.enabled) (.Values.allDatabases.SingleSqlFile) }}
+    {{ else if and (.Values.allDatabases.enabled) (.Values.allDatabases.singleBackupFile) }}
     echo "Backing up all databases"
     MYSQL_DB="alldatabases"
     mysqldump ${MYSQL_OPTS} -h ${MYSQL_HOST} -P ${MYSQL_PORT} -u ${MYSQL_USERNAME}{{ if .Values.mysql.password }} -p${MYSQL_PASSWORD}{{ end }} --all-databases | gzip > ${BACKUP_DIR}/${TIMESTAMP}_${MYSQL_DB}.sql.gz
@@ -71,13 +71,13 @@ data:
 
     {{- if (.Values.upload.googlestoragebucket.enabled) or (.Values.upload.ssh.enabled) -}}
     {{ if .Values.upload.ssh.enabled -}}
-    echo "upload files via ssh"
-    rsync -av --delete --exclude=*.state -e 'ssh -o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=/dev/null' ${BACKUP_DIR}/ {{ .Values.upload.ssh.user }}@{{ .Values.upload.ssh.host }}:/{{ .Values.upload.ssh.dir }}
+    echo "upload files via ssh to {{ .Values.upload.ssh.user }}@{{ .Values.upload.ssh.host }}:{{ .Values.upload.ssh.dir }}"
+    rsync -av --delete --exclude=*.state -e 'ssh -o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=/dev/null' ${BACKUP_DIR}/ {{ .Values.upload.ssh.user }}@{{ .Values.upload.ssh.host }}:{{ .Values.upload.ssh.dir }}
     rcu=$?
     {{ end -}}
 
     {{ if .Values.upload.googlestoragebucket.enabled }}
-    echo "upload files to google storage bucket"
+    echo "upload files to google storage bucket {{ .Values.upload.googlestoragebucket.bucketname }}"
     gcloud auth activate-service-account --key-file /root/gcloud/keyfile.json
     gsutil -m rsync -x '.*\.state' -d ${BACKUP_DIR}/ {{ .Values.upload.googlestoragebucket.bucketname }}
     rcu=$?
