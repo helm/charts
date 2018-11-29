@@ -1,9 +1,13 @@
 name: spark-history-server
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 0.3.0
 =======
 version: 0.2.1
 >>>>>>> Corrected syntax error in deployment command (#9323)
+=======
+version: 0.3.1
+>>>>>>> Added colleague as co-owner of the chart
 appVersion: 2.4.0
 description: A Helm chart for Spark History Server
 home: https://spark.apache.org
