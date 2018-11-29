@@ -88,7 +88,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `filter.kubeTokenFile`             | Optional custom configmaps       | `/var/run/secrets/kubernetes.io/serviceaccount/token`     |
 | `filter.kubeTag`                   | Optional top-level tag for matching in filter         | `kube`                                 |
 | `image.fluent_bit.repository`      | Image                                      | `fluent/fluent-bit`                               |
-| `image.fluent_bit.tag`             | Image tag                                  | `0.14.6`                                          |
+| `image.fluent_bit.tag`             | Image tag                                  | `0.14.8`                                          |
 | `image.pullPolicy`                 | Image pull policy                          | `Always`                                          |
 | `image.pullSecrets`                | Specify image pull secrets                 | `nil`                                             |
 | `input.tail.memBufLimit`           | Specify Mem_Buf_Limit in tail input        | `5MB`                                             |
