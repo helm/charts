@@ -106,6 +106,8 @@ spec:
               value: {{ .Values.replicaSetName }}
             - name: TIMEOUT
               value: "{{ .Values.init.timeout }}"
+            - name: DB_PATH
+              value: "{{ .Values.dbPath }}"
           {{- if .Values.auth.enabled }}
             - name: AUTH
               value: "true"
@@ -163,7 +165,7 @@ spec:
             - mongod
           args:
             - --config=/data/configdb/mongod.conf
-            - --dbpath=/data/db
+            - --dbpath={{ .Values.dbPath }}
             - --replSet={{ .Values.replicaSetName }}
             - --port=27017
             - --bind_ip=0.0.0.0

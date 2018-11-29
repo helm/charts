@@ -33,6 +33,7 @@ The following table lists the configurable parameters of the mongodb chart and t
 
 | Parameter                           | Description                                                               | Default                                             |
 | ----------------------------------- | ------------------------------------------------------------------------- | --------------------------------------------------- |
+| `dbPath`                            | Corresponds to mongo config `storage.dbPath`                              | `/data/db`                                          | 
 | `replicas`                          | Number of replicas in the replica set                                     | `3`                                                 |
 | `replicaSetName`                    | The name of the replica set                                               | `rs0`                                               |
 | `podDisruptionBudget`               | Pod disruption budget                                                     | `{}`                                                |

@@ -78,17 +78,19 @@ shutdown_mongo() {
 }
 
 init_mongod_standalone() {
+
+    mkdir -p $DB_PATH
     if [[ ! -f /init/initMongodStandalone.js ]]; then
         log "Skipping init mongod standalone script"
         return 0
-    elif [[ -z "$(ls -1A /data/db)" ]]; then
+    elif [[ -z "$(ls -1A $DB_PATH)" ]]; then
         log "mongod standalone script currently not supported on initial install"
         return 0
     fi
 
     local port="27018"
     log "Starting a MongoDB instance as standalone..."
-    mongod --config /data/configdb/mongod.conf --dbpath=/data/db "${auth_args[@]}" --port "${port}" --bind_ip=0.0.0.0 2>&1 | tee -a /work-dir/log.txt 1>&2 &
+    mongod --config /data/configdb/mongod.conf --dbpath="$DB_PATH" "${auth_args[@]}" --port "${port}" --bind_ip=0.0.0.0 2>&1 | tee -a /work-dir/log.txt 1>&2 &
     export pid=$!
     trap shutdown_mongo EXIT
     log "Waiting for MongoDB to be ready..."
@@ -153,7 +155,7 @@ init_mongod_standalone
 
 log "Peers: ${peers[*]}"
 log "Starting a MongoDB replica"
-mongod --config /data/configdb/mongod.conf --dbpath=/data/db --replSet="$replica_set" --port="${port}" "${auth_args[@]}" --bind_ip=0.0.0.0 2>&1 | tee -a /work-dir/log.txt 1>&2 &
+mongod --config /data/configdb/mongod.conf --dbpath="$DB_PATH" --replSet="$replica_set" --port="${port}" "${auth_args[@]}" --bind_ip=0.0.0.0 2>&1 | tee -a /work-dir/log.txt 1>&2 &
 pid=$!
 trap shutdown_mongo EXIT
 

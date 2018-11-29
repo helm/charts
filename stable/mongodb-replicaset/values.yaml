@@ -1,6 +1,6 @@
 replicas: 3
 port: 27017
-
+dbPath: /data/db
 replicaSetName: rs0
 
 podDisruptionBudget: {}
