@@ -44,6 +44,7 @@ data:
     echo "started" > ${BACKUP_DIR}/${TIMESTAMP}.state
 
     {{- if (.Values.persistence.enabled) or (.Values.persistentVolumeClaim) }}
+
     {{ if .Values.housekeeping.enabled }}
     echo "delete old backups"
     find ${BACKUP_DIR} -maxdepth 1 -mtime +${KEEP_DAYS} -regex "^${BACKUP_DIR}/[0-9]*_.*\.sql\.gz$" -type f -exec rm {} \;
@@ -71,31 +72,34 @@ data:
     {{- if (.Values.upload.googlestoragebucket.enabled) or (.Values.upload.ssh.enabled) -}}
     {{ if .Values.upload.ssh.enabled -}}
     echo "upload files via ssh"
-    rsync -av --delete -e 'ssh -o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=/dev/null' ${BACKUP_DIR}/ {{ .Values.upload.ssh.user }}@{{ .Values.upload.ssh.host }}:/{{ .Values.upload.ssh.dir }}
+    rsync -av --delete --exclude=*.state -e 'ssh -o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=/dev/null' ${BACKUP_DIR}/ {{ .Values.upload.ssh.user }}@{{ .Values.upload.ssh.host }}:/{{ .Values.upload.ssh.dir }}
     rcu=$?
-    {{- end -}}
+    {{ end -}}
 
     {{ if .Values.upload.googlestoragebucket.enabled }}
     echo "upload files to google storage bucket"
     gcloud auth activate-service-account --key-file /root/gcloud/keyfile.json
-    gsutil rsync -d ${BACKUP_DIR}/ {{ .Values.upload.googlestoragebucket.bucketname }}
+    gsutil -m rsync -x '.*\.state' -d ${BACKUP_DIR}/ {{ .Values.upload.googlestoragebucket.bucketname }}
     rcu=$?
-    {{- end -}}
+    {{ end }}
 
     if [ "$rcu" != "0" ]; then
       echo "upload failed"
       exit 1
     fi
-    done
-    {{- end -}}
+
     {{- else }}
     mysqldump ${MYSQL_OPTS} -h ${MYSQL_HOST} -P ${MYSQL_PORT} -u ${MYSQL_USERNAME}{{ if .Values.mysql.password }} -p${MYSQL_PASSWORD}{{ end }} --all-databases
     rc=$?
-    {{- end }}
+
+    {{ end }}
+    {{ end }}
+
     if [ "$rc" != "0" ]; then
       echo "backup failed"
       exit 1
     fi
+
     {{ if .Values.debug }}
     ls -alh ${BACKUP_DIR}
     {{ end }}
