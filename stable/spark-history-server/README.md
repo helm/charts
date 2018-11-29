@@ -38,7 +38,7 @@
 
   Similarly, if using S3 as storage, follow the preparatory steps below:
   ```bash
-  $ aws s3 mb s3://your-spark-event-log-directory # default is bucket is s3://spark-hs/
+  $ aws s3 mb s3://your-spark-event-log-directory # default bucket is s3://spark-hs/
   $ aws iam list-access-keys --user-name your-user-name --output text | awk '{print $2}' >> aws-access-key
   $ echo "your-aws-secret-key" >> aws-secret-key
   ```

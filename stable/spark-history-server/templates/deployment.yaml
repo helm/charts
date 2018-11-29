@@ -82,7 +82,7 @@ spec:
         volumeMounts:
         - name: secrets-volume
           mountPath: /etc/secrets
-        {{- end}}
+        {{- end }}
         {{- else }}
         volumeMounts:
         - name: core-site
@@ -108,7 +108,7 @@ spec:
       - name: secrets-volume
         secret:
           secretName: {{ .Values.s3.secret }}
-      {{- end}}
+      {{- end }}
       {{- else }}
       volumes:
       - name: hdfs-site
