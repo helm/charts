@@ -109,6 +109,7 @@ service:
   externalPort: 8080
   nodePort:
   annotations: {}
+  labels: {}
 
 resources: {}
 #  limits:

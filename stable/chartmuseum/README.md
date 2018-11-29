@@ -120,6 +120,7 @@ their default values. See values.yaml for all available options.
 | `service.type`                         | Kubernetes Service type                     | `ClusterIP`                                          |
 | `service.clusterIP`                    | Static clusterIP or None for headless services| `nil`                                              |
 | `service.servicename`                  | Custom name for service                     | ``                                                  |
+| `service.labels`                       | Additional labels for service               | `{}`                                                |
 | `deployment.labels`                    | Additional labels for deployment            | `{}`                                                |
 | `deployment.matchlabes`                | Match labels for deployment selector        | `{}`                                                |
 
