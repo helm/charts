@@ -178,6 +178,9 @@ data:
     <?xml version='1.1' encoding='UTF-8'?>
     <jenkins.model.JenkinsLocationConfiguration>
       <adminAddress>{{ default "" .Values.Master.JenkinsAdminEmail }}</adminAddress>
+{{- if .Values.Master.JenkinsUrl }}
+      <jenkinsUrl>{{ .Values.Master.JenkinsUrl }}</jenkinsUrl>
+{{- else }}
 {{- if .Values.Master.HostName }}
 {{- if .Values.Master.Ingress.TLS }}
       <jenkinsUrl>https://{{ .Values.Master.HostName }}{{ default "" .Values.Master.JenkinsUriPrefix }}</jenkinsUrl>
@@ -186,6 +189,7 @@ data:
 {{- end }}
 {{- else }}
       <jenkinsUrl>http://{{ template "jenkins.fullname" . }}:{{.Values.Master.ServicePort}}{{ default "" .Values.Master.JenkinsUriPrefix }}</jenkinsUrl>
+{{- end}}
 {{- end}}
     </jenkins.model.JenkinsLocationConfiguration>
   jenkins.CLI.xml: |-
