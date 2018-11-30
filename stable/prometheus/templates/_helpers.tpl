@@ -9,44 +9,36 @@ Expand the name of the chart.
 {{/*
 Create unified labels for prometheus components
 */}}
-{{- define "prometheus.alertmanager.labels" }}
+{{- define "prometheus.common.labels" }}
 app: {{ template "prometheus.name" . }}
 chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-component: {{ .Values.alertmanager.name | quote }}
 heritage: {{ .Release.Service }}
 release: {{ .Release.Name }}
+{{- end }}
+
+{{- define "prometheus.alertmanager.labels" }}
+component: {{ .Values.alertmanager.name | quote }}
+{{- include "prometheus.common.labels" . }}
 {{- end }}
 
 {{- define "prometheus.kubeStateMetrics.labels" }}
-app: {{ template "prometheus.name" . }}
-chart: {{ .Chart.Name }}-{{ .Chart.Version }}
 component: {{ .Values.kubeStateMetrics.name | quote }}
-heritage: {{ .Release.Service }}
-release: {{ .Release.Name }}
+{{- include "prometheus.common.labels" . }}
 {{- end }}
 
 {{- define "prometheus.nodeExporter.labels" }}
-app: {{ template "prometheus.name" . }}
-chart: {{ .Chart.Name }}-{{ .Chart.Version }}
 component: {{ .Values.nodeExporter.name | quote }}
-heritage: {{ .Release.Service }}
-release: {{ .Release.Name }}
+{{- include "prometheus.common.labels" . }}
 {{- end }}
 
 {{- define "prometheus.pushgateway.labels" }}
-app: {{ template "prometheus.name" . }}
-chart: {{ .Chart.Name }}-{{ .Chart.Version }}
 component: {{ .Values.pushgateway.name | quote }}
-heritage: {{ .Release.Service }}
-release: {{ .Release.Name }}
+{{- include "prometheus.common.labels" . }}
 {{- end }}
 
 {{- define "prometheus.server.labels" }}
-app: {{ template "prometheus.name" . }}
-chart: {{ .Chart.Name }}-{{ .Chart.Version }}
 component: {{ .Values.server.name | quote }}
-heritage: {{ .Release.Service }}
-release: {{ .Release.Name }}
+{{- include "prometheus.common.labels" . }}
 {{- end }}
 
 {{/*
