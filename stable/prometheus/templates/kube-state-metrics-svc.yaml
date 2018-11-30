@@ -35,8 +35,6 @@ spec:
       protocol: TCP
       targetPort: 8080
   selector:
-    app: {{ template "prometheus.name" . }}
-    component: "{{ .Values.kubeStateMetrics.name }}"
-    release: {{ .Release.Name }}
+    {{- include "prometheus.kubeStateMetrics.matchLabels" . | indent 4 }}
   type: "{{ .Values.kubeStateMetrics.service.type }}"
 {{- end }}

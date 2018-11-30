@@ -10,6 +10,9 @@ metadata:
     {{- include "prometheus.kubeStateMetrics.labels" . | indent 4 }}
   name: {{ template "prometheus.kubeStateMetrics.fullname" . }}
 spec:
+  selector:
+    matchLabels:
+      {{- include "prometheus.kubeStateMetrics.matchLabels" . | indent 6 }}
   replicas: {{ .Values.kubeStateMetrics.replicaCount }}
   template:
     metadata:

@@ -35,8 +35,6 @@ spec:
       protocol: TCP
       targetPort: 9100
   selector:
-    app: {{ template "prometheus.name" . }}
-    component: "{{ .Values.nodeExporter.name }}"
-    release: {{ .Release.Name }}
+    {{- include "prometheus.nodeExporter.matchLabels" . | indent 4 }}
   type: "{{ .Values.nodeExporter.service.type }}"
 {{- end -}}

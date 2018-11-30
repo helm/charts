@@ -35,8 +35,6 @@ spec:
       protocol: TCP
       targetPort: 9091
   selector:
-    app: {{ template "prometheus.name" . }}
-    component: "{{ .Values.pushgateway.name }}"
-    release: {{ .Release.Name }}
+    {{- include "prometheus.pushgateway.matchLabels" . | indent 4 }}
   type: "{{ .Values.pushgateway.service.type }}"
 {{- end }}

@@ -6,6 +6,9 @@ metadata:
     {{- include "prometheus.alertmanager.labels" . | indent 4 }}
   name: {{ template "prometheus.alertmanager.fullname" . }}
 spec:
+  selector:
+    matchLabels:
+      {{- include "prometheus.alertmanager.matchLabels" . | indent 6 }}
   replicas: {{ .Values.alertmanager.replicaCount }}
   {{- if .Values.server.strategy }}
   strategy:

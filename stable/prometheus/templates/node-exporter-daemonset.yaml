@@ -10,6 +10,9 @@ metadata:
     {{- include "prometheus.nodeExporter.labels" . | indent 4 }}
   name: {{ template "prometheus.nodeExporter.fullname" . }}
 spec:
+  selector:
+    matchLabels:
+      {{- include "prometheus.nodeExporter.matchLabels" . | indent 6 }}
   {{- if .Values.nodeExporter.updateStrategy }}
   updateStrategy:
 {{ toYaml .Values.nodeExporter.updateStrategy | indent 4 }}

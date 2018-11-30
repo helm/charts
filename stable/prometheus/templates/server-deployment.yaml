@@ -9,6 +9,9 @@ metadata:
     {{- include "prometheus.server.labels" . | indent 4 }}
   name: {{ template "prometheus.server.fullname" . }}
 spec:
+  selector:
+    matchLabels:
+      {{- include "prometheus.server.matchLabels" . | indent 6 }}
   replicas: {{ .Values.server.replicaCount }}
   {{- if .Values.server.strategy }}
   strategy:

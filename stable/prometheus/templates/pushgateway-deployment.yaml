@@ -6,6 +6,9 @@ metadata:
     {{- include "prometheus.pushgateway.labels" . | indent 4 }}
   name: {{ template "prometheus.pushgateway.fullname" . }}
 spec:
+  selector:
+    matchLabels:
+      {{- include "prometheus.pushgateway.matchLabels" . | indent 6 }}
   replicas: {{ .Values.pushgateway.replicaCount }}
   template:
     metadata:

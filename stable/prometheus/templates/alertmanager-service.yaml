@@ -44,8 +44,6 @@ spec:
       targetPort: 6783
 {{- end }}
   selector:
-    app: {{ template "prometheus.name" . }}
-    component: "{{ .Values.alertmanager.name }}"
-    release: {{ .Release.Name }}
+    {{- include "prometheus.alertmanager.matchLabels" . | indent 4 }}
   type: "{{ .Values.alertmanager.service.type }}"
 {{- end }}
