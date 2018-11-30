@@ -57,6 +57,7 @@ The following table lists the configurable parameters of the phpMyAdmin chart an
 | `db.port`                  | Database port to use to connect          | `3306`                                                  |
 | `db.chartName`             | Database suffix if included in the same release | `nil`                                            |
 | `db.host`                  | Database host to connect to              | `nil`                                                   |
+| `db.bundleTestDB`                  | Deploy a MariaDB instance for testing purposes              | `false`                                                   |
 | `ingress.enabled`          | Ingress resource to be added             | `false`                                                 |
 | `ingress.annotations`      | Ingress annotations                      | `{ingress.kubernetes.io/rewrite-target: /,    nginx.ingress.kubernetes.io/rewrite-target: /}`          |
 | `ingress.path`             | Path to access frontend                  | `/`                                                     |
