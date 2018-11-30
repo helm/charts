@@ -1,7 +1,10 @@
 # Airflow chart
 
-Helm chart for deploying Apache Airflow on kubernetes
+Helm chart for deploying Apache Airflow on kubernetes.
+
+
 Read more about Kubernetes Executor and Operator [here](https://airflow.incubator.apache.org/kubernetes.html).
+
 
 ## Ealy bird
 
@@ -11,24 +14,31 @@ functional, so a build from 'master' is the latest docker image. And thus it is 
 There are also differences between version, ex 1.10.1rc2 has the BatchTaskRunner while the master build uses the
 StandardTaskRunner.
 
+
 ## Guideance
 
 To force you not to end up in performance and/or other issues, this template takes some experience into account.
+
 
 ### Chain of configuration
 
 The chart might seem to have secrets and configmaps that isn´t used, and worker pods might seem to be missing mounts.
 The configuration design of airflow is not straight forward. Webservers and scheduler gets config overloaded with a
 configmap, while a secret populate the configration file, that in turn creates environment variables for the workers(tasks).
-All of which is configurable from the values file.
+All of which is configurable from the values.yaml file.
 
 The chart automatically sets the following variables:
+```
 AIRFLOW__CORE__SQL_ALCHEMY_CONN,
 AIRFLOW__KUBERNETES__AIRFLOW_CONFIGMAP,
 AIRFLOW__KUBERNETES__NAMESPACE
+```
 and:
+```
 AIRFLOW__KUBERNETES__WORKER_SERVICE_ACCOUNT_NAME
+```
 if rbac is enabled.
+
 
 ### Database backend
 
@@ -41,9 +51,23 @@ sqlAlchemyConn: somespec+other://username:password@db-hostname:5432/schema
 ### Provision connections
 
 The backend DB needs to be initialized, but also connections has to be provisioned to Ariflow. There is a provision
-job for this. See the provisioner section of the values.yaml file for some inspiration.
+job for this. Look at the example in the provisioner section of the values.yaml file for some inspiration.
+```
+provisioner:
+  enabled: true
+  cmds: |-
+    airflow initdb;
+    airflow connections --add --conn_id my_rs_connection \
+    --conn_type jdbc \
+    --conn_host jdbc:redshift://my-redshift.eu-west-1.redshift.amazonaws.com \
+    --conn_login my_rs_user \
+    --conn_password my_secret_password \
+    --conn_schema my_database \
+    --conn_port 5439 \
+    --conn_extra '{"extra__jdbc__drv_path": "/usr/local/ariflow/drivers/RedshiftJDBC42-no-awssdk-1.2.15.1025.jar", "extra__jdbc__drv_clsname": "com.amazon.redshift.jdbc42.Driver"}';
+```
+_this shows how to provision a AWS Redshift JDBS connection supported by the default docker image_
 
-This also means that there is a
 
 ### Worker logs
 
@@ -78,6 +102,7 @@ But it git syncs for each task in an EmptyDir mount, so basically a full clone..
 
 So I made a tiny patch of Airflow in my docker image.
 Edit: `worker_container_contains_dags = True` is set by default
+
 
 ### Installing the Chart
 
@@ -120,6 +145,8 @@ Alternatively a YAML file that specifies the values for the parameters can be pr
 ```bash
 $ helm install --name my-airflow -f values.yaml incubator/airflow
 ```
+
+
 ## Debugging
 
 One simple thing you can do is to set `AIRFLOW__KUBERNETES__DELETE_WORKER_PODS: "False"` in the config section in your
