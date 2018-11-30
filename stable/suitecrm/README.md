@@ -84,6 +84,10 @@ The following table lists the configurable parameters of the SuiteCRM chart and 
 | `service.nodePorts.https`                | Kubernetes https node port                 | `""`                                                    |
 | `service.externalTrafficPolicy`   | Enable client source IP preservation       | `Cluster`                                               |
 | `service.loadBalancerIP`            | `loadBalancerIP` for the SuiteCRM Service       | `nil`                                                   |
+| `ingress.enabled`           | Enable ingress for SuiteCRM Release | `false`                                     |
+| `ingress.annotations`       | Additional annotations for ingress     | `{}`                                                 |
+| `ingress.hosts`             | SuiteCRM Ingress hostnames       | `[]`                                                 |
+| `ingress.tls`               | SuiteCRM Ingress TLS configuration (YAML) | `[]`                                        |
 | `persistence.enabled`               | Enable persistence using PVC                    | `true`                                                  |
 | `persistence.storageClass`          | PVC Storage Class for SuiteCRM volume           | `nil` (uses alpha storage class annotation)             |
 | `persistence.existingClaim`         | An Existing PVC name for SuiteCRM volume        | `nil` (uses alpha storage class annotation)             |

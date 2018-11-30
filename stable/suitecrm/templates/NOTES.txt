@@ -9,8 +9,11 @@ This deployment will be incomplete until you configure SuiteCRM with a resolvabl
 host. To configure SuiteCRM with the URL of your service:
 
 1. Get the SuiteCRM URL by running:
-
-  {{- if contains "NodePort" .Values.service.type }}
+  {{- if .Values.ingress.enabled }}
+  {{- range .Values.ingress.hosts }}
+    http{{ if $.Values.ingress.tls }}s{{ end }}://{{ . }}
+  {{- end }}
+  {{- else if contains "NodePort" .Values.service.type }}
 
   export APP_PORT=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "suitecrm.fullname" . }} -o jsonpath="{.spec.ports[0].nodePort}")
   export APP_HOST=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
@@ -46,7 +49,11 @@ host. To configure SuiteCRM with the URL of your service:
 {{- else -}}
 1. Get the SuiteCRM URL by running:
 
-{{- if eq .Values.service.type "ClusterIP" }}
+{{- if .Values.ingress.enabled }}
+{{- range .Values.ingress.hosts }}
+  http{{ if $.Values.ingress.tls }}s{{ end }}://{{ . }}
+{{- end }}
+{{- else if eq .Values.service.type "ClusterIP" }}
 
   echo "SuiteCRM URL: http://127.0.0.1:8080/"
   kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "suitecrm.fullname" . }} $POD_NAME 8080:{{ .Values.service.port }}
@@ -76,7 +83,12 @@ host. To configure SuiteCRM to use and external database host:
 
 1. Complete your SuiteCRM deployment by running:
 
-{{- if contains "NodePort" .Values.service.type }}
+1. Get the application URL by running these commands:
+{{- if .Values.ingress.enabled }}
+{{- range .Values.ingress.hosts }}
+  http{{ if $.Values.ingress.tls }}s{{ end }}://{{ . }}
+{{- end }}
+{{- else if contains "NodePort" .Values.service.type }}
   export APP_HOST=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
 {{- else if contains "LoadBalancer" .Values.service.type }}
 
