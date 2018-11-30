@@ -36,7 +36,8 @@ valueFrom:
 {{- $itemTemplateName := index . 2 -}}
 
 {{- range $name, $value := $root -}}
-{{- $name := printf "%s_%s" $prefix  (regexReplaceAll "([a-z0-9])([A-Z])" $name "${1}_${2}") | upper -}}
+{{- $name := regexReplaceAll "([[:alnum:]])([[:upper:]])" $name "${1}_${2}" | replace "-" "_" -}}
+{{- $name := printf "%s_%s" $prefix $name | upper -}}
 {{- if kindIs "map" $value }}
 {{- include "common.envvar.from_yaml" (list $value $name $itemTemplateName) -}}
 {{- else if kindIs "slice" $value }}
