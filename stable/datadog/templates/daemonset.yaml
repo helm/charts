@@ -151,6 +151,8 @@ spec:
           - name: cgroups
             mountPath: /host/sys/fs/cgroup
             readOnly: true
+          - name: s6-run
+            mountPath: /var/run/s6
           {{- if (or (.Values.datadog.confd) (.Values.datadog.autoconf)) }}
           - name: confd
             mountPath: /conf.d
@@ -191,6 +193,8 @@ spec:
         - hostPath:
             path: /sys/fs/cgroup
           name: cgroups
+        - name: s6-run
+          emptyDir: {}
         {{- if (or (.Values.datadog.confd) (.Values.datadog.autoconf)) }}
         - name: confd
           configMap:
