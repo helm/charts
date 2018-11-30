@@ -144,7 +144,7 @@ spec:
           mountPath: /docker-entrypoint-initdb.d
         {{- if .Values.persistence.enabled }}
         - name: data
-          mountPath: /bitnami/postgresql
+          mountPath: {{ .Values.persistence.mountPath }}
         {{ end }}
         {{ if or (.Files.Glob "files/postgresql.conf") .Values.postgresqlConfiguration }}
         - name: postgresql-config
@@ -157,6 +157,11 @@ spec:
           subPath: pg_hba.conf
         {{ end }}
       volumes:
+      {{- if and .Values.persistence.enabled .Values.persistence.existingClaim }}
+      - name: {{ .Values.persistence.existingClaim }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.persistence.existingClaim }}
+      {{- end }}
       {{ if or (.Files.Glob "files/postgresql.conf") (.Files.Glob "files/pg_hba.conf") .Values.postgresqlConfiguration .Values.pgHbaConfiguration }}
       - name: postgresql-config
         configMap:
@@ -165,7 +170,7 @@ spec:
       - name: custom-init-scripts
         configMap:
           name: {{ template "postgresql.fullname" . }}-init-scripts
-{{- if .Values.persistence.enabled }}
+{{- if and .Values.persistence.enabled (not .Values.persistence.existingClaim) }}
   volumeClaimTemplates:
     - metadata:
         name: data
