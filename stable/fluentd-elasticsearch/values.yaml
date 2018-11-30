@@ -24,6 +24,12 @@ elasticsearch:
   buffer_queue_limit: 8
   logstash_prefix: 'logstash'
 
+# If you want to add custom environment variables, use the env dict
+# You can then reference these in your config file e.g.:
+#     user "#{ENV['OUTPUT_USER']}"
+env:
+  # OUTPUT_USER: my_user
+
 rbac:
   create: true
 
