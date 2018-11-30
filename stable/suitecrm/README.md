@@ -56,7 +56,6 @@ The following table lists the configurable parameters of the SuiteCRM chart and 
 | `image.pullPolicy`                  | Image pull policy                               | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
 | `image.pullSecrets`                 | Specify image pull secrets                      | `nil`                                                   |
 | `suitecrmHost`                      | SuiteCRM host to create application URLs        | `nil`                                                   |
-| `suitecrmLoadBalancerIP`            | `loadBalancerIP` for the SuiteCRM Service       | `nil`                                                   |
 | `suitecrmUsername`                  | User of the application                         | `user`                                                  |
 | `suitecrmPassword`                  | Application password                            | _random 10 character alphanumeric string_               |
 | `suitecrmEmail`                     | Admin email                                     | `user@example.com`                                      |
@@ -78,8 +77,13 @@ The following table lists the configurable parameters of the SuiteCRM chart and 
 | `mariadb.db.user`                   | Database user to create                         | `bn_suitecrm`                                           |
 | `mariadb.db.password`               | Password for the database                       | `nil`                                                   |
 | `mariadb.rootUser.password`         | MariaDB admin password                          | `nil`                                                   |
-| `serviceType`                       | Kubernetes Service type                         | `LoadBalancer`                                          |
-| `externalTrafficPolicy`             | Set to `Local` to preserve the client source IP | `Cluster`                                               |
+| `service.type`                    | Kubernetes Service type                    | `LoadBalancer`                                          |
+| `service.port`                    | Service HTTP port                  | `80`                                          |
+| `service.httpsPort`                    | Service HTTPS port                   | `443`                                          |
+| `service.nodePorts.http`                 | Kubernetes http node port                  | `""`                                                    |
+| `service.nodePorts.https`                | Kubernetes https node port                 | `""`                                                    |
+| `service.externalTrafficPolicy`   | Enable client source IP preservation       | `Cluster`                                               |
+| `service.loadBalancerIP`            | `loadBalancerIP` for the SuiteCRM Service       | `nil`                                                   |
 | `persistence.enabled`               | Enable persistence using PVC                    | `true`                                                  |
 | `persistence.storageClass`          | PVC Storage Class for SuiteCRM volume           | `nil` (uses alpha storage class annotation)             |
 | `persistence.existingClaim`         | An Existing PVC name for SuiteCRM volume        | `nil` (uses alpha storage class annotation)             |
