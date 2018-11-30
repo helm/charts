@@ -35,6 +35,9 @@ db:
   ## please note that this setting precedes dbHost
   # chartName: mariadb
   # host: foo
+  ## If you want to test phpMyAdmin, you can set it to bundle a MariaDB
+  ## instance
+  bundleTestDB: false
 
 ingress:
   enabled: false
