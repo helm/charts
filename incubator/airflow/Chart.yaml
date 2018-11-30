@@ -1,0 +1,13 @@
+name: airflow
+version: 0.0.1
+description: Helm chart to deploy Airflow with K8s executors
+keywords:
+  - airflow
+  - apache
+home: https://airflow.apache.org/
+sources:
+- https://github.com/tekn0ir/airflow-chart
+maintainers:
+- name: Anders Åslund
+  email: anders.aslund@teknoir.se
+engine: gotpl

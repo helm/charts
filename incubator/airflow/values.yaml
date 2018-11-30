@@ -1,0 +1,124 @@
+# Duplicate this file and put your customization here
+
+airflowImage: tekn0ir/airflow-docker
+airflowImageTag: latest
+imagePullPolicy: IfNotPresent
+
+fernetKey: af7CN0q6ag5U3g08IsPsw3K45U7Xa0axgVFhoh-3zB8=
+
+## To specify a separately provisioned backend database for Airflow use this:
+# sqlAlchemyConn: postgresql+psycopg2://username:password@db-hostname:5432/schema
+
+## Specify ingress settings
+## ref: https://kubernetes.io/docs/concepts/services-networking/ingress/
+ingress:
+  enabled: true
+  annotations: {}
+  labels: {}
+  hosts:
+  - airflow.192.168.99.100.xip.io
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - airflow.192.168.99.100.xip.io
+
+## Specify service annotations
+## This example add prometheus metrics scrape that is available in the default docker image
+service:
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/path: "/admin/metrics"
+    prometheus.io/port: "8080"
+
+webserver:
+  replicas: 2
+  annotations: {}
+
+scheduler:
+  annotations: {}
+
+## RBAC enabled/disable, the airflow containers needs a service account
+## with permissisions sufficient to spawn workers
+## if disabled use
+## serviceAccountName: <name of service account>
+rbac:
+  enabled: true
+
+## Prepare your environment, runs in its own pod when DB is up
+## ref: https://airflow.apache.org/cli.html
+provisioner:
+  enabled: true
+  cmds: |-
+    airflow initdb;
+    airflow connections --add --conn_id my_rs_connection \
+    --conn_type jdbc \
+    --conn_host jdbc:redshift://my-redshift.eu-west-1.redshift.amazonaws.com \
+    --conn_login my_rs_user \
+    --conn_password my_secret_password \
+    --conn_schema my_database \
+    --conn_port 5439 \
+    --conn_extra '{"extra__jdbc__drv_path": "/usr/local/ariflow/drivers/RedshiftJDBC42-no-awssdk-1.2.15.1025.jar", "extra__jdbc__drv_clsname": "com.amazon.redshift.jdbc42.Driver"}';
+
+# Airflow configuration
+# https://airflow.apache.org/howto/set-config.html
+# Any airflow setting can be set by the scheme AIRFLOW__{SECTION}__{KEY}
+# You are able to add arbitrary config here and it will be added to webserver, scheduler and workers
+# The only configs automatically set by the char are:
+# AIRFLOW__KUBERNETES__AIRFLOW_CONFIGMAP
+# AIRFLOW__KUBERNETES__NAMESPACE
+# AIRFLOW__KUBERNETES__WORKER_SERVICE_ACCOUNT_NAME
+# AIRFLOW__CORE__SQL_ALCHEMY_CONN
+# here is an example of what else you want to configure
+config:
+  # Other
+  AWS_DEFAULT_REGION: eu-west-1
+  # Core
+  AIRFLOW__CORE__AIRFLOW_HOME: /usr/local/airflow
+  AIRFLOW__CORE__DAGS_FOLDER: /usr/local/airflow/dags
+  AIRFLOW__CORE__BASE_LOG_FOLDER: /usr/local/airflow/logs
+  AIRFLOW__CORE__LOGGING_LEVEL: INFO
+  # Webserver
+  AIRFLOW__WEBSERVER__BASE_URL: http://airflow.192.168.99.100.xip.io
+  AIRFLOW__WEBSERVER__AUTHENTICATE: "False"
+  AIRFLOW__WEBSERVER__EXPOSE_CONFIG: "True"
+  # Kubernetes
+  AIRFLOW__KUBERNETES__WORKER_CONTAINER_REPOSITORY: tekn0ir/airflow-docker
+  AIRFLOW__KUBERNETES__WORKER_CONTAINER_TAG: 1.10.1rc2
+  AIRFLOW__KUBERNETES__WORKER_CONTAINER_IMAGE_PULL_POLICY: IfNotPresent
+  AIRFLOW__KUBERNETES__DELETE_WORKER_PODS: "True"
+# Rem,ember that the following will be automatically set by the chart!:
+# AIRFLOW__KUBERNETES__AIRFLOW_CONFIGMAP
+# AIRFLOW__KUBERNETES__NAMESPACE
+# AIRFLOW__KUBERNETES__WORKER_SERVICE_ACCOUNT_NAME
+# AIRFLOW__CORE__SQL_ALCHEMY_CONN
+
+########################################################################################################################
+## Configuration values for the postgresql dependency.
+## ref: https://github.com/kubernetes/charts/blob/master/stable/postgresql/README.md
+##
+postgresql:
+  ## Use the PostgreSQL chart dependency.
+  ## Set to false if bringing your own PostgreSQL.
+  ##
+  enabled: true
+  ## If bringing your own PostgreSQL, the full uri to use
+  ## e.g. postgres://airflow:changeme@my-postgres.com:5432/airflow?sslmode=disable
+  ##
+  # uri:
+  ### PostgreSQL User to create.
+  ##
+  postgresUser: airflow
+  ## PostgreSQL Password for the new user.
+  ## If not set, a random 10 characters password will be used.
+  ##
+  postgresPassword: airflow
+  ## PostgreSQL Database to create.
+  ##
+  postgresDatabase: airflow
+  ## Persistent Volume Storage configuration.
+  ## ref: https://kubernetes.io/docs/user-guide/persistent-volumes
+  ##
+  persistence:
+    ## Enable PostgreSQL persistence using Persistent Volume Claims.
+    ##
+    enabled: false

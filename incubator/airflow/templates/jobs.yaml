@@ -1,0 +1,38 @@
+{{- if .Values.provisioner.enabled  }}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ template "airflow.name" . }}-provisioner
+  labels:
+    app: {{ template "airflow.name" . }}
+    chart: {{ template "airflow.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  backoffLimit: 1
+  template:
+    spec:
+      restartPolicy: Never
+      volumes:
+      - name: airflow-config
+        configMap:
+          name: {{ template "airflow.name" . }}-config
+      containers:
+      - name: provisioner
+        image: {{ .Values.airflowImage }}:{{ .Values.airflowImageTag }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        envFrom:
+        - secretRef:
+            name: {{ template "airflow.name" . }}-secrets
+        - configMapRef:
+            name: {{ template "airflow.name" . }}-env
+        env:
+        - name: AIRFLOW_KUBE_NAMESPACE
+          value: {{ .Release.Namespace }}
+        volumeMounts:
+        - name: airflow-config
+          mountPath: /usr/local/airflow/airflow.cfg
+          subPath: airflow.cfg
+        args: [ {{ .Values.provisioner.cmds | quote }} ]
+{{- end }}

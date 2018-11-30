@@ -1,0 +1,113 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "airflow.name" . }}-webserver
+  labels:
+    app: {{ template "airflow.name" . }}-webserver
+    chart: {{ template "airflow.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+{{- if .Values.webserver.annotations }}
+  annotations:
+{{ toYaml .Values.webserver.annotations | indent 4 }}
+{{- end }}
+spec:
+  replicas: {{ .Values.webserver.replicas }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: {{ template "airflow.name" . }}-webserver
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "airflow.name" . }}-webserver
+        release: {{ .Release.Name }}
+    spec:
+{{- if .Values.rbac.enabled }}
+      serviceAccountName: {{ template "airflow.name" . }}
+{{- else }}
+      serviceAccountName: {{ .Values.serviceAccountName }}
+{{- end }}
+      containers:
+      - name: webserver
+        image: {{ .Values.airflowImage }}:{{ .Values.airflowImageTag }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        ports:
+        - name: webserver
+          containerPort: 8080
+        args: ["webserver"]
+        envFrom:
+        - secretRef:
+            name: {{ template "airflow.name" . }}-secrets
+        - configMapRef:
+            name: {{ template "airflow.name" . }}-env
+        env:
+        - name: AIRFLOW_KUBE_NAMESPACE
+          value: {{ .Release.Namespace }}
+        volumeMounts:
+        - name: airflow-config
+          mountPath: /usr/local/airflow/airflow.cfg
+          subPath: airflow.cfg
+      volumes:
+      - name: airflow-config
+        configMap:
+          name: {{ template "airflow.name" . }}-config
+
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "airflow.name" . }}-scheduler
+  labels:
+    app: {{ template "airflow.name" . }}-scheduler
+    chart: {{ template "airflow.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+{{- if .Values.scheduler.annotations }}
+  annotations:
+{{ toYaml .Values.scheduler.annotations | indent 4 }}
+{{- end }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ template "airflow.name" . }}-scheduler
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "airflow.name" . }}-scheduler
+        release: {{ .Release.Name }}
+    spec:
+{{- if .Values.rbac.enabled }}
+      serviceAccountName: {{ template "airflow.name" . }}
+{{- else }}
+      serviceAccountName: {{ .Values.serviceAccountName }}
+{{- end }}
+      containers:
+      - name: scheduler
+        image: {{ .Values.airflowImage }}:{{ .Values.airflowImageTag }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        args: ["scheduler"]
+        envFrom:
+        - secretRef:
+            name: {{ template "airflow.name" . }}-secrets
+        - configMapRef:
+            name: {{ template "airflow.name" . }}-env
+        env:
+        - name: AIRFLOW_KUBE_NAMESPACE
+          value: {{ .Release.Namespace }}
+        volumeMounts:
+        - name: airflow-config
+          mountPath: /usr/local/airflow/airflow.cfg
+          subPath: airflow.cfg
+      volumes:
+      - name: airflow-config
+        configMap:
+          name: {{ template "airflow.name" . }}-config
