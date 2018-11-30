@@ -19,9 +19,11 @@ data:
   CORE_PEER_PROFILE_ENABLED: "true"
   CORE_PEER_DISCOVERY_PERIOD: 60s
   CORE_PEER_DISCOVERY_TOUCHPERIOD: 60s
-  CORE_VM_ENDPOINT: unix:///host/var/run/docker.sock
   CORE_PEER_LOCALMSPID: {{ .Values.peer.mspID | quote }}
   CORE_PEER_MSPCONFIGPATH: /var/hyperledger/msp
+  ###########
+  # Logging #
+  ###########
   CORE_LOGGING_LEVEL: debug
   CORE_LOGGING_PEER: debug
   CORE_LOGGING_CAUTHDSL: debug
@@ -30,6 +32,17 @@ data:
   CORE_LOGGING_MSP: info
   CORE_LOGGING_POLICIES: debug
   CORE_LOGGING_GRPC: debug
+  ##########
+  # Gossip #
+  ##########
+  CORE_PEER_GOSSIP_BOOTSTRAP: {{ .Values.peer.gossip.bootstrap | quote }}
+  CORE_PEER_GOSSIP_ENDPOINT: {{ .Values.peer.gossip.endpoint | quote }}
+  CORE_PEER_GOSSIP_EXTERNALENDPOINT: {{ .Values.peer.gossip.externalEndpoint | quote }}
+  CORE_PEER_GOSSIP_ORGLEADER: {{ .Values.peer.gossip.orgLeader | quote }}
+  CORE_PEER_GOSSIP_USELEADERELECTION: {{ .Values.peer.gossip.useLeaderElection | quote }}
+  ##########
+  # TLS    #
+  ##########
   CORE_PEER_TLS_ENABLED: {{ .Values.peer.tls.server.enabled | quote }}
   CORE_PEER_TLS_CERT_FILE: "/var/hyperledger/tls/server/pair/tls.crt"
   CORE_PEER_TLS_KEY_FILE: "/var/hyperledger/tls/server/pair/tls.key"
@@ -39,6 +52,7 @@ data:
   CORE_PEER_TLS_CLIENTROOTCAS_FILES: "/var/hyperledger/tls/client/cert/*"
   CORE_PEER_TLS_CLIENTCERT_FILE: "/var/hyperledger/tls/client/pair/tls.crt"
   CORE_PEER_TLS_CLIENTKEY_FILE: "/var/hyperledger/tls/client/pair/tls.key"
+  CORE_VM_ENDPOINT: unix:///host/var/run/docker.sock
   CORE_LEDGER_STATE_STATEDATABASE: {{ .Values.peer.databaseType | quote }}
   # Containers in the same pod share the host
   {{- if eq .Values.peer.databaseType "CouchDB" }}
