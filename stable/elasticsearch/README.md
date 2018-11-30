@@ -61,9 +61,9 @@ The following table lists the configurable parameters of the elasticsearch chart
 
 |              Parameter               |                             Description                             |                       Default                       |
 | ------------------------------------ | ------------------------------------------------------------------- | --------------------------------------------------- |
-| `appVersion`                         | Application Version (Elasticsearch)                                 | `6.4.2`                                             |
+| `appVersion`                         | Application Version (Elasticsearch)                                 | `6.5.0`                                             |
 | `image.repository`                   | Container image name                                                | `docker.elastic.co/elasticsearch/elasticsearch-oss` |
-| `image.tag`                          | Container image tag                                                 | `6.4.2`                                             |
+| `image.tag`                          | Container image tag                                                 | `6.5.0`                                             |
 | `image.pullPolicy`                   | Container pull policy                                               | `IfNotPresent`                                      |
 | `initImage.repository`               | Init container image name                                           | `busybox`                                           |
 | `initImage.tag`                      | Init container image tag                                            | `latest`                                            |
@@ -123,7 +123,8 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `data.antiAffinity`                  | Data anti-affinity policy                                           | `soft`                                              |
 | `data.nodeAffinity`                  | Data node affinity policy                                           | `{}`                                                |
 | `extraInitContainers`                | Additional init container passed through the tpl 	                 | ``                                                  |
-| `podSecurityPolicy.enabled`          | Specify if a Pod Security Policy must be created                    | `false`                                             |
+| `podSecurityPolicy.annotations`      | Specify pod annotations in the pod security policy                  | `{}`                                                |
+| `podSecurityPolicy.enabled`          | Specify if a pod security policy must be created                    | `false`                                             |
 | `serviceAccounts.client.create`      | If true, create the client service account                          | `true`                                              |
 | `serviceAccounts.client.name`        | Name of the client service account to use or create                 | `{{ elasticsearch.client.fullname }}`               |
 | `serviceAccounts.master.create`      | If true, create the master service account                          | `true`                                              |
