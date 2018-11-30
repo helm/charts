@@ -26,23 +26,34 @@ environment:
   # SPARK_PUBLIC_DNS: ...
 
 pvc:
-  # to use a file system path for Spark events dir, set 'enablePVC' to true and mention the
-  # name of an already created persistent volume claim in existingClaimName.
+  # to use a file system path for Spark events dir, set 'enabled' to true and mention the
+  # name of an already created persistent volume claim in existingPVC.
   # The volume will be mounted on /data in the pod
-  enablePVC: true
-  existingClaimName: nfs-pvc
+  enabled: true
+  existingPVC: nfs-pvc
   eventsDir: "/"
 
-# Settings for the sub-chart
-# When pvc.enablePVC is true, make sure:
-# pvc.existingClaimName == nfs.pvcName
+# When both pvc.enabled and nfs.enabled are true, make sure:
+# pvc.existingPVC == nfs.pvc
 nfs:
-  enableExampleNFS: true
-  pvName: nfs-pv
-  pvcName: nfs-pvc
+  enabled: true
+  pv: nfs-pv
+  pvc: nfs-pvc
+
+# When both pvc.enabled and gluster.enabled are true, make sure:
+# pvc.existingPVC == gluster.pvc
+gluster:
+  enabled: false
+  storageClass: glusterfs-sc
+  resturl: "http://heketi-storage.glusterfs.svc:8080"
+  restuser: admin
+  secretName: heketi-storage-admin-secret
+  secretNamespace: glusterfs
+  pvc: gluster-pvc
+  pvcStorage: 10Gi
 
 gcs:
-  enableGCS: false
+  enabled: false
   secret: history-secrets
   key: sparkonk8s.json
   logDirectory: gs://spark-hs/

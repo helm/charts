@@ -4,15 +4,15 @@ kind: PersistentVolumeClaim
 metadata:
   name: {{ .Values.pvc }}
   labels:
-    app.kubernetes.io/name: {{ include "nfs.name" . }}
-    helm.sh/chart: {{ include "nfs.chart" . }}
+    app.kubernetes.io/name: {{ include "gluster.name" . }}
+    helm.sh/chart: {{ include "gluster.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   accessModes:
-    - ReadWriteMany
-  storageClassName: ""
+  - ReadWriteMany
   resources:
     requests:
       storage: {{ .Values.pvcStorage }}
+  storageClassName: {{ .Values.storageClass }}
 {{- end }}

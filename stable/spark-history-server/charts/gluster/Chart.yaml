@@ -1,0 +1,9 @@
+name: gluster
+version: 0.1.0
+appVersion: 0.1.0
+description: A Helm chart for GlusterFS
+keywords:
+- gluster
+maintainers:
+- name: yuchaoran2011
+  email: yuchaoran2011@gmail.com

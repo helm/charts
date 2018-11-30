@@ -69,11 +69,11 @@ spec:
           httpGet:
             path: /
             port: historyport
-        {{- if .Values.pvc.enablePVC }}
+        {{- if .Values.pvc.enabled }}
         volumeMounts:
         - name: data
           mountPath: /mnt/{{ .Values.pvc.eventsDir }}
-        {{- else if .Values.gcs.enableGCS }}
+        {{- else if .Values.gcs.enabled }}
         volumeMounts:
         - name: secrets-volume
           mountPath: /etc/secrets
@@ -92,12 +92,12 @@ spec:
           mountPath: /etc/hadoop/hdfs-site.xml
           subPath: hdfs-site.xml
         {{- end }}
-      {{- if .Values.pvc.enablePVC }}
+      {{- if .Values.pvc.enabled }}
       volumes:
       - name: data
         persistentVolumeClaim:
-          claimName: {{ .Values.pvc.existingClaimName }}
-      {{- else if .Values.gcs.enableGCS }}
+          claimName: {{ .Values.pvc.existingPVC }}
+      {{- else if .Values.gcs.enabled }}
       volumes:
       - name: secrets-volume
         secret:

@@ -50,9 +50,13 @@
 
 * PVC (Only if using PVC)
 
-  If you are using a PVC as the backing storage for Spark history events, then you'll need to create the PVC before installing the chart. On the Google Kubernetes Engine (GKE), the recommended underlying PersistentVolume is NFS. You can also use Portworx or Gluster. All three options provide sharing capabilities that would allow both the history server pod and the Spark job pods to mount the same PVC. 
+  If you are using a PVC as the backing storage for Spark history events, then you'll need to create the PVC before installing the chart. On the Google Kubernetes Engine (GKE), the recommended underlying PersistentVolume is NFS. You can also use Portworx or GlusterFS. All three options provide sharing capabilities that would allow both the history server pod and the Spark job pods to mount the same PVC. 
 
-  The chart by default creates a PVC backed by an NFS volume. The NFS volume and server are installed as a child chart adapted from the [documentation](https://github.com/kubernetes/examples/tree/master/staging/volumes/nfs) in the kubernetes/examples repo. The NFS PVC provided makes the history server work out of the box. The user is free to replace NFS with other storage technologies (e.g. Gluster) as long as the history server references the PVC using `pvc.existingClaimName` setting that has been properly set up.
+  The chart by default creates a PVC backed by an NFS volume. The NFS volume and server are installed as a child chart adapted from the [documentation](https://github.com/kubernetes/examples/tree/master/staging/volumes/nfs) in the kubernetes/examples repo. The NFS PVC provided makes the history server work out of the box. 
+
+  GlusterFS is more suitable for production use cases. When enabled, the chart sets up a GlusterFS StorageClass and a PVC bound to a dynamically provisioned PV. 
+
+  The user is free to replace NFS or GlusterFS with other storage technologies (e.g. Portworx) as long as the history server references the PVC using `pvc.existingPVC` setting that has been properly set up.
 
 NOTE: If installing the chart on an OpenShift cluster, first run
 
@@ -98,11 +102,21 @@ Note that the default image `lightbend/spark-history-server` is built using this
 | image.tag |The tag of the image|2.4.0|
 | service.type |The type of history server service that exposes the UI|LoadBalancer|
 | service.port |The port on which the service UI can be accessed.|18080|
-| pvc.enablePVC |Whether to use PVC storage|true|
-| pvc.existingClaimName |The pre-created PVC name|nfs-pvc|
+| pvc.enabled |Whether to use PVC storage|true|
+| pvc.existingPVC |The pre-created PVC name|nfs-pvc|
 | pvc.eventsDir |The log directory when PVC is used|/|
-| nfs.enableExampleNFS |Whether to install demo NFS volume and server|true|
-| gcs.enableGCS |Whether to use GCS storage|false|
+| nfs.enabled |Whether to install demo NFS volume and server|true|
+| nfs.pv |Name of NFS PV to create|nfs-pv|
+| nfs.pvc |Name of NFS PVC to create|nfs-pvc|
+| gluster.enabled |Whether to enable GlusterFS as PVC backend storage|false|
+| gluster.storageClass |Name of GlusterFS StorageClass to enable dynamic provisioning|The heketi server URL|
+| gluster.resturl |Gluster REST service/Heketi service url which provision gluster volumes on demand|"http://heketi-storage.glusterfs.svc:8080"|
+| gluster.restuser |Gluster REST service/Heketi user who has access to create volumes in the trusted storage pool|admin|
+| gluster.secretName |Together with `gluster.secretNamespace` identify Secret instance that contains the user password that is used when communicating with the Gluster REST service|heketi-storage-admin-secret|
+| gluster.secretNamespace |See above|glusterfs|
+| gluster.pvc |Name of GlusterFS PVC|gluster-pvc|
+| gluster.pvcStorage |Storage size of GlusterFS PVC|10Gi|
+| gcs.enabled |Whether to use GCS storage|false|
 | gcs.secret |Pre-mounted secret name for GCS connection|history-secrets|
 | gcs.key |The JSON key file name|sparkonk8s.json|
 | gcs.logDirectory |The GCS log directory that starts with "gs://"|gs://spark-hs/|
@@ -113,14 +127,14 @@ Note that the default image `lightbend/spark-history-server` is built using this
 | s3.secretKeyName | The file name that contains the AWS secret access key. Omit if using IAM based authentication | aws-secret-key |
 | s3.logDirectory | The S3 log directory that starts with "s3a://" | s3a://spark-hs/ |
 
-Note that only when `pvc.enablePVC` is set to `true`, the following settings take effect:
+Note that only when `pvc.enabled` is set to `true`, the following settings take effect:
 
-* pvc.existingClaimName
+* pvc.existingPVC
 * pvc.eventsDir
 
 By default an NFS server and PVC are set up. Optionally they can be disabled by setting `nfs.enableExampleNFS` to false.
 
-Similary, only when `gcs.enableGCS` is `true`, the following settings take effect:
+Similary, only when `gcs.enabled` is `true`, the following settings take effect:
 
 * gcs.secret
 * gcs.key
@@ -134,7 +148,7 @@ Similarly, only when `s3.enableS3` is `true`, the following settings take effect
 * s3.secretKeyName
 * s3.logDirectory
 
-And only when `pvc.enablePVC` and `gcs.enableGCS` are both `false`, is HDFS used, in which case the settings below are in effect:
+And only when `pvc.enabled` and `gcs.enabled` are both `false`, is HDFS used, in which case the settings below are in effect:
 
 * hdfs.logDirectory
 * hdfs.hdfsSiteConfigMap
