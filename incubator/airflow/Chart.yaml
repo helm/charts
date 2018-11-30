@@ -1,5 +1,6 @@
 name: airflow
 version: 0.0.1
+appVersion: 1.10.1
 description: Helm chart to deploy Airflow with K8s executors
 keywords:
   - airflow
