@@ -91,6 +91,11 @@ The following table lists the configurable parameters of the Hyperledger Fabric 
 | `peer.databaseType`                | Database type to use (`goleveldb` or `CouchDB`)      | `goleveldb`                                                |
 | `peer.couchdbInstance              | CouchDB chart name to use `cdb-peer1`                | `cdb-peer1`                                                |
 | `peer.mspID`                       | ID of MSP the Peer belongs to                        | `Org1MSP`                                                  |
+| `peer.gossip.bootstrap`            | Gossip bootstrap address                             | ``                                                         |
+| `peer.gossip.endpoint`             | Gossip endpoint                                      | ``                                                         |
+| `peer.gossip.externalEndpoint`     | Gossip external endpoint                             | ``                                                         |
+| `peer.gossip.orgLeader`            | Gossip organisation leader ("true"/"false")          | `"false"`                                                  |
+| `peer.gossip.useLeaderElection`    | Gossip use leader election                           | `"true"`                                                   |
 | `peer.tls.server.enabled`          | Do we enable server-side TLS?                        | `false`                                                    |
 | `peer.tls.client.enabled`          | Do we enable client-side TLS?                        | `false`                                                    |
 | `secrets.peer.cred`                | Credentials: 'CA_USERNAME' and 'CA_PASSWORD'         | ``                                                         |
