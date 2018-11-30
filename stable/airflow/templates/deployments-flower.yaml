@@ -4,7 +4,8 @@ kind: Deployment
 metadata:
   name: {{ template "airflow.fullname" . }}-flower
   labels:
-    app: {{ template "airflow.name" . }}-flower
+    app: {{ template "airflow.name" . }}
+    component: flower
     chart: {{ template "airflow.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
@@ -18,7 +19,8 @@ spec:
       maxUnavailable: 0
   selector:
     matchLabels:
-      app: {{ template "airflow.name" . }}-flower
+      app: {{ template "airflow.name" . }}
+      component: flower
       release: {{ .Release.Name }}
   template:
     metadata:
@@ -26,7 +28,8 @@ spec:
         checksum/config: {{ include (print $.Template.BasePath "/configmap-airflow.yaml") . | sha256sum }}
         configmap.fabric8.io/update-on-change: "{{ template "airflow.fullname" . }}-env"
       labels:
-        app: {{ template "airflow.name" . }}-flower
+        app: {{ template "airflow.name" . }}
+        component: flower
         release: {{ .Release.Name }}
     spec:
       {{- if .Values.airflow.image.pullSecret }}

@@ -3,7 +3,8 @@ kind: Deployment
 metadata:
   name: {{ template "airflow.fullname" . }}-scheduler
   labels:
-    app: {{ template "airflow.name" . }}-scheduler
+    app: {{ template "airflow.name" . }}
+    component: scheduler
     chart: {{ template "airflow.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
@@ -18,7 +19,8 @@ spec:
       maxUnavailable: 100%
   selector:
     matchLabels:
-      app: {{ template "airflow.name" . }}-scheduler
+      app: {{ template "airflow.name" . }}
+      component: scheduler
       release: {{ .Release.Name }}
   template:
     metadata:
@@ -26,7 +28,8 @@ spec:
         checksum/config: {{ include (print $.Template.BasePath "/configmap-airflow.yaml") . | sha256sum }}
         configmap.fabric8.io/update-on-change: "{{ template "airflow.fullname" . }}-env"
       labels:
-        app: {{ template "airflow.name" . }}-scheduler
+        app: {{ template "airflow.name" . }}
+        component: scheduler
         release: {{ .Release.Name }}
     spec:
       {{- if .Values.airflow.image.pullSecret }}

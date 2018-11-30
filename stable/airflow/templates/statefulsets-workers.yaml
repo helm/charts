@@ -7,7 +7,8 @@ kind: StatefulSet
 metadata:
   name: {{ template "airflow.fullname" . }}-worker
   labels:
-    app: {{ template "airflow.name" . }}-worker
+    app: {{ template "airflow.name" . }}
+    component: worker
     chart: {{ template "airflow.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
@@ -22,7 +23,8 @@ spec:
   replicas: {{ .Values.workers.replicas }}
   selector:
     matchLabels:
-      app: {{ template "airflow.name" . }}-worker
+      app: {{ template "airflow.name" . }}
+      component: worker
       release: {{ .Release.Name }}
   template:
     metadata:
@@ -33,7 +35,8 @@ spec:
         {{ $key }}: {{ $value | quote }}
         {{- end }}
       labels:
-        app: {{ template "airflow.name" . }}-worker
+        app: {{ template "airflow.name" . }}
+        component: worker
         release: {{ .Release.Name }}
     spec:
       {{- if .Values.airflow.image.pullSecret }}

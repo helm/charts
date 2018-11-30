@@ -4,7 +4,8 @@ kind: Ingress
 metadata:
   name: {{ template "airflow.fullname" . }}-flower
   labels:
-    app: {{ template "airflow.name" . }}-flower
+    app: {{ template "airflow.name" . }}
+    component: flower
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
