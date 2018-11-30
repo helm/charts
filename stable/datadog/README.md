@@ -117,6 +117,7 @@ The following table lists the configurable parameters of the Datadog chart and t
 | `clusterAgent.resources.limits.cpu`      | CPU resource limits                | `200m`                                    |
 | `clusterAgent.resources.requests.memory` | Memory resource requests           | `256Mi`                                   |
 | `clusterAgent.resources.limits.memory`   | Memory resource limits             | `256Mi`                                   |
+| `clusterAgent.tolerations`               | List of node taints to tolerate    | `[]`                                      |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
