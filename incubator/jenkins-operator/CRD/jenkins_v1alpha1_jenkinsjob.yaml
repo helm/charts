@@ -1,0 +1,65 @@
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  creationTimestamp: null
+  labels:
+    app.kubernetes.io/instance: '{{.Release.Name}}'
+    app.kubernetes.io/managed-by: '{{.Release.Service}}'
+    app.kubernetes.io/name: '{{include "jenkins-operator.name" .}}'
+    app.kubernetes.io/version: '{{.Chart.AppVersion | replace "+" "_" | trunc 63}}'
+    controller-tools.k8s.io: "1.0"
+    helm.sh/chart: '{{include "jenkins-operator.chart" .}}'
+  name: jenkinsjobs.jenkins.jenkinsoperator.maratoid.github.com
+spec:
+  group: jenkins.jenkinsoperator.maratoid.github.com
+  names:
+    kind: JenkinsJob
+    plural: jenkinsjobs
+  scope: Namespaced
+  validation:
+    openAPIV3Schema:
+      properties:
+        apiVersion:
+          type: string
+        kind:
+          type: string
+        metadata:
+          type: object
+        spec:
+          properties:
+            credentials:
+              items:
+                properties:
+                  credential:
+                    pattern: ^[a-z][a-z-]*[a-z]
+                    type: string
+                  credentialtype:
+                    pattern: usernamePassword|secretText|serviceaccount|vaultgithub|vaultapprole|vaulttoken
+                    type: string
+                  secret:
+                    type: string
+                  secretdata:
+                    type: object
+                type: object
+              type: array
+            jenkinsinstance:
+              type: string
+            jobdsl:
+              type: string
+            jobxml:
+              type: string
+          type: object
+        status:
+          properties:
+            phase:
+              type: string
+          required:
+          - phase
+          type: object
+      type: object
+  version: v1alpha1
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: null
