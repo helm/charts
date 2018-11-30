@@ -22,7 +22,7 @@ auth:
 ## Secrets must be manually created in the namespace.
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
 ##
-# imagePullSecrets:
+imagePullSecrets: []
 #   - myRegistrKeySecretName
 
 # Specs for the Docker image for the init container that establishes the replica set
