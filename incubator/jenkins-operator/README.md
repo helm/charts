@@ -7,7 +7,7 @@ Jenkins configuration and management.
 
 ## Introduction
 
-The jenkins operator manages JenkinsCI instances deployed to [Kubernetes](https://k8s.io) and automates tasks related to operating a JenkinsCI server
+The jenkins operator manages Jenkins instances deployed to [Kubernetes](https://k8s.io) and automates tasks related to operating a Jenkins server
 
 - Create and Destroy instances
 - Create and Destroy Jobs and Credentials
