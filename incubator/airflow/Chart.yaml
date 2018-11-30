@@ -9,6 +9,6 @@ home: https://airflow.apache.org/
 sources:
 - https://github.com/tekn0ir/airflow-chart
 maintainers:
-- name: Anders Åslund
+- name: tekn0ir
   email: anders.aslund@teknoir.se
 engine: gotpl
