@@ -8,7 +8,7 @@ metadata:
 {{ toYaml .Values.server.persistentVolume.annotations | indent 4 }}
   {{- end }}
   labels:
-    {{- include "prometheus.server.labels" . | indent 4 }}
+    {{- include "prometheus.server.labels" . | nindent 4 }}
   name: {{ template "prometheus.server.fullname" . }}
 spec:
   accessModes:

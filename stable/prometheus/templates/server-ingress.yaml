@@ -10,7 +10,7 @@ metadata:
 {{ toYaml .Values.server.ingress.annotations | indent 4 }}
 {{- end }}
   labels:
-    {{- include "prometheus.server.labels" . | indent 4 }}
+    {{- include "prometheus.server.labels" . | nindent 4 }}
 {{- range $key, $value := .Values.server.ingress.extraLabels }}
     {{ $key }}: {{ $value }}
 {{- end }}

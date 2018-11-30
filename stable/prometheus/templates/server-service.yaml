@@ -6,7 +6,7 @@ metadata:
 {{ toYaml .Values.server.service.annotations | indent 4 }}
 {{- end }}
   labels:
-    {{- include "prometheus.server.labels" . | indent 4 }}
+    {{- include "prometheus.server.labels" . | nindent 4 }}
 {{- if .Values.server.service.labels }}
 {{ toYaml .Values.server.service.labels | indent 4 }}
 {{- end }}
@@ -37,5 +37,5 @@ spec:
       nodePort: {{ .Values.server.service.nodePort }}
     {{- end }}
   selector:
-    {{- include "prometheus.server.matchLabels" . | indent 4 }}
+    {{- include "prometheus.server.matchLabels" . | nindent 4 }}
   type: "{{ .Values.server.service.type }}"

@@ -4,7 +4,7 @@ kind: NetworkPolicy
 metadata:
   name: {{ template "prometheus.alertmanager.fullname" . }}
   labels:
-    {{- include "prometheus.alertmanager.labels" . | indent 4 }}
+    {{- include "prometheus.alertmanager.labels" . | nindent 4 }}
 spec:
   podSelector:
     matchLabels:

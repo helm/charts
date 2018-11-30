@@ -4,7 +4,7 @@ kind: NetworkPolicy
 metadata:
   name: {{ template "prometheus.kubeStateMetrics.fullname" . }}
   labels:
-    {{- include "prometheus.kubeStateMetrics.labels" . | indent 4 }}
+    {{- include "prometheus.kubeStateMetrics.labels" . | nindent 4 }}
 spec:
   podSelector:
     matchLabels:

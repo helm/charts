@@ -5,7 +5,7 @@ kind: RoleBinding
 metadata:
   name: {{ template "prometheus.nodeExporter.fullname" . }}
   labels:
-    {{- include "prometheus.nodeExporter.labels" . | indent 4 }}
+    {{- include "prometheus.nodeExporter.labels" . | nindent 4 }}
   namespace: {{ .Release.Namespace }}
 roleRef:
   kind: Role

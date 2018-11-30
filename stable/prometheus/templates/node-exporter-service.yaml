@@ -7,7 +7,7 @@ metadata:
 {{ toYaml .Values.nodeExporter.service.annotations | indent 4 }}
 {{- end }}
   labels:
-    {{- include "prometheus.nodeExporter.labels" . | indent 4 }}
+    {{- include "prometheus.nodeExporter.labels" . | nindent 4 }}
 {{- if .Values.nodeExporter.service.labels }}
 {{ toYaml .Values.nodeExporter.service.labels | indent 4 }}
 {{- end }}
@@ -35,6 +35,6 @@ spec:
       protocol: TCP
       targetPort: 9100
   selector:
-    {{- include "prometheus.nodeExporter.matchLabels" . | indent 4 }}
+    {{- include "prometheus.nodeExporter.matchLabels" . | nindent 4 }}
   type: "{{ .Values.nodeExporter.service.type }}"
 {{- end -}}

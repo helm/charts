@@ -3,12 +3,12 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
-    {{- include "prometheus.alertmanager.labels" . | indent 4 }}
+    {{- include "prometheus.alertmanager.labels" . | nindent 4 }}
   name: {{ template "prometheus.alertmanager.fullname" . }}
 spec:
   selector:
     matchLabels:
-      {{- include "prometheus.alertmanager.matchLabels" . | indent 6 }}
+      {{- include "prometheus.alertmanager.matchLabels" . | nindent 6 }}
   replicas: {{ .Values.alertmanager.replicaCount }}
   {{- if .Values.server.strategy }}
   strategy:
@@ -21,7 +21,7 @@ spec:
 {{ toYaml .Values.alertmanager.podAnnotations | indent 8 }}
     {{- end }}
       labels:
-        {{- include "prometheus.alertmanager.labels" . | indent 8 }}
+        {{- include "prometheus.alertmanager.labels" . | nindent 8 }}
     spec:
 {{- if .Values.alertmanager.affinity }}
       affinity:

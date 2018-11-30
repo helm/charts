@@ -5,7 +5,7 @@ kind: PodSecurityPolicy
 metadata:
   name: {{ template "prometheus.nodeExporter.fullname" . }}
   labels:
-    {{- include "prometheus.nodeExporter.labels" . | indent 4 }}
+    {{- include "prometheus.nodeExporter.labels" . | nindent 4 }}
   annotations:
 {{- if .Values.nodeExporter.podSecurityPolicy.annotations }}
 {{ toYaml .Values.nodeExporter.podSecurityPolicy.annotations | indent 4 }}

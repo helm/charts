@@ -4,7 +4,7 @@ kind: NetworkPolicy
 metadata:
   name: {{ template "prometheus.server.fullname" . }}
   labels:
-    {{- include "prometheus.server.labels" . | indent 4 }}
+    {{- include "prometheus.server.labels" . | nindent 4 }}
 spec:
   podSelector:
     matchLabels:
