@@ -33,7 +33,7 @@ Note: It is highly recommended to set non-default passwords when deploying. All 
   ## anchore_values.yaml
 
   postgresql:
-    postgresPassword: <PASSWORD>
+    postgresqlPassword: <PASSWORD>
     persistence:
       size: 50Gi
 
@@ -41,6 +41,18 @@ Note: It is highly recommended to set non-default passwords when deploying. All 
     defaultAdminPassword: <PASSWORD>
     defaultAdminEmail: <EMAIL>
   ```
+
+## Upgrading to Chart version 0.10.0
+
+Version 0.10.0 of the anchore-engine helm chart includes an upgrade to the postgresql subchart that introduced breaking changes in parameter names.
+
+If you have customized postgresql subchart parameters, make sure to use the new parameter names.
+
+For instance:
+
+* `postgresPassword` -> `postgresqlPassword`
+* `postgresUser`-> `postgresqlUsername`
+* `postgresDatabase`-> `postgresqlDatabase`
 
 ## Upgrading to Chart version 0.9.0
 
@@ -80,9 +92,9 @@ Use a LoadBalancer service type:
 #### Install using an existing/external PostgreSQL service:
   ```
   postgresql:
-    postgresPassword: <PASSWORD>
-    postgresUser: <USER>
-    postgresDatabase: <DATABASE>
+    postgresqlPassword: <PASSWORD>
+    postgresqlUsername: <USER>
+    postgresqlDatabase: <DATABASE>
     enabled: false
     externalEndpoint: <HOSTNAME:5432>
 
@@ -282,7 +294,7 @@ Note: This installs with chart managed PostgreSQL & Redis databases.
   ## anchore_values.yaml
 
   postgresql:
-    postgresPassword: <PASSWORD>
+    postgresqlPassword: <PASSWORD>
     persistence:
       size: 50Gi
 
@@ -295,7 +307,7 @@ Note: This installs with chart managed PostgreSQL & Redis databases.
     enabled: True
 
   anchore-feeds-db:
-    postgresPassword: <PASSWORD>
+    postgresqlPassword: <PASSWORD>
 
   anchore-ui-redis:
     password: <PASSWORD>

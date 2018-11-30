@@ -58,9 +58,9 @@ spec:
           value: "{{ template "postgres.anchore-feeds-db.fullname" . }}:5432"
         {{- end }}
         - name: ANCHORE_DB_NAME
-          value: {{ index .Values "anchore-feeds-db" "postgresDatabase" | quote }}
+          value: {{ index .Values "anchore-feeds-db" "postgresqlDatabase" | quote }}
         - name: ANCHORE_DB_USER
-          value: {{ index .Values "anchore-feeds-db" "postgresUser"  | quote }}
+          value: {{ index .Values "anchore-feeds-db" "postgresqlUsername"  | quote }}
         - name: ANCHORE_DB_PASSWORD
           valueFrom:
             secretKeyRef:

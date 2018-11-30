@@ -1,11 +1,11 @@
 dependencies:
   - name: postgresql
-    version: "1.0.0"
+    version: "2.6.6"
     repository: "alias:stable"
     condition: postgresql.enabled
 
   - name: postgresql
-    version: "1.0.0"
+    version: "2.6.6"
     repository: "alias:stable"
     condition: anchore-feeds-db.enabled,anchoreEnterpriseGlobal.enabled
     alias: anchore-feeds-db

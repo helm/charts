@@ -8,8 +8,8 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 data:
-  ANCHORE_DB_NAME: {{ index .Values "postgresql" "postgresDatabase" | quote }}
-  ANCHORE_DB_USER: {{ index .Values "postgresql" "postgresUser" | quote }}
+  ANCHORE_DB_NAME: {{ index .Values "postgresql" "postgresqlDatabase" | quote }}
+  ANCHORE_DB_USER: {{ index .Values "postgresql" "postgresqlUsername" | quote }}
   {{- if and (index .Values "postgresql" "externalEndpoint") (not (index .Values "postgresql" "enabled")) }}
   ANCHORE_DB_HOST: {{ index .Values "postgresql" "externalEndpoint" | quote }}
   {{- else }}

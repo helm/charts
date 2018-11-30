@@ -3,11 +3,11 @@
 # Anchore engine has a dependency on Postgresql, configure here
 postgresql:
   # To use an external DB, uncomment & set 'enabled: false'
-  # externalEndpoint, postgresUser, postgresPassword & postgresDatabase are required values for external postgres
+  # externalEndpoint, postgresqlUsername, postgresqlPassword & postgresqlDatabase are required values for external postgres
   # enabled: false
-  postgresUser: anchoreengine
-  postgresPassword: anchore-postgres,123
-  postgresDatabase: anchore
+  postgresqlUsername: anchoreengine
+  postgresqlPassword: anchore-postgres,123
+  postgresqlDatabase: anchore
 
   # Specify an external (already existing) postgres deployment for use.
   # Set to the host and port. eg. mypostgres.myserver.io:5432
@@ -314,11 +314,11 @@ anchoreEnterpriseGlobal:
 # Only utilized if anchoreEnterpriseFeeds.enabled: true
 anchore-feeds-db:
   # To use an external DB, uncomment & set 'enabled: false'
-  # externalEndpoint, postgresUser, postgresPassword & postgresDatabase are required values for external postgres
+  # externalEndpoint, postgresqlUsername, postgresqlPassword & postgresqlDatabase are required values for external postgres
   # enabled: false
-  postgresUser: anchoreengine
-  postgresPassword: anchore-postgres,123
-  postgresDatabase: anchore-feeds
+  postgresqlUsername: anchoreengine
+  postgresqlPassword: anchore-postgres,123
+  postgresqlDatabase: anchore-feeds
 
   # Specify an external (already existing) postgres deployment for use.
   # Set to the host and port. eg. mypostgres.myserver.io:5432
