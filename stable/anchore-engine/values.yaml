@@ -24,24 +24,8 @@ anchoreGlobal:
   image:
     # Can use 'latest' tag but not recommended
     repository: docker.io/anchore/anchore-engine
-    tag: v0.3.0
+    tag: v0.3.1
     pullPolicy: IfNotPresent
-
-  # K8s service configuration for all anchore engine APIs, must be reachable inside the cluster by all other services and users
-  service:
-    type: ClusterIP
-    ports:
-      analyzer: 8084
-      extApi: 8228
-      simplequeue: 8083
-      catalog: 8082
-      policyEngine: 8087
-      kubernetesWebhook: 8338
-      # For enterprise customers only
-      feedsApi: 8448
-      uiHttp: 80
-      rbacApi: 8229
-      rbacAuth: 8089
 
   # Create an ingress resource for all external anchore engine services.
   # Ingress paths/hosts can be setup for the anchoreApi & anchoreEnterpriseUi deployments in the corresponding values sections.
@@ -57,6 +41,9 @@ anchoreGlobal:
     #    hosts:
     #      - chart-example.local
 
+  ###
+  # Start of General Anchore Engine Configurations (populates config.yaml)
+  ###
   # Set where default configs are placed at startup. This must be a writable location for the pod.
   serviceDir: /anchore_service_config
   logLevel: INFO
@@ -109,6 +96,7 @@ anchoreGlobal:
 # is very IO intensive. Use of affinity/anti-affinity rules for scheduling the analyzers is future work.
 anchoreAnalyzer:
   replicaCount: 1
+  containerPort: 8228
 
   # The cycle timer is the interval between checks to the work queue for new jobs
   cycleTimers:
@@ -143,6 +131,12 @@ anchoreAnalyzer:
 # Pod configuration for the anchore engine api service.
 anchoreApi:
   replicaCount: 1
+
+  # kubernetes service configuration for anchore external API
+  service:
+    type: ClusterIP
+    port: 8228
+    annotations: {}
 
   # Used to create Ingress record for the anchore engine external API (api service)
   # (should used with service.type: ClusterIP or NodePort depending on platform)
@@ -242,6 +236,12 @@ anchoreCatalog:
       #     # Create the container if it is not already present
       #     create_container: false
 
+  # kubernetes service configuration for anchore catalog api
+  service:
+    type: ClusterIP
+    port: 8228
+    annotations: {}
+
   # resources:
   #  limits:
   #    cpu: 100m
@@ -259,11 +259,18 @@ anchoreCatalog:
 anchorePolicyEngine:
   replicaCount: 1
 
+  # Intervals to run specific events on (seconds)
   cycleTimers:
     # Interval to run a feed sync to get latest cve data
     feed_sync: 14400
     # Interval between checks to see if there needs to be a task queued
     feed_sync_checker: 3600
+
+  # kubernetes service configuration for anchore policy engine api
+  service:
+    type: ClusterIP
+    port: 8228
+    annotations: {}
 
   # resources:
   #  limits:
@@ -281,6 +288,12 @@ anchorePolicyEngine:
 # Pod configuration for the anchore engine simplequeue service.
 anchoreSimpleQueue:
   replicaCount: 1
+
+  # kubernetes service configuration for anchore simplequeue api
+  service:
+    type: ClusterIP
+    port: 8228
+    annotations: {}
 
   # resources:
   #  limits:
@@ -307,7 +320,7 @@ anchoreEnterpriseGlobal:
 
   image:
     repository: docker.io/anchore/enterprise
-    tag: v0.3.0
+    tag: v0.3.1
     pullPolicy: IfNotPresent
 
 # Configure the second postgres database instance for the enterprise feeds service.
@@ -346,6 +359,12 @@ anchoreEnterpriseFeeds:
     connectionPoolSize: 30
     connectionPoolMaxOverflow: 100
 
+  # kubernetes service configuration for anchore feeds service api
+  service:
+    type: ClusterIP
+    port: 8228
+    annotations: {}
+
   # Staging space for holding normalized output from drivers.
   scratchVolume:
     mountPath: /scratch
@@ -370,6 +389,13 @@ anchoreEnterpriseFeeds:
 # This component consists of 2 containers that run as side-cars in the anchore engine api pod.
 anchoreEnterpriseRbac:
   enabled: true
+
+  # Kubernetes service config - annotations & serviceType configs must be set in anchoreApi
+  # Due to RBAC sharing a service with the general API.
+  service:
+    apiPort: 8229
+    authPort: 8089
+
   # authResources:
   #  limits:
   #    cpu: 100m
@@ -404,8 +430,14 @@ anchoreEnterpriseUi:
 
   image:
     repository: docker.io/anchore/enterprise-ui
-    tag: v0.3.0
+    tag: v0.3.1
     pullPolicy: IfNotPresent
+
+  # kubernetes service configuration for anchore UI
+  service:
+    type: ClusterIP
+    port: 80
+    annotations: {}
 
   ingress:
     path: /*
@@ -413,18 +445,18 @@ anchoreEnterpriseUi:
     # hosts:
     #   - anchore-ui.local
 
-  # resources:
-  #  limits:
-  #    cpu: 100m
-  #    memory: 8Gi
-  #  requests:
-  #    cpu: 100m
-  #    memory: 3Gi
+    # resources:
+    #  limits:
+    #    cpu: 100m
+    #    memory: 8Gi
+    #  requests:
+    #    cpu: 100m
+    #    memory: 3Gi
 
-  annotations: {}
-  nodeSelector: {}
-  tolerations: []
-  affinity: {}
+    annotations: {}
+    nodeSelector: {}
+    tolerations: []
+    affinity: {}
 
 # Anchore Engine Enterprise UI is dependent on redis for storing sessions
 # Only utilized if 'anchoreEnterpriseUi.enabled: true'

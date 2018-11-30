@@ -59,7 +59,7 @@ spec:
             fieldRef:
               fieldPath: metadata.name
         ports:
-        - containerPort: {{ .Values.anchoreGlobal.service.ports.extApi }}
+        - containerPort: {{ .Values.anchoreApi.service.port }}
           name: external-api
         volumeMounts:
         - name: config-volume
@@ -70,22 +70,23 @@ spec:
           mountPath: {{ default "/certs" .Values.anchoreGlobal.internalServicesSsl.certDir }}
           readOnly: true
         {{- end }}
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: external-api
-          initialDelaySeconds: 60
-          periodSeconds: 10
-          timeoutSeconds: 10
-          failureThreshold: 10
         livenessProbe:
           httpGet:
             path: /health
             port: external-api
+          initialDelaySeconds: 120
           timeoutSeconds: 10
-          initialDelaySeconds: 60
-          periodSeconds: 30
-          failureThreshold: 10
+          periodSeconds: 10
+          failureThreshold: 6
+          successThreshold: 1
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: external-api
+          timeoutSeconds: 10
+          periodSeconds: 10
+          failureThreshold: 3
+          successThreshold: 1
         resources:
 {{ toYaml .Values.anchoreApi.resources | indent 10 }}
 
@@ -106,7 +107,7 @@ spec:
             fieldRef:
               fieldPath: metadata.name
         ports:
-        - containerPort: {{ .Values.anchoreGlobal.service.ports.rbacApi }}
+        - containerPort: {{ .Values.anchoreEnterpriseRbac.service.apiPort }}
           name: rbac-manager
         volumeMounts:
         - name: anchore-license
@@ -120,22 +121,23 @@ spec:
           mountPath: {{ default "/certs" .Values.anchoreGlobal.internalServicesSsl.certDir }}
           readOnly: true
         {{- end }}
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: rbac-manager
-          initialDelaySeconds: 60
-          periodSeconds: 10
-          timeoutSeconds: 10
-          failureThreshold: 10
         livenessProbe:
           httpGet:
             path: /health
             port: rbac-manager
+          initialDelaySeconds: 120
           timeoutSeconds: 10
-          initialDelaySeconds: 60
-          periodSeconds: 30
-          failureThreshold: 10
+          periodSeconds: 10
+          failureThreshold: 6
+          successThreshold: 1
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: rbac-manager
+          timeoutSeconds: 10
+          periodSeconds: 10
+          failureThreshold: 3
+          successThreshold: 1
         resources:
 {{ toYaml .Values.anchoreEnterpriseRbac.managerResources | indent 10 }}
 
@@ -155,7 +157,7 @@ spec:
             fieldRef:
               fieldPath: metadata.name
         ports:
-        - containerPort: {{ .Values.anchoreGlobal.service.ports.rbacAuth }}
+        - containerPort: {{ .Values.anchoreEnterpriseRbac.service.authPort }}
           name: rbac-auth
         volumeMounts:
         - name: anchore-license
@@ -169,24 +171,27 @@ spec:
           mountPath: {{ default "/certs" .Values.anchoreGlobal.internalServicesSsl.certDir }}
           readOnly: true
         {{- end }}
-        readinessProbe:
-          exec:
-            command:
-              - curl
-              - 'localhost:{{ .Values.anchoreGlobal.service.ports.rbacAuth }}/health'
-          initialDelaySeconds: 60
-          periodSeconds: 10
-          timeoutSeconds: 10
-          failureThreshold: 10
         livenessProbe:
           exec:
             command:
               - curl
-              - 'localhost:{{ .Values.anchoreGlobal.service.ports.rbacAuth }}/health'
+              - -f
+              - 'localhost:{{ .Values.anchoreEnterpriseRbac.service.authPort }}/health'
+          initialDelaySeconds: 120
           timeoutSeconds: 10
-          initialDelaySeconds: 60
-          periodSeconds: 30
-          failureThreshold: 10
+          periodSeconds: 10
+          failureThreshold: 6
+          successThreshold: 1
+        readinessProbe:
+          exec:
+            command:
+              - curl
+              - -f
+              - 'localhost:{{ .Values.anchoreEnterpriseRbac.service.authPort }}/health'
+          timeoutSeconds: 10
+          periodSeconds: 10
+          failureThreshold: 3
+          successThreshold: 1
         resources:
 {{ toYaml .Values.anchoreEnterpriseRbac.authResources | indent 10 }}
 
@@ -218,17 +223,21 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     component: {{ $component }}
+  {{- if .Values.anchoreApi.service.annotations }}
+  annotations:
+{{ toYaml .Values.anchoreApi.service.annotations | indent 4 }}
+  {{- end }}
 spec:
-  type: {{ .Values.anchoreGlobal.service.type }}
+  type: {{ .Values.anchoreApi.service.type }}
   ports:
     - name: anchore-external-api
-      port: {{ .Values.anchoreGlobal.service.ports.extApi }}
-      targetPort: {{ .Values.anchoreGlobal.service.ports.extApi }}
+      port: {{ .Values.anchoreApi.service.port }}
+      targetPort: {{ .Values.anchoreApi.service.port }}
       protocol: TCP
   {{- if and .Values.anchoreEnterpriseGlobal.enabled .Values.anchoreEnterpriseRbac.enabled }}
     - name: anchore-rbac-manager
-      port: {{ .Values.anchoreGlobal.service.ports.rbacApi }}
-      targetPort: {{ .Values.anchoreGlobal.service.ports.rbacApi }}
+      port: {{ .Values.anchoreEnterpriseRbac.service.apiPort }}
+      targetPort: {{ .Values.anchoreEnterpriseRbac.service.apiPort }}
       protocol: TCP
   {{- end }}
   selector:

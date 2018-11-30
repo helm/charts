@@ -8,7 +8,6 @@ Each of these services can be scaled and configured independently.
 
 See [Anchore Engine](https://github.com/anchore/anchore-engine) for more project details.
 
-
 ## Chart Details
 
 The chart is split into global and service specific configurations for the OSS Anchore Engine, as well as global and services specific configurations for the Enterprise components.
@@ -26,7 +25,7 @@ The recommended way to install the Anchore Engine Chart is with a customized val
 
   `helm install --name <release_name> -f anchore_values.yaml stable/anchore-engine`
 
-Note: It is highly recommended to set non-default passwords when deploying. All passwords are set to defaults specified in the chart.
+*Note: It is highly recommended to set non-default passwords when deploying. All passwords are set to defaults specified in the chart.*
 
 ##### Install using chart managed PostgreSQL service with custom passwords.
   ```
@@ -41,6 +40,28 @@ Note: It is highly recommended to set non-default passwords when deploying. All 
     defaultAdminPassword: <PASSWORD>
     defaultAdminEmail: <EMAIL>
   ```
+
+## Upgrading to Chart version 0.10.0
+
+Service configs have been moved from the anchoreGlobal section, to individual component sections in the values.yaml file.
+If you're upgrading from a previous install and are using custom ports or serviceTypes, be sure to update your values.yaml file accordingly.
+
+##### v0.9.0 service config
+
+```
+anchoreGlobal:
+  service:
+    type: ClusterIP
+    apiPort: 8228
+```
+
+##### v0.10.0 service config
+```
+anchoreApi:
+  service:
+    type: ClusterIP
+    port: 8228
+```
 
 ## Upgrading to Chart version 0.9.0
 
@@ -61,23 +82,42 @@ Engine Code Version: 0.3.0
 All configurations should be appended to your custom `anchore_values.yaml` file and utilized when installing the chart.
 While the configuration options of Anchore Engine are extensive, the options provided by the chart are:
 
-#### Exposing the service outside the cluster:
+### Exposing the service outside the cluster:
 
-Use ingress, which enables SSL termination at the LB:
+##### Using Ingress
+
+This configuration allows SSL termination at the LB.
+
+*Note: Ingress controllers can use custom hosts or paths for routing requests. Custom paths or hosts should be set in the corresponding component configuration - anchoreEnterpriseUI.ingress or anchoreApi.ingress*
+
   ```
   anchoreGlobal:
     ingress:
       enabled: true
+
+  anchoreApi:
+    ingress:
+      path: /v1/*
+      hosts:
+        - anchore-api.local
+
+  anchoreEnterpriseUi:
+    ingress:
+      path: /*
+      hosts:
+        - anchore-ui.local
   ```
 
-Use a LoadBalancer service type:
+##### Using Service Type
   ```
-  anchoreGlobal:
+  anchoreApi:
     service:
       type: LoadBalancer
   ```
 
-#### Install using an existing/external PostgreSQL service:
+### Install using an existing/external PostgreSQL instance
+*Note: it is recommended to use an external Postgresql instance for production installs*
+
   ```
   postgresql:
     postgresPassword: <PASSWORD>
@@ -92,6 +132,7 @@ Use a LoadBalancer service type:
   ```
 
 ### Archive Driver
+*Note: it is recommended to use an external archive driver for production installs.*
 
 The archive subsystem of Anchore Engine is what stores large json documents and can consume quite a lot of storage if
 you analyze a lot of images. A general rule for storage provisioning is 10MB per image analyzed, so with thousands of
@@ -238,7 +279,7 @@ To configure the events:
 
 ### Scaling Individual Components
 
-As of Anchore Engine v0.3.0, all services can now be scaled-out by increasing the replica counts. The chart now supports
+As of Chart version 0.9.0, all services can now be scaled-out by increasing the replica counts. The chart now supports
 this configuration.
 
 To set a specific number of service containers:
@@ -257,6 +298,10 @@ To update the number in a running configuration:
 ## Adding Enterprise Components
 
  The following features are available to Anchore Enterprise customers. Please contact the Anchore team for more information about getting a license for the enterprise features. [Anchore Enterprise Demo](https://anchore.com/demo/)
+
+    * Role based access control
+    * Graphical User Interface
+    * On-prem feeds service
 
 ### Enabling Enterprise Services
 Enterprise services require an Anchore Enterprise license, as well as credentials with
@@ -277,7 +322,8 @@ To use this Helm chart with the enterprise services enabled, perform these steps
     `helm install --name <release_name> -f /path/to/anchore_values.yaml stable/anchore-engine`
 
 ##### Example anchore_values.yaml file for installing Anchore Enterprise
-Note: This installs with chart managed PostgreSQL & Redis databases.
+*Note: This installs with chart managed PostgreSQL & Redis databases. This is not a production ready config.*
+
   ```
   ## anchore_values.yaml
 
