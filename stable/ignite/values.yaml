@@ -9,6 +9,8 @@ image:
 nameOverride: ""
 fullnameOverride: ""
 
+rbac: yes
+
 ignite:
   env:
     OPTION_LIBS: "ignite-kubernetes,ignite-rest-http"
