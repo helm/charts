@@ -61,3 +61,17 @@ extraVars:
   - name: HMD_IMAGE_UPLOAD_TYPE
     value: filesystem
 ```
+
+### Use behind a TLS reverse proxy
+
+If you use HackMD behind a reverse proxy that does TLS decryption and forwards traffic in plain HTTP, you have to enable the following variables in your `values.yaml`:
+
+```yaml
+extraVars:
+  - name: CMD_DOMAIN
+    value: change.this.to.your.own.fqdn
+  - name: CMD_PROTOCOL_USESSL
+    value: "true"
+  - name: CMD_URL_ADDPORT
+    value: "false"
+```
