@@ -9,7 +9,7 @@ replicas: 3
 image: "confluentinc/cp-kafka"
 
 ## The kafka image tag
-imageTag: "5.0.0-2"  # Confluent image for Kafka 2.0.0
+imageTag: "5.0.1"  # Confluent image for Kafka 2.0.0
 
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -147,6 +147,7 @@ external:
   servicePort: 19092
   firstListenerPort: 31090
   domain: cluster.local
+  loadBalancerIP: []
   init:
     image: "lwolf/kubectl_deployer"
     imageTag: "0.4"
