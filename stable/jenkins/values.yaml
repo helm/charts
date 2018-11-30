@@ -16,7 +16,12 @@ Master:
 # ImagePullSecret: jenkins
   Component: "jenkins-master"
   UseSecurity: true
-  # SecurityRealm
+  # SecurityRealm:
+  # Optionally configure a different AuthorizationStrategy using Jenkins XML
+  # AuthorizationStrategy: |-
+  #    <authorizationStrategy class="hudson.security.FullControlOnceLoggedInAuthorizationStrategy">
+  #      <denyAnonymousReadAccess>true</denyAnonymousReadAccess>
+  #    </authorizationStrategy>
   HostNetworking: false
   AdminUser: admin
   # AdminPassword: <defaults to random>
@@ -37,6 +42,7 @@ Master:
   # Set min/max heap here if needed with:
   # JavaOpts: "-Xms512m -Xmx512m"
   # JenkinsOpts: ""
+  # JenkinsUrl: ""
   # If you set this prefix and use ingress controller then you might want to set the ingress path below
   # JenkinsUriPrefix: "/jenkins"
   # Enable pod security context (must be `true` if RunAsUser or FsGroup are set)
