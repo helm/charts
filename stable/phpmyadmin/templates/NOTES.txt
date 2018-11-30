@@ -35,6 +35,12 @@
 phpMyAdmin has been configured to connect to a database in {{ if .Values.db.chartName}}{{template "phpmyadmin.dbfullname" .}}{{ else }}{{.Values.db.host}}{{end}}
 {{if .Values.db.port}}with port {{.Values.db.port}} {{end }}
 Please login using a database username and password. 
+{{ else if .Values.db.bundleTestDB }}
+For testing purposes, phpMyAdmin has been configured to point to a test MariaDB
+instance. Please login using the following credentials:
+
+  Username: root
+  Password : $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "mariadb.fullname" . }} -o jsonpath="{.data.mariadb-root-password}" | base64 --decode)
 
 {{ else }}
 phpMyAdmin has not been configure to point to a specific database. Please provide the db host,
