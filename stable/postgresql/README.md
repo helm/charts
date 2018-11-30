@@ -79,9 +79,12 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `persistence.accessMode`                      | PVC Access Mode for PostgreSQL volume              | `ReadWriteOnce`                                           |
 | `persistence.size`                            | PVC Storage Request for PostgreSQL volume          | `8Gi`                                                     |
 | `persistence.annotations`                     | Annotations for the PVC                            | `{}`                                                      |
-| `nodeSelector`                                | Node labels for pod assignment                     | `{}`                                                      |
-| `affinity`                                    | Affinity labels for pod assignment                 | `{}`                                                      |
-| `tolerations`                                 | Toleration labels for pod assignment               | `[]`                                                      |
+| `master.nodeSelector`                         | Node labels for pod assignment (postgresql master)       | `{}`                                                      |
+| `master.affinity`                             | Affinity labels for pod assignment (postgresql master)   | `{}`                                                      |
+| `master.tolerations`                          | Toleration labels for pod assignment (postgresql master) | `[]`                                                      |
+| `slave.nodeSelector`                          | Node labels for pod assignment (postgresql slave)       | `{}`                                                      |
+| `slave.affinity`                              | Affinity labels for pod assignment (postgresql slave)   | `{}`                                                      |
+| `slave.tolerations`                           | Toleration labels for pod assignment (postgresql slave) | `[]`                                                      |
 | `terminationGracePeriodSeconds`               | Seconds the pod needs to terminate gracefully      | `nil`                                                     |
 | `resources`                                   | CPU/Memory resource requests/limits                | Memory: `256Mi`, CPU: `250m`                              |
 | `securityContext.enabled`                     | Enable security context                            | `true`                                                    |
