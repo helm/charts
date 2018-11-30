@@ -51,3 +51,13 @@ Parameter | Description | Default
 `postgresql.postgresHost` | PostgreSQL host (if `postgresql.install == false`)  | `nil`
 `postgresql.postgresPassword` | PostgreSQL Password for the new user | random 10 characters
 `postgresql.postgresDatabase` | PostgreSQL Database to create | `hackmd`
+
+### Use persistent volume for image uploads
+
+If you want to use a Kubernetes Persistent volume for image upload (enabled by default), you can encourter a problem where your volume doesn't have proper ownershuip, so HackMD won't be able to write into it. You can use set the `HMD_IMAGE_UPLOAD_TYPE` to `filesystem` in your `values.yaml` to have the Docker entrypoint change volume's ownership:
+
+```yaml
+extraVars:
+  - name: HMD_IMAGE_UPLOAD_TYPE
+    value: filesystem
+```
