@@ -58,6 +58,8 @@ The following tables lists the configurable parameters of the prometheus-operato
 | `fullNameOverride` | Provide a name to substitute for the full names of resources |`""`|
 | `commonLabels` | Labels to apply to all resources | `[]` |
 | `defaultRules.create` | Create default rules for monitoring the cluster | `true` |
+| `defaultRules.labels` | Labels for default rules for monitoring the cluster | `{}` |
+| `defaultRules.annotations` | Annotations for default rules for monitoring the cluster | `{}` |
 | `global.rbac.create` | Create RBAC resources | `true` |
 | `global.rbac.pspEnabled` | Create pod security policy resources | `true` |
 | `global.imagePullSecrets` | Reference to one or more secrets to be used when pulling images | `[]` |
@@ -71,9 +73,13 @@ The following tables lists the configurable parameters of the prometheus-operato
 | `prometheusOperator.createCustomResource` | Create CRDs. Required if deploying anything besides the operator itself as part of the release. The operator will create / update these on startup. If your Helm version < 2.10 you will have to either create the CRDs first or deploy the operator first, then the rest of the resources | `true` |
 | `prometheusOperator.cleanupCustomResource` | Attempt to delete CRDs when the release is removed. This option may be useful while testing but is not recommended, as deleting the CRD definition will delete resources and prevent the operator from being able to clean up resources that it manages | `false` |
 | `prometheusOperator.podLabels` | Labels to add to the operator pod | `{}` |
+| `prometheusOperator.priorityClassName` | Name of Priority Class to assign pods | `nil` |
 | `prometheusOperator.kubeletService.enabled` | If true, the operator will create and maintain a service for scraping kubelets | `true` |
-| `prometheusOperator.kubeletService.namespace` | Namespace to deploy kubelet service | `true` |
+| `prometheusOperator.kubeletService.namespace` | Namespace to deploy kubelet service | `kube-system` |
 | `prometheusOperator.serviceMonitor.selfMonitor` | Enable monitoring of prometheus operator | `true` |
+| `prometheusOperator.service.type` | Prometheus operator service type | `ClusterIP` |
+| `prometheusOperator.service.nodePort` | Port to expose prometheus operator service on each node | `38080` |
+| `prometheusOperator.service.annotations` | Annotations to be added to the prometheus operator service | `{}` |
 | `prometheusOperator.resources` | Resource limits for prometheus operator | `{}` |
 | `prometheusOperator.nodeSelector` | Prometheus operator node selector https://kubernetes.io/docs/user-guide/node-selection/ | `{}` |
 | `prometheusOperator.tolerations` | Tolerations for use with node taints https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/ | `[]` |
@@ -105,6 +111,9 @@ The following tables lists the configurable parameters of the prometheus-operato
 | `prometheus.ingress.labels` | Prometheus Ingress additional labels | `{}` |
 | `prometheus.ingress.hosts` | Prometheus Ingress hostnames | `[]` |
 | `prometheus.ingress.tls` | Prometheus Ingress TLS configuration (YAML) | `[]` |
+| `prometheus.service.type` |  Prometheus Service type | `ClusterIP` |
+| `prometheus.service.nodePort` |  Prometheus Service port for NodePort service type | `39090` |
+| `prometheus.service.annotations` |  Prometheus Service Annotations | `{}` |
 | `prometheus.additionalServiceMonitors` | List of `serviceMonitor` objects to create. See https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#servicemonitorspec | `[]` |
 | `prometheus.prometheusSpec.podMetadata` | Standard object’s metadata. More info: https://github.com/kubernetes/community/blob/master/contributors/devel/api-conventions.md#metadata Metadata Labels and Annotations gets propagated to the prometheus pods. | `{}` |
 | `prometheus.prometheusSpec.serviceMonitorSelector` | ServiceMonitors to be selected for target discovery. | `{}` |
@@ -156,6 +165,9 @@ The following tables lists the configurable parameters of the prometheus-operato
 | `alertmanager.ingress.labels` | Alertmanager Ingress additional labels | `{}` |
 | `alertmanager.ingress.hosts` | Alertmanager Ingress hostnames | `[]` |
 | `alertmanager.ingress.tls` | Alertmanager Ingress TLS configuration (YAML) | `[]` |
+| `alertmanager.service.type` | Alertmanager Service type | `ClusterIP` |
+| `alertmanager.service.nodePort` | Alertmanager Service port for NodePort service type | `30903` |
+| `alertmanager.service.annotations` | Alertmanager Service annotations | `{}` |
 | `alertmanager.config` | Provide YAML to configure Alertmanager. See https://prometheus.io/docs/alerting/configuration/#configuration-file. The default provided works to suppress the DeadMansSwitch alert from `defaultRules.create` | `{"global":{"resolve_timeout":"5m"},"route":{"group_by":["job"],"group_wait":"30s","group_interval":"5m","repeat_interval":"12h","receiver":"null","routes":[{"match":{"alertname":"DeadMansSwitch"},"receiver":"null"}]},"receivers":[{"name":"null"}]}` |
 | `alertmanager.alertmanagerSpec.podMetadata` | Standard object’s metadata. More info: https://github.com/kubernetes/community/blob/master/contributors/devel/api-conventions.md#metadata Metadata Labels and Annotations gets propagated to the prometheus pods. | `{}` |
 | `alertmanager.alertmanagerSpec.image.tag` | Tag of Alertmanager container image to be deployed. | `v0.15.2` |

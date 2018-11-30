@@ -88,6 +88,11 @@ The following table lists the configurable parameters of the Hyperledger Fabric 
 | `image.pullPolicy`                 | Image pull policy                                | `IfNotPresent`                                             |
 | `service.port`                     | TCP port                                         | `7050`                                                     |
 | `service.type`                     | K8S service type exposing ports, e.g. `ClusterIP`| `ClusterIP`                                                |
+| `ingress.enabled`                  | If true, Ingress will be created                 | `false`                                                    |
+| `ingress.annotations`              | Ingress annotations                              | `{}`                                                       |
+| `ingress.path`                     | Ingress path                                     | `/`                                                        |
+| `ingress.hosts`                    | Ingress hostnames                                | `[]`                                                       |
+| `ingress.tls`                      | Ingress TLS configuration                        | `[]`                                                       |
 | `persistence.accessMode`           | Use volume as ReadOnly or ReadWrite              | `ReadWriteOnce`                                            |
 | `persistence.annotations`          | Persistent Volume annotations                    | `{}`                                                       |
 | `persistence.size`                 | Size of data volume (adjust for production!)     | `1Gi`                                                      |
@@ -103,6 +108,7 @@ The following table lists the configurable parameters of the Hyperledger Fabric 
 | `secrets.ord.intCaCert`            | Int. CA Cert: as 'intermediatecacert.pem'        | ``                                                         |
 | `secrets.ord.tls`                  | TLS secret: as 'tls.crt' and 'tls.key'           | ``                                                         |
 | `secrets.ord.tlsRootCert`          | TLS root CA certificate: as 'cert.pem'           | ``                                                         |
+| `secrets.ord.tlsClientRootCert`    | TLS client root CA certificate: as 'cert.pem'    | ``                                                         |
 | `secrets.genesis`                  | Secret containing Genesis Block for orderer      | ``                                                         |
 | `secrets.adminCert`                | Secret containing Orderer Org admin certificate  | ``                                                         |
 | `resources`                        | CPU/Memory resource requests/limits              | `{}`                                                       |

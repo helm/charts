@@ -20,6 +20,10 @@ commonLabels: {}
 ##
 defaultRules:
   create: true
+  ## Labels for default rules
+  labels: {}
+  ## Annotations for default rules
+  annotations: {}
 
 ##
 global:
@@ -124,6 +128,7 @@ alertmanager:
   ## Configuration for Alertmanager service
   ##
   service:
+    annotations: {}
     ## Port to expose on each node
     ## Only used if service.type is 'NodePort'
     ##
@@ -449,6 +454,18 @@ prometheusOperator:
     create: true
     name: ""
 
+  ## Configuration for Prometheus operator service
+  ##
+  service:
+    ## Port to expose on each node
+    ## Only used if service.type is 'NodePort'
+    ##
+    nodePort: 38080
+
+    ## Service type
+    ##
+    type: ClusterIP
+
   ## Deploy CRDs used by Prometheus Operator.
   ##
   createCustomResource: true
@@ -460,6 +477,9 @@ prometheusOperator:
   ## Labels to add to the operator pod
   ##
   podLabels: {}
+
+  ## Assign a PriorityClassName to pods if set
+  # priorityClassName: ""
 
   ## If true, the operator will create and maintain a service for scraping kubelets
   ## ref: https://github.com/coreos/prometheus-operator/blob/master/helm/prometheus-operator/README.md
@@ -548,6 +568,20 @@ prometheus:
   serviceAccount:
     create: true
     name: ""
+
+  ## Configuration for Prometheus service
+  ##
+  service:
+    annotations: {}
+
+    ## Port to expose on each node
+    ## Only used if service.type is 'NodePort'
+    ##
+    nodePort: 39090
+
+    ## Service type
+    ##
+    type: ClusterIP
 
   rbac:
     ## Create role bindings in the specified namespaces, to allow Prometheus monitoring
