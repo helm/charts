@@ -51,8 +51,8 @@ If you have customized postgresql subchart parameters, make sure to use the new 
 For instance:
 
 * `postgresPassword` -> `postgresqlPassword`
-* `postgresUser`-> `postgresqlUsername`
-* `postgresDatabase`-> `postgresqlDatabase`
+* `postgresUser` -> `postgresqlUsername`
+* `postgresDatabase` -> `postgresqlDatabase`
 
 ## Upgrading to Chart version 0.9.0
 
