@@ -10,6 +10,7 @@ metadata:
 data:
   enablePVC: {{ .Values.pvc.enablePVC | quote }}
   enableGCS: {{ .Values.gcs.enableGCS | quote }}
+  enableS3: {{ .Values.s3.enableS3 | quote }}
   {{- range $key, $val := .Values.environment }}
   {{ $key }}: {{ $val | quote }}
   {{- end }}
@@ -19,6 +20,10 @@ data:
   {{- end }}
   {{- else if .Values.gcs.enableGCS }}
   {{- range $key, $val := .Values.gcs }}
+  {{ $key }}: {{ $val | quote }}
+  {{- end }}
+  {{- else if .Values.s3.enableS3 }}
+  {{- range $key, $val := .Values.s3 }}
   {{ $key }}: {{ $val | quote }}
   {{- end }}
   {{- else }}
