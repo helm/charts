@@ -11,17 +11,9 @@ metadata:
 {{- if .Values.service.labels }}
 {{ toYaml .Values.service.labels | indent 4 }}
 {{- end }}
-{{- if .Values.ingress.enabled }}
-  annotations:
-    service.alpha.kubernetes.io/app-protocols: '{"https":"HTTPS"}'
-{{- if .Values.service.annotations }}
-{{ toYaml .Values.service.annotations | indent 4 }}
-{{- end }}
-{{- else }}
 {{- if .Values.service.annotations }}
   annotations:
 {{ toYaml .Values.service.annotations | indent 4 }}
-{{- end }}
 {{- end }}
 spec:
   type: {{ .Values.service.type }}
