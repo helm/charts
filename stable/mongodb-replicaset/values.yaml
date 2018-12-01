@@ -57,6 +57,10 @@ securityContext:
   fsGroup: 999
   runAsNonRoot: true
 
+init:
+  resources: {}
+  timeout: 900
+
 resources: {}
 # limits:
 #   cpu: 500m

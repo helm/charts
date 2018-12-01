@@ -35,9 +35,16 @@ spec:
   secrets:
 {{ toYaml .Values.alertmanager.alertmanagerSpec.secrets | indent 4 }}
 {{- end }}
+{{- if .Values.alertmanager.alertmanagerSpec.configMaps }}
+  configMaps:
+{{ toYaml .Values.alertmanager.alertmanagerSpec.configMaps | indent 4 }}
+{{- end }}
 {{- if .Values.alertmanager.alertmanagerSpec.resources }}
   resources:
 {{ toYaml .Values.alertmanager.alertmanagerSpec.resources | indent 4 }}
+{{- end }}
+{{- if .Values.alertmanager.alertmanagerSpec.routePrefix }}
+  routePrefix: "{{ .Values.alertmanager.alertmanagerSpec.routePrefix }}"
 {{- end }}
 {{- if .Values.alertmanager.alertmanagerSpec.securityContext }}
   securityContext:
@@ -46,10 +53,6 @@ spec:
 {{- if .Values.alertmanager.alertmanagerSpec.storage }}
   storage:
 {{ toYaml .Values.alertmanager.alertmanagerSpec.storage | indent 4 }}
-{{- end }}
-{{- if .Values.alertmanager.alertmanagerSpec.securityContext }}
-  securityContext:
-{{ toYaml .Values.alertmanager.alertmanagerSpec.securityContext | indent 4 }}
 {{- end }}
 {{- if .Values.alertmanager.alertmanagerSpec.podMetadata }}
   podMetadata:

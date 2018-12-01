@@ -39,6 +39,20 @@ google:
   project: ""
   serviceAccountSecret: ""
 
+# Infoblox keys to inject
+infoblox:
+  # Required keys:
+  wapiUsername: ""
+  wapiPassword: ""
+  gridHost: ""
+  # Optional keys:
+  domainFilter: ""
+  noSslVerify: false
+  wapiPort: ""
+  wapiVersion: ""
+  wapiConnectionPoolSize: ""
+  wapiHttpTimeout: ""
+
 ## Limit possible target zones by domain suffixes (optional)
 domainFilters: []
 ## Limit possible target zones by zone id (optional)

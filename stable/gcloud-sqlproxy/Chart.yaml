@@ -1,7 +1,7 @@
 name: gcloud-sqlproxy
-version: 0.5.0
+version: 0.6.1
 appVersion: 1.11
-description: Google Cloud SQL Proxy
+description: DEPRECATED Google Cloud SQL Proxy
 keywords:
 - google
 - cloud
@@ -12,7 +12,6 @@ keywords:
 home: https://cloud.google.com/sql/docs/postgres/sql-proxy
 sources:
 - https://github.com/rimusz/charts
-maintainers:
-- name: rimusz
-  email: rmocius@gmail.com
-engine: gotpl
+## Deprecated following https://github.com/helm/charts/blob/master/PROCESSES.md#deprecating-a-chart
+## Chart is now maintained in https://github.com/buildkiterimusz/charts
+deprecated: true
