@@ -110,20 +110,20 @@ spec:
            node_namespace_pod:kube_pod_info:
         )
       record: node:node_memory_swap_io_bytes:sum_rate
-    - expr: avg(irate(node_disk_io_time_seconds_total{job="node-exporter",device=~"(sd|xvd|nvme).+"}[1m]))
+    - expr: avg(irate(node_disk_io_time_seconds_total{job="node-exporter",device=~"nvme.+|rbd.+|sd.+|vd.+|xvd.+"}[1m]))
       record: :node_disk_utilisation:avg_irate
     - expr: |-
         avg by (node) (
-          irate(node_disk_io_time_seconds_total{job="node-exporter",device=~"(sd|xvd|nvme).+"}[1m])
+          irate(node_disk_io_time_seconds_total{job="node-exporter",device=~"nvme.+|rbd.+|sd.+|vd.+|xvd.+"}[1m])
         * on (namespace, pod) group_left(node)
           node_namespace_pod:kube_pod_info:
         )
       record: node:node_disk_utilisation:avg_irate
-    - expr: avg(irate(node_disk_io_time_weighted_seconds_total{job="node-exporter",device=~"(sd|xvd|nvme).+"}[1m]) / 1e3)
+    - expr: avg(irate(node_disk_io_time_weighted_seconds_total{job="node-exporter",device=~"nvme.+|rbd.+|sd.+|vd.+|xvd.+"}[1m]) / 1e3)
       record: :node_disk_saturation:avg_irate
     - expr: |-
         avg by (node) (
-          irate(node_disk_io_time_weighted_seconds_total{job="node-exporter",device=~"(sd|xvd|nvme).+"}[1m]) / 1e3
+          irate(node_disk_io_time_weighted_seconds_total{job="node-exporter",device=~"nvme.+|rbd.+|sd.+|vd.+|xvd.+"}[1m]) / 1e3
         * on (namespace, pod) group_left(node)
           node_namespace_pod:kube_pod_info:
         )

@@ -2,12 +2,17 @@
 
 ## [sync_prometheus_rules.py](sync_prometheus_rules.py)
 
-This script generates prometheus rules set for alertmanager based from any properly formatted kubernetes yaml based on defined input, splitting rules to separate files based on group name.
+This script generates prometheus rules set for alertmanager from any properly formatted kubernetes yaml based on defined input, splitting rules to separate files based on group name.
 
-Currently only following imported:
+Currently following imported:
  - [coreos/prometheus-operator rules set](https://github.com/coreos/prometheus-operator/blob/master/contrib/kube-prometheus/manifests/prometheus-rules.yaml)
  - [etcd-io/etc rules set](https://github.com/etcd-io/etcd/blob/master/Documentation/op-guide/etcd3_alert.rules.yml) (temporary disabled)
 
-## Grafana dashboards
+## [sync_grafana_dashboards.py](sync_grafana_dashboards.py)
 
-Currently there is no script to import dashboards, they can be synced only manually.
+This script generates grafana dashboards from json files, splitting them to separate files based on group name.
+
+Currently following imported:
+ - [coreos/prometheus-operator dashboards](https://github.com/coreos/prometheus-operator/blob/master/contrib/kube-prometheus/manifests/grafana-deployment.yaml)
+ - [etcd-io/etc dashboard](https://github.com/etcd-io/etcd/blob/master/Documentation/op-guide/grafana.json)
+ - [coreos/prometheus-operator CoreDNS dashboard](https://github.com/helm/charts/blob/master/stable/prometheus-operator/dashboards/grafana-coredns-k8s.json) (not maintained in this location)

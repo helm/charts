@@ -134,6 +134,42 @@ def add_rules_conditions(rules, indent=4):
     return rules
 
 
+def write_group_to_file(group, url, destination):
+    fix_expr(group['rules'])
+
+    # prepare rules string representation
+    rules = yaml_str_repr(group)
+    # add replacements of custom variables and include their initialisation in case it's needed
+    init_line = ''
+    for line in replacement_map:
+        if line in rules:
+            rules = rules.replace(line, replacement_map[line]['replacement'])
+            init_line += '\n' + replacement_map[line]['init']
+    # append per-alert rules
+    rules = add_rules_conditions(rules)
+    # initialize header
+    lines = header % {
+        'name': group['name'],
+        'url': url,
+        'condition': condition_map.get(group['name'], ''),
+        'init_line': init_line,
+    }
+
+    # rules themselves
+    lines += rules
+
+    # footer
+    lines += '{{- end }}'
+
+    filename = group['name'] + '.yaml'
+    new_filename = "%s/%s" % (destination, filename)
+
+    # recreate the file
+    with open(new_filename, 'w') as f:
+        f.write(lines)
+    print("Generated %s" % new_filename)
+
+
 def main():
     init_yaml_styles()
     # read the rules, create a new template file per group
@@ -144,40 +180,7 @@ def main():
         # etcd workaround, their file don't have spec level
         groups = yaml_text['spec']['groups'] if yaml_text.get('spec') else yaml_text['groups']
         for group in groups:
-            fix_expr(group['rules'])
-
-            # prepare rules string representation
-            rules = yaml_str_repr(group)
-            # add replacements of custom variables and include their initialisation in case it's needed
-            init_line = ''
-            for line in replacement_map:
-                if line in rules:
-                    rules = rules.replace(line, replacement_map[line]['replacement'])
-                    init_line += '\n' + replacement_map[line]['init']
-            # append per-alert rules
-            rules = add_rules_conditions(rules)
-            # initialize header
-            lines = header % {
-                'name': group['name'],
-                'url': chart['source'],
-                'condition': condition_map.get(group['name'], ''),
-                'init_line': init_line,
-            }
-
-            # rules themselves
-            lines += rules
-
-            # footer
-            lines += '{{- end }}'
-
-            filename = group['name'] + '.yaml'
-            new_filename = "%s/%s" % (chart['destination'], filename)
-
-            # recreate the file
-            with open(new_filename, 'w') as f:
-                f.write(lines)
-
-            print("Generated %s" % new_filename)
+            write_group_to_file(group, chart['source'], chart['destination'])
     print("Finished")
 
 
