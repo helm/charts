@@ -8,7 +8,8 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 data:
-  action_file.yml: {{ toYaml .Values.configMaps.action_file_yml | indent 2 }}
+  action_file.yml:
+{{ toYaml .Values.configMaps.action_file_yml | indent 4 }}
   {{ if .Values.configMaps.config_yml }}
   config.yml: {{ toYaml .Values.configMaps.config_yml | indent 2 }}
   {{ else }}
