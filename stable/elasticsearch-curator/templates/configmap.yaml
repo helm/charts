@@ -16,7 +16,7 @@ data:
   config.yml: |
     client:
       hosts: 
-        - {{ range .Values.config.elasticsearch.hosts }} {{ . }} {{ end }}
+{{ .Values.config.elasticsearch.hosts | toYaml | indent 8 }}
       port: {{ .Values.config.elasticsearch.port }}
   {{ end }}
   
