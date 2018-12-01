@@ -10,6 +10,8 @@ image:
   tag: 5.10.19
   pullPolicy: IfNotPresent
 
+controller: deployment
+
 # If enabled, the controller, discovery, GUI, and STUN services will not be
 # created.
 # Instead, one service will be created with the port and nodePort settings from
