@@ -9,6 +9,8 @@ image:
   tag: 5.9.29
   pullPolicy: IfNotPresent
 
+controller: deployment
+
 guiService:
   type: ClusterIP
   port: 8443

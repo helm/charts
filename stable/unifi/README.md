@@ -39,6 +39,7 @@ The following tables lists the configurable parameters of the Sentry chart and t
 | `image.repository`         | Image repository | `jacobalberty/unifi` |
 | `image.tag`                | Image tag. Possible values listed [here](https://hub.docker.com/r/jacobalberty/unifi/tags/).| `5.8.23`|
 | `image.pullPolicy`         | Image pull policy | `IfNotPresent` |
+| `controller`               | Controller used for deploying the Unifi pods. Possible values: daemonset or statefulset | `deployment`
 | `guiService.type`             | Kubernetes service type for the Unifi GUI | `ClusterIP` |
 | `guiService.port`             | Kubernetes port where the Unifi GUI is exposed| `8443` |
 | `guiService.annotations`      | Service annotations for the Unifi GUI | `{}` |

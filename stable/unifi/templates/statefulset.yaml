@@ -1,6 +1,6 @@
-{{- if eq .Values.controller "deployment" }}
+{{- if eq .Values.controller "statefulset" }}
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: {{ template "unifi.fullname" . }}
   labels:
