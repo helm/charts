@@ -478,7 +478,7 @@ concourse:
     ## Blacklist of addresses to skip the proxy when reaching.
     # no_proxy:
     ## If set, the worker will be immediately removed upon stalling.
-    # ephemeral:
+    ephemeral: true
     ## Port on which to listen for beacon pprof server.
     # bindDebugPort: 9099
     ## Version of the worker. This is normally baked in to the binary, so this flag is hidden.
@@ -906,7 +906,7 @@ worker:
   #       type: BlockDevice
   #
   # As a special exception, this allows taking over the `concourse-work-dir`
-  # volume (from the default emptyDir) if `persistence.enabled` is false:
+  # volume (from the default emptyDir):
   #
   # additionalVolumes:
   #   - name: concourse-work-dir
@@ -940,49 +940,6 @@ worker:
     guardian.api.garden-server.create.failed
     baggageclaim.api.volume-server.create-volume-async.failed-to-create
 
-  ## Strategy for StatefulSet updates (requires Kubernetes 1.6+)
-  ## Ref: https://kubernetes.io/docs/concepts/workloads/controllers/statefulset
-  ##
-  updateStrategy: RollingUpdate
-
-  ## Pod Management strategy (requires Kubernetes 1.7+)
-  ## Ref: https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#pod-management-policies
-  ##
-  ## "OrderedReady" is default. "Parallel" means worker pods will launch or terminate
-  ## in parallel.
-  podManagementPolicy: Parallel
-
-  ## When persistance is disabled this value will be used to limit the emptyDir volume size
-  ## Ref: https://kubernetes.io/docs/concepts/storage/volumes/#emptydir
-  # emptyDirSize: 20Gi
-
-## Persistent Volume Storage configuration.
-## ref: https://kubernetes.io/docs/user-guide/persistent-volumes
-##
-persistence:
-  ## Enable persistence using Persistent Volume Claims.
-  ##
-  enabled: true
-
-  ## Worker Persistence configuration.
-  ##
-  worker:
-    ## concourse data Persistent Volume Storage Class
-    ## If defined, storageClassName: <storageClass>
-    ## If set to "-", storageClassName: "", which disables dynamic provisioning
-    ## If undefined (the default) or set to null, no storageClassName spec is
-    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
-    ##   GKE, AWS & OpenStack)
-    ##
-    # storageClass: "-"
-
-    ## Persistent Volume Access Mode.
-    ##
-    accessMode: ReadWriteOnce
-
-    ## Persistent Volume Storage Size.
-    ##
-    size: 20Gi
 
 ## Configuration values for the postgresql dependency.
 ## ref: https://github.com/kubernetes/charts/blob/master/stable/postgresql/README.md

@@ -1,5 +1,5 @@
 apiVersion: apps/v1beta1
-kind: StatefulSet
+kind: Deployment
 metadata:
   name: {{ template "concourse.worker.fullname" . }}
   labels:
@@ -7,9 +7,7 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
-
 spec:
-  serviceName: {{ template "concourse.worker.fullname" . }}
   replicas: {{ .Values.worker.replicas }}
   template:
     metadata:
@@ -17,9 +15,7 @@ spec:
         app: {{ template "concourse.worker.fullname" . }}
         release: "{{ .Release.Name }}"
       annotations:
-        {{- range $key, $value := .Values.worker.annotations }}
-        {{ $key }}: {{ $value | quote }}
-        {{- end }}
+{{ toYaml .Values.worker.annotations | indent 8 }}
     spec:
     {{- with .Values.worker.nodeSelector }}
       nodeSelector:
@@ -43,19 +39,8 @@ spec:
           image: "{{ .Values.image }}:{{ .Values.imageTag }}"
           {{- end }}
           imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
-          command:
-            - /bin/sh
           args:
-            - -c
-            - |-
-              cp /dev/null /tmp/.liveness_probe
-              rm -rf ${CONCOURSE_WORK_DIR:-/concourse-work-dir}/*
-              while ! concourse retire-worker --name=${HOSTNAME} | grep -q worker-not-found; do
-                touch /tmp/.pre_start_cleanup
-                sleep 5
-              done
-              rm -f /tmp/.pre_start_cleanup
-              concourse worker --name=${HOSTNAME} | tee -a /tmp/.liveness_probe
+            - worker
           livenessProbe:
             exec:
               command:
@@ -67,10 +52,6 @@ spec:
                   cp /dev/null /tmp/.liveness_probe
                   if [ ! -z "${FATAL_ERRORS}" ]; then
                     >&2 echo "Fatal error detected: ${FATAL_ERRORS}"
-                    exit 1
-                  fi
-                  if [ -f /tmp/.pre_start_cleanup ]; then
-                    >&2 echo "Still trying to clean up before starting concourse. 'fly prune-worker -w ${HOSTNAME}' might need to be called to force cleanup."
                     exit 1
                   fi
             failureThreshold: 1
@@ -500,31 +481,6 @@ spec:
                 path: worker_key
               - key: worker-key-pub
                 path: worker_key.pub
-{{- define "concourse.are-there-additional-volumes.with-the-name.concourse-work-dir" }}
-  {{- range .Values.worker.additionalVolumes }}
-    {{- if .name | eq "concourse-work-dir" }}
-      {{- .name }}
-    {{- end }}
-  {{- end }}
-{{- end }}
-  {{- if .Values.persistence.enabled }}
-  volumeClaimTemplates:
-    - metadata:
-        name: concourse-work-dir
-      spec:
-        accessModes:
-          - {{ .Values.persistence.worker.accessMode | quote }}
-        resources:
-          requests:
-            storage: {{ .Values.persistence.worker.size | quote }}
-      {{- if .Values.persistence.worker.storageClass }}
-      {{- if (eq "-" .Values.persistence.worker.storageClass) }}
-        storageClassName: ""
-      {{- else }}
-        storageClassName: "{{ .Values.persistence.worker.storageClass }}"
-      {{- end }}
-      {{- end }}
-  {{- else }}
       {{ if include "concourse.are-there-additional-volumes.with-the-name.concourse-work-dir" . | not }}
         - name: concourse-work-dir
           emptyDir:
@@ -532,9 +488,3 @@ spec:
             sizeLimit: {{ .Values.worker.emptyDirSize | quote }}
             {{- end }}
       {{- end }}
-  {{- end }}
-{{- if semverCompare "^1.7-0" .Capabilities.KubeVersion.GitVersion }}
-  updateStrategy:
-    type: {{ .Values.worker.updateStrategy }}
-{{- end }}
-  podManagementPolicy: {{ .Values.worker.podManagementPolicy }}

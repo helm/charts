@@ -113,14 +113,8 @@ The following table lists the configurable parameters of the Concourse chart and
 | `worker.tolerations` | Tolerations for the worker nodes | `[]` |
 | `worker.terminationGracePeriodSeconds` | Upper bound for graceful shutdown to allow the worker to drain its tasks | `60` |
 | `worker.fatalErrors` | Newline delimited strings which, when logged, should trigger a restart of the worker | *See [values.yaml](values.yaml)* |
-| `worker.updateStrategy` | `OnDelete` or `RollingUpdate` (requires Kubernetes >= 1.7) | `RollingUpdate` |
-| `worker.podManagementPolicy` | `OrderedReady` or `Parallel` (requires Kubernetes >= 1.7) | `Parallel` |
 | `worker.hardAntiAffinity` | Should the workers be forced (as opposed to preferred) to be on different nodes? | `false` |
 | `worker.emptyDirSize` | When persistance is disabled this value will be used to limit the emptyDir volume size | `nil` |
-| `persistence.enabled` | Enable Concourse persistence using Persistent Volume Claims | `true` |
-| `persistence.worker.storageClass` | Concourse Worker Persistent Volume Storage Class | `generic` |
-| `persistence.worker.accessMode` | Concourse Worker Persistent Volume Access Mode | `ReadWriteOnce` |
-| `persistence.worker.size` | Concourse Worker Persistent Volume Storage Size | `20Gi` |
 | `postgresql.enabled` | Enable PostgreSQL as a chart dependency | `true` |
 | `postgresql.postgresUser` | PostgreSQL User to create | `concourse` |
 | `postgresql.postgresPassword` | PostgreSQL Password for the new user | `concourse` |
