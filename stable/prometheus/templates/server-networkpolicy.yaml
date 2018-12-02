@@ -4,11 +4,7 @@ kind: NetworkPolicy
 metadata:
   name: {{ template "prometheus.server.fullname" . }}
   labels:
-    app: {{ template "prometheus.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    component: "{{ .Values.server.name }}"
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    {{- include "prometheus.server.labels" . | nindent 4 }}
 spec:
   podSelector:
     matchLabels:

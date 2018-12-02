@@ -10,11 +10,7 @@ metadata:
 {{ toYaml .Values.alertmanager.ingress.annotations | indent 4 }}
 {{- end }}
   labels:
-    app: {{ template "prometheus.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    component: "{{ .Values.alertmanager.name }}"
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    {{- include "prometheus.alertmanager.labels" . | nindent 4 }}
 {{- range $key, $value := .Values.alertmanager.ingress.extraLabels }}
     {{ $key }}: {{ $value }}
 {{- end }}
