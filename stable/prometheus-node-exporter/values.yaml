@@ -33,6 +33,10 @@ serviceAccount:
   name:
   imagePullSecrets: []
 
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 65534
+
 rbac:
   ## If true, create & use RBAC resources
   ##
