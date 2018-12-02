@@ -30,7 +30,7 @@ spec:
           imagePullPolicy: {{ .Values.worker.image.pullPolicy }}
           args:
             - dask-worker
-            - {{ template "dask.fullname" . }}-scheduler:{{ .Values.scheduler.servicePort }}
+            - tcp://{{ template "dask.fullname" . }}-scheduler:{{ .Values.scheduler.servicePort }}
           {{- if .Values.worker.resources.limits }}
             - --nthreads
             - {{ .Values.worker.resources.limits.cpu | default .Values.worker.default_resources.cpu | quote }}
