@@ -15,6 +15,7 @@ metadata:
   annotations:
 {{ toYaml .Values.service.annotations | indent 4 }}
 {{- end }}
+{{- end }}
 spec:
   type: {{ .Values.service.type }}
   ports:
