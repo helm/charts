@@ -15,7 +15,7 @@ fullnameOverride: ""
 # Add your consul server details here
 consulServer: host:port
 
-#Flags - for a list visit https://github.com/prometheus/consul_exporter#flags
+# Flags - for a list visit https://github.com/prometheus/consul_exporter#flags
 options: {}
 
 service:
