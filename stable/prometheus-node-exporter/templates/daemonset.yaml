@@ -19,9 +19,10 @@ spec:
 {{- if and .Values.rbac.create .Values.serviceAccount.create }}
       serviceAccountName: {{ template "prometheus-node-exporter.serviceAccountName" . }}
 {{- end }}      
+{{- if .Values.securityContext }}
       securityContext:
-        runAsNonRoot: true
-        runAsUser: 65534
+{{ toYaml .Values.securityContext | indent 8 }}
+{{- end }}
 {{- if .Values.priorityClassName }}
       priorityClassName: {{ .Values.priorityClassName }}
 {{- end }}
