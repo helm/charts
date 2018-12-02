@@ -3,6 +3,7 @@ appVersion: "1.0"
 description: Prometheus metrics exporter for Kafka
 name: prometheus-kafka-exporter
 version: 0.1.0
+home: https://github.com/danielqsj/kafka_exporter
 sources:
   - https://github.com/danielqsj/kafka_exporter
 keywords:
