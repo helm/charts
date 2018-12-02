@@ -117,3 +117,9 @@ $ helm install --name my-release -f values.yaml stable/fluent-bit
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+## Upgrading
+
+### From < 1.0.0 To 1.0.0
+
+Values `extraInputs`, `extraFilters` and `extraOutputs` have been removed in version `1.0.0` of the fluent-bit chart. Please use the `rawConfig` value instead, inserting blocks of text as desired.
