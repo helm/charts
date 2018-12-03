@@ -47,7 +47,7 @@ spec:
             - name: CONCOURSE_BIND_IP
               value: {{ .Values.concourse.web.bindIp | quote }}
             {{- end }}
-            {{- if .Values.concourse.web.localAuth.enabled }}
+            {{- if and .Values.secrets.mount .Values.concourse.web.localAuth.enabled }}
             - name: CONCOURSE_ADD_LOCAL_USER
               valueFrom:
                 secretKeyRef:
@@ -81,7 +81,7 @@ spec:
             - name: CONCOURSE_PEER_URL
               value: "http://$(POD_IP):$(CONCOURSE_BIND_PORT)"
             {{- end }}
-            {{- if .Values.concourse.web.encryption.enabled }}
+            {{- if and .Values.secrets.mount .Values.concourse.web.encryption.enabled }}
             - name: CONCOURSE_ENCRYPTION_KEY
               valueFrom:
                 secretKeyRef:
@@ -159,11 +159,13 @@ spec:
               value: {{ template "concourse.postgresql.fullname" . }}
             - name: CONCOURSE_POSTGRES_USER
               value: {{ .Values.postgresql.postgresUser | quote }}
+            {{- if .Values.secrets.mount }}
             - name: CONCOURSE_POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ template "concourse.postgresql.fullname" . }}
                   key: postgres-password
+            {{- end }}
             - name: CONCOURSE_POSTGRES_DATABASE
               value: {{ .Values.postgresql.postgresDatabase | quote }}
             {{- else }}
@@ -179,6 +181,7 @@ spec:
             - name: CONCOURSE_POSTGRES_SOCKET
               value: {{ .Values.concourse.web.postgres.socket | quote }}
             {{- end }}
+            {{- if .Values.secrets.mount }}
             - name: CONCOURSE_POSTGRES_USER
               valueFrom:
                 secretKeyRef:
@@ -189,6 +192,7 @@ spec:
                 secretKeyRef:
                   name: {{ template "concourse.concourse.fullname" . }}
                   key: postgresql-password
+            {{- end }}
             {{- if .Values.concourse.web.postgres.sslmode }}
             - name: CONCOURSE_POSTGRES_SSLMODE
               value: {{ .Values.concourse.web.postgres.sslmode | quote }}
@@ -232,6 +236,7 @@ spec:
             {{- end }}
 
             {{- if .Values.concourse.web.awsSecretsManager.enabled }}
+            {{- if .Values.secretes.mount }}
             - name: CONCOURSE_AWS_SECRETSMANAGER_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
@@ -249,6 +254,7 @@ spec:
                   name: {{ template "concourse.concourse.fullname" . }}
                   key: aws-secretsmanager-session-token
             {{- end }}
+            {{- end }}
             {{- if .Values.concourse.web.awsSecretsManager.region }}
             - name: AWS_REGION
               value: {{ .Values.concourse.web.awsSecretsManager.region | quote }}
@@ -265,6 +271,7 @@ spec:
 
 
             {{- if .Values.concourse.web.awsSsm.enabled }}
+            {{- if .Values.secrets.mount }}
             - name: CONCOURSE_AWS_SSM_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
@@ -281,6 +288,7 @@ spec:
                 secretKeyRef:
                   name: {{ template "concourse.concourse.fullname" . }}
                   key: aws-ssm-session-token
+            {{- end }}
             {{- end }}
             {{- if .Values.concourse.web.awsSsm.region }}
             - name: AWS_REGION
@@ -307,7 +315,7 @@ spec:
             - name: CONCOURSE_VAULT_CA_CERT
               value: "/concourse-vault/ca.cert"
             {{- end }}
-            {{- if eq (default "" .Values.concourse.web.vault.authBackend) "token" }}
+            {{- if and .Values.secrets.mount eq (default "" .Values.concourse.web.vault.authBackend) "token" }}
             - name: CONCOURSE_VAULT_CLIENT_TOKEN
               valueFrom:
                 secretKeyRef:
@@ -320,7 +328,7 @@ spec:
             - name: CONCOURSE_VAULT_CLIENT_KEY
               value: "/concourse-vault/client.key"
             {{- end }}
-            {{- if eq (default "" .Values.concourse.web.vault.authBackend) "approle" }}
+            {{- if and .Values.secrets.mount eq (default "" .Values.concourse.web.vault.authBackend) "approle" }}
             - name: CONCOURSE_VAULT_AUTH_PARAM
               valueFrom:
                 secretKeyRef:
@@ -414,11 +422,13 @@ spec:
               value: {{ .Values.concourse.web.influxdb.database | quote }}
             - name: CONCOURSE_INFLUXDB_USERNAME
               value: {{ .Values.concourse.web.influxdb.username | quote }}
+            {{- if .Values.secrets.mount }}
             - name: CONCOURSE_INFLUXDB_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ template "concourse.concourse.fullname" . }}
                   key: influxdb-password
+            {{- end }}
             - name: CONCOURSE_INFLUXDB_INSECURE_SKIP_VERIFY
               value: {{ .Values.concourse.web.influxdb.insecureSkipVerify | quote}}
             {{- end }}
@@ -595,6 +605,7 @@ spec:
             {{- end }}
 
             {{- if .Values.concourse.web.auth.cf.enabled }}
+            {{- if .Values.secrets.mount }}
             - name: CONCOURSE_CF_CLIENT_ID
               valueFrom:
                 secretKeyRef:
@@ -605,6 +616,7 @@ spec:
                 secretKeyRef:
                   name: {{ template "concourse.concourse.fullname" . }}
                   key: cf-client-secret
+            {{- end }}
             {{- if .Values.concourse.web.auth.cf.apiUrl }}
             - name: CONCOURSE_CF_API_URL
               value: {{ .Values.concourse.web.auth.cf.apiUrl | quote }}
@@ -620,6 +632,7 @@ spec:
             {{- end }}
 
             {{- if .Values.concourse.web.auth.github.enabled }}
+            {{- if .Values.secrets.mount }}
             - name: CONCOURSE_GITHUB_CLIENT_ID
               valueFrom:
                 secretKeyRef:
@@ -630,6 +643,7 @@ spec:
                 secretKeyRef:
                   name: {{ template "concourse.concourse.fullname" . }}
                   key: github-client-secret
+            {{- end }}
             {{- if .Values.concourse.web.auth.github.host }}
             - name: CONCOURSE_GITHUB_HOST
               value: {{ .Values.concourse.web.auth.github.host | quote }}
@@ -641,6 +655,7 @@ spec:
             {{- end }}
 
             {{- if .Values.concourse.web.auth.gitlab.enabled }}
+            {{- if .Values.secrets.mount }}
             - name: CONCOURSE_GITLAB_CLIENT_ID
               valueFrom:
                 secretKeyRef:
@@ -651,6 +666,7 @@ spec:
                 secretKeyRef:
                   name: {{ template "concourse.concourse.fullname" . }}
                   key: gitlab-client-secret
+            {{- end }}
             {{- if .Values.concourse.web.auth.gitlab.host }}
             - name: CONCOURSE_GITLAB_HOST
               value: {{ .Values.concourse.web.auth.gitlab.host | quote }}
@@ -749,6 +765,7 @@ spec:
             - name: CONCOURSE_OAUTH_DISPLAY_NAME
               value: {{ .Values.concourse.web.auth.oauth.displayName | quote }}
             {{- end }}
+            {{- if .Values.secrets.mount }}
             - name: CONCOURSE_OAUTH_CLIENT_ID
               valueFrom:
                 secretKeyRef:
@@ -759,6 +776,7 @@ spec:
                 secretKeyRef:
                   name: {{ template "concourse.concourse.fullname" . }}
                   key: oauth-client-secret
+            {{- end }}
             {{- if .Values.concourse.web.auth.oauth.authUrl }}
             - name: CONCOURSE_OAUTH_AUTH_URL
               value: {{ .Values.concourse.web.auth.oauth.authUrl | quote }}
@@ -798,6 +816,7 @@ spec:
             - name: CONCOURSE_OIDC_ISSUER
               value: {{ .Values.concourse.web.auth.oidc.issuer | quote }}
             {{- end }}
+            {{- if .Values.secrets.mount }}
             - name: CONCOURSE_OIDC_CLIENT_ID
               valueFrom:
                 secretKeyRef:
@@ -808,6 +827,7 @@ spec:
                 secretKeyRef:
                   name: {{ template "concourse.concourse.fullname" . }}
                   key: oidc-client-secret
+            {{- end }}
             {{- if .Values.concourse.web.auth.oidc.scope }}
             - name: CONCOURSE_OIDC_SCOPE
               value: {{ .Values.concourse.web.auth.oidc.scope | quote }}
