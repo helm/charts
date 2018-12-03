@@ -21,9 +21,6 @@ spec:
         chart: {{ template "redis.chart" . }}
         role: metrics
         app: {{ template "redis.name" . }}
-        {{- if and .Values.networkPolicy.enabled (not .Values.networkPolicy.allowExternal) }}
-        {{ template "redis.fullname" . }}-client: "true"
-        {{- end }}
       {{- if .Values.metrics.podLabels }}
 {{ toYaml .Values.metrics.podLabels | indent 8 }}
       {{- end }}
