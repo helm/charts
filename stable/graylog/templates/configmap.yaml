@@ -90,9 +90,6 @@ data:
     root_timezone = {{ default "UTC" .Values.graylog.rootTimezone }}
     plugin_dir = /usr/share/graylog/plugin
     rest_listen_uri = http://0.0.0.0:9000/api/
-  {{- if .Values.graylog.ingress.enabled }}
-    rest_transport_uri = {{ template "graylog.url" .}}/api
-  {{- end }}
     #web_enable = true
     web_listen_uri = http://0.0.0.0:9000/
   {{- if .Values.graylog.ingress.enabled }}
