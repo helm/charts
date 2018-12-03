@@ -18,6 +18,13 @@ auth:
   # existingAdminSecret:
   # exisitingMetricsSecret:
 
+## Optionally specify an array of imagePullSecrets.
+## Secrets must be manually created in the namespace.
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+##
+imagePullSecrets: []
+#   - myRegistrKeySecretName
+
 # Specs for the Docker image for the init container that establishes the replica set
 installImage:
   repository: k8s.gcr.io/mongodb-install

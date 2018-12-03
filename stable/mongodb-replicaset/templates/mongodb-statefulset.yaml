@@ -36,6 +36,12 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
       {{- end }}
     spec:
+    {{- if .Values.image.imagePullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.image.imagePullSecrets }}
+        - name: {{ . }}
+      {{- end}}
+    {{- end }}
       securityContext:
 {{ toYaml .Values.securityContext | indent 8 }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
@@ -146,7 +152,7 @@ spec:
             - name: datadir
               mountPath: /data/db
           resources:
-{{ toYaml .Values.init.resources | indent 12 }}        
+{{ toYaml .Values.init.resources | indent 12 }}
       containers:
         - name: {{ template "mongodb-replicaset.name" . }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
