@@ -18,8 +18,12 @@ spec:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-{{- if .Values.oauth.enabled }}
         env:
+{{- range $key, $value := .Values.env }}
+        - name: "{{ $key }}"
+          value: "{{ $value }}"
+{{- end }}
+{{- if .Values.oauth.enabled }}
         - name: TOKEN_SECRET
           valueFrom:
             secretKeyRef:
@@ -81,6 +85,11 @@ spec:
               name: {{ template "chronograf.fullname" . }}
               key: go_public_url
 {{- end }}
+{{- end }}
+{{- if .Values.envFromSecret }}
+        envFrom:
+        - secretRef:
+            name: {{ .Values.envFromSecret }}
 {{- end }}
         ports:
         - containerPort: 8888
