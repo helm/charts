@@ -27,7 +27,7 @@ data:
   fluent-bit-input.conf: |-
     [INPUT]
         Name             tail
-        Path             /var/log/containers/*.log
+        Path             {{ .Values.input.tail.path }}
         Parser           docker
         Tag              {{ .Values.filter.kubeTag }}.*
         Refresh_Interval 5

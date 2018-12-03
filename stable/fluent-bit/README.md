@@ -80,9 +80,9 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `podAnnotations`                   | Optional pod annotations                  | `NULL`                |
 | `fullConfigMap`                    | User has provided entire config (parsers + system)  | `false`      |
 | `existingConfigMap`                | ConfigMap override                         | ``                    |
-| `extraEntries.input`               |    Extra entries for existing [INPUT] section                     | `NULL`                    |
-| `extraEntries.filter`               |    Extra entries for existing [FILTER] section                     | `NULL`                    |
-| `extraEntries.output`               |   Extra entries for existing [OUPUT] section                     | `NULL`                    |
+| `extraEntries.input`               |    Extra entries for existing [INPUT] section                     | ``                    |
+| `extraEntries.filter`               |    Extra entries for existing [FILTER] section                     | ``                    |
+| `extraEntries.output`               |   Extra entries for existing [OUPUT] section                     | ``                    |
 | `extraVolumeMounts`                | Mount an extra volume, required to mount ssl certificates when elasticsearch has tls enabled |          |
 | `extraVolume`                      | Extra volume                               |                                                |
 | `filter.enableExclude`                   | Enable the use of monitoring for a pod annotation of `fluentbit.io/exclude: true`. If present, discard logs from that pod.         | `true`                                 |
@@ -97,6 +97,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `image.pullPolicy`                 | Image pull policy                          | `Always`                                          |
 | `image.pullSecrets`                | Specify image pull secrets                 | `nil`                                             |
 | `input.tail.memBufLimit`           | Specify Mem_Buf_Limit in tail input        | `5MB`                                             |
+| `input.tail.path`           | Specify log file(s) through the use of common wildcards.        | `/var/log/containers/*.log`                                             |
 | `rbac.create`                      | Specifies whether RBAC resources should be created.   | `true`                                 |
 | `serviceAccount.create`            | Specifies whether a ServiceAccount should be created. | `true`                                 |
 | `serviceAccount.name`              | The name of the ServiceAccount to use.     | `NULL`                                            |

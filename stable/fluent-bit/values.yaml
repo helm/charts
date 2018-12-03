@@ -106,21 +106,19 @@ fullConfigMap: false
 ##
 existingConfigMap: ""
 
-## Can insert entire sections as desired
 rawConfig: |-
   @INCLUDE fluent-bit-service.conf
   @INCLUDE fluent-bit-input.conf
   @INCLUDE fluent-bit-filter.conf
   @INCLUDE fluent-bit-output.conf
 
-## Add additional entries in existing Input/Filter/Output sections
 extraEntries:
   input: |-
-    # >=1 additional Key/Value entrie(s) for existing Input section
+#     # >=1 additional Key/Value entrie(s) for existing Input section
   filter: |-
-    # >=1 additional Key/Value entrie(s) for existing Filter section
+#     # >=1 additional Key/Value entrie(s) for existing Filter section
   output: |-
-    # >=1 additional Key/Value entrie(s) for existing Ouput section
+#     # >=1 additional Key/Value entrie(s) for existing Ouput section
 
 ## Extra volumes containing additional files required for fluent-bit to work
 ## (eg. CA certificates)
@@ -158,6 +156,8 @@ nodeSelector: {}
 input:
   tail:
     memBufLimit: 5MB
+    path: /var/log/containers/*.log
+
 
 filter:
   kubeURL: https://kubernetes.default.svc:443
