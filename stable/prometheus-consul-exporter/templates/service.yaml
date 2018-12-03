@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "consul-exporter.fullname" . }}
+  name: {{ include "prometheus-consul-exporter.fullname" . }}
   labels:
-    app: {{ template "consul-exporter.name" . }}
-    chart: {{ template "consul-exporter.chart" . }}
+    app: {{ template "prometheus-consul-exporter.name" . }}
+    chart: {{ template "prometheus-consul-exporter.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
@@ -15,4 +15,4 @@ spec:
       protocol: TCP
       name: http
   selector:
-    app: {{ template "consul-exporter.name" . }}
+    app: {{ template "prometheus-consul-exporter.name" . }}

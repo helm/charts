@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "consul-exporter.fullname" . }}
+  name: {{ include "prometheus-consul-exporter.fullname" . }}
   labels:
-    app: {{ template "consul-exporter.name" . }}
-    chart: {{ template "consul-exporter.chart" . }}
+    app: {{ template "prometheus-consul-exporter.name" . }}
+    chart: {{ template "prometheus-consul-exporter.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ template "consul-exporter.name" . }}
+      app: {{ template "prometheus-consul-exporter.name" . }}
       release: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ template "consul-exporter.name" . }}
+        app: {{ template "prometheus-consul-exporter.name" . }}
         release: {{ .Release.Name }}
     spec:
       containers:
