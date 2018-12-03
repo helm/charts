@@ -44,9 +44,10 @@ spec:
           securityContext:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true
+{{- if .Values.prometheusOperator.securityContext }}
       securityContext:
-        runAsNonRoot: true
-        runAsUser: 65534
+{{ toYaml .Values.prometheusOperator.securityContext | indent 8 }}
+{{- end }}
       serviceAccountName: {{ template "prometheus-operator.operator.serviceAccountName" . }}
     {{- with .Values.prometheusOperator.nodeSelector }}
       nodeSelector:
