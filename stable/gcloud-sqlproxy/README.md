@@ -1,4 +1,9 @@
-# GCP SQL Proxy
+# GCP SQL Proxy - DEPRECATED
+
+**This chart is deprecated! You can find the new chart in:**
+- **Source:** https://github.com/rimusz/charts
+- **Charts repository:** https://charts.rimusz.net
+
 
 [sql-proxy](https://cloud.google.com/sql/docs/postgres/sql-proxy) The Cloud SQL Proxy provides secure access to your Cloud SQL Postgres/MySQL instances without having to whitelist IP addresses or configure SSL.
 
@@ -9,7 +14,7 @@ Accessing your Cloud SQL instance using the Cloud SQL Proxy offers these advanta
 
 ## Introduction
 
-This chart creates a Google Cloud Endpoints deployment and service on a Kubernetes cluster using the Helm package manager.
+This chart creates a Google Cloud SQL Proxy deployment and service on a Kubernetes cluster using the Helm package manager.
 You need to enable Cloud SQL Administration API and create a service account for the proxy as per these [instructions](https://cloud.google.com/sql/docs/postgres/connect-container-engine).
 
 ## Prerequisites
