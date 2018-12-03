@@ -41,7 +41,8 @@ spec:
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       initContainers:
         - name: copy-config
-          image: busybox
+          image: "{{ .Values.copyConfigImage.repository }}:{{ .Values.copyConfigImage.tag }}"
+          imagePullPolicy: {{ .Values.copyConfigImage.pullPolicy | quote }}
           command:
             - "sh"
           args:
