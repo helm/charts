@@ -2,7 +2,7 @@
 ## ref: https://hub.docker.com/r/library/influxdb/tags/
 image:
   repo: "influxdb"
-  tag: "1.6-alpine"
+  tag: "1.7-alpine"
   pullPolicy: IfNotPresent
 
 ## Specify a service type
@@ -117,8 +117,10 @@ env:
 ## ref: https://docs.influxdata.com/influxdb/v1.1/administration/config/
 config:
   reporting_disabled: false
-  bind_address: 8088
   storage_directory: /var/lib/influxdb
+  rpc:
+    enabled: true
+    bind_address: 8088
   meta:
     retention_autocreate: true
     logging_enabled: true
@@ -231,5 +233,3 @@ config:
     log_enabled: true
     enabled: true
     run_interval: 1s
-
-exposeRpcService: true
