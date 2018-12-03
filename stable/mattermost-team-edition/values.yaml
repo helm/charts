@@ -6,7 +6,7 @@ image:
   tag: 5.5.0
   imagePullPolicy: IfNotPresent
 
-initImage:
+initContainerImage:
   repository: appropriate/curl
   tag: latest
   imagePullPolicy: IfNotPresent
