@@ -24,6 +24,12 @@ installImage:
   tag: 0.6
   pullPolicy: IfNotPresent
 
+# Specs for the Docker image for the copyConfig init container
+copyConfigImage:
+  repository: busybox
+  tag: 1.29.3
+  pullPolicy: IfNotPresent
+
 # Specs for the MongoDB image
 image:
   repository: mongo
