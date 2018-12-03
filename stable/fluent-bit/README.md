@@ -80,6 +80,9 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `podAnnotations`                   | Optional pod annotations                  | `NULL`                |
 | `fullConfigMap`                    | User has provided entire config (parsers + system)  | `false`      |
 | `existingConfigMap`                | ConfigMap override                         | ``                    |
+| `extraEntries.input`               |    Extra entries for existing [INPUT] section                     | `NULL`                    |
+| `extraEntries.filter`               |    Extra entries for existing [FILTER] section                     | `NULL`                    |
+| `extraEntries.output`               |   Extra entries for existing [OUPUT] section                     | `NULL`                    |
 | `extraVolumeMounts`                | Mount an extra volume, required to mount ssl certificates when elasticsearch has tls enabled |          |
 | `extraVolume`                      | Extra volume                               |                                                |
 | `filter.enableExclude`                   | Enable the use of monitoring for a pod annotation of `fluentbit.io/exclude: true`. If present, discard logs from that pod.         | `true`                                 |
@@ -123,4 +126,6 @@ $ helm install --name my-release -f values.yaml stable/fluent-bit
 
 ### From < 1.0.0 To 1.0.0
 
-Values `extraInputs`, `extraFilters` and `extraOutputs` have been removed in version `1.0.0` of the fluent-bit chart. Please use the `rawConfig` value instead, inserting blocks of text as desired.
+Values `extraInputs`, `extraFilters` and `extraOutputs` have been removed in version `1.0.0` of the fluent-bit chart. 
+To add additional entries to the existing sections, please use the `extraEntries.(input|filter|output)` values. 
+For entire sections, please use the `rawConfig` value, inserting blocks of text as desired.

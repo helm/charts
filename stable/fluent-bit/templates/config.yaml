@@ -37,6 +37,7 @@ data:
         DB               /tail-db/tail-containers-state.db
         DB.Sync          Normal
 {{- end }}
+{{ .Values.extraEntries.input | indent 8 }}
 
   fluent-bit-filter.conf: |-
     [FILTER]
@@ -54,6 +55,7 @@ data:
 {{- if .Values.filter.enableExclude }}
         K8S-Logging.Exclude On
 {{- end }}
+{{ .Values.extraEntries.filter | indent 8 }}
 
   fluent-bit-output.conf: |-
 {{ if eq .Values.backend.type "test" }}
@@ -134,6 +136,8 @@ data:
 {{- end }}
         Format {{ .Values.backend.http.format }}
 {{- end }}
+{{ .Values.extraEntries.output | indent 8 }}
+
 
   fluent-bit.conf: |-
 {{ .Values.rawConfig | indent 4 }}
