@@ -255,10 +255,10 @@ env:
   JMXSSL: "false"
 
   # Hostname for JMX remote host if required
-  #JMX_HOSTNAME: ""
+  # JMX_HOSTNAME: ""
 
   # JVM Flags is an optional parameter to set extra JVM Flags
-  #SERVER_JVMFLAGS: ""
+  # SERVER_JVMFLAGS: ""
 
   ## The port on which the server will accept client requests.
   ZK_CLIENT_PORT: 2181
