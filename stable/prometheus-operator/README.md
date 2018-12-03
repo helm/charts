@@ -81,6 +81,7 @@ The following tables lists the configurable parameters of the prometheus-operato
 | `prometheusOperator.service.nodePort` | Port to expose prometheus operator service on each node | `38080` |
 | `prometheusOperator.service.annotations` | Annotations to be added to the prometheus operator service | `{}` |
 | `prometheusOperator.resources` | Resource limits for prometheus operator | `{}` |
+| `prometheusOperator.securityContext` | SecurityContext for prometheus operator | `{"runAsNonRoot": true, "runAsUser": 65534}` |
 | `prometheusOperator.nodeSelector` | Prometheus operator node selector https://kubernetes.io/docs/user-guide/node-selection/ | `{}` |
 | `prometheusOperator.tolerations` | Tolerations for use with node taints https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/ | `[]` |
 | `prometheusOperator.affinity` | Assign the prometheus operator to run on specific nodes https://kubernetes.io/docs/concepts/configuration/assign-pod-node/ | `{}` |
