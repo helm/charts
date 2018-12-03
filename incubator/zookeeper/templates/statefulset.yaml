@@ -55,7 +55,7 @@ spec:
           command:
             - /bin/bash
             - -xec
-            - zkGenConfig.sh && exec zkServer.sh start-foreground
+            - zkGenConfig.sh && export JMX_HOSTNAME=${JMX_HOSTNAME:-$(hostname -i)} && if [ "$JMXPORT" ]; then export SERVER_JVMFLAGS="$SERVER_JVMFLAGS -Djava.rmi.server.hostname=$JMX_HOSTNAME"; fi && exec zkServer.sh start-foreground
           ports:
 {{- range $key, $port := .Values.ports }}
             - name: {{ $key }}
