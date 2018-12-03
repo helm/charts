@@ -152,6 +152,9 @@ spec:
 {{- if eq .Values.storage "filesystem" }}
             - name: data
               mountPath: /var/lib/registry/
+{{- if .Values.persistence.subPath }}
+              subPath: "{{ .Values.persistence.subPath }}"
+{{- end }}
 {{- end }}
             - name: "{{ template "docker-registry.fullname" . }}-config"
               mountPath: "/etc/docker/registry"

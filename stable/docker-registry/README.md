@@ -35,6 +35,7 @@ their default values.
 | `persistence.enabled`       | Whether to use a PVC for the Docker storage                                                | `false`         |
 | `persistence.size`          | Amount of space to claim for PVC                                                           | `10Gi`          |
 | `persistence.storageClass`  | Storage Class to use for PVC                                                               | `-`             |
+| `persistence.subPath`       | Mount a sub dir of the persistent volume                                                   | `""`            |
 | `persistence.existingClaim` | Name of an existing PVC to use for config                                                  | `nil`           |
 | `service.port`              | TCP port on which the service is exposed                                                   | `5000`          |
 | `service.type`              | service type                                                                               | `ClusterIP`     |
