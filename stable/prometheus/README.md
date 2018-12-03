@@ -120,6 +120,12 @@ Parameter | Description | Default
 `alertmanager.persistentVolume.subPath` | Subdirectory of alertmanager data Persistent Volume to mount | `""`
 `alertmanager.podAnnotations` | annotations to be added to alertmanager pods | `{}`
 `alertmanager.replicaCount` | desired number of alertmanager pods | `1`
+`alertmanager.statefulSet.enabled` | If true, use a statefulset instead of a deployment for pod management | `false`
+`alertmanager.statefulSet.podManagementPolicy` | podManagementPolicy of alertmanager pods | `OrderedReady`
+`alertmanager.statefulSet.headless.annotations` | annotations for alertmanager headless service | `{}`
+`alertmanager.statefulSet.headless.labels` | labels for alertmanager headless service | `{}`
+`alertmanager.statefulSet.headless.enableMeshPeer` | If true, enable the mesh peer endpoint for the headless service | `{}`
+`alertmanager.statefulSet.headless.servicePort` | alertmanager headless service port | `80`
 `alertmanager.priorityClassName` | alertmanager priorityClassName | `nil`
 `alertmanager.resources` | alertmanager pod resource requests & limits | `{}`
 `alertmanager.securityContext` | Custom [security context](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/) for Alert Manager containers | `{}`
@@ -252,6 +258,12 @@ Parameter | Description | Default
 `server.podAnnotations` | annotations to be added to Prometheus server pods | `{}`
 `server.deploymentAnnotations` | annotations to be added to Prometheus server deployment | `{}'
 `server.replicaCount` | desired number of Prometheus server pods | `1`
+`server.statefulSet.enabled` | If true, use a statefulset instead of a deployment for pod management | `false`
+`server.statefulSet.annotations` | annotations to be added to Prometheus server stateful set | `{}'
+`server.statefulSet.podManagementPolicy` | podManagementPolicy of server pods | `OrderedReady`
+`server.statefulSet.headless.annotations` | annotations for Prometheus server headless service | `{}`
+`server.statefulSet.headless.labels` | labels for Prometheus server headless service | `{}`
+`server.statefulSet.headless.servicePort` | Prometheus server headless service port | `80`
 `server.resources` | Prometheus server resource requests and limits | `{}`
 `server.securityContext` | Custom [security context](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/) for server containers | `{}`
 `server.service.annotations` | annotations for Prometheus server service | `{}`
