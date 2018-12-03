@@ -1,0 +1,30 @@
+{{- if .Values.server.statefulSet.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+{{- if .Values.server.statefulSet.headless.annotations }}
+  annotations:
+{{ toYaml .Values.server.statefulSet.headless.annotations | indent 4 }}
+{{- end }}
+  labels:
+    app: {{ template "prometheus.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: "{{ .Values.server.name }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+{{- if .Values.server.statefulSet.headless.labels }}
+{{ toYaml .Values.server.statefulSet.headless.labels | indent 4 }}
+{{- end }}
+  name: {{ template "prometheus.server.fullname" . }}-headless
+spec:
+  clusterIP: None
+  ports:
+    - name: http
+      port: {{ .Values.server.statefulSet.headless.servicePort }}
+      protocol: TCP
+      targetPort: 9090
+  selector:
+    app: {{ template "prometheus.name" . }}
+    component: "{{ .Values.server.name }}"
+    release: {{ .Release.Name }}
+{{- end -}}
