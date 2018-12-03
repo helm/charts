@@ -159,13 +159,11 @@ spec:
               value: {{ template "concourse.postgresql.fullname" . }}
             - name: CONCOURSE_POSTGRES_USER
               value: {{ .Values.postgresql.postgresUser | quote }}
-            {{- if .Values.secrets.mount }}
             - name: CONCOURSE_POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ template "concourse.postgresql.fullname" . }}
                   key: postgres-password
-            {{- end }}
             - name: CONCOURSE_POSTGRES_DATABASE
               value: {{ .Values.postgresql.postgresDatabase | quote }}
             {{- else }}
