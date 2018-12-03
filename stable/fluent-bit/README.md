@@ -128,5 +128,5 @@ $ helm install --name my-release -f values.yaml stable/fluent-bit
 ### From < 1.0.0 To 1.0.0
 
 Values `extraInputs`, `extraFilters` and `extraOutputs` have been removed in version `1.0.0` of the fluent-bit chart. 
-To add additional entries to the existing sections, please use the `extraEntries.(input|filter|output)` values. 
+To add additional entries to the existing sections, please use the `extraEntries.input`, `extraEntries.filter` and `extraEntries.output` values. 
 For entire sections, please use the `rawConfig` value, inserting blocks of text as desired.
