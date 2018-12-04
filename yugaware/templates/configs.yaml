@@ -52,7 +52,7 @@ data:
       docker.network = bridge
       seedData = false
       swamper.targetPath = /opt/swamper_targets
-      multiTenant = false
+      multiTenant = {{ .Values.yugaware.multiTenant }}
       releases.path = "/opt/releases"
       docker.release = "/opt/yugabyte/release"
       thirdparty.packagePath = /opt/third-party

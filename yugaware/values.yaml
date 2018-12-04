@@ -12,3 +12,4 @@ yugaware:
   replicas: 1
   storage: 100Gi
   storage_class: standard
+  multiTenant: false
