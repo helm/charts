@@ -40,13 +40,13 @@ spec:
             httpGet:
               path: /
               port: ui
+          volumeMounts:
+          - name: seq-data
+            mountPath: {{ .Values.persistence.path }}
+            subPath: {{ .Values.persistence.subPath }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}
-          volumeMounts:
-            - name: seq-data
-              mountPath: {{ .Values.persistence.path }}
-              subPath: {{ .Values.persistence.subPath }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
     {{- end }}
