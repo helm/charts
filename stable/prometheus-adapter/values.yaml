@@ -3,7 +3,7 @@ affinity: {}
 
 image:
   repository: directxman12/k8s-prometheus-adapter-amd64
-  tag: v0.2.1
+  tag: v0.4.0
   pullPolicy: IfNotPresent
 
 logLevel: 4
