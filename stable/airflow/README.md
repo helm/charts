@@ -9,7 +9,7 @@ monitor workflows.
 To install the Airflow Chart into your Kubernetes cluster :
 
 ```bash
-helm install --namespace "airflow" --name "airflow" incubator/airflow
+helm install --namespace "airflow" --name "airflow" stable/airflow
 ```
 
 After installation succeeds, you can get a status of Chart
