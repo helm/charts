@@ -1,12 +1,9 @@
-# A headless service to create DNS records
+# A headless service to create DNS records for discovery purposes. Use the -client service to connect applications
 apiVersion: v1
 kind: Service
 metadata:
   annotations:
     service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
-  {{- if .Values.serviceAnnotations }}
-{{ toYaml .Values.serviceAnnotations | indent 4 }}
-  {{- end }}
   labels:
     app: {{ template "mongodb-replicaset.name" . }}
     chart: {{ template "mongodb-replicaset.chart" . }}
@@ -22,11 +19,7 @@ spec:
   ports:
     - name: mongodb
       port: {{ .Values.port }}
-{{- if .Values.metrics.enabled }}
-    - name: metrics
-      port: {{ .Values.metrics.port }}
-      targetPort: metrics
-{{- end }}
+  publishNotReadyAddresses: true
   selector:
     app: {{ template "mongodb-replicaset.name" . }}
     release: {{ .Release.Name }}

@@ -92,7 +92,10 @@ configFiles:
 
 ## When set to true will create sidecar for `prom/mysqld-exporter`
 ## metrics exporting
-metricsExporter: false
+metricsExporter:
+  enabled: false
+  commandOverrides: []
+  argsOverrides: []
 
 ## When set to true will create sidecar to tail mysql log
 logTail: true

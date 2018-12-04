@@ -1,15 +1,14 @@
-{{- if .Values.alertmanager.enabled -}}
+{{- if and .Values.alertmanager.enabled (not .Values.alertmanager.statefulSet.enabled) -}}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
-    app: {{ template "prometheus.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    component: "{{ .Values.alertmanager.name }}"
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    {{- include "prometheus.alertmanager.labels" . | nindent 4 }}
   name: {{ template "prometheus.alertmanager.fullname" . }}
 spec:
+  selector:
+    matchLabels:
+      {{- include "prometheus.alertmanager.matchLabels" . | nindent 6 }}
   replicas: {{ .Values.alertmanager.replicaCount }}
   {{- if .Values.server.strategy }}
   strategy:
@@ -22,9 +21,7 @@ spec:
 {{ toYaml .Values.alertmanager.podAnnotations | indent 8 }}
     {{- end }}
       labels:
-        app: {{ template "prometheus.name" . }}
-        component: "{{ .Values.alertmanager.name }}"
-        release: {{ .Release.Name }}
+        {{- include "prometheus.alertmanager.labels" . | nindent 8 }}
     spec:
 {{- if .Values.alertmanager.affinity }}
       affinity:
