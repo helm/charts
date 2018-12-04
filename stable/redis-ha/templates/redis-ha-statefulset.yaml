@@ -52,7 +52,11 @@ spec:
         - name: AUTH
           valueFrom:
             secretKeyRef:
+            {{- if .Values.existingSecret }}
+              name: {{ .Values.existingSecret }}
+            {{- else }}
               name: {{ template "redis-ha.fullname" . }}
+            {{- end }}  
               key: auth
 {{- end }}
         - name: POD_IP
