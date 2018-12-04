@@ -51,26 +51,26 @@ spec:
           /usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} gateway s3" ]
           {{- else }}
           {{- if .Values.azuregateway.enabled }}
-          command: [ "/bin/sh", 
-          "-ce", 
-          "cp /tmp/config.json {{ .Values.configPath }} && 
+          command: [ "/bin/sh",
+          "-ce",
+          "cp /tmp/config.json {{ .Values.configPath }} &&
           /usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} gateway azure" ]
           {{- else }}
           {{- if .Values.gcsgateway.enabled }}
-          command: [ "/bin/sh", 
-          "-ce", 
-          "cp /tmp/config.json {{ .Values.configPath }} && 
+          command: [ "/bin/sh",
+          "-ce",
+          "cp /tmp/config.json {{ .Values.configPath }} &&
           /usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} gateway gcs {{ .Values.gcsgateway.projectId }}" ]
           {{- else }}
           {{- if .Values.nasgateway.enabled }}
-          command: [ "/bin/sh", 
-          "-ce", 
-          "cp /tmp/config.json {{ .Values.configPath }} && 
+          command: [ "/bin/sh",
+          "-ce",
+          "cp /tmp/config.json {{ .Values.configPath }} &&
           /usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} gateway nas {{ .Values.mountPath }}" ]
           {{- else }}
-          command: [ "/bin/sh", 
-          "-ce", 
-          "cp /tmp/config.json {{ .Values.configPath }} && 
+          command: [ "/bin/sh",
+          "-ce",
+          "cp /tmp/config.json {{ .Values.configPath }} &&
           /usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} server {{ .Values.mountPath }}" ]
           {{- end }}
           {{- end }}
@@ -114,10 +114,7 @@ spec:
                   key: secretkey
             {{- if .Values.gcsgateway.enabled }}
             - name: GOOGLE_APPLICATION_CREDENTIALS
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "minio.fullname" . }}
-                  key: gcs_key.json
+              value: /etc/credentials/gcs_key.json
             {{- end }}
             {{- range $key, $val := .Values.environment }}
             - name: {{ $key }}
