@@ -12,7 +12,9 @@ $ helm install stable/jasperreports
 
 This chart bootstraps a [JasperReports](https://github.com/bitnami/bitnami-docker-jasperreports) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
-It also packages the [Bitnami MariaDB chart](https://github.com/kubernetes/charts/tree/master/stable/mariadb) which is required for bootstrapping a MariaDB deployment for the database requirements of the JasperReports application.
+It also packages the [Bitnami MariaDB chart](https://github.com/kubernetes/charts/tree/master/stable/mariadb) which bootstraps a MariaDB deployment required by the JasperReports application.
+
+Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters.
 
 ## Prerequisites
 
@@ -47,8 +49,12 @@ The following table lists the configurable parameters of the JasperReports chart
 
 |           Parameter           |                 Description                  |                         Default                          |
 |-------------------------------|----------------------------------------------|----------------------------------------------------------|
-| `image`                       | JasperReports image                          | `bitnami/jasperreports:{VERSION}`                        |
-| `imagePullPolicy`             | Image pull policy                            | `IfNotPresent`                                           |
+| `global.imageRegistry`        | Global Docker image registry                 | `nil`                                                    |
+| `image.registry`              | JasperReports image registry                 | `docker.io`                                              |
+| `image.repository`            | JasperReports Image name                     | `bitnami/jasperreports`                                  |
+| `image.tag`                   | JasperReports Image tag                      | `{VERSION}`                                              |
+| `image.pullPolicy`            | Image pull policy                            | `Always` if `imageTag` is `latest`, else `IfNotPresent`  |
+| `image.pullSecrets`           | Specify image pull secrets                   | `nil`                                                    |
 | `jasperreportsUsername`       | User of the application                      | `user`                                                   |
 | `jasperreportsPassword`       | Application password                         | _random 10 character long alphanumeric string_           |
 | `jasperreportsEmail`          | User email                                   | `user@example.com`                                       |
@@ -63,13 +69,16 @@ The following table lists the configurable parameters of the JasperReports chart
 | `externalDatabase.port`       | Port of the external database                | `3306`                                                   |
 | `externalDatabase.user`       | Existing username in the external db         | `bn_jasperreports`                                       |
 | `externalDatabase.password`   | Password for the above username              | `nil`                                                    |
-| `externalDatabase.database`   | Name of the existing databse                 | `bitnami_jasperreports`                                  |
-| `mariadb.enabled`             | Wheter to use or not the mariadb chart       | `true`                                                   |
-| `mariadb.mariadbDatabase`     | Database name to create                      | `bitnami_jasperreports`                                  |
-| `mariadb.mariadbUser`         | Database user to create                      | `bn_jasperreports`                                       |
-| `mariadb.mariadbPassword`     | Password for the database                    | `nil`                                                    |
-| `mariadb.mariadbRootPassword` | MariaDB admin password                       | `nil`                                                    |
-| `serviceType`                 | Kubernetes Service type                      | `LoadBalancer`                                           |
+| `externalDatabase.database`   | Name of the existing database                | `bitnami_jasperreports`                                  |
+| `mariadb.enabled`             | Whether to use the MariaDB chart             | `true`                                                   |
+| `mariadb.db.name`     | Database name to create                      | `bitnami_jasperreports`                                  |
+| `mariadb.db.user`         | Database user to create                      | `bn_jasperreports`                                       |
+| `mariadb.db.password`     | Password for the database                    | `nil`                                                    |
+| `mariadb.rootUser.password` | MariaDB admin password                       | `nil`                                                    |
+| `service.type`                    | Kubernetes Service type                    | `LoadBalancer`                                          |
+| `service.externalTrafficPolicy`   | Enable client source IP preservation       | `Cluster`                                               |
+| `service.port`                    | Service HTTP port                    | `80`                                          |
+| `service.nodePorts.http`                 | Kubernetes http node port                  | `""`                                                    |
 | `persistence.enabled`         | Enable persistence using PVC                 | `true`                                                   |
 | `persistence.storageClass`    | PVC Storage Class for JasperReports volume   | `nil` (uses alpha storage annotation)                    |
 | `persistence.accessMode`      | PVC Access Mode for JasperReports volume     | `ReadWriteOnce`                                          |
@@ -102,3 +111,14 @@ The [Bitnami JasperReports](https://github.com/bitnami/bitnami-docker-jasperrepo
 
 Persistent Volume Claims are used to keep the data across deployments. This is known to work in GCE, AWS, and minikube.
 See the [Configuration](#configuration) section to configure the PVC or to disable persistence.
+
+## Upgrading
+
+### To 3.0.0
+
+Backwards compatibility is not guaranteed unless you modify the labels used on the chart's deployments.
+Use the workaround below to upgrade from versions previous to 3.0.0. The following example assumes that the release name is jasperreports:
+
+```console
+$ kubectl patch deployment jasperreports-jasperreports --type=json -p='[{"op": "remove", "path": "/spec/selector/matchLabels/chart"}]'
+$ kubectl delete statefulset jasperreports-mariadb --cascade=false

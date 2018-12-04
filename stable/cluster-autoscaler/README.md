@@ -16,6 +16,8 @@ This chart bootstraps a cluster-autoscaler deployment on a [Kubernetes](http://k
 
   - Kubernetes 1.8+
 > [older versions](https://github.com/kubernetes/autoscaler/tree/master/cluster-autoscaler#releases) may work by overriding the `image`. Cluster-autoscaler internally simulates the scheduler and bugs between mismatched versions may be subtle.
+  - Azure AKS specific Prerequisites:
+    - Kubernetes 1.10+ with RBAC-enabled
 
 ## Installing the Chart
 
@@ -31,11 +33,13 @@ To install the chart with the release name `my-release`:
 
 ### Using auto-discovery of tagged instance groups
 
+#### AWS
+
 Auto-discovery finds ASGs tags as below and automatically manages them based on the min and max size specified in the ASG. `cloudProvider=aws` only.
 
 1) tag the ASGs with _key_ `k8s.io/cluster-autoscaler/enabled` and _key_ `kubernetes.io/cluster/<YOUR CLUSTER NAME>`
-1) verify the [IAM Permissions](#IAM)
-1) set `autoDiscovery.clusterName=<YOUR CLUSTER NAME>`
+2) verify the [IAM Permissions](#iam)
+3) set `autoDiscovery.clusterName=<YOUR CLUSTER NAME>`
 
 ```console
 $ helm install stable/cluster-autoscaler --name my-release --set autoDiscovery.clusterName=<CLUSTER NAME>
@@ -43,12 +47,43 @@ $ helm install stable/cluster-autoscaler --name my-release --set autoDiscovery.c
 
 The [auto-discovery](#auto-discovery) section provides more details and examples
 
-### Specifying groups manually
+#### GCE
+##### Required parameters
+- `autoDiscovery.clusterName=any-name`
+- `--cloud-provider=gce`
+- `autoscalingGroupsnamePrefix[0].name=your-ig-prefix,autoscalingGroupsnamePrefix[0].maxSize=10,autoscalingGroupsnamePrefix[0].minSize=1`
+
+1) Either provide a yaml file setting `autoscalingGroupsnamePrefix` (see values.yaml) or use `--set` e.g.:
+
+```console
+$ helm install stable/cluster-autoscaler \
+--name my-release \
+--set autoDiscovery.clusterName=<CLUSTER NAME> \
+--set cloudProvider=gce \
+--set autoDiscovery.clusterName=mycluster \
+--set "autoscalingGroupsnamePrefix[0].name=your-ig-prefix,autoscalingGroupsnamePrefix[0].maxSize=10,autoscalingGroupsnamePrefix[0].minSize=1"
+```
+
+#### Azure AKS
+##### Required Parameters
+- `cloudProvider=azure`
+- `autoscalingGroups[0].name=your-agent-pool,autoscalingGroups[0].maxSize=10,autoscalingGroups[0].minSize=1`
+- `azureClientID: "your-service-principal-app-id"` 
+- `azureClientSecret: "your-service-principal-client-secret"`
+- `azureSubscriptionID: "your-azure-subscription-id"`
+- `azureTenantID: "your-azure-tenant-id"`
+- `azureClusterName: "your-aks-cluster-name"`
+- `azureResourceGroup: "your-aks-cluster-resource-group-name"`
+- `azureVMType: "AKS"`
+- `azureNodeResourceGroup: "your-aks-cluster-node-resource-group"`
+
+
+### Specifying groups manually (only aws)
 
 Without autodiscovery, specify an array of elements each containing ASG name, min size, max size. The sizes specified here will be applied to the ASG, assuming IAM permissions are correctly configured.
 
-1) verify the [IAM Permissions](#IAM Permissions)
-1) Either provide a yaml file setting `autoscalingGroups` (see values.yaml) or use `--set` e.g.:
+1) verify the [IAM Permissions](#iam)
+2) Either provide a yaml file setting `autoscalingGroups` (see values.yaml) or use `--set` e.g.:
 
 ```console
 $ helm install stable/cluster-autoscaler --name my-release --set "autoscalingGroups[0].name=your-asg-name,autoscalingGroups[0].maxSize=10,autoscalingGroups[0].minSize=1"
@@ -73,22 +108,29 @@ The following table lists the configurable parameters of the cluster-autoscaler 
 Parameter | Description | Default
 --- | --- | ---
 `affinity` | node/pod affinities | None
-`autoDiscovery.clusterName` | enable autodiscovery for name in ASG tag (only `cloudProvider=aws`)| `""` **required unless autoscalingGroups[] provided**
+`autoDiscovery.clusterName` | enable autodiscovery for name in ASG tag (only `cloudProvider=aws`). Must be set for `cloudProvider=gce`, but no MIG tagging required.| `""` **required unless autoscalingGroups[] provided**
 `autoscalingGroups[].name` | autoscaling group name | None. Required unless `autoDiscovery.enabled=true`
 `autoscalingGroups[].maxSize` | maximum autoscaling group size | None. Required unless `autoDiscovery.enabled=true`
 `autoscalingGroups[].minSize` | minimum autoscaling group size | None. Required unless `autoDiscovery.enabled=true`
 `awsRegion` | AWS region (required if `cloudProvider=aws`) | `us-east-1`
+`autoscalingGroupsnamePrefix[].name` | GCE MIG name | None. Required for `cloudProvider=gce`
+`autoscalingGroupsnamePrefix[].maxSize` | maximum MIG size | None. Required for `cloudProvider=gce`
+`autoscalingGroupsnamePrefix[].minSize` | minimum MIG size |  None. Required for `cloudProvider=gce`
 `sslCertPath` | Path on the host where ssl ca cert exists | `/etc/ssl/certs/ca-certificates.crt`
-`cloudProvider` | `aws` or `spotinst` are currently supported | `aws`
-`image.repository` | Image (used if `cloudProvider=aws`) | `k8s.gcr.io/cluster-autoscaler`
-`image.tag` | Image tag (used if `cloudProvider=aws`) | `v1.1.0`
-`image.pullPolicy` | Image pull policy (used if `cloudProvider=aws`) | `IfNotPresent`
+`cloudProvider` | `aws` or `spotinst` are currently supported for AWS. `gce` for GCE. `azure` for Azure AKS | `aws`
+`image.repository` | Image | `k8s.gcr.io/cluster-autoscaler`
+`image.tag` | Image tag  | `v1.2.0`
+`image.pullPolicy` | Image pull policy  | `IfNotPresent`
 `extraArgs` | additional container arguments | `{}`
+`podDisruptionBudget` | Pod disruption budget | `maxUnavailable: 1`
+`extraEnv` | additional container environment variables | `{}`
 `nodeSelector` | node labels for pod assignment | `{}`
 `podAnnotations` | annotations to add to each pod | `{}`
 `rbac.create` | If true, create & use RBAC resources | `false`
 `rbac.serviceAccountName` | existing ServiceAccount to use (ignored if rbac.create=true) | `default`
+`rbac.pspEnabled` | Must be used with `rbac.create` true. If true, creates & uses RBAC resources required in the cluster with [Pod Security Policies](https://kubernetes.io/docs/concepts/policy/pod-security-policy/) enabled. | `false`
 `replicaCount` | desired number of pods | `1`
+`priorityClassName` | priorityClassName | `nil`
 `resources` | pod resource requests & limits | `{}`
 `service.annotations` | annotations to add to service | none
 `service.clusterIP` | IP address to assign to service | `""`
@@ -96,6 +138,7 @@ Parameter | Description | Default
 `service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
 `service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
 `service.servicePort` | service port to expose | `8085`
+`service.portName` | name for service port | `http`
 `service.type` | type of service to create | `ClusterIP`
 `spotinst.account` | Spotinst Account ID (required if `cloudprovider=spotinst`) | `""`
 `spotinst.token` | Spotinst API token (required if `cloudprovider=spotinst`) | `""`
@@ -103,9 +146,16 @@ Parameter | Description | Default
 `spotinst.image.tag` | Image tag (used if `cloudProvider=spotinst`) | `v0.6.0`
 `spotinst.image.pullPolicy` | Image pull policy (used if `cloudProvider=spotinst`) | `IfNotPresent`
 `tolerations` | List of node taints to tolerate (requires Kubernetes >= 1.6) | `[]`
+`azureClientID` | Service Principal ClientID with contributor permission to Cluster and Node ResourceGroup | none
+`azureClientSecret` | Service Principal ClientSecret with contributor permission to Cluster and Node ResourceGroup | none
+`azureSubscriptionID` | Azure subscription where the resources are located | none
+`azureTenantID` | Azure tenant where the resources are located | none
+`azureClusterName` | Azure AKS cluster name | none
+`azureResourceGroup` | Azure resource group that the cluster is located | none
+`azureVMType: "AKS"` | Azure VM type | `AKS`
+`azureNodeResourceGroup` | azure resource group where the clusters Nodes are located, typically set as `MC_<cluster-resource-group-name>_<cluster-name>_<location>` | none
 
-
-Specify each parameter you'd like to override using a YAML file as described above in the [installation](#Installing the Chart) section or by using the `--set key=value[,key=value]` argument to `helm install`. For example, to change the region and [expander](https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/FAQ.md#what-are-expanders):
+Specify each parameter you'd like to override using a YAML file as described above in the [installation](#installing-the-chart) section or by using the `--set key=value[,key=value]` argument to `helm install`. For example, to change the region and [expander](https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/FAQ.md#what-are-expanders):
 
 ```console
 $ helm install stable/cluster-autoscaler --name my-release \

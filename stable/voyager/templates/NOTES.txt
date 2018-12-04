@@ -1,3 +1,5 @@
+**This chart is DEPRECATED and moved to https://github.com/appscode/charts**
+
 Set cloudProvider for installing Voyager
 
 To verify that Voyager has started, run:

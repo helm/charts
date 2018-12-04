@@ -2,15 +2,31 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 replicaCount: 1
+
+updateStrategy: {}
+  # type: RollingUpdate
+  # rollingUpdate:
+  #   maxSurge: 1
+  #   maxUnavailable: 0
+
 image:
   repository: jfelten/openvpn-docker
   tag: 1.1.0
   pullPolicy: IfNotPresent
 service:
-  name: openvpn
   type: LoadBalancer
   externalPort: 443
   internalPort: 443
+  externalIPs: []
+  nodePort: 32085
+  # LoadBalancerSourceRanges: 0.0.0.0/0
+  # loadBalancerIP: 10.0.0.1
+
+  ## Here annotations can be added to the openvpn service
+  # annotations:
+  #   external-dns.alpha.kubernetes.io/hostname: vpn.example.com
+  annotations: {}
+
 resources:
   limits:
     cpu: 300m
@@ -20,6 +36,7 @@ resources:
     memory: 128Mi
 persistence:
   enabled: true
+  # subPath: openvpn
   ## A manually managed Persistent Volume and Claim
   ## Requires persistence.enabled: true
   ## If defined, PVC must be created manually before volume will be bound
@@ -46,6 +63,20 @@ openvpn:
   OVPN_K8S_POD_NETWORK: "10.0.0.0"
   # Kubernetes pod network subnet (optional).
   OVPN_K8S_POD_SUBNET: "255.0.0.0"
+  # Kubernetes service network (optional).
+  # Define openvpn.OVPN_K8S_SVC_NETWORK and openvpn.OVPN_K8S_SVC_SUBNET if it's needed to create a separate route to Kubernates service subnet
+  # OVPN_K8S_SVC_NETWORK:
+  # Kubernetes service network subnet (optional).
+  # OVPN_K8S_SVC_SUBNET:
+  # Server certificate data
+  # keystoreSecret:
+  # secret with openvpn certificates. If specified, certificates are taken from the secret
+  # create secret with such command:
+  #    kubectl create secret generic openvpn-keystore-secret --from-file=./server.key --from-file=./ca.crt --from-file=./server.crt --from-file=./dh.pem
+  # Push a `dhcp-option DOMAIN` config
+  dhcpOptionDomain: true
+  # Redirect all client traffic through VPN
+  redirectGateway: true
   # Arbitrary lines appended to the end of the server configuration file
   # conf: |
   #  max-clients 100

@@ -1,0 +1,84 @@
+# Default values for kuberos.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+# You probably want to change the values under `kuberos` and `ingress`
+
+# `kuberos` describes the config for the app
+kuberos:
+  oidcClientURL: https://accounts.google.com
+  # `oidcClientURL` is the endpoint that is used to quesry OIDC info
+  oidcClientID: REDACTED.apps.googleusercontent.com
+  # `oidcClientID` is typically a long alpha numeric string.
+  #   For G Suite the 'REDACTED' part is about 45 alphanumeric characters
+  oidcSecret: super-secret-value-here
+  # `oidcSecret` is typically a long alpha numeric string.
+  #   For G Suite it's about 25 alphanumeric characters
+  #   For security reasons it's best to set this at deployment time with
+  #     `--set kuberos.oidcSecret=mySuper-secretPassPhrase`
+  clusters:
+  # The clusters below must all use the same OIDC details above
+  #   The config snippet that is generated for a user will default
+  #   to the first cluster
+  - name: dev-cluster
+    # `name` is a label to apply to the cluster. It would normally be
+    #   the fqdn of the cluster eg dev-cluster.example.com
+    #   it can be something a little more friendly eg dev-cluster
+    apiServer: https://api.dev-cluster.example.com
+    # `apiServer` is the url for kubectl
+    #   This is typically  https://api.fqdn
+    caCrt: |-
+      -----BEGIN CERTIFICATE-----
+      cert data here
+      -----END CERTIFICATE-----
+    # `caCrt` is the public / CA cert for the cluster
+
+ingress:
+  enabled: false
+  # Set `enabled` to true to create an ingress and get external traffic to kuberos
+  annotations: {}
+  # Add your ingress annotations here. Most common ones are given below
+    # kubernetes.io/ingress.class: nginx
+    # certmanager.k8s.io/cluster-issuer:      prod-acme
+    # certmanager.k8s.io/acme-challenge-type: http01
+    # nginx.ingress.kubernetes.io/force-ssl-redirect: true
+  path: /
+  # `path` can stay as-is
+  hosts:
+  # Add host headers and cert names below
+    - chart-example.local
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+image:
+  repository: negz/kuberos
+  tag: ede4085
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 80
+  annotations: {}
+  # Add your service annotations here.
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

@@ -3,18 +3,25 @@
 # Declare name/value pairs to be passed into your templates.
 # name: value
 
-ServiceType: LoadBalancer
-ServicePort: 9090
-ContainerPort: 9090
-Component: "tensorflow-inception"
-Replicas: 1
-Image: "quay.io/lachie83/inception_serving"
-ImageTag: "latest"
-ImagePullPolicy: "IfNotPresent"
-Resources:
-  limits:
-    cpu: 100m
-    memory: 256Mi
-  requests:
-    cpu: 100m
-    memory: 256Mi
+serviceType: LoadBalancer
+servicePort: 9090
+containerPort: 9090
+component: "tensorflow-inception"
+replicas: 1
+image:
+  repository: "quay.io/thomasjungblut/tfs-inception"
+  tag: "tfs-1.8.0-gpu"
+  pullPolicy: "IfNotPresent"
+
+env:
+  ldLibraryPath: "/usr/lib/x86_64-linux-gnu/"
+
+resources: {}
+#  limits:
+#    nvidia.com/gpu: 1
+#    cpu: 100m
+#    memory: 256Mi
+#  requests:
+#    nvidia.com/gpu: 1
+#    cpu: 100m
+#    memory: 256Mi

@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "graphite.fullname" . }}-statsd-configmap
+  labels:
+    app: {{ template "graphite.name" . }}
+    chart: {{ template "graphite.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+{{- range $key, $value := .Values.statsdConfigMaps }}
+  {{ $key }}: |-
+{{ $value | indent 4 }}
+{{- end }}

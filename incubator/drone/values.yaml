@@ -1,4 +1,4 @@
-appVersion: "0.8.4"
+appVersion: "0.8.5"
 
 images:
   ## The official drone (server) image, change tag to use a different version.
@@ -6,7 +6,7 @@ images:
   ##
   server:
     repository: "docker.io/drone/drone"
-    tag: 0.8.4
+    tag: 0.8.5
     pullPolicy: IfNotPresent
 
   ## The official drone (agent) image, change tag to use a different version.
@@ -14,7 +14,7 @@ images:
   ##
   agent:
     repository: "docker.io/drone/agent"
-    tag: 0.8.4
+    tag: 0.8.5
     pullPolicy: IfNotPresent
 
   ## The official docker (dind) image, change tag to use a different version.
@@ -86,7 +86,21 @@ server:
     # DRONE_ORGS: "my-github-org,my-other-github-org"
     # DRONE_ADMIN:"admin-1,admin-2"
     # DRONE_GITHUB_CLIENT: "github-oauth2-client-id"
-    # DRONE_GITHUB_SECRET: "github-oauth2-client-secret"
+
+  ## Secret environment variables are configured in `server.envSecrets`.
+  ## Each item in `server.envSecrets` references a Kubernetes Secret.
+  ## These Secrets should be created before they are referenced.
+  ##
+  # envSecrets:
+  #   # The name of a Kubernetes Secret
+  #   drone-server-secrets:
+  #     # A list of Secret keys to include as environment variables
+  #     - DRONE_GITHUB_SECRET
+
+  ## Additional server annotations.
+  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+  ##
+  annotations: {}
 
   ## CPU and memory limits for drone server
   ##
@@ -97,6 +111,11 @@ server:
   #  limits:
   #    memory: 2Gi
   #    cpu: 1
+
+  ## Use an alternate scheduler, e.g. "stork".
+  ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+  ##
+  # schedulerName:
 
   ## Pod scheduling preferences.
   ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
@@ -114,6 +133,11 @@ agent:
   ## Number of drone agent replicas
   replicas: 1
 
+  ## Additional agent annotations.
+  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+  ##
+  annotations: {}
+
   ## CPU and memory limits for drone agent
   ##
   resources: {}
@@ -123,6 +147,11 @@ agent:
   #  limits:
   #    memory: 2Gi
   #    cpu: 1
+
+  ## Use an alternate scheduler, e.g. "stork".
+  ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+  ##
+  # schedulerName:
 
   ## Pod scheduling preferences.
   ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
@@ -135,6 +164,18 @@ dind:
   ## attention to the fact that we can't enforce resource constraints in that case.
   ##
   enabled: true
+
+  ## Values in here get injected as environment variables to DinD.
+  ## ref: http://readme.drone.io/admin/installation-reference
+  ##
+  #  env:
+  #    DRONE_DEBUG: "false"
+
+  ## Allowing custom command and args to DinD
+  ## ref: https://discourse.drone.io/t/docker-mtu-problem/1207
+  ##
+  #  command: '["/bin/sh"]'
+  #  args: '["-c", "dockerd --host=unix:///var/run/docker.sock --host=tcp://127.0.0.1:2375 --mtu=1350"]'
 
   ## Docker storage driver.
   ## Your DinD instance should be using the same driver as your host.
@@ -178,3 +219,16 @@ persistence:
 ## the agents and servers, otherwise this will be auto-generated.
 ##
 # sharedSecret: supersecret
+
+rbac:
+  ## Specifies whether RBAC resources should be created
+  create: true
+  ## RBAC api version (v1, v1beta1, or v1alpha1)
+  apiVersion: v1
+
+serviceAccount:
+  ## Specifies whether a ServiceAccount should be created
+  create: true
+  ## The name of the ServiceAccount to use.
+  ## If not set and create is true, a name is generated using the fullname template
+  name:

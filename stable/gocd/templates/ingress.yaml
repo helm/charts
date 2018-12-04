@@ -1,3 +1,4 @@
+{{- if .Values.server.enabled }}
 {{- if .Values.server.ingress.enabled -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
@@ -21,4 +22,9 @@ spec:
     {{- range $host := .Values.server.ingress.hosts }}
     - host: {{ $host }}
     {{- end -}}
+  {{- if .Values.server.ingress.tls }}
+  tls:
+{{ toYaml .Values.server.ingress.tls | indent 4 }}
+  {{- end -}}
+{{- end -}}
 {{- end -}}

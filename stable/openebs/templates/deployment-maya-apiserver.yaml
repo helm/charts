@@ -1,0 +1,100 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "openebs.fullname" . }}-apiserver
+  labels:
+    app: {{ template "openebs.name" . }}
+    chart: {{ template "openebs.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: apiserver
+spec:
+  replicas: {{ .Values.apiserver.replicas }}
+  selector:
+    matchLabels:
+      app: {{ template "openebs.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "openebs.name" . }}
+        release: {{ .Release.Name }}
+        component: apiserver
+    spec:
+      serviceAccountName: {{ template "openebs.serviceAccountName" . }}
+      containers:
+      - name: {{ template "openebs.name" . }}-apiserver
+        image: "{{ .Values.apiserver.image }}:{{ .Values.apiserver.imageTag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.apiserver.ports.internalPort }}
+        env:
+        # OPENEBS_IO_KUBE_CONFIG enables maya api service to connect to K8s
+        # based on this config. This is ignored if empty.
+        # This is supported for maya api server version 0.5.2 onwards
+        #- name: OPENEBS_IO_KUBE_CONFIG
+        #  value: "/home/ubuntu/.kube/config"
+        # OPENEBS_IO_K8S_MASTER enables maya api service to connect to K8s
+        # based on this address. This is ignored if empty.
+        # This is supported for maya api server version 0.5.2 onwards
+        #- name: OPENEBS_IO_K8S_MASTER
+        #  value: "http://172.28.128.3:8080"
+        # OPENEBS_IO_INSTALL_CONFIG_NAME specifies the config map containing the install configuration.
+        # Currently, the configuration can be used to specifiy the default version for the CAS Templates
+        - name: OPENEBS_IO_INSTALL_CONFIG_NAME
+          value: {{ template "openebs.fullname" . }}-install-config
+{{- if .Values.ndm.sparse }}
+{{- if .Values.ndm.sparse.enabled }}
+        # OPENEBS_IO_INSTALL_DEFAULT_CSTOR_SPARSE_POOL decides whether default cstor sparse pool should be
+        # configured as a part of openebs installation.
+        # If "true" a default cstor sparse pool will be configured, if "false" it will not be configured.
+        - name: OPENEBS_IO_INSTALL_DEFAULT_CSTOR_SPARSE_POOL
+          value: "{{ .Values.ndm.sparse.enabled }}"
+{{- end }}
+{{- end }}
+        # OPENEBS_NAMESPACE provides the namespace of this deployment as an
+        # environment variable
+        - name: OPENEBS_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        # OPENEBS_SERVICE_ACCOUNT provides the service account of this pod as
+        # environment variable
+        - name: OPENEBS_SERVICE_ACCOUNT
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.serviceAccountName
+        # OPENEBS_MAYA_POD_NAME provides the name of this pod as
+        # environment variable
+        - name: OPENEBS_MAYA_POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: OPENEBS_IO_JIVA_CONTROLLER_IMAGE
+          value: "{{ .Values.jiva.image }}:{{ .Values.jiva.imageTag }}"
+        - name: OPENEBS_IO_JIVA_REPLICA_IMAGE
+          value: "{{ .Values.jiva.image }}:{{ .Values.jiva.imageTag }}"
+        - name: OPENEBS_IO_JIVA_REPLICA_COUNT
+          value: "{{ .Values.jiva.replicas }}"
+        - name: OPENEBS_IO_CSTOR_TARGET_IMAGE
+          value: "{{ .Values.cstor.target.image }}:{{ .Values.cstor.target.imageTag }}"
+        - name: OPENEBS_IO_CSTOR_POOL_IMAGE
+          value: "{{ .Values.cstor.pool.image }}:{{ .Values.cstor.pool.imageTag }}"
+        - name: OPENEBS_IO_CSTOR_POOL_MGMT_IMAGE
+          value: "{{ .Values.cstor.poolMgmt.image }}:{{ .Values.cstor.poolMgmt.imageTag }}"
+        - name: OPENEBS_IO_CSTOR_VOLUME_MGMT_IMAGE
+          value: "{{ .Values.cstor.volumeMgmt.image }}:{{ .Values.cstor.volumeMgmt.imageTag }}"
+        - name: OPENEBS_IO_VOLUME_MONITOR_IMAGE
+          value: "{{ .Values.policies.monitoring.image }}:{{ .Values.policies.monitoring.imageTag }}"
+{{- if .Values.apiserver.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.apiserver.nodeSelector | indent 8 }}
+{{- end }}
+{{- if .Values.apiserver.tolerations }}
+      tolerations:
+{{ toYaml .Values.apiserver.tolerations | indent 8 }}
+{{- end }}
+{{- if .Values.apiserver.affinity }}
+      affinity:
+{{ toYaml .Values.apiserver.affinity | indent 8 }}
+{{- end }}

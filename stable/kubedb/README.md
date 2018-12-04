@@ -1,3 +1,5 @@
+**This chart is DEPRECATED and moved to https://github.com/appscode/charts**
+
 # KubeDB
 [KubeDB by AppsCode](https://github.com/kubedb/cli) - Making running production-grade databases easy on Kubernetes
 
@@ -77,7 +79,7 @@ By default the chart will not install the recommended RBAC roles and rolebinding
 
 You need to have the flag `--authorization-mode=RBAC` on the api server. See the following document for how to enable [RBAC](https://kubernetes.io/docs/admin/authorization/rbac/).
 
-To determine if your cluster supports RBAC, run the the following command:
+To determine if your cluster supports RBAC, run the following command:
 
 ```console
 $ kubectl api-versions | grep rbac

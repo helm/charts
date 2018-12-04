@@ -1,0 +1,35 @@
+## URL of your Incoming Webhook in Slack:
+slackUrl: ""
+## Time to wait after pod becomes not ready before notifying
+notReadyMinTime: 60000  # in ms
+
+## Configuration for the deployment:
+image:
+  repository: willwill/kube-slack
+  tag: v3.6.0
+  pullPolicy: IfNotPresent
+
+resources: {}
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

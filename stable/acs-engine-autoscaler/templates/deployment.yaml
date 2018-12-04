@@ -7,6 +7,9 @@ metadata:
 {{ include "acs-engine-autoscaler.labels.standard" . | indent 4 }}
   annotations:
     description: {{ .Chart.Description }}
+{{- with .Values.deploymentAnnotations }}
+{{ toYaml . | indent 4 }}
+{{- end }}
 spec:
   replicas: {{ .Values.replicaCount }}
   template:
@@ -14,10 +17,15 @@ spec:
       labels:
 {{ include "acs-engine-autoscaler.labels.standard" . | indent 8 }}
         openai/do-not-drain: "true"
+{{- with .Values.podAnnotations }}
+      annotations:
+{{ toYaml . | indent 8 }}
+{{- end }}
     spec:
       containers:
       - name: {{ template "acs-engine-autoscaler.fullname" . }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
         - name: AZURE_SP_APP_ID
           valueFrom:
@@ -79,7 +87,20 @@ spec:
             - {{ .Values.acsenginecluster.overprovision | quote }}
             {{- end }}
             - -vvv
-        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        resources:
+{{ toYaml .Values.resources | indent 12 }}
+{{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+{{- end }}
       restartPolicy: Always
       dnsPolicy: Default
 {{ end }}

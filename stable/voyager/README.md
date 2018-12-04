@@ -1,3 +1,5 @@
+**This chart is DEPRECATED and moved to https://github.com/appscode/charts**
+
 # Voyager
 [Voyager by AppsCode](https://github.com/appscode/voyager) - Secure Ingress Controller for Kubernetes
 
@@ -49,7 +51,7 @@ The following table lists the configurable parameters of the Voyager chart and t
 | `imagePullPolicy`                  | Image pull policy                                             | `IfNotPresent`        |
 | `cloudProvider`                    | Name of cloud provider                                        | `nil`                 |
 | `cloudConfig`                      | Path to cloud config                                          | ``                    |
-| `criticalAddon`                    | If true, installs voyager operator as critical addon          | `false`               |
+| `criticalAddon`                    | If true, installs Voyager operator as critical addon          | `false`               |
 | `logLevel`                         | Log level for operator                                        | `3`                   |
 | `persistence.enabled`              | Enable mounting cloud config                                  | `false`               |
 | `persistence.hostPath`             | Host mount path for cloud config                              | `/etc/kubernetes`     |
@@ -60,7 +62,7 @@ The following table lists the configurable parameters of the Voyager chart and t
 | `ingressClass`                     | Ingress class to watch for. If empty, it handles all ingress  | ``                    |
 | `apiserver.groupPriorityMinimum`   | The minimum priority the group should have.                   | 10000                 |
 | `apiserver.versionPriority`        | The ordering of this API inside of the group.                 | 15                    |
-| `apiserver.enableAdmissionWebhook` | Configure apiserver as adission webhooks for Voyager CRDs     | false                 |
+| `apiserver.enableAdmissionWebhook` | Configure apiserver as admission webhooks for Voyager CRDs     | false                 |
 | `apiserver.ca`                     | CA certificate used by main Kubernetes api server             | ``                    |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
@@ -81,7 +83,7 @@ By default the chart will not install the recommended RBAC roles and rolebinding
 
 You need to have the flag `--authorization-mode=RBAC` on the api server. See the following document for how to enable [RBAC](https://kubernetes.io/docs/admin/authorization/rbac/).
 
-To determine if your cluster supports RBAC, run the the following command:
+To determine if your cluster supports RBAC, run the following command:
 
 ```console
 $ kubectl api-versions | grep rbac

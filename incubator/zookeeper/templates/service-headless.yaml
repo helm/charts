@@ -3,17 +3,23 @@ kind: Service
 metadata:
   name: {{ template "zookeeper.fullname" . }}-headless
   labels:
-    app: {{ include "zookeeper.name" . | quote }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: {{ .Release.Name | quote }}
-    heritage: {{ .Release.Service | quote }}
+    app: {{ template "zookeeper.name" . }}
+    chart: {{ template "zookeeper.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+{{- if .Values.headless.annotations }}
+  annotations:
+{{ .Values.headless.annotations | toYaml | trimSuffix "\n" | indent 4 }}
+{{- end }}
 spec:
-  ports:
-  - port: {{ .Values.serverPort }}
-    name: server
-  - port: {{ .Values.leaderElectionPort }}
-    name: leader-election
   clusterIP: None
+  ports:
+{{- range $key, $port := .Values.ports }}
+    - name: {{ $key }}
+      port: {{ $port.containerPort }}
+      targetPort: {{ $port.name }}
+      protocol: {{ $port.protocol }}
+{{- end }}
   selector:
-    app: {{ include "zookeeper.name" . | quote }}
-    release: {{ .Release.Name | quote }}
+    app: {{ template "zookeeper.name" . }}
+    release: {{ .Release.Name }}

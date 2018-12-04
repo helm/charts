@@ -37,12 +37,8 @@ spec:
         imagePullPolicy: {{ .Values.speaker.image.pullPolicy }}
         args:
         - --port=7472
-        - --config={{ template "metallb.fullname" . }}
+        - --config={{ template "metallb.configMapName" . }}
         env:
-        - name: METALLB_NODE_IP
-          valueFrom:
-            fieldRef:
-              fieldPath: status.hostIP
         - name: METALLB_NODE_NAME
           valueFrom:
             fieldRef:
@@ -60,3 +56,15 @@ spec:
             - all
             add:
             - net_raw
+    {{- with .Values.speaker.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.speaker.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.speaker.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}

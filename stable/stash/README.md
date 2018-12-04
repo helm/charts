@@ -1,3 +1,5 @@
+**This chart is DEPRECATED and moved to https://github.com/appscode/charts**
+
 # Stash
 [Stash by AppsCode](https://github.com/appscode/stash) - Backup your Kubernetes Volumes
 ## TL;DR;
@@ -40,7 +42,7 @@ The following table lists the configurable parameters of the Stash chart and the
 
 | Parameter                           | Description                                                       | Default            |
 | ----------------------------------- | ----------------------------------------------------------------- | ------------------ |
-| `replicaCount`                      | Number of stash operator replicas to create (only 1 is supported) | `1`                |
+| `replicaCount`                      | Number of Stash operator replicas to create (only 1 is supported) | `1`                |
 | `operator.image`                    | operator container image                                          | `appscode/stash`   |
 | `operator.tag`                      | operator container image tag                                      | `0.7.0-rc.1`       |
 | `operator.pullPolicy`               | operator container image pull policy                              | `IfNotPresent`     |
@@ -51,8 +53,8 @@ The following table lists the configurable parameters of the Stash chart and the
 | `rbac.create`                       | If `true`, create and use RBAC resources                          | `true`             |
 | `serviceAccount.create`             | If `true`, create a new service account                           | `true`             |
 | `serviceAccount.name`               | Service account to be used. If not set and `serviceAccount.create` is `true`, a name is generated using the fullname template | `` |
-| `apiserver.groupPriorityMinimum`    | The minimum priority the group should have.                       | 10000              |
-| `apiserver.versionPriority`         | The ordering of this API inside of the group.                     | 15                 |
+| `apiserver.groupPriorityMinimum`    | The minimum priority the group should have                       | 10000              |
+| `apiserver.versionPriority`         | The ordering of this API inside of the group                     | 15                 |
 | `apiserver.enableValidatingWebhook` | Enable validating webhooks for Stash CRDs                         | false              |
 | `apiserver.enableMutatingWebhook`   | Enable mutating webhooks for Kubernetes workloads                 | false              |
 | `apiserver.ca`                      | CA certificate used by main Kubernetes api server                 | ``                 |
@@ -76,7 +78,7 @@ By default the chart will not install the recommended RBAC roles and rolebinding
 
 You need to have the flag `--authorization-mode=RBAC` on the api server. See the following document for how to enable [RBAC](https://kubernetes.io/docs/admin/authorization/rbac/).
 
-To determine if your cluster supports RBAC, run the the following command:
+To determine if your cluster supports RBAC, run the following command:
 
 ```console
 $ kubectl api-versions | grep rbac

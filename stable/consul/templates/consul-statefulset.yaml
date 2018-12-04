@@ -5,57 +5,43 @@ metadata:
   labels:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    chart: {{ template "consul.chart" . }}
     component: "{{ .Release.Name }}-{{ .Values.Component }}"
 spec:
   serviceName: "{{ template "consul.fullname" . }}"
   replicas: {{ default 3 .Values.Replicas }}
   updateStrategy:
     type: RollingUpdate
+  selector:
+    matchLabels:
+      release: {{ .Release.Name | quote }}
+      component: "{{ .Release.Name }}-{{ .Values.Component }}"
   template:
     metadata:
       name: "{{ template "consul.fullname" . }}"
       labels:
         heritage: {{ .Release.Service | quote }}
         release: {{ .Release.Name | quote }}
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        chart: {{ template "consul.chart" . }}
         component: "{{ .Release.Name }}-{{ .Values.Component }}"
     spec:
       securityContext:
         fsGroup: 1000
-      {{- if eq .Values.antiAffinity "hard" }}
+{{- if .Values.priorityClassName }}
+      priorityClassName: "{{ .Values.priorityClassName }}"
+{{- end }}
+    {{- if .Values.affinity }}
       affinity:
-        {{- if .Values.nodeAffinity }}
-        nodeAffinity:
-{{ toYaml .Values.nodeAffinity | indent 10 }}
-        {{- end }}
-        podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchExpressions:
-              - key: component
-                operator: In
-                values:
-                - "{{ .Release.Name }}-{{ .Values.Component }}"
-            topologyKey: kubernetes.io/hostname
-      {{- else if eq .Values.antiAffinity "soft" }}
-      affinity:
-        {{- if .Values.nodeAffinity }}
-        nodeAffinity:
-{{ toYaml .Values.nodeAffinity | indent 10 }}
-        {{- end }}
-        podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 1
-            podAffinityTerm:
-              topologyKey: kubernetes.io/hostname
-              labelSelector:
-                matchExpressions:
-                - key: component
-                  operator: In
-                  values:
-                  - "{{ .Release.Name }}-{{ .Values.Component }}"
-      {{- end }}
+{{ tpl .Values.affinity . | indent 8 }}
+    {{- end }}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+    {{- end }}
       containers:
       - name: "{{ template "consul.fullname" . }}"
         image: "{{ .Values.Image }}:{{ .Values.ImageTag }}"
@@ -107,11 +93,17 @@ spec:
         - name: gossip-key
           mountPath: /etc/consul/secrets
           readOnly: true
+        {{ range .Values.ConsulConfig }}
+        - name: userconfig-{{ .name }}
+          readOnly: true
+          mountPath: /etc/consul/userconfig/{{ .name }}
+        {{ end }}
         livenessProbe:
           exec:
             command:
             - consul
             - members
+            - -http-addr=http://127.0.0.1:{{ .Values.HttpPort }}
           initialDelaySeconds: 300
           timeoutSeconds: 5
         command:
@@ -120,7 +112,7 @@ spec:
           - |
             IP=$(hostname -i)
 
-            {{- if .Values.EncryptGossip }}
+            {{- if .Values.Gossip.Encrypt }}
             if [ -e /etc/consul/secrets/gossip-key ]; then
               echo "{\"encrypt\": \"$(base64 /etc/consul/secrets/gossip-key)\"}" > /etc/consul/encrypt.json
               GOSSIP_KEY="-config-file /etc/consul/encrypt.json"
@@ -144,6 +136,9 @@ spec:
             done
 
             exec /bin/consul agent \
+            {{- range .Values.ConsulConfig }}
+              -config-dir /etc/consul/userconfig/{{ .name }} \
+            {{- end}}
             {{- if .Values.uiService.enabled }}
               -ui \
             {{- end }}
@@ -163,7 +158,7 @@ spec:
               -bind=0.0.0.0 \
               -advertise=${IP} \
               ${PEERS} \
-            {{- if .Values.EncryptGossip }}
+            {{- if .Values.Gossip.Encrypt }}
               ${GOSSIP_KEY} \
             {{- end }}
               -client=0.0.0.0 \
@@ -173,6 +168,15 @@ spec:
       - name: gossip-key
         secret:
           secretName: {{ template "consul.fullname" . }}-gossip-key
+      {{ range .Values.ConsulConfig }}
+      - name: userconfig-{{ .name }}
+        {{ .type }}:
+          {{- if (eq .type "configMap") }}
+          name: {{ .name }}
+          {{- else if (eq .type "secret") }}
+          secretName: {{ .name }}
+          {{- end}}
+      {{ end }}
   volumeClaimTemplates:
   - metadata:
       name: datadir

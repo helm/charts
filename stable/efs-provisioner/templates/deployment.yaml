@@ -1,0 +1,56 @@
+kind: Deployment
+apiVersion: apps/v1beta2
+metadata:
+  name: {{ template "efs-provisioner.fullname" . }}
+  labels:
+    app: {{ template "efs-provisioner.name" . }}
+    env: {{ .Values.global.deployEnv }}
+    chart: {{ template "efs-provisioner.chartname" . }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "efs-provisioner.name" . }}
+      release: "{{ .Release.Name }}"
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: {{ template "efs-provisioner.name" . }}
+        release: "{{ .Release.Name }}"
+    spec:
+      serviceAccount: {{ template "efs-provisioner.serviceAccountName" . }}
+      containers:
+      - name: {{ template "efs-provisioner.fullname" . }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+        - name: FILE_SYSTEM_ID
+          value: {{ .Values.efsProvisioner.efsFileSystemId }}
+        - name: AWS_REGION
+          value: {{ .Values.efsProvisioner.awsRegion }}
+        - name: PROVISIONER_NAME
+          value: {{ .Values.efsProvisioner.provisionerName }}
+        volumeMounts:
+        - name: pv-volume
+          subPath: {{ (trimPrefix "/" .Values.efsProvisioner.path) }}
+          mountPath: /persistentvolumes
+      {{- if ne .Values.efsProvisioner.path "/" }}
+      initContainers:
+      - name: "init-path"
+        image: {{ .Values.busyboxImage.repository}}:{{ .Values.busyboxImage.tag}}
+        imagePullPolicy: {{ .Values.busyboxImage.pullPolicy }}
+        command: [ "sh", "-c", "mkdir -p /efs-vol-root/{{ (trimPrefix "/" .Values.efsProvisioner.path) }}" ]
+        volumeMounts:
+        - name: pv-volume
+          mountPath: /efs-vol-root
+      {{- end }}
+      volumes:
+      - name: pv-volume
+        nfs:
+          server: {{ .Values.efsProvisioner.efsFileSystemId }}.efs.{{ .Values.efsProvisioner.awsRegion }}.amazonaws.com
+          path: /

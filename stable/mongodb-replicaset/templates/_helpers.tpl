@@ -42,6 +42,15 @@ Create the name for the admin secret.
     {{- end -}}
 {{- end -}}
 
+{{- define "mongodb-replicaset.metricsSecret" -}}
+    {{- if .Values.auth.existingMetricsSecret -}}
+        {{- .Values.auth.existingMetricsSecret -}}
+    {{- else -}}
+        {{- template "mongodb-replicaset.fullname" . -}}-metrics
+    {{- end -}}
+{{- end -}}
+
+
 {{/*
 Create the name for the key secret.
 */}}

@@ -1,10 +1,10 @@
 slack:
   # Slack channel to notify
-  channel: ""
+  channel: "XXXX"
 
   # Slack bots token. Create using: https://my.slack.com/services/new/bot
   # and invite the bot to your channel using: /join @botname
-  token: ""
+  token: "XXXX"
 
 # Resources to watch
 resourcesToWatch:

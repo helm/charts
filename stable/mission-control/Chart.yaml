@@ -1,0 +1,16 @@
+apiVersion: v1
+description: DEPRECATED A Helm chart for JFrog Mission Control
+home: https://jfrog.com/mission-control/
+icon: https://raw.githubusercontent.com/JFrogDev/artifactory-dcos/master/images/jfrog_med.png
+keywords:
+- mission-control
+- jfrog
+name: mission-control
+sources:
+- https://bintray.com/jfrog/product/mission-control/view
+- https://github.com/jfrog/charts
+version: 0.4.3
+appVersion: 3.1.2
+## Deprecated following https://github.com/helm/charts/blob/master/PROCESSES.md#deprecating-a-chart
+## Chart is now maintained in https://github.com/jfrog/charts
+deprecated: true

@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "prometheus-mysql-exporter.fullname" . }}
+  labels:
+    app: {{ template "prometheus-mysql-exporter.name" . }}
+    chart: {{ template "prometheus-mysql-exporter.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "prometheus-mysql-exporter.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "prometheus-mysql-exporter.name" . }}
+        release: {{ .Release.Name }}
+      annotations:
+      {{- if .Values.cloudsqlproxy.enabled }}
+        checksum/config: {{ include (print .Template.BasePath "/secret.yaml") . | sha256sum }}
+        {{- if .Values.annotations }}
+{{ toYaml .Values.annotations | indent 8 }}
+        {{- end }}
+      {{- else }}
+{{ toYaml .Values.annotations | indent 8 }}
+      {{- end }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: DATA_SOURCE_NAME
+              value: "{{ .Values.mysql.user }}:{{ .Values.mysql.pass }}@{{ if .Values.mysql.protocol }}{{ .Values.mysql.protocol }}{{ end }}({{ .Values.mysql.host }}:{{ .Values.mysql.port }})/{{ if .Values.mysql.db }}{{ .Values.mysql.db }}{{ end }}{{ if .Values.mysql.param }}?{{ .Values.mysql.param }}{{ end }}"
+          ports:
+            - containerPort: {{ .Values.service.internalPort }}
+          livenessProbe:
+            httpGet:
+              path: /
+              port: {{ .Values.service.internalPort }}
+          readinessProbe:
+            httpGet:
+              path: /
+              port: {{ .Values.service.internalPort }}
+        {{- if .Values.cloudsqlproxy.enabled }}
+        - name: cloudsql-proxy
+          image: "{{ .Values.cloudsqlproxy.image.repo }}:{{ .Values.cloudsqlproxy.image.tag }}"
+          imagePullPolicy: "{{ .Values.cloudsqlproxy.image.PullPolicy  }}"
+          command: ["/cloud_sql_proxy",
+                    "-instances={{ .Values.cloudsqlproxy.instanceConnectionName }}=tcp:{{ .Values.cloudsqlproxy.port }}",
+                    "-credential_file=/secrets/cloudsql/credentials.json"]
+          livenessProbe:
+            exec:
+              command: ["nc", "-z", "127.0.0.1", "3306"]
+          volumeMounts:
+            - name: cloudsql-proxy-sa-credentials
+              mountPath: /secrets/cloudsql
+              readOnly: true
+        {{- end }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- if .Values.cloudsqlproxy.enabled }}
+      volumes:
+        - name: cloudsql-proxy-sa-credentials
+          secret:
+            secretName: {{ template "prometheus-mysql-exporter.cloudsqlsecret" . }}
+    {{- end }}

@@ -1,5 +1,5 @@
 {{- if .Values.rbac.create -}}
-{{- if .Values.credentialManager.kubernetes.enabled -}}
+{{- if .Values.concourse.web.kubernetes.enabled -}}
 apiVersion: rbac.authorization.k8s.io/{{ .Values.rbac.apiVersion }}
 kind: ClusterRole
 metadata:

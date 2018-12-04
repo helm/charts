@@ -14,15 +14,22 @@ spec:
     metadata:
       annotations:
         checksum/secrets: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
+{{- if .Values.agent.annotations }}
+{{ toYaml .Values.agent.annotations | indent 8 }}
+{{- end }}
       labels:
         app: {{ template "drone.name" . }}
         release: "{{ .Release.Name }}"
         component: agent
     spec:
+{{- if .Values.agent.schedulerName }}
+      schedulerName: "{{ .Values.agent.schedulerName }}"
+{{- end }}
 {{- if .Values.agent.affinity }}
       affinity:
 {{ toYaml .Values.agent.affinity | indent 8 }}
 {{- end }}
+      serviceAccountName: {{ template "drone.serviceAccountName" . }}
       containers:
       - name: {{ template "drone.fullname" . }}-agent
         image: "{{ .Values.images.agent.repository }}:{{ .Values.images.agent.tag }}"
@@ -39,10 +46,10 @@ spec:
           - name: DOCKER_HOST
             value: tcp://localhost:2375
 {{- end }}
-          {{ range $key, $value := .Values.agent.env }}
+          {{- range $key, $value := .Values.agent.env }}
           - name: {{ $key }}
             value: {{ $value | quote }}
-          {{ end }}
+          {{- end }}
         resources:
 {{ toYaml .Values.agent.resources | indent 10 }}
 {{- if not .Values.dind.enabled }}
@@ -59,9 +66,19 @@ spec:
       - name: {{ template "drone.fullname" . }}-dind
         image: "{{ .Values.images.dind.repository }}:{{ .Values.images.dind.tag }}"
         imagePullPolicy: {{ .Values.images.dind.pullPolicy }}
+{{- if .Values.dind.command }}
+        command: {{ .Values.dind.command }}
+{{ end }}
+{{- if .Values.dind.args }}
+        args: {{ .Values.dind.args }}
+{{ end }}
         env:
         - name: DOCKER_DRIVER
           value: {{ .Values.dind.driver }}
+        {{ range $key, $value := .Values.dind.env }}
+        - name: {{ $key }}
+          value: {{ $value | quote }}
+        {{ end }}
         securityContext:
           privileged: true
         resources:

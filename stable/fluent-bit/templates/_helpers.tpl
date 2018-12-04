@@ -19,9 +19,23 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 Return the appropriate apiVersion for RBAC APIs.
 */}}
 {{- define "rbac.apiVersion" -}}
-{{- if ge .Capabilities.KubeVersion.Minor "8" -}}
-"rbac.authorization.k8s.io/v1"
+{{- if .Capabilities.APIVersions.Has "v1" -}}
+rbac.authorization.k8s.io/v1
+{{- else if .Capabilities.APIVersions.Has "v1beta1" -}}
+rbac.authorization.k8s.io/v1beta1
 {{- else -}}
-"rbac.authorization.k8s.io/v1beta1"
+rbac.authorization.k8s.io/v1alpha1
 {{- end -}}
 {{- end -}}
+
+{{/*
+Create the name of the service account to use
+*/}}
+{{- define "fluent-bit.serviceAccountName" -}}
+{{- if .Values.serviceAccount.create -}}
+    {{ default (include "fluent-bit.fullname" .) .Values.serviceAccount.name }}
+{{- else -}}
+    {{ default "default" .Values.serviceAccount.name }}
+{{- end -}}
+{{- end -}}
+

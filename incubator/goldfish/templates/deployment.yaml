@@ -1,4 +1,3 @@
-#TODO custom hcl, vault token in cmd
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -30,8 +29,6 @@ spec:
                 name: {{ template "goldfish.fullname" $ }}
                 key: {{ $key }}
           {{- end }}
-          command:
-          - /app/entrypoint.sh
           livenessProbe:
             httpGet:
               path: /
@@ -40,17 +37,22 @@ spec:
             httpGet:
               path: /
               port: {{ .Values.service.internalPort }}
-          volumeMounts:
-          - name: goldfish-config
-            mountPath: /app/docker.json
-            subPath: docker.json
+          env:
+            - name: GOLDFISH_PORT
+              value: {{ .Values.service.internalPort | quote }}
+            - name: GOLDFISH_CONFIG
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "goldfish.fullname" . }}
+                  key: config
+            - name: VAULT_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "goldfish.fullname" . }}
+                  key: vault-token
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
     {{- end }}
-      volumes:
-        - name: goldfish-config
-          configMap:
-            name: "{{ template "goldfish.fullname" . }}"

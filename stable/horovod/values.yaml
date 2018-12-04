@@ -1,0 +1,38 @@
+# Default values for horovod.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+useHostNetwork: false
+useHostPID: false
+
+resources: {}
+  # limits:
+  #   nvidia.com/gpu: 1
+  # requests:
+  #   nvidia.com/gpu: 1
+
+ssh:
+  port: 22
+  useSecrets: false
+#  hostKey: |-
+#    -----BEGIN RSA PRIVATE KEY-----
+#    YourPrivateKey
+#    -----END RSA PRIVATE KEY-----
+#  hostKeyPub: |-
+#    ssh-rsa YourPublicKey
+
+worker:
+  number: 3
+  podManagementPolicy: Parallel
+  image:
+    repository: uber/horovod
+    tag: 0.12.1-tf1.8.0-py3.5
+    pullPolicy: IfNotPresent
+
+master:
+  image:
+    repository: uber/horovod
+    tag: 0.12.1-tf1.8.0-py3.5
+    pullPolicy: IfNotPresent
+  # args:
+  #  - "mpiexec -n 3 --hostfile /horovod/generated/hostfile --mca orte_keep_fqdn_hostnames t --allow-run-as-root --display-map --tag-output --timestamp-output sh -c 'LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/cuda-9.0/targets/x86_64-linux/lib/stubs python /examples/tensorflow_mnist.py'"

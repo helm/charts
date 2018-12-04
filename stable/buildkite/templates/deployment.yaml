@@ -40,7 +40,9 @@ spec:
                   key: agent-ssh
             {{- end }}
             # EXTRA BUILDKITE AGENT ENV VARS
-{{- if .Values.extraEnv }}{{ toYaml .Values.extraEnv | indent 12 }}{{- end }}
+{{- if .Values.extraEnv }}
+{{ toYaml .Values.extraEnv | indent 12 }}
+{{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           volumeMounts:

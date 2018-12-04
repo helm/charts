@@ -1,4 +1,4 @@
-{{- if .Values.rbac.create -}}
+{{- if and .Values.rbac.create (not .Values.controller.scope.enabled) -}}
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding
 metadata:
@@ -14,6 +14,6 @@ roleRef:
   name: {{ template "nginx-ingress.fullname" . }}
 subjects:
   - kind: ServiceAccount
-    name: {{ template "nginx-ingress.fullname" . }}
+    name: {{ template "nginx-ingress.serviceAccountName" . }}
     namespace: {{ .Release.Namespace }}
 {{- end -}}

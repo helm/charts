@@ -1,8 +1,10 @@
 # oauth2-proxy
 
+**N.B., this chart is deprecated and is no longer maintained as it's upstream [has been abandoned](https://github.com/bitly/oauth2_proxy/issues/628#issuecomment-417121636).**
+
 [oauth2-proxy](https://github.com/bitly/oauth2_proxy) is a reverse proxy and static file server that provides authentication using Providers (Google, GitHub, and others) to validate accounts by email, domain or group.
 
-**Note - at this time, there is a known incompatibility between `oauth2-proxy` version 2.2 (which is it's latest release) and `nginx-ingress` versions >= 0.9beta12. To utilize this chart at this time please use nginx-ingress version 0.9beta11**
+**Note - at this time, there is a known incompatibility between `oauth2-proxy` version 2.2 (which is its latest release) and `nginx-ingress` versions >= 0.9beta12. To utilize this chart at this time please use nginx-ingress version 0.9beta11**
 
 ## TL;DR;
 
@@ -12,7 +14,7 @@ $ helm install stable/oauth2-proxy
 
 ## Introduction
 
-This chart bootstraps a oauth2-proxy deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
+This chart bootstraps an oauth2-proxy deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
 ## Installing the Chart
 
@@ -41,9 +43,13 @@ The following table lists the configurable parameters of the oauth2-proxy chart 
 Parameter | Description | Default
 --- | --- | ---
 `affinity` | node/pod affinities | None
+`authenticatedEmailsFile.enabled` | Enables authorize individual email addresses | `false`
+`authenticatedEmailsFile.template` | Name of the configmap what is handled outside of that chart | `""`
+`authenticatedEmailsFile.restricted_access | (email addresses)[https://github.com/bitly/oauth2_proxy#email-authentication] list config | `""`
 `config.clientID` | oauth client ID | `""`
 `config.clientSecret` | oauth client secret | `""`
 `config.cookieSecret` | server specific cookie for the secret; create a new one with `python -c 'import os,base64; print base64.b64encode(os.urandom(16))'` | `""`
+`config.configFile` | custom [oauth2_proxy.cfg](https://github.com/bitly/oauth2_proxy/blob/master/contrib/oauth2_proxy.cfg.example) contents for settings not overridable via environment nor command line | `""`
 `extraArgs` | key:value list of extra arguments to give the binary | `{}`
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
 `image.repository` | Image repository | `a5huynh/oauth2_proxy`
@@ -55,7 +61,8 @@ Parameter | Description | Default
 `podLabels` | additional labesl to add to each pod | `{}`
 `replicaCount` | desired number of pods | `1`
 `resources` | pod resource requests & limits | `{}`
-`service.port` | port for the service | `443`
+`priorityClassName` | priorityClassName | `nil` 
+`service.port` | port for the service | `80`
 `service.type` | type of service | `ClusterIP`
 `tolerations` | List of node taints to tolerate | `[]`
 

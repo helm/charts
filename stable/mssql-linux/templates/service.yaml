@@ -7,12 +7,16 @@ metadata:
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+{{- if .Values.service.annotations }}
+  annotations:
+{{ toYaml .Values.service.annotations | indent 4 }}
+{{- end }}
 spec:
   type: {{ .Values.service.type }}
   ports:
-  - name: db
-    port: 1433
-    targetPort: db
+  - name: mssql
+    port: {{ .Values.service.port }}
+    targetPort: mssql
     protocol: TCP
   selector:
     app: {{ template "mssql.name" . }}
