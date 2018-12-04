@@ -21,6 +21,11 @@ spec:
       labels:
         app: {{ template "kured.name" . }}
         release: {{ .Release.Name }}
+      annotations:
+      {{- range $key, $value := .Values.podAnnotations }}
+        {{ $key }}: {{ $value | quote }}
+      {{- end }}
+      {{- end }}
     spec:
       serviceAccountName: {{ template "kured.serviceAccountName" . }}
       hostPID: true
