@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: lmierzwa/karma
-  tag: v0.16
+  tag: v0.18
   pullPolicy: IfNotPresent
 
 nameOverride: ""
