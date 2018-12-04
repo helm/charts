@@ -530,6 +530,10 @@ prometheusOperator:
   #       - e2e-az1
   #       - e2e-az2
 
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 65534
+
   ## Prometheus-operator image
   ##
   image:
