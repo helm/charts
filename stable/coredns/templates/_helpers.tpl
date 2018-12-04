@@ -122,3 +122,14 @@ Generate the list of ports automatically from the server definitions
         {{- end -}}
     {{- end -}}
 {{- end -}}
+
+{{/*
+Create the name of the service account to use
+*/}}
+{{- define "coredns.serviceAccountName" -}}
+{{- if .Values.serviceAccount.create -}}
+    {{ default (include "coredns.fullname" .) .Values.serviceAccount.name }}
+{{- else -}}
+    {{ default "default" .Values.serviceAccount.name }}
+{{- end -}}
+{{- end -}}
