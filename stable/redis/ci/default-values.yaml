@@ -336,18 +336,6 @@ metrics:
   # podAnnotations: {}
   # podLabels: {}
 
-  # Enable this if you're using https://github.com/coreos/prometheus-operator
-  serviceMonitor:
-    enabled: false
-    namespace: monitoring
-    # fallback to the prometheus default unless specified
-    # interval: 10s
-    ## Defaults to what's used if you follow CoreOS [Prometheus Install Instructions](https://github.com/helm/charts/tree/master/stable/prometheus-operator#tldr)
-    ## [Prometheus Selector Label](https://github.com/helm/charts/tree/master/stable/prometheus-operator#prometheus-operator-1)
-    ## [Kube Prometheus Selector Label](https://github.com/helm/charts/tree/master/stable/prometheus-operator#exporters)
-    selector:
-      prometheus: kube-prometheus
-
 ##
 ## Init containers parameters:
 ## volumePermissions: Change the owner of the persist volume mountpoint to RunAsUser:fsGroup
