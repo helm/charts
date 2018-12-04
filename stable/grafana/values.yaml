@@ -42,7 +42,7 @@ securityContext:
 # priorityClassName:
 
 downloadDashboardsImage:
-  repository: appropriate/curl
+  repository: alpine/git
   tag: latest
   pullPolicy: IfNotPresent
 
