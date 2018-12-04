@@ -18,7 +18,7 @@ image:
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
   ##
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
@@ -29,12 +29,12 @@ image:
 ## Cluster settings
 cluster:
   enabled: true
-  slaveCount: 1
+  slaveCount: 3
 
 networkPolicy:
   ## Specifies whether a NetworkPolicy should be created
   ##
-  enabled: false
+  enabled: true
 
   ## The Policy model to apply. When set to false, only pods with the correct
   ## client label will have network access to the port Redis is listening
@@ -96,8 +96,8 @@ master:
   ##
   ## Can be used to specify command line arguments, for example:
   ##
-  command:
-  - "/run.sh"
+  # command:
+  #  - "redis-server"
   ## Redis additional command line flags
   ##
   ## Can be used to specify command line flags, for example:
@@ -137,15 +137,15 @@ master:
   ##
   livenessProbe:
     enabled: true
-    initialDelaySeconds: 5
-    periodSeconds: 5
+    initialDelaySeconds: 30
+    periodSeconds: 10
     timeoutSeconds: 5
     successThreshold: 1
     failureThreshold: 5
   readinessProbe:
     enabled: true
     initialDelaySeconds: 5
-    periodSeconds: 5
+    periodSeconds: 10
     timeoutSeconds: 1
     successThreshold: 1
     failureThreshold: 5
@@ -179,6 +179,7 @@ master:
     loadBalancerIP:
 
   ## Redis Master Pod Security Context
+  ##
   securityContext:
     enabled: true
     fsGroup: 1001
@@ -191,7 +192,7 @@ master:
     enabled: true
     ## The path the volume will be mounted at, useful when using different
     ## Redis images.
-    path: /data
+    path: /bitnami/redis/data
     ## The subdirectory of the volume to mount to, useful in dev environments
     ## and one PV for multiple services.
     subPath: ""
@@ -295,7 +296,7 @@ slave:
 ## Prometheus Exporter / Metrics
 ##
 metrics:
-  enabled: false
+  enabled: true
 
   image:
     registry: docker.io
@@ -335,18 +336,6 @@ metrics:
   ## Metrics exporter pod Annotation and Labels
   # podAnnotations: {}
   # podLabels: {}
-
-  # Enable this if you're using https://github.com/coreos/prometheus-operator
-  serviceMonitor:
-    enabled: false
-    namespace: monitoring
-    # fallback to the prometheus default unless specified
-    # interval: 10s
-    ## Defaults to what's used if you follow CoreOS [Prometheus Install Instructions](https://github.com/helm/charts/tree/master/stable/prometheus-operator#tldr)
-    ## [Prometheus Selector Label](https://github.com/helm/charts/tree/master/stable/prometheus-operator#prometheus-operator-1)
-    ## [Kube Prometheus Selector Label](https://github.com/helm/charts/tree/master/stable/prometheus-operator#exporters)
-    selector:
-      prometheus: kube-prometheus
 
 ##
 ## Init containers parameters:

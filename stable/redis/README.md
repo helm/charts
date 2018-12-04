@@ -52,6 +52,17 @@ The command removes all the Kubernetes components associated with the chart and 
 A major chart version change (like v1.2.3 -> v2.0.0) indicates that there is an
 incompatible breaking change needing manual actions.
 
+### 5.0.0
+
+The default image in this release may be switched out for any image containing the `redis-server`
+and `redis-cli` binaries. If `redis-server` is not the default image ENTRYPOINT, `master.command`
+must be specified.
+
+#### Breaking changes
+- `master.args` and `slave.args` are removed. Use `master.command` or `slave.command` instead in order to override the image entrypoint, or `master.extraFlags` to pass additional flags to `redis-server`.
+- `disableCommands` is now interpreted as an array of strings instead of a string of comma separated values.
+- `master.persistence.path` now defaults to `/data`.
+
 ### 4.0.0
 
 This version removes the `chart` label from the `spec.selector.matchLabels`
@@ -85,7 +96,7 @@ The following table lists the configurable parameters of the Redis chart and the
 | `image.pullPolicy`                         | Image pull policy                                                                                              | `Always`                                             |
 | `image.pullSecrets`                        | Specify docker-registry secret names as an array                                                               | `nil`                                                |
 | `cluster.enabled`                          | Use master-slave topology                                                                                      | `true`                                               |
-| `cluster.slaveCount`                       | Number of slaves                                                                                               | 1                                                    |
+| `cluster.slaveCount`                       | Number of slaves                                                                                               | `1`                                                  |
 | `existingSecret`                           | Name of existing secret object (for password authentication)                                                   | `nil`                                                |
 | `usePassword`                              | Use password                                                                                                   | `true`                                               |
 | `password`                                 | Redis password (ignored if existingSecret set)                                                                 | Randomly generated                                   |
@@ -115,7 +126,7 @@ The following table lists the configurable parameters of the Redis chart and the
 | `metrics.serviceMonitor.selector`          | Default to kube-prometheus install (CoreOS recommended), but should be set according to Prometheus install     | `{ prometheus: kube-prometheus }`                    |
 | `persistence.existingClaim`                | Provide an existing PersistentVolumeClaim                                                                      | `nil`                                                |
 | `master.persistence.enabled`               | Use a PVC to persist data (master node)                                                                        | `true`                                               |
-| `master.persistence.path`                  | Path to mount the volume at, to use other images                                                               | `/bitnami`                                           |
+| `master.persistence.path`                  | Path to mount the volume at, to use other images                                                               | `/data`                                              |
 | `master.persistence.subPath`               | Subdirectory of the volume to mount at                                                                         | `""`                                                 |
 | `master.persistence.storageClass`          | Storage class of backing PVC                                                                                   | `generic`                                            |
 | `master.persistence.accessModes`           | Persistent Volume Access Modes                                                                                 | `[ReadWriteOnce]`                                    |
@@ -124,8 +135,8 @@ The following table lists the configurable parameters of the Redis chart and the
 | `master.statefulset.rollingUpdatePartition`| Partition update strategy                                                                                      | `nil`                                                |
 | `master.podLabels`                         | Additional labels for Redis master pod                                                                         | {}                                                   |
 | `master.podAnnotations`                    | Additional annotations for Redis master pod                                                                    | {}                                                   |
-| `master.port`                              | Redis master port                                                                                              | 6379                                                 |
-| `master.args`                              | Redis master command-line args                                                                                 | []                                                   |
+| `master.port`                              | Redis master port                                                                                              | `6379`                                               |
+| `master.command`                           | Redis master entrypoint array. The docker image's ENTRYPOINT is used if this is not provided.                  | []                                                   |
 | `master.disableCommands`                   | Comma-separated list of Redis commands to disable (master)                                                     | `FLUSHDB,FLUSHALL`                                   |
 | `master.extraFlags`                        | Redis master additional command line flags                                                                     | []                                                   |
 | `master.nodeSelector`                      | Redis master Node labels for pod assignment                                                                    | {"beta.kubernetes.io/arch": "amd64"}                 |
@@ -162,7 +173,7 @@ The following table lists the configurable parameters of the Redis chart and the
 | `slave.service.annotations`                | annotations for redis slave service                                                                            | {}                                                   |
 | `slave.service.loadBalancerIP`             | LoadBalancerIP if Redis slave service type is `LoadBalancer`                                                   | `nil`                                                |
 | `slave.port`                               | Redis slave port                                                                                               | `master.port`                                        |
-| `slave.args`                               | Redis slave command-line args                                                                                  | `master.args`                                        |
+| `slave.command`                            | Redis slave entrypoint array. The docker image's ENTRYPOINT is used if this is not provided.                   | `master.command`                                     |
 | `slave.disableCommands`                    | Comma-separated list of Redis commands to disable (slave)                                                      | `master.disableCommands`                             |
 | `slave.extraFlags`                         | Redis slave additional command line flags                                                                      | `master.extraFlags`                                  |
 | `slave.livenessProbe.enabled`              | Turn on and off liveness probe (redis slave pod)                                                               | `master.livenessProbe.enabled`                       |
@@ -184,9 +195,7 @@ The following table lists the configurable parameters of the Redis chart and the
 | `slave.securityContext.fsGroup`            | Group ID for the container (redis slave pod)                                                                   | `master.securityContext.fsGroup`                     |
 | `slave.securityContext.runAsUser`          | User ID for the container (redis slave pod)                                                                    | `master.securityContext.runAsUser`                   |
 | `slave.resources`                          | Redis slave CPU/Memory resource requests/limits                                                                | `master.resources`                                   |
-| `slave.affinity`                          | Enable node/pod affinity for slaves                                                                | {}                                   |
-
-The above parameters map to the env variables defined in [bitnami/redis](http://github.com/bitnami/bitnami-docker-redis). For more information please refer to the [bitnami/redis](http://github.com/bitnami/bitnami-docker-redis) image documentation.
+| `slave.affinity`                           | Enable node/pod affinity for slaves                                                                            | {}                                                   |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
@@ -225,11 +234,7 @@ after a successful install.
 
 ## Persistence
 
-The [Bitnami Redis](https://github.com/bitnami/bitnami-docker-redis) image stores the Redis data and configurations at the `/bitnami` path of the container.
-
-By default, the chart mounts a [Persistent Volume](http://kubernetes.io/docs/user-guide/persistent-volumes/) at this location. The volume is created using dynamic volume provisioning. If a Persistent Volume Claim already exists, specify it during installation.
-
-By default, the chart persists both data and configuration. If you wish to persist only the data directory set `persistence.path` to `/bitnami/redis/data` and `persistence.subPath` to `redis/data`.
+By default, the chart mounts a [Persistent Volume](http://kubernetes.io/docs/user-guide/persistent-volumes/) at the `/data` path. The volume is created using dynamic volume provisioning. If a Persistent Volume Claim already exists, specify it during installation.
 
 ### Existing PersistentVolumeClaim
 
