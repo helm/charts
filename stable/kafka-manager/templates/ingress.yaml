@@ -7,10 +7,11 @@ kind: Ingress
 metadata:
   name: {{ $fullName }}
   labels:
-    app: {{ template "kafka-manager.name" . }}
-    chart: {{ template "kafka-manager.chart" . }}
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ include "kafka-manager.name" . }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion | replace "+" "_" | trunc 63 }}
+    helm.sh/chart: {{ include "kafka-manager.chart" . }}
 {{- with .Values.ingress.annotations }}
   annotations:
 {{ toYaml . | indent 4 }}
