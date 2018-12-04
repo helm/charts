@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "seq.fullname" . }}
@@ -58,7 +58,7 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
-    volumes:
+      volumes:
       - name: seq-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
