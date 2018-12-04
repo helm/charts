@@ -22,6 +22,13 @@ elasticsearch:
   port: 9200
   buffer_chunk_limit: 2M
   buffer_queue_limit: 8
+  logstash_prefix: 'logstash'
+
+# If you want to add custom environment variables, use the env dict
+# You can then reference these in your config file e.g.:
+#     user "#{ENV['OUTPUT_USER']}"
+env:
+  # OUTPUT_USER: my_user
 
 rbac:
   create: true
@@ -32,6 +39,21 @@ serviceAccount:
   # The name of the ServiceAccount to use.
   # If not set and create is true, a name is generated using the fullname template
   name:
+
+## Specify if a Pod Security Policy for node-exporter must be created
+## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/
+##
+podSecurityPolicy:
+  enabled: false
+  annotations: {}
+    ## Specify pod annotations
+    ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#apparmor
+    ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#seccomp
+    ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#sysctl
+    ##
+    # seccomp.security.alpha.kubernetes.io/allowedProfileNames: '*'
+    # seccomp.security.alpha.kubernetes.io/defaultProfileName: 'docker/default'
+    # apparmor.security.beta.kubernetes.io/defaultProfileName: 'runtime/default'
 
 livenessProbe:
   enabled: true
@@ -44,6 +66,8 @@ tolerations: {}
   # - key: node-role.kubernetes.io/master
   #   operator: Exists
   #   effect: NoSchedule
+
+nodeSelector: {}
 
 service: {}
   # type: ClusterIP
@@ -422,6 +446,7 @@ configMaps:
       host "#{ENV['OUTPUT_HOST']}"
       port "#{ENV['OUTPUT_PORT']}"
       logstash_format true
+      logstash_prefix "#{ENV['LOGSTASH_PREFIX']}"
       <buffer>
         @type file
         path /var/log/fluentd-buffers/kubernetes.system.buffer

@@ -1,0 +1,20 @@
+{{- if and .Values.kubeEtcd.enabled .Values.kubeEtcd.endpoints }}
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: {{ template "prometheus-operator.fullname" . }}-kube-etcd
+  labels:
+    app: {{ template "prometheus-operator.name" . }}-kube-etcd
+    k8s-app: etcd-server
+{{ include "prometheus-operator.labels" . | indent 4 }}
+  namespace: kube-system
+subsets:
+  - addresses:
+      {{- range .Values.kubeEtcd.endpoints }}
+      - ip: {{ . }}
+      {{- end }}
+    ports:
+      - name: http-metrics
+        port: {{ .Values.kubeEtcd.service.port }}
+        protocol: TCP
+{{- end }}

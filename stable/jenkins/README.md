@@ -37,6 +37,9 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `Master.ImagePullSecret`          | Master image pull secret             | Not set                                                                      |
 | `Master.Component`                | k8s selector key                     | `jenkins-master`                                                             |
 | `Master.UseSecurity`              | Use basic security                   | `true`                                                                       |
+| `Master.SecurityRealm`            | Custom Security Realm                | Not set                                                                      |
+| `Master.AuthorizationStrategy`    | Jenkins XML job config for AuthorizationStrategy | Not set                                                                      |
+| `Master.ServiceLabels`            | Custom Service labels                | Not set                                                                      |
 | `Master.AdminUser`                | Admin username (and password) created as a secret if useSecurity is true | `admin`                                  |
 | `Master.AdminPassword`            | Admin password (and user) created as a secret if useSecurity is true | Random value                                  |
 | `Master.JenkinsAdminEmail`        | Email address for the administrator of the Jenkins instance | Not set                                               |
@@ -62,9 +65,12 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `Master.LoadBalancerSourceRanges` | Allowed inbound IP addresses         | `0.0.0.0/0`                                                                  |
 | `Master.LoadBalancerIP`           | Optional fixed external IP           | Not set                                                                      |
 | `Master.JMXPort`                  | Open a port, for JMX stats           | Not set                                                                      |
+| `Master.ExtraPorts`               | Open extra ports, for other uses     | Not set                                                                      |
 | `Master.CustomConfigMap`          | Use a custom ConfigMap               | `false`                                                                      |
+| `Master.AdditionalConfig`          | Add additional config files         | `{}`                                                                      |
 | `Master.OverwriteConfig`          | Replace config w/ ConfigMap on boot  | `false`                                                                      |
 | `Master.Ingress.Annotations`      | Ingress annotations                  | `{}`                                                                         |
+| `Master.Ingress.Path`             | Ingress path                         | Not set                                                                         |
 | `Master.Ingress.TLS`              | Ingress TLS configuration            | `[]`                                                                         |
 | `Master.InitScripts`              | List of Jenkins init scripts         | Not set                                                                      |
 | `Master.CredentialsXmlSecret`     | Kubernetes secret that contains a 'credentials.xml' file | Not set                                                  |
@@ -135,6 +141,43 @@ Install helm chart with network policy enabled:
 
     $ helm install stable/jenkins --set NetworkPolicy.Enabled=true
 
+## Adding customized securityRealm
+
+`Master.SecurityRealm` in values can be used to support custom security realm instead of default `LegacySecurityRealm`. For example, you can add a security realm to authenticate via keycloak.
+
+```yaml
+SecurityRealm: |-
+  <securityRealm class="org.jenkinsci.plugins.oic.OicSecurityRealm" plugin="oic-auth@1.0">
+    <clientId>testId</clientId>
+    <clientSecret>testsecret</clientSecret>
+    <tokenServerUrl>https:testurl</tokenServerUrl>
+    <authorizationServerUrl>https:testAuthUrl</authorizationServerUrl>
+    <userNameField>email</userNameField>
+    <scopes>openid email</scopes>
+  </securityRealm>
+```
+
+## Adding additional configs
+
+`Master.AdditionalConfig` can be used to add additional config files in `config.yaml`. For example, it can be used to add additional config files for keycloak authentication.
+
+```yaml
+AdditionalConfig:
+  testConfig.txt: |-
+    - name: testName
+      clientKey: testKey
+      clientURL: testUrl
+```
+
+## Adding customized labels
+
+`Master.ServiceLabels` can be used to add custom labels in `jenkins-master-svc.yaml`. For example,
+
+```yaml
+ServiceLabels:
+  expose: true
+```
+
 ## Persistence
 
 The Jenkins image stores persistence under `/var/jenkins_home` path of the container. A dynamically managed Persistent Volume
@@ -157,8 +200,8 @@ It is possible to mount several volumes using `Persistence.volumes` and `Persist
 #### Existing PersistentVolumeClaim
 
 1. Create the PersistentVolume
-1. Create the PersistentVolumeClaim
-1. Install the chart
+2. Create the PersistentVolumeClaim
+3. Install the chart
 
 ```bash
 $ helm install --name my-release --set Persistence.ExistingClaim=PVC_NAME stable/jenkins
