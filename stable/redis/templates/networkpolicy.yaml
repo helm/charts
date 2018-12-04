@@ -22,6 +22,13 @@ spec:
         - podSelector:
             matchLabels:
               {{ template "redis.fullname" . }}-client: "true"
+        {{- if .Values.metrics.enabled }}
+        - podSelector:
+            matchLabels:
+              release: "{{ .Release.Name }}"
+              role: metrics
+              app: {{ template "redis.name" . }}
+        {{- end }}
       {{- end }}
     {{- if .Values.metrics.enabled }}
     # Allow prometheus scrapes for metrics
