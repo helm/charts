@@ -172,7 +172,29 @@ alertmanager:
   ##
   podAnnotations: {}
 
+  ## Use a StatefulSet if replicaCount needs to be greater than 1 (see below)
+  ##
   replicaCount: 1
+
+  statefulSet:
+    ## If true, use a statefulset instead of a deployment for pod management.
+    ## This allows to scale replicas to more than 1 pod
+    ##
+    enabled: false
+
+    podManagementPolicy: OrderedReady
+
+    ## Alertmanager headless service to use for the statefulset
+    ##
+    headless:
+      annotations: {}
+      labels: {}
+
+      ## Enabling peer mesh service end points for enabling the HA alert manager
+      ## Ref: https://github.com/prometheus/alertmanager/blob/master/README.md
+      # enableMeshPeer : true
+
+      servicePort: 80
 
   ## alertmanager resource requests and limits
   ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -371,7 +393,7 @@ nodeExporter:
   ##
   image:
     repository: prom/node-exporter
-    tag: v0.16.0
+    tag: v0.17.0
     pullPolicy: IfNotPresent
 
   ## Specify if a Pod Security Policy for node-exporter must be created
@@ -656,7 +678,25 @@ server:
   podAnnotations: {}
     # iam.amazonaws.com/role: prometheus
 
+  ## Use a StatefulSet if replicaCount needs to be greater than 1 (see below)
+  ##
   replicaCount: 1
+
+  statefulSet:
+    ## If true, use a statefulset instead of a deployment for pod management.
+    ## This allows to scale replicas to more than 1 pod
+    ##
+    enabled: false
+
+    annotations: {}
+    podManagementPolicy: OrderedReady
+
+    ## Alertmanager headless service to use for the statefulset
+    ##
+    headless:
+      annotations: {}
+      labels: {}
+      servicePort: 80
 
   ## Prometheus server resource requests and limits
   ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -709,7 +749,7 @@ pushgateway:
   ##
   image:
     repository: prom/pushgateway
-    tag: v0.5.2
+    tag: v0.6.0
     pullPolicy: IfNotPresent
 
   ## pushgateway priorityClassName
