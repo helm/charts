@@ -23,7 +23,8 @@ PostgreSQL can be accessed via port 5432 on the following DNS name from within y
 
 To get the password for "{{ .Values.postgresqlUsername }}" run:
 
-    export POSTGRESQL_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "postgresql.fullname" . }} -o jsonpath="{.data.postgresql-password}" | base64 --decode)
+    export POSTGRESQL_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} 
+            {{ if .Values.existingSecret }}{{ .Values.existingSecret }}{{ else }}{{ template "postgresql.fullname" . }}{{ end }} -o jsonpath="{.data.postgresql-password}" | base64 --decode)
 
 To connect to your database run the following command:
 
