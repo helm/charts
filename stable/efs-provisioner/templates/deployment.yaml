@@ -53,6 +53,8 @@ spec:
         - name: pv-volume
           subPath: {{ (trimPrefix "/" .Values.efsProvisioner.path) }}
           mountPath: /persistentvolumes
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
       {{- if ne .Values.efsProvisioner.path "/" }}
       initContainers:
       - name: "init-path"
