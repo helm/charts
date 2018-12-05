@@ -104,7 +104,11 @@ spec:
         - name: POSTGRESQL_PASSWORD
           valueFrom:
             secretKeyRef:
+            {{- if .Values.existingSecret }}
+              name: {{ .Values.existingSecret }}
+            {{- else }}
               name: {{ template "postgresql.fullname" . }}
+            {{- end }}  
               key: postgresql-password
         - name: POSTGRESQL_DATABASE
           value: {{ .Values.postgresqlDatabase | quote }}
@@ -170,7 +174,11 @@ spec:
         - name: DATA_SOURCE_PASS
           valueFrom:
             secretKeyRef:
+            {{- if .Values.existingSecret }}
+              name: {{ .Values.existingSecret }}
+            {{- else }}
               name: {{ template "postgresql.fullname" . }}
+            {{- end }}  
               key: postgresql-password
         - name: DATA_SOURCE_USER
           value: {{ .Values.postgresqlUsername }}
