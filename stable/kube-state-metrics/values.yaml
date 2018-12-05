@@ -12,7 +12,7 @@ service:
   loadBalancerIP: ""
 rbac:
   # If true, create & use RBAC resources
-  create: false
+  create: true
   # Ignored if rbac.create is true
   serviceAccountName: default
 
@@ -31,6 +31,9 @@ tolerations: []
 
 # Annotations to be added to the pod
 podAnnotations: {}
+
+## Assign a PriorityClassName to pods if set
+# priorityClassName: ""
 
 # Available collectors for kube-state-metrics. By default all available
 # collectors are enabled.

@@ -1,0 +1,11 @@
+ord:
+  type: solo
+  mspID: OrdererMSP
+
+secrets:
+  ord:
+    cert: hlf--ord0-idcert
+    key: hlf--ord0-idkey
+    caCert: hlf--ord-cacert
+  genesis: hlf--genesis
+  adminCert: hlf--ord-admincert
