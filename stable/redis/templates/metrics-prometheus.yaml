@@ -23,6 +23,8 @@ spec:
   selector:
     matchLabels:
       app: {{ template "redis.name" . }}
+      release: {{ .Release.Name }}
   namespaceSelector:
-      any: true
+    matchNames:
+    - {{ .Release.Namespace }}
 {{- end -}}
