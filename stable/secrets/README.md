@@ -35,5 +35,6 @@ The following quickstart let's you set up secret:
 | Key           | Description                                                               | Example                            | Default Value                      |
 |---------------|---------------------------------------------------------------------------|------------------------------------|------------------------------------|
 | name          | name of the secret                                                      | `test`                        | `test`                        |
-| data          | data contains the list of key, pair values for secret values                                                      | `clientid: testid`                        | `clientid: testid`                        |
+| data          | data contains the list of key value pairs. Values are base64 encrypted.                                                       | `clientid: testid`                        | `clientid: testid`                        |
 | type          | type of the secret                                                      | `Opaque`                        | `Opaque`                        |
+| labels          | label for secrets                                                      | `app: app-name`                        | `app: app-name`                        |
