@@ -81,6 +81,10 @@ kubeConfig:
   omittedNameSpaces:
   - kube-system
   - kube-public
+  # List of Docker registries to make available to Spinnaker
+  dockerRegistries:
+  - dockerhub
+# - gcr
 
 # Change this if youd like to expose Spinnaker outside the cluster
 ingress:

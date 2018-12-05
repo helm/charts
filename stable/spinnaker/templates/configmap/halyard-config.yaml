@@ -104,7 +104,8 @@ data:
       PROVIDER_COMMAND='add'
     fi
 
-    $HAL_COMMAND config provider kubernetes account $PROVIDER_COMMAND {{ $context }} --docker-registries dockerhub \
+    $HAL_COMMAND config provider kubernetes account $PROVIDER_COMMAND {{ $context }} \
+                --docker-registries {{ range $index, $registry := $.Values.kubeConfig.dockerRegistries }}{{if $index}},{{end}}{{- $registry }}{{- end }} \
                 --context {{ $context }} {{ if not $.Values.kubeConfig.enabled }}--service-account true{{ end }} \
                 {{ if $.Values.kubeConfig.enabled }}--kubeconfig-file /opt/kube/{{ $.Values.kubeConfig.secretKey }}{{ end }} --omit-namespaces={{ template "omittedNameSpaces" $ }} --provider-version v2
     {{- end }}

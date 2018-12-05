@@ -58,6 +58,10 @@ for Spinnaker. If you want to add arbitrary clusters need to do the following:
       # This is the context from the list above that you would like
       # to deploy Spinnaker itself to.
       deploymentContext: my-context
+      # List of Docker registries to make available to Spinnaker
+      dockerRegistries:
+      - dockerhub
+      # - gcr
     ```
 
 ## Specifying Docker Registries and Valid Images (Repositories)
