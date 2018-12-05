@@ -83,6 +83,8 @@ readinessProbe:
   enabled: false
   initialDelaySeconds: 30
   timeoutSeconds: 10
+  periodSeconds: 10
+  successThreshold: 5
 
 # Enable an authproxy. Specify container in extraContainers
 authProxyEnabled: false
