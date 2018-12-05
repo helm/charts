@@ -131,6 +131,10 @@ kvprovider:
     #   insecureSkipVerify: true
 
     ## only relevant for etcd
+timeouts:
+  readTimeout: 0s
+  writeTimeout: 0s
+  idleTimeout: 180s
 
 
 acme:

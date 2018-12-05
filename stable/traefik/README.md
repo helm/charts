@@ -208,7 +208,10 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `tracing.zipkin.id128Bit`              | Use Zipkin 128 bit root span IDs                                                                                             | `true`                                            |
 | `tracing.datadog.localAgentHostPort`   | Location of the Datadog agent where spans will be sent                                                                       | `127.0.0.1:8126`                                  |
 | `tracing.datadog.debug`                | Enables Datadog debugging                                                                                                    | `false`                                           |
-| `tracing.datadog.globalTag`            | Apply shared tag in a form of Key:Value to all the traces                                                                    | `""`                                           |
+| `tracing.datadog.globalTag`            | Apply shared tag in a form of Key:Value to all the traces                                                                    | `""`                                              |
+| `timeouts.readTimeout`                 | The maximum duration for reading the entire request, including the body. If zero, no timeout exists.                         | `"0s"`                                            |
+| `timeouts.writeTimeout`                | The maximum duration before timing out writes of the response. If zero, no timeout exists.                                   | `"0s"`                                            |
+| `timeouts.idleTimeout`                 | The maximum duration an idle (keep-alive) connection will remain idle before closing itself. If zero, no timeout exists.   | `"0s"`                                            |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 

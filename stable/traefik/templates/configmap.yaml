@@ -353,3 +353,13 @@ data:
         {{- end }}
       {{- end }}
     {{- end }}
+    [respondingTimeouts]
+      {{- if ne (.Values.timeouts.readTimeout | quote) "" }}
+      readTimeout = {{ .Values.timeouts.readTimeout | quote }}
+      {{- end }}
+      {{- if ne (.Values.timeouts.writeTimeout | quote) "" }}
+      writeTimeout = {{ .Values.timeouts.writeTimeout | quote }}
+      {{- end }}
+      {{- if ne (.Values.timeouts.idleTimeout | quote) "" }}
+      idleTimeout = {{ .Values.timeouts.idleTimeout | quote }}
+      {{- end }}
