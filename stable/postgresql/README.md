@@ -63,6 +63,8 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `replication.user`                            | Replication user                                     | `repl_user`                                               |
 | `replication.password`                        | Replication user password                            | `repl_password`                                           |
 | `replication.slaveReplicas`                   | Number of slaves replicas                            | `1`                                                       |
+| `existingSecret`                              | Name of existing secret to use for postgresl passwords        | `nil`                                                     |
+
 | `postgresqlUsername`                          | PostgreSQL admin user                                | `postgres`                                                |
 | `postgresqlPassword`                          | PostgreSQL admin password                            | _random 10 character alphanumeric string_                 |
 | `postgresqlDatabase`                          | PostgreSQL database                                  | `nil`                                                     |
@@ -105,7 +107,7 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `readinessProbe.successThreshold`             | Minimum consecutive successes for the probe to be considered successful after having failed   |  1             |
 | `metrics.enabled`                             | Start a prometheus exporter                          | `false`                                                   |
 | `metrics.service.type`                        | Kubernetes Service type                              |  `ClusterIP`                                              |
-| `metrics.service.annotatios`                  | Additional annotations for metrics exporter pod      |  `{}`                                                     |
+| `metrics.service.annotations`                 | Additional annotations for metrics exporter pod      |  `{}`                                                     |
 | `metrics.service.loadBalancerIP`              | loadBalancerIP if redis metrics service type is `LoadBalancer` | `nil`                                         |
 | `metrics.image.registry`                      | PostgreSQL Image registry                            | `docker.io`                                               |
 | `metrics.image.repository`                    | PostgreSQL Image name                                | `wrouesnel/postgres_exporter`                             |

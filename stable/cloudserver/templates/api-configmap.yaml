@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "cloudserver.fullname" . }}
+  labels:
+    app: {{ template "cloudserver.name" . }}
+    chart: {{ template "cloudserver.chart" . }}
+    component: api
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+data:
+  locationConfig.json: |
+    {{ toJson .Values.api.locationConstraints }}

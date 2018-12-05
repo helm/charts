@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "cloudserver.localdata.fullname" . }}
+  labels:
+    app: {{ template "cloudserver.name" . }}
+    chart: {{ template "cloudserver.chart" . }}
+    component: localdata
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.localdata.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "cloudserver.name" . }}
+      component: localdata
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "cloudserver.name" . }}
+        component: localdata
+        release: {{ .Release.Name }}
+    spec:
+      serviceAccountName: {{ template "cloudserver.serviceAccountName.localdata" . }}
+      initContainers:
+        - name: {{ .Chart.Name }}-localdata-init
+          image: busybox
+          command: ['sh', '-x', '-c', 'if ! test -d /data/3511; then for i in `seq 1 3511`; do mkdir -p /data/$i; done; fi']
+          volumeMounts:
+            - name: persistent-storage
+              mountPath: /data
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: localdata
+              containerPort: 9991
+          args: ['npm', 'run', 'start_dataserver']
+          volumeMounts:
+            - name: persistent-storage
+              mountPath: /data
+          env:
+            - name: S3DATAPATH
+              value: /data
+            - name: LISTEN_ADDR
+              value: "0.0.0.0"
+            - name: HEALTHCHECKS_ALLOWFROM
+              value: "0.0.0.0/0"
+          livenessProbe:
+            tcpSocket:
+              port: localdata
+            initialDelaySeconds: 5
+          readinessProbe:
+            tcpSocket:
+              port: localdata
+            initialDelaySeconds: 5
+          resources:
+{{ toYaml .Values.localdata.resources | indent 12 }}
+    {{- if .Values.localdata.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.localdata.nodeSelector | indent 8 }}
+    {{- end }}
+      volumes:
+        - name: persistent-storage
+      {{- if .Values.localdata.persistentVolume.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ if .Values.localdata.persistentVolume.existingClaim }}{{ .Values.localdata.persistentVolume.existingClaim }}{{- else }}{{ template "cloudserver.localdata.fullname" . }}{{- end }}
+      {{- else }}
+          emptyDir: {}
+      {{- end }}
