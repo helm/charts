@@ -43,6 +43,9 @@ The following table lists the configurable parameters of the kibana chart and th
 | `affinity`                                    | node/pod affinities                        | None                                   |
 | `env`                                         | Environment variables to configure Kibana  | `{}`                                   |
 | `files`                                       | Kibana configuration files                 | None                                   |
+| `livenessProbe.enabled`                       | livenessProbe to be enabled?               | `false`                                |
+| `livenessProbe.initialDelaySeconds`           | number of seconds                          | 30                                     |
+| `livenessProbe.timeoutSeconds`                | number of seconds                          | 10                                     |
 | `image.pullPolicy`                            | Image pull policy                          | `IfNotPresent`                         |
 | `image.repository`                            | Image repository                           | `docker.elastic.co/kibana/kibana-oss`  |
 | `image.tag`                                   | Image tag                                  | `6.5.1`                                |
@@ -88,6 +91,11 @@ The following table lists the configurable parameters of the kibana chart and th
 | `persistentVolumeClaim.accessModes`           | Acces mode to the PVC                      | `ReadWriteOnce`                         |
 | `persistentVolumeClaim.size`                  | Size of the PVC                            | `5Gi`                                   |
 | `persistentVolumeClaim.storageClass`          | Storage class of the PVC                   | None:                                   |
+| `readinessProbe.enabled`                      | readinessProbe to be enabled?              | `false`                                 |
+| `readinessProbe.initialDelaySeconds`          | number of seconds                          | 30                                      |
+| `readinessProbe.timeoutSeconds`               | number of seconds                          | 10                                      |
+| `readinessProbe.periodSeconds`                | number of seconds                          | 10                                      |
+| `readinessProbe.successThreshold`             | number of successes                        | 5                                       |
 | `securityContext.enabled`                     | Enable security context (should be true for PVC)                    | `false`                                  |
 | `securityContext.allowPrivilegeEscalation`    | Allow privilege escalation                 | `false`                                 |
 | `securityContext.runAsUser`                   | User id to run in pods                     | `1000`                                  |
