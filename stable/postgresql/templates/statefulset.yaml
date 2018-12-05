@@ -32,9 +32,12 @@ spec:
         fsGroup: {{ .Values.securityContext.fsGroup }}
         runAsUser: {{ .Values.securityContext.runAsUser }}
       {{- end }}
-      {{- if .Values.image.pullSecrets }}
+      {{- if or .Values.image.pullSecrets .Values.metrics.image.pullSecrets }}
       imagePullSecrets:
       {{- range .Values.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end}}
+      {{- range .Values.metrics.image.pullSecrets }}
         - name: {{ . }}
       {{- end}}
       {{- end }}
@@ -156,6 +159,49 @@ spec:
           mountPath: /opt/bitnami/postgresql/conf/pg_hba.conf
           subPath: pg_hba.conf
         {{ end }}
+{{- if .Values.metrics.enabled }}
+      - name: metrics
+        image: {{ template "metrics.image" . }}
+        imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
+        env:
+        {{- $database := required "In order to enable metrics you need to specify a database (.Values.postgresqlDatabase)" .Values.postgresqlDatabase }}
+        - name: DATA_SOURCE_URI
+          value: {{ printf "localhost:%d/%s?sslmode=disable" (int .Values.service.port) $database | quote }}
+        - name: DATA_SOURCE_PASS
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "postgresql.fullname" . }}
+              key: postgresql-password
+        - name: DATA_SOURCE_USER
+          value: {{ .Values.postgresqlUsername }}
+        {{- if .Values.livenessProbe.enabled }}
+        livenessProbe:
+          httpGet:
+            path: /
+            port: metrics
+          initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.livenessProbe.successThreshold }}
+          failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+        {{- end }}
+        {{- if .Values.readinessProbe.enabled }}
+        readinessProbe:
+          httpGet:
+            path: /
+            port: metrics
+          initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.readinessProbe.successThreshold }}
+          failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+        {{- end }}
+        ports:
+        - name: metrics
+          containerPort: 9187
+        resources:
+{{ toYaml .Values.metrics.resources | indent 10 }}
+{{- end }}
       volumes:
       {{- if and .Values.persistence.enabled .Values.persistence.existingClaim }}
       - name: {{ .Values.persistence.existingClaim }}
