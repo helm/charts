@@ -32,14 +32,22 @@ serviceAccount:
   # The name of the ServiceAccount to use. If not set and create is true, a name is generated using the fullname template
   name:
 
-superuserUsername: "stolon"
+superuserSecret:
+  name: ""
+  usernameKey: pg_su_username
+  passwordKey: pg_su_password
 
-## password for the superuser (REQUIRED)
+replicationSecret:
+  name: ""
+  usernameKey: pg_repl_username
+  passwordKey: pg_repl_password
+
+superuserUsername: "stolon"
+## password for the superuser (REQUIRED if superuserSecret is not set)
 superuserPassword:
 
 replicationUsername: "repluser"
-
-## password for the replication user (REQUIRED)
+## password for the replication user (REQUIRED if replicationSecret is not set)
 replicationPassword:
 
 ## backend could be one of the following: consul, etcdv2, etcdv3 or kubernetes

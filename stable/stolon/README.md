@@ -34,15 +34,21 @@ Kubernetes is the default store backend. `consul`, `etcdv2` or `etcdv3` can also
 | `debug`                                 | Debug mode                                     | `false`                                                      |
 | `persistence.enabled`                   | Use a PVC to persist data                      | `true`                                                       |
 | `persistence.storageClassName`          | Storage class name of backing PVC              | `""`                                                         |
-| `persistence.accessModes`               | Persistent volumes access modes               | `["ReadWriteOnce"]`                                          |
+| `persistence.accessModes`               | Persistent volumes access modes                | `["ReadWriteOnce"]`                                          |
 | `persistence.size`                      | Size of data volume                            | `10Gi`                                                       |
 | `rbac.create`                           | Specifies if RBAC resources should be created  | `true`                                                       |
 | `serviceAccount.create`                 | Specifies if ServiceAccount should be created  | `true`                                                       |
 | `serviceAccount.name`                   | Name of the generated ServiceAccount           | Defaults to fullname template                                |
+| `superuserSecret.name`                  | Postgres superuser credential secret name      | `""`                                                         |
+| `superuserSecret.usernameKey`           | Username key of Postgres superuser in secret   | `pg_su_username`                                             |
+| `superuserSecret.passwordKey`           | Password key of Postgres superuser in secret   | `pg_su_password`                                             |
 | `superuserUsername`                     | Postgres superuser username                    | `stolon`                                                     |
-| `superuserPassword`                     | Postgres superuser password                    | (Required)                                         |
+| `superuserPassword`                     | Postgres superuser password                    | (Required if `superuserSecret.name` is not set)              |
+| `replicationSecret.name`                | Postgres replication credential secret name    | `""`                                                         |
+| `replicationSecret.usernameKey`         | Username key of Postgres replication in secret | `pg_repl_username`                                           |
+| `replicationSecret.passwordKey`         | Password key of Postgres replication in secret | `pg_repl_password`                                           |
 | `replicationUsername`                   | Replication username                           | `repluser`                                                   |
-| `replicationPassword`                   | Replication password                           | (Required)                                         |
+| `replicationPassword`                   | Replication password                           | (Required if `replicationSecret.name` is not set)            |
 | `store.backend`                         | Store backend (kubernetes/consul/etcd)         | `kubernetes`                                                 |
 | `store.endpoints`                       | Store backend endpoints                        | `nil`                                                        |
 | `store.kubeResourceKind`                | Kubernetes resource kind (only for kubernetes) | `configmap`                                                  |
