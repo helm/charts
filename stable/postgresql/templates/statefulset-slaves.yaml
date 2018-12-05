@@ -93,7 +93,11 @@ spec:
         - name: POSTGRESQL_REPLICATION_PASSWORD
           valueFrom:
             secretKeyRef:
+            {{- if .Values.existingSecret }}
+              name: {{ .Values.existingSecret }}
+            {{- else }}
               name: {{ template "postgresql.fullname" . }}
+            {{- end }}  
               key: postgresql-replication-password
         - name: POSTGRESQL_MASTER_HOST
           value: {{ template "postgresql.fullname" . }}
