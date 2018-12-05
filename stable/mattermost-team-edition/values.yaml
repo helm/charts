@@ -6,6 +6,11 @@ image:
   tag: 5.5.0
   imagePullPolicy: IfNotPresent
 
+initContainerImage:
+  repository: appropriate/curl
+  tag: latest
+  imagePullPolicy: IfNotPresent
+
 ## How many old ReplicaSets for Mattermost Deployment you want to retain
 revisionHistoryLimit: 1
 

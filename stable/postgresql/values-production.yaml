@@ -123,6 +123,10 @@ service:
 ##
 persistence:
   enabled: true
+  ## A manually managed Persistent Volume and Claim
+  ## If defined, PVC must be created manually before volume will be bound
+  # existingClaim:
+  mountPath: /bitnami/postgresql  
   # storageClass: "-"
   accessModes:
     - ReadWriteOnce
@@ -178,7 +182,6 @@ readinessProbe:
 metrics:
   enabled: true
   # resources: {}
-  # podAnnotations: {}
   service:
     type: ClusterIP
     annotations:
@@ -196,13 +199,6 @@ metrics:
     ##
     # pullSecrets:
     #   - myRegistrKeySecretName
-
-  ## Metrics exporter labels and tolerations for pod assignment
-  # nodeSelector: {"beta.kubernetes.io/arch": "amd64"}
-  # tolerations: []
-
-  ## Metrics exporter pod Annotation and Labels
-  # podLabels: {}
 
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes)
   ## Configure extra options for liveness and readiness probes
