@@ -105,7 +105,7 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `readinessProbe.successThreshold`             | Minimum consecutive successes for the probe to be considered successful after having failed   |  1             |
 | `metrics.enabled`                             | Start a prometheus exporter                          | `false`                                                   |
 | `metrics.service.type`                        | Kubernetes Service type                              |  `ClusterIP`                                              |
-| `metrics.service.annotatios`                  | Additional annotations for metrics exporter pod      |  `{}`                                                     |
+| `metrics.service.annotations`                 | Additional annotations for metrics exporter pod      |  `{}`                                                     |
 | `metrics.service.loadBalancerIP`              | loadBalancerIP if redis metrics service type is `LoadBalancer` | `nil`                                         |
 | `metrics.image.registry`                      | PostgreSQL Image registry                            | `docker.io`                                               |
 | `metrics.image.repository`                    | PostgreSQL Image name                                | `wrouesnel/postgres_exporter`                             |
