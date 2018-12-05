@@ -73,6 +73,7 @@ Parameter | Description | Default
 `agent.image.tag` | Agent image tag | `v2.8`
 `agent.image.pullPolicy` | Agent image pull policy | `IfNotPresent`
 `agent.dnsPolicy` | Agent pod DNS policy | `ClusterFirstWithHostNet`
+`agent.existingSecret` | Name of the existing secret that should be used by the agent for certificates | `null`
 `agent.extraArgs` | Additional agent container arguments | `{}`
 `agent.extraEnv` | Additional agent container environment variables | `{}`
 `agent.extraHostPathMounts` | Additional agent container hostPath mounts | `[]`
@@ -103,6 +104,7 @@ Parameter | Description | Default
 `server.image.pullPolicy` | Server image pull policy | `Always`
 `server.assumeRoleArn` | IAM role for the server to assume before processing requests | `null`
 `server.cache.syncInterval` | Pod cache synchronization interval | `1m`
+`server.existingSecret` | Name of the existing secret that should be used by the server for certificates | `null`
 `server.extraArgs` | Additional server container arguments | `{}`
 `server.extraEnv` | Additional server container environment variables | `{}`
 `server.extraHostPathMounts` | Additional server container hostPath mounts | `[]`
