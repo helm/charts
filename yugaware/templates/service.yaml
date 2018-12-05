@@ -44,7 +44,7 @@ spec:
       labels:
         app: {{ .Release.Name }}-yugaware
     spec:
-      serviceAccountName: {{ .Values.yugaware.serviceAccount }}
+      serviceAccountName: {{ .Release.Name }}
       imagePullSecrets:
       - name: {{ .Values.image.pullSecret }}
       volumes:

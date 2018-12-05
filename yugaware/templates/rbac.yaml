@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: yugaware
+  name: {{ .Release.Name }}
   labels:
     k8s-app: yugaware
     kubernetes.io/cluster-service: "true"
@@ -10,7 +10,7 @@ metadata:
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: yugaware
+  name: {{ .Release.Name }}
   labels:
     k8s-app: yugaware
     kubernetes.io/cluster-service: "true"
@@ -42,16 +42,16 @@ rules:
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: yugaware
+  name: {{ .Release.Name }}
   labels:
     k8s-app: yugaware
     kubernetes.io/cluster-service: "true"
     addonmanager.kubernetes.io/mode: Reconcile
 subjects:
 - kind: ServiceAccount
-  name: yugaware
-  namespace: default
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
 roleRef:
   kind: ClusterRole
-  name: yugaware
+  name: {{ .Release.Name }}
   apiGroup: rbac.authorization.k8s.io
