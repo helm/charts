@@ -76,10 +76,10 @@ The following table lists the configurable parameters of the Minio chart and the
 | Parameter                  | Description                         | Default                                                 |
 |----------------------------|-------------------------------------|---------------------------------------------------------|
 | `image.repository`         | Image repository                    | `minio/minio`                                           |
-| `image.tag`                | Minio image tag. Possible values listed [here](https://hub.docker.com/r/minio/minio/tags/).| `RELEASE.2018-10-18T00-28-58Z`|
+| `image.tag`                | Minio image tag. Possible values listed [here](https://hub.docker.com/r/minio/minio/tags/).| `RELEASE.2018-11-22T02-51-56Z`|
 | `image.pullPolicy`         | Image pull policy                   | `IfNotPresent`                                          |
 | `mcImage.repository`       | Client image repository             | `minio/mc`                                              |
-| `mcImage.tag`              | mc image tag. Possible values listed [here](https://hub.docker.com/r/minio/mc/tags/).| `RELEASE.2018-10-18T00-40-05Z`|
+| `mcImage.tag`              | mc image tag. Possible values listed [here](https://hub.docker.com/r/minio/mc/tags/).| `RELEASE.2018-11-06T01-12-20Z`|
 | `mcImage.pullPolicy`       | mc Image pull policy                | `IfNotPresent`                                          |
 | `ingress.enabled`          | Enables Ingress                     | `false`                                                 |
 | `ingress.annotations`      | Ingress annotations                 | `{}`                                                    |
@@ -107,6 +107,8 @@ The following table lists the configurable parameters of the Minio chart and the
 | `nodeSelector`             | Node labels for pod assignment      | `{}`                                                    |
 | `affinity`                 | Affinity settings for pod assignment | `{}`                                                   |
 | `tolerations`              | Toleration labels for pod assignment | `[]`                                                   |
+| `tls.enable`               | Enable TLS for Minio server | `false`                                                         |
+| `tls.certSecret`           | Kubernetes Secret with `public.crt` and `private.key` files. | `""`                           |
 | `livenessProbe.initialDelaySeconds`  | Delay before liveness probe is initiated        | `5`                               |
 | `livenessProbe.periodSeconds`        | How often to perform the probe                  | `30`                              |
 | `livenessProbe.timeoutSeconds`       | When the probe times out                        | `1`                               |
@@ -127,6 +129,7 @@ The following table lists the configurable parameters of the Minio chart and the
 | `gcsgateway.projectId`     | Google cloud project id             | `""` |
 | `nasgateway.enabled`       | Use minio as a [NAS gateway](https://docs.minio.io/docs/minio-gateway-for-nas)             | `false` |
 | `nasgateway.replicas`      | Number of NAS gateway instances to be run in parallel on a PV            | `4` |
+| `environment`              | Set Minio server relevant environment variables in `values.yaml` file. Minio containers will be passed these variables when they start. | `MINIO_BROWSER: "on"` |
 
 Some of the parameters above map to the env variables defined in the [Minio DockerHub image](https://hub.docker.com/r/minio/minio/).
 
@@ -257,3 +260,29 @@ The following fields are expected in the secret
 1. `accesskey` - the access key ID
 2. `secretkey` - the secret key
 3. `gcs_key.json` - The GCS key if you are using the GCS gateway feature. This is optional.
+
+Configure TLS
+-------------
+
+To enable TLS for Minio containers, acquire TLS certificates from a CA or create self-signed certificates. While creating / acquiring certificates ensure the corresponding domain names are set as per the standard [DNS naming conventions](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#pod-identity) in a Kubernetes StatefulSet (for a distributed Minio setup). Then create a secret using
+
+```bash
+$ kubectl create secret generic tls-ssl-minio --from-file=path/to/private.key --from-file=path/to/public.crt
+```
+
+Then install the chart, specifying that you want to use the TLS secret:
+
+```bash
+$ helm install --set tls.enabled=true,tls.certSecret=tls-ssl-minio stable/minio
+```
+
+Pass environment variables to Minio containers
+----------------------------------------------
+
+To pass environment variables to Minio containers when deploying via Helm chart, use the below command line format
+
+```bash
+$ helm install --set environment.MINIO_BROWSER=on,environment.MINIO_DOMAIN=domain-name stable/minio
+```
+
+You can add as many environment variables as required, using the above format. Just add `environment.<VARIABLE_NAME>=<value>` under `set` flag.
