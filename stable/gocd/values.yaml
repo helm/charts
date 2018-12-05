@@ -172,6 +172,8 @@ server:
 agent:
   # agent.replicaCount is the GoCD Agent replicas Count. Specify the number of GoCD agents to run
   replicaCount: 0
+  # agent.deployStrategy is the strategy explained in detail at https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
+  deployStrategy: {}
   image:
     # agent.image.repository is the GoCD Agent image name
     repository: "gocd/gocd-agent-alpine-3.6"

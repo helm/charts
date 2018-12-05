@@ -75,8 +75,9 @@ spec:
               name: {{ printf "%s-%s" .Release.Name "externaldb" }}
               key: db-password
         {{- end }}
+        {{- $port:=.Values.service.port | toString }}
         - name: OSCLASS_HOST
-          value: {{ include "osclass.host" . | quote }}
+          value: "{{ include "osclass.host" . }}{{- if ne $port "80" }}:{{ .Values.service.port }}{{ end }}"
         - name: OSCLASS_USERNAME
           value: {{ default "" .Values.osclassUsername | quote }}
         - name: OSCLASS_PASSWORD

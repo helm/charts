@@ -51,6 +51,9 @@ spec:
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
       {{- end }}
+      {{- if .Values.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      {{- end }}
       {{- if and .Values.persistence.enabled .Values.securityContext.enabled}}
       initContainers:
       - name: init-chmod-data
@@ -79,9 +82,9 @@ spec:
         env:
         {{- if .Values.image.debug}}
         - name: BASH_DEBUG
-          value: 1
+          value: "1"
         - name: NAMI_DEBUG
-          value: 1
+          value: "1"
         {{- end }}
         - name: POSTGRESQL_REPLICATION_MODE
           value: "slave"
@@ -90,7 +93,11 @@ spec:
         - name: POSTGRESQL_REPLICATION_PASSWORD
           valueFrom:
             secretKeyRef:
+            {{- if .Values.existingSecret }}
+              name: {{ .Values.existingSecret }}
+            {{- else }}
               name: {{ template "postgresql.fullname" . }}
+            {{- end }}  
               key: postgresql-replication-password
         - name: POSTGRESQL_MASTER_HOST
           value: {{ template "postgresql.fullname" . }}
@@ -152,10 +159,12 @@ spec:
   volumeClaimTemplates:
     - metadata:
         name: data
+      {{- with .Values.persistence.annotations }}
         annotations:
-        {{- range $key, $value := .Values.persistence.annotations }}
+        {{- range $key, $value := . }}
           {{ $key }}: {{ $value }}
         {{- end }}
+      {{- end }}
       spec:
         accessModes:
         {{- range .Values.persistence.accessModes }}

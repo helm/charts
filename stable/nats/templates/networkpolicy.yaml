@@ -16,7 +16,7 @@ spec:
   ingress:
     # Allow inbound connections
     - ports:
-      - port: {{ .Values.clientService.port }}
+      - port: {{ .Values.client.service.port }}
       {{- if not .Values.networkPolicy.allowExternal }}
       from:
         - podSelector:
@@ -24,7 +24,7 @@ spec:
               {{ template "nats.fullname" . }}-client: "true"
       {{- end }}
     - ports:
-      - port: {{ .Values.clusterService.port }}
+      - port: {{ .Values.cluster.service.port }}
     - ports:
-      - port: {{ .Values.monitoringService.port }}
+      - port: {{ .Values.monitoring.service.port }}
 {{- end }}
