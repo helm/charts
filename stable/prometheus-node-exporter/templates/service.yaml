@@ -11,6 +11,9 @@ spec:
   type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.port }}
+    {{- if ( and (eq .Values.service.type "NodePort" ) (not (empty .Values.service.nodePort)) ) }}
+      nodePort: {{ .Values.service.nodePort }}
+    {{- end }}
       targetPort: {{ .Values.service.targetPort }}
       protocol: TCP
       name: metrics
