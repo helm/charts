@@ -1,14 +1,10 @@
-{{- if .Values.networkPolicy.enabled }}
+{{- if and .Values.alertmanager.enabled .Values.networkPolicy.enabled -}}
 apiVersion: {{ template "prometheus.networkPolicy.apiVersion" . }}
 kind: NetworkPolicy
 metadata:
   name: {{ template "prometheus.alertmanager.fullname" . }}
   labels:
-    app: {{ template "prometheus.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    component: "{{ .Values.alertmanager.name }}"
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    {{- include "prometheus.alertmanager.labels" . | nindent 4 }}
 spec:
   podSelector:
     matchLabels:
@@ -23,4 +19,4 @@ spec:
             component: "{{ .Values.server.name }}"
     - ports:
       - port: 9093
-{{- end }}
+{{- end -}}

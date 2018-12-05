@@ -21,6 +21,10 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
 {{- end }}
     spec:
+{{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.image.pullSecrets | indent 8 }}
+{{- end }}
       serviceAccountName: {{ template "fluent-bit.serviceAccountName" . }}
       containers:
       - name: fluent-bit
@@ -42,13 +46,31 @@ spec:
         - name: varlibdockercontainers
           mountPath: /var/lib/docker/containers
           readOnly: true
+{{- if .Values.fullConfigMap }}
+        - name: config
+          mountPath: /fluent-bit/etc
+{{- else }}
         - name: config
           mountPath: /fluent-bit/etc/fluent-bit.conf
-          subPath: fluent-bit.conf
+          subPath: fluent-bit.conf     
+        - name: config
+          mountPath: /fluent-bit/etc/fluent-bit-service.conf
+          subPath: fluent-bit-service.conf
+        - name: config
+          mountPath: /fluent-bit/etc/fluent-bit-input.conf
+          subPath: fluent-bit-input.conf
+        - name: config
+          mountPath: /fluent-bit/etc/fluent-bit-filter.conf
+          subPath: fluent-bit-filter.conf
+        - name: config
+          mountPath: /fluent-bit/etc/fluent-bit-output.conf
+          subPath: fluent-bit-output.conf
+          
 {{- if .Values.parsers.enabled }}
         - name: config
           mountPath: /fluent-bit/etc/parsers_custom.conf
           subPath: parsers.conf
+{{- end }}
 {{- end }}
 {{- if .Values.backend.es.tls_ca }}
         - name: es-tls-secret

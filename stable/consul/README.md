@@ -52,12 +52,15 @@ The following table lists the configurable parameters of the consul chart and th
 | `ConsulDnsPort`         | Container dns listening port          | `8600`                                                     |
 | `affinity`              | Consul affinity settings              | `see values.yaml`                                          |
 | `nodeSelector`          | Node labels for pod assignment        | `{}`                                                       |
+| `tolerations`           | Tolerations for pod assignment        | `[]`                                                       |
 | `maxUnavailable`        | Pod disruption Budget maxUnavailable  | `1`                                                        |
 | `ui.enabled`            | Enable Consul Web UI                  | `true`                                                     |
 | `uiService.enabled`     | Create dedicated Consul Web UI svc    | `true`                                                     |
 | `uiService.type`        | Dedicate Consul Web UI svc type       | `NodePort`                                                 |
 | `test.image`            | Test container image requires kubectl + bash (used for helm test)      | `lachlanevenson/k8s-kubectl` |
 | `test.imageTag`         | Test container image tag  (used for helm test)     | `v1.4.8-bash`                                 |
+| `test.rbac.create`                      | Create rbac for test container                 | `false`                           |
+| `test.rbac.serviceAccountName`          | Name of existed service account for test container    | ``                     |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 

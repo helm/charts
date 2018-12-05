@@ -12,7 +12,8 @@ See https://github.com/weaveworks/kured
 | `serviceAccount.create` | Create service account roles                                                | `true`                     |
 | `serviceAccount.name`   | Service account name to create (or use if `serviceAccount.create` is false) | (chart fullname)           |
 | `updateStrategy`        | Daemonset update strategy                                                   | `OnDelete`                 |
-| `tolerations`           | Tolerations to apply to the daemonset (eg to allow running on master)       | `[]`                       |
+| `tolerations`           | Tolerations to apply to the daemonset (eg to allow running on master)       | `[{"key": "node-role.kubernetes.io/master", "effect": "NoSchedule"}]`|
+| `podAnnotations`        | Annotations to apply to pods (eg to add Prometheus annotations)             | `{}`                       |
 
 See https://github.com/weaveworks/kured#configuration for values for `extraArgs`. Note that
 ```yaml

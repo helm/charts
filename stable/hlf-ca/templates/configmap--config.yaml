@@ -24,8 +24,8 @@ data:
       # Enable TLS (handled by the Ingress)
       enabled: false
       # TLS for the server's listening port
-      certfile: /var/hyperledger/tls_secret/tls.crt
-      keyfile: /var/hyperledger/tls_secret/tls.key
+      certfile: /var/hyperledger/tls/secret/tls.crt
+      keyfile: /var/hyperledger/tls/secret/tls.key
       clientauth:
         # Supported types: NoClientCert, RequestClientCert, RequireAnyClientCert, VerifyClientCertIfGiven and RequireAndVerifyClientCert.
         type: noclientcert

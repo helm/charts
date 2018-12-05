@@ -67,15 +67,9 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - containerPort: {{ .Values.service.internalPort }}
-          command: [
-              "sh",
-              "-ce",
-              "mkdir /scripts &&
-              cp /tmp-script/startup.sh /scripts/startup.sh &&
-              chmod 0755 /scripts/startup.sh &&
-              /scripts/startup.sh
-              "
-            ]
+          {{- if .Values.command }}
+          command: {{ .Values.command }}
+          {{- end }}
           env:
             {{- range $key, $value := .Values.extraEnv }}
             - name: {{ $key }}
@@ -101,7 +95,7 @@ spec:
               {{- if eq .Values.database.type "postgresql" }}
               value: "jdbc:postgresql://{{ template "postgresql.hostname" . }}:{{- .Values.postgresql.service.port -}}/{{- .Values.postgresql.postgresDatabase -}}"
               {{- else if eq .Values.database.type "mysql" }}
-              value: "jdbc:mysql://{{ template "mysql.hostname" . }}:{{ .Values.mysql.service.port }}/{{ .Values.mysql.mysqlDatabase }}?useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true"
+              value: "jdbc:mysql://{{ template "mysql.hostname" . }}:{{ .Values.mysql.service.port }}/{{ .Values.mysql.mysqlDatabase }}?useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true{{- range $key, $value := .Values.mysql.mysqlParams }}&{{ $key }}={{ $value }}{{- end }}"
               {{- end }}
           livenessProbe:
             httpGet:

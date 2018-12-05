@@ -51,7 +51,7 @@ The following table lists the configurable parameters of the Vault chart and the
 | `imagePullSecret`                 | The name of the secret to use if pulling from a private registry | `nil`       |
 | `image.pullPolicy`                | Container pull policy                    | `IfNotPresent`                      |
 | `image.repository`                | Container image to use                   | `vault`                             |
-| `image.tag`                       | Container image tag to deploy            | `0.11.1`                            |
+| `image.tag`                       | Container image tag to deploy            | `0.11.2`                            |
 | `vault.dev`                       | Use Vault in dev mode                    | true (set to false in production)   |
 | `vault.extraEnv`                  | Extra env vars for Vault pods            | `{}`                                |
 | `vault.extraContainers`           | Sidecar containers to add to the vault pod | `{}`                              |
@@ -69,7 +69,7 @@ The following table lists the configurable parameters of the Vault chart and the
 | `podAnnotations`                  | Annotations for pods                     | `{}`                                |
 | `consulAgent.join`                | If set, start start a consul agent       | `nil`                               |
 | `consulAgent.repository`          | Container image for consul agent         | `consul`                            |
-| `consulAgent.tag`                 | Container image tag for consul agent     | `1.0.7`                             |
+| `consulAgent.tag`                 | Container image tag for consul agent     | `1.2.3`                             |
 | `consulAgent.pullPolicy`          | Container pull policy for consul agent   | `IfNotPresent`                      |
 | `consulAgent.gossipKeySecretName` | k8s secret containing gossip key         | `nil` (see values.yaml for details) |
 | `consulAgent.HttpPort`            | HTTP port for consul agent API           | `8500`                              |

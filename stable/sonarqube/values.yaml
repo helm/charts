@@ -4,9 +4,20 @@
 replicaCount: 1
 image:
   repository: sonarqube
-  tag: 6.7.3
+  tag: 6.7.6-community
   # If using a private repository, the name of the imagePullSecret to use
   # pullSecret: my-repo-secret
+# Starting 6.7.6 and 7.4 official sonarqube docker image, command is not required
+# anymore. For older images, uncomment the following lines.
+# command: [
+#   "sh",
+#   "-ce",
+#   "mkdir /scripts &&
+#   cp /tmp-script/startup.sh /scripts/startup.sh &&
+#   chmod 0755 /scripts/startup.sh &&
+#   /scripts/startup.sh
+#   "
+#   ]
 service:
   name: sonarqube
   type: LoadBalancer
@@ -139,6 +150,8 @@ mysql:
   mysqlUser: "sonarUser"
   mysqlPassword: "sonarPass"
   mysqlDatabase: "sonarDB"
+  # mysqlParams:
+  #   useSSL: "true"
   # Specify the TCP port that mySQL should use
   service:
     port: 3306
