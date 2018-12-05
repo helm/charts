@@ -115,7 +115,7 @@ spec:
             name: {{ if .Values.alertmanager.configMapOverrideName }}{{ .Release.Name }}-{{ .Values.alertmanager.configMapOverrideName }}{{- else }}{{ template "prometheus.alertmanager.fullname" . }}{{- end }}
           {{- else }}
           secret:
-            name: {{ .Values.alertmanager.configFromSecret }}
+            secretName: {{ .Values.alertmanager.configFromSecret }}
           {{- end }}
         - name: storage-volume
         {{- if .Values.alertmanager.persistentVolume.enabled }}
