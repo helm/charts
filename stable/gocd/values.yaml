@@ -175,7 +175,7 @@ agent:
     # specifies whether the top level service account (also used by the server) should be reused as the service account for gocd agents
     reuseTopLevelServiceAccount: false
     # if reuseTopLevelServiceAccount is false, this field specifies the name of an existing service account to be associated with gocd agents
-    # by default (name field is empty), no service account is created for gocd agents
+    # If field is empty, the default service account for that namespace will be used.
     name:
 
   # agent.replicaCount is the GoCD Agent replicas Count. Specify the number of GoCD agents to run

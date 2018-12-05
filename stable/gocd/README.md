@@ -163,8 +163,6 @@ $ kubectl create secret generic gocd-server-ssh \
 | `agent.resources`                         | GoCD agent resource requests and limits                                                                                                                                          | `{}`                |
 | `agent.nodeSelector`                      | GoCD agent nodeSelector for pod labels                                                                                                                                           | `{}`                |
 | `agent.affinity`                         | GoCD agent affinity                                                                                                                                                               | `{}`                |
-| `agent.serviceAccount.reuseTopLevelServiceAccount`                   |  Specifies whether the top level service account (also used by the server) should be reused as the service account for gocd agents                                 | `nil`                        |
-| `agent.serviceAccount.name`                   |  If reuseTopLevelServiceAccount is false, this field specifies the name of an existing service account to be associated with gocd agents. By default (name field is empty), no service account is created for gocd agents | `nil`                        |
 | `agent.env.goServerUrl`                   | GoCD Server Url. If nil, discovers the GoCD server service if its available on the Kubernetes cluster                                                                            | `nil`                        |
 | `agent.env.agentAutoRegisterKey`          | GoCD Agent autoregister key                                                                                                                                                      | `nil`                        |
 | `agent.env.agentAutoRegisterResources`    | Comma separated list of GoCD Agent resources                                                                                                                                     | `nil`                        |
@@ -313,11 +311,13 @@ To mount a `ConfigMap` containing `/docker-entrypoint.d/` scripts:
 The RBAC section is for users who want to use the Kubernetes Elastic Agent Plugin with GoCD. The Kubernetes elastic agent plugin for GoCD brings up pods on demand while running a job.
 If RBAC is enabled,
  1. A cluster role is created by default and the following privileges are provided.
-    Privileges:
+
+    <a name="cluster-role-privileges"></a>Cluser role privileges:
       - nodes: list, get
       - events: list, watch
       - namespace: list, get
       - pods, pods/log: *
+
 
  2. A cluster role binding to bind the specified service account with the cluster role.
 
@@ -350,6 +350,26 @@ The gocd service account can be associated with an existing role in the namespac
 ```bash
 helm install --namespace gocd --name gocd-app --set rbac.roleRef=ROLE_NAME stable/gocd
 ```
+
+#### Agent service account:
+
+Service account can be configured specifically for agents. This configuration also allows for the reuse of the top level service account that is used to configure the server pod. The various settings and their possible states are described below:
+
+| Parameter | Description | Default |
+| --------------------------------------------- | ----------------------------------------------------------------------------------- | ------------------- |
+| `agent.serviceAccount.reuseTopLevelServiceAccount`                   |  Specifies whether the top level service account (also used by the server) should be reused as the service account for gocd agents                                 | `nil`                        |
+| `agent.serviceAccount.name`                   |  If reuseTopLevelServiceAccount is false, this field specifies the name of an existing service account to be associated with gocd agents. By default (name field is empty), no service account is created for gocd agents | `nil`                        |
+
+Possible states:
+
+|State | Effect                                                                         |
+|------|--------------------------------------------------|
+|reuseTopLevelServiceAccount = false and name = empty|The default service account for the namespace will be used.|
+|reuseTopLevelServiceAccount = false and name = 'agentSA'|The 'agentSA' service account will be used. The service account needs to exist and bound with the appropriate role. |
+|reuseTopLevelServiceAccount = true| The GoCD service account will be created and used for the agents in the specified namespace. The permissions associated with the GoCD SA are defined here - [Cluser role privileges](#cluster-role-privileges).  |
+
+ SA and bind it with the appropriate role themselves. May be provide examples or commands for role and role bindings?
+reuseTopLevelServiceAccount = true => GoCD SA will be created and used for the agents in the specified namespace. The permissions associated with the GoCD SA are defined here - [Cluser role privileges](#cluster-role-privileges).
 
 # License
 
