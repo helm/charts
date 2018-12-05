@@ -339,7 +339,8 @@ metrics:
   # Enable this if you're using https://github.com/coreos/prometheus-operator
   serviceMonitor:
     enabled: false
-    namespace: monitoring
+    ## Specify a namespace if needed
+    # namespace: monitoring
     # fallback to the prometheus default unless specified
     # interval: 10s
     ## Defaults to what's used if you follow CoreOS [Prometheus Install Instructions](https://github.com/helm/charts/tree/master/stable/prometheus-operator#tldr)
