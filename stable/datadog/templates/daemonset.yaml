@@ -23,6 +23,11 @@ spec:
 {{ toYaml .Values.daemonset.podAnnotations | indent 8 }}
       {{- end }}
     spec:
+      {{- if .Values.datadog.seLinuxLabel }}
+      securityContext:
+        seLinuxOptions:
+          type: "{{ .Values.datadog.seLinuxLabel }}"
+      {{- end }}
       {{- if .Values.daemonset.useHostNetwork }}
       hostNetwork: {{ .Values.daemonset.useHostNetwork }}
       dnsPolicy: ClusterFirstWithHostNet

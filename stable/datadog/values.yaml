@@ -129,6 +129,10 @@ datadog:
   ##
   # apiKey:
 
+  ## You can modify the SELinux security context used to run the containers by
+  ## modifying the label type below:
+  # seLinuxLabel: "spc_t"
+
   ## Use existing Secret which stores API key instead of creating a new one
   # apiKeyExistingSecret:
 
