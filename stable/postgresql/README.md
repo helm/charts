@@ -63,8 +63,7 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `replication.user`                            | Replication user                                     | `repl_user`                                               |
 | `replication.password`                        | Replication user password                            | `repl_password`                                           |
 | `replication.slaveReplicas`                   | Number of slaves replicas                            | `1`                                                       |
-| `existingSecret`                              | Name of existing secret to use for postgresl passwords        | `nil`                                                     |
-
+| `existingSecret`                              | Name of existing secret to use for PostgreSQL passwords        | `nil`                                                     |
 | `postgresqlUsername`                          | PostgreSQL admin user                                | `postgres`                                                |
 | `postgresqlPassword`                          | PostgreSQL admin password                            | _random 10 character alphanumeric string_                 |
 | `postgresqlDatabase`                          | PostgreSQL database                                  | `nil`                                                     |
