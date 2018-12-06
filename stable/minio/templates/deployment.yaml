@@ -12,6 +12,9 @@ spec:
   {{- if .Values.nasgateway.enabled }}
   replicas: {{ .Values.nasgateway.replicas }}
   {{- end }}
+  {{- if .Values.s3gateway.enabled }}
+  replicas: {{ .Values.s3gateway.replicas }}
+  {{- end }}
   {{- if .Values.azuregateway.enabled }}
   replicas: {{ .Values.azuregateway.replicas }}
   {{- end }}
@@ -36,6 +39,12 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if .Values.s3gateway.enabled }}
+          command: [ "/bin/sh",
+          "-ce",
+          "cp /tmp/config.json {{ .Values.configPath }} &&
+          /usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} gateway s3"]
+          {{- else }}
           {{- if .Values.azuregateway.enabled }}
           command: [ "/bin/sh", 
           "-ce", 
@@ -61,8 +70,9 @@ spec:
           {{- end }}
           {{- end }}
           {{- end }}
+          {{- end }}
           volumeMounts:
-            {{- if and .Values.persistence.enabled ((not .Values.gcsgateway.enabled) (not .Values.azuregateway.enabled)) }}
+            {{- if and .Values.persistence.enabled ((not .Values.gcsgateway.enabled) (not .Values.azuregateway.enabled) (not .Values.s3gateway.enabled)) }}
             - name: export
               mountPath: {{ .Values.mountPath }}
               {{- if .Values.persistence.subPath }}
@@ -140,7 +150,7 @@ spec:
 {{ toYaml . | indent 8 }}
 {{- end }}
       volumes:
-        {{- if and (not .Values.gcsgateway.enabled) (not .Values.azuregateway.enabled) }}
+        {{- if and (not .Values.gcsgateway.enabled) (not .Values.azuregateway.enabled) (not .Values.s3gateway.enabled) }}
         - name: export
         {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:

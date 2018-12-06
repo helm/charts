@@ -142,6 +142,10 @@ defaultBucket:
   ## Purge if bucket exists already
   purge: false
 
+s3gateway:
+  enabled: false
+  replicas: 4
+
 ## Use minio as an azure blob gateway, you should disable data persistence so no volume claim are created.
 ## https://docs.minio.io/docs/minio-gateway-for-azure
 azuregateway:
