@@ -16,7 +16,7 @@ spec:
         heritage: "{{ .Release.Service }}"
       {{- if .Values.chromeDebug.podAnnotations }}
       annotations:
-{{ toYaml .Values.chromeDebug.podAnnotations | indent 4 }}
+{{ toYaml .Values.chromeDebug.podAnnotations | indent 8 }}
       {{- end}}
     spec:
       containers:

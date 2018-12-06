@@ -15,7 +15,7 @@ spec:
         heritage: "{{ .Release.Service }}"
       {{- if .Values.hub.podAnnotations }}
       annotations:
-{{ toYaml .Values.hub.podAnnotations | indent 4 }}
+{{ toYaml .Values.hub.podAnnotations | indent 8 }}
       {{- end}}
     spec:
       containers:

@@ -16,7 +16,7 @@ spec:
         heritage: "{{ .Release.Service }}"
       {{- if .Values.firefox.podAnnotations }}
       annotations:
-{{ toYaml .Values.firefox.podAnnotations | indent 4 }}
+{{ toYaml .Values.firefox.podAnnotations | indent 8 }}
       {{- end}}
     spec:
       containers:
