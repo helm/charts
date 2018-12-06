@@ -2,6 +2,7 @@
 {{- $nodeNumber := printf "%03d" . }}
 {{- $workDir := printf "/work" }}
 {{- $dataDir := printf "/data" }}
+{{- $refDir := printf "/ref" }}
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -42,10 +43,12 @@ spec:
           volumeMounts:
             - mountPath: {{ $workDir }}
               name: work-dir
+            - mountPath: {{ $refDir }}
+              name: ref-dir
           command:
             - 'sh'
-            - '-c'
-            - 'chown -R 1000:101 {{ $workDir }}'
+            - '-xc'
+            - 'cp {{ $refDir }}/config.toml {{ $workDir }}/; cp {{ $refDir }}/genesis.json {{ $workDir }}/; cp {{ $refDir }}/priv_validator.json {{ $workDir }}/'
       containers:
         - name: node-{{ $nodeNumber }}
           image: "{{ $.Values.image.repository }}:{{ $.Values.image.tag }}"
@@ -97,7 +100,7 @@ spec:
 {{ toYaml $.Values.resources | indent 12 }}
         {{- end }}
       volumes:
-        - name: work-dir
+        - name: ref-dir
           projected:
             sources:
               - configMap:
@@ -115,6 +118,8 @@ spec:
                   items:
                     - key: key-{{ $nodeNumber }}
                       path: priv_validator.json
+        - name: work-dir
+          emptyDir: {}
         - name: data-dir
         {{- if $.Values.persistence.enabled }}
           persistentVolumeClaim:
@@ -124,6 +129,7 @@ spec:
         {{- end }}
       securityContext:
         fsGroup: 101
+        runAsUser: 1000
     {{- if $.Values.affinity }}
       affinity:
 {{ toYaml $.Values.affinity | indent 8 }}

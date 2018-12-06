@@ -1,0 +1,24 @@
+{{- if and .Values.missionControl.persistence.enabled (not .Values.missionControl.persistence.existingClaim) }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ template "mission-control.fullname" . }}
+  labels:
+    app: {{ template "mission-control.name" . }}
+    chart: {{ template "mission-control.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  accessModes:
+    - {{ .Values.missionControl.persistence.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.missionControl.persistence.size }}
+{{- if .Values.missionControl.persistence.storageClass }}
+{{- if (eq "-" .Values.missionControl.persistence.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ .Values.missionControl.persistence.storageClass }}"
+{{- end }}
+{{- end }}
+{{- end }}

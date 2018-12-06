@@ -6,7 +6,7 @@ metadata:
     checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
   labels:
     app: {{ template "keycloak.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    chart: {{ template "keycloak.chart" . }}
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
@@ -21,18 +21,28 @@ spec:
         app: {{ template "keycloak.name" . }}
         release: "{{ .Release.Name }}"
     spec:
+      securityContext:
+{{ toYaml .Values.keycloak.securityContext | indent 8 }}
+    {{- if .Values.keycloak.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.keycloak.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end}}
+    {{- end }}
     {{- if .Values.keycloak.persistence.deployPostgres }}
       initContainers:
         - name: wait-for-postgresql
-          image: "{{ .Values.hyperkube.image.repository }}:{{ .Values.hyperkube.image.tag }}"
-          imagePullPolicy: "{{ .Values.hyperkube.image.pullPolicy }}"
+          image: "{{ .Values.init.image.repository }}:{{ .Values.init.image.tag }}"
+          imagePullPolicy: {{ .Values.init.image.pullPolicy }}
           command:
-            - "bash"
-            - "-c"
-            - "/scripts/wait_for_postgresql.sh app={{ template "keycloak.postgresql.fullname" . }}"
-          volumeMounts:
-            - name: scripts
-              mountPath: /scripts
+            - sh
+            - -c
+            - |
+              until printf "." && nc -z -w 2 {{ template "keycloak.postgresql.fullname" . }} {{ .Values.postgresql.service.port }}; do
+                  sleep 2;
+              done;
+
+              echo 'PostgreSQL OK ✓'
     {{- end }}
       containers:
         - name: {{ .Chart.Name }}
@@ -41,6 +51,7 @@ spec:
           command:
             - /scripts/keycloak.sh
           env:
+          {{- if .Release.IsInstall }}
             - name: KEYCLOAK_USER
               value: {{ .Values.keycloak.username }}
             - name: KEYCLOAK_PASSWORD
@@ -48,6 +59,7 @@ spec:
                 secretKeyRef:
                   name: {{ template "keycloak.fullname" . }}-http
                   key: password
+          {{- end }}
           {{- if .Values.keycloak.persistence.deployPostgres }}
             - name: POSTGRES_PORT_5432_TCP_ADDR
               value: {{ template "keycloak.postgresql.fullname" . }}
@@ -63,12 +75,15 @@ spec:
           {{- else }}
 {{ include "keycloak.externalDbConfig" . | indent 12 }}
           {{- end }}
-{{- if .Values.keycloak.additionalEnv }}
-{{ toYaml .Values.keycloak.additionalEnv | indent 12 }}
+{{- with .Values.keycloak.extraEnv }}
+{{ toYaml . | indent 12 }}
 {{- end }}
           volumeMounts:
             - name: scripts
               mountPath: /scripts
+{{- with .Values.keycloak.extraVolumeMounts }}
+{{ toYaml . | indent 12 }}
+{{- end }}
           ports:
             - name: http
               containerPort: 8080
@@ -77,48 +92,34 @@ spec:
             httpGet:
               path: /auth/
               port: http
-            initialDelaySeconds: 120
-            timeoutSeconds: 5
+            initialDelaySeconds: {{ .Values.keycloak.livenessProbe.initialDelaySeconds }}
+            timeoutSeconds: {{ .Values.keycloak.livenessProbe.timeoutSeconds }}
           readinessProbe:
             httpGet:
               path: /auth/
               port: http
-            initialDelaySeconds: 5
-            timeoutSeconds: 1
+            initialDelaySeconds: {{ .Values.keycloak.readinessProbe.initialDelaySeconds }}
+            timeoutSeconds: {{ .Values.keycloak.readinessProbe.timeoutSeconds }}
           resources:
 {{ toYaml .Values.keycloak.resources | indent 12 }}
-    {{- if eq .Values.keycloak.podAntiAffinity "hard" }}
+    {{- with .Values.keycloak.affinity }}
       affinity:
-        podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            - topologyKey: "kubernetes.io/hostname"
-              labelSelector:
-                matchLabels:
-                  app: "{{ template "keycloak.fullname" . }}"
-                  release: "{{ .Release.Name }}"
-    {{- else if eq .Values.keycloak.podAntiAffinity "soft" }}
-      affinity:
-        podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 1
-              podAffinityTerm:
-                topologyKey: kubernetes.io/hostname
-                labelSelector:
-                  matchLabels:
-                    app: "{{ template "keycloak.fullname" . }}"
-                    release: "{{ .Release.Name }}"
+{{ toYaml . | indent 8 }}
     {{- end }}
-    {{- if .Values.keycloak.nodeSelector }}
+    {{- with .Values.keycloak.nodeSelector }}
       nodeSelector:
-{{ toYaml .Values.keycloak.nodeSelector | indent 8 }}
+{{ toYaml . | indent 8 }}
     {{- end }}
-    {{- if .Values.keycloak.tolerations }}
+    {{- with .Values.keycloak.tolerations }}
       tolerations:
-{{ toYaml .Values.keycloak.tolerations | indent 8 }}
+{{ toYaml . | indent 8 }}
     {{- end }}
       terminationGracePeriodSeconds: 60
       volumes:
         - name: scripts
           configMap:
             name: {{ template "keycloak.fullname" . }}
-            defaultMode: 0755
+            defaultMode: 0555
+{{- with .Values.keycloak.extraVolumes }}
+{{ toYaml . | indent 8 }}
+{{- end }}

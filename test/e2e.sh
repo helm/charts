@@ -1,5 +1,6 @@
-#!/bin/bash
-# Copyright 2016 The Kubernetes Authors All rights reserved.
+#!/usr/bin/env bash
+
+# Copyright 2018 The Kubernetes Authors. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,30 +17,40 @@
 set -o errexit
 set -o nounset
 set -o pipefail
-set -o xtrace
 
-# TODO should we inject this.  This is creating problems bumping the Docker version
-IMAGE_VERSION="test-image:v1.11"
-CHART_ROOT=${CHART_ROOT:-$(git rev-parse --show-toplevel)}
-IMAGE_NAME=${IMAGE_NAME:-"gcr.io/kubernetes-charts-ci/${IMAGE_VERSION}"}
+readonly IMAGE_TAG=v3.0.1
+readonly IMAGE_REPOSITORY="gcr.io/kubernetes-charts-ci/test-image"
+readonly REPO_ROOT="${REPO_ROOT:-$(git rev-parse --show-toplevel)}"
 
-VOLUMES="-v ${CHART_ROOT}:/src -v ${KUBECONFIG:=${HOME}/.kube/config}:/.kube/config"
-
-GKE_CREDS=""
-if [ -f $HOME/.config/gcloud/application_default_credentials.json ];then
-  GKE_CREDS="-v $HOME/.config/gcloud/application_default_credentials.json:/service-account.json:ro"
-  GKE_CREDS="${GKE_CREDS} -e KUBECONFIG=/.kube/config"
-elif [ -n ${GOOGLE_APPLICATION_CREDENTIALS:=} ];then
-  GKE_CREDS="-v ${GOOGLE_APPLICATION_CREDENTIALS}:/service-account.json:ro"
-else
-  echo "Unable to find a suitable value for GOOGLE_APPLICATION_CREDENTIALS"
-  exit 1
+# Pull numbers are only available on presubmit jobs. When the tests are run as
+# part of a batch job (e.g., batch merge) the PULL_NUMBER is not available. Pull
+# numbers are useful for some debugging. When no PULL_NUMBER is supplied we build
+# from other info.
+PULL_INFO="${PULL_NUMBER:-}"
+if [ -z "$PULL_INFO" ]; then
+    PULL_INFO="${PULL_BASE_SHA:-}"
 fi
+readonly PULL_INFO
 
-docker run ${VOLUMES} ${GKE_CREDS} \
-           -e GOOGLE_APPLICATION_CREDENTIALS=/service-account.json \
-           -e "PULL_NUMBER=$PULL_NUMBER" \
-           -e "BUILD_NUMBER=$BUILD_NUMBER" \
-           -e "VERIFICATION_PAUSE=${VERIFICATION_PAUSE:=0}" \
-           ${IMAGE_NAME} /src/test/changed.sh
-echo "Done Testing!"
+main() {
+    git remote add k8s https://github.com/helm/charts
+    git fetch k8s master
+
+    local config_container_id
+    config_container_id=$(docker run -ti -d -v "$GOOGLE_APPLICATION_CREDENTIALS:/service-account.json" \
+        -v "$REPO_ROOT:/workdir" --workdir=/workdir \
+        -e "CT_BUILD_ID=$JOB_TYPE-$PULL_INFO-$BUILD_ID" \
+        "$IMAGE_REPOSITORY:$IMAGE_TAG" cat)
+
+    # shellcheck disable=SC2064
+    trap "docker rm -f $config_container_id" EXIT
+
+    docker exec "$config_container_id" gcloud auth activate-service-account --key-file /service-account.json
+    docker exec "$config_container_id" gcloud container clusters get-credentials jenkins --project kubernetes-charts-ci --zone us-west1-a
+    docker exec "$config_container_id" kubectl cluster-info
+    docker exec "$config_container_id" ct lint-and-install --config test/ct.yaml
+
+    echo "Done Testing!"
+}
+
+main

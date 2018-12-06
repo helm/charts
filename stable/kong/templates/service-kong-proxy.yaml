@@ -13,18 +13,21 @@ metadata:
     heritage: "{{ .Release.Service }}"
 spec:
   type: {{ .Values.proxy.type }}
-  {{- if and (eq .Values.proxy.type "LoadBalancer") .Values.proxy.loadBalancerIP }}
+  {{- if eq .Values.proxy.type "LoadBalancer" }}
+  {{- if .Values.proxy.loadBalancerIP }}
   loadBalancerIP: {{ .Values.proxy.loadBalancerIP }}
+  {{- end }}
+  {{- if .Values.proxy.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+  {{- range $cidr := .Values.admin.loadBalancerSourceRanges }}
+  - {{ $cidr }}
+  {{- end }}
+  {{- end }}
   {{- end }}
   ports:
   - name: kong-proxy
-  {{- if .Values.proxy.https }}
-    port: {{ .Values.proxy.https.servicePort }}
-    targetPort: {{ .Values.proxy.https.containerPort }}
-  {{- else if .Values.proxy.http }}
-    port: {{ .Values.proxy.http.servicePort }}
-    targetPort: {{ .Values.proxy.http.containerPort }}
-  {{- end }}
+    port: {{ .Values.proxy.servicePort }}
+    targetPort: {{ .Values.proxy.containerPort }}
   {{- if (and (eq .Values.proxy.type "NodePort") (not (empty .Values.proxy.nodePort))) }}
     nodePort: {{ .Values.proxy.nodePort }}
   {{- end }}
@@ -32,3 +35,4 @@ spec:
   selector:
     app: {{ template "kong.name" . }}
     release: {{ .Release.Name }}
+    component: app

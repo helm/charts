@@ -5,7 +5,7 @@
 replicaCount: 1
 image:
   repository: metabase/metabase
-  tag: v0.27.2
+  tag: v0.30.1
   pullPolicy: IfNotPresent
 
 # Config Jetty web server
@@ -52,11 +52,18 @@ service:
   type: ClusterIP
   externalPort: 80
   internalPort: 3000
+  annotations:
+    # Used to add custom annotations to the Service.
+    # service.beta.kubernetes.io/aws-load-balancer-internal: "0.0.0.0/0"
 ingress:
   enabled: false
   # Used to create Ingress record (should used with service.type: ClusterIP).
   hosts:
     # - metabase.domain.com
+  labels:
+    # Used to add custom labels to the Ingress
+    # Useful if for example you have multiple Ingress controllers and want your Ingress controllers to bind to specific Ingresses
+    # traffic: internal
   annotations:
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"

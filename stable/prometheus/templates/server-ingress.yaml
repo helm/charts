@@ -10,19 +10,20 @@ metadata:
 {{ toYaml .Values.server.ingress.annotations | indent 4 }}
 {{- end }}
   labels:
-    app: {{ template "prometheus.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    component: "{{ .Values.server.name }}"
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    {{- include "prometheus.server.labels" . | nindent 4 }}
+{{- range $key, $value := .Values.server.ingress.extraLabels }}
+    {{ $key }}: {{ $value }}
+{{- end }}
   name: {{ template "prometheus.server.fullname" . }}
 spec:
   rules:
   {{- range .Values.server.ingress.hosts }}
-    - host: {{ . }}
+    {{- $url := splitList "/" . }}
+    - host: {{ first $url }}
       http:
         paths:
-          - backend:
+          - path: /{{ rest $url | join "/" }}
+            backend:
               serviceName: {{ $serviceName }}
               servicePort: {{ $servicePort }}
   {{- end -}}

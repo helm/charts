@@ -27,7 +27,20 @@ spec:
             - "-endpoints"
             - "{{ index .Values "etcd-operator" "cluster" "name" }}-client:2379"
 {{- else }}
-            - "-endpoints {{ .Values.etcd.endpoints }}"
+            - "-endpoints" 
+            - "{{ .Values.etcd.endpoints }}"
+{{- end }}
+{{- if .Values.etcd.tls }}
+            - "-certfile"
+            - "/etc/zetcd/secrets/{{ .Values.etcd.tls.cert }}"
+            - "-cafile"
+            - "/etc/zetcd/secrets/{{ .Values.etcd.tls.ca }}"
+            - "-keyfile"
+            - "/etc/zetcd/secrets/{{ .Values.etcd.tls.key }}"
+          volumeMounts:
+            - name: tls
+              mountPath: /etc/zetcd/secrets
+              readOnly: true
 {{- end }}
           ports:
             - containerPort: {{ .Values.service.internalPort }}
@@ -43,3 +56,9 @@ spec:
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
     {{- end }}
+{{- if .Values.etcd.tls }}
+      volumes:
+      - name: tls
+        secret:
+          secretName: {{ .Values.etcd.tls.existingSecret }}
+{{- end }}

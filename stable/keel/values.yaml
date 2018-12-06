@@ -3,8 +3,8 @@
 # Declare variables to be passed into your templates.
 
 image:
-  repository: karolisr/keel
-  tag: 0.4.2
+  repository: keelhq/keel
+  tag: 0.9.5
   pullPolicy: IfNotPresent
 
 # Polling is enabled by default,
@@ -35,6 +35,8 @@ slack:
   enabled: false
   token: ""
   channel: ""
+  botName: ""
+  approvalsChannel: ""
 
 # Keel service
 # Enable to receive webhooks from Docker registries
@@ -55,7 +57,7 @@ webhookRelay:
   # webhookrelay docker image
   image:
     repository: webhookrelay/webhookrelayd
-    tag: 0.2.7
+    tag: 0.6.3
     pullPolicy: IfNotPresent
 
 # Keel self-update

@@ -35,7 +35,7 @@ $ helm install --name hadoop $(stable/hadoop/tools/calc_resources.sh 50) \
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Hadoop chart and their default values.
+The following table lists the configurable parameters of the Hadoop chart and their default values.
 
 | Parameter                                         | Description                                                                        | Default                                                          |
 | ------------------------------------------------- | -------------------------------                                                    | ---------------------------------------------------------------- |

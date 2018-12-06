@@ -33,22 +33,23 @@ $ helm install --name my-release incubator/etcd
 
 ## Configuration
 
-The following tables lists the configurable parameters of the etcd chart and their default values.
+The following table lists the configurable parameters of the etcd chart and their default values.
 
-| Parameter               | Description                        | Default                                                    |
-| ----------------------- | ---------------------------------- | ---------------------------------------------------------- |
-| `Name`                  | Spark master name                  | `etcd`                                                     |
-| `Image`                 | Container image name               | `k8s.gcr.io/etcd-amd64`                      |
-| `ImageTag`              | Container image tag                | `2.2.5`                                                    |
-| `ImagePullPolicy`       | Container pull policy              | `Always`                                                   |
-| `Replicas`              | k8s statefulset replicas           | `3`                                                        |
-| `Component`             | k8s selector key                   | `etcd`                                                     |
-| `Cpu`                   | container requested cpu            | `100m`                                                     |
-| `Memory`                | container requested memory         | `512Mi`                                                    |
-| `ClientPort`            | k8s service port                   | `2379`                                                     |
-| `PeerPorts`             | Container listening port           | `2380`                                                     |
-| `Storage`               | Persistent volume size             | `1Gi`                                                      |
-| `StorageClass`          | Persistent volume storage class    | `anything`                                                 |
+| Parameter               | Description                          | Default                                            |
+| ----------------------- | ------------------------------------ | -------------------------------------------------- |
+| `image.repository`      | Container image repository           | `k8s.gcr.io/etcd-amd64`                            |
+| `image.tag`             | Container image tag                  | `2.2.5`                                            |
+| `image.pullPolicy`      | Container pull policy                | `IfNotPresent`                                     |
+| `replicas`              | k8s statefulset replicas             | `3`                                                |
+| `resources`             | container required resources         | `{}`                                             |                                            |
+| `clientPort`            | k8s service port                     | `2379`                                             |
+| `peerPorts`             | Container listening port             | `2380`                                             |
+| `storage`               | Persistent volume size               | `1Gi`                                              |
+| `storageClass`          | Persistent volume storage class      | `anything`                                         |
+| `affinity`              | affinity settings for pod assignment | `{}`                                               |
+| `nodeSelector`          | Node labels for pod assignment       | `{}`                                               |
+| `tolerations`           | Toleration labels for pod assignment | `[]`                                               |
+| `extraEnv`              | Optional environment variables       | `[]`                                               |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
@@ -93,7 +94,7 @@ $ kill -9 ETCD_1_PID
 ```
 
 ```shell
-$ kubectl get pods -l "component=${RELEASE-NAME}-etcd"
+$ kubectl get pods -l "release=${RELEASE-NAME},app=etcd"
 NAME                 READY     STATUS        RESTARTS   AGE
 etcd-0               1/1       Running       0          54s
 etcd-2               1/1       Running       0          51s
@@ -102,7 +103,7 @@ etcd-2               1/1       Running       0          51s
 After a while:
 
 ```shell
-$ kubectl get pods -l "component=${RELEASE-NAME}-etcd"
+$ kubectl get pods -l "release=${RELEASE-NAME},app=etcd"
 NAME                 READY     STATUS    RESTARTS   AGE
 etcd-0               1/1       Running   0          1m
 etcd-1               1/1       Running   0          20s
@@ -132,7 +133,7 @@ This is for reference. Scaling should be managed by `helm upgrade`
 The etcd cluster can be scale up by running ``kubectl patch`` or ``kubectl edit``. For instance,
 
 ```sh
-$ kubectl get pods -l "component=${RELEASE-NAME}-etcd"
+$ kubectl get pods -l "release=${RELEASE-NAME},app=etcd"
 NAME      READY     STATUS    RESTARTS   AGE
 etcd-0    1/1       Running   0          7m
 etcd-1    1/1       Running   0          7m
@@ -141,7 +142,7 @@ etcd-2    1/1       Running   0          6m
 $ kubectl patch statefulset/etcd -p '{"spec":{"replicas": 5}}'
 "etcd" patched
 
-$ kubectl get pods -l "component=${RELEASE-NAME}-etcd"
+$ kubectl get pods -l "release=${RELEASE-NAME},app=etcd"
 NAME      READY     STATUS    RESTARTS   AGE
 etcd-0    1/1       Running   0          8m
 etcd-1    1/1       Running   0          8m
@@ -156,7 +157,7 @@ Scaling-down is similar. For instance, changing the number of replicas to ``4``:
 $ kubectl edit statefulset/etcd
 statefulset "etcd" edited
 
-$ kubectl get pods -l "component=${RELEASE-NAME}-etcd"
+$ kubectl get pods -l "release=${RELEASE-NAME},app=etcd"
 NAME      READY     STATUS    RESTARTS   AGE
 etcd-0    1/1       Running   0          8m
 etcd-1    1/1       Running   0          8m

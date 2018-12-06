@@ -4,12 +4,12 @@ metadata:
   name: {{ template "rethinkdb.fullname" . }}-proxy
   labels:
     app: {{ template "rethinkdb.name" . }}-proxy
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    chart: {{ template "rethinkdb.chart" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
   annotations:
-  {{- if .Values.proxy.serviceAnnotations }}
-{{ toYaml .Values.proxy.serviceAnnotations | indent 4 }}
+  {{- if .Values.proxy.service.annotations }}
+{{ toYaml .Values.proxy.service.annotations | indent 4 }}
   {{- end }}
 spec:
   type: {{ .Values.proxy.service.type }}

@@ -6,6 +6,18 @@
   value: {{ default "" $value | quote }}
 {{- end -}}
 
+{{- define "common.envvar.configmap" -}}
+  {{- $name := index . 0 -}}
+  {{- $configMapName := index . 1 -}}
+  {{- $configMapKey := index . 2 -}}
+
+  name: {{ $name }}
+  valueFrom:
+    configMapKeyRef:
+      name: {{ $configMapName }}
+      key: {{ $configMapKey }}
+{{- end -}}
+
 {{- define "common.envvar.secret" -}}
   {{- $name := index . 0 -}}
   {{- $secretName := index . 1 -}}

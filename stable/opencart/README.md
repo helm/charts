@@ -10,9 +10,11 @@ $ helm install stable/opencart
 
 ## Introduction
 
-This chart bootstraps a [OpenCart](https://github.com/bitnami/bitnami-docker-opencart) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
+This chart bootstraps an [OpenCart](https://github.com/bitnami/bitnami-docker-opencart) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
 It also packages the [Bitnami MariaDB chart](https://github.com/kubernetes/charts/tree/master/stable/mariadb) which is required for bootstrapping a MariaDB deployment for the database requirements of the OpenCart application.
+
+Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters.
 
 ## Prerequisites
 
@@ -43,14 +45,24 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the OpenCart chart and their default values.
+The following table lists the configurable parameters of the OpenCart chart and their default values.
 
 |              Parameter              |                Description                |                         Default                          |
 |-------------------------------------|-------------------------------------------|----------------------------------------------------------|
-| `image`                             | OpenCart image                            | `bitnami/opencart:{VERSION}`                             |
-| `imagePullPolicy`                   | Image pull policy                         | `Always` if `image` tag is `latest`, else `IfNotPresent` |
+| `global.imageRegistry`              | Global Docker image registry              | `nil`                                                    |
+| `image.registry`                    | OpenCart image registry                   | `docker.io`                                              |
+| `image.repository`                  | OpenCart Image name                       | `bitnami/opencart`                                       |
+| `image.tag`                         | OpenCart Image tag                        | `{VERSION}`                                              |
+| `image.pullPolicy`                  | Image pull policy                         | `Always` if `imageTag` is `latest`, else `IfNotPresent`  |
+| `image.pullSecrets`                 | Specify image pull secrets                | `nil`                                                    |
 | `opencartHost`                      | OpenCart host to create application URLs  | `nil`                                                    |
-| `opencartLoadBalancerIP`            | `loadBalancerIP` for the OpenCart Service | `nil`                                                    |
+| `service.type`                    | Kubernetes Service type                    | `LoadBalancer`                                          |
+| `service.port`                    | Service HTTP port                    | `80`                                          |
+| `service.httpsPort`                    | Service HTTPS port                    | `443`                                          |
+| `service.externalTrafficPolicy`   | Enable client source IP preservation       | `Cluster`                                               |
+| `service.nodePorts.http`                 | Kubernetes http node port                  | `""`                                                    |
+| `service.nodePorts.https`                | Kubernetes https node port                 | `""`                                                    |
+| `service.loadBalancerIP`            | `loadBalancerIP` for the OpenCart Service | `nil`                                                    |
 | `opencartUsername`                  | User of the application                   | `user`                                                   |
 | `opencartPassword`                  | Application password                      | _random 10 character long alphanumeric string_           |
 | `opencartEmail`                     | Admin email                               | `user@example.com`                                       |
@@ -59,7 +71,17 @@ The following tables lists the configurable parameters of the OpenCart chart and
 | `smtpUser`                          | SMTP user                                 | `nil`                                                    |
 | `smtpPassword`                      | SMTP password                             | `nil`                                                    |
 | `smtpProtocol`                      | SMTP protocol [`ssl`, `tls`]              | `nil`                                                    |
-| `mariadb.mariadbRootPassword`       | MariaDB admin password                    | `nil`                                                    |
+| `allowEmptyPassword`                | Allow DB blank passwords                  | `yes`                                                    |
+| `externalDatabase.host`             | Host of the external database             | `nil`                                                    |
+| `externalDatabase.port`             | Port of the external database             | `3306`                                                   |
+| `externalDatabase.user`             | Existing username in the external db      | `bn_opencart`                                            |
+| `externalDatabase.password`         | Password for the above username           | `nil`                                                    |
+| `externalDatabase.database`         | Name of the existing database             | `bitnami_opencart`                                       |
+| `mariadb.enabled`                   | Whether to use MariaDB chart              | `true`                                                   |
+| `mariadb.db.name`           | Database name to create                   | `bitnami_opencart`                                       |
+| `mariadb.db.user`               | Database user to create                   | `bn_opencart`                                            |
+| `mariadb.db.password`           | Password for the database                 | `nil`                                                    |
+| `mariadb.rootUser.password`       | MariaDB admin password                    | `nil`                                                    |
 | `serviceType`                       | Kubernetes Service type                   | `LoadBalancer`                                           |
 | `persistence.enabled`               | Enable persistence using PVC              | `true`                                                   |
 | `persistence.apache.storageClass`   | PVC Storage Class for Apache volume       | `nil` (uses alpha storage class annotation)              |
@@ -69,6 +91,15 @@ The following tables lists the configurable parameters of the OpenCart chart and
 | `persistence.opencart.accessMode`   | PVC Access Mode for OpenCart volume       | `ReadWriteOnce`                                          |
 | `persistence.opencart.size`         | PVC Storage Request for OpenCart volume   | `8Gi`                                                    |
 | `resources`                         | CPU/Memory resource requests/limits       | Memory: `512Mi`, CPU: `300m`                             |
+| `podAnnotations`                | Pod annotations                                   | `{}`                                                       |
+| `metrics.enabled`                          | Start a side-car prometheus exporter                                                                           | `false`                                              |
+| `metrics.image.registry`                   | Apache exporter image registry                                                                                  | `docker.io`                                          |
+| `metrics.image.repository`                 | Apache exporter image name                                                                                      | `lusotycoon/apache-exporter`                           |
+| `metrics.image.tag`                        | Apache exporter image tag                                                                                       | `v0.5.0`                                            |
+| `metrics.image.pullPolicy`                 | Image pull policy                                                                                              | `IfNotPresent`                                       |
+| `metrics.image.pullSecrets`                | Specify docker-registry secret names as an array                                                               | `nil`                                                |
+| `metrics.podAnnotations`                   | Additional annotations for Metrics exporter pod                                                                | `{prometheus.io/scrape: "true", prometheus.io/port: "9117"}`                                                   |
+| `metrics.resources`                        | Exporter resource requests/limit                                                                               | {}                        |
 
 The above parameters map to the env variables defined in [bitnami/opencart](http://github.com/bitnami/bitnami-docker-opencart). For more information please refer to the [bitnami/opencart](http://github.com/bitnami/bitnami-docker-opencart) image documentation.
 
@@ -94,7 +125,7 @@ $ helm install --name my-release \
     stable/opencart
 ```
 
-The above command sets the OpenCart administrator account username and password to `admin` and `password` respectively. Additionally it sets the MariaDB `root` user password to `secretpassword`.
+The above command sets the OpenCart administrator account username and password to `admin` and `password` respectively. Additionally, it sets the MariaDB `root` user password to `secretpassword`.
 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
@@ -110,3 +141,15 @@ The [Bitnami OpenCart](https://github.com/bitnami/bitnami-docker-opencart) image
 
 Persistent Volume Claims are used to keep the data across deployments. This is known to work in GCE, AWS, and minikube.
 See the [Configuration](#configuration) section to configure the PVC or to disable persistence.
+
+## Upgrading
+
+### To 3.0.0
+
+Backwards compatibility is not guaranteed unless you modify the labels used on the chart's deployments.
+Use the workaround below to upgrade from versions previous to 3.0.0. The following example assumes that the release name is opencart:
+
+```console
+$ kubectl patch deployment opencart-opencart --type=json -p='[{"op": "remove", "path": "/spec/selector/matchLabels/chart"}]'
+$ kubectl delete statefulset opencart-mariadb --cascade=false
+```

@@ -1,5 +1,9 @@
 # Spring Cloud Data Flow Chart
 
+****
+**NOTE: This chart has been DEPRECATED. Please use stable/spring-cloud-data-flow.**
+****
+
 [Spring Cloud Data Flow](http://cloud.spring.io/spring-cloud-dataflow/) is a toolkit for building data integration and real-time data processing pipelines.
 
 Pipelines consist of [Spring Boot](http://projects.spring.io/spring-boot/) apps, built using the [Spring Cloud Stream](http://cloud.spring.io/spring-cloud-stream/) or [Spring Cloud Task](http://cloud.spring.io/spring-cloud-task/) microservice frameworks. This makes Spring Cloud Data Flow suitable for a range of data processing use cases, from import/export to event streaming and predictive analytics.
@@ -28,13 +32,26 @@ If you are using a cluster that does not have a load balancer (like Minikube) th
 
 ```bash
 $ helm install --name my-release --set server.service.type=NodePort incubator/spring-cloud-data-flow
-````
+```
 
 Note that this chart pulls in many different Docker images so can take a while to fully install. 
 
 ## Configuration
 
-The following tables lists the configurable parameters and their default values.
+The following tables list the configurable parameters and their default values.
+
+### RBAC Configuration
+
+| Parameter     | Description                 | Default                   |
+| ------------- | --------------------------- | ------------------------- |
+| rbac.create   | Create RBAC configurations  | true
+
+### ServiceAccount Configuration
+
+| Parameter             | Description            | Default                     |
+| --------------------- | ---------------------- | --------------------------- |
+| serviceAccount.create | Create ServiceAccount  | true
+| serviceAccount.name   | ServiceAccount name    | (generated if not specified)
 
 ### Data Flow User Accounts
 
@@ -45,44 +62,48 @@ The following tables lists the configurable parameters and their default values.
 | dataflowRoles           | The roles assigned to the primary user | ROLE_VIEW, ROLE_CREATE
 | dataflowAdminUsername   | The username for the admin user        | admin
 | dataflowAdminPassword   | The password for the admin user        | admin
-| dataflowAdminRoles      | The roles assigned to the admin user    ROLE_MANAGE, ROLE_VIEW
+| dataflowAdminRoles      | The roles assigned to the admin user   | ROLE_MANAGE, ROLE_VIEW
 
 ### Data Flow Server Configuration
 
 | Parameter                         | Description                                        | Default          |
 | --------------------------------- | -------------------------------------------------- | ---------------- |
-| server.version                    | The version/tag of the Data Flow server            | 1.2.2.RELEASE
+| server.version                    | The version/tag of the Data Flow server            | 1.6.2.RELEASE
 | server.imagePullPolicy            | The imagePullPolicy of the Data Flow server        | IfNotPresent
 | server.service.type               | The service type for the Data Flow server          | LoadBalancer
 | server.service.externalPort       | The external port for the Data Flow server         | 80
-| server.service.internalPort       | The internal port for the Data Flow server         | 80
-| server.service.resources.limits   | Data Flow server Resource limits                   | cpu: 1.0 memory: 2048Mi
-| server.service.resources.requests | Data Flow server Resource resuests                 | cpu: 0.5 memory: 1024Mi
+
+### Skipper Server Configuration
+
+| Parameter                          | Description                                       | Default          |
+| ---------------------------------- | ------------------------------------------------- | ---------------- |
+| skipper.version                    | The version/tag of the Skipper server             | 1.0.9.RELEASE
+| skipper.imagePullPolicy            | The imagePullPolicy of the Skipper server         | IfNotPresent
+| skipper.platformName               | The name of the configured platform account       | minikube
+| skipper.service.type               | The service type for the Skipper server           | ClusterIP
 
 ### Metrics Server Configuration
 
 | Parameter                          | Description                                       | Default          |
 | ---------------------------------- | ------------------------------------------------- | ---------------- |
-| metrics.version                    | The version/tag of the Metrics server             | 1.0.0.RELEASE
+| metrics.version                    | The version/tag of the Metrics server             | 2.0.0.RELEASE
 | metrics.imagePullPolicy            | The imagePullPolicy of the Metrics server         | IfNotPresent
 | metrics.service.type               | The service type for the Metrics server           | ClusterIP
-| metrics.service.externalPort       | The external port for the Metrics server          | 80
-| metrics.service.internalPort       | The internal port for the Metrics server          | 80
-| metrics.service.resources.limits   | Metrics server Resource limits                    | cpu: 1.0 memory: 1024Mi
-| metrics.service.resources.requests | Metrics server Resource limits                    | cpu: 0.5 memory: 640Mi
 
 ### Spring Cloud Deployer Configuration
 
 | Parameter                                   | Description                            | Default                   |
 | ------------------------------------------- | -------------------------------------- | ------------------------- |
+| deployer.resourceLimits.cpu                 | Deployer resource limit for cpu        | 500m
+| deployer.resourceLimits.memory              | Deployer resource limit for memory     | 1024Mi
 | deployer.readinessProbe.initialDelaySeconds | Deployer readiness probe initial delay | 120
 | deployer.livenessProbe.initialDelaySeconds  | Deployer liveness probe initial delay  | 90
 
-### Rabbit MQ Configuration
+### RabbitMQ Configuration
 
 | Parameter                  | Description           | Default                   |
 | -------------------------- | --------------------- | ------------------------- |
-| rabbitmq.rabbitmqUsername  | Rebbit MQ user name   | user
+| rabbitmq.rabbitmqUsername  | RabbitMQ user name    | user
 
 ### MySQL Configuration
 

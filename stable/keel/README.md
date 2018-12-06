@@ -1,4 +1,8 @@
-# Keel - automated Kubernetes deployments for the rest of us
+# Keel - automated Kubernetes deployments for the rest of us - DEPRECATED
+
+ **This chart is deprecated! You can find the new chart in:**
+ - **Source:** https://github.com/keel-hq/keel/tree/master/chart/keel
+ - **Charts repository:** https://charts.keel.sh
 
 * Website [https://keel.sh](https://keel.sh)
 * User Guide [https://keel.sh/user-guide/](https://keel.sh/user-guide/)
@@ -99,6 +103,8 @@ The following table lists has the main configurable parameters (polling, trigger
 | `slack.enabled`                   | Enable/disable Slack Notification      | `false`                                                   |
 | `slack.token`                     | Slack token                            |                                                           |
 | `slack.channel`                   | Slack channel                          |                                                           |
+| `slack.approvalChannel`           | Slack approval channel                 |                                                           |
+| `slack.botName`                   | Slack Bot name                         |                                                           |
 | `service.enable`                  | Enable/disable Keel service            | `false`                                                   |
 | `service.type`                    | Keel service type                      | `LoadBalancer`                                            |
 | `service.externalPort`            | Keel service port                      | `9300`                                                    |

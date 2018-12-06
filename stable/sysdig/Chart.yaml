@@ -1,5 +1,6 @@
 name: sysdig
-version: 0.4.0
+version: 1.2.0
+appVersion: 0.81.0
 description: Sysdig Monitor and Secure agent
 keywords:
   - monitoring
@@ -14,7 +15,9 @@ sources:
   - https://app.sysdigcloud.com/#/settings/user
   - https://github.com/draios/sysdig
 maintainers:
-  - name: Lachlan Evenson
+  - name: lachie83
     email: lachlan@deis.com
-  - name: Jorge Salamero
+  - name: bencer
     email: jorge.salamero@sysdig.com
+  - name: nestorsalceda
+    email: nestor.salceda@sysdig.com

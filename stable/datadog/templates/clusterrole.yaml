@@ -3,47 +3,66 @@ apiVersion: {{ template "rbac.apiVersion" . }}
 kind: ClusterRole
 metadata:
   labels:
-    app: {{ template "datadog.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    app: "{{ template "datadog.fullname" . }}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
   name: {{ template "datadog.fullname" . }}
 rules:
-- nonResourceURLs:
-  - "/version"  # Used to get apiserver version metadata
-  - "/healthz"  # Healthcheck
-  verbs: ["get"]
-- apiGroups: ["apps"]
+{{- if not .Values.clusterAgent.enabled }}
+- apiGroups:
+  - ""
   resources:
-    - "deployments"
-  verbs: ["get", "list"]
-- apiGroups: ["batch"]
+  - services
+  - events
+  - endpoints
+  - pods
+  - nodes
+  - componentstatuses
+  verbs:
+  - get
+  - list
+  - watch
+{{- if .Values.datadog.collectEvents }}
+- apiGroups:
+  - ""
   resources:
-    - "jobs"
-  verbs: ["get", "list"]
-- apiGroups: ["extensions"]
-  resources:
-    - "daemonsets"
-    - "replicasets"
-  verbs: ["get", "list"]
-- apiGroups: [""]
-  resources:
-    - "namespaces" #
-    - "events"     # Cluster events + kube_service cache invalidation
-    - "services"   # kube_service tag
-    - "nodes"
-    - "pods"
-  verbs: ["get", "list"]
-{{- if .Values.datadog.leaderElection }}
-- apiGroups: [""]
-  resources:
-    - "configmaps"
-  resourceNames: ["datadog-leader-elector"]
-  verbs: ["get", "delete", "update"]
-- apiGroups: [""]
-  resources:
-    - "configmaps"
-  verbs: ["create"]
+  - configmaps
+  resourceNames:
+  - datadogtoken  # Kubernetes event collection state
+  verbs:
+  - get
+  - update
 {{- end }}
+{{- if .Values.datadog.leaderElection }}
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  resourceNames:
+  - datadog-leader-election  # Leader election token
+  verbs:
+  - get
+  - update
+- apiGroups:  # To create the leader election token
+  - ""
+  resources:
+  - configmaps
+  verbs:
+  - create
+{{- end }}
+- nonResourceURLs:
+  - "/version"
+  - "/healthz"
+  verbs:
+  - get
+{{- end }}
+- apiGroups:  # Kubelet connectivity
+  - ""
+  resources:
+  - nodes/metrics
+  - nodes/spec
+  - nodes/proxy
+  verbs:
+  - get
 {{- end -}}
-

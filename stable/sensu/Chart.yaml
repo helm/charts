@@ -1,6 +1,7 @@
 apiVersion: v1
 name: sensu
-version: 0.2.0
+version: 0.2.3
+appVersion: 0.28
 description: Sensu monitoring framework backed by the Redis transport
 keywords:
 - sensu

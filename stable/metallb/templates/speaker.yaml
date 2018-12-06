@@ -1,0 +1,70 @@
+apiVersion: apps/v1beta2
+kind: DaemonSet
+metadata:
+  name: {{ template "metallb.fullname" . }}-speaker
+  labels:
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: {{ template "metallb.chart" . }}
+    app: {{ template "metallb.name" . }}
+    component: speaker
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "metallb.name" . }}
+      component: speaker
+      release: {{ .Release.Name | quote }}
+  template:
+    metadata:
+      labels:
+        heritage: {{ .Release.Service | quote }}
+        release: {{ .Release.Name | quote }}
+        chart: {{ template "metallb.chart" . }}
+        app: {{ template "metallb.name" . }}
+        component: speaker
+{{- if .Values.prometheus.scrapeAnnotations }}
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "7472"
+{{- end }}
+    spec:
+      serviceAccountName: {{ template "metallb.speakerServiceAccountName" . }}
+      terminationGracePeriodSeconds: 0
+      hostNetwork: true
+      containers:
+      - name: speaker
+        image: {{ .Values.speaker.image.repository }}:{{ .Values.speaker.image.tag }}
+        imagePullPolicy: {{ .Values.speaker.image.pullPolicy }}
+        args:
+        - --port=7472
+        - --config={{ template "metallb.configMapName" . }}
+        env:
+        - name: METALLB_NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        ports:
+        - name: monitoring
+          containerPort: 7472
+        resources:
+{{ toYaml .Values.speaker.resources | indent 10 }}
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+            - ALL
+            add:
+            - NET_RAW
+    {{- with .Values.speaker.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.speaker.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.speaker.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}

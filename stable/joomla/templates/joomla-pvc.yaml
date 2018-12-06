@@ -5,9 +5,9 @@ metadata:
   name: {{ template "joomla.fullname" . }}-joomla
   labels:
     app: {{ template "joomla.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    chart: {{ template "joomla.chart" . }}
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
 spec:
   accessModes:
     - {{ .Values.persistence.joomla.accessMode | quote }}
@@ -18,7 +18,7 @@ spec:
 {{- if (eq "-" .Values.persistence.joomla.storageClass) }}
   storageClassName: ""
 {{- else }}
-  storageClassName: "{{ .Values.persistence.joomla.storageClass }}"
+  storageClassName: {{ .Values.persistence.joomla.storageClass | quote }}
 {{- end }}
 {{- end }}
 {{- end -}}

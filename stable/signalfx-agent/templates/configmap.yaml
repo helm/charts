@@ -1,0 +1,123 @@
+{{- if and .Values.clusterName .Values.signalFxAccessToken -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "signalfx-agent.fullname" . }}
+  namespace: {{ template "signalfx-agent.namespace" . }}
+  labels:
+    app: {{ template "signalfx-agent.name" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    chart: {{ template "signalfx-agent.chart" . }}
+data:
+  agent.yaml: |
+{{- if .Values.agentConfig }}
+{{ toYaml .Values.agentConfig | indent 4 }}
+{{- else }}
+    signalFxAccessToken: ${SFX_ACCESS_TOKEN}
+
+    intervalSeconds: {{ .Values.metricIntervalSeconds }}
+
+    logging:
+      level: {{ .Values.logLevel | default "info" }}
+
+    globalDimensions:
+      kubernetes_cluster: {{ .Values.clusterName }}
+
+    sendMachineID: false
+
+    observers:
+    - type: k8s-api
+      {{- if .Values.apiServerSkipVerify }}
+      kubernetesAPI:
+        skipVerify: true
+      {{- end }}
+
+    monitors:
+    - type: collectd/cpu
+    - type: collectd/cpufreq
+    - type: collectd/df
+      hostFSPath: /hostfs
+    - type: collectd/disk
+    - type: collectd/interface
+    - type: collectd/load
+    - type: collectd/memory
+    - type: collectd/protocols
+    - type: collectd/signalfx-metadata
+      procFSPath: /hostfs/proc
+    - type: host-metadata
+      etcPath: /hostfs/etc
+      procFSPath: /hostfs/proc
+    - type: collectd/uptime
+    - type: collectd/vmem
+
+    - type: collectd/processes
+      processes:
+      - collectd
+      - signalfx-agent
+
+    - type: kubelet-stats
+      {{- if .Values.containerStatsIntervalSeconds }}
+      intervalSeconds: {{ .Values.containerStatsIntervalSeconds }}
+      {{- end }}
+      {{- if .Values.kubeletAPI }}
+      kubeletAPI:
+        {{ toYaml .Values.kubeletAPI | indent 8 | trim }}
+      {{- end }}
+
+    {{ if .Values.gatherClusterMetrics -}}
+    # Collects k8s cluster-level metrics
+    - type: kubernetes-cluster
+      useNodeName: true
+    {{- end }}
+
+    {{ if .Values.gatherDockerMetrics -}}
+    - type: docker-container-stats
+      dockerURL: unix:///var/run/docker.sock
+      excludedImages:
+       - '*pause-amd64*'
+      labelsToDimensions:
+        io.kubernetes.container.name: container_spec_name
+        io.kubernetes.pod.name: kubernetes_pod_name
+        io.kubernetes.pod.uid: kubernetes_pod_uid
+        io.kubernetes.pod.namespace: kubernetes_namespace
+      metricsToExclude:
+       - metricNames:
+         - 'cpu.usage*'
+         - 'cpu.percent'
+         - 'memory.usage*'
+         - 'memory.percent'
+         - 'blkio.io_service_bytes_recursive.*'
+         negated: true
+    {{- end }}
+
+    {{ range .Values.monitors -}}
+    - type: {{ .type }}
+      {{- with .discoveryRule }}
+      discoveryRule: {{ . }}
+      {{- end }}
+      {{- if (omit . "type" "discoveryRule") }}
+      {{ toYaml (omit . "type" "discoveryRule") | indent 6 | trim }}
+      {{- end }}
+
+    {{ end }}
+
+    collectd:
+      readThreads: {{ .Values.readThreads | default 5 }}
+      writeQueueLimitHigh: {{ .Values.writeQueueLimitHigh | default 500000 }}
+      writeQueueLimitLow: {{ .Values.writeQueueLimitLow | default 400000 }}
+      timeout: {{ .Values.timeout | default 40 }}
+      logLevel: {{ .Values.logLevel | default "notice" }}
+
+    metricsToExclude:
+      {{- if .Values.metricNamesToExclude }}
+      - metricNames:
+       {{- range .Values.metricNamesToExclude }}
+        - "{{ . }}"
+       {{- end }}
+      {{- end }}
+      {{- with .Values.metricsToExclude }}
+{{ toYaml . | indent 6 }}
+      {{- end }}
+{{- end }}
+{{- end -}}

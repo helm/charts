@@ -78,6 +78,7 @@ rules:
   - apiGroups:
     - apps
     resources:
+    - replicasets
     - statefulsets
     verbs:
     - watch
@@ -91,4 +92,15 @@ rules:
     - watch
     - list
     - get
+{{- if .Values.rbac.pspEnabled }}
+  - apiGroups:
+    - extensions
+    resources:
+    - podsecuritypolicies
+    resourceNames:
+    - privileged-{{ template "cluster-autoscaler.fullname" . }}
+    verbs:
+    - use
+{{- end -}}
+
 {{- end -}}

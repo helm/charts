@@ -1,0 +1,19 @@
+{{- if gt .Values.defaultBackend.replicaCount 1.0 }}
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  labels:
+    app: {{ template "nginx-ingress.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: "{{ .Values.defaultBackend.name }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "nginx-ingress.defaultBackend.fullname" . }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "nginx-ingress.name" . }}
+      release: {{ .Release.Name }}
+      component: "{{ .Values.defaultBackend.name }}"
+  minAvailable: {{ .Values.defaultBackend.minAvailable }}
+{{- end }}

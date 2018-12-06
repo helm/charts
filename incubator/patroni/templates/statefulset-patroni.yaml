@@ -3,31 +3,29 @@ kind: StatefulSet
 metadata:
   name: {{ template "patroni.fullname" . }}
   labels:
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    component: "{{.Release.Name}}-{{.Values.Component}}"
+    app: {{ template "patroni.name" . }}
+    chart: {{ template "patroni.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
   serviceName: {{ template "patroni.fullname" . }}
-  replicas: {{default 5 .Values.Replicas }}
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "patroni.name" . }}
+      release: {{ .Release.Name }}
   template:
     metadata:
       name: {{ template "patroni.fullname" . }}
       labels:
-        heritage: {{.Release.Service | quote }}
-        release: {{.Release.Name | quote }}
-        chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-        component: "{{.Release.Name}}-{{.Values.Component}}"
+        app: {{ template "patroni.name" . }}
+        release: {{ .Release.Name }}
     spec:
-      {{ if .Values.NodeSelector }}
-      nodeSelector:
-        {{ range $key, $value := .Values.NodeSelector }}
-          {{ $key }}: {{ $value | quote }}
-        {{ end }}
-      {{ end }}
+      serviceAccountName: {{ template "patroni.serviceAccountName" . }}
       containers:
-      - name: spilo
-        image: "{{ .Values.Spilo.Image }}:{{ .Values.Spilo.Version }}"
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
         - name: PGPASSWORD_SUPERUSER
           valueFrom:
@@ -44,59 +42,59 @@ spec:
             secretKeyRef:
               name: {{ template "patroni.fullname" . }}
               key: password-standby
-        {{if .Values.Etcd.Enable }}
-        {{if .Values.Etcd.DeployChart }}
+        {{- if .Values.etcd.enable }}
+        {{- if .Values.etcd.deployChart }}
         - name: ETCD_DISCOVERY_DOMAIN
-          value: {{default (printf "%s-etcd" .Release.Name | trunc 63) .Values.Etcd.Discovery }}
-        {{else}}
+          value: {{default (printf "%s-etcd" .Release.Name | trunc 63) .Values.etcd.discovery }}
+        {{- else }}
         - name: ETCD_HOST
-          value: {{ .Values.Etcd.Host | quote }}
-        {{end}}
-        {{else if .Values.Zookeeper.Enable }}
-        {{if .Values.Zookeeper.DeployChart }}
+          value: {{ .Values.etcd.host | quote }}
+        {{- end }}
+        {{- else if .Values.zookeeper.enable }}
+        {{- if .Values.zookeeper.deployChart }}
         - name: ZOOKEEPER_HOSTS
-          value: {{(printf "'hs-zk-%s:2181'" .Release.Name | trunc 63)}}
-        {{else}}
+          value: {{(printf "'%s-zookeeper-headless:2181'" .Release.Name | trunc 63)}}
+        {{- else }}
         - name: ZOOKEEPER_HOSTS
-          value: {{ .Values.Zookeeper.Hosts | quote }}
-        {{end}}
-        {{end}}
+          value: {{ .Values.zookeeper.hosts | quote }}
+        {{- end }}
+        {{- end }}
         - name: SCOPE
           value: {{ template "patroni.fullname" . }}
-        {{if .Values.WalE.Enable }}
+        {{- if .Values.walE.enable }}
         - name: USE_WALE
-          value: {{ .Values.WalE.Enable | quote }}
-        {{if .Values.WalE.Schedule_Cron_Job }}
+          value: {{ .Values.walE.enable | quote }}
+        {{- if .Values.walE.scheduleCronJob }}
         - name: BACKUP_SCHEDULE
-          value: {{ .Values.WalE.Schedule_Cron_Job | quote}}
-        {{end}}
-        {{if .Values.WalE.Retain_Backups }}
+          value: {{ .Values.walE.scheduleCronJob | quote}}
+        {{- end }}
+        {{- if .Values.walE.retainBackups }}
         - name: BACKUP_NUM_TO_RETAIN
-          value: {{ .Values.WalE.Retain_Backups | quote}}
-        {{end}}
-        {{if .Values.WalE.S3_Bucket }}
+          value: {{ .Values.walE.retainBackups | quote}}
+        {{- end }}
+        {{- if .Values.walE.s3Bucket }}
         - name: WAL_S3_BUCKET
-          value: {{ .Values.WalE.S3_Bucket | quote }}
-        {{else if .Values.WalE.GCS_Bucket }}
+          value: {{ .Values.walE.s3Bucket | quote }}
+        {{else if .Values.walE.gcsBucket }}
         - name: WAL_GCS_BUCKET
-          value: {{ .Values.WalE.GCS_Bucket | quote }}
-        {{if .Values.WalE.Kubernetes_Secret }}
+          value: {{ .Values.walE.gcsBucket | quote }}
+        {{- if .Values.walE.kubernetesSecret }}
         - name: GOOGLE_APPLICATION_CREDENTIALS
-          value: "/etc/credentials/{{.Values.WalE.Kubernetes_Secret}}.json"
-        {{end}}
-        {{end}}
-        {{if .Values.WalE.Backup_Threshold_Megabytes }}
+          value: "/etc/credentials/{{.Values.walE.kubernetesSecret}}.json"
+        {{- end }}
+        {{- end }}
+        {{- if .Values.walE.backupThresholdMegabytes }}
         - name: WALE_BACKUP_THRESHOLD_MEGABYTES
-          value: {{ .Values.WalE.Backup_Threshold_Megabytes | quote }}
-        {{end}}
-        {{if .Values.WalE.Backup_Threshold_Percentage }}
+          value: {{ .Values.walE.backupThresholdMegabytes | quote }}
+        {{- end }}
+        {{- if .Values.walE.backupThresholdPercentage }}
         - name: WALE_BACKUP_THRESHOLD_PERCENTAGE
-          value: {{ .Values.WalE.Backup_Threshold_Percentage | quote }}
-        {{end}}
-        {{else}}
+          value: {{ .Values.walE.backupThresholdPercentage | quote }}
+        {{- end }}
+        {{- else }}
         - name: USE_WALE
           value: ""
-        {{end}}
+        {{- end }}
         - name: PGROOT
           value: "{{ .Values.persistentVolume.mountPath }}/pgroot"
         - name: POD_NAMESPACE
@@ -107,10 +105,6 @@ spec:
         ports:
         - containerPort: 8008
         - containerPort: 5432
-        resources:
-          requests:
-            cpu: "{{.Values.Resources.Cpu}}"
-            memory: "{{.Values.Resources.Memory}}"
         volumeMounts:
         - name: storage-volume
           mountPath: "{{ .Values.persistentVolume.mountPath }}"
@@ -118,44 +112,57 @@ spec:
         - mountPath: /etc/patroni
           name: patroni-config
           readOnly: true
-        {{if .Values.WalE.Enable }}
-        {{if .Values.WalE.Kubernetes_Secret }}
-        - name: {{ .Values.WalE.Kubernetes_Secret }}
+        {{- if .Values.walE.enable }}
+        {{- if .Values.walE.kubernetesSecret }}
+        - name: {{ .Values.walE.kubernetesSecret }}
           mountPath: /etc/credentials
           readOnly: true
-        {{end}}
-        {{end}}
+        {{- end }}
+        {{- end }}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+      affinity:
+{{ tpl .Values.affinity . | indent 8 }}
       volumes:
       - name: patroni-config
         secret:
           secretName: {{ template "patroni.fullname" . }}
-      {{if .Values.WalE.Enable }}
-      {{if .Values.WalE.Kubernetes_Secret }}
-      - name: {{ .Values.WalE.Kubernetes_Secret }}
+      {{- if .Values.walE.enable }}
+      {{- if .Values.walE.kubernetesSecret }}
+      - name: {{ .Values.walE.kubernetesSecret }}
         secret:
-          secretName: {{ .Values.WalE.Kubernetes_Secret }}
-      {{end}}
-      {{end}}
+          secretName: {{ .Values.walE.kubernetesSecret }}
+      {{- end }}
+      {{- end }}
   volumeClaimTemplates:
     - metadata:
         name: storage-volume
         annotations:
-        {{- if .Values.persistentVolume.storageClass }}
-          volume.beta.kubernetes.io/storage-class: "{{ .Values.persistentVolume.storageClass }}"
-        {{- else }}
-          volume.alpha.kubernetes.io/storage-class: default
-        {{- end }}
         {{- if .Values.persistentVolume.annotations }}
 {{ toYaml .Values.persistentVolume.annotations | indent 8 }}
         {{- end }}
         labels:
-          heritage: {{.Release.Service | quote }}
-          release: {{.Release.Name | quote }}
-          chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-          component: "{{ .Release.Name }}-{{ .Values.Component }}"
+          app: {{ template "patroni.name" . }}
+          release: {{ .Release.Name }}
+          heritage: {{ .Release.Service }}
       spec:
         accessModes:
 {{ toYaml .Values.persistentVolume.accessModes | indent 8 }}
         resources:
           requests:
             storage: "{{ .Values.persistentVolume.size }}"
+      {{- if .Values.persistentVolume.storageClass }}
+      {{- if (eq "-" .Values.persistentVolume.storageClass) }}
+        storageClassName: ""
+      {{- else }}
+        storageClassName: "{{ .Values.persistentVolume.storageClass }}"
+      {{- end }}
+      {{- end }}

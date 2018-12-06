@@ -1,0 +1,6 @@
+1. vault-operator deployed.
+  
+  Check the vault-operator logs
+
+    export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "vault-operator.name" . }},release={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
+    kubectl logs $POD_NAME --namespace={{ .Release.Namespace }}

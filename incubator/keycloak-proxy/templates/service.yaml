@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "keycloak-proxy.fullname" . }}
+  labels:
+    app: {{ template "keycloak-proxy.name" . }}
+    chart: {{ template "keycloak-proxy.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+    {{- if and (eq "NodePort" .Values.service.type) .Values.service.nodePort }}
+      nodePort: {{ .Values.service.nodePort }}
+    {{- end }}
+  selector:
+    app: {{ template "keycloak-proxy.name" . }}
+    release: {{ .Release.Name }}
+  sessionAffinity: None

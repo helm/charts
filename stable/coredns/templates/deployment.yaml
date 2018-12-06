@@ -10,38 +10,47 @@ metadata:
     k8s-app: {{ .Chart.Name | quote }}
     kubernetes.io/cluster-service: "true"
     kubernetes.io/name: "CoreDNS"
-    {{- else }}
-    app: {{ template "coredns.fullname" . }}
     {{- end }}
+    app: {{ template "coredns.name" . }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
+      release: {{ .Release.Name | quote }}
       {{- if .Values.isClusterService }}
       k8s-app: {{ .Chart.Name | quote }}
-      {{- else }}
-      app: {{ template "coredns.fullname" . }}
       {{- end }}
+      app: {{ template "coredns.name" . }}
   template:
     metadata:
       labels:
         {{- if .Values.isClusterService }}
         k8s-app: {{ .Chart.Name | quote }}
-        {{- else }}
-        app: {{ template "coredns.fullname" . }}
         {{- end }}
+        app: {{ template "coredns.name" . }}
         release: {{ .Release.Name | quote }}
       annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
         {{- if .Values.isClusterService }}
         scheduler.alpha.kubernetes.io/critical-pod: ''
         scheduler.alpha.kubernetes.io/tolerations: '[{"key":"CriticalAddonsOnly", "operator":"Exists"}]'
         {{- end }}
     spec:
-      {{- if .Values.plugins.kubernetes.enabled }}
-      serviceAccountName: {{ if .Values.rbac.create }}{{ template "coredns.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
-      {{- end }}
+      serviceAccountName: {{ template "coredns.serviceAccountName" . }}
       {{- if .Values.isClusterService }}
       dnsPolicy: Default
+      {{- end }}
+      {{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+      {{- end }}
+      {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+      {{- end }}
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
       {{- end }}
       containers:
       - name: "coredns"
@@ -54,21 +63,7 @@ spec:
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         ports:
-        {{- if or (eq .Values.serviceProtocol "UDPNTCP") (eq .Values.serviceProtocol "UDP") }}
-        - containerPort: 53
-          name: dns
-          protocol: UDP
-        {{- end }}
-        {{- if or (eq .Values.serviceProtocol "UDPNTCP") (eq .Values.serviceProtocol "TCP") }}
-        - containerPort: 53
-          name: dns-tcp
-          protocol: TCP
-        {{- end }}
-        {{- if .Values.plugins.prometheus.enabled }}
-        - containerPort: {{ .Values.plugins.prometheus.port }}
-          name: metrics
-          protocol: TCP
-        {{- end }}
+{{ include "coredns.containerPorts" . | indent 8 }}
         livenessProbe:
           httpGet:
             path: /health

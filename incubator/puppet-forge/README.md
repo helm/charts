@@ -12,7 +12,7 @@ How to use this container
 The container when invoked with no arguments will start the Puppet forge
 server at port 8080 with local Puppet forge modules locate in /puppet/modules.
 If a volume mount is not specified to /puppet/modules, then all modules are
-kept within the container and will the modules will be purged upon restarting
+kept within the container and the modules will be purged upon restarting
 the container. In addition, the log files for the service are kept in
 /puppet/logs.
 

@@ -1,0 +1,44 @@
+{{- if .Values.server.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "gocd.fullname" . }}-server
+  annotations:
+    {{- range $key, $value := .Values.server.service.annotations }}
+      {{ $key }}: {{ $value | quote }}
+    {{- end }}
+  labels:
+    app: {{ template "gocd.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+    component: server
+spec:
+  type: {{ .Values.server.service.type }}
+  {{ if .Values.server.service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+    {{- range .Values.server.service.loadBalancerSourceRanges }}
+    - {{ . }}
+    {{- end }}
+  {{ end }}
+  ports:
+    - port: {{ .Values.server.service.httpPort }}
+      targetPort: 8153
+      {{- if .Values.server.service.nodeHttpPort }}
+      nodePort: {{ .Values.server.service.nodeHttpPort }}
+      {{- end}}
+      protocol: TCP
+      name: http
+
+    - port: {{ .Values.server.service.httpsPort }}
+      targetPort: 8154
+      {{- if .Values.server.service.nodeHttpsPort }}
+      nodePort: {{ .Values.server.service.nodeHttpsPort }}
+      {{- end}}
+      protocol: TCP
+      name: https
+  selector:
+    app: {{ template "gocd.name" . }}
+    release: {{ .Release.Name | quote }}
+    component: server
+{{- end -}}

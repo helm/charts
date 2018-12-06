@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app: {{ template "mongodb-replicaset.name" . }}
+    chart: {{ template "mongodb-replicaset.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+{{- if .Values.extraLabels }}
+{{ toYaml .Values.extraLabels | indent 4 }}
+{{- end }}
+  name: {{ template "mongodb-replicaset.fullname" . }}-init
+data:
+  on-start.sh: |
+{{ .Files.Get "init/on-start.sh" | indent 4 }}
+{{- if .Values.initMongodStandalone }}
+  initMongodStandalone.js: |
+{{ .Values.initMongodStandalone | indent 4 }}
+{{- end }}
+

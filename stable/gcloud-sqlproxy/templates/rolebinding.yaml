@@ -1,0 +1,20 @@
+{{- if .Values.rbac.create }}
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: RoleBinding
+metadata:
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ template "gcloud-sqlproxy.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  name: {{ .Release.Name }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ template "gcloud-sqlproxy.fullname" . }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ template "gcloud-sqlproxy.fullname" . }}
+    namespace: {{ .Release.Namespace }}
+{{- end }}

@@ -7,12 +7,14 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
+    component: app
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       app: {{ template "kong.name" . }}
       release: {{ .Release.Name }}
+      component: app
   template:
     metadata:
     {{- if .Values.podAnnotations }}
@@ -22,20 +24,65 @@ spec:
       labels:
         app: {{ template "kong.name" . }}
         release: {{ .Release.Name }}
+        component: app
     spec:
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end }}
+      {{- end }}
+      initContainers:
+      - name: wait-for-db
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        env:
+        - name: KONG_PROXY_ACCESS_LOG
+          value: "/dev/stdout"
+        - name: KONG_ADMIN_ACCESS_LOG
+          value: "/dev/stdout"
+        - name: KONG_PROXY_ERROR_LOG
+          value: "/dev/stderr"
+        - name: KONG_ADMIN_ERROR_LOG
+          value: "/dev/stderr"
+        {{- if .Values.postgresql.enabled }}
+        - name: KONG_PG_HOST
+          value: {{ template "kong.postgresql.fullname" . }}
+        - name: KONG_PG_PORT
+          value: "{{ .Values.postgresql.service.port }}"
+        - name: KONG_PG_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "kong.postgresql.fullname" . }}
+              key: postgres-password
+        {{- end }}
+        {{- if .Values.cassandra.enabled }}
+        - name: KONG_CASSANDRA_CONTACT_POINTS
+          value: {{ template "kong.cassandra.fullname" . }}
+        {{- end }}
+        {{- range $key, $val := .Values.env }}
+        - name: KONG_{{ $key | upper}}
+          value: {{ $val | quote }}
+        {{- end}}
+        command: [ "/bin/sh", "-c", "until kong start; do echo 'waiting for db'; sleep 1; done; kong stop" ]
       containers:
       - name: {{ template "kong.name" . }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
+        {{- if .Values.admin.useTLS }}
         - name: KONG_ADMIN_LISTEN
-          value: 0.0.0.0:{{ default 8001 .Values.admin.http.containerPort }}
-        - name: KONG_ADMIN_LISTEN_SSL
-          value: 0.0.0.0:{{ default 8444 .Values.admin.https.containerPort }}
+          value: "0.0.0.0:{{ .Values.admin.containerPort }} ssl"
+        {{- else }}
+        - name: KONG_ADMIN_LISTEN
+          value: 0.0.0.0:{{ .Values.admin.containerPort }}
+        {{- end }}
+        {{- if .Values.proxy.useTLS }}
         - name: KONG_PROXY_LISTEN
-          value: 0.0.0.0:{{ default 8000 .Values.proxy.http.containerPort }}
-        - name: KONG_PROXY_LISTEN_SSL
-          value: 0.0.0.0:{{ default 8443 .Values.proxy.https.containerPort }}
+          value: "0.0.0.0:{{ .Values.proxy.containerPort }} ssl"
+        {{- else }}
+        - name: KONG_PROXY_LISTEN
+          value: 0.0.0.0:{{ .Values.proxy.containerPort }}
+        {{- end }}
         - name: KONG_NGINX_DAEMON
           value: "off"
         - name: KONG_PROXY_ACCESS_LOG
@@ -53,6 +100,8 @@ spec:
         {{- if .Values.postgresql.enabled }}
         - name: KONG_PG_HOST
           value: {{ template "kong.postgresql.fullname" . }}
+        - name: KONG_PG_PORT
+          value: "{{ .Values.postgresql.service.port }}"
         - name: KONG_PG_PASSWORD
           valueFrom:
             secretKeyRef:
@@ -64,24 +113,12 @@ spec:
           value: {{ template "kong.cassandra.fullname" . }}
         {{- end }}
         ports:
-        {{- if .Values.admin.https }}
-        - name: admin-ssl
-          containerPort: {{ .Values.admin.https.containerPort }}
-          protocol: TCP
-        {{- else if .Values.admin.http }}
         - name: admin
-          containerPort: {{ .Values.admin.http.containerPort }}
+          containerPort: {{ .Values.admin.containerPort }}
           protocol: TCP
-        {{ end }}
-        {{- if .Values.proxy.https }}
-        - name: proxy-ssl
-          containerPort: {{ .Values.proxy.https.containerPort }}
-          protocol: TCP
-        {{- else if .Values.proxy.http }}
         - name: proxy
-          containerPort: {{ .Values.proxy.http.containerPort }}
+          containerPort: {{ .Values.proxy.containerPort }}
           protocol: TCP
-        {{- end }}
         readinessProbe:
 {{ toYaml .Values.readinessProbe | indent 10 }}
         livenessProbe:

@@ -4,6 +4,7 @@ image:
   repository: quay.io/honestbee/locust
   tag: 0.7.5
   pullPolicy: IfNotPresent
+  pullSecrets: []
 
 service:
   name: master-web
@@ -11,6 +12,8 @@ service:
   externalPort: 8089
   internalPort: 8089
   nodePort: 0
+  annotations: {}
+  extraLabels: {}
 master:
   config:
     target-host: https://site.example.com

@@ -1,0 +1,100 @@
+# Default values for prometheus-cloudwatch-exporter.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: prom/cloudwatch-exporter
+  tag: cloudwatch_exporter-0.5.0
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 9100
+  portName: http
+  annotations: {}
+  labels: {}
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #    memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+aws:
+  region: eu-west-1
+  role:
+  # Note: Do not specify the aws_access_key_id abd aws_secret_access_key if you specified role before
+  aws_access_key_id:
+  aws_secret_access_key:
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+
+config: |-
+  # This is the default configuration for prometheus-cloudwatch-exporter
+  region: eu-west-1
+  period_seconds: 240
+  metrics:
+  - aws_namespace: AWS/ELB
+    aws_metric_name: HealthyHostCount
+    aws_dimensions: [AvailabilityZone, LoadBalancerName]
+    aws_statistics: [Average]
+
+  - aws_namespace: AWS/ELB
+    aws_metric_name: UnHealthyHostCount
+    aws_dimensions: [AvailabilityZone, LoadBalancerName]
+    aws_statistics: [Average]
+
+  - aws_namespace: AWS/ELB
+    aws_metric_name: RequestCount
+    aws_dimensions: [AvailabilityZone, LoadBalancerName]
+    aws_statistics: [Sum]
+
+  - aws_namespace: AWS/ELB
+    aws_metric_name: Latency
+    aws_dimensions: [AvailabilityZone, LoadBalancerName]
+    aws_statistics: [Average]
+
+  - aws_namespace: AWS/ELB
+    aws_metric_name: SurgeQueueLength
+    aws_dimensions: [AvailabilityZone, LoadBalancerName]
+    aws_statistics: [Maximum, Sum]
+
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+# Configurable health checks against the /healthy and /ready endpoints
+livenessProbe:
+  initialDelaySeconds: 30
+  periodSeconds: 5
+  timeoutSeconds: 5
+  successThreshold: 1
+  failureThreshold: 3
+
+readinessProbe:
+  initialDelaySeconds: 30
+  periodSeconds: 5
+  timeoutSeconds: 5
+  successThreshold: 1
+  failureThreshold: 3

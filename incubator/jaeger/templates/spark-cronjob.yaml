@@ -1,5 +1,5 @@
 {{- if .Values.spark.enabled -}}
-{{- if or .Capabilities.APIVersions.Has "batch/v1beta1" .Capabilities.APIVersions.Has "batch/v2alpha1" -}}
+{{- if or (.Capabilities.APIVersions.Has "batch/v1beta1") (.Capabilities.APIVersions.Has "batch/v2alpha1") -}}
 apiVersion: {{ template "cronjob.apiVersion" $ }}
 kind: CronJob
 metadata:
@@ -17,6 +17,8 @@ metadata:
 {{- end }}
 spec:
   schedule: {{ .Values.spark.schedule | quote }}
+  successfulJobsHistoryLimit: {{ .Values.spark.successfulJobsHistoryLimit }}
+  failedJobsHistoryLimit: {{ .Values.spark.failedJobsHistoryLimit }}
   jobTemplate:
     spec:
       template:
@@ -27,11 +29,15 @@ spec:
             release: {{ .Release.Name }}
             jaeger-infra: spark-instance
             {{- if .Values.spark.podLabels }}
-            {{ toYaml .Values.spark.podLabels | indent 12 }}
+{{ toYaml .Values.spark.podLabels | indent 12 }}
             {{- end }}
         spec:
           nodeSelector:
-            {{ toYaml .Values.spark.nodeSelector | indent 12 }}
+{{ toYaml .Values.spark.nodeSelector | indent 12 }}
+{{- if .Values.spark.tolerations }}
+      tolerations:
+{{ toYaml .Values.spark.tolerations | indent 8 }}
+{{- end }}
           containers:
           - name: {{ template "jaeger.fullname" . }}-spark
             image: {{ .Values.spark.image }}:{{ .Values.spark.tag }}
@@ -60,6 +66,11 @@ spec:
                 configMapKeyRef:
                   name: {{ template "jaeger.fullname" . }}
                   key: es.server-urls
+            - name: ES_NODES_WAN_ONLY
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "jaeger.fullname" . }}
+                  key: es.nodes-wan-only
             - name: ES_PASSWORD
               valueFrom:
                 configMapKeyRef:
@@ -72,7 +83,7 @@ spec:
                   key: es.username
             {{- end }}
             resources:
-            {{ toYaml .Values.spark.resources | indent 10 }}
+{{ toYaml .Values.spark.resources | indent 14 }}
           restartPolicy: OnFailure
 {{- end -}}
 {{- end -}}

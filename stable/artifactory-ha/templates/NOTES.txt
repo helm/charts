@@ -1,0 +1,65 @@
+Congratulations. You have just deployed JFrog Artifactory HA!
+
+#### THIS CHART IS DEPRECATED! ####
+
+{{- if eq .Values.artifactory.masterKey "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF" }}
+
+
+***************************************** WARNING ******************************************
+* Your Artifactory master key is still set to the provided example:                        *
+* artifactory.masterKey=FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF   *
+*                                                                                          *
+* You should change this to your own generated key:                                        *
+* $ export MASTER_KEY=$(openssl rand -hex 32)                                              *
+* $ echo ${MASTER_KEY}                                                                     *
+*                                                                                          *
+* Pass the created master key to helm with '--set artifactory.masterKey=${MASTER_KEY}'     *
+********************************************************************************************
+{{- end }}
+
+{{- if .Values.postgresql.enabled }}
+
+DATABASE:
+To extract the database password, run the following
+export DB_PASSWORD=$(kubectl get --namespace {{ .Release.Namespace }} $(kubectl get secret --namespace {{ .Release.Namespace }} -o name | grep postgresql) -o jsonpath="{.data.postgres-password}" | base64 --decode)
+echo ${DB_PASSWORD}
+{{- end }}
+
+SETUP:
+1. Get the Artifactory IP and URL
+
+   {{- if contains "NodePort" .Values.nginx.service.type }}
+   export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "artifactory-ha.nginx.fullname" . }})
+   export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+   echo http://$NODE_IP:$NODE_PORT/
+
+   {{- else if contains "LoadBalancer" .Values.nginx.service.type }}
+   NOTE: It may take a few minutes for the LoadBalancer public IP to be available!
+
+   You can watch the status of the service by running 'kubectl get svc -w {{ template "artifactory-ha.nginx.fullname" . }}'
+   export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "artifactory-ha.nginx.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+   echo http://$SERVICE_IP/
+
+   {{- else if contains "ClusterIP" .Values.nginx.service.type }}
+   export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "component={{ .Values.nginx.name }}" -o jsonpath="{.items[0].metadata.name}")
+   kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME 8080:80
+   echo http://127.0.0.1:8080
+
+   {{- end }}
+
+2. Open Artifactory in your browser
+   Default credential for Artifactory:
+   user:     admin
+   password: password
+
+   {{- if .Values.artifactory.license.secret }}
+
+3. Manage Artifactory license through the {{ .Values.artifactory.license.secret }} secret ONLY!
+   Since the artifactory license(s) is managed with a secret ({{ .Values.artifactory.license.secret }}), any change through the Artifactory UI might not be saved!
+
+   {{- else }}
+
+3. Add HA licenses to activate Artifactory HA through the Artifactory UI
+   NOTE: Each Artifactory node requires a valid license. See https://www.jfrog.com/confluence/display/RTF/HA+Installation+and+Setup for more details.
+
+   {{- end }}

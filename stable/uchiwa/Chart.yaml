@@ -1,6 +1,7 @@
 apiVersion: v1
 name: uchiwa
-version: 0.2.2
+version: 0.2.7
+appVersion: 0.22
 description: Dashboard for the Sensu monitoring framework
 keywords:
 - uchiwa

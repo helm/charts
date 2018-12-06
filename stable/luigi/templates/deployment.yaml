@@ -1,0 +1,75 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "luigi.fullname" . }}
+  labels:
+    app: {{ template "luigi.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "luigi.name" . }}
+      release: {{ .Release.Name }}
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "luigi.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          command: ["/bin/sh", "-c", "luigid"]
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: 8082
+          livenessProbe:
+            httpGet:
+              path: /static/visualiser/index.html
+              port: 8082
+          readinessProbe:
+            httpGet:
+              path: /static/visualiser/index.html
+              port: 8082
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+          volumeMounts:
+          - name: {{ template "luigi.name" . }}-luigi-conf
+            mountPath: /etc/luigi/client.cfg
+            subPath: client.cfg
+          - name: {{ template "luigi.name" . }}-logging-conf
+            mountPath: /etc/luigi/logging.cfg
+            subPath: logging.cfg
+          - name: luigi-state
+            mountPath: /luigi/state/
+
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+
+      volumes:
+      - name: {{ template "luigi.name" . }}-luigi-conf
+        configMap:
+          name: {{ template "luigi.fullname" . }}
+          items:
+          - key: client.cfg
+            path: client.cfg
+
+      - name: {{ template "luigi.name" . }}-logging-conf
+        configMap:
+          name: {{ template "luigi.fullname" . }}
+          items:
+          - key: logging.cfg
+            path: logging.cfg
+
+      - name: luigi-state
+      {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ template "luigi.fullname" . }}
+      {{- else }}
+        emptyDir: {}
+      {{ end }}

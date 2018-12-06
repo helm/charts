@@ -8,25 +8,72 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "orangehrm.fullname" . }}
+      release: "{{ .Release.Name }}"
   template:
     metadata:
       labels:
         app: {{ template "orangehrm.fullname" . }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        release: "{{ .Release.Name }}"
+{{- if or .Values.podAnnotations .Values.metrics.enabled }}
+      annotations:
+  {{- if .Values.podAnnotations }}
+{{ toYaml .Values.podAnnotations | indent 8 }}
+  {{- end }}
+  {{- if .Values.metrics.podAnnotations }}
+{{ toYaml .Values.metrics.podAnnotations | indent 8 }}
+  {{- end }}
+{{- end }}
     spec:
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end}}
+      {{- end }}
+      hostAliases:
+      - ip: "127.0.0.1"
+        hostnames:
+        - "status.localhost"
       containers:
       - name: {{ template "orangehrm.fullname" . }}
-        image: "{{ .Values.image }}"
-        imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+        image: {{ template "orangehrm.image" . }}
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         env:
+        - name: ALLOW_EMPTY_PASSWORD
+          value: {{ .Values.allowEmptyPassword | quote }}
+        {{- if .Values.mariadb.enabled }}
         - name: MARIADB_HOST
           value: {{ template "orangehrm.mariadb.fullname" . }}
         - name: MARIADB_PORT_NUMBER
           value: "3306"
-        - name: MARIADB_PASSWORD
+        - name: ORANGEHRM_DATABASE_NAME
+          value: {{ .Values.mariadb.db.name | quote }}
+        - name: ORANGEHRM_DATABASE_USER
+          value: {{ .Values.mariadb.db.user | quote }}
+        - name: ORANGEHRM_DATABASE_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "orangehrm.mariadb.fullname" . }}
-              key: mariadb-root-password
+              key: mariadb-password
+        {{- else }}
+        - name: MARIADB_HOST
+          value: {{ .Values.externalDatabase.host | quote }}
+        - name: MARIADB_PORT_NUMBER
+          value: {{ .Values.externalDatabase.port | quote }}
+        - name: ORANGEHRM_DATABASE_NAME
+          value: {{ .Values.externalDatabase.database | quote }}
+        - name: ORANGEHRM_DATABASE_USER
+          value: {{ .Values.externalDatabase.user | quote }}
+        - name: ORANGEHRM_DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ printf "%s-%s" .Release.Name "externaldb" }}
+              key: db-password
+        {{- end }}
         - name: ORANGEHRM_USERNAME
           value: {{ default "" .Values.orangehrmUsername | quote }}
         - name: ORANGEHRM_PASSWORD
@@ -69,6 +116,29 @@ spec:
           mountPath: /bitnami/orangehrm
         - name: apache-data
           mountPath: /bitnami/apache
+{{- if .Values.metrics.enabled }}
+      - name: metrics
+        image: {{ template "metrics.image" . }}
+        imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
+        command: [ '/bin/apache_exporter', '-scrape_uri', 'http://status.localhost:80/server-status/?auto']
+        ports:
+        - name: metrics
+          containerPort: 9117
+        livenessProbe:
+          httpGet:
+            path: /metrics
+            port: metrics
+          initialDelaySeconds: 15
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /metrics
+            port: metrics
+          initialDelaySeconds: 5
+          timeoutSeconds: 1
+        resources:
+  {{ toYaml .Values.metrics.resources | indent 10 }}
+{{- end }}
       volumes:
       - name: orangehrm-data
       {{- if .Values.persistence.enabled }}

@@ -35,8 +35,6 @@ To install the chart with the release name `my-release`:
 $ helm install --name my-release stable/uchiwa
 ```
 
-*Replace the `x.x.x` placeholder with the chart release version.*
-
 The command deploys Uchiwa on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
 
 > **Tip**: List all releases using `helm list`
@@ -53,27 +51,27 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Uchiwa chart and their default values.
+The following table lists the configurable parameters of the Uchiwa chart and their default values.
 
 | Parameter                            | Description                              | Default                                                    |
 | -------------------------------      | -------------------------------          | ---------------------------------------------------------- |
 | `image`                              | Uchiwa image                          | `sstarcher/uchiwa`                              |
 | `imageTag`                              | Uchiwa version                          | `0.22`                              |
 | `imagePullPolicy`                    | Image pull policy                        | `IfNotPresent`   |
-| `replicaCount`         | Number of uchiwa replicas | `1`  |
-| `httpPort` | Service port for kubernetes | `80` |
+| `replicaCount`         | Number of Uchiwa replicas | `1`  |
+| `httpPort` | Service port for Kubernetes | `80` |
 | `routable` | Enables routing through the Deis router | `false` |
-| `resources.requests.cpu` | CPU request for uchiwa | `10m` |
-| `resources.requests.memory` | Memory request for uchiwa | `50Mi` |
-| `resources.limits.cpu` | CPU limit for uchiwa | `` |
-| `resources.limits.memory` | Memory limit for uchiwa | `50Mi` |
+| `resources.requests.cpu` | CPU request for Uchiwa | `10m` |
+| `resources.requests.memory` | Memory request for Uchiwa | `50Mi` |
+| `resources.limits.cpu` | CPU limit for Uchiwa | `` |
+| `resources.limits.memory` | Memory limit for Uchiwa | `50Mi` |
 | `host` | Address on which Uchiwa will listen | `0.0.0.0` |
 | `port` | Port on which Uchiwa will listen | `3000` |
 | `refresh` | Determines the interval to pull the Sensu APIs, in seconds | `10` |
 | `loglevel` | Level of logging to show after Uchiwa has started | `info` |
 
 
-Detailed documentaion for the `config` json can be found at [Uchiwa/Docs](https://docs.uchiwa.io/getting-started/configuration/)
+Detailed documentation for the `config` json can be found at [Uchiwa/Docs](https://docs.uchiwa.io/getting-started/configuration/)
 
 ```console
 $ helm install --name my-release \

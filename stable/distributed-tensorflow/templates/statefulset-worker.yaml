@@ -1,0 +1,86 @@
+{{- $lr := .Values.hyperparams.learningrate -}}
+{{- $batchsize := .Values.hyperparams.batchsize -}}
+
+apiVersion: apps/v1beta2
+kind: StatefulSet
+metadata:
+  name: {{ .Release.Name }}-worker
+  labels:
+    app: {{ template "distributed-tensorflow.name" . }}
+    chart: {{ template "distributed-tensorflow.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    role: worker
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "distributed-tensorflow.name" . }}
+      release: {{ .Release.Name }}
+      role: worker
+  serviceName: {{ template "distributed-tensorflow.fullname" . }}-worker
+  podManagementPolicy: {{ .Values.worker.podManagementPolicy }}
+  replicas: {{.Values.worker.number}}
+  template:
+    metadata:
+      labels:
+        app: {{ template "distributed-tensorflow.name" . }}
+        chart: {{ template "distributed-tensorflow.chart" . }}
+        release: {{ .Release.Name }}
+        heritage: {{ .Release.Service }}
+        role: worker
+    spec:
+{{- if .Values.volumes }}
+      volumes:
+{{ toYaml .Values.volumes | indent  6 }}
+{{- end }}
+      containers:
+      - name: worker
+        image: "{{ .Values.worker.image.repository }}:{{ .Values.worker.image.tag }}"
+        imagePullPolicy: {{ .Values.worker.image.pullPolicy }}
+        command:
+        - "python"
+        - "train_distributed.py"
+{{- if gt (int .Values.worker.gpuCount) 0 }}
+        - --num_gpus
+        - "{{ .Values.worker.gpuCount }}"
+{{- end }}
+        - --learning_rate
+        - {{ $lr | quote }}
+        - --batch_size
+        - {{ $batchsize | quote }}
+        env:
+        - name: WORKER_HOSTS
+          valueFrom:
+            configMapKeyRef:
+              name: {{ template "distributed-tensorflow.fullname" . }}
+              key: worker.hostList
+        - name: PS_HOSTS
+          valueFrom:
+            configMapKeyRef:
+              name: {{ template "distributed-tensorflow.fullname" . }}
+              key: ps.hostList
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: JOB_NAME
+          value: worker
+       {{- if .Values.worker.env }}            
+       {{- range $key, $value := .Values.worker.env }}
+        - name: "{{ $key }}"
+          value: "{{ $value }}"
+       {{- end }}
+       {{- end }}
+        ports:
+        - containerPort: {{ .Values.worker.port }}
+{{- if .Values.volumeMounts }}
+        volumeMounts:
+{{ toYaml .Values.volumeMounts | indent 8 }}
+{{- end }}
+{{- if gt (int .Values.worker.gpuCount) 0 }}
+        resources:
+          limits:
+            nvidia.com/gpu: {{- .Values.worker.gpuCount }}
+          request:
+            nvidia.com/gpu: {{- .Values.worker.gpuCount }}
+{{- end }}

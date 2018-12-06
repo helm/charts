@@ -1,0 +1,93 @@
+{{- if eq .Values.artifactory.persistence.type "nfs" }}
+### Artifactory HA data
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ template "artifactory-ha.fullname" . }}-data-pv
+  labels:
+    app: {{ template "artifactory-ha.name" . }}
+    chart: {{ template "artifactory-ha.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    id: {{ template "artifactory-ha.name" . }}-data-pv
+    type: nfs-volume
+spec:
+  capacity:
+    storage: {{ .Values.artifactory.persistence.nfs.capacity }}
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  nfs:
+    server: {{ .Values.artifactory.persistence.nfs.ip }}
+    path: "{{ .Values.artifactory.persistence.nfs.haDataMount }}"
+    readOnly: false
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ template "artifactory-ha.fullname" . }}-data-pvc
+  labels:
+    app: {{ template "artifactory-ha.name" . }}
+    chart: {{ template "artifactory-ha.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    type: nfs-volume
+spec:
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: ""
+  resources:
+    requests:
+      storage: {{ .Values.artifactory.persistence.nfs.capacity }}
+  selector:
+    matchLabels:
+      id: {{ template "artifactory-ha.name" . }}-data-pv
+      app: {{ template "artifactory-ha.name" . }}
+      release: {{ .Release.Name }}
+---
+### Artifactory HA backup
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ template "artifactory-ha.fullname" . }}-backup-pv
+  labels:
+    app: {{ template "artifactory-ha.name" . }}
+    chart: {{ template "artifactory-ha.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    id: {{ template "artifactory-ha.name" . }}-backup-pv
+    type: nfs-volume
+spec:
+  capacity:
+    storage: {{ .Values.artifactory.persistence.nfs.capacity }}
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  nfs:
+    server: {{ .Values.artifactory.persistence.nfs.ip }}
+    path: "{{ .Values.artifactory.persistence.nfs.haBackupMount }}"
+    readOnly: false
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ template "artifactory-ha.fullname" . }}-backup-pvc
+  labels:
+    app: {{ template "artifactory-ha.name" . }}
+    chart: {{ template "artifactory-ha.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    type: nfs-volume
+spec:
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: ""
+  resources:
+    requests:
+      storage: {{ .Values.artifactory.persistence.nfs.capacity }}
+  selector:
+    matchLabels:
+      id: {{ template "artifactory-ha.name" . }}-backup-pv
+      app: {{ template "artifactory-ha.name" . }}
+      release: {{ .Release.Name }}
+{{- end }}

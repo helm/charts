@@ -6,16 +6,16 @@ metadata:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    component: "{{ .Release.Name }}-{{ .Values.Component }}"
+    component: "{{ .Release.Name }}-{{ .Values.component }}"
   annotations:
     "helm.sh/created": {{ .Release.Time.Seconds | quote }}
 spec:
   ports:
-  - port: {{ .Values.ServicePort }}
-    targetPort: {{ .Values.ContainerPort }}
+  - port: {{ .Values.servicePort }}
+    targetPort: {{ .Values.containerPort }}
   selector:
-    component: "{{ .Release.Name }}-{{ .Values.Component }}"
-  type: {{ .Values.ServiceType }}
+    component: "{{ .Release.Name }}-{{ .Values.component }}"
+  type: {{ .Values.serviceType }}
 
 ---
 apiVersion: extensions/v1beta1
@@ -26,39 +26,44 @@ metadata:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    component: "{{ .Release.Name }}-{{ .Values.Component }}"
+    component: "{{ .Release.Name }}-{{ .Values.component }}"
   annotations:
     "helm.sh/created": {{ .Release.Time.Seconds | quote }}
 spec:
-  replicas: {{ default 1 .Values.Replicas }}
+  replicas: {{ default 1 .Values.replicas }}
   strategy:
     type: RollingUpdate
   selector:
     matchLabels:
-      component: "{{ .Release.Name }}-{{ .Values.Component }}"
+      component: "{{ .Release.Name }}-{{ .Values.component }}"
   template:
     metadata:
       labels:
         heritage: {{ .Release.Service | quote }}
         release: {{ .Release.Name | quote }}
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-        component: "{{ .Release.Name }}-{{ .Values.Component }}"
+        component: "{{ .Release.Name }}-{{ .Values.component }}"
     spec:
       containers:
         - name: {{ template "tensorflow-inception.fullname" . }}
-          image: "{{ .Values.Image }}:{{ .Values.ImageTag }}"
-          imagePullPolicy: "{{ .Values.ImagePullPolicy }}"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           command:
           - "/bin/sh"
           - "-c"
           args:
-          - "/serving/bazel-bin/tensorflow_serving/model_servers/tensorflow_model_server --port={{ .Values.ContainerPort }} --model_name=inception --model_base_path=/serving/inception-export"
+          - "tensorflow_model_server --port={{ .Values.containerPort }} --model_name=inception --model_base_path=/serving/inception-export"
+{{- if .Values.env.ldLibraryPath  }}
+          env:
+          - name: LD_LIBRARY_PATH
+            value: {{ .Values.env.ldLibraryPath }}
+{{ end }}
           ports:
-            - containerPort: {{ .Values.ContainerPort }}
+            - containerPort: {{ .Values.containerPort }}
           readinessProbe:
             tcpSocket:
-              port: {{ .Values.ContainerPort }}
+              port: {{ .Values.containerPort }}
             initialDelaySeconds: 15
             timeoutSeconds: 1
           resources:
-{{ toYaml .Values.Resources | indent 12 }}
+{{ toYaml .Values.resources | indent 12 }}
