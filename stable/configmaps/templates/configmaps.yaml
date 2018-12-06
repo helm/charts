@@ -1,0 +1,23 @@
+---
+apiVersion: v1
+kind: List
+items:
+{{- range .Values.ConfigMaps }}
+- apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    labels:
+{{ include "configmaps.labels.chart" $ | indent 6 }}
+  {{- if .labels }}
+{{ toYaml .labels | indent 6 }}
+  {{- end }}
+  {{- if .annotations }}
+    annotations:
+{{ toYaml .annotations | indent 6 -}}
+  {{- end }}
+    name: {{ .name }}
+  data:
+  {{- if .data }}
+{{ toYaml .data | indent 4 -}}
+  {{- end }}
+{{- end }}

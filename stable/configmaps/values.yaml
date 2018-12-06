@@ -1,0 +1,6 @@
+ConfigMaps:
+- name: configmapname
+  labels:
+    app: "appname"
+  annotations: {}
+  data:
