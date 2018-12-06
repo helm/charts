@@ -110,7 +110,7 @@ their default values. See values.yaml for all available options.
 | `env.open.CACHE`                       | Cache store, can be one of: redis           | ``                                                  |
 | `env.open.CACHE_REDIS_ADDR`            | Address of Redis service (host:port)        | ``                                                  |
 | `env.open.CACHE_REDIS_DB`              | Redis database to be selected after connect | `0`                                                 |
-| `env.field.KUBERNETES_NAMESPACE`       | Namespace name in which chartmuseum is deployed | ``                                              |
+| `env.field`                            | Expose pod information to containers through environment variables | ``                                              |
 | `env.secret.BASIC_AUTH_USER`           | Username for basic HTTP authentication      | ``                                                  |
 | `env.secret.BASIC_AUTH_PASS`           | Password for basic HTTP authentication      | ``                                                  |
 | `env.secret.CACHE_REDIS_PASSWORD`      | Redis requirepass server configuration      | ``                                                  |

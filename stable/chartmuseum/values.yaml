@@ -79,7 +79,7 @@ env:
     # Redis database to be selected after connect
     CACHE_REDIS_DB: 0
   field:
-    KUBERNETES_NAMESPACE:
+    # POD_IP: status.podIP
   secret:
     # username for basic http authentication
     BASIC_AUTH_USER:
