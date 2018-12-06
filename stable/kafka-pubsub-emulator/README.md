@@ -28,8 +28,7 @@ This chart will create:
 ### Installation
 
 ```
-helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
-helm install --name emulator incubator/kafka-pubsub-emulator
+helm install --name emulator stable/kafka-pubsub-emulator
 ```
 
 ### Configuration
