@@ -46,7 +46,7 @@ The following table lists the configurable parameters of the Mattermost Team Edi
 Parameter                            | Description                                                                                     | Default
 ---                                  | ---                                                                                             | ---
 `image.repository`                   | container image repository                                                                      | `mattermost/mattermost-team-edition`
-`image.tag`                          | container image tag                                                                             | `5.5.0`
+`image.tag`                          | container image tag                                                                             | `5.5.1`
 `image.imagePullPolicy`              | container image pull policy                                                                     | `IfNotPresent`
 `initContainerImage.repository`      | init container image repository                                                                 | `appropriate/curl`
 `initContainerImage.tag`             | init container image tag                                                                        | `latest`
