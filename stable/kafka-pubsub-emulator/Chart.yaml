@@ -9,8 +9,8 @@ keywords:
   - pubsub
   - queue
 name: kafka-pubsub-emulator
+maintainers:
+  - name: riccardomc
 sources:
   - https://github.com/GoogleCloudPlatform/kafka-pubsub-emulator
-maintainers:
-  - riccardomc
 version: 0.1.0
