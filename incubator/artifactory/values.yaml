@@ -7,7 +7,7 @@ Name: artifactory
 Component: "Artifactory"
 
 ## Uncomment following line if you want to run Artifactory-Pro
-#image: "docker.bintray.io/jfrog/artifactory-pro"
+# image: "docker.bintray.io/jfrog/artifactory-pro"
 image: "docker.bintray.io/jfrog/artifactory-oss"
 imageTag: "5.2.0"
 imagePullPolicy: "Always"
