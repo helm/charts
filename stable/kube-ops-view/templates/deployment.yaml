@@ -21,7 +21,7 @@ spec:
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         {{- if .Values.redis.enabled }}
         args:
-        - --redis-url=redis://{{ template "redis.fullname" . }}-master:{{ .Values.redis.master.port }}
+        - --redis-url=redis://{{ .Release.Name }}-redis-master:{{ .Values.redis.master.port }}
         {{- end }}
         ports:
         - containerPort: {{ .Values.service.internalPort }}
