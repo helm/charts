@@ -23,6 +23,14 @@ If release name contains chart name it will be used as a full name.
 {{- end -}}
 {{- end -}}
 {{- end -}}
+{{/*
+Derive the memory hard limit for each POD based on the memory limit.
+Since the memory is represented in <x>GBi, we use this function to convert that into bytes.
+Multiplied by 870 since 0.85 * 1024 ~ 870 (floating calculations not supported)
+*/}}
+{{- define "yugabyte.memory_hard_limit" -}}
+{{- printf "%d" .limits.memory | regexFind "\\d+" | mul 1024 | mul 1024 | mul 870 }}
+{{- end -}}
 
 {{/*
 Create chart name and version as used by the chart label.

@@ -105,7 +105,6 @@ spec:
           requests:
             storage: {{ $root.Values.persistentVolume.storage }}
     {{- end }}
-
   updateStrategy:
     type: RollingUpdate
     rollingUpdate:
@@ -185,6 +184,7 @@ spec:
           - "--master_addresses={{range $index := until (int ($root.Values.replicas.master))}}{{if ne $index 0}},{{end}}yb-master-{{ $index }}.yb-masters.$(NAMESPACE):7100{{end}}"
           - "--master_replication_factor={{ $root.Values.replicas.master }}"
           - "--metric_node_name=$(HOSTNAME)"
+          - "--memory_limit_hard_bytes={{ template "yugabyte.memory_hard_limit" $root.Values.resource.master }}"
           - "--logtostderr"
           {{- range $flag, $override := $root.Values.gflags.master }}
           - "--{{ $flag }}={{ $override }}"
@@ -194,8 +194,9 @@ spec:
           - "--fs_data_dirs={{range $index := until (int ($root.Values.persistentVolume.count))}}{{if ne $index 0}},{{end}}/mnt/disk{{ $index }}{{end}}"
           - "--server_broadcast_addresses=$(HOSTNAME).yb-tservers.$(NAMESPACE):9100"
           - "--tserver_master_addrs={{range $index := until (int ($root.Values.replicas.master))}}{{if ne $index 0}},{{end}}yb-master-{{ $index }}.yb-masters.$(NAMESPACE):7100{{end}}"
-          - "--tserver_master_replication_factor={{ $root.Values.replicas.master }}"
           - "--metric_node_name=$(HOSTNAME)"
+          - "--memory_limit_hard_bytes={{ template "yugabyte.memory_hard_limit" $root.Values.resource.tserver }}"
+          - "--tserver_master_replication_factor=0"
           - "--logtostderr"
           {{- range $flag, $override := $root.Values.gflags.tserver }}
           - "--{{ $flag }}={{ $override }}"

@@ -17,8 +17,14 @@ resource:
     requests:
       cpu: 2
       memory: 2Gi
+    limits:
+      cpu: 2
+      memory: 2Gi 
   tserver:
     requests:
+      cpu: 2
+      memory: 4Gi
+    limits:
       cpu: 2
       memory: 4Gi
 
@@ -27,8 +33,8 @@ replicas:
   tserver: 3
 
 partition:
-  master: 3
-  tserver: 3
+  master: 0
+  tserver: 0
 
 gflags:
   master:
