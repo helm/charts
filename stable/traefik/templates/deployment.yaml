@@ -36,6 +36,9 @@ spec:
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: {{ .Release.Name | quote }}
         heritage: {{ .Release.Service | quote }}
+        {{- if .Values.deployment.podLabels }}
+{{ toYaml .Values.deployment.podLabels | indent 8 }}
+        {{- end }}
     spec:
       {{- if .Values.rbac.enabled }}
       serviceAccountName: {{ template "traefik.fullname" . }}
@@ -124,6 +127,10 @@ spec:
         {{- end }}
         args:
         - --configfile=/config/traefik.toml
+        {{- range .Values.startupArguments }}
+        - {{ . }}
+        {{- end }}
+
       volumes:
       - name: config
         configMap:
