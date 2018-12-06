@@ -1,12 +1,12 @@
 image:
   repository: sorintlab/stolon
-  tag: v0.10.0-pg10
+  tag: v0.12.0-pg10
   pullPolicy: IfNotPresent
 
 # used by create-cluster-job when store.backend is etcd
 etcdImage:
   repository: k8s.gcr.io/etcd-amd64
-  tag: 2.2.5
+  tag: 2.3.7
   pullPolicy: IfNotPresent
 
 debug: false
@@ -30,17 +30,17 @@ rbac:
 serviceAccount:
   create: true
   # The name of the ServiceAccount to use. If not set and create is true, a name is generated using the fullname template
-  # name: my-name
+  name:
 
 superuserUsername: "stolon"
 
-## password for the superuser (default is 40 random chars)
-# superuserPassword: ""
+## password for the superuser (REQUIRED)
+superuserPassword:
 
 replicationUsername: "repluser"
 
-## password for the replication user (default is 40 random chars)
-# replicationPassword: "replPassword"
+## password for the replication user (REQUIRED)
+replicationPassword:
 
 ## backend could be one of the following: consul, etcdv2, etcdv3 or kubernetes
 store:
@@ -56,10 +56,14 @@ ports:
   metrics:
     containerPort: 8080
 
+job:
+  autoCreateCluster: true
+
 keeper:
   replicaCount: 2
   annotations: {}
   resources: {}
+  priorityClassName: ""
   service:
     type: ClusterIP
     annotations: {}
@@ -71,11 +75,14 @@ keeper:
   nodeSelector: {}
   affinity: {}
   tolerations: []
+  volumes: []
+  volumeMounts: []
 
 proxy:
   replicaCount: 2
   annotations: {}
   resources: {}
+  priorityClassName: ""
   service:
     type: ClusterIP
 #    loadBalancerIP: ""
@@ -93,6 +100,7 @@ sentinel:
   replicaCount: 2
   annotations: {}
   resources: {}
+  priorityClassName: ""
   nodeSelector: {}
   affinity: {}
   tolerations: []

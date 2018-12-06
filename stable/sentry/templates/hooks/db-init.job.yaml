@@ -22,6 +22,10 @@ spec:
         release: "{{ .Release.Name }}"
     spec:
       restartPolicy: Never
+      {{- if .Values.image.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.image.imagePullSecrets | indent 8 }}
+      {{- end }}
       containers:
       - name: db-init-job
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -39,7 +43,11 @@ spec:
         - name: SENTRY_DB_PASSWORD
           valueFrom:
             secretKeyRef:
+            {{- if .Values.postgresql.existingSecret }}
+              name: {{ .Values.postgresql.existingSecret }}
+            {{- else }}
               name: {{ template "postgresql.fullname" . }}
+            {{- end }}
               key: postgres-password
         - name: SENTRY_POSTGRES_HOST
           value: {{ template "postgresql.fullname" . }}
@@ -48,10 +56,14 @@ spec:
         - name: SENTRY_REDIS_PASSWORD
           valueFrom:
             secretKeyRef:
+            {{- if .Values.redis.existingSecret }}
+              name: {{ .Values.redis.existingSecret }}
+            {{- else }}
               name: {{ template "redis.fullname" . }}
+            {{- end }}
               key: redis-password
         - name: SENTRY_REDIS_HOST
-          value: {{ template "redis.fullname" . }}
+          value: {{ template "redis.fullname" . }}-master
         - name: SENTRY_REDIS_PORT
           value: "6379"
         - name: SENTRY_EMAIL_HOST
@@ -69,3 +81,11 @@ spec:
           value: {{ .Values.email.use_tls | quote }}
         - name: SENTRY_SERVER_EMAIL
           value: {{ .Values.email.from_address | quote }}
+        volumeMounts:
+        - mountPath: /etc/sentry
+          name: config
+          readOnly: true
+      volumes:
+      - name: config
+        configMap:
+          name: {{ template "fullname" . }}

@@ -142,6 +142,7 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `agent.service.binaryPort`               | jaeger.thrift over binary thrift    |  6832                                  |
 | `agent.service.compactPort`              | jaeger.thrift over compact thrift   |  6831                                  |
 | `agent.image`                            | Image for Jaeger Agent              |  jaegertracing/jaeger-agent            |
+| `agent.podAnnotations`                   | Annotations for Agent pod           |  nil                                   |
 | `agent.pullPolicy`                       | Agent image pullPolicy              |  IfNotPresent                          |
 | `agent.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`       |
 | `agent.service.annotations`              | Annotations for Agent SVC           |  nil                                   |
@@ -149,6 +150,7 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `agent.service.compactPort`              | jaeger.thrift over compact thrift   |  6831                                  |
 | `agent.service.zipkinThriftPort`         | zipkin.thrift over compact thrift   |  5775                                  |
 | `agent.useHostNetwork`                   | Enable hostNetwork for agents       |  false                                 |
+| `agent.tolerations`                      | Node Tolerations                    | `[]`                                   |
 | `cassandra.config.cluster_name`          | Cluster name                        |  jaeger                                |
 | `cassandra.config.dc_name`               | Datacenter name                     |  dc1                                   |
 | `cassandra.config.endpoint_snitch`       | Node discovery method               |  GossipingPropertyFileSnitch           |
@@ -156,12 +158,13 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `cassandra.config.seed_size`             | Seed size                           |  1                                     |
 | `cassandra.image.tag`                    | The image tag/version               |  3.11                                  |
 | `cassandra.persistence.enabled`          | To enable storage persistence       |  false (Highly recommended to enable)  |
-| `collector.annotationsPod`               | Annotations for Collector           |  nil                                   |
 | `collector.cmdlineParams`                | Additional command line parameters  |  nil                                   |
+| `collector.podAnnotations`               | Annotations for Collector pod       |  nil                                   |
 | `collector.service.httpPort`             | Client port for HTTP thrift         |  14268                                 |
 | `collector.service.annotations`          | Annotations for Collector SVC       |  nil                                   |
 | `collector.image`                        | Image for jaeger collector          |  jaegertracing/jaeger-collector        |
 | `collector.pullPolicy`                   | Collector image pullPolicy          |  IfNotPresent                          |
+| `collector.tolerations`                  | Node Tolerations                    | `[]`                                   |
 | `collector.service.annotations`          | Annotations for Collector SVC       |  nil                                   |
 | `collector.service.httpPort`             | Client port for HTTP thrift         |  14268                                 |
 | `collector.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`   |
@@ -176,12 +179,13 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `hotrod.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`      |
 | `provisionDataStore.cassandra`           | Provision Cassandra Data Store      |  true                                  |
 | `provisionDataStore.elasticsearch`       | Provision Elasticsearch Data Store  |  false                                 |
-| `query.annotationsPod`                   | Annotations for Query UI            |  nil                                   |
 | `query.service.annotations`              | Annotations for Query SVC           |  nil                                   |
 | `query.cmdlineParams`                    | Additional command line parameters  |  nil                                   |
 | `query.image`                            | Image for Jaeger Query UI           |  jaegertracing/jaeger-query            |
 | `query.ingress.enabled`                  | Allow external traffic access       |  false                                 |
+| `query.podAnnotations`                   | Annotations for Query pod           |  nil                                   |
 | `query.pullPolicy`                       | Query UI image pullPolicy           |  IfNotPresent                          |
+| `query.tolerations`                      | Node Tolerations                    | `[]`                                   |
 | `query.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`       |
 | `query.service.queryPort`                | External accessible port            |  80                                    |
 | `query.service.targetPort`               | Internal Query UI port              |  16686                                 |
@@ -197,6 +201,7 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `spark.successfulJobsHistoryLimit`       | Cron job successfulJobsHistoryLimit |  5                                     |
 | `spark.failedJobsHistoryLimit`           | Cron job failedJobsHistoryLimit     |  5                                     |
 | `spark.tag`                              | Tag of the dependencies job image   |  latest                                |
+| `spark.tolerations`                      | Node Tolerations                    | `[]`                                   |
 | `storage.cassandra.host`                 | Provisioned cassandra host          |  cassandra                             |
 | `storage.cassandra.password`             | Provisioned cassandra password      |  password                              |
 | `storage.cassandra.port`                 | Provisioned cassandra port          |  9042                                  |

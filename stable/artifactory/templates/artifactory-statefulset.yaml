@@ -1,0 +1,245 @@
+apiVersion: apps/v1beta2
+kind: StatefulSet
+metadata:
+  name: {{ template "artifactory.fullname" . }}
+  labels:
+    app: {{ template "artifactory.name" . }}
+    chart: {{ template "artifactory.chart" . }}
+    component: {{ .Values.artifactory.name }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+spec:
+  serviceName: {{ template "artifactory.name" . }}
+  replicas: 1
+  updateStrategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: {{ template "artifactory.name" . }}
+      role: {{ template "artifactory.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "artifactory.name" . }}
+        role: {{ template "artifactory.name" . }}
+        component: {{ .Values.artifactory.name }}
+        release: {{ .Release.Name }}
+    spec:
+      serviceAccountName: {{ template "artifactory.serviceAccountName" . }}
+    {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+      - name: {{ .Values.imagePullSecrets }}
+    {{- end }}
+      initContainers:
+      - name: "remove-lost-found"
+        image: "{{ .Values.initContainerImage }}"
+        imagePullPolicy: {{ .Values.artifactory.image.pullPolicy }}
+        command:
+        - 'sh'
+        - '-c'
+        - 'rm -rfv {{ .Values.artifactory.persistence.mountPath }}/lost+found {{ .Values.artifactory.persistence.mountPath }}/data/.lock'
+        volumeMounts:
+        - mountPath: {{ .Values.artifactory.persistence.mountPath | quote }}
+          name: artifactory-volume
+      - name: "wait-for-db"
+        image: "{{ .Values.initContainerImage }}"
+        command:
+        - 'sh'
+        - '-c'
+        - >
+      {{- if .Values.postgresql.enabled }}
+          until nc -z -w 2 {{ .Release.Name }}-postgresql {{ .Values.postgresql.service.port }} && echo database ok; do
+      {{- else }}
+          until nc -z -w 2 {{ .Values.database.host }} {{ .Values.database.port }} && echo database ok; do
+      {{- end }}
+            sleep 2;
+          done;
+      containers:
+      - name: {{ .Values.artifactory.name }}
+        image: "{{ .Values.artifactory.image.repository }}:{{ default .Chart.AppVersion .Values.artifactory.image.version }}"
+        imagePullPolicy: {{ .Values.artifactory.image.pullPolicy }}
+        lifecycle:
+          postStart:
+            exec:
+              command:
+              - '/bin/sh'
+              - '-c'
+              - >
+                {{- if .Values.artifactory.configMapName }}
+                cp -Lrf /bootstrap/* /artifactory_extra_conf/;
+                {{- end }}
+                if [ -d {{ .Values.artifactory.persistence.mountPath }}/access/etc/keys ]; then
+                chown -R {{ .Values.artifactory.uid }}:{{ .Values.artifactory.uid }} {{ .Values.artifactory.persistence.mountPath }}/access/etc/keys;
+                fi;
+                {{- if .Values.artifactory.replicator.enabled }}
+                mkdir -p {{ .Values.artifactory.persistence.mountPath }}/replicator/etc;
+                cp -fv /tmp/replicator/replicator.yaml {{ .Values.artifactory.persistence.mountPath }}/replicator/etc/replicator.yaml;
+                chown -R {{ .Values.artifactory.uid }}:{{ .Values.artifactory.uid }} {{ .Values.artifactory.persistence.mountPath }}/replicator;
+                {{- end }}
+                {{- if .Values.artifactory.distributionCerts }}
+                mkdir -p {{ .Values.artifactory.persistence.mountPath }}/access/etc/keys/trusted;
+                cp -fv /tmp/access/etc/keys/private.key {{ .Values.artifactory.persistence.mountPath }}/access/etc/keys;
+                cp -fv /tmp/access/etc/keys/root.crt    {{ .Values.artifactory.persistence.mountPath }}/access/etc/keys;
+                cp -fv /tmp/access/etc/keys/root.crt    {{ .Values.artifactory.persistence.mountPath }}/access/etc/keys/trusted;
+                chown -R {{ .Values.artifactory.uid }}:{{ .Values.artifactory.uid }} {{ .Values.artifactory.persistence.mountPath }}/access/etc;
+                {{- end }}
+                {{- if .Values.artifactory.postStartCommand }}
+                {{ .Values.artifactory.postStartCommand }}
+                {{- end }}
+        env:
+        {{- if .Values.postgresql.enabled }}
+        - name: DB_TYPE
+          value: 'postgresql'
+        - name: DB_USER
+          value: {{.Values.postgresql.postgresUser | quote }}
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-postgresql
+              key: postgres-password
+        - name: DB_HOST
+          value: {{ .Release.Name }}-postgresql
+        {{- else }}
+        - name: DB_TYPE
+          value: '{{ .Values.database.type }}'
+        - name: DB_HOST
+          value: '{{ .Values.database.host }}'
+        - name: DB_PORT
+          value: '{{ .Values.database.port }}'
+        - name: DB_USER
+          value: '{{ .Values.database.user }}'
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "artifactory.fullname" . }}
+              key: db-password
+      {{- end }}
+        - name: EXTRA_JAVA_OPTIONS
+          value: "
+      {{- if .Values.artifactory.javaOpts.other }}
+          {{ .Values.artifactory.javaOpts.other }}
+      {{- end}}
+      {{- if .Values.artifactory.javaOpts.xms }}
+          -Xms{{ .Values.artifactory.javaOpts.xms }}
+      {{- end}}
+      {{- if .Values.artifactory.javaOpts.xmx }}
+          -Xmx{{ .Values.artifactory.javaOpts.xmx }}
+      {{- end}}
+      {{- if .Values.artifactory.replicator.enabled }}
+          -Dartifactory.releasebundle.feature.enabled=true
+      {{- end }}
+            "
+        {{- if .Values.artifactory.replicator.enabled }}
+        - name: START_LOCAL_REPLICATOR
+          value: "true"
+        {{- end }}
+        ports:
+        - containerPort: {{ .Values.artifactory.internalPort }}
+        {{- if .Values.artifactory.replicator.enabled }}
+        - containerPort: {{ .Values.artifactory.internalPortReplicator }}
+        {{- end }}
+        volumeMounts:
+        - name: artifactory-volume
+          mountPath: {{ .Values.artifactory.persistence.mountPath | quote }}
+      {{- if .Values.artifactory.distributionCerts }}
+        - name: distribution-certs
+          mountPath: "/tmp/access/etc/keys"
+      {{- end }}
+      {{- if .Values.artifactory.configMapName }}
+        - name: bootstrap-config
+          mountPath: "/bootstrap/"
+      {{- end }}
+      {{- if .Values.artifactory.license.secret }}
+        - name: artifactory-license
+          mountPath: "/artifactory_extra_conf/artifactory.lic"
+          subPath: {{ .Values.artifactory.license.dataKey }}
+      {{- end }}
+      {{- if .Values.artifactory.replicator.enabled }}
+        - name: replicator-config
+          mountPath: "/tmp/replicator/replicator.yaml"
+          subPath: replicator.yaml
+      {{- end }}
+        resources:
+{{ toYaml .Values.artifactory.resources | indent 10 }}
+    {{- with .Values.artifactory.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.artifactory.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.artifactory.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+        {{- if .Values.artifactory.readinessProbe.enabled }}
+        readinessProbe:
+          httpGet:
+            path: '/artifactory/webapp/#/login'
+            port: 8081
+          initialDelaySeconds: {{ .Values.artifactory.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.artifactory.readinessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.artifactory.readinessProbe.timeoutSeconds }}
+          failureThreshold: {{ .Values.artifactory.readinessProbe.failureThreshold }}
+          successThreshold: {{ .Values.artifactory.readinessProbe.successThreshold }}
+        {{- end }}
+        {{- if .Values.artifactory.livenessProbe.enabled }}
+        livenessProbe:
+          httpGet:
+            path: '/artifactory/webapp/#/login'
+            port: 8081
+          initialDelaySeconds: {{ .Values.artifactory.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.artifactory.livenessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.artifactory.livenessProbe.timeoutSeconds }}
+          failureThreshold: {{ .Values.artifactory.livenessProbe.failureThreshold }}
+          successThreshold: {{ .Values.artifactory.livenessProbe.successThreshold }}
+        {{- end }}
+      volumes:
+      {{- if .Values.artifactory.distributionCerts }}
+      - name: distribution-certs
+        configMap:
+          name: {{ .Values.artifactory.distributionCerts }}
+      {{- end }}
+      {{- if .Values.artifactory.replicator.enabled }}
+      - name: replicator-config
+        configMap:
+          name: {{ template "artifactory.fullname" . }}-replicator-config
+      {{- end }}
+      {{- if .Values.artifactory.configMapName }}
+      - name: bootstrap-config
+        configMap:
+          name: {{ .Values.artifactory.configMapName }}
+      {{- end}}
+      {{- if .Values.artifactory.license.secret }}
+      - name: artifactory-license
+        secret:
+          secretName: {{ .Values.artifactory.license.secret }}
+      {{- end }}
+      {{- if .Values.artifactory.persistence.enabled }}
+  volumeClaimTemplates:
+  - metadata:
+      name: artifactory-volume
+    spec:
+    {{- if .Values.artifactory.persistence.existingClaim }}
+      selector:
+        matchLabels:
+          app: {{ template "artifactory.name" . }}
+    {{- else }}
+      {{- if .Values.artifactory.persistence.storageClass }}
+      {{- if (eq "-" .Values.artifactory.persistence.storageClass) }}
+      storageClassName: ""
+      {{- else }}
+      storageClassName: "{{ .Values.artifactory.persistence.storageClass }}"
+      {{- end }}
+      {{- end }}
+      accessModes: [ "{{ .Values.artifactory.persistence.accessMode }}" ]
+      resources:
+        requests:
+          storage: {{ .Values.artifactory.persistence.size }}
+    {{- end }}
+      {{- else }}
+      - name: artifactory-volume
+        emptyDir: {}
+      {{- end }}

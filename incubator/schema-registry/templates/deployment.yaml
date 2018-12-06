@@ -43,7 +43,7 @@ spec:
             value: {{ .Values.sasl.scram.clientUser }}
           - name: SCRAM_CLIENT_PASSWORD
             {{- if (hasKey .Values.sasl.scram "useExistingSecret") }}
-            valueFrom: 
+            valueFrom:
 {{ toYaml .Values.sasl.scram.useExistingSecret.clientPassword | indent 14 -}}
             {{- else }}
             valueFrom:
@@ -63,23 +63,48 @@ spec:
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           ports:
             - containerPort: {{ .Values.servicePort }}
+            {{- if .Values.external.enabled }}
+            - containerPort: {{ .Values.external.servicePort }}
+              name: external
+            {{- end }}
+            {{- if .Values.jmx.enabled }}
+            - containerPort: {{ .Values.jmx.port }}
+              name: jmx
+            {{- end }}
           livenessProbe:
             httpGet:
               path: /
               port: {{ .Values.servicePort }}
+            {{- if not .Values.livenessProbe }}
             initialDelaySeconds: 10
             timeoutSeconds: 5
+            {{- else }}
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds | default 10}}
+            {{- if .Values.livenessProbe.periodSeconds }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+            {{- end }}
+            timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds | default 5}}
+            {{- if .Values.livenessProbe.successThreshold }}
+            successThreshold: {{ .Values.livenessProbe.successThreshold }}
+            {{- end }}
+            {{- if .Values.livenessProbe.failureThreshold }}
+            failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+            {{- end }}
+            {{- end }}
           readinessProbe:
             httpGet:
               path: /
               port: {{ .Values.servicePort }}
-            initialDelaySeconds: 10
-            timeoutSeconds: 5
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds | default 10}}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds | default 5}}
+            successThreshold: {{ .Values.readinessProbe.successThreshold }}
+            failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
           env:
           - name: SCHEMA_REGISTRY_HOST_NAME
             valueFrom:
               fieldRef:
-                fieldPath: metadata.name
+                fieldPath: status.podIP
           - name: SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS
             value: {{ template "schema-registry.kafkaStore.bootstrapServers" . }}
           - name: SCHEMA_REGISTRY_KAFKASTORE_GROUP_ID
@@ -97,12 +122,23 @@ spec:
           - name: SCHEMA_REGISTRY_OPTS
             value: "{{ .Values.schemaRegistryOpts }}"
           {{- end }}
+          {{- if .Values.jmx.enabled }}
+          - name: JMX_PORT
+            value: "{{ .Values.jmx.port }}"
+          {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           volumeMounts:
           {{- if .Values.sasl.scram.enabled }}
           - name: jaasconfig
             mountPath: {{ .Values.sasl.configPath | quote }}
+          {{- end }}
+          {{- range $secret := .Values.secrets }}
+            {{- if $secret.mountPath }}
+          - name: {{ include "schema-registry.fullname" $ }}-{{ $secret.name }}
+            mountPath: {{ $secret.mountPath }}
+            readOnly: true
+            {{- end }}
           {{- end }}
       volumes:
       {{- if .Values.sasl.scram.enabled }}
@@ -112,4 +148,8 @@ spec:
         configMap:
           name: {{ template "schema-registry.fullname" . }}
       {{- end }}
-          
+      {{- range .Values.secrets }}
+      - name: {{ include "schema-registry.fullname" $ }}-{{ .name }}
+        secret:
+          secretName: {{ .name }}
+      {{- end }}

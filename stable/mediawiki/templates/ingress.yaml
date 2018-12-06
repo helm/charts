@@ -3,15 +3,18 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: "{{- printf "%s-%s" .name $.Release.Name | trunc 63 | trimSuffix "-" -}}"
+  name: {{ template "mediawiki.fullname" $ }}
   labels:
-    app: {{ template "mediawiki.fullname" $ }}
-    chart: "{{ $.Chart.Name }}-{{ $.Chart.Version }}"
+    app: {{ template "mediawiki.name" $ }}
+    chart: {{ template "mediawiki.chart" $ }}
     release: {{ $.Release.Name | quote }}
     heritage: {{ $.Release.Service | quote }}
   annotations:
     {{- if .tls }}
     ingress.kubernetes.io/secure-backends: "true"
+    {{- end }}
+    {{- if .certManager }}
+    kubernetes.io/tls-acme: "true"
     {{- end }}
     {{- range $key, $value := .annotations }}
     {{ $key }}: {{ $value | quote }}
@@ -24,7 +27,7 @@ spec:
         - path: {{ default "/" .path }}
           backend:
             serviceName: {{ template "mediawiki.fullname" $ }}
-            servicePort: 80
+            servicePort: http
 {{- if .tls }}
   tls:
   - hosts:

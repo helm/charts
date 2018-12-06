@@ -5,7 +5,7 @@ strategy:
     maxUnavailable: 0
 image:
   repository: chartmuseum/chartmuseum
-  tag: v0.7.0
+  tag: v0.7.1
   pullPolicy: IfNotPresent
 env:
   open:
@@ -98,6 +98,7 @@ replica:
   #   iam.amazonaws.com/role: role-arn
 service:
   type: ClusterIP
+  # clusterIP: None
   externalPort: 8080
   nodePort:
   annotations: {}

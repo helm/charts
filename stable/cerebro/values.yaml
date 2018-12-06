@@ -1,0 +1,47 @@
+replicaCount: 1
+revisionHistoryLimit: 3
+
+image:
+  repository: lmenezes/cerebro
+  # Note: when updating the version, ensure `config` and the ConfigMap are kept
+  # in sync with the default configuration of the upstream image
+  tag: 0.8.1
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 80
+  annotations: {}
+  labels: {}
+
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  path: /
+  hosts:
+    - chart-example.local
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+config:
+  basePath: '/'
+  restHistorySize: 50
+  hosts: []
+  #  - host:
+  #    name:
+
+  # Secret used to sign session cookies. If empty it will be replaced with a
+  # random 64 length string
+  secret: ''

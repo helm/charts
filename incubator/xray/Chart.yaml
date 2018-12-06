@@ -1,0 +1,14 @@
+apiVersion: v1
+name: xray
+version: 0.3.2
+appVersion: 2.1.0
+home: https://www.jfrog.com/xray/
+description: DEPRECATED Universal component scan for security and license inventory and impact analysis
+keywords:
+- xray
+- jfrog
+sources:
+- https://bintray.com/jfrog/product/xray/view
+- https://github.com/JFrogDev
+icon: https://raw.githubusercontent.com/JFrogDev/artifactory-dcos/master/images/jfrog_med.png
+deprecated: true

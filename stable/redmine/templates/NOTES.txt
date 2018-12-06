@@ -1,28 +1,33 @@
 1. Get the Redmine URL:
 
-{{- if contains "NodePort" .Values.serviceType }}
+{{- if contains "NodePort" .Values.service.type }}
 
   export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "redmine.fullname" . }})
   export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
-  echo http://$NODE_IP:$NODE_PORT/
+  echo "Redmine URL: http://$NODE_IP:$NODE_PORT/"
 
-{{- else if contains "LoadBalancer" .Values.serviceType }}
+{{- else if contains "LoadBalancer" .Values.service.type }}
 
   NOTE: It may take a few minutes for the LoadBalancer IP to be available.
         Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "redmine.fullname" . }}'
 
 
   export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "redmine.fullname" . }} --template "{{ "{{ range (index .status.loadBalancer.ingress 0) }}{{ . }}{{ end }}" }}")
-  echo http://$SERVICE_IP/
+
+{{- $port:=.Values.service.port | toString }}
+  echo "Redmine URL: http://$SERVICE_IP{{- if ne $port "80" }}:{{ .Values.service.port }}{{ end }}/"
 
 {{- else if .Values.ingress.enabled }}
-  http://{{ .Values.ingress.hostname }}/
 
-{{- else if contains "ClusterIP" .Values.serviceType }}
+  {{- range .Values.ingress.hosts }}
+    echo "Redmine URL: http://{{ .name }}/"
+  {{- end }}
 
-  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "redmine.fullname" . }}" -o jsonpath="{.items[0].metadata.name}")
-  echo http://127.0.0.1:3000/
-  kubectl port-forward $POD_NAME 3000:3000
+{{- else if contains "ClusterIP" .Values.service.type }}
+
+  echo "Redmine URL: http://127.0.0.1:{{ .Values.service.port }}/"
+  kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "redmine.fullname" . }} 3000:{{ .Values.service.port }}
+
 {{- end }}
 
 2. Login with the following credentials

@@ -16,7 +16,30 @@ Either subchart can be deployed on its own (set the "enabled" value to "false" f
 
 * The service account, cluster role, cluster role binding and service specified in the rendered version of this chart must not already exist.
 
-## Values templated in this chart
+## Installing the Chart
+
+To install the chart with the release name `my-release`:
+
+```bash
+$ helm install --name my-release stable/weave-scope
+```
+
+The command deploys Weave Scope on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
+
+> **Tip**: List all releases using `helm list`
+
+## Uninstalling the Chart
+
+To uninstall/delete the `my-release` deployment:
+
+```bash
+$ helm delete my-release
+```
+
+The command removes all the Kubernetes components associated with the chart and deletes the release.
+
+
+## Configuration
 
 Note that most of this documentation is repeated in `values.yaml`; if you're in a hurry you can skip this part here and read it there.  Values with no default noted have no default.
 
@@ -26,7 +49,7 @@ Note that most of this documentation is repeated in `values.yaml`; if you're in 
 |----------:|:------------|:--------|
 | **image.*** | the parameters of the image pulls for this release | |
 | **image.repository** | the image that will be used for this release (required) | "weaveworks/scope" |
-| **image.tag** | the version of Weave Scope desired for this release (required) | "1.6.5"
+| **image.tag** | the version of Weave Scope desired for this release (required) | "1.9.1"
 | **image.pullPolicy** | the imagePullPolicy for the container (required): IfNotPresent, Always, or Never | IfNotPresent
 | **service.*** | the configuration of the service used to access the frontend | |
 | **service.name** | the short name desired for the frontend service (optional, but if not specified by the user a value will be calculated) -- this is a global so we can access its value easily from the agent subchart | "weave-scope-app" |
@@ -43,7 +66,7 @@ The **weave-scope-frontend** section controls how the Scope frontend is installe
 | **enabled** | controls whether the frontend is deployed | true |
 | **resources.*** | controls requests/limits for the frontend (these values are all optional) | |
 | **resources.requests.cpu** | CPU request in MHz (m) | |
-| **resources.requests.memory** | memory request in MiB (Mi) | | 
+| **resources.requests.memory** | memory request in MiB (Mi) | |
 | **resources.limits.cpu** | CPU limit in MHz (m) | |
 | **resources.limits.memory** | memory limit in MiB (Mi) | |
 

@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "mission-control.fullname" . }}
+  labels:
+    app: {{ template "mission-control.name" . }}
+    chart: {{ template "mission-control.chart" . }}
+    component: {{ .Values.missionControl.name }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+spec:
+  type: {{ .Values.missionControl.service.type }}
+  ports:
+  - name: http
+    port: {{ .Values.missionControl.externalPort }}
+    targetPort: {{ .Values.missionControl.internalPort }}
+    protocol: TCP
+  selector:
+    app: {{ template "mission-control.name" . }}
+    component: {{ .Values.missionControl.name }}
+    release: {{ .Release.Name }}

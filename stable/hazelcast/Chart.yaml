@@ -1,0 +1,22 @@
+name: hazelcast
+version: 1.1.0
+appVersion: "3.11"
+description: Hazelcast IMDG is the most widely used in-memory data grid with hundreds of thousands of installed clusters around the world. It offers caching solutions ensuring that data is in the right place when it’s needed for optimal performance.
+keywords:
+- hazelcast
+- keyvalue
+- in-memory
+- database
+- caching
+home: http://hazelcast.com/
+icon: http://hazelcast.com/images/logos/HazelcastLogo-Blue_Dark_Icon_200px.png
+sources:
+- https://github.com/hazelcast/hazelcast
+maintainers:
+- name: leszko
+  email: rafal@hazelcast.com
+- name: googlielmo
+  email: guglielmo@hazelcast.com
+- name: mesutcelik
+  email: mesut@hazelcast.com
+engine: gotpl

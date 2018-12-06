@@ -10,11 +10,17 @@ metadata:
     heritage: "{{ .Release.Service }}"
     component: "dashboard"
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "parse.name" . }}
+      release: "{{ .Release.Name }}"
+      component: "dashboard"
   replicas: 1
   template:
     metadata:
       labels:
         app: {{ template "parse.name" . }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: "{{ .Release.Name }}"
         component: "dashboard"
     spec:
@@ -26,7 +32,7 @@ spec:
       {{- end }}
       containers:
       - name: {{ template "parse.fullname" . }}
-        image: "{{ .Values.dashboard.image.registry }}/{{ .Values.dashboard.image.repository }}:{{ .Values.dashboard.image.tag }}"
+        image: {{ template "parse.dashboard.image" . }}
         imagePullPolicy: {{ .Values.dashboard.image.pullPolicy | quote }}
         env:
         - name: PARSE_DASHBOARD_USER

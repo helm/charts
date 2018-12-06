@@ -1,0 +1,16 @@
+{{- if .Values.customRules }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "falco.fullname" . }}-rules
+  labels:
+    app: {{ template "falco.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+data:
+{{- range $file, $content :=  .Values.customRules }}
+  {{ $file }}: |-
+{{ $content | indent 4}}
+{{- end }}
+{{- end }}

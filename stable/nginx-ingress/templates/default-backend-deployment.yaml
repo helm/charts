@@ -16,7 +16,9 @@ spec:
     metadata:
     {{- if .Values.defaultBackend.podAnnotations }}
       annotations:
-{{ toYaml .Values.defaultBackend.podAnnotations | indent 8 }}
+      {{- range $key, $value := .Values.defaultBackend.podAnnotations }}
+        {{ $key }}: {{ $value | quote }}
+      {{- end }}
     {{- end }}
       labels:
         app: {{ template "nginx-ingress.name" . }}
@@ -30,6 +32,9 @@ spec:
       imagePullSecrets:
 {{ toYaml .Values.imagePullSecrets | indent 8 }}
       {{- end }}
+{{- if .Values.defaultBackend.priorityClassName }}
+      priorityClassName: "{{ .Values.defaultBackend.priorityClassName }}"
+{{- end }}
       containers:
         - name: {{ template "nginx-ingress.name" . }}-{{ .Values.defaultBackend.name }}
           image: "{{ .Values.defaultBackend.image.repository }}:{{ .Values.defaultBackend.image.tag }}"
@@ -45,13 +50,13 @@ spec:
           livenessProbe:
             httpGet:
               path: /healthz
-              port: 8080
+              port: {{ .Values.defaultBackend.port }}
               scheme: HTTP
             initialDelaySeconds: 30
             timeoutSeconds: 5
           ports:
             - name: http
-              containerPort: 8080
+              containerPort: {{ .Values.defaultBackend.port }}
               protocol: TCP
           resources:
 {{ toYaml .Values.defaultBackend.resources | indent 12 }}

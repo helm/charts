@@ -14,15 +14,15 @@ jobs:
             shellcheck -x test/repo-sync.sh
   lint-charts:
     docker:
-      - image: gcr.io/kubernetes-charts-ci/test-image:v2.0.2
+      - image: gcr.io/kubernetes-charts-ci/test-image:v3.0.1
     steps:
       - checkout
       - run:
           name: lint
           command: |
-            git remote add k8s https://github.com/kubernetes/charts
+            git remote add k8s https://github.com/helm/charts
             git fetch k8s master
-            chart_test.sh --config test/.testenv --no-install
+            ct lint --config test/ct.yaml
   sync:
     docker:
       - image: google/cloud-sdk

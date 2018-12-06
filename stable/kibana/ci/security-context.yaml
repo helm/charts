@@ -1,0 +1,6 @@
+---
+securityContext:
+  enabled: true
+  allowPrivilegeEscalation: false
+  runAsUser: 1000
+  fsGroup: 2000

@@ -1,0 +1,24 @@
+{{- if and .Values.insightExecutor.persistence.enabled (not .Values.insightExecutor.persistence.existingClaim) }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ template "insight-executor.fullname" . }}
+  labels:
+    app: {{ template "mission-control.name" . }}
+    chart: {{ template "mission-control.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  accessModes:
+    - {{ .Values.insightExecutor.persistence.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.insightExecutor.persistence.size }}
+{{- if .Values.insightExecutor.persistence.storageClass }}
+{{- if (eq "-" .Values.insightExecutor.persistence.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ .Values.insightExecutor.persistence.storageClass }}"
+{{- end }}
+{{- end }}
+{{- end }}

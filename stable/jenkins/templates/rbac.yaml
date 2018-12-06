@@ -1,7 +1,11 @@
 {{ if .Values.rbac.install }}
 {{- $serviceName := include "jenkins.fullname" . -}}
-apiVersion: rbac.authorization.k8s.io/{{ required "A valid .Values.rbac.apiVersion entry required!" .Values.rbac.apiVersion }}
-kind: ClusterRoleBinding
+{{- if .Capabilities.APIVersions.Has "rbac.authorization.k8s.io/v1" }}
+apiVersion: rbac.authorization.k8s.io/v1
+{{- else if .Capabilities.APIVersions.Has "rbac.authorization.k8s.io/v1beta1" }}
+apiVersion: rbac.authorization.k8s.io/v1beta1
+{{- end }}
+kind: {{ .Values.rbac.roleBindingKind }}
 metadata:
   name: {{ $serviceName }}-role-binding
   labels:

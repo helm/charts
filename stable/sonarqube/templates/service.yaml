@@ -25,7 +25,7 @@ spec:
     release: {{ .Release.Name }}
   {{- if eq .Values.service.type "LoadBalancer"}}
   loadBalancerSourceRanges: {{.Values.service.loadBalancerSourceRanges}}
-  {{- if .Values.service.LoadBalancerIP}}
+  {{- if .Values.service.loadBalancerIP}}
   loadBalancerIP: {{.Values.service.loadBalancerIP}}
   {{- end }}
   {{- end }}

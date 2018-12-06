@@ -1,0 +1,24 @@
+{{- if .Values.rookout.token -}}
+Rookouts Routers are connection to Rookouts SDK (The Rook), you should see the status at Rookouts IDE.
+
+    https://app.rookout.com/app/connectivity/agents
+
+No further action should be required.
+
+{{- else -}}
+##############################################################################
+####               ERROR: You did not set a token.                        ####
+##############################################################################
+
+This deployment will be incomplete until you get your token from Rookout. 
+
+Once registered you can request an token at:
+
+    http://rookout.com/
+
+Then run:
+
+    helm upgrade {{ .Release.Name }} \
+        --set token=YOUR-TOKEN-HERE stable/rookout
+{{- end }}
+

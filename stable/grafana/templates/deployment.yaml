@@ -19,6 +19,9 @@ spec:
       release: {{ .Release.Name }}
   strategy:
     type: {{ .Values.deploymentStrategy }}
+  {{- if ne .Values.deploymentStrategy "RollingUpdate" }}
+    rollingUpdate: null
+  {{- end }}
   template:
     metadata:
       labels:
@@ -32,6 +35,13 @@ spec:
       serviceAccountName: {{ template "grafana.serviceAccountName" . }}
 {{- if .Values.schedulerName }}
       schedulerName: "{{ .Values.schedulerName }}"
+{{- end }}
+{{- if .Values.securityContext }}
+      securityContext:
+{{ toYaml .Values.securityContext | indent 8 }}
+{{- end }}
+{{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName }}
 {{- end }}
 {{- if .Values.dashboards }}
       initContainers:
@@ -68,6 +78,10 @@ spec:
               value: "{{ .Values.sidecar.dashboards.label }}"
             - name: FOLDER
               value: "{{ .Values.sidecar.dashboards.folder }}"
+            {{- if .Values.sidecar.dashboards.searchNamespace }}
+            - name: NAMESPACE
+              value: "{{ .Values.sidecar.dashboards.searchNamespace }}"
+            {{- end }}
           resources:
 {{ toYaml .Values.sidecar.resources | indent 12 }}
           volumeMounts:
@@ -83,6 +97,10 @@ spec:
               value: "{{ .Values.sidecar.datasources.label }}"
             - name: FOLDER
               value: "/etc/grafana/provisioning/datasources"
+            {{- if .Values.sidecar.datasources.searchNamespace }}
+            - name: NAMESPACE
+              value: "{{ .Values.sidecar.datasources.searchNamespace }}"
+            {{- end }}
           resources:
 {{ toYaml .Values.sidecar.resources | indent 12 }}
           volumeMounts:
@@ -99,15 +117,26 @@ spec:
             - name: ldap
               mountPath: "/etc/grafana/ldap.toml"
               subPath: ldap.toml
+            - name: storage
+              mountPath: "/var/lib/grafana"
+              subPath: {{ .Values.persistence.subPath }}
 {{- if .Values.dashboards }}
-  {{- range $key, $value := .Values.dashboards }}
-    {{ if hasKey $value "json" }}
-            - name: dashboards-json
-              mountPath: "/var/lib/grafana/dashboards/{{ $key }}.json"
-              subPath: {{ $key }}.json
+  {{- range $provider, $dashboards := .Values.dashboards }}
+    {{- range $key, $value := $dashboards }}
+      {{- if hasKey $value "json" }}
+            - name: dashboards-{{ $provider }}
+              mountPath: "/var/lib/grafana/dashboards/{{ $provider }}/{{ $key }}.json"
+              subPath: "{{ $key }}.json"
+      {{- end }}
     {{- end }}
   {{- end }}
 {{- end -}}
+{{- if .Values.dashboardsConfigMaps }}
+  {{- range keys .Values.dashboardsConfigMaps }}
+            - name: dashboards-{{ . }}
+              mountPath: "/var/lib/grafana/dashboards/{{ . }}"
+  {{- end }}
+{{- end }}
 {{- if .Values.datasources }}
             - name: config
               mountPath: "/etc/grafana/provisioning/datasources/datasources.yaml"
@@ -122,15 +151,18 @@ spec:
             - name: sc-dashboard-volume
               mountPath: {{ .Values.sidecar.dashboards.folder | quote }}
             - name: sc-dashboard-provider
-              mountPath: "/etc/grafana/provisioning/dashboards"
+              mountPath: "/etc/grafana/provisioning/dashboards/sc-dashboardproviders.yaml"
+              subPath: provider.yaml
 {{- end}}
 {{- if .Values.sidecar.datasources.enabled }}
             - name: sc-datasources-volume
               mountPath: "/etc/grafana/provisioning/datasources"
 {{- end}}
-            - name: storage
-              mountPath: "/var/lib/grafana"
-              subPath: {{ .Values.persistence.subPath }}
+          {{- range .Values.extraSecretMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              readOnly: {{ .readOnly }}
+          {{- end }}
           ports:
             - name: service
               containerPort: {{ .Values.service.port }}
@@ -178,17 +210,9 @@ spec:
                 name: {{ .Values.envFromSecret }}
           {{- end }}
           livenessProbe:
-            httpGet:
-              path: /api/health
-              port: 3000
+{{ toYaml .Values.livenessProbe | indent 12 }}
           readinessProbe:
-            httpGet:
-              path: /api/health
-              port: 3000
-            initialDelaySeconds: 60
-            timeoutSeconds: 30
-            failureThreshold: 10
-            periodSeconds: 10
+{{ toYaml .Values.readinessProbe | indent 12 }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}
@@ -207,9 +231,20 @@ spec:
         - name: config
           configMap:
             name: {{ template "grafana.fullname" . }}
-        - name: dashboards-json
+        {{- if .Values.dashboards }}
+          {{- range keys .Values.dashboards }}
+        - name: dashboards-{{ . }}
           configMap:
-            name: {{ template "grafana.fullname" . }}-dashboards-json
+            name: {{ template "grafana.fullname" $ }}-dashboards-{{ . }}
+          {{- end }}
+        {{- end }}
+        {{- if .Values.dashboardsConfigMaps }}
+          {{- range $provider, $name := .Values.dashboardsConfigMaps }}
+        - name: dashboards-{{ $provider }}
+          configMap:
+            name: {{ $name }}
+          {{- end }}
+        {{- end }}
         - name: ldap
           secret:
             {{- if .Values.ldap.existingSecret }}
@@ -242,5 +277,5 @@ spec:
         - name: {{ .name }}
           secret:
             secretName: {{ .secretName }}
+            defaultMode: {{ .defaultMode }}
       {{- end }}
-

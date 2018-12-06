@@ -4,11 +4,11 @@
 
 ## Introduction
 
-This chart bootstraps Horovod which is a Distributed TensorFlow Framework on a Kubernetes cluster using the Helm Package manager. It deploys Horovod workers as statefulsets, and the Horovod master as a job, then discover the the host list automatically.ß
+This chart bootstraps Horovod which is a Distributed TensorFlow Framework on a Kubernetes cluster using the Helm Package Manager. It deploys Horovod workers as statefulsets, and the Horovod master as a job, then discover the host list automatically.
 
 ## Prerequisites
 
-- Kubernetes cluster v1.8+ 
+- Kubernetes cluster v1.8+
 
 ## Build Docker Image
 
@@ -64,7 +64,7 @@ master:
 EOF
 ```
 
-For most cases, the overlay network impacts the horovod performance greatly, so we should apply `Host Network` solution. To run Horovod with Host Network and GPU, you can create `values.yaml` like below
+For most cases, the overlay network impacts the Horovod performance greatly, so we should apply `Host Network` solution. To run Horovod with Host Network and GPU, you can create `values.yaml` like below
 
 
 ```
@@ -121,6 +121,21 @@ $ helm delete mnist
 
 The command removes all the Kubernetes components associated with the chart and
 deletes the release.
+
+## Upgrading an existing Release to a new major version
+A major chart version change (like v1.2.3 -> v2.0.0) indicates that there is an
+incompatible breaking change needing manual actions.
+
+### 1.0.0
+This version removes the `chart` label from the `spec.selector.matchLabels`
+which is immutable since `StatefulSet apps/v1beta2`. It has been inadvertently
+added, causing any subsequent upgrade to fail. See https://github.com/helm/charts/issues/7726.
+
+In order to upgrade, delete the Horovod StatefulSet before upgrading, supposing your Release is named `my-release`:
+
+```bash
+$ kubectl delete statefulsets.apps --cascade=false my-release
+```
 
 ## Configuration
 

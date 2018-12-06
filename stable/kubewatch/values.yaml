@@ -1,3 +1,9 @@
+## Global Docker image registry
+## Please, note that this will override the image registry for all the images, including dependencies, configured to use the global value
+##
+# global:
+#   imageRegistry:
+
 slack:
   # Slack channel to notify
   channel: "XXXX"
@@ -5,6 +11,19 @@ slack:
   # Slack bots token. Create using: https://my.slack.com/services/new/bot
   # and invite the bot to your channel using: /join @botname
   token: "XXXX"
+
+# hipchat:
+#   room: ""
+#   token: ""
+#   url: ""
+# mattermost:
+#   channel: ""
+#   url: ""
+#   username: ""
+# flock:
+#   url: ""
+# webhook:
+#   url: ""
 
 # Resources to watch
 resourcesToWatch:
@@ -18,9 +37,10 @@ resourcesToWatch:
   persistentvolume: false
 
 image:
-  repository: "tuna/kubewatch"
-  tag: "v0.0.3"
-  pullPolicy: "IfNotPresent"
+  registry: "docker.io"
+  repository: "bitnami/kubewatch"
+  tag: "0.0.4"
+  pullPolicy: "Always"
 
 rbac:
   # If true, create & use RBAC resources

@@ -29,6 +29,20 @@ mysqlha:
   ## Create database with name and grant all permissions to user on startup, if needed
   # mysqlDatabase:
 
+  ## Configuration files for the master and slaves
+  ##
+  configFiles:
+    master.cnf: |
+      # Apply this config only on the master.
+      [mysqld]
+      log-bin
+      skip_name_resolve
+    slave.cnf: |
+      # Apply this config only on slaves.
+      [mysqld]
+      super-read-only
+      skip_name_resolve
+
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
 ##

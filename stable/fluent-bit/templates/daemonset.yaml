@@ -4,6 +4,9 @@ metadata:
   name: fluent-bit
   labels:
     app: {{ template "fluent-bit.fullname" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
 spec:
   updateStrategy:
     type: RollingUpdate
@@ -11,12 +14,17 @@ spec:
     metadata:
       labels:
         app: {{ template "fluent-bit.fullname" . }}
+        release: {{ .Release.Name }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
 {{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
 {{- end }}
     spec:
+{{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.image.pullSecrets | indent 8 }}
+{{- end }}
       serviceAccountName: {{ template "fluent-bit.serviceAccountName" . }}
       containers:
       - name: fluent-bit
@@ -38,9 +46,32 @@ spec:
         - name: varlibdockercontainers
           mountPath: /var/lib/docker/containers
           readOnly: true
+{{- if .Values.fullConfigMap }}
+        - name: config
+          mountPath: /fluent-bit/etc
+{{- else }}
         - name: config
           mountPath: /fluent-bit/etc/fluent-bit.conf
-          subPath: fluent-bit.conf
+          subPath: fluent-bit.conf     
+        - name: config
+          mountPath: /fluent-bit/etc/fluent-bit-service.conf
+          subPath: fluent-bit-service.conf
+        - name: config
+          mountPath: /fluent-bit/etc/fluent-bit-input.conf
+          subPath: fluent-bit-input.conf
+        - name: config
+          mountPath: /fluent-bit/etc/fluent-bit-filter.conf
+          subPath: fluent-bit-filter.conf
+        - name: config
+          mountPath: /fluent-bit/etc/fluent-bit-output.conf
+          subPath: fluent-bit-output.conf
+          
+{{- if .Values.parsers.enabled }}
+        - name: config
+          mountPath: /fluent-bit/etc/parsers_custom.conf
+          subPath: parsers.conf
+{{- end }}
+{{- end }}
 {{- if .Values.backend.es.tls_ca }}
         - name: es-tls-secret
           mountPath: /secure/es-tls-ca.crt

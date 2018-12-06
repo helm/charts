@@ -23,17 +23,19 @@ spec:
       labels:
         app: {{ template "kubewatch.name" . }}
         release: "{{ .Release.Name }}"
+        chart: {{ template "kubewatch.chart" . }}
       {{- if .Values.podLabels }}
 {{ toYaml .Values.podLabels | indent 8 }}
       {{- end }}
     spec:
       containers:
       - name: {{ template "kubewatch.name" . }}
-        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        image: {{ template "kubewatch.image" . }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         volumeMounts:
         - name: {{ template "kubewatch.name" . }}-config-map
-          mountPath: /root
+          mountPath: /opt/bitnami/kubewatch/.kubewatch.yaml
+          subPath: .kubewatch.yaml
         resources:
 {{ toYaml .Values.resources | indent 10 }}
     {{- if .Values.affinity }}
@@ -52,4 +54,3 @@ spec:
       - name: {{ template "kubewatch.name" . }}-config-map
         configMap:
           name: {{ template "kubewatch.fullname" . }}-config
-

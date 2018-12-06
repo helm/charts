@@ -1,0 +1,26 @@
+1. Get the application URL by running these commands:
+{{- if .Values.ingress.enabled }}
+{{- range .Values.ingress.hosts }}
+  http{{ if $.Values.ingress.tls }}s{{ end }}://{{ . }}{{ $.Values.ingress.path }}
+{{- end }}
+{{- else if contains "NodePort" .Values.service.type }}
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "hlf-couchdb.fullname" . }})
+  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo http://$NODE_IP:$NODE_PORT
+{{- else if contains "LoadBalancer" .Values.service.type }}
+     NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+           You can watch the status of by running 'kubectl get svc -w {{ include "hlf-couchdb.fullname" . }}'
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "hlf-couchdb.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  echo http://$SERVICE_IP:{{ .Values.service.port }}
+{{- else if contains "ClusterIP" .Values.service.type }}
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ include "hlf-couchdb.name" . }},release={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
+  echo "Visit http://127.0.0.1:8080 to use your application"
+  kubectl port-forward $POD_NAME 8080:80
+{{- end }}
+
+2. Get the CouchDB username and password by running this command:
+  export COUCHDB_USERNAME=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ include "hlf-couchdb.fullname" . }} -o jsonpath="{.data.COUCHDB_USERNAME}" | base64 --decode; echo)
+  export COUCHDB_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ include "hlf-couchdb.fullname" . }} -o jsonpath="{.data.COUCHDB_PASSWORD}" | base64 --decode; echo)
+
+3. Update the chart without resetting the password (requires running step 2):
+  helm upgrade {{ .Release.Name }} stable/hlf-couchdb --namespace {{ .Release.Namespace }} -f my-values.yaml --set couchdbUsername=$COUCHDB_USERNAME,couchdbPassword=$COUCHDB_PASSWORD

@@ -1,5 +1,5 @@
 name: percona
-version: 0.3.2
+version: 0.3.3
 appVersion: 5.7.17
 description: free, fully compatible, enhanced, open source drop-in replacement for
   MySQL
@@ -14,6 +14,6 @@ sources:
 - https://github.com/kubernetes/charts
 - https://github.com/docker-library/percona
 maintainers:
-- name: Patrick Galbraith
+- name: CaptTofu
   email: patg@patg.net
 engine: gotpl

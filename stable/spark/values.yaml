@@ -38,6 +38,10 @@ Worker:
   # DaemonMemory: 1g
   # Set how much total memory workers have to give executors
   # ExecutorMemory: 1g
+  Autoscaling:
+    Enabled: false
+  ReplicasMax: 10
+  CpuTargetPercentage: 50
 
 Zeppelin:
   Name: zeppelin
@@ -67,3 +71,22 @@ Zeppelin:
   #   SecretName: example-tls
   #   Hosts:
   #   - example.local
+  Persistence:
+    Config:
+      Enabled: false
+      ## etcd data Persistent Volume Storage Class
+      ## If defined, storageClassName: <storageClass>
+      ## If set to "-", storageClassName: "", which disables dynamic provisioning
+      ## If undefined (the default) or set to null, no storageClassName spec is
+      ## set, choosing the default provisioner. (gp2 on AWS, standard on
+      ## GKE, AWS & OpenStack)
+      StorageClass: "-"
+      ## Set default PVC size
+      Size: 10G
+      ## Set default PVC access mode: https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes
+      AccessMode: ReadWriteOnce
+    Notebook:
+      Enabled: false
+      StorageClass: "-"
+      Size: 10G
+      AccessMode: ReadWriteOnce

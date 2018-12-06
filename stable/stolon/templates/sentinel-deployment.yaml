@@ -26,6 +26,9 @@ spec:
 {{ toYaml . | indent 8 }}
 {{- end }}
     spec:
+{{- if .Values.sentinel.priorityClassName }}
+      priorityClassName: "{{ .Values.sentinel.priorityClassName }}"
+{{- end }}
       serviceAccountName: {{ template "stolon.serviceAccountName" . }}
       containers:
         - name: {{ .Chart.Name }}
@@ -56,6 +59,11 @@ spec:
               value: "0.0.0.0:8080"
             - name: STSENTINEL_DEBUG
               value: {{ .Values.debug | quote}}
+          ports:
+{{- range $key, $value := .Values.ports }}
+            - name: {{ $key }}
+{{ toYaml $value | indent 14 }}
+{{- end }}
           resources:
 {{ toYaml .Values.sentinel.resources | indent 12 }}
 {{- with .Values.sentinel.nodeSelector }}

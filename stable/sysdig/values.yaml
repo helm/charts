@@ -1,50 +1,83 @@
 # Default values for Sysdig Monitor and Secure Helm package.
 
-rbac:
-    # true here enables creation of rbac resources
-    install: false
-    # rbac version
-    apiVersion: v1beta1
-
 image:
-    repository: "sysdig/agent"
-    tag: "latest"
-    pullPolicy: "Always"
+  registry: docker.io
+  repository: sysdig/agent
+  tag: latest
+  # Specify a imagePullPolicy
+  # Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
+  # ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+  pullPolicy: Always
+  # Optionally specify an array of imagePullSecrets.
+  # Secrets must be manually created in the namespace.
+  # ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  #
+  # pullSecrets:
+  #   - name: myRegistrKeySecretName
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 30m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 20m
+  #   memory: 128Mi
+
+rbac:
+  # true here enables creation of rbac resources
+  create: true
+
+serviceAccount:
+  # Create and use serviceAccount resources
+  create: true
+  # Use this value as serviceAccountName
+  name:
+
+daemonset: {}
+  # Allow the DaemonSet to perform a rolling update on helm update
+  # ref: https://kubernetes.io/docs/tasks/manage-daemon/update-daemon-set/
+  # updateStrategy: RollingUpdate
 
 sysdig:
     # Required: You need your Sysdig Monitor access key before running agents.
-    # AccessKey: ""
+    # accessKey: ""
 
-    # Optional: Key-value agent tags following the format "key:val,key2:val2".
-    AgentTags: ""
-
-    # Optional: additional configuration parameters.
-    # This will be moved into a ConfigMap shortly.
-    AdditionalConf: ""
-
-    serviceAccountName: "sysdig-account"
-
-    # Optional: array of additional env variables used for custom config.
-    # env:
-    #   - name:
-    #     value:
+  settings: {}
+    ### Agent tags
+    # tags: linux:ubuntu,dept:dev,local:nyc
+    #### Sysdig Software related config ####
+    # Sysdig collector address
+    # collector: 192.168.1.1
+    # Collector TCP port
+    # collector_port: 6666
+    # Whether collector accepts ssl
+    # ssl: true
+    # collector certificate validation
+    # ssl_verify_certificate: true
+    #######################################
+    # new_k8s: true
+    # k8s_cluster_name: production
 
 secure:
-    # true here enables Sysdig Secure: container run-time security & forensics
-    enable: false
+  # true here enables Sysdig Secure: container run-time security & forensics
+  enabled: false
 
-    # Default Sysdig Secure configuration (please add trailing \n)
-    SecureConf: "security: {enabled: true}\ncommandlines_capture: {enabled: true}\nmemdump: {enabled: true}\n"
-
-resources:
-    requests:
-        cpu: 100m
-        memory: 512Mi
-    limits:
-        cpu: 500m
-        memory: 768Mi
+customAppChecks: {}
+  # Allow passing custom app checks for Sysdig Agent.
+  # Example:
+  #
+  # sample.py: |-
+  #   from checks import AgentCheck
+  #
+  #   class MyCustomCheck(AgentCheck):
+  #       def check(self, instance):
+  #           self.gauge("testhelm", 1)
 
 # Allow sysdig to run on Kubernetes 1.6 masters.
 tolerations:
-    - effect: NoSchedule
-      key: node-role.kubernetes.io/master
+  - effect: NoSchedule
+    key: node-role.kubernetes.io/master

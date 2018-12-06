@@ -1,0 +1,18 @@
+{{- if .Values.rbac.create -}}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: {{ .Release.Namespace }}
+  name: {{ template "kured.fullname" . }}
+  labels:
+    app: {{ template "kured.name" . }}
+    chart: {{ template "kured.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+rules:
+# Allow kured to lock/unlock itself
+- apiGroups:     ["extensions"]
+  resources:     ["daemonsets"]
+  resourceNames: ["kured"]
+  verbs:         ["update"]
+{{- end -}}

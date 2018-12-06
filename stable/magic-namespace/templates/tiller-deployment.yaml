@@ -3,6 +3,9 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: tiller-deploy
+  {{- if hasKey .Values "namespace" }}
+  namespace: {{ .Values.namespace }}
+  {{- end }}
   labels:
     app: helm
     name: tiller
@@ -32,12 +35,16 @@ spec:
           imagePullPolicy: {{ .Values.tiller.image.pullPolicy }}
           env:
           - name: TILLER_NAMESPACE
+            {{- if hasKey .Values "namespace" }}
+            value: {{ .Values.namespace }}
+            {{- else }}
             value: {{ .Release.Namespace }}
+            {{- end }}
           - name: TILLER_HISTORY_MAX
             value: {{ quote .Values.tiller.maxHistory }}
           {{- if .Values.tiller.onlyListenOnLocalhost }}
           command: ["/tiller"]
-          args: ["--listen=localhost:44134"]
+          args: ["--listen=127.0.0.1:44134"]
           {{- else }}
           ports:
           - containerPort: 44134

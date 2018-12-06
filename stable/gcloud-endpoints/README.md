@@ -1,3 +1,5 @@
+# THIS CHART IS DEPRECATED.
+
 # Google Cloud Endpoints
 
 [Google Cloud Endpoints](https://cloud.google.com/endpoints/) is an NGINX-based proxy used to develop, deploy, protect, and monitor APIs running on Google Cloud.
@@ -42,7 +44,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Drupal chart and their default values.
+The following table lists the configurable parameters of the Drupal chart and their default values.
 
 | Parameter                         | Description                            | Default                                                   |
 | --------------------------------- | -------------------------------------- | --------------------------------------------------------- |

@@ -17,5 +17,5 @@ You can log into the Jaeger Query UI here:
 
   export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "release={{ .Release.Name }},component=query" -o jsonpath="{.items[0].metadata.name}")
   echo http://127.0.0.1:8080/
-  kubectl port-forward $POD_NAME 8080:16686
+  kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME 8080:16686
 {{- end }}

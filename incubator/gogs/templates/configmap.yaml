@@ -47,7 +47,7 @@ data:
     PASSWD = {{ template "gogs.database.password" . }}
 
     [security]
-    INSTALL_LOCK = true
+    INSTALL_LOCK = {{ .Values.service.gogs.installLock }}
     SECRET_KEY = {{ default "" .Values.service.gogs.securitySecretKey | b64enc | quote }}
 
     [ui]
@@ -69,6 +69,27 @@ data:
     [log]
     MODE = {{ .Values.service.gogs.logMode }}
     LEVEL = {{ .Values.service.gogs.logLevel }}
+
+    [cron]
+    ENABLED = {{ .Values.service.gogs.cronEnabled }}
+    RUN_AT_START = {{ .Values.service.gogs.cronRunAtStart }}
+
+    [cron.update_mirrors]
+    SCHEDULE = {{ .Values.service.gogs.cronUpdateMirrorsSchedule }}
+
+    [cron.repo_health_check]
+    SCHEDULE = {{ .Values.service.gogs.cronRepoHealthCheckSchedule }}
+    TIMEOUT = {{ .Values.service.gogs.cronRepoHealthCheckTimeout }}
+    ARGS = {{ .Values.service.gogs.cronRepoHealthCheckArgs }}
+
+    [cron.check_repo_stats]
+    RUN_AT_START = {{ .Values.service.gogs.cronCheckRepoStatsRunAtStart }}
+    SCHEDULE = {{ .Values.service.gogs.cronCheckRepoStatsSchedule }}
+
+    [cron.repo_archive_cleanup]
+    RUN_AT_START = {{ .Values.service.gogs.cronRepoArchiveCleanupRunAtStart }}
+    SCHEDULE = {{ .Values.service.gogs.cronRepoArchiveCleanupSchedule }}
+    OLDER_THAN = {{ .Values.service.gogs.cronRepoArchiveCleanupOlderThan }}
 
     [other]
     SHOW_FOOTER_BRANDING = {{ .Values.service.gogs.otherShowFooterBranding }}

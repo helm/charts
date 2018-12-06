@@ -1,6 +1,6 @@
 image:
   repository: verdaccio/verdaccio
-  tag: 2.7.3
+  tag: 3.8.1
   pullPolicy: IfNotPresent
 
 service:
@@ -50,7 +50,7 @@ configMap: |
   #
   # Do not configure host and port under `listen` in this file
   # as it will be ignored when using docker.
-  # see https://github.com/verdaccio/verdaccio/blob/master/wiki/docker.md#docker-and-custom-port-configuration
+  # see https://github.com/verdaccio/verdaccio/blob/master/docs/docker.md#docker-and-custom-port-configuration
   #
   # Look here for more config file examples:
   # https://github.com/verdaccio/verdaccio/tree/master/conf
@@ -58,6 +58,11 @@ configMap: |
 
   # path to a directory with all packages
   storage: /verdaccio/storage/data
+
+  web:
+    # WebUI is enabled as default, if you want disable it, just uncomment this line
+    #enable: false
+    title: Verdaccio
 
   auth:
     htpasswd:
@@ -93,10 +98,16 @@ configMap: |
       # if package is not available locally, proxy requests to 'npmjs' registry
       proxy: npmjs
 
+  # To use `npm audit` uncomment the following section
+  middlewares:
+    audit:
+      enabled: true
+
   # log settings
   logs:
     - {type: stdout, format: pretty, level: http}
     #- {type: file, path: verdaccio.log, level: info}
+
 persistence:
   enabled: true
   ## A manually managed Persistent Volume and Claim
@@ -122,3 +133,8 @@ persistence:
 #  - mountPath: /var/nothing
 #    name: nothing
 #    readOnly: true
+
+securityContext:
+  enabled: true
+  runAsUser: 100
+  fsGroup: 101

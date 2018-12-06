@@ -13,6 +13,7 @@ spec:
     metadata:
       labels:
         app: {{ template "influxdb.fullname" . }}
+        release: "{{ .Release.Name }}"
     spec:
       containers:
       - name: {{ template "influxdb.fullname" . }}
@@ -80,6 +81,9 @@ spec:
       - name: config
         configMap:
           name: {{ template "influxdb.fullname" . }}
+    {{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+    {{- end }}
     {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}

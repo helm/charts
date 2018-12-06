@@ -1,0 +1,84 @@
+{{- $authPwd := default (include "nats.randomPassword" .) .Values.auth.password -}}
+{{- $clusterAuthPwd := default (include "nats.randomPassword" .) .Values.clusterAuth.password -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app: "{{ template "nats.name" . }}"
+    chart: "{{ template "nats.chart" . }}"
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+  name: {{ template "nats.fullname" . }}
+data:
+  gnatsd.conf: |-
+    listen: 0.0.0.0:{{ .Values.client.service.port }}
+    http: 0.0.0.0:{{ .Values.monitoring.service.port }}
+
+    # Authorization for client connections
+    {{- if .Values.auth.enabled }}
+    authorization {
+      {{- if .Values.auth.user }}
+      user: {{ .Values.auth.user }}
+      password: {{ $authPwd }}
+      {{- else if .Values.auth.token }}
+      token: {{ .Values.auth.token }}
+      {{- end }}
+      timeout:  1
+    }
+    {{- end }}
+
+    # Logging options
+    debug: {{ .Values.debug.enabled }}
+    trace: {{ .Values.debug.trace }}
+    logtime: {{ .Values.debug.logtime }}
+
+    # Pid file
+    pid_file: "/tmp/gnatsd.pid"
+
+    # Some system overides
+    {{- if .Values.maxConnections }}
+    max_connections: {{ .Values.maxConnections }}
+    {{- end }}
+    {{- if .Values.maxControlLine }}
+    max_control_line: {{ .Values.maxControlLine }}
+    {{- end }}
+    {{- if .Values.maxPayload }}    
+    max_payload: {{ .Values.maxPayload }}
+    {{- end }}
+    {{- if .Values.writeDeadline }}
+    write_deadline: {{ .Values.writeDeadline | quote }}
+    {{- end }}
+
+
+    # Clustering definition
+    cluster {
+      listen: 0.0.0.0:{{ .Values.cluster.service.port }}
+
+      # Authorization for cluster connections
+      {{- if .Values.clusterAuth.enabled }}
+      authorization {
+        {{- if .Values.clusterAuth.user }}
+        user: {{ .Values.clusterAuth.user }}
+        password: {{ $clusterAuthPwd }}
+        {{- else if .Values.clusterAuth.token }}
+        token: {{ .Values.clusterAuth.token }}
+        {{- end }}
+        timeout:  1
+      }
+      {{- end }}
+
+      # Routes are actively solicited and connected to from this server.
+      # Other servers can connect to us if they supply the correct credentials
+      # in their routes definitions from above
+      routes = [
+        {{- if .Values.clusterAuth.enabled }}
+        {{- if .Values.clusterAuth.user }}
+        nats://{{ .Values.clusterAuth.user }}:{{ $clusterAuthPwd }}@{{ template "nats.fullname" . }}-cluster:{{ .Values.cluster.service.port }}
+        {{- else if .Values.clusterAuth.token }}
+        nats://{{ .Values.clusterAuth.token }}@{{ template "nats.fullname" . }}-cluster:{{ .Values.cluster.service.port }}
+        {{- end }}
+        {{- else }}
+        nats://{{ template "nats.fullname" . }}-cluster:{{ .Values.cluster.service.port }}
+        {{- end }}
+      ]
+    }

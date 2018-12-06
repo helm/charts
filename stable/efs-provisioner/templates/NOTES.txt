@@ -1,0 +1,15 @@
+You can provision an EFS-backed persistent volume with a persistent volume claim like below:
+
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: my-efs-vol-1
+  annotations:
+    volume.beta.kubernetes.io/storage-class: {{ .Values.efsProvisioner.storageClass.name }}
+spec:
+  storageClassName: {{ .Values.efsProvisioner.storageClass.name }}
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Mi

@@ -79,8 +79,8 @@ metadata:
 spec:
   ports:                                        # composes the `ports` section of the service definition.
   - name: smtp
-    port: 22
-    targetPort: 22
+    port: 25
+    targetPort: 25
   - name: imaps
     port: 993
     targetPort: 993
@@ -124,8 +124,8 @@ metadata:
 spec:
   ports:
   - name: smtp
-    port: 22
-    targetPort: 22
+    port: 25
+    targetPort: 25
   - name: imaps
     port: 993
     targetPort: 993

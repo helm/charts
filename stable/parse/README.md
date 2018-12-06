@@ -12,6 +12,8 @@ $ helm install stable/parse
 
 This chart bootstraps a [Parse](https://github.com/bitnami/bitnami-docker-parse) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
+Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters.
+
 ## Prerequisites
 
 - Kubernetes 1.4+ with Beta APIs enabled
@@ -45,8 +47,12 @@ The following table lists the configurable parameters of the Parse chart and the
 
 |             Parameter              |              Description               |                   Default                               |
 |------------------------------------|----------------------------------------|-------------------------------------------------------- |
-| `serviceType`                      | Kubernetes Service type                | `LoadBalancer`                                          |
-| `loadBalancerIP`                   | `loadBalancerIP` for the Parse Service | `nil`                                                   |
+| `global.imageRegistry`             | Global Docker image registry           | `nil`                                                   |
+| `service.type`                    | Kubernetes Service type                    | `LoadBalancer`                                          |
+| `service.port`                    | Service HTTP port (Dashboard)                   | `80`                                          |
+| `service.loadBalancerIP`                   | `loadBalancerIP` for the Parse Service | `nil`                                                   |
+| `service.externalTrafficPolicy`   | Enable client source IP preservation       | `Cluster`                                               |
+| `service.nodePorts.http`                 | Kubernetes http node port                  | `""`                                                    |
 | `server.image.registry`            | Parse image registry                   | `docker.io`                                             |
 | `server.image.repository`          | Parse image name                       | `bitnami/parse`                                         |
 | `server.image.tag`                 | Parse image tag                        | `{VERSION}`                                             |
@@ -118,3 +124,16 @@ The [Bitnami Parse](https://github.com/bitnami/bitnami-docker-parse) image store
 
 Persistent Volume Claims are used to keep the data across deployments. This is known to work in GCE, AWS, and minikube.
 See the [Configuration](#configuration) section to configure the PVC or to disable persistence.
+
+## Upgrading
+
+### To 3.0.0
+
+Backwards compatibility is not guaranteed unless you modify the labels used on the chart's deployments.
+Use the workaround below to upgrade from versions previous to 3.0.0. The following example assumes that the release name is parse:
+
+```console
+$ kubectl patch deployment parse-parse-dashboard --type=json -p='[{"op": "remove", "path": "/spec/selector/matchLabels/chart"}]'
+$ kubectl patch deployment parse-parse-server --type=json -p='[{"op": "remove", "path": "/spec/selector/matchLabels/chart"}]'
+$ kubectl patch deployment parse-mongodb --type=json -p='[{"op": "remove", "path": "/spec/selector/matchLabels/chart"}]'
+```

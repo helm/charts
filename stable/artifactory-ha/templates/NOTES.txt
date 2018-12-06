@@ -1,5 +1,7 @@
 Congratulations. You have just deployed JFrog Artifactory HA!
 
+#### THIS CHART IS DEPRECATED! ####
+
 {{- if eq .Values.artifactory.masterKey "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF" }}
 
 

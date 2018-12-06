@@ -1,106 +1,302 @@
-Anchore Engine Helm Chart
-=========================
+# Anchore Engine Helm Chart
 
-This chart deploys the Anchore Engine docker container image analysis system. Anchore Engine
-requires a PostgreSQL database (>=9.6) which may be handled by the chart or supplied externally,
-and executes in a 2-tier architecture with an api/control layer and a batch execution worker pool layer.
+This chart deploys the Anchore Engine docker container image analysis system. Anchore Engine requires a PostgreSQL database (>=9.6) which may be handled by the chart or supplied externally, and executes in a service based architecture utilizing the following Anchore Engine services: External API, Simplequeue, Catalog, Policy Engine, and Analyzer.
+
+This chart can also be used to install the following Anchore Enterprise services: GUI, RBAC, On-prem Feeds. Enterprise services require a valid Anchore Enterprise License as well as credentials with access to the private dockerhub repository hosting the images. These are not enabled by default.
+
+Each of these services can be scaled and configured independently.
 
 See [Anchore Engine](https://github.com/anchore/anchore-engine) for more project details.
 
 
-Chart Details
--------------
+## Chart Details
 
-The chart is split into three primary sections: GlobalConfig, CoreConfig, WorkerConfig. As the name implies,
-the GlobalConfig is for configuration values that all components require, while the Core and Worker sections are
-tier-specific and allow customization for each role.
+The chart is split into global and service specific configurations for the OSS Anchore Engine, as well as global and services specific configurations for the Enterprise components.
 
-NOTE: It is highly recommended to set a non-default password when deploying. The admin password is set to a default in the chart. To customize it use:
- `--set globalConfig.users.admin.password=<pass>` or set it in the values.yaml locally.
+  * The `anchoreGlobal` section is for configuration values required by all Anchore Engine components.
+  * The `anchoreEnterpriseGlobal` section is for configuration values required by all Anchore Engine Enterprise components.
+  * Service specific configuration values allow customization for each individual service.
 
+For a description of each component, view the official documentation at: [Anchore Enterprise Service Overview](https://anchore.freshdesk.com/support/solutions/articles/36000098518-enterprise-service-overview-and-architecture)
 
-### Core Role
-The core services provide the apis and state management for the system. Core services must be available within the cluster
-for use by the workers.
-* Core component provides webhook calls to external services for notifications of events:
-  * New images added
-  * CVE changes in images
-  * Policy evaluation state change for an image
+## Installing the Anchore Engine OSS Chart
+TL;DR - `helm install stable/anchore-engine`
 
+The recommended way to install the Anchore Engine Chart is with a customized values file and a custom release name. Create a new file named `anchore_values.yaml` and add all desired custom values (examples below); then run the following command:
 
-### Worker Role
-The workers download and analyze images and upload results to the core services. The workers poll the queue service and
-do not have their own external api.
+  `helm install --name <release_name> -f anchore_values.yaml stable/anchore-engine`
 
+Note: It is highly recommended to set non-default passwords when deploying. All passwords are set to defaults specified in the chart.
 
-Installing the Chart
---------------------
+##### Install using chart managed PostgreSQL service with custom passwords.
+  ```
+  ## anchore_values.yaml
 
-Deploying PostgreSQL as a dependency managed in the chart:
+  postgresql:
+    postgresPassword: <PASSWORD>
+    persistence:
+      size: 50Gi
 
-`helm install stable/anchore-engine`
+  anchoreGlobal:
+    defaultAdminPassword: <PASSWORD>
+    defaultAdminEmail: <EMAIL>
+  ```
 
+## Upgrading to Chart version 0.9.0
 
-Using an existing/external PostgreSQL service:
+Version 0.9.0 of the anchore-engine helm chart includes major changes to the architecture, values.yaml file, as well as introduced Anchore Enterprise components. Due to these changes, it is highly recommended that upgrades are handled with caution. Any custom values.yaml files will also need to be adjusted to match the new structure. Version upgrades have only been validated when upgrading from 0.2.6 -> 0.9.0.
 
-`helm install --name <name> --set postgresql.enabled=False stable/anchore-engine`
+`helm upgrade <release_name> stable/anchore-engine`
 
+When upgrading the Chart from version 0.2.6 to version 0.9.0, it will take approximately 5 minutes for anchore-engine to upgrade the database.
+To ensure that the upgrade has completed, run the `anchore-cli system status` command and verify the engine & db versions match the output below.
 
-This installs the chart in cluster-local mode. To expose the service outside the chart there are two options:
-1. Use a LoadBalancer service type by setting the `service.type=LoadBalancer` in the values.yaml or on CLI
-2. Use an ingress by setting `ingress.enabled=True` in the values.yaml or on CLI
+```
+Engine DB Version: 0.0.8
+Engine Code Version: 0.3.0
+```
 
+## Configuration
 
-
-Configuration
--------------
-
+All configurations should be appended to your custom `anchore_values.yaml` file and utilized when installing the chart.
 While the configuration options of Anchore Engine are extensive, the options provided by the chart are:
 
-### Exposing the service outside the cluster:
+#### Exposing the service outside the cluster:
 
-* Use ingress, which enables SSL termination at the LB:
-  * ingress.enabled=True (may require service.type=NodePort for some K8s installations e.g. GKE)
+Use ingress, which enables SSL termination at the LB:
+  ```
+  anchoreGlobal:
+    ingress:
+      enabled: true
+  ```
 
-* Use a LoadBalancer service type:
-  * service.type=LoadBalancer 
+Use a LoadBalancer service type:
+  ```
+  anchoreGlobal:
+    service:
+      type: LoadBalancer
+  ```
 
+#### Install using an existing/external PostgreSQL service:
+  ```
+  postgresql:
+    postgresPassword: <PASSWORD>
+    postgresUser: <USER>
+    postgresDatabase: <DATABASE>
+    enabled: false
+    externalEndpoint: <HOSTNAME:5432>
 
-### Database
+  anchoreGlobal:
+    dbConfig:
+      ssl: true
+  ```
 
-* External Postgres (not managed by helm)
-  * postgresql.enabled=False
-  * postgresql.externalEndpoint=myserver.mypostgres.com:5432
-  * postgresql.postgresUser=username
-  * postgresql.postgresPassword=password
-  * postgresql.postgresDatabase=db name  
-  * globalConfig.dbConfig.ssl=True
+### Archive Driver
 
+The archive subsystem of Anchore Engine is what stores large json documents and can consume quite a lot of storage if
+you analyze a lot of images. A general rule for storage provisioning is 10MB per image analyzed, so with thousands of
+analyzed images, you may need many gigabytes of storage. The Archive drivers now support other backends than just postgresql,
+so you can leverage external and scalable storage systems and keep the postgresql storage usage to a much lower level.
 
-### Policy Sync from anchore.io
-anchore.io is a hosted version of anchore engine that includes a UI and policy editor. You can configure a local anchore-engine
-to download and keep the policy bundles in sync (policies defining how to evaluate images).
-Simply provide the credentials for your anchore.io account in the values.yaml or using `--set` on CLI to enable:
+##### Configuring Compression:
 
-* coreConfig.policyBundleSyncEnabled=True
-* globalConfig.users.admin.anchoreIOCredentials.useAnonymous=False
-* globalConfig.users.admin.anchoreIOCredentials.user=username
-* globalConfig.users.admin.anchoreIOCredentials.password=password
+The archive system has compression available to help reduce size of objects and storage consumed in exchange for slightly
+slower performance and more cpu usage. There are two config values:
 
+To toggle on/off (default is True), and set a minimum size for compression to be used (to avoid compressing things too small to be of much benefit, the default is 100):
 
-Adding Workers
---------------
+  ```
+  anchoreCatalog:
+    archive:
+      compression:
+        enabled=True
+        min_size_kbytes=100
+  ```
 
-To set a specific number of workers once the service is running:
+##### The supported archive drivers are:
 
-If using defaults from the chart:
+* S3 - Any AWS s3-api compatible system (e.g. minio, scality, etc)
+* OpenStack Swift
+* Local FS - A local filesystem on the core pod. Does not handle sharding or replication, so generally only for testing.
+* DB - the default postgresql backend
 
-`helm upgrade --set workerConfig.replicaCount=2 <releasename> stable/anchore-engine`
+#### S3:
+  ```
+  anchoreCatalog:
+    archive:
+      storage_driver:
+        name: 's3'
+        config:
+          access_key: 'MY_ACCESS_KEY'
+          secret_key: 'MY_SECRET_KEY'
+          #iamauto: True
+          url: 'https://S3-end-point.example.com'
+          region: null
+          bucket: 'anchorearchive'
+          create_bucket: True
+      compression:
+      ... # Compression config here
+  ```
 
-If customized values, use the local directory for the chart values:
+#### Using Swift:
 
-`helm upgrade --set workerConfig.replicaCount=2 <releasename> ./anchore-engine`
+The swift configuration is basically a pass-thru to the underlying pythonswiftclient so it can take quite a few different
+options depending on your swift deployment and config. The best way to configure the swift driver is by using a custom values.yaml
 
-To launch with more than one worker you can either modify values.yaml or run with:
+The Swift driver supports three authentication methods:
 
-`helm install --set workerConfig.replicaCount=2 stable/anchore-engine`
+* Keystone V3
+* Keystone V2
+* Legacy (username / password)
+
+##### Keystone V3:
+  ```
+  anchoreCatalog:
+    archive:
+      storage_driver:
+        name: swift
+        config:
+          auth_version: '3'
+          os_username: 'myusername'
+          os_password: 'mypassword'
+          os_project_name: myproject
+          os_project_domain_name: example.com
+          os_auth_url: 'foo.example.com:8000/auth/etc'
+          container: 'anchorearchive'
+          # Optionally
+          create_container: True
+      compression:
+      ... # Compression config here
+  ```
+
+##### Keystone V2:
+  ```
+  anchoreCatalog:
+    archive:
+      storage_driver:    
+        name: swift
+        config:
+          auth_version: '2'
+          os_username: 'myusername'
+          os_password: 'mypassword'
+          os_tenant_name: 'mytenant'
+          os_auth_url: 'foo.example.com:8000/auth/etc'
+          container: 'anchorearchive'
+          # Optionally
+          create_container: True
+      compression:
+      ... # Compression config here
+  ```
+
+##### Legacy username/password:
+  ```
+  anchoreCatalog:
+    archive:
+      storage_driver:
+        name: swift
+        config:
+          user: 'user:password'
+          auth: 'http://swift.example.com:8080/auth/v1.0'
+          key:  'anchore'
+          container: 'anchorearchive'
+          # Optionally
+          create_container: True
+      compression:
+      ... # Compression config here
+  ```
+
+#### Postgresql:
+
+This is the default archive driver and requires no additional configuration.
+
+### Prometheus Metrics
+
+Anchore Engine supports exporting prometheus metrics form each container. To enable metrics:
+  ```
+  anchoreGlobal:
+    enableMetrics: True
+  ```
+
+When enabled, each service provides the metrics over the existing service port so your prometheus deployment will need to
+know about each pod and the ports it provides to scrape the metrics.
+
+### Event Notifications
+
+Anchore Engine in v0.2.3 introduces a new events subsystem that exposes system-wide events via both a REST api as well
+as via webhooks. The webhooks support filtering to ensure only certain event classes result in webhook calls to help limit
+the volume of calls if you desire. Events, and all webhooks, are emitted from the core components, so configuration is
+done in the coreConfig.
+
+To configure the events:
+  ```
+  anchoreCatalog:
+    events:
+      notification:
+        enabled:true
+      level=error
+  ```
+
+### Scaling Individual Components
+
+As of Anchore Engine v0.3.0, all services can now be scaled-out by increasing the replica counts. The chart now supports
+this configuration.
+
+To set a specific number of service containers:
+  ```
+  anchoreAnalyzer:
+    replicaCount: 5
+
+  anchorePolicyEngine:
+    replicaCount: 3
+  ```
+
+To update the number in a running configuration:
+
+`helm upgrade --set anchoreAnalyzer.replicaCount=2 <releasename> stable/anchore-engine -f anchore_values.yaml`
+
+## Adding Enterprise Components
+
+ The following features are available to Anchore Enterprise customers. Please contact the Anchore team for more information about getting a license for the enterprise features. [Anchore Enterprise Demo](https://anchore.com/demo/)
+
+### Enabling Enterprise Services
+Enterprise services require an Anchore Enterprise license, as well as credentials with
+permission to the private docker repositories that contain the enterprise images.
+
+To use this Helm chart with the enterprise services enabled, perform these steps.
+
+1. Create a kubernetes secret containing your license file.
+
+    `kubectl create secret generic anchore-enterprise-license --from-file=license.yaml=<PATH/TO/LICENSE.YAML>`
+
+1. Create a kubernetes secret containing dockerhub credentials with access to the private anchore enterprise repositories.
+
+    `kubectl create secret docker-registry anchore-enterprise-pullcreds --docker-server=docker.io --docker-username=<DOCKERHUB_USER> --docker-password=<DOCKERHUB_PASSWORD> --docker-email=<EMAIL_ADDRESS>`
+
+1. Install the helm chart using a custom anchore_values.yaml file (see examples below)
+
+    `helm install --name <release_name> -f /path/to/anchore_values.yaml stable/anchore-engine`
+
+##### Example anchore_values.yaml file for installing Anchore Enterprise
+Note: This installs with chart managed PostgreSQL & Redis databases.
+  ```
+  ## anchore_values.yaml
+
+  postgresql:
+    postgresPassword: <PASSWORD>
+    persistence:
+      size: 50Gi
+
+  anchoreGlobal:
+    defaultAdminPassword: <PASSWORD>
+    defaultAdminEmail: <EMAIL>
+    enableMetrics: True
+
+  anchoreEnterpriseGlobal:
+    enabled: True
+
+  anchore-feeds-db:
+    postgresPassword: <PASSWORD>
+
+  anchore-ui-redis:
+    password: <PASSWORD>
+  ```

@@ -9,4 +9,4 @@ maintainers:
 - name: acondrat
   email: arcadie.condrat@gmail.com
 name: prometheus-to-sd
-version: 0.1.0
+version: 0.1.1

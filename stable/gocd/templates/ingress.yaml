@@ -1,3 +1,4 @@
+{{- if .Values.server.enabled }}
 {{- if .Values.server.ingress.enabled -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
@@ -25,4 +26,5 @@ spec:
   tls:
 {{ toYaml .Values.server.ingress.tls | indent 4 }}
   {{- end -}}
+{{- end -}}
 {{- end -}}
