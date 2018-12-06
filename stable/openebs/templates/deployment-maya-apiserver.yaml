@@ -39,10 +39,6 @@ spec:
         # This is supported for maya api server version 0.5.2 onwards
         #- name: OPENEBS_IO_K8S_MASTER
         #  value: "http://172.28.128.3:8080"
-        # OPENEBS_IO_INSTALL_CONFIG_NAME specifies the config map containing the install configuration.
-        # Currently, the configuration can be used to specifiy the default version for the CAS Templates
-        - name: OPENEBS_IO_INSTALL_CONFIG_NAME
-          value: {{ template "openebs.fullname" . }}-install-config
 {{- if .Values.ndm.sparse }}
 {{- if .Values.ndm.sparse.enabled }}
         # OPENEBS_IO_INSTALL_DEFAULT_CSTOR_SPARSE_POOL decides whether default cstor sparse pool should be
@@ -86,6 +82,14 @@ spec:
           value: "{{ .Values.cstor.volumeMgmt.image }}:{{ .Values.cstor.volumeMgmt.imageTag }}"
         - name: OPENEBS_IO_VOLUME_MONITOR_IMAGE
           value: "{{ .Values.policies.monitoring.image }}:{{ .Values.policies.monitoring.imageTag }}"
+        # OPENEBS_IO_ENABLE_ANALYTICS if set to true sends anonymous usage
+        # events to Google Analytics
+        - name: OPENEBS_IO_ENABLE_ANALYTICS
+          value: "{{ .Values.analytics.enabled }}"
+        # OPENEBS_IO_ANALYTICS_PING_INTERVAL can be used to specify the duration (in hours)
+        # for periodic ping events sent to Google Analytics. Default is 24 hours.
+        - name: OPENEBS_IO_ANALYTICS_PING_INTERVAL
+          value: "{{ .Values.analytics.pingInterval }}"
 {{- if .Values.apiserver.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.apiserver.nodeSelector | indent 8 }}
