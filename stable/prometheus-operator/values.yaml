@@ -478,6 +478,9 @@ prometheusOperator:
   ##
   podLabels: {}
 
+  ## Assign a PriorityClassName to pods if set
+  # priorityClassName: ""
+
   ## If true, the operator will create and maintain a service for scraping kubelets
   ## ref: https://github.com/coreos/prometheus-operator/blob/master/helm/prometheus-operator/README.md
   ##
@@ -526,6 +529,10 @@ prometheusOperator:
   #       values:
   #       - e2e-az1
   #       - e2e-az2
+
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 65534
 
   ## Prometheus-operator image
   ##

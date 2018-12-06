@@ -131,7 +131,7 @@
         "AmazonS3SignV2": false
     },
     "EmailSettings": {
-        "EnableSignUpWithEmail": true,
+        "EnableSignUpWithEmail": {{ .Values.config.enableSignUpWithEmail }},
         "EnableSignInWithEmail": true,
         "EnableSignInWithUsername": true,
         {{ if .Values.config.smtpServer }}
