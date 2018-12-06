@@ -8,6 +8,9 @@ serviceType: LoadBalancer
 whiteListSourceRange: []
 externalTrafficPolicy: Cluster
 replicas: 1
+# startupArguments:
+#   - "--ping"
+#   - "--ping.entrypoint=http"
 
 podDisruptionBudget: {}
   # maxUnavailable: 1
