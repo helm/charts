@@ -1,6 +1,6 @@
 apiVersion: v1
 appVersion: "1.0.0.0"
-description: A Helm chart for the GCP Kafka PubSub Emulator
+description: A Helm chart for the GCP Kafka PubSub Emulator - https://github.com/GoogleCloudPlatform/kafka-pubsub-emulator
 keywords:
   - google cloud platform
   - kafka
@@ -11,4 +11,6 @@ keywords:
 name: kafka-pubsub-emulator
 sources:
   - https://github.com/GoogleCloudPlatform/kafka-pubsub-emulator
+maintainers:
+  - riccardomc
 version: 0.1.0
