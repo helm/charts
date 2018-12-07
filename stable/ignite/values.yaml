@@ -11,26 +11,25 @@ fullnameOverride: ""
 
 rbac: yes
 
-ignite:
-  env:
-    OPTION_LIBS: "ignite-kubernetes,ignite-rest-http"
-    IGNITE_QUIET: "false"
-    JVM_OPTS: "-Djava.net.preferIPv4Stack=true"
-  peerClassLoadingEnabled: false
-  dataStorage:
-    enabled: false
-    persistenceVolume:
-      size: 8Gi
-      provisioner: kubernetes.io/aws-ebs
-      provisionerParameters:
-        type: gp2
-        fsType: ext4
-    walVolume:
-      size: 8Gi
-      provisioner: kubernetes.io/aws-ebs
-      provisionerParameters:
-        type: gp2
-        fsType: ext4
+env:
+  OPTION_LIBS: "ignite-kubernetes,ignite-rest-http"
+  IGNITE_QUIET: "false"
+  JVM_OPTS: "-Djava.net.preferIPv4Stack=true"
+peerClassLoadingEnabled: false
+dataStorage:
+  enabled: false
+  persistenceVolume:
+    size: 8Gi
+    provisioner: kubernetes.io/aws-ebs
+    provisionerParameters:
+      type: gp2
+      fsType: ext4
+  walVolume:
+    size: 8Gi
+    provisioner: kubernetes.io/aws-ebs
+    provisionerParameters:
+      type: gp2
+      fsType: ext4
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious

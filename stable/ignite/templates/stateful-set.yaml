@@ -33,9 +33,9 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         resources:
 {{ toYaml .Values.resources | indent 10 }}
-{{- if .Values.ignite.env }}
+{{- if .Values.env }}
         env:
-{{- range $name, $value := .Values.ignite.env }}
+{{- range $name, $value := .Values.env }}
         - name: "{{ $name }}"
           value: "{{ $value }}"
 {{- end }}
@@ -49,7 +49,7 @@ spec:
         - containerPort: 8080 # REST port number.
         - containerPort: 10900 #Thin clients port number.
         volumeMounts:
-{{- if (.Values.ignite.dataStorage.enabled) }}
+{{- if (.Values.dataStorage.enabled) }}
         - mountPath: "/wal"
           name: ignite-wal
         - mountPath: "/persistence"
@@ -70,7 +70,7 @@ spec:
 {{ toYaml . | indent 8 }}
     {{- end }}
   volumeClaimTemplates:
-{{- if (.Values.ignite.dataStorage.enabled) }}
+{{- if (.Values.dataStorage.enabled) }}
   - metadata:
       name: ignite-persistence
     spec:
@@ -78,7 +78,7 @@ spec:
       storageClassName: "{{ include "ignite.fullname" . }}-persistence-storage-class"
       resources:
         requests:
-          storage: {{ .Values.ignite.dataStorage.persistenceVolume.size }}
+          storage: {{ .Values.dataStorage.persistenceVolume.size }}
   - metadata:
       name: ignite-wal
     spec:
@@ -86,5 +86,5 @@ spec:
       storageClassName: "{{ include "ignite.fullname" . }}-wal-storage-class"
       resources:
         requests:
-          storage: {{ .Values.ignite.dataStorage.walVolume.size }}
+          storage: {{ .Values.dataStorage.walVolume.size }}
 {{- end }}
