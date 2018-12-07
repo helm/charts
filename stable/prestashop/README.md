@@ -91,6 +91,16 @@ The following table lists the configurable parameters of the PrestaShop chart an
 | `persistence.existingClaim`           | An Existing PVC name for Apache volume                                                       | `nil` (uses alpha storage class annotation)             |
 | `persistence.accessMode`              | PVC Access Mode for PrestaShop volume                                                        | `ReadWriteOnce`                                         |
 | `persistence.size`                    | PVC Storage Request for PrestaShop volume                                                    | `8Gi`                                                   |
+| `ingress.enabled`                | Enable ingress controller resource         | `false`                                                 |
+| `ingress.hosts[0].name`          | Hostname to your WordPress installation    | `wordpress.local`                                       |
+| `ingress.hosts[0].path`          | Path within the url structure              | `/`                                                     |
+| `ingress.hosts[0].tls`           | Utilize TLS backend in ingress             | `false`                                                 |
+| `ingress.hosts[0].certManager`   | Add annotations for cert-manager           | `false`                                                 |
+| `ingress.hosts[0].tlsSecret`     | TLS Secret (certificates)                  | `wordpress.local-tls-secret`                            |
+| `ingress.hosts[0].annotations`   | Annotations for this host's ingress record | `[]`                                                    |
+| `ingress.secrets[0].name`        | TLS Secret Name                            | `nil`                                                   |
+| `ingress.secrets[0].certificate` | TLS Secret Certificate                     | `nil`                                                   |
+| `ingress.secrets[0].key`         | TLS Secret Key                             | `nil`                                                   |
 | `resources`                           | CPU/Memory resource requests/limits                                                          | Memory: `512Mi`, CPU: `300m`                            |
 | `livenessProbe.initialDelaySeconds`   | Delay before liveness probe is initiated                                                     | 600                                                     |
 | `livenessProbe.periodSeconds`         | How often to perform the probe                                                               | 3                                                       |

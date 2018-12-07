@@ -43,10 +43,19 @@ host. To configure PrestaShop with the URL of your service:
 {{- end }}
 
 {{- else -}}
+
+{{- if .Values.ingress.enabled }}
+
+  You should be able to access your new Prestashop installation through
+
+  {{- range .Values.ingress.hosts }}
+  {{ if .tls }}https{{ else }}http{{ end }}://{{ .name }}
+  {{- end }}
+
+
+{{- else if eq .Values.service.type "ClusterIP" }}
+
 1. Get the PrestaShop URL by running:
-
-{{- if eq .Values.service.type "ClusterIP" }}
-
   echo "Store URL: http://127.0.0.1:8080/"
   echo "Admin URL: http://127.0.0.1:8080/administration"
   kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "prestashop.fullname" . }} 8080:{{ .Values.service.port }}
