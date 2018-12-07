@@ -28,11 +28,6 @@ image:
 ##
 # prestashopHost:
 
-## loadBalancerIP for the PrestaShop Service (optional, cloud specific)
-## ref: http://kubernetes.io/docs/user-guide/services/#type-loadbalancer
-##
-# prestashopLoadBalancerIP:
-
 ## User of the application
 ## ref: https://github.com/bitnami/bitnami-docker-prestashop#configuration
 ##
@@ -145,11 +140,26 @@ mariadb:
 ## Kubernetes configuration
 ## For minikube, set this to NodePort, elsewhere use LoadBalancer
 ##
-serviceType: LoadBalancer
-
-## Set external traffic policy to: "Local" to preserve source IP on providers supporting it
-## ref: https://kubernetes.io/docs/tutorials/services/source-ip/#source-ip-for-services-with-type-nodeport
-externalTrafficPolicy: Local
+service:
+  type: LoadBalancer
+  # HTTP Port
+  port: 80
+  # HTTPS Port
+  httpsPort: 44
+  ## loadBalancerIP for the PrestaShop Service (optional, cloud specific)
+  ## ref: http://kubernetes.io/docs/user-guide/services/#type-loadbalancer
+  ## loadBalancerIP
+  ##
+  ## nodePorts:
+  ##   http: <to set explicitly, choose port between 30000-32767>
+  ##   https: <to set explicitly, choose port between 30000-32767>
+  nodePorts:
+    http: ""
+    https: ""
+  ## Enable client source IP preservation
+  ## ref http://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip
+  ##
+  externalTrafficPolicy: Local
 
 ## Control where client requests go, to the same pod or round-robin
 ## Values: ClientIP or None

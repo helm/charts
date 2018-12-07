@@ -75,7 +75,13 @@ The following table lists the configurable parameters of the TestLink chart and 
 | `mariadb.db.user`                   | Database user to create                 | `bn_testlink`                                           |
 | `mariadb.db.password`               | Password for the database               | `nil`                                                   |
 | `mariadb.rootUser.password`         | MariaDB admin password                  | `nil`                                                   |
-| `serviceType`                       | Kubernetes Service type                 | `LoadBalancer`                                          |
+| `service.type`                    | Kubernetes Service type                    | `LoadBalancer`                                          |
+| `service.port`                    | Service HTTP port                  | `80`                                          |
+| `service.httpsPort`                    | Service HTTPS port                   | `443`                                          |
+| `service.nodePorts.http`                 | Kubernetes http node port                  | `""`                                                    |
+| `service.nodePorts.https`                | Kubernetes https node port                 | `""`                                                    |
+| `service.externalTrafficPolicy`   | Enable client source IP preservation       | `Cluster`                                               |
+| `service.loadBalancerIP`   | LoadBalancer service IP address       | `""`                                               |
 | `persistence.enabled`               | Enable persistence using PVC            | `true`                                                  |
 | `persistence.apache.storageClass`   | PVC Storage Class for Apache volume     | `nil` (uses alpha storage class annotation)             |
 | `persistence.apache.accessMode`     | PVC Access Mode for Apache volume       | `ReadWriteOnce`                                         |

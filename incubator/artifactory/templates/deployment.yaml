@@ -1,0 +1,37 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{template "fullname" .}}
+  labels:
+    app: {{ template "fullname" . }}
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+spec:
+  replicas: {{default 1 .Values.replicaCount}}
+  template:
+    metadata:
+      labels:
+        app: {{template "fullname" .}}
+        release: {{.Release.Name | quote }}
+    spec:
+      containers:
+      - name: {{ template "fullname" . }}
+        image: "{{ .Values.image}}:{{ .Values.imageTag}}"
+        imagePullPolicy: {{default "IfNotPresent" .Values.ImagePullPolicy}}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        ports:
+        - containerPort: 8081
+          name: http
+        volumeMounts:
+        - name: etc
+          mountPath: /var/opt/jfrog/artifactory/etc
+        - name: logs
+          mountPath: /var/opt/jfrog/artifactory/logs
+        - name: data
+          mountPath: /var/opt/jfrog/artifactory/data
+      volumes:
+        - name: data
+        - name: logs
+        - name: etc
