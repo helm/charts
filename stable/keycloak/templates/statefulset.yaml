@@ -32,11 +32,11 @@ spec:
     spec:
       securityContext:
 {{ toYaml .Values.keycloak.securityContext | indent 8 }}
-    {{- if .Values.keycloak.image.pullSecrets }}
+    {{- with .Values.keycloak.image.pullSecrets }}
       imagePullSecrets:
-    {{- range .Values.keycloak.image.pullSecrets }}
-      - name: {{ . }}
-    {{- end }}
+      {{- range . }}
+        - name: {{ . }}
+      {{- end }}
     {{- end }}
     {{- if or .Values.keycloak.persistence.deployPostgres .Values.keycloak.extraInitContainers }}
       initContainers:
