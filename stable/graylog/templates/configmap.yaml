@@ -84,7 +84,7 @@ data:
         </Loggers>
     </Configuration>
   graylog.conf: |-
-    node_id_file = /usr/share/graylog/data/node-id
+    node_id_file = /usr/share/graylog/data/journal/node-id
     root_username = {{ .Values.graylog.rootUsername }}
     root_email = {{ .Values.graylog.rootEmail }}
     root_timezone = {{ default "UTC" .Values.graylog.rootTimezone }}
