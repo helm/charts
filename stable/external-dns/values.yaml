@@ -21,6 +21,8 @@ provider: aws
 aws:
   secretKey: ""
   accessKey: ""
+  # pre external-dns 0.5.9 home dir should be `/root/.aws`
+  credentialsPath: "/.aws"
   roleArn: ""
   region: "us-east-1"
   # Filter for zones of this type (optional, options: public, private)
@@ -118,6 +120,13 @@ rbac:
   ## Ignored if rbac.create is true
   ##
   serviceAccountName: default
+
+securityContext: {}
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 65534 # 65534 is nobody - revise aws.credentialsPath when changing uid
+  # capabilities:
+  #   drop: ["ALL"]
 
 service:
   annotations: {}
