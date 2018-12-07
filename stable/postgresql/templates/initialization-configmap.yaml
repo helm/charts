@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "postgresql.fullname" . }}-init-scripts
+  labels:
+    app: {{ template "postgresql.name" . }}
+    chart: {{ template "postgresql.chart" . }}
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+data:
+{{ (.Files.Glob "files/docker-entrypoint-initdb.d/*").AsConfig | indent 2 }}
+{{- with .Values.initdbScripts }}
+{{ toYaml . | indent 2 }}
+{{- end }}

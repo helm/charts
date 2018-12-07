@@ -1,0 +1,7 @@
+## Name of CA, stored in FABRIC_CA_SERVER_CA_NAME (and the configMap "--config", if deploying a Root CA)
+caName: rca
+
+postgresql:
+  ## Whether to deploy a postgres server to satisfy the Fabric CA database requirements.
+  # To use an external database set this to false and configure the externalDatabase parameters, specifying the type to 'postgres'
+  enabled: true

@@ -1,3 +1,4 @@
+{{- if not .Values.server.statefulSet.enabled -}}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -6,13 +7,12 @@ metadata:
 {{ toYaml .Values.server.deploymentAnnotations | indent 4 }}
 {{- end }}
   labels:
-    app: {{ template "prometheus.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    component: "{{ .Values.server.name }}"
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    {{- include "prometheus.server.labels" . | nindent 4 }}
   name: {{ template "prometheus.server.fullname" . }}
 spec:
+  selector:
+    matchLabels:
+      {{- include "prometheus.server.matchLabels" . | nindent 6 }}
   replicas: {{ .Values.server.replicaCount }}
   {{- if .Values.server.strategy }}
   strategy:
@@ -25,9 +25,7 @@ spec:
 {{ toYaml .Values.server.podAnnotations | indent 8 }}
     {{- end }}
       labels:
-        app: {{ template "prometheus.name" . }}
-        component: "{{ .Values.server.name }}"
-        release: {{ .Release.Name }}
+        {{- include "prometheus.server.labels" . | nindent 8 }}
     spec:
 {{- if .Values.server.affinity }}
       affinity:
@@ -63,6 +61,9 @@ spec:
             - --webhook-url=http://127.0.0.1:9090{{ .Values.server.prefixURL }}/-/reload
           {{- range $key, $value := .Values.configmapReload.extraArgs }}
             - --{{ $key }}={{ $value }}
+          {{- end }}
+          {{- range .Values.configmapReload.extraVolumeDirs }}
+            - --volume-dir={{ . }}
           {{- end }}
           resources:
 {{ toYaml .Values.configmapReload.resources | indent 12 }}
@@ -138,6 +139,10 @@ spec:
               subPath: {{ .subPath }}
               readOnly: {{ .readOnly }}
           {{- end }}
+    {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+       {{ toYaml .Values.imagePullSecrets | indent 2 }}
+    {{- end }}
     {{- if .Values.server.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.server.nodeSelector | indent 8 }}
@@ -191,3 +196,4 @@ spec:
           configMap:
             name: {{ .configMap }}
       {{- end }}
+{{- end -}}

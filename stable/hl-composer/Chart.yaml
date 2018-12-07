@@ -1,7 +1,7 @@
 apiVersion: v1
 description: Hyperledger Composer REST Server chart
 name: hl-composer
-version: 1.0.9
+version: 1.0.11
 appVersion: 0.20.0
 keywords:
   - blockchain

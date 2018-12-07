@@ -37,9 +37,13 @@ The following table lists the configurable parameters of the mongodb chart and t
 | `replicaSetName`                    | The name of the replica set                                               | `rs0`                                               |
 | `podDisruptionBudget`               | Pod disruption budget                                                     | `{}`                                                |
 | `port`                              | MongoDB port                                                              | `27017`                                             |
+| `imagePullSecrets`                  | Image pull secrets                                                        | `[]`                                                  |
 | `installImage.repository`           | Image name for the install container                                      | `k8s.gcr.io/mongodb-install`                        |
 | `installImage.tag`                  | Image tag for the install container                                       | `0.5`                                               |
 | `installImage.pullPolicy`           | Image pull policy for the init container that establishes the replica set | `IfNotPresent`                                      |
+| `copyConfigImage.repository`        | Image name for the copy config init container                             | `busybox`                                           |
+| `copyConfigImage.tag`               | Image tag for the copy config init container                              | `latest`                                            |
+| `copyConfigImage.pullPolicy`        | Image pull policy for the copy config init container                      | `Always`                                            |
 | `image.repository`                  | MongoDB image name                                                        | `mongo`                                             |
 | `image.tag`                         | MongoDB image tag                                                         | `3.6`                                               |
 | `image.pullPolicy`                  | MongoDB image pull policy                                                 | `IfNotPresent`                                      |
@@ -51,9 +55,12 @@ The following table lists the configurable parameters of the mongodb chart and t
 | `persistentVolume.accessMode`       | Persistent volume access modes                                            | `[ReadWriteOnce]`                                   |
 | `persistentVolume.size`             | Persistent volume size                                                    | `10Gi`                                              |
 | `persistentVolume.annotations`      | Persistent volume annotations                                             | `{}`                                                |
+| `terminationGracePeriodSeconds`     | Duration in seconds the pod needs to terminate gracefully                 | `30`                                                |
 | `tls.enabled`                       | Enable MongoDB TLS support including authentication                       | `false`                                             |
 | `tls.cacert`                        | The CA certificate used for the members                                   | Our self signed CA certificate                      |
 | `tls.cakey`                         | The CA key used for the members                                           | Our key for the self signed CA certificate          |
+| `init.resources`                    | Pod resource requests and limits (for init containers)                    | `{}`                                                |
+| `init.timeout`                      | The amount of time in seconds to wait for bootstrap to finish             | `900`                                               |
 | `metrics.enabled`                   | Enable Prometheus compatible metrics for pods and replicasets             | `false`                                             |
 | `metrics.image.repository`           | Image name for metrics exporter                                           | `ssalaues/mongodb-exporter`                         |
 | `metrics.image.tag`                  | Image tag for metrics exporter                                            | `0.6.1`                                             |
@@ -117,6 +124,12 @@ keys `user` and `password`, that for the key file must contain `key.txt`.  The u
 full `root` permissions but is restricted to the `admin` database for security purposes. It can be
 used to create additional users with more specific permissions.
 
+To connect to the mongo shell with authentication enabled, use a command similar to the following (substituting values as appropriate):
+
+```shell
+kubectl exec -it mongodb-replicaset-0 -- mongo mydb -u admin -p password --authenticationDatabase admin
+```
+
 ## TLS support
 
 To enable full TLS encryption set `tls.enabled` to `true`. It is recommended to create your own CA by executing:
@@ -137,7 +150,7 @@ configmap:
     port: 27017
     ssl:
       mode: requireSSL
-      CAFile: /ca/tls.crt
+      CAFile: /data/configdb/tls.crt
       PEMKeyFile: /work-dir/mongo.pem
   replication:
     replSetName: rs0

@@ -22,6 +22,7 @@ spec:
 {{ toYaml .Values.data.podAnnotations | indent 8 }}
         {{- end }}
     spec:
+      serviceAccountName: {{ template "elasticsearch.serviceAccountName.data" . }}
 {{- if .Values.data.priorityClassName }}
       priorityClassName: "{{ .Values.data.priorityClassName }}"
 {{- end }}
@@ -127,28 +128,29 @@ spec:
         - mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
           name: config
           subPath: elasticsearch.yml
-{{- if hasPrefix "2." .Values.image.tag }}
+{{- if hasPrefix "2." .Values.appVersion }}
         - mountPath: /usr/share/elasticsearch/config/logging.yml
           name: config
           subPath: logging.yml
 {{- end }}
-{{- if hasPrefix "5." .Values.image.tag }}
+{{- if hasPrefix "5." .Values.appVersion }}
         - mountPath: /usr/share/elasticsearch/config/log4j2.properties
           name: config
           subPath: log4j2.properties
 {{- end }}
-        - name: config
-          mountPath: /pre-stop-hook.sh
-          subPath: pre-stop-hook.sh
-        - name: config
-          mountPath: /post-start-hook.sh
-          subPath: post-start-hook.sh
 {{- if .Values.cluster.keystoreSecret }}
         - name: keystore
           mountPath: "/usr/share/elasticsearch/config/elasticsearch.keystore"
           subPath: elasticsearch.keystore
           readOnly: true
 {{- end }}
+{{- if .Values.data.hooks.drain.enabled }}
+        - name: config
+          mountPath: /pre-stop-hook.sh
+          subPath: pre-stop-hook.sh
+        - name: config
+          mountPath: /post-start-hook.sh
+          subPath: post-start-hook.sh
         lifecycle:
           preStop:
             exec:
@@ -156,6 +158,7 @@ spec:
           postStart:
             exec:
               command: ["/bin/bash","/post-start-hook.sh"]
+{{- end }}
       terminationGracePeriodSeconds: {{ .Values.data.terminationGracePeriodSeconds }}
 {{- if .Values.image.pullSecrets }}
       imagePullSecrets:

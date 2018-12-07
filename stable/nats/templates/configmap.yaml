@@ -1,4 +1,4 @@
-{{- $authPwd := default (randAlphaNum 10) .Values.auth.password -}}
+{{- $authPwd := default (include "nats.randomPassword" .) .Values.auth.password -}}
 {{- $clusterAuthPwd := default (include "nats.randomPassword" .) .Values.clusterAuth.password -}}
 apiVersion: v1
 kind: ConfigMap
@@ -11,8 +11,8 @@ metadata:
   name: {{ template "nats.fullname" . }}
 data:
   gnatsd.conf: |-
-    listen: 0.0.0.0:{{ .Values.clientService.port }}
-    http: 0.0.0.0:{{ .Values.monitoringService.port }}
+    listen: 0.0.0.0:{{ .Values.client.service.port }}
+    http: 0.0.0.0:{{ .Values.monitoring.service.port }}
 
     # Authorization for client connections
     {{- if .Values.auth.enabled }}
@@ -52,7 +52,7 @@ data:
 
     # Clustering definition
     cluster {
-      listen: 0.0.0.0:{{ .Values.clusterService.port }}
+      listen: 0.0.0.0:{{ .Values.cluster.service.port }}
 
       # Authorization for cluster connections
       {{- if .Values.clusterAuth.enabled }}
@@ -73,12 +73,12 @@ data:
       routes = [
         {{- if .Values.clusterAuth.enabled }}
         {{- if .Values.clusterAuth.user }}
-        nats://{{ .Values.clusterAuth.user }}:{{ $clusterAuthPwd }}@{{ template "nats.fullname" . }}-cluster:{{ .Values.clusterService.port }}
+        nats://{{ .Values.clusterAuth.user }}:{{ $clusterAuthPwd }}@{{ template "nats.fullname" . }}-cluster:{{ .Values.cluster.service.port }}
         {{- else if .Values.clusterAuth.token }}
-        nats://{{ .Values.clusterAuth.token }}@{{ template "nats.fullname" . }}-cluster:{{ .Values.clusterService.port }}
+        nats://{{ .Values.clusterAuth.token }}@{{ template "nats.fullname" . }}-cluster:{{ .Values.cluster.service.port }}
         {{- end }}
         {{- else }}
-        nats://{{ template "nats.fullname" . }}-cluster:{{ .Values.clusterService.port }}
+        nats://{{ template "nats.fullname" . }}-cluster:{{ .Values.cluster.service.port }}
         {{- end }}
       ]
     }

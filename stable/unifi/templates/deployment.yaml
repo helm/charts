@@ -41,13 +41,13 @@ spec:
               path: /status
               port: https-gui
               scheme: HTTPS
-              initialDelaySeconds: 30
+            initialDelaySeconds: 30
           readinessProbe:
             httpGet:
               path: /status
               port: https-gui
               scheme: HTTPS
-              initialDelaySeconds: 15
+            initialDelaySeconds: 15
           env:
             - name: TZ
               value: "{{ .Values.timezone }}"
