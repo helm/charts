@@ -6,9 +6,9 @@ stateful set pods are in "Running" state :
 
 and then execute:
 
-  kubectl exec -n {{ .Release.Namespace }} {{ include "ignite.fullname" . }}-0 -- /opt/ignite/apache-ignite-fabric/bin/control.sh --activate
+  kubectl exec -n {{ .Release.Namespace }} {{ include "ignite.fullname" . }}-0 -- /opt/ignite/apache-ignite/bin/control.sh --activate
 
 {{- end }}
 To check cluster state please run:
 
-  kubectl exec -n {{ .Release.Namespace }} {{ include "ignite.fullname" . }}-0 -- /opt/ignite/apache-ignite-fabric/bin/control.sh --state
+  kubectl exec -n {{ .Release.Namespace }} {{ include "ignite.fullname" . }}-0 -- /opt/ignite/apache-ignite/bin/control.sh --state
