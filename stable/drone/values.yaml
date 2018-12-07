@@ -1,4 +1,4 @@
-appVersion: "1.0.0-rc.1"
+appVersion: "1.0.0-rc.2"
 
 images:
   ## The official drone (server) image, change tag to use a different version.
@@ -6,34 +6,14 @@ images:
   ##
   server:
     repository: "docker.io/drone/drone"
-    tag: 1.0.0-rc.1
+    tag: 1.0.0-rc.2
     pullPolicy: IfNotPresent
 
-  ## The official drone (agent) image, change tag to use a different version.
-  ## ref: https://hub.docker.com/r/drone/agent/tags/
-  ##
-  agent:
-    repository: "docker.io/drone/agent"
-    tag: 1.0.0-rc.1
+  ## Rely on the cronjob to delete old drone jobs, if you're using k8s < 1.12
+  cronjob:
+    repository: "docker.io/lachlanevenson/k8s-kubectl"
+    tag: v1.9.3
     pullPolicy: IfNotPresent
-
-  ## The official docker (dind) image, change tag to use a different version.
-  ## ref: https://hub.docker.com/r/library/docker/tags/
-  ##
-  dind:
-    repository: "docker.io/library/docker"
-    tag: 18.06.1-ce-dind
-    pullPolicy: IfNotPresent
-
-  ## The official drone (secrets) images, change repository or tag to use a different version.
-  ## ref: https://docs.drone.io/extend/secrets/
-  ##
-  secrets:
-    # repository: "docker.io/drone/amazon-secrets"
-    repository: "docker.io/drone/kubernetes-secrets"
-    # repository: "docker.io/drone/vault-secrets"
-    tag: latest
-    pullPolicy: Always
 
 service:
   ## If service.type is not set to NodePort, the following statement
@@ -44,6 +24,14 @@ service:
   ## Service type can be set to ClusterIP, NodePort or LoadBalancer.
   ##
   type: ClusterIP
+
+
+  ## Drone Service annotations
+  ##
+  # annotations:
+  #   service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
+  #   service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:xx-xxxx-x:xxxxxxxxxxx:certificate/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx
+  #   external-dns.alpha.kubernetes.io/hostname: drone.domain.tld. 
 
 ingress:
   ## If true, Drone Ingress will be created.
@@ -72,11 +60,14 @@ ingress:
 server:
   ## If not set, it will be autofilled with the cluster host.
   ## Host must be the public hostname of the server
+  # host: "drone.domain.io"
+
   ## Scheme must match the public hostname, ie if ingress TLS or let's encrypt
   ## are enabled, scheme must be https.
-  ##
-  # host: "drone.domain.io"
   # scheme: "https"
+
+  ## Control the port the server listens on and whether or not cert/key is
+  ## generated for the server.
   letsEncrypt: false
 
   ## Drone server configuration.
@@ -94,6 +85,7 @@ server:
     ## Uncomment this and add your own custom configuration.
     ##
     # DRONE_GITHUB_CLIENT_ID: "github-oauth2-client-id"
+    # DRONE_GITHUB_SERVER: "https://github.com"
 
   ## Secret environment variables are configured in `server.envSecrets`.
   ## Each item in `server.envSecrets` references a Kubernetes Secret.
@@ -144,164 +136,6 @@ server:
   ##
   extraVolumes: |
 
-agent:
-  ## Drone agent configuration.
-  ## Values in here get injected as environment variables.
-  ## ref: https://docs.drone.io/reference/agent/
-  ## ref: https://docs.drone.io/reference/environ/
-  ##
-  env:
-    DRONE_LOGS_DEBUG: "false"
-    DRONE_RPC_DEBUG: "false"
-
-  ## Number of drone agent replicas
-  replicas: 1
-
-  ## Additional agent annotations.
-  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
-  ##
-  annotations: {}
-
-  ## CPU and memory limits for drone agent
-  ##
-  resources: {}
-  #  requests:
-  #    memory: 32Mi
-  #    cpu: 40m
-  #  limits:
-  #    memory: 2Gi
-  #    cpu: 1
-
-  ## Use an alternate scheduler, e.g. "stork".
-  ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
-  ##
-  # schedulerName:
-
-  ## Pod scheduling preferences.
-  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
-  ##
-  affinity: {}
-
-  ## Node labels for pod assignment
-  ## ref: https://kubernetes.io/docs/user-guide/node-selection
-  ##
-  nodeSelector: {}
-
-dind:
-  ## Enable or disable DinD
-  ## If disabled, the drone agent will spawn docker containers on the host. Pay
-  ## attention to the fact that we can't enforce resource constraints in that case.
-  ##
-  enabled: true
-
-  ## Values in here get injected as environment variables to DinD.
-  ## ref: http://readme.drone.io/admin/installation-reference
-  ##
-  #  env:
-  #    DRONE_LOGS_DEBUG: "false"
-
-  ## Allowing custom command and args to DinD
-  ## ref: https://discourse.drone.io/t/docker-mtu-problem/1207
-  ##
-  #  command: '["/bin/sh"]'
-  #  args: '["-c", "dockerd --host=unix:///var/run/docker.sock --host=tcp://127.0.0.1:2375 --mtu=1350"]'
-
-  ## Docker storage driver.
-  ## Your DinD instance should be using the same driver as your host.
-  ## ref: https://docs.docker.com/engine/userguide/storagedriver/selectadriver/
-  ##
-  driver: overlay2
-
-  ## CPU and memory limits for dind
-  ##
-  resources: {}
-  #  requests:
-  #    memory: 32Mi
-  #    cpu: 40m
-  #  limits:
-  #    memory: 2Gi
-  #    cpu: 1
-
-## Allow drone to access kubernetes secrets
-## ref: https://docs.drone.io/extend/secrets/
-secrets:
-  enabled: false
-
-  ## Drone secrets configuration.
-  ## Values in here get injected as environment variables.
-  ## As of this writing, environment variables are not documented
-  ## ref: https://github.com/drone/drone-kubernetes-secrets/blob/master/cmd/drone-kubernetes-secrets/main.go
-  ## ref: https://github.com/drone/drone-vault/blob/master/cmd/drone-vault/main.go
-  ## https://github.com/drone/drone-amazon-secrets/blob/master/cmd/drone-amazon-secrets/main.go
-  ##
-  env:
-    ## aws
-    # DEBUG: "false"
-    # SERVER_ADDR: ":3000"
-
-    ## kubernetes
-    DEBUG: "false"
-    KUBERNETES_CONFIG: "/etc/kubernetes/config"
-    # KUBERNETES_NAMESPACE: # defined automatically
-
-    ## vault
-    # DEBUG: "false"
-    # SERVER_ADDR: ":3000"
-    # VAULT_ADDR:
-    # VAULT_TOKEN_RENEWAL:
-    # VAULT_TOKEN_TTL:
-    # VAULT_AUTH_TYPE:
-    # VAULT_AUTH_MOUNT_POINT:
-    # VAULT_KUBERNETES_ROLE:
-
-  ## Additional secret server annotations.
-  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
-  ##
-  annotations: {}
-
-  ## CPU and memory limits for drone secret server
-  ##
-  resources: {}
-  #  requests:
-  #    memory: 32Mi
-  #    cpu: 40m
-  #  limits:
-  #    memory: 128Mi
-  #    cpu: 500m
-
-  ## Use an alternate scheduler, e.g. "stork".
-  ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
-  ##
-  # schedulerName:
-
-  ## Pod scheduling preferences.
-  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
-  ##
-  affinity: {}
-
-  ## Node labels for pod assignment
-  ## ref: https://kubernetes.io/docs/user-guide/node-selection
-  ##
-  nodeSelector: {}
-
-  ## additional siecar containers, e. g. for a database proxy, such as Google's cloudsql-proxy.
-  ## ex: https://github.com/kubernetes/charts/tree/master/stable/keycloak
-  ##
-  extraContainers: |
-
-  ## additional volumes, e. g. for kubernetes config secrets
-  ##
-  extraVolumes: |
-
-  ## additional volumes mounts, e. g. for kubernetes config secrets
-  ##
-  extraVolumeMounts: |
-
-## Enable scraping of the /metrics endpoint for Prometheus
-metrics:
-  prometheus:
-    enabled: false
-
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
 ##
@@ -340,4 +174,16 @@ serviceAccount:
   create: true
   ## The name of the ServiceAccount to use.
   ## If not set and create is true, a name is generated using the fullname template
-  name:
+  ## FIXME: Temporarily set to default, because spawned jobs can only use the default SA
+  name: default
+
+## Enable if you are using k8s < 1.12 or if you are not able to turn on
+#TTLAfterFinished
+## FIXME Once there's a generic label, for drone jobs, this command will simplify
+cronjob:
+  enabled: false
+  schedule: "0 0 * * *"
+  command:
+    - /bin/sh
+    - -c
+    - "KUBECTL='kubectl -n  $DRONE_KUBERNETES_NAMESPACE --certificate-authority=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt --token=`cat /var/run/secrets/kubernetes.io/serviceaccount/token`'; for field in succeeded failed; do eval $KUBECTL get job -o jsonpath=\"{.items[?\(@.status.\$field==1\)].metadata.name}\"| grep -- drone-job | awk '{print\$1}' | tee /tmp/jobs; [ -f /tmp/jobs ] && [ -s /tmp/jobs ] && eval $KUBECTL delete job \`cat /tmp/jobs\`; rm -f /tmp/jobs; done"

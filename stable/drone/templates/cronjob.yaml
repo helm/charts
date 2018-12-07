@@ -1,0 +1,45 @@
+{{- if .Values.cronjob.enabled }}
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: {{ template "drone.fullname" . }}
+  labels:
+    app: {{ template "drone.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  schedule: {{ default "MISSING" .Values.cronjob.schedule | quote }}
+  concurrencyPolicy: Forbid
+  startingDeadlineSeconds: 60
+  successfulJobsHistoryLimit: 10
+  failedJobsHistoryLimit: 10
+  jobTemplate:
+    metadata:
+      labels:
+        app: {{ template "drone.name" . }}
+        release: "{{ .Release.Name }}"
+        heritage: "{{ .Release.Service }}"
+    spec:
+      activeDeadlineSeconds: 60
+      template:
+        metadata:
+          labels:
+            app: {{ template "drone.name" . }}
+            release: "{{ .Release.Name }}"
+            heritage: "{{ .Release.Service }}"
+        spec:
+          serviceAccountName: {{ template "drone.serviceAccountName" . }}
+          restartPolicy: OnFailure
+          {{- if .Values.images.cronjob.imagePullSecrets }}
+          imagePullSecrets:
+            - name: {{ .Values.images.cronjob.imagePullSecrets }}
+          {{- end }}
+          containers:
+            - name: {{ template "drone.name" . }}
+              image: "{{ .Values.images.cronjob.repository }}:{{ .Values.images.cronjob.tag }}"
+              imagePullPolicy: "{{ .Values.images.cronjob.pullPolicy }}"
+              command:
+{{ toYaml .Values.cronjob.command | indent 16 }}
+
+{{- end }}
