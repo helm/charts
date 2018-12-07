@@ -75,6 +75,11 @@ data:
           {{- if .Values.ssl.cipherSuites }}
           {{ template "traefik.ssl.cipherSuites" . }}
           {{- end }}
+          {{- if .Values.ssl.mtls.enabled }}
+          [entryPoints.https.tls.ClientCA]
+          {{ template "traefik.ssl.mtls.clientCAs" . }}
+          optional = {{ .Values.ssl.mtls.optional }}
+          {{- end }}
           [[entryPoints.https.tls.certificates]]
           CertFile = "/ssl/tls.crt"
           KeyFile = "/ssl/tls.key"
