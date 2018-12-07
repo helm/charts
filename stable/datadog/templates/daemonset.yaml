@@ -25,7 +25,7 @@ spec:
     spec:
       {{- if .Values.datadog.securityContext }}
       securityContext:
-{{ toYaml .Values.daemonset.podAnnotations | indent 8 }}
+{{ toYaml .Values.datadog.securityContext | indent 8 }}
       {{- end }}
       {{- if .Values.daemonset.useHostNetwork }}
       hostNetwork: {{ .Values.daemonset.useHostNetwork }}
