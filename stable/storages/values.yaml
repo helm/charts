@@ -15,7 +15,7 @@ Claims:
   annotations: {}
   storage: 10Gi
   # if you speicify storageClassName then volumeName is ignored and claim is made with storageClass instead of volume
-  #storageClassName: efs
+  # storageClassName: efs
   volumeName: storage-volume
   labels:
     app: appname
