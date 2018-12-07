@@ -59,6 +59,8 @@ The following table lists the configurable parameters of the consul chart and th
 | `uiService.type`        | Dedicate Consul Web UI svc type       | `NodePort`                                                 |
 | `test.image`            | Test container image requires kubectl + bash (used for helm test)      | `lachlanevenson/k8s-kubectl` |
 | `test.imageTag`         | Test container image tag  (used for helm test)     | `v1.4.8-bash`                                 |
+| `test.rbac.create`                      | Create rbac for test container                 | `false`                           |
+| `test.rbac.serviceAccountName`          | Name of existed service account for test container    | ``                     |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
