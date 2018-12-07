@@ -190,6 +190,19 @@ This label will be displayed in the output of a successful install.
 
 ## Upgrade
 
+### 3.0.0
+
+This releases make it possible to specify different nodeSelector, affinity and tolerations for master and slave pods.
+It also fixes an issue with `postgresql.master.fullname` helper template not obeying fullnameOverride.
+
+#### Breaking changes
+
+- `affinty` has been renamed to `master.affinity` and `slave.affinity`.
+- `tolerations` has been renamed to `master.tolerations` and `slave.tolerations`.
+- `nodeSelector` has been renamed to `master.nodeSelector` and `slave.nodeSelector`.
+
+### 2.0.0
+
 In order to upgrade from the `0.X.X` branch to `1.X.X`, you should follow the below steps:
 
  - Obtain the service name (`SERVICE_NAME`) and password (`OLD_PASSWORD`) of the existing postgresql chart. You can find the instructions to obtain the password in the NOTES.txt, the service name can be obtained by running
