@@ -18,6 +18,13 @@ spec:
       labels:
         app: {{ template "datadog.clusterAgent.fullname" . }}
       name: {{ template "datadog.clusterAgent.fullname" . }}
+      annotations:
+      {{- if not .Values.datadog.apiKeyExistingSecret }}
+        checksum/apikey-secret: {{ include (print $.Template.BasePath "/apikey-secret.yaml") . | sha256sum }}
+      {{- end }}
+      {{- if not .Values.datadog.appKeyExistingSecret }}
+        checksum/appkey-secret: {{ include (print $.Template.BasePath "/appkey-secret.yaml") . | sha256sum }}
+      {{- end }}
     spec:
       {{- if .Values.clusterAgent.image.pullSecrets }}
       imagePullSecrets:
