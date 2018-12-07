@@ -1,0 +1,23 @@
+Volumes:
+- name: storage-volume
+  annotations: {}
+  labels:
+    app: appname
+  accessModes:
+  - ReadWriteOnce
+  storage: 10Gi
+  nfs:
+    server: fs-abcdef.efs.eu-west-1.amazonaws.com
+    path: /home/storage
+
+Claims:
+- name: storage-volume-claim
+  annotations: {}
+  storage: 10Gi
+  # if you speicify storageClassName then volumeName is ignored and claim is made with storageClass instead of volume
+  #storageClassName: efs
+  volumeName: storage-volume
+  labels:
+    app: appname
+  accessModes:
+  - ReadWriteOnce

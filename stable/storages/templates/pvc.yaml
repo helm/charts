@@ -1,0 +1,30 @@
+---
+apiVersion: v1
+kind: List
+items:
+{{- range .Values.Claims }}
+- apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    name: {{ .name }}
+    labels:
+{{ include "storages.labels.chart" $ | indent 6 }}
+{{- if .labels }}
+{{ toYaml .labels | indent 6 }}
+{{- end }}
+{{- if .annotations }}
+    annotations:
+{{ toYaml .annotations | indent 6 }}
+{{- end }}
+  spec:
+    accessModes:
+  {{ toYaml .accessModes | indent 4 }}
+    resources:
+      requests:
+        storage: {{ .storage }}
+  {{- if .storageClassName }}
+    storageClassName: {{ .storageClassName }}
+  {{- else }}
+    volumeName: {{ .volumeName }}
+  {{- end }}
+{{- end }}

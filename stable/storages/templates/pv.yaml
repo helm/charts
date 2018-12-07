@@ -1,0 +1,27 @@
+---
+apiVersion: v1
+kind: List
+items:
+{{- range .Values.Volumes }}
+- apiVersion: v1
+  kind: PersistentVolume
+  metadata:
+    name: {{ .name }}
+    labels:
+{{ include "storages.labels.chart" $ | indent 6 }}
+{{- if .labels }}
+{{ toYaml .labels | indent 6 }}
+{{- end }}
+{{- if .annotations }}
+    annotations:
+{{ toYaml .annotations | indent 6 }}
+{{- end }}
+  spec:
+    capacity:
+      storage: {{ .storage }}
+    accessModes:
+{{ toYaml .accessModes | indent 6 }}
+    nfs:
+      server: {{ .nfs.server }}
+      path: {{ .nfs.path }}
+{{- end }}
