@@ -77,6 +77,10 @@ The following tables lists the configurable parameters of the prometheus-operato
 | `prometheusOperator.service.type` | Prometheus operator service type | `ClusterIP` |
 | `prometheusOperator.service.nodePort` | Port to expose prometheus operator service on each node | `38080` |
 | `prometheusOperator.service.annotations` | Annotations to be added to the prometheus operator service | `{}` |
+| `prometheusOperator.service.labels` |  Prometheus Operator Service Labels | `{}` |
+| `prometheusOperator.service.externalIPs` | List of IP addresses at which the Prometheus Operator server service is available  | `[]` |
+| `prometheusOperator.service.loadBalancerIP` |  Prometheus Operator Loadbalancer IP | `""` |
+| `prometheusOperator.service.loadBalancerSourceRanges` | Prometheus Operator Load Balancer Source Ranges | `[]` |
 | `prometheusOperator.resources` | Resource limits for prometheus operator | `{}` |
 | `prometheusOperator.nodeSelector` | Prometheus operator node selector https://kubernetes.io/docs/user-guide/node-selection/ | `{}` |
 | `prometheusOperator.tolerations` | Tolerations for use with node taints https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/ | `[]` |
@@ -111,6 +115,10 @@ The following tables lists the configurable parameters of the prometheus-operato
 | `prometheus.service.type` |  Prometheus Service type | `ClusterIP` |
 | `prometheus.service.nodePort` |  Prometheus Service port for NodePort service type | `39090` |
 | `prometheus.service.annotations` |  Prometheus Service Annotations | `{}` |
+| `prometheus.service.labels` |  Prometheus Service Labels | `{}` |
+| `prometheus.service.externalIPs` | List of IP addresses at which the Prometheus server service is available  | `[]` |
+| `prometheus.service.loadBalancerIP` |  Prometheus Loadbalancer IP | `""` |
+| `prometheus.service.loadBalancerSourceRanges` | Prometheus Load Balancer Source Ranges | `[]` |
 | `prometheus.additionalServiceMonitors` | List of `serviceMonitor` objects to create. See https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#servicemonitorspec | `[]` |
 | `prometheus.prometheusSpec.podMetadata` | Standard object’s metadata. More info: https://github.com/kubernetes/community/blob/master/contributors/devel/api-conventions.md#metadata Metadata Labels and Annotations gets propagated to the prometheus pods. | `{}` |
 | `prometheus.prometheusSpec.serviceMonitorSelector` | ServiceMonitors to be selected for target discovery. | `{}` |
@@ -165,6 +173,10 @@ The following tables lists the configurable parameters of the prometheus-operato
 | `alertmanager.service.type` | Alertmanager Service type | `ClusterIP` |
 | `alertmanager.service.nodePort` | Alertmanager Service port for NodePort service type | `30903` |
 | `alertmanager.service.annotations` | Alertmanager Service annotations | `{}` |
+| `alertmanager.service.labels` |  Alertmanager Service Labels | `{}` |
+| `alertmanager.service.externalIPs` | List of IP addresses at which the Alertmanager server service is available  | `[]` |
+| `alertmanager.service.loadBalancerIP` |  Alertmanager Loadbalancer IP | `""` |
+| `alertmanager.service.loadBalancerSourceRanges` | Alertmanager Load Balancer Source Ranges | `[]` |
 | `alertmanager.config` | Provide YAML to configure Alertmanager. See https://prometheus.io/docs/alerting/configuration/#configuration-file. The default provided works to suppress the DeadMansSwitch alert from `defaultRules.create` | `{"global":{"resolve_timeout":"5m"},"route":{"group_by":["job"],"group_wait":"30s","group_interval":"5m","repeat_interval":"12h","receiver":"null","routes":[{"match":{"alertname":"DeadMansSwitch"},"receiver":"null"}]},"receivers":[{"name":"null"}]}` |
 | `alertmanager.alertmanagerSpec.podMetadata` | Standard object’s metadata. More info: https://github.com/kubernetes/community/blob/master/contributors/devel/api-conventions.md#metadata Metadata Labels and Annotations gets propagated to the prometheus pods. | `{}` |
 | `alertmanager.alertmanagerSpec.image.tag` | Tag of Alertmanager container image to be deployed. | `v0.15.2` |
