@@ -52,6 +52,13 @@ peer:
   couchdbInstance: cdb-peer1
   ## MSP ID of the Peer
   mspID: Org1MSP
+  gossip:
+    bootstrap: ""
+    endpoint: ""
+    externalEndpoint: ""
+    orgLeader: "false"
+    useLeaderElection: "true"
+
   tls:
     server:
       enabled: "false"
