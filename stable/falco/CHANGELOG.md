@@ -3,6 +3,10 @@
 This file documents all notable changes to Sysdig Falco Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v0.5.7
+
+* Added missing RBAC rules, authorizing `list` of `replicasets`, `daemonsets` and `deployments`
+
 ## v0.5.6
 
 * Allow extra container args
