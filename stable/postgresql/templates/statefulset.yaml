@@ -110,8 +110,10 @@ spec:
               name: {{ template "postgresql.fullname" . }}
             {{- end }}  
               key: postgresql-password
+        {{- if .Values.postgresqlDatabase }}
         - name: POSTGRESQL_DATABASE
           value: {{ .Values.postgresqlDatabase | quote }}
+        {{- end }}
         - name: POD_IP
           valueFrom: { fieldRef: { fieldPath: status.podIP } }
 {{- if .Values.extraEnv }}
