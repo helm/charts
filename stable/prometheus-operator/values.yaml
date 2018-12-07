@@ -125,11 +125,21 @@ alertmanager:
   ##
   service:
     annotations: {}
+    labels: {}
+    clusterIP: ""
+   
     ## Port to expose on each node
     ## Only used if service.type is 'NodePort'
     ##
     nodePort: 30903
+    
+    ## List of IP addresses at which the Prometheus server service is available
+    ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
+    ##
+    externalIPs: []
 
+    loadBalancerIP: ""
+    loadBalancerSourceRanges: []
     ## Service type
     ##
     type: ClusterIP
@@ -453,14 +463,32 @@ prometheusOperator:
   ## Configuration for Prometheus operator service
   ##
   service:
+    annotations: {}
+    labels: {}
+    clusterIP: ""
     ## Port to expose on each node
     ## Only used if service.type is 'NodePort'
     ##
     nodePort: 38080
 
-    ## Service type
+    ## Port to expose external
+    ## Only used if is necessary
     ##
+    #servicePort: 80
+
+    ## Loadbalancer IP
+    ## Only use if service.type is "loadbalancer"
+    loadBalancerIP: ""
+    loadBalancerSourceRanges: []
+
+    ## Service type
+    ## NodepPort, ClusterIP, loadbalancer
     type: ClusterIP
+
+    ## List of IP addresses at which the Prometheus server service is available
+    ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
+    ##
+    externalIPs: []
 
   ## Deploy CRDs used by Prometheus Operator.
   ##
@@ -566,11 +594,21 @@ prometheus:
   ##
   service:
     annotations: {}
+    labels: {}
+    clusterIP: ""
+    
+    ## List of IP addresses at which the Prometheus server service is available
+    ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
+    ##
+    externalIPs: []
 
     ## Port to expose on each node
     ## Only used if service.type is 'NodePort'
     ##
     nodePort: 39090
+
+    loadBalancerIP: ""
+    loadBalancerSourceRanges: []
 
     ## Service type
     ##
