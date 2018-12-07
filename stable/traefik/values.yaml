@@ -1,8 +1,6 @@
 ## Default values for Traefik
 image: traefik
 imageTag: 1.7.19
-## can be of type DaemonSet or Deployment
-deployType: Deployment
 
 ## Optionally specify an array of imagePullSecrets.
 ## Secrets must be manually created in the namespace.
@@ -10,6 +8,8 @@ deployType: Deployment
 # imagePullSecrets:
 # - "regsecret"
 
+## can be of type DaemonSet or Deployment
+deployType: Deployment
 
 testFramework:
   enabled: false
