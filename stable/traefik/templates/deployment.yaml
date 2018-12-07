@@ -1,9 +1,18 @@
+{{- if eq .Values.deployType "Deployment" }}
 {{- if semverCompare "^1.9-0" .Capabilities.KubeVersion.GitVersion }}
 apiVersion: apps/v1
 {{- else }}
 apiVersion: apps/v1beta1
 {{- end }}
 kind: Deployment
+{{- else }}
+{{- if semverCompare "^1.8-0" .Capabilities.KubeVersion.GitVersion }}
+apiVersion: apps/v1beta2
+{{- else }}
+apiVersion: apps/v1
+{{- end }}
+kind: DaemonSet
+{{- end }}
 metadata:
   name: {{ template "traefik.fullname" . }}
   labels:
@@ -12,7 +21,9 @@ metadata:
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
 spec:
+{{- if eq .Values.deployType "Deployment" }}
   replicas: {{ default 1 .Values.replicas }}
+{{- end }}
   selector:
     matchLabels:
       app: {{ template "traefik.name" . }}
@@ -166,3 +177,5 @@ spec:
       tolerations:
 {{ toYaml .Values.tolerations | indent 6 }}
       {{- end }}
+{{- end }}
+
