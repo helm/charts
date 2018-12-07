@@ -55,7 +55,12 @@ spec:
         {{- if .Values.secrets.ord.tlsRootCert }}
         - name: tls-rootcert
           secret:
-          secretName: {{ .Values.secrets.ord.tlsRootCert }}
+            secretName: {{ .Values.secrets.ord.tlsRootCert }}
+        {{- end }}
+        {{- if .Values.secrets.ord.tlsClientRootCert }}
+        - name: tls-clientrootcert
+          secret:
+            secretName: {{ .Values.secrets.ord.tlsClientRootCert }}
         {{- end }}
         {{- if .Values.secrets.genesis }}
         - name: genesis
@@ -80,9 +85,22 @@ spec:
             - name: ord-port
               containerPort: 7050
               protocol: TCP
-          # TODO: Add liveness and readiness probes
+          livenessProbe:
+            exec:
+              command:
+              - ls
+              - /var/hyperledger
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          # TODO: Improve readiness probe (ideally `ps aux | awk '$11=="orderer"'`)
+          readinessProbe:
+            exec:
+              command:
+              - ls
+              - /var/hyperledger
+            initialDelaySeconds: 15
           command:
-            - sh
+            - bash
             - -c
             - |
 
@@ -108,6 +126,11 @@ spec:
               mkdir -p ${ORDERER_FILELEDGER_LOCATION}
               mkdir -p ${ORDERER_FILELEDGER_LOCATION}/index
 
+              if [ $ORDERER_GENERAL_TLS_CLIENTAUTHREQUIRED ]
+              then
+                export ORDERER_GENERAL_TLS_CLIENTROOTCAS=$(echo $(ls $ORDERER_GENERAL_TLS_CLIENTROOTCAS) | echo "[$(sed 's/ /,/g')]")
+              fi
+
               echo ">\033[0;35m orderer \033[0m"
               orderer
           envFrom:
@@ -118,10 +141,6 @@ spec:
             {{- end }}
             - configMapRef:
                 name: {{ include "hlf-ord.fullname" . }}--ord
-          ports:
-            - name: ord-port
-              containerPort: 7050
-              protocol: TCP
           volumeMounts:
             - mountPath: /var/hyperledger
               name: data
@@ -146,12 +165,16 @@ spec:
               name: intcacert
             {{- end }}
             {{- if .Values.secrets.ord.tls }}
-            - mountPath: /var/hyperledger/msp_tls
+            - mountPath: /var/hyperledger/tls/server/pair
               name: tls
             {{- end }}
             {{- if .Values.secrets.ord.tlsRootCert }}
-            - mountPath: /var/hyperledger/msp_tls
+            - mountPath: /var/hyperledger/tls/server/cert
               name: tls-rootcert
+            {{- end }}
+            {{- if .Values.secrets.ord.tlsClientRootCert }}
+            - mountPath: /var/hyperledger/tls/client/cert
+              name: tls-clientrootcert
             {{- end }}
             {{- if .Values.secrets.genesis }}
             - mountPath: /hl_config/genesis

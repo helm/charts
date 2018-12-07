@@ -10,6 +10,8 @@ image:
 
 replicaCount: 1
 
+## Here annotations can be added to the kubernetes dashboard deployment
+annotations: {}
 ## Here labels can be added to the kubernetes dashboard deployment
 ##
 labels: {}
@@ -33,6 +35,11 @@ tolerations: []
 #    operator: "Equal|Exists"
 #    value: "value"
 #    effect: "NoSchedule|PreferNoSchedule|NoExecute"
+
+## Affinity
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+affinity: {}
+
 
 service:
   type: ClusterIP

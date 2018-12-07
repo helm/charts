@@ -133,9 +133,7 @@ spec:
         name: database-storage
         labels:
           app: {{ template "couchdb.name" . }}
-          chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
           release: {{ .Release.Name }}
-          heritage: {{ .Release.Service }}
       spec:
         accessModes:
         {{- range .Values.persistentVolume.accessModes }}

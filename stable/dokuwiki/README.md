@@ -58,7 +58,10 @@ The following table lists the configurable parameters of the DokuWiki chart and 
 | `dokuwikiPassword`                   | Application password                                       | _random 10 character alphanumeric string_     |
 | `dokuwikiEmail`                      | User email                                                 | `user@example.com`                            |
 | `dokuwikiWikiName`                   | Wiki name                                                  | `My Wiki`                                     |
-| `service.loadBalancer`               | Kubernetes LoadBalancerIP to request                       | `nil`                                         |
+| `service.type`                    | Kubernetes Service type                    | `LoadBalancer`                                          |
+| `service.port`                    | Service HTTP port                    | `80`                                          |
+| `service.httpsPort`                    | Service HTTPS port                    | `443`                                          |
+| `service.loadBalancerIP`               | Kubernetes LoadBalancerIP to request                       | `nil`                                         |
 | `service.externalTrafficPolicy`      | Enable client source IP preservation                       | `Cluster`                                     |
 | `service.nodePorts.http`             | Kubernetes http node port                                  | `""`                                          |
 | `service.nodePorts.https`            | Kubernetes https node port                                 | `""`                                          |
@@ -130,7 +133,8 @@ $ helm install --name my-release -f values.yaml stable/dokuwiki
 
 The [Bitnami DokuWiki](https://github.com/bitnami/bitnami-docker-dokuwiki) image stores the DokuWiki data and configurations at the `/bitnami/dokuwiki` and `/bitnami/apache` paths of the container.
 
-Persistent Volume Claims are used to keep the data across deployments. This is known to work in GCE, AWS, and minikube.
+Persistent Volume Claims are used to keep the data across deployments. There is a [known issue](https://github.com/kubernetes/kubernetes/issues/39178) in Kubernetes Clusters with EBS in different availability zones. Ensure your cluster is configured properly to create Volumes in the same availability zone where the nodes are running. Kuberentes 1.12 solved this issue with the [Volume Binding Mode](https://kubernetes.io/docs/concepts/storage/storage-classes/#volume-binding-mode).
+
 See the [Configuration](#configuration) section to configure the PVC or to disable persistence.
 
 ## Upgrading

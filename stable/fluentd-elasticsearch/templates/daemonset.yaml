@@ -47,10 +47,18 @@ spec:
           value: {{ .Values.elasticsearch.host | quote }}
         - name: OUTPUT_PORT
           value: {{ .Values.elasticsearch.port | quote }}
+        - name: LOGSTASH_PREFIX
+          value: {{ .Values.elasticsearch.logstash_prefix | quote }}
         - name: OUTPUT_BUFFER_CHUNK_LIMIT
           value: {{ .Values.elasticsearch.buffer_chunk_limit | quote }}
         - name: OUTPUT_BUFFER_QUEUE_LIMIT
           value: {{ .Values.elasticsearch.buffer_queue_limit | quote }}
+        {{- if .Values.env }}
+        {{- range $key, $value := .Values.env }}
+        - name: {{ $key }}
+          value: {{ $value | quote }}
+        {{- end }}
+        {{- end }}
         - name: K8S_NODE_NAME
           valueFrom:
             fieldRef:
@@ -66,7 +74,7 @@ spec:
         - name: libsystemddir
           mountPath: /host/lib
           readOnly: true
-        - name: config-volume-{{ template "fluentd-elasticsearch.fullname" . }}
+        - name: config-volume
           mountPath: /etc/fluent/config.d
 {{- if .Values.extraVolumeMounts }}
 {{ toYaml .Values.extraVolumeMounts | indent 8 }}
@@ -75,6 +83,9 @@ spec:
 {{- range $port := .Values.service.ports }}
           - name: {{ $port.name }}
             containerPort: {{ $port.port }}
+{{- if $port.protocol }}
+            protocol: {{ $port.protocol }}
+{{- end }}
 {{- end }}
 {{- if .Values.livenessProbe.enabled }}
         # Liveness probe is aimed to help in situarions where fluentd
@@ -122,7 +133,7 @@ spec:
       - name: libsystemddir
         hostPath:
           path: /usr/lib64
-      - name: config-volume-{{ template "fluentd-elasticsearch.fullname" . }}
+      - name: config-volume
         configMap:
           name: {{ template "fluentd-elasticsearch.fullname" . }}
 {{- if .Values.extraVolumes }}
