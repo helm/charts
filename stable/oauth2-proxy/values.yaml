@@ -12,6 +12,26 @@ config:
   #   pass_basic_auth = false
   #   pass_access_token = true
   configFile: ""
+  # If user has an existing k8s secret they would like to use instead of generating them:
+  # existingSecret:
+  #   # Where to find the client ID
+  #   clientID:
+  #     secretKeyRef:
+  #       name: "client-id"
+  #       key: "client-id"
+  #   # Where to find the client secret
+  #   clientSecret:
+  #     secretKeyRef:
+  #       name: "client-secret"
+  #       key: "client-secret"
+  #   # Where to find the cookie secret
+  #   cookieSecret:
+  #     secretKeyRef:
+  #       name: "cookie-secret"
+  #       key: "cookie-secret"
+
+nameOverride: ""
+fullnameOverride: ""
 
 image:
   repository: "a5huynh/oauth2_proxy"
