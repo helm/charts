@@ -5,7 +5,7 @@ image:
 
 service:
   annotations: {}
-  clusterIP: ""
+  # clusterIP: ""
   externalIPs: []
   loadBalancerIP: ""
   loadBalancerSourceRanges: []
