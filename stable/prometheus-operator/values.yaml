@@ -156,7 +156,7 @@ alertmanager:
     ##
     image:
       repository: quay.io/prometheus/alertmanager
-      tag: v0.15.2
+      tag: v0.15.3
 
     ## Secrets is a list of Secrets in the same namespace as the Alertmanager object, which shall be mounted into the
     ## Alertmanager Pods. The Secrets are mounted into /etc/alertmanager/secrets/.
@@ -648,10 +648,10 @@ prometheus:
     ##
     image:
       repository: quay.io/prometheus/prometheus
-      tag: v2.4.3
+      tag: v2.5.0
 
     #  repository: quay.io/coreos/prometheus
-    #  tag: v2.4.3
+    #  tag: v2.5.0
 
     ## Tolerations for use with node taints
     ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
