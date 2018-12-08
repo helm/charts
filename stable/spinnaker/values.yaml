@@ -178,6 +178,8 @@ s3:
   # endpoint: ""
   # accessKey: ""
   # secretKey: ""
+  # You can also create a secret with the accessKey and secretKey and provide its name here
+  # secretName: s3-secret-name
 
 # Azure Storage Account
 azs:
