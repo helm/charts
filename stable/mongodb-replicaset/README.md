@@ -38,12 +38,12 @@ The following table lists the configurable parameters of the mongodb chart and t
 | `podDisruptionBudget`               | Pod disruption budget                                                     | `{}`                                                |
 | `port`                              | MongoDB port                                                              | `27017`                                             |
 | `imagePullSecrets`                  | Image pull secrets                                                        | `[]`                                                  |
-| `installImage.repository`           | Image name for the install container                                      | `k8s.gcr.io/mongodb-install`                        |
-| `installImage.tag`                  | Image tag for the install container                                       | `0.5`                                               |
+| `installImage.repository`           | Image name for the install container                                      | `unguiculus/mongodb-install`                        |
+| `installImage.tag`                  | Image tag for the install container                                       | `0.7`                                               |
 | `installImage.pullPolicy`           | Image pull policy for the init container that establishes the replica set | `IfNotPresent`                                      |
 | `copyConfigImage.repository`        | Image name for the copy config init container                             | `busybox`                                           |
-| `copyConfigImage.tag`               | Image tag for the copy config init container                              | `latest`                                            |
-| `copyConfigImage.pullPolicy`        | Image pull policy for the copy config init container                      | `Always`                                            |
+| `copyConfigImage.tag`               | Image tag for the copy config init container                              | `1.29.3`                                            |
+| `copyConfigImage.pullPolicy`        | Image pull policy for the copy config init container                      | `IfNotPresent`                                            |
 | `image.repository`                  | MongoDB image name                                                        | `mongo`                                             |
 | `image.tag`                         | MongoDB image tag                                                         | `3.6`                                               |
 | `image.pullPolicy`                  | MongoDB image pull policy                                                 | `IfNotPresent`                                      |
