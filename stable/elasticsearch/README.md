@@ -105,6 +105,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `master.persistence.accessMode`      | Master persistent Access Mode                                       | `ReadWriteOnce`                                     |
 | `master.antiAffinity`                | Master anti-affinity policy                                         | `soft`                                              |
 | `master.nodeAffinity`                | Master node affinity policy                                         | `{}`                                                |
+| `master.updateStrategy`              | Master node update strategy policy                                  | `{type: "onDelete"}`                                |
 | `data.exposeHttp`                    | Expose http port 9200 on data Pods for monitoring, etc              | `false`                                             |
 | `data.replicas`                      | Data node replicas (statefulset)                                    | `2`                                                 |
 | `data.resources`                     | Data node resources requests & limits                               | `{} - cpu limit must be an integer`                 |
@@ -122,7 +123,8 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `data.terminationGracePeriodSeconds` | Data termination grace period (seconds)                             | `3600`                                              |
 | `data.antiAffinity`                  | Data anti-affinity policy                                           | `soft`                                              |
 | `data.nodeAffinity`                  | Data node affinity policy                                           | `{}`                                                |
-| `extraInitContainers`                | Additional init container passed through the tpl 	                 | ``                                                  |
+| `data.updateStrategy`                | Data node update strategy policy                                    | `{type: "onDelete"}`                                |
+| `extraInitContainers`                | Additional init container passed through the tpl                    | ``                                                  |
 | `podSecurityPolicy.annotations`      | Specify pod annotations in the pod security policy                  | `{}`                                                |
 | `podSecurityPolicy.enabled`          | Specify if a pod security policy must be created                    | `false`                                             |
 | `serviceAccounts.client.create`      | If true, create the client service account                          | `true`                                              |
