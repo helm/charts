@@ -10,6 +10,7 @@ metadata:
   labels:
 {{ include "spinnaker.standard-labels" . | indent 4 }}
 spec:
+  {{- if .Values.ingress.host }}
   rules:
   - host: {{ .Values.ingress.host | quote }}
     http:
@@ -26,6 +27,11 @@ spec:
         backend:
           serviceName: spin-deck
           servicePort: 9000
+  {{- else }}
+  backend:
+    serviceName: spin-deck
+    servicePort: 9000
+  {{- end }}
 {{- if .Values.ingress.tls }}
   tls:
 {{ toYaml .Values.ingress.tls | indent 4 }}
