@@ -24,6 +24,11 @@ spec:
         release: {{ .Release.Name }}
       annotations:
         checksum/config: {{ include (print .Template.BasePath "/config-openvpn.yaml") . | sha256sum }}
+        {{- if .Values.podAnnotations }}
+          {{- range $key, $value := .Values.podAnnotations }}
+        {{ $key }}: {{ $value | quote }}
+          {{- end }}
+        {{- end }}
     spec:
       containers:
       - name: {{ .Chart.Name }}
