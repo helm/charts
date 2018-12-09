@@ -33,12 +33,12 @@ spec:
           configMap:
             name: {{ include "superset.fullname" . }}
         - name: storage-volume
-        {{- if .Values.persistence.enabled }}
+          {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
             claimName: {{ .Values.persistence.existingClaim | default (include "superset.fullname" .) }}
-        {{- else }}
+          {{- else }}
           emptyDir: {}
-        {{- end }}
+          {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -56,39 +56,39 @@ spec:
             - name: http
               containerPort: 8088
               protocol: TCP
-        {{- with .Values.extraEnv }}
+          {{- with .Values.extraEnv }}
           env:
-          {{- range $key, $value := .Values.extraEnv }}
+            {{- range $key, $value := .Values.extraEnv }}
             - name: "{{ $key }}"
               value: "{{ $value }}"
+            {{- end }}
           {{- end }}
-        {{- end }}
-        {{- if .Values.extraEnvFromSecret }}
+          {{- if .Values.extraEnvFromSecret }}
           envFrom:
             - secretRef:
                 name: {{ .Values.extraEnvFromSecret }}
-        {{- end }}
-    {{- with .Values.resources }}
+          {{- end }}
+          {{- with .Values.resources }}
           resources:
-{{ toYaml . | indent 12 }}
-    {{- end }}
-    {{- with .Values.livenessProbe }}
+            {{- . | toYaml | nindent 12 }}
+          {{- end }}
+          {{- with .Values.livenessProbe }}
           livenessProbe:
-{{ toYaml . | indent 12 }}
-    {{- end }}
-    {{- with .Values.readinessProbe }}
+            {{- . | toYaml | nindent 12 }}
+          {{- end }}
+          {{- with .Values.readinessProbe }}
           readinessProbe:
-{{ toYaml . | indent 12 }}
-    {{- end }}
-    {{- with .Values.nodeSelector }}
+            {{- . | toYaml | nindent 12 }}
+          {{- end }}
+      {{- with .Values.nodeSelector }}
       nodeSelector:
-{{ toYaml . | indent 8 }}
-    {{- end }}
-    {{- with .Values.affinity }}
+        {{- . | toYaml | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
       affinity:
-{{ toYaml . | indent 8 }}
-    {{- end }}
-    {{- with .Values.tolerations }}
+        {{- . | toYaml | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
       tolerations:
-{{ toYaml . | indent 8 }}
-    {{- end }}
+        {{- . | toYaml | nindent 8 }}
+      {{- end }}
