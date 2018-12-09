@@ -45,7 +45,7 @@ spec:
       containers:
       - name: sparkoperator
         image: {{ .Values.operatorImageName }}:{{ .Values.operatorVersion }}
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
         {{- if .Values.enableWebhook }}
         volumeMounts:
           - name: webhook-certs
@@ -62,6 +62,7 @@ spec:
         - -metrics-labels=app_type
         - -enable-webhook=true
         - -webhook-svc-namespace={{ .Release.Namespace }}
+        - -webhook-svc-name={{ include "sparkoperator.fullname" . }}-webhook
         - -logtostderr
         {{- else if (.Values.enableMetrics) }}
         args:
@@ -72,6 +73,7 @@ spec:
         args:
         - -enable-webhook=true
         - -webhook-svc-namespace={{ .Release.Namespace }}
+        - -webhook-svc-name={{ include "sparkoperator.fullname" . }}-webhook
         - -logtostderr
         {{- else }}
         args:
