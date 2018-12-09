@@ -1,6 +1,5 @@
 name: oauth2-proxy
 version: 0.8.0
-deprecated: true
 apiVersion: v1
 appVersion: 2.2
 home: https://github.com/bitly/oauth2_proxy
