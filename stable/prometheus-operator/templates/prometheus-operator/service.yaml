@@ -21,7 +21,7 @@ spec:
 {{- if .Values.prometheusOperator.service.loadBalancerIP }}
   loadBalancerIP: {{ .Values.prometheusOperator.service.loadBalancerIP }}
 {{- end }}
-{{- if .Values.prometheusOperator.prometheusOperator.loadBalancerSourceRanges }}
+{{- if .Values.prometheusOperator.service.loadBalancerSourceRanges }}
   loadBalancerSourceRanges:
   {{- range $cidr := .Values.prometheusOperator.service.loadBalancerSourceRanges }}
     - {{ $cidr }}
