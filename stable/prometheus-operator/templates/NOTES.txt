@@ -19,4 +19,3 @@ Get the Prometheus server URL by running these commands in the same shell:
   export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "prometheus.name" . }},component={{ .Values.server.name }}" -o jsonpath="{.items[0].metadata.name}")
   kubectl --namespace {{ .Release.Namespace }} port-forward $POD_NAME 9090
 {{- end }}
-{{- end }}
