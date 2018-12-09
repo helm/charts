@@ -22,19 +22,15 @@ spec:
         release: {{ .Release.Name }}
         heritage: {{ .Release.Service }}
       annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
         checksum/secrets: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
     spec:
       securityContext:
         runAsUser: 0
         fsGroup: 0
       volumes:
-        - name: superset-init
+        - name: superset-configs
           secret:
             secretName: {{ include "superset.fullname" . }}
-        - name: superset-server-config
-          configMap:
-            name: {{ include "superset.fullname" . }}
         - name: storage-volume
           {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
@@ -49,10 +45,8 @@ spec:
           command: ["/bin/bash"]
           args: ["/home/superset/init_superset.sh" ]
           volumeMounts:
-            - name: superset-init
+            - name: superset-configs
               mountPath: /home/superset
-            - name: superset-server-config
-              mountPath: /etc/superset
             - name: storage-volume
               mountPath: /var/lib/superset
           ports:
