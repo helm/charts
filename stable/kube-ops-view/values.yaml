@@ -39,6 +39,10 @@ rbac:
 ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
 podLabels: {}
 
+# Add securityContext
+securityContext: {}
+
+# Defaults for Redis
 redis:
   enabled: false
   usePassword: false
