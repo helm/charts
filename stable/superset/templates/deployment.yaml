@@ -1,24 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "superset.fullname" . }}
+  name: {{ include "superset.fullname" . }}
   labels:
-    app: {{ template "superset.name" . }}
-    chart: {{ template "superset.chart" . }}
+    app: {{ include "superset.name" . }}
+    chart: {{ include "superset.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ template "superset.name" . }}
+      app: {{ include "superset.name" . }}
       release: {{ .Release.Name }}
   template:
     metadata:
-      name: {{ template "superset.fullname" . }}
+      name: {{ include "superset.fullname" . }}
       labels:
-        app: {{ template "superset.name" . }}
-        chart: {{ template "superset.chart" . }}
+        app: {{ include "superset.name" . }}
+        chart: {{ include "superset.chart" . }}
         release: {{ .Release.Name }}
         heritage: {{ .Release.Service }}
     spec:
@@ -28,14 +28,14 @@ spec:
       volumes:
         - name: superset-init
           secret:
-            secretName: {{ template "superset.fullname" . }}
+            secretName: {{ include "superset.fullname" . }}
         - name: superset-server-config
           configMap:
-            name: {{ template "superset.fullname" . }}
+            name: {{ include "superset.fullname" . }}
         - name: storage-volume
         {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
-            claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "superset.fullname" . }}{{- end }}
+            claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ include "superset.fullname" . }}{{- end }}
         {{- else }}
           emptyDir: {}
         {{- end }}
