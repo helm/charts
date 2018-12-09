@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: "cassandra"
+  name: {{ .Release.Name }}-cassandra
   namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "elassandra.name" . }}

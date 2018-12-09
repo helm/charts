@@ -43,7 +43,7 @@ resources: {}
 config:
   cluster_name: elassandra
   cluster_size: 3
-  seed_size: 2
+  seed_size: 1
   num_tokens: 16
   # If you want Cassandra to use this datacenter and rack name,
   # you need to set endpoint_snitch to GossipingPropertyFileSnitch.

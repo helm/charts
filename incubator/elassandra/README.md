@@ -16,7 +16,7 @@ After installation succeeds, you can get a status of Chart
 helm status "elassandra"
 ```
 
-As show below, the Elassandra chart creates 2 clustered service for elasticsearch and cassandra. This allow to deploy elasticsearch and cassandra applications in their default configuration.
+As show below, the Elassandra chart creates 2 clustered service for elasticsearch and cassandra.
 
 ```bash
 kubectl get all -o wide -n elassandra
@@ -25,10 +25,10 @@ pod/elassandra-0              1/1       Running   0          51m
 pod/elassandra-1              1/1       Running   0          50m
 pod/elassandra-2              1/1       Running   0          49m
 
-NAME                    TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)                                                          AGE
-service/cassandra       ClusterIP   10.0.174.13    <none>        9042/TCP,9160/TCP                                                51m
-service/elassandra      ClusterIP   None           <none>        7199/TCP,7000/TCP,7001/TCP,9300/TCP,9042/TCP,9160/TCP,9200/TCP   51m
-service/elasticsearch   ClusterIP   10.0.131.15    <none>        9200/TCP                                                         51m
+NAME                               TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)                                                          AGE
+service/elassandra                 ClusterIP   None           <none>        7199/TCP,7000/TCP,7001/TCP,9300/TCP,9042/TCP,9160/TCP,9200/TCP   51m
+service/elassandra-cassandra       ClusterIP   10.0.174.13    <none>        9042/TCP,9160/TCP                                                51m
+service/elassandra-elasticsearch   ClusterIP   10.0.131.15    <none>        9200/TCP                                                         51m
 
 NAME                          DESIRED   CURRENT   AGE
 statefulset.apps/elassandra   3         3         51m
@@ -106,7 +106,7 @@ The following table lists the configurable parameters of the Cassandra chart and
 | `elasticsearch.enabled`              | Enable elasticsearch service                    | `true`                                                     |
 | `config.cluster_name`                | The name of the cluster.                        | `elassandra`                                               |
 | `config.cluster_size`                | The number of nodes in the cluster.             | `3`                                                        |
-| `config.seed_size`                   | The number of seed nodes used to bootstrap new clients joining the cluster.                            | `2` |
+| `config.seed_size`                   | The number of seed nodes used to bootstrap new clients joining the cluster.                            | `1` |
 | `config.num_tokens`                  | Initdb Arguments                                | `16`                                                       |
 | `config.dc_name`                     | Initdb Arguments                                | `DC1`                                                      |
 | `config.rack_name`                   | Initdb Arguments                                | `RAC1`                                                     |
@@ -193,7 +193,7 @@ green  open   test  kVpEHykCR7CT_Xnlastq7A   3   0          1            0      
 To install the Kibana chart with the release name `elassandra`:
 
 ```console
-$ helm install --namespace "elassandra" --name kibana --set image.tag=6.2.3  stable/kibana
+$ helm install --namespace "elassandra" --name kibana --set image.tag=6.2.3 --set env.ELASTICSEARCH_URL="http://elassandra-elasticsearch:9200" stable/kibana
 ```
 
 To forward the kibana port to POD localhost:5601 run the following:
