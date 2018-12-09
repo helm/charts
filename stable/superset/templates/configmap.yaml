@@ -9,3 +9,6 @@ metadata:
     heritage: {{ .Release.Service }}
 data:
   superset_config.py: {{ .Values.configFile | quote }}
+  {{- range $key, $value := .Values.extraConfigFiles }}
+  {{ $key }}: {{ $value | quote }}
+  {{- end }}
