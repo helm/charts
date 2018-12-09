@@ -35,7 +35,7 @@ spec:
         - name: storage-volume
         {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
-            claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ include "superset.fullname" . }}{{- end }}
+            claimName: {{ .Values.persistence.existingClaim | default (include "superset.fullname" .) }}
         {{- else }}
           emptyDir: {}
         {{- end }}
