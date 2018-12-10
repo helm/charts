@@ -108,7 +108,7 @@ spec:
               name: {{ .Values.existingSecret }}
             {{- else }}
               name: {{ template "postgresql.fullname" . }}
-            {{- end }}  
+            {{- end }}
               key: postgresql-password
         {{- if .Values.postgresqlDatabase }}
         - name: POSTGRESQL_DATABASE
@@ -180,7 +180,7 @@ spec:
               name: {{ .Values.existingSecret }}
             {{- else }}
               name: {{ template "postgresql.fullname" . }}
-            {{- end }}  
+            {{- end }}
               key: postgresql-password
         - name: DATA_SOURCE_USER
           value: {{ .Values.postgresqlUsername }}
@@ -226,6 +226,8 @@ spec:
       - name: custom-init-scripts
         configMap:
           name: {{ template "postgresql.fullname" . }}-init-scripts
+  updateStrategy:
+    type: {{ .Values.updateStrategy.type }}
 {{- if and .Values.persistence.enabled (not .Values.persistence.existingClaim) }}
   volumeClaimTemplates:
     - metadata:
