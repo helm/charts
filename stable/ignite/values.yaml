@@ -16,7 +16,8 @@ env:
   IGNITE_QUIET: "false"
   JVM_OPTS: "-Djava.net.preferIPv4Stack=true"
 peerClassLoadingEnabled: false
-dataStorage:
+
+persistence:
   enabled: false
   persistenceVolume:
     size: 8Gi

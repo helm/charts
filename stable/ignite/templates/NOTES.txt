@@ -1,4 +1,4 @@
-{{- if (.Values.dataStorage.enabled) }}
+{{- if (.Values.persistence.enabled) }}
 You need to activate your ignite deployment. To do it please ensure all
 stateful set pods are in "Running" state :
 

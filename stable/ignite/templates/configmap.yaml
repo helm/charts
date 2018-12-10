@@ -37,7 +37,7 @@ data:
 
             <property name="peerClassLoadingEnabled" value="{{ .Values.peerClassLoadingEnabled | default false }}"/>
 
-{{- if (.Values.dataStorage.enabled) }}
+{{- if (.Values.persistence.enabled) }}
             <!-- Enabling Apache Ignite Persistent Store. -->
             <property name="dataStorageConfiguration">
                 <bean class="org.apache.ignite.configuration.DataStorageConfiguration">
