@@ -9,7 +9,12 @@ image:
 nameOverride: ""
 fullnameOverride: ""
 
-rbac: yes
+rbac:
+  create: true
+
+serviceAccount:
+  create: true
+  name:
 
 env:
   OPTION_LIBS: "ignite-kubernetes,ignite-rest-http"
