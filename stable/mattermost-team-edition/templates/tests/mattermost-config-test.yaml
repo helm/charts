@@ -3,10 +3,9 @@ kind: ConfigMap
 metadata:
   name: {{ template  "mattermost-team-edition.fullname" . }}-tests
   labels:
-    chart: {{ template "mattermost-team-edition.chart" . }}
-    app: {{ template "mattermost-team-edition.fullname" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ include "mattermost-team-edition.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 data:
   run.sh: |-
     @test "Testing Mattermost is accessible" {
