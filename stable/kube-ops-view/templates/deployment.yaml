@@ -24,6 +24,10 @@ spec:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
+        {{- if .Values.redis.enabled }}
+        args:
+        - --redis-url=redis://{{ .Release.Name }}-redis-master:{{ .Values.redis.master.port }}
+        {{- end }}
         ports:
         - containerPort: {{ .Values.service.internalPort }}
         livenessProbe:
