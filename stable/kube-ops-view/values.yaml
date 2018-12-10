@@ -41,3 +41,13 @@ podLabels: {}
 
 # Add securityContext
 securityContext: {}
+
+# Defaults for Redis
+redis:
+  enabled: false
+  usePassword: false
+  cluster:
+    enabled: false
+  master:
+    persistence:
+      enabled: false
