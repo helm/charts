@@ -35,10 +35,22 @@ spec:
           imagePullSecrets:
             - name: {{ .Values.images.cronjob.imagePullSecrets }}
           {{- end }}
+          volumes:
+            - name: script
+              configMap:
+                name: {{ template "drone.fullname" . }}
+                defaultMode: 493
           containers:
             - name: {{ template "drone.name" . }}
               image: "{{ .Values.images.cronjob.repository }}:{{ .Values.images.cronjob.tag }}"
               imagePullPolicy: "{{ .Values.images.cronjob.pullPolicy }}"
+              volumeMounts:
+                - name: script
+                  mountPath: /opt/bin
+                  readOnly: true
+              env:
+                - name: DRONE_KUBERNETES_NAMESPACE
+                  value: {{ .Release.Namespace }}
               command:
 {{ toYaml .Values.cronjob.command | indent 16 }}
 

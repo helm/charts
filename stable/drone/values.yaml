@@ -86,6 +86,7 @@ server:
     ##
     # DRONE_GITHUB_CLIENT_ID: "github-oauth2-client-id"
     # DRONE_GITHUB_SERVER: "https://github.com"
+    # DRONE_USER_FILTER: "user1,user2"
 
   ## Secret environment variables are configured in `server.envSecrets`.
   ## Each item in `server.envSecrets` references a Kubernetes Secret.
@@ -181,8 +182,8 @@ serviceAccount:
 ## FIXME Once there's a generic label, for drone jobs, this command will simplify
 cronjob:
   enabled: false
-  schedule: "0 0 * * *"
+  schedule: "*/15 * * * *"
   command:
     - /bin/sh
     - -c
-    - "KUBECTL='kubectl -n  $DRONE_KUBERNETES_NAMESPACE --certificate-authority=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt --token=`cat /var/run/secrets/kubernetes.io/serviceaccount/token`'; for field in succeeded failed; do eval $KUBECTL get job -o jsonpath=\"{.items[?\(@.status.\$field==1\)].metadata.name}\"| grep -- drone-job | awk '{print\$1}' | tee /tmp/jobs; [ -f /tmp/jobs ] && [ -s /tmp/jobs ] && eval $KUBECTL delete job \`cat /tmp/jobs\`; rm -f /tmp/jobs; done"
+    - /opt/bin/clean.sh
