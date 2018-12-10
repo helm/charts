@@ -48,13 +48,20 @@ data:
   {{- range $provider, $dashboards := .Values.dashboards }}
     {{- range $key, $value := $dashboards }}
       {{- if (or (hasKey $value "gnetId") (hasKey $value "url")) }}
-    curl -sk \
-    --connect-timeout 60 \
-    --max-time 60 \
-    -H "Accept: application/json" \
-    -H "Content-Type: application/json;charset=UTF-8" \
+    wget -q --no-check-certificate \
+    --timeout 60 \
+    --header "Accept: application/json" \
+    --header "Content-Type: application/json;charset=UTF-8" -O - \
     {{- if $value.url -}}{{ $value.url }}{{- else -}} https://grafana.com/api/dashboards/{{ $value.gnetId }}/revisions/{{- if $value.revision -}}{{ $value.revision }}{{- else -}}1{{- end -}}/download{{- end -}}{{ if $value.datasource }}| sed 's|\"datasource\":[^,]*|\"datasource\": \"{{ $value.datasource }}\"|g'{{ end }} \
     > /var/lib/grafana/dashboards/{{ $provider }}/{{ $key }}.json
+      {{- end }}
+      {{- if (hasKey $value "gitrepo") }}
+    TMPDIR=/tmp/$(echo {{ $value.gitrepo }} | sha1sum | cut -f 1 -d " ")
+    if [ ! -d ${TMPDIR} ]
+    then
+        git clone --depth 1 {{ $value.gitrepo }} -b {{ $value.gitbranch }} ${TMPDIR}
+    fi
+    cp ${TMPDIR}/{{ $value.gitpath }} /var/lib/grafana/dashboards/{{ $provider }}/{{ $key }}.json
       {{- end }}
     {{- end }}
   {{- end }}
