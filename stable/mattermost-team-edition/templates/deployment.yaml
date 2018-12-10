@@ -30,8 +30,8 @@ spec:
       initContainers:
       {{- if not .Values.externalDB.enabled }}
       - name: "init-mysql"
-        image: "appropriate/curl:latest"
-        imagePullPolicy: "IfNotPresent"
+        image: "{{ .Values.initContainerImage.repository }}:{{ .Values.initContainerImage.tag }}"
+        imagePullPolicy: {{ .Values.initContainerImage.imagePullPolicy }}
         command: ["sh", "-c", "until curl --max-time 5 http://{{ .Release.Name }}-mysql:3306; do echo waiting for {{ .Release.Name }}-mysql; sleep 5; done;"]
       {{- end }}
       {{- if .Values.extraInitContainers }}
