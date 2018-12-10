@@ -12,7 +12,7 @@ spec:
   serviceName: {{ template "postgresql.fullname" . }}-headless
   replicas: {{ .Values.replication.slaveReplicas }}
   updateStrategy:
-    type: RollingUpdate
+    type: {{ .Values.updateStrategy.type }}
   selector:
     matchLabels:
       app: {{ template "postgresql.name" . }}
@@ -155,8 +155,6 @@ spec:
         configMap:
           name: {{ template "postgresql.fullname" . }}-configuration
       {{ end }}
-  updateStrategy:
-    type: {{ .Values.updateStrategy.type }}
 {{- if .Values.persistence.enabled }}
   volumeClaimTemplates:
     - metadata:
