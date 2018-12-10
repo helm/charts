@@ -59,6 +59,10 @@ upstreamURL: ""
 ClientID: ""
 ClientSecret: ""
 
+# Sets the encryption key used to encode the session state
+# If not set it defaults to a random 32 characters alphanumeric string
+encryptionKey: ""
+
 # Require the following scopes in the request
 scopes: []
 
