@@ -78,10 +78,6 @@ ingress:
 # A custom log4j.properties file can be provided using a multiline YAML string.
 # See https://github.com/metabase/metabase/blob/master/resources/log4j.properties
 #
-# Also don't forget to pass "-Dlog4j.configuration=file:/tmp/conf/log4j.properties"
-# value to javaToolOptions.
-# See https://github.com/metabase/metabase/blob/master/docs/operations-guide/start.md#configuring-logging-level
-#
 # log4jProperties:
 
 resources: {}
