@@ -49,13 +49,14 @@ The following quickstart let's you set up secret:
 | Volumes.annotations          | annotations for volume                                                       | ``                        | `{}`                        |
 | Volumes.accessModes          | accessModes of the volume                                                      | `ReadWriteOnce`                        | `ReadWriteOnce`                        |
 | Volumes.labels          | label for volume                                                      | `app: app-name`                        | `app: app-name`                        |
-| Volumes.storage          | storage size for volume                                                      | `10Gi`                        | `10Gi`                        |
+| Volumes.storage          | storage size for volume                                                      | `8Gi`                        | `8Gi`                        |
+| Volumes.claimRef.name          | Name of claim reference                                                      | `storage-data`                        | ``                        |
 | Volumes.nfs.server          | server for volume                                                      | `fs-blabla.efs.eu-west-1.amazonaws.com`                        | `fs-blabla.efs.eu-west-1.amazonaws.com`                        |
 | Volumes.nfs.path          | path for volume                                                      | `/home/storage`                        | `/home/storage`                        |
 | Claims.name          | name of the claim                                                      | `storage-volume-claim`                        | `storage-volume-claim`                        |
 | Claims.annotations          | annotations for claim                                                       | ``                        | `{}`                        |
 | Claims.accessModes          | accessModes of the claim                                                      | `ReadWriteOnce`                        | `ReadWriteOnce`                        |
 | Claims.labels          | label for claim                                                      | `app: app-name`                        | `app: app-name`                        |
-| Claims.storage          | storage size for claim                                                      | `10Gi`                        | `10Gi`                        |
+| Claims.storage          | storage size for claim                                                      | `8Gi`                        | `8Gi`                        |
 | Claims.storageClassName          | storageClass name for claim                                                      | `efs`                        | `efs`                        |
 | Claims.volumeName          | volume name for claim                                                      | `storage-volume`                        | `storage-volume`                        |

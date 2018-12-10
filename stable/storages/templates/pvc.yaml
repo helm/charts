@@ -24,7 +24,11 @@ items:
       requests:
         storage: {{ .storage }}
   {{- if .storageClassName }}
-    storageClassName: {{ .storageClassName }}
+  {{- if (eq "-" .storageClassName) }}
+  storageClassName: ""
+  {{- else }}
+  storageClassName: "{{ .storageClassName }}"
+  {{- end }}
   {{- else }}
     volumeName: {{ .volumeName }}
   {{- end }}
