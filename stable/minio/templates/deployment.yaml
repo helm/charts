@@ -164,14 +164,6 @@ spec:
             secretName: {{ if .Values.existingSecret }}{{ .Values.existingSecret }}{{ else }}{{ template "minio.fullname" . }}{{ end }}
         - name: minio-config-dir
           emptyDir: {}
-        {{- if .Values.gcsgateway.enabled }}
-        - name: gcs-secret-volume
-          secret:
-            secretName: {{ template "minio.fullname" . }}
-            items:
-            - key: gcs_key.json
-              path: gcs_key.json
-        {{ end }}
         {{- if .Values.tls.enabled }}
         - name: cert-secret-volume
           secret:
