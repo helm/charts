@@ -31,7 +31,7 @@ service:
   # annotations:
   #   service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
   #   service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:xx-xxxx-x:xxxxxxxxxxx:certificate/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx
-  #   external-dns.alpha.kubernetes.io/hostname: drone.domain.tld. 
+  #   external-dns.alpha.kubernetes.io/hostname: drone.domain.tld.
 
 ingress:
   ## If true, Drone Ingress will be created.
@@ -177,8 +177,7 @@ serviceAccount:
   ## FIXME: Temporarily set to default, because spawned jobs can only use the default SA
   name: default
 
-## Enable if you are using k8s < 1.12 or if you are not able to turn on
-#TTLAfterFinished
+## Enable if you are using k8s < 1.12 or if you are not able to turn on TTLAfterFinished
 ## FIXME Once there's a generic label, for drone jobs, this command will simplify
 cronjob:
   enabled: false
