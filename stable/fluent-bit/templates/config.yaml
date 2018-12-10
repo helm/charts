@@ -163,7 +163,7 @@ data:
         Name        {{ .name }}
         Format      json
 {{- if .timeKeep }}
-        Time_Keep    {{ .timeKeep }}
+        Time_Keep   {{ .timeKeep }}
 {{- end }}
 {{- if .timeKey }}
         Time_Key    {{ .timeKey }}
