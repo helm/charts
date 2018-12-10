@@ -63,7 +63,7 @@ spec:
           command:
             - /scripts/keycloak.sh
           env:
-          {{- if .Release.IsInstall }}
+          {{- if and (eq .Values.keycloak.createUser true) (.Release.IsInstall) }}
             - name: KEYCLOAK_USER
               value: {{ .Values.keycloak.username }}
             - name: KEYCLOAK_PASSWORD
