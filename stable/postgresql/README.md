@@ -117,6 +117,7 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `metrics.image.pullPolicy`                    | PostgreSQL Image pull policy                         | `IfNotPresent`                                            |
 | `metrics.image.pullSecrets`                   | Specify Image pull secrets                           | `nil` (does not add image pull secrets to deployed pods)  |
 | `extraEnv`                                    | Any extra environment variables you would like to pass on to the pod | `{}`                                    |
+| `updateStrategy`                              | Update strategy policy                               | `{type: "onDelete"}`                                      |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

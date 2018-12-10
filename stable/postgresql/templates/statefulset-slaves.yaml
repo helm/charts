@@ -97,7 +97,7 @@ spec:
               name: {{ .Values.existingSecret }}
             {{- else }}
               name: {{ template "postgresql.fullname" . }}
-            {{- end }}  
+            {{- end }}
               key: postgresql-replication-password
         - name: POSTGRESQL_MASTER_HOST
           value: {{ template "postgresql.fullname" . }}
@@ -155,6 +155,8 @@ spec:
         configMap:
           name: {{ template "postgresql.fullname" . }}-configuration
       {{ end }}
+  updateStrategy:
+    type: {{ .Values.updateStrategy.type }}
 {{- if .Values.persistence.enabled }}
   volumeClaimTemplates:
     - metadata:

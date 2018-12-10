@@ -138,6 +138,11 @@ persistence:
   size: 8Gi
   annotations: {}
 
+## updateStrategy for PostgreSQL StatefulSet and its slaves StatefulSets
+## ref: https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#update-strategies
+updateStrategy:
+  type: RollingUpdate
+
 ##
 ## PostgreSQL Master parameters
 ##
