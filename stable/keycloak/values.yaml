@@ -162,6 +162,9 @@ keycloak:
 
     port: 80
 
+    # Optional: jGroups port for high availability clustering
+    jgroupsPort: 7600
+
   ## Ingress configuration.
   ## ref: https://kubernetes.io/docs/user-guide/ingress/
   ingress:
