@@ -39,7 +39,7 @@ spec:
       containers:
       - name: {{ template "fluentd-elasticsearch.fullname" . }}
         image:  "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-        imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         env:
         - name: FLUENTD_ARGS
           value: --no-supervisor -q
