@@ -70,6 +70,10 @@ spec:
               value: {{ .Values.proxy.cluster | quote }}
             - name: VIRTUAL_HOST
               value: {{ .Values.proxy.virtualHost | quote }}
+          {{- if .Values.proxy.providerUrlInternal }}
+            - name: PROXY_PROVIDER_URL
+              value: {{ .Values.proxy.providerUrlInternal | quote }}
+          {{- end }}
           readinessProbe:
             httpGet:
               path: /ping

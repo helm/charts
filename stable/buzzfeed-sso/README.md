@@ -65,6 +65,7 @@ Parameter | Description | Default
 `auth.tls` | tls configuration for central sso auth ingress. | `{ secretName: "sso-auth-tls-secret" }`
 `auth.customSecret` | the secret key to reuse (avoids secret creation via helm) | REQUIRED if `auth.secret` is not set
 `proxy.virtualHost` | wildcard domain for redirecting SSO to the backends | REQUIRED
+`proxy.providerUrlInternal` | url for split dns deployments |
 `proxy.cluster` | the cluster name for SSO | `dev`
 `proxy.replicaCount` | desired number of proxy pods | `1`
 `proxy.resources` | resource limits and requests for proxy pods | `{ limits: { memory: "256Mi", cpu: "200m" }}`
