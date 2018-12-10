@@ -58,7 +58,7 @@ servers:
     parameters: round_robin
   - name: prometheus
     parameters: 0.0.0.0:9153
-  - name: proxy
+  - name: forward
     parameters: . /etc/resolv.conf
 
 # Complete example with all the options:
