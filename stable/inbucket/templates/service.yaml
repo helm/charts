@@ -47,5 +47,5 @@ spec:
       nodePort: {{ .Values.service.nodePort.pop3 }}
       {{- end }}
   selector:
-    app: {{ template "inbucket.name" . }}
-    release: {{ .Release.Name }}
+    app.kubernetes.io/name: {{ include "inbucket.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
