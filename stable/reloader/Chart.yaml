@@ -1,5 +1,3 @@
-# Generated from deployments/kubernetes/templates/chart/Chart.yaml.tmpl
-
 apiVersion: v1
 name: reloader
 description: Reloader chart that runs on kubernetes
