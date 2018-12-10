@@ -60,7 +60,7 @@ spec:
           - --seeds
           - {{ template "scylladb.fullname" . }}-0.{{ template "scylladb.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
           {{- if .Values.config.overprovisioned }}
-          - --overprovisioned
+          - --overprovisioned=1
           {{- end }}
           {{- if .Values.config.cpu }}
           - --smp
@@ -84,27 +84,20 @@ spec:
           initialDelaySeconds: 15
           timeoutSeconds: 5
         volumeMounts:
-          - name: scylla-conf-yaml
+          - name: scylla-files
             mountPath: /etc/scylla/scylla.yaml
-          - name: scylla-ready-probe
+            subPath: scylla.yaml
+          - name: scylla-files
             mountPath: /opt/ready-probe.sh
+            subPath: ready-probe.sh
           {{- if .Values.persistence.size }}
           - name: datadir
             mountPath: /var/lib/scylla
           {{- end }}
       volumes:
-        - name: scylla-ready-probe
+        - name: scylla-files
           configMap:
             name: {{ template "scylladb.fullname" . }}
-            items:
-            - key: ready-probe.sh
-              path: ready-probe.sh
-        - name: scylla-conf-yaml
-          configMap:
-            name: scylla
-            items:
-            - key: scylla.yaml
-              path: scylla.yaml
   volumeClaimTemplates:
     - metadata:
         name: datadir

@@ -52,4 +52,4 @@ affinity: {}
 
 persistence:
   accessMode: ReadWriteOnce
-  size: 15Gi
+  size: 1Gi
