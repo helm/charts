@@ -3,10 +3,9 @@ kind: Deployment
 metadata:
   name: {{ template "mattermost-team-edition.fullname" . }}
   labels:
-    chart: {{ template "mattermost-team-edition.chart" . }}
-    app: {{ template "mattermost-team-edition.fullname" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ include "mattermost-team-edition.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   replicas: 1
   strategy:
@@ -15,17 +14,17 @@ spec:
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
   selector:
     matchLabels:
-      app: {{ template "mattermost-team-edition.fullname" . }}
-      release: {{ .Release.Name }}
+      app.kubernetes.io/name: {{ include "mattermost-team-edition.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/managed-by: {{ .Release.Service }}
   template:
     metadata:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap-config.yaml") . | sha256sum }}
       labels:
-        app: {{ template "mattermost-team-edition.fullname" . }}
-        release: {{ .Release.Name }}
-        chart: {{ template "mattermost-team-edition.chart" . }}
-        heritage: {{ .Release.Service }}
+        app.kubernetes.io/name: {{ include "mattermost-team-edition.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
     spec:
       initContainers:
       {{- if not .Values.externalDB.enabled }}
