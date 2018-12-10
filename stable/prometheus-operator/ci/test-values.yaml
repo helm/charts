@@ -20,6 +20,10 @@ commonLabels: {}
 ##
 defaultRules:
   create: true
+  ## Labels for default rules
+  labels: {}
+  ## Annotations for default rules
+  annotations: {}
 
 ##
 global:
@@ -124,6 +128,8 @@ alertmanager:
   ## Configuration for Alertmanager service
   ##
   service:
+    annotations: {}
+
     ## Port to expose on each node
     ## Only used if service.type is 'NodePort'
     ##
@@ -151,7 +157,7 @@ alertmanager:
     ##
     image:
       repository: quay.io/prometheus/alertmanager
-      tag: v0.15.2
+      tag: v0.15.3
 
     ## Secrets is a list of Secrets in the same namespace as the Alertmanager object, which shall be mounted into the
     ## Alertmanager Pods. The Secrets are mounted into /etc/alertmanager/secrets/.
@@ -449,6 +455,18 @@ prometheusOperator:
     create: true
     name: ""
 
+  ## Configuration for Prometheus operator service
+  ##
+  service:
+    ## Port to expose on each node
+    ## Only used if service.type is 'NodePort'
+    ##
+    nodePort: 38080
+
+    ## Service type
+    ##
+    type: ClusterIP
+
   ## Deploy CRDs used by Prometheus Operator.
   ##
   createCustomResource: true
@@ -549,6 +567,18 @@ prometheus:
     create: true
     name: ""
 
+  ## Configuration for Prometheus service
+  ##
+  service:
+    ## Port to expose on each node
+    ## Only used if service.type is 'NodePort'
+    ##
+    nodePort: 39090
+
+    ## Service type
+    ##
+    type: ClusterIP
+
   rbac:
     ## Create role bindings in the specified namespaces, to allow Prometheus monitoring
     ## a role binding in the release namespace will always be created.
@@ -589,6 +619,17 @@ prometheus:
   serviceMonitor:
     selfMonitor: true
 
+  service:
+    annotations: {}
+
+    ## Node Port (only used if service type is NodePort)
+    ##
+    # nodePort: 30816
+
+    ## Service type
+    ##
+    type: ClusterIP
+
   ## Settings affecting prometheusSpec
   ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#prometheusspec
   ##
@@ -610,10 +651,10 @@ prometheus:
     ##
     image:
       repository: quay.io/prometheus/prometheus
-      tag: v2.4.3
+      tag: v2.5.0
 
     #  repository: quay.io/coreos/prometheus
-    #  tag: v2.4.3
+    #  tag: v2.5.0
 
     ## Tolerations for use with node taints
     ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/

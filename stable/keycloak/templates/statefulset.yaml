@@ -100,7 +100,7 @@ spec:
             timeoutSeconds: {{ .Values.keycloak.livenessProbe.timeoutSeconds }}
           readinessProbe:
             httpGet:
-              path: /{{ .Values.keycloak.basepath }}/
+              path: /{{ .Values.keycloak.basepath }}/realms/master
               port: http
             initialDelaySeconds: {{ .Values.keycloak.readinessProbe.initialDelaySeconds }}
             timeoutSeconds: {{ .Values.keycloak.readinessProbe.timeoutSeconds }}

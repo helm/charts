@@ -32,19 +32,26 @@ spec:
         fsGroup: {{ .Values.securityContext.fsGroup }}
         runAsUser: {{ .Values.securityContext.runAsUser }}
       {{- end }}
-      {{- if .Values.image.pullSecrets }}
+      {{- if or .Values.image.pullSecrets .Values.metrics.image.pullSecrets }}
       imagePullSecrets:
       {{- range .Values.image.pullSecrets }}
         - name: {{ . }}
       {{- end}}
+      {{- range .Values.metrics.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end}}
       {{- end }}
-      {{- if .Values.nodeSelector }}
+      {{- if .Values.master.nodeSelector }}
       nodeSelector:
-{{ toYaml .Values.nodeSelector | indent 8 }}
+{{ toYaml .Values.master.nodeSelector | indent 8 }}
       {{- end }}
-      {{- if .Values.tolerations }}
+      {{- if .Values.master.affinity }}
+      affinity:
+{{ toYaml .Values.master.affinity | indent 8 }}
+      {{- end }}
+      {{- if .Values.master.tolerations }}
       tolerations:
-{{ toYaml .Values.tolerations | indent 8 }}
+{{ toYaml .Values.master.tolerations | indent 8 }}
       {{- end }}
       {{- if .Values.terminationGracePeriodSeconds }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
@@ -54,7 +61,14 @@ spec:
       - name: init-chmod-data
         image: {{ template "postgresql.volumePermissions.image" . }}
         imagePullPolicy: "{{ .Values.volumePermissions.image.pullPolicy }}"
-        command: ['sh' , '-c' , 'if [ -d /bitnami/postgresql/data ]; then chmod  0700 /bitnami/postgresql/data; fi']
+        command:
+          - sh
+          - -c
+          - |
+            chown -R {{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.fsGroup }} /bitnami
+            if [ -d /bitnami/postgresql/data ]; then
+              chmod  0700 /bitnami/postgresql/data;
+            fi
         securityContext:
           runAsUser: {{ .Values.volumePermissions.securityContext.runAsUser }}
         volumeMounts:
@@ -66,8 +80,14 @@ spec:
         image: {{ template "postgresql.image" . }}
         imagePullPolicy: "{{ .Values.image.pullPolicy }}"
         resources:
-{{ toYaml .Values.Resources | indent 10 }}
+{{ toYaml .Values.resources | indent 10 }}
         env:
+        {{- if .Values.image.debug}}
+        - name: BASH_DEBUG
+          value: "1"
+        - name: NAMI_DEBUG
+          value: "1"
+        {{- end }}
         {{- if .Values.replication.enabled }}
         - name: POSTGRESQL_REPLICATION_MODE
           value: "master"
@@ -84,10 +104,16 @@ spec:
         - name: POSTGRESQL_PASSWORD
           valueFrom:
             secretKeyRef:
+            {{- if .Values.existingSecret }}
+              name: {{ .Values.existingSecret }}
+            {{- else }}
               name: {{ template "postgresql.fullname" . }}
+            {{- end }}  
               key: postgresql-password
+        {{- if .Values.postgresqlDatabase }}
         - name: POSTGRESQL_DATABASE
           value: {{ .Values.postgresqlDatabase | quote }}
+        {{- end }}
         - name: POD_IP
           valueFrom: { fieldRef: { fieldPath: status.podIP } }
 {{- if .Values.extraEnv }}
@@ -127,20 +153,72 @@ spec:
           mountPath: /docker-entrypoint-initdb.d
         {{- if .Values.persistence.enabled }}
         - name: data
-          mountPath: /bitnami/postgresql
+          mountPath: {{ .Values.persistence.mountPath }}
         {{ end }}
-        {{ if  (.Files.Glob "files/postgresql.conf") }}
+        {{ if or (.Files.Glob "files/postgresql.conf") .Values.postgresqlConfiguration }}
         - name: postgresql-config
           mountPath: /opt/bitnami/postgresql/conf/postgresql.conf
           subPath: postgresql.conf
         {{ end }}
-        {{ if (.Files.Glob "files/pg_hba.conf") }}
+        {{ if or (.Files.Glob "files/pg_hba.conf") .Values.pgHbaConfiguration }}
         - name: postgresql-config
           mountPath: /opt/bitnami/postgresql/conf/pg_hba.conf
           subPath: pg_hba.conf
         {{ end }}
+{{- if .Values.metrics.enabled }}
+      - name: metrics
+        image: {{ template "metrics.image" . }}
+        imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
+        env:
+        {{- $database := required "In order to enable metrics you need to specify a database (.Values.postgresqlDatabase)" .Values.postgresqlDatabase }}
+        - name: DATA_SOURCE_URI
+          value: {{ printf "localhost:%d/%s?sslmode=disable" (int .Values.service.port) $database | quote }}
+        - name: DATA_SOURCE_PASS
+          valueFrom:
+            secretKeyRef:
+            {{- if .Values.existingSecret }}
+              name: {{ .Values.existingSecret }}
+            {{- else }}
+              name: {{ template "postgresql.fullname" . }}
+            {{- end }}  
+              key: postgresql-password
+        - name: DATA_SOURCE_USER
+          value: {{ .Values.postgresqlUsername }}
+        {{- if .Values.livenessProbe.enabled }}
+        livenessProbe:
+          httpGet:
+            path: /
+            port: metrics
+          initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.livenessProbe.successThreshold }}
+          failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+        {{- end }}
+        {{- if .Values.readinessProbe.enabled }}
+        readinessProbe:
+          httpGet:
+            path: /
+            port: metrics
+          initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.readinessProbe.successThreshold }}
+          failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+        {{- end }}
+        ports:
+        - name: metrics
+          containerPort: 9187
+        resources:
+{{ toYaml .Values.metrics.resources | indent 10 }}
+{{- end }}
       volumes:
-      {{ if or (.Files.Glob "files/postgresql.conf") (.Files.Glob "files/pg_hba.conf") }}
+      {{- if and .Values.persistence.enabled .Values.persistence.existingClaim }}
+      - name: {{ .Values.persistence.existingClaim }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.persistence.existingClaim }}
+      {{- end }}
+      {{ if or (.Files.Glob "files/postgresql.conf") (.Files.Glob "files/pg_hba.conf") .Values.postgresqlConfiguration .Values.pgHbaConfiguration }}
       - name: postgresql-config
         configMap:
           name: {{ template "postgresql.fullname" . }}-configuration
@@ -148,14 +226,16 @@ spec:
       - name: custom-init-scripts
         configMap:
           name: {{ template "postgresql.fullname" . }}-init-scripts
-{{- if .Values.persistence.enabled }}
+{{- if and .Values.persistence.enabled (not .Values.persistence.existingClaim) }}
   volumeClaimTemplates:
     - metadata:
         name: data
+      {{- with .Values.persistence.annotations }}
         annotations:
-        {{- range $key, $value := .Values.persistence.annotations }}
+        {{- range $key, $value := . }}
           {{ $key }}: {{ $value }}
         {{- end }}
+      {{- end }}
       spec:
         accessModes:
         {{- range .Values.persistence.accessModes }}

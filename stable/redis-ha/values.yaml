@@ -3,7 +3,7 @@
 ##
 image:
   repository: redis
-  tag: 4.0.11-stretch
+  tag: 4.0.11-alpine
   pullPolicy: IfNotPresent
 ## replicas number for each component
 replicas: 3

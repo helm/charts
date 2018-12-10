@@ -20,6 +20,10 @@ commonLabels: {}
 ##
 defaultRules:
   create: true
+  ## Labels for default rules
+  labels: {}
+  ## Annotations for default rules
+  annotations: {}
 
 ##
 global:
@@ -124,6 +128,7 @@ alertmanager:
   ## Configuration for Alertmanager service
   ##
   service:
+    annotations: {}
     ## Port to expose on each node
     ## Only used if service.type is 'NodePort'
     ##
@@ -151,7 +156,7 @@ alertmanager:
     ##
     image:
       repository: quay.io/prometheus/alertmanager
-      tag: v0.15.2
+      tag: v0.15.3
 
     ## Secrets is a list of Secrets in the same namespace as the Alertmanager object, which shall be mounted into the
     ## Alertmanager Pods. The Secrets are mounted into /etc/alertmanager/secrets/.
@@ -449,6 +454,18 @@ prometheusOperator:
     create: true
     name: ""
 
+  ## Configuration for Prometheus operator service
+  ##
+  service:
+    ## Port to expose on each node
+    ## Only used if service.type is 'NodePort'
+    ##
+    nodePort: 38080
+
+    ## Service type
+    ##
+    type: ClusterIP
+
   ## Deploy CRDs used by Prometheus Operator.
   ##
   createCustomResource: true
@@ -460,6 +477,9 @@ prometheusOperator:
   ## Labels to add to the operator pod
   ##
   podLabels: {}
+
+  ## Assign a PriorityClassName to pods if set
+  # priorityClassName: ""
 
   ## If true, the operator will create and maintain a service for scraping kubelets
   ## ref: https://github.com/coreos/prometheus-operator/blob/master/helm/prometheus-operator/README.md
@@ -510,6 +530,10 @@ prometheusOperator:
   #       - e2e-az1
   #       - e2e-az2
 
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 65534
+
   ## Prometheus-operator image
   ##
   image:
@@ -548,6 +572,20 @@ prometheus:
   serviceAccount:
     create: true
     name: ""
+
+  ## Configuration for Prometheus service
+  ##
+  service:
+    annotations: {}
+
+    ## Port to expose on each node
+    ## Only used if service.type is 'NodePort'
+    ##
+    nodePort: 39090
+
+    ## Service type
+    ##
+    type: ClusterIP
 
   rbac:
     ## Create role bindings in the specified namespaces, to allow Prometheus monitoring
@@ -610,10 +648,10 @@ prometheus:
     ##
     image:
       repository: quay.io/prometheus/prometheus
-      tag: v2.4.3
+      tag: v2.5.0
 
     #  repository: quay.io/coreos/prometheus
-    #  tag: v2.4.3
+    #  tag: v2.5.0
 
     ## Tolerations for use with node taints
     ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/

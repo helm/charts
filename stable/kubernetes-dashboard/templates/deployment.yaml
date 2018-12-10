@@ -2,6 +2,10 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: {{ template "kubernetes-dashboard.fullname" . }}
+{{- if .Values.annotations }}
+  annotations:
+{{ toYaml .Values.annotations | indent 4 }}
+{{- end }}
   labels:
     app: {{ template "kubernetes-dashboard.name" . }}
     chart: {{ template "kubernetes-dashboard.chart" . }}
