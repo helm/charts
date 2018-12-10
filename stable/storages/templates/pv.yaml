@@ -1,4 +1,5 @@
 ---
+{{- if .Values.Volumes }}
 apiVersion: v1
 kind: List
 items:
@@ -24,4 +25,5 @@ items:
     nfs:
       server: {{ .nfs.server }}
       path: {{ .nfs.path }}
+{{- end }}
 {{- end }}

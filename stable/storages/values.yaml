@@ -1,14 +1,14 @@
 Volumes:
-- name: storage-volume
-  annotations: {}
-  labels:
-    app: appname
-  accessModes:
-  - ReadWriteOnce
-  storage: 10Gi
-  nfs:
-    server: fs-abcdef.efs.eu-west-1.amazonaws.com
-    path: /home/storage
+# - name: storage-volume
+#   annotations: {}
+#   labels:
+#     app: appname
+#   accessModes:
+#   - ReadWriteOnce
+#   storage: 10Gi
+#   nfs:
+#     server: fs-abcdef.efs.eu-west-1.amazonaws.com
+#     path: /home/storage
 
 Claims:
 - name: storage-volume-claim

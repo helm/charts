@@ -1,4 +1,5 @@
 ---
+{{- if .Values.Claims }}
 apiVersion: v1
 kind: List
 items:
@@ -27,4 +28,5 @@ items:
   {{- else }}
     volumeName: {{ .volumeName }}
   {{- end }}
+{{- end }}
 {{- end }}
