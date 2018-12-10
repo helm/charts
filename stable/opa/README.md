@@ -53,3 +53,22 @@ API](https://www.openpolicyagent.org/docs/bundles.html).
 
 For more information on OPA-specific configuration see the [OPA Configuration
 Reference](https://www.openpolicyagent.org/docs/configuration.html).
+
+| Parameter | Description | Default |
+| --- | --- | --- |
+| `admissionControllerKind` | Type of admission controller to install. | `ValidatingWebhookConfiguration` |
+| `admissionControllerFailurePolicy` | Fail-open (`Ignore`) or fail-closed (`Fail`)? | `Ignore` |
+| `admissionControllerRules` | Types of operations resources to check. | `*` |
+| `generateAdmissionControllerCerts` | Auto-generate TLS certificates for admission controller. | `true` |
+| `admissionControllerCA` | Manually set admission controller certificate CA. | Unset |
+| `admissionControllerCert` | Manually set admission controller certificate. | Unset |
+| `admissionControllerKey` | Manually set admission controller key. | Unset |
+| `image` | OPA image to deploy. | `openpolicyagent/opa` |
+| `imageTag` | OPA image tag to deploy. | See [values.yaml](values.yaml) |
+| `replicas` | Number of admission controller replicas to deploy. | `1` |
+| `tolerations` | List of node taint tolerations. | `[]` |
+| `nodeSelector` | Node labels for pod assignment. | `{}` |
+| `resources` | CPU and memory limits for OPA Pod. | `{}` |
+| `readinessProbe` | HTTP readiness probe for OPA container. | See [values.yaml](values.yaml) |
+| `livenessProbe` | HTTP liveness probe for OPA container. | See [values.yaml](values.yaml) |
+| `opa` | OPA configuration. | See [values.yaml](values.yaml) |
