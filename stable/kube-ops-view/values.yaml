@@ -51,3 +51,4 @@ redis:
   master:
     persistence:
       enabled: false
+
