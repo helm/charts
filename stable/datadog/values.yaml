@@ -135,6 +135,15 @@ datadog:
   ##
   name: datadog
 
+  # The site of the Datadog intake to send Agent data to.
+  # Defaults to 'datadoghq.com', set to 'datadoghq.eu' to send data to the EU site.
+  # site: datadoghq.com
+
+  # The host of the Datadog intake server to send Agent data to, only set this option
+  # if you need the Agent to send data to a custom URL.
+  # Overrides the site setting defined in "site".
+  # dd_url: https://app.datadoghq.com
+
   ## Set logging verbosity.
   ## ref: https://github.com/DataDog/docker-dd-agent#environment-variables
   ## Note: For Agent6 (image `datadog/agent`) the valid log levels are
