@@ -1,17 +1,16 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: {{ template "inbucket.name" . }}
-    chart: {{ template "inbucket.chart" . }}
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    app.kubernetes.io/name: {{ include "inbucket.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
   name: {{ template "inbucket.fullname" . }}
 spec:
   selector:
     matchLabels:
-      app: {{ template "inbucket.name" . }}
-      release: {{ .Release.Name | quote }}
+      app.kubernetes.io/name: {{ include "inbucket.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
     {{- if .Values.podAnnotations }}
@@ -19,8 +18,8 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
     {{- end }}
       labels:
-        app: {{ template "inbucket.name" . }}
-        release: {{ .Release.Name | quote }}
+        app.kubernetes.io/name: {{ include "inbucket.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
       containers:
         - name: {{ template "inbucket.name" . }}

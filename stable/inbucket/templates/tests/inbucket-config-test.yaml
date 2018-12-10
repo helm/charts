@@ -4,10 +4,9 @@ kind: ConfigMap
 metadata:
   name: {{ template "inbucket.name" . }}-tests
   labels:
-    chart: {{ template "inbucket.chart" . }}
-    app: {{ template "inbucket.name" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ include "inbucket.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 data:
   run.sh: |-
     @test "Testing Inbucket is accessible" {

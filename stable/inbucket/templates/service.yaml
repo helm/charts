@@ -6,10 +6,9 @@ metadata:
 {{ toYaml .Values.service.annotations | indent 4 }}
 {{- end }}
   labels:
-    app: {{ template "inbucket.name" . }}
-    chart: {{ template "inbucket.chart" . }}
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    app.kubernetes.io/name: {{ include "inbucket.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
   name: {{ template "inbucket.fullname" . }}
 spec:
   type: "{{ .Values.service.type }}"
@@ -48,5 +47,5 @@ spec:
       nodePort: {{ .Values.service.nodePort.pop3 }}
       {{- end }}
   selector:
-    app: {{ template "inbucket.name" . }}
-    release: {{ .Release.Name }}
+    app.kubernetes.io/name: {{ include "inbucket.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
