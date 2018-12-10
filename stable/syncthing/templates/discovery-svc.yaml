@@ -48,5 +48,5 @@ spec:
       nodePort: {{.Values.discoveryService.nodePort}}
 {{ end }}
   selector:
-    app: {{ template "syncthing.name" . }}
+    app.kubernetes.io/name: {{ template "syncthing.name" . }}
     release: {{ .Release.Name }}
