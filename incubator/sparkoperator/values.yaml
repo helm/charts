@@ -16,5 +16,5 @@ serviceAccounts:
 
 sparkJobNamespace: default
 
-enableWebhook: true
+enableWebhook: false
 enableMetrics: true
