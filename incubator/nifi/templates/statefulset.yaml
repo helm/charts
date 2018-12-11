@@ -12,6 +12,10 @@ spec:
   podManagementPolicy: {{ .Values.sts.podManagementPolicy }}
   serviceName: {{ template "apache-nifi.fullname" . }}-headless
   replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "apache-nifi.name" . }}
+      release: {{ .Release.Name }}
   template:
     metadata:
       annotations:
