@@ -1,1 +1,1 @@
-storages chart is used with conjunction of other charts. It can come in handy when a public chart does not provide support for additional pv or pvc. In that scenario, this chart can be used to deploy additional pv and pvc.
+PV/PVC has been created. Mount this in your resource to use it.
