@@ -28,7 +28,7 @@ controller:
   name: controller
   image:
     repository: quay.io/jcmoraisjr/haproxy-ingress
-    tag: "v0.5-beta.3"
+    tag: "v0.6"
     pullPolicy: IfNotPresent
 
   defaultSslCertificate:
@@ -41,6 +41,21 @@ controller:
   # ConfigMap to configure haproxy ingress
   config: {}
 
+  # Use host ports?
+  hostPorts:
+    enable: false
+    http: 80
+    https: 443
+    # List of ports from tcp map
+    tcp: []
+
+
+  # Name of the ingress class to route through this controller
+  ingressClass: haproxy
+
+  healthzPort: 10253
+  statsPort: 1936
+
   service:
     annotations: {}
     labels: {}
@@ -51,6 +66,10 @@ controller:
       https: 443
 
     type: LoadBalancer
+    loadBalancerIP: ""
+
+    enableHttp: true
+    enableHttps: true
 
     # type: NodePort
     # nodePorts:
@@ -59,3 +78,11 @@ controller:
     nodePorts:
       http: ""
       https: ""
+
+  resources: {}
+
+# TCP service key:value pairs
+# <port>: <namespace>/<servicename>:<portnumber>[:[<in-proxy>][:<out-proxy>]]
+# https://github.com/jcmoraisjr/haproxy-ingress/tree/v0.6#tcp-services-configmap
+tcp: {}
+#  8080: "default/example-tcp-svc:9000"

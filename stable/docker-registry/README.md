@@ -63,6 +63,11 @@ their default values.
 | `swift.container`           | Swift container                                                                            | `nil`           |
 | `nodeSelector`              | node labels for pod assignment                                                             | `{}`            |
 | `tolerations`               | pod tolerations                                                                            | `[]`            |
+| `ingress.enabled`           | If true, Ingress will be created                                                           | `false`         |
+| `ingress.annotations`       | Ingress annotations                                                                        | `{}`            |
+| `ingress.path`              | Ingress service path                                                                       | `/`            |
+| `ingress.hosts`             | Ingress hostnames                                                                          | `[]`            |
+| `ingress.tls`               | Ingress TLS configuration (YAML)                                                           | `[]`            |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to
 `helm install`.

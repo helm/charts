@@ -72,7 +72,14 @@ The following table lists the configurable parameters of the phpBB chart and the
 | `mariadb.db.name`         | Database name to create               | `bitnami_phpbb`                                         |
 | `mariadb.db.user`             | Database user to create               | `bn_phpbb`                                              |
 | `mariadb.db.password`         | Password for the database             | _random 10 character long alphanumeric string_          |
-| `serviceType`                     | Kubernetes Service type               | `LoadBalancer`                                          |
+| `service.type`                    | Kubernetes Service type                    | `LoadBalancer`                                          |
+| `service.port`                    | Service HTTP port (Dashboard)                   | `80`                                          |
+| `nodePorts.http`                 | Kubernetes http node port                  | `""`                                                    |
+| `nodePorts.https`                | Kubernetes https node port                 | `""`                                                    |
+| `service.externalTrafficPolicy`   | Enable client source IP preservation       | `Cluster`                                               |
+| `service.nodePorts.http`                 | Kubernetes http node port                  | `""`                                                    |
+| `service.nodePorts.https`                 | Kubernetes https node port                  | `""`                                                    |
+| `service.loadBalancerIP`                 | LoadBalancer service IP                  | `""`                                                    |
 | `persistence.enabled`             | Enable persistence using PVC          | `true`                                                  |
 | `persistence.apache.storageClass` | PVC Storage Class for Apache volume   | `nil` (uses alpha storage class annotation)             |
 | `persistence.apache.accessMode`   | PVC Access Mode for Apache volume     | `ReadWriteOnce`                                         |
@@ -81,6 +88,15 @@ The following table lists the configurable parameters of the phpBB chart and the
 | `persistence.phpbb.accessMode`    | PVC Access Mode for phpBB volume      | `ReadWriteOnce`                                         |
 | `persistence.phpbb.size`          | PVC Storage Request for phpBB volume  | `8Gi`                                                   |
 | `resources`                       | CPU/Memory resource requests/limits   | Memory: `512Mi`, CPU: `300m`                            |
+| `podAnnotations`                | Pod annotations                                   | `{}`                                                       |
+| `metrics.enabled`                          | Start a side-car prometheus exporter                                                                           | `false`                                              |
+| `metrics.image.registry`                   | Apache exporter image registry                                                                                  | `docker.io`                                          |
+| `metrics.image.repository`                 | Apache exporter image name                                                                                      | `lusotycoon/apache-exporter`                           |
+| `metrics.image.tag`                        | Apache exporter image tag                                                                                       | `v0.5.0`                                            |
+| `metrics.image.pullPolicy`                 | Image pull policy                                                                                              | `IfNotPresent`                                       |
+| `metrics.image.pullSecrets`                | Specify docker-registry secret names as an array                                                               | `nil`                                                |
+| `metrics.podAnnotations`                   | Additional annotations for Metrics exporter pod                                                                | `{prometheus.io/scrape: "true", prometheus.io/port: "9117"}`                                                   |
+| `metrics.resources`                        | Exporter resource requests/limit                                                                               | {}                        |
 
 The above parameters map to the env variables defined in [bitnami/phpbb](http://github.com/bitnami/bitnami-docker-phpbb). For more information please refer to the [bitnami/phpbb](http://github.com/bitnami/bitnami-docker-phpbb) image documentation.
 

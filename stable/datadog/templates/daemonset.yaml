@@ -64,6 +64,14 @@ spec:
               secretKeyRef:
                 name: {{ template "datadog.apiSecretName" . }}
                 key: api-key
+          {{- if .Values.datadog.site }}
+          - name: DD_SITE
+            value: {{ .Values.datadog.site | quote }}
+          {{- end }}
+          {{- if .Values.datadog.dd_url }}
+          - name: DD_DD_URL
+            value: {{ .Values.datadog.dd_url | quote }}
+          {{- end }}
           {{- if .Values.datadog.logLevel }}
           - name: DD_LOG_LEVEL
             value: {{ .Values.datadog.logLevel | quote }}
@@ -100,6 +108,8 @@ spec:
           {{- else }}
           - name: DD_CLUSTER_AGENT_ENABLED
             value: {{ .Values.clusterAgent.enabled | quote }}
+          - name: DD_CLUSTER_AGENT_KUBERNETES_SERVICE_NAME
+            value: {{ template "datadog.clusterAgent.fullname" . }}
           - name: DD_CLUSTER_AGENT_AUTH_TOKEN
             valueFrom:
               secretKeyRef:
@@ -149,6 +159,8 @@ spec:
           - name: cgroups
             mountPath: /host/sys/fs/cgroup
             readOnly: true
+          - name: s6-run
+            mountPath: /var/run/s6
           {{- if (or (.Values.datadog.confd) (.Values.datadog.autoconf)) }}
           - name: confd
             mountPath: /conf.d
@@ -189,6 +201,8 @@ spec:
         - hostPath:
             path: /sys/fs/cgroup
           name: cgroups
+        - name: s6-run
+          emptyDir: {}
         {{- if (or (.Values.datadog.confd) (.Values.datadog.autoconf)) }}
         - name: confd
           configMap:

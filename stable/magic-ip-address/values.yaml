@@ -1,0 +1,40 @@
+image:
+  repository: mumoshu/kube-magic-ip-assigner
+  tag: 0.9.0-1.9.8
+  pullPolicy: IfNotPresent
+
+config:
+  ipAddress: 169.254.210.210
+  selector: app=myapp
+  hostInterface: cni0
+  port: 9200
+  protocol: tcp
+  verbose:
+  pollInterval: 5
+
+# A map of additional environment variables
+extraVars: {}
+  # test1: "test2"
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 200Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 100Mi
+
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
