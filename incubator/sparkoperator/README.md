@@ -24,10 +24,9 @@ The following table lists the configurable parameters of the Spark operator char
 | Parameter                 | Description                                           | Default                                |
 | ------------------------- | ----------------------------------------------------- | -------------------------------------- |
 | `operatorImageName`       | The name of the operator image                        | `gcr.io/spark-operator/spark-operator` |
-| `operatorVersion`         | The version of the operator to install                | `v2.3.1-v1alpha1-latest`               |
+| `operatorVersion`         | The version of the operator to install                | `v2.4.0-v1alpha1-latest`               |
 | `sparkJobNamespace`       | K8s namespace where Spark jobs are to be deployed.    | `default`                              |
-| `createSparkJobNamespace` | Whether to create the Spark job namespace             | false                                  |
-| `enableWebhook`           | Whether to enable mutating admission webhook          | true                                   |
+| `enableWebhook`           | Whether to enable mutating admission webhook          | false                                   |
 | `enableMetrics`           | Whether to expose metrics to be scraped by Premetheus | true                                   |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. 
