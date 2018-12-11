@@ -1,0 +1,55 @@
+---
+{{- if .Values.mirror.enabled }}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "kafka.fullname" . }}-mirror
+  labels:
+    app: "{{ template "kafka.name" . }}"
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+spec:
+  replicas: {{ .Values.mirror.replicas }}
+  selector:
+    matchLabels:
+      app: {{ template "kafka.name" . }}-mirror
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "kafka.name" . }}-mirror
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: kafka-mirror
+          image: "{{ .Values.image }}:{{ .Values.imageTag }}"
+          command:
+            - /usr/bin/kafka-run-class
+          args:
+            - kafka.tools.MirrorMaker
+            - --consumer.config
+            - /etc/kafka/consumer.properties
+            - --producer.config
+            - /etc/kafka/producer.properties
+            - --whitelist
+            - {{ .Values.mirror.whitelist | quote }}
+            - --num.streams
+            - {{ .Values.mirror.num.streams | quote }}
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/kafka/consumer.properties
+              subPath: consumer.properties
+            - name: config-volume
+              mountPath: /etc/kafka/producer.properties
+              subPath: producer.properties
+            - name: config-volume
+              mountPath: /etc/kafka/tools-log4j.properties
+              subPath: tools-log4j.properties
+          resources:
+{{ toYaml .Values.mirror.resources | indent 12 }}
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ template "kafka.fullname" . }}-mirror-config
+{{- end }}

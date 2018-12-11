@@ -138,6 +138,16 @@ following configurable parameters:
 | `configJob.backoffLimit`                              | Number of retries before considering kafka-config job as failed                                                                                                          | `6`                                                                |
 | `topics`                                              | List of topics to create & configure. Can specify name, partitions, replicationFactor, reassignPartitions, config. See values.yaml                                       | `[]` (Empty list)                                                  |
 | `testsEnabled`                                        | Enable/disable the chart's tests                                                                                                                                         | `true`                                                             |
+
+| `mirror.enabled`                                      | Deploy Kafka Mirror service | `false` |
+| `mirror.replicas`                                     | Number of Kafka mirror replicas | `1`  |
+| `mirror.resources`                                    | Kafka mirror pod Resources  | `{}` |
+| `mirror.num.streams`                                  | Number of streams used by kafka mirror to replicate topics | `1`  |
+| `mirror.whitelist`                                    | White list mirrored topics | `""` |
+| `mirror.config.consumer`                              | Consumer configuration, relevant options are `bootstrap.servers`, `group.id`, `auto.offset.reset`. See kafka mirror documentation for more options. | `{}` |
+| `mirror.config.producer`                              | Producer configuration, relevant options are `bootstrap.servers`, `compression.type`, `batch.size` See kafka mirror documentation for more options. | `{}` |
+| `mirror.log4j`                                        | Kafka Mirror log4j configuration | `{}` |
+
 | `zookeeper.enabled`                                   | If True, installs Zookeeper Chart                                                                                                                                        | `true`                                                             |
 | `zookeeper.resources`                                 | Zookeeper resource requests and limits                                                                                                                                   | `{}`                                                               |
 | `zookeeper.env`                                       | Environmental variables provided to Zookeeper Zookeeper                                                                                                                  | `{ZK_HEAP_SIZE: "1G"}`                                             |

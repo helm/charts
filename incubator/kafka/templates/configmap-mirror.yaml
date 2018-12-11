@@ -1,0 +1,30 @@
+{{- if .Values.mirror.enabled -}}
+{{- $zk := include "zookeeper.url" . -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app: {{ template "kafka.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+  name: {{ template "kafka.fullname" . }}-mirror-config
+data:
+  consumer.properties: |
+    {{ template "consumer.bootstrap.servers" . }}
+
+  {{- range $key, $value := .Values.mirror.config.consumer }}
+    {{ $key }}={{ $value }}
+  {{- end }}
+
+  producer.properties: |
+    {{- range $key, $value := .Values.mirror.config.producer }}
+      {{ $key }}={{ $value }}
+    {{- end }}
+
+  tools-log4j.properties: |
+    {{- range $key, $value := .Values.mirror.config.log4j }}
+      {{ $key }}={{ $value }}
+    {{- end }}
+
+{{- end -}}

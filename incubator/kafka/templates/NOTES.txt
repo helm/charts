@@ -1,4 +1,4 @@
-### Connecting to Kafka from inside Kubernetes
+# Connecting to Kafka from inside Kubernetes
 
 You can connect to Kafka by running a simple pod in the K8s cluster like this with a configuration like this:
 
@@ -40,7 +40,8 @@ To end the producer session try: Ctrl+C
 If you specify "zookeeper.connect" in configurationOverrides, please replace "{{ .Release.Name }}-zookeeper:2181" with the value of "zookeeper.connect", or you will get error.
 
 {{ if .Values.external.enabled }}
-### Connecting to Kafka from outside Kubernetes
+
+# Connecting to Kafka from outside Kubernetes
 
 You have enabled the external access feature of this chart.
 
@@ -73,4 +74,25 @@ To view JMX configuration (pull request/updates to improve defaults are encourag
   {{ else }}
   kubectl -n {{ .Release.Namespace }} describe configmap {{ include "kafka.fullname" . }}-metrics
   {{- end }}
+{{- end }}
+
+{{ if .Values.mirror.enabled }}
+You have enabled Kafka mirror between clusters for future reference here is configuration.
+
+Consumer:
+  {{ template "consumer.bootstrap.servers" . }}
+{{- range $key, $value := .Values.mirror.config.consumer }}
+  {{ $key }}={{ $value }}
+{{- end }}
+
+Producer:
+{{- range $key, $value := .Values.mirror.config.producer }}
+  {{ $key }}={{ $value }}
+{{- end }}
+
+log4j:
+{{- range $key, $value := .Values.mirror.config.log4j }}
+  {{ $key }}={{ $value }}
+{{- end }}
+
 {{- end }}

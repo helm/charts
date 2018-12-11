@@ -42,14 +42,19 @@ Form the Zookeeper URL. If zookeeper is installed as part of this chart, use k8s
 else use user-provided URL
 */}}
 {{- define "zookeeper.url" }}
-{{- $port := .Values.zookeeper.port | toString }}
-{{- if .Values.zookeeper.enabled -}}
-{{- printf "%s:%s" (include "kafka.zookeeper.fullname" .) $port }}
-{{- else -}}
-{{- $zookeeperConnect := printf "%s:%s" .Values.zookeeper.url $port }}
-{{- $zookeeperConnectOverride := index .Values "configurationOverrides" "zookeeper.connect" }}
-{{- default $zookeeperConnect $zookeeperConnectOverride }}
-{{- end -}}
+  {{- $port := .Values.zookeeper.port | toString }}
+  {{- if .Values.zookeeper.enabled -}}
+    {{- if index .Values.zookeeper.service.annotations "external-dns.alpha.kubernetes.io/hostname" }}
+      {{- $hostname := index .Values.zookeeper.service.annotations "external-dns.alpha.kubernetes.io/hostname" | trimSuffix "."}}
+      {{- printf "%s:%s" $hostname $port -}}
+    {{- else -}}
+      {{- printf "%s:%s" (include "kafka.zookeeper.fullname" .) $port }}
+    {{- end -}}
+  {{- else -}}
+    {{- $zookeeperConnect := printf "%s:%s" .Values.zookeeper.url $port }}
+    {{- $zookeeperConnectOverride := index .Values "configurationOverrides" "zookeeper.connect" }}
+    {{- default $zookeeperConnect $zookeeperConnectOverride }}
+  {{- end -}}
 {{- end -}}
 
 {{/*
@@ -109,6 +114,14 @@ app.kubernetes.io/component: kafka-monitor
 {{- define "kafka.monitor.labels" -}}
 {{ include "kafka.common.metaLabels" . }}
 {{ include "kafka.monitor.matchLabels" . }}
+
+{{/*
+Test if bootstrap.servers is defined in kafka mirror config for consumer and if not use our service
+*/}}
+{{- define "consumer.bootstrap.servers" -}}
+{{- if not (index .Values.mirror.config.consumer "bootstrap.servers") -}}
+{{- printf "bootstrap.servers=%s-headless.%s:9092" (include "kafka.fullname" .) .Release.Namespace -}}
+{{- end -}}
 {{- end -}}
 
 {{- define "serviceMonitor.namespace" -}}
