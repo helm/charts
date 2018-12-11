@@ -1,5 +1,5 @@
 dependencies:
 - name: kafka
-  version: 0.8.5
+  version: 0.13.2
   repository: https://kubernetes-charts-incubator.storage.googleapis.com/
   condition: kafka.enabled

@@ -7,7 +7,7 @@
 ## schema-registry repository
 image: "confluentinc/cp-schema-registry"
 ## The container tag to use
-imageTag: 4.1.1
+imageTag: 5.0.1
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
 imagePullPolicy: "IfNotPresent"
@@ -64,7 +64,7 @@ sasl:
     enabled: false
     init:
       image: "confluentinc/cp-schema-registry"
-      imageTag: "4.0.0"
+      imageTag: "5.0.1"
       imagePullPolicy: "IfNotPresent"
     clientUser: "kafka-client"
     zookeeperClientUser: "zookeeper-client"
