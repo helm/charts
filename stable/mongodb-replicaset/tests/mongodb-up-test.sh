@@ -3,8 +3,10 @@
 MONGOCACRT=/ca/tls.crt
 MONGOPEM=/work-dir/mongo.pem
 
+MONGOARGS="--quiet"
+
 if [ -f "$MONGOPEM" ]; then
-    MONGOARGS="--ssl --sslCAFile $MONGOCACRT --sslPEMKeyFile $MONGOPEM"
+    MONGOARGS="$MONGOARGS --ssl --sslCAFile $MONGOCACRT --sslPEMKeyFile $MONGOPEM"
 fi
 
 if [[ "${AUTH}" == "true" ]]; then
@@ -38,8 +40,8 @@ setup() {
         sleep 1
 
         for ((i = 0; i < $(replicas); ++i)); do
-            response=$(mongo $MONGOARGS "--host=$(pod_name "$i")" "--eval=rs.status()" || true)
-            if [[ "$response" =~ .*'"ok" : 1'.* ]]; then
+            response=$(mongo $MONGOARGS "--host=$(pod_name "$i")" "--eval=rs.status().ok" || true)
+            if [[ "$response" -eq 1 ]]; then
                 ready=$((ready + 1))
             fi
         done
@@ -53,15 +55,15 @@ setup() {
 
 @test "Connect mongodb client to mongodb pods" {
     for ((i = 0; i < $(replicas); ++i)); do
-        response=$(mongo $MONGOARGS "--host=$(pod_name "$i")" "--eval=rs.status()")
-        if [[ ! "$response" =~ .*'"ok" : 1'.* ]]; then
+        response=$(mongo $MONGOARGS "--host=$(pod_name "$i")" "--eval=rs.status().ok")
+        if [[ ! "$response" -eq 1 ]]; then
             exit 1
         fi
     done
 }
 
 @test "Write key to primary" {
-    response=$(mongo $MONGOARGS --host=$(master_pod) "--eval=db.test.insert({\"abc\": \"def\"}).nInserted" --quiet)
+    response=$(mongo $MONGOARGS --host=$(master_pod) "--eval=db.test.insert({\"abc\": \"def\"}).nInserted")
     if [[ ! "$response" =~ "1" ]]; then
         exit 1
     fi
@@ -72,12 +74,12 @@ setup() {
     sleep 10
 
     for ((i = 0; i < $(replicas); ++i)); do
-        response=$(mongo $MONGOARGS --host=$(pod_name "$i") "--eval=rs.slaveOk(); db.test.find({\"abc\":\"def\"})" --quiet)
+        response=$(mongo $MONGOARGS --host=$(pod_name "$i") "--eval=rs.slaveOk(); db.test.find({\"abc\":\"def\"})")
         if [[ ! "$response" =~ .*def.* ]]; then
             exit 1
         fi
     done
 
     # Clean up a document after test
-    mongo $MONGOARGS --host=$(master_pod) "--eval=db.test.deleteMany({\"abc\": \"def\"})" --quiet
+    mongo $MONGOARGS --host=$(master_pod) "--eval=db.test.deleteMany({\"abc\": \"def\"})"
 }
