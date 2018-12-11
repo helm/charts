@@ -161,7 +161,7 @@ PV.
 Since all Pods should have the same collection of DAG files, it is recommended to create just one PV
 that is shared. This ensures that the Pods are always in sync about the DagBag.
 
-This is controlled by setting `persistance.enabled=true`. You will have to ensure yourself the
+This is controlled by setting `persistence.enabled=true`. You will have to ensure yourself the
 PVC are shared properly between your pods:
 - If you are on AWS, you can use [Elastic File System (EFS)](https://aws.amazon.com/efs/).
 - If you are on Azure, you can use
@@ -233,11 +233,11 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `ingress.flower.annotations`             | annotations for the web ui ingress                      | `{}`                      |
 | `ingress.flower.tls.enabled`             | enables TLS termination at the ingress                  | `false`                   |
 | `ingress.flower.tls.secretName`          | name of the secret containing the TLS certificate & key | ``                        |
-| `persistance.enabled`                    | enable persistance storage for DAGs                     | `false`                   |
-| `persistance.existingClaim`              | if using an existing claim, specify the name here       | `nil`                     |
-| `persistance.storageClass`               | Persistent Volume Storage Class                         | (undefined)               |
-| `persistance.accessMode`                 | PVC access mode                                         | `ReadWriteOnce`           |
-| `persistance.size`                       | Persistant storage size request                         | `1Gi`                     |
+| `persistence.enabled`                    | enable persistence storage for DAGs                     | `false`                   |
+| `persistence.existingClaim`              | if using an existing claim, specify the name here       | `nil`                     |
+| `persistence.storageClass`               | Persistent Volume Storage Class                         | (undefined)               |
+| `persistence.accessMode`                 | PVC access mode                                         | `ReadWriteOnce`           |
+| `persistence.size`                       | Persistant storage size request                         | `1Gi`                     |
 | `dags.doNotPickle`                       | should the scheduler disable DAG pickling               | `false`                   |
 | `dags.path`                              | mount path for persistent volume                        | `/usr/local/airflow/dags` |
 | `dags.initContainer.enabled`             | Fetch the source code when the pods starts              | `false`                   |
