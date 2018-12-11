@@ -91,6 +91,7 @@ The following table lists the configurable parameters of the chart and its defau
 | `ingress.hosts`                 | Ingress accepted hostnames                         | `["logstash.cluster.local"]`                     |
 | `ingress.tls`                   | Ingress TLS configuration                          | `[]`                                             |
 | `resources`                     | Pod resource requests & limits                     | `{}`                                             |
+| `priorityClassName`             | priorityClassName                                  | `nil`                                            |
 | `nodeSelector`                  | Node selector                                      | `{}`                                             |
 | `tolerations`                   | Tolerations                                        | `[]`                                             |
 | `affinity`                      | Affinity or Anti-Affinity                          | `{}`                                             |
