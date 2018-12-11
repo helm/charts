@@ -52,6 +52,13 @@ Create chart name and version as used by the chart label.
 {{- end -}}
 
 {{/*
+Generate chart secret name
+*/}}
+{{- define "postgresql.secretName" -}}
+{{ default (include "postgresql.fullname" .) .Values.existingSecret }}
+{{- end -}}
+
+{{/*
 Return the proper PostgreSQL image name
 */}}
 {{- define "postgresql.image" -}}

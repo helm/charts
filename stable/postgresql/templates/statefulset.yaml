@@ -96,7 +96,7 @@ spec:
         - name: POSTGRESQL_REPLICATION_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "postgresql.fullname" . }}
+              name: {{ template "postgresql.secretName" . }}
               key: postgresql-replication-password
         {{- end }}
         - name: POSTGRESQL_USERNAME
@@ -104,11 +104,7 @@ spec:
         - name: POSTGRESQL_PASSWORD
           valueFrom:
             secretKeyRef:
-            {{- if .Values.existingSecret }}
-              name: {{ .Values.existingSecret }}
-            {{- else }}
-              name: {{ template "postgresql.fullname" . }}
-            {{- end }}
+              name: {{ template "postgresql.secretName" . }}
               key: postgresql-password
         {{- if .Values.postgresqlDatabase }}
         - name: POSTGRESQL_DATABASE
@@ -176,11 +172,7 @@ spec:
         - name: DATA_SOURCE_PASS
           valueFrom:
             secretKeyRef:
-            {{- if .Values.existingSecret }}
-              name: {{ .Values.existingSecret }}
-            {{- else }}
-              name: {{ template "postgresql.fullname" . }}
-            {{- end }}
+              name: {{ template "postgresql.secretName" . }}
               key: postgresql-password
         - name: DATA_SOURCE_USER
           value: {{ .Values.postgresqlUsername }}
