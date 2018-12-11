@@ -78,10 +78,18 @@ spec:
             - name: TZ
               value: {{ .Values.firefox.timeZone | quote }}
             {{- end }}
+          volumeMounts:
+{{ if .Values.firefox.volumeMounts -}}
+{{ toYaml .Values.firefox.volumeMounts | indent 12 }}
+{{- end }}
           resources:
 {{ toYaml .Values.firefox.resources | indent 12 }}
       hostAliases:
 {{ toYaml .Values.global.hostAliases | indent 8 }}
+      volumes:
+{{ if .Values.firefox.volumes -}}
+{{ toYaml .Values.firefox.volumes | indent 8 }}
+{{- end }}
       nodeSelector:
 {{- if .Values.firefox.nodeSelector }}
 {{ toYaml .Values.firefox.nodeSelector | indent 8  }}
