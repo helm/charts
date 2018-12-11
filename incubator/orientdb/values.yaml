@@ -56,10 +56,12 @@ hazelcast:
 persistence:
   enabled: true
   storage:
-    accessMode: [ ReadWriteOnce ]
+    accessMode:
+    - ReadWriteOnce
     size: 10Gi
   backup:
-    accessMode: [ ReadWriteOnce ]
+    accessMode:
+    - ReadWriteOnce
     size: 2Gi
 
 config:
@@ -67,7 +69,3 @@ config:
   overrideOrientdbServerConfig: true
   overrideGremlinServerConfig: true
   overrideDistributedDbConfig: true
-
-tests:
-  workload: CRUD:C25000R25000U25000D25000
-  opsPerTx: 1000
