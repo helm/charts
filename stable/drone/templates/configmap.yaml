@@ -1,0 +1,22 @@
+{{- if .Values.cronjob.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "drone.fullname" . }}
+  labels:
+    app: {{ template "drone.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+data:
+  clean.sh: |-
+    #!/bin/sh
+    KUBECTL="kubectl -n $DRONE_KUBERNETES_NAMESPACE --certificate-authority=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt --token=`cat /var/run/secrets/kubernetes.io/serviceaccount/token`"
+    for field in succeeded failed; do 
+      $KUBECTL get job -o jsonpath="{.items[?(@.status.$field==1)].metadata.name}" | \
+        grep -- drone-job | awk '{print$1}' | tee /tmp/jobs
+      [ -f /tmp/jobs ] && [ -s /tmp/jobs ] && $KUBECTL delete job `cat /tmp/jobs`
+      rm -f /tmp/jobs
+    done
+
+{{- end }}
