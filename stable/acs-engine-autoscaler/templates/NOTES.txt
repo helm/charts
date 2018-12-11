@@ -1,3 +1,10 @@
+#########################
+####  DEPRECATED     ####
+#########################
+# acs-engine-autoscaler is deprecated.
+# If you wish to use the autoscaler in acs-engine, refer to
+# https://github.com/kubernetes/autoscaler instead.
+
 {{- if and .Values.acsenginecluster.resourcegroup .Values.acsenginecluster.azurespappid .Values.acsenginecluster.azurespsecret .Values.acsenginecluster.azuresptenantid .Values.acsenginecluster.kubeconfigprivatekey .Values.acsenginecluster.clientprivatekey -}}
 
 The acs-engine-autoscaler is getting provisioned in your cluster. After a few minutes, you can run the following to verify.

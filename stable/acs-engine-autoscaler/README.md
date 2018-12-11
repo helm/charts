@@ -1,4 +1,4 @@
-# acs-engine-autoscaler
+# DEPRECATED: acs-engine-autoscaler
 
 [acs-engine-autoscaler](https://github.com/wbuchwalter/Kubernetes-acs-engine-autoscaler) is a node-level autoscaler for Kubernetes for clusters created with acs-engine.
 
