@@ -1,0 +1,47 @@
+{{- if .Values.ingress.enabled -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+# https://kubernetes.io/docs/concepts/services-networking/ingress/
+# https://docs.giantswarm.io/guides/advanced-ingress-configuration/
+# https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/
+metadata:
+  name: {{ template "apache-nifi.fullname" . }}-ingress
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ include "apache-nifi.name" . | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+  annotations:
+    {{- range $key, $value := .Values.ingress.annotations }}
+      {{ $key }}: {{ $value | quote }}
+    {{- end }}
+    {{- if .Values.properties.externalSecure }}
+      nginx.ingress.kubernetes.io/custom-request-headers: X-ProxyScheme:https||X-ProxyHost:{{ .Values.ingress.host }}||X-ProxyPort:443
+    {{- else }}
+      nginx.ingress.kubernetes.io/custom-request-headers: X-ProxyScheme:http||X-ProxyHost:{{ .Values.ingress.host }}||X-ProxyPort:80
+    {{- end }}
+spec:
+  rules:
+  - host: {{ .Values.ingress.host }}
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: {{ template "apache-nifi.fullname" . }}-headless
+          servicePort: {{ .Values.properties.httpPort }}
+  {{- end -}}
+
+  {{- if or .Values.properties.clusterSecure .Values.properties.externalSecure }}
+  {{-   if .Values.ingress.tls }}
+  tls:
+{{ toYaml .Values.ingress.tls | indent 4 }}
+  {{-   else }}
+  tls:
+    - secretName: {{ .Values.ingress.tlsSecretName |default (print "tls-le--" (include "apache-nifi.fullname" .)) }}
+      hosts:
+      - {{ .Values.ingress.host }}
+  {{- end -}}
+{{- end -}}
+
+

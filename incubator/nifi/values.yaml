@@ -19,6 +19,9 @@ service:
   type: ClusterIP
 
 properties:
+  # use externalSecure for when inbound SSL is provided by nginx-ingress or other external mechanism
+  externalSecure: false
+
   isNode: true
   httpPort: null
   httpsPort: 8443
@@ -35,6 +38,17 @@ loadBalancer:
   enabled: true
   httpPort: 80
   httpsPort: 443
+
+ingress:
+  enabled: false
+#  annotations:
+
+  # tlsSecretName:
+
+  # tls:
+
+  # host:
+
 
 # Amount of memory to give the NiFi java heap
 jvmMemory: 2g
