@@ -20,12 +20,11 @@ variables. Please note that default persistence configuration is for AWS EBS.
 ```console
 helm install --name my-release \
     --set persistence.enabled=true \
-    --set persistence.size=100Gi \
-    --set wal_persistence.enabled=true \
-    --set wal_persistence.size=8Gi \
+    --set persistence.persistenceVolume.size=100Gi \
+    --set persistence.walVolume.size=8Gi \
     stable/ignite
 ```
 
 To configure persistence for other volume plugins you should edit
-`persistence.provisioner` and `persistence.provisioner_parameters` variables.
-(and the same variables for `wal_persistence` section).
+`persistence.persistenceVolume.provisioner` and `persistence.persistenceVolume.provisioner_parameters` variables.
+(and the same variables for `persistence.walVolume` section). The chart creates 2 StorageClass resources, you can read about it's configurartion [here](https://kubernetes.io/docs/concepts/storage/storage-classes/).
