@@ -27,4 +27,3 @@ ingress:
     authSecret: zeppelin-auth-secret
 
 nodeSelector: {}
-
