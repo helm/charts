@@ -1,0 +1,7 @@
+apiVersion: v1
+name: orientdb
+description: A Helm chart for Distributed OrientDB 
+version: 0.1.0
+appVersion: "3.0.x"
+
+
