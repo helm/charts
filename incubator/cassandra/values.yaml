@@ -163,7 +163,7 @@ backup:
 
   # Additional arguments for cain
   # Ref: https://github.com/nuvo/cain#usage
-  extraArgs: {}
+  extraArgs: []
 
   # Add additional environment variables
   env:
