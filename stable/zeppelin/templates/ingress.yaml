@@ -1,0 +1,35 @@
+{{- if .Values.ingress.enabled }}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ .Release.Name }}-zeppelin
+  labels:
+    app: {{ template "zeppelin.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  annotations:
+    {{- if .Values.ingress.certManager }} 
+    kubernetes.io/tls-acme: "true"
+    {{- end }}
+    {{- if .Values.ingress.nginx.basicAuth }}
+    nginx.ingress.kubernetes.io/auth-type: basic
+    nginx.ingress.kubernetes.io/auth-secret: {{ .Values.ingress.nginx.authSecret }}
+    nginx.ingress.kubernetes.io/auth-realm: "Zeppelin - Authentication Required"
+    {{- end }}
+spec:
+  rules:
+  - host: {{ .Values.ingress.host }}
+    http:
+      paths:
+      - path: {{ .Values.ingress.path }}
+        backend:
+          serviceName: {{ .Release.Name }}-zeppelin
+          servicePort: 8080
+  {{- if .Values.ingress.tls }}
+  tls:
+  - secretName: {{ .Values.ingress.tlsSecretName }}
+    hosts:
+    - {{ .Values.ingress.host }}
+  {{- end }}
+{{- end }}

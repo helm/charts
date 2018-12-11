@@ -14,3 +14,17 @@ spark:
   driverMemory: 1g
   executorMemory: 1g
   numExecutors: 2
+
+ingress:
+  enabled: false
+  certManager: false
+  host: zeppelin.local
+  path: /
+  tls: false
+  tlsSecretName: zeppelin-tls-secret
+  nginx:
+    basicAuth: false
+    authSecret: zeppelin-auth-secret
+
+nodeSelector: {}
+
