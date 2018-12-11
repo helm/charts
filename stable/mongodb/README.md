@@ -139,7 +139,7 @@ $ helm install --name my-release -f values.yaml stable/mongodb
 You can start the MongoDB chart in replica set mode with the following command:
 
 ```bash
-$ helm install --name my-release stable/mongodb --set replication.enabled=true
+$ helm install --name my-release stable/mongodb --set replicaSet.enabled=true
 ```
 
 ## Production settings and horizontal scaling
