@@ -7,6 +7,7 @@ metadata:
 {{- end }}
   labels:
 {{ include "reloader-labels.chart" . | indent 4 }}
+{{ include "reloader-labels.selector" . | indent 4 }}
 {{- if .Values.reloader.deployment.labels }}
 {{ toYaml .Values.reloader.deployment.labels | indent 4 }}
 {{- end }}
@@ -19,14 +20,14 @@ spec:
   revisionHistoryLimit: 2
   selector:
     matchLabels:
-      app: {{ template "reloader-name" . }}
-      release: {{ .Release.Name | quote }}
+{{ include "reloader-labels.selector" . | indent 6 }}
 {{- if .Values.reloader.matchLabels }}
 {{ toYaml .Values.reloader.matchLabels | indent 6 }}
 {{- end }}
   template:
     metadata:
       labels:
+{{ include "reloader-labels.selector" . | indent 8 }}
 {{ include "reloader-labels.chart" . | indent 8 }}
 {{- if .Values.reloader.deployment.labels }}
 {{ toYaml .Values.reloader.deployment.labels | indent 8 }}

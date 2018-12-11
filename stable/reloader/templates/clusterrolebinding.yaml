@@ -5,6 +5,7 @@ kind: ClusterRoleBinding
 metadata:
   labels:
 {{ include "reloader-labels.chart" . | indent 4 }}
+{{ include "reloader-labels.selector" . | indent 4 }}
 {{- if .Values.reloader.rbac.labels }}
 {{ toYaml .Values.reloader.rbac.labels | indent 4 }}
 {{- end }}
