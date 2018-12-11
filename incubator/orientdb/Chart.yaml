@@ -6,6 +6,6 @@ maintainers:
   - name: "Product Engineering Team (AKA The Sommeliers) @ B-yond"
     email: sommeliers@b-yond.com
     url: https://www.b-yond.com
-appVersion: "3.0.x"
+appVersion: "3.0.10"
 
 
