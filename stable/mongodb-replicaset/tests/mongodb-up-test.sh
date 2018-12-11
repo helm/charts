@@ -7,7 +7,7 @@ if [ -f "$MONGOPEM" ]; then
     MONGOARGS="--ssl --sslCAFile $MONGOCACRT --sslPEMKeyFile $MONGOPEM"
 fi
 
-if [ "$AUTH" ]; then
+if [[ "${AUTH}" == "true" ]]; then
     MONGOARGS="$MONGOARGS --username $ADMIN_USER --password $ADMIN_PASSWORD --authenticationDatabase admin"
 fi
 
