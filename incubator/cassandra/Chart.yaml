@@ -13,6 +13,6 @@ home: http://cassandra.apache.org
 maintainers:
 - name: KongZ
   email: goonohc@gmail.com
-- name: Maor Friedman
+- name: maorfr
   email: maorfr@gmail.com
 engine: gotpl
