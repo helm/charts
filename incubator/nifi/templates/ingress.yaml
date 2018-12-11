@@ -16,6 +16,18 @@ metadata:
     {{- range $key, $value := .Values.ingress.annotations }}
       {{ $key }}: {{ $value | quote }}
     {{- end }}
+    {{- if .Values.ingress.auth }}
+    {{-   if .Values.ingress.auth.enabled }}
+    {{-     if eq .Values.ingress.auth.mode "basic" }}
+      # type of authentication
+      nginx.ingress.kubernetes.io/auth-type: "basic"
+      # name of the secret that contains the user/password definitions
+      nginx.ingress.kubernetes.io/auth-secret: {{ .Values.ingress.auth.basic_secret |default (printf "%s--%s" .Release.Name "secrets-auth") |quote }}
+      # message to display with an appropriate context why the authentication is required
+      nginx.ingress.kubernetes.io/auth-realm: {{ printf "%s: %s" "Authentication Required" (include "apache-nifi.name" .) |quote }}
+    {{-      end }}
+    {{-   end }}
+    {{- end }}
     {{- if .Values.properties.externalSecure }}
       nginx.ingress.kubernetes.io/custom-request-headers: X-ProxyScheme:https||X-ProxyHost:{{ .Values.ingress.host }}||X-ProxyPort:443
     {{- else }}
