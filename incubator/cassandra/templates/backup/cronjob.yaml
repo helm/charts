@@ -40,6 +40,9 @@ spec:
             - {{ $schedule.keyspace }}
             - --dst
             - {{ $backup.destination }}
+            {{- with $backup.extraArgs }}
+{{ toYaml . | indent 12 }}
+          {{- end }}
           {{- with $backup.env }}
             env:
 {{ toYaml . | indent 12 }}
