@@ -2,6 +2,10 @@ apiVersion: v1
 name: orientdb
 description: A Helm chart for Distributed OrientDB 
 version: 0.1.0
+maintainers:
+  - name: "Product Engineering Team (AKA The Sommeliers) @ B-yond"
+    email: sommeliers@b-yond.com
+    url: https://www.b-yond.com
 appVersion: "3.0.x"
 
 
