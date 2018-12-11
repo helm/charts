@@ -21,8 +21,7 @@ This chart will do the following:
 You can install the chart with the release name `srui` as below.
 
 ```console
-$ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
-$ helm install --name srui incubator/schema-registry-ui
+$ helm install --name srui schema-registry-ui
 ```
 
 If you do not specify a name, helm will select a name for you.
@@ -49,7 +48,7 @@ You can specify each parameter using the `--set key=value[,key=value]` argument 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install --name my-release -f values.yaml incubator/schema-registry-ui
+$ helm install --name my-release -f values.yaml schema-registry-ui
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
@@ -59,9 +58,9 @@ The following table lists the configurable parameters of the SchemaRegistryUI ch
 
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
-| `replicaCount` | The number of `SchemaRegistry` Pods in the Deployment | `1` |
-| `image.repository` | The `SchemaRegistry` image repository | `confluentinc/cp-schema-registry` |
-| `image.tag` | The `SchemaRegistry` image tag | `4.0.0` |
+| `replicaCount` | The number of `SchemaRegistryUI` Pods in the Deployment | `1` |
+| `image.repository` | The `SchemaRegistryUI` image repository | `landoop/schema-registry-ui` |
+| `image.tag` | The `SchemaRegistryUI` image tag | `0.9.4` |
 | `image.imagePullPolicy` | Image Pull Policy | `IfNotPresent` |
 | `service.type` | Type of the service | `LoadBalancer` |
 | `service.port` | Port to use | `80` |
