@@ -46,7 +46,7 @@ The following table lists the configurable parameters of the Metabase chart and 
 |------------------------|------------------------------------------------------------|-------------------|
 | replicaCount           | desired number of controller pods                          | 1                 |
 | image.repository       | controller container image repository                      | metabase/metabase |
-| image.tag              | controller container image tag                             | v0.30.1           |
+| image.tag              | controller container image tag                             | v0.31.2           |
 | image.pullPolicy       | controller container image pull policy                     | IfNotPresent      |
 | listen.host            | Listening on a specific network host                       | 0.0.0.0           |
 | listen.port            | Listening on a specific network port                       | 3000              |
@@ -80,7 +80,7 @@ The following table lists the configurable parameters of the Metabase chart and 
 | ingress.tls            | Ingress TLS configuration                                  | null              |
 | resources              | Server resource requests and limits                        | {}                |
 
-The above parameters map to the env variables defined in [metabase](http://github.com/metabase/metabase). For more information please refer to the [metabase documentations](http://www.metabase.com/docs/v0.24.2/).
+The above parameters map to the env variables defined in [metabase](http://github.com/metabase/metabase). For more information please refer to the [metabase documentations](http://www.metabase.com/docs/v0.31.2/).
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
