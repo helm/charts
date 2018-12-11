@@ -19,6 +19,6 @@ spec:
       containers:
       - name: main
         image: {{ .Values.operatorImageName }}:{{ .Values.operatorVersion }}
-        imagePullPolicy: IfNotPresent
-        command: ["/usr/bin/gencerts.sh", "-n", "{{ .Release.Namespace }}", "-p"]
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        command: ["/usr/bin/gencerts.sh", "-n", "{{ .Release.Namespace }}", "-s", '{{ include "sparkoperator.fullname" . }}-webhook', "-p"]
 {{ end }}
