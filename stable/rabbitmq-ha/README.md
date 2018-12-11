@@ -220,7 +220,13 @@ $ helm install --name my-release --set existingConfigMap=true stable/rabbitmq-ha
 ### Custom Secret
 
 Similar to custom ConfigMap, `existingSecret` can be used to override the default secret.yaml provided, and
-`rabbitmqCert.existingSecret` can be used to override the default certificates.
+`rabbitmqCert.existingSecret` can be used to override the default certificates. The custom secret must provide
+the following keys: 
+
+* `rabbitmq-user`
+* `rabbitmq-password`
+* `rabbitmq-erlang-cookie`
+* `definitions.json` (the name can be altered by setting the `definitionsSource`)
 
 ### Prometheus Monitoring & Alerts
 
