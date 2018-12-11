@@ -7,6 +7,10 @@ if [ -f "$MONGOPEM" ]; then
     MONGOARGS="--ssl --sslCAFile $MONGOCACRT --sslPEMKeyFile $MONGOPEM"
 fi
 
+if [ "$AUTH" ]; then
+    MONGOARGS="$MONGOARGS --username $ADMIN_USER --password $ADMIN_PASSWORD --authenticationDatabase admin"
+fi
+
 pod_name() {
     local full_name="${FULL_NAME?Environment variable FULL_NAME not set}"
     local index="$1"
@@ -19,7 +23,7 @@ replicas() {
 
 master_pod() {
     for ((i = 0; i < $(replicas); ++i)); do
-        response=$(mongo "$MONGOARGS" "--host=$(pod_name "$i")" "--eval=rs.isMaster().ismaster")
+        response=$(mongo $MONGOARGS "--host=$(pod_name "$i")" "--eval=rs.isMaster().ismaster")
         if [[ "$response" =~ "true" ]]; then
             pod_name "$i"
             break
@@ -34,30 +38,30 @@ setup() {
         sleep 1
 
         for ((i = 0; i < $(replicas); ++i)); do
-            response=$(mongo "$MONGOARGS" "--host=$(pod_name "$i")" "--eval=rs.status()" || true)
-            if [[ "$response" =~ .*ok.* ]]; then
+            response=$(mongo $MONGOARGS "--host=$(pod_name "$i")" "--eval=rs.status()" || true)
+            if [[ "$response" =~ .*'"ok" : 1'.* ]]; then
                 ready=$((ready + 1))
             fi
         done
     done
 }
 
-@test "Testing mongodb client is accessible" {
+@test "Testing mongodb client is executable" {
     mongo -h
     [ "$?" -eq 0 ]
 }
 
 @test "Connect mongodb client to mongodb pods" {
     for ((i = 0; i < $(replicas); ++i)); do
-        response=$(mongo "$MONGOARGS" "--host=$(pod_name "$i")" "--eval=rs.status()")
-        if [[ ! "$response" =~ .*ok.* ]]; then
+        response=$(mongo $MONGOARGS "--host=$(pod_name "$i")" "--eval=rs.status()")
+        if [[ ! "$response" =~ .*'"ok" : 1'.* ]]; then
             exit 1
         fi
     done
 }
 
-@test "Write key to master" {
-    response=$(mongo "$MONGOARGS" --host=$(master_pod) "--eval=db.test.insert({\"abc\": \"def\"}).nInserted")
+@test "Write key to primary" {
+    response=$(mongo $MONGOARGS --host=$(master_pod) "--eval=db.test.insert({\"abc\": \"def\"}).nInserted" --quiet)
     if [[ ! "$response" =~ "1" ]]; then
         exit 1
     fi
@@ -68,9 +72,12 @@ setup() {
     sleep 10
 
     for ((i = 0; i < $(replicas); ++i)); do
-        response=$(mongo "$MONGOARGS" --host=$(pod_name "$i") "--eval=rs.slaveOk(); db.test.find({\"abc\":\"def\"})")
+        response=$(mongo $MONGOARGS --host=$(pod_name "$i") "--eval=rs.slaveOk(); db.test.find({\"abc\":\"def\"})" --quiet)
         if [[ ! "$response" =~ .*def.* ]]; then
             exit 1
         fi
     done
+
+    # Clean up a document after test
+    mongo $MONGOARGS --host=$(master_pod) "--eval=db.test.deleteMany({\"abc\": \"def\"})" --quiet
 }
