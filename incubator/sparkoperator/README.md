@@ -38,6 +38,5 @@ The following table lists the configurable parameters of the Spark operator char
 | `resyncInterval`          | Informer resync interval in seconds                          | 30                                     |
 | `webhookPort`             | Service port of the webhook server                           | 8080                                   |                                    |
 
-
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. 
 
