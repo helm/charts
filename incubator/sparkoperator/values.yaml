@@ -1,7 +1,6 @@
 operatorImageName: gcr.io/spark-operator/spark-operator
 operatorVersion: v2.4.0-v1alpha1-latest
 imagePullPolicy: IfNotPresent
-sparkJobNamespace: default
 
 rbac:
   create: true
@@ -14,9 +13,9 @@ serviceAccounts:
     create: true
     name:
 
-createSparkJobNamespace: false
+sparkJobNamespace: default
 
-enableWebhook: true
+enableWebhook: false
 enableMetrics: true
 
 controllerThreads: 10

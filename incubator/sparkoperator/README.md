@@ -27,8 +27,7 @@ The following table lists the configurable parameters of the Spark operator char
 | `operatorVersion`         | The version of the operator to install                       | `v2.4.0-v1alpha1-latest`               |
 | `imagePullPolicy`         | Docker image pull policy                                     | `IfNotPresent`                         |
 | `sparkJobNamespace`       | K8s namespace where Spark jobs are to be deployed            | `default`                              |
-| `createSparkJobNamespace` | Whether to create the Spark job namespace                    | false                                  |
-| `enableWebhook`           | Whether to enable mutating admission webhook                 | true                                   |
+| `enableWebhook`           | Whether to enable mutating admission webhook                 | false                                   |
 | `enableMetrics`           | Whether to expose metrics to be scraped by Premetheus        | true                                   |
 | `controllerThreads`       | Number of worker threads used by the SparkApplication controller | 10                                     |
 | `installCrds`             | Whether to install CRDs                                      | true                                   |
