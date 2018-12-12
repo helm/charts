@@ -43,7 +43,7 @@ etcdOperator:
   replicaCount: 1
   image:
     repository: quay.io/coreos/etcd-operator
-    tag: v0.9.2
+    tag: v0.9.3
     pullPolicy: Always
   resources:
     cpu: 100m
@@ -75,7 +75,7 @@ backupOperator:
   replicaCount: 1
   image:
     repository: quay.io/coreos/etcd-operator
-    tag: v0.9.2
+    tag: v0.9.3
     pullPolicy: Always
   resources:
     cpu: 100m
@@ -98,7 +98,7 @@ restoreOperator:
   replicaCount: 1
   image:
     repository: quay.io/coreos/etcd-operator
-    tag: v0.9.2
+    tag: v0.9.3
     pullPolicy: Always
   port: 19999
   resources:
@@ -121,10 +121,10 @@ restoreOperator:
 etcdCluster:
   name: etcd-cluster
   size: 3
-  version: 3.2.13
+  version: 3.2.25
   image:
     repository: quay.io/coreos/etcd
-    tag: v3.2.13
+    tag: v3.2.25
     pullPolicy: Always
   enableTLS: false
   # TLS configs
