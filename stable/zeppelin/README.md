@@ -27,13 +27,10 @@ The following table lists the configurable parameters of the Zeppelin chart and 
 | `hadoop.configMapName`               | Name of the hadoop config map to use (must be in same namespace)  | `hadoop-config`                                            |
 | `hadoop.configPath`                  | Path in the Zeppelin image where the Hadoop config is mounted     | `/usr/hadoop-2.7.3/etc/hadoop`                             |
 | `ingress.enabled`                    | Enable ingress                                                    | `false`                                                    |
-| `ingress.certManager`                | Add annotations for cert-manager                                  | `false`                                                    |
-| `ingress.host`                       | Hostname of the Zeppelin installation                             | `zeppelin.local`                                           |
+| `ingress.annotations`                | Ingress annotations                                               | `{}`                                                       |
+| `ingress.hosts`                      | Ingress Hostnames                                                 | `["zeppelin.local"]`                                       |
 | `ingress.path`                       | Path within the URL structure                                     | `/`                                                        |
-| `ingress.tls`                        | Utilize TLS backend in ingress                                    | `false`                                                    |
-| `ingress.tlsSecretName`              | TLS secret name                                                   | `zeppelin-tls-secret`                                      |
-| `ingress.nginx.basicAuth`            | Enable NGINX ingress controller basic auth                        | `false`                                                    |
-| `ingress.nginx.authSecret`           | Secret name for NGINX basic auth                                  | `zeppelin-auth-secret`                                     |
+| `ingress.tls`                        | Ingress TLS configuration                                         | `[]`                                                       |
 | `nodeSelecor`                        | Node selector for the Zeppelin deployment                         | `{}`                                                       |
 
 ## Related charts
