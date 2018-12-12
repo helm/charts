@@ -30,12 +30,6 @@ if [[ "$AUTH" == "true" ]]; then
         metrics_user="$METRICS_USER"
         metrics_password="$METRICS_PASSWORD"
     fi
-    if [[ "$DB_ENABLED" == "true" ]]; then
-        db_user="$DB_USER"
-        db_password="$DB_PASSWORD"
-        db_role="$DB_ROLE"
-        db_name="$DB_NAME"
-    fi
     auth_args=("--auth" "--keyFile=/data/configdb/key.txt")
 fi
 
@@ -211,7 +205,7 @@ elif (mongo "${ssl_args[@]}" --eval "rs.status()" | grep "no replset config has 
     fi
 fi
 
-# Metrics User creation
+# User creation
 if [[ -n "${primary}" && "$AUTH" == "true" && "$METRICS" == "true" ]]; then
     metric_user_count=$(mongo admin --host "${primary}" "${admin_creds[@]}" "${ssl_args[@]}" --eval "db.system.users.find({user: '${metrics_user}'}).count()" --quiet)
     if [[ "${metric_user_count}" == "0" ]]; then
@@ -220,14 +214,6 @@ if [[ -n "${primary}" && "$AUTH" == "true" && "$METRICS" == "true" ]]; then
     fi
 fi
 
-# DB User creation
-if [[ -n "${primary}" && "$AUTH" == "true" && "$DB_ENABLED" == "true" ]]; then
-    db_user_count=$(mongo admin --host "${primary}" "${admin_creds[@]}" "${ssl_args[@]}" --eval "db.system.users.find({user: '${db_user}'}).count()" --quiet)
-    if [[ "${db_user_count}" == "0" ]]; then
-        log "Creating additional DB User"
-        mongo admin --host "${primary}" "${admin_creds[@]}" "${ssl_args[@]}" --eval "db.createUser({user: '${db_user}', pwd: '${db_password}', roles: [{role: '${db_role}', db: '${db_name}'}]})"
-    fi
-fi
-
 log "MongoDB bootstrap complete"
 exit 0
+

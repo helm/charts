@@ -11,17 +11,11 @@ auth:
   enabled: false
   # adminUser: username
   # adminPassword: password
-  # additionalUser:
-  #   username: myuser
-  #   password: mypass
-  #   role: readWrite
-  #   dbname: mydb
   # metricsUser: metrics
   # metricsPassword: password
   # key: keycontent
   # existingKeySecret:
   # existingAdminSecret:
-  # existingDbSecret:
   # exisitingMetricsSecret:
 
 ## Optionally specify an array of imagePullSecrets.

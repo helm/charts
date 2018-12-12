@@ -37,13 +37,13 @@ The following table lists the configurable parameters of the mongodb chart and t
 | `replicaSetName`                    | The name of the replica set                                               | `rs0`                                               |
 | `podDisruptionBudget`               | Pod disruption budget                                                     | `{}`                                                |
 | `port`                              | MongoDB port                                                              | `27017`                                             |
-| `imagePullSecrets`                  | Image pull secrets                                                        | `[]`                                                  |
+| `imagePullSecrets`                  | Image pull secrets                                                        | `[]`                                                |
 | `installImage.repository`           | Image name for the install container                                      | `unguiculus/mongodb-install`                        |
 | `installImage.tag`                  | Image tag for the install container                                       | `0.7`                                               |
 | `installImage.pullPolicy`           | Image pull policy for the init container that establishes the replica set | `IfNotPresent`                                      |
 | `copyConfigImage.repository`        | Image name for the copy config init container                             | `busybox`                                           |
 | `copyConfigImage.tag`               | Image tag for the copy config init container                              | `1.29.3`                                            |
-| `copyConfigImage.pullPolicy`        | Image pull policy for the copy config init container                      | `IfNotPresent`                                            |
+| `copyConfigImage.pullPolicy`        | Image pull policy for the copy config init container                      | `IfNotPresent`                                      |
 | `image.repository`                  | MongoDB image name                                                        | `mongo`                                             |
 | `image.tag`                         | MongoDB image tag                                                         | `3.6`                                               |
 | `image.pullPolicy`                  | MongoDB image pull policy                                                 | `IfNotPresent`                                      |
@@ -67,6 +67,7 @@ The following table lists the configurable parameters of the mongodb chart and t
 | `metrics.image.pullPolicy`          | Image pull policy for metrics exporter                                    | `IfNotPresent`                                      |
 | `metrics.port`                      | Port for metrics exporter                                                 | `9216`                                              |
 | `metrics.path`                      | URL Path to expose metics                                                 | `/metrics`                                          |
+| `metrics.resources`                 | Metrics pod resource requests and limits                                  | `{}`                                                |
 | `metrics.socketTimeout`             | Time to wait for a non-responding socket                                  | `3s`                                                |
 | `metrics.syncTimeout`               | Time an operation with this session will wait before returning an error   | `1m`                                                |
 | `metrics.prometheusServiceDiscovery`| Adds annotations for Prometheus ServiceDiscovery                          | `true`                                              |
@@ -75,10 +76,6 @@ The following table lists the configurable parameters of the mongodb chart and t
 | `auth.existingKeySecret`            | If set, an existing secret with this name for the key is used             | ``                                                  |
 | `auth.adminUser`                    | MongoDB admin user                                                        | ``                                                  |
 | `auth.adminPassword`                | MongoDB admin password                                                    | ``                                                  |
-| `auth.additionalUser.username`      | MongoDB db user                                                           | ``                                                  |
-| `auth.additionalUser.password`      | MongoDB db password                                                       | ``                                                  |
-| `auth.additionalUser.dbname`        | Database name for the user role to be associated with                     | ``                                                  |
-| `auth.additionalUser.role`          | Database role permissions for the user                                    | ``                                                  |
 | `auth.metricsUser`                  | MongoDB clusterMonitor user                                               | ``                                                  |
 | `auth.metricsPassword`              | MongoDB clusterMonitor password                                           | ``                                                  |
 | `auth.existingAdminSecret`          | If set, and existing secret with this name is used for the admin user     | ``                                                  |
