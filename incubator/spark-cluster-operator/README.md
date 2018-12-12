@@ -3,13 +3,13 @@ ConfigMap-based approach for managing the Spark clusters and apps in Kubernetes 
 
 # Installation
 ```
-helm install incubator/spark-operator
+helm install incubator/spark-cluster-operator
 ```
 
 or 
 
 ```
-helm install --set operator.env.crd=true incubator/spark-operator
+helm install --set env.crd=true incubator/spark-cluster-operator
 ```
 
 The operator needs to create Service Account, Role and Role Binding. If running in Minikube, you may need to
