@@ -24,7 +24,8 @@ spec:
     spec:
       initContainers:
         - name: chown-db
-          image: docker.io/busybox:musl
+          image: {{ .Values.init.image.repository }}:{{ .Values.init.image.tag }}
+          imagePullPolicy: {{ .Values.init.image.pullPolicy }}
           command: ["chown", "1000:1000", "/var/db/cerebro"]
           volumeMounts:
             - name: db
