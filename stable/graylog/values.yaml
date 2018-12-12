@@ -16,6 +16,12 @@ serviceAccount:
   ##
   name:
 
+tags:
+  # If true, this chart will install Elasticsearch from requirement dependencies
+  install-elasticsearch: true
+  # If true, this chart will install MongoDB replicaset from requirement dependencies
+  install-mongodb: true
+
 graylog:
   ## Graylog image version
   ## Ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -152,7 +158,12 @@ graylog:
   metrics:
     ## If true, prometheus annotations will not be attached
     ##
-    enabled: true
+    enabled: false
+
+  geoip:
+    ## If true, Maxmind GeoLite2 will be download to /etc/geoip/GeoLite2-City.mmdb
+    ##
+    enabled: false
 
   ## Graylog root user name
   ##
@@ -177,14 +188,13 @@ graylog:
     ## If one or more of your elasticsearch hosts require authentication, include the credentials in each node URI that
     ## requires authentication.
     ##
-    hosts: ""
-    # hosts: http://elasticsearch-coordinating.graylog.svc.cluster.local:9200
+    # hosts: http://elasticsearch-client.graylog.svc.cluster.local:9200
 
     ## These configuration settings are only used on the first start of Graylog. After that,
     ## index related settings can be changed in the Graylog web interface on the 'System / Indices' page.
     ## Also see http://docs.graylog.org/en/2.3/pages/configuration/index_model.html#index-set-configuration.
     rotationStrategy: time
-    maxNumberOfIndices: "24w"
+    maxNumberOfIndices: 24
     retentionStrategy: delete
     shards: 5
     replicas: 1
@@ -193,7 +203,6 @@ graylog:
   mongodb:
     ## MongoDB connection string
     ## See https://docs.mongodb.com/manual/reference/connection-string/ for details
-    uri: ""
     # uri: mongodb://user:pass@host1:27017,host2:27017,host3:27017/graylog?replicaSet=rs01
 
     ## Increase this value according to the maximum connections your MongoDB server can handle from a single client
@@ -219,3 +228,10 @@ graylog:
   serverFiles: {}
     # graylog-server.key: |
     # graylog-server.cert: |
+
+## Specify Elasticsearch version from requirement dependencies. Ignore this seection if you install Elasticsearch manually.
+## Note: Graylog 2.4 requires Elasticsearch version <= 5.6
+elasticsearch:
+  image:
+    repository: "docker.elastic.co/elasticsearch/elasticsearch"
+    tag: "5.6.14"

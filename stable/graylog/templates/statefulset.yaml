@@ -102,12 +102,14 @@ spec:
                 curl -s --location --retry 3 -o ${GRAYLOG_HOME}/plugin/metrics-reporter-prometheus-2.4.0-beta.3.jar "https://github.com/graylog-labs/graylog-plugin-metrics-reporter/releases/download/2.4.0-beta.3/metrics-reporter-prometheus-2.4.0-beta.3.jar"
               {{- end }}
                 chown -R ${GRAYLOG_USER}:${GRAYLOG_GROUP} ${GRAYLOG_HOME}/plugin/
+              {{- if .Values.graylog.geoip.enabled }}
                 echo "Downloading Maxmind GeoLite2 ..."
                 curl -s --location --retry 3 -o /tmp/GeoLite2-City.tar.gz "https://geolite.maxmind.com/download/geoip/database/GeoLite2-City.tar.gz"
                 curlreturn=$?
                 if [[ $curlreturn -eq 0 ]]; then
                   mkdir -p /etc/geoip && cd /etc/geoip && tar xvzf /tmp/GeoLite2-City.tar.gz --wildcards "*.mmdb" --strip-components=1 -C /etc/geoip && chown -R graylog:graylog /etc/geoip
                 fi
+              {{- end }}
                 # Start Graylog
                 echo "Starting graylog"
                 # Original docker-entrypoint.sh in Graylog Docker will error while executing since you can't chown readonly files in `config`

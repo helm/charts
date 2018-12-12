@@ -96,7 +96,7 @@ data:
   {{- if .Values.graylog.ingress.enabled }}
     web_endpoint_uri =  {{ template "graylog.url" .}}/api
   {{- end }}
-    elasticsearch_hosts = {{ default .Values.graylog.elasticsearch.hosts }}
+    elasticsearch_hosts = {{ template "graylog.elasticsearch.hosts" . }}
     elasticsearch_connect_timeout = 10s
     elasticsearch_socket_timeout = 60s
     #elasticsearch_idle_timeout = -1s
@@ -126,8 +126,7 @@ data:
     message_journal_dir = /usr/share/graylog/data/journal
     lb_recognition_period_seconds = 3
     # Use a replica set instead of a single host
-    mongodb_uri = {{ .Values.graylog.mongodb.uri }}
-    #mongodb_uri = mongodb://grayloguser:secret@localhost:27017,localhost:27018,localhost:27019/graylog
+    mongodb_uri = {{ template "graylog.mongodb.uri" . }}
     mongodb_max_connections = {{ default 1000 .Values.graylog.mongodb.maxConnections }}
     mongodb_threads_allowed_to_block_multiplier = 5
     # Email transport

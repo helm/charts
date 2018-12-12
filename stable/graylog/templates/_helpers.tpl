@@ -51,3 +51,26 @@ Print Host URL
 {{- end }}
 {{- end -}}
 
+{{/*
+Create a default fully qualified elasticsearch name or use the `graylog.elasticsearch.hosts` value if defined.
+Or use chart dependencies with release name
+*/}}
+{{- define "graylog.elasticsearch.hosts" -}}
+{{- if .Values.graylog.elasticsearch.hosts }}
+    {{- .Values.graylog.elasticsearch.hosts -}}
+{{- else }}
+    {{- printf "http://%s-elasticsearch-client:9200" .Release.Name -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Create a default fully qualified mongodb name or use the `graylog.mongodb.uri` value if defined.
+Or use chart dependencies with release name
+*/}}
+{{- define "graylog.mongodb.uri" -}}
+{{- if .Values.graylog.mongodb.uri }}
+    {{- .Values.graylog.mongodb.uri -}}
+{{- else }}
+    {{- printf "mongodb://%s-mongodb-replicaset:27017/graylog?replicaSet=rs0" .Release.Name -}}
+{{- end -}}
+{{- end -}}
