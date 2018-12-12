@@ -226,6 +226,9 @@ spec:
                     app: {{ template "rabbitmq-ha.name" . }}
                     release: {{ .Release.Name }}
       {{- end }}
+      {{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName }}
+      {{- end }}
       volumes:
         - name: config
           emptyDir: {}
@@ -246,9 +249,6 @@ spec:
             defaultMode: 420
             secretName: {{ template "rabbitmq-ha.certSecretName" . }}
         {{- end }}
-      {{- if .Values.priorityClassName }}
-      priorityClassName: {{ .Values.priorityClassName }}
-      {{- end }}
 {{- if .Values.persistentVolume.enabled }}
   volumeClaimTemplates:
     - metadata:
@@ -273,6 +273,6 @@ spec:
       {{- end }}
       {{- end }}
 {{- else }}
-        - name: data
+        - name: {{ .Values.persistentVolume.name }}
           emptyDir: {}
 {{- end }}
