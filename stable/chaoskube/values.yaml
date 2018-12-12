@@ -75,3 +75,9 @@ affinity: {}
   #       labelSelector:
   #         matchLabels:
   #           app: chaoskube
+
+podAnnotations: {}
+  ## Annotations for the chaoskube pod.
+  #  podAnnotations:
+  #    prometheus.io/scrape: "true"
+  #    prometheus.io/port: "8080"

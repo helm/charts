@@ -61,6 +61,7 @@ $ helm install stable/chaoskube --set dryRun=false
 | `tolerations`             | Toleration labels for pod assignment                | `[]`                             |
 | `affinity`                | Affinity settings for pod assignment                | `{}`                             |
 | `minimumAge`              | Set minimum pod age to filter pod by                | `0s`                             |
+| `podAnnotations`	    | Annotations for the chaoskube pod			  | `{}`			     |
 
 Setting label and namespaces selectors from the shell can be tricky but is possible (example with zsh):
 
