@@ -190,8 +190,8 @@ You'll also need to create/copy secret values for optional features. See [templa
 # copy a posgres URI to clipboard and paste it to file
 printf "%s" "$(pbpaste)" > postgresql-uri
 # copy Github client id and secrets to clipboard and paste to files
-printf "%s" "$(pbpaste)" > github-auth-client-id
-printf "%s" "$(pbpaste)" > github-auth-client-secret
+printf "%s" "$(pbpaste)" > github-client-id
+printf "%s" "$(pbpaste)" > github-client-secret
 # set an encryption key for DB encryption at rest
 printf "%s" "$(openssl rand -base64 24)" > encryption-key
 ```
