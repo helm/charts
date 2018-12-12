@@ -93,7 +93,7 @@ can provide it in the `config` parameter. The configuration format is
 
 ```console
 $ cat values.yaml
-config:
+configInline:
   peers:
   - peer-address: 10.0.0.1
     peer-asn: 64512
