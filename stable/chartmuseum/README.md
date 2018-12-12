@@ -1,6 +1,6 @@
 # ChartMuseum Helm Chart
 
-Deploy your own private ChartMuseum.   
+Deploy your own private ChartMuseum.
 
 Please also see https://github.com/kubernetes-helm/chartmuseum
 
@@ -39,8 +39,8 @@ By default this chart will not have persistent storage, and the API service
 will be *DISABLED*.  This protects against unauthorized access to the API
 with default configuration values.
 
-For a more robust solution supply helm install with a custom values.yaml   
-You are also required to create the StorageClass resource ahead of time:   
+For a more robust solution supply helm install with a custom values.yaml
+You are also required to create the StorageClass resource ahead of time:
 ```
 kubectl create -f /path/to/storage_class.yaml
 ```
@@ -52,7 +52,7 @@ their default values. See values.yaml for all available options.
 |----------------------------------------|---------------------------------------------|-----------------------------------------------------|
 | `image.pullPolicy`                     | Container pull policy                       | `IfNotPresent`                                      |
 | `image.repository`                     | Container image to use                      | `chartmuseum/chartmuseum`                           |
-| `image.tag`                            | Container image tag to deploy               | `v0.7.1`                                            |
+| `image.tag`                            | Container image tag to deploy               | `v0.8.0`                                            |
 | `persistence.accessMode`               | Access mode to use for PVC                  | `ReadWriteOnce`                                     |
 | `persistence.enabled`                  | Whether to use a PVC for persistent storage | `false`                                             |
 | `persistence.size`                     | Amount of space to claim for PVC            | `8Gi`                                               |
@@ -233,7 +233,7 @@ env:
   open:
     STORAGE: google
     STORAGE_GOOGLE_BUCKET: my-gcs-bucket
-    STORAGE_GOOGLE_PREFIX:    
+    STORAGE_GOOGLE_PREFIX:
 ```
 
 ### Using with Google Cloud Storage and a Google Service Account
@@ -317,7 +317,7 @@ env:
     STORAGE: microsoft
     STORAGE_MICROSOFT_CONTAINER: mycontainer
     # prefix to store charts for microsoft storage backend
-    STORAGE_MICROSOFT_PREFIX:    
+    STORAGE_MICROSOFT_PREFIX:
   secret:
     AZURE_STORAGE_ACCOUNT: "********" ## azure storage account
     AZURE_STORAGE_ACCESS_KEY: "********" ## azure storage account access key
@@ -425,7 +425,7 @@ helm install --name my-chartmuseum -f custom.yaml stable/chartmuseum
 
 #### Example storage class
 
-Example storage-class.yaml provided here for use with a Ceph cluster.   
+Example storage-class.yaml provided here for use with a Ceph cluster.
 
 ```
 kind: StorageClass
@@ -446,7 +446,7 @@ parameters:
 ## Uninstall
 
 By default, a deliberate uninstall will result in the persistent volume
-claim being deleted.   
+claim being deleted.
 
 ```shell
 helm delete my-chartmuseum
