@@ -10,7 +10,6 @@ metadata:
   name: {{ template "elasticsearch.client.fullname" . }}
 {{- if .Values.client.serviceAnnotations }}
   annotations:
-    service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
 {{ toYaml .Values.client.serviceAnnotations | indent 4 }}
 {{- end }}
 
@@ -19,7 +18,6 @@ spec:
     - name: http
       port: 9200
       targetPort: http
-  publishNotReadyAddresses: true
   selector:
     app: {{ template "elasticsearch.name" . }}
     component: "{{ .Values.client.name }}"
