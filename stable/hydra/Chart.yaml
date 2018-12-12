@@ -1,4 +1,4 @@
-appVersion: 1.0.0-rc.3_oryOS.9
+appVersion: 1.0.0-rc.4_oryOS.9
 description: A security-first open source OAuth2 and OpenID Connect server for
   existing and new enterprise infrastructures.
 home: https://www.ory.am/products/hydra
@@ -20,4 +20,4 @@ maintainers:
 - email: meybohm@traum-ferienwohnungen.de
   name: jayme-github
 name: hydra
-version: 0.0.3
+version: 0.0.4
