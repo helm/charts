@@ -18,6 +18,9 @@ labels: {}
 # kubernetes.io/cluster-service: "true"
 # kubernetes.io/name: "Kubernetes Dashboard"
 
+## Serve application over HTTP without TLS
+enableInsecureLogin: false
+
 ## Additional container arguments
 ##
 # extraArgs:
