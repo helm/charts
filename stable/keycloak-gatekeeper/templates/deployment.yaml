@@ -27,9 +27,7 @@ spec:
         prometheus.io/path: "/oauth/metrics"
         prometheus.io/port: "3000"
     spec:
-      {{- if and .Values.rbac.create .Values.serviceAccount.create }}
       serviceAccountName: {{ include "keycloak-gatekeeper.serviceAccountName" . }}
-      {{- end  }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
