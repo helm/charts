@@ -92,6 +92,11 @@ spec:
             - name: http
               containerPort: 8080
               protocol: TCP
+          {{- if $highAvailability }}
+            - name: jgroups
+              containerPort: 7600
+              protocol: TCP
+          {{- end }}
           livenessProbe:
             httpGet:
               path: /{{ .Values.keycloak.basepath }}/
@@ -100,7 +105,7 @@ spec:
             timeoutSeconds: {{ .Values.keycloak.livenessProbe.timeoutSeconds }}
           readinessProbe:
             httpGet:
-              path: /{{ .Values.keycloak.basepath }}/
+              path: /{{ .Values.keycloak.basepath }}/realms/master
               port: http
             initialDelaySeconds: {{ .Values.keycloak.readinessProbe.initialDelaySeconds }}
             timeoutSeconds: {{ .Values.keycloak.readinessProbe.timeoutSeconds }}
