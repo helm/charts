@@ -67,6 +67,7 @@ The following table lists the configurable parameters of the Fluentd Cloudwatch 
 | `rbac.serviceAccountName`       | existing ServiceAccount to use (ignored if rbac.create=true)              | `default`                             |
 | `tolerations`                   | Add tolerations                                                           | `[]`                                  |
 | `extraVars`                     | Add pod environment variables (must be specified as a single line object) | `[]`                                  |
+| `updateStrategy`                | Define daemonset update strategy                                          | `OnDelete`                            |
 
 Starting with fluentd-kubernetes-daemonset v0.12.43-cloudwatch, the container runs as user fluentd. To be able to write pos files to the host system, you'll need to run fluentd as root. Add the following extraVars value to run as root.
 
