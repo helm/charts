@@ -31,7 +31,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `nameOverride`                    | Override the resource name prefix    | `jenkins`                                                                    |
 | `fullnameOverride`                | Override the full resource names     | `jenkins-{release-name}` (or `jenkins` if release-name is `jenkins`)         |
 | `Master.Name`                     | Jenkins master name                  | `jenkins-master`                                                             |
-| `Master.Image`                    | Master image name                    | `jenkinsci/jenkins`                                                          |
+| `Master.Image`                    | Master image name                    | `jenkins/jenkins`                                                            |
 | `Master.ImageTag`                 | Master image tag                     | `lts`                                                                     |
 | `Master.ImagePullPolicy`          | Master image pull policy             | `Always`                                                                     |
 | `Master.ImagePullSecret`          | Master image pull secret             | Not set                                                                      |
