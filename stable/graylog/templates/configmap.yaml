@@ -3,10 +3,11 @@ kind: ConfigMap
 metadata:
   name: {{ template "graylog.fullname" . }}
   labels:
-    app: {{ template "graylog.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app.kubernetes.io/name: {{ template "graylog.name" . }}
+    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    app.kubernetes.io/managed-by: "{{ .Release.Service }}"
+    app.kubernetes.io/instance: "{{ .Release.Name }}"
+    app.kubernetes.io/version: "{{ .Chart.AppVersion }}"
 data:
   log4j2.xml: |-
     <?xml version="1.0" encoding="UTF-8"?>

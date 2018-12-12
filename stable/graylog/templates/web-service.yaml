@@ -7,11 +7,12 @@ metadata:
 {{- end }}
   name: {{ template "graylog.fullname" . }}-web
   labels:
-    app: {{ template "graylog.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    heritage: "{{ .Release.Service }}"
-    release: "{{ .Release.Name }}"
-    component: "web"
+    app.kubernetes.io/name: {{ template "graylog.name" . }}
+    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    app.kubernetes.io/managed-by: "{{ .Release.Service }}"
+    app.kubernetes.io/instance: "{{ .Release.Name }}"
+    app.kubernetes.io/version: "{{ .Chart.AppVersion }}"
+    app.kubernetes.io/component: "web"
 spec:
   ports:
     - name: graylog
@@ -33,8 +34,8 @@ spec:
   {{- end }}
 {{- end }}  
   selector:
-    app: {{ template "graylog.name" . }}
-    release: {{ .Release.Name }}
+    app.kubernetes.io/name: {{ template "graylog.name" . }}
+    app.kubernetes.io/instance: "{{ .Release.Name }}"
   type: "{{ .Values.graylog.service.type }}"
 {{- if eq "LoadBalancer" .Values.graylog.service.type }}
   {{- if .Values.graylog.service.loadBalancerIP }}

@@ -3,22 +3,23 @@ kind: StatefulSet
 metadata:
   name: {{ template "graylog.fullname" . }}
   labels:
-    app: {{ template "graylog.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    heritage: "{{ .Release.Service }}"
-    release: "{{ .Release.Name }}"
+    app.kubernetes.io/name: {{ template "graylog.name" . }}
+    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    app.kubernetes.io/managed-by: "{{ .Release.Service }}"
+    app.kubernetes.io/instance: "{{ .Release.Name }}"
+    app.kubernetes.io/version: "{{ .Chart.AppVersion }}"
 spec:
   serviceName: {{ template "graylog.fullname" . }}
   replicas: {{ .Values.graylog.replicas }}
   selector:
     matchLabels:
-      app: {{ template "graylog.name" . }}
-      release: {{ .Release.Name }}
+      app.kubernetes.io/name: {{ template "graylog.name" . }}
+      app.kubernetes.io/instance: "{{ .Release.Name }}"
   template:
     metadata:
       labels:
-        app: {{ template "graylog.name" . }}
-        release: {{ .Release.Name }}
+        app.kubernetes.io/name: {{ template "graylog.name" . }}
+        app.kubernetes.io/instance: "{{ .Release.Name }}"
       annotations:
       {{- if .Values.graylog.podAnnotations }}
       {{- range $key, $value := .Values.graylog.podAnnotations }}
@@ -74,6 +75,7 @@ spec:
                 GRAYLOG_HOME=/usr/share/graylog
                 GRAYLOG_USER=graylog
                 GRAYLOG_GROUP=graylog
+                chown -R ${GRAYLOG_USER}:${GRAYLOG_GROUP} ${GRAYLOG_HOME}/data/
                 MASTER_NAME="{{ template "graylog.fullname" . }}-master.{{ .Release.Namespace }}.svc.cluster.local"
                 # Looking for Master IP
                 MASTER_IP=`/k8s/kubectl get pod -o jsonpath='{range .items[*]}{.metadata.name} {.status.podIP}{"\n"}{end}' -l graylog-role=master --field-selector=status.phase=Running|awk '{print $2}'`

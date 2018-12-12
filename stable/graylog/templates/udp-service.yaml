@@ -8,11 +8,12 @@ metadata:
 {{- end }}
   name: {{ template "graylog.fullname" . }}-udp
   labels:
-    app: {{ template "graylog.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    heritage: "{{ .Release.Service }}"
-    release: "{{ .Release.Name }}"
-    component: "UDP"
+    app.kubernetes.io/name: {{ template "graylog.name" . }}
+    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    app.kubernetes.io/managed-by: "{{ .Release.Service }}"
+    app.kubernetes.io/instance: "{{ .Release.Name }}"
+    app.kubernetes.io/version: "{{ .Chart.AppVersion }}"
+    app.kubernetes.io/component: "UDP"
 spec:
   ports:
   {{- range .Values.graylog.input.udp.ports }}
@@ -36,8 +37,8 @@ spec:
   {{- end }}
 {{- end }}  
   selector:
-    app: {{ template "graylog.name" . }}
-    release: {{ .Release.Name }}
+    app.kubernetes.io/name: {{ template "graylog.name" . }}
+    app.kubernetes.io/instance: "{{ .Release.Name }}"
   type: "{{ .Values.graylog.input.udp.service.type }}"
 {{- if eq "LoadBalancer" .Values.graylog.input.udp.service.type }}
   {{- if .Values.graylog.input.udp.service.loadBalancerIP }}
