@@ -68,7 +68,9 @@ The following table lists the configurable parameters of the Datadog chart and t
 | `image.pullSecrets`         | Image pull secrets                 |  `nil`                                    |
 | `rbac.create`               | If true, create & use RBAC resources | `true`                                  |
 | `rbac.serviceAccount`       | existing ServiceAccount to use (ignored if rbac.create=true) | `default`       |
-| `datadog.name`              | Container name if Deamonset or Deployment | `datadog`                          |
+| `datadog.name`              | Container name if Daemonset or Deployment | `datadog`                          |
+| `datadog.site`              | Site ('datadoghq.com' or 'datadoghq.eu') | `nil`                                |
+| `datadog.dd_url`            | Datadog intake server              | `nil`                                     |
 | `datadog.env`               | Additional Datadog environment variables | `nil`                               |
 | `datadog.logsEnabled`       | Enable log collection              | `nil`                                     |
 | `datadog.logsConfigContainerCollectAll` | Collect logs from all containers | `nil`                           |
@@ -78,6 +80,7 @@ The following table lists the configurable parameters of the Datadog chart and t
 | `datadog.confd`             | Additional check configurations (static and Autodiscovery) | `nil`             |
 | `datadog.criSocketPath`     | Path to the container runtime socket (if different from Docker) | `nil`        |
 | `datadog.tags`              | Set host tags                      | `nil`                                     |
+| `datadog.nonLocalTraffic` | Enable statsd reporting from any external ip | `False`                           |
 | `datadog.useCriSocketVolume` | Enable mounting the container runtime socket in Agent containers | `True` |
 | `datadog.volumes`           | Additional volumes for the daemonset or deployment | `nil`                     |
 | `datadog.volumeMounts`      | Additional volumeMounts for the daemonset or deployment | `nil`                |
@@ -116,6 +119,7 @@ The following table lists the configurable parameters of the Datadog chart and t
 | `clusterAgent.resources.limits.cpu`      | CPU resource limits                | `200m`                                    |
 | `clusterAgent.resources.requests.memory` | Memory resource requests           | `256Mi`                                   |
 | `clusterAgent.resources.limits.memory`   | Memory resource limits             | `256Mi`                                   |
+| `clusterAgent.tolerations`               | List of node taints to tolerate    | `[]`                                      |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
