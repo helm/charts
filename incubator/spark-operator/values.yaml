@@ -1,15 +1,16 @@
 version: v0.3.2-v1alpha1
-operator:
-  image:
-    repository: quay.io/radanalyticsio/spark-operator
-    tag: latest-released
-    pullPolicy: IfNotPresent
-  env:
-    crd: false
-    reconciliationInterval: 180
-    colors: true
-    namespace: "" # empty string represents the same ns as the operator's, use * for all
-  resources:
-    limits:
-      memory: 512Mi
-      cpu: 1000m
+image:
+  repository: quay.io/radanalyticsio/spark-operator
+  tag: latest-released
+  pullPolicy: IfNotPresent
+env:
+  namespace: ""                # empty string represents the same ns as the operator's, use * for all
+  crd: false                   # if false, the operator will watch on ConfigMaps
+  reconciliationInterval: 180  # how often (in seconds) the full reconciliation should be run
+  metrics: false               # should we expose metrics for Prometheus?
+  metricsPort: 8080            # port for the metrics http server
+  internalJvmMetrics: false    # should we expose also internal JVM metrics?
+  colors: true                 # colorized log messages
+resources:
+  memory: 512Mi
+  cpu: 1000m

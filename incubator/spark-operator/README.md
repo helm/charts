@@ -1,5 +1,5 @@
 # spark-operator
-ConfigMap-based approach for managing the Spark clusters in Kubernetes and OpenShift.
+ConfigMap-based approach for managing the Spark clusters and apps in Kubernetes and OpenShift.
 
 # Installation
 ```
@@ -53,6 +53,29 @@ spec:
     instances: "2"
 EOF
 ```
+
+### Configuration
+
+_The following table lists the configurable parameters of the Spark operator chart and their default values._
+
+| Parameter                    | Description                                                  | Default                                 |
+| ---------------------------- | ------------------------------------------------------------ | --------------------------------------- |
+| `image.repository`           | The name of the operator image                               | `quay.io/radanalyticsio/spark-operator` |
+| `image.tag`                  | The image tag representing the version of the operator       | `latest-released`                       |
+| `image.pullPolicy`           | Container image pull policy                                  | `IfNotPresent`                          |
+| `env.namespace`              | Kubernetes namespace where Spark operator watch for events. If `*` is used, it watches in all namespaces, if empty string is used, it will watch only in the same namespace the operator is deployed in.   | `""`                                    |
+| `env.crd`                    | Whether to use CustomResource or ConfigMap based approach.   | `false`                                 |
+| `env.reconciliationInterval` | How often (in seconds) the full reconciliation should be run | `180`                                   |
+| `env.metrics`                | Whether to start metrics server to be scraped by Prometheus. | `false`                                 |
+| `env.metricsPort`            | The port for the metrics http server                         | `8080`                                  |
+| `env.internalJvmMetrics`     | Whether to expose also internal JVM metrics?                 | `false`                                 |
+| `env.colors`                 | Colorized log messages                                       | `true`                                  |
+| `resources.memory`           | Memory limit for the operator pod (used by K8s scheduler)    | `512Mi`                                 |
+| `resources.cpu`              | Cpu limit for the operator pod (used by K8s scheduler)       | `1000m`                                 |
+
+Specify each parameter using the `--set key=value[,key=value]` argument to `helm install` or `helm template`.
+
+
 
 For more details consult https://github.com/radanalyticsio/spark-operator/blob/master/README.md
 or check the [examples](https://github.com/radanalyticsio/spark-operator/tree/master/examples).

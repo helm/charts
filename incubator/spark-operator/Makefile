@@ -4,5 +4,5 @@ template:
 	cat ./template.yaml
 
 template-crd:
-	helm template --set operator.env.crd=true .
+	helm template --set env.crd=true .
 	cat ./template.yaml

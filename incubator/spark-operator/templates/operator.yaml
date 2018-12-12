@@ -4,7 +4,7 @@ kind: ServiceAccount
 metadata:
   name: spark-operator
 ---
-{{- if .Values.operator.env.crd }}
+{{- if .Values.env.crd }}
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding
 metadata:
@@ -17,7 +17,7 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: spark-operator
-    namespace: {{ default "myproject" .Values.operator.env.namespace }}
+    namespace: {{ default "myproject" .Values.env.namespace }}
 {{- else }}
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1beta1
@@ -64,19 +64,25 @@ spec:
       serviceAccountName: spark-operator
       containers:
       - name: spark-operator
-        image: {{ .Values.operator.image.repository }}:{{ .Values.operator.image.tag }}
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         env:
         - name: WATCHED_NAMESPACE
-          value: {{ .Values.operator.env.namespace }}
+          value: {{ .Values.env.namespace }}
         - name: FULL_RECONCILIATION_INTERVAL_S
-          value: "{{ .Values.operator.env.reconciliationInterval }}"
+          value: "{{ .Values.env.reconciliationInterval }}"
         - name: CRD
-          value: "{{ .Values.operator.env.crd }}"
+          value: "{{ .Values.env.crd }}"
+        - name: METRICS
+          value: "{{ .Values.env.metrics }}"
+        - name: METRICS_PORT
+          value: "{{ .Values.env.metricsPort }}"
+        - name: METRICS_JVM
+          value: "{{ .Values.env.internalJvmMetrics }}"
         - name: COLORS
-          value: "{{ .Values.operator.env.colors }}"
+          value: "{{ .Values.env.colors }}"
         resources:
           limits:
-            memory: {{ .Values.operator.resources.limits.memory }}
-            cpu: {{ .Values.operator.resources.limits.cpu }}
-        imagePullPolicy: {{ .Values.operator.image.pullPolicy }}
+            memory: {{ .Values.resources.memory }}
+            cpu: {{ .Values.resources.cpu }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
 
