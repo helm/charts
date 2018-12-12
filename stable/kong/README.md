@@ -177,3 +177,4 @@ https://github.com/Kong/kubernetes-ingress-controller/blob/master/docs/custom-ty
 | image.tag        | Version of the ingress controller           | 0.2.0                                                                        |
 | readinessProbe   | Kong ingress controllers readiness probe    |                                                                              |
 | livenessProbe    | Kong ingress controllers liveness probe     |                                                                              |
+| ingressClass     | The ingress-class value for controller      | nginx
