@@ -2,7 +2,7 @@
 
 image:
   repository: "coscale/coscale-agent"
-  tag: "3.10.11"
+  tag: 3.16.0
   pullPolicy: "IfNotPresent"
 
 coscale:
