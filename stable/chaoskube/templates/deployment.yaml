@@ -18,6 +18,10 @@ spec:
     metadata:
       labels:
 {{ include "labels.standard" . | indent 8 }}
+{{- with .Values.podAnnotations }}
+      annotations:
+{{ toYaml . | indent 8 }}
+{{- end }}
     spec:
       containers:
         - name: {{ .Values.name }}
