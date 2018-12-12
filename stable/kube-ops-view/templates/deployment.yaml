@@ -10,15 +10,18 @@ spec:
     metadata:
       labels:
         app: {{ template "kube-ops-view.fullname" . }}
-{{- if .Values.podLabels }}
+        {{- if .Values.podLabels }}
 {{ toYaml .Values.podLabels | indent 8 }}
-{{- end }}
+        {{- end }}
     spec:
+      {{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+      {{- end }}
       {{- with .Values.securityContext }}
       securityContext:
 {{ toYaml . | indent 8 }}
       {{- end }}
-
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "kube-ops-view.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
       containers:
       - name: {{ .Chart.Name }}
