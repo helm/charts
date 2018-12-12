@@ -15,9 +15,7 @@ spec:
   type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.externalPort }}
-{{- if ne .Values.service.type "ClusterIP" }}
       targetPort: {{ .Values.service.internalPort }}
-{{- end }}
       protocol: TCP
       name: {{ .Values.service.name }}
   selector:
