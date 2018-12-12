@@ -9,6 +9,11 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
+  strategy:
+    type: {{ .Values.DeploymentUpdate.type }}
+    rollingUpdate:
+      maxSurge: {{ .Values.DeploymentUpdate.maxSurge }}
+      maxUnavailable: {{ .Values.DeploymentUpdate.maxUnavailable }}
   {{- if .Values.nasgateway.enabled }}
   replicas: {{ .Values.nasgateway.replicas }}
   {{- end }}
@@ -43,25 +48,25 @@ spec:
           command: [ "/bin/sh",
           "-ce",
           "cp /tmp/config.json {{ .Values.configPath }} &&
-          /usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} gateway s3"]
+          /usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} gateway s3" ]
           {{- else }}
           {{- if .Values.azuregateway.enabled }}
           command: [ "/bin/sh", 
           "-ce", 
           "cp /tmp/config.json {{ .Values.configPath }} && 
-          /usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} gateway azure"]
+          /usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} gateway azure" ]
           {{- else }}
           {{- if .Values.gcsgateway.enabled }}
           command: [ "/bin/sh", 
           "-ce", 
           "cp /tmp/config.json {{ .Values.configPath }} && 
-          /usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} gateway gcs {{ .Values.gcsgateway.projectId }}"]
+          /usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} gateway gcs {{ .Values.gcsgateway.projectId }}" ]
           {{- else }}
           {{- if .Values.nasgateway.enabled }}
           command: [ "/bin/sh", 
           "-ce", 
           "cp /tmp/config.json {{ .Values.configPath }} && 
-          /usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} gateway nas {{ .Values.mountPath }}"]
+          /usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} gateway nas {{ .Values.mountPath }}" ]
           {{- else }}
           command: [ "/bin/sh", 
           "-ce", 
