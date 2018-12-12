@@ -81,7 +81,7 @@ nexusProxy:
   #   requiredMembershipVerification: "true"
   # secrets:
   #   keystore: ""
-  #   password: "" 
+  #   password: ""
   resources: {}
     # requests:
       # cpu: 100m
