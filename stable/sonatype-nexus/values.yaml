@@ -10,7 +10,7 @@ deploymentStrategy: {}
 
 nexus:
   imageName: quay.io/travelaudience/docker-nexus
-  imageTag: 3.13.0_alpine_3.8.1
+  imageTag: 3.14.0
   imagePullPolicy: IfNotPresent
   env:
     - name: install4jAddVmParams
@@ -63,7 +63,7 @@ nexusProxy:
   enabled: true
   # svcName: proxy-svc
   imageName: quay.io/travelaudience/docker-nexus-proxy
-  imageTag: 2.3.0
+  imageTag: 2.4.0
   imagePullPolicy: IfNotPresent
   port: 8080
   targetPort: 8080
@@ -78,6 +78,7 @@ nexusProxy:
   #   clientSecret: ""
   #   organizationId: ""
   #   redirectUrl: ""
+  #   requiredMembershipVerification: "true"
   # secrets:
   #   keystore: ""
   #   password: ""
@@ -109,7 +110,7 @@ persistence:
 nexusBackup:
   enabled: false
   imageName: quay.io/travelaudience/docker-nexus-backup
-  imageTag: 1.3.0
+  imageTag: 1.4.0
   imagePullPolicy: IfNotPresent
   env:
     targetBucket:
