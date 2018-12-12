@@ -77,10 +77,7 @@ affinity: {}
   #           app: chaoskube
 
 podAnnotations: {}
-  ##  Annotations for the chaoskube pod.
-  #   
-  #   podAnnotations:
-  #      prometheus.io/scrape: "true"
-  #      prometheus.io/port: "8080"
-  #
-  #
+  ## Annotations for the chaoskube pod.
+  #  podAnnotations:
+  #    prometheus.io/scrape: "true"
+  #    prometheus.io/port: "8080"
