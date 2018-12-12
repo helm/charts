@@ -35,6 +35,7 @@ The following table lists the configurable parameters of the mongodb chart and t
 | ----------------------------------- | ------------------------------------------------------------------------- | --------------------------------------------------- |
 | `replicas`                          | Number of replicas in the replica set                                     | `3`                                                 |
 | `replicaSetName`                    | The name of the replica set                                               | `rs0`                                               |
+| `replicaSetConfig`                  | MongoDB replica set member configuration options.                         | `[]`
 | `podDisruptionBudget`               | Pod disruption budget                                                     | `{}`                                                |
 | `port`                              | MongoDB port                                                              | `27017`                                             |
 | `imagePullSecrets`                  | Image pull secrets                                                        | `[]`                                                  |
@@ -231,6 +232,25 @@ export RELEASE_NAME=messy-hydra
 ```console
 for i in 0 1 2; do kubectl exec $RELEASE_NAME-mongodb-replicaset-$i -- sh -c 'mongo --eval="printjson(db.serverStatus())"'; done
 ```
+
+### Replica Set Configuration
+
+When using arbiters, hidden secondaries, etc. one needs to modify the replica set member document for particular nodes. The `replicaSetConfig`
+option leverages an array to modify the membership document for each node. You should ensure you have an entry for each node in your replica set;
+even if the entry is empty.
+
+```yaml
+replicas: 4
+replicaSetConfig:
+  - priority: 3
+  - priority: 2
+  - priority: 2
+  - priority: 0
+    votes: 0
+    hidden: true
+```
+
+This configuration deploys 4 nodes: one high priority PRIMARY node, two lower priority SECONDARIES, and a single, non-voting, hidden secondary.
 
 ### Failover
 

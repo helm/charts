@@ -13,8 +13,12 @@ metadata:
 data:
   on-start.sh: |
 {{ .Files.Get "init/on-start.sh" | indent 4 }}
+  add_to_rs.js: |
+{{ .Files.Get "init/add_to_rs.js" | indent 4}}
+  replica-config.js: |
+    //replicaSet configuration
+    var setConfig = {{ toJson .Values.replicaConfig }}
 {{- if .Values.initMongodStandalone }}
   initMongodStandalone.js: |
 {{ .Values.initMongodStandalone | indent 4 }}
 {{- end }}
-

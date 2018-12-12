@@ -2,6 +2,7 @@ replicas: 3
 port: 27017
 
 replicaSetName: rs0
+replicaSetConfig: []
 
 podDisruptionBudget: {}
   # maxUnavailable: 1

@@ -15,6 +15,7 @@
 # limitations under the License.
 
 set -e pipefail
+set -x
 
 port=27017
 replica_set="$REPLICA_SET"
@@ -98,6 +99,13 @@ init_mongod_standalone() {
     shutdown_mongo "localhost:${port}"
 }
 
+template_init_script() {
+    member_index=$(printf "${service_name}" | cut -d. -f1 | tr -d $'\n' | tail -c 1) #extra whitespace character at the end.
+    sed s/xxMEMBER_INDEXxx/${member_index}/g < /init/add_to_rs.js | \
+    sed s/xxMEMBER_HOSTxx/${service_name}/g | \
+    sed s/xxREPLICA_SETxx/${replica_set}/g > /work-dir/add_me_to_rs.js
+}
+
 my_hostname=$(hostname)
 log "Bootstrapping MongoDB replica set member: $my_hostname"
 
@@ -173,12 +181,13 @@ for peer in "${peers[@]}"; do
     fi
 done
 
+template_init_script
 if [[ "${primary}" = "${service_name}" ]]; then
     log "This replica is already PRIMARY"
 elif [[ -n "${primary}" ]]; then
     if [[ $(mongo admin --host "${primary}" "${admin_creds[@]}" "${ssl_args[@]}" --quiet --eval "rs.conf().members.findIndex(m => m.host == '${service_name}:${port}')") == "-1" ]]; then
       log "Adding myself (${service_name}) to replica set..."
-      if (mongo admin --host "${primary}" "${admin_creds[@]}" "${ssl_args[@]}" --eval "rs.add('${service_name}')" | grep 'Quorum check failed'); then
+      if (mongo admin --host "${primary}" "${admin_creds[@]}" "${ssl_args[@]}" /work-dir/add_me_to_rs.js | grep 'Quorum check failed'); then
           log 'Quorum check failed, unable to join replicaset. Exiting prematurely.'
           exit 1
       fi
@@ -191,8 +200,7 @@ elif [[ -n "${primary}" ]]; then
 
 elif (mongo "${ssl_args[@]}" --eval "rs.status()" | grep "no replset config has been received"); then
     log "Initiating a new replica set with myself ($service_name)..."
-    mongo "${ssl_args[@]}" --eval "rs.initiate({'_id': '$replica_set', 'members': [{'_id': 0, 'host': '$service_name'}]})"
-
+    mongo "${ssl_args[@]}" /work-dir/add_me_to_rs.js
     sleep 3
     log 'Waiting for replica to reach PRIMARY state...'
     retry_until "localhost" "db.isMaster().ismaster" "true"
@@ -216,4 +224,3 @@ fi
 
 log "MongoDB bootstrap complete"
 exit 0
-
