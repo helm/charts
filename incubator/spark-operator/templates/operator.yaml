@@ -68,6 +68,8 @@ spec:
         env:
         - name: WATCHED_NAMESPACE
           value: {{ .Values.operator.env.namespace }}
+        - name: FULL_RECONCILIATION_INTERVAL_S
+          value: "{{ .Values.operator.env.reconciliationInterval }}"
         - name: CRD
           value: "{{ .Values.operator.env.crd }}"
         - name: COLORS

@@ -35,7 +35,8 @@ metadata:
     radanalytics.io/kind: sparkcluster
 data:
   config: |-
-    workerNodes: "2"
+    worker:
+      instances: "2"
 EOF
 ```
 
@@ -48,7 +49,8 @@ kind: sparkcluster
 metadata:
   name: my-cluster
 spec:
-  workerNodes: "2"
+  worker:
+    instances: "2"
 EOF
 ```
 

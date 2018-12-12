@@ -10,7 +10,8 @@ metadata:
     radanalytics.io/kind: sparkcluster
 data:
   config: |-
-    workerNodes: "2"
+    worker:
+      instances: "2"
 EOF
 
 or in case of CRD approach:
@@ -21,7 +22,8 @@ kind: sparkcluster
 metadata:
   name: my-cluster
 spec:
-  workerNodes: "2"
+  worker:
+    instances: "2"
 EOF
 
 For more details consult https://github.com/radanalyticsio/spark-operator/blob/master/README.md

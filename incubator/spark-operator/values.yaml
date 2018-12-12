@@ -1,14 +1,15 @@
-version: v0.1.5-v1alpha1
+version: v0.3.2-v1alpha1
 operator:
   image:
-    repository: radanalyticsio/spark-operator
+    repository: quay.io/radanalyticsio/spark-operator
     tag: latest-released
     pullPolicy: IfNotPresent
   env:
     crd: false
+    reconciliationInterval: 180
     colors: true
-    namespace: ""
+    namespace: "" # empty string represents the same ns as the operator's, use * for all
   resources:
     limits:
-      memory: 256Mi
-      cpu: 500m
+      memory: 512Mi
+      cpu: 1000m
