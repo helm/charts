@@ -152,6 +152,7 @@ If `nexusProxy.env.cloudIamAuthEnabled` is set to `true` the following variables
 | `nexusProxy.env.clientSecret`    | GCP OAuth client Secret            | `nil`                                                |
 | `nexusProxy.env.organizationId`  | GCP organization ID                | `nil`                                                |
 | `nexusProxy.env.redirectUrl`     | OAuth callback url. example `https://nexus.example.com/oauth/callback` | `nil`            |
+| `nexusProxy.env.requiredMembershipVerification` | Whether users presenting valid JWT tokens must still be verified for membership within the GCP organization. | `true`    |
 | `nexusProxy.secrets.keystore`    | base-64 encoded value of the keystore file needed for the proxy to sign user tokens. Example: cat keystore.jceks &#124; base64 | `nil`  |
 | `nexusProxy.secrets.password`    | Password to the Java Keystore file | `nil`                                                |
 
