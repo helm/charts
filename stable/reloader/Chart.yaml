@@ -8,7 +8,7 @@ keywords:
   - kubernetes
 home: https://github.com/stakater/Reloader
 sources:
-- https://github.com/stakater/IngressMonitorController
+- https://github.com/stakater/Reloader
 icon: https://raw.githubusercontent.com/stakater/Reloader/master/assets/web/reloader-round-100px.png
 maintainers:
 - name: rasheedamir
