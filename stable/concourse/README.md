@@ -68,7 +68,7 @@ The following table lists the configurable parameters of the Concourse chart and
 | Parameter               | Description                           | Default                                                    |
 | ----------------------- | ----------------------------------    | ---------------------------------------------------------- |
 | `image` | Concourse image | `concourse/concourse` |
-| `imageTag` | Concourse image version | `4.2.1` |
+| `imageTag` | Concourse image version | `4.2.2` |
 | `imagePullPolicy` | Concourse image pull policy | `IfNotPresent` |
 | `web.nameOverride` | Override the Concourse Web components name | `nil` |
 | `web.replicas` | Number of Concourse Web replicas | `1` |
