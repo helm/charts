@@ -1,1 +1,1 @@
-configmaps chart is used with conjunction of other charts. It can come in handy when a public chart does not provide support for additional configmaps. In that scenario, this chart can be used to deploy additional configmaps.
+Configmaps have been created. Mount these in your resources to use them.
