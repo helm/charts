@@ -68,6 +68,23 @@ $ helm delete my-release
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
+Upgrading the Chart
+-------------------
+
+You can use Helm to update Minio version in a live release. Assuming your release is named as `my-release`, get the values using the command:
+
+```bash
+$ helm get values my-release > old_values.yaml
+```
+
+Then change the field `image.tag` in `old_values.yaml` file with Minio image tag you want to use. Now update the chart using
+
+```bash
+$ helm upgrade -f old_values.yaml my-release stable/minio
+```
+
+Default upgrade strategies are specified in the `values.yaml` file. Update these fields if you'd like to use a different strategy.
+
 Configuration
 -------------
 
