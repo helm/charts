@@ -10,6 +10,8 @@ image:
 
 replicaCount: 1
 
+## Here annotations can be added to the kubernetes dashboard deployment
+annotations: {}
 ## Here labels can be added to the kubernetes dashboard deployment
 ##
 labels: {}

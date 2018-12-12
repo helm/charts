@@ -54,6 +54,7 @@ The following table lists the configurable parameters of the Node Exporter chart
 | `serviceAccount.create`           | Specifies whether a service account should be created.                                                                        | `true`                                  |     |
 | `serviceAccount.name`             | Service account to be used. If not set and `serviceAccount.create` is `true`, a name is generated using the fullname template |                                         |     |
 | `serviceAccount.imagePullSecrets` | Specify image pull secrets                                                                                                    | `[]`                                    |     |
+| `securityContext`                 | SecurityContext                                                                                                               | `{"runAsNonRoot": true, "runAsUser": 65534}` |     |
 | `tolerations`                     | List of node taints to tolerate                                                                                               | `- effect: NoSchedule operator: Exists` |     |
 | `priorityClassName`               | Name of Priority Class to assign pods                                                                                         | `nil`                                   |     |
 
