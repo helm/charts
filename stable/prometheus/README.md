@@ -103,6 +103,7 @@ Parameter | Description | Default
 `alertmanager.configMapOverrideName` | Prometheus alertmanager ConfigMap override where full-name is `{{.Release.Name}}-{{.Values.alertmanager.configMapOverrideName}}` and setting this value will prevent the default alertmanager ConfigMap from being generated | `""`
 `alertmanager.configFromSecret` | The name of a secret in the same kubernetes namespace which contains the Alertmanager config, setting this value will prevent the default alertmanager ConfigMap from being generated | `""`
 `alertmanager.configFileName` | The configuration file name to be loaded to alertmanager. Must match the key within configuration loaded from ConfigMap/Secret. | `alertmanager.yml`
+`alertmanager.useConfigmapReload` | Enables the usage of configmap-reload as sidecar | `true`
 `alertmanager.ingress.enabled` | If true, alertmanager Ingress will be created | `false`
 `alertmanager.ingress.annotations` | alertmanager Ingress annotations | `{}`
 `alertmanager.ingress.extraLabels` | alertmanager Ingress additional labels | `{}`
@@ -240,6 +241,7 @@ Parameter | Description | Default
 `server.extraConfigmapMounts` | Additional Prometheus server configMap mounts | `[]`
 `server.extraSecretMounts` | Additional Prometheus server Secret mounts | `[]`
 `server.configMapOverrideName` | Prometheus server ConfigMap override where full-name is `{{.Release.Name}}-{{.Values.server.configMapOverrideName}}` and setting this value will prevent the default server ConfigMap from being generated | `""`
+`server.useConfigmapReload` | Enables the usage of configmap-reload as sidecar | `true`
 `server.ingress.enabled` | If true, Prometheus server Ingress will be created | `false`
 `server.ingress.annotations` | Prometheus server Ingress annotations | `[]`
 `server.ingress.extraLabels` | Prometheus server Ingress additional labels | `{}`

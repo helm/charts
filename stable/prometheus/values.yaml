@@ -78,6 +78,9 @@ alertmanager:
   ##
   configFileName: alertmanager.yml
 
+  ## If true configmap-reload will be added as sidecar
+  useConfigmapReload: true
+
   ingress:
     ## If true, alertmanager Ingress will be created
     ##
@@ -582,6 +585,9 @@ server:
   ## to NOT generate a ConfigMap resource
   ##
   configMapOverrideName: ""
+
+  ## If true configmap-reload will be added as sidecar
+  useConfigmapReload: true
 
   ingress:
     ## If true, Prometheus server Ingress will be created
