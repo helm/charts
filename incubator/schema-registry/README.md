@@ -19,6 +19,14 @@ https://docs.confluent.io/current/schema-registry/docs/design.html#kafka-coordin
 ## Installing the Chart
 You can install the chart with the release name `mysr` as below.
 
+---
+**Warning:** DO NOT USE `schema-registry` AS NAME.
+
+Using `schema-registry` as the name will result in a `CrashloopBackoff` / `Error` container, as Kubernetes will inject an environment variable into each pod, `SCHEMA_REGISTRY_PORT: N`; which the Schema Registry entrypoint assumes is broken configuration and exits.
+
+---
+
+
 ```console
 $ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
 $ helm install --name mysr incubator/schema-registry
