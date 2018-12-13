@@ -357,19 +357,16 @@ Service account can be configured specifically for agents. This configuration al
 
 | Parameter | Description | Default |
 | --------------------------------------------- | ----------------------------------------------------------------------------------- | ------------------- |
-| `agent.serviceAccount.reuseTopLevelServiceAccount`                   |  Specifies whether the top level service account (also used by the server) should be reused as the service account for gocd agents                                 | `nil`                        |
+| `agent.serviceAccount.reuseTopLevelServiceAccount`                   |  Specifies whether the top level service account (also used by the server) should be reused as the service account for gocd agents                                 | false                        |
 | `agent.serviceAccount.name`                   |  If reuseTopLevelServiceAccount is false, this field specifies the name of an existing service account to be associated with gocd agents. By default (name field is empty), no service account is created for gocd agents | `nil`                        |
 
 Possible states:
 
 |State | Effect                                                                         |
 |------|--------------------------------------------------|
-|reuseTopLevelServiceAccount = false and name = empty|The default service account for the namespace will be used.|
+|reuseTopLevelServiceAccount = false and name = empty|The service account 'default' will be used.|
 |reuseTopLevelServiceAccount = false and name = 'agentSA'|The 'agentSA' service account will be used. The service account needs to exist and bound with the appropriate role. |
-|reuseTopLevelServiceAccount = true| The GoCD service account will be created and used for the agents in the specified namespace. The permissions associated with the GoCD SA are defined here - [Cluser role privileges](#cluster-role-privileges).  |
-
- SA and bind it with the appropriate role themselves. May be provide examples or commands for role and role bindings?
-reuseTopLevelServiceAccount = true => GoCD SA will be created and used for the agents in the specified namespace. The permissions associated with the GoCD SA are defined here - [Cluser role privileges](#cluster-role-privileges).
+|reuseTopLevelServiceAccount = true| The GoCD service account will be created and used for the agents in the specified namespace. The permissions associated with the GoCD SA are defined here - [Cluster role privileges](#cluster-role-privileges).  |
 
 # License
 
