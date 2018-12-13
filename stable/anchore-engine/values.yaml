@@ -147,7 +147,7 @@ anchoreApi:
   # Used to create Ingress record for the anchore engine external API (api service)
   # (should used with service.type: ClusterIP or NodePort depending on platform)
   ingress:
-    path: /v1/*
+    path: /v1
     # You can bound on specific hostnames
     # hosts:
     #   - anchore-api.local
