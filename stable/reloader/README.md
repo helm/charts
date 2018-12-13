@@ -68,7 +68,7 @@ spec:
 
 ## Usage
 
-The following quickstart let's you set up Ingress Monitor Controller to register uptime monitors for ingresses/routes in all namespaces:
+The following quickstart let's you set up Reloader quickly:
 
 Update the `values.yaml` and set the following properties
 
@@ -95,7 +95,7 @@ You can deploy Reloader by following methods:
 
 ### Helm Charts
 
-Alternatively if you have configured helm on your cluster, you can add reloader to helm from our public chart repository and deploy it via helm using below mentioned commands
+if you have configured helm on your cluster, you can add reloader to helm from public chart repository and deploy it via helm using below mentioned commands
 
  ```bash
 helm repo add stable https://kubernetes-charts.storage.googleapis.com/
