@@ -1,7 +1,8 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  annotations:
+  name:
+    {{ template "kuberhealthy.name" . }}
   labels:
     app: {{ template "kuberhealthy.name" . }}
     chart: {{ .Chart.Name }}
