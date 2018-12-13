@@ -59,7 +59,7 @@ Or use chart dependencies with release name
 {{- if .Values.graylog.elasticsearch.hosts }}
     {{- .Values.graylog.elasticsearch.hosts -}}
 {{- else }}
-    {{- printf "http://%s-elasticsearch-client:9200" .Release.Name -}}
+    {{- printf "http://%s-elasticsearch-client.%s.svc.cluster.local:9200" .Release.Name .Release.Namespace -}}
 {{- end -}}
 {{- end -}}
 
@@ -71,6 +71,6 @@ Or use chart dependencies with release name
 {{- if .Values.graylog.mongodb.uri }}
     {{- .Values.graylog.mongodb.uri -}}
 {{- else }}
-    {{- printf "mongodb://%s-mongodb-replicaset:27017/graylog?replicaSet=rs0" .Release.Name -}}
+    {{- printf "mongodb://%s-mongodb-replicaset.%s.svc.cluster.local:27017/graylog?replicaSet=rs0" .Release.Name .Release.Namespace -}}
 {{- end -}}
 {{- end -}}
