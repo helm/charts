@@ -60,7 +60,7 @@ controller:
     annotations: {}
     labels: {}
     clusterIP: ""
-    externalTrafficPolicy: Cluster
+    externalTrafficPolicy: ""
 
     targetPorts:
       http: 80
