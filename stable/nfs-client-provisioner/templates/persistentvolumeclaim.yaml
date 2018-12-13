@@ -1,0 +1,17 @@
+{{ if .Values.nfs.mountOptions -}}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: pvc-{{ template "nfs-client-provisioner.fullname" . }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  storageClassName: ""
+  selector:
+    matchLabels:
+      nfs-client-provisioner: {{ template "nfs-client-provisioner.fullname" . }}
+  resources:
+    requests:
+      storage: 10Mi
+{{ end -}}

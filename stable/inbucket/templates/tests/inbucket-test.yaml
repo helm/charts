@@ -3,10 +3,9 @@ kind: Pod
 metadata:
   name: "{{ template "inbucket.name" . }}-test-{{ randAlphaNum 5 | lower }}"
   labels:
-    chart: {{ template "inbucket.chart" . }}
-    app: {{ template "inbucket.name" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ include "inbucket.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
   annotations:
     "helm.sh/hook": test-success
 spec:

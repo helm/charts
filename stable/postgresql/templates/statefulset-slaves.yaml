@@ -39,13 +39,20 @@ spec:
         - name: {{ . }}
       {{- end}}
       {{- end }}
-      {{- if .Values.nodeSelector }}
+      {{- if .Values.slave.nodeSelector }}
       nodeSelector:
-{{ toYaml .Values.nodeSelector | indent 8 }}
+{{ toYaml .Values.slave.nodeSelector | indent 8 }}
       {{- end }}
-      {{- if .Values.tolerations }}
+      {{- if .Values.slave.affinity }}
+      affinity:
+{{ toYaml .Values.slave.affinity | indent 8 }}
+      {{- end }}
+      {{- if .Values.slave.tolerations }}
       tolerations:
-{{ toYaml .Values.tolerations | indent 8 }}
+{{ toYaml .Values.slave.tolerations | indent 8 }}
+      {{- end }}
+      {{- if .Values.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       {{- end }}
       {{- if and .Values.persistence.enabled .Values.securityContext.enabled}}
       initContainers:
@@ -75,9 +82,9 @@ spec:
         env:
         {{- if .Values.image.debug}}
         - name: BASH_DEBUG
-          value: 1
+          value: "1"
         - name: NAMI_DEBUG
-          value: 1
+          value: "1"
         {{- end }}
         - name: POSTGRESQL_REPLICATION_MODE
           value: "slave"
@@ -86,7 +93,11 @@ spec:
         - name: POSTGRESQL_REPLICATION_PASSWORD
           valueFrom:
             secretKeyRef:
+            {{- if .Values.existingSecret }}
+              name: {{ .Values.existingSecret }}
+            {{- else }}
               name: {{ template "postgresql.fullname" . }}
+            {{- end }}
               key: postgresql-replication-password
         - name: POSTGRESQL_MASTER_HOST
           value: {{ template "postgresql.fullname" . }}
@@ -128,30 +139,34 @@ spec:
         - name: data
           mountPath: /bitnami/postgresql
         {{ end }}
-        {{ if  (.Files.Glob "files/postgresql.conf") }}
+        {{ if or (.Files.Glob "files/postgresql.conf") .Values.postgresqlConfiguration }}
         - name: postgresql-config
           mountPath: /opt/bitnami/postgresql/conf/postgresql.conf
           subPath: postgresql.conf
         {{ end }}
-        {{ if (.Files.Glob "files/pg_hba.conf") }}
+        {{ if or (.Files.Glob "files/pg_hba.conf") .Values.pgHbaConfiguration }}
         - name: postgresql-config
           mountPath: /opt/bitnami/postgresql/conf/pg_hba.conf
           subPath: pg_hba.conf
         {{ end }}
       volumes:
-      {{ if or (.Files.Glob "files/postgresql.conf") (.Files.Glob "files/pg_hba.conf") }}
+      {{ if or (.Files.Glob "files/postgresql.conf") (.Files.Glob "files/pg_hba.conf") .Values.postgresqlConfiguration .Values.pgHbaConfiguration }}
       - name: postgresql-config
         configMap:
           name: {{ template "postgresql.fullname" . }}-configuration
       {{ end }}
+  updateStrategy:
+    type: {{ .Values.updateStrategy.type }}
 {{- if .Values.persistence.enabled }}
   volumeClaimTemplates:
     - metadata:
         name: data
+      {{- with .Values.persistence.annotations }}
         annotations:
-        {{- range $key, $value := .Values.persistence.annotations }}
+        {{- range $key, $value := . }}
           {{ $key }}: {{ $value }}
         {{- end }}
+      {{- end }}
       spec:
         accessModes:
         {{- range .Values.persistence.accessModes }}
