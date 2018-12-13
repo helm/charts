@@ -8,6 +8,11 @@ metadata:
     chart: "{{.Chart.Name}}-{{.Chart.Version}}"
 spec:
   template:
+{{- if and (.Values.NetworkPolicy.Enabled) (not .Values.NetworkPolicy.AllowExternal) }}
+    metadata:
+      labels:
+        {{.Release.Name}}-{{.Values.Component}}-client: "true"
+{{- end }}
     spec:
 {{- if .Values.Secure.Enabled }}
       serviceAccountName: {{ template "cockroachdb.serviceAccountName" . }}
