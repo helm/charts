@@ -1,3 +1,7 @@
+### 1.5.9
+* [6547ba84](https://github.com/kubernetes/charts/commit/6547ba84):
+  - Introduces the ability to configure agent service accounts
+
 ### 1.5.8
 * [cee475aa](https://github.com/kubernetes/charts/commit/cee475aa):
   - Enable extra volume mounts without persistence

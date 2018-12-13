@@ -170,6 +170,14 @@ server:
       secretName: gocd-server-ssh
 
 agent:
+  # specifies overrides for agent specific service account creation
+  serviceAccount:
+    # specifies whether the top level service account (also used by the server) should be reused as the service account for gocd agents
+    reuseTopLevelServiceAccount: false
+    # if reuseTopLevelServiceAccount is false, this field specifies the name of an existing service account to be associated with gocd agents
+    # If field is empty, the service account "default" will be used.
+    name:
+
   # agent.replicaCount is the GoCD Agent replicas Count. Specify the number of GoCD agents to run
   replicaCount: 0
   # agent.deployStrategy is the strategy explained in detail at https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
