@@ -40,7 +40,7 @@ To get the password for "{{ .Values.mongodbUsername }}" run:
 
 To connect to your database run the following command:
 
-    kubectl run --namespace {{ .Release.Namespace }} {{ template "mongodb.fullname" . }}-client --rm --tty -i --image bitnami/mongodb --command -- mongo admin --host {{ template "mongodb.fullname" . }} {{- if .Values.usePassword }} --authenticationDatabase admin -u root -p $MONGODB_ROOT_PASSWORD{{- end }}
+    kubectl run --namespace {{ .Release.Namespace }} {{ template "mongodb.fullname" . }}-client --rm --tty -i --restart='Never' --image bitnami/mongodb --command -- mongo admin --host {{ template "mongodb.fullname" . }} {{- if .Values.usePassword }} --authenticationDatabase admin -u root -p $MONGODB_ROOT_PASSWORD{{- end }}
 
 To connect to your database from outside the cluster execute the following commands:
 
