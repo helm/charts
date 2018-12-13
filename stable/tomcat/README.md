@@ -23,7 +23,7 @@ To install the chart with the release name `my-release`:
 $ helm install --name my-release stable/tomcat
 ```
 
-This command deploys a tomcat dedicated server with sane defaults.
+This command deploys a tomcat dedicated server with sane defaults. Sample app located at `http://<IP>/sample`
 
 > **Tip**: List all releases using `helm list`
 
