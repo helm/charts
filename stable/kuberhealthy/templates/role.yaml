@@ -2,7 +2,6 @@ apiVersion: {{ template "rbac.apiVersion" . }}
 kind: Role
 metadata:
   name: {{ template "kuberhealthy.name" . }}
-  namespace: {{ .Release.Namespace }}
 rules:
   - apiGroups:
     - apps

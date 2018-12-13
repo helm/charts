@@ -7,7 +7,6 @@ metadata:
     chart: {{ .Chart.Name }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-  namespace: {{ .Release.Namespace }}
 spec:
   replicas: {{ .Values.deployment.replicas }}
   selector:

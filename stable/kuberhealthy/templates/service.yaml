@@ -13,7 +13,6 @@ metadata:
   {{ end -}}
   {{ end -}}
   name: {{ template "kuberhealthy.name" . }}
-  namespace: {{ .Release.Namespace }}
 spec:
   type: {{ .Values.service.type }}
   ports:
