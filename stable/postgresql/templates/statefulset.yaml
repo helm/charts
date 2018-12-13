@@ -226,8 +226,6 @@ spec:
       - name: custom-init-scripts
         configMap:
           name: {{ template "postgresql.fullname" . }}-init-scripts
-  updateStrategy:
-    type: {{ .Values.updateStrategy.type }}
 {{- if and .Values.persistence.enabled (not .Values.persistence.existingClaim) }}
   volumeClaimTemplates:
     - metadata:
@@ -257,3 +255,5 @@ spec:
       - name: data
         emptyDir: {}
 {{- end }}
+  updateStrategy:
+    type: {{ .Values.updateStrategy.type }}
