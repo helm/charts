@@ -19,4 +19,5 @@ keywords:
 - cluster
 sources:
 - https://github.com/Comcast/kuberhealthy
+- https://github.com/helm/charts/tree/master/stable/kuberhealthy
 icon: https://raw.githubusercontent.com/Comcast/kuberhealthy/helm/deploy/helm/kuberhealthy/kh-logo.png
