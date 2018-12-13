@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 
 prometheus:
-  enabled: true
+  enabled: false
   name: "prometheus"
   enableScraping: true
   serviceMonitor: true
