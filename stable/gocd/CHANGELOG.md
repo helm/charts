@@ -1,3 +1,7 @@
+### 1.5.8
+* [cee475aa](https://github.com/kubernetes/charts/commit/cee475aa):
+  - Enable extra volume mounts without persistence
+
 ### 1.5.7
 * [c663a531](https://github.com/kubernetes/charts/commit/c663a531):
   - Bump up GoCD app version to 18.11.0

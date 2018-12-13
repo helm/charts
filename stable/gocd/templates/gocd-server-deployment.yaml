@@ -26,7 +26,7 @@ spec:
         component: server
     spec:
       serviceAccountName: {{ template "gocd.serviceAccountName" . }}
-      {{- if or .Values.server.shouldPreconfigure (or .Values.server.persistence.enabled .Values.server.security.ssh.enabled) }}
+      {{- if or .Values.server.shouldPreconfigure (or .Values.server.persistence.enabled (or .Values.server.security.ssh.enabled .Values.server.persistence.extraVolumes)) }}
       volumes:
       {{- end }}
       {{- if .Values.server.shouldPreconfigure }}
@@ -38,9 +38,9 @@ spec:
         - name: goserver-vol
           persistentVolumeClaim:
             claimName: {{ .Values.server.persistence.existingClaim | default (printf "%s-%s" (include "gocd.fullname" .) "server") }}
-        {{- if ne (len .Values.server.persistence.extraVolumes) 0 }}
+      {{- end }}
+      {{- if ne (len .Values.server.persistence.extraVolumes) 0 }}
 {{ toYaml .Values.server.persistence.extraVolumes | indent 8 }}
-        {{- end }}
       {{- end }}
       {{- if .Values.server.security.ssh.enabled }}
         - name: ssh-secrets
@@ -80,7 +80,7 @@ spec:
             initialDelaySeconds: {{ .Values.server.healthCheck.initialDelaySeconds }}
             periodSeconds: {{ .Values.server.healthCheck.periodSeconds }}
             failureThreshold: {{ .Values.server.healthCheck.failureThreshold }}
-          {{- if or .Values.server.shouldPreconfigure (or .Values.server.persistence.enabled .Values.server.security.ssh.enabled) }}
+          {{- if or .Values.server.shouldPreconfigure (or .Values.server.persistence.enabled (or .Values.server.security.ssh.enabled .Values.server.persistence.extraVolumeMounts)) }}
           volumeMounts:
           {{- end }}
           {{- if .Values.server.shouldPreconfigure }}
@@ -98,9 +98,9 @@ spec:
             - name: {{ .Values.server.persistence.name.dockerEntryPoint }}
               mountPath: /docker-entrypoint.d
               subPath: {{ .Values.server.persistence.subpath.dockerEntryPoint }}
-            {{- if ne (len .Values.server.persistence.extraVolumeMounts) 0 }}
+          {{- end }}
+          {{- if ne (len .Values.server.persistence.extraVolumeMounts) 0 }}
 {{ toYaml .Values.server.persistence.extraVolumeMounts | indent 12 }}
-            {{- end }}
           {{- end }}
           {{- if .Values.server.security.ssh.enabled }}
             - name: ssh-secrets
