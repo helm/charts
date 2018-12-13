@@ -562,6 +562,7 @@ spec:
       for: 15m
       labels:
         severity: critical
+{{- if not .Values.prometheusOperator.enabled }}
     - alert: PrometheusOperatorDown
       annotations:
         message: PrometheusOperator has disappeared from Prometheus target discovery.
@@ -571,6 +572,7 @@ spec:
       for: 15m
       labels:
         severity: critical
+{{- end }}
   - name: kubernetes-apps
     rules:
     - alert: KubePodCrashLooping
