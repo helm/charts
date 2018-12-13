@@ -42,6 +42,6 @@ Create the name of the service account to use for agents
 {{- if .Values.agent.serviceAccount.reuseTopLevelServiceAccount -}}
     {{ template "gocd.serviceAccountName" . }}
 {{- else -}}
-    {{ .Values.agent.serviceAccount.name }}
+    {{ default "default" .Values.agent.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
