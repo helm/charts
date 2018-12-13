@@ -42,7 +42,7 @@ Parameter | Description | Default
 --- | --- | ---
 `hydra.replicas` | The number of Hydra replicas | `1`
 `hydra.image.repository` | The Hydra image repository | `oryd/hydra`
-`hydra.image.tag` | The Hydra image tag | `v1.0.0-beta.8-alpine`
+`hydra.image.tag` | The Hydra image tag | `v1.0.0-rc.5_oryOS.10-alpine`
 `hydra.image.pullPolicy` | The image pull policy | `IfNotPresent`
 `hydra.image.pullSecrets` | Image pull secrets | `[]`
 `hydra.initContainers` | Init containers. Passed through the `tpl` funtion and thus to be configured a string | `""`
