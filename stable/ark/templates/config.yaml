@@ -1,14 +1,13 @@
-{{- $root := . }}
-{{ with .Values.configuration }}
 apiVersion: ark.heptio.com/v1
 kind: Config
 metadata:
   name: default
   labels:
-    chart: {{ template "ark.chart" $root }}
-    heritage: {{ $root.Release.Service }}
-    release: {{ $root.Release.Name }}
-    app: {{ template "ark.name" $root }}
+    chart: {{ template "ark.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    app: {{ template "ark.name" . }}
+{{ with .Values.configuration }}
 {{- with .persistentVolumeProvider }}
 persistentVolumeProvider:
   name: {{ .name  }}
