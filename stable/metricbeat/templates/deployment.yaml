@@ -76,3 +76,6 @@ spec:
       - name: modules
         secret:
           secretName: {{ template "metricbeat.fullname" . }}-deployment-modules
+{{- if .Values.extraVolumes }}
+{{ toYaml .Values.extraVolumes | indent 6 }}
+{{- end }}
