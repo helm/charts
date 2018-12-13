@@ -1,8 +1,4 @@
-{{- if semverCompare "^1.9-0" .Capabilities.KubeVersion.GitVersion }}
 apiVersion: apps/v1
-{{- else }}
-apiVersion: apps/v1beta2
-{{- end }}
 kind: StatefulSet
 metadata:
   labels:

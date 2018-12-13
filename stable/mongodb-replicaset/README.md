@@ -2,8 +2,9 @@
 
 ## Prerequisites Details
 
-* Kubernetes 1.8+ with Beta APIs enabled.
-* PV support on the underlying infrastructure.
+* Kubernetes 1.9+
+* Kubernetes beta APIs enabled only if `podDisruptionBudget` is enabled
+* PV support on the underlying infrastructure
 
 ## StatefulSet Details
 
