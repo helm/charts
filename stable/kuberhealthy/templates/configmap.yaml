@@ -8,7 +8,7 @@ metadata:
     prometheus: {{ .Values.prometheus.name }}
     role: alert-rules
   name: {{ template "kuberhealthy.name" . }}
-  namespace: {{ .Values.deployment.namespace }}
+  namespace: {{ .Release.Namespace }}
 data:
   kuberhealthy.rules: |-
     groups:
