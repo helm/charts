@@ -1,0 +1,13 @@
+apiVersion: {{ template "rbac.apiVersion" . }}
+kind: RoleBinding
+metadata:
+  name: {{ template "kuberhealthy.name" . }}
+  namespace: {{ .Values.deployment.namespace }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ template "kuberhealthy.name" . }}
+subjects:
+- kind: ServiceAccount
+  name: {{ template "kuberhealthy.name" . }}
+  namespace: {{ .Values.deployment.namespace }}
