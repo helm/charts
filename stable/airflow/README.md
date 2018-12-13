@@ -247,15 +247,15 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `rbac.create`                            | create RBAC resources                                   | `true`                    |
 | `serviceAccount.create`                  | create a service account                                | `true`                    |
 | `serviceAccount.name`                    | the service account name                                | ``                        |
-| `postgres.enabled`                       | create a postgres server                                | `true`                    |
-| `postgres.uri`                           | full URL to custom postgres setup                       | (undefined)               |
-| `postgres.portgresHost`                  | PostgreSQL Hostname                                     | (undefined)               |
-| `postgres.postgresUser`                  | PostgreSQL User                                         | `postgres`                |
-| `postgres.postgresPassword`              | PostgreSQL Password                                     | `airflow`                 |
-| `postgres.postgresDatabase`              | PostgreSQL Database name                                | `airflow`                 |
-| `postgres.persistence.enabled`           | Enable Postgres PVC                                     | `true`                    |
-| `postgres.persistance.storageClass`      | Persistant class                                        | (undefined)               |
-| `postgres.persistance.accessMode`        | Access mode                                             | `ReadWriteOnce`           |
+| `postgresql.enabled`                     | create a postgres server                                | `true`                    |
+| `postgresql.uri`                         | full URL to custom postgres setup                       | (undefined)               |
+| `postgresql.portgresHost`                | PostgreSQL Hostname                                     | (undefined)               |
+| `postgresql.postgresUser`                | PostgreSQL User                                         | `postgres`                |
+| `postgresql.postgresPassword`            | PostgreSQL Password                                     | `airflow`                 |
+| `postgresql.postgresDatabase`            | PostgreSQL Database name                                | `airflow`                 |
+| `postgresql.persistence.enabled`         | Enable Postgres PVC                                     | `true`                    |
+| `postgresql.persistance.storageClass     | Persistant class                                        | (undefined)               |
+| `postgresql.persistance.accessMode`      | Access mode                                             | `ReadWriteOnce`           |
 | `redis.enabled`                          | Create a Redis cluster                                  | `true`                    |
 | `redis.password`                         | Redis password                                          | `airflow`                 |
 | `redis.master.persistence.enabled`       | Enable Redis PVC                                        | `false`                   |
