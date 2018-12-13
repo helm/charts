@@ -19,7 +19,7 @@ keycloak:
     ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
     ##
     pullSecrets: []
-    #  - myRegistrKeySecretName
+    # - myRegistrKeySecretName
 
   securityContext:
     runAsUser: 1000

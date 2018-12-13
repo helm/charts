@@ -34,7 +34,9 @@ spec:
 {{ toYaml .Values.keycloak.securityContext | indent 8 }}
     {{- with .Values.keycloak.image.pullSecrets }}
       imagePullSecrets:
-{{ toYaml . | indent 8 }}
+      {{- range . }}
+        - name: {{ . }}
+      {{- end }}
     {{- end }}
     {{- if or .Values.keycloak.persistence.deployPostgres .Values.keycloak.extraInitContainers }}
       initContainers:
