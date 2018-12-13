@@ -50,7 +50,7 @@ spec:
           ports:
             - name: metrics
               containerPort: 9100
-              hostPort: {{ .Values.nodeExporter.service.hostPort }}
+              port: {{ .Values.nodeExporter.service.hostPort }}
           resources:
 {{ toYaml .Values.nodeExporter.resources | indent 12 }}
           volumeMounts:
