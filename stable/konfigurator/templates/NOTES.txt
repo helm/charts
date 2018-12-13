@@ -1,0 +1,1 @@
+- Custom resource has been created. Check your application to see this resource mounted.
