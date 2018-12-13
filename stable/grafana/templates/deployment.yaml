@@ -163,6 +163,11 @@ spec:
               mountPath: {{ .mountPath }}
               readOnly: {{ .readOnly }}
           {{- end }}
+          {{- range .Values.extraVolumeMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              readOnly: {{ .readOnly }}
+          {{- end }}
           ports:
             - name: service
               containerPort: {{ .Values.service.port }}
@@ -278,4 +283,9 @@ spec:
           secret:
             secretName: {{ .secretName }}
             defaultMode: {{ .defaultMode }}
+      {{- end }}
+      {{- range .Values.extraVolumeMounts }}
+        - name: {{ .name }}
+          persistentVolumeClaim:
+            claimName: {{ .existingClaim }}
       {{- end }}
