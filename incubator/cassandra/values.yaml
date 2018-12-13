@@ -159,7 +159,7 @@ backup:
 
   image:
     repos: nuvo/cain
-    tag: 0.2.0
+    tag: 0.3.0
 
   # Add additional environment variables
   env:
