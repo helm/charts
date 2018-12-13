@@ -1,9 +1,0 @@
-dependencies:
-- name: elasticsearch
-  repository: https://kubernetes-charts.storage.googleapis.com/
-  version: 1.15.0
-- name: mongodb-replicaset
-  repository: https://kubernetes-charts.storage.googleapis.com/
-  version: 3.8.4
-digest: sha256:a890de20d7a3bd1e4f281511d8b0c7a6005d07b0e1e28d550e5b9c3f70f493ce
-generated: 2018-12-12T23:36:19.055191+07:00
