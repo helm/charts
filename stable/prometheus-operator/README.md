@@ -191,6 +191,7 @@ The following tables lists the configurable parameters of the prometheus-operato
 | `alertmanager.alertmanagerSpec.containers` | Containers allows injecting additional containers. This is meant to allow adding an authentication proxy to an Alertmanager pod. | `[]` |
 | `alertmanager.alertmanagerSpec.priorityClassName` | Priority class assigned to the Pods | `""` |
 | `alertmanager.alertmanagerSpec.additionalPeers` | AdditionalPeers allows injecting a set of additional Alertmanagers to peer with to form a highly available cluster. | `[]` |
+| `alertmanager.alertmanagerSpec.alertmanagerConfigExternal` | Externally configure Alertmanager Secret. Alertmanager will fail to start if enabled and no secret is created. | `false` |
 
 ### Grafana
 | Parameter | Description | Default |

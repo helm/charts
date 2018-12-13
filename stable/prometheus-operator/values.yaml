@@ -63,6 +63,13 @@ alertmanager:
     minAvailable: 1
     maxUnavailable: ""
 
+
+  ## Managed Alertmanager Externally
+  ## This configuration requires you to create a secret with the same name as originally expected
+  ## {{ template "prometheus-operator.fullname" . }}-alertmanager
+
+  alertmanagerConfigExternal: false
+
   ## Alertmanager configuration directives
   ## ref: https://prometheus.io/docs/alerting/configuration/#configuration-file
   ##      https://prometheus.io/webtools/alerting/routing-tree-editor/
