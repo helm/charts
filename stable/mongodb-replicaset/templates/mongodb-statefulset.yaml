@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   labels:
@@ -27,7 +27,7 @@ spec:
 {{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/mongodb-mongodb-configmap.yaml") . | sha256sum }}
-      {{- if .Values.metrics.prometheusServiceDiscovery }}
+      {{- if and (.Values.metrics.prometheusServiceDiscovery) (.Values.metrics.enabled) }}
         prometheus.io/scrape: "true"
         prometheus.io/port: {{ .Values.metrics.port | quote }}
         prometheus.io/path: {{ .Values.metrics.path | quote }}
@@ -126,7 +126,6 @@ spec:
                 secretKeyRef:
                   name: "{{ template "mongodb-replicaset.adminSecret" . }}"
                   key: password
-
           {{- if .Values.metrics.enabled }}
             - name: METRICS
               value: "true"
