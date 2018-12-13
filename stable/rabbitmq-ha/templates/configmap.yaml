@@ -14,6 +14,7 @@ metadata:
 data:
   enabled_plugins: |
     [
+{{ .Values.extraPlugins | indent 6 }}
       {{- if .Values.rabbitmqLDAPPlugin.enabled }}
       rabbitmq_auth_backend_ldap,
       {{- end }}
@@ -43,12 +44,8 @@ data:
       {{- end }}
 
       rabbitmq_consistent_hash_exchange,
-      rabbitmq_federation,
-      rabbitmq_federation_management,
       rabbitmq_management,
-      rabbitmq_peer_discovery_k8s,
-      rabbitmq_shovel,
-      rabbitmq_shovel_management
+      rabbitmq_peer_discovery_k8s
     ].
 
   rabbitmq.conf: |
