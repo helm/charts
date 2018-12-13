@@ -114,6 +114,15 @@ clusterAgent:
       cpu: 200m
       memory: 256Mi
 
+  ## Override the agent's liveness probe logic from the default:
+  ## In case of issues with the probe, you can disable it with the
+  ## following values, to allow easier investigating:
+  # livenessProbe:
+  #   exec:
+  #     command: ["/bin/true"]
+  ## Override the cluster-agent's readiness probe logic from the default:
+  # readinessProbe:
+
 datadog:
   ## You'll need to set this to your Datadog API key before the agent will run.
   ## ref: https://app.datadoghq.com/account/settings#agent/kubernetes
@@ -251,6 +260,13 @@ datadog:
   ## Provide a mapping of Kubernetes Annotations to Datadog Tags
   # podAnnotationsAsTags:
   #     iam.amazonaws.com/role: kube_iamrole
+
+  ## Override the agent's liveness probe logic from the default:
+  ## In case of issues with the probe, you can disable it with the
+  ## following values, to allow easier investigating:
+  # livenessProbe:
+  #   exec:
+  #     command: ["/bin/true"]
 
   ## datadog-agent resource requests and limits
   ## Make sure to keep requests and limits equal to keep the pods in the Guaranteed QoS class
