@@ -9,6 +9,9 @@ metadata:
   {{- end }}
 {{- end }}
   labels:
+{{- if .Values.controller.metrics.service.labels }}
+{{ toYaml .Values.controller.metrics.service.labels | indent 4 }}
+{{- end }}
     app: {{ template "nginx-ingress.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     component: "{{ .Values.controller.name }}"
