@@ -1,0 +1,14 @@
+{{- if (.Values.persistence.enabled) }}
+You need to activate your ignite deployment. To do it please ensure all
+stateful set pods are in "Running" state :
+
+  kubectl get pods -n {{ .Release.Namespace }} -l app={{ include "ignite.fullname" . }}
+
+and then execute:
+
+  kubectl exec -n {{ .Release.Namespace }} {{ include "ignite.fullname" . }}-0 -- /opt/ignite/apache-ignite/bin/control.sh --activate
+
+{{- end }}
+To check cluster state please run:
+
+  kubectl exec -n {{ .Release.Namespace }} {{ include "ignite.fullname" . }}-0 -- /opt/ignite/apache-ignite/bin/control.sh --state

@@ -2,7 +2,7 @@
 ##
 image:
   repository: minio/minio
-  tag: RELEASE.2018-11-30T03-56-59Z
+  tag: RELEASE.2018-12-06T01-27-43Z
   pullPolicy: IfNotPresent
 
 ## Set default image, imageTag, and imagePullPolicy for the `mc` (the minio
@@ -10,13 +10,23 @@ image:
 ##
 mcImage:
   repository: minio/mc
-  tag: RELEASE.2018-11-30T01-52-08Z
+  tag: RELEASE.2018-12-05T22-59-07Z
   pullPolicy: IfNotPresent
 
 ## minio server mode, i.e. standalone or distributed.
 ## Distributed Minio ref: https://docs.minio.io/docs/distributed-minio-quickstart-guide
 ##
 mode: standalone
+
+## Update strategy for Deployments
+DeploymentUpdate:
+  type: RollingUpdate
+  maxUnavailable: 0
+  maxSurge: 100%
+
+## Update strategy for StatefulSets
+StatefulSetUpdate:
+  updateStrategy: RollingUpdate
 
 ## Pod priority settings
 ## ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
@@ -141,6 +151,10 @@ defaultBucket:
   policy: none
   ## Purge if bucket exists already
   purge: false
+
+s3gateway:
+  enabled: false
+  replicas: 4
 
 ## Use minio as an azure blob gateway, you should disable data persistence so no volume claim are created.
 ## https://docs.minio.io/docs/minio-gateway-for-azure

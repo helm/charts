@@ -25,7 +25,7 @@ livenessProbe:
 
 image:
   repository: grafana/grafana
-  tag: 5.4.0
+  tag: 5.4.1
   pullPolicy: IfNotPresent
 
   ## Optionally specify an array of imagePullSecrets.
@@ -135,6 +135,14 @@ extraSecretMounts: []
   #   mountPath: /etc/secrets
   #   secretName: grafana-secret-files
   #   readOnly: true
+
+## Additional grafana server volume mounts
+# Defines additional volume mounts.
+extraVolumeMounts: []
+  # - name: extra-volume
+  #   mountPath: /mnt/volume
+  #   readOnly: true
+  #   existingClaim: volume-claim
 
 ## Pass the plugins you want installed as a list.
 ##
