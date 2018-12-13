@@ -21,9 +21,9 @@ spec:
       http:
         paths:
         {{- if index $.Values.ingress "annotations" }}
-          {{- if eq (index $.Values.ingress.annotations "kubernetes.io/ingress.class" | default "") "gce" }}
+          {{- if eq (index $.Values.ingress.annotations "kubernetes.io/ingress.class" | default "") "gce" "alb" }}
           - path: /*
-          {{- else }}{{/* Has annotations but ingress class is not "gce" */}}
+          {{- else }}{{/* Has annotations but ingress class is not "gce" nor "alb" */}}
           - path: /
           {{- end }}
         {{- else}}{{/* Has no annotations */}}

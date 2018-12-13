@@ -16,6 +16,10 @@ spec:
       labels:
         app: {{ template "gogs.fullname" . }}
     spec:
+      {{- with .Values.securityContext }}
+      securityContext:
+{{ toYaml . | indent 8 }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -24,10 +28,12 @@ spec:
             - containerPort: 3000
             - containerPort: 22
           livenessProbe:
+            initialDelaySeconds: 180
             httpGet:
               path: /
               port: 3000
           readinessProbe:
+            initialDelaySeconds: 180
             httpGet:
               path: /
               port: 3000

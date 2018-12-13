@@ -58,17 +58,17 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `rabbitmq.username`                  | RabbitMQ application username                    | `user`                                                  |
 | `rabbitmq.password`                  | RabbitMQ application password                    | _random 10 character long alphanumeric string_          |
 | `rabbitmq.erlangCookie`              | Erlang cookie                                    | _random 32 character long alphanumeric string_          |
-| `rabbitmq.amqpPort`                  | Amqp port                                        | `5672`                                                  |
-| `rabbitmq.distPort`                  | Erlang distribution server port                  | `25672`                                                 |
-| `rabbitmq.nodePort`                  | Node port override, if serviceType NodePort      | _random available between 30000-32767_                  |
-| `rabbitmq.managerPort`               | RabbitMQ Manager port                            | `15672`                                                 |
 | `rabbitmq.diskFreeLimit`             | Disk free limit                                  | `"6GiB"`                                                |
 | `rabbitmq.plugins`                   | configuration file for plugins to enable         | `[rabbitmq_management,rabbitmq_peer_discovery_k8s].`    |
 | `rabbitmq.clustering.address_type`   | Switch clustering mode                           | `ip` or `hostname`                                      |
 | `rabbitmq.clustering.k8s_domain`     | Customize internal k8s cluster domain            | `cluster.local`                                         |
 | `rabbitmq.ulimitNofiles`             | Max File Descriptor limit                        | `65536`                                                 |
 | `rabbitmq.configuration`             | rabbitmq.conf content                            | see values.yaml                                         |
-| `serviceType`                        | Kubernetes Service type                          | `ClusterIP`                                             |
+| `service.type`                        | Kubernetes Service type                          | `ClusterIP`                                             |
+| `service.amqpPort`                  | Amqp port                                        | `5672`                                                  |
+| `service.distPort`                  | Erlang distribution server port                  | `25672`                                                 |
+| `service.nodePort`                  | Node port override, if serviceType NodePort      | _random available between 30000-32767_                  |
+| `service.managerPort`               | RabbitMQ Manager port                            | `15672`                                                 |
 | `persistence.enabled`                | Use a PVC to persist data                        | `false`                                                 |
 | `persistence.storageClass`           | Storage class of backing PVC                     | `nil` (uses alpha storage class annotation)             |
 | `persistence.accessMode`             | Use volume as ReadOnly or ReadWrite              | `ReadWriteOnce`                                         |

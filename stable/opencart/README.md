@@ -56,7 +56,13 @@ The following table lists the configurable parameters of the OpenCart chart and 
 | `image.pullPolicy`                  | Image pull policy                         | `Always` if `imageTag` is `latest`, else `IfNotPresent`  |
 | `image.pullSecrets`                 | Specify image pull secrets                | `nil`                                                    |
 | `opencartHost`                      | OpenCart host to create application URLs  | `nil`                                                    |
-| `opencartLoadBalancerIP`            | `loadBalancerIP` for the OpenCart Service | `nil`                                                    |
+| `service.type`                    | Kubernetes Service type                    | `LoadBalancer`                                          |
+| `service.port`                    | Service HTTP port                    | `80`                                          |
+| `service.httpsPort`                    | Service HTTPS port                    | `443`                                          |
+| `service.externalTrafficPolicy`   | Enable client source IP preservation       | `Cluster`                                               |
+| `service.nodePorts.http`                 | Kubernetes http node port                  | `""`                                                    |
+| `service.nodePorts.https`                | Kubernetes https node port                 | `""`                                                    |
+| `service.loadBalancerIP`            | `loadBalancerIP` for the OpenCart Service | `nil`                                                    |
 | `opencartUsername`                  | User of the application                   | `user`                                                   |
 | `opencartPassword`                  | Application password                      | _random 10 character long alphanumeric string_           |
 | `opencartEmail`                     | Admin email                               | `user@example.com`                                       |
