@@ -23,7 +23,7 @@ spec:
       {{- end }}
       initContainers:
       - name: "remove-lost-found"
-        image: "{{ .Values.busybox.image}}:{{ .Values.busybox.tag}}"
+        image: "{{ .Values.busybox.image}}:{{ .Values.busybox.tag }}"
         imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
         command:  ["rm", "-fr", "/var/lib/mysql/lost+found"]
         volumeMounts:

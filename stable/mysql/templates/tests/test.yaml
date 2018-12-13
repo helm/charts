@@ -12,7 +12,7 @@ metadata:
 spec:
   initContainers:
     - name: test-framework
-      image: "{{ .Values.testFramework.image}}:{{ .Values.testFramework.tag}}"
+      image: "{{ .Values.testFramework.image}}:{{ .Values.testFramework.tag }}"
       command:
       - "bash"
       - "-c"
