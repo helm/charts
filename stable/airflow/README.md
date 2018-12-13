@@ -241,6 +241,8 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `dags.doNotPickle`                       | should the scheduler disable DAG pickling               | `false`                   |
 | `dags.path`                              | mount path for persistent volume                        | `/usr/local/airflow/dags` |
 | `dags.initContainer.enabled`             | Fetch the source code when the pods starts              | `false`                   |
+| `dags.initContainer.image.repository`    | Init container Docker image.                            | `alpine/git`              |
+| `dags.initContainer.image.tag`           | Init container Docker image tag.                        | `1.0.4`                   |
 | `dags.initContainer.installRequirements` | auto install requirements.txt deps                      | `true`                    |
 | `dags.git.url`                           | url to clone the git repository                         | nil                       |
 | `dags.git.ref`                           | branch name, tag or sha1 to reset to                    | `master`                  |
