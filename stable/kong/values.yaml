@@ -51,6 +51,13 @@ proxy:
   annotations: {}
   #  service.beta.kubernetes.io/aws-load-balancer-proxy-protocol: "*"
 
+  # Example usage with the parameter "enableTlsOffload"
+  # service.beta.kubernetes.io/aws-load-balancer-connection-idle-timeout: "3600"
+  # service.beta.kubernetes.io/aws-load-balancer-internal: 0.0.0.0/0
+  # service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-1:xxxxxxxxxx:certificate/xxxxxxxxx
+  # service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
+  # service.beta.kubernetes.io/aws-load-balancer-backend-protocol: "http"
+
   # HTTP plain-text traffic
   http:
     enabled: false
@@ -61,6 +68,10 @@ proxy:
   # HTTPS traffic on the proxy port
   tls:
     enabled: true
+    # This will set the service to enable the tls port but pointing it to the
+    # http containerPort.  The usage of this is to create this topology:
+    # Internet <---> (SSL/443/HTTPS) ELB (offloads SSL/HTTP) <----> (HTTP) Kong (HTTP) <----> (HTTP) pod
+    enableTlsOffload: true
     servicePort: 8443
     containerPort: 8443
     nodePort: 32443
