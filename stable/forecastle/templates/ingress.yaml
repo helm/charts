@@ -1,0 +1,39 @@
+{{- if .Values.forecastle.ingress.enabled -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "forecastle.name" . }}
+  labels:
+{{ include "forecastle.labels.selector" . | indent 4 }}
+{{ include "forecastle.labels.chart" . | indent 4 }}
+{{- if .Values.forecastle.ingress.labels }}
+{{ toYaml .Values.forecastle.ingress.labels | indent 4 }}
+{{- end }}
+{{- if .Values.forecastle.matchLabels }}
+{{ toYaml .Values.forecastle.matchLabels | indent 4 }}
+{{- end }}
+{{- if .Values.forecastle.ingress.annotations }}
+  annotations:
+{{ toYaml .Values.forecastle.ingress.annotations | indent 4 }}
+{{- end }}
+spec:
+  backend:
+    serviceName: {{ template "forecastle.name" . }}
+    servicePort: {{ .Values.forecastle.service.port }}
+  rules:
+  - host: {{ .Values.forecastle.ingress.host }}
+    http:
+      paths:
+      - backend:
+          serviceName: {{ template "forecastle.name" . }}
+          servicePort: {{ .Values.forecastle.service.port }}
+        path: {{ .Values.forecastle.ingress.path }}
+  {{- if .Values.forecastle.ingress.tls.enabled }}
+  tls:
+  - hosts:
+    - {{ .Values.forecastle.ingress.host }}
+    {{- if .Values.forecastle.ingress.tls.secretName }}
+    secretName: {{ .Values.forecastle.ingress.tls.secretName | quote }}
+    {{- end }}
+  {{- end -}}
+{{- end }}

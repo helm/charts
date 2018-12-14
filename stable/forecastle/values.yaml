@@ -1,0 +1,52 @@
+forecastle:
+  namespace: default
+  deployment:
+    replicas: 1
+    revisionHistoryLimit: 2
+    labels:
+      group: com.stakater.platform
+      provider: stakater
+    annotations: {}
+    image:
+      name: stakater/forecastle
+      tag: "1.0.14"
+      pullPolicy: IfNotPresent
+    # Support for extra environment variables.
+    env:
+      # Open supports Key value pair as environment variables.
+      open:
+      # secret supports Key value pair as environment variables. It gets the values based on keys from default forecastle secret if any.
+      secret:
+      # field supports Key value pair as environment variables. It gets the values from other fields of pod.
+      field:
+  config:
+    annotations: {}
+    labels: {}
+    data:
+      namespaces:
+      # - test
+  service:
+    enabled: true
+    annotations: {}
+    labels:
+      expose: "true"
+    port: 80
+    targetPort: 3000
+  rbac:
+    enabled: true
+    labels: {}
+  # Service account config for the agent pods
+  serviceAccount:
+    # Specifies whether a ServiceAccount should be created
+    create: true
+    labels: {}
+    # The name of the ServiceAccount to use.
+    # If not set and create is true, a name is generated using the fullname template
+    name: forecastle
+  ingress:
+    enabled: false
+    host: forcastle.test
+    path: /
+    tls:
+      enabled: true
+      secretName: forecastle-test-cert

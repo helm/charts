@@ -1,0 +1,4 @@
+- Add forecastle annotations in your ingresses and check your applications in forecastle dashboard
+1. forecastle.stakater.com/expose
+2. forecastle.stakater.com/icon
+3. forecastle.stakater.com/appName

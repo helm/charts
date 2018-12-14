@@ -1,0 +1,20 @@
+{{- if .Values.forecastle.rbac.enabled }}
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ template "forecastle.name" . }}-cluster-ingress-role
+  labels:
+{{ include "forecastle.labels.selector" . | indent 4 }}
+{{ include "forecastle.labels.chart" . | indent 4 }}
+{{- if .Values.forecastle.rbac.labels }}
+{{ toYaml .Values.forecastle.rbac.labels | indent 4 }}
+{{- end }}
+{{- if .Values.forecastle.matchLabels }}
+{{ toYaml .Values.forecastle.matchLabels | indent 4 }}
+{{- end }}
+rules:
+- apiGroups: ["", "extensions"]
+  resources: ["ingresses"]
+  verbs: ["get", "list"]
+{{- end }}

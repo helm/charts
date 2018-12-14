@@ -1,0 +1,31 @@
+{{- if .Values.forecastle.service.enabled }}
+---
+apiVersion: v1
+kind: List
+items:
+- apiVersion: v1
+  kind: Service
+  metadata:
+{{- if .Values.forecastle.service.annotations }}
+    annotations:
+{{ toYaml .Values.forecastle.service.annotations | indent 6 }}
+{{- end }}
+    labels:
+{{ include "forecastle.labels.selector" . | indent 6 }}
+{{ include "forecastle.labels.chart" . | indent 6 }}
+{{- if .Values.forecastle.service.labels }}
+{{ toYaml .Values.forecastle.service.labels | indent 6 }}
+{{- end }}
+{{- if .Values.forecastle.matchLabels }}
+{{ toYaml .Values.forecastle.matchLabels | indent 6 }}
+{{- end }}
+    name: {{ template "forecastle.name" . }}
+  spec:
+    ports:
+    - name: http
+      port: {{ .Values.forecastle.service.port }}
+      protocol: TCP
+      targetPort: {{ .Values.forecastle.service.targetPort }}
+    selector:
+{{ include "forecastle.labels.selector" . | indent 6 }}
+{{- end }}

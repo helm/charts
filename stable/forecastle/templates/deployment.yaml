@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+{{- if .Values.forecastle.deployment.annotations }}
+  annotations:
+{{ toYaml .Values.forecastle.deployment.annotations | indent 4 }}
+{{- end }}
+  labels:
+{{ include "forecastle.labels.selector" . | indent 4 }}
+{{ include "forecastle.labels.chart" . | indent 4 }}
+{{- if .Values.forecastle.deployment.labels }}
+{{ toYaml .Values.forecastle.deployment.labels | indent 4 }}
+{{- end }}
+{{- if .Values.forecastle.matchLabels }}
+{{ toYaml .Values.forecastle.matchLabels | indent 4 }}
+{{- end }}
+  name: {{ template "forecastle.name" . }}
+spec:
+  replicas: {{ .Values.forecastle.deployment.replicas }}
+  revisionHistoryLimit: {{ .Values.forecastle.deployment.revisionHistoryLimit }}
+  selector:
+    matchLabels:
+{{ include "forecastle.labels.selector" . | indent 6 }}
+  template:
+    metadata:
+      labels:
+{{ include "forecastle.labels.selector" . | indent 8 }}
+{{ include "forecastle.labels.chart" . | indent 8 }}
+{{- if .Values.forecastle.deployment.labels }}
+{{ toYaml .Values.forecastle.deployment.labels | indent 8 }}
+{{- end }}
+{{- if .Values.forecastle.matchLabels }}
+{{ toYaml .Values.forecastle.matchLabels | indent 8 }}
+{{- end }}
+    spec:
+      containers:
+      - env:
+      {{- range $name, $value := .Values.forecastle.deployment.env.open }}
+      {{- if not (empty $value) }}
+        - name: {{ $name | quote }}
+          value: {{ $value | quote }}
+      {{- end }}
+      {{- end }}
+      {{- $secret_name := include "forecastle.fullname" . }}
+      {{- range $name, $value := .Values.forecastle.deployment.env.secret }}
+      {{- if not ( empty $value) }}
+        - name: {{ $name | quote }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ $secret_name }}
+              key: {{ $name | quote }}
+      {{- end }}
+      {{- end }}
+      {{- range $name, $value := .Values.forecastle.deployment.env.field }}
+      {{- if not ( empty $value) }}
+        - name: {{ $name | quote }}
+          valueFrom:
+            fieldRef:
+              fieldPath: {{ $value | quote}}
+      {{- end }}
+      {{- end }}
+        - name: KUBERNETES_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        image: "{{ .Values.forecastle.deployment.image.name }}:{{ .Values.forecastle.deployment.image.tag }}"
+        name: {{ template "forecastle.name" . }}
+        pullPolicy: {{ .Values.forecastle.deployment.image.pullPolicy }}
+        volumeMounts:
+        - name: {{ template "forecastle.name" . }}-config
+          mountPath: /etc/forecastle
+      volumes:
+      - name: {{ template "forecastle.name" . }}-config
+        configMap: 
+          name: {{ template "forecastle.name" . }}
+      serviceAccountName: {{ template "serviceAccountName" . }}

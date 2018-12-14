@@ -1,0 +1,24 @@
+{{- if .Values.forecastle.rbac.enabled }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ template "forecastle.name" . }}-cluster-ingress-role-binding
+  labels:
+{{ include "forecastle.labels.selector" . | indent 4 }}
+{{ include "forecastle.labels.chart" . | indent 4 }}
+{{- if .Values.forecastle.rbac.labels }}
+{{ toYaml .Values.forecastle.rbac.labels | indent 4 }}
+{{- end }}
+{{- if .Values.forecastle.matchLabels }}
+{{ toYaml .Values.forecastle.matchLabels | indent 4 }}
+{{- end }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ template "forecastle.name" . }}-cluster-ingress-role
+subjects:
+- kind: ServiceAccount
+  name: {{ template "serviceAccountName" . }}
+  namespace: {{ .Values.forecastle.namespace }}
+{{- end }}

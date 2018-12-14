@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "forecastle.name" . }}
+{{- if .Values.forecastle.config.annotations }}
+  annotations:
+{{ toYaml .Values.forecastle.config.annotations | indent 4 }}
+{{- end }}
+  labels:
+{{ include "forecastle.labels.selector" . | indent 4 }}
+{{ include "forecastle.labels.chart" . | indent 4 }}
+{{- if .Values.forecastle.config.labels }}
+{{ toYaml .Values.forecastle.config.labels | indent 4 }}
+{{- end }}
+{{- if .Values.forecastle.matchLabels }}
+{{ toYaml .Values.forecastle.matchLabels | indent 4 }}
+{{- end }}
+data:
+  config.yaml: |-
+{{ toYaml .Values.forecastle.config.data | indent 4 }}
