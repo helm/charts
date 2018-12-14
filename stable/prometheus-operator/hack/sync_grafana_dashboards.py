@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fetch rules from charts dictionary into this chart."""
+"""Fetch dashboards from provided urls into this chart."""
 import json
 import os
 import textwrap

@@ -107,6 +107,7 @@ spec:
       for: 15m
       labels:
         severity: critical
+{{- if .Values.prometheusOperator.enabled }}
     - alert: PrometheusOperatorDown
       annotations:
         message: PrometheusOperator has disappeared from Prometheus target discovery.
@@ -115,4 +116,5 @@ spec:
       for: 15m
       labels:
         severity: critical
+{{- end }}
 {{- end }}

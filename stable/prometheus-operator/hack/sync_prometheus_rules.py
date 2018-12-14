@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fetch rules from charts dictionary into this chart."""
+"""Fetch alerting rules from provided urls into this chart."""
 import textwrap
 
 import requests
@@ -49,6 +49,7 @@ alert_condition_map = {
     'KubeSchedulerDown': '.Values.kubeScheduler.enabled',
     'KubeStateMetricsDown': '.Values.kubeStateMetrics.enabled',  # there are more alerts which are left enabled, because they'll never fire without metrics
     'KubeletDown': '.Values.prometheusOperator.kubeletService.enabled',  # there are more alerts which are left enabled, because they'll never fire without metrics
+    'PrometheusOperatorDown': '.Values.prometheusOperator.enabled',
     'NodeExporterDown': '.Values.nodeExporter.enabled',
     'CoreDNSDown': '.Values.kubeDns.enabled',
 }
@@ -129,7 +130,11 @@ def add_rules_conditions(rules, indent=4):
             index = rules.index(line_start + alert_name)
             rules = rules[:index] + rule_text + rules[index:]
             # add end of if
-            next_index = rules.index(line_start, index + len(rule_text) + 1)
+            try:
+                next_index = rules.index(line_start, index + len(rule_text) + 1)
+            except ValueError:
+                # we found the last alert in file if there are no alerts after it
+                next_index = len(rules)
             rules = rules[:next_index] + '{{- end }}\n' + rules[next_index:]
     return rules
 
