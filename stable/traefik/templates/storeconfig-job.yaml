@@ -18,6 +18,19 @@ spec:
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     spec:
       restartPolicy: Never
+      #selector:
+      #  matchLabels:
+      #    app: {{ template "traefik.name" . }}
+      affinity:
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                  - {{ template "traefik.name" . }}
+            topologyKey: kubernetes.io/hostname
       containers: 
         - name: storeconfig-job
           image: "{{ .Values.image }}:{{ .Values.imageTag }}"
