@@ -16,7 +16,7 @@ konfigurator:
     env:
       # Open supports Key value pair as environment variables.
       open:
-      # secret supports Key value pair as environment variables. It gets the values based on keys from default reloader secret if any.
+      # secret supports Key value pair as environment variables. It gets the values based on keys from default konfigurator secret if any.
       secret:
       # field supports Key value pair as environment variables. It gets the values from other fields of pod.
       field:
