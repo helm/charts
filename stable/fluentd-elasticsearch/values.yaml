@@ -442,7 +442,7 @@ configMaps:
       @type elasticsearch
       @log_level info
       include_tag_key true
-      type_name fluentd
+      type_name _doc
       host "#{ENV['OUTPUT_HOST']}"
       port "#{ENV['OUTPUT_PORT']}"
       logstash_format true
