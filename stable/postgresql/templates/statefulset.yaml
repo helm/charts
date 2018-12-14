@@ -11,7 +11,7 @@ spec:
   serviceName: {{ template "postgresql.fullname" . }}-headless
   replicas: 1
   updateStrategy:
-    type: RollingUpdate
+    type: {{ .Values.updateStrategy.type }}
   selector:
     matchLabels:
       app: {{ template "postgresql.name" . }}
@@ -252,5 +252,3 @@ spec:
       {{- end }}
       {{- end }}
 {{- end }}
-  updateStrategy:
-    type: {{ .Values.updateStrategy.type }}
