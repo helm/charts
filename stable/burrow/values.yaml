@@ -1,6 +1,6 @@
 image:
   repository: quay.io/monax/db
-  tag: 0.17.1
+  tag: 0.20.0
   pullPolicy: IfNotPresent
 
 chain:

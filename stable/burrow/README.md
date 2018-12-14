@@ -51,7 +51,7 @@ Parameter | Description | Default
 `genesisFile` | base64 encoded string for the genesis.json file | `""`
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
 `image.repository` | Image repository | `quay.io/monax/db`
-`image.tag` | Image tag | `0.17.1`
+`image.tag` | Image tag | `0.20.0`
 `ingress.annotations` | Ingress annotations | None
 `ingress.enabled` | Enables Ingress | `false`
 `ingress.hosts` | Ingress accepted hostnames | None
