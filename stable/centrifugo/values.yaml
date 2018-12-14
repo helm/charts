@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   repository: centrifugo/centrifugo
-  tag: 1.7.3
+  tag: v2.0.2
   pullPolicy: IfNotPresent
 
 service:
