@@ -18,9 +18,6 @@ spec:
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     spec:
       restartPolicy: Never
-      #selector:
-      #  matchLabels:
-      #    app: {{ template "traefik.name" . }}
       affinity:
         podAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
