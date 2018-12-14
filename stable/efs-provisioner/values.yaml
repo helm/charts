@@ -13,6 +13,7 @@ global:
 replicaCount: 1
 revisionHistoryLimit: 10
 image:
+  ## See https://quay.io/repository/external_storage/efs-provisioner?tab=tags for newest versions
   repository: quay.io/external_storage/efs-provisioner
   tag: v0.1.2
   pullPolicy: IfNotPresent
@@ -22,6 +23,10 @@ busyboxImage:
   tag: 1.27
   pullPolicy: IfNotPresent
 
+## Annotations to be added to pods
+##
+podAnnotations: {}
+
 ## Configure provisioner
 ## https://github.com/kubernetes-incubator/external-storage/tree/master/aws/efs#deployment
 ##
@@ -29,6 +34,7 @@ efsProvisioner:
   efsFileSystemId: fs-12345678
   awsRegion: us-east-2
   path: /example-pv
+  ## Be aware that "kubernetes.io" namespace is reserved by system volume plugins and not usable
   provisionerName: example.com/aws-efs
   storageClass:
     name: efs

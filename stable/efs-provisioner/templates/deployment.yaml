@@ -22,6 +22,10 @@ spec:
       labels:
         app: {{ template "efs-provisioner.name" . }}
         release: "{{ .Release.Name }}"
+    {{- if .Values.podAnnotations }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8}}
+    {{- end }}
     spec:
       serviceAccount: {{ template "efs-provisioner.serviceAccountName" . }}
       containers:

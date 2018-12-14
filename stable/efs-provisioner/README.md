@@ -1,11 +1,11 @@
 # Helm chart for 'efs-provisioner'
 
-The Kubernetes project provides an AWS [EFS provisioner](https://github.com/kubernetes-incubator/external-storage/tree/master/aws/efs) 
+The Kubernetes project provides an AWS [EFS provisioner](https://github.com/kubernetes-incubator/external-storage/tree/master/aws/efs)
 that is used to fulfill PersistentVolumeClaims with EFS PersistentVolumes.
 
-"The efs-provisioner allows you to mount EFS storage as PersistentVolumes in kubernetes. 
-It consists of a container that has access to an AWS EFS resource. The container reads 
-a configmap which contains the EFS filesystem ID, the AWS region and the name you want 
+"The efs-provisioner allows you to mount EFS storage as PersistentVolumes in kubernetes.
+It consists of a container that has access to an AWS EFS resource. The container reads
+a configmap which contains the EFS filesystem ID, the AWS region and the name you want
 to use for your efs-provisioner. This name will be used later when you create a storage class."
 
 This chart deploys the EFS Provisioner and a StorageClass for EFS volumes (optionally as the default).
@@ -67,6 +67,10 @@ busyboxImage:
   repository: gcr.io/google_containers/busybox
   tag: 1.27
   pullPolicy: IfNotPresent
+
+## Annotations to be added to pods
+##
+podAnnotations: {}
 
 ## Configure provisioner
 ## https://github.com/kubernetes-incubator/external-storage/tree/master/aws/efs#deployment
