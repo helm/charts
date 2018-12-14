@@ -25,12 +25,12 @@ spec:
             name: {{ template "kafka-manager.bootstrap.fullname" . }}
             defaultMode: 0744
       containers:
-      - name: {{ .Chart.Name }}-bootstrap
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-        imagePullPolicy: {{ .Values.image.pullPolicy }}
-        command: ["/usr/local/script/addClusters.sh"]
-        volumeMounts:
-          - name: script-volume
-            mountPath: "/usr/local/script"
+        - name: {{ .Chart.Name }}-bootstrap
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["/usr/local/script/addClusters.sh"]
+          volumeMounts:
+            - name: script-volume
+              mountPath: "/usr/local/script"
   backoffLimit: 20
 {{- end -}}
