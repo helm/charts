@@ -72,7 +72,6 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `cluster.xpackEnable`                | Writes the X-Pack configuration options to the configuration file   | `false`                                             |
 | `cluster.config`                     | Additional cluster config appended                                  | `{}`                                                |
 | `cluster.keystoreSecret`             | Name of secret holding secure config options in an es keystore      | `nil`                                               |
-| `cluster.env`                        | Cluster environment variables                                       | `{MINIMUM_MASTER_NODES: "2"}`                       |
 | `cluster.additionalJavaOpts`         | Cluster parameters to be added to `ES_JAVA_OPTS` environment variable | `""`                                              |
 | `client.name`                        | Client component name                                               | `client`                                            |
 | `client.replicas`                    | Client node replicas (deployment)                                   | `2`                                                 |
@@ -180,7 +179,7 @@ would degrade performance heavily. The issue is tracked in
 
 >This setting tells Elasticsearch to not elect a master unless there are enough master-eligible nodes available. Only then will an election take place.
 
->This setting should always be configured to a quorum (majority) of your master-eligible nodes. A quorum is (number of master-eligible nodes / 2) + 1
+>This setting should always be configured to a quorum (majority) of your master-eligible nodes and this is done automatically. A quorum is (number of master-eligible nodes / 2) + 1
 
 More info: https://www.elastic.co/guide/en/elasticsearch/guide/1.x/_important_configuration_changes.html#_minimum_master_nodes
 

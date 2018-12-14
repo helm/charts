@@ -29,7 +29,7 @@ data:
     discovery:
       zen:
         ping.unicast.hosts: ${DISCOVERY_SERVICE:}
-        minimum_master_nodes: ${MINIMUM_MASTER_NODES:2}
+        minimum_master_nodes: {{ div .Values.master.replicas 2 | add1 }}
 {{- else if hasPrefix "5." .Values.appVersion }}
     # see https://github.com/kubernetes/kubernetes/issues/3595
     bootstrap.memory_lock: ${BOOTSTRAP_MEMORY_LOCK:false}
@@ -37,7 +37,7 @@ data:
     discovery:
       zen:
         ping.unicast.hosts: ${DISCOVERY_SERVICE:}
-        minimum_master_nodes: ${MINIMUM_MASTER_NODES:2}
+        minimum_master_nodes: {{ div .Values.master.replicas 2 | add1 }}
 
 {{- if .Values.cluster.xpackEnable }}
     # see https://www.elastic.co/guide/en/x-pack/current/xpack-settings.html
@@ -53,7 +53,7 @@ data:
     discovery:
       zen:
         ping.unicast.hosts: ${DISCOVERY_SERVICE:}
-        minimum_master_nodes: ${MINIMUM_MASTER_NODES:2}
+        minimum_master_nodes: {{ div .Values.master.replicas 2 | add1 }}
 
 {{- if (.Values.cluster.xpackEnable) and .Values.appVersion gt 6.3  }}
     # see https://www.elastic.co/guide/en/x-pack/current/xpack-settings.html
@@ -72,11 +72,11 @@ data:
     processors: ${PROCESSORS:}
 
     # avoid split-brain w/ a minimum consensus of two masters plus a data node
-    gateway.expected_master_nodes: ${EXPECTED_MASTER_NODES:2}
-    gateway.expected_data_nodes: ${EXPECTED_DATA_NODES:1}
+    gateway.expected_master_nodes: {{ .Values.master.replicas }}
+    gateway.expected_data_nodes: {{ .Values.data.replicas }}
     gateway.recover_after_time: ${RECOVER_AFTER_TIME:5m}
-    gateway.recover_after_master_nodes: ${RECOVER_AFTER_MASTER_NODES:2}
-    gateway.recover_after_data_nodes: ${RECOVER_AFTER_DATA_NODES:1}
+    gateway.recover_after_master_nodes: {{ div .Values.master.replicas 2 | add1 }}
+    gateway.recover_after_data_nodes: {{ div .Values.data.replicas 2 | add1 }}
 {{- with .Values.cluster.config }}
 {{ toYaml . | indent 4 }}
 {{- end }}
