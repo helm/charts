@@ -231,7 +231,7 @@ spec:
             - >-
               /bin/mongodb_exporter
             {{- if .Values.auth.enabled }}
-              -mongodb.uri mongodb://$METRICS_USER:$METRICS_PASSWORD@localhost:{{ .Values.port }}/admin
+              -mongodb.uri mongodb://$METRICS_USER:$METRICS_PASSWORD@localhost:{{ .Values.port }}
             {{- else }}
               -mongodb.uri mongodb://localhost:{{ .Values.port }}
             {{- end }}
