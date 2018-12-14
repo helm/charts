@@ -6,7 +6,7 @@ imageTag: "5.7.14"
 
 busybox:
   image: "busybox"
-  tag: "latest"
+  tag: "1.29.3"
 
 testFramework:
   image: "dduportal/bats"
