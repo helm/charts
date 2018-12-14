@@ -19,6 +19,9 @@ spec:
 {{- if .Values.controller.service.clusterIP }}
   clusterIP: "{{ .Values.controller.service.clusterIP }}"
 {{- end }}
+{{- if .Values.controller.service.externalTrafficPolicy }}
+  externalTrafficPolicy: "{{ .Values.controller.service.externalTrafficPolicy }}"
+{{- end }}
 {{- if .Values.controller.service.loadBalancerIP }}
   loadBalancerIP: "{{ .Values.controller.service.loadBalancerIP }}"
 {{- end }}

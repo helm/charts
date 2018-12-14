@@ -47,7 +47,7 @@ Parameter | Description | Default
 `defaultBackend.service.name` | name of default backend service to create | `ingress-default-backend`
 `controller.name` | name of the controller component | `controller`
 `controller.image.repository` | controller container image repository | `quay.io/jcmoraisjr/haproxy-ingress`
-`controller.image.tag` | controller container image tag | `v0.5-beta.3`
+`controller.image.tag` | controller container image tag | `v0.6`
 `controller.image.pullPolicy` | controller container image pullPolicy | `IfNotPresent`
 `controller.defaultSslCertificate.secret.namespace` | namespace of default certificate for controller | `{{ .Release.Namespace }}`
 `controller.defaultSslCertificate.secret.name` | name of the secret for default certificate of controller | `""`
@@ -63,6 +63,7 @@ Parameter | Description | Default
 `controller.service.annotations` | annotations for controller service | `{}`
 `controller.service.labels` | labels for controller service | `{}`
 `controller.service.clusterIP` | internal controller cluster service IP | `""`
+`controller.service.externalTrafficPolicy` | external traffic policy | `Cluster`
 `controller.service.enableHttp` | if port 80 should be opened for service | `true`
 `controller.service.enableHttps` | if port 443 should be opened for service | `true`
 `controller.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
