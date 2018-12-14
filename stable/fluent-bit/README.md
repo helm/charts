@@ -83,6 +83,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `extraEntries.input`               |    Extra entries for existing [INPUT] section                     | ``                    |
 | `extraEntries.filter`               |    Extra entries for existing [FILTER] section                     | ``                    |
 | `extraEntries.output`               |   Extra entries for existing [OUPUT] section                     | ``                    |
+| `extraPorts`                       | List of extra ports                        |                       |
 | `extraVolumeMounts`                | Mount an extra volume, required to mount ssl certificates when elasticsearch has tls enabled |          |
 | `extraVolume`                      | Extra volume                               |                                                |
 | `filter.enableExclude`                   | Enable the use of monitoring for a pod annotation of `fluentbit.io/exclude: true`. If present, discard logs from that pod.         | `true`                                 |
