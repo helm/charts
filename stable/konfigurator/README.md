@@ -27,14 +27,6 @@ Deploying Konfigurator is a 2 step procedure:
 1. Deploy CRD to your cluster
 2. Deploy Konfigurator operator
 
-So first apply the CRD manifest by running the following command:
-
-```bash
-kubectl apply -f https://raw.githubusercontent.com/stakater/Konfigurator/master/deploy/crd.yaml
-```
-
-Once the CRD is installed, you can deploy the operator on your kubernetes cluster via any of the following methods.
-
 ### Helm Charts
 
 if you have configured helm on your cluster, you can add konfigurator to helm from public chart repository and deploy it via helm using below mentioned commands
@@ -47,9 +39,40 @@ helm repo update
 helm install stable/konfigurator
 ```
 
+**NOTE:**
+By default helm installs crd when deploying konfigurator. If crd has already installed in your cluster. You can set this `crd.enabled: false` variable before installing the konfigurator. Or you can simply run the following command to install it.
+
+```yaml
+helm install stable/konfigurator --set konfigurator.crd.enabled=false
+```
+
 Once Konfigurator is running, you can start creating resources supported by it. For details about its custom resources, look [here](https://github.com/stakater/Konfigurator/tree/master/docs/konfigurator-template.md).
 
 ## Usage
+
+The following quickstart let's you set up Konfigurator quickly:
+
+Update the `values.yaml` and set the following properties
+
+| Key           | Description                                                               | Example                            | Default Value                      |
+|---------------|---------------------------------------------------------------------------|------------------------------------|------------------------------------|
+| crd.enabled          | Option to create crd                                                | `true`                        | `true`                        |
+| matchLabels          | Additional match Labels for selector                                                | `{}`                        | `{}`                        |
+| deployment.annotations          | Annotations for deployment                                                | `{}`                        | `{}`                        |
+| deployment.labels          | Labels for deployment                                                | `provider: stakater`                        | `provider: stakater`                        |
+| deployment.image.name          | Image name for Konfigurator                                                | `stakater/konfigurator`                        | `stakater/konfigurator`                        |
+| deployment.image.tag          | Image tag for Konfigurator                                                | `0.0.10`                        | `0.0.10`                        |
+| deployment.image.pullPolicy          | Image pull policy for Konfigurator                                                | `IfNotPresent`                        | `IfNotPresent`                        |
+| deployment.containerPort          | Container port for Konfigurator                                                | `60000`                        | `60000`                        |
+| deployment.env.open          | Additional key value pair as environment variables                                                | `STORAGE: local`                        | ``                        |
+| deployment.env.secret          | Additional Key value pair as environment variables. It gets the values based on keys from default Konfigurator secret if any                                               | `BASIC_AUTH_USER: test`                        | ``                        |
+| deployment.env.field          | Additional environment variables to expose pod information to containers.                                               | `POD_IP: status.podIP`                        | ``                        |
+| rbac.enabled          | Option to create rbac                                               | `true`                        | `true`                        |
+| rbac.labels          | Additional labels for rbac                                               | `{}`                        | `{}`                        |
+| serviceAccount.create          | Option to create serviceAccount                                               | `true`                        | `true`                        |
+| serviceAccount.name          | Name of serviceAccount                                               | `konfigurator`                        | `konfigurator`                        |
+
+### CustomResourceDefinition
 
 You can set the following properties in KonfiguratorTemplate to customize your generated resource
 
@@ -62,6 +85,10 @@ You can set the following properties in KonfiguratorTemplate to customize your g
 | app.volumeMounts.mountPath     | The path inside the container where you want the rendered resource to be mounted                                                                                      | `/home/app/config/`                        |
 | app.volumeMounts.containerName | The container name inside which the resource will be mounted                                                                                                          | `my-container`                             |
 | app.templates                  | A list of key value pairs. All the configuration templates go inside this property. You can paste your static config as is inside this block and it will work as well | `app.config: someConfig`                   |
+
+## Example
+
+[Here](https://github.com/stakater/Konfigurator/blob/master/examples/parsing-multiline-logs-with-fluentd.md) is the detailed example that shows how konfigurator dynamically generates fluentd configuration.
 
 ## Help
 
