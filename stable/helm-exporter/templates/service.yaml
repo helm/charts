@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "helm-exporter.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "helm-exporter.name" . }}
+    helm.sh/chart: {{ include "helm-exporter.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+  annotations:
+    prometheus.io/scrape: "true"
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+    - port: 9100
+      targetPort: http
+      protocol: TCP
+      name: metrics
+  selector:
+    app.kubernetes.io/name: {{ include "helm-exporter.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
