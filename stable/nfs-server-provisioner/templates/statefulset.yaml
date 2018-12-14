@@ -85,7 +85,8 @@ spec:
 {{- if not .Values.persistence.enabled }}
       volumes:
         - name: data
-          emptyDir: {}
+          hostPath:
+            path: /mnt/nfs-server
 {{- end }}
 
 {{- if .Values.persistence.enabled }}
