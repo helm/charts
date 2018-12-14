@@ -151,10 +151,8 @@ spec:
         volumeMounts:
         - name: custom-init-scripts
           mountPath: /docker-entrypoint-initdb.d
-        {{- if .Values.persistence.enabled }}
         - name: data
           mountPath: {{ .Values.persistence.mountPath }}
-        {{ end }}
         {{ if or (.Files.Glob "files/postgresql.conf") .Values.postgresqlConfiguration }}
         - name: postgresql-config
           mountPath: /opt/bitnami/postgresql/conf/postgresql.conf
@@ -225,6 +223,9 @@ spec:
       - name: data
         persistentVolumeClaim:
           claimName: {{ .Values.persistence.existingClaim }}
+{{- else if not .Values.persistence.enabled }}
+      - name: data
+        emptyDir: {}
 {{- else if and .Values.persistence.enabled (not .Values.persistence.existingClaim) }}
   volumeClaimTemplates:
     - metadata:
