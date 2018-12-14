@@ -67,10 +67,15 @@ and their default values.
 | admin.ingress.hosts            | List of ingress hosts.                                                           | `[]`                |
 | admin.ingress.path             | Ingress path.                                                                    | `/`                 |
 | admin.ingress.annotations      | Ingress annotations. See documentation for your ingress controller for details   | `{}`                |
-| proxy.useTLS                   | Secure Proxy traffic                                                             | `true`              |
-| proxy.servicePort              | TCP port on which the Kong Proxy Service is exposed                              | `8443`              |
-| proxy.containerPort            | TCP port on which the Kong app listens for Proxy traffic                         | `8443`              |
-| proxy.nodePort                 | Node port when service type is `NodePort`                                        |                     |
+| proxy.useOnlyTLS               | Use only TLS for the proxy port                                                  | true                |
+| proxy.useOnlyNonTLS            | Use only non TLS for the proxy port                                              | false               |
+| proxy.useTLSAndNonTLS          | Use TLS and non TLS for the proxy port                                           | false               |
+| TLSPorts.servicePort           | Service port to use for TLS                                                      | 8443                |
+| TLSPorts.containerPort         | Container port to use for TLS                                                    | 8443                |
+| TLSPorts.nodePort              | NodePort to use for TLS                                                          | 32443               |
+| nonTLSPorts.servicePort        | Service port to use for non TLS                                                  | 8000                |
+| nonTLSPorts.containerPort      | Container port to use for non TLS                                                | 8000                |
+| nonTLSPorts.nodePort           | NodePort to use for nont TLS                                                     | 32000               |
 | proxy.type                     | k8s service type. Options: NodePort, ClusterIP, LoadBalancer                     | `NodePort`          |
 | proxy.loadBalancerSourceRanges | Limit proxy access to CIDRs if set and service type is `LoadBalancer`            | `[]`                |
 | proxy.loadBalancerIP           | To reuse an existing ingress static IP for the admin service                     |                     |
