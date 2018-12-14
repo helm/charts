@@ -31,7 +31,7 @@ Deploying Konfigurator is a 2 step procedure:
 
 if you have configured helm on your cluster, you can add konfigurator to helm from public chart repository and deploy it via helm using below mentioned commands
 
-```bash
+```yaml
 helm repo add stable https://kubernetes-charts.storage.googleapis.com/
 
 helm repo update
