@@ -84,7 +84,9 @@ kubeConfig:
   # List of Docker registries to make available to Spinnaker
   dockerRegistries:
   - dockerhub
-# - gcr
+  # - gcr
+  # The Kubernetes account provider version (v1 or v2)
+  providerVersion: v2
 
 # Change this if youd like to expose Spinnaker outside the cluster
 ingress:
