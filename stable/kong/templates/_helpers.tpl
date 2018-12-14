@@ -33,3 +33,19 @@ Create the name of the service account to use
     {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Create the KONG_PROXY_LISTEN value string
+*/}}
+{{- define "kong.kongProxyListenValue" -}}
+{{- if and .Values.proxy.http.enabled .Values.proxy.tls.enabled -}}
+   0.0.0.0:{{ .Values.proxy.http.containerPort }},0.0.0.0:{{ .Values.proxy.tls.containerPort }} ssl
+{{ else }}
+{{- if .Values.proxy.http.enabled -}}
+   0.0.0.0:{{ .Values.proxy.http.containerPort }}
+{{- end -}}
+{{- if .Values.proxy.tls.enabled -}}
+   0.0.0.0:{{ .Values.proxy.tls.containerPort }} ssl
+{{- end -}}
+{{- end -}}
+{{- end }}
