@@ -8,11 +8,6 @@ image:
 ## replicas number for each component
 replicas: 3
 
-# This allows the init process to create a default master when it cannot find 
-# one. In certain cases of network partitions, disabling this can be useful
-# for debugging
-skipInit: false
-
 ## Redis specific configuration options
 redis:
   port: 6379

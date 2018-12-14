@@ -47,7 +47,6 @@ data:
     SENTINEL_CONF=/data/conf/sentinel.conf
     SENTINEL_PORT={{ .Values.sentinel.port }}
     SERVICE={{ template "redis-ha.fullname" . }}
-    SKIP_DEFAULTS={{- if .Values.skipInit }}"true"{{- end }}
     set -eu
 
     sentinel_update() {
@@ -96,9 +95,7 @@ data:
         if [ "$(redis-cli -h "$MASTER"{{ if .Values.auth }} -a "$AUTH"{{ end }} ping)" != "PONG" ]; then
            echo "Can't ping master, attempting to force failover"
            if redis-cli -h "$SERVICE" -p "$SENTINEL_PORT" sentinel failover "$MASTER_GROUP" | grep -q 'NOGOODSLAVE' ; then 
-               if [ "$SKIP_DEFAULTS" != "true" ]; then
-                   setup_defaults
-               fi
+               setup_defaults
                return 0
            fi
            sleep 10
@@ -128,9 +125,10 @@ data:
         exit 1
     elif [ "$MASTER" ]; then
         find_master
-    elif [ "$SKIP_DEFAULTS" != "true" ]; then
+    else
         setup_defaults
     fi
+
     if [ "${AUTH:-}" ]; then
         echo "Setting auth values"
         sed -i "s/replace-default-auth/$AUTH/" "$REDIS_CONF" "$SENTINEL_CONF"
