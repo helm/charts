@@ -10,7 +10,7 @@ $ helm install stable/kafka-manager
 
 ## Prerequisites
 
-- Kubernetes 1.8+ with Beta APIs enabled
+- Kubernetes 1.9+ with Beta APIs enabled
 
 ## Installing the Chart
 
