@@ -184,7 +184,7 @@ spec:
           - "--master_addresses={{range $index := until (int ($root.Values.replicas.master))}}{{if ne $index 0}},{{end}}yb-master-{{ $index }}.yb-masters.$(NAMESPACE):7100{{end}}"
           - "--metric_node_name=$(HOSTNAME)"
           - "--memory_limit_hard_bytes={{ template "yugabyte.memory_hard_limit" $root.Values.resource.master }}"
-          - "--logtostderr"
+          - "--stderrthreshold=0"
           {{- range $flag, $override := $root.Values.gflags.master }}
           - "--{{ $flag }}={{ $override }}"
           {{- end}}
@@ -199,7 +199,7 @@ spec:
           - "--tserver_master_addrs={{range $index := until (int ($root.Values.replicas.master))}}{{if ne $index 0}},{{end}}yb-master-{{ $index }}.yb-masters.$(NAMESPACE):7100{{end}}"
           - "--metric_node_name=$(HOSTNAME)"
           - "--memory_limit_hard_bytes={{ template "yugabyte.memory_hard_limit" $root.Values.resource.tserver }}"
-          - "--logtostderr"
+          - "--stderrthreshold=0"
           {{- range $flag, $override := $root.Values.gflags.tserver }}
           - "--{{ $flag }}={{ $override }}"
           {{- end}}
