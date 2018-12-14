@@ -5,7 +5,7 @@ on_minikube: false
 image:
   fluent_bit:
     repository: fluent/fluent-bit
-    tag: 0.14.8
+    tag: 0.14.9
   pullPolicy: Always
 
 # When enabled, exposes json and prometheus metrics on {{ .Release.Name }}-metrics service
@@ -141,6 +141,13 @@ resources: {}
   # requests:
   #   cpu: 10m
   #   memory: 8Mi
+
+# When enabled, pods will bind to the node's network namespace.
+hostNetwork: false
+
+# Which DNS policy to use for the pod.
+# Consider switching to 'ClusterFirstWithHostNet' when 'hostNetwork' is enabled.
+dnsPolicy: ClusterFirst
 
 ## Node tolerations for fluent-bit scheduling to nodes with taints
 ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/

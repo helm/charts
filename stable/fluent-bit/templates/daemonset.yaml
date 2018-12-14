@@ -25,6 +25,8 @@ spec:
       imagePullSecrets:
 {{ toYaml .Values.image.pullSecrets | indent 8 }}
 {{- end }}
+      hostNetwork: {{ .Values.hostNetwork }}
+      dnsPolicy: {{ .Values.dnsPolicy }}
       serviceAccountName: {{ template "fluent-bit.serviceAccountName" . }}
       containers:
       - name: fluent-bit
