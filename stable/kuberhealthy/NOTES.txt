@@ -2,7 +2,7 @@
 Kuberhealthy has been installed to your cluster!
 
 	Docker Image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
-	Namespace: {{ .Values.namespace }}
+	Namespace: {{ .Release.Namespace }}
 	Service Type: {{ .Values.service.type }}
 	Service Port: {{ .Values.service.externalPort }}
 	Tolerates Masters: {{ .Values.tolerations.master }}

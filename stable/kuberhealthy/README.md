@@ -35,8 +35,6 @@ prometheus:
   enableAlerting: true # enable default Kuberhealthy alerts configuration
 app:
   name: "kuberhealthy" # what to name the kuberhealthy deployment
-  namespace: "kuberhealthy" # what namespace to deploy the kuberhealthy app into
-  namespace: "kuberhealthy" # what namespace to deploy the kuberhealthy app into
 image:
   repository: quay.io/comcast/kuberhealthy
   tag: 0.1.1
