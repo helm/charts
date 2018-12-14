@@ -51,19 +51,19 @@ proxy:
   annotations: {}
   #  service.beta.kubernetes.io/aws-load-balancer-proxy-protocol: "*"
 
-  # Must only set one to true
-  useOnlyTLS: true
-  useOnlyNonTLS: false
-  useTLSAndNonTLS: false
+  # HTTP plain-text traffic
+  http:
+    enabled: false
+    servicePort: 8000
+    containerPort: 8000
+    nodePort: 32080
 
-  TLSPorts:
+  # HTTPS traffic on the proxy port
+  tls:
+    enabled: true
     servicePort: 8443
     containerPort: 8443
     nodePort: 32443
-  nonTLSPorts:
-    servicePort: 8000
-    containerPort: 8000
-    nodePort: 32000
 
   type: NodePort
 

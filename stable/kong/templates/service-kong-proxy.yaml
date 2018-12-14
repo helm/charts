@@ -25,38 +25,43 @@ spec:
   {{- end }}
   {{- end }}
   ports:
-
-  {{- if .Values.proxy.useOnlyTLS }}
-  - name: kong-proxy-tls
-    port: {{ .Values.proxy.TLSPorts.servicePort }}
-    targetPort: {{ .Values.proxy.TLSPorts.containerPort }}
-  {{- if (and (eq .Values.proxy.type "NodePort") (not (empty .Values.proxy.TLSPorts.nodePort))) }}
-    nodePort: {{ .Values.proxy.TLSPorts.nodePort }}
-  {{- end }}
-  {{- end }}
-
-  {{- if .Values.proxy.useOnlyNonTLS }}
+  {{- if and .Values.proxy.http.enabled .Values.proxy.tls.enabled }}
   - name: kong-proxy
-    port: {{ .Values.proxy.nonTLSPorts.servicePort }}
-    targetPort: {{ .Values.proxy.nonTLSPorts.containerPort }}
-  {{- if (and (eq .Values.proxy.type "NodePort") (not (empty .Values.proxy.nonTLSPorts.nodePort))) }}
-    nodePort: {{ .Values.proxy.nonTLSPorts.nodePort }}
+    port: {{ .Values.proxy.http.servicePort }}
+    targetPort: {{ .Values.proxy.http.containerPort }}
+  {{- if (and (eq .Values.proxy.type "NodePort") (not (empty .Values.proxy.http.nodePort))) }}
+    nodePort: {{ .Values.proxy.http.nodePort }}
+  {{- end }}
+  - name: kong-proxy-tls
+    port: {{ .Values.proxy.tls.servicePort }}
+    targetPort: {{ .Values.proxy.tls.containerPort }}
+  {{- if (and (eq .Values.proxy.type "NodePort") (not (empty .Values.proxy.tls.nodePort))) }}
+    nodePort: {{ .Values.proxy.tls.nodePort }}
+  {{- end }}
+
+  {{ else }}
+
+  {{- if .Values.proxy.http.enabled }}
+  - name: kong-proxy
+    port: {{ .Values.proxy.http.servicePort }}
+    targetPort: {{ .Values.proxy.http.containerPort }}
+  {{- if (and (eq .Values.proxy.type "NodePort") (not (empty .Values.proxy.http.nodePort))) }}
+    nodePort: {{ .Values.proxy.http.nodePort }}
+  {{- end }}
+  {{- end }}
+  {{- if or .Values.proxy.tls.enabled .Values.proxy.tls.enableTlsOffload }}
+  - name: kong-proxy-tls
+    port: {{ .Values.proxy.tls.servicePort }}
+    {{- if .Values.proxy.tls.enableTlsOffload }}
+    targetPort: {{ .Values.proxy.http.containerPort }}
+    {{ else }}
+    targetPort: {{ .Values.proxy.tls.containerPort }}
+    {{- end }}
+  {{- if (and (eq .Values.proxy.type "NodePort") (not (empty .Values.proxy.tls.nodePort))) }}
+    nodePort: {{ .Values.proxy.tls.nodePort }}
   {{- end }}
   {{- end }}
 
-  {{- if .Values.proxy.useTLSAndNonTLS }}
-  - name: kong-proxy-tls
-    port: {{ .Values.proxy.TLSPorts.servicePort }}
-    targetPort: {{ .Values.proxy.TLSPorts.containerPort }}
-  {{- if (and (eq .Values.proxy.type "NodePort") (not (empty .Values.proxy.TLSPorts.nodePort))) }}
-    nodePort: {{ .Values.proxy.TLSPorts.nodePort }}
-  {{- end }}
-  - name: kong-proxy
-    port: {{ .Values.proxy.nonTLSPorts.servicePort }}
-    targetPort: {{ .Values.proxy.nonTLSPorts.containerPort }}
-  {{- if (and (eq .Values.proxy.type "NodePort") (not (empty .Values.proxy.nonTLSPorts.nodePort))) }}
-    nodePort: {{ .Values.proxy.nonTLSPorts.nodePort }}
-  {{- end }}
   {{- end }}
 
   selector:

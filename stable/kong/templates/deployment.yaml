@@ -76,17 +76,20 @@ spec:
         - name: KONG_ADMIN_LISTEN
           value: 0.0.0.0:{{ .Values.admin.containerPort }}
         {{- end }}
-        {{- if .Values.proxy.useOnlyTLS }}
+        {{- if and .Values.proxy.http.enabled .Values.proxy.tls.enabled }}
         - name: KONG_PROXY_LISTEN
-          value: "0.0.0.0:{{ .Values.proxy.TLSPorts.containerPort }} ssl"
+          value: "0.0.0.0:{{ .Values.proxy.http.containerPort }},0.0.0.0:{{ .Values.proxy.tls.containerPort }} ssl"
+        {{ else }}
+
+        {{- if .Values.proxy.http.enabled }}
+        - name: KONG_PROXY_LISTEN
+          value: "0.0.0.0:{{ .Values.proxy.http.containerPort }}"
         {{- end }}
-        {{- if .Values.proxy.useOnlyNonTLS }}
+        {{- if .Values.proxy.tls.enabled }}
         - name: KONG_PROXY_LISTEN
-          value: "0.0.0.0:{{ .Values.proxy.nonTLSPorts.containerPort }}"
+          value: "0.0.0.0:{{ .Values.proxy.tls.containerPort }} ssl"
         {{- end }}
-        {{- if .Values.proxy.useTLSAndNonTLS }}
-        - name: KONG_PROXY_LISTEN
-          value: "0.0.0.0:{{ .Values.proxy.nonTLSPorts.containerPort }},0.0.0.0:{{ .Values.proxy.TLSPorts.containerPort }} ssl"
+
         {{- end }}
         - name: KONG_NGINX_DAEMON
           value: "off"
@@ -121,24 +124,29 @@ spec:
         - name: admin
           containerPort: {{ .Values.admin.containerPort }}
           protocol: TCP
-        {{- if .Values.proxy.useOnlyTLS }}
-        - name: proxy-tls
-          containerPort: {{ .Values.proxy.TLSPorts.containerPort }}
-          protocol: TCP
-        {{- end }}
-        {{- if .Values.proxy.useOnlyNonTLS }}
+
+        {{- if and .Values.proxy.http.enabled .Values.proxy.tls.enabled }}
         - name: proxy
-          containerPort: {{ .Values.proxy.nonTLSPorts.containerPort }}
-          protocol: TCP
-        {{- end }}
-        {{- if .Values.proxy.useTLSAndNonTLS }}
-        - name: proxy
-          containerPort: {{ .Values.proxy.nonTLSPorts.containerPort }}
+          containerPort: {{ .Values.proxy.http.containerPort }}
           protocol: TCP
         - name: proxy-tls
-          containerPort: {{ .Values.proxy.TLSPorts.containerPort }}
+          containerPort: {{ .Values.proxy.tls.containerPort }}
+          protocol: TCP
+        {{ else }}
+
+        {{- if .Values.proxy.http.enabled }}
+        - name: proxy
+          containerPort: {{ .Values.proxy.http.containerPort }}
           protocol: TCP
         {{- end }}
+        {{- if .Values.proxy.tls.enabled }}
+        - name: proxy-tls
+          containerPort: {{ .Values.proxy.tls.containerPort }}
+          protocol: TCP
+        {{- end }}
+
+        {{- end }}
+
 
         readinessProbe:
 {{ toYaml .Values.readinessProbe | indent 10 }}
