@@ -182,3 +182,45 @@ https://github.com/Kong/kubernetes-ingress-controller/blob/master/docs/custom-ty
 | readinessProbe   | Kong ingress controllers readiness probe    |                                                                              |
 | livenessProbe    | Kong ingress controllers liveness probe     |                                                                              |
 | ingressClass     | The ingress-class value for controller      | nginx
+
+### AWS
+
+#### Offload TLS on the ELB
+
+This describes a method to offload the TLS termination at the ELB and forward non encrypted
+payload onto Kong.
+
+Topology:
+```
+Internet <---> (SSL/443/HTTPS) ELB (offloads SSL/HTTP) <----> (HTTP) Kong (HTTP) <----> (HTTP) pod
+               (80/HTTP)
+```
+
+Settings to update:
+```
+proxy:
+  # If you want to specify annotations for the proxy service, uncomment the following
+  # line, add additional or adjust as needed, and remove the curly braces after 'annotations:'.
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-connection-idle-timeout: "3600"
+    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-1:xxxxxxxxxx:certificate/xxxxxxxxx
+    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
+    service.beta.kubernetes.io/aws-load-balancer-backend-protocol: "http"
+
+  http:
+    enabled: true
+    servicePort: 80
+    containerPort: 8000
+
+  tls:
+    enabled: true
+    enableTlsOffload: true
+    servicePort: 443
+```
+
+To create an internal ELB instead add the following annotation:
+```
+service.beta.kubernetes.io/aws-load-balancer-internal: 0.0.0.0/0
+```
+
+The ELB will listen on port 80 and 443 external to the cluster.
