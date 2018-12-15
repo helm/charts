@@ -68,7 +68,7 @@ spec:
 {{- if .Values.prometheus.prometheusSpec.serviceMonitorSelector }}
   serviceMonitorSelector:
 {{ toYaml .Values.prometheus.prometheusSpec.serviceMonitorSelector | indent 4 }}
-{{ else}}
+{{ else if .Values.prometheus.prometheusSpec.serviceMonitorSelecorNilUsesHelmValues  }}
   serviceMonitorSelector:
     matchLabels:
       release: {{ .Release.Name | quote }}
@@ -96,10 +96,11 @@ spec:
   ruleNamespaceSelector:
 {{ toYaml .Values.prometheus.prometheusSpec.ruleNamespaceSelector | indent 4 }}
 {{- end }}
+{{- if .Values.prometheus.prometheusSpec.ruleSelector }}
   ruleSelector:
-  {{- if .Values.prometheus.prometheusSpec.ruleSelector }}
 {{ toYaml .Values.prometheus.prometheusSpec.ruleSelector | indent 4}}
-  {{- else }}
+{{- else if .Values.prometheus.prometheusSpec.ruleSelectorNilUsesHelmValues }}
+  ruleSelector:    
     matchLabels:
       app: {{ template "prometheus-operator.name" . }}
       release: {{ .Release.Name | quote }}
