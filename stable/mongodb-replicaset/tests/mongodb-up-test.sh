@@ -26,7 +26,7 @@ replicas() {
 master_pod() {
     for ((i = 0; i < $(replicas); ++i)); do
         response=$(mongo $MONGOARGS "--host=$(pod_name "$i")" "--eval=rs.isMaster().ismaster")
-        if [[ "$response" =~ "true" ]]; then
+        if [[ "$response" == "true" ]]; then
             pod_name "$i"
             break
         fi
@@ -64,7 +64,7 @@ setup() {
 
 @test "Write key to primary" {
     response=$(mongo $MONGOARGS --host=$(master_pod) "--eval=db.test.insert({\"abc\": \"def\"}).nInserted")
-    if [[ ! "$response" =~ "1" ]]; then
+    if [[ ! "$response" -eq 1 ]]; then
         exit 1
     fi
 }
