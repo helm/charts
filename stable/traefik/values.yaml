@@ -1,10 +1,11 @@
 ## Default values for Traefik
 image: traefik
 imageTag: 1.7.4
-## can switch the service type to NodePort if required
+## can switch the service type to NodePort or ClusterIP if required
 serviceType: LoadBalancer
 # loadBalancerIP: ""
 # loadBalancerSourceRanges: []
+# clusterIP: ""
 whiteListSourceRange: []
 externalTrafficPolicy: Cluster
 replicas: 1
