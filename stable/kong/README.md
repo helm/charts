@@ -67,15 +67,14 @@ and their default values.
 | admin.ingress.hosts            | List of ingress hosts.                                                           | `[]`                |
 | admin.ingress.path             | Ingress path.                                                                    | `/`                 |
 | admin.ingress.annotations      | Ingress annotations. See documentation for your ingress controller for details   | `{}`                |
-| proxy.useOnlyTLS               | Use only TLS for the proxy port                                                  | true                |
-| proxy.useOnlyNonTLS            | Use only non TLS for the proxy port                                              | false               |
-| proxy.useTLSAndNonTLS          | Use TLS and non TLS for the proxy port                                           | false               |
-| TLSPorts.servicePort           | Service port to use for TLS                                                      | 8443                |
-| TLSPorts.containerPort         | Container port to use for TLS                                                    | 8443                |
-| TLSPorts.nodePort              | NodePort to use for TLS                                                          | 32443               |
-| nonTLSPorts.servicePort        | Service port to use for non TLS                                                  | 8000                |
-| nonTLSPorts.containerPort      | Container port to use for non TLS                                                | 8000                |
-| nonTLSPorts.nodePort           | NodePort to use for nont TLS                                                     | 32000               |
+| proxy.http.enabled             | Enables http on the proxy                                                        | false               |
+| proxy.http.servicePort         | Service port to use for http                                                     | 8000                |
+| proxy.http.containerPort       | Container port to use for http                                                   | 8000                |
+| proxy.http.nodePort            | Node port to use for http                                                        | 32080               |
+| proxy.tls.enabled              | Enables TLS on the proxy                                                         | true                |
+| proxy.tls.enableTlsOffload     | Used when the cloud loadbalancer should offload TLS                              | 8443                |
+| proxy.tls.containerPort        | Container port to use for TLS                                                    | 8443                |
+| proxy.tls.nodePort             | Node port to use for TLS                                                         | 32443               |
 | proxy.type                     | k8s service type. Options: NodePort, ClusterIP, LoadBalancer                     | `NodePort`          |
 | proxy.loadBalancerSourceRanges | Limit proxy access to CIDRs if set and service type is `LoadBalancer`            | `[]`                |
 | proxy.loadBalancerIP           | To reuse an existing ingress static IP for the admin service                     |                     |
