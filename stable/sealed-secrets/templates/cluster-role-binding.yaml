@@ -4,10 +4,11 @@ kind: ClusterRoleBinding
 metadata:
   name: {{ template "sealed-secrets.fullname" . }}
   labels:
-    app: {{ template "sealed-secrets.fullname" . }}
-    chart: {{ template "sealed-secrets.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ template "sealed-secrets.name" . }}
+    helm.sh/chart: {{ template "sealed-secrets.chart" . }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
