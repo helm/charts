@@ -28,6 +28,7 @@ spec:
         allowPrivilegeEscalation: false
         capabilities:
           drop: ["all"]
+        readOnlyRootFilesystem: true
         runAsNonRoot: true
         runAsUser: 10001
       serviceAccountName: {{ template "k8s-prometheus-adapter.serviceAccountName" . }}
