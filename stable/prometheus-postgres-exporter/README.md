@@ -41,6 +41,7 @@ The following table lists the configurable parameters of the postgres Exporter c
 | `image`                         | Image                                      | `wrouesnel/postgres_exporter`                      |
 | `imageTag`                      | Image tag                                  | `v0.4.6`                                      |
 | `imagePullPolicy`               | Image pull policy                          | `IfNotPresent` |
+| `service.annotations`           | annotations for the service                | `{}`           |
 | `service.type`      | Service type |  `ClusterIP` |
 | `service.port`                      | The service port                               | `80`                                     |
 | `service.targetPort`                      | The target port of the container                               | `9187`                                        |
