@@ -108,7 +108,7 @@ spec:
               name: {{ .Values.existingSecret }}
             {{- else }}
               name: {{ template "postgresql.fullname" . }}
-            {{- end }}  
+            {{- end }}
               key: postgresql-password
         {{- if .Values.postgresqlDatabase }}
         - name: POSTGRESQL_DATABASE
@@ -180,7 +180,7 @@ spec:
               name: {{ .Values.existingSecret }}
             {{- else }}
               name: {{ template "postgresql.fullname" . }}
-            {{- end }}  
+            {{- end }}
               key: postgresql-password
         - name: DATA_SOURCE_USER
           value: {{ .Values.postgresqlUsername }}
@@ -255,3 +255,5 @@ spec:
       - name: data
         emptyDir: {}
 {{- end }}
+  updateStrategy:
+    type: {{ .Values.updateStrategy.type }}

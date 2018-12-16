@@ -7,11 +7,7 @@ metadata:
 {{ toYaml .Values.server.statefulSet.headless.annotations | indent 4 }}
 {{- end }}
   labels:
-    app: {{ template "prometheus.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    component: "{{ .Values.server.name }}"
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    {{- include "prometheus.server.labels" . | nindent 4 }}
 {{- if .Values.server.statefulSet.headless.labels }}
 {{ toYaml .Values.server.statefulSet.headless.labels | indent 4 }}
 {{- end }}
@@ -24,7 +20,5 @@ spec:
       protocol: TCP
       targetPort: 9090
   selector:
-    app: {{ template "prometheus.name" . }}
-    component: "{{ .Values.server.name }}"
-    release: {{ .Release.Name }}
+    {{- include "prometheus.server.matchLabels" . | nindent 4 }}
 {{- end -}}
