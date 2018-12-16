@@ -18,9 +18,7 @@ spec:
         app: {{ template "sealed-secrets.fullname" . }}
         release: {{ .Release.Name }}
     spec:
-      {{ if .Values.rbac.create }}
       serviceAccountName: {{ template "sealed-secrets.serviceAccountName" . }}
-      {{ end }}
       containers:
         - name: {{ template "sealed-secrets.fullname" . }}
           command:

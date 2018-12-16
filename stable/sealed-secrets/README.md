@@ -4,8 +4,7 @@ This chart contains the resources to use [sealed-secrets](https://github.com/bit
 
 ## Prerequisites
 
-<!-- TODO 1.7 is possible using a ThirdPartyResoure. If there is demand integrate this? -->
-* Kubernetes >=1.8
+* Kubernetes >= 1.9
 
 ## Installing the Chart
 
