@@ -120,6 +120,7 @@ spec:
         - --publish-service={{ .Release.Namespace }}/{{ template "kong.fullname" . }}-proxy
         # Set the ingress class
         - --ingress-class={{ .Values.ingressController.ingressClass }}
+        - --election-id=kong-ingress-controller-leader-{{ .Values.ingressController.ingressClass }}
         env:
         - name: POD_NAME
           valueFrom:
