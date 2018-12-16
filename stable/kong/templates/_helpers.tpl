@@ -38,6 +38,10 @@ Create the name of the service account to use
 Create the KONG_PROXY_LISTEN value string
 */}}
 {{- define "kong.kongProxyListenValue" -}}
+{{- if and .Values.proxy.http.enabled .Values.proxy.tls.enableTlsOffload -}}
+  0.0.0.0:{{ .Values.proxy.http.containerPort }}
+{{ else }}
+
 {{- if and .Values.proxy.http.enabled .Values.proxy.tls.enabled -}}
    0.0.0.0:{{ .Values.proxy.http.containerPort }},0.0.0.0:{{ .Values.proxy.tls.containerPort }} ssl
 {{ else }}
@@ -48,4 +52,8 @@ Create the KONG_PROXY_LISTEN value string
    0.0.0.0:{{ .Values.proxy.tls.containerPort }} ssl
 {{- end -}}
 {{- end -}}
+
+{{- end }}
+
+
 {{- end }}
