@@ -18,5 +18,5 @@ icon: https://raw.githubusercontent.com/Microsoft/OMS-docker/ci_feature/img/azur
 sources:
   - https://github.com/Microsoft/OMS-docker/tree/ci_feature_prod
 maintainers:
-  - name: Vishwanath Narasimhan
+  - name: vishiy
     email: visnara@microsoft.com
