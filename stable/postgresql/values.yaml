@@ -138,13 +138,34 @@ persistence:
   size: 8Gi
   annotations: {}
 
-## Node, affinity and tolerations labels for pod assignment
-## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
-## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
-## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
-nodeSelector: {}
-affinity: {}
-tolerations: []
+## updateStrategy for PostgreSQL StatefulSet and its slaves StatefulSets
+## ref: https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#update-strategies
+updateStrategy:
+  type: RollingUpdate
+
+##
+## PostgreSQL Master parameters
+##
+master:
+  ## Node, affinity and tolerations labels for pod assignment
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
+  nodeSelector: {}
+  affinity: {}
+  tolerations: []
+
+##
+## PostgreSQL Slave parameters
+##
+slave:
+  ## Node, affinity and tolerations labels for pod assignment
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
+  nodeSelector: {}
+  affinity: {}
+  tolerations: []
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -189,7 +210,6 @@ readinessProbe:
 metrics:
   enabled: false
   # resources: {}
-  # podAnnotations: {}
   service:
     type: ClusterIP
     annotations:
@@ -207,13 +227,6 @@ metrics:
     ##
     # pullSecrets:
     #   - myRegistrKeySecretName
-
-  ## Metrics exporter labels and tolerations for pod assignment
-  # nodeSelector: {"beta.kubernetes.io/arch": "amd64"}
-  # tolerations: []
-
-  ## Metrics exporter pod Annotation and Labels
-  # podLabels: {}
 
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes)
   ## Configure extra options for liveness and readiness probes

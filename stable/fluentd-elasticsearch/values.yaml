@@ -3,7 +3,7 @@ image:
 ## Specify an imagePullPolicy (Required)
 ## It's recommended to change this to 'Always' if the image tag is 'latest'
 ## ref: http://kubernetes.io/docs/user-guide/images/#updating-images
-  tag: v2.3.1
+  tag: v2.3.2
   pullPolicy: IfNotPresent
 
 ## Configure resource requests and limits
@@ -61,6 +61,11 @@ livenessProbe:
 annotations: {}
   # prometheus.io/scrape: "true"
   # prometheus.io/port: "24231"
+
+## DaemonSet update strategy
+## Ref: https://kubernetes.io/docs/tasks/manage-daemon/update-daemon-set/
+updateStrategy:
+  type: RollingUpdate
 
 tolerations: {}
   # - key: node-role.kubernetes.io/master
