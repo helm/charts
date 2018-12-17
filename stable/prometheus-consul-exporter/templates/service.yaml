@@ -18,3 +18,4 @@ spec:
       name: http
   selector:
     app: {{ template "prometheus-consul-exporter.name" . }}
+    release: {{ .Release.Name }}
