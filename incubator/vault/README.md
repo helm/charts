@@ -55,7 +55,7 @@ The following table lists the configurable parameters of the Vault chart and the
 | `vault.dev`                       | Use Vault in dev mode                    | true (set to false in production)   |
 | `vault.extraEnv`                  | Extra env vars for Vault pods            | `{}`                                |
 | `vault.extraContainers`           | Sidecar containers to add to the vault pod | `{}`                              |
-| `vault.extraInitContainers`       | Init containers to be added to the vault pod | `nil`                           |
+| `vault.extraInitContainers`       | Init containers to be added to the vault pod | `{}`                            |
 | `vault.extraVolumes`              | Additional volumes to the controller pod | `{}`                                |
 | `vault.customSecrets`             | Custom secrets available to Vault        | `[]`                                |
 | `vault.config`                    | Vault configuration                      | No default backend                  |
