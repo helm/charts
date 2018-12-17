@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: "{{ template "inbucket.name" . }}-test-{{ randAlphaNum 5 | lower }}"
+  name: "{{ include "inbucket.name" . }}-test-{{ randAlphaNum 5 | lower }}"
   labels:
     app.kubernetes.io/name: {{ include "inbucket.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
@@ -36,7 +36,7 @@ spec:
   volumes:
   - name: tests
     configMap:
-      name: {{ template "inbucket.name" . }}-tests
+      name: {{ include "inbucket.name" . }}-tests
   - name: tools
     emptyDir: {}
   restartPolicy: Never
