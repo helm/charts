@@ -29,7 +29,7 @@ spec:
         scheduler.alpha.kubernetes.io/tolerations: '{{ toJson .Values.tolerations }}'
       {{- end }}
       {{- if .Values.deployment.podAnnotations }}
-      {{- toYaml .Values.deployment.podAnnotations | indent 4 }}
+{{ toYaml .Values.deployment.podAnnotations | indent 8 }}
       {{- end }}
       labels:
         app: {{ template "traefik.name" . }}
