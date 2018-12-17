@@ -6,6 +6,7 @@ metadata:
     app.kubernetes.io/name: {{ include "inbucket.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "inbucket.chart" . }}
   annotations:
     "helm.sh/hook": test-success
 spec:
