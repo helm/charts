@@ -155,8 +155,6 @@ spec:
         configMap:
           name: {{ template "postgresql.fullname" . }}-configuration
       {{ end }}
-  updateStrategy:
-    type: {{ .Values.updateStrategy.type }}
 {{- if .Values.persistence.enabled }}
   volumeClaimTemplates:
     - metadata:
@@ -187,3 +185,5 @@ spec:
           emptyDir: {}
 {{- end }}
 {{- end }}
+updateStrategy:
+    type: {{ .Values.updateStrategy.type }}
