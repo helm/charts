@@ -100,6 +100,7 @@ The following table lists the configurable parameters of the kibana chart and th
 | `securityContext.allowPrivilegeEscalation`    | Allow privilege escalation                 | `false`                                 |
 | `securityContext.runAsUser`                   | User id to run in pods                     | `1000`                                  |
 | `securityContext.fsGroup`                     | fsGroup id to run in pods                  | `2000`                                  |
+| `extraConfigMapMounts`                        | Additional configmaps to be mounted        | `[]`                                    |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
