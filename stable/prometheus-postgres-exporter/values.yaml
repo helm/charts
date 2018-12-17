@@ -13,6 +13,8 @@ service:
   type: ClusterIP
   port: 80
   targetPort: 9187
+  name: http
+  labels: {}
   annotations: {}
 
 resources: {}
@@ -148,6 +150,8 @@ tolerations: []
 affinity: {}
 
 annotations: {}
+
+podLabels: {}
 
 # Additional sidecar containers, e. g. for a database proxy, such as Google's cloudsql-proxy
 extraContainers: |
