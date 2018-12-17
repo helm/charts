@@ -42,13 +42,13 @@ Note that most of this documentation is repeated in `values.yaml`; if you're in 
 | Parameter | Description | Default |
 |----------:|:------------|:--------|
 | **image.*** | the parameters of the image pulls for this release | |
-| **image.repository** | the image that will be used for this release (required) | "weaveworks/scope" |
-| **image.tag** | the version of Weave Scope desired for this release (required) | "1.9.1"
-| **image.pullPolicy** | the imagePullPolicy for the container (required): IfNotPresent, Always, or Never | IfNotPresent
+| **image.repository** | the image that will be used for this release (required) | `weaveworks/scope` |
+| **image.tag** | the version of Weave Scope desired for this release (required) | `1.10.1`
+| **image.pullPolicy** | the imagePullPolicy for the container (required): IfNotPresent, Always, or Never | `IfNotPresent`
 | **service.*** | the configuration of the service used to access the frontend | |
-| **service.name** | the short name desired for the frontend service (optional, but if not specified by the user a value will be calculated) -- this is a global so we can access its value easily from the agent subchart | "weave-scope-app" |
-| **service.port** | the port exposed by the Scope frontend service (required if weave-scope-frontend is enabled) -- this is a global so we can access its value easily from the agent subchart | 80 |
-| **service.type** | the type of the frontend service (required if weave-scope-frontend is enabled): ClusterIP, NodePort or LoadBalancer -- this is a global to keep it with the other values for configuring the frontend service | "ClusterIP" |
+| **service.name** | the short name desired for the frontend service (optional, but if not specified by the user a value will be calculated) -- this is a global so we can access its value easily from the agent subchart | `weave-scope-app` |
+| **service.port** | the port exposed by the Scope frontend service (required if weave-scope-frontend is enabled) -- this is a global so we can access its value easily from the agent subchart | `80` |
+| **service.type** | the type of the frontend service (required if weave-scope-frontend is enabled): ClusterIP, NodePort or LoadBalancer -- this is a global to keep it with the other values for configuring the frontend service | `ClusterIP` |
 
 
 ### Weave Scope frontend values
@@ -57,7 +57,7 @@ The **weave-scope-frontend** section controls how the Scope frontend is installe
 
 | Parameter | Description | Default |
 |----------:|:------------|:--------|
-| **enabled** | controls whether the frontend is deployed | true |
+| **enabled** | controls whether the frontend is deployed | `true` |
 | **resources.*** | controls requests/limits for the frontend (these values are all optional) | |
 | **resources.requests.cpu** | CPU request in MHz (m) | |
 | **resources.requests.memory** | memory request in MiB (Mi) | |
@@ -77,7 +77,7 @@ The **agent** section controls how the Weave Scope node agent pods are installed
 | **probeToken** | the token used to connect to Weave Cloud -- this is not needed for connecting to non-cloud Scope frontends | |
 | **rbac.*** | controls RBAC resource creation/use | |
 | **rbac.create** | whether RBAC resources should be created (required) -- this **must** be set to false if RBAC is not enabled in the cluster; it *may* be set to false in an RBAC-enabled cluster to allow for external management of RBAC | true |
-| **serviceAccount.create** | whether a new service account name that the agent will use should be created. | true |
+| **serviceAccount.create** | whether a new service account name that the agent will use should be created. | `true` |
 | **serviceAccount.name** | service account to be used.  If not set and serviceAccount.create is `true` a name is generated using the fullname template. |  |
 | **serviceAccount.readonly** | whether delete and update permissions for cluster role should be granted | false |
 | **resources.*** | controls requests/limits for the agent (these values are all optional) | |
