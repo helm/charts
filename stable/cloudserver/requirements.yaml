@@ -1,0 +1,9 @@
+dependencies:
+- name: mongodb-replicaset
+  version: 3.6.4
+  repository: "https://kubernetes-charts.storage.googleapis.com/"
+  condition: mongodb-replicaset.enabled
+- name: redis-ha
+  version: 3.0.0
+  repository: "https://kubernetes-charts.storage.googleapis.com/"
+  condition: redis-ha.enabled

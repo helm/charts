@@ -10,6 +10,10 @@ metadata:
     component: agent
 spec:
   replicas: {{ .Values.agent.replicaCount }}
+  {{- if .Values.agent.deployStrategy }}
+  strategy:
+{{ toYaml .Values.agent.deployStrategy | indent 4 }}
+  {{- end }}
   selector:
     matchLabels:
       app: {{ template "gocd.name" . }}
@@ -22,6 +26,7 @@ spec:
         release: {{ .Release.Name | quote }}
         component: agent
     spec:
+      serviceAccountName: {{ template "gocd.agentServiceAccountName" . }}
       {{- if or .Values.agent.persistence.enabled .Values.agent.security.ssh.enabled }}
       volumes:
       {{- end }}
@@ -29,9 +34,9 @@ spec:
         - name: goagent-vol
           persistentVolumeClaim:
             claimName: {{ .Values.agent.persistence.existingClaim | default (printf "%s-%s" (include "gocd.fullname" .) "agent")  }}
-        {{- if ne (len .Values.agent.persistence.extraVolumes) 0 }}
+      {{- end }}
+      {{- if ne (len .Values.agent.persistence.extraVolumes) 0 }}
 {{ toYaml .Values.agent.persistence.extraVolumes | indent 8 }}
-        {{- end }}
       {{- end }}
       {{- if .Values.agent.security.ssh.enabled }}
         - name: ssh-secrets
@@ -101,7 +106,7 @@ spec:
               port: 8152
             initialDelaySeconds: {{ .Values.agent.healthCheck.initialDelaySeconds }}
           {{- end }}
-          {{- if or .Values.agent.persistence.enabled .Values.agent.security.ssh.enabled }}
+          {{- if or .Values.agent.persistence.enabled (or .Values.agent.security.ssh.enabled .Values.agent.persistence.extraVolumeMounts) }}
           volumeMounts:
           {{- end }}
           {{- if .Values.agent.persistence.enabled }}
@@ -111,9 +116,9 @@ spec:
             - name: {{ .Values.agent.persistence.name.dockerEntryPoint }}
               mountPath: /docker-entrypoint.d
               subPath: {{ .Values.agent.persistence.subpath.dockerEntryPoint }}
-            {{- if ne (len .Values.agent.persistence.extraVolumeMounts) 0 }}
+          {{- end }}
+          {{- if ne (len .Values.agent.persistence.extraVolumeMounts) 0 }}
 {{ toYaml .Values.agent.persistence.extraVolumeMounts | indent 12 }}
-            {{- end }}
           {{- end }}
           {{- if .Values.agent.security.ssh.enabled }}
             - name: ssh-secrets
