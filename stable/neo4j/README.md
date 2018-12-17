@@ -74,7 +74,7 @@ their default values.
 | `readReplica.numberOfServers`         | Number of machines in READ_REPLICA mode                                                                                                 | `0`                                             |
 | `readReplica.initContainers`          | Init containers to add to the replica pod. Example use case is a script that installs the APOC library                                  | `{}`                                            |
 | `resources`                           | Resources required (e.g. CPU, memory)                                                                                                   | `{}`                                            |
-| `initialMembersDiscoveryDomainSuffix` | Suffix for initial members discovery domain                                                                                             | `svc.cluster.local`                             |
+| `clusterDomain`                       | Cluster domain                                                                                                                          | `cluster.local`                                 |
 
 The above parameters map to the env variables defined in the
 [Neo4j docker image](https://github.com/neo4j/docker-neo4j).
