@@ -33,6 +33,9 @@ service:
   annotations: {}
   loadBalancerIP:
   clusterIP: None
+  # This field takes a list of IP CIDR ranges, which Kubernetes will use to configure firewall exceptions
+  # loadBalancerSourceRanges:
+  # - 10.0.0.0/8
 
 meshService:
   annotations: {}
