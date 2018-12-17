@@ -1,0 +1,33 @@
+{{- if and .Values.alertmanager.enabled .Values.alertmanager.ingress.enabled }}
+{{- $routePrefix := .Values.alertmanager.alertmanagerSpec.routePrefix }}
+{{- $serviceName := printf "%s-%s" (include "prometheus-operator.fullname" .) "alertmanager" }}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ $serviceName }}
+{{- if .Values.alertmanager.ingress.annotations }}
+  annotations:
+{{ toYaml .Values.alertmanager.ingress.annotations | indent 4 }}
+{{- end }}
+  labels:
+    app: {{ template "prometheus-operator.name" . }}-alertmanager
+{{- if .Values.alertmanager.ingress.labels }}
+{{ toYaml .Values.alertmanager.ingress.labels | indent 4 }}
+{{- end }}
+{{ include "prometheus-operator.labels" . | indent 4 }}
+spec:
+  rules:
+    {{- range $host := .Values.alertmanager.ingress.hosts }}
+    - host: {{ . }}
+      http:
+        paths:
+          - path: "{{ $routePrefix }}"
+            backend:
+              serviceName: {{ $serviceName }}
+              servicePort: 9093
+    {{- end }}
+{{- if .Values.alertmanager.ingress.tls }}
+  tls:
+{{ toYaml .Values.alertmanager.ingress.tls | indent 4 }}
+{{- end }}
+{{- end }}

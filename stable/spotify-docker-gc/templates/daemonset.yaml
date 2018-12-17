@@ -41,7 +41,19 @@ spec:
         volumeMounts:
         - name: docker-socket
           mountPath: /var/run/docker.sock
+        {{- if .Values.resources }}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        {{- end }}
       volumes:
       - name: docker-socket
         hostPath:
           path: /var/run/docker.sock
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+    {{- end }}

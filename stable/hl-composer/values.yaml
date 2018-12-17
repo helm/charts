@@ -1,0 +1,145 @@
+# Default values for hl-composer.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+persistence:
+  # By default we must set this to false to enable chart to pass tests
+  # However, in a proper deployment, you should set this to "true", so that the different components can share data
+  enabled: false
+  annotations: {}
+  capacity: 1Gi
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  storageClass: ""
+  accessMode: ReadWriteMany
+
+cli:
+  image:
+    repository: hyperledger/composer-cli
+    tag: 0.20.0
+    pullPolicy: IfNotPresent
+
+  secrets: {}
+    # This should contain the packaged .bna network file.
+    # blockchainNetwork: bc--bna
+    # We need a secret for the Organisation certificate and key
+    # adminCert: hl--peer-admincert
+    # adminKey: hl--peer-adminkey
+    # Composer Connection JSON
+    # hlcConnection: hl--connection
+
+  resources: {}
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #  cpu: 100m
+    #  memory: 128Mi
+    # requests:
+    #  cpu: 100m
+    #  memory: 128Mi
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
+rest:
+  image:
+    repository: hyperledger/composer-rest-server
+    tag: 0.20.0
+    pullPolicy: IfNotPresent
+
+  service:
+    # Cluster IP or LoadBalancer
+    type: ClusterIP
+    port: 3000
+
+  # Ingress for Composer REST
+  ingress:
+    enabled: false
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # certmanager.k8s.io/cluster-issuer: "letsencrypt-staging"
+    path: /
+    hosts: []
+    #  - hl-composer-rest.local
+    tls: []
+    #  - secretName: hl-composer-rest-tls
+    #    hosts:
+    #      - hl-composer-rest.local
+
+  config:
+    # Composer REST server API key
+    # apiKey:
+    # Card for network connection
+    composerRestServerCard: admin@test-network
+
+  resources: {}
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #  cpu: 100m
+    #  memory: 128Mi
+    # requests:
+    #  cpu: 100m
+    #  memory: 128Mi
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
+pg:
+  enabled: true
+
+  image:
+    repository: hyperledger/composer-playground
+    tag: 0.20.0
+    pullPolicy: IfNotPresent
+
+  service:
+    # Cluster IP or LoadBalancer
+    type: ClusterIP
+    port: 8080
+
+  # Ingress for Composer PlayGround
+  ingress:
+    enabled: false
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # certmanager.k8s.io/cluster-issuer: "letsencrypt-staging"
+    path: /
+    hosts: []
+    #  - hl-composer-pg.local
+    tls: []
+    #  - secretName: hl-composer-pg-tls
+    #    hosts:
+    #      - hl-composer-pg.local
+
+  resources: {}
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #  cpu: 100m
+    #  memory: 128Mi
+    # requests:
+    #  cpu: 100m
+    #  memory: 128Mi
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}

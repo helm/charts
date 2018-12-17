@@ -4,6 +4,14 @@
 image: "mysql"
 imageTag: "5.7.14"
 
+busybox:
+  image: "busybox"
+  tag: "1.29.3"
+
+testFramework:
+  image: "dduportal/bats"
+  tag: "0.4.0"
+
 ## Specify password for root user
 ##
 ## Default: random 10 character string
@@ -28,6 +36,20 @@ imageTag: "5.7.14"
 ## ref: http://kubernetes.io/docs/user-guide/images/#updating-images
 ##
 imagePullPolicy: IfNotPresent
+
+extraVolumes: |
+  # - name: extras
+  #   emptyDir: {}
+
+extraVolumeMounts: |
+  # - name: extras
+  #   mountPath: /usr/share/extras
+  #   readOnly: true
+
+extraInitContainers: |
+  # - name: do-something
+  #   image: busybox
+  #   command: ['do', 'something']
 
 # Optionally specify an array of imagePullSecrets.
 # Secrets must be manually created in the namespace.
@@ -66,6 +88,7 @@ persistence:
   # storageClass: "-"
   accessMode: ReadWriteOnce
   size: 8Gi
+  annotations: {}
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -100,6 +123,12 @@ metrics:
   annotations: {}
     # prometheus.io/scrape: "true"
     # prometheus.io/port: "9104"
+  livenessProbe:
+    initialDelaySeconds: 15
+    timeoutSeconds: 5
+  readinessProbe:
+    initialDelaySeconds: 5
+    timeoutSeconds: 1
 
 ## Configure the service
 ## ref: http://kubernetes.io/docs/user-guide/services/
@@ -127,3 +156,13 @@ ssl:
 #      -----BEGIN RSA PRIVATE KEY-----
 #      ...
 #      -----END RSA PRIVATE KEY-----
+
+## Populates the 'TZ' system timezone environment variable
+## ref: https://dev.mysql.com/doc/refman/5.7/en/time-zone-support.html
+##
+## Default: nil (mysql will use image's default timezone, normally UTC)
+## Example: 'Australia/Sydney'
+# timezone:
+
+# To be added to the database server pod(s)
+podAnnotations: {}

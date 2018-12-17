@@ -1,6 +1,6 @@
 # Kubernetes AWS EC2 Spot Termination Notice Handler
 
-This chart installs the [kube-spot-termination-notice-handler](https://github.com/mumoshu/kube-spot-termination-notice-handler) as a daemonset across the cluster nodes.
+This chart installs the [kube-spot-termination-notice-handler](https://github.com/kube-aws/kube-spot-termination-notice-handler) as a daemonset across the cluster nodes.
 
 ## Purpose
 

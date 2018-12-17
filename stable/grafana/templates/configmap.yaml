@@ -8,8 +8,8 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 data:
-{{- with .Values.plugins }}
-  plugins: {{ . | quote }}
+{{- if .Values.plugins }}
+  plugins: {{ join "," .Values.plugins }}
 {{- end }}
   grafana.ini: |
 {{- range $key, $value := index .Values "grafana.ini" }}

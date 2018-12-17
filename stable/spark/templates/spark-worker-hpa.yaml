@@ -1,0 +1,23 @@
+{{- if .Values.Worker.Autoscaling.Enabled }}
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  labels:
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    component: "{{ .Release.Name }}-{{ .Values.Worker.Component }}"
+  name: {{ template "worker-fullname" . }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1beta1
+    kind: Deployment
+    name: {{ template "worker-fullname" . }}
+  minReplicas: {{ .Values.Worker.Replicas }}
+  maxReplicas: {{ .Values.Worker.ReplicasMax }}
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      targetAverageUtilization: {{ .Values.Worker.CpuTargetPercentage }}
+{{- end }}

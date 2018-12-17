@@ -24,4 +24,10 @@ spec:
             backend:
               serviceName: {{ template "schema-registry.fullname" . }}
               servicePort: {{ .Values.servicePort }}
+{{- if .Values.ingress.tls.enabled }}
+  tls:
+    - secretName: {{ .Values.ingress.tls.secretName }}
+      hosts:
+        - {{ .Values.ingress.hostname }}
+{{- end -}}
 {{ end -}}

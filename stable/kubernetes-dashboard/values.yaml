@@ -5,16 +5,21 @@
 
 image:
   repository: k8s.gcr.io/kubernetes-dashboard-amd64
-  tag: v1.8.3
+  tag: v1.10.0
   pullPolicy: IfNotPresent
 
 replicaCount: 1
 
+## Here annotations can be added to the kubernetes dashboard deployment
+annotations: {}
 ## Here labels can be added to the kubernetes dashboard deployment
 ##
 labels: {}
 # kubernetes.io/cluster-service: "true"
 # kubernetes.io/name: "Kubernetes Dashboard"
+
+## Serve application over HTTP without TLS
+enableInsecureLogin: false
 
 ## Additional container arguments
 ##
@@ -33,6 +38,11 @@ tolerations: []
 #    operator: "Equal|Exists"
 #    value: "value"
 #    effect: "NoSchedule|PreferNoSchedule|NoExecute"
+
+## Affinity
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+affinity: {}
+
 
 service:
   type: ClusterIP
@@ -56,10 +66,10 @@ service:
 resources:
   limits:
     cpu: 100m
-    memory: 50Mi
+    memory: 100Mi
   requests:
     cpu: 100m
-    memory: 50Mi
+    memory: 100Mi
 
 ingress:
   ## If true, Kubernetes Dashboard Ingress will be created.
@@ -105,3 +115,9 @@ serviceAccount:
   # The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
   name:
+
+livenessProbe:
+  # Number of seconds to wait before sending first probe
+  initialDelaySeconds: 30
+  # Number of seconds to wait for probe response
+  timeoutSeconds: 30

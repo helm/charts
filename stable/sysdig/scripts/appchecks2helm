@@ -1,0 +1,11 @@
+#!/bin/bash
+
+echo "customAppChecks:"
+for app_check in "$@"
+do
+  echo -e "  $(basename $app_check): |-"
+  while IFS= read -r line
+  do
+    echo -e "    $line"
+  done <"$app_check"
+done

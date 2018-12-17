@@ -55,7 +55,11 @@ data:
         ping.unicast.hosts: ${DISCOVERY_SERVICE:}
         minimum_master_nodes: ${MINIMUM_MASTER_NODES:2}
 
-{{- if .Values.cluster.xpackEnable }}
+{{- if (.Values.cluster.xpackEnable) and .Values.appVersion gt 6.3  }}
+    # see https://www.elastic.co/guide/en/x-pack/current/xpack-settings.html
+    # After 6.3 xpack systems changed and are enabled by default and different configs manage them this enables monitoring
+    xpack.monitoring.collection.enabled: ${XPACK_MONITORING_ENABLED:false}
+{{- else if .Values.cluster.xpackEnable }}
     # see https://www.elastic.co/guide/en/x-pack/current/xpack-settings.html
     xpack.ml.enabled: ${XPACK_ML_ENABLED:false}
     xpack.monitoring.enabled: ${XPACK_MONITORING_ENABLED:false}
@@ -73,8 +77,8 @@ data:
     gateway.recover_after_time: ${RECOVER_AFTER_TIME:5m}
     gateway.recover_after_master_nodes: ${RECOVER_AFTER_MASTER_NODES:2}
     gateway.recover_after_data_nodes: ${RECOVER_AFTER_DATA_NODES:1}
-{{- if .Values.cluster.config }}
-{{ toYaml .Values.cluster.config | indent 4 }}
+{{- with .Values.cluster.config }}
+{{ toYaml . | indent 4 }}
 {{- end }}
 {{- if hasPrefix "2." .Values.image.tag }}
   logging.yml: |-
@@ -117,10 +121,11 @@ data:
 {{- end }}
   pre-stop-hook.sh: |-
     #!/bin/bash
+    exec &> >(tee -a "/var/log/elasticsearch-hooks.log")
     NODE_NAME=${HOSTNAME}
     echo "Prepare to migrate data of the node ${NODE_NAME}"
     echo "Move all data from node ${NODE_NAME}"
-    curl -s -XPUT -H 'Content-Type: application/json' 'localhost:9200/_cluster/settings' -d "{
+    curl -s -XPUT -H 'Content-Type: application/json' '{{ template "elasticsearch.client.fullname" . }}:9200/_cluster/settings' -d "{
       \"transient\" :{
           \"cluster.routing.allocation.exclude._name\" : \"${NODE_NAME}\"
       }
@@ -129,7 +134,7 @@ data:
 
     while true ; do
       echo -e "Wait for node ${NODE_NAME} to become empty"
-      SHARDS_ALLOCATION=$(curl -s -XGET 'http://localhost:9200/_cat/shards')
+      SHARDS_ALLOCATION=$(curl -s -XGET 'http://{{ template "elasticsearch.client.fullname" . }}:9200/_cat/shards')
       if ! echo "${SHARDS_ALLOCATION}" | grep -E "${NODE_NAME}"; then
         break
       fi
@@ -138,11 +143,12 @@ data:
     echo "Node ${NODE_NAME} is ready to shutdown"
   post-start-hook.sh: |-
     #!/bin/bash
+    exec &> >(tee -a "/var/log/elasticsearch-hooks.log")
     NODE_NAME=${HOSTNAME}
-    CLUSTER_SETTINGS=$(curl -s -XGET "http://localhost:9200/_cluster/settings")
+    CLUSTER_SETTINGS=$(curl -s -XGET "http://{{ template "elasticsearch.client.fullname" . }}:9200/_cluster/settings")
     if echo "${CLUSTER_SETTINGS}" | grep -E "${NODE_NAME}"; then
       echo "Activate node ${NODE_NAME}"
-      curl -s -XPUT -H 'Content-Type: application/json' "http://localhost:9200/_cluster/settings" -d "{
+      curl -s -XPUT -H 'Content-Type: application/json' "http://{{ template "elasticsearch.client.fullname" . }}:9200/_cluster/settings" -d "{
         \"transient\" :{
             \"cluster.routing.allocation.exclude._name\" : null
         }

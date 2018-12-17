@@ -27,10 +27,10 @@ The command removes all the Kubernetes components associated with the chart and 
 setting                           | description                                                                                                           | default
 ----------------------------------|-----------------------------------------------------------------------------------------------------------------------|----------
 dmarc2logstash.image.repository   | dmarc2logstash Docker image repository                                                                                | jertel/dmarc2logstash
-dmarc2logstash.image.tag          | dmarc2logstash image tag, typically the version, of the Docker image                                                  | 1.0.0
+dmarc2logstash.image.tag          | dmarc2logstash image tag, typically the version, of the Docker image                                                  | 1.0.2
 dmarc2logstash.image.pullPolicy   | dmarc2logstash Kubernetes image pull policy                                                                           | IfNotPresent
 filebeat.image.repository         | Elastic filebeat Docker image repository                                                                              | docker.elastic.co/beats/filebeat
-filebeat.image.tag                | Elastic filebeat tag, typically the version, of the Docker image                                                      | 6.2.1
+filebeat.image.tag                | Elastic filebeat tag, typically the version, of the Docker image                                                      | 6.2.4
 filebeat.image.pullPolicy         | Elastic filebeat Kubernetes image pull policy                                                                         | IfNotPresent
 filebeat.logstash.host            | Logstash service host; ex: logstash (this value must be provided)                                                     | ""
 filebeat.logstash.port            | Logstash service port                                                                                                 | 5000

@@ -28,13 +28,13 @@ This deployment will not complete. To proceed, run
  helm upgrade {{ .Release.Name }} \
    --set omsagent.secret.wsid=<your_workspace_id> \
    --set omsagent.secret.key=<your_workspace_key> \ 
-   --set omsagent.enc.clusterName=<your_cluster_name> \
-   stable/msoms
+   --set omsagent.env.clusterName=<your_cluster_name> \
+   incubator/azuremonitor-containers
    
 {{- else -}}
 
 {{ .Release.Name }} deployment is complete. 
 Data should start flowing to the Log Analytics workspace shortly. 
-Proceed to https://aka.ms/coinprod if you would like to view this data.
+Proceed to https://aka.ms/azmon-containers if you would like to view this data.
 
 {{- end }}

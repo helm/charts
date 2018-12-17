@@ -1,0 +1,35 @@
+{{- if and .Values.pg.enabled .Values.pg.ingress.enabled -}}
+{{- $fullName := include "hl-composer.fullname" . -}}
+{{- $ingressPath := .Values.pg.ingress.path -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ $fullName }}-pg
+  labels:
+{{ include "labels.standard" . | indent 4 }}
+{{- with .Values.pg.ingress.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
+spec:
+{{- if .Values.pg.ingress.tls }}
+  tls:
+  {{- range .Values.pg.ingress.tls }}
+    - hosts:
+      {{- range .hosts }}
+        - {{ . }}
+      {{- end }}
+      secretName: {{ .secretName }}
+  {{- end }}
+{{- end }}
+  rules:
+  {{- range .Values.pg.ingress.hosts }}
+    - host: {{ . }}
+      http:
+        paths:
+          - path: {{ $ingressPath }}
+            backend:
+              serviceName: {{ $fullName }}-pg
+              servicePort: http
+  {{- end }}
+{{- end }}

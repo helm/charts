@@ -22,13 +22,14 @@ spec:
         component: {{ .Values.insightExecutor.name }}
         release: {{ .Release.Name }}
     spec:
+      serviceAccountName: {{ template "mission-control.serviceAccountName" . }}
     {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
       - name: {{ .Values.imagePullSecrets }}
     {{- end }}
       containers:
       - name: {{ .Values.insightExecutor.name }}
-        image: {{ .Values.insightExecutor.image }}:{{ .Values.insightExecutor.version }}
+        image: {{ .Values.insightExecutor.image }}:{{ default .Chart.AppVersion .Values.insightExecutor.version }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         env:
         - name: CORE_URL
@@ -44,6 +45,12 @@ spec:
         - name: insight-executor-data
           mountPath: {{ .Values.insightExecutor.persistence.mountPath | quote }}
         livenessProbe:
+          httpGet:
+            path: /executorservice/api
+            port: 8080
+          initialDelaySeconds: 180
+          periodSeconds: 10
+        readinessProbe:
           httpGet:
             path: /executorservice/api
             port: 8080

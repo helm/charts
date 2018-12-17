@@ -15,9 +15,7 @@ spec:
   type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.externalPort }}
-{{- if ne .Values.service.type "ClusterIP" }}
       targetPort: {{ .Values.service.internalPort }}
-{{- end }}
       protocol: TCP
       name: {{ .Values.service.name }}
   selector:
@@ -25,7 +23,7 @@ spec:
     release: {{ .Release.Name }}
   {{- if eq .Values.service.type "LoadBalancer"}}
   loadBalancerSourceRanges: {{.Values.service.loadBalancerSourceRanges}}
-  {{- if .Values.service.LoadBalancerIP}}
+  {{- if .Values.service.loadBalancerIP}}
   loadBalancerIP: {{.Values.service.loadBalancerIP}}
   {{- end }}
   {{- end }}

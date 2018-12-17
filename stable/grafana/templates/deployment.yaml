@@ -19,6 +19,9 @@ spec:
       release: {{ .Release.Name }}
   strategy:
     type: {{ .Values.deploymentStrategy }}
+  {{- if ne .Values.deploymentStrategy "RollingUpdate" }}
+    rollingUpdate: null
+  {{- end }}
   template:
     metadata:
       labels:
@@ -33,9 +36,13 @@ spec:
 {{- if .Values.schedulerName }}
       schedulerName: "{{ .Values.schedulerName }}"
 {{- end }}
+{{- if .Values.securityContext }}
       securityContext:
-        runAsUser: 472
-        fsGroup: 472
+{{ toYaml .Values.securityContext | indent 8 }}
+{{- end }}
+{{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName }}
+{{- end }}
 {{- if .Values.dashboards }}
       initContainers:
         - name: download-dashboards
@@ -71,6 +78,10 @@ spec:
               value: "{{ .Values.sidecar.dashboards.label }}"
             - name: FOLDER
               value: "{{ .Values.sidecar.dashboards.folder }}"
+            {{- if .Values.sidecar.dashboards.searchNamespace }}
+            - name: NAMESPACE
+              value: "{{ .Values.sidecar.dashboards.searchNamespace }}"
+            {{- end }}
           resources:
 {{ toYaml .Values.sidecar.resources | indent 12 }}
           volumeMounts:
@@ -86,6 +97,10 @@ spec:
               value: "{{ .Values.sidecar.datasources.label }}"
             - name: FOLDER
               value: "/etc/grafana/provisioning/datasources"
+            {{- if .Values.sidecar.datasources.searchNamespace }}
+            - name: NAMESPACE
+              value: "{{ .Values.sidecar.datasources.searchNamespace }}"
+            {{- end }}
           resources:
 {{ toYaml .Values.sidecar.resources | indent 12 }}
           volumeMounts:
@@ -102,6 +117,9 @@ spec:
             - name: ldap
               mountPath: "/etc/grafana/ldap.toml"
               subPath: ldap.toml
+            - name: storage
+              mountPath: "/var/lib/grafana"
+              subPath: {{ .Values.persistence.subPath }}
 {{- if .Values.dashboards }}
   {{- range $provider, $dashboards := .Values.dashboards }}
     {{- range $key, $value := $dashboards }}
@@ -133,16 +151,19 @@ spec:
             - name: sc-dashboard-volume
               mountPath: {{ .Values.sidecar.dashboards.folder | quote }}
             - name: sc-dashboard-provider
-              mountPath: "/etc/grafana/provisioning/dashboards"
+              mountPath: "/etc/grafana/provisioning/dashboards/sc-dashboardproviders.yaml"
+              subPath: provider.yaml
 {{- end}}
 {{- if .Values.sidecar.datasources.enabled }}
             - name: sc-datasources-volume
               mountPath: "/etc/grafana/provisioning/datasources"
 {{- end}}
-            - name: storage
-              mountPath: "/var/lib/grafana"
-              subPath: {{ .Values.persistence.subPath }}
           {{- range .Values.extraSecretMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              readOnly: {{ .readOnly }}
+          {{- end }}
+          {{- range .Values.extraVolumeMounts }}
             - name: {{ .name }}
               mountPath: {{ .mountPath }}
               readOnly: {{ .readOnly }}
@@ -194,17 +215,9 @@ spec:
                 name: {{ .Values.envFromSecret }}
           {{- end }}
           livenessProbe:
-            httpGet:
-              path: /api/health
-              port: 3000
+{{ toYaml .Values.livenessProbe | indent 12 }}
           readinessProbe:
-            httpGet:
-              path: /api/health
-              port: 3000
-            initialDelaySeconds: 60
-            timeoutSeconds: 30
-            failureThreshold: 10
-            periodSeconds: 10
+{{ toYaml .Values.readinessProbe | indent 12 }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}
@@ -269,5 +282,10 @@ spec:
         - name: {{ .name }}
           secret:
             secretName: {{ .secretName }}
+            defaultMode: {{ .defaultMode }}
       {{- end }}
-
+      {{- range .Values.extraVolumeMounts }}
+        - name: {{ .name }}
+          persistentVolumeClaim:
+            claimName: {{ .existingClaim }}
+      {{- end }}

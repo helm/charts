@@ -65,3 +65,12 @@ resources:
 
 ## Node selector
 nodeSelector: {}
+
+## Tolerations
+tolerations: []
+
+## Affinity
+affinity: {}
+
+podDisruptionBudget: |
+  maxUnavailable: 1

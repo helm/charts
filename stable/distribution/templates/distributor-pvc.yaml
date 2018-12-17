@@ -1,0 +1,24 @@
+{{- if and .Values.distributor.persistence.enabled (not .Values.distributor.persistence.existingClaim) }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ template "distributor.fullname" . }}
+  labels:
+    app: {{ template "distribution.name" . }}
+    chart: {{ template "distribution.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  accessModes:
+    - {{ .Values.distributor.persistence.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.distributor.persistence.size }}
+{{- if .Values.distributor.persistence.storageClass }}
+{{- if (eq "-" .Values.distributor.persistence.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ .Values.distributor.persistence.storageClass }}"
+{{- end }}
+{{- end }}
+{{- end }}

@@ -1,5 +1,7 @@
 # JFrog Xray HA on Kubernetes Helm Chart
 
+**Note: This Chart is Deprecated. We have moved it to stable.**
+
 ## Prerequisites Details
 
 * Kubernetes 1.8+
@@ -182,7 +184,7 @@ The following table lists the configurable parameters of the artifactory chart a
 | `common.stdOutEnabled`                         | Xray enable standard output                  | `true`               |
 | `common.masterKey`  | Xray Master Key Can be generated with `openssl rand -hex 32` | `FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF` |
 | `global.mongoUrl`                              | Xray external MongoDB URL                    | ` `                  |
-| `global.postgresqlUrl`                         | Xray external PostgresSQL URL                | ` `                  |
+| `global.postgresqlUrl`                         | Xray external PostgreSQL URL                | ` `                  |
 | `analysis.name`                                | Xray Analysis name                           | `xray-analysis`      |
 | `analysis.image`                               | Xray Analysis container image                | `docker.bintray.io/jfrog/xray-analysis` |
 | `analysis.internalPort`                        | Xray Analysis internal port                  | `7000`               |

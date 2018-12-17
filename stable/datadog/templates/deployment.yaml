@@ -5,7 +5,10 @@ kind: Deployment
 metadata:
   name: {{ template "datadog.fullname" . }}
   labels:
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: "{{ template "datadog.fullname" . }}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
 spec:
   replicas: {{ .Values.deployment.replicas }}
   template:
@@ -15,12 +18,19 @@ spec:
         type: deployment
       name: {{ template "datadog.fullname" . }}
       annotations:
-        checksum/autoconf-config: {{ toYaml .Values.datadog.autoconf | sha256sum }}
-        checksum/confd-config: {{ toYaml .Values.datadog.confd | sha256sum }}
-        checksum/checksd-config: {{ toYaml .Values.datadog.checksd | sha256sum }}
+        checksum/autoconf-config: {{ tpl (toYaml .Values.datadog.autoconf) . | sha256sum }}
+        checksum/confd-config: {{ tpl (toYaml .Values.datadog.confd) . | sha256sum }}
+        checksum/checksd-config: {{ tpl (toYaml .Values.datadog.checksd) . | sha256sum }}
     spec:
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.image.pullSecrets | indent 8 }}
+      {{- end }}
+      {{- if .Values.deployment.priorityClassName }}
+      priorityClassName: {{ .Values.deployment.priorityClassName }}
+      {{- end }}
       containers:
-      - name: {{ .Chart.Name }}
+      - name: {{ default .Chart.Name .Values.datadog.name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         resources:
@@ -40,14 +50,20 @@ spec:
               secretKeyRef:
                 name: {{ template "datadog.apiSecretName" . }}
                 key: api-key
+          {{- if .Values.datadog.site }}
+          - name: DD_SITE
+            value: {{ .Values.datadog.site | quote }}
+          {{- end }}
+          {{- if .Values.datadog.dd_url }}
+          - name: DD_DD_URL
+            value: {{ .Values.datadog.dd_url | quote }}
+          {{- end }}
           {{- if .Values.datadog.logLevel }}
           - name: DD_LOG_LEVEL
             value: {{ .Values.datadog.logLevel | quote }}
           {{- end }}
           {{- if .Values.datadog.nonLocalTraffic }}
-          - name: NON_LOCAL_TRAFFIC # agent5
-            value: {{ .Values.datadog.nonLocalTraffic | quote }}
-          - name: DD_DOGSTATSD_NON_LOCAL_TRAFFIC # agent6
+          - name: DD_DOGSTATSD_NON_LOCAL_TRAFFIC
             value: {{ .Values.datadog.nonLocalTraffic | quote }}
           {{- end }}
           {{- if .Values.datadog.tags }}
@@ -58,28 +74,32 @@ spec:
           - name: DD_APM_ENABLED
             value: {{ .Values.datadog.apmEnabled | quote }}
           {{- end }}
-          - name: SD_BACKEND
-            value: docker
           - name: KUBERNETES
             value: "yes"
           {{- if .Values.datadog.collectEvents }}
           - name: KUBERNETES_COLLECT_EVENTS
             value: "yes"
           {{- end }}
+          {{- if .Values.datadog.criSocketPath }}
+          - name: DD_CRI_SOCKET_PATH
+            value: {{ .Values.datadog.criSocketPath | quote }}
+          {{- end }}
 {{- if .Values.datadog.env }}
 {{ toYaml .Values.datadog.env | indent 10 }}
 {{- end }}
         volumeMounts:
-          - name: dockersocket
-            mountPath: /var/run/docker.sock
+          {{- if .Values.datadog.useCriSocketVolume }}
+          - name: runtimesocket
+            mountPath: {{ default "/var/run/docker.sock" .Values.datadog.criSocketPath | quote }}
             readOnly: true
+          {{- end }}
           - name: procdir
             mountPath: /host/proc
             readOnly: true
           - name: cgroups
             mountPath: /host/sys/fs/cgroup
             readOnly: true
-          {{- if .Values.datadog.confd }}
+          {{- if (or (.Values.datadog.confd) (.Values.datadog.autoconf)) }}
           - name: confd
             mountPath: /conf.d
             readOnly: true
@@ -89,35 +109,34 @@ spec:
             mountPath: /checks.d
             readOnly: true
           {{- end }}
-          {{- if .Values.datadog.autoconf }}
-          - name: autoconf
-            {{- if hasSuffix "-alpine" .Values.image.tag }}
-            mountPath: /opt/datadog-agent/agent/conf.d/auto_conf
-            {{- else }}
-            mountPath: /etc/dd-agent/conf.d/auto_conf
-            {{- end }}
-            readOnly: true
-          {{- end }}
 {{- if .Values.datadog.volumeMounts }}
 {{ toYaml .Values.datadog.volumeMounts | indent 10 }}
 {{- end }}
+{{- if .Values.datadog.livenessProbe }}
+        livenessProbe:
+{{ toYaml .Values.datadog.livenessProbe | indent 10 }}
+{{- else }}
         livenessProbe:
           exec:
             command:
             - ./probe.sh
           initialDelaySeconds: 15
           periodSeconds: 5
+          failureThreshold: 6
+{{- end }}
       volumes:
+        {{- if .Values.datadog.useCriSocketVolume }}
         - hostPath:
-            path: /var/run/docker.sock
-          name: dockersocket
+            path: {{ default "/var/run/docker.sock" .Values.datadog.criSocketPath | quote }}
+          name: runtimesocket
+        {{- end }}
         - hostPath:
             path: /proc
           name: procdir
         - hostPath:
             path: /sys/fs/cgroup
           name: cgroups
-        {{- if .Values.datadog.confd }}
+        {{- if (or (.Values.datadog.confd) (.Values.datadog.autoconf)) }}
         - name: confd
           configMap:
             name: {{ template "datadog.confd.fullname" . }}
@@ -126,11 +145,6 @@ spec:
         - name: checksd
           configMap:
             name: {{ template "datadog.checksd.fullname" . }}
-        {{- end }}
-        {{- if .Values.datadog.autoconf }}
-        - name: autoconf
-          configMap:
-            name: {{ template "datadog.autoconf.fullname" . }}
         {{- end }}
 {{- if .Values.datadog.volumes }}
 {{ toYaml .Values.datadog.volumes | indent 8 }}

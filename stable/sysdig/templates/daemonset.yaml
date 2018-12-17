@@ -1,3 +1,4 @@
+{{- if .Values.sysdig.accessKey }}
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
@@ -19,10 +20,15 @@ spec:
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
       hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
       hostPID: true
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.image.pullSecrets | indent 8 }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          image: {{ template "sysdig.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
@@ -31,7 +37,7 @@ spec:
           readinessProbe:
             exec:
               command: [ "test", "-e", "/opt/draios/logs/draios.log" ]
-              initialDelaySeconds: 10
+            initialDelaySeconds: 10
           volumeMounts:
             - mountPath: /host/var/run/docker.sock
               name: docker-sock
@@ -57,6 +63,10 @@ spec:
               name: sysdig-agent-config
             - mountPath: /opt/draios/etc/kubernetes/secrets
               name: sysdig-agent-secrets
+            {{- if .Values.customAppChecks }}
+            - mountPath: /opt/draios/lib/python/checks.custom.d
+              name: custom-app-checks-volume
+            {{- end }}
       volumes:
         - name: dshm
           emptyDir:
@@ -86,5 +96,11 @@ spec:
         - name: sysdig-agent-secrets
           secret:
             secretName: {{ template "sysdig.fullname" . }}
+        {{- if .Values.customAppChecks }}
+        - name: custom-app-checks-volume
+          configMap:
+            name: {{ template "sysdig.fullname" . }}-custom-app-checks
+        {{- end }}
   updateStrategy:
     type: {{ default "OnDelete" .Values.daemonset.updateStrategy | quote }}
+{{- end }}
