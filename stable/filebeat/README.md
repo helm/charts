@@ -56,7 +56,9 @@ The following table lists the configurable parameters of the filebeat chart and 
 | `affinity`                                               |                                                                                                          | `{}`                                               |
 | `rbac.create`                                            | Specifies whether RBAC resources should be created                                                       | `true`                                             |
 | `serviceAccount.create`                                  | Specifies whether a ServiceAccount should be created                                                     | `true`                                             |
-| `serviceAccount.name`                                    | he name of the ServiceAccount to use                                                                     | `""`                                               |
+| `serviceAccount.name`                                    | the name of the ServiceAccount to use                                                                     | `""`                                               |
+| `podSecurityPolicy.enabled`                              | Should the PodSecurityPolicy be created. Depends on `rbac.create` being set to `true`.                                                                     | `false`                                               |
+| `podSecurityPolicy.annotations`                                    | Annotations to be added to the created PodSecurityPolicy:                                                                    | `""`                                               |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
