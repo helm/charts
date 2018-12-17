@@ -141,6 +141,7 @@ The following table lists the configurable parameters of the Minio chart and the
 | `defaultBucket.name`       | Bucket name                         | `bucket`                                                |
 | `defaultBucket.policy`     | Bucket policy                       | `none`                                                  |
 | `defaultBucket.purge`      | Purge the bucket if already exists  | `false`                                                 |
+| `buckets`                  | List of buckets to create after minio install  | `[]`                                         |
 | `s3gateway.enabled`        | Use minio as a [s3 gateway](https://github.com/minio/minio/blob/master/docs/gateway/s3.md)| `false` |
 | `s3gateway.replicas`       | Number of s3 gateway instances to run in parallel | `4` |
 | `azuregateway.enabled`     | Use minio as an [azure gateway](https://docs.minio.io/docs/minio-gateway-for-azure)| `false`  |
