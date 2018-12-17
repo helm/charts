@@ -18,6 +18,12 @@ spec:
       labels:
         app: {{ template "unifi.name" . }}
         release: {{ .Release.Name }}
+      {{- if .Values.podAnnotations }}
+      annotations:
+        {{- range $key, $value := .Values.podAnnotations }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
+      {{- end }}
     spec:
       containers:
         - name: {{ .Chart.Name }}
@@ -41,13 +47,13 @@ spec:
               path: /status
               port: https-gui
               scheme: HTTPS
-              initialDelaySeconds: 30
+            initialDelaySeconds: 30
           readinessProbe:
             httpGet:
               path: /status
               port: https-gui
               scheme: HTTPS
-              initialDelaySeconds: 15
+            initialDelaySeconds: 15
           env:
             - name: TZ
               value: "{{ .Values.timezone }}"

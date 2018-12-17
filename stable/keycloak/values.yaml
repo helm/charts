@@ -19,7 +19,7 @@ keycloak:
     ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
     ##
     pullSecrets: []
-    #  - myRegistrKeySecretName
+    # - myRegistrKeySecretName
 
   securityContext:
     runAsUser: 1000
@@ -133,6 +133,8 @@ keycloak:
       /subsystem=infinispan/cache-container=keycloak/distributed-cache=offlineSessions:write-attribute(name=owners, value=${env.CACHE_OWNERS:2})
       /subsystem=infinispan/cache-container=keycloak/distributed-cache=loginFailures:write-attribute(name=owners, value=${env.CACHE_OWNERS:2})
 
+      /subsystem=jgroups/channel=ee:write-attribute(name=stack, value=tcp)
+
     # Custom CLI script
     custom: ""
 
@@ -159,6 +161,9 @@ keycloak:
     # nodePort: 30000
 
     port: 80
+
+    # Optional: jGroups port for high availability clustering
+    jgroupsPort: 7600
 
   ## Ingress configuration.
   ## ref: https://kubernetes.io/docs/user-guide/ingress/

@@ -25,7 +25,7 @@ spec:
       {{- if .Values.priorityClassName }}
       priorityClassName: "{{ .Values.priorityClassName }}"
       {{- end }}
-{{- if or (.Values.dashboardImport.dashboards) (.Values.plugins) }}
+{{- if or (.Values.dashboardImport.dashboards) (.Values.plugins.enabled) }}
       initContainers:
 {{- if .Values.dashboardImport.dashboards }}
       - name: {{ .Chart.Name }}-dashboardimport
@@ -59,7 +59,7 @@ spec:
           subPath: {{ $configFile }}
         {{- end }}
 {{- end }}
-{{- if .Values.plugins}}
+{{- if .Values.plugins.enabled}}
       - name: {{ .Chart.Name }}-plugins-install
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
@@ -68,14 +68,34 @@ spec:
           - "-c"
           - |
             set -e
+            rm -rf plugins/lost+found
             plugins=(
-            {{- range .Values.plugins }}
+            {{- range .Values.plugins.values }}
             {{ . }}
             {{- end }}
             )
+            if {{ .Values.plugins.reset }}
+            then
+              for p in $(./bin/kibana-plugin list | cut -d "@" -f1)
+              do
+                ./bin/kibana-plugin remove ${p}
+              done
+            fi
             for i in "${plugins[@]}"
             do
-               ./bin/kibana-plugin install $i
+              IFS=',' read -ra PLUGIN <<< "$i"
+              pluginInstalledCheck=$(./bin/kibana-plugin list | grep "${PLUGIN[0]}" | cut -d '@' -f1 || true)
+              pluginVersionCheck=$(./bin/kibana-plugin list | grep "${PLUGIN[0]}" | cut -d '@' -f2 || true)
+              if [ "${pluginInstalledCheck}" = "${PLUGIN[0]}" ]
+              then
+                if [ "${pluginVersionCheck}" != "${PLUGIN[1]}" ]
+                then
+                  ./bin/kibana-plugin remove "${PLUGIN[0]}"
+                  ./bin/kibana-plugin install "${PLUGIN[2]}"
+                fi
+              else
+                ./bin/kibana-plugin install "${PLUGIN[2]}"
+              fi
             done
         env:
         {{- range $key, $value := .Values.env }}
@@ -94,6 +114,10 @@ spec:
           mountPath: "/usr/share/kibana/config/{{ $configFile }}"
           subPath: {{ $configFile }}
         {{- end }}
+{{- if .Values.securityContext.enabled }}
+        securityContext:
+          allowPrivilegeEscalation: {{ .Values.securityContext.allowPrivilegeEscalation }}
+{{- end }}
 {{- end }}
 {{- end }}
       containers:
@@ -132,6 +156,8 @@ spec:
             port: {{ .Values.service.internalPort }}
           initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
           timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.readinessProbe.successThreshold }}
+          periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
 {{- end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
@@ -141,7 +167,7 @@ spec:
           mountPath: "/usr/share/kibana/config/{{ $configFile }}"
           subPath: {{ $configFile }}
         {{- end }}
-{{- if .Values.plugins}}
+{{- if .Values.plugins.enabled}}
         - name: plugins
           mountPath: /usr/share/kibana/plugins
 {{- end }}
@@ -162,13 +188,23 @@ spec:
     {{- end }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
+{{- if .Values.securityContext.enabled }}
+      securityContext:
+        runAsUser: {{ .Values.securityContext.runAsUser }}
+        fsGroup: {{ .Values.securityContext.fsGroup }}
+{{- end }}
       volumes:
         - name: {{ template "kibana.name" . }}
           configMap:
             name: {{ template "kibana.fullname" . }}
-{{- if .Values.plugins}}
+{{- if .Values.plugins.enabled}}
         - name: plugins
+          {{- if .Values.persistentVolumeClaim.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ template "kibana.fullname" . }}
+          {{- else }}
           emptyDir: {}
+          {{- end }}
 {{- end }}
 {{- if .Values.dashboardImport.dashboards }}
         - name: {{ template "kibana.fullname" . }}-dashboards

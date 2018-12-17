@@ -75,6 +75,8 @@ keeper:
   nodeSelector: {}
   affinity: {}
   tolerations: []
+  volumes: []
+  volumeMounts: []
 
 proxy:
   replicaCount: 2

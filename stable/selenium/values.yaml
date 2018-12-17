@@ -4,6 +4,12 @@ global:
   ## can also be spceifed at chart level see below
   nodeSelector:
   #  label: value
+  ## Configure HostAliases
+  hostAliases: []
+  affinity:
+  #  label: value
+  tolerations:
+  #  label: value
 
 hub:
   ## The repository and image
@@ -21,14 +27,17 @@ hub:
   ## The port which the hub listens on
   port: 4444
 
-  ## Timeout for probe Hub readiness via HTTP request on Hub status
+  ## Timeout for probe Hub readiness via HTTP request on hub.probePath
   readinessTimeout: 1
 
   ## Initial delay before performing the first readinessProbe
   readinessDelay: 15
 
-  ## Timeout for probe Hub liveness via HTTP request on Hub status
+  ## Timeout for probe Hub liveness via HTTP request on hub.probePath
   livenessTimeout: 1
+
+  ## Path for checking readiness and liveness via HTTP Request
+  probePath: "/wd/hub/status"
 
   ## Set the JAVA_TOOL_OPTIONS environment variable
   ## If you find your selenium hub is OOMKilled, try adding -XX:+UseSerialGC
@@ -53,6 +62,9 @@ hub:
     limits:
       cpu: ".5"
       memory: "512Mi"
+
+  ## Configure annotations on the hub pod
+  podAnnotations: {}
 
   ## The type of service to create
   ##   Values: ClusterIP, NodePort, LoadBalancer, or ExternalName
@@ -125,6 +137,9 @@ chrome:
 
   ## The number of pods in the deployment
   replicas: 1
+
+  ## Configure annotations on the chrome pods
+  podAnnotations: {}
 
   ## Set the JAVA_TOOL_OPTIONS environment variable
   ## If you find your selenium node is OOMKilled, try adding -XX:+UseSerialGC
@@ -202,6 +217,9 @@ chromeDebug:
   ## The number of pods in the deployment
   replicas: 1
 
+  ## Configure annotations on the chrome debug pods
+  podAnnotations: {}
+
   ## Set the JAVA_TOOL_OPTIONS environment variable
   ## If you find your selenium hub is OOMKilled, try adding -XX:+UseSerialGC
   javaOpts: "-Xmx900m"
@@ -277,6 +295,9 @@ firefox:
   ## The number of pods in the deployment
   replicas: 1
 
+  ## Configure annotations on the firefox pods
+  podAnnotations: {}
+
   ## Set the JAVA_TOOL_OPTIONS environment variable
   ## If you find your selenium hub is OOMKilled, try adding -XX:+UseSerialGC
   javaOpts: "-Xmx900m"
@@ -338,6 +359,9 @@ firefoxDebug:
 
   ## The number of pods in the deployment
   replicas: 1
+
+  ## Configure annotations on the firefox debug pods
+  podAnnotations: {}
 
   ## Set the JAVA_TOOL_OPTIONS environment variable
   ## If you find your selenium hub is OOMKilled, try adding -XX:+UseSerialGC

@@ -15,6 +15,9 @@ spec:
       - namespace: {{ .Release.Namespace }}
         name: {{ template "prometheus-operator.fullname" . }}-alertmanager
         port: web
+        {{- if .Values.alertmanager.alertmanagerSpec.routePrefix }}
+        pathPrefix: "{{ .Values.alertmanager.alertmanagerSpec.routePrefix }}"
+        {{- end }}
 {{- end }}
 {{- if .Values.prometheus.prometheusSpec.image }}
   baseImage: {{ .Values.prometheus.prometheusSpec.image.repository }}
@@ -57,13 +60,15 @@ spec:
   secrets:
 {{ toYaml .Values.prometheus.prometheusSpec.secrets | indent 4 }}
 {{- end }}
-{{- if .Values.global.rbac.create }}
-  serviceAccountName: {{ template "prometheus-operator.prometheus.serviceAccountName" . }}
+{{- if .Values.prometheus.prometheusSpec.configMaps }}
+  configMaps:
+{{ toYaml .Values.prometheus.prometheusSpec.configMaps | indent 4 }}
 {{- end }}
+  serviceAccountName: {{ template "prometheus-operator.prometheus.serviceAccountName" . }}
 {{- if .Values.prometheus.prometheusSpec.serviceMonitorSelector }}
   serviceMonitorSelector:
 {{ toYaml .Values.prometheus.prometheusSpec.serviceMonitorSelector | indent 4 }}
-{{ else}}
+{{ else if .Values.prometheus.prometheusSpec.serviceMonitorSelecorNilUsesHelmValues  }}
   serviceMonitorSelector:
     matchLabels:
       release: {{ .Release.Name | quote }}
@@ -91,10 +96,11 @@ spec:
   ruleNamespaceSelector:
 {{ toYaml .Values.prometheus.prometheusSpec.ruleNamespaceSelector | indent 4 }}
 {{- end }}
+{{- if .Values.prometheus.prometheusSpec.ruleSelector }}
   ruleSelector:
-  {{- if .Values.prometheus.prometheusSpec.ruleSelector }}
 {{ toYaml .Values.prometheus.prometheusSpec.ruleSelector | indent 4}}
-  {{- else }}
+{{- else if .Values.prometheus.prometheusSpec.ruleSelectorNilUsesHelmValues }}
+  ruleSelector:    
     matchLabels:
       app: {{ template "prometheus-operator.name" . }}
       release: {{ .Release.Name | quote }}
@@ -145,6 +151,11 @@ spec:
   additionalAlertManagerConfigs:
     name: {{ template "prometheus-operator.fullname" . }}-prometheus-am-confg
     key: additional-alertmanager-configs.yaml
+{{- end }}
+{{- if .Values.prometheus.prometheusSpec.additionalAlertRelabelConfigs }}
+  additionalAlertRelabelConfigs:
+    name: {{ template "prometheus-operator.fullname" . }}-prometheus-am-relabel-confg
+    key: additional-alert-relabel-configs.yaml
 {{- end }}
 {{- if .Values.prometheus.prometheusSpec.containers }}
   containers:
