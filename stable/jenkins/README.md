@@ -194,6 +194,7 @@ It is possible to mount several volumes using `Persistence.volumes` and `Persist
 | `Persistence.ExistingClaim` | Provide the name of a PVC       | `nil`           |
 | `Persistence.AccessMode`    | The PVC access mode             | `ReadWriteOnce` |
 | `Persistence.Size`          | The size of the PVC             | `8Gi`           |
+| `Persistence.SubPath`       | SubPath for jenkins-home mount  | `nil`           |
 | `Persistence.volumes`       | Additional volumes              | `nil`           |
 | `Persistence.mounts`        | Additional mounts               | `nil`           |
 
