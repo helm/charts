@@ -4,10 +4,10 @@ kind: CronJob
 metadata:
   name: {{ template "mysqldump.fullname" . }}
   labels:
-    app: {{ template "mysqldump.name" . }}
-    chart: {{ template "mysqldump.chart" . }}
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app.kubernetes.io/name: {{ include "mysqldump.name" . }}
+    helm.sh/chart: {{ include "mysqldump.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   schedule: "{{ .Values.schedule }}"
   successfulJobsHistoryLimit: {{ .Values.successfulJobsHistoryLimit }}
@@ -26,4 +26,4 @@ spec:
       template:
 {{- $file := .Files.Get "files/job.tpl" }}
 {{ tpl $file . | indent 8 }}
-{{- end -}}
+{{ end }}
