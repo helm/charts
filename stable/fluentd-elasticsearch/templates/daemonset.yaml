@@ -45,6 +45,8 @@ spec:
         - name: OUTPUT_PORT
           value: {{ .Values.elasticsearch.port | quote }}
         - name: LOGSTASH_PREFIX
+          value: {{ .Values.elasticsearch.scheme | quote }}
+        - name: OUTPUT_SCHEME       
           value: {{ .Values.elasticsearch.logstash_prefix | quote }}
         - name: OUTPUT_BUFFER_CHUNK_LIMIT
           value: {{ .Values.elasticsearch.buffer_chunk_limit | quote }}
