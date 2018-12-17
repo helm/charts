@@ -259,9 +259,9 @@ acme:
 dashboard:
   enabled: false
   domain: traefik.example.com
-  service: {}
+  service:
     annotations: {}
-  ingress: {}
+  ingress:
     annotations: {}
   auth: {}
     # basic:
@@ -322,7 +322,7 @@ deployment:
   # labels to add to the pod container metadata
   # podLabels:
   #   key: value
-  annotations: {}
+  podAnnotations: {}
   hostPort:
     httpEnabled: false
     httpsEnabled: false
