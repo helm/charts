@@ -136,6 +136,10 @@ service:
   ## otherwise leave blank
   ##
   # loadBalancerIP:
+  # HTTP Port
+  port: 80
+  # HTTPS Port
+  httpsPort: 443
   ## Use nodePorts to requets some specific ports when usin NodePort
   ## nodePorts:
   ##   http: <to set explicitly, choose port between 30000-32767>

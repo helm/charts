@@ -27,7 +27,7 @@ spec:
         - path: {{ default "/" .path }}
           backend:
             serviceName: {{ template "rabbitmq.fullname" . }}
-            servicePort: {{ .Values.rabbitmq.managerPort }}
+            servicePort: {{ .Values.service.managerPort }}
 {{- if .Values.ingress.tls }}
   tls:
   - hosts:

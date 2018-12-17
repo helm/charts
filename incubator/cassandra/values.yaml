@@ -124,6 +124,10 @@ securityContext:
 ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
 affinity: {}
 
+## Node tolerations for pod assignment
+## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+tolerations: []
+
 rbac:
   # Specifies whether RBAC resources should be created
   create: true
@@ -155,7 +159,7 @@ backup:
 
   image:
     repos: nuvo/cain
-    tag: 0.2.0
+    tag: 0.3.0
 
   # Add additional environment variables
   env:
