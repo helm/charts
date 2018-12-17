@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "airflow.fullname" . }}-scripts
+  labels:
+    app: {{ template "airflow.name" . }}
+    chart: {{ template "airflow.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  install-requirements.sh: |
+    #!/bin/sh -e
+    if [ ! -d {{ .Values.dags.path }} ]; then
+      echo "No folder {{ .Values.dags.path }}"
+      exit 0
+    fi
+    cd {{ .Values.dags.path }}
+    if [ -f requirements.txt ]; then
+      pip install --user -r requirements.txt
+    else
+      exit 0
+    fi

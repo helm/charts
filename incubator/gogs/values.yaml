@@ -56,6 +56,10 @@ service:
     ##
     disableHttpGit: false
 
+    ## Lock the path /install to configure gogs
+    ##
+    installLock: true
+
     ## Indicates whether or not to enable repository file upload feature.
     ##
     repositoryUploadEnabled: true
@@ -328,3 +332,5 @@ postgresql:
     ## Enable PostgreSQL persistence using Persistent Volume Claims.
     ##
     enabled: true
+## Security context
+securityContext: {}
