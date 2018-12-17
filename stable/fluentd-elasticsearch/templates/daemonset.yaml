@@ -11,6 +11,8 @@ metadata:
     heritage: "{{ .Release.Service }}"
     release: "{{ .Release.Name }}"
 spec:
+  updateStrategy:
+{{ toYaml .Values.updateStrategy | indent 4 }}
   selector:
     matchLabels:
       app: {{ template "fluentd-elasticsearch.fullname" . }}
