@@ -280,6 +280,11 @@ $ helm install --name my-release stable/prometheus-operator -f values1.yaml,valu
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
+
+## Developing Prometheus Rules and Grafana Dashboards
+
+This chart Grafana Dashboards and Prometheus Rules are just a copy from coreos/prometheus-operator and other sources, synced (with alterations) by scripts in [hack](hack) folder. In order to introduce any changes you need to first [add them to original repo](https://github.com/coreos/prometheus-operator/blob/master/contrib/kube-prometheus/docs/developing-prometheus-rules-and-grafana-dashboards.md) and then sync there by scripts.
+
 ## Further Information
 
 For more in-depth documentation of configuration options meanings, please see
