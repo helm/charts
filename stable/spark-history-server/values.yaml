@@ -52,3 +52,14 @@ hdfs:
   coreSiteConfigMap: core-site
   logDirectory: hdfs://hdfs/history/
   HADOOP_CONF_DIR: /etc/hadoop
+
+s3:
+  enableS3: false
+  enableIAM: true
+  # Omit for IAM role-based or provider-based authentication.
+  secret: aws-secrets
+  # accessKeyName is a is AWS access key ID. Omit for IAM role-based or provider-based authentication.
+  accessKeyName: aws-access-key
+  # secretKey is AWS secret key. Omit for IAM role-based or provider-based authentication.
+  secretKeyName: aws-secret-key
+  logDirectory: s3a://spark-hs/

@@ -40,6 +40,9 @@ spec:
       securityContext:
 {{ toYaml .Values.securityContext | indent 8 }}
 {{- end }}
+{{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName }}
+{{- end }}
 {{- if .Values.dashboards }}
       initContainers:
         - name: download-dashboards
@@ -160,6 +163,11 @@ spec:
               mountPath: {{ .mountPath }}
               readOnly: {{ .readOnly }}
           {{- end }}
+          {{- range .Values.extraVolumeMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              readOnly: {{ .readOnly }}
+          {{- end }}
           ports:
             - name: service
               containerPort: {{ .Values.service.port }}
@@ -275,4 +283,9 @@ spec:
           secret:
             secretName: {{ .secretName }}
             defaultMode: {{ .defaultMode }}
+      {{- end }}
+      {{- range .Values.extraVolumeMounts }}
+        - name: {{ .name }}
+          persistentVolumeClaim:
+            claimName: {{ .existingClaim }}
       {{- end }}

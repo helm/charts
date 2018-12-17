@@ -50,11 +50,14 @@ The following table lists the configurable parameters of the Node Exporter chart
 | `service.type`                    | Service type                                                                                                                  | `ClusterIP`                             |     |
 | `service.port`                    | The service port                                                                                                              | `9100`                                  |     |
 | `service.targetPort`              | The target port of the container                                                                                              | `9100`                                  |     |
-| `service.annotations`             | Kubernetes service annotations | `{prometheus.io/scrape: "true"}` |
+| `service.nodePort`                | The node port of the service                                                                                                  |                                         |     |
+| `service.annotations`             | Kubernetes service annotations                                                                                                | `{prometheus.io/scrape: "true"}`        |     |
 | `serviceAccount.create`           | Specifies whether a service account should be created.                                                                        | `true`                                  |     |
 | `serviceAccount.name`             | Service account to be used. If not set and `serviceAccount.create` is `true`, a name is generated using the fullname template |                                         |     |
 | `serviceAccount.imagePullSecrets` | Specify image pull secrets                                                                                                    | `[]`                                    |     |
+| `securityContext`                 | SecurityContext                                                                                                               | `{"runAsNonRoot": true, "runAsUser": 65534}` |     |
 | `tolerations`                     | List of node taints to tolerate                                                                                               | `- effect: NoSchedule operator: Exists` |     |
+| `priorityClassName`               | Name of Priority Class to assign pods                                                                                         | `nil`                                   |     |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
