@@ -3,7 +3,7 @@ image:
 ## Specify an imagePullPolicy (Required)
 ## It's recommended to change this to 'Always' if the image tag is 'latest'
 ## ref: http://kubernetes.io/docs/user-guide/images/#updating-images
-  tag: v2.3.1
+  tag: v2.3.2
   pullPolicy: IfNotPresent
 
 ## Configure resource requests and limits
@@ -23,6 +23,12 @@ elasticsearch:
   buffer_chunk_limit: 2M
   buffer_queue_limit: 8
   logstash_prefix: 'logstash'
+
+# If you want to add custom environment variables, use the env dict
+# You can then reference these in your config file e.g.:
+#     user "#{ENV['OUTPUT_USER']}"
+env:
+  # OUTPUT_USER: my_user
 
 rbac:
   create: true
