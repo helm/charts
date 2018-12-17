@@ -17,6 +17,6 @@ home: https://docs.microsoft.com/en-us/azure/monitoring/monitoring-container-hea
 icon: https://raw.githubusercontent.com/Microsoft/OMS-docker/ci_feature/img/azuremonitor-containers.svg
 sources:
   - https://github.com/Microsoft/OMS-docker/tree/ci_feature_prod
-maintainer:
+maintainers:
   - name: Vishwanath Narasimhan
     email: visnara@microsoft.com
