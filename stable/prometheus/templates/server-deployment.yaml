@@ -1,3 +1,4 @@
+{{- if not .Values.server.statefulSet.enabled -}}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -6,13 +7,12 @@ metadata:
 {{ toYaml .Values.server.deploymentAnnotations | indent 4 }}
 {{- end }}
   labels:
-    app: {{ template "prometheus.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    component: "{{ .Values.server.name }}"
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    {{- include "prometheus.server.labels" . | nindent 4 }}
   name: {{ template "prometheus.server.fullname" . }}
 spec:
+  selector:
+    matchLabels:
+      {{- include "prometheus.server.matchLabels" . | nindent 6 }}
   replicas: {{ .Values.server.replicaCount }}
   {{- if .Values.server.strategy }}
   strategy:
@@ -25,9 +25,7 @@ spec:
 {{ toYaml .Values.server.podAnnotations | indent 8 }}
     {{- end }}
       labels:
-        app: {{ template "prometheus.name" . }}
-        component: "{{ .Values.server.name }}"
-        release: {{ .Release.Name }}
+        {{- include "prometheus.server.labels" . | nindent 8 }}
     spec:
 {{- if .Values.server.affinity }}
       affinity:
@@ -198,3 +196,4 @@ spec:
           configMap:
             name: {{ .configMap }}
       {{- end }}
+{{- end -}}
