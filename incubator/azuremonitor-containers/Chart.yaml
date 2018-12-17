@@ -11,6 +11,8 @@ keywords:
   - logs
   - containerhealth
   - kubernetesmonitoring
+  - acs-engine
+  - aks-engine
 home: https://docs.microsoft.com/en-us/azure/monitoring/monitoring-container-health
 icon: https://raw.githubusercontent.com/Microsoft/OMS-docker/ci_feature/img/azuremonitor-containers.svg
 sources:
