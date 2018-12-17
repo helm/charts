@@ -2,8 +2,8 @@
 
 image:
   repository: falcosecurity/falco
-  tag: latest
-  pullPolicy: Always
+  tag: 0.13.0
+  pullPolicy: IfNotPresent
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
