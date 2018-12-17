@@ -54,12 +54,6 @@ rabbitmq:
   ##
   # rabbitmqClusterNodeName:
 
-  ## RabbitMQ Disk free limit
-  ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
-  ## ref: https://www.rabbitmq.com/disk-alarms.html
-  ##
-  diskFreeLimit: '"6GiB"'
-
   ## RabbitMQ Max File Descriptors
   ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
   ## ref: https://www.rabbitmq.com/install-debian.html#kernel-resource-limits
@@ -77,6 +71,7 @@ rabbitmq:
 
   ## Configution file content
   configuration: |-
+      disk_free_limit.absolute = 4GB
       ## Clustering
       cluster_formation.peer_discovery_backend  = rabbit_peer_discovery_k8s
       cluster_formation.k8s.host = kubernetes.default.svc.cluster.local

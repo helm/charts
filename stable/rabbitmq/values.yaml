@@ -77,6 +77,7 @@ rabbitmq:
 
   ## Configution file content
   configuration: |-
+      disk_free_limit.absolute = 4GB
       ## Clustering
       cluster_formation.peer_discovery_backend  = rabbit_peer_discovery_k8s
       cluster_formation.k8s.host = kubernetes.default.svc.cluster.local
