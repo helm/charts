@@ -11,13 +11,16 @@ metadata:
     chart: {{ template "prometheus-postgres-exporter.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+{{- if .Values.service.labels }}
+{{ toYaml .Values.service.labels | trim | indent 4 }}
+{{- end }}
 spec:
   type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.port }}
       targetPort: {{ .Values.service.targetPort }}
       protocol: TCP
-      name: http
+      name: {{ .Values.service.name }}
   selector:
     app: {{ template "prometheus-postgres-exporter.name" . }}
     release: {{ .Release.Name }}
