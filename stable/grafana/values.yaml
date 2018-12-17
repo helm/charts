@@ -24,7 +24,7 @@ livenessProbe:
 
 image:
   repository: grafana/grafana
-  tag: 5.3.4
+  tag: 5.4.1
   pullPolicy: IfNotPresent
 
   ## Optionally specify an array of imagePullSecrets.
@@ -37,6 +37,9 @@ image:
 securityContext:
   runAsUser: 472
   fsGroup: 472
+
+## Assign a PriorityClassName to pods if set
+# priorityClassName:
 
 downloadDashboardsImage:
   repository: appropriate/curl

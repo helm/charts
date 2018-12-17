@@ -74,6 +74,7 @@ The following table lists the configurable parameters of the Ghost chart and the
 | `service.port`                    | Service HTTP port                    | `80`                                          |
 | `service.nodePorts.http`                 | Kubernetes http node port                  | `""`                                                    |
 | `service.externalTrafficPolicy`      | Enable client source IP preservation                       | `Cluster`                                     |
+| `service.loadBalancerIP`      | LoadBalancerIP for the Ghost service                       | ``                                     |
 | `ingress.enabled`                   | Enable ingress controller resource                            | `false`                                                  |
 | `ingress.hosts[0].name`             | Hostname to your Ghost installation                           | `ghost.local`                                            |
 | `ingress.hosts[0].path`             | Path within the url structure                                 | `/`                                                      |
