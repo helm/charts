@@ -118,6 +118,9 @@ spec:
         - --default-backend-service={{ .Release.Namespace }}/{{ template "kong.fullname" . }}-proxy
         # Service from were we extract the IP address/es to use in Ingress status
         - --publish-service={{ .Release.Namespace }}/{{ template "kong.fullname" . }}-proxy
+        # Set the ingress class
+        - --ingress-class={{ .Values.ingressController.ingressClass }}
+        - --election-id=kong-ingress-controller-leader-{{ .Values.ingressController.ingressClass }}
         env:
         - name: POD_NAME
           valueFrom:

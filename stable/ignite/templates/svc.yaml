@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "ignite.fullname" . }}
+  labels:
+    app: {{ include "ignite.fullname" . }}
+spec:
+  ports:
+    - name: jdbc
+      port: 11211
+      targetPort: 11211
+    - name: spi-communication
+      port: 47100
+      targetPort: 47100
+    - name: spi-discovery
+      port: 47500
+      targetPort: 47500
+    - name: jmx
+      port: 49112
+      targetPort: 49112
+    - name: sql
+      port: 10800
+      targetPort: 10800
+    - name: rest
+      port: 8080
+      targetPort: 8080
+    - name: thin-clients
+      port: 10900
+      targetPort: 10900
+  clusterIP: None
+  selector:
+    app: {{ include "ignite.fullname" . }}
