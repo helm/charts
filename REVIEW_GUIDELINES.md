@@ -37,15 +37,15 @@ Stable charts should not depend on charts in incubator.
 Resources and labels should follow some conventions. The standard resource metadata (`metadata.labels` and `spec.template.metadata.labels`) should be this:
 
 ```yaml
-name: {{ template "myapp.fullname" . }}
+name: {{ include "myapp.fullname" . }}
 labels:
-  app.kubernetes.io/name: {{ template "myapp.name" . }}
+  app.kubernetes.io/name: {{ include "myapp.name" . }}
   app.kubernetes.io/instance: {{ .Release.Name }}
   app.kubernetes.io/managed-by: {{ .Release.Service }}
-  helm.sh/chart: {{ template "myapp.chart" . }}
+  helm.sh/chart: {{ include "myapp.chart" . }}
 ```
 
-If a chart has multiple components, a `app.kubernetes.io/component` label should be added (e. g. `app.kubernetes.io/component: server`). The resource name should get the component as suffix (e. g. `name: {{ template "myapp.fullname" . }}-server`).
+If a chart has multiple components, a `app.kubernetes.io/component` label should be added (e. g. `app.kubernetes.io/component: server`). The resource name should get the component as suffix (e. g. `name: {{ include "myapp.fullname" . }}-server`).
 
 Note that templates have to be namespaced. With Helm 2.7+, `helm create` does this out-of-the-box. The `app.kubernetes.io/name` label should use the `name` template, not `fullname` as is still the case with older charts.
 
@@ -56,7 +56,7 @@ Note that templates have to be namespaced. With Helm 2.7+, `helm create` does th
 ```yaml
 selector:
   matchLabels:
-    app.kubernetes.io/name: {{ template "myapp.name" . }}
+    app.kubernetes.io/name: {{ include "myapp.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
 ```
 
@@ -84,7 +84,7 @@ Label selectors for services must have both `app.kubernetes.io/name` and `app.ku
 
 ```yaml
 selector:
-  app.kubernetes.io/name: {{ template "myapp.name" . }}
+  app.kubernetes.io/name: {{ include "myapp.name" . }}
   app.kubernetes.io/instance: {{ .Release.Name }}
 ```
 
@@ -98,11 +98,11 @@ In case of a `Statefulset`, `spec.volumeClaimTemplates.metadata.labels` must hav
 
 ```yaml
 labels:
-  app.kubernetes.io/name: {{ template "myapp.name" . }}
+  app.kubernetes.io/name: {{ include "myapp.name" . }}
   app.kubernetes.io/instance: {{ .Release.Name }}
 ```
 
-If a chart has multiple components, a `component` label should be added to the selector (see above).
+If a chart has multiple components, a `app.kubernetes.io/component` label should be added to the selector (see above).
 
 ### PersistentVolumeClaim
 
@@ -172,12 +172,12 @@ volumes:
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ include "fullname" . }}
   labels:
-    app.kubernetes.io/name: {{ template "myapp.name" . }}
+    app.kubernetes.io/name: {{ include "myapp.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
-    helm.sh/chart: {{ template "myapp.chart" . }}
+    helm.sh/chart: {{ include "myapp.chart" . }}
 spec:
   accessModes:
     - {{ .Values.persistence.accessMode | quote }}
@@ -218,17 +218,17 @@ apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
 metadata:
   labels:
-    app.kubernetes.io/name: {{ template "myapp.name" . }}
+    app.kubernetes.io/name: {{ include "myapp.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
-    helm.sh/chart: {{ template "myapp.chart" . }}
+    helm.sh/chart: {{ include "myapp.chart" . }}
     app.kubernetes.io/component: "{{ .Values.name }}"
-  name: {{ template "helm-chart.fullname" . }}
+  name: {{ include "helm-chart.fullname" . }}
 spec:
   scaleTargetRef:
     apiVersion: apps/v1beta1
     kind: Deployment
-    name: {{ template "helm-chart.fullname" . }}
+    name: {{ include "helm-chart.fullname" . }}
   minReplicas: {{ .Values.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.autoscaling.maxReplicas }}
   metrics:
@@ -273,10 +273,10 @@ kind: Ingress
 metadata:
   name: {{ include "fullname" }}
   labels:
-    app.kubernetes.io/name: {{ template "myapp.name" . }}
+    app.kubernetes.io/name: {{ include "myapp.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
-    helm.sh/chart: {{ template "myapp.chart" . }}
+    helm.sh/chart: {{ include "myapp.chart" . }}
 {{- with .Values.ingress.annotations }}
   annotations:
 {{ toYaml . | indent 4 }}
