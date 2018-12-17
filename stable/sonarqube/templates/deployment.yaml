@@ -111,15 +111,10 @@ spec:
             periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
             failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
           volumeMounts:
-            - mountPath: /opt/sonarqube/conf
-              name: sonarqube
-              subPath: conf
-            - mountPath: /tmp-script/
-              name: startup
             {{- if .Values.sonarProperties }}
-            - name: config
-              mountPath: /tmp/conf/
-            {{- end}}
+            - mountPath: /opt/sonarqube/conf/
+              name: config
+            {{- end }}
             - mountPath: /opt/sonarqube/data
               name: sonarqube
               subPath: data
@@ -141,7 +136,7 @@ spec:
 {{ toYaml .Values.affinity | indent 8 }}
     {{- end }}
       volumes:
-      {{- if .Values.sonarProperties}}
+      {{- if .Values.sonarProperties }}
       - name: config
         configMap:
           name: {{ template "sonarqube.fullname" . }}-config
@@ -155,12 +150,6 @@ spec:
           items:
             - key: install_plugins.sh
               path: install_plugins.sh
-      - name: startup
-        configMap:
-          name: {{ template "sonarqube.fullname" . }}-startup
-          items:
-            - key: startup.sh
-              path: startup.sh
       - name: sonarqube
         {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
