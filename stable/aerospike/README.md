@@ -45,11 +45,11 @@ The chart can be customized using the following configurable parameters:
 | `replicaCount`                  | Aerospike Brokers                                               | `1`                          |
 | `command`                       | Custom command (Docker Entrypoint)                              | `[]`                         |
 | `args`                          | Custom args (Docker Cmd)                                        | `[]`                         |
-| `persistentVolume`              | config of persistent volumes for storage-engine                 | `{}`                         |
-| `confFile`                      | config filename. This file should be included in the chart path | `aerospike.conf`             |
-| `resources`                     | resource requests and limits                                    | `{}`                         |
+| `persistentVolume`              | Config of persistent volumes for storage-engine                 | `{}`                         |
+| `confFile`                      | Config filename. This file should be included in the chart path | `aerospike.conf`             |
+| `resources`                     | Resource requests and limits                                    | `{}`                         |
 | `nodeSelector`                  | Labels for pod assignment                                       | `{}`                         |
-| `terminationGracePeriodSeconds` | wit time before forcefully terminating container                | `30`                         |
+| `terminationGracePeriodSeconds` | Wait time before forcefully terminating container                | `30`                         |
 
 Specify parameters using `--set key=value[,key=value]` argument to `helm install`
 
