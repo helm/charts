@@ -4,6 +4,8 @@ global:
   ## can also be spceifed at chart level see below
   nodeSelector:
   #  label: value
+  ## Configure HostAliases
+  hostAliases: []
   affinity:
   #  label: value
   tolerations:

@@ -80,6 +80,8 @@ spec:
             {{- end }}
           resources:
 {{ toYaml .Values.firefox.resources | indent 12 }}
+      hostAliases:
+{{ toYaml .Values.global.hostAliases | indent 8 }}
       nodeSelector:
 {{- if .Values.firefox.nodeSelector }}
 {{ toYaml .Values.firefox.nodeSelector | indent 8  }}
