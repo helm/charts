@@ -33,6 +33,7 @@ their default values.
 | `image.pullPolicy`                   | Container pull policy                                 | `IfNotPresent`                               |
 | `image.repository`                   | Container image to use                                | `quay.io/pires/docker-elasticsearch-curator` |
 | `image.tag`                          | Container image tag to deploy                         | `5.5.4`                                      |
+| `hooks`                              | Whether to run job on selected hooks                  | `{ "install": false, "upgrade": false }`     |
 | `cronjob.schedule`                   | Schedule for the CronJob                              | `0 1 * * *`                                  |
 | `cronjob.annotations`                | Annotations to add to the cronjob                     | {}                                           |
 | `cronjob.concurrencyPolicy`          | `Allow|Forbid|Replace` concurrent jobs                | `nil`                                        |
