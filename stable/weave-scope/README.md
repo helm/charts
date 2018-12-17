@@ -70,9 +70,9 @@ The **agent** section controls how the Weave Scope node agent pods are installed
 
 | Parameter | Description | Default |
 |----------:|:------------|:--------|
-| **enabled** | controls whether the agent is deployed | true |
+| **enabled** | controls whether the agent is deployed | `true` |
+| **dockerBridge** | the name of the Docker bridge interface | `docker0` |
 | **disableFrontendControls** | disable controls for frontend, like delete, reset, run shell, etc | false |
-| **dockerBridge** | the name of the Docker bridge interface | "docker0" |
 | **scopeFrontendAddr** | the host:port of a Scope frontend to send data to -- this is only needed in cases where the frontend is deployed separately from the agent (e.g. an install outside the cluster or a pre-existing install inside it) | |
 | **probeToken** | the token used to connect to Weave Cloud -- this is not needed for connecting to non-cloud Scope frontends | |
 | **rbac.*** | controls RBAC resource creation/use | |
