@@ -28,7 +28,9 @@ spec:
       {{- if and (.Values.tolerations) (semverCompare "<1.6-0" .Capabilities.KubeVersion.GitVersion) }}
         scheduler.alpha.kubernetes.io/tolerations: '{{ toJson .Values.tolerations }}'
       {{- end }}
+      {{- if .Values.deployment.podAnnotations }}
       {{- toYaml .Values.deployment.podAnnotations | indent 4 }}
+      {{- end }}
       labels:
         app: {{ template "traefik.name" . }}
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
