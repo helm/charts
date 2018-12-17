@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ template "kuberhealthy.name" . }}
+    release: {{ .Release.Name }}
+  {{ if .Values.prometheus.enabled -}}
+  {{ if .Values.prometheus.enableScraping -}}
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: {{ .Values.service.externalPort | quote }}
+    prometheus.io/path: "/metrics"
+  {{ end -}}
+  {{ end -}}
+  name: {{ template "kuberhealthy.name" . }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+  - port: {{ .Values.service.externalPort }}
+    name: http
+    targetPort: 8080
+  selector:
+    app: {{ template "kuberhealthy.name" . }}
+    release: {{ .Release.Name }}
