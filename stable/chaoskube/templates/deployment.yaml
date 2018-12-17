@@ -17,6 +17,7 @@ spec:
   template:
     metadata:
       labels:
+        component: "server"
 {{ include "labels.standard" . | indent 8 }}
 {{- with .Values.podAnnotations }}
       annotations:
