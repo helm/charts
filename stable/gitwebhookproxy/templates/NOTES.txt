@@ -1,0 +1,1 @@
+Update the webhookurl with gitwebhookproxy public url and secret in your github/gitlab repo to start using gitwebhookproxy.

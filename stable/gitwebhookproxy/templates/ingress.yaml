@@ -1,0 +1,33 @@
+{{- if .Values.gitWebhookProxy.ingress.enabled }}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+{{- if .Values.gitWebhookProxy.ingress.annotations }}
+  annotations:
+{{ toYaml .Values.gitWebhookProxy.ingress.annotations | indent 4 }}
+{{- end }}
+  labels:
+{{ include "gitwebhookproxy.labels.selector" . | indent 4 }}
+{{ include "gitwebhookproxy.labels.chart" . | indent 4 }}
+{{- if .Values.gitWebhookProxy.useCustomName }}
+  name: {{ .Values.gitWebhookProxy.customName }}
+{{- else }}
+  name: {{ template "gitwebhookproxy.name" . }}
+{{- end }}
+  namespace: {{ .Values.gitWebhookProxy.namespace }}
+spec:
+  rules:
+  - host: {{ .Values.gitWebhookProxy.ingress.host }}
+    http:
+      paths:
+      - backend:
+        {{- if .Values.gitWebhookProxy.useCustomName }}
+          serviceName: {{ .Values.gitWebhookProxy.customName }}
+        {{- else }}
+          serviceName: {{ template "gitwebhookproxy.name" . }}
+        {{- end }}
+          servicePort: 80
+  tls:
+  - hosts:
+    - {{ .Values.gitWebhookProxy.ingress.host }}
+{{- end }}

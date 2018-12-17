@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  annotations:
+    fabric8.io/target-platform: kubernetes
+  labels:
+{{ include "gitwebhookproxy.labels.selector" . | indent 4 }}
+{{ include "gitwebhookproxy.labels.chart" . | indent 4 }}
+{{- if .Values.gitWebhookProxy.useCustomName }}
+  name: {{ .Values.gitWebhookProxy.customName }}
+{{- else }}
+  name: {{ template "gitwebhookproxy.name" . }}
+{{- end }}
+data:
+  {{- with .Values.gitWebhookProxy.config.provider }}
+  provider: {{ . }}
+  {{- end }}
+  upstreamURL: {{ .Values.gitWebhookProxy.config.upstreamURL }}
+  {{- with .Values.gitWebhookProxy.config.allowedPaths }}
+  allowedPaths: {{ . }}
+  {{- end }}
+  {{- with .Values.gitWebhookProxy.config.ignoredUsers }}
+  ignoredUsers: {{ . }}
+  {{- end }}

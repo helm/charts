@@ -1,0 +1,27 @@
+# Generated from /kubernetes/templates/chart/Chart.yaml.tmpl
+
+apiVersion: v1
+name: gitwebhookproxy
+description: GitWebhookProxy chart that runs on kubernetes
+version: 1.0.0
+appVersion: 0.2.56
+keywords:
+  - GitWebhookProxy
+  - kubernetes
+home: https://github.com/stakater/GitWebhookProxy
+sources:
+- https://github.com/stakater/GitWebhookProxy
+icon: https://raw.githubusercontent.com/stakater/GitWebhookProxy/master/assets/web/gitwebhookproxy-round-100px.png
+maintainers:
+- name: rasheedamir
+  email: rasheed@aurorasolutions.io
+- name: waseem-h
+  email: waseemhassan@stakater.com
+- name: faizanahmad055
+  email: faizan.ahmad55@outlook.com
+- name: kahootali
+  email: ali.kahoot@aurorasolutions.io
+- name: ahmadiq
+  email: ahmad@aurorasolutions.io
+- name: ahsan-storm
+  email: ahsanmuhammad1@outlook.com

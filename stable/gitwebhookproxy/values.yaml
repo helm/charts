@@ -1,0 +1,36 @@
+gitWebhookProxy:
+  useCustomName: false
+  customName: gitlabwebhookproxy
+  namespace: default
+  image:
+    name: stakater/gitwebhookproxy
+    tag: "0.2.56"
+    pullPolicy: IfNotPresent
+  deployment:
+    labels:
+      provider: stakater
+      group: com.stakater.platform
+      version: 0.2.56
+    annotations: {}
+  config:
+    provider: github
+    upstreamURL: "https://jenkins.test"
+    allowedPaths: "/github-webhook,/project"
+    secret: "iamsecret"
+    ignoredUsers: "stakater-user"
+  service:
+    labels:
+      expose: "true"
+    annotations: {}
+    ports:
+      - name: http
+        port: 80
+        protocol: TCP
+        targetPort: 8080
+  ingress:
+    enabled: false
+    annotations: {}
+    host: gitwebhookproxy.test
+    serviceName: gitwebhookproxy
+    servicePort: 80
+
