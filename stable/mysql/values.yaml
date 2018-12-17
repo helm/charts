@@ -4,6 +4,14 @@
 image: "mysql"
 imageTag: "5.7.14"
 
+busybox:
+  image: "busybox"
+  tag: "1.29.3"
+
+testFramework:
+  image: "dduportal/bats"
+  tag: "0.4.0"
+
 ## Specify password for root user
 ##
 ## Default: random 10 character string

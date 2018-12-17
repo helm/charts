@@ -240,7 +240,10 @@ alertmanager:
     ## This defaults to non root user with uid 1000 and gid 2000.	*v1.PodSecurityContext	false
     ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
     ##
-    securityContext: {}
+    securityContext:
+      runAsNonRoot: true
+      runAsUser: 1000
+      fsGroup: 2000
 
     ## ListenLocal makes the Alertmanager server listen on loopback, so that it does not bind against the Pod IP.
     ## Note this is only for the Alertmanager UI, not the gossip communication.
@@ -538,7 +541,7 @@ prometheusOperator:
   ##
   image:
     repository: quay.io/coreos/prometheus-operator
-    tag: v0.25.0
+    tag: v0.26.0
     pullPolicy: IfNotPresent
 
   ## Configmap-reload image to use for reloading configmaps
@@ -551,7 +554,7 @@ prometheusOperator:
   ##
   prometheusConfigReloaderImage:
     repository: quay.io/coreos/prometheus-config-reloader
-    tag: v0.25.0
+    tag: v0.26.0
 
   ## Hyperkube image to use when cleaning up
   ##
@@ -703,6 +706,12 @@ prometheus:
     ##
     ruleNamespaceSelector: {}
 
+    ## If true, a nil or {} value for prometheus.prometheusSpec.ruleSelector will cause the
+    ## prometheus resource to be created with selectors based on values in the helm deployment,
+    ## which will also match the PrometheusRule resources created
+    ##
+    ruleSelectorNilUsesHelmValues: true
+
     ## Rules CRD selector
     ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/design.md
     ## If unspecified the release `app` and `release` will be used as the label selector
@@ -724,8 +733,14 @@ prometheus:
     #   matchLabels:
     #     role: example-rules
 
+    ## If true, a nil or {} value for prometheus.prometheusSpec.serviceMonitorSelector will cause the
+    ## prometheus resource to be created with selectors based on values in the helm deployment,
+    ## which will also match the servicemonitors created
+    ##
+    serviceMonitorSelecorNilUsesHelmValues: true
+
     ## serviceMonitorSelector will limit which servicemonitors are used to create scrape
-    ## configs in Prometheus. By default all are loaded
+    ## configs in Prometheus. See serviceMonitorSelectorUseHelmLabels
     ##
     serviceMonitorSelector: {}
 
@@ -877,7 +892,10 @@ prometheus:
     ## This defaults to non root user with uid 1000 and gid 2000.
     ## https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md
     ##
-    securityContext: {}
+    securityContext:
+      runAsNonRoot: true
+      runAsUser: 1000
+      fsGroup: 2000
 
     ## 	Priority class assigned to the Pods
     ##
