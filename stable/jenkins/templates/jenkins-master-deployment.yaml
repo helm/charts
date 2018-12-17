@@ -73,6 +73,9 @@ spec:
             -
               mountPath: /var/jenkins_home
               name: jenkins-home
+              {{- if .Values.Persistence.SubPath }}
+              subPath: {{ .Values.Persistence.SubPath }}
+              {{- end }}
             -
               mountPath: /var/jenkins_config
               name: jenkins-config
@@ -175,6 +178,9 @@ spec:
               mountPath: /var/jenkins_home
               name: jenkins-home
               readOnly: false
+              {{- if .Values.Persistence.SubPath }}
+              subPath: {{ .Values.Persistence.SubPath }}
+              {{- end }}
             -
               mountPath: /var/jenkins_config
               name: jenkins-config
