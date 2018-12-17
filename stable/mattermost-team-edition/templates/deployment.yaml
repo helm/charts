@@ -6,6 +6,7 @@ metadata:
     app.kubernetes.io/name: {{ include "mattermost-team-edition.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "mattermost-team-edition.chart" . }}
 spec:
   replicas: 1
   strategy:
@@ -25,6 +26,7 @@ spec:
         app.kubernetes.io/name: {{ include "mattermost-team-edition.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
         app.kubernetes.io/managed-by: {{ .Release.Service }}
+        helm.sh/chart: {{ include "mattermost-team-edition.chart" . }}
     spec:
       initContainers:
       {{- if not .Values.externalDB.enabled }}
