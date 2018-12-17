@@ -94,11 +94,11 @@ spec:
         {{- end }}
         ports:
         - name: client
-          containerPort: {{ .Values.clientService.port }}
+          containerPort: {{ .Values.client.service.port }}
         - name: cluster
-          containerPort: {{ .Values.clusterService.port }}
+          containerPort: {{ .Values.cluster.service.port }}
         - name: monitoring
-          containerPort: {{ .Values.monitoringService.port }}
+          containerPort: {{ .Values.monitoring.service.port }}
         {{- if .Values.livenessProbe.enabled }}
         livenessProbe:
           httpGet:
@@ -136,7 +136,7 @@ spec:
         imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
         args:
 {{ toYaml .Values.metrics.args | indent 10 -}}
-          - "http://localhost:{{ .Values.monitoringService.port }}"
+          - "http://localhost:{{ .Values.monitoring.service.port }}"
         ports:
         - name: metrics
           containerPort: {{ .Values.metrics.port }}
@@ -153,7 +153,7 @@ spec:
           initialDelaySeconds: 5
           timeoutSeconds: 1
         resources:
-  {{ toYaml .Values.metrics.resources | indent 10 }}
+{{ toYaml .Values.metrics.resources | indent 10 }}
 {{- end }}
       volumes:
       - name: config

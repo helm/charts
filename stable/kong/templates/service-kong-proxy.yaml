@@ -35,3 +35,4 @@ spec:
   selector:
     app: {{ template "kong.name" . }}
     release: {{ .Release.Name }}
+    component: app
