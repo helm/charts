@@ -88,6 +88,8 @@ spec:
 {{ if .Values.chrome.volumes -}}
 {{ toYaml .Values.chrome.volumes | indent 8 }}
 {{- end }}
+      hostAliases:
+{{ toYaml .Values.global.hostAliases | indent 8 }}
       nodeSelector:
 {{- if .Values.chrome.nodeSelector }}
 {{ toYaml .Values.chrome.nodeSelector | indent 8  }}
