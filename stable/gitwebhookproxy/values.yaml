@@ -33,4 +33,3 @@ gitWebhookProxy:
     host: gitwebhookproxy.test
     serviceName: gitwebhookproxy
     servicePort: 80
-
