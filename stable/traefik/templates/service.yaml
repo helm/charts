@@ -12,12 +12,10 @@ metadata:
     {{ $key }}: {{ $value | quote }}
   {{- end }}
   {{- end }}
+{{- if .Values.service.annotations }}
   annotations:
-  {{- if .Values.service }}
-  {{- range $key, $value := .Values.service.annotations }}
-    {{ $key }}: {{ $value | quote }}
-  {{- end }}
-  {{- end }}
+{{ toYaml .Values.service.annotations | indent 4 }}
+{{- end }}
 spec:
   type: {{ .Values.serviceType }}
   {{- if .Values.loadBalancerIP }}

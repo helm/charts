@@ -260,13 +260,9 @@ dashboard:
   enabled: false
   domain: traefik.example.com
   service: {}
-    # annotations:
-    #   key: value
+    annotations: {}
   ingress: {}
-    # annotations:
-    #   key: value
-    # labels:
-    #   key: value
+    annotations: {}
   auth: {}
     # basic:
     #   username: password
@@ -274,10 +270,7 @@ dashboard:
     ## Number of recent errors to show in the ‘Health’ tab
     # recentErrors:
 service:
-  # annotations:
-  #   key: value
-  # labels:
-  #   key: value
+  annotations: {}
   ## Further config for service of type NodePort
   ## Default config with empty string "" will assign a dynamic
   ## nodePort to http and https ports
@@ -329,8 +322,7 @@ deployment:
   # labels to add to the pod container metadata
   # podLabels:
   #   key: value
-  # podAnnotations:
-  #   key: value
+  annotations: {}
   hostPort:
     httpEnabled: false
     httpsEnabled: false

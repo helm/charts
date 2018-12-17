@@ -13,12 +13,10 @@ metadata:
     {{ $key }}: {{ $value | quote }}
   {{- end }}
   {{- end }}
+{{- if .Values.dashboard.ingress.annotations }}
   annotations:
-  {{- if .Values.dashboard.ingress }}
-  {{- range $key, $value := .Values.dashboard.ingress.annotations }}
-    {{ $key }}: {{ $value | quote }}
-  {{- end }}
-  {{- end }}
+{{- toYaml .Values.dashboard.ingress.annotations | indent 4 }}
+{{- end }}
 spec:
   rules:
   - host: {{ .Values.dashboard.domain }}
