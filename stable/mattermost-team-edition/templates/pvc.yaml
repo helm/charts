@@ -2,7 +2,7 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ template "mattermost-team-edition.fullname" . }}
+  name: {{ include "mattermost-team-edition.fullname" . }}
   labels:
     app.kubernetes.io/name: {{ include "mattermost-team-edition.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
