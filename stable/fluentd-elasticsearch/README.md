@@ -52,10 +52,11 @@ The following table lists the configurable parameters of the Fluentd elasticsear
 | `elasticsearch.logstash_prefix`    | Elasticsearch Logstash prefix              | `logstash`                                                 |
 | `elasticsearch.buffer_chunk_limit` | Elasticsearch buffer chunk limit           | `2M`                                                       |
 | `elasticsearch.buffer_queue_limit` | Elasticsearch buffer queue limit           | `8`                                                        |
+| `env`                              | List of environment variables that are added to the fluentd pods   | `{}`                               |
 | `extraVolumeMounts`                | Mount an extra volume, required to mount ssl certificates when elasticsearch has tls enabled |          |
 | `extraVolume`                      | Extra volume                               |                                                            |
 | `image.repository`                 | Image                                      | `gcr.io/google-containers/fluentd-elasticsearch`           |
-| `image.tag`                        | Image tag                                  | `v2.3.1`                                                   |
+| `image.tag`                        | Image tag                                  | `v2.3.2`                                                   |
 | `image.pullPolicy`                 | Image pull policy                          | `IfNotPresent`                                             |
 | `livenessProbe.enabled`            | Whether to enable livenessProbe            | `true`                                                     |
 | `nodeSelector`                     | Optional daemonset nodeSelector            | `{}`                                                       |
