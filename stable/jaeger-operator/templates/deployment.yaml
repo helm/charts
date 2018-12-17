@@ -4,7 +4,6 @@ metadata:
   name: {{ include "jaeger-operator.fullname" . }}
   labels:
     app.kubernetes.io/name: {{ include "jaeger-operator.name" . }}
-    helm.sh/chart: {{ include "jaeger-operator.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
