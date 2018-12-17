@@ -6,7 +6,7 @@ images:
   ##
   server:
     repository: "docker.io/drone/drone"
-    tag: 0.8.6
+    tag: 0.8.9
     pullPolicy: IfNotPresent
 
   ## The official drone (agent) image, change tag to use a different version.
@@ -14,7 +14,7 @@ images:
   ##
   agent:
     repository: "docker.io/drone/agent"
-    tag: 0.8.6
+    tag: 0.8.9
     pullPolicy: IfNotPresent
 
   ## The official docker (dind) image, change tag to use a different version.
