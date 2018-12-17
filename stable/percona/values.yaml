@@ -1,3 +1,8 @@
+## percona image
+## ref: https://hub.docker.com/_/percona/
+##
+image: "percona"
+
 ## percona image version
 ## ref: https://hub.docker.com/r/library/percona/tags/
 ##
