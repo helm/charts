@@ -13,6 +13,6 @@ rules:
 # Allow kured to lock/unlock itself
 - apiGroups:     ["extensions"]
   resources:     ["daemonsets"]
-  resourceNames: ["kured"]
+  resourceNames: ["{{ template "kured.fullname" . }}"]
   verbs:         ["update"]
 {{- end -}}
