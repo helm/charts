@@ -77,6 +77,7 @@ The following table lists the configurable parameters of the Fluentd elasticsear
 | `serviceAccount.create`            | Specifies whether a service account should be created.| `true`                                          |
 | `serviceAccount.name`              | Name of the service account.               |                                                            |
 | `tolerations`                      | Optional daemonset tolerations             | `{}`                                                       |
+| `updateStrategy`                   | Optional daemonset update strategy         | `type: RollingUpdate`                                      |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
