@@ -16,6 +16,7 @@ spec:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
         checksum/secrets: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
+        checksum/adminproxy: {{ include (print $.Template.BasePath "/configmap-adminproxy.yaml") . | sha256sum }}
       labels:
         app: {{ template "hydra.name" . }}
         release: "{{ .Release.Name }}"
@@ -59,6 +60,10 @@ spec:
           - name: hydra-startscript
             mountPath: /start-hydra.sh
             subPath: start-hydra.sh
+{{- if .Values.hydra.adminProxy.enable }}
+          - name: socket
+            mountPath: /socket
+{{- end }}
           {{- if .Values.hydra.extraVolumeMounts }}
 {{ tpl .Values.hydra.extraVolumeMounts . | indent 12 }}
           {{- end }}
@@ -66,23 +71,49 @@ spec:
             - name: public
               containerPort: 4444
               protocol: TCP
+{{- if not .Values.hydra.adminProxy.enable }}
             - name: admin
               containerPort: 4445
               protocol: TCP
+{{- end }}
           livenessProbe:
             httpGet:
               path: /health/alive
-              port: admin
+              port: public
             initialDelaySeconds: {{ .Values.hydra.livenessProbe.initialDelaySeconds }}
             timeoutSeconds: {{ .Values.hydra.livenessProbe.timeoutSeconds }}
           readinessProbe:
             httpGet:
               path: /health/ready
-              port: admin
+              port: 4445
             initialDelaySeconds: {{ .Values.hydra.readinessProbe.initialDelaySeconds }}
             timeoutSeconds: {{ .Values.hydra.readinessProbe.timeoutSeconds }}
           resources:
 {{ toYaml .Values.hydra.resources | indent 12 }}
+{{- if .Values.hydra.adminProxy.enable }}
+        - name: adminproxy
+          image: "{{ .Values.hydra.adminProxy.image }}"
+          ports:
+            - name: admin
+              containerPort: 4445
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /nginx/ready
+              port: admin
+          volumeMounts:
+          - name: socket
+            mountPath: /socket
+          - name: nginx-config
+            mountPath: /etc/nginx/conf.d/
+            readOnly: true
+          - name: nginx
+            mountPath: /var/cache/nginx
+          - name: nginx
+            mountPath: /var/run
+          resources:
+{{ toYaml .Values.hydra.adminProxy.resources | indent 12 }}
+{{- end }}
 {{- with .Values.hydra.extraContainers }}
 {{ tpl . $ | indent 8 }}
 {{- end }}
@@ -107,4 +138,13 @@ spec:
           items:
           - key : start-hydra.sh
             path: start-hydra.sh
+{{- if .Values.hydra.adminProxy.enable }}
+      - name: socket
+        emptyDir: {}
+      - name: nginx
+        emptyDir: {}
+      - name: nginx-config
+        configMap:
+          name: {{ .Release.Name }}-adminproxy
+{{- end }}
 {{ tpl .Values.hydra.extraVolumes . | indent 6 }}

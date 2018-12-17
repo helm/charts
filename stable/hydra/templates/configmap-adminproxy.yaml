@@ -1,0 +1,49 @@
+{{- if .Values.hydra.adminProxy.enable }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "hydra.fullname" . }}-adminproxy
+  labels:
+    app: {{ template "hydra.name" . }}
+    chart: {{ template "hydra.chart" . }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+data:
+  default.conf: |
+    upstream hydra {
+        server {{ .Values.hydra.config.ADMIN_HOST }};
+    }
+
+    server {
+        listen       4445;
+        server_name  _;
+
+        auth_basic "ORY Hydra";
+        auth_basic_user_file /etc/nginx/conf.d/htpassword;
+
+        # Logging is done by hydra
+        access_log off;
+
+        # Pass all requests to hydra
+        location / {
+          proxy_pass http://hydra;
+        }
+
+        # Allow unauthenticated access to readiness probe and metrics
+        location /health/ready {
+          auth_basic off;
+          proxy_pass http://hydra;
+        }
+        location /metrics {
+          auth_basic off;
+          proxy_pass http://hydra;
+        }
+        # Readiness probe for nginx
+        location /nginx/ready {
+          auth_basic off;
+          return 200 "OK";
+        }
+    }
+  htpassword: |
+    {{ .Values.hydra.adminProxy.user }}:{{ .Values.hydra.adminProxy.passwordHash }}
+{{- end }}

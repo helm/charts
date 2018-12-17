@@ -43,6 +43,16 @@ hydra:
     ## If not set, a random 16 character secret will be used.
     cookie: ""
 
+  ## Enable to hide the admin API behind an Nginx reverse proxy (with basic auth)
+  adminProxy:
+    enable: true
+    image: nginx:mainline-alpine
+    user: hydra
+    # For supported password hash types, see:
+    # http://nginx.org/en/docs/http/ngx_http_auth_basic_module.html#auth_basic_user_file
+    passwordHash: ""
+    resources: {}
+
   ## Additional init containers
   initContainers: |
 

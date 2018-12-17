@@ -71,6 +71,11 @@ Parameter | Description | Default
 `hydra.service.admin.type` | The Hydra admin API service type | `ClusterIP`
 `hydra.service.admin.port` | The Hydra admin API service port | `80`
 `hydra.service.admin.nodePort` | The node port used if the Hydra admin API service is of type `NodePort` | `""`
+`hydra.adminProxy.enable` | Hide the Hydra admin API behing an nginx reverse proxy with basic auth | `false`
+`hydra.adminProxy.image` | nginx image to use | `nginx:mainline-alpine`
+`hydra.adminProxy.user` | Basic auth username | `hydra`
+`hydra.adminProxy.passwordHash` | Basic auth password hash (see [ngx_http_auth_basic](http://nginx.org/en/docs/http/ngx_http_auth_basic_module.html#auth_basic_user_file)) | `""`
+`hydra.adminProxy.resources` | Pod resource requests and limits | `{}`
 `hydra.ingress.enabled` | if `true`, an ingress is created | `false`
 `hydra.ingress.annotations` | annotations for the ingress | `{}`
 `hydra.ingress.path` | if `true`, an ingress is created | `/`
