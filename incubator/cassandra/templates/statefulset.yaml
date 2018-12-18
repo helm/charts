@@ -74,6 +74,12 @@ spec:
       - name: {{ template "cassandra.fullname" . }}
         image: "{{ .Values.image.repo }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+{{- if .Values.commandOverrides }}
+        command: {{ .Values.commandOverrides }}
+{{- end }}
+{{- if .Values.argsOverrides }}
+        args: {{ .Values.argsOverrides }}
+{{- end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         env:
@@ -137,6 +143,11 @@ spec:
         volumeMounts:
         - name: data
           mountPath: /var/lib/cassandra
+{{- range $key, $value := .Values.configOverrides }}
+        - name: cassandra-config-{{ $key | replace "." "-" }}
+          mountPath: /etc/cassandra/{{ $key }}
+          subPath: {{ $key }}
+{{- end }}
         {{- if not .Values.persistence.enabled }}
         lifecycle:
           preStop:
@@ -148,8 +159,15 @@ spec:
       imagePullSecrets:
         - name: {{ .Values.image.pullSecrets }}
       {{- end }}
-{{- if not .Values.persistence.enabled }}
+{{- if or .Values.configOverrides (not .Values.persistence.enabled) }}
       volumes:
+{{- end }}
+{{- range $key, $value := .Values.configOverrides }}
+      - configMap:
+          name: cassandra
+        name: cassandra-config-{{ $key | replace "." "-" }}
+{{- end }}
+{{- if not .Values.persistence.enabled }}
       - name: data
         emptyDir: {}
 {{- else }}
