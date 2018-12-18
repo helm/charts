@@ -1,0 +1,25 @@
+apiVersion: v1
+name: logrotate
+version: 1.0.0
+appVersion: 3.13.0
+description: Logrotate chart that runs on kubernetes
+keywords:
+  - logrotate
+  - kubernetes
+home: https://github.com/stakater/dockerfile-logrotate
+sources:
+- https://github.com/stakater/dockerfile-logrotate/
+maintainers:
+- name: ahsan-storm
+  email: ahsanmuhammad1@outlook.com
+- name: rasheedamir
+  email: rasheed@aurorasolutions.io
+- name: waseem-h
+  email: waseemhassan@stakater.com
+- name: faizanahmad055
+  email: faizan.ahmad55@outlook.com
+- name: kahootali
+  email: ali.kahoot@aurorasolutions.io
+- name: ahmadiq
+  email: ahmad@aurorasolutions.io
+  

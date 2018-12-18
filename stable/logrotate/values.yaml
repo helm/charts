@@ -1,0 +1,23 @@
+daemonset:
+  annotations: {}
+  labels: {}
+image:
+  name: stakater/logrotate
+  tag: "3.13.0"
+  pullPolicy: IfNotPresent
+environment:
+  cronSchedule: "0 */12 * * *"
+config:
+  annotations: {}
+  labels: {}
+  k8sRotatorConf: |-
+    /var/lib/docker/containers/*/*.log {
+          rotate 5
+          copytruncate
+          missingok
+          notifempty
+          compress
+          maxsize 200M
+          daily
+          create 0644 root root
+      }

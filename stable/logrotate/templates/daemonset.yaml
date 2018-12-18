@@ -1,0 +1,42 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+{{- if .Values.daemonset.annotations }}
+  annotations:
+{{ toYaml .Values.daemonset.annotations | indent 4 }}
+{{- end }}
+{{- if .Values.daemonset.labels }}
+  labels:
+{{ toYaml .Values.daemonset.labels | indent 4 }}
+{{- end }}
+  name: {{ template "logrotate-name" . }}
+spec:
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      name: {{ template "logrotate-name" . }}
+      labels:
+{{ include "logrotate-labels.selector" . | indent 8 }}
+    spec:
+      containers:
+      - name: {{ template "logrotate-name" . }}
+        image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
+        securityContext:
+          privileged: true
+        volumeMounts:
+         - name: containers
+           mountPath: /var/lib/docker/containers
+         - name: {{ template "logrotate-name" . }}-config
+           mountPath: /etc/{{ template "logrotate-name" . }}.d/k8s-rotator.conf
+           subPath: k8s-rotator.conf
+        env:
+          - name: CRON_SCHEDULE
+            value: "{{ .Values.environment.cronSchedule }}"
+      volumes:
+         - hostPath:
+             path: /var/lib/docker/containers
+           name: containers
+         - configMap:
+            name: {{ template "logrotate-name" . }}
+           name: {{ template "logrotate-name" . }}-config

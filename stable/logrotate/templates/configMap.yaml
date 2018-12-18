@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+{{- if .Values.config.annotations}}
+  annotations:
+  {{ toYaml .Values.config.annotations | indent 4 }}
+{{- end}}
+{{- if .Values.config.labels }}
+  labels:
+{{ toYaml .Values.config.labels | indent 4 }}
+{{- end }}
+  name: {{ template "logrotate-name" . }}
+data:
+  k8s-rotator.conf:  |-
+{{ .Values.config.k8sRotatorConf | indent 6 }}
