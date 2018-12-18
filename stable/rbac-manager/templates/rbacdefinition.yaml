@@ -1,4 +1,5 @@
 {{- range .Values.rbacDefinitions }}
+---
 apiVersion: rbacmanager.reactiveops.io/v1beta1
 kind: RBACDefinition
 metadata:
