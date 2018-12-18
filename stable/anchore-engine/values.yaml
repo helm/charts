@@ -28,12 +28,15 @@ anchoreGlobal:
     pullPolicy: IfNotPresent
 
   # Create an ingress resource for all external anchore engine services.
+  # By default this chart is setup to use the NGINX ingress controller which needs to be installed & configured on your cluster.
+  # To utilize a GCE ingress controller comment out the annotations below, also edit path configurion the UI & Api configs as per the comments.
   # Ingress paths/hosts can be setup for the anchoreApi & anchoreEnterpriseUi deployments in the corresponding values sections.
   ingress:
     enabled: false
-    annotations: {}
+    annotations:
+      kubernetes.io/ingress.class: nginx
+      # nginx.ingress.kubernetes.io/ssl-redirect: "false"
       # kubernetes.io/ingress.allow-http: false
-      # kubernetes.io/ingress.class: nginx
       # kubernetes.io/tls-acme: true
     tls: []
     # Secrets must be manually created in the namespace.
@@ -141,7 +144,10 @@ anchoreApi:
   # Used to create Ingress record for the anchore engine external API (api service)
   # (should used with service.type: ClusterIP or NodePort depending on platform)
   ingress:
-    path: /v1/*
+    # For GCE ingress controllers use the following path
+    # path: /v1/*
+    # By default this is configured to use an NGINX ingress controller.
+    path: /v1/
     # You can bound on specific hostnames
     # hosts:
     #   - anchore-api.local
@@ -440,23 +446,26 @@ anchoreEnterpriseUi:
     annotations: {}
 
   ingress:
-    path: /*
+    # For GCE ingress controllers use the following path
+    # path: /*
+    # By default this is configured to use an NGINX ingress controller.
+    path: /
     # You can bound on specific hostnames
     # hosts:
     #   - anchore-ui.local
 
-    # resources:
-    #  limits:
-    #    cpu: 100m
-    #    memory: 8Gi
-    #  requests:
-    #    cpu: 100m
-    #    memory: 3Gi
+  # resources:
+  #  limits:
+  #    cpu: 100m
+  #    memory: 8Gi
+  #  requests:
+  #    cpu: 100m
+  #    memory: 3Gi
 
-    annotations: {}
-    nodeSelector: {}
-    tolerations: []
-    affinity: {}
+  annotations: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
 
 # Anchore Engine Enterprise UI is dependent on redis for storing sessions
 # Only utilized if 'anchoreEnterpriseUi.enabled: true'

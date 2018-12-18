@@ -90,22 +90,31 @@ This configuration allows SSL termination at the LB.
 
 *Note: Ingress controllers can use custom hosts or paths for routing requests. Custom paths or hosts should be set in the corresponding component configuration - anchoreEnterpriseUI.ingress or anchoreApi.ingress*
 
+##### NGINX Ingress Controller
+```
+anchoreGlobal:
+  ingress:
+    enabled: true
+```
+
+##### GCE Ingress Controller
   ```
   anchoreGlobal:
     ingress:
       enabled: true
+      annotations: null
 
   anchoreApi:
     ingress:
       path: /v1/*
-      hosts:
-        - anchore-api.local
+    service:
+      type: NodePort
 
   anchoreEnterpriseUi:
     ingress:
       path: /*
-      hosts:
-        - anchore-ui.local
+    service
+      type: NodePort
   ```
 
 ##### Using Service Type
