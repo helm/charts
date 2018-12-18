@@ -48,6 +48,10 @@ server:
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
   nodeSelector: {}
 
+  ## Affinity for assigning pods to specific nodes
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+  affinity: {}
+
   healthCheck:
     # server.healthCheck.initialDelaySeconds is the initial delays in seconds to start the health checks
     initialDelaySeconds: 90
@@ -62,7 +66,7 @@ server:
     #  server.env.extraEnvVars is the list of environment variables passed to GoCD Server
     extraEnvVars:
       - name: GOCD_PLUGIN_INSTALL_kubernetes-elastic-agents
-        value: https://github.com/gocd/kubernetes-elastic-agents/releases/download/v1.0.2/kubernetes-elastic-agent-1.0.2-108.jar
+        value: https://github.com/gocd/kubernetes-elastic-agents/releases/download/v2.0.0/kubernetes-elastic-agent-2.0.0-113.jar
       - name: GOCD_PLUGIN_INSTALL_docker-registry-artifact-plugin
         value: https://github.com/gocd/docker-registry-artifact-plugin/releases/download/1.0.0/docker-registry-artifact-plugin-1.0.0-3.jar
   service:
@@ -166,8 +170,18 @@ server:
       secretName: gocd-server-ssh
 
 agent:
+  # specifies overrides for agent specific service account creation
+  serviceAccount:
+    # specifies whether the top level service account (also used by the server) should be reused as the service account for gocd agents
+    reuseTopLevelServiceAccount: false
+    # if reuseTopLevelServiceAccount is false, this field specifies the name of an existing service account to be associated with gocd agents
+    # If field is empty, the service account "default" will be used.
+    name:
+
   # agent.replicaCount is the GoCD Agent replicas Count. Specify the number of GoCD agents to run
   replicaCount: 0
+  # agent.deployStrategy is the strategy explained in detail at https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
+  deployStrategy: {}
   image:
     # agent.image.repository is the GoCD Agent image name
     repository: "gocd/gocd-agent-alpine-3.6"
@@ -279,3 +293,7 @@ agent:
   ## Additional GoCD agent pod labels
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
   nodeSelector: {}
+
+  ## Affinity for assigning pods to specific nodes
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+  affinity: {}

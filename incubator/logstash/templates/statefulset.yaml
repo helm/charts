@@ -110,10 +110,6 @@ spec:
 {{ toYaml .Values.exporter.logstash.resources | indent 12 }}
 {{- end }}
 
-    {{- with .Values.volumes }}
-      volumes:
-{{ toYaml . | indent 8 }}
-    {{- end }}
     {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
@@ -134,6 +130,9 @@ spec:
         - name: pipeline
           configMap:
             name: {{ template "logstash.fullname" . }}-pipeline
+    {{- with .Values.volumes }}
+{{ toYaml . | indent 8 }}
+    {{- end }}
 {{- if not .Values.persistence.enabled }}
         - name: data
           emptyDir: {}

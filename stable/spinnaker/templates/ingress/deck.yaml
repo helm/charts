@@ -6,7 +6,7 @@ metadata:
   annotations:
 {{ toYaml .Values.ingress.annotations | indent 4 }}
 {{- end }}
-  name: {{ template "spinnaker.fullname" . }}
+  name: {{ template "spinnaker.fullname" . }}-deck
   labels:
 {{ include "spinnaker.standard-labels" . | indent 4 }}
 spec:

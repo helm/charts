@@ -52,12 +52,18 @@ The following table lists the configurable parameters of the consul chart and th
 | `ConsulDnsPort`         | Container dns listening port          | `8600`                                                     |
 | `affinity`              | Consul affinity settings              | `see values.yaml`                                          |
 | `nodeSelector`          | Node labels for pod assignment        | `{}`                                                       |
+| `tolerations`           | Tolerations for pod assignment        | `[]`                                                       |
 | `maxUnavailable`        | Pod disruption Budget maxUnavailable  | `1`                                                        |
 | `ui.enabled`            | Enable Consul Web UI                  | `true`                                                     |
 | `uiService.enabled`     | Create dedicated Consul Web UI svc    | `true`                                                     |
 | `uiService.type`        | Dedicate Consul Web UI svc type       | `NodePort`                                                 |
-| `test.image`            | Test container image requires kubectl + bash (used for helm test)      | `lachlanevenson/k8s-kubectl` |
+| `acl.enabled`           | Enable basic ACL configuration        | `false`                                                    |
+| `acl.masterToken`       | Master token that was provided in consul ACL config file | `""`                                    |
+| `acl.agentToken`        | Agent token that was provided in consul ACL config file | `""`                                    |
+| `test.image`            | Test container image requires kubectl + bash (used for helm test)   | `lachlanevenson/k8s-kubectl` |
 | `test.imageTag`         | Test container image tag  (used for helm test)     | `v1.4.8-bash`                                 |
+| `test.rbac.create`                      | Create rbac for test container                 | `false`                           |
+| `test.rbac.serviceAccountName`          | Name of existed service account for test container    | ``                     |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
@@ -100,6 +106,7 @@ $ kubectl delete pvc -l component=${RELEASE-NAME}-consul
 ## Pitfalls
 
 * When ACLs are enabled and `acl_default_policy` is set to `deny`, it is necessary to set the `acl_token` to a token that can perform at least the `consul members`, otherwise the kubernetes liveness probe will keep failing and the containers will be killed every 5 minutes.
+  * Basic ACLs configuration can be done by setting `acl.enabled` to `true`, and setting values for `acl.masterToken` and `acl.agentToken`.
 
 ## Testing
 

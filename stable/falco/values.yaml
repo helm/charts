@@ -1,9 +1,9 @@
 # Default values for falco.
 
 image:
-  repository: sysdig/falco
-  tag: latest
-  pullPolicy: Always
+  repository: falcosecurity/falco
+  tag: 0.13.0
+  pullPolicy: IfNotPresent
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious

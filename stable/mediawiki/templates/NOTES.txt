@@ -26,13 +26,15 @@
   NOTE: It may take a few minutes for the LoadBalancer IP to be available.
         Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "mediawiki.fullname" . }}'
 
-  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "mediawiki.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-  echo "Mediawiki URL: http://$SERVICE_IP/"
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "mediawiki.fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
+
+{{- $port:=.Values.service.port | toString }}
+  echo "Mediawiki URL: http://$SERVICE_IP{{- if ne $port "80" }}:{{ .Values.service.port }}{{ end }}/"
 
 {{- else if contains "ClusterIP"  .Values.service.type }}
 
   echo "Mediawiki URL: http://127.0.0.1:8080/"
-  kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "mediawiki.fullname" . }} 8080:80
+  kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "mediawiki.fullname" . }} 8080:{{ .Values.service.port }}
 
 {{- end }}
 {{- end }}

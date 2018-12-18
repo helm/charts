@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: homeassistant/home-assistant
-  tag: 0.77.1
+  tag: 0.81.2
   pullPolicy: IfNotPresent
 
 service:
@@ -35,6 +35,8 @@ ingress:
   #  - secretName: home-assistant-tls
   #    hosts:
   #      - home-assistant.local
+
+hostNetwork: false
 
 persistence:
   enabled: true

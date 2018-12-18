@@ -1,4 +1,8 @@
-apiVersion: extensions/v1beta1
+{{- if .Capabilities.APIVersions.Has "apps/v1" }}
+apiVersion: apps/v1
+{{- else }}
+apiVersion: apps/v1beta1
+{{- end }}
 kind: Deployment
 metadata:
   name: {{ template "jenkins.fullname" . }}
@@ -69,6 +73,9 @@ spec:
             -
               mountPath: /var/jenkins_home
               name: jenkins-home
+              {{- if .Values.Persistence.SubPath }}
+              subPath: {{ .Values.Persistence.SubPath }}
+              {{- end }}
             -
               mountPath: /var/jenkins_config
               name: jenkins-config
@@ -134,6 +141,10 @@ spec:
             - containerPort: {{ .Values.Master.JMXPort }}
               name: jmx
             {{- end }}
+{{- range $index, $port := .Values.Master.ExtraPorts }}
+            - containerPort: {{ $port.port }}
+              name: {{ $port.name }}
+{{- end }}
 {{- if .Values.Master.HealthProbes }}
           livenessProbe:
             httpGet:
@@ -167,6 +178,9 @@ spec:
               mountPath: /var/jenkins_home
               name: jenkins-home
               readOnly: false
+              {{- if .Values.Persistence.SubPath }}
+              subPath: {{ .Values.Persistence.SubPath }}
+              {{- end }}
             -
               mountPath: /var/jenkins_config
               name: jenkins-config

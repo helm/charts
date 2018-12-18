@@ -62,6 +62,8 @@ image:
 service:
   type: ClusterIP
   port: 80
+  annotations: {}
+  # Add your service annotations here.
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious

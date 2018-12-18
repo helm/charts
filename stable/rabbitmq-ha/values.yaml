@@ -13,20 +13,89 @@ managementPassword: E9R3fjZm4ejFkVFE
 extraConfig: |
 #  queue_master_locator = min-masters
 
+## Place any additional plugins to enable in /etc/rabbitmq/enabled_plugins
+## Ref: https://www.rabbitmq.com/plugins.html
+extraPlugins: |
+  rabbitmq_shovel,
+  rabbitmq_shovel_management,
+  rabbitmq_federation,
+  rabbitmq_federation_management,
+
+definitions:
+  users: |-
+#   {
+#     "name": "myUsername",
+#     "password": "myPassword",
+#     "tags": "administrator"
+#   }
+  vhosts: |-
+#   {
+#     "name": "/rabbit"
+#   }
+  parameters: |-
+#   {
+#     "value": {
+#       "src-uri": "amqp://localhost",
+#       "src-queue": "source",
+#       "dest-uri": "amqp://localhost",
+#       "dest-queue": "destination",
+#       "add-forward-headers": false,
+#       "ack-mode": "on-confirm",
+#       "delete-after": "never"
+#     },
+#     "vhost": "/",
+#     "component": "shovel",
+#     "name": "test"
+#   }
+  permissions: |-
+#   {
+#     "user": "myUsername",
+#     "vhost": "/rabbit",
+#     "configure": ".*",
+#     "write": ".*",
+#     "read": ".*"
+#   }
+  queues: |-
+#    {
+#       "name":"myName",
+#       "vhost":"/rabbit",
+#       "durable":true,
+#       "auto_delete":false,
+#       "arguments":{}
+#    }
+  exchanges: |-
+#    {
+#       "name":"myName",
+#       "vhost":"/rabbit",
+#       "type":"direct",
+#       "durable":true,
+#       "auto_delete":false,
+#       "internal":false,
+#       "arguments":{}
+#    }
+  bindings: |-
+#    {
+#       "source":"myName",
+#       "vhost":"/rabbit",
+#       "destination":"myName",
+#       "destination_type":"queue",
+#       "routing_key":"myKey",
+#       "arguments":{}
+#    }
 ## Sets the policies in definitions.json. This can be used to control the high
 ## availability of queues by mirroring them to multiple nodes.
 ## Ref: https://www.rabbitmq.com/ha.html
-policies: |-
-#  {
-#    "name": "ha-all",
-#    "pattern": ".*",
-#    "vhost": "/",
-#    "definition": {
-#      "ha-mode": "all",
-#      "ha-sync-mode": "automatic",
-#      "ha-sync-batch-size": 1
+  policies: |-
+#    {
+#      "name": "ha-all",
+#      "pattern": ".*",
+#      "vhost": "/",
+#      "definition": {
+#        "ha-mode": "all",
+#        "ha-sync-mode": "automatic",
+#        "ha-sync-batch-size": 1
+#      }
 #    }
-#  }
 
 
 ## RabbitMQ default VirtualHost
@@ -187,6 +256,11 @@ image:
   # pullSecrets:
   #   - myRegistrKeySecretName
 
+busyboxImage:
+  repository: busybox
+  tag: latest
+  pullPolicy: Always
+
 ## Duration in seconds the pod needs to terminate gracefully
 terminationGracePeriodSeconds: 10
 
@@ -203,10 +277,16 @@ service:
   loadBalancerSourceRanges: []
   type: ClusterIP
 
+podManagementPolicy: OrderedReady
+
 ## Statefulsets rolling update update strategy
 ## Ref: https://kubernetes.io/docs/tutorials/stateful-application/basic-stateful-set/#rolling-update
 ##
 updateStrategy: OnDelete
+
+## Statefulsets Pod Priority
+## Ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/#priorityclass
+## priorityClassName: ""
 
 ## We usually recommend not to specify default resources and to leave this as
 ## a conscious choice for the user. This also increases chances charts run on
@@ -224,8 +304,8 @@ resources: {}
   # requests:
   #   cpu: 100mm
   #   memory: 1Gi
-initContainer: {}
-  # resources:
+initContainer:
+  resources: {}
   #   limits:
   #     cpu: 100mm
   #     memory: 128Mi
@@ -318,7 +398,7 @@ livenessProbe:
 
 readinessProbe:
   failureThreshold: 6
-  initialDelaySeconds: 10
+  initialDelaySeconds: 20
   timeoutSeconds: 3
   periodSeconds: 5
 
@@ -377,3 +457,6 @@ prometheus:
       ## [Kube Prometheus Selector Label](https://github.com/coreos/prometheus-operator/blob/master/helm/kube-prometheus/values.yaml#L298)
       selector:
         prometheus: kube-prometheus
+
+## Kubernetes Cluster Domain
+clusterDomain: cluster.local

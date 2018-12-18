@@ -8,12 +8,12 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
-  {{- if .Values.service.annotations }}
+  {{- if .Values.deployment.service.annotations }}
   annotations:
-  {{ toYaml .Values.service.annotations | indent 4 }}
+  {{ toYaml .Values.deployment.service.annotations | indent 4 }}
   {{- end }}
 spec:
-  type: {{ .Values.serviceType }}
+  type: {{ .Values.deployment.service.type }}
   selector:
     app: {{ template "datadog.fullname" . }}
     type: deployment

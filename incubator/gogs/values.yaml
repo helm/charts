@@ -11,7 +11,7 @@ replicaCount: 1
 
 image:
   repository: gogs/gogs
-  tag: 0.11.29
+  tag: 0.11.66
   pullPolicy: IfNotPresent
 
 service:
@@ -55,6 +55,10 @@ service:
     ## disabled, users can only perform Git operations via SSH.
     ##
     disableHttpGit: false
+
+    ## Lock the path /install to configure gogs
+    ##
+    installLock: true
 
     ## Indicates whether or not to enable repository file upload feature.
     ##
@@ -195,6 +199,50 @@ service:
     ##
     uiFeedMaxCommitNum: 5
 
+    ## Enable running cron tasks periodically.
+    ##
+    cronEnabled: true
+
+    ## Run cron tasks when Gogs starts.
+    ##
+    cronRunAtStart: false
+
+    ## Cron syntax for scheduling update mirrors, e.g. @every 1h.
+    ##
+    cronUpdateMirrorsSchedule: '@every 10m'
+
+    ## Cron syntax for scheduling repository health check, e.g. @every 24h.
+    ##
+    cronRepoHealthCheckSchedule: '@every 24h'
+
+    ## Time duration syntax for health check execution timeout, e.g. 60s.
+    ##
+    cronRepoHealthCheckTimeout: 60s
+
+    ## Arguments for command git fsck, e.g. --unreachable --tags.
+    ##
+    cronRepoHealthCheckArgs:
+
+    ## Enable this to run repository statistics check at start time.
+    ##
+    cronCheckRepoStatsRunAtStart: true
+
+    ## Cron syntax for scheduling repository statistics check, e.g. @every 24h.
+    ##
+    cronCheckRepoStatsSchedule: '@every 24h'
+
+    ## Enable this to run repository archives cleanup at start time.
+    ##
+    cronRepoArchiveCleanupRunAtStart: false
+
+    ## Cron syntax for scheduling repository statistics check, e.g. @every 24h.
+    ##
+    cronRepoArchiveCleanupSchedule: '@every 24h'
+
+    ## Time duration to check if archive should be cleaned, e.g. 24h
+    ##
+    cronRepoArchiveCleanupOlderThan: 24h
+
   ## Ingress configuration.
   ## ref: https://kubernetes.io/docs/user-guide/ingress/
   ##
@@ -284,3 +332,5 @@ postgresql:
     ## Enable PostgreSQL persistence using Persistent Volume Claims.
     ##
     enabled: true
+## Security context
+securityContext: {}

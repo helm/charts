@@ -116,5 +116,10 @@ erlangFlags:
 ## by a ConfigMap object.
 ## ref: http://docs.couchdb.org/en/latest/config/index.html
 couchdbConfig:
+  # cluster:
+  #   q: 8 # Create 8 shards for each database
   chttpd:
     bind_address: any
+    # chttpd.require_valid_user disables all the anonymous requests to the port
+    # 5984 when is set to true.
+    require_valid_user: false
