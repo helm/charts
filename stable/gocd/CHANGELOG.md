@@ -1,3 +1,7 @@
+### 1.5.10
+* [87b3a755](https://github.com/kubernetes/charts/commit/87b3a755):
+  - Allow the override of the preconfigure command
+
 ### 1.5.9
 * [6547ba84](https://github.com/kubernetes/charts/commit/6547ba84):
   - Introduces the ability to configure agent service accounts
