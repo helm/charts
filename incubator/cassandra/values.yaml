@@ -161,6 +161,10 @@ backup:
     repos: nuvo/cain
     tag: 0.3.0
 
+  # Additional arguments for cain
+  # Ref: https://github.com/nuvo/cain#usage
+  extraArgs: []
+
   # Add additional environment variables
   env:
   # Example environment variable required for AWS credentials chain
