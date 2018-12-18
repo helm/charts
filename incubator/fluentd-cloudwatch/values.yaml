@@ -43,6 +43,9 @@ rbac:
 extraVars: []
 # - "{ name: NODE_NAME, valueFrom: { fieldRef: { fieldPath: spec.nodeName } } }"
 
+updateStrategy:
+  type: OnDelete
+
 fluentdConfig: |
   <match fluent.**>
     type null

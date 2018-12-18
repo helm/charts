@@ -11,8 +11,6 @@ metadata:
 spec:
   serviceName: {{ template "postgresql.fullname" . }}-headless
   replicas: {{ .Values.replication.slaveReplicas }}
-  updateStrategy:
-    type: RollingUpdate
   selector:
     matchLabels:
       app: {{ template "postgresql.name" . }}
@@ -39,17 +37,17 @@ spec:
         - name: {{ . }}
       {{- end}}
       {{- end }}
-      {{- if .Values.nodeSelector }}
+      {{- if .Values.slave.nodeSelector }}
       nodeSelector:
-{{ toYaml .Values.nodeSelector | indent 8 }}
+{{ toYaml .Values.slave.nodeSelector | indent 8 }}
       {{- end }}
-      {{- if .Values.affinity }}
+      {{- if .Values.slave.affinity }}
       affinity:
-{{ toYaml .Values.affinity | indent 8 }}
+{{ toYaml .Values.slave.affinity | indent 8 }}
       {{- end }}
-      {{- if .Values.tolerations }}
+      {{- if .Values.slave.tolerations }}
       tolerations:
-{{ toYaml .Values.tolerations | indent 8 }}
+{{ toYaml .Values.slave.tolerations | indent 8 }}
       {{- end }}
       {{- if .Values.terminationGracePeriodSeconds }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
@@ -97,7 +95,7 @@ spec:
               name: {{ .Values.existingSecret }}
             {{- else }}
               name: {{ template "postgresql.fullname" . }}
-            {{- end }}  
+            {{- end }}
               key: postgresql-replication-password
         - name: POSTGRESQL_MASTER_HOST
           value: {{ template "postgresql.fullname" . }}
@@ -155,6 +153,8 @@ spec:
         configMap:
           name: {{ template "postgresql.fullname" . }}-configuration
       {{ end }}
+  updateStrategy:
+    type: {{ .Values.updateStrategy.type }}
 {{- if .Values.persistence.enabled }}
   volumeClaimTemplates:
     - metadata:

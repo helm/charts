@@ -33,7 +33,7 @@ podSecurityPolicy:
 
 image:
   repository: "docker.elastic.co/elasticsearch/elasticsearch-oss"
-  tag: "6.5.1"
+  tag: "6.5.3"
   pullPolicy: "IfNotPresent"
   # If specified, use these secrets to access the image
   # pullSecrets:
@@ -90,6 +90,18 @@ client:
     enabled: false
     minAvailable: 1
     # maxUnavailable: 1
+  ingress:
+    enabled: false
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    path: /
+    hosts:
+      - chart-example.local
+    tls: []
+    #  - secretName: chart-example-tls
+    #    hosts:
+    #      - chart-example.local
 
 master:
   name: master
