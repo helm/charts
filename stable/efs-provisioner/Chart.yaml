@@ -1,7 +1,11 @@
 apiVersion: v1
 name: efs-provisioner
 description: A Helm chart for the AWS EFS external storage provisioner
+<<<<<<< HEAD
 version: 0.1.2
+=======
+version: 0.2.0
+>>>>>>> Added nodeSelector, annotations and tolerations
 appVersion: v0.1.2
 home: https://github.com/kubernetes-incubator/external-storage/tree/master/aws/efs
 sources:

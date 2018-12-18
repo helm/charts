@@ -43,7 +43,8 @@ All the values documented below and by `helm inspect values`.
 helm inspect values stable/efs-provisioner
 ```
 
-```
+```yaml
+
 #
 # Default values for EFS provisioner service
 # https://github.com/kubernetes-incubator/external-storage/tree/master/aws/efs
@@ -103,4 +104,22 @@ resources: {}
   # requests:
   #  cpu: 100m
   #  memory: 128Mi
+
+## Tolerations
+##
+tolerations:
+- effect: NoSchedule
+  key: node-role.kubernetes.io/master
+- key: CriticalAddonsOnly
+  operator: Exists
+
+## nodeSelector
+##
+nodeSelector:
+  node-role.kubernetes.io/master: ""
+
+## podAnnotations
+##
+podAnnotations:
+  myAnnotation: exampleValue
 ```
