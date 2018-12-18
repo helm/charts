@@ -15,16 +15,16 @@ metadata:
   annotations:
 {{ toYaml .Values.service.annotations | indent 4 }}
 {{- end }}
-{{- end }}
 spec:
   type: {{ .Values.service.type }}
   ports:
   - port: {{ .Values.service.externalPort }}
-    name: "https"
 {{- if .Values.enableInsecureLogin }}
     targetPort: 9090
+    name: "http"
 {{- else }}
     targetPort: 8443
+    name: "https"
 {{- end }}
 {{- if hasKey .Values.service "nodePort" }}
     nodePort: {{ .Values.service.nodePort }}
