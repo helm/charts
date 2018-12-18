@@ -99,7 +99,7 @@ anchoreGlobal:
 # is very IO intensive. Use of affinity/anti-affinity rules for scheduling the analyzers is future work.
 anchoreAnalyzer:
   replicaCount: 1
-  containerPort: 8228
+  containerPort: 8084
 
   # The cycle timer is the interval between checks to the work queue for new jobs
   cycleTimers:
@@ -245,7 +245,7 @@ anchoreCatalog:
   # kubernetes service configuration for anchore catalog api
   service:
     type: ClusterIP
-    port: 8228
+    port: 8082
     annotations: {}
 
   # resources:
@@ -275,7 +275,7 @@ anchorePolicyEngine:
   # kubernetes service configuration for anchore policy engine api
   service:
     type: ClusterIP
-    port: 8228
+    port: 8087
     annotations: {}
 
   # resources:
@@ -298,7 +298,7 @@ anchoreSimpleQueue:
   # kubernetes service configuration for anchore simplequeue api
   service:
     type: ClusterIP
-    port: 8228
+    port: 8083
     annotations: {}
 
   # resources:
@@ -368,7 +368,7 @@ anchoreEnterpriseFeeds:
   # kubernetes service configuration for anchore feeds service api
   service:
     type: ClusterIP
-    port: 8228
+    port: 8448
     annotations: {}
 
   # Staging space for holding normalized output from drivers.
