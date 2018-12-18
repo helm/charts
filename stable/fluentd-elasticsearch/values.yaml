@@ -62,6 +62,11 @@ annotations: {}
   # prometheus.io/scrape: "true"
   # prometheus.io/port: "24231"
 
+## DaemonSet update strategy
+## Ref: https://kubernetes.io/docs/tasks/manage-daemon/update-daemon-set/
+updateStrategy:
+  type: RollingUpdate
+
 tolerations: {}
   # - key: node-role.kubernetes.io/master
   #   operator: Exists

@@ -28,10 +28,12 @@ spec:
             - containerPort: 3000
             - containerPort: 22
           livenessProbe:
+            initialDelaySeconds: 180
             httpGet:
               path: /
               port: 3000
           readinessProbe:
+            initialDelaySeconds: 180
             httpGet:
               path: /
               port: 3000

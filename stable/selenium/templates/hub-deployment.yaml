@@ -32,14 +32,14 @@ spec:
               name: http
           livenessProbe:
             httpGet:
-              path: /wd/hub/status
+              path: {{ .Values.hub.probePath }}
               port: {{ .Values.hub.port }}
             initialDelaySeconds: 30
             periodSeconds: 5
             timeoutSeconds: {{ .Values.hub.livenessTimeout }}
           readinessProbe:
             httpGet:
-              path: /wd/hub/status
+              path: {{ .Values.hub.probePath }}
               port: {{ .Values.hub.port }}
             initialDelaySeconds: {{ .Values.hub.readinessDelay }}
             timeoutSeconds: {{ .Values.hub.readinessTimeout }}
