@@ -159,7 +159,7 @@ spec:
           mountPath: /docker-entrypoint-initdb.d
         {{- if .Values.usePasswordFile }}
         - name: postgresql-password
-          mountPath: /opt/bitnami/postgresql/secrets
+          mountPath: /opt/bitnami/postgresql/secrets/
         {{ end }}
         {{- if .Values.persistence.enabled }}
         - name: data
@@ -183,11 +183,16 @@ spec:
         {{- $database := required "In order to enable metrics you need to specify a database (.Values.postgresqlDatabase)" .Values.postgresqlDatabase }}
         - name: DATA_SOURCE_URI
           value: {{ printf "localhost:%d/%s?sslmode=disable" (int .Values.service.port) $database | quote }}
+        {{- if .Values.usePasswordFile }}
+        - name: DATA_SOURCE_PASS_FILE
+          value: "/opt/bitnami/postgresql/secrets/postgresql-password"
+        {{- else }}
         - name: DATA_SOURCE_PASS
           valueFrom:
             secretKeyRef:
               name: {{ template "postgresql.secretName" . }}
               key: postgresql-password
+        {{- end }}
         - name: DATA_SOURCE_USER
           value: {{ .Values.postgresqlUsername }}
         {{- if .Values.livenessProbe.enabled }}
@@ -212,6 +217,11 @@ spec:
           successThreshold: {{ .Values.readinessProbe.successThreshold }}
           failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
         {{- end }}
+        volumeMounts:
+        {{- if .Values.usePasswordFile }}
+        - name: postgresql-password
+          mountPath: /opt/bitnami/postgresql/secrets/
+        {{ end }}
         ports:
         - name: metrics
           containerPort: 9187
