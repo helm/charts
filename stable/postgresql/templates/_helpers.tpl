@@ -106,3 +106,15 @@ Return the proper PostgreSQL metrics image name
 {{- $tag := default "latest" .Values.metrics.image.tag | toString -}}
 {{- printf "%s/%s:%s" $registryName .Values.metrics.image.repository $tag -}}
 {{- end -}}
+
+{{/*
+Get the password secret.
+*/}}
+{{- define "postgresql.secretName" -}}
+{{- $secretName := include "postgresql.fullname" . -}}
+{{- if .Values.existingSecret -}}
+{{ $secretName := .Values.existingSecret -}}
+{{- else -}}
+{{- printf "%s" $secretName -}}
+{{- end -}}
+{{- end -}}
