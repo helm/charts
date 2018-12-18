@@ -10,6 +10,8 @@ The handler watches for Spot termination events, and will do the following if de
 
 * [Optional] Send a message to a Slack channel informing that a termination notice has been received.
 
+* [Optional] Remove the instance from AutoScaling Group, causing ASG to begin replacement process sooner.
+
 ## Installation
 
 You should install into the `kube-system` namespace, but this is not a requirement. The following example assumes this has been chosen.
@@ -35,3 +37,5 @@ You may set these options in your values file:
 * `serviceAccount.create` -  Specifies whether a ServiceAccount should be created. Defaults to `true`.
 
 * `serviceAccount.name` - The name of the ServiceAccount to use. If not set and create is true, a name is generated using the fullname template.
+
+* `detachAsg` - optional - If this is set to any value other than `false`, the spot termination handler will detect (standard) AutoScaling Group, and initiate detach when termination notice is detected. Defaults to `false`.

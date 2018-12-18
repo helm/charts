@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 image:
   repository: kubeaws/kube-spot-termination-notice-handler
-  tag: 1.10.8-1
+  tag: 1.12.0-2
   pullPolicy: IfNotPresent
 
 # Poll the metadata every pollInterval seconds for termination events:
@@ -17,6 +17,9 @@ pollInterval: 5
 
 # Silence logspout by default - set to true to enable logs arriving in logspout
 enableLogspout: false
+
+# Trigger instance removal from AutoScaling Group on termination notice
+detachAsg: false
 
 resources: {}
 # We usually recommend not to specify default resources and to leave this as a conscious
