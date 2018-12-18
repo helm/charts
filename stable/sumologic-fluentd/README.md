@@ -71,7 +71,7 @@ The following table lists the configurable parameters of the sumologic-fluentd c
 | `sumologic.sourceName` | Set the sumo `_sourceName` | `%{namespace}.%{pod}.%{container}` |
 | `sumologic.sourceHost` | Set the sumo `_sourceHost` | `Nil` |
 | `sumologic.sourceCategory` | Set the sumo `_sourceCategory` | `%{namespace}/%{pod_name}` |
-| `sumologic.sourceCategoryPrefix` | Define a prefix, for `_sourceCategory` | `Nil` |
+| `sumologic.sourceCategoryPrefix` | Define a prefix, for `_sourceCategory` | `/kubernetes` |
 | `sumologic.sourceCategoryReplaceDash` | Used to replace `-` with another character | `/` |
 | `sumologic.logFormat` | Format to post logs, into sumo (`json`, `json_merge`, or `text`) | `json` |
 | `sumologic.kubernetesMeta` | Include or exclude kubernetes metadata, with `json` format | `true` |
@@ -251,4 +251,4 @@ spec:
 ```
 
 ### FluentD stops processing logs
-When dealing with large volumes of data (TB's from what we have seen), FluentD may stop processing logs, but continue to run.  This issue seems to be caused by the [scalability of the inotify process](https://github.com/fluent/fluentd/issues/1630) that is packaged with the FluentD in_tail plugin.  If you encounter this situation, setting the `ENABLE_STAT_WATCHER` to `false` should resolve this issue.
+When dealing with large volumes of data (TB's from what we have seen), FluentD may stop processing logs, but continue to run. This issue seems to be caused by the [scalability of the inotify process](https://github.com/fluent/fluentd/issues/1630) that is packaged with the FluentD in_tail plugin. If you encounter this situation, setting the `ENABLE_STAT_WATCHER` to `false` should resolve this issue.
