@@ -71,6 +71,7 @@ The following tables list the configurable parameters of the GoCD chart and thei
 | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------- | ------------------- |
 | `server.enabled`                           | Enable GoCD Server. Supported values are `true`, `false`. When enabled, the GoCD server deployment is done on helm install.  | `true`              |
 | `server.shouldPreconfigure`                | Preconfigure GoCD Server to have a default elastic agent profile and Kubernetes elastic agent plugin settings. Supported values are `true`, `false`.  | `true`              |
+| `server.preconfigureCommand`               | Preconfigure GOCD Server with a custom command (shell,python, etc ...). Supported value is a list. | `["/bin/bash", "/preconfigure_server.sh"]`|
 | `server.image.repository`                  | GoCD server image                                                                                             | `gocd/gocd-server`  |
 | `server.image.tag`                         | GoCD server image tag                                                                                         | `.Chart.appVersion` |
 | `server.image.pullPolicy`                  | Image pull policy                                                                                             | `IfNotPresent`      |
