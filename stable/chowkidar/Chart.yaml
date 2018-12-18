@@ -1,5 +1,3 @@
-# Generated from deployments/kubernetes/templates/chart/Chart.yaml.tmpl
-
 apiVersion: v1
 name: chowkidar
 description: Chowkidar chart that runs on kubernetes
