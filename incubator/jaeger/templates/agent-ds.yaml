@@ -54,6 +54,10 @@ spec:
         - name: {{ $key | replace "." "_" | replace "-" "_" | upper | quote }}
           value: {{ $value }}
         {{- end }}
+        {{- range $key, $value := .Values.collector.extraEnvironmentVariables }}
+        - name: {{ $key | replace "." "_" | replace "-" "_" | upper | quote }}
+          value: {{ $value }}
+        {{- end }}   
         ports:
         - containerPort: {{ .Values.agent.service.zipkinThriftPort }}
           protocol: UDP

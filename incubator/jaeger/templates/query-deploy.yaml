@@ -93,6 +93,10 @@ spec:
               configMapKeyRef:
                 name: {{ template "jaeger.fullname" . }}
                 key: query.health-check-http-port
+          {{- range $key, $value := .Values.query.extraEnvironmentVariables }}
+          - name: {{ $key | replace "." "_" | replace "-" "_" | upper | quote }}
+            value: {{ $value }}
+          {{- end }}                
         ports:
         - containerPort: {{ .Values.query.service.targetPort }}
           protocol: TCP

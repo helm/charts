@@ -136,7 +136,7 @@ The following table lists the configurable parameters of the Jaeger chart and th
 |             Parameter                    |            Description              |                  Default               |
 |------------------------------------------|-------------------------------------|----------------------------------------|
 | `agent.annotations`                      | Annotations for Agent               |  nil                                   |
-| `agent.cmdlineParams`                    | Additional command line parameters  |  nil                                   |
+| `agent.extraEnvironmentVariables`        | Additional environment variables    |  nil                                   |
 | `agent.dnsPolicy`                        | Configure DNS policy for agents     |  ClusterFirst                          |
 | `agent.service.annotations`              | Annotations for Agent SVC           |  nil                                   |
 | `agent.service.binaryPort`               | jaeger.thrift over binary thrift    |  6832                                  |
@@ -158,7 +158,7 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `cassandra.config.seed_size`             | Seed size                           |  1                                     |
 | `cassandra.image.tag`                    | The image tag/version               |  3.11.3                                |
 | `cassandra.persistence.enabled`          | To enable storage persistence       |  false (Highly recommended to enable)  |
-| `collector.cmdlineParams`                | Additional command line parameters  |  nil                                   |
+| `collector.extraEnvironmentVariables`    | Additional environment variables    |  nil                                   |
 | `collector.podAnnotations`               | Annotations for Collector pod       |  nil                                   |
 | `collector.service.httpPort`             | Client port for HTTP thrift         |  14268                                 |
 | `collector.service.annotations`          | Annotations for Collector SVC       |  nil                                   |
@@ -180,7 +180,7 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `provisionDataStore.cassandra`           | Provision Cassandra Data Store      |  true                                  |
 | `provisionDataStore.elasticsearch`       | Provision Elasticsearch Data Store  |  false                                 |
 | `query.service.annotations`              | Annotations for Query SVC           |  nil                                   |
-| `query.cmdlineParams`                    | Additional command line parameters  |  nil                                   |
+| `query.extraEnvironmentVariables`        | Additional environment variables    |  nil                                   |
 | `query.image`                            | Image for Jaeger Query UI           |  jaegertracing/jaeger-query            |
 | `query.ingress.enabled`                  | Allow external traffic access       |  false                                 |
 | `query.podAnnotations`                   | Annotations for Query pod           |  nil                                   |

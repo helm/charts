@@ -98,6 +98,10 @@ spec:
               configMapKeyRef:
                 name: {{ template "jaeger.fullname" . }}
                 key: collector.zipkin.http-port
+          {{- range $key, $value := .Values.collector.extraEnvironmentVariables }}
+          - name: {{ $key | replace "." "_" | replace "-" "_" | upper | quote }}
+            value: {{ $value }}
+          {{- end }}     
         ports:
         - containerPort: {{ .Values.collector.service.tchannelPort }}
           name: tchannel
