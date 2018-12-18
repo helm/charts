@@ -11,7 +11,7 @@ spec:
   serviceName: {{ template "postgresql.fullname" . }}-headless
   replicas: 1
   updateStrategy:
-    type: RollingUpdate
+    type: {{ .Values.updateStrategy.type }}
   selector:
     matchLabels:
       app: {{ template "postgresql.name" . }}
@@ -151,10 +151,8 @@ spec:
         volumeMounts:
         - name: custom-init-scripts
           mountPath: /docker-entrypoint-initdb.d
-        {{- if .Values.persistence.enabled }}
         - name: data
           mountPath: {{ .Values.persistence.mountPath }}
-        {{ end }}
         {{ if or (.Files.Glob "files/postgresql.conf") .Values.postgresqlConfiguration }}
         - name: postgresql-config
           mountPath: /opt/bitnami/postgresql/conf/postgresql.conf
@@ -213,11 +211,6 @@ spec:
 {{ toYaml .Values.metrics.resources | indent 10 }}
 {{- end }}
       volumes:
-      {{- if and .Values.persistence.enabled .Values.persistence.existingClaim }}
-      - name: {{ .Values.persistence.existingClaim }}
-        persistentVolumeClaim:
-          claimName: {{ .Values.persistence.existingClaim }}
-      {{- end }}
       {{ if or (.Files.Glob "files/postgresql.conf") (.Files.Glob "files/pg_hba.conf") .Values.postgresqlConfiguration .Values.pgHbaConfiguration }}
       - name: postgresql-config
         configMap:
@@ -226,7 +219,14 @@ spec:
       - name: custom-init-scripts
         configMap:
           name: {{ template "postgresql.fullname" . }}-init-scripts
-{{- if and .Values.persistence.enabled (not .Values.persistence.existingClaim) }}
+{{- if and .Values.persistence.enabled .Values.persistence.existingClaim }}
+      - name: data
+        persistentVolumeClaim:
+          claimName: {{ .Values.persistence.existingClaim }}
+{{- else if not .Values.persistence.enabled }}
+      - name: data
+        emptyDir: {}
+{{- else if and .Values.persistence.enabled (not .Values.persistence.existingClaim) }}
   volumeClaimTemplates:
     - metadata:
         name: data
@@ -251,9 +251,4 @@ spec:
         storageClassName: "{{ .Values.persistence.storageClass }}"
       {{- end }}
       {{- end }}
-{{- else }}
-      - name: data
-        emptyDir: {}
 {{- end }}
-  updateStrategy:
-    type: {{ .Values.updateStrategy.type }}
