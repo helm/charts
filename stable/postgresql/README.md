@@ -59,6 +59,7 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `volumePermissions.image.tag`                 | Init container volume-permissions image tag          | `latest`                                                  |
 | `volumePermissions.image.pullPolicy`          | Init container volume-permissions image pull policy  | `Always`                                                  |
 | `volumePermissions.securityContext.runAsUser` | User ID for the init container                       | `0`                                                       |
+| `usePasswordFile`                             | Have the secrets mounted as a file instead of env vars                 | `false`                                                   |
 | `replication.enabled`                         | Would you like to enable replication                 | `false`                                                   |
 | `replication.user`                            | Replication user                                     | `repl_user`                                               |
 | `replication.password`                        | Replication user password                            | `repl_password`                                           |

@@ -88,15 +88,16 @@ spec:
           value: "slave"
         - name: POSTGRESQL_REPLICATION_USER
           value: {{ .Values.replication.user | quote }}
+        {{- if .Values.usePasswordFile }}
+        - name: POSTGRESQL_REPLICATION_PASSWORD_FILE
+          value: "/opt/bitnami/postgresql/secrets/postgresql-replication-password"
+        {{- else }}        
         - name: POSTGRESQL_REPLICATION_PASSWORD
           valueFrom:
             secretKeyRef:
-            {{- if .Values.existingSecret }}
-              name: {{ .Values.existingSecret }}
-            {{- else }}
-              name: {{ template "postgresql.fullname" . }}
-            {{- end }}
+              name: {{ template "postgresql.secretName" . }}
               key: postgresql-replication-password
+        {{- end }}
         - name: POSTGRESQL_MASTER_HOST
           value: {{ template "postgresql.fullname" . }}
         - name: POSTGRESQL_MASTER_PORT_NUMBER
@@ -133,6 +134,10 @@ spec:
           failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
         {{- end }}
         volumeMounts:
+        {{- if .Values.usePasswordFile }}
+        - name: postgresql-password
+          mountPath: /opt/bitnami/postgresql/secrets
+        {{ end }}
         {{- if .Values.persistence.enabled }}
         - name: data
           mountPath: /bitnami/postgresql
@@ -148,6 +153,11 @@ spec:
           subPath: pg_hba.conf
         {{ end }}
       volumes:
+      {{- if .Values.usePasswordFile }}
+      - name: postgresql-password
+        secret:
+          secretName: {{ template "postgresql.secretName" . }}
+      {{ end }}
       {{ if or (.Files.Glob "files/postgresql.conf") (.Files.Glob "files/pg_hba.conf") .Values.postgresqlConfiguration .Values.pgHbaConfiguration }}
       - name: postgresql-config
         configMap:

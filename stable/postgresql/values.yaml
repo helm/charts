@@ -65,6 +65,12 @@ postgresqlUsername: postgres
 ##
 # postgresqlPassword:
 
+## PostgreSQL password using existing secret
+## existingSecret: secret
+
+## Mount PostgreSQL secret as a file instead of passing environment variable
+# usePasswordFile: false
+
 ## Create a database
 ## ref: https://github.com/bitnami/bitnami-docker-postgresql/blob/master/README.md#creating-a-database-on-first-run
 ##
