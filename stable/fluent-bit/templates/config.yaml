@@ -174,10 +174,8 @@ data:
 {{- if .decodeFieldAs  }}
         Decode_Field_As {{ .decodeFieldAs }} {{ .decodeField | default "log" }}
 {{- end}}
-{{- if .commands }}
-{{- range .commands }}
-        {{ .command }}
-{{- end }}
+{{- if .extraEntries }}
+{{ .extraEntries | indent 8 }}
 {{- end }}
 {{ end }}
 {{- end }}
