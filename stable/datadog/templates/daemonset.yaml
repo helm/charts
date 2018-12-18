@@ -173,7 +173,7 @@ spec:
           {{- end }}
           {{- if .Values.datadog.logsEnabled }}
           - name: pointerdir
-            mountPath: /var/lib/datadog-agent/logs
+            mountPath: /opt/datadog-agent/run
           {{- end }}
           {{- if .Values.datadog.processAgentEnabled }}
           - name: passwd
@@ -221,7 +221,7 @@ spec:
         {{- end }}
         {{- if .Values.datadog.logsEnabled }}
         - hostPath:
-            path: /var/lib/datadog-agent/logs
+            path: {{ default "/var/lib/datadog-agent/logs" .Values.datadog.logsPointerHostPath | quote }}
           name: pointerdir
         {{- end }}
         {{- if .Values.datadog.processAgentEnabled }}
