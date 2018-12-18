@@ -1,6 +1,6 @@
 image:
   repository: "docker.elastic.co/kibana/kibana-oss"
-  tag: "6.5.0"
+  tag: "6.5.3"
   pullPolicy: "IfNotPresent"
 
 commandline:
@@ -56,7 +56,8 @@ service:
 ingress:
   enabled: false
   # hosts:
-    # - chart-example.local
+    # - kibana.localhost.localdomain
+    # - localhost.localdomain/kibana
   # annotations:
   #   kubernetes.io/ingress.class: nginx
   #   kubernetes.io/tls-acme: "true"
@@ -82,6 +83,8 @@ readinessProbe:
   enabled: false
   initialDelaySeconds: 30
   timeoutSeconds: 10
+  periodSeconds: 10
+  successThreshold: 5
 
 # Enable an authproxy. Specify container in extraContainers
 authProxyEnabled: false
@@ -174,3 +177,9 @@ securityContext:
   allowPrivilegeEscalation: false
   runAsUser: 1000
   fsGroup: 2000
+
+extraConfigMapMounts: []
+  # - name: logtrail-configs
+  #   configMap: kibana-logtrail
+  #   mountPath: /usr/share/kibana/plugins/logtrail/logtrail.json
+  #   subPath: logtrail.json
