@@ -130,11 +130,11 @@ falco:
 
   # Possible additional things you might want to do with program output:
   #   - send to a slack webhook:
-  #         program: "jq '{text: .output}' | curl -d @- -X POST https://hooks.slack.com/services/XXX"
+  #     program: "\"jq '{text: .output}' | curl -d @- -X POST https://hooks.slack.com/services/XXX\""
   #   - logging (alternate method than syslog):
-  #         program: logger -t falco-test
+  #     program: logger -t falco-test
   #   - send over a network connection:
-  #         program: nc host.example.com 80
+  #     program: nc host.example.com 80
 
   # If keep_alive is set to true, the program will be started once and
   # continuously written to, with each output message on its own
