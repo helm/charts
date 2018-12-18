@@ -1,0 +1,19 @@
+---
+{{- if .Values.chowkidar.rbac.enabled }}
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  labels: 
+{{ include "chowkidar.labels.selector" . | indent 4 }}
+{{ include "chowkidar.labels.chart" . | indent 4 }}
+  name: {{ template "chowkidar.name" . }}-role
+rules:
+  - apiGroups:
+      - ""
+    resources:      
+      - pods
+    verbs:
+      - list
+      - get
+      - watch
+{{- end }}

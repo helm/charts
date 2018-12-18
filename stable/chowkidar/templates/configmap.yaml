@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+{{ include "chowkidar.labels.selector" . | indent 4 }}
+{{ include "chowkidar.labels.chart" . | indent 4 }}
+  name: {{ template "chowkidar.name" . }}
+data:
+  config.yaml: |-
+    controllers:
+    {{- range .Values.chowkidar.controllers }}
+    - type: {{ .type }}
+      {{- with .watchCriterion }}
+      watchcriterion:
+        operator: {{ .operator }}
+        identifiers:
+        {{- range .identifiers }}
+        - {{ . }}
+        {{- end }}
+      {{- end }}
+      actions:
+      {{- range .actions }}
+      - name: {{ .name }}
+        params:
+        {{- range $key, $value := .params }}
+          {{ $key }}: {{ $value }}
+        {{- end }}
+      {{- end }}
+    {{- end }}

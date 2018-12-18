@@ -1,0 +1,26 @@
+# Generated from deployments/kubernetes/templates/chart/Chart.yaml.tmpl
+
+apiVersion: v1
+name: chowkidar
+description: Chowkidar chart that runs on kubernetes
+version: 0.0.26
+keywords:
+  - Chowkidar
+  - kubernetes
+home: https://github.com/stakater/Chowkidar
+sources:
+- https://github.com/stakater/Chowkidar
+icon: https://raw.githubusercontent.com/stakater/Chowkidar/master/assets/web/chowkidar-white-round-border-100px.png
+maintainers:
+- name: rasheedamir
+  email: rasheed@aurorasolutions.io
+- name: waseem-h
+  email: waseemhassan@stakater.com
+- name: faizanahmad055
+  email: faizan.ahmad55@outlook.com
+- name: kahootali
+  email: ali.kahoot@aurorasolutions.io
+- name: ahmadiq
+  email: ahmad@aurorasolutions.io
+- name: ahsan-storm
+  email: ahsanmuhammad1@outlook.com
