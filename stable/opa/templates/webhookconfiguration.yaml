@@ -1,0 +1,43 @@
+{{- $cn := printf "%s.%s.svc" ( include "opa.fullname" . ) .Release.Namespace }}
+{{- $ca := genCA "opa-admission-ca" 3650 -}}
+{{- $cert := genSignedCert $cn nil nil 3650 $ca -}}
+kind: {{ .Values.admissionControllerKind }}
+apiVersion: admissionregistration.k8s.io/v1beta1
+metadata:
+  name: {{ template "opa.fullname" . }}
+  labels:
+{{ include "opa.labels.standard" . | indent 4 }}
+webhooks:
+  - name: webhook.openpolicyagent.org
+    failurePolicy: {{ .Values.admissionControllerFailurePolicy }}
+    rules:
+{{ toYaml .Values.admissionControllerRules | indent 6 }}
+    clientConfig:
+{{ if .Values.generateAdmissionControllerCerts }}
+      caBundle: {{ b64enc $ca.Cert }}
+{{ else }}
+      caBundle: {{ b64enc .Values.admissionControllerCA }}
+{{ end }}
+      service:
+        name: {{ template "opa.fullname" . }}
+        namespace: {{ .Release.Namespace }}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ template "opa.fullname" . }}-cert
+  labels:
+    app: {{ template "opa.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+type: Opaque
+data:
+{{ if .Values.generateAdmissionControllerCerts }}
+  tls.crt: {{ b64enc $cert.Cert }}
+  tls.key: {{ b64enc $cert.Key }}
+{{ else }}
+  tls.crt: {{ b64enc .Values.admissionControllerCert }}
+  tls.key: {{ b64enc .Values.admissionControllerKey }}
+{{ end }}
+
