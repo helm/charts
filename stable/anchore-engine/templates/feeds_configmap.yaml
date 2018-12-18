@@ -45,7 +45,7 @@ data:
         require_auth: true
         endpoint_hostname: {{ template "anchore-engine.enterprise-feeds.fullname" . }}
         listen: '0.0.0.0'
-        port: {{ .Values.anchoreGlobal.service.ports.feedsApi }}
+        port: {{ .Values.anchoreEnterpriseFeeds.service.port }}
         # Time delay in seconds between consecutive driver runs for processing data
         cycle_timers:
 {{ toYaml .Values.anchoreEnterpriseFeeds.cycleTimers | indent 10 }}
