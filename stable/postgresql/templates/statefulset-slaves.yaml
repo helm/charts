@@ -11,8 +11,6 @@ metadata:
 spec:
   serviceName: {{ template "postgresql.fullname" . }}-headless
   replicas: {{ .Values.replication.slaveReplicas }}
-  updateStrategy:
-    type: RollingUpdate
   selector:
     matchLabels:
       app: {{ template "postgresql.name" . }}
