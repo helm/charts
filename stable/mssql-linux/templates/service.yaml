@@ -12,7 +12,12 @@ metadata:
 {{ toYaml .Values.service.annotations | indent 4 }}
 {{- end }}
 spec:
+  {{- if .Values.service.headless }}
+  type: clusterIP
+  clusterIP: None
+  {{- else }}
   type: {{ .Values.service.type }}
+  {{- end }}
   ports:
   - name: mssql
     port: {{ .Values.service.port }}
