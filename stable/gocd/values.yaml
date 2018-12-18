@@ -25,6 +25,9 @@ server:
   # Note: If this value is set to true, then, the serviceAccount.name is configured for the GoCD server pod. The service account token is mounted as a secret and is used in the lifecycle hook.
   # Note: An attempt to preconfigure the GoCD server is made. There are cases where the pre-configuration can fail and the GoCD server starts with an empty config.
   shouldPreconfigure: true
+  preconfigureCommand:
+    - "/bin/bash"
+    - "/preconfigure_server.sh"
   image:
     # server.image.repository is the GoCD Server image name
     repository: "gocd/gocd-server"
