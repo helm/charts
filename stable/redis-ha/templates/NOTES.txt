@@ -5,10 +5,7 @@ To connect to your Redis server:
 
 {{- if .Values.auth }}
 1. To retrieve the redis password:
-   On MacOS:
-   echo $(kubectl get secret {{ template "redis-ha.fullname" . }} -o "jsonpath={.data['auth']}" | base64 -D)
-   On Linux:
-   echo $(kubectl get secret {{ template "redis-ha.fullname" . }} -o "jsonpath={.data['auth']}" | base64 -d)
+   echo $(kubectl get secret {{ template "redis-ha.fullname" . }} -o "jsonpath={.data['auth']}" | base64 --decode)
 
 2. Connect to the Redis master pod that you can use as a client. By default the {{ template "redis-ha.fullname" . }}-server-0 pod is configured as the master:
 
