@@ -70,6 +70,12 @@ postgresqlUsername: postgres
 ##
 # postgresqlDatabase:
 
+## PostgreSQL password using existing secret
+## existingSecret: secret
+
+## Mount PostgreSQL secret as a file instead of passing environment variable
+# usePasswordFile: false
+
 ## PostgreSQL configuration
 ## Specify runtime configuration parameters as a dict, using camelCase, e.g.
 ## {"sharedBuffers": "500MB"}
