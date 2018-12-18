@@ -87,7 +87,7 @@ parsers:
   ##  json parser config can be defined by providing an extraEntries field.
   ##  The following entry:
   ## json:
-  ##   - extraEntries: | 
+  ##   - extraEntries: |
   ##       Decode_Field_As  escaped log do_next
   ##       Decode_Field_As  json log
   ##
