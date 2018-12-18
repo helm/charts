@@ -21,6 +21,9 @@ For a description of each component, view the official documentation at: [Anchor
 ## Installing the Anchore Engine OSS Chart
 TL;DR - `helm install stable/anchore-engine`
 
+Anchore Engine will take approximately 3 minutes to bootstrap. After the initial bootstrap period, Anchore Engine will begin a vulnerability feed sync. During this time, image analysis will show zero vulnerabilities until the sync is completed. This sync can take multiple hours depending on which feeds are enabled. The following anchore-cli command is available to poll the system and report back when the engine is bootstrapped and the vulnerability feeds are all synced up. `anchore-cli system wait`
+
+
 The recommended way to install the Anchore Engine Chart is with a customized values file and a custom release name. Create a new file named `anchore_values.yaml` and add all desired custom values (examples below); then run the following command:
 
   `helm install --name <release_name> -f anchore_values.yaml stable/anchore-engine`
@@ -42,6 +45,8 @@ The recommended way to install the Anchore Engine Chart is with a customized val
   ```
 
 ## Upgrading to Chart version 0.10.0
+
+Ingress resources have been changed to work natively with NGINX ingress controllers. If you're using a different ingress controller, update your values.yaml file accordingly. See the __Using Ingress__ configuration section for examples of NGINX & GCE ingress controller configurations.
 
 Service configs have been moved from the anchoreGlobal section, to individual component sections in the values.yaml file.
 If you're upgrading from a previous install and are using custom ports or serviceTypes, be sure to update your values.yaml file accordingly.
@@ -84,7 +89,7 @@ While the configuration options of Anchore Engine are extensive, the options pro
 
 ### Exposing the service outside the cluster:
 
-##### Using Ingress
+#### Using Ingress
 
 This configuration allows SSL termination at the LB.
 
@@ -311,6 +316,7 @@ To update the number in a running configuration:
     * Role based access control
     * Graphical User Interface
     * On-prem feeds service
+    * Snyk vulnerability data
 
 ### Enabling Enterprise Services
 Enterprise services require an Anchore Enterprise license, as well as credentials with
