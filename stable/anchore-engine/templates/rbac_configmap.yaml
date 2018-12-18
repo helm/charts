@@ -47,7 +47,7 @@ data:
         require_auth: True
         endpoint_hostname: localhost
         listen: '127.0.0.1'
-        port: {{ .Values.anchoreGlobal.service.ports.rbacAuth }}
+        port: {{ .Values.anchoreEnterpriseRbac.service.authPort }}
         ssl_cert: {{ .Values.anchoreGlobal.internalServicesSsl.certDir -}}/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretCertName }}
         ssl_key: {{ .Values.anchoreGlobal.internalServicesSsl.certDir -}}/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretKeyName }}
         ssl_enable: {{ .Values.anchoreGlobal.internalServicesSslEnabled }}
@@ -56,10 +56,10 @@ data:
         require_auth: True
         endpoint_hostname: {{ template "anchore-engine.api.fullname" . }}
         listen: '0.0.0.0'
-        port: {{ .Values.anchoreGlobal.service.ports.rbacApi }}
+        port: {{ .Values.anchoreEnterpriseRbac.service.apiPort }}
         authorization_handler: external
         authorization_handler_config:
-          endpoint: 'http://localhost:{{ .Values.anchoreGlobal.service.ports.rbacAuth }}'
+          endpoint: 'http://localhost:{{ .Values.anchoreEnterpriseRbac.service.authPort }}'
         ssl_cert: {{ .Values.anchoreGlobal.internalServicesSsl.certDir -}}/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretCertName }}
         ssl_key: {{ .Values.anchoreGlobal.internalServicesSsl.certDir -}}/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretKeyName }}
         ssl_enable: {{ .Values.anchoreGlobal.internalServicesSslEnabled }}

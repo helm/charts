@@ -43,7 +43,7 @@ spec:
               fieldPath: metadata.name
         ports:
         - name: analyzer-api
-          containerPort: {{ .Values.anchoreGlobal.service.ports.analyzer }}
+          containerPort: {{ .Values.anchoreAnalyzer.containerPort }}
         volumeMounts:
         - name: config-volume
           mountPath: /config/config.yaml
@@ -59,17 +59,19 @@ spec:
           httpGet:
             path: /health
             port: analyzer-api
-          initialDelaySeconds: 10
-          periodSeconds: 60
-          failureThreshold: 5
+          initialDelaySeconds: 120
+          timeoutSeconds: 10
+          periodSeconds: 10
+          failureThreshold: 6
+          successThreshold: 1
         readinessProbe:
           httpGet:
             path: /health
             port: analyzer-api
-          initialDelaySeconds: 5
-          periodSeconds: 10
           timeoutSeconds: 10
-          failureThreshold: 10
+          periodSeconds: 10
+          failureThreshold: 3
+          successThreshold: 1
         resources:
 {{ toYaml .Values.anchoreAnalyzer.resources | indent 10 }}
       volumes:

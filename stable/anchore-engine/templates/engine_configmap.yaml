@@ -68,7 +68,7 @@ data:
           snyk: false
           {{- end }}
       {{- if and .Values.anchoreEnterpriseGlobal.enabled .Values.anchoreEnterpriseFeeds.enabled }}
-      url: 'http://{{ template "anchore-engine.enterprise-feeds.fullname" . }}:{{ .Values.anchoreGlobal.service.ports.feedsApi }}/v1/feeds'
+      url: 'http://{{ template "anchore-engine.enterprise-feeds.fullname" . }}:{{ .Values.anchoreEnterpriseFeeds.service.port }}/v1/feeds'
       client_url:
       token_url:
       {{- else }}
@@ -98,11 +98,11 @@ data:
         require_auth: true
         endpoint_hostname: {{ template "anchore-engine.api.fullname" . }}
         listen: '0.0.0.0'
-        port: {{ .Values.anchoreGlobal.service.ports.extApi }}
+        port: {{ .Values.anchoreApi.service.port }}
         {{- if and .Values.anchoreEnterpriseGlobal.enabled .Values.anchoreEnterpriseRbac.enabled }}
         authorization_handler: external
         authorization_handler_config:
-          endpoint: "http://localhost:{{ .Values.anchoreGlobal.service.ports.rbacAuth }}"
+          endpoint: "http://localhost:{{ .Values.anchoreEnterpriseRbac.service.authPort }}"
         {{- end }}
         ssl_enable: {{ .Values.anchoreGlobal.internalServicesSslEnabled }}
         ssl_cert: {{ .Values.anchoreGlobal.internalServicesSsl.certDir -}}/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretCertName }}
@@ -112,7 +112,7 @@ data:
         require_auth: true
         endpoint_hostname: {{ template "anchore-engine.analyzer.fullname" . }}
         listen: '0.0.0.0'
-        port: {{ .Values.anchoreGlobal.service.ports.analyzer }}
+        port: {{ .Values.anchoreAnalyzer.containerPort }}
         cycle_timer_seconds: 1
         cycle_timers:
 {{ toYaml .Values.anchoreAnalyzer.cycleTimers | indent 10 }}
@@ -126,7 +126,7 @@ data:
         require_auth: true
         endpoint_hostname: {{ template "anchore-engine.catalog.fullname" . }}
         listen: '0.0.0.0'
-        port: {{ .Values.anchoreGlobal.service.ports.catalog }}
+        port: {{ .Values.anchoreCatalog.service.port }}
         cycle_timer_seconds: '1'
         cycle_timers:
 {{ toYaml .Values.anchoreCatalog.cycleTimers | indent 10 }}
@@ -142,7 +142,7 @@ data:
         require_auth: true
         endpoint_hostname: {{ template "anchore-engine.simplequeue.fullname" . }}
         listen: '0.0.0.0'
-        port: {{ .Values.anchoreGlobal.service.ports.simplequeue }}
+        port: {{ .Values.anchoreSimpleQueue.service.port }}
         ssl_enable: {{ .Values.anchoreGlobal.internalServicesSslEnabled }}
         ssl_cert: {{ .Values.anchoreGlobal.internalServicesSsl.certDir -}}/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretCertName }}
         ssl_key: {{ .Values.anchoreGlobal.internalServicesSsl.certDir -}}/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretKeyName }}
@@ -151,7 +151,7 @@ data:
         require_auth: true
         endpoint_hostname: {{ template "anchore-engine.policy-engine.fullname" . }}
         listen: '0.0.0.0'
-        port: {{ .Values.anchoreGlobal.service.ports.policyEngine }}
+        port: {{ .Values.anchorePolicyEngine.service.port }}
         cycle_timer_seconds: 1
         cycle_timers:
 {{ toYaml .Values.anchorePolicyEngine.cycleTimers | indent 10 }}
