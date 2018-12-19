@@ -59,3 +59,56 @@ credentials:
   existingSecret:
   useSecret: true
   secretContents: {}
+
+extend:
+  configMaps:
+    - name: 
+      path:
+      data:
+  secrets:
+    - name:
+      path: 
+      data:
+  emptyDirs:
+    - name: ark-data
+      path: /ark-data
+  sidecars:
+    - command:
+      - /bin/bash
+      - /scripts/start.sh
+      env:
+      - name: BACKUP_FOLDER
+        value: /ark-data/backups
+      - name: GPG_KEY
+        value: B31D7CA977ECC65D8DE3B835F92676DA40432FDD
+      - name: ARK_STORAGE_LOCATION
+        value: local-backups
+      - name: BUCKET_URL
+        value: gs://myriad-backups-nearline/bushelops-dev-alpha-kubernetes/
+      - name: BACKUP_NAME
+        value: kubernetes
+      - name: START_TIME
+        value: "17:50"
+      - name: INCLUDE_NAMESPACES
+        value: '*'
+      - name: BACKUP_FREQUENCY
+        value: 24h
+      - name: STATUSCAKE_URL
+        value: https://push.statuscake.com/?PK=7b2c09d00b9f025&TestID=3678656&time=0
+      - name: JSON_LOG_FORMAT
+        value: "true"
+      image: oliverisaac/ark-encrypt:latest
+      imagePullPolicy: Always
+      name: encrypt
+      resources: {}
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /ark-data
+        name: ark-data
+      - mountPath: /secrets
+        name: bucket-account-key
+  plugins:
+    - name: ark-example-plugins
+      image:  oliverisaac/ark-example-plugins:latest
+      imagePullPolicy: Always

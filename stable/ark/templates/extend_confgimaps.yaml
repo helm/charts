@@ -1,0 +1,15 @@
+{{- if .Values.extend.configMaps }}
+{{- range $cm := .Values.extend.configMaps }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $cm.name }}
+  labels:
+    chart: {{ template "ark.chart" $ }}
+    heritage: {{ $.Release.Service }}
+    release: {{ $.Release.Name }}
+    app: {{ template "ark.name" $ }}
+data:
+{{ toYaml $cm.data | indent 2 }}
+{{- end }}
+{{- end }}
