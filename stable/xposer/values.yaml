@@ -1,0 +1,19 @@
+xposer:
+  labels:
+    provider: stakater
+    group: com.stakater.platform
+    version: 0.0.3
+  image:
+    name: stakater/xposer
+    tag: "0.0.3"
+    pullPolicy: IfNotPresent
+  configFilePath: /configs/config.yaml
+  deployment:
+    annotations: {}
+  # Configuration which xposer will use to create ingress for a service
+  config:
+    domain: mydomain.com
+    ingressURLTemplate: "{{.Service}}.{{.Namespace}}.{{.Domain}}"
+    ingressURLPath: /
+    ingressNameTemplate: "{{.Service}}"
+    tls: false

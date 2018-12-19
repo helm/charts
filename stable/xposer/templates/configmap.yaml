@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+{{ include "xposer-labels.stakater" . | indent 4 }}
+{{ include "xposer-labels.chart" . | indent 4 }}
+  name: {{ template "xposer-name" . }}
+data:
+  config.yaml: |-
+    domain: {{ .Values.xposer.config.domain }}
+    ingressURLTemplate: {{ .Values.xposer.config.ingressURLTemplate | quote }}
+    ingressURLPath: {{ .Values.xposer.config.ingressURLPath }}
+    ingressNameTemplate: {{ .Values.xposer.config.ingressNameTemplate | quote }}
+    tls: {{ .Values.xposer.config.tls }}
