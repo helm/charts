@@ -110,10 +110,14 @@ spec:
       serviceAccountName: {{ template "metricbeat.serviceAccountName" . }}
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
+{{- if .Values.daemonset.tolerations }}
       tolerations:
-      - key: node-role.kubernetes.io/master
-        operator: Exists
-        effect: NoSchedule
+{{ toYaml .Values.daemonset.tolerations | indent 6 }}
+{{- end }}
+{{- if .Values.daemonset.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.daemonset.nodeSelector | indent 8 }}
+{{- end }}
 {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
