@@ -23,6 +23,7 @@ elasticsearch:
   buffer_chunk_limit: 2M
   buffer_queue_limit: 8
   logstash_prefix: 'logstash'
+  scheme: 'http'
 
 # If you want to add custom environment variables, use the env dict
 # You can then reference these in your config file e.g.:
@@ -447,9 +448,10 @@ configMaps:
       @type elasticsearch
       @log_level info
       include_tag_key true
-      type_name fluentd
+      type_name _doc
       host "#{ENV['OUTPUT_HOST']}"
       port "#{ENV['OUTPUT_PORT']}"
+      scheme "#{ENV['OUTPUT_SCHEME']}"
       logstash_format true
       logstash_prefix "#{ENV['LOGSTASH_PREFIX']}"
       <buffer>

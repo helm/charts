@@ -47,11 +47,12 @@ The following table lists the configurable parameters of the Fluentd elasticsear
 | ---------------------------------- | ------------------------------------------ | ---------------------------------------------------------- |
 | `annotations`                      | Optional daemonset annotations             | `NULL`                                                     |
 | `configMaps`                       | Fluentd configmaps                         | `default conf files`                                       |
-| `elasticsearch.host`               | Elstaicsearch Host                         | `elasticsearch-client`                                     |
+| `elasticsearch.host`               | Elasticsearch Host                         | `elasticsearch-client`                                     |
 | `elasticsearch.port`               | Elasticsearch Port                         | `9200`                                                     |
 | `elasticsearch.logstash_prefix`    | Elasticsearch Logstash prefix              | `logstash`                                                 |
 | `elasticsearch.buffer_chunk_limit` | Elasticsearch buffer chunk limit           | `2M`                                                       |
 | `elasticsearch.buffer_queue_limit` | Elasticsearch buffer queue limit           | `8`                                                        |
+| `elasticsearch.scheme`             | Elasticsearch scheme setting               | `http`                                                     |
 | `env`                              | List of environment variables that are added to the fluentd pods   | `{}`                               |
 | `extraVolumeMounts`                | Mount an extra volume, required to mount ssl certificates when elasticsearch has tls enabled |          |
 | `extraVolume`                      | Extra volume                               |                                                            |
@@ -72,7 +73,7 @@ The following table lists the configurable parameters of the Fluentd elasticsear
 | `service.ports`                    | List of service ports dict [{name:...}...] | Not Set                                                    |
 | `service.ports[].name`             | One of service ports name                  | Not Set                                                    |
 | `service.ports[].port`             | Service port                               | Not Set                                                    |
-| `service.ports[].nodePort`         | NodePort port(when service.type is NodePort) | Not Set                                                    |
+| `service.ports[].nodePort`         | NodePort port (when service.type is NodePort) | Not Set                                                 |
 | `service.ports[].protocol`         | Service protocol(optional, can be TCP/UDP) | Not Set                                                    |
 | `serviceAccount.create`            | Specifies whether a service account should be created.| `true`                                          |
 | `serviceAccount.name`              | Name of the service account.               |                                                            |
