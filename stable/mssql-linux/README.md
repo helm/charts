@@ -60,7 +60,7 @@ $ printf $(kubectl get secret --namespace default mymssql-mssql-linux-secret -o 
 ...
 ```
 
-Windows Powershell
+Windows PowerShell
 
 ```console
 PS [System.Text.Encoding]::ASCII.GetString([System.Convert]::FromBase64String($(kubectl get secret --namespace default mymssql-mssql-linux-secret -o jsonpath="{.data.sapassword}" )))
