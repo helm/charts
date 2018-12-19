@@ -2,7 +2,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: "{{ .Release.Name }}-db-init"
+  name: "{{ template "fullname" . }}-db-init"
   labels:
     app: {{ template "fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
@@ -11,26 +11,62 @@ metadata:
   annotations:
     # This is what defines this resource as a hook. Without this line, the
     # job is considered part of the release.
-    "helm.sh/hook": post-install
-    "helm.sh/hook-weight": "-5"
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": {{ (default -5 .Values.jobs.dbInit.weight) | quote }}
+    "helm.sh/hook-delete-policy": hook-succeeded,hook-failed
 spec:
+  activeDeadlineSeconds: {{ default 900 .Values.jobs.dbInit.activeDeadlineSeconds }}
+  ttlSecondsAfterFinished: {{ default 120 .Values.jobs.dbInit.ttlSecondsAfterFinished }}
+  backoffLimit: {{ default 5 .Values.jobs.dbInit.backOffLimit }}
+  parallelism: 1
+  completions: 1
   template:
     metadata:
-      name: "{{ .Release.Name }}-db-init"
+      name: "{{ template "fullname" . }}-db-init"
       labels:
         app: {{ template "fullname" . }}
         release: "{{ .Release.Name }}"
     spec:
-      restartPolicy: Never
+      restartPolicy: OnFailure
       {{- if .Values.image.imagePullSecrets }}
       imagePullSecrets:
 {{ toYaml .Values.image.imagePullSecrets | indent 8 }}
       {{- end }}
+      initContainers:
+      # Delay launch this job until postgresql is ready
+      - name: db-init-job-delay
+        image: "{{ .Values.postgresql.image }}:{{ .Values.postgresql.imageTag }}"
+        imagePullPolicy: {{ .Values.postgresql.imagePullPolicy }}
+        command:
+        - /bin/bash
+        - -c
+        - >
+          function is_pg_ready {
+            pg_isready \
+              --host=$(SENTRY_POSTGRES_HOST) \
+              --port=$(SENTRY_POSTGRES_PORT) \
+              --username=$(SENTRY_DB_USER) \
+              --dbname=$(SENTRY_DB_NAME) \
+              --timeout=1
+          }
+          while [[ "$(is_pg_ready)" != *"accepting connections"* ]]; do
+            echo "response from server: $(is_pg_ready)";
+            echo "waiting for $(SENTRY_POSTGRES_HOST) service" && sleep 5s;
+          done
+          echo -n "$(is_pg_ready)";
+          echo "$(SENTRY_POSTGRES_HOST) is ready";
+{{- include "sentry.standardEnv" . | indent 8 }}
       containers:
       - name: db-init-job
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-        command: ["sentry","upgrade","--noinput"]
+        command:
+        - sh
+        - -c
+        - >
+          sentry upgrade --noinput
 {{- include "sentry.standardEnv" . | indent 8 }}
+        resources:
+{{ toYaml .Values.jobs.dbInit.resources | indent 10 }}
         volumeMounts:
         - mountPath: /etc/sentry
           name: config

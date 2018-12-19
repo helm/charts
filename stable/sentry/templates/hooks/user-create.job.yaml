@@ -2,7 +2,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: "{{ .Release.Name }}-user-create"
+  name: "{{ template "fullname" . }}-user-create"
   labels:
     app: {{ template "fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
@@ -12,16 +12,22 @@ metadata:
     # This is what defines this resource as a hook. Without this line, the
     # job is considered part of the release.
     "helm.sh/hook": post-install
-    "helm.sh/hook-weight": "5"
+    "helm.sh/hook-weight": {{ (default 5 .Values.jobs.createUser.weight) | quote }}
+    "helm.sh/hook-delete-policy": hook-succeeded,hook-failed
 spec:
+  activeDeadlineSeconds: {{ default 120 (.Values.jobs.createUser.activeDeadlineSeconds) }}
+  ttlSecondsAfterFinished: {{ default 120 .Values.jobs.createUser.ttlSecondsAfterFinished }}
+  backoffLimit: {{ default 3 .Values.jobs.createUser.backOffLimit }}
+  parallelism: 1
+  completions: 1
   template:
     metadata:
-      name: "{{ .Release.Name }}-user-create"
+      name: "{{ template "fullname" . }}-user-create"
       labels:
         app: {{ template "fullname" . }}
         release: "{{ .Release.Name }}"
     spec:
-      restartPolicy: Never
+      restartPolicy: OnFailure
       {{- if .Values.image.imagePullSecrets }}
       imagePullSecrets:
 {{ toYaml .Values.image.imagePullSecrets | indent 8 }}
@@ -29,7 +35,11 @@ spec:
       containers:
       - name: user-create-job
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-        command: ["sentry","createuser","--no-input","--email", "{{ .Values.user.email }}", "--superuser","--password","$(SENTRY_USER_PASSWORD)"]
+        command:
+        - sh
+        - -c
+        - >
+          sentry createuser --no-input --email {{ .Values.user.email }} --superuser --password $(SENTRY_USER_PASSWORD)
 {{- include "sentry.standardEnv" . | indent 8 }}
         - name: SENTRY_USER_PASSWORD
           valueFrom:

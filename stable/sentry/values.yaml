@@ -12,6 +12,25 @@ image:
 # Add an existing secret to override the {{ template "fullname" . }} secret files
 existingSecret:
 
+jobs:
+  dbInit:
+    weight:
+    activeDeadlineSeconds: 900
+    ttlSecondsAfterFinished: 120
+    backOffLimit: 5
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi
+      limits:
+        cpu: 1000m
+        memory: 2Gi
+  createUser:
+    weight:
+    activeDeadlineSeconds: 120
+    ttlSecondsAfterFinished: 120
+    backOffLimit: 3
+
 # How many web UI instances to run
 web:
   replicacount: 1
