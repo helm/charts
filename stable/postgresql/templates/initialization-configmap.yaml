@@ -1,3 +1,4 @@
+{{-  if  (.Files.Glob "files/docker-entrypoint-initdb.d/*.{sh,sql,sql.gz}") }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -16,4 +17,5 @@ data:
 {{ (.Files.Glob "files/docker-entrypoint-initdb.d/*.{sh,sql}").AsConfig | indent 2 }}
 {{- with .Values.initdbScripts }}
 {{ toYaml . | indent 2 }}
+{{- end }}
 {{- end }}
