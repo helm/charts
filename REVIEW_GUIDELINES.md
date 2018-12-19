@@ -37,17 +37,17 @@ Stable charts should not depend on charts in incubator.
 Resources and labels should follow some conventions. The standard resource metadata (`metadata.labels` and `spec.template.metadata.labels`) should be this:
 
 ```yaml
-name: {{ template "myapp.fullname" . }}
+name: {{ include "myapp.fullname" . }}
 labels:
-  app: {{ template "myapp.name" . }}
-  chart: {{ template "myapp.chart" . }}
-  release: {{ .Release.Name }}
-  heritage: {{ .Release.Service }}
+  app.kubernetes.io/name: {{ include "myapp.name" . }}
+  app.kubernetes.io/instance: {{ .Release.Name }}
+  app.kubernetes.io/managed-by: {{ .Release.Service }}
+  helm.sh/chart: {{ include "myapp.chart" . }}
 ```
 
-If a chart has multiple components, a `component` label should be added (e. g. `component: server`). The resource name should get the component as suffix (e. g. `name: {{ template "myapp.fullname" . }}-server`).
+If a chart has multiple components, a `app.kubernetes.io/component` label should be added (e. g. `app.kubernetes.io/component: server`). The resource name should get the component as suffix (e. g. `name: {{ include "myapp.fullname" . }}-server`).
 
-Note that templates have to be namespaced. With Helm 2.7+, `helm create` does this out-of-the-box. The `app` label should use the `name` template, not `fullname` as is still the case with older charts.
+Note that templates have to be namespaced. With Helm 2.7+, `helm create` does this out-of-the-box. The `app.kubernetes.io/name` label should use the `name` template, not `fullname` as is still the case with older charts.
 
 ### Deployments, StatefulSets, DaemonSets Selectors
 
@@ -56,13 +56,13 @@ Note that templates have to be namespaced. With Helm 2.7+, `helm create` does th
 ```yaml
 selector:
   matchLabels:
-    app: {{ template "myapp.name" . }}
-    release: {{ .Release.Name }}
+    app.kubernetes.io/name: {{ include "myapp.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
 ```
 
 If a chart has multiple components, a `component` label should be added to the selector (see above).
 
-`spec.selector.matchLabels` defined in `Deployments`/`StatefulSets`/`DaemonSets` `>=v1/beta2` **must not** contain `chart` label or any label containing a version of the chart, because the selector is immutable.
+`spec.selector.matchLabels` defined in `Deployments`/`StatefulSets`/`DaemonSets` `>=v1/beta2` **must not** contain `helm.sh/chart` label or any label containing a version of the chart, because the selector is immutable.
 The chart label string contains the version, so if it is specified, whenever the the Chart.yaml version changes, Helm's attempt to change this immutable field would cause the upgrade to fail.
 
 #### Fixing Selectors
@@ -70,39 +70,39 @@ The chart label string contains the version, so if it is specified, whenever the
 ##### For Deployments, StatefulSets, DaemonSets apps/v1beta1 or extensions/v1beta1
 
 - If it does not specify `spec.selector.matchLabels`, set it
-- Remove `chart` label in `spec.selector.matchLabels` if it exists
+- Remove `helm.sh/chart` label in `spec.selector.matchLabels` if it exists
 - Bump patch version of the Chart
 
 ##### For Deployments, StatefulSets, DaemonSets >=apps/v1beta2
 
-- Remove `chart` label in `spec.selector.matchLabels` if it exists
+- Remove `helm.sh/chart` label in `spec.selector.matchLabels` if it exists
 - Bump major version of the Chart as it is a breaking change
 
 ### Service Selectors
 
-Label selectors for services must have both `app` and `release` labels.
+Label selectors for services must have both `app.kubernetes.io/name` and `app.kubernetes.io/instance` labels.
 
 ```yaml
 selector:
-  app: {{ template "myapp.name" . }}
-  release: {{ .Release.Name }}
+  app.kubernetes.io/name: {{ include "myapp.name" . }}
+  app.kubernetes.io/instance: {{ .Release.Name }}
 ```
 
-If a chart has multiple components, a `component` label should be added to the selector (see above).
+If a chart has multiple components, a `app.kubernetes.io/component` label should be added to the selector (see above).
 
 ### Persistence Labels
 
 ### StatefulSet
 
-In case of a `Statefulset`, `spec.volumeClaimTemplates.metadata.labels` must have both `app` and `release` labels, and **must not** contain `chart` label or any label containing a version of the chart, because `spec.volumeClaimTemplates` is immutable.
+In case of a `Statefulset`, `spec.volumeClaimTemplates.metadata.labels` must have both `app.kubernetes.io/name` and `app.kubernetes.io/instance` labels, and **must not** contain `helm.sh/chart` label or any label containing a version of the chart, because `spec.volumeClaimTemplates` is immutable.
 
 ```yaml
 labels:
-  app: {{ template "myapp.name" . }}
-  release: {{ .Release.Name }}
+  app.kubernetes.io/name: {{ include "myapp.name" . }}
+  app.kubernetes.io/instance: {{ .Release.Name }}
 ```
 
-If a chart has multiple components, a `component` label should be added to the selector (see above).
+If a chart has multiple components, a `app.kubernetes.io/component` label should be added to the selector (see above).
 
 ### PersistentVolumeClaim
 
@@ -159,7 +159,7 @@ volumes:
   - name: data
   {{- if .Values.persistence.enabled }}
     persistentVolumeClaim:
-      claimName: {{ .Values.persistence.existingClaim | default (include "fullname" .) }}
+      claimName: {{ .Values.persistence.existingClaim | default (include "myapp.fullname" .) }}
   {{- else }}
     emptyDir: {}
   {{- end -}}
@@ -172,12 +172,12 @@ volumes:
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ include "myapp.fullname" . }}
   labels:
-    app: {{ template "name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app.kubernetes.io/name: {{ include "myapp.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "myapp.chart" . }}
 spec:
   accessModes:
     - {{ .Values.persistence.accessMode | quote }}
@@ -217,18 +217,18 @@ autoscaling:
 apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
 metadata:
+  name: {{ include "myapp.fullname" . }}
   labels:
-    app: {{ template "helm-chart.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    component: "{{ .Values.name }}"
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
-  name: {{ template "helm-chart.fullname" . }}
+    app.kubernetes.io/name: {{ include "myapp.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "myapp.chart" . }}
+    app.kubernetes.io/component: "{{ .Values.name }}"
 spec:
   scaleTargetRef:
-    apiVersion: apps/v1beta1
+    apiVersion: apps/v1
     kind: Deployment
-    name: {{ template "helm-chart.fullname" . }}
+    name: {{ include "myapp.fullname" . }}
   minReplicas: {{ .Values.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.autoscaling.maxReplicas }}
   metrics:
@@ -271,12 +271,12 @@ ingress:
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: {{ include "fullname" }}
+  name: {{ include "myapp.fullname" }}
   labels:
-    app: {{ include "name" . }}
-    chart: {{ include "chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ include "myapp.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "myapp.chart" . }}
 {{- with .Values.ingress.annotations }}
   annotations:
 {{ toYaml . | indent 4 }}
@@ -299,7 +299,7 @@ spec:
         paths:
           - path: {{ .Values.ingress.path }}
             backend:
-              serviceName: {{ include "fullname" }}
+              serviceName: {{ include "myapp.fullname" }}
               servicePort: http
   {{- end }}
 {{- end }}

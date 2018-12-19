@@ -1,0 +1,13 @@
+{{- if (.Files.Glob "files/conf.d/*.conf") }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "postgresql.fullname" . }}-extended-configuration
+  labels:
+    app: {{ template "postgresql.name" . }}
+    chart: {{ template "postgresql.chart" . }}
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+data:
+{{ (.Files.Glob "files/conf.d/*.conf").AsConfig | indent 2 }}
+{{- end }}
