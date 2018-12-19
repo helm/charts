@@ -1,0 +1,23 @@
+{{- if .Values.keeper.podDisruptionBudget.enabled }}
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ template "stolon.fullname" . }}-keeper
+  labels:
+    app: {{ template "stolon.name" . }}
+    chart: {{ template "stolon.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+{{- if .Values.keeper.podDisruptionBudget.minAvailable }}
+  minAvailable: {{ .Values.keeper.podDisruptionBudget.minAvailable }}
+{{- end }}
+{{- if .Values.keeper.podDisruptionBudget.maxUnavailable }}
+  maxUnavailable: {{ .Values.keeper.podDisruptionBudget.maxUnavailable }}
+{{- end }}
+  selector:
+    matchLabels:
+      app: {{ template "stolon.name" . }}
+      release: {{ .Release.Name }}
+      component: stolon-keeper
+{{- end }}

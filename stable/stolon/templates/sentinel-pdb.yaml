@@ -1,0 +1,23 @@
+{{- if .Values.sentinel.podDisruptionBudget.enabled }}
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ template "stolon.fullname" . }}-sentinel
+  labels:
+    app: {{ template "stolon.name" . }}
+    chart: {{ template "stolon.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+{{- if .Values.sentinel.podDisruptionBudget.minAvailable }}
+  minAvailable: {{ .Values.sentinel.podDisruptionBudget.minAvailable }}
+{{- end }}
+{{- if .Values.sentinel.podDisruptionBudget.maxUnavailable }}
+  maxUnavailable: {{ .Values.sentinel.podDisruptionBudget.maxUnavailable }}
+{{- end }}
+  selector:
+    matchLabels:
+      app: {{ template "stolon.name" . }}
+      release: {{ .Release.Name }}
+      component: stolon-sentinel
+{{- end }}

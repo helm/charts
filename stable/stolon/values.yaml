@@ -85,6 +85,10 @@ keeper:
   tolerations: []
   volumes: []
   volumeMounts: []
+  podDisruptionBudget:
+    enabled: true
+    # minAvailable: 1
+    maxUnavailable: 1
 
 proxy:
   replicaCount: 2
@@ -103,6 +107,10 @@ proxy:
   nodeSelector: {}
   affinity: {}
   tolerations: []
+  podDisruptionBudget:
+    enabled: true
+    minAvailable: 1
+    # maxUnavailable: 1
 
 sentinel:
   replicaCount: 2
@@ -112,3 +120,7 @@ sentinel:
   nodeSelector: {}
   affinity: {}
   tolerations: []
+  podDisruptionBudget:
+    enabled: true
+    minAvailable: 1
+    # maxUnavailable: 1
