@@ -1,3 +1,7 @@
+### 1.5.11
+* [a8f4e6c9](https://github.com/kubernetes/charts/commit/a8f4e6c9):
+  - Bump up GoCD app version to 18.12.0
+
 ### 1.5.10
 * [87b3a755](https://github.com/kubernetes/charts/commit/87b3a755):
   - Allow the override of the preconfigure command
