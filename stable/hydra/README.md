@@ -71,6 +71,7 @@ Parameter | Description | Default
 `hydra.service.admin.type` | The Hydra admin API service type | `ClusterIP`
 `hydra.service.admin.port` | The Hydra admin API service port | `80`
 `hydra.service.admin.nodePort` | The node port used if the Hydra admin API service is of type `NodePort` | `""`
+`hydra.config.ADMIN_HOST` | The interface or unix socket hydra should listen and handle administrative API requests on. Use `unix:/socket/socket` when using reverse admin proxy | `0.0.0.0`
 `hydra.adminProxy.enable` | Hide the Hydra admin API behing an nginx reverse proxy with basic auth | `false`
 `hydra.adminProxy.image` | nginx image to use | `nginx:mainline-alpine`
 `hydra.adminProxy.user` | Basic auth username | `hydra`

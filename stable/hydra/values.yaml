@@ -32,6 +32,9 @@ hydra:
     ## Leave empty for text based log format, or set to "json" for JSON formatting.
     LOG_FORMAT: json
 
+    #interface or unix socket hydra should listen and handle administrative API (ADMIN_HOST)
+    ADMIN_HOST: "0.0.0.0"
+
     # LOG_LEVEL: debug
     # OAUTH2_SHARE_ERROR_DEBUG: true
 
@@ -45,7 +48,7 @@ hydra:
 
   ## Enable to hide the admin API behind an Nginx reverse proxy (with basic auth)
   adminProxy:
-    enable: true
+    enable: false
     image: nginx:mainline-alpine
     user: hydra
     # For supported password hash types, see:
