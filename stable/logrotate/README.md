@@ -54,4 +54,3 @@ The following table lists the configurable parameters of the chart and its defau
             |
 | `config.k8sRotatorConf`                  | Complete config file for logrotate                      | ``     
             |
-            
