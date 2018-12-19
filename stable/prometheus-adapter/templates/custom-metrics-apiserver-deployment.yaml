@@ -21,11 +21,14 @@ spec:
         release: {{ .Release.Name }}
         heritage: {{ .Release.Service }}
       name: {{ template "k8s-prometheus-adapter.name" . }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/custom-metrics-configmap.yaml") . | sha256sum }}
     spec:
       securityContext:
         allowPrivilegeEscalation: false
         capabilities:
           drop: ["all"]
+        readOnlyRootFilesystem: true
         runAsNonRoot: true
         runAsUser: 10001
       serviceAccountName: {{ template "k8s-prometheus-adapter.serviceAccountName" . }}

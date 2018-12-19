@@ -11,9 +11,13 @@
      NOTE: It may take a few minutes for the LoadBalancer IP to be available.
            You can watch the status of by running 'kubectl get svc -w {{ template "centrifugo.fullname" . }}'
   export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "centrifugo.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-  echo http://$SERVICE_IP:{{ .Values.service.externalPort }}
+  echo http://$SERVICE_IP:{{ .Values.service.port }}
 {{- else if contains "ClusterIP"  .Values.service.type }}
   export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "centrifugo.name" . }},release={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
   echo "Visit http://127.0.0.1:8080 to use your application"
-  kubectl port-forward $POD_NAME 8080:{{ .Values.service.externalPort }}
+  kubectl port-forward $POD_NAME 8080:{{ .Values.service.port }}
 {{- end }}
+
+2. Get your admin user password by running:
+
+  kubectl get secret --namespace {{ .Release.Namespace }} {{ template "centrifugo.fullname" . }} -o jsonpath="{.data.admin-password}" | base64 --decode ; echo

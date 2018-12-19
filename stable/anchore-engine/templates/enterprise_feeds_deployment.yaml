@@ -1,0 +1,140 @@
+{{- if and .Values.anchoreEnterpriseGlobal.enabled .Values.anchoreEnterpriseFeeds.enabled -}}
+{{- $component := "enterprise-feeds" -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{ template "anchore-engine.enterprise-feeds.fullname" . }}"
+  labels:
+    app: "{{ template "anchore-engine.fullname" . }}"
+    component: {{ $component }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  selector:
+    matchLabels:
+      app: "{{ template "anchore-engine.fullname" . }}"
+      component: {{ $component }}
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: "{{ template "anchore-engine.fullname" . }}"
+        component: {{ $component }}
+{{- if .Values.anchoreEnterpriseFeeds.annotations }}
+      annotations:
+{{ toYaml .Values.anchoreEnterpriseFeeds.annotations | indent 8 }}
+{{- end }}
+    spec:
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ template "anchore-engine.enterprise-feeds.fullname" .}}
+        - name: scratch-volume
+{{ toYaml .Values.anchoreEnterpriseFeeds.scratchVolume.details | indent 10 }}
+        - name: anchore-license
+          secret:
+            secretName: {{ .Values.anchoreEnterpriseGlobal.licenseSecretName }}
+      imagePullSecrets:
+      - name: {{ .Values.anchoreEnterpriseGlobal.imagePullSecretName }}
+      containers:
+      - name: {{ .Chart.Name }}-{{ $component }}
+        image: "{{ .Values.anchoreEnterpriseGlobal.image.repository }}:{{ .Values.anchoreEnterpriseGlobal.image.tag }}"
+        imagePullPolicy: {{ .Values.anchoreEnterpriseGlobal.image.pullPolicy }}
+        command: ["/usr/local/bin/anchore-enterprise-manager"]
+        args: ["service", "start", "feeds"]
+        ports:
+        - containerPort: {{ .Values.anchoreEnterpriseFeeds.service.port }}
+          name: feeds-api
+        envFrom:
+        - secretRef:
+            name: {{ template "anchore-engine.fullname" . }}
+        env:
+        {{- if and (index .Values "anchore-feeds-db" "externalEndpoint") (not (index .Values "anchore-feeds-db" "enabled")) }}
+        - name: ANCHORE_DB_HOST
+          value: {{ index .Values "anchore-feeds-db" "externalEndpoint" | quote }}
+        {{- else}}
+        - name: ANCHORE_DB_HOST
+          value: "{{ template "postgres.anchore-feeds-db.fullname" . }}:5432"
+        {{- end }}
+        - name: ANCHORE_DB_NAME
+          value: {{ index .Values "anchore-feeds-db" "postgresDatabase" | quote }}
+        - name: ANCHORE_DB_USER
+          value: {{ index .Values "anchore-feeds-db" "postgresUser"  | quote }}
+        - name: ANCHORE_DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "anchore-engine.fullname" . }}
+              key: .feedsDbPassword
+        - name: ANCHORE_POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        volumeMounts:
+        - name: config-volume
+          mountPath: /config/config.yaml
+          subPath: config.yaml
+        - name: scratch-volume
+          mountPath: {{ .Values.anchoreEnterpriseFeeds.scratchVolume.mountPath }}
+        - name: anchore-license
+          mountPath: /license.yaml
+          subPath: license.yaml
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: feeds-api
+          initialDelaySeconds: 120
+          timeoutSeconds: 10
+          periodSeconds: 10
+          failureThreshold: 6
+          successThreshold: 1
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: feeds-api
+          timeoutSeconds: 10
+          periodSeconds: 10
+          failureThreshold: 3
+          successThreshold: 1
+        resources:
+{{ toYaml .Values.anchoreEnterpriseFeeds.resources | indent 10 }}
+    {{- if .Values.anchoreEnterpriseFeeds.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.anchoreEnterpriseFeeds.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- with .Values.anchoreEnterpriseFeeds.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.anchoreEnterpriseFeeds.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "anchore-engine.enterprise-feeds.fullname" . }}
+  labels:
+    app: {{ template "anchore-engine.fullname" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: {{ $component }}
+  {{- if .Values.anchoreEnterpriseFeeds.service.annotations }}
+  annotations:
+{{ toYaml .Values.anchoreEnterpriseFeeds.service.annotations | indent 4 }}
+  {{- end }}
+spec:
+  type: {{ .Values.anchoreEnterpriseFeeds.service.type }}
+  ports:
+    - name: feeds-api
+      port: {{ .Values.anchoreEnterpriseFeeds.service.port }}
+      targetPort: {{ .Values.anchoreEnterpriseFeeds.service.port }}
+      protocol: TCP
+  selector:
+    app: {{ template "anchore-engine.fullname" . }}
+    component: {{ $component }}
+
+{{- end -}}

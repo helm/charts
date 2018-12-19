@@ -14,6 +14,8 @@ This chart bootstraps a [MediaWiki](https://github.com/bitnami/bitnami-docker-me
 
 It also packages the [Bitnami MariaDB chart](https://github.com/kubernetes/charts/tree/master/stable/mariadb) which is required for bootstrapping a MariaDB deployment for the database requirements of the MediaWiki application.
 
+Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters.
+
 ## Prerequisites
 
 - Kubernetes 1.4+ with Beta APIs enabled
@@ -47,6 +49,7 @@ The following table lists the configurable parameters of the MediaWiki chart and
 
 |              Parameter               |               Description                                   |                         Default                         |
 |--------------------------------------|-------------------------------------------------------------|---------------------------------------------------------|
+| `global.imageRegistry`               | Global Docker image registry                                | `nil`                                                   |
 | `image.registry`                     | MediaWiki image registry                                    | `docker.io`                                             |
 | `image.repository`                   | MediaWiki Image name                                        | `bitnami/mediawiki`                                     |
 | `image.tag`                          | MediaWiki Image tag                                         | `{VERSION}`                                             |
@@ -73,6 +76,8 @@ The following table lists the configurable parameters of the MediaWiki chart and
 | `mariadb.db.password`                | Password for the database                                   | _random 10 character long alphanumeric string_          |
 | `service.type`                       | Kubernetes Service type                                     | `LoadBalancer`                                          |
 | `service.loadBalancer`               | Kubernetes LoadBalancerIP to request                        | `nil`                                                   |
+| `service.port`                    | Service HTTP port                    | `80`                                          |
+| `service.httpsPort`                    | Service HTTPS port                    | `443`                                          |
 | `service.externalTrafficPolicy`      | Enable client source IP preservation                        | `Cluster`                                                 |
 | `service.nodePorts.http`             | Kubernetes http node port                                   | `""`                                                    |
 | `service.nodePorts.https`            | Kubernetes https node port                                  | `""`                                                    |
@@ -80,18 +85,17 @@ The following table lists the configurable parameters of the MediaWiki chart and
 | `ingress.hosts[0].name`              | Hostname to your Mediawiki installation                     | `mediawiki.local`                                       |
 | `ingress.hosts[0].path`              | Path within the url structure                               | `/`                                                     |
 | `ingress.hosts[0].tls`               | Utilize TLS backend in ingress                              | `false`                                                 |
+| `ingress.hosts[0].certManager`       | Add annotations for cert-manager                            | `false`                                                 |
 | `ingress.hosts[0].tlsSecret`         | TLS Secret (certificates)                                   | `mediawiki.local-tls-secret`                            |
 | `ingress.hosts[0].annotations`       | Annotations for this host's ingress record                  | `[]`                                                    |
 | `ingress.secrets[0].name`            | TLS Secret Name                                             | `nil`                                                   |
 | `ingress.secrets[0].certificate`     | TLS Secret Certificate                                      | `nil`                                                   |
 | `ingress.secrets[0].key`             | TLS Secret Key                                              | `nil`                                                   |
 | `persistence.enabled`                | Enable persistence using PVC                                | `true`                                                  |
-| `persistence.apache.storageClass`    | PVC Storage Class for Apache volume                         | `nil` (uses alpha storage class annotation)             |
-| `persistence.apache.accessMode`      | PVC Access Mode for Apache volume                           | `ReadWriteOnce`                                         |
-| `persistence.apache.size`            | PVC Storage Request for Apache volume                       | `1Gi`                                                   |
-| `persistence.mediawiki.storageClass` | PVC Storage Class for MediaWiki volume                      | `nil` (uses alpha storage class annotation)             |
-| `persistence.mediawiki.accessMode`   | PVC Access Mode for MediaWiki volume                        | `ReadWriteOnce`                                         |
-| `persistence.mediawiki.size`         | PVC Storage Request for MediaWiki volume                    | `8Gi`                                                   |
+| `persistence.storageClass`           | PVC Storage Class for MediaWiki volume                      | `nil` (uses alpha storage class annotation)             |
+| `persistence.existingClaim`          | An Existing PVC name for MediaWiki volume                   | `nil` (uses alpha storage class annotation)             |
+| `persistence.accessMode`             | PVC Access Mode for MediaWiki volume                        | `ReadWriteOnce`                                         |
+| `persistence.size`                   | PVC Storage Request for MediaWiki volume                    | `8Gi`                                                   |
 | `resources`                          | CPU/Memory resource requests/limits                         | Memory: `512Mi`, CPU: `300m`                            |
 | `livenessProbe.enabled`              | Enable/disable the liveness probe (ingest nodes pod)        | `true`                                                  |
 | `livenessProbe.initialDelaySeconds`  | Delay before liveness probe is initiated (ingest nodes pod) | 120                                                     |
@@ -105,6 +109,15 @@ The following table lists the configurable parameters of the MediaWiki chart and
 | `readinessProbe.timeoutSeconds`      | When the probe times out (ingest nodes pod)                 | 5                                                       |
 | `readinessProbe.failureThreshold`    | Minimum consecutive failures to be considered failed        | 6                                                       |
 | `readinessProbe.successThreshold`    | Minimum consecutive successes to be considered successful   | 1                                                       |
+| `podAnnotations`                | Pod annotations                                   | `{}`                                                       |
+| `metrics.enabled`                          | Start a side-car prometheus exporter                                                                           | `false`                                              |
+| `metrics.image.registry`                   | Apache exporter image registry                                                                                  | `docker.io`                                          |
+| `metrics.image.repository`                 | Apache exporter image name                                                                                      | `lusotycoon/apache-exporter`                           |
+| `metrics.image.tag`                        | Apache exporter image tag                                                                                       | `v0.5.0`                                            |
+| `metrics.image.pullPolicy`                 | Image pull policy                                                                                              | `IfNotPresent`                                       |
+| `metrics.image.pullSecrets`                | Specify docker-registry secret names as an array                                                               | `nil`                                                |
+| `metrics.podAnnotations`                   | Additional annotations for Metrics exporter pod                                                                | `{prometheus.io/scrape: "true", prometheus.io/port: "9117"}`                                                   |
+| `metrics.resources`                        | Exporter resource requests/limit                                                                               | {}                        |
 
 The above parameters map to the env variables defined in [bitnami/mediawiki](http://github.com/bitnami/bitnami-docker-mediawiki). For more information please refer to the [bitnami/mediawiki](http://github.com/bitnami/bitnami-docker-mediawiki) image documentation.
 

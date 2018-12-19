@@ -1,6 +1,6 @@
 name: anchore-engine
-version: 0.2.3
-appVersion: 0.2.4
+version: 0.10.0
+appVersion: 0.3.1
 description: Anchore container analysis and policy evaluation engine service
 keywords:
  - analysis
@@ -9,11 +9,13 @@ keywords:
  - "anchore-engine"
  - image
  - security
-home: https://anchore.io
+home: https://anchore.com
 sources:
  - https://github.com/anchore/anchore-engine
 maintainers:
  - name: zhill
    email: zach@anchore.com
+ - name: btodhunter
+   email: bradyt@anchore.com
 engine: gotpl
 icon: https://anchore.com/wp-content/uploads/2016/08/anchore.png

@@ -11,6 +11,7 @@ metadata:
 {{ toYaml .Values.extraLabels | indent 4 }}
 {{- end }}
 spec:
+  podManagementPolicy: {{ .Values.podManagementPolicy }}
   serviceName: {{ template "rabbitmq-ha.fullname" . }}-discovery
   replicas: {{ .Values.replicaCount }}
   updateStrategy:
@@ -45,7 +46,8 @@ spec:
       serviceAccountName: {{ template "rabbitmq-ha.serviceAccountName" . }}
       initContainers:
         - name: copy-rabbitmq-config
-          image: busybox
+          image: {{ .Values.busyboxImage.repository}}:{{ .Values.busyboxImage.tag}}
+          imagePullPolicy: {{ .Values.busyboxImage.pullPolicy }}
           command: ['sh', '-c', 'cp /configmap/* /etc/rabbitmq; rm -f /var/lib/rabbitmq/.erlang.cookie']
           resources:
 {{ toYaml .Values.initContainer.resources | indent 12 }}
@@ -101,26 +103,24 @@ spec:
               protocol: TCP
               containerPort: 5671
             {{- end }}
+          {{- $managementCredentials := printf "%s:%s" .Values.managementUsername .Values.managementPassword | b64enc }}
+          {{- $managementHeader := printf "Authorization: Basic %s" $managementCredentials }}
           livenessProbe:
-            httpGet:
-              path: /api/healthchecks/node
-              port: 15672
-              scheme: HTTP
-              httpHeaders:
-              - name: Authorization
-                value: Basic {{ printf "%s:%s" .Values.managementUsername .Values.managementPassword | b64enc }}
+            exec:
+              command:
+              - /bin/sh
+              - -c
+              - 'wget -O - -q --header "{{ $managementHeader }}" http://localhost:15672/api/healthchecks/node | grep -qF "{\"status\":\"ok\"}"'
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
             failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
           readinessProbe:
-            httpGet:
-              path: /api/healthchecks/node
-              port: 15672
-              scheme: HTTP
-              httpHeaders:
-              - name: Authorization
-                value: Basic {{ printf "%s:%s" .Values.managementUsername .Values.managementPassword | b64enc }}
+            exec:
+              command:
+              - /bin/sh
+              - -c
+              - 'wget -O - -q --header "{{ $managementHeader }}" http://localhost:15672/api/healthchecks/node | grep -qF "{\"status\":\"ok\"}"'
             initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
             timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
             periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
@@ -134,9 +134,9 @@ spec:
             - name: RABBITMQ_USE_LONGNAME
               value: "true"
             - name: RABBITMQ_NODENAME
-              value: rabbit@$(MY_POD_NAME).{{ template "rabbitmq-ha.fullname" . }}-discovery.{{ .Release.Namespace }}.svc.cluster.local
+              value: rabbit@$(MY_POD_NAME).{{ template "rabbitmq-ha.fullname" . }}-discovery.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}
             - name: K8S_HOSTNAME_SUFFIX
-              value: .{{ template "rabbitmq-ha.fullname" . }}-discovery.{{ .Release.Namespace }}.svc.cluster.local
+              value: .{{ template "rabbitmq-ha.fullname" . }}-discovery.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}
             - name: K8S_SERVICE_NAME
               value: {{ template "rabbitmq-ha.fullname" . }}-discovery
             - name: RABBITMQ_ERLANG_COOKIE
@@ -155,7 +155,6 @@ spec:
               mountPath: /var/lib/rabbitmq
             - name: config
               mountPath: /etc/rabbitmq
-              readOnly: true
             {{- if not .Values.existingSecret }}
             - name: definitions
               mountPath: /etc/definitions
@@ -226,6 +225,9 @@ spec:
                     app: {{ template "rabbitmq-ha.name" . }}
                     release: {{ .Release.Name }}
       {{- end }}
+      {{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName }}
+      {{- end }}
       volumes:
         - name: config
           emptyDir: {}
@@ -270,6 +272,6 @@ spec:
       {{- end }}
       {{- end }}
 {{- else }}
-        - name: data
+        - name: {{ .Values.persistentVolume.name }}
           emptyDir: {}
 {{- end }}

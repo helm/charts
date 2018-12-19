@@ -1,0 +1,121 @@
+{{- $component := "simplequeue" -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{ template "anchore-engine.simplequeue.fullname" . }}"
+  labels:
+    app: "{{ template "anchore-engine.fullname" . }}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+    component: {{ $component }}
+spec:
+  selector:
+    matchLabels:
+      app: "{{ template "anchore-engine.fullname" . }}"
+      component: {{ $component }}
+  replicas: {{ .Values.anchoreSimpleQueue.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: "{{ template "anchore-engine.fullname" . }}"
+        component: {{ $component }}
+{{- if .Values.anchoreSimpleQueue.annotations }}
+      annotations:
+{{ toYaml .Values.anchoreSimpleQueue.annotations | indent 8 }}
+{{- end }}
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}-{{ $component }}
+        image: {{ .Values.anchoreGlobal.image.repository }}:{{ .Values.anchoreGlobal.image.tag }}
+        imagePullPolicy: {{ .Values.anchoreGlobal.image.pullPolicy }}
+        command: ["/usr/local/bin/anchore-manager"]
+        args: ["service", "start", "simplequeue"]
+        envFrom:
+        - secretRef:
+            name: {{ template "anchore-engine.fullname" . }}
+        - configMapRef:
+            name: {{ template "anchore-engine.fullname" . }}
+        env:
+        - name: ANCHORE_POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        ports:
+        - name: simplequeue
+          containerPort: {{ .Values.anchoreSimpleQueue.service.port }}
+        volumeMounts:
+        - name: config-volume
+          mountPath: /config/config.yaml
+          subPath: config.yaml
+        {{- if .Values.anchoreGlobal.internalServicesSslEnabled }}
+        - name: certs
+          mountPath: {{ default "/certs" .Values.anchoreGlobal.internalServicesSsl.certDir }}
+          readOnly: true
+        {{- end }}
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: simplequeue
+          initialDelaySeconds: 120
+          timeoutSeconds: 10
+          periodSeconds: 10
+          failureThreshold: 6
+          successThreshold: 1
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: simplequeue
+          timeoutSeconds: 10
+          periodSeconds: 10
+          failureThreshold: 3
+          successThreshold: 1
+        resources:
+{{ toYaml .Values.anchoreSimpleQueue.resources | indent 10 }}
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ template "anchore-engine.fullname" .}}
+        {{- if .Values.anchoreGlobal.internalServicesSslEnabled }}
+        - name: certs
+          secret:
+            secretName: {{ .Values.anchoreGlobal.internalServicesSsl.certSecret }}
+        {{- end }}
+    {{- if .Values.anchoreSimpleQueue.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.anchoreSimpleQueue.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- with .Values.anchoreSimpleQueue.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.anchoreSimpleQueue.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "anchore-engine.simplequeue.fullname" . }}
+  labels:
+    app: {{ template "anchore-engine.fullname" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: {{ $component }}
+  {{- if .Values.anchoreSimpleQueue.service.annotations }}
+  annotations:
+{{ toYaml .Values.anchoreSimpleQueue.service.annotations | indent 4 }}
+  {{- end }}
+spec:
+  type: {{ .Values.anchoreSimpleQueue.service.type }}
+  ports:
+    - name: anchore-simplequeue-api
+      port: {{ .Values.anchoreSimpleQueue.service.port }}
+      targetPort: {{ .Values.anchoreSimpleQueue.service.port }}
+      protocol: TCP
+  selector:
+    app: {{ template "anchore-engine.fullname" . }}
+    component: {{ $component }}

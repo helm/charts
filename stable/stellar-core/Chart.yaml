@@ -1,0 +1,21 @@
+apiVersion: v1
+appVersion: "10.0.0"
+description: Backbone node of the Stellar cryptocurrency network.
+name: stellar-core
+version: 1.0.0
+icon: https://www.stellar.org/developers/images/favicon/rocket-180x180.png
+home: https://www.stellar.org
+maintainers:
+  - name: andrenarchy
+    email: andre.extern@satoshipay.io
+    url: https://github.com/andrenarchy
+  - name: rendhalver
+    email: pete.brown@powerhrg.com
+sources:
+  - https://github.com/satoshipay/docker-stellar-core/
+keywords:
+  - stellar
+  - stellar-core
+  - cryptocurrency
+  - blockchain
+engine: gotpl

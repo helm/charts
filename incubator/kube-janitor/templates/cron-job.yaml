@@ -1,0 +1,41 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: {{ template "chart.fullname" . }}
+  labels:
+    app: {{ template "chart.name" . }}
+    chart: {{ template "chart.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  schedule: "{{ .Values.cron.schedule }}"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: {{ template "chart.fullname" . }}
+          restartPolicy: Never
+          containers:
+          - name: {{ .Chart.Name }}
+            image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+            imagePullPolicy: {{ .Values.image.pullPolicy }}
+            command:
+              - "/kube-janitor"
+              - "-expiration"
+              - "{{ .Values.kubejanitor.expiration }}"
+              - "-namespace"
+              - "{{ .Values.kubejanitor.namespace }}"
+              - "-annotation"
+              - "{{ .Values.kubejanitor.annotation }}"
+              {{- if .Values.kubejanitor.pendingJobExpiration }}
+              - "-pendingJobExpiration"
+              - "{{ .Values.kubejanitor.pendingJobExpiration }}"
+              {{- end }}
+              {{- if .Values.kubejanitor.verbose }}
+              - "-verbose"
+              {{- end }}
+              {{- if .Values.kubejanitor.dryrun }}
+              - "-dryrun"
+              {{- end }}
+            resources:
+{{ toYaml .Values.resources | indent 14 }}

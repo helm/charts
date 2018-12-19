@@ -19,9 +19,13 @@ spec:
 {{- if and .Values.rbac.create .Values.serviceAccount.create }}
       serviceAccountName: {{ template "prometheus-node-exporter.serviceAccountName" . }}
 {{- end }}      
+{{- if .Values.securityContext }}
       securityContext:
-        runAsNonRoot: true
-        runAsUser: 65534
+{{ toYaml .Values.securityContext | indent 8 }}
+{{- end }}
+{{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName }}
+{{- end }}
       containers:
         - name: node-exporter
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -54,6 +58,13 @@ spec:
             - name: sys
               mountPath: /host/sys
               readOnly: true
+            {{- if .Values.extraHostVolumeMounts }}
+            {{- range $_, $mount := .Values.extraHostVolumeMounts }}
+            - name: {{ $mount.name }}
+              mountPath: {{ $mount.mountPath }}
+              readOnly: {{ $mount.readOnly }}
+            {{- end }}
+            {{- end }}
       hostNetwork: true
       hostPID: true
     {{- with .Values.tolerations }}
@@ -67,3 +78,10 @@ spec:
         - name: sys
           hostPath:
             path: /sys
+        {{- if .Values.extraHostVolumeMounts }}
+        {{- range $_, $mount := .Values.extraHostVolumeMounts }}
+        - name: {{ $mount.name }}
+          hostPath:
+            path: {{ $mount.hostPath }}
+        {{- end }}
+        {{- end }}

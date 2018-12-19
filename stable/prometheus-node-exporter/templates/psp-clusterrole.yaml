@@ -1,5 +1,5 @@
-{{- if .Values.rbacEnable }}
-{{- if .Values.pspEnable }}
+{{- if .Values.rbac.create }}
+{{- if .Values.rbac.pspEnabled }}
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1beta1
 metadata:

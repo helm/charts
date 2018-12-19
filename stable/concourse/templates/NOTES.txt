@@ -33,19 +33,8 @@
     kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME 8080:{{ .Values.concourse.atcPort }}
     {{- end }}
   {{- end }}
-{{- if .Values.concourse.basicAuth.enabled }}
-
-* Login with the following credentials
-  {{ if .Values.secrets.create }}
-  Username: {{ .Values.secrets.basicAuthUsername }}
-  Password: {{ .Values.secrets.basicAuthPassword }}
-  {{ else }}
-  Username: see basic-auth-username in secret {{ template "concourse.concourse.fullname" . }}
-  Password: see basic-auth-password in secret {{ template "concourse.concourse.fullname" . }}
-  {{ end }}
-{{- end }}
-* If this is your first time using Concourse, follow the tutorial at https://concourse-ci.org/hello-world.html
-{{- if contains "naive" .Values.concourse.baggageclaimDriver }}
+* If this is your first time using Concourse, follow the tutorials at https://concourse-ci.org/tutorials.html
+{{- if contains "naive" .Values.concourse.worker.baggageclaim.driver }}
 
 *******************
 ******WARNING******

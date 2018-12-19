@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "cosbench.controller.fullname" . }}
+  labels:
+    app: {{ template "cosbench.name" . }}
+    chart: {{ template "cosbench.chart" . }}
+    component: controller
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+spec:
+  type: {{ .Values.controller.type }}
+  ports:
+    - name: controller
+      port: {{ .Values.controller.service.port }}
+      targetPort: controller
+      protocol: TCP
+  selector:
+    app: {{ template "cosbench.name" . }}
+    component: controller
+    release: {{ .Release.Name }}

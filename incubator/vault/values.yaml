@@ -6,12 +6,12 @@ replicaCount: 3
 # imagePullSecret:
 image:
   repository: vault
-  tag: 0.11.1
+  tag: 0.11.2
   pullPolicy: IfNotPresent
 
 consulAgent:
   repository: consul
-  tag: 1.0.7
+  tag: 1.2.3
   pullPolicy: IfNotPresent
   # If you set join to a consul server endpoint, a consul agent will
   # be started in the vault pod.  If unset, no agent container is
