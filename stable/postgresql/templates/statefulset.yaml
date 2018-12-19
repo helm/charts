@@ -155,10 +155,10 @@ spec:
           failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
         {{- end }}
         volumeMounts:
-        {{-  if  (.Files.Glob "files/docker-entrypoint-initdb.d/*.{sh,sql,sql.gz}") }}
+        {{- if  (.Files.Glob "files/docker-entrypoint-initdb.d/*.{sh,sql,sql.gz}") }}
         - name: custom-init-scripts
           mountPath: /docker-entrypoint-initdb.d
-        {{ end }}
+        {{- end }}
         {{- if .Values.usePasswordFile }}
         - name: postgresql-password
           mountPath: /opt/bitnami/postgresql/secrets/
@@ -167,16 +167,16 @@ spec:
         - name: data
           mountPath: {{ .Values.persistence.mountPath }}
         {{- end }}
-        {{ if or (.Files.Glob "files/postgresql.conf") .Values.postgresqlConfiguration }}
+        {{- if or (.Files.Glob "files/postgresql.conf") .Values.postgresqlConfiguration }}
         - name: postgresql-config
           mountPath: /opt/bitnami/postgresql/conf/postgresql.conf
           subPath: postgresql.conf
-        {{ end }}
-        {{ if or (.Files.Glob "files/pg_hba.conf") .Values.pgHbaConfiguration }}
+        {{- end }}
+        {{- if or (.Files.Glob "files/pg_hba.conf") .Values.pgHbaConfiguration }}
         - name: postgresql-config
           mountPath: /opt/bitnami/postgresql/conf/pg_hba.conf
           subPath: pg_hba.conf
-        {{ end }}
+        {{- end }}
 {{- if .Values.metrics.enabled }}
       - name: metrics
         image: {{ template "metrics.image" . }}
@@ -223,7 +223,7 @@ spec:
         {{- if .Values.usePasswordFile }}
         - name: postgresql-password
           mountPath: /opt/bitnami/postgresql/secrets/
-        {{ end }}
+        {{- end }}
         ports:
         - name: metrics
           containerPort: 9187
@@ -241,7 +241,7 @@ spec:
         secret:
           secretName: {{ template "postgresql.secretName" . }}
       {{- end }}
-      {{-  if  (.Files.Glob "files/docker-entrypoint-initdb.d/*.{sh,sql,sql.gz}") }}
+      {{- if  (.Files.Glob "files/docker-entrypoint-initdb.d/*.{sh,sql,sql.gz}") }}
       - name: custom-init-scripts
         configMap:
           name: {{ template "postgresql.fullname" . }}-init-scripts
