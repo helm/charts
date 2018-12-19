@@ -159,6 +159,10 @@ spec:
         - name: custom-init-scripts
           mountPath: /docker-entrypoint-initdb.d
         {{- end }}
+        {{- if (.Files.Glob "files/conf.d/*.conf") }}
+        - name: postgresql-extended-config
+          mountPath: /opt/bitnami/postgresql/conf/conf.d/
+        {{- end }}
         {{- if .Values.usePasswordFile }}
         - name: postgresql-password
           mountPath: /opt/bitnami/postgresql/secrets/
@@ -235,6 +239,11 @@ spec:
       - name: postgresql-config
         configMap:
           name: {{ template "postgresql.fullname" . }}-configuration
+      {{- end }}
+      {{- if (.Files.Glob "files/conf.d/*.conf") }}
+      - name: postgresql-extended-config
+        configMap:
+          name: {{ template "postgresql.fullname" . }}-extended-configuration
       {{- end }}
       {{- if .Values.usePasswordFile }}
       - name: postgresql-password
