@@ -1,0 +1,26 @@
+{{- if .Values.jamadar.rbac.enabled }}
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  labels: 
+{{ include "jamadar.labels.selector" . | indent 4 }}
+{{ include "jamadar.labels.chart" . | indent 4 }}
+{{- if .Values.jamadar.rbac.labels }}
+{{ toYaml .Values.jamadar.rbac.labels | indent 4 }}
+{{- end }}
+{{- if .Values.jamadar.matchLabels }}
+{{ toYaml .Values.jamadar.matchLabels | indent 4 }}
+{{- end }}
+  name: {{ template "jamadar.name" . }}-role
+rules:
+  - apiGroups:
+      - ""
+    resources:      
+      - namespaces
+    verbs:
+      - list
+      - get
+      - watch
+      - create
+      - delete
+{{- end }}

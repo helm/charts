@@ -1,0 +1,53 @@
+jamadar:
+  matchLabels: {}
+  image:
+    name: stakater/jamadar
+    tag: "0.0.12"
+    pullPolicy: IfNotPresent
+  pollTimeInterval: 20m
+  age: 7d
+  resources:
+  - namespaces
+  actions:
+  - name: slack
+    params:
+      token: <token>
+      channel: <channel-name>
+  restrictedNamespaces:
+  - kube-system
+  - default
+  - kube-public
+
+  deployment:
+    labels:
+      provider: stakater
+      group: com.stakater.platform
+      version: 0.0.12
+    annotations:
+      configmap.reloader.stakater.com/reload: "jamadar"
+    # Support for extra environment variables.
+    env:
+      # Open supports Key value pair as environment variables.
+      open:
+      # secret supports Key value pair as environment variables. It gets the values based on keys from default jamadar secret if any.
+      secret:
+      # field supports Key value pair as environment variables. It gets the values from other fields of pod.
+      field:
+
+  configmap:
+    labels: {}
+    annotations: {}
+
+  configFilePath: /configs/config.yaml
+
+  rbac:
+    enabled: true
+    labels: {}
+  # Service account config for the agent pods
+  serviceAccount:
+    # Specifies whether a ServiceAccount should be created
+    create: true
+    labels: {}
+    # The name of the ServiceAccount to use.
+    # If not set and create is true, a name is generated using the fullname template
+    name: jamadar

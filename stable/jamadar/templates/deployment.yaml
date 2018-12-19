@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+{{- if .Values.jamadar.deployment.annotations }}
+  annotations:
+{{ toYaml .Values.jamadar.deployment.annotations | indent 4 }}
+{{- end }}
+  labels:
+{{ include "jamadar.labels.selector" . | indent 4 }}
+{{ include "jamadar.labels.chart" . | indent 4 }}
+{{- if .Values.jamadar.deployment.labels }}
+{{ toYaml .Values.jamadar.deployment.labels | indent 4 }}
+{{- end }}
+{{- if .Values.jamadar.matchLabels }}
+{{ toYaml .Values.jamadar.matchLabels | indent 4 }}
+{{- end }}
+  name: {{ template "jamadar.name" . }}
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+{{ include "jamadar.labels.selector" . | indent 6 }}
+{{- if .Values.jamadar.matchLabels }}
+{{ toYaml .Values.jamadar.matchLabels | indent 6 }}
+{{- end }}
+  template:
+    metadata:
+      labels:
+{{ include "jamadar.labels.selector" . | indent 8 }}
+{{- if .Values.jamadar.matchLabels }}
+{{ toYaml .Values.jamadar.matchLabels | indent 8 }}
+{{- end }}
+    spec:
+      containers:
+      - env:
+      {{- range $name, $value := .Values.jamadar.deployment.env.open }}
+      {{- if not (empty $value) }}
+        - name: {{ $name | quote }}
+          value: {{ $value | quote }}
+      {{- end }}
+      {{- end }}
+      {{- $secret_name := include "jamadar.name" . }}
+      {{- range $name, $value := .Values.jamadar.deployment.env.secret }}
+      {{- if not ( empty $value) }}
+        - name: {{ $name | quote }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ $secret_name }}
+              key: {{ $name | quote }}
+      {{- end }}
+      {{- end }}
+      {{- range $name, $value := .Values.jamadar.deployment.env.field }}
+      {{- if not ( empty $value) }}
+        - name: {{ $name | quote }}
+          valueFrom:
+            fieldRef:
+              fieldPath: {{ $value | quote}}
+      {{- end }}
+      {{- end }}
+        - name: KUBERNETES_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: CONFIG_FILE_PATH
+          value: {{ .Values.jamadar.configFilePath }}
+        image: "{{ .Values.jamadar.image.name }}:{{ .Values.jamadar.image.tag }}"
+        imagePullPolicy: {{ .Values.jamadar.image.pullPolicy }}
+        name: {{ template "jamadar.name" . }}
+        volumeMounts:
+        - mountPath: /configs
+          name: config-volume
+      serviceAccountName: {{ template "jamadar.name" . }}
+      volumes:
+      - configMap:
+          name: {{ template "serviceAccountName" . }}
+        name: config-volume
+              
