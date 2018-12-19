@@ -254,6 +254,13 @@ Adds a backup CronJob for jenkins, along with required RBAC resources.
 | `backup.resources`          | Backup CPU/Memory resource requests/limits | Memory: `1Gi`, CPU: `1`           |
 | `backup.destination`        | Destination to store backup artifacts      | `s3://nuvo-jenkins-data/backup`   |
 
+### Restore from backup
+
+To restore a backup, you can use the `kube-tasks` underlying tool called [skbn](https://github.com/nuvo/skbn), which copies files from cloud storage to Kubernetes.
+The best way to do it would be using a `Job` to copy files from the desired backup tag to the Jenkins pod.
+See the [skbn in-cluster example](https://github.com/nuvo/skbn/tree/master/examples/in-cluster) for more details.
+
+
 ## Run Jenkins as non root user
 
 The default settings of this helm chart let Jenkins run as root user with uid `0`.
