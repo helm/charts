@@ -42,6 +42,12 @@ spec:
             - name: stun
               containerPort: 3478
               protocol: UDP
+          {{- if .Values.addSetfcap }}
+          securityContext:
+            capabilities:
+              add:
+                - SETFCAP
+          {{- end }}
           livenessProbe:
             httpGet:
               path: /status
