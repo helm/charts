@@ -60,8 +60,8 @@ Parameter                           | Description                          | Def
 ----------------------------------- | ------------------------------------ | --------------------------------
 `replicaCount`                      | Desired number of pods               | `1`
 `restartPolicy`                     | Container restart policy             | `Always`
-`image.repository`                  | Container image repository           | `justwatch/stackdriver_exporter`
-`image.tag`                         | Container image tag                  | `1.0.2`
+`image.repository`                  | Container image repository           | `frodenas/stackdriver-exporter`
+`image.tag`                         | Container image tag                  | `v0.6.0`
 `image.pullPolicy`                  | Container image pull policy          | `IfNotPresent`
 `resources`                         | Resource requests & limits           | `{}`
 `service.type`                      | Type of service to create            | `ClusterIP`
@@ -72,7 +72,7 @@ Parameter                           | Description                          | Def
 `stackdriver.metrics.offset`        | Offset (into the past) to request    | `0s`
 `web.listenAddress`                 | Port to listen on                    | `9255`
 `web.path`                          | Path under which to expose metrics   | `/metrics`
-`annoations`                        | Deployment annotations               | `{}`
+`annotations`                       | Deployment annotations               | `{}`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to
 `helm install`. For example,
