@@ -86,7 +86,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 ```bash
 $ helm install --name my-release \
   --set cluster.memberCount=3,serviceAccount.create=false \
-    hazelcast/hazelcast-jet
+    stable/hazelcast-jet
 ```
 
 The above command sets number of Hazelcast Jet members to 3 and disables REST endpoints.
