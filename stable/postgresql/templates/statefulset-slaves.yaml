@@ -91,7 +91,7 @@ spec:
         {{- if .Values.usePasswordFile }}
         - name: POSTGRESQL_REPLICATION_PASSWORD_FILE
           value: "/opt/bitnami/postgresql/secrets/postgresql-replication-password"
-        {{- else }}        
+        {{- else }}
         - name: POSTGRESQL_REPLICATION_PASSWORD
           valueFrom:
             secretKeyRef:
@@ -152,6 +152,10 @@ spec:
           mountPath: /opt/bitnami/postgresql/conf/pg_hba.conf
           subPath: pg_hba.conf
         {{ end }}
+        {{- if (.Files.Glob "files/conf.d/*.conf") }}
+        - name: postgresql-extended-config
+          mountPath: /opt/bitnami/postgresql/conf/conf.d/
+        {{- end }}
       volumes:
       {{- if .Values.usePasswordFile }}
       - name: postgresql-password
@@ -163,6 +167,11 @@ spec:
         configMap:
           name: {{ template "postgresql.fullname" . }}-configuration
       {{ end }}
+      {{- if (.Files.Glob "files/conf.d/*.conf") }}
+      - name: postgresql-extended-config
+        configMap:
+          name: {{ template "postgresql.fullname" . }}-extended-configuration
+      {{- end }}
   updateStrategy:
     type: {{ .Values.updateStrategy.type }}
 {{- if .Values.persistence.enabled }}
