@@ -9,6 +9,9 @@ image:
   imagePullSecrets: []
   # - name:
 
+# Add an existing secret to override the {{ template "fullname" . }} secret files
+existingSecret:
+
 # How many web UI instances to run
 web:
   replicacount: 1

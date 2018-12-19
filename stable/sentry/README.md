@@ -61,6 +61,7 @@ The following table lists the configurable parameters of the Sentry chart and th
 | `image.repository`                   | Sentry image                                | `library/sentry`                                           |
 | `image.tag`                          | Sentry image tag                            | `9.0`                                                      |
 | `imagePullPolicy`                    | Image pull policy                           | `IfNotPresent`                                             |
+| `existingSecret`                     | Name of existing secret for passwords       | `nil`                                                      |
 | `web.podAnnotations`                 | Web pod annotations                         | `{}`                                                       |
 | `web.replicacount`                   | Amount of web pods to run                   | `1`                                                        |
 | `web.resources.limits`               | Web resource limits                         | `{cpu: 500m, memory: 500Mi}`                               |
