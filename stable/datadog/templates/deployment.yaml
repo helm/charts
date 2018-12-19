@@ -112,12 +112,18 @@ spec:
 {{- if .Values.datadog.volumeMounts }}
 {{ toYaml .Values.datadog.volumeMounts | indent 10 }}
 {{- end }}
+{{- if .Values.datadog.livenessProbe }}
+        livenessProbe:
+{{ toYaml .Values.datadog.livenessProbe | indent 10 }}
+{{- else }}
         livenessProbe:
           exec:
             command:
             - ./probe.sh
           initialDelaySeconds: 15
           periodSeconds: 5
+          failureThreshold: 6
+{{- end }}
       volumes:
         {{- if .Values.datadog.useCriSocketVolume }}
         - hostPath:
