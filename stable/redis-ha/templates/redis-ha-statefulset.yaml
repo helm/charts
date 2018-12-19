@@ -56,10 +56,6 @@ spec:
               name: {{ template "redis-ha.fullname" . }}
               key: auth
 {{- end }}
-        - name: POD_IP
-          valueFrom:
-            fieldRef:
-              fieldPath: status.podIP
         volumeMounts:
         - name: config
           mountPath: /readonly-config
