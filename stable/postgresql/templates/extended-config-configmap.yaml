@@ -9,7 +9,5 @@ metadata:
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
 data:
-{{- if (.Files.Glob "files/conf.d/*.conf") }}
 {{ (.Files.Glob "files/conf.d/*.conf").AsConfig | indent 2 }}
-{{- end }}
 {{- end }}
