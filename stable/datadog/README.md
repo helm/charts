@@ -15,15 +15,15 @@ Kubernetes 1.4+ or OpenShift 3.4+ (1.3 support is currently partial, full suppor
 To install the chart with the release name `my-release`, retrieve your Datadog API key from your [Agent Installation Instructions](https://app.datadoghq.com/account/settings#agent/kubernetes) and run:
 
 ```bash
-$ helm install --name my-release \
-    --set datadog.apiKey=YOUR-KEY-HERE stable/datadog
+helm install --name my-release \
+  --set datadog.apiKey=YOUR-KEY-HERE stable/datadog
 ```
 
 After a few minutes, you should see hosts and metrics being reported in Datadog.
 
 **Tip**: List all releases using `helm list`
 
-### Enabling the Datadog Cluster Agent ###
+### Enabling the Datadog Cluster Agent
 
 Read about the Datadog Cluster Agent in the [official documentation](https://docs.datadoghq.com/agent/kubernetes/cluster/).
 
@@ -47,7 +47,7 @@ helm install --name datadog-monitoring \
 To uninstall/delete the `my-release` deployment:
 
 ```bash
-$ helm delete my-release
+helm delete my-release
 ```
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
@@ -68,17 +68,21 @@ The following table lists the configurable parameters of the Datadog chart and t
 | `image.pullSecrets`         | Image pull secrets                 |  `nil`                                    |
 | `rbac.create`               | If true, create & use RBAC resources | `true`                                  |
 | `rbac.serviceAccount`       | existing ServiceAccount to use (ignored if rbac.create=true) | `default`       |
-| `datadog.name`              | Container name if Deamonset or Deployment | `datadog`                          |
+| `datadog.name`              | Container name if Daemonset or Deployment | `datadog`                          |
+| `datadog.site`              | Site ('datadoghq.com' or 'datadoghq.eu') | `nil`                                |
+| `datadog.dd_url`            | Datadog intake server              | `nil`                                     |
 | `datadog.env`               | Additional Datadog environment variables | `nil`                               |
 | `datadog.logsEnabled`       | Enable log collection              | `nil`                                     |
 | `datadog.logsConfigContainerCollectAll` | Collect logs from all containers | `nil`                           |
+| `datadog.logsPointerHostPath` | Host path to store the log tailing state in | `/var/lib/datadog-agent/logs`   |
 | `datadog.apmEnabled`        | Enable tracing from the host       | `nil`                                     |
 | `datadog.processAgentEnabled` | Enable live process monitoring   | `nil`                                     |
 | `datadog.checksd`           | Additional custom checks as python code  | `nil`                               |
 | `datadog.confd`             | Additional check configurations (static and Autodiscovery) | `nil`             |
 | `datadog.criSocketPath`     | Path to the container runtime socket (if different from Docker) | `nil`        |
 | `datadog.tags`              | Set host tags                      | `nil`                                     |
-| `datadog.useCriSocketPathVolume` | Enable mounting the container runtime socket in Agent containers | `True` |
+| `datadog.nonLocalTraffic` | Enable statsd reporting from any external ip | `False`                           |
+| `datadog.useCriSocketVolume` | Enable mounting the container runtime socket in Agent containers | `True` |
 | `datadog.volumes`           | Additional volumes for the daemonset or deployment | `nil`                     |
 | `datadog.volumeMounts`      | Additional volumeMounts for the daemonset or deployment | `nil`                |
 | `datadog.podAnnotationsAsTags` | Kubernetes Annotations to Datadog Tags mapping | `nil`                      |
@@ -87,6 +91,7 @@ The following table lists the configurable parameters of the Datadog chart and t
 | `datadog.resources.limits.cpu` | CPU resource limits             | `200m`                                    |
 | `datadog.resources.requests.memory` | Memory resource requests   | `256Mi`                                   |
 | `datadog.resources.limits.memory` | Memory resource limits       | `256Mi`                                   |
+| `datadog.livenessProbe`     | Overrides the default liveness probe | exec /probe.sh                          |
 | `daemonset.podAnnotations`  | Annotations to add to the DaemonSet's Pods | `nil`                             |
 | `daemonset.tolerations`     | List of node taints to tolerate (requires Kubernetes >= 1.6) | `nil`           |
 | `daemonset.nodeSelector`    | Node selectors                     | `nil`                                     |
@@ -116,19 +121,22 @@ The following table lists the configurable parameters of the Datadog chart and t
 | `clusterAgent.resources.limits.cpu`      | CPU resource limits                | `200m`                                    |
 | `clusterAgent.resources.requests.memory` | Memory resource requests           | `256Mi`                                   |
 | `clusterAgent.resources.limits.memory`   | Memory resource limits             | `256Mi`                                   |
+| `clusterAgent.tolerations`               | List of node taints to tolerate    | `[]`                                      |
+| `clusterAgent.livenessProbe`             | Overrides the default liveness probe | http port 443 if external metrics enabled       |
+| `clusterAgent.readinessProbe`            | Overrides the default readiness probe | http port 443 if external metrics enabled      |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```bash
-$ helm install --name my-release \
-    --set datadog.apiKey=YOUR-KEY-HERE,datadog.logLevel=DEBUG \
-    stable/datadog
+helm install --name my-release \
+  --set datadog.apiKey=YOUR-KEY-HERE,datadog.logLevel=DEBUG \
+  stable/datadog
 ```
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f my-values.yaml stable/datadog
+helm install --name my-release -f my-values.yaml stable/datadog
 ```
 
 **Tip**: You can copy and customize the default [values.yaml](values.yaml)
@@ -207,3 +215,12 @@ podLabelsAsTags:
   app: kube_app
   release: helm_release
 ```
+
+### CRI integration
+
+As of the version 6.6.0, the Datadog Agent supports collecting metrics from any container runtime interface used in your cluster.
+Configure the location path of the socket with `datadog.criSocketPath` and make sure you allow the socket to be mounted into the pod running the agent by setting `datadog.useCriSocketVolume` to `True`.
+Standard paths are:
+
+- Containerd socket: `/var/run/containerd/containerd.sock`
+- Cri-o socket: `/var/run/crio/crio.sock`

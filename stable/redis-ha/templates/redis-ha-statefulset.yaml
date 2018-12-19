@@ -19,7 +19,7 @@ spec:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/redis-ha-configmap.yaml") . | sha256sum }}
       {{- if .Values.podAnnotations }}
-{{ toYaml .Values.podAnnotations . | indent 8 }}
+{{ toYaml .Values.podAnnotations | indent 8 }}
       {{- end }}
       labels:
         release: {{ .Release.Name }}
@@ -44,9 +44,9 @@ spec:
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         command:
-        - bash
+        - sh
         args:
-        - /readonly-config/init.bash
+        - /readonly-config/init.sh
         env:
 {{- if .Values.auth }}
         - name: AUTH

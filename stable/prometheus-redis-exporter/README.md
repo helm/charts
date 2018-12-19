@@ -44,7 +44,7 @@ The following table lists the configurable parameters and their default values.
 | ---------------------- | --------------------------------------------------- | ------------------------- |
 | `replicaCount`         | desired number of prometheus-redis-exporter pods    | `1`                       |
 | `image.repository`     | prometheus-redis-exporter image repository          | `oliver006/redis_exporter`|
-| `image.tag`            | prometheus-redis-exporter image tag                 | `v0.21.1`                 |
+| `image.tag`            | prometheus-redis-exporter image tag                 | `v0.22.1`                 |
 | `image.pullPolicy`     | image pull policy                                   | `IfNotPresent`            |
 | `extraArgs`            | extra arguments for the binary; possible values [here](https://github.com/oliver006/redis_exporter#flags)| {}
 | `env`                  | additional environment variables in YAML format. Can be used to pass credentials as env variables (via secret) as per the image readme [here](https://github.com/oliver006/redis_exporter#environment-variables) | {} |

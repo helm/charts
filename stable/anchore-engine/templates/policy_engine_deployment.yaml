@@ -1,0 +1,121 @@
+{{- $component := "policy" -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{ template "anchore-engine.policy-engine.fullname" . }}"
+  labels:
+    app: "{{ template "anchore-engine.fullname" . }}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+    component: {{ $component }}
+spec:
+  selector:
+    matchLabels:
+      app: "{{ template "anchore-engine.fullname" . }}"
+      component: {{ $component }}
+  replicas: {{ .Values.anchorePolicyEngine.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: "{{ template "anchore-engine.fullname" . }}"
+        component: {{ $component }}
+{{- if .Values.anchorePolicyEngine.annotations }}
+      annotations:
+{{ toYaml .Values.anchorePolicyEngine.annotations | indent 8 }}
+{{- end }}
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}-{{ $component }}
+        image: {{ .Values.anchoreGlobal.image.repository }}:{{ .Values.anchoreGlobal.image.tag }}
+        imagePullPolicy: {{ .Values.anchoreGlobal.image.pullPolicy }}
+        command: ["/usr/local/bin/anchore-manager"]
+        args: ["service", "start", "policy_engine"]
+        envFrom:
+        - secretRef:
+            name: {{ template "anchore-engine.fullname" . }}
+        - configMapRef:
+            name: {{ template "anchore-engine.fullname" . }}
+        env:
+        - name: ANCHORE_POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        ports:
+        - name: policy
+          containerPort: {{ .Values.anchorePolicyEngine.service.port }}
+        volumeMounts:
+        - name: config-volume
+          mountPath: /config/config.yaml
+          subPath: config.yaml
+        {{- if .Values.anchoreGlobal.internalServicesSslEnabled }}
+        - name: certs
+          mountPath: {{ default "/certs" .Values.anchoreGlobal.internalServicesSsl.certDir }}
+          readOnly: true
+        {{- end }}
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: policy
+          initialDelaySeconds: 120
+          timeoutSeconds: 10
+          periodSeconds: 10
+          failureThreshold: 6
+          successThreshold: 1
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: policy
+          timeoutSeconds: 10
+          periodSeconds: 10
+          failureThreshold: 3
+          successThreshold: 1
+        resources:
+{{ toYaml .Values.anchorePolicyEngine.resources | indent 10 }}
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ template "anchore-engine.fullname" .}}
+        {{- if .Values.anchoreGlobal.internalServicesSslEnabled }}
+        - name: certs
+          secret:
+            secretName: {{ .Values.anchoreGlobal.internalServicesSsl.certSecret }}
+        {{- end }}
+    {{- if .Values.anchorePolicyEngine.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.anchorePolicyEngine.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- with .Values.anchorePolicyEngine.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.anchorePolicyEngine.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "anchore-engine.policy-engine.fullname" . }}
+  labels:
+    app: {{ template "anchore-engine.fullname" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: {{ $component }}
+  {{- if .Values.anchorePolicyEngine.service.annotations }}
+  annotations:
+{{ toYaml .Values.anchorePolicyEngine.service.annotations | indent 4 }}
+  {{- end }}
+spec:
+  type: {{ .Values.anchorePolicyEngine.service.type }}
+  ports:
+    - name: anchore-policy-api
+      port: {{ .Values.anchorePolicyEngine.service.port }}
+      targetPort: {{ .Values.anchorePolicyEngine.service.port }}
+      protocol: TCP
+  selector:
+    app: {{ template "anchore-engine.fullname" . }}
+    component: {{ $component }}
