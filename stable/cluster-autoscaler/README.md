@@ -146,6 +146,10 @@ Parameter | Description | Default
 `spotinst.image.tag` | Image tag (used if `cloudProvider=spotinst`) | `v0.6.0`
 `spotinst.image.pullPolicy` | Image pull policy (used if `cloudProvider=spotinst`) | `IfNotPresent`
 `tolerations` | List of node taints to tolerate (requires Kubernetes >= 1.6) | `[]`
+`serviceMonitor.enabled` | if `true`, creates a Prometheus Operator ServiceMonitor | `false`
+`serviceMonitor.interval` | Interval that Prometheus scrapes Cluster Autoscaler metrics | `10s`
+`serviceMonitor.namespace` | Namespace which Prometheus is running in | `monitoring`
+`serviceMonitor.selector` | Default to kube-prometheus install (CoreOS recommended), but should be set according to Prometheus install | `{ prometheus: kube-prometheus }`
 `azureClientID` | Service Principal ClientID with contributor permission to Cluster and Node ResourceGroup | none
 `azureClientSecret` | Service Principal ClientSecret with contributor permission to Cluster and Node ResourceGroup | none
 `azureSubscriptionID` | Azure subscription where the resources are located | none
