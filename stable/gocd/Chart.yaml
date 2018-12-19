@@ -1,7 +1,7 @@
 name: gocd
 home: https://www.gocd.org/
-version: 1.5.10
-appVersion: 18.11.0
+version: 1.5.11
+appVersion: 18.12.0
 description: GoCD is an open-source continuous delivery server to model and visualize complex workflows with ease.
 icon: https://gocd.github.io/assets/images/go-icon-black-192x192.png
 keywords:
