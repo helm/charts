@@ -35,7 +35,7 @@ release: {{ .Release.Name | quote }}
 
 {{/*
 Create comma separated list of omitted namespaces in Kubernetes
-}}
+*/}}
 {{- define "omittedNameSpaces" -}}
 {{- join "," .Values.kubeConfig.omittedNameSpaces }}
 {{- end -}}
