@@ -59,12 +59,12 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `volumePermissions.image.tag`                 | Init container volume-permissions image tag          | `latest`                                                  |
 | `volumePermissions.image.pullPolicy`          | Init container volume-permissions image pull policy  | `Always`                                                  |
 | `volumePermissions.securityContext.runAsUser` | User ID for the init container                       | `0`                                                       |
+| `usePasswordFile`                             | Have the secrets mounted as a file instead of env vars                 | `false`                                                   |
 | `replication.enabled`                         | Would you like to enable replication                 | `false`                                                   |
 | `replication.user`                            | Replication user                                     | `repl_user`                                               |
 | `replication.password`                        | Replication user password                            | `repl_password`                                           |
 | `replication.slaveReplicas`                   | Number of slaves replicas                            | `1`                                                       |
-| `existingSecret`                              | Name of existing secret to use for postgresl passwords        | `nil`                                                     |
-
+| `existingSecret`                              | Name of existing secret to use for PostgreSQL passwords        | `nil`                                                     |
 | `postgresqlUsername`                          | PostgreSQL admin user                                | `postgres`                                                |
 | `postgresqlPassword`                          | PostgreSQL admin password                            | _random 10 character alphanumeric string_                 |
 | `postgresqlDatabase`                          | PostgreSQL database                                  | `nil`                                                     |
@@ -83,9 +83,12 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `persistence.accessMode`                      | PVC Access Mode for PostgreSQL volume                | `ReadWriteOnce`                                           |
 | `persistence.size`                            | PVC Storage Request for PostgreSQL volume            | `8Gi`                                                     |
 | `persistence.annotations`                     | Annotations for the PVC                              | `{}`                                                      |
-| `nodeSelector`                                | Node labels for pod assignment                       | `{}`                                                      |
-| `affinity`                                    | Affinity labels for pod assignment                   | `{}`                                                      |
-| `tolerations`                                 | Toleration labels for pod assignment                 | `[]`                                                      |
+| `master.nodeSelector`                         | Node labels for pod assignment (postgresql master)       | `{}`                                                  |
+| `master.affinity`                             | Affinity labels for pod assignment (postgresql master)   | `{}`                                                  |
+| `master.tolerations`                          | Toleration labels for pod assignment (postgresql master) | `[]`                                                  |
+| `slave.nodeSelector`                          | Node labels for pod assignment (postgresql slave)        | `{}`                                                  |
+| `slave.affinity`                              | Affinity labels for pod assignment (postgresql slave)    | `{}`                                                  |
+| `slave.tolerations`                           | Toleration labels for pod assignment (postgresql slave)  | `[]`                                                  |
 | `terminationGracePeriodSeconds`               | Seconds the pod needs to terminate gracefully        | `nil`                                                     |
 | `resources`                                   | CPU/Memory resource requests/limits                  | Memory: `256Mi`, CPU: `250m`                              |
 | `securityContext.enabled`                     | Enable security context                              | `true`                                                    |
@@ -115,6 +118,7 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `metrics.image.pullPolicy`                    | PostgreSQL Image pull policy                         | `IfNotPresent`                                            |
 | `metrics.image.pullSecrets`                   | Specify Image pull secrets                           | `nil` (does not add image pull secrets to deployed pods)  |
 | `extraEnv`                                    | Any extra environment variables you would like to pass on to the pod | `{}`                                    |
+| `updateStrategy`                              | Update strategy policy                               | `{type: "onDelete"}`                                      |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
@@ -190,6 +194,19 @@ For more precise policy, set `networkPolicy.allowExternal=false`. This will only
 This label will be displayed in the output of a successful install.
 
 ## Upgrade
+
+### 3.0.0
+
+This releases make it possible to specify different nodeSelector, affinity and tolerations for master and slave pods.
+It also fixes an issue with `postgresql.master.fullname` helper template not obeying fullnameOverride.
+
+#### Breaking changes
+
+- `affinty` has been renamed to `master.affinity` and `slave.affinity`.
+- `tolerations` has been renamed to `master.tolerations` and `slave.tolerations`.
+- `nodeSelector` has been renamed to `master.nodeSelector` and `slave.nodeSelector`.
+
+### 2.0.0
 
 In order to upgrade from the `0.X.X` branch to `1.X.X`, you should follow the below steps:
 

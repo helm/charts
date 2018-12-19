@@ -10,6 +10,8 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
+  updateStrategy:
+    type: {{ .Values.StatefulSetUpdate.updateStrategy }}
   serviceName: {{ template "minio.fullname" . }}
   replicas: {{ .Values.replicas }}
   selector:
