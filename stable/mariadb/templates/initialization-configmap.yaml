@@ -9,6 +9,11 @@ metadata:
     chart: {{ template "mariadb.chart" . }}
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
+binaryData:
+{{- $root := . }}
+{{- range $path, $bytes := .Files.Glob "files/docker-entrypoint-initdb.d/*.sql.gz" }}
+  {{ base $path }}: {{ $root.Files.Get $path | b64enc | quote }}
+{{- end }}
 data:
-{{ (.Files.Glob "files/docker-entrypoint-initdb.d/*[sh|sql|sql.gz]").AsConfig | indent 2 }}
+{{ (.Files.Glob "files/docker-entrypoint-initdb.d/*.{sh,sql}").AsConfig | indent 2 }}
 {{ end }}
