@@ -161,7 +161,7 @@ spec:
         {{- end }}
         {{- if or (.Files.Glob "files/conf.d/*.conf") .Values.extendedConfConfigMap }}
         - name: postgresql-extended-config
-          mountPath: /opt/bitnami/postgresql/conf/conf.d/
+          mountPath: /bitnami/postgresql/conf/conf.d/
         {{- end }}
         {{- if .Values.usePasswordFile }}
         - name: postgresql-password
