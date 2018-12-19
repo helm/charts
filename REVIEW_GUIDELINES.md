@@ -159,7 +159,7 @@ volumes:
   - name: data
   {{- if .Values.persistence.enabled }}
     persistentVolumeClaim:
-      claimName: {{ .Values.persistence.existingClaim | default (include "fullname" .) }}
+      claimName: {{ .Values.persistence.existingClaim | default (include "myapp.fullname" .) }}
   {{- else }}
     emptyDir: {}
   {{- end -}}
@@ -172,7 +172,7 @@ volumes:
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ include "fullname" . }}
+  name: {{ include "myapp.fullname" . }}
   labels:
     app.kubernetes.io/name: {{ include "myapp.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
@@ -217,18 +217,18 @@ autoscaling:
 apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
 metadata:
+  name: {{ include "myapp.fullname" . }}
   labels:
     app.kubernetes.io/name: {{ include "myapp.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     helm.sh/chart: {{ include "myapp.chart" . }}
     app.kubernetes.io/component: "{{ .Values.name }}"
-  name: {{ include "helm-chart.fullname" . }}
 spec:
   scaleTargetRef:
-    apiVersion: apps/v1beta1
+    apiVersion: apps/v1
     kind: Deployment
-    name: {{ include "helm-chart.fullname" . }}
+    name: {{ include "myapp.fullname" . }}
   minReplicas: {{ .Values.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.autoscaling.maxReplicas }}
   metrics:
@@ -271,7 +271,7 @@ ingress:
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: {{ include "fullname" }}
+  name: {{ include "myapp.fullname" }}
   labels:
     app.kubernetes.io/name: {{ include "myapp.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
@@ -299,7 +299,7 @@ spec:
         paths:
           - path: {{ .Values.ingress.path }}
             backend:
-              serviceName: {{ include "fullname" }}
+              serviceName: {{ include "myapp.fullname" }}
               servicePort: http
   {{- end }}
 {{- end }}
