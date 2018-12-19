@@ -737,7 +737,7 @@ prometheus:
     ## prometheus resource to be created with selectors based on values in the helm deployment,
     ## which will also match the servicemonitors created
     ##
-    serviceMonitorSelecorNilUsesHelmValues: true
+    serviceMonitorSelectorNilUsesHelmValues: true
 
     ## serviceMonitorSelector will limit which servicemonitors are used to create scrape
     ## configs in Prometheus. See serviceMonitorSelectorUseHelmLabels
