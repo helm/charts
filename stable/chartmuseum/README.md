@@ -39,6 +39,12 @@ By default this chart will not have persistent storage, and the API service
 will be *DISABLED*.  This protects against unauthorized access to the API
 with default configuration values.
 
+In addition, by default, pod `securityContext.fsGroup` is set to `1000`. This
+is the user/group that the ChartMuseum container runs as, and is used to
+enable local persitant storage. If your cluster has DenySecurityContext enabled,
+you can set `securityContext` to `{}` and still use this chart with one of
+the cloud storage options.
+
 For a more robust solution supply helm install with a custom values.yaml
 You are also required to create the StorageClass resource ahead of time:
 ```
@@ -72,7 +78,7 @@ their default values. See values.yaml for all available options.
 | `resources.requests.memory`            | Container requested memory                  | `64Mi`                                              |
 | `serviceAccount.create`                | If true, create the service account         | `false`                                             |
 | `serviceAccount.name`                  | Name of the serviceAccount to create or use | `{{ chartmuseum.fullname }}`                        |
-| `securityContext`                      | Map of securityContext for the pod          | `{}`                                                |
+| `securityContext`                      | Map of securityContext for the pod          | `{ fsGroup: 1000 }`                                 |
 | `nodeSelector`                         | Map of node labels for pod assignment       | `{}`                                                |
 | `tolerations`                          | List of node taints to tolerate             | `[]`                                                |
 | `affinity`                             | Map of node/pod affinities                  | `{}`                                                |
