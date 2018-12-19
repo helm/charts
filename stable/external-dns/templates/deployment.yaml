@@ -42,6 +42,11 @@ spec:
             - --policy={{ .Values.policy }}
             - --provider={{ .Values.provider }}
             - --registry={{ .Values.registry }}
+          {{- if eq .Values.provider "cloudflare" }}
+            {{- if .Values.cloudflare.proxied }}
+            - --cloudflare-proxied
+            {{- end }}
+          {{- end }}
           {{- if .Values.txtOwnerId }}
             - --txt-owner-id={{ .Values.txtOwnerId }}
           {{- end }}
