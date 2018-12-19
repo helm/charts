@@ -61,6 +61,9 @@ spec:
             - --{{ $key }}
             {{- end }}
           {{- end }}
+          {{- if .Values.cloudflare.proxied }}
+            - --cloudflare-proxied
+          {{- end }}
           {{- if .Values.aws.zoneType }}
             - --aws-zone-type={{ .Values.aws.zoneType }}
           {{- end }}
