@@ -25,7 +25,6 @@ Elasticsearch can be accessed:
     echo http://$SERVICE_IP:9200
     {{- else if contains "ClusterIP"  .Values.client.serviceType }}
 
-    export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "elasticsearch.name" . }},component={{ .Values.client.name }},release={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
     echo "Visit http://127.0.0.1:9200 to use Elasticsearch"
-    kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME 9200:9200
+    kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "elasticsearch.client.fullname" . }} 9200:9200
     {{- end }}
