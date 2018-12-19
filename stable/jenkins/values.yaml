@@ -242,7 +242,7 @@ backup:
 
   image:
     repository: nuvo/kube-tasks
-    tag: 0.1.0
+    tag: 0.1.1
 
   # Additional arguments for kube-tasks
   # Ref: https://github.com/nuvo/kube-tasks#simple-backup
