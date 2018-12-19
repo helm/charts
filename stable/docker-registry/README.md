@@ -65,7 +65,8 @@ their default values.
 | `tolerations`               | pod tolerations                                                                            | `[]`            |
 | `ingress.enabled`           | If true, Ingress will be created                                                           | `false`         |
 | `ingress.annotations`       | Ingress annotations                                                                        | `{}`            |
-| `ingress.path`              | Ingress service path                                                                       | `/`            |
+| `ingress.labels`            | Ingress labels                                                                             | `{}`            |
+| `ingress.path`              | Ingress service path                                                                       | `/`             |
 | `ingress.hosts`             | Ingress hostnames                                                                          | `[]`            |
 | `ingress.tls`               | Ingress TLS configuration (YAML)                                                           | `[]`            |
 
