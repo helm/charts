@@ -1,0 +1,16 @@
+{{- if .Values.jet.configurationFiles }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "hazelcast-jet.fullname" . }}-configuration
+  labels:
+    app: {{ template "hazelcast-jet.name" . }}
+    chart: {{ template "hazelcast-jet.chart" . }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+data:
+{{- range $key, $val := .Values.jet.configurationFiles }}
+  {{ $key }}: |-
+{{ $val | indent 4}}
+{{- end }}
+{{- end -}}
