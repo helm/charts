@@ -17,6 +17,8 @@ resources: {}
   #   cpu: 20m
   #   memory: 128Mi
 
+extraArgs: []
+
 rbac:
   # Create and use rbac resources
   create: true
