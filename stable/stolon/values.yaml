@@ -57,6 +57,7 @@ store:
   kubeResourceKind: configmap
 
 pgParameters: {}
+  # maxConnections: 1000
 
 ports:
   stolon:
@@ -66,6 +67,11 @@ ports:
 
 job:
   autoCreateCluster: true
+  autoUpdateClusterSpec: true
+
+clusterSpec: {}
+  # sleepInterval: 1s
+  # maxStandbys: 5
 
 keeper:
   replicaCount: 2
