@@ -70,7 +70,10 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `postgresqlDatabase`                          | PostgreSQL database                                  | `nil`                                                     |
 | `postgresqlConfiguration`                     | Runtime Config Parameters                            | `nil`                                                     |
 | `pgHbaConfiguration`                          | Content of pg\_hba.conf                              | `nil (do not create pg_hba.conf)`                         |
+| `configurationConfigMap`                               | ConfigMap with the PostgreSQL configuration files (Note: Overrides `postgresqlConfiguration` and `pgHbaConfiguration`)                               | `nil`                                                     |
+| `extendedConfConfigMap`                               | ConfigMap with the extended PostgreSQL configuration files                              | `nil`                                                     |
 | `initdbScripts`                               | List of initdb scripts                               | `nil`                                                     |
+| `initdbScriptsConfigMap`                               | ConfigMap with the initdb scripts (Note: Overrides `initdbScripts`)                               | `nil`                                                     |
 | `service.type`                                | Kubernetes Service type                              | `ClusterIP`                                               |
 | `service.port`                                | PostgreSQL port                                      | `5432`                                                    |
 | `service.nodePort`                            | Kubernetes Service nodePort                          | `nil`                                                     |
@@ -146,16 +149,22 @@ Add your custom file to "files/postgresql.conf" in your working directory. This 
 
 Alternatively, you can specify PostgreSQL configuration parameters using the `postgresqlConfiguration` parameter as a dict, using camelCase, e.g. {"sharedBuffers": "500MB"}.
 
+In addition to these options, you can also set an external ConfigMap with all the configuration files. This is done by setting the `configurationConfigMap` parameter. Note that this will override the two previous options.
+
 ### Allow settings to be loaded from files other than the default `postgresql.conf`
 
 If you don't want to provide the whole PostgreSQL configuration file and only specify certain parameters, you can add your extended `.conf` files to "files/conf.d/" in your working directory.
 Those files will be mounted as configMap to the containers adding/overwriting the default configuration using the `include_dir` directive that allows settings to be loaded from files other than the default `postgresql.conf`.
+
+Alternatively, you can also set an external ConfigMap with all the extra configuration files. This is done by setting the `extendedConfConfigMap` parameter. Note that this will override the previous option.
 
 ## Initialize a fresh instance
 
 The [Bitnami PostgreSQL](https://github.com/bitnami/bitnami-docker-postgresql) image allows you to use your custom scripts to initialize a fresh instance. In order to execute the scripts, they must be located inside the chart folder `files/docker-entrypoint-initdb.d` so they can be consumed as a ConfigMap.
 
 Alternatively, you can specify custom scripts using the `initdbScripts` parameter as dict.
+
+In addition to these options, you can also set an external ConfigMap with all the initialization scripts. This is done by setting the `initdbScriptsConfigMap` parameter. Note that this will override the two previous options.
 
 The allowed extensions are `.sh`, `.sql` and `.sql.gz`.
 
