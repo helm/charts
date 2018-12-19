@@ -51,8 +51,8 @@ The following table lists the configurable parameters of the etcd-operator chart
 
 | Parameter                                         | Description                                                          | Default                                        |
 | ------------------------------------------------- | -------------------------------------------------------------------- | ---------------------------------------------- |
-| `rbac.create`                                     | install required RBAC service account, roles and rolebindings        | `true`                                         |
-| `rbac.apiVersion`                                 | RBAC api version `v1alpha1|v1beta1`                                  | `v1beta1`                                      |
+| `rbac.create`                                     | Install required RBAC service account, roles and rolebindings        | `true`                                         |
+| `rbac.apiVersion`                                 | RBAC api version `v1alpha1\|v1beta1`                                 | `v1beta1`                                      |
 | `rbac.etcdOperatorServiceAccountName`             | Name of the service account resource when RBAC is enabled            | `etcd-operator-sa`                                      |
 | `rbac.backupOperatorServiceAccountName`           | Name of the service account resource when RBAC is enabled            | `etcd-backup-operator-sa`                                      |
 | `rbac.restoreOperatorServiceAccountName`          | Name of the service account resource when RBAC is enabled            | `etcd-restore-operator-sa`                                      |
@@ -109,7 +109,7 @@ The following table lists the configurable parameters of the etcd-operator chart
 | `etcdCluster.pod.resources.limits.memory`         | Memory limit per etcd cluster pod                                    | `128Mi`                                        |
 | `etcdCluster.pod.resources.requests.cpu`          | CPU request per etcd cluster pod                                     | `100m`                                         |
 | `etcdCluster.pod.resources.requests.memory`       | Memory request per etcd cluster pod                                  | `128Mi`                                        |
-| `etcdCluster.pod.nodeSelector`                    | node labels for etcd cluster pod assignment                          | `{}`                                           |
+| `etcdCluster.pod.nodeSelector`                    | Node labels for etcd cluster pod assignment                          | `{}`                                           |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 
