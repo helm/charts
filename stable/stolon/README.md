@@ -63,18 +63,27 @@ Kubernetes is the default store backend. `consul`, `etcdv2` or `etcdv3` can also
 | `keeper.tolerations`                    | Toleration labels for keeper pod assignment    | `[]`                                                         |
 | `keeper.volumes`                        | Additional volumes                             | `[]`                                                         |
 | `keeper.volumeMounts`                   | Mount paths for `keeper.volumes`               | `[]`                                                         |
+| `keeper.podDisruptionBudget.enabled`    | If true, create a pod disruption budget for keeper pods. | `true`                                             |
+| `keeper.podDisruptionBudget.minAvailable` | Minimum number / percentage of pods that should remain scheduled | `""`                                     |
+| `keeper.podDisruptionBudget.maxUnavailable` | Maximum number / percentage of pods that may be made unavailable | `1`                                    |
 | `proxy.replicaCount`                    | Number of proxy nodes                          | `2`                                                          |
 | `proxy.resources`                       | Proxy resource requests/limit                  | `{}`                                                         |
 | `proxy.priorityClassName`               | Proxy priorityClassName                        | `nil`                                                        |
 | `proxy.nodeSelector`                    | Node labels for proxy pod assignment           | `{}`                                                         |
 | `proxy.affinity`                        | Affinity settings for proxy pod assignment     | `{}`                                                         |
 | `proxy.tolerations`                     | Toleration labels for proxy pod assignment     | `[]`                                                         |
+| `proxy.podDisruptionBudget.enabled`     | If true, create a pod disruption budget for proxy pods. | `true`                                              |
+| `proxy.podDisruptionBudget.minAvailable` | Minimum number / percentage of pods that should remain scheduled | `1`                                       |
+| `proxy.podDisruptionBudget.maxUnavailable` | Maximum number / percentage of pods that may be made unavailable | `""`                                    |
 | `sentinel.replicaCount`                 | Number of sentinel nodes                       | `2`                                                          |
 | `sentinel.resources`                    | Sentinel resource requests/limit               | `{}`                                                         |
 | `sentinel.priorityClassName`            | Sentinel priorityClassName                     | `nil`                                                        |
 | `sentinel.nodeSelector`                 | Node labels for sentinel pod assignment        | `{}`                                                         |
 | `sentinel.affinity`                     | Affinity settings for sentinel pod assignment  | `{}`                                                         |
 | `sentinel.tolerations`                  | Toleration labels for sentinel pod assignment  | `[]`                                                         |
+| `sentinel.podDisruptionBudget.enabled`  | If true, create a pod disruption budget for sentinel pods. | `true`                                           |
+| `sentinel.podDisruptionBudget.minAvailable` | Minimum number / percentage of pods that should remain scheduled | `1`                                    |
+| `sentinel.podDisruptionBudget.maxUnavailable` | Maximum number / percentage of pods that may be made unavailable | `""`                                 |
 
 
 [pgconf]: https://github.com/postgres/postgres/blob/master/src/backend/utils/misc/postgresql.conf.sample
