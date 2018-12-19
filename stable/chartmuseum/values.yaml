@@ -138,9 +138,10 @@ serviceAccount:
   # name:
 
 # UID/GID 1000 is the default user "chartmuseum" used in
-# the container image starting in v0.8.0 and above
+# the container image starting in v0.8.0 and above. This
+# is required for local persistant storage. If your cluster
+# does not allow this, try setting securityContext: {}
 securityContext:
-  runAsUser: 1000
   fsGroup: 1000
 
 nodeSelector: {}
