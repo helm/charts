@@ -13,3 +13,4 @@ yugaware:
   storage: 100Gi
   storage_class: standard
   multiTenant: false
+  serviceAccount: yugaware

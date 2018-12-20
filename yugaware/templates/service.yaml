@@ -15,6 +15,8 @@ spec:
   ports:
   - name: ui
     port: 80
+  - name: metrics
+    port: 9090
   selector:
     app: {{ .Release.Name }}-yugaware
   type: LoadBalancer
@@ -40,6 +42,7 @@ spec:
       labels:
         app: {{ .Release.Name }}-yugaware
     spec:
+      serviceAccountName: {{ .Values.yugaware.serviceAccount }}
       imagePullSecrets:
       - name: {{ .Values.image.pullSecret }}
       volumes:
@@ -49,6 +52,8 @@ spec:
         - name: yugaware-ui
           emptyDir: {}
         - name: thirdparty-deps
+          emptyDir: {}
+        - name: prometheus-storage
           emptyDir: {}
         - name: yugaware-config
           configMap:
@@ -99,19 +104,18 @@ spec:
               mountPath: /var/lib/postgresql/data
               subPath: postgres_data
         - name: prometheus
-          image: prom/prometheus:v1.5.2
+          image: prom/prometheus:v2.2.1
           volumeMounts:
           - name: prometheus-config
             mountPath: /etc/prometheus/
-          - name: yugaware-storage
-            mountPath: /opt/prometheus/
-            subPath: promtheus
+          - name: prometheus-storage
+            mountPath: /prometheus/
           - name: yugaware-storage
             mountPath: /opt/swamper_targets/
             subPath: swamper_targets
           args:
-            - -config.file=/etc/prometheus/prometheus.yml
-            - -storage.local.path=/opt/prometheus
+            - --config.file=/etc/prometheus/prometheus.yml
+            - --storage.tsdb.path=/prometheus/
           ports:
             - containerPort: 9090
         - name: thirdparty-deps
