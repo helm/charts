@@ -1,11 +1,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "mattermost-team-edition.fullname" . }}
+  name: {{ include "mattermost-team-edition.fullname" . }}
   labels:
     app.kubernetes.io/name: {{ include "mattermost-team-edition.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "mattermost-team-edition.chart" . }}
 spec:
   replicas: 1
   strategy:
@@ -25,6 +26,7 @@ spec:
         app.kubernetes.io/name: {{ include "mattermost-team-edition.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
         app.kubernetes.io/managed-by: {{ .Release.Service }}
+        helm.sh/chart: {{ include "mattermost-team-edition.chart" . }}
     spec:
       initContainers:
       {{- if not .Values.externalDB.enabled }}
@@ -73,7 +75,7 @@ spec:
       volumes:
       - name: config-json
         configMap:
-          name: {{ template "mattermost-team-edition.fullname" . }}-config-json
+          name: {{ include "mattermost-team-edition.fullname" . }}-config-json
           items:
           - key: config.json
             path: config.json
