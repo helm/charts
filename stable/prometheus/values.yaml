@@ -506,7 +506,7 @@ server:
   ##
   image:
     repository: prom/prometheus
-    tag: v2.5.0
+    tag: v2.6.0
     pullPolicy: IfNotPresent
 
   ## prometheus server priorityClassName
