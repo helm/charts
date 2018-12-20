@@ -9,7 +9,8 @@ metadata:
     app.kubernetes.io/name: {{ include "inbucket.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
-  name: {{ template "inbucket.fullname" . }}
+    helm.sh/chart: {{ include "inbucket.chart" . }}
+  name: {{ include "inbucket.fullname" . }}
 spec:
   type: "{{ .Values.service.type }}"
   clusterIP: "{{ .Values.service.clusterIP }}"
