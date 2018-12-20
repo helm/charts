@@ -72,11 +72,12 @@ and their default values.
 | proxy.containerPort            | TCP port on which the Kong app listens for Proxy traffic                         | `8443`              |
 | proxy.nodePort                 | Node port when service type is `NodePort`                                        |                     |
 | proxy.http.enabled             | Enables http on the proxy                                                        | false               |
-| proxy.http.servicePort         | Service port to use for http                                                     | 8000                |
+| proxy.http.servicePort         | Service port to use for http                                                     | 80                  |
 | proxy.http.containerPort       | Container port to use for http                                                   | 8000                |
 | proxy.http.nodePort            | Node port to use for http                                                        | 32080               |
 | proxy.tls.enabled              | Enables TLS on the proxy                                                         | true                |
 | proxy.tls.containerPort        | Container port to use for TLS                                                    | 8443                |
+| proxy.tls.servicePort          | Service port to use for TLS                                                      | 8443                |
 | proxy.tls.nodePort             | Node port to use for TLS                                                         | 32443               |
 | proxy.type                     | k8s service type. Options: NodePort, ClusterIP, LoadBalancer                     | `NodePort`          |
 | proxy.loadBalancerSourceRanges | Limit proxy access to CIDRs if set and service type is `LoadBalancer`            | `[]`                |
