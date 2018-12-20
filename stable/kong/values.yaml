@@ -54,13 +54,13 @@ proxy:
   # HTTP plain-text traffic
   http:
     enabled: false
-    servicePort: 8000
+    servicePort: 80
     containerPort: 8000
     nodePort: 32080
 
   tls:
     enabled: true
-    servicePort: 8443
+    servicePort: 443
     containerPort: 8443
     nodePort: 32443
 
