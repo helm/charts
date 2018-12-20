@@ -46,21 +46,21 @@ spec:
           - serve
           - /etc/docker/registry/config.yml
           ports:
-            - containerPort: {{ .Values.service.port }}
+            - containerPort: 5000
           livenessProbe:
             httpGet:
 {{- if .Values.tlsSecretName }}
               scheme: HTTPS
 {{- end }}
               path: /
-              port: {{ .Values.service.port }}
+              port: 5000
           readinessProbe:
             httpGet:
 {{- if .Values.tlsSecretName }}
               scheme: HTTPS
 {{- end }}
               path: /
-              port: {{ .Values.service.port }}
+              port: 5000
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           env:
