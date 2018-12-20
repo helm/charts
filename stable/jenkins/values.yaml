@@ -104,6 +104,10 @@ Master:
     - workflow-aggregator:2.5
     - credentials-binding:1.16
     - git:3.9.1
+  ConfigurationAsCode:
+    Enabled: false
+    PluginVersion: 1.4
+    AdditionalConfig: {}
   # Used to approve a list of groovy functions in pipelines used the script-security plugin. Can be viewed under /scriptApproval
   # ScriptApproval:
   #   - "method groovy.json.JsonSlurperClassic parseText java.lang.String"

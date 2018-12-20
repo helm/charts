@@ -28,6 +28,9 @@ spec:
         component: "{{ .Release.Name }}-{{ .Values.Master.Component }}"
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
+        {{- if .Values.Master.ConfigurationAsCode.Enabled }}
+        checksum/casc: {{ include (print $.Template.BasePath "/configmap-jenkins-config-as-code.yaml") . | sha256sum }}
+        {{- end}}
         {{- if .Values.Master.PodAnnotations }}
 {{ toYaml .Values.Master.PodAnnotations | indent 8 }}
         {{- end }}
@@ -113,6 +116,10 @@ spec:
           args: [ "--argumentsRealm.passwd.$(ADMIN_USER)=$(ADMIN_PASSWORD)",  "--argumentsRealm.roles.$(ADMIN_USER)=admin"]
           {{- end }}
           env:
+            {{- if .Values.Master.ConfigurationAsCode.Enabled }}
+            - name: CASC_JENKINS_CONFIG
+              value: "/var/jenkins_casc"
+            {{- end}}
             - name: JAVA_TOOL_OPTIONS
               value: "{{ default "" .Values.Master.JavaOpts}}"
             - name: JENKINS_OPTS
@@ -185,6 +192,12 @@ spec:
               mountPath: /var/jenkins_config
               name: jenkins-config
               readOnly: true
+            {{- if .Values.Master.ConfigurationAsCode.Enabled }}
+            -
+              mountPath: /var/jenkins_casc
+              name: jenkins-config-as-code
+              readOnly: false
+            {{- end }}
             {{- if .Values.Master.CredentialsXmlSecret }}
             -
               mountPath: /var/jenkins_credentials
@@ -220,6 +233,12 @@ spec:
       - name: jenkins-config
         configMap:
           name: {{ template "jenkins.fullname" . }}
+      {{- if .Values.Master.ConfigurationAsCode.Enabled }}
+      - name: jenkins-config-as-code
+        configMap:
+          defaultMode: 420
+          name: {{ template "jenkins.fullname" . }}-casc
+      {{- end }}
       {{- if .Values.Master.CredentialsXmlSecret }}
       - name: jenkins-credentials
         secret:

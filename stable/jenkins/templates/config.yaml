@@ -254,6 +254,11 @@ data:
 {{- range $index, $val := .Values.Master.InstallPlugins }}
 {{ $val | indent 4 }}
 {{- end }}
+{{- if .Values.Master.ConfigurationAsCode.Enabled }}
+    {{- if not (contains "configuration-as-code" (quote .Values.Master.InstallPlugins)) }}
+    configuration-as-code:{{ .Values.Master.ConfigurationAsCode.PluginVersion }}
+    {{- end}}
+{{- end }}
 {{- end }}
 {{ else }}
 {{ include "override_config_map" . }}

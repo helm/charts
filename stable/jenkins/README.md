@@ -82,6 +82,9 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `Master.Affinity`                 | Affinity settings                    | `{}`                                                                         |
 | `Master.Tolerations`              | Toleration labels for pod assignment | `{}`                                                                         |
 | `Master.PodAnnotations`           | Annotations for master pod           | `{}`                                                                         |
+| `Master.ConfigurationAsCode.Enabled` | Enable configuration as code         | `false`                                                                   |
+| `Master.ConfigurationAsCode.PluginVersion` | Version of configuration as code plugin (only used if `configuration-as-code` not part of `Master.InstallPlugins` | `1.4` |
+| `Master.ConfigurationAsCode.AdditionalConfig` | Add additional configuration as code config files | `{}`                                                |
 | `NetworkPolicy.Enabled`           | Enable creation of NetworkPolicy resources. | `false`                                                               |
 | `NetworkPolicy.ApiVersion`        | NetworkPolicy ApiVersion             | `extensions/v1beta1`                                                         |
 | `rbac.install`                    | Create service account and ClusterRoleBinding for Kubernetes plugin | `false`                                       |
@@ -168,6 +171,28 @@ AdditionalConfig:
       clientKey: testKey
       clientURL: testUrl
 ```
+
+## Using Configuration as Code
+
+`Master.ConfigurationAsCode.Enabled` can be used to enable [Jenkins Configuration as Code Plugin](https://github.com/jenkinsci/configuration-as-code-plugin).
+It automatically adds it to `Master.InstallPlugins` unless it's already specified there.
+
+The plugin version being used can be customized via `Master.ConfigurationAsCode.PluginVersion`.
+
+Below is an example how you can customize the system message by providing `Master.ConfigurationAsCode.AdditionalConfig`:
+
+```yaml
+Master:
+  ConfigurationAsCode:
+    Enabled: true
+    AdditionalConfig:
+      testConfig.yaml: |-
+        jenkins:
+          systemMessage: "Jenkins configured automatically by Jenkins Configuration as Code Plugin\n\n"
+```
+
+In contrast to adding xml configuration files these settings are reapplied during every Jenkins restart and when you apply
+the configuration in the plugin ui.
 
 ## Adding customized labels
 

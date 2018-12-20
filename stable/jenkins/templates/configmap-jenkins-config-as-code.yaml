@@ -1,0 +1,17 @@
+{{- if .Values.Master.ConfigurationAsCode.Enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "jenkins.fullname" . }}-casc
+  labels:
+    app: {{ template "jenkins.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    component: "{{ .Release.Name }}-{{ .Values.Master.Component }}"
+data:
+  jenkins.yaml: |
+    jenkins:
+      numExecutors: 0
+{{ if .Values.Master.ConfigurationAsCode.AdditionalConfig }}
+{{- toYaml .Values.Master.ConfigurationAsCode.AdditionalConfig | indent 2 }}
+{{- end }}
+{{- end }}
