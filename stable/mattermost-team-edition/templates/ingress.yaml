@@ -5,11 +5,12 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: {{ template "mattermost-team-edition.fullname" . }}
+  name: {{ include "mattermost-team-edition.fullname" . }}
   labels:
     app.kubernetes.io/name: {{ include "mattermost-team-edition.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "mattermost-team-edition.chart" . }}
   annotations:
 {{ if .Values.ingress.tls }}
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
