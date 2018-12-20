@@ -68,7 +68,7 @@ and their default values.
 | admin.ingress.path             | Ingress path.                                                                    | `/`                 |
 | admin.ingress.annotations      | Ingress annotations. See documentation for your ingress controller for details   | `{}`                |
 | proxy.useTLS                   | Secure Proxy traffic                                                             | `true`              |
-| proxy.servicePort              | TCP port on which the Kong Proxy Service is exposed                              | `8443`              |
+| proxy.servicePort              | TCP port on which the Kong Proxy Service is exposed                              | `443`               |
 | proxy.containerPort            | TCP port on which the Kong app listens for Proxy traffic                         | `8443`              |
 | proxy.nodePort                 | Node port when service type is `NodePort`                                        |                     |
 | proxy.http.enabled             | Enables http on the proxy                                                        | false               |
