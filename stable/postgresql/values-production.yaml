@@ -99,6 +99,13 @@ postgresqlUsername: postgres
 #   host all all localhost trust
 #   host mydatabase mysuser 192.168.0.0/24 md5
 
+## ConfigMap with PostgreSQL configuration
+## NOTE: This will override postgresqlConfiguration and pgHbaConfiguration
+# configurationConfigMap:
+
+## ConfigMap with PostgreSQL extended configuration
+# extendedConfConfigMap:
+
 ## initdb scripts
 ## Specify dictionnary of scripts to be run at first boot
 ## Alternatively, you can put your scripts under the files/docker-entrypoint-initdb.d directory
@@ -107,6 +114,10 @@ postgresqlUsername: postgres
 #   my_init_script.sh:|
 #      #!/bin/sh
 #      echo "Do something."
+
+## ConfigMap with scripts to be run at first boot
+## NOTE: This will override initdbScripts
+# initdbScriptsConfigMap:
 
 ## PostgreSQL service configuration
 service:
