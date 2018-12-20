@@ -47,7 +47,7 @@ cloudConfigPath: /etc/gce.conf
 
 image:
   repository: k8s.gcr.io/cluster-autoscaler
-  tag: v1.12.0
+  tag: v1.13.1
   pullPolicy: IfNotPresent
 
 tolerations: []
