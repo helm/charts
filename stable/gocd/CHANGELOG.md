@@ -1,3 +1,7 @@
+### 1.5.12
+* [72aa74f1](https://github.com/kubernetes/charts/commit/72aa74f1):
+  - Removes the namespace list permission for the service account being created.
+
 ### 1.5.11
 * [a8f4e6c9](https://github.com/kubernetes/charts/commit/a8f4e6c9):
   - Bump up GoCD app version to 18.12.0
