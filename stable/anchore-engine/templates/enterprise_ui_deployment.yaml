@@ -54,12 +54,12 @@ spec:
           value: {{ printf "redis://:$(REDIS_PASSWORD)@%s-master:6379" ( include "redis.fullname" . ) }}
         {{- end }}
         - name: ANCHORE_ENGINE_URI
-          value: 'http://{{ template "anchore-engine.api.fullname" . }}:{{ .Values.anchoreGlobal.service.ports.extApi }}/v1'
+          value: 'http://{{ template "anchore-engine.api.fullname" . }}:{{ .Values.anchoreApi.service.port }}/v1'
         - name: ANCHORE_LICENSE_PATH
           value: '/'
         {{- if .Values.anchoreEnterpriseRbac.enabled }}
         - name: ANCHORE_RBAC_URI
-          value: 'http://{{ template "anchore-engine.api.fullname" . }}:{{ .Values.anchoreGlobal.service.ports.rbacApi }}/v1'
+          value: 'http://{{ template "anchore-engine.api.fullname" . }}:{{ .Values.anchoreEnterpriseRbac.service.apiPort }}/v1'
         {{- end }}
         - name: ANCHORE_ENABLE_SSL
           value: '{{ .Values.anchoreEnterpriseUi.enableSsl }}'
@@ -75,22 +75,21 @@ spec:
         - name: anchore-license
           mountPath: "/license.yaml"
           subPath: license.yaml
+        livenessProbe:
+          httpGet:
+            path: /
+            port: enterprise-ui
+          initialDelaySeconds: 120
+          periodSeconds: 10
+          failureThreshold: 6
+          successThreshold: 1
         readinessProbe:
           httpGet:
             path: /service/health
             port: enterprise-ui
-          initialDelaySeconds: 60
           periodSeconds: 10
-          timeoutSeconds: 10
-          failureThreshold: 10
-        livenessProbe:
-          httpGet:
-            path: /service/health
-            port: enterprise-ui
-          timeoutSeconds: 10
-          initialDelaySeconds: 60
-          periodSeconds: 30
-          failureThreshold: 10
+          failureThreshold: 3
+          successThreshold: 1
         resources:
 {{ toYaml .Values.anchoreEnterpriseUi.resources | indent 10 }}
     {{- if .Values.anchoreEnterpriseUi.nodeSelector }}
@@ -117,12 +116,16 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
+  {{- if .Values.anchoreEnterpriseUi.service.annotations }}
+  annotations:
+{{ toYaml .Values.anchoreEnterpriseUi.service.annotations | indent 4 }}
+  {{- end }}
 spec:
   sessionAffinity: ClientIP
-  type: {{ .Values.anchoreGlobal.service.type }}
+  type: {{ .Values.anchoreEnterpriseUi.service.type }}
   ports:
     - name: enterprise-ui
-      port: {{ .Values.anchoreGlobal.service.ports.uiHttp }}
+      port: {{ .Values.anchoreEnterpriseUi.service.port }}
       protocol: TCP
       targetPort: 3000
   selector:
