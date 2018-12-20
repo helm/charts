@@ -5,7 +5,7 @@ metadata:
   name: secrets-unsealer
   labels:
     app.kubernetes.io/name: {{ template "sealed-secrets.name" . }}
-    helm.sh/helm.sh/chart: {{ template "sealed-secrets.chart" . }}
+    helm.sh/chart: {{ template "sealed-secrets.chart" . }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/version: {{ .Chart.AppVersion }}
