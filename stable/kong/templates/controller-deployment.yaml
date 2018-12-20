@@ -28,10 +28,12 @@ spec:
         component: "controller"
     spec:
       serviceAccountName: {{ template "kong.serviceAccountName" . }}
-{{- if .Values.image.imagePullSecrets }}
+      {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
-      - name: {{ .Values.image.imagePullSecrets }}
-{{- end }}
+      {{- range .Values.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end }}
+      {{- end }}
       initContainers:
       - name: wait-for-db
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
