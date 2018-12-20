@@ -226,15 +226,3 @@ kubectl create secret tls yourls.local-tls --key /path/to/key.key --cert /path/t
 
 Please see [this example](https://github.com/kubernetes/contrib/tree/master/ingress/controllers/nginx/examples/tls)
 for more information.
-
-## Upgrading
-
-### To 3.0.0
-
-Backwards compatibility is not guaranteed unless you modify the labels used on the chart's deployments.
-Use the workaround below to upgrade from versions previous to `3.0.0`. The following example assumes that the release name is `yourls`:
-
-```console
-$ kubectl patch deployment yourls-yourls --type=json -p='[{"op": "remove", "path": "/spec/selector/matchLabels/chart"}]'
-$ kubectl delete statefulset yourls-mariadb --cascade=false
-```
