@@ -63,7 +63,7 @@ data:
       name: {{ $sl.name | quote }}
     spec:
 {{- if $sl.config }}
-      config: 
+      config:
 {{ toYaml $sl.config | indent 8 }}
 {{- else }}
       config: {}
@@ -74,4 +74,3 @@ data:
       provider: {{ $sl.provider | quote }}
     {{- end }}
   {{- end }}
-

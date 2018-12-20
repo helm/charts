@@ -81,12 +81,21 @@ Parameter | Description | Default
 `credentials.existingSecret` | If specified and `useSecret` is `true`, uses an existing secret with this name instead of creating one | ``
 `credentials.useSecret` | Whether a secret should be used. Set this to `false` when using `kube2iam` | `true`
 `credentials.secretContents` | Contents for the credentials secret | `{}`
+`extend.env` | Env you can place in the main ark container | `[]`
+`extend.configMaps` | Additional configmaps you can mount in the container. | `[]`
+`extend.secrets` | Additional secrets you can mount in the container. | `[]`
+`extend.sidecars` | Additional sidecare containers you can place in the pod. Requires full container definition. | `[]`
+`extend.plugins` | Plugins may be included. These will be added as initcontainers | `[]`
 
 
 ## How to
 ```
 helm install --name ark --namespace heptio-ark ./ark
 ```
+
+## Extending the Deployment
+
+If you wish to add additional sidecars or configuration to the deployment, use the `extend` section of the values.yaml file. This allows for the addition of configmaps, secrets, environment variables, sidecars, and plugins.
 
 ## Remove heptio/ark
 Remember that when you remove Ark all backups remain untouched

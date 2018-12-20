@@ -71,23 +71,33 @@ credentials:
   useSecret: true
   secretContents: {}
 
+# You can use these extend options to add sidecars to perform additional operations. Enviornment, configmaps, secrets, and empty dirs are provided to help with that
 extend:
-  env:
+  # Environment variables to be set in the main ark container
+  env: []
     # - name: ARK_FILE_OBJECT_STORE_ROOT
     #   value: /ark-data
-  configMaps: 
-    #   - name: 
-    #     path:
-    #     data:
-  secrets:
-    # - name:
-    #   path: 
-    #   data:
-  emptyDirs:
+  # An array of configmaps to be mounted in the main ark container.
+  # You can reference these as volumeMounts in your sidecars
+  configMaps:  []
+    #   - name: example-configmap
+    #     path: /example
+    #     data: { script.sh: echo hello world }
+  # An array of secrets to be mounted in the main ark container.
+  # You can reference these as volumeMounts in your sidecars
+  secrets: []
+    # - name: example-secret
+    #   path: /secrets
+    #   data: { password: aHVudGVyMgo= }
+  # Create emptyDir volumes that will be mounted in the container.
+  # You can reference these in your sidecars to help with data sharing between containers.
+  emptyDirs: []
     # - name: ark-data
     #   path: /ark-data
-  sidecars:
-  plugins:
+  # An array of sidecars to be added to the pod. Must contain full container definition
+  sidecars: []
+  # Plugins to be added as initcontainers.
+  plugins: []
     # - name: ark-example-plugins
     #   image:  oliverisaac/ark-example-plugins:latest
     #   imagePullPolicy: Always
