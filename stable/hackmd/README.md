@@ -28,7 +28,7 @@ Parameter | Description | Default
 --------- | ----------- | -------
 `replicaCount` | How many replicas to run. | 1
 `image.repository` | Name of the image to run, without the tag. | [hackmdio/hackmd](https://github.com/hackmdio/docker-hackmd)
-`image.tag` | The image tag to use. | 1.0.1-ce
+`image.tag` | The image tag to use. | 1.2.1-alpine
 `image.pullPolicy` | The kubernetes image pull policy. | IfNotPresent
 `service.name` | The kubernetes service name to use. | hackmd
 `service.type` | The kubernetes service type to use. | ClusterIP
