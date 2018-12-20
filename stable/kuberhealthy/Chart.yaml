@@ -3,7 +3,7 @@ appVersion: "0.1.1"
 home: https://comcast.github.io/kuberhealthy/
 description: The official Helm chart for Kuberhealthy.
 name: kuberhealthy
-version: 0.1.1
+version: 0.1.2
 maintainers:
   - name: integrii
     email: eric.greer@comcast.com
