@@ -61,6 +61,10 @@ spec:
                 secretKeyRef:
                   name: "{{ template "sumologic-fluentd.fullname" . }}"
                   key: collector-url
+            - name: K8S_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
             - name: FLUENTD_SOURCE
               value: {{ quote .Values.sumologic.fluentdSource }}
             {{- if .Values.sumologic.fluentdUserConfigDir }}
