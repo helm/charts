@@ -111,15 +111,6 @@ spec:
         - name: admin
           containerPort: {{ .Values.admin.containerPort }}
           protocol: TCP
-        {{- if and .Values.proxy.http.enabled .Values.proxy.tls.enabled }}
-        - name: proxy
-          containerPort: {{ .Values.proxy.http.containerPort }}
-          protocol: TCP
-        - name: proxy-tls
-          containerPort: {{ .Values.proxy.tls.containerPort }}
-          protocol: TCP
-        {{ else }}
-
         {{- if .Values.proxy.http.enabled }}
         - name: proxy
           containerPort: {{ .Values.proxy.http.containerPort }}
@@ -129,7 +120,6 @@ spec:
         - name: proxy-tls
           containerPort: {{ .Values.proxy.tls.containerPort }}
           protocol: TCP
-        {{- end }}
         {{- end }}
         readinessProbe:
 {{ toYaml .Values.readinessProbe | indent 10 }}
