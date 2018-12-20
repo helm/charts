@@ -13,7 +13,7 @@ data:
     kind: Config
     metadata:
       name: default
-{{ with .Values.configuration }}
+{{- with .Values.configuration }}
   {{- with .persistentVolumeProvider }}
     persistentVolumeProvider:
       name: {{ .name  }}
@@ -52,3 +52,26 @@ data:
     scheduleSyncPeriod: {{ .scheduleSyncPeriod }}
     restoreOnlyMode: {{ .restoreOnlyMode }}
 {{- end }}
+  {{- if .Values.configuration.storageLocations  }}
+  storageLocations.yaml: |
+    {{- range $sl := .Values.configuration.storageLocations }}
+    ---
+    apiVersion: ark.heptio.com/v1
+    kind: BackupStorageLocation
+    metadata:
+      annotations:
+      name: {{ $sl.name | quote }}
+    spec:
+{{- if $sl.config }}
+      config: 
+{{ toYaml $sl.config | indent 8 }}
+{{- else }}
+      config: {}
+{{- end }}
+      objectStorage:
+        bucket: {{ $sl.bucket | quote }}
+        prefix: {{ $sl.prefix | quote }}
+      provider: {{ $sl.provider | quote }}
+    {{- end }}
+  {{- end }}
+

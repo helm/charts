@@ -57,6 +57,10 @@ spec:
             - secretRef:
                 name: {{ template "ark.secretName" . }}
           {{- end }}
+          {{- if .Values.extend.env }}
+          env:
+{{ toYaml .Values.extend.env | indent 12 }}
+          {{- end }}
           {{- with .Values.resources }}
           resources:
 {{ toYaml . | indent 12 }}
