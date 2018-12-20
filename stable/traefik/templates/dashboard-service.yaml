@@ -8,12 +8,10 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
+{{- if .Values.dashboard.service.annotations }}
   annotations:
-  {{- if .Values.dashboard.service }}
-  {{- range $key, $value := .Values.dashboard.service.annotations }}
-    {{ $key }}: {{ $value | quote }}
-  {{- end }}
-  {{- end }}
+{{- toYaml .Values.dashboard.service.annotations | indent 4 }}
+{{- end }}
 spec:
   selector:
     app: {{ template "traefik.name" . }}
