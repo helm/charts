@@ -8,6 +8,7 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     component: apiserver
+    name: maya-apiserver
 spec:
   replicas: {{ .Values.apiserver.replicas }}
   selector:
