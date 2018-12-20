@@ -36,12 +36,146 @@ data:
 {{- end }}
 {{- end }}
 
+  start_sentinel_command: |
+    set_number_of_sentinels_var() {
+      ip_to_use=$(echo "$1" | tr '.' '_')
+      eval "num_of_sentinels_before_${ip_to_use}=${2}"
+    }
+    get_number_of_sentinels_var() {
+      ip_to_use=$(echo "$1" | tr '.' '_')
+      eval "echo \$num_of_sentinels_before_${ip_to_use}"
+    }
+    is_current_pod_master() {
+      if timeout 5 redis-cli info replication | grep -q "role:master"; then
+        echo "true"
+      else
+        echo "false"
+      fi
+    }
+    ask_sentinel_for_master() {
+      timeout 5 redis-cli -h {{ template "redis-ha.fullname" . }} -p {{ .Values.sentinel.port }} sentinel get-master-addr-by-name {{ .Values.redis.masterGroupName }} | grep -E '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}'
+    }
+    wait_for_new_master() {
+      if [ ! "$wait_for_new_master_attempt_number" ]; then
+        wait_for_new_master_attempt_number=1
+      fi
+      wait_for_new_master_timeout=60
+      if [ ! "$(timeout 3 redis-cli -h "$MASTER"{{ if .Values.auth }} -a "$AUTH"{{ end }} ping)" ]; then
+        if [ "$wait_for_new_master_attempt_number" -lt "$wait_for_new_master_timeout" ]; then
+          echo "Cannot ping master. Attemping to find new one"
+          sleep 1
+          wait_for_new_master_attempt_number=$((wait_for_new_master_attempt_number+1))
+          MASTER="$(ask_sentinel_for_master)"
+          wait_for_new_master
+        else
+          unset wait_for_new_master_attempt_number
+          return 1
+        fi
+      fi
+    }
+    wait_for_sentinel_reset() {
+      ip=$1
+      if [ ! "$wait_for_sentinel_reset_attempt_number" ]; then
+        wait_for_sentinel_reset_attempt_number=1
+      fi
+      wait_for_sentinel_reset_timeout=10
+      num=$(timeout 5 redis-cli -h "$ip" -p {{ .Values.sentinel.port }} sentinel master {{ .Values.redis.masterGroupName }} | grep "num-other-sentinels" -A1 | tail -n1)
+
+      # if we still have the same number of sentinels we had before we shut this one down, or if we no other sentinels, wait
+      if test "$num" -gt "$previous_sentinel_count" || test "$num" = "$previous_sentinel_count" || test "$num" = "0"; then
+        if [ "$wait_for_sentinel_reset_attempt_number" -lt "$wait_for_sentinel_reset_timeout" ]; then
+          sleep 1
+          wait_for_sentinel_reset_attempt_number=$((wait_for_sentinel_reset_attempt_number+1))
+          wait_for_sentinel_reset "$ip"
+        else
+          echo "WARNING: Sentinel reset attempts exceeded timeout."
+        fi
+      fi
+    }
+    wait_for_redis_container_to_shutdown() {
+      if [ "$(redis-cli{{ if .Values.auth }} -a "$AUTH"{{ end }} ping)" ]; then
+        sleep 1
+        wait_for_redis_container_to_shutdown
+      fi
+    }
+    graceful_shutdown() {
+      echo "Received signal to terminate sentinel container. Attempting graceful shutdown"
+      is_master=$(is_current_pod_master)
+      echo "Current pod contains redis master: $is_master"
+      if [ "$PID" ]; then
+        ips=$(redis-cli -h localhost -p {{ .Values.sentinel.port }} sentinel sentinels {{ .Values.redis.masterGroupName }}  | grep -E '\<ip\>' -A1 | grep -E '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}')
+        for ip in $ips ; do
+          num=$(timeout 5 redis-cli -h "$ip" -p {{ .Values.sentinel.port }} sentinel master {{ .Values.redis.masterGroupName }} | grep "num-other-sentinels" -A1 | tail -n1)
+          if [ -z "$num" ]; then
+            echo "Could not find sentinel count from $ip. Omitting from list"
+            set_number_of_sentinels_var "$ip" bad_ip
+          else
+            echo "Sentinel $ip thinks there are $num sentinels"
+            set_number_of_sentinels_var "$ip" "$num"
+          fi
+        done
+        kill "$PID"
+        wait "$PID"
+        if test "$is_master" = "true" ; then
+          echo 'Waiting for redis to shutdown'
+          wait_for_redis_container_to_shutdown
+          MASTER="$(ask_sentinel_for_master)"
+          echo "Waiting for new master to be selected before resetting sentinels to make sure they do not elect this one after reset"
+          wait_for_new_master
+        fi
+        for ip in $ips ; do
+          previous_sentinel_count=$(get_number_of_sentinels_var "$ip")
+          if [ "$previous_sentinel_count" != "bad_ip" ] ; then
+            echo "Resetting sentinel at $ip so it forgets about pod currently terminating"
+
+            # This command echos "1" if successful which seems confusing to display so omit it. Errors seem to go to stderr anyway.
+            timeout 5 redis-cli -h "$ip" -p {{ .Values.sentinel.port }} sentinel reset {{ .Values.redis.masterGroupName }} >/dev/null
+
+            wait_for_sentinel_reset "$ip" "$previous_sentinel_count"
+          fi
+        done
+        echo "Shutdown complete"
+      fi
+      exit 0
+    }
+    trap graceful_shutdown INT TERM
+    redis-sentinel /data/conf/sentinel.conf &
+    export PID=$!
+    echo "THE PID: $PID"
+    wait $PID
+    trap - INT TERM
+    wait $PID
+
+  start_redis_command: |
+    wait_for_sentinel_to_shutdown() {
+      if [ "$(redis-cli -p {{ .Values.sentinel.port }}{{ if .Values.auth }} -a "$AUTH"{{ end }} ping)" ]; then
+        sleep 1
+        wait_for_sentinel_to_shutdown
+      fi
+    }
+    graceful_shutdown() {
+      echo "Received signal to terminate redis container. Waiting for sentinel to shutdown"
+      wait_for_sentinel_to_shutdown
+      kill "$PID"
+      wait "$PID"
+      echo "Shutdown complete"
+      exit 0
+    }
+    trap graceful_shutdown INT TERM
+    redis-server /data/conf/redis.conf &
+    export PID=$!
+    echo $PID
+    wait $PID
+    trap - INT TERM
+    wait $PID
+
   init.sh: |
     HOSTNAME="$(hostname)"
-    MASTER="$(redis-cli -h {{ template "redis-ha.fullname" . }} -p {{ .Values.sentinel.port }} sentinel get-master-addr-by-name {{ .Values.redis.masterGroupName }} | grep -E '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}')"
     REDIS_CONF=/data/conf/redis.conf
     SENTINEL_CONF=/data/conf/sentinel.conf
-    
+    START_REDIS_COMMAND=/data/conf/start_redis_command
+    START_SENTINEL_COMMAND=/data/conf/start_sentinel_command
+
     set -e
     sentinel_update() {
         echo "Updating sentinel config"
@@ -51,6 +185,10 @@ data:
     redis_update() {
         echo "Updating redis config"
         echo "slaveof $1 {{ .Values.redis.port }}" >> "$REDIS_CONF"
+    }
+
+    ask_sentinel_for_master() {
+      timeout 5 redis-cli -h {{ template "redis-ha.fullname" . }} -p {{ .Values.sentinel.port }} sentinel get-master-addr-by-name {{ .Values.redis.masterGroupName }} | grep -E '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}'
     }
 
     setup_defaults() {
@@ -67,17 +205,34 @@ data:
         fi
     }
 
+    wait_for_new_master() {
+        if [ ! "$wait_for_new_master_attempt_number" ]; then
+          wait_for_new_master_attempt_number=1
+        fi
+        wait_for_new_master_timeout=60
+        if [ ! "$(timeout 3 redis-cli -h "$MASTER"{{ if .Values.auth }} -a "$AUTH"{{ end }} ping)" ]; then
+          if [ "$wait_for_new_master_attempt_number" -lt "$wait_for_new_master_timeout" ]; then
+            echo "Cannot ping master. Attemping to find new one"
+            sleep 1
+            wait_for_new_master_attempt_number=$((wait_for_new_master_attempt_number+1))
+            MASTER="$(ask_sentinel_for_master)"
+            wait_for_new_master
+          else
+            unset wait_for_new_master_attempt_number
+            return 1
+          fi
+        fi
+    }
+
     find_master() {
         echo "Attempting to find master"
-        if [ ! "$(redis-cli -h "$MASTER"{{ if .Values.auth }} -a "$AUTH"{{ end }} ping)" ]; then
+        if ! wait_for_new_master ; then
            echo "Can't ping master, attempting to force failover"
-           if redis-cli -h {{ template "redis-ha.fullname" . }} -p {{ .Values.sentinel.port }} sentinel failover {{ .Values.redis.masterGroupName }} | grep -q 'NOGOODSLAVE' ; then 
+           if timeout 5 redis-cli -h {{ template "redis-ha.fullname" . }} -p {{ .Values.sentinel.port }} sentinel failover {{ .Values.redis.masterGroupName }} | grep -q 'NOGOODSLAVE' ; then
                setup_defaults
                return 0
            fi
-           sleep 10
-           MASTER="$(redis-cli -h {{ template "redis-ha.fullname" . }} -p {{ .Values.sentinel.port }} sentinel get-master-addr-by-name {{ .Values.redis.masterGroupName }} | grep -E '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}')"
-           if [ "$MASTER" ]; then
+           if wait_for_new_master ; then
                sentinel_update "$MASTER"
                redis_update "$MASTER"
            else
@@ -96,7 +251,10 @@ data:
 
     cp /readonly-config/redis.conf "$REDIS_CONF"
     cp /readonly-config/sentinel.conf "$SENTINEL_CONF"
+    cp /readonly-config/start_redis_command "$START_REDIS_COMMAND"
+    cp /readonly-config/start_sentinel_command "$START_SENTINEL_COMMAND"
 
+    MASTER="$(ask_sentinel_for_master || echo '')"
     if [ "$MASTER" ]; then
         find_master
     else

@@ -65,14 +65,13 @@ spec:
           readOnly: true
         - name: data
           mountPath: /data
+      terminationGracePeriodSeconds: 240
       containers:
       - name: redis
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-        command:
-        - redis-server
-        args:
-        - /data/conf/redis.conf
+        command: [sh]
+        args: [/data/conf/start_redis_command]
         livenessProbe:
           exec:
             command: ["redis-cli", "ping"]
@@ -94,10 +93,8 @@ spec:
       - name: sentinel
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-        command:
-          - redis-sentinel
-        args:
-          - /data/conf/sentinel.conf
+        command: [sh]
+        args: [/data/conf/start_sentinel_command]
         livenessProbe:
           exec:
             command: ["redis-cli", "-p", "{{ .Values.sentinel.port }}", "ping"]
