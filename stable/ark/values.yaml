@@ -79,7 +79,7 @@ extend:
     #   value: /ark-data
   # An array of configmaps to be mounted in the main ark container.
   # You can reference these as volumeMounts in your sidecars
-  configMaps:  []
+  configMaps: []
     #   - name: example-configmap
     #     path: /example
     #     data: { script.sh: echo hello world }
@@ -99,5 +99,5 @@ extend:
   # Plugins to be added as initcontainers.
   plugins: []
     # - name: ark-example-plugins
-    #   image:  oliverisaac/ark-example-plugins:latest
+    #   image: oliverisaac/ark-example-plugins:latest
     #   imagePullPolicy: Always
