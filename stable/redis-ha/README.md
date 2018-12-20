@@ -113,3 +113,10 @@ Sentinel options supported must be in the the `sentinel <option> <master-group-n
 
 If more control is needed from either the redis or sentinel config then an entire config can be defined under `redis.customConfig` or `sentinel.customConfig`. Please note that these values will override any configuration options under their respective section. For example, if you define `sentinel.customConfig` then the `sentinel.config` is ignored.
 
+## Running Acceptance Tests Against Cluster
+
+See https://github.com/burnettk/redis-rb-cluster/blob/master/README.md
+
+Here you find a script that fires up a stable/redis-ha cluster and runs an acceptance test script against it. This is designed to verify that the cluster can recover when pods are deleted or updates to stable/redis-ha are rolled out.
+
+Current status as of 2018-12-20: the client receives between 10 and 5000 read/write errors over a period lasting between 10 and 20 seconds when a master pod is deleted.
