@@ -91,6 +91,9 @@ keeper:
   tolerations: []
   volumes: []
   volumeMounts: []
+  hooks:
+    failKeeper:
+      enabled: false
   podDisruptionBudget:
     enabled: false
     # minAvailable: 1

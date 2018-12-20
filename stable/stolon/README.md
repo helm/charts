@@ -65,6 +65,7 @@ Kubernetes is the default store backend. `consul`, `etcdv2` or `etcdv3` can also
 | `keeper.tolerations`                    | Toleration labels for keeper pod assignment    | `[]`                                                         |
 | `keeper.volumes`                        | Additional volumes                             | `[]`                                                         |
 | `keeper.volumeMounts`                   | Mount paths for `keeper.volumes`               | `[]`                                                         |
+| `keeper.hooks.failKeeper.enabled`       | Enable failkeeper pre-stop hook                | `false`                                                      |
 | `keeper.podDisruptionBudget.enabled`    | If true, create a pod disruption budget for keeper pods. | `false`                                            |
 | `keeper.podDisruptionBudget.minAvailable` | Minimum number / percentage of pods that should remain scheduled | `""`                                     |
 | `keeper.podDisruptionBudget.maxUnavailable` | Maximum number / percentage of pods that may be made unavailable | `""`                                   |
