@@ -36,6 +36,7 @@ azure:
 cloudflare:
   apiKey: ""
   email: ""
+  proxied: true
 # When using the Google provider, specify the Google project (required when provider=google)
 google:
   project: ""
