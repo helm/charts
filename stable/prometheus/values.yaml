@@ -400,7 +400,7 @@ nodeExporter:
   ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/
   ##
   podSecurityPolicy:
-    enabled: False
+    enabled: false
     annotations: {}
       ## Specify pod annotations
       ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#apparmor
@@ -552,7 +552,7 @@ server:
   ## Additional Prometheus server Volumes
   ##
   extraVolumes: []
-  
+
   ## Additional Prometheus server hostPath mounts
   ##
   extraHostPathMounts: []
