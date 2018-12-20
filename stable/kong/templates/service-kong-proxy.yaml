@@ -32,6 +32,7 @@ spec:
   {{- if (and (eq .Values.proxy.type "NodePort") (not (empty .Values.proxy.http.nodePort))) }}
     nodePort: {{ .Values.proxy.http.nodePort }}
   {{- end }}
+    protocol: TCP
   {{- end }}
   {{- if or .Values.proxy.tls.enabled }}
   - name: kong-proxy-tls
@@ -40,6 +41,7 @@ spec:
   {{- if (and (eq .Values.proxy.type "NodePort") (not (empty .Values.proxy.tls.nodePort))) }}
     nodePort: {{ .Values.proxy.tls.nodePort }}
   {{- end }}
+    protocol: TCP
   {{- end }}
 
 
