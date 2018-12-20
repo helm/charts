@@ -14,3 +14,5 @@ yugaware:
   storage_class: standard
   multiTenant: false
   serviceAccount: yugaware
+  loadBalancerIP: ""
+  loadBalancerType: "LoadBalancer"

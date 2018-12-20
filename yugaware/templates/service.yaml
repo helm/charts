@@ -19,8 +19,10 @@ spec:
     port: 9090
   selector:
     app: {{ .Release.Name }}-yugaware
-  type: LoadBalancer
-
+  type: "{{ .Values.yugaware.loadBalancerType }}"
+  {{- if .Values.yugaware.loadBalancerIP }}
+  loadBalancerIP: "{{ .Values.yugaware.loadBalancerIP }}"
+  {{- end }}
 ---
 apiVersion: apps/v1
 kind: StatefulSet
