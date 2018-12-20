@@ -18,4 +18,11 @@
 
   USER: {{ .Values.user.email }}
   Get login password with
+
+  {{- if not .Values.existingSecret }}
     kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.user-password}" | base64 --decode
+  {{- else }}
+    kubectl get secret --namespace {{ .Release.Namespace }} .Values.existingSecret -o jsonpath="{.data.user-password}" | base64 --decode
+  {{- end }}
+
+
