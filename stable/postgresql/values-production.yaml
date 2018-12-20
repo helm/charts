@@ -34,11 +34,17 @@ image:
 ## volumePermissions: Change the owner of the persist volume mountpoint to RunAsUser:fsGroup
 ##
 volumePermissions:
+  enabled: true
   image:
     registry: docker.io
     repository: bitnami/minideb
     tag: latest
+    ## Specify a imagePullPolicy
+    ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
+    ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+    ##
     pullPolicy: Always
+  ## Init container Security Context
   securityContext:
     runAsUser: 0
 
