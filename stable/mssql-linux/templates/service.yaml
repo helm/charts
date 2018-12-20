@@ -13,7 +13,7 @@ metadata:
 {{- end }}
 spec:
   {{- if .Values.service.headless }}
-  type: clusterIP
+  type: ClusterIP
   clusterIP: None
   {{- else }}
   type: {{ .Values.service.type }}
