@@ -1,4 +1,4 @@
-{{- if (.Files.Glob "files/conf.d/*.conf") }}
+{{- if and (.Files.Glob "files/conf.d/*.conf") (not .Values.extendedConfConfigMap)}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
