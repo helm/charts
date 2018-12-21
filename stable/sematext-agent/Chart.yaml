@@ -11,6 +11,6 @@ keywords:
   - ebpf
 home: https://sematext.com/cloud
 maintainers:
-  - name: Alen Komljen
+  - name: komljen
     email: alen.komljen@sematext.com
 name: sematext-agent
