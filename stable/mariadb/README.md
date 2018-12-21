@@ -55,6 +55,7 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `image.tag`                               | MariaDB Image tag                                   | `{VERSION}`                                                       |
 | `image.pullPolicy`                        | MariaDB image pull policy                           | `Always` if `imageTag` is `latest`, else `IfNotPresent`           |
 | `image.pullSecrets`                       | Specify image pull secrets                          | `nil` (does not add image pull secrets to deployed pods)          |
+| `image.debug`                             | Specify if debug logs should be enabled             | `false`                                                           |
 | `service.type`                            | Kubernetes service type                             | `ClusterIP`                                                       |
 | `service.clusterIp`                       | Specific cluster IP when service type is cluster IP. Use None for headless service | `nil`                              |
 | `service.port`                            | MySQL service port                                  | `3306`                                                            |
