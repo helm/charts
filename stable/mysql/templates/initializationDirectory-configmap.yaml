@@ -1,0 +1,14 @@
+{{- if or .Values.initializationDirectory .Values.initializationFiles }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "mysql.fullname" . }}-initialization-directory
+data:
+{{- if .Values.initializationDirectory }}
+{{ (.Files.Glob (printf "%s%s" .Values.initializationDirectory "/**")).AsConfig | indent 2 }}
+{{- end }}
+{{- range $key, $val := .Values.initializationFiles }}
+  {{ $key }}: |-
+{{ $val | indent 4}}
+{{- end }}
+{{- end -}}

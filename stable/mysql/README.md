@@ -97,7 +97,8 @@ The following table lists the configurable parameters of the MySQL chart and the
 | `ssl.certificates[0].cert`                   | Server certificate (public key)                                                              | `nil`                                                |
 | `ssl.certificates[0].key`                    | Server key (private key)                                                                     | `nil`                                                |
 | `imagePullSecrets`                           | Name of Secret resource containing private registry credentials                              | `nil`                                                |
-| `initializationFiles`                        | List of SQL files which are run after the container started                                  | `nil`                                                |
+| `initializationFiles`                        | List of `.sql` or `.sh` scripts to be executed before database is started                | `nil`                                                |
+| `initializationDirectory`                    | Mount host directory with `.sql` or `.sh` scripts into container `/docker-entrypoint-initdb.d` directory for initialization before database is started | `nil` |
 | `timezone`                                   | Container and mysqld timezone (TZ env)                                                       | `nil` (UTC depending on image)                       |
 | `podAnnotations`                             | Map of annotations to add to the pods                                                        | `{}`                                                 |
 
@@ -145,20 +146,44 @@ configurationFiles:
     [mysqld]
 ```
 
-## MySQL initialization files
+## MySQL initialization
 
-The [MySQL](https://hub.docker.com/_/mysql/) image accepts *.sh, *.sql and *.sql.gz files at the path `/docker-entrypoint-initdb.d`.
-These files are being run exactly once for container initialization and ignored on following container restarts.
-If you want to use initialization scripts, you can create initialization files by passing the file contents on the `initializationFiles` attribute.
+The [MySQL](https://hub.docker.com/_/mysql/) image accepts `*.sh`, `*.sql` and `*.sql.gz` files under `/docker-entrypoint-initdb.d` for further database initialization.
+These files are executed exactly once and ignored on subsequent container restarts.
 
+To pass initialization scripts into the container, you can either:
+1. pass the files content on the `initializationFiles` attribute:
 
-```yaml
-initializationFiles:
-  first-db.sql: |-
-    CREATE DATABASE IF NOT EXISTS first DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
-  second-db.sql: |-
-    CREATE DATABASE IF NOT EXISTS second DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
-```
+    ```yaml
+    initializationFiles:
+      first-db.sql: |-
+        CREATE DATABASE IF NOT EXISTS first DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
+      second-db.sql: |-
+      CREATE DATABASE IF NOT EXISTS second DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
+    ```
+
+2. use `initializationDirectory` attribute with relative path from mysql chart to the host directory, without trailing `/` (slash)
+
+    ```yaml
+    initializationDirectory: initdb
+    ```
+    Provided following dir structure:
+        mysql
+        ├──initdb
+        │   ├──01_createUsers.sql
+        │   ├──02_createTables.sql
+        │   ├──03_loadData.sql
+        │   └──....
+        ├──templates
+        │   ├──deployment.yaml
+        │   ├──initializationDirectory-configmap.yaml
+        │   ├──svc.yaml
+        │   └──....
+        ├──Chart.yaml
+        ├──values.yaml
+        └──....
+
+    _*Note: Currently Tiller does not have access to your filesystem, so `initializationDirectory` must point into a directory inside the chart._
 
 ## SSL
 
