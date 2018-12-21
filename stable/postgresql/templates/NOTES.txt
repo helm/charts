@@ -19,8 +19,10 @@
 
 PostgreSQL can be accessed via port 5432 on the following DNS name from within your cluster:
 
-    {{ template "postgresql.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
-
+    {{ template "postgresql.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local - Read/Write connection
+{{- if .Values.replication.enabled }}
+    {{ template "postgresql.fullname" . }}-read.{{ .Release.Namespace }}.svc.cluster.local - Read only connection
+{{- end }}
 To get the password for "{{ .Values.postgresqlUsername }}" run:
 
     export POSTGRESQL_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ if .Values.existingSecret }}{{ .Values.existingSecret }}{{ else }}{{ template "postgresql.fullname" . }}{{ end }} -o jsonpath="{.data.postgresql-password}" | base64 --decode)
