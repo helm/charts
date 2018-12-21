@@ -6,6 +6,6 @@ appVersion: v0.28.0
 home: https://github.com/kbudde/rabbitmq_exporter
 sources:
   - https://github.com/kbudde/rabbitmq_exporter
-mantainers:
+maintainers:
   - name: juanchimienti
     email: juan.chimienti@gmail.com
