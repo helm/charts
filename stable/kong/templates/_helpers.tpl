@@ -51,3 +51,14 @@ Create the KONG_PROXY_LISTEN value string
 {{- end -}}
 
 {{- end }}
+
+{{/*
+Create the ingress servicePort value string
+*/}}
+{{- define "kong.ingress.servicePort" -}}
+{{- if .Values.proxy.tls.enabled -}}
+   {{ .Values.proxy.tls.servicePort }}
+{{- else -}}
+   {{ .Values.proxy.http.servicePort }}
+{{- end -}}
+{{- end -}}
