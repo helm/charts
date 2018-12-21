@@ -60,6 +60,14 @@ rules:
       - list
       - get
   - apiGroups:
+    - batch
+    resources:
+      - jobs
+    verbs:
+      - watch
+      - list
+      - get
+  - apiGroups:
       - extensions
     resources:
       - replicasets
