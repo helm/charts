@@ -40,7 +40,8 @@ spec:
       {{- if .Values.dags.initContainer.enabled }}
       initContainers:
         - name: git-clone
-          image: alpine/git # Any image with git will do
+          image: {{ .Values.dags.initContainer.image.repository }}:{{ .Values.dags.initContainer.image.tag }} # Any image with git will do
+          imagePullPolicy: {{ .Values.dags.initContainer.image.pullPolicy }}
           command:
             - /usr/local/git/git-clone.sh
           args:
