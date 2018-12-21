@@ -56,13 +56,13 @@ proxy:
     enabled: true
     servicePort: 80
     containerPort: 8000
-    #nodePort: 32080
+    # nodePort: 32080
 
   tls:
     enabled: true
     servicePort: 443
     containerPort: 8443
-    #nodePort: 32443
+    # nodePort: 32443
 
   type: NodePort
 
