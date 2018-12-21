@@ -156,6 +156,8 @@ spec:
             port: {{ .Values.service.internalPort }}
           initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
           timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.readinessProbe.successThreshold }}
+          periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
 {{- end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
@@ -171,6 +173,11 @@ spec:
 {{- end }}
 {{- with .Values.extraContainers }}
 {{ tpl . $ | indent 6 }}
+{{- end }}
+{{- range .Values.extraConfigMapMounts }}
+        - name: {{ .name }}
+          mountPath: {{ .mountPath }}
+          subPath: {{ .subPath }}
 {{- end }}
     {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
@@ -212,4 +219,9 @@ spec:
           configMap:
             name: {{ template "kibana.fullname" . }}-importscript
             defaultMode: 0777
+{{- end }}
+{{- range .Values.extraConfigMapMounts }}
+        - name: {{ .name }}
+          configMap:
+            name: {{ .configMap }}
 {{- end }}
