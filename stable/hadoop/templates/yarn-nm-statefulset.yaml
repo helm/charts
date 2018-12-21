@@ -8,7 +8,6 @@ metadata:
     app: {{ include "hadoop.name" . }}
     chart: {{ include "hadoop.chart" . }}
     release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
     component: yarn-nm
 spec:
   serviceName: {{ include "hadoop.fullname" . }}-yarn-nm
@@ -47,8 +46,8 @@ spec:
       terminationGracePeriodSeconds: 0
       containers:
       - name: yarn-nm
-        image: {{ .Values.image }}
-        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         ports:
         - containerPort: 8088
           name: web

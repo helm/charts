@@ -8,7 +8,6 @@ metadata:
     app: {{ include "hadoop.name" . }}
     chart: {{ include "hadoop.chart" . }}
     release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
     component: hdfs-nn
 spec:
   serviceName: {{ include "hadoop.fullname" . }}-hdfs-nn
@@ -44,8 +43,8 @@ spec:
       terminationGracePeriodSeconds: 0
       containers:
       - name: hdfs-nn
-        image: {{ .Values.image }}
-        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         command:
         - "/bin/bash"
         - "/tmp/hadoop-config/bootstrap.sh"

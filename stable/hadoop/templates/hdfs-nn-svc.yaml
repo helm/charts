@@ -7,7 +7,6 @@ metadata:
     app: {{ include "hadoop.name" . }}
     chart: {{ include "hadoop.chart" . }}
     release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
     component: hdfs-nn
 spec:
   ports:
