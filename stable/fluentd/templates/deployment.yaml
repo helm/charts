@@ -22,6 +22,8 @@ spec:
       labels:
         app: {{ template "fluentd.name" . }}
         release: {{ .Release.Name }}
+      annotations:
+{{ toYaml .Values.annotations | indent 8 }}
     spec:
 {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
