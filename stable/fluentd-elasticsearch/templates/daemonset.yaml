@@ -50,10 +50,8 @@ spec:
           value: {{ .Values.elasticsearch.logstash_prefix | quote }}
         - name: OUTPUT_SCHEME
           value: {{ .Values.elasticsearch.scheme | quote }}
-        {{- if eq .Values.elasticsearch.scheme "https" }}
         - name: OUTPUT_SSL_VERSION
           value: {{ .Values.elasticsearch.ssl_version | quote }}
-        {{- end }}
         - name: OUTPUT_BUFFER_CHUNK_LIMIT
           value: {{ .Values.elasticsearch.buffer_chunk_limit | quote }}
         - name: OUTPUT_BUFFER_QUEUE_LIMIT
