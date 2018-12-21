@@ -12,8 +12,8 @@ data:
   TZ: Etc/UTC
   ## Postgres DB configuration
   POSTGRES_HOST: "{{ template "airflow.postgresql.fullname" . }}"
-  POSTGRES_PORT: "{{ .Values.postgresql.postgresPort }}"
-  POSTGRES_DB: "{{ .Values.postgresql.postgresDatabase }}"
+  POSTGRES_PORT: "{{ .Values.postgresql.service.port }}"
+  POSTGRES_DB: "{{ .Values.postgresql.postgresqlDatabase }}"
   ## Redis DB configuration
   REDIS_HOST: "{{ template "airflow.redis.fullname" . }}"
   REDIS_PORT: "{{ .Values.redis.master.port }}"
