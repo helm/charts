@@ -84,6 +84,20 @@ parsers:
   ## Regex required fields are name and regex. JSON required field
   ## is name.
   regex: []
+  ##  json parser config can be defined by providing an extraEntries field.
+  ##  The following entry:
+  ## json:
+  ##   - extraEntries: |
+  ##       Decode_Field_As  escaped log do_next
+  ##       Decode_Field_As  json log
+  ##
+  ##  translates into
+  ##
+  ##   Command       |  Decoder  | Field | Optional Action   |
+  ##   ==============|===========|=======|===================|
+  ##   Decode_Field_As  escaped   log  do_next
+  ##   Decode_Field_As  json log
+  ##
   json: []
 
 env: []
