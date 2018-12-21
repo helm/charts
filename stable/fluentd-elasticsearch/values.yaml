@@ -20,10 +20,11 @@ resources: {}
 elasticsearch:
   host: 'elasticsearch-client'
   port: 9200
+  scheme: 'http'
+  ssl_version: TLSv1_2
   buffer_chunk_limit: 2M
   buffer_queue_limit: 8
   logstash_prefix: 'logstash'
-  scheme: 'http'
 
 # If you want to add custom environment variables, use the env dict
 # You can then reference these in your config file e.g.:
@@ -452,6 +453,7 @@ configMaps:
       host "#{ENV['OUTPUT_HOST']}"
       port "#{ENV['OUTPUT_PORT']}"
       scheme "#{ENV['OUTPUT_SCHEME']}"
+      ssl_version "#{ENV['OUTPUT_SSL_VERSION']}"
       logstash_format true
       logstash_prefix "#{ENV['LOGSTASH_PREFIX']}"
       <buffer>
