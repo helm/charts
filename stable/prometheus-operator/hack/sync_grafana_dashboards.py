@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Fetch dashboards from provided urls into this chart."""
 import json
-import os
 import textwrap
+from os import makedirs, path
 
 import requests
 import yaml
@@ -27,18 +27,18 @@ def change_style(style, representer):
 charts = [
     {
         'source': 'https://raw.githubusercontent.com/coreos/prometheus-operator/master/contrib/kube-prometheus/manifests/grafana-dashboardDefinitions.yaml',
-        'destination': '../templates/grafana/dashboards'
+        'destination': '../templates/grafana/dashboards',
+        'type': 'yaml',
     },
-]
-
-jsons = [
     {
         'source': 'https://raw.githubusercontent.com/etcd-io/etcd/master/Documentation/op-guide/grafana.json',
-        'destination': '../templates/grafana/dashboards'
+        'destination': '../templates/grafana/dashboards',
+        'type': 'json',
     },
     {
         'source': 'https://raw.githubusercontent.com/helm/charts/master/stable/prometheus-operator/dashboards/grafana-coredns-k8s.json',
-        'destination': '../templates/grafana/dashboards'
+        'destination': '../templates/grafana/dashboards',
+        'type': 'json',
     },
 ]
 
@@ -104,6 +104,9 @@ def write_group_to_file(resource_name, content, url, destination):
     filename = resource_name + '.yaml'
     new_filename = "%s/%s" % (destination, filename)
 
+    # make sure directories to store the file exist
+    makedirs(destination, exist_ok=True)
+
     # recreate the file
     with open(new_filename, 'w') as f:
         f.write(lines)
@@ -117,23 +120,22 @@ def main():
     for chart in charts:
         print("Generating rules from %s" % chart['source'])
         raw_text = requests.get(chart['source']).text
-        yaml_text = yaml.load(raw_text)
-        groups = yaml_text['items']
-        for group in groups:
-            for resource, content in group['data'].items():
-                write_group_to_file(resource.replace('.json', ''), content, chart['source'], chart['destination'])
-    for json_file in jsons:
-        print("Generating rules from %s" % json_file['source'])
-        raw_text = requests.get(json_file['source']).text
-        json_text = json.loads(raw_text)
-        # is it already a dashboard structure or is it nested (etcd case)?
-        flat_structure = json_text.get('annotations')
-        if flat_structure:
-            resource = os.path.basename(json_file['source']).replace('.json', '')
-            write_group_to_file(resource, json.dumps(json_text, indent=4), json_file['source'], json_file['destination'])
-        else:
-            for resource, content in json_text.items():
-                write_group_to_file(resource.replace('.json', ''), json.dumps(content, indent=4), json_file['source'], json_file['destination'])
+        if chart['type'] == 'yaml':
+            yaml_text = yaml.load(raw_text)
+            groups = yaml_text['items']
+            for group in groups:
+                for resource, content in group['data'].items():
+                    write_group_to_file(resource.replace('.json', ''), content, chart['source'], chart['destination'])
+        elif chart['type'] == 'json':
+            json_text = json.loads(raw_text)
+            # is it already a dashboard structure or is it nested (etcd case)?
+            flat_structure = bool(json_text.get('annotations'))
+            if flat_structure:
+                resource = path.basename(chart['source']).replace('.json', '')
+                write_group_to_file(resource, json.dumps(json_text, indent=4), chart['source'], chart['destination'])
+            else:
+                for resource, content in json_text.items():
+                    write_group_to_file(resource.replace('.json', ''), json.dumps(content, indent=4), chart['source'], chart['destination'])
     print("Finished")
 
 

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
-"""Fetch alerting rules from provided urls into this chart."""
+"""Fetch alerting and aggregation rules from provided urls into this chart."""
 import textwrap
+from os import makedirs
 
 import requests
 import yaml
@@ -69,7 +70,7 @@ replacement_map = {
 # standard header
 header = '''# Generated from '%(name)s' group from %(url)s
 {{- if and .Values.defaultRules.create%(condition)s }}%(init_line)s
-apiVersion: monitoring.coreos.com/v1
+apiVersion: {{ printf "%%s/v1" (.Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com") }}
 kind: PrometheusRule
 metadata:
   name: {{ printf "%%s-%%s" (include "prometheus-operator.fullname" .) "%(name)s" | trunc 63 | trimSuffix "-" }}
@@ -115,7 +116,7 @@ def yaml_str_repr(struct, indent=4):
         default_flow_style=False  # to disable multiple items on single line
     )
     text = escape(text)  # escape {{ and }} for helm
-    text = textwrap.indent(text, ' ' * indent)[indent-1:]  # indent everything, and remove very first line extra indentation
+    text = textwrap.indent(text, ' ' * indent)[indent - 1:]  # indent everything, and remove very first line extra indentation
     return text
 
 
@@ -169,9 +170,13 @@ def write_group_to_file(group, url, destination):
     filename = group['name'] + '.yaml'
     new_filename = "%s/%s" % (destination, filename)
 
+    # make sure directories to store the file exist
+    makedirs(destination, exist_ok=True)
+
     # recreate the file
     with open(new_filename, 'w') as f:
         f.write(lines)
+
     print("Generated %s" % new_filename)
 
 
