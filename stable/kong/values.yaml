@@ -53,7 +53,7 @@ proxy:
 
   # HTTP plain-text traffic
   http:
-    enabled: false
+    enabled: true
     servicePort: 80
     containerPort: 8000
     nodePort: 32080

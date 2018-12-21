@@ -67,7 +67,7 @@ and their default values.
 | admin.ingress.hosts            | List of ingress hosts.                                                           | `[]`                |
 | admin.ingress.path             | Ingress path.                                                                    | `/`                 |
 | admin.ingress.annotations      | Ingress annotations. See documentation for your ingress controller for details   | `{}`                |
-| proxy.http.enabled             | Enables http on the proxy                                                        | false               |
+| proxy.http.enabled             | Enables http on the proxy                                                        | true               |
 | proxy.http.servicePort         | Service port to use for http                                                     | 80                  |
 | proxy.http.containerPort       | Container port to use for http                                                   | 8000                |
 | proxy.http.nodePort            | Node port to use for http                                                        | 32080               |
