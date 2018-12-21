@@ -111,7 +111,8 @@ spec:
           lifecycle:
             postStart:
               exec:
-                command: ["/bin/bash","/preconfigure_server.sh"]
+                command:
+{{ toYaml .Values.server.preconfigureCommand | indent 18 }}                
           {{- end }}
           resources:
 {{ toYaml .Values.server.resources | indent 12 }}

@@ -85,6 +85,10 @@ spec:
         image: {{ template "mariadb.image" . }}
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         env:
+        {{- if .Values.image.debug}}
+        - name: BITNAMI_DEBUG
+          value: "true"
+        {{- end }}
         - name: MARIADB_REPLICATION_MODE
           value: "slave"
         - name: MARIADB_MASTER_HOST
