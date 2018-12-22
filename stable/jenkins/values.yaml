@@ -100,8 +100,8 @@ Master:
   # List of plugins to be install during Jenkins master start
   InstallPlugins:
     - kubernetes:1.14.0
-    - workflow-job:2.24
-    - workflow-aggregator:2.5
+    - workflow-job:2.31
+    - workflow-aggregator:2.6
     - credentials-binding:1.17
     - git:3.9.1
   # Used to approve a list of groovy functions in pipelines used the script-security plugin. Can be viewed under /scriptApproval
