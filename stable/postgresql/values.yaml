@@ -63,8 +63,8 @@ replication:
   slaveReplicas: 1
   ## Set synchronous commit mode: on, off, remote_apply, remote_write and local
   ## ref: https://www.postgresql.org/docs/9.6/runtime-config-wal.html#GUC-WAL-LEVEL
-  synchronousCommit: off
-  ## From the number of `slaveReplicas` defined above, set the number of those that will have synchronous replication 
+  synchronousCommit: "off"
+  ## From the number of `slaveReplicas` defined above, set the number of those that will have synchronous replication
   ## NOTE: It cannot be > slaveReplicas
   numSynchronousReplicas: 0
   ## Replication Cluster application name. Useful for defining multiple replication policies
