@@ -103,6 +103,14 @@ spec:
               name: {{ template "postgresql.secretName" . }}
               key: postgresql-replication-password
         {{- end }}
+        {{- if not (eq .Values.replication.synchronousCommit "off")}}
+        - name: POSTGRESQL_SYNCHRONOUS_COMMIT_MODE
+          value: {{ .Values.replication.synchronousCommit }}
+        - name: POSTGRESQL_NUM_SYNCHRONOUS_REPLICAS
+          value: {{ .Values.replication.numSynchronousReplicas }}
+        {{- end }}
+        - name: POSTGRESQL_CLUSTER_APP_NAME
+          value: {{ .Values.replication.applicationName }}
         {{- end }}
         - name: POSTGRESQL_USERNAME
           value: {{ .Values.postgresqlUsername | quote }}
