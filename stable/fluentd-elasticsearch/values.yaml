@@ -32,6 +32,12 @@ elasticsearch:
 env:
   # OUTPUT_USER: my_user
 
+# If you want to add custom environment variables from secrets, use the secret list
+secret:
+# - name: ELASTICSEARCH_PASSWORD
+#   secret_name: elasticsearch
+#   secret_key: password
+
 rbac:
   create: true
 
