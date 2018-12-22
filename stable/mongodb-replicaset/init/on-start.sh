@@ -16,10 +16,11 @@
 
 set -e pipefail
 
+port=27017
 replica_set="$REPLICA_SET"
 script_name=${0##*/}
 SECONDS=0
-timeout=300
+timeout="${TIMEOUT:-900}"
 
 if [[ "$AUTH" == "true" ]]; then
     admin_user="$ADMIN_USER"
@@ -152,7 +153,7 @@ init_mongod_standalone
 
 log "Peers: ${peers[*]}"
 log "Starting a MongoDB replica"
-mongod --config /data/configdb/mongod.conf --dbpath=/data/db --replSet="$replica_set" --port=27017 "${auth_args[@]}" --bind_ip=0.0.0.0 2>&1 | tee -a /work-dir/log.txt 1>&2 &
+mongod --config /data/configdb/mongod.conf --dbpath=/data/db --replSet="$replica_set" --port="${port}" "${auth_args[@]}" --bind_ip=0.0.0.0 2>&1 | tee -a /work-dir/log.txt 1>&2 &
 pid=$!
 trap shutdown_mongo EXIT
 
@@ -175,10 +176,12 @@ done
 if [[ "${primary}" = "${service_name}" ]]; then
     log "This replica is already PRIMARY"
 elif [[ -n "${primary}" ]]; then
-    log "Adding myself (${service_name}) to replica set..."
-    if (mongo admin --host "${primary}" "${admin_creds[@]}" "${ssl_args[@]}" --eval "rs.add('${service_name}')" | grep 'Quorum check failed'); then
-        log 'Quorum check failed, unable to join replicaset. Exiting prematurely.'
-        exit 1
+    if [[ $(mongo admin --host "${primary}" "${admin_creds[@]}" "${ssl_args[@]}" --quiet --eval "rs.conf().members.findIndex(m => m.host == '${service_name}:${port}')") == "-1" ]]; then
+      log "Adding myself (${service_name}) to replica set..."
+      if (mongo admin --host "${primary}" "${admin_creds[@]}" "${ssl_args[@]}" --eval "rs.add('${service_name}')" | grep 'Quorum check failed'); then
+          log 'Quorum check failed, unable to join replicaset. Exiting prematurely.'
+          exit 1
+      fi
     fi
 
     sleep 3

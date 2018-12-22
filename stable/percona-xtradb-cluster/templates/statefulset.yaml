@@ -127,10 +127,18 @@ spec:
         - name: var-log
           mountPath: /var/log
       {{ end }}
-      {{ if .Values.metricsExporter }}
+      {{ if .Values.metricsExporter.enabled }}
       - name: metrics
         image: prom/mysqld-exporter
         imagePullPolicy: IfNotPresent
+{{- if .Values.metricsExporter.commandOverrides }}
+        command:
+{{ toYaml .Values.metricsExporter.commandOverrides | indent 8 }}
+{{- end }}
+{{- if .Values.metricsExporter.argsOverrides }}
+        args:
+{{ toYaml .Values.metricsExporter.argsOverrides | indent 8 }}
+{{- end }}
         ports:
         - name: metrics
           containerPort: 9104

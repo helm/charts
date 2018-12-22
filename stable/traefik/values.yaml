@@ -1,6 +1,6 @@
 ## Default values for Traefik
 image: traefik
-imageTag: 1.7.4
+imageTag: 1.7.6
 ## can switch the service type to NodePort if required
 serviceType: LoadBalancer
 # loadBalancerIP: ""
@@ -8,6 +8,9 @@ serviceType: LoadBalancer
 whiteListSourceRange: []
 externalTrafficPolicy: Cluster
 replicas: 1
+# startupArguments:
+#   - "--ping"
+#   - "--ping.entrypoint=http"
 
 podDisruptionBudget: {}
   # maxUnavailable: 1
@@ -313,6 +316,9 @@ rbac:
 metrics:
   prometheus:
     enabled: false
+    ## If true, prevents exposing port 8080 on the main Traefik service, reserving
+    ## it to the dashboard service only
+    restrictAccess: false
     # buckets: [0.1,0.3,1.2,5]
   datadog:
     enabled: false
@@ -323,6 +329,9 @@ metrics:
     # address: localhost:8125
     # pushinterval: 10s
 deployment:
+  # labels to add to the pod container metadata
+  # podLabels:
+  #   key: value
   # podAnnotations:
   #   key: value
   hostPort:
@@ -333,7 +342,7 @@ sendAnonymousUsage: false
 tracing:
   enabled: false
   serviceName: traefik
-  # backend: choices are jaeger, zipkin
+  # backend: choices are jaeger, zipkin, datadog
   # jaeger:
   #   localAgentHostPort: "127.0.0.1:6831"
   #   samplingServerURL: http://localhost:5778/sampling
@@ -344,3 +353,7 @@ tracing:
   #   debug: false
   #   sameSpan: false
   #   id128bit: true
+  # datadog:
+  #   localAgentHostPort: "127.0.0.1:8126"
+  #   debug: false
+  #   globalTag: ""

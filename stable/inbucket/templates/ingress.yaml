@@ -9,10 +9,10 @@ metadata:
 {{ toYaml .Values.ingress.annotations | indent 4 }}
 {{- end }}
   labels:
-    app: {{ template "inbucket.name" . }}
-    chart: {{ template "inbucket.chart" . }}
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    app.kubernetes.io/name: {{ include "inbucket.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "inbucket.chart" . }}
   name: {{ $fullName }}
 spec:
 {{- if .Values.ingress.tls }}

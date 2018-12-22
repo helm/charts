@@ -25,6 +25,9 @@ server:
   # Note: If this value is set to true, then, the serviceAccount.name is configured for the GoCD server pod. The service account token is mounted as a secret and is used in the lifecycle hook.
   # Note: An attempt to preconfigure the GoCD server is made. There are cases where the pre-configuration can fail and the GoCD server starts with an empty config.
   shouldPreconfigure: true
+  preconfigureCommand:
+    - "/bin/bash"
+    - "/preconfigure_server.sh"
   image:
     # server.image.repository is the GoCD Server image name
     repository: "gocd/gocd-server"
@@ -66,7 +69,7 @@ server:
     #  server.env.extraEnvVars is the list of environment variables passed to GoCD Server
     extraEnvVars:
       - name: GOCD_PLUGIN_INSTALL_kubernetes-elastic-agents
-        value: https://github.com/gocd/kubernetes-elastic-agents/releases/download/v2.0.0/kubernetes-elastic-agent-2.0.0-113.jar
+        value: https://github.com/gocd/kubernetes-elastic-agents/releases/download/2.1.0-123/kubernetes-elastic-agent-2.1.0-123.jar
       - name: GOCD_PLUGIN_INSTALL_docker-registry-artifact-plugin
         value: https://github.com/gocd/docker-registry-artifact-plugin/releases/download/1.0.0/docker-registry-artifact-plugin-1.0.0-3.jar
   service:
@@ -170,8 +173,18 @@ server:
       secretName: gocd-server-ssh
 
 agent:
+  # specifies overrides for agent specific service account creation
+  serviceAccount:
+    # specifies whether the top level service account (also used by the server) should be reused as the service account for gocd agents
+    reuseTopLevelServiceAccount: false
+    # if reuseTopLevelServiceAccount is false, this field specifies the name of an existing service account to be associated with gocd agents
+    # If field is empty, the service account "default" will be used.
+    name:
+
   # agent.replicaCount is the GoCD Agent replicas Count. Specify the number of GoCD agents to run
   replicaCount: 0
+  # agent.deployStrategy is the strategy explained in detail at https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
+  deployStrategy: {}
   image:
     # agent.image.repository is the GoCD Agent image name
     repository: "gocd/gocd-agent-alpine-3.6"
