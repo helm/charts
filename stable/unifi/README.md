@@ -75,6 +75,7 @@ The following tables lists the configurable parameters of the Sentry chart and t
 | `ingress.tls`                  | Ingress TLS configuration | `[]` |
 | `timezone`                     | Timezone the Unifi controller should run as, e.g. 'America/New York' | `UTC` |
 | `runAsRoot`                    | Run the controller as UID0 (root user) | `false` |
+| `addSetfcap`                   | Give the controller container the SETFCAP capability; this is necessary when not running as root | `true` |
 | `mongodb.enabled`              | Use external MongoDB for data storage | `false` |
 | `mongodb.dbUri`                | external MongoDB URI | `mongodb://mongo/unifi` |
 | `mongodb.statDbUri`            | external MongoDB statdb URI | `mongodb://mongo/unifi_stat` |

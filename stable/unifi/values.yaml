@@ -109,6 +109,7 @@ ingress:
 timezone: UTC
 
 runAsRoot: false
+addSetfcap: true
 
   # define an external mongoDB instead of using the built-in mongodb
 mongodb:

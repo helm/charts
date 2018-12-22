@@ -6,6 +6,7 @@ metadata:
     app.kubernetes.io/name: {{ include "jaeger-operator.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "jaeger-operator.chart" . }}
 spec:
   replicas: 1
   selector:
@@ -18,6 +19,8 @@ spec:
       labels:
         app.kubernetes.io/name: {{ include "jaeger-operator.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+        helm.sh/chart: {{ include "jaeger-operator.chart" . }}
     spec:
       {{- if .Values.serviceAccount.create }}
       serviceAccountName: {{ include "jaeger-operator.serviceAccountName" . }}
