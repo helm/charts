@@ -77,7 +77,7 @@ spec:
         - name: vault-root
           mountPath: /root/
         {{- range .Values.vault.customSecrets }}
-        - name: {{ .secretName }}
+        - name: {{ .secretName | replace "." "-"}}
           mountPath: {{ .mountPath }}
         {{- end }}
 {{- if .Values.vault.extraContainers }}
@@ -126,7 +126,7 @@ spec:
         - name: vault-root
           emptyDir: {}
         {{- range .Values.vault.customSecrets }}
-        - name: {{ .secretName }}
+        - name: {{ .secretName | replace "." "-"}}
           secret:
             secretName: {{ .secretName }}
         {{- end }}

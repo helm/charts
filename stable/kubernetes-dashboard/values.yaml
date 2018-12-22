@@ -5,16 +5,21 @@
 
 image:
   repository: k8s.gcr.io/kubernetes-dashboard-amd64
-  tag: v1.10.0
+  tag: v1.10.1
   pullPolicy: IfNotPresent
 
 replicaCount: 1
 
+## Here annotations can be added to the kubernetes dashboard deployment
+annotations: {}
 ## Here labels can be added to the kubernetes dashboard deployment
 ##
 labels: {}
 # kubernetes.io/cluster-service: "true"
 # kubernetes.io/name: "Kubernetes Dashboard"
+
+## Serve application over HTTP without TLS
+enableInsecureLogin: false
 
 ## Additional container arguments
 ##
@@ -75,8 +80,14 @@ ingress:
   ##
   # annotations:
   #   kubernetes.io/ingress.class: nginx
-  #   nginx.ingress.kubernetes.io/secure-backends: "true"
   #   kubernetes.io/tls-acme: 'true'
+  ## If you plan to use TLS backend with enableInsecureLogin set to false
+  ## (default), you need to uncomment the below.
+  ## If you use ingress-nginx < 0.21.0
+  #   nginx.ingress.kubernetes.io/secure-backends: "true"
+  ## if you use ingress-nginx >= 0.21.0
+  #   nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+
 
   ## Kubernetes Dashboard Ingress path
   ##
