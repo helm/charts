@@ -62,6 +62,15 @@ spec:
           value: {{ $value | quote }}
         {{- end }}
         {{- end }}
+        {{- if .Values.secret }}
+        {{- range $key, $value := .Values.secret }}
+        - name: {{ .name }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ $value.secret_name }}
+              key: {{ $value.secret_key | quote }}
+        {{- end }}
+        {{- end }}
         - name: K8S_NODE_NAME
           valueFrom:
             fieldRef:
