@@ -168,20 +168,21 @@ To pass initialization scripts into the container, you can either:
     initializationDirectory: initdb
     ```
     Provided following dir structure:
-        mysql
-        ├──initdb
-        │   ├──01_createUsers.sql
-        │   ├──02_createTables.sql
-        │   ├──03_loadData.sql
-        │   └──....
-        ├──templates
-        │   ├──deployment.yaml
-        │   ├──initializationDirectory-configmap.yaml
-        │   ├──svc.yaml
-        │   └──....
-        ├──Chart.yaml
-        ├──values.yaml
-        └──....
+
+        stable/mysql
+                ├──initdb
+                │   ├──01_createUsers.sql
+                │   ├──02_createTables.sql
+                │   ├──03_loadData.sql
+                │   └──....
+                ├──templates
+                │   ├──deployment.yaml
+                │   ├──initializationDirectory-configmap.yaml
+                │   ├──svc.yaml
+                │   └──....
+                ├──Chart.yaml
+                ├──values.yaml
+                └──....
 
     _*Note: Currently Tiller does not have access to your filesystem, so `initializationDirectory` must point into a directory inside the chart._
 
