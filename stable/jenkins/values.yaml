@@ -99,10 +99,10 @@ Master:
   #   port: 9000
   # List of plugins to be install during Jenkins master start
   InstallPlugins:
-    - kubernetes:1.12.4
+    - kubernetes:1.14.0
     - workflow-job:2.24
     - workflow-aggregator:2.5
-    - credentials-binding:1.16
+    - credentials-binding:1.17
     - git:3.9.1
   # Used to approve a list of groovy functions in pipelines used the script-security plugin. Can be viewed under /scriptApproval
   # ScriptApproval:
