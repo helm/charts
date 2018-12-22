@@ -98,6 +98,8 @@ spec:
               name: {{ template "postgresql.secretName" . }}
               key: postgresql-replication-password
         {{- end }}
+        - name: POSTGRESQL_CLUSTER_APP_NAME
+          value: {{ .Values.replication.applicationName }}
         - name: POSTGRESQL_MASTER_HOST
           value: {{ template "postgresql.fullname" . }}
         - name: POSTGRESQL_MASTER_PORT_NUMBER
