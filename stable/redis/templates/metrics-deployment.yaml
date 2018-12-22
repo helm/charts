@@ -73,7 +73,7 @@ spec:
               name: {{ template "redis.secretName" . }}
               key: redis-password
         {{- end }}
-        {{- else }}
+        {{- end }}
         command:
         - /bin/sh
         - -c
