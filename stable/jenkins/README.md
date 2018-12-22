@@ -83,7 +83,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `Master.Tolerations`              | Toleration labels for pod assignment | `{}`                                                                         |
 | `Master.PodAnnotations`           | Annotations for master pod           | `{}`                                                                         |
 | `NetworkPolicy.Enabled`           | Enable creation of NetworkPolicy resources. | `false`                                                               |
-| `NetworkPolicy.ApiVersion`        | NetworkPolicy ApiVersion             | `extensions/v1beta1`                                                         |
+| `NetworkPolicy.ApiVersion`        | NetworkPolicy ApiVersion             | `networking.k8s.io/v1`                                                         |
 | `rbac.install`                    | Create service account and ClusterRoleBinding for Kubernetes plugin | `false`                                       |
 | `rbac.roleRef`                    | Cluster role name to bind to         | `cluster-admin`                                                              |
 | `rbac.roleBindingKind`            | Role kind (`RoleBinding` or `ClusterRoleBinding`)| `ClusterRoleBinding`                                             |
@@ -97,7 +97,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `Agent.Enabled`            | Enable Kubernetes plugin jnlp-agent podTemplate | `true`                 |
 | `Agent.Image`              | Agent image name                                | `jenkinsci/jnlp-slave` |
 | `Agent.ImagePullSecret`    | Agent image pull secret                         | Not set                |
-| `Agent.ImageTag`           | Agent image tag                                 | `2.62`                 |
+| `Agent.ImageTag`           | Agent image tag                                 | `3.27-1`                 |
 | `Agent.Privileged`         | Agent privileged container                      | `false`                |
 | `Agent.resources`          | Resources allocation (Requests and Limits)      | `{requests: {cpu: 200m, memory: 256Mi}, limits: {cpu: 200m, memory: 256Mi}}`|
 | `Agent.volumes`            | Additional volumes                              | `nil`                  |
