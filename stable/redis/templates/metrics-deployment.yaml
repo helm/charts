@@ -63,16 +63,38 @@ spec:
         - name: REDIS_ALIAS
           value: {{ template "redis.fullname" . }}
         {{- if .Values.usePassword }}
+        {{- if .Values.usePasswordFile }}
+        - name: REDIS_PASSWORD_FILE
+          value: "/secrets/redis-password"
+        {{- else }}
         - name: REDIS_PASSWORD
           valueFrom:
             secretKeyRef:
-              {{- if .Values.existingSecret }}
-              name: {{ .Values.existingSecret }}
-              {{- else }}
-              name: {{ template "redis.fullname" . }}
-              {{- end }}
+              name: {{ template "redis.secretName" . }}
               key: redis-password
         {{- end }}
+        {{- else }}
+        command:
+        - /bin/sh
+        - -c
+        - |-
+          if [[ -n $REDIS_PASSWORD_FILE ]]; then
+            password_aux="$(< "${REDIS_PASSWORD_FILE}")"
+            export REDIS_PASSWORD=$password_aux
+          fi
+          /bin/redis_exporter
+
+        volumeMounts:
+        {{- if .Values.usePasswordFile }}
+        - name: redis-password
+          mountPath: /secrets/
+        {{- end }}
+      volumes:
+      {{- if .Values.usePasswordFile }}
+      - name: redis-password
+        secret:
+          secretName: {{ template "redis.secretName" . }}
+      {{- end }}
         ports:
         - name: metrics
           containerPort: 9121
