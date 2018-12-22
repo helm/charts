@@ -5,6 +5,11 @@ kind: Job
 metadata:
   name: post-installation-job
   namespace: kube-system
+  labels:
+    app: post-installation-job
+    chart: {{.Chart.Name}}-{{.Chart.Version}}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
   annotations:
       "helm.sh/hook": "pre-install"
       "helm.sh/hook-weight": "0"
@@ -13,6 +18,9 @@ spec:
   template:
     metadata:
       name: post-installation-job
+      labels:
+          app: post-installation-job
+          release: {{ .Release.Name }}
     spec:
       serviceAccountName: tiller
       containers:
@@ -33,6 +41,11 @@ kind: Job
 metadata:
   name: post-deletion-job
   namespace: kube-system
+  labels:
+    app: post-deletion-job
+    chart: {{.Chart.Name}}-{{.Chart.Version}}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
   annotations:
       "helm.sh/hook": post-delete
       "helm.sh/hook-delete-policy": "hook-succeeded,hook-failed"
@@ -40,6 +53,9 @@ spec:
   template:
     metadata:
       name: post-deletion-job
+      labels:
+          app: post-deletion-job
+          release: {{ .Release.Name }}
     spec:
       serviceAccountName: tiller
       containers:

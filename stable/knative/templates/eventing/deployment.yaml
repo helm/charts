@@ -5,15 +5,18 @@ kind: Deployment
 metadata:
   name: eventing-controller
   namespace: {{ .Values.eventing.namespace }}
+  labels:
+    app: eventing-controller
+    chart: {{.Chart.Name}}-{{.Chart.Version}}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
   replicas: {{.Values.eventing.controller.replicaCount }}
   template:
     metadata:
       labels:
         app: eventing-controller
-        chart: {{.Chart.Name}}-{{.Chart.Version}}
         release: {{ .Release.Name }}
-        heritage: {{ .Release.Service }}
     spec:
       containers:
       - args:
@@ -38,6 +41,12 @@ kind: Deployment
 metadata:
   name: webhook
   namespace: knative-eventing
+  labels:
+    app: webhook
+    role: webhook
+    chart: {{.Chart.Name}}-{{.Chart.Version}}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
   replicas: {{.Values.eventing.webhook.replicaCount }}
   template:
@@ -47,9 +56,7 @@ spec:
       labels:
         app: webhook
         role: webhook
-        chart: {{.Chart.Name}}-{{.Chart.Version}}
         release: {{ .Release.Name }}
-        heritage: {{ .Release.Service }}
     spec:
       containers:
       - image: {{ .Values.eventing.webhook.image.repository }}:{{ .Values.eventing.webhook.image.tag }}

@@ -3,6 +3,7 @@ description: Knative Helm chart for Kubernetes
 name: knative
 version: 0.1.0
 appVersion: 0.1.1
+tillerVersion: ">=2.10.0"
 home: https://github.com/knative/
 icon: https://raw.githubusercontent.com/knative/docs/master/images/logo/rgb/knative-logo-rgb.jpg
 keywords:

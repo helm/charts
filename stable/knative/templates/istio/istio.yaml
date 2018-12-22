@@ -4,6 +4,10 @@ apiVersion: v1
 kind: Namespace
 metadata:
   name: istio-system
+  labels:
+    chart: {{.Chart.Name}}-{{.Chart.Version}}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 # PATCH #1 ends.
 ---
 # Source: istio/charts/mixer/templates/configmap.yaml
