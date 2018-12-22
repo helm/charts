@@ -69,6 +69,33 @@ worker:
   # Optional extra labels for pod, i.e. redis-client: "true"
   # podLabels: []
 
+# Job resources
+jobs:
+  dbInit:
+    resources:
+      limits:
+        cpu: "1"
+        memory: 2Gi
+      requests:
+        cpu: 100m
+        memory: 200Mi
+    nodeSelector: {}
+    tolerations: []
+    affinity: {}
+    # schedulerName
+  userCreate:
+    resources:
+      limits:
+        cpu: 200m
+        memory: 200Mi
+      requests:
+        cpu: 100m
+        memory: 100Mi
+    nodeSelector: {}
+    tolerations: []
+    affinity: {}
+    # schedulerName
+
 # Admin user to create
 user:
   # Indicated to create the admin user or not,

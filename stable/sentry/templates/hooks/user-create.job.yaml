@@ -17,6 +17,10 @@ metadata:
 spec:
   template:
     metadata:
+      {{- if .Values.jobs.userCreate.podAnnotations }}
+      annotations:
+{{ toYaml .Values.jobs.userCreate.podAnnotations | indent 8 }}
+      {{- end }}
       name: "{{ .Release.Name }}-user-create"
       labels:
         app: {{ template "fullname" . }}
@@ -26,6 +30,21 @@ spec:
         {{- end }}
     spec:
       restartPolicy: Never
+      {{- if .Values.jobs.userCreate.affinity }}
+      affinity:
+{{ toYaml .Values.jobs.userCreate.affinity | indent 8 }}
+      {{- end }}
+      {{- if .Values.jobs.userCreate.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.jobs.userCreate.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.jobs.userCreate.tolerations }}
+      tolerations:
+{{ toYaml .Values.jobs.userCreate.tolerations | indent 8 }}
+      {{- end }}
+      {{- if .Values.jobs.userCreate.schedulerName }}
+      schedulerName: "{{ .Values.jobs.userCreate.schedulerName }}"
+      {{- end }}
       {{- if .Values.image.imagePullSecrets }}
       imagePullSecrets:
 {{ toYaml .Values.image.imagePullSecrets | indent 8 }}
@@ -100,6 +119,8 @@ spec:
         - mountPath: /etc/sentry
           name: config
           readOnly: true
+        resources:
+{{ toYaml .Values.jobs.userCreate.resources | indent 12 }}
       volumes:
       - name: config
         configMap:

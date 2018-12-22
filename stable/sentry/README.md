@@ -89,6 +89,20 @@ The following table lists the configurable parameters of the Sentry chart and th
 | `worker.schedulerName`               | Name of an alternate scheduler for worker   | `nil`                                                      |
 | `worker.affinity`                    | Affinity settings for worker pod assignment | `{}`                                                       |
 | `worker.tolerations`                 | Toleration labels for worker pod assignment | `[]`                                                       |
+| `jobs.dbInit.podAnnotations`         | db-init job annotations                     | `{}`                                                       |
+| `jobs.dbInit.resources.limits`       | db-init job resource limits                 | `{cpu: "1", memory: 2Gi}`                                  |
+| `jobs.dbInit.resources.requests`     | db-init job resource requests               | `{cpu: 100m, memory: 200Mi}`                               |
+| `jobs.dbInit.nodeSelector`           | Node labels for db-init job assignment      | `{}`                                                       |
+| `jobs.dbInit.schedulerName`          | Name of an alternate scheduler for db-init  | `nil`                                                      |
+| `jobs.dbInit.affinity`               | Affinity settings for db-init job assignment | `{}`                                                      |
+| `jobs.dbInit.tolerations`            | Toleration labels for db-init job assignment | `[]`                                                      |
+| `jobs.userCreate.podAnnotations`     | user-create job annotations                 | `{}`                                                       |
+| `jobs.userCreate.resources.limits`   | user-create job resource limits             | `{cpu: 200m, memory: 200Mi}`                               |
+| `jobs.userCreate.resources.requests` | user-create job resource requests           | `{cpu: 100m, memory: 100Mi}`                               |
+| `jobs.userCreate.nodeSelector`       | Node labels for user-create job assignment  | `{}`                                                       |
+| `jobs.userCreate.schedulerName`      | Name of an alternate scheduler for user-create | `nil`                                                   |
+| `jobs.userCreate.affinity`           | Affinity settings for user-create job assignment | `{}`                                                  |
+| `jobs.userCreate.tolerations`        | Toleration labels for user-create job assignment | `[]`                                                  |
 | `user.create`                        | Create the default admin                    | `true`                                                     |
 | `user.email`                         | Username for default admin                  | `admin@sentry.local`                                       |
 | `email.from_address`                 | Email notifications are from                | `smtp`                                                     |

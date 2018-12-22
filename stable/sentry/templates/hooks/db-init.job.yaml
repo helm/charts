@@ -17,6 +17,10 @@ metadata:
 spec:
   template:
     metadata:
+      {{- if .Values.jobs.dbInit.podAnnotations }}
+      annotations:
+{{ toYaml .Values.jobs.dbInit.podAnnotations | indent 8 }}
+      {{- end }}
       name: "{{ .Release.Name }}-db-init"
       labels:
         app: {{ template "fullname" . }}
@@ -26,6 +30,21 @@ spec:
         {{- end }}
     spec:
       restartPolicy: Never
+      {{- if .Values.jobs.dbInit.affinity }}
+      affinity:
+{{ toYaml .Values.jobs.dbInit.affinity | indent 8 }}
+      {{- end }}
+      {{- if .Values.jobs.dbInit.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.jobs.dbInit.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.jobs.dbInit.tolerations }}
+      tolerations:
+{{ toYaml .Values.jobs.dbInit.tolerations | indent 8 }}
+      {{- end }}
+      {{- if .Values.jobs.dbInit.schedulerName }}
+      schedulerName: "{{ .Values.jobs.dbInit.schedulerName }}"
+      {{- end }}
       {{- if .Values.image.imagePullSecrets }}
       imagePullSecrets:
 {{ toYaml .Values.image.imagePullSecrets | indent 8 }}
@@ -95,6 +114,8 @@ spec:
         - mountPath: /etc/sentry
           name: config
           readOnly: true
+        resources:
+{{ toYaml .Values.jobs.dbInit.resources | indent 12 }}
       volumes:
       - name: config
         configMap:
