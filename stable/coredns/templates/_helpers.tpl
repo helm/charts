@@ -68,7 +68,7 @@ Generate the list of ports automatically from the server definitions
             {{- printf "- {port: %v, targetPort: %v, protocol: UDP}\n" (index $innerdict "serviceport") $port -}}
         {{- end -}}
         {{- if index $innerdict "istcp" -}}
-            {{- printf "- {port: %v, protocol: TCP}\n" $port -}}
+            {{- printf "- {port: %v, targetPort: %v, protocol: TCP}\n" (index $innerdict "serviceport") $port -}}
         {{- end -}}
     {{- end -}}
 {{- end -}}
