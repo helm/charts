@@ -129,7 +129,7 @@ jmx:
   port: 5555
 
 ## Pass any secrets to the pods. The secrets will be mounted to a specfic path
-## OR presented as Environment Variables. Environment variable names are 
+## OR presented as Environment Variables. Environment variable names are
 ## generated as: `<secretName>_<secretKey>` (All upper case)
 ## note: Keystore/Truststore are binary and should always be presented as files.
 secrets: []
