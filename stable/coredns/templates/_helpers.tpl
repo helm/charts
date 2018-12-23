@@ -32,7 +32,7 @@ Generate the list of ports automatically from the server definitions
 
         {{/* If none of the server blocks has mentioned this port yet take note of it */}}
         {{- if not (hasKey $ports $port) -}}
-            {{- $ports := set $ports $port (dict "istcp" false "isudp" false) -}}
+            {{- $ports := set $ports $port (dict "istcp" false "isudp" false "serviceport" (default $port .servicePort)) -}}
         {{- end -}}
         {{/* Retrieve the inner dict that holds the protocols for a given port */}}
         {{- $innerdict := index $ports $port -}}
@@ -65,7 +65,7 @@ Generate the list of ports automatically from the server definitions
     {{/* Write out the ports according to the info collected above */}}
     {{- range $port, $innerdict := $ports -}}
         {{- if index $innerdict "isudp" -}}
-            {{- printf "- {port: %v, protocol: UDP}\n" $port -}}
+            {{- printf "- {port: %v, targetPort: %v, protocol: UDP}\n" (index $innerdict "serviceport") $port -}}
         {{- end -}}
         {{- if index $innerdict "istcp" -}}
             {{- printf "- {port: %v, protocol: TCP}\n" $port -}}

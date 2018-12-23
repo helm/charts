@@ -47,6 +47,10 @@ servers:
 - zones:
   - zone: .
   port: 53
+  # If set, use the given port as the service port. By default, the service
+  # port is same as port. For example, you can use this option to run coredns
+  # as a non-root user on port 8053, and use 53 as the service port.
+  # servicePort: 53
   plugins:
   - name: cache
     parameters: 30
