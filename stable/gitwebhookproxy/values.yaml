@@ -4,13 +4,13 @@ gitWebhookProxy:
   namespace: default
   image:
     name: stakater/gitwebhookproxy
-    tag: "0.2.58"
+    tag: "0.2.59"
     pullPolicy: IfNotPresent
   deployment:
     labels:
       provider: stakater
       group: com.stakater.platform
-      version: 0.2.58
+      version: 0.2.59
     annotations: {}
   config:
     provider: github
