@@ -9,6 +9,7 @@ to renew certificates at an appropriate time before expiry.
 ## Prerequisites
 
 - Kubernetes 1.7+
+- Helm v2.12.1+ (see [#5054](https://github.com/helm/helm/issues/5054))
 
 ## Installing the Chart
 
