@@ -76,13 +76,8 @@ spec:
         - name: KONG_ADMIN_LISTEN
           value: 0.0.0.0:{{ .Values.admin.containerPort }}
         {{- end }}
-        {{- if .Values.proxy.useTLS }}
         - name: KONG_PROXY_LISTEN
-          value: "0.0.0.0:{{ .Values.proxy.containerPort }} ssl"
-        {{- else }}
-        - name: KONG_PROXY_LISTEN
-          value: 0.0.0.0:{{ .Values.proxy.containerPort }}
-        {{- end }}
+          value: {{ template "kong.kongProxyListenValue" . }}
         - name: KONG_NGINX_DAEMON
           value: "off"
         - name: KONG_PROXY_ACCESS_LOG
@@ -116,9 +111,16 @@ spec:
         - name: admin
           containerPort: {{ .Values.admin.containerPort }}
           protocol: TCP
+        {{- if .Values.proxy.http.enabled }}
         - name: proxy
-          containerPort: {{ .Values.proxy.containerPort }}
+          containerPort: {{ .Values.proxy.http.containerPort }}
           protocol: TCP
+        {{- end }}
+        {{- if .Values.proxy.tls.enabled }}
+        - name: proxy-tls
+          containerPort: {{ .Values.proxy.tls.containerPort }}
+          protocol: TCP
+        {{- end }}
         readinessProbe:
 {{ toYaml .Values.readinessProbe | indent 10 }}
         livenessProbe:
