@@ -15,6 +15,7 @@ Master:
   ImagePullPolicy: "Always"
 # ImagePullSecret: jenkins
   Component: "jenkins-master"
+  NumExecutors: 0
   UseSecurity: true
   # SecurityRealm:
   # Optionally configure a different AuthorizationStrategy using Jenkins XML
