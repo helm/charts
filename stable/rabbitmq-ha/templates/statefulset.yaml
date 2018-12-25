@@ -179,12 +179,12 @@ spec:
             - name: RABBIT_CAPABILITIES
               value: "{{ .Values.prometheus.exporter.capabilities }}"
             {{- end }}  
-            - name: RABBIT_USER
+            - name: RABBIT_DEFAULT_USER
               valueFrom:
                 secretKeyRef:
                   name: {{ template "rabbitmq-ha.secretName" . }}
                   key: rabbitmq-username
-            - name: RABBIT_PASSWORD
+            - name: RABBIT_DEFAULT_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ template "rabbitmq-ha.secretName" . }}
