@@ -14,7 +14,7 @@ This chart bootstraps a [Prometheus](https://prometheus.io/) deployment on a [Ku
 
 ## Prerequisites
 
-- Kubernetes 1.3+ with Beta APIs enabled
+- Kubernetes 1.10+ with Beta APIs enabled
 
 ## Installing the Chart
 
