@@ -4,8 +4,11 @@
 
 image:
   repository: docker.io/anapsix/satisfy
+  # if both image.tag and image.digest are present
+  # digest will be used
   tag: v3.0.4
-  pullPolicy: IfNotPresent
+  digest: sha256:16a818ab03b6a6bd2625dc9b4760f079fbbddfdd1473994593dfae958c6e7e29
+  pullPolicy: Always
   pullSecrets: []
     # - secret1
     # - secret2

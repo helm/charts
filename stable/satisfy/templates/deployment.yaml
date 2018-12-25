@@ -26,8 +26,8 @@ spec:
       {{- end }}
       initContainers:
         - name: init
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+          image: "{{ include "satisfy.image" . }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           command:
             - /bin/sh
             - -c
@@ -49,11 +49,11 @@ spec:
               mountPath: /app_persist
       containers:
         - name: satisfy
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          image: "{{ include "satisfy.image" . }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
-              containerPort: 8080
+              containerPort: 80
               protocol: TCP
           env:
             - name: REPO_NAME

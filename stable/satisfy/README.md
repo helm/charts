@@ -23,9 +23,10 @@ chart and deletes the release.
 
  Parameter                      | Description                            | Default
 ------------------------------- | -------------------------------------- | ---------
-`image.pullPolicy`              | Image pull policy                      | `IfNotPresent`
+`image.pullPolicy`              | Image pull policy                      | `Always`
 `image.repository`              | Image repository                       | `docker.io/anapsix/satisfy`
 `image.tag`                     | Image tag                              | `v3.0.4`
+`image.digest`                  | Image digest                           | `sha256:16a818ab03b6a6bd2625dc9b4760f079fbbddfdd1473994593dfae958c6e7e29`
 `image.pullSecrets`             | Specify image pull secrets             | `[]`
 `service.type`                  | Type of service                        | `ClusterIP`
 `service.port`                  | Service port                           | `80`
@@ -49,3 +50,8 @@ chart and deletes the release.
 `satisfy.repo_name`             | Satis repository name                  | `myrepo`
 `satisfy.homepage`              | Satis repository URL                   | `http://chart-example.local`
 `satisfy.ssh_private_key`       | SSH Private key used with GIT repos    | `nil`
+
+> When both `image.tag` and `image.digest` are present, `image.digest` will be used. See [Docker docs][1] for more details about using image digest.
+
+[## Link Reference ##]::
+[1]: https://docs.docker.com/engine/reference/commandline/pull/#pull-an-image-by-digest-immutable-identifier

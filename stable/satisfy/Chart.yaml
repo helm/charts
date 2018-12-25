@@ -8,6 +8,7 @@ sources:
 - https://github.com/anapsix/docker-satisfy
 - https://github.com/ludofleury/satisfy
 - https://github.com/composer/satis
+- https://unit.nginx.org/
 maintainers:
 - name: anapsix
   email: anapsix@random.io
