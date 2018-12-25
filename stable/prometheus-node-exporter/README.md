@@ -58,6 +58,8 @@ The following table lists the configurable parameters of the Node Exporter chart
 | `securityContext`                 | SecurityContext                                                                                                               | `{"runAsNonRoot": true, "runAsUser": 65534}` |     |
 | `tolerations`                     | List of node taints to tolerate                                                                                               | `- effect: NoSchedule operator: Exists` |     |
 | `priorityClassName`               | Name of Priority Class to assign pods                                                                                         | `nil`                                   |     |
+| `endpoints`            | list of addresses that have node exporter deployed outside of the cluster                                                                | `[]`                                    |     |
+
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
