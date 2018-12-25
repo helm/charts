@@ -48,6 +48,10 @@ The following table lists the configurable parameters of the MySQL chart and the
 | -------------------------------------------- | -------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
 | `image`                                      | `mysql` image repository.                                                                    | `mysql`                                              |
 | `imageTag`                                   | `mysql` image tag.                                                                           | `5.7.14`                                             |
+| `busybox.image`                                    | `busybox` image repository.                                                                    | `busybox`                                            |
+| `busybox.tag`                                | `busybox` image tag.                                                                           | `1.29.3`                                             |
+| `testFramework.image`                              | `test-framework` image repository.                                                                    | `dduportal/bats`                                            |
+| `testFramework.tag`                          | `test-framework` image tag.                                                                           | `0.4.0`                                              |
 | `imagePullPolicy`                            | Image pull policy                                                                            | `IfNotPresent`                                       |
 | `existingSecret`                             | Use Existing secret for Password details                                                     | `nil`                                                |
 | `extraVolumes`                               | Additional volumes as a string to be passed to the `tpl` function                            |                                                      |
@@ -96,6 +100,7 @@ The following table lists the configurable parameters of the MySQL chart and the
 | `initializationFiles`                        | List of SQL files which are run after the container started                                  | `nil`                                                |
 | `timezone`                                   | Container and mysqld timezone (TZ env)                                                       | `nil` (UTC depending on image)                       |
 | `podAnnotations`                             | Map of annotations to add to the pods                                                        | `{}`                                                 |
+| `priorityClassName`                          | Set pod priorityClassName                                                                    | `{}`                                                 |
 
 Some of the parameters above map to the env variables defined in the [MySQL DockerHub image](https://hub.docker.com/_/mysql/).
 

@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "atlantis.fullname" . }}
+  labels:
+    app: {{ template "atlantis.name" . }}
+    chart: {{ template "atlantis.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  {{- with .Values.service.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+  {{- end }}
+spec:
+  type: {{ .Values.service.type }}
+  template:
+    metadata:
+{{- with .Values.podTemplate.annotations }}
+      annotations:
+{{ toYaml . | indent 8 }}
+{{- end }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: 4141
+      protocol: TCP
+      name: atlantis
+  selector:
+    app: {{ template "atlantis.name" . }}
+    release: {{ .Release.Name }}

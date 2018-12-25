@@ -147,8 +147,10 @@ postgresql:
     enabled: true
 
 redis:
-  persistence:
-    enabled: true
+  master:
+    persistence:
+      enabled: true
+      # If change pvc size redis.master.persistence.size: 20Gi
 
 config:
   configYml: ""
