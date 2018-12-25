@@ -25,5 +25,5 @@ rules:
 - apiGroups: [""]
   resources:
   - namespaces
-  verbs: ["list", "get"]
+  verbs: ["get"]
 {{ end }}

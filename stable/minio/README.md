@@ -68,6 +68,23 @@ $ helm delete my-release
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
+Upgrading the Chart
+-------------------
+
+You can use Helm to update Minio version in a live release. Assuming your release is named as `my-release`, get the values using the command:
+
+```bash
+$ helm get values my-release > old_values.yaml
+```
+
+Then change the field `image.tag` in `old_values.yaml` file with Minio image tag you want to use. Now update the chart using
+
+```bash
+$ helm upgrade -f old_values.yaml my-release stable/minio
+```
+
+Default upgrade strategies are specified in the `values.yaml` file. Update these fields if you'd like to use a different strategy.
+
 Configuration
 -------------
 
@@ -107,7 +124,7 @@ The following table lists the configurable parameters of the Minio chart and the
 | `nodeSelector`             | Node labels for pod assignment      | `{}`                                                    |
 | `affinity`                 | Affinity settings for pod assignment | `{}`                                                   |
 | `tolerations`              | Toleration labels for pod assignment | `[]`                                                   |
-| `tls.enable`               | Enable TLS for Minio server | `false`                                                         |
+| `tls.enabled`              | Enable TLS for Minio server | `false`                                                         |
 | `tls.certSecret`           | Kubernetes Secret with `public.crt` and `private.key` files. | `""`                           |
 | `livenessProbe.initialDelaySeconds`  | Delay before liveness probe is initiated        | `5`                               |
 | `livenessProbe.periodSeconds`        | How often to perform the probe                  | `30`                              |
@@ -123,6 +140,8 @@ The following table lists the configurable parameters of the Minio chart and the
 | `defaultBucket.name`       | Bucket name                         | `bucket`                                                |
 | `defaultBucket.policy`     | Bucket policy                       | `none`                                                  |
 | `defaultBucket.purge`      | Purge the bucket if already exists  | `false`                                                 |
+| `s3gateway.enabled`        | Use minio as a [s3 gateway](https://github.com/minio/minio/blob/master/docs/gateway/s3.md)| `false` |
+| `s3gateway.replicas`       | Number of s3 gateway instances to run in parallel | `4` |
 | `azuregateway.enabled`     | Use minio as an [azure gateway](https://docs.minio.io/docs/minio-gateway-for-azure)| `false`  |
 | `gcsgateway.enabled`       | Use minio as a [Google Cloud Storage gateway](https://docs.minio.io/docs/minio-gateway-for-gcs)| `false` |
 | `gcsgateway.gcsKeyJson`    | credential json file of service account key | `""` |

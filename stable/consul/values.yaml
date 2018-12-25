@@ -118,6 +118,12 @@ uiIngress:
   hosts: []
   tls: {}
 
+## Useful when ACLs are enabled
+acl:
+  enabled: false
+  masterToken: ""
+  agentToken: ""
+
 ## test container details
 test:
   image: lachlanevenson/k8s-kubectl
