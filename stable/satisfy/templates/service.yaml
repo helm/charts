@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "satisfy.fullname" . }}
+  name: {{ include "satisfy.fullname" . }}
   labels:
-    app: {{ template "satisfy.name" . }}
-    chart: {{ template "satisfy.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ include "satisfy.name" . }}
+    helm.sh/chart: {{ include "satisfy.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   type: {{ .Values.service.type }}
   ports:
@@ -15,5 +15,5 @@ spec:
       protocol: TCP
       name: http
   selector:
-    app: {{ template "satisfy.name" . }}
-    release: {{ .Release.Name }}
+    app.kubernetes.io/name: {{ include "satisfy.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}

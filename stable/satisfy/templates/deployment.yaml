@@ -1,23 +1,23 @@
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
-  name: {{ template "satisfy.fullname" . }}
+  name: {{ include "satisfy.fullname" . }}
   labels:
-    app: {{ template "satisfy.name" . }}
-    chart: {{ template "satisfy.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ include "satisfy.name" . }}
+    helm.sh/chart: {{ include "satisfy.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ template "satisfy.name" . }}
-      release: {{ .Release.Name }}
+      app.kubernetes.io/name: {{ include "satisfy.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ template "satisfy.name" . }}
-        release: {{ .Release.Name }}
+        app.kubernetes.io/name: {{ include "satisfy.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       {{- with .Values.image.pullSecrets }}
