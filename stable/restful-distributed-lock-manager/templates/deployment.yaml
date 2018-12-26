@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+{{ include "rdlm.labels.selector" . | indent 4 }}
+{{ include "rdlm.labels.chart" . | indent 4 }}
+{{- if .Values.rdlm.labels }}
+{{ toYaml .Values.rdlm.labels | indent 4 }}
+{{- end }}
+  name: {{ template "rdlm.name" . }}
+spec:
+  replicas: {{ .Values.rdlm.deployment.replicas }}
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+{{ include "rdlm.labels.selector" . | indent 6 }}
+{{- if .Values.rdlm.deployment.podLabels }}
+{{ toYaml .Values.rdlm.deployment.podLabels | indent 6 }}
+{{- end }}
+  template:
+    metadata:
+      labels:
+{{ include "rdlm.labels.selector" . | indent 8 }}
+{{- if .Values.rdlm.deployment.podLabels }}
+{{ toYaml .Values.rdlm.deployment.podLabels | indent 8 }}
+{{- end }}
+    spec:
+      containers:
+      - name: {{ .Values.rdlm.deployment.container.name }}        
+        image: "{{ .Values.rdlm.deployment.container.imageName }}:{{ .Values.rdlm.deployment.container.imageTag }}"
+        ports:
+        - containerPort: {{ .Values.rdlm.deployment.container.targetPort }}
+          name: http
+          protocol: TCP

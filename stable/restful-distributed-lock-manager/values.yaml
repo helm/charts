@@ -1,0 +1,14 @@
+rdlm:
+  labels:
+    group: com.stakater.platform
+    provider: stakater
+    version: 0.5.3
+  deployment:
+    replicas: 1
+    podLabels: {}
+    container:
+      name: rdlm
+      imageName: stakater/restful-distributed-lock-manager
+      imageTag: 0.5.3
+      port: 8080
+      targetPort: 8888
