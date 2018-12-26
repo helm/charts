@@ -20,7 +20,7 @@ helm repo add stable https://kubernetes-charts.storage.googleapis.com/
 
 helm repo update
 
-helm install stable/restful-distributed-lock-manager
+helm install stable/rdlm
 ```
 
 ## Usage
