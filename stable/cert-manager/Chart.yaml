@@ -1,8 +1,9 @@
 name: cert-manager
-version: v0.5.2
+version: 0.5.3
 appVersion: v0.5.2
 description: A Helm chart for cert-manager
 home: https://github.com/jetstack/cert-manager
+icon: https://raw.githubusercontent.com/kubernetes/kubernetes/master/logo/logo.png
 keywords:
   - cert-manager
   - kube-lego
