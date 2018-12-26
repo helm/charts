@@ -7,7 +7,7 @@ rbac:
     rules:
     - apiGroups:
         - ""
-      resources:      
+      resources:
         - secrets
         - configmaps
       verbs:
