@@ -43,7 +43,7 @@ spec:
               fieldPath: metadata.name
         ports:
         - name: policy
-          containerPort: {{ .Values.anchoreGlobal.service.ports.policyEngine }}
+          containerPort: {{ .Values.anchorePolicyEngine.service.port }}
         volumeMounts:
         - name: config-volume
           mountPath: /config/config.yaml
@@ -54,21 +54,22 @@ spec:
           readOnly: true
         {{- end }}
         livenessProbe:
-          exec:
-            command:
-            - pgrep
-            - twistd
-          initialDelaySeconds: 10
-          periodSeconds: 60
-          failureThreshold: 5
+          httpGet:
+            path: /health
+            port: policy
+          initialDelaySeconds: 120
+          timeoutSeconds: 10
+          periodSeconds: 10
+          failureThreshold: 6
+          successThreshold: 1
         readinessProbe:
           httpGet:
             path: /health
             port: policy
-          initialDelaySeconds: 5
-          periodSeconds: 10
           timeoutSeconds: 10
-          failureThreshold: 10
+          periodSeconds: 10
+          failureThreshold: 3
+          successThreshold: 1
         resources:
 {{ toYaml .Values.anchorePolicyEngine.resources | indent 10 }}
       volumes:
@@ -104,12 +105,16 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     component: {{ $component }}
+  {{- if .Values.anchorePolicyEngine.service.annotations }}
+  annotations:
+{{ toYaml .Values.anchorePolicyEngine.service.annotations | indent 4 }}
+  {{- end }}
 spec:
-  type: {{ .Values.anchoreGlobal.service.type }}
+  type: {{ .Values.anchorePolicyEngine.service.type }}
   ports:
     - name: anchore-policy-api
-      port: {{ .Values.anchoreGlobal.service.ports.policyEngine }}
-      targetPort: {{ .Values.anchoreGlobal.service.ports.policyEngine }}
+      port: {{ .Values.anchorePolicyEngine.service.port }}
+      targetPort: {{ .Values.anchorePolicyEngine.service.port }}
       protocol: TCP
   selector:
     app: {{ template "anchore-engine.fullname" . }}

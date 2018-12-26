@@ -18,6 +18,12 @@ spec:
       labels:
         app: {{ template "unifi.name" . }}
         release: {{ .Release.Name }}
+      {{- if .Values.podAnnotations }}
+      annotations:
+        {{- range $key, $value := .Values.podAnnotations }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
+      {{- end }}
     spec:
       containers:
         - name: {{ .Chart.Name }}
@@ -36,6 +42,12 @@ spec:
             - name: stun
               containerPort: 3478
               protocol: UDP
+          {{- if .Values.addSetfcap }}
+          securityContext:
+            capabilities:
+              add:
+                - SETFCAP
+          {{- end }}
           livenessProbe:
             httpGet:
               path: /status
@@ -53,6 +65,10 @@ spec:
               value: "{{ .Values.timezone }}"
             - name: RUNAS_UID0
               value: "{{ .Values.runAsRoot }}"
+            - name: UNIFI_UID
+              value: "{{ .Values.UID }}"
+            - name: UNIFI_GID
+              value: "{{ .Values.GID }}"
             {{- if .Values.mongodb.enabled }}
             - name: DB_URI
               value: "{{ .Values.mongodb.dbUri }}"

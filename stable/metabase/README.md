@@ -74,6 +74,7 @@ The following table lists the configurable parameters of the Metabase chart and 
 | service.annotations    | Service annotations                                        | {}                |
 | ingress.enabled        | Enable ingress controller resource                         | false             |
 | ingress.hosts          | Ingress resource hostnames                                 | null              |
+| ingress.path           | Ingress path                                               | /                 |
 | ingress.labels         | Ingress labels configuration                               | null              |
 | ingress.annotations    | Ingress annotations configuration                          | null              |
 | ingress.tls            | Ingress TLS configuration                                  | null              |
