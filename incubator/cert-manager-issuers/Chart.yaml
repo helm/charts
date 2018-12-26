@@ -1,5 +1,6 @@
 name: cert-manager-issuers
 version: v0.0.4
+appVersion: v0.5.2
 description: A Helm chart for cert-manager issuers
 home: https://github.com/afirth/site-cluster
 keywords:
