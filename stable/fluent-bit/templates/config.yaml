@@ -163,7 +163,7 @@ data:
         Name        {{ .name }}
         Format      json
 {{- if .timeKeep }}
-        Time_Keep    {{ .timeKeep }}
+        Time_Keep   {{ .timeKeep }}
 {{- end }}
 {{- if .timeKey }}
         Time_Key    {{ .timeKey }}
@@ -173,8 +173,12 @@ data:
 {{- end }}
 {{- if .decodeFieldAs  }}
         Decode_Field_As {{ .decodeFieldAs }} {{ .decodeField | default "log" }}
+{{- end}}
+{{- if .extraEntries }}
+{{ .extraEntries | indent 8 }}
 {{- end }}
 {{ end }}
 {{- end }}
 
 {{- end -}}
+

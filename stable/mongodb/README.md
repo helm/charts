@@ -174,3 +174,14 @@ The allowed extensions are `.sh`, and `.js`.
 The [Bitnami MongoDB](https://github.com/bitnami/bitnami-docker-mongodb) image stores the MongoDB data and configurations at the `/bitnami/mongodb` path of the container.
 
 The chart mounts a [Persistent Volume](http://kubernetes.io/docs/user-guide/persistent-volumes/) at this location. The volume is created using dynamic volume provisioning.
+
+## Upgrading
+
+### To 5.0.0
+
+When enabling replicaset configuration, backwards compatibility is not guaranteed unless you modify the labels used on the chart's statefulsets.
+Use the workaround below to upgrade from versions previous to 5.0.0. The following example assumes that the release name is `my-release`:
+
+```consoloe
+$ kubectl delete statefulset my-release-mongodb-arbiter my-release-mongodb-primary my-release-mongodb-secondary --cascade=false
+```

@@ -67,6 +67,15 @@ config:
     # If a JVM Agent is in place
     # agent: 61621
 
+## Cassandra config files overrides
+configOverrides: {}
+
+## Cassandra docker command overrides
+commandOverrides: []
+
+## Cassandra docker args overrides
+argsOverrides: []
+
 ## Custom env variables.
 ## ref: https://hub.docker.com/_/cassandra/
 env: {}
@@ -160,6 +169,10 @@ backup:
   image:
     repos: nuvo/cain
     tag: 0.3.0
+
+  # Additional arguments for cain
+  # Ref: https://github.com/nuvo/cain#usage
+  extraArgs: []
 
   # Add additional environment variables
   env:
