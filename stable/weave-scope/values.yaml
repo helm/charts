@@ -36,6 +36,15 @@ weave-scope-frontend:
         # cpu: ""
         # weave-scope-frontend.resources.limits.memory: memory limit in MiB (Mi)
         # memory: ""
+  ingress:
+    enabled: false
+      # annotations:
+          # kubernetes.io/ingress.class: nginx
+          # kubernetes.io/tls-acme: "true"
+      # paths: []
+      # hosts:
+        #  - weave-scope.domain.com
+      # tls: []
 
 # weave-scope-agent.* controls how the Weave Scope node agent pods are installed
 weave-scope-agent:
