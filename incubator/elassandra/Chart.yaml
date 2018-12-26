@@ -1,6 +1,6 @@
 name: elassandra
 version: 1.0.0
-appVersion: 6.2.3.8
+appVersion: 6.2.3.9
 description: Elassandra is a fork of Elasticsearch modified to run on top of Apache Cassandra in a scalable and
   resilient peer-to-peer architecture. Elasticsearch code is embedded in Cassanda nodes providing advanced
   search features on Cassandra tables and Cassandra serve as an Elasticsearch data and configuration store.
