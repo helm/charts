@@ -1,0 +1,21 @@
+# Default values for cert-manager-issuers
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+email: "you@example.com"
+
+issuers:
+  - kind: ClusterIssuer
+    # optional override, otherwise values.email is used
+    # email: "you@example.com"
+    name: letsencrypt-staging
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    method:
+      http01: {}
+  - kind: ClusterIssuer
+    # optional override, otherwise values.email is used
+    # email: "you@example.com"
+    name: letsencrypt-prod
+    server: https://acme-v02.api.letsencrypt.org/directory
+    method:
+      http01: {}

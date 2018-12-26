@@ -1,0 +1,4 @@
+Try
+$ kubectl get clusterissuers
+or
+$ kubectl get issuers --namespace={{ $.Release.Namespace }}

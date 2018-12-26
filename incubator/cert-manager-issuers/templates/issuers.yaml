@@ -1,0 +1,28 @@
+{{- $email := .Values.email -}}
+{{- $release := .Release -}}
+
+{{- range $issuer := .Values.issuers }}
+---
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: {{ .kind }}
+metadata:
+  name: {{ .name }}
+  namespace: {{ $.Release.Namespace | quote }}
+  labels:
+    app: {{ template "cert-manager-issuers.name" $ }}
+    chart: {{ template "cert-manager-issuers.chart" $ }}
+    release: {{ $.Release.Name }}
+    heritage: {{ $.Release.Service }}
+spec:
+  acme:
+    server: {{ .server }}
+    {{- if .email }}
+    email: {{ .email }}
+    {{- else }}
+    email: {{ $email }}
+    {{- end }}
+    privateKeySecretRef:
+      name: {{ .name }}
+{{ toYaml .method | indent 4 }}
+
+{{- end }}
