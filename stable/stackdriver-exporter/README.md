@@ -67,6 +67,11 @@ Parameter                           | Description                          | Def
 `service.type`                      | Type of service to create            | `ClusterIP`
 `service.httpPort`                  | Port for the http service            | `9255`
 `stackdriver.projectId`             | GCP Project ID                       | ``
+`stackdriver.maxRetries`            | Max number of retries on 503         | `0`
+`stackdriver.httpTimeout`           | How long to wait for result from SD  | `10s`
+`stackdriver.maxBackoff`            | Max time for wait in exp backoff     | `5s`
+`stackdriver.backoffJitter`         | Amount of jitter in exp backoff      | `1s`
+`stackdriver.retryStatuses`         | HTTP code to trigger a retry	       | `503`
 `stackdriver.metrics.typePrefixes`  | Comma separated Metric Type prefixes | ``
 `stackdriver.metrics.interval`      | Metrics interval to request from GCP | `5m`
 `stackdriver.metrics.offset`        | Offset (into the past) to request    | `0s`
