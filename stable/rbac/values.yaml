@@ -1,0 +1,41 @@
+rbac:
+  appName: rbac
+  clusterRole:
+    enabled: false
+    name: testClusterRole
+    labels: {}
+    rules:
+    - apiGroups:
+        - ""
+      resources:      
+        - secrets
+        - configmaps
+      verbs:
+        - list
+        - get
+        - watch
+  role:
+    enabled: false
+    name: testRole
+    labels: {}
+    rules:
+  clusterRoleBinding:
+    enabled: false
+    name: testClusterRoleBinding
+    labels: {}
+    clusterRoleName:
+    serviceAccountName:
+  roleBinding:
+    enabled: false
+    name: testRoleBinding
+    labels: {}
+    roleName:
+    serviceAccountName:
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: false
+  labels: {}
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: testAccount
