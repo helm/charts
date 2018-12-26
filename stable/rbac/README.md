@@ -24,22 +24,22 @@ The following quickstart let's you set up rbac chart:
 |---------------|---------------------------------------------------------------------------|------------------------------------|------------------------------------|
 | appName          | name of the application. Used in labels                                                     | `rbac`                                             | `rbac`                    |
 | clusterRole.enabled          | Enable clusterRole                                          | `true`                                          | `false`                                 |
-| clusterRole.name    | Name of clusterRole                                                 | `testClusterRole"`                | `testClusterRole`                        |
+| clusterRole.name    | Name of clusterRole                                                 | `testclusterrole"`                | `testclusterrole`                        |
 | clusterRole.labels        | label for clusterRole                                                         | `app: app-name`                         | `{}`                                        |
 | clusterRole.rules        | rules for clusterRole                                                         | ``                         | ``                                        |
 | clusterRoleBinding.enabled          | Enable clusterRoleBinding                                          | `true`                                          | `false`                                 |
-| clusterRoleBinding.name    | Name of clusterRoleBinding                                                 | `testClusterRoleBinding`                | `testClusterRoleBinding`                        |
+| clusterRoleBinding.name    | Name of clusterRoleBinding                                                 | `testclusterrolebinding`                | `testclusterrolebinding`                        |
 | clusterRoleBinding.labels        | label for clusterRoleBinding                                                         | `app: app-name`                         | `{}`                                        |
-| clusterRoleBinding.clusterRoleName        | clusterRole name for clusterRoleBinding                                                        | `testClusterRole`                         | `testClusterRole`                                        |
+| clusterRoleBinding.clusterRoleName        | clusterRole name for clusterRoleBinding                                                        | `testclusterrole`                         | `testclusterrole`                                        |
 | clusterRoleBinding.serviceAccountName        | serviceAccount name for clusterRoleBinding                                                         | `cluster-admin`                         | ``                                        |
 | role.enabled          | Enable role                                          | `true`                                          | `true`                                 |
-| role.name    | Name of role                                                 | `testRole"`                | `testRole`                        |
+| role.name    | Name of role                                                 | `testrole"`                | `testrole`                        |
 | role.labels        | label for role                                                         | `app: app-name`                         | `{}`                                        |
 | role.rules        | rules for role                                                         | ``                         | ``                                        |
 | roleBinding.enabled          | Enable roleBinding                                          | `true`                                          | `true`                                 |
-| roleBinding.name    | Name of roleBinding                                                 | `testRoleBinding`                | `testRoleBinding`                        |
+| roleBinding.name    | Name of roleBinding                                                 | `testrolebinding`                | `testrolebinding`                        |
 | roleBinding.labels        | label for roleBinding                                                         | `app: app-name`                         | `{}`                                        |
-| roleBinding.roleName        | role name for roleBinding                                                        | `testRole`                         | `testRole`                                        |
-| roleBinding.serviceAccountName        | serviceAccount name for roleBinding                                                         | `testAccount`                         | ``                                        |
+| roleBinding.roleName        | role name for roleBinding                                                        | `testrole`                         | `testrole`                                        |
+| roleBinding.serviceAccountName        | serviceAccount name for roleBinding                                                         | `testaccount`                         | ``                                        |
 | serviceAccount.create          | Option to create serviceAccount                                               | `true`                        | `true`                        |
-| serviceAccount.name          | Name of serviceAccount                                               | `testAccount`                        | `testAccount`                        |
+| serviceAccount.name          | Name of serviceAccount                                               | `testaccount`                        | `testaccount`                        |
