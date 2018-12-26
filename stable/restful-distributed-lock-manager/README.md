@@ -13,7 +13,7 @@
 
 ## Helm Charts
 
-If you have configured helm on your cluster, you can add reloader to helm from helm public chart repository and deploy it via helm using below mentioned commands
+If you have configured helm on your cluster, you can add rdlm to helm from helm public chart repository and deploy it via helm using below mentioned commands
 
  ```bash
 helm repo add stable https://kubernetes-charts.storage.googleapis.com/
@@ -37,5 +37,5 @@ Update the `values.yaml` and set the following properties
 | rdlm.deployment.container.name           | container name                                                | `rdlm`                        | `rdlm`                        |
 | rdlm.deployment.container.imageName          | Image name for rdlm                                                | `stakater/restful-distributed-lock-manager`                        | `stakater/restful-distributed-lock-manager`                        |
 | rdlm.deployment.container.imageTag          | Image tag for rdlm                                                | `0.5.3`                        | `0.5.3`                        |
-| rdlm.deployment.container.port          | Image pull policy for reloader                                                | `8080`                        | `8080`                        |
-| rdlm.deployment.container.targetPort          | Image pull policy for reloader                                                | `8888`                        | `8888`                        |
+| rdlm.deployment.container.port          | port to expose rdlm                                                | `8080`                        | `8080`                        |
+| rdlm.deployment.container.targetPort          | container targetPort for rdlm                                                | `8888`                        | `8888`                        |
