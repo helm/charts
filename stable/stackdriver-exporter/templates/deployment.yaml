@@ -47,6 +47,16 @@ spec:
               value: {{ .Values.web.listenAddress | quote }}
             - name: STACKDRIVER_EXPORTER_WEB_TELEMETRY_PATH
               value: {{ .Values.web.path | quote }}
+            - name: STACKDRIVER_EXPORTER_MAX_RETRIES
+              value: {{ .Values.maxRetries | quote }}
+            - name: STACKDRIVER_EXPORTER_HTTP_TIMEOUT
+              value: {{ .Values.httpTimeout | quote }}
+            - name: STACKDRIVER_EXPORTER_MAX_BACKOFF_DURATION
+              value: {{ .Values.maxBackoff | quote }}
+            - name: STACKDRIVER_EXPORTER_BACKODFF_JITTER_BASE
+              value: {{ .Values.backoffJitter | quote }}
+            - name: STACKDRIVER_EXPORTER_RETRY_STATUSES
+              value: {{ .Values.retryStatuses | quote}}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           ports:
