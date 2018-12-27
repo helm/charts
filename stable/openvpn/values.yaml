@@ -68,6 +68,11 @@ openvpn:
   # OVPN_K8S_SVC_NETWORK:
   # Kubernetes service network subnet (optional).
   # OVPN_K8S_SVC_SUBNET:
+  # Server certificate data
+  # keystoreSecret:
+  # secret with openvpn certificates. If specified, certificates are taken from the secret
+  # create secret with such command:
+  #    kubectl create secret generic openvpn-keystore-secret --from-file=./server.key --from-file=./ca.crt --from-file=./server.crt --from-file=./dh.pem
   # Push a `dhcp-option DOMAIN` config
   dhcpOptionDomain: true
   # Redirect all client traffic through VPN

@@ -11,7 +11,7 @@ agent:
 
   image:
     repository: quay.io/uswitch/kiam
-    tag: v2.8
+    tag: v3.0-rc1
     pullPolicy: IfNotPresent
 
   ## Logging settings
@@ -98,7 +98,7 @@ server:
 
   image:
     repository: quay.io/uswitch/kiam
-    tag: v2.8
+    tag: v3.0-rc1
     pullPolicy: IfNotPresent
 
   ## Logging settings
@@ -157,6 +157,10 @@ server:
   ## Timeout when creating the kiam gateway
   ##
   gatewayTimeoutCreation: 50ms
+
+  ## Server probe configuration
+  probes:
+    serverAddress: localhost
 
   ## Base64-encoded PEM values for server's CA certificate(s), certificate and private key
   ##

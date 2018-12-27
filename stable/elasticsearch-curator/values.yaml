@@ -1,0 +1,98 @@
+# Default values for elasticsearch-curator.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+cronjob:
+  # At 01:00 every day
+  schedule: "0 1 * * *"
+  annotations: {}
+  concurrencyPolicy: ""
+  failedJobsHistoryLimit: ""
+  successfulJobsHistoryLimit: ""
+
+pod:
+  annotations: {}
+
+image:
+  repository: quay.io/pires/docker-elasticsearch-curator
+  tag: 5.5.4
+  pullPolicy: IfNotPresent
+
+config:
+  elasticsearch:
+    hosts:
+      - CHANGEME.host
+    port: 9200
+
+configMaps:
+  # Delete indices older than 7 days
+  action_file_yml: |-
+    ---
+    actions:
+      1:
+        action: delete_indices
+        description: "Clean up ES by deleting old indices"
+        options:
+          timeout_override:
+          continue_if_exception: False
+          disable_action: False
+          ignore_empty_list: True
+        filters:
+        - filtertype: age
+          source: name
+          direction: older
+          timestring: '%Y.%m.%d'
+          unit: days
+          unit_count: 7
+          field:
+          stats_result:
+          epoch:
+          exclude: False
+  # Having config_yaml WILL override the other config
+  # config_yml: |-
+  #   ---
+  #   client:
+  #     hosts:
+  #       - elasticsearch-logging-cluster
+  #     port: 9200
+  #     url_prefix:
+  #     use_ssl: True
+  #     certificate:
+  #     client_cert:
+  #     client_key:
+  #     ssl_no_validate: True
+  #     http_auth:
+  #     timeout: 30
+  #     master_only: False
+  #   logging:
+  #     loglevel: INFO
+  #     logfile:
+  #     logformat: default
+  #     blacklist: ['elasticsearch', 'urllib3']
+
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+priorityClassName: ""
+
+# extraVolumes and extraVolumeMounts allows you to mount other volumes
+# Example Use Case: mount ssl certificates when elasticsearch has tls enabled
+# extraVolumes:
+#   - name: es-certs
+#     secret:
+#       defaultMode: 420
+#       secretName: es-certs
+# extraVolumeMounts:
+#   - name: es-certs
+#     mountPath: /certs
+#     readOnly: true

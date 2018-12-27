@@ -6,6 +6,8 @@ image:
   pullPolicy: IfNotPresent
 
 nodeSelector: {}
+tolerations: []
+affinity: {}
 
 config:
   modules:
@@ -17,13 +19,14 @@ config:
         no_follow_redirects: false
         preferred_ip_protocol: "ip4"
 
-resources:
+resources: {}
   # limits:
   #   memory: 300Mi
   # requests:
   #   memory: 50Mi
 
 service:
+  annotations: {}
   type: ClusterIP
   port: 9115
 

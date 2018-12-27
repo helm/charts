@@ -16,7 +16,9 @@ spec:
     metadata:
     {{- if .Values.defaultBackend.podAnnotations }}
       annotations:
-{{ toYaml .Values.defaultBackend.podAnnotations | indent 8 }}
+      {{- range $key, $value := .Values.defaultBackend.podAnnotations }}
+        {{ $key }}: {{ $value | quote }}
+      {{- end }}
     {{- end }}
       labels:
         app: {{ template "nginx-ingress.name" . }}

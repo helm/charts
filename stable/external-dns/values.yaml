@@ -1,7 +1,7 @@
 ## Details about the image to be pulled.
 image:
   name: registry.opensource.zalan.do/teapot/external-dns
-  tag: v0.5.6
+  tag: v0.5.9
   pullSecrets: []
   pullPolicy: IfNotPresent
 
@@ -21,19 +21,40 @@ provider: aws
 aws:
   secretKey: ""
   accessKey: ""
+  # pre external-dns 0.5.9 home dir should be `/root/.aws`
+  credentialsPath: "/.aws"
   roleArn: ""
   region: "us-east-1"
   # Filter for zones of this type (optional, options: public, private)
   zoneType: ""
 
+azure:
+# If you don't specify a secret to load azure.json from, you will get the host's /etc/kubernetes/azure.json
+  secretName: ""
+
 # Cloudflare keys to inject as environment variables
 cloudflare:
   apiKey: ""
   email: ""
+  proxied: true
 # When using the Google provider, specify the Google project (required when provider=google)
 google:
   project: ""
   serviceAccountSecret: ""
+
+# Infoblox keys to inject
+infoblox:
+  # Required keys:
+  wapiUsername: ""
+  wapiPassword: ""
+  gridHost: ""
+  # Optional keys:
+  domainFilter: ""
+  noSslVerify: false
+  wapiPort: ""
+  wapiVersion: ""
+  wapiConnectionPoolSize: ""
+  wapiHttpTimeout: ""
 
 ## Limit possible target zones by domain suffixes (optional)
 domainFilters: []
@@ -70,7 +91,17 @@ logLevel: info
 
 extraArgs: {}
 
-extraEnv: {}
+# Extra environment variables which will be saved in a release-specific secret
+# or retrieved via valueFrom.
+# extraEnv:
+# - name: SECRET_TO_SAVE
+#   value: secret_value
+# - name: AWS_ACCESS_KEY_ID
+#   valueFrom:
+#     secretKeyRef:
+#       name: existing-secret
+#       key: access-key-id
+extraEnv: []
 
 ## CPU and Memory limit and request for external-dns
 resources: {}
@@ -90,6 +121,13 @@ rbac:
   ## Ignored if rbac.create is true
   ##
   serviceAccountName: default
+
+securityContext: {}
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 65534 # 65534 is nobody - revise aws.credentialsPath when changing uid
+  # capabilities:
+  #   drop: ["ALL"]
 
 service:
   annotations: {}

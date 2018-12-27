@@ -1,6 +1,6 @@
 name: keycloak
-version: 3.4.0
-appVersion: 4.2.1.Final
+version: 4.0.8
+appVersion: 4.5.0.Final
 description: Open Source Identity and Access Management For Modern Applications and Services
 keywords:
   - sso
@@ -14,7 +14,5 @@ icon: https://www.keycloak.org/resources/images/keycloak_logo_480x108.png
 sources:
   - https://github.com/jboss-dockerfiles/keycloak
 maintainers:
-  - name: nexeck
-    email: marcel@beck.im
   - name: unguiculus
     email: unguiculus@gmail.com

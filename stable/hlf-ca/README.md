@@ -18,7 +18,6 @@ This CA can then be used to register and enroll identities for clients, admins a
 
 - Kubernetes 1.9+
 - PV provisioner support in the underlying infrastructure.
-- A running [PostgreSQL Chart](https://github.com/kubernetes/charts/tree/master/stable/postgresql) to host the Hyperledger Fabric CA data, in a database defined under the settings `db.database`.
 
 ## Installing the Chart
 
@@ -40,7 +39,7 @@ $ helm install stable/hlf-ca --name org1-ca --set adminUsername=ca-admin,adminPa
 
 The above command creates a CA Admin user named `ca-admin` with password `secretpassword`.
 
-Alternatively, a YAML file can be provided while installing the chart. This file specifies values to override those provided in the defualt values.yaml. For example,
+Alternatively, a YAML file can be provided while installing the chart. This file specifies values to override those provided in the default values.yaml. For example,
 
 ```bash
 $ helm install stable/hlf-ca --name org1-ca -f my-values.yaml
@@ -81,6 +80,7 @@ The following table lists the configurable parameters of the Hyperledger Fabric 
 | `ingress.path`                     | Ingress path                                     | `/`                                                        |
 | `ingress.hosts`                    | Ingress hostnames                                | `[]`                                                       |
 | `ingress.tls`                      | Ingress TLS configuration                        | `[]`                                                       |
+| `persistence.existingClaim`        | Name of an existing PVC to use for Fabric CA     | `nil`                                                      |
 | `persistence.accessMode`           | Use volume as ReadOnly or ReadWrite              | `ReadWriteOnce`                                            |
 | `persistence.annotations`          | Persistent Volume annotations                    | `{}`                                                       |
 | `persistence.size`                 | Size of data volume                              | `1Gi`                                                      |
@@ -88,8 +88,15 @@ The following table lists the configurable parameters of the Hyperledger Fabric 
 | `adminUsername`                    | Admin Username for CA                            | `admin`                                                    |
 | `adminPassword`                    | Admin Password                                   | Random 24 alphanumeric characters                          |
 | `caName`                           | Name of CA                                       | `org1-ca`                                                  |
-| `db.chart`                         | Name of a Database Chart holding CA data         | `` supports postgresql                                     |
-| `db.database`                      | Name of the actual Database holding the CA data  | `fabric_ca`                                                |
+| `db.ssl`                           | SSL Authentication                               | `disable`                                                  |
+| `postgresql.enabled`               | Deploy a PostgreSQL container holding the CA data | `false`                                                   |
+| `mysql.enabled`                    | Deploy a MySQL container holding the CA data     | `false`                                                    |
+| `externalDatabase.type`            | Database type (either `postgres` or `mysql` )    | `nil`                                                      |
+| `externalDatabase.host`            | Host of the external database                    | `localhost`                                                |
+| `externalDatabase.username`        | Existing username in the external db             | ``                                                         |
+| `externalDatabase.password`        | Password for the above username                  | ``                                                         |
+| `externalDatabase.database`        | Name of the existing database                    | ``                                                         |
+| `externalDatabase.port`            | Database port number                             | ``                                                         |
 | `config.hlfToolsVersion`           | Version of Hyperledger Fabric tools used         | `1.1.0`                                                    |
 | `config.mountTLS`                  | If TLS secrets are generated, do we mount them?  | `false`                                                    |
 | `config.debug`                     | Enable debug logging                             | `true`                                                     |
@@ -108,6 +115,43 @@ The following table lists the configurable parameters of the Hyperledger Fabric 
 | `nodeSelector`                     | Node labels for pod assignment                   | `{}`                                                       |
 | `tolerations`                      | Toleration labels for pod assignment             | `[]`                                                       |
 | `affinity`                         | Affinity settings for pod assignment             | `{}`                                                       |
+
+## Database
+
+The Fabric CA server needs a database to store the users registered. 
+
+By default the chart is configured to use an in-memory `sqlite3` database, but you can also configure the helm chart to install a `PostgreSQL` or a `MySQL` database along the Fabric CA server. 
+
+### PostgreSQL
+
+To install a `postgresql` running in Kubernetes you have to enable and configure the `postgresql` section in `values.yaml` or pass the following parameter:
+
+```
+ helm install stable/hlf-ca --name org1-ca --set postgresql.enabled=true
+```
+
+### MySQL
+
+To install a `mysql` running in Kubernetes you have to enable and configure the `mysql` section in `values.yaml` or pass the following parameter:
+
+```
+ helm install stable/hlf-ca --name org1-ca --set mysql.enabled=true
+```
+
+### External Database
+
+In case you already setup a database (`postgres` or `mysql`), you can enable and configure the `externalDatabase` section in `values.yaml` or pass the following parameters:`
+
+```
+ helm install stable/hlf-ca --name org1-ca \
+   --set externalDatabase.type=mysql \
+   --set externalDatabase.host=myhost \
+   --set externalDatabase.username=myuser \
+   --set externalDatabase.password=mypassword \
+   --set externalDatabase.database=mydatabase
+```
+
+Please consult the [documentation](https://hyperledger-fabric-ca.readthedocs.io/en/latest/users-guide.html?highlight=database#configuring-the-database) for mode details. 
 
 ## Persistence
 

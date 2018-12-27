@@ -19,6 +19,9 @@ spec:
         app: {{ template "home-assistant.name" . }}
         release: {{ .Release.Name }}
     spec:
+      {{- if .Values.hostNetwork }}
+      hostNetwork: {{ .Values.hostNetwork }} 
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -31,12 +34,16 @@ spec:
             httpGet:
               path: /
               port: api
-              initialDelaySeconds: 30
+            initialDelaySeconds: 30
+            failureThreshold: 5
+            timeoutSeconds: 5
           readinessProbe:
             httpGet:
               path: /
               port: api
-              initialDelaySeconds: 15
+            initialDelaySeconds: 30
+            failureThreshold: 5
+            timeoutSeconds: 5
           env:
             {{- range $key, $value := .Values.extraEnv }}
             - name: {{ $key }}

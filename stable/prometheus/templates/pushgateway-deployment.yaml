@@ -3,13 +3,12 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
-    app: {{ template "prometheus.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    component: "{{ .Values.pushgateway.name }}"
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    {{- include "prometheus.pushgateway.labels" . | nindent 4 }}
   name: {{ template "prometheus.pushgateway.fullname" . }}
 spec:
+  selector:
+    matchLabels:
+      {{- include "prometheus.pushgateway.matchLabels" . | nindent 6 }}
   replicas: {{ .Values.pushgateway.replicaCount }}
   template:
     metadata:
@@ -18,9 +17,7 @@ spec:
 {{ toYaml .Values.pushgateway.podAnnotations | indent 8 }}
     {{- end }}
       labels:
-        app: {{ template "prometheus.name" . }}
-        component: "{{ .Values.pushgateway.name }}"
-        release: {{ .Release.Name }}
+        {{- include "prometheus.pushgateway.labels" . | nindent 8 }}
     spec:
       serviceAccountName: {{ template "prometheus.serviceAccountName.pushgateway" . }}
 {{- if .Values.pushgateway.priorityClassName }}
@@ -48,6 +45,10 @@ spec:
             timeoutSeconds: 10
           resources:
 {{ toYaml .Values.pushgateway.resources | indent 12 }}
+    {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+      {{ toYaml .Values.imagePullSecrets | indent 2 }}
+    {{- end }}
     {{- if .Values.pushgateway.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.pushgateway.nodeSelector | indent 8 }}
