@@ -121,7 +121,7 @@ vault:
   #   - name: some-mount
   #     mountPath: /some/path
   extraVolumes: {}
-  extraInitContainers: |
+  extraInitContainers: {}
   ## Init containers to be added
   # - name: do-something
   #   image: busybox
