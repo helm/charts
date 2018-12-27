@@ -55,6 +55,8 @@ Parameter | Description | Default
 `podLabels` | additional labesl to add to each pod | `{}`
 `replicaCount` | desired number of pods | `1`
 `resources` | pod resource requests & limits | `{}`
+`readinessProbe.enabled` | enable liveness probe, which is disabled by default to pass charts ci builds without actual AWS credentials | `false`
+`livenessProbe.enabled` | enable readiness probe, which is disabled by default to pass charts ci builds without actual AWS credentials | `false`
 `service.port` | port for the service | `9200`
 `service.type` | type of service | `ClusterIP`
 `tolerations` | List of node taints to tolerate | `[]`

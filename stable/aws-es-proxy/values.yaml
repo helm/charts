@@ -21,6 +21,25 @@ extraArgs: {}
   # -log-to-file
   # -no-sign-reqs
 
+# livenessProbe is disabled by default to pass helm/charts ci builds without actual AWS credentials
+livenessProbe:
+  enabled: false
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 10
+  successThreshold: 1
+  failureThreshold: 10
+
+# readinessProbe is disabled by default to pass helm/charts ci builds without actual AWS credentials
+readinessProbe:
+  # enabled is a flag used to enable readiness probe
+  enabled: false
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 10
+  successThreshold: 1
+  failureThreshold: 10
+
 service:
   type: ClusterIP
   port: 9200
