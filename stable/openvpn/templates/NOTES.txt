@@ -4,7 +4,7 @@ Please be aware that certificate generation is variable and may take some time (
 
 Check pod status with the command:
 
-  POD_NAME=$(kubectl get pods -l type=openvpn -o jsonpath='{ .items[0].metadata.name }') && kubectl log $POD_NAME --follow
+  POD_NAME=$(kubectl get pods --namespace "{{ .Release.Namespace }}" -l app=openvpn -o jsonpath='{ .items[0].metadata.name }') && kubectl log $POD_NAME --follow
 
 LoadBalancer ingress creation can take some time as well. Check service status with the command:
 

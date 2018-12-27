@@ -43,7 +43,7 @@ To connect to your Redis server:
 
 1. Run a Redis pod that you can use as a client:
 
-   kubectl run --namespace {{ .Release.Namespace }} {{ template "redis.fullname" . }}-client --rm --tty -i \
+   kubectl run --namespace {{ .Release.Namespace }} {{ template "redis.fullname" . }}-client --rm --tty -i --restart='Never' \
    {{ if .Values.usePassword }} --env REDIS_PASSWORD=$REDIS_PASSWORD \{{ end }}
    {{- if and (.Values.networkPolicy.enabled) (not .Values.networkPolicy.allowExternal) }}--labels="{{ template "redis.name" . }}-client=true" \{{- end }}
    --image {{ template "redis.image" . }} -- bash
@@ -76,7 +76,7 @@ To connect to your database from outside the cluster execute the following comma
   NOTE: It may take a few minutes for the LoadBalancer IP to be available.
         Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "redis.fullname" . }}'
 
-    export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "redis.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+    export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "redis.fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
     redis-cli -h $SERVICE_IP -p {{ .Values.master.service.nodePort }} {{- if .Values.usePassword }} -a $REDIS_PASSWORD{{ end }}
 
 {{- else if contains "ClusterIP" .Values.master.service.type }}

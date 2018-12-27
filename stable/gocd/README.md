@@ -8,12 +8,14 @@
 
 This chart bootstraps a single node GoCD server and GoCD agents on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
+To quickly build your first pipeline while learning key GoCD concepts, visit the [Intro to GoCD guide](https://www.gocd.org/getting-started/part-1/).
+
 ## Prerequisites
 
 - Kubernetes 1.8+ with Beta APIs enabled
 - PV provisioner support in the underlying infrastructure
 - LoadBalancer support or Ingress Controller
-- Ensure that the service account used for starting tiller has enough permissions to create a role. 
+- Ensure that the service account used for starting tiller has enough permissions to create a role.
 
 ## Setup
 
@@ -37,7 +39,7 @@ $ kubectl create clusterrolebinding clusterRoleBinding \
 ## Installing the Chart
 
 Refer the [GoCD website](https://www.gocd.org/kubernetes) for getting started with GoCD on Helm.
- 
+
 To install the chart with the release name `gocd-app`:
 
 ```bash
@@ -69,11 +71,13 @@ The following tables list the configurable parameters of the GoCD chart and thei
 | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------- | ------------------- |
 | `server.enabled`                           | Enable GoCD Server. Supported values are `true`, `false`. When enabled, the GoCD server deployment is done on helm install.  | `true`              |
 | `server.shouldPreconfigure`                | Preconfigure GoCD Server to have a default elastic agent profile and Kubernetes elastic agent plugin settings. Supported values are `true`, `false`.  | `true`              |
+| `server.preconfigureCommand`               | Preconfigure GOCD Server with a custom command (shell,python, etc ...). Supported value is a list. | `["/bin/bash", "/preconfigure_server.sh"]`|
 | `server.image.repository`                  | GoCD server image                                                                                             | `gocd/gocd-server`  |
 | `server.image.tag`                         | GoCD server image tag                                                                                         | `.Chart.appVersion` |
 | `server.image.pullPolicy`                  | Image pull policy                                                                                             | `IfNotPresent`      |
 | `server.resources`                         | GoCD server resource requests and limits                                                                      | `{}`                |
 | `server.nodeSelector`                      | GoCD server nodeSelector for pod labels                                                                       | `{}`                |
+| `server.affinity`                         | GoCD server affinity                                                                                           | `{}`                |
 | `server.env.goServerSystemProperties`      | GoCD Server system properties                                                                                 | `nil`               |
 | `server.env.extraEnvVars`                  | GoCD Server extra Environment variables                                                                       | `nil`               |
 | `server.service.type`                      | Type of GoCD server Kubernetes service                                                                        | `NodePort`          |
@@ -96,23 +100,23 @@ The following tables list the configurable parameters of the GoCD chart and thei
 #### Preconfiguring the GoCD Server
 
 Based on the information available about the Kubernetes cluster, the [Kubernetes elastic agent](https://github.com/gocd/kubernetes-elastic-agents) plugin settings can be configured. A default elastic agent profile too is created so that users can concentrate on building their CD pipeline.
-A simple first pipeline is created in order to bootstrap the getting started experience for users. 
+A simple first pipeline is created in order to bootstrap the getting started experience for users.
 
-If you are comfortable with GoCD and feel that there is no need to preconfigure the server, then you can override `server.shouldPreconfigure` to be false. 
+If you are comfortable with GoCD and feel that there is no need to preconfigure the server, then you can override `server.shouldPreconfigure` to be false.
 
-**Note: If the GoCD server is started with an existing config from a persistent volume, set the value of `server.shouldPreconfigure` to `false`.** 
+**Note: If the GoCD server is started with an existing config from a persistent volume, set the value of `server.shouldPreconfigure` to `false`.**
 
 ```bash
 $ helm install --namespace gocd --name gocd-app --set server.shouldPreconfigure=false stable/gocd
 ```
 
-We are using the `postStart` container lifecycle hook to configure the plugin settings and the elastic agent profile. On starting the container, an attempt is made to configure the GoCD server. 
+We are using the `postStart` container lifecycle hook to configure the plugin settings and the elastic agent profile. On starting the container, an attempt is made to configure the GoCD server.
 
 ```bash
 $ kubectl get pods --namespace gocd
 ```
 
-The above command will show the pod state. This will be in `ContainerCreating` till the preconfigure script exits. 
+The above command will show the pod state. This will be in `ContainerCreating` till the preconfigure script exits.
 
 ```bash
 $ kubectl describe pods --namespace gocd
@@ -131,7 +135,7 @@ This command provides the information on how to access the GoCD server.
 The cases when the attempt to preconfigure the GoCD server fails:
 
 1. The service account token mounted as a secret for the GoCD server pod does not have sufficient permissions. The API call to configure the plugin settings will fail.
-2. If the GoCD server is started with an existing configuration with security configured, then the API calls in the preconfigure script will fail. 
+2. If the GoCD server is started with an existing configuration with security configured, then the API calls in the preconfigure script will fail.
 
 #### SSH keys
 For accessing repositories over SSH in GoCD server, you need to add SSH keys to the GoCD server.
@@ -153,11 +157,13 @@ $ kubectl create secret generic gocd-server-ssh \
 | Parameter                                 | Description                                                                                                                                                                      | Default                      |
 | ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- |
 | `agent.replicaCount`                      | GoCD Agent replicas Count. By default, no agents are provided.                                                                                                                   | `0`                          |
+| `agent.deployStrategy`                      | GoCD Agent [deployment strategy](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy).                                                                                                                   | `{}`                          |
 | `agent.image.repository`                  | GoCD agent image                                                                                                                                                                 | `gocd/gocd-agent-alpine-3.6` |
 | `agent.image.tag`                         | GoCD agent image tag                                                                                                                                                             | `.Chart.appVersion`          |
 | `agent.image.pullPolicy`                  | Image pull policy                                                                                                                                                                | `IfNotPresent`               |
 | `agent.resources`                         | GoCD agent resource requests and limits                                                                                                                                          | `{}`                |
 | `agent.nodeSelector`                      | GoCD agent nodeSelector for pod labels                                                                                                                                           | `{}`                |
+| `agent.affinity`                         | GoCD agent affinity                                                                                                                                                               | `{}`                |
 | `agent.env.goServerUrl`                   | GoCD Server Url. If nil, discovers the GoCD server service if its available on the Kubernetes cluster                                                                            | `nil`                        |
 | `agent.env.agentAutoRegisterKey`          | GoCD Agent autoregister key                                                                                                                                                      | `nil`                        |
 | `agent.env.agentAutoRegisterResources`    | Comma separated list of GoCD Agent resources                                                                                                                                     | `nil`                        |
@@ -202,7 +208,7 @@ $ kubectl create secret generic gocd-agent-ssh \
 
 ## Persistence
 
-By default, the GoCD helm chart supports dynamic volume provisioning. This means that the standard storage class with a default provisioner provided by various cloud platforms used. 
+By default, the GoCD helm chart supports dynamic volume provisioning. This means that the standard storage class with a default provisioner provided by various cloud platforms used.
 Refer to the [Kubernetes blog](http://blog.kubernetes.io/2017/03/dynamic-provisioning-and-storage-classes-kubernetes.html) to know more about the default provisioners across platforms.
 
 > **Note**: The reclaim policy for most default volume provisioners is `delete`. This means that, the persistent volume provisioned using the default provisioner will be deleted along with the data when the PVC gets deleted.
@@ -229,30 +235,70 @@ The value pvSelector must be specified so that the right persistence volume will
 $ helm install --name gocd-app --set server.persistence.existingClaim=PVC_NAME stable/gocd
 ```
 
+#### Additional Volumes
+
+Additional volumes, such as `ConfigMaps` and `secrets`, can be mounted on the server and agent deployments.
+
+To mount a `secret`:
+```
+  persistence:
+    enabled: true
+    extraVolumeMounts:
+      - name: github-key
+        mountPath: /etc/config/keys/
+        readOnly: true
+    extraVolumes:
+      - name: github-key
+        secret:
+          secretName: github-key
+          defaultMode: 0744
+```
+
+To mount a `ConfigMap` containing `/docker-entrypoint.d/` scripts:
+```
+  persistence:
+    enabled: true
+    name:
+      dockerEntryPoint: gocd-init-scripts
+    subpath:
+      dockerEntryPoint: ""
+    extraVolumes:
+      - name: gocd-init-scripts
+        configMap:
+          name: gocd-init-scripts
+          defaultMode: 0755
+```
+
 ### Server persistence Values
 
-| Parameter                                     | Description                                         | Default              |
-| --------------------------------------------- | --------------------------------------------------- | -------------------- |
-| `server.persistence.enabled`                  | Enable the use of a GoCD server PVC                 | `true`              |
-| `server.persistence.accessMode`               | The PVC access mode                                 | `ReadWriteOnce`      |
-| `server.persistence.size`                     | The size of the PVC                                 | `2Gi`                |
-| `server.persistence.storageClass`             | The PVC storage class name                          | `nil`                |
-| `server.persistence.pvSelector`               | The godata Persistence Volume Selectors             | `nil`                |
-| `server.persistence.subpath.godata`           | The /godata path on Persistence Volume              | `godata`             |
-| `server.persistence.subpath.homego`           | The /home/go path on Persistence Volume             | `homego`             |
-| `server.persistence.subpath.dockerEntryPoint` | The /docker-entrypoint.d path on Persistence Volume | `scripts`            |
+| Parameter                                     | Description                                             | Default              |
+| --------------------------------------------- | ------------------------------------------------------- | -------------------- |
+| `server.persistence.enabled`                  | Enable the use of a GoCD server PVC                     | `true`               |
+| `server.persistence.accessMode`               | The PVC access mode                                     | `ReadWriteOnce`      |
+| `server.persistence.size`                     | The size of the PVC                                     | `2Gi`                |
+| `server.persistence.storageClass`             | The PVC storage class name                              | `nil`                |
+| `server.persistence.pvSelector`               | The godata Persistence Volume Selectors                 | `nil`                |
+| `server.persistence.name.dockerEntryPoint`    | The Persitence Volume to mount at /docker-entrypoint.d/ | `goserver-vol`       |
+| `server.persistence.subpath.godata`           | The /godata path on Persistence Volume                  | `godata`             |
+| `server.persistence.subpath.homego`           | The /home/go path on Persistence Volume                 | `homego`             |
+| `server.persistence.subpath.dockerEntryPoint` | The /docker-entrypoint.d path on Persistence Volume     | `scripts`            |
+| `server.persistence.extraVolumes`             | Additional server volumes                               | `[]`                 |
+| `server.persistence.extraVolumeMounts`        | Additional server volumeMounts                          | `[]`                 |
 
 ### Agent persistence Values
 
-| Parameter                                     | Description                                          | Default              |
-| --------------------------------------------- | ---------------------------------------------------- | -------------------- |
-| `agent.persistence.enabled`                   | Enable the use of a GoCD agent PVC                   | `false`              |
-| `agent.persistence.accessMode`                | The PVC access mode                                  | `ReadWriteOnce`      |
-| `agent.persistence.size`                      | The size of the PVC                                  | `1Gi`                |
-| `agent.persistence.storageClass`              | The PVC storage class name                           | `nil`                |
-| `agent.persistence.pvSelector`                | The godata Persistence Volume Selectors              | `nil`                |
-| `agent.persistence.subpath.homego`            | The /home/go path on Persistence Volume              | `homego`             |
-| `agent.persistence.subpath.dockerEntryPoint`  | The /docker-entrypoint.d path on Persistence Volume  | `scripts`            |
+| Parameter                                     | Description                                             | Default              |
+| --------------------------------------------- | ------------------------------------------------------- | -------------------- |
+| `agent.persistence.enabled`                   | Enable the use of a GoCD agent PVC                      | `false`              |
+| `agent.persistence.accessMode`                | The PVC access mode                                     | `ReadWriteOnce`      |
+| `agent.persistence.size`                      | The size of the PVC                                     | `1Gi`                |
+| `agent.persistence.storageClass`              | The PVC storage class name                              | `nil`                |
+| `agent.persistence.pvSelector`                | The godata Persistence Volume Selectors                 | `nil`                |
+| `agent.persistence.name.dockerEntryPoint`     | The Persitence Volume to mount at /docker-entrypoint.d/ | `goagent-vol`        |
+| `agent.persistence.subpath.homego`            | The /home/go path on Persistence Volume                 | `homego`             |
+| `agent.persistence.subpath.dockerEntryPoint`  | The /docker-entrypoint.d path on Persistence Volume     | `scripts`            |
+| `agent.persistence.extraVolumes`              | Additional agent volumes                                | `[]`                 |
+| `agent.persistence.extraVolumeMounts`         | Additional agent volumeMounts                           | `[]`                 |
 
 ##### Note:
 
@@ -266,11 +312,13 @@ $ helm install --name gocd-app --set server.persistence.existingClaim=PVC_NAME s
 The RBAC section is for users who want to use the Kubernetes Elastic Agent Plugin with GoCD. The Kubernetes elastic agent plugin for GoCD brings up pods on demand while running a job.
 If RBAC is enabled,
  1. A cluster role is created by default and the following privileges are provided.
-    Privileges:
+
+    <a name="cluster-role-privileges"></a>Cluser role privileges:
       - nodes: list, get
       - events: list, watch
       - namespace: list, get
       - pods, pods/log: *
+
 
  2. A cluster role binding to bind the specified service account with the cluster role.
 
@@ -285,7 +333,7 @@ If RBAC is enabled,
 | `rbac.roleRef`                                | An existing role that can be bound to the gocd service account.                     | `nil`                |
 | `serviceAccount.create`                       | Specifies whether a service account should be created.                              | `true`               |
 | `serviceAccount.name`                         | Name of the service account.                                                        | `nil`                |
- 
+
 If `rbac.create=false`, the service account that will be used, either the default or one that's created, will not have the cluster scope or pod privileges to use with the Kubernetes EA plugin.
 A cluster role binding must be created like below:
 
@@ -303,6 +351,23 @@ The gocd service account can be associated with an existing role in the namespac
 ```bash
 helm install --namespace gocd --name gocd-app --set rbac.roleRef=ROLE_NAME stable/gocd
 ```
+
+#### Agent service account:
+
+Service account can be configured specifically for agents. This configuration also allows for the reuse of the top level service account that is used to configure the server pod. The various settings and their possible states are described below:
+
+| Parameter | Description | Default |
+| --------------------------------------------- | ----------------------------------------------------------------------------------- | ------------------- |
+| `agent.serviceAccount.reuseTopLevelServiceAccount`                   |  Specifies whether the top level service account (also used by the server) should be reused as the service account for gocd agents                                 | false                        |
+| `agent.serviceAccount.name`                   |  If reuseTopLevelServiceAccount is false, this field specifies the name of an existing service account to be associated with gocd agents. By default (name field is empty), no service account is created for gocd agents | `nil`                        |
+
+Possible states:
+
+|State | Effect                                                                         |
+|------|--------------------------------------------------|
+|reuseTopLevelServiceAccount = false and name = empty|The service account 'default' will be used.|
+|reuseTopLevelServiceAccount = false and name = 'agentSA'|The 'agentSA' service account will be used. The service account needs to exist and bound with the appropriate role. |
+|reuseTopLevelServiceAccount = true| The GoCD service account will be created and used for the agents in the specified namespace. The permissions associated with the GoCD SA are defined here - [Cluster role privileges](#cluster-role-privileges).  |
 
 # License
 

@@ -12,6 +12,8 @@ $ helm install stable/dokuwiki
 
 This chart bootstraps a [DokuWiki](https://github.com/bitnami/bitnami-docker-dokuwiki) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
+Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters.
+
 ## Prerequisites
 
 - Kubernetes 1.4+ with Beta APIs enabled
@@ -45,6 +47,7 @@ The following table lists the configurable parameters of the DokuWiki chart and 
 
 |              Parameter               |               Description                                  |                   Default                     |
 |--------------------------------------|------------------------------------------------------------|-----------------------------------------------|
+| `global.imageRegistry`               | Global Docker image registry                               | `nil`                                         |
 | `image.registry`                     | DokuWiki image registry                                    | `docker.io`                                   |
 | `image.repository`                   | DokuWiki image name                                        | `bitnami/dokuwiki`                            |
 | `image.tag`                          | DokuWiki image tag                                         | `{VERSION}`                                   |
@@ -55,15 +58,19 @@ The following table lists the configurable parameters of the DokuWiki chart and 
 | `dokuwikiPassword`                   | Application password                                       | _random 10 character alphanumeric string_     |
 | `dokuwikiEmail`                      | User email                                                 | `user@example.com`                            |
 | `dokuwikiWikiName`                   | Wiki name                                                  | `My Wiki`                                     |
-| `service.loadBalancer`               | Kubernetes LoadBalancerIP to request                       | `nil`                                         |
-| `service.externalTrafficPolicy`      | Enable client source IP preservation                       | `Cluster`                                       |
+| `service.type`                    | Kubernetes Service type                    | `LoadBalancer`                                          |
+| `service.port`                    | Service HTTP port                    | `80`                                          |
+| `service.httpsPort`                    | Service HTTPS port                    | `443`                                          |
+| `service.loadBalancerIP`               | Kubernetes LoadBalancerIP to request                       | `nil`                                         |
+| `service.externalTrafficPolicy`      | Enable client source IP preservation                       | `Cluster`                                     |
 | `service.nodePorts.http`             | Kubernetes http node port                                  | `""`                                          |
 | `service.nodePorts.https`            | Kubernetes https node port                                 | `""`                                          |
 | `ingress.enabled`                    | Enable ingress controller resource                         | `false`                                       |
-| `ingress.hosts[0].name`              | Hostname to your Joomla! installation                      | `joomla.local`                                |
+| `ingress.hosts[0].name`              | Hostname to your DokuWiki installation                     | `dokuwiki.local`                              |
 | `ingress.hosts[0].path`              | Path within the url structure                              | `/`                                           |
 | `ingress.hosts[0].tls`               | Utilize TLS backend in ingress                             | `false`                                       |
-| `ingress.hosts[0].tlsSecret`         | TLS Secret (certificates)                                  | `joomla.local-tls-secret`                     |
+| `ingress.hosts[0].certManager`       | Add annotations for cert-manager                           | `false`                                       |
+| `ingress.hosts[0].tlsSecret`         | TLS Secret (certificates)                                  | `dokuwiki.local-tls`                          |
 | `ingress.hosts[0].annotations`       | Annotations for this host's ingress record                 | `[]`                                          |
 | `ingress.secrets[0].name`            | TLS Secret Name                                            | `nil`                                         |
 | `ingress.secrets[0].certificate`     | TLS Secret Certificate                                     | `nil`                                         |
@@ -88,6 +95,18 @@ The following table lists the configurable parameters of the DokuWiki chart and 
 | `readinessProbe.timeoutSeconds`      | When the probe times out                                   | 5                                             |
 | `readinessProbe.failureThreshold`    | Minimum consecutive failures to be considered failed       | 6                                             |
 | `readinessProbe.successThreshold`    | Minimum consecutive successes to be considered successful  | 1                                             |
+| `nodeSelector`                       | Node labels for pod assignment                             | `{}`                                          |
+| `affinity`                           | Affinity settings for pod assignment                       | `{}`                                          |
+| `tolerations`                        | Toleration labels for pod assignment                       | `[]`                                          |
+| `podAnnotations`                | Pod annotations                                   | `{}`                                                       |
+| `metrics.enabled`                          | Start a side-car prometheus exporter                                                                           | `false`                                              |
+| `metrics.image.registry`                   | Apache exporter image registry                                                                                  | `docker.io`                                          |
+| `metrics.image.repository`                 | Apache exporter image name                                                                                      | `lusotycoon/apache-exporter`                           |
+| `metrics.image.tag`                        | Apache exporter image tag                                                                                       | `v0.5.0`                                            |
+| `metrics.image.pullPolicy`                 | Image pull policy                                                                                              | `IfNotPresent`                                       |
+| `metrics.image.pullSecrets`                | Specify docker-registry secret names as an array                                                               | `nil`                                                |
+| `metrics.podAnnotations`                   | Additional annotations for Metrics exporter pod                                                                | `{prometheus.io/scrape: "true", prometheus.io/port: "9117"}`                                                   |
+| `metrics.resources`                        | Exporter resource requests/limit                                                                               | {}                        |
 
 
 The above parameters map to the env variables defined in [bitnami/dokuwiki](http://github.com/bitnami/bitnami-docker-dokuwiki). For more information please refer to the [bitnami/dokuwiki](http://github.com/bitnami/bitnami-docker-dokuwiki) image documentation.
@@ -114,5 +133,17 @@ $ helm install --name my-release -f values.yaml stable/dokuwiki
 
 The [Bitnami DokuWiki](https://github.com/bitnami/bitnami-docker-dokuwiki) image stores the DokuWiki data and configurations at the `/bitnami/dokuwiki` and `/bitnami/apache` paths of the container.
 
-Persistent Volume Claims are used to keep the data across deployments. This is known to work in GCE, AWS, and minikube.
+Persistent Volume Claims are used to keep the data across deployments. There is a [known issue](https://github.com/kubernetes/kubernetes/issues/39178) in Kubernetes Clusters with EBS in different availability zones. Ensure your cluster is configured properly to create Volumes in the same availability zone where the nodes are running. Kuberentes 1.12 solved this issue with the [Volume Binding Mode](https://kubernetes.io/docs/concepts/storage/storage-classes/#volume-binding-mode).
+
 See the [Configuration](#configuration) section to configure the PVC or to disable persistence.
+
+## Upgrading
+
+### To 3.0.0
+
+Backwards compatibility is not guaranteed unless you modify the labels used on the chart's deployments.
+Use the workaround below to upgrade from versions previous to 3.0.0. The following example assumes that the release name is dokuwiki:
+
+```console
+$ kubectl patch deployment dokuwiki-dokuwiki --type=json -p='[{"op": "remove", "path": "/spec/selector/matchLabels/chart"}]'
+```

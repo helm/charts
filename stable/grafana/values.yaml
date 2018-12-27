@@ -9,9 +9,22 @@ replicas: 1
 
 deploymentStrategy: RollingUpdate
 
+readinessProbe:
+  httpGet:
+    path: /api/health
+    port: 3000
+
+livenessProbe:
+  httpGet:
+    path: /api/health
+    port: 3000
+  initialDelaySeconds: 60
+  timeoutSeconds: 30
+  failureThreshold: 10
+
 image:
   repository: grafana/grafana
-  tag: 5.2.4
+  tag: 5.4.2
   pullPolicy: IfNotPresent
 
   ## Optionally specify an array of imagePullSecrets.
@@ -24,6 +37,9 @@ image:
 securityContext:
   runAsUser: 472
   fsGroup: 472
+
+## Assign a PriorityClassName to pods if set
+# priorityClassName:
 
 downloadDashboardsImage:
   repository: appropriate/curl
@@ -119,9 +135,19 @@ extraSecretMounts: []
   #   secretName: grafana-secret-files
   #   readOnly: true
 
-# Pass the plugins you want installed as a comma separated list.
-# plugins: "digrich-bubblechart-panel,grafana-clock-panel"
-plugins: ""
+## Additional grafana server volume mounts
+# Defines additional volume mounts.
+extraVolumeMounts: []
+  # - name: extra-volume
+  #   mountPath: /mnt/volume
+  #   readOnly: true
+  #   existingClaim: volume-claim
+
+## Pass the plugins you want installed as a list.
+##
+plugins: []
+  # - digrich-bubblechart-panel
+  # - grafana-clock-panel
 
 ## Configure grafana datasources
 ## ref: http://docs.grafana.org/administration/provisioning/#datasources
@@ -239,7 +265,7 @@ smtp:
 ## Sidecars that collect the configmaps with specified label and stores the included files them into the respective folders
 ## Requires at least Grafana 5 to work and can't be used together with parameters dashboardProviders, datasources and dashboards
 sidecar:
-  image: kiwigrid/k8s-sidecar:0.0.3
+  image: kiwigrid/k8s-sidecar:0.0.6
   imagePullPolicy: IfNotPresent
   resources:
 #   limits:
@@ -254,7 +280,15 @@ sidecar:
     label: grafana_dashboard
     # folder in the pod that should hold the collected dashboards
     folder: /tmp/dashboards
+    # If specified, the sidecar will search for dashboard config-maps inside this namespace.
+    # Otherwise the namespace in which the sidecar is running will be used.
+    # It's also possible to specify ALL to search in all namespaces
+    searchNamespace: null
   datasources:
     enabled: false
     # label that the configmaps with datasources are marked with
     label: grafana_datasource
+    # If specified, the sidecar will search for datasource config-maps inside this namespace.
+    # Otherwise the namespace in which the sidecar is running will be used.
+    # It's also possible to specify ALL to search in all namespaces
+    searchNamespace: null

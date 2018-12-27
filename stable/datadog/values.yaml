@@ -3,7 +3,7 @@ image:
   # This chart is compatible with different images, please choose one
   repository: datadog/agent               # Agent6
   # repository: datadog/dogstatsd         # Standalone DogStatsD6
-  tag: 6.4.2  # Use 6.4.2-jmx to enable jmx fetch collection
+  tag: 6.6.0  # Use 6.6.0-jmx to enable jmx fetch collection
   pullPolicy: IfNotPresent
   ## It is possible to specify docker registry credentials
   ## See https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
@@ -55,6 +55,9 @@ daemonset:
   ## ref: https://kubernetes.io/docs/tasks/manage-daemon/update-daemon-set/
   # updateStrategy: RollingUpdate
 
+  ## Sets PriorityClassName if defined
+  # priorityClassName:
+
 # Apart from DaemonSet, deploy Datadog agent pods and related service for
 # applications that want to send custom metrics. Provides DogStasD service.
 #
@@ -68,21 +71,57 @@ deployment:
   # Tolerations for pod assignment
   # Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
   tolerations: []
-
   # If you're using a NodePort-type service and need a fixed port, set this parameter.
   # dogstatsdNodePort: 8125
   # traceNodePort: 8126
 
+  service:
+    type: ClusterIP
+    annotations: {}
+
+  ## Sets PriorityClassName if defined
+  # priorityClassName:
+
 ## deploy the kube-state-metrics deployment
 ## ref: https://github.com/kubernetes/charts/tree/master/stable/kube-state-metrics
-##
-
-# service:
-# type: LoadBalancer
-# annotations: {}
 
 kubeStateMetrics:
   enabled: true
+
+# This is the new cluster agent implementation that handles cluster-wide
+# metrics more cleanly, separates concerns for better rbac, and implements
+# the external metrics API so you can autoscale HPAs based on datadog
+# metrics
+clusterAgent:
+  containerName: cluster-agent
+  image:
+    repository: datadog/cluster-agent
+    tag: 1.0.0
+    pullPolicy: IfNotPresent
+  enabled: false
+  ## This needs to be at least 32 characters a-zA-z
+  ## It is a preshared key between the node agents and the cluster agent
+  token: ""
+  replicas: 1
+  ## Enable the metricsProvider to be able to scale based on metrics in Datadog
+  metricsProvider:
+    enabled: false
+  resources:
+    requests:
+      cpu: 200m
+      memory: 256Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
+
+  ## Override the agent's liveness probe logic from the default:
+  ## In case of issues with the probe, you can disable it with the
+  ## following values, to allow easier investigating:
+  # livenessProbe:
+  #   exec:
+  #     command: ["/bin/true"]
+  ## Override the cluster-agent's readiness probe logic from the default:
+  # readinessProbe:
 
 datadog:
   ## You'll need to set this to your Datadog API key before the agent will run.
@@ -93,21 +132,41 @@ datadog:
   ## Use existing Secret which stores API key instead of creating a new one
   # apiKeyExistingSecret:
 
-  ## dd-agent container name
+  ## If you are using clusterAgent.metricsProvider.enabled = true, you'll need
+  ## a datadog app key for read access to the metrics
+  # appKey:
+
+  ## Use existing Secret which stores APP key instead of creating a new one
+  # appKeyExistingSecret:
+
+  ## Daemonset/Deployment container name
+  ## See clusterAgent.containerName if clusterAgent.enabled = true
   ##
-  name: dd-agent
+  name: datadog
+
+  # The site of the Datadog intake to send Agent data to.
+  # Defaults to 'datadoghq.com', set to 'datadoghq.eu' to send data to the EU site.
+  # site: datadoghq.com
+
+  # The host of the Datadog intake server to send Agent data to, only set this option
+  # if you need the Agent to send data to a custom URL.
+  # Overrides the site setting defined in "site".
+  # dd_url: https://app.datadoghq.com
 
   ## Set logging verbosity.
   ## ref: https://github.com/DataDog/docker-dd-agent#environment-variables
   ## Note: For Agent6 (image `datadog/agent`) the valid log levels are
   ## trace, debug, info, warn, error, critical, and off
   ##
-  logLevel: WARNING
+  logLevel: INFO
 
   ## Un-comment this to make each node accept non-local statsd traffic.
   ## ref: https://github.com/DataDog/docker-dd-agent#environment-variables
   ##
   # nonLocalTraffic: true
+
+  ## Enable container runtime socket volume mounting
+  useCriSocketVolume: true
 
   ## Set host tags.
   ## ref: https://github.com/DataDog/docker-dd-agent#environment-variables
@@ -158,7 +217,7 @@ datadog:
 
   ## Enable leader election mechanism for event collection
   ##
-  leaderElection: false
+  # leaderElection: false
 
   ## Set the lease time for leader election
   ##
@@ -188,6 +247,26 @@ datadog:
   ##
   # checksd:
   #   service.py: |-
+
+  ## Path to the container runtime socket (if different from Docker)
+  ## This is supported starting from agent 6.6.0
+  # criSocketPath: /var/run/containerd/containerd.sock
+
+  ## Provide a mapping of Kubernetes Labels to Datadog Tags
+  # podLabelsAsTags:
+  #     app: kube_app
+  #     release: helm_release
+
+  ## Provide a mapping of Kubernetes Annotations to Datadog Tags
+  # podAnnotationsAsTags:
+  #     iam.amazonaws.com/role: kube_iamrole
+
+  ## Override the agent's liveness probe logic from the default:
+  ## In case of issues with the probe, you can disable it with the
+  ## following values, to allow easier investigating:
+  # livenessProbe:
+  #   exec:
+  #     command: ["/bin/true"]
 
   ## datadog-agent resource requests and limits
   ## Make sure to keep requests and limits equal to keep the pods in the Guaranteed QoS class

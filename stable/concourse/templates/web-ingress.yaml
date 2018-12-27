@@ -1,7 +1,7 @@
 {{- if .Values.web.ingress.enabled -}}
 {{- $releaseName := .Release.Name -}}
 {{- $serviceName := default "web" .Values.web.nameOverride -}}
-{{- $servicePort := .Values.concourse.atcPort -}}
+{{- $servicePort := .Values.concourse.web.bindPort -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:

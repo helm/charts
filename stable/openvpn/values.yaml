@@ -64,10 +64,15 @@ openvpn:
   # Kubernetes pod network subnet (optional).
   OVPN_K8S_POD_SUBNET: "255.0.0.0"
   # Kubernetes service network (optional).
-  # Define openvpn.OVPN_K8S_POD_NETWORK and openvpn.OVPN_K8S_POD_SUBNET if it's needed to create a separate route to Kubernates service subnet
-  # OVPN_K8S_POD_NETWORK:
+  # Define openvpn.OVPN_K8S_SVC_NETWORK and openvpn.OVPN_K8S_SVC_SUBNET if it's needed to create a separate route to Kubernates service subnet
+  # OVPN_K8S_SVC_NETWORK:
   # Kubernetes service network subnet (optional).
-  # OVPN_K8S_POD_SUBNET:
+  # OVPN_K8S_SVC_SUBNET:
+  # Server certificate data
+  # keystoreSecret:
+  # secret with openvpn certificates. If specified, certificates are taken from the secret
+  # create secret with such command:
+  #    kubectl create secret generic openvpn-keystore-secret --from-file=./server.key --from-file=./ca.crt --from-file=./server.crt --from-file=./dh.pem
   # Push a `dhcp-option DOMAIN` config
   dhcpOptionDomain: true
   # Redirect all client traffic through VPN

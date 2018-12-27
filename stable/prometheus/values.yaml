@@ -1,6 +1,9 @@
 rbac:
   create: true
 
+imagePullSecrets:
+# - name: "image-pull-secret"
+
 ## Define serviceAccount names for components. Defaults to component's fully qualified name.
 ##
 serviceAccounts:
@@ -33,7 +36,7 @@ alertmanager:
   ##
   image:
     repository: prom/alertmanager
-    tag: v0.15.2
+    tag: v0.15.3
     pullPolicy: IfNotPresent
 
   ## alertmanager priorityClassName
@@ -169,7 +172,29 @@ alertmanager:
   ##
   podAnnotations: {}
 
+  ## Use a StatefulSet if replicaCount needs to be greater than 1 (see below)
+  ##
   replicaCount: 1
+
+  statefulSet:
+    ## If true, use a statefulset instead of a deployment for pod management.
+    ## This allows to scale replicas to more than 1 pod
+    ##
+    enabled: false
+
+    podManagementPolicy: OrderedReady
+
+    ## Alertmanager headless service to use for the statefulset
+    ##
+    headless:
+      annotations: {}
+      labels: {}
+
+      ## Enabling peer mesh service end points for enabling the HA alert manager
+      ## Ref: https://github.com/prometheus/alertmanager/blob/master/README.md
+      # enableMeshPeer : true
+
+      servicePort: 80
 
   ## alertmanager resource requests and limits
   ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -224,12 +249,17 @@ configmapReload:
   ## Additional configmap-reload container arguments
   ##
   extraArgs: {}
+  ## Additional configmap-reload volume directories
+  ##
+  extraVolumeDirs: []
+
 
   ## Additional configmap-reload mounts
   ##
   extraConfigmapMounts: []
     # - name: prometheus-alerts
     #   mountPath: /etc/alerts.d
+    #   subPath: ""
     #   configMap: prometheus-alerts
     #   readOnly: true
 
@@ -347,6 +377,14 @@ nodeExporter:
   ##
   enabled: true
 
+  ## If true, node-exporter pods share the host network namespace
+  ##
+  hostNetwork: true
+
+  ## If true, node-exporter pods share the host PID namespace
+  ##
+  hostPID: true
+
   ## node-exporter container name
   ##
   name: node-exporter
@@ -355,8 +393,23 @@ nodeExporter:
   ##
   image:
     repository: prom/node-exporter
-    tag: v0.16.0
+    tag: v0.17.0
     pullPolicy: IfNotPresent
+
+  ## Specify if a Pod Security Policy for node-exporter must be created
+  ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/
+  ##
+  podSecurityPolicy:
+    enabled: False
+    annotations: {}
+      ## Specify pod annotations
+      ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#apparmor
+      ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#seccomp
+      ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#sysctl
+      ##
+      # seccomp.security.alpha.kubernetes.io/allowedProfileNames: '*'
+      # seccomp.security.alpha.kubernetes.io/defaultProfileName: 'docker/default'
+      # apparmor.security.beta.kubernetes.io/defaultProfileName: 'runtime/default'
 
   ## node-exporter priorityClassName
   ##
@@ -453,7 +506,7 @@ server:
   ##
   image:
     repository: prom/prometheus
-    tag: v2.4.0
+    tag: v2.6.0
     pullPolicy: IfNotPresent
 
   ## prometheus server priorityClassName
@@ -493,12 +546,14 @@ server:
   extraHostPathMounts: []
     # - name: certs-dir
     #   mountPath: /etc/kubernetes/certs
+    #   subPath: ""
     #   hostPath: /etc/kubernetes/certs
     #   readOnly: true
 
   extraConfigmapMounts: []
     # - name: certs-configmap
     #   mountPath: /prometheus
+    #   subPath: ""
     #   configMap: certs-configmap
     #   readOnly: true
 
@@ -507,6 +562,7 @@ server:
   extraSecretMounts: []
     # - name: secret-files
     #   mountPath: /etc/secrets
+    #   subPath: ""
     #   secretName: prom-secret-files
     #   readOnly: true
 
@@ -622,7 +678,25 @@ server:
   podAnnotations: {}
     # iam.amazonaws.com/role: prometheus
 
+  ## Use a StatefulSet if replicaCount needs to be greater than 1 (see below)
+  ##
   replicaCount: 1
+
+  statefulSet:
+    ## If true, use a statefulset instead of a deployment for pod management.
+    ## This allows to scale replicas to more than 1 pod
+    ##
+    enabled: false
+
+    annotations: {}
+    podManagementPolicy: OrderedReady
+
+    ## Alertmanager headless service to use for the statefulset
+    ##
+    headless:
+      annotations: {}
+      labels: {}
+      servicePort: 80
 
   ## Prometheus server resource requests and limits
   ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -675,7 +749,7 @@ pushgateway:
   ##
   image:
     repository: prom/pushgateway
-    tag: v0.5.2
+    tag: v0.6.0
     pullPolicy: IfNotPresent
 
   ## pushgateway priorityClassName
@@ -785,7 +859,22 @@ alertmanagerFiles:
 ## Prometheus server ConfigMap entries
 ##
 serverFiles:
+
+  ## Alerts configuration
+  ## Ref: https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/
   alerts: {}
+  # groups:
+  #   - name: Instances
+  #     rules:
+  #       - alert: InstanceDown
+  #         expr: up == 0
+  #         for: 5m
+  #         labels:
+  #           severity: page
+  #         annotations:
+  #           description: '{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 5 minutes.'
+  #           summary: 'Instance {{ $labels.instance }} down'
+
   rules: {}
 
   prometheus.yml:
@@ -881,7 +970,7 @@ serverFiles:
           - source_labels: [__meta_kubernetes_node_name]
             regex: (.+)
             target_label: __metrics_path__
-            replacement: /api/v1/nodes/${1}/proxy/metrics
+            replacement: /api/v1/nodes/$1/proxy/metrics
 
 
       - job_name: 'kubernetes-nodes-cadvisor'
@@ -913,7 +1002,7 @@ serverFiles:
         # This configuration will work only on kubelet 1.7.3+
         # As the scrape endpoints for cAdvisor have changed
         # if you are using older version you need to change the replacement to
-        # replacement: /api/v1/nodes/${1}:4194/proxy/metrics
+        # replacement: /api/v1/nodes/$1:4194/proxy/metrics
         # more info here https://github.com/coreos/prometheus-operator/issues/633
         relabel_configs:
           - action: labelmap
@@ -923,7 +1012,7 @@ serverFiles:
           - source_labels: [__meta_kubernetes_node_name]
             regex: (.+)
             target_label: __metrics_path__
-            replacement: /api/v1/nodes/${1}/proxy/metrics/cadvisor
+            replacement: /api/v1/nodes/$1/proxy/metrics/cadvisor
 
       # Scrape config for service endpoints.
       #
@@ -966,6 +1055,9 @@ serverFiles:
           - source_labels: [__meta_kubernetes_service_name]
             action: replace
             target_label: kubernetes_name
+          - source_labels: [__meta_kubernetes_pod_node_name]
+            action: replace
+            target_label: kubernetes_node
 
       - job_name: 'prometheus-pushgateway'
         honor_labels: true
@@ -1044,6 +1136,25 @@ serverFiles:
           - source_labels: [__meta_kubernetes_pod_name]
             action: replace
             target_label: kubernetes_pod_name
+
+# adds additional scrape configs to prometheus.yml
+# must be a string so you have to add a | after extraScrapeConfigs:
+# example adds prometheus-blackbox-exporter scrape config
+extraScrapeConfigs:
+  # - job_name: 'prometheus-blackbox-exporter'
+  #   metrics_path: /probe
+  #   params:
+  #     module: [http_2xx]
+  #   static_configs:
+  #     - targets:
+  #       - https://example.com
+  #   relabel_configs:
+  #     - source_labels: [__address__]
+  #       target_label: __param_target
+  #     - source_labels: [__param_target]
+  #       target_label: instance
+  #     - target_label: __address__
+  #       replacement: prometheus-blackbox-exporter:9115
 
 networkPolicy:
   ## Enable creation of NetworkPolicy resources.

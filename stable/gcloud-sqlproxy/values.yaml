@@ -71,3 +71,6 @@ tolerations: []
 
 ## Affinity
 affinity: {}
+
+podDisruptionBudget: |
+  maxUnavailable: 1

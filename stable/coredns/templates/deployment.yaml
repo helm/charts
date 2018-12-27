@@ -27,7 +27,7 @@ spec:
         {{- if .Values.isClusterService }}
         k8s-app: {{ .Chart.Name | quote }}
         {{- end }}
-        app: {{ template "coredns.fullname" . }}
+        app: {{ template "coredns.name" . }}
         release: {{ .Release.Name | quote }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
@@ -36,9 +36,7 @@ spec:
         scheduler.alpha.kubernetes.io/tolerations: '[{"key":"CriticalAddonsOnly", "operator":"Exists"}]'
         {{- end }}
     spec:
-      {{- if or .Values.rbac.create .Values.rbac.serviceAccountName }}
-      serviceAccountName: {{ if .Values.rbac.create }}{{ template "coredns.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
-      {{- end }}
+      serviceAccountName: {{ template "coredns.serviceAccountName" . }}
       {{- if .Values.isClusterService }}
       dnsPolicy: Default
       {{- end }}
@@ -49,6 +47,10 @@ spec:
       {{- if .Values.tolerations }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
+      {{- end }}
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
       {{- end }}
       containers:
       - name: "coredns"

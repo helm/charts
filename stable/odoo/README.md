@@ -14,6 +14,8 @@ $ helm install stable/odoo
 
 This chart bootstraps a [Odoo](https://github.com/bitnami/bitnami-docker-odoo) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
+Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters.
+
 ## Prerequisites
 
 - Kubernetes 1.4+ with Beta APIs enabled
@@ -47,6 +49,7 @@ The following table lists the configurable parameters of the Odoo chart and thei
 
 |               Parameter               |                Description                                  |                   Default                      |
 |---------------------------------------|-------------------------------------------------------------|------------------------------------------------|
+| `global.imageRegistry`                | Global Docker image registry                                | `nil`                                          |
 | `image.registry`                      | Odoo image registry                                         | `docker.io`                                    |
 | `image.repository`                    | Odoo Image name                                             | `bitnami/odoo`                                 |
 | `image.tag`                           | Odoo Image tag                                              | `{VERSION}`                                    |
@@ -61,13 +64,15 @@ The following table lists the configurable parameters of the Odoo chart and thei
 | `smtpPassword`                        | SMTP password                                               | `nil`                                          |
 | `smtpProtocol`                        | SMTP protocol [`ssl`, `tls`]                                | `nil`                                          |
 | `service.type`                        | Kubernetes Service type                                     | `LoadBalancer`                                 |
+| `service.port`                    | Service HTTP port                    | `80`                                          |
 | `service.loadBalancer`                | Kubernetes LoadBalancerIP to request                        | `nil`                                          |
-| `service.externalTrafficPolicy`       | Enable client source IP preservation                        | `Cluster`                                        |
+| `service.externalTrafficPolicy`       | Enable client source IP preservation                        | `Cluster`                                      |
 | `service.nodePort`                    | Kubernetes http node port                                   | `""`                                           |
 | `ingress.enabled`                     | Enable ingress controller resource                          | `false`                                        |
 | `ingress.hosts[0].name`               | Hostname to your Odoo installation                          | `odoo.local`                                   |
 | `ingress.hosts[0].path`               | Path within the url structure                               | `/`                                            |
 | `ingress.hosts[0].tls`                | Utilize TLS backend in ingress                              | `false`                                        |
+| `ingress.hosts[0].certManager`        | Add annotations for cert-manager                            | `false`                                        |
 | `ingress.hosts[0].tlsSecret`          | TLS Secret (certificates)                                   | `odoo.local-tls-secret`                        |
 | `ingress.hosts[0].annotations`        | Annotations for this host's ingress record                  | `[]`                                           |
 | `ingress.secrets[0].name`             | TLS Secret Name                                             | `nil`                                          |
@@ -121,3 +126,15 @@ The [Bitnami Odoo](https://github.com/bitnami/bitnami-docker-odoo) image stores 
 
 Persistent Volume Claims are used to keep the data across deployments. This is known to work in GCE, AWS, and minikube.
 See the [Configuration](#configuration) section to configure the PVC or to disable persistence.
+
+## Upgrading
+
+### To 3.0.0
+
+Backwards compatibility is not guaranteed unless you modify the labels used on the chart's deployments.
+Use the workaround below to upgrade from versions previous to 3.0.0. The following example assumes that the release name is odoo:
+
+```console
+$ kubectl patch deployment odoo-odoo --type=json -p='[{"op": "remove", "path": "/spec/selector/matchLabels/chart"}]'
+$ kubectl patch deployment odoo-postgresql --type=json -p='[{"op": "remove", "path": "/spec/selector/matchLabels/chart"}]'
+```

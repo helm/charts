@@ -1,12 +1,76 @@
+### 1.5.12
+* [72aa74f1](https://github.com/kubernetes/charts/commit/72aa74f1):
+  - Removes the namespace list permission for the service account being created.
+
+### 1.5.11
+* [a8f4e6c9](https://github.com/kubernetes/charts/commit/a8f4e6c9):
+  - Bump up GoCD app version to 18.12.0
+
+### 1.5.10
+* [87b3a755](https://github.com/kubernetes/charts/commit/87b3a755):
+  - Allow the override of the preconfigure command
+
+### 1.5.9
+* [6547ba84](https://github.com/kubernetes/charts/commit/6547ba84):
+  - Introduces the ability to configure agent service accounts
+
+### 1.5.8
+* [cee475aa](https://github.com/kubernetes/charts/commit/cee475aa):
+  - Enable extra volume mounts without persistence
+
+### 1.5.7
+* [c663a531](https://github.com/kubernetes/charts/commit/c663a531):
+  - Bump up GoCD app version to 18.11.0
+
+### 1.5.6
+
+* [32de4923](https://github.com/kubernetes/charts/commit/32de4923)
+  - Deployment strategy value
+
+### 1.5.5
+
+* [22f3354](https://github.com/helm/charts/commit/22f3354):
+  - Volume mount the config map to preconfigure the server even if persistence is disabled. ([#8579](https://github.com/helm/charts/issues/8579))
+
+### 1.5.4
+
+* [4018a215](https://github.com/kubernetes/charts/commit/4018a215):
+  - Update README with link to "Intro to GoCD" guide
+
+### 1.5.3
+* [65fa6218](https://github.com/kubernetes/charts/commit/65fa6218):
+  - Affinity setting in agent and server deployments
+* [587d7a37](https://github.com/kubernetes/charts/commit/587d7a37):
+  - Invalid nodeSelector reference for agent deployment
+
+### 1.5.2
+* [17fa5c8e](https://github.com/kubernetes/charts/commit/17fa5c8e): Fix agent kube resources typo.
+
+### 1.5.1
+
+* [b22b9d6](https://github.com/kubernetes/charts/commit/b22b9d6):
+  - Use latest Kubernetes elastic agent plugin v2.0.0
+
+### 1.5.0
+
+* [1f8118b](https://github.com/kubernetes/charts/commit/1f8118b):
+  - Bump up GoCD app version to 18.10.0
+
+### 1.4.3
+
+* [52120886](https://github.com/kubernetes/charts/commit/52120886): Add extra volumes and volumeMounts options on the server and agents
+
 ### 1.4.2
 
 * [499fddf9](https://github.com/kubernetes/charts/commit/499fddf9): Add agent.env.extraEnvVars
 
 ### 1.4.1
+
 * [15c77caf](https://github.com/kubernetes/charts/commit/15c77caf):
   - Bump up GoCD app version to 18.9.0
 
 ### 1.4.0
+
 * [f5249551](https://github.com/kubernetes/charts/commit/f5249551):  
   - Bump up GoCD app version to 18.8.0
   - Updated kubernetes elastic agent plugin version to 1.0.2

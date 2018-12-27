@@ -2,8 +2,8 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 image:
-  repository: egeland/kube-spot-termination-notice-handler
-  tag: 1.8.1-1
+  repository: kubeaws/kube-spot-termination-notice-handler
+  tag: 1.10.8-1
   pullPolicy: IfNotPresent
 
 # Poll the metadata every pollInterval seconds for termination events:

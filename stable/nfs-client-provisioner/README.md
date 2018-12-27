@@ -5,7 +5,7 @@ The [NFS client provisioner](https://github.com/kubernetes-incubator/external-st
 ## TL;DR;
 
 ```console
-$ helm install stable/nfs-client-provisioner
+$ helm install --set nfs.server=x.x.x.x --set nfs.path=/exported/path stable/nfs-client-provisioner
 ```
 
 ## Introduction
@@ -48,18 +48,23 @@ The following tables lists the configurable parameters of this chart and their d
 | `replicaCount`                    | Number of provisioner instances to deployed | `1`                                                         |
 | `strategyType`                    | Specifies the strategy used to replace old Pods by new ones | `Recreate`                                  |
 | `image.repository`                | Provisioner image                           | `quay.io/external_storage/nfs-client-provisioner`         |
-| `image.tag`                       | Version of provisioner image                | `v3.0.2-k8s1.11`                                          |
+| `image.tag`                       | Version of provisioner image                | `v3.1.0-k8s1.11`                                          |
 | `image.pullPolicy`                | Image pull policy                           | `IfNotPresent`                                            |
-| `storageclass.name`               | Name of the storageclass                    | `nfs-client`                                              |
-| `storageclass.defaultClass`       | Set as the default StorageClass             | `false`	                                              |
-| `storageclass.allowVolumeExpansion`       | Allow expanding the volume          | `true`	                                              |
-| `storageclass.reclaimPolicy`    | Method used to reclaim an obsoleted volume                 | `Delete` 	                              |
-| `storageclass.provisionerName`    | Name of the provisionerName                 | null 	                                              |
-| `storageclass.archiveOnDelete`    | Archive pvc when deleting                   | `true` 	                                              |
+| `storageClass.name`               | Name of the storageClass                    | `nfs-client`                                              |
+| `storageClass.defaultClass`       | Set as the default StorageClass             | `false`	                                              |
+| `storageClass.allowVolumeExpansion`       | Allow expanding the volume          | `true`	                                              |
+| `storageClass.reclaimPolicy`    | Method used to reclaim an obsoleted volume                 | `Delete` 	                              |
+| `storageClass.provisionerName`    | Name of the provisionerName                 | null 	                                              |
+| `storageClass.archiveOnDelete`    | Archive pvc when deleting                   | `true` 	                                              |
 | `nfs.server`                      | Hostname of the NFS server                  | null (ip or hostname)                                     |
 | `nfs.path`                        | Basepath of the mount point to be used      | `/ifs/kubernetes`                                         |
+| `nfs.mountOptions`                | Mount options (e.g. 'nfsvers=3')            | null                                                      |
 | `resources`                       | Resources required (e.g. CPU, memory)       | `{}`                                                      |
 | `rbac.create` 		    | Use Role-based Access Control		  | `true`						      |
 | `podSecurityPolicy.enabled`	    | Create & use Pod Security Policy resources  | `false`						      |
 | `serviceAccount.create`	    | Should we create a ServiceAccount	          | `true`						      |
 | `serviceAccount.name`		    | Name of the ServiceAccount to use           | null						      |
+| `nodeSelector`                    | Node labels for pod assignment              | `{}`                                                      |
+| `affinity`                        | Affinity settings                           | `{}`                                                      |
+| `tolerations`                     | List of node taints to tolerate             | `[]`                                                      |
+

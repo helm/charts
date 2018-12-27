@@ -6,7 +6,7 @@ images:
   ##
   server:
     repository: "docker.io/drone/drone"
-    tag: 0.8.6
+    tag: 0.8.9
     pullPolicy: IfNotPresent
 
   ## The official drone (agent) image, change tag to use a different version.
@@ -14,7 +14,7 @@ images:
   ##
   agent:
     repository: "docker.io/drone/agent"
-    tag: 0.8.6
+    tag: 0.8.9
     pullPolicy: IfNotPresent
 
   ## The official docker (dind) image, change tag to use a different version.
@@ -36,6 +36,13 @@ service:
   ## Service type can be set to ClusterIP, NodePort or LoadBalancer.
   ##
   type: ClusterIP
+
+  ## Drone Service annotations
+  ##
+  # annotations:
+  #   service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
+  #   service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:xx-xxxx-x:xxxxxxxxxxx:certificate/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx
+  #   external-dns.alpha.kubernetes.io/hostname: drone.domain.tld.
 
 ingress:
   ## If true, Drone Ingress will be created.
@@ -162,6 +169,23 @@ agent:
   #    memory: 2Gi
   #    cpu: 1
 
+  ## Liveness and readiness probe values
+  ## Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-probes
+  livenessProbe:
+    enabled: true
+    failureThreshold: 3
+    initialDelaySeconds: 0
+    periodSeconds: 10
+    successThreshold: 1
+    timeoutSeconds: 1
+  readinessProbe:
+    enabled: true
+    failureThreshold: 3
+    initialDelaySeconds: 0
+    periodSeconds: 10
+    successThreshold: 1
+    timeoutSeconds: 1
+
   ## Use an alternate scheduler, e.g. "stork".
   ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
   ##
@@ -211,6 +235,11 @@ dind:
   #  limits:
   #    memory: 2Gi
   #    cpu: 1
+
+## Enable scraping of the /metrics endpoint for Prometheus
+metrics:
+  prometheus:
+    enabled: false
 
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/

@@ -68,6 +68,16 @@ spec:
         secret:
           secretName: {{ template "spinnaker.fullname" . }}-s3
       {{- end }}
+      {{- if .Values.halyard.additionalSecrets.create }}
+      - name: additional-secrets
+        secret:
+          secretName: {{ template "spinnaker.fullname" . }}-additional-secrets
+      {{- end }}
+      {{- if .Values.halyard.additionalConfigMaps.create }}
+      - name: additional-config-maps
+        configMap:
+          name: {{ template "spinnaker.fullname" . }}-additional-config-maps
+      {{- end }}
       - name: halyard-config
         emptyDir: {}
       containers:
@@ -88,6 +98,14 @@ spec:
         {{- if .Values.kubeConfig.enabled }}
         - name: kube-config
           mountPath: /opt/kube
+        {{- end }}
+        {{- if .Values.halyard.additionalSecrets.create }}
+        - name: additional-secrets
+          mountPath: /opt/halyard/additionalSecrets
+        {{- end }}
+        {{- if .Values.halyard.additionalConfigMaps.create }}
+        - name: additional-config-maps
+          mountPath: /opt/halyard/additionalConfigMaps
         {{- end }}
         - name: halyard-home
           mountPath: /home/spinnaker

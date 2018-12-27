@@ -43,5 +43,5 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- end -}}
 
 {{- define "concourse.namespacePrefix" -}}
-{{- default (printf "%s-" .Release.Name ) .Values.credentialManager.kubernetes.namespacePrefix -}}
+{{- default (printf "%s-" .Release.Name ) .Values.concourse.web.kubernetes.namespacePrefix -}}
 {{- end -}}

@@ -1,0 +1,19 @@
+{{- if .Values.kubeStateMetrics.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ template "prometheus-operator.fullname" . }}-kube-state-metrics
+  labels:
+    app: {{ template "prometheus-operator.name" . }}-kube-state-metrics
+{{ include "prometheus-operator.labels" . | indent 4 }}
+spec:
+  jobLabel: app
+  endpoints:
+  - interval: 30s
+    port: http
+    honorLabels: true
+  selector:
+    matchLabels:
+      app: kube-state-metrics
+      release: "{{ .Release.Name }}"
+{{- end }}

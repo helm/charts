@@ -1,0 +1,24 @@
+{{- if and ((or (.Values.signalsciences.accessKeyIdExistingSecret) (.Values.signalsciences.accessKeyId)) (or (.Values.signalsciences.accessKeyIdExistingSecret) (.Values.signalsciences.secretAccessKey))) }}
+Signalsciences agents are spinning up on each node in your cluster. After a few
+minutes, you should see your agents on the dashboard:
+
+    https://dashboard.signalsciences.net
+
+{{- else }}
+##############################################################################
+####          ERROR: You did not set a signalsciences.accessKeyId or      ####
+#####                       signalsciences.secretAccessKey.               ####
+##############################################################################
+
+This deployment will not be complete until you get your accessKeyId and your
+secretAccessKey from https://dashboard.signalsciences.net.
+
+Then run:
+
+    helm upgrade {{ .Release.Name }} \
+        --set signalsciences.accessKeyId=YOUR-ACCESSKEYID \
+        --set signalsciences.secretAccessKey=YOUR-SECRETACCESSKEY \
+        stable/signalsciences
+{{- end }}
+
+

@@ -43,6 +43,10 @@ spec:
             - name: "KUBE_STATE_METRICS_URL"
               value: "{{ .Values.kubeStateMetricsUrl }}"
            {{- end }}
+           {{- if .Values.kubeStateMetricsTimeout }}
+            - name: TIMEOUT
+              value: {{ .Values.kubeStateMetricsTimeout | quote }}
+           {{- end }}
             - name: "NRIA_DISPLAY_NAME"
               valueFrom:
                 fieldRef:
@@ -54,7 +58,7 @@ spec:
                   apiVersion: "v1"
                   fieldPath: "spec.nodeName"
             - name: "NRIA_PASSTHROUGH_ENVIRONMENT"
-              value: "KUBERNETES_SERVICE_HOST,KUBERNETES_SERVICE_PORT,CLUSTER_NAME,CADVISOR_PORT,NRK8S_NODE_NAME,KUBE_STATE_METRICS_URL"
+              value: "KUBERNETES_SERVICE_HOST,KUBERNETES_SERVICE_PORT,CLUSTER_NAME,CADVISOR_PORT,NRK8S_NODE_NAME,KUBE_STATE_METRICS_URL,TIMEOUT"
             {{- if .Values.verboseLog }}
             - name: NRIA_VERBOSE
               value: "1"

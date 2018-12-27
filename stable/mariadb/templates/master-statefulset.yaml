@@ -9,21 +9,34 @@ metadata:
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
 spec:
+  selector:
+    matchLabels:
+      release: "{{ .Release.Name }}"
+      component: "master"
+      app: {{ template "mariadb.name" . }}
   serviceName: "{{ template "master.fullname" . }}"
   replicas: 1
   updateStrategy:
     type: RollingUpdate
   template:
     metadata:
+      {{- if .Values.master.annotations }}
+      annotations:
+        {{- range .Values.master.annotations }}
+        {{ .key }}: '{{ .value }}'
+        {{- end }}
+      {{- end }}
       labels:
         app: "{{ template "mariadb.name" . }}"
         component: "master"
         release: "{{ .Release.Name }}"
         chart: {{ template "mariadb.chart" . }}
     spec:
+      {{- if .Values.securityContext.enabled }}
       securityContext:
-        runAsUser: 1001
-        fsGroup: 1001
+        fsGroup: {{ .Values.securityContext.fsGroup }}
+        runAsUser: {{ .Values.securityContext.runAsUser }}
+      {{- end }}
       {{- if eq .Values.master.antiAffinity "hard" }}
       affinity:
       {{- with .Values.master.affinity  }}
@@ -71,6 +84,10 @@ spec:
         image: {{ template "mariadb.image" . }}
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         env:
+        {{- if .Values.image.debug}}
+        - name: BITNAMI_DEBUG
+          value: "true"
+        {{- end }}
         - name: MARIADB_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
@@ -126,8 +143,10 @@ spec:
         volumeMounts:
         - name: data
           mountPath: /bitnami/mariadb
+        {{- if  (.Files.Glob "files/docker-entrypoint-initdb.d/*[sh|sql|sql.gz]") }}
         - name: custom-init-scripts
           mountPath: /docker-entrypoint-initdb.d
+        {{- end }}
 {{- if .Values.master.config }}
         - name: config
           mountPath: /opt/bitnami/mariadb/conf/my.cnf
@@ -167,26 +186,27 @@ spec:
 {{ toYaml .Values.metrics.resources | indent 10 }}
 {{- end }}
       volumes:
-      {{- if and .Values.master.persistence.enabled .Values.master.persistence.existingClaim }}
+        {{- if and .Values.master.persistence.enabled .Values.master.persistence.existingClaim }}
         - name: {{ .Values.master.persistence.existingClaim }}
           persistentVolumeClaim:
             claimName: {{ .Values.master.persistence.existingClaim }}
-      {{ end }}
-      {{- if .Values.master.config }}
+        {{ end }}
+        {{- if .Values.master.config }}
         - name: config
           configMap:
             name: {{ template "master.fullname" . }}
-      {{- end }}
+        {{- end }}
+        {{- if  (.Files.Glob "files/docker-entrypoint-initdb.d/*[sh|sql|sql.gz]") }}
         - name: custom-init-scripts
           configMap:
             name: {{ template "master.fullname" . }}-init-scripts
+        {{- end }}
 {{- if .Values.master.persistence.enabled }}
   volumeClaimTemplates:
     - metadata:
         name: data
         labels:
           app: "{{ template "mariadb.name" . }}"
-          chart: {{ template "mariadb.chart" . }}
           component: "master"
           release: {{ .Release.Name | quote }}
           heritage: {{ .Release.Service | quote }}

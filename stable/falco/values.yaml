@@ -1,9 +1,9 @@
 # Default values for falco.
 
 image:
-  repository: sysdig/falco
-  tag: latest
-  pullPolicy: Always
+  repository: falcosecurity/falco
+  tag: 0.13.0
+  pullPolicy: IfNotPresent
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -16,6 +16,8 @@ resources: {}
   # requests:
   #   cpu: 20m
   #   memory: 128Mi
+
+extraArgs: []
 
 rbac:
   # Create and use rbac resources
@@ -37,6 +39,12 @@ daemonset: {}
   # If you do want to specify resources, uncomment the following lines, adjust
   # them as necessary, and remove the curly braces after 'resources:'.
   # updateStrategy: RollingUpdate
+
+# If is behind a proxy you can set the proxy server
+proxy:
+  httpProxy:
+  httpsProxy:
+  noProxy:
 
 ebpf:
   # Enable eBPF support for Falco
@@ -124,11 +132,11 @@ falco:
 
   # Possible additional things you might want to do with program output:
   #   - send to a slack webhook:
-  #         program: "jq '{text: .output}' | curl -d @- -X POST https://hooks.slack.com/services/XXX"
+  #     program: "\"jq '{text: .output}' | curl -d @- -X POST https://hooks.slack.com/services/XXX\""
   #   - logging (alternate method than syslog):
-  #         program: logger -t falco-test
+  #     program: logger -t falco-test
   #   - send over a network connection:
-  #         program: nc host.example.com 80
+  #     program: nc host.example.com 80
 
   # If keep_alive is set to true, the program will be started once and
   # continuously written to, with each output message on its own
@@ -176,6 +184,20 @@ integrations:
   natsOutput:
     enabled: false
     natsUrl: "nats://nats.nats-io.svc.cluster.local:4222"
+  # If SNS Output integration is enabled, falco will be configured to use this
+  # integration as file_output and sets the following values:
+  # * json_output: true
+  # * json_include_output_property: true
+  # * file_output:
+  #     enabled: true
+  #     keep_alive: true
+  #     filename: /var/run/falco/nats
+  snsOutput:
+    enabled: false
+    topic: ""
+    aws_access_key_id: ""
+    aws_secret_access_key: ""
+    aws_default_region: ""
 
 # Allow falco to run on Kubernetes 1.6 masters.
 tolerations:
