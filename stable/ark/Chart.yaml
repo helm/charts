@@ -4,7 +4,7 @@ description: A Helm chart for ark
 name: ark
 version: 1.2.4
 home: https://github.com/heptio/ark
-icon: https://zsas32jxetoak8am2leahrh6-wpengine.netdna-ssl.com/wp-content/uploads/2018/10/logo-ark.svg
+icon: https://cdn-images-1.medium.com/max/1600/1*-9mb3AKnKdcL_QD3CMnthQ.png
 sources:
 - https://github.com/heptio/ark
 maintainers:
