@@ -48,7 +48,7 @@ rules:
 #     matches: ""
 #     as: "my_custom_metric"
 #   metricsQuery: sum(<<.Series>>{<<.LabelMatchers>>}) by (<<.GroupBy>>)
-  # Mounts a configMap with pre-generated rules for use. Overrides the 
+  # Mounts a configMap with pre-generated rules for use. Overrides the
   # default and custom entries
   existing:
 
