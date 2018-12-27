@@ -67,6 +67,15 @@ config:
     # If a JVM Agent is in place
     # agent: 61621
 
+## Cassandra config files overrides
+configOverrides: {}
+
+## Cassandra docker command overrides
+commandOverrides: []
+
+## Cassandra docker args overrides
+argsOverrides: []
+
 ## Custom env variables.
 ## ref: https://hub.docker.com/_/cassandra/
 env: {}
@@ -124,6 +133,10 @@ securityContext:
 ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
 affinity: {}
 
+## Node tolerations for pod assignment
+## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+tolerations: []
+
 rbac:
   # Specifies whether RBAC resources should be created
   create: true
@@ -136,7 +149,7 @@ serviceAccount:
   # name:
 
 ## Backup cronjob configuration
-## Ref: https://github.com/maorfr/cain
+## Ref: https://github.com/nuvo/cain
 backup:
   enabled: false
 
@@ -149,13 +162,17 @@ backup:
     cron: "30 7 * * *"
 
   annotations:
-    # Example for authorization using kube2iam
+    # Example for authorization to AWS S3 using kube2iam
     # Can also be done using environment variables
     iam.amazonaws.com/role: cain
 
   image:
-    repos: maorfr/cain
-    tag: 0.1.0
+    repos: nuvo/cain
+    tag: 0.4.1
+
+  # Additional arguments for cain
+  # Ref: https://github.com/nuvo/cain#usage
+  extraArgs: []
 
   # Add additional environment variables
   env:
@@ -172,9 +189,9 @@ backup:
       cpu: 1
 
   # Destination to store the backup artifacts
-  # Currently only s3 is supported
-  # Additional support can added.
-  # Ref: https://github.com/maorfr/skbn
+  # Supported cloud storage services: AWS S3, Minio S3, Azure Blob Storage
+  # Additional support can added. Visit this repository for details
+  # Ref: https://github.com/nuvo/skbn
   destination: s3://bucket/cassandra
 
 ## Cassandra exported configuration

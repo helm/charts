@@ -1,3 +1,4 @@
+{{- if .Values.sysdig.accessKey }}
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
@@ -21,9 +22,13 @@ spec:
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
       hostPID: true
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.image.pullSecrets | indent 8 }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          image: {{ template "sysdig.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
@@ -98,3 +103,4 @@ spec:
         {{- end }}
   updateStrategy:
     type: {{ default "OnDelete" .Values.daemonset.updateStrategy | quote }}
+{{- end }}

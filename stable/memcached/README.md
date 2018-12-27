@@ -52,6 +52,7 @@ The following table lists the configurable parameters of the Memcached chart and
 | `metrics.resources`       | CPU/Memory resource requests/limits for the metrics exporter | `{}`                       |
 | `extraContainers`         | Container sidecar definition(s) as string | Un-set                                        |
 | `extraVolumes`            | Volume definitions to add as string | Un-set                                              |
+| `kind`                    | Install as StatefulSet or Deployment | StatefulSet                                        |
 
 The above parameters map to `memcached` params. For more information please refer to the [Memcached documentation](https://github.com/memcached/memcached/wiki/ConfiguringServer).
 

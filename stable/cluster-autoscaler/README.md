@@ -16,6 +16,8 @@ This chart bootstraps a cluster-autoscaler deployment on a [Kubernetes](http://k
 
   - Kubernetes 1.8+
 > [older versions](https://github.com/kubernetes/autoscaler/tree/master/cluster-autoscaler#releases) may work by overriding the `image`. Cluster-autoscaler internally simulates the scheduler and bugs between mismatched versions may be subtle.
+  - Azure AKS specific Prerequisites:
+    - Kubernetes 1.10+ with RBAC-enabled
 
 ## Installing the Chart
 
@@ -36,8 +38,8 @@ To install the chart with the release name `my-release`:
 Auto-discovery finds ASGs tags as below and automatically manages them based on the min and max size specified in the ASG. `cloudProvider=aws` only.
 
 1) tag the ASGs with _key_ `k8s.io/cluster-autoscaler/enabled` and _key_ `kubernetes.io/cluster/<YOUR CLUSTER NAME>`
-1) verify the [IAM Permissions](#iam)
-1) set `autoDiscovery.clusterName=<YOUR CLUSTER NAME>`
+2) verify the [IAM Permissions](#iam)
+3) set `autoDiscovery.clusterName=<YOUR CLUSTER NAME>`
 
 ```console
 $ helm install stable/cluster-autoscaler --name my-release --set autoDiscovery.clusterName=<CLUSTER NAME>
@@ -62,12 +64,26 @@ $ helm install stable/cluster-autoscaler \
 --set "autoscalingGroupsnamePrefix[0].name=your-ig-prefix,autoscalingGroupsnamePrefix[0].maxSize=10,autoscalingGroupsnamePrefix[0].minSize=1"
 ```
 
+#### Azure AKS
+##### Required Parameters
+- `cloudProvider=azure`
+- `autoscalingGroups[0].name=your-agent-pool,autoscalingGroups[0].maxSize=10,autoscalingGroups[0].minSize=1`
+- `azureClientID: "your-service-principal-app-id"` 
+- `azureClientSecret: "your-service-principal-client-secret"`
+- `azureSubscriptionID: "your-azure-subscription-id"`
+- `azureTenantID: "your-azure-tenant-id"`
+- `azureClusterName: "your-aks-cluster-name"`
+- `azureResourceGroup: "your-aks-cluster-resource-group-name"`
+- `azureVMType: "AKS"`
+- `azureNodeResourceGroup: "your-aks-cluster-node-resource-group"`
+
+
 ### Specifying groups manually (only aws)
 
 Without autodiscovery, specify an array of elements each containing ASG name, min size, max size. The sizes specified here will be applied to the ASG, assuming IAM permissions are correctly configured.
 
 1) verify the [IAM Permissions](#iam)
-1) Either provide a yaml file setting `autoscalingGroups` (see values.yaml) or use `--set` e.g.:
+2) Either provide a yaml file setting `autoscalingGroups` (see values.yaml) or use `--set` e.g.:
 
 ```console
 $ helm install stable/cluster-autoscaler --name my-release --set "autoscalingGroups[0].name=your-asg-name,autoscalingGroups[0].maxSize=10,autoscalingGroups[0].minSize=1"
@@ -101,9 +117,9 @@ Parameter | Description | Default
 `autoscalingGroupsnamePrefix[].maxSize` | maximum MIG size | None. Required for `cloudProvider=gce`
 `autoscalingGroupsnamePrefix[].minSize` | minimum MIG size |  None. Required for `cloudProvider=gce`
 `sslCertPath` | Path on the host where ssl ca cert exists | `/etc/ssl/certs/ca-certificates.crt`
-`cloudProvider` | `aws` or `spotinst` are currently supported for AWS. `gce` for GCE| `aws`
+`cloudProvider` | `aws` or `spotinst` are currently supported for AWS. `gce` for GCE. `azure` for Azure AKS | `aws`
 `image.repository` | Image | `k8s.gcr.io/cluster-autoscaler`
-`image.tag` | Image tag  | `v1.2.0`
+`image.tag` | Image tag  | `v1.13.1`
 `image.pullPolicy` | Image pull policy  | `IfNotPresent`
 `extraArgs` | additional container arguments | `{}`
 `podDisruptionBudget` | Pod disruption budget | `maxUnavailable: 1`
@@ -130,7 +146,18 @@ Parameter | Description | Default
 `spotinst.image.tag` | Image tag (used if `cloudProvider=spotinst`) | `v0.6.0`
 `spotinst.image.pullPolicy` | Image pull policy (used if `cloudProvider=spotinst`) | `IfNotPresent`
 `tolerations` | List of node taints to tolerate (requires Kubernetes >= 1.6) | `[]`
-
+`serviceMonitor.enabled` | if `true`, creates a Prometheus Operator ServiceMonitor | `false`
+`serviceMonitor.interval` | Interval that Prometheus scrapes Cluster Autoscaler metrics | `10s`
+`serviceMonitor.namespace` | Namespace which Prometheus is running in | `monitoring`
+`serviceMonitor.selector` | Default to kube-prometheus install (CoreOS recommended), but should be set according to Prometheus install | `{ prometheus: kube-prometheus }`
+`azureClientID` | Service Principal ClientID with contributor permission to Cluster and Node ResourceGroup | none
+`azureClientSecret` | Service Principal ClientSecret with contributor permission to Cluster and Node ResourceGroup | none
+`azureSubscriptionID` | Azure subscription where the resources are located | none
+`azureTenantID` | Azure tenant where the resources are located | none
+`azureClusterName` | Azure AKS cluster name | none
+`azureResourceGroup` | Azure resource group that the cluster is located | none
+`azureVMType: "AKS"` | Azure VM type | `AKS`
+`azureNodeResourceGroup` | azure resource group where the clusters Nodes are located, typically set as `MC_<cluster-resource-group-name>_<cluster-name>_<location>` | none
 
 Specify each parameter you'd like to override using a YAML file as described above in the [installation](#installing-the-chart) section or by using the `--set key=value[,key=value]` argument to `helm install`. For example, to change the region and [expander](https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/FAQ.md#what-are-expanders):
 
