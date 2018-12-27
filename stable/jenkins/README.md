@@ -248,7 +248,7 @@ Adds a backup CronJob for jenkins, along with required RBAC resources.
 | `backup.schedule`           | Schedule to run jobs                       | `0 2 * * *`                       |
 | `backup.annotations`        | Backup pod annotations                     | iam.amazonaws.com/role: `jenkins` |
 | `backup.image.repo`         | Backup image repository                    | `nuvo/kube-tasks`                 |
-| `backup.image.tag`          | Backup image tag                           | `0.1.1`                           |
+| `backup.image.tag`          | Backup image tag                           | `0.1.2`                           |
 | `backup.extraArgs`          | Additional arguments for kube-tasks        | `[]`                              |
 | `backup.env`                | Backup environment variables               | AWS_REGION: `us-east-1`           |
 | `backup.resources`          | Backup CPU/Memory resource requests/limits | Memory: `1Gi`, CPU: `1`           |
