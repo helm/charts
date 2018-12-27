@@ -126,6 +126,19 @@ spec:
           - name: JMX_PORT
             value: "{{ .Values.jmx.port }}"
           {{- end }}
+          {{- if .Values.secrets }}
+            {{- range $secret := .Values.secrets }}
+              {{- if not $secret.mountPath }}
+                {{- range $key := $secret.keys }}
+          - name: {{ (print $secret.name "_" $key) | upper | replace "." "_" | replace "-" "_"}}
+            valueFrom:
+              secretKeyRef:
+                name: {{ $secret.name }}
+                key: {{ $key }}
+                {{- end }}
+              {{- end }}
+            {{- end }}
+          {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           volumeMounts:
