@@ -46,6 +46,7 @@ The following table lists the configurable parameters of the Fluentd elasticsear
 | Parameter                          | Description                                | Default                                                    |
 | ---------------------------------- | ------------------------------------------ | ---------------------------------------------------------- |
 | `annotations`                      | Optional daemonset annotations             | `NULL`                                                     |
+| `podAnnotations`                      | Optional daemonset's pods annotations             | `NULL`                                                     |
 | `configMaps`                       | Fluentd configmaps                         | `default conf files`                                       |
 | `elasticsearch.host`               | Elasticsearch Host                         | `elasticsearch-client`                                     |
 | `elasticsearch.port`               | Elasticsearch Port                         | `9200`                                                     |
