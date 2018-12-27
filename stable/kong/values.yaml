@@ -51,13 +51,21 @@ proxy:
   annotations: {}
   #  service.beta.kubernetes.io/aws-load-balancer-proxy-protocol: "*"
 
-  # HTTPS traffic on the proxy port
-  useTLS: true
-  servicePort: 8443
-  containerPort: 8443
+  # HTTP plain-text traffic
+  http:
+    enabled: true
+    servicePort: 80
+    containerPort: 8000
+    # nodePort: 32080
+
+  tls:
+    enabled: true
+    servicePort: 443
+    containerPort: 8443
+    # nodePort: 32443
+
   type: NodePort
-  # Set a nodePort which is available
-  # nodePort: 32443
+
   # Kong proxy ingress settings.
   ingress:
     # Enable/disable exposure using ingress.
@@ -160,7 +168,7 @@ ingressController:
   enabled: false
   image:
     repository: kong-docker-kubernetes-ingress-controller.bintray.io/kong-ingress-controller
-    tag: 0.2.0
+    tag: 0.2.2
   replicaCount: 1
   livenessProbe:
     failureThreshold: 3
@@ -183,6 +191,8 @@ ingressController:
     successThreshold: 1
     timeoutSeconds: 5
 
+  installCRDs: true
+
   rbac:
     # Specifies whether RBAC resources should be created
     create: true
@@ -193,3 +203,5 @@ ingressController:
     # The name of the ServiceAccount to use.
     # If not set and create is true, a name is generated using the fullname template
     name:
+
+  ingressClass: nginx

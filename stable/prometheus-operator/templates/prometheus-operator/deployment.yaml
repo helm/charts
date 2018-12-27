@@ -21,6 +21,9 @@ spec:
 {{ toYaml .Values.prometheusOperator.podLabels | indent 8 }}
 {{- end }}
     spec:
+    {{- if .Values.prometheusOperator.priorityClassName }}
+      priorityClassName: {{ .Values.prometheusOperator.priorityClassName }}
+    {{- end }}
       containers:
         - name: {{ template "prometheus-operator.name" . }}
           image: "{{ .Values.prometheusOperator.image.repository }}:{{ .Values.prometheusOperator.image.tag }}"
@@ -41,9 +44,10 @@ spec:
           securityContext:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true
+{{- if .Values.prometheusOperator.securityContext }}
       securityContext:
-        runAsNonRoot: true
-        runAsUser: 65534
+{{ toYaml .Values.prometheusOperator.securityContext | indent 8 }}
+{{- end }}
       serviceAccountName: {{ template "prometheus-operator.operator.serviceAccountName" . }}
     {{- with .Values.prometheusOperator.nodeSelector }}
       nodeSelector:

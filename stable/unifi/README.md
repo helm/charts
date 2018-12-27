@@ -75,6 +75,9 @@ The following tables lists the configurable parameters of the Sentry chart and t
 | `ingress.tls`                  | Ingress TLS configuration | `[]` |
 | `timezone`                     | Timezone the Unifi controller should run as, e.g. 'America/New York' | `UTC` |
 | `runAsRoot`                    | Run the controller as UID0 (root user) | `false` |
+| `UID`                          | Run the controller as user UID | `999` |
+| `GID`                          | Run the controller as group GID | `999` |
+| `addSetfcap`                   | Give the controller container the SETFCAP capability; this is necessary when not running as root | `true` |
 | `mongodb.enabled`              | Use external MongoDB for data storage | `false` |
 | `mongodb.dbUri`                | external MongoDB URI | `mongodb://mongo/unifi` |
 | `mongodb.statDbUri`            | external MongoDB statdb URI | `mongodb://mongo/unifi_stat` |
@@ -88,6 +91,7 @@ The following tables lists the configurable parameters of the Sentry chart and t
 | `nodeSelector`             | Node labels for pod assignment | `{}` |
 | `tolerations`              | Toleration labels for pod assignment | `[]` |
 | `affinity`                 | Affinity settings for pod assignment | `{}` |
+| `podAnnotations`           | Key-value pairs to add as pod annotations | `{}` |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

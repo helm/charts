@@ -28,10 +28,12 @@ spec:
         component: "controller"
     spec:
       serviceAccountName: {{ template "kong.serviceAccountName" . }}
-{{- if .Values.image.imagePullSecrets }}
+      {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
-      - name: {{ .Values.image.imagePullSecrets }}
-{{- end }}
+      {{- range .Values.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end }}
+      {{- end }}
       initContainers:
       - name: wait-for-db
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -44,6 +46,10 @@ spec:
           value: "/dev/stderr"
         - name: KONG_ADMIN_ERROR_LOG
           value: "/dev/stderr"
+        {{- range $key, $val := .Values.env }}
+        - name: KONG_{{ $key | upper}}
+          value: {{ $val | quote }}
+        {{- end}}
         {{- if .Values.postgresql.enabled }}
         - name: KONG_PG_HOST
           value: {{ template "kong.postgresql.fullname" . }}
@@ -71,6 +77,10 @@ spec:
           value: "/dev/stdout"
         - name: KONG_ADMIN_ERROR_LOG
           value: "/dev/stderr"
+        {{- range $key, $val := .Values.env }}
+        - name: KONG_{{ $key | upper}}
+          value: {{ $val | quote }}
+        {{- end}}
         {{- if .Values.admin.useTLS }}
         - name: KONG_ADMIN_LISTEN
           value: "0.0.0.0:{{ .Values.admin.containerPort }} ssl"
@@ -110,6 +120,9 @@ spec:
         - --default-backend-service={{ .Release.Namespace }}/{{ template "kong.fullname" . }}-proxy
         # Service from were we extract the IP address/es to use in Ingress status
         - --publish-service={{ .Release.Namespace }}/{{ template "kong.fullname" . }}-proxy
+        # Set the ingress class
+        - --ingress-class={{ .Values.ingressController.ingressClass }}
+        - --election-id=kong-ingress-controller-leader-{{ .Values.ingressController.ingressClass }}
         env:
         - name: POD_NAME
           valueFrom:
