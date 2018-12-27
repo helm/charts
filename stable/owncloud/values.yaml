@@ -78,11 +78,6 @@ ingress:
 ##
 # owncloudHost:
 
-## loadBalancerIP for the ownCloud Service (optional, cloud specific)
-## ref: http://kubernetes.io/docs/user-guide/services/#type-loadbalancer
-##
-# owncloudLoadBalancerIP:
-
 ## User of the application
 ## ref: https://github.com/bitnami/bitnami-docker-owncloud#configuration
 ##
@@ -170,7 +165,23 @@ mariadb:
 ## Kubernetes configuration
 ## For minikube, set this to NodePort, elsewhere use LoadBalancer
 ##
-serviceType: LoadBalancer
+service:
+  type: LoadBalancer
+  # HTTP Port
+  port: 80
+  ## loadBalancerIP:
+  ##
+  ## nodePorts:
+  ##   http: <to set explicitly, choose port between 30000-32767>
+  ##   https: <to set explicitly, choose port between 30000-32767>
+  nodePorts:
+    http: ""
+    https: ""
+  ## Enable client source IP preservation
+  ## ref http://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip
+  ##
+  externalTrafficPolicy: Cluster
+
 
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/

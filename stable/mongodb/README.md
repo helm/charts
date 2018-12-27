@@ -101,14 +101,20 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `readinessProbe.failureThreshold`       | Minimum consecutive failures for the probe to be considered failed after having succeeded.   | `6`                                         |
 | `readinessProbe.successThreshold`       | Minimum consecutive successes for the probe to be considered successful after having failed. | `1`                                         |
 | `configmap`                             | MongoDB configuration file to be used                                                        | `nil`                                       |
-| `metrics.enabled`                          | Start a side-car prometheus exporter                                                                           | `false`                                              |
-| `metrics.image.registry`                   | MongoDB exporter image registry                                                                                  | `docker.io`                                          |
-| `metrics.image.repository`                 | MongoDB exporter image name                                                                                      | `forekshub/percona-mongodb-exporter`                           |
-| `metrics.image.tag`                        | MongoDB exporter image tag                                                                                       | `latest`                                            |
-| `metrics.image.pullPolicy`                 | Image pull policy                                                                                              | `IfNotPresent`                                       |
-| `metrics.image.pullSecrets`                | Specify docker-registry secret names as an array                                                               | `nil`                                                |
-| `metrics.podAnnotations`                   | Additional annotations for Metrics exporter pod                                                                | {}                                                   |
-| `metrics.resources`                        | Exporter resource requests/limit                                                                               | Memory: `256Mi`, CPU: `100m`                         |
+| `metrics.enabled`                       | Start a side-car prometheus exporter                                                         | `false`                                     |
+| `metrics.image.registry`                | MongoDB exporter image registry                                                              | `docker.io`                                 |
+| `metrics.image.repository`              | MongoDB exporter image name                                                                  | `forekshub/percona-mongodb-exporter`                           |
+| `metrics.image.tag`                     | MongoDB exporter image tag                                                                   | `latest`                                    |
+| `metrics.image.pullPolicy`              | Image pull policy                                                                            | `IfNotPresent`                              |
+| `metrics.image.pullSecrets`             | Specify docker-registry secret names as an array                                             | `nil`                                       |
+| `metrics.podAnnotations`                | Additional annotations for Metrics exporter pod                                              | {}                                          |
+| `metrics.resources`                     | Exporter resource requests/limit                                                             | Memory: `256Mi`, CPU: `100m`             |
+| `metrics.serviceMonitor.enabled`        | Create ServiceMonitor Resource for scraping metrics using PrometheusOperator                 | `false`                                     |
+| `metrics.serviceMonitor.additionalLabels`          | Used to pass Labels that are required by the Installed Prometheus Operator        | {}                                          |
+| `metrics.serviceMonitor.relabellings`              | Specify Metric Relabellings to add to the scrape endpoint                         | `nil`                                       |
+| `metrics.serviceMonitor.alerting.rules`            | Define individual alerting rules as required                                      | {}                                          |
+| `metrics.serviceMonitor.alerting.additionalLabels` | Used to pass Labels that are required by the Installed Prometheus Operator        | {}                                          |
+
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
@@ -168,3 +174,14 @@ The allowed extensions are `.sh`, and `.js`.
 The [Bitnami MongoDB](https://github.com/bitnami/bitnami-docker-mongodb) image stores the MongoDB data and configurations at the `/bitnami/mongodb` path of the container.
 
 The chart mounts a [Persistent Volume](http://kubernetes.io/docs/user-guide/persistent-volumes/) at this location. The volume is created using dynamic volume provisioning.
+
+## Upgrading
+
+### To 5.0.0
+
+When enabling replicaset configuration, backwards compatibility is not guaranteed unless you modify the labels used on the chart's statefulsets.
+Use the workaround below to upgrade from versions previous to 5.0.0. The following example assumes that the release name is `my-release`:
+
+```consoloe
+$ kubectl delete statefulset my-release-mongodb-arbiter my-release-mongodb-primary my-release-mongodb-secondary --cascade=false
+```

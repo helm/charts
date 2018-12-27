@@ -13,6 +13,14 @@ managementPassword: E9R3fjZm4ejFkVFE
 extraConfig: |
 #  queue_master_locator = min-masters
 
+## Place any additional plugins to enable in /etc/rabbitmq/enabled_plugins
+## Ref: https://www.rabbitmq.com/plugins.html
+extraPlugins: |
+  rabbitmq_shovel,
+  rabbitmq_shovel_management,
+  rabbitmq_federation,
+  rabbitmq_federation_management,
+
 definitions:
   users: |-
 #   {
@@ -248,6 +256,11 @@ image:
   # pullSecrets:
   #   - myRegistrKeySecretName
 
+busyboxImage:
+  repository: busybox
+  tag: latest
+  pullPolicy: Always
+
 ## Duration in seconds the pod needs to terminate gracefully
 terminationGracePeriodSeconds: 10
 
@@ -444,3 +457,6 @@ prometheus:
       ## [Kube Prometheus Selector Label](https://github.com/coreos/prometheus-operator/blob/master/helm/kube-prometheus/values.yaml#L298)
       selector:
         prometheus: kube-prometheus
+
+## Kubernetes Cluster Domain
+clusterDomain: cluster.local

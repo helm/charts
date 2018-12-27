@@ -77,8 +77,9 @@ spec:
               name: {{ printf "%s-%s" .Release.Name "externaldb" }}
               key: db-password
         {{- end }}
+{{- $port:=.Values.service.port | toString }}
         - name: PRESTASHOP_HOST
-          value: {{ include "prestashop.host" . | quote }}
+          value: "{{ include "prestashop.host" . }}{{- if ne $port "80" }}:{{ .Values.service.port }}{{ end }}"
         - name: PRESTASHOP_USERNAME
           value: {{ .Values.prestashopUsername | quote }}
         - name: PRESTASHOP_PASSWORD

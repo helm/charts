@@ -15,7 +15,7 @@ image:
 
 apiserver:
   image: "quay.io/openebs/m-apiserver"
-  imageTag: "0.7.1"
+  imageTag: "0.8.0"
   replicas: 1
   ports:
     externalPort: 5656
@@ -26,7 +26,7 @@ apiserver:
 
 provisioner:
   image: "quay.io/openebs/openebs-k8s-provisioner"
-  imageTag: "0.7.1"
+  imageTag: "0.8.0"
   replicas: 1
   nodeSelector: {}
   tolerations: []
@@ -35,10 +35,10 @@ provisioner:
 snapshotOperator:
   controller:
     image: "quay.io/openebs/snapshot-controller"
-    imageTag: "0.7.1"
+    imageTag: "0.8.0"
   provisioner:
     image: "quay.io/openebs/snapshot-provisioner"
-    imageTag: "0.7.1"
+    imageTag: "0.8.0"
   replicas: 1
   upgradeStrategy: "Recreate"
   nodeSelector: {}
@@ -55,30 +55,35 @@ ndm:
     count: "1"
   filters:
     excludeVendors: "CLOUDBYT,OpenEBS"
-    excludePaths: "loop,fd0,sr0,/dev/ram,/dev/dm-"
+    excludePaths: "loop,fd0,sr0,/dev/ram,/dev/dm-,/dev/md"
   nodeSelector: {}
 
 jiva:
   image: "quay.io/openebs/jiva"
-  imageTag: "0.7.1"
+  imageTag: "0.8.0"
   replicas: 3
 
 cstor:
   pool:
     image: "quay.io/openebs/cstor-pool"
-    imageTag: "0.7.1"
+    imageTag: "0.8.0"
   poolMgmt:
     image: "quay.io/openebs/cstor-pool-mgmt"
-    imageTag: "0.7.1"
+    imageTag: "0.8.0"
   target:
     image: "quay.io/openebs/cstor-istgt"
-    imageTag: "0.7.1"
+    imageTag: "0.8.0"
   volumeMgmt:
     image: "quay.io/openebs/cstor-volume-mgmt"
-    imageTag: "0.7.1"
+    imageTag: "0.8.0"
 
 policies:
   monitoring:
     enabled: true
     image: "quay.io/openebs/m-exporter"
-    imageTag: "0.7.1"
+    imageTag: "0.8.0"
+
+analytics:
+  enabled: true
+  # Specify in hours the duration after which a ping event needs to be sent.
+  pingInterval: "24h"
