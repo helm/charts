@@ -46,6 +46,7 @@ The following table lists the configurable parameters of the Fluentd elasticsear
 | Parameter                          | Description                                | Default                                                    |
 | ---------------------------------- | ------------------------------------------ | ---------------------------------------------------------- |
 | `annotations`                      | Optional daemonset annotations             | `NULL`                                                     |
+| `podAnnotations`                      | Optional daemonset's pods annotations             | `NULL`                                                     |
 | `configMaps`                       | Fluentd configmaps                         | `default conf files`                                       |
 | `elasticsearch.host`               | Elasticsearch Host                         | `elasticsearch-client`                                     |
 | `elasticsearch.port`               | Elasticsearch Port                         | `9200`                                                     |
@@ -54,6 +55,7 @@ The following table lists the configurable parameters of the Fluentd elasticsear
 | `elasticsearch.buffer_queue_limit` | Elasticsearch buffer queue limit           | `8`                                                        |
 | `elasticsearch.scheme`             | Elasticsearch scheme setting               | `http`                                                     |
 | `env`                              | List of environment variables that are added to the fluentd pods   | `{}`                               |
+| `secret`                              | List of environment variables that are set from secrets and added to the fluentd pods   | `[]`                               |
 | `extraVolumeMounts`                | Mount an extra volume, required to mount ssl certificates when elasticsearch has tls enabled |          |
 | `extraVolume`                      | Extra volume                               |                                                            |
 | `image.repository`                 | Image                                      | `gcr.io/google-containers/fluentd-elasticsearch`           |

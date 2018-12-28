@@ -320,6 +320,9 @@ rbac:
 metrics:
   prometheus:
     enabled: false
+    ## If true, prevents exposing port 8080 on the main Traefik service, reserving
+    ## it to the dashboard service only
+    restrictAccess: false
     # buckets: [0.1,0.3,1.2,5]
   datadog:
     enabled: false
