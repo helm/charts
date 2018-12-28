@@ -110,7 +110,7 @@ data:
 
     # Possible additional things you might want to do with program output:
     #   - send to a slack webhook:
-    #         program: "jq '{text: .output}' | curl -d @- -X POST https://hooks.slack.com/services/XXX"
+    #         program: "\"jq '{text: .output}' | curl -d @- -X POST https://hooks.slack.com/services/XXX\""
     #   - logging (alternate method than syslog):
     #         program: logger -t falco-test
     #   - send over a network connection:

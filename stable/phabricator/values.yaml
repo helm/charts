@@ -10,7 +10,7 @@
 image:
   registry: docker.io
   repository: bitnami/phabricator
-  tag: 2018.46.0
+  tag: 2018.50.0
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -32,11 +32,6 @@ image:
 ## ref: https://github.com/bitnami/bitnami-docker-phabricator#configuration
 ##
 # phabricatorAlternateFileDomain:
-
-## loadBalancerIP for the Phabricator Service (optional, cloud specific)
-## ref: http://kubernetes.io/docs/user-guide/services/#type-loadbalancer
-##
-# phabricatorLoadBalancerIP:
 
 ## User of the application
 ## ref: https://github.com/bitnami/bitnami-docker-phabricator#configuration
@@ -111,7 +106,24 @@ mariadb:
 ## Kubernetes configuration
 ## For minikube, set this to NodePort, elsewhere use LoadBalancer
 ##
-serviceType: LoadBalancer
+service:
+  type: LoadBalancer
+  # HTTP Port
+  port: 80
+  # HTTPS Port
+  httpsPort: 443
+  ## loadBalancerIP:
+  ##
+  ## nodePorts:
+  ##   http: <to set explicitly, choose port between 30000-32767>
+  ##   https: <to set explicitly, choose port between 30000-32767>
+  nodePorts:
+    http: ""
+    https: ""
+  ## Enable client source IP preservation
+  ## ref http://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip
+  ##
+  externalTrafficPolicy: Cluster
 
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/

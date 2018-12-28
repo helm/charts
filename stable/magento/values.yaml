@@ -10,7 +10,7 @@
 image:
   registry: docker.io
   repository: bitnami/magento
-  tag: 2.2.6
+  tag: 2.3.0
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -147,6 +147,7 @@ service:
   # HTTPS Port
   httpsPort: 443
   ##
+  ## loadBalancerIP:
   ## nodePorts:
   ##   http: <to set explicitly, choose port between 30000-32767>
   ##   https: <to set explicitly, choose port between 30000-32767>

@@ -8,7 +8,7 @@ replicaCount: 1
 ## Set default image, imageTag, and imagePullPolicy.
 image:
   repository: "amancevice/superset"
-  tag: "0.24.0"
+  tag: "0.28.1"
   pullPolicy: "IfNotPresent"
 
 initFile: |-
@@ -46,6 +46,12 @@ configFile: |-
 
   # Set this API key to enable Mapbox visualizations
   MAPBOX_API_KEY = ''
+
+## Extra confiuguration files and their content to be made available next to the config file
+extraConfigFiles: {}
+  ## custom_sso_security_manager.py: |-
+  ##   from superset.security import SupersetSecurityManager
+  ##   ...
 
 ## Extra environment variables that will be passed onto deployment pod
 ##

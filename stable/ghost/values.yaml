@@ -10,7 +10,7 @@
 image:
   registry: docker.io
   repository: bitnami/ghost
-  tag: 2.6.0
+  tag: 2.9.1
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -146,6 +146,7 @@ service:
   type: LoadBalancer
   # HTTP Port
   port: 80
+  ## loadBalancerIP:
   ##
   ## nodePorts:
   ##   http: <to set explicitly, choose port between 30000-32767>
