@@ -16,7 +16,7 @@ init:
 
 deployment:
   annotations: {}
-  
+
 service:
   type: ClusterIP
   port: 80
