@@ -29,12 +29,14 @@ spec:
         app.kubernetes.io/managed-by: {{ .Release.Service }}
         kubernetes.io/cluster-service: "true"
       annotations:
+        {{- if semverCompare "< 1.13" .Capabilities.KubeVersion.GitVersion }}
         # This annotation ensures that fluentd does not get evicted if the node
         # supports critical pod annotation based priority scheme.
         # Note that this does not guarantee admission on the nodes (#40573).
         # NB! this annotation is deprecated as of version 1.13 and will be removed in 1.14.
         # ref: https://kubernetes.io/docs/tasks/administer-cluster/guaranteed-scheduling-critical-addon-pods/
         scheduler.alpha.kubernetes.io/critical-pod: ''
+        {{- end }}
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
 {{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
