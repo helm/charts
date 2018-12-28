@@ -182,7 +182,7 @@ data:
       [etcd.tls]
       {{- end }}
       {{ range $key, $value := .Values.kvprovider.etcd.tls }}
-      {{ $key }} = {{ $value | quote }}
+      {{ $key }} = {{ $value }}
       {{ end }}
     {{- end }}
     {{- if .Values.kvprovider.consul }}

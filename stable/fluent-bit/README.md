@@ -94,7 +94,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `filter.kubeTag`                   | Optional top-level tag for matching in filter         | `kube`                                 |
 | `filter.mergeJSONLog`                   | If the log field content is a JSON string map, append the map fields as part of the log structure         | `true`                                 |
 | `image.fluent_bit.repository`      | Image                                      | `fluent/fluent-bit`                               |
-| `image.fluent_bit.tag`             | Image tag                                  | `1.0.1`                                          |
+| `image.fluent_bit.tag`             | Image tag                                  | `0.14.9`                                          |
 | `image.pullPolicy`                 | Image pull policy                          | `Always`                                          |
 | `image.pullSecrets`                | Specify image pull secrets                 | `nil`                                             |
 | `input.tail.memBufLimit`           | Specify Mem_Buf_Limit in tail input        | `5MB`                                             |

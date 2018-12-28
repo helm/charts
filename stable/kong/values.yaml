@@ -51,21 +51,13 @@ proxy:
   annotations: {}
   #  service.beta.kubernetes.io/aws-load-balancer-proxy-protocol: "*"
 
-  # HTTP plain-text traffic
-  http:
-    enabled: true
-    servicePort: 80
-    containerPort: 8000
-    # nodePort: 32080
-
-  tls:
-    enabled: true
-    servicePort: 443
-    containerPort: 8443
-    # nodePort: 32443
-
+  # HTTPS traffic on the proxy port
+  useTLS: true
+  servicePort: 8443
+  containerPort: 8443
   type: NodePort
-
+  # Set a nodePort which is available
+  # nodePort: 32443
   # Kong proxy ingress settings.
   ingress:
     # Enable/disable exposure using ingress.
