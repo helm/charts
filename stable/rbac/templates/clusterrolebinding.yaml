@@ -8,7 +8,11 @@ metadata:
 {{- if .Values.rbac.clusterRoleBinding.labels }}
 {{ toYaml .Values.rbac.clusterRoleBinding.labels | indent 4 }}
 {{- end }}
+{{- if .Values.rbac.clusterRoleBinding.name }}
   name: {{ .Values.rbac.clusterRoleBinding.name }}
+{{- else }}
+  name: {{ .Values.rbac.clusterRoleBinding.serviceAccountName }}-{{ .Release.Namespace }}-cluster-role-binding
+{{- end }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole

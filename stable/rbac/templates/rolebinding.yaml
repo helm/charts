@@ -9,7 +9,11 @@ metadata:
 {{- if .Values.rbac.roleBinding.labels }}
 {{ toYaml .Values.rbac.roleBinding.labels | indent 4 }}
 {{- end }}
+{{- if .Values.rbac.roleBinding.name }}
   name: {{ .Values.rbac.roleBinding.name }}
+{{- else }}
+  name: {{ .Values.rbac.roleBinding.serviceAccountName }}-{{ .Release.Namespace }}-role-binding
+{{- end }}
   namespace: {{ .Release.Namespace }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
