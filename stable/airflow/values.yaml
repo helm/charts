@@ -266,15 +266,6 @@ dags:
   initContainer:
     ## Fetch the source code when the pods starts
     enabled: false
-    ## Image for the init container (any image with git will do)
-    image:
-      ## docker-airflow image
-      repository: alpine/git
-      ## image tag
-      tag: 1.0.4
-      ## Image pull policy
-      ## values: Always or IfNotPresent
-      pullPolicy: IfNotPresent
     ## install requirements.txt dependencies automatically
     installRequirements: true
 
@@ -312,17 +303,16 @@ postgresql:
   ## postgresHost:
   ##
   ## PostgreSQL port
-  service:
-    port: 5432
+  postgresPort: 5432
   ## PostgreSQL User to create.
-  postgresqlUsername: postgres
+  postgresUser: postgres
   ##
   ## PostgreSQL Password for the new user.
   ## If not set, a random 10 characters password will be used.
-  postgresqlPassword: airflow
+  postgresPassword: airflow
   ##
   ## PostgreSQL Database to create.
-  postgresqlDatabase: airflow
+  postgresDatabase: airflow
   ##
   ## Persistent Volume Storage configuration.
   ## ref: https://kubernetes.io/docs/user-guide/persistent-volumes

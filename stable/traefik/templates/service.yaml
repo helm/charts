@@ -54,7 +54,7 @@ spec:
     {{- if not .Values.ssl.enabled }}
     targetPort: httpn
     {{- end }}
-  {{- if (and (.Values.metrics.prometheus.enabled) (not (.Values.metrics.prometheus.restrictAccess)))}}
+  {{- if .Values.metrics.prometheus.enabled }}
   - port: 8080
     name: metrics
     targetPort: dash
