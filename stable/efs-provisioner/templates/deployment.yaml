@@ -24,6 +24,9 @@ spec:
         release: "{{ .Release.Name }}"
     spec:
       serviceAccount: {{ template "efs-provisioner.serviceAccountName" . }}
+      {{- if .Values.priorityClassName }}
+      priorityClassName: "{{ .Values.priorityClassName }}"
+      {{- end }}
       containers:
       - name: {{ template "efs-provisioner.fullname" . }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
