@@ -6,6 +6,12 @@ image:
   tag: v2.3.2
   pullPolicy: IfNotPresent
 
+# Specify to use specific priorityClass for pods
+# ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
+# If a Pod cannot be scheduled, the scheduler tries to preempt (evict) lower priority
+# Pods to make scheduling of the pending Pod possible.
+priorityClassName: ""
+
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 ##

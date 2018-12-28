@@ -70,6 +70,7 @@ The following table lists the configurable parameters of the Fluentd elasticsear
 | `nodeSelector`                     | Optional daemonset nodeSelector            | `{}`                                                       |
 | `podSecurityPolicy.annotations`    | Specify pod annotations in the pod security policy | `{}`                                               |
 | `podSecurityPolicy.enabled`        | Specify if a pod security policy must be created   | `false`                                            |
+| `priorityClassName`                | Optional PriorityClass for pods            | `""`                                                       |
 | `rbac.create`                      | RBAC                                       | `true`                                                     |
 | `resources.limits.cpu`             | CPU limit                                  | `100m`                                                     |
 | `resources.limits.memory`          | Memory limit                               | `500Mi`                                                    |
