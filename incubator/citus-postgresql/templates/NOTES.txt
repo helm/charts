@@ -1,4 +1,4 @@
-Citus PostgreSQL endpoint: {{ template "citus-postgresql.fullname" . }}:{{ .Values.master.port }}
+Citus PostgreSQL endpoint: {{ template "citus-postgresql.fullname" . }}:{{ .Values.superuser.port }}
 
 Superuser Username: {{ .Values.superuser.username }}
 Superuser Password: {{ .Values.superuser.password }}

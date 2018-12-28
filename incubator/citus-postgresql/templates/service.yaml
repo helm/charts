@@ -15,7 +15,7 @@ spec:
   type: {{ .Values.service.type }}
   ports:
   - port: {{ .Values.service.externalPort }}
-    targetPort: {{ .Values.master.port }}
+    targetPort: {{ .Values.superuser.port }}
     protocol: TCP  
     name: psql
   selector:

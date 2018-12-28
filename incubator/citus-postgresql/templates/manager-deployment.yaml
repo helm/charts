@@ -1,0 +1,53 @@
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: citus-manager 
+spec:
+  selector:
+    matchLabels:
+      app: citus-manager
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: citus-manager
+    spec:
+      serviceAccountName: {{ .Values.manager.serviceAccountName.name }}
+      containers:
+      - name: citus-manager-container
+        image: "{{ .Values.manager.image }}:{{ .Values.manager.imageTag }}"
+        imagePullPolicy: "{{ .Values.imagePullPolicy }}"
+        volumeMounts:
+        - name: citus-config-mount
+          mountPath: "/etc/citus-config/"
+        resources:
+ {{ toYaml .Values.manager.resources | indent 12 }}
+        env:
+        - name: NAMESPACE
+          value: {{ .Values.manager.namespace }}
+        - name: SHORT_URL
+          value: "{{ .Values.manager.shortUrl }}"
+        - name: WORKER_SERVICE
+          value: {{ template "citus-postgresql.fullname" . }}-worker
+        - name: MASTER_SERVICE 
+          value: {{ template "citus-postgresql.fullname" . }}-master
+        - name: WORKER_LABEL
+          value: {{ .Values.worker.citusType }}
+        - name: MASTER_LABEL
+          value: {{ .Values.master.citusType }}
+        - name: PG_DB
+          value: "{{ .Values.superuser.database }}"
+        - name: PG_PORT
+          value: "{{ .Values.superuser.port }}"
+        - name: PG_PASSWORD
+          value: "{{ .Values.superuser.password }}"
+        - name: PG_USER
+          value: {{ .Values.superuser.username }}
+        - name: MINIMUM_WORKERS
+          value: "{{ .Values.manager.minimumWorkers }}"
+        - name: SSL_MODE
+          value: "{{ .Values.manager.ssl.mode }}"
+      volumes:
+      - name: citus-config-mount
+        configMap:
+          name: setup-config

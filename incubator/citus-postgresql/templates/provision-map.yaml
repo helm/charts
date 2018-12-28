@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: setup-config
+data:
+  master.setup: {{ .Values.manager.provision.masterQueries }}
+  worker.setup: {{ .Values.manager.provision.workerQueries }}

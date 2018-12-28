@@ -18,6 +18,7 @@ spec:
       labels:
         app: {{ template "citus-postgresql.name" . }}-master
         release: {{ .Release.Name }}
+        citusType: {{ .Values.master.citusType }}
       {{- if .Values.prometheus.enabled }}
       annotations:
         prometheus.io/scrape: "true"
@@ -39,21 +40,7 @@ spec:
 {{ toYaml .Values.prometheus.resources | indent 12 }}
         env:
         - name: DATA_SOURCE_NAME
-          value: postgresql://postgres@127.0.0.1:{{ .Values.master.port }}?sslmode=disable
-        livenessProbe:
-          httpGet:
-            path: /metrics
-            port: {{ .Values.prometheus.port }}
-          initialDelaySeconds: 60
-          periodSeconds: 120
-          timeoutSeconds: 15
-        readinessProbe:
-          httpGet:
-            path: /metrics
-            port: {{ .Values.prometheus.port }}
-          initialDelaySeconds: 60
-          periodSeconds: 120
-          timeoutSeconds: 15        
+          value: postgresql://postgres@127.0.0.1:{{ .Values.superuser.port }}?sslmode=disable
       {{- end }}
       - name: citus
         image: "{{ .Values.image }}:{{ .Values.imageTag }}"
@@ -76,12 +63,14 @@ spec:
           && chown -R postgres:postgres /home/postgres
           && docker-entrypoint.sh postgres
         ports:
-        - containerPort: {{ .Values.master.port }}
+        - containerPort: {{ .Values.superuser.port }}
         resources:
 {{ toYaml .Values.master.resources | indent 12 }}
         env:
         - name: PGDATA
           value: /var/lib/postgresql/data/pgdata
+        - name: PGPASSFILE
+          value: /home/postgres/.pgpass
         - name: POSTGRES_USER
           valueFrom:
             secretKeyRef:
@@ -92,6 +81,20 @@ spec:
             secretKeyRef:
               name: {{ template "citus-postgresql.fullname" . }}-secret
               key: superuser-password
+        - name: POSTGRES_DB
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "citus-postgresql.fullname" . }}-secret
+              key: superuser-database
+        {{- if .Values.readiness.enabled }}
+        readinessProbe:
+          exec:
+            command:
+            - /pg_healthcheck
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 5
+        {{- end }}
         volumeMounts:
         - name: pgdata
           mountPath: /var/lib/postgresql/data

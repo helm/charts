@@ -9,7 +9,7 @@ metadata:
     heritage: {{ .Release.Service }}
 spec:
   ports:
-  - port: {{ .Values.worker.port }}
+  - port: {{ .Values.superuser.port }}
     name: psql
   clusterIP: None
   selector:
