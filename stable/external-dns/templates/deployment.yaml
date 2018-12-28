@@ -61,11 +61,31 @@ spec:
             - --{{ $key }}
             {{- end }}
           {{- end }}
+          {{- if .Values.cloudflare.proxied }}
+            - --cloudflare-proxied
+          {{- end }}
           {{- if .Values.aws.zoneType }}
             - --aws-zone-type={{ .Values.aws.zoneType }}
           {{- end }}
           {{- if .Values.google.project }}
             - --google-project={{ .Values.google.project }}
+          {{- end }}
+          {{- if eq .Values.provider "infoblox" }}
+            - --infoblox-grid-host={{ .Values.infoblox.gridHost }}
+            {{- if .Values.infoblox.domainFilter }}
+            - --domain-filter={{ .Values.infoblox.domainFilter }}
+            {{- end }}
+            {{- if .Values.infoblox.wapiPort }}
+            - --infoblox-wapi-port={{ .Values.infoblox.wapiPort }}
+            {{- end }}
+            {{- if .Values.infoblox.wapiVersion }}
+            - --infoblox-wapi-version={{ .Values.infoblox.wapiVersion }}
+            {{- end }}
+            {{- if .Values.infoblox.noSslVerify }}
+            - --no-infoblox-ssl-verify
+            {{- else }}
+            - --infoblox-ssl-verify
+            {{- end }}
           {{- end }}
           volumeMounts:
           {{- if .Values.google.serviceAccountSecret }}
@@ -83,7 +103,7 @@ spec:
           {{- end }}
           {{- if (and .Values.aws.secretKey .Values.aws.accessKey) }}
           - name: aws-credentials
-            mountPath: /root/.aws
+            mountPath: {{ .Values.aws.credentialsPath }}
             readOnly: true
           {{- end }}
           env:
@@ -106,6 +126,26 @@ spec:
           - name: CF_API_EMAIL
             value: "{{ .Values.cloudflare.email }}"
         {{- end }}
+        {{- if .Values.infoblox.wapiConnectionPoolSize }}
+          - name: EXTERNAL_DNS_INFOBLOX_HTTP_POOL_CONNECTIONS
+            value: "{{ .Values.infoblox.wapiConnectionPoolSize }}"
+        {{- end }}
+        {{- if .Values.infoblox.wapiHttpTimeout }}
+          - name: EXTERNAL_DNS_INFOBLOX_HTTP_REQUEST_TIMEOUT
+            value: "{{ .Values.infoblox.wapiHttpTimeout }}"
+        {{- end }}
+        {{- if and .Values.infoblox.wapiUsername .Values.infoblox.wapiPassword }}
+          - name: EXTERNAL_DNS_INFOBLOX_WAPI_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "external-dns.fullname" . }}
+                key: infoblox_wapi_username
+          - name: EXTERNAL_DNS_INFOBLOX_WAPI_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "external-dns.fullname" . }}
+                key: infoblox_wapi_password
+        {{- end }}
         {{- $root := . -}}
         {{- range .Values.extraEnv }}
           - name: {{ .name }}
@@ -124,6 +164,10 @@ spec:
               port: 7979
           ports:
             - containerPort: 7979
+        {{- if .Values.securityContext }}
+          securityContext:
+{{ toYaml .Values.securityContext | indent 12 }}
+        {{- end }}
         {{- if .Values.resources }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
