@@ -12,9 +12,14 @@ service:
   loadBalancerIP: ""
 rbac:
   # If true, create & use RBAC resources
-  create: false
+  create: true
   # Ignored if rbac.create is true
   serviceAccountName: default
+
+securityContext:
+  enabled: true
+  runAsUser: 65534
+  fsGroup: 65534
 
 ## Node labels for pod assignment
 ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
@@ -26,6 +31,9 @@ tolerations: []
 
 # Annotations to be added to the pod
 podAnnotations: {}
+
+## Assign a PriorityClassName to pods if set
+# priorityClassName: ""
 
 # Available collectors for kube-state-metrics. By default all available
 # collectors are enabled.

@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: solidnerd/bookstack
-  tag: 0.23.2
+  tag: 0.24.2
   pullPolicy: IfNotPresent
 
 app:

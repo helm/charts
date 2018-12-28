@@ -14,14 +14,14 @@
 
 all: push
 
-TAG = 0.6
-PREFIX = staging-k8s.gcr.io/mongodb-install
+TAG = 0.7
+PREFIX = unguiculus/mongodb-install
 
-container:
+build:
 	docker build -t $(PREFIX):$(TAG) .
 
-push: container
-	gcloud docker -- push $(PREFIX):$(TAG)
+push: build
+	docker push $(PREFIX):$(TAG)
 
 clean:
 	docker rmi $(PREFIX):$(TAG)

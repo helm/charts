@@ -55,13 +55,15 @@ spec:
         - name: http
           containerPort: {{ .Values.service.port }}
         livenessProbe:
-          httpGet:
-            path: /connection
+          tcpSocket:
             port: {{ .Values.service.port }}
+          initialDelaySeconds: 30
+          periodSeconds: 10
         readinessProbe:
-          httpGet:
-            path: /connection
+          tcpSocket:
             port: {{ .Values.service.port }}
+          initialDelaySeconds: 15
+          periodSeconds: 10
         resources:
 {{ toYaml .Values.resources | indent 10 }}
       volumes:

@@ -25,3 +25,4 @@ spec:
         ports:
         - containerPort: 80
           hostPort: {{ default "5555" .Values.hostPort }}
+          hostIP: {{ default "127.0.0.1" .Values.hostIP }}

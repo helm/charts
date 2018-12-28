@@ -26,19 +26,21 @@ spec:
         component: server
     spec:
       serviceAccountName: {{ template "gocd.serviceAccountName" . }}
-      {{- if or .Values.server.persistence.enabled .Values.server.security.ssh.enabled }}
+      {{- if or .Values.server.shouldPreconfigure (or .Values.server.persistence.enabled (or .Values.server.security.ssh.enabled .Values.server.persistence.extraVolumes)) }}
       volumes:
+      {{- end }}
+      {{- if .Values.server.shouldPreconfigure }}
+        - name: config-vol
+          configMap:
+            name: {{ template "gocd.fullname" . }}
       {{- end }}
       {{- if .Values.server.persistence.enabled }}
         - name: goserver-vol
           persistentVolumeClaim:
             claimName: {{ .Values.server.persistence.existingClaim | default (printf "%s-%s" (include "gocd.fullname" .) "server") }}
-        - name: config-vol
-          configMap:
-            name: {{ template "gocd.fullname" . }}
-        {{- if ne (len .Values.server.persistence.extraVolumes) 0 }}
+      {{- end }}
+      {{- if ne (len .Values.server.persistence.extraVolumes) 0 }}
 {{ toYaml .Values.server.persistence.extraVolumes | indent 8 }}
-        {{- end }}
       {{- end }}
       {{- if .Values.server.security.ssh.enabled }}
         - name: ssh-secrets
@@ -78,8 +80,13 @@ spec:
             initialDelaySeconds: {{ .Values.server.healthCheck.initialDelaySeconds }}
             periodSeconds: {{ .Values.server.healthCheck.periodSeconds }}
             failureThreshold: {{ .Values.server.healthCheck.failureThreshold }}
-          {{- if or .Values.server.persistence.enabled .Values.server.security.ssh.enabled }}
+          {{- if or .Values.server.shouldPreconfigure (or .Values.server.persistence.enabled (or .Values.server.security.ssh.enabled .Values.server.persistence.extraVolumeMounts)) }}
           volumeMounts:
+          {{- end }}
+          {{- if .Values.server.shouldPreconfigure }}
+            - name: config-vol
+              mountPath: /preconfigure_server.sh
+              subPath: preconfigure_server.sh
           {{- end }}
           {{- if .Values.server.persistence.enabled }}
             - name: goserver-vol
@@ -91,12 +98,9 @@ spec:
             - name: {{ .Values.server.persistence.name.dockerEntryPoint }}
               mountPath: /docker-entrypoint.d
               subPath: {{ .Values.server.persistence.subpath.dockerEntryPoint }}
-            - name: config-vol
-              mountPath: /preconfigure_server.sh
-              subPath: preconfigure_server.sh
-            {{- if ne (len .Values.server.persistence.extraVolumeMounts) 0 }}
+          {{- end }}
+          {{- if ne (len .Values.server.persistence.extraVolumeMounts) 0 }}
 {{ toYaml .Values.server.persistence.extraVolumeMounts | indent 12 }}
-            {{- end }}
           {{- end }}
           {{- if .Values.server.security.ssh.enabled }}
             - name: ssh-secrets
@@ -107,13 +111,18 @@ spec:
           lifecycle:
             postStart:
               exec:
-                command: ["/bin/bash","/preconfigure_server.sh"]
+                command:
+{{ toYaml .Values.server.preconfigureCommand | indent 18 }}                
           {{- end }}
           resources:
 {{ toYaml .Values.server.resources | indent 12 }}
     {{- if .Values.server.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.server.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- if .Values.server.affinity }}
+      affinity:
+{{ toYaml .Values.server.affinity | indent 8 }}
     {{- end }}
     {{- if .Values.server.hostAliases }}
       hostAliases:
