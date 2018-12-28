@@ -64,6 +64,9 @@ forwardedHeaders:
   # - 10.0.0.0/8
 ssl:
   enabled: false
+  # Set secretName to use an externally defined secret
+  # must have keys "tls.crt", and "tls.key"
+  secretName: ""
   enforced: false
   permanentRedirect: false
   upstream: false
