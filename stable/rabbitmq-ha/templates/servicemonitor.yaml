@@ -14,7 +14,12 @@ spec:
       app: {{ template "rabbitmq-ha.name" . }}
       release: {{ .Release.Name }}
   endpoints:
+{{- if .Values.prometheus.exporter.rabbitmq_plugin }}
+  - port: http
+    path: /api/metrics
+{{- else }}
   - port: exporter
+{{- end }}
     interval: {{ .Values.prometheus.operator.serviceMonitor.interval }}
   namespaceSelector:
     any: true

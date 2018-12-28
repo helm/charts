@@ -13,6 +13,11 @@ managementPassword: E9R3fjZm4ejFkVFE
 extraConfig: |
 #  queue_master_locator = min-masters
 
+
+## Place advanced.config file in /etc/rabbitmq/advanced.config
+## Ref: https://www.rabbitmq.com/configure.html#advanced-config-file
+advancedConfig: |
+
 ## Place any additional plugins to enable in /etc/rabbitmq/enabled_plugins
 ## Ref: https://www.rabbitmq.com/plugins.html
 extraPlugins: |
@@ -409,6 +414,9 @@ prometheus:
   ## Configures Prometheus Exporter to expose and scrape stats.
   exporter:
     enabled: false
+
+    ## whether to use Rabbitmq prometheus_exporter plugin https://hub.docker.com/r/deadtrickster/rabbitmq_prometheus
+    rabbitmq_plugin: false
     env: {}
     image:
       repository: kbudde/rabbitmq-exporter
