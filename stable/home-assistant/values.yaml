@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: homeassistant/home-assistant
-  tag: 0.81.2
+  tag: 0.84.6
   pullPolicy: IfNotPresent
 
 service:
