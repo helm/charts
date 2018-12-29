@@ -55,10 +55,20 @@ persistence:
   accessMode: ReadWriteOnce
   size: 5Gi
 
-## Additional hass-configurator container environment variable
+## Additional hass container environment variable
 ## For instance to add a http_proxy
 ##
 extraEnv: {}
+
+## Additional hass container environment variable from k8s secrets
+## For instance to add a password
+## can use `!env_var` in the home assistant configuration to reference these variables
+extraEnvSecrets:
+  # Example
+  # This will set ${MQTT_PASSWORD} to the 'password' key from the 'mqtt' secret
+  # MQTT_PASSWORD:
+  #   secret: mqtt
+  #   key: password
 
 configurator:
   enabled: false
