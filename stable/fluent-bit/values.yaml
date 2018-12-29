@@ -23,6 +23,9 @@ metrics:
 # When enabled, fluent-bit will keep track of tailing offsets across pod restarts.
 trackOffsets: false
 
+# When enabled, fluent-bit will collect kubelet logs
+kubeletLogs: true
+
 backend:
   type: forward
   forward:

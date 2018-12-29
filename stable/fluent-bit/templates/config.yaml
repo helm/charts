@@ -37,6 +37,12 @@ data:
         DB               /tail-db/tail-containers-state.db
         DB.Sync          Normal
 {{- end }}
+{{- if .Values.kubeletLogs }}
+    [INPUT]
+        Name            systemd
+        Tag             kubelet
+        Systemd_Filter  _SYSTEMD_UNIT=kubelet.service
+{{- end }}
 {{ .Values.extraEntries.input | indent 8 }}
 
   fluent-bit-filter.conf: |-
