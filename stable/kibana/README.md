@@ -43,9 +43,12 @@ The following table lists the configurable parameters of the kibana chart and th
 | `affinity`                                    | node/pod affinities                        | None                                   |
 | `env`                                         | Environment variables to configure Kibana  | `{}`                                   |
 | `files`                                       | Kibana configuration files                 | None                                   |
+| `livenessProbe.enabled`                       | livenessProbe to be enabled?               | `false`                                |
+| `livenessProbe.initialDelaySeconds`           | number of seconds                          | 30                                     |
+| `livenessProbe.timeoutSeconds`                | number of seconds                          | 10                                     |
 | `image.pullPolicy`                            | Image pull policy                          | `IfNotPresent`                         |
 | `image.repository`                            | Image repository                           | `docker.elastic.co/kibana/kibana-oss`  |
-| `image.tag`                                   | Image tag                                  | `6.5.0`                                |
+| `image.tag`                                   | Image tag                                  | `6.5.3`                                |
 | `image.pullSecrets`                           | Specify image pull secrets                 | `nil`                                  |
 | `commandline.args`                            | add additional commandline args            | `nil`                                  |
 | `ingress.enabled`                             | Enables Ingress                            | `false`                                |
@@ -88,10 +91,17 @@ The following table lists the configurable parameters of the kibana chart and th
 | `persistentVolumeClaim.accessModes`           | Acces mode to the PVC                      | `ReadWriteOnce`                         |
 | `persistentVolumeClaim.size`                  | Size of the PVC                            | `5Gi`                                   |
 | `persistentVolumeClaim.storageClass`          | Storage class of the PVC                   | None:                                   |
+| `readinessProbe.enabled`                      | readinessProbe to be enabled?              | `false`                                 |
+| `readinessProbe.initialDelaySeconds`          | number of seconds                          | 30                                      |
+| `readinessProbe.timeoutSeconds`               | number of seconds                          | 10                                      |
+| `readinessProbe.periodSeconds`                | number of seconds                          | 10                                      |
+| `readinessProbe.successThreshold`             | number of successes                        | 5                                       |
 | `securityContext.enabled`                     | Enable security context (should be true for PVC)                    | `false`                                  |
 | `securityContext.allowPrivilegeEscalation`    | Allow privilege escalation                 | `false`                                 |
 | `securityContext.runAsUser`                   | User id to run in pods                     | `1000`                                  |
 | `securityContext.fsGroup`                     | fsGroup id to run in pods                  | `2000`                                  |
+| `extraConfigMapMounts`                        | Additional configmaps to be mounted        | `[]`                                    |
+| `deployment.annotations`                      | Annotations for deployment                 | `{}`                                    |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,

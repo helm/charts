@@ -61,6 +61,9 @@ spec:
             - --{{ $key }}
             {{- end }}
           {{- end }}
+          {{- if .Values.cloudflare.proxied }}
+            - --cloudflare-proxied
+          {{- end }}
           {{- if .Values.aws.zoneType }}
             - --aws-zone-type={{ .Values.aws.zoneType }}
           {{- end }}
@@ -100,7 +103,7 @@ spec:
           {{- end }}
           {{- if (and .Values.aws.secretKey .Values.aws.accessKey) }}
           - name: aws-credentials
-            mountPath: /root/.aws
+            mountPath: {{ .Values.aws.credentialsPath }}
             readOnly: true
           {{- end }}
           env:
@@ -161,6 +164,10 @@ spec:
               port: 7979
           ports:
             - containerPort: 7979
+        {{- if .Values.securityContext }}
+          securityContext:
+{{ toYaml .Values.securityContext | indent 12 }}
+        {{- end }}
         {{- if .Values.resources }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}

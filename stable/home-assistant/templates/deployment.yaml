@@ -49,6 +49,13 @@ spec:
             - name: {{ $key }}
               value: {{ $value }}
             {{- end }}
+            {{- range $name, $opts := .Values.extraEnvSecrets }}
+            - name: {{ $name }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $opts.secret }}
+                  key: {{ $opts.key }}
+            {{- end }}
           volumeMounts:
           - mountPath: /config
             name: config

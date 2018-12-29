@@ -38,10 +38,10 @@ The following table lists the configurable parameters of the Prometheus Adapter 
 | ------------------------------- | ------------------------------------------------------------------------------- | --------------------------------------------|
 | `affinity`                      | Node affinity                                                                   | `{}`                                        |
 | `image.repository`              | Image repository                                                                | `directxman12/k8s-prometheus-adapter-amd64` |
-| `image.tag`                     | Image tag                                                                       | `v0.2.1`                                    |
+| `image.tag`                     | Image tag                                                                       | `v0.4.1`                                    |
 | `image.pullPolicy`              | Image pull policy                                                               | `IfNotPresent`                              |
 | `logLevel`                      | Log level                                                                       | `4`                                         |
-| `metricsRelistInterval`         | Interval at which to re-list the set of all available metrics from Prometheus   | `30s`                                       |
+| `metricsRelistInterval`         | Interval at which to re-list the set of all available metrics from Prometheus   | `1m`                                        |
 | `nodeSelector`                  | Node labels for pod assignment                                                  | `{}`                                        |
 | `prometheus.url`                | Url of where we can find the Prometheus service                                 | `http://prometheus.default.svc`             |
 | `prometheus.port`               | Port of where we can find the Prometheus service                                | `9090`                                      |

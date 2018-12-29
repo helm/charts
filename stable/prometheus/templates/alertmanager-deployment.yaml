@@ -1,4 +1,4 @@
-{{- if .Values.alertmanager.enabled -}}
+{{- if and .Values.alertmanager.enabled (not .Values.alertmanager.statefulSet.enabled) -}}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
