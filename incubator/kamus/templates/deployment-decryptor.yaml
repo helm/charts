@@ -1,0 +1,62 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "kamus.name" . }}-decryptor
+  labels:
+    app: {{ template "kamus.name" . }}
+    component: decryptor
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 0
+  replicas: {{ .Values.replicaCount }}
+  selector:
+      matchLabels:
+        app: {{ template "kamus.name" . }}
+        release: {{ .Release.Name }}
+        component: decryptor
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap-decryptor.yaml") . | sha256sum }}
+        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+      labels:
+        app: {{ template "kamus.name" . }}
+        release: {{ .Release.Name }}
+        component: decryptor
+    spec:
+      serviceAccountName: {{ template "kamus.name" . }}
+      automountServiceAccountToken: true
+      containers:
+        - name: decryptor-api
+          image: {{ .Values.image.repository }}/kamus:decryptor-{{ .Values.image.version }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+            - name: secret-volume
+              mountPath: /home/dotnet/app/secrets
+          ports:
+            - containerPort: 9999
+          livenessProbe:
+            httpGet:
+              path: /api/v1/isAlive
+              port: 9999
+          readinessProbe:
+            httpGet:
+              path: /api/v1/isAlive
+              port: 9999
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+          envFrom:
+           - configMapRef:
+              name: {{ template "kamus.name" . }}-decryptor
+      volumes:
+        - name: secret-volume
+          secret:
+            secretName: {{ template "kamus.name" . }}
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end }}

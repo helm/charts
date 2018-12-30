@@ -1,0 +1,11 @@
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ template "kamus.name" . }}
+subjects:
+- kind: ServiceAccount
+  name: {{ template "kamus.name" . }}
+roleRef:
+  kind: ClusterRole
+  name: {{ template "kamus.name" . }}
+  apiGroup: rbac.authorization.k8s.io

@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "kamus.name" . }}-decryptor
+{{- if .Values.service.annotations }}
+  annotations:
+{{ toYaml .Values.service.annotations | indent 4 }}
+{{- end }}
+  labels:
+    app: {{ template "kamus.name" . }}
+    component: decryptor
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: 80
+      targetPort: 9999
+      protocol: TCP
+      name: kamus-decryptor
+  selector:
+    app: {{ template "kamus.name" . }}
+    component: decryptor
+    release: {{ .Release.Name }}

@@ -1,0 +1,36 @@
+{{- if .Values.ingress.enabled -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "kamus.name" . }}
+  labels:
+    app: {{ template "kamus.name" . }}
+    component: encryptor
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+{{- if .Values.ingress.annotations }}
+  annotations:
+{{ toYaml .Values.ingress.annotations | indent 4 }}
+{{- end }}
+spec:
+  rules:
+    {{- range $host := .Values.ingress.hosts }}
+    - host: {{ $host }}
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: kamus-encryptor
+              servicePort: 80
+    {{- end }}
+{{- if .Values.ingress.tls.secretName -}}}}
+  tls:
+    - hosts:
+    {{- range $host := .Values.ingress.hosts }}
+      - {{ $host }}
+    {{- end }}
+
+      secretName: {{ .Values.ingress.tls.secretName }}
+{{- end -}}}}
+{{- end -}}

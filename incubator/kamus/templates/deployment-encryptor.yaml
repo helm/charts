@@ -1,0 +1,102 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "kamus.name" . }}-encryptor
+  labels:
+    app: {{ template "kamus.name" . }}
+    component: encryptor
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 0
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "kamus.name" . }}
+      component: encryptor
+      release: {{ .Release.Name }}
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap-encryptor.yaml") . | sha256sum }}
+        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+      labels:
+        app: {{ template "kamus.name" . }}
+        component: encryptor
+        release: {{ .Release.Name }}
+    spec:
+      serviceAccountName: {{ template "kamus.name" . }}
+      automountServiceAccountToken: false
+      containers:
+        - name: encryptor-api
+          image: {{ .Values.image.repository }}/kamus:encryptor-{{ .Values.image.version }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+            - name: secret-volume
+              mountPath: /home/dotnet/app/secrets
+          ports:
+            - containerPort: 9999
+          livenessProbe:
+            httpGet:
+              path: /api/v1/isAlive
+              port: 9999
+          readinessProbe:
+            httpGet:
+              path: /api/v1/isAlive
+              port: 9999
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+          envFrom:
+           - configMapRef:
+              name: {{ template "kamus.name" . }}-encryptor
+        {{- if .Values.useAirbag }}
+        - name: "airbag"
+          image: {{ .Values.airbag.repository }}/airbag:{{ .Values.airbag.tag }}
+          ports:
+            - containerPort: 7000
+          env:
+            - name: BACKEND_HOST_NAME
+              value: "localhost"
+            - name: BACKEND_SERVICE_PORT
+              value: "9999"
+            - name: UNAUTHENTICATED_ROUTES
+              value: '/api/v1/isAlive,/metrics'
+            - name: COLLECT_METRICS
+              value: "true"
+            - name: ASPNETCORE_URLS
+              value: "http://+:7000"
+            {{- if .Values.airbag.authority }}
+            - name: AUTHORITY
+              value: {{ .Values.airbag.authority | quote }}
+            - name: AUDIENCE
+              value: {{ .Values.airbag.audience | quote }}
+            - name: ISSUER
+              value: {{ .Values.airbag.issuer | quote }}  
+            {{- end }}  
+          livenessProbe:
+            httpGet:
+              path: /api/v1/isAlive
+              port: 7000
+          readinessProbe:
+            httpGet:
+              path: /api/v1/isAlive
+              port: 7000
+          resources:
+            resources:
+              limits:
+                cpu: 500m
+                memory: 600Mi
+              requests:
+                cpu: 100m
+                memory: 128Mi
+          {{- end -}}}}
+      volumes:
+        - name: secret-volume
+          secret:
+            secretName: {{ template "kamus.name" . }}
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end }}
