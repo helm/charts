@@ -18,11 +18,11 @@ ingress:
   enabled: false
 resources:
   limits:
-   cpu: 500m
-   memory: 600Mi
+    cpu: 500m
+    memory: 600Mi
   requests:
-   cpu: 100m
-   memory: 128Mi
+    cpu: 100m
+    memory: 128Mi
 autoscale:
   minReplicas: 2
   maxReplicas: 10
