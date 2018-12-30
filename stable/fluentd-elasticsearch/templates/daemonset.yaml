@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: {{ template "fluentd-elasticsearch.fullname" . }}
+  name: {{ include "fluentd-elasticsearch.fullname" . }}
   labels:
     app.kubernetes.io/name: {{ include "fluentd-elasticsearch.name" . }}
     helm.sh/chart: {{ include "fluentd-elasticsearch.chart" . }}
@@ -38,9 +38,9 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
 {{- end }}
     spec:
-      serviceAccountName: {{ template "fluentd-elasticsearch.fullname" . }}
+      serviceAccountName: {{ include "fluentd-elasticsearch.fullname" . }}
       containers:
-      - name: {{ template "fluentd-elasticsearch.fullname" . }}
+      - name: {{ include "fluentd-elasticsearch.fullname" . }}
         image:  "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         env:
@@ -151,7 +151,7 @@ spec:
           path: /usr/lib64
       - name: config-volume
         configMap:
-          name: {{ template "fluentd-elasticsearch.fullname" . }}
+          name: {{ include "fluentd-elasticsearch.fullname" . }}
 {{- if .Values.extraVolumes }}
 {{ toYaml .Values.extraVolumes | indent 6 }}
 {{- end }}
