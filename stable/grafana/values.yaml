@@ -105,9 +105,9 @@ affinity: {}
 persistence:
   enabled: false
   # storageClassName: default
-  # accessModes:
-  #   - ReadWriteOnce
-  # size: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  size: 10Gi
   # annotations: {}
   # subPath: ""
   # existingClaim:
