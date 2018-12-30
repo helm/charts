@@ -13,7 +13,7 @@ image: concourse/concourse
 ## Concourse image version.
 ## ref: https://hub.docker.com/r/concourse/concourse/tags/
 ##
-imageTag: "4.2.1"
+imageTag: "4.2.2"
 
 ## Specific image digest to use in place of a tag.
 ## ref: https://kubernetes.io/docs/concepts/configuration/overview/#container-images

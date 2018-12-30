@@ -18,3 +18,5 @@ updateStrategy: OnDelete
 tolerations:
   - key: node-role.kubernetes.io/master
     effect: NoSchedule
+
+podAnnotations: {}
