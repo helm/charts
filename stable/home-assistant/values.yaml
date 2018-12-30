@@ -8,6 +8,7 @@ image:
   repository: homeassistant/home-assistant
   tag: 0.84.6
   pullPolicy: IfNotPresent
+  pullSecrets: []
 
 service:
   type: ClusterIP
