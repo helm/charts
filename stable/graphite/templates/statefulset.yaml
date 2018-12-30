@@ -1,5 +1,5 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: apps/v1beta1
+kind: StatefulSet
 metadata:
   name: {{ template "graphite.fullname" . }}
   labels:
@@ -8,25 +8,19 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  strategy:
-    type: Recreate
+  updateStrategy:
+    type: RollingUpdate
   selector:
     matchLabels:
       app: {{ template "graphite.name" . }}
       release: {{ .Release.Name }}
+  serviceName: {{ template "graphite.name" . }}
   template:
     metadata:
       labels:
         app: {{ template "graphite.name" . }}
         release: {{ .Release.Name }}
     spec:
-      initContainers:
-      - name: create-syncdb
-        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
-        command: [ "sh", "-c", "test -f /opt/graphite/storage/graphite.db || /usr/bin/expect /usr/local/bin/django_admin_init.exp"]
-        volumeMounts:
-          - name: {{ template "graphite.fullname" . }}-pvc
-            mountPath: /opt/graphite/storage/
       containers:
       - image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         name: {{ .Chart.Name }}
