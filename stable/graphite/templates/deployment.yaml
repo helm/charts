@@ -22,7 +22,7 @@ spec:
     spec:
       initContainers:
       - name: create-syncdb
-        image: {{ .Values.image.repository }}
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         command: [ "sh", "-c", "test -f /opt/graphite/storage/graphite.db || /usr/bin/expect /usr/local/bin/django_admin_init.exp"]
         volumeMounts:
           - name: {{ template "graphite.fullname" . }}-pvc
