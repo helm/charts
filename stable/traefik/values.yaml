@@ -16,6 +16,8 @@ podDisruptionBudget: {}
   # maxUnavailable: 1
   # minAvailable: 2
 
+priorityClassName: ""
+
 # rootCAs: []
 
 cpuRequest: 100m
