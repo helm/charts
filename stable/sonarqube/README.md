@@ -46,6 +46,7 @@ The following table lists the configurable parameters of the Sonarqube chart and
 | `command`                                   | command to run in the container           | `nil` (need to be set prior to 6.7.6, and 7.4)      |
 | `ingress.enabled`                           | Flag for enabling ingress                 | false                                      |
 | `service.type`                              | Kubernetes service type                   | `LoadBalancer`                             |
+| `service.labels`                            | Kubernetes service labels                 | None                                       |
 | `service.annotations`                       | Kubernetes service annotations            | None                                       |
 | `service.loadBalancerSourceRanges`          | Kubernetes service LB Allowed inbound IP addresses | 0.0.0.0/0                            |
 | `service.loadBalancerIP`                    | Kubernetes service LB Optional fixed external IP   | None                                       |
