@@ -13,7 +13,7 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  replicas: {{ .Values.proxy.replicaCount }}
+  replicas: {{ .Values.auth.replicaCount }}
   selector:
     matchLabels:
       app: {{ $name }}-auth
@@ -126,16 +126,16 @@ spec:
               readOnly: true
         {{- end }}
           resources:
-{{ toYaml .Values.proxy.resources | indent 12 }}
-    {{- with .Values.proxy.nodeSelector }}
+{{ toYaml .Values.auth.resources | indent 12 }}
+    {{- with .Values.auth.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
     {{- end }}
-    {{- with .Values.proxy.affinity }}
+    {{- with .Values.auth.affinity }}
       affinity:
 {{ toYaml . | indent 8 }}
     {{- end }}
-    {{- with .Values.proxy.tolerations }}
+    {{- with .Values.auth.tolerations }}
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
