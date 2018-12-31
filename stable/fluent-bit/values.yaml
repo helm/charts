@@ -184,12 +184,12 @@ input:
   systemd:
     enabled: true
     filters: {}
-      # _SYSTEMD_UNIT: kubelet.service
       # _SYSTEMD_UNIT: docker.service
-      # _SYSTEMD_UNIT: kubelet-monitor.service
+      # _SYSTEMD_UNIT: kubelet.service
       # _SYSTEMD_UNIT: node-problem-detector.service
     maxEntries: 1000
     readFromTail: true
+    tag: host.*
 
 filter:
   kubeURL: https://kubernetes.default.svc:443

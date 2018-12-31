@@ -36,8 +36,9 @@ The following tables lists the configurable parameters of the Sentry chart and t
 | Parameter                  | Description                         | Default                                                 |
 |----------------------------|-------------------------------------|---------------------------------------------------------|
 | `image.repository`         | Image repository | `homeassistant/home-assistant` |
-| `image.tag`                | Image tag. Possible values listed [here](https://hub.docker.com/r/jacobalberty/home-assistant/tags/).| `0.72.1`|
+| `image.tag`                | Image tag. Possible values listed [here](https://hub.docker.com/r/homeassistant/home-assistant/tags/).| `0.84.6`|
 | `image.pullPolicy`         | Image pull policy | `IfNotPresent` |
+| `image.pullSecrets`        | Secrets to use when pulling the image | `[]` |
 | `service.type`             | Kubernetes service type for the home-assistant GUI | `ClusterIP` |
 | `service.port`             | Kubernetes port where the home-assistant GUI is exposed| `8123` |
 | `service.annotations`      | Service annotations for the home-assistant GUI | `{}` |

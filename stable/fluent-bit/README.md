@@ -103,6 +103,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `input.systemd.filters`             | Please see https://fluentbit.io/documentation/current/input/systemd.html                   | `{}`                                       |
 | `input.systemd.maxEntries`             | Please see https://fluentbit.io/documentation/current/input/systemd.html                  | `1000`                                       |
 | `input.systemd.readFromTail` | Please see https://fluentbit.io/documentation/current/input/systemd.html | `true`|
+| `input.systemd.tag` | Please see https://fluentbit.io/documentation/current/input/systemd.html | `host.*`|
 | `rbac.create`                      | Specifies whether RBAC resources should be created.   | `true`                                 |
 | `serviceAccount.create`            | Specifies whether a ServiceAccount should be created. | `true`                                 |
 | `serviceAccount.name`              | The name of the ServiceAccount to use.     | `NULL`                                            |
