@@ -37,11 +37,15 @@ data:
         DB               /tail-db/tail-containers-state.db
         DB.Sync          Normal
 {{- end }}
-{{- if .Values.kubeletLogs }}
+{{- if .Values.input.systemd.enabled }}
     [INPUT]
         Name            systemd
-        Tag             kubelet
-        Systemd_Filter  _SYSTEMD_UNIT=kubelet.service
+        Tag             host.*
+{{- range $key, $value := .Values.input.systemd.filters }}
+        Systemd_Filter  "{{ $key }}"="{{ $value }}"
+{{- end }}
+        Max_Entries     {{ .Values.input.systemd.maxEntries }}
+        Read_From_Tail  {{ .Values.input.systemd.readFromTail }}
 {{- end }}
 {{ .Values.extraEntries.input | indent 8 }}
 

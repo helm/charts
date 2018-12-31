@@ -23,9 +23,6 @@ metrics:
 # When enabled, fluent-bit will keep track of tailing offsets across pod restarts.
 trackOffsets: false
 
-# When enabled, fluent-bit will collect kubelet logs
-kubeletLogs: true
-
 backend:
   type: forward
   forward:
@@ -184,7 +181,15 @@ input:
   tail:
     memBufLimit: 5MB
     path: /var/log/containers/*.log
-
+  systemd:
+    enabled: true
+    filters: {}
+      # _SYSTEMD_UNIT: kubelet.service
+      # _SYSTEMD_UNIT: docker.service
+      # _SYSTEMD_UNIT: kubelet-monitor.service
+      # _SYSTEMD_UNIT: node-problem-detector.service
+    maxEntries: 1000
+    readFromTail: true
 
 filter:
   kubeURL: https://kubernetes.default.svc:443
