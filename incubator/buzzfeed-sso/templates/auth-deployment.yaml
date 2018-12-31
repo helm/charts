@@ -8,22 +8,25 @@ kind: Deployment
 metadata:
   name: {{ $fullName }}-auth
   labels:
-    app: {{ $name }}-auth
-    chart: {{ template "buzzfeed-sso.chart" . }}-auth
+    app: {{ $name }}
+    chart: {{ template "buzzfeed-sso.chart" . }}
+    component: {{ $name }}-auth
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
   replicas: {{ .Values.auth.replicaCount }}
   selector:
     matchLabels:
-      app: {{ $name }}-auth
+      app: {{ $name }}
+      component: {{ $name }}-auth
       release: {{ .Release.Name }}
   template:
     metadata:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
       labels:
-        app: {{ $name }}-auth
+        app: {{ $name }}
+        component: {{ $name }}-auth
         release: {{ .Release.Name }}
     spec:
     {{- if .Values.provider.google }}

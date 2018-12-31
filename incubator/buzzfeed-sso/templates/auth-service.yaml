@@ -4,8 +4,9 @@ kind: Service
 metadata:
   name: {{ template "buzzfeed-sso.fullname" . }}-auth
   labels:
-    app: {{ $name }}-auth
+    app: {{ $name }}
     chart: {{ template "buzzfeed-sso.chart" . }}
+    component: {{ $name }}-auth
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
@@ -16,5 +17,6 @@ spec:
       targetPort: 4180
       protocol: TCP
   selector:
-    app: {{ $name }}-auth
+    app: {{ $name }}
+    component: {{ $name }}-auth
     release: {{ .Release.Name }}

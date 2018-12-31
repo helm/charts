@@ -6,22 +6,25 @@ kind: Deployment
 metadata:
   name: {{ $fullName }}-proxy
   labels:
-    app: {{ $name }}-proxy
-    chart: {{ template "buzzfeed-sso.chart" . }}-proxy
+    app: {{ $name }}
+    chart: {{ template "buzzfeed-sso.chart" . }}
+    component: {{ $name }}-proxy
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
   replicas: {{ .Values.proxy.replicaCount }}
   selector:
     matchLabels:
-      app: {{ $name }}-proxy
+      app: {{ $name }}
+      component: {{ $name }}-proxy
       release: {{ .Release.Name }}
   template:
     metadata:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
       labels:
-        app: {{ $name }}-proxy
+        app: {{ $name }}
+        component: {{ $name }}-proxy
         release: {{ .Release.Name }}
     spec:
       volumes:

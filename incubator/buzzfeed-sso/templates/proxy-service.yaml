@@ -4,8 +4,9 @@ kind: Service
 metadata:
   name: {{ template "buzzfeed-sso.fullname" . }}-proxy
   labels:
-    app: {{ $name }}-proxy
+    app: {{ $name }}
     chart: {{ template "buzzfeed-sso.chart" . }}
+    component: {{ $name }}-proxy
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
@@ -16,5 +17,6 @@ spec:
       targetPort: 4180
       protocol: TCP
   selector:
-    app: {{ $name }}-proxy
+    app: {{ $name }}
+    component: {{ $name }}-proxy
     release: {{ .Release.Name }}
