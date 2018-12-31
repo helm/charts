@@ -20,3 +20,17 @@ data:
     else
       exit 0
     fi
+{{- if .Values.airflow.connections }}    
+  add-connections.sh: |
+    #!/bin/sh -e
+    {{- range .Values.airflow.connections }}
+    airflow connections --add --conn_type {{ .type }} --conn_id {{ .id }} 
+    {{- if .uri }} --conn_uri {{ .uri | quote }} {{ end -}}
+    {{- if .host }} --conn_extra {{ .host }} {{ end -}}
+    {{- if .login }} --conn_extra {{ .login }} {{ end -}}
+    {{- if .password }} --conn_extra {{ .password }} {{ end -}}
+    {{- if .schema }} --conn_extra {{ .schema }} {{ end -}}
+    {{- if .port }} --conn_extra {{ .port }} {{ end -}}
+    {{- if .extra }} --conn_extra {{ .extra | quote }} {{ end -}}
+    {{- end }}
+{{- end }}

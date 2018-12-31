@@ -98,6 +98,20 @@ airflow:
     pullSecret: my-docker-repo-secret
 ```
 
+### Airflow connections
+
+Connections define how your Airflow instance connects to environment and 3rd party service providers.
+This helm chart allows you to define your own connections at the time of Airflow initialization.
+For each connection the id and the type has to be defined. All other properties are optional.
+Example:
+```yaml
+airflow:
+  connections:
+  - id: my_aws
+    type: aws
+    extra: '{"aws_access_key_id": "**********", "aws_secret_access_key": "***", "region_name":"eu-central-1"}'
+
+
 ### Worker Statefulset
 
 Celery workers uses StatefulSet.

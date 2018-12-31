@@ -101,6 +101,10 @@ spec:
               /usr/local/scripts/install-requirements.sh &&
               echo "executing initdb" &&
               airflow initdb &&
+            {{- if .Values.airflow.connections }}
+              echo "adding connections" &&
+              /usr/local/scripts/add-connections.sh &&
+            {{- end }} 
               echo "executing scheduler" &&
               airflow scheduler -n {{ .Values.airflow.schedulerNumRuns }}
           {{- else }}

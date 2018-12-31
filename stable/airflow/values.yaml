@@ -80,7 +80,16 @@ airflow:
   ## Configure pod disruption budget for the scheduler
   podDisruptionBudget:
     maxUnavailable: 1
-
+  ## Add custom connections
+  ## Use this to add Airflow connections for operators you use
+  ## For each connection - the id and type have to be defined. 
+  ## All the other parameters are optional 
+  ## Example:
+  ##   connections:
+  ##   - id: my_aws
+  ##     type: aws
+  ##     extra: '{"aws_access_key_id": "**********", "aws_secret_access_key": "***", "region_name":"eu-central-1"}'
+  connections: {}
 ##
 ## Workers configuration
 workers:
