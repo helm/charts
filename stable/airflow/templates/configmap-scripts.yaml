@@ -26,11 +26,11 @@ data:
     {{- range .Values.airflow.connections }}
     airflow connections --add --conn_type {{ .type }} --conn_id {{ .id }} 
     {{- if .uri }} --conn_uri {{ .uri | quote }} {{ end -}}
-    {{- if .host }} --conn_extra {{ .host }} {{ end -}}
+    {{- if .host }} --conn_host {{ .host }} {{ end -}}
     {{- if .login }} --conn_extra {{ .login }} {{ end -}}
-    {{- if .password }} --conn_extra {{ .password }} {{ end -}}
-    {{- if .schema }} --conn_extra {{ .schema }} {{ end -}}
-    {{- if .port }} --conn_extra {{ .port }} {{ end -}}
+    {{- if .password }} --conn_login {{ .password }} {{ end -}}
+    {{- if .schema }} --conn_schema {{ .schema }} {{ end -}}
+    {{- if .port }} --conn_port {{ .port }} {{ end -}}
     {{- if .extra }} --conn_extra {{ .extra | quote }} {{ end -}}
     {{- end }}
 {{- end }}
