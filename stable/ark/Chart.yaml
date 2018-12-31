@@ -4,6 +4,7 @@ description: A Helm chart for ark
 version: 1.2.5
 home: https://github.com/heptio/ark
 icon: https://cdn-images-1.medium.com/max/1600/1*-9mb3AKnKdcL_QD3CMnthQ.png
+appVersion: v0.9.1
 sources:
 - https://github.com/heptio/ark
 maintainers:
