@@ -82,8 +82,8 @@ airflow:
     maxUnavailable: 1
   ## Add custom connections
   ## Use this to add Airflow connections for operators you use
-  ## For each connection - the id and type have to be defined. 
-  ## All the other parameters are optional 
+  ## For each connection - the id and type have to be defined.
+  ## All the other parameters are optional
   ## Example:
   ##   connections:
   ##   - id: my_aws
