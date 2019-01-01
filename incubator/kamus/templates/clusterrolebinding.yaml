@@ -5,6 +5,7 @@ metadata:
 subjects:
 - kind: ServiceAccount
   name: {{ template "kamus.name" . }}
+  namespace: {{ .Release.Namespace }}
 roleRef:
   kind: ClusterRole
   name: {{ template "kamus.name" . }}

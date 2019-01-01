@@ -18,6 +18,7 @@ spec:
       app: {{ template "kamus.name" . }}
       component: encryptor
       release: {{ .Release.Name }}
+  template:
     metadata:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap-encryptor.yaml") . | sha256sum }}
@@ -51,7 +52,9 @@ spec:
           envFrom:
            - configMapRef:
               name: {{ template "kamus.name" . }}-encryptor
-        {{- if .Values.useAirbag }}
+
+
+        {{- if .Values.useAirbag -}}
         - name: "airbag"
           image: {{ .Values.airbag.repository }}/airbag:{{ .Values.airbag.tag }}
           ports:
@@ -91,7 +94,7 @@ spec:
               requests:
                 cpu: 100m
                 memory: 128Mi
-          {{- end -}}}}
+          {{- end }}
       volumes:
         - name: secret-volume
           secret:

@@ -32,7 +32,7 @@ The chart can be customized using the following configurable parameters. Most se
 | `service.type`                                 | The type of the service (careful, values other than `ClusterIp` expose the decryptor to the internet)                         | `ClusterIp`  
 | `service.annotations`                          | The annotations for the service |  `prometheus.io/scrape: "true"`
 | `ingress.enabled`                              | Enable or disable ingress for encryptor API |  `false`
-| `ingress.host`                                 | Array of hosts for the ingress |                 
+| `ingress.hosts`                                 | Array of hosts for the ingress |                 
 | `ingress.annotations`                          | The annotations for the ingress | 
 | `ingress.tls.secretName`                       | The name of the TLS secret that should be used by the ingress | 
 | `resources.limit.cpu`                          | The maximum CPU cores that can be consumed  | `500m`
@@ -42,15 +42,24 @@ The chart can be customized using the following configurable parameters. Most se
 | `autoscale.minReplicas`                        | The minimum number of pods   | 2
 | `autoscale.maxReplicas`                        | The maximum number of pods   | 10 
 | `autoscale.targetCPU`                          | Scale up the numnber of pods when CPU usage is above this percentage       |   50
-| `keyManagment.provider`                        | The KMS provider  | AES
-| `keyManagment.AES.key`                         | The encryption key used by the AES provider, *ovveride for production deployments*. This value *must* kept secret            | `rWnWbaFutavdoeqUiVYMNJGvmjQh31qaIej/vAxJ9G0=`
-| `keyManagment.azureKeyVault.clientId`           | A client ID for a valid Azure Active Directory that has permissions to access the requested key vault |    
-| `keyManagment.azureKeyVault.clientSecret`          | A client secret for a valid Azure Active Directory that has permissions to access the requested key vault. This value *must* kept secret |   
-| `keyManagment.azureKeyVault.keyVaultName`          | The name of the KeyVault to use | 
-| `keyManagment.azureKeyVault.keyType`                | The type of the keys  |  `RSA-HSM` 
-| `keyManagment.azureKeyVault.keySize`                | The size of the keys. Do not set to values smaller than 2048 for RSA keys   |  `2048` 
-| `keyManagment.azureKeyVault.maximumDataLength`                | The maximum number of bytes that can be encrypted by KeyVaults. For data in bigger size, envelope encryption is used.   |  `214` 
+| `keyManagement.provider`                        | The KMS provider (one of AES, AzureKeyVault, GoogleKms)  | AES
+| `keyManagement.AES.key`                         | The encryption key used by the AES provider, *ovveride for production deployments*. This value *must* kept secret            | `rWnWbaFutavdoeqUiVYMNJGvmjQh31qaIej/vAxJ9G0=`
+| `keyManagement.azureKeyVault.clientId`           | A client ID for a valid Azure Active Directory that has permissions to access the requested key vault |    
+| `keyManagement.azureKeyVault.clientSecret`          | A client secret for a valid Azure Active Directory that has permissions to access the requested key vault. This value *must* kept secret |   
+| `keyManagement.azureKeyVault.keyVaultName`          | The name of the KeyVault to use | 
+| `keyManagement.azureKeyVault.keyType`                | The type of the keys  |  `RSA-HSM` 
+| `keyManagement.azureKeyVault.keySize`                | The size of the keys. Do not set to values smaller than 2048 for RSA keys   |  `2048` 
+| `keyManagement.azureKeyVault.maximumDataLength`                | The maximum number of bytes that can be encrypted by KeyVaults. For data in bigger size, envelope encryption is used.   |  `214` 
+| `keyManagement.googleKms.location`                | The location of the keyring used for encryption/decryption   |  
+| `keyManagement.googleKms.keyRing`                | The name of the keyring used for encryption/decryption   |  
+| `keyManagement.googleKms.protectionLevel`                | The protection of the keys, can be either HSM or SOFTWARE   |  HSM
+| `keyManagement.googleKms.credentials`                | Base64 encoded credentials files (the JSON file that is created when creating keys for service account on google)  | 
 
+keyManagement:
+  provider: GoogleKms
+  googleKms:
+    location: europe-east2
+    keyRing: kamus-tests
 Specify parameters using `--set key=value[,key=value]` argument to `helm install`.
 
 Alternatively a YAML file that specifies the values for the parameters can be provided like this:

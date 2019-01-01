@@ -7,11 +7,11 @@ airbag:
   repository: soluto
   tag: 0.8
 image:
-  version: 1.0
+  version: latest
   repository: soluto
   pullPolicy: IfNotPresent
 service:
-  type: ClusterIp
+  type: ClusterIP
   annotations:
     prometheus.io/scrape: "true"
 ingress:
@@ -27,7 +27,7 @@ autoscale:
   minReplicas: 2
   maxReplicas: 10
   targetCPU: 50
-keyManagment:
+keyManagement:
   provider: AESKey
   AES:
     key: rWnWbaFutavdoeqUiVYMNJGvmjQh31qaIej/vAxJ9G0=

@@ -24,7 +24,7 @@ spec:
               serviceName: kamus-encryptor
               servicePort: 80
     {{- end }}
-{{- if .Values.ingress.tls.secretName -}}}}
+{{- if .Values.ingress.tls -}}}}
   tls:
     - hosts:
     {{- range $host := .Values.ingress.hosts }}
@@ -32,5 +32,5 @@ spec:
     {{- end }}
 
       secretName: {{ .Values.ingress.tls.secretName }}
-{{- end -}}}}
+{{- end -}}
 {{- end -}}
