@@ -236,6 +236,12 @@ dind:
   #    memory: 2Gi
   #    cpu: 1
 
+  ## additional volume mounts for DinD, e. g. for nfs volume for cache
+  ## ex: https://github.com/kubernetes/charts/tree/master/stable/keycloak
+  ##
+  extraVolumeMounts: |
+  extraVolumes: |
+
 ## Enable scraping of the /metrics endpoint for Prometheus
 metrics:
   prometheus:

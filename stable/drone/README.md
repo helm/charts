@@ -77,13 +77,15 @@ The following table lists the configurable parameters of the drone charts and th
 | `agent.readinessProbe.timeoutSeconds` | When the probe times out                                                           | 1                            |
 | `agent.readinessProbe.successThreshold` | Minimum consecutive successes for the probe to be considered successful after having failed. | 1                |
 | `agent.readinessProbe.failureThreshold` | Minimum consecutive failures for the probe to be considered failed after having succeeded. | 3                  |
-| `agent.tolerations`         | Drone **agent** pod tolerations                                                               | `{}`                        |
+| `agent.extraVolumes`        | Additional volumes for use in `dind.extraVolumeMounts`                                        | `""`                        |
+| `agent.tolerations`         | Drone **agent** pod tolerations                                                               | `[]`                        |
 | `dind.enabled`              | Enable or disable **DinD**                                                                    | `true`                      |
 | `dind.driver`               | **DinD** storage driver                                                                       | `overlay2`                  |
 | `dind.resources`            | **DinD** pod resource requests & limits                                                       | `{}`                        |
 | `dind.env`                  | **DinD** environment variables                                                                | `nil`                       |
 | `dind.command`              | **DinD** custom command instead of default entry point                                        | `nil`                       |
 | `dind.args`                 | **DinD** arguments for custom command or entry point                                          | `nil`                       |
+| `dind.extraVolumeMounts`    | **DinD** extra volumes to mount                                                               | `""`                        |
 | `metrics.prometheus.enabled` | Enable Prometheus metrics endpoint                                                          | `false`                     |
 | `persistence.enabled`       | Use a PVC to persist data                                                                     | `true`                      |
 | `persistence.existingClaim` | Use an existing PVC to persist data                                                           | `nil`                       |
