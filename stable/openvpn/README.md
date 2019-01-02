@@ -73,6 +73,7 @@ Parameter | Description | Default
 `persistence.storageClass`     | Storage class of backing PVC                                         | `nil`
 `persistence.accessMode`       | Use volume as ReadOnly or ReadWrite                                  | `ReadWriteOnce`
 `persistence.size`             | Size of data volume                                                  | `2M`
+`podAnnotations`               | Key-value pairs to add as pod annotations                            | `{}`
 `openvpn.OVPN_NETWORK`         | Network allocated for openvpn clients                                | `10.240.0.0`
 `openvpn.OVPN_SUBNET`          | Network subnet allocated for openvpn                                 | `255.255.0.0`
 `openvpn.OVPN_PROTO`           | Protocol used by openvpn tcp or udp                                  | `tcp`
