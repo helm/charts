@@ -87,6 +87,13 @@ The following table lists the configurable parameters of the Redmine chart and t
 | `ingress.tls[i].secretName`       | The secret kubernetes.io/tls             | `nil`                                                   |
 | `ingress.tls[i].hosts[j]`         | The virtual host name                    | `nil`                                                   |
 | `resources`                       | Resources allocation (Requests and Limits) | `{}` |
+| `ldap.enabled`                    | Enable or disable LDAP authentication. [See official docs for details](https://www.bookstackapp.com/docs/admin/ldap-auth/) | `false` |
+| `ldap.server`                    | LDAP server address | `false` |
+| `ldap.base_dn`                    | Base DN where users will be searched | `false` |
+| `ldap.dn`                    | User which will make search queries. Leave empty to search anonymously. | `false` |
+| `ldap.pass`                    | Password of user performing search queries.  | `false` |
+| `ldap.userFilter`                    | A filter to use when searching for users | `false` |
+| `ldap.version`                    | Set the LDAP version to use when connecting to the server. Required especially when using AD. | `false` |
 
 The above parameters map to the env variables defined in the [Bookstack image](https://hub.docker.com/r/solidnerd/bookstack/) and the MariaDB/MySQL database settings. For more information please refer to the [Bookstack](https://hub.docker.com/r/solidnerd/bookstack/) image documentation.
 
