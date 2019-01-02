@@ -1,22 +1,21 @@
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
-  name: {{ template "hadoop.fullname" . }}-yarn-rm
+  name: {{ include "hadoop.fullname" . }}-yarn-rm
   annotations:
     checksum/config: {{ include (print $.Template.BasePath "/hadoop-configmap.yaml") . | sha256sum }}
   labels:
-    app: {{ template "hadoop.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    app: {{ include "hadoop.name" . }}
+    chart: {{ include "hadoop.chart" . }}
     release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
     component: yarn-rm
 spec:
-  serviceName: {{ template "hadoop.fullname" . }}-yarn-rm
+  serviceName: {{ include "hadoop.fullname" . }}-yarn-rm
   replicas: 1
   template:
     metadata:
       labels:
-        app: {{ template "hadoop.name" . }}
+        app: {{ include "hadoop.name" . }}
         release: {{ .Release.Name }}
         component: yarn-rm
     spec:
@@ -27,7 +26,7 @@ spec:
           - topologyKey: "kubernetes.io/hostname"
             labelSelector:
               matchLabels:
-                app:  {{ template "hadoop.name" . }}
+                app:  {{ include "hadoop.name" . }}
                 release: {{ .Release.Name | quote }}
                 component: yarn-rm
         {{- else if eq .Values.antiAffinity "soft" }}
@@ -37,15 +36,15 @@ spec:
               topologyKey: "kubernetes.io/hostname"
               labelSelector:
                 matchLabels:
-                  app:  {{ template "hadoop.name" . }}
+                  app:  {{ include "hadoop.name" . }}
                   release: {{ .Release.Name | quote }}
                   component: yarn-rm
         {{- end }}
       terminationGracePeriodSeconds: 0
       containers:
       - name: yarn-rm
-        image: {{ .Values.image }}
-        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         ports:
         - containerPort: 8088
           name: web
@@ -73,4 +72,4 @@ spec:
       volumes:
       - name: hadoop-config
         configMap:
-          name: {{ template "hadoop.fullname" . }}
+          name: {{ include "hadoop.fullname" . }}
