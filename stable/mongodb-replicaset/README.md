@@ -86,6 +86,7 @@ The following table lists the configurable parameters of the mongodb chart and t
 | `nodeSelector`                      | Node labels for pod assignment                                            | `{}`                                                |
 | `affinity`                          | Node/pod affinities                                                       | `{}`                                                |
 | `tolerations`                       | List of node taints to tolerate                                           | `[]`                                                |
+| `priorityClassName`                 | Pod priority class name                                                   | ``                                                  |
 | `livenessProbe.failureThreshold`    | Liveness probe failure threshold                                          | `3`                                                 |
 | `livenessProbe.initialDelaySeconds` | Liveness probe initial delay seconds                                      | `30`                                                |
 | `livenessProbe.periodSeconds`       | Liveness probe period seconds                                             | `10`                                                |
