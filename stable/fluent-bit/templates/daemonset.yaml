@@ -3,7 +3,7 @@ kind: DaemonSet
 metadata:
   name: fluent-bit
   labels:
-    app: {{ template "fluent-bit.fullname" . }}
+    app: {{ template "fluent-bit.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
@@ -13,7 +13,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "fluent-bit.fullname" . }}
+        app: {{ template "fluent-bit.name" . }}
         release: {{ .Release.Name }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}

@@ -105,9 +105,9 @@ spec:
         {{- end }}
         {{- if not (eq .Values.replication.synchronousCommit "off")}}
         - name: POSTGRESQL_SYNCHRONOUS_COMMIT_MODE
-          value: {{ .Values.replication.synchronousCommit }}
+          value: {{ .Values.replication.synchronousCommit | quote }}
         - name: POSTGRESQL_NUM_SYNCHRONOUS_REPLICAS
-          value: {{ .Values.replication.numSynchronousReplicas }}
+          value: {{ .Values.replication.numSynchronousReplicas | quote }}
         {{- end }}
         - name: POSTGRESQL_CLUSTER_APP_NAME
           value: {{ .Values.replication.applicationName }}
@@ -163,7 +163,7 @@ spec:
           failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
         {{- end }}
         volumeMounts:
-        {{- if or (.Files.Glob "files/docker-entrypoint-initdb.d/*.{sh,sql,sql.gz}") .Values.initdbScriptsConfigMap }}
+        {{- if or (.Files.Glob "files/docker-entrypoint-initdb.d/*.{sh,sql,sql.gz}") .Values.initdbScriptsConfigMap .Values.initdbScripts }}
         - name: custom-init-scripts
           mountPath: /docker-entrypoint-initdb.d
         {{- end }}
@@ -252,7 +252,7 @@ spec:
         secret:
           secretName: {{ template "postgresql.secretName" . }}
       {{- end }}
-      {{- if  or (.Files.Glob "files/docker-entrypoint-initdb.d/*.{sh,sql,sql.gz}") .Values.initdbScriptsConfigMap }}
+      {{- if  or (.Files.Glob "files/docker-entrypoint-initdb.d/*.{sh,sql,sql.gz}") .Values.initdbScriptsConfigMap .Values.initdbScripts }}
       - name: custom-init-scripts
         configMap:
           name: {{ template "postgresql.initdbScriptsCM" . }}

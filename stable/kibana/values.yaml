@@ -29,6 +29,9 @@ files:
     # logging.verbose: "true"
     # server.defaultRoute: "/app/kibana"
 
+deployment:
+  annotations: {}
+
 service:
   type: ClusterIP
   externalPort: 443
