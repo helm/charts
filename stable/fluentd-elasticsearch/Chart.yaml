@@ -15,8 +15,5 @@ sources:
 - https://github.com/fluent/fluentd-kubernetes-daemonset
 - https://github.com/GoogleCloudPlatform/fluent-plugin-detect-exceptions
 - https://github.com/kubernetes/kubernetes/tree/master/cluster/addons/fluentd-elasticsearch/fluentd-es-image
-maintainers:
-- name: monotek
-  email: monotek23@gmail.com
 engine: gotpl
 deprecated: true
