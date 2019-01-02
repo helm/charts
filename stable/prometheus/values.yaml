@@ -418,7 +418,7 @@ nodeExporter:
   ## Custom Update Strategy
   ##
   updateStrategy:
-    type: OnDelete
+    type: RollingUpdate
 
   ## Additional node-exporter container arguments
   ##
