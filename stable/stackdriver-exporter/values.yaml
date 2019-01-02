@@ -25,13 +25,13 @@ service:
 stackdriver:
   # The Google Project ID to gather metrics for
   projectId: "FALSE"
-  # Max number of retries that should be attempted on 503 errors from stackdriver
+  # Max number of retries that should be attempted on 503 errors from Stackdriver
   maxRetries: 0
-  # How long should stackdriver_exporter wait for a result from the Stackdriver API
+  # How long should Stackdriver_exporter wait for a result from the Stackdriver API
   httpTimeout: 10s
   # Max time between each request in an exp backoff scenario
   maxBackoff: 5s
-  # The amount of jitter to introduce in a exp backoff scenario
+  # The amount of jitter to introduce in an exp backoff scenario
   backoffJitter: 1s
   # The HTTP statuses that should trigger a retry
   retryStatuses: 503
