@@ -17,6 +17,7 @@ spec:
         app: {{ template "elasticsearch.name" . }}
         component: "{{ .Values.master.name }}"
         release: {{ .Release.Name }}
+        role: master
         {{- if .Values.master.podAnnotations }}
       annotations:
 {{ toYaml .Values.master.podAnnotations | indent 8 }}
