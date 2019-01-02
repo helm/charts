@@ -3,10 +3,10 @@ kind: Service
 metadata:
   name: {{ template "prestashop.fullname" . }}
   labels:
-    app: {{ template "prestashop.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app: "{{ template "prestashop.name" . }}"
+    chart: "{{ template "prestashop.chart" . }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
 spec:
   type: {{ .Values.service.type }}
   {{- if (and (eq .Values.service.type "LoadBalancer") (not (empty .Values.service.loadBalancerIP))) }}
@@ -29,4 +29,4 @@ spec:
       nodePort: {{ .Values.service.nodePorts.https }}
       {{- end }}
   selector:
-    app: {{ template "prestashop.fullname" . }}
+    app: "{{ template "prestashop.fullname" . }}"

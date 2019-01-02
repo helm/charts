@@ -16,6 +16,13 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- end -}}
 
 {{/*
+Create chart name and version as used by the chart label.
+*/}}
+{{- define "prestashop.chart" -}}
+{{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{/*
 Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
@@ -38,10 +45,16 @@ Note, returns 127.0.0.1 if using ClusterIP.
 {{/*
 Gets the host to be used for this application.
 If not using ClusterIP, or if a host or LoadBalancerIP is not defined, the value will be empty.
+When using Ingress, it will be set to the Ingress hostname.
 */}}
 {{- define "prestashop.host" -}}
+{{- if .Values.ingress.enabled }}
+{{- $host := (index .Values.ingress.hosts 0).name | default "" -}}
+{{- default (include "prestashop.serviceIP" .) $host -}}
+{{- else -}}
 {{- $host := index .Values (printf "%sHost" .Chart.Name) | default "" -}}
 {{- default (include "prestashop.serviceIP" .) $host -}}
+{{- end -}}
 {{- end -}}
 
 {{/*
