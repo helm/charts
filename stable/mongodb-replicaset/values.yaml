@@ -92,6 +92,8 @@ tolerations: []
 
 extraLabels: {}
 
+# priorityClassName: ""
+
 persistentVolume:
   enabled: true
   ## mongodb-replicaset data Persistent Volume Storage Class
