@@ -3,7 +3,6 @@
 {{- if empty (include "prestashop.host" .) -}}
 ###############################################################################
 ### ERROR: You did not provide an external host in your 'helm install' call ###
-See {{ (index .Values.ingress.hosts 0).name }}
 ###############################################################################
 
 This deployment will be incomplete until you configure PrestaShop with a resolvable
