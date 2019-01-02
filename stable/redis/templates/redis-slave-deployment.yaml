@@ -61,7 +61,7 @@ spec:
       {{- end }}
     {{- with .Values.slave.affinity }}
       affinity:
-{{ toYaml . | indent 8 }}
+{{ tpl (toYaml .) $ | indent 8 }}
     {{- end }}
       containers:
       - name: {{ template "redis.fullname" . }}

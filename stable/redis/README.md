@@ -141,7 +141,7 @@ The following table lists the configurable parameters of the Redis chart and the
 | `master.extraFlags`                        | Redis master additional command line flags                                                                     | []                                                   |
 | `master.nodeSelector`                      | Redis master Node labels for pod assignment                                                                    | {"beta.kubernetes.io/arch": "amd64"}                 |
 | `master.tolerations`                       | Toleration labels for Redis master pod assignment                                                              | []                                                   |
-| `master.affinity   `                       | Affinity settings for Redis master pod assignment                                                              | []                                                   |
+| `master.affinity`                          | Affinity settings for Redis master pod assignment                                                              | {}                                                   |
 | `master.schedulerName`                     | Name of an alternate scheduler                                                                                 | `nil`                                                |
 | `master.service.type`                      | Kubernetes Service type (redis master)                                                                         | `ClusterIP`                                          |
 | `master.service.port`                      | Kubernetes Service port (redis master)                                                                         | `6379`                                               |
@@ -195,7 +195,7 @@ The following table lists the configurable parameters of the Redis chart and the
 | `slave.securityContext.fsGroup`            | Group ID for the container (redis slave pod)                                                                   | `master.securityContext.fsGroup`                     |
 | `slave.securityContext.runAsUser`          | User ID for the container (redis slave pod)                                                                    | `master.securityContext.runAsUser`                   |
 | `slave.resources`                          | Redis slave CPU/Memory resource requests/limits                                                                | `master.resources`                                   |
-| `slave.affinity`                           | Enable node/pod affinity for slaves                                                                            | {}                                                   |
+| `slave.affinity`                           | Affinity settings for Redis slave pod assignment                                                               | {}                                                   |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
