@@ -11,6 +11,7 @@ image:
     repository: tomcat
     tag: "7.0"
   pullPolicy: IfNotPresent
+  pullSecrets: []
 
 deploy:
   directory: /usr/local/tomcat/webapps
@@ -33,6 +34,16 @@ ingress:
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
+
+readinessProbe:
+  path: "/sample"
+  initialDelaySeconds: 60
+  periodSeconds: 30
+  failureThreshold: 6
+livenessProbe:
+  path: "/sample"
+  initialDelaySeconds: 60
+  periodSeconds: 30
 
 resources: {}
 #  limits:
