@@ -60,6 +60,7 @@ The following table lists the configurable parameters of the Ghost chart and the
 | `volumePermissions.image.tag`       | Init container volume-permissions image tag                   | `latest`                                                 |
 | `volumePermissions.image.pullPolicy`| Init container volume-permissions image pull policy           | `Always`                                                 |
 | `ghostHost`                         | Ghost host to create application URLs                         | `nil`                                                    |
+| `ghostProtocol`                     | Protocol (http or https) to use in the application URLs       | `http`                                                   |
 | `ghostPath`                         | Ghost path to create application URLs                         | `nil`                                                    |
 | `ghostUsername`                     | User of the application                                       | `user@example.com`                                       |
 | `ghostPassword`                     | Application password                                          | Randomly generated                                       |

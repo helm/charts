@@ -87,6 +87,8 @@ spec:
         {{- end }}
         - name: GHOST_HOST
           value: {{ include "ghost.host" . | quote }}
+        - name: GHOST_PROTOCOL
+          value: {{  .Values.ghostProtocol | quote }}
         - name: GHOST_PORT_NUMBER
           value: {{ .Values.service.port | quote }}
         - name: GHOST_USERNAME

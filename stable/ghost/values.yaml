@@ -34,9 +34,10 @@ volumePermissions:
     tag: latest
     pullPolicy: Always
 
-## Ghost host and path to create application URLs
+## Ghost protocol, host and path to create application URLs
 ## ref: https://github.com/bitnami/bitnami-docker-ghost#configuration
 ##
+ghostProtocol: https
 # ghostHost:
 ghostPath: /
 
