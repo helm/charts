@@ -4,10 +4,10 @@ apiVersion: v1
 metadata:
   name: {{ template "prestashop.fullname" . }}-prestashop
   labels:
-    app: {{ template "prestashop.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app: "{{ template "prestashop.name" . }}"
+    chart: "{{ template "prestashop.chart" . }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
 spec:
   accessModes:
     - {{ .Values.persistence.accessMode | quote }}
