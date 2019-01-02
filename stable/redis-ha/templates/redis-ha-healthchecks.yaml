@@ -15,7 +15,7 @@ data:
     SENTINEL_PORT={{ .Values.sentinel.port }}
     REDIS_PORT={{ .Values.redis.port }}
     NUM_SLAVES=$(redis-cli -p "$SENTINEL_PORT" sentinel master {{ .Values.redis.masterGroupName }} | awk '/num-slaves/{getline; print}')
-    MIN_SLAVES=$(({{ .Values.sentinel.quorum }} / 2))
+    MIN_SLAVES={{ index .Values.redis.config "min-slaves-to-write" }}
 
     if [ "$1" = "$SENTINEL_PORT" ]; then
         if redis-cli -p "$SENTINEL_PORT" sentinel ckquorum "$MASTER_GROUP" | grep -q NOQUORUM ; then
