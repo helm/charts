@@ -81,7 +81,7 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `affinity`                           | Affinity settings for pod assignment             | {}                                                      |
 | `tolerations`                        | Toleration labels for pod assignment             | []                                                      |
 | `ingress.enabled`                    | Enable ingress resource for Management console   | `false`                                                 |
-| `ingress.hostName`                   | Hostname to your PrestaShop installation         | `nil`                                                   |
+| `ingress.hostName`                   | Hostname to your RabbitMQ installation           | `nil`                                                   |
 | `ingress.path`                       | Path within the url structure                    | `/`                                                     |
 | `ingress.tls`                        | enable ingress with tls                          | `false`                                                 |
 | `ingress.tlsSecret`                  | tls type secret to be used                       | `myTlsSecret`                                           |
