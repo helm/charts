@@ -1,5 +1,5 @@
 name: fluentd-elasticsearch
-version: 2.0.7
+version: 2.0.8
 appVersion: 2.3.2
 home: https://www.fluentd.org/
 description: DEPRECATED! - A Fluentd Helm chart for Kubernetes with Elasticsearch output
