@@ -27,7 +27,7 @@ spec:
       containers:
         - name: {{ .Chart.Name }}
           image:  "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+          imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
           command:
             - "/bin/sh"
             - "-c"

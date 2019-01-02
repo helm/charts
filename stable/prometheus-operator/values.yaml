@@ -498,6 +498,9 @@ prometheusOperator:
   ##
   createCustomResource: true
 
+  ## Customize CRDs API Group
+  crdApiGroup: monitoring.coreos.com
+
   ## Attempt to clean up CRDs created by Prometheus Operator.
   ##
   cleanupCustomResource: false
@@ -584,7 +587,7 @@ prometheusOperator:
   ## Hyperkube image to use when cleaning up
   ##
   hyperkubeImage:
-    repository: gcr.io/google-containers/hyperkube
+    repository: k8s.gcr.io/hyperkube
     tag: v1.12.1
     pullPolicy: IfNotPresent
 
