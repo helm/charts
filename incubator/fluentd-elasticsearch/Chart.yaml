@@ -1,5 +1,5 @@
 name: fluentd-elasticsearch
-version: 0.7.2
+version: 0.7.3
 appVersion: 2.2.0
 home: https://www.fluentd.org/
 description: DEPRECATED! - A Fluentd Helm chart for Kubernetes with Elasticsearch output
@@ -19,3 +19,4 @@ maintainers:
 - name: monotek
   email: monotek23@gmail.com
 engine: gotpl
+deprecated: true
