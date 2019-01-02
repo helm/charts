@@ -136,6 +136,7 @@ postgresqlUsername: postgres
 service:
   ## PosgresSQL service type
   type: ClusterIP
+  # clusterIP: None
   port: 5432
 
   ## Specify the nodePort value for the LoadBalancer and NodePort service types.
