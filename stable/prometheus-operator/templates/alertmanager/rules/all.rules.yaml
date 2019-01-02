@@ -3,7 +3,7 @@
 {{- $prometheusJob := printf "%s-%s" (include "prometheus-operator.fullname" .) "prometheus" }}
 {{- $alertmanagerJob := printf "%s-%s" (include "prometheus-operator.fullname" .) "alertmanager" }}
 
-apiVersion: monitoring.coreos.com/v1
+apiVersion: {{ printf "%s/v1" (.Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com") }}
 kind: PrometheusRule
 metadata:
   name: {{ template "prometheus-operator.fullname" . }}

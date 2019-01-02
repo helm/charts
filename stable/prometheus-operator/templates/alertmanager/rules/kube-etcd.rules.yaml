@@ -1,6 +1,6 @@
 {{- if and .Values.defaultRules.create }}
 # these rules synced manually from https://github.com/etcd-io/etcd/blob/master/Documentation/etcd-mixin/mixin.libsonnet
-apiVersion: monitoring.coreos.com/v1
+apiVersion: {{ printf "%s/v1" (.Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com") }}
 kind: PrometheusRule
 metadata:
   name: {{ printf "%s-%s" (include "prometheus-operator.fullname" .) "kube-etcd-rules" | trunc 63 | trimSuffix "-" }}

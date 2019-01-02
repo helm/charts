@@ -14,7 +14,7 @@ rules:
   verbs:
   - '*'
 - apiGroups:
-  - monitoring.coreos.com
+  - {{ .Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com" }}
   resources:
   - alertmanagers
   - prometheuses
