@@ -47,11 +47,11 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 ```bash
 $ helm install --name my-release \
-  --set factorioServer.factorioServer=My Server,ImageTag=0.14.15 \
+  --set factorioServer.factorioServer=My Server,ImageTag=0.15.39 \
     stable/factorio
 ```
 
-The above command deploys Factorio dedicated with a server name of `My Server` and docker-factorio image version `0.14.15`.
+The above command deploys Factorio dedicated with a server name of `My Server` and docker-factorio image version `0.15.39`.
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 

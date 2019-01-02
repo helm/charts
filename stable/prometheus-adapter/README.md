@@ -38,10 +38,10 @@ The following table lists the configurable parameters of the Prometheus Adapter 
 | ------------------------------- | ------------------------------------------------------------------------------- | --------------------------------------------|
 | `affinity`                      | Node affinity                                                                   | `{}`                                        |
 | `image.repository`              | Image repository                                                                | `directxman12/k8s-prometheus-adapter-amd64` |
-| `image.tag`                     | Image tag                                                                       | `v0.2.1`                                    |
+| `image.tag`                     | Image tag                                                                       | `v0.4.1`                                    |
 | `image.pullPolicy`              | Image pull policy                                                               | `IfNotPresent`                              |
 | `logLevel`                      | Log level                                                                       | `4`                                         |
-| `metricsRelistInterval`         | Interval at which to re-list the set of all available metrics from Prometheus   | `30s`                                       |
+| `metricsRelistInterval`         | Interval at which to re-list the set of all available metrics from Prometheus   | `1m`                                        |
 | `nodeSelector`                  | Node labels for pod assignment                                                  | `{}`                                        |
 | `prometheus.url`                | Url of where we can find the Prometheus service                                 | `http://prometheus.default.svc`             |
 | `prometheus.port`               | Port of where we can find the Prometheus service                                | `9090`                                      |
@@ -49,6 +49,7 @@ The following table lists the configurable parameters of the Prometheus Adapter 
 | `resources`                     | CPU/Memory resource requests/limits                                             | `{}`                                        |
 | `rules.default`                 | If `true`, enable a set of default rules in the configmap                       | `true`                                      |
 | `rules.custom`                  | A list of custom configmap rules                                                | `[]`                                        |
+| `rules.existing`                | The name of an existing configMap with rules. Overrides default and custom.     | ``                                          |                                                                                                        
 | `service.annotations`           | Annotations to add to the service                                               | `{}`                                        |
 | `service.port`                  | Service port to expose                                                          | `443`                                       |
 | `service.type`                  | Type of service to create                                                       | `ClusterIP`                                 |

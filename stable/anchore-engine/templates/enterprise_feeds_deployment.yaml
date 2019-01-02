@@ -44,7 +44,7 @@ spec:
         command: ["/usr/local/bin/anchore-enterprise-manager"]
         args: ["service", "start", "feeds"]
         ports:
-        - containerPort: {{ .Values.anchoreGlobal.service.ports.feedsApi }}
+        - containerPort: {{ .Values.anchoreEnterpriseFeeds.service.port }}
           name: feeds-api
         envFrom:
         - secretRef:
@@ -79,22 +79,23 @@ spec:
         - name: anchore-license
           mountPath: /license.yaml
           subPath: license.yaml
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: feeds-api
-          initialDelaySeconds: 60
-          periodSeconds: 10
-          timeoutSeconds: 10
-          failureThreshold: 10
         livenessProbe:
           httpGet:
             path: /health
             port: feeds-api
+          initialDelaySeconds: 120
           timeoutSeconds: 10
-          initialDelaySeconds: 60
-          periodSeconds: 30
-          failureThreshold: 10
+          periodSeconds: 10
+          failureThreshold: 6
+          successThreshold: 1
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: feeds-api
+          timeoutSeconds: 10
+          periodSeconds: 10
+          failureThreshold: 3
+          successThreshold: 1
         resources:
 {{ toYaml .Values.anchoreEnterpriseFeeds.resources | indent 10 }}
     {{- if .Values.anchoreEnterpriseFeeds.nodeSelector }}
@@ -121,12 +122,16 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     component: {{ $component }}
+  {{- if .Values.anchoreEnterpriseFeeds.service.annotations }}
+  annotations:
+{{ toYaml .Values.anchoreEnterpriseFeeds.service.annotations | indent 4 }}
+  {{- end }}
 spec:
-  type: {{ .Values.anchoreGlobal.service.type }}
+  type: {{ .Values.anchoreEnterpriseFeeds.service.type }}
   ports:
     - name: feeds-api
-      port: {{ .Values.anchoreGlobal.service.ports.feedsApi }}
-      targetPort: {{ .Values.anchoreGlobal.service.ports.feedsApi }}
+      port: {{ .Values.anchoreEnterpriseFeeds.service.port }}
+      targetPort: {{ .Values.anchoreEnterpriseFeeds.service.port }}
       protocol: TCP
   selector:
     app: {{ template "anchore-engine.fullname" . }}

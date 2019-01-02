@@ -3,7 +3,12 @@
 # Declare variables to be passed into your templates.
 image:
   repository: mattermost/mattermost-team-edition
-  tag: 5.5.0
+  tag: 5.6.2
+  imagePullPolicy: IfNotPresent
+
+initContainerImage:
+  repository: appropriate/curl
+  tag: latest
   imagePullPolicy: IfNotPresent
 
 ## How many old ReplicaSets for Mattermost Deployment you want to retain

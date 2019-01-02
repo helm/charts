@@ -23,6 +23,11 @@ image:
   # pullSecrets:
   #   - myRegistrKeySecretName
 
+  ## Set to true if you would like to see extra information on logs
+  ## It turns BASH and NAMI debugging in minideb
+  ## ref:  https://github.com/bitnami/minideb-extras/#turn-on-bash-debugging
+  debug: false
+
 service:
   ## Kubernetes service type, ClusterIP and NodePort are supported at present
   type: ClusterIP
@@ -88,6 +93,19 @@ replication:
   ## Option to force users to specify a password. That is required for 'helm upgrade' to work properly.
   ## If it is not force, a random password will be generated.
   forcePassword: false
+
+## initdb scripts
+## Specify dictionnary of scripts to be run at first boot
+## Alternatively, you can put your scripts under the files/docker-entrypoint-initdb.d directory
+##
+# initdbScripts:
+#   my_init_script.sh: |
+#      #!/bin/sh
+#      echo "Do something."
+#
+## ConfigMap with scripts to be run at first boot
+## Note: This will override initdbScripts
+# initdbScriptsConfigMap:
 
 master:
   ## Mariadb Master additional pod annotations
