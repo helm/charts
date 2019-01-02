@@ -274,6 +274,10 @@ controller:
       servicePort: 9913
       type: ClusterIP
 
+    serviceMonitor:
+      enabled: false
+      additionalLabels: {}
+
   lifecycle: {}
 
   priorityClassName: ""

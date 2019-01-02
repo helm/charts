@@ -1,0 +1,27 @@
+{{- if and .Values.controller.stats.enabled .Values.controller.metrics.enabled .Values.controller.metrics.serviceMonitor.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ template "nginx-ingress.controller.fullname" . }}
+  labels:
+    app: {{ template "nginx-ingress.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: "{{ .Values.controller.name }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    {{- if .Values.controller.metrics.serviceMonitor.additionalLabels }}
+{{ toYaml .Values.controller.metrics.serviceMonitor.additionalLabels | indent 4 }}
+    {{- end }}
+spec:
+  endpoints:
+    - port: metrics
+      interval: 30s
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace }}
+  selector:
+    matchLabels:
+      app: {{ template "nginx-ingress.name" . }}
+      component: "{{ .Values.controller.name }}"
+      release: {{ .Release.Name }}
+{{- end }}
