@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "presto.coordinator" . }}
+  labels:
+    app: {{ template "presto.name" . }}
+    chart: {{ template "presto.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: coordinator
+data:
+  node.properties: |
+    node.environment={{ .Values.server.node.environment }}
+    node.data-dir={{ .Values.server.node.dataDir }}
+
+  jvm.config: |
+    -server
+    -Xmx{{ .Values.server.jvm.maxHeapSize }}
+    -XX:+{{ .Values.server.jvm.gcMethod.type }}
+    -XX:G1HeapRegionSize={{ .Values.server.jvm.gcMethod.g1.heapRegionSize }}
+    -XX:+UseGCOverheadLimit
+    -XX:+ExplicitGCInvokesConcurrent
+    -XX:+HeapDumpOnOutOfMemoryError
+    -XX:+ExitOnOutOfMemoryError
+
+  config.properties: |
+    coordinator=true
+{{- if gt (int .Values.server.workers) 0 }}
+    node-scheduler.include-coordinator=false
+{{- else }}
+    node-scheduler.include-coordinator=true
+{{- end }}
+    http-server.http.port={{ .Values.server.config.http.port }}
+    query.max-memory={{ .Values.server.config.query.maxMemory }}
+    query.max-memory-per-node={{ .Values.server.config.query.maxMemoryPerNode }}
+    discovery-server.enabled=true
+    discovery.uri=http://{{ template "presto.fullname" . }}:{{ .Values.server.config.http.port }}
+
+  log.properties: |
+    com.facebook.presto={{ .Values.server.log.presto.level }}
+
+  docker-presto.sh: |
+    #!/bin/bash 
+    cp {{ .Values.server.config.path }}/*.properties $PRESTO_CONF_DIR
+    cp {{ .Values.server.config.path }}/*.config $PRESTO_CONF_DIR
+    launcher run
+
+---

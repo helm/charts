@@ -4,7 +4,9 @@ kind: Service
 metadata:
 {{- if .Values.controller.stats.service.annotations }}
   annotations:
-{{ toYaml .Values.controller.stats.service.annotations | indent 4 }}
+  {{- range $key, $value := .Values.controller.stats.service.annotations }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
 {{- end }}
   labels:
     app: {{ template "nginx-ingress.name" . }}
@@ -29,7 +31,7 @@ spec:
   ports:
     - name: stats
       port: {{ .Values.controller.stats.service.servicePort }}
-      targetPort: 18080
+      targetPort: stats
   selector:
     app: {{ template "nginx-ingress.name" . }}
     component: "{{ .Values.controller.name }}"

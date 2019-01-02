@@ -1,0 +1,3 @@
+To verify that Metricbeat has started, run:
+
+  kubectl --namespace={{ .Release.Namespace }} get pods -l "app={{ template "metricbeat.name" . }},release={{ .Release.Name }}"

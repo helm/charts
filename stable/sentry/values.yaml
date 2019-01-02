@@ -3,8 +3,11 @@
 # Declare variables to be passed into your templates.
 image:
   repository: sentry
-  tag: "8.20"
+  tag: "9.0"
   pullPolicy: IfNotPresent
+  # Add the secret name to pull from a private registry.
+  imagePullSecrets: []
+  # - name:
 
 # How many web UI instances to run
 web:
@@ -16,6 +19,19 @@ web:
     requests:
       cpu: 300m
       memory: 300Mi
+  env:
+    - name: GITHUB_APP_ID
+      value:
+    - name: GITHUB_API_SECRET
+      value:
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  ## Use an alternate scheduler, e.g. "stork".
+  ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+  ##
+  # schedulerName:
+
 
 # How many cron instances to run
 cron:
@@ -27,6 +43,10 @@ cron:
     requests:
       cpu: 100m
       memory: 100Mi
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  # schedulerName:
 
 # How many worker instances to run
 worker:
@@ -38,9 +58,16 @@ worker:
     requests:
       cpu: 100m
       memory: 100Mi
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  # schedulerName:
 
-# Initial admin user to create
+# Admin user to create
 user:
+  # Indicated to create the admin user or not,
+  # Default is true as the initial installation.
+  create: true
   email: admin@sentry.local
 
 # BYO Email server
@@ -62,6 +89,11 @@ service:
   type: LoadBalancer
   externalPort: 9000
   internalPort: 9000
+  ## External IP addresses of service
+  ## Default: nil
+  ##
+  # externalIPs:
+  # - 192.168.0.1
 
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
@@ -84,7 +116,7 @@ persistence:
   filestore_dir: /var/lib/sentry/files
 
 ## Configure ingress resource that allow you to access the
-## Sentry instalation. Set up the URL
+## Sentry installation. Set up the URL
 ## ref: http://kubernetes.io/docs/user-guide/ingress/
 ##
 ingress:
@@ -115,5 +147,11 @@ postgresql:
     enabled: true
 
 redis:
-  persistence:
-    enabled: true
+  master:
+    persistence:
+      enabled: true
+      # If change pvc size redis.master.persistence.size: 20Gi
+
+config:
+  configYml: ""
+  sentryConfPy: ""

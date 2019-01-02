@@ -1,0 +1,48 @@
+{{- if .Values.ui.enabled }}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "kubeless.fullname" . }}-ui
+  labels:
+{{ include "labels.standard" . | indent 4 }}
+    component: ui
+spec:
+  replicas: {{ .Values.controller.deployment.replicaCount }}
+  template:
+    metadata:
+      labels:
+        component: ui
+        app: {{ template "kubeless.name"  . }}
+        release: {{ .Release.Name | quote }}
+    spec:
+{{- if .Values.rbac.create }}
+      serviceAccountName: kubeless-ui
+{{- end }}
+      containers:
+      - name: ui
+        image: "{{ .Values.ui.deployment.ui.image.repository }}:{{ .Values.ui.deployment.ui.image.tag }}"
+        imagePullPolicy: {{ .Values.ui.deployment.ui.image.pullPolicy }}
+        ports:
+        - containerPort: 3000
+          name: http
+          protocol: TCP
+        readinessProbe:
+          httpGet:
+            path: /
+            port: http
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /
+            port: http
+          initialDelaySeconds: 10
+          periodSeconds: 20
+      - name: proxy
+        image: "{{ .Values.ui.deployment.proxy.image.repository }}:{{ .Values.ui.deployment.proxy.image.tag }}"
+        imagePullPolicy: {{ .Values.ui.deployment.proxy.image.pullPolicy }}
+        args:
+        - proxy
+        - "-p"
+        - "8080"
+{{- end }}

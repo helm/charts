@@ -3,16 +3,14 @@
 # Declare variables to be passed into your templates.
 replicaCount: 1
 image:
-  repository: quay.io/tuannvm/goldfish
-  tag: v0.7.3
+  repository: caiyeon/goldfish
+  tag: 0.9.0
   pullPolicy: IfNotPresent
 service:
-  name: nginx
+  name: goldfish
   type: ClusterIP
   externalPort: 80
   internalPort: 8000
-  # Custom nodePort when type: NodePort
-  # nodePort: 31000
 ingress:
   enabled: false
   # Used to create an Ingress record.
@@ -40,18 +38,15 @@ resources: {}
 config:
   listener:
     tcp:
-      address: "0.0.0.0:8000"
-      tls_cert_file: ""
-      tls_key_file: ""
+      address: 0.0.0.0:8000
       tls_disable: 1
   vault:
-    address: "http://vault:8200"
+    address: http://vault:8200
     tls_skip_verify: 1
-    runtime_config: "secret/goldfish"
-    approle_login: "auth/approle/login"
-    approle_id: "goldfish"
+    runtime_config: secret/goldfish
+    approle_login: auth/approle/login
+    approle_id: goldfish
   disable_mlock: 1
 
 secrets:
-  vault-addr: "http://vault:8200"
-  vault-token: "token"
+  vault-token: ''

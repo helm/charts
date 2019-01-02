@@ -1,28 +1,33 @@
+{{- if .Values.collector.enabled -}}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: "{{ template "jaeger.fullname" . }}-collector"
+  name: {{ template "jaeger.collector.name" . }}
   labels:
-    app: "{{ template "jaeger.name" . }}"
+    app: {{ template "jaeger.name" . }}
     jaeger-infra: collector-deployment
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    component: "collector"
-    heritage: "{{ .Release.Service }}"
-    release: "{{ .Release.Name }}"
+    component: collector
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
 {{- if .Values.collector.annotations }}
   annotations:
-{{ toYaml .Values.collector.annotations | indent 6 }}
+{{ toYaml .Values.collector.annotations | indent 4 }}
 {{- end }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.collector.replicaCount }}
   strategy:
     type: Recreate
   template:
     metadata:
+{{- if .Values.collector.podAnnotations }}
+      annotations:
+{{ toYaml .Values.collector.podAnnotations | indent 8 }}
+{{- end }}
       labels:
-        app: "{{ template "jaeger.name" . }}"
-        component: "collector"
-        release: "{{ .Release.Name }}"
+        app: {{ template "jaeger.name" . }}
+        component: collector
+        release: {{ .Release.Name }}
         jaeger-infra: collector-pod
 {{- if .Values.collector.podLabels }}
 {{ toYaml .Values.collector.podLabels | indent 8 }}
@@ -30,39 +35,92 @@ spec:
     spec:
       nodeSelector:
 {{ toYaml .Values.collector.nodeSelector | indent 8 }}
+{{- if .Values.collector.tolerations }}
+      tolerations:
+{{ toYaml .Values.collector.tolerations | indent 8 }}
+{{- end }}
       containers:
-      - name: "{{ template "jaeger.fullname" . }}-collector"
-        image: "{{ .Values.collector.image }}:{{ .Values.collector.tag }}"
+      - name: {{ template "jaeger.collector.name" . }}
+        image: {{ .Values.collector.image }}:{{ .Values.tag }}
         imagePullPolicy: {{ .Values.collector.pullPolicy }}
+        env:
+          - name: SPAN_STORAGE_TYPE
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "jaeger.fullname" . }}
+                key: span-storage.type
+          {{- if eq .Values.storage.type "cassandra" }}
+          - name: CASSANDRA_SERVERS
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "jaeger.fullname" . }}
+                key: cassandra.servers
+          - name: CASSANDRA_PORT
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "jaeger.fullname" . }}
+                key: cassandra.port
+          - name: CASSANDRA_KEYSPACE
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "jaeger.fullname" . }}
+                key: cassandra.keyspace
+          {{- end }}
+          {{- if eq .Values.storage.type "elasticsearch" }}
+          - name: ES_PASSWORD
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "jaeger.fullname" . }}
+                key: es.password
+          - name: ES_SERVER_URLS
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "jaeger.fullname" . }}
+                key: es.server-urls
+          - name: ES_USERNAME
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "jaeger.fullname" . }}
+                key: es.username
+          {{- end }}
+          - name: COLLECTOR_PORT
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "jaeger.fullname" . }}
+                key: collector.port
+          - name: COLLECTOR_HTTP_PORT
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "jaeger.fullname" . }}
+                key: collector.http-port
+          - name: COLLECTOR_ZIPKIN_HTTP_PORT
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "jaeger.fullname" . }}
+                key: collector.zipkin.http-port
         ports:
         - containerPort: {{ .Values.collector.service.tchannelPort }}
+          name: tchannel
           protocol: TCP
         - containerPort: {{ .Values.collector.service.httpPort }}
+          name: http
+          protocol: TCP
+        - containerPort: {{ .Values.collector.service.healthCheckPort }}
+          name: healthcheck
           protocol: TCP
         - containerPort: {{ .Values.collector.service.zipkinPort }}
+          name: zipkin
           protocol: TCP
+        readinessProbe:
+          httpGet:
+            port: healthcheck
+          initialDelaySeconds: 10
+        livenessProbe:
+          httpGet:
+            port: healthcheck
+          initialDelaySeconds: 10
         resources:
 {{ toYaml .Values.collector.resources | indent 10 }}
-        command:
-        - "/go/bin/collector-linux"
-{{ if not (empty .Values.elasticsearch.config.host) }}
-        - "--span-storage.type=elasticsearch"
-        - "--es.server-urls={{ .Values.elasticsearch.config.host }}"
-        - "--es.username={{ .Values.elasticsearch.config.username }}"
-        - "--es.password={{ .Values.elasticsearch.config.password }}"
-{{ else if .Values.tags.elasticsearch }}
-        - "--span-storage.type=elasticsearch"
-        - "--es.server-urls=http://{{ template "elasticsearch.fullname" . }}-client:9200"
-{{ else if not (empty .Values.cassandra.config.host) }}
-        - "--cassandra.servers={{ .Values.cassandra.config.host }}"
-        - "--cassandra.keyspace=jaeger_v1_{{ .Values.cassandra.config.dc_name }}"
-{{ else }}
-        - "--cassandra.servers={{ template "cassandra.fullname" . }}"
-        - "--cassandra.keyspace=jaeger_v1_{{ .Values.cassandra.config.dc_name }}"
-{{ end }}
-        - "--collector.zipkin.http-port={{ .Values.collector.service.zipkinPort }}"
-{{- range $key, $value := .Values.collector.cmdlineParams }}
-        - "{{ $value }}"
-{{- end }}
       dnsPolicy: {{ .Values.collector.dnsPolicy }}
       restartPolicy: Always
+{{- end -}}

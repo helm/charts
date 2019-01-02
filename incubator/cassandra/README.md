@@ -36,6 +36,14 @@ persistence:
 
 If you want to create a `StorageClass` on other platform, please see documentation here [https://kubernetes.io/docs/user-guide/persistent-volumes/](https://kubernetes.io/docs/user-guide/persistent-volumes/)
 
+When running a cluster without persistence, the termination of a pod will first initiate a decommissioning of that pod.
+Depending on the amount of data stored inside the cluster this may take a while. In order to complete a graceful
+termination, pods need to get more time for it. Set the following values in `values.yaml`:
+
+```yaml
+podSettings:
+  terminationGracePeriodSeconds: 1800
+```
 
 ## Install Chart with specific cluster size
 By default, this Chart will create a cassandra with 3 nodes. If you want to change the cluster size during installation, you can use `--set config.cluster_size={value}` argument. Or edit `values.yaml`
@@ -68,32 +76,72 @@ nodes:
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Cassandra chart and their default values.
+The following table lists the configurable parameters of the Cassandra chart and their default values.
 
 | Parameter                  | Description                                     | Default                                                    |
 | -----------------------    | ---------------------------------------------   | ---------------------------------------------------------- |
-| `image.repo`               | `cassandra` image repository                    | `cassandra`                                                |
-| `image.tag`                | `cassandra` image tag                           | `3`                                                        |
-| `image.pullPolicy`         | Image pull policy                               | `Always` if `imageTag` is `latest`, else `IfNotPresent`    |
-| `image.pullSecrets`        | Image pull secrets                              | `nil`                                                      |
-| `config.cluster_name`      | The name of the cluster.                        | `cassandra`                                                |
-| `config.cluster_size`      | The nubmer of nodes in the cluster.             | `3`                                                        |
-| `config.seed_size`         | The number of seed nodes used to bootstrap new clients joining the cluster.                | `2`                                                        |
-| `config.num_tokens`        | Initdb Arguments                                | `256`                                                      |
-| `config.dc_name`           | Initdb Arguments                                | `DC1`                                                      |
-| `config.rack_name`         | Initdb Arguments                                | `RAC1`                                                     |
-| `config.endpoint_snitch`   | Initdb Arguments                                | `SimpleSnitch`                                             |
-| `config.max_heap_size`     | Initdb Arguments                                | `2048M`                                                    |
-| `config.heap_new_size`     | Initdb Arguments                                | `512M`                                                     |
-| `config.ports.cql`         | Initdb Arguments                                | `9042`                                                     |
-| `config.ports.thrift`      | Initdb Arguments                                | `9160`                                                     |
-| `config.start_rpc`         | Initdb Arguments                                | `false`                                                    |
-| `persistence.enabled`      | Use a PVC to persist data                       | `true`                                                     |
-| `persistence.storageClass` | Storage class of backing PVC                    | `nil` (uses alpha storage class annotation)                |
-| `persistence.accessMode`   | Use volume as ReadOnly or ReadWrite             | `ReadWriteOnce`                                            |
-| `persistence.size`         | Size of data volume                             | `10Gi`                                                     |
-| `resources`                | CPU/Memory resource requests/limits             | Memory: `4Gi`, CPU: `2`                                    |
-| `service.type`             | k8s service type exposing ports, e.g. `NodePort`| `ClusterIP`                                                |
+| `image.repo`                         | `cassandra` image repository                    | `cassandra`                                                |
+| `image.tag`                          | `cassandra` image tag                           | `3.11.3`                                                   |
+| `image.pullPolicy`                   | Image pull policy                               | `Always` if `imageTag` is `latest`, else `IfNotPresent`    |
+| `image.pullSecrets`                  | Image pull secrets                              | `nil`                                                      |
+| `config.cluster_domain`              | The name of the cluster domain.                 | `cluster.local`                                            |
+| `config.cluster_name`                | The name of the cluster.                        | `cassandra`                                                |
+| `config.cluster_size`                | The number of nodes in the cluster.             | `3`                                                        |
+| `config.seed_size`                   | The number of seed nodes used to bootstrap new clients joining the cluster.                            | `2` |
+| `config.num_tokens`                  | Initdb Arguments                                | `256`                                                      |
+| `config.dc_name`                     | Initdb Arguments                                | `DC1`                                                      |
+| `config.rack_name`                   | Initdb Arguments                                | `RAC1`                                                     |
+| `config.endpoint_snitch`             | Initdb Arguments                                | `SimpleSnitch`                                             |
+| `config.max_heap_size`               | Initdb Arguments                                | `2048M`                                                    |
+| `config.heap_new_size`               | Initdb Arguments                                | `512M`                                                     |
+| `config.ports.cql`                   | Initdb Arguments                                | `9042`                                                     |
+| `config.ports.thrift`                | Initdb Arguments                                | `9160`                                                     |
+| `config.ports.agent`                 | The port of the JVM Agent (if any)              | `nil`                                                      |
+| `config.start_rpc`                   | Initdb Arguments                                | `false`                                                    |
+| `configOverrides`                    | Overrides config files in /etc/cassandra dir    | `{}`                                                       |
+| `commandOverrides`                   | Overrides default docker command                | `[]`                                                       |
+| `argsOverrides`                      | Overrides default docker args                   | `[]`                                                       |
+| `env`                                | Custom env variables                            | `{}`                                                       |
+| `persistence.enabled`                | Use a PVC to persist data                       | `true`                                                     |
+| `persistence.storageClass`           | Storage class of backing PVC                    | `nil` (uses alpha storage class annotation)                |
+| `persistence.accessMode`             | Use volume as ReadOnly or ReadWrite             | `ReadWriteOnce`                                            |
+| `persistence.size`                   | Size of data volume                             | `10Gi`                                                     |
+| `resources`                          | CPU/Memory resource requests/limits             | Memory: `4Gi`, CPU: `2`                                    |
+| `service.type`                       | k8s service type exposing ports, e.g. `NodePort`| `ClusterIP`                                                |
+| `podManagementPolicy`                | podManagementPolicy of the StatefulSet          | `OrderedReady`                                             |
+| `podDisruptionBudget`                | Pod distruption budget                          | `{}`                                                       |
+| `podAnnotations`                     | pod annotations for the StatefulSet             | `{}`                                                       |
+| `updateStrategy.type`                | UpdateStrategy of the StatefulSet               | `OnDelete`                                                 |
+| `livenessProbe.initialDelaySeconds`  | Delay before liveness probe is initiated        | `90`                                                       |
+| `livenessProbe.periodSeconds`        | How often to perform the probe                  | `30`                                                       |
+| `livenessProbe.timeoutSeconds`       | When the probe times out                        | `5`                                                        |
+| `livenessProbe.successThreshold`     | Minimum consecutive successes for the probe to be considered successful after having failed.           | `1` |
+| `livenessProbe.failureThreshold`     | Minimum consecutive failures for the probe to be considered failed after having succeeded.             | `3` |
+| `readinessProbe.initialDelaySeconds` | Delay before readiness probe is initiated       | `90`                                                       |
+| `readinessProbe.periodSeconds`       | How often to perform the probe                  | `30`                                                       |
+| `readinessProbe.timeoutSeconds`      | When the probe times out                        | `5`                                                        |
+| `readinessProbe.successThreshold`    | Minimum consecutive successes for the probe to be considered successful after having failed.           | `1` |
+| `readinessProbe.failureThreshold`    | Minimum consecutive failures for the probe to be considered failed after having succeeded.             | `3` |
+| `rbac.create`                        | Specifies whether RBAC resources should be created                                                  | `true` |
+| `serviceAccount.create`              | Specifies whether a ServiceAccount should be created                                                | `true` |
+| `serviceAccount.name`                | The name of the ServiceAccount to use           |                                                            |
+| `backup.enabled`                     | Enable backup on chart installation             | `false`                                                    |
+| `backup.schedule`                    | Keyspaces to backup, each with cron time        |                                                            |
+| `backup.annotations`                 | Backup pod annotations                          | iam.amazonaws.com/role: `cain`                             |
+| `backup.image.repo`                  | Backup image repository                         | `nuvo/cain`                                                |
+| `backup.image.tag`                   | Backup image tag                                | `0.4.1`                                                    |
+| `backup.extraArgs`                   | Additional arguments for cain                   | `[]`                                                       |
+| `backup.env`                         | Backup environment variables                    | AWS_REGION: `us-east-1`                                    |
+| `backup.resources`                   | Backup CPU/Memory resource requests/limits      | Memory: `1Gi`, CPU: `1`                                    |
+| `backup.destination`                 | Destination to store backup artifacts           | `s3://bucket/cassandra`                                    |
+| `exporter.enabled`                   | Enable Cassandra exporter                       | `false`                                                    |
+| `exporter.image.repo`                | Exporter image repository                       | `criteord/cassandra_exporter`                              |
+| `exporter.image.tag`                 | Exporter image tag                              | `2.0.2`                                                    |
+| `exporter.port`                      | Exporter port                                   | `5556`                                                     |
+| `exporter.jvmOpts`                   | Exporter additional JVM options                 |                                                            |
+| `affinity`                           | Kubernetes node affinity                        | `{}`                                                       |
+| `tolerations`                        | Kubernetes node tolerations                     | `[]`                                                       |
+
 
 ## Scale cassandra
 When you want to change the cluster size of your cassandra, you can use the helm upgrade command.

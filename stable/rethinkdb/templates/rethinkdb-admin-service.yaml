@@ -4,7 +4,7 @@ metadata:
   name: "{{ template "rethinkdb.fullname" . }}-admin"
   labels:
     app: "{{ template "rethinkdb.name" . }}-admin"
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    chart: {{ template "rethinkdb.chart" . }}
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
 spec:

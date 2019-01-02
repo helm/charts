@@ -33,7 +33,6 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: status.podIP
-          # {{ required "config.LEGO_EMAIL is a required field" .Values.config.LEGO_EMAIL }}
           {{- range $key, $value := .Values.config }}
             - name: "{{ $key }}"
               value: "{{ $value }}"

@@ -1,0 +1,54 @@
+
+1. Get the application URL by running these commands:
+{{- if .Values.ingress.enabled }}
+  You should be able to access your new phpMyAdmin installation through
+  http{{ if $.Values.ingress.tls }}s{{ end }}://{{ if $.Values.ingress.host }}{{.Values.ingress.host}}{{else}}your-cluster-ip{{end}}{{ $.Values.ingress.path }}
+  {{if not $.Values.ingress.host}}
+  
+  Find out your cluster ip address by running:
+  $ kubectl cluster-info
+
+  {{ end }}
+{{- else if contains "NodePort" .Values.service.type }}
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "phpmyadmin.fullname" . }})
+  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo "phpMyAdmin URL: http://$NODE_IP:$NODE_PORT"
+
+{{- else if contains "LoadBalancer" .Values.service.type }}
+  
+  NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+         You can watch the status of by running 'kubectl get svc -w {{ template "phpmyadmin.fullname" . }}'
+  
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "phpmyadmin.fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
+  echo "phpMyAdmin URL: http://$SERVICE_IP:{{ .Values.service.port }}"
+
+{{- else if contains "ClusterIP" .Values.service.type }}
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "phpmyadmin.name" . }},release={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
+  echo "phpMyAdmin URL: http://127.0.0.1:8080"
+  kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "phpmyadmin.fullname" . }} 8080:80
+
+{{- end }}
+
+2. How to log in
+{{ if or (.Values.db.chartName) (.Values.db.host)}}
+
+phpMyAdmin has been configured to connect to a database in {{ if .Values.db.chartName}}{{template "phpmyadmin.dbfullname" .}}{{ else }}{{.Values.db.host}}{{end}}
+{{if .Values.db.port}}with port {{.Values.db.port}} {{end }}
+Please login using a database username and password. 
+{{ else if .Values.db.bundleTestDB }}
+For testing purposes, phpMyAdmin has been configured to point to a test MariaDB
+instance. Please login using the following credentials:
+
+  Username: root
+  Password : $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "mariadb.fullname" . }} -o jsonpath="{.data.mariadb-root-password}" | base64 --decode)
+
+{{ else }}
+phpMyAdmin has not been configure to point to a specific database. Please provide the db host,
+username and password at log in or upgrade the release with a specific database:
+
+$ helm upgrade {{.Release.Name}} stable/phpmyadmin --set db.host=mydb 
+
+{{end}}
+
+** Please be patient while the chart is being deployed **
+

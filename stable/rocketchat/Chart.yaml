@@ -1,5 +1,6 @@
 name: rocketchat
-version: 0.1.2
+version: 0.1.5
+appVersion: 0.69.1
 description: Prepare to take off with the ultimate chat platform, experience the next
   level of team communications
 keywords:
@@ -20,4 +21,5 @@ maintainers:
   email: buildmaster@rocket.chat
 - name: geekgonecrazy
 - name: pierreozoux
+- name: verwilst
 engine: gotpl

@@ -1,0 +1,15 @@
+{{- if .Values.rbac.create }}
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: Role
+metadata:
+  name: {{ template "patroni.fullname" . }}
+  labels:
+    app: {{ template "patroni.name" . }}
+    chart: {{ template "patroni.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+rules:
+  - apiGroups: [""]
+    resources: ["endpoints", "pods"]
+    verbs: ["patch"]
+{{- end }}

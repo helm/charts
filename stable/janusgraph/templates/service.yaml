@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "janusgraph.fullname" . }}
+  labels:
+    app: {{ template "janusgraph.name" . }}
+    chart: {{ template "janusgraph.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+{{- if .Values.service.serviceAnnotations }}
+  annotations:
+{{ toYaml .Values.service.serviceAnnotations | indent 4 }}
+{{- end }}
+
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: 8182
+      protocol: TCP
+  selector:
+    app: {{ template "janusgraph.name" . }}
+    release: {{ .Release.Name }}

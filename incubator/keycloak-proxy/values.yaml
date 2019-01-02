@@ -1,0 +1,59 @@
+# Default values for keycloak-proxy.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: jboss/keycloak-proxy
+  tag: 3.4.2.Final
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+
+  ## Optional static port assignment for service type NodePort.
+  # nodePort: 30000
+
+  port: 80
+
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  path: /
+  hosts:
+    - keycloak-proxy.example.com
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+configmap:
+  targetUrl: "http://url-to-the-target-server.example.com"
+  realm: REALM_NAME
+  realmPublicKey: ""
+  authServerUrl: http://url-to-keycloak.example.com/auth
+  resource: CLIENT_ID
+  secret: CLIENT_SECRET
+  pattern: /admin
+  rolesAllowed: admin

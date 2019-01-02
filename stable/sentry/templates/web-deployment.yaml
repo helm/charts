@@ -11,11 +11,34 @@ spec:
   replicas: {{ .Values.web.replicacount }}
   template:
     metadata:
+      {{- if .Values.web.podAnnotations }}
+      annotations:
+{{ toYaml .Values.web.podAnnotations | indent 8 }}
+      {{- end }}
       labels:
         app: {{ template "fullname" . }}
         release: "{{ .Release.Name }}"
         role: web
     spec:
+      {{- if .Values.web.affinity }}
+      affinity:
+{{ toYaml .Values.web.affinity | indent 8 }}
+      {{- end }}
+      {{- if .Values.web.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.web.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.web.tolerations }}
+      tolerations:
+{{ toYaml .Values.web.tolerations | indent 8 }}
+      {{- end }}
+      {{- if .Values.web.schedulerName }}
+      schedulerName: "{{ .Values.web.schedulerName }}"
+      {{- end }}
+      {{- if .Values.image.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.image.imagePullSecrets | indent 8 }}
+      {{- end }}
       containers:
       - name: {{ .Chart.Name }}-web
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -35,7 +58,11 @@ spec:
         - name: SENTRY_DB_PASSWORD
           valueFrom:
             secretKeyRef:
+            {{- if .Values.postgresql.existingSecret }}
+              name: {{ .Values.postgresql.existingSecret }}
+            {{- else }}
               name: {{ template "postgresql.fullname" . }}
+            {{- end }}
               key: postgres-password
         - name: SENTRY_POSTGRES_HOST
           value: {{ template "postgresql.fullname" . }}
@@ -44,10 +71,14 @@ spec:
         - name: SENTRY_REDIS_PASSWORD
           valueFrom:
             secretKeyRef:
+            {{- if .Values.redis.existingSecret }}
+              name: {{ .Values.redis.existingSecret }}
+            {{- else }}
               name: {{ template "redis.fullname" . }}
+            {{- end }}
               key: redis-password
         - name: SENTRY_REDIS_HOST
-          value: {{ template "redis.fullname" . }}
+          value: {{ template "redis.fullname" . }}-master
         - name: SENTRY_REDIS_PORT
           value: "6379"
         - name: SENTRY_EMAIL_HOST
@@ -65,7 +96,13 @@ spec:
           value: {{ .Values.email.use_tls | quote }}
         - name: SENTRY_SERVER_EMAIL
           value: {{ .Values.email.from_address | quote }}
+{{- if .Values.web.env }}
+{{ toYaml .Values.web.env | indent 8 }}
+{{- end }}
         volumeMounts:
+        - mountPath: /etc/sentry
+          name: config
+          readOnly: true
         - mountPath: {{ .Values.persistence.filestore_dir }}
           name: sentry-data
         livenessProbe:
@@ -91,6 +128,9 @@ spec:
         resources:
 {{ toYaml .Values.web.resources | indent 12 }}
       volumes:
+      - name: config
+        configMap:
+          name: {{ template "fullname" . }}
       - name: sentry-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:

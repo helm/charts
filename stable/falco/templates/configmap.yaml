@@ -1,0 +1,142 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "falco.fullname" . }}
+  labels:
+    app: {{ template "falco.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+data:
+  falco.yaml: |-
+    # File(s) or Directories containing Falco rules, loaded at startup.
+    # The name "rules_file" is only for backwards compatibility.
+    # If the entry is a file, it will be read directly. If the entry is a directory,
+    # every file in that directory will be read, in alphabetical order.
+    #
+    # falco_rules.yaml ships with the falco package and is overridden with
+    # every new software version. falco_rules.local.yaml is only created
+    # if it doesn't exist. If you want to customize the set of rules, add
+    # your customizations to falco_rules.local.yaml.
+    #
+    # The files will be read in the order presented here, so make sure if
+    # you have overrides they appear in later files.
+    rules_file:
+      {{- range .Values.falco.rulesFile }}
+      - {{ . }}
+      {{- end }}
+
+    # Whether to output events in json or text
+    {{- if (or .Values.integrations.gcscc.enabled .Values.integrations.natsOutput.enabled .Values.integrations.snsOutput.enabled) }}
+    json_output: true
+    {{- else }}
+    json_output: {{ .Values.falco.jsonOutput }}
+    {{- end }}
+
+    # When using json output, whether or not to include the "output" property
+    # itself (e.g. "File below a known binary directory opened for writing
+    # (user=root ....") in the json output.
+
+    {{- if (or .Values.integrations.natsOutput.enabled .Values.integrations.snsOutput.enabled) }}
+    json_include_output_property: true
+    {{- else }}
+    json_include_output_property: {{ .Values.falco.jsonIncludeOutputProperty }}
+    {{- end }}
+
+    # Send information logs to stderr and/or syslog Note these are *not* security
+    # notification logs! These are just Falco lifecycle (and possibly error) logs.
+    log_stderr: {{ .Values.falco.logStderr }}
+    log_syslog: {{ .Values.falco.logSyslog }}
+
+    # Minimum log level to include in logs. Note: these levels are
+    # separate from the priority field of rules. This refers only to the
+    # log level of falco's internal logging. Can be one of "emergency",
+    # "alert", "critical", "error", "warning", "notice", "info", "debug".
+    log_level: {{ .Values.falco.logLevel }}
+
+    # Minimum rule priority level to load and run. All rules having a
+    # priority more severe than this level will be loaded/run.  Can be one
+    # of "emergency", "alert", "critical", "error", "warning", "notice",
+    # "info", "debug".
+    priority: {{ .Values.falco.priority }}
+
+    # Whether or not output to any of the output channels below is
+    # buffered. Defaults to false
+    buffered_outputs: {{ .Values.falco.bufferedOutputs }}
+
+    # A throttling mechanism implemented as a token bucket limits the
+    # rate of falco notifications. This throttling is controlled by the following configuration
+    # options:
+    #  - rate: the number of tokens (i.e. right to send a notification)
+    #    gained per second. Defaults to 1.
+    #  - max_burst: the maximum number of tokens outstanding. Defaults to 1000.
+    #
+    # With these defaults, falco could send up to 1000 notifications after
+    # an initial quiet period, and then up to 1 notification per second
+    # afterward. It would gain the full burst back after 1000 seconds of
+    # no activity.
+    outputs:
+      rate: {{ .Values.falco.outputs.rate }}
+      max_burst: {{ .Values.falco.outputs.maxBurst }}
+
+    # Where security notifications should go.
+    # Multiple outputs can be enabled.
+
+    syslog_output:
+      enabled: {{ .Values.falco.syslogOutput.enabled }}
+
+    # If keep_alive is set to true, the file will be opened once and
+    # continuously written to, with each output message on its own
+    # line. If keep_alive is set to false, the file will be re-opened
+    # for each output message.
+    #
+    # Also, the file will be closed and reopened if falco is signaled with
+    # SIGUSR1.
+
+    {{- if (or .Values.integrations.natsOutput.enabled .Values.integrations.snsOutput.enabled) }}
+    file_output:
+      enabled: true
+      keep_alive: true
+      filename: /var/run/falco/nats
+    {{- else }}
+    file_output:
+      enabled: {{ .Values.falco.fileOutput.enabled }}
+      keep_alive: {{ .Values.falco.fileOutput.keepAlive }}
+      filename: {{ .Values.falco.fileOutput.filename }}
+    {{- end }}
+
+    stdout_output:
+      enabled: {{ .Values.falco.stdoutOutput.enabled }}
+
+    # Possible additional things you might want to do with program output:
+    #   - send to a slack webhook:
+    #         program: "\"jq '{text: .output}' | curl -d @- -X POST https://hooks.slack.com/services/XXX\""
+    #   - logging (alternate method than syslog):
+    #         program: logger -t falco-test
+    #   - send over a network connection:
+    #         program: nc host.example.com 80
+
+    # If keep_alive is set to true, the program will be started once and
+    # continuously written to, with each output message on its own
+    # line. If keep_alive is set to false, the program will be re-spawned
+    # for each output message.
+    #
+    # Also, the program will be closed and reopened if falco is signaled with
+    # SIGUSR1.
+    {{- if .Values.integrations.gcscc.enabled }}
+    programOutput:
+      enabled: true
+      keep_alive: false
+      program: "\"curl -d @- -X POST --header 'Content-Type: application/json' --header 'Authorization: {{ .Values.integrations.gcscc.webhookAuthenticationToken }}' {{ .Values.integrations.gcscc.webhookUrl }}/\""
+    {{- else }}
+    program_output:
+      enabled: {{ .Values.falco.programOutput.enabled }}
+      keep_alive: {{ .Values.falco.programOutput.keepAlive }}
+      program: {{ .Values.falco.programOutput.program }}
+    {{- end }}
+
+  {{- if .Values.integrations.snsOutput.enabled }}
+  aws_default_region: {{ .Values.integrations.snsOutput.aws_default_region }}
+  {{- end }}
+
+{{ (.Files.Glob "rules/*").AsConfig | indent 2 }}

@@ -1,0 +1,32 @@
+{{- if .Values.cluster.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "redis.fullname" . }}-slave
+  labels:
+    app: {{ template "redis.name" . }}
+    chart: {{ template "redis.chart" . }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+{{- if .Values.slave.service.annotations }}
+  annotations:
+{{ toYaml .Values.slave.service.annotations | indent 4 }}
+{{- end }}
+spec:
+  type: {{ .Values.slave.service.type }}
+  {{ if eq .Values.slave.service.type "LoadBalancer" -}} {{ if .Values.slave.service.loadBalancerIP -}}
+  loadBalancerIP: {{ .Values.slave.service.loadBalancerIP }}
+  {{ end -}}
+  {{- end -}}
+  ports:
+  - name: redis
+    port: 6379
+    targetPort: redis
+    {{- if .Values.slave.service.nodePort }}
+    nodePort: {{ .Values.slave.service.nodePort }}
+    {{- end }}
+  selector:
+    app: {{ template "redis.name" . }}
+    release: "{{ .Release.Name }}"
+    role: slave
+{{- end}}

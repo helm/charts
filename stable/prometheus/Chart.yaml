@@ -1,5 +1,6 @@
 name: prometheus
-version: 4.6.15
+version: 8.3.1
+appVersion: 2.6.0
 description: Prometheus is a monitoring system and time series database.
 home: https://prometheus.io/
 icon: https://raw.githubusercontent.com/prometheus/prometheus.github.io/master/assets/prometheus_logo-cb55bb5c346.png
@@ -7,8 +8,12 @@ sources:
   - https://github.com/prometheus/alertmanager
   - https://github.com/prometheus/prometheus
   - https://github.com/prometheus/pushgateway
+  - https://github.com/prometheus/node_exporter
   - https://github.com/kubernetes/kube-state-metrics
 maintainers:
   - name: mgoodness
     email: mgoodness@gmail.com
+  - name: gianrubio
+    email: gianrubio@gmail.com
 engine: gotpl
+tillerVersion: ">=2.8.0"

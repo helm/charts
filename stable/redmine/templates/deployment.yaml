@@ -4,20 +4,34 @@ metadata:
   name: {{ template "redmine.fullname" . }}
   labels:
     app: {{ template "redmine.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    chart: {{ template "redmine.chart" . }}
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
-  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ template "redmine.fullname" . }}
+      release: "{{ .Release.Name }}"
+  replicas: {{ .Values.replicas }}
   template:
     metadata:
       labels:
         app: {{ template "redmine.fullname" . }}
+        chart: {{ template "redmine.chart" . }}
+        release: "{{ .Release.Name }}"
     spec:
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end}}
+      {{- end }}
       containers:
       - name: {{ template "redmine.fullname" . }}
-        image: "{{ .Values.image }}"
-        imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+        image: {{ template "redmine.image" . }}
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
         env:
         {{- if .Values.extraVars }}
 {{ toYaml .Values.extraVars | indent 8 }}
@@ -29,7 +43,7 @@ spec:
           valueFrom:
             secretKeyRef:
               name: {{ template "redmine.postgresql.fullname" . }}
-              key: postgres-password
+              key: postgresql-password
         {{- else }}
         - name: REDMINE_DB_MYSQL
           value: {{ template "redmine.mariadb.fullname" . }}

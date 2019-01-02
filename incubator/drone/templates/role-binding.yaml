@@ -1,0 +1,19 @@
+{{ if .Values.rbac.create }}
+apiVersion: rbac.authorization.k8s.io/{{ required "A valid .Values.rbac.apiVersion entry required!" .Values.rbac.apiVersion }}
+kind: RoleBinding
+metadata:
+  name: {{ template "drone.fullname" . }}
+  labels:
+    app: {{ template "drone.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ template "drone.fullname" . }}
+subjects:
+- kind: ServiceAccount
+  name: {{ template "drone.serviceAccountName" . }}
+  namespace: {{ .Release.Namespace }}
+{{ end }}

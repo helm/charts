@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "rabbitmq.fullname" . }}-config
+  labels:
+    app: {{ template "rabbitmq.name" . }}
+    chart: {{ template "rabbitmq.chart" .  }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+data:
+  enabled_plugins: |-
+{{ .Values.rabbitmq.plugins | indent 4 }}
+  rabbitmq.conf: |-
+    ##username and password
+    default_user={{.Values.rabbitmq.username}}
+    default_pass=CHANGEME
+{{ .Values.rabbitmq.configuration | indent 4 }}
+

@@ -1,5 +1,7 @@
 name: minecraft
-version: 0.2.0
+version: 0.3.2
+appVersion: 1.13.1
+home: https://minecraft.net/
 description: Minecraft server
 keywords:
 - game
@@ -8,5 +10,5 @@ sources:
 - https://hub.docker.com/r/itzg/minecraft-server/~/dockerfile/
 - https://github.com/itzg/dockerfiles
 maintainers:
-- name: Greg Taylor
+- name: gtaylor
   email: gtaylor@gc-taylor.com

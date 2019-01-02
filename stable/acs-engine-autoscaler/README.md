@@ -1,4 +1,4 @@
-# acs-engine-autoscaler
+# DEPRECATED: acs-engine-autoscaler
 
 [acs-engine-autoscaler](https://github.com/wbuchwalter/Kubernetes-acs-engine-autoscaler) is a node-level autoscaler for Kubernetes for clusters created with acs-engine.
 
@@ -45,7 +45,7 @@ acsenginecluster:
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install stable/acs-engine-autoscaler
+$ helm install --name my-release stable/acs-engine-autoscaler
 ```
 
 The command deploys acs-engine-autoscaler on the Kubernetes cluster using the supplied configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -99,10 +99,19 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the acs-engine-autoscaler chart and their default values.
+The following tables list the configurable parameters of the acs-engine-autoscaler chart and their default values.
 
 Parameter | Description | Default
 --- | --- | ---
+`image.repository` | Image repository | `wbuchwalter/kubernetes-acs-engine-autoscaler` |
+`image.tag` | Image tag. Possible values listed [here](https://hub.docker.com/r/wbuchwalter/kubernetes-acs-engine-autoscaler/tags/).| `2.1.1`|
+`image.pullPolicy` | Image pull policy | `IfNotPresent` |
+`podAnnotations` | Pod annotations | `{}` |
+`deploymentAnnotations` | Deployment annotations | `{}` |
+`resources` | CPU/Memory resource requests/limits | `{}` |
+`nodeSelector` | Node labels for pod assignment | `{}` |
+`tolerations` | Toleration labels for pod assignment | `[]` |
+`affinity` | Affinity settings for pod assignment | `{}` |
 `resourcegroup`| Name of the resource group containing the cluster | None. You *must* supply one.
 `azurespappid`| An Azure service principal id | None. You *must* supply one.
 `azurespsecret`| An Azure service principal secret | None. You *must* supply one.
@@ -112,11 +121,12 @@ Parameter | Description | Default
 `caprivatekey`| The key passed to the `caPrivateKey` parameter in your `azuredeploy.parameters.json` generated with `acs-engine` | None. You *must* supply one.
 `acsdeployment`| [OPTIONAL] The name of the deployment used to deploy the kubernetes cluster initially. | `azuredeploy`.
 `sleeptime`| [OPTIONAL] The number of seconds to sleep between scaling loops. | 60
-`ignorepools`| [OPTIONAL] A list of comma seperated pool names the autoscaler should ignore. | None.
+`ignorepools`| [OPTIONAL] A list of comma separated pool names the autoscaler should ignore. | None.
 `spareagents`| [OPTIONAL] Number of agents per pool that should always remain up. | 1
 `idlethreshold`| [OPTIONAL] Maximum duration (in seconds) an agent can stay idle before being deleted. | 1800 (30 minutes)
 `overprovision`| [OPTIONAL] Number of extra agents to create when scaling out. | 0
-Specify each parameter you'd like to override using a YAML file as described above in the [installation](#Installing the Chart) section.
+
+Specify each parameter you'd like to override using a YAML file as described above in the [installation](#installing-the-chart) section.
 
 
 ## Credentials

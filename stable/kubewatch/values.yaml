@@ -1,0 +1,83 @@
+## Global Docker image registry
+## Please, note that this will override the image registry for all the images, including dependencies, configured to use the global value
+##
+# global:
+#   imageRegistry:
+
+slack:
+  enabled: true
+  # Slack channel to notify
+  channel: "XXXX"
+  # Slack bots token. Create using: https://my.slack.com/services/new/bot
+  # and invite the bot to your channel using: /join @botname
+  token: "XXXX"
+
+hipchat:
+  enabled: false
+  # room: ""
+  # token: ""
+  # url: ""
+mattermost:
+  enabled: false
+  # channel: ""
+  # url: ""
+  # username: ""
+flock:
+  enabled: false
+  # url: ""
+webhook:
+  enabled: false
+  # url: ""
+
+# Resources to watch
+resourcesToWatch:
+  deployment: true
+  replicationcontroller: false
+  replicaset: false
+  daemonset: false
+  services: false
+  pod: true
+  job: false
+  persistentvolume: false
+
+image:
+  registry: "docker.io"
+  repository: "bitnami/kubewatch"
+  tag: "0.0.4"
+  pullPolicy: "Always"
+
+rbac:
+  # If true, create & use RBAC resources
+  #
+  create: true
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+resources: {}
+  # limits:
+  #   cpu: 100m
+  #   memory: 300Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 300Mi
+
+# Affinity for pod assignment
+# Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+# affinity: {}
+
+# Tolerations for pod assignment
+# Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+tolerations: []
+
+# Node labels for pod assignment
+# Ref: https://kubernetes.io/docs/user-guide/node-selection/
+nodeSelector: {}
+
+podAnnotations: {}
+podLabels: {}
+replicaCount: 1

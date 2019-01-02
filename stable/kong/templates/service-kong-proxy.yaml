@@ -1,0 +1,51 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "kong.fullname" . }}-proxy
+  annotations:
+    {{- range $key, $value := .Values.proxy.annotations }}
+      {{ $key }}: {{ $value | quote }}
+    {{- end }}
+  labels:
+    app: {{ template "kong.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  type: {{ .Values.proxy.type }}
+  {{- if eq .Values.proxy.type "LoadBalancer" }}
+  {{- if .Values.proxy.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.proxy.loadBalancerIP }}
+  {{- end }}
+  {{- if .Values.proxy.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+  {{- range $cidr := .Values.admin.loadBalancerSourceRanges }}
+  - {{ $cidr }}
+  {{- end }}
+  {{- end }}
+  {{- end }}
+  ports:
+  {{- if .Values.proxy.http.enabled }}
+  - name: kong-proxy
+    port: {{ .Values.proxy.http.servicePort }}
+    targetPort: {{ .Values.proxy.http.containerPort }}
+  {{- if (and (eq .Values.proxy.type "NodePort") (not (empty .Values.proxy.http.nodePort))) }}
+    nodePort: {{ .Values.proxy.http.nodePort }}
+  {{- end }}
+    protocol: TCP
+  {{- end }}
+  {{- if or .Values.proxy.tls.enabled }}
+  - name: kong-proxy-tls
+    port: {{ .Values.proxy.tls.servicePort }}
+    targetPort: {{ .Values.proxy.tls.containerPort }}
+  {{- if (and (eq .Values.proxy.type "NodePort") (not (empty .Values.proxy.tls.nodePort))) }}
+    nodePort: {{ .Values.proxy.tls.nodePort }}
+  {{- end }}
+    protocol: TCP
+  {{- end }}
+
+
+  selector:
+    app: {{ template "kong.name" . }}
+    release: {{ .Release.Name }}
+    component: app

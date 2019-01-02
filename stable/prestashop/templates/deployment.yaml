@@ -4,63 +4,114 @@ kind: Deployment
 metadata:
   name: {{ template "prestashop.fullname" . }}
   labels:
-    app: {{ template "prestashop.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app: "{{ template "prestashop.name" . }}"
+    chart: "{{ template "prestashop.chart" . }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "prestashop.fullname" . }}
+      release: "{{ .Release.Name }}"
   template:
     metadata:
       labels:
-        app: {{ template "prestashop.fullname" . }}
+        app: "{{ template "prestashop.name" . }}"
+        chart: "{{ template "prestashop.chart" . }}"
+        release: {{ .Release.Name | quote }}
+{{- if or .Values.podAnnotations .Values.metrics.enabled }}
+      annotations:
+  {{- if .Values.podAnnotations }}
+{{ toYaml .Values.podAnnotations | indent 8 }}
+  {{- end }}
+  {{- if .Values.metrics.podAnnotations }}
+{{ toYaml .Values.metrics.podAnnotations | indent 8 }}
+  {{- end }}
+{{- end }}
     spec:
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end}}
+      {{- end }}
+      hostAliases:
+      - ip: "127.0.0.1"
+        hostnames:
+        - "status.localhost"
       containers:
       - name: {{ template "prestashop.fullname" . }}
-        image: "{{ .Values.image }}"
-        imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+        image: {{ template "prestashop.image" . }}
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         env:
+        - name: ALLOW_EMPTY_PASSWORD
+          value: {{ .Values.allowEmptyPassword | quote }}
+        - name: PRESTASHOP_COOKIE_CHECK_IP
+          value: {{ .Values.prestashopCookieCheckIP | quote }}
+        {{- if .Values.mariadb.enabled }}
         - name: MARIADB_HOST
           value: {{ template "prestashop.mariadb.fullname" . }}
         - name: MARIADB_PORT_NUMBER
           value: "3306"
-        - name: MARIADB_PASSWORD
+        - name: PRESTASHOP_DATABASE_NAME
+          value: {{ .Values.mariadb.db.name | quote }}
+        - name: PRESTASHOP_DATABASE_USER
+          value: {{ .Values.mariadb.db.user | quote }}
+        - name: PRESTASHOP_DATABASE_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "prestashop.mariadb.fullname" . }}
-              key: mariadb-root-password
+              key: mariadb-password
+        {{- else }}
+        - name: MARIADB_HOST
+          value: {{ .Values.externalDatabase.host | quote }}
+        - name: MARIADB_PORT_NUMBER
+          value: {{ .Values.externalDatabase.port | quote }}
+        - name: PRESTASHOP_DATABASE_NAME
+          value: {{ .Values.externalDatabase.database | quote }}
+        - name: PRESTASHOP_DATABASE_USER
+          value: {{ .Values.externalDatabase.user | quote }}
+        - name: PRESTASHOP_DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ printf "%s-%s" .Release.Name "externaldb" }}
+              key: db-password
+        {{- end }}
+{{- $port:=.Values.service.port | toString }}
         - name: PRESTASHOP_HOST
-          value: {{ include "prestashop.host" . | quote }}
+          value: "{{ include "prestashop.host" . }}{{- if ne $port "80" }}:{{ .Values.service.port }}{{ end }}"
         - name: PRESTASHOP_USERNAME
-          value: {{ default "" .Values.prestashopUsername | quote }}
+          value: {{ .Values.prestashopUsername | quote }}
         - name: PRESTASHOP_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "prestashop.fullname" . }}
               key: prestashop-password
         - name: PRESTASHOP_EMAIL
-          value: {{ default "" .Values.prestashopEmail | quote }}
+          value: {{ .Values.prestashopEmail | quote }}
         - name: PRESTASHOP_FIRST_NAME
-          value: {{ default "" .Values.prestashopFirstName | quote }}
+          value: {{ .Values.prestashopFirstName | quote }}
         - name: PRESTASHOP_LAST_NAME
-          value: {{ default "" .Values.prestashopLastName | quote }}
+          value: {{ .Values.prestashopLastName | quote }}
         - name: SMTP_HOST
-          value: {{ default "" .Values.smtpHost | quote }}
+          value: {{ .Values.smtpHost | quote }}
         - name: SMTP_PORT
-          value: {{ default "" .Values.smtpPort | quote }}
+          value: {{ .Values.smtpPort | quote }}
         - name: SMTP_USER
-          value: {{ default "" .Values.smtpUser | quote }}
+          value: {{ .Values.smtpUser | quote }}
         - name: SMTP_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "prestashop.fullname" . }}
               key: smtp-password
         - name: SMTP_PROTOCOL
-          value: {{ default "" .Values.smtpProtocol | quote }}
+          value: {{ .Values.smtpProtocol | quote }}
         ports:
         - name: http
           containerPort: 80
         - name: https
           containerPort: 443
+        {{- if .Values.livenessProbe.enabled }}
         livenessProbe:
           httpGet:
             path: /login
@@ -68,9 +119,13 @@ spec:
             httpHeaders:
             - name: Host
               value: {{ include "prestashop.host" . | quote }}
-          initialDelaySeconds: 120
-          timeoutSeconds: 5
-          failureThreshold: 6
+          initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.livenessProbe.successThreshold }}
+          failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+        {{- end }}
+        {{- if .Values.readinessProbe.enabled }}
         readinessProbe:
           httpGet:
             path: /login
@@ -78,28 +133,49 @@ spec:
             httpHeaders:
             - name: Host
               value: {{ include "prestashop.host" . | quote }}
-          initialDelaySeconds: 30
-          timeoutSeconds: 3
-          periodSeconds: 5
+          initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.readinessProbe.successThreshold }}
+          failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+        {{- end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
-        - name: prestashop-data
-          mountPath: /bitnami/prestashop
-        - name: apache-data
-          mountPath: /bitnami/apache
+        - mountPath: /bitnami/apache
+          name: prestashop-data
+          subPath: apache
+        - mountPath: /bitnami/prestashop
+          name: prestashop-data
+          subPath: prestashop
+{{- if .Values.metrics.enabled }}
+      - name: metrics
+        image: {{ template "metrics.image" . }}
+        imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
+        command: [ '/bin/apache_exporter', '-scrape_uri', 'http://status.localhost:80/server-status/?auto']
+        ports:
+        - name: metrics
+          containerPort: 9117
+        livenessProbe:
+          httpGet:
+            path: /metrics
+            port: metrics
+          initialDelaySeconds: 15
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /metrics
+            port: metrics
+          initialDelaySeconds: 5
+          timeoutSeconds: 1
+        resources:
+{{ toYaml .Values.metrics.resources | indent 12 }}
+{{- end }}
       volumes:
       - name: prestashop-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "prestashop.fullname" . }}-prestashop
-      {{- else }}
-        emptyDir: {}
-      {{- end }}
-      - name: apache-data
-      {{- if .Values.persistence.enabled }}
-        persistentVolumeClaim:
-          claimName: {{ template "prestashop.fullname" . }}-apache
+          claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "prestashop.fullname" . }}-prestashop{{- end }}
       {{- else }}
         emptyDir: {}
       {{- end }}

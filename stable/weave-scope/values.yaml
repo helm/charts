@@ -4,7 +4,7 @@ global:
   # global.image: the image that will be used for this release
   image:
     repository: weaveworks/scope
-    tag: "1.6.5"
+    tag: 1.10.1
     # global.image.pullPolicy: must be Always, IfNotPresent, or Never
     pullPolicy: "IfNotPresent"
   # global.service.*: the configuration of the service used to access the frontend
@@ -54,21 +54,22 @@ weave-scope-agent:
     # weave-scope-agent.rbac.create *must* be set to false if RBAC is not enabled in the cluster
     # weave-scope-agent.rbac.create *may* be set to false in an RBAC-enabled cluster to allow for external management of RBAC
     create: true
-    # weave-scope-agent.rbac.serviceAccountName: the service account name that the agent will use
-    # weave-scope-agent.rbac.serviceAccountName may be specified if you need to use a specific service account name, but will be generated if not specified and rbac.create is true
-    # weave-scope-agent.rbac.serviceAccountName *must* be specified and already exist if rbac.create is false
-    # weave-scope-agent.rbac.serviceAccountName *must not* already exist if rbac.create is true (it will then be created/managed as part of the release)
-    # serviceAccountName: "weave-scope"
-    # weave-scope-agent.resources.*: controls requests/limits for the agent
-    # weave-scope-agent.resources.* values are all optional but should not be set to empty values
-    # resources:
-      # requests:
-        # weave-scope-agent.resources.requests.cpu: CPU req. in MHz (m)
-        # cpu: ""
-        # weave-scope-agent.resources.requests.memory: memory req. in MiB (Mi)
-        # memory: ""
-      # limits:
-        # weave-scope-agent.resources.limits.cpu: CPU limit in MHz (m)
-        # cpu: ""
-        # weave-scope-agent.resources.limits.memory: memory limit in MiB (Mi)
-        # memory: ""
+  serviceAccount:
+    # Specifies whether a ServiceAccount should be created
+    create: true
+    # The name of the ServiceAccount to use.
+    # If not set and create is true, a name is generated using the fullname template
+    # name: "weave-scope"
+  # weave-scope-agent.resources.*: controls requests/limits for the agent
+  # weave-scope-agent.resources.* values are all optional but should not be set to empty values
+  # resources:
+    # requests:
+      # weave-scope-agent.resources.requests.cpu: CPU req. in MHz (m)
+      # cpu: ""
+      # weave-scope-agent.resources.requests.memory: memory req. in MiB (Mi)
+      # memory: ""
+    # limits:
+      # weave-scope-agent.resources.limits.cpu: CPU limit in MHz (m)
+      # cpu: ""
+      # weave-scope-agent.resources.limits.memory: memory limit in MiB (Mi)
+      # memory: ""

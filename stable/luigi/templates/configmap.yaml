@@ -1,0 +1,68 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "luigi.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "luigi.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  client.cfg: |
+{{ printf .Values.service.config | indent 4 }}
+
+  logging.cfg: |
+    [loggers]
+    keys=root,tornado,client,scheduler,server
+
+    [logger_root]
+    level=DEBUG
+    handlers=console
+
+    [logger_client]
+    level=DEBUG
+    handlers=console
+    qualname=luigi-interface
+    propagate=0
+
+    [logger_server]
+    level=DEBUG
+    handlers=console
+    qualname=luigi.server
+    propagate=0
+
+    [logger_scheduler]
+    level=DEBUG
+    handlers=console
+    qualname=luigi.scheduler
+    propagate=0
+
+    [logger_tornado]
+    level=DEBUG
+    handlers=warnconsole
+    qualname=tornado
+    propagate=0
+
+    [formatters]
+    keys=detail
+
+    [formatter_detail]
+    class=logging.Formatter
+    format=%(asctime)s %(name)-15s %(levelname)-8s %(message)s
+
+    [handlers]
+    keys=console,warnconsole
+
+    [handler_console]
+    level=INFO
+    class=StreamHandler
+    args=(sys.stdout,)
+    formatter=detail
+
+    [handler_warnconsole]
+    level=WARNING
+    class=StreamHandler
+    args=(sys.stdout,)
+    formatter=detail
+

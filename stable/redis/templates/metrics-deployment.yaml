@@ -1,0 +1,81 @@
+{{- if .Values.metrics.enabled }}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "redis.fullname" . }}-metrics
+  labels:
+    app: {{ template "redis.name" . }}
+    chart: {{ template "redis.chart" . }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  selector:
+    matchLabels:
+        release: "{{ .Release.Name }}"
+        role: metrics
+        app: {{ template "redis.name" . }}
+  template:
+    metadata:
+      labels:
+        release: "{{ .Release.Name }}"
+        chart: {{ template "redis.chart" . }}
+        role: metrics
+        app: {{ template "redis.name" . }}
+      {{- if .Values.metrics.podLabels }}
+{{ toYaml .Values.metrics.podLabels | indent 8 }}
+      {{- end }}
+      annotations:
+        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+      {{- if .Values.metrics.podAnnotations }}
+{{ toYaml .Values.metrics.podAnnotations | indent 8 }}
+      {{- end }}
+    spec:
+      {{- if .Values.metrics.image.pullSecrets }}
+      imagePullSecrets:
+        {{- range .Values.metrics.image.pullSecrets }}
+        - name: {{ . }}
+        {{- end}}
+      {{- end}}
+      {{- if .Values.metrics.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.metrics.nodeSelector | indent 8 }}
+      {{- end }}
+      serviceAccountName: "{{ template "redis.serviceAccountName" . }}"
+      {{- if .Values.metrics.tolerations }}
+      tolerations:
+{{ toYaml .Values.metrics.tolerations | indent 8 }}
+      {{- end }}
+      containers:
+      - name: metrics
+        image: {{ template "metrics.image" . }}
+        imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
+        args:
+        {{- range $key, $value := .Values.metrics.extraArgs }}
+          - --{{ $key }}={{ $value }}
+        {{- end }}
+        env:
+        - name: REDIS_ADDR
+        {{- if .Values.cluster.enabled }}
+          value: {{ printf "%s-master:%d,%s-slave:%d" ( include "redis.fullname" . ) ( int .Values.master.port ) ( include "redis.fullname" . ) ( .Values.slave.port | default .Values.master.port | int ) | quote }}
+        {{- else }}
+          value: {{ printf "%s-master:%d" (include "redis.fullname" . ) (int .Values.master.port) | quote }}
+        {{- end }}
+        - name: REDIS_ALIAS
+          value: {{ template "redis.fullname" . }}
+        {{- if .Values.usePassword }}
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              {{- if .Values.existingSecret }}
+              name: {{ .Values.existingSecret }}
+              {{- else }}
+              name: {{ template "redis.fullname" . }}
+              {{- end }}
+              key: redis-password
+        {{- end }}
+        ports:
+        - name: metrics
+          containerPort: 9121
+        resources:
+{{ toYaml .Values.metrics.resources | indent 10 }}
+{{- end }}

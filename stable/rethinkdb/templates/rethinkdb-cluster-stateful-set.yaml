@@ -4,7 +4,7 @@ metadata:
   name: "{{ template "rethinkdb.fullname" . }}-cluster"
   labels:
     app: "{{ template "rethinkdb.name" . }}-cluster"
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    chart: {{ template "rethinkdb.chart" . }}
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
 spec:
@@ -17,12 +17,13 @@ spec:
         app: "{{ template "rethinkdb.name" . }}-cluster"
         heritage: {{ .Release.Service | quote }}
         release: {{ .Release.Name | quote }}
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        chart: {{ template "rethinkdb.chart" . }}
       annotations:
       {{- if .Values.cluster.podAnnotations }}
 {{ toYaml .Values.cluster.podAnnotations | indent 8 }}
       {{- end }}
     spec:
+      serviceAccountName: {{ template "rethinkdb.serviceAccountName" . }}
       containers:
         - name: {{ template "rethinkdb.name" . }}-cluster
           image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
@@ -63,15 +64,9 @@ spec:
                 fieldRef:
                   fieldPath: metadata.name
           livenessProbe:
-            exec:
-              command:
-                - /rethinkdb-probe
-            failureThreshold: 3
-            initialDelaySeconds: 15
-            periodSeconds: 10
-            successThreshold: 1
-            timeoutSeconds: 5
+{{ toYaml .Values.cluster.livenessProbe | indent 12 }}          
           readinessProbe:
+{{ toYaml .Values.cluster.readinessProbe | indent 12 }}
             exec:
               command:
                 - /rethinkdb-probe

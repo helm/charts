@@ -6,9 +6,18 @@
 rbac:
   create: true
   apiVersion: v1beta1
-  etcdOperatorServiceAccountName: default
-  backupOperatorServiceAccountName: default
-  restoreOperatorServiceAccountName: default
+
+## Service account names and whether to create them
+serviceAccount:
+  etcdOperatorServiceAccount:
+    create: true
+    name:
+  backupOperatorServiceAccount:
+    create: true
+    name:
+  restoreOperatorServiceAccount:
+    create: true
+    name:
 
 # Select what to deploy
 deployments:
@@ -34,7 +43,7 @@ etcdOperator:
   replicaCount: 1
   image:
     repository: quay.io/coreos/etcd-operator
-    tag: v0.7.0
+    tag: v0.9.3
     pullPolicy: Always
   resources:
     cpu: 100m
@@ -45,14 +54,28 @@ etcdOperator:
   ## additional command arguments go here; will be translated to `--key=value` form
   ## e.g., analytics: true
   commandArgs: {}
-
+  ## Configurable health checks against the /readyz endpoint that etcd-operator exposes
+  readinessProbe:
+    enabled: false
+    initialDelaySeconds: 0
+    periodSeconds: 10
+    timeoutSeconds: 1
+    successThreshold: 1
+    failureThreshold: 3
+  livenessProbe:
+    enabled: false
+    initialDelaySeconds: 0
+    periodSeconds: 10
+    timeoutSeconds: 1
+    successThreshold: 1
+    failureThreshold: 3
 # backup spec
 backupOperator:
   name: etcd-backup-operator
   replicaCount: 1
   image:
     repository: quay.io/coreos/etcd-operator
-    tag: v0.7.0
+    tag: v0.9.3
     pullPolicy: Always
   resources:
     cpu: 100m
@@ -75,7 +98,7 @@ restoreOperator:
   replicaCount: 1
   image:
     repository: quay.io/coreos/etcd-operator
-    tag: v0.7.0
+    tag: v0.9.3
     pullPolicy: Always
   port: 19999
   resources:
@@ -98,10 +121,10 @@ restoreOperator:
 etcdCluster:
   name: etcd-cluster
   size: 3
-  version: 3.2.10
+  version: 3.2.25
   image:
     repository: quay.io/coreos/etcd
-    tag: v3.2.10
+    tag: v3.2.25
     pullPolicy: Always
   enableTLS: false
   # TLS configs

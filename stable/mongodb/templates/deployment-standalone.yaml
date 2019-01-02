@@ -1,0 +1,184 @@
+{{- if not .Values.replicaSet.enabled }}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "mongodb.fullname" . }}
+  labels:
+    app: {{ template "mongodb.name" . }}
+    chart: {{ template "mongodb.chart" . }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "mongodb.name" . }}
+      release: "{{ .Release.Name }}"
+  template:
+    metadata:
+      labels:
+        app: {{ template "mongodb.name" . }}
+        release: "{{ .Release.Name }}"
+        chart: {{ template "mongodb.chart" . }}
+      {{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels | indent 8 }}
+      {{- end }}
+      {{- if or .Values.podAnnotations .Values.metrics.enabled }}
+      annotations:
+{{- if .Values.podAnnotations }}
+{{ toYaml .Values.podAnnotations | indent 8 }}
+{{- end }}
+{{- if .Values.metrics.enabled }}
+{{ toYaml .Values.metrics.podAnnotations | indent 8 }}
+{{- end }}
+      {{- end }}
+    spec:
+      {{- if .Values.securityContext.enabled }}
+      securityContext:
+        fsGroup: {{ .Values.securityContext.fsGroup }}
+        runAsUser: {{ .Values.securityContext.runAsUser }}
+      {{- end }}
+      {{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+      {{- end -}}
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+      {{- end }}
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end}}
+      {{- end }}
+      containers:
+      - name: {{ template "mongodb.fullname" . }}
+        image: {{ template "mongodb.image" . }}
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+        env:
+        {{- if .Values.usePassword }}
+        - name: MONGODB_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ if .Values.existingSecret }}{{ .Values.existingSecret }}{{- else }}{{ template "mongodb.fullname" . }}{{- end }}
+              key: mongodb-root-password
+        {{- end }}
+        - name: MONGODB_USERNAME
+          value: {{ default "" .Values.mongodbUsername | quote }}
+        {{- if and .Values.mongodbUsername .Values.mongodbDatabase }}
+        - name: MONGODB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ if .Values.existingSecret }}{{ .Values.existingSecret }}{{- else }}{{ template "mongodb.fullname" . }}{{- end }}
+              key: mongodb-password
+        {{- end }}
+        - name: MONGODB_DATABASE
+          value: {{ default "" .Values.mongodbDatabase | quote }}
+        - name: MONGODB_ENABLE_IPV6
+        {{- if .Values.mongodbEnableIPv6 }}
+          value: "yes"
+        {{- else }}
+          value: "no"
+        {{- end }}
+        - name: MONGODB_EXTRA_FLAGS
+          value: {{ default "" .Values.mongodbExtraFlags | join " " }}
+        ports:
+        - name: mongodb
+          containerPort: 27017
+        {{- if .Values.livenessProbe.enabled }}
+        livenessProbe:
+          exec:
+            command:
+            - mongo
+            - --eval
+            - "db.adminCommand('ping')"
+          initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.livenessProbe.successThreshold }}
+          failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+        {{- end }}
+        {{- if .Values.readinessProbe.enabled }}
+        readinessProbe:
+          exec:
+            command:
+            - mongo
+            - --eval
+            - "db.adminCommand('ping')"
+          initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.readinessProbe.successThreshold }}
+          failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+        {{- end }}
+        volumeMounts:
+        - name: data
+          mountPath: /bitnami/mongodb
+        {{- if  (.Files.Glob "files/docker-entrypoint-initdb.d/*[sh|js]") }}
+        - name: custom-init-scripts
+          mountPath: /docker-entrypoint-initdb.d
+        {{- end }}
+        {{- if .Values.configmap }}
+        - name: config
+          mountPath: /opt/bitnami/mongodb/conf/mongodb.conf
+          subPath: mongodb.conf
+        {{- end }}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+{{- if .Values.metrics.enabled }}
+      - name: metrics
+        image: {{ template "metrics.image" . }}
+        imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
+        env:
+        {{- if .Values.usePassword }}
+        - name: MONGODB_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ if .Values.existingSecret }}{{ .Values.existingSecret }}{{- else }}{{ template "mongodb.fullname" . }}{{- end }}
+              key: mongodb-root-password
+        command: [ 'sh', '-c', '/bin/mongodb_exporter --mongodb.uri mongodb://root:${MONGODB_ROOT_PASSWORD}@localhost:{{ .Values.service.port }}/admin' ]
+        {{- else }}
+        command: [ 'sh', '-c', '/bin/mongodb_exporter --mongodb.uri mongodb://localhost:{{ .Values.service.port }}' ]
+        {{- end }}
+        ports:
+        - name: metrics
+          containerPort: 9216
+        livenessProbe:
+          httpGet:
+            path: /metrics
+            port: metrics
+          initialDelaySeconds: 15
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /metrics
+            port: metrics
+          initialDelaySeconds: 5
+          timeoutSeconds: 1
+        resources:
+  {{ toYaml .Values.metrics.resources | indent 10 }}
+{{- end }}
+      volumes:
+      {{- if  (.Files.Glob "files/docker-entrypoint-initdb.d/*[sh|js]") }}
+      - name: custom-init-scripts
+        configMap:
+          name: {{ template "mongodb.fullname" . }}-init-scripts
+      {{- end }}
+      - name: data
+      {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "mongodb.fullname" . }}{{- end }}
+
+      {{- else }}
+        emptyDir: {}
+      {{- end -}}
+      {{- if .Values.configmap }}
+      - name: config
+        configMap:
+          name: {{ template "mongodb.fullname" . }}
+      {{- end }}
+ {{- end -}}

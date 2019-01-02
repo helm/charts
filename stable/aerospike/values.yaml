@@ -7,6 +7,12 @@ image:
   tag: 3.14.1.2
   pullPolicy: IfNotPresent
 
+# pass custom command. This is equivalent of Entrypoint in docker
+command: []
+
+# pass custom args. This is equivalent of Cmd in docker
+args: []
+
 # Set as empty object {} if no volumes need to be created
 # See confFile below
 persistentVolume: {}
@@ -27,6 +33,9 @@ service:
   annotations: {}
   loadBalancerIP:
   clusterIP: None
+  # This field takes a list of IP CIDR ranges, which Kubernetes will use to configure firewall exceptions
+  # loadBalancerSourceRanges:
+  # - 10.0.0.0/8
 
 meshService:
   annotations: {}

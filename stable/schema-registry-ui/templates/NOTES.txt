@@ -1,0 +1,39 @@
+ __      _                              __            _     _
+/ _\ ___| |__   ___ _ __ ___   __ _    /__\ ___  __ _(_)___| |_ _ __ _   _
+\ \ / __| '_ \ / _ \ '_ ` _ \ / _` |  / \/// _ \/ _` | / __| __| '__| | | |
+_\ \ (__| | | |  __/ | | | | | (_| | / _  \  __/ (_| | \__ \ |_| |  | |_| |
+\__/\___|_| |_|\___|_| |_| |_|\__,_| \/ \_/\___|\__, |_|___/\__|_|   \__, |
+                                                |___/                |___/
+
+                                      _____
+                               /\ /\  \_   \
+                              / / \ \  / /\/
+                              \ \_/ /\/ /_
+                               \___/\____/
+
+Congratulations! You have successfully deployed Schema Registry UI (SRUI)
+
+This is a web tool for the confluentinc/schema-registry in order to create / view / search / evolve / view history & configure Avro schemas of your Kafka cluster.
+
+1. Get the application URL by running these commands:
+{{- if .Values.ingress.enabled }}
+{{- range .Values.ingress.hosts }}
+  http{{ if $.Values.ingress.tls }}s{{ end }}://{{ . }}{{ $.Values.ingress.path }}
+{{- end }}
+{{- else if contains "NodePort" .Values.service.type }}
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "schema-registry-ui.fullname" . }})
+  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo http://$NODE_IP:$NODE_PORT
+
+  If you are using minikube, this may be helpful:
+  minikube service {{ .Release.Name }}-schema-registry-ui
+{{- else if contains "LoadBalancer" .Values.service.type }}
+     NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+           You can watch the status of by running 'kubectl get svc -w {{ template "schema-registry-ui.fullname" . }}'
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "schema-registry-ui.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  echo http://$SERVICE_IP:{{ .Values.service.port }}
+{{- else if contains "ClusterIP" .Values.service.type }}
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "schema-registry-ui.name" . }},release={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
+  echo "Visit http://127.0.0.1:80 to use your application"
+  kubectl port-forward $POD_NAME 8080:80
+{{- end }}

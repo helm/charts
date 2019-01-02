@@ -35,8 +35,6 @@ To install the chart with the release name `my-release`:
 $ helm install --name my-release stable/sensu
 ```
 
-*Replace the `x.x.x` placeholder with the chart release version.*
-
 The command deploys Sensu on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
 
 > **Tip**: List all releases using `helm list`
@@ -53,7 +51,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Sensu chart and their default values.
+The following table lists the configurable parameters of the Sensu chart and their default values.
 
 | Parameter                            | Description                              | Default                                                    |
 | -------------------------------      | -------------------------------          | ---------------------------------------------------------- |

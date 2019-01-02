@@ -1,0 +1,108 @@
+image:
+  repository: hyperledger/burrow
+  tag: 0.23.2
+  pullPolicy: IfNotPresent
+
+chain:
+  nodes: 1
+  logLevel: info
+  extraSeeds: []
+  testing: false
+
+validatorAddresses:
+  Validator_0:
+    Address: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+    NodeAddress: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+
+env: {}
+extraArgs: {}
+
+organization: "user"
+
+persistence:
+  enabled: true
+  size: 80Gi
+  storageClass: standard
+  accessMode: ReadWriteOnce
+  persistentVolumeReclaimPolicy: "Retain"
+
+peer:
+  service:
+    type: ClusterIP
+    port: 26656
+  ingress:
+    enabled: false
+    hosts: []
+
+rpcGRPC:
+  enabled: true
+  service:
+    port: 10997
+    type: ClusterIP
+    loadBalance: true
+  ingress:
+    enabled: false
+    hosts: []
+    annotations: {}
+    tls: {}
+
+rpcInfo:
+  enabled: true
+  service:
+    port: 26658
+    type: ClusterIP
+    loadBalance: true
+  ingress:
+    enabled: false
+    # exposing partial ingress only exposes
+    # the /accounts and /blocks paths outside the cluster
+    partial: false
+    pathLeader: "/"
+    annotations: {}
+    hosts: []
+    tls: {}
+
+rpcMetrics:
+  enabled: true
+  port: 9102
+  path: /metrics
+  blockSampleSize: 100
+
+rpcProfiler:
+  enabled: false
+  port: 6060
+
+# resources:
+#   limits:
+#     cpu: 500m
+#     memory: 1Gi
+#   requests:
+#     cpu: 100m
+#     memory: 256Mi
+
+livenessProbe:
+  enabled: true
+  path: /status?block_seen_time_within=3m
+  initialDelaySeconds: 240
+  timeoutSeconds: 1
+  periodSeconds: 30
+
+readinessProbe:
+  enabled: true
+  path: /status
+  initialDelaySeconds: 5
+
+podAnnotations: {}
+podLabels: {}
+
+# Affinity for pod assignment
+# Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+affinity: {}
+
+# Tolerations for pod assignment
+# Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+tolerations: []
+
+# Node labels for pod assignment
+# Ref: https://kubernetes.io/docs/user-guide/node-selection/
+nodeSelector: {}

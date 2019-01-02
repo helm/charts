@@ -1,23 +1,59 @@
+## Global Docker image registry
+## Please, note that this will override the image registry for all the images, including dependencies, configured to use the global value
+##
+# global:
+#   imageRegistry:
+
 ## Kubernetes serviceType for Parse Deployment
 ## ref: http://kubernetes.io/docs/user-guide/services/#publishing-services---service-types
 ##
-serviceType: LoadBalancer
+service:
+  type: LoadBalancer
+  # Parse dashboard HTTP Port
+  port: 80
+  ## loadBalancerIP:
+  ##
+  ## nodePorts:
+  ##   http: <to set explicitly, choose port between 30000-32767>
+  nodePorts:
+    http: ""
+  ## Enable client source IP preservation
+  ## ref http://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip
+  ##
+  externalTrafficPolicy: Cluster
 
 ## loadBalancerIP for the Parse Service (optional, cloud specific)
 ## ref: http://kubernetes.io/docs/user-guide/services/#type-loadbalancer
 ##
-# loadBalancerIP:
+#
 
 server:
   ## Bitnami Parse image version
   ## ref: https://hub.docker.com/r/bitnami/parse/tags/
   ##
-  image: bitnami/parse:2.7.1-r0
+  image:
+    registry: docker.io
+    repository: bitnami/parse
+    tag: 3.1.2
+    ## Specify a imagePullPolicy
+    ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
+    ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+    ##
+    pullPolicy: IfNotPresent
+    ## Optionally specify an array of imagePullSecrets.
+    ## Secrets must be manually created in the namespace.
+    ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+    ##
+    # pullSecrets:
+    #   - myRegistrKeySecretName
 
-  ## Specify a imagePullPolicy
-  ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+  ## Parse Server Pod Security Context
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
   ##
-  imagePullPolicy: IfNotPresent
+  securityContext:
+    enabled: true
+    fsGroup: 1001
+    runAsUser: 1001
 
   ## Parse Server Port
   ## ref: https://github.com/bitnami/bitnami-docker-parse#configuration
@@ -55,12 +91,29 @@ dashboard:
   ## Bitnami Parse Dashboard image version
   ## ref: https://hub.docker.com/r/bitnami/parse-dashboard/tags/
   ##
-  image: bitnami/parse-dashboard:1.1.2-r0
+  image:
+    registry: docker.io
+    repository: bitnami/parse-dashboard
+    tag: 1.2.0
+    ## Specify a imagePullPolicy
+    ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
+    ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+    ##
+    pullPolicy: IfNotPresent
+    ## Optionally specify an array of imagePullSecrets.
+    ## Secrets must be manually created in the namespace.
+    ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+    ##
+    # pullSecrets:
+    #   - myRegistrKeySecretName
 
-  ## Specify a imagePullPolicy
-  ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+  ## Parse Dashboard Pod Security Context
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
   ##
-  imagePullPolicy: IfNotPresent
+  securityContext:
+    enabled: true
+    fsGroup: 1001
+    runAsUser: 1001
 
   ## Parse Dashboard application username
   ## ref: https://github.com/bitnami/bitnami-docker-parse-dashboard#configuration
@@ -105,7 +158,14 @@ persistence:
 ##
 ## MongoDB chart configuration
 ##
+## https://github.com/helm/charts/blob/master/stable/mongodb/values.yaml
+##
 mongodb:
+  ## MongoDB Password authentication
+  usePassword: true
+  ## If the password is not specified, MongoDB will generate a random password
+  ##
+  # mongodbRootPassword:
   ## Enable persistence using Persistent Volume Claims
   ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
   ##

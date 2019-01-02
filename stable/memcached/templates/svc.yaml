@@ -7,11 +7,18 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
+  annotations:
+{{ toYaml .Values.serviceAnnotations | indent 4 }}
 spec:
   clusterIP: None
   ports:
   - name: memcache
     port: 11211
     targetPort: memcache
+{{- if .Values.metrics.enabled }}
+  - name: metrics
+    port: 9150
+    targetPort: metrics
+{{- end }}
   selector:
     app: {{ template "memcached.fullname" . }}

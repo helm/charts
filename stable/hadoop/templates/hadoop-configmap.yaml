@@ -1,12 +1,11 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "hadoop.fullname" . }}
+  name: {{ include "hadoop.fullname" . }}
   labels:
-    app: {{ template "hadoop.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    app: {{ include "hadoop.name" . }}
+    chart: {{ include "hadoop.chart" . }}
     release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
 data:
   bootstrap.sh: |
     #!/bin/bash
@@ -35,22 +34,20 @@ data:
     if [[ "${HOSTNAME}" =~ "hdfs-nn" ]]; then
       mkdir -p /root/hdfs/namenode
       $HADOOP_PREFIX/bin/hdfs namenode -format -force -nonInteractive
-      sed -i s/{{ template "hadoop.fullname" . }}-hdfs-nn/0.0.0.0/ /usr/local/hadoop/etc/hadoop/core-site.xml
       $HADOOP_PREFIX/sbin/hadoop-daemon.sh start namenode
     fi
 
     if [[ "${HOSTNAME}" =~ "hdfs-dn" ]]; then
       mkdir -p /root/hdfs/datanode
 
-      #  wait up to 30 seconds for namenode 
-      (while [[ $count -lt 15 && -z `curl -sf http://{{ template "hadoop.fullname" . }}-hdfs-nn:50070` ]]; do ((count=count+1)) ; echo "Waiting for {{ template "hadoop.fullname" . }}-hdfs-nn" ; sleep 2; done && [[ $count -lt 15 ]])
+      #  wait up to 30 seconds for namenode
+      (while [[ $count -lt 15 && -z `curl -sf http://{{ include "hadoop.fullname" . }}-hdfs-nn:50070` ]]; do ((count=count+1)) ; echo "Waiting for {{ include "hadoop.fullname" . }}-hdfs-nn" ; sleep 2; done && [[ $count -lt 15 ]])
       [[ $? -ne 0 ]] && echo "Timeout waiting for hdfs-nn, exiting." && exit 1
 
       $HADOOP_PREFIX/sbin/hadoop-daemon.sh start datanode
     fi
 
     if [[ "${HOSTNAME}" =~ "yarn-rm" ]]; then
-      sed -i s/{{ template "hadoop.fullname" . }}-yarn-rm/0.0.0.0/ $HADOOP_PREFIX/etc/hadoop/yarn-site.xml
       cp ${CONFIG_DIR}/start-yarn-rm.sh $HADOOP_PREFIX/sbin/
       cd $HADOOP_PREFIX/sbin
       chmod +x start-yarn-rm.sh
@@ -76,7 +73,7 @@ data:
       chmod +x start-yarn-nm.sh
 
       #  wait up to 30 seconds for resourcemanager
-      (while [[ $count -lt 15 && -z `curl -sf http://{{ template "hadoop.fullname" . }}-yarn-rm:8088/ws/v1/cluster/info` ]]; do ((count=count+1)) ; echo "Waiting for {{ template "hadoop.fullname" . }}-yarn-rm" ; sleep 2; done && [[ $count -lt 15 ]])
+      (while [[ $count -lt 15 && -z `curl -sf http://{{ include "hadoop.fullname" . }}-yarn-rm:8088/ws/v1/cluster/info` ]]; do ((count=count+1)) ; echo "Waiting for {{ include "hadoop.fullname" . }}-yarn-rm" ; sleep 2; done && [[ $count -lt 15 ]])
       [[ $? -ne 0 ]] && echo "Timeout waiting for yarn-rm, exiting." && exit 1
 
       ./start-yarn-nm.sh
@@ -98,7 +95,7 @@ data:
     <configuration>
       <property>
             <name>fs.defaultFS</name>
-            <value>hdfs://{{ template "hadoop.fullname" . }}-hdfs-nn:9000/</value>
+            <value>hdfs://{{ include "hadoop.fullname" . }}-hdfs-nn:9000/</value>
             <description>NameNode URI</description>
         </property>
     </configuration>
@@ -138,6 +135,18 @@ data:
         <name>dfs.namenode.datanode.registration.ip-hostname-check</name>
         <value>false</value>
       </property>
+
+      <!-- Bind to all interfaces -->
+      <property>
+        <name>dfs.namenode.rpc-bind-host</name>
+        <value>0.0.0.0</value>
+      </property>
+      <property>
+        <name>dfs.namenode.servicerpc-bind-host</name>
+        <value>0.0.0.0</value>
+      </property>
+      <!-- /Bind to all interfaces -->
+
     </configuration>
 
   mapred-site.xml: |
@@ -151,11 +160,11 @@ data:
       </property>
       <property>
         <name>mapreduce.jobhistory.address</name>
-        <value>{{ template "hadoop.fullname" . }}-yarn-rm-0.{{ template "hadoop.fullname" . }}-yarn-rm.{{ .Release.Namespace }}.svc.cluster.local:10020</value>
+        <value>{{ include "hadoop.fullname" . }}-yarn-rm-0.{{ include "hadoop.fullname" . }}-yarn-rm.{{ .Release.Namespace }}.svc.cluster.local:10020</value>
       </property>
       <property>
         <name>mapreduce.jobhistory.webapp.address</name>
-        <value>{{ template "hadoop.fullname" . }}-yarn-rm-0.{{ template "hadoop.fullname" . }}-yarn-rm.{{ .Release.Namespace }}.svc.cluster.local:19888</value>
+        <value>{{ include "hadoop.fullname" . }}-yarn-rm-0.{{ include "hadoop.fullname" . }}-yarn-rm.{{ .Release.Namespace }}.svc.cluster.local:19888</value>
       </property>
     </configuration>
 
@@ -243,8 +252,23 @@ data:
     <configuration>
       <property>
         <name>yarn.resourcemanager.hostname</name>
-        <value>{{ template "hadoop.fullname" . }}-yarn-rm</value>
+        <value>{{ include "hadoop.fullname" . }}-yarn-rm</value>
       </property>
+
+      <!-- Bind to all interfaces -->
+      <property>
+        <name>yarn.resourcemanager.bind-host</name>
+        <value>0.0.0.0</value>
+      </property>
+      <property>
+        <name>yarn.nodemanager.bind-host</name>
+        <value>0.0.0.0</value>
+      </property>
+      <property>
+        <name>yarn.timeline-service.bind-host</name>
+        <value>0.0.0.0</value>
+      </property>
+      <!-- /Bind to all interfaces -->
 
       <property>
         <name>yarn.nodemanager.vmem-check-enabled</name>

@@ -1,0 +1,121 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "phpmyadmin.fullname" . }}
+  labels:
+    app: {{ template "phpmyadmin.name" . }}
+    chart: {{ template "phpmyadmin.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ template "phpmyadmin.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "phpmyadmin.name" . }}
+        chart: {{ template "phpmyadmin.chart" . }}
+        release: {{ .Release.Name }}
+{{- if or .Values.podAnnotations .Values.metrics.enabled }}
+      annotations:
+  {{- if .Values.podAnnotations }}
+{{ toYaml .Values.podAnnotations | indent 8 }}
+  {{- end }}
+  {{- if .Values.metrics.podAnnotations }}
+{{ toYaml .Values.metrics.podAnnotations | indent 8 }}
+  {{- end }}
+{{- end }}
+    spec:
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end}}
+      {{- end }}
+      hostAliases:
+      - ip: "127.0.0.1"
+        hostnames:
+        - "status.localhost"
+      containers:
+        - name: {{ .Chart.Name }}
+          image: {{ template "phpmyadmin.image" . }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: DATABASE_PORT_NUMBER
+              value: "{{ .Values.db.port }}"
+            {{- if .Values.db.chartName }}
+            - name: DATABASE_HOST
+              value: "{{ template "phpmyadmin.dbfullname" . }}"
+            {{- else if .Values.db.bundleTestDB }} 
+            - name: DATABASE_HOST
+              value: "{{ template "mariadb.fullname" . }}"
+            {{- else }} 
+            - name: DATABASE_HOST
+              value: "{{ .Values.db.host }}"
+            {{- end }}
+            {{- if and (not .Values.db.chartName) (not .Values.db.host)}}
+            - name: PHPMYADMIN_ALLOW_NO_PASSWORD
+              value: "true"
+            - name: PHPMYADMIN_ALLOW_ARBITRARY_SERVER
+              value: "true"
+            {{- else }}
+            - name: PHPMYADMIN_ALLOW_NO_PASSWORD
+              value: "false"
+            {{- end }}
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+            - name: https
+              containerPort: 443
+              protocol: TCP
+          {{- if .Values.probesEnabled }}
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          {{- end }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+{{- if .Values.metrics.enabled }}
+        - name: metrics
+          image: {{ template "metrics.image" . }}
+          imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
+          command: [ '/bin/apache_exporter', '-scrape_uri', 'http://status.localhost:80/server-status/?auto']
+          ports:
+          - name: metrics
+            containerPort: 9117
+          livenessProbe:
+            httpGet:
+              path: /metrics
+              port: metrics
+            initialDelaySeconds: 15
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /metrics
+              port: metrics
+            initialDelaySeconds: 5
+            timeoutSeconds: 1
+          resources:
+{{ toYaml .Values.metrics.resources | indent 12 }}
+{{- end }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

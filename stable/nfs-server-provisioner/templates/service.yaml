@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "nfs-provisioner.fullname" . }}
+  labels:
+    app: {{ template "nfs-provisioner.name" . }}
+    chart: {{ template "nfs-provisioner.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.nfsPort }}
+      targetPort: nfs
+      protocol: TCP
+      name: nfs
+{{- if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.nfsNodePort))) }}
+      nodePort: {{ .Values.service.nfsNodePort }}
+{{- end }}
+    - port: {{ .Values.service.mountdPort }}
+      targetPort: mountd
+      protocol: TCP
+      name: mountd
+{{- if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.mountdNodePort))) }}
+      nodePort: {{ .Values.service.mountdNodePort }}
+{{- end }}
+    - port: {{ .Values.service.rpcbindPort }}
+      targetPort: rpcbind-tcp
+      protocol: TCP
+      name: rpcbind-tcp
+{{- if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.rpcbindNodePort))) }}
+      nodePort: {{ .Values.service.rpcbindNodePort }}
+{{- end }}
+    - port: {{ .Values.service.rpcbindPort }}
+      targetPort: rpcbind-udp
+      protocol: UDP
+      name: rpcbind-udp
+{{- if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.rpcbindNodePort))) }}
+      nodePort: {{ .Values.service.rpcbindNodePort }}
+{{- end }}
+{{- if .Values.service.externalIPs }}
+  externalIPs:
+{{ toYaml .Values.service.externalIPs | indent 4 }}
+{{- end }}
+  selector:
+    app: {{ template "nfs-provisioner.name" . }}
+    release: {{ .Release.Name }}

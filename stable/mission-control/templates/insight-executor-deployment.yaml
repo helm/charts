@@ -1,0 +1,80 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "insight-executor.fullname" . }}
+  labels:
+    app: {{ template "mission-control.name" . }}
+    chart: {{ template "mission-control.chart" . }}
+    component: {{ .Values.insightExecutor.name }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.insightExecutor.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "mission-control.name" . }}
+      component: {{ .Values.insightExecutor.name }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "mission-control.name" . }}
+        component: {{ .Values.insightExecutor.name }}
+        release: {{ .Release.Name }}
+    spec:
+      serviceAccountName: {{ template "mission-control.serviceAccountName" . }}
+    {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+      - name: {{ .Values.imagePullSecrets }}
+    {{- end }}
+      containers:
+      - name: {{ .Values.insightExecutor.name }}
+        image: {{ .Values.insightExecutor.image }}:{{ default .Chart.AppVersion .Values.insightExecutor.version }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        env:
+        - name: CORE_URL
+          value: 'http://{{ template "insight-server.fullname" . }}:{{ .Values.insightServer.internalHttpPort }}'
+        - name: JFI_HOME
+          value: '/var/cloudbox'
+        - name: JFI_HOME_EXECUTOR
+          value: '/var/cloudbox/executor'
+        ports:
+        - containerPort: {{ .Values.insightExecutor.internalPort }}
+          protocol: TCP
+        volumeMounts:
+        - name: insight-executor-data
+          mountPath: {{ .Values.insightExecutor.persistence.mountPath | quote }}
+        livenessProbe:
+          httpGet:
+            path: /executorservice/api
+            port: 8080
+          initialDelaySeconds: 180
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /executorservice/api
+            port: 8080
+          initialDelaySeconds: 180
+          periodSeconds: 10
+        resources:
+{{ toYaml .Values.insightExecutor.resources | indent 10 }}
+    {{- with .Values.insightExecutor.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.insightExecutor.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.insightExecutor.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+      volumes:
+      - name: insight-executor-data
+      {{- if .Values.insightExecutor.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ if .Values.insightExecutor.persistence.existingClaim }}{{ .Values.insightExecutor.persistence.existingClaim }}{{ else }}{{ template "insight-executor.fullname" . }}{{ end }}
+      {{- else }}
+        emptyDir: {}
+      {{- end }}

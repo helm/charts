@@ -1,12 +1,33 @@
+halyard:
+  spinnakerVersion: 1.9.1
+  image:
+    repository: gcr.io/spinnaker-marketplace/halyard
+    tag: 1.9.1
+  # Provide a config map with Hal commands that will be run the core config (storage)
+  # The config map should contain a script in the config.sh key
+  additionalScripts:
+    enabled: false
+    configMapName: my-halyard-config
+    configMapKey: config.sh
+    # If you'd rather do an inline script, set create to true and put the content in the data dict like you would a configmap
+    create: false
+    data: {}
+  additionalSecrets:
+    create: false
+    data: {}
+  additionalConfigMaps:
+    create: false
+    data: {}
+
 # Define which registries and repositories you want available in your
 # Spinnaker pipeline definitions
 # For more info visit:
 #   https://www.spinnaker.io/setup/providers/docker-registry/
 
 # Configure your Docker registries here
-accounts:
+dockerRegistries:
 - name: dockerhub
-  address: https://index.docker.io
+  address: index.docker.io
   repositories:
     - library/alpine
     - library/ubuntu
@@ -18,98 +39,122 @@ accounts:
 #   password: '<INSERT YOUR SERVICE ACCOUNT JSON HERE>'
 #   email: 1234@5678.com
 
-# Settings for notifications via email
-# For more info visit:
-#   https://www.spinnaker.io/setup/features/notifications/#email
-mail:
-  enabled: false
-  host: smtp.example.org
-  username: admin
-  password: admin
-  fromAddress: spinnaker@example.org
-  port: 25
+# If you don't want to put your passwords into a values file
+# you can use a pre-created secret instead of putting passwords
+# (specify secret name in below `dockerRegistryAccountSecret`)
+# per account above with data in the format:
+# <name>: <password>
 
-slack:
-  enabled: false
-  token:
-  botName: 'spinnakerbot'
+# dockerRegistryAccountSecret: myregistry-secrets
 
-# Images for each component
-images:
-  clouddriver: gcr.io/spinnaker-marketplace/clouddriver:0.5.0-72
-  echo: gcr.io/spinnaker-marketplace/echo:0.4.0-72
-  deck: gcr.io/spinnaker-marketplace/deck:1.3.0-72
-  igor: gcr.io/spinnaker-marketplace/igor:0.4.0-72
-  orca: gcr.io/spinnaker-marketplace/orca:0.5.0-72
-  gate: gcr.io/spinnaker-marketplace/gate:0.5.0-72
-  front50: gcr.io/spinnaker-marketplace/front50:0.4.1-72
-  rosco: gcr.io/spinnaker-marketplace/rosco:0.4.0-72
+kubeConfig:
+  # Use this when you want to register arbitrary clusters with Spinnaker
+  # Upload your ~/kube/.config to a secret
+  enabled: false
+  secretName: my-kubeconfig
+  secretKey: config
+  # List of contexts from the kubeconfig to make available to Spinnaker
+  contexts:
+  - default
+  deploymentContext: default
 
 # Change this if youd like to expose Spinnaker outside the cluster
-deck:
-  host: localhost
-  port: 9000
-  protocol: http
-  ingress:
-    enabled: false
-    # annotations:
-      # ingress.kubernetes.io/ssl-redirect: 'true'
-      # kubernetes.io/ingress.class: nginx
-      # kubernetes.io/tls-acme: "true"
-    # tls:
-    #  - secretName: -tls
-    #    hosts:
-    #      - domain.com
+ingress:
+  enabled: false
+  # host: spinnaker.example.org
+  # annotations:
+    # ingress.kubernetes.io/ssl-redirect: 'true'
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  # tls:
+  #  - secretName: -tls
+  #    hosts:
+  #      - domain.com
 
-gate:
-  allowedOriginsPattern: '^https?://(?:localhost|127.0.0.1|[^/]+\.example\.com)(?::[1-9]\d*)?/?$'
+ingressGate:
+  enabled: false
+  # host: gate.spinnaker.example.org
+  # annotations:
+    # ingress.kubernetes.io/ssl-redirect: 'true'
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  # tls:
+  #  - secretName: -tls
+  #    hosts:
+  #      - domain.com
 
-# Bucket to use when storing config data in S3 compatible storage
-storageBucket: spinnaker
+# spinnakerFeatureFlags is a list of Spinnaker feature flags to enable
+# Ref: https://www.spinnaker.io/reference/halyard/commands/#hal-config-features-edit
+# spinnakerFeatureFlags:
+#   - artifacts
+#   - pipeline-templates
+spinnakerFeatureFlags:
+  - artifacts
+  - jobs
 
-# Change service type for UI service
-serviceType: ClusterIP
-
-# Resources to provide to each of
-# the Spinnaker components
-resources:
-  limits:
-    cpu: 1000m
-    memory: 1280Mi
-  requests:
-    cpu: 1000m
-    memory: 1280Mi
+# Node labels for pod assignment
+# Ref: https://kubernetes.io/docs/user-guide/node-selection/
+# nodeSelector to provide to each of the Spinnaker components
+nodeSelector: {}
 
 # Redis password to use for the in-cluster redis service
 # Redis is not exposed publically
 redis:
-  redisPassword: password
+  password: password
+  nodeSelector: {}
+  cluster:
+    enabled: false
+# Uncomment if you don't want to create a PVC for redis
+#  master:
+#    persistence:
+#      enabled: false
 
 # Minio access/secret keys for the in-cluster S3 usage
 # Minio is not exposed publically
 minio:
   enabled: true
-  imageTag: RELEASE.2016-11-26T02-23-47Z
+  imageTag: RELEASE.2018-06-09T02-18-09Z
   serviceType: ClusterIP
   accessKey: spinnakeradmin
   secretKey: spinnakeradmin
+  bucket: "spinnaker"
+  nodeSelector: {}
+# Uncomment if you don't want to create a PVC for minio
+#  persistence:
+#    enabled: false
 
+# Google Cloud Storage
 gcs:
   enabled: false
   project: my-project-name
+  bucket: "<GCS-BUCKET-NAME>"
   jsonKey: '<INSERT CLOUD STORAGE JSON HERE>'
 
-# Configuration for the Jenkins instance that is attached to the
-# igor component of Spinnaker. For more info about the Jenkins integration
-# with Spinnaker, visit:
-#   https://www.spinnaker.io/setup/ci/jenkins/
-jenkins:
-  Master:
-    Cpu: "500m"
-    Memory: "512Mi"
-    ServiceType: ClusterIP
-    CustomConfigMap: true
+# AWS Simple Storage Service
+s3:
+  enabled: false
+  bucket: "<S3-BUCKET-NAME>"
+  # rootFolder: "front50"
+  # region: "us-east-1"
+  # endpoint: ""
+  # accessKey: ""
+  # secretKey: ""
 
-  Agent:
-    Cpu: "500m"
-    Memory: "512Mi"
+# Azure Storage Account
+azs:
+  enabled: false
+#   storageAccountName: ""
+#   accessKey: ""
+#   containerName: "spinnaker"
+
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccounts to use.
+  # If left blank it is auto-generated from the fullname of the release
+  halyardName:
+  spinnakerName:

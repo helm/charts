@@ -1,18 +1,18 @@
 name: odoo
-version: 0.6.6
-appVersion: 10.0.20171222
+version: 5.0.2
+appVersion: 11.0.20181215
 description: A suite of web based open source business apps.
+home: https://www.odoo.com/
+icon: https://bitnami.com/assets/stacks/odoo/img/odoo-stack-110x117.png
 keywords:
 - odoo
 - crm
 - www
 - http
 - web
-home: https://www.odoo.com/
 sources:
 - https://github.com/bitnami/bitnami-docker-odoo
 maintainers:
 - name: Bitnami
   email: containers@bitnami.com
 engine: gotpl
-icon: https://bitnami.com/assets/stacks/odoo/img/odoo-stack-110x117.png

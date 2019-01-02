@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.artifactory.service.name }}
+  name: {{ template "artifactory.fullname" . }}
   labels:
     app: {{ template "artifactory.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    component: "{{ .Values.artifactory.name }}"
+    chart: {{ template "artifactory.chart" . }}
+    component: {{ .Values.artifactory.name }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 {{- if .Values.artifactory.service.annotations }}
@@ -19,6 +19,12 @@ spec:
     targetPort: {{ .Values.artifactory.internalPort }}
     protocol: TCP
     name: {{ .Release.Name }}
+  {{- if .Values.artifactory.replicator.enabled }}
+  - port: {{ .Values.artifactory.externalPortReplicator }}
+    targetPort: {{ .Values.artifactory.internalPortReplicator }}
+    protocol: TCP
+    name: replicator
+  {{- end}}
   selector:
     app: {{ template "artifactory.name" . }}
     component: "{{ .Values.artifactory.name }}"

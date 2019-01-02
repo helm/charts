@@ -20,7 +20,15 @@ spec:
     - host: {{ . }}
       http:
         paths:
+        {{- if index $.Values.ingress "annotations" }}
+          {{- if eq (index $.Values.ingress.annotations "kubernetes.io/ingress.class" | default "") "gce" }}
+          - path: /*
+          {{- else }}{{/* Has annotations but ingress class is not "gce" */}}
           - path: /
+          {{- end }}
+        {{- else}}{{/* Has no annotations */}}
+          - path: /
+        {{- end }}
             backend:
               serviceName: {{ $fullName }}
               servicePort: {{ $httpPort }}

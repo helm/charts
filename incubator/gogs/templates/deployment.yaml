@@ -16,18 +16,24 @@ spec:
       labels:
         app: {{ template "gogs.fullname" . }}
     spec:
+      {{- with .Values.securityContext }}
+      securityContext:
+{{ toYaml . | indent 8 }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.image }}:{{ .Values.imageTag }}"
-          imagePullPolicy: {{ .Values.imagePullPolicy }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - containerPort: 3000
-            - containerPort: {{ .Values.service.sshPort | int }}
+            - containerPort: 22
           livenessProbe:
+            initialDelaySeconds: 180
             httpGet:
               path: /
               port: 3000
           readinessProbe:
+            initialDelaySeconds: 180
             httpGet:
               path: /
               port: 3000

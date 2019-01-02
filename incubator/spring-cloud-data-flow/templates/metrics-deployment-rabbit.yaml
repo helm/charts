@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: {{ template "scdf.fullname" . }}-metrics
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "scdf.name" . }}
     component: metrics
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
@@ -13,7 +13,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "name" . }}
+        app: {{ template "scdf.name" . }}
         component: metrics
         release: "{{ .Release.Name }}"
     spec:
@@ -22,30 +22,35 @@ spec:
         image: {{ .Values.metrics.image }}:{{ .Values.metrics.version }}
         imagePullPolicy: {{ .Values.metrics.imagePullPolicy }}
         ports:
-        - containerPort: {{ .Values.metrics.service.internalPort }}
+        - containerPort: 8080
+          name: http
         resources:
 {{ toYaml .Values.metrics.resources | indent 10 }}
         livenessProbe:
           httpGet:
-            path: /health
-            port: {{ .Values.metrics.service.internalPort }}
-          initialDelaySeconds: 60
-          timeoutSeconds: 10
+            path: /actuator/health
+            port: http
+          initialDelaySeconds: 90
+          periodSeconds: 15
+          timeoutSeconds: 5
         readinessProbe:
           httpGet:
-            path: /health
-            port: {{ .Values.metrics.service.internalPort }}
-          initialDelaySeconds: 30
-          timeoutSeconds: 10
+            path: /actuator/health
+            port: http
+          initialDelaySeconds: 60
+          periodSeconds: 15
+          timeoutSeconds: 5
         env:
         - name: SERVER_PORT
-          value: '80'
-        - name: SECURITY_BASIC_ENABLED
+          value: '8080'
+        - name: SPRING_CLOUD_CONFIG_ENABLED
           value: 'false'
+        - name: SPRING_AUTOCONFIGURE_EXCLUDE
+          value: 'org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration'
         - name: SPRING_RABBITMQ_HOST
-          value: '${{ printf "{%s" .Release.Name | upper }}_RABBITMQ_SERVICE_HOST}'
+          value: '${{ printf "{" }}{{ template "scdf.envrelease" . }}_RABBITMQ_SERVICE_HOST}'
         - name: SPRING_RABBITMQ_PORT
-          value: '${{ printf "{%s" .Release.Name | upper }}_RABBITMQ_SERVICE_PORT_AMPQ}'
+          value: '${{ printf "{" }}{{ template "scdf.envrelease" . }}_RABBITMQ_SERVICE_PORT_AMQP}'
         - name: SPRING_RABBITMQ_USERNAME
           value: '{{ .Values.rabbitmq.rabbitmqUsername }}'
         - name: SPRING_RABBITMQ_PASSWORD
@@ -53,3 +58,4 @@ spec:
             secretKeyRef:
               name: {{ printf "%s-%s" .Release.Name "rabbitmq" | trunc 63 | trimSuffix "-" }}
               key: rabbitmq-password
+      serviceAccountName: {{ template "scdf.serviceAccountName" . }}

@@ -1,0 +1,29 @@
+{{ if and .Values.rbac.create (not .Values.rbac.roleRef) }}
+apiVersion: rbac.authorization.k8s.io/{{ required "A valid .Values.rbac.apiVersion entry required!" .Values.rbac.apiVersion }}
+kind: ClusterRole
+metadata:
+  name: {{ template "gocd.fullname" . }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: "{{ template "gocd.name" . }}"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+rules:
+- apiGroups: [""]
+  resources:
+  - pods
+  - pods/log
+  verbs: ["*"]
+- apiGroups: [""]
+  resources:
+  - nodes
+  verbs: ["get", "list"]
+- apiGroups: [""]
+  resources:
+  - events
+  verbs: ["list", "watch"]
+- apiGroups: [""]
+  resources:
+  - namespaces
+  verbs: ["get"]
+{{ end }}

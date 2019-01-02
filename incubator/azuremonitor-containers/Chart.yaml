@@ -1,0 +1,22 @@
+apiVersion: v1
+appVersion: 2.0.0-3
+description: Helm chart for deploying Azure Monitor container monitoring agent in Kubernetes
+name: azuremonitor-containers
+version: 0.4.0
+keywords:
+  - monitoring
+  - azuremonitor
+  - metric
+  - event
+  - logs
+  - containerhealth
+  - kubernetesmonitoring
+  - acs-engine
+  - aks-engine
+home: https://docs.microsoft.com/en-us/azure/monitoring/monitoring-container-health
+icon: https://raw.githubusercontent.com/Microsoft/OMS-docker/ci_feature/img/azuremonitor-containers.svg
+sources:
+  - https://github.com/Microsoft/OMS-docker/tree/ci_feature_prod
+maintainers:
+  - name: vishiy
+    email: visnara@microsoft.com

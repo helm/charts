@@ -1,13 +1,12 @@
+deprecated: true  # moved to stable
 name: kubewatch
-version: 0.2.0
+version: 0.2.3
 appVersion: v0.0.3
-description: Kubewatch notifies your slack rooms when changes to your cluster occur
+description: DEPRECATED Kubewatch notifies your slack rooms when changes to your cluster occur
+home: https://github.com/skippbox/kubewatch
 keywords:
 - kubernetes
 - slack
-maintainers:
-- name: compleatang
-  email: casey@monax.io
 sources:
 - https://github.com/skippbox/kubewatch
 engine: gotpl

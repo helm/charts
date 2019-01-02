@@ -1,8 +1,8 @@
 ## Image Settings
 ##
 image:
-  repository: "quay.io/influxdb/chronograf"
-  tag: "latest"
+  repository: "docker.io/chronograf"
+  tag: "1.7-alpine"
   pullPolicy: "Always"
 
 ## Specify a service type
@@ -13,7 +13,7 @@ service:
   replicas: 1
   type: ClusterIP
 
-## Persist data to a persitent volume
+## Persist data to a persistent volume
 ##
 persistence:
   enabled: false
@@ -38,11 +38,11 @@ resources:
   limits:
     memory: 2Gi
     cpu: 2
-    
+
 ## Configure the ingress object to hook into existing infastructure
 ## ref : http://kubernetes.io/docs/user-guide/ingress/
-## OPTIONALLY you can set .Values.ingress.secretName to set which secret to use    
-## 
+## OPTIONALLY you can set .Values.ingress.secretName to set which secret to use
+##
 ingress:
   enabled: false
   tls: false
@@ -64,18 +64,26 @@ oauth:
     enabled: false
     client_id: CHANGE_ME
     client_secret: CHANGE_ME
-    # This is a comma seperated list of GH organizations (OPTIONAL)
+    # This is a comma separated list of GH organizations (OPTIONAL)
     gh_orgs: ""
   google:
     enabled: false
     client_id: CHANGE_ME
     client_secret: CHANGE_ME
-    public_url: "" # eg. http://chronograf.foobar.com
-    # This is a comma seperated list of Google Apps domains (OPTIONAL)
-    google_domains: ""
+    # eg. http://chronograf.foobar.com
+    public_url: ""
+    # This is a comma separated list of Google Apps domains (OPTIONAL)
+    domains: ""
   heroku:
     enabled: false
     client_id: CHANGE_ME
     client_secret: CHANGE_ME
-    # This is a comma seperated list of Heroku organizations (OPTIONAL)
+    # This is a comma separated list of Heroku organizations (OPTIONAL)
     he_orgs: ""
+
+## Extra environment variables that will be passed onto deployment pods
+env: {}
+
+## The name of a secret in the same kubernetes namespace which contain values to be added to the environment
+## This can be useful for auth tokens, etc
+envFromSecret: ""

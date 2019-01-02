@@ -1,0 +1,38 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "kubeless.fullname" . }}-controller-manager
+  labels:
+{{ include "labels.standard" . | indent 4 }}
+    kubeless: controller
+spec:
+  selector:
+    matchLabels:
+      kubeless: controller
+  replicas: {{ .Values.controller.deployment.replicaCount }}
+  template:
+    metadata:
+      labels:
+        kubeless: controller
+        app: {{ template "kubeless.name"  . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: kubeless-function-controller
+        image: "{{ .Values.controller.deployment.functionController.image.repository }}:{{ .Values.controller.deployment.functionController.image.tag }}"
+        imagePullPolicy: {{ .Values.controller.deployment.functionController.image.pullPolicy }}
+        resources:
+{{ toYaml .Values.controller.resources | indent 10 }}
+      - name: http-trigger-controller
+        image: "{{ .Values.controller.deployment.httpTriggerController.image.repository }}:{{ .Values.controller.deployment.httpTriggerController.image.tag }}"
+        imagePullPolicy: {{ .Values.controller.deployment.httpTriggerController.image.pullPolicy }}
+        resources:
+{{ toYaml .Values.controller.resources | indent 10 }}
+      - name: cronjob-trigger-controller
+        image: "{{ .Values.controller.deployment.cronJobTriggerController.image.repository }}:{{ .Values.controller.deployment.cronJobTriggerController.image.tag }}"
+        imagePullPolicy: {{ .Values.controller.deployment.cronJobTriggerController.image.pullPolicy }}
+        resources:
+{{ toYaml .Values.controller.resources | indent 10 }}
+{{- if .Values.rbac.create }}
+      serviceAccountName: controller-acct
+{{- end }}

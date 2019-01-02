@@ -1,11 +1,14 @@
 name: mongodb
-version: 0.4.22
-appVersion: 3.6.1
+version: 5.0.0
+appVersion: 4.0.3
 description: NoSQL document-oriented database that stores JSON-like documents with dynamic schemas, simplifying the integration of data in content-driven applications.
 keywords:
 - mongodb
 - database
 - nosql
+- cluster
+- replicaset
+- replication
 home: https://mongodb.org
 icon: https://bitnami.com/assets/stacks/mongodb/img/mongodb-stack-220x234.png
 sources:

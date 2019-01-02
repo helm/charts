@@ -1,0 +1,45 @@
+{{- if .Values.rbac.create }}
+{{- if .Values.ui.enabled }}
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  name: kubeless-ui
+  labels:
+{{ include "labels.standard" . | indent 4 }}
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  - pods/log
+  verbs:
+  - get
+  - list
+- apiGroups:
+  - kubeless.io
+  resources:
+  - functions
+  verbs:
+  - get
+  - list
+  - watch
+  - update
+  - create
+  - delete
+- apiGroups:
+  - ""
+  resources:
+  - services
+  - services/proxy
+  verbs:
+  - get
+  - list
+  - proxy
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  verbs:
+  - get
+{{- end}}
+{{- end}}

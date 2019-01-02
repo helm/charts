@@ -1,26 +1,28 @@
+{{- if .Values.sumologic.collectorUrl -}}
+# Sumologic collector URL is required
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "sumologic-fluentd.fullname" . }}
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "sumologic-fluentd.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
   template:
     metadata:
-      name: {{ template "fullname" . }}
+      name: {{ template "sumologic-fluentd.fullname" . }}
     {{- if .Values.podAnnotations }}
       annotations:
 {{ toYaml .Values.podAnnotations | indent 8 }}
     {{- end }}
       labels:
-        app: {{ template "name" . }}
+        app: {{ template "sumologic-fluentd.name" . }}
         release: {{ .Release.Name }}
     spec:
       containers:
-        - name: {{ template "fullname" . }}
+        - name: {{ template "sumologic-fluentd.fullname" . }}
           image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{.Values.image.pullPolicy}}
           resources:
@@ -42,12 +44,27 @@ spec:
               mountPath: /var/lib/rkt/
               readOnly: true
             {{- end }}
+            {{- if .Values.sumologic.fluentdUserConfig }}
+              {{- if .Values.sumologic.fluentdUserConfigDir }}
+            - name: fluentd-user-conf
+              mountPath: {{ quote .Values.sumologic.fluentdUserConfigDir }}
+              readOnly: true
+              {{- else }}
+            - name: fluentd-user-conf
+              mountPath: /fluentd/conf.d/user
+              readOnly: true           
+              {{- end }}
+            {{- end }}
           env:
             - name: COLLECTOR_URL
               valueFrom:
                 secretKeyRef:
-                  name: "{{ template "fullname-secrets" . }}"
+                  name: "{{ template "sumologic-fluentd.fullname" . }}"
                   key: collector-url
+            - name: K8S_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
             - name: FLUENTD_SOURCE
               value: {{ quote .Values.sumologic.fluentdSource }}
             {{- if .Values.sumologic.fluentdUserConfigDir }}
@@ -126,6 +143,14 @@ spec:
             - name: FLUENTD_OPT
               value: {{ quote .Values.sumologic.fluentdOpt }}
             {{- end }}
+            {{- if quote .Values.sumologic.timeKey }}
+            - name: TIME_KEY
+              value: {{ quote .Values.sumologic.timeKey }}
+            {{- end }}
+            {{- if quote .Values.sumologic.addTimeStamp }}
+            - name: ADD_TIMESTAMP
+              value: {{ quote .Values.sumologic.addTimeStamp }}
+            {{- end }}
             {{- if quote .Values.sumologic.verifySsl }}
             - name: VERIFY_SSL
               value: {{ quote .Values.sumologic.verifySsl }}
@@ -146,12 +171,25 @@ spec:
             - name: AUDIT_LOG_PATH
               value: {{ quote .Values.sumologic.auditLogPath }}
             {{- end }}
-      serviceAccountName: {{ if .Values.rbac.create }}{{ template "fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+            {{- if .Values.sumologic.containerLogsPath }}
+            - name: CONTAINER_LOGS_PATH
+              value: {{ quote .Values.sumologic.containerLogsPath }}
+            {{- end }}
+            {{- if .Values.sumologic.proxyUri }}
+            - name: PROXY_URI
+              value: {{ quote .Values.sumologic.proxyUri }}
+            {{- end }}
+            {{- if .Values.sumologic.enableStatWatcher }}
+            - name: ENABLE_STAT_WATCHER
+              value: {{ quote .Values.sumologic.enableStatWatcher }}
+            {{- end }}
+      serviceAccountName: {{ if .Values.rbac.create }}{{ template "sumologic-fluentd.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
       volumes:
         - name: pos-files
           {{- if .Values.persistence.enabled }}
           hostPath:
             path: {{ .Values.persistence.hostPath }}
+            type: "{{ if .Values.persistence.createPath }}DirectoryOrCreate{{ end }}"
           {{- else }}
           emptyDir: {}
           {{- end }}
@@ -166,9 +204,15 @@ spec:
         - name: docker-logs
           hostPath:
             path: /var/lib/docker
+        {{- if .Values.sumologic.fluentdUserConfig }}
+        - name: fluentd-user-conf
+          configMap:
+            name: {{ template "sumologic-fluentd.fluentdUserConfig.fullname" . }}
+        {{- end }}
     {{- if .Values.tolerations }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
     {{- end }}
   updateStrategy:
     type: "{{ .Values.updateStrategy }}"
+{{- end }}

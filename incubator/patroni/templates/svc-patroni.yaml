@@ -3,12 +3,14 @@ kind: Service
 metadata:
   name: {{ template "patroni.fullname" . }}
   labels:
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    component: "{{ .Release.Name }}-{{ .Values.Component }}"
+    app: {{ template "patroni.name" . }}
+    chart: {{ template "patroni.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
   type: ClusterIP
   ports:
-  - port: 5432
-    targetPort: 5432
+  - name: postgresql
+    port: 5432
+    targetPort: postgresql
+    protocol: TCP

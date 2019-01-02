@@ -1,0 +1,17 @@
+name: nats
+version: 2.0.1
+appVersion: 1.3.0
+description: An open-source, cloud-native messaging system
+keywords:
+- nats
+- messaging
+- addressing
+- discovery
+home: https://nats.io/
+sources:
+- https://github.com/bitnami/bitnami-docker-nats
+maintainers:
+- name: Bitnami
+  email: containers@bitnami.com
+engine: gotpl
+icon: https://bitnami.com/assets/stacks/nats/img/nats-stack-110x117.png

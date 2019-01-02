@@ -22,7 +22,7 @@ $ helm install --name my-release stable/consul
 
 ## Configuration
 
-The following tables lists the configurable parameters of the consul chart and their default values.
+The following table lists the configurable parameters of the consul chart and their default values.
 
 | Parameter               | Description                           | Default                                                    |
 | ----------------------- | ----------------------------------    | ---------------------------------------------------------- |
@@ -32,13 +32,17 @@ The following tables lists the configurable parameters of the consul chart and t
 | `ImagePullPolicy`       | Container pull policy                 | `Always`                                                   |
 | `Replicas`              | k8s statefulset replicas              | `3`                                                        |
 | `Component`             | k8s selector key                      | `consul`                                                   |
+| `ConsulConfig`          | List of secrets and configMaps containing consul configuration | []                                |
+| `Cpu`                   | container requested cpu               | `100m`                                                     |
 | `DatacenterName`        | Consul Datacenter Name                | `dc1` (The consul default)                                 |
 | `DisableHostNodeId`     | Disable Node Id creation (uses random)| `false`                                                    |
 | `EncryptGossip`         | Whether or not gossip is encrypted    | `true`                                                     |
+| `GossipKey`             | Gossip-key to use by all members      | `nil`                                                      |
 | `Storage`               | Persistent volume size                | `1Gi`                                                      |
 | `StorageClass`          | Persistent volume storage class       | `nil`                                                      |
 | `HttpPort`              | Consul http listening port            | `8500`                                                     |
 | `Resources`             | Container resource requests and limits| `{}`                                                       |
+| `priorityClassName`     | priorityClassName                     | `nil`                                                      |
 | `RpcPort`               | Consul rpc listening port             | `8400`                                                     |
 | `SerflanPort`           | Container serf lan listening port     | `8301`                                                     |
 | `SerflanUdpPort`        | Container serf lan UDP listening port | `8301`                                                     |
@@ -46,13 +50,20 @@ The following tables lists the configurable parameters of the consul chart and t
 | `SerfwanUdpPort`        | Container serf wan UDP listening port | `8302`                                                     |
 | `ServerPort`            | Container server listening port       | `8300`                                                     |
 | `ConsulDnsPort`         | Container dns listening port          | `8600`                                                     |
-| `antiAffinity`          | Consul pod anti-affinity setting      | `hard`                                                     |
+| `affinity`              | Consul affinity settings              | `see values.yaml`                                          |
+| `nodeSelector`          | Node labels for pod assignment        | `{}`                                                       |
+| `tolerations`           | Tolerations for pod assignment        | `[]`                                                       |
 | `maxUnavailable`        | Pod disruption Budget maxUnavailable  | `1`                                                        |
-| `ui.enabled`            | Enable Consul Web UI                  | `true`                                                    |
-| `uiService.enabled`     | Create dedicated Consul Web UI svc    | `true`                                                    |
+| `ui.enabled`            | Enable Consul Web UI                  | `true`                                                     |
+| `uiService.enabled`     | Create dedicated Consul Web UI svc    | `true`                                                     |
 | `uiService.type`        | Dedicate Consul Web UI svc type       | `NodePort`                                                 |
-| `test.image`            | Test container image requires kubectl + bash (used for helm test)      | `lachlanevenson/k8s-kubectl`                                                 |
-| `test.imageTag`         | Test container image tag  (used for helm test)     | `v1.4.8-bash`                                                 |
+| `acl.enabled`           | Enable basic ACL configuration        | `false`                                                    |
+| `acl.masterToken`       | Master token that was provided in consul ACL config file | `""`                                    |
+| `acl.agentToken`        | Agent token that was provided in consul ACL config file | `""`                                    |
+| `test.image`            | Test container image requires kubectl + bash (used for helm test)   | `lachlanevenson/k8s-kubectl` |
+| `test.imageTag`         | Test container image tag  (used for helm test)     | `v1.4.8-bash`                                 |
+| `test.rbac.create`                      | Create rbac for test container                 | `false`                           |
+| `test.rbac.serviceAccountName`          | Name of existed service account for test container    | ``                     |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
@@ -61,8 +72,26 @@ Alternatively, a YAML file that specifies the values for the parameters can be p
 ```bash
 $ helm install --name my-release -f values.yaml stable/consul
 ```
+> **Tip**: `ConsulConfig` is impossible to set using --set as it's not possible to set list of hashes with it at the moment, use a YAML file instead.
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+## Further consul configuration
+
+To support passing in more detailed/complex configuration options using `secret`s or `configMap`s. As an example, here is what a `values.yaml` could look like:
+```yaml
+ConsulConfig:
+  - type: configMap
+    name: consul-defaults
+  - type: secret
+    name: consul-secrets
+```
+
+> These are both mounted as files in the consul pods, including the secrets. When they are changed, the cluster may need to be restarted.
+
+> **Important**: Kubernetes does not allow the volumes to be changed for a StatefulSet. If a new item needs to be added to this list, the StatefulSet needs to be deleted and re-created. The contents of each item can change and will be respected when the containers would read configuration (reload/restart).
+
+This would require the `consul-defaults` `configMap` and `consul-secrets` `secret` in the same `namespace`. There is no difference from the consul perspective, one could use only `secret`s, or only `configMap`s, or neither. They can each contain multiple consul configuration files (every `JSON` file contained in them will be interpreted as one). The order in which the configuration will be loaded is the same order as they are specified in the `ConsulConfig` setting (later overrides earlier). In case they contain multiple files, the order between those files is decided by consul (as per the [--config-dir](https://www.consul.io/docs/agent/options.html#_config_dir) argument in consul agent), but the order in `ConsulConfig` is still respected. The configuration generated by helm (this chart) is loaded last, and therefore overrides the configuration set here.
 
 ## Cleanup orphaned Persistent Volumes
 
@@ -73,6 +102,11 @@ Do the following after deleting the chart release to clean up orphaned Persisten
 ```bash
 $ kubectl delete pvc -l component=${RELEASE-NAME}-consul
 ```
+
+## Pitfalls
+
+* When ACLs are enabled and `acl_default_policy` is set to `deny`, it is necessary to set the `acl_token` to a token that can perform at least the `consul members`, otherwise the kubernetes liveness probe will keep failing and the containers will be killed every 5 minutes.
+  * Basic ACLs configuration can be done by setting `acl.enabled` to `true`, and setting values for `acl.masterToken` and `acl.agentToken`.
 
 ## Testing
 

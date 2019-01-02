@@ -1,0 +1,49 @@
+{{- if .Values.hotrod.enabled -}}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "jaeger.fullname" . }}-hotrod
+  labels:
+    app: {{ template "jaeger.name" . }}
+    jaeger-infra: hotrod-deployment
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    component: hotrod
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.hotrod.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "jaeger.name" . }}
+        component: hotrod
+        release: {{ .Release.Name }}
+        jaeger-infra: hotrod-instance
+    spec:
+      containers:
+        - name: {{ template "jaeger.fullname" . }}-hotrod
+          image: {{ .Values.hotrod.image.repository }}:{{ .Values.hotrod.image.tag }}
+          imagePullPolicy: {{ .Values.hotrod.image.pullPolicy }}
+          env:
+            - name: JAEGER_AGENT_HOST_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "jaeger.fullname" . }}
+                  key: hotrod.agent-host-port
+          ports:
+            - containerPort: {{ .Values.hotrod.service.internalPort }}
+          livenessProbe:
+            httpGet:
+              path: /
+              port: {{ .Values.hotrod.service.internalPort }}
+          readinessProbe:
+            httpGet:
+              path: /
+              port: {{ .Values.hotrod.service.internalPort }}
+          resources:
+{{ toYaml .Values.hotrod.resources | indent 12 }}
+    {{- if .Values.hotrod.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.hotrod.nodeSelector | indent 8 }}
+    {{- end }}
+{{- end }}

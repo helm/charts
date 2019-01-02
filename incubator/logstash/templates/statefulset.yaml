@@ -1,0 +1,156 @@
+apiVersion: apps/v1beta2
+kind: StatefulSet
+metadata:
+  name: {{ template "logstash.fullname" . }}
+  labels:
+    app: {{ template "logstash.name" . }}
+    chart: {{ template "logstash.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  serviceName: {{ template "logstash.fullname" . }}
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "logstash.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "logstash.name" . }}
+        release: {{ .Release.Name }}
+      {{- if .Values.podLabels }}
+        ## Custom pod labels
+        {{- range $key, $value := .Values.podLabels }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
+      {{- end }}
+      annotations:
+        checksum/patterns: {{ include (print $.Template.BasePath "/patterns-config.yaml") . | sha256sum }}
+        checksum/pipeline: {{ include (print $.Template.BasePath "/pipeline-config.yaml") . | sha256sum }}
+      {{- if .Values.podAnnotations }}
+        ## Custom pod annotations
+        {{- range $key, $value := .Values.podAnnotations }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
+      {{- end }}
+    spec:
+      securityContext:
+        runAsUser: 1000
+        fsGroup: 1000
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.image.pullSecrets | indent 8 }}
+      {{- end }}
+      containers:
+
+        ## logstash
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: monitor
+              containerPort: {{ .Values.exporter.logstash.target.port }}
+              protocol: TCP
+{{ toYaml .Values.ports | indent 12 }}
+          livenessProbe:
+{{ toYaml .Values.livenessProbe | indent 12 }}
+          readinessProbe:
+{{ toYaml .Values.readinessProbe | indent 12 }}
+          env:
+            ## Logstash monitoring API host and port env vars
+            - name: HTTP_HOST
+              value: "0.0.0.0"
+            - name: HTTP_PORT
+              value: {{ .Values.exporter.logstash.target.port | quote }}
+            ## Elasticsearch output
+            - name: ELASTICSEARCH_HOST
+              value: {{ .Values.elasticsearch.host | quote }}
+            - name: ELASTICSEARCH_PORT
+              value: {{ .Values.elasticsearch.port | quote }}
+            ## Additional env vars
+          {{- range $key, $value := .Values.config }}
+            - name: {{ $key | upper | replace "." "_" }}
+              value: {{ $value | quote }}
+          {{- end }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+          volumeMounts:
+{{ toYaml .Values.volumeMounts | indent 12 }}
+
+{{- if .Values.exporter.logstash.enabled }}
+        ## logstash-exporter
+        - name: {{ .Chart.Name }}-exporter
+          image: "{{ .Values.exporter.logstash.image.repository }}:{{ .Values.exporter.logstash.image.tag }}"
+          imagePullPolicy: {{ .Values.exporter.logstash.image.pullPolicy }}
+          command: ["/bin/sh", "-c"]
+          ## Delay start of logstash-exporter to give logstash more time to come online.
+          args:
+            - >-
+              sleep 60;
+              exec /logstash_exporter
+                --logstash.endpoint=http://localhost:{{ .Values.exporter.logstash.target.port }}
+                --web.listen-address=:{{ .Values.exporter.logstash.port }}
+          ports:
+            - name: ls-exporter
+              containerPort: {{ .Values.exporter.logstash.port }}
+              protocol: TCP
+          livenessProbe:
+{{ toYaml .Values.exporter.logstash.livenessProbe | indent 12 }}
+          readinessProbe:
+{{ toYaml .Values.exporter.logstash.readinessProbe | indent 12 }}
+          {{- with .Values.exporter.logstash.config }}
+          env:
+            {{- range $key, $value := . }}
+            - name: {{ $key | upper | replace "." "_" }}
+              value: {{ $value | quote }}
+            {{- end }}
+          {{- end }}
+          resources:
+{{ toYaml .Values.exporter.logstash.resources | indent 12 }}
+{{- end }}
+
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      volumes:
+        - name: patterns
+          configMap:
+            name: {{ template "logstash.fullname" . }}-patterns
+        - name: pipeline
+          configMap:
+            name: {{ template "logstash.fullname" . }}-pipeline
+    {{- with .Values.volumes }}
+{{ toYaml . | indent 8 }}
+    {{- end }}
+{{- if not .Values.persistence.enabled }}
+        - name: data
+          emptyDir: {}
+{{- else }}
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes:
+          - {{ .Values.persistence.accessMode | quote }}
+        resources:
+          requests:
+            storage: {{ .Values.persistence.size | quote }}
+      {{- if .Values.persistence.storageClass }}
+        {{- if (eq "-" .Values.persistence.storageClass) }}
+        storageClassName: ""
+        {{- else }}
+        storageClassName: "{{ .Values.persistence.storageClass }}"
+        {{- end }}
+      {{- end }}
+{{- end }}

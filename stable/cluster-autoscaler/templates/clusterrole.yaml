@@ -78,9 +78,29 @@ rules:
   - apiGroups:
     - apps
     resources:
+    - replicasets
     - statefulsets
     verbs:
     - watch
     - list
     - get
+  - apiGroups:
+    - storage.k8s.io
+    resources:
+    - storageclasses
+    verbs:
+    - watch
+    - list
+    - get
+{{- if .Values.rbac.pspEnabled }}
+  - apiGroups:
+    - extensions
+    resources:
+    - podsecuritypolicies
+    resourceNames:
+    - privileged-{{ template "cluster-autoscaler.fullname" . }}
+    verbs:
+    - use
+{{- end -}}
+
 {{- end -}}

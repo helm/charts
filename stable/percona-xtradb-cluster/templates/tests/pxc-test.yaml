@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ .Release.Name }}-test"
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+  - name: pxc-test
+    image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+    imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+    command: ["bash", "/tests/run.sh"]
+    env:
+    - name: MYSQL_ROOT_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: {{ template "percona-xtradb-cluster.fullname" . }}
+          key: mysql-root-password
+    volumeMounts:
+    - mountPath: /tests
+      name: tests
+  volumes:
+  - name: tests
+    configMap:
+      name: {{ template "percona-xtradb-cluster.fullname" . }}-tests
+  restartPolicy: Never

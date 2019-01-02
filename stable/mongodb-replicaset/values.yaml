@@ -1,31 +1,78 @@
-replicaSet: rs0
 replicas: 3
 port: 27017
+
+replicaSetName: rs0
+
+podDisruptionBudget: {}
+  # maxUnavailable: 1
+  # minAvailable: 2
 
 auth:
   enabled: false
   # adminUser: username
   # adminPassword: password
+  # metricsUser: metrics
+  # metricsPassword: password
   # key: keycontent
   # existingKeySecret:
   # existingAdminSecret:
+  # exisitingMetricsSecret:
+
+## Optionally specify an array of imagePullSecrets.
+## Secrets must be manually created in the namespace.
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+##
+imagePullSecrets: []
+#   - myRegistrKeySecretName
 
 # Specs for the Docker image for the init container that establishes the replica set
 installImage:
-  name: gcr.io/google_containers/mongodb-install
-  tag: 0.5
+  repository: unguiculus/mongodb-install
+  tag: 0.7
+  pullPolicy: IfNotPresent
+
+# Specs for the Docker image for the copyConfig init container
+copyConfigImage:
+  repository: busybox
+  tag: 1.29.3
   pullPolicy: IfNotPresent
 
 # Specs for the MongoDB image
 image:
-  name: mongo
-  tag: 3.4
+  repository: mongo
+  tag: 3.6
   pullPolicy: IfNotPresent
+
+# Additional environment variables to be set in the container
+extraVars: {}
+# - name: TCMALLOC_AGGRESSIVE_DECOMMIT
+#   value: "true"
+
+# Prometheus Metrics Exporter
+metrics:
+  enabled: false
+  image:
+    repository: ssalaues/mongodb-exporter
+    tag: 0.6.1
+    pullPolicy: IfNotPresent
+  port: 9216
+  path: "/metrics"
+  socketTimeout: 3s
+  syncTimeout: 1m
+  prometheusServiceDiscovery: true
+  resources: {}
 
 # Annotations to be added to MongoDB pods
 podAnnotations: {}
 
-podAntiAffinity: "soft"
+securityContext:
+  runAsUser: 999
+  fsGroup: 999
+  runAsNonRoot: true
+
+init:
+  resources: {}
+  timeout: 900
 
 resources: {}
 # limits:
@@ -38,6 +85,14 @@ resources: {}
 ## Node selector
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
 nodeSelector: {}
+
+affinity: {}
+
+tolerations: []
+
+extraLabels: {}
+
+# priorityClassName: ""
 
 persistentVolume:
   enabled: true
@@ -57,6 +112,8 @@ persistentVolume:
 # Annotations to be added to the service
 serviceAnnotations: {}
 
+terminationGracePeriodSeconds: 30
+
 tls:
   # Enable or disable MongoDB TLS support
   enabled: false
@@ -69,19 +126,28 @@ tls:
   # cakey:
 
 # Entries for the MongoDB config file
-configmap:
-  storage:
-    dbPath: /data/db
-  net:
-    port: 27017
-    # Uncomment for TLS support
-    # ssl:
-    #   mode: requireSSL
-    #   CAFile: /ca/tls.crt
-    #   PEMKeyFile: /work-dir/mongo.pem
-  replication:
-    replSetName: rs0
-  # Uncomment for TLS support or keyfile access control without TLS
-  # security:
-  #   authorization: enabled
-  #   keyFile: /keydir/key.txt
+configmap: {}
+
+# Javascript code to execute on each replica at initContainer time
+# This is the recommended way to create indexes on replicasets.
+# Below is an example that creates indexes in foreground on each replica in standalone mode.
+# ref: https://docs.mongodb.com/manual/tutorial/build-indexes-on-replica-sets/
+# initMongodStandalone: |+
+#   db = db.getSiblingDB("mydb")
+#   db.my_users.createIndex({email: 1})
+
+# Readiness probe
+readinessProbe:
+  initialDelaySeconds: 5
+  timeoutSeconds: 1
+  failureThreshold: 3
+  periodSeconds: 10
+  successThreshold: 1
+
+# Liveness probe
+livenessProbe:
+  initialDelaySeconds: 30
+  timeoutSeconds: 5
+  failureThreshold: 3
+  periodSeconds: 10
+  successThreshold: 1

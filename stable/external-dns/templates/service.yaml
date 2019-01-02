@@ -12,7 +12,9 @@ metadata:
     release: {{ .Release.Name }}
   name: {{ template "external-dns.fullname" . }}
 spec:
+{{- if .Values.service.clusterIP }}
   clusterIP: "{{ .Values.service.clusterIP }}"
+{{- end }}
 {{- if .Values.service.externalIPs }}
   externalIPs:
 {{ toYaml .Values.service.externalIPs | indent 4 }}
@@ -28,6 +30,7 @@ spec:
     - port: {{ .Values.service.servicePort }}
       protocol: TCP
       targetPort: 7979
+      name: http
   selector:
     app: {{ template "external-dns.name" . }}
     release: {{ .Release.Name }}

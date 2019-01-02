@@ -1,13 +1,20 @@
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   labels:
     app: {{ template "mongodb-replicaset.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    chart: {{ template "mongodb-replicaset.chart" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
+{{- if .Values.extraLabels }}
+{{ toYaml .Values.extraLabels | indent 4 }}
+{{- end }}
   name: {{ template "mongodb-replicaset.fullname" . }}
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "mongodb-replicaset.name" . }}
+      release: {{ .Release.Name }}
   serviceName: {{ template "mongodb-replicaset.fullname" . }}
   replicas: {{ .Values.replicas }}
   template:
@@ -15,32 +22,88 @@ spec:
       labels:
         app: {{ template "mongodb-replicaset.name" . }}
         release: {{ .Release.Name }}
+{{- if .Values.extraLabels }}
+{{ toYaml .Values.extraLabels | indent 8 }}
+{{- end }}
       annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/mongodb-mongodb-configmap.yaml") . | sha256sum }}
+      {{- if and (.Values.metrics.prometheusServiceDiscovery) (.Values.metrics.enabled) }}
+        prometheus.io/scrape: "true"
+        prometheus.io/port: {{ .Values.metrics.port | quote }}
+        prometheus.io/path: {{ .Values.metrics.path | quote }}
+      {{- end }}
       {{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
       {{- end }}
     spec:
-      {{- if .Values.nodeSelector }}
-      nodeSelector:
-{{ toYaml .Values.nodeSelector | indent 8 }}
-      {{- end }}
+    {{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName }}
+    {{- end }}
+    {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.imagePullSecrets }}
+        - name: {{ . }}
+      {{- end}}
+    {{- end }}
+      securityContext:
+{{ toYaml .Values.securityContext | indent 8 }}
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       initContainers:
+        - name: copy-config
+          image: "{{ .Values.copyConfigImage.repository }}:{{ .Values.copyConfigImage.tag }}"
+          imagePullPolicy: {{ .Values.copyConfigImage.pullPolicy | quote }}
+          command:
+            - "sh"
+          args:
+            - "-c"
+            - |
+              set -e
+              set -x
+
+              cp /configdb-readonly/mongod.conf /data/configdb/mongod.conf
+
+            {{- if .Values.tls.enabled }}
+              cp /ca-readonly/tls.key /data/configdb/tls.key
+              cp /ca-readonly/tls.crt /data/configdb/tls.crt
+            {{- end }}
+
+            {{- if .Values.auth.enabled }}
+              cp /keydir-readonly/key.txt /data/configdb/key.txt
+              chmod 600 /data/configdb/key.txt
+            {{- end }}
+          volumeMounts:
+            - name: workdir
+              mountPath: /work-dir
+            - name: config
+              mountPath: /configdb-readonly
+            - name: configdir
+              mountPath: /data/configdb
+          {{- if .Values.tls.enabled }}
+            - name: ca
+              mountPath: /ca-readonly
+          {{- end }}
+          {{- if .Values.auth.enabled }}
+            - name: keydir
+              mountPath: /keydir-readonly
+          {{- end }}
+          resources:
+{{ toYaml .Values.init.resources | indent 12 }}
         - name: install
-          image: "{{ .Values.installImage.name }}:{{ .Values.installImage.tag }}"
+          image: "{{ .Values.installImage.repository }}:{{ .Values.installImage.tag }}"
           args:
             - --work-dir=/work-dir
           imagePullPolicy: "{{ .Values.installImage.pullPolicy }}"
           volumeMounts:
             - name: workdir
               mountPath: /work-dir
-            - name: config
-              mountPath: /config
+          resources:
+{{ toYaml .Values.init.resources | indent 12 }}
         - name: bootstrap
-          image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           command:
             - /work-dir/peer-finder
           args:
-            - -on-start=/work-dir/on-start.sh
+            - -on-start=/init/on-start.sh
             - "-service={{ template "mongodb-replicaset.fullname" . }}"
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           env:
@@ -50,7 +113,9 @@ spec:
                   apiVersion: v1
                   fieldPath: metadata.namespace
             - name: REPLICA_SET
-              value: {{ .Values.replicaSet }}
+              value: {{ .Values.replicaSetName }}
+            - name: TIMEOUT
+              value: "{{ .Values.init.timeout }}"
           {{- if .Values.auth.enabled }}
             - name: AUTH
               value: "true"
@@ -64,118 +129,193 @@ spec:
                 secretKeyRef:
                   name: "{{ template "mongodb-replicaset.adminSecret" . }}"
                   key: password
+          {{- if .Values.metrics.enabled }}
+            - name: METRICS
+              value: "true"
+            - name: METRICS_USER
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ template "mongodb-replicaset.metricsSecret" . }}"
+                  key: user
+            - name: METRICS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ template "mongodb-replicaset.metricsSecret" . }}"
+                  key: password
+          {{- end }}
           {{- end }}
           volumeMounts:
             - name: workdir
               mountPath: /work-dir
-            - name: config
-              mountPath: /config
-          {{- if and (.Values.tls.enabled) }}
-            - name: ca
-              mountPath: /ca
-          {{- end }}
+            - name: init
+              mountPath: /init
+            - name: configdir
+              mountPath: /data/configdb
             - name: datadir
               mountPath: /data/db
-          {{- if .Values.auth.enabled }}
-            - name: keydir
-              mountPath: /keydir
-              readOnly: true
-          {{- end }}
+          resources:
+{{ toYaml .Values.init.resources | indent 12 }}
       containers:
         - name: {{ template "mongodb-replicaset.name" . }}
-          image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
+        {{- if .Values.extraVars }}
+          env:
+{{ toYaml .Values.extraVars | indent 12 }}
+        {{- end }}
           ports:
-            - name: peer
-              containerPort: {{ .Values.port }}
+            - name: mongodb
+              containerPort: 27017
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           command:
             - mongod
-            - --config=/config/mongod.conf
+          args:
+            - --config=/data/configdb/mongod.conf
+            - --dbpath=/data/db
+            - --replSet={{ .Values.replicaSetName }}
+            - --port=27017
+            - --bind_ip=0.0.0.0
           {{- if .Values.auth.enabled }}
-          env:
-            - name: AUTH
-              value: "true"
-            - name: ADMIN_USER
-              valueFrom:
-                secretKeyRef:
-                  name: "{{ template "mongodb-replicaset.adminSecret" . }}"
-                  key: user
-            - name: ADMIN_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: "{{ template "mongodb-replicaset.adminSecret" . }}"
-                  key: password
+            - --auth
+            - --keyFile=/data/configdb/key.txt
+          {{- end }}
+          {{- if .Values.tls.enabled }}
+            - --sslMode=requireSSL
+            - --sslCAFile=/data/configdb/tls.crt
+            - --sslPEMKeyFile=/work-dir/mongo.pem
           {{- end }}
           livenessProbe:
             exec:
               command:
                 - mongo
-              {{- if and (.Values.tls.enabled) }}
+              {{- if .Values.tls.enabled }}
                 - --ssl
-                - --sslCAFile=/ca/tls.crt
+                - --sslCAFile=/data/configdb/tls.crt
                 - --sslPEMKeyFile=/work-dir/mongo.pem
               {{- end }}
                 - --eval
                 - "db.adminCommand('ping')"
-            initialDelaySeconds: 30
-            timeoutSeconds: 5
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+            successThreshold: {{ .Values.livenessProbe.successThreshold }}
           readinessProbe:
             exec:
               command:
                 - mongo
-              {{- if and (.Values.tls.enabled) }}
+              {{- if .Values.tls.enabled }}
                 - --ssl
-                - --sslCAFile=/ca/tls.crt
+                - --sslCAFile=/data/configdb/tls.crt
                 - --sslPEMKeyFile=/work-dir/mongo.pem
               {{- end }}
                 - --eval
                 - "db.adminCommand('ping')"
-            initialDelaySeconds: 5
-            timeoutSeconds: 1
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+            timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+            successThreshold: {{ .Values.readinessProbe.successThreshold }}
           volumeMounts:
             - name: datadir
               mountPath: /data/db
-            - name: config
-              mountPath: /config
+            - name: configdir
+              mountPath: /data/configdb
+            - name: workdir
+              mountPath: /work-dir
+{{ if .Values.metrics.enabled }}
+        - name: metrics
+          image: "{{ .Values.metrics.image.repository }}:{{ .Values.metrics.image.tag }}"
+          imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
+          command:
+            - sh
+            - -ec
+            - >-
+              /bin/mongodb_exporter
+            {{- if .Values.auth.enabled }}
+              -mongodb.uri mongodb://$METRICS_USER:$METRICS_PASSWORD@localhost:{{ .Values.port }}
+            {{- else }}
+              -mongodb.uri mongodb://localhost:{{ .Values.port }}
+            {{- end }}
+            {{- if .Values.tls.enabled }}
+              -mongodb.tls
+              -mongodb.tls-ca=/ca/tls.crt
+              -mongodb.tls-cert=/work-dir/mongo.pem
+            {{- end }}
+              -mongodb.socket-timeout={{ .Values.metrics.socketTimeout }}
+              -mongodb.sync-timeout={{ .Values.metrics.syncTimeout }}
+              -web.metrics-path={{ .Values.metrics.path }}
+              -web.listen-address=:{{ .Values.metrics.port }}
+          volumeMounts:
           {{- if and (.Values.tls.enabled) }}
             - name: ca
               mountPath: /ca
+              readOnly: true
           {{- end }}
             - name: workdir
               mountPath: /work-dir
-          {{- if .Values.auth.enabled }}
-            - name: keydir
-              mountPath: /keydir
               readOnly: true
+          env:
+          {{- if .Values.auth.enabled }}
+            - name: METRICS_USER
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ template "mongodb-replicaset.metricsSecret" . }}"
+                  key: user
+            - name: METRICS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ template "mongodb-replicaset.metricsSecret" . }}"
+                  key: password
           {{- end }}
-      {{- if eq .Values.podAntiAffinity "hard" }}
+          ports:
+            - name: metrics
+              containerPort: {{ .Values.metrics.port  }}
+          resources:
+{{ toYaml .Values.metrics.resources | indent 12 }}
+          livenessProbe:
+            exec:
+              command:
+                - sh
+                - -ec
+                - >-
+                  /bin/mongodb_exporter
+                {{- if .Values.auth.enabled }}
+                  -mongodb.uri mongodb://$METRICS_USER:$METRICS_PASSWORD@localhost:{{ .Values.port }}
+                {{- else }}
+                  -mongodb.uri mongodb://localhost:{{ .Values.port }}
+                {{- end }}
+                {{- if .Values.tls.enabled }}
+                  -mongodb.tls
+                  -mongodb.tls-ca=/ca/tls.crt
+                  -mongodb.tls-cert=/work-dir/mongo.pem
+                {{- end }}
+                  -test
+              initialDelaySeconds: 30
+              periodSeconds: 10
+{{ end }}
+   {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
       affinity:
-        podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            - topologyKey: "kubernetes.io/hostname"
-              labelSelector:
-                matchLabels:
-                  app: "{{ template "mongodb-replicaset.name" . }}"
-                  release: "{{ .Release.Name }}"
-      {{- else if eq .Values.podAntiAffinity "soft" }}
-      affinity:
-        podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 1
-              podAffinityTerm:
-                topologyKey: kubernetes.io/hostname
-                labelSelector:
-                  matchLabels:
-                    app: "{{ template "mongodb-replicaset.name" . }}"
-                    release: "{{ .Release.Name }}"
-      {{- end }}
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
       volumes:
         - name: config
           configMap:
-            name: {{ template "mongodb-replicaset.fullname" . }}
-        {{- if and (.Values.tls.enabled) }}
+            name: {{ template "mongodb-replicaset.fullname" . }}-mongodb
+        - name: init
+          configMap:
+            defaultMode: 0755
+            name: {{ template "mongodb-replicaset.fullname" . }}-init
+        {{- if .Values.tls.enabled }}
         - name: ca
           secret:
             defaultMode: 0400
@@ -188,6 +328,8 @@ spec:
             secretName: {{ template "mongodb-replicaset.keySecret" . }}
         {{- end }}
         - name: workdir
+          emptyDir: {}
+        - name: configdir
           emptyDir: {}
 {{- if .Values.persistentVolume.enabled }}
   volumeClaimTemplates:

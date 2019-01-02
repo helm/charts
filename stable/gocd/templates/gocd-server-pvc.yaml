@@ -1,0 +1,31 @@
+{{- if .Values.server.enabled }}
+{{- if and .Values.server.persistence.enabled (not .Values.server.persistence.existingClaim) -}}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ template "gocd.fullname" . }}-server
+  labels:
+    app: {{ template "gocd.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+    component: server
+spec:
+  accessModes:
+    - {{ .Values.server.persistence.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.server.persistence.size | quote }}
+{{- if .Values.server.persistence.storageClass }}
+{{- if (eq "-" .Values.server.persistence.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: {{ .Values.server.persistence.storageClass }}
+{{- end }}
+{{- end }}
+{{- if .Values.server.persistence.pvSelector }}
+  selector:
+{{ toYaml .Values.server.persistence.pvSelector | indent 4 }}
+{{- end }}
+{{- end }}
+{{- end -}}

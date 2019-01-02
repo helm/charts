@@ -6,10 +6,10 @@ metadata:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    component: "{{ .Release.Name }}-{{ .Values.Component }}"
+    app: {{ template "etcd.name" . }}
 spec:
   serviceName: {{ template "etcd.fullname" . }}
-  replicas: {{ default 3 .Values.Replicas }}
+  replicas: {{ .Values.replicas }}
   template:
     metadata:
       name: {{ template "etcd.fullname" . }}
@@ -17,26 +17,39 @@ spec:
         heritage: {{ .Release.Service | quote }}
         release: {{ .Release.Name | quote }}
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-        component: "{{ .Release.Name }}-{{ .Values.Component }}"
+        app: {{ template "etcd.name" . }}
     spec:
+{{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+{{- end }}
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}
+{{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+{{- end }}
       containers:
       - name: {{ template "etcd.fullname" . }}
-        image: "{{ .Values.Image }}:{{ .Values.ImageTag }}"
-        imagePullPolicy: "{{ .Values.ImagePullPolicy }}"
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: "{{ .Values.image.pullPolicy }}"
         ports:
-        - containerPort: {{ .Values.PeerPort }}
+        - containerPort: {{ .Values.peerPort }}
           name: peer
-        - containerPort: {{ .Values.ClientPort }}
+        - containerPort: {{ .Values.clientPort }}
           name: client
         resources:
-          requests:
-            cpu: "{{ .Values.Cpu }}"
-            memory: "{{ .Values.Memory }}"
+{{ toYaml .Values.resources | indent 10 }}          
         env:
         - name: INITIAL_CLUSTER_SIZE
-          value: {{ default 3 .Values.Replicas | quote }}
+          value: {{ .Values.replicas | quote }}
         - name: SET_NAME
           value: {{ template "etcd.fullname" . }}
+{{- if .Values.extraEnv }}
+{{ toYaml .Values.extraEnv | indent 8 }}
+{{- end }}
         volumeMounts:
         - name: datadir
           mountPath: /var/run/etcd
@@ -58,12 +71,15 @@ spec:
                       etcdctl member list | grep http://${HOSTNAME}.${SET_NAME}:2380 | cut -d':' -f1 | cut -d'[' -f1
                   }
 
-                  echo "Removing ${HOSTNAME} from etcd cluster"
+                  SET_ID=${HOSTNAME##*[^0-9]}
 
-                  ETCDCTL_ENDPOINT=${EPS} etcdctl member remove $(member_hash)
-                  if [ $? -eq 0 ]; then
-                      # Remove everything otherwise the cluster will no longer scale-up
-                      rm -rf /var/run/etcd/*
+                  if [ "${SET_ID}" -ge ${INITIAL_CLUSTER_SIZE} ]; then
+                      echo "Removing ${HOSTNAME} from etcd cluster"
+                      ETCDCTL_ENDPOINT=${EPS} etcdctl member remove $(member_hash)
+                      if [ $? -eq 0 ]; then
+                          # Remove everything otherwise the cluster will no longer scale-up
+                          rm -rf /var/run/etcd/*
+                      fi
                   fi
         command:
           - "/bin/sh"
@@ -98,14 +114,14 @@ spec:
                 # re-join member
                 ETCDCTL_ENDPOINT=$(eps) etcdctl member update ${member_id} http://${HOSTNAME}.${SET_NAME}:2380
                 exec etcd --name ${HOSTNAME} \
-                    --listen-peer-urls http://${HOSTNAME}.${SET_NAME}:2380 \
-                    --listen-client-urls http://${HOSTNAME}.${SET_NAME}:2379,http://127.0.0.1:2379 \
+                    --listen-peer-urls http://0.0.0.0:2380 \
+                    --listen-client-urls http://0.0.0.0:2379\
                     --advertise-client-urls http://${HOSTNAME}.${SET_NAME}:2379 \
                     --data-dir /var/run/etcd/default.etcd
             fi
 
             # etcd-SET_ID
-            SET_ID=${HOSTNAME:5:${#HOSTNAME}}
+            SET_ID=${HOSTNAME##*[^0-9]}
 
             # adding a new member to existing cluster (assuming all initial pods are available)
             if [ "${SET_ID}" -ge ${INITIAL_CLUSTER_SIZE} ]; then
@@ -135,8 +151,8 @@ spec:
                 collect_member &
 
                 exec etcd --name ${HOSTNAME} \
-                    --listen-peer-urls http://${HOSTNAME}.${SET_NAME}:2380 \
-                    --listen-client-urls http://${HOSTNAME}.${SET_NAME}:2379,http://127.0.0.1:2379 \
+                    --listen-peer-urls http://0.0.0.0:2380 \
+                    --listen-client-urls http://0.0.0.0:2379 \
                     --advertise-client-urls http://${HOSTNAME}.${SET_NAME}:2379 \
                     --data-dir /var/run/etcd/default.etcd \
                     --initial-advertise-peer-urls http://${HOSTNAME}.${SET_NAME}:2380 \
@@ -162,13 +178,14 @@ spec:
             # join member
             exec etcd --name ${HOSTNAME} \
                 --initial-advertise-peer-urls http://${HOSTNAME}.${SET_NAME}:2380 \
-                --listen-peer-urls http://${HOSTNAME}.${SET_NAME}:2380 \
-                --listen-client-urls http://${HOSTNAME}.${SET_NAME}:2379,http://127.0.0.1:2379 \
+                --listen-peer-urls http://0.0.0.0:2380 \
+                --listen-client-urls http://0.0.0.0:2379 \
                 --advertise-client-urls http://${HOSTNAME}.${SET_NAME}:2379 \
                 --initial-cluster-token etcd-cluster-1 \
                 --initial-cluster ${PEERS} \
                 --initial-cluster-state new \
                 --data-dir /var/run/etcd/default.etcd
+  {{- if .Values.persistentVolume.enabled }}
   volumeClaimTemplates:
   - metadata:
       name: datadir
@@ -178,11 +195,16 @@ spec:
       resources:
         requests:
           # upstream recommended max is 700M
-          storage: "{{ .Values.Storage }}"
-    {{- if .Values.StorageClass }}
-    {{- if (eq "-" .Values.StorageClass) }}
+          storage: "{{ .Values.persistentVolume.storage }}"
+    {{- if .Values.persistentVolume.storageClass }}
+    {{- if (eq "-" .Values.persistentVolume.storageClass) }}
       storageClassName: ""
     {{- else }}
-      storageClassName: "{{ .Values.StorageClass }}"
+      storageClassName: "{{ .Values.persistentVolume.storageClass }}"
     {{- end }}
     {{- end }}
+  {{- else }}
+      volumes:
+      - name: datadir
+        emptyDir: {}
+  {{- end }}

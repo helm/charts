@@ -1,11 +1,15 @@
 name: dokuwiki
-version: 0.2.1
+version: 4.0.0
+appVersion: 0.20180422.201805030840
 description: DokuWiki is a standards-compliant, simple to use wiki optimized for creating
   documentation. It is targeted at developer teams, workgroups, and small companies.
   All data is stored in plain text files, so no database is required.
 keywords:
 - dokuwiki
 - wiki
+- http
+- web
+- application
 - php
 home: http://www.dokuwiki.org/
 sources:

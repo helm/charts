@@ -1,6 +1,6 @@
 name: coscale
-version: 0.2.0
-appVersion: 3.9.1
+version: 0.3.0
+appVersion: 3.16.0
 description: CoScale Agent
 keywords:
 - monitoring

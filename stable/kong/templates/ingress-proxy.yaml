@@ -1,0 +1,33 @@
+{{- if .Values.proxy.ingress.enabled -}}
+{{- $serviceName := include "kong.fullname" . -}}
+{{- $servicePort := include "kong.ingress.servicePort" . -}}
+{{- $path := .Values.proxy.ingress.path -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "kong.fullname" . }}-proxy
+  labels:
+    app: {{ template "kong.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+  annotations:
+    {{- range $key, $value := .Values.proxy.ingress.annotations }}
+      {{ $key }}: {{ $value | quote }}
+    {{- end }}
+spec:
+  rules:
+    {{- range $host := .Values.proxy.ingress.hosts }}
+    - host: {{ $host }}
+      http:
+        paths:
+          - path: {{ $path }}
+            backend:
+              serviceName: {{ $serviceName }}-proxy
+              servicePort: {{ $servicePort }}
+    {{- end -}}
+  {{- if .Values.proxy.ingress.tls }}
+  tls:
+{{ toYaml .Values.proxy.ingress.tls | indent 4 }}
+  {{- end -}}
+{{- end -}}

@@ -40,3 +40,36 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- $name := default .Chart.Name .Values.nameOverride -}}
 {{- printf "%s-%s-%s" .Release.Name $name .Values.restoreOperator.name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+
+{{/*
+Create the name of the etcd-operator service account to use
+*/}}
+{{- define "etcd-operator.serviceAccountName" -}}
+{{- if .Values.serviceAccount.etcdOperatorServiceAccount.create -}}
+    {{ default (include "etcd-operator.fullname" .) .Values.serviceAccount.etcdOperatorServiceAccount.name }}
+{{- else -}}
+    {{ default "default" .Values.serviceAccount.etcdOperatorServiceAccount.name }}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Create the name of the backup-operator service account to use 
+*/}}
+{{- define "etcd-backup-operator.serviceAccountName" -}}
+{{- if .Values.serviceAccount.backupOperatorServiceAccount.create -}}
+    {{ default (include "etcd-backup-operator.fullname" .) .Values.serviceAccount.backupOperatorServiceAccount.name }}
+{{- else -}}
+    {{ default "default" .Values.serviceAccount.backupOperatorServiceAccount.name }}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Create the name of the restore-operator service account to use 
+*/}}
+{{- define "etcd-restore-operator.serviceAccountName" -}}
+{{- if .Values.serviceAccount.restoreOperatorServiceAccount.create -}}
+    {{ default (include "etcd-restore-operator.fullname" .) .Values.serviceAccount.restoreOperatorServiceAccount.name }}
+{{- else -}}
+    {{ default "default" .Values.serviceAccount.restoreOperatorServiceAccount.name }}
+{{- end -}}
+{{- end -}}

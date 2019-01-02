@@ -2,7 +2,7 @@
 ## ref: https://hub.docker.com/r/library/influxdb/tags/
 image:
   repo: "influxdb"
-  tag: "1.2-alpine"
+  tag: "1.7-alpine"
   pullPolicy: IfNotPresent
 
 ## Specify a service type
@@ -13,6 +13,14 @@ service:
   ## Add annotations to service
   # annotations: {}
   type: ClusterIP
+  ## Add IP Cluster
+  # clusterIP: ""
+  ## Add external IPs that route to one or more cluster nodes
+  # externalIPs: []
+  ## Specify LoadBalancer IP (only allow on some cloud provider)
+  # loadBalancerIP: ""
+  ## Allow source IPs to access on service (if empty, any access allow)
+  # loadBalancerSourceRanges: []
 
 ## Persist data to a persistent volume
 ##
@@ -60,7 +68,8 @@ setDefaultUser:
     username: "admin"
 
     ## User password
-    ## Default: (Randomly generated 10 characters of Ascii)
+    ## single quotes must be escaped (\')
+    ## Default: (Randomly generated 10 characters of AlphaNum)
     # password:
 
     ## User privileges
@@ -77,6 +86,20 @@ resources:
     memory: 16Gi
     cpu: 8
 
+ingress:
+  enabled: false
+  tls: false
+  # secretName: my-tls-cert # only needed if tls above is true
+  hostname: influxdb.foobar.com
+  annotations:
+    # kubernetes.io/ingress.class: "nginx"
+    # kubernetes.io/tls-acme: "true"
+
+## Use an alternate scheduler, e.g. "stork".
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+# schedulerName:
+
 ## Node labels for pod assignment
 ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
 ##
@@ -89,13 +112,15 @@ env:
   # - name: INFLUXDB_DB
   #   value: "demo"
 
-## Change InfluxDB configuration paramaters below:
+## Change InfluxDB configuration parameters below:
 ## Defaults are indicated
 ## ref: https://docs.influxdata.com/influxdb/v1.1/administration/config/
 config:
   reporting_disabled: false
-  bind_address: 8088
   storage_directory: /var/lib/influxdb
+  rpc:
+    enabled: true
+    bind_address: 8088
   meta:
     retention_autocreate: true
     logging_enabled: true
@@ -167,6 +192,9 @@ config:
     consistency_level: one
     separator: .
     udp_read_buffer: 0
+    # Uncomment to define graphite templates
+    # templates:
+    #   - "graphite.metric.*.*.* measurement.run"
   collectd:
     enabled: false
     bind_address: 25826

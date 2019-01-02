@@ -1,5 +1,5 @@
 {{- if .Values.ingress.enabled -}}
-{{- $serviceName := include "fullname" . -}}
+{{- $serviceName := include "goldfish.fullname" . -}}
 {{- $servicePort := .Values.service.externalPort -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
@@ -20,7 +20,7 @@ spec:
     - host: {{ $host }}
       http:
         paths:
-          - path: /
+          - path: /*
             backend:
               serviceName: {{ $serviceName }}
               servicePort: {{ $servicePort }}

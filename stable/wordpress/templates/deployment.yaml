@@ -8,16 +8,41 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
-  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ template "fullname" . }}
+      release: "{{ .Release.Name }}"
+  replicas: {{ .Values.replicaCount }}
   template:
     metadata:
       labels:
         app: {{ template "fullname" . }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        release: "{{ .Release.Name }}"
+{{- if or .Values.podAnnotations .Values.metrics.enabled }}
+      annotations:
+  {{- if .Values.podAnnotations }}
+{{ toYaml .Values.podAnnotations | indent 8 }}
+  {{- end }}
+  {{- if .Values.metrics.podAnnotations }}
+{{ toYaml .Values.metrics.podAnnotations | indent 8 }}
+  {{- end }}
+{{- end }}
     spec:
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end}}
+      {{- end }}
+      hostAliases:
+      - ip: "127.0.0.1"
+        hostnames:
+        - "status.localhost"
       containers:
-      - name: {{ template "fullname" . }}
-        image: "{{ .Values.image }}"
-        imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+      - name: wordpress
+        image: {{ template "wordpress.image" . }}
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         env:
         - name: ALLOW_EMPTY_PASSWORD
         {{- if .Values.allowEmptyPassword }}
@@ -25,16 +50,6 @@ spec:
         {{- else }}
           value: "no"
         {{- end }}
-        - name: MARIADB_ROOT_PASSWORD
-          valueFrom:
-            secretKeyRef:
-            {{- if .Values.mariadb.enabled }}
-              name: {{ template "mariadb.fullname" . }}
-              key: mariadb-root-password
-            {{- else }}
-              name: {{ printf "%s-%s" .Release.Name "externaldb" }}
-              key: db-root-password
-            {{- end }}
         - name: MARIADB_HOST
         {{- if .Values.mariadb.enabled }}
           value: {{ template "mariadb.fullname" . }}
@@ -49,13 +64,13 @@ spec:
         {{- end }}
         - name: WORDPRESS_DATABASE_NAME
         {{- if .Values.mariadb.enabled }}
-          value: {{ .Values.mariadb.mariadbDatabase | quote }}
+          value: {{ .Values.mariadb.db.name | quote }}
         {{- else }}
           value: {{ .Values.externalDatabase.database | quote }}
         {{- end }}
         - name: WORDPRESS_DATABASE_USER
         {{- if .Values.mariadb.enabled }}
-          value: {{ .Values.mariadb.mariadbUser | quote }}
+          value: {{ .Values.mariadb.db.user | quote }}
         {{- else }}
           value: {{ .Values.externalDatabase.user | quote }}
         {{- end }}
@@ -70,35 +85,37 @@ spec:
               key: db-password
             {{- end }}
         - name: WORDPRESS_USERNAME
-          value: {{ default "" .Values.wordpressUsername | quote }}
+          value: {{ .Values.wordpressUsername | quote }}
         - name: WORDPRESS_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "fullname" . }}
               key: wordpress-password
         - name: WORDPRESS_EMAIL
-          value: {{ default "" .Values.wordpressEmail | quote }}
+          value: {{ .Values.wordpressEmail | quote }}
         - name: WORDPRESS_FIRST_NAME
-          value: {{ default "" .Values.wordpressFirstName | quote }}
+          value: {{ .Values.wordpressFirstName | quote }}
         - name: WORDPRESS_LAST_NAME
-          value: {{ default "" .Values.wordpressLastName | quote }}
+          value: {{ .Values.wordpressLastName | quote }}
         - name: WORDPRESS_BLOG_NAME
-          value: {{ default "" .Values.wordpressBlogName | quote }}
+          value: {{ .Values.wordpressBlogName | quote }}
+        - name: WORDPRESS_TABLE_PREFIX
+          value: {{ .Values.wordpressTablePrefix | quote }}
         - name: SMTP_HOST
-          value: {{ default "" .Values.smtpHost | quote }}
+          value: {{ .Values.smtpHost | quote }}
         - name: SMTP_PORT
-          value: {{ default "" .Values.smtpPort | quote }}
+          value: {{ .Values.smtpPort | quote }}
         - name: SMTP_USER
-          value: {{ default "" .Values.smtpUser | quote }}
+          value: {{ .Values.smtpUser | quote }}
         - name: SMTP_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "fullname" . }}
               key: smtp-password
         - name: SMTP_USERNAME
-          value: {{ default "" .Values.smtpUsername | quote }}
+          value: {{ .Values.smtpUsername | quote }}
         - name: SMTP_PROTOCOL
-          value: {{ default "" .Values.smtpProtocol | quote }}
+          value: {{ .Values.smtpProtocol | quote }}
         ports:
         - name: http
           containerPort: 80
@@ -113,9 +130,7 @@ spec:
             port: https
             scheme: HTTPS
           {{- end }}
-          initialDelaySeconds: 120
-          timeoutSeconds: 5
-          failureThreshold: 6
+{{ toYaml .Values.livenessProbe | indent 10 }}
         readinessProbe:
           httpGet:
             path: /wp-login.php
@@ -125,9 +140,7 @@ spec:
             port: https
             scheme: HTTPS
           {{- end }}
-          initialDelaySeconds: 30
-          timeoutSeconds: 3
-          periodSeconds: 5
+{{ toYaml .Values.readinessProbe | indent 10 }}
         volumeMounts:
         - mountPath: /bitnami/apache
           name: wordpress-data
@@ -140,11 +153,34 @@ spec:
           subPath: php
         resources:
 {{ toYaml .Values.resources | indent 10 }}
+{{- if .Values.metrics.enabled }}
+      - name: metrics
+        image: {{ template "metrics.image" . }}
+        imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
+        command: [ '/bin/apache_exporter', '-scrape_uri', 'http://status.localhost:80/server-status/?auto']
+        ports:
+        - name: metrics
+          containerPort: 9117
+        livenessProbe:
+          httpGet:
+            path: /metrics
+            port: metrics
+          initialDelaySeconds: 15
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /metrics
+            port: metrics
+          initialDelaySeconds: 5
+          timeoutSeconds: 1
+        resources:
+  {{ toYaml .Values.metrics.resources | indent 10 }}
+{{- end }}
       volumes:
       - name: wordpress-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "fullname" . }}
+          claimName: {{ .Values.persistence.existingClaim | default (include "fullname" .) }}
       {{- else }}
         emptyDir: {}
       {{ end }}
@@ -152,3 +188,12 @@ spec:
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
       {{- end -}}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+

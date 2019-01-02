@@ -1,0 +1,56 @@
+{{- if and .Values.geth.account.address .Values.geth.account.privateKey .Values.geth.account.secret }}
+
+  1. View the EthStats dashboard at:
+
+  {{- if contains "NodePort" .Values.ethstats.service.type }}
+    export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "ethereum.fullname" . }}-ethstats)
+    export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+    echo http://$NODE_IP:$NODE_PORT
+  {{- else if contains "LoadBalancer" .Values.ethstats.service.type }}
+    export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "ethereum.fullname" . }}-ethstats -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+    echo http://$SERVICE_IP
+
+    NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+          You can watch the status of by running 'kubectl get svc -w {{ template "ethereum.fullname" . }}-ethstats-service'
+  {{- else if contains "ClusterIP" .Values.ethstats.service.type }}
+    export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "ethereum.fullname" . }}-ethstats,release={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
+    echo "Visit http://127.0.0.1 to use your application"
+    kubectl port-forward $POD_NAME 80:80
+  {{- end }}
+
+  2. Connect to Geth transaction nodes (through RPC or WS) at the following IP:
+
+  {{- if contains "NodePort" .Values.geth.tx.service.type }}
+    export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "ethereum.fullname" . }}-geth-tx)
+    export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+    echo $NODE_IP:$NODE_PORT
+  {{- else if contains "LoadBalancer" .Values.geth.tx.service.type }}
+    export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "ethereum.fullname" . }}-geth-tx -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+    echo $SERVICE_IP
+
+    NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+          You can watch the status of by running 'kubectl get svc -w {{ template "ethereum.fullname" . }}-geth-tx'
+  {{- else if contains "ClusterIP" .Values.geth.tx.service.type }}
+    export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "ethereum.name" . }},release={{ .Release.Name }},component=geth-tx" -o jsonpath="{.items[0].metadata.name}")
+    kubectl port-forward $POD_NAME 8545:8545 8546:8546
+  {{- end }}
+
+{{- else -}}
+
+##############################################################################
+####           ERROR: Geth Account has not been configured!               ####
+##############################################################################
+
+This deployment will be incomplete until a Geth account is configured. 
+See https://github.com/ethereum/go-ethereum/wiki/Managing-your-accounts for 
+instructions on how to create a Geth account.
+
+Once created, run:
+
+    helm upgrade {{ .Release.Name }} \
+        --set geth.account.address=YOUR-ETHEREUM-ADDRESS-HERE
+        --set geth.account.privateKey=YOUR-PRIVATE-KEY-HERE
+        --set geth.account.secret=YOUR-SECRET-HERE
+        stable/ethereum
+
+{{- end }}

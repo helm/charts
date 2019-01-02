@@ -1,0 +1,27 @@
+{{- $highAvailability := gt (int .Values.keycloak.replicas) 1 -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "keycloak.fullname" . }}-headless
+  labels:
+    app: {{ template "keycloak.name" . }}
+    chart: {{ template "keycloak.chart" . }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+    - name: http
+      port: {{ .Values.keycloak.service.port }}
+      targetPort: http
+      protocol: TCP
+  {{- if $highAvailability }}
+    - name: jgroups
+      port: {{ .Values.keycloak.service.jgroupsPort }}
+      targetPort: jgroups
+      protocol: TCP
+  {{- end }}
+  selector:
+    app: {{ template "keycloak.name" . }}
+    release: "{{ .Release.Name }}"

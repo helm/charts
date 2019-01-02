@@ -1,17 +1,21 @@
 name: postgresql
-version: 0.8.5
-description: Object-relational database management system (ORDBMS) with an emphasis on extensibility and on standards-compliance.
+version: 3.7.3
+appVersion: 10.6.0
+description: Chart for PostgreSQL, an object-relational database management system (ORDBMS) with an emphasis on extensibility and on standards-compliance.
 keywords:
 - postgresql
 - postgres
 - database
 - sql
+- replication
+- cluster
 home: https://www.postgresql.org/
-icon: https://www.postgresql.org/media/img/about/press/elephant.png
+icon: https://bitnami.com/assets/stacks/postgresql/img/postgresql-stack-110x117.png
 sources:
-- https://github.com/kubernetes/charts
-- https://github.com/docker-library/postgres
+- https://github.com/bitnami/bitnami-docker-postgresql
 maintainers:
-- name: swordbeta
-- name: databus23
+- name: Bitnami
+  email: containers@bitnami.com
+- name: desaintmartin
+  email: cedric@desaintmartin.fr
 engine: gotpl

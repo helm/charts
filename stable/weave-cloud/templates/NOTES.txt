@@ -1,10 +1,10 @@
-{{- if .Values.ServiceToken -}}
+{{- if .Values.token -}}
 
 Weave Cloud agents had been installed!
 
 First, verify all Pods are running:
 
-  kubectl get pods -n {{ .Release.Namespace }} -l weave-cloud-component
+  kubectl get pods -n {{ .Release.Namespace }}
 
 Next, login to Weave Cloud (https://cloud.weave.works) and verify the agents are connect to your instance.
 
@@ -23,6 +23,6 @@ To retrieve your Weave Cloud service token, log in to your instance first: https
 
 Then run:
 
-  helm upgrade {{ .Release.Name }} --set ServiceToken=<YOUR_WEAVE_CLOUD_SERVICE_TOKEN> stable/weave-cloud
+  helm upgrade {{ .Release.Name }} --set token=<YOUR_WEAVE_CLOUD_SERVICE_TOKEN> stable/weave-cloud
 
 {{- end }}

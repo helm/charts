@@ -9,18 +9,35 @@ metadata:
     heritage: "{{ .Release.Service }}"
     component: "server"
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "parse.name" . }}
+      release: "{{ .Release.Name }}"
+      component: "server"
   replicas: 1
   template:
     metadata:
       labels:
         app: {{ template "parse.name" . }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: "{{ .Release.Name }}"
         component: "server"
     spec:
+      {{- if .Values.server.securityContext.enabled }}
+      securityContext:
+        fsGroup: {{ .Values.server.securityContext.fsGroup }}
+        runAsUser: {{ .Values.server.securityContext.runAsUser }}
+      {{- end }}
+      {{- if .Values.server.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.server.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end}}
+      {{- end }}
       containers:
       - name: {{ template "parse.fullname" . }}
-        image: "{{ .Values.server.image }}"
-        imagePullPolicy: {{ .Values.server.imagePullPolicy | quote }}
+        image: {{ template "parse.server.image" . }}
+        imagePullPolicy: {{ .Values.server.image.pullPolicy | quote }}
         env:
         - name: PARSE_HOST
           value: "0.0.0.0"
@@ -39,6 +56,13 @@ spec:
           value: {{ template "parse.mongodb.fullname" . }}
         - name: MONGODB_PORT
           value: "27017"
+        {{- if .Values.mongodb.usePassword }}
+        - name: MONGODB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "parse.mongodb.fullname" . }}
+              key: mongodb-root-password
+        {{- end }}
         ports:
         - name: server-http
           containerPort: {{ .Values.server.port }}

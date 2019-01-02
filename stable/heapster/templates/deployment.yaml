@@ -2,6 +2,8 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: {{ template "heapster.fullname" . }}
+  annotations:
+{{ toYaml .Values.annotations | indent 4 }}
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     {{- range $key, $value := .Values.labels }}
@@ -11,6 +13,8 @@ spec:
   replicas: {{ .Values.replicaCount }}
   template:
     metadata:
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8 }}
       labels:
         app: {{ template "heapster.fullname" . }}
     spec:
@@ -18,6 +22,14 @@ spec:
 {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}
+{{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+{{- end }}
+{{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 6 }}
 {{- end }}
       containers:
       - name: {{ .Chart.Name }}

@@ -1,0 +1,87 @@
+{{ $fullname := include "dex.fullname" . }}
+{{ $httpsTlsBuiltName := printf "%s-tls" $fullname }}
+{{ $httpsTlsSecretName := default $httpsTlsBuiltName .Values.certs.web.secret.tlsName }}
+{{ $grpcTlsServerBuiltName := printf "%s-server-tls" $fullname }}
+{{ $grpcTlsServerSecretName := default $grpcTlsServerBuiltName .Values.certs.grpc.secret.serverTlsName }}
+{{ $grpcCaBuiltName := printf "%s-ca" $fullname }}
+{{ $grpcCaSecretName := default $grpcCaBuiltName .Values.certs.grpc.secret.caName }}
+
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "dex.fullname" . }}
+  labels:
+    app: {{ template "dex.name" . }}
+    chart: {{ template "dex.chart" . }}
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+spec:
+  replicas: {{ .Values.replicas }}
+  strategy:
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: {{ template "dex.name" . }}
+      release: "{{ .Release.Name }}"
+  template:
+    metadata:
+      labels:
+        app: {{ template "dex.name" . }}
+        release: "{{ .Release.Name }}"
+    spec:
+      serviceAccountName: {{ template "dex.serviceAccountName" . }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 10 }}
+      containers:
+      - name: main
+        image: "{{ .Values.image }}:{{ .Values.imageTag }}"
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        command:
+        - /usr/local/bin/dex
+        - serve
+        - /etc/dex/cfg/config.yaml
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        ports:
+{{ toYaml .Values.ports | indent 10 }}
+        env:
+{{ toYaml .Values.env | indent 10 }}
+        volumeMounts:
+        - mountPath: /etc/dex/cfg
+          name: config
+        - mountPath: /etc/dex/tls/https/server
+          name: https-tls
+        - mountPath: /etc/dex/tls/grpc/server
+          name: grpc-tls-server
+        - mountPath: /etc/dex/tls/grpc/ca
+          name: grpc-tls-ca
+{{- if ne (len .Values.extraVolumeMounts) 0 }}
+{{ toYaml .Values.extraVolumeMounts | indent 8 }}
+{{- end }}
+      volumes:
+      - secret:
+          defaultMode: 420
+          items:
+          - key: config.yaml
+            path: config.yaml
+          secretName: {{ template "dex.fullname" . }}
+        name: config
+      - name: https-tls
+        secret:
+          defaultMode: 420
+          secretName: {{ $httpsTlsSecretName | quote }}
+      - name: grpc-tls-server
+        secret:
+          defaultMode: 420
+          secretName: {{ $grpcTlsServerSecretName | quote }}
+      - name: grpc-tls-ca
+        secret:
+          defaultMode: 420
+          secretName: {{ $grpcCaSecretName| quote }}
+{{- if ne (len .Values.extraVolumes) 0 }}
+{{ toYaml .Values.extraVolumes | indent 6 }}
+{{- end }}
+

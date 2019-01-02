@@ -40,13 +40,13 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Metabase chart and their default values.
+The following table lists the configurable parameters of the Metabase chart and their default values.
 
 | Parameter              | Description                                                | Default           |
 |------------------------|------------------------------------------------------------|-------------------|
 | replicaCount           | desired number of controller pods                          | 1                 |
 | image.repository       | controller container image repository                      | metabase/metabase |
-| image.tag              | controller container image tag                             | v0.26.2           |
+| image.tag              | controller container image tag                             | v0.30.1           |
 | image.pullPolicy       | controller container image pull policy                     | IfNotPresent      |
 | listen.host            | Listening on a specific network host                       | 0.0.0.0           |
 | listen.port            | Listening on a specific network port                       | 3000              |
@@ -56,6 +56,7 @@ The following tables lists the configurable parameters of the Metabase chart and
 | ssl.keyStorePassword   | The password for key Store                                 | null              |
 | database.type          | Backend database type                                      | h2                |
 | database.encryptionKey | Secret key for encrypt sensitive information into database | null              |
+| database.connectionURI | Database connection URI (alternative to the below settings)| null              |
 | database.host          | Database host                                              | null              |
 | database.port          | Database port                                              | null              |
 | database.dbname        | Database name                                              | null              |
@@ -70,8 +71,11 @@ The following tables lists the configurable parameters of the Metabase chart and
 | service.type           | ClusterIP, NodePort, or LoadBalancer                       | ClusterIP         |
 | service.externalPort   | Service external port                                      | 80                |
 | service.internalPort   | Service internal port, should be the same as `listen.port` | 3000              |
+| service.annotations    | Service annotations                                        | {}                |
 | ingress.enabled        | Enable ingress controller resource                         | false             |
 | ingress.hosts          | Ingress resource hostnames                                 | null              |
+| ingress.path           | Ingress path                                               | /                 |
+| ingress.labels         | Ingress labels configuration                               | null              |
 | ingress.annotations    | Ingress annotations configuration                          | null              |
 | ingress.tls            | Ingress TLS configuration                                  | null              |
 | resources              | Server resource requests and limits                        | {}                |

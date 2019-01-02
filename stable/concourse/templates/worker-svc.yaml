@@ -14,7 +14,7 @@ spec:
   type: ClusterIP
   clusterIP: None
   ## We do NOT expose any port as workers will forward connections with the ATC through a TSA reverse-tunnel
-  ## ref: https://concourse.ci/architecture.html#architecture-worker
+  ## ref: https://concourse-ci.org/architecture.html#architecture-worker
   ##
   ports: []
   selector:

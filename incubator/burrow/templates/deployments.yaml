@@ -1,0 +1,143 @@
+{{ range (until (.Values.chain.numberOfNodes | int)) }}
+{{- $nodeNumber := printf "%03d" . }}
+{{- $workDir := printf "/work" }}
+{{- $dataDir := printf "/data" }}
+{{- $refDir := printf "/ref" }}
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ template "burrow.name" $ }}
+    chart: "{{ $.Chart.Name }}-{{ $.Chart.Version }}"
+    heritage: {{ $.Release.Service }}
+    release: {{ $.Release.Name }}
+  name: {{ template "burrow.fullname" $ }}-{{ $nodeNumber }}
+spec:
+  replicas: 1
+  template:
+    metadata:
+    {{- if $.Values.podAnnotations }}
+      annotations:
+{{ toYaml $.Values.podAnnotations | indent 8 }}
+    {{- end }}
+      labels:
+        app: {{ template "burrow.name" $ }}
+        release: {{ $.Release.Name }}
+        nodeNumber: {{ $nodeNumber | quote }}
+      {{- if $.Values.podLabels }}
+{{ toYaml $.Values.podLabels | indent 8 }}
+      {{- end }}
+    spec:
+      initContainers:
+        - name: init-node
+          image: busybox
+          imagePullPolicy: IfNotPresent
+          command:
+            - 'sh'
+            - '-xc'
+            - 'echo Initializing...; sleep {{ mul 5 . }}; echo Ready to go!'
+        - name: init-dir
+          image: busybox
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - mountPath: {{ $workDir }}
+              name: work-dir
+            - mountPath: {{ $refDir }}
+              name: ref-dir
+          command:
+            - 'sh'
+            - '-xc'
+            - 'cp {{ $refDir }}/config.toml {{ $workDir }}/; cp {{ $refDir }}/genesis.json {{ $workDir }}/; cp {{ $refDir }}/priv_validator.json {{ $workDir }}/'
+      containers:
+        - name: node-{{ $nodeNumber }}
+          image: "{{ $.Values.image.repository }}:{{ $.Values.image.tag }}"
+          imagePullPolicy: {{ $.Values.image.pullPolicy }}
+          args:
+          {{- range $key, $value := $.Values.extraArgs }}
+            - --{{ $key }}={{ $value }}
+          {{- end }}
+          env:
+            - name: BURROW_WORKDIR
+              value: {{ $workDir }}
+            - name: BURROW_DATADIR
+              value: {{ $dataDir }}
+          {{- range $key, $value := $.Values.env }}
+            - name: "{{ $key }}"
+              value: "{{ $value }}"
+          {{- end }}
+          volumeMounts:
+            - mountPath: {{ $workDir }}
+              name: work-dir
+            - mountPath: {{ $dataDir }}
+              name: data-dir
+          ports:
+            - name: peer
+              protocol: TCP
+              containerPort: {{ $.Values.service.peer.port }}
+            - name: rpc
+              protocol: TCP
+              containerPort: {{ $.Values.service.rpc.port }}
+            - name: api
+              protocol: TCP
+              containerPort: {{ $.Values.service.api.port }}
+          livenessProbe:
+            httpGet:
+              path: /status
+              port: rpc
+              scheme: HTTP
+            initialDelaySeconds: 20
+            timeoutSeconds: 1
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /status
+              port: rpc
+              scheme: HTTP
+            initialDelaySeconds: 1
+        {{- if $.Values.resources }}
+          resources:
+{{ toYaml $.Values.resources | indent 12 }}
+        {{- end }}
+      volumes:
+        - name: ref-dir
+          projected:
+            sources:
+              - configMap:
+                  name: {{ template "burrow.fullname" $ }}-config-{{ $nodeNumber }}
+                  items:
+                    - key: config.toml
+                      path: config.toml
+              - secret:
+                  name: {{ template "burrow.fullname" $ }}-genesis
+                  items:
+                    - key: genesis.json
+                      path: genesis.json
+              - secret:
+                  name: {{ template "burrow.fullname" $ }}-keys
+                  items:
+                    - key: key-{{ $nodeNumber }}
+                      path: priv_validator.json
+        - name: work-dir
+          emptyDir: {}
+        - name: data-dir
+        {{- if $.Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ template "burrow.fullname" $ }}
+        {{- else }}
+          emptyDir: {}
+        {{- end }}
+      securityContext:
+        fsGroup: 101
+        runAsUser: 1000
+    {{- if $.Values.affinity }}
+      affinity:
+{{ toYaml $.Values.affinity | indent 8 }}
+    {{- end }}
+    {{- if $.Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml $.Values.nodeSelector | indent 8 }}
+    {{- end }}
+      tolerations:
+{{ toYaml $.Values.tolerations | indent 8 }}
+{{- end }}

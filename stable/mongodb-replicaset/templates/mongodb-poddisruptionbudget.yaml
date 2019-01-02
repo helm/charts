@@ -1,0 +1,20 @@
+{{- if .Values.podDisruptionBudget -}}
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  labels:
+    app: {{ template "mongodb-replicaset.name" . }}
+    chart: {{ template "mongodb-replicaset.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+{{- if .Values.extraLabels }}
+{{ toYaml .Values.extraLabels | indent 4 }}
+{{- end }}
+  name: {{ template "mongodb-replicaset.fullname" . }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "mongodb-replicaset.name" . }}
+      release: {{ .Release.Name }}
+{{ toYaml .Values.podDisruptionBudget | indent 2 }}
+{{- end -}}

@@ -1,0 +1,62 @@
+{{- if .Values.rbac.create -}}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app: {{ template "kubewatch.name" . }}
+    chart: {{ template "kubewatch.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "kubewatch.fullname" . }}
+rules:
+  - apiGroups:
+      - ""
+    resources:
+    - pods
+    - namespaces
+    - services
+    - deployments
+    - replicationcontrollers
+    - replicasets
+    - daemonsets
+    - persistentvolumes
+    verbs:
+    - list
+    - watch
+    - get
+  - apiGroups:
+    - apps
+    resources:
+    - daemonsets
+    - deployments
+    - deployments/scale
+    - replicasets
+    - replicasets/scale
+    - statefulsets
+    verbs:
+    - get
+    - list
+    - watch
+  - apiGroups:
+    - extensions
+    resources:
+    - daemonsets
+    - deployments
+    - deployments/scale
+    - replicasets
+    - replicasets/scale
+    - replicationcontrollers/scale
+    verbs:
+    - get
+    - list
+    - watch
+  - apiGroups:
+    - batch
+    resources:
+    - cronjobs
+    - jobs
+    verbs:
+    - get
+    - list
+    - watch
+{{- end -}}

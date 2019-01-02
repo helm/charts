@@ -1,0 +1,71 @@
+# Default values for prometheus-node-exporter.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+image:
+  repository: quay.io/prometheus/node-exporter
+  tag: v0.17.0
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 9100
+  targetPort: 9100
+  nodePort:
+  annotations:
+    prometheus.io/scrape: "true"
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 200m
+  #    memory: 50Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 30Mi
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+  imagePullSecrets: []
+
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 65534
+
+rbac:
+  ## If true, create & use RBAC resources
+  ##
+  create: true
+  ## If true, create & use Pod Security Policy resources
+  ## https://kubernetes.io/docs/concepts/policy/pod-security-policy/
+  pspEnabled: true
+
+# for deployments that have node_exporter deployed outside of the cluster, list
+# their addresses here
+endpoints: []
+
+tolerations:
+  - effect: NoSchedule
+    operator: Exists
+
+## Assign a PriorityClassName to pods if set
+# priorityClassName: ""
+
+## Additional container arguments
+##
+extraArgs: {}
+#   - --collector.diskstats.ignored-devices=^(ram|loop|fd|(h|s|v)d[a-z]|nvme\\d+n\\d+p)\\d+$
+
+## Additional mounts from the host
+##
+extraHostVolumeMounts: {}
+#  - name: <mountName>
+#    hostPath: <hostPath>
+#    mountPath: <mountPath>
+#    readOnly: true|false

@@ -1,0 +1,107 @@
+apiVersion: apps/v1beta2
+kind: StatefulSet
+metadata:
+  name: {{ template "nfs-provisioner.fullname" . }}
+  labels:
+    app: {{ template "nfs-provisioner.name" . }}
+    chart: {{ template "nfs-provisioner.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+spec:
+  # TODO: Investigate how/if nfs-provisioner can be scaled out beyond 1 replica
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "nfs-provisioner.name" . }}
+      release: {{ .Release.Name }}
+  serviceName: {{ template "nfs-provisioner.fullname" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "nfs-provisioner.name" . }}
+        chart: {{ template "nfs-provisioner.chart" . }}
+        heritage: {{ .Release.Service }}
+        release: {{ .Release.Name }}
+    spec:
+      # NOTE: This is 10 seconds longer than the default nfs-provisioner --grace-period value of 90sec
+      terminationGracePeriodSeconds: 100
+      serviceAccountName: {{ if .Values.rbac.create }}{{ template "nfs-provisioner.fullname" . }}{{ else }}{{ .Values.rbac.serviceAccountName | quote }}{{ end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: nfs
+              containerPort: 2049
+              protocol: TCP
+            - name: mountd
+              containerPort: 20048
+              protocol: TCP
+            - name: rpcbind-tcp
+              containerPort: 111
+              protocol: TCP
+            - name: rpcbind-udp
+              containerPort: 111
+              protocol: UDP
+          securityContext:
+            capabilities:
+              add:
+                - DAC_READ_SEARCH
+                - SYS_RESOURCE
+          args:
+            - "-provisioner={{ template "nfs-provisioner.provisionerName" . }}"
+          env:
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: SERVICE_NAME
+              value: {{ template "nfs-provisioner.fullname" . }}
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          volumeMounts:
+            - name: data
+              mountPath: /export
+          resources:
+        {{- with .Values.resources }}
+          resources:
+{{ toYaml . | indent 12 }}
+        {{- end }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+
+{{- if not .Values.persistence.enabled }}
+      volumes:
+        - name: data
+          emptyDir: {}
+{{- end }}
+
+{{- if .Values.persistence.enabled }}
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes: [ {{ .Values.persistence.accessMode | quote }} ]
+      {{- if .Values.persistence.storageClass }}
+      {{- if (eq "-" .Values.persistence.storageClass) }}
+        storageClassName: ""
+      {{- else }}
+        storageClassName: {{ .Values.persistence.storageClass | quote }}
+      {{- end }}
+      {{- end }}
+        resources:
+          requests:
+            storage: {{ .Values.persistence.size | quote }}
+{{- end }}

@@ -1,0 +1,99 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "insight-scheduler.fullname" . }}
+  labels:
+    app: {{ template "mission-control.name" . }}
+    chart: {{ template "mission-control.chart" . }}
+    component: {{ .Values.insightScheduler.name }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.insightScheduler.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "mission-control.name" . }}
+      component: {{ .Values.insightScheduler.name }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      name: {{ .Values.insightScheduler.name }}
+      labels:
+        app: {{ template "mission-control.name" . }}
+        component: {{ .Values.insightScheduler.name }}
+        release: {{ .Release.Name }}
+    spec:
+      serviceAccountName: {{ template "mission-control.serviceAccountName" . }}
+    {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+      - name: {{ .Values.imagePullSecrets }}
+    {{- end }}
+      initContainers:
+      - name: init-data
+        image: "{{ .Values.initContainerImage }}"
+        command:
+        - 'sh'
+        - '-c'
+        - >
+          until nc -z -w 2 {{ .Release.Name }}-mongodb 27017 && echo mongodb ok;
+            do sleep 2;
+          done;
+          sleep 10
+      containers:
+      - name: {{ .Values.insightScheduler.name }}
+        image: {{ .Values.insightScheduler.image }}:{{ default .Chart.AppVersion .Values.insightScheduler.version }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        env:
+        - name: CORE_URL
+          value: 'http://{{ template "insight-server.fullname" . }}:{{ .Values.insightServer.internalHttpPort }}'
+        - name: JFI_HOME
+          value: '/var/cloudbox'
+        - name: JFI_HOME_SCHEDULER
+          value: '/var/cloudbox/scheduler'
+        - name: MONGO_URL
+          value: '{{ .Release.Name }}-mongodb:27017'
+        - name: MONGODB_USERNAME
+          value: '{{ .Values.mongodb.db.insightUser }}'
+        - name: MONGODB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "mission-control.fullname" . }}-mongodb-cred
+              key: insightPassword
+        - name: MONGODB_ADMIN_USERNAME
+          value: '{{ .Values.mongodb.db.adminUser }}'
+        - name: MONGODB_ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "mission-control.fullname" . }}-mongodb-cred
+              key: adminPassword
+        - name: JFMC_SCHEDULER_MONGO_DB
+          value: '{{ .Values.mongodb.db.insightSchedulerDb }}'
+        ports:
+        - containerPort: {{ .Values.insightScheduler.internalPort }}
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /schedulerservice/api/status
+            port: 8080
+          initialDelaySeconds: 120
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /schedulerservice/api/status
+            port: 8080
+          initialDelaySeconds: 120
+          periodSeconds: 10
+        resources:
+{{ toYaml .Values.insightScheduler.resources | indent 10 }}
+    {{- with .Values.insightScheduler.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.insightScheduler.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.insightScheduler.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

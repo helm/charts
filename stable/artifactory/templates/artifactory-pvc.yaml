@@ -1,13 +1,17 @@
-{{- if .Values.artifactory.persistence.enabled }}
+{{- if and .Values.artifactory.persistence.enabled (not .Values.artifactory.persistence.existingClaim) -}}
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ template "artifactory.artifactory.fullname" . }}
+  name: {{ template "artifactory.fullname" . }}
   labels:
     app: {{ template "artifactory.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    chart: {{ template "artifactory.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+{{- if .Values.artifactory.persistence.annotations }}
+  annotations:
+{{ toYaml .Values.artifactory.persistence.annotations | indent 4 }}
+{{- end }}
 spec:
   accessModes:
     - {{ .Values.artifactory.persistence.accessMode | quote }}

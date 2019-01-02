@@ -1,0 +1,36 @@
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+apiService:
+  # Specifies if the v1beta1.metrics.k8s.io API service should be created.
+  #
+  # You typically want this enabled! If you disable API service creation you have to
+  # manage it outside of this chart for e.g horizontal pod autoscaling to
+  # work with this release.
+  create: true
+
+image:
+  repository: gcr.io/google_containers/metrics-server-amd64
+  tag: v0.3.1
+  pullPolicy: IfNotPresent
+
+args:
+  - --logtostderr
+# enable this if you have self-signed certificates, see: https://github.com/kubernetes-incubator/metrics-server
+#  - --kubelet-insecure-tls
+
+resources: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

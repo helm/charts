@@ -1,0 +1,130 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  labels:
+    app: {{ template "oauth2-proxy.name" . }}
+    chart: {{ template "oauth2-proxy.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "oauth2-proxy.fullname" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "oauth2-proxy.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+    {{- if .Values.podAnnotations }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8 }}
+    {{- end }}
+      labels:
+        app: {{ template "oauth2-proxy.name" . }}
+        release: "{{ .Release.Name }}"
+      {{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels | indent 8 }}
+      {{- end }}
+    spec:
+    {{- if .Values.priorityClassName }}
+      priorityClassName: "{{ .Values.priorityClassName }}"
+    {{- end }}
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        args:
+        {{- range $key, $value := .Values.extraArgs }}
+          {{- if $value }}
+          - --{{ $key }}={{ $value }}
+          {{- else }}
+          - --{{ $key }}
+          {{- end }}
+        {{- end }}
+        {{- if .Values.config.configFile }}
+          - --config=/etc/oauth2_proxy/oauth2_proxy.cfg
+        {{- end }}
+        {{- if .Values.authenticatedEmailsFile.enabled }}
+        {{- if .Values.authenticatedEmailsFile.template }}
+          - --authenticated-emails-file=/etc/oauth2-proxy/{{ .Values.authenticatedEmailsFile.template }}
+        {{- else }}
+          - --authenticated-emails-file=/etc/oauth2-proxy/authenticated-emails-list
+        {{- end }}
+        {{- end }}
+        env:
+        - name: OAUTH2_PROXY_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name:  {{ template "oauth2-proxy.fullname" . }}
+              key: client-id
+        - name: OAUTH2_PROXY_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name:  {{ template "oauth2-proxy.fullname" . }}
+              key: client-secret
+        - name: OAUTH2_PROXY_COOKIE_SECRET
+          valueFrom:
+            secretKeyRef:
+              name:  {{ template "oauth2-proxy.fullname" . }}
+              key: cookie-secret
+        ports:
+          - containerPort: 4180
+            name: http
+            protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /ping
+            port: http
+        readinessProbe:
+          httpGet:
+            path: /ping
+            port: http
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        volumeMounts:
+{{- if .Values.config.configFile }}
+        - mountPath: /etc/oauth2_proxy
+          name: {{ template "oauth2-proxy.fullname" . }}-configmap
+{{- end }}
+{{- if .Values.authenticatedEmailsFile.enabled }}
+        - mountPath: /etc/oauth2-proxy
+          name: {{ template "oauth2-proxy.fullname" . }}-configaccesslist
+          readOnly: true
+{{- end }}
+      volumes:
+{{- if .Values.config.configFile }}
+      - configMap:
+          defaultMode: 420
+          name: {{ template "oauth2-proxy.fullname" . }}
+        name: {{ template "oauth2-proxy.fullname" . }}-configmap
+{{- end }}
+{{- if .Values.authenticatedEmailsFile.enabled }}
+      - configMap:
+{{- if .Values.authenticatedEmailsFile.template }}
+          name: {{ .Values.authenticatedEmailsFile.template }}
+{{- else }}
+          name: {{ template "oauth2-proxy.fullname" . }}-accesslist
+{{- end }}
+          items:
+          - key: restricted_user_access
+{{- if .Values.authenticatedEmailsFile.template }}
+            path: {{ .Values.authenticatedEmailsFile.template }}
+{{- else }}
+            path: authenticated-emails-list
+{{- end }}
+        name: {{ template "oauth2-proxy.fullname" . }}-configaccesslist
+{{- end }}
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.imagePullSecrets | indent 8 }}
+      {{- end }}
+    {{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+    {{- end }}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}

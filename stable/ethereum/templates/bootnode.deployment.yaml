@@ -1,0 +1,74 @@
+apiVersion: apps/v1beta2 
+kind: Deployment
+metadata:
+  name: {{ template "ethereum.fullname" . }}-bootnode
+  labels:
+    app: {{ template "ethereum.name" . }}
+    chart: {{ template "ethereum.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: bootnode
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ template "ethereum.name" . }}
+      release: {{ .Release.Name }}
+      component: bootnode
+  template:
+    metadata:
+      labels:
+        app: {{ template "ethereum.name" . }}
+        release: {{ .Release.Name }}
+        component: bootnode
+    spec:
+      containers:
+      - name: bootnode
+        image: {{ .Values.bootnode.image.repository }}:{{ .Values.bootnode.image.tag }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        command: ["/bin/sh"]
+        args: 
+        - "-c"
+        - "bootnode --nodekey=/etc/bootnode/node.key --verbosity=4"
+        volumeMounts:
+        - name: data
+          mountPath: /etc/bootnode
+        ports:
+        - name: discovery
+          containerPort: 30301
+          protocol: UDP
+      - name: bootnode-server
+        image: {{ .Values.bootnode.image.repository }}:{{ .Values.bootnode.image.tag }}
+        imagePullPolicy: {{.Values.imagePullPolicy}}
+        command: ["/bin/sh"]
+        args:
+        - "-c"
+        - "while [ 1 ]; do echo -e \"HTTP/1.1 200 OK\n\nenode://$(bootnode -writeaddress --nodekey=/etc/bootnode/node.key)@$(POD_IP):30301\" | nc -l -v -p 80 || break; done;"
+        volumeMounts:
+        - name: data
+          mountPath: /etc/bootnode
+        env:
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        ports:
+        - containerPort: 80
+      initContainers:
+      - name: genkey
+        image: {{ .Values.bootnode.image.repository }}:{{ .Values.bootnode.image.tag }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        command: ["/bin/sh"]
+        args:
+        - "-c"
+        - "bootnode --genkey=/etc/bootnode/node.key"
+        volumeMounts:
+        - name: data
+          mountPath: /etc/bootnode
+      volumes:
+      - name: data
+        emptyDir: {}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}

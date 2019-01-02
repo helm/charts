@@ -18,7 +18,7 @@ spec:
     app: {{ template "msoms.name" .   }}
    annotations:
     agentVersion: {{ .Values.omsagent.image.tag }}
-    dockerProviderVersion: 10.0.0-28
+    dockerProviderVersion: {{ .Values.omsagent.image.dockerProviderVersion }}
   spec:
    containers:
      - name: {{ template "msoms.name" . }}
@@ -38,6 +38,8 @@ spec:
           name: docker-sock
         - mountPath: /var/log
           name: host-log
+        - mountPath: /var/lib/docker/containers
+          name: containerlog-path
         - mountPath: /etc/omsagent-secret
           name: omsagent-secret
           readOnly: true
@@ -56,6 +58,9 @@ spec:
     - name: host-log
       hostPath:
        path: /var/log
+    - name: containerlog-path
+      hostPath:
+       path: /var/lib/docker/containers
     - name: omsagent-secret
       secret:
        secretName: {{ template "msoms.fullname" .}}
@@ -69,4 +74,8 @@ spec:
       operator: "Equal"
       value: "true"
       effect: "NoSchedule"
+{{- if .Values.tolerations }}       
+{{ toYaml .Values.tolerations | indent 4 }}     
+{{- end }}       
+
 {{- end }}               

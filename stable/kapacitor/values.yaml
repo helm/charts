@@ -3,7 +3,7 @@
 ##
 image:
   repository: "kapacitor"
-  tag: "1.2"
+  tag: "1.5.1-alpine"
   pullPolicy: "IfNotPresent"
 
 ## Specify a service type, defaults to NodePort
@@ -16,7 +16,7 @@ service:
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
 ##
 persistence:
-  enabled: false
+  enabled: true
   ## kapacitor data Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>
   ## If set to "-", storageClassName: "", which disables dynamic provisioning
@@ -27,6 +27,7 @@ persistence:
   # storageClass: "-"
   accessMode: ReadWriteOnce
   size: 8Gi
+  # existingClaim: ""
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -51,7 +52,7 @@ resources:
 # or, at your terminal, with
 #
 # helm install --name kapacitor-rls --set influxURL=http://influxurl.com,envVars.KAPACITOR_SLACK_ENABLED=true,envVars.KAPACITOR_SLACK_URL="http://slack.com/xxxxx/xxxxx/xxxx/xxxxxxx" stable/kapacitor
-    
+
 ## Set the URL of InfluxDB instance to create subscription on
 ## ref: https://docs.influxdata.com/kapacitor/v1.1/introduction/getting_started/
 ##

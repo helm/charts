@@ -1,0 +1,59 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "prometheus-pushgateway.fullname" . }}
+  labels:
+{{ template "prometheus-pushgateway.defaultLabels" merge (dict "extraLabels" .Values.podLabels) .  }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "prometheus-pushgateway.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "prometheus-pushgateway.name" . }}
+        release: {{ .Release.Name }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8 }}        
+    spec:
+      serviceAccountName: {{ template "prometheus-pushgateway.serviceAccountName" . }}
+      containers:
+        - name: pushgateway
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+        {{- if .Values.extraArgs }}
+          args:
+{{ toYaml .Values.extraArgs | indent 12 }}
+        {{- end }}
+          ports:
+            - name: metrics
+              containerPort: 9091
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /#/status
+              port: 9091
+            initialDelaySeconds: 10
+            timeoutSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /#/status
+              port: 9091
+            initialDelaySeconds: 10
+            timeoutSeconds: 10
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+    {{- end }}
+    {{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+    {{- end }}

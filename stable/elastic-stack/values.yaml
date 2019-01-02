@@ -1,0 +1,63 @@
+# Default values for elk.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+kibana:
+  env:
+    ELASTICSEARCH_URL: http://http.default.svc.cluster.local:9200
+
+logstash:
+  enabled: true
+  # elasticsearch:
+  #   host: elastic-stack-elasticsearch-client
+
+filebeat:
+  enabled: false
+  # config:
+  #   output.file.enabled: false
+  #   output.logstash:
+  #     hosts: ["elastic-stack-logstash:5044"]
+  # indexTemplateLoad:
+  #   - elastic-stack-elasticsearch-client:9200
+
+fluentd:
+  enabled: false
+
+fluent-bit:
+  enabled: false
+
+fluentd-elasticsearch:
+  enabled: false
+
+nginx-ldapauth-proxy:
+  enabled: false
+  # Example config to get it working with ELK. Adjust as you need to.
+  # proxy:
+  #   port: 5601
+  #   # This is the internal hostname for the kibana service
+  #   host: "elk-kibana.default.svc.cluster.local"
+  #   authName: "ELK:Infrastructure:LDAP"
+  #   ldapHost: "ldap.example.com"
+  #   ldapDN: "dc=example,dc=com"
+  #   ldapFilter: "objectClass=organizationalPerson"
+  #   ldapBindDN: "cn=reader,dc=example,dc=com"
+  #   requires:
+  #     - name: "ELK-USER"
+  #       filter: "cn=elkuser,ou=groups,dc=example,dc=com"
+  # ingress:
+  #   enabled: true
+  #   hosts:
+  #     - "elk.example.com"
+  #   annotations:
+  #     kubernetes.io/ingress.class: nginx
+  #   tls:
+  #     - hosts:
+  #       - elk.example.com
+  #       secretName: example-elk-tls
+  # secrets:
+  #   ldapBindPassword: PASSWORD
+elasticsearch-curator:
+  enabled: false
+
+elasticsearch-exporter:
+  enabled: false

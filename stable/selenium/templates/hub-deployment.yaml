@@ -13,7 +13,10 @@ spec:
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: "{{ .Release.Name }}"
         heritage: "{{ .Release.Service }}"
-      annotations: 
+      {{- if .Values.hub.podAnnotations }}
+      annotations:
+{{ toYaml .Values.hub.podAnnotations | indent 8 }}
+      {{- end}}
     spec:
       containers:
         - name: {{ .Chart.Name }}
@@ -29,17 +32,19 @@ spec:
               name: http
           livenessProbe:
             httpGet:
-              path: /grid/console
+              path: {{ .Values.hub.probePath }}
               port: {{ .Values.hub.port }}
             initialDelaySeconds: 30
             periodSeconds: 5
+            timeoutSeconds: {{ .Values.hub.livenessTimeout }}
           readinessProbe:
             httpGet:
-              path: /grid/console
+              path: {{ .Values.hub.probePath }}
               port: {{ .Values.hub.port }}
+            initialDelaySeconds: {{ .Values.hub.readinessDelay }}
             timeoutSeconds: {{ .Values.hub.readinessTimeout }}
           env:
-            - name: JAVA_OPTS
+            - name: JAVA_TOOL_OPTIONS
               value: {{ default "" .Values.hub.javaOpts | quote }}
             - name: SE_OPTS
               value: {{ default "" .Values.hub.seOpts | quote }}
@@ -49,7 +54,7 @@ spec:
             {{- end }}
             {{- if .Values.hub.gridJettyMaxThreads }}
             - name: GRID_JETTY_MAX_THREADS
-              value: {{ .Values.hub.gridNewSessionWaitTimeout | quote }}
+              value: {{ .Values.hub.gridJettyMaxThreads | quote }}
             {{- end }}
             {{- if .Values.hub.gridNodePolling }}
             - name: GRID_NODE_POLLING
@@ -81,3 +86,21 @@ spec:
             {{- end }}
           resources:
 {{ toYaml .Values.hub.resources | indent 12 }}
+      nodeSelector:
+{{- if .Values.hub.nodeSelector }}
+{{ toYaml .Values.hub.nodeSelector | indent 8  }}
+{{- else if .Values.global.nodeSelector }}
+{{ toYaml .Values.global.nodeSelector | indent 8  }}
+{{- end }}
+      affinity:
+{{- if .Values.hub.affinity }}
+{{ toYaml .Values.hub.affinity | indent 8  }}
+{{- else if .Values.global.affinity }}
+{{ toYaml .Values.global.affinity | indent 8  }}
+{{- end }}
+      tolerations:
+{{- if .Values.hub.tolerations }}
+{{ toYaml .Values.hub.tolerations | indent 8  }}
+{{- else if .Values.global.tolerations }}
+{{ toYaml .Values.global.tolerations | indent 8  }}
+{{- end }}

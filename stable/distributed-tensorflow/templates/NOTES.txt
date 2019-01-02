@@ -1,0 +1,4 @@
+1. Get the application Status by running these commands:
+
+  echo "Get the statefulset of distributed tensorflow"
+  kubectl get sts --namespace {{ .Release.Namespace }} -l "app={{ template "distributed-tensorflow.name" . }},release={{ .Release.Name }}"

@@ -10,7 +10,7 @@ $ helm install stable/ipfs
 
 ## Introduction
 
-This chart bootstraps a [IPFS](https://ipfs.io) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
+This chart bootstraps an [IPFS](https://ipfs.io) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
 ## Installing the Chart
 
@@ -36,7 +36,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Memcached chart and their default values.
+The following table lists the configurable parameters of the Memcached chart and their default values.
 
 | Parameter | Description | Default |
 |-----------|-------------|---------|

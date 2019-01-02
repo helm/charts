@@ -1,0 +1,52 @@
+# Number of exporters to run
+replicaCount: 1
+
+# Restart policy for container
+restartPolicy: Always
+
+image:
+  repository: frodenas/stackdriver-exporter
+  tag: v0.6.0
+  pullPolicy: IfNotPresent
+
+resources: {}
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+service:
+  type: ClusterIP
+  httpPort: 9255
+  annotations: {}
+
+stackdriver:
+  # The Google Project ID to gather metrics for
+  projectId: "FALSE"
+  # Max number of retries that should be attempted on 503 errors from stackdriver
+  maxRetries: 0
+  # How long should stackdriver_exporter wait for a result from the Stackdriver API
+  httpTimeout: 10s
+  # Max time between each request in an exp backoff scenario
+  maxBackoff: 5s
+  # The amount of jitter to introduce in a exp backoff scenario
+  backoffJitter: 1s
+  # The HTTP statuses that should trigger a retry
+  retryStatuses: 503
+  metrics:
+    # The prefixes to gather metrics for, we default to just CPU metrics.
+    typePrefixes: 'compute.googleapis.com/instance/cpu'
+    # The frequency to request
+    interval: '5m'
+    # How far into the past to offset
+    offset: '0s'
+
+web:
+  # Port to listen on
+  listenAddress: ':9255'
+  # Path under which to expose metrics.
+  path: /metrics
+
+annotations: {}

@@ -1,5 +1,6 @@
 name: influxdb
-version: 0.7.0
+version: 1.0.0
+appVersion: 1.7
 description: Scalable datastore for metrics, events, and real-time analytics.
 keywords:
 - influxdb
@@ -9,6 +10,6 @@ home: https://www.influxdata.com/time-series-platform/influxdb/
 sources:
 - https://github.com/influxdata/influxdb
 maintainers:
-- name: Jack Zampolin
+- name: jackzampolin
   email: jack@influxdb.com
 engine: gotpl

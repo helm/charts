@@ -1,5 +1,5 @@
 apiVersion: apps/v1beta1
-kind: StatefulSet
+kind: {{ .Values.kind }}
 metadata:
   name: {{ template "memcached.fullname" . }}
   labels:
@@ -31,7 +31,7 @@ spec:
           preferredDuringSchedulingIgnoredDuringExecution:
           - weight: 5
             podAffinityTerm:
-            - topologyKey: "kubernetes.io/hostname"
+              topologyKey: "kubernetes.io/hostname"
               labelSelector:
                 matchLabels:
                   app:  {{ template "memcached.fullname" . }}
@@ -66,3 +66,24 @@ spec:
           timeoutSeconds: 1
         resources:
 {{ toYaml .Values.resources | indent 10 }}
+{{- if .Values.metrics.enabled }}
+      - name: metrics
+        image: {{ .Values.metrics.image }}
+        imagePullPolicy: {{ default "" .Values.metrics.imagePullPolicy | quote }}
+        ports:
+        - name: metrics
+          containerPort: 9150
+        resources:
+{{ toYaml .Values.metrics.resources | indent 10 }}
+{{- end }}
+{{- with .Values.extraContainers }}
+{{ tpl . $ | indent 6 }}
+{{- end }}
+{{- with .Values.extraVolumes }}
+      volumes:
+{{ tpl . $ | indent 6 }}
+{{- end }}
+{{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | trim | indent 8}}
+{{- end }}

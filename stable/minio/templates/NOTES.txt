@@ -1,10 +1,10 @@
-{{- if eq .Values.serviceType "ClusterIP" }}
-Minio can be accessed via port {{ .Values.servicePort }} on the following DNS name from within your cluster:
-{{ template "minio.fullname" . }}-svc.{{ .Release.Namespace }}.svc.cluster.local
+{{- if eq .Values.service.type "ClusterIP" "NodePort" }}
+Minio can be accessed via port {{ .Values.service.port }} on the following DNS name from within your cluster:
+{{ template "minio.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
 
 To access Minio from localhost, run the below commands:
 
-  1. export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "minio.fullname" . }}" -o jsonpath="{.items[0].metadata.name}")
+  1. export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "release={{ template "minio.fullname" . }}" -o jsonpath="{.items[0].metadata.name}")
 
   2. kubectl port-forward $POD_NAME 9000 --namespace {{ .Release.Namespace }}
 
@@ -20,8 +20,8 @@ You can now access Minio server on http://localhost:9000. Follow the below steps
 
 Alternately, you can use your browser or the Minio SDK to access the server - https://docs.minio.io/categories/17
 {{- end }}
-{{- if eq .Values.serviceType "LoadBalancer" }}
-Minio can be accessed via port {{ .Values.servicePort }} on an external IP address. Get the service external IP address by:
+{{- if eq .Values.service.type "LoadBalancer" }}
+Minio can be accessed via port {{ .Values.service.port }} on an external IP address. Get the service external IP address by:
 kubectl get svc --namespace {{ .Release.Namespace }} -l app={{ template "minio.fullname" . }}
 
 Note that the public IP may take a couple of minutes to be available.
@@ -30,7 +30,7 @@ You can now access Minio server on http://<External-IP>:9000. Follow the below s
 
   1. Download the Minio mc client - https://docs.minio.io/docs/minio-client-quickstart-guide
 
-  2. mc config host add {{ template "minio.fullname" . }}-local http://<External-IP>:{{ .Values.servicePort }} {{ .Values.accessKey }} {{ .Values.secretKey }} S3v4
+  2. mc config host add {{ template "minio.fullname" . }}-local http://<External-IP>:{{ .Values.service.port }} {{ .Values.accessKey }} {{ .Values.secretKey }} S3v4
 
   3. mc ls {{ template "minio.fullname" . }}-local
 

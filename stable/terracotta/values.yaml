@@ -1,0 +1,64 @@
+# Terracotta Image definitions are available at : https://github.com/Terracotta-OSS/docker
+
+image:
+  repository: terracotta/terracotta-server-oss
+  tag: 5.5.1
+  pullPolicy: Always
+
+website: "https://github.com/Terracotta-OSS/docker"
+
+sampleEhcacheClientImage:
+  repository: terracotta/sample-ehcache-client
+  tag: 5.5.1
+
+
+replicaCount: 2
+
+# specify as many offheap resources as you want; provided you have enough resources on the node
+# and you have caching clients using those resources for their clustered tiers !
+offheaps:
+  - name: offheap-1
+    unit: MB
+    size: 512
+  - name: offheap-2
+    unit: MB
+    size: 256
+
+
+service:
+  type: ClusterIP
+  terracottaPort: 9410
+  syncPort: 9430
+  # None is headless service; still useful for the StatefulSet that relies on it
+  clusterIP: "None"
+
+tolerateUnreadyEndpoints: true
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:

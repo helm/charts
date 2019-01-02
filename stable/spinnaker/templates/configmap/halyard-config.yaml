@@ -1,0 +1,117 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "spinnaker.fullname" . }}-halyard-config
+  labels:
+{{ include "spinnaker.standard-labels" . | indent 4 }}
+data:
+  install.sh: |
+    #!/bin/bash
+
+    # Wait for the Hal daemon to be ready
+    export DAEMON_ENDPOINT=http://{{ template "spinnaker.fullname" . }}-halyard:8064
+    export HAL_COMMAND="hal --daemon-endpoint $DAEMON_ENDPOINT"
+    until $HAL_COMMAND --ready; do sleep 10 ; done
+
+    bash -xe /opt/halyard/scripts/config.sh
+
+    {{- if .Values.halyard.additionalScripts.enabled }}
+    bash /opt/halyard/additional/{{ .Values.halyard.additionalScripts.configMapKey }}
+    {{- end }}
+
+    {{- if  and .Values.halyard.additionalScripts.create .Values.halyard.additionalScripts.data }}
+    {{- range $index, $script := .Values.halyard.additionalScripts.data }}
+    bash -xe /opt/halyard/additionalScripts/{{ $index }}
+    {{- end }}
+    {{- end }}
+
+    $HAL_COMMAND deploy apply
+  clean.sh: |
+    export HAL_COMMAND='hal --daemon-endpoint http://{{ template "spinnaker.fullname" . }}-halyard:8064'
+    $HAL_COMMAND deploy clean -q
+  config.sh: |
+    # Spinnaker version
+    $HAL_COMMAND config version edit --version {{ .Values.halyard.spinnakerVersion }}
+
+    # Storage
+    {{ if .Values.minio.enabled }}
+    echo {{ .Values.minio.secretKey }} | $HAL_COMMAND config storage s3 edit --endpoint http://{{ .Release.Name }}-minio:9000 --access-key-id {{ .Values.minio.accessKey }} --secret-access-key --bucket {{ .Values.minio.bucket }}
+    $HAL_COMMAND config storage edit --type s3
+    {{ end }}
+    {{ if .Values.s3.enabled }}
+    {{- if .Values.s3.secretKey -}} cat /opt/s3/secretKey | {{- end }} $HAL_COMMAND config storage s3 edit \
+      --bucket {{ .Values.s3.bucket }} \
+      {{- if .Values.s3.rootFolder }}
+      --root-folder {{ .Values.s3.rootFolder }} \
+      {{- end }}
+      {{- if .Values.s3.region }}
+      --region {{ .Values.s3.region }} \
+      {{- end }}
+      {{- if .Values.s3.endpoint }}
+      --endpoint {{ .Values.s3.endpoint }} \
+      {{- end }}
+      {{- if .Values.s3.accessKey }}
+      --access-key-id "$(cat /opt/s3/accessKey)" \
+      {{- end }}
+      {{- if .Values.s3.secretKey }}
+      --secret-access-key \
+      {{- end }}
+
+    $HAL_COMMAND config storage edit --type s3
+    {{ end }}
+    {{ if .Values.gcs.enabled }}
+    $HAL_COMMAND config storage gcs edit --project {{ .Values.gcs.project }} --json-path /opt/gcs/key.json --bucket {{ .Values.gcs.bucket }}
+    $HAL_COMMAND config storage edit --type gcs
+    {{ end }}
+    {{ if .Values.azs.enabled }}
+    $HAL_COMMAND config storage azs edit --storage-account-name {{ .Values.azs.storageAccountName }} \
+      {{- if .Values.azs.containerName }}
+      --storage-container-name {{ .Values.azs.containerName }} \
+      {{- end }}
+      --storage-account-key "{{ .Values.azs.accessKey }}"
+    $HAL_COMMAND config storage edit --type azs
+    {{ end }}
+
+    # Docker Registry
+    $HAL_COMMAND config provider docker-registry enable
+    {{- range $index, $registry := .Values.dockerRegistries }}
+
+    if $HAL_COMMAND config provider docker-registry account get {{ $registry.name }}; then
+      PROVIDER_COMMAND='edit'
+    else
+      PROVIDER_COMMAND='add'
+    fi
+
+    CREDS=""
+    {{ if $registry.username -}}
+    CREDS+="--username {{ $registry.username }} --password-file /opt/registry/passwords/{{ $registry.name }}"
+    {{ if $registry.email -}}
+    CREDS+=" --email {{ $registry.email }}"
+    {{- end -}}
+    {{- end }}
+
+    $HAL_COMMAND config provider docker-registry account $PROVIDER_COMMAND {{ $registry.name }} --address {{ $registry.address }} \
+        ${CREDS} {{ if $registry.repositories }} --repositories {{ range $index, $repository := $registry.repositories }}{{if $index}},{{end}}{{- $repository }}{{- end }}{{- end }}
+
+    {{- end }}
+
+    $HAL_COMMAND config provider kubernetes enable
+    {{- range $index, $context := .Values.kubeConfig.contexts }}
+
+    if $HAL_COMMAND config provider kubernetes account get {{ $context }}; then
+      PROVIDER_COMMAND='edit'
+    else
+      PROVIDER_COMMAND='add'
+    fi
+
+    $HAL_COMMAND config provider kubernetes account $PROVIDER_COMMAND {{ $context }} --docker-registries dockerhub \
+                --context {{ $context }} {{ if not $.Values.kubeConfig.enabled }}--service-account true{{ end }} \
+                {{ if $.Values.kubeConfig.enabled }}--kubeconfig-file /opt/kube/{{ $.Values.kubeConfig.secretKey }}{{ end }} --omit-namespaces=kube-system,kube-public --provider-version v2
+    {{- end }}
+    $HAL_COMMAND config deploy edit --account-name {{ .Values.kubeConfig.deploymentContext }} --type distributed \
+                           --location {{ .Release.Namespace }}
+    # Use Deck to route to Gate
+    $HAL_COMMAND config security api edit --no-validate --override-base-url /gate
+    {{- range $index, $feature := .Values.spinnakerFeatureFlags }}
+    $HAL_COMMAND config features edit --{{ $feature }} true
+    {{- end }}

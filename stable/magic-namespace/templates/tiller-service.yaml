@@ -1,0 +1,25 @@
+{{- if and .Values.tiller.enabled .Values.tiller.includeService }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: tiller-deploy
+  {{- if hasKey .Values "namespace" }}
+  namespace: {{ .Values.namespace }}
+  {{- end }}
+  labels:
+    app: helm
+    name: tiller
+    chart: {{ template "magic-namespace.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: ClusterIP
+  selector:
+    app: helm
+    name: tiller
+  ports:
+  - name: tiller
+    port: 44134
+    protocol: TCP
+    targetPort: tiller
+{{- end }}

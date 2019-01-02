@@ -1,10 +1,15 @@
-apiVersion: "apps/v1beta1"
+apiVersion: "apps/v1beta2"
 kind: StatefulSet
 metadata:
   name: "{{ template "neo4j.core.fullname" . }}"
 spec:
   serviceName: {{ template "neo4j.fullname" . }}
   replicas: {{ .Values.core.numberOfServers }}
+  selector:
+    matchLabels:
+      release: {{ .Release.Name | quote }}
+      app: {{ template "neo4j.name" . }}
+      component: core
   template:
     metadata:
       labels:
@@ -19,6 +24,8 @@ spec:
         image: "{{ .Values.image }}:{{ .Values.imageTag }}"
         imagePullPolicy: "{{ .Values.imagePullPolicy }}"
         env:
+          - name: NEO4J_ACCEPT_LICENSE_AGREEMENT
+            value: "{{ .Values.acceptLicenseAgreement }}"
           - name: NEO4J_dbms_mode
             value: CORE
           - name: NUMBER_OF_CORES
@@ -28,7 +35,7 @@ spec:
           - name: NEO4J_causal__clustering_discovery__type
             value: DNS
           - name: NEO4J_causal__clustering_initial__discovery__members
-            value: "{{ template "neo4j.fullname" . }}.default.svc.cluster.local:5000"
+            value: "{{ template "neo4j.fullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}:5000"
           {{- if .Values.authEnabled }}
           - name: NEO4J_SECRETS_PASSWORD
             valueFrom:
@@ -66,18 +73,30 @@ spec:
           name: browser
         - containerPort: 7687
           name: bolt
-        securityContext:
-          privileged: true
         volumeMounts:
         - name: datadir
           mountPath: "{{ .Values.core.persistentVolume.mountPath }}"
-          subPath: "{{ .Values.core.persistentVolume.subPath }}"
+          {{- if .Values.core.persistentVolume.subPath }}
+          subPath: {{ .Values.core.persistentVolume.subPath }}
+          {{- end }}
+        - name: plugins
+          mountPath: /plugins
         resources:
 {{ toYaml .Values.resources | indent 10 }}
 {{- if .Values.core.sidecarContainers }}
-{{ toYaml .Values.core.sidecarContainers | indent 6}}
+{{ toYaml .Values.core.sidecarContainers | indent 6 }}
 {{- end }}
-
+{{- if .Values.imagePullSecret }}
+      imagePullSecrets:
+      - name: {{ .Values.imagePullSecret }}
+{{- end -}}
+{{- if .Values.core.initContainers }}
+      initContainers:
+{{ toYaml .Values.core.initContainers | indent 6 }}
+{{- end }}
+      volumes:
+        - name: plugins
+          emptyDir: {}
   volumeClaimTemplates:
     - metadata:
         name: datadir

@@ -1,0 +1,78 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "mission-control.fullname" . }}-setup-script
+  labels:
+    app: {{ template "mission-control.name" . }}
+    chart: {{ template "mission-control.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+data:
+  setup.sh: |
+    #!/bin/sh
+    # Setup script to create MongoDB users
+
+    errorExit () {
+      echo; echo "ERROR: $1"; echo; exit 1
+    }
+
+    echo "Waiting for mongodb to come up"
+    until mongo --host {{ .Release.Name }}-mongodb --port 27017 --eval "db.adminCommand('ping')" > /dev/null 2>&1; do
+    echo "Waiting for db availability"
+    sleep 1
+    done
+    echo "DB ready. Configuring..."
+    mongo --eval "var adminPassword = '$MONGODB_ADMIN_PASSWORD', mcPassword = '$MONGODB_MC_PASSWORD', insightPassword = '$MONGODB_INSIGHT_PASSWORD';" --host {{ .Release.Name }}-mongodb --port 27017 /scripts/createMongoDBUsers.js || errorExit "DB user setup failed"
+    echo "DB config done"
+
+  createMongoDBUsers.js: |
+    // JFrog Mission-Control MongoDB Bootstrap
+
+    // Default admin user
+    var adminUser = {
+        user: "{{ .Values.mongodb.db.adminUser }}",
+        pwd: adminPassword
+    };
+
+    // Create the admin user
+    adminUser.roles = ["root"];
+    adminUser.customData = {
+        createdBy: "JFrog Mission-Control installer"
+    };
+    db.getSiblingDB(adminUser.user).auth(adminUser.user, adminUser.pwd) || db.getSiblingDB(adminUser.user).createUser(adminUser);
+
+    // Default mc user
+    var jfmcUser = {
+        user: "{{ .Values.mongodb.db.mcUser }}",
+        pwd: mcPassword,
+        roles: ["dbOwner"],
+        customData: {
+            createdBy: "JFrog Mission-Control installer"
+        }
+    };
+
+    // Default insight-server user
+    var jiUser = {
+        user: "{{ .Values.mongodb.db.insightUser }}",
+        pwd: insightPassword,
+        roles: ["dbOwner"],
+        customData: {
+            createdBy: "JFrog Mission-Control installer"
+        }
+    };
+
+    // Authenticating as admin to create mc user
+    var loginOutput = db.getSiblingDB(adminUser.user).auth(adminUser.user, adminUser.pwd);
+
+    // Check if user exists before creation
+    function createUserDB(dbName, dbUser) {
+        db.getSiblingDB(dbName).getUser(dbUser.user) || db.getSiblingDB(dbName).createUser(dbUser);
+    }
+
+    createUserDB("{{ .Values.mongodb.db.mcUser }}", jfmcUser);
+    createUserDB("insight_CUSTOM_", jiUser);
+    createUserDB("insight_team", jiUser);
+    createUserDB("{{ .Values.mongodb.db.insightSchedulerDb }}", jiUser)
+
+
+

@@ -2,14 +2,17 @@
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
+{{- if .Values.nodeExporter.deploymentAnnotations }}
+  annotations:
+{{ toYaml .Values.nodeExporter.deploymentAnnotations | indent 4 }}
+{{- end }}
   labels:
-    app: {{ template "prometheus.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    component: "{{ .Values.nodeExporter.name }}"
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    {{- include "prometheus.nodeExporter.labels" . | nindent 4 }}
   name: {{ template "prometheus.nodeExporter.fullname" . }}
 spec:
+  selector:
+    matchLabels:
+      {{- include "prometheus.nodeExporter.matchLabels" . | nindent 6 }}
   {{- if .Values.nodeExporter.updateStrategy }}
   updateStrategy:
 {{ toYaml .Values.nodeExporter.updateStrategy | indent 4 }}
@@ -21,11 +24,15 @@ spec:
 {{ toYaml .Values.nodeExporter.podAnnotations | indent 8 }}
     {{- end }}
       labels:
-        app: {{ template "prometheus.name" . }}
-        component: "{{ .Values.nodeExporter.name }}"
-        release: {{ .Release.Name }}
+        {{- include "prometheus.nodeExporter.labels" . | nindent 8 }}
+{{- if .Values.nodeExporter.pod.labels }}
+{{ toYaml .Values.nodeExporter.pod.labels | indent 8 }}
+{{- end }}
     spec:
-      serviceAccountName: {{ if .Values.rbac.create }}{{ template "prometheus.nodeExporter.fullname" . }}{{ else }}"{{ .Values.nodeExporter.serviceAccountName }}"{{ end }}
+      serviceAccountName: {{ template "prometheus.serviceAccountName.nodeExporter" . }}
+{{- if .Values.nodeExporter.priorityClassName }}
+      priorityClassName: "{{ .Values.nodeExporter.priorityClassName }}"
+{{- end }}
       containers:
         - name: {{ template "prometheus.name" . }}-{{ .Values.nodeExporter.name }}
           image: "{{ .Values.nodeExporter.image.repository }}:{{ .Values.nodeExporter.image.tag }}"
@@ -34,7 +41,11 @@ spec:
             - --path.procfs=/host/proc
             - --path.sysfs=/host/sys
           {{- range $key, $value := .Values.nodeExporter.extraArgs }}
+          {{- if $value }}
             - --{{ $key }}={{ $value }}
+          {{- else }}
+            - --{{ $key }}
+          {{- end }}
           {{- end }}
           ports:
             - name: metrics
@@ -54,8 +65,21 @@ spec:
               mountPath: {{ .mountPath }}
               readOnly: {{ .readOnly }}
           {{- end }}
+          {{- range .Values.nodeExporter.extraConfigmapMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              readOnly: {{ .readOnly }}
+          {{- end }}
+    {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+      {{ toYaml .Values.imagePullSecrets | indent 2 }}
+    {{- end }}
+    {{- if .Values.nodeExporter.hostNetwork }}
       hostNetwork: true
+    {{- end }}
+    {{- if .Values.nodeExporter.hostPID }}
       hostPID: true
+    {{- end }}
     {{- if .Values.nodeExporter.tolerations }}
       tolerations:
 {{ toYaml .Values.nodeExporter.tolerations | indent 8 }}
@@ -63,6 +87,10 @@ spec:
     {{- if .Values.nodeExporter.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeExporter.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- if .Values.nodeExporter.securityContext }}
+      securityContext:
+{{ toYaml .Values.nodeExporter.securityContext | indent 8 }}
     {{- end }}
       volumes:
         - name: proc
@@ -76,4 +104,10 @@ spec:
           hostPath:
             path: {{ .hostPath }}
       {{- end }}
+      {{- range .Values.nodeExporter.extraConfigmapMounts }}
+        - name: {{ .name }}
+          configMap:
+            name: {{ .configMap }}
+      {{- end }}
+
 {{- end -}}

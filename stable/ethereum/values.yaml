@@ -1,0 +1,50 @@
+# Default values for ethereum.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+imagePullPolicy: IfNotPresent
+
+# Node labels for pod assignment
+# ref: https://kubernetes.io/docs/user-guide/node-selection/
+nodeSelector: {}
+
+bootnode:
+  image:
+    repository: ethereum/client-go
+    tag: alltools-v1.7.3
+
+ethstats:
+  image:
+    repository: ethereumex/eth-stats-dashboard
+    tag: v0.0.1
+  webSocketSecret: my-secret-for-connecting-to-ethstats
+  service:
+    type: LoadBalancer
+
+geth:
+  image:
+    repository: ethereum/client-go
+    tag: v1.7.3
+  tx:
+    # transaction nodes
+    replicaCount: 2
+    service:
+      type: ClusterIP
+    args:
+      rpcapi: 'eth,net,web3'
+  miner:
+    # miner nodes
+    replicaCount: 3
+  genesis:
+    # geth genesis block
+    difficulty: '0x0400'
+    gasLimit: '0x8000000'
+    networkId: 98052
+  account:
+    # You will need to configure an Ethereum account before this
+    # network will run. The Ethereum account will be used to seed
+    # Ether and mined Ether will be deposited into this account.
+    # ref: https://github.com/ethereum/go-ethereum/wiki/Managing-your-accounts
+    address:
+    privateKey:
+    secret:

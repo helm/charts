@@ -1,0 +1,15 @@
+{{- if .Values.authenticatedEmailsFile.enabled }}
+{{- if .Values.authenticatedEmailsFile.restricted_access }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app: {{ template "oauth2-proxy.name" . }}
+    chart: {{ template "oauth2-proxy.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "oauth2-proxy.fullname" . }}-accesslist
+data:
+  restricted_user_access: {{ .Values.authenticatedEmailsFile.restricted_access | quote }}
+{{- end }}
+{{- end }}

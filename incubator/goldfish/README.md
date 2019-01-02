@@ -2,29 +2,25 @@
 
 This Helm chart simplifies the deployment of [goldfish](https://github.com/Caiyeon/goldfish) on Kubernetes.
 
-## Pre Requisites:
+## Pre-requisites
 
 * Requires (and tested with) vault `0.8.1` or above.
 
 ### Vault
 
-* A quick way to provision [vault](https://github.com/tuannvm/charts/tree/tuan-vault-implementation/incubator/vault) (not stable yet, waiting for PR get merged):
+* Use the [vault](https://github.com/kubernetes/charts/tree/master/incubator/vault) helm chart (still incubating)
+* Use the [vault-operator](https://github.com/kubernetes/charts/tree/master/incubator/vault-operator) helm chart (pending PR)
 
-    ```bash
-     helm install -n hb-vault \
-     https://github.com/tuannvm/charts/raw/tuan-vault-implementation/binary/vault-0.1.0.tgz
-    ```
+Alternately, use an existing Vault and provide an endpoint. For more information on how to install Vault, check [here](https://www.vaultproject.io/docs/install/index.html).
 
-    Alternatively Vault endpoint is provided. For more information on howto install Vault, check [here](https://www.vaultproject.io/docs/install/index.html)
-
-## Chart details
+## Chart Details
 
 This chart will do the following:
 
 * Create a Kubernetes Deployment for goldfish
 * Expose goldfish on the specified `hosts` via ingress
 
-### Installing the chart
+### Installing the Chart
 
 To install the chart with the release name `goldfish` in the default namespace:
 
@@ -36,16 +32,16 @@ helm install -n goldfish .
 | ---------------------- | --------------------------------- | -------------------------- |
 | `Name`                 | Name                              | `core`                     |
 | `replicaCount`         | Number of replicas                | `1`                        |
-| `image.repository`     | Image and registry name           | `quay.io/tuannvm/goldfish` |
-| `image.tag`            | Container image tag               | `latest`                   |
+| `image.repository`     | Image and registry name           | `caiyeon/goldfish`         |
+| `image.tag`            | Container image tag               | `0.9.0`                    |
 | `image.pullPolicy`     | Container image tag               | `Always`                   |
 | `service.type`         | k8s service type                  | `ClusterIP`                |
 | `service.externalPort` | external port                     | `80`                       |
 | `service.internalPort` | pod-listened port                 | `8000`                     |
 | `ingress.enabled`      | Enable ingress usage              | `false`                    |
 | `ingress.hosts`        | service hostname                  | `chart-example.local`      |
-| `config.*`             | variables to generate config file | `-`                        |
-| `secrets.*`            | variables to be created as `ENV`  | `-`                        |
+| `config.*`             | variables to generate config file | see `values.yaml`          |
+| `secrets.*`            | variables to be created as `ENV`  | see `values.yaml`          |
 
 Specify parameters using `--set key=value[,key=value]` argument to `helm install`
 
@@ -57,7 +53,7 @@ helm install -n goldfish . --set \
 Alternatively a YAML file that specifies the values for the parameters can be provided like this:
 
 ```bash
-$ helm install --name goldfish -f .secrets.yaml .
+$ helm install --name goldfish -f values.yaml .
 ```
 
 ### Upgrading and Rollbacks

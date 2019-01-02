@@ -1,0 +1,56 @@
+# Service for all Artifactory cluster nodes.
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "artifactory-ha.fullname" . }}
+  labels:
+    app: {{ template "artifactory-ha.name" . }}
+    chart: {{ template "artifactory-ha.chart" . }}
+    component: {{ .Values.artifactory.name }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+spec:
+  type: {{ .Values.artifactory.service.type }}
+  ports:
+  - port: {{ .Values.artifactory.externalPort }}
+    targetPort: {{ .Values.artifactory.internalPort }}
+    protocol: TCP
+    name: http
+  selector:
+{{- if eq .Values.artifactory.service.pool "members" }}
+    role: {{ template "artifactory-ha.node.name" . }}
+{{- end }}
+    app: {{ template "artifactory-ha.name" . }}
+    component: "{{ .Values.artifactory.name }}"
+    release: {{ .Release.Name }}
+---
+# Internal service for Artifactory primary node only!
+# Used by member nodes to check readiness of primary node before starting up
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "artifactory-ha.primary.name" . }}
+  labels:
+    app: {{ template "artifactory-ha.name" . }}
+    chart: {{ template "artifactory-ha.chart" . }}
+    component: {{ .Values.artifactory.name }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+spec:
+  type: {{ .Values.artifactory.service.type }}
+  ports:
+  - port: {{ .Values.artifactory.externalPort }}
+    targetPort: {{ .Values.artifactory.internalPort }}
+    protocol: TCP
+    name: http
+  {{- if .Values.artifactory.replicator.enabled }}
+  - port: {{ .Values.artifactory.externalPortReplicator }}
+    targetPort: {{ .Values.artifactory.internalPortReplicator }}
+    protocol: TCP
+    name: replicator
+  {{- end}}
+  selector:
+    role: {{ template "artifactory-ha.primary.name" . }}
+    app: {{ template "artifactory-ha.name" . }}
+    component: "{{ .Values.artifactory.name }}"
+    release: {{ .Release.Name }}

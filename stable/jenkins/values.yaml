@@ -3,6 +3,11 @@
 # Declare name/value pairs to be passed into your templates.
 # name: value
 
+## Overrides for generated resource names
+# See templates/_helpers.tpl
+# nameOverride:
+# fullnameOverride:
+
 Master:
   Name: jenkins-master
   Image: "jenkins/jenkins"
@@ -11,26 +16,72 @@ Master:
 # ImagePullSecret: jenkins
   Component: "jenkins-master"
   UseSecurity: true
+  # SecurityRealm:
+  # Optionally configure a different AuthorizationStrategy using Jenkins XML
+  # AuthorizationStrategy: |-
+  #    <authorizationStrategy class="hudson.security.FullControlOnceLoggedInAuthorizationStrategy">
+  #      <denyAnonymousReadAccess>true</denyAnonymousReadAccess>
+  #    </authorizationStrategy>
+  HostNetworking: false
   AdminUser: admin
   # AdminPassword: <defaults to random>
-  Cpu: "200m"
-  Memory: "256Mi"
+  resources:
+    requests:
+      cpu: "50m"
+      memory: "256Mi"
+    limits:
+      cpu: "2000m"
+      memory: "2048Mi"
+  # Environment variables that get added to the init container (useful for e.g. http_proxy)
+  # InitContainerEnv:
+  #   - name: http_proxy
+  #     value: "http://192.168.64.1:3128"
+  # ContainerEnv:
+  #   - name: http_proxy
+  #     value: "http://192.168.64.1:3128"
   # Set min/max heap here if needed with:
   # JavaOpts: "-Xms512m -Xmx512m"
   # JenkinsOpts: ""
+  # JenkinsUrl: ""
+  # If you set this prefix and use ingress controller then you might want to set the ingress path below
   # JenkinsUriPrefix: "/jenkins"
+  # Enable pod security context (must be `true` if RunAsUser or FsGroup are set)
+  UsePodSecurityContext: true
+  # Set RunAsUser to 1000 to let Jenkins run as non-root user 'jenkins' which exists in 'jenkins/jenkins' docker image.
+  # When setting RunAsUser to a different value than 0 also set FsGroup to the same value:
+  # RunAsUser: <defaults to 0>
+  # FsGroup: <will be omitted in deployment if RunAsUser is 0>
   ServicePort: 8080
   # For minikube, set this to NodePort, elsewhere use LoadBalancer
   # Use ClusterIP if your setup includes ingress controller
   ServiceType: LoadBalancer
   # Master Service annotations
   ServiceAnnotations: {}
+  # Master Service Labels
+  ServiceLabels: {}
   #   service.beta.kubernetes.io/aws-load-balancer-backend-protocol: https
   # Used to create Ingress record (should used with ServiceType: ClusterIP)
   # HostName: jenkins.cluster.local
   # NodePort: <to set explicitly, choose port between 30000-32767
-  ContainerPort: 8080
+  # Enable Kubernetes Liveness and Readiness Probes
+  # ~ 2 minutes to allow Jenkins to restart when upgrading plugins. Set ReadinessTimeout to be shorter than LivenessTimeout.
+  HealthProbes: true
+  HealthProbesLivenessTimeout: 90
+  HealthProbesReadinessTimeout: 60
+  HealthProbeLivenessFailureThreshold: 12
   SlaveListenerPort: 50000
+  DisabledAgentProtocols:
+    - JNLP-connect
+    - JNLP2-connect
+  CSRF:
+    DefaultCrumbIssuer:
+      Enabled: true
+      ProxyCompatability: true
+  CLI: false
+  # Kubernetes service type for the JNLP slave service
+  # SETTING THIS TO "LoadBalancer" IS A HUGE SECURITY RISK: https://github.com/kubernetes/charts/issues/1341
+  SlaveListenerServiceType: ClusterIP
+  SlaveListenerServiceAnnotations: {}
   LoadBalancerSourceRanges:
   - 0.0.0.0/0
   # Optionally assign a known public LB IP
@@ -42,13 +93,17 @@ Master:
   #   -Dcom.sun.management.jmxremote.authenticate=false
   #   -Dcom.sun.management.jmxremote.ssl=false
   # JMXPort: 4000
+  # Optionally configure other ports to expose in the Master container
+  ExtraPorts:
+  # - name: BuildInfoProxy
+  #   port: 9000
   # List of plugins to be install during Jenkins master start
   InstallPlugins:
-    - kubernetes:1.1
+    - kubernetes:1.12.4
+    - workflow-job:2.24
     - workflow-aggregator:2.5
-    - workflow-job:2.15
-    - credentials-binding:1.13
-    - git:3.6.4
+    - credentials-binding:1.16
+    - git:3.9.1
   # Used to approve a list of groovy functions in pipelines used the script-security plugin. Can be viewed under /scriptApproval
   # ScriptApproval:
   #   - "method groovy.json.JsonSlurperClassic parseText java.lang.String"
@@ -57,34 +112,63 @@ Master:
   InitScripts:
   #  - |
   #    print 'adding global pipeline libraries, register properties, bootstrap jobs...'
+  # Kubernetes secret that contains a 'credentials.xml' for Jenkins
+  # CredentialsXmlSecret: jenkins-credentials
+  # Kubernetes secret that contains files to be put in the Jenkins 'secrets' directory,
+  # useful to manage encryption keys used for credentials.xml for instance (such as
+  # master.key and hudson.util.Secret)
+  # SecretsFilesSecret: jenkins-secrets
+  # Jenkins XML job configs to provision
+  # Jobs: |-
+  #   test: |-
+  #     <<xml here>>
   CustomConfigMap: false
+  # By default, the configMap is only used to set the initial config the first time
+  # that the chart is installed.  Setting `OverwriteConfig` to `true` will overwrite
+  # the jenkins config with the contents of the configMap every time the pod starts.
+  OverwriteConfig: false
   # Node labels and tolerations for pod assignment
   # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
   # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
   NodeSelector: {}
   Tolerations: {}
+  PodAnnotations: {}
 
   Ingress:
-    Annotations:
+    ApiVersion: extensions/v1beta1
+    Annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
+
+    # Set this path to JenkinsUriPrefix above or use annotations to rewrite path
+    # Path: "/jenkins"
 
     TLS:
     # - secretName: jenkins.cluster.local
     #   hosts:
     #     - jenkins.cluster.local
+  AdditionalConfig: {}
 
 Agent:
   Enabled: true
   Image: jenkins/jnlp-slave
   ImageTag: 3.10-1
+  CustomJenkinsLabels: []
 # ImagePullSecret: jenkins
   Component: "jenkins-slave"
   Privileged: false
-  Cpu: "200m"
-  Memory: "256Mi"
+  resources:
+    requests:
+      cpu: "200m"
+      memory: "256Mi"
+    limits:
+      cpu: "200m"
+      memory: "256Mi"
   # You may want to change this to true while testing a new image
   AlwaysPullImage: false
+  # Controls how slave pods are retained after the Jenkins build completes
+  # Possible values: Always, Never, OnFailure
+  PodRetention: Never
   # You can define the volumes that you want to mount for this container
   # Allowed types are: ConfigMap, EmptyDir, HostPath, Nfs, Pod, Secret
   # Configure the attributes as they appear in the corresponding Java class for that type
@@ -135,7 +219,7 @@ NetworkPolicy:
 rbac:
   install: false
   serviceAccountName: default
-  # RBAC api version (currently either v1beta1 or v1alpha1)
-  apiVersion: v1beta1
-  # Cluster role reference
+  # Role reference
   roleRef: cluster-admin
+  # Role kind (RoleBinding or ClusterRoleBinding)
+  roleBindingKind: ClusterRoleBinding

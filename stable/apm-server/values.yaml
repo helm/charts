@@ -1,0 +1,126 @@
+image:
+  repository: docker.elastic.co/apm/apm-server
+  tag: 6.2.4
+  pullPolicy: IfNotPresent
+
+config:
+  apm-server: {}
+    ### Defines the host and port the server is listening on
+    # host: "localhost:8200"
+
+    ## Maximum permitted size in bytes of an unzipped request accepted by the server to be processed.
+    # max_unzipped_size: 52428800
+    ## Maximum permitted size in bytes of a request's header accepted by the server to be processed.
+    # max_header_size: 1048576
+
+    ## Maximum permitted duration in seconds for reading an entire request.
+    # read_timeout: 2s
+    ## Maximum permitted duration in seconds for writing a response.
+    # write_timeout: 2s
+
+    ## Maximum duration in seconds before releasing resources when shutting down the server.
+    # shutdown_timeout: 5s
+
+    ## Maximum number of requests permitted to be sent to the server concurrently.
+    # concurrent_requests: 40
+
+    ## Authorization token to be checked. If a token is set here the agents must
+    ## send their token in the following format: Authorization: Bearer <secret-token>.
+    ## It is recommended to use an authorization token in combination with SSL enabled.
+    # secret_token:
+    # ssl.enabled: false
+    # ssl.certificate : "path/to/cert"
+    # ssl.key : "path/to/private_key"
+
+  queue: {}
+    ## Queue type by name (default 'mem')
+    ## The memory queue will present all available events (up to the outputs
+    ## bulk_max_size) to the output, the moment the output is ready to server
+    ## another batch of events.
+    # mem:
+      ## Max number of events the queue can buffer.
+      # events: 4096
+
+      ## Hints the minimum number of events stored in the queue,
+      ## before providing a batch of events to the outputs.
+      ## A value of 0 (the default) ensures events are immediately available
+      ## to be sent to the outputs.
+      # flush.min_events: 2048
+
+      ## Maximum duration after which events are available to the outputs,
+      ## if the number of events stored in the queue is < min_flush_events.
+      # flush.timeout: 1s
+
+  # When a key contains a period, use this format for setting values on the command line:
+  # --set config."output\.file".enabled=false
+  output.file:
+    path: "/usr/share/apm-server/data"
+    filename: apm-server
+    rotate_every_kb: 10000
+    number_of_files: 5
+
+  # output.elasticsearch:
+  #  hosts: ["elasticsearch:9200"]
+  #  protocol: "https"
+  #  username: "elastic"
+  #  password: "changeme"
+
+# List of beat plugins
+plugins: []
+  # - kinesis.so
+
+# Additional container arguments
+extraArgs: []
+  # - -d
+  # - *
+
+# A map of additional environment variables
+extraVars: {}
+  # test1: "test2"
+
+# Add additional volumes and mounts, for example to read other log files on the host
+extraVolumes: []
+  # - hostPath:
+  #     path: /var/log
+  #   name: varlog
+extraVolumeMounts: []
+  # - name: varlog
+  #   mountPath: /host/var/log
+  #   readOnly: true
+
+## Labels to be added to pods
+podLabels: {}
+
+## Annotations to be added to pods
+podAnnotations: {}
+
+resources: {}
+  ## We usually recommend not to specify default resources and to leave this as a conscious
+  ## choice for the user. This also increases chances charts run on environments with little
+  ## resources, such as Minikube. If you do want to specify resources, uncomment the following
+  ## lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 200Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 100Mi
+
+## Node labels for pod assignment
+## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+nodeSelector: {}
+
+## Affinity configuration for pod assignment
+## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+affinity: {}
+
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:

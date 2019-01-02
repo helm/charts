@@ -37,31 +37,44 @@ If you're sure you want to use it run `helm` with:
 $ helm install stable/chaoskube --set dryRun=false
 ```
 
-| Parameter                 | Description                                         | Default                           |
-|---------------------------|-----------------------------------------------------|-----------------------------------|
-| `name`                    | container name                                      | chaoskube                         |
-| `image`                   | docker image                                        | quay.io/linki/chaoskube           |
-| `imageTag`                | docker image tag                                    | v0.6.1                            |
-| `replicas`                | number of replicas to run                           | 1                                 |
-| `interval`                | interval between pod terminations                   | 10m                               |
-| `labels`                  | label selector to filter pods by                    | "" (matches everything)           |
-| `annotations`             | annotation selector to filter pods by               | "" (matches everything)           |
-| `namespaces`              | namespace selector to filter pods by                | "" (all namespaces)               |
-| `dryRun`                  | don't kill pods, only log what would have been done | true                              |
-| `resources.cpu`           | cpu resource requests and limits                    | 10m                               |
-| `resources.memory`        | memory resource requests and limits                 | 16Mi                              |
-| `rbac.create`             | create rbac service account and roles               | false                             |
-| `rbac.serviceAccountName` | name of serviceAccount to use when create is false  | default                           |
+| Parameter                 | Description                                         | Default                          |
+|---------------------------|-----------------------------------------------------|----------------------------------|
+| `name`                    | container name                                      | chaoskube                        |
+| `image`                   | docker image                                        | quay.io/linki/chaoskube          |
+| `imageTag`                | docker image tag                                    | v0.10.0                          |
+| `replicas`                | number of replicas to run                           | 1                                |
+| `interval`                | interval between pod terminations                   | 10m                              |
+| `labels`                  | label selector to filter pods by                    | "" (matches everything)          |
+| `annotations`             | annotation selector to filter pods by               | "" (matches everything)          |
+| `namespaces`              | namespace selector to filter pods by                | "" (all namespaces)              |
+| `dryRun`                  | don't kill pods, only log what would have been done | true                             |
+| `debug`                   | Enable debug logging mode, for detailed logs        | false                            |
+| `timezone`                | Set timezone for running actions (Optional)         | "" (UTC)                         |
+| `excludedWeekdays`        | Set Days of the Week to avoid actions (Optional)    | "" (Don't skip any weekdays)     |
+| `excludedTimesOfDay`      | Set Time Range to avoid actions (Optional)          | "" (Don't skip any times of day) |
+| `excludedDaysOfYear`      | Set Days of the Year to avoid actions (Optional)    | "" (Don't skip any days)         |
+| `priorityClassName`       | priorityClassName                                   | `nil`                            |
+| `rbac.create`             | create rbac service account and roles               | false                            |
+| `rbac.serviceAccountName` | name of serviceAccount to use when create is false  | default                          |
+| `resources`               | CPU/Memory resource requests/limits                 | `{}`                             |
+| `nodeSelector`            | Node labels for pod assignment                      | `{}`                             |
+| `tolerations`             | Toleration labels for pod assignment                | `[]`                             |
+| `affinity`                | Affinity settings for pod assignment                | `{}`                             |
+| `minimumAge`              | Set minimum pod age to filter pod by                | `0s`                             |
+| `podAnnotations`	    | Annotations for the chaoskube pod			  | `{}`			     |
 
 Setting label and namespaces selectors from the shell can be tricky but is possible (example with zsh):
 
 ```console
 $ helm install \
   --set labels='app=mate\,stage!=prod',namespaces='!kube-system\,!production' \
-  stable/chaoskube --debug --dry-run | grep -A4 args
+  stable/chaoskube --debug --dry-run | grep -A7 args
     args:
-    - --in-cluster
     - --interval=10m
     - --labels=app=foo,stage!=prod
     - --namespaces=!kube-system,!production
+    - --timezone=America/New_York
+    - --excludedWeekdays="Sat,Tue"
+    - --excludedTimesOfDay="12:00-18:00"
+    - --excludedDaysOfYear="Apr1,Dec24"
 ```

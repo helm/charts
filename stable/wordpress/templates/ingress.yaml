@@ -13,6 +13,9 @@ metadata:
     {{- if .tls }}
     ingress.kubernetes.io/secure-backends: "true"
     {{- end }}
+    {{- if .certManager }}
+    kubernetes.io/tls-acme: "true"
+    {{- end }}
     {{- range $key, $value := .annotations }}
     {{ $key }}: {{ $value | quote }}
     {{- end }}
@@ -24,7 +27,7 @@ spec:
         - path: {{ default "/" .path }}
           backend:
             serviceName: {{ template "fullname" $ }}
-            servicePort: {{ if .tls }}443{{ else }}80{{end}}
+            servicePort: 80
 {{- if .tls }}
   tls:
   - hosts:

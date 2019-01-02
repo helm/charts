@@ -1,36 +1,35 @@
-1. Get your '{{ .Values.server.adminUser }}' user password by running:
+1. Get your '{{ .Values.adminUser }}' user password by running:
 
-   kubectl get secret --namespace {{ .Release.Namespace }} {{ template "grafana.server.fullname" . }} -o jsonpath="{.data.grafana-admin-password}" | base64 --decode ; echo
+   kubectl get secret --namespace {{ .Release.Namespace }} {{ template "grafana.fullname" . }} -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
 
-2. The Grafana server can be accessed via port {{ .Values.server.service.httpPort }} on the following DNS name from within your cluster:
+2. The Grafana server can be accessed via port {{ .Values.service.port }} on the following DNS name from within your cluster:
 
-   {{ template "grafana.server.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
-{{ if .Values.server.ingress.enabled }}
+   {{ template "grafana.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+{{ if .Values.ingress.enabled }}
    From outside the cluster, the server URL(s) are:
-{{- range .Values.server.ingress.hosts }}
+{{- range .Values.ingress.hosts }}
      http://{{ . }}
 {{- end }}
 {{ else }}
    Get the Grafana URL to visit by running these commands in the same shell:
-{{ if contains "NodePort" .Values.server.service.type -}}
-     export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "grafana.server.fullname" . }})
+{{ if contains "NodePort" .Values.service.type -}}
+     export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "grafana.fullname" . }})
      export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
      echo http://$NODE_IP:$NODE_PORT
-{{ else if contains "LoadBalancer" .Values.server.service.type -}}
+{{ else if contains "LoadBalancer" .Values.service.type -}}
    NOTE: It may take a few minutes for the LoadBalancer IP to be available.
-        You can watch the status of by running 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "grafana.server.fullname" . }}'
-     export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "grafana.server.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-     echo http://$SERVICE_IP:{{ .Values.server.httpPort -}}
-{{ else if contains "ClusterIP"  .Values.server.service.type }}
-     export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "grafana.fullname" . }},component={{ .Values.server.name }}" -o jsonpath="{.items[0].metadata.name}")
+        You can watch the status of by running 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "grafana.fullname" . }}'
+     export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "grafana.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+     http://$SERVICE_IP:{{ .Values.service.port -}}
+{{ else if contains "ClusterIP"  .Values.service.type }}
+     export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "grafana.name" . }},release={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
      kubectl --namespace {{ .Release.Namespace }} port-forward $POD_NAME 3000
 {{- end }}
 {{- end }}
 
-3. Login with the password from step 1 and the username: {{ .Values.server.adminUser }}
+3. Login with the password from step 1 and the username: {{ .Values.adminUser }}
 
-{{- if .Values.server.persistentVolume.enabled }}
-{{- else }}
+{{- if not .Values.persistence.enabled }}
 #################################################################################
 ######   WARNING: Persistence is disabled!!! You will lose your data when   #####
 ######            the Grafana pod is terminated.                            #####

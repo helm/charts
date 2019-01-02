@@ -1,0 +1,343 @@
+# Default values for artifactory-ha.
+# This is a YAML-formatted file.
+# Beware when changing values here. You should know what you are doing!
+# Access the values with {{ .Values.key.subkey }}
+
+# Common
+initContainerImage: "alpine:3.6"
+
+# For supporting pulling from private registries
+imagePullSecrets:
+
+## Role Based Access Control
+## Ref: https://kubernetes.io/docs/admin/authorization/rbac/
+rbac:
+  create: true
+  role:
+    ## Rules to create. It follows the role specification
+    rules:
+    - apiGroups:
+      - ''
+      resources:
+      - services
+      - endpoints
+      - pods
+      verbs:
+      - get
+      - watch
+      - list
+
+## Service Account
+## Ref: https://kubernetes.io/docs/admin/service-accounts-admin/
+##
+serviceAccount:
+  create: true
+  ## The name of the ServiceAccount to use.
+  ## If not set and create is true, a name is generated using the fullname template
+  name:
+
+ingress:
+  enabled: false
+  # Used to create an Ingress record.
+  hosts:
+  #  - artifactory.domain.example
+  annotations:
+  # kubernetes.io/ingress.class: nginx
+  # kubernetes.io/tls-acme: "true"
+  tls:
+  # Secrets must be manually created in the namespace.
+  # - secretName: chart-example-tls
+  #   hosts:
+  #     - artifactory.domain.example
+
+# Database
+## Configuration values for the postgresql dependency
+## ref: https://github.com/kubernetes/charts/blob/master/stable/postgresql/README.md
+##
+postgresql:
+  enabled: true
+  postgresDatabase: "artifactory"
+  postgresUser: "artifactory"
+  postgresPassword:
+  postgresConfig:
+    maxConnections: "1500"
+  service:
+    port: 5432
+  persistence:
+    enabled: true
+    size: 50Gi
+  resources: {}
+  #  requests:
+  #    memory: "512Mi"
+  #    cpu: "100m"
+  #  limits:
+  #    memory: "1Gi"
+  #    cpu: "500m"
+
+## If NOT using the PostgreSQL in this chart (postgresql.enabled=false),
+## you must specify the following database details
+database:
+  type:
+  host:
+  port:
+  user:
+  password:
+
+# Artifactory
+artifactory:
+  name: artifactory-ha
+  image:
+    repository: "docker.bintray.io/jfrog/artifactory-pro"
+    # Note that by default we use appVersion to get image tag
+    # version: 6.2.0
+    pullPolicy: IfNotPresent
+  ## Artifactory requires a unique master key
+  ## You can generate one with the command:
+  ## 'openssl rand -hex 32'
+  ## Pass it to helm with '--set artifactory.masterKey=${MASTER_KEY}'
+  ## IMPORTANT: You should NOT use the example masterKey for a production deployment!
+  masterKey: FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+
+  ## Artifactory license secret.
+  ## If artifactory.license.secret is passed, it will be mounted as
+  ## ARTIFACTORY_HOME/etc/artifactory.cluster.license and loaded at run time.
+  ## The dataKey should be the name of the secret data key created.
+  license:
+    secret:
+    dataKey:
+  ## Create configMap with artifactory.config.import.xml and security.import.xml and pass name of configMap in following parameter
+  configMapName:
+
+  ## Extra postStart command to install JDBC driver for MySql/MariaDb/Oracle
+  # postStartCommand: "curl -L -o /opt/jfrog/artifactory/tomcat/lib/mysql-connector-java-5.1.41.jar https://jcenter.bintray.com/mysql/mysql-connector-java/5.1.41/mysql-connector-java-5.1.41.jar && chown 1030:1030 /opt/jfrog/artifactory/tomcat/lib/mysql-connector-java-5.1.41.jar"
+
+  membershipPort: 10017
+  externalPort: 8081
+  internalPort: 8081
+  internalPortReplicator: 6061
+  externalPortReplicator: 6061
+  uid: 1030
+  ## The following settings are to configure the frequency of the liveness and readiness probes
+  livenessProbe:
+    enabled: true
+    initialDelaySeconds: 180
+    failureThreshold: 10
+    timeoutSeconds: 10
+    periodSeconds: 10
+    successThreshold: 1
+
+  readinessProbe:
+    enabled: true
+    initialDelaySeconds: 60
+    failureThreshold: 10
+    timeoutSeconds: 10
+    periodSeconds: 10
+    successThreshold: 1
+  persistence:
+    enabled: true
+    local: false
+    redundancy: 3
+    mountPath: "/var/opt/jfrog/artifactory"
+    accessMode: ReadWriteOnce
+    size: 200Gi
+    ## artifactory data Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
+    ##
+    # storageClass: "-"
+
+    ## Set the persistence storage type. This will apply the matching binarystore.xml to Artifactory config
+    ## Supported types are:
+    ## file-system (default)
+    ## nfs
+    ## google-storage
+    ## aws-s3
+    type: file-system
+
+    ## For artifactory.persistence.type nfs
+    ## If using NFS as the shared storage, you must have a running NFS server that is accessible by your Kubernetes
+    ## cluster nodes.
+    ## Need to have the following set
+    nfs:
+      # Must pass actual IP of NFS server with '--set For artifactory.persistence.nfs.ip=${NFS_IP}'
+      ip:
+      haDataMount: "/data"
+      haBackupMount: "/backup"
+      dataDir: "/var/opt/jfrog/artifactory-ha"
+      backupDir: "/var/opt/jfrog/artifactory-backup"
+      capacity: 200Gi
+    ## For artifactory.persistence.type google-storage
+    googleStorage:
+      # Set a unique bucket name
+      bucketName: "artifactory-ha-gcp"
+      identity:
+      credential:
+      path: "artifactory-ha/filestore"
+    ## For artifactory.persistence.type aws-s3
+    awsS3:
+      # Set a unique bucket name
+      bucketName: "artifactory-ha-aws"
+      region:
+      identity:
+      credential:
+      path: "artifactory-ha/filestore"
+  service:
+    name: artifactory
+    type: ClusterIP
+    ## Which nodes in the cluster should be in the external load balancer pool (have external traffic routed to them)
+    ## Supported pool values
+    ## members
+    ## all
+    pool: members
+
+  ## The following Java options are passed to the java process running Artifactory.
+  ## This will be passed to all cluster members. Primary and member nodes.
+  javaOpts:
+    other: "-Dartifactory.locking.provider.type=db"
+  ## Artifactory Replicator is available only for Enterprise Plus
+  replicator:
+    enabled: false
+    publicUrl:
+  # Name of ConfigMap for Distribution Cert
+  distributionCerts:
+
+  ## Type specific configurations.
+  ## There is a difference between the primary and the member nodes.
+  ## Customising their resources and java parameters is done here.
+  primary:
+    name: artifactory-ha-primary
+    persistence:
+      ## Set existingClaim to true or false
+      ## If true, you must prepare a PVC with the name e.g `artifactory-ha-primary`
+      existingClaim: false
+    ## Resources for the primary node
+    resources: {}
+    #  requests:
+    #    memory: "1Gi"
+    #    cpu: "500m"
+    #  limits:
+    #    memory: "2Gi"
+    #    cpu: "1"
+    ## The following Java options are passed to the java process running Artifactory primary node.
+    ## You should set them according to the resources set above
+    javaOpts: {}
+    #  xms: "1g"
+    #  xmx: "2g"
+    #  other:
+    nodeSelector: {}
+
+    tolerations: []
+
+    affinity: {}
+  node:
+    name: artifactory-ha-member
+    persistence:
+      ## Set existingClaim to true or false
+      ## If true, you must prepare a PVC with the name e.g `artifactory-ha-member`
+      existingClaim: false
+    replicaCount: 2
+    ## Resources for the member nodes
+    resources: {}
+    #  requests:
+    #    memory: "1Gi"
+    #    cpu: "500m"
+    #  limits:
+    #    memory: "2Gi"
+    #    cpu: "1"
+    ## The following Java options are passed to the java process running Artifactory member nodes.
+    ## You should set them according to the resources set above
+    javaOpts: {}
+    #  xms: "1g"
+    #  xmx: "2g"
+    #  other:
+    nodeSelector: {}
+
+    tolerations: []
+
+    affinity: {}
+
+# Nginx
+nginx:
+  enabled: true
+  name: nginx
+  replicaCount: 1
+  image:
+    repository: "docker.bintray.io/jfrog/nginx-artifactory-pro"
+    # Note that by default we use appVersion to get image tag
+    # version: 6.2.0
+    pullPolicy: IfNotPresent
+  service:
+    ## For minikube, set this to NodePort, elsewhere use LoadBalancer
+    type: LoadBalancer
+    ## For supporting whitelist on the Nginx LoadBalancer service
+    ## Set this to a list of IP CIDR ranges
+    ## Example: loadBalancerSourceRanges: ['10.10.10.5/32', '10.11.10.5/32']
+    ## or pass from helm command line
+    ## Example: helm install ... --set nginx.service.loadBalancerSourceRanges='{10.10.10.5/32,10.11.10.5/32}'
+    loadBalancerSourceRanges: []
+    ## Provide static ip address
+    loadBalancerIP:
+  externalPortHttp: 80
+  internalPortHttp: 80
+  externalPortHttps: 443
+  internalPortHttps: 443
+  internalPortReplicator: 6061
+  externalPortReplicator: 6061
+  ## The following settings are to configure the frequency of the liveness and readiness probes
+  livenessProbe:
+    enabled: true
+    initialDelaySeconds: 100
+    failureThreshold: 10
+    timeoutSeconds: 10
+    periodSeconds: 10
+    successThreshold: 1
+
+  readinessProbe:
+    enabled: true
+    initialDelaySeconds: 60
+    failureThreshold: 10
+    timeoutSeconds: 10
+    periodSeconds: 10
+    successThreshold: 1
+  ## The SSL secret that will be used by the Nginx pod
+  # tlsSecretName: chart-example-tls
+  env:
+    ssl: true
+    # artUrl: "http://artifactory:8081/artifactory"
+    skipAutoConfigUpdate: false
+  ## Custom ConfigMap for nginx.conf
+  customConfigMap:
+  persistence:
+    mountPath: "/var/opt/jfrog/nginx"
+    enabled: false
+    ## A manually managed Persistent Volume and Claim
+    ## Requires persistence.enabled: true
+    ## If defined, PVC must be created manually before volume will be bound
+    # existingClaim:
+
+    accessMode: ReadWriteOnce
+    size: 5Gi
+    ## nginx data Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
+    ##
+    # storageClass: "-"
+  resources: {}
+  #  requests:
+  #    memory: "250Mi"
+  #    cpu: "100m"
+  #  limits:
+  #    memory: "250Mi"
+  #    cpu: "500m"
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}

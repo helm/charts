@@ -1,0 +1,29 @@
+{{- if .Values.replicaSet.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "mongodb.fullname" . }}-headless
+  labels:
+    app: {{ template "mongodb.name" . }}
+    chart: {{ template "mongodb.chart" . }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+{{- if .Values.service.annotations }}
+  annotations:
+{{ toYaml .Values.service.annotations | indent 4 }}
+{{- end }}
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+  - name: mongodb
+    port: {{ .Values.service.port }}
+{{- if .Values.metrics.enabled }}
+  - name: metrics
+    port: 9216
+    targetPort: metrics
+{{- end }}
+  selector:
+    app: {{ template "mongodb.name" . }}
+    release: {{ .Release.Name }}
+{{- end }}

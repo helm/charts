@@ -9,24 +9,42 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "ghost.fullname" . }}
+      release: "{{ .Release.Name }}"
   replicas: 1
   template:
     metadata:
       labels:
         app: {{ template "ghost.fullname" . }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        release: "{{ .Release.Name }}"
     spec:
+      {{- if .Values.securityContext.enabled }}
+      securityContext:
+        fsGroup: {{ .Values.securityContext.fsGroup }}
+        runAsUser: {{ .Values.securityContext.runAsUser }}
+      {{- else }}
       initContainers:
       - name: volume-permissions
-        image: "{{ .Values.volumePermissions.image.name }}:{{ .Values.volumePermissions.image.tag }}"
-        imagePullPolicy: {{ default "" .Values.volumePermissions.image.pullPolicy | quote }}
-        command: ['sh', '-c', 'chmod -R g+rwX /bitnami']
+        image: {{ template "ghost.volumePermissions.image" . }}
+        imagePullPolicy: "{{ .Values.volumePermissions.image.pullPolicy }}"
+        command: ['sh', '-c', 'chmod -R g+rwX {{ .Values.persistence.path }}']
         volumeMounts:
-        - mountPath: /bitnami
+        - mountPath: {{ .Values.persistence.path }}
           name: ghost-data
+      {{- end }}
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end}}
+      {{- end }}
       containers:
       - name: {{ template "ghost.fullname" . }}
-        image: "{{ .Values.image }}"
-        imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+        image: {{ template "ghost.image" . }}
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         env:
         - name: ALLOW_EMPTY_PASSWORD
         {{- if .Values.allowEmptyPassword }}
@@ -38,21 +56,25 @@ spec:
         {{- if .Values.mariadb.enabled }}
           value: {{ template "ghost.mariadb.fullname" . }}
         {{- else }}
-          value: {{ default "" .Values.externalDatabase.host | quote }}
+          value: {{ .Values.externalDatabase.host | quote }}
         {{- end }}
         - name: MARIADB_PORT_NUMBER
+        {{- if .Values.mariadb.enabled }}
           value: "3306"
+        {{- else }}
+          value: {{ .Values.externalDatabase.port | quote }}
+        {{- end }}
         - name: GHOST_DATABASE_NAME
         {{- if .Values.mariadb.enabled }}
-          value: {{ default "" .Values.mariadb.mariadbDatabase | quote }}
+          value: {{ .Values.mariadb.db.name | quote }}
         {{- else }}
-          value: {{ default "" .Values.externalDatabase.database | quote }}
+          value: {{ .Values.externalDatabase.database | quote }}
         {{- end }}
         - name: GHOST_DATABASE_USER
         {{- if .Values.mariadb.enabled }}
-          value: {{ default "" .Values.mariadb.mariadbUser | quote }}
+          value: {{ .Values.mariadb.db.user | quote }}
         {{- else }}
-          value: {{ default "" .Values.externalDatabase.user | quote }}
+          value: {{ .Values.externalDatabase.user | quote }}
         {{- end }}
         - name: GHOST_DATABASE_PASSWORD
         {{- if .Values.mariadb.enabled }}
@@ -61,42 +83,44 @@ spec:
               name: {{ template "ghost.mariadb.fullname" . }}
               key: mariadb-password
         {{- else }}
-          value: {{ default "" .Values.externalDatabase.password | quote }}
+          value: {{ .Values.externalDatabase.password | quote }}
         {{- end }}
         - name: GHOST_HOST
           value: {{ include "ghost.host" . | quote }}
+        - name: GHOST_PROTOCOL
+          value: {{  .Values.ghostProtocol | quote }}
         - name: GHOST_PORT_NUMBER
-          value: {{ default "80" .Values.ghostPort | quote }}
+          value: {{ .Values.service.port | quote }}
         - name: GHOST_USERNAME
-          value: {{ default "" .Values.ghostUsername | quote }}
+          value: {{ .Values.ghostUsername | quote }}
         - name: GHOST_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "ghost.fullname" . }}
               key: ghost-password
         - name: GHOST_EMAIL
-          value: {{ default "" .Values.ghostEmail | quote }}
+          value: {{ .Values.ghostEmail | quote }}
         - name: BLOG_TITLE
-          value: {{ default "" .Values.ghostBlogTitle | quote }}
+          value: {{ .Values.ghostBlogTitle | quote }}
         - name: SMTP_HOST
-          value: {{ default "" .Values.smtpHost | quote }}
+          value: {{ .Values.smtpHost | quote }}
         - name: SMTP_PORT
-          value: {{ default "" .Values.smtpPort | quote }}
+          value: {{ .Values.smtpPort | quote }}
         - name: SMTP_USER
-          value: {{ default "" .Values.smtpUser | quote }}
+          value: {{ .Values.smtpUser | quote }}
         - name: SMTP_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "ghost.fullname" . }}
               key: smtp-password
         - name: SMTP_SERVICE
-          value: {{ default "" .Values.smtpService | quote }}
+          value: {{ .Values.smtpService | quote }}
         ports:
         - name: http
           containerPort: 2368
         livenessProbe:
           httpGet:
-            path: /ghost
+            path: {{ .Values.ghostPath }}
             port: http
             httpHeaders:
             - name: Host
@@ -106,7 +130,7 @@ spec:
           failureThreshold: 6
         readinessProbe:
           httpGet:
-            path: /ghost
+            path: {{ .Values.ghostPath }}
             port: http
             httpHeaders:
             - name: Host

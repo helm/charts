@@ -1,3 +1,8 @@
+## percona image
+## ref: https://hub.docker.com/_/percona/
+##
+image: "percona"
+
 ## percona image version
 ## ref: https://hub.docker.com/r/library/percona/tags/
 ##
@@ -27,7 +32,7 @@ imageTag: "5.7.17"
 ##
 imagePullPolicy: IfNotPresent
 
-## Persist data to a persitent volume
+## Persist data to a persistent volume
 persistence:
   enabled: false
   ## percona data Persistent Volume Storage Class
@@ -37,7 +42,7 @@ persistence:
   ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
   ##   GKE, AWS & OpenStack)
   ##
-  # storageClass: "-" 
+  # storageClass: "-"
   accessMode: ReadWriteOnce
   size: 8Gi
 
@@ -48,3 +53,14 @@ resources:
   requests:
     memory: 256Mi
     cpu: 100m
+
+## Node labels for pod assignment
+## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+##
+nodeSelector: {}
+
+## Tolerations labels for pod assignment
+## Allow the scheduling on tainted nodes (requires Kubernetes >= 1.6)
+## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+##
+tolerations: []

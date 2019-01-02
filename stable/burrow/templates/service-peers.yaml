@@ -1,0 +1,36 @@
+{{- $peerIngress := and .Values.peer.ingress.enabled (not (eq (len .Values.peer.ingress.hosts) 0)) -}}
+{{ range (until (.Values.chain.nodes | int)) }}
+{{- $nodeNumber := printf "%03d" . }}
+---
+kind: Service
+apiVersion: v1
+metadata:
+{{- if $peerIngress }}
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: "{{ $nodeNumber }}.{{ index $.Values.peer.ingress.hosts 0 }}"
+    external-dns.alpha.kubernetes.io/ttl: "120"
+{{- end }}
+  labels:
+    app: {{ template "burrow.name" $ }}
+    chart: {{ template "burrow.chart" $ }}
+    release: {{ $.Release.Name }}
+    heritage: {{ $.Release.Service }}
+    nodeNumber: {{ $nodeNumber | quote }}
+  name: {{ template "burrow.fullname" $ }}-peer-{{ $nodeNumber }}
+spec:
+{{- if $peerIngress }}
+  type: LoadBalancer
+  externalTrafficPolicy: Local
+{{- else }}
+  type: {{ $.Values.peer.service.type }}
+{{- end }}
+  ports:
+    - name: peer
+      port: {{ $.Values.peer.service.port }}
+      targetPort: peer
+      protocol: TCP
+  selector:
+    app: {{ template "burrow.name" $ }}
+    release: {{ $.Release.Name }}
+    nodeNumber: {{ $nodeNumber | quote }}
+{{- end }}

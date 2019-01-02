@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "gce-ingress.fullname" . }}
+  labels:
+    app: {{ include "gce-ingress.name" . }}
+    chart: {{ include "gce-ingress.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  gce.conf: |
+    [global]
+    token-url = {{ .Values.config.tokenUrl }}
+    project-id = {{ .Values.config.projectID }}
+    network = {{ .Values.config.network }}
+    subnetwork = {{ .Values.config.subnetwork }}
+    node-instance-prefix = {{ .Values.config.nodeInstancePrefix }}
+    node-tags = {{ .Values.config.nodeTags }}

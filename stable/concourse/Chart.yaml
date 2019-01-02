@@ -1,13 +1,13 @@
 name: concourse
-version: 0.10.7
-appVersion: 3.6.0
+version: 3.0.1
+appVersion: 4.2.2
 description: Concourse is a simple and scalable CI system.
 icon: https://avatars1.githubusercontent.com/u/7809479
 keywords:
 - ci
 - concourse
 - concourse.ci
-home: https://concourse.ci/
+home: https://concourse-ci.org/
 sources:
 - https://github.com/concourse/bin
 - https://github.com/kubernetes/charts

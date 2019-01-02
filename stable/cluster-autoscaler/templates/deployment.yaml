@@ -1,3 +1,5 @@
+{{- if or .Values.autoDiscovery.clusterName .Values.autoscalingGroups }}
+{{/* one of the above is required */}}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -22,6 +24,9 @@ spec:
 {{ toYaml .Values.podLabels | indent 8 }}
       {{- end }}
     spec:
+      {{- if .Values.priorityClassName }}
+      priorityClassName: "{{ .Values.priorityClassName }}"
+      {{- end }}
       containers:
         - name: {{ template "cluster-autoscaler.name" . }}
         {{- if eq .Values.cloudProvider "spotinst" }}
@@ -35,12 +40,30 @@ spec:
             - ./cluster-autoscaler
             - --cloud-provider={{ .Values.cloudProvider }}
             - --namespace={{ .Release.Namespace }}
-          {{- range .Values.autoscalingGroups }}
+          {{- if .Values.autoscalingGroups }}
+            {{- range .Values.autoscalingGroups }}
             - --nodes={{ .minSize }}:{{ .maxSize }}:{{ .name }}
+            {{- end }}
           {{- end }}
+          {{- if eq .Values.cloudProvider "aws" }}
+            {{- if .Values.autoDiscovery.clusterName }}
+            - --node-group-auto-discovery=asg:tag=k8s.io/cluster-autoscaler/enabled,kubernetes.io/cluster/
+              {{- .Values.autoDiscovery.clusterName }}
+            {{- end }}
+          {{- else if eq .Values.cloudProvider "gce" }}
+          {{- if .Values.autoscalingGroupsnamePrefix }}
+            {{- range .Values.autoscalingGroupsnamePrefix }}
+            - --node-group-auto-discovery=mig:namePrefix={{ .name }},min={{ .minSize }},max={{ .maxSize }}
+            {{- end }}
+          {{- end }}
+          {{- end }}
+          {{- if eq .Values.cloudProvider "gce" }}
+            - --cloud-config={{ .Values.cloudConfigPath }}
+            {{- end }}
           {{- range $key, $value := .Values.extraArgs }}
-            - --{{ $key }}={{ $value }}
+            - --{{ $key }}{{ if $value }}={{ $value }}{{ end }}
           {{- end }}
+
           env:
           {{- if eq .Values.cloudProvider "aws" }}
             - name: AWS_REGION
@@ -50,6 +73,51 @@ spec:
               value: "{{ .Values.spotinst.token }}"
             - name: SPOTINST_ACCOUNT
               value: "{{ .Values.spotinst.account }}"
+          {{- else if eq .Values.cloudProvider "azure" }}
+            - name: ARM_SUBSCRIPTION_ID
+              valueFrom:
+                secretKeyRef:
+                  key: SubscriptionID
+                  name: {{ template "cluster-autoscaler.fullname" . }}
+            - name: ARM_RESOURCE_GROUP
+              valueFrom:
+                secretKeyRef:
+                  key: ResourceGroup
+                  name: {{ template "cluster-autoscaler.fullname" . }}
+            - name: ARM_TENANT_ID
+              valueFrom:
+                secretKeyRef:
+                  key: TenantID
+                  name: {{ template "cluster-autoscaler.fullname" . }}
+            - name: ARM_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  key: ClientID
+                  name: {{ template "cluster-autoscaler.fullname" . }}
+            - name: ARM_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: ClientSecret
+                  name: {{ template "cluster-autoscaler.fullname" . }}
+            - name: ARM_VM_TYPE
+              valueFrom:
+                secretKeyRef:
+                  key: VMType
+                  name: {{ template "cluster-autoscaler.fullname" . }}
+            - name: AZURE_CLUSTER_NAME
+              valueFrom:
+                secretKeyRef:
+                  key: ClusterName
+                  name: {{ template "cluster-autoscaler.fullname" . }}
+            - name: AZURE_NODE_RESOURCE_GROUP
+              valueFrom:
+                secretKeyRef:
+                  key: NodeResourceGroup
+                  name: {{ template "cluster-autoscaler.fullname" . }}
+          {{- end }}
+          {{- range $key, $value := .Values.extraEnv }}
+            - name: {{ $key }}
+              value: "{{ $value }}"
           {{- end }}
           livenessProbe:
             httpGet:
@@ -61,8 +129,13 @@ spec:
 {{ toYaml .Values.resources | indent 12 }}
           volumeMounts:
             - name: ssl-certs
-              mountPath: /etc/ssl/certs/ca-certificates.crt
+              mountPath: {{ .Values.sslCertPath }}
               readOnly: true
+            {{- if eq .Values.cloudProvider "gce" }}
+            - name: cloudconfig
+              mountPath: {{ .Values.cloudConfigPath }}
+              readOnly: true
+            {{- end }}
     {{- if .Values.affinity }}
       affinity:
 {{ toYaml .Values.affinity | indent 8 }}
@@ -77,4 +150,10 @@ spec:
       volumes:
         - name: ssl-certs
           hostPath:
-            path: /etc/ssl/certs/ca-certificates.crt
+            path: {{ .Values.sslCertPath }}
+        {{- if eq .Values.cloudProvider "gce" }}
+        - name: cloudconfig
+          hostPath:
+            path: {{ .Values.cloudConfigPath }}
+        {{- end }}
+{{- end}}

@@ -6,11 +6,18 @@ metadata:
     app: {{ template "jenkins.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     component: "{{ .Release.Name }}-{{ .Values.Master.Component }}"
+{{- if .Values.Master.SlaveListenerServiceAnnotations }}
+  annotations:
+{{ toYaml .Values.Master.SlaveListenerServiceAnnotations | indent 4 }}
+{{- end }}
 spec:
   ports:
     - port: {{ .Values.Master.SlaveListenerPort }}
       targetPort: {{ .Values.Master.SlaveListenerPort }}
+      {{ if (and (eq .Values.Master.SlaveListenerServiceType "NodePort") (not (empty .Values.Master.SlaveListenerPort))) }}
+      nodePort: {{.Values.Master.SlaveListenerPort}}
+      {{end}}
       name: slavelistener
   selector:
     component: "{{ .Release.Name }}-{{ .Values.Master.Component }}"
-  type: ClusterIP
+  type: {{ .Values.Master.SlaveListenerServiceType }}

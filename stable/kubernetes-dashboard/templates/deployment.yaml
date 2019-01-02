@@ -2,14 +2,21 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: {{ template "kubernetes-dashboard.fullname" . }}
+{{- if .Values.annotations }}
+  annotations:
+{{ toYaml .Values.annotations | indent 4 }}
+{{- end }}
   labels:
     app: {{ template "kubernetes-dashboard.name" . }}
-    heritage: "{{ .Release.Service }}"
-    release: "{{ .Release.Name }}"
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    chart: {{ template "kubernetes-dashboard.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
     kubernetes.io/cluster-service: "true"
+{{- if .Values.labels }}
+{{ toYaml .Values.labels | indent 4 }}
+{{- end }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicaCount }}
   strategy:
     rollingUpdate:
       maxSurge: 0
@@ -19,31 +26,69 @@ spec:
     metadata:
       labels:
         app: {{ template "kubernetes-dashboard.name" . }}
-        heritage: "{{ .Release.Service }}"
-        release: "{{ .Release.Name }}"
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        release: {{ .Release.Name }}
         kubernetes.io/cluster-service: "true"
     spec:
-      serviceAccountName: {{ if .Values.rbac.create }}{{ template "kubernetes-dashboard.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
-      nodeSelector:
-{{ toYaml .Values.nodeSelector | indent 10 }}
+      serviceAccountName: {{ template "kubernetes-dashboard.serviceAccountName" . }}
       containers:
-      - name: main
-        image: "{{ .Values.image }}:{{ .Values.imageTag }}"
-        imagePullPolicy: {{ .Values.imagePullPolicy }}
-        resources:
-{{ toYaml .Values.resources | indent 10 }}
-        livenessProbe:
-          failureThreshold: 3
-          httpGet:
-            path: /
-            port: 9090
-            scheme: HTTP
-          initialDelaySeconds: 30
-          periodSeconds: 10
-          successThreshold: 1
-          timeoutSeconds: 30
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        args:
+{{- if .Values.enableInsecureLogin }}
+          - --enable-insecure-login
+{{- else }}
+          - --auto-generate-certificates
+{{- end }}
+{{- if .Values.extraArgs }}
+{{ toYaml .Values.extraArgs | indent 10 }}
+{{- end }}
         ports:
+{{- if .Values.enableInsecureLogin }}
         - name: http
           containerPort: 9090
           protocol: TCP
+{{- else }}
+        - name: https
+          containerPort: 8443
+          protocol: TCP
+{{- end }}
+        volumeMounts:
+        - name: kubernetes-dashboard-certs
+          mountPath: /certs
+          # Create on-disk volume to store exec logs
+        - mountPath: /tmp
+          name: tmp-volume
+        livenessProbe:
+          httpGet:
+{{- if .Values.enableInsecureLogin }}
+            scheme: HTTP
+            path: /
+            port: 9090
+{{- else }}
+            scheme: HTTPS
+            path: /
+            port: 8443
+{{- end }}
+          initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+          timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+      volumes:
+      - name: kubernetes-dashboard-certs
+        secret:
+          secretName: {{ template "kubernetes-dashboard.fullname" . }}
+      - name: tmp-volume
+        emptyDir: {}
+    {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+    {{- end }}
+    {{- if .Values.affinity }}
+        affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+    {{- end }}

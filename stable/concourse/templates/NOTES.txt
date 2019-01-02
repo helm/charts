@@ -1,5 +1,5 @@
 
-1. Concourse can be accessed:
+* Concourse can be accessed:
 
   * Within your cluster, at the following DNS name at port {{ .Values.concourse.atcPort }}:
 
@@ -33,14 +33,12 @@
     kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME 8080:{{ .Values.concourse.atcPort }}
     {{- end }}
   {{- end }}
+* If this is your first time using Concourse, follow the tutorials at https://concourse-ci.org/tutorials.html
+{{- if contains "naive" .Values.concourse.worker.baggageclaim.driver }}
 
-2. Login with the following credentials
+*******************
+******WARNING******
+*******************
 
-  Username: {{ .Values.concourse.username }}
-  Password: {{ .Values.concourse.password }}
-
-3. If this is your first time using Concourse, follow the tutorial at https://concourse.ci/hello-world.html
-{{- if contains "naive" .Values.concourse.baggageclaimDriver }}
-
-4. ***WARNING*** You are using the "naive" baggage claim driver, which is also the default value for this chart. This is the default for compatability reasons, but is very space inefficient, and should be changed to either "btrfs" or "overlay" depending on that filesystem's support in the Linux kernel your cluster is using. Please see https://github.com/concourse/concourse/issues/1230 for background.
+You are using the "naive" baggage claim driver, which is also the default value for this chart. This is the default for compatibility reasons, but is very space inefficient, and should be changed to either "btrfs" (recommended) or "overlay" depending on that filesystem's support in the Linux kernel your cluster is using. Please see https://github.com/concourse/concourse/issues/1230 and https://github.com/concourse/concourse/issues/1966 for background.
 {{- end }}

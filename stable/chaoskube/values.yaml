@@ -5,7 +5,7 @@ name: chaoskube
 image: quay.io/linki/chaoskube
 
 # docker image tag
-imageTag: v0.6.1
+imageTag: v0.10.0
 
 # number of replicas to run
 replicas: 1
@@ -25,10 +25,24 @@ namespaces:
 # don't kill pods, only log what would have been done
 dryRun: true
 
-# resource requests and limits
-resources:
-  cpu: 10m
-  memory: 16Mi
+# Enable debug logging
+debug: false
+
+# Set values for exempting specific week days from Chaoskube Actions
+excludedWeekdays:
+
+# Set values for exempting specific times of day from Chaoskube Actions
+excludedTimesOfDay:
+
+# Set values for exempting specific days of the year from Chaoskube Actions (Dec24,Jan1)
+excludedDaysOfYear:
+
+# Set specific Timezone for Actions to take place
+timezone: UTC
+
+minimumAge: 0s
+
+priorityClassName: ""
 
 # create service account with permission to list and kill pods
 rbac:
@@ -36,3 +50,34 @@ rbac:
 
   # only used when create is false
   serviceAccountName: default
+
+resources: {}
+  ## We usually recommend not to specify default resources and to leave this as a conscious
+  ## choice for the user. This also increases chances charts run on environments with little
+  ## resources, such as Minikube. If you do want to specify resources, uncomment the following
+  ## lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+  ## Suggested antiAffinity, as each CA should be on a separate Node for resilience
+  # podAntiAffinity:
+  #   requiredDuringSchedulingIgnoredDuringExecution:
+  #     - topologyKey: "kubernetes.io/hostname"
+  #       labelSelector:
+  #         matchLabels:
+  #           app: chaoskube
+
+podAnnotations: {}
+  ## Annotations for the chaoskube pod.
+  #  podAnnotations:
+  #    prometheus.io/scrape: "true"
+  #    prometheus.io/port: "8080"

@@ -1,6 +1,7 @@
 name: gitlab-ce
 deprecated: true
-version: 0.2.1
+version: 0.2.2
+appVersion: 9.4.1
 description: GitLab Community Edition
 keywords:
 - git
@@ -14,6 +15,3 @@ sources:
 - https://hub.docker.com/r/gitlab/gitlab-ce/
 - https://docs.gitlab.com/omnibus/
 icon: https://gitlab.com/uploads/group/avatar/6543/gitlab-logo-square.png
-maintainers:
-- name: Greg Taylor
-  email: gtaylor@gc-taylor.com

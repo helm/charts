@@ -10,6 +10,6 @@ metadata:
     release: "{{ .Release.Name }}"
 rules:
 - apiGroups: [""]
-  resources: ["services"]
+  resources: ["nodes", "services"]
   verbs: ["list"]
 {{ end }}

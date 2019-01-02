@@ -1,0 +1,45 @@
+{{ if and .Values.prometheus.jmx.enabled .Values.prometheus.operator.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "kafka.fullname" . }}
+  namespace: {{ .Values.prometheus.operator.serviceMonitor.namespace }}
+  labels:
+{{ toYaml .Values.prometheus.operator.serviceMonitor.selector | indent 4 }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ include "kafka.name" . }}
+      release: {{ .Release.Name }}
+  endpoints:
+  - port: jmx-exporter
+    interval: {{ .Values.prometheus.jmx.interval }}
+  {{- if .Values.prometheus.jmx.scrapeTimeout }}
+    scrapeTimeout: {{ .Values.prometheus.jmx.scrapeTimeout }}
+  {{- end }}
+  namespaceSelector:
+    any: true
+{{ end }}
+---
+{{ if and .Values.prometheus.kafka.enabled .Values.prometheus.operator.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "kafka.fullname" . }}-exporter
+  namespace: {{ .Values.prometheus.operator.serviceMonitor.namespace }}
+  labels:
+{{ toYaml .Values.prometheus.operator.serviceMonitor.selector | indent 4 }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ include "kafka.name" . }}-exporter
+      release: {{ .Release.Name }}
+  endpoints:
+  - port: kafka-exporter
+    interval: {{ .Values.prometheus.kafka.interval }}
+  {{- if .Values.prometheus.kafka.scrapeTimeout }}
+    scrapeTimeout: {{ .Values.prometheus.kafka.scrapeTimeout }}
+  {{- end }}
+  namespaceSelector:
+    any: true
+{{ end }}

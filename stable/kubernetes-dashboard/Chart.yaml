@@ -1,10 +1,16 @@
 name: kubernetes-dashboard
-version: 0.4.3
-appVersion: 1.7.1
+version: 0.10.2
+appVersion: 1.10.1
 description: General-purpose web UI for Kubernetes clusters
 keywords:
 - kubernetes
 - dashboard
+home: https://github.com/kubernetes/dashboard
+sources:
+- https://github.com/kubernetes/dashboard
 maintainers:
 - name: kfox1111
   email: Kevin.Fox@pnnl.gov
+- name: desaintmartin
+  email: cdesaintmartin@wiremind.fr
+icon: https://raw.githubusercontent.com/kubernetes/kubernetes/master/logo/logo.svg

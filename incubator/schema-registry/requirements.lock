@@ -1,6 +1,6 @@
 dependencies:
 - name: kafka
   repository: https://kubernetes-charts-incubator.storage.googleapis.com/
-  version: 0.2.2
-digest: sha256:43aedc891276fa0f681a738c003e0bf8f458bf05cf3087e010b0ee3f3bb5c9ec
-generated: 2017-11-29T14:12:11.958088-06:00
+  version: 0.13.2
+digest: sha256:d7bb6ed7e6e7be2134f3bf9b2aa3e68ce27c44e6081293629eb963ad4fc19784
+generated: 2018-12-10T10:48:20.368348Z

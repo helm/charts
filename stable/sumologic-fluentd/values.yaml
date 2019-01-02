@@ -1,7 +1,7 @@
 # Default values for sumologic-fluentd.
 image:
   name: sumologic/fluentd-kubernetes-sumologic
-  tag: v1.6
+  tag: v2.1.0
   pullPolicy: IfNotPresent
 
 ## Annotations to add to the DaemonSet's Pods
@@ -29,6 +29,15 @@ sumologic:
   ## A directory of user-defined fluentd configuration files, which must be in the "*.conf" directory
   ## in the container (Default "/fluentd/conf.d/user")
   fluentdUserConfigDir: ""
+
+  ## Provide user-defined fluentd configuration files
+  ## Each key will become a file in `fluentdUserConfigDir`
+  ##
+  # fluentdUserConfig:
+  #   source.systemd.conf: |-
+  #     <source>
+  #        ...
+  #     </source>
 
   ## How frequently to push logs to SumoLogic (default 5s)
   ## ref: https://github.com/SumoLogic/fluentd-kubernetes-sumologic#options
@@ -106,6 +115,23 @@ sumologic:
   ## ref: https://github.com/SumoLogic/fluentd-kubernetes-sumologic#options
   excludeUnitRegex: ""
 
+  ## The field name for json formatted sources that should be used as the time
+  ## ref: https://docs.fluentd.org/v0.12/articles/formatter_json#time_key-(string,-optional,-defaults-to-%E2%80%9Ctime%E2%80%9D)
+  # timeKey:
+
+  ## Specify the path in_tail should watch for container logs.  (Default /mnt/log/containers/*.log)
+  # containerLogsPath:
+
+  ## Add the uri of the proxy environment if present.
+  # proxyUri:
+
+  ## Option to control the enabling of stat_watcher. (Default true)
+  ## ref: https://docs.fluentd.org/v1.0/articles/in_tail#enable_stat_watcher
+  # enableStatWatcher:
+
+  ## Option to control adding timestamp to logs. (Default true)
+  addTimeStamp: true
+
   ## Fluentd command line options
   ## ref: http://docs.fluentd.org/v0.12/articles/command-line-option
   fluentdOpt: ""
@@ -129,12 +155,15 @@ sumologic:
   ## ref: https://kubernetes.io/docs/tasks/debug-application-cluster/audit/
   auditLogPath: ""
 
+## Note: Requires Kubernetes 1.8+ to enable this feature via hostPath volume type
 ## By default, the daemonset will store position files, for logs tailed, in an
-## emptyDir. If you have a directory, on the host, to store pos files, specify
-## it here.
+## emptyDir. If you have already have a directory on the host for storing pos files,
+## specify it here. Otherwise, it can create the directory for you by setting the type
+## to "DirectoryOrCreate".
 persistence:
   enabled: false
   hostPath: /var/run/fluentd-pos
+  createPath: false
 
 resources:
   requests:

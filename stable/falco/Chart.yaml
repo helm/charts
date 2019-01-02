@@ -1,0 +1,19 @@
+apiVersion: v1
+name: falco
+version: 0.5.6
+appVersion: 0.13.0
+description: Sysdig Falco
+keywords:
+  - monitoring
+  - security
+  - alerting
+  - metric
+  - troubleshooting
+  - run-time
+home: https://falco.org
+icon: https://falco.org/images/logos/falco-logo.png
+sources:
+  - https://github.com/falcosecurity/falco
+maintainers:
+  - name: nestorsalceda
+    email: nestor.salceda@sysdig.com

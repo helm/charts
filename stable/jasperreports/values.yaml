@@ -1,12 +1,27 @@
-## Bitnami JasperReports image version
-## ref: https://hub.docker.com/r/bitnami/jasperreports/tags/
+## Global Docker image registry
+## Please, note that this will override the image registry for all the images, including dependencies, configured to use the global value
 ##
-image: bitnami/jasperreports:6.4.2-r0
+# global:
+#   imageRegistry:
 
-## Specify a imagePullPolicy
-## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+## Bitnami JasperReports image version
+## ref: https://hub.docker.com/r/bitnami/dokuwiki/tags/
 ##
-imagePullPolicy: IfNotPresent
+image:
+  registry: docker.io
+  repository: bitnami/jasperreports
+  tag: 7.1.0
+  ## Specify a imagePullPolicy
+  ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
+  ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+  ##
+  pullPolicy: IfNotPresent
+  ## Optionally specify an array of imagePullSecrets.
+  ## Secrets must be manually created in the namespace.
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  ##
+  # pullSecrets:
+  #   - myRegistrKeySecretName
 
 ## User of the application
 ## ref: https://github.com/bitnami/bitnami-docker-jasperreports#configuration
@@ -24,6 +39,30 @@ jasperreportsUsername: user
 ##
 jasperreportsEmail: user@example.com
 
+## Set to `yes` to allow the container to be started with blank passwords
+## ref: https://github.com/bitnami/bitnami-docker-jasperreports#environment-variables
+allowEmptyPassword: "yes"
+
+##
+## External database configuration
+##
+externalDatabase:
+  ## Database host
+  host:
+
+  ## Database host
+  port: 3306
+
+  ## Database user
+  user: bn_jasperreports
+
+  ## Database password
+  password:
+
+  ## Database name
+  database: bitnami_jasperreports
+
+
 ## SMTP mail delivery configuration
 ## ref: https://github.com/bitnami/bitnami-docker-jasperreports#smtp-configuration
 ##
@@ -37,32 +76,65 @@ jasperreportsEmail: user@example.com
 ##
 ## MariaDB chart configuration
 ##
+## https://github.com/helm/charts/blob/master/stable/mariadb/values.yaml
+##
 mariadb:
+  ## Whether to deploy a mariadb server to satisfy the applications database requirements. To use an external database set this to false and configure the externalDatabase parameters
+  enabled: true
+  ## Disable MariaDB replication
+  replication:
+    enabled: false
+
+  ## Create a database and a database user
+  ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#creating-a-database-user-on-first-run
+  ##
+  db:
+    name: bitnami_jasperreports
+    user: bn_jasperreports
+    ## If the password is not specified, mariadb will generates a random password
+    ##
+    # password:
+
   ## MariaDB admin password
   ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#setting-the-root-password-on-first-run
   ##
-  # mariadbRootPassword:
+  # rootUser:
+  #   password:
 
   ## Enable persistence using Persistent Volume Claims
   ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
   ##
-  persistence:
-    enabled: true
-    ## mariadb data Persistent Volume Storage Class
-    ## If defined, storageClassName: <storageClass>
-    ## If set to "-", storageClassName: "", which disables dynamic provisioning
-    ## If undefined (the default) or set to null, no storageClassName spec is
-    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
-    ##   GKE, AWS & OpenStack)
-    ##
-    # storageClass: "-"
-    accessMode: ReadWriteOnce
-    size: 8Gi
+  master:
+    persistence:
+      enabled: true
+      ## mariadb data Persistent Volume Storage Class
+      ## If defined, storageClassName: <storageClass>
+      ## If set to "-", storageClassName: "", which disables dynamic provisioning
+      ## If undefined (the default) or set to null, no storageClassName spec is
+      ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+      ##   GKE, AWS & OpenStack)
+      ##
+      # storageClass: "-"
+      accessMode: ReadWriteOnce
+      size: 8Gi
 
 ## Kubernetes configuration
 ## For minikube, set this to NodePort, elsewhere use LoadBalancer
 ##
-serviceType: LoadBalancer
+service:
+  type: LoadBalancer
+  # HTTP Port
+  port: 80
+  ##
+  ## nodePorts:
+  ##   http: <to set explicitly, choose port between 30000-32767>
+  ##   https: <to set explicitly, choose port between 30000-32767>
+  nodePorts:
+    http: ""
+  ## Enable client source IP preservation
+  ## ref http://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip
+  ##
+  externalTrafficPolicy: Cluster
 
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/

@@ -4,6 +4,14 @@
 image: "mysql"
 imageTag: "5.7.14"
 
+busybox:
+  image: "busybox"
+  tag: "1.29.3"
+
+testFramework:
+  image: "dduportal/bats"
+  tag: "0.4.0"
+
 ## Specify password for root user
 ##
 ## Default: random 10 character string
@@ -12,6 +20,7 @@ imageTag: "5.7.14"
 ## Create a database user
 ##
 # mysqlUser:
+## Default: random 10 character string
 # mysqlPassword:
 
 ## Allow unauthenticated access, uncomment to enable
@@ -27,6 +36,30 @@ imageTag: "5.7.14"
 ## ref: http://kubernetes.io/docs/user-guide/images/#updating-images
 ##
 imagePullPolicy: IfNotPresent
+
+extraVolumes: |
+  # - name: extras
+  #   emptyDir: {}
+
+extraVolumeMounts: |
+  # - name: extras
+  #   mountPath: /usr/share/extras
+  #   readOnly: true
+
+extraInitContainers: |
+  # - name: do-something
+  #   image: busybox
+  #   command: ['do', 'something']
+
+# Optionally specify an array of imagePullSecrets.
+# Secrets must be manually created in the namespace.
+# ref: https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
+# imagePullSecrets:
+  # - name: myRegistryKeySecretName
+
+## Node selector
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+nodeSelector: {}
 
 livenessProbe:
   initialDelaySeconds: 30
@@ -55,6 +88,7 @@ persistence:
   # storageClass: "-"
   accessMode: ReadWriteOnce
   size: 8Gi
+  annotations: {}
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -65,7 +99,73 @@ resources:
     cpu: 100m
 
 # Custom mysql configuration files used to override default mysql settings
-configurationFiles:
+configurationFiles: {}
 #  mysql.cnf: |-
 #    [mysqld]
 #    skip-name-resolve
+#    ssl-ca=/ssl/ca.pem
+#    ssl-cert=/ssl/server-cert.pem
+#    ssl-key=/ssl/server-key.pem
+
+# Custom mysql init SQL files used to initialize the database
+initializationFiles: {}
+#  first-db.sql: |-
+#    CREATE DATABASE IF NOT EXISTS first DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
+#  second-db.sql: |-
+#    CREATE DATABASE IF NOT EXISTS second DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
+
+metrics:
+  enabled: false
+  image: prom/mysqld-exporter
+  imageTag: v0.10.0
+  imagePullPolicy: IfNotPresent
+  resources: {}
+  annotations: {}
+    # prometheus.io/scrape: "true"
+    # prometheus.io/port: "9104"
+  livenessProbe:
+    initialDelaySeconds: 15
+    timeoutSeconds: 5
+  readinessProbe:
+    initialDelaySeconds: 5
+    timeoutSeconds: 1
+
+## Configure the service
+## ref: http://kubernetes.io/docs/user-guide/services/
+service:
+  ## Specify a service type
+  ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services---service-types
+  type: ClusterIP
+  port: 3306
+  # nodePort: 32000
+
+ssl:
+  enabled: false
+  secret: mysql-ssl-certs
+  certificates:
+#  - name: mysql-ssl-certs
+#    ca: |-
+#      -----BEGIN CERTIFICATE-----
+#      ...
+#      -----END CERTIFICATE-----
+#    cert: |-
+#      -----BEGIN CERTIFICATE-----
+#      ...
+#      -----END CERTIFICATE-----
+#    key: |-
+#      -----BEGIN RSA PRIVATE KEY-----
+#      ...
+#      -----END RSA PRIVATE KEY-----
+
+## Populates the 'TZ' system timezone environment variable
+## ref: https://dev.mysql.com/doc/refman/5.7/en/time-zone-support.html
+##
+## Default: nil (mysql will use image's default timezone, normally UTC)
+## Example: 'Australia/Sydney'
+# timezone:
+
+# To be added to the database server pod(s)
+podAnnotations: {}
+
+## Set pod priorityClassName
+# priorityClassName: {}

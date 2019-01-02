@@ -69,7 +69,7 @@ $ helm install --name my-release -f values.yaml stable/influxdb
 
 The [InfluxDB](https://hub.docker.com/_/influxdb/) image stores data in the `/var/lib/influxdb` directory in the container.
 
-The chart mounts a [Persistent Volume](http://kubernetes.io/docs/user-guide/persistent-volumes/) volume at this location. The volume is created using dynamic volume provisioning.
+The chart mounts a [Persistent Volume](http://kubernetes.io/docs/user-guide/persistent-volumes/) at this location. The volume is created using dynamic volume provisioning.
 
 ## Starting with authentication
 
@@ -80,3 +80,9 @@ Influxdb requires also a user to be set in order for authentication to be enforc
 To handle this setup on startup, a job can be enabled in `values.yaml` by setting `.Values.setDefaultUser.enabled` to `true`.
 
 Make sure to uncomment or configure the job settings after enabling it. If a password is not set, a random password will be generated.
+
+## Upgrading
+
+### From < 1.0.0 To >= 1.0.0
+
+Values `.Values.config.bind_address` and `.Values.exposeRpc` no longer exist. They have been replaced with `.Values.config.rpc.bind_address` and `.Values.config.rpc.enabled` respectively. Please adjust your values file accordingly.

@@ -17,4 +17,5 @@ rules:
     verbs:
       - list
       - watch
+      - get
 {{- end -}}

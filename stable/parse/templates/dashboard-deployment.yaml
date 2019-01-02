@@ -10,18 +10,35 @@ metadata:
     heritage: "{{ .Release.Service }}"
     component: "dashboard"
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "parse.name" . }}
+      release: "{{ .Release.Name }}"
+      component: "dashboard"
   replicas: 1
   template:
     metadata:
       labels:
         app: {{ template "parse.name" . }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: "{{ .Release.Name }}"
         component: "dashboard"
     spec:
+      {{- if .Values.dashboard.securityContext.enabled }}
+      securityContext:
+        fsGroup: {{ .Values.dashboard.securityContext.fsGroup }}
+        runAsUser: {{ .Values.dashboard.securityContext.runAsUser }}
+      {{- end }}
+      {{- if .Values.dashboard.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.dashboard.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end}}
+      {{- end }}
       containers:
       - name: {{ template "parse.fullname" . }}
-        image: "{{ .Values.dashboard.image }}"
-        imagePullPolicy: {{ .Values.dashboard.imagePullPolicy | quote }}
+        image: {{ template "parse.dashboard.image" . }}
+        imagePullPolicy: {{ .Values.dashboard.image.pullPolicy | quote }}
         env:
         - name: PARSE_DASHBOARD_USER
           value: {{ .Values.dashboard.username }}

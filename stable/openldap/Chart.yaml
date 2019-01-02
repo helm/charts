@@ -1,0 +1,15 @@
+name: openldap
+home: https://www.openldap.org
+version: 0.2.4
+appVersion: 2.4.44
+description: Community developed LDAP software
+icon: http://www.openldap.org/images/headers/LDAPworm.gif
+keywords:
+  - ldap
+  - openldap
+sources:
+  - https://github.com/kubernetes/charts
+maintainers:
+  - name: enis
+    email: enis@apache.org
+engine: gotpl

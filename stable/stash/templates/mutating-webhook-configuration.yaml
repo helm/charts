@@ -1,0 +1,104 @@
+{{- if .Values.apiserver.enableMutatingWebhook }}
+apiVersion: admissionregistration.k8s.io/v1beta1
+kind: MutatingWebhookConfiguration
+metadata:
+  name: admission.stash.appscode.com
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: "{{ template "stash.name" . }}"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+webhooks:
+- name: deployment.admission.stash.appscode.com
+  clientConfig:
+    service:
+      namespace: default
+      name: kubernetes
+      path: /apis/admission.stash.appscode.com/v1alpha1/deployments
+    caBundle: {{ b64enc .Values.apiserver.ca }}
+  rules:
+  - operations:
+    - CREATE
+    - UPDATE
+    apiGroups:
+    - apps
+    - extensions
+    apiVersions:
+    - "*"
+    resources:
+    - deployments
+  failurePolicy: Fail
+- name: daemonset.admission.stash.appscode.com
+  clientConfig:
+    service:
+      namespace: default
+      name: kubernetes
+      path: /apis/admission.stash.appscode.com/v1alpha1/daemonsets
+    caBundle: {{ b64enc .Values.apiserver.ca }}
+  rules:
+  - operations:
+    - CREATE
+    - UPDATE
+    apiGroups:
+    - apps
+    - extensions
+    apiVersions:
+    - "*"
+    resources:
+    - daemonsets
+  failurePolicy: Fail
+- name: statefulset.admission.stash.appscode.com
+  clientConfig:
+    service:
+      namespace: default
+      name: kubernetes
+      path: /apis/admission.stash.appscode.com/v1alpha1/statefulsets
+    caBundle: {{ b64enc .Values.apiserver.ca }}
+  rules:
+  - operations:
+    - CREATE
+    apiGroups:
+    - apps
+    apiVersions:
+    - "*"
+    resources:
+    - statefulsets
+  failurePolicy: Fail
+- name: replicationcontroller.admission.stash.appscode.com
+  clientConfig:
+    service:
+      namespace: default
+      name: kubernetes
+      path: /apis/admission.stash.appscode.com/v1alpha1/replicationcontrollers
+    caBundle: {{ b64enc .Values.apiserver.ca }}
+  rules:
+  - operations:
+    - CREATE
+    - UPDATE
+    apiGroups:
+    - ""
+    apiVersions:
+    - "*"
+    resources:
+    - replicationcontrollers
+  failurePolicy: Fail
+- name: replicaset.admission.stash.appscode.com
+  clientConfig:
+    service:
+      namespace: default
+      name: kubernetes
+      path: /apis/admission.stash.appscode.com/v1alpha1/replicasets
+    caBundle: {{ b64enc .Values.apiserver.ca }}
+  rules:
+  - operations:
+    - CREATE
+    - UPDATE
+    apiGroups:
+    - apps
+    - extensions
+    apiVersions:
+    - "*"
+    resources:
+    - replicasets
+  failurePolicy: Fail
+{{ end }}

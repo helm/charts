@@ -1,31 +1,47 @@
-apiVersion: extensions/v1beta1
+{{- if semverCompare "^1.9-0" .Capabilities.KubeVersion.GitVersion }}
+apiVersion: apps/v1
+{{- else }}
+apiVersion: apps/v1beta1
+{{- end }}
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "traefik.fullname" . }}
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "traefik.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
 spec:
   replicas: {{ default 1 .Values.replicas }}
   selector:
     matchLabels:
-      app: {{ template "fullname" . }}
+      app: {{ template "traefik.name" . }}
+      release: {{ .Release.Name }}
+  {{- if .Values.deploymentStrategy }}
+  strategy:
+{{ toYaml .Values.deploymentStrategy | indent 4 }}
+  {{- end }}
   template:
     metadata:
-      {{- if and (.Values.tolerations) (le .Capabilities.KubeVersion.Minor "5") }}
       annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+      {{- if and (.Values.tolerations) (semverCompare "<1.6-0" .Capabilities.KubeVersion.GitVersion) }}
         scheduler.alpha.kubernetes.io/tolerations: '{{ toJson .Values.tolerations }}'
       {{- end }}
+      {{- range $key, $value := .Values.deployment.podAnnotations }}
+        {{ $key }}: {{ $value | quote }}
+      {{- end }}
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "traefik.name" . }}
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-        release: "{{ .Release.Name }}"
-        heritage: "{{ .Release.Service }}"
+        release: {{ .Release.Name | quote }}
+        heritage: {{ .Release.Service | quote }}
+        {{- if .Values.deployment.podLabels }}
+{{ toYaml .Values.deployment.podLabels | indent 8 }}
+        {{- end }}
     spec:
       {{- if .Values.rbac.enabled }}
-      serviceAccountName: {{ template "fullname" . }}
+      serviceAccountName: {{ template "traefik.fullname" . }}
       {{- else }}
       serviceAccountName: default
       {{- end }}
@@ -34,16 +50,20 @@ spec:
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
       {{- end }}
+      {{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+      {{- end }}
       containers:
       - image: {{ .Values.image }}:{{ .Values.imageTag }}
-        name: {{ template "fullname" . }}
+        name: {{ template "traefik.fullname" . }}
         resources:
           requests:
-            cpu: "{{ .Values.cpuRequest }}"
-            memory: "{{ .Values.memoryRequest }}"
+            cpu: {{ .Values.cpuRequest | quote }}
+            memory: {{ .Values.memoryRequest | quote }}
           limits:
-            cpu: "{{ .Values.cpuLimit }}"
-            memory: "{{ .Values.memoryLimit }}"
+            cpu: {{ .Values.cpuLimit | quote }}
+            memory: {{ .Values.memoryLimit | quote }}
         readinessProbe:
           tcpSocket:
             port: 80
@@ -60,10 +80,20 @@ spec:
           periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 2
+        {{- if and .Values.acme.enabled (eq .Values.acme.challengeType "dns-01") .Values.acme.dnsProvider.name }}
+        env:
+        {{- range $k, $_ := (index .Values.acme.dnsProvider .Values.acme.dnsProvider.name) }}
+          - name: {{ $k }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "traefik.fullname" $ }}-dnsprovider-config
+                key: {{ $k }}
+        {{- end }}
+        {{- end }}
         volumeMounts:
         - mountPath: /config
           name: config
-        {{- if .Values.ssl.enabled }}
+        {{- if and .Values.ssl.enabled (not .Values.ssl.upstream) }}
         - mountPath: /ssl
           name: ssl
         {{- end }}
@@ -74,39 +104,52 @@ spec:
         ports:
         - name: http
           containerPort: 80
+          {{- if .Values.deployment.hostPort.httpEnabled }}
+          hostPort: 80
+          {{- end }}
           protocol: TCP
         - name: httpn
           containerPort: 8880
           protocol: TCP
         - name: https
           containerPort: 443
+          {{- if .Values.deployment.hostPort.httpsEnabled }}
+          hostPort: 443
+          {{- end }}
           protocol: TCP
         {{- if .Values.dashboard.enabled }}
         - name: dash
           containerPort: 8080
+          {{- if .Values.deployment.hostPort.dashboardEnabled }}
+          hostPort: 8080
+          {{- end }}
           protocol: TCP
         {{- end }}
         args:
         - --configfile=/config/traefik.toml
+        {{- range .Values.startupArguments }}
+        - {{ . }}
+        {{- end }}
+
       volumes:
       - name: config
         configMap:
-          name: {{ template "fullname" . }}
-      {{- if .Values.ssl.enabled }}
+          name: {{ template "traefik.fullname" . }}
+      {{- if and .Values.ssl.enabled (not .Values.ssl.upstream) }}
       - name: ssl
         secret:
-          secretName: {{ template "fullname" . }}-default-cert
+          secretName: {{ template "traefik.fullname" . }}-default-cert
       {{- end }}
       {{- if .Values.acme.enabled }}
       - name: acme
       {{- if .Values.acme.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "fullname" . }}-acme
+          claimName: {{ .Values.acme.persistence.existingClaim | default (printf "%s-acme" (include "traefik.fullname" .)) }}
       {{- else }}
         emptyDir: {}
       {{- end }}
       {{- end }}
-      {{- if and (.Values.tolerations) (ge .Capabilities.KubeVersion.Minor "6") }}
+      {{- if and (.Values.tolerations) (semverCompare "^1.6-0" .Capabilities.KubeVersion.GitVersion) }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 6 }}
       {{- end }}

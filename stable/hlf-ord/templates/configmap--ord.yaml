@@ -1,0 +1,34 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "hlf-ord.fullname" . }}--ord
+  labels:
+{{ include "labels.standard" . | indent 4 }}
+data:
+  ## Location where fabric-ca-client configuration is saved
+  FABRIC_CA_CLIENT_HOME: /var/hyperledger/fabric-ca-client
+  ## Orderer defaults
+  ORDERER_CFG_PATH: /var/hyperledger/config
+  ORDERER_GENERAL_LEDGERTYPE: file
+  ORDERER_FILELEDGER_LOCATION: /var/hyperledger/ledger
+  ORDERER_GENERAL_BATCHTIMEOUT: 1s
+  ORDERER_GENERAL_BATCHSIZE_MAXMESSAGECOUNT: "10"
+  ORDERER_GENERAL_MAXWINDOWSIZE: "1000"
+  ORDERER_GENERAL_ORDERERTYPE: {{ .Values.ord.type | quote }}
+  ORDERER_GENERAL_LISTENADDRESS: 0.0.0.0
+  ORDERER_GENERAL_LISTENPORT: "7050"
+  ORDERER_GENERAL_LOGLEVEL: debug
+  ORDERER_GENERAL_LOCALMSPDIR: /var/hyperledger/msp
+  ORDERER_GENERAL_LOCALMSPID: {{ .Values.ord.mspID | quote }}
+  ORDERER_GENERAL_GENESISMETHOD: file
+  ORDERER_GENERAL_GENESISFILE: /hl_config/genesis/genesis.block
+  ORDERER_GENERAL_GENESISPROFILE: initial
+  ORDERER_GENERAL_TLS_ENABLED: {{ .Values.ord.tls.server.enabled | quote }}
+  ORDERER_GENERAL_TLS_CERTIFICATE: "/var/hyperledger/tls/server/pair/tls.crt"
+  ORDERER_GENERAL_TLS_PRIVATEKEY: "/var/hyperledger/tls/server/pair/tls.key"
+  ORDERER_GENERAL_TLS_ROOTCAS: "/var/hyperledger/tls/server/cert/cacert.pem"
+  ORDERER_GENERAL_TLS_CLIENTAUTHREQUIRED: {{ .Values.ord.tls.client.enabled | quote }}
+  # This is fixed prior to starting the orderer
+  ORDERER_GENERAL_TLS_CLIENTROOTCAS: "/var/hyperledger/tls/client/cert/*"
+  GODEBUG: "netdns=go"
+  ADMIN_MSP_PATH: /var/hyperledger/admin_msp

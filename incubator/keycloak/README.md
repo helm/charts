@@ -1,5 +1,9 @@
 # Keycloak
 
+****
+**NOTE: This chart has been DEPRECATED. Please use stable/keycloak.**
+****
+
 [Keycloak](http://www.keycloak.org/) is an open source identity and access management for modern applications and services.
 
 ## TL;DR;
@@ -11,9 +15,9 @@ $ helm install incubator/keycloak
 
 ## Introduction
 
-This chart bootstraps a [Keycloak](http://www.keycloak.org/) StatefulSet on a [Kubernetes](https://kubernetes.io) cluster 
+This chart bootstraps a [Keycloak](http://www.keycloak.org/) StatefulSet on a [Kubernetes](https://kubernetes.io) cluster
 using the [Helm](https://helm.sh) package manager. It provisions a fully featured Keycloak installation.
-For more information on Keycloak and its capabilities, see it's [documentation](http://www.keycloak.org/documentation.html).
+For more information on Keycloak and its capabilities, see its [documentation](http://www.keycloak.org/documentation.html).
 
 ## Prerequisites Details
 
@@ -38,42 +42,49 @@ $ helm delete keycloak
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Keycloak chart and their default values.
+The following table lists the configurable parameters of the Keycloak chart and their default values.
 
 Parameter | Description | Default
 --- | --- | ---
-`hyperkube.image.repository` | Hyperkube image repository | `quay.io/coreos/hyperkube`
-`hyperkube.image.tag` | Hyperkube image tag | `v1.8.1_coreos.0`
-`hyperkube.image.pullPolicy` | Hyperkube image pull policy | `IfNotPresent`
+`init.image.repository` | Init image repository | `alpine`
+`init.image.tag` | Init image tag | `3.6`
+`init.image.pullPolicy` | Init image pull policy | `IfNotPresent`
 `keycloak.replicas` | The number of Keycloak replicas | `1`
 `keycloak.image.repository` | The Keycloak image repository | `jboss/keycloak`
-`keycloak.image.tag` | The Keycloak image tag | `3.4.0.Final`
+`keycloak.image.tag` | The Keycloak image tag | `3.4.3.Final`
 `keycloak.image.pullPolicy` | The Keycloak image pull policy | `IfNotPresent`
+`keycloak.image.pullSecrets`| Specify image pull secrets | `nil` (does not add image pull secrets to deployed pods) |
 `keycloak.username` | Username for the initial Keycloak admin user | `keycloak`
 `keycloak.password` | Password for the initial Keycloak admin user. If not set, a random 10 characters password is created | `""`
-`keycloak.additionalEnv` | Allows the specification of additional environment variables for Keycloak | `[]`
+`keycloak.extraEnv` | Allows the specification of additional environment variables for Keycloak | `[]`
+`keycloak.extraVolumeMounts` | Add additional volumes mounts, e. g. for custom themes | `[]`
+`keycloak.extraVolumes` | Add additional volumes, e. g. for custom themes | `[]`
+`keycloak.podDisruptionBudget` | Pod disruption budget | `{}`
 `keycloak.resources` | Pod resource requests and limits | `{}`
-`keycloak.podAntiAffinity` | Pod anti-affinity (`soft` or `hard`) | `soft`
+`keycloak.affinity` | Pod affinity | ``
 `keycloak.nodeSelector` | Node labels for pod assignment | `{}`
 `keycloak.tolerations` | Node taints to tolerate | `[]`
+`keycloak.securityContext` | Security context for the pod | `{runAsUser: 1000, fsGroup: 1000, runAsNonRoot: true}`
+`keycloak.preStartScript` | Custom script to run before Keycloak starts up | ``
+`keycloak.livenessProbe.initialDelaySeconds` | Liveness Probe `initialDelaySeconds` | `120`
+`keycloak.livenessProbe.timeoutSeconds` | Liveness Probe `timeoutSeconds` | `5`
+`keycloak.readinessProbe.initialDelaySeconds` | Readiness Probe `initialDelaySeconds` | `30`
+`keycloak.readinessProbe.timeoutSeconds` | Readiness Probe `timeoutSeconds` | `1`
 `keycloak.cli.nodeIdentifier` | WildFly CLI script for setting the node identifier | See `values.yaml`
 `keycloak.cli.logging` | WildFly CLI script for logging configuration | See `values.yaml`
 `keycloak.cli.reverseProxy` | WildFly CLI script for reverse proxy configuration | See `values.yaml`
 `keycloak.cli.discovery` | WildFly CLI script for cluster discovery | See `values.yaml`
 `keycloak.cli.custom` | Additional custom WildFly CLI script | `""`
 `keycloak.service.annotations` | Annotations for the Keycloak service | `{}`
-`keycloak.service.labels` | Additional labels for ther Keycloak service | `{}`
+`keycloak.service.labels` | Additional labels for the Keycloak service | `{}`
 `keycloak.service.type` | The service type | `ClusterIP`
 `keycloak.service.port` | The service port | `80`
 `keycloak.service.nodePort` | The node port used if the service is of type `NodePort` | `""`
-`keycloak.ingress.enabled` | If true, an ingress is be created | `false`
-`keycloak.ingress.path` | The ingress path | `/`
-`keycloak.ingress.annotations` | Annotations for the ingress | `{}`
-`keycloak.ingress.hosts` | A list of hosts for the ingress | `[keycloak.example.com]`
-`keycloak.ingress.tls.enabled` | If true, tls is enabled for the ingress | `false`
-`keycloak.ingress.tls.existingSecret` | If tls is enabled, uses an existing secret with this name; otherwise a secret is created | `false`
-`keycloak.ingress.tls.secretContents` | Contents for the tls secret | `{}`
-`keycloak.ingress.tls.secretAnnotations` | Annotations for the newly created tls secret | `{}`
+`keycloak.ingress.enabled` | if `true`, an ingress is created | `false`
+`keycloak.ingress.annotations` | annotations for the ingress | `{}`
+`keycloak.ingress.path` | if `true`, an ingress is created | `/`
+`keycloak.ingress.hosts` | a list of ingress hosts | `[keycloak.example.com]`
+`keycloak.ingress.tls` | a list of [IngressTLS](https://v1-9.docs.kubernetes.io/docs/reference/generated/kubernetes-api/v1.9/#ingresstls-v1beta1-extensions) items | `[]`
 `keycloak.persistence.deployPostgres` | If true, the PostgreSQL chart is installed | `true`
 `keycloak.persistence.existingSecret` | Name of an existing secret to be used for the database password (if `keycloak.persistence.deployPostgres=false`). Otherwise a new secret is created | `""`
 `keycloak.persistence.existingSecretKey` | The key for the database password in the existing secret (if `keycloak.persistence.deployPostgres=false`) | `password`
@@ -101,7 +112,7 @@ $ helm install --name keycloak -f values.yaml incubator/keycloak
 ### Database Setup
 
 By default, the [PostgreSQL](https://github.com/kubernetes/charts/tree/master/stable/postgresql) chart is deployed and used as database.
-Please refer to this chart for additional PostgreSQL configuration options. If PostgreSQL is disabled, Keycloak uses an embedded H2 
+Please refer to this chart for additional PostgreSQL configuration options. If PostgreSQL is disabled, Keycloak uses an embedded H2
 database which is only suitable for testing with a single replica.
 
 #### Using an External Database
@@ -140,7 +151,7 @@ See also:
 
 ```yaml
 keycloak:
-  additionalEnv:
+  extraEnv:
     - name: KEYCLOAK_LOGLEVEL
       value: : DEBUG
     - name: WILDFLY_LOGLEVEL
@@ -155,7 +166,7 @@ WildFly can be configured via its [command line interface (CLI)](https://docs.jb
 This chart uses the official Keycloak Docker image and customizes the installation running CLI scripts at server startup.
 
 In order to make further customization easier, the CLI commands are separated by their concerns into smaller scripts.
-Everything is in `values.yaml` and can be overridden. Additional CLI commands may be added via `keycloak.cli.custom`, 
+Everything is in `values.yaml` and can be overridden. Additional CLI commands may be added via `keycloak.cli.custom`,
 which is empty by default.
 
 ### High Availability and Clustering

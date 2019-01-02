@@ -1,0 +1,42 @@
+image:
+  repository: sematext/sematext-agent-docker
+  # For all available tags check here https://hub.docker.com/r/sematext/sematext-agent-docker/tags/
+  tag: 1.31.53
+  pullPolicy: IfNotPresent
+
+sematext:
+  # You will need to Create and Set at least one token before starting this agent!
+
+  # spmToken:
+  # logseneToken:
+
+  # Depending on where you created your apps, choose US or EU region.
+  region: US
+
+  useHostNetwork: false
+  name: sematext-docker-agent
+
+  # Support for custom URLs
+  # url:
+  #   spmReceiver: http://spm-receiver:8080
+  #   logseneReceiver: http://logsene-receiver:8080
+  #   eventsReceiver: http://events-receiver:8080
+
+  # The full list of available options is here https://sematext.com/docs/sematext-docker-agent/configuration/
+  config:
+    # MATCH_BY_NAME: .*_default_
+    # SPM_MATCH_BY_NAME: .*_default_
+
+  resources: {}
+  #  requests:
+  #    cpu: 500m
+  #    memory: 128Mi
+  #  limits:
+  #    cpu: 1000m
+  #    memory: 1024Mi
+
+  tolerations: []
+
+  # Node labels for pod assignment
+  # Ref: https://kubernetes.io/docs/user-guide/node-selection/
+  nodeSelector: {}

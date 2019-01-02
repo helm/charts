@@ -1,38 +1,39 @@
 {{- if .Values.ingress.enabled -}}
-{{- $fullName := include "kubernetes-dashboard.fullname" . }}
-{{- $httpPort := .Values.httpPort }}
+{{- $serviceName := include "kubernetes-dashboard.fullname" . -}}
+{{- $servicePort := .Values.service.externalPort -}}
+{{- $path := .Values.ingress.path -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  annotations:
-  {{- range $key, $value := .Values.ingress.annotations }}
-    {{ $key }}: {{ $value | quote }}
-  {{- end }}
+  name: {{ template "kubernetes-dashboard.fullname" . }}
   labels:
     app: {{ template "kubernetes-dashboard.name" . }}
-    heritage: "{{ .Release.Service }}"
-    release: "{{ .Release.Name }}"
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-  name: {{ template "kubernetes-dashboard.fullname" . }}
+    chart: {{ template "kubernetes-dashboard.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+{{- if .Values.ingress.annotations }}
+  annotations:
+{{ toYaml .Values.ingress.annotations | indent 4 }}
+{{- end }}
 spec:
   rules:
   {{- if .Values.ingress.hosts }}
-  {{- range .Values.ingress.hosts }}
-    - host: {{ . }}
+  {{- range $host := .Values.ingress.hosts }}
+    - host: {{ $host }}
       http:
         paths:
-          - path: /
+          - path: {{ $path }}
             backend:
-              serviceName: {{ $fullName }}
-              servicePort: {{ $httpPort }}
+              serviceName: {{ $serviceName }}
+              servicePort: {{ $servicePort }}
   {{- end -}}
   {{- else }}
     - http:
         paths:
-          - path: /
+          - path: {{ $path }}
             backend:
-              serviceName: {{ $fullName }}
-              servicePort: {{ $httpPort }}
+              serviceName: {{ $serviceName }}
+              servicePort: {{ $servicePort }}
   {{- end -}}
   {{- if .Values.ingress.tls }}
   tls:

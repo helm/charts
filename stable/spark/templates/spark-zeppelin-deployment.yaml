@@ -9,11 +9,12 @@ metadata:
     component: "{{ .Release.Name }}-{{ .Values.Zeppelin.Component }}"
 spec:
   ports:
-    - port: {{ .Values.Zeppelin.ServicePort }}
+    - name: http
+      port: {{ .Values.Zeppelin.ServicePort }}
       targetPort: {{ .Values.Zeppelin.ContainerPort }}
   selector:
     component: "{{ .Release.Name }}-{{ .Values.Zeppelin.Component }}"
-  type: "LoadBalancer"
+  type: {{ .Values.Zeppelin.ServiceType }}
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -42,10 +43,32 @@ spec:
       containers:
         - name: {{ template "zeppelin-fullname" . }}
           image: "{{ .Values.Zeppelin.Image }}:{{ .Values.Zeppelin.ImageTag }}"
-          command: ["/bin/sh","-c"]
-          args: ["sed -i.bak s/spark-master:7077/{{ template "master-fullname" . }}:{{ .Values.Master.ServicePort }}/g /opt/zeppelin/conf/zeppelin-env.sh; /opt/zeppelin/bin/docker-zeppelin.sh"]
           ports:
             - containerPort: {{ .Values.Zeppelin.ContainerPort }}
+              name: http
           resources:
             requests:
               cpu: "{{ .Values.Zeppelin.Cpu }}"
+          env:
+            - name: SPARK_MASTER
+              value: "spark://{{ template "master-fullname" . }}:{{ .Values.Master.ServicePort }}"
+          volumeMounts:
+          {{- if .Values.Zeppelin.Persistence.Config.Enabled }}
+            - name: {{ template "master-fullname" . }}-config
+              mountPath: /zeppelin/conf
+          {{- end }}
+          {{- if .Values.Zeppelin.Persistence.Notebook.Enabled }}
+            - name: {{ template "master-fullname" . }}-notebook
+              mountPath: /zeppelin/notebook
+          {{- end }}
+      volumes:
+        {{- if .Values.Zeppelin.Persistence.Config.Enabled }}
+        - name: {{ template "master-fullname" . }}-config
+          persistentVolumeClaim:
+            claimName: {{ template "zeppelin-fullname" . }}-config
+        {{- end }}
+        {{- if .Values.Zeppelin.Persistence.Notebook.Enabled }}
+        - name: {{ template "master-fullname" . }}-notebook
+          persistentVolumeClaim:
+            claimName: {{ template "zeppelin-fullname" . }}-notebook
+        {{- end }}

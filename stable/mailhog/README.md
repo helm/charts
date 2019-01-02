@@ -66,12 +66,8 @@ Parameter | Description | Default
 `ingress.enabled` | if `true`, an ingress is created | `false`
 `ingress.annotations` | annotations for the ingress | `{}`
 `ingress.path` | if `true`, an ingress is created | `/`
-`ingress.host` | the ingress host | `mailhog.example.com`
-`ingress.tls.enabled` | if `true`, tls is enabled for the ingress | `false`
-`ingress.tls.existingSecret` | if tls is enabled, uses an existing secret with this name; otherwise a secret is created | `false`
-`ingress.tls.secretAnnotations` | annotations for the tls secret | `false`
-`ingress.tls.secretContents` | YAML contents for the tls ingress | `false`
-
+`ingress.hosts` | a list of ingress hosts | `[mailhog.example.com]`
+`ingress.tls` | a list of [IngressTLS](https://v1-8.docs.kubernetes.io/docs/api-reference/v1.8/#ingresstls-v1beta1-extensions) items | `[]`
 `env` | Mailhog environment variables, see [CONFIG.md](https://github.com/mailhog/MailHog/blob/master/docs/CONFIG.md) | `{}`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,

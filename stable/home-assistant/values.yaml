@@ -1,0 +1,146 @@
+# Default values for home-assistant.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: homeassistant/home-assistant
+  tag: 0.84.6
+  pullPolicy: IfNotPresent
+  pullSecrets: []
+
+service:
+  type: ClusterIP
+  port: 8123
+  annotations: {}
+  labels: {}
+  clusterIP: ""
+  ## List of IP addresses at which the hass-configurator service is available
+  ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
+  ##
+  externalIPs: []
+  loadBalancerIP: ""
+  loadBalancerSourceRanges: []
+  # nodePort: 30000
+
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  path: /
+  hosts:
+    - home-assistant.local
+  tls: []
+  #  - secretName: home-assistant-tls
+  #    hosts:
+  #      - home-assistant.local
+
+hostNetwork: false
+
+persistence:
+  enabled: true
+  ## home-assistant data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  # storageClass: "-"
+  ##
+  ## If you want to reuse an existing claim, you can pass the name of the PVC using
+  ## the existingClaim variable
+  # existingClaim: your-claim
+  accessMode: ReadWriteOnce
+  size: 5Gi
+
+## Additional hass container environment variable
+## For instance to add a http_proxy
+##
+extraEnv: {}
+
+## Additional hass container environment variable from k8s secrets
+## For instance to add a password
+## can use `!env_var` in the home assistant configuration to reference these variables
+extraEnvSecrets:
+  # Example
+  # This will set ${MQTT_PASSWORD} to the 'password' key from the 'mqtt' secret
+  # MQTT_PASSWORD:
+  #   secret: mqtt
+  #   key: password
+
+configurator:
+  enabled: false
+
+  ## hass-configurator container image
+  ##
+  image:
+    repository: causticlab/hass-configurator-docker
+    tag: x86_64-0.3.1
+    pullPolicy: IfNotPresent
+
+  ## URL for the home assistant API endpoint
+  # hassApiUrl: http://home-assistant:8123/api/
+  ## home assistant API password
+  # hassApiPassword:
+  ## path where the home assistant configuration is stored
+  basepath: /config
+  ## don't allow switching out of the base path
+  enforceBasepath: true
+  ## username for basic auth for accessing the configurator
+  # username:
+  ## password (sha256-hash) for basic auth for accessing the configurator
+  ## For example "test" would be "{sha256}9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08"
+  # password:
+
+  ## Additional hass-configurator container environment variable
+  ## For instance to add a http_proxy
+  ##
+  extraEnv: {}
+
+  ingress:
+    enabled: false
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    path: /
+    hosts:
+      - home-assistant.local
+    tls: []
+    #  - secretName: home-assistant-tls
+    #    hosts:
+    #      - home-assistant.local
+
+  service:
+    type: ClusterIP
+    port: 3218
+    annotations: {}
+    labels: {}
+    clusterIP: ""
+    ## List of IP addresses at which the hass-configurator service is available
+    ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
+    ##
+    externalIPs: []
+    loadBalancerIP: ""
+    loadBalancerSourceRanges: []
+    # nodePort: 30000
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

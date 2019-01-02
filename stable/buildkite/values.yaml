@@ -17,9 +17,10 @@ agent:
   meta: "role=agent"
 
 # Extra env vars to be passed
-# If you do want to xxtra env vars to pass to agent, uncomment the following
+# If you do want extra env vars to pass to agent, uncomment the following
 # lines, adjust them as necessary.
-#extraEnv:
+#
+# extraEnv:
 #  - name: test1
 #    value: "test1"
 #  - name: test2

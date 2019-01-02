@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Calculates cluster resources given a percentage based on what is currently allocatable.
-# Related issue to programatic resource query: https://github.com/kubernetes/kubernetes/issues/27404
+# Related issue to programmatic resource query: https://github.com/kubernetes/kubernetes/issues/27404
 
 TARGET_PCT=$1
 
@@ -39,7 +39,7 @@ for NODE in ${NODES}; do
     # Get available memory
     AVAIL_MEM[$i]=$(jq '.node.memory.availableBytes' <<< "${NODE_STATS[$i]}")
     AVAIL_MEM[$i]=$(bc -l <<< "scale=0; ${AVAIL_MEM[$i]}/1024/1024")
-    
+
     # Derive available CPU
     USED_CPU=$(jq '.node.cpu.usageNanoCores' <<< "${NODE_STATS[$i]}")
     AVAIL_CPU[$i]=$(bc -l <<< "scale=2; (${TOTAL_CPU} - ${USED_CPU})/1000000")

@@ -4,6 +4,10 @@ metadata:
   name: {{ template "gogs.fullname" . }}
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+{{- if .Values.service.annotations }}
+  annotations:
+{{ toYaml .Values.service.annotations | indent 4 }}
+{{- end }}
 spec:
   type: {{ .Values.serviceType }}
   ports:
@@ -11,7 +15,7 @@ spec:
     targetPort: 3000
     name: {{ default "gogs" .Values.service.nameOverride }}-http
   - port: {{ .Values.service.sshPort | int }}
-    targetPort:  {{ .Values.service.sshPort | int }}
+    targetPort: 22
     name: {{ default "gogs" .Values.service.nameOverride }}-ssh
   selector:
     app: {{ template "gogs.fullname" . }}

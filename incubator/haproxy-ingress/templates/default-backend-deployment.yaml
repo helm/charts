@@ -1,0 +1,31 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  labels:
+    app: {{ template "haproxy-ingress.name" . }}
+    chart: {{ template "haproxy-ingress.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ .Values.defaultBackend.name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "haproxy-ingress.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "haproxy-ingress.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Values.defaultBackend.name }}
+          image: "{{ .Values.defaultBackend.image.repository }}:{{ .Values.defaultBackend.image.tag }}"
+          imagePullPolicy: "{{ .Values.defaultBackend.image.pullPolicy }}"
+          ports:
+            - containerPort: 8080
+          resources:
+            limits:
+              cpu: {{ .Values.defaultBackend.resources.cpu }}
+              memory: {{ .Values.defaultBackend.resources.memory }}

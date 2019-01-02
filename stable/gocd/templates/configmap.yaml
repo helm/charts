@@ -1,0 +1,139 @@
+{{- if .Values.server.shouldPreconfigure }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "gocd.fullname" . }}
+  labels:
+    app: {{ template "gocd.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+data:
+  preconfigure_server.sh: |-
+    #!/bin/bash
+
+    SERVICE_ACCOUNT_PATH=/var/run/secrets/kubernetes.io/serviceaccount
+    KUBE_TOKEN=$(<${SERVICE_ACCOUNT_PATH}/token)
+
+    while true
+    do
+      status_code=$(curl 'http://localhost:8153/go/api/v1/health' -o /dev/null -w "%{http_code}")
+      if [ $status_code == 200 ]; then
+        break
+      fi
+      sleep 10
+    done
+
+    set -e
+
+    echo "checking if server has already been configured" >> /godata/logs/preconfigure.log
+
+    if [ -f /godata/logs/preconfigure_complete.log ]
+    then
+      echo "Existing server configuration found in cruise-config.xml. Skipping preconfigure_server scripts." >> /godata/logs/preconfigure.log
+      exit 0
+    fi
+
+    echo "No configuration found in cruise-config.xml. Using default preconfigure_server scripts to configure server" >> /godata/logs/preconfigure.log
+
+    echo "Trying to create an elastic profile now." >> /godata/logs/preconfigure.log
+
+    (curl --fail -i 'http://localhost:8153/go/api/elastic/profiles' \
+      -H 'Accept: application/vnd.go.cd.v1+json' \
+      -H 'Content-Type: application/json' \
+      -X POST -d '{
+        "id": "demo-app",
+        "plugin_id": "cd.go.contrib.elasticagent.kubernetes",
+        "properties": [
+          {
+            "key": "Image",
+            "value": "gocd/gocd-agent-docker-dind:v{{ .Chart.AppVersion }}"
+          },
+          {
+            "key": "PodConfiguration",
+            "value": "apiVersion: v1\nkind: Pod\nmetadata:\n  name: pod-name-prefix-{{ `{{ POD_POSTFIX }}` }}\n  labels:\n    app: web\nspec:\n  serviceAccountName: {{ template "gocd.agentServiceAccountName" . }}\n  containers:\n    - name: gocd-agent-container-{{ `{{ CONTAINER_POSTFIX }}` }}\n      image: gocd/gocd-agent-docker-dind:v{{ .Chart.AppVersion }}\n      securityContext:\n        privileged: true"
+          },
+          {
+            "key": "SpecifiedUsingPodConfiguration",
+            "value": "true"
+          },
+          {
+            "key": "Privileged",
+            "value": "true"
+          }
+        ]
+      }' >> /godata/logs/preconfigure.log)
+
+    echo "Trying to configure plugin settings." >> /godata/logs/preconfigure.log
+
+    (curl --fail -i 'http://localhost:8153/go/api/admin/plugin_settings' \
+      -H 'Accept: application/vnd.go.cd.v1+json' \
+      -H 'Content-Type: application/json' \
+      -X POST -d '{
+        "plugin_id": "cd.go.contrib.elasticagent.kubernetes",
+        "configuration": [
+          {
+            "key": "go_server_url",
+            "value": "https://{{ template "gocd.fullname" . }}-server:{{ .Values.server.service.httpsPort }}/go"
+          },
+          {
+            "key": "kubernetes_cluster_url",
+            "value": "https://'$KUBERNETES_SERVICE_HOST':'$KUBERNETES_SERVICE_PORT_HTTPS'"
+          },
+          {
+            "key": "namespace",
+            "value": "{{ .Release.Namespace }}"
+          },
+          {
+            "key": "security_token",
+            "value": "'$KUBE_TOKEN'"
+          }
+        ]
+      }' >> /godata/logs/preconfigure.log)
+
+    echo "Trying to creating a hello world pipeline." >> /godata/logs/preconfigure.log
+
+    (curl --fail -i 'http://localhost:8153/go/api/admin/pipelines' \
+      -H 'Accept: application/vnd.go.cd.v6+json' \
+      -H 'Content-Type: application/json' \
+      -X POST -d '{ "group": "sample",
+                    "pipeline": {
+                      "label_template": "${COUNT}",
+                      "name": "hello_world",
+                      "materials": [
+                        {
+                          "type": "git",
+                          "attributes": {
+                            "url": "https://github.com/gocd-contrib/getting-started-repo",
+                            "shallow_clone": true
+                          }
+                        }
+                      ],
+                      "stages": [
+                        {
+                          "name": "default_stage",
+                          "jobs": [
+                            {
+                              "name": "default_job",
+                              "elastic_profile_id": "demo-app",
+                              "tasks": [
+                                {
+                                  "type": "exec",
+                                  "attributes": {
+                                    "command": "echo",
+                                    "arguments": [
+                                      "Hello World"
+                                    ]
+                                  }
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }' >> /godata/logs/preconfigure.log )
+
+    echo "Done preconfiguring the GoCD server" > /godata/logs/preconfigure_complete.log
+
+{{- end }}

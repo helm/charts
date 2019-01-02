@@ -1,5 +1,6 @@
 name: memcached
-version: 2.0.0
+version: 2.4.0
+appVersion: 1.5.6
 description: Free & open source, high-performance, distributed memory object caching
   system.
 keywords:
@@ -10,6 +11,10 @@ icon: https://upload.wikimedia.org/wikipedia/en/thumb/2/27/Memcached.svg/1024px-
 sources:
 - https://github.com/docker-library/memcached
 maintainers:
-- name: Greg Taylor
+- name: gtaylor
   email: gtaylor@gc-taylor.com
+- name: olemarkus
+  email: o.with@sportradar.com
+- name: kennethaasan
+  email: k.aasan@sportradar.com
 engine: gotpl

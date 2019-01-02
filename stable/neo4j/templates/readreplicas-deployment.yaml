@@ -22,6 +22,8 @@ spec:
         image: "{{ .Values.image }}:{{ .Values.imageTag }}"
         imagePullPolicy: "{{ .Values.imagePullPolicy }}"
         env:
+          - name: NEO4J_ACCEPT_LICENSE_AGREEMENT
+            value: "{{ .Values.acceptLicenseAgreement }}"
           - name: NEO4J_dbms_mode
             value: READ_REPLICA
           - name: NEO4J_dbms_security_auth__enabled
@@ -29,7 +31,7 @@ spec:
           - name: NEO4J_causal__clustering_discovery__type
             value: DNS
           - name: NEO4J_causal__clustering_initial__discovery__members
-            value: "{{ template "neo4j.fullname" . }}.default.svc.cluster.local:5000"
+            value: "{{ template "neo4j.fullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}:5000"
           {{- if .Values.authEnabled }}
           - name: NEO4J_SECRETS_PASSWORD
             valueFrom:
@@ -61,5 +63,20 @@ spec:
           name: bolt
         - containerPort: 6000
           name: tx
-        securityContext:
-          privileged: true
+        volumeMounts:
+        - name: plugins
+          mountPath: /plugins
+{{- if .Values.core.sidecarContainers }}
+{{ toYaml .Values.core.sidecarContainers | indent 6 }}
+{{- end }}
+{{- if .Values.readReplica.initContainers }}
+      initContainers:
+{{ toYaml .Values.readReplica.initContainers | indent 6 }}
+{{- end }}
+      volumes:
+        - name: plugins
+          emptyDir: {}
+{{- if .Values.imagePullSecret }}
+      imagePullSecrets:
+      - name: {{ .Values.imagePullSecret }}
+{{- end -}}
