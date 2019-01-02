@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: {{ template "prestashop.fullname" . }}
   labels:
-    app: "{{ template "prestashop.fullname" . }}"
+    app: "{{ template "prestashop.name" . }}"
     chart: "{{ template "prestashop.chart" . }}"
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
