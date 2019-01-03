@@ -69,6 +69,8 @@ ingressShim: {}
   # defaultACMEChallengeType: ""
   # defaultACMEDNS01ChallengeProvider: ""
 
+priorityClassName: ""
+
 webhook:
   enabled: false
 
