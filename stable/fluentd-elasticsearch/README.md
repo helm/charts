@@ -1,9 +1,8 @@
-# Fluentd Elasticsearch
+# DEPRECATED - Fluentd Elasticsearch
 
 
-This chart is deprecated as we move to our own repo which will be puplished on hub.helm.sh soon.
+This chart is deprecated as we move to our own repo (https://kiwigrid.github.io) which will be puplished on hub.helm.sh soon.
 The chart source can be found here: https://github.com/kiwigrid/helm-charts/tree/master/charts/fluentd-elasticsearch
-
 
 
 * Installs [Fluentd](https://www.fluentd.org/) log forwarder.
