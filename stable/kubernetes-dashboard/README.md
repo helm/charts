@@ -94,4 +94,4 @@ fullnameOverride: 'kubernetes-dashboard'
 
 ### Ugrade from 0.x.x to 1.x.x
 
-
+Upgrade from 0.x.x version to 1.x.x version is seamless if you use default `ingress.path` value. If you have non-default `ingress.path` values with version 0.x.x, you need to add your custom path in `ingress.paths` list value as shown as examples in `values.yaml`.
