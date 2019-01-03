@@ -99,6 +99,17 @@ data:
         sub_filter "src=\"/" "src=\"/proxy/$1:$2/";
         sub_filter_once off;
       }
+
+      location ~ "^/proxy/(.*.svc.cluster.local):([0-9]{4,6})/(.*)$" {
+        resolver 127.0.0.1:53 ipv6=off;
+        proxy_pass "http://$1:$2/$3$is_args$args";
+        sub_filter "http://" "/proxy/";
+        sub_filter "href='/" "href='/proxy/$1:$2/";
+        sub_filter "href=\"/" "href=\"/proxy/$1:$2/";
+        sub_filter "src='/" "src='/proxy/$1:$2/";
+        sub_filter "src=\"/" "src=\"/proxy/$1:$2/";
+        sub_filter_once off;
+      }
     }
 ---
 apiVersion: v1
