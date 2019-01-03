@@ -53,6 +53,14 @@ spec:
                 name: {{ template "datadog.appKeySecretName" . }}
                 key: app-key
           {{- end }}
+          {{- if .Values.datadog.site }}
+          - name: DD_SITE
+            value: {{ .Values.datadog.site | quote }}
+          {{- end }}
+          {{- if .Values.datadog.dd_url }}
+          - name: DD_DD_URL
+            value: {{ .Values.datadog.dd_url | quote }}
+          {{- end }}
           {{- if .Values.datadog.logLevel }}
           - name: DD_LOG_LEVEL
             value: {{ .Values.datadog.logLevel | quote }}
@@ -77,18 +85,26 @@ spec:
 {{- if .Values.clusterAgent.env }}
 {{ toYaml .Values.clusterAgent.env | indent 10 }}
 {{- end }}
-        {{- if .Values.clusterAgent.metricsProvider.enabled }}
+{{- if .Values.clusterAgent.livenessProbe }}
+        livenessProbe:
+{{ toYaml .Values.clusterAgent.livenessProbe | indent 10 }}
+{{- else if .Values.clusterAgent.metricsProvider.enabled }}
         livenessProbe:
           httpGet:
             port: 443
             path: /healthz
             scheme: HTTPS
+{{- end }}
+{{- if .Values.clusterAgent.readinessProbe }}
+        readinessProbe:
+{{ toYaml .Values.clusterAgent.readinessProbe | indent 10 }}
+{{- else if .Values.clusterAgent.metricsProvider.enabled}}
         readinessProbe:
           httpGet:
             port: 443
             path: /healthz
             scheme: HTTPS
-        {{- end }}
+{{- end }}
       {{- if .Values.clusterAgent.tolerations }}
       tolerations:
 {{ toYaml .Values.clusterAgent.tolerations | indent 8 }}

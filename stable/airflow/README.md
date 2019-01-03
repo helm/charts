@@ -161,7 +161,7 @@ PV.
 Since all Pods should have the same collection of DAG files, it is recommended to create just one PV
 that is shared. This ensures that the Pods are always in sync about the DagBag.
 
-This is controlled by setting `persistance.enabled=true`. You will have to ensure yourself the
+This is controlled by setting `persistence.enabled=true`. You will have to ensure yourself the
 PVC are shared properly between your pods:
 - If you are on AWS, you can use [Elastic File System (EFS)](https://aws.amazon.com/efs/).
 - If you are on Azure, you can use
@@ -233,29 +233,31 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `ingress.flower.annotations`             | annotations for the web ui ingress                      | `{}`                      |
 | `ingress.flower.tls.enabled`             | enables TLS termination at the ingress                  | `false`                   |
 | `ingress.flower.tls.secretName`          | name of the secret containing the TLS certificate & key | ``                        |
-| `persistance.enabled`                    | enable persistance storage for DAGs                     | `false`                   |
-| `persistance.existingClaim`              | if using an existing claim, specify the name here       | `nil`                     |
-| `persistance.storageClass`               | Persistent Volume Storage Class                         | (undefined)               |
-| `persistance.accessMode`                 | PVC access mode                                         | `ReadWriteOnce`           |
-| `persistance.size`                       | Persistant storage size request                         | `1Gi`                     |
+| `persistence.enabled`                    | enable persistence storage for DAGs                     | `false`                   |
+| `persistence.existingClaim`              | if using an existing claim, specify the name here       | `nil`                     |
+| `persistence.storageClass`               | Persistent Volume Storage Class                         | (undefined)               |
+| `persistence.accessMode`                 | PVC access mode                                         | `ReadWriteOnce`           |
+| `persistence.size`                       | Persistant storage size request                         | `1Gi`                     |
 | `dags.doNotPickle`                       | should the scheduler disable DAG pickling               | `false`                   |
 | `dags.path`                              | mount path for persistent volume                        | `/usr/local/airflow/dags` |
 | `dags.initContainer.enabled`             | Fetch the source code when the pods starts              | `false`                   |
+| `dags.initContainer.image.repository`    | Init container Docker image.                            | `alpine/git`              |
+| `dags.initContainer.image.tag`           | Init container Docker image tag.                        | `1.0.4`                   |
 | `dags.initContainer.installRequirements` | auto install requirements.txt deps                      | `true`                    |
 | `dags.git.url`                           | url to clone the git repository                         | nil                       |
 | `dags.git.ref`                           | branch name, tag or sha1 to reset to                    | `master`                  |
 | `rbac.create`                            | create RBAC resources                                   | `true`                    |
 | `serviceAccount.create`                  | create a service account                                | `true`                    |
 | `serviceAccount.name`                    | the service account name                                | ``                        |
-| `postgres.enabled`                       | create a postgres server                                | `true`                    |
-| `postgres.uri`                           | full URL to custom postgres setup                       | (undefined)               |
-| `postgres.portgresHost`                  | PostgreSQL Hostname                                     | (undefined)               |
-| `postgres.postgresUser`                  | PostgreSQL User                                         | `postgres`                |
-| `postgres.postgresPassword`              | PostgreSQL Password                                     | `airflow`                 |
-| `postgres.postgresDatabase`              | PostgreSQL Database name                                | `airflow`                 |
-| `postgres.persistence.enabled`           | Enable Postgres PVC                                     | `true`                    |
-| `postgres.persistance.storageClass`      | Persistant class                                        | (undefined)               |
-| `postgres.persistance.accessMode`        | Access mode                                             | `ReadWriteOnce`           |
+| `postgresql.enabled`                     | create a postgres server                                | `true`                    |
+| `postgresql.uri`                         | full URL to custom postgres setup                       | (undefined)               |
+| `postgresql.portgresHost`                | PostgreSQL Hostname                                     | (undefined)               |
+| `postgresql.postgresUser`                | PostgreSQL User                                         | `postgres`                |
+| `postgresql.postgresPassword`            | PostgreSQL Password                                     | `airflow`                 |
+| `postgresql.postgresDatabase`            | PostgreSQL Database name                                | `airflow`                 |
+| `postgresql.persistence.enabled`         | Enable Postgres PVC                                     | `true`                    |
+| `postgresql.persistance.storageClass     | Persistant class                                        | (undefined)               |
+| `postgresql.persistance.accessMode`      | Access mode                                             | `ReadWriteOnce`           |
 | `redis.enabled`                          | Create a Redis cluster                                  | `true`                    |
 | `redis.password`                         | Redis password                                          | `airflow`                 |
 | `redis.master.persistence.enabled`       | Enable Redis PVC                                        | `false`                   |
