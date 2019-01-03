@@ -48,8 +48,8 @@ spec:
 {{- end }}
 {{- if .Values.persistence.enabled }}
         - name: init-chown-data
-          image: busybox
-          imagePullPolicy: IfNotPresent
+          image: "{{ .Values.chownDataImage.repository }}:{{ .Values.chownDataImage.tag }}"
+          imagePullPolicy: {{ .Values.chownDataImage.pullPolicy }}
           securityContext:
             runAsUser: 0
           command: ["chown", "-R", "{{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.runAsUser }}", "/var/lib/grafana"]
