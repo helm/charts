@@ -13,6 +13,12 @@
 
 -------------------------------------------------------------------------------
 {{- end }}
+-------------------------------------------------------------------------------
+ NOTE
+
+  Please note some K8s resources such as Secrets or PVCs should be deleted
+  manually if you delete this release.
+-------------------------------------------------------------------------------
 {{- end }}
 
 ** Please be patient while the chart is being deployed **
