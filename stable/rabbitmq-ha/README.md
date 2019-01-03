@@ -77,6 +77,7 @@ and their default values.
 | `definitions.exchanges`                        | Pre-created exchanges | `""` |
 | `definitions.bindings`                         | Pre-created bindings | `""` |
 | `definitions.policies`                         | HA policies to add to definitions.json | `""` |
+| `definitionsSource`                            | Use this key within an existing secret to reference the definitions specification | `"definitions.json"` |
 | `image.pullPolicy`                             | Image pull policy                                                                                                                                                                                     | `Always` if `image` tag is `latest`, else `IfNotPresent`   |
 | `image.repository`                             | RabbitMQ container image repository                                                                                                                                                                   | `rabbitmq`                                                 |
 | `image.tag`                                    | RabbitMQ container image tag                                                                                                                                                                          | `3.7-alpine`                                               |
