@@ -40,7 +40,11 @@ spec:
       volumes:
         - name: tls
           secret:
+            {{- if .Values.server.tlsSecret }}
+            secretName: {{ .Values.server.tlsSecret }}
+            {{else}}
             secretName: {{ template "kiam.fullname" . }}-server
+            {{- end }}
       {{- range .Values.server.extraHostPathMounts }}
         - name: {{ .name }}
           hostPath:
