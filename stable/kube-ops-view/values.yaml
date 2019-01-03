@@ -14,11 +14,11 @@ service:
   internalPort: 8080
 resources:
   limits:
-    cpu: 100m
-    memory: 128Mi
+    cpu: 300m
+    memory: 256Mi
   requests:
-    cpu: 80m
-    memory: 64Mi
+    cpu: 200m
+    memory: 128Mi
 ingress:
   enabled: false
   # hostname: kube-ops-view.local
