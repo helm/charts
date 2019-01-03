@@ -77,6 +77,7 @@ and their default values.
 | `definitions.exchanges`                        | Pre-created exchanges | `""` |
 | `definitions.bindings`                         | Pre-created bindings | `""` |
 | `definitions.policies`                         | HA policies to add to definitions.json | `""` |
+| `definitionsSource`                            | Use this key within an existing secret to reference the definitions specification | `"definitions.json"` |
 | `image.pullPolicy`                             | Image pull policy                                                                                                                                                                                     | `Always` if `image` tag is `latest`, else `IfNotPresent`   |
 | `image.repository`                             | RabbitMQ container image repository                                                                                                                                                                   | `rabbitmq`                                                 |
 | `image.tag`                                    | RabbitMQ container image tag                                                                                                                                                                          | `3.7-alpine`                                               |
@@ -220,7 +221,13 @@ $ helm install --name my-release --set existingConfigMap=true stable/rabbitmq-ha
 ### Custom Secret
 
 Similar to custom ConfigMap, `existingSecret` can be used to override the default secret.yaml provided, and
-`rabbitmqCert.existingSecret` can be used to override the default certificates.
+`rabbitmqCert.existingSecret` can be used to override the default certificates. The custom secret must provide
+the following keys: 
+
+* `rabbitmq-user`
+* `rabbitmq-password`
+* `rabbitmq-erlang-cookie`
+* `definitions.json` (the name can be altered by setting the `definitionsSource`)
 
 ### Prometheus Monitoring & Alerts
 

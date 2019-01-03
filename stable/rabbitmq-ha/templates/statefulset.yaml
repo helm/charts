@@ -155,11 +155,9 @@ spec:
               mountPath: /var/lib/rabbitmq
             - name: config
               mountPath: /etc/rabbitmq
-            {{- if not .Values.existingSecret }}
             - name: definitions
               mountPath: /etc/definitions
               readOnly: true
-            {{- end }}
             {{- if .Values.rabbitmqCert.enabled }}
             - name: cert
               mountPath: /etc/cert
@@ -234,14 +232,12 @@ spec:
         - name: configmap
           configMap:
             name: {{ template "rabbitmq-ha.fullname" . }}
-        {{- if not .Values.existingSecret }}
         - name: definitions
           secret:
-            secretName: {{ template "rabbitmq-ha.fullname" . }}
+            secretName: {{ template "rabbitmq-ha.secretName" . }}
             items:
-            - key: definitions.json
+            - key: {{ .Values.definitionsSource }}
               path: definitions.json
-        {{- end }}
         {{- if .Values.rabbitmqCert.enabled }}
         - name: cert
           secret:
