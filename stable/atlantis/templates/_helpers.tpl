@@ -47,9 +47,9 @@ Defines the scheme (http or https) of the Atlantis service
 */}}
 {{- define "atlantis.url.scheme" -}}
 {{- if .Values.tlsSecretName -}}
-http
-{{- else -}}
 https
+{{- else -}}
+http
 {{- end -}}
 {{- end -}}
 
@@ -57,5 +57,5 @@ https
 Defines the internal kubernetes address to Atlantis
 */}}
 {{- define "atlantis.url" -}}
-{{ template "atlantis.url.scheme" }}://{{ template "atlantis.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
+{{ template "atlantis.url.scheme" . }}://{{ template "atlantis.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
 {{- end -}}
