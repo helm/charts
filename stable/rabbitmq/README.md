@@ -94,8 +94,8 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `livenessProbe.successThreshold`     | number of successes                              | 1                                                       |
 | `readinessProbe.enabled`             | would you like a readinessProbe to be enabled    | `true`                                                  |
 | `readinessProbe.initialDelaySeconds` | number of seconds                                | 10                                                      |
-| `readinessProbe.timeoutSeconds`      | number of seconds                                | 3                                                       |
-| `readinessProbe.periodSeconds`       | number of seconds                                | 5                                                       |
+| `readinessProbe.timeoutSeconds`      | number of seconds                                | 20                                                      |
+| `readinessProbe.periodSeconds`       | number of seconds                                | 30                                                      |
 | `readinessProbe.failureThreshold`    | number of failures                               | 3                                                       |
 | `readinessProbe.successThreshold`    | number of successes                              | 1                                                       |
 | `metrics.enabled`                    | Start a side-car prometheus exporter             | `false`                                                 |
