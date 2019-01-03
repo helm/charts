@@ -138,7 +138,7 @@ master:
     enabled: true
     # Enable persistence using an existing PVC
     # existingClaim:
-    # mountPath:
+    mountPath: /bitnami/mariadb
     ## Persistent Volume Storage Class
     ## If defined, storageClassName: <storageClass>
     ## If set to "-", storageClassName: "", which disables dynamic provisioning
@@ -149,7 +149,7 @@ master:
     # storageClass: "-"
     ## Persistent Volume Claim annotations
     ##
-    annotations:
+    annotations: {}
     ## Persistent Volume Access Mode
     ##
     accessModes:
