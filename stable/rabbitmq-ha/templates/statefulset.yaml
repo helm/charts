@@ -155,7 +155,6 @@ spec:
               mountPath: /var/lib/rabbitmq
             - name: config
               mountPath: /etc/rabbitmq
-              readOnly: true
             - name: definitions
               mountPath: /etc/definitions
               readOnly: true
