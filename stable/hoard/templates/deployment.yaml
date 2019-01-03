@@ -1,0 +1,87 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "hoard.fullname" . }}
+  labels:
+    app: {{ template "hoard.name" . }}
+    chart: {{ template "hoard.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "hoard.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "hoard.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.service.port }}
+              name: http
+          env:
+{{- if eq .Values.storage.type "s3" }}
+          - name: AWS_ACCESS_KEY_ID
+            valueFrom:
+              secretKeyRef:
+                name: {{ required "A valid storage credential is required." .Values.storage.credentialsSecret }}
+                key: access-key-id
+          - name: AWS_SECRET_ACCESS_KEY
+            valueFrom:
+              secretKeyRef:
+                name: {{ required "A valid storage credential is required." .Values.storage.credentialsSecret }}
+                key: secret-access-key
+{{- end }}
+{{- if eq .Values.storage.type "gcs" }}
+{{ required "A valid storage credential is required." .Values.storage.credentialsSecret }}
+          - name: GCLOUD_SERVICE_KEY
+            valueFrom:
+              secretKeyRef:
+                name: {{ required "A valid storage credential is required." .Values.storage.credentialsSecret }}
+                key: secret-access-key
+{{- end }}
+          - name: HOARD_JSON_CONFIG
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "hoard.fullname" . }}
+                key: config.json
+          livenessProbe:
+            exec:
+              command:
+              - sh
+              - -c
+              - '[ $(echo "marmottes" | hoarctl put | hoarctl get) = "marmottes" ]'
+            initialDelaySeconds: 5
+            periodSeconds: 45
+{{- if eq .Values.storage.type "local" }}
+          volumeMounts:
+          - mountPath: /data
+            name: data-dir
+{{- end }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+{{- if eq .Values.storage.type "local" }}
+      volumes:
+        - name: data-dir
+          persistentVolumeClaim:
+            claimName: {{ template "hoard.fullname" $ }}
+{{- end }}
+{{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+{{- end }}
