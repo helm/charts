@@ -142,7 +142,7 @@ spec:
 {{ toYaml .Values.master.resources | indent 10 }}
         volumeMounts:
         - name: data
-          mountPath: {{ .Values.persistence.mountPath }}
+          mountPath: {{ .Values.master.persistence.mountPath }}
         {{- if or (.Files.Glob "files/docker-entrypoint-initdb.d/*.{sh,sql,sql.gz}") .Values.initdbScriptsConfigMap .Values.initdbScripts }}
         - name: custom-init-scripts
           mountPath: /docker-entrypoint-initdb.d
@@ -196,10 +196,10 @@ spec:
         - name: data
           persistentVolumeClaim:
             claimName: {{ .Values.master.persistence.existingClaim }}
-{{- else if not .Values.persistence.enabled }}
+{{- else if not .Values.master.persistence.enabled }}
         - name: data
           emptyDir: {}
-{{- else if and .Values.persistence.enabled (not .Values.persistence.existingClaim) }}
+{{- else if and .Values.master.persistence.enabled (not .Values.master.persistence.existingClaim) }}
   volumeClaimTemplates:
     - metadata:
         name: data
