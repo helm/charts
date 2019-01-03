@@ -42,7 +42,7 @@ spec:
             - name: stun
               containerPort: 3478
               protocol: UDP
-          {{- if .Values.addSetfcap }}
+          {{- if not .Values.runAsRoot }}
           securityContext:
             capabilities:
               add:
