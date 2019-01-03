@@ -4,10 +4,10 @@ apiVersion: v1
 metadata:
   name: {{ template "fullname" . }}
   labels:
-    app: {{ template "fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app: "{{ template "fullname" . }}"
+    chart: "{{ template "wordpress.chart" . }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
 spec:
   accessModes:
     - {{ .Values.persistence.accessMode | quote }}
