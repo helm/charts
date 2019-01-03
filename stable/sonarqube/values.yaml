@@ -4,7 +4,7 @@
 replicaCount: 1
 image:
   repository: sonarqube
-  tag: 6.7.6-community
+  tag: 7.4-community
   # If using a private repository, the name of the imagePullSecret to use
   # pullSecret: my-repo-secret
 # Starting 6.7.6 and 7.4 official sonarqube docker image, command is not required
