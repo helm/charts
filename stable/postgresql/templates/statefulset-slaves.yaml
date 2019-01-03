@@ -57,6 +57,8 @@ spec:
       - name: init-chmod-data
         image: {{ template "postgresql.volumePermissions.image" . }}
         imagePullPolicy: "{{ .Values.volumePermissions.image.pullPolicy }}"
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
         command:
           - sh
           - -c
@@ -98,6 +100,8 @@ spec:
               name: {{ template "postgresql.secretName" . }}
               key: postgresql-replication-password
         {{- end }}
+        - name: POSTGRESQL_CLUSTER_APP_NAME
+          value: {{ .Values.replication.applicationName }}
         - name: POSTGRESQL_MASTER_HOST
           value: {{ template "postgresql.fullname" . }}
         - name: POSTGRESQL_MASTER_PORT_NUMBER
@@ -142,19 +146,13 @@ spec:
         - name: data
           mountPath: /bitnami/postgresql
         {{ end }}
-        {{ if or (.Files.Glob "files/postgresql.conf") .Values.postgresqlConfiguration }}
-        - name: postgresql-config
-          mountPath: /opt/bitnami/postgresql/conf/postgresql.conf
-          subPath: postgresql.conf
-        {{ end }}
-        {{ if or (.Files.Glob "files/pg_hba.conf") .Values.pgHbaConfiguration }}
-        - name: postgresql-config
-          mountPath: /opt/bitnami/postgresql/conf/pg_hba.conf
-          subPath: pg_hba.conf
-        {{ end }}
-        {{- if (.Files.Glob "files/conf.d/*.conf") }}
+        {{- if or (.Files.Glob "files/conf.d/*.conf") .Values.extendedConfConfigMap }}
         - name: postgresql-extended-config
-          mountPath: /opt/bitnami/postgresql/conf/conf.d/
+          mountPath: /bitnami/postgresql/conf/conf.d/
+        {{- end }}
+        {{- if or (.Files.Glob "files/postgresql.conf") (.Files.Glob "files/pg_hba.conf") .Values.postgresqlConfiguration .Values.pgHbaConfiguration .Values.configurationConfigMap }}
+        - name: postgresql-config
+          mountPath: /bitnami/postgresql/conf
         {{- end }}
       volumes:
       {{- if .Values.usePasswordFile }}
@@ -162,15 +160,15 @@ spec:
         secret:
           secretName: {{ template "postgresql.secretName" . }}
       {{ end }}
-      {{ if or (.Files.Glob "files/postgresql.conf") (.Files.Glob "files/pg_hba.conf") .Values.postgresqlConfiguration .Values.pgHbaConfiguration }}
+      {{- if or (.Files.Glob "files/postgresql.conf") (.Files.Glob "files/pg_hba.conf") .Values.postgresqlConfiguration .Values.pgHbaConfiguration .Values.configurationConfigMap}}
       - name: postgresql-config
         configMap:
-          name: {{ template "postgresql.fullname" . }}-configuration
-      {{ end }}
-      {{- if (.Files.Glob "files/conf.d/*.conf") }}
+          name: {{ template "postgresql.configurationCM" . }}
+      {{- end }}
+      {{- if or (.Files.Glob "files/conf.d/*.conf") .Values.extendedConfConfigMap }}
       - name: postgresql-extended-config
         configMap:
-          name: {{ template "postgresql.fullname" . }}-extended-configuration
+          name: {{ template "postgresql.extendedConfigurationCM" . }}
       {{- end }}
   updateStrategy:
     type: {{ .Values.updateStrategy.type }}

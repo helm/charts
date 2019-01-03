@@ -111,10 +111,42 @@ Return the proper PostgreSQL metrics image name
 Get the password secret.
 */}}
 {{- define "postgresql.secretName" -}}
-{{- $secretName := include "postgresql.fullname" . -}}
 {{- if .Values.existingSecret -}}
-{{ $secretName := .Values.existingSecret -}}
+{{- printf "%s" .Values.existingSecret -}}
 {{- else -}}
-{{- printf "%s" $secretName -}}
+{{- printf "%s" (include "postgresql.fullname" .) -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Get the configuration ConfigMap name.
+*/}}
+{{- define "postgresql.configurationCM" -}}
+{{- if .Values.configurationConfigMap -}}
+{{- printf "%s" .Values.configurationConfigMap -}}
+{{- else -}}
+{{- printf "%s-configuration" (include "postgresql.fullname" .) -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Get the extended configuration ConfigMap name.
+*/}}
+{{- define "postgresql.extendedConfigurationCM" -}}
+{{- if .Values.extendedConfConfigMap -}}
+{{- printf "%s" .Values.extendedConfConfigMap -}}
+{{- else -}}
+{{- printf "%s-extended-configuration" (include "postgresql.fullname" .) -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Get the initialization scripts ConfigMap name.
+*/}}
+{{- define "postgresql.initdbScriptsCM" -}}
+{{- if .Values.initdbScriptsConfigMap -}}
+{{- printf "%s" .Values.initdbScriptsConfigMap -}}
+{{- else -}}
+{{- printf "%s-init-scripts" (include "postgresql.fullname" .) -}}
 {{- end -}}
 {{- end -}}

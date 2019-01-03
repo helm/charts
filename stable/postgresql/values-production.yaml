@@ -60,7 +60,15 @@ replication:
   enabled: true
   user: repl_user
   password: repl_password
-  slaveReplicas: 1
+  slaveReplicas: 2
+  ## Set synchronous commit mode: on, off, remote_apply, remote_write and local
+  ## ref: https://www.postgresql.org/docs/9.6/runtime-config-wal.html#GUC-WAL-LEVEL
+  synchronousCommit: "on"
+  ## From the number of `slaveReplicas` defined above, set the number of those that will have synchronous replication
+  ## NOTE: It cannot be > slaveReplicas
+  numSynchronousReplicas: 1
+  ## Replication Cluster application name. Useful for defining multiple replication policies
+  applicationName: my_application
 
 ## PostgreSQL admin user
 ## ref: https://github.com/bitnami/bitnami-docker-postgresql/blob/master/README.md#setting-the-root-password-on-first-run
@@ -99,6 +107,13 @@ postgresqlUsername: postgres
 #   host all all localhost trust
 #   host mydatabase mysuser 192.168.0.0/24 md5
 
+## ConfigMap with PostgreSQL configuration
+## NOTE: This will override postgresqlConfiguration and pgHbaConfiguration
+# configurationConfigMap:
+
+## ConfigMap with PostgreSQL extended configuration
+# extendedConfConfigMap:
+
 ## initdb scripts
 ## Specify dictionnary of scripts to be run at first boot
 ## Alternatively, you can put your scripts under the files/docker-entrypoint-initdb.d directory
@@ -107,6 +122,10 @@ postgresqlUsername: postgres
 #   my_init_script.sh:|
 #      #!/bin/sh
 #      echo "Do something."
+
+## ConfigMap with scripts to be run at first boot
+## NOTE: This will override initdbScripts
+# initdbScriptsConfigMap:
 
 ## PostgreSQL service configuration
 service:
