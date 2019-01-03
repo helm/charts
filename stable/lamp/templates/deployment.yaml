@@ -15,6 +15,7 @@ spec:
         app: {{ template "lamp.name" . }}
         release: {{ .Release.Name }}
     spec:
+      automountServiceAccountToken: {{ .Values.automountServiceAccountToken }}
       initContainers:
       - name: "init-chown-mysql"
         image: "busybox"

@@ -337,3 +337,8 @@ keepSecrets: false
 ## replicaCount > 1 will corrupt your database if one is used. Future releases
 ## might enable elastic scaling via galeradb
 replicaCount: 1
+
+## don't automatically inject a service account token inside the pod
+## only toggle this to true if your application needs read/write
+## access inside the kubernetes namespace.
+automountServiceAccountToken: false
