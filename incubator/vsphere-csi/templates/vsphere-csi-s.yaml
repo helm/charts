@@ -1,0 +1,10 @@
+{{- if .Values.cfg.enabled -}}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: vspherecsi
+  namespace: kube-system
+data:
+  {{ .Values.cfg.vcenter }}.username: {{ .Values.cfg.username | b64enc }}
+  {{ .Values.cfg.vcenter }}.password: {{ .Values.cfg.password | b64enc }}
+{{- end -}}

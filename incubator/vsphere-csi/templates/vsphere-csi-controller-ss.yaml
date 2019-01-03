@@ -1,0 +1,125 @@
+
+kind: StatefulSet
+apiVersion: apps/v1beta1
+metadata:
+  name: {{ template "csi.controller.name" . }}
+  namespace: kube-system
+  labels:
+    app: {{ template "csi.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    component: controller
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+{{- if .Values.csi.controller.annotations }}
+  annotations:
+{{ toYaml .Values.csi.controller.annotations | indent 4 }}
+{{- end }}
+spec:
+  serviceName: vsphere-csi-controller
+  replicas: {{ .Values.csi.controller.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "csi.name" . }}
+        component: controller
+        role: vsphere-csi
+        release: {{ .Release.Name }}
+{{- if .Values.csi.controller.podLabels }}
+{{ toYaml .Values.csi.controller.podLabels | indent 8 }}
+{{- end }}
+{{- if .Values.csi.controller.podAnnotations }}
+      annotations:
+{{ toYaml .Values.csi.controller.podAnnotations | indent 8 }}
+{{- end }}
+    spec:
+      serviceAccount: {{ .Values.csi.controller.serviceAccountName }}
+      containers:
+        - name: csi-provisioner
+          image: {{ .Values.csi.provisioner.image }}:{{ .Values.csi.provisioner.tag }}
+          imagePullPolicy: {{ .Values.csi.provisioner.pullPolicy }}
+          args:
+            - "--provisioner=io.k8s.cloud-provider-vsphere.vsphere"
+            - "--csi-address=$(ADDRESS)"
+            - "--v={{ .Values.csi.provisioner.cmdline.logging }}"
+          env:
+            - name: ADDRESS
+              value: /var/lib/csi/sockets/pluginproxy/csi.sock
+          volumeMounts:
+            - name: socket-dir
+              mountPath: /var/lib/csi/sockets/pluginproxy/
+        - name: csi-attacher
+          image: {{ .Values.csi.attacher.image }}:{{ .Values.csi.attacher.tag }}
+          imagePullPolicy: {{ .Values.csi.attacher.pullPolicy }}
+          args:
+            - "--v={{ .Values.csi.attacher.cmdline.logging }}"
+            - "--csi-address=$(ADDRESS)"
+          env:
+            - name: ADDRESS
+              value: /var/lib/csi/sockets/pluginproxy/csi.sock
+          volumeMounts:
+            - name: socket-dir
+              mountPath: /var/lib/csi/sockets/pluginproxy/
+        - name: vsphere-csi-controller
+          image: {{ .Values.csi.controller.image }}:{{ .Values.csi.controller.tag }}
+          imagePullPolicy: {{ .Values.csi.controller.pullPolicy }}
+          env:
+            {{- range $key, $value := .Values.csi.controller.cmdline.additionalParams }}
+            - name: {{ $key | replace "." "_" | replace "-" "_" | upper }}
+              value: {{ $value }}
+            {{- end }}
+            - name: VSPHERE_KUBE_CONFIG
+              value: "*"
+            - name: CSI_ENDPOINT
+              value: unix:///var/lib/csi/sockets/pluginproxy/csi.sock
+            - name: X_CSI_MODE
+              value: "controller"
+            - name: X_CSI_SPEC_REQ_VALIDATION
+              value: "false"
+          volumeMounts:
+            - mountPath: {{ .Values.csi.controller.cmdline.k8sCerts.dir }}
+              name: k8s-certs
+              readOnly: true
+            - mountPath: {{ .Values.csi.controller.cmdline.caCerts.dir }}
+              name: ca-certs
+              readOnly: true
+            - mountPath: {{ .Values.csi.controller.cmdline.kubeConfig.dir }}/{{ .Values.csi.controller.cmdline.kubeConfig.file }}
+              name: kubeconfig
+              readOnly: true
+            - mountPath: {{ .Values.csi.controller.cmdline.cloudConfig.dir }}
+              name: vsphere-config-volume
+              readOnly: true
+            - mountPath: /var/lib/csi/sockets/pluginproxy/
+              name: socket-dir
+      volumes:
+        - name: k8s-certs
+        {{- if .Values.csi.controller.cmdline.k8sCerts.configMap }}
+          configMap:
+            name: {{ .Values.csi.controller.cmdline.k8sCerts.configMap }}
+        {{- else }}
+          hostPath:
+            path: {{ .Values.csi.controller.cmdline.k8sCerts.dir }}
+            type: DirectoryOrCreate
+        {{- end }}
+        - name: ca-certs
+        {{- if .Values.csi.controller.cmdline.caCerts.configMap }}
+          configMap:
+            name: {{ .Values.csi.controller.cmdline.caCerts.configMap }}
+        {{- else }}
+          hostPath:
+            path: {{ .Values.csi.controller.cmdline.caCerts.dir }}
+            type: DirectoryOrCreate
+        {{- end }}
+        - name: kubeconfig
+        {{- if .Values.csi.controller.cmdline.kubeConfig.configMap }}
+          configMap:
+            name: {{ .Values.csi.controller.cmdline.kubeConfig.configMap }}
+        {{- else }}
+          hostPath:
+            path: {{ .Values.csi.controller.cmdline.kubeConfig.dir }}/{{ .Values.csi.controller.cmdline.kubeConfig.file }}
+            type: FileOrCreate
+        {{- end }}
+        - name: vsphere-config-volume
+          configMap:
+            name: csi-config
+        - name: socket-dir
+          emptyDir: {}

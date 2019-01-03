@@ -1,0 +1,20 @@
+{{- if .Values.cfg.enabled -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: csi-config
+  namespace: kube-system
+data:
+  vsphere.conf: |
+    [Global]
+    # properties in this section will be used for all specified vCenters unless overriden in VirtualCenter section.
+    port = "443" #Optional
+    insecure-flag = "1" #set to 1 if the vCenter uses a self-signed cert
+    # settings for using k8s secret
+    secret-name = "vspherecsi"
+    secret-namespace = "kube-system"
+
+    [VirtualCenter "{{ .Values.cfg.vcenter }}"]
+    datacenters = "{{ .Values.cfg.datacenter }}"
+    # port, insecure-flag will be used from Global section.
+{{- end -}}

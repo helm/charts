@@ -1,0 +1,6 @@
+The vSphere CSI Driver has been installed.
+
+To learn how to create your own StorageClass and PersistentVolumeClaim,
+please visit the following:
+
+https://github.com/kubernetes/cloud-provider-vsphere/blob/master/docs/deploying_csi_vsphere_with_rbac.md

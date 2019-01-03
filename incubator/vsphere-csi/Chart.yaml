@@ -1,0 +1,19 @@
+apiVersion: v1
+appVersion: 0.1.0
+description: A vSphere Container Storage Interface (CSI) Driver Helm chart for Kubernetes
+name: vsphere-csi
+version: 0.1.0
+keywords:
+  - vsphere
+  - vmware
+  - cloud
+  - provider
+  - storage
+  - CSI
+home: https://github.com/kubernetes/cloud-provider-vsphere
+icon: https://raw.githubusercontent.com/kubernetes/cloud-provider-vsphere/master/docs/vmware_logo.png
+sources:
+  - http://gcr.io/cloud-provider-vsphere/vsphere-csi
+maintainers:
+  - name: dvonthenen
+    email: vonthenend@vmware.com

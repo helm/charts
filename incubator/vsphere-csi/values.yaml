@@ -1,0 +1,87 @@
+# Default values for vSphere-CSI.
+# This is a YAML-formatted file.
+# vSohere-CSI values are grouped by component
+
+cfg:
+  enabled: false
+  vcenter: "10.0.0.1"
+  username: "user"
+  password: "pass"
+  datacenter: "dc"
+
+csi:
+
+  #
+  # Kubernetes specific components for CSI
+  #
+  provisioner:
+    image: quay.io/k8scsi/csi-provisioner
+    tag: v1.0.1
+    pullPolicy: IfNotPresent
+    cmdline:
+      logging: 2
+  attacher:
+    image: quay.io/k8scsi/csi-attacher
+    tag: v1.0.1
+    pullPolicy: IfNotPresent
+    cmdline:
+      logging: 2
+  registrar:
+    image: quay.io/k8scsi/csi-node-driver-registrar
+    tag: v1.0.1
+    pullPolicy: IfNotPresent
+    cmdline:
+      logging: 2
+  #
+  # Kubernetes specific components for CSI
+  #
+
+  # vSphere CSI controller components
+  controller:
+    annotations: {}
+    image: gcr.io/cloud-provider-vsphere/vsphere-csi
+    tag: v0.1.1
+    pullPolicy: IfNotPresent
+    cmdline:
+      logging: 2
+      # Location of the cloud configmap to be mounted on the filesystem
+      cloudConfig:
+        dir: "/etc/cloud"
+        file: "vsphere.conf"
+      # kubeConfigConfigMap defined the ConfigMap name in place of using volume
+      # containing the Kubeconfig file
+      kubeConfig:
+        configMap: null
+        dir: "/etc/kubernetes"
+        file: "controller-manager.conf"
+      # caCertsConfigMap defined the ConfigMap name in place of using volume
+      # containing the CACerts file
+      caCerts:
+        configMap: null
+        dir: /etc/ssl/certs
+      # k8sCerts to be used to access the kubernetes api server
+      k8sCerts:
+        configMap: null
+        dir: /etc/kubernetes/pki
+      additionalParams: {}
+    replicaCount: 1
+    serviceAccountName: vsphere-csi-controller
+    podAnnotations: {}
+    ## Additional pod labels
+    ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+    podLabels: {}
+
+  # vSphere CSI node components
+  node:
+    annotations: {}
+    image: gcr.io/cloud-provider-vsphere/vsphere-csi
+    tag: v0.1.1
+    pullPolicy: IfNotPresent
+    cmdline:
+      logging: 2
+      additionalParams: {}
+    serviceAccountName: vsphere-csi-node
+    podAnnotations: {}
+    ## Additional pod labels
+    ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+    podLabels: {}

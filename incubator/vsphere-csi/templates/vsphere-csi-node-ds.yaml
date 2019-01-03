@@ -1,0 +1,103 @@
+kind: DaemonSet
+apiVersion: apps/v1beta2
+metadata:
+  name: {{ template "csi.node.name" . }}
+  namespace: kube-system
+  labels:
+    app: {{ template "csi.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    component: node
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+{{- if .Values.csi.node.annotations }}
+  annotations:
+{{ toYaml .Values.csi.node.annotations | indent 4 }}
+{{- end }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "csi.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "csi.name" . }}
+        component: controller
+        role: vsphere-csi
+        release: {{ .Release.Name }}
+{{- if .Values.csi.node.podLabels }}
+{{ toYaml .Values.csi.node.podLabels | indent 8 }}
+{{- end }}
+{{- if .Values.csi.node.podAnnotations }}
+      annotations:
+{{ toYaml .Values.csi.node.podAnnotations | indent 8 }}
+{{- end }}
+    spec:
+      serviceAccount: {{ .Values.csi.node.serviceAccountName }}
+      hostNetwork: true
+      containers:
+        - name: driver-registrar
+          image: {{ .Values.csi.registrar.image }}:{{ .Values.csi.registrar.tag }}
+          imagePullPolicy: {{ .Values.csi.registrar.pullPolicy }}
+          args:
+            - "--v={{ .Values.csi.registrar.cmdline.logging }}"
+            - "--csi-address=$(ADDRESS)"
+            - "--kubelet-registration-path=$(DRIVER_REG_SOCK_PATH)"
+          env:
+            - name: ADDRESS
+              value: /csi/csi.sock
+            - name: DRIVER_REG_SOCK_PATH
+              value: /var/lib/kubelet/plugins_registry/io.k8s.cloud-provider-vsphere.vsphere/csi.sock
+            - name: KUBE_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+          volumeMounts:
+            - name: plugin-dir
+              mountPath: /csi/
+            - name: registration-dir
+              mountPath: /registration/
+        - name: vsphere-csi-node
+          image: {{ .Values.csi.node.image }}:{{ .Values.csi.node.tag }}
+          imagePullPolicy: {{ .Values.csi.node.pullPolicy }}
+          env:
+            {{- range $key, $value := .Values.csi.node.cmdline.additionalParams }}
+            - name: {{ $key | replace "." "_" | replace "-" "_" | upper }}
+              value: {{ $value }}
+            {{- end }}
+            - name: CSI_ENDPOINT
+              value: unix:///csi/csi.sock
+            - name: X_CSI_MODE
+              value: "node"
+            - name: X_CSI_SPEC_REQ_VALIDATION
+              value: "false"
+          securityContext:
+            privileged: true
+            capabilities:
+              add: ["SYS_ADMIN"]
+            allowPrivilegeEscalation: true
+          volumeMounts:
+            - name: plugin-dir
+              mountPath: /csi
+            - name: pods-mount-dir
+              mountPath: /var/lib/kubelet
+              # needed so that any mounts setup inside this container are
+              # propagated back to the host machine.
+              mountPropagation: "Bidirectional"
+            - name: device-dir
+              mountPath: /dev
+      volumes:
+        - name: registration-dir
+          hostPath:
+            path: /var/lib/kubelet/plugins_registry
+            type: DirectoryOrCreate
+        - name: plugin-dir
+          hostPath:
+            path: /var/lib/kubelet/plugins_registry/io.k8s.cloud-provider-vsphere.vsphere
+            type: DirectoryOrCreate
+        - name: pods-mount-dir
+          hostPath:
+            path: /var/lib/kubelet
+            type: Directory
+        - name: device-dir
+          hostPath:
+            path: /dev
