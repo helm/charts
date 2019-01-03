@@ -28,7 +28,7 @@ rules:
       # Here: "<ingress-controller-leader>-<nginx>"
       # This has to be adapted if you change either parameter
       # when launching the nginx-ingress-controller.
-      - "kong-ingress-controller-leader-kong-{{ .Values.ingressController.ingressClass }}"
+      - "kong-ingress-controller-leader-{{ .Values.ingressController.ingressClass }}-{{ .Values.ingressController.ingressClass }}"
     verbs:
       - get
       - update
