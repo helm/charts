@@ -28,6 +28,9 @@ data:
     [INPUT]
         Name             tail
         Path             {{ .Values.input.tail.path }}
+{{- if .Values.input.tail.exclude_path }}
+        Exclude_Path             {{ .Values.input.tail.exclude_path }}
+{{- end }}
         Parser           docker
         Tag              {{ .Values.filter.kubeTag }}.*
         Refresh_Interval 5

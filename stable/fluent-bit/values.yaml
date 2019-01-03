@@ -181,6 +181,9 @@ input:
   tail:
     memBufLimit: 5MB
     path: /var/log/containers/*.log
+    # Set one or multiple shell patterns separated by commas
+    # to exclude files matching a certain criteria
+    exclude_path:
 
 
 filter:
