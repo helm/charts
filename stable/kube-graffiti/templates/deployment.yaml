@@ -1,0 +1,76 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ include "kube-graffiti.fullname" . }}
+  labels:
+    app: {{ include "kube-graffiti.name" . }}
+    chart: {{ include "kube-graffiti.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "kube-graffiti.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "kube-graffiti.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      serviceAccountName: {{ include "kube-graffiti.fullname" . }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+          - name: GRAFFITI_CONFIG
+            value: "/config/graffiti-config.yaml"
+          ports:
+          - name: https
+            containerPort: {{ .Values.server.port }}
+            protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.healthChecker.path }}
+              port: {{ .Values.healthChecker.port }}
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            timeoutSeconds: 3
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.healthChecker.path }}
+              port: {{ .Values.healthChecker.port }}
+            periodSeconds: 10
+            timeoutSeconds: 3
+          volumeMounts:
+          - name: webhook-certs
+            mountPath: /tls
+          - name: config
+            mountPath: /config
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+      volumes:
+      - name: webhook-certs
+        secret:
+          secretName: {{ .Release.Name }}-kube-graffiti-certs
+      - name: config
+        configMap:
+          {{ if eq .Values.configMapName "" -}}
+          name: {{ .Release.Name }}-kube-graffiti-config
+          {{ else -}}
+          name: {{ .Values.configMapName }}
+          {{- end }}

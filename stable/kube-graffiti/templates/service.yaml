@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  {{ if eq .Values.service.name "" -}}
+  name: {{ include "kube-graffiti.fullname" . }}
+  {{ else -}}
+  name: {{ .Values.service.name }}
+  {{ end -}}
+  labels:
+    app: {{ include "kube-graffiti.name" . }}
+    chart: {{ include "kube-graffiti.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.server.port }}
+      protocol: TCP
+      name: https
+  selector:
+    app: {{ include "kube-graffiti.name" . }}
+    release: {{ .Release.Name }}

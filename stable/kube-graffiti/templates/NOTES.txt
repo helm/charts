@@ -1,0 +1,18 @@
+kube-graffiti has now been installed as service: -
+  {{ if eq .Values.service.name "" -}}
+  {{ include "kube-graffiti.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+  {{ else -}}
+  {{ .Values.service.name }}.{{ .Release.Namespace }}.svc.cluster.local
+  {{ end -}}
+
+Please use kubectl to check which mutatingwebhookconfigurations have added to your cluster, e.g.
+  $ kubectl get mutatingwebhookconfigurations
+
+You should have a webhook 'add-name-label-to-namespaces' by default
+or one for each graffiti rule that you configured via your values.
+
+If you have not created your own kube-graffiti certificates
+(you can use the script https://github.com/HotelsDotCom/kube-graffiti/blob/master/testing/gencerts.sh)
+please make sure that you deployed the chart into the namespace 'kube-graffiti'.
+
+

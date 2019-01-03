@@ -1,0 +1,45 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ .Release.Name }}-kube-graffiti-manage-mutating-webhooks
+  labels:
+    app: kube-graffiti
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ .Release.Name }}-kube-graffiti-manage-mutating-webhooks
+subjects:
+  - kind: ServiceAccount
+    name: {{ .Release.Name }}-kube-graffiti
+    namespace: {{ .Release.Namespace }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ .Release.Name }}-kube-graffiti-read-apiserver-authentication
+  namespace: kube-system
+  labels:
+    app: kube-graffiti
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ .Release.Name }}-kube-graffiti-read-apiserver-authentication
+subjects:
+  - kind: ServiceAccount
+    name: {{ .Release.Name }}-kube-graffiti
+    namespace: {{ .Release.Namespace }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ .Release.Name }}-kube-graffiti-cluster-admin
+  labels:
+    app: kube-graffiti
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+  - kind: ServiceAccount
+    name: {{ .Release.Name }}-kube-graffiti
+    namespace: {{ .Release.Namespace }}
