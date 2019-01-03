@@ -1,4 +1,4 @@
-{{- if .Values.sumologic.collectorUrl -}}
+{{- if (or (.Values.sumologic.collectorUrlExistingSecret) (.Values.sumologic.collectorUrl)) -}}
 Sumo Logic agents are spinning up on each node in your cluster. After a few
 minutes, you should see logs available in Sumo Logic.
 
@@ -14,9 +14,9 @@ SumoLogic.
       sumologic.com/exclude: "true"
 
 {{- else -}}
-###########################################################
-####  ERROR: You did not set a sumologic.collectorUrl  ####
-###########################################################
+#################################################################################################
+####  ERROR: You did not set sumologic.collectorUrl or sumologic.collectorUrlExistingSecret  ####
+#################################################################################################
 
 This deployment will be incomplete until you provide your collector URL, from Sumo Logic.
 
