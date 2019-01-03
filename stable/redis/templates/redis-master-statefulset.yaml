@@ -46,7 +46,7 @@ spec:
       serviceAccountName: "{{ template "redis.serviceAccountName" . }}"
       {{- with .Values.master.affinity }}
       affinity:
-{{ toYaml . | indent 8 }}
+{{ tpl (toYaml .) $ | indent 8 }}
       {{- end }}
       {{- if .Values.master.nodeSelector }}
       nodeSelector:

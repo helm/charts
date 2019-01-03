@@ -61,6 +61,14 @@ replication:
   user: repl_user
   password: repl_password
   slaveReplicas: 1
+  ## Set synchronous commit mode: on, off, remote_apply, remote_write and local
+  ## ref: https://www.postgresql.org/docs/9.6/runtime-config-wal.html#GUC-WAL-LEVEL
+  synchronousCommit: "off"
+  ## From the number of `slaveReplicas` defined above, set the number of those that will have synchronous replication
+  ## NOTE: It cannot be > slaveReplicas
+  numSynchronousReplicas: 0
+  ## Replication Cluster application name. Useful for defining multiple replication policies
+  applicationName: my_application
 
 ## PostgreSQL admin user
 ## ref: https://github.com/bitnami/bitnami-docker-postgresql/blob/master/README.md#setting-the-root-password-on-first-run
@@ -128,6 +136,7 @@ postgresqlUsername: postgres
 service:
   ## PosgresSQL service type
   type: ClusterIP
+  # clusterIP: None
   port: 5432
 
   ## Specify the nodePort value for the LoadBalancer and NodePort service types.
