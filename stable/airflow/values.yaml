@@ -315,14 +315,14 @@ postgresql:
   service:
     port: 5432
   ## PostgreSQL User to create.
-  postgresqlUsername: postgres
+  postgresUser: postgres
   ##
   ## PostgreSQL Password for the new user.
   ## If not set, a random 10 characters password will be used.
-  postgresqlPassword: airflow
+  postgresPassword: airflow
   ##
   ## PostgreSQL Database to create.
-  postgresqlDatabase: airflow
+  postgresDatabase: airflow
   ##
   ## Persistent Volume Storage configuration.
   ## ref: https://kubernetes.io/docs/user-guide/persistent-volumes
