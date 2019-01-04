@@ -252,9 +252,9 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `postgresql.enabled`                     | create a postgres server                                | `true`                    |
 | `postgresql.uri`                         | full URL to custom postgres setup                       | (undefined)               |
 | `postgresql.portgresHost`                | PostgreSQL Hostname                                     | (undefined)               |
-| `postgresql.postgresqlUsername`          | PostgreSQL User                                         | `postgres`                |
-| `postgresql.postgresqlPassword`          | PostgreSQL Password                                     | `airflow`                 |
-| `postgresql.postgresqlDatabase`          | PostgreSQL Database name                                | `airflow`                 |
+| `postgresql.postgresUser`                | PostgreSQL User                                         | `postgres`                |
+| `postgresql.postgresPassword`            | PostgreSQL Password                                     | `airflow`                 |
+| `postgresql.postgresDatabase`            | PostgreSQL Database name                                | `airflow`                 |
 | `postgresql.persistence.enabled`         | Enable Postgres PVC                                     | `true`                    |
 | `postgresql.persistance.storageClass     | Persistant class                                        | (undefined)               |
 | `postgresql.persistance.accessMode`      | Access mode                                             | `ReadWriteOnce`           |

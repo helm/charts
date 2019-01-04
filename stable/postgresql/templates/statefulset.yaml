@@ -61,6 +61,8 @@ spec:
       - name: init-chmod-data
         image: {{ template "postgresql.volumePermissions.image" . }}
         imagePullPolicy: "{{ .Values.volumePermissions.image.pullPolicy }}"
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
         command:
           - sh
           - -c
@@ -105,9 +107,9 @@ spec:
         {{- end }}
         {{- if not (eq .Values.replication.synchronousCommit "off")}}
         - name: POSTGRESQL_SYNCHRONOUS_COMMIT_MODE
-          value: {{ .Values.replication.synchronousCommit }}
+          value: {{ .Values.replication.synchronousCommit | quote }}
         - name: POSTGRESQL_NUM_SYNCHRONOUS_REPLICAS
-          value: {{ .Values.replication.numSynchronousReplicas }}
+          value: {{ .Values.replication.numSynchronousReplicas | quote }}
         {{- end }}
         - name: POSTGRESQL_CLUSTER_APP_NAME
           value: {{ .Values.replication.applicationName }}
@@ -163,11 +165,11 @@ spec:
           failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
         {{- end }}
         volumeMounts:
-        {{- if or (.Files.Glob "files/docker-entrypoint-initdb.d/*.{sh,sql,sql.gz}") .Values.initdbScriptsConfigMap }}
+        {{- if or (.Files.Glob "files/docker-entrypoint-initdb.d/*.{sh,sql,sql.gz}") .Values.initdbScriptsConfigMap .Values.initdbScripts }}
         - name: custom-init-scripts
           mountPath: /docker-entrypoint-initdb.d
         {{- end }}
-        {{- if or (.Files.Glob "files/conf.d/*.conf") .Values.extendedConfConfigMap }}
+        {{- if or (.Files.Glob "files/conf.d/*.conf") .Values.postgresqlExtendedConf .Values.extendedConfConfigMap }}
         - name: postgresql-extended-config
           mountPath: /bitnami/postgresql/conf/conf.d/
         {{- end }}
@@ -242,7 +244,7 @@ spec:
         configMap:
           name: {{ template "postgresql.configurationCM" . }}
       {{- end }}
-      {{- if or (.Files.Glob "files/conf.d/*.conf") .Values.extendedConfConfigMap }}
+      {{- if or (.Files.Glob "files/conf.d/*.conf") .Values.postgresqlExtendedConf .Values.extendedConfConfigMap }}
       - name: postgresql-extended-config
         configMap:
           name: {{ template "postgresql.extendedConfigurationCM" . }}
@@ -252,7 +254,7 @@ spec:
         secret:
           secretName: {{ template "postgresql.secretName" . }}
       {{- end }}
-      {{- if  or (.Files.Glob "files/docker-entrypoint-initdb.d/*.{sh,sql,sql.gz}") .Values.initdbScriptsConfigMap }}
+      {{- if  or (.Files.Glob "files/docker-entrypoint-initdb.d/*.{sh,sql,sql.gz}") .Values.initdbScriptsConfigMap .Values.initdbScripts }}
       - name: custom-init-scripts
         configMap:
           name: {{ template "postgresql.initdbScriptsCM" . }}
