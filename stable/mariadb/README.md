@@ -129,6 +129,13 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `metrics.image.tag`                       | Exporter image tag                                  | `v0.10.0`                                                         |
 | `metrics.image.pullPolicy`                | Exporter image pull policy                          | `IfNotPresent`                                                    |
 | `metrics.resources`                       | Exporter resource requests/limit                    | `nil`                                                             |
+| `hooks.enabled`                           | Use hooks to cleanup once the release is deleted    | `false`                                                           |
+| `hooks.cleanClaims`                       | Remove PVCs once the release is deleted             | `false`                                                           |
+| `hooks.image.registry`                    | Kubectl image registry                              | `docker.io`                                                       |
+| `hooks.image.repository`                  | Kubectl image name                                  | `bitnami/kubectl`                                                 |
+| `hooks.image.tag`                         | Kubectl image tag                                   | `1.12.3`                                                          |
+| `hooks.image.pullPolicy`                  | Kubectl image pull policy                           | `IfNotPresent`                                                    |
+| `rbac.create`                             | Whether create RBAC resources or not                | `true`                                                            |
 
 The above parameters map to the env variables defined in [bitnami/mariadb](http://github.com/bitnami/bitnami-docker-mariadb). For more information please refer to the [bitnami/mariadb](http://github.com/bitnami/bitnami-docker-mariadb) image documentation.
 

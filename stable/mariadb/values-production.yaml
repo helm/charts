@@ -215,7 +215,6 @@ master:
 slave:
   replicas: 2
 
-
   ## Mariadb Slave additional pod annotations
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
   # annotations:
@@ -304,14 +303,52 @@ slave:
     successThreshold: 1
     failureThreshold: 3
 
+## Prometheus exporter
+##
 metrics:
   enabled: true
+  ## MySQL Server Exporter image
+  ## ref: https://hub.docker.com/r/bitnami/kubectl/tags/
+  ##
   image:
     registry: docker.io
     repository: prom/mysqld-exporter
     tag: v0.10.0
+    ## Specify a imagePullPolicy
+    ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
+    ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+    ##
     pullPolicy: IfNotPresent
   resources: {}
   annotations:
     prometheus.io/scrape: "true"
     prometheus.io/port: "9104"
+
+## Hooks are used to cleanup once a release is deleted
+##
+hooks:
+  enabled: false
+  ## Remove PVCs once the release is deleted
+  ## Warning: data will be lost
+  ##
+  cleanClaims: false
+  rbac:
+  ## Bitnami kubectl image
+  ## ref: https://hub.docker.com/r/bitnami/kubectl/tags/
+  ##
+  image:
+    registry: docker.io
+    repository: bitnami/kubectl
+    tag: 1.12.3
+    ## Specify a imagePullPolicy
+    ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
+    ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+    ##
+    pullPolicy: IfNotPresent
+
+## RBAC support
+## ref: https://docs.bitnami.com/kubernetes/how-to/configure-rbac-in-your-kubernetes-cluster/
+##
+rbac:
+  # Whether create RBAC resources or not
+  create: true

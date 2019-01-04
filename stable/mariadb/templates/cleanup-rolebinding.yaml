@@ -1,0 +1,25 @@
+{{- if .Values.rbac.create }}
+{{- if .Values.hooks.enabled }}
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: RoleBinding
+metadata:
+  name: {{ template "mariadb-cleanup-hook.fullname" . }}
+  annotations:
+    helm.sh/hook: post-delete
+    helm.sh/hook-delete-policy: hook-succeeded
+    helm.sh/hook-weight: "-10"
+  labels:
+    app: "{{ template "mariadb.name" . }}"
+    chart: "{{ template "mariadb.chart" . }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ template "mariadb-cleanup-hook.fullname" . }}
+subjects:
+- kind: ServiceAccount
+  name: {{ template "mariadb-cleanup-hook.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+{{- end }}
+{{- end }}

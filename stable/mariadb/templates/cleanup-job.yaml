@@ -1,0 +1,40 @@
+{{- if .Values.hooks.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ template "mariadb-cleanup-hook.fullname" . }}
+  annotations:
+    helm.sh/hook: post-delete
+    helm.sh/hook-delete-policy: hook-succeeded
+  labels:
+    app: "{{ template "mariadb.name" . }}"
+    chart: "{{ template "mariadb.chart" . }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: "{{ template "mariadb.name" . }}"
+        release: {{ .Release.Name | quote }}
+    spec:
+      containers:
+      - name: kubectl
+        image: {{ template "hooks.image" . }}
+        command:
+        - /bin/sh
+        args:
+        - -ec
+        - |
+          kubectl delete secret -n {{ .Release.Namespace }} {{ template "mariadb.fullname" . }} || true
+        {{- if .Values.hooks.cleanClaims }}
+          kubectl delete pvc -n {{ .Release.Namespace }} $(kubectl get pvc -n {{ .Release.Namespace }} -l app="{{ template "mariadb.name" . }}",release={{ .Release.Name | quote }} -o jsonpath='{.items[*].metadata.name}') || true
+        {{- end }}
+      restartPolicy: OnFailure
+      serviceAccountName: {{ template "mariadb-cleanup-hook.fullname" . }}
+      {{- if .Values.securityContext.enabled }}
+      securityContext:
+        fsGroup: {{ .Values.securityContext.fsGroup }}
+        runAsUser: {{ .Values.securityContext.runAsUser }}
+      {{- end }}
+{{- end }}
