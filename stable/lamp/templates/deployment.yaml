@@ -52,7 +52,7 @@ spec:
       - name: "copy-root"
         image: "{{ .Values.php.repository }}:{{ .Values.php.tag }}"
         imagePullPolicy: "Always"
-        command: ["/bin/bash", "-c", "cp -ua /var/www/html/* /data/web/ && cp -ua /var/www/html/.[^.]* /data/web/ && chown 33:33 -R /data/web/"]
+        command: ["/bin/sh", "-c", "cp -ua /var/www/html/* /data/web/ && cp -ua /var/www/html/.[^.]* /data/web/ && chown 33:33 -R /data/web/"]
         volumeMounts:
         {{- if and .Values.php.persistentSubpaths (or .Values.persistence.hostPath .Values.persistence.enabled)}}
         {{- range $subPath := .Values.php.persistentSubpaths }}
@@ -362,7 +362,7 @@ spec:
       containers:
       {{- if .Values.php.fpmEnabled }}
       - name: "httpd"
-        image: "httpd:2.4.29-alpine"
+        image: "httpd:2.4-alpine"
         imagePullPolicy: "Always"
         ports:
         - containerPort: 80
@@ -400,7 +400,7 @@ spec:
         {{- if .Values.php.repository }}
         image: "{{ .Values.php.repository }}:{{ .Values.php.tag }}"
         {{- else }}
-        image: "php:{{ .Values.php.version }}-fpm"
+        image: "php:{{ .Values.php.version }}-fpm-alpine"
         {{- end }}
         {{- if not .Values.php.sockets }}
         ports:
@@ -522,8 +522,8 @@ spec:
       {{- end }}
       {{ if .Values.sftp.enabled }}
       - name: sftp
-        image: atmoz/sftp
-        command: [/bin/bash, -c, "bash /entrypoint $SFTP_USER:$SFTP_PASSWORD:33:33:web"]
+        image: atmoz/sftp:alpine
+        command: [/bin/bash, -c, "bash /entrypoint $SFTP_USER:$SFTP_PASSWORD:33:33"]
         ports:
         - containerPort: 22
         env:

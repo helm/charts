@@ -6,7 +6,7 @@ mysql:
 
 php:
   repository: drupal
-  tag: 7-fpm
+  tag: fpm-alpine
   persistentSubpaths:
   - modules
   - profiles

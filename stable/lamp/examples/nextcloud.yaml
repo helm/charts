@@ -6,7 +6,7 @@ mysql:
 
 php:
   repository: nextcloud
-  tag: fpm
+  tag: stable-fpm-alpine
   persistentSubpaths:
   - apps
   - config

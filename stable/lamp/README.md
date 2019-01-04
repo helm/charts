@@ -188,6 +188,8 @@ The MySQL container is disabled by default, any container with the base image of
 
 SFTP is an instance of the atmoz/sftp container, through which you can access the webroot.
 
+> **Note**: The webroot is located in the subfolder of the sftp users home directory so putting files into the webroot via sftp have to be put to the web subfolder and the put command will fail if you upload to the root directory since writing permissions are disabled there.
+
 | Parameter | Description | Default |
 | - | - | - |
 | `sftp.enabled` | Enables sftp service | false |
