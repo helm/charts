@@ -190,7 +190,7 @@ Elasticsearch v5 terminology has updated, and now refers to a `Client Node` as a
 
 More info: https://www.elastic.co/guide/en/elasticsearch/reference/5.5/modules-node.html#coordinating-node
 
-## Enabling elasticsearch interal monitoring
+## Enabling elasticsearch internal monitoring
 Requires version 6.3+ and standard non `oss` repository defined. Starting with 6.3 Xpack is partially free and enabled by default. You need to set a new config to enable the collection of these internal metrics. (https://www.elastic.co/guide/en/elasticsearch/reference/6.3/monitoring-settings.html)
 
 To do this through this helm chart override with the three following changes:
