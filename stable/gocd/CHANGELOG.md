@@ -1,3 +1,7 @@
+### 1.5.13
+* [223b59f](https://github.com/kubernetes/charts/commit/223b59f):
+  - Fix typo in README.
+
 ### 1.5.12
 * [72aa74f1](https://github.com/kubernetes/charts/commit/72aa74f1):
   - Removes the namespace list permission for the service account being created.
