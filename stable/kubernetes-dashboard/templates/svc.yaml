@@ -21,8 +21,10 @@ spec:
   - port: {{ .Values.service.externalPort }}
 {{- if .Values.enableInsecureLogin }}
     targetPort: 9090
+    name: "http"
 {{- else }}
     targetPort: 8443
+    name: "https"
 {{- end }}
 {{- if hasKey .Values.service "nodePort" }}
     nodePort: {{ .Values.service.nodePort }}
