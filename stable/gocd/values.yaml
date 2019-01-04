@@ -218,7 +218,7 @@ agent:
     agentAutoRegisterResources:
     # agent.env.agentAutoRegisterEnvironments is the GoCD Agent auto-register Environments
     # deprecated because of a typo. Use agent.env.agentAutoRegisterEnvironments instead
-    agentAutoRegisterEnvironemnts: env1, env2
+    agentAutoRegisterEnvironemnts:
     # agent.env.agentAutoRegisterEnvironments is the GoCD Agent auto-register Environments
     agentAutoRegisterEnvironments:
     # agent.env.agentAutoRegisterHostname is the GoCD Agent auto-register hostname
