@@ -2,24 +2,24 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "phpbb.fullname" . }}
+  name: "{{ template "phpbb.fullname" . }}"
   labels:
-    app: {{ template "phpbb.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app: "{{ template "phpbb.fullname" . }}"
+    chart: "{{ template "phpbb.chart" . }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
 spec:
   selector:
     matchLabels:
-      app: {{ template "phpbb.fullname" . }}
-      release: "{{ .Release.Name }}"
+      app: "{{ template "phpbb.fullname" . }}"
+      release: {{ .Release.Name | quote }}
   replicas: 1
   template:
     metadata:
       labels:
-        app: {{ template "phpbb.fullname" . }}
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-        release: "{{ .Release.Name }}"
+        app: "{{ template "phpbb.fullname" . }}"
+        chart: "{{ template "phpbb.chart" . }}"
+        release: {{ .Release.Name | quote }}
 {{- if or .Values.podAnnotations .Values.metrics.enabled }}
       annotations:
   {{- if .Values.podAnnotations }}
@@ -41,7 +41,7 @@ spec:
         hostnames:
         - "status.localhost"
       containers:
-      - name: {{ template "phpbb.fullname" . }}
+      - name: "{{ template "phpbb.fullname" . }}"
         image: {{ template "phpbb.image" . }}
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         env:
@@ -86,23 +86,33 @@ spec:
         - name: PHPBB_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "phpbb.fullname" . }}
+              name: "{{ template "phpbb.fullname" . }}"
               key: phpbb-password
         - name: PHPBB_EMAIL
           value: {{ .Values.phpbbEmail | quote }}
+        {{- if .Values.smtpHost }}
         - name: SMTP_HOST
           value: {{ .Values.smtpHost | quote }}
+        {{- end }}
+        {{- if .Values.smtpPort }}
         - name: SMTP_PORT
           value: {{ .Values.smtpPort | quote }}
+        {{- end }}
+        {{- if .Values.smtpUser }}
         - name: SMTP_USER
           value: {{ .Values.smtpUser | quote }}
+        {{- end }}
+        {{- if .Values.smtpPassword }}
         - name: SMTP_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "phpbb.fullname" . }}
+              name: "{{ template "phpbb.fullname" . }}"
               key: smtp-password
+        {{- end }}
+        {{- if .Values.smtpProtocol }}
         - name: SMTP_PROTOCOL
           value: {{ default "" .Values.smtpProtocol | quote }}
+        {{- end }}
         ports:
         - name: http
           containerPort: 80
@@ -152,14 +162,14 @@ spec:
       - name: phpbb-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "phpbb.fullname" . }}-phpbb
+          claimName: "{{ template "phpbb.fullname" . }}-phpbb"
       {{- else }}
         emptyDir: {}
       {{- end }}
       - name: apache-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "phpbb.fullname" . }}-apache
+          claimName: "{{ template "phpbb.fullname" . }}-apache"
       {{- else }}
         emptyDir: {}
       {{- end }}
