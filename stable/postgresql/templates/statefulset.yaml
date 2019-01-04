@@ -169,7 +169,7 @@ spec:
         - name: custom-init-scripts
           mountPath: /docker-entrypoint-initdb.d
         {{- end }}
-        {{- if or (.Files.Glob "files/conf.d/*.conf") .Values.extendedConfConfigMap }}
+        {{- if or (.Files.Glob "files/conf.d/*.conf") .Values.postgresqlExtendedConf .Values.extendedConfConfigMap }}
         - name: postgresql-extended-config
           mountPath: /bitnami/postgresql/conf/conf.d/
         {{- end }}
@@ -244,7 +244,7 @@ spec:
         configMap:
           name: {{ template "postgresql.configurationCM" . }}
       {{- end }}
-      {{- if or (.Files.Glob "files/conf.d/*.conf") .Values.extendedConfConfigMap }}
+      {{- if or (.Files.Glob "files/conf.d/*.conf") .Values.postgresqlExtendedConf .Values.extendedConfConfigMap }}
       - name: postgresql-extended-config
         configMap:
           name: {{ template "postgresql.extendedConfigurationCM" . }}

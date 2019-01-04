@@ -98,6 +98,13 @@ postgresqlUsername: postgres
 ##
 # postgresqlConfiguration:
 
+## PostgreSQL extended configuration
+## As above, but _appended_ to the main configuration
+## Alternatively, you can put your *.conf under the files/conf.d/ directory
+## https://github.com/bitnami/bitnami-docker-postgresql#allow-settings-to-be-loaded-from-files-other-than-the-default-postgresqlconf
+##
+# postgresqlExtendedConf:
+
 ## PostgreSQL client authentication configuration
 ## Specify content for pg_hba.conf
 ## Default: do not create pg_hba.conf
