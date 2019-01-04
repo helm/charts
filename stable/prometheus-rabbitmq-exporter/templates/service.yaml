@@ -11,7 +11,7 @@ spec:
   type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.externalPort }}
-      targetPort: {{ .Values.service.internalPort }}
+      targetPort: publish
       protocol: TCP
       name: rabbitmq-exporter
   selector:
