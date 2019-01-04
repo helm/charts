@@ -25,10 +25,10 @@ rules:
       - configmaps
     resourceNames:
       # Defaults to "<election-id>-<ingress-class>"
-      # Here: "<ingress-controller-leader>-<nginx>"
+      # Here: "<kong-ingress-controller-leader-nginx>-<nginx>"
       # This has to be adapted if you change either parameter
       # when launching the nginx-ingress-controller.
-      - "kong-ingress-controller-leader-kong-{{ .Values.ingressController.ingressClass }}"
+      - "kong-ingress-controller-leader-{{ .Values.ingressController.ingressClass }}-{{ .Values.ingressController.ingressClass }}"
     verbs:
       - get
       - update
