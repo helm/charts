@@ -4,7 +4,7 @@
 replicaCount: 1
 image:
   repository: kbudde/rabbitmq-exporter
-  tag: v0.28.0
+  tag: v0.29.0
   pullPolicy: IfNotPresent
 service:
   type: ClusterIP
@@ -35,8 +35,8 @@ rabbitmq:
   password: guest
   capabilities: bert,no_sort
   include_queues: ".*"
-  skip_queues: "^$"
   include_vhost: ".*"
+  skip_queues: "^$"
   skip_vhost: "^$"
   exporters: "exchange,node,overview,queue"
   output_format: "TTY"

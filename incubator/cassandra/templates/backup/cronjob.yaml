@@ -25,7 +25,7 @@ spec:
             {{ toYaml $backup.annotations }}
         spec:
           restartPolicy: OnFailure
-          serviceAccountName: {{ template "cassandra.fullname" $ }}-backup
+          serviceAccountName: {{ template "cassandra.serviceAccountName" $ }}
           containers:
           - name: cassandra-backup
             image: "{{ $backup.image.repos }}:{{ $backup.image.tag }}"
@@ -40,8 +40,9 @@ spec:
             - {{ $schedule.keyspace }}
             - --dst
             - {{ $backup.destination }}
-            - --parallel
-            - "0"
+            {{- with $backup.extraArgs }}
+{{ toYaml . | indent 12 }}
+          {{- end }}
           {{- with $backup.env }}
             env:
 {{ toYaml . | indent 12 }}

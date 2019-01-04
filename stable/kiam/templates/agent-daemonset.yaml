@@ -44,7 +44,11 @@ spec:
       volumes:
         - name: tls
           secret:
+            {{- if .Values.agent.tlsSecret }}
+            secretName: {{ .Values.agent.tlsSecret }}
+            {{else}}
             secretName: {{ template "kiam.fullname" . }}-agent
+            {{- end }}
         - name: xtables
           hostPath:
             path: /run/xtables.lock

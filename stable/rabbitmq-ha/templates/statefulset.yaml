@@ -46,7 +46,8 @@ spec:
       serviceAccountName: {{ template "rabbitmq-ha.serviceAccountName" . }}
       initContainers:
         - name: copy-rabbitmq-config
-          image: busybox
+          image: {{ .Values.busyboxImage.repository}}:{{ .Values.busyboxImage.tag}}
+          imagePullPolicy: {{ .Values.busyboxImage.pullPolicy }}
           command: ['sh', '-c', 'cp /configmap/* /etc/rabbitmq; rm -f /var/lib/rabbitmq/.erlang.cookie']
           resources:
 {{ toYaml .Values.initContainer.resources | indent 12 }}
@@ -133,9 +134,9 @@ spec:
             - name: RABBITMQ_USE_LONGNAME
               value: "true"
             - name: RABBITMQ_NODENAME
-              value: rabbit@$(MY_POD_NAME).{{ template "rabbitmq-ha.fullname" . }}-discovery.{{ .Release.Namespace }}.svc.cluster.local
+              value: rabbit@$(MY_POD_NAME).{{ template "rabbitmq-ha.fullname" . }}-discovery.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}
             - name: K8S_HOSTNAME_SUFFIX
-              value: .{{ template "rabbitmq-ha.fullname" . }}-discovery.{{ .Release.Namespace }}.svc.cluster.local
+              value: .{{ template "rabbitmq-ha.fullname" . }}-discovery.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}
             - name: K8S_SERVICE_NAME
               value: {{ template "rabbitmq-ha.fullname" . }}-discovery
             - name: RABBITMQ_ERLANG_COOKIE
@@ -154,12 +155,9 @@ spec:
               mountPath: /var/lib/rabbitmq
             - name: config
               mountPath: /etc/rabbitmq
-              readOnly: true
-            {{- if not .Values.existingSecret }}
             - name: definitions
               mountPath: /etc/definitions
               readOnly: true
-            {{- end }}
             {{- if .Values.rabbitmqCert.enabled }}
             - name: cert
               mountPath: /etc/cert
@@ -225,29 +223,27 @@ spec:
                     app: {{ template "rabbitmq-ha.name" . }}
                     release: {{ .Release.Name }}
       {{- end }}
+      {{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName }}
+      {{- end }}
       volumes:
         - name: config
           emptyDir: {}
         - name: configmap
           configMap:
             name: {{ template "rabbitmq-ha.fullname" . }}
-        {{- if not .Values.existingSecret }}
         - name: definitions
           secret:
-            secretName: {{ template "rabbitmq-ha.fullname" . }}
+            secretName: {{ template "rabbitmq-ha.secretName" . }}
             items:
-            - key: definitions.json
+            - key: {{ .Values.definitionsSource }}
               path: definitions.json
-        {{- end }}
         {{- if .Values.rabbitmqCert.enabled }}
         - name: cert
           secret:
             defaultMode: 420
             secretName: {{ template "rabbitmq-ha.certSecretName" . }}
         {{- end }}
-      {{- if .Values.priorityClassName }}
-      priorityClassName: {{ .Values.priorityClassName }}
-      {{- end }}
 {{- if .Values.persistentVolume.enabled }}
   volumeClaimTemplates:
     - metadata:
@@ -272,6 +268,6 @@ spec:
       {{- end }}
       {{- end }}
 {{- else }}
-        - name: data
+        - name: {{ .Values.persistentVolume.name }}
           emptyDir: {}
 {{- end }}

@@ -14,7 +14,10 @@ spec:
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: "{{ .Release.Name }}"
         heritage: "{{ .Release.Service }}"
-      annotations: 
+      {{- if .Values.firefoxDebug.podAnnotations }}
+      annotations:
+{{ toYaml .Values.firefoxDebug.podAnnotations | indent 8 }}
+      {{- end}}
     spec:
       containers:
         - name: {{ .Chart.Name }}
@@ -79,6 +82,8 @@ spec:
             {{- end }}
           resources:
 {{ toYaml .Values.firefoxDebug.resources | indent 12 }}
+      hostAliases:
+{{ toYaml .Values.global.hostAliases | indent 8 }}
       nodeSelector:
 {{- if .Values.firefoxDebug.nodeSelector }}
 {{ toYaml .Values.firefoxDebug.nodeSelector | indent 8  }}

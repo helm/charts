@@ -19,7 +19,7 @@ keycloak:
     ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
     ##
     pullSecrets: []
-    #  - myRegistrKeySecretName
+    # - myRegistrKeySecretName
 
   securityContext:
     runAsUser: 1000
@@ -161,6 +161,9 @@ keycloak:
     # nodePort: 30000
 
     port: 80
+
+    # Optional: jGroups port for high availability clustering
+    jgroupsPort: 7600
 
   ## Ingress configuration.
   ## ref: https://kubernetes.io/docs/user-guide/ingress/

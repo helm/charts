@@ -10,7 +10,7 @@
 image:
   registry: docker.io
   repository: bitnami/ghost
-  tag: 2.6.0
+  tag: 2.9.1
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -34,21 +34,13 @@ volumePermissions:
     tag: latest
     pullPolicy: Always
 
-## Ghost host and path to create application URLs
+## Ghost protocol, host and path to create application URLs
 ## ref: https://github.com/bitnami/bitnami-docker-ghost#configuration
 ##
+ghostProtocol: https
 # ghostHost:
 ghostPath: /
 
-## Ghost port to create application URLs along with host.
-## ref: https://github.com/bitnami/bitnami-docker-ghost#configuration
-##
-ghostPort: 80
-
-## loadBalancerIP for the Ghost Service (optional, cloud specific)
-## ref: http://kubernetes.io/docs/user-guide/services/#type-loadbalancer
-##
-ghostLoadBalancerIP: ""
 
 ## User of the application
 ## ref: https://github.com/bitnami/bitnami-docker-ghost#configuration
@@ -151,7 +143,20 @@ mariadb:
 ## Kubernetes configuration
 ## For minikube, set this to NodePort, elsewhere use LoadBalancer
 ##
-serviceType: LoadBalancer
+service:
+  type: LoadBalancer
+  # HTTP Port
+  port: 80
+  ## loadBalancerIP:
+  ##
+  ## nodePorts:
+  ##   http: <to set explicitly, choose port between 30000-32767>
+  nodePorts:
+    http: ""
+  ## Enable client source IP preservation
+  ## ref http://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip
+  ##
+  externalTrafficPolicy: Cluster
 
 ## Pod Security Context
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/

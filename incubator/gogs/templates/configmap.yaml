@@ -47,7 +47,7 @@ data:
     PASSWD = {{ template "gogs.database.password" . }}
 
     [security]
-    INSTALL_LOCK = true
+    INSTALL_LOCK = {{ .Values.service.gogs.installLock }}
     SECRET_KEY = {{ default "" .Values.service.gogs.securitySecretKey | b64enc | quote }}
 
     [ui]

@@ -10,7 +10,7 @@ terminationGracePeriodSeconds: 30
 
 image:
   repository: docker.elastic.co/logstash/logstash-oss
-  tag: 6.4.3
+  tag: 6.5.4
   pullPolicy: IfNotPresent
   ## Add secrets manually via kubectl on kubernetes cluster and reference here
   #  pullSecrets:
@@ -83,6 +83,8 @@ resources: {}
   # requests:
   #  cpu: 100m
   #  memory: 128Mi
+
+priorityClassName: ""
 
 nodeSelector: {}
 

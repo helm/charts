@@ -4,14 +4,26 @@
 replicaCount: 1
 image:
   repository: sonarqube
-  tag: 6.7.3
+  tag: 7.4-community
   # If using a private repository, the name of the imagePullSecret to use
   # pullSecret: my-repo-secret
+# Starting 6.7.6 and 7.4 official sonarqube docker image, command is not required
+# anymore. For older images, uncomment the following lines.
+# command: [
+#   "sh",
+#   "-ce",
+#   "mkdir /scripts &&
+#   cp /tmp-script/startup.sh /scripts/startup.sh &&
+#   chmod 0755 /scripts/startup.sh &&
+#   /scripts/startup.sh
+#   "
+#   ]
 service:
   name: sonarqube
   type: LoadBalancer
   externalPort: 9000
   internalPort: 9000
+  labels:
   annotations:
   # May be used in example for internal load balancing in GCP:
   # cloud.google.com/load-balancer-type: Internal
