@@ -1,9 +1,11 @@
 {{ if .Values.rbac.install }}
 {{- $serviceName := include "jenkins.fullname" . -}}
-{{- if .Capabilities.APIVersions.Has "rbac.authorization.k8s.io/v1" }}
-apiVersion: rbac.authorization.k8s.io/v1
-{{- else if .Capabilities.APIVersions.Has "rbac.authorization.k8s.io/v1beta1" }}
+{{- if .Capabilities.APIVersions.Has "rbac.authorization.k8s.io/v1beta1" }}
 apiVersion: rbac.authorization.k8s.io/v1beta1
+{{- else if .Capabilities.APIVersions.Has "rbac.authorization.k8s.io/v1alpha1" }}
+apiVersion: rbac.authorization.k8s.io/v1alpha1
+{{- else }}
+apiVersion: rbac.authorization.k8s.io/v1
 {{- end }}
 kind: {{ .Values.rbac.roleBindingKind }}
 metadata:
