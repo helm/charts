@@ -17,7 +17,7 @@ spec:
 {{- range $key, $port := .Values.ports }}
     - name: {{ $key }}
       port: {{ $port.containerPort }}
-      targetPort: {{ $port.name }}
+      targetPort: {{ $key }}
       protocol: {{ $port.protocol }}
 {{- end }}
   selector:
