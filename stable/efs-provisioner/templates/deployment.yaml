@@ -1,3 +1,14 @@
+ {{- if ne .Values.efsProvisioner.efsFileSystemId "fs-12345678" }}
+ {{/*
+ The `efsFileSystemId` value must be set.
+
+ The above `if` condition also prevents the helm integration tests from failing.
+ Given that the helm test infrastructure does not have access to valid
+ AWS EFS resources, a deployment that references the example `fs-12345678`
+ creates pods that will never enter a clean, running state.
+
+ Omitting the deployment hacks around this limitation.
+*/}}
 kind: Deployment
 apiVersion: apps/v1beta2
 metadata:
@@ -24,6 +35,9 @@ spec:
         release: "{{ .Release.Name }}"
     spec:
       serviceAccount: {{ template "efs-provisioner.serviceAccountName" . }}
+      {{- if .Values.priorityClassName }}
+      priorityClassName: "{{ .Values.priorityClassName }}"
+      {{- end }}
       containers:
       - name: {{ template "efs-provisioner.fullname" . }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -54,3 +68,4 @@ spec:
         nfs:
           server: {{ .Values.efsProvisioner.efsFileSystemId }}.efs.{{ .Values.efsProvisioner.awsRegion }}.amazonaws.com
           path: /
+{{- end }}
