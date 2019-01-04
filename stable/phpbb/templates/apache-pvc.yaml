@@ -2,12 +2,12 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ template "phpbb.fullname" . }}-apache
+  name: "{{ template "phpbb.fullname" . }}-apache"
   labels:
-    app: {{ template "phpbb.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app: "{{ template "phpbb.fullname" . }}"
+    chart: "{{ template "phpbb.chart" . }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
 spec:
   accessModes:
     - {{ .Values.persistence.apache.accessMode | quote }}

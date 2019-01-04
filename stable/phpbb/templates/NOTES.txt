@@ -4,16 +4,16 @@
 
 {{- if contains "NodePort" .Values.service.type }}
 
-  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "phpbb.fullname" . }})
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services "{{ template "phpbb.fullname" . }}")
   export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
   echo "phpBB URL: http://$NODE_IP:$NODE_PORT/"
 
 {{- else if contains "LoadBalancer" .Values.service.type }}
 
   NOTE: It may take a few minutes for the LoadBalancer IP to be available.
-        Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "phpbb.fullname" . }}'
+        Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w "{{ template "phpbb.fullname" . }}"'
 
-  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "phpbb.fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} "{{ template "phpbb.fullname" . }}" --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
 
 {{- $port:=.Values.service.port | toString }}
   echo "phpBB URL: http://$SERVICE_IP{{- if ne $port "80" }}:{{ .Values.service.port }}{{ end }}/"
@@ -21,14 +21,14 @@
 {{- else if contains "ClusterIP"  .Values.service.type }}
 
   echo "phpBB URL: http://127.0.0.1:8080/"
-  kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "phpbb.fullname" . }} 8080:{{ .Values.service.port }}
+  kubectl port-forward --namespace {{ .Release.Namespace }} svc/"{{ template "phpbb.fullname" . }}" 8080:{{ .Values.service.port }}
 
 {{- end }}
 
 2. Get your phpBB login credentials by running:
 
     echo Username: {{ .Values.phpbbUser }}
-    echo Password: $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "phpbb.fullname" . }} -o jsonpath="{.data.phpbb-password}" | base64 --decode)
+    echo Password: $(kubectl get secret --namespace {{ .Release.Namespace }} "{{ template "phpbb.fullname" . }}" -o jsonpath="{.data.phpbb-password}" | base64 --decode)
 
 {{- else -}}
 
