@@ -3,6 +3,9 @@ settings:
     - /config/kernel-monitor.json
     - /config/docker-monitor.json
 
+hostpath:
+  logdir: /var/log/
+
 image:
   repository: k8s.gcr.io/node-problem-detector
   tag: v0.5.0
