@@ -1,3 +1,8 @@
+# For performance reasons, you may want to split the service into two services.
+# One called crate-discovery to handle the discovery typically on port 4300 and
+# another one for the rest of functions (admin, postgres, etc). This is because
+# Performance Issues have been seen with the discovery service behind load
+# balancers. See: https://github.com/helm/charts/pull/8432
 apiVersion: v1
 kind: Service
 metadata:

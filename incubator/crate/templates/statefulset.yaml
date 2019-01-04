@@ -1,14 +1,21 @@
-apiVersion: "apps/v1beta1"
+apiVersion: "apps/v1"
 kind: StatefulSet
 metadata:
   name: crate
 spec:
   serviceName: "crate-db"
   replicas: {{ .Values.crate.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.app }}
   template:
     metadata:
       labels:
         app: {{ .Values.app }}
+        app.kubernetes.io/name: crate-deployment
+        app.kubernetes.io/part-of: crate-db
+        app.kubernetes.io/version: {{ .Values.image.tag }}
+        app.kubernetes.io/managed-by: helm
       annotations:
         pod.alpha.kubernetes.io/initialized: "true"
     spec:
@@ -26,16 +33,20 @@ spec:
         command:
           - /docker-entrypoint.sh
           - -Clicense.enterprise=false
-          - -Ccluster.name=${CLUSTER_NAME}
+          - -Ccluster.name={{ .Values.crate.clusterName }}
           - -Cnetwork.host="0.0.0.0"
           - -Cdiscovery.zen.hosts_provider=srv
-          - -Cdiscovery.zen.minimum_master_nodes=${MINIMUM_MASTER_NODES}
+          - -Cdiscovery.zen.minimum_master_nodes={{ .Values.crate.minimumMasterNodes }}
           - -Cdiscovery.srv.query=_{{ .Values.service.clusterName }}._tcp.{{ .Values.service.name }}.{{ .Release.Namespace }}.svc.cluster.local
-          - -Cgateway.recover_after_nodes=${RECOVER_AFTER_NODES}
+          - -Cgateway.recover_after_nodes={{ .Values.crate.recoverAfterNodes }}
           - -Cgateway.recover_after_time={{ .Values.crate.recoverAfterTime }}
-          - -Cgateway.expected_nodes=${EXPECTED_NODES}
+          - -Cgateway.expected_nodes={{ .Values.crate.replicas }}
           - -Chttp.cors.enabled={{ .Values.http.cors.enabled }}
           - -Chttp.cors.allow-origin={{ .Values.http.cors.allowOrigin }}
+          - -Cpath.data=/data
+          {{- if .Values.resources.limits.cpu }}
+          - -Cprocessors={{ .Values.resources.limits.cpu }}
+          {{- end }}
         volumeMounts:
             - mountPath: /data
               name: data

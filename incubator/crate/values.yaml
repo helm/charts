@@ -29,7 +29,7 @@ crate:
   clusterName: my-cluster
   crateHeapSize: 1g
   recoverAfterNodes: 1
-  replicas: 1
+  replicas: 1  # If you want more replicas, checkout the links above.
   recoverAfterTime: 5m
   minimumMasterNodes: 1
 
