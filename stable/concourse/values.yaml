@@ -13,7 +13,7 @@ image: concourse/concourse
 ## Concourse image version.
 ## ref: https://hub.docker.com/r/concourse/concourse/tags/
 ##
-imageTag: "4.2.1"
+imageTag: "4.2.2"
 
 ## Specific image digest to use in place of a tag.
 ## ref: https://kubernetes.io/docs/concepts/configuration/overview/#container-images
@@ -196,8 +196,6 @@ concourse:
       retryMax: 5m
       ## The initial time between retries when logging in or reAuthing a secret.
       retryInitial: 1s
-      ## Paramter to pass when logging in via the backend. Can be specified multiple times.
-      # authParam: id=foo,secret_id=bar
     ## Don't actually do any automatic scheduling or checking.
     # noop:
     staticWorker:
@@ -842,6 +840,15 @@ worker:
   #     hostPath:
   #       path: /dev/nvme0n1
   #       type: BlockDevice
+  #
+  # As a special exception, this allows taking over the `concourse-work-dir`
+  # volume (from the default emptyDir) if `persistence.enabled` is false:
+  #
+  # additionalVolumes:
+  #   - name: concourse-work-dir
+  #     hostPath:
+  #       path: /mnt/locally-mounted-fast-disk/concourse
+  #       type: DirectoryOrCreate
 
   ## Whether the workers should be forced to run on separate nodes.
   ## This is accomplished by setting their AntiAffinity with requiredDuringSchedulingIgnoredDuringExecution as opposed to preferred
@@ -1148,6 +1155,14 @@ secrets:
   ## ref: https://www.vaultproject.io/docs/concepts/tokens.html#periodic-tokens
   ##
   # vaultClientToken:
+
+  ## vault authentication parameters
+  ## Paramter to pass when logging in via the backend
+  ## Required for "approle" authenication method
+  ## e.g. "role_id=x,secret_id=x"
+  ## ref: https://concourse-ci.org/creds.html#vault-auth-param=NAME=VALUE
+  ##
+  # vaultAuthParam:
 
   ## provide the client certificate for authenticating with the [TLS](https://www.vaultproject.io/docs/auth/cert.html) backend
   ## the value will be written to /concourse-vault/client.cert

@@ -58,8 +58,13 @@ The following tables lists the configurable parameters of this chart and their d
 | `storageClass.archiveOnDelete`    | Archive pvc when deleting                   | `true` 	                                              |
 | `nfs.server`                      | Hostname of the NFS server                  | null (ip or hostname)                                     |
 | `nfs.path`                        | Basepath of the mount point to be used      | `/ifs/kubernetes`                                         |
+| `nfs.mountOptions`                | Mount options (e.g. 'nfsvers=3')            | null                                                      |
 | `resources`                       | Resources required (e.g. CPU, memory)       | `{}`                                                      |
 | `rbac.create` 		    | Use Role-based Access Control		  | `true`						      |
 | `podSecurityPolicy.enabled`	    | Create & use Pod Security Policy resources  | `false`						      |
 | `serviceAccount.create`	    | Should we create a ServiceAccount	          | `true`						      |
 | `serviceAccount.name`		    | Name of the ServiceAccount to use           | null						      |
+| `nodeSelector`                    | Node labels for pod assignment              | `{}`                                                      |
+| `affinity`                        | Affinity settings                           | `{}`                                                      |
+| `tolerations`                     | List of node taints to tolerate             | `[]`                                                      |
+

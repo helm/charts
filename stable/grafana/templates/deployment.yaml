@@ -21,7 +21,7 @@ spec:
     type: {{ .Values.deploymentStrategy }}
   {{- if ne .Values.deploymentStrategy "RollingUpdate" }}
     rollingUpdate: null
-  {{- end }}    
+  {{- end }}
   template:
     metadata:
       labels:
@@ -40,8 +40,27 @@ spec:
       securityContext:
 {{ toYaml .Values.securityContext | indent 8 }}
 {{- end }}
-{{- if .Values.dashboards }}
+{{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName }}
+{{- end }}
+{{- if (.Values.persistence.enabled) or (.Values.dashboards) }}
       initContainers:
+{{- end }}
+{{- if .Values.persistence.enabled }}
+        - name: init-chown-data
+          image: "{{ .Values.chownDataImage.repository }}:{{ .Values.chownDataImage.tag }}"
+          imagePullPolicy: {{ .Values.chownDataImage.pullPolicy }}
+          securityContext:
+            runAsUser: 0
+          command: ["chown", "-R", "{{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.runAsUser }}", "/var/lib/grafana"]
+          volumeMounts:
+            - name: storage
+              mountPath: "/var/lib/grafana"
+{{- if .Values.persistence.subPath }}
+              subPath: {{ .Values.persistence.subPath }}
+{{- end }}
+{{- end }}
+{{- if .Values.dashboards }}
         - name: download-dashboards
           image: "{{ .Values.downloadDashboardsImage.repository }}:{{ .Values.downloadDashboardsImage.tag }}"
           imagePullPolicy: {{ .Values.downloadDashboardsImage.pullPolicy }}
@@ -52,7 +71,9 @@ spec:
               subPath: download_dashboards.sh
             - name: storage
               mountPath: "/var/lib/grafana"
+{{- if .Values.persistence.subPath }}
               subPath: {{ .Values.persistence.subPath }}
+{{- end }}
           {{- range .Values.extraSecretMounts }}
             - name: {{ .name }}
               mountPath: {{ .mountPath }}
@@ -75,6 +96,10 @@ spec:
               value: "{{ .Values.sidecar.dashboards.label }}"
             - name: FOLDER
               value: "{{ .Values.sidecar.dashboards.folder }}"
+            {{- if .Values.sidecar.dashboards.searchNamespace }}
+            - name: NAMESPACE
+              value: "{{ .Values.sidecar.dashboards.searchNamespace }}"
+            {{- end }}
           resources:
 {{ toYaml .Values.sidecar.resources | indent 12 }}
           volumeMounts:
@@ -90,6 +115,10 @@ spec:
               value: "{{ .Values.sidecar.datasources.label }}"
             - name: FOLDER
               value: "/etc/grafana/provisioning/datasources"
+            {{- if .Values.sidecar.datasources.searchNamespace }}
+            - name: NAMESPACE
+              value: "{{ .Values.sidecar.datasources.searchNamespace }}"
+            {{- end }}
           resources:
 {{ toYaml .Values.sidecar.resources | indent 12 }}
           volumeMounts:
@@ -106,6 +135,11 @@ spec:
             - name: ldap
               mountPath: "/etc/grafana/ldap.toml"
               subPath: ldap.toml
+            - name: storage
+              mountPath: "/var/lib/grafana"
+{{- if .Values.persistence.subPath }}
+              subPath: {{ .Values.persistence.subPath }}
+{{- end }}
 {{- if .Values.dashboards }}
   {{- range $provider, $dashboards := .Values.dashboards }}
     {{- range $key, $value := $dashboards }}
@@ -144,10 +178,12 @@ spec:
             - name: sc-datasources-volume
               mountPath: "/etc/grafana/provisioning/datasources"
 {{- end}}
-            - name: storage
-              mountPath: "/var/lib/grafana"
-              subPath: {{ .Values.persistence.subPath }}
           {{- range .Values.extraSecretMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              readOnly: {{ .readOnly }}
+          {{- end }}
+          {{- range .Values.extraVolumeMounts }}
             - name: {{ .name }}
               mountPath: {{ .mountPath }}
               readOnly: {{ .readOnly }}
@@ -267,4 +303,9 @@ spec:
           secret:
             secretName: {{ .secretName }}
             defaultMode: {{ .defaultMode }}
+      {{- end }}
+      {{- range .Values.extraVolumeMounts }}
+        - name: {{ .name }}
+          persistentVolumeClaim:
+            claimName: {{ .existingClaim }}
       {{- end }}

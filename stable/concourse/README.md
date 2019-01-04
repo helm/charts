@@ -68,7 +68,7 @@ The following table lists the configurable parameters of the Concourse chart and
 | Parameter               | Description                           | Default                                                    |
 | ----------------------- | ----------------------------------    | ---------------------------------------------------------- |
 | `image` | Concourse image | `concourse/concourse` |
-| `imageTag` | Concourse image version | `4.2.1` |
+| `imageTag` | Concourse image version | `4.2.2` |
 | `imagePullPolicy` | Concourse image pull policy | `IfNotPresent` |
 | `web.nameOverride` | Override the Concourse Web components name | `nil` |
 | `web.replicas` | Number of Concourse Web replicas | `1` |
@@ -151,6 +151,7 @@ The following table lists the configurable parameters of the Concourse chart and
 | `secrets.vaultClientCert` | Vault Client Certificate | `nil` |
 | `secrets.vaultClientKey` | Vault Client Key | `nil` |
 | `secrets.vaultClientToken` | Vault periodic client token | `nil` |
+| `secrets.vaultAuthParam` | Paramter to pass when logging in via the backend | `nil` |
 | `secrets.influxdbPassword` | Password used to authenticate with influxdb | `nil` |
 | `secrets.syslogCaCert` | SSL certificate to verify Syslog server | `nil` |
 

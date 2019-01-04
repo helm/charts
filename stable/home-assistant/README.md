@@ -36,15 +36,16 @@ The following tables lists the configurable parameters of the Sentry chart and t
 | Parameter                  | Description                         | Default                                                 |
 |----------------------------|-------------------------------------|---------------------------------------------------------|
 | `image.repository`         | Image repository | `homeassistant/home-assistant` |
-| `image.tag`                | Image tag. Possible values listed [here](https://hub.docker.com/r/jacobalberty/home-assistant/tags/).| `0.72.1`|
+| `image.tag`                | Image tag. Possible values listed [here](https://hub.docker.com/r/homeassistant/home-assistant/tags/).| `0.84.6`|
 | `image.pullPolicy`         | Image pull policy | `IfNotPresent` |
+| `image.pullSecrets`        | Secrets to use when pulling the image | `[]` |
 | `service.type`             | Kubernetes service type for the home-assistant GUI | `ClusterIP` |
 | `service.port`             | Kubernetes port where the home-assistant GUI is exposed| `8123` |
 | `service.annotations`      | Service annotations for the home-assistant GUI | `{}` |
 | `service.clusterIP`   | Cluster IP for the home-assistant GUI | `` |
 | `service.externalIPs`   | External IPs for the home-assistant GUI | `[]` |
-| `service.loadBalancerIP`   | Loadbalance IP for the home-assistant GUI | `` |
-| `service.loadBalancerSourceRanges`   | Loadbalance client IP restriction range for the home-assistant GUI | `[]` |
+| `service.loadBalancerIP`   | Loadbalancer IP for the home-assistant GUI | `` |
+| `service.loadBalancerSourceRanges`   | Loadbalancer client IP restriction range for the home-assistant GUI | `[]` |
 | `hostNetwork`              | Enable hostNetwork - might be needed for discovery to work | `false` |
 | `service.nodePort`   | nodePort to listen on for the home-assistant GUI | `` |
 | `ingress.enabled`              | Enables Ingress | `false` |
@@ -58,6 +59,7 @@ The following tables lists the configurable parameters of the Sentry chart and t
 | `persistence.storageClass` | Type of persistent volume claim | `-` |
 | `persistence.accessMode`  | Persistence access modes | `ReadWriteMany` |
 | `extraEnv`          | Extra ENV vars to pass to the home-assistant container | `{}` |
+| `extraEnvSecrets`   | Extra env vars to pass to the home-assistant container from k8s secrets - see `values.yaml` for an example | `{}` |
 | `configurator.enabled`     | Enable the optional [configuration UI](https://github.com/danielperna84/hass-configurator) | `false` |
 | `configurator.image.repository`         | Image repository | `billimek/hass-configurator-docker` |
 | `configurator.image.tag`                | Image tag | `x86_64-0.3.0`|
@@ -88,8 +90,8 @@ The following tables lists the configurable parameters of the Sentry chart and t
 | `configurator.service.labels`           | Service labels to use for the configurator UI | `{}` |
 | `configurator.service.clusterIP`        | Cluster IP for the configurator UI | `` |
 | `configurator.service.externalIPs`      | External IPs for the configurator UI | `[]` |
-| `configurator.service.loadBalancerIP`   | Loadbalance IP for the configurator UI | `` |
-| `configurator.service.loadBalancerSourceRanges`   | Loadbalance client IP restriction range for the configurator UI | `[]` |
+| `configurator.service.loadBalancerIP`   | Loadbalancer IP for the configurator UI | `` |
+| `configurator.service.loadBalancerSourceRanges`   | Loadbalancer client IP restriction range for the configurator UI | `[]` |
 | `resources`                | CPU/Memory resource requests/limits or the home-assistant GUI | `{}` |
 | `nodeSelector`             | Node labels for pod assignment or the home-assistant GUI | `{}` |
 | `tolerations`              | Toleration labels for pod assignment or the home-assistant GUI | `[]` |
@@ -111,8 +113,8 @@ helm install --name my-release -f values.yaml stable/home-assistant
 
 Read through the [values.yaml](values.yaml) file. It has several commented out suggested values.
 
-## Regarding configuring home assistnat
+## Regarding configuring home assistant
 
 Much of the home assistant configuration occurs inside the various files persisted to the `/config` directory.  This will require external access to the persistent storage location where the home assistant configuration data is stored.
 
-Because this may be a limitation, the [Home Assistant Configurator UI](https://github.com/danielperna84/hass-configurator) is added to the chart as an option to provide a webUI for editing the various configuration files
+Because this may be a limitation, the [Home Assistant Configurator UI](https://github.com/danielperna84/hass-configurator) is added to the chart as an option to provide a webUI for editing the various configuration files.

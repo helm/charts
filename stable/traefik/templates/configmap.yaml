@@ -93,6 +93,14 @@ data:
       {{- end }}
       address = ":8880"
       compress = {{ .Values.gzip.enabled }}
+      {{- if .Values.proxyProtocol.enabled }}
+        [entryPoints.httpn.proxyProtocol]
+        {{ template "traefik.trustedips" . }}
+      {{- end }}
+      {{- if .Values.forwardedHeaders.enabled }}
+        [entryPoints.httpn.forwardedHeaders]
+        {{ template "traefik.forwardedHeadersTrustedIPs" . }}
+      {{- end }}
       {{- end }}
       {{- if .Values.dashboard.enabled }}
       [entryPoints.traefik]
@@ -174,7 +182,7 @@ data:
       [etcd.tls]
       {{- end }}
       {{ range $key, $value := .Values.kvprovider.etcd.tls }}
-      {{ $key }} = {{ $value }}
+      {{ $key }} = {{ $value | quote }}
       {{ end }}
     {{- end }}
     {{- if .Values.kvprovider.consul }}
@@ -330,6 +338,18 @@ data:
         {{- end }}
         {{- if ne (.Values.tracing.zipkin.id128bit | quote) "" }}
         id128bit = {{ .Values.tracing.zipkin.id128bit }}
+        {{- end }}
+      {{- end }}
+      {{- if eq .Values.tracing.backend "datadog" }}
+      [tracing.datadog]
+        {{- if .Values.tracing.datadog.localAgentHostPort }}
+        localAgentHostPort = {{ .Values.tracing.datadog.localAgentHostPort | quote }}
+        {{- end }}
+        {{- if ne (.Values.tracing.datadog.debug | quote) "" }}
+        debug = {{ .Values.tracing.datadog.debug }}
+        {{- end }}
+        {{- if ne (.Values.tracing.datadog.globalTag | quote) "" }}
+        globalTag = {{ .Values.tracing.datadog.globalTag | quote }}
         {{- end }}
       {{- end }}
     {{- end }}

@@ -1,0 +1,30 @@
+replicaCount: 1
+image:
+   repository: quay.io/samsung_cnct/jenkins-operator
+   tag: 0.1.12
+   pullPolicy: IfNotPresent
+
+# short resource name override
+nameOverride: ''
+
+# long resource name override
+fullnameOverride: ''
+
+# keep CRDs installed after a release deletion
+keepCRDs: false
+
+# install RBAC resources
+rbac: true
+
+# install CRDs from chart resources (rather than from embedded binary ones)
+chartCrds: true
+
+# command line arguments to be passed to the operator binary
+args:
+- --alsologtostderr
+- --install-crds=false
+
+resources: {}
+nodeSelector: {}
+tolerations: []
+affinity: {}

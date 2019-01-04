@@ -14,7 +14,6 @@ spec:
   selector:
     matchLabels:
       app: {{ template "mongodb.name" . }}
-      chart: {{ template "mongodb.chart" . }}
       release: {{ .Release.Name }}
       component: primary
   template:
@@ -42,9 +41,17 @@ spec:
         fsGroup: {{ .Values.securityContext.fsGroup }}
         runAsUser: {{ .Values.securityContext.runAsUser }}
       {{- end }}
+      {{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+      {{- end -}}
       {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
       {{- end }}
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
@@ -77,7 +84,7 @@ spec:
           - name: MONGODB_DATABASE
             value: {{ .Values.mongodbDatabase | quote }}
             {{- if .Values.usePassword }}
-            {{- if .Values.mongodbPassword }}
+            {{- if or .Values.mongodbPassword .Values.existingSecret }}
           - name: MONGODB_PASSWORD
             valueFrom:
               secretKeyRef:
@@ -148,12 +155,16 @@ spec:
           image: {{ template "metrics.image" . }}
           imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
           env:
+          {{- if .Values.usePassword }}
           - name: MONGODB_ROOT_PASSWORD
             valueFrom:
               secretKeyRef:
                 name: {{ if .Values.existingSecret }}{{ .Values.existingSecret }}{{- else }}{{ template "mongodb.fullname" . }}{{- end }}
                 key: mongodb-root-password
           command: [ 'sh', '-c', '/bin/mongodb_exporter --mongodb.uri mongodb://root:${MONGODB_ROOT_PASSWORD}@localhost:{{ .Values.service.port }}/admin' ]
+          {{- else }}
+          command: [ 'sh', '-c', '/bin/mongodb_exporter --mongodb.uri mongodb://localhost:{{ .Values.service.port }}' ]
+          {{- end }}
           ports:
           - name: metrics
             containerPort: 9216

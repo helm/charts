@@ -494,6 +494,13 @@ spec:
                 path: worker_key
               - key: worker-key-pub
                 path: worker_key.pub
+{{- define "concourse.are-there-additional-volumes.with-the-name.concourse-work-dir" }}
+  {{- range .Values.worker.additionalVolumes }}
+    {{- if .name | eq "concourse-work-dir" }}
+      {{- .name }}
+    {{- end }}
+  {{- end }}
+{{- end }}
   {{- if .Values.persistence.enabled }}
   volumeClaimTemplates:
     - metadata:
@@ -512,8 +519,10 @@ spec:
       {{- end }}
       {{- end }}
   {{- else }}
+      {{ if include "concourse.are-there-additional-volumes.with-the-name.concourse-work-dir" . | not }}
         - name: concourse-work-dir
           emptyDir: {}
+      {{- end }}
   {{- end }}
 {{- if semverCompare "^1.7-0" .Capabilities.KubeVersion.GitVersion }}
   updateStrategy:

@@ -29,10 +29,10 @@ helm install --name my-release stable/cockroachdb
 ```
 
 Note that for a production cluster, you are very likely to want to modify the
-`Storage` and `StorageClass` parameters. This chart defaults to just 1 GiB of
-disk space per pod in order for it to work in small environments like Minikube,
+`Storage` and `StorageClass` parameters. This chart defaults to 100 GiB of
+disk space per pod, but you may want more or less depending on your use case,
 and the default persistent volume `StorageClass` in your environment may not be
-what you want for a database (e.g. on GCE the default is not SSD).
+what you want for a database (e.g. on GCE and Azure the default is not SSD).
 
 If you are running in secure mode (with configuration parameter `Secure.Enabled`
 set to `true`), then you will have to manually approve the cluster's security
@@ -49,8 +49,8 @@ Due to having no explicit selector set for the StatefulSet before version 2.0.0 
 this chart, upgrading from any version that uses a version of kubernetes that locks
 the selector labels to any other version is impossible without deleting the StatefulSet.
 Luckily there is a way to do it without actually deleting all the resources managed
-by the StatefulSet. Use the workaround below to upgrade from versions previous to 2.0.0.
-The following example assumes that the release name is crdb:
+by the StatefulSet. Use the workaround below to upgrade from charts versions previous
+to 2.0.0. The following example assumes that the release name is crdb:
 
 ```console
 $ kubectl delete statefulset crdb-cockroachdb --cascade=false
@@ -69,7 +69,7 @@ The following table lists the configurable parameters of the CockroachDB chart a
 | ------------------------------ | ------------------------------------------------ | ----------------------------------------- |
 | `Name`                         | Chart name                                       | `cockroachdb`                             |
 | `Image`                        | Container image name                             | `cockroachdb/cockroach`                   |
-| `ImageTag`                     | Container image tag                              | `v2.0.6`                                  |
+| `ImageTag`                     | Container image tag                              | `v2.1.3`                                  |
 | `ImagePullPolicy`              | Container pull policy                            | `Always`                                  |
 | `Replicas`                     | k8s statefulset replicas                         | `3`                                       |
 | `MaxUnavailable`               | k8s PodDisruptionBudget parameter                | `1`                                       |
@@ -82,7 +82,7 @@ The following table lists the configurable parameters of the CockroachDB chart a
 | `ExternalHttpPort`             | CockroachDB HTTP port on service                 | `8080`                                    |
 | `HttpName`                     | Name given to the http service port              | `http`                                    |
 | `Resources`                    | Resource requests and limits                     | `{}`                                      |
-| `Storage`                      | Persistent volume size                           | `1Gi`                                     |
+| `Storage`                      | Persistent volume size                           | `100Gi`                                     |
 | `StorageClass`                 | Persistent volume class                          | `null`                                    |
 | `CacheSize`                    | Size of CockroachDB's in-memory cache            | `25%`                                     |
 | `MaxSQLMemory`                 | Max memory to use processing SQL queries         | `25%`                                     |
