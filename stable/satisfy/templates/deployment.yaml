@@ -31,16 +31,16 @@ spec:
           command:
             - /bin/sh
             - -c
-            - >
-              set -x;
-              set -e;
+            - |
+              set -x
+              set -e
               if [[ -e /app_persist/satis.json ]]; then
-                echo >&2 "Existing installation found, moving on..";
+                echo >&2 "Existing installation found, moving on.."
                 exit 0
               else
-                echo >&2 "Seeding new instance..";
-                cp -r /app/* /app_persist/;
-                chown -R satisfy:satisfy /app_persist;
+                echo >&2 "Seeding new instance.."
+                cp -r /app/* /app_persist/
+                chown -R satisfy:satisfy /app_persist
               fi
           securityContext:
             runAsUser: 0
@@ -57,7 +57,7 @@ spec:
               protocol: TCP
           env:
             - name: REPO_NAME
-              value: "{{ .Values.satisfy.repo_name }}"
+              value: "{{ .Values.satisfy.repoName }}"
             - name: HOMEPAGE
               value: "{{ .Values.satisfy.homepage }}"
             {{- if .Values.satisfy.ssh_private_key }}

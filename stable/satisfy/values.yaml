@@ -1,13 +1,14 @@
-# Default values for satisfy.
+# Default values for Satisfy.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
 image:
   repository: docker.io/anapsix/satisfy
-  # if both image.tag and image.digest are present
+  # image.digest takes precedence: 
+  # i.e. if both image.tag and image.digest are present
   # digest will be used
-  tag: v3.0.4
-  digest: sha256:16a818ab03b6a6bd2625dc9b4760f079fbbddfdd1473994593dfae958c6e7e29
+  # tag: v3.0.4
+  digest: sha256:3f3de7ae1c0462cb7e6cc671e869fca6a898991ae6d5e295558a3edcb20f2194
   pullPolicy: Always
   pullSecrets: []
     # - secret1
@@ -65,7 +66,7 @@ persistence:
 
 ## Application settings
 satisfy:
-  repo_name: myrepo
+  repoName: myrepo
   homepage: http://chart-example.local
   ssh_private_key: ~  # set it via CLI
                       # for example: `--set satisfy.ssh_private_key="$(<~/.ssh/id_rsa)"`

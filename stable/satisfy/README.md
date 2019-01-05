@@ -47,7 +47,7 @@ chart and deletes the release.
 `persistence.storageClass`      | Storage class of backing PVC           | `nil`
 `persistence.accessMode`        | Use volume as ReadOnly or ReadWrite    | `ReadWriteOnce`
 `persistence.size`              | Size of data volume                    | `8Gi`
-`satisfy.repo_name`             | Satis repository name                  | `myrepo`
+`satisfy.repoName`              | Satis repository name                  | `myrepo`
 `satisfy.homepage`              | Satis repository URL                   | `http://chart-example.local`
 `satisfy.ssh_private_key`       | SSH Private key used with GIT repos    | `nil`
 
