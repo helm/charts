@@ -1,4 +1,4 @@
-{{- if and (.Files.Glob "files/docker-entrypoint-initdb.d/*.{sh,sql,sql.gz}") (not .Values.initdbScriptsConfigMap) }}
+{{- if and (or (.Files.Glob "files/docker-entrypoint-initdb.d/*.{sh,sql,sql.gz}") .Values.initdbScripts) (not .Values.initdbScriptsConfigMap) }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -8,13 +8,16 @@ metadata:
     chart: {{ template "postgresql.chart" . }}
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
+{{- with .Files.Glob "files/docker-entrypoint-initdb.d/*.sql.gz" }}
 binaryData:
-{{- $root := . }}
-{{- range $path, $bytes := .Files.Glob "files/docker-entrypoint-initdb.d/*.sql.gz" }}
-  {{ base $path }}: {{ $root.Files.Get $path | b64enc | quote }}
+{{- range $path, $bytes := . }}
+  {{ base $path }}: {{ $.Files.Get $path | b64enc | quote }}
+{{- end }}
 {{- end }}
 data:
-{{ (.Files.Glob "files/docker-entrypoint-initdb.d/*.{sh,sql}").AsConfig | indent 2 }}
+{{- with .Files.Glob "files/docker-entrypoint-initdb.d/*.{sh,sql}" }}
+{{ .AsConfig | indent 2 }}
+{{- end }}
 {{- with .Values.initdbScripts }}
 {{ toYaml . | indent 2 }}
 {{- end }}
