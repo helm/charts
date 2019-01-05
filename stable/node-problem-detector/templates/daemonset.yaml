@@ -59,7 +59,7 @@ spec:
       volumes:
         - name: log
           hostPath:
-            path: /var/log/
+            path: {{ .Values.hostpath.logdir }}
         - name: localtime
           hostPath:
             path: /etc/localtime
