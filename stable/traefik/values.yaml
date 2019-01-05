@@ -16,7 +16,7 @@ podDisruptionBudget: {}
   # maxUnavailable: 1
   # minAvailable: 2
 
-priorityClassName: ""
+# priorityClassName: ""
 
 # rootCAs: []
 
