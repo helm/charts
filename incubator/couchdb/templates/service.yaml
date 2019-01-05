@@ -13,6 +13,9 @@ spec:
     - port: {{ .Values.service.externalPort }}
       protocol: TCP
       targetPort: 5984
+      {{- if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.nodePort))) }}
+      nodePort: {{ .Values.service.nodePort }}
+      {{- end }}
   type: {{ .Values.service.type }}
   selector:
     app: {{ template "couchdb.name" . }}
