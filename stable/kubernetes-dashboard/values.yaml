@@ -55,8 +55,11 @@ service:
 
   ## Kubernetes Dashboard Service annotations
   ##
+  ## For GCE ingress, the following annotation is required:
+  ## service.alpha.kubernetes.io/app-protocols: '{"https":"HTTPS"}' if enableInsecureLogin=false
+  ## or
+  ## service.alpha.kubernetes.io/app-protocols: '{"http":"HTTP"}' if enableInsecureLogin=true
   annotations: {}
-  # foo.io/bar: "true"
 
   ## Here labels can be added to the Kubernetes Dashboard service
   ##
@@ -89,9 +92,11 @@ ingress:
   #   nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
 
 
-  ## Kubernetes Dashboard Ingress path
+  ## Kubernetes Dashboard Ingress paths
   ##
-  path: /
+  paths:
+    - /
+  #  - /*
 
   ## Kubernetes Dashboard Ingress hostnames
   ## Must be provided if Ingress is enabled
