@@ -28,6 +28,27 @@ spec:
       {{- if .Values.hostNetwork }}
       hostNetwork: {{ .Values.hostNetwork }} 
       {{- end }}
+      initContainers:
+      {{- if .Values.git.enabled }}
+      - name: git-sync
+        image: "{{ .Values.git.image.repository }}:{{ .Values.git.image.tag }}"
+        imagePullPolicy: {{ .Values.git.image.pullPolicy }}
+        command: ['sh', '-c', 'git clone {{ .Values.git.repo }} {{ .Values.git.syncPath }}']
+        volumeMounts:
+        - mountPath: /config
+          name: config
+        - mountPath: {{ .Values.git.keyPath }}/id_rsa
+          name: git-secret
+          subPath: id_rsa
+        - mountPath: {{ .Values.git.keyPath }}id_rsa.pub
+          name: git-secret
+          subPath: id_rsa.pub
+        - mountPath: {{ .Values.git.keyPath }}/known_hosts
+          name: git-secret
+          subPath: known_hosts
+        securityContext:
+          runAsUser: 0
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -51,6 +72,13 @@ spec:
             failureThreshold: 5
             timeoutSeconds: 5
           env:
+            {{- if .Values.configurator.hassApiPassword }}
+            - name: HC_HASS_API_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "home-assistant.fullname" . }}-configurator
+                  key: hass-api-password
+            {{- end }}
             {{- range $key, $value := .Values.extraEnv }}
             - name: {{ $key }}
               value: {{ $value }}
@@ -108,7 +136,7 @@ spec:
               value: "{{ .Values.configurator.hassApiUrl }}"
             {{- else }}
             - name: HC_HASS_API
-              value: "http://{{ template "home-assistant.fullname" . }}:{{ .Values.service.port }}/api/"
+              value: "http://127.0.0.1:8123/api/"
             {{- end }}
             {{- if .Values.configurator.basepath }}
             - name: HC_BASEPATH
@@ -125,6 +153,17 @@ spec:
           volumeMounts:
           - mountPath: /config
             name: config
+          {{- if .Values.git.enabled }}
+          - mountPath: {{ .Values.git.keyPath }}/id_rsa
+            name: git-secret
+            subPath: id_rsa
+          - mountPath: {{ .Values.git.keyPath }}/id_rsa.pub
+            name: git-secret
+            subPath: id_rsa.pub
+          - mountPath: {{ .Values.git.keyPath }}/known_hosts
+            name: git-secret
+            subPath: known_hosts
+          {{- end }}
           resources:
 {{ toYaml .Values.configurator.resources | indent 12 }}
         {{- end }}
@@ -135,6 +174,12 @@ spec:
           claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "home-assistant.fullname" . }}{{- end }}
       {{- else }}
         emptyDir: {}
+      {{ end }}
+      {{- if .Values.git.enabled }}
+      - name: git-secret
+        secret:
+          defaultMode: 256
+          secretName: {{ .Values.git.secret }}
       {{ end }}
     {{- with .Values.nodeSelector }}
       nodeSelector:
