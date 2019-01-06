@@ -10,7 +10,7 @@
 image:
   registry: docker.io
   repository: bitnami/wordpress
-  tag: 4.9.8
+  tag: 5.0.2
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -140,19 +140,23 @@ mariadb:
 ## Kubernetes configuration
 ## For minikube, set this to NodePort, elsewhere use LoadBalancer or ClusterIP
 ##
-serviceType: LoadBalancer
-##
-## serviceType: NodePort
-## nodePorts:
-##   http: <to set explicitly, choose port between 30000-32767>
-##   https: <to set explicitly, choose port between 30000-32767>
-nodePorts:
-  http: ""
-  https: ""
-## Enable client source IP preservation
-## ref http://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip
-##
-serviceExternalTrafficPolicy: Cluster
+service:
+  type: LoadBalancer
+  # HTTP Port
+  port: 80
+  # HTTPS Port
+  httpsPort: 443
+  ##
+  ## nodePorts:
+  ##   http: <to set explicitly, choose port between 30000-32767>
+  ##   https: <to set explicitly, choose port between 30000-32767>
+  nodePorts:
+    http: ""
+    https: ""
+  ## Enable client source IP preservation
+  ## ref http://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip
+  ##
+  externalTrafficPolicy: Cluster
 
 ## Allow health checks to be pointed at the https port
 healthcheckHttps: false

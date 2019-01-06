@@ -63,3 +63,15 @@ Return the proper metrics image name
 {{- $tag := .Values.metrics.image.tag | toString -}}
 {{- printf "%s/%s:%s" $registryName $repositoryName $tag -}}
 {{- end -}}
+
+{{ template "mariadb.initdbScriptsCM" . }}
+{{/*
+Get the initialization scripts ConfigMap name.
+*/}}
+{{- define "mariadb.initdbScriptsCM" -}}
+{{- if .Values.initdbScriptsConfigMap -}}
+{{- printf "%s" .Values.initdbScriptsConfigMap -}}
+{{- else -}}
+{{- printf "%s-init-scripts" (include "mariadb.fullname" .) -}}
+{{- end -}}
+{{- end -}}

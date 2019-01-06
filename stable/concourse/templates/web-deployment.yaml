@@ -242,20 +242,20 @@ spec:
                 secretKeyRef:
                   name: {{ template "concourse.concourse.fullname" . }}
                   key: aws-secretsmanager-secret-key
-            {{- if .Values.secrets.awsSsmSessionToken }}
+            {{- if .Values.secrets.awsSecretsManagerSessionToken }}
             - name: CONCOURSE_AWS_SECRETSMANAGER_SESSION_TOKEN
               valueFrom:
                 secretKeyRef:
                   name: {{ template "concourse.concourse.fullname" . }}
                   key: aws-secretsmanager-session-token
             {{- end }}
-            {{- if .Values.concoures.web.awsSecretsManager.region }}
+            {{- if .Values.concourse.web.awsSecretsManager.region }}
             - name: AWS_REGION
-              value: {{ .Values.concoures.web.awsSecretsManager.region | quote }}
+              value: {{ .Values.concourse.web.awsSecretsManager.region | quote }}
             {{- end }}
-            {{- if .Values.concoures.web.awsSecretsManager.pipelineSecretTemplate }}
+            {{- if .Values.concourse.web.awsSecretsManager.pipelineSecretTemplate }}
             - name: CONCOURSE_AWS_SECRETSMANAGER_PIPELINE_SECRET_TEMPLATE
-              value: {{ .Values.concoures.web.awsSecretsManager.pipelineSecretTemplate | quote }}
+              value: {{ .Values.concourse.web.awsSecretsManager.pipelineSecretTemplate | quote }}
             {{- end }}
             {{- if .Values.concourse.web.awsSecretsManager.teamSecretTemplate }}
             - name: CONCOURSE_AWS_SECRETSMANAGER_TEAM_SECRET_TEMPLATE
@@ -282,9 +282,9 @@ spec:
                   name: {{ template "concourse.concourse.fullname" . }}
                   key: aws-ssm-session-token
             {{- end }}
-            {{- if .Values.concoures.web.awsSsm.region }}
+            {{- if .Values.concourse.web.awsSsm.region }}
             - name: AWS_REGION
-              value: {{ .Values.concoures.web.awsSsm.region | quote }}
+              value: {{ .Values.concourse.web.awsSsm.region | quote }}
             {{- end }}
             {{- if .Values.credentialManager.awsSsm.pipelineSecretTemplate }}
             - name: CONCOURSE_AWS_SSM_PIPELINE_SECRET_TEMPLATE
@@ -303,14 +303,16 @@ spec:
               value: {{ .Values.concourse.web.vault.pathPrefix | quote }}
             - name: CONCOURSE_VAULT_AUTH_BACKEND
               value: {{ .Values.concourse.web.vault.authBackend | quote }}
+            {{- if .Values.concourse.web.vault.useCaCert }}
+            - name: CONCOURSE_VAULT_CA_CERT
+              value: "/concourse-vault/ca.cert"
+            {{- end }}
+            {{- if eq (default "" .Values.concourse.web.vault.authBackend) "token" }}
             - name: CONCOURSE_VAULT_CLIENT_TOKEN
               valueFrom:
                 secretKeyRef:
                   name: {{ template "concourse.concourse.fullname" . }}
                   key: vault-client-token
-            {{- if .Values.concourse.web.vault.useCaCert }}
-            - name: CONCOURSE_VAULT_CA_CERT
-              value: "/concourse-vault/ca.cert"
             {{- end }}
             {{- if eq (default "" .Values.concourse.web.vault.authBackend) "cert" }}
             - name: CONCOURSE_VAULT_CLIENT_CERT
@@ -318,13 +320,16 @@ spec:
             - name: CONCOURSE_VAULT_CLIENT_KEY
               value: "/concourse-vault/client.key"
             {{- end }}
+            {{- if eq (default "" .Values.concourse.web.vault.authBackend) "approle" }}
+            - name: CONCOURSE_VAULT_AUTH_PARAM
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: vault-client-auth-param
+            {{- end }}
             {{- if .Values.concourse.web.vault.authBackendMaxTtl }}
             - name: CONCOURSE_VAULT_AUTH_BACKEND_MAX_TTL
               value: {{ .Values.concourse.web.vault.authBackendMaxTtl | quote }}
-            {{- end }}
-            {{- if .Values.concourse.web.vault.authParam }}
-            - name: CONCOURSE_VAULT_AUTH_PARAM
-              value: {{ .Values.concourse.web.vault.authParam | quote }}
             {{- end }}
             {{- if .Values.concourse.web.vault.cache }}
             - name: CONCOURSE_VAULT_CACHE

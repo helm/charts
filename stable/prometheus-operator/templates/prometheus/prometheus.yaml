@@ -1,5 +1,5 @@
 {{- if .Values.prometheus.enabled }}
-apiVersion: monitoring.coreos.com/v1
+apiVersion: {{ printf "%s/v1" (.Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com") }}
 kind: Prometheus
 metadata:
   name: {{ template "prometheus-operator.fullname" . }}-prometheus
@@ -64,16 +64,16 @@ spec:
   configMaps:
 {{ toYaml .Values.prometheus.prometheusSpec.configMaps | indent 4 }}
 {{- end }}
-{{- if .Values.global.rbac.create }}
   serviceAccountName: {{ template "prometheus-operator.prometheus.serviceAccountName" . }}
-{{- end }}
 {{- if .Values.prometheus.prometheusSpec.serviceMonitorSelector }}
   serviceMonitorSelector:
 {{ toYaml .Values.prometheus.prometheusSpec.serviceMonitorSelector | indent 4 }}
-{{ else}}
+{{ else if .Values.prometheus.prometheusSpec.serviceMonitorSelectorNilUsesHelmValues  }}
   serviceMonitorSelector:
     matchLabels:
       release: {{ .Release.Name | quote }}
+{{ else }}
+  serviceMonitorSelector: {}
 {{- end }}
 {{- if .Values.prometheus.prometheusSpec.serviceMonitorNamespaceSelector }}
   serviceMonitorNamespaceSelector:
@@ -98,10 +98,11 @@ spec:
   ruleNamespaceSelector:
 {{ toYaml .Values.prometheus.prometheusSpec.ruleNamespaceSelector | indent 4 }}
 {{- end }}
+{{- if .Values.prometheus.prometheusSpec.ruleSelector }}
   ruleSelector:
-  {{- if .Values.prometheus.prometheusSpec.ruleSelector }}
 {{ toYaml .Values.prometheus.prometheusSpec.ruleSelector | indent 4}}
-  {{- else }}
+{{- else if .Values.prometheus.prometheusSpec.ruleSelectorNilUsesHelmValues }}
+  ruleSelector:    
     matchLabels:
       app: {{ template "prometheus-operator.name" . }}
       release: {{ .Release.Name | quote }}

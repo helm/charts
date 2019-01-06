@@ -60,9 +60,8 @@ The following table lists the configurable parameters of the Ghost chart and the
 | `volumePermissions.image.tag`       | Init container volume-permissions image tag                   | `latest`                                                 |
 | `volumePermissions.image.pullPolicy`| Init container volume-permissions image pull policy           | `Always`                                                 |
 | `ghostHost`                         | Ghost host to create application URLs                         | `nil`                                                    |
+| `ghostProtocol`                     | Protocol (http or https) to use in the application URLs       | `http`                                                   |
 | `ghostPath`                         | Ghost path to create application URLs                         | `nil`                                                    |
-| `ghostPort`                         | Ghost port to create application URLs along with host         | `80`                                                     |
-| `ghostLoadBalancerIP`               | `loadBalancerIP` for the Ghost Service                        | `nil`                                                    |
 | `ghostUsername`                     | User of the application                                       | `user@example.com`                                       |
 | `ghostPassword`                     | Application password                                          | Randomly generated                                       |
 | `ghostEmail`                        | Admin email                                                   | `user@example.com`                                       |
@@ -72,6 +71,11 @@ The following table lists the configurable parameters of the Ghost chart and the
 | `securityContext.enabled`           | Enable security context                                       | `true`                                                   |
 | `securityContext.fsGroup`           | Group ID for the container                                    | `1001`                                                   |
 | `securityContext.runAsUser`         | User ID for the container                                     | `1001`                                                   |
+| `service.type`                    | Kubernetes Service type                    | `LoadBalancer`                                          |
+| `service.port`                    | Service HTTP port                    | `80`                                          |
+| `service.nodePorts.http`                 | Kubernetes http node port                  | `""`                                                    |
+| `service.externalTrafficPolicy`      | Enable client source IP preservation                       | `Cluster`                                     |
+| `service.loadBalancerIP`      | LoadBalancerIP for the Ghost service                       | ``                                     |
 | `ingress.enabled`                   | Enable ingress controller resource                            | `false`                                                  |
 | `ingress.hosts[0].name`             | Hostname to your Ghost installation                           | `ghost.local`                                            |
 | `ingress.hosts[0].path`             | Path within the url structure                                 | `/`                                                      |

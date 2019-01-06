@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "opa.fullname" . }}
+  labels:
+{{ include "opa.labels.standard" . | indent 4 }}
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      app: {{ template "opa.fullname" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "opa.fullname" . }}
+      name: {{ template "opa.fullname" . }}
+    spec:
+      containers:
+        - name: opa
+          image: {{ .Values.image }}:{{ .Values.imageTag }}
+          args:
+            - "run"
+            - "--server"
+            - "--config-file=/config/config.yaml"
+            - "--tls-cert-file=/certs/tls.crt"
+            - "--tls-private-key-file=/certs/tls.key"
+            - "--addr=0.0.0.0:443"
+          volumeMounts:
+            - name: certs
+              readOnly: true
+              mountPath: /certs
+            - name: config
+              readOnly: true
+              mountPath: /config
+          readinessProbe:
+{{ toYaml .Values.readinessProbe | indent 12 }}
+          livenessProbe:
+{{ toYaml .Values.livenessProbe | indent 12 }}
+      volumes:
+        - name: certs
+          secret:
+            secretName: {{ template "opa.fullname" . }}-cert
+        - name: config
+          secret:
+            secretName: {{ template "opa.fullname" . }}-config
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+      resources:
+{{ toYaml .Values.resources | indent 8 }}
