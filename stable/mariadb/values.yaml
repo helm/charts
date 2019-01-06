@@ -252,6 +252,10 @@ slave:
     ##
     size: 8Gi
     ##
+  extraInitContainers: |
+  # - name: do-something
+  #   image: busybox
+  #   command: ['do', 'something']
 
   ## Configure MySQL slave with a custom my.cnf file
   ## ref: https://mysql.com/kb/en/mysql/configuring-mysql-with-mycnf/#example-of-configuration-file
