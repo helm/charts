@@ -183,10 +183,11 @@ input:
     path: /var/log/containers/*.log
   systemd:
     enabled: true
-    filters: {}
-      # _SYSTEMD_UNIT: docker.service
-      # _SYSTEMD_UNIT: kubelet.service
-      # _SYSTEMD_UNIT: node-problem-detector.service
+    filters:
+      systemdUnit:
+        - docker.service
+        - kubelet.service
+        - node-problem-detector.service
     maxEntries: 1000
     readFromTail: true
     tag: host.*
