@@ -210,7 +210,6 @@ data:
 
     SENTINEL_PORT={{ .Values.sentinel.port }}
     SERVICE={{ template "redis-ha.fullname" . }}
-
     set -eu
 
     sentinel_update() {

@@ -77,13 +77,14 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `master.affinity`                         | Master affinity (in addition to master.antiAffinity when set)  | `{}`                                                   |
 | `master.antiAffinity`                     | Master pod anti-affinity policy                     | `soft`                                                            |
 | `master.tolerations`                      | List of node taints to tolerate (master)            | `[]`                                                              |
-| `master.persistence.enabled`              | Enable persistence using a `PersistentVolumeClaim`  | `true`                                                            |
+| `master.persistence.enabled`              | Enable persistence using PVC                        | `true`                                                            |
 | `master.persistence.existingClaim`        | Provide an existing `PersistentVolumeClaim`         | `nil`                                                             |
-| `master.persistence.mountPath`            | Configure existing `PersistentVolumeClaim` mount path  | `""`                                                           |
+| `master.persistence.mountPath`            | Path to mount the volume at                         | `/bitnami/mariadb`                                                |
 | `master.persistence.annotations`          | Persistent Volume Claim annotations                 | `{}`                                                              |
 | `master.persistence.storageClass`         | Persistent Volume Storage Class                     | ``                                                                |
 | `master.persistence.accessModes`          | Persistent Volume Access Modes                      | `[ReadWriteOnce]`                                                 |
 | `master.persistence.size`                 | Persistent Volume Size                              | `8Gi`                                                             |
+| `master.extraInitContainers`                        | Additional init containers as a string to be passed to the `tpl` function (master)                    |                                                      |
 | `master.config`                           | Config file for the MariaDB Master server           | `_default values in the values.yaml file_`                        |
 | `master.resources`                        | CPU/Memory resource requests/limits for master node | `{}`                                                              |
 | `master.livenessProbe.enabled`            | Turn on and off liveness probe (master)             | `true`                                                            |
@@ -109,6 +110,7 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `slave.persistence.storageClass`          | Persistent Volume Storage Class                     | ``                                                                |
 | `slave.persistence.accessModes`           | Persistent Volume Access Modes                      | `[ReadWriteOnce]`                                                 |
 | `slave.persistence.size`                  | Persistent Volume Size                              | `8Gi`                                                             |
+| `slave.extraInitContainers`                        | Additional init containers as a string to be passed to the `tpl` function (slave)                    |                                                      |
 | `slave.config`                            | Config file for the MariaDB Slave replicas          | `_default values in the values.yaml file_`                        |
 | `slave.resources`                         | CPU/Memory resource requests/limits for slave node  | `{}`                                                              |
 | `slave.livenessProbe.enabled`             | Turn on and off liveness probe (slave)              | `true`                                                            |
@@ -165,6 +167,20 @@ The allowed extensions are `.sh`, `.sql` and `.sql.gz`.
 The [Bitnami MariaDB](https://github.com/bitnami/bitnami-docker-mariadb) image stores the MariaDB data and configurations at the `/bitnami/mariadb` path of the container.
 
 The chart mounts a [Persistent Volume](kubernetes.io/docs/user-guide/persistent-volumes/) volume at this location. The volume is created using dynamic volume provisioning, by default. An existing PersistentVolumeClaim can be defined.
+
+## Extra Init Containers
+
+The feature allows for specifying a template string for a initContainer in the master/slave pod. Usecases include situations when you need some pre-run setup. For example, in IKS (IBM Cloud Kubernetes Service), non-root users do not have write permission on the volume mount path for NFS-powered file storage. So, you could use a initcontainer to `chown` the mount. See a example below, where we add an initContainer on the master pod that reports to an external resource that the db is going to starting.
+`values.yaml`
+```yaml
+master:
+  extraInitContainers: |
+    - name: initcontainer
+      image: alpine:latest
+      command: ["/bin/sh", "-c"]
+      args:
+        - curl http://api-service.local/db/starting;
+```
 
 ## Upgrading
 

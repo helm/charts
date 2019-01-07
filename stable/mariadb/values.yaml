@@ -138,7 +138,7 @@ master:
     enabled: true
     # Enable persistence using an existing PVC
     # existingClaim:
-    # mountPath:
+    mountPath: /bitnami/mariadb
     ## Persistent Volume Storage Class
     ## If defined, storageClassName: <storageClass>
     ## If set to "-", storageClassName: "", which disables dynamic provisioning
@@ -149,7 +149,7 @@ master:
     # storageClass: "-"
     ## Persistent Volume Claim annotations
     ##
-    annotations:
+    annotations: {}
     ## Persistent Volume Access Mode
     ##
     accessModes:
@@ -158,6 +158,10 @@ master:
     ##
     size: 8Gi
     ##
+  extraInitContainers: |
+  # - name: do-something
+  #   image: busybox
+  #   command: ['do', 'something']
 
   ## Configure MySQL with a custom my.cnf file
   ## ref: https://mysql.com/kb/en/mysql/configuring-mysql-with-mycnf/#example-of-configuration-file
@@ -248,6 +252,10 @@ slave:
     ##
     size: 8Gi
     ##
+  extraInitContainers: |
+  # - name: do-something
+  #   image: busybox
+  #   command: ['do', 'something']
 
   ## Configure MySQL slave with a custom my.cnf file
   ## ref: https://mysql.com/kb/en/mysql/configuring-mysql-with-mycnf/#example-of-configuration-file

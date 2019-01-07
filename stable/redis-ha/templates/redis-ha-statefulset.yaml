@@ -71,10 +71,12 @@ spec:
         #       command: [/bin/sh, /data/conf/stop_redis_command]
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-        command: [redis-server]
-        args: [/data/conf/redis.conf]
         # command: [sh]
         # args: [/data/conf/start_redis_command]
+        command:
+        - redis-server
+        args:
+        - /data/conf/redis.conf
 {{- if .Values.auth }}
         env:
         - name: AUTH
@@ -108,8 +110,10 @@ spec:
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         command: [redis-sentinel]
         args: [/data/conf/sentinel.conf]
-        # command: [sh]
-        # args: [/data/conf/start_sentinel_command]
+        command:
+          - redis-sentinel
+        args:
+          - /data/conf/sentinel.conf
 {{- if .Values.auth }}
         env:
         - name: AUTH
