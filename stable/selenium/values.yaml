@@ -39,6 +39,15 @@ hub:
   ## Path for checking readiness and liveness via HTTP Request
   probePath: "/wd/hub/status"
 
+  ## Additional environment variables to set
+  extraEnvs: []
+  # extraEnvs:
+  #   - name: FOO
+  #     valueFrom:
+  #       secretKeyRef:
+  #         key: FOO
+  #         name: secret-resource
+
   ## Set the JAVA_TOOL_OPTIONS environment variable
   ## If you find your selenium hub is OOMKilled, try adding -XX:+UseSerialGC
   javaOpts: "-Xmx400m"
@@ -141,6 +150,15 @@ chrome:
   ## Configure annotations on the chrome pods
   podAnnotations: {}
 
+  ## Additional environment variables to set
+  extraEnvs: []
+  # extraEnvs:
+  #   - name: FOO
+  #     valueFrom:
+  #       secretKeyRef:
+  #         key: FOO
+  #         name: secret-resource
+
   ## Set the JAVA_TOOL_OPTIONS environment variable
   ## If you find your selenium node is OOMKilled, try adding -XX:+UseSerialGC
   javaOpts: "-Xmx900m"
@@ -220,6 +238,15 @@ chromeDebug:
   ## Configure annotations on the chrome debug pods
   podAnnotations: {}
 
+  ## Additional environment variables to set
+  extraEnvs: []
+  # extraEnvs:
+  #   - name: FOO
+  #     valueFrom:
+  #       secretKeyRef:
+  #         key: FOO
+  #         name: secret-resource
+
   ## Set the JAVA_TOOL_OPTIONS environment variable
   ## If you find your selenium hub is OOMKilled, try adding -XX:+UseSerialGC
   javaOpts: "-Xmx900m"
@@ -298,6 +325,15 @@ firefox:
   ## Configure annotations on the firefox pods
   podAnnotations: {}
 
+  ## Additional environment variables to set
+  extraEnvs: []
+  # extraEnvs:
+  #   - name: FOO
+  #     valueFrom:
+  #       secretKeyRef:
+  #         key: FOO
+  #         name: secret-resource
+
   ## Set the JAVA_TOOL_OPTIONS environment variable
   ## If you find your selenium hub is OOMKilled, try adding -XX:+UseSerialGC
   javaOpts: "-Xmx900m"
@@ -362,6 +398,15 @@ firefoxDebug:
 
   ## Configure annotations on the firefox debug pods
   podAnnotations: {}
+
+  ## Additional environment variables to set
+  extraEnvs: []
+  # extraEnvs:
+  #   - name: FOO
+  #     valueFrom:
+  #       secretKeyRef:
+  #         key: FOO
+  #         name: secret-resource
 
   ## Set the JAVA_TOOL_OPTIONS environment variable
   ## If you find your selenium hub is OOMKilled, try adding -XX:+UseSerialGC

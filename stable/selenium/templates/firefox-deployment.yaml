@@ -78,6 +78,9 @@ spec:
             - name: TZ
               value: {{ .Values.firefox.timeZone | quote }}
             {{- end }}
+            {{- if .Values.firefox.extraEnvs }}
+{{ toYaml .Values.firefox.extraEnvs | indent 12 }}
+            {{- end }}
           resources:
 {{ toYaml .Values.firefox.resources | indent 12 }}
       hostAliases:

@@ -78,6 +78,9 @@ spec:
             - name: TZ
               value: {{ .Values.chrome.timeZone | quote }}
             {{- end }}
+            {{- if .Values.chrome.extraEnvs }}
+{{ toYaml .Values.chrome.extraEnvs | indent 12 }}
+            {{- end }}
           volumeMounts:
 {{ if .Values.chrome.volumeMounts -}}
 {{ toYaml .Values.chrome.volumeMounts | indent 12 }}

@@ -84,6 +84,9 @@ spec:
             - name: TZ
               value: {{ .Values.hub.timeZone | quote }}
             {{- end }}
+            {{- if .Values.hub.extraEnvs }}
+{{ toYaml .Values.hub.extraEnvs | indent 12 }}
+            {{- end }}
           resources:
 {{ toYaml .Values.hub.resources | indent 12 }}
       nodeSelector:

@@ -29,7 +29,7 @@ spec:
               name: jmx
               protocol: TCP
             {{- end }}
-            - containerPort: 5900 
+            - containerPort: 5900
               name: vnc
           env:
             - name: HUB_PORT_4444_TCP_ADDR
@@ -79,6 +79,9 @@ spec:
             {{- if .Values.chromeDebug.timeZone }}
             - name: TZ
               value: {{ .Values.chromeDebug.timeZone | quote }}
+            {{- end }}
+            {{- if .Values.chromeDebug.extraEnvs }}
+{{ toYaml .Values.chromeDebug.extraEnvs | indent 12 }}
             {{- end }}
           volumeMounts:
 {{ if .Values.chromeDebug.volumeMounts -}}
