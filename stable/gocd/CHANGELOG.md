@@ -1,3 +1,7 @@
+### 1.6.0
+* [7002dac](https://github.com/kubernetes/charts/commit/7002dac):
+  - add option to specify init containers and restart policy for server and agent
+
 ### 1.5.13
 * [223b59f](https://github.com/kubernetes/charts/commit/223b59f):
   - Fix typo in README.
