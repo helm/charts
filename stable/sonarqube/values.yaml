@@ -18,6 +18,11 @@ image:
 #   /scripts/startup.sh
 #   "
 #   ]
+
+# Set security context for sonarqube pod
+securityContext:
+  fsGroup: 999
+
 service:
   name: sonarqube
   type: LoadBalancer
