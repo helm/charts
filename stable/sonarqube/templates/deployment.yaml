@@ -113,11 +113,6 @@ spec:
             periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
             failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
           volumeMounts:
-            - mountPath: /opt/sonarqube/conf
-              name: sonarqube
-              subPath: conf
-            - mountPath: /tmp-script/
-              name: startup
             {{- if .Values.sonarProperties }}
             - mountPath: /opt/sonarqube/conf/
               name: config
@@ -165,13 +160,7 @@ spec:
           defaultMode: 0755
           items:
             - key: copy_plugins.sh
-              path: copy_plugins.sh                
-      - name: startup
-        configMap:
-          name: {{ template "sonarqube.fullname" . }}-startup
-          items:
-            - key: startup.sh
-              path: startup.sh
+              path: copy_plugins.sh
       - name: sonarqube
         {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
