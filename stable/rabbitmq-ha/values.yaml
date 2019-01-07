@@ -158,6 +158,13 @@ rabbitmqAuth:
     # auth_mechanisms.2 = AMQPLAIN
     # auth_mechanisms.3 = EXTERNAL
 
+## Automatic Partition Handling Strategy (split brain handling)
+## Ref: https://www.rabbitmq.com/partitions.html#automatic-handling
+## Note: pause-if-all-down is not supported without using a custom configmap since it requires extra
+## configuration.
+
+rabbitmqClusterPartitionHandling: autoheal
+
 ## Authentication backend
 ## Ref: https://github.com/rabbitmq/rabbitmq-auth-backend-http
 rabbitmqAuthHTTP:
