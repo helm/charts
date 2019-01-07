@@ -27,8 +27,8 @@ imagePullSecrets: []
 
 # Specs for the Docker image for the init container that establishes the replica set
 installImage:
-  repository: k8s.gcr.io/mongodb-install
-  tag: 0.6
+  repository: unguiculus/mongodb-install
+  tag: 0.7
   pullPolicy: IfNotPresent
 
 # Specs for the Docker image for the copyConfig init container
@@ -92,6 +92,8 @@ tolerations: []
 
 extraLabels: {}
 
+# priorityClassName: ""
+
 persistentVolume:
   enabled: true
   ## mongodb-replicaset data Persistent Volume Storage Class
@@ -124,7 +126,7 @@ tls:
   # cakey:
 
 # Entries for the MongoDB config file
-configmap:
+configmap: {}
 
 # Javascript code to execute on each replica at initContainer time
 # This is the recommended way to create indexes on replicasets.

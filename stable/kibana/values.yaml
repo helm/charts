@@ -1,6 +1,6 @@
 image:
   repository: "docker.elastic.co/kibana/kibana-oss"
-  tag: "6.5.1"
+  tag: "6.5.4"
   pullPolicy: "IfNotPresent"
 
 commandline:
@@ -28,6 +28,9 @@ files:
     # server.port: 5601
     # logging.verbose: "true"
     # server.defaultRoute: "/app/kibana"
+
+deployment:
+  annotations: {}
 
 service:
   type: ClusterIP
@@ -177,3 +180,9 @@ securityContext:
   allowPrivilegeEscalation: false
   runAsUser: 1000
   fsGroup: 2000
+
+extraConfigMapMounts: []
+  # - name: logtrail-configs
+  #   configMap: kibana-logtrail
+  #   mountPath: /usr/share/kibana/plugins/logtrail/logtrail.json
+  #   subPath: logtrail.json

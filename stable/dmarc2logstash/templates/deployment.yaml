@@ -62,6 +62,8 @@ spec:
                 secretKeyRef:
                   name: {{ template "dmarc2logstash.name" . }}-secrets
                   key: pop3_password
+            - name: DELETE_MESSAGES
+              value: "{{ .Values.dmarc2logstash.deleteMessages }}"
           volumeMounts:
             - name: shared-log
               mountPath: /opt/dmarc2logstash/output

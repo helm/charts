@@ -62,7 +62,7 @@ The following table lists the configurable parameters of the SchemaRegistry char
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
 | `image` | The `SchemaRegistry` image repository | `confluentinc/cp-schema-registry` |
-| `imageTag` | The `SchemaRegistry` image tag | `4.0.1` |
+| `imageTag` | The `SchemaRegistry` image tag | `5.0.1` |
 | `imagePullPolicy` | Image Pull Policy | `IfNotPresent` |
 | `replicaCount` | The number of `SchemaRegistry` Pods in the Deployment | `1` |
 | `configurationOverrides` | `SchemaRegistry` [configuration setting](https://github.com/confluentinc/schema-registry/blob/master/docs/config.rst#configuration-options) overrides in the dictionary format `setting.name: value` | `{}` |
@@ -70,7 +70,7 @@ The following table lists the configurable parameters of the SchemaRegistry char
 | `sasl.configPath` | where to store config for sasl configurations | `/etc/kafka-config` |
 | `sasl.scram.enabled` | whether sasl-scam is enabled | `false` |
 | `sasl.scram.init.image` | which image to use for initializing sasl scram | `confluentinc/cp-schema-registry` |
-| `sasl.scram.init.imageTag` | which version/tag to use for sasl scram init | `4.0.0` |
+| `sasl.scram.init.imageTag` | which version/tag to use for sasl scram init | `5.0.1` |
 | `sasl.scram.init.imagePullPolicy` | the sasl scram init pull policy | `IfNotPresent` |
 | `sasl.scram.clientUser` | the sasl scram user to use to authenticate to kafka | `kafka-client` |
 | `sasl.scram.clientPassword` | the sasl scram password to use to authenticate to kafka | `kafka-password` |

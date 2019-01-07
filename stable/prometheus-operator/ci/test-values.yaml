@@ -129,7 +129,6 @@ alertmanager:
   ##
   service:
     annotations: {}
-
     ## Port to expose on each node
     ## Only used if service.type is 'NodePort'
     ##
@@ -157,7 +156,7 @@ alertmanager:
     ##
     image:
       repository: quay.io/prometheus/alertmanager
-      tag: v0.15.2
+      tag: v0.15.3
 
     ## Secrets is a list of Secrets in the same namespace as the Alertmanager object, which shall be mounted into the
     ## Alertmanager Pods. The Secrets are mounted into /etc/alertmanager/secrets/.
@@ -178,7 +177,7 @@ alertmanager:
     replicas: 1
 
     ## Time duration Alertmanager shall retain data for. Default is '120h', and must match the regular expression
-    ## [0-9]+(ms|s|m|h|d|w|y) (milliseconds seconds minutes hours days weeks years).
+    ## [0-9]+(ms|s|m|h) (milliseconds seconds minutes hours).
     ##
     retention: 120h
 
@@ -241,7 +240,10 @@ alertmanager:
     ## This defaults to non root user with uid 1000 and gid 2000.	*v1.PodSecurityContext	false
     ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
     ##
-    securityContext: {}
+    securityContext:
+      runAsNonRoot: true
+      runAsUser: 1000
+      fsGroup: 2000
 
     ## ListenLocal makes the Alertmanager server listen on loopback, so that it does not bind against the Pod IP.
     ## Note this is only for the Alertmanager UI, not the gossip communication.
@@ -479,6 +481,9 @@ prometheusOperator:
   ##
   podLabels: {}
 
+  ## Assign a PriorityClassName to pods if set
+  # priorityClassName: ""
+
   ## If true, the operator will create and maintain a service for scraping kubelets
   ## ref: https://github.com/coreos/prometheus-operator/blob/master/helm/prometheus-operator/README.md
   ##
@@ -528,11 +533,15 @@ prometheusOperator:
   #       - e2e-az1
   #       - e2e-az2
 
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 65534
+
   ## Prometheus-operator image
   ##
   image:
     repository: quay.io/coreos/prometheus-operator
-    tag: v0.25.0
+    tag: v0.26.0
     pullPolicy: IfNotPresent
 
   ## Configmap-reload image to use for reloading configmaps
@@ -545,12 +554,12 @@ prometheusOperator:
   ##
   prometheusConfigReloaderImage:
     repository: quay.io/coreos/prometheus-config-reloader
-    tag: v0.25.0
+    tag: v0.26.0
 
   ## Hyperkube image to use when cleaning up
   ##
   hyperkubeImage:
-    repository: gcr.io/google-containers/hyperkube
+    repository: k8s.gcr.io/hyperkube
     tag: v1.12.1
     pullPolicy: IfNotPresent
 
@@ -570,6 +579,8 @@ prometheus:
   ## Configuration for Prometheus service
   ##
   service:
+    annotations: {}
+
     ## Port to expose on each node
     ## Only used if service.type is 'NodePort'
     ##
@@ -619,17 +630,6 @@ prometheus:
   serviceMonitor:
     selfMonitor: true
 
-  service:
-    annotations: {}
-
-    ## Node Port (only used if service type is NodePort)
-    ##
-    # nodePort: 30816
-
-    ## Service type
-    ##
-    type: ClusterIP
-
   ## Settings affecting prometheusSpec
   ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#prometheusspec
   ##
@@ -651,10 +651,10 @@ prometheus:
     ##
     image:
       repository: quay.io/prometheus/prometheus
-      tag: v2.4.3
+      tag: v2.5.0
 
     #  repository: quay.io/coreos/prometheus
-    #  tag: v2.4.3
+    #  tag: v2.5.0
 
     ## Tolerations for use with node taints
     ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
@@ -706,6 +706,12 @@ prometheus:
     ##
     ruleNamespaceSelector: {}
 
+    ## If true, a nil or {} value for prometheus.prometheusSpec.ruleSelector will cause the
+    ## prometheus resource to be created with selectors based on values in the helm deployment,
+    ## which will also match the PrometheusRule resources created
+    ##
+    ruleSelectorNilUsesHelmValues: true
+
     ## Rules CRD selector
     ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/design.md
     ## If unspecified the release `app` and `release` will be used as the label selector
@@ -727,8 +733,14 @@ prometheus:
     #   matchLabels:
     #     role: example-rules
 
+    ## If true, a nil or {} value for prometheus.prometheusSpec.serviceMonitorSelector will cause the
+    ## prometheus resource to be created with selectors based on values in the helm deployment,
+    ## which will also match the servicemonitors created
+    ##
+    serviceMonitorSelectorNilUsesHelmValues: true
+
     ## serviceMonitorSelector will limit which servicemonitors are used to create scrape
-    ## configs in Prometheus. By default all are loaded
+    ## configs in Prometheus. See serviceMonitorSelectorUseHelmLabels
     ##
     serviceMonitorSelector: {}
 
@@ -880,7 +892,10 @@ prometheus:
     ## This defaults to non root user with uid 1000 and gid 2000.
     ## https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md
     ##
-    securityContext: {}
+    securityContext:
+      runAsNonRoot: true
+      runAsUser: 1000
+      fsGroup: 2000
 
     ## 	Priority class assigned to the Pods
     ##
