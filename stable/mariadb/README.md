@@ -168,6 +168,20 @@ The [Bitnami MariaDB](https://github.com/bitnami/bitnami-docker-mariadb) image s
 
 The chart mounts a [Persistent Volume](kubernetes.io/docs/user-guide/persistent-volumes/) volume at this location. The volume is created using dynamic volume provisioning, by default. An existing PersistentVolumeClaim can be defined.
 
+## Extra Init Containers
+
+The feature allows for specifying a template string for a initContainer in the master/slave pod. Usecases include situations when you need some pre-run setup. For example, in IKS (IBM Cloud Kubernetes Service), non-root users do not have write permission on the volume mount path for NFS-powered file storage. So, you could use a initcontainer to `chown` the mount. See a example below, where we add an initContainer on the master pod that reports to an external resource that the db is going to starting.
+`values.yaml`
+```yaml
+master:
+  extraInitContainers: |
+    - name: initcontainer
+      image: alpine:latest
+      command: ["/bin/sh", "-c"]
+      args:
+        - curl http://api-service.local/db/starting;
+```
+
 ## Upgrading
 
 It's necessary to set the `rootUser.password` parameter when upgrading for readiness/liveness probes to work properly. When you install this chart for the first time, some notes will be displayed providing the credentials you must use under the 'Administrator credentials' section. Please note down the password and run the command below to upgrade your chart:
