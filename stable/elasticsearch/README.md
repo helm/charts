@@ -88,10 +88,12 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `client.loadBalancerSourceRanges`    | Client loadBalancerSourceRanges                                     | `{}`                                                |
 | `client.antiAffinity`                | Client anti-affinity policy                                         | `soft`                                              |
 | `client.nodeAffinity`                | Client node affinity policy                                         | `{}`                                                |
+| `client.initResources`               | Client initContainer resources requests & limits                    | `{}`                                                |
 | `client.ingress.enabled`             | Enable Client Ingress                                               | `false`                                             |
 | `client.ingress.annotations`         | Client Ingress annotations                                          | `{}`                                                |
 | `client.ingress.hosts`               | Client Ingress Hostnames                                            | `[]`                                                |
 | `client.ingress.tls`                 | Client Ingress TLS configuration                                    | `[]`                                                |
+| `master.initResources`               | Master initContainer resources requests & limits                    | `{}`                                                |
 | `master.exposeHttp`                  | Expose http port 9200 on master Pods for monitoring, etc            | `false`                                             |
 | `master.name`                        | Master component name                                               | `master`                                            |
 | `master.replicas`                    | Master node replicas (deployment)                                   | `2`                                                 |
@@ -110,6 +112,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `master.antiAffinity`                | Master anti-affinity policy                                         | `soft`                                              |
 | `master.nodeAffinity`                | Master node affinity policy                                         | `{}`                                                |
 | `master.updateStrategy`              | Master node update strategy policy                                  | `{type: "onDelete"}`                                |
+| `data.initResources`                 | Data initContainer resources requests & limits                      | `{}`                                                |
 | `data.exposeHttp`                    | Expose http port 9200 on data Pods for monitoring, etc              | `false`                                             |
 | `data.replicas`                      | Data node replicas (statefulset)                                    | `2`                                                 |
 | `data.resources`                     | Data node resources requests & limits                               | `{} - cpu limit must be an integer`                 |
