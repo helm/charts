@@ -206,5 +206,10 @@ spec:
   {{- else }}
       volumes:
       - name: datadir
+      {{- if .Values.memoryMode }}
+        emptyDir:
+          medium: Memory
+      {{- else }}
         emptyDir: {}
+      {{- end }}
   {{- end }}
