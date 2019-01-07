@@ -52,7 +52,7 @@ spec:
       nodePort: {{ $externalListenerPort }}
       {{- end }}
       protocol: TCP
-  {{- if eq $root.Values.external.type "LoadBalancer" }}
+  {{- if and $root.Values.external.loadBalancerIP (eq $root.Values.external.type "LoadBalancer") }}
   loadBalancerIP: {{ index $root.Values.external.loadBalancerIP $i }}
   {{- end }}
   selector:
