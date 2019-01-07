@@ -21,6 +21,7 @@ env: {}
 
 service:
   type: ClusterIP
+  # type: nodePort:
   externalPort: 80
   ports:
     - name: "monitor-agent"
