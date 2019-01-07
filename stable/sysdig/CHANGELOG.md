@@ -3,6 +3,12 @@
 This file documents all notable changes to Sysdig Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v1.2.1
+
+### Minor Changes
+
+* Add checksum annotations to DaemonSet so that rolling upgrades works when a ConfigMap changes.
+
 ## v1.2.0
 
 ### Major Changes
