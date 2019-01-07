@@ -2,7 +2,7 @@ apiVersion: v1
 appVersion: "v0.4.11"
 description: A Helm chart for Atlantis https://www.runatlantis.io
 name: atlantis
-version: 1.0.0
+version: 1.0.1
 keywords:
 - terraform
 home: https://www.runatlantis.io
