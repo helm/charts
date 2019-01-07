@@ -8,6 +8,7 @@ description: Open source continuous integration server. It supports multiple SCM
 sources:
 - https://github.com/jenkinsci/jenkins
 - https://github.com/jenkinsci/docker-jnlp-slave
+- https://github.com/nuvo/kube-tasks
 maintainers:
 - name: lachie83
   email: lachlan.evenson@microsoft.com
