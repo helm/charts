@@ -34,9 +34,11 @@ spec:
 {{- if .Values.rbac.enabled }}
       serviceAccountName: {{ .Release.Name }}
 {{- end }}
+    {{- if or .Values.prometheus.agent.enabled .Values.external.enabled }}
+      initContainers:
+    {{- end }}
     {{- if .Values.external.enabled }}
       ## ref: https://github.com/Yolean/kubernetes-kafka/blob/master/kafka/50kafka.yml
-      initContainers:
       - name: init-ext
         image: "{{ .Values.external.init.image }}:{{ .Values.external.init.imageTag }}"
         imagePullPolicy: "{{ .Values.external.init.imagePullPolicy }}"
@@ -53,6 +55,19 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: metadata.namespace
+    {{- end }}
+    {{- if .Values.prometheus.agent.enabled }}
+      - name: wget-jmx-jar
+        image: busybox
+        imagePullPolicy: IfNotPresent
+        command:
+        - wget
+        - "-O"
+        - "/tmp/jmx-agent/jmx_prometheus_javaagent-{{ .Values.prometheus.agent.version }}.jar"
+        - https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/{{ .Values.prometheus.agent.version }}/jmx_prometheus_javaagent-{{ .Values.prometheus.agent.version }}.jar
+        volumeMounts:
+        - mountPath: /tmp/jmx-agent
+          name: jmx-agent
     {{- end }}
 {{- if .Values.tolerations }}
       tolerations:
@@ -164,6 +179,10 @@ spec:
               fieldPath: status.podIP
         - name: KAFKA_HEAP_OPTS
           value: {{ .Values.kafkaHeapOptions }}
+        {{- if .Values.prometheus.agent.enabled }}
+        - name: KAFKA_JMX_OPTS
+          value: "-javaagent:/var/lib/prometheus/jmx_prometheus_javaagent-{{ .Values.prometheus.agent.version }}.jar={{ .Values.prometheus.agent.port }}:/etc/prometheus/{{ .Values.jmx.configMap.overrideName }}"
+        {{- end }}
         {{- if not (hasKey .Values.configurationOverrides "zookeeper.connect") }}
         - name: KAFKA_ZOOKEEPER_CONNECT
           value: {{ include "zookeeper.url" . | quote }}
@@ -226,12 +245,19 @@ spec:
             {{- end }}
           {{- end }}
         {{- end }}
+        {{- if .Values.prometheus.agent.enabled }}
+        - name: jmx-config
+          mountPath: /etc/prometheus/
+        - name: jmx-agent
+          mountPath: /var/lib/prometheus/jmx_prometheus_javaagent-{{ .Values.prometheus.agent.version }}.jar
+          subPath: jmx_prometheus_javaagent-{{ .Values.prometheus.agent.version }}.jar
+        {{- end }}
       volumes:
       {{- if not .Values.persistence.enabled }}
       - name: datadir
         emptyDir: {}
       {{- end }}
-      {{- if .Values.prometheus.jmx.enabled }}
+      {{- if .Values.jmx.configMap.enabled }}
       - name: jmx-config
         configMap:
           {{- if .Values.jmx.configMap.overrideName }}
@@ -239,6 +265,10 @@ spec:
           {{- else }}
           name: {{ include "kafka.fullname" . }}-metrics
           {{- end }}
+      {{- end }}
+      {{- if .Values.prometheus.agent.enabled }}
+      - name: jmx-agent
+        emptyDir: {}
       {{- end }}
       {{- range .Values.secrets }}
       - name: {{ include "kafka.fullname" $ }}-{{ .name }}
