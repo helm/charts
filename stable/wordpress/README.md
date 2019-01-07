@@ -87,6 +87,8 @@ The following table lists the configurable parameters of the WordPress chart and
 | `service.nodePorts.http`                 | Kubernetes http node port                  | `""`                                                    |
 | `service.nodePorts.https`                | Kubernetes https node port                 | `""`                                                    |
 | `healthcheckHttps`               | Use https for liveliness and readiness     | `false`                                                 |
+| `livenessProbeHeaders`           | Headers to use for livenessProbe           | `nil`                                                   |
+| `readinessProbeHeaders`          | Headers to use for readinessProbe          | `nil`                                                   |
 | `ingress.enabled`                | Enable ingress controller resource         | `false`                                                 |
 | `ingress.hosts[0].name`          | Hostname to your WordPress installation    | `wordpress.local`                                       |
 | `ingress.hosts[0].path`          | Path within the url structure              | `/`                                                     |
@@ -245,6 +247,21 @@ kubectl create secret tls wordpress.local-tls --key /path/to/key.key --cert /pat
 
 Please see [this example](https://github.com/kubernetes/contrib/tree/master/ingress/controllers/nginx/examples/tls)
 for more information.
+
+### Ingress-terminated https
+
+In cases where HTTPS/TLS is terminated on the ingress, you may run into an issue where non-https liveness and readiness probes result in a 302 (redirect from HTTP to HTTPS) and are interpreted by Kubernetes as not-live/not-ready.  (See [Kubernetes issue #47893 on GitHub](https://github.com/kubernetes/kubernetes/issues/47893) for further details about 302 _not_ being interpreted as "successful".)  To work around this problem, use `livenessProbeHeaders` and `readinessProbeHeaders` to pass the same headers that your ingress would pass in order to get an HTTP 200 status result.  For example (where the following is in a `--values`-referenced file):
+
+```
+livenessProbeHeaders:
+- name: X-Forwarded-Proto
+  value: https
+readinessProbeHeaders:
+- name: X-Forwarded-Proto
+  value: https
+```
+
+Any number of name/value pairs may be specified; they are all copied into the liveness or readiness probe definition.
 
 ## Upgrading
 

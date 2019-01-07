@@ -172,6 +172,16 @@ readinessProbe:
   timeoutSeconds: 5
   failureThreshold: 6
   successThreshold: 1
+## If using an HTTPS-terminating load-balancer, the probes may need to behave
+## like the balancer to prevent HTTP 302 responses.  According to the Kubernetes
+## docs, 302 should be considered "successful", but this issue on GitHub
+## (https://github.com/kubernetes/kubernetes/issues/47893) shows that it isn't.
+# livenessProbeHeaders:
+# - name: X-Forwarded-Proto
+#   value: https
+# readinessProbeHeaders:
+# - name: X-Forwarded-Proto
+#   value: https
 
 ## Configure the ingress resource that allows you to access the
 ## Wordpress installation. Set up the URL
