@@ -14,8 +14,6 @@ data:
     MASTER_GROUP="{{ .Values.redis.masterGroupName }}"
     SENTINEL_PORT={{ .Values.sentinel.port }}
     REDIS_PORT={{ .Values.redis.port }}
-    NUM_SLAVES=$(redis-cli -p "$SENTINEL_PORT" sentinel master {{ .Values.redis.masterGroupName }} | awk '/num-slaves/{getline; print}')
-    MIN_SLAVES={{ index .Values.redis.config "min-slaves-to-write" }}
 
     if [ "$1" = "$SENTINEL_PORT" ]; then
         if redis-cli -p "$SENTINEL_PORT" sentinel ckquorum "$MASTER_GROUP" | grep -q NOQUORUM ; then
@@ -23,6 +21,8 @@ data:
             exit 1
         fi
     elif [ "$1" = "$REDIS_PORT" ]; then
+        NUM_SLAVES=$(redis-cli -p "$SENTINEL_PORT" sentinel master {{ .Values.redis.masterGroupName }} | awk '/num-slaves/{getline; print}')
+        MIN_SLAVES={{ index .Values.redis.config "min-slaves-to-write" }}
         if [ "$MIN_SLAVES" -gt "$NUM_SLAVES" ]; then
             echo "Could not find enough replicating slaves. Needed $MIN_SLAVES but found $NUM_SLAVES"
             exit 1

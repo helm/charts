@@ -71,12 +71,10 @@ spec:
         #       command: [/bin/sh, /data/conf/stop_redis_command]
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-        # command: [sh]
-        # args: [/data/conf/start_redis_command]
         command:
-        - redis-server
+          - sh
         args:
-        - /data/conf/redis.conf
+          - /data/conf/start_redis_command
 {{- if .Values.auth }}
         env:
         - name: AUTH
@@ -87,7 +85,7 @@ spec:
 {{- end }}
         livenessProbe:
           exec:
-            command: [ "sh", "/probes/check-quorum.sh", "{{ .Values.redis.port }}"]
+            command: ["sh", "/probes/readiness.sh", "{{ .Values.redis.port }}"]
           initialDelaySeconds: 15
           periodSeconds: 5
         readinessProbe:
@@ -108,12 +106,10 @@ spec:
       - name: sentinel
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-        command: [redis-sentinel]
-        args: [/data/conf/sentinel.conf]
         command:
-          - redis-sentinel
+          - sh
         args:
-          - /data/conf/sentinel.conf
+          - /data/conf/start_sentinel_command
 {{- if .Values.auth }}
         env:
         - name: AUTH
@@ -124,7 +120,7 @@ spec:
 {{- end }}
         livenessProbe:
           exec:
-            command: [ "sh", "/probes/check-quorum.sh", "{{ .Values.sentinel.port }}"]
+            command: ["sh", "/probes/readiness.sh", "{{ .Values.sentinel.port }}"]
           initialDelaySeconds: 15
           periodSeconds: 5
         readinessProbe:

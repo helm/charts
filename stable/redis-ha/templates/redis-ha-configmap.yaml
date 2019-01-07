@@ -60,20 +60,15 @@ data:
         wait_for_new_master_attempt_number=1
       fi
       wait_for_new_master_timeout=60
-      set -x
       if [ "$(timeout 3 redis-cli -h "$MASTER"{{ if .Values.auth }} -a "$AUTH"{{ end }} ping)" != "PONG" ]; then
-      set +x
         if [ "$wait_for_new_master_attempt_number" -lt "$wait_for_new_master_timeout" ]; then
           echo "Cannot ping master. Attemping to find new one"
           sleep 1
           wait_for_new_master_attempt_number=$((wait_for_new_master_attempt_number+1))
-          set -x
           MASTER="$(ask_sentinel_for_master)"
-          set +x
           wait_for_new_master
         else
           unset wait_for_new_master_attempt_number
-          echo "FAILED TO FIND NEW MASTER"
           return 1
         fi
       fi
@@ -132,16 +127,12 @@ data:
             set_number_of_sentinels_var "$ip" "$num"
           fi
         done
-        echo "KILLING SENTINEL PID"
         kill "$PID"
         wait "$PID"
         if test "$is_master" = "true" ; then
           echo 'Waiting for redis to shutdown'
           wait_for_redis_container_to_shutdown
-          echo 'ASKING SENTINEL FOR MASTER'
-          set -x
           MASTER="$(ask_sentinel_for_master)"
-          set +x
           echo "Waiting for new master to be selected before resetting sentinels to make sure they do not elect this one after reset"
           if wait_for_new_master; then
             reset_sentinels
@@ -156,7 +147,6 @@ data:
     trap graceful_shutdown INT TERM
     redis-sentinel /data/conf/sentinel.conf &
     export PID=$!
-    echo "THE PID: $PID"
     wait $PID
     trap - INT TERM
     wait $PID
@@ -191,7 +181,6 @@ data:
     trap graceful_shutdown INT TERM
     redis-server /data/conf/redis.conf &
     export PID=$!
-    echo $PID
     wait $PID
     trap - INT TERM
     wait $PID
@@ -272,9 +261,7 @@ data:
             echo "Cannot ping master. Attemping to find new one"
             sleep 1
             wait_for_new_master_attempt_number=$((wait_for_new_master_attempt_number+1))
-            set -x
             MASTER="$(ask_sentinel_for_master)"
-            set +x
             wait_for_new_master
           else
             unset wait_for_new_master_attempt_number
