@@ -72,6 +72,8 @@ spec:
   serviceMonitorSelector:
     matchLabels:
       release: {{ .Release.Name | quote }}
+{{ else }}
+  serviceMonitorSelector: {}
 {{- end }}
 {{- if .Values.prometheus.prometheusSpec.serviceMonitorNamespaceSelector }}
   serviceMonitorNamespaceSelector:
