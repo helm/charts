@@ -67,3 +67,6 @@ metrics:
 extraContainers: |
 
 extraVolumes: |
+
+# To be added to the server pod(s)
+podAnnotations: {}
