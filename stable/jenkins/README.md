@@ -191,8 +191,8 @@ Master:
           systemMessage: "Jenkins configured automatically by Jenkins Configuration as Code Plugin\n\n"
 ```
 
-In contrast to adding xml configuration files these settings are reapplied during every Jenkins restart and when you apply
-the configuration in the plugin ui.
+Every configuration changes triggers a Jenkins restart during which the settings are reapplied.
+
 
 ## Adding customized labels
 
