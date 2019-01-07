@@ -416,7 +416,7 @@ prometheus:
     env: {}
     image:
       repository: kbudde/rabbitmq-exporter
-      tag: v0.28.0
+      tag: v0.29.0
       pullPolicy: IfNotPresent
 
     ## Port Prometheus scrapes for metrics
