@@ -1,4 +1,4 @@
-{{- if .Values.sumologic.collectorUrl -}}
+{{- if (or (.Values.sumologic.collectorUrlExistingSecret) (.Values.sumologic.collectorUrl)) -}}
 # Sumologic collector URL is required
 apiVersion: extensions/v1beta1
 kind: DaemonSet
@@ -52,15 +52,23 @@ spec:
               {{- else }}
             - name: fluentd-user-conf
               mountPath: /fluentd/conf.d/user
-              readOnly: true           
+              readOnly: true
               {{- end }}
             {{- end }}
           env:
             - name: COLLECTOR_URL
               valueFrom:
                 secretKeyRef:
+            {{- if .Values.sumologic.collectorUrlExistingSecret }}
+                  name: "{{ .Values.sumologic.collectorUrlExistingSecret }}"
+            {{- else }}
                   name: "{{ template "sumologic-fluentd.fullname" . }}"
+            {{- end }}
                   key: collector-url
+            - name: K8S_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
             - name: FLUENTD_SOURCE
               value: {{ quote .Values.sumologic.fluentdSource }}
             {{- if .Values.sumologic.fluentdUserConfigDir }}

@@ -15,6 +15,8 @@ spec:
         app: {{ template "sonarqube.name" . }}
         release: {{ .Release.Name }}
     spec:
+      securityContext:
+{{ toYaml .Values.securityContext | indent 8 }}
       {{- if .Values.plugins.install }}
       initContainers:
         - name: install-plugins
@@ -26,16 +28,16 @@ spec:
             {{- end }}
           command: ["sh",
             "-c",
-            "mkdir -p /opt/sonarqube/extensions/plugins/ &&
-            cp /tmp/scripts/install_plugins.sh /opt/sonarqube/extensions/plugins/install_plugins.sh &&
-            chmod 0775 /opt/sonarqube/extensions/plugins/install_plugins.sh &&
-            /opt/sonarqube/extensions/plugins/install_plugins.sh
+            "mkdir -p /opt/sonarqube/extensions/plugins/tmp &&
+            cp /tmp/scripts/install_plugins.sh /opt/sonarqube/extensions/plugins/tmp/install_plugins.sh &&
+            chmod 0775 /opt/sonarqube/extensions/plugins/tmp/install_plugins.sh &&
+            /opt/sonarqube/extensions/plugins/tmp/install_plugins.sh && pwd && ls -lah
             "
            ]
           volumeMounts:
-            - mountPath: /opt/sonarqube/extensions
+            - mountPath: /opt/sonarqube/extensions/plugins/tmp
               name: sonarqube
-              subPath: extensions
+              subPath: tmp
             - name: install-plugins
               mountPath: /tmp/scripts/
           resources:
@@ -111,6 +113,11 @@ spec:
             periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
             failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
           volumeMounts:
+            - mountPath: /opt/sonarqube/conf
+              name: sonarqube
+              subPath: conf
+            - mountPath: /tmp-script/
+              name: startup
             {{- if .Values.sonarProperties }}
             - mountPath: /opt/sonarqube/conf/
               name: config
@@ -118,9 +125,11 @@ spec:
             - mountPath: /opt/sonarqube/data
               name: sonarqube
               subPath: data
-            - mountPath: /opt/sonarqube/extensions
+            - mountPath: /opt/sonarqube/extensions/plugins/tmp
               name: sonarqube
-              subPath: extensions
+              subPath: tmp
+            - name: copy-plugins
+              mountPath: /usr/local/
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- if .Values.nodeSelector }}
@@ -150,6 +159,19 @@ spec:
           items:
             - key: install_plugins.sh
               path: install_plugins.sh
+      - name: copy-plugins
+        configMap:
+          name: {{ template "sonarqube.fullname" . }}-copy-plugins
+          defaultMode: 0755
+          items:
+            - key: copy_plugins.sh
+              path: copy_plugins.sh                
+      - name: startup
+        configMap:
+          name: {{ template "sonarqube.fullname" . }}-startup
+          items:
+            - key: startup.sh
+              path: startup.sh
       - name: sonarqube
         {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
