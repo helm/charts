@@ -13,6 +13,10 @@ managementPassword: E9R3fjZm4ejFkVFE
 extraConfig: |
 #  queue_master_locator = min-masters
 
+## Definitions specification within the secret, will always be mounted
+## at /etc/definitions/defintions.json
+definitionsSource: definitions.json
+
 ## Place any additional plugins to enable in /etc/rabbitmq/enabled_plugins
 ## Ref: https://www.rabbitmq.com/plugins.html
 extraPlugins: |

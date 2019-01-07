@@ -71,6 +71,7 @@ The following tables list the configurable parameters of the GoCD chart and thei
 | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------- | ------------------- |
 | `server.enabled`                           | Enable GoCD Server. Supported values are `true`, `false`. When enabled, the GoCD server deployment is done on helm install.  | `true`              |
 | `server.shouldPreconfigure`                | Preconfigure GoCD Server to have a default elastic agent profile and Kubernetes elastic agent plugin settings. Supported values are `true`, `false`.  | `true`              |
+| `server.preconfigureCommand`               | Preconfigure GOCD Server with a custom command (shell,python, etc ...). Supported value is a list. | `["/bin/bash", "/preconfigure_server.sh"]`|
 | `server.image.repository`                  | GoCD server image                                                                                             | `gocd/gocd-server`  |
 | `server.image.tag`                         | GoCD server image tag                                                                                         | `.Chart.appVersion` |
 | `server.image.pullPolicy`                  | Image pull policy                                                                                             | `IfNotPresent`      |
@@ -215,7 +216,7 @@ Refer to the [Kubernetes blog](http://blog.kubernetes.io/2017/03/dynamic-provisi
 One can change the storage class to be used by overriding `server.persistence.storageClass` and `agent.persistence.storageClass` like below:
 
 ```bash
-$ helm install --namespace gocd --name gocd-app --set server.persistence.stoageClass=STORAGE_CLASS_NAME stable/gocd
+$ helm install --namespace gocd --name gocd-app --set server.persistence.storageClass=STORAGE_CLASS_NAME stable/gocd
 ```
 
 #### Static Volumes
