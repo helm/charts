@@ -27,6 +27,7 @@ data:
     echo "Applying runtime configuration using {{ .Values.image }}:{{ .Values.imageTag }}"
   {{- range $n, $topic := .Values.topics }}
     {{- if and $topic.partitions $topic.replicationFactor $topic.reassignPartitions }}
+    kafka-topics --zookeeper {{ $zk }} --create --if-not-exists --force --topic {{ $topic.name }} --partitions {{ $topic.partitions }} --replication-factor {{ $topic.replicationFactor }}
     kafka-topics --zookeeper {{ $zk }} --alter --force --topic {{ $topic.name }} --partitions {{ $topic.partitions }} || true
     cat << EOF > {{ $topic.name }}-increase-replication-factor.json
       {"version":1, "partitions":[
