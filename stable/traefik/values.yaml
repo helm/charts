@@ -377,15 +377,15 @@ tracing:
 
 ## Create HorizontalPodAutoscaler object.
 ##
-autoscaling: {}
-# minReplicas: 1
-# maxReplicas: 10
-# metrics:
-# - type: Resource
-#   resource:
-#     name: cpu
-#     targetAverageUtilization: 60
-# - type: Resource
-#   resource:
-#     name: memory
-#     targetAverageUtilization: 60
+# autoscaling:
+#   minReplicas: 1
+#   maxReplicas: 10
+#   metrics:
+#   - type: Resource
+#     resource:
+#       name: cpu
+#       targetAverageUtilization: 60
+#   - type: Resource
+#     resource:
+#       name: memory
+#       targetAverageUtilization: 60
