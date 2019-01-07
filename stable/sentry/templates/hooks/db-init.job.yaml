@@ -34,7 +34,7 @@ spec:
         - name: SENTRY_SECRET_KEY
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "sentry.secretSecret" . }}
               key: sentry-secret
         - name: SENTRY_DB_USER
           value: {{ default "sentry" .Values.postgresUser | quote }}
@@ -75,7 +75,7 @@ spec:
         - name: SENTRY_EMAIL_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "sentry.emailSecret" . }}
               key: smtp-password
         - name: SENTRY_EMAIL_USE_TLS
           value: {{ .Values.email.use_tls | quote }}

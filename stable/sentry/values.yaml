@@ -9,6 +9,9 @@ image:
   imagePullSecrets: []
   # - name:
 
+sentrySecret:
+existingSentrySecret:
+
 # How many web UI instances to run
 web:
   replicacount: 1
@@ -69,6 +72,7 @@ user:
   # Default is true as the initial installation.
   create: true
   email: admin@sentry.local
+  existingUserSecret:
 
 # BYO Email server
 # TODO: Add exim4 template
@@ -81,6 +85,7 @@ email:
   user:
   password:
   enable_replies: false
+  existingEmailSecret:
 
 # Name of the service and what port to expose on the pod
 # Don't change these unless you know what you're doing
