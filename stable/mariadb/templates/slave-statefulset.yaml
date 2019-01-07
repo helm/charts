@@ -80,6 +80,10 @@ spec:
         - name: {{ . }}
       {{- end}}
       {{- end }}
+      {{- if .Values.master.extraInitContainers }}
+      initContainers:
+{{ tpl .Values.master.extraInitContainers . | indent 6}}
+      {{- end }}
       containers:
       - name: "mariadb"
         image: {{ template "mariadb.image" . }}
