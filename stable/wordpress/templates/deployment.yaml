@@ -3,30 +3,30 @@ kind: Deployment
 metadata:
   name: {{ template "fullname" . }}
   labels:
-    app: {{ template "fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app: "{{ template "fullname" . }}"
+    chart: "{{ template "wordpress.chart" . }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
 spec:
   selector:
     matchLabels:
-      app: {{ template "fullname" . }}
-      release: "{{ .Release.Name }}"
+      app: "{{ template "fullname" . }}"
+      release: {{ .Release.Name | quote }}
   replicas: {{ .Values.replicaCount }}
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-        release: "{{ .Release.Name }}"
+        app: "{{ template "fullname" . }}"
+        chart: "{{ template "wordpress.chart" . }}"
+        release: {{ .Release.Name | quote }}
 {{- if or .Values.podAnnotations .Values.metrics.enabled }}
       annotations:
-  {{- if .Values.podAnnotations }}
+{{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
-  {{- end }}
-  {{- if .Values.metrics.podAnnotations }}
+{{- end }}
+{{- if .Values.metrics.podAnnotations }}
 {{ toYaml .Values.metrics.podAnnotations | indent 8 }}
-  {{- end }}
+{{- end }}
 {{- end }}
     spec:
       {{- if .Values.image.pullSecrets }}
@@ -101,21 +101,33 @@ spec:
           value: {{ .Values.wordpressBlogName | quote }}
         - name: WORDPRESS_TABLE_PREFIX
           value: {{ .Values.wordpressTablePrefix | quote }}
+        {{- if .Values.smtpHost }}
         - name: SMTP_HOST
           value: {{ .Values.smtpHost | quote }}
+        {{- end }}
+        {{- if .Values.smtpPort }}
         - name: SMTP_PORT
           value: {{ .Values.smtpPort | quote }}
+        {{- end }}
+        {{- if .Values.smtpUser }}
         - name: SMTP_USER
           value: {{ .Values.smtpUser | quote }}
+        {{- end }}
+        {{- if .Values.smtpPassword }}
         - name: SMTP_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "fullname" . }}
               key: smtp-password
+        {{- end }}
+        {{- if .Values.smtpUsername }}
         - name: SMTP_USERNAME
           value: {{ .Values.smtpUsername | quote }}
+        {{- end }}
+        {{- if .Values.smtpProtocol }}
         - name: SMTP_PROTOCOL
           value: {{ .Values.smtpProtocol | quote }}
+        {{- end }}
         ports:
         - name: http
           containerPort: 80
@@ -130,6 +142,10 @@ spec:
             port: https
             scheme: HTTPS
           {{- end }}
+          {{- if .Values.livenessProbeHeaders }}
+            httpHeaders:
+{{ toYaml .Values.livenessProbeHeaders | indent 14 }}
+          {{- end }}
 {{ toYaml .Values.livenessProbe | indent 10 }}
         readinessProbe:
           httpGet:
@@ -139,6 +155,10 @@ spec:
           {{- else }}
             port: https
             scheme: HTTPS
+          {{- end }}
+          {{- if .Values.readinessProbeHeaders }}
+            httpHeaders:
+{{ toYaml .Values.readinessProbeHeaders | indent 14 }}
           {{- end }}
 {{ toYaml .Values.readinessProbe | indent 10 }}
         volumeMounts:
@@ -196,4 +216,3 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
-

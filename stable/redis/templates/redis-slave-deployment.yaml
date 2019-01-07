@@ -61,7 +61,7 @@ spec:
       {{- end }}
     {{- with .Values.slave.affinity }}
       affinity:
-{{ toYaml . | indent 8 }}
+{{ tpl (toYaml .) $ | indent 8 }}
     {{- end }}
       containers:
       - name: {{ template "redis.fullname" . }}
@@ -91,6 +91,12 @@ spec:
         - "/opt/bitnami/redis/etc/redis.conf"
         - "--include"
         - "/opt/bitnami/redis/etc/replica.conf"
+        {{- $extraFlags := ( default .Values.master.extraFlags .Values.slave.extraFlags ) }}
+        {{- if $extraFlags }}
+        {{- range $extraFlags }}
+        - {{ . | quote }}
+        {{- end }}
+        {{- end }}
         env:
         - name: REDIS_REPLICATION_MODE
           value: slave

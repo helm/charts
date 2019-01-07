@@ -8,7 +8,7 @@ metadata:
 {{- end }}
   labels:
 {{ include "chartmuseum.labels.standard" . | indent 4 }}
-{{- if .Values.service.annotations }}
+{{- if .Values.service.labels }}
 {{ toYaml .Values.service.labels | indent 4 }}
 {{- end }}
 {{- if .Values.service.annotations }}
