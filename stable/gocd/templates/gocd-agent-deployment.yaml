@@ -43,6 +43,10 @@ spec:
           secret:
             secretName: {{ .Values.agent.security.ssh.secretName }}
       {{- end }}
+      {{- if .Values.agent.initContainers }}
+      initContainers:
+{{ toYaml .Values.agent.initContainers | indent 8 }}
+      {{- end }}
       containers:
         - name: {{ template "gocd.name" . }}-agent
           {{- if .Values.agent.image.tag }}
@@ -127,6 +131,7 @@ spec:
           {{- end }}
           securityContext:
             privileged: {{ .Values.agent.privileged }}
+      restartPolicy: {{ .Values.agent.restartPolicy }}
     {{- if .Values.agent.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.agent.nodeSelector | indent 8 }}
