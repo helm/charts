@@ -309,6 +309,16 @@ prometheus:
 #        cpu: 100m
 #        memory: 100Mi
 
+  ## Prometheus Java Agent JMX Exporter
+  agent:
+    enabled: false
+
+    ## https://github.com/prometheus/jmx_exporter/releases
+    version: 0.3.1
+
+    ## Port agent exposes for Prometheus to scrape metrics
+    port: 5557
+
   operator:
     ## Are you using Prometheus Operator?
     enabled: false
