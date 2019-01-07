@@ -5,25 +5,29 @@
 #   imageRegistry:
 
 slack:
+  enabled: true
   # Slack channel to notify
   channel: "XXXX"
-
   # Slack bots token. Create using: https://my.slack.com/services/new/bot
   # and invite the bot to your channel using: /join @botname
   token: "XXXX"
 
-# hipchat:
-#   room: ""
-#   token: ""
-#   url: ""
-# mattermost:
-#   channel: ""
-#   url: ""
-#   username: ""
-# flock:
-#   url: ""
-# webhook:
-#   url: ""
+hipchat:
+  enabled: false
+  # room: ""
+  # token: ""
+  # url: ""
+mattermost:
+  enabled: false
+  # channel: ""
+  # url: ""
+  # username: ""
+flock:
+  enabled: false
+  # url: ""
+webhook:
+  enabled: false
+  # url: ""
 
 # Resources to watch
 resourcesToWatch:

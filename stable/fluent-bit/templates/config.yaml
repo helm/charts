@@ -4,7 +4,7 @@ kind: ConfigMap
 metadata:
   name: {{ template "fluent-bit.fullname" . }}-config
   labels:
-    app: {{ template "fluent-bit.fullname" . }}
+    app: {{ template "fluent-bit.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
@@ -173,8 +173,12 @@ data:
 {{- end }}
 {{- if .decodeFieldAs  }}
         Decode_Field_As {{ .decodeFieldAs }} {{ .decodeField | default "log" }}
+{{- end}}
+{{- if .extraEntries }}
+{{ .extraEntries | indent 8 }}
 {{- end }}
 {{ end }}
 {{- end }}
 
 {{- end -}}
+

@@ -43,7 +43,7 @@ spec:
               fieldPath: metadata.name
         ports:
         - name: catalog
-          containerPort: {{ .Values.anchoreGlobal.service.ports.catalog }}
+          containerPort: {{ .Values.anchoreCatalog.service.port }}
         volumeMounts:
         - name: config-volume
           mountPath: /config/config.yaml
@@ -57,17 +57,19 @@ spec:
           httpGet:
             path: /health
             port: catalog
-          initialDelaySeconds: 10
-          periodSeconds: 60
-          failureThreshold: 5
+          initialDelaySeconds: 120
+          timeoutSeconds: 10
+          periodSeconds: 10
+          failureThreshold: 6
+          successThreshold: 1
         readinessProbe:
           httpGet:
             path: /health
             port: catalog
-          initialDelaySeconds: 5
-          periodSeconds: 10
           timeoutSeconds: 10
-          failureThreshold: 10
+          periodSeconds: 10
+          failureThreshold: 3
+          successThreshold: 1
         resources:
 {{ toYaml .Values.anchoreCatalog.resources | indent 10 }}
       volumes:
@@ -103,12 +105,16 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     component: {{ $component }}
+  {{- if .Values.anchoreCatalog.service.annotations }}
+  annotations:
+{{ toYaml .Values.anchoreCatalog.service.annotations | indent 4 }}
+  {{- end }}
 spec:
-  type: {{ .Values.anchoreGlobal.service.type }}
+  type: {{ .Values.anchoreCatalog.service.type }}
   ports:
     - name: anchore-catalog-api
-      port: {{ .Values.anchoreGlobal.service.ports.catalog }}
-      targetPort: {{ .Values.anchoreGlobal.service.ports.catalog }}
+      port: {{ .Values.anchoreCatalog.service.port }}
+      targetPort: {{ .Values.anchoreCatalog.service.port }}
       protocol: TCP
   selector:
     app: {{ template "anchore-engine.fullname" . }}
