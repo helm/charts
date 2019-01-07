@@ -98,6 +98,23 @@ airflow:
     pullSecret: my-docker-repo-secret
 ```
 
+### Airflow connections
+
+Connections define how your Airflow instance connects to environment and 3rd party service providers.
+This helm chart allows you to define your own connections at the time of Airflow initialization.
+For each connection the id and the type has to be defined. All other properties are optional.
+
+Example:
+```yaml
+airflow:
+  connections:
+  - id: my_aws
+    type: aws
+    extra: '{"aws_access_key_id": "**********", "aws_secret_access_key": "***", "region_name":"eu-central-1"}'
+```
+
+Note: As connections may require to include sensitive data - the resulting script is stored encrypted in a kubernetes secret and mounted into the airflow scheduler container. It is probably wise not to put connection data in the default values.yaml and instead create an encrypted my-secret-values.yaml. this way it can be decrypted before the installation and passed to helm with -f <my-secret-values.yaml>
+
 ### Worker Statefulset
 
 Celery workers uses StatefulSet.
@@ -161,7 +178,7 @@ PV.
 Since all Pods should have the same collection of DAG files, it is recommended to create just one PV
 that is shared. This ensures that the Pods are always in sync about the DagBag.
 
-This is controlled by setting `persistance.enabled=true`. You will have to ensure yourself the
+This is controlled by setting `persistence.enabled=true`. You will have to ensure yourself the
 PVC are shared properly between your pods:
 - If you are on AWS, you can use [Elastic File System (EFS)](https://aws.amazon.com/efs/).
 - If you are on Azure, you can use
@@ -233,29 +250,31 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `ingress.flower.annotations`             | annotations for the web ui ingress                      | `{}`                      |
 | `ingress.flower.tls.enabled`             | enables TLS termination at the ingress                  | `false`                   |
 | `ingress.flower.tls.secretName`          | name of the secret containing the TLS certificate & key | ``                        |
-| `persistance.enabled`                    | enable persistance storage for DAGs                     | `false`                   |
-| `persistance.existingClaim`              | if using an existing claim, specify the name here       | `nil`                     |
-| `persistance.storageClass`               | Persistent Volume Storage Class                         | (undefined)               |
-| `persistance.accessMode`                 | PVC access mode                                         | `ReadWriteOnce`           |
-| `persistance.size`                       | Persistant storage size request                         | `1Gi`                     |
+| `persistence.enabled`                    | enable persistence storage for DAGs                     | `false`                   |
+| `persistence.existingClaim`              | if using an existing claim, specify the name here       | `nil`                     |
+| `persistence.storageClass`               | Persistent Volume Storage Class                         | (undefined)               |
+| `persistence.accessMode`                 | PVC access mode                                         | `ReadWriteOnce`           |
+| `persistence.size`                       | Persistant storage size request                         | `1Gi`                     |
 | `dags.doNotPickle`                       | should the scheduler disable DAG pickling               | `false`                   |
 | `dags.path`                              | mount path for persistent volume                        | `/usr/local/airflow/dags` |
 | `dags.initContainer.enabled`             | Fetch the source code when the pods starts              | `false`                   |
+| `dags.initContainer.image.repository`    | Init container Docker image.                            | `alpine/git`              |
+| `dags.initContainer.image.tag`           | Init container Docker image tag.                        | `1.0.4`                   |
 | `dags.initContainer.installRequirements` | auto install requirements.txt deps                      | `true`                    |
 | `dags.git.url`                           | url to clone the git repository                         | nil                       |
 | `dags.git.ref`                           | branch name, tag or sha1 to reset to                    | `master`                  |
 | `rbac.create`                            | create RBAC resources                                   | `true`                    |
 | `serviceAccount.create`                  | create a service account                                | `true`                    |
 | `serviceAccount.name`                    | the service account name                                | ``                        |
-| `postgres.enabled`                       | create a postgres server                                | `true`                    |
-| `postgres.uri`                           | full URL to custom postgres setup                       | (undefined)               |
-| `postgres.portgresHost`                  | PostgreSQL Hostname                                     | (undefined)               |
-| `postgres.postgresUser`                  | PostgreSQL User                                         | `postgres`                |
-| `postgres.postgresPassword`              | PostgreSQL Password                                     | `airflow`                 |
-| `postgres.postgresDatabase`              | PostgreSQL Database name                                | `airflow`                 |
-| `postgres.persistence.enabled`           | Enable Postgres PVC                                     | `true`                    |
-| `postgres.persistance.storageClass`      | Persistant class                                        | (undefined)               |
-| `postgres.persistance.accessMode`        | Access mode                                             | `ReadWriteOnce`           |
+| `postgresql.enabled`                     | create a postgres server                                | `true`                    |
+| `postgresql.uri`                         | full URL to custom postgres setup                       | (undefined)               |
+| `postgresql.portgresHost`                | PostgreSQL Hostname                                     | (undefined)               |
+| `postgresql.postgresUser`                | PostgreSQL User                                         | `postgres`                |
+| `postgresql.postgresPassword`            | PostgreSQL Password                                     | `airflow`                 |
+| `postgresql.postgresDatabase`            | PostgreSQL Database name                                | `airflow`                 |
+| `postgresql.persistence.enabled`         | Enable Postgres PVC                                     | `true`                    |
+| `postgresql.persistance.storageClass     | Persistant class                                        | (undefined)               |
+| `postgresql.persistance.accessMode`      | Access mode                                             | `ReadWriteOnce`           |
 | `redis.enabled`                          | Create a Redis cluster                                  | `true`                    |
 | `redis.password`                         | Redis password                                          | `airflow`                 |
 | `redis.master.persistence.enabled`       | Enable Redis PVC                                        | `false`                   |

@@ -1,3 +1,27 @@
+### 1.5.13
+* [223b59f](https://github.com/kubernetes/charts/commit/223b59f):
+  - Fix typo in README.
+
+### 1.5.12
+* [72aa74f1](https://github.com/kubernetes/charts/commit/72aa74f1):
+  - Removes the namespace list permission for the service account being created.
+
+### 1.5.11
+* [a8f4e6c9](https://github.com/kubernetes/charts/commit/a8f4e6c9):
+  - Bump up GoCD app version to 18.12.0
+
+### 1.5.10
+* [87b3a755](https://github.com/kubernetes/charts/commit/87b3a755):
+  - Allow the override of the preconfigure command
+
+### 1.5.9
+* [6547ba84](https://github.com/kubernetes/charts/commit/6547ba84):
+  - Introduces the ability to configure agent service accounts
+
+### 1.5.8
+* [cee475aa](https://github.com/kubernetes/charts/commit/cee475aa):
+  - Enable extra volume mounts without persistence
+
 ### 1.5.7
 * [c663a531](https://github.com/kubernetes/charts/commit/c663a531):
   - Bump up GoCD app version to 18.11.0

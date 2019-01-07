@@ -4,6 +4,8 @@ global:
   ## can also be spceifed at chart level see below
   nodeSelector:
   #  label: value
+  ## Configure HostAliases
+  hostAliases: []
   affinity:
   #  label: value
   tolerations:
@@ -25,14 +27,17 @@ hub:
   ## The port which the hub listens on
   port: 4444
 
-  ## Timeout for probe Hub readiness via HTTP request on Hub status
+  ## Timeout for probe Hub readiness via HTTP request on hub.probePath
   readinessTimeout: 1
 
   ## Initial delay before performing the first readinessProbe
   readinessDelay: 15
 
-  ## Timeout for probe Hub liveness via HTTP request on Hub status
+  ## Timeout for probe Hub liveness via HTTP request on hub.probePath
   livenessTimeout: 1
+
+  ## Path for checking readiness and liveness via HTTP Request
+  probePath: "/wd/hub/status"
 
   ## Set the JAVA_TOOL_OPTIONS environment variable
   ## If you find your selenium hub is OOMKilled, try adding -XX:+UseSerialGC

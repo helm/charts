@@ -74,11 +74,11 @@ spec:
           {{- end }}
           {{- range $secret := .Values.secrets }}
             {{- range $key := $secret.keys }}
-          - name: {{ (print $secret.name "_" $key) | upper }}
-            valueFrom:
-              secretKeyRef:
-                name: {{ $secret.name }}
-                key: {{ $key }}
+            - name: {{ (print $secret.name "_" $key) | upper }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $secret.name }}
+                  key: {{ $key }}
             {{- end }}
           {{- end }}
           resources:

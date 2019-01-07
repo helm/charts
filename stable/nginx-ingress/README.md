@@ -118,10 +118,13 @@ Parameter | Description | Default
 `controller.metrics.service.annotations` | annotations for Prometheus metrics service | `{}`
 `controller.metrics.service.clusterIP` | cluster IP address to assign to service | `""`
 `controller.metrics.service.externalIPs` | Prometheus metrics service external IP addresses | `[]`
+`controller.metrics.service.labels` | labels for metrics service | `{}`
 `controller.metrics.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
 `controller.metrics.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
 `controller.metrics.service.servicePort` | Prometheus metrics service port | `9913`
 `controller.metrics.service.type` | type of Prometheus metrics service to create | `ClusterIP`
+`controller.metrics.serviceMonitor.enabled` | Set this to `true` to create ServiceMonitor for Prometheus operator | `false`
+`controller.metrics.serviceMonitor.additionalLabels` | Additional labels that can be used so ServiceMonitor will be discovered by Prometheus | `{}`
 `controller.customTemplate.configMapName` | configMap containing a custom nginx template | `""`
 `controller.customTemplate.configMapKey` | configMap key containing the nginx template | `""`
 `controller.headers` | configMap key:value pairs containing the [custom headers](https://github.com/kubernetes/ingress-nginx/tree/master/docs/examples/customization/custom-headers) for Nginx | `{}`
@@ -174,6 +177,7 @@ as described [here](https://github.com/kubernetes/ingress-nginx/blob/master/docs
 ```console
 $ helm install stable/nginx-ingress --set controller.extraArgs.v=2
 ```
+> **Tip**: You can use the default [values.yaml](values.yaml)
 
 ## PodDisruptionBudget
 Note that the PodDisruptionBudget resource will only be defined if the replicaCount is greater than one,
@@ -189,27 +193,7 @@ $ helm install stable/nginx-ingress --name my-release \
     --set controller.metrics.enabled=true
 ```
 
-You can add Prometheus annotations to the metrics service using `controller.metrics.service.annotations`. Alternatively, if you use the Prometheus Operator, you need to create a ServiceMonitor as follows:
-
-```yaml
-apiVersion: monitoring.coreos.com/v1
-kind: ServiceMonitor
-metadata:
-  name: nginx-ingress-service-monitor
-spec:
-  jobLabel: nginx-ingress
-  selector:
-    matchLabels:
-      app: nginx-ingress
-      release: <RELEASE>
-  namespaceSelector:
-    matchNames:
-      - <RELEASE_NAMESPACE>
-  endpoints:
-    - port: metrics
-      interval: 30s
-```
-> **Tip**: You can use the default [values.yaml](values.yaml)
+You can add Prometheus annotations to the metrics service using `controller.metrics.service.annotations`. Alternatively, if you use the Prometheus Operator, you can enable ServiceMonitor creation using `controller.metrics.serviceMonitor.enabled`.
 
 ## ExternalDNS Service configuration
 

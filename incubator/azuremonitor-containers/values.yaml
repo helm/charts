@@ -6,9 +6,9 @@
 ## ref: https://github.com/Microsoft/OMS-docker/tree/ci_feature_prod
 omsagent:
   image:
-    tag: "ciprod10162018-2"
+    tag: "ciprod11292018"
     pullPolicy: IfNotPresent
-    dockerProviderVersion: "3.0.0-1"
+    dockerProviderVersion: "3.0.0-2"
     agentVersion: "1.6.0-163"
 ## To get your workspace id and key do the following
 ## You can create a Azure Loganalytics workspace from portal.azure.com and get its ID & PRIMARY KEY from 'Advanced Settings' tab in the Ux.

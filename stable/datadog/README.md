@@ -74,6 +74,7 @@ The following table lists the configurable parameters of the Datadog chart and t
 | `datadog.env`               | Additional Datadog environment variables | `nil`                               |
 | `datadog.logsEnabled`       | Enable log collection              | `nil`                                     |
 | `datadog.logsConfigContainerCollectAll` | Collect logs from all containers | `nil`                           |
+| `datadog.logsPointerHostPath` | Host path to store the log tailing state in | `/var/lib/datadog-agent/logs`   |
 | `datadog.apmEnabled`        | Enable tracing from the host       | `nil`                                     |
 | `datadog.processAgentEnabled` | Enable live process monitoring   | `nil`                                     |
 | `datadog.checksd`           | Additional custom checks as python code  | `nil`                               |
@@ -90,6 +91,7 @@ The following table lists the configurable parameters of the Datadog chart and t
 | `datadog.resources.limits.cpu` | CPU resource limits             | `200m`                                    |
 | `datadog.resources.requests.memory` | Memory resource requests   | `256Mi`                                   |
 | `datadog.resources.limits.memory` | Memory resource limits       | `256Mi`                                   |
+| `datadog.livenessProbe`     | Overrides the default liveness probe | exec /probe.sh                          |
 | `daemonset.podAnnotations`  | Annotations to add to the DaemonSet's Pods | `nil`                             |
 | `daemonset.tolerations`     | List of node taints to tolerate (requires Kubernetes >= 1.6) | `nil`           |
 | `daemonset.nodeSelector`    | Node selectors                     | `nil`                                     |
@@ -120,6 +122,8 @@ The following table lists the configurable parameters of the Datadog chart and t
 | `clusterAgent.resources.requests.memory` | Memory resource requests           | `256Mi`                                   |
 | `clusterAgent.resources.limits.memory`   | Memory resource limits             | `256Mi`                                   |
 | `clusterAgent.tolerations`               | List of node taints to tolerate    | `[]`                                      |
+| `clusterAgent.livenessProbe`             | Overrides the default liveness probe | http port 443 if external metrics enabled       |
+| `clusterAgent.readinessProbe`            | Overrides the default readiness probe | http port 443 if external metrics enabled      |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

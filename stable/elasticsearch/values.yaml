@@ -1,7 +1,7 @@
 # Default values for elasticsearch.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-appVersion: "6.5.1"
+appVersion: "6.5.4"
 
 ## Define serviceAccount names for components. Defaults to component's fully qualified name.
 ##
@@ -33,7 +33,7 @@ podSecurityPolicy:
 
 image:
   repository: "docker.elastic.co/elasticsearch/elasticsearch-oss"
-  tag: "6.5.1"
+  tag: "6.5.4"
   pullPolicy: "IfNotPresent"
   # If specified, use these secrets to access the image
   # pullSecrets:
@@ -75,6 +75,13 @@ client:
   nodeAffinity: {}
   nodeSelector: {}
   tolerations: []
+  initResources: {}
+    # limits:
+    #   cpu: "25m"
+    #   # memory: "128Mi"
+    # requests:
+    #   cpu: "25m"
+    #   memory: "128Mi"
   resources:
     limits:
       cpu: "1"
@@ -90,6 +97,18 @@ client:
     enabled: false
     minAvailable: 1
     # maxUnavailable: 1
+  ingress:
+    enabled: false
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    path: /
+    hosts:
+      - chart-example.local
+    tls: []
+    #  - secretName: chart-example-tls
+    #    hosts:
+    #      - chart-example.local
 
 master:
   name: master
@@ -106,6 +125,13 @@ master:
   nodeAffinity: {}
   nodeSelector: {}
   tolerations: []
+  initResources: {}
+    # limits:
+    #   cpu: "25m"
+    #   # memory: "128Mi"
+    # requests:
+    #   cpu: "25m"
+    #   memory: "128Mi"
   resources:
     limits:
       cpu: "1"
@@ -140,6 +166,13 @@ data:
   nodeAffinity: {}
   nodeSelector: {}
   tolerations: []
+  initResources: {}
+    # limits:
+    #   cpu: "25m"
+    #   # memory: "128Mi"
+    # requests:
+    #   cpu: "25m"
+    #   memory: "128Mi"
   resources:
     limits:
       cpu: "1"
