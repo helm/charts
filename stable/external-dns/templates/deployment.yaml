@@ -90,7 +90,7 @@ spec:
             {{- end }}
           {{- end }}
           volumeMounts:
-          {{- if .Values.google.serviceAccountSecret }}
+          {{- if or .Values.google.serviceAccountSecret .Values.google.serviceAccountKey }}
           - name: google-service-account
             mountPath: /etc/secrets/service-account/
           {{- end}}
@@ -109,7 +109,7 @@ spec:
             readOnly: true
           {{- end }}
           env:
-        {{- if .Values.google.serviceAccountSecret }}
+        {{- if or .Values.google.serviceAccountSecret .Values.google.serviceAccountKey }}
           - name: GOOGLE_APPLICATION_CREDENTIALS
             value: /etc/secrets/service-account/credentials.json
         {{- end }}
@@ -178,7 +178,11 @@ spec:
       {{- if .Values.google.serviceAccountSecret }}
       - name: google-service-account
         secret:
-          secretName: "{{.Values.google.serviceAccountSecret}}"
+          secretName: {{ .Values.google.serviceAccountSecret | quote }}
+      {{- else if .Values.google.serviceAccountKey }}
+      - name: google-service-account
+        secret:
+          secretName: {{ template "external-dns.fullname" . }}
       {{- end}}
       {{- if eq .Values.provider "azure" }}
       - name: azure-config-file
