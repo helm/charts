@@ -65,7 +65,7 @@ data:
     # Set to false if automatic cleanup of absent nodes is desired.
     # This can be dangerous, see http://www.rabbitmq.com/cluster-formation.html#node-health-checks-and-cleanup.
     cluster_formation.node_cleanup.only_log_warning = true
-    cluster_partition_handling = autoheal
+    cluster_partition_handling = {{ .Values.rabbitmqClusterPartitionHandling }}
 
     ## The default "guest" user is only permitted to access the server
     ## via a loopback interface (e.g. localhost)
