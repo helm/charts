@@ -38,14 +38,15 @@ successfulJobsHistoryLimit: 5
 failedJobsHistoryLimit: 5
 
 ## set persistentVolumeClaim to use a PVC that already exists.
-## if set will override any settings under `resistence` otherwise
-## if not set and `persistence` set to true, will create a PVC.
+## if set will override any settings under `persistence` otherwise
+## if not set and `persistence.enabled` set to true, will create a PVC.
 # persistentVolumeClaim: <existing-PVC>
 
 persistence:
   enabled: true
   size: 8Gi
   accessMode: ReadWriteOnce
+  subPath:
   ## If defined, storageClassName: <storageClass>
   ## If set to "-", storageClassName: "", which disables dynamic provisioning
   ## If undefined (the default) or set to null, no storageClassName spec is
