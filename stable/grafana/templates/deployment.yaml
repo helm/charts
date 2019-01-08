@@ -43,8 +43,24 @@ spec:
 {{- if .Values.priorityClassName }}
       priorityClassName: {{ .Values.priorityClassName }}
 {{- end }}
-{{- if .Values.dashboards }}
+{{- if (.Values.persistence.enabled) or (.Values.dashboards) }}
       initContainers:
+{{- end }}
+{{- if .Values.persistence.enabled }}
+        - name: init-chown-data
+          image: "{{ .Values.chownDataImage.repository }}:{{ .Values.chownDataImage.tag }}"
+          imagePullPolicy: {{ .Values.chownDataImage.pullPolicy }}
+          securityContext:
+            runAsUser: 0
+          command: ["chown", "-R", "{{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.runAsUser }}", "/var/lib/grafana"]
+          volumeMounts:
+            - name: storage
+              mountPath: "/var/lib/grafana"
+{{- if .Values.persistence.subPath }}
+              subPath: {{ .Values.persistence.subPath }}
+{{- end }}
+{{- end }}
+{{- if .Values.dashboards }}
         - name: download-dashboards
           image: "{{ .Values.downloadDashboardsImage.repository }}:{{ .Values.downloadDashboardsImage.tag }}"
           imagePullPolicy: {{ .Values.downloadDashboardsImage.pullPolicy }}
@@ -55,7 +71,9 @@ spec:
               subPath: download_dashboards.sh
             - name: storage
               mountPath: "/var/lib/grafana"
+{{- if .Values.persistence.subPath }}
               subPath: {{ .Values.persistence.subPath }}
+{{- end }}
           {{- range .Values.extraSecretMounts }}
             - name: {{ .name }}
               mountPath: {{ .mountPath }}
@@ -119,7 +137,9 @@ spec:
               subPath: ldap.toml
             - name: storage
               mountPath: "/var/lib/grafana"
+{{- if .Values.persistence.subPath }}
               subPath: {{ .Values.persistence.subPath }}
+{{- end }}
 {{- if .Values.dashboards }}
   {{- range $provider, $dashboards := .Values.dashboards }}
     {{- range $key, $value := $dashboards }}

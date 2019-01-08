@@ -91,6 +91,7 @@ The following table lists the configurable parameters of the Datadog chart and t
 | `datadog.resources.limits.cpu` | CPU resource limits             | `200m`                                    |
 | `datadog.resources.requests.memory` | Memory resource requests   | `256Mi`                                   |
 | `datadog.resources.limits.memory` | Memory resource limits       | `256Mi`                                   |
+| `datadog.securityContext`   | Allows you to overwrite the default securityContext applied to the container  | `nil`  |
 | `datadog.livenessProbe`     | Overrides the default liveness probe | exec /probe.sh                          |
 | `daemonset.podAnnotations`  | Annotations to add to the DaemonSet's Pods | `nil`                             |
 | `daemonset.tolerations`     | List of node taints to tolerate (requires Kubernetes >= 1.6) | `nil`           |
