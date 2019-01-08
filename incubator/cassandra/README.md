@@ -98,6 +98,9 @@ The following table lists the configurable parameters of the Cassandra chart and
 | `config.ports.thrift`                | Initdb Arguments                                | `9160`                                                     |
 | `config.ports.agent`                 | The port of the JVM Agent (if any)              | `nil`                                                      |
 | `config.start_rpc`                   | Initdb Arguments                                | `false`                                                    |
+| `configOverrides`                    | Overrides config files in /etc/cassandra dir    | `{}`                                                       |
+| `commandOverrides`                   | Overrides default docker command                | `[]`                                                       |
+| `argsOverrides`                      | Overrides default docker args                   | `[]`                                                       |
 | `env`                                | Custom env variables                            | `{}`                                                       |
 | `persistence.enabled`                | Use a PVC to persist data                       | `true`                                                     |
 | `persistence.storageClass`           | Storage class of backing PVC                    | `nil` (uses alpha storage class annotation)                |
@@ -126,7 +129,7 @@ The following table lists the configurable parameters of the Cassandra chart and
 | `backup.schedule`                    | Keyspaces to backup, each with cron time        |                                                            |
 | `backup.annotations`                 | Backup pod annotations                          | iam.amazonaws.com/role: `cain`                             |
 | `backup.image.repo`                  | Backup image repository                         | `nuvo/cain`                                                |
-| `backup.image.tag`                   | Backup image tag                                | `0.3.0`                                                    |
+| `backup.image.tag`                   | Backup image tag                                | `0.4.1`                                                    |
 | `backup.extraArgs`                   | Additional arguments for cain                   | `[]`                                                       |
 | `backup.env`                         | Backup environment variables                    | AWS_REGION: `us-east-1`                                    |
 | `backup.resources`                   | Backup CPU/Memory resource requests/limits      | Memory: `1Gi`, CPU: `1`                                    |

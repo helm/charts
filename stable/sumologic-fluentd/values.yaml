@@ -1,7 +1,7 @@
 # Default values for sumologic-fluentd.
 image:
   name: sumologic/fluentd-kubernetes-sumologic
-  tag: v2.0.0
+  tag: v2.1.0
   pullPolicy: IfNotPresent
 
 ## Annotations to add to the DaemonSet's Pods
@@ -21,7 +21,10 @@ updateStrategy: OnDelete
 sumologic:
   ## You'll need to set this to sumo collector, before the agent will run.
   ## ref: https://github.com/SumoLogic/fluentd-kubernetes-sumologic#sumologic
-  collectorUrl: ""
+  # collectorUrl:
+
+  ## Use existing Secret which stores collector url instead of creating a new one
+  # collectorUrlExistingSecret:
 
   ## The source of fluentd logs, either file or systemd
   fluentdSource: file

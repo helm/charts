@@ -71,10 +71,13 @@ The following tables list the configurable parameters of the GoCD chart and thei
 | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------- | ------------------- |
 | `server.enabled`                           | Enable GoCD Server. Supported values are `true`, `false`. When enabled, the GoCD server deployment is done on helm install.  | `true`              |
 | `server.shouldPreconfigure`                | Preconfigure GoCD Server to have a default elastic agent profile and Kubernetes elastic agent plugin settings. Supported values are `true`, `false`.  | `true`              |
+| `server.preconfigureCommand`               | Preconfigure GOCD Server with a custom command (shell,python, etc ...). Supported value is a list. | `["/bin/bash", "/preconfigure_server.sh"]`|
 | `server.image.repository`                  | GoCD server image                                                                                             | `gocd/gocd-server`  |
 | `server.image.tag`                         | GoCD server image tag                                                                                         | `.Chart.appVersion` |
 | `server.image.pullPolicy`                  | Image pull policy                                                                                             | `IfNotPresent`      |
 | `server.resources`                         | GoCD server resource requests and limits                                                                      | `{}`                |
+| `server.initContainers`                    | GoCD server init containers                                                                                   | `[]`                |
+| `server.restartPolicy`                     | GoCD server restart policy                                                                                    | `Always`            |
 | `server.nodeSelector`                      | GoCD server nodeSelector for pod labels                                                                       | `{}`                |
 | `server.affinity`                         | GoCD server affinity                                                                                           | `{}`                |
 | `server.env.goServerSystemProperties`      | GoCD Server system properties                                                                                 | `nil`               |
@@ -161,6 +164,8 @@ $ kubectl create secret generic gocd-server-ssh \
 | `agent.image.tag`                         | GoCD agent image tag                                                                                                                                                             | `.Chart.appVersion`          |
 | `agent.image.pullPolicy`                  | Image pull policy                                                                                                                                                                | `IfNotPresent`               |
 | `agent.resources`                         | GoCD agent resource requests and limits                                                                                                                                          | `{}`                |
+| `agent.initContainers`                    | GoCD agent init containers                                                                                                                                                       | `[]`                |
+| `agent.restartPolicy`                     | GoCD agent restart policy                                                                                                                                                        | `Always`               |
 | `agent.nodeSelector`                      | GoCD agent nodeSelector for pod labels                                                                                                                                           | `{}`                |
 | `agent.affinity`                         | GoCD agent affinity                                                                                                                                                               | `{}`                |
 | `agent.env.goServerUrl`                   | GoCD Server Url. If nil, discovers the GoCD server service if its available on the Kubernetes cluster                                                                            | `nil`                        |
@@ -215,7 +220,7 @@ Refer to the [Kubernetes blog](http://blog.kubernetes.io/2017/03/dynamic-provisi
 One can change the storage class to be used by overriding `server.persistence.storageClass` and `agent.persistence.storageClass` like below:
 
 ```bash
-$ helm install --namespace gocd --name gocd-app --set server.persistence.stoageClass=STORAGE_CLASS_NAME stable/gocd
+$ helm install --namespace gocd --name gocd-app --set server.persistence.storageClass=STORAGE_CLASS_NAME stable/gocd
 ```
 
 #### Static Volumes
@@ -305,6 +310,37 @@ To mount a `ConfigMap` containing `/docker-entrypoint.d/` scripts:
 
 1. That packages being cached here is shared between all the agents.
 2. That all the agents sharing this directory are privy to all the secrets in `/home/go`
+
+## Init containers
+
+The GoCD helm chart supports specifying init containers for server and agents. This can for example be used to download `kubectl` or any other necessary ressources before starting GoCD:
+
+```
+agent:
+  persistence:
+    extraVolumes:
+      - name: kubectl
+        emptyDir: {}
+    extraVolumeMounts:
+      - name: kubectl
+        mountPath: /usr/local/bin/kubectl
+        subPath: kubectl
+  initContainers:
+    - name: download-kubectl
+      image: "ellerbrock/alpine-bash-curl-ssl:latest"
+      imagePullPolicy: "IfNotPresent"
+      volumeMounts:
+        - name: kubectl
+          mountPath: /download
+      workingDir: /download
+      command: ["/bin/bash"]
+      args:
+        - "-c"
+        - 'curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl && chmod +x ./kubectl'
+u
+```
+
+Depending on how long the init containers take to complete, it might be necessary to tweak the values of `server.healthCheck.initialDelaySeconds` or `agent.healthCheck.initialDelaySeconds`.
 
 ## RBAC and Service Accounts
 

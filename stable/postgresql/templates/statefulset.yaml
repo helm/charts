@@ -56,11 +56,13 @@ spec:
       {{- if .Values.terminationGracePeriodSeconds }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       {{- end }}
-      {{- if and .Values.persistence.enabled .Values.securityContext.enabled}}
+      {{- if and .Values.volumePermissions.enabled .Values.persistence.enabled }}
       initContainers:
       - name: init-chmod-data
         image: {{ template "postgresql.volumePermissions.image" . }}
         imagePullPolicy: "{{ .Values.volumePermissions.image.pullPolicy }}"
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
         command:
           - sh
           - -c
@@ -74,7 +76,7 @@ spec:
         volumeMounts:
         - name: data
           mountPath: /bitnami/postgresql
-      {{ end }}
+      {{- end }}
       containers:
       - name: {{ template "postgresql.fullname" . }}
         image: {{ template "postgresql.image" . }}
@@ -96,13 +98,21 @@ spec:
         {{- if .Values.usePasswordFile }}
         - name: POSTGRESQL_REPLICATION_PASSWORD_FILE
           value: "/opt/bitnami/postgresql/secrets/postgresql-replication-password"
-        {{- else }}        
+        {{- else }}
         - name: POSTGRESQL_REPLICATION_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "postgresql.secretName" . }}
               key: postgresql-replication-password
         {{- end }}
+        {{- if not (eq .Values.replication.synchronousCommit "off")}}
+        - name: POSTGRESQL_SYNCHRONOUS_COMMIT_MODE
+          value: {{ .Values.replication.synchronousCommit | quote }}
+        - name: POSTGRESQL_NUM_SYNCHRONOUS_REPLICAS
+          value: {{ .Values.replication.numSynchronousReplicas | quote }}
+        {{- end }}
+        - name: POSTGRESQL_CLUSTER_APP_NAME
+          value: {{ .Values.replication.applicationName }}
         {{- end }}
         - name: POSTGRESQL_USERNAME
           value: {{ .Values.postgresqlUsername | quote }}
@@ -115,7 +125,7 @@ spec:
             secretKeyRef:
               name: {{ template "postgresql.secretName" . }}
               key: postgresql-password
-        {{- end }}              
+        {{- end }}
         {{- if .Values.postgresqlDatabase }}
         - name: POSTGRESQL_DATABASE
           value: {{ .Values.postgresqlDatabase | quote }}
@@ -155,26 +165,26 @@ spec:
           failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
         {{- end }}
         volumeMounts:
+        {{- if or (.Files.Glob "files/docker-entrypoint-initdb.d/*.{sh,sql,sql.gz}") .Values.initdbScriptsConfigMap .Values.initdbScripts }}
         - name: custom-init-scripts
           mountPath: /docker-entrypoint-initdb.d
+        {{- end }}
+        {{- if or (.Files.Glob "files/conf.d/*.conf") .Values.postgresqlExtendedConf .Values.extendedConfConfigMap }}
+        - name: postgresql-extended-config
+          mountPath: /bitnami/postgresql/conf/conf.d/
+        {{- end }}
         {{- if .Values.usePasswordFile }}
         - name: postgresql-password
           mountPath: /opt/bitnami/postgresql/secrets/
-        {{ end }}
+        {{- end }}
         {{- if .Values.persistence.enabled }}
         - name: data
           mountPath: {{ .Values.persistence.mountPath }}
         {{- end }}
-        {{ if or (.Files.Glob "files/postgresql.conf") .Values.postgresqlConfiguration }}
+        {{- if or (.Files.Glob "files/postgresql.conf") (.Files.Glob "files/pg_hba.conf") .Values.postgresqlConfiguration .Values.pgHbaConfiguration .Values.configurationConfigMap }}
         - name: postgresql-config
-          mountPath: /opt/bitnami/postgresql/conf/postgresql.conf
-          subPath: postgresql.conf
-        {{ end }}
-        {{ if or (.Files.Glob "files/pg_hba.conf") .Values.pgHbaConfiguration }}
-        - name: postgresql-config
-          mountPath: /opt/bitnami/postgresql/conf/pg_hba.conf
-          subPath: pg_hba.conf
-        {{ end }}
+          mountPath: /bitnami/postgresql/conf
+        {{- end }}
 {{- if .Values.metrics.enabled }}
       - name: metrics
         image: {{ template "metrics.image" . }}
@@ -200,28 +210,28 @@ spec:
           httpGet:
             path: /
             port: metrics
-          initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
-          periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
-          timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
-          successThreshold: {{ .Values.livenessProbe.successThreshold }}
-          failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+          initialDelaySeconds: {{ .Values.metrics.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.metrics.livenessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.metrics.livenessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.metrics.livenessProbe.successThreshold }}
+          failureThreshold: {{ .Values.metrics.livenessProbe.failureThreshold }}
         {{- end }}
         {{- if .Values.readinessProbe.enabled }}
         readinessProbe:
           httpGet:
             path: /
             port: metrics
-          initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
-          periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
-          timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
-          successThreshold: {{ .Values.readinessProbe.successThreshold }}
-          failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+          initialDelaySeconds: {{ .Values.metrics.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.metrics.readinessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.metrics.readinessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.metrics.readinessProbe.successThreshold }}
+          failureThreshold: {{ .Values.metrics.readinessProbe.failureThreshold }}
         {{- end }}
         volumeMounts:
         {{- if .Values.usePasswordFile }}
         - name: postgresql-password
           mountPath: /opt/bitnami/postgresql/secrets/
-        {{ end }}
+        {{- end }}
         ports:
         - name: metrics
           containerPort: 9187
@@ -229,19 +239,26 @@ spec:
 {{ toYaml .Values.metrics.resources | indent 10 }}
 {{- end }}
       volumes:
-      {{ if or (.Files.Glob "files/postgresql.conf") (.Files.Glob "files/pg_hba.conf") .Values.postgresqlConfiguration .Values.pgHbaConfiguration }}
+      {{- if or (.Files.Glob "files/postgresql.conf") (.Files.Glob "files/pg_hba.conf") .Values.postgresqlConfiguration .Values.pgHbaConfiguration .Values.configurationConfigMap}}
       - name: postgresql-config
         configMap:
-          name: {{ template "postgresql.fullname" . }}-configuration
-      {{ end }}
+          name: {{ template "postgresql.configurationCM" . }}
+      {{- end }}
+      {{- if or (.Files.Glob "files/conf.d/*.conf") .Values.postgresqlExtendedConf .Values.extendedConfConfigMap }}
+      - name: postgresql-extended-config
+        configMap:
+          name: {{ template "postgresql.extendedConfigurationCM" . }}
+      {{- end }}
       {{- if .Values.usePasswordFile }}
       - name: postgresql-password
         secret:
           secretName: {{ template "postgresql.secretName" . }}
-      {{ end }}
+      {{- end }}
+      {{- if  or (.Files.Glob "files/docker-entrypoint-initdb.d/*.{sh,sql,sql.gz}") .Values.initdbScriptsConfigMap .Values.initdbScripts }}
       - name: custom-init-scripts
         configMap:
-          name: {{ template "postgresql.fullname" . }}-init-scripts
+          name: {{ template "postgresql.initdbScriptsCM" . }}
+      {{- end }}
 {{- if and .Values.persistence.enabled .Values.persistence.existingClaim }}
       - name: data
         persistentVolumeClaim:
