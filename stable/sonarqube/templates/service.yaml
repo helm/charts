@@ -10,10 +10,12 @@ metadata:
   {{- range $key, $value := .Values.service.labels }}
     {{ $key }}: {{ $value | quote }}
   {{- end }}
+{{ if .Values.service.annotations}}
   annotations:
     {{- range $key, $value := .Values.service.annotations }}
-      {{ $key }}: {{ $value | quote }}
+    {{ $key }}: {{ $value | quote }}
     {{- end }}
+{{- end }}
 spec:
   type: {{ .Values.service.type }}
   ports:
