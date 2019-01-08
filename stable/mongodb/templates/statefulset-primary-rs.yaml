@@ -181,7 +181,7 @@ spec:
             initialDelaySeconds: 5
             timeoutSeconds: 1
           resources:
-  {{ toYaml .Values.metrics.resources | indent 10 }}
+{{ toYaml .Values.metrics.resources | indent 12 }}
 {{- end }}
       volumes:
         {{- if  (.Files.Glob "files/docker-entrypoint-initdb.d/*[sh|js]") }}
