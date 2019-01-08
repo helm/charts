@@ -62,14 +62,15 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `securityContext.enabled`                 | Enable security context                             | `true`                                                            |
 | `securityContext.fsGroup`                 | Group ID for the container                          | `1001`                                                            |
 | `securityContext.runAsUser`               | User ID for the container                           | `1001`                                                            |
-| `rootUser.password`                       | Password for the `root` user                        | _random 10 character alphanumeric string_                         |
+| `existingSecret`                       | Use Existing secret for Password details (`rootUser.password`, `db.password`, `replication.password` will be ignored and picked up from this secret)                       |                         |
+| `rootUser.password`                       | Password for the `root` user. Ignored if existing secret is provided.                       | _random 10 character alphanumeric string_                         |
 | `rootUser.forcePassword`                  | Force users to specify a password                   | `false`                                                           |
 | `db.user`                                 | Username of new user to create                      | `nil`                                                             |
-| `db.password`                             | Password for the new user                           | _random 10 character alphanumeric string if `db.user` is defined_ |
+| `db.password`                             | Password for the new user. Ignored if existing secret is provided.                           | _random 10 character alphanumeric string if `db.user` is defined_ |
 | `db.name`                                 | Name for new database to create                     | `my_database`                                                     |
 | `replication.enabled`                     | MariaDB replication enabled                         | `true`                                                            |
-| `replication.user`                        | MariaDB replication user                            | `replicator`                                                      |
-| `replication.password`                    | MariaDB replication user password                   | _random 10 character alphanumeric string_                         |
+| `replication.user`                        |MariaDB replication user                            | `replicator`                                                      |
+| `replication.password`                    | MariaDB replication user password. Ignored if existing secret is provided.                   | _random 10 character alphanumeric string_                         |
 | `initdbScripts`                           | List of initdb scripts                              | `nil`                                                             |
 | `initdbScriptsConfigMap`                  | ConfigMap with the initdb scripts (Note: Overrides `initdbScripts`) | `nil`                                             |
 | `master.annotations[].key`                | key for the the annotation list item                |  `nil`                                                            |

@@ -48,13 +48,14 @@ securityContext:
   fsGroup: 1001
   runAsUser: 1001
 
+# # Use existing secret (ignores root, db and replication passwords)
+# existingSecret:
+
 rootUser:
   ## MariaDB admin password
   ## ref: https://github.com/bitnami/bitnami-docker-mariadb#setting-the-root-password-on-first-run
   ##
   password:
-  ## Use existing secret (ignores root, db and replication passwords)
-  # existingSecret:
   ##
   ## Option to force users to specify a password. That is required for 'helm upgrade' to work properly.
   ## If it is not force, a random password will be generated.
