@@ -61,6 +61,8 @@ The following table lists the configurable parameters of the Sentry chart and th
 | `image.repository`                   | Sentry image                                | `library/sentry`                                           |
 | `image.tag`                          | Sentry image tag                            | `9.0`                                                      |
 | `imagePullPolicy`                    | Image pull policy                           | `IfNotPresent`                                             |
+| `sentrySecret`                  | Sentry Secret Key                                       | `nil`                                                      |
+| `existingSentrySecret`          | Name of existing secret to use for Sentry Secret        | `nil`                                                      |
 | `web.podAnnotations`                 | Web pod annotations                         | `{}`                                                       |
 | `web.replicacount`                   | Amount of web pods to run                   | `1`                                                        |
 | `web.resources.limits`               | Web resource limits                         | `{cpu: 500m, memory: 500Mi}`                               |
@@ -88,6 +90,7 @@ The following table lists the configurable parameters of the Sentry chart and th
 | `worker.tolerations`                 | Toleration labels for worker pod assignment | `[]`                                                       |
 | `user.create`                        | Create the default admin                    | `true`                                                     |
 | `user.email`                         | Username for default admin                  | `admin@sentry.local`                                       |
+| `user.existingUserSecret`       | Name of existing secret to use for Sentry user password | `nil`                                                      |
 | `email.from_address`                 | Email notifications are from                | `smtp`                                                     |
 | `email.host`                         | SMTP host for sending email                 | `smtp`                                                     |
 | `email.port`                         | SMTP port                                   | `25`                                                       |
@@ -95,6 +98,7 @@ The following table lists the configurable parameters of the Sentry chart and th
 | `email.password`                     | SMTP password                               | `nil`                                                      |
 | `email.use_tls`                      | SMTP TLS for security                       | `false`                                                    |
 | `email.enable_replies`               | Allow email replies                         | `false`                                                    |
+| `email.existingEmailSecret`     | Name of existing secret to use for Sentry smtp password | `nil`                                                      |
 | `service.type`                       | Kubernetes service type                     | `LoadBalancer`                                             |
 | `service.name`                       | Kubernetes service name                     | `sentry`                                                   |
 | `service.externalPort`               | Kubernetes external service port            | `9000`                                                     |
