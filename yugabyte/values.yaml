@@ -7,10 +7,15 @@ Image:
   tag: latest
   pullPolicy: IfNotPresent
 
-persistentVolume:
-  count: 2
-  storage: 10Gi
-  storageClass: standard
+storage:
+  master:
+    count: 2
+    size: 10Gi
+    storageClass: standard
+  tserver:
+    count: 2
+    size: 10Gi
+    storageClass: standard
 
 resource:
   master:
@@ -19,7 +24,7 @@ resource:
       memory: 2Gi
     limits:
       cpu: 2
-      memory: 2Gi 
+      memory: 2Gi
   tserver:
     requests:
       cpu: 2

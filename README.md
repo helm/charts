@@ -72,6 +72,17 @@ helm install yugabyte --set resource.tserver.limits.cpu=16,resource.tserver.limi
 helm install yugabyte --set gflags.tserver.use_cassandra_authentication=true --namespace yb-demo --name yb-demo --wait
 ```
 
+#### Create YugaByte cluster with larger disk.
+The default helm chart brings up a YugaByte DB with 10Gi for master nodes and 10Gi for tserver nodes. You override those defaults as below.
+```
+helm install yugabyte --set storage.tserver.size=100Gi --namespace yb-demo --name yb-demo --wait
+```
+
+#### Create YugaByte cluster with different storage class.
+```
+helm install yugabyte --set storage.tserver.storageClass=custom-storage,storage.master.storageClass=custom-storage --namespace yb-demo --name yb-demo --wait
+```
+
 ### Exposing YugaByte service endpoints using LoadBalancer
 By default YugaByte helm would expose the master ui endpoint alone via LoadBalancer. If you wish to expose yql, yedis services
 via LoadBalancer for your app to use, you could do that in couple of different ways.

@@ -87,7 +87,8 @@ spec:
   replicas: {{ $root.Values.replicas.tserver  }}
   {{ end }}
   volumeClaimTemplates:
-    {{- range $index := until (int ($root.Values.persistentVolume.count )) }}
+    {{- $storageInfo := (eq .name "yb-masters") | ternary $root.Values.storage.master $root.Values.storage.tserver -}}
+    {{- range $index := until (int ($storageInfo.count )) }}
     - metadata:
         name: datadir{{ $index }}
         labels:
@@ -98,12 +99,12 @@ spec:
       spec:
         accessModes:
           - "ReadWriteOnce"
-        {{- if $root.Values.persistentVolume.storageClass }}
-        storageClassName: {{ $root.Values.persistentVolume.storageClass }}
+        {{- if $storageInfo.storageClass }}
+        storageClassName: {{ $storageInfo.storageClass }}
         {{- end }}
         resources:
           requests:
-            storage: {{ $root.Values.persistentVolume.storage }}
+            storage: {{ $storageInfo.size }}
     {{- end }}
   updateStrategy:
     type: RollingUpdate
@@ -178,7 +179,7 @@ spec:
         command:
         {{ if eq .name "yb-masters" }}
           - "/home/yugabyte/bin/yb-master"
-          - "--fs_data_dirs={{range $index := until (int ($root.Values.persistentVolume.count))}}{{if ne $index 0}},{{end}}/mnt/disk{{ $index }}{{end}}"
+          - "--fs_data_dirs={{range $index := until (int ($storageInfo.count))}}{{if ne $index 0}},{{end}}/mnt/disk{{ $index }}{{end}}"
           - "--rpc_bind_addresses=$(POD_IP)"
           - "--server_broadcast_addresses=$(HOSTNAME).yb-masters.$(NAMESPACE):7100"
           - "--master_addresses={{range $index := until (int ($root.Values.replicas.master))}}{{if ne $index 0}},{{end}}yb-master-{{ $index }}.yb-masters.$(NAMESPACE):7100{{end}}"
@@ -190,7 +191,7 @@ spec:
           {{- end}}
         {{ else }}
           - "/home/yugabyte/bin/yb-tserver"
-          - "--fs_data_dirs={{range $index := until (int ($root.Values.persistentVolume.count))}}{{if ne $index 0}},{{end}}/mnt/disk{{ $index }}{{end}}"
+          - "--fs_data_dirs={{range $index := until (int ($storageInfo.count))}}{{if ne $index 0}},{{end}}/mnt/disk{{ $index }}{{end}}"
           - "--server_broadcast_addresses=$(HOSTNAME).yb-tservers.$(NAMESPACE):9100"
           {{ if $root.Values.enablePostgres }}
           - "--start_pgsql_proxy"
@@ -210,12 +211,12 @@ spec:
             name: {{ $label | quote }}
           {{- end}}
         volumeMounts:
-          {{- range $index := until (int ($root.Values.persistentVolume.count)) }}
+          {{- range $index := until (int ($storageInfo.count)) }}
           - name: datadir{{ $index }}
             mountPath: /mnt/disk{{ $index }}
           {{- end }}
       volumes:
-        {{- range $index := until (int ($root.Values.persistentVolume.count)) }}
+        {{- range $index := until (int ($storageInfo.count)) }}
         - name: datadir{{ $index }}
           hostPath:
             path: /mnt/disks/ssd{{ $index }}
