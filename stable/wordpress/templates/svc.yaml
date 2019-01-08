@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "wordpress.fullname" . }}
   labels:
-    app: "{{ template "fullname" . }}"
+    app: "{{ template "wordpress.fullname" . }}"
     chart: "{{ template "wordpress.chart" . }}"
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
@@ -26,4 +26,4 @@ spec:
       nodePort: {{ .Values.service.nodePorts.https }}
       {{- end }}
   selector:
-    app: "{{ template "fullname" . }}"
+    app: "{{ template "wordpress.fullname" . }}"
