@@ -10,7 +10,7 @@ data:
     <hudson>
       <disabledAdministrativeMonitors/>
       <version>{{ .Values.Master.ImageTag }}</version>
-      <numExecutors>0</numExecutors>
+      <numExecutors>{{ .Values.Master.NumExecutors }}</numExecutors>
       <mode>NORMAL</mode>
       <useSecurity>{{ .Values.Master.UseSecurity }}</useSecurity>
 {{- if not (empty .Values.Master.AuthorizationStrategy ) }}
