@@ -3,20 +3,20 @@ kind: Deployment
 metadata:
   name: {{ template "wordpress.fullname" . }}
   labels:
-    app: "{{ template "wordpress.name" . }}"
+    app: "{{ template "wordpress.fullname" . }}"
     chart: "{{ template "wordpress.chart" . }}"
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
 spec:
   selector:
     matchLabels:
-      app: "{{ template "wordpress.name" . }}"
+      app: "{{ template "wordpress.fullname" . }}"
       release: {{ .Release.Name | quote }}
   replicas: {{ .Values.replicaCount }}
   template:
     metadata:
       labels:
-        app: "{{ template "wordpress.name" . }}"
+        app: "{{ template "wordpress.fullname" . }}"
         chart: "{{ template "wordpress.chart" . }}"
         release: {{ .Release.Name | quote }}
 {{- if or .Values.podAnnotations .Values.metrics.enabled }}

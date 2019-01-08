@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: {{ template "wordpress.fullname" . }}
   labels:
-    app: "{{ template "wordpress.name" . }}"
+    app: "{{ template "wordpress.fullname" . }}"
     chart: "{{ template "wordpress.chart" . }}"
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
@@ -26,4 +26,4 @@ spec:
       nodePort: {{ .Values.service.nodePorts.https }}
       {{- end }}
   selector:
-    app: "{{ template "wordpress.name" . }}"
+    app: "{{ template "wordpress.fullname" . }}"
