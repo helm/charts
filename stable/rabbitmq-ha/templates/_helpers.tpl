@@ -59,7 +59,7 @@ users, virtual hosts, permissions and parameters) to load by the management plug
     {
       "name": {{ .Values.managementUsername | quote }},
       "password": {{ .Values.managementPassword | quote }},
-      "tags": "management"
+      "tags": {{ .Values.managementTags | quote }}
     },
     {
       "name": {{ .Values.rabbitmqUsername | quote }},

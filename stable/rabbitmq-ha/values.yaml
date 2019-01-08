@@ -7,6 +7,7 @@ rabbitmqUsername: guest
 ## RabbitMQ Management user used for health checks
 managementUsername: management
 managementPassword: E9R3fjZm4ejFkVFE
+managementTags: "management"
 
 ## Place any additional key/value configuration to add to rabbitmq.conf
 ## Ref: https://www.rabbitmq.com/configure.html#config-items
