@@ -62,8 +62,8 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `securityContext.enabled`                 | Enable security context                             | `true`                                                            |
 | `securityContext.fsGroup`                 | Group ID for the container                          | `1001`                                                            |
 | `securityContext.runAsUser`               | User ID for the container                           | `1001`                                                            |
+| `existingSecret`                       | Use Existing secret for Password details                       |                         |
 | `rootUser.password`                       | Password for the `root` user. Ignored if existing secret is provided.                       | _random 10 character alphanumeric string_                         |
-| `rootUser.existingSecret`                       | Use Existing secret for Password details                       |                         |
 | `rootUser.forcePassword`                  | Force users to specify a password                   | `false`                                                           |
 | `db.user`                                 | Username of new user to create                      | `nil`                                                             |
 | `db.password`                             | Password for the new user. Ignored if existing secret is provided.                           | _random 10 character alphanumeric string if `db.user` is defined_ |
