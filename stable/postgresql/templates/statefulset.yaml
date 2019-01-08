@@ -210,22 +210,22 @@ spec:
           httpGet:
             path: /
             port: metrics
-          initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
-          periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
-          timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
-          successThreshold: {{ .Values.livenessProbe.successThreshold }}
-          failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+          initialDelaySeconds: {{ .Values.metrics.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.metrics.livenessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.metrics.livenessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.metrics.livenessProbe.successThreshold }}
+          failureThreshold: {{ .Values.metrics.livenessProbe.failureThreshold }}
         {{- end }}
         {{- if .Values.readinessProbe.enabled }}
         readinessProbe:
           httpGet:
             path: /
             port: metrics
-          initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
-          periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
-          timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
-          successThreshold: {{ .Values.readinessProbe.successThreshold }}
-          failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+          initialDelaySeconds: {{ .Values.metrics.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.metrics.readinessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.metrics.readinessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.metrics.readinessProbe.successThreshold }}
+          failureThreshold: {{ .Values.metrics.readinessProbe.failureThreshold }}
         {{- end }}
         volumeMounts:
         {{- if .Values.usePasswordFile }}
