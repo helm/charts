@@ -25,5 +25,5 @@ spec:
           - path: {{ .Values.ingress.path }}
             backend:
               serviceName: {{ $fullName }}
-              servicePort: 4141
+              servicePort: {{ .Values.service.port }}
 {{- end }}

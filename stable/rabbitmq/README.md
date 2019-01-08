@@ -88,14 +88,14 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `ingress.annotations`                | ingress annotations as an array                  | []                                                      |
 | `livenessProbe.enabled`              | would you like a livenessProbed to be enabled    | `true`                                                  |
 | `livenessProbe.initialDelaySeconds`  | number of seconds                                | 120                                                     |
-| `livenessProbe.timeoutSeconds`       | number of seconds                                | 5                                                       |
-| `livenessProbe.periodSeconds`        | number of seconds                                | 5                                                       |
+| `livenessProbe.timeoutSeconds`       | number of seconds                                | 20                                                      |
+| `livenessProbe.periodSeconds`        | number of seconds                                | 30                                                      |
 | `livenessProbe.failureThreshold`     | number of failures                               | 6                                                       |
 | `livenessProbe.successThreshold`     | number of successes                              | 1                                                       |
 | `readinessProbe.enabled`             | would you like a readinessProbe to be enabled    | `true`                                                  |
 | `readinessProbe.initialDelaySeconds` | number of seconds                                | 10                                                      |
-| `readinessProbe.timeoutSeconds`      | number of seconds                                | 3                                                       |
-| `readinessProbe.periodSeconds`       | number of seconds                                | 5                                                       |
+| `readinessProbe.timeoutSeconds`      | number of seconds                                | 20                                                      |
+| `readinessProbe.periodSeconds`       | number of seconds                                | 30                                                      |
 | `readinessProbe.failureThreshold`    | number of failures                               | 3                                                       |
 | `readinessProbe.successThreshold`    | number of successes                              | 1                                                       |
 | `metrics.enabled`                    | Start a side-car prometheus exporter             | `false`                                                 |

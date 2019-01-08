@@ -44,6 +44,7 @@ The following table lists the configurable parameters of the Sonarqube chart and
 | `image.pullPolicy`                          | Image pull policy                         | `IfNotPresent`                             |
 | `image.pullSecret`                          | imagePullSecret to use for private repository      |                                   |
 | `command`                                   | command to run in the container           | `nil` (need to be set prior to 6.7.6, and 7.4)      |
+| `securityContext.fsGroup`                   | Group applied to mounted directories/files|  `999`                                     |
 | `ingress.enabled`                           | Flag for enabling ingress                 | false                                      |
 | `service.type`                              | Kubernetes service type                   | `LoadBalancer`                             |
 | `service.labels`                            | Kubernetes service labels                 | None                                       |
@@ -55,15 +56,17 @@ The following table lists the configurable parameters of the Sonarqube chart and
 | `persistence.accessMode`                    | Volumes access mode to be set             | `ReadWriteOnce`                            |
 | `persistence.size`                          | Size of the volume                        | None                                     |
 | `sonarProperties`                           | Custom `sonar.properties` file            | None                                       |
-| `database.type`                             |Set to "mysql" to use mysql database       | `postgresql`|
+| `database.type`                             | Set to "mysql" to use mysql database       | `postgresql`|
 | `postgresql.enabled`                        | Set to `false` to use external server / mysql database     | `true`                                     |
 | `postgresql.postgresServer`                 | Hostname of the external Postgresql server| `null`                                     |
+| `postgresql.postgresPasswordSecret`         | Secret containing the password of the external Postgresql server | `null`              |
 | `postgresql.postgresUser`                   | Postgresql database user                  | `sonarUser`                                |
 | `postgresql.postgresPassword`               | Postgresql database password              | `sonarPass`                                |
 | `postgresql.postgresDatabase`               | Postgresql database name                  | `sonarDB`                                  |
 | `postgresql.service.port`                   | Postgresql port                           | `5432`                                     |
 | `mysql.enabled`                             | Set to `false` to use external server / postgresql database        | `false`                                     |
 | `mysql.mysqlServer`                         | Hostname of the external Mysql server     | `null`                                     |
+| `mysql.mysqlPasswordSecret`                 | Secret containing the password of the external Mysql server | `null`                   |
 | `mysql.mysqlUser`                           | Mysql database user                       | `sonarUser`                                |
 | `mysql.mysqlPassword`                       | Mysql database password                   | `sonarPass`                                |
 | `mysql.mysqlDatabase`                       | Mysql database name                       | `sonarDB`                                  |

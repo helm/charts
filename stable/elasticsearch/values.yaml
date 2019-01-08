@@ -75,6 +75,13 @@ client:
   nodeAffinity: {}
   nodeSelector: {}
   tolerations: []
+  initResources: {}
+    # limits:
+    #   cpu: "25m"
+    #   # memory: "128Mi"
+    # requests:
+    #   cpu: "25m"
+    #   memory: "128Mi"
   resources:
     limits:
       cpu: "1"
@@ -118,6 +125,13 @@ master:
   nodeAffinity: {}
   nodeSelector: {}
   tolerations: []
+  initResources: {}
+    # limits:
+    #   cpu: "25m"
+    #   # memory: "128Mi"
+    # requests:
+    #   cpu: "25m"
+    #   memory: "128Mi"
   resources:
     limits:
       cpu: "1"
@@ -152,6 +166,13 @@ data:
   nodeAffinity: {}
   nodeSelector: {}
   tolerations: []
+  initResources: {}
+    # limits:
+    #   cpu: "25m"
+    #   # memory: "128Mi"
+    # requests:
+    #   cpu: "25m"
+    #   memory: "128Mi"
   resources:
     limits:
       cpu: "1"
