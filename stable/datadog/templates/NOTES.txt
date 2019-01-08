@@ -53,6 +53,9 @@ Create an application key at https://app.datadoghq.com/account/settings#api
 Because you enabled the Cluster Agent but did not provide a token, a random token was generated.
 This token is used to secure the communication between the Agents and the Cluster Agent.
 
+Make sure to recreate all pods on upgrade (with the --recreate-pods flag) to ensure all
+agents use the same shared token.
+
   {{- end }}
 
 {{- end }}
