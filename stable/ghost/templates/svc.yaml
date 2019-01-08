@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: {{ template "ghost.fullname" . }}
   labels:
-    app: "{{ template "ghost.name" . }}"
+    app: "{{ template "ghost.fullname" . }}"
     chart: "{{ template "ghost.chart" . }}"
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
@@ -23,4 +23,4 @@ spec:
       nodePort: {{ .Values.service.nodePorts.http }}
       {{- end }}
   selector:
-    app: "{{ template "ghost.name" . }}"
+    app: "{{ template "ghost.fullname" . }}"

@@ -4,20 +4,20 @@ kind: Deployment
 metadata:
   name: {{ template "ghost.fullname" . }}
   labels:
-    app: "{{ template "ghost.name" . }}"
+    app: "{{ template "ghost.fullname" . }}"
     chart: "{{ template "ghost.chart" . }}"
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
 spec:
   selector:
     matchLabels:
-      app: "{{ template "ghost.name" . }}"
+      app: "{{ template "ghost.fullname" . }}"
       release: {{ .Release.Name | quote }}
   replicas: 1
   template:
     metadata:
       labels:
-        app: "{{ template "ghost.name" . }}"
+        app: "{{ template "ghost.fullname" . }}"
         chart: "{{ template "ghost.chart" . }}"
         release: {{ .Release.Name | quote }}
     spec:
