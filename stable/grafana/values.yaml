@@ -1,6 +1,7 @@
 rbac:
   create: true
   pspEnabled: true
+  pspUseAppArmor: true
 serviceAccount:
   create: true
   name:
@@ -44,6 +45,11 @@ securityContext:
 downloadDashboardsImage:
   repository: appropriate/curl
   tag: latest
+  pullPolicy: IfNotPresent
+
+chownDataImage:
+  repository: busybox
+  tag: 1.30.0
   pullPolicy: IfNotPresent
 
 ## Pod Annotations
@@ -105,9 +111,9 @@ affinity: {}
 persistence:
   enabled: false
   # storageClassName: default
-  # accessModes:
-  #   - ReadWriteOnce
-  # size: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  size: 10Gi
   # annotations: {}
   # subPath: ""
   # existingClaim:
