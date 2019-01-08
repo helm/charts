@@ -98,6 +98,23 @@ airflow:
     pullSecret: my-docker-repo-secret
 ```
 
+### Airflow connections
+
+Connections define how your Airflow instance connects to environment and 3rd party service providers.
+This helm chart allows you to define your own connections at the time of Airflow initialization.
+For each connection the id and the type has to be defined. All other properties are optional.
+
+Example:
+```yaml
+airflow:
+  connections:
+  - id: my_aws
+    type: aws
+    extra: '{"aws_access_key_id": "**********", "aws_secret_access_key": "***", "region_name":"eu-central-1"}'
+```
+
+Note: As connections may require to include sensitive data - the resulting script is stored encrypted in a kubernetes secret and mounted into the airflow scheduler container. It is probably wise not to put connection data in the default values.yaml and instead create an encrypted my-secret-values.yaml. this way it can be decrypted before the installation and passed to helm with -f <my-secret-values.yaml>
+
 ### Worker Statefulset
 
 Celery workers uses StatefulSet.
@@ -252,9 +269,9 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `postgresql.enabled`                     | create a postgres server                                | `true`                    |
 | `postgresql.uri`                         | full URL to custom postgres setup                       | (undefined)               |
 | `postgresql.portgresHost`                | PostgreSQL Hostname                                     | (undefined)               |
-| `postgresql.postgresqlUsername`          | PostgreSQL User                                         | `postgres`                |
-| `postgresql.postgresqlPassword`          | PostgreSQL Password                                     | `airflow`                 |
-| `postgresql.postgresqlDatabase`          | PostgreSQL Database name                                | `airflow`                 |
+| `postgresql.postgresUser`                | PostgreSQL User                                         | `postgres`                |
+| `postgresql.postgresPassword`            | PostgreSQL Password                                     | `airflow`                 |
+| `postgresql.postgresDatabase`            | PostgreSQL Database name                                | `airflow`                 |
 | `postgresql.persistence.enabled`         | Enable Postgres PVC                                     | `true`                    |
 | `postgresql.persistance.storageClass     | Persistant class                                        | (undefined)               |
 | `postgresql.persistance.accessMode`      | Access mode                                             | `ReadWriteOnce`           |

@@ -80,7 +80,18 @@ airflow:
   ## Configure pod disruption budget for the scheduler
   podDisruptionBudget:
     maxUnavailable: 1
-
+  ## Add custom connections
+  ## Use this to add Airflow connections for operators you use
+  ## For each connection - the id and type have to be defined.
+  ## All the other parameters are optional
+  ## Connections will be created with a script that is stored
+  ## in a K8s secret and mounted into the scheduler container
+  ## Example:
+  ##   connections:
+  ##   - id: my_aws
+  ##     type: aws
+  ##     extra: '{"aws_access_key_id": "**********", "aws_secret_access_key": "***", "region_name":"eu-central-1"}'
+  connections: {}
 ##
 ## Workers configuration
 workers:
@@ -315,14 +326,14 @@ postgresql:
   service:
     port: 5432
   ## PostgreSQL User to create.
-  postgresqlUsername: postgres
+  postgresUser: postgres
   ##
   ## PostgreSQL Password for the new user.
   ## If not set, a random 10 characters password will be used.
-  postgresqlPassword: airflow
+  postgresPassword: airflow
   ##
   ## PostgreSQL Database to create.
-  postgresqlDatabase: airflow
+  postgresDatabase: airflow
   ##
   ## Persistent Volume Storage configuration.
   ## ref: https://kubernetes.io/docs/user-guide/persistent-volumes
