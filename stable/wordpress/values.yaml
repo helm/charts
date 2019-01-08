@@ -99,7 +99,7 @@ externalDatabase:
 ##
 mariadb:
   ## Whether to deploy a mariadb server to satisfy the applications database requirements. To use an external database set this to false and configure the externalDatabase parameters
-  enabled: false
+  enabled: true
   ## Disable MariaDB replication
   replication:
     enabled: false
@@ -192,7 +192,7 @@ readinessProbe:
 ##
 ingress:
   ## Set to true to enable ingress record generation
-  enabled: true
+  enabled: false
 
   ## Set this to true in order to add the corresponding annotations for cert-manager
   certManager: false
