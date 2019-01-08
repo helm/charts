@@ -3,10 +3,10 @@ kind: Service
 metadata:
   name: {{ template "ghost.fullname" . }}
   labels:
-    app: {{ template "ghost.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app: "{{ template "ghost.fullname" . }}"
+    chart: "{{ template "ghost.chart" . }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
 spec:
   type: {{ .Values.service.type }}
   {{- if (or (eq .Values.service.type "LoadBalancer") (eq .Values.service.type "NodePort")) }}
@@ -23,4 +23,4 @@ spec:
       nodePort: {{ .Values.service.nodePorts.http }}
       {{- end }}
   selector:
-    app: {{ template "ghost.fullname" . }}
+    app: "{{ template "ghost.fullname" . }}"
