@@ -12,6 +12,9 @@ spec:
     volumeMounts:
     - name: backups
       mountPath: /backup
+{{- if .Values.persistence.subPath }}
+      subPath: {{ .Values.persistence.subPath }}
+{{- end }}
     - name: mysql-backup-script
       mountPath: /scripts
 {{- if .Values.upload.ssh.enabled }}

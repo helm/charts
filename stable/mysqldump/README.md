@@ -64,6 +64,7 @@ persistence.enabled             | create new PVC (unless `persistentVolumeClaim`
 persistence.size                | size of PVC to create                     | 8Gi
 persistence.accessMode          | accessMode to use for PVC                 | ReadWriteOnce
 persistence.storageClass        | storage class to use for PVC              |
+persistence.subPath             | subPath for PVC                           |
 allDatabases.enabled            | backup all databases                      | true   
 allDatabases.SingleSqlFile      | backup all databases to singel file       | false
 housekeeping.enabled            | delete olf backups in pvc                 | true     
