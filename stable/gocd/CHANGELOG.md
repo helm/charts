@@ -1,3 +1,10 @@
+### 1.6.2
+
+* [fe985d7](https://github.com/kubernetes/charts/commit/fe985d7):
+  - Deprecate agent.env.agentAutoRegisterEnvironemnts in favour of agent.env.agentAutoRegisterEnvironments.
+
+  *Please note that the deprecated property will be removed in GoCD 19.3.0 (that is, when Chart.appVersion is 19.3.0). Users are encouraged to use the new property `agent.env.agentAutoRegisterEnvironments`.*
+
 ### 1.6.1
 
 * [28d5416](https://github.com/kubernetes/charts/commit/28d5416):
