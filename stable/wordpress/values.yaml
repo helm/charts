@@ -32,7 +32,7 @@ wordpressUsername: user
 ## Defaults to a random 10-character alphanumeric string if not set
 ## ref: https://github.com/bitnami/bitnami-docker-wordpress#environment-variables
 ##
-wordpressPassword: qwer1234
+# wordpressPassword:
 
 ## Admin email
 ## ref: https://github.com/bitnami/bitnami-docker-wordpress#environment-variables
@@ -99,7 +99,7 @@ externalDatabase:
 ##
 mariadb:
   ## Whether to deploy a mariadb server to satisfy the applications database requirements. To use an external database set this to false and configure the externalDatabase parameters
-  enabled: true
+  enabled: false
   ## Disable MariaDB replication
   replication:
     enabled: false
@@ -141,7 +141,7 @@ mariadb:
 ## For minikube, set this to NodePort, elsewhere use LoadBalancer or ClusterIP
 ##
 service:
-  type: NodePort
+  type: LoadBalancer
   # HTTP Port
   port: 80
   # HTTPS Port
