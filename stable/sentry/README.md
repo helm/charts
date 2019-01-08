@@ -56,63 +56,63 @@ $ kubectl delete job/sentry-db-init job/sentry-user-create
 
 The following table lists the configurable parameters of the Sentry chart and their default values.
 
-| Parameter                            | Description                                 | Default                                                    |
-| -------------------------------      | -------------------------------             | ---------------------------------------------------------- |
-| `image.repository`                   | Sentry image                                | `library/sentry`                                           |
-| `image.tag`                          | Sentry image tag                            | `9.0`                                                      |
-| `imagePullPolicy`                    | Image pull policy                           | `IfNotPresent`                                             |
+| Parameter                       | Description                                             | Default                                                    |
+| ------------------------------- | -------------------------------                         | ---------------------------------------------------------- |
+| `image.repository`              | Sentry image                                            | `library/sentry`                                           |
+| `image.tag`                     | Sentry image tag                                        | `9.0`                                                      |
+| `imagePullPolicy`               | Image pull policy                                       | `IfNotPresent`                                             |
 | `sentrySecret`                  | Sentry Secret Key                                       | `nil`                                                      |
 | `existingSentrySecret`          | Name of existing secret to use for Sentry Secret        | `nil`                                                      |
-| `web.podAnnotations`                 | Web pod annotations                         | `{}`                                                       |
-| `web.replicacount`                   | Amount of web pods to run                   | `1`                                                        |
-| `web.resources.limits`               | Web resource limits                         | `{cpu: 500m, memory: 500Mi}`                               |
-| `web.resources.requests`             | Web resource requests                       | `{cpu: 300m, memory: 300Mi}`                               |
-| `web.env`                            | Additional web environment variables        | `[{name: GITHUB_APP_ID}, {name: GITHUB_API_SECRET}]`       |
-| `web.nodeSelector`                   | Node labels for web pod assignment          | `{}`                                                       |
-| `web.affinity`                       | Affinity settings for web pod assignment    | `{}`                                                       |
-| `web.schedulerName`                  | Name of an alternate scheduler for web pod  | `nil`                                                      |
-| `web.tolerations`                    | Toleration labels for web pod assignment    | `[]`                                                       |
-| `cron.podAnnotations`                | Cron pod annotations                        | `{}`                                                       |
-| `cron.replicacount`                  | Amount of cron pods to run                  | `1`                                                        |
-| `cron.resources.limits`              | Cron resource limits                        | `{cpu: 200m, memory: 200Mi}`                               |
-| `cron.resources.requests`            | Cron resource requests                      | `{cpu: 100m, memory: 100Mi}`                               |
-| `cron.nodeSelector`                  | Node labels for cron pod assignment         | `{}`                                                       |
-| `cron.affinity`                      | Affinity settings for cron pod assignment   | `{}`                                                       |
-| `cron.schedulerName`                 | Name of an alternate scheduler for cron pod | `nil`                                                      |
-| `cron.tolerations`                   | Toleration labels for cron pod assignment   | `[]`                                                       |
-| `worker.podAnnotations`              | Worker pod annotations                      | `{}`                                                       |
-| `worker.replicacount`                | Amount of worker pods to run                | `2`                                                        |
-| `worker.resources.limits`            | Worker resource limits                      | `{cpu: 300m, memory: 500Mi}`                               |
-| `worker.resources.requests`          | Worker resource requests                    | `{cpu: 100m, memory: 100Mi}`                               |
-| `worker.nodeSelector`                | Node labels for worker pod assignment       | `{}`                                                       |
-| `worker.schedulerName`               | Name of an alternate scheduler for worker   | `nil`                                                      |
-| `worker.affinity`                    | Affinity settings for worker pod assignment | `{}`                                                       |
-| `worker.tolerations`                 | Toleration labels for worker pod assignment | `[]`                                                       |
-| `user.create`                        | Create the default admin                    | `true`                                                     |
-| `user.email`                         | Username for default admin                  | `admin@sentry.local`                                       |
+| `web.podAnnotations`            | Web pod annotations                                     | `{}`                                                       |
+| `web.replicacount`              | Amount of web pods to run                               | `1`                                                        |
+| `web.resources.limits`          | Web resource limits                                     | `{cpu: 500m, memory: 500Mi}`                               |
+| `web.resources.requests`        | Web resource requests                                   | `{cpu: 300m, memory: 300Mi}`                               |
+| `web.env`                       | Additional web environment variables                    | `[{name: GITHUB_APP_ID}, {name: GITHUB_API_SECRET}]`       |
+| `web.nodeSelector`              | Node labels for web pod assignment                      | `{}`                                                       |
+| `web.affinity`                  | Affinity settings for web pod assignment                | `{}`                                                       |
+| `web.schedulerName`             | Name of an alternate scheduler for web pod              | `nil`                                                      |
+| `web.tolerations`               | Toleration labels for web pod assignment                | `[]`                                                       |
+| `cron.podAnnotations`           | Cron pod annotations                                    | `{}`                                                       |
+| `cron.replicacount`             | Amount of cron pods to run                              | `1`                                                        |
+| `cron.resources.limits`         | Cron resource limits                                    | `{cpu: 200m, memory: 200Mi}`                               |
+| `cron.resources.requests`       | Cron resource requests                                  | `{cpu: 100m, memory: 100Mi}`                               |
+| `cron.nodeSelector`             | Node labels for cron pod assignment                     | `{}`                                                       |
+| `cron.affinity`                 | Affinity settings for cron pod assignment               | `{}`                                                       |
+| `cron.schedulerName`            | Name of an alternate scheduler for cron pod             | `nil`                                                      |
+| `cron.tolerations`              | Toleration labels for cron pod assignment               | `[]`                                                       |
+| `worker.podAnnotations`         | Worker pod annotations                                  | `{}`                                                       |
+| `worker.replicacount`           | Amount of worker pods to run                            | `2`                                                        |
+| `worker.resources.limits`       | Worker resource limits                                  | `{cpu: 300m, memory: 500Mi}`                               |
+| `worker.resources.requests`     | Worker resource requests                                | `{cpu: 100m, memory: 100Mi}`                               |
+| `worker.nodeSelector`           | Node labels for worker pod assignment                   | `{}`                                                       |
+| `worker.schedulerName`          | Name of an alternate scheduler for worker               | `nil`                                                      |
+| `worker.affinity`               | Affinity settings for worker pod assignment             | `{}`                                                       |
+| `worker.tolerations`            | Toleration labels for worker pod assignment             | `[]`                                                       |
+| `user.create`                   | Create the default admin                                | `true`                                                     |
+| `user.email`                    | Username for default admin                              | `admin@sentry.local`                                       |
 | `user.existingUserSecret`       | Name of existing secret to use for Sentry user password | `nil`                                                      |
-| `email.from_address`                 | Email notifications are from                | `smtp`                                                     |
-| `email.host`                         | SMTP host for sending email                 | `smtp`                                                     |
-| `email.port`                         | SMTP port                                   | `25`                                                       |
-| `email.user`                         | SMTP user                                   | `nil`                                                      |
-| `email.password`                     | SMTP password                               | `nil`                                                      |
-| `email.use_tls`                      | SMTP TLS for security                       | `false`                                                    |
-| `email.enable_replies`               | Allow email replies                         | `false`                                                    |
+| `email.from_address`            | Email notifications are from                            | `smtp`                                                     |
+| `email.host`                    | SMTP host for sending email                             | `smtp`                                                     |
+| `email.port`                    | SMTP port                                               | `25`                                                       |
+| `email.user`                    | SMTP user                                               | `nil`                                                      |
+| `email.password`                | SMTP password                                           | `nil`                                                      |
+| `email.use_tls`                 | SMTP TLS for security                                   | `false`                                                    |
+| `email.enable_replies`          | Allow email replies                                     | `false`                                                    |
 | `email.existingEmailSecret`     | Name of existing secret to use for Sentry smtp password | `nil`                                                      |
-| `service.type`                       | Kubernetes service type                     | `LoadBalancer`                                             |
-| `service.name`                       | Kubernetes service name                     | `sentry`                                                   |
-| `service.externalPort`               | Kubernetes external service port            | `9000`                                                     |
-| `service.internalPort`               | Kubernetes internal service port            | `9000`                                                     |
-| `ingress.enabled`                    | Enable ingress controller resource          | `false`                                                    |
-| `ingress.annotations`                | Ingress annotations                         | `{}`                                                       |
-| `ingress.hostname`                   | URL to address your Sentry installation     | `sentry.local`                                             |
-| `ingress.tls`                        | Ingress TLS configuration                   | `[]`                                                       |
-| `persistence.enabled`                | Enable persistence using PVC                | `true`                                                     |
-| `persistence.storageClass`           | PVC Storage Class                           | `nil` (uses alpha storage class annotation)                |
-| `persistence.accessMode`             | PVC Access Mode                             | `ReadWriteOnce`                                            |
-| `persistence.size`                   | PVC Storage Request                         | `10Gi`                                                     |
-| `config.configYml`                   | Sentry config.yml file                      | ``                                                         |
-| `config.sentryConfPy`                | Sentry sentry.conf.py file                  | ``                                                         |
+| `service.type`                  | Kubernetes service type                                 | `LoadBalancer`                                             |
+| `service.name`                  | Kubernetes service name                                 | `sentry`                                                   |
+| `service.externalPort`          | Kubernetes external service port                        | `9000`                                                     |
+| `service.internalPort`          | Kubernetes internal service port                        | `9000`                                                     |
+| `ingress.enabled`               | Enable ingress controller resource                      | `false`                                                    |
+| `ingress.annotations`           | Ingress annotations                                     | `{}`                                                       |
+| `ingress.hostname`              | URL to address your Sentry installation                 | `sentry.local`                                             |
+| `ingress.tls`                   | Ingress TLS configuration                               | `[]`                                                       |
+| `persistence.enabled`           | Enable persistence using PVC                            | `true`                                                     |
+| `persistence.storageClass`      | PVC Storage Class                                       | `nil` (uses alpha storage class annotation)                |
+| `persistence.accessMode`        | PVC Access Mode                                         | `ReadWriteOnce`                                            |
+| `persistence.size`              | PVC Storage Request                                     | `10Gi`                                                     |
+| `config.configYml`              | Sentry config.yml file                                  | ``                                                         |
+| `config.sentryConfPy`           | Sentry sentry.conf.py file                              | ``                                                         |
 
 Dependent charts can also have values overwritten. Preface values with postgresql.* or redis.*
 
