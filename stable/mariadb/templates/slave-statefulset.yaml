@@ -104,14 +104,22 @@ spec:
         - name: MARIADB_MASTER_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
+            {{- if .Values.existingSecret }}
+              name: {{ .Values.existingSecret }}
+            {{- else }}
               name: {{ template "mariadb.fullname" . }}
+            {{- end }}
               key: mariadb-root-password
         - name: MARIADB_REPLICATION_USER
           value: "{{ .Values.replication.user }}"
         - name: MARIADB_REPLICATION_PASSWORD
           valueFrom:
             secretKeyRef:
+            {{- if .Values.existingSecret }}
+              name: {{ .Values.existingSecret }}
+            {{- else }}
               name: {{ template "mariadb.fullname" . }}
+            {{- end }}
               key: mariadb-replication-password
         ports:
         - name: mysql
@@ -154,7 +162,11 @@ spec:
         - name: MARIADB_MASTER_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
+            {{- if .Values.existingSecret }}
+              name: {{ .Values.existingSecret }}
+            {{- else }}
               name: {{ template "mariadb.fullname" . }}
+            {{- end }}
               key: mariadb-root-password
         command: [ 'sh', '-c', 'DATA_SOURCE_NAME="root:$MARIADB_MASTER_ROOT_PASSWORD@(localhost:3306)/" /bin/mysqld_exporter' ]
         ports:
