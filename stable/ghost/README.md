@@ -66,6 +66,11 @@ The following table lists the configurable parameters of the Ghost chart and the
 | `ghostPassword`                     | Application password                                          | Randomly generated                                       |
 | `ghostEmail`                        | Admin email                                                   | `user@example.com`                                       |
 | `ghostBlogTitle`                    | Ghost Blog name                                               | `User's Blog`                                            |
+| `smtpHost`                          | SMTP host                                                     | `nil`                                                    |
+| `smtpPort`                          | SMTP port                                                     | `nil`                                                    |
+| `smtpUser`                          | SMTP user                                                     | `nil`                                                    |
+| `smtpPassword`                      | SMTP password                                                 | `nil`                                                    |
+| `smtpService`                       | SMTP service                                                  | `nil`                                                    |
 | `allowEmptyPassword`                | Allow DB blank passwords                                      | `yes`                                                    |
 | `serviceType`                       | Kubernetes Service type                                       | `LoadBalancer`                                           |
 | `securityContext.enabled`           | Enable security context                                       | `true`                                                   |
