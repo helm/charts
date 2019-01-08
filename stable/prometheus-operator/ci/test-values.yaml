@@ -342,6 +342,16 @@ kubelet:
 ##
 kubeControllerManager:
   enabled: true
+
+  ## If your kube controller manager is not deployed as a pod, specify IPs it can be found on
+  ##
+  endpoints: []
+  # - 10.141.4.22
+  # - 10.141.4.23
+  # - 10.141.4.24
+
+  ## If using kubeControllerManager.endpoints only the port and targetPort are used
+  ##
   service:
     port: 10252
     targetPort: 10252
@@ -408,6 +418,16 @@ kubeEtcd:
 ##
 kubeScheduler:
   enabled: true
+
+  ## If your kube scheduler is not deployed as a pod, specify IPs it can be found on
+  ##
+  endpoints: []
+  # - 10.141.4.22
+  # - 10.141.4.23
+  # - 10.141.4.24
+
+  ## If using kubeScheduler.endpoints only the port and targetPort are used
+  ##
   service:
     port: 10251
     targetPort: 10251

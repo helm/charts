@@ -238,6 +238,7 @@ The following tables lists the configurable parameters of the prometheus-operato
 | `kubelet.namespace` | Namespace where the kubelet is deployed. See also `prometheusOperator.kubeletService.namespace` | `kube-system` |
 | `kubelet.serviceMonitor.https` | Enable scraping of the kubelet over HTTPS. For more information, see https://github.com/coreos/prometheus-operator/issues/926 | `false` |
 | `kubeControllerManager.enabled` | Deploy a `service` and `serviceMonitor` to scrape the Kubernetes controller-manager | `true` |
+| `kubeControllerManager.endpoints` | Endpoints where Controller-manager runs. Provide this if running Controller-manager outside the cluster | `[]` |
 | `kubeControllermanager.service.port` | Controller-manager port for the service runs on | `10252` |
 | `kubeControllermanager.service.targetPort` | Controller-manager targetPort for the service runs on | `10252` |
 | `kubeControllermanager.service.targetPort.selector` | Controller-manager service selector | `{"k8s-app" : "kube-controller-manager" }`
@@ -258,6 +259,11 @@ The following tables lists the configurable parameters of the prometheus-operato
 | `kubeEtcd.servicemonitor.caFile` | Certificate authority file to use when connecting to etcd. See `prometheus.prometheusSpec.secrets` | `""` |
 | `kubeEtcd.servicemonitor.certFile` | Client certificate file to use when connecting to etcd. See `prometheus.prometheusSpec.secrets` | `""` |
 | `kubeEtcd.servicemonitor.keyFile` | Client key file to use when connecting to etcd.  See `prometheus.prometheusSpec.secrets` | `""` |
+| `kubeScheduler.enabled` | Deploy a `service` and `serviceMonitor` to scrape the Kubernetes scheduler | `true` |
+| `kubeScheduler.endpoints` | Endpoints where scheduler runs. Provide this if running scheduler outside the cluster | `[]` |
+| `kubeScheduler.service.port` | Scheduler port for the service runs on | `10251` |
+| `kubeScheduler.service.targetPort` | Scheduler targetPort for the service runs on | `10251` |
+| `kubeScheduler.service.targetPort.selector` | Scheduler service selector | `{"k8s-app" : "kube-scheduler" }`
 | `kubeStateMetrics.enabled` | Deploy the `kube-state-metrics` chart and configure a servicemonitor to scrape | `true` |
 | `kube-state-metrics.rbac.create` | Create RBAC components in kube-state-metrics. See `global.rbac.create` | `true` |
 | `nodeExporter.enabled` | Deploy the `prometheus-node-exporter` and scrape it | `true` |
