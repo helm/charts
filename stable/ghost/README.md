@@ -66,23 +66,28 @@ The following table lists the configurable parameters of the Ghost chart and the
 | `ghostPassword`                     | Application password                                          | Randomly generated                                       |
 | `ghostEmail`                        | Admin email                                                   | `user@example.com`                                       |
 | `ghostBlogTitle`                    | Ghost Blog name                                               | `User's Blog`                                            |
+| `smtpHost`                          | SMTP host                                                     | `nil`                                                    |
+| `smtpPort`                          | SMTP port                                                     | `nil`                                                    |
+| `smtpUser`                          | SMTP user                                                     | `nil`                                                    |
+| `smtpPassword`                      | SMTP password                                                 | `nil`                                                    |
+| `smtpService`                       | SMTP service                                                  | `nil`                                                    |
 | `allowEmptyPassword`                | Allow DB blank passwords                                      | `yes`                                                    |
 | `serviceType`                       | Kubernetes Service type                                       | `LoadBalancer`                                           |
 | `securityContext.enabled`           | Enable security context                                       | `true`                                                   |
 | `securityContext.fsGroup`           | Group ID for the container                                    | `1001`                                                   |
 | `securityContext.runAsUser`         | User ID for the container                                     | `1001`                                                   |
-| `service.type`                    | Kubernetes Service type                    | `LoadBalancer`                                          |
-| `service.port`                    | Service HTTP port                    | `80`                                          |
-| `service.nodePorts.http`                 | Kubernetes http node port                  | `""`                                                    |
-| `service.externalTrafficPolicy`      | Enable client source IP preservation                       | `Cluster`                                     |
-| `service.loadBalancerIP`      | LoadBalancerIP for the Ghost service                       | ``                                     |
+| `service.type`                      | Kubernetes Service type                                       | `LoadBalancer`                                           |
+| `service.port`                      | Service HTTP port                                             | `80`                                                     |
+| `service.nodePorts.http`            | Kubernetes http node port                                     | `""`                                                     |
+| `service.externalTrafficPolicy`     | Enable client source IP preservation                          | `Cluster`                                                |
+| `service.loadBalancerIP`            | LoadBalancerIP for the Ghost service                          | ``                                                       |
 | `ingress.enabled`                   | Enable ingress controller resource                            | `false`                                                  |
+| `ingress.annotations`               | Ingress annotations                                           | `[]`                                                     |
+| `ingress.certManager`               | Add annotations for cert-manager                              | `false`                                                  |
 | `ingress.hosts[0].name`             | Hostname to your Ghost installation                           | `ghost.local`                                            |
 | `ingress.hosts[0].path`             | Path within the url structure                                 | `/`                                                      |
 | `ingress.hosts[0].tls`              | Utilize TLS backend in ingress                                | `false`                                                  |
-| `ingress.hosts[0].certManager`      | Add annotations for cert-manager                              | `false`                                                  |
 | `ingress.hosts[0].tlsSecret`        | TLS Secret (certificates)                                     | `ghost.local-tls-secret`                                 |
-| `ingress.hosts[0].annotations`      | Annotations for this host's ingress record                    | `[]`                                                     |
 | `ingress.secrets[0].name`           | TLS Secret Name                                               | `nil`                                                    |
 | `ingress.secrets[0].certificate`    | TLS Secret Certificate                                        | `nil`                                                    |
 | `ingress.secrets[0].key`            | TLS Secret Key                                                | `nil`                                                    |
