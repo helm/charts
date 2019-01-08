@@ -170,7 +170,7 @@ graylog:
   rootUsername: "admin"
 
   ## Graylog root password
-  ## Defaults to a random 10-character alphanumeric string if not set
+  ## Defaults to a random 16-character alphanumeric string if not set
   ##
   # rootPassword: ""
 

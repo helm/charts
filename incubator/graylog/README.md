@@ -12,8 +12,10 @@ This chart requires the following charts before install Graylog
 To install the Graylog Chart with all dependencies
 
 ```bash
+kubectl create namespace graylog
+
 helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
-helm install -n "graylog" incubator/graylog
+helm install --namespace "graylog" -n "graylog" incubator/graylog
 ```
 
 ## Manually Install Dependencies
@@ -21,14 +23,14 @@ This method is *recommended* when you want to expand the availability, scalabili
 
 To install MongoDB, run
 
-```
-helm install -n mongodb stable/mongodb-replicaset
+```bash
+helm install --namespace "graylog" -n "mongodb" stable/mongodb-replicaset
 ```
 
 To install Elasticsearch, run
 
-```
-helm install -n elasticsearch stable/elasticsearch
+```bash
+helm install --namespace "graylog" -n "elasticsearch" stable/elasticsearch
 ```
 
 Note: There are many alternative Elasticsearch available on GitHub. If you found the `stable/elasticsearch` is not suitable, you can search other charts from GitHub repositories.
@@ -38,10 +40,10 @@ To install the Graylog Chart into your Kubernetes cluster (This Chart requires p
 
 ```bash
 helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
-helm install -n "graylog" incubator/graylog \
+helm install --namespace "graylog" -n "graylog" incubator/graylog \
   --set tags.install-mongodb=false\
   --set tags.install-elasticsearch=false\
-  --set graylog.mongodb.uri=mongodb://mongodb-mongodb-replicaset-0.mongodb-mongodb-replicaset.mongodb.svc.cluster.local:27017/graylog?replicaSet=rs01 \
+  --set graylog.mongodb.uri=mongodb://mongodb-mongodb-replicaset-0.mongodb-mongodb-replicaset.graylog.svc.cluster.local:27017/graylog?replicaSet=rs0 \
   --set elasticsearch.hosts=http://elasticsearch-client.graylog.svc.cluster.local:9200
 ```
 
