@@ -79,6 +79,10 @@ spec:
         - name: {{ . }}
       {{- end}}
       {{- end }}
+      {{- if .Values.master.extraInitContainers }}
+      initContainers:
+{{ tpl .Values.master.extraInitContainers . | indent 6}}
+      {{- end }}
       containers:
       - name: "mariadb"
         image: {{ template "mariadb.image" . }}
@@ -142,20 +146,16 @@ spec:
 {{ toYaml .Values.master.resources | indent 10 }}
         volumeMounts:
         - name: data
-          mountPath: /bitnami/mariadb
-        {{- if  (.Files.Glob "files/docker-entrypoint-initdb.d/*[sh|sql|sql.gz]") }}
+          mountPath: {{ .Values.master.persistence.mountPath }}
+        {{- if or (.Files.Glob "files/docker-entrypoint-initdb.d/*.{sh,sql,sql.gz}") .Values.initdbScriptsConfigMap .Values.initdbScripts }}
         - name: custom-init-scripts
           mountPath: /docker-entrypoint-initdb.d
         {{- end }}
-{{- if .Values.master.config }}
+        {{- if .Values.master.config }}
         - name: config
           mountPath: /opt/bitnami/mariadb/conf/my.cnf
           subPath: my.cnf
-{{- if .Values.master.persistence.existingClaim }}
-        - name: {{ .Values.master.persistence.existingClaim }}
-          mountPath: {{ .Values.master.persistence.mountPath }}
-{{- end }}
-{{- end }}
+       {{- end }}
 {{- if .Values.metrics.enabled }}
       - name: metrics
         image: {{ template "metrics.image" . }}
@@ -186,22 +186,24 @@ spec:
 {{ toYaml .Values.metrics.resources | indent 10 }}
 {{- end }}
       volumes:
-        {{- if and .Values.master.persistence.enabled .Values.master.persistence.existingClaim }}
-        - name: {{ .Values.master.persistence.existingClaim }}
-          persistentVolumeClaim:
-            claimName: {{ .Values.master.persistence.existingClaim }}
-        {{ end }}
         {{- if .Values.master.config }}
         - name: config
           configMap:
             name: {{ template "master.fullname" . }}
         {{- end }}
-        {{- if  (.Files.Glob "files/docker-entrypoint-initdb.d/*[sh|sql|sql.gz]") }}
+        {{- if or (.Files.Glob "files/docker-entrypoint-initdb.d/*.{sh,sql,sql.gz}") .Values.initdbScriptsConfigMap .Values.initdbScripts }}
         - name: custom-init-scripts
           configMap:
-            name: {{ template "master.fullname" . }}-init-scripts
+            name: {{ template "mariadb.initdbScriptsCM" . }}
         {{- end }}
-{{- if .Values.master.persistence.enabled }}
+{{- if and .Values.master.persistence.enabled .Values.master.persistence.existingClaim }}
+        - name: data
+          persistentVolumeClaim:
+            claimName: {{ .Values.master.persistence.existingClaim }}
+{{- else if not .Values.master.persistence.enabled }}
+        - name: data
+          emptyDir: {}
+{{- else if and .Values.master.persistence.enabled (not .Values.master.persistence.existingClaim) }}
   volumeClaimTemplates:
     - metadata:
         name: data
@@ -225,7 +227,4 @@ spec:
         storageClassName: {{ .Values.master.persistence.storageClass | quote }}
       {{- end }}
       {{- end }}
-{{- else }}
-        - name: "data"
-          emptyDir: {}
 {{- end }}

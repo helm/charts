@@ -223,3 +223,47 @@ rbac:
   roleRef: cluster-admin
   # Role kind (RoleBinding or ClusterRoleBinding)
   roleBindingKind: ClusterRoleBinding
+
+## Backup cronjob configuration
+## Ref: https://github.com/nuvo/kube-tasks
+backup:
+  # Backup must use RBAC
+  # So by enabling backup you are enabling RBAC specific for backup
+  enabled: false
+
+  # Schedule to run jobs. Must be in cron time format
+  # Ref: https://crontab.guru/
+  schedule: "0 2 * * *"
+
+  annotations:
+    # Example for authorization to AWS S3 using kube2iam
+    # Can also be done using environment variables
+    iam.amazonaws.com/role: jenkins
+
+  image:
+    repository: nuvo/kube-tasks
+    tag: 0.1.2
+
+  # Additional arguments for kube-tasks
+  # Ref: https://github.com/nuvo/kube-tasks#simple-backup
+  extraArgs: []
+
+  # Add additional environment variables
+  env:
+  # Example environment variable required for AWS credentials chain
+  - name: AWS_REGION
+    value: us-east-1
+
+  resources:
+    requests:
+      memory: 1Gi
+      cpu: 1
+    limits:
+      memory: 1Gi
+      cpu: 1
+
+  # Destination to store the backup artifacts
+  # Supported cloud storage services: AWS S3, Minio S3, Azure Blob Storage
+  # Additional support can added. Visit this repository for details
+  # Ref: https://github.com/nuvo/skbn
+  destination: s3://nuvo-jenkins-data/backup

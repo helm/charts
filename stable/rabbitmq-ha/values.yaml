@@ -13,6 +13,10 @@ managementPassword: E9R3fjZm4ejFkVFE
 extraConfig: |
 #  queue_master_locator = min-masters
 
+## Definitions specification within the secret, will always be mounted
+## at /etc/definitions/defintions.json
+definitionsSource: definitions.json
+
 ## Place any additional plugins to enable in /etc/rabbitmq/enabled_plugins
 ## Ref: https://www.rabbitmq.com/plugins.html
 extraPlugins: |
@@ -153,6 +157,13 @@ rabbitmqAuth:
     # auth_mechanisms.1 = PLAIN
     # auth_mechanisms.2 = AMQPLAIN
     # auth_mechanisms.3 = EXTERNAL
+
+## Automatic Partition Handling Strategy (split brain handling)
+## Ref: https://www.rabbitmq.com/partitions.html#automatic-handling
+## Note: pause-if-all-down is not supported without using a custom configmap since it requires extra
+## configuration.
+
+rabbitmqClusterPartitionHandling: autoheal
 
 ## Authentication backend
 ## Ref: https://github.com/rabbitmq/rabbitmq-auth-backend-http
@@ -412,7 +423,7 @@ prometheus:
     env: {}
     image:
       repository: kbudde/rabbitmq-exporter
-      tag: v0.28.0
+      tag: v0.29.0
       pullPolicy: IfNotPresent
 
     ## Port Prometheus scrapes for metrics
