@@ -194,6 +194,7 @@ Parameter | Description | Default
 `nodeExporter.service.annotations` | annotations for node-exporter service | `{prometheus.io/scrape: "true"}`
 `nodeExporter.service.clusterIP` | internal node-exporter cluster service IP | `None`
 `nodeExporter.service.externalIPs` | node-exporter service external IP addresses | `[]`
+`nodeExporter.service.hostPort` | node-exporter service host port | `9100`
 `nodeExporter.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
 `nodeExporter.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
 `nodeExporter.service.servicePort` | node-exporter service port | `9100`
