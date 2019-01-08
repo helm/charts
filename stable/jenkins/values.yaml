@@ -99,10 +99,10 @@ Master:
   #   port: 9000
   # List of plugins to be install during Jenkins master start
   InstallPlugins:
-    - kubernetes:1.12.4
-    - workflow-job:2.24
-    - workflow-aggregator:2.5
-    - credentials-binding:1.16
+    - kubernetes:1.14.0
+    - workflow-job:2.31
+    - workflow-aggregator:2.6
+    - credentials-binding:1.17
     - git:3.9.1
   # Used to approve a list of groovy functions in pipelines used the script-security plugin. Can be viewed under /scriptApproval
   # ScriptApproval:
@@ -152,7 +152,7 @@ Master:
 Agent:
   Enabled: true
   Image: jenkins/jnlp-slave
-  ImageTag: 3.10-1
+  ImageTag: 3.27-1
   CustomJenkinsLabels: []
 # ImagePullSecret: jenkins
   Component: "jenkins-slave"
@@ -213,7 +213,7 @@ NetworkPolicy:
   Enabled: false
   # For Kubernetes v1.4, v1.5 and v1.6, use 'extensions/v1beta1'
   # For Kubernetes v1.7, use 'networking.k8s.io/v1'
-  ApiVersion: extensions/v1beta1
+  ApiVersion: networking.k8s.io/v1
 
 ## Install Default RBAC roles and bindings
 rbac:
