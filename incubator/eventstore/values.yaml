@@ -30,10 +30,10 @@ imagePullPolicy: IfNotPresent
 clusterSize: 3
 ##
 ## Configure the HTTP admin API. The admin password is set
-## using a post-install hook that makes a POST request to the 
-## Event Store HTTP API. The `admin.password` value should be 
-## set in a separate `creds-values.yaml` file so that you can 
-## keep it out of source control and read during deployment. 
+## using a post-install hook that makes a POST request to the
+## Event Store HTTP API. The `admin.password` value should be
+## set in a separate `creds-values.yaml` file so that you can
+## keep it out of source control and read during deployment.
 ## See the `ci` directory in this repo for the default values.
 ## ref: https://eventstore.org/docs/http-api/security/index.html
 ## ref: https://github.com/helm/helm/blob/master/docs/charts_hooks.md
