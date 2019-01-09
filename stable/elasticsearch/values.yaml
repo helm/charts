@@ -55,6 +55,8 @@ cluster:
   config: {}
   # Custom parameters, as string, to be added to ES_JAVA_OPTS environment variable
   additionalJavaOpts: ""
+  # Command to run at the end of deployment
+  bootstrapShellCommand: ""
   env:
     # IMPORTANT: https://www.elastic.co/guide/en/elasticsearch/reference/current/important-settings.html#minimum_master_nodes
     # To prevent data loss, it is vital to configure the discovery.zen.minimum_master_nodes setting so that each master-eligible
@@ -75,6 +77,13 @@ client:
   nodeAffinity: {}
   nodeSelector: {}
   tolerations: []
+  initResources: {}
+    # limits:
+    #   cpu: "25m"
+    #   # memory: "128Mi"
+    # requests:
+    #   cpu: "25m"
+    #   memory: "128Mi"
   resources:
     limits:
       cpu: "1"
@@ -118,6 +127,13 @@ master:
   nodeAffinity: {}
   nodeSelector: {}
   tolerations: []
+  initResources: {}
+    # limits:
+    #   cpu: "25m"
+    #   # memory: "128Mi"
+    # requests:
+    #   cpu: "25m"
+    #   memory: "128Mi"
   resources:
     limits:
       cpu: "1"
@@ -152,6 +168,13 @@ data:
   nodeAffinity: {}
   nodeSelector: {}
   tolerations: []
+  initResources: {}
+    # limits:
+    #   cpu: "25m"
+    #   # memory: "128Mi"
+    # requests:
+    #   cpu: "25m"
+    #   memory: "128Mi"
   resources:
     limits:
       cpu: "1"

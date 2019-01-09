@@ -109,7 +109,6 @@ ingress:
 timezone: UTC
 
 runAsRoot: false
-addSetfcap: true
 UID: 999
 GID: 999
 

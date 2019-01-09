@@ -57,6 +57,12 @@ spec:
             - name: GOOGLE_APPLICATION_CREDENTIALS
           {{- end }}
               value: /credentials/cloud
+          {{ if .Values.configuration.extraEnvVars }}
+          {{- range $key, $value := .Values.configuration.extraEnvVars }}
+            - name: {{ default "none" $key }}
+              value: {{ default "none" $value }}
+          {{- end }}
+          {{- end }}
         {{- end }}
       volumes:
         {{- if and .Values.credentials.useSecret (or (eq $provider "aws") (eq $provider "gcp")) }}
