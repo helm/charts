@@ -37,7 +37,7 @@ volumePermissions:
 ## Ghost protocol, host and path to create application URLs
 ## ref: https://github.com/bitnami/bitnami-docker-ghost#configuration
 ##
-ghostProtocol: https
+ghostProtocol: http
 # ghostHost:
 ghostPath: /
 
