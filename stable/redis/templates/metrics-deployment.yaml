@@ -41,6 +41,9 @@ spec:
 {{ toYaml .Values.metrics.nodeSelector | indent 8 }}
       {{- end }}
       serviceAccountName: "{{ template "redis.serviceAccountName" . }}"
+      {{- if .Values.metrics.priorityClassName }}
+      priorityClassName: "{{ .Values.metrics.priorityClassName }}"
+      {{- end }}
       {{- if .Values.metrics.tolerations }}
       tolerations:
 {{ toYaml .Values.metrics.tolerations | indent 8 }}
