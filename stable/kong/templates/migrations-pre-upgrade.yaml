@@ -1,22 +1,27 @@
 {{- if .Values.runMigrations }}
+# Why is this Job duplicated and not using only helm hooks?
+# See: https://github.com/helm/charts/pull/7362
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ template "kong.fullname" . }}-init-migrations
+  name: {{ template "kong.fullname" . }}-pre-upgrade-migrations
   labels:
     app: {{ template "kong.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
-    component: init-migrations
+    component: pre-upgrade-migrations
+  annotations:
+    helm.sh/hook: "pre-upgrade"
+    helm.sh/hook-delete-policy: "before-hook-creation"
 spec:
   template:
     metadata:
-      name: {{ template "kong.name" . }}-init-migrations
+      name: {{ template "kong.name" . }}-pre-upgrade-migrations
       labels:
         app: {{ template "kong.name" . }}
         release: "{{ .Release.Name }}"
-        component: init-migrations
+        component: pre-upgrade-migrations
     spec:
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
@@ -27,7 +32,7 @@ spec:
       {{- if .Values.postgresql.enabled }}
       initContainers:
       - name: wait-for-postgres
-        image: "{{ .Values.waitImage.repository }}:{{ .Values.waitImage.tag }}"
+        image: busybox
         env:
         - name: KONG_PG_HOST
           value: {{ template "kong.postgresql.fullname" . }}
@@ -41,7 +46,7 @@ spec:
         command: [ "/bin/sh", "-c", "until nc -zv $KONG_PG_HOST $KONG_PG_PORT -w1; do echo 'waiting for db'; sleep 1; done" ]
       {{- end }}
       containers:
-      - name: {{ template "kong.name" . }}-migrations
+      - name: {{ template "kong.name" . }}-upgrade-migrations
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
@@ -66,6 +71,6 @@ spec:
         - name: KONG_CASSANDRA_CONTACT_POINTS
           value: {{ template "kong.cassandra.fullname" . }}
         {{- end }}
-        command: [ "/bin/sh", "-c", "kong migrations bootstrap" ]
+        command: [ "/bin/sh", "-c", "kong migrations up" ]
       restartPolicy: OnFailure
 {{- end }}
