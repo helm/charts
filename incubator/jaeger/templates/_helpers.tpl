@@ -130,8 +130,7 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- end -}}
 
 {{- define "jaeger.hotrod.tracing.host" -}}
-{{- $host := printf "%s-agent" (include "jaeger.agent.name" .) -}}
-{{- default $host .Values.hotrod.tracing.host -}}
+{{- default (include "jaeger.agent.name" .) .Values.hotrod.tracing.host -}}
 {{- end -}}
 
 {{/*
