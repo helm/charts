@@ -4,10 +4,10 @@ kind: Deployment
 metadata:
   name: {{ template "opencart.fullname" . }}
   labels:
-    app: {{ template "opencart.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app.kubernetes.io/name: {{ include "opencart.name" . }}
+    helm.sh/chart: {{ include "opencart.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   selector:
     matchLabels:
@@ -72,7 +72,7 @@ spec:
         - name: OPENCART_DATABASE_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ printf "%s-%s" .Release.Name "externaldb" }}
+              name: {{ template "opencart.fullname" . }}-externaldb
               key: db-password
         {{- end }}
         - name: OPENCART_HOST
