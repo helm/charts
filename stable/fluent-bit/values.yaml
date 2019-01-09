@@ -56,7 +56,7 @@ backend:
     host: 127.0.0.1
     port: 8088
     token: ""
-    send_raw: "on"
+    send_raw: "off"
     tls: "on"
     tls_verify: "off"
     tls_debug: 1
