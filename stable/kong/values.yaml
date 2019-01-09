@@ -158,8 +158,8 @@ cassandra:
 # PostgreSQL chart configs
 postgresql:
   enabled: true
-  postgresUser: kong
-  postgresDatabase: kong
+  postgresqlUsername: kong
+  postgresqlDatabase: kong
   service:
     port: 5432
 
