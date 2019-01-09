@@ -114,7 +114,6 @@ spec:
       - name: ingress-controller
         args:
         - /kong-ingress-controller
-        # the kong URL points to the kong admin api server
         # the default service is the kong proxy service
         - --default-backend-service={{ .Release.Namespace }}/{{ template "kong.fullname" . }}-proxy
         # Service from were we extract the IP address/es to use in Ingress status
@@ -122,9 +121,10 @@ spec:
         # Set the ingress class
         - --ingress-class={{ .Values.ingressController.ingressClass }}
         - --election-id=kong-ingress-controller-leader-{{ .Values.ingressController.ingressClass }}
+        # the kong URL points to the kong admin api server
         {{- if .Values.admin.useTLS }}
         - --kong-url=https://localhost:{{ .Values.admin.containerPort }}
-        - --admin-tls-skip-verify
+        - --admin-tls-skip-verify # TODO make this configurable
         {{- else }}
         - --kong-url=http://localhost:{{ .Values.admin.containerPort }}
         {{- end }}
