@@ -263,7 +263,6 @@ spec:
             {{- end }}
             {{- end }}
 
-
             {{- if .Values.concourse.web.awsSsm.enabled }}
             - name: CONCOURSE_AWS_SSM_ACCESS_KEY
               valueFrom:
