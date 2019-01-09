@@ -43,7 +43,7 @@ spec:
             httpGet:
               path: /_readiness
               port: {{ .Values.extHttpPort }}
-            initialDelaySeconds: 5
+            initialDelaySeconds: 15
             timeoutSeconds: 5
             periodSeconds: 15
       volumes:

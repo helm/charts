@@ -65,7 +65,7 @@ spec:
             httpGet:
               path: /stats
               port: {{ .Values.extHttpPort }}
-            initialDelaySeconds: 5
+            initialDelaySeconds: 15
             timeoutSeconds: 5
             periodSeconds: 15
           resources:

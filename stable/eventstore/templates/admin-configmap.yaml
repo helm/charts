@@ -9,21 +9,23 @@ metadata:
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 data:
   nginx.conf: |
-    upstream eventstore {
-        server {{ include "eventstore.dns" . }}:{{ .Values.extHttpPort }};
-    }
     server {
         listen {{ .Values.extHttpPort }};
+        # set a variable so nginx will not check if host is available on startup
+        # ref: https://stackoverflow.com/a/43341304/2108162
+        resolver kube-dns.kube-system.svc.cluster.local valid=5s;
+        set $eventstore http://{{ include "eventstore.dns" . }}:{{ .Values.extHttpPort }};
         location = /_liveness {
             add_header Content-Type text/plain;
             return 200 'ok';
         }
         location = /_readiness {
-            proxy_pass          http://eventstore/stats;
+            proxy_pass          $eventstore/stats;
         }
         location / {
+            set $upstream_eventstore http://eventstore;
             proxy_set_header    X-Real-IP $remote_addr;
             proxy_set_header    Host      $http_host;
-            proxy_pass          http://eventstore;
+            proxy_pass          $eventstore;
         }
     }

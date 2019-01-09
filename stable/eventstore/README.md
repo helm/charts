@@ -32,22 +32,23 @@ To install the Event Store chart with a custom admin password:
 ```
 > helm install -n eventstore stable/eventstore --set 'admin.password=<your admin password>'
 ```
-> You can use the username `admin` and the password set in the above command
-to log into the admin interface.
+> This triggers Helm to run a post-install Job which resets the admin password using
+the Event Store HTTP API. You can then use the username `admin` and the password set 
+in the above command to log into the admin interface.
 
-The command deploys Event Store on the Kubernetes cluster in the default configuration. 
-The [configuration](#configuration) section lists the parameters that can be configured
-during installation.
+The above commands install Event Store with the default configuration. 
+The [configuration](#configuration) section below lists the parameters 
+that can be configured during installation.
 
-## Deleting the Charts
+## Deleting the Chart
 
-Delete the Helm deployment as normal
+Delete the `eventstore` release.
 
 ```
 $ helm delete eventstore --purge
 ```
-
-The command removes all the Kubernetes components associated with the chart and deletes the release.
+> This command removes all the Kubernetes components 
+associated with the chart and deletes the release.
 
 ## Configuration
 
