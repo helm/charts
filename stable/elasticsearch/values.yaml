@@ -73,6 +73,7 @@ client:
 #  serviceAnnotations:
 #    example: client-svc-foo
   heapSize: "512m"
+  # additionalJavaOpts: "-XX:MaxRAM=512m"
   antiAffinity: "soft"
   nodeAffinity: {}
   nodeSelector: {}
@@ -117,6 +118,7 @@ master:
   exposeHttp: false
   replicas: 3
   heapSize: "512m"
+  # additionalJavaOpts: "-XX:MaxRAM=512m"
   persistence:
     enabled: true
     accessMode: ReadWriteOnce
@@ -157,6 +159,7 @@ data:
   exposeHttp: false
   replicas: 2
   heapSize: "1536m"
+  # additionalJavaOpts: "-XX:MaxRAM=1536m"
   persistence:
     enabled: true
     accessMode: ReadWriteOnce
