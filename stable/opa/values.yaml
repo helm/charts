@@ -64,6 +64,25 @@ nodeSelector: {}
 # field below.
 resources: {}
 
+rbac:
+  # If true, create & use RBAC resources
+  #
+  create: true
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+# This proxy allows opa to make Kubernetes SubjectAccessReview checks against the
+# Kubernetes API. You can get a rego function at github.com/open-policy-agent/library
+kubectl:
+    proxy: true
+    image: lachlanevenson/k8s-kubectl
+    imageTag: latest
+
 # To control the liveness and readiness probes change the fields below.
 readinessProbe:
   httpGet:

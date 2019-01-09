@@ -40,3 +40,14 @@ chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
 release: "{{ .Release.Name }}"
 heritage: "{{ .Release.Service }}"
 {{- end -}}
+
+{{/*
+Create the name of the service account to use
+*/}}
+{{- define "opa.serviceAccountName" -}}
+{{- if .Values.serviceAccount.create -}}
+    {{ default (include "opa.fullname" .) .Values.serviceAccount.name }}
+{{- else -}}
+    {{ default "default" .Values.serviceAccount.name }}
+{{- end -}}
+{{- end -}}
