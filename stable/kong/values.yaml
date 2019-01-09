@@ -56,12 +56,14 @@ proxy:
     enabled: true
     servicePort: 80
     containerPort: 8000
+    # Set a nodePort which is available if service type is NodePort
     # nodePort: 32080
 
   tls:
     enabled: true
     servicePort: 443
     containerPort: 8443
+    # Set a nodePort which is available if service type is NodePort
     # nodePort: 32443
 
   type: NodePort
