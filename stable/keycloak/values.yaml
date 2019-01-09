@@ -21,6 +21,11 @@ keycloak:
     pullSecrets: []
     # - myRegistrKeySecretName
 
+  hostAliases: []
+  #  - ip: "1.2.3.4"
+  #    hostnames:
+  #      - "my.host.com"
+
   securityContext:
     runAsUser: 1000
     fsGroup: 1000

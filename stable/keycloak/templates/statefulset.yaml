@@ -30,6 +30,10 @@ spec:
 {{ toYaml .Values.keycloak.podAnnotations | indent 8 }}
 {{- end }}
     spec:
+{{- with .Values.keycloak.hostAliases }}
+      hostAliases:
+{{ toYaml . | indent 8 }}
+{{- end }}
       securityContext:
 {{ toYaml .Values.keycloak.securityContext | indent 8 }}
     {{- with .Values.keycloak.image.pullSecrets }}
