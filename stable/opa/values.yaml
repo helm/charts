@@ -79,9 +79,9 @@ serviceAccount:
 # This proxy allows opa to make Kubernetes SubjectAccessReview checks against the
 # Kubernetes API. You can get a rego function at github.com/open-policy-agent/library
 kubectl:
-    proxy: true
-    image: lachlanevenson/k8s-kubectl
-    imageTag: latest
+  proxy: true
+  image: lachlanevenson/k8s-kubectl
+  imageTag: latest
 
 # To control the liveness and readiness probes change the fields below.
 readinessProbe:
