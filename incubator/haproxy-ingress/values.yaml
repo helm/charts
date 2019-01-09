@@ -179,13 +179,12 @@ controller:
     loadBalancerIP: ""
     loadBalancerSourceRanges: []
 
-    targetPorts:
-      httpPorts:
-        - port: 80
-        # nodePort:
-      httpsPorts:
-        - port: 443
-        # nodePort:
+    httpPorts:
+      - port: 80
+      # nodePort:
+    httpsPorts:
+      - port: 443
+      # nodePort:
 
     ## Set external traffic policy to: "Local" to preserve source IP on
     ## providers supporting it
