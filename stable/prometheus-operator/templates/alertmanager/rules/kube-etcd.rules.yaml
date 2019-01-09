@@ -1,4 +1,4 @@
-{{- if and .Values.defaultRules.create }}
+{{- if and .Values.defaultRules.create .Values.kubeEtcd.enabled }}
 # these rules synced manually from https://github.com/etcd-io/etcd/blob/master/Documentation/etcd-mixin/mixin.libsonnet
 apiVersion: {{ printf "%s/v1" (.Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com") }}
 kind: PrometheusRule
