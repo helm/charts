@@ -3,6 +3,14 @@
 # Declare variables to be passed into your templates.
 
 replicaCount: 1
+
+# Define deployment strategy
+strategy: {}
+  # type: RollingUpdate
+  # rollingUpdate:
+  #   maxSurge: 1
+  #   maxUnavailable: 0
+
 image:
   # From repository https://github.com/osixia/docker-openldap
   repository: osixia/openldap
