@@ -69,7 +69,7 @@ data:
     rc=$?
     {{- end -}}
 
-    {{- if (.Values.upload.googlestoragebucket.enabled) or (.Values.upload.ssh.enabled) -}}
+    {{- if or (.Values.upload.googlestoragebucket.enabled) (.Values.upload.ssh.enabled) -}}
     {{ if .Values.upload.ssh.enabled -}}
     echo "upload files via ssh to {{ .Values.upload.ssh.user }}@{{ .Values.upload.ssh.host }}:{{ .Values.upload.ssh.dir }}"
     rsync -av --delete --exclude=*.state -e 'ssh -o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=/dev/null' ${BACKUP_DIR}/ {{ .Values.upload.ssh.user }}@{{ .Values.upload.ssh.host }}:{{ .Values.upload.ssh.dir }}
