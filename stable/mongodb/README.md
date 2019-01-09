@@ -60,6 +60,7 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `mongodbPassword`                       | MongoDB custom user password                                                                 | `random alhpanumeric string (10)`           |
 | `mongodbDatabase`                       | Database to create                                                                           | `nil`                                       |
 | `mongodbEnableIPv6`                     | Switch to enable/disable IPv6 on MongoDB                                                     | `true`                                      |
+| `mongodbSystemLogVerbosity`             | MongoDB systen log verbosity level                                                           | `0`                                         |
 | `mongodbExtraFlags`                     | MongoDB additional command line flags                                                        | []                                          |
 | `service.annotations`                   | Kubernetes service annotations                                                               | `{}`                                        |
 | `service.type`                          | Kubernetes Service type                                                                      | `ClusterIP`                                 |
