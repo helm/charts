@@ -46,6 +46,14 @@ spec:
               value: "{{ .Values.rabbitmq.skip_queues }}"
             - name: SKIP_VHOST
               value: "{{ .Values.rabbitmq.skip_vhost }}"
+            - name: RABBIT_EXPORTERS
+              value: "{{ .Values.rabbitmq.exporters }}"
+            - name: OUTPUT_FORMAT
+              value: "{{ .Values.rabbitmq.output_format }}"
+            - name: RABBIT_TIMEOUT
+              value: "{{ .Values.rabbitmq.timeout }}"
+            - name: MAX_QUEUES
+              value: "{{ .Values.rabbitmq.max_queues }}"
           ports:
             - containerPort: {{ .Values.service.internalPort }}
               name: publish
