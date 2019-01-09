@@ -1,16 +1,15 @@
-{{- if .Values.konfigurator.rbac.enabled }}
----
+{{- if .Values.rbac.enabled }}
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1beta1
 metadata:
   labels:
 {{ include "konfigurator.labels.selector" . | indent 4 }}
 {{ include "konfigurator.labels.chart" . | indent 4 }}
-{{- if .Values.konfigurator.rbac.labels }}
-{{ toYaml .Values.konfigurator.rbac.labels | indent 4 }}
+{{- if .Values.rbac.labels }}
+{{ toYaml .Values.rbac.labels | indent 4 }}
 {{- end }}
-{{- if .Values.konfigurator.matchLabels }}
-{{ toYaml .Values.konfigurator.matchLabels | indent 4 }}
+{{- if .Values.matchLabels }}
+{{ toYaml .Values.matchLabels | indent 4 }}
 {{- end }}
   name: {{ template "konfigurator.name" . }}-{{ .Release.Namespace }}-cluster-role
 rules:

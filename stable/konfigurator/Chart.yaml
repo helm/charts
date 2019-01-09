@@ -2,7 +2,7 @@
 
 apiVersion: v1
 name: konfigurator
-description: Konfigurator chart that runs on kubernetes
+description: Konfigurator chart that runs on Kubernetes
 version: 1.0.0
 appVersion: 0.0.10
 keywords:

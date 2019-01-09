@@ -1,33 +1,32 @@
-konfigurator:
-  matchLabels: {}
-  crd:
-    enabled: true
-  deployment:
-    annotations: {}
-    labels:
-      provider: stakater
-      group: com.stakater.platform
-    image:
-      name: stakater/konfigurator
-      tag: "0.0.10"
-      pullPolicy: IfNotPresent
-    containerPort: 60000
-    # Support for extra environment variables.
-    env:
-      # Open supports Key value pair as environment variables.
-      open:
-      # secret supports Key value pair as environment variables. It gets the values based on keys from default konfigurator secret if any.
-      secret:
-      # field supports Key value pair as environment variables. It gets the values from other fields of pod.
-      field:
-  rbac:
-    enabled: true
-    labels: {}
-  # Service account config for the agent pods
-  serviceAccount:
-    # Specifies whether a ServiceAccount should be created
-    create: true
-    labels: {}
-    # The name of the ServiceAccount to use.
-    # If not set and create is true, a name is generated using the fullname template
-    name: konfigurator
+matchLabels: {}
+crd:
+  enabled: true
+deployment:
+  annotations: {}
+  labels:
+    provider: stakater
+    group: com.stakater.platform
+  image:
+    name: stakater/konfigurator
+    tag: "0.0.10"
+    pullPolicy: IfNotPresent
+  containerPort: 60000
+  # Support for extra environment variables.
+  env:
+    # Open supports Key value pair as environment variables.
+    open:
+    # secret supports Key value pair as environment variables. It gets the values based on keys from default konfigurator secret if any.
+    secret:
+    # field supports Key value pair as environment variables. It gets the values from other fields of pod.
+    field:
+rbac:
+  enabled: true
+  labels: {}
+# Service account config for the agent pods
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  labels: {}
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: konfigurator

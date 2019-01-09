@@ -2,18 +2,18 @@
 
 ## Problem
 
-Dynamically generating app configuration when kubernetes resources change.
+Dynamically generate application configuration when Kubernetes resources change.
 
 ## Solution
 
-A kubernetes operator that can dynamically generate app configuration when kubernetes resources change
+A Kubernetes operator that can dynamically generate app configuration when Kubernetes resources change
 
 ## Features
 
 - Render Configurations to
   - ConfigMap
   - Secret
-- Support for GO Templating Engine
+- Support for Go Templating Engine
 - Custom helper functions
 - Support to watch the following Kubernetes Resources
   - Pods

@@ -1,18 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-{{- if .Values.konfigurator.deployment.annotations }}
+{{- if .Values.deployment.annotations }}
   annotations:
-{{ toYaml .Values.konfigurator.deployment.annotations | indent 4 }}
+{{ toYaml .Values.deployment.annotations | indent 4 }}
 {{- end }}
   labels:
 {{ include "konfigurator.labels.selector" . | indent 4 }}
 {{ include "konfigurator.labels.chart" . | indent 4 }}
-{{- if .Values.konfigurator.deployment.labels }}
-{{ toYaml .Values.konfigurator.deployment.labels | indent 4 }}
+{{- if .Values.deployment.labels }}
+{{ toYaml .Values.deployment.labels | indent 4 }}
 {{- end }}
-{{- if .Values.konfigurator.matchLabels }}
-{{ toYaml .Values.konfigurator.matchLabels | indent 4 }}
+{{- if .Values.matchLabels }}
+{{ toYaml .Values.matchLabels | indent 4 }}
 {{- end }}
   name: {{ template "konfigurator.name" . }}
 spec:
@@ -25,31 +25,31 @@ spec:
       labels:
 {{ include "konfigurator.labels.selector" . | indent 8 }}
 {{ include "konfigurator.labels.chart" . | indent 8 }}
-{{- if .Values.konfigurator.deployment.labels }}
-{{ toYaml .Values.konfigurator.deployment.labels | indent 8 }}
+{{- if .Values.deployment.labels }}
+{{ toYaml .Values.deployment.labels | indent 8 }}
 {{- end }}
-{{- if .Values.konfigurator.matchLabels }}
-{{ toYaml .Values.konfigurator.matchLabels | indent 8 }}
+{{- if .Values.matchLabels }}
+{{ toYaml .Values.matchLabels | indent 8 }}
 {{- end }}
     spec:
       containers:
         - name: {{ template "konfigurator.name" . }}
-          image: "{{ .Values.konfigurator.deployment.image.name }}:{{ .Values.konfigurator.deployment.image.tag }}"
-          imagePullPolicy: {{ .Values.konfigurator.deployment.image.pullPolicy }}
+          image: "{{ .Values.deployment.image.name }}:{{ .Values.deployment.image.tag }}"
+          imagePullPolicy: {{ .Values.deployment.image.pullPolicy }}
           ports:
-          - containerPort: {{ .Values.konfigurator.deployment.containerPort }}
+          - containerPort: {{ .Values.deployment.containerPort }}
             name: metrics
           command:
           - Konfigurator
           env:
-          {{- range $name, $value := .Values.konfigurator.deployment.env.open }}
+          {{- range $name, $value := .Values.deployment.env.open }}
           {{- if not (empty $value) }}
             - name: {{ $name | quote }}
               value: {{ $value | quote }}
           {{- end }}
           {{- end }}
           {{- $secret_name := include "konfigurator.fullname" . }}
-          {{- range $name, $value := .Values.konfigurator.deployment.env.secret }}
+          {{- range $name, $value := .Values.deployment.env.secret }}
           {{- if not ( empty $value) }}
             - name: {{ $name | quote }}
               valueFrom:
@@ -58,7 +58,7 @@ spec:
                   key: {{ $name | quote }}
           {{- end }}
           {{- end }}
-          {{- range $name, $value := .Values.konfigurator.deployment.env.field }}
+          {{- range $name, $value := .Values.deployment.env.field }}
           {{- if not ( empty $value) }}
             - name: {{ $name | quote }}
               valueFrom:

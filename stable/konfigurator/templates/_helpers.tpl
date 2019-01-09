@@ -29,9 +29,9 @@ heritage: {{ .Release.Service | quote }}
 Create the name of the service account to use
 */}}
 {{- define "serviceAccountName" -}}
-{{- if .Values.konfigurator.serviceAccount.create -}}
-    {{ default (include "konfigurator.fullname" .) .Values.konfigurator.serviceAccount.name }}
+{{- if .Values.serviceAccount.create -}}
+    {{ default (include "konfigurator.fullname" .) .Values.serviceAccount.name }}
 {{- else -}}
-    {{ default "default" .Values.konfigurator.serviceAccount.name }}
+    {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
