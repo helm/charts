@@ -76,6 +76,8 @@ spec:
               name: {{ if .Values.existingSecret }}{{ .Values.existingSecret }}{{- else }}{{ template "mongodb.fullname" . }}{{- end }}
               key: mongodb-password
         {{- end }}
+        - name: MONGODB_SYSTEM_LOG_VERBOSITY
+          value: {{ .Values.mongodbSystemLogVerbosity | quote}}
         - name: MONGODB_DATABASE
           value: {{ default "" .Values.mongodbDatabase | quote }}
         - name: MONGODB_ENABLE_IPV6
