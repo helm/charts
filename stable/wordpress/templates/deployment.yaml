@@ -1,22 +1,22 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "wordpress.fullname" . }}
   labels:
-    app: "{{ template "fullname" . }}"
+    app: "{{ template "wordpress.fullname" . }}"
     chart: "{{ template "wordpress.chart" . }}"
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
 spec:
   selector:
     matchLabels:
-      app: "{{ template "fullname" . }}"
+      app: "{{ template "wordpress.fullname" . }}"
       release: {{ .Release.Name | quote }}
   replicas: {{ .Values.replicaCount }}
   template:
     metadata:
       labels:
-        app: "{{ template "fullname" . }}"
+        app: "{{ template "wordpress.fullname" . }}"
         chart: "{{ template "wordpress.chart" . }}"
         release: {{ .Release.Name | quote }}
 {{- if or .Values.podAnnotations .Values.metrics.enabled }}
@@ -89,7 +89,7 @@ spec:
         - name: WORDPRESS_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "wordpress.fullname" . }}
               key: wordpress-password
         - name: WORDPRESS_EMAIL
           value: {{ .Values.wordpressEmail | quote }}
@@ -117,7 +117,7 @@ spec:
         - name: SMTP_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "wordpress.fullname" . }}
               key: smtp-password
         {{- end }}
         {{- if .Values.smtpUsername }}
@@ -200,7 +200,7 @@ spec:
       - name: wordpress-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ .Values.persistence.existingClaim | default (include "fullname" .) }}
+          claimName: {{ .Values.persistence.existingClaim | default (include "wordpress.fullname" .) }}
       {{- else }}
         emptyDir: {}
       {{ end }}

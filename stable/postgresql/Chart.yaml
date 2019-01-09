@@ -1,5 +1,5 @@
 name: postgresql
-version: 3.9.0
+version: 3.9.1
 appVersion: 10.6.0
 description: Chart for PostgreSQL, an object-relational database management system (ORDBMS) with an emphasis on extensibility and on standards-compliance.
 keywords:
