@@ -63,6 +63,7 @@ Parameter | Description | Default
 `keycloak.nodeSelector` | Node labels for pod assignment | `{}`
 `keycloak.tolerations` | Node taints to tolerate | `[]`
 `keycloak.podAnnotations` | Extra annotations to add to pod | `{}`
+`keycloak.hostAliases` | Mapping between IP and hostnames that will be injected as entries in the pod's hosts files | `[]`
 `keycloak.securityContext` | Security context for the pod | `{runAsUser: 1000, fsGroup: 1000, runAsNonRoot: true}`
 `keycloak.preStartScript` | Custom script to run before Keycloak starts up | ``
 `keycloak.extraArgs` | Additional arguments to the start command | ``
