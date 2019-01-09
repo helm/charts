@@ -1,9 +1,7 @@
 name: prestashop
-version: 5.0.1
-appVersion: 1.7.4-4
-description: A popular open source ecommerce solution. Professional tools are easily
-  accessible to increase online sales including instant guest checkout, abandoned
-  cart reminders and automated Email marketing.
+version: 6.0.0
+appVersion: 1.7.5-0
+description: A popular open source ecommerce solution. Professional tools are easily accessible to increase online sales including instant guest checkout, abandoned cart reminders and automated Email marketing.
 keywords:
 - prestashop
 - e-commerce
