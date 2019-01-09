@@ -7,17 +7,6 @@ image:
   tag: 7.4-community
   # If using a private repository, the name of the imagePullSecret to use
   # pullSecret: my-repo-secret
-# Starting 6.7.6 and 7.4 official sonarqube docker image, command is not required
-# anymore. For older images, uncomment the following lines.
-# command: [
-#   "sh",
-#   "-ce",
-#   "mkdir /scripts &&
-#   cp /tmp-script/startup.sh /scripts/startup.sh &&
-#   chmod 0755 /scripts/startup.sh &&
-#   /scripts/startup.sh
-#   "
-#   ]
 
 # Set security context for sonarqube pod
 securityContext:
