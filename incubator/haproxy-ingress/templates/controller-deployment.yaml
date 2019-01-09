@@ -1,6 +1,6 @@
-{{- if eq .Values.controller.kind "DaemonSet" }}
+{{- if eq .Values.controller.kind "Deployment" }}
 apiVersion: apps/v1beta2
-kind: DaemonSet
+kind: Deployment
 metadata:
   labels:
     app: {{ template "haproxy-ingress.name" . }}
@@ -10,7 +10,9 @@ metadata:
     heritage: {{ .Release.Service }}
   name: {{ template "haproxy-ingress.controller.fullname" . }}
 spec:
-  updateStrategy:
+  replicas: {{ .Values.controller.replicaCount }}
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+  strategy:
 {{ toYaml .Values.controller.updateStrategy | indent 4 }}
   minReadySeconds: {{ .Values.controller.minReadySeconds }}
   selector:
@@ -19,11 +21,11 @@ spec:
       release: {{ .Release.Name }}
   template:
     metadata:
-      {{- if .Values.controller.podAnnotations }}
       annotations:
 {{- if .Values.controller.template }}
         checksum/config: {{ include (print $.Template.BasePath "/controller-template.yaml") . | sha256sum }}
 {{- end }}
+      {{- if .Values.controller.podAnnotations }}
 {{ toYaml .Values.controller.podAnnotations | indent 8}}
       {{- end }}
       labels:
@@ -57,16 +59,9 @@ spec:
           ports:
             - name: http
               containerPort: 80
-            {{- if (and .Values.controller.daemonset.useHostPort (not (empty .Values.controller.daemonset.hostPorts.http))) }}
-              hostPort: {{ .Values.controller.daemonset.hostPorts.http }}
-            {{- end }}
             - name: https
               containerPort: 443
-            {{- if (and .Values.controller.daemonset.useHostPort (not (empty .Values.controller.daemonset.hostPorts.https))) }}
-              hostPort: {{ .Values.controller.daemonset.hostPorts.https }}
-            {{- end }}
           {{- if .Values.controller.stats.enabled }}
-            - name: stats
             - name: stats
               containerPort: {{ .Values.controller.stats.port }}
               protocol: TCP
@@ -77,13 +72,6 @@ spec:
             - name: "{{ $key }}-tcp"
               containerPort: {{ $key }}
               protocol: TCP
-            {{- if $.Values.controller.daemonset.useHostPort }}
-              {{- range $p := $.Values.controller.daemonset.hostPorts.tcp }}
-                {{- if eq $key $p }}
-              hostPort: {{ $key }}
-                {{- end }}
-              {{- end }}
-            {{- end }}
           {{- end }}
           livenessProbe:
             httpGet:
@@ -181,5 +169,9 @@ spec:
     {{- if .Values.controller.affinity }}
       affinity:
 {{ toYaml .Values.controller.affinity | indent 8 }}
+    {{- end }}
+    {{- if .Values.controller.securityContext }}
+      securityContext:
+{{ toYaml .Values.controller.securityContext | indent 8 }}
     {{- end }}
 {{- end }}

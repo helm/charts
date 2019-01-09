@@ -1,4 +1,4 @@
-{{- if .Values.controller.tcp }}
+{{- if .Values.controller.template -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -8,7 +8,9 @@ metadata:
     component: "{{ .Values.controller.name }}"
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-  name: {{ template "haproxy-ingress.controller.fullname" . }}-tcp
+  name: {{ template "haproxy-ingress.controller.fullname" . }}-template
 data:
-{{ toYaml .Values.controller.tcp | indent 2 }}
+  haproxy.tmpl: |-
+{{ .Values.controller.template | indent 4 }}
+{{/* .Files.Get "haproxy.tmpl" | indent 4 */}}
 {{- end }}
