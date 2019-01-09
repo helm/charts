@@ -19,6 +19,10 @@ image:
 #   "
 #   ]
 
+# Starting from chart 0.12.0 if you want to install custom plugins ie: plugins.install is set, you need to , uncomment the following lines.
+# command:
+#  - /usr/local/copy_plugins.sh
+
 # Set security context for sonarqube pod
 securityContext:
   fsGroup: 999
