@@ -12,4 +12,6 @@ maintainers:
     email: zanhsieh@gmail.com
   - name: rtluckie
     email: rluckie@cisco.com
+  - name: maorfr
+    email: maorfr@gmail.com
 engine: gotpl
