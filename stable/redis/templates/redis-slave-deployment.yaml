@@ -48,6 +48,9 @@ spec:
       {{- /* Include master securityContext if slave securityContext not defined */ -}}
       {{ include "redis.slave.securityContext" . | indent 6 }}
       serviceAccountName: "{{ template "redis.serviceAccountName" . }}"
+      {{- if .Values.slave.priorityClassName }}
+      priorityClassName: "{{ .Values.slave.priorityClassName }}"
+      {{- end }}
       {{- if (.Values.slave.nodeSelector | default .Values.master.nodeSelector) }}
       nodeSelector:
 {{ toYaml (.Values.slave.nodeSelector | default .Values.master.nodeSelector) | indent 8 }}
@@ -91,6 +94,12 @@ spec:
         - "/opt/bitnami/redis/etc/redis.conf"
         - "--include"
         - "/opt/bitnami/redis/etc/replica.conf"
+        {{- $extraFlags := ( default .Values.master.extraFlags .Values.slave.extraFlags ) }}
+        {{- if $extraFlags }}
+        {{- range $extraFlags }}
+        - {{ . | quote }}
+        {{- end }}
+        {{- end }}
         env:
         - name: REDIS_REPLICATION_MODE
           value: slave

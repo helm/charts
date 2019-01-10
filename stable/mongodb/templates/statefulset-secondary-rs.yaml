@@ -68,6 +68,8 @@ spec:
           - containerPort: {{ .Values.service.port }}
             name: mongodb
           env:
+          - name: MONGODB_SYSTEM_LOG_VERBOSITY
+            value: {{ .Values.mongodbSystemLogVerbosity | quote}}
           - name: MONGODB_POD_NAME
             valueFrom:
               fieldRef:
@@ -169,7 +171,7 @@ spec:
             initialDelaySeconds: 5
             timeoutSeconds: 1
           resources:
-  {{ toYaml .Values.metrics.resources | indent 10 }}
+{{ toYaml .Values.metrics.resources | indent 12 }}
 {{- end }}
       volumes:
         {{- if .Values.configmap }}
