@@ -10,8 +10,7 @@ mysql:
   database: wordpress
 
 php:
-  repository: "wordpress"
-  tag: "fpm-alpine"
+  image: "wordpress:fpm-alpine"
   envVars:
   - name: WORDPRESS_DB_HOST
     value: localhost

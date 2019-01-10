@@ -5,8 +5,7 @@ mysql:
   database: joomla
 
 php:
-  repository: joomla
-  tag: fpm-alpine
+  image: "joomla:fpm-alpine"
   envVars:
   - name: JOOMLA_DB_HOST
     value: localhost

@@ -11,10 +11,8 @@ init:
   manually:
     ## init.manually.enabled Enables container for manual initialization
     enabled: false
-    ## init.manually.repository Containers repository
-    repository: lead4good/init-wp
-    ## init.manually.tag Repository tag
-    tag: latest
+    ## init.manually.image Container image
+    image: "lead4good/init-wp:latest"
     ## init.manually.pullPolicy Image pull policy
     pullPolicy: Always
 
@@ -22,14 +20,8 @@ init:
   resources: false
 
 php:
-  ## php.version default php repository version, you can specify a different version like 5 or 7.0
-  version: "7"
-
-  ## php.repository If not empty, repository is chosen over default php repo
-  # repository: php
-
-  ## php.tag Repository tag
-  # tag: fpm
+  ## php.image default php image
+  image: "php:7-fpm-alpine"
 
   ## php.pullPolicy Image pull policy
   pullPolicy: Always
@@ -72,6 +64,9 @@ php:
   #    memory: 1Mi
 
 httpd:
+  ## httpd.image default httpd image
+  image: "httpd:2.4-alpine"
+
   ## httpd.resources HTTPD container resource requests/limits
   resources: false
   #  requests:
@@ -92,14 +87,11 @@ mysql:
   ## mysql.database MySQL user database
   # database: database
 
-  ## mysql.repository MySQL repository - choose one of the official images
+  ## mysql.image MySQL image - choose one of the official images
   ##     [mysql](https://hub.docker.com/_/mysql/)
   ##     [mariadb](https://hub.docker.com/_/mariadb/)
   ##     [percona](https://hub.docker.com/_/percona/)
-  repository: mysql
-
-  ## mysql.tag Repository tag
-  tag: 5.7
+  image: "mysql:5.7"
 
   ## mysql.imagePullPolicy Image pull policy
   imagePullPolicy: Always
@@ -114,6 +106,9 @@ mysql:
   #    memory: 1Mi
 
 sftp:
+  ## sftp.image default sftp image
+  image: "atmoz/sftp:alpine"
+
   ## sftp.enabled Enables sftp service
   enabled: false
 
@@ -203,6 +198,9 @@ svn:
   #    memory: 1Mi
 
 phpmyadmin:
+  ## phpmyadmin.image default phpmyadmin image
+  image: "phpmyadmin/phpmyadmin"
+
   ## phpmyadmin.enabled Enables phpmyadmin service
   enabled: false
 
