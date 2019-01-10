@@ -144,6 +144,16 @@ Master:
     # Set this path to JenkinsUriPrefix above or use annotations to rewrite path
     # Path: "/jenkins"
 
+    # Replace or add rules to Master.HostName value
+    # CustomRules:
+    #   - host: jenkins.example.com
+    #     http:
+    #       paths:
+    #       - backend:
+    #           serviceName: jenkins
+    #           servicePort: 8080
+    #         path: /
+
     TLS:
     # - secretName: jenkins.cluster.local
     #   hosts:

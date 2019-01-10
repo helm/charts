@@ -1,4 +1,4 @@
-{{- if .Values.Master.HostName }}
+{{- if or .Values.Master.HostName .Values.Master.Ingress.CustomRules }}
 apiVersion: {{ .Values.Master.Ingress.ApiVersion }}
 kind: Ingress
 metadata:
@@ -9,6 +9,7 @@ metadata:
   name: {{ template "jenkins.fullname" . }}
 spec:
   rules:
+{{- if .Values.Master.HostName }}
   - host: {{ .Values.Master.HostName | quote }}
     http:
       paths:
@@ -18,6 +19,10 @@ spec:
 {{- if .Values.Master.Ingress.Path }}
         path: {{ .Values.Master.Ingress.Path }}
 {{- end -}}
+{{- end }}
+{{- if .Values.Master.Ingress.CustomRules }}
+{{ toYaml .Values.Master.Ingress.CustomRules | indent 4 }}
+{{- end }}
 {{- if .Values.Master.Ingress.TLS }}
   tls:
 {{ toYaml .Values.Master.Ingress.TLS | indent 4 }}
