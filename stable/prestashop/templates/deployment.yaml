@@ -11,7 +11,7 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: {{ template "prestashop.fullname" . }}
+      app: {{ template "prestashop.name" . }}
       release: "{{ .Release.Name }}"
   template:
     metadata:
