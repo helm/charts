@@ -80,7 +80,7 @@ spec:
 {{- end }}
         livenessProbe:
           exec:
-            command: [ "sh", "/probes/check-quorum.sh", "{{ .Values.redis.port }}"]
+            command: [ "sh", "/probes/readiness.sh", "{{ .Values.redis.port }}"]
           initialDelaySeconds: 15
           periodSeconds: 5
         readinessProbe:
