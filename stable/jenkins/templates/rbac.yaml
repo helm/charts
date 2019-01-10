@@ -17,7 +17,7 @@ metadata:
     heritage: "{{ .Release.Service }}"
 roleRef:
   apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
+  kind: {{ .Values.rbac.roleKind }}
   name: {{ .Values.rbac.roleRef }}
 subjects:
 - kind: ServiceAccount
