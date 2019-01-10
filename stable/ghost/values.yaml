@@ -74,6 +74,7 @@ allowEmptyPassword: "yes"
 # smtpPort:
 # smtpUser:
 # smtpPassword:
+# smtpFromAddress
 # smtpService:
 
 ##

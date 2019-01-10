@@ -121,6 +121,10 @@ spec:
               name: {{ template "ghost.fullname" . }}
               key: smtp-password
         {{- end }}
+        {{- if .Values.smtpFromAddress }}
+        - name: SMTP_FROM_ADDRESS
+          value: {{ .Values.smtpFromAddress | quote }}
+        {{- end }}
         {{- if .Values.smtpService }}
         - name: SMTP_SERVICE
           value: {{ .Values.smtpService | quote }}

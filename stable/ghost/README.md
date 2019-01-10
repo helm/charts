@@ -70,6 +70,7 @@ The following table lists the configurable parameters of the Ghost chart and the
 | `smtpPort`                          | SMTP port                                                     | `nil`                                                    |
 | `smtpUser`                          | SMTP user                                                     | `nil`                                                    |
 | `smtpPassword`                      | SMTP password                                                 | `nil`                                                    |
+| `smtpFromAddress`                   | SMTP from address                                             | `nil`                                                    |
 | `smtpService`                       | SMTP service                                                  | `nil`                                                    |
 | `allowEmptyPassword`                | Allow DB blank passwords                                      | `yes`                                                    |
 | `serviceType`                       | Kubernetes Service type                                       | `LoadBalancer`                                           |
