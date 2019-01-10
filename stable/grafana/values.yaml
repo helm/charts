@@ -1,6 +1,7 @@
 rbac:
   create: true
   pspEnabled: true
+  pspUseAppArmor: true
 serviceAccount:
   create: true
   name:
@@ -48,7 +49,7 @@ downloadDashboardsImage:
 
 chownDataImage:
   repository: busybox
-  tag: 1.3.0
+  tag: 1.30.0
   pullPolicy: IfNotPresent
 
 ## Pod Annotations

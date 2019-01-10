@@ -44,6 +44,9 @@ spec:
         runAsUser: {{ .Values.master.securityContext.runAsUser }}
       {{- end }}
       serviceAccountName: "{{ template "redis.serviceAccountName" . }}"
+      {{- if .Values.master.priorityClassName }}
+      priorityClassName: "{{ .Values.master.priorityClassName }}"
+      {{- end }}
       {{- with .Values.master.affinity }}
       affinity:
 {{ tpl (toYaml .) $ | indent 8 }}
