@@ -158,6 +158,7 @@ spec:
               path: "{{ default "" .Values.Master.JenkinsUriPrefix }}/login"
               port: http
             initialDelaySeconds: {{ .Values.Master.HealthProbesReadinessTimeout }}
+            periodSeconds: {{ .Values.Master.HealthProbeReadinessPeriodSeconds }}
 {{- end }}
           # Resources configuration is a little hacky. This was to prevent breaking
           # changes, and should be cleanned up in the future once everybody had
