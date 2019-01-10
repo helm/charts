@@ -8,6 +8,15 @@ image:
   tag: 0.8.1
   pullPolicy: IfNotPresent
 
+init:
+  image:
+    repository: docker.io/busybox
+    tag: musl
+    pullPolicy: IfNotPresent
+
+deployment:
+  annotations: {}
+
 service:
   type: ClusterIP
   port: 80

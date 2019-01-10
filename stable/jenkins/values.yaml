@@ -15,6 +15,7 @@ Master:
   ImagePullPolicy: "Always"
 # ImagePullSecret: jenkins
   Component: "jenkins-master"
+  NumExecutors: 0
   UseSecurity: true
   # SecurityRealm:
   # Optionally configure a different AuthorizationStrategy using Jenkins XML
@@ -99,10 +100,10 @@ Master:
   #   port: 9000
   # List of plugins to be install during Jenkins master start
   InstallPlugins:
-    - kubernetes:1.12.4
-    - workflow-job:2.24
-    - workflow-aggregator:2.5
-    - credentials-binding:1.16
+    - kubernetes:1.14.0
+    - workflow-job:2.31
+    - workflow-aggregator:2.6
+    - credentials-binding:1.17
     - git:3.9.1
   # Used to approve a list of groovy functions in pipelines used the script-security plugin. Can be viewed under /scriptApproval
   # ScriptApproval:
@@ -119,7 +120,7 @@ Master:
   # master.key and hudson.util.Secret)
   # SecretsFilesSecret: jenkins-secrets
   # Jenkins XML job configs to provision
-  # Jobs: |-
+  # Jobs:
   #   test: |-
   #     <<xml here>>
   CustomConfigMap: false
@@ -152,7 +153,7 @@ Master:
 Agent:
   Enabled: true
   Image: jenkins/jnlp-slave
-  ImageTag: 3.10-1
+  ImageTag: 3.27-1
   CustomJenkinsLabels: []
 # ImagePullSecret: jenkins
   Component: "jenkins-slave"
@@ -213,7 +214,7 @@ NetworkPolicy:
   Enabled: false
   # For Kubernetes v1.4, v1.5 and v1.6, use 'extensions/v1beta1'
   # For Kubernetes v1.7, use 'networking.k8s.io/v1'
-  ApiVersion: extensions/v1beta1
+  ApiVersion: networking.k8s.io/v1
 
 ## Install Default RBAC roles and bindings
 rbac:
@@ -221,5 +222,51 @@ rbac:
   serviceAccountName: default
   # Role reference
   roleRef: cluster-admin
-  # Role kind (RoleBinding or ClusterRoleBinding)
+  # Role kind (Role or ClusterRole)
+  roleKind: ClusterRole
+  # Role binding kind (RoleBinding or ClusterRoleBinding)
   roleBindingKind: ClusterRoleBinding
+
+## Backup cronjob configuration
+## Ref: https://github.com/nuvo/kube-tasks
+backup:
+  # Backup must use RBAC
+  # So by enabling backup you are enabling RBAC specific for backup
+  enabled: false
+
+  # Schedule to run jobs. Must be in cron time format
+  # Ref: https://crontab.guru/
+  schedule: "0 2 * * *"
+
+  annotations:
+    # Example for authorization to AWS S3 using kube2iam
+    # Can also be done using environment variables
+    iam.amazonaws.com/role: jenkins
+
+  image:
+    repository: nuvo/kube-tasks
+    tag: 0.1.2
+
+  # Additional arguments for kube-tasks
+  # Ref: https://github.com/nuvo/kube-tasks#simple-backup
+  extraArgs: []
+
+  # Add additional environment variables
+  env:
+  # Example environment variable required for AWS credentials chain
+  - name: AWS_REGION
+    value: us-east-1
+
+  resources:
+    requests:
+      memory: 1Gi
+      cpu: 1
+    limits:
+      memory: 1Gi
+      cpu: 1
+
+  # Destination to store the backup artifacts
+  # Supported cloud storage services: AWS S3, Minio S3, Azure Blob Storage
+  # Additional support can added. Visit this repository for details
+  # Ref: https://github.com/nuvo/skbn
+  destination: s3://nuvo-jenkins-data/backup

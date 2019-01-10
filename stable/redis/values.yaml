@@ -13,7 +13,7 @@ image:
   ## Bitnami Redis image tag
   ## ref: https://github.com/bitnami/bitnami-docker-redis#supported-tags-and-respective-dockerfile-links
   ##
-  tag: 4.0.11
+  tag: 4.0.12
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -96,24 +96,25 @@ master:
   ##
   ## Can be used to specify command line arguments, for example:
   ##
-  ## args:
-  ##  - "redis-server"
-  ##  - "--maxmemory-policy volatile-ttl"
-  args: []
+  command:
+  - "/run.sh"
   ## Redis additional command line flags
   ##
   ## Can be used to specify command line flags, for example:
   ##
-  ## redisExtraFlags:
+  ## extraFlags:
   ##  - "--maxmemory-policy volatile-ttl"
   ##  - "--repl-backlog-size 1024mb"
   extraFlags: []
   ## Comma-separated list of Redis commands to disable
   ##
   ## Can be used to disable Redis commands for security reasons.
-  ## ref: https://github.com/bitnami/bitnami-docker-redis#disabling-redis-commands
+  ## Commands will be completely disabled by renaming each to an empty string.
+  ## ref: https://redis.io/topics/security#disabling-of-specific-commands
   ##
-  disableCommands: "FLUSHDB,FLUSHALL"
+  disableCommands:
+  - FLUSHDB
+  - FLUSHALL
 
   ## Redis Master additional pod labels and annotations
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
@@ -136,15 +137,15 @@ master:
   ##
   livenessProbe:
     enabled: true
-    initialDelaySeconds: 30
-    periodSeconds: 10
+    initialDelaySeconds: 5
+    periodSeconds: 5
     timeoutSeconds: 5
     successThreshold: 1
     failureThreshold: 5
   readinessProbe:
     enabled: true
     initialDelaySeconds: 5
-    periodSeconds: 10
+    periodSeconds: 5
     timeoutSeconds: 1
     successThreshold: 1
     failureThreshold: 5
@@ -190,7 +191,7 @@ master:
     enabled: true
     ## The path the volume will be mounted at, useful when using different
     ## Redis images.
-    path: /bitnami/redis/data
+    path: /data
     ## The subdirectory of the volume to mount to, useful in dev environments
     ## and one PV for multiple services.
     subPath: ""
@@ -213,6 +214,9 @@ master:
     ## Partition update strategy
     ## https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#partitions
     # rollingUpdatePartition:
+
+  ## Redis Master pod priorityClassName
+  # priorityClassName: {}
 
 
 ##
@@ -239,16 +243,10 @@ slave:
 
   ## Redis port
   # port: 6379
-  ## Redis command arguments
-  # args: []
   ## Redis extra flags
   # extraFlags: []
-  ## Comma-separated list of Redis commands to disable
-  # disableCommands: ""
-  ## deployment update stategy
-  # updateStrategy:
-  #   rollingUpdate:
-  #     maxUnavailable: 0
+  ## List of Redis commands to disable
+  # disableCommands: []
 
   ## Redis Slave pod/node affinity/anti-affinity
   ##
@@ -297,6 +295,9 @@ slave:
   #   fsGroup: 1001
   #   runAsUser: 1001
 
+  ## Redis slave pod priorityClassName
+  # priorityClassName: {}
+
 ## Prometheus Exporter / Metrics
 ##
 metrics:
@@ -305,7 +306,7 @@ metrics:
   image:
     registry: docker.io
     repository: oliver006/redis_exporter
-    tag: v0.20.2
+    tag: v0.25.0
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
@@ -344,7 +345,8 @@ metrics:
   # Enable this if you're using https://github.com/coreos/prometheus-operator
   serviceMonitor:
     enabled: false
-    namespace: monitoring
+    ## Specify a namespace if needed
+    # namespace: monitoring
     # fallback to the prometheus default unless specified
     # interval: 10s
     ## Defaults to what's used if you follow CoreOS [Prometheus Install Instructions](https://github.com/helm/charts/tree/master/stable/prometheus-operator#tldr)
@@ -352,6 +354,9 @@ metrics:
     ## [Kube Prometheus Selector Label](https://github.com/helm/charts/tree/master/stable/prometheus-operator#exporters)
     selector:
       prometheus: kube-prometheus
+
+  ## Metrics exporter pod priorityClassName
+  # priorityClassName: {}
 
 ##
 ## Init containers parameters:
@@ -365,6 +370,7 @@ volumePermissions:
     pullPolicy: IfNotPresent
 
 ## Redis config file
+## ref: https://redis.io/topics/config
 ##
 configmap: |-
-#  Redis configuration file
+  # maxmemory-policy volatile-lru

@@ -1,6 +1,6 @@
 ## Default values for Traefik
 image: traefik
-imageTag: 1.7.4
+imageTag: 1.7.6
 ## can switch the service type to NodePort if required
 serviceType: LoadBalancer
 # loadBalancerIP: ""
@@ -8,10 +8,15 @@ serviceType: LoadBalancer
 whiteListSourceRange: []
 externalTrafficPolicy: Cluster
 replicas: 1
+# startupArguments:
+#   - "--ping"
+#   - "--ping.entrypoint=http"
 
 podDisruptionBudget: {}
   # maxUnavailable: 1
   # minAvailable: 2
+
+# priorityClassName: ""
 
 # rootCAs: []
 
@@ -65,6 +70,14 @@ ssl:
   permanentRedirect: false
   upstream: false
   insecureSkipVerify: false
+  generateTLS: false
+  # defaultCN: "example.com"
+    # or *.example.com
+  defaultSANList: []
+    # - example.com
+    # - test1.example.com
+  defaultIPList: []
+    # - 1.2.3.4
   # cipherSuites: []
   # https://docs.traefik.io/configuration/entrypoints/#specify-minimum-tls-version
   # tlsMinVersion: VersionTLS12
@@ -313,6 +326,9 @@ rbac:
 metrics:
   prometheus:
     enabled: false
+    ## If true, prevents exposing port 8080 on the main Traefik service, reserving
+    ## it to the dashboard service only
+    restrictAccess: false
     # buckets: [0.1,0.3,1.2,5]
   datadog:
     enabled: false

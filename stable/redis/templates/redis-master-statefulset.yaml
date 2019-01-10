@@ -44,9 +44,12 @@ spec:
         runAsUser: {{ .Values.master.securityContext.runAsUser }}
       {{- end }}
       serviceAccountName: "{{ template "redis.serviceAccountName" . }}"
+      {{- if .Values.master.priorityClassName }}
+      priorityClassName: "{{ .Values.master.priorityClassName }}"
+      {{- end }}
       {{- with .Values.master.affinity }}
       affinity:
-{{ toYaml . | indent 8 }}
+{{ tpl (toYaml .) $ | indent 8 }}
       {{- end }}
       {{- if .Values.master.nodeSelector }}
       nodeSelector:
@@ -63,9 +66,28 @@ spec:
       - name: {{ template "redis.fullname" . }}
         image: "{{ template "redis.image" . }}"
         imagePullPolicy: {{ default "" .Values.image.pullPolicy | quote }}
-        {{- if .Values.master.args }}
+        {{- if .Values.master.command }}
+        command:
+{{ toYaml .Values.master.command | indent 10 }}
+        {{- end }}
         args:
-{{ toYaml .Values.master.args | indent 10 }}
+        - "--port"
+        - "$(REDIS_PORT)"
+        {{- if .Values.usePassword }}
+        - "--requirepass"
+        - "$(REDIS_PASSWORD)"
+        {{- else }}
+        - "--protected-mode"
+        - "no"
+        {{- end }}
+        - "--include"
+        - "/opt/bitnami/redis/etc/redis.conf"
+        - "--include"
+        - "/opt/bitnami/redis/etc/master.conf"
+        {{- if .Values.master.extraFlags }}
+        {{- range .Values.master.extraFlags }}
+        - {{ . | quote }}
+        {{- end }}
         {{- end }}
         env:
         - name: REDIS_REPLICATION_MODE
@@ -86,12 +108,6 @@ spec:
         {{- end }}
         - name: REDIS_PORT
           value: {{ .Values.master.port | quote }}
-        - name: REDIS_DISABLE_COMMANDS
-          value: {{ .Values.master.disableCommands }}
-        {{- if .Values.master.extraFlags }}
-        - name: REDIS_EXTRA_FLAGS
-          value: {{ .Values.master.extraFlags | join " " }}
-        {{- end }}
         ports:
         - name: redis
           containerPort: {{ .Values.master.port }}
@@ -131,8 +147,7 @@ spec:
           subPath: {{ .Values.master.persistence.subPath }}
         {{- if .Values.configmap }}
         - name: config
-          mountPath: /opt/bitnami/redis/etc/redis.conf
-          subPath: redis.conf
+          mountPath: /opt/bitnami/redis/etc
         {{- end }}
       {{- if and ( and .Values.master.persistence.enabled (not .Values.persistence.existingClaim) ) .Values.master.securityContext.enabled }}
       initContainers:
