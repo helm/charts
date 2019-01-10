@@ -58,6 +58,10 @@ Master:
   ServiceType: LoadBalancer
   # Master Service annotations
   ServiceAnnotations: {}
+  # Master Custom Labels
+  DeploymentLabels:
+  # foo: bar
+  # bar: foo
   # Master Service Labels
   ServiceLabels: {}
   #   service.beta.kubernetes.io/aws-load-balancer-backend-protocol: https
