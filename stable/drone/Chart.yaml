@@ -1,7 +1,7 @@
 name: drone
 home: https://drone.io/
 icon: https://drone.io/apple-touch-icon.png
-version: 1.8.0-redmart
+version: 1.8.0-redmart-01
 appVersion: 0.8.9
 description: Drone is a Continuous Delivery system built on container technology
 keywords:
