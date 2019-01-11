@@ -162,6 +162,9 @@ spec:
             - name: cert
               mountPath: /etc/cert
             {{- end }}
+            {{- if .Values.extraVolumeMounts }}
+{{ toYaml .Values.extraVolumeMounts | indent 12 }}
+            {{- end }}
         {{ if .Values.prometheus.exporter.enabled }}
         - name: {{ .Chart.Name }}-exporter
           image: {{ .Values.prometheus.exporter.image.repository }}:{{ .Values.prometheus.exporter.image.tag }}
@@ -173,10 +176,10 @@ spec:
           env:
             - name: PUBLISH_PORT
               value: "{{ .Values.prometheus.exporter.port }}"
-            {{ if .Values.prometheus.exporter.capabilities }}  
+            {{ if .Values.prometheus.exporter.capabilities }}
             - name: RABBIT_CAPABILITIES
               value: "{{ .Values.prometheus.exporter.capabilities }}"
-            {{- end }}  
+            {{- end }}
             - name: RABBIT_USER
               valueFrom:
                 secretKeyRef:
@@ -243,6 +246,9 @@ spec:
           secret:
             defaultMode: 420
             secretName: {{ template "rabbitmq-ha.certSecretName" . }}
+        {{- end }}
+        {{- if .Values.extraVolumes }}
+{{ toYaml .Values.extraVolumes | indent 8 }}
         {{- end }}
 {{- if .Values.persistentVolume.enabled }}
   volumeClaimTemplates:
