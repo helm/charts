@@ -181,7 +181,16 @@ input:
   tail:
     memBufLimit: 5MB
     path: /var/log/containers/*.log
-
+  systemd:
+    enabled: false
+    filters:
+      systemdUnit:
+        - docker.service
+        - kubelet.service
+        - node-problem-detector.service
+    maxEntries: 1000
+    readFromTail: true
+    tag: host.*
 
 filter:
   kubeURL: https://kubernetes.default.svc:443
