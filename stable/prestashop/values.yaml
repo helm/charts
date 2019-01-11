@@ -144,7 +144,7 @@ service:
   # HTTP Port
   port: 80
   # HTTPS Port
-  httpsPort: 44
+  httpsPort: 443
   ## loadBalancerIP for the PrestaShop Service (optional, cloud specific)
   ## ref: http://kubernetes.io/docs/user-guide/services/#type-loadbalancer
   ## loadBalancerIP
