@@ -195,8 +195,7 @@ dashboardProviders: {}
 dashboards: {}
 #  default:
 #    some-dashboard:
-#      json: |
-#        $RAW_JSON
+#      json: dashboards/custom-dashboard.json
 #    prometheus-stats:
 #      gnetId: 2
 #      revision: 2
