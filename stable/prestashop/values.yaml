@@ -62,7 +62,7 @@ prestashopCookieCheckIP: "no"
 ## Country
 ## ref: https://github.com/bitnami/bitnami-docker-prestashop#configuration
 ##
-prestashopCountry: "en"
+prestashopCountry: "us"
 
 ## Language
 ## ref: https://github.com/bitnami/bitnami-docker-prestashop#configuration
