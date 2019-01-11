@@ -42,7 +42,7 @@ spec:
             - name: stun
               containerPort: 3478
               protocol: UDP
-          {{- if .Values.addSetfcap }}
+          {{- if not .Values.runAsRoot }}
           securityContext:
             capabilities:
               add:
@@ -65,6 +65,10 @@ spec:
               value: "{{ .Values.timezone }}"
             - name: RUNAS_UID0
               value: "{{ .Values.runAsRoot }}"
+            - name: UNIFI_UID
+              value: "{{ .Values.UID }}"
+            - name: UNIFI_GID
+              value: "{{ .Values.GID }}"
             {{- if .Values.mongodb.enabled }}
             - name: DB_URI
               value: "{{ .Values.mongodb.dbUri }}"

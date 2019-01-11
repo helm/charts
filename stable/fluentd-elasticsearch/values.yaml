@@ -32,6 +32,12 @@ elasticsearch:
 env:
   # OUTPUT_USER: my_user
 
+# If you want to add custom environment variables from secrets, use the secret list
+secret:
+# - name: ELASTICSEARCH_PASSWORD
+#   secret_name: elasticsearch
+#   secret_key: password
+
 rbac:
   create: true
 
@@ -61,6 +67,8 @@ livenessProbe:
   enabled: true
 
 annotations: {}
+
+podAnnotations: {}
   # prometheus.io/scrape: "true"
   # prometheus.io/port: "24231"
 
@@ -456,6 +464,7 @@ configMaps:
       ssl_version "#{ENV['OUTPUT_SSL_VERSION']}"
       logstash_format true
       logstash_prefix "#{ENV['LOGSTASH_PREFIX']}"
+      reconnect_on_error true
       <buffer>
         @type file
         path /var/log/fluentd-buffers/kubernetes.system.buffer

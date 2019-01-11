@@ -57,8 +57,8 @@ The command removes all the Kubernetes components associated with the chart and 
 | `persistence.size`                        | Size of persistent volume claim               | `10Gi`                                                  |
 | `persistence.existingClaim`               | Use an existing PVC to persist data           | `nil`                                                   |
 | `persistence.storageClassName`            | Type of persistent volume claim               | `nil`                                                   |
-| `persistence.accessModes`                 | Persistence access modes                      | `[]`                                                    |
-| `persistence.subPath`                     | Mount a sub dir of the persistent volume      | `""`                                                    |
+| `persistence.accessModes`                 | Persistence access modes                      | `[ReadWriteOnce]`                                       |
+| `persistence.subPath`                     | Mount a sub dir of the persistent volume      | `nil`                                                   |
 | `schedulerName`                           | Alternate scheduler name                      | `nil`                                                   |
 | `env`                                     | Extra environment variables passed to pods    | `{}`                                                    |
 | `envFromSecret`                           | Name of a Kubenretes secret (must be manually created in the same namespace) containing values to be added to the environment | `""` |
@@ -81,6 +81,9 @@ The command removes all the Kubernetes components associated with the chart and 
 | `sidecar.datasources.label`               | Label that config maps with datasources should have to be added | `false`                               |
 | `sidecar.datasources.searchNamespace`     | If specified, the sidecar will search for datasources config-maps inside this namespace. Otherwise the namespace in which the sidecar is running will be used. It's also possible to specify ALL to search in all namespaces | `nil`                               |
 | `smtp.existingSecret`                     | The name of an existing secret containing the SMTP credentials, this must have the keys `user` and `password`. | `""` |
+| `rbac.create`                             | Create and use RBAC resources | `true` |
+| `rbac.pspEnabled`                         | Create PodSecurityPolicy (with `rbac.create`, grant roles permissions as well) | `true` |
+| `rbac.pspUseAppArmor`                     | Enforce AppArmor in created PodSecurityPolicy (requires `rbac.pspEnabled`)  | `true` |
 
 ## Sidecar for dashboards
 
