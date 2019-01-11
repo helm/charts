@@ -7,14 +7,14 @@
 ##
 serviceType: LoadBalancer
 
-## expose the service to the grpc client
-port: 9090
+grpcServicePort: 9090
+restServicePort: 80
 replicas: 1
 
-# repository: "cheyang/tf-model-server-gpu"
 image:
-  repository: "cheyang/tf-model-server"
-  tag: "1.4"
+  repository: "tensorflow/serving"
+  tag: "1.12.0"
+  # tag: "1.12.0-gpu"
   pullPolicy: "IfNotPresent"
 resources: {}
   #  limits:
@@ -28,14 +28,13 @@ resources: {}
 
 
 ## The command and args to run the pod
-modelName: "inception"
-modelBasePath: "/serving/inception-export"
-
-## the mount path inside the container
-# mountPath: /serving/inception-export
+grpcPort: 8500
+restPort: 8501
+modelName: "model-name"
+modelBasePath: "model-base-path"
 
 persistence:
-  enabled: true
+  enabled: false
   storageClass: ""
   size: 10Gi
   accessMode: ReadWriteOnce

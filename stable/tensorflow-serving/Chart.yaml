@@ -1,8 +1,9 @@
 name: tensorflow-serving
 home: https://github.com/kubernetes/charts
-version: 0.1.2
+version: 0.1.3
 appVersion: 1.14.0
 description: TensorFlow Serving is an open-source software library for serving machine learning models.
+icon: https://avatars0.githubusercontent.com/u/15658638?s=200&v=4
 sources:
 - https://github.com/tensorflow/serving
 maintainers:

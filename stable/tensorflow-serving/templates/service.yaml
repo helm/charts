@@ -10,9 +10,12 @@ metadata:
 spec:
   type: {{ .Values.serviceType }}
   ports:
-    - name: serving
-      port: 9090
-      targetPort: serving
+    - name: grpc-service-port
+      port: {{ .Values.grpcServicePort }}
+      targetPort: grpc-port
+    - name: http-service-port
+      port: {{ .Values.restServicePort }}
+      targetPort: http-port
   selector:
     release: {{ .Release.Name | quote }}
     app: {{ template "tensorflow-serving.name" . }}

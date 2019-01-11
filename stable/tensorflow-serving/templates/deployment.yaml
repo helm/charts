@@ -1,4 +1,3 @@
-{{- $gpuCount := .Values.gpuCount -}}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -17,7 +16,7 @@ spec:
   selector:
     matchLabels:
       release: {{ .Release.Name | quote }}
-      app: {{ template "tensorflow-serving.name" . }} 
+      app: {{ template "tensorflow-serving.name" . }}
   template:
     metadata:
       labels:
@@ -27,22 +26,26 @@ spec:
         app: {{ template "tensorflow-serving.name" . }}
     spec:
       containers:
-        - name: serving
+        - name: tfserving
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           command:
             - "/usr/bin/tensorflow_model_server"
           args:
-            - "--port=9090"
+            - "--port={{ .Values.grpcPort }}"
+            - "--rest_api_port={{ .Values.restPort }}"
             - "--model_name={{ .Values.modelName }}"
             - "--model_base_path={{ .Values.modelBasePath }}"
           ports:
-            - containerPort: 9090
-              name: serving
+            - containerPort: {{ .Values.grpcPort }}
+              name: grpc-port
+              protocol: TCP
+            - containerPort: {{ .Values.restPort }}
+              name: http-port
               protocol: TCP
           readinessProbe:
             tcpSocket:
-              port: serving
+              port: grpc-port
             initialDelaySeconds: 15
             timeoutSeconds: 1
           resources:
