@@ -95,8 +95,13 @@ spec:
 {{ toYaml .Values.core.initContainers | indent 6 }}
 {{- end }}
       volumes:
+        {{- if not .Values.core.persistentVolume.enabled }}
+        - name: datadir
+          emptyDir: {}
+        {{- end }}
         - name: plugins
           emptyDir: {}
+  {{- if .Values.core.persistentVolume.enabled }}
   volumeClaimTemplates:
     - metadata:
         name: datadir
@@ -117,3 +122,4 @@ spec:
         resources:
           requests:
             storage: "{{ .Values.core.persistentVolume.size }}"
+  {{- end }}
