@@ -67,6 +67,7 @@ and their default values.
 |------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------|
 | `existingConfigMap`                            | Use an existing ConfigMap                                                                                                                                                                             | `false`                                                    |
 | `existingSecret`                               | Use an existing secret for password & erlang cookie                                                                                                                                                   | `""`                                                       |
+| `extraPlugins`                                 | Additional plugins to add to the default configmap                                                                                                                                                    | `rabbitmq_shovel, rabbitmq_shovel_management, rabbitmq_federation, rabbitmq_federation_management,` |
 | `extraConfig`                                  | Additional configuration to add to default configmap                                                                                                                                                  | `{}`                                                         |
 | `definitions.users`                            | Additional users | `""` |
 | `definitions.vhosts`                           | Additional vhosts | `""` |
@@ -76,6 +77,7 @@ and their default values.
 | `definitions.exchanges`                        | Pre-created exchanges | `""` |
 | `definitions.bindings`                         | Pre-created bindings | `""` |
 | `definitions.policies`                         | HA policies to add to definitions.json | `""` |
+| `definitionsSource`                            | Use this key within an existing secret to reference the definitions specification | `"definitions.json"` |
 | `image.pullPolicy`                             | Image pull policy                                                                                                                                                                                     | `Always` if `image` tag is `latest`, else `IfNotPresent`   |
 | `image.repository`                             | RabbitMQ container image repository                                                                                                                                                                   | `rabbitmq`                                                 |
 | `image.tag`                                    | RabbitMQ container image tag                                                                                                                                                                          | `3.7-alpine`                                               |
@@ -94,7 +96,7 @@ and their default values.
 | `prometheus.exporter.enabled`                  | Configures Prometheus Exporter to expose and scrape stats                                                                                                                                             | `false`                                                    |
 | `prometheus.exporter.env`                      | Environment variables to set for Exporter container                                                                                                                                                   | `{}`                                                       |
 | `prometheus.exporter.image.repository`         | Prometheus Exporter repository                                                                                                                                                                        | `kbudde/rabbitmq-exporter`                                 |
-| `prometheus.exporter.image.tag`                | Image Tag                                                                                                                                                                                             | `v0.28.0`                                                  |
+| `prometheus.exporter.image.tag`                | Image Tag                                                                                                                                                                                             | `v0.29.0`                                                  |
 | `prometheus.exporter.image.pullPolicy`         | Image Pull Policy                                                                                                                                                                                     | `IfNotPresent`                                             |
 | `prometheus.exporter.port`                     | Port Prometheus scrapes for metrics                                                                                                                                                                   | `9090`                                                     |
 | `prometheus.exporter.capabilities`             | Comma-separated list of extended scraping capabilities supported by the target RabbitMQ server. [Click here for details.](https://github.com/kbudde/rabbitmq_exporter#extended-rabbitmq-capabilities) | `bert,no_sort`                                             |
@@ -111,6 +113,9 @@ and their default values.
 | `rabbitmqCert.certfile`                        | base64 encoded server certificate (overwrites existing Secret)                                                                                                                                        | ``                                                         |
 | `rabbitmqCert.existingSecret`                  | Name of an existing `Secret` to mount for amqps                                                                                                                                                       | `""`                                                       |
 | `rabbitmqCert.keyfile`                         | base64 encoded server private key (overwrites existing Secret)                                                                                                                                        | ``                                                         |
+| `rabbitmqClusterPartitionHandling`             | [Automatic Partition Handling Strategy (split brain handling)](https://www.rabbitmq.com/partitions.html#automatic-handling)                                                                           | `autoheal`                                                 | 
+| `extraVolumes`                             | Extra volumes to attach to the statefulset                                                                                                                                                           | `[]`                                                     |
+| `extraVolumeMounts`                             | Extra volume mounts to mount to the statefulset                                                                                                                                                           | `[]`                                                     |
 | `rabbitmqEpmdPort`                             | EPMD port used for cross cluster replication                                                                                                                                                          | `4369`                                                     |
 | `rabbitmqErlangCookie`                         | Erlang cookie                                                                                                                                                                                         | _random 32 character long alphanumeric string_             |
 | `rabbitmqHipeCompile`                          | Precompile parts of RabbitMQ using HiPE                                                                                                                                                               | `false`                                                    |
@@ -219,7 +224,13 @@ $ helm install --name my-release --set existingConfigMap=true stable/rabbitmq-ha
 ### Custom Secret
 
 Similar to custom ConfigMap, `existingSecret` can be used to override the default secret.yaml provided, and
-`rabbitmqCert.existingSecret` can be used to override the default certificates.
+`rabbitmqCert.existingSecret` can be used to override the default certificates. The custom secret must provide
+the following keys: 
+
+* `rabbitmq-user`
+* `rabbitmq-password`
+* `rabbitmq-erlang-cookie`
+* `definitions.json` (the name can be altered by setting the `definitionsSource`)
 
 ### Prometheus Monitoring & Alerts
 

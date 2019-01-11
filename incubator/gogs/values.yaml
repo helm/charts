@@ -11,7 +11,7 @@ replicaCount: 1
 
 image:
   repository: gogs/gogs
-  tag: 0.11.66
+  tag: 0.11.79
   pullPolicy: IfNotPresent
 
 service:
@@ -332,3 +332,5 @@ postgresql:
     ## Enable PostgreSQL persistence using Persistent Volume Claims.
     ##
     enabled: true
+## Security context
+securityContext: {}

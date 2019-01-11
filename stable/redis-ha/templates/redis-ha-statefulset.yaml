@@ -17,7 +17,8 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/redis-ha-configmap.yaml") . | sha256sum }}
+        checksum/init-config: {{ include (print $.Template.BasePath "/redis-ha-configmap.yaml") . | sha256sum }}
+        checksum/probe-config: {{ include (print $.Template.BasePath "/redis-ha-healthchecks.yaml") . | sha256sum }}
       {{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
       {{- end }}
@@ -47,8 +48,8 @@ spec:
         - sh
         args:
         - /readonly-config/init.sh
-        env:
 {{- if .Values.auth }}
+        env:
         - name: AUTH
           valueFrom:
             secretKeyRef:
@@ -59,10 +60,6 @@ spec:
             {{- end }}  
               key: auth
 {{- end }}
-        - name: POD_IP
-          valueFrom:
-            fieldRef:
-              fieldPath: status.podIP
         volumeMounts:
         - name: config
           mountPath: /readonly-config
@@ -77,14 +74,22 @@ spec:
         - redis-server
         args:
         - /data/conf/redis.conf
+{{- if .Values.auth }}
+        env:
+        - name: AUTH
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "redis-ha.fullname" . }}
+              key: auth
+{{- end }}
         livenessProbe:
           exec:
-            command: ["redis-cli", "ping"]
+            command: [ "sh", "/probes/check-quorum.sh", "{{ .Values.redis.port }}"]
           initialDelaySeconds: 15
           periodSeconds: 5
         readinessProbe:
           exec:
-            command: ["redis-cli", "ping"]
+            command: ["sh", "/probes/readiness.sh", "{{ .Values.redis.port }}"]
           initialDelaySeconds: 15
           periodSeconds: 5
         resources:
@@ -95,6 +100,8 @@ spec:
         volumeMounts:
         - mountPath: /data
           name: data
+        - mountPath: /probes
+          name: probes
       - name: sentinel
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
@@ -102,14 +109,22 @@ spec:
           - redis-sentinel
         args:
           - /data/conf/sentinel.conf
+{{- if .Values.auth }}
+        env:
+        - name: AUTH
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "redis-ha.fullname" . }}
+              key: auth
+{{- end }}
         livenessProbe:
           exec:
-            command: ["redis-cli", "-p", "{{ .Values.sentinel.port }}", "ping"]
+            command: [ "sh", "/probes/check-quorum.sh", "{{ .Values.sentinel.port }}"]
           initialDelaySeconds: 15
           periodSeconds: 5
         readinessProbe:
           exec:
-            command: ["redis-cli", "-p", "{{ .Values.sentinel.port }}", "ping"]
+            command: ["sh", "/probes/readiness.sh", "{{ .Values.sentinel.port }}"]
           initialDelaySeconds: 15
           periodSeconds: 5
         resources:
@@ -120,10 +135,15 @@ spec:
         volumeMounts:
         - mountPath: /data
           name: data
+        - mountPath: /probes
+          name: probes
       volumes:
       - name: config
         configMap:
           name: {{ template "redis-ha.fullname" . }}-configmap
+      - name: probes
+        configMap:
+          name: {{ template "redis-ha.fullname" . }}-probes
 {{- if .Values.persistentVolume.enabled }}
   volumeClaimTemplates:
   - metadata:

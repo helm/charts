@@ -22,13 +22,18 @@ spec:
       volumes:
         - name: app-volume
           emptyDir: {}
-      containers:
+      initContainers:
         - name: war
           image: {{ .Values.image.webarchive.repository }}:{{ .Values.image.webarchive.tag }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - "sh"
+            - "-c"
+            - "cp /*.war /app"
           volumeMounts:
             - name: app-volume
               mountPath: /app
+      containers:
         - name: {{ .Chart.Name }}
           image: {{ .Values.image.tomcat.repository }}:{{ .Values.image.tomcat.tag }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
@@ -39,14 +44,24 @@ spec:
             - containerPort: {{ .Values.service.internalPort }}
               hostPort: 8009
           livenessProbe:
-            exec:
-              command:
-              - cat
-              - /usr/local/tomcat/webapps/sample/index.html
-            initialDelaySeconds: 15
-            periodSeconds: 20  
+            httpGet:
+              path: {{ .Values.livenessProbe.path }}
+              port: {{ .Values.service.internalPort }}
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.readinessProbe.path }}
+              port: {{ .Values.service.internalPort }}
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+            failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
+    {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.image.pullSecrets | indent 8 }}
+    {{- end }}
     {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}

@@ -60,6 +60,7 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `mongodbPassword`                       | MongoDB custom user password                                                                 | `random alhpanumeric string (10)`           |
 | `mongodbDatabase`                       | Database to create                                                                           | `nil`                                       |
 | `mongodbEnableIPv6`                     | Switch to enable/disable IPv6 on MongoDB                                                     | `true`                                      |
+| `mongodbSystemLogVerbosity`             | MongoDB systen log verbosity level                                                           | `0`                                         |
 | `mongodbExtraFlags`                     | MongoDB additional command line flags                                                        | []                                          |
 | `service.annotations`                   | Kubernetes service annotations                                                               | `{}`                                        |
 | `service.type`                          | Kubernetes Service type                                                                      | `ClusterIP`                                 |
@@ -139,7 +140,7 @@ $ helm install --name my-release -f values.yaml stable/mongodb
 You can start the MongoDB chart in replica set mode with the following command:
 
 ```bash
-$ helm install --name my-release stable/mongodb --set replication.enabled=true
+$ helm install --name my-release stable/mongodb --set replicaSet.enabled=true
 ```
 
 ## Production settings and horizontal scaling
@@ -174,3 +175,14 @@ The allowed extensions are `.sh`, and `.js`.
 The [Bitnami MongoDB](https://github.com/bitnami/bitnami-docker-mongodb) image stores the MongoDB data and configurations at the `/bitnami/mongodb` path of the container.
 
 The chart mounts a [Persistent Volume](http://kubernetes.io/docs/user-guide/persistent-volumes/) at this location. The volume is created using dynamic volume provisioning.
+
+## Upgrading
+
+### To 5.0.0
+
+When enabling replicaset configuration, backwards compatibility is not guaranteed unless you modify the labels used on the chart's statefulsets.
+Use the workaround below to upgrade from versions previous to 5.0.0. The following example assumes that the release name is `my-release`:
+
+```consoloe
+$ kubectl delete statefulset my-release-mongodb-arbiter my-release-mongodb-primary my-release-mongodb-secondary --cascade=false
+```
