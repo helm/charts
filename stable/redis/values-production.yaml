@@ -79,6 +79,9 @@ password:
 ## Use existing secret (ignores previous password)
 # existingSecret:
 
+## Mount secrets as files instead of environment variables
+usePasswordFile: false
+
 ## Persist data to a persistent volume
 persistence: {}
   ## A manually managed Persistent Volume and Claim
