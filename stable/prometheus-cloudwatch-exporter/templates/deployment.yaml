@@ -30,19 +30,19 @@ spec:
             - /cloudwatch_exporter.jar
             - "{{ .Values.service.targetPort }}"
             - /config/config.yaml
-        {{- if not .Values.aws.role }}
-        {{- if and .Values.aws.aws_secret_access_key .Values.aws.aws_access_key_id }}
+        {{- if or (not .Values.aws.role) (.Values.existingSecret) }}
+        {{- if or (and .Values.aws.aws_secret_access_key .Values.aws.aws_access_key_id) (.Values.existingSecret) }}
           env:
             - name: AWS_ACCESS_KEY_ID
               valueFrom:
                 secretKeyRef:
                   key: aws_access_key_id
-                  name: {{ template "prometheus-cloudwatch-exporter.fullname" . }}
+                  name: {{ template "prometheus-cloudwatch-exporter.secretName" . }}
             - name: AWS_SECRET_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
                   key: aws_secret_access_key
-                  name: {{ template "prometheus-cloudwatch-exporter.fullname" . }}
+                  name: {{ template "prometheus-cloudwatch-exporter.secretName" . }}
           {{- end }}
           {{- end }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
