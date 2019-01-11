@@ -277,6 +277,10 @@ dashboard:
     #   key: value
     # labels:
     #   key: value
+    # tls:
+      # - hosts:
+      #   - traefik.example.com
+      #   secretName: traefik-default-cert
   auth: {}
     # basic:
     #   username: password
