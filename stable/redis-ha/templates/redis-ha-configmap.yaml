@@ -37,73 +37,101 @@ data:
 {{- end }}
 
   init.sh: |
-    MASTER=`redis-cli -h {{ template "redis-ha.fullname" . }} -p {{ .Values.sentinel.port }} sentinel get-master-addr-by-name {{ .Values.redis.masterGroupName }} | grep -E '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}'`
+    HOSTNAME="$(hostname)"
+    INDEX="${HOSTNAME##*-}"
+    MASTER="$(redis-cli -h {{ template "redis-ha.fullname" . }} -p {{ .Values.sentinel.port }} sentinel get-master-addr-by-name {{ .Values.redis.masterGroupName }} | grep -E '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}')"
+    MASTER_GROUP="{{ .Values.redis.masterGroupName }}"
+    QUORUM="{{ .Values.sentinel.quorum }}"
     REDIS_CONF=/data/conf/redis.conf
+    REDIS_PORT={{ .Values.redis.port }}
     SENTINEL_CONF=/data/conf/sentinel.conf
-    
-    set -e
-    function sentinel_update(){
+    SENTINEL_PORT={{ .Values.sentinel.port }}
+    SERVICE={{ template "redis-ha.fullname" . }}
+    set -eu
+
+    sentinel_update() {
         echo "Updating sentinel config"
-        sed -i "1s/^/sentinel monitor {{ .Values.redis.masterGroupName }} $1 {{ .Values.redis.port }} {{ .Values.sentinel.quorum }} \n/" $SENTINEL_CONF
+        sed -i "1s/^/$(cat sentinel-id)\\n/" "$SENTINEL_CONF"
+        sed -i "2s/^/sentinel monitor $MASTER_GROUP $1 $REDIS_PORT $QUORUM \\n/" "$SENTINEL_CONF"
+        echo "sentinel announce-ip $ANNOUNCE_IP" >> $SENTINEL_CONF
+        echo "sentinel announce-port $SENTINEL_PORT" >> $SENTINEL_CONF
     }
 
-    function redis_update(){
+    redis_update() {
         echo "Updating redis config"
-        echo "slaveof $1 {{ .Values.redis.port }}" >> $REDIS_CONF
+        echo "slaveof $1 $REDIS_PORT" >> "$REDIS_CONF"
+        echo "slave-announce-ip $ANNOUNCE_IP" >> $REDIS_CONF
+        echo "slave-announce-port $REDIS_PORT" >> $REDIS_CONF
     }
 
-    function setup_defaults(){
+    copy_config() {
+        if [ -f "$SENTINEL_CONF" ]; then
+            grep "sentinel myid" "$SENTINEL_CONF" > sentinel-id || true
+        fi
+        cp /readonly-config/redis.conf "$REDIS_CONF"
+        cp /readonly-config/sentinel.conf "$SENTINEL_CONF"
+    }
+
+    setup_defaults() {
         echo "Setting up defaults"
-        if [[ "$HOSTNAME" == "{{ template "redis-ha.fullname" . }}-server-0" ]]; then
+        if [ "$INDEX" = "0" ]; then
             echo "Setting this pod as the default master"
-            sed -i "s/^.*slaveof.*//" $REDIS_CONF
-            sentinel_update "$POD_IP"
+            sed -i "s/^.*slaveof.*//" "$REDIS_CONF"
+            sentinel_update "$ANNOUNCE_IP"
         else
+            DEFAULT_MASTER="$(getent hosts "$SERVICE-announce-0" | awk '{ print $1 }')"
+            if [ -z "$DEFAULT_MASTER" ]; then
+                echo "Unable to resolve host"
+                exit 1
+            fi
             echo "Setting default slave config.."
-            echo "slaveof {{ template "redis-ha.fullname" . }}-server-0.{{ template "redis-ha.fullname" . }} {{ .Values.redis.port }}" >> $REDIS_CONF
-            sentinel_update "{{ template "redis-ha.fullname" . }}-server-0.{{ template "redis-ha.fullname" . }}"
-            redis_update "{{ template "redis-ha.fullname" . }}-server-0.{{ template "redis-ha.fullname" . }}"
+            redis_update "$DEFAULT_MASTER"
+            sentinel_update "$DEFAULT_MASTER"
         fi
     }
 
-    function find_master(){
+    find_master() {
         echo "Attempting to find master"
-        if [[ ! `redis-cli -h $MASTER{{ if .Values.auth }} -a $AUTH{{ end }} ping` ]]; then
+        if [ "$(redis-cli -h "$MASTER"{{ if .Values.auth }} -a "$AUTH"{{ end }} ping)" != "PONG" ]; then
            echo "Can't ping master, attempting to force failover"
-           if redis-cli -h {{ template "redis-ha.fullname" . }} -p {{ .Values.sentinel.port }} sentinel failover {{ .Values.redis.masterGroupName }} | grep -q 'NOGOODSLAVE' ; then 
+           if redis-cli -h "$SERVICE" -p "$SENTINEL_PORT" sentinel failover "$MASTER_GROUP" | grep -q 'NOGOODSLAVE' ; then 
                setup_defaults
                return 0
            fi
            sleep 10
-           MASTER=`redis-cli -h {{ template "redis-ha.fullname" . }} -p {{ .Values.sentinel.port }} sentinel get-master-addr-by-name {{ .Values.redis.masterGroupName }} | grep -E '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}'`
-           if [[ "$MASTER" ]]; then
-               sentinel_update $MASTER
-               redis_update $MASTER
+           MASTER="$(redis-cli -h $SERVICE -p $SENTINEL_PORT sentinel get-master-addr-by-name $MASTER_GROUP | grep -E '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}')"
+           if [ "$MASTER" ]; then
+               sentinel_update "$MASTER"
+               redis_update "$MASTER"
            else
               echo "Could not failover, exiting..."
               exit 1
            fi
         else
             echo "Found reachable master, updating config"
-            sentinel_update $MASTER
-            redis_update $MASTER
+            sentinel_update "$MASTER"
+            redis_update "$MASTER"
         fi
     }
 
     mkdir -p /data/conf/
+
     echo "Initializing config.."
+    copy_config
 
-    cp /readonly-config/redis.conf $REDIS_CONF
-    cp /readonly-config/sentinel.conf $SENTINEL_CONF
-
-    if [[ "$MASTER" ]]; then
+    ANNOUNCE_IP=$(getent hosts "$SERVICE-announce-$INDEX" | awk '{ print $1 }')
+    if [ -z "$ANNOUNCE_IP" ]; then
+        "Could not resolve the announce ip for this pod"
+        exit 1
+    elif [ "$MASTER" ]; then
         find_master
     else
         setup_defaults
     fi
-    if [[ "$AUTH" ]]; then
+
+    if [ "${AUTH:-}" ]; then
         echo "Setting auth values"
-        sed -i "s/replace-default-auth/$AUTH/" $REDIS_CONF $SENTINEL_CONF
+        sed -i "s/replace-default-auth/$AUTH/" "$REDIS_CONF" "$SENTINEL_CONF"
     fi
 
     echo "Ready..."

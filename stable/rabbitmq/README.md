@@ -64,11 +64,11 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `rabbitmq.clustering.k8s_domain`     | Customize internal k8s cluster domain            | `cluster.local`                                         |
 | `rabbitmq.ulimitNofiles`             | Max File Descriptor limit                        | `65536`                                                 |
 | `rabbitmq.configuration`             | rabbitmq.conf content                            | see values.yaml                                         |
-| `service.type`                        | Kubernetes Service type                          | `ClusterIP`                                             |
-| `service.amqpPort`                  | Amqp port                                        | `5672`                                                  |
-| `service.distPort`                  | Erlang distribution server port                  | `25672`                                                 |
-| `service.nodePort`                  | Node port override, if serviceType NodePort      | _random available between 30000-32767_                  |
-| `service.managerPort`               | RabbitMQ Manager port                            | `15672`                                                 |
+| `service.type`                       | Kubernetes Service type                          | `ClusterIP`                                             |
+| `service.amqpPort`                   | Amqp port                                        | `5672`                                                  |
+| `service.distPort`                   | Erlang distribution server port                  | `25672`                                                 |
+| `service.nodePort`                   | Node port override, if serviceType NodePort      | _random available between 30000-32767_                  |
+| `service.managerPort`                | RabbitMQ Manager port                            | `15672`                                                 |
 | `persistence.enabled`                | Use a PVC to persist data                        | `false`                                                 |
 | `persistence.storageClass`           | Storage class of backing PVC                     | `nil` (uses alpha storage class annotation)             |
 | `persistence.accessMode`             | Use volume as ReadOnly or ReadWrite              | `ReadWriteOnce`                                         |
@@ -80,20 +80,22 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `nodeSelector`                       | Node labels for pod assignment                   | {}                                                      |
 | `affinity`                           | Affinity settings for pod assignment             | {}                                                      |
 | `tolerations`                        | Toleration labels for pod assignment             | []                                                      |
-| `ingress.enabled`                    | enable ingress for management console            | `false`                                                 |
+| `ingress.enabled`                    | Enable ingress resource for Management console   | `false`                                                 |
+| `ingress.hostName`                   | Hostname to your RabbitMQ installation           | `nil`                                                   |
+| `ingress.path`                       | Path within the url structure                    | `/`                                                     |
 | `ingress.tls`                        | enable ingress with tls                          | `false`                                                 |
 | `ingress.tlsSecret`                  | tls type secret to be used                       | `myTlsSecret`                                           |
 | `ingress.annotations`                | ingress annotations as an array                  | []                                                      |
 | `livenessProbe.enabled`              | would you like a livenessProbed to be enabled    | `true`                                                  |
 | `livenessProbe.initialDelaySeconds`  | number of seconds                                | 120                                                     |
-| `livenessProbe.timeoutSeconds`       | number of seconds                                | 5                                                       |
-| `livenessProbe.periodSeconds`        | number of seconds                                | 5                                                       |
+| `livenessProbe.timeoutSeconds`       | number of seconds                                | 20                                                      |
+| `livenessProbe.periodSeconds`        | number of seconds                                | 30                                                      |
 | `livenessProbe.failureThreshold`     | number of failures                               | 6                                                       |
 | `livenessProbe.successThreshold`     | number of successes                              | 1                                                       |
 | `readinessProbe.enabled`             | would you like a readinessProbe to be enabled    | `true`                                                  |
 | `readinessProbe.initialDelaySeconds` | number of seconds                                | 10                                                      |
-| `readinessProbe.timeoutSeconds`      | number of seconds                                | 3                                                       |
-| `readinessProbe.periodSeconds`       | number of seconds                                | 5                                                       |
+| `readinessProbe.timeoutSeconds`      | number of seconds                                | 20                                                      |
+| `readinessProbe.periodSeconds`       | number of seconds                                | 30                                                      |
 | `readinessProbe.failureThreshold`    | number of failures                               | 3                                                       |
 | `readinessProbe.successThreshold`    | number of successes                              | 1                                                       |
 | `metrics.enabled`                    | Start a side-car prometheus exporter             | `false`                                                 |

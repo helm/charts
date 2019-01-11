@@ -23,6 +23,10 @@ spec:
 {{ toYaml .Values.daemonset.podAnnotations | indent 8 }}
       {{- end }}
     spec:
+      {{- if .Values.datadog.securityContext }}
+      securityContext:
+{{ toYaml .Values.datadog.securityContext | indent 8 }}
+      {{- end }}
       {{- if .Values.daemonset.useHostNetwork }}
       hostNetwork: {{ .Values.daemonset.useHostNetwork }}
       dnsPolicy: ClusterFirstWithHostNet
@@ -91,6 +95,18 @@ spec:
           {{- if .Values.datadog.processAgentEnabled }}
           - name: DD_PROCESS_AGENT_ENABLED
             value: {{ .Values.datadog.processAgentEnabled | quote }}
+          {{- end }}
+          {{- if .Values.datadog.hostname }}
+          - name: DD_HOSTNAME
+            value: {{ .Values.datadog.hostname | quote }}
+          {{- end }}
+          {{- if .Values.datadog.acInclude }}
+          - name: DD_AC_INCLUDE
+            value: {{ .Values.datadog.acInclude | quote }}
+          {{- end }}
+          {{- if .Values.datadog.acExclude }}
+          - name: DD_AC_EXCLUDE
+            value: {{ .Values.datadog.acExclude | quote }}
           {{- end }}
           {{- if not .Values.clusterAgent.enabled }}
           {{- if .Values.datadog.leaderElection }}
@@ -173,7 +189,7 @@ spec:
           {{- end }}
           {{- if .Values.datadog.logsEnabled }}
           - name: pointerdir
-            mountPath: /var/lib/datadog-agent/logs
+            mountPath: /opt/datadog-agent/run
           {{- end }}
           {{- if .Values.datadog.processAgentEnabled }}
           - name: passwd
@@ -183,12 +199,18 @@ spec:
 {{- if .Values.datadog.volumeMounts }}
 {{ toYaml .Values.datadog.volumeMounts | indent 10 }}
 {{- end }}
+{{- if .Values.datadog.livenessProbe }}
+        livenessProbe:
+{{ toYaml .Values.datadog.livenessProbe | indent 10 }}
+{{- else }}
         livenessProbe:
           exec:
             command:
             - ./probe.sh
           initialDelaySeconds: 15
           periodSeconds: 5
+          failureThreshold: 6
+{{- end }}
       volumes:
         {{- if .Values.datadog.useCriSocketVolume }}
         - hostPath:
@@ -215,7 +237,7 @@ spec:
         {{- end }}
         {{- if .Values.datadog.logsEnabled }}
         - hostPath:
-            path: /var/lib/datadog-agent/logs
+            path: {{ default "/var/lib/datadog-agent/logs" .Values.datadog.logsPointerHostPath | quote }}
           name: pointerdir
         {{- end }}
         {{- if .Values.datadog.processAgentEnabled }}
