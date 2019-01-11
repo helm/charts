@@ -41,6 +41,7 @@ cloudflare:
 google:
   project: ""
   serviceAccountSecret: ""
+  serviceAccountKey: ""
 
 # Infoblox keys to inject
 infoblox:
