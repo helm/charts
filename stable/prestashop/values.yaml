@@ -59,6 +59,16 @@ prestashopLastName: User
 ##
 prestashopCookieCheckIP: "no"
 
+## Country
+## ref: https://github.com/bitnami/bitnami-docker-prestashop#configuration
+##
+prestashopCountry: "us"
+
+## Language
+## ref: https://github.com/bitnami/bitnami-docker-prestashop#configuration
+##
+prestashopLanguage: "en"
+
 ## Set to `yes` to allow the container to be started with blank passwords
 ## ref: https://github.com/bitnami/bitnami-docker-prestashop#environment-variables
 allowEmptyPassword: "yes"
