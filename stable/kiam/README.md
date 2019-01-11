@@ -52,6 +52,20 @@ agent:
 server:
   tlsSecret: kiam-server-tls
 ```
+Define TLS certificate names to use in kiam command line arguments as follows.
+```yaml
+agent:
+  tlsCerts:
+    certFileName: cert
+    keyFileName: key
+    caFileName: ca
+
+server:
+  tlsCerts:
+    certFileName: cert
+    keyFileName: key
+    caFileName: ca
+```
 
 To install the chart with the release name `my-release`:
 

@@ -91,6 +91,12 @@ agent:
   ##
   tlsSecret:
 
+  ## Agent TLS Certificate filenames
+  tlsCerts:
+    certFileName: cert
+    keyFileName: key
+    caFileName: ca
+
 server:
   ## If false, server will not be installed
   ##
@@ -194,6 +200,12 @@ server:
   ## Use hostNetwork for server
   ## Set this to true when running the servers on the same nodes as the agents
   useHostNetwork: false
+
+  ## Agent TLS Certificate filenames
+  tlsCerts:
+    certFileName: cert
+    keyFileName: key
+    caFileName: ca
 
 rbac:
   # Specifies whether RBAC resources should be created
