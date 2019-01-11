@@ -23,7 +23,7 @@ spec:
 {{ toYaml .Values.server.podAnnotations | indent 8 }}
     {{- end }}
       labels:
-        {{- include "prometheus.server.labels" . | nindent 8 }}
+        {{- include "prometheus.server.matchLabels" . | nindent 8 }}
     spec:
 {{- if .Values.server.affinity }}
       affinity:

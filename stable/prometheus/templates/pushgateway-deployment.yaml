@@ -17,7 +17,7 @@ spec:
 {{ toYaml .Values.pushgateway.podAnnotations | indent 8 }}
     {{- end }}
       labels:
-        {{- include "prometheus.pushgateway.labels" . | nindent 8 }}
+        {{- include "prometheus.pushgateway.matchLabels" . | nindent 8 }}
     spec:
       serviceAccountName: {{ template "prometheus.serviceAccountName.pushgateway" . }}
 {{- if .Values.pushgateway.priorityClassName }}

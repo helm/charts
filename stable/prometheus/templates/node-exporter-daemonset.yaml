@@ -24,7 +24,7 @@ spec:
 {{ toYaml .Values.nodeExporter.podAnnotations | indent 8 }}
     {{- end }}
       labels:
-        {{- include "prometheus.nodeExporter.labels" . | nindent 8 }}
+        {{- include "prometheus.nodeExporter.matchLabels" . | nindent 8 }}
 {{- if .Values.nodeExporter.pod.labels }}
 {{ toYaml .Values.nodeExporter.pod.labels | indent 8 }}
 {{- end }}

@@ -21,7 +21,7 @@ spec:
 {{ toYaml .Values.kubeStateMetrics.podAnnotations | indent 8 }}
     {{- end }}
       labels:
-        {{- include "prometheus.kubeStateMetrics.labels" . | nindent 8 }}
+        {{- include "prometheus.kubeStateMetrics.matchLabels" . | nindent 8 }}
 {{- if .Values.kubeStateMetrics.pod.labels }}
 {{ toYaml .Values.kubeStateMetrics.pod.labels | indent 8 }}
 {{- end }}
