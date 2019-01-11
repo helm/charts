@@ -109,6 +109,8 @@ ingress:
 timezone: UTC
 
 runAsRoot: false
+UID: 999
+GID: 999
 
   # define an external mongoDB instead of using the built-in mongodb
 mongodb:

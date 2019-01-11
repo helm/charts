@@ -48,7 +48,7 @@ The following table lists the configurable parameters of the kibana chart and th
 | `livenessProbe.timeoutSeconds`                | number of seconds                          | 10                                     |
 | `image.pullPolicy`                            | Image pull policy                          | `IfNotPresent`                         |
 | `image.repository`                            | Image repository                           | `docker.elastic.co/kibana/kibana-oss`  |
-| `image.tag`                                   | Image tag                                  | `6.5.3`                                |
+| `image.tag`                                   | Image tag                                  | `6.5.4`                                |
 | `image.pullSecrets`                           | Specify image pull secrets                 | `nil`                                  |
 | `commandline.args`                            | add additional commandline args            | `nil`                                  |
 | `ingress.enabled`                             | Enables Ingress                            | `false`                                |
@@ -100,6 +100,8 @@ The following table lists the configurable parameters of the kibana chart and th
 | `securityContext.allowPrivilegeEscalation`    | Allow privilege escalation                 | `false`                                 |
 | `securityContext.runAsUser`                   | User id to run in pods                     | `1000`                                  |
 | `securityContext.fsGroup`                     | fsGroup id to run in pods                  | `2000`                                  |
+| `extraConfigMapMounts`                        | Additional configmaps to be mounted        | `[]`                                    |
+| `deployment.annotations`                      | Annotations for deployment                 | `{}`                                    |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,

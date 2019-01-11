@@ -73,6 +73,9 @@ spec:
             -
               mountPath: /var/jenkins_home
               name: jenkins-home
+              {{- if .Values.Persistence.SubPath }}
+              subPath: {{ .Values.Persistence.SubPath }}
+              {{- end }}
             -
               mountPath: /var/jenkins_config
               name: jenkins-config
@@ -110,7 +113,7 @@ spec:
           args: [ "--argumentsRealm.passwd.$(ADMIN_USER)=$(ADMIN_PASSWORD)",  "--argumentsRealm.roles.$(ADMIN_USER)=admin"]
           {{- end }}
           env:
-            - name: JAVA_TOOL_OPTIONS
+            - name: JAVA_OPTS
               value: "{{ default "" .Values.Master.JavaOpts}}"
             - name: JENKINS_OPTS
               value: "{{ if .Values.Master.JenkinsUriPrefix }}--prefix={{ .Values.Master.JenkinsUriPrefix }} {{ end }}{{ default "" .Values.Master.JenkinsOpts}}"
@@ -155,6 +158,7 @@ spec:
               path: "{{ default "" .Values.Master.JenkinsUriPrefix }}/login"
               port: http
             initialDelaySeconds: {{ .Values.Master.HealthProbesReadinessTimeout }}
+            periodSeconds: {{ .Values.Master.HealthProbeReadinessPeriodSeconds }}
 {{- end }}
           # Resources configuration is a little hacky. This was to prevent breaking
           # changes, and should be cleanned up in the future once everybody had
@@ -175,6 +179,9 @@ spec:
               mountPath: /var/jenkins_home
               name: jenkins-home
               readOnly: false
+              {{- if .Values.Persistence.SubPath }}
+              subPath: {{ .Values.Persistence.SubPath }}
+              {{- end }}
             -
               mountPath: /var/jenkins_config
               name: jenkins-config

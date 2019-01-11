@@ -74,6 +74,7 @@ The following table lists the configurable parameters of the Datadog chart and t
 | `datadog.env`               | Additional Datadog environment variables | `nil`                               |
 | `datadog.logsEnabled`       | Enable log collection              | `nil`                                     |
 | `datadog.logsConfigContainerCollectAll` | Collect logs from all containers | `nil`                           |
+| `datadog.logsPointerHostPath` | Host path to store the log tailing state in | `/var/lib/datadog-agent/logs`   |
 | `datadog.apmEnabled`        | Enable tracing from the host       | `nil`                                     |
 | `datadog.processAgentEnabled` | Enable live process monitoring   | `nil`                                     |
 | `datadog.checksd`           | Additional custom checks as python code  | `nil`                               |
@@ -90,7 +91,11 @@ The following table lists the configurable parameters of the Datadog chart and t
 | `datadog.resources.limits.cpu` | CPU resource limits             | `200m`                                    |
 | `datadog.resources.requests.memory` | Memory resource requests   | `256Mi`                                   |
 | `datadog.resources.limits.memory` | Memory resource limits       | `256Mi`                                   |
+| `datadog.securityContext`   | Allows you to overwrite the default securityContext applied to the container  | `nil`  |
 | `datadog.livenessProbe`     | Overrides the default liveness probe | exec /probe.sh                          |
+| `datadog.hostname`          | Set the hostname (write it in datadog.conf) | `nil`                            |
+| `datadog.acInclude`         | Include containers based on image name | `nil`                                 |
+| `datadog.acExclude`         | Exclude containers based on image name | `nil`                                 |
 | `daemonset.podAnnotations`  | Annotations to add to the DaemonSet's Pods | `nil`                             |
 | `daemonset.tolerations`     | List of node taints to tolerate (requires Kubernetes >= 1.6) | `nil`           |
 | `daemonset.nodeSelector`    | Node selectors                     | `nil`                                     |

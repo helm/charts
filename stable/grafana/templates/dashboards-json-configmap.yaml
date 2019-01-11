@@ -1,5 +1,6 @@
 {{- if .Values.dashboards }}
-  {{- range $provider, $dashboards := .Values.dashboards }}
+{{ $files := .Files }}
+{{- range $provider, $dashboards := .Values.dashboards }}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -12,11 +13,11 @@ metadata:
     heritage: {{ $.Release.Service }}
     dashboard-provider: {{ $provider }}
 data:
-  {{- range $key, $value := $dashboards }}
-    {{- if hasKey $value "json" }}
-  {{ $key }}.json: |
-{{ $value.json | indent 4 }}
-    {{- end }}
-  {{- end }}
-  {{- end }}
+{{- range $key, $value := $dashboards }}
+{{- if hasKey $value "json" }}
+{{ print $key | indent 2 }}.json:
+{{ toYaml ( $files.Get $value.json ) | indent 4}}
+{{- end }}
+{{- end }}
+{{- end }}
 {{- end }}

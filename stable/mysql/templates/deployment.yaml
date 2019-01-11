@@ -21,6 +21,9 @@ spec:
       imagePullSecrets:
 {{ toYaml .Values.imagePullSecrets | indent 8 }}
       {{- end }}
+      {{- if .Values.priorityClassName }}
+      priorityClassName: "{{ .Values.priorityClassName }}"
+      {{- end }}
       initContainers:
       - name: "remove-lost-found"
         image: "{{ .Values.busybox.image}}:{{ .Values.busybox.tag }}"
