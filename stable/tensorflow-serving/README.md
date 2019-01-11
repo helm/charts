@@ -1,13 +1,13 @@
 # TensorFlow Serving
 
-TensorFlow Serving is an open-source software library for serving machine learning models. We hope to demonstrate how to deploy a generic TensorFlow Model Server and serve a model from distributed storage instead of baking into the image like [TensorFlow inception](../../incubator/tensorflow-inception/README.md). 
+TensorFlow Serving is an open-source software library for serving machine learning models. We hope to demonstrate how to deploy a generic TensorFlow Model Server and serve a model from distributed storage instead of baking into the image like [TensorFlow inception](../../incubator/tensorflow-inception/README.md).
 
 For more information,
 [visit the project on github](https://github.com/tensorflow/serving).
 
 ## Prerequisites
 
-- Kubernetes cluster v1.8+ 
+- Kubernetes cluster v1.8+
 - Because TensorFlow Serving needs model in persistent storage, you have to put your servable model in  NFS (Network File System) or
 HDFS (Hadoop Distributed File System), AWS S3 (Simple Storage Service) or Google Cloud Storage. Here is a sample for NAS storage.
 
@@ -56,18 +56,18 @@ umount /serving
 Creating Persistent Volume with configuration like below
 
 ```
---- 
+---
 apiVersion: v1
 kind: PersistentVolume
-metadata: 
-  labels: 
+metadata:
+  labels:
     model: mnist
   name: pv-nas-mnist
 spec:
   persistentVolumeReclaimPolicy: Retain
-  accessModes: 
+  accessModes:
     - ReadWriteMany
-  capacity: 
+  capacity:
     storage: 5Gi
   nfs:
   	# FIXME: use the right IP
@@ -84,10 +84,10 @@ spec:
 modelName: "mnist"
 modelBasePath: "/serving/model/mnist"
 image: "cheyang/tf-model-server-gpu:1.4"
-persistence: 
+persistence:
   mountPath: /serving/model/mnist
-  pvc: 
-    matchLabels: 
+  pvc:
+    matchLabels:
       model: mnist
     storage: 5Gi
 resources:
@@ -95,17 +95,17 @@ resources:
     nvidia.com/gpu: 1
 ```
 
-* To deploy without GPU, you can create `values.yaml` like 
+* To deploy without GPU, you can create `values.yaml` like
 
 ```
 ---
 modelName: "mnist"
 modelBasePath: "/serving/model/mnist"
 image: "cheyang/tf-model-server:1.4"
-persistence: 
+persistence:
   mountPath: /serving/model/mnist
-  pvc: 
-    matchLabels: 
+  pvc:
+    matchLabels:
       model: mnist
     storage: 5Gi
 ```
@@ -116,6 +116,12 @@ To install the chart with the release name `mnist`:
 
 ```bash
 $ helm install --values values.yaml --name mnist stable/tensorflow-serving
+```
+
+To install the chart with model on Google Cloud Storage and with GPU:
+
+```bash
+$ helm install --name model-name --set modelName=model-name,modelBasePath=gs://bucket/model-folder,resources.limits."nvidia\.com/gpu"=1,image.tag=1.12.0-gpu stable/tensorflow-serving
 ```
 
 ## Uninstalling the Chart
@@ -138,7 +144,10 @@ chart and their default values.
 |-----------|-------------|---------|
 | `image` | TensorFlow Serving image | `cheyang/tf-model-server-gpu:1.4`, the docker file is [Tensorflow Serving Dockerfile](https://github.com/kubeflow/kubeflow/tree/master/components/k8s-model-server/images) |
 | `imagePullPolicy` | `imagePullPolicy` for the service mnist | `IfNotPresent` |
-| `port` | Tensorflow Serving port | `9090` |
+| `grpcServicePort` | Tensorflow Serving gRPC service port | `9090` |
+| `restServicePort` | Tensorflow Serving REST service port | `80` |
+| `grpcPort` | Tensorflow Serving gRPC port | `8500` |
+| `restPort` | Tensorflow Serving REST port | `8501` |
 | `serviceType` | The service type which supports NodePort, LoadBalancer | `LoadBalancer` |
 |`replicas`| K8S deployment replicas | `1` |
 |`modelName`|  The model name | `mnist`|
@@ -147,6 +156,3 @@ chart and their default values.
 |`persistence.enabled` | enable pvc for the tensorflow serving | `false` |
 |`persistence.size`| the storage size to request | `5Gi` |
 |`persistence.matchLabels`| the selector for pv | `{}` |
-
-
-
