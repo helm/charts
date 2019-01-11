@@ -1,3 +1,8 @@
+### 1.6.3
+
+* [bca4092f](https://github.com/kubernetes/charts/commit/bca4092f):
+  - Fixes regression of functionality that allows for extra volumes and mounts regardless of whether persistence and ssh is enabled
+
 ### 1.6.2
 
 * [fe985d7](https://github.com/kubernetes/charts/commit/fe985d7):
