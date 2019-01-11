@@ -1,13 +1,14 @@
-{{- if .Values.tcp }}
+{{- if .Values.controller.tcp }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
   labels:
     app: {{ template "haproxy-ingress.name" . }}
     chart: {{ template "haproxy-ingress.chart" . }}
+    component: "{{ .Values.controller.name }}"
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-  name: {{ template "haproxy-ingress.fullname" . }}-tcp
+  name: {{ template "haproxy-ingress.controller.fullname" . }}-tcp
 data:
-{{ toYaml .Values.tcp | indent 2 }}
+{{ toYaml .Values.controller.tcp | indent 2 }}
 {{- end }}
