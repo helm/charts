@@ -31,7 +31,7 @@ resources: {}
 grpcPort: 8500
 restPort: 8501
 modelName: "model-name"
-modelBasePath: "model-base-path"
+modelBasePath: "gs://model-base-path/model-name"
 
 persistence:
   enabled: false
