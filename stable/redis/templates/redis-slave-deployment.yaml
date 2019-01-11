@@ -110,24 +110,23 @@ spec:
         - name: REDIS_MASTER_PORT_NUMBER
           value: {{ .Values.master.service.port | quote }}
         {{- if .Values.usePassword }}
+        {{- if .Values.usePasswordFile }}
+        - name: REDIS_PASSWORD_FILE
+          value: "/opt/bitnami/redis/secrets/redis-password"
+        - name: REDIS_MASTER_PASSWORD_FILE
+          value: "/opt/bitnami/redis/secrets/redis-master-password"
+        {{- else }}
         - name: REDIS_PASSWORD
           valueFrom:
             secretKeyRef:
-              {{- if .Values.existingSecret }}
-              name: {{ .Values.existingSecret }}
-              {{- else }}
-              name: {{ template "redis.fullname" . }}
-              {{- end }}
+              name: {{ template "redis.secretName" . }}
               key: redis-password
         - name: REDIS_MASTER_PASSWORD
           valueFrom:
             secretKeyRef:
-              {{- if .Values.existingSecret }}
-              name: {{ .Values.existingSecret }}
-              {{- else }}
-              name: {{ template "redis.fullname" . }}
-              {{- end }}
+              name: {{ template "redis.secretName" . }}
               key: redis-password
+        {{- end }}
         {{- else }}
         - name: ALLOW_EMPTY_PASSWORD
           value: "yes"
@@ -144,6 +143,10 @@ spec:
         volumeMounts:
         - name: health
           mountPath: /health
+        {{- if .Values.usePasswordFile }}
+        - name: redis-password
+          mountPath: /opt/bitnami/redis/secrets/
+        {{- end }}
         - name: redis-data
           mountPath: /data
         {{- if .Values.configmap }}
@@ -155,6 +158,11 @@ spec:
         configMap:
           name: {{ template "redis.fullname" . }}-health
           defaultMode: 0755
+      {{- if .Values.usePasswordFile }}
+      - name: redis-password
+        secret:
+          secretName: {{ template "redis.secretName" . }}
+      {{- end }}
       {{- if .Values.configmap }}
       - name: config
         configMap:
