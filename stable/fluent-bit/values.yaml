@@ -182,7 +182,7 @@ input:
     memBufLimit: 5MB
     path: /var/log/containers/*.log
   systemd:
-    enabled: true
+    enabled: false
     filters:
       systemdUnit:
         - docker.service
