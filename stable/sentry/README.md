@@ -104,6 +104,7 @@ The following table lists the configurable parameters of the Sentry chart and th
 | `ingress.hostname`                   | URL to address your Sentry installation     | `sentry.local`                                             |
 | `ingress.tls`                        | Ingress TLS configuration                   | `[]`                                                       |
 | `persistence.enabled`                | Enable persistence using PVC                | `true`                                                     |
+| `persistence.existingClaim`          | Provide an existing `PersistentVolumeClaim` | `nil`                                                      |
 | `persistence.storageClass`           | PVC Storage Class                           | `nil` (uses alpha storage class annotation)                |
 | `persistence.accessMode`             | PVC Access Mode                             | `ReadWriteOnce`                                            |
 | `persistence.size`                   | PVC Storage Request                         | `10Gi`                                                     |
