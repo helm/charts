@@ -29,7 +29,12 @@ resources: {}
   #   cpu: 100m
   #   memory: 128Mi
 
+
+## Specify an existing secret holding the aws credentials
+existingSecret: ""
+
 aws:
+  ## only used if no existing secret is specified
   region: eu-west-1
   role:
   # Note: Do not specify the aws_access_key_id abd aws_secret_access_key if you specified role before
