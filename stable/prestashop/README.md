@@ -72,13 +72,15 @@ The following table lists the configurable parameters of the PrestaShop chart an
 | `ingress.secrets[0].name`             | TLS Secret Name                                                                              | `nil`                                                        |
 | `ingress.secrets[0].certificate`      | TLS Secret Certificate                                                                       | `nil`                                                        |
 | `ingress.secrets[0].key`              | TLS Secret Key                                                                               | `nil`                                                        |
-| `prestashopHost`                      | PrestaShop host to create application URLs (when ingress, it will be ignored)                | `nil`                                          |
+| `prestashopHost`                      | PrestaShop host to create application URLs (when ingress, it will be ignored)                | `nil`                                                        |
 | `prestashopUsername`                  | User of the application                                                                      | `user@example.com`                                           |
 | `prestashopPassword`                  | Application password                                                                         | _random 10 character long alphanumeric string_               |
 | `prestashopEmail`                     | Admin email                                                                                  | `user@example.com`                                           |
 | `prestashopFirstName`                 | First Name                                                                                   | `Bitnami`                                                    |
 | `prestashopLastName`                  | Last Name                                                                                    | `Name`                                                       |
 | `prestashopCookieCheckIP`             | Whether to check the cookie's IP address or not                                              | `no`                                                         |
+| `prestashopCountry`                   | Default country of the store                                                                 | `us`                                                         |
+| `prestashopLanguage`                  | Default language of the store (iso code)                                                     | `en`                                                         |
 | `smtpHost`                            | SMTP host                                                                                    | `nil`                                                        |
 | `smtpPort`                            | SMTP port                                                                                    | `nil`                                                        |
 | `smtpUser`                            | SMTP user                                                                                    | `nil`                                                        |
