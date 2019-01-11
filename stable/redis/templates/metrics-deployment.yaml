@@ -35,7 +35,7 @@ spec:
         {{- range .Values.metrics.image.pullSecrets }}
         - name: {{ . }}
         {{- end}}
-      {{- end}}
+      {{- end }}
       {{- if .Values.metrics.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.metrics.nodeSelector | indent 8 }}
@@ -89,15 +89,15 @@ spec:
         - name: redis-password
           mountPath: /secrets/
         {{- end }}
-      volumes:
-      {{- if .Values.usePasswordFile }}
-      - name: redis-password
-        secret:
-          secretName: {{ template "redis.secretName" . }}
-      {{- end }}
         ports:
         - name: metrics
           containerPort: 9121
         resources:
 {{ toYaml .Values.metrics.resources | indent 10 }}
+      volumes:
+      {{- if .Values.usePasswordFile }}
+        - name: redis-password
+          secret:
+            secretName: {{ template "redis.secretName" . }}
+      {{- end }}
 {{- end }}
