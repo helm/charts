@@ -76,6 +76,8 @@ spec:
               name: {{ if .Values.existingSecret }}{{ .Values.existingSecret }}{{- else }}{{ template "mongodb.fullname" . }}{{- end }}
               key: mongodb-password
         {{- end }}
+        - name: MONGODB_SYSTEM_LOG_VERBOSITY
+          value: {{ .Values.mongodbSystemLogVerbosity | quote}}
         - name: MONGODB_DATABASE
           value: {{ default "" .Values.mongodbDatabase | quote }}
         - name: MONGODB_ENABLE_IPV6
@@ -160,7 +162,7 @@ spec:
           initialDelaySeconds: 5
           timeoutSeconds: 1
         resources:
-  {{ toYaml .Values.metrics.resources | indent 10 }}
+{{ toYaml .Values.metrics.resources | indent 10 }}
 {{- end }}
       volumes:
       {{- if  (.Files.Glob "files/docker-entrypoint-initdb.d/*[sh|js]") }}
