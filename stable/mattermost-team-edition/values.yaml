@@ -249,7 +249,7 @@ mattermostConfig: {
     "MaxIdleConns": 20,
     "MaxOpenConns": 35,
     "Trace": false,
-    "AtRestEncryptKey": "PLACEHOLDER",
+    "AtRestEncryptKey": "",
     "QueryTimeout": 30
   },
   "LogSettings": {
@@ -275,7 +275,7 @@ mattermostConfig: {
     "DriverName": "PLACEHOLDER",
     "Directory": "./data/",
     "EnablePublicLink": false,
-    "PublicLinkSalt": "PLACEHOLDER",
+    "PublicLinkSalt": "",
     "ThumbnailWidth": 120,
     "ThumbnailHeight": 100,
     "PreviewWidth": 1024,
@@ -306,7 +306,7 @@ mattermostConfig: {
     "SMTPServer": "PLACEHOLDER",
     "SMTPPort": "PLACEHOLDER",
     "ConnectionSecurity": "PLACEHOLDER",
-    "InviteSalt": "PLACEHOLDER",
+    "InviteSalt": "",
     "SendPushNotifications": true,
     "PushNotificationServer": "https://push-test.mattermost.com",
     "PushNotificationContents": "generic",
