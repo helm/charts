@@ -29,35 +29,9 @@ data:
   {{- $_ := set $c.SqlSettings "DriverName" "mysql" }}
   {{- $_ := set $c.SqlSettings "DataSource" (print .Values.mysql.mysqlUser ":" .Values.mysql.mysqlPassword "@tcp(" .Release.Name "-mysql:3306)/" .Values.mysql.mysqlDatabase "?charset=utf8mb4,utf8&readTimeout=30s&writeTimeout=30s") }}
   {{- end }}
+  
   {{- $_ := set $c.SqlSettings "AtRestEncryptKey" (.Values.mattermostConfig.SqlSettings.AtRestEncryptKey | default (randAlphaNum 32)) }}
-
-  {{- if .Values.config.filesAccessKey }}
-  {{- $_ := set $c.FileSettings "DriverName" "amazons3" }}
-  {{- else }}
-  {{- $_ := set $c.FileSettings "DriverName" "local" }}
-  {{- end }}
   {{- $_ := set $c.FileSettings "PublicLinkSalt" (.Values.mattermostConfig.FileSettings.PublicLinkSalt | default (randAlphaNum 32)) }}
-  {{- $_ := set $c.FileSettings "AmazonS3AccessKeyId" (.Values.config.filesAccessKey | default "") }}
-  {{- $_ := set $c.FileSettings "AmazonS3SecretAccessKey" (.Values.config.filesSecretKey | default "") }}
-  {{- $_ := set $c.FileSettings "AmazonS3Bucket" (.Values.config.fileBucketName | default "") }}
-
-  {{- if .Values.config.smtpServer }}
-  {{- $_ := set $c.EmailSettings "SendEmailNotifications" true }}
-  {{- else }}
-  {{- $_ := set $c.EmailSettings "SendEmailNotifications" false }}
-  {{- end }}
-  {{- $_ := set $c.EmailSettings "FeedbackName" (.Values.config.feedbackName | default "") }}
-  {{- $_ := set $c.EmailSettings "FeedbackEmail" (.Values.config.feedbackEmail | default "") }}
-  {{- $_ := set $c.EmailSettings "SMTPUsername" (.Values.config.smtpUsername | default "") }}
-  {{- $_ := set $c.EmailSettings "SMTPPassword" (.Values.config.smtpPassword | default "") }}
-  {{- if and .Values.config.smtpUsername .Values.config.smtpPassword }}
-  {{- $_ := set $c.EmailSettings "EnableSMTPAuth" true }}
-  {{- else }}
-  {{- $_ := set $c.EmailSettings "EnableSMTPAuth" false }}
-  {{- end }}
-  {{- $_ := set $c.EmailSettings "SMTPServer" (.Values.config.smtpServer | default "") }}
-  {{- $_ := set $c.EmailSettings "SMTPPort" (.Values.config.smtpPort | default "") }}
-  {{- $_ := set $c.EmailSettings "ConnectionSecurity" (.Values.config.smtpConnection | default "") }}
   {{- $_ := set $c.EmailSettings "InviteSalt" (.Values.mattermostConfig.EmailSettings.InviteSalt | default (randAlphaNum 32)) }}
 
   {{- /* Render the processed config as a JSON string */}}

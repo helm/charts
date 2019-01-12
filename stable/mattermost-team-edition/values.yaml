@@ -31,21 +31,6 @@ persistence:
     accessMode: ReadWriteOnce
   # existingClaim: ""
 
-# Mattermost configuration:
-config:
-  filesAccessKey:
-  filesSecretKey:
-  fileBucketName:
-  smtpServer:
-  smtpPort:
-  # empty, TLS, or STARTTLS
-  smtpConnection:
-  smtpUsername:
-  smtpPassword:
-  feedbackEmail:
-  feedbackName:
-  enableSignUpWithEmail: true
-
 service:
   type: ClusterIP
   externalPort: 8065
