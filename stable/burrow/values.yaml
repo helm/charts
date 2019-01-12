@@ -1,6 +1,6 @@
 image:
   repository: hyperledger/burrow
-  tag: 0.23.2
+  tag: 0.23.3
   pullPolicy: IfNotPresent
 
 chain:
