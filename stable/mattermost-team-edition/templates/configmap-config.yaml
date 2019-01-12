@@ -10,17 +10,12 @@ metadata:
 data:
   {{- /* Make a deep enough copy of the default config */}}
   {{- $c := dict }}
-  {{- range $key, $dictVal := .Values.defaultConfig }}
+  {{- range $key, $dictVal := .Values.mattermostConfig }}
   {{- $dictCopy := merge (dict) $dictVal }}
   {{- $_ := set $c $key $dictCopy }}
   {{- end }}
 
   {{- /* Update the copied default config based on .Values */}}
-  {{- $_ := set $c.ServiceSettings "SiteURL" (.Values.config.siteUrl | default "") }}
-
-  {{- $_ := set $c.TeamSettings "SiteName" (.Values.config.siteName | default "Mattermost") }}
-
-  {{- $_ := set $c.SqlSettings "DriverName" (.Values.config.siteName | default "Mattermost") }}
   {{- if .Values.externalDB.enabled }}
   {{- $_ := set $c.SqlSettings "DriverName" (.Values.externalDB.externalDriverType) }}
   {{- $_ := set $c.SqlSettings "DataSource" (.Values.externalDB.externalConnectionString) }}
