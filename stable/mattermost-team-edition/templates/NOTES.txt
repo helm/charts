@@ -27,5 +27,5 @@ helm install --set host=mattermost.yourdomain.com --set ingress.enabled=true sta
 {{ end }}
 
 {{ if .Values.auth.gitlab }}
-{{ fail "HARD DEPRECATION: 'auth.gitlab' is deprecated, please use 'extraConfig.GitLabSettings' instead." }}
+{{ fail "HARD DEPRECATION: 'auth.gitlab' is deprecated, please use 'defaultConfig.GitLabSettings' instead." }}
 {{ end }}

@@ -80,7 +80,7 @@ ingress:
     #     - mattermost.example.com
 
 auth:
-  # gitlab is deprecated in favor of extraConfig.GitLabSettings
+  # gitlab is deprecated in favor of defaultConfig.GitLabSettings
   gitlab: {}
 
 
@@ -174,8 +174,6 @@ extraInitContainers: |
   #       PGPASSWORD=$POSTGRES_PASSWORD_GITLAB createdb -h $POSTGRES_HOST_GITLAB -p $POSTGRES_PORT_GITLAB -U $POSTGRES_USER_GITLAB $POSTGRES_DB_NAME_MATTERMOST
   #       echo "Done"
   #       fi
-
-extraConfig: {}
 
 defaultConfig: {
   "ServiceSettings": {
