@@ -79,10 +79,6 @@ ingress:
     #   hosts:
     #     - mattermost.example.com
 
-auth:
-  # gitlab is deprecated in favor of defaultConfig.GitLabSettings
-  gitlab: {}
-
 
 ## If use this please disable the mysql chart, setting the config mysql.enable to false
 externalDB:
