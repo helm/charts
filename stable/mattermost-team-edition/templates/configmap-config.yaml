@@ -16,6 +16,12 @@ data:
   {{- end }}
 
   {{- /* Update the copied default config based on .Values */}}
+
+  {{- if or .Values.mattermostConfig.SqlSettings.DriverName .Values.mattermostConfig.SqlSettings.DataSource }}
+  {{- $message := "Use 'mysql' or 'externalDB' to instead of using a configuration with:\n\nmattermostConfig:\n  SqlSettings\n    DriverName: ...\n    DataSource: ..." }}
+  {{- print "\n\nDIRECT CONFIGURATION NOT SUPPORTED:\n-----------------------------------\n\n" $message | fail }}
+  {{- end }}
+
   {{- if .Values.externalDB.enabled }}
   {{- $_ := set $c.SqlSettings "DriverName" (.Values.externalDB.externalDriverType) }}
   {{- $_ := set $c.SqlSettings "DataSource" (.Values.externalDB.externalConnectionString) }}

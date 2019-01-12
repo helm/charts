@@ -242,8 +242,8 @@ mattermostConfig: {
     "MaxNotificationsPerChannel": 1000
   },
   "SqlSettings": {
-    "DriverName": "PLACEHOLDER",
-    "DataSource": "PLACEHOLDER",
+    "DriverName": "",
+    "DataSource": "",
     "DataSourceReplicas": [],
     "DataSourceSearchReplicas": [],
     "MaxIdleConns": 20,
