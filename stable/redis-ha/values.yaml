@@ -99,6 +99,9 @@ podDisruptionBudget: {}
 auth: false
 # redisPassword:
 
+## Use existing secret containing "auth" key (ignores redisPassword)
+# existingSecret:
+
 persistentVolume:
   enabled: true
   ## redis-ha data Persistent Volume Storage Class
