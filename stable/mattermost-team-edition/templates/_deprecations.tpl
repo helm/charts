@@ -101,7 +101,7 @@ Compile all deprecations into a single message, and call fail.
 {{- /* Deprecate config.emailSettings */}}
 {{- define "mattermost.deprecate.config.emailSettings" }}
 {{- if typeIs "map[string]interface {}" .Values.config }}
-{{- if or .Values.config.smtpServer (or hasKey .Values.config "enableSignUpWithEmail" (or .Values.config.feedbackName .Values.config.feedbackEmail)) }}
+{{- if or .Values.config.smtpServer (or (hasKey .Values.config "enableSignUpWithEmail") (or .Values.config.feedbackName .Values.config.feedbackEmail)) }}
 {{- $EmailSettings := dict }}
 {{- if .Values.config.smtpServer }}
 {{- $_ := set $EmailSettings "SendEmailNotifications" true }}
