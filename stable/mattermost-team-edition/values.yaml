@@ -39,7 +39,7 @@ service:
 ingress:
   enabled: false
   path: /
-  annotations:
+  annotations: {}
     # kubernetes.io/ingress.class: nginx
     # certmanager.k8s.io/issuer:  your-issuer
     # nginx.ingress.kubernetes.io/proxy-body-size: 50m
