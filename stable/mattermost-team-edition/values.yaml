@@ -154,7 +154,7 @@ extraInitContainers: |
   #       echo "Done"
   #       fi
 
-mattermostConfig: {
+configJSON: {
   "ServiceSettings": {
     "SiteURL": "",
     "LicenseFileLocation": "",

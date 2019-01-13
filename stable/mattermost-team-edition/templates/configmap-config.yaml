@@ -10,15 +10,15 @@ metadata:
 data:
   {{- /* Make a deep enough copy of the default config */}}
   {{- $c := dict }}
-  {{- range $key, $dictVal := .Values.mattermostConfig }}
+  {{- range $key, $dictVal := .Values.configJSON }}
   {{- $dictCopy := merge (dict) $dictVal }}
   {{- $_ := set $c $key $dictCopy }}
   {{- end }}
 
   {{- /* Update the copied default config based on .Values */}}
 
-  {{- if or .Values.mattermostConfig.SqlSettings.DriverName .Values.mattermostConfig.SqlSettings.DataSource }}
-  {{- $message := "Use 'mysql' or 'externalDB' to instead of using a configuration with:\n\nmattermostConfig:\n  SqlSettings\n    DriverName: ...\n    DataSource: ..." }}
+  {{- if or .Values.configJSON.SqlSettings.DriverName .Values.configJSON.SqlSettings.DataSource }}
+  {{- $message := "Use 'mysql' or 'externalDB' to instead of using a configuration with:\n\nconfigJSON:\n  SqlSettings\n    DriverName: ...\n    DataSource: ..." }}
   {{- print "\n\nDIRECT CONFIGURATION NOT SUPPORTED:\n-----------------------------------\n\n" $message | fail }}
   {{- end }}
 
@@ -29,10 +29,10 @@ data:
   {{- $_ := set $c.SqlSettings "DriverName" "mysql" }}
   {{- $_ := set $c.SqlSettings "DataSource" (print .Values.mysql.mysqlUser ":" .Values.mysql.mysqlPassword "@tcp(" .Release.Name "-mysql:3306)/" .Values.mysql.mysqlDatabase "?charset=utf8mb4,utf8&readTimeout=30s&writeTimeout=30s") }}
   {{- end }}
-  
-  {{- $_ := set $c.SqlSettings "AtRestEncryptKey" (.Values.mattermostConfig.SqlSettings.AtRestEncryptKey | default (randAlphaNum 32)) }}
-  {{- $_ := set $c.FileSettings "PublicLinkSalt" (.Values.mattermostConfig.FileSettings.PublicLinkSalt | default (randAlphaNum 32)) }}
-  {{- $_ := set $c.EmailSettings "InviteSalt" (.Values.mattermostConfig.EmailSettings.InviteSalt | default (randAlphaNum 32)) }}
+
+  {{- $_ := set $c.SqlSettings "AtRestEncryptKey" (.Values.configJSON.SqlSettings.AtRestEncryptKey | default (randAlphaNum 32)) }}
+  {{- $_ := set $c.FileSettings "PublicLinkSalt" (.Values.configJSON.FileSettings.PublicLinkSalt | default (randAlphaNum 32)) }}
+  {{- $_ := set $c.EmailSettings "InviteSalt" (.Values.configJSON.EmailSettings.InviteSalt | default (randAlphaNum 32)) }}
 
   {{- /* Render the processed config as a JSON string */}}
   {{- /* NOTE: Mounted at /mattermost/config/config.json on the mattermost pod */}}

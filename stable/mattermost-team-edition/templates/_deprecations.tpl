@@ -40,7 +40,7 @@ Compile all deprecations into a single message, and call fail.
 
 {{- /* print output */}}
 {{- if $message }}
-{{- printf "\n\nFAILURE DUE TO DEPRECATIONS:\n----------------------------\n\nmattermostConfig:%s" $message | fail }}
+{{- printf "\n\nFAILURE DUE TO DEPRECATIONS:\n----------------------------\n\nconfigJSON:%s" $message | fail }}
 {{- end }}
 {{- end }}
 
