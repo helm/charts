@@ -102,13 +102,13 @@ spec:
               {{- end }}
           livenessProbe:
             httpGet:
-              path: /sessions/new
+              path: {{ .Values.livenessProbe.sonarWebContext }}sessions/new
               port: {{ .Values.service.internalPort }}
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
           readinessProbe:
             httpGet:
-              path: /sessions/new
+              path: {{ .Values.readinessProbe.sonarWebContext }}sessions/new
               port: {{ .Values.service.internalPort }}
             initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.readinessProbe.periodSeconds }}

@@ -63,9 +63,11 @@ readinessProbe:
   initialDelaySeconds: 60
   periodSeconds: 30
   failureThreshold: 6
+  sonarWebContext: /
 livenessProbe:
   initialDelaySeconds: 60
   periodSeconds: 30
+  sonarWebContext: /
 
 # Set extra env variables. Like proxy settings.
 extraEnv: {}
