@@ -46,6 +46,8 @@ The following table lists the configurable parameters of the Sonarqube chart and
 | `command`                                   | command to run in the container           | `nil` (need to be set prior to 6.7.6, and 7.4)      |
 | `securityContext.fsGroup`                   | Group applied to mounted directories/files|  `999`                                     |
 | `ingress.enabled`                           | Flag for enabling ingress                 | false                                      |
+| `livenessProbe.sonarWebContext`             | SonarQube web context for livenessProbe   | /                                          |
+| `readinessProbe.sonarWebContext`            | SonarQube web context for readinessProbe  | /                                          |
 | `service.type`                              | Kubernetes service type                   | `LoadBalancer`                             |
 | `service.labels`                            | Kubernetes service labels                 | None                                       |
 | `service.annotations`                       | Kubernetes service annotations            | None                                       |
