@@ -236,6 +236,10 @@ spec:
           name: {{ include "kafka.fullname" . }}-metrics
           {{- end }}
       {{- end }}
+      {{- if .Values.securityContext }}
+      securityContext:
+        {{- .Values.securityContext | toYaml | nindent 8 }}
+      {{- end }}
       {{- range .Values.secrets }}
       - name: {{ include "kafka.fullname" $ }}-{{ .name }}
         secret:
