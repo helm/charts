@@ -1,0 +1,4 @@
+Note: Make sure to follow the instructions in the README to finish setting up your wallet.
+
+Once your wallet is setup, the lnd RPC interface can be accessed via port {{ .Values.internalServices.rpcPort }} on the following DNS name from within your cluster:
+{{ template "lnd.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local

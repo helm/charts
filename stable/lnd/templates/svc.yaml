@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "lnd.fullname" . }}-internal
+  labels:
+    app: {{ template "lnd.name" . }}
+    chart: {{ template "lnd.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  ports:
+    - name: rpc
+      port: {{ .Values.internalServices.rpcPort }}
+      targetPort: rpc
+  selector:
+    app: {{ template "lnd.name" . }}
+    release: {{ .Release.Name }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "lnd.fullname" . }}-external
+  labels:
+    app: {{ template "lnd.name" . }}
+    chart: {{ template "lnd.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: LoadBalancer
+  ports:
+    - name: p2p
+      port: {{ .Values.externalServices.p2pPort }}
+      targetPort: p2p
+  selector:
+    app: {{ template "lnd.name" . }}
+    release: {{ .Release.Name }}

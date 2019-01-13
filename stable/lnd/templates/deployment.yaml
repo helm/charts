@@ -1,0 +1,99 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "lnd.fullname" . }}
+  labels:
+    app: {{ template "lnd.name" . }}
+    chart: {{ template "lnd.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: {{ template "lnd.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "lnd.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      {{- if .Values.configurationFile }}
+      initContainers:
+        - name: copy-lnd-config
+          image: busybox
+          command: ['sh', '-c', 'cp /configmap/lnd.conf /root/.lnd/lnd.conf']
+          volumeMounts:
+            - name: configmap
+              mountPath: /configmap
+            - name: config
+              mountPath: /root/.lnd/
+      {{- end }}
+      terminationGracePeriodSeconds: 60
+      containers:
+        - name: {{ template "lnd.fullname" . }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          command: ["lnd"]
+          imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+          resources:
+  {{ toYaml .Values.resources | indent 10 }}
+          ports:
+            - name: rpc
+              containerPort: {{ .Values.internalServices.rpcPort }}
+            - name: p2p
+              containerPort: {{ .Values.externalServices.p2pPort }}
+          volumeMounts:
+            - name: data
+              mountPath: /root/
+            {{- if .Values.configurationFile }}
+            - name: config
+              mountPath: /root/.lnd/lnd.conf
+              subPath: lnd.conf
+            {{- end }}
+          lifecycle:
+            preStop:
+              exec:
+                # Make sure we safely quit lnd so we don't corrupt
+                # anything
+                command: ["/bin/lncli", "-n", "{{ .Values.network }}", "stop"]
+        {{- if .Values.autoUnlock }}
+        - name: autounlock
+          image: appropriate/curl
+          command: ["/bin/sh", "-c"]
+          args:
+          - 'sleep 2 && LND_DIR=/root/.lnd && MACAROON_HEADER="Grpc-Metadata-macaroon:
+            $(xxd -p -c 1000 $LND_DIR/data/chain/bitcoin/{{ .Values.network }}/admin.macaroon)" &&
+            curl -f -X POST --cacert $LND_DIR/tls.cert --header "$MACAROON_HEADER" https://localhost:8080/v1/unlockwallet
+            -d "{\"wallet_password\":\"$(cat /secrets/pwd | tr -d ''\n'' | base64)\"}"
+            && sleep 99999999d'
+          volumeMounts:
+          - mountPath: /root/
+            name: data
+          - mountPath: /secrets
+            name: secrets
+          resources:
+            requests:
+              cpu: "10m"
+        {{- end }}
+      volumes:
+        {{- if .Values.autoUnlock }}
+        - name: secrets
+          secret:
+            secretName: {{ template "lnd.fullname" . }}
+        {{- end }}
+        {{- if .Values.configurationFile }}
+        - name: config
+          emptyDir: {}
+        - name: configmap
+          configMap:
+            name: {{ template "lnd.fullname" . }}
+        {{- end }}
+        - name: data
+        {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.existingClaim | default (include "lnd.fullname" .) }}
+        {{- else }}
+          emptyDir: {}
+        {{- end -}}
