@@ -72,7 +72,7 @@ Parameter                            | Description                              
 `mysql.mysqlPassword`                | User Password for Mysql (Required)                                                              |  ""
 `mysql.mysqlDatabase`                | Database name (Required)                                                                        |  "mattermost"
 `extraEnvVars`                       | Extra environments variables to be used in the deployments                                      |
-`extraInitContainers`                | Additional init containers. Passed through the `tpl` function                                   | ``
+`extraInitContainers`                | Additional init containers                                                                      | ``
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

@@ -101,7 +101,7 @@ mysql:
   # existingClaim: ""
 
 ## Additional env vars
-extraEnvVars:
+extraEnvVars: []
   # This is an example of extra env vars when using with the deployment with GitLab Helm Charts
   # - name: POSTGRES_PASSWORD_GITLAB
   #   valueFrom:
@@ -122,8 +122,8 @@ extraEnvVars:
   #   value: postgres://$(POSTGRES_USER_GITLAB):$(POSTGRES_PASSWORD_GITLAB)@$(POSTGRES_HOST_GITLAB):$(POSTGRES_PORT_GITLAB)/$(POSTGRES_DB_NAME_MATTERMOST)?sslmode=disable&connect_timeout=10
 
 ## Additional init containers
-extraInitContainers: |
-# This is an example of extra Init Container when using with the deployment with GitLab Helm Charts
+extraInitContainers: []
+  # This is an example of extra Init Container when using with the deployment with GitLab Helm Charts
   # - name: bootstrap-database
   #   image: "postgres:9.6-alpine"
   #   imagePullPolicy: IfNotPresent

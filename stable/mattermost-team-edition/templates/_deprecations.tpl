@@ -26,21 +26,33 @@ Compile all deprecations into a single message, and call fail.
 */}}
 
 {{- define "mattermost.deprecations" }}
-{{- /* add templates here */}}
-{{- $deprecated := list }}
-{{- $deprecated := append $deprecated (include "mattermost.deprecate.auth.gitlab" .) }}
-{{- $deprecated := append $deprecated (include "mattermost.deprecate.config.siteUrl" .) }}
-{{- $deprecated := append $deprecated (include "mattermost.deprecate.config.siteName" .) }}
-{{- $deprecated := append $deprecated (include "mattermost.deprecate.config.fileSettings" .) }}
-{{- $deprecated := append $deprecated (include "mattermost.deprecate.config.emailSettings" .) }}
+{{- $depHeader := print "\n\nFAILURE DUE TO DEPRECATIONS:\n----------------------------" }}
+{{- $depMessage := "" }}
 
-{{- /* prepare output */}}
-{{- $deprecated := without $deprecated "" }}
-{{- $message := join "\n" $deprecated }}
+{{- /*
+deprecations in order to transition to a passthrough configuration in configJSON
+*/}}
+{{- $passthroughs := list }}
+{{- $passthroughs := append $passthroughs (include "mattermost.deprecate.auth.gitlab" .) }}
+{{- $passthroughs := append $passthroughs (include "mattermost.deprecate.config.siteUrl" .) }}
+{{- $passthroughs := append $passthroughs (include "mattermost.deprecate.config.siteName" .) }}
+{{- $passthroughs := append $passthroughs (include "mattermost.deprecate.config.fileSettings" .) }}
+{{- $passthroughs := append $passthroughs (include "mattermost.deprecate.config.emailSettings" .) }}
+{{- $passthroughs := without $passthroughs "" }}
+{{- if $passthroughs }}
+{{- $passthroughsHeader := print "\n\nconfigJSON:" }}
+{{- $passthroughsMessage := print $passthroughsHeader (join "\n" $passthroughs) }}
+{{- $depMessage := print $depMessage $passthroughsMessage }}}
+{{- end }}
+
+{{- if typeIs "string" .Values.extraInitContainers }}
+{{- $stringToListMessage := print "\n\nPlease make extraInitContainers a list instead of a string.\nGot a '|' symbol after extraInitContainers? Remove it." }}
+{{- $depMessage := print $depMessage $stringToListMessage }}
+{{- end }}
 
 {{- /* print output */}}
-{{- if $message }}
-{{- printf "\n\nFAILURE DUE TO DEPRECATIONS:\n----------------------------\n\nconfigJSON:%s" $message | fail }}
+{{- if $depMessage }}
+{{- printf $depMessage | fail }}
 {{- end }}
 {{- end }}
 
