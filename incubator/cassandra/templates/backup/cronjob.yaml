@@ -9,7 +9,7 @@ kind: CronJob
 metadata:
   name: {{ template "cassandra.fullname" $ }}-backup-{{ $schedule.keyspace }}
   labels:
-    app: {{ template "cassandra.name" $ }}
+    app: {{ template "cassandra.name" $ }}-cain
     chart: {{ template "cassandra.chart" $ }}
     release: "{{ $release.Name }}"
     heritage: "{{ $release.Service }}"
@@ -35,7 +35,7 @@ spec:
             - --namespace
             - {{ $release.Namespace }}
             - --selector
-            - release={{ $release.Name }}
+            - app={{ template "cassandra.name" $ }}
             - --keyspace
             - {{ $schedule.keyspace }}
             - --dst
