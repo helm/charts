@@ -1,0 +1,53 @@
+# Default values for bitcoind.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+image:
+  repository: thesisrobot/lnd
+  tag: v0.5.1-beta-fixed
+  pullPolicy: IfNotPresent
+
+# Ports that are exposed to other pods in your cluster
+internalServices:
+  rpcPort: 10009
+ 
+# Ports that are visible outside your cluster
+externalServices:
+  p2pPort: 9735
+
+persistence:
+  enabled: true
+  ## database data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  # storageClass: "-"
+  accessMode: ReadWriteOnce
+  size: 5Gi
+
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+##
+resources: {}
+#  requests:
+#    memory: 512Mi
+#    cpu: 300m
+
+# The network lnd is running on
+network: mainnet
+
+# Custom lnd configuration file used to override default lnd settings
+configurationFile:
+  lnd.conf: |-
+    bitcoin.active=1
+    bitcoin.mainnet=1
+    debuglevel=debug
+    bitcoin.node=bitcoind
+    bitcoind.rpcuser=
+    bitcoind.rpcpass=
+    # bitcoind.zmqpubrawblock=tcp://127.0.0.1:28332
+    # bitcoind.zmqpubrawtx=tcp://127.0.0.1:28333
+    rpclisten=0.0.0.0:10009

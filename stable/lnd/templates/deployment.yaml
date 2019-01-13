@@ -1,0 +1,75 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "lnd.fullname" . }}
+  labels:
+    app: {{ template "lnd.name" . }}
+    chart: {{ template "lnd.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: {{ template "lnd.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "lnd.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      {{- if .Values.configurationFile }}
+      initContainers:
+        - name: copy-lnd-config
+          image: busybox
+          command: ['sh', '-c', 'cp /configmap/lnd.conf /root/.lnd/lnd.conf']
+          volumeMounts:
+            - name: configmap
+              mountPath: /configmap
+            - name: config
+              mountPath: /root/.lnd/
+      {{- end }}
+      terminationGracePeriodSeconds: 60
+      containers:
+        - name: {{ template "lnd.fullname" . }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          command: ["lnd"]
+          imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+          resources:
+  {{ toYaml .Values.resources | indent 10 }}
+          ports:
+            - name: rpc
+              containerPort: {{ .Values.internalServices.rpcPort }}
+            - name: p2p
+              containerPort: {{ .Values.externalServices.p2pPort }}
+          volumeMounts:
+            - name: data
+              mountPath: /root/
+            {{- if .Values.configurationFile }}
+            - name: config
+              mountPath: /root/.lnd/lnd.conf
+              subPath: lnd.conf
+            {{- end }}
+          lifecycle:
+            preStop:
+              exec:
+                # Make sure we safely quit lnd so we don't corrupt
+                # anything
+                command: ["/bin/lncli", "-n", "{{ .Values.network }}", "stop"]
+      volumes:
+        {{- if .Values.configurationFile }}
+        - name: config
+          emptyDir: {}
+        - name: configmap
+          configMap:
+            name: {{ template "lnd.fullname" . }}
+        {{- end }}
+        - name: data
+        {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.existingClaim | default (include "lnd.fullname" .) }}
+        {{- else }}
+          emptyDir: {}
+        {{- end -}}
