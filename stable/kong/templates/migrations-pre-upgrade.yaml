@@ -29,10 +29,11 @@ spec:
         - name: {{ . }}
       {{- end }}
       {{- end }}
-      {{- if .Values.postgresql.enabled }}
+      {{- if or (.Values.postgresql.enabled) (.Values.cassandra.enabled)  }}
       initContainers:
+      {{- if .Values.postgresql.enabled }}
       - name: wait-for-postgres
-        image: busybox
+        image: "{{ .Values.waitImage.repository }}:{{ .Values.waitImage.tag }}"
         env:
         - name: KONG_PG_HOST
           value: {{ template "kong.postgresql.fullname" . }}
@@ -44,6 +45,17 @@ spec:
               name: {{ template "kong.postgresql.fullname" . }}
               key: postgresql-password
         command: [ "/bin/sh", "-c", "until nc -zv $KONG_PG_HOST $KONG_PG_PORT -w1; do echo 'waiting for db'; sleep 1; done" ]
+      {{- end }}
+      {{- if .Values.cassandra.enabled }}
+      - name: wait-for-cassandra
+        image: "{{ .Values.waitImage.repository }}:{{ .Values.waitImage.tag }}"
+        env:
+        - name: KONG_CASSANDRA_CONTACT_POINTS
+          value: {{ template "kong.cassandra.fullname" . }}
+        - name: KONG_CASSANDRA_CQL_PORT
+          value: "{{ .Values.cassandra.config.ports.cql }}"
+        command: [ "/bin/sh", "-c", "until nc -zv $KONG_CASSANDRA_CONTACT_POINTS $KONG_CASSANDRA_CQL_PORT -w1; do echo 'waiting for db'; sleep 1; done" ]
+      {{- end }}
       {{- end }}
       containers:
       - name: {{ template "kong.name" . }}-upgrade-migrations
