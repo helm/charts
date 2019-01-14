@@ -62,14 +62,15 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `securityContext.enabled`                 | Enable security context                             | `true`                                                            |
 | `securityContext.fsGroup`                 | Group ID for the container                          | `1001`                                                            |
 | `securityContext.runAsUser`               | User ID for the container                           | `1001`                                                            |
-| `rootUser.password`                       | Password for the `root` user                        | _random 10 character alphanumeric string_                         |
+| `existingSecret`                       | Use Existing secret for Password details (`rootUser.password`, `db.password`, `replication.password` will be ignored and picked up from this secret)                       |                         |
+| `rootUser.password`                       | Password for the `root` user. Ignored if existing secret is provided.                       | _random 10 character alphanumeric string_                         |
 | `rootUser.forcePassword`                  | Force users to specify a password                   | `false`                                                           |
 | `db.user`                                 | Username of new user to create                      | `nil`                                                             |
-| `db.password`                             | Password for the new user                           | _random 10 character alphanumeric string if `db.user` is defined_ |
+| `db.password`                             | Password for the new user. Ignored if existing secret is provided.                           | _random 10 character alphanumeric string if `db.user` is defined_ |
 | `db.name`                                 | Name for new database to create                     | `my_database`                                                     |
 | `replication.enabled`                     | MariaDB replication enabled                         | `true`                                                            |
-| `replication.user`                        | MariaDB replication user                            | `replicator`                                                      |
-| `replication.password`                    | MariaDB replication user password                   | _random 10 character alphanumeric string_                         |
+| `replication.user`                        |MariaDB replication user                            | `replicator`                                                      |
+| `replication.password`                    | MariaDB replication user password. Ignored if existing secret is provided.                   | _random 10 character alphanumeric string_                         |
 | `initdbScripts`                           | List of initdb scripts                              | `nil`                                                             |
 | `initdbScriptsConfigMap`                  | ConfigMap with the initdb scripts (Note: Overrides `initdbScripts`) | `nil`                                             |
 | `master.annotations[].key`                | key for the the annotation list item                |  `nil`                                                            |
@@ -84,6 +85,7 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `master.persistence.storageClass`         | Persistent Volume Storage Class                     | ``                                                                |
 | `master.persistence.accessModes`          | Persistent Volume Access Modes                      | `[ReadWriteOnce]`                                                 |
 | `master.persistence.size`                 | Persistent Volume Size                              | `8Gi`                                                             |
+| `master.extraInitContainers`                        | Additional init containers as a string to be passed to the `tpl` function (master)                    |                                                      |
 | `master.config`                           | Config file for the MariaDB Master server           | `_default values in the values.yaml file_`                        |
 | `master.resources`                        | CPU/Memory resource requests/limits for master node | `{}`                                                              |
 | `master.livenessProbe.enabled`            | Turn on and off liveness probe (master)             | `true`                                                            |
@@ -109,6 +111,7 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `slave.persistence.storageClass`          | Persistent Volume Storage Class                     | ``                                                                |
 | `slave.persistence.accessModes`           | Persistent Volume Access Modes                      | `[ReadWriteOnce]`                                                 |
 | `slave.persistence.size`                  | Persistent Volume Size                              | `8Gi`                                                             |
+| `slave.extraInitContainers`                        | Additional init containers as a string to be passed to the `tpl` function (slave)                    |                                                      |
 | `slave.config`                            | Config file for the MariaDB Slave replicas          | `_default values in the values.yaml file_`                        |
 | `slave.resources`                         | CPU/Memory resource requests/limits for slave node  | `{}`                                                              |
 | `slave.livenessProbe.enabled`             | Turn on and off liveness probe (slave)              | `true`                                                            |
@@ -165,6 +168,20 @@ The allowed extensions are `.sh`, `.sql` and `.sql.gz`.
 The [Bitnami MariaDB](https://github.com/bitnami/bitnami-docker-mariadb) image stores the MariaDB data and configurations at the `/bitnami/mariadb` path of the container.
 
 The chart mounts a [Persistent Volume](kubernetes.io/docs/user-guide/persistent-volumes/) volume at this location. The volume is created using dynamic volume provisioning, by default. An existing PersistentVolumeClaim can be defined.
+
+## Extra Init Containers
+
+The feature allows for specifying a template string for a initContainer in the master/slave pod. Usecases include situations when you need some pre-run setup. For example, in IKS (IBM Cloud Kubernetes Service), non-root users do not have write permission on the volume mount path for NFS-powered file storage. So, you could use a initcontainer to `chown` the mount. See a example below, where we add an initContainer on the master pod that reports to an external resource that the db is going to starting.
+`values.yaml`
+```yaml
+master:
+  extraInitContainers: |
+    - name: initcontainer
+      image: alpine:latest
+      command: ["/bin/sh", "-c"]
+      args:
+        - curl http://api-service.local/db/starting;
+```
 
 ## Upgrading
 

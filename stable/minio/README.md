@@ -1,7 +1,7 @@
 Minio
 =====
 
-[Minio](https://minio.io) is a lightweight, AWS S3 compatible object storage server. It is best suited for storing unstructured data such as photos, videos, log files, backups, VM and container images. Size of an object can range from a few KBs to a maximum of 5TB. Minio server is light enough to be bundled with the application stack, similar to NodeJS, Redis and MySQL.
+[Minio](https://minio.io) is a distributed object storage service for high performance, high scale data infrastructures. It is a drop in replacement for AWS S3 in your own environment. It uses erasure coding to provide highly resilient storage that can tolerate failures of upto n/2 nodes. It runs on cloud, container, kubernetes and bare-metal environments. It is simple enough to be deployed in seconds, and can scale to 100s of peta bytes. Minio is suitable for storing objects such as photos, videos, log files, backups, VM and container images.
 
 Minio supports [distributed mode](https://docs.minio.io/docs/distributed-minio-quickstart-guide). In distributed mode, you can pool multiple drives (even on different machines) into a single object storage server.
 
@@ -141,6 +141,7 @@ The following table lists the configurable parameters of the Minio chart and the
 | `defaultBucket.name`       | Bucket name                         | `bucket`                                                |
 | `defaultBucket.policy`     | Bucket policy                       | `none`                                                  |
 | `defaultBucket.purge`      | Purge the bucket if already exists  | `false`                                                 |
+| `buckets`                  | List of buckets to create after minio install  | `[]`                                         |
 | `s3gateway.enabled`        | Use minio as a [s3 gateway](https://github.com/minio/minio/blob/master/docs/gateway/s3.md)| `false` |
 | `s3gateway.replicas`       | Number of s3 gateway instances to run in parallel | `4` |
 | `azuregateway.enabled`     | Use minio as an [azure gateway](https://docs.minio.io/docs/minio-gateway-for-azure)| `false`  |
