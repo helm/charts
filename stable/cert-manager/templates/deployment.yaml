@@ -109,3 +109,8 @@ spec:
       dnsConfig:
 {{ toYaml .Values.podDnsConfig | indent 8 }}
 {{- end }}
+{{- if .Values.securityContext.enabled }}
+      securityContext:
+        fsGroup: {{ .Values.securityContext.fsGroup }}
+        runAsUser: {{ .Values.securityContext.runAsUser }}
+{{- end }}
