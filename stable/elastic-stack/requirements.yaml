@@ -1,7 +1,8 @@
 dependencies:
 - name: elasticsearch
-  version: ^1.15.0
+  version: ^1.17.0
   repository: https://kubernetes-charts.storage.googleapis.com/
+  condition: elasticsearch.enabled
 - name: kibana
   version: ^0.16.0
   repository: https://kubernetes-charts.storage.googleapis.com/

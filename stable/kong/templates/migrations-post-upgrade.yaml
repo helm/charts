@@ -4,24 +4,24 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ template "kong.fullname" . }}-upgrade-migrations
+  name: {{ template "kong.fullname" . }}-post-upgrade-migrations
   labels:
     app: {{ template "kong.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
-    component: migrations
+    component: post-upgrade-migrations
   annotations:
-    helm.sh/hook: "pre-upgrade"
+    helm.sh/hook: "post-upgrade"
     helm.sh/hook-delete-policy: "before-hook-creation"
 spec:
   template:
     metadata:
-      name: {{ template "kong.name" . }}-upgrade-migrations
+      name: {{ template "kong.name" . }}-post-upgrade-migrations
       labels:
         app: {{ template "kong.name" . }}
         release: "{{ .Release.Name }}"
-        component: migrations
+        component: post-upgrade-migrations
     spec:
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
@@ -42,11 +42,11 @@ spec:
           valueFrom:
             secretKeyRef:
               name: {{ template "kong.postgresql.fullname" . }}
-              key: postgres-password
+              key: postgresql-password
         command: [ "/bin/sh", "-c", "until nc -zv $KONG_PG_HOST $KONG_PG_PORT -w1; do echo 'waiting for db'; sleep 1; done" ]
       {{- end }}
       containers:
-      - name: {{ template "kong.name" . }}-upgrade-migrations
+      - name: {{ template "kong.name" . }}-post-upgrade-migrations
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
@@ -65,12 +65,12 @@ spec:
           valueFrom:
             secretKeyRef:
               name: {{ template "kong.postgresql.fullname" . }}
-              key: postgres-password
+              key: postgresql-password
         {{- end }}
         {{- if .Values.cassandra.enabled }}
         - name: KONG_CASSANDRA_CONTACT_POINTS
           value: {{ template "kong.cassandra.fullname" . }}
         {{- end }}
-        command: [ "/bin/sh", "-c", "kong migrations up" ]
+        command: [ "/bin/sh", "-c", "kong migrations finish" ]
       restartPolicy: OnFailure
 {{- end }}

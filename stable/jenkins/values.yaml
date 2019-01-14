@@ -69,6 +69,7 @@ Master:
   HealthProbes: true
   HealthProbesLivenessTimeout: 90
   HealthProbesReadinessTimeout: 60
+  HealthProbeReadinessPeriodSeconds: 10
   HealthProbeLivenessFailureThreshold: 12
   SlaveListenerPort: 50000
   DisabledAgentProtocols:
@@ -120,7 +121,7 @@ Master:
   # master.key and hudson.util.Secret)
   # SecretsFilesSecret: jenkins-secrets
   # Jenkins XML job configs to provision
-  # Jobs: |-
+  # Jobs:
   #   test: |-
   #     <<xml here>>
   CustomConfigMap: false
@@ -222,7 +223,9 @@ rbac:
   serviceAccountName: default
   # Role reference
   roleRef: cluster-admin
-  # Role kind (RoleBinding or ClusterRoleBinding)
+  # Role kind (Role or ClusterRole)
+  roleKind: ClusterRole
+  # Role binding kind (RoleBinding or ClusterRoleBinding)
   roleBindingKind: ClusterRoleBinding
 
 ## Backup cronjob configuration
