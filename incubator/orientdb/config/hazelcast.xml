@@ -41,7 +41,7 @@
             </multicast>
             <tcp-ip enabled="true">
                 {{- range $i, $e := until ( .Values.replicaCount | int ) }}
-                <member>{{ $fullname }}-{{$i}}.{{ $fullname }}-svc.{{ $self.Release.Namespace }}.svc.cluster.local</member>
+                <member>{{ $fullname }}-{{$i}}.{{ $fullname }}-headless.{{ $self.Release.Namespace }}.svc.cluster.local</member>
                 {{- end }}
             </tcp-ip>
         </join>

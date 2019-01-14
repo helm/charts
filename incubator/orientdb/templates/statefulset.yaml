@@ -13,7 +13,7 @@ spec:
     matchLabels:
       app: {{ template "orientdb.name" . }}
       release: {{ .Release.Name }}
-  serviceName: {{ template "orientdb.fullname" . }}-svc
+  serviceName: {{ template "orientdb.fullname" . }}-headless
   template:
     metadata:
       labels:
