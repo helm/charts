@@ -25,6 +25,13 @@ imageTag: "4.2.2"
 ##
 imagePullPolicy: IfNotPresent
 
+## Optionally specify an array of imagePullSecrets.
+## Secrets must be manually created in the namespace.
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+##
+# imagePullSecrets:
+#   - myRegistrKeySecretName
+
 ## Configuration values for Concourse.
 ## ref: https://concourse-ci.org/setting-up.html
 ##
