@@ -182,3 +182,7 @@ rbac:
 
   ## Ignored if rbac.create is true
   serviceAccountName: default
+
+daemonset:
+  # Priority Class to use for deployed daemonsets
+  # priorityClassName: ""
