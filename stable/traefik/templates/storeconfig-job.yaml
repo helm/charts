@@ -2,17 +2,16 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: "storeconfig-job"
+  name: "storeconfig-job-{{ .Release.Revision }}"
   annotations:
-    "helm.sh/hook": post-install
-    "helm.sh/hook-delete-policy": hook-succeeded
+    "helm.sh/hook": post-install,post-upgrade
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     app: {{ template "traefik.name" . }}
 spec:
   template:
     metadata: 
-      name: "storeconfig-job"
+      name: "storeconfig-job-{{ .Release.Revision }}"
       labels:
         app: {{ template "traefik.name" . }}
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"

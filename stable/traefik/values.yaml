@@ -246,8 +246,10 @@ acme:
       AWS_SECRET_ACCESS_KEY: ""
     vultr:
       VULTR_API_KEY: ""
-  ## Save ACME certs to a persistent volume. WARNING: If you do not do this, you will re-request
-  ## certs every time a pod (re-)starts and you WILL be rate limited!
+  ## Save ACME certs to a persistent volume.
+  ## WARNING: If you do not do this and you did not have configured
+  ## a kvprovider, you will re-request certs every time a pod (re-)starts
+  ## and you WILL be rate limited!
   persistence:
     enabled: true
     annotations: {}
