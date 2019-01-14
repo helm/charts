@@ -60,10 +60,12 @@ spec:
           {{- if eq .Values.cloudProvider "gce" }}
             - --cloud-config={{ .Values.cloudConfigPath }}
             {{- end }}
+          {{- if .Values.regional }}
+            - --regional=true
+            {{- end }}
           {{- range $key, $value := .Values.extraArgs }}
             - --{{ $key }}{{ if $value }}={{ $value }}{{ end }}
           {{- end }}
-
           env:
           {{- if eq .Values.cloudProvider "aws" }}
             - name: AWS_REGION

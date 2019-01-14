@@ -1,25 +1,25 @@
 autoDiscovery:
-# Only cloudProvider `aws` and `gce` are supported by auto-discovery at this time
-# AWS: Set tags as described in https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/cloudprovider/aws/README.md#auto-discovery-setup
-  clusterName:  # cluster.local
+  # Only cloudProvider `aws` and `gce` are supported by auto-discovery at this time
+  # AWS: Set tags as described in https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/cloudprovider/aws/README.md#auto-discovery-setup
+  clusterName: # cluster.local
 
 autoscalingGroups: []
 # At least one element is required if not using autoDiscovery
-  # - name: asg1
-  #   maxSize: 2
-  #   minSize: 1
-  # - name: asg2
-  #   maxSize: 2
-  #   minSize: 1
+# - name: asg1
+#   maxSize: 2
+#   minSize: 1
+# - name: asg2
+#   maxSize: 2
+#   minSize: 1
 
 autoscalingGroupsnamePrefix: []
 # At least one element is required if not using autoDiscovery
-  # - name: ig01
-  #   maxSize: 10
-  #   minSize: 0
-  # - name: ig02
-  #   maxSize: 10
-  #   minSize: 0
+# - name: ig01
+#   maxSize: 10
+#   minSize: 0
+# - name: ig02
+#   maxSize: 10
+#   minSize: 0
 
 # Required if cloudProvider=aws
 awsRegion: us-east-1
@@ -99,7 +99,12 @@ rbac:
   ##
   serviceAccountName: default
 
-resources: {}
+# GCP: Whether the underlying instance groups are regional (as opposed to zonal)
+# https://cloud.google.com/compute/docs/instance-groups/distributing-instances-with-regional-instance-groups
+regional: false
+
+resources:
+  {}
   # limits:
   #   cpu: 100m
   #   memory: 300Mi
@@ -135,11 +140,13 @@ spotinst:
 ## Are you using Prometheus Operator?
 serviceMonitor:
   enabled: false
-  interval: "10s"
-   # Namespace Prometheus is installed in
-  namespace: monitoring
-   ## Defaults to whats used if you follow CoreOS [Prometheus Install Instructions](https://github.com/helm/charts/tree/master/stable/prometheus-operator#tldr)
-   ## [Prometheus Selector Label](https://github.com/helm/charts/tree/master/stable/prometheus-operator#prometheus-operator-1)
-   ## [Kube Prometheus Selector Label](https://github.com/helm/charts/tree/master/stable/prometheus-operator#exporters)
+  interval:
+    "10s"
+    # Namespace Prometheus is installed in
+  namespace:
+    monitoring
+    ## Defaults to whats used if you follow CoreOS [Prometheus Install Instructions](https://github.com/helm/charts/tree/master/stable/prometheus-operator#tldr)
+    ## [Prometheus Selector Label](https://github.com/helm/charts/tree/master/stable/prometheus-operator#prometheus-operator-1)
+    ## [Kube Prometheus Selector Label](https://github.com/helm/charts/tree/master/stable/prometheus-operator#exporters)
   selector:
     prometheus: kube-prometheus
