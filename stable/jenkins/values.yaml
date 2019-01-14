@@ -73,6 +73,7 @@ Master:
   HealthProbes: true
   HealthProbesLivenessTimeout: 90
   HealthProbesReadinessTimeout: 60
+  HealthProbeReadinessPeriodSeconds: 10
   HealthProbeLivenessFailureThreshold: 12
   SlaveListenerPort: 50000
   DisabledAgentProtocols:

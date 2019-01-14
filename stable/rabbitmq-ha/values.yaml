@@ -148,6 +148,12 @@ rabbitmqCert:
   certfile: |
   keyfile: |
 
+## Extra volumes for statefulset
+extraVolumes: []
+
+## Extra volume mounts for statefulset
+extraVolumeMounts: []
+
 ## Authentication mechanism
 ## Ref: http://www.rabbitmq.com/authentication.html
 rabbitmqAuth:
