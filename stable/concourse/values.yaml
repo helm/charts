@@ -892,6 +892,10 @@ worker:
   ## in parallel.
   podManagementPolicy: Parallel
 
+  ## When persistance is disabled this value will be used to limit the emptyDir volume size
+  ## Ref: https://kubernetes.io/docs/concepts/storage/volumes/#emptydir
+  # emptyDirSize: 20Gi
+
 ## Persistent Volume Storage configuration.
 ## ref: https://kubernetes.io/docs/user-guide/persistent-volumes
 ##

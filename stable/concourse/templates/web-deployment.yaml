@@ -265,7 +265,6 @@ spec:
             {{- end }}
             {{- end }}
 
-
             {{- if .Values.concourse.web.awsSsm.enabled }}
             - name: CONCOURSE_AWS_SSM_ACCESS_KEY
               valueFrom:
@@ -288,13 +287,13 @@ spec:
             - name: AWS_REGION
               value: {{ .Values.concourse.web.awsSsm.region | quote }}
             {{- end }}
-            {{- if .Values.credentialManager.awsSsm.pipelineSecretTemplate }}
+            {{- if .Values.concourse.web.awsSsm.pipelineSecretTemplate }}
             - name: CONCOURSE_AWS_SSM_PIPELINE_SECRET_TEMPLATE
-              value: {{ .Values.credentialManager.awsSsm.pipelineSecretTemplate | quote }}
+              value: {{ .Values.concourse.web.awsSsm.pipelineSecretTemplate | quote }}
             {{- end }}
-            {{- if .Values.credentialManager.awsSsm.teamSecretTemplate }}
+            {{- if .Values.concourse.web.awsSsm.teamSecretTemplate }}
             - name: CONCOURSE_AWS_SSM_TEAM_SECRET_TEMPLATE
-              value: {{ .Values.credentialManager.awsSsm.teamSecretTemplate | quote }}
+              value: {{ .Values.concourse.web.awsSsm.teamSecretTemplate | quote }}
             {{- end }}
             {{- end }}
 

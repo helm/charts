@@ -38,6 +38,10 @@ rabbitmq:
   include_vhost: ".*"
   skip_queues: "^$"
   skip_vhost: "^$"
+  exporters: "exchange,node,overview,queue"
+  output_format: "TTY"
+  timeout: 30
+  max_queues: 0
 
 annotations: {}
 #  prometheus.io/scrape: "true"

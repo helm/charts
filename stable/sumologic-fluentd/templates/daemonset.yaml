@@ -21,6 +21,9 @@ spec:
         app: {{ template "sumologic-fluentd.name" . }}
         release: {{ .Release.Name }}
     spec:
+      {{- if .Values.daemonset.priorityClassName }}
+      priorityClassName: {{ .Values.daemonset.priorityClassName }}
+      {{- end }}
       containers:
         - name: {{ template "sumologic-fluentd.fullname" . }}
           image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
