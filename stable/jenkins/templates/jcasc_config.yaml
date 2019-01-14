@@ -1,0 +1,16 @@
+{{- if and (.Values.Master.JCasC.enabled) (.Values.Master.Sidecar.configAutoReload.enabled) }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: jenkins-config-{{ template "jenkins.fullname" . }}
+  labels:
+    {{ .Values.Master.Sidecar.configAutoReload.label | default "jenkins_config" }}: "true"
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    component: "{{ .Release.Name }}-{{ .Values.Master.Name }}"
+data:
+{{- range $key, $val := .Values.Master.JCasC.ConfigScripts }}
+  {{ $key }}.yaml: |-
+{{ $val | indent 4 }}
+{{- end }}
+{{- end }}
