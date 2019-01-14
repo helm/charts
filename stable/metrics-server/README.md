@@ -18,3 +18,4 @@ Parameter | Description | Default
 `tolerations` | List of node taints to tolerate (requires Kubernetes >=1.6) | `[]`
 `nodeSelector` | Node labels for pod assignment | `{}`
 `affinity` | Node affinity | `{}`
+`replicas` | Number of replicas | `1`
