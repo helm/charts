@@ -401,4 +401,4 @@ zookeeper:
   #     - topologyKey: "kubernetes.io/hostname"
   #       labelSelector:
   #         matchLabels:
-  #           release: zookeeper
+  #           app: zookeeper
