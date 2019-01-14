@@ -82,6 +82,7 @@ The following table lists the configurable parameters of the Ghost chart and the
 | `service.nodePorts.http`            | Kubernetes http node port                                     | `""`                                                     |
 | `service.externalTrafficPolicy`     | Enable client source IP preservation                          | `Cluster`                                                |
 | `service.loadBalancerIP`            | LoadBalancerIP for the Ghost service                          | ``                                                       |
+| `service.annotations`            | Service annotations                          | ``                                                       |
 | `ingress.enabled`                   | Enable ingress controller resource                            | `false`                                                  |
 | `ingress.annotations`               | Ingress annotations                                           | `[]`                                                     |
 | `ingress.certManager`               | Add annotations for cert-manager                              | `false`                                                  |
