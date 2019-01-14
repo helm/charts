@@ -70,6 +70,7 @@ The following table lists the configurable parameters of the Concourse chart and
 | `image` | Concourse image | `concourse/concourse` |
 | `imageTag` | Concourse image version | `4.2.2` |
 | `imagePullPolicy` | Concourse image pull policy | `IfNotPresent` |
+| `imagePullSecrets` | Array of imagePullSecrets in the namespace for pulling images | `[]` |
 | `web.nameOverride` | Override the Concourse Web components name | `nil` |
 | `web.replicas` | Number of Concourse Web replicas | `1` |
 | `web.resources` | Concourse Web resource requests and limits | `{requests: {cpu: "100m", memory: "128Mi"}}` |
