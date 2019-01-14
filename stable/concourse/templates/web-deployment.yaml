@@ -894,17 +894,9 @@ spec:
               containerPort: {{ .Values.concourse.web.prometheus.bindPort }}
             {{- end }}
           livenessProbe:
-            httpGet:
-              path: /
-              port: atc
-            initialDelaySeconds: 120
-            timeoutSeconds: 5
+{{ toYaml .Values.web.livenessProbe | indent 12 }}
           readinessProbe:
-            httpGet:
-              path: /
-              port: atc
-            initialDelaySeconds: 5
-            timeoutSeconds: 1
+{{ toYaml .Values.web.readinessProbe | indent 12 }}
           resources:
 {{ toYaml .Values.web.resources | indent 12 }}
           volumeMounts:
