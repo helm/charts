@@ -55,20 +55,16 @@ manager:
   namespace: "default"
   shortUrl: "True"
   minimumWorkers: "2"
-  serviceAccountName:
+  serviceAccount:
     create: true
     name: citus-manager-sa
   ssl:
     mode: "prefer"
   provision:
     masterQueries: |
-      "CREATE FUNCTION one() RETURNS integer AS 'select 1;' LANGUAGE SQL;
-
-      CREATE FUNCTION three() RETURNS integer AS 'select 1;' LANGUAGE SQL;"
+      ""
     workerQueries: |
-      "CREATE FUNCTION two() RETURNS integer AS 'select 1;' LANGUAGE SQL;
-
-      CREATE FUNCTION four() RETURNS integer AS 'select 1;' LANGUAGE SQL;"
+      ""
 
 
 ## SSL encryption of TCP/IP connections

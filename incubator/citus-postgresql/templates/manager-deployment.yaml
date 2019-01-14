@@ -1,20 +1,30 @@
 apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
 kind: Deployment
 metadata:
-  name: citus-manager 
+  name: {{ template "citus-postgresql.fullname" . }}-manager
+  labels:
+    app: {{ template "citus-postgresql.name" . }}-manager
+    chart: {{ template "citus-postgresql.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}  
 spec:
   selector:
     matchLabels:
-      app: citus-manager
+      app: {{ template "citus-postgresql.name" . }}-manager
   replicas: 1
   template:
     metadata:
       labels:
-        app: citus-manager
+        app: {{ template "citus-postgresql.name" . }}-manager
+        release: {{ .Release.Name }}
     spec:
-      serviceAccountName: {{ .Values.manager.serviceAccountName.name }}
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+        - name: {{ .Values.imagePullSecrets }}
+      {{- end }}    
+      serviceAccountName: {{ .Values.manager.serviceAccount.name }}
       containers:
-      - name: citus-manager-container
+      - name: citus-manager
         image: "{{ .Values.manager.image }}:{{ .Values.manager.imageTag }}"
         imagePullPolicy: "{{ .Values.imagePullPolicy }}"
         volumeMounts:
