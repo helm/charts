@@ -50,10 +50,11 @@ The following tables list the configurable parameters of the Dask chart and thei
 | -----------------------      | ---------------------------------| ---------------|
 | `worker.name`                | Dask worker name                 | `worker`       |
 | `worker.image`               | Container image name             | `daskdev/dask` |
-| `worker.imageTag`            | Container image tag              | `1.0.0`       |
+| `worker.imageTag`            | Container image tag              | `1.0.0`        |
 | `worker.replicas`            | k8s hpa and deployment replicas  | `3`            |
 | `worker.resources`           | Container resources              | `{}`           |
-|
+| `worker.volumes`             | Volumes for the worker           | `{}`           |
+| `worker.volumeMouns`         | Volume mounts for the worker     | `{}`           |
 
 ### jupyter
 

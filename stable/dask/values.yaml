@@ -45,6 +45,8 @@ worker:
     # requests:
     #   cpu: 1
     #   memory: 3G
+  volumes: {}
+  volumeMounts: {}
 
 jupyter:
   name: jupyter
