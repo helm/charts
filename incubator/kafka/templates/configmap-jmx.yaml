@@ -1,4 +1,4 @@
-{{- if and .Values.prometheus.jmx.enabled .Values.jmx.configMap.enabled }}
+{{- if .Values.jmx.configMap.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
