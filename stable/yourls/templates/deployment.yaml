@@ -1,24 +1,33 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "yourls.fullname" . }}
   labels:
-    app: {{ template "fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app: "{{ template "yourls.fullname" . }}"
+    chart: "{{ template "yourls.chart" . }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
 spec:
   selector:
     matchLabels:
-      app: {{ template "fullname" . }}
-      release: "{{ .Release.Name }}"
+      app: "{{ template "yourls.fullname" . }}"
+      release: {{ .Release.Name | quote }}
   replicas: {{ .Values.replicaCount }}
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-        release: "{{ .Release.Name }}"
+        app: "{{ template "yourls.fullname" . }}"
+        chart: "{{ template "yourls.chart" . }}"
+        release: {{ .Release.Name | quote }}
+      {{- if or .Values.podAnnotations .Values.metrics.enabled }}
+      annotations:
+      {{- if .Values.podAnnotations }}
+{{ toYaml .Values.podAnnotations | indent 8 }}
+      {{- end }}
+      {{- if .Values.metrics.podAnnotations }}
+{{ toYaml .Values.metrics.podAnnotations | indent 8 }}
+      {{- end }}
+      {{- end }}
     spec:
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
@@ -26,9 +35,13 @@ spec:
         - name: {{ . }}
       {{- end}}
       {{- end }}
+      hostAliases:
+        - ip: "127.0.0.1"
+          hostnames:
+            - "status.localhost"
       containers:
-        - name: {{ template "fullname" . }}
-          image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        - name: "{{ template "yourls.fullname" . }}"
+          image: {{ template "yourls.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
           env:
             - name: ALLOW_EMPTY_PASSWORD
@@ -74,7 +87,7 @@ spec:
             - name: YOURLS_PASS
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "fullname" . }}
+                  name: {{ template "yourls.fullname" . }}
                   key: yourls-password
           {{- if .Values.extraEnv }}
 {{ toYaml .Values.extraEnv | indent 12 }}
@@ -119,11 +132,34 @@ spec:
           {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 10 }}
+{{- if .Values.metrics.enabled }}
+        - name: metrics
+          image: {{ template "metrics.image" . }}
+          imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
+          command: [ '/bin/apache_exporter', '-scrape_uri', 'http://status.localhost:80/server-status/?auto']
+          ports:
+            - name: metrics
+            containerPort: 9117
+          livenessProbe:
+            httpGet:
+              path: /metrics
+              port: metrics
+            initialDelaySeconds: 15
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /metrics
+              port: metrics
+            initialDelaySeconds: 5
+            timeoutSeconds: 1
+          resources:
+  {{ toYaml .Values.metrics.resources | indent 10 }}
+{{- end }}
       volumes:
         - name: yourls-data
         {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
-            claimName: {{ .Values.persistence.existingClaim | default (include "fullname" .) }}
+            claimName: {{ .Values.persistence.existingClaim | default (include "yourls.fullname" .) }}
         {{- else }}
           emptyDir: {}
         {{ end }}

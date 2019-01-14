@@ -11,21 +11,22 @@
 {{- else if contains "LoadBalancer" .Values.service.type }}
 
   NOTE: It may take a few minutes for the LoadBalancer IP to be available.
-        Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "fullname" . }}'
+        Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "yourls.fullname" . }}'
 
-  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
-  echo "YOURLS URL: http://$SERVICE_IP/"
-  echo "YOURLS Admin URL: http://$SERVICE_IP/admin"
+{{- $port:=.Values.service.port | toString }}
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "yourls.fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
+  echo "YOURLS URL: http://$SERVICE_IP{{- if ne $port "80" }}:{{ .Values.service.port }}{{ end }}/"
+  echo "YOURLS Admin URL: http://$SERVICE_IP{{- if ne $port "80" }}:{{ .Values.service.port }}{{ end }}/admin"
 
 {{- else if contains "ClusterIP"  .Values.service.type }}
 
   echo "YOURLS URL: http://127.0.0.1:8080/"
   echo "YOURLS Admin URL: http://127.0.0.1:8080/admin"
-  kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "fullname" . }} 8080:80
+  kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "yourls.fullname" . }} 8080:{{ .Values.service.port }}
 
 {{- else if contains "NodePort" .Values.service.type }}
 
-  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "fullname" . }})
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "yourls.fullname" . }})
   export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
   echo "YOURLS URL: http://$NODE_IP:$NODE_PORT/"
   echo "YOURLS Admin URL: http://$NODE_IP:$NODE_PORT/admin"
@@ -35,4 +36,4 @@
 2. Login with the following credentials to see your shortner
 
   echo Username: {{ .Values.yourlsUsername }}
-  echo Password: $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.yourls-password}" | base64 --decode)
+  echo Password: $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "yourls.fullname" . }} -o jsonpath="{.data.yourls-password}" | base64 --decode)

@@ -22,3 +22,5 @@
 
 # OWNERS file for Kubernetes
 OWNERS
+# example production yaml
+values-production.yaml

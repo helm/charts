@@ -14,7 +14,7 @@ This chart bootstraps a [YOURLS](https://hub.docker.com/_/yourls/) deployment on
 
 It also packages the [MariaDB chart](https://github.com/kubernetes/charts/tree/master/stable/mariadb) which is required for bootstrapping a MariaDB deployment for the database requirements of the YOURLS application.
 
-charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters.
+Charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters.
 
 ## Prerequisites
 
@@ -70,18 +70,21 @@ The following table lists the configurable parameters of the YOURLS chart and th
 | `externalDatabase.user`          | Existing username in the external db       | `yourls`                                                |
 | `externalDatabase.password`      | Password for the above username            | `nil`                                                   |
 | `externalDatabase.database`      | Name of the existing database              | `yourls`                                                |
+| `service.annotations`            | Service annotations                        | `{}`                                                    |
 | `service.type`                   | Kubernetes Service type                    | `LoadBalancer`                                          |
+| `service.port`                   | Service HTTP port                          | `80`                                                    |
+| `service.httpsPort`              | Service HTTPS port                         | `443`                                                   |
 | `service.externalTrafficPolicy`  | Enable client source IP preservation       | `Cluster`                                               |
 | `nodePorts.http`                 | Kubernetes http node port                  | `""`                                                    |
 | `nodePorts.https`                | Kubernetes https node port                 | `""`                                                    |
 | `healthcheckHttps`               | Use https for liveliness and readiness     | `false`                                                 |
 | `ingress.enabled`                | Enable ingress controller resource         | `false`                                                 |
+| `ingress.certManager`            | Add annotations for cert-manager           | `false`                                                 |
+| `ingress.annotations`            | Ingress annotations                        | `[]`                                                    |
 | `ingress.hosts[0].name`          | Hostname to your YOURLS installation       | `yourls.local`                                          |
 | `ingress.hosts[0].path`          | Path within the url structure              | `/`                                                     |
 | `ingress.hosts[0].tls`           | Utilize TLS backend in ingress             | `false`                                                 |
-| `ingress.hosts[0].certManager`   | Add annotations for cert-manager           | `false`                                                 |
 | `ingress.hosts[0].tlsSecret`     | TLS Secret (certificates)                  | `yourls.local-tls-secret`                               |
-| `ingress.hosts[0].annotations`   | Annotations for this host's ingress record | `[]`                                                    |
 | `ingress.secrets[0].name`        | TLS Secret Name                            | `nil`                                                   |
 | `ingress.secrets[0].certificate` | TLS Secret Certificate                     | `nil`                                                   |
 | `ingress.secrets[0].key`         | TLS Secret Key                             | `nil`                                                   |
@@ -95,6 +98,15 @@ The following table lists the configurable parameters of the YOURLS chart and th
 | `nodeSelector`                   | Node labels for pod assignment             | `{}`                                                    |
 | `tolerations`                    | List of node taints to tolerate            | `[]`                                                    |
 | `affinity`                       | Map of node/pod affinities                 | `{}`                                                    |
+| `podAnnotations`                 | Pod annotations                                         | `{}`                                                           |
+| `metrics.enabled`                | Start a side-car prometheus exporter                    | `false`                                                        |
+| `metrics.image.registry`         | Apache exporter image registry                          | `docker.io`                                                    |
+| `metrics.image.repository`       | Apache exporter image name                              | `lusotycoon/apache-exporter`                                   |
+| `metrics.image.tag`              | Apache exporter image tag                               | `v0.5.0`                                                       |
+| `metrics.image.pullPolicy`       | Image pull policy                                       | `IfNotPresent`                                                 |
+| `metrics.image.pullSecrets`      | Specify docker-registry secret names as an array        | `nil`                                                          |
+| `metrics.podAnnotations`         | Additional annotations for Metrics exporter pod         | `{prometheus.io/scrape: "true", prometheus.io/port: "9117"}`   |
+| `metrics.resources`              | Exporter resource requests/limit                        | {}                                                             |
 
 The above parameters map to the env variables defined in [YOURLS](https://hub.docker.com/_/yourls/). For more information please refer to the [yourls](https://hub.docker.com/_/yourls/) image documentation.
 
