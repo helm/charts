@@ -8,6 +8,7 @@
 
 # Replace this with your own repo whitelist:
 orgWhitelist: github.com/yourorg/*
+# logLevel: "debug"
 
 # If using GitHub, specify like the following:
 # github:
@@ -74,7 +75,7 @@ serviceAccountSecrets:
 
 image:
   repository: runatlantis/atlantis
-  tag: v0.4.11
+  tag: v0.4.13
   pullPolicy: IfNotPresent
 
 ## enable using atlantis.yaml file
@@ -152,3 +153,5 @@ serviceAccount:
   # The name of the ServiceAccount to use.
   # If not set and create is true, a name is generated using the fullname template
   name:
+
+# tlsSecretName: tls
