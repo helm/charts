@@ -1,7 +1,7 @@
 settings:
   log_monitors:
-    - /config/kernel-monitor.json
-    - /config/docker-monitor.json
+    - kernel-monitor.json
+    - docker-monitor.json
 
 hostpath:
   logdir: /var/log/
