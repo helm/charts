@@ -25,6 +25,10 @@ rules:
   - statefulsets
   - deployments
   verbs: ["get", "list", "watch"]
+- apiGroups: [""]
+  resources:
+  - nodes/stats
+  verbs: ["get"]
 - nonResourceURLs: ["/metrics"]
   verbs: ["get"]
 {{- end -}}
