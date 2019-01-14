@@ -177,7 +177,7 @@ spec:
           value: {{ .Values.kafkaHeapOptions }}
         {{- if .Values.prometheus.agent.enabled }}
         - name: KAFKA_JMX_OPTS
-          value: "-javaagent:/var/lib/prometheus/jmx_prometheus_javaagent-{{ .Values.prometheus.agent.version }}.jar={{ .Values.prometheus.agent.port }}:/etc/prometheus/{{ .Values.jmx.configMap.overrideName }}"
+          value: "-javaagent:/var/lib/prometheus/jmx_prometheus_javaagent-{{ .Values.prometheus.agent.version }}.jar={{ .Values.prometheus.agent.port }}:/etc/prometheus/jmx-kafka-prometheus.yml"
         {{- end }}
         {{- if not (hasKey .Values.configurationOverrides "zookeeper.connect") }}
         - name: KAFKA_ZOOKEEPER_CONNECT
