@@ -106,6 +106,7 @@ The following table lists the configurable parameters of the sumologic-fluentd c
 | `resources.limits.memory` | Memory resource limits | 256Mi |
 | `rbac.create` | Is Role Based Authentication enabled in the cluster | `false` |
 | `rbac.serviceAccountName` | RBAC service account name | {{ fullname }} |
+| `daemonset.priorityClassName` | Priority Class to use for the daemonset | `Nil` |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
