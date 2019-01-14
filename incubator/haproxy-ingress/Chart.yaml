@@ -1,5 +1,5 @@
 name: haproxy-ingress
-version: 0.0.5
+version: 0.0.6
 appVersion: 0.7.0
 home: https://github.com/jcmoraisjr/haproxy-ingress
 description: Ingress controller implementation for haproxy loadbalancer.
