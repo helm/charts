@@ -521,7 +521,10 @@ spec:
   {{- else }}
       {{ if include "concourse.are-there-additional-volumes.with-the-name.concourse-work-dir" . | not }}
         - name: concourse-work-dir
-          emptyDir: {}
+          emptyDir:
+            {{- if .Values.worker.emptyDirSize }}
+            sizeLimit: {{ .Values.worker.emptyDirSize | quote }}
+            {{- end }}
       {{- end }}
   {{- end }}
 {{- if semverCompare "^1.7-0" .Capabilities.KubeVersion.GitVersion }}
