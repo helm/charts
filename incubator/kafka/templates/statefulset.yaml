@@ -61,8 +61,8 @@ spec:
         image: busybox
         imagePullPolicy: IfNotPresent
         command:
-        - wget
-        - "-O"
+        - curl
+        - "-o"
         - "/tmp/jmx-agent/jmx_prometheus_javaagent-{{ .Values.prometheus.agent.version }}.jar"
         - https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/{{ .Values.prometheus.agent.version }}/jmx_prometheus_javaagent-{{ .Values.prometheus.agent.version }}.jar
         volumeMounts:
