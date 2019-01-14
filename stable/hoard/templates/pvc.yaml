@@ -15,7 +15,7 @@ metadata:
   {{- end }}
 spec:
   accessModes:
-    - {{ $.Values.persistence.accessMode | quote }}
+  - {{ $.Values.persistence.accessMode | quote }}
   resources:
     requests:
       storage: {{ $.Values.persistence.size | quote }}
