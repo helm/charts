@@ -28,7 +28,7 @@ spec:
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
         - name: {{ .Values.imagePullSecrets }}
-      {{- end }}      
+      {{- end }}
       containers:
       {{- if .Values.prometheus.enabled }}
       - name: prometheus-metrics
@@ -46,7 +46,7 @@ spec:
         image: "{{ .Values.image }}:{{ .Values.imageTag }}"
         imagePullPolicy: "{{ .Values.imagePullPolicy }}"
         command: ["/bin/sh"]
-        args: 
+        args:
         - "-c"
         - >-
           mkdir -p /home/postgres
@@ -121,7 +121,7 @@ spec:
         - name: ssl-config
           configMap:
             name: {{ template "citus-postgresql.fullname" . }}-ssl-settings
-        {{ end }}            
+        {{ end }}
   volumeClaimTemplates:
   - metadata:
       name: pgdata

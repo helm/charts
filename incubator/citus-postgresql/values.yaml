@@ -1,6 +1,6 @@
 ## General
 fullnameOverride: ""
-imagePullSecrets: "" # Provide the name of secret for accessing private docker registry
+imagePullSecrets: ""
 image: citusdata/citus
 imageTag: 8.1.1
 imagePullPolicy: IfNotPresent
@@ -14,7 +14,7 @@ worker:
   updateStrategy:
     type: RollingUpdate
   resources: {}
-  #  limits: 
+  #  limits:
   #    cpu: 1
   #    memory: 15Gi
   #  requests:
@@ -42,9 +42,8 @@ service:
   type: ClusterIP
   annotations: {}
 
-
-# Citus membership manager
-# manager.ssl.mode supports PostgreSQL sslmodes https://www.postgresql.org/docs/current/libpq-ssl.html
+## Citus membership manager
+## ref PostgreSQL sslmodes https://www.postgresql.org/docs/current/libpq-ssl.html
 manager:
   image: bakdata/citus-k8s-membership-manager
   imageTag: v0.3
@@ -66,14 +65,12 @@ manager:
     workerQueries: |
       ""
 
-
 ## SSL encryption of TCP/IP connections
 ## add base64 encoded cert+key files
 ssl:
   enabled: false
   cert:
   key:
-
 
 ## Monitoring: Prometheus Exporter Configuration
 ## ref: https://prometheus.io/docs/instrumenting/exporters/

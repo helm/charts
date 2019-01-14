@@ -6,7 +6,7 @@ metadata:
     app: {{ template "citus-postgresql.name" . }}-manager
     chart: {{ template "citus-postgresql.chart" . }}
     release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}  
+    heritage: {{ .Release.Service }}
 spec:
   selector:
     matchLabels:
@@ -21,7 +21,7 @@ spec:
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
         - name: {{ .Values.imagePullSecrets }}
-      {{- end }}    
+      {{- end }}
       serviceAccountName: {{ .Values.manager.serviceAccount.name }}
       containers:
       - name: citus-manager
@@ -39,7 +39,7 @@ spec:
           value: "{{ .Values.manager.shortUrl }}"
         - name: WORKER_SERVICE
           value: {{ template "citus-postgresql.fullname" . }}-worker
-        - name: MASTER_SERVICE 
+        - name: MASTER_SERVICE
           value: {{ template "citus-postgresql.fullname" . }}-master
         - name: WORKER_LABEL
           value: {{ .Values.worker.citusType }}

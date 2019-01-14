@@ -10,7 +10,7 @@ metadata:
 spec:
   ports:
   - port: {{ .Values.superuser.port }}
-    protocol: TCP  
+    protocol: TCP
     name: psql
   clusterIP: None
   selector:

@@ -10,13 +10,13 @@ metadata:
 {{- with .Values.service.annotations }}
   annotations:
 {{ toYaml . | indent 4 }}
-{{- end }}    
+{{- end }}
 spec:
   type: {{ .Values.service.type }}
   ports:
   - port: {{ .Values.service.externalPort }}
     targetPort: {{ .Values.superuser.port }}
-    protocol: TCP  
+    protocol: TCP
     name: psql
   selector:
     app: {{ template "citus-postgresql.name" . }}-master

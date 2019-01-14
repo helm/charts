@@ -7,7 +7,7 @@ metadata:
     app: {{ template "citus-postgresql.name" . }}-manager
     chart: {{ template "citus-postgresql.chart" . }}
     release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}    
+    heritage: {{ .Release.Service }}
 ---
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
@@ -17,7 +17,7 @@ metadata:
     app: {{ template "citus-postgresql.name" . }}-manager
     chart: {{ template "citus-postgresql.chart" . }}
     release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}    
+    heritage: {{ .Release.Service }}
 rules:
 - apiGroups: [""]
   resources: ["pods", "pods/status"]
@@ -31,7 +31,7 @@ metadata:
     app: {{ template "citus-postgresql.name" . }}-manager
     chart: {{ template "citus-postgresql.chart" . }}
     release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}  
+    heritage: {{ .Release.Service }}
 subjects:
 - kind: ServiceAccount
   name: {{ .Values.manager.serviceAccount.name }}

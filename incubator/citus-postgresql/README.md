@@ -39,7 +39,7 @@ pods-list  2m
 ==> v1/Secret
 NAME                   AGE
 citus-postgresql-pgpass  2m
-citus-postgresql-sll  2m
+citus-postgresql-ssl     2m
 citus-postgresql-secret  2m
 
 ==> v1/ConfigMap
@@ -75,15 +75,16 @@ NOTES:
 
 There are
 1. A [StatefulSet](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/) `citus-postgresql-worker` which contains n (determined by replication factor) [Pods](https://kubernetes.io/docs/concepts/workloads/pods/pod-overview/) with a Citus Postgresql Worker and a Prometheus sidecar container each. After the first worker pod has been started, Kubernetes waits until all containers in this pod become "ready" before launching further pods.
-1. A [StatefulSet](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/) `citus-postgresql-master` which contains a [Pod](https://kubernetes.io/docs/concepts/workloads/pods/pod-overview/) with a Citus Postgresql Master and a Prometheus sidecar container. 
+1. A [StatefulSet](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/) `citus-postgresql-master` which contains a [Pod](https://kubernetes.io/docs/concepts/workloads/pods/pod-overview/) with a Citus Postgresql Master and a Prometheus sidecar container.
 1. A [Deployment](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) `citus-manager` which contains a [Pod](https://kubernetes.io/docs/concepts/workloads/pods/pod-overview/) with the Citus Membership Manager container.
 1. A [Service](https://kubernetes.io/docs/concepts/services-networking/service) `citus-postgresql` which serves as Cluster internal endpoint to reach the Citus master.
 1. A headless [Service](https://kubernetes.io/docs/concepts/services-networking/service/#headless-services) `citus-postgresql-worker` which serves as cluster internal endpoint to a specific Citus worker node.
 1. A headless [Service](https://kubernetes.io/docs/concepts/services-networking/service/#headless-services) `citus-postgresql-master` which serves as cluster internal endpoint to the Citus master node.
 1. A [ConfigMap](https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/) `setup-config` which contains SQL scripts for provisioning master and worker nodes.
 1. A [ConfigMap](https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/) `citus-postresql-ssl-settings` with SSL configuration for Citus nodes.
-1. A [Secret](https://kubernetes.io/docs/concepts/configuration/secret/) that holds credentials for the superuser.
-1. A [Secret](https://kubernetes.io/docs/concepts/configuration/secret/) that deploys credentials for all nodes in the cluster as a [.pgpass](https://www.postgresql.org/docs/11/libpq-pgpass.html) file.
+1. A [Secret](https://kubernetes.io/docs/concepts/configuration/secret/) `citus-postgresql-secret` that holds credentials for the superuser.
+1. A [Secret](https://kubernetes.io/docs/concepts/configuration/secret/) `citus-postgresql-pgpass` that deploys credentials for all nodes in the cluster as a [.pgpass](https://www.postgresql.org/docs/11/libpq-pgpass.html) file.
+1. A [Secret](https://kubernetes.io/docs/concepts/configuration/secret/) `citus-postgresql-ssl` that holds the SSL cert and key files.
 1. A [ServiceAccount](https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/) `citus-manager-sa` for the Citus Membership Manager deployment.
 1. A [Role](https://kubernetes.io/docs/reference/access-authn-authz/rbac/) `pods-list` to query Kubernetes API for pod details and status.
 1. A [RoleBinding](https://kubernetes.io/docs/reference/access-authn-authz/rbac/) `pods-list` to map the Role to the ServiceAccount.

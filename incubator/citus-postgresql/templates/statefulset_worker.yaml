@@ -16,7 +16,7 @@ spec:
   {{- if .Values.worker.updateStrategy }}
   updateStrategy:
 {{ toYaml .Values.worker.updateStrategy | indent 4 }}
-  {{- end }}      
+  {{- end }}
   template:
     metadata:
       labels:
@@ -32,7 +32,7 @@ spec:
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
         - name: {{ .Values.imagePullSecrets }}
-      {{- end }}      
+      {{- end }}
       containers:
       {{- if .Values.prometheus.enabled }}
       - name: prometheus-metrics
@@ -50,7 +50,7 @@ spec:
         image: "{{ .Values.image }}:{{ .Values.imageTag }}"
         imagePullPolicy: "{{ .Values.imagePullPolicy }}"
         command: ["/bin/sh"]
-        args: 
+        args:
         - "-c"
         - >-
           mkdir -p /home/postgres
@@ -90,7 +90,7 @@ spec:
             secretKeyRef:
               name: {{ template "citus-postgresql.fullname" . }}-secret
               key: superuser-database
-        {{- if .Values.readiness.enabled }}              
+        {{- if .Values.readiness.enabled }}
         readinessProbe:
           exec:
             command:
@@ -98,7 +98,7 @@ spec:
           initialDelaySeconds: 10
           periodSeconds: 10
           timeoutSeconds: 5
-        {{- end }}          
+        {{- end }}
         volumeMounts:
         - name: pgdata
           mountPath: /var/lib/postgresql/data
@@ -110,7 +110,7 @@ spec:
           readOnly: true
         - name: ssl-config
           mountPath: /k8s/ssl-config
-          readOnly: true          
+          readOnly: true
         {{ end }}
       volumes:
         - name: pgpass
@@ -124,7 +124,7 @@ spec:
             defaultMode: 256
         - name: ssl-config
           configMap:
-            name: {{ template "citus-postgresql.fullname" . }}-ssl-settings            
+            name: {{ template "citus-postgresql.fullname" . }}-ssl-settings
         {{ end }}
   volumeClaimTemplates:
   - metadata:
