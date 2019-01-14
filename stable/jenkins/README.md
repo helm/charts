@@ -73,9 +73,9 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `Master.Ingress.Annotations`      | Ingress annotations                  | `{}`                                                                         |
 | `Master.Ingress.Path`             | Ingress path                         | Not set                                                                         |
 | `Master.Ingress.TLS`              | Ingress TLS configuration            | `[]`                                                                         |
+| `Master.JCasC.ConfigScripts`      | List of Jenkins Config as Code scripts | False                                                                   |
+| `Master.Sidecar.configAutoReload` | Jenkins Config as Code auto-reload settings | False                                                                    |
 | `Master.InitScripts`              | List of Jenkins init scripts         | Not set                                                                      |
-| `Master.JCasC.ConfigScripts`      | List of Jenkins Config as Code scripts | Not set                                                                    |
-| `Master.Sidecar.configAutoReload` | Jenkins Config as Code auto-reload settings | Not set                                                                    |
 | `Master.CredentialsXmlSecret`     | Kubernetes secret that contains a 'credentials.xml' file | Not set                                                  |
 | `Master.SecretsFilesSecret`       | Kubernetes secret that contains 'secrets' files | Not set                                                           |
 | `Master.Jobs`                     | Jenkins XML job configs              | Not set                                                                      |
@@ -215,7 +215,7 @@ $ helm install --name my-release --set Persistence.ExistingClaim=PVC_NAME stable
 ```
 
 ## Configuration as Code
-Jenkins Configuration as Code is now a top-level Jenkins project.  Add a key under ConfigScripts for each configuration area, where each corresponds to a plugin or section of the UI.  The keys (prior to | character) are just labels, and can be any value.  They are used to give the section a meaningful name.  Each key will become the name of a configuration yaml file on the master in /var/jenkins_home/casc_configs and will be processed by the Configuration as Code Plugin during Jenkins startup.  The lines after each | become the content of the configuration yaml file.  The first line after this is a JCasC root element, eg jenkins, credentials, etc.  Best reference is the Documentation link here: https://<jenkins_url>/configuration-as-code.  The example below creates ldap settings:
+Jenkins Configuration as Code is now a standard component in the Jenkins project.  Add a key under ConfigScripts for each configuration area, where each corresponds to a plugin or section of the UI.  The keys (prior to | character) are just labels, and can be any value.  They are only used to give the section a meaningful name.  Each key will become the name of a configuration yaml file on the master in /var/jenkins_home/casc_configs (by default) and will be processed by the Configuration as Code Plugin during Jenkins startup.  The lines after each | become the content of the configuration yaml file.  The first line after this is a JCasC root element, eg jenkins, credentials, etc.  Best reference is the Documentation link here: https://<jenkins_url>/configuration-as-code.  The example below creates ldap settings:
 
 ```yaml
 ConfigScripts:
@@ -224,13 +224,15 @@ ConfigScripts:
       securityRealm:
         ldap:
           configurations:
-            - groupMembershipStrategy:
-                fromUserRecord:
-                  attributeName: "memberOf"
-              inhibitInferRootDN: false
-              rootDN: "dc=acme,dc=org"
-              server: "ldaps://ldap.acme.org:1636"
+            configurations:
+              - server: ldap.acme.com
+                rootDN: dc=acme,dc=uk
+                managerPasswordSecret: ${LDAP_PASSWORD}
+              - groupMembershipStrategy:
+                  fromUserRecord:
+                    attributeName: "memberOf"
 ```
+Further JCasC examples can be found [here.](https://github.com/jenkinsci/configuration-as-code-plugin/tree/master/demos)
 
 
 ## RBAC

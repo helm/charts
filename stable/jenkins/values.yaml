@@ -109,6 +109,7 @@ Master:
   ExtraPorts:
   # - name: BuildInfoProxy
   #   port: 9000
+
   # List of plugins to be install during Jenkins master start
   InstallPlugins:
     - kubernetes:1.14.0
@@ -116,6 +117,7 @@ Master:
     - workflow-aggregator:2.6
     - credentials-binding:1.17
     - git:3.9.1
+
   # Used to approve a list of groovy functions in pipelines used the script-security plugin. Can be viewed under /scriptApproval
   # ScriptApproval:
   #   - "method groovy.json.JsonSlurperClassic parseText java.lang.String"
@@ -137,20 +139,19 @@ Master:
 
   # Below is the implementation of Jenkins Configuration as Code.  Add a key under ConfigScripts for each configuration area,
   # each of which correspond to a plugin or section of the UI.  Each key (prior to | character) is just a label, and can be any value.
-  # They are used to give the section a meaningful name.  The keys become the name of a configuration yaml file on the master in
-  # /var/jenkins_home/casc_configs and will be processed by the Configuration as Code Plugin.  The lines after each | become the
+  # Keys are only used to give the section a meaningful name.  The keys become the name of a configuration yaml file on the master in
+  # /var/jenkins_home/casc_configs (by default) and will be processed by the Configuration as Code Plugin.  The lines after each | become the
   # content of the configuration yaml file.  The first line after this is a JCasC root element, eg jenkins, credentials, etc.
-  # Best reference is https://<jenkins_url>/configuration-as-code/reference.  The commented example creates a welcome message.
+  # Best reference is https://<jenkins_url>/configuration-as-code/reference.  The example below creates a welcome message.
   JCasC:
-    enabled: true
+    enabled: false
     PluginVersion: 1.4
     SupportPluginVersion: 1.4
     ConfigScripts:
       welcome-message: |
         jenkins:
-          systemMessage: |
-            Welcome to our CI\CD server.  This Jenkins is configured and managed 'as code'.
-            Global configuration is handled by 'Jenkins Configuration as Code Plugin'
+          systemMessage: Welcome to our CI\CD server.  This Jenkins is configured and managed 'as code'.
+
   Sidecar:
     image: shadwell/k8s-sidecar:0.0.1
     imagePullPolicy: IfNotPresent
@@ -162,10 +163,10 @@ Master:
     #     cpu: 50m
     #     memory: 50Mi
     configAutoReload:
-      # If enabled: true, Jenkins Configuration as Code will be reloaded on-the-fly without a reboot.  If false or not-specified
+      # If enabled: true, Jenkins Configuration as Code will be reloaded on-the-fly without a reboot.  If false or not-specified,
       # jcasc changes will cause a reboot and will only be applied at the subsequent start-up.  Auto-reload uses the Jenkins CLI
       # over SSH to reapply config when changes to the ConfigScripts are detected.  The admin account will have an
-      # SSH private key (RSA 4096) created for you unless you specify OwnSshKey: true.  This will be saved to a k8s secret.
+      # SSH private key (RSA 4096) created unless you specify OwnSshKey: true.  This will be saved to a k8s secret.
       enabled: true
       # SSH port value can be set to any unused TCP port.  The default, 944, is a non-standard SSH port that has been chosen at random.
       # Is only used to reload jcasc config from the sidecar container running in the Jenkins master pod.
@@ -197,14 +198,12 @@ Master:
   OverwriteConfig: false
 
   Ingress:
-   ApiVersion: extensions/v1beta1
+    ApiVersion: extensions/v1beta1
     Annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
-
     # Set this path to JenkinsUriPrefix above or use annotations to rewrite path
     # Path: "/jenkins"
-
     TLS:
     # - secretName: jenkins.cluster.local
     #   hosts:
@@ -249,7 +248,6 @@ Persistence:
   ## Requires Persistence.Enabled: true
   ## If defined, PVC must be created manually before volume will be bound
   # ExistingClaim:
-
   ## jenkins data Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>
   ## If set to "-", storageClassName: "", which disables dynamic provisioning
@@ -258,7 +256,6 @@ Persistence:
   ##   GKE, AWS & OpenStack)
   ##
   # StorageClass: "-"
-
   Annotations: {}
   AccessMode: ReadWriteOnce
   Size: 8Gi
@@ -294,30 +291,24 @@ backup:
   # Backup must use RBAC
   # So by enabling backup you are enabling RBAC specific for backup
   enabled: false
-
   # Schedule to run jobs. Must be in cron time format
   # Ref: https://crontab.guru/
   schedule: "0 2 * * *"
-
   annotations:
     # Example for authorization to AWS S3 using kube2iam
     # Can also be done using environment variables
     iam.amazonaws.com/role: jenkins
-
   image:
     repository: nuvo/kube-tasks
     tag: 0.1.2
-
   # Additional arguments for kube-tasks
   # Ref: https://github.com/nuvo/kube-tasks#simple-backup
   extraArgs: []
-
   # Add additional environment variables
   env:
   # Example environment variable required for AWS credentials chain
   - name: AWS_REGION
     value: us-east-1
-
   resources:
     requests:
       memory: 1Gi
@@ -325,7 +316,6 @@ backup:
     limits:
       memory: 1Gi
       cpu: 1
-
   # Destination to store the backup artifacts
   # Supported cloud storage services: AWS S3, Minio S3, Azure Blob Storage
   # Additional support can added. Visit this repository for details
