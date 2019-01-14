@@ -73,6 +73,8 @@ The following table lists the configurable parameters of the Concourse chart and
 | `web.nameOverride` | Override the Concourse Web components name | `nil` |
 | `web.replicas` | Number of Concourse Web replicas | `1` |
 | `web.resources` | Concourse Web resource requests and limits | `{requests: {cpu: "100m", memory: "128Mi"}}` |
+| `web.readinessProbe` | Readiness Probe settings | `{"httpGet":{"path":"/api/v1/info","port":"atc"}}` |
+| `web.livenessProbe` | Liveness Probe settings | `{"failureThreshold":5,"httpGet":{"path":"/api/v1/info","port":"atc"},"initialDelaySeconds":10,"periodSeconds":15,"timeoutSeconds":3}` |
 | `web.additionalAffinities` | Additional affinities to apply to web pods. E.g: node affinity | `{}` |
 | `web.env` | Configure additional environment variables for the web containers | `[]` |
 | `web.annotations`| Concourse Web deployment annotations | `nil` |
