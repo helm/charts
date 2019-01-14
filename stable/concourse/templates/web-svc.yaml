@@ -33,6 +33,14 @@ spec:
       {{ if and (eq "NodePort" .Values.web.service.type) .Values.web.service.atcNodePort }}
       nodePort: {{ .Values.web.service.atcNodePort}}
       {{ end }}
+    {{- if .Values.concourse.web.tls.enabled }}
+    - name: atc-tls
+      port: {{ .Values.concourse.web.tls.bindPort }}
+      targetPort: atc-tls
+      {{ if and (eq "NodePort" .Values.web.service.type) .Values.web.service.atcTlsNodePort }}
+      nodePort: {{ .Values.web.service.atcTlsNodePort}}
+      {{ end }}
+    {{- end }}
     - name: tsa
       port: {{ .Values.concourse.web.tsa.bindPort }}
       targetPort: tsa

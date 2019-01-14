@@ -54,21 +54,23 @@ spec:
                   name: {{ template "concourse.concourse.fullname" . }}
                   key: local-users
             {{- end }}
-            {{- if .Values.concourse.web.tlsBindPort }}
+            {{- if .Values.concourse.web.tls.enabled }}
             - name: CONCOURSE_TLS_BIND_PORT
-              value: {{ .Values.concourse.web.tlsBindPort | quote }}
-            {{- end }}
-            {{- if .Values.concourse.web.tlsCert }}
+              value: {{ .Values.concourse.web.tls.bindPort | default "443" | quote }}
             - name: CONCOURSE_TLS_CERT
-              value: {{ .Values.concourse.web.tlsCert | quote }}
-            {{- end }}
-            {{- if .Values.concourse.web.tlsKey }}
+              value: "/concourse-web-tls/client.cert"
             - name: CONCOURSE_TLS_KEY
-              value: {{ .Values.concourse.web.tlsKey | quote }}
+              value: "/concourse-web-tls/client.key"
             {{- end }}
+            {{- if .Values.concourse.web.tls.enabled }}
+            - name: CONCOURSE_EXTERNAL_URL
+              value: {{ required "Must specify HTTPS external URL when concourse.web.tls.enabled is true" .Values.concourse.web.externalUrl | quote }}
+            {{- else }}
             {{- if .Values.concourse.web.externalUrl }}
             - name: CONCOURSE_EXTERNAL_URL
+              value:
               value: {{ .Values.concourse.web.externalUrl | quote }}
+            {{- end }}
             {{- end }}
             {{- if .Values.concourse.web.peerUrl }}
             - name: CONCOURSE_PEER_URL
@@ -873,6 +875,10 @@ spec:
           ports:
             - name: atc
               containerPort: {{ .Values.concourse.web.bindPort }}
+            {{- if .Values.concourse.web.tls.enabled }}
+            - name: atc-tls
+              containerPort: {{ .Values.concourse.web.tls.bindPort }}
+            {{- end }}
             - name: tsa
               containerPort: {{ .Values.concourse.web.tsa.bindPort }}
             {{- if .Values.concourse.web.debugBindPort }}
@@ -905,6 +911,11 @@ spec:
             - name: concourse-keys
               mountPath: /concourse-keys
               readOnly: true
+            {{- if .Values.concourse.web.tls.enabled }}
+            - name: web-tls
+              mountPath: /concourse-web-tls
+              readOnly: true
+            {{- end }}
             {{- if .Values.concourse.web.vault.enabled }}
             - name: vault-keys
               mountPath: /concourse-vault
@@ -939,6 +950,17 @@ spec:
                 path: session_signing_key
               - key: worker-key-pub
                 path: worker_key.pub
+        {{- if .Values.concourse.web.tls.enabled }}
+        - name: web-tls
+          secret:
+            secretName: {{ template "concourse.concourse.fullname" . }}
+            defaultMode: 0400
+            items:
+              - key: web-tls-cert
+                path: client.cert
+              - key: web-tls-key
+                path: client.key
+        {{- end }}
         {{- if .Values.concourse.web.vault.enabled }}
         - name: vault-keys
           secret:

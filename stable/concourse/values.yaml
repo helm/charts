@@ -36,12 +36,13 @@ concourse:
     # bindIp: 0.0.0.0
     ## Port on which to listen for HTTP traffic.
     bindPort: 8080
-    ## Port on which to listen for HTTPS traffic.
-    # tlsBindPort:
-    ## File containing an SSL certificate.
-    # tlsCert:
-    ## File containing an RSA private key, used to encrypt HTTPS traffic.
-    # tlsKey:
+    ## TLS configurations for the web component to be able to serve HTTPS traffic.
+    ## Once enabled, consumes the certificates set via secrets.
+    #
+    tls:
+      enabled: false
+      ## Port on which to listen for HTTPS traffic.
+      # bindPort:
     ## URL used to reach any ATC from the outside world.
     # externalUrl: http://127.0.0.1:8080
     ## URL used to reach this ATC from other ATCs in the cluster.
@@ -728,8 +729,11 @@ web:
   # When using web.service.type: NodePort, sets the nodePort for atc
   #  atcNodePort: 30150
   #
+  # When using web.service.type: NodePort, sets the nodePort for atc tls
+  #  atcTlsNodePort: 30151
+  #
   # When using web.service.type: NodePort, sets the nodePort for tsa
-  #  tsaNodePort: 30151
+  #  tsaNodePort: 30152
 
   ## Ingress configuration.
   ## ref: https://kubernetes.io/docs/user-guide/ingress/
@@ -991,6 +995,11 @@ secrets:
   ## false to manage these secrets outside Helm.
   ##
   create: true
+
+  ## The TLS certificate and private key for the web component to be able to terminate
+  ## TLS connections.
+  # webTlsCert:
+  # webTlsKey:
 
   ## Concourse Host Keys.
   ## ref: https://concourse-ci.org/install.html#generating-keys

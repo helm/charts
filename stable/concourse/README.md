@@ -83,6 +83,7 @@ The following table lists the configurable parameters of the Concourse chart and
 | `web.service.loadBalancerIP` | The IP to use when web.service.type is LoadBalancer | `nil` |
 | `web.service.loadBalancerSourceRanges` | Concourse Web Service Load Balancer Source IP ranges | `nil` |
 | `web.service.atcNodePort` | Sets the nodePort for atc when using `NodePort` | `nil` |
+| `web.service.atcTlsNodePort` | Sets the nodePort for atc tls when using `NodePort` | `nil` |
 | `web.service.tsaNodePort` | Sets the nodePort for tsa when using `NodePort` | `nil` |
 | `web.ingress.enabled` | Enable Concourse Web Ingress | `false` |
 | `web.ingress.annotations` | Concourse Web Ingress annotations | `{}` |
@@ -153,6 +154,8 @@ The following table lists the configurable parameters of the Concourse chart and
 | `secrets.vaultClientKey` | Vault Client Key | `nil` |
 | `secrets.vaultClientToken` | Vault periodic client token | `nil` |
 | `secrets.vaultAuthParam` | Paramter to pass when logging in via the backend | `nil` |
+| `secrets.webTlsCert` | TLS certificate for the web component to terminate TLS connections | `nil` |
+| `secrets.webTlsKey` | An RSA private key, used to encrypt HTTPS traffic  | `nil` |
 | `secrets.influxdbPassword` | Password used to authenticate with influxdb | `nil` |
 | `secrets.syslogCaCert` | SSL certificate to verify Syslog server | `nil` |
 
