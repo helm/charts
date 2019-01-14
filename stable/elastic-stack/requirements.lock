@@ -16,7 +16,7 @@ dependencies:
   version: 1.4.0
 - name: fluent-bit
   repository: https://kubernetes-charts.storage.googleapis.com/
-  version: 0.16.3
+  version: 1.3.0
 - name: fluentd-elasticsearch
   repository: https://kubernetes-charts.storage.googleapis.com/
   version: 1.5.0
@@ -29,5 +29,5 @@ dependencies:
 - name: elasticsearch-exporter
   repository: https://kubernetes-charts.storage.googleapis.com/
   version: 0.4.1
-digest: sha256:47c8de761d86a1984d21242571af670ff1758c59d1592a0570b7dcb362ac5b3f
-generated: 2019-01-14T11:10:23.523020823-05:00
+digest: sha256:1fd4a059ff9264193884b83644fd057216c384cc5a0debfe8347e9433bd7d1e2
+generated: 2019-01-14T14:58:05.877505741-05:00
