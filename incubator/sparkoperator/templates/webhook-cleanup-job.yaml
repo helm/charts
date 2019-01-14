@@ -4,7 +4,7 @@ kind: Job
 metadata:
   name: {{ include "sparkoperator.fullname" . }}-cleanup
   annotations:
-    "helm.sh/hook": pre-delete
+    "helm.sh/hook": pre-delete, pre-upgrade
     "helm.sh/hook-delete-policy": hook-succeeded
   labels:
     app.kubernetes.io/name: {{ include "sparkoperator.name" . }}

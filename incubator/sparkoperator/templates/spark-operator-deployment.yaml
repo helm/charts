@@ -55,7 +55,6 @@ spec:
         ports:
           - containerPort: {{ .Values.metricsPort }}
         {{ end }}
-        command: ["/usr/bin/spark-operator"]
         args:
         - -v=2
         - -namespace={{ .Values.sparkJobNamespace }}
@@ -74,6 +73,6 @@ spec:
         - -enable-webhook=true
         - -webhook-svc-namespace={{ .Release.Namespace }}
         - -webhook-port={{ .Values.webhookPort }}
-        - -webhook-svc-name={{ include "sparkoperator.fullname" . }}-webhook
+        - -webhook-svc-name={{ .Release.Name }}-webhook
         - -webhook-config-name={{ include "sparkoperator.fullname" . }}-webhook-config
         {{- end }}
