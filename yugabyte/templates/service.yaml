@@ -23,9 +23,11 @@ spec:
   selector:
     app: "{{ .label }}"
 
+{{ if $root.Values.enableLoadBalancer }}
 {{- $service := . -}}
 {{- range $endpoint :=  $root.Values.serviceEndpoints }}
 {{- if eq $service.label $endpoint.app }}
+{{ end }}
 ---
 apiVersion: v1
 kind: Service
