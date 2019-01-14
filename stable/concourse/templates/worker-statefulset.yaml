@@ -28,6 +28,12 @@ spec:
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "concourse.worker.fullname" . }}{{ else }}{{ .Values.rbac.workerServiceAccountName }}{{ end }}
       tolerations:
 {{ toYaml .Values.worker.tolerations | indent 8 }}
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.imagePullSecrets }}
+        - name: {{ . }}
+      {{- end }}
+      {{- end }}
       terminationGracePeriodSeconds: {{ .Values.worker.terminationGracePeriodSeconds }}
       containers:
         - name: {{ template "concourse.worker.fullname" . }}
