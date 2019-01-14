@@ -28,10 +28,12 @@ spec:
         component: "controller"
     spec:
       serviceAccountName: {{ template "kong.serviceAccountName" . }}
-{{- if .Values.image.imagePullSecrets }}
+      {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
-      - name: {{ .Values.image.imagePullSecrets }}
-{{- end }}
+      {{- range .Values.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end }}
+      {{- end }}
       initContainers:
       - name: wait-for-db
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -57,7 +59,7 @@ spec:
           valueFrom:
             secretKeyRef:
               name: {{ template "kong.postgresql.fullname" . }}
-              key: postgres-password
+              key: postgresql-password
         {{- end }}
         {{- if .Values.cassandra.enabled }}
         - name: KONG_CASSANDRA_CONTACT_POINTS
@@ -93,7 +95,7 @@ spec:
           valueFrom:
             secretKeyRef:
               name: {{ template "kong.postgresql.fullname" . }}
-              key: postgres-password
+              key: postgresql-password
         {{- end }}
         {{- if .Values.cassandra.enabled }}
         - name: KONG_CASSANDRA_CONTACT_POINTS
@@ -112,8 +114,6 @@ spec:
       - name: ingress-controller
         args:
         - /kong-ingress-controller
-        # the kong URL points to the kong admin api server
-        - --kong-url=http://localhost:{{ .Values.admin.containerPort }}
         # the default service is the kong proxy service
         - --default-backend-service={{ .Release.Namespace }}/{{ template "kong.fullname" . }}-proxy
         # Service from were we extract the IP address/es to use in Ingress status
@@ -121,6 +121,13 @@ spec:
         # Set the ingress class
         - --ingress-class={{ .Values.ingressController.ingressClass }}
         - --election-id=kong-ingress-controller-leader-{{ .Values.ingressController.ingressClass }}
+        # the kong URL points to the kong admin api server
+        {{- if .Values.admin.useTLS }}
+        - --kong-url=https://localhost:{{ .Values.admin.containerPort }}
+        - --admin-tls-skip-verify # TODO make this configurable
+        {{- else }}
+        - --kong-url=http://localhost:{{ .Values.admin.containerPort }}
+        {{- end }}
         env:
         - name: POD_NAME
           valueFrom:

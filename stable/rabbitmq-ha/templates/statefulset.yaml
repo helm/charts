@@ -155,14 +155,15 @@ spec:
               mountPath: /var/lib/rabbitmq
             - name: config
               mountPath: /etc/rabbitmq
-            {{- if not .Values.existingSecret }}
             - name: definitions
               mountPath: /etc/definitions
               readOnly: true
-            {{- end }}
             {{- if .Values.rabbitmqCert.enabled }}
             - name: cert
               mountPath: /etc/cert
+            {{- end }}
+            {{- if .Values.extraVolumeMounts }}
+{{ toYaml .Values.extraVolumeMounts | indent 12 }}
             {{- end }}
         {{ if .Values.prometheus.exporter.enabled }}
         - name: {{ .Chart.Name }}-exporter
@@ -175,10 +176,10 @@ spec:
           env:
             - name: PUBLISH_PORT
               value: "{{ .Values.prometheus.exporter.port }}"
-            {{ if .Values.prometheus.exporter.capabilities }}  
+            {{ if .Values.prometheus.exporter.capabilities }}
             - name: RABBIT_CAPABILITIES
               value: "{{ .Values.prometheus.exporter.capabilities }}"
-            {{- end }}  
+            {{- end }}
             - name: RABBIT_USER
               valueFrom:
                 secretKeyRef:
@@ -234,19 +235,20 @@ spec:
         - name: configmap
           configMap:
             name: {{ template "rabbitmq-ha.fullname" . }}
-        {{- if not .Values.existingSecret }}
         - name: definitions
           secret:
-            secretName: {{ template "rabbitmq-ha.fullname" . }}
+            secretName: {{ template "rabbitmq-ha.secretName" . }}
             items:
-            - key: definitions.json
+            - key: {{ .Values.definitionsSource }}
               path: definitions.json
-        {{- end }}
         {{- if .Values.rabbitmqCert.enabled }}
         - name: cert
           secret:
             defaultMode: 420
             secretName: {{ template "rabbitmq-ha.certSecretName" . }}
+        {{- end }}
+        {{- if .Values.extraVolumes }}
+{{ toYaml .Values.extraVolumes | indent 8 }}
         {{- end }}
 {{- if .Values.persistentVolume.enabled }}
   volumeClaimTemplates:

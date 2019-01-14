@@ -13,7 +13,6 @@ spec:
     matchLabels:
       app: {{ template "mongodb.name" . }}
       release: {{ .Release.Name }}
-      chart: {{ template "mongodb.chart" . }}
       component: arbiter
   serviceName: {{ template "mongodb.fullname" . }}-headless
   replicas: {{ .Values.replicaSet.replicas.arbiter }}
@@ -63,6 +62,8 @@ spec:
           - containerPort: {{ .Values.service.port }}
             name: mongodb
           env:
+          - name: MONGODB_SYSTEM_LOG_VERBOSITY
+            value: {{ .Values.mongodbSystemLogVerbosity | quote}}
           - name: MONGODB_POD_NAME
             valueFrom:
               fieldRef:
@@ -95,8 +96,10 @@ spec:
           {{- else }}
             value: "no"
           {{- end }}
+          {{- if .Values.mongodbExtraFlags }}
           - name: MONGODB_EXTRA_FLAGS
-            value: {{ default "" .Values.mongodbExtraFlags | join " " }}
+            value: {{ .Values.mongodbExtraFlags | join " " }}
+          {{- end }}
           {{- if .Values.livenessProbe.enabled }}
           livenessProbe:
             tcpSocket:

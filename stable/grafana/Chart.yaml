@@ -1,5 +1,6 @@
+apiVersion: v1
 name: grafana
-version: 1.21.2
+version: 1.24.1
 appVersion: 5.4.2
 kubeVersion: "^1.8.0-0"
 description: The leading tool for querying and visualizing time series and metrics.
@@ -12,4 +13,6 @@ maintainers:
     email: zanhsieh@gmail.com
   - name: rtluckie
     email: rluckie@cisco.com
+  - name: maorfr
+    email: maorfr@gmail.com
 engine: gotpl
