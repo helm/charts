@@ -243,7 +243,7 @@ spec:
         {{- end }}
         {{- if .Values.prometheus.agent.enabled }}
         - name: jmx-config
-          mountPath: /etc/prometheus/
+          mountPath: /etc/prometheus
         - name: jmx-agent
           mountPath: /var/lib/prometheus/jmx_prometheus_javaagent-{{ .Values.prometheus.agent.version }}.jar
           subPath: jmx_prometheus_javaagent-{{ .Values.prometheus.agent.version }}.jar
