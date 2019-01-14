@@ -1,3 +1,7 @@
+## set kubernetes cluster domain where minio is running
+##
+clusterDomain: cluster.local
+
 ## Set default image, imageTag, and imagePullPolicy. mode is used to indicate the
 ##
 image:
@@ -151,6 +155,17 @@ defaultBucket:
   policy: none
   ## Purge if bucket exists already
   purge: false
+
+## Create multiple buckets after minio install
+## Enabling `defaultBucket` will take priority over this list
+##
+buckets: []
+  # - name: bucket1
+  #   policy: none
+  #   purge: false
+  # - name: bucket2
+  #   policy: none
+  #   purge: false
 
 s3gateway:
   enabled: false

@@ -57,6 +57,8 @@ spec:
       - name: init-chmod-data
         image: {{ template "postgresql.volumePermissions.image" . }}
         imagePullPolicy: "{{ .Values.volumePermissions.image.pullPolicy }}"
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
         command:
           - sh
           - -c
@@ -142,7 +144,7 @@ spec:
         {{ end }}
         {{- if .Values.persistence.enabled }}
         - name: data
-          mountPath: /bitnami/postgresql
+          mountPath: {{ .Values.persistence.mountPath }}
         {{ end }}
         {{- if or (.Files.Glob "files/conf.d/*.conf") .Values.extendedConfConfigMap }}
         - name: postgresql-extended-config
@@ -167,6 +169,10 @@ spec:
       - name: postgresql-extended-config
         configMap:
           name: {{ template "postgresql.extendedConfigurationCM" . }}
+      {{- end }}
+      {{- if not .Values.persistence.enabled }}
+      - name: data
+        emptyDir: {}
       {{- end }}
   updateStrategy:
     type: {{ .Values.updateStrategy.type }}
@@ -195,8 +201,5 @@ spec:
         storageClassName: "{{ .Values.persistence.storageClass }}"
       {{- end }}
       {{- end }}
-{{- else }}
-        - name: data
-          emptyDir: {}
 {{- end }}
 {{- end }}

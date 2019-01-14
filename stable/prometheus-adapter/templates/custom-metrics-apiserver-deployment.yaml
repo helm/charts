@@ -101,7 +101,11 @@ spec:
       volumes:
       - name: config
         configMap:
+          {{- if .Values.rules.existing }}
+          name: {{ .Values.rules.existing }}
+          {{- else }}
           name: {{ template "k8s-prometheus-adapter.fullname" . }}
+          {{- end }}
       - name: tmp
         emptyDir: {}
 {{- if .Values.tls.enable }}

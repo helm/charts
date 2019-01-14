@@ -23,6 +23,10 @@ spec:
 {{ toYaml .Values.daemonset.podAnnotations | indent 8 }}
       {{- end }}
     spec:
+      {{- if .Values.datadog.securityContext }}
+      securityContext:
+{{ toYaml .Values.datadog.securityContext | indent 8 }}
+      {{- end }}
       {{- if .Values.daemonset.useHostNetwork }}
       hostNetwork: {{ .Values.daemonset.useHostNetwork }}
       dnsPolicy: ClusterFirstWithHostNet
@@ -91,6 +95,18 @@ spec:
           {{- if .Values.datadog.processAgentEnabled }}
           - name: DD_PROCESS_AGENT_ENABLED
             value: {{ .Values.datadog.processAgentEnabled | quote }}
+          {{- end }}
+          {{- if .Values.datadog.hostname }}
+          - name: DD_HOSTNAME
+            value: {{ .Values.datadog.hostname | quote }}
+          {{- end }}
+          {{- if .Values.datadog.acInclude }}
+          - name: DD_AC_INCLUDE
+            value: {{ .Values.datadog.acInclude | quote }}
+          {{- end }}
+          {{- if .Values.datadog.acExclude }}
+          - name: DD_AC_EXCLUDE
+            value: {{ .Values.datadog.acExclude | quote }}
           {{- end }}
           {{- if not .Values.clusterAgent.enabled }}
           {{- if .Values.datadog.leaderElection }}
