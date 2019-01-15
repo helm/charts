@@ -2,5 +2,5 @@ dependencies:
 - name: postgresql
   repository: http://localhost/helm
   version: 3.8.0
-digest: sha256:1c4bad397ff3039c8ecb2564267abb32d69897cebd2b755da469681a85919ac7
-generated: 2019-01-15T08:29:15.941679333+01:00
+digest: sha256:ef103fb3956b9168255e0200204a222f6633a369a2a5cb2792a42e9faff60bcf
+generated: 2019-01-15T13:29:09.018093165+01:00
