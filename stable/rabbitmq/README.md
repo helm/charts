@@ -62,7 +62,7 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `rabbitmq.clustering.address_type`   | Switch clustering mode                           | `ip` or `hostname`                                      |
 | `rabbitmq.clustering.k8s_domain`     | Customize internal k8s cluster domain            | `cluster.local`                                         |
 | `rabbitmq.ulimitNofiles`             | Max File Descriptor limit                        | `65536`                                                 |
-| `rabbitmq.configuration`             | rabbitmq.conf default configuration              | See values.yaml                                         |
+| `rabbitmq.configuration`             | Required cluster configuration                   | See values.yaml                                         |
 | `rabbitmq.extraConfiguration`        | Extra configuration to add to rabbitmq.conf      | See values.yaml                                         |
 | `service.type`                       | Kubernetes Service type                          | `ClusterIP`                                             |
 | `service.amqpPort`                   | Amqp port                                        | `5672`                                                  |

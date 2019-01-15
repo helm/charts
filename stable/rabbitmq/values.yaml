@@ -69,8 +69,8 @@ rabbitmq:
     address_type: ip
     k8s_domain: cluster.local
 
-  ## Default configuration to be added to the config map.
-  ## Do not override unless you know what you are doing
+  ## Configuration file content: required cluster configuration
+  ## Do not override unless you know what you are doing. To add more configuration, use `extraConfiguration` instead
   configuration: |-
     ## Clustering
     cluster_formation.peer_discovery_backend  = rabbit_peer_discovery_k8s
@@ -78,14 +78,15 @@ rabbitmq:
     cluster_formation.node_cleanup.interval = 10
     cluster_formation.node_cleanup.only_log_warning = true
     cluster_partition_handling = autoheal
+    # queue master locator
+    queue_master_locator=min-masters
+    # enable guest user
+    loopback_users.guest = false
 
-  ## Extra configuration to be added to the config map.
-  ## Useful to add user customizations to the configuration.
+  ## Configuration file content: extra configuration
+  ## Use this instead of  `configuration` to add more configuration
   extraConfiguration: |-
-    ## queue master locator
-    #queue_master_locator=min-masters
-    ## enable guest user
-    #loopback_users.guest = false
+    #disk_free_limit.absolute = 50MB
 
 ## Kubernetes service type
 service:
