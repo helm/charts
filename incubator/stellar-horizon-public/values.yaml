@@ -13,7 +13,7 @@ postgresql:
   postgresDatabase: stellar-horizon
   postgresUser: postgres
   # options from https://github.com/helm/charts/tree/master/stable/postgresql
-  #postgresPassword: ""
+  # postgresPassword: ""
 
 postgresqlConnectTimeout: 5
 
@@ -51,8 +51,7 @@ persistence:
   ## A manually managed Persistent Volume and Claim
   ## Requires persistence.enabled: true
   ## If defined, PVC must be created manually before volume will be bound
-  # existingClaim: 
-
+  # existingClaim:
   ## database data Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>
   ## If set to "-", storageClassName: "", which disables dynamic provisioning
