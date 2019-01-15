@@ -1,0 +1,108 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "stellar-horizon.fullname" . }}
+  labels:
+    app: {{ template "stellar-horizon.name" . }}
+    chart: {{ template "stellar-horizon.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: {{ template "stellar-horizon.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "stellar-horizon.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      serviceAccountName: "{{ template "stellar-horizon.serviceAccountName" . }}"
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}{{ with .Values.image.flavor }}-{{.}}{{ end }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: horizon
+              containerPort: 8000
+              protocol: TCP
+            - name: http
+              containerPort: 8000
+              protocol: TCP
+          env:
+            {{- if .Values.postgresql.enabled }}
+            - name: DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "stellar-horizon.postgresql.fullname" . }}
+                  key: postgresql-password
+            - name: DATABASE_URL
+              value: postgresql://dbname={{ .Values.postgresql.postgresDatabase }} user={{ .Values.postgresql.postgresUser }} password=$(DATABASE_PASSWORD) host={{ template "stellar-horizon.postgresql.fullname" . }} connect_timeout={{ .Values.postgresqlConnectTimeout }}
+            - name: STELLAR_CORE_DATABASE_URL
+              value: postgresql://dbname={{ .Values.postgresql.stellarCorePostgresDatabase }} user={{ .Values.postgresql.postgresUser }} password=$(DATABASE_PASSWORD) host={{ template "stellar-horizon.postgresql.fullname" . }} connect_timeout={{ .Values.postgresqlConnectTimeout }}
+            {{- else }}
+            {{- with .Values.existingDatabase.passwordSecret }}
+            - name: DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .name | quote }}
+                  key: {{ .key | quote }}
+            {{- end }}
+            - name: DATABASE_URL
+              value: {{ .Values.existingDatabase.url }}
+            - name: STELLAR_CORE_DATABASE_URL
+              value: {{ .Values.existingDatabase.stellarUrl }}
+            {{- end }}
+{{- with .Values.stellarCoreUrl }}
+            - name: STELLAR_CORE_URL
+              value: {{ . | quote }}
+{{- end }}
+{{- if .Values.gcloudServiceAccountKey }}
+            - name: GCLOUD_SERVICE_ACCOUNT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "stellar-horizon.fullname" . }}
+                  key: gcloudServiceAccountKey
+{{- end }}
+{{- range $key, $val := .Values.environment }}
+            - name: {{ $key }}
+              value: {{ $val | quote }}
+{{- end }}
+          livenessProbe:
+            httpGet:
+              path: /info
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /info
+              port: http
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+          volumeMounts:
+            - name: data
+              mountPath: {{ .Values.persistence.mountPath }}
+              subPath: {{ .Values.persistence.subPath }}
+      volumes:
+      - name: data
+      {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.persistence.existingClaim | default (include "stellar-horizon.fullname" .) }}
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
