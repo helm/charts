@@ -46,7 +46,7 @@ The following table lists the configurable parameters for this chart and their d
 | `rbac.create`                     | RBAC                                       | `true`                                                       |
 | `resources`                       | Pod resource requests and limits           | `{}`                                                         |
 | `settings.log_monitors`           | System log monitor config files            | `/config/kernel-monitor.json`, `/config/docker-monitor.json` |
-| `settings.custom_plugin_monitors` | Custom plugin monitor config files         | `/config/kernel-monitor.json`, `/config/docker-monitor.json` |
+| `settings.custom_plugin_monitors` | Custom plugin monitor config files         | `[]`                                                         |
 | `serviceAccount.create`           | Whether a ServiceAccount should be created | `true`                                                       |
 | `serviceAccount.name`             | Name of the ServiceAccount to create       | Generated value from template                                |
 | `tolerations`                     | Optional daemonset tolerations             | `[]`                                                         |
