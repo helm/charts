@@ -73,7 +73,6 @@ The following table lists the configurable parameters of the Ghost chart and the
 | `smtpFromAddress`                   | SMTP from address                                             | `nil`                                                    |
 | `smtpService`                       | SMTP service                                                  | `nil`                                                    |
 | `allowEmptyPassword`                | Allow DB blank passwords                                      | `yes`                                                    |
-| `serviceType`                       | Kubernetes Service type                                       | `LoadBalancer`                                           |
 | `securityContext.enabled`           | Enable security context                                       | `true`                                                   |
 | `securityContext.fsGroup`           | Group ID for the container                                    | `1001`                                                   |
 | `securityContext.runAsUser`         | User ID for the container                                     | `1001`                                                   |
