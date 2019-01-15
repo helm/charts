@@ -1,16 +1,20 @@
 image:
   repository: rookout/agent
-  tag: 0.2.3
+  tag: 0.3.9
   pullPolicy: IfNotPresent
 
 service:
   type: ClusterIP
 
-listenAll: True
 tags: ''
 
 rookout:
   token: ''
+  listenAll: "False"
+
+limits:
+  memory: ''
+  cpu: ''
 
 nodeSelector: {}
 
