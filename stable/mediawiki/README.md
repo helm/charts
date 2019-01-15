@@ -54,7 +54,7 @@ The following table lists the configurable parameters of the MediaWiki chart and
 | `image.repository`                   | MediaWiki Image name                                        | `bitnami/mediawiki`                                     |
 | `image.tag`                          | MediaWiki Image tag                                         | `{VERSION}`                                             |
 | `image.pullPolicy`                   | Image pull policy                                           | `Always`                                                |
-| `image.pullSecrets`                  | Specify image pull secrets                                  | `nil`                                                   |
+| `image.pullSecrets`                  | Specify docker-registry secret names as an array            | `[]` (does not add image pull secrets to deployed pods) |
 | `mediawikiUser`                      | User of the application                                     | `user`                                                  |
 | `mediawikiPassword`                  | Application password                                        | _random 10 character long alphanumeric string_          |
 | `mediawikiEmail`                     | Admin email                                                 | `user@example.com`                                      |
@@ -76,9 +76,9 @@ The following table lists the configurable parameters of the MediaWiki chart and
 | `mariadb.db.password`                | Password for the database                                   | _random 10 character long alphanumeric string_          |
 | `service.type`                       | Kubernetes Service type                                     | `LoadBalancer`                                          |
 | `service.loadBalancer`               | Kubernetes LoadBalancerIP to request                        | `nil`                                                   |
-| `service.port`                    | Service HTTP port                    | `80`                                          |
-| `service.httpsPort`                    | Service HTTPS port                    | `443`                                          |
-| `service.externalTrafficPolicy`      | Enable client source IP preservation                        | `Cluster`                                                 |
+| `service.port`                       | Service HTTP port                                           | `80`                                                    |
+| `service.httpsPort`                  | Service HTTPS port                                          | `443`                                                   |
+| `service.externalTrafficPolicy`      | Enable client source IP preservation                        | `Cluster`                                               |
 | `service.nodePorts.http`             | Kubernetes http node port                                   | `""`                                                    |
 | `service.nodePorts.https`            | Kubernetes https node port                                  | `""`                                                    |
 | `ingress.enabled`                    | Enable ingress controller resource                          | `false`                                                 |
@@ -109,15 +109,15 @@ The following table lists the configurable parameters of the MediaWiki chart and
 | `readinessProbe.timeoutSeconds`      | When the probe times out (ingest nodes pod)                 | 5                                                       |
 | `readinessProbe.failureThreshold`    | Minimum consecutive failures to be considered failed        | 6                                                       |
 | `readinessProbe.successThreshold`    | Minimum consecutive successes to be considered successful   | 1                                                       |
-| `podAnnotations`                | Pod annotations                                   | `{}`                                                       |
-| `metrics.enabled`                          | Start a side-car prometheus exporter                                                                           | `false`                                              |
-| `metrics.image.registry`                   | Apache exporter image registry                                                                                  | `docker.io`                                          |
-| `metrics.image.repository`                 | Apache exporter image name                                                                                      | `lusotycoon/apache-exporter`                           |
-| `metrics.image.tag`                        | Apache exporter image tag                                                                                       | `v0.5.0`                                            |
-| `metrics.image.pullPolicy`                 | Image pull policy                                                                                              | `IfNotPresent`                                       |
-| `metrics.image.pullSecrets`                | Specify docker-registry secret names as an array                                                               | `nil`                                                |
-| `metrics.podAnnotations`                   | Additional annotations for Metrics exporter pod                                                                | `{prometheus.io/scrape: "true", prometheus.io/port: "9117"}`                                                   |
-| `metrics.resources`                        | Exporter resource requests/limit                                                                               | {}                        |
+| `podAnnotations`                     | Pod annotations                                             | `{}`                                                    |
+| `metrics.enabled`                    | Start a side-car prometheus exporter                        | `false`                                                 |
+| `metrics.image.registry`             | Apache exporter image registry                              | `docker.io`                                             |
+| `metrics.image.repository`           | Apache exporter image name                                  | `lusotycoon/apache-exporter`                            |
+| `metrics.image.tag`                  | Apache exporter image tag                                   | `v0.5.0`                                                |
+| `metrics.image.pullPolicy`           | Image pull policy                                           | `IfNotPresent`                                          |
+| `metrics.image.pullSecrets`          | Specify docker-registry secret names as an array            | `[]` (does not add image pull secrets to deployed pods) |
+| `metrics.podAnnotations`             | Additional annotations for Metrics exporter pod             | `{prometheus.io/scrape: "true", prometheus.io/port: "9117"}` |
+| `metrics.resources`                  | Exporter resource requests/limit                            | {}                                                      |
 
 The above parameters map to the env variables defined in [bitnami/mediawiki](http://github.com/bitnami/bitnami-docker-mediawiki). For more information please refer to the [bitnami/mediawiki](http://github.com/bitnami/bitnami-docker-mediawiki) image documentation.
 
