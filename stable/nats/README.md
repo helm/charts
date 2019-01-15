@@ -52,7 +52,7 @@ The following table lists the configurable parameters of the NATS chart and thei
 | `image.repository`                   | NATS Image name                                                                              | `bitnami/nats`                                                |
 | `image.tag`                          | NATS Image tag                                                                               | `{VERSION}`                                                   |
 | `image.pullPolicy`                   | Image pull policy                                                                            | `Always`                                                      |
-| `image.pullSecrets`                  | Specify image pull secrets                                                                   | `nil`                                                         |
+| `image.pullSecrets`                  | Specify docker-registry secret names as an array                                             | `[]` (does not add image pull secrets to deployed pods)       |
 | `auth.enabled`                       | Switch to enable/disable client authentication                                               | `true`                                                        |
 | `auth.user`                          | Client authentication user                                                                   | `nats_cluster`                                                |
 | `auth.password`                      | Client authentication password                                                               | `random alhpanumeric string (10)`                             |
@@ -92,21 +92,21 @@ The following table lists the configurable parameters of the NATS chart and thei
 | `readinessProbe.timeoutSeconds`      | When the probe times out                                                                     | `5`                                                           |
 | `readinessProbe.failureThreshold`    | Minimum consecutive failures for the probe to be considered failed after having succeeded.   | `6`                                                           |
 | `readinessProbe.successThreshold`    | Minimum consecutive successes for the probe to be considered successful after having failed. | `1`                                                           |
-| `client.service.type`                 | Kubernetes Service type (NATS client)                                                        | `ClusterIP`                                                   |
-| `client.service.port`                 | NATS client port                                                                             | `4222`                                                        |
-| `client.service.nodePort`             | Port to bind to for NodePort service type (NATS client)                                      | `nil`                                                         |
-| `client.service.annotations`          | Annotations for NATS client service                                                          | {}                                                            |
-| `client.service.loadBalancerIP`       | loadBalancerIP if NATS client service type is `LoadBalancer`                                 | `nil`                                                         |
-| `cluster.service.type`                | Kubernetes Service type (NATS cluster)                                                       | `ClusterIP`                                                   |
-| `cluster.service.port`                | NATS cluster port                                                                            | `6222`                                                        |
-| `cluster.service.nodePort`            | Port to bind to for NodePort service type (NATS cluster)                                     | `nil`                                                         |
-| `cluster.service.annotations`         | Annotations for NATS cluster service                                                         | {}                                                            |
-| `cluster.service.loadBalancerIP`      | loadBalancerIP if NATS cluster service type is `LoadBalancer`                                | `nil`                                                         |
-| `monitoring.service.type`             | Kubernetes Service type (NATS monitoring)                                                    | `ClusterIP`                                                   |
-| `monitoring.service.port`             | NATS monitoring port                                                                         | `8222`                                                        |
-| `monitoring.service.nodePort`         | Port to bind to for NodePort service type (NATS monitoring)                                  | `nil`                                                         |
-| `monitoring.service.annotations`      | Annotations for NATS monitoring service                                                      | {}                                                            |
-| `monitoring.service.loadBalancerIP`   | loadBalancerIP if NATS monitoring service type is `LoadBalancer`                             | `nil`                                                         |
+| `client.service.type`                | Kubernetes Service type (NATS client)                                                        | `ClusterIP`                                                   |
+| `client.service.port`                | NATS client port                                                                             | `4222`                                                        |
+| `client.service.nodePort`            | Port to bind to for NodePort service type (NATS client)                                      | `nil`                                                         |
+| `client.service.annotations`         | Annotations for NATS client service                                                          | {}                                                            |
+| `client.service.loadBalancerIP`      | loadBalancerIP if NATS client service type is `LoadBalancer`                                 | `nil`                                                         |
+| `cluster.service.type`               | Kubernetes Service type (NATS cluster)                                                       | `ClusterIP`                                                   |
+| `cluster.service.port`               | NATS cluster port                                                                            | `6222`                                                        |
+| `cluster.service.nodePort`           | Port to bind to for NodePort service type (NATS cluster)                                     | `nil`                                                         |
+| `cluster.service.annotations`        | Annotations for NATS cluster service                                                         | {}                                                            |
+| `cluster.service.loadBalancerIP`     | loadBalancerIP if NATS cluster service type is `LoadBalancer`                                | `nil`                                                         |
+| `monitoring.service.type`            | Kubernetes Service type (NATS monitoring)                                                    | `ClusterIP`                                                   |
+| `monitoring.service.port`            | NATS monitoring port                                                                         | `8222`                                                        |
+| `monitoring.service.nodePort`        | Port to bind to for NodePort service type (NATS monitoring)                                  | `nil`                                                         |
+| `monitoring.service.annotations`     | Annotations for NATS monitoring service                                                      | {}                                                            |
+| `monitoring.service.loadBalancerIP`  | loadBalancerIP if NATS monitoring service type is `LoadBalancer`                             | `nil`                                                         |
 | `ingress.enabled`                    | Enable ingress controller resource                                                           | `false`                                                       |
 | `ingress.hosts[0].name`              | Hostname for NATS monitoring                                                                 | `nats.local`                                                  |
 | `ingress.hosts[0].path`              | Path within the url structure                                                                | `/`                                                           |
@@ -123,7 +123,7 @@ The following table lists the configurable parameters of the NATS chart and thei
 | `metrics.image.repository`           | Prometheus metrics exporter image name                                                       | `synadia/prometheus-nats-exporter`                            |
 | `metrics.image.tag`                  | Prometheus metrics exporter image tag                                                        | `0.1.0`                                                       |
 | `metrics.image.pullPolicy`           | Prometheus metrics image pull policy                                                         | `IfNotPresent`                                                |
-| `metrics.image.pullSecrets`          | Prometheus metrics image pull secrets                                                        | `nil`                                                         |
+| `metrics.image.pullSecrets`          | Prometheus metrics image pull secrets                                                        | `[]` (does not add image pull secrets to deployed pods)       |
 | `metrics.port`                       | Prometheus metrics exporter port                                                             | `7777`                                                        |
 | `metrics.podAnnotations`             | Prometheus metrics exporter annotations                                                      | `prometheus.io/scrape: "true"`,  `prometheus.io/port: "7777"` |
 | `metrics.resources`                  | Prometheus metrics exporter resource requests/limit                                          | {}                                                            |
