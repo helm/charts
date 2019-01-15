@@ -75,6 +75,10 @@ controller:
   ##
   podLabels: {}
 
+  ## Affinity to be added to controller pods
+  ##
+  podAffinity: {}
+
   ## Priority Class to be used
   ##
   priorityClassName: ""

@@ -36,6 +36,10 @@ spec:
 {{ toYaml .Values.controller.podLabels | indent 8 }}
         {{- end }}
     spec:
+    {{- if .Values.controller.podAffinity }}
+      affinity:
+{{ toYaml .Values.controller.podAffinity | indent 8 }}
+    {{- end }}
       serviceAccountName: {{ template "haproxy-ingress.serviceAccountName" . }}
       containers:
         - name: haproxy-ingress
