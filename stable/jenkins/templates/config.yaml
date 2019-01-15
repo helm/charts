@@ -229,7 +229,13 @@ data:
 {{- if .Values.Master.ScriptApproval }}
     yes n | cp -i /var/jenkins_config/scriptapproval.xml /var/jenkins_home/scriptApproval.xml;
 {{- end }}
-{{- if or (.Values.Master.InitScripts) (.Values.Master.Sidecar.configAutoReload.enabled) }}
+{{- if and (.Values.Master.JCasC.enabled) (.Values.Master.Sidecar.configAutoReload.enabled) }}
+{{- if not .Values.Master.InitScripts }}
+    mkdir -p /var/jenkins_home/init.groovy.d/;
+    yes n | cp -i /var/jenkins_config/*.groovy /var/jenkins_home/init.groovy.d/;
+{{- end }}
+{{- end }}
+{{- if .Values.Master.InitScripts }}
     mkdir -p /var/jenkins_home/init.groovy.d/;
     yes n | cp -i /var/jenkins_config/*.groovy /var/jenkins_home/init.groovy.d/;
 {{- end }}
