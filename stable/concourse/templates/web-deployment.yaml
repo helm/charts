@@ -15,13 +15,7 @@ spec:
         app: {{ template "concourse.web.fullname" . }}
         release: "{{ .Release.Name }}"
       annotations:
-        {{- if .Values.concourse.web.prometheus.enabled }}
-        prometheus.io/scrape: "true"
-        prometheus.io/port: {{ .Values.concourse.web.prometheus.bindPort | quote }}
-        {{- end }}
-        {{- range $key, $value := .Values.web.annotations }}
-        {{ $key }}: {{ $value | quote }}
-        {{- end }}
+{{ toYaml .Values.web.annotations | indent 8 }}
     spec:
     {{- with .Values.web.nodeSelector }}
       nodeSelector:
