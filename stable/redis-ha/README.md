@@ -54,7 +54,7 @@ The following table lists the configurable parameters of the Redis chart and the
 | Parameter                        | Description                                                                                                                  | Default                                                   |
 | -------------------------------- | -----------------------------------------------------                                                                        | --------------------------------------------------------- |
 | `image`                          | Redis image                                                                                                                  | `redis`                                                   |
-| `tag`                            | Redis tag                                                                                                                    | `4.0.11-stretch`                                          |
+| `tag`                            | Redis tag                                                                                                                    | `5.0.3-alpine`                                          |
 | `replicas`                       | Number of redis master/slave pods                                                                                            | `3`                                                       |
 | `redis.port`                     | Port to access the redis service                                                                                             | `6379`                                                    |
 | `redis.masterGroupName`          | Redis convention for naming the cluster group                                                                                | `mymaster`                                                |
@@ -79,7 +79,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 ```bash
 $ helm install \
   --set image=redis \
-  --set tag=4.0.11-stretch \
+  --set tag=5.0.3-alpine \
     stable/redis-ha
 ```
 
