@@ -1,4 +1,9 @@
-# Fluentd Elasticsearch
+# DEPRECATED - Fluentd Elasticsearch
+
+
+This chart is deprecated as we move to our own repo (https://kiwigrid.github.io) which will be puplished on hub.helm.sh soon.
+The chart source can be found here: https://github.com/kiwigrid/helm-charts/tree/master/charts/fluentd-elasticsearch
+
 
 * Installs [Fluentd](https://www.fluentd.org/) log forwarder.
 
@@ -46,6 +51,7 @@ The following table lists the configurable parameters of the Fluentd elasticsear
 | Parameter                          | Description                                | Default                                                    |
 | ---------------------------------- | ------------------------------------------ | ---------------------------------------------------------- |
 | `annotations`                      | Optional daemonset annotations             | `NULL`                                                     |
+| `podAnnotations`                      | Optional daemonset's pods annotations             | `NULL`                                                     |
 | `configMaps`                       | Fluentd configmaps                         | `default conf files`                                       |
 | `elasticsearch.host`               | Elasticsearch Host                         | `elasticsearch-client`                                     |
 | `elasticsearch.port`               | Elasticsearch Port                         | `9200`                                                     |

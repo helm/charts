@@ -1,11 +1,14 @@
 settings:
   log_monitors:
-    - /config/kernel-monitor.json
-    - /config/docker-monitor.json
+    - kernel-monitor.json
+    - docker-monitor.json
+
+hostpath:
+  logdir: /var/log/
 
 image:
   repository: k8s.gcr.io/node-problem-detector
-  tag: v0.5.0
+  tag: v0.6.1
   pullPolicy: IfNotPresent
 
 nameOverride: ""

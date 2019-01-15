@@ -27,11 +27,11 @@ spec:
       containers:
         - name: {{ .Chart.Name }}
           image:  "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+          imagePullPolicy: {{ .Values.image.pullPolicy | default "IfNotPresent" | quote }}
           command:
             - "/bin/sh"
             - "-c"
-            - "exec /node-problem-detector --logtostderr --system-log-monitors={{- range $index, $monitor := .Values.settings.log_monitors }}{{if ne $index 0}},{{end}}{{ $monitor }}{{- end }}"
+            - "exec /node-problem-detector --logtostderr --system-log-monitors={{- range $index, $monitor := .Values.settings.log_monitors }}{{if ne $index 0}},{{end}}/config/{{ $monitor }}{{- end }}"
           securityContext:
             privileged: true
           env:
@@ -44,6 +44,9 @@ spec:
               mountPath: /var/log
             - name: localtime
               mountPath: /etc/localtime
+              readOnly: true
+            - name: config
+              mountPath: /config
               readOnly: true
           terminationGracePeriodSeconds: 30
           resources:
@@ -59,8 +62,16 @@ spec:
       volumes:
         - name: log
           hostPath:
-            path: /var/log/
+            path: {{ .Values.hostpath.logdir }}
         - name: localtime
           hostPath:
             path: /etc/localtime
             type: "FileOrCreate"
+        - name: config
+          configMap:
+            name: {{ include "node-problem-detector.fullname" . }}
+            items:
+            {{- range $index, $monitor := .Values.settings.log_monitors }}
+            - key: {{ $monitor }}
+              path: {{ $monitor }}
+            {{- end }}

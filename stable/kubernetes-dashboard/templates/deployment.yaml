@@ -24,6 +24,10 @@ spec:
     type: RollingUpdate
   template:
     metadata:
+    {{- if .Values.podAnnotations }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8 }}
+    {{- end }}
       labels:
         app: {{ template "kubernetes-dashboard.name" . }}
         release: {{ .Release.Name }}

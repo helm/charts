@@ -53,6 +53,7 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `image.tag`                             | MongoDB Image tag                                                                            | `{VERSION}`                                 |
 | `image.pullPolicy`                      | Image pull policy                                                                            | `Always`                                    |
 | `image.pullSecrets`                     | Specify image pull secrets                                                                   | `nil`                                       |
+| `image.debug`                           | Specify if debug logs should be enabled                                                      | `false`                                     |
 | `usePassword`                           | Enable password authentication                                                               | `true`                                      |
 | `existingSecret`                        | Existing secret with MongoDB credentials                                                     | `nil`                                       |
 | `mongodbRootPassword`                   | MongoDB admin password                                                                       | `random alhpanumeric string (10)`           |
@@ -60,6 +61,7 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `mongodbPassword`                       | MongoDB custom user password                                                                 | `random alhpanumeric string (10)`           |
 | `mongodbDatabase`                       | Database to create                                                                           | `nil`                                       |
 | `mongodbEnableIPv6`                     | Switch to enable/disable IPv6 on MongoDB                                                     | `true`                                      |
+| `mongodbSystemLogVerbosity`             | MongoDB systen log verbosity level                                                           | `0`                                         |
 | `mongodbExtraFlags`                     | MongoDB additional command line flags                                                        | []                                          |
 | `service.annotations`                   | Kubernetes service annotations                                                               | `{}`                                        |
 | `service.type`                          | Kubernetes Service type                                                                      | `ClusterIP`                                 |
@@ -139,7 +141,7 @@ $ helm install --name my-release -f values.yaml stable/mongodb
 You can start the MongoDB chart in replica set mode with the following command:
 
 ```bash
-$ helm install --name my-release stable/mongodb --set replication.enabled=true
+$ helm install --name my-release stable/mongodb --set replicaSet.enabled=true
 ```
 
 ## Production settings and horizontal scaling

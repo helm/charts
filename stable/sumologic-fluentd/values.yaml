@@ -21,7 +21,10 @@ updateStrategy: OnDelete
 sumologic:
   ## You'll need to set this to sumo collector, before the agent will run.
   ## ref: https://github.com/SumoLogic/fluentd-kubernetes-sumologic#sumologic
-  collectorUrl: ""
+  # collectorUrl:
+
+  ## Use existing Secret which stores collector url instead of creating a new one
+  # collectorUrlExistingSecret:
 
   ## The source of fluentd logs, either file or systemd
   fluentdSource: file
@@ -179,3 +182,7 @@ rbac:
 
   ## Ignored if rbac.create is true
   serviceAccountName: default
+
+daemonset:
+  # Priority Class to use for deployed daemonsets
+  # priorityClassName: ""

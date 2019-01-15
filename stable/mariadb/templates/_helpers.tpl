@@ -9,10 +9,19 @@ Expand the name of the chart.
 {{/*
 Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+If release name contains chart name it will be used as a full name.
 */}}
 {{- define "mariadb.fullname" -}}
+{{- if .Values.fullnameOverride -}}
+{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
 {{- $name := default .Chart.Name .Values.nameOverride -}}
+{{- if contains $name .Release.Name -}}
+{{- printf .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
 {{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+{{- end -}}
 {{- end -}}
 
 {{- define "master.fullname" -}}
@@ -62,4 +71,16 @@ Return the proper metrics image name
 {{- $repositoryName := .Values.metrics.image.repository -}}
 {{- $tag := .Values.metrics.image.tag | toString -}}
 {{- printf "%s/%s:%s" $registryName $repositoryName $tag -}}
+{{- end -}}
+
+{{ template "mariadb.initdbScriptsCM" . }}
+{{/*
+Get the initialization scripts ConfigMap name.
+*/}}
+{{- define "mariadb.initdbScriptsCM" -}}
+{{- if .Values.initdbScriptsConfigMap -}}
+{{- printf "%s" .Values.initdbScriptsConfigMap -}}
+{{- else -}}
+{{- printf "%s-init-scripts" (include "mariadb.fullname" .) -}}
+{{- end -}}
 {{- end -}}
