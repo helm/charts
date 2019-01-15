@@ -50,7 +50,7 @@ The following table lists the configurable parameters of the Rookout Router char
 | `listenAll`                       | Configuring the agent to listen on all addresses instead of only localhost.                      | `False` |               
 | `image.registry`                  | Rookout image registry                   | `docker.io`                                             |
 | `image.repository`                | Rookout image name                       | `rookout/agent`                                         |
-| `image.tag`                       | Rookout image tag                        | 0.2.3                                             |
+| `image.tag`                       | Rookout image tag                        | 0.3.9                                             |
 | `image.pullPolicy`                | Image pull policy                        | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
 | `image.pullSecrets`               | Specify image pull secrets               | `nil`                                                   |
 
