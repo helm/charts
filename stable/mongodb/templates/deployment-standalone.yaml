@@ -60,6 +60,10 @@ spec:
         image: {{ template "mongodb.image" . }}
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         env:
+        {{- if .Values.image.debug}}
+        - name: NAMI_DEBUG
+          value: "1"
+        {{- end }}
         {{- if .Values.usePassword }}
         - name: MONGODB_ROOT_PASSWORD
           valueFrom:
