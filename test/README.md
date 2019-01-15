@@ -19,6 +19,8 @@ The static analysis currently:
 
 ### Operational Testing
 
+Operational testing allow to deploy a Release for the changed Helm Chart and test it.
+
 #### Procedure
 
 Pull requests testing is run via the [Kubernetes Test Infrastructure](https://github.com/kubernetes/test-infra).
@@ -34,9 +36,15 @@ The testing logic has been extrated to the [chart-testing](https://github.com/ku
 
 #### Providing Custom Test Values
 
-Testing charts with default values may not be suitable in all cases. For instance, charts may require some values to be set which should not be part of the chart's default `values.yaml` (such as keys etc.). Furthermore, it may be desirable to test a chart with different configurations.
+Testing charts with default values may not be suitable in all cases. For instance, charts may require some values to be set which should not be part of the chart's default `values.yaml` (such as keys etc.). Furthermore, it is often desirable to test a chart with different configurations, reflecting different use cases (examples: setting a password instead of using the default generated one, activating persistence instead of using the default emptyDir volume, etc.).
 
 In order to enable custom test values, create a directory `ci` in the chart's directory and add any number of `*-values.yaml` files to this directory. Only files with a suffix `-values.yaml` are considered. Instead of using the defaults, the chart is then installed and tested separately for each of these files using the `--values` flag.
+
+Please note that the "no value at all" set (i.e only using the default values) has to be explicitly defined in a test file in order to be tested.
+
+You can have a look at existing tests in this repository, like the ones defined for the [Kibana Chart](https://github.com/helm/charts/tree/master/stable/kibana/ci).
+
+Please also note that it is different than a "[Helm Chart Test](https://github.com/helm/helm/blob/master/docs/chart_tests.md)".
 
 #### Triggering
 

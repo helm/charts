@@ -342,31 +342,9 @@ More [configuration](https://kubernetes.io/docs/concepts/configuration/overview/
 
 ## Tests
 
-This repository uses a test helper defined at https://github.com/helm/chart-testing. This allows the charts of this repository to be tested according to several rules (linting, semver checking, deployment testing, etc) for every Pull Request.
+This repository follows a [test procedure](https://github.com/helm/charts/blob/master/test/README.md). This allows the charts of this repository to be tested according to several rules (linting, semver checking, deployment testing, etc) for every Pull Request.
 
-One of those tests allows to deploy a Release from a Chart using the default values defined in `values.yaml`. Whereas it allows to spot the most obvious errors, it does not test for different use cases (setting a password instead of using the default generated one, activating persistence instead of using the default emptyDir volume, etc).
+The `ci` directory of a given Chart allows to test different use cases, by allowing you to define different sets of values overriding `values.yaml`, one file per set. See the [documentation](https://github.com/helm/charts/blob/master/test/README.md#providing-custom-test-values) for more informations.
 
-The `ci` directory of a given Chart allows to test such different use cases, by allowing you to define different sets of values overriding `values.yaml`, one file per set.
+This directory MUST exist with at least one test file in it.
 
-
-This directory MUST exist with at least one test file (in our example, default-values.yaml not overriding any value):
-
-```yaml
----
-
-```
-
-In order to define several use cases, you should create other test files (in our case, enable-persistence.yaml enabling creation of PVC of our imaginary chart):
-
-```yaml
----
-persistence:
-  enabled: true
-```
-
-You can have a look at existing tests in this repository, like the ones defined for the [Kibana Chart](https://github.com/helm/charts/tree/master/stable/kibana/ci).
-
-
-Please note that the "no value at all" set (i.e only using the default values) has to be explicitly defined.
-
-Please also note that it is different than a "[Helm Chart Test](https://github.com/helm/helm/blob/master/docs/chart_tests.md)".
