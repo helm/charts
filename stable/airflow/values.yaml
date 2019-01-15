@@ -307,6 +307,11 @@ serviceAccount:
   name:
 
 ##
+## Define existing secret for postgresql and redis
+## If not specified, creates secret with postgres and redis values
+existingAirflowSecret: ""
+
+##
 ## Configuration values for the postgresql dependency.
 ## ref: https://github.com/kubernetes/charts/blob/master/stable/postgresql/README.md
 postgresql:
