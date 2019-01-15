@@ -8,7 +8,13 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
   annotations:
-{{ toYaml .Values.web.service.annotations | indent 4 }}
+    {{- range $key, $value := .Values.web.service.annotations }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+    {{- if .Values.concourse.web.prometheus.enabled }}
+    prometheus.io/scrape: "true"
+    prometheus.io/port: {{ .Values.concourse.web.prometheus.bindPort | quote }}
+    {{- end }}
 spec:
   type: {{ .Values.web.service.type }}
   {{ if .Values.web.service.loadBalancerSourceRanges }}
