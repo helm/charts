@@ -54,7 +54,7 @@ The following table lists the configurable parameters of the Odoo chart and thei
 | `image.repository`                    | Odoo Image name                                             | `bitnami/odoo`                                 |
 | `image.tag`                           | Odoo Image tag                                              | `{VERSION}`                                    |
 | `image.pullPolicy`                    | Image pull policy                                           | `Always`                                       |
-| `image.pullSecrets`                   | Specify image pull secrets                                  | `nil`                                          |
+| `image.pullSecrets`                   | Specify docker-registry secret names as an array            | `[]` (does not add image pull secrets to deployed pods) |
 | `odooUsername`                        | User of the application                                     | `user@example.com`                             |
 | `odooPassword`                        | Admin account password                                      | _random 10 character long alphanumeric string_ |
 | `odooEmail`                           | Admin account email                                         | `user@example.com`                             |
@@ -64,7 +64,7 @@ The following table lists the configurable parameters of the Odoo chart and thei
 | `smtpPassword`                        | SMTP password                                               | `nil`                                          |
 | `smtpProtocol`                        | SMTP protocol [`ssl`, `tls`]                                | `nil`                                          |
 | `service.type`                        | Kubernetes Service type                                     | `LoadBalancer`                                 |
-| `service.port`                    | Service HTTP port                    | `80`                                          |
+| `service.port`                        | Service HTTP port                                           | `80`                                           |
 | `service.loadBalancer`                | Kubernetes LoadBalancerIP to request                        | `nil`                                          |
 | `service.externalTrafficPolicy`       | Enable client source IP preservation                        | `Cluster`                                      |
 | `service.nodePort`                    | Kubernetes http node port                                   | `""`                                           |
