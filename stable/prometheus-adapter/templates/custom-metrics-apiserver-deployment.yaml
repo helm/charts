@@ -67,6 +67,12 @@ spec:
         resources:
 {{ toYaml .Values.resources | indent 10 }}
 {{- end }}
+{{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+{{- range .Values.image.pullSecrets }}
+        - name: {{ . }}
+{{- end }}
+{{- end }}
         securityContext:
           readOnlyRootFilesystem: true
         volumeMounts:
