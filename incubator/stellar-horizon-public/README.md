@@ -20,6 +20,7 @@ $ helm install --name my-release incubator/stellar-horizon
 | -----------------------             | ---------------------------------------------                      | ---------------------------------------------    |
 | `stellarCoreUrl`                    | Stellar Core URL                                                   | `http://stellar-core-http:11626`                 |
 | `stellarCorePostgresDatabase`       | Stellar Core postgres DB name                                      | stellar-core
+| `stellarCoreIngest        `         | ingest data from Stellar Core (true/false)                         | `true`
 | `environment`                       | Additional environment variables for Stellar Core                  | `{}`                                             |
 | `postgresql.enabled`                | Enable PostgreSQL database                                         | `false`                                          |
 | `postgresql.postgresDatabase`       | PostgreSQL database name                                           | `stellar-core`                                   |

@@ -61,6 +61,10 @@ spec:
             - name: STELLAR_CORE_URL
               value: {{ . | quote }}
 {{- end }}
+{{- with .Values.stellarCoreIngest }}
+            - name: INGEST
+              value: {{ . | quote }}
+{{- end }}
 {{- if .Values.gcloudServiceAccountKey }}
             - name: GCLOUD_SERVICE_ACCOUNT_KEY
               valueFrom:
@@ -74,11 +78,11 @@ spec:
 {{- end }}
           livenessProbe:
             httpGet:
-              path: /info
+              path: /
               port: http
           readinessProbe:
             httpGet:
-              path: /info
+              path: /
               port: http
           resources:
 {{ toYaml .Values.resources | indent 12 }}
