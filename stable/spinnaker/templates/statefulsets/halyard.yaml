@@ -37,7 +37,13 @@ spec:
           printf 'server.address: 0.0.0.0\n' > /tmp/config/halyard-local.yml && \
           # Use Redis deployed via the dependent Helm chart
           mkdir -p /tmp/spinnaker/.hal/default/service-settings && \
+          {{- if .Values.redis.external }}
+          printf 'overrideBaseUrl: redis://:{{ .Values.redis.password }}@{{ .Values.redis.host }}:{{ .Values.redis.port }}\nskipLifeCycleManagement: true\n' > /tmp/spinnaker/.hal/default/service-settings/redis.yml && \
+          mkdir -p /tmp/spinnaker/.hal/default/profiles && \
+          printf 'redis.configuration.secure: true\n' > /tmp/spinnaker/.hal/default/profiles/gate-local.yml && \
+          {{- else }}
           printf 'overrideBaseUrl: redis://:{{ .Values.redis.password }}@{{ .Release.Name }}-redis-master:6379\nskipLifeCycleManagement: true\n' > /tmp/spinnaker/.hal/default/service-settings/redis.yml && \
+          {{- end }}
           # Route the /gate path of Deck to Gate
           printf 'env:\n  API_HOST: http://spin-gate.{{ .Release.Namespace }}:8084/\n' > /tmp/spinnaker/.hal/default/service-settings/deck.yml
         volumeMounts:

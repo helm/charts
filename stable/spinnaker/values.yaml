@@ -104,6 +104,11 @@ redis:
   nodeSelector: {}
   cluster:
     enabled: false
+# Change this to true if youd like to use external redis
+  external: false
+# Uncomment to specify external redis
+#  host: "<EXTERNAL-REDIS-HOST-NAME>"
+#  port: 6379
 # Uncomment if you don't want to create a PVC for redis
 #  master:
 #    persistence:
