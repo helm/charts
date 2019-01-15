@@ -44,6 +44,8 @@ spec:
       - name: config-init
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
+        resources:
+{{ toYaml .Values.init.resources | indent 10 }}
         command:
         - sh
         args:
