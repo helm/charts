@@ -22,10 +22,10 @@ spec:
       labels:
         app: {{ template "atlantis.name" . }}
         release: {{ .Release.Name }}
-  {{- with .Values.podTemplate.annotations }}
+      {{- with .Values.podTemplate.annotations }}
       annotations:
-  {{ toYaml . | indent 10 }}
-  {{- end }}
+{{ toYaml . | indent 8 }}
+      {{- end }}
     spec:
       serviceAccountName: {{ template "atlantis.serviceAccountName" . }}
       securityContext:
@@ -61,7 +61,7 @@ spec:
               exec:
                 command: ["/bin/sh", "-c", "cp /etc/secret-gitconfig/gitconfig /home/atlantis/.gitconfig && chown atlantis /home/atlantis/.gitconfig"]
           {{- end}}
-          cmd: atlantis
+          command: ["atlantis"]
           args:
             - server
           {{- if .Values.allowRepoConfig }}
