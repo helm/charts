@@ -23,14 +23,16 @@ spec:
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          resources:
+            limits:
+              memory: {{ .Values.limits.memory }}
+              cpu: {{ .Values.limits.cpu }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
             - name: ROOKOUT_TOKEN
-              value: {{ .Values.token }}
+              value: "{{ .Values.rookout.token }}"
             - name: ROOKOUT_LISTEN_ALL
-              value: {{ .Values.listenAll }}
-            - name: ROOKOUT_AGENT_TAGS
-              value: {{ .Values.tags }}  
+              value: "{{ .Values.rookout.listenAll }}"
           ports:
             - containerPort: 7486
           livenessProbe:
