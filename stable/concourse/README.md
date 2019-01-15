@@ -70,9 +70,12 @@ The following table lists the configurable parameters of the Concourse chart and
 | `image` | Concourse image | `concourse/concourse` |
 | `imageTag` | Concourse image version | `4.2.2` |
 | `imagePullPolicy` | Concourse image pull policy | `IfNotPresent` |
+| `imagePullSecrets` | Array of imagePullSecrets in the namespace for pulling images | `[]` |
 | `web.nameOverride` | Override the Concourse Web components name | `nil` |
 | `web.replicas` | Number of Concourse Web replicas | `1` |
 | `web.resources` | Concourse Web resource requests and limits | `{requests: {cpu: "100m", memory: "128Mi"}}` |
+| `web.readinessProbe` | Readiness Probe settings | `{"httpGet":{"path":"/api/v1/info","port":"atc"}}` |
+| `web.livenessProbe` | Liveness Probe settings | `{"failureThreshold":5,"httpGet":{"path":"/api/v1/info","port":"atc"},"initialDelaySeconds":10,"periodSeconds":15,"timeoutSeconds":3}` |
 | `web.additionalAffinities` | Additional affinities to apply to web pods. E.g: node affinity | `{}` |
 | `web.env` | Configure additional environment variables for the web containers | `[]` |
 | `web.annotations`| Concourse Web deployment annotations | `nil` |
@@ -83,6 +86,7 @@ The following table lists the configurable parameters of the Concourse chart and
 | `web.service.loadBalancerIP` | The IP to use when web.service.type is LoadBalancer | `nil` |
 | `web.service.loadBalancerSourceRanges` | Concourse Web Service Load Balancer Source IP ranges | `nil` |
 | `web.service.atcNodePort` | Sets the nodePort for atc when using `NodePort` | `nil` |
+| `web.service.atcTlsNodePort` | Sets the nodePort for atc tls when using `NodePort` | `nil` |
 | `web.service.tsaNodePort` | Sets the nodePort for tsa when using `NodePort` | `nil` |
 | `web.ingress.enabled` | Enable Concourse Web Ingress | `false` |
 | `web.ingress.annotations` | Concourse Web Ingress annotations | `{}` |
@@ -103,6 +107,7 @@ The following table lists the configurable parameters of the Concourse chart and
 | `worker.updateStrategy` | `OnDelete` or `RollingUpdate` (requires Kubernetes >= 1.7) | `RollingUpdate` |
 | `worker.podManagementPolicy` | `OrderedReady` or `Parallel` (requires Kubernetes >= 1.7) | `Parallel` |
 | `worker.hardAntiAffinity` | Should the workers be forced (as opposed to preferred) to be on different nodes? | `false` |
+| `worker.emptyDirSize` | When persistance is disabled this value will be used to limit the emptyDir volume size | `nil` |
 | `persistence.enabled` | Enable Concourse persistence using Persistent Volume Claims | `true` |
 | `persistence.worker.storageClass` | Concourse Worker Persistent Volume Storage Class | `generic` |
 | `persistence.worker.accessMode` | Concourse Worker Persistent Volume Access Mode | `ReadWriteOnce` |
@@ -152,6 +157,8 @@ The following table lists the configurable parameters of the Concourse chart and
 | `secrets.vaultClientKey` | Vault Client Key | `nil` |
 | `secrets.vaultClientToken` | Vault periodic client token | `nil` |
 | `secrets.vaultAuthParam` | Paramter to pass when logging in via the backend | `nil` |
+| `secrets.webTlsCert` | TLS certificate for the web component to terminate TLS connections | `nil` |
+| `secrets.webTlsKey` | An RSA private key, used to encrypt HTTPS traffic  | `nil` |
 | `secrets.influxdbPassword` | Password used to authenticate with influxdb | `nil` |
 | `secrets.syslogCaCert` | SSL certificate to verify Syslog server | `nil` |
 
