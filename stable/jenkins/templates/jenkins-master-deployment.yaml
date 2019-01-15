@@ -117,7 +117,7 @@ spec:
           {{- end }}
           env:
             - name: JAVA_OPTS
-              value: "{{ default "" .Values.Master.JavaOpts}}"
+              value: {{ default "" .Values.Master.JavaOpts | quote }}
             - name: JENKINS_OPTS
               value: "{{ if .Values.Master.JenkinsUriPrefix }}--prefix={{ .Values.Master.JenkinsUriPrefix }} {{ end }}{{ default "" .Values.Master.JenkinsOpts}}"
             {{- if .Values.Master.UseSecurity }}
