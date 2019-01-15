@@ -1,6 +1,7 @@
 environment: {}
 
 stellarCoreUrl: http://stellar-core-http:11626
+stellarCorePostgresDatabase: stellar-core
 
 ## Only used if postgresql.enabled is true
 stellarCorePostgresDatabase: stellar-core
