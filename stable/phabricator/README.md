@@ -54,7 +54,7 @@ The following table lists the configurable parameters of the Phabricator chart a
 | `image.repository`                     | Phabricator image name                       | `bitnami/phabricator`                                    |
 | `image.tag`                            | Phabricator image tag                        | `{VERSION}`                                              |
 | `image.pullPolicy`                     | Image pull policy                            | `Always` if `imageTag` is `latest`, else `IfNotPresent`  |
-| `image.pullSecrets`                    | Specify image pull secrets                   | `nil`                                                    |
+| `image.pullSecrets`                    | Specify docker-registry secret names as an array                   | `[]` (does not add image pull secrets to deployed pods)                                                    |
 | `phabricatorHost`                      | Phabricator host to create application URLs  | `nil`                                                    |
 | `phabricatorAlternateFileDomain`       | Phabricator alternate domain to upload files | `nil`                                                    |
 | `phabricatorUsername`                  | User of the application                      | `user`                                                   |
@@ -93,15 +93,15 @@ The following table lists the configurable parameters of the Phabricator chart a
 | `ingress.secrets[0].name`              | TLS Secret Name                              | `nil`                                                    |
 | `ingress.secrets[0].certificate`       | TLS Secret Certificate                       | `nil`                                                    |
 | `ingress.secrets[0].key`               | TLS Secret Key                               | `nil`                                                    |
-| `podAnnotations`                | Pod annotations                                   | `{}`                                                       |
-| `metrics.enabled`                          | Start a side-car prometheus exporter                                                                           | `false`                                              |
-| `metrics.image.registry`                   | Apache exporter image registry                                                                                  | `docker.io`                                          |
-| `metrics.image.repository`                 | Apache exporter image name                                                                                      | `lusotycoon/apache-exporter`                           |
-| `metrics.image.tag`                        | Apache exporter image tag                                                                                       | `v0.5.0`                                            |
-| `metrics.image.pullPolicy`                 | Image pull policy                                                                                              | `IfNotPresent`                                       |
-| `metrics.image.pullSecrets`                | Specify docker-registry secret names as an array                                                               | `nil`                                                |
-| `metrics.podAnnotations`                   | Additional annotations for Metrics exporter pod                                                                | `{prometheus.io/scrape: "true", prometheus.io/port: "9117"}`                                                   |
-| `metrics.resources`                        | Exporter resource requests/limit                                                                               | {}                        |
+| `podAnnotations`                       | Pod annotations                                  | `{}`                                                 |
+| `metrics.enabled`                      | Start a side-car prometheus exporter             | `false`                                              |
+| `metrics.image.registry`               | Apache exporter image registry                   | `docker.io`                                          |
+| `metrics.image.repository`             | Apache exporter image name                       | `lusotycoon/apache-exporter`                         |
+| `metrics.image.tag`                    | Apache exporter image tag                        | `v0.5.0`                                             |
+| `metrics.image.pullPolicy`             | Image pull policy                                | `IfNotPresent`                                       |
+| `metrics.image.pullSecrets`            | Specify docker-registry secret names as an array | `[]` (does not add image pull secrets to deployed pods)      |
+| `metrics.podAnnotations`               | Additional annotations for Metrics exporter pod  | `{prometheus.io/scrape: "true", prometheus.io/port: "9117"}` |
+| `metrics.resources`                    | Exporter resource requests/limit                 | {}                                                    |
 
 The above parameters map to the env variables defined in [bitnami/phabricator](http://github.com/bitnami/bitnami-docker-phabricator). For more information please refer to the [bitnami/phabricator](http://github.com/bitnami/bitnami-docker-phabricator) image documentation.
 
