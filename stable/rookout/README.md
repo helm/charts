@@ -5,7 +5,7 @@
 ## TL;DR;
 
 ```bash
-$ helm install --name my-release stable/rookout --set token=YOUR_ORGANIZATIONAL_TOKEN
+$ helm install --name my-release stable/rookout --set rookout.token=YOUR_ORGANIZATIONAL_TOKEN
 ```
 
 ## Introduction
@@ -21,7 +21,7 @@ This chart bootstraps a [Rookout Router](https://docs.rookout.com/docs/installat
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release stable/rookout --set token=YOUR_ORGANIZATIONAL_TOKEN
+$ helm install --name my-release stable/rookout --set rookout.token=YOUR_ORGANIZATIONAL_TOKEN
 ```
 
 The command deploys Rookout on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -45,11 +45,12 @@ The following table lists the configurable parameters of the Rookout Router char
 |            Parameter              |              Description                 |                          Default                        | 
 | --------------------------------- | ---------------------------------------- | ------------------------------------------------------- |
 | `token`                           | Rookout organizational token             | `Nil` You must provide your own token                   |  
-| `tags`                            | Rookout Router tags                      | `Nil` You must provide your own token                   |                         
-| `listenAll`                       | Configuring the agent to listen on all addresses instead of only localhost.                      | `True` You must provide your own token |               
+| `limits.memory`                   | Memory chart limit                       | `Nil`                                                 |
+| `limits.cpu`                      | CPU chart limit                          | `Nil`                                                  |
+| `listenAll`                       | Configuring the agent to listen on all addresses instead of only localhost.                      | `False` |               
 | `image.registry`                  | Rookout image registry                   | `docker.io`                                             |
 | `image.repository`                | Rookout image name                       | `rookout/agent`                                         |
-| `image.tag`                       | Rookout image tag                        | `{VERSION}`                                             |
+| `image.tag`                       | Rookout image tag                        | 0.2.3                                             |
 | `image.pullPolicy`                | Image pull policy                        | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
 | `image.pullSecrets`               | Specify image pull secrets               | `nil`                                                   |
 
@@ -60,10 +61,10 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 ```bash
 $ helm install --name my-release \
-  --set token=YOUR_TOKEN_HERE,listenAll=False,tags=tag1;tag2;tag3 \
+  --set rookout.token=YOUR_TOKEN_HERE,listenAll=False \
     stable/rookout
 ```
 
-The above command sets the Rookout Router token to your organizational token. Additionally, it sets the listenAll to `False` and Router tags to `tag1;tag2;tag3`.
+The above command sets the Rookout Router token to your organizational token. Additionally, it sets the listenAll to `False`.
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
