@@ -3,7 +3,7 @@ hydra:
 
   image:
     repository: oryd/hydra
-    tag: v1.0.0-rc.5_oryOS.10-alpine
+    tag: v1.0.0-rc.6_oryOS.10-alpine
     pullPolicy: IfNotPresent
 
     ## Optionally specify an array of imagePullSecrets.
