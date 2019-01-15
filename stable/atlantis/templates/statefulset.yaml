@@ -24,7 +24,7 @@ spec:
         release: {{ .Release.Name }}
       {{- with .Values.podTemplate.annotations }}
       annotations:
-{{ toYaml . | indent 10 }}
+{{ toYaml . | indent 8 }}
       {{- end }}
     spec:
       serviceAccountName: {{ template "atlantis.serviceAccountName" . }}
