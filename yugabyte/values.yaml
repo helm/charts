@@ -52,7 +52,7 @@ PodManagementPolicy: Parallel
 # Flag to use to enable postgres support on tservers.
 # enablePostgres: false
 
-enableLoadBalancer: true
+enableLoadBalancer: True
 
 serviceEndpoints:
   - name: "yb-master-ui"

@@ -27,7 +27,6 @@ spec:
 {{- $service := . -}}
 {{- range $endpoint :=  $root.Values.serviceEndpoints }}
 {{- if eq $service.label $endpoint.app }}
-{{ end }}
 ---
 apiVersion: v1
 kind: Service
@@ -67,6 +66,7 @@ spec:
   type: {{ $endpoint.type }}
 {{- end}}
 {{- end}}
+{{ end }}
 
 ---
 apiVersion: apps/v1
