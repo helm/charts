@@ -6,6 +6,7 @@ kind: Ingress
 metadata:
   name: {{ $fullName }}
   labels:
+    app: {{ template "toplevel.name" . }}
     app.kubernetes.io/name: {{ include "weave-scope-frontend.name" . }}
     helm.sh/chart: {{ include "weave-scope-frontend.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
