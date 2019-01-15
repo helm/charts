@@ -84,6 +84,8 @@ spec:
             {{- end}}
           livenessProbe:
             httpGet:
+              path: /minio/health/live
+              port: service
               {{- if .Values.tls.enabled }}
               scheme: HTTPS
               {{- end }}
