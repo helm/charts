@@ -32,7 +32,8 @@ hydra:
     ## Leave empty for text based log format, or set to "json" for JSON formatting.
     LOG_FORMAT: json
 
-    #interface or unix socket hydra should listen and handle administrative API (ADMIN_HOST)
+    ## Interface or unix socket hydra should listen and handle administrative API
+    ## Use something like `unix:/socket/admin_socket` when adminProxy is enabled
     ADMIN_HOST: "0.0.0.0"
 
     # LOG_LEVEL: debug
@@ -47,6 +48,7 @@ hydra:
     cookie: ""
 
   ## Enable to hide the admin API behind an Nginx reverse proxy (with basic auth)
+  ## Don't forget to set `config.ADMIN_HOST` as well.
   adminProxy:
     enable: false
     image: nginx:mainline-alpine
