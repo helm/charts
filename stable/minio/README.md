@@ -148,6 +148,9 @@ The following table lists the configurable parameters of the Minio chart and the
 | `gcsgateway.enabled`       | Use minio as a [Google Cloud Storage gateway](https://docs.minio.io/docs/minio-gateway-for-gcs)| `false` |
 | `gcsgateway.gcsKeyJson`    | credential json file of service account key | `""` |
 | `gcsgateway.projectId`     | Google cloud project id             | `""` |
+| `ossgateway.enabled`       | Use minio as a [Alibaba Cloud Object Storage Service gateway](https://github.com/minio/minio/blob/master/docs/gateway/oss.md)| `false` |
+| `ossgateway.replicas`      | Number of oss gateway instances to run in parallel | `4` |
+| `ossgateway.endpointURL`   | OSS server endpoint. | `""` |
 | `nasgateway.enabled`       | Use minio as a [NAS gateway](https://docs.minio.io/docs/minio-gateway-for-nas)             | `false` |
 | `nasgateway.replicas`      | Number of NAS gateway instances to be run in parallel on a PV            | `4` |
 | `environment`              | Set Minio server relevant environment variables in `values.yaml` file. Minio containers will be passed these variables when they start. | `MINIO_BROWSER: "on"` |
