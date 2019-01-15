@@ -45,8 +45,12 @@ spec:
         - name: {{ . }}
       {{- end}}
     {{- end }}
+      {{- if .Values.securityContext.enabled }}
       securityContext:
-{{ toYaml .Values.securityContext | indent 8 }}
+        runAsUser: {{ .Values.securityContext.runAsUser }}
+        fsGroup: {{ .Values.securityContext.fsGroup }}
+        runAsNonRoot: {{ .Values.securityContext.runAsNonRoot }}        
+      {{- end }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       initContainers:
         - name: copy-config
