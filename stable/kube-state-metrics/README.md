@@ -31,6 +31,7 @@ $ helm install stable/kube-state-metrics
 | `tolerations`                         | Tolerations for pod assignment	                      | []                                          |
 | `podAnnotations`                      | Annotations to be added to the pod                      | {}                                          |
 | `resources`                           | kube-state-metrics resource requests and limits         | {}                                          |
+| `collectors.configmaps`               | Enable the configmaps collector.                        | true                                        |
 | `collectors.cronjobs`                 | Enable the cronjobs collector.                          | true                                        |
 | `collectors.daemonsets`               | Enable the daemonsets collector.                        | true                                        |
 | `collectors.deployments`              | Enable the deployments collector.                       | true                                        |
@@ -46,5 +47,6 @@ $ helm install stable/kube-state-metrics
 | `collectors.replicasets`              | Enable the replicasets collector.                       | true                                        |
 | `collectors.replicationcontrollers`   | Enable the replicationcontrollers collector.            | true                                        |
 | `collectors.resourcequotas`           | Enable the resourcequotas collector.                    | true                                        |
+| `collectors.secrets`                  | Enable the secrets collector.                           | true                                        |
 | `collectors.services`                 | Enable the services collector.                          | true                                        |
 | `collectors.statefulsets`             | Enable the statefulsets collector.                      | true                                        |

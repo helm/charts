@@ -53,6 +53,11 @@ spec:
         - name: varlibdockercontainers
           mountPath: /var/lib/docker/containers
           readOnly: true
+      {{- if .Values.input.systemd.enabled }}
+        - name: etcmachineid
+          mountPath: /etc/machine-id
+          readOnly: true
+      {{- end }}
 {{- if .Values.fullConfigMap }}
         - name: config
           mountPath: /fluent-bit/etc
@@ -112,6 +117,12 @@ spec:
       - name: varlibdockercontainers
         hostPath:
           path: /var/lib/docker/containers
+    {{- if .Values.input.systemd.enabled }}
+      - name: etcmachineid
+        hostPath:
+          path: /etc/machine-id
+          type: File
+    {{- end }}
 {{- if .Values.backend.es.tls_ca }}
       - name: es-tls-secret
         secret:

@@ -69,8 +69,9 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - containerPort: {{ .Values.service.internalPort }}
-          {{- if .Values.command }}
-          command: {{ .Values.command }}
+          {{- if .Values.plugins.install }}
+          command:
+            - /usr/local/copy_plugins.sh
           {{- end }}
           env:
             {{- range $key, $value := .Values.extraEnv }}
@@ -101,13 +102,13 @@ spec:
               {{- end }}
           livenessProbe:
             httpGet:
-              path: /sessions/new
+              path: {{ .Values.livenessProbe.sonarWebContext }}sessions/new
               port: {{ .Values.service.internalPort }}
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
           readinessProbe:
             httpGet:
-              path: /sessions/new
+              path: {{ .Values.readinessProbe.sonarWebContext }}sessions/new
               port: {{ .Values.service.internalPort }}
             initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.readinessProbe.periodSeconds }}

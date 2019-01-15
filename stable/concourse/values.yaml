@@ -25,6 +25,13 @@ imageTag: "4.2.2"
 ##
 imagePullPolicy: IfNotPresent
 
+## Optionally specify an array of imagePullSecrets.
+## Secrets must be manually created in the namespace.
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+##
+# imagePullSecrets:
+#   - myRegistrKeySecretName
+
 ## Configuration values for Concourse.
 ## ref: https://concourse-ci.org/setting-up.html
 ##
@@ -36,12 +43,13 @@ concourse:
     # bindIp: 0.0.0.0
     ## Port on which to listen for HTTP traffic.
     bindPort: 8080
-    ## Port on which to listen for HTTPS traffic.
-    # tlsBindPort:
-    ## File containing an SSL certificate.
-    # tlsCert:
-    ## File containing an RSA private key, used to encrypt HTTPS traffic.
-    # tlsKey:
+    ## TLS configurations for the web component to be able to serve HTTPS traffic.
+    ## Once enabled, consumes the certificates set via secrets.
+    #
+    tls:
+      enabled: false
+      ## Port on which to listen for HTTPS traffic.
+      # bindPort:
     ## URL used to reach any ATC from the outside world.
     # externalUrl: http://127.0.0.1:8080
     ## URL used to reach this ATC from other ATCs in the cluster.
@@ -649,6 +657,27 @@ web:
   ##
   replicas: 1
 
+  ## Configures the liveness probe used to determine
+  ## if the Web component is up.
+  ## Note.: if you're upgrading Concourse from one version
+  ## to another, the probe will probably fail for some time
+  ## before migrations are finished - in such situations,
+  ## either consider bumping the values set here.
+  livenessProbe:
+    failureThreshold: 5
+    httpGet:
+      path: /api/v1/info
+      port: atc
+    initialDelaySeconds: 10
+    periodSeconds: 15
+    timeoutSeconds: 3
+
+  ## Configures the readiness probes.
+  readinessProbe:
+    httpGet:
+      path: /api/v1/info
+      port: atc
+
   ## Configure resource requests and limits.
   ## ref: https://kubernetes.io/docs/user-guide/compute-resources/
   ##
@@ -728,8 +757,11 @@ web:
   # When using web.service.type: NodePort, sets the nodePort for atc
   #  atcNodePort: 30150
   #
+  # When using web.service.type: NodePort, sets the nodePort for atc tls
+  #  atcTlsNodePort: 30151
+  #
   # When using web.service.type: NodePort, sets the nodePort for tsa
-  #  tsaNodePort: 30151
+  #  tsaNodePort: 30152
 
   ## Ingress configuration.
   ## ref: https://kubernetes.io/docs/user-guide/ingress/
@@ -888,6 +920,10 @@ worker:
   ## in parallel.
   podManagementPolicy: Parallel
 
+  ## When persistance is disabled this value will be used to limit the emptyDir volume size
+  ## Ref: https://kubernetes.io/docs/concepts/storage/volumes/#emptydir
+  # emptyDirSize: 20Gi
+
 ## Persistent Volume Storage configuration.
 ## ref: https://kubernetes.io/docs/user-guide/persistent-volumes
 ##
@@ -987,6 +1023,11 @@ secrets:
   ## false to manage these secrets outside Helm.
   ##
   create: true
+
+  ## The TLS certificate and private key for the web component to be able to terminate
+  ## TLS connections.
+  # webTlsCert:
+  # webTlsKey:
 
   ## Concourse Host Keys.
   ## ref: https://concourse-ci.org/install.html#generating-keys
