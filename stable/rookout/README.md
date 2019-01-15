@@ -47,7 +47,7 @@ The following table lists the configurable parameters of the Rookout Router char
 | `token`                           | Rookout organizational token             | `Nil` You must provide your own token                   |  
 | `limits.memory`                   | Memory chart limit                       | `Nil`                                                 |
 | `limits.cpu`                      | CPU chart limit                          | `Nil`                                                  |
-| `listenAll`                       | Configuring the agent to listen on all addresses instead of only localhost.                      | `False` |               
+| `listenAll`                       | Configuring the agent to listen on all addresses instead of only localhost.                      | `True` |               
 | `image.registry`                  | Rookout image registry                   | `docker.io`                                             |
 | `image.repository`                | Rookout image name                       | `rookout/agent`                                         |
 | `image.tag`                       | Rookout image tag                        | 0.3.9                                             |
