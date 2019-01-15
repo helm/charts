@@ -14,8 +14,8 @@ strategy: |
 
 image:
   repository: envoyproxy/envoy-alpine
-  tag: 952c5e1db91b6bcc1c11a0c8316d6b11bbcc3657
-  ## ^ ref: https://github.com/envoyproxy/envoy/commit/952c5e1db91b6bcc1c11a0c8316d6b11bbcc3657
+  tag: d920944aed67425f91fc203774aebce9609e5d9a
+  ## ^ ref: https://github.com/envoyproxy/envoy/commit/d920944aed67425f91fc203774aebce9609e5d9a
   pullPolicy: IfNotPresent
 
 command:

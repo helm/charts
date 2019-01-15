@@ -36,10 +36,12 @@ azure:
 cloudflare:
   apiKey: ""
   email: ""
+  proxied: true
 # When using the Google provider, specify the Google project (required when provider=google)
 google:
   project: ""
   serviceAccountSecret: ""
+  serviceAccountKey: ""
 
 # Infoblox keys to inject
 infoblox:
