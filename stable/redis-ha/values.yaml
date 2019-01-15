@@ -3,7 +3,7 @@
 ##
 image:
   repository: redis
-  tag: 4.0.11-alpine
+  tag: 5.0.3-alpine
   pullPolicy: IfNotPresent
 ## replicas number for each component
 replicas: 3
@@ -98,6 +98,9 @@ podDisruptionBudget: {}
 ## Configures redis with AUTH (requirepass & masterauth conf params)
 auth: false
 # redisPassword:
+
+## Use existing secret containing "auth" key (ignores redisPassword)
+# existingSecret:
 
 persistentVolume:
   enabled: true

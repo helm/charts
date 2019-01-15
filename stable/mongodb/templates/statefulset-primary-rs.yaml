@@ -67,6 +67,12 @@ spec:
           - containerPort: {{ .Values.service.port }}
             name: mongodb
           env:
+          {{- if .Values.image.debug}}
+          - name: NAMI_DEBUG
+            value: "1"
+          {{- end }}
+          - name: MONGODB_SYSTEM_LOG_VERBOSITY
+            value: {{ .Values.mongodbSystemLogVerbosity | quote}}
           - name: MONGODB_POD_NAME
             valueFrom:
               fieldRef:
@@ -79,10 +85,14 @@ spec:
           - name: MONGODB_ADVERTISED_HOSTNAME
             value: "$(MONGODB_POD_NAME).{{ template "mongodb.fullname" . }}-headless.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}"
             {{- end }}
+          {{- if .Values.mongodbUsername }}
           - name: MONGODB_USERNAME
             value: {{ .Values.mongodbUsername | quote }}
+          {{- end }}
+          {{- if .Values.mongodbDatabase }}
           - name: MONGODB_DATABASE
             value: {{ .Values.mongodbDatabase | quote }}
+          {{- end }}
             {{- if .Values.usePassword }}
             {{- if or .Values.mongodbPassword .Values.existingSecret }}
           - name: MONGODB_PASSWORD
@@ -108,8 +118,10 @@ spec:
           {{- else }}
             value: "no"
           {{- end }}
+          {{- if .Values.mongodbExtraFlags }}
           - name: MONGODB_EXTRA_FLAGS
-            value: {{ default "" .Values.mongodbExtraFlags | join " " }}
+            value: {{ .Values.mongodbExtraFlags | join " " }}
+          {{- end }}
           {{- if .Values.livenessProbe.enabled }}
           livenessProbe:
             exec:

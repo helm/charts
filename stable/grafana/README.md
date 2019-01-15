@@ -38,7 +38,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `securityContext`                         | Deployment securityContext                    | `{"runAsUser": 472, "fsGroup": 472}`                    |
 | `priorityClassName`                       | Name of Priority Class to assign pods         | `nil`                                                   |
 | `image.repository`                        | Image repository                              | `grafana/grafana`                                       |
-| `image.tag`                               | Image tag. (`Must be >= 5.0.0`)               | `5.4.2`                                                 |
+| `image.tag`                               | Image tag. (`Must be >= 5.0.0`)               | `5.4.3`                                                 |
 | `image.pullPolicy`                        | Image pull policy                             | `IfNotPresent`                                          |
 | `service.type`                            | Kubernetes service type                       | `ClusterIP`                                             |
 | `service.port`                            | Kubernetes port where service is exposed      | `80`                                                    |
@@ -80,7 +80,12 @@ The command removes all the Kubernetes components associated with the chart and 
 | `sidecar.datasources.enabled`             | Enabled the cluster wide search for datasources and adds/updates/deletes them in grafana |`false`       |
 | `sidecar.datasources.label`               | Label that config maps with datasources should have to be added | `false`                               |
 | `sidecar.datasources.searchNamespace`     | If specified, the sidecar will search for datasources config-maps inside this namespace. Otherwise the namespace in which the sidecar is running will be used. It's also possible to specify ALL to search in all namespaces | `nil`                               |
-| `smtp.existingSecret`                     | The name of an existing secret containing the SMTP credentials, this must have the keys `user` and `password`. | `""` |
+| `smtp.existingSecret`                     | The name of an existing secret containing the SMTP credentials. | `""`                                  |
+| `smtp.userKey`                            | The key in the existing SMTP secret containing the username. | `"user"`                                 |
+| `smtp.passwordKey`                        | The key in the existing SMTP secret containing the password. | `"password"`                             |
+| `admin.existingSecret`                    | The name of an existing secret containing the admin credentials. | `""`                                 |
+| `admin.userKey`                           | The key in the existing admin secret containing the username. | `"admin-user"`                          |
+| `admin.passwordKey`                       | The key in the existing admin secret containing the password. | `"admin-password"`                      |
 | `rbac.create`                             | Create and use RBAC resources | `true` |
 | `rbac.pspEnabled`                         | Create PodSecurityPolicy (with `rbac.create`, grant roles permissions as well) | `true` |
 | `rbac.pspUseAppArmor`                     | Enforce AppArmor in created PodSecurityPolicy (requires `rbac.pspEnabled`)  | `true` |
