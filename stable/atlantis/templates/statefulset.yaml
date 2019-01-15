@@ -61,7 +61,7 @@ spec:
               exec:
                 command: ["/bin/sh", "-c", "cp /etc/secret-gitconfig/gitconfig /home/atlantis/.gitconfig && chown atlantis /home/atlantis/.gitconfig"]
           {{- end}}
-          command: atlantis
+          command: ["atlantis"]
           args:
             - server
           {{- if .Values.allowRepoConfig }}
