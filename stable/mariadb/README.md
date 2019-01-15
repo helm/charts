@@ -54,7 +54,7 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `image.repository`                        | MariaDB Image name                                  | `bitnami/mariadb`                                                 |
 | `image.tag`                               | MariaDB Image tag                                   | `{VERSION}`                                                       |
 | `image.pullPolicy`                        | MariaDB image pull policy                           | `Always` if `imageTag` is `latest`, else `IfNotPresent`           |
-| `image.pullSecrets`                       | Specify image pull secrets                          | `nil` (does not add image pull secrets to deployed pods)          |
+| `image.pullSecrets`                       | Specify docker-registry secret names as an array    | `[]` (does not add image pull secrets to deployed pods)           |
 | `image.debug`                             | Specify if debug logs should be enabled             | `false`                                                           |
 | `service.type`                            | Kubernetes service type                             | `ClusterIP`                                                       |
 | `service.clusterIp`                       | Specific cluster IP when service type is cluster IP. Use None for headless service | `nil`                              |
@@ -62,15 +62,15 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `securityContext.enabled`                 | Enable security context                             | `true`                                                            |
 | `securityContext.fsGroup`                 | Group ID for the container                          | `1001`                                                            |
 | `securityContext.runAsUser`               | User ID for the container                           | `1001`                                                            |
-| `existingSecret`                       | Use Existing secret for Password details (`rootUser.password`, `db.password`, `replication.password` will be ignored and picked up from this secret)                       |                         |
-| `rootUser.password`                       | Password for the `root` user. Ignored if existing secret is provided.                       | _random 10 character alphanumeric string_                         |
+| `existingSecret`                          | Use Existing secret for Password details (`rootUser.password`, `db.password`, `replication.password` will be ignored and picked up from this secret) |                         |
+| `rootUser.password`                       | Password for the `root` user. Ignored if existing secret is provided. | _random 10 character alphanumeric string_       |
 | `rootUser.forcePassword`                  | Force users to specify a password                   | `false`                                                           |
 | `db.user`                                 | Username of new user to create                      | `nil`                                                             |
-| `db.password`                             | Password for the new user. Ignored if existing secret is provided.                           | _random 10 character alphanumeric string if `db.user` is defined_ |
+| `db.password`                             | Password for the new user. Ignored if existing secret is provided.    | _random 10 character alphanumeric string if `db.user` is defined_ |
 | `db.name`                                 | Name for new database to create                     | `my_database`                                                     |
 | `replication.enabled`                     | MariaDB replication enabled                         | `true`                                                            |
-| `replication.user`                        |MariaDB replication user                            | `replicator`                                                      |
-| `replication.password`                    | MariaDB replication user password. Ignored if existing secret is provided.                   | _random 10 character alphanumeric string_                         |
+| `replication.user`                        |MariaDB replication user                             | `replicator`                                                      |
+| `replication.password`                    | MariaDB replication user password. Ignored if existing secret is provided. | _random 10 character alphanumeric string_  |
 | `initdbScripts`                           | List of initdb scripts                              | `nil`                                                             |
 | `initdbScriptsConfigMap`                  | ConfigMap with the initdb scripts (Note: Overrides `initdbScripts`) | `nil`                                             |
 | `master.annotations[].key`                | key for the the annotation list item                |  `nil`                                                            |
@@ -85,7 +85,7 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `master.persistence.storageClass`         | Persistent Volume Storage Class                     | ``                                                                |
 | `master.persistence.accessModes`          | Persistent Volume Access Modes                      | `[ReadWriteOnce]`                                                 |
 | `master.persistence.size`                 | Persistent Volume Size                              | `8Gi`                                                             |
-| `master.extraInitContainers`                        | Additional init containers as a string to be passed to the `tpl` function (master)                    |                                                      |
+| `master.extraInitContainers`              | Additional init containers as a string to be passed to the `tpl` function (master) |                                    |
 | `master.config`                           | Config file for the MariaDB Master server           | `_default values in the values.yaml file_`                        |
 | `master.resources`                        | CPU/Memory resource requests/limits for master node | `{}`                                                              |
 | `master.livenessProbe.enabled`            | Turn on and off liveness probe (master)             | `true`                                                            |
@@ -111,7 +111,7 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `slave.persistence.storageClass`          | Persistent Volume Storage Class                     | ``                                                                |
 | `slave.persistence.accessModes`           | Persistent Volume Access Modes                      | `[ReadWriteOnce]`                                                 |
 | `slave.persistence.size`                  | Persistent Volume Size                              | `8Gi`                                                             |
-| `slave.extraInitContainers`                        | Additional init containers as a string to be passed to the `tpl` function (slave)                    |                                                      |
+| `slave.extraInitContainers`               | Additional init containers as a string to be passed to the `tpl` function (slave)               |                       |
 | `slave.config`                            | Config file for the MariaDB Slave replicas          | `_default values in the values.yaml file_`                        |
 | `slave.resources`                         | CPU/Memory resource requests/limits for slave node  | `{}`                                                              |
 | `slave.livenessProbe.enabled`             | Turn on and off liveness probe (slave)              | `true`                                                            |
