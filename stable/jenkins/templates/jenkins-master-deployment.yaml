@@ -1,4 +1,8 @@
-apiVersion: extensions/v1beta1
+{{- if .Capabilities.APIVersions.Has "apps/v1" }}
+apiVersion: apps/v1
+{{- else }}
+apiVersion: apps/v1beta1
+{{- end }}
 kind: Deployment
 metadata:
   name: {{ template "jenkins.fullname" . }}
@@ -7,6 +11,9 @@ metadata:
     release: {{ .Release.Name | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     component: "{{ .Release.Name }}-{{ .Values.Master.Name }}"
+    {{- range $key, $val := .Values.Master.DeploymentLabels }}
+    {{ $key }}: {{ $val | quote }}
+    {{- end}}
 spec:
   replicas: 1
   strategy:
@@ -69,6 +76,9 @@ spec:
             -
               mountPath: /var/jenkins_home
               name: jenkins-home
+              {{- if .Values.Persistence.SubPath }}
+              subPath: {{ .Values.Persistence.SubPath }}
+              {{- end }}
             -
               mountPath: /var/jenkins_config
               name: jenkins-config
@@ -106,7 +116,7 @@ spec:
           args: [ "--argumentsRealm.passwd.$(ADMIN_USER)=$(ADMIN_PASSWORD)",  "--argumentsRealm.roles.$(ADMIN_USER)=admin"]
           {{- end }}
           env:
-            - name: JAVA_TOOL_OPTIONS
+            - name: JAVA_OPTS
               value: "{{ default "" .Values.Master.JavaOpts}}"
             - name: JENKINS_OPTS
               value: "{{ if .Values.Master.JenkinsUriPrefix }}--prefix={{ .Values.Master.JenkinsUriPrefix }} {{ end }}{{ default "" .Values.Master.JenkinsOpts}}"
@@ -134,6 +144,10 @@ spec:
             - containerPort: {{ .Values.Master.JMXPort }}
               name: jmx
             {{- end }}
+{{- range $index, $port := .Values.Master.ExtraPorts }}
+            - containerPort: {{ $port.port }}
+              name: {{ $port.name }}
+{{- end }}
 {{- if .Values.Master.HealthProbes }}
           livenessProbe:
             httpGet:
@@ -147,6 +161,7 @@ spec:
               path: "{{ default "" .Values.Master.JenkinsUriPrefix }}/login"
               port: http
             initialDelaySeconds: {{ .Values.Master.HealthProbesReadinessTimeout }}
+            periodSeconds: {{ .Values.Master.HealthProbeReadinessPeriodSeconds }}
 {{- end }}
           # Resources configuration is a little hacky. This was to prevent breaking
           # changes, and should be cleanned up in the future once everybody had
@@ -167,6 +182,9 @@ spec:
               mountPath: /var/jenkins_home
               name: jenkins-home
               readOnly: false
+              {{- if .Values.Persistence.SubPath }}
+              subPath: {{ .Values.Persistence.SubPath }}
+              {{- end }}
             -
               mountPath: /var/jenkins_config
               name: jenkins-config

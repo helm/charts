@@ -1,0 +1,28 @@
+{{- if .Values.rbac.create }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ include "spark-history-server.fullname" . }}-cr
+  labels:
+    app.kubernetes.io/name: {{ include "spark-history-server.name" . }}
+    helm.sh/chart: {{ include "spark-history-server.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+rules:
+- apiGroups: [""]
+  resources: ["deployments", "pods"]
+  verbs: ["*"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ include "spark-history-server.fullname" . }}-crb
+subjects:
+- kind: ServiceAccount
+  name: {{ include "spark-history-server.serviceAccountName" . }}
+  namespace: {{ .Release.Namespace }}
+roleRef:
+  kind: ClusterRole
+  name: {{ include "spark-history-server.fullname" . }}-cr
+  apiGroup: rbac.authorization.k8s.io
+{{- end }}

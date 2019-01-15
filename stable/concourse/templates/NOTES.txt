@@ -1,7 +1,7 @@
 
 * Concourse can be accessed:
 
-  * Within your cluster, at the following DNS name at port {{ .Values.concourse.atcPort }}:
+  * Within your cluster, at the following DNS name at port {{ .Values.concourse.web.bindPort }}:
 
     {{ template "concourse.web.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
 
@@ -25,27 +25,16 @@
            You can watch the status of by running 'kubectl get svc -w {{ template "concourse.web.fullname" . }}'
 
     export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "concourse.web.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-    echo http://$SERVICE_IP:{{ .Values.concourse.atcPort }}
+    echo http://$SERVICE_IP:{{ .Values.concourse.web.bindPort }}
     {{- else if contains "ClusterIP"  .Values.web.service.type }}
 
     export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "concourse.web.fullname" . }}" -o jsonpath="{.items[0].metadata.name}")
     echo "Visit http://127.0.0.1:8080 to use Concourse"
-    kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME 8080:{{ .Values.concourse.atcPort }}
+    kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME 8080:{{ .Values.concourse.web.bindPort }}
     {{- end }}
   {{- end }}
-{{- if .Values.concourse.basicAuth.enabled }}
-
-* Login with the following credentials
-  {{ if .Values.secrets.create }}
-  Username: {{ .Values.secrets.basicAuthUsername }}
-  Password: {{ .Values.secrets.basicAuthPassword }}
-  {{ else }}
-  Username: see basic-auth-username in secret {{ template "concourse.concourse.fullname" . }}
-  Password: see basic-auth-password in secret {{ template "concourse.concourse.fullname" . }}
-  {{ end }}
-{{- end }}
-* If this is your first time using Concourse, follow the tutorial at https://concourse-ci.org/hello-world.html
-{{- if contains "naive" .Values.concourse.baggageclaimDriver }}
+* If this is your first time using Concourse, follow the tutorials at https://concourse-ci.org/tutorials.html
+{{- if contains "naive" .Values.concourse.worker.baggageclaim.driver }}
 
 *******************
 ******WARNING******

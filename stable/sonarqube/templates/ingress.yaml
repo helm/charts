@@ -10,10 +10,12 @@ metadata:
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+{{ if .Values.ingress.annotations}}
   annotations:
     {{- range $key, $value := .Values.ingress.annotations }}
-      {{ $key }}: {{ $value | quote }}
+    {{ $key }}: {{ $value | quote }}
     {{- end }}
+{{- end }}
 spec:
   rules:
     {{- range $host := .Values.ingress.hosts }}

@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "spark-history-server.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "spark-history-server.name" . }}
+    helm.sh/chart: {{ include "spark-history-server.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+  - port: {{ .Values.service.port }}
+    targetPort: historyport
+    protocol: TCP
+    name: historyport
+  selector:
+    app.kubernetes.io/name: {{ include "spark-history-server.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}

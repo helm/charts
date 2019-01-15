@@ -35,6 +35,10 @@ spec:
             containerPort: 9235
           resources:
 {{ toYaml .Values.resources | indent 12 }}
+    {{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+    {{- end }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
       tolerations:

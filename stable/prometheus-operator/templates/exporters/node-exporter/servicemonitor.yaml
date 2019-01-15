@@ -1,0 +1,18 @@
+{{- if .Values.nodeExporter.enabled }}
+apiVersion: {{ printf "%s/v1" (.Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com") }}
+kind: ServiceMonitor
+metadata:
+  name: {{ template "prometheus-operator.fullname" . }}-node-exporter
+  labels:
+    app: {{ template "prometheus-operator.name" . }}-node-exporter
+{{ include "prometheus-operator.labels" . | indent 4 }}
+spec:
+  jobLabel: {{ .Values.nodeExporter.jobLabel }}
+  selector:
+    matchLabels:
+      app: prometheus-node-exporter
+      release: {{ .Release.Name }}
+  endpoints:
+  - port: metrics
+    interval: 30s
+{{- end }}

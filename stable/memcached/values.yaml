@@ -33,6 +33,9 @@ memcached:
 serviceAnnotations: {}
 #  prometheus.io/scrape: "true"
 
+## StatefulSet or Deployment
+kind: StatefulSet
+
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 ##
@@ -64,3 +67,6 @@ metrics:
 extraContainers: |
 
 extraVolumes: |
+
+# To be added to the server pod(s)
+podAnnotations: {}

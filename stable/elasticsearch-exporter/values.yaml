@@ -23,6 +23,8 @@ priorityClassName: ""
 
 nodeSelector: {}
 
+tolerations: {}
+
 podAnnotations: {}
 
 service:

@@ -1,7 +1,7 @@
 Minio
 =====
 
-[Minio](https://minio.io) is a lightweight, AWS S3 compatible object storage server. It is best suited for storing unstructured data such as photos, videos, log files, backups, VM and container images. Size of an object can range from a few KBs to a maximum of 5TB. Minio server is light enough to be bundled with the application stack, similar to NodeJS, Redis and MySQL.
+[Minio](https://minio.io) is a distributed object storage service for high performance, high scale data infrastructures. It is a drop in replacement for AWS S3 in your own environment. It uses erasure coding to provide highly resilient storage that can tolerate failures of upto n/2 nodes. It runs on cloud, container, kubernetes and bare-metal environments. It is simple enough to be deployed in seconds, and can scale to 100s of peta bytes. Minio is suitable for storing objects such as photos, videos, log files, backups, VM and container images.
 
 Minio supports [distributed mode](https://docs.minio.io/docs/distributed-minio-quickstart-guide). In distributed mode, you can pool multiple drives (even on different machines) into a single object storage server.
 
@@ -68,6 +68,23 @@ $ helm delete my-release
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
+Upgrading the Chart
+-------------------
+
+You can use Helm to update Minio version in a live release. Assuming your release is named as `my-release`, get the values using the command:
+
+```bash
+$ helm get values my-release > old_values.yaml
+```
+
+Then change the field `image.tag` in `old_values.yaml` file with Minio image tag you want to use. Now update the chart using
+
+```bash
+$ helm upgrade -f old_values.yaml my-release stable/minio
+```
+
+Default upgrade strategies are specified in the `values.yaml` file. Update these fields if you'd like to use a different strategy.
+
 Configuration
 -------------
 
@@ -76,10 +93,10 @@ The following table lists the configurable parameters of the Minio chart and the
 | Parameter                  | Description                         | Default                                                 |
 |----------------------------|-------------------------------------|---------------------------------------------------------|
 | `image.repository`         | Image repository                    | `minio/minio`                                           |
-| `image.tag`                | Minio image tag. Possible values listed [here](https://hub.docker.com/r/minio/minio/tags/).| `RELEASE.2018-09-12T18-49-56Z`|
+| `image.tag`                | Minio image tag. Possible values listed [here](https://hub.docker.com/r/minio/minio/tags/).| `RELEASE.2018-11-22T02-51-56Z`|
 | `image.pullPolicy`         | Image pull policy                   | `IfNotPresent`                                          |
 | `mcImage.repository`       | Client image repository             | `minio/mc`                                              |
-| `mcImage.tag`              | mc image tag. Possible values listed [here](https://hub.docker.com/r/minio/mc/tags/).| `RELEASE.2018-09-10T23-39-12Z`|
+| `mcImage.tag`              | mc image tag. Possible values listed [here](https://hub.docker.com/r/minio/mc/tags/).| `RELEASE.2018-11-06T01-12-20Z`|
 | `mcImage.pullPolicy`       | mc Image pull policy                | `IfNotPresent`                                          |
 | `ingress.enabled`          | Enables Ingress                     | `false`                                                 |
 | `ingress.annotations`      | Ingress annotations                 | `{}`                                                    |
@@ -87,10 +104,12 @@ The following table lists the configurable parameters of the Minio chart and the
 | `ingress.tls`              | Ingress TLS configuration           | `[]`                                                    |
 | `mode`                     | Minio server mode (`standalone` or `distributed`)| `standalone`                               |
 | `replicas`                 | Number of nodes (applicable only for Minio distributed mode). Should be 4 <= x <= 32 | `4`    |
+| `existingSecret`           | Name of existing secret with access and secret key.| `""`                                     |
 | `accessKey`                | Default access key (5 to 20 characters) | `AKIAIOSFODNN7EXAMPLE`                              |
 | `secretKey`                | Default secret key (8 to 40 characters) | `wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY`          |
 | `configPath`               | Default config file location        | `~/.minio`                                              |
 | `mountPath`                | Default mount location for persistent drive| `/export`                                        |
+| `clusterDomain`            | domain name of kubernetes cluster where pod is running.| `cluster.local`                      |
 | `service.type`             | Kubernetes service type             | `ClusterIP`                                             |
 | `service.port`             | Kubernetes port where service is exposed| `9000`                                              |
 | `service.externalIPs`      | service external IP addresses | `nil`                                                         |
@@ -106,6 +125,8 @@ The following table lists the configurable parameters of the Minio chart and the
 | `nodeSelector`             | Node labels for pod assignment      | `{}`                                                    |
 | `affinity`                 | Affinity settings for pod assignment | `{}`                                                   |
 | `tolerations`              | Toleration labels for pod assignment | `[]`                                                   |
+| `tls.enabled`              | Enable TLS for Minio server | `false`                                                         |
+| `tls.certSecret`           | Kubernetes Secret with `public.crt` and `private.key` files. | `""`                           |
 | `livenessProbe.initialDelaySeconds`  | Delay before liveness probe is initiated        | `5`                               |
 | `livenessProbe.periodSeconds`        | How often to perform the probe                  | `30`                              |
 | `livenessProbe.timeoutSeconds`       | When the probe times out                        | `1`                               |
@@ -120,12 +141,16 @@ The following table lists the configurable parameters of the Minio chart and the
 | `defaultBucket.name`       | Bucket name                         | `bucket`                                                |
 | `defaultBucket.policy`     | Bucket policy                       | `none`                                                  |
 | `defaultBucket.purge`      | Purge the bucket if already exists  | `false`                                                 |
+| `buckets`                  | List of buckets to create after minio install  | `[]`                                         |
+| `s3gateway.enabled`        | Use minio as a [s3 gateway](https://github.com/minio/minio/blob/master/docs/gateway/s3.md)| `false` |
+| `s3gateway.replicas`       | Number of s3 gateway instances to run in parallel | `4` |
 | `azuregateway.enabled`     | Use minio as an [azure gateway](https://docs.minio.io/docs/minio-gateway-for-azure)| `false`  |
 | `gcsgateway.enabled`       | Use minio as a [Google Cloud Storage gateway](https://docs.minio.io/docs/minio-gateway-for-gcs)| `false` |
 | `gcsgateway.gcsKeyJson`    | credential json file of service account key | `""` |
 | `gcsgateway.projectId`     | Google cloud project id             | `""` |
 | `nasgateway.enabled`       | Use minio as a [NAS gateway](https://docs.minio.io/docs/minio-gateway-for-nas)             | `false` |
 | `nasgateway.replicas`      | Number of NAS gateway instances to be run in parallel on a PV            | `4` |
+| `environment`              | Set Minio server relevant environment variables in `values.yaml` file. Minio containers will be passed these variables when they start. | `MINIO_BROWSER: "on"` |
 
 Some of the parameters above map to the env variables defined in the [Minio DockerHub image](https://hub.docker.com/r/minio/minio/).
 
@@ -210,8 +235,8 @@ Existing PersistentVolumeClaim
 If a Persistent Volume Claim already exists, specify it during installation.
 
 1. Create the PersistentVolume
-1. Create the PersistentVolumeClaim
-1. Install the chart
+2. Create the PersistentVolumeClaim
+3. Install the chart
 
 ```bash
 $ helm install --set persistence.existingClaim=PVC_NAME stable/minio
@@ -235,3 +260,50 @@ With NetworkPolicy enabled, traffic will be limited to just port 9000.
 For more precise policy, set `networkPolicy.allowExternal=true`. This will
 only allow pods with the generated client label to connect to Minio.
 This label will be displayed in the output of a successful install.
+
+Existing secret
+---------------
+
+Instead of having this chart create the secret for you, you can supply a preexisting secret, much
+like an existing PersistentVolumeClaim.
+
+First, create the secret:
+```bash
+$ kubectl create secret generic my-minio-secret --from-literal=accesskey=foobarbaz --from-literal=secretkey=foobarbazqux
+```
+
+Then install the chart, specifying that you want to use an existing secret:
+```bash
+$ helm install --set existingSecret=my-minio-secret stable/minio
+```
+
+The following fields are expected in the secret
+1. `accesskey` - the access key ID
+2. `secretkey` - the secret key
+3. `gcs_key.json` - The GCS key if you are using the GCS gateway feature. This is optional.
+
+Configure TLS
+-------------
+
+To enable TLS for Minio containers, acquire TLS certificates from a CA or create self-signed certificates. While creating / acquiring certificates ensure the corresponding domain names are set as per the standard [DNS naming conventions](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#pod-identity) in a Kubernetes StatefulSet (for a distributed Minio setup). Then create a secret using
+
+```bash
+$ kubectl create secret generic tls-ssl-minio --from-file=path/to/private.key --from-file=path/to/public.crt
+```
+
+Then install the chart, specifying that you want to use the TLS secret:
+
+```bash
+$ helm install --set tls.enabled=true,tls.certSecret=tls-ssl-minio stable/minio
+```
+
+Pass environment variables to Minio containers
+----------------------------------------------
+
+To pass environment variables to Minio containers when deploying via Helm chart, use the below command line format
+
+```bash
+$ helm install --set environment.MINIO_BROWSER=on,environment.MINIO_DOMAIN=domain-name stable/minio
+```
+
+You can add as many environment variables as required, using the above format. Just add `environment.<VARIABLE_NAME>=<value>` under `set` flag.

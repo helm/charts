@@ -1,0 +1,9 @@
+---
+# enable the plugin init container with plugins retrieved from an URL
+plugins:
+  enabled: true
+  reset: false
+  # Use <plugin_name,version,url> to add/upgrade plugin
+  values:
+    - logtrail,0.1.30,https://github.com/sivasamyk/logtrail/releases/download/v0.1.30/logtrail-6.4.3-0.1.30.zip
+    # - other_plugin

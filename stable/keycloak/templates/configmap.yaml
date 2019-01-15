@@ -21,11 +21,12 @@ data:
 {{ . | indent 4 }}
   {{- end }}
 
-    exec /opt/jboss/docker-entrypoint.sh -b 0.0.0.0 {{ .Values.keycloak.extraArgs }}{{- if $highAvailability }} --server-config standalone-ha.xml{{ end }}
+    exec /opt/jboss/tools/docker-entrypoint.sh -b 0.0.0.0 {{ .Values.keycloak.extraArgs }}{{- if $highAvailability }} -c standalone-ha.xml{{ else }} -c standalone.xml{{ end }}
     exit "$?"
 
   keycloak.cli: |
     embed-server {{- if $highAvailability }} --server-config=standalone-ha.xml{{ end }} --std-out=echo
+    batch
 
 {{- if ne .Values.keycloak.basepath "auth" }}
     # Changes the base path to be /keycloak.basepath instead of /auth
@@ -37,24 +38,21 @@ data:
 
 {{- with .Values.keycloak.cli }}
 
-{{ .nodeIdentifier | indent 4 }}
+{{ tpl .nodeIdentifier $ | indent 4 }}
 
-{{ .logging | indent 4 }}
+{{ tpl .logging $ | indent 4 }}
 
-{{ .reverseProxy | indent 4 }}
+{{ tpl .reverseProxy $ | indent 4 }}
 
 {{- if $highAvailability }}
-{{ .discovery | indent 4 }}
-{{- end }}
-
-{{- if and $highAvailability (eq $.Values.keycloak.persistence.dbVendor "postgres") }}
-{{ .postgresql | indent 4 }}
+{{ tpl .ha $ | indent 4 }}
 {{- end }}
 
 {{- with .custom }}
-{{ . | indent 4 }}
+{{ tpl . $ | indent 4 }}
 {{- end }}
 
 {{- end }}
 
+    run-batch
     stop-embedded-server

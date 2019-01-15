@@ -1,0 +1,205 @@
+{{- if .Values.replication.enabled }}
+apiVersion: apps/v1beta2
+kind: StatefulSet
+metadata:
+  name: "{{ template "postgresql.fullname" . }}-slave"
+  labels:
+    app: {{ template "postgresql.name" . }}
+    chart: {{ template "postgresql.chart" . }}
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+spec:
+  serviceName: {{ template "postgresql.fullname" . }}-headless
+  replicas: {{ .Values.replication.slaveReplicas }}
+  selector:
+    matchLabels:
+      app: {{ template "postgresql.name" . }}
+      release: {{ .Release.Name | quote }}
+      role: slave
+  template:
+    metadata:
+      name: {{ template "postgresql.fullname" . }}
+      labels:
+        app: {{ template "postgresql.name" . }}
+        chart: {{ template "postgresql.chart" . }}
+        release: {{ .Release.Name | quote }}
+        heritage: {{ .Release.Service | quote }}
+        role: slave
+    spec:
+      {{- if .Values.securityContext.enabled }}
+      securityContext:
+        fsGroup: {{ .Values.securityContext.fsGroup }}
+        runAsUser: {{ .Values.securityContext.runAsUser }}
+      {{- end }}
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end}}
+      {{- end }}
+      {{- if .Values.slave.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.slave.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.slave.affinity }}
+      affinity:
+{{ toYaml .Values.slave.affinity | indent 8 }}
+      {{- end }}
+      {{- if .Values.slave.tolerations }}
+      tolerations:
+{{ toYaml .Values.slave.tolerations | indent 8 }}
+      {{- end }}
+      {{- if .Values.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      {{- end }}
+      {{- if and .Values.volumePermissions.enabled .Values.persistence.enabled }}
+      initContainers:
+      - name: init-chmod-data
+        image: {{ template "postgresql.volumePermissions.image" . }}
+        imagePullPolicy: "{{ .Values.volumePermissions.image.pullPolicy }}"
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        command:
+          - sh
+          - -c
+          - |
+            chown -R {{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.fsGroup }} /bitnami
+            if [ -d /bitnami/postgresql/data ]; then
+              chmod  0700 /bitnami/postgresql/data;
+            fi
+        securityContext:
+          runAsUser: {{ .Values.volumePermissions.securityContext.runAsUser }}
+        volumeMounts:
+        - name: data
+          mountPath: /bitnami/postgresql
+      {{- end }}
+      containers:
+      - name: {{ template "postgresql.fullname" . }}
+        image: {{ template "postgresql.image" . }}
+        imagePullPolicy: "{{ .Values.image.pullPolicy }}"
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        env:
+        {{- if .Values.image.debug}}
+        - name: BASH_DEBUG
+          value: "1"
+        - name: NAMI_DEBUG
+          value: "1"
+        {{- end }}
+        - name: POSTGRESQL_REPLICATION_MODE
+          value: "slave"
+        - name: POSTGRESQL_REPLICATION_USER
+          value: {{ .Values.replication.user | quote }}
+        {{- if .Values.usePasswordFile }}
+        - name: POSTGRESQL_REPLICATION_PASSWORD_FILE
+          value: "/opt/bitnami/postgresql/secrets/postgresql-replication-password"
+        {{- else }}
+        - name: POSTGRESQL_REPLICATION_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "postgresql.secretName" . }}
+              key: postgresql-replication-password
+        {{- end }}
+        - name: POSTGRESQL_CLUSTER_APP_NAME
+          value: {{ .Values.replication.applicationName }}
+        - name: POSTGRESQL_MASTER_HOST
+          value: {{ template "postgresql.fullname" . }}
+        - name: POSTGRESQL_MASTER_PORT_NUMBER
+          value: {{ .Values.service.port | quote }}
+        - name: POD_IP
+          valueFrom: { fieldRef: { fieldPath: status.podIP } }
+        ports:
+        - name: postgresql
+          containerPort: {{ .Values.service.port }}
+        {{- if .Values.livenessProbe.enabled }}
+        livenessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - exec pg_isready -U {{ .Values.postgresqlUsername | quote }} --host $POD_IP
+          initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.livenessProbe.successThreshold }}
+          failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+        {{- end }}
+        {{- if .Values.readinessProbe.enabled }}
+        readinessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - exec pg_isready -U {{ .Values.postgresqlUsername | quote }} --host $POD_IP
+          initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.readinessProbe.successThreshold }}
+          failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+        {{- end }}
+        volumeMounts:
+        {{- if .Values.usePasswordFile }}
+        - name: postgresql-password
+          mountPath: /opt/bitnami/postgresql/secrets
+        {{ end }}
+        {{- if .Values.persistence.enabled }}
+        - name: data
+          mountPath: {{ .Values.persistence.mountPath }}
+        {{ end }}
+        {{- if or (.Files.Glob "files/conf.d/*.conf") .Values.extendedConfConfigMap }}
+        - name: postgresql-extended-config
+          mountPath: /bitnami/postgresql/conf/conf.d/
+        {{- end }}
+        {{- if or (.Files.Glob "files/postgresql.conf") (.Files.Glob "files/pg_hba.conf") .Values.postgresqlConfiguration .Values.pgHbaConfiguration .Values.configurationConfigMap }}
+        - name: postgresql-config
+          mountPath: /bitnami/postgresql/conf
+        {{- end }}
+      volumes:
+      {{- if .Values.usePasswordFile }}
+      - name: postgresql-password
+        secret:
+          secretName: {{ template "postgresql.secretName" . }}
+      {{ end }}
+      {{- if or (.Files.Glob "files/postgresql.conf") (.Files.Glob "files/pg_hba.conf") .Values.postgresqlConfiguration .Values.pgHbaConfiguration .Values.configurationConfigMap}}
+      - name: postgresql-config
+        configMap:
+          name: {{ template "postgresql.configurationCM" . }}
+      {{- end }}
+      {{- if or (.Files.Glob "files/conf.d/*.conf") .Values.extendedConfConfigMap }}
+      - name: postgresql-extended-config
+        configMap:
+          name: {{ template "postgresql.extendedConfigurationCM" . }}
+      {{- end }}
+      {{- if not .Values.persistence.enabled }}
+      - name: data
+        emptyDir: {}
+      {{- end }}
+  updateStrategy:
+    type: {{ .Values.updateStrategy.type }}
+{{- if .Values.persistence.enabled }}
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      {{- with .Values.persistence.annotations }}
+        annotations:
+        {{- range $key, $value := . }}
+          {{ $key }}: {{ $value }}
+        {{- end }}
+      {{- end }}
+      spec:
+        accessModes:
+        {{- range .Values.persistence.accessModes }}
+          - {{ . | quote }}
+        {{- end }}
+        resources:
+          requests:
+            storage: {{ .Values.persistence.size | quote }}
+      {{- if .Values.persistence.storageClass }}
+      {{- if (eq "-" .Values.persistence.storageClass) }}
+        storageClassName: ""
+      {{- else }}
+        storageClassName: "{{ .Values.persistence.storageClass }}"
+      {{- end }}
+      {{- end }}
+{{- end }}
+{{- end }}

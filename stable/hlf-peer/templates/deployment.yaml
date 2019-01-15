@@ -10,6 +10,10 @@ spec:
     matchLabels:
       app: {{ include "hlf-peer.name" . }}
       release: {{ .Release.Name }}
+  # Ensure we allow our pod to be unavailable, so we can upgrade
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 1
   template:
     metadata:
       labels:
@@ -26,6 +30,46 @@ spec:
         - name: dockersocket
           hostPath:
             path: /var/run/docker.sock
+        {{- if .Values.secrets.peer.cert }}
+        - name: id-cert
+          secret:
+            secretName: {{ .Values.secrets.peer.cert }}
+        {{- end }}
+        {{- if .Values.secrets.peer.key }}
+        - name: id-key
+          secret:
+            secretName: {{ .Values.secrets.peer.key }}
+        {{- end }}
+        {{- if .Values.secrets.peer.caCert }}
+        - name: cacert
+          secret:
+            secretName: {{ .Values.secrets.peer.caCert }}
+        {{- end }}
+        {{- if .Values.secrets.peer.intCaCert }}
+        - name: intcacert
+          secret:
+            secretName: {{ .Values.secrets.peer.intCaCert }}
+        {{- end }}
+        {{- if .Values.secrets.peer.tls }}
+        - name: tls
+          secret:
+            secretName: {{ .Values.secrets.peer.tls }}
+        {{- end }}
+        {{- if .Values.secrets.peer.tlsRootCert }}
+        - name: tls-rootcert
+          secret:
+            secretName: {{ .Values.secrets.peer.tlsRootCert }}
+        {{- end }}
+        {{- if .Values.secrets.peer.tlsClient }}
+        - name: tls-client
+          secret:
+            secretName: {{ .Values.secrets.peer.tlsClient }}
+        {{- end }}
+        {{- if .Values.secrets.peer.tlsClientRootCert }}
+        - name: tls-clientrootcert
+          secret:
+            secretName: {{ .Values.secrets.peer.tlsClientRootCert }}
+        {{- end }}
         {{- if .Values.secrets.channel }}
         - name: channel
           secret:
@@ -41,10 +85,10 @@ spec:
           secret:
             secretName: {{ .Values.secrets.adminKey }}
         {{- end }}
-        {{- if .Values.secrets.caServerTls }}
-        - name: ca-server-tls
+        {{- if .Values.secrets.ordTlsRootCert }}
+        - name: ord-tls-rootcert
           secret:
-            secretName: {{ .Values.secrets.caServerTls }}
+            secretName: {{ .Values.secrets.ordTlsRootCert }}
         {{- end }}
       containers:
         - name: peer
@@ -57,81 +101,39 @@ spec:
             - name: event
               containerPort: 7053
               protocol: TCP
-          # TODO: Add liveness and readiness probes
+          livenessProbe:
+            exec:
+              command:
+              - ls
+              - /var/hyperledger
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          # TODO: Improve readiness probe (ideally `ps aux | awk '$11=="orderer"'`)
+          readinessProbe:
+            exec:
+              command:
+              - ls
+              - /var/hyperledger
+            initialDelaySeconds: 15
           command:
-            - sh
+            - bash
             - -c
             - |
               # To avoid having separate secrets for CouchDB and HLF
               export CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=$COUCHDB_USER
               export CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=$COUCHDB_PASSWORD
 
-              while [ ! -d /hl_config/admin/admincerts ] || [ -z "$(ls -A /hl_config/admin/admincerts)" ];
+              while [ ! -d /var/hyperledger/admin_msp/admincerts ] || [ -z "$(ls -A /var/hyperledger/admin_msp/admincerts)" ];
               do
-                echo "\033[0;31m /hl_config/admin/admincerts must contain Peer admin certificates files \033[0m"
+                echo "\033[0;31m /var/hyperledger/admin_msp/admincerts must contain Peer admin certificates files \033[0m"
                 sleep 60
               done
-            
-              # Download Fabric CA-client if it does not exist
-              if [ ! -f /bin/fabric-ca-client ]
-              then
-                if [ ! -f /var/hyperledger/fabric-ca-${HLF_TOOLS_BUILD}.tar.gz ]
-                then
-                  # Curl is needed to download Fabric CA-client
-                  apt update
-                  apt install curl -y
 
-                  echo "Downloading Fabric CA-client"
-                  curl -f -s -C - https://nexus.hyperledger.org/content/repositories/releases/org/hyperledger/fabric-ca/hyperledger-fabric-ca/${HLF_TOOLS_BUILD}/hyperledger-fabric-ca-${HLF_TOOLS_BUILD}.tar.gz > /var/hyperledger/fabric-ca-${HLF_TOOLS_BUILD}.tar.gz
-                fi
-                echo "Unzipping Fabric CA-client"
-                tar xzf /var/hyperledger/fabric-ca-${HLF_TOOLS_BUILD}.tar.gz -C /
-              fi
-
-              while [ ! -f ${CORE_PEER_MSPCONFIGPATH}/signcerts/cert.pem ];
+              while [ ! -d ${CORE_PEER_MSPCONFIGPATH}/signcerts ];
               do
-                {{- if .Values.secrets.caServerTls }}
-                echo ">\033[0;35m fabric-ca-client enroll -d -u https://${CA_USERNAME}:${CA_PASSWORD}@${CA_ADDRESS} -M ${CORE_PEER_MSPCONFIGPATH} --tls.certfiles /hl_config/ca_server/tls/tls.crt \033[0m"
-                fabric-ca-client enroll -d -u https://${CA_USERNAME}:${CA_PASSWORD}@${CA_ADDRESS} -M ${CORE_PEER_MSPCONFIGPATH} --tls.certfiles /hl_config/ca_server/tls/tls.crt
-                {{- else }}
-                echo ">\033[0;35m fabric-ca-client enroll -d -u http://${CA_USERNAME}:${CA_PASSWORD}@${CA_ADDRESS} -M ${CORE_PEER_MSPCONFIGPATH} \033[0m"
-                fabric-ca-client enroll -d -u http://${CA_USERNAME}:${CA_PASSWORD}@${CA_ADDRESS} -M ${CORE_PEER_MSPCONFIGPATH}
-                {{- end }}
-
-                if [ ! -f ${CORE_PEER_MSPCONFIGPATH}/signcerts/cert.pem ]
-                then
-                  echo ">\033[0;31m Unable to enroll Peer, make sure you have registered them first \(sleeping 180 seconds and re-trying\) \033[0m"
-                  sleep 180
-                fi
+                echo "\033[0;31m ${CORE_PEER_MSPCONFIGPATH}/signcerts directory must exist \033[0m"
+                sleep 60
               done
-
-              echo ">\033[0;32m Copy admincerts to ${CORE_PEER_MSPCONFIGPATH}/admincerts \033[0m"
-              mkdir -p ${CORE_PEER_MSPCONFIGPATH}/admincerts
-              cp -L /hl_config/admin/signcerts/* ${CORE_PEER_MSPCONFIGPATH}/admincerts
-
-              echo ">\033[0;32m Setup admin certificates in ${ADMIN_MSP_PATH} \033[0m"
-              mkdir -p ${ADMIN_MSP_PATH} ${ADMIN_MSP_PATH}/cacerts ${ADMIN_MSP_PATH}/intermediatecerts
-              cp -L -r /hl_config/admin/* ${ADMIN_MSP_PATH}
-              cp ${CORE_PEER_MSPCONFIGPATH}/cacerts/* ${ADMIN_MSP_PATH}/cacerts
-              cp ${CORE_PEER_MSPCONFIGPATH}/intermediatecerts/* ${ADMIN_MSP_PATH}/intermediatecerts
-
-              # Create TLS certificate for Peer
-              if [ ! -f ${CORE_PEER_TLS_PRIVATEKEY} ]
-              then
-                {{- if .Values.secrets.caServerTls }}
-                echo ">\033[0;35m fabric-ca-client enroll -d --enrollment.profile tls -u https://${CA_USERNAME}:${CA_PASSWORD}@${CA_ADDRESS} -M /tmp/tls --csr.hosts {{ include "hlf-peer.fullname" . }} --tls.certfiles /hl_config/ca_server/tls/tls.crt \033[0m"
-                fabric-ca-client enroll -d --enrollment.profile tls -u https://${CA_USERNAME}:${CA_PASSWORD}@${CA_ADDRESS} -M /tmp/tls --csr.hosts {{ include "hlf-peer.fullname" . }} --tls.certfiles /hl_config/ca_server/tls/tls.crt
-                {{- else }}
-                echo ">\033[0;35m fabric-ca-client enroll -d --enrollment.profile tls -u http://${CA_USERNAME}:${CA_PASSWORD}@${CA_ADDRESS} -M /tmp/tls --csr.hosts {{ include "hlf-peer.fullname" . }} \033[0m"
-                fabric-ca-client enroll -d --enrollment.profile tls -u http://${CA_USERNAME}:${CA_PASSWORD}@${CA_ADDRESS} -M /tmp/tls --csr.hosts {{ include "hlf-peer.fullname" . }}
-                {{- end }}
-
-                mkdir -p $(dirname $CORE_PEER_TLS_PRIVATEKEY)
-                cp /tmp/tls/keystore/* $CORE_PEER_TLS_PRIVATEKEY
-                mkdir -p $(dirname $CORE_PEER_TLS_CERTIFICATE)
-                cp /tmp/tls/signcerts/* $CORE_PEER_TLS_CERTIFICATE
-                #rm -rf /tmp/tls
-              fi
 
               if [ ! -d ${FABRIC_CFG_PATH} ]
               then
@@ -140,11 +142,14 @@ spec:
                 ls ${FABRIC_CFG_PATH}
               fi
 
+              if [ $CORE_PEER_TLS_CLIENTAUTHREQUIRED ]
+              then
+                export CORE_PEER_TLS_CLIENTROOTCAS_FILES=$(ls -d $CORE_PEER_TLS_CLIENTROOTCAS_FILES)
+              fi
+
               echo ">\033[0;35m peer node start \033[0m"
               peer node start
           envFrom:
-            - secretRef:
-                name: {{ include "hlf-peer.fullname" . }}
             {{- if eq .Values.peer.databaseType "CouchDB" }}
             - secretRef:
                 name: {{ .Values.peer.couchdbInstance }}-hlf-couchdb
@@ -156,23 +161,61 @@ spec:
               name: data
             - mountPath: /host/var/run/docker.sock
               name: dockersocket
+            {{- if .Values.secrets.peer.cert }}
+            - mountPath: /var/hyperledger/msp/signcerts
+              name: id-cert
+            {{- end }}
+            {{- if .Values.secrets.peer.key }}
+            - mountPath: /var/hyperledger/msp/keystore
+              name: id-key
+            {{- end }}
+            {{- if .Values.secrets.peer.caCert }}
+            - mountPath: /var/hyperledger/msp/cacerts
+              name: cacert
+            - mountPath: /var/hyperledger/admin_msp/cacerts
+              name: cacert
+            {{- end }}
+            {{- if .Values.secrets.peer.intCaCert }}
+            - mountPath: /var/hyperledger/msp/intermediatecerts
+              name: intcacert
+            - mountPath: /var/hyperledger/admin_msp/intermediatecerts
+              name: intcacert
+            {{- end }}
+            {{- if .Values.secrets.peer.tls }}
+            - mountPath: /var/hyperledger/tls/server/pair
+              name: tls
+            {{- end }}
+            {{- if .Values.secrets.peer.tlsRootCert }}
+            - mountPath: /var/hyperledger/tls/server/cert
+              name: tls-rootcert
+            {{- end }}
+            {{- if .Values.secrets.peer.tlsClient }}
+            - mountPath: /var/hyperledger/tls/client/pair
+              name: tls-client
+            {{- end }}
+            {{- if .Values.secrets.peer.tlsClientRootCert }}
+            - mountPath: /var/hyperledger/tls/client/cert
+              name: tls-clientrootcert
+            {{- end }}
+            {{- if .Values.secrets.ordTlsRootCert }}
+            - mountPath: /var/hyperledger/tls/ord/cert
+              name: ord-tls-rootcert
+            {{- end }}
             {{- if .Values.secrets.channel }}
             - mountPath: /hl_config/channel
               name: channel
             {{- end }}
             {{- if .Values.secrets.adminCert }}
-            - mountPath: /hl_config/admin/admincerts
+            - mountPath: /var/hyperledger/admin_msp/admincerts
               name: admin-cert
-            - mountPath: /hl_config/admin/signcerts
+            - mountPath: /var/hyperledger/admin_msp/signcerts
+              name: admin-cert
+            - mountPath: /var/hyperledger/msp/admincerts
               name: admin-cert
             {{- end }}
             {{- if .Values.secrets.adminKey }}
-            - mountPath: /hl_config/admin/keystore
+            - mountPath: /var/hyperledger/admin_msp/keystore
               name: admin-key
-            {{- end }}
-            {{- if .Values.secrets.caServerTls }}
-            - mountPath: /hl_config/ca_server/tls
-              name: ca-server-tls
             {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}

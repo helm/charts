@@ -1,0 +1,25 @@
+{{- if .Values.kubeControllerManager.enabled }}
+apiVersion: {{ printf "%s/v1" (.Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com") }}
+kind: ServiceMonitor
+metadata:
+  name: {{ template "prometheus-operator.fullname" . }}-kube-controller-manager
+  labels:
+    app: {{ template "prometheus-operator.name" . }}-kube-controller-manager
+{{ include "prometheus-operator.labels" . | indent 4 }}
+spec:
+  jobLabel: jobLabel
+  selector:
+    matchLabels:
+      app: {{ template "prometheus-operator.name" . }}-kube-controller-manager
+      release: {{ .Release.Name | quote }}
+  namespaceSelector:
+    matchNames:
+      - "kube-system"
+  endpoints:
+  - port: http-metrics
+    interval: 15s
+    tlsConfig:
+      caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+      insecureSkipVerify: true
+    bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+{{- end }}

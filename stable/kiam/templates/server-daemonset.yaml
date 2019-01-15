@@ -40,7 +40,11 @@ spec:
       volumes:
         - name: tls
           secret:
+            {{- if .Values.server.tlsSecret }}
+            secretName: {{ .Values.server.tlsSecret }}
+            {{else}}
             secretName: {{ template "kiam.fullname" . }}-server
+            {{- end }}
       {{- range .Values.server.extraHostPathMounts }}
         - name: {{ .name }}
           hostPath:
@@ -51,16 +55,17 @@ spec:
           image: "{{ .Values.server.image.repository }}:{{ .Values.server.image.tag }}"
           imagePullPolicy: {{ .Values.server.image.pullPolicy }}
           command:
-            - /server
+            - /kiam
+            - server
           args:
             {{- if .Values.server.log.jsonOutput }}
             - --json-log
             {{- end }}
             - --level={{ .Values.server.log.level }}
             - --bind=0.0.0.0:{{ .Values.server.service.targetPort }}
-            - --cert=/etc/kiam/tls/cert
-            - --key=/etc/kiam/tls/key
-            - --ca=/etc/kiam/tls/ca
+            - --cert=/etc/kiam/tls/{{ .Values.server.tlsCerts.certFileName }}
+            - --key=/etc/kiam/tls/{{ .Values.server.tlsCerts.keyFileName }}
+            - --ca=/etc/kiam/tls/{{ .Values.server.tlsCerts.caFileName }}
             {{- if .Values.server.roleBaseArn }}
             - --role-base-arn={{ .Values.server.roleBaseArn }}
             {{- else }}
@@ -71,8 +76,10 @@ spec:
             {{- end }}
             - --session-duration={{ .Values.server.sessionDuration }}
             - --sync={{ .Values.server.cache.syncInterval }}
+            {{- if .Values.server.prometheus.scrape }}
             - --prometheus-listen-addr=0.0.0.0:{{ .Values.server.prometheus.port }}
             - --prometheus-sync-interval={{ .Values.server.prometheus.syncInterval }}
+            {{- end }}
           {{- range $key, $value := .Values.server.extraArgs }}
             {{- if $value }}
             - --{{ $key }}={{ $value }}
@@ -98,11 +105,12 @@ spec:
           livenessProbe:
             exec:
               command:
-                - /health
-                - --cert=/etc/kiam/tls/cert
-                - --key=/etc/kiam/tls/key
-                - --ca=/etc/kiam/tls/ca
-                - --server-address=localhost:{{ .Values.server.service.targetPort }}
+                - /kiam
+                - health
+                - --cert=/etc/kiam/tls/{{ .Values.server.tlsCerts.certFileName }}
+                - --key=/etc/kiam/tls/{{ .Values.server.tlsCerts.keyFileName }}
+                - --ca=/etc/kiam/tls/{{ .Values.server.tlsCerts.caFileName }}
+                - --server-address={{ .Values.server.probes.serverAddress }}:{{ .Values.server.service.targetPort }}
                 - --server-address-refresh=2s
                 - --timeout=5s
                 - --gateway-timeout-creation={{ .Values.server.gatewayTimeoutCreation }}
@@ -112,11 +120,12 @@ spec:
           readinessProbe:
             exec:
               command:
-                - /health
-                - --cert=/etc/kiam/tls/cert
-                - --key=/etc/kiam/tls/key
-                - --ca=/etc/kiam/tls/ca
-                - --server-address=localhost:{{ .Values.server.service.targetPort }}
+                - /kiam
+                - health
+                - --cert=/etc/kiam/tls/{{ .Values.server.tlsCerts.certFileName }}
+                - --key=/etc/kiam/tls/{{ .Values.server.tlsCerts.keyFileName }}
+                - --ca=/etc/kiam/tls/{{ .Values.server.tlsCerts.caFileName }}
+                - --server-address={{ .Values.server.probes.serverAddress }}:{{ .Values.server.service.targetPort }}
                 - --server-address-refresh=2s
                 - --timeout=5s
                 - --gateway-timeout-creation={{ .Values.server.gatewayTimeoutCreation }}

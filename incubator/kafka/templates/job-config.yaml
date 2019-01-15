@@ -16,7 +16,7 @@ spec:
         app: {{ template "kafka.fullname" . }}
         release: "{{ .Release.Name }}"
     spec:
-      restartPolicy: Never
+      restartPolicy: OnFailure
       volumes:
         - name: config-volume
           configMap:

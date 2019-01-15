@@ -44,7 +44,11 @@ spec:
       volumes:
         - name: tls
           secret:
+            {{- if .Values.agent.tlsSecret }}
+            secretName: {{ .Values.agent.tlsSecret }}
+            {{else}}
             secretName: {{ template "kiam.fullname" . }}-agent
+            {{- end }}
         - name: xtables
           hostPath:
             path: /run/xtables.lock
@@ -62,7 +66,8 @@ spec:
           image: "{{ .Values.agent.image.repository }}:{{ .Values.agent.image.tag }}"
           imagePullPolicy: {{ .Values.agent.image.pullPolicy }}
           command:
-            - /agent
+            - /kiam
+            - agent
           args:
             {{- if .Values.agent.host.iptables }}
             - --iptables
@@ -73,12 +78,14 @@ spec:
             {{- end }}
             - --level={{ .Values.agent.log.level }}
             - --port={{ .Values.agent.host.port }}
-            - --cert=/etc/kiam/tls/cert
-            - --key=/etc/kiam/tls/key
-            - --ca=/etc/kiam/tls/ca
+            - --cert=/etc/kiam/tls/{{ .Values.agent.tlsCerts.certFileName }}
+            - --key=/etc/kiam/tls/{{ .Values.agent.tlsCerts.keyFileName }}
+            - --ca=/etc/kiam/tls/{{ .Values.agent.tlsCerts.caFileName }}
             - --server-address={{ template "kiam.fullname" . }}-server:{{ .Values.server.service.port }}
+            {{- if .Values.agent.prometheus.scrape }}
             - --prometheus-listen-addr=0.0.0.0:{{ .Values.agent.prometheus.port }}
             - --prometheus-sync-interval={{ .Values.agent.prometheus.syncInterval }}
+            {{- end }}
             - --gateway-timeout-creation={{ .Values.agent.gatewayTimeoutCreation }}
           {{- range $key, $value := .Values.agent.extraArgs }}
             {{- if $value }}

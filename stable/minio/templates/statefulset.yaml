@@ -10,6 +10,8 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
+  updateStrategy:
+    type: {{ .Values.StatefulSetUpdate.updateStrategy }}
   serviceName: {{ template "minio.fullname" . }}
   replicas: {{ .Values.replicas }}
   selector:
@@ -30,13 +32,23 @@ spec:
         - name: {{ .Chart.Name }}
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command: [ "/bin/sh", 
-          "-ce", 
+          {{- if .Values.tls.enabled }}
+          command: [ "/bin/sh",
+          "-ce",
           "cp /tmp/config.json {{ .Values.configPath }} &&
           /usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} server
           {{- range $i := until $nodeCount }}
-          http://{{ template `minio.fullname` $ }}-{{ $i }}.{{ template `minio.fullname` $ }}.{{ $.Release.Namespace }}.svc.cluster.local{{ $.Values.mountPath }}
+          https://{{ template `minio.fullname` $ }}-{{ $i }}.{{ template `minio.fullname` $ }}.{{ $.Release.Namespace }}.svc.{{ $.Values.clusterDomain }}{{ $.Values.mountPath }}
           {{- end }}" ]
+          {{ else }}
+          command: [ "/bin/sh",
+          "-ce",
+          "cp /tmp/config.json {{ .Values.configPath }} &&
+          /usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} server
+          {{- range $i := until $nodeCount }}
+          http://{{ template `minio.fullname` $ }}-{{ $i }}.{{ template `minio.fullname` $ }}.{{ $.Release.Namespace }}.svc.{{ $.Values.clusterDomain }}{{ $.Values.mountPath }}
+          {{- end }}" ]
+          {{ end }}
           volumeMounts:
             - name: export
               mountPath: {{ .Values.mountPath }}
@@ -48,6 +60,10 @@ spec:
               subPath: config.json
             - name: minio-config-dir
               mountPath: {{ .Values.configPath }}
+            {{- if .Values.tls.enabled }}
+            - name: cert-secret-volume
+              mountPath: {{ .Values.configPath }}certs
+            {{ end }}
           ports:
             - name: service
               containerPort: 9000
@@ -55,17 +71,24 @@ spec:
             - name: MINIO_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "minio.fullname" . }}
+                  name: {{ if .Values.existingSecret }}{{ .Values.existingSecret }}{{ else }}{{ template "minio.fullname" . }}{{ end }}
                   key: accesskey
             - name: MINIO_SECRET_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "minio.fullname" . }}
+                  name: {{ if .Values.existingSecret }}{{ .Values.existingSecret }}{{ else }}{{ template "minio.fullname" . }}{{ end }}
                   key: secretkey
+            {{- range $key, $val := .Values.environment }}
+            - name: {{ $key }}
+              value: {{ $val | quote }}
+            {{- end}}
           livenessProbe:
             httpGet:
               path: /minio/health/live
               port: service
+              {{- if .Values.tls.enabled }}
+              scheme: HTTPS
+              {{- end }}
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
@@ -88,12 +111,24 @@ spec:
       volumes:
         - name: minio-user
           secret:
-            secretName: {{ template "minio.fullname" . }}
+            secretName: {{ if .Values.existingSecret }}{{ .Values.existingSecret }}{{ else }}{{ template "minio.fullname" . }}{{ end }}
         - name: minio-server-config
           configMap:
             name: {{ template "minio.fullname" . }}
         - name: minio-config-dir
           emptyDir: {}
+        {{- if .Values.tls.enabled }}
+        - name: cert-secret-volume
+          secret:
+            secretName: {{ .Values.tls.certSecret }}
+            items:
+            - key: {{ .Values.tls.publicCrt }}
+              path: public.crt
+            - key: {{ .Values.tls.privateKey }}
+              path: private.key
+            - key: {{ .Values.tls.publicCrt }}
+              path: CAs/public.crt
+        {{ end }}
   volumeClaimTemplates:
     - metadata:
         name: export

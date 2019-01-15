@@ -14,6 +14,8 @@ This chart bootstraps a [Redmine](https://github.com/bitnami/bitnami-docker-redm
 
 It also packages the [Bitnami MariaDB chart](https://github.com/kubernetes/charts/tree/master/stable/mariadb) and the [PostgreSQL chart](https://github.com/kubernetes/charts/tree/master/stable/postgresql) which are required for bootstrapping a MariaDB/PostgreSQL deployment for the database requirements of the Redmine application.
 
+Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters.
+
 ## Prerequisites
 
 - Kubernetes 1.4+ with Beta APIs enabled
@@ -53,45 +55,54 @@ helm install --name my-release stable/redmine --set databaseType.mariadb=false,d
 
 The following table lists the configurable parameters of the Redmine chart and their default values.
 
-|            Parameter              |              Description                 |                          Default                        | 
-| --------------------------------- | ---------------------------------------- | ------------------------------------------------------- |
-| `image.registry`                  | Redmine image registry                   | `docker.io`                                             |
-| `image.repository`                | Redmine image name                       | `bitnami/redmine`                                       |
-| `image.tag`                       | Redmine image tag                        | `{VERSION}`                                             |
-| `image.pullPolicy`                | Image pull policy                        | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
-| `image.pullSecrets`               | Specify image pull secrets               | `nil`                                                   |
-| `redmineUsername`                 | User of the application                  | `user`                                                  |
-| `redminePassword`                 | Application password                     | _random 10 character long alphanumeric string_          |
-| `redmineEmail`                    | Admin email                              | `user@example.com`                                      |
-| `redmineLanguage`                 | Redmine default data language            | `en`                                                    |
-| `extraVars`                       | Environment variables, passed to redmine | `nil`                                                   |
-| `smtpHost`                        | SMTP host                                | `nil`                                                   |
-| `smtpPort`                        | SMTP port                                | `nil`                                                   |
-| `smtpUser`                        | SMTP user                                | `nil`                                                   |
-| `smtpPassword`                    | SMTP password                            | `nil`                                                   |
-| `smtpTls`                         | Use TLS encryption with SMTP             | `nil`                                                   |
-| `databaseType.postgresql`         | Select postgresql database               | `false`                                                 |
-| `databaseType.mariadb`            | Select mariadb database                  | `true`                                                  |
-| `mariadb.rootUser.password`     | MariaDB admin password                   | `nil`                                                   |
-| `postgresql.postgresqlPassword`   | PostgreSQL admin password                | `nil`                                                   |
-| `serviceType`                     | Kubernetes Service type                  | `LoadBalancer`                                          |
-| `serviceLoadBalancerSourceRanges` | An array of load balancer sources        | `0.0.0.0/0`                                             |
-| `ingress.enabled`                 | Enable or disable the ingress            | `false`                                                 |
-| `ingress.hostname`                | The virtual host name                    | `redmine.cluster.local`                                 |
-| `ingress.annotations`             | An array of service annotations          | `nil`                                                   |
-| `ingress.tls[i].secretName`       | The secret kubernetes.io/tls             | `nil`                                                   |
-| `ingress.tls[i].hosts[j]`         | The virtual host name                    | `nil`                                                   |
-| `networkPolicyApiVersion`         | The kubernetes network API version       | `extensions/v1beta1`                                    |
-| `persistence.enabled`             | Enable persistence using PVC             | `true`                                                  |
-| `persistence.existingClaim`       | The name of an existing PVC              | `nil`                                                   |
-| `persistence.storageClass`        | PVC Storage Class                        | `nil` (uses alpha storage class annotation)             |
-| `persistence.accessMode`          | PVC Access Mode                          | `ReadWriteOnce`                                         |
-| `persistence.size`                | PVC Storage Request                      | `8Gi`                                                   |
-| `podDisruptionBudget.enabled`     | Pod Disruption Budget toggle             | `false`                                                 |
-| `podDisruptionBudget.minAvailable`| Minimum available pods                   | `nil`                                                     |
-| `podDisruptionBudget.maxUnavailable`| Maximum unavailable pods               | `nil`                                                     |
-| `replicas`                        | The number of pod replicas (See [Replicas](#replicas)) | `1`                                                     |
-| `resources`                       | Resources allocation (Requests and Limits) | `{}` |
+|            Parameter                |              Description                   |                          Default                        |
+| ----------------------------------- | ------------------------------------------ | ------------------------------------------------------- |
+| `global.imageRegistry`              | Global Docker image registr  y             | `nil`                                                   |
+| `image.registry`                    | Redmine image registry                     | `docker.io`                                             |
+| `image.repository`                  | Redmine image name                         | `bitnami/redmine`                                       |
+| `image.tag`                         | Redmine image tag                          | `{VERSION}`                                             |
+| `image.pullPolicy`                  | Image pull policy                          | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
+| `image.pullSecrets`                 | Specify docker-registry secret names as an array                 | `[]` (does not add image pull secrets to deployed pods)   |
+| `redmineUsername`                   | User of the application                    | `user`                                                  |
+| `redminePassword`                   | Application password                       | _random 10 character long alphanumeric string_          |
+| `redmineEmail`                      | Admin email                                | `user@example.com`                                      |
+| `redmineLanguage`                   | Redmine default data language              | `en`                                                    |
+| `extraVars`                         | Environment variables, passed to redmine   | `nil`                                                   |
+| `smtpHost`                          | SMTP host                                  | `nil`                                                   |
+| `smtpPort`                          | SMTP port                                  | `nil`                                                   |
+| `smtpUser`                          | SMTP user                                  | `nil`                                                   |
+| `smtpPassword`                      | SMTP password                              | `nil`                                                   |
+| `smtpTls`                           | Use TLS encryption with SMTP               | `nil`                                                   |
+| `databaseType.postgresql`           | Select postgresql database                 | `false`                                                 |
+| `databaseType.mariadb`              | Select mariadb database                    | `true`                                                  |
+| `mariadb.rootUser.password`         | MariaDB admin password                     | `nil`                                                   |
+| `postgresql.postgresqlPassword`     | PostgreSQL admin password                  | `nil`                                                   |
+| `service.type`                    | Kubernetes Service type                    | `LoadBalancer`                                          |
+| `service.port`                    | Service HTTP port                  | `80`                                          |
+| `service.nodePorts.http`                 | Kubernetes http node port                  | `""`                                                    |
+| `service.externalTrafficPolicy`   | Enable client source IP preservation       | `Cluster`                                               |
+| `service.loadBalancerIP`   | LoadBalancer service IP address       | `""`                                               |
+| `service.loadBalancerSourceRanges`   | An array of load balancer sources          | `0.0.0.0/0`                                             |
+| `ingress.enabled`                   | Enable or disable the ingress              | `false`                                                 |
+| `ingress.hosts[0].name`             | Hostname to your Redmine installation      | `redmine.local  `                                       |
+| `ingress.hosts[0].path`             | Path within the url structure              | `/`                                                     |
+| `ingress.hosts[0].tls`              | Utilize TLS backend in ingress             | `false`                                                 |
+| `ingress.hosts[0].certManager`      | Add annotations for cert-manager           | `false`                                                 |
+| `ingress.hosts[0].tlsSecret`        | TLS Secret (certificates)                  | `redmine.local-tls-secret`                              |
+| `ingress.hosts[0].annotations`      | Annotations for this host's ingress record | `[]`                                                    |
+| `ingress.secrets[0].name`           | TLS Secret Name                            | `nil`                                                   |
+| `ingress.secrets[0].certificate`    | TLS Secret Certificate                     | `nil`                                                   |
+| `ingress.secrets[0].key`            | TLS Secret Key                             | `nil`                                                   |
+| `persistence.enabled`               | Enable persistence using PVC               | `true`                                                  |
+| `persistence.existingClaim`         | The name of an existing PVC                | `nil`                                                   |
+| `persistence.storageClass`          | PVC Storage Class                          | `nil` (uses alpha storage class annotation)             |
+| `persistence.accessMode`            | PVC Access Mode                            | `ReadWriteOnce`                                         |
+| `persistence.size`                  | PVC Storage Request                        | `8Gi`                                                   |
+| `podDisruptionBudget.enabled`       | Pod Disruption Budget toggle               | `false`                                                 |
+| `podDisruptionBudget.minAvailable`  | Minimum available pods                     | `nil`                                                   |
+| `podDisruptionBudget.maxUnavailable`| Maximum unavailable pods                   | `nil`                                                   |
+| `replicas`                          | The number of pod replicas                 | `1`                                                     |
+| `resources`                         | Resources allocation (Requests and Limits) | `{}`                                                    |
 
 The above parameters map to the env variables defined in [bitnami/redmine](http://github.com/bitnami/bitnami-docker-redmine). For more information please refer to the [bitnami/redmine](http://github.com/bitnami/bitnami-docker-redmine) image documentation.
 

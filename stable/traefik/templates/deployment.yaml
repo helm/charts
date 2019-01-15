@@ -9,8 +9,8 @@ metadata:
   labels:
     app: {{ template "traefik.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
 spec:
   replicas: {{ default 1 .Values.replicas }}
   selector:
@@ -34,8 +34,11 @@ spec:
       labels:
         app: {{ template "traefik.name" . }}
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-        release: "{{ .Release.Name }}"
-        heritage: "{{ .Release.Service }}"
+        release: {{ .Release.Name | quote }}
+        heritage: {{ .Release.Service | quote }}
+        {{- if .Values.deployment.podLabels }}
+{{ toYaml .Values.deployment.podLabels | indent 8 }}
+        {{- end }}
     spec:
       {{- if .Values.rbac.enabled }}
       serviceAccountName: {{ template "traefik.fullname" . }}
@@ -51,16 +54,19 @@ spec:
       affinity:
 {{ toYaml .Values.affinity | indent 8 }}
       {{- end }}
+      {{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName | quote }}
+      {{- end }}
       containers:
       - image: {{ .Values.image }}:{{ .Values.imageTag }}
         name: {{ template "traefik.fullname" . }}
         resources:
           requests:
-            cpu: "{{ .Values.cpuRequest }}"
-            memory: "{{ .Values.memoryRequest }}"
+            cpu: {{ .Values.cpuRequest | quote }}
+            memory: {{ .Values.memoryRequest | quote }}
           limits:
-            cpu: "{{ .Values.cpuLimit }}"
-            memory: "{{ .Values.memoryLimit }}"
+            cpu: {{ .Values.cpuLimit | quote }}
+            memory: {{ .Values.memoryLimit | quote }}
         readinessProbe:
           tcpSocket:
             port: 80
@@ -124,6 +130,10 @@ spec:
         {{- end }}
         args:
         - --configfile=/config/traefik.toml
+        {{- range .Values.startupArguments }}
+        - {{ . }}
+        {{- end }}
+
       volumes:
       - name: config
         configMap:

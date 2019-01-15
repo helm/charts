@@ -24,6 +24,11 @@ spec:
         release: "{{ .Release.Name }}"
         component: "dashboard"
     spec:
+      {{- if .Values.dashboard.securityContext.enabled }}
+      securityContext:
+        fsGroup: {{ .Values.dashboard.securityContext.fsGroup }}
+        runAsUser: {{ .Values.dashboard.securityContext.runAsUser }}
+      {{- end }}
       {{- if .Values.dashboard.image.pullSecrets }}
       imagePullSecrets:
       {{- range .Values.dashboard.image.pullSecrets }}
@@ -32,7 +37,7 @@ spec:
       {{- end }}
       containers:
       - name: {{ template "parse.fullname" . }}
-        image: "{{ .Values.dashboard.image.registry }}/{{ .Values.dashboard.image.repository }}:{{ .Values.dashboard.image.tag }}"
+        image: {{ template "parse.dashboard.image" . }}
         imagePullPolicy: {{ .Values.dashboard.image.pullPolicy | quote }}
         env:
         - name: PARSE_DASHBOARD_USER
