@@ -6,6 +6,7 @@ Upstream development: https://github.com/charyorde/stellar-horizon
 
 ## Prerequisites
 - You must have a running [stellar-core](https://github.com/helm/charts/tree/master/stable/stellar-core) helm chart
+- Make sure `stellar-horizon` database exists in postgres database.
 
 ## Installing the Chart
 
