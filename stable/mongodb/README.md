@@ -52,7 +52,8 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `image.repository`                      | MongoDB Image name                                                                           | `bitnami/mongodb`                           |
 | `image.tag`                             | MongoDB Image tag                                                                            | `{VERSION}`                                 |
 | `image.pullPolicy`                      | Image pull policy                                                                            | `Always`                                    |
-| `image.pullSecrets`                     | Specify image pull secrets                                                                   | `nil`                                       |
+| `image.pullSecrets`                     | Specify docker-registry secret names as an array                                             | `[]` (does not add image pull secrets to deployed pods) |
+| `image.debug`                           | Specify if debug logs should be enabled                                                      | `false`                                     |
 | `usePassword`                           | Enable password authentication                                                               | `true`                                      |
 | `existingSecret`                        | Existing secret with MongoDB credentials                                                     | `nil`                                       |
 | `mongodbRootPassword`                   | MongoDB admin password                                                                       | `random alhpanumeric string (10)`           |
@@ -104,10 +105,10 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `configmap`                             | MongoDB configuration file to be used                                                        | `nil`                                       |
 | `metrics.enabled`                       | Start a side-car prometheus exporter                                                         | `false`                                     |
 | `metrics.image.registry`                | MongoDB exporter image registry                                                              | `docker.io`                                 |
-| `metrics.image.repository`              | MongoDB exporter image name                                                                  | `forekshub/percona-mongodb-exporter`                           |
+| `metrics.image.repository`              | MongoDB exporter image name                                                                  | `forekshub/percona-mongodb-exporter`        |
 | `metrics.image.tag`                     | MongoDB exporter image tag                                                                   | `latest`                                    |
 | `metrics.image.pullPolicy`              | Image pull policy                                                                            | `IfNotPresent`                              |
-| `metrics.image.pullSecrets`             | Specify docker-registry secret names as an array                                             | `nil`                                       |
+| `metrics.image.pullSecrets`             | Specify docker-registry secret names as an array                                             | `[]` (does not add image pull secrets to deployed pods) |
 | `metrics.podAnnotations`                | Additional annotations for Metrics exporter pod                                              | {}                                          |
 | `metrics.resources`                     | Exporter resource requests/limit                                                             | Memory: `256Mi`, CPU: `100m`             |
 | `metrics.serviceMonitor.enabled`        | Create ServiceMonitor Resource for scraping metrics using PrometheusOperator                 | `false`                                     |

@@ -39,6 +39,14 @@ securityContext:
   runAsUser: 472
   fsGroup: 472
 
+
+extraConfigmapMounts: []
+  # - name: certs-configmap
+  #   mountPath: /etc/grafana/ssl/
+  #   configMap: certs-configmap
+  #   readOnly: true
+
+
 ## Assign a PriorityClassName to pods if set
 # priorityClassName:
 
