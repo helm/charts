@@ -74,6 +74,7 @@ Parameter | Description | Default
 `configuration.backupStorageProvider.config.s3Url` | S3 url (primarily used for local storage services like Minio) | ``
 `configuration.backupStorageProvider.config.kmsKeyId` | KMS key for encryption (AWS only) | ``
 `configuration.backupSyncPeriod` | How frequently Ark queries the object storage to make sure that the appropriate Backup resources have been created for existing backup files | `60m`
+`configuration.extraEnvVars` | Key/values for extra environment variables such as AWS_CLUSTER_NAME, etc | `{}`
 `configuration.gcSyncPeriod` | How frequently Ark queries the object storage to delete backup files that have passed their TTL | `60m`
 `configuration.scheduleSyncPeriod` | How frequently Ark checks its Schedule resource objects to see if a backup needs to be initiated | `1m`
 `configuration.resourcePriorities` | An ordered list that describes the order in which Kubernetes resource objects should be restored | `[]`

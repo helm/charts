@@ -2,12 +2,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "hadoop.fullname" . }}-yarn-rm
+  name: {{ include "hadoop.fullname" . }}-yarn-rm
   labels:
-    app: {{ template "hadoop.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    app: {{ include "hadoop.name" . }}
+    chart: {{ include "hadoop.chart" . }}
     release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
     component: yarn-rm
 spec:
   ports:
@@ -15,6 +14,6 @@ spec:
     name: web
   clusterIP: None
   selector:
-    app: {{ template "hadoop.name" . }}
+    app: {{ include "hadoop.name" . }}
     release: {{ .Release.Name }}
     component: yarn-rm

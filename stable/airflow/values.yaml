@@ -80,7 +80,18 @@ airflow:
   ## Configure pod disruption budget for the scheduler
   podDisruptionBudget:
     maxUnavailable: 1
-
+  ## Add custom connections
+  ## Use this to add Airflow connections for operators you use
+  ## For each connection - the id and type have to be defined.
+  ## All the other parameters are optional
+  ## Connections will be created with a script that is stored
+  ## in a K8s secret and mounted into the scheduler container
+  ## Example:
+  ##   connections:
+  ##   - id: my_aws
+  ##     type: aws
+  ##     extra: '{"aws_access_key_id": "**********", "aws_secret_access_key": "***", "region_name":"eu-central-1"}'
+  connections: {}
 ##
 ## Workers configuration
 workers:
@@ -266,6 +277,15 @@ dags:
   initContainer:
     ## Fetch the source code when the pods starts
     enabled: false
+    ## Image for the init container (any image with git will do)
+    image:
+      ## docker-airflow image
+      repository: alpine/git
+      ## image tag
+      tag: 1.0.4
+      ## Image pull policy
+      ## values: Always or IfNotPresent
+      pullPolicy: IfNotPresent
     ## install requirements.txt dependencies automatically
     installRequirements: true
 
@@ -287,6 +307,11 @@ serviceAccount:
   name:
 
 ##
+## Define existing secret for postgresql and redis
+## If not specified, creates secret with postgres and redis values
+existingAirflowSecret: ""
+
+##
 ## Configuration values for the postgresql dependency.
 ## ref: https://github.com/kubernetes/charts/blob/master/stable/postgresql/README.md
 postgresql:
@@ -303,7 +328,8 @@ postgresql:
   ## postgresHost:
   ##
   ## PostgreSQL port
-  postgresPort: 5432
+  service:
+    port: 5432
   ## PostgreSQL User to create.
   postgresUser: postgres
   ##

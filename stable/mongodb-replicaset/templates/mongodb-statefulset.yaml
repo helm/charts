@@ -36,6 +36,9 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
       {{- end }}
     spec:
+    {{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName }}
+    {{- end }}
     {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
       {{- range .Values.imagePullSecrets }}
@@ -229,12 +232,12 @@ spec:
             - sh
             - -ec
             - >-
-            {{- if .Values.auth.enabled }}
-              export MONGODB_URL=mongodb://$METRICS_USER:$METRICS_PASSWORD@localhost:{{ .Values.port }};
-            {{- else }}
-              export MONGODB_URL=mongodb://localhost:{{ .Values.port }};
-            {{- end }}
               /bin/mongodb_exporter
+            {{- if .Values.auth.enabled }}
+              -mongodb.uri mongodb://$METRICS_USER:$METRICS_PASSWORD@localhost:{{ .Values.port }}
+            {{- else }}
+              -mongodb.uri mongodb://localhost:{{ .Values.port }}
+            {{- end }}
             {{- if .Values.tls.enabled }}
               -mongodb.tls
               -mongodb.tls-ca=/ca/tls.crt
@@ -277,12 +280,12 @@ spec:
                 - sh
                 - -ec
                 - >-
-                {{- if .Values.auth.enabled }}
-                  export MONGODB_URL=mongodb://$METRICS_USER:$METRICS_PASSWORD@localhost:{{ .Values.port }};
-                {{- else }}
-                  export MONGODB_URL=mongodb://localhost:{{ .Values.port }};
-                {{- end }}
                   /bin/mongodb_exporter
+                {{- if .Values.auth.enabled }}
+                  -mongodb.uri mongodb://$METRICS_USER:$METRICS_PASSWORD@localhost:{{ .Values.port }}
+                {{- else }}
+                  -mongodb.uri mongodb://localhost:{{ .Values.port }}
+                {{- end }}
                 {{- if .Values.tls.enabled }}
                   -mongodb.tls
                   -mongodb.tls-ca=/ca/tls.crt

@@ -39,6 +39,12 @@ By default this chart will not have persistent storage, and the API service
 will be *DISABLED*.  This protects against unauthorized access to the API
 with default configuration values.
 
+In addition, by default, pod `securityContext.fsGroup` is set to `1000`. This
+is the user/group that the ChartMuseum container runs as, and is used to
+enable local persitant storage. If your cluster has DenySecurityContext enabled,
+you can set `securityContext` to `{}` and still use this chart with one of
+the cloud storage options.
+
 For a more robust solution supply helm install with a custom values.yaml
 You are also required to create the StorageClass resource ahead of time:
 ```
@@ -56,7 +62,15 @@ their default values. See values.yaml for all available options.
 | `persistence.accessMode`               | Access mode to use for PVC                  | `ReadWriteOnce`                                     |
 | `persistence.enabled`                  | Whether to use a PVC for persistent storage | `false`                                             |
 | `persistence.size`                     | Amount of space to claim for PVC            | `8Gi`                                               |
+| `persistence.labels`                   | Additional labels for PVC                   | `{}`                                                |
 | `persistence.storageClass`             | Storage Class to use for PVC                | `-`                                                 |
+| `persistence.volumeName`               | Volume to use for PVC                       | ``                                                  |
+| `persistence.pv.enabled`               | Whether to use a PV for persistent storage  | `false`                                                 |
+| `persistence.pv.capacity.storage`      | Storage size to use for PV                  | `8Gi`                                                 |
+| `persistence.pv.accessMode`            | Access mode to use for PV                   | `ReadWriteOnce`                                                 |
+| `persistence.pv.nfs.server`            | NFS server for PV                           | ``                                                 |
+| `persistence.pv.nfs.path`              | Storage Path                                | ``                                                 |
+| `persistence.pv.pvname`                | Custom name for private volume              | ``                                                  |
 | `replicaCount`                         | k8s replicas                                | `1`                                                 |
 | `resources.limits.cpu`                 | Container maximum CPU                       | `100m`                                              |
 | `resources.limits.memory`              | Container maximum memory                    | `128Mi`                                             |
@@ -64,22 +78,22 @@ their default values. See values.yaml for all available options.
 | `resources.requests.memory`            | Container requested memory                  | `64Mi`                                              |
 | `serviceAccount.create`                | If true, create the service account         | `false`                                             |
 | `serviceAccount.name`                  | Name of the serviceAccount to create or use | `{{ chartmuseum.fullname }}`                        |
-| `securityContext`                      | Map of securityContext for the pod          | `{}`                                                |
+| `securityContext`                      | Map of securityContext for the pod          | `{ fsGroup: 1000 }`                                 |
 | `nodeSelector`                         | Map of node labels for pod assignment       | `{}`                                                |
 | `tolerations`                          | List of node taints to tolerate             | `[]`                                                |
 | `affinity`                             | Map of node/pod affinities                  | `{}`                                                |
 | `env.open.STORAGE`                     | Storage Backend to use                      | `local`                                             |
-| `env.open.ALIBABA_BUCKET`              | Bucket to store charts in for Alibaba       | ``                                                  |
-| `env.open.ALIBABA_PREFIX`              | Prefix to store charts under for Alibaba    | ``                                                  |
-| `env.open.ALIBABA_ENDPOINT`            | Alternative Alibaba endpoint                | ``                                                  |
-| `env.open.ALIBABA_SSE`                 | Server side encryption algorithm to use     | ``                                                  |
-| `env.open.AMAZON_BUCKET`               | Bucket to store charts in for AWS           | ``                                                  |
-| `env.open.AMAZON_ENDPOINT`             | Alternative AWS endpoint                    | ``                                                  |
-| `env.open.AMAZON_PREFIX`               | Prefix to store charts under for AWS        | ``                                                  |
-| `env.open.AMAZON_REGION`               | Region to use for bucket access for AWS     | ``                                                  |
-| `env.open.AMAZON_SSE`                  | Server side encryption algorithm to use     | ``                                                  |
-| `env.open.GOOGLE_BUCKET`               | Bucket to store charts in for GCP           | ``                                                  |
-| `env.open.GOOGLE_PREFIX`               | Prefix to store charts under for GCP        | ``                                                  |
+| `env.open.STORAGE_ALIBABA_BUCKET`      | Bucket to store charts in for Alibaba       | ``                                                  |
+| `env.open.STORAGE_ALIBABA_PREFIX`      | Prefix to store charts under for Alibaba    | ``                                                  |
+| `env.open.STORAGE_ALIBABA_ENDPOINT`    | Alternative Alibaba endpoint                | ``                                                  |
+| `env.open.STORAGE_ALIBABA_SSE`         | Server side encryption algorithm to use     | ``                                                  |
+| `env.open.STORAGE_AMAZON_BUCKET`       | Bucket to store charts in for AWS           | ``                                                  |
+| `env.open.STORAGE_AMAZON_ENDPOINT`     | Alternative AWS endpoint                    | ``                                                  |
+| `env.open.STORAGE_AMAZON_PREFIX`       | Prefix to store charts under for AWS        | ``                                                  |
+| `env.open.STORAGE_AMAZON_REGION`       | Region to use for bucket access for AWS     | ``                                                  |
+| `env.open.STORAGE_AMAZON_SSE`          | Server side encryption algorithm to use     | ``                                                  |
+| `env.open.STORAGE_GOOGLE_BUCKET`       | Bucket to store charts in for GCP           | ``                                                  |
+| `env.open.STORAGE_GOOGLE_PREFIX`       | Prefix to store charts under for GCP        | ``                                                  |
 | `env.open.STORAGE_MICROSOFT_CONTAINER` | Container to store charts under for MS      | ``                                                  |
 | `env.open.STORAGE_MICROSOFT_PREFIX`    | Prefix to store charts under for MS         | ``                                                  |
 | `env.open.STORAGE_OPENSTACK_CONTAINER` | Container to store charts for openstack     | ``                                                  |
@@ -102,6 +116,7 @@ their default values. See values.yaml for all available options.
 | `env.open.CACHE`                       | Cache store, can be one of: redis           | ``                                                  |
 | `env.open.CACHE_REDIS_ADDR`            | Address of Redis service (host:port)        | ``                                                  |
 | `env.open.CACHE_REDIS_DB`              | Redis database to be selected after connect | `0`                                                 |
+| `env.field`                            | Expose pod information to containers through environment variables | ``                                              |
 | `env.secret.BASIC_AUTH_USER`           | Username for basic HTTP authentication      | ``                                                  |
 | `env.secret.BASIC_AUTH_PASS`           | Password for basic HTTP authentication      | ``                                                  |
 | `env.secret.CACHE_REDIS_PASSWORD`      | Redis requirepass server configuration      | ``                                                  |
@@ -110,6 +125,10 @@ their default values. See values.yaml for all available options.
 | `gcp.secret.key`                       | Secret key for te GCP json file             | `credentials.json`                                  |
 | `service.type`                         | Kubernetes Service type                     | `ClusterIP`                                          |
 | `service.clusterIP`                    | Static clusterIP or None for headless services| `nil`                                              |
+| `service.servicename`                  | Custom name for service                     | ``                                                  |
+| `service.labels`                       | Additional labels for service               | `{}`                                                |
+| `deployment.labels`                    | Additional labels for deployment            | `{}`                                                |
+| `deployment.matchlabes`                | Match labels for deployment selector        | `{}`                                                |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to
 `helm install`.

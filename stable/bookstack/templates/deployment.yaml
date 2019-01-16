@@ -37,6 +37,22 @@ spec:
               path: /
               port: http
           env:
+          {{- if .Values.ldap.enabled }}
+            - name: AUTH_METHOD
+              value: ldap
+            - name: LDAP_SERVER
+              value: {{ .Values.ldap.server | quote }}
+            - name: LDAP_BASE_DN
+              value: {{ .Values.ldap.base_dn | quote }}
+            - name: LDAP_DN
+              value: {{ .Values.ldap.dn | quote }}
+            - name: LDAP_PASS
+              value: {{ .Values.ldap.pass | quote }}
+            - name: LDAP_USER_FILTER
+              value: {{ .Values.ldap.userFilter | quote }}
+            - name: LDAP_VERSION
+              value: {{ .Values.ldap.version | quote }}
+          {{- end }}
           {{- if .Values.mariadb.enabled }}
             - name: DB_HOST
               value: {{ template "bookstack.mariadb.fullname" . }}

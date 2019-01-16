@@ -7,7 +7,7 @@ metadata:
 spec:
   containers:
   - name: {{ .Release.Name }}-vault-status-test
-    image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+    image: "{{ .Values.image.repository }}:{{ default .Chart.AppVersion .Values.image.tag }}"
     env:
       - name: VAULT_ADDR
         value: http://{{ template "vault.fullname" . }}.{{ .Release.Namespace }}:8200
