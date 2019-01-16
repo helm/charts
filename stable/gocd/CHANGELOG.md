@@ -1,3 +1,9 @@
+### 1.6.4
+
+* [ec15367](https://github.com/kubernetes/charts/commit/ec15367):
+
+- Bump up the version of docker registry artifact plugin to latest.
+
 ### 1.6.3
 
 * [bca4092f](https://github.com/kubernetes/charts/commit/bca4092f):
