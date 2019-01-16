@@ -181,7 +181,7 @@ spec:
           value: {{ .Values.kafkaHeapOptions }}
         {{- if .Values.prometheus.agent.enabled }}
         - name: KAFKA_JMX_OPTS_DEFAULT
-          valkue: "-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false"
+          value: "-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false"
         - name: KAFKA_JMX_OPTS
           value: "$(KAFKA_JMX_OPTS_DEFAULT) -javaagent:/var/lib/prometheus/jmx_prometheus_javaagent-{{ .Values.prometheus.agent.version }}.jar={{ .Values.prometheus.agent.port }}:/etc/prometheus/jmx-kafka-prometheus.yml"
         {{- end }}
