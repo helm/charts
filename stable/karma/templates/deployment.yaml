@@ -44,7 +44,7 @@ spec:
               periodSeconds: {{ .Values.livenessProbe.period }}
           readinessProbe:
             httpGet:
-              path: {{ .Values.livenessProbePath }}
+              path: {{ .Values.livenessProbe.path }}
               port: http
               initialDelaySeconds: {{ .Values.livenessProbe.delay }}
               periodSeconds: {{ .Values.livenessProbe.period }}
