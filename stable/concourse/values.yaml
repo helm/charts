@@ -700,6 +700,7 @@ web:
   vaultSecretsPath: "/concourse-vault"
   postgresqlSecretsPath: "/concourse-postgresql"
   syslogSecretsPath: "/concourse-syslog"
+  tlsSecretsPath: "/concourse-web-tls"
 
   ## Additional affinities to add to the web pods.
   ##

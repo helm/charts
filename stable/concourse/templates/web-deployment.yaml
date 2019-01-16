@@ -64,9 +64,9 @@ spec:
             - name: CONCOURSE_TLS_BIND_PORT
               value: {{ .Values.concourse.web.tls.bindPort | default "443" | quote }}
             - name: CONCOURSE_TLS_CERT
-              value: "/concourse-web-tls/client.cert"
+              value: "{{ .Values.web.tlsSecretsPath }}/client.cert"
             - name: CONCOURSE_TLS_KEY
-              value: "/concourse-web-tls/client.key"
+              value: "{{ .Values.web.tlsSecretsPath }}/client.key"
             {{- end }}
             {{- if .Values.concourse.web.tls.enabled }}
             - name: CONCOURSE_EXTERNAL_URL
@@ -911,7 +911,7 @@ spec:
               readOnly: true
             {{- if .Values.concourse.web.tls.enabled }}
             - name: web-tls
-              mountPath: /concourse-web-tls
+              mountPath: {{ .Values.web.tlsSecretsPath | quote }}
               readOnly: true
             {{- end }}
             {{- if .Values.concourse.web.vault.enabled }}
