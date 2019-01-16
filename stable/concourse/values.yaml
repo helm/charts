@@ -695,11 +695,11 @@ web:
   #     value: "debug"
 
   ## For managing where secrets should be mounted for the web agents
-  # keySecretsPath: "/concourse-keys"
-  # authSecretsPath: "/concourse-auth"
-  # vaultSecretsPath: "/concourse-vault"
-  # postgresqlSecretsPath: "/concourse-postgresql"
-  # syslogSecretsPath: "/concourse-syslog"
+  keySecretsPath: "/concourse-keys"
+  authSecretsPath: "/concourse-auth"
+  vaultSecretsPath: "/concourse-vault"
+  postgresqlSecretsPath: "/concourse-postgresql"
+  syslogSecretsPath: "/concourse-syslog"
 
   ## Additional affinities to add to the web pods.
   ##
@@ -842,7 +842,7 @@ worker:
 
 
   ## For managing where secrets should be mounted for worker agents
-  # keySecretsPath: "/concourse-keys"
+  keySecretsPath: "/concourse-keys"
 
   ## Configure additional volumeMounts for the
   ## worker container(s)
