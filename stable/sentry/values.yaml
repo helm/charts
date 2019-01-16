@@ -89,6 +89,11 @@ service:
   type: LoadBalancer
   externalPort: 9000
   internalPort: 9000
+
+  ## Service annotations
+  ##
+  annotations: {}
+
   ## External IP addresses of service
   ## Default: nil
   ##
