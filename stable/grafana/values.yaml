@@ -223,7 +223,7 @@ dashboards: {}
 #      gerritserver: gerritsever.domain.com
 #      gerritprojname: owner/repo
 #      gerritprojbrch: master
-#      gerritfile: dir1/dir2/file.json
+#      gerritfile: dir1/dir2/dashboard.json
 
 ## Reference to external ConfigMap per provider. Use provider name as key and ConfiMap name as value.
 ## A provider dashboards must be defined either by external ConfigMaps or in values.yaml, not in both.
