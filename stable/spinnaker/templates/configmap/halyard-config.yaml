@@ -106,7 +106,7 @@ data:
 
     $HAL_COMMAND config provider kubernetes account $PROVIDER_COMMAND {{ $context }} --docker-registries dockerhub \
                 --context {{ $context }} {{ if not $.Values.kubeConfig.enabled }}--service-account true{{ end }} \
-                {{ if $.Values.kubeConfig.enabled }}--kubeconfig-file /opt/kube/{{ $.Values.kubeConfig.secretKey }}{{ end }} --omit-namespaces=kube-system,kube-public --provider-version v2
+                {{ if $.Values.kubeConfig.enabled }}--kubeconfig-file /opt/kube/{{ $.Values.kubeConfig.secretKey }}{{ end }} --omit-namespaces={{ template "omittedNameSpaces" $ }} --provider-version v2
     {{- end }}
     $HAL_COMMAND config deploy edit --account-name {{ .Values.kubeConfig.deploymentContext }} --type distributed \
                            --location {{ .Release.Namespace }}

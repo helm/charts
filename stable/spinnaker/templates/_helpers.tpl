@@ -32,3 +32,10 @@ A set of common selector labels for resources.
 app: {{ include "spinnaker.fullname" . | quote }}
 release: {{ .Release.Name | quote }}
 {{- end -}}
+
+{{/*
+Create comma separated list of omitted namespaces in Kubernetes
+*/}}
+{{- define "omittedNameSpaces" -}}
+{{- join "," .Values.kubeConfig.omittedNameSpaces }}
+{{- end -}}
