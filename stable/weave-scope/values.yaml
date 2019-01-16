@@ -36,6 +36,10 @@ weave-scope-frontend:
         # cpu: ""
         # weave-scope-frontend.resources.limits.memory: memory limit in MiB (Mi)
         # memory: ""
+        #
+  ## Configure the ingress object to hook into existing infastructure
+  ### ref : http://kubernetes.io/docs/user-guide/ingress/
+  ###
   ingress:
     enabled: false
       # annotations:
