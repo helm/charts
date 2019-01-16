@@ -12,9 +12,6 @@ metadata:
     release: {{ $.Release.Name }}
   annotations:
     service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
-    {{- if $.Values.serviceAnnotations }}
-{{ toYaml $.Values.server.annotations | indent 4 }}
-    {{ end }}
 spec:
   type: ClusterIP
   publishNotReadyAddresses: true
