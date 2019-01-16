@@ -55,6 +55,16 @@ data:
     -H "Content-Type: application/json;charset=UTF-8" \
     {{- if $value.url -}}{{ $value.url }}{{- else -}} https://grafana.com/api/dashboards/{{ $value.gnetId }}/revisions/{{- if $value.revision -}}{{ $value.revision }}{{- else -}}1{{- end -}}/download{{- end -}}{{ if $value.datasource }}| sed 's|\"datasource\":[^,]*|\"datasource\": \"{{ $value.datasource }}\"|g'{{ end }} \
     > /var/lib/grafana/dashboards/{{ $provider }}/{{ $key }}.json
+      {{- end -}}
+      {{- if hasKey $value "gerritserver" }}
+    curl -sk \
+    --connect-timeout 60 \
+    --max-time 60 \
+    --user {{$value.gerrituser}}:{{$value.gerritpwd}} \
+    https://{{ $value.gerritserver }}/a/projects/$(echo {{ $value.gerritprojname }} | sed 's/\//%2F/g' )/branches/{{ $value.gerritprojbrch }}/files/$(echo {{ $value.gerritfile }} | sed 's/\//%2F/g' )/content \
+    > /var/lib/grafana/dashboards/{{ $provider }}/{{ $key }}.base64
+    base64 -d /var/lib/grafana/dashboards/{{ $provider }}/{{ $key }}.base64 > /var/lib/grafana/dashboards/{{ $provider }}/{{ $key }}.json
+    rm -f /var/lib/grafana/dashboards/{{ $provider }}/{{ $key }}.base64
       {{- end }}
     {{- end }}
   {{- end }}
