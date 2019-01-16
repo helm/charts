@@ -5,15 +5,6 @@ pipeline:
     pull: true
     charts:
     - stable/drone
-    helm_repo: https://charts.infra.redmart.com
-    when:
-      branch: [master]
-      event: push
-
-  publish_charts:
-    image: docker-registry.infra.redmart.com/devops/drone-helm-push:0.2.0
-    pull: true
-    charts:
     - stable/rabbitmq-ha
     helm_repo: https://charts.infra.redmart.com
     when:
