@@ -215,8 +215,15 @@ dashboards: {}
 #      gnetId: 2
 #      revision: 2
 #      datasource: Prometheus
-#    local-dashboard:
+#    local-dashboard-no-base64-impicit:
 #      url: https://example.com/repository/test.json
+#    local-dashboard-no-base64-expicit:
+#      url: https://example.com/repository/test.json
+#      b64content: false
+#    local-dashboard-base64:
+#      url: https://example.com/repository/test-b64.json
+#      url: https://user:pass@gerritserver.com/a/projects/owner%2Frepo/branches/branchname/files/dir1%2Fdir2%2Ffile.json/content
+#      b64content: true
 
 ## Reference to external ConfigMap per provider. Use provider name as key and ConfiMap name as value.
 ## A provider dashboards must be defined either by external ConfigMaps or in values.yaml, not in both.
