@@ -1,7 +1,7 @@
 # Default values for elasticsearch.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-appVersion: "6.5.1"
+appVersion: "6.5.4"
 
 ## Define serviceAccount names for components. Defaults to component's fully qualified name.
 ##
@@ -33,7 +33,7 @@ podSecurityPolicy:
 
 image:
   repository: "docker.elastic.co/elasticsearch/elasticsearch-oss"
-  tag: "6.5.1"
+  tag: "6.5.4"
   pullPolicy: "IfNotPresent"
   # If specified, use these secrets to access the image
   # pullSecrets:
@@ -55,6 +55,8 @@ cluster:
   config: {}
   # Custom parameters, as string, to be added to ES_JAVA_OPTS environment variable
   additionalJavaOpts: ""
+  # Command to run at the end of deployment
+  bootstrapShellCommand: ""
   env:
     # IMPORTANT: https://www.elastic.co/guide/en/elasticsearch/reference/current/important-settings.html#minimum_master_nodes
     # To prevent data loss, it is vital to configure the discovery.zen.minimum_master_nodes setting so that each master-eligible
@@ -71,10 +73,18 @@ client:
 #  serviceAnnotations:
 #    example: client-svc-foo
   heapSize: "512m"
+  # additionalJavaOpts: "-XX:MaxRAM=512m"
   antiAffinity: "soft"
   nodeAffinity: {}
   nodeSelector: {}
   tolerations: []
+  initResources: {}
+    # limits:
+    #   cpu: "25m"
+    #   # memory: "128Mi"
+    # requests:
+    #   cpu: "25m"
+    #   memory: "128Mi"
   resources:
     limits:
       cpu: "1"
@@ -108,6 +118,7 @@ master:
   exposeHttp: false
   replicas: 3
   heapSize: "512m"
+  # additionalJavaOpts: "-XX:MaxRAM=512m"
   persistence:
     enabled: true
     accessMode: ReadWriteOnce
@@ -118,6 +129,13 @@ master:
   nodeAffinity: {}
   nodeSelector: {}
   tolerations: []
+  initResources: {}
+    # limits:
+    #   cpu: "25m"
+    #   # memory: "128Mi"
+    # requests:
+    #   cpu: "25m"
+    #   memory: "128Mi"
   resources:
     limits:
       cpu: "1"
@@ -141,6 +159,7 @@ data:
   exposeHttp: false
   replicas: 2
   heapSize: "1536m"
+  # additionalJavaOpts: "-XX:MaxRAM=1536m"
   persistence:
     enabled: true
     accessMode: ReadWriteOnce
@@ -152,6 +171,13 @@ data:
   nodeAffinity: {}
   nodeSelector: {}
   tolerations: []
+  initResources: {}
+    # limits:
+    #   cpu: "25m"
+    #   # memory: "128Mi"
+    # requests:
+    #   cpu: "25m"
+    #   memory: "128Mi"
   resources:
     limits:
       cpu: "1"

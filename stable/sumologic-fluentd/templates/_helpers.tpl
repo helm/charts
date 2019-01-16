@@ -16,13 +16,6 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- end -}}
 
 {{/*
-A uniquely named secret, which includes the install time
-*/}}
-{{- define "sumologic-fluentd.fullname-secrets" -}}
-{{- printf "%s-secrets-%d" (include "sumologic-fluentd.fullname" .) .Release.Time.Seconds -}}
-{{- end -}}
-
-{{/*
 Create a default fully qualified fluentd user conf name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
