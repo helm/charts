@@ -76,7 +76,7 @@ spec:
         command: ["sysctl", "-w", "vm.max_map_count=262144"]
         securityContext:
           privileged: true
-      - name: "chown"
+      - name: "chown-init-config"
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         resources:
@@ -87,6 +87,19 @@ spec:
         - >
           set -e;
           set -x;
+
+          cp /tmp/elasticsearch.yml /usr/share/elasticsearch/config/elasticsearch.yml
+
+          HOSTNAME="$(hostname)"
+          INDEX="${HOSTNAME##*-}"
+
+          ENV_VAR_PREFIX=`echo {{ template "elasticsearch.master.fullname" . }}-|awk '{print toupper($0)}'|sed 's/-/_/g'`
+          HOSTVAR="${ENV_VAR_PREFIX}ANNOUNCE_${INDEX}_SERVICE_HOST"
+          HOST="${!HOSTVAR}"
+
+          echo "" >> /usr/share/elasticsearch/config/elasticsearch.yml;
+          echo "network.publish_host: ${HOST}" >> /usr/share/elasticsearch/config/elasticsearch.yml;
+
           chown elasticsearch:elasticsearch /usr/share/elasticsearch/data;
           for datadir in $(find /usr/share/elasticsearch/data -mindepth 1 -maxdepth 1 -not -name ".snapshot"); do
             chown -R elasticsearch:elasticsearch $datadir;
@@ -100,6 +113,11 @@ spec:
         volumeMounts:
         - mountPath: /usr/share/elasticsearch/data
           name: data
+        - mountPath: /tmp/elasticsearch.yml
+          name: config
+          subPath: elasticsearch.yml
+        - mountPath: /usr/share/elasticsearch/config
+          name: elasticsearch-yml
 {{- if .Values.extraInitContainers }}
 {{ tpl .Values.extraInitContainers . | indent 6 }}
 {{- end }}
@@ -144,7 +162,7 @@ spec:
         - mountPath: /usr/share/elasticsearch/data
           name: data
         - mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
-          name: config
+          name: elasticsearch-yml
           subPath: elasticsearch.yml
 {{- if hasPrefix "2." .Values.appVersion }}
         - mountPath: /usr/share/elasticsearch/config/logging.yml
@@ -172,6 +190,8 @@ spec:
       - name: config
         configMap:
           name: {{ template "elasticsearch.fullname" . }}
+      - name: elasticsearch-yml
+        emptyDir: {}
 {{- if .Values.cluster.keystoreSecret }}
       - name: keystore
         secret:

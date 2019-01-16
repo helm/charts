@@ -1,0 +1,31 @@
+{{- range $i := until (int .Values.master.replicas) }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "elasticsearch.master.fullname" $ }}-announce-{{ $i }}
+  labels:
+    app: {{ template "elasticsearch.name" $ }}
+    chart: {{ $.Chart.Name }}-{{ $.Chart.Version }}
+    component: {{ $.Values.master.name | quote }}
+    heritage: {{ $.Release.Service }}
+    release: {{ $.Release.Name }}
+  annotations:
+    service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
+    {{- if $.Values.serviceAnnotations }}
+{{ toYaml $.Values.server.annotations | indent 4 }}
+    {{ end }}
+spec:
+  type: ClusterIP
+  publishNotReadyAddresses: true
+  ports:
+  - name: transport
+    port: 9300
+    targetPort: transport
+  selector:
+    app: {{ template "elasticsearch.name" $ }}
+    component: {{ $.Values.master.name | quote }}
+    release: {{ $.Release.Name }}
+    role: master
+    statefulset.kubernetes.io/pod-name: {{ template "elasticsearch.master.fullname" $ }}-{{ $i }}
+{{ end }}
