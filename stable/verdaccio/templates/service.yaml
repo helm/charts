@@ -29,6 +29,11 @@ spec:
       targetPort: http
       protocol: TCP
       name: {{ .Values.service.name }}
+      {{- if contains "NodePort" .Values.service.type }}
+      {{- if .Values.service.nodePort }}
+      nodePort: {{ .Values.service.nodePort }}
+      {{- end }}
+      {{- end }}
   selector:
     app: {{ template "verdaccio.name" . }}
     release: {{ .Release.Name }}
