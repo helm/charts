@@ -20,9 +20,10 @@ data:
 {{- end }}
 
 {{- if .Values.datasources }}
+{{ $root := . }}
   {{- range $key, $value := .Values.datasources }}
   {{ $key }}: |
-{{ toYaml $value | indent 4 }}
+{{ tpl (toYaml $value | indent 4) $root }}
   {{- end -}}
 {{- end -}}
 
