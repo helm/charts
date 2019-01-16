@@ -120,4 +120,3 @@ configMap:
   #   sentry:
   #     private: secret
   #   public: 123456789
-
