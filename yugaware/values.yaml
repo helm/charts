@@ -11,8 +11,10 @@ image:
 yugaware:
   replicas: 1
   storage: 100Gi
-  storage_class: standard
+  storageClass: standard
   multiTenant: false
   serviceAccount: yugaware
-  loadBalancerIP: ""
-  loadBalancerType: "LoadBalancer"
+  service:
+    enabled: true
+    ip: ""
+    type: "LoadBalancer"

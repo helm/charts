@@ -1,5 +1,6 @@
 # Copyright (c) YugaByte, Inc.
 
+{{- if .Values.yugaware.service.enabled }}
 ---
 apiVersion: v1
 kind: Service
@@ -19,10 +20,11 @@ spec:
     port: 9090
   selector:
     app: {{ .Release.Name }}-yugaware
-  type: "{{ .Values.yugaware.loadBalancerType }}"
-  {{- if .Values.yugaware.loadBalancerIP }}
-  loadBalancerIP: "{{ .Values.yugaware.loadBalancerIP }}"
+  type: "{{ .Values.yugaware.service.type }}"
+  {{- if and (eq .Values.yugaware.service.type "LoadBalancer") (.Values.yugaware.service.ip) }}
+  loadBalancerIP: "{{ .Values.yugaware.service.ip }}"
   {{- end }}
+{{- end }}
 ---
 apiVersion: apps/v1
 kind: StatefulSet

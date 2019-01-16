@@ -11,7 +11,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
-  storageClassName: {{ .Values.yugaware.storage_class }}
+  storageClassName: {{ .Values.yugaware.storageClass }}
   resources:
     requests:
       storage: {{ .Values.yugaware.storage }}
