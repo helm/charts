@@ -316,8 +316,14 @@ prometheus:
     ## https://github.com/prometheus/jmx_exporter/releases
     version: 0.3.1
 
+    ## Interval at which Prometheus scrapes metrics, note: only used by Prometheus Operator
+    interval: 10s
+
+    ## Timeout at which Prometheus timeouts scrape run, note: only used by Prometheus Operator
+    scrapeTimeout: 10s
+
     ## Port agent exposes for Prometheus to scrape metrics
-    port: 5557
+    port: 8080
 
   operator:
     ## Are you using Prometheus Operator?
