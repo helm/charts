@@ -48,6 +48,10 @@ spec:
               value: {{ .Values.nfs.server }}
             - name: NFS_PATH
               value: {{ .Values.nfs.path }}
+          {{- with .Values.resources }}
+          resources:
+{{ toYaml . | indent 12 }}
+          {{- end }}
       volumes:
         - name: nfs-client-root
 {{- if .Values.buildMode }}
