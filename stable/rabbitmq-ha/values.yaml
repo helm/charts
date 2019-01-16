@@ -266,7 +266,7 @@ terminationGracePeriodSeconds: 10
 
 service:
   annotations: {}
-  clusterIP: None
+  #clusterIP: None
 
   ## List of IP addresses at which the service is available
   ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
@@ -276,6 +276,9 @@ service:
   loadBalancerIP: ""
   loadBalancerSourceRanges: []
   type: ClusterIP
+
+serviceDiscovery:
+  annotations: {}
 
 podManagementPolicy: OrderedReady
 

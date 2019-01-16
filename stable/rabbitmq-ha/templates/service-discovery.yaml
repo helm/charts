@@ -3,8 +3,8 @@ kind: Service
 metadata:
   annotations:
     service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
-{{- if .Values.service.annotations }}
-{{ toYaml .Values.service.annotations | indent 4 }}
+{{- if .Values.serviceDiscovery.annotations }}
+{{ toYaml .Values.serviceDiscovery.annotations | indent 4 }}
 {{- end }}
   name: {{ template "rabbitmq-ha.fullname" . }}-discovery
   labels:
