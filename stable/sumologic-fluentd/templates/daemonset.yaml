@@ -158,6 +158,14 @@ spec:
             - name: ADD_TIMESTAMP
               value: {{ quote .Values.sumologic.addTimeStamp }}
             {{- end }}
+            {{- if quote .Values.sumologic.addTime }}
+            - name: ADD_TIME
+              value: {{ quote .Values.sumologic.addTime }}
+            {{- end }}
+            {{- if quote .Values.sumologic.addStream }}
+            - name: ADD_STREAM
+              value: {{ quote .Values.sumologic.addStream }}
+            {{- end }}
             {{- if quote .Values.sumologic.verifySsl }}
             - name: VERIFY_SSL
               value: {{ quote .Values.sumologic.verifySsl }}
