@@ -42,3 +42,24 @@ spec:
     app: {{ include "kafka.name" . }}-exporter
     release: {{ .Release.Name }}
 {{- end }}
+---
+{{- if and .Values.prometheus.agent.enabled .Values.prometheus.operator.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "kafka.fullname" . }}-agent-exporter
+  labels:
+    app: {{ include "kafka.name" . }}-agent-exporter
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  ports:
+  - name: agent-exporter
+    protocol: TCP
+    port: {{ .Values.prometheus.agent.port }}
+    targetPort: {{ .Values.prometheus.agent.port }}
+  selector:
+    app: {{ include "kafka.name" . }}-agent-exporter
+    release: {{ .Release.Name }}
+{{- end }}
