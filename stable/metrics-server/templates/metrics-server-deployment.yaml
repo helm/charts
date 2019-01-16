@@ -12,6 +12,7 @@ spec:
     matchLabels:
       app: {{ template "metrics-server.name" . }}
       release: {{ .Release.Name }}
+  replicas: {{ .Values.replicas }}
   template:
     metadata:
       labels:

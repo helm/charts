@@ -11,6 +11,9 @@ metadata:
     release: {{ .Release.Name | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     component: "{{ .Release.Name }}-{{ .Values.Master.Name }}"
+    {{- range $key, $val := .Values.Master.DeploymentLabels }}
+    {{ $key }}: {{ $val | quote }}
+    {{- end}}
 spec:
   replicas: 1
   strategy:
@@ -114,7 +117,7 @@ spec:
           {{- end }}
           env:
             - name: JAVA_OPTS
-              value: "{{ default "" .Values.Master.JavaOpts}}"
+              value: {{ default "" .Values.Master.JavaOpts | quote }}
             - name: JENKINS_OPTS
               value: "{{ if .Values.Master.JenkinsUriPrefix }}--prefix={{ .Values.Master.JenkinsUriPrefix }} {{ end }}{{ default "" .Values.Master.JenkinsOpts}}"
             {{- if .Values.Master.UseSecurity }}

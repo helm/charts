@@ -90,7 +90,11 @@ spec:
         - name: SENTRY_EMAIL_PASSWORD
           valueFrom:
             secretKeyRef:
+            {{- if .Values.email.existingSecret }}
+              name: {{ .Values.email.existingSecret }}
+            {{- else }}
               name: {{ template "fullname" . }}
+            {{- end }}
               key: smtp-password
         - name: SENTRY_EMAIL_USE_TLS
           value: {{ .Values.email.use_tls | quote }}
@@ -134,7 +138,7 @@ spec:
       - name: sentry-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "fullname" . }}
+          claimName: {{ .Values.persistence.existingClaim | default (include "fullname" .) }}
       {{- else }}
         emptyDir: {}
       {{ end }}

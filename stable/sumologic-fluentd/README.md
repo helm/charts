@@ -91,6 +91,8 @@ The following table lists the configurable parameters of the sumologic-fluentd c
 | `sumologic.auditLogPath` | Define the path to the [Kubernetes Audit Log](https://kubernetes.io/docs/tasks/debug-application-cluster/audit/) | `/mnt/log/kube-apiserver-audit.log` |
 | `sumologic.timeKey` | The field name for json formatted sources that should be used as the time. See [time_key](https://docs.fluentd.org/v0.12/articles/formatter_json#time_key-(string,-optional,-defaults-to-%E2%80%9Ctime%E2%80%9D)). | `time`
 | `sumologic.addTimeStamp` | Option to control adding timestamp to logs. | `true`
+| `sumologic.addTime` | Option to control adding time to logs. | `true`
+| `sumologic.addStream` | Option to control adding stream to logs. | `true`
 | `sumologic.containerLogsPath` | Specify the path in_tail should watch for container logs. | `/mnt/log/containers/*.log`
 | `sumologic.proxyUri` | Add the uri of the proxy environment if present. | `Nil`
 | `sumologic.enableStatWatcher` | Option to control the enabling of [stat_watcher](https://docs.fluentd.org/v1.0/articles/in_tail#enable_stat_watcher). | `true`
@@ -106,6 +108,7 @@ The following table lists the configurable parameters of the sumologic-fluentd c
 | `resources.limits.memory` | Memory resource limits | 256Mi |
 | `rbac.create` | Is Role Based Authentication enabled in the cluster | `false` |
 | `rbac.serviceAccountName` | RBAC service account name | {{ fullname }} |
+| `daemonset.priorityClassName` | Priority Class to use for the daemonset | `Nil` |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
