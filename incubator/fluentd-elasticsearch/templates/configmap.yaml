@@ -1,12 +1,13 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "fluentd-elasticsearch.fullname" . }}
+  name: {{ include "fluentd-elasticsearch.fullname" . }}
   labels:
-    app: {{ template "fluentd-elasticsearch.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
+    app.kubernetes.io/name: {{ include "fluentd-elasticsearch.name" . }}
+    helm.sh/chart: {{ include "fluentd-elasticsearch.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    kubernetes.io/cluster-service: "true"
     addonmanager.kubernetes.io/mode: Reconcile
 data:
 {{- range $key, $value := .Values.configMaps }}

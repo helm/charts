@@ -52,14 +52,16 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `image.repository`                      | MongoDB Image name                                                                           | `bitnami/mongodb`                           |
 | `image.tag`                             | MongoDB Image tag                                                                            | `{VERSION}`                                 |
 | `image.pullPolicy`                      | Image pull policy                                                                            | `Always`                                    |
-| `image.pullSecrets`                     | Specify image pull secrets                                                                   | `nil`                                       |
+| `image.pullSecrets`                     | Specify docker-registry secret names as an array                                             | `[]` (does not add image pull secrets to deployed pods) |
+| `image.debug`                           | Specify if debug logs should be enabled                                                      | `false`                                     |
 | `usePassword`                           | Enable password authentication                                                               | `true`                                      |
 | `existingSecret`                        | Existing secret with MongoDB credentials                                                     | `nil`                                       |
-| `mongodbRootPassword`                   | MongoDB admin password                                                                       | `random alhpanumeric string (10)`           |
+| `mongodbRootPassword`                   | MongoDB admin password                                                                       | `random alphanumeric string (10)`           |
 | `mongodbUsername`                       | MongoDB custom user                                                                          | `nil`                                       |
-| `mongodbPassword`                       | MongoDB custom user password                                                                 | `random alhpanumeric string (10)`           |
+| `mongodbPassword`                       | MongoDB custom user password                                                                 | `random alphanumeric string (10)`           |
 | `mongodbDatabase`                       | Database to create                                                                           | `nil`                                       |
 | `mongodbEnableIPv6`                     | Switch to enable/disable IPv6 on MongoDB                                                     | `true`                                      |
+| `mongodbSystemLogVerbosity`             | MongoDB systen log verbosity level                                                           | `0`                                         |
 | `mongodbExtraFlags`                     | MongoDB additional command line flags                                                        | []                                          |
 | `service.annotations`                   | Kubernetes service annotations                                                               | `{}`                                        |
 | `service.type`                          | Kubernetes Service type                                                                      | `ClusterIP`                                 |
@@ -103,10 +105,10 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `configmap`                             | MongoDB configuration file to be used                                                        | `nil`                                       |
 | `metrics.enabled`                       | Start a side-car prometheus exporter                                                         | `false`                                     |
 | `metrics.image.registry`                | MongoDB exporter image registry                                                              | `docker.io`                                 |
-| `metrics.image.repository`              | MongoDB exporter image name                                                                  | `forekshub/percona-mongodb-exporter`                           |
+| `metrics.image.repository`              | MongoDB exporter image name                                                                  | `forekshub/percona-mongodb-exporter`        |
 | `metrics.image.tag`                     | MongoDB exporter image tag                                                                   | `latest`                                    |
 | `metrics.image.pullPolicy`              | Image pull policy                                                                            | `IfNotPresent`                              |
-| `metrics.image.pullSecrets`             | Specify docker-registry secret names as an array                                             | `nil`                                       |
+| `metrics.image.pullSecrets`             | Specify docker-registry secret names as an array                                             | `[]` (does not add image pull secrets to deployed pods) |
 | `metrics.podAnnotations`                | Additional annotations for Metrics exporter pod                                              | {}                                          |
 | `metrics.resources`                     | Exporter resource requests/limit                                                             | Memory: `256Mi`, CPU: `100m`             |
 | `metrics.serviceMonitor.enabled`        | Create ServiceMonitor Resource for scraping metrics using PrometheusOperator                 | `false`                                     |
@@ -139,7 +141,7 @@ $ helm install --name my-release -f values.yaml stable/mongodb
 You can start the MongoDB chart in replica set mode with the following command:
 
 ```bash
-$ helm install --name my-release stable/mongodb --set replication.enabled=true
+$ helm install --name my-release stable/mongodb --set replicaSet.enabled=true
 ```
 
 ## Production settings and horizontal scaling
@@ -174,3 +176,14 @@ The allowed extensions are `.sh`, and `.js`.
 The [Bitnami MongoDB](https://github.com/bitnami/bitnami-docker-mongodb) image stores the MongoDB data and configurations at the `/bitnami/mongodb` path of the container.
 
 The chart mounts a [Persistent Volume](http://kubernetes.io/docs/user-guide/persistent-volumes/) at this location. The volume is created using dynamic volume provisioning.
+
+## Upgrading
+
+### To 5.0.0
+
+When enabling replicaset configuration, backwards compatibility is not guaranteed unless you modify the labels used on the chart's statefulsets.
+Use the workaround below to upgrade from versions previous to 5.0.0. The following example assumes that the release name is `my-release`:
+
+```consoloe
+$ kubectl delete statefulset my-release-mongodb-arbiter my-release-mongodb-primary my-release-mongodb-secondary --cascade=false
+```

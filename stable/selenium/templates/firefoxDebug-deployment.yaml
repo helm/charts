@@ -82,6 +82,8 @@ spec:
             {{- end }}
           resources:
 {{ toYaml .Values.firefoxDebug.resources | indent 12 }}
+      hostAliases:
+{{ toYaml .Values.global.hostAliases | indent 8 }}
       nodeSelector:
 {{- if .Values.firefoxDebug.nodeSelector }}
 {{ toYaml .Values.firefoxDebug.nodeSelector | indent 8  }}
