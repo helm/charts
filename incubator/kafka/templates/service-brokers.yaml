@@ -60,6 +60,6 @@ spec:
     port: {{ .Values.prometheus.agent.port }}
     targetPort: {{ .Values.prometheus.agent.port }}
   selector:
-    app: {{ include "kafka.name" . }}-agent-exporter
+    app: {{ include "kafka.name" . }}
     release: {{ .Release.Name }}
 {{- end }}
