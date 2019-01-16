@@ -56,9 +56,9 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `image.debug`                           | Specify if debug logs should be enabled                                                      | `false`                                     |
 | `usePassword`                           | Enable password authentication                                                               | `true`                                      |
 | `existingSecret`                        | Existing secret with MongoDB credentials                                                     | `nil`                                       |
-| `mongodbRootPassword`                   | MongoDB admin password                                                                       | `random alhpanumeric string (10)`           |
+| `mongodbRootPassword`                   | MongoDB admin password                                                                       | `random alphanumeric string (10)`           |
 | `mongodbUsername`                       | MongoDB custom user                                                                          | `nil`                                       |
-| `mongodbPassword`                       | MongoDB custom user password                                                                 | `random alhpanumeric string (10)`           |
+| `mongodbPassword`                       | MongoDB custom user password                                                                 | `random alphanumeric string (10)`           |
 | `mongodbDatabase`                       | Database to create                                                                           | `nil`                                       |
 | `mongodbEnableIPv6`                     | Switch to enable/disable IPv6 on MongoDB                                                     | `true`                                      |
 | `mongodbSystemLogVerbosity`             | MongoDB systen log verbosity level                                                           | `0`                                         |
