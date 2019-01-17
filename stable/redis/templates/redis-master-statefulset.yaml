@@ -154,8 +154,10 @@ spec:
         - name: config
           mountPath: /opt/bitnami/redis/etc
         {{- end }}
-      {{- if and ( and .Values.master.persistence.enabled (not .Values.persistence.existingClaim) ) .Values.master.securityContext.enabled }}
+      {{- $needsVolumePermissions := and ( and .Values.master.persistence.enabled (not .Values.persistence.existingClaim) ) .Values.master.securityContext.enabled }}
+      {{- if or $needsVolumePermissions .Values.master.sysctlImage.enabled }}
       initContainers:
+      {{- if $needsVolumePermissions }}
       - name: volume-permissions
         image: "{{ template "volumePermissions.image" . }}"
         imagePullPolicy: {{ default "" .Values.volumePermissions.image.pullPolicy | quote }}
@@ -166,6 +168,21 @@ spec:
         - name: redis-data
           mountPath: {{ .Values.master.persistence.path }}
           subPath: {{ .Values.master.persistence.subPath }}
+      {{- end }}
+      {{- if .Values.master.sysctlImage.enabled }}
+        - name: init-sysctl
+          image: {{ template "redis.master.sysctl.image" . }}
+          {{- if .Values.master.sysctlImage.mountHostSys }}
+          volumeMounts:
+          - name: host-sys
+            mountPath: /host-sys
+          {{- end }}
+          command:
+{{ toYaml .Values.master.sysctlImage.command | indent 12 }}
+          securityContext:
+            privileged: true
+            runAsUser: 0
+      {{- end }}
       {{- end }}
       volumes:
       - name: health
@@ -191,6 +208,11 @@ spec:
         persistentVolumeClaim:
           claimName: {{ .Values.persistence.existingClaim }}
       {{- end }}
+      {{- end }}
+      {{- if .Values.master.sysctlImage.mountHostSys }}
+      - name: host-sys
+        hostPath:
+          path: /sys
       {{- end }}
   {{- if and .Values.master.persistence.enabled (not .Values.persistence.existingClaim) }}
   volumeClaimTemplates:

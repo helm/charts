@@ -221,7 +221,16 @@ master:
   ## Redis Master pod priorityClassName
   # priorityClassName: {}
 
-
+  ## Sysctl InitContainer
+  ## used to perform sysctl operation to modify Kernel settings (needed sometimes to avoid warnings)
+  sysctlImage:
+    enabled: false
+    command: []
+    registry: docker.io
+    repository: busybox
+    tag: latest
+    pullPolicy: Always
+    mountHostSys: false
 ##
 ## Redis Slave properties
 ## Note: service.type is a mandatory parameter
@@ -300,6 +309,17 @@ slave:
 
   ## Redis slave pod priorityClassName
   # priorityClassName: {}
+
+  ## Sysctl InitContainer
+  ## used to perform sysctl operation to modify Kernel settings (needed sometimes to avoid warnings)
+  sysctlImage:
+    enabled: false
+    command: []
+    registry: docker.io
+    repository: busybox
+    tag: latest
+    pullPolicy: Always
+    mountHostSys: false
 
 ## Prometheus Exporter / Metrics
 ##
