@@ -131,7 +131,12 @@ gcs:
   enabled: false
   project: my-project-name
   bucket: "<GCS-BUCKET-NAME>"
+  ## if jsonKey is set, will create a secret containing it
   jsonKey: '<INSERT CLOUD STORAGE JSON HERE>'
+  ## override the name of the secret to use for jsonKey, if `jsonKey`
+  ## is empty, it will not create a secret assuming you are creating one
+  ## external to the chart. the key for that secret should be `key.json`.
+  secretName:
 
 # AWS Simple Storage Service
 s3:
