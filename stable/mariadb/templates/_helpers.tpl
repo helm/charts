@@ -84,3 +84,14 @@ Get the initialization scripts ConfigMap name.
 {{- printf "%s-init-scripts" (include "mariadb.fullname" .) -}}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Create the name of the service account to use
+*/}}
+{{- define "mariadb.serviceAccountName" -}}
+{{- if .Values.serviceAccount.create -}}
+    {{ default (include "mariadb.fullname" .) .Values.serviceAccount.name }}
+{{- else -}}
+    {{ default "default" .Values.serviceAccount.name }}
+{{- end -}}
+{{- end -}}
