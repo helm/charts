@@ -129,9 +129,9 @@ spec:
               port: service
               {{- if .Values.tls.enabled }}
               scheme: HTTPS
+              {{ else }}
+              scheme: HTTP
               {{- end }}
-              path: /minio/health/live
-              port: service
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
