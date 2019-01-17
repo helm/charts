@@ -322,9 +322,6 @@ prometheus:
     ## Port agent exposes for Prometheus to scrape metrics
     port: 8080
 
-    ## Custom label selector
-    selector: {}
-
   operator:
     ## Are you using Prometheus Operator?
     enabled: false
