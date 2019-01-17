@@ -74,17 +74,17 @@ spec:
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "airflow.fullname" . }}
+                  name: {{ template "airflow.secret" . }}
                   key: postgresUser
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "airflow.fullname" . }}
+                  name: {{ template "airflow.secret" . }}
                   key: postgresPassword
             - name: REDIS_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "airflow.fullname" . }}
+                  name: {{ template "airflow.secret" . }}
                   key: redisPassword
           volumeMounts:
           {{- $secretsDir := .Values.workers.secretsDir -}}

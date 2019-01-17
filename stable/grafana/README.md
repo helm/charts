@@ -64,8 +64,9 @@ The command removes all the Kubernetes components associated with the chart and 
 | `envFromSecret`                           | Name of a Kubenretes secret (must be manually created in the same namespace) containing values to be added to the environment | `""` |
 | `extraSecretMounts`                       | Additional grafana server secret mounts       | `[]`                                                    |
 | `extraVolumeMounts`                       | Additional grafana server volume mounts       | `[]`                                                    |
+| `extraConfigmapMounts`                    | Additional grafana server configMap volume mounts  | `[]`                                               |
 | `plugins`                                 | Plugins to be loaded along with Grafana       | `[]`                                                    |
-| `datasources`                             | Configure grafana datasources                 | `{}`                                                    |
+| `datasources`                             | Configure grafana datasources (passed through tpl) | `{}`                                                    |
 | `dashboardProviders`                      | Configure grafana dashboard providers         | `{}`                                                    |
 | `dashboards`                              | Dashboards to import                          | `{}`                                                    |
 | `dashboardsConfigMaps`                    | ConfigMaps reference that contains dashboards | `{}`                                                    |
