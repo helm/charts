@@ -159,6 +159,13 @@ $ kubectl create secret generic redshift-user --from-file=redshift-user=~/secret
 ```
 Where `redshift-user.txt` contains the user secret as a single text string.
 
+### Use precreated secret for postgres and redis
+
+You can use a precreated secret for the connection credentials to both postgresql and redis. To do
+so specify in values.yaml `existingAirflowSecret`, where the value is the name of the secret which has
+postgresUser, postgresPassword, and redisPassword defined. If not specified, it will fall back to using
+`secrets.yaml` to store the connection credentials by default.
+
 ### Local binaries
 
 Please note a folder `~/.local/bin` will be automatically created and added to the PATH so that
@@ -238,6 +245,7 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `workers.pod.annotations`                | annotations for the worker pods                         | `{}`                      |
 | `workers.secretsDir`                     | directory in which to mount secrets on worker nodes     | /var/airflow/secrets      |
 | `workers.secrets`                        | secrets to mount as volumes on worker nodes             | []                        |
+| `existingAirflowSecret`                  | secret to use for postgres and redis connection         |                           |
 | `ingress.enabled`                        | enable ingress                                          | `false`                   |
 | `ingress.web.host`                       | hostname for the webserver ui                           | ""                        |
 | `ingress.web.path`                       | path of the werbserver ui (read `values.yaml`)          | ``                        |

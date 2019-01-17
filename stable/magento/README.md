@@ -54,7 +54,7 @@ The following table lists the configurable parameters of the Magento chart and t
 | `image.repository`                   | Magento Image name                         | `bitnami/magento`                                        |
 | `image.tag`                          | Magento Image tag                          | `{VERSION}`                                              |
 | `image.pullPolicy`                   | Image pull policy                          | `Always` if `imageTag` is `latest`, else `IfNotPresent`  |
-| `image.pullSecrets`                  | Specify image pull secrets                 | `nil`                                                    |
+| `image.pullSecrets`                  | Specify docker-registry secret names as an array | `[]` (does not add image pull secrets to deployed pods) |
 | `magentoHost`                        | Magento host to create application URLs    | `nil`                                                    |
 | `magentoLoadBalancerIP`              | `loadBalancerIP` for the magento Service   | `nil`                                                    |
 | `magentoUsername`                    | User of the application                    | `user`                                                   |
@@ -75,14 +75,14 @@ The following table lists the configurable parameters of the Magento chart and t
 | `mariadb.db.name`                    | Database name to create                    | `bitnami_magento`                                        |
 | `mariadb.db.user`                    | Database user to create                    | `bn_magento`                                             |
 | `mariadb.db.password`                | Password for the database                  | _random 10 character long alphanumeric string_           |
-| `service.type`                    | Kubernetes Service type                    | `LoadBalancer`                                          |
-| `service.port`                    | Service HTTP port                    | `80`                                          |
-| `service.httpsPort`                    | Service HTTPS port                    | `443`                                          |
-| `nodePorts.https`                | Kubernetes https node port                 | `""`                                                    |
-| `service.externalTrafficPolicy`   | Enable client source IP preservation       | `Cluster`                                               |
-| `service.nodePorts.http`                 | Kubernetes http node port                  | `""`                                                    |
-| `service.nodePorts.https`                | Kubernetes https node port                 | `""`                                                    |
-| `service.loadBalancerIP`            | `loadBalancerIP` for the Magento Service | `nil`                                                    |
+| `service.type`                       | Kubernetes Service type                    | `LoadBalancer`                                           |
+| `service.port`                       | Service HTTP port                          | `80`                                                     |
+| `service.httpsPort`                  | Service HTTPS port                         | `443`                                                    |
+| `nodePorts.https`                    | Kubernetes https node port                 | `""`                                                     |
+| `service.externalTrafficPolicy`      | Enable client source IP preservation       | `Cluster`                                                |
+| `service.nodePorts.http`             | Kubernetes http node port                  | `""`                                                     |
+| `service.nodePorts.https`            | Kubernetes https node port                 | `""`                                                     |
+| `service.loadBalancerIP`             | `loadBalancerIP` for the Magento Service   | `nil`                                                    |
 | `livenessProbe.enabled`              | Turn on and off liveness probe             | `true`                                                   |
 | `livenessProbe.initialDelaySeconds`  | Delay before liveness probe is initiated   | `1000`                                                   |
 | `livenessProbe.periodSeconds`        | How often to perform the probe             | `10`                                                     |
@@ -103,15 +103,15 @@ The following table lists the configurable parameters of the Magento chart and t
 | `persistence.magento.accessMode`     | PVC Access Mode for Magento volume         | `ReadWriteOnce`                                          |
 | `persistence.magento.size`           | PVC Storage Request for Magento volume     | `8Gi`                                                    |
 | `resources`                          | CPU/Memory resource requests/limits        | Memory: `512Mi`, CPU: `300m`                             |
-| `podAnnotations`                | Pod annotations                                   | `{}`                                                       |
-| `metrics.enabled`                          | Start a side-car prometheus exporter                                                                           | `false`                                              |
-| `metrics.image.registry`                   | Apache exporter image registry                                                                                  | `docker.io`                                          |
-| `metrics.image.repository`                 | Apache exporter image name                                                                                      | `lusotycoon/apache-exporter`                           |
-| `metrics.image.tag`                        | Apache exporter image tag                                                                                       | `v0.5.0`                                            |
-| `metrics.image.pullPolicy`                 | Image pull policy                                                                                              | `IfNotPresent`                                       |
-| `metrics.image.pullSecrets`                | Specify docker-registry secret names as an array                                                               | `nil`                                                |
-| `metrics.podAnnotations`                   | Additional annotations for Metrics exporter pod                                                                | `{prometheus.io/scrape: "true", prometheus.io/port: "9117"}`                                                   |
-| `metrics.resources`                        | Exporter resource requests/limit                                                                               | {}                        |
+| `podAnnotations`                     | Pod annotations                            | `{}`                                                     |
+| `metrics.enabled`                    | Start a side-car prometheus exporter       | `false`                                                  |
+| `metrics.image.registry`             | Apache exporter image registry             | `docker.io`                                              |
+| `metrics.image.repository`           | Apache exporter image name                 | `lusotycoon/apache-exporter`                             |
+| `metrics.image.tag`                  | Apache exporter image tag                  | `v0.5.0`                                                 |
+| `metrics.image.pullPolicy`           | Image pull policy                          | `IfNotPresent`                                           |
+| `metrics.image.pullSecrets`          | Specify docker-registry secret names as an array | `[]` (does not add image pull secrets to deployed pods)  |
+| `metrics.podAnnotations`             | Additional annotations for Metrics exporter pod  | `{prometheus.io/scrape: "true", prometheus.io/port: "9117"}` |
+| `metrics.resources`                  | Exporter resource requests/limit                 | {}                                                  |
 
 The above parameters map to the env variables defined in [bitnami/magento](http://github.com/bitnami/bitnami-docker-magento). For more information please refer to the [bitnami/magento](http://github.com/bitnami/bitnami-docker-magento) image documentation.
 
