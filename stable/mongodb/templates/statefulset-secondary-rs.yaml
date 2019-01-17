@@ -76,7 +76,13 @@ spec:
             value: "1"
           {{- end }}
           - name: MONGODB_SYSTEM_LOG_VERBOSITY
-            value: {{ .Values.mongodbSystemLogVerbosity | quote}}
+            value: {{ .Values.mongodbSystemLogVerbosity | quote }}
+          - name: MONGODB_DISABLE_SYSTEM_LOG
+            {{- if .Values.mongodbDisableSystemLog }}
+            value: "yes"
+            {{- else }}
+            value: "no"
+            {{- end }}
           - name: MONGODB_POD_NAME
             valueFrom:
               fieldRef:
