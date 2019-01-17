@@ -32,6 +32,7 @@ spec:
         release: "{{ .Release.Name }}"
         chart: {{ template "mariadb.chart" . }}
     spec:
+      serviceAccountName: "{{ template "mariadb.serviceAccountName" . }}"
       {{- if .Values.securityContext.enabled }}
       securityContext:
         fsGroup: {{ .Values.securityContext.fsGroup }}
