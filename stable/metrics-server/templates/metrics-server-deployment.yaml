@@ -26,6 +26,17 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command:
             - /metrics-server
+            {{- if .Values.insecureSkipVerify }}
+            - --kubelet-insecure-tls
+            {{- end }}
+            {{- if .Values.tls.enabled }}
+            - --client-ca-file
+            - /certs/caFile
+            - --tls-cert-file
+            - /certs/certFile
+            - --tls-private-key-file
+            - /certs/privateKeyFile
+            {{- end }}
             {{- range .Values.args }}
             - {{ . | quote }}
             {{- end }}
@@ -33,6 +44,28 @@ spec:
           resources:
 {{ toYaml . | indent 12 }}
         {{- end }}
+      {{- if .Values.tls.enabled }}
+          volumeMounts:
+            - mountPath: /certs/caFile
+              name: ca-file
+              readOnly: true
+            - mountPath: /certs/certFile
+              name: cert-file
+              readOnly: true
+            - mountPath: /certs/privateKeyFile
+              name: key-file
+              readOnly: true
+      volumes:
+        - name: ca-file
+          hostPath:
+            path: {{ .Values.tls.ca }}
+        - name: cert-file
+          hostPath:
+            path: {{ .Values.tls.certificate }}
+        - name: key-file
+          hostPath:
+            path: {{ .Values.tls.key }}
+      {{- end}}
     {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

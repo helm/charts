@@ -19,3 +19,8 @@ Parameter | Description | Default
 `nodeSelector` | Node labels for pod assignment | `{}`
 `affinity` | Node affinity | `{}`
 `replicas` | Number of replicas | `1`
+`insecureSkipVerify` | If true, skip validation of remote server identity | `false`
+`tls.enabled` | If true, use the provided certificates. If false, generate self-signed certs | `false`
+`tls.ca` | Public CA file that signed the APIService (ignored if tls.enable=false) | ``
+`tls.certificate` | Public key of the APIService (ignored if tls.enable=false) | ``
+`tls.key` | Private key of the APIService (ignored if tls.enable=false) | ``

@@ -24,8 +24,6 @@ image:
 
 args:
   - --logtostderr
-# enable this if you have self-signed certificates, see: https://github.com/kubernetes-incubator/metrics-server
-#  - --kubelet-insecure-tls
 
 resources: {}
 
@@ -36,3 +34,11 @@ tolerations: []
 affinity: {}
 
 replicas: 1
+
+# enable this if you have self-signed certificates, see: https://github.com/kubernetes-incubator/metrics-server
+insecureSkipVerify: false
+tls:
+  enabled: false
+  ca: /etc/kubernetes/certs/ca.crt
+  certificate: /etc/kubernetes/certs/kubelet.crt
+  key: /etc/kubernetes/certs/kubelet.key
