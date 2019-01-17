@@ -18,11 +18,9 @@ image:
   tag: 5.5.4
   pullPolicy: IfNotPresent
 
-config:
-  elasticsearch:
-    hosts:
-      - CHANGEME.host
-    port: 9200
+hooks:
+  install: false
+  upgrade: false
 
 configMaps:
   # Delete indices older than 7 days
@@ -49,26 +47,26 @@ configMaps:
           epoch:
           exclude: False
   # Having config_yaml WILL override the other config
-  # config_yml: |-
-  #   ---
-  #   client:
-  #     hosts:
-  #       - elasticsearch-logging-cluster
-  #     port: 9200
-  #     url_prefix:
-  #     use_ssl: True
-  #     certificate:
-  #     client_cert:
-  #     client_key:
-  #     ssl_no_validate: True
-  #     http_auth:
-  #     timeout: 30
-  #     master_only: False
-  #   logging:
-  #     loglevel: INFO
-  #     logfile:
-  #     logformat: default
-  #     blacklist: ['elasticsearch', 'urllib3']
+  config_yml: |-
+    ---
+    client:
+      hosts:
+        - CHANGEME.host
+      port: 9200
+      # url_prefix:
+      # use_ssl: True
+      # certificate:
+      # client_cert:
+      # client_key:
+      # ssl_no_validate: True
+      # http_auth:
+      # timeout: 30
+      # master_only: False
+    # logging:
+    #   loglevel: INFO
+    #   logfile:
+    #   logformat: default
+    #   blacklist: ['elasticsearch', 'urllib3']
 
 
 resources: {}
