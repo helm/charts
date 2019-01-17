@@ -1,4 +1,4 @@
-{{- if .Values.proxy.podDisruptionBudget.enabled }}
+{{- if .Values.proxy.podDisruptionBudget }}
 apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
@@ -9,15 +9,10 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-{{- if .Values.proxy.podDisruptionBudget.minAvailable }}
-  minAvailable: {{ .Values.proxy.podDisruptionBudget.minAvailable }}
-{{- end }}
-{{- if .Values.proxy.podDisruptionBudget.maxUnavailable }}
-  maxUnavailable: {{ .Values.proxy.podDisruptionBudget.maxUnavailable }}
-{{- end }}
   selector:
     matchLabels:
       app: {{ template "stolon.name" . }}
       release: {{ .Release.Name }}
       component: stolon-proxy
+{{ toYaml .Values.proxy.podDisruptionBudget | indent 2 }}
 {{- end }}

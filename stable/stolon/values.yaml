@@ -95,7 +95,6 @@ keeper:
     failKeeper:
       enabled: false
   podDisruptionBudget:
-    enabled: false
     # minAvailable: 1
     # maxUnavailable: 1
 
@@ -117,7 +116,6 @@ proxy:
   affinity: {}
   tolerations: []
   podDisruptionBudget:
-    enabled: false
     # minAvailable: 1
     # maxUnavailable: 1
 
@@ -130,6 +128,5 @@ sentinel:
   affinity: {}
   tolerations: []
   podDisruptionBudget:
-    enabled: false
     # minAvailable: 1
     # maxUnavailable: 1
