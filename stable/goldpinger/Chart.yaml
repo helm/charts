@@ -1,0 +1,9 @@
+name: goldpinger
+version: 1.0.0
+appVersion: 1.2.0
+description: Goldpinger makes calls between its instances for visibility and alerting.
+sources:
+  - https://github.com/bloomberg/goldpinger
+maintainers:
+  - name: okgolove
+    email: okgolove@markeloff.net
