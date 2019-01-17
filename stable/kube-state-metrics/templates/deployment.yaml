@@ -31,6 +31,9 @@ spec:
       containers:
       - name: {{ .Chart.Name }}
         args:
+{{  if .Values.collectors.configmaps  }}
+        - --collectors=configmaps
+{{  end  }}
 {{  if .Values.collectors.cronjobs  }}
         - --collectors=cronjobs
 {{  end  }}
@@ -75,6 +78,9 @@ spec:
 {{  end  }}
 {{  if .Values.collectors.resourcequotas  }}
         - --collectors=resourcequotas
+{{  end  }}
+{{  if .Values.collectors.secrets  }}
+        - --collectors=secrets
 {{  end  }}
 {{  if .Values.collectors.services  }}
         - --collectors=services
