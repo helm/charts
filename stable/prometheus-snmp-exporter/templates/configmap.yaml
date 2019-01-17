@@ -1,0 +1,14 @@
+{{- if .Values.config }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "prometheus-snmp-exporter.fullname" . }}
+  labels:
+    chart: {{ template "prometheus-snmp-exporter.chart" . }}
+    app: {{ template "prometheus-snmp-exporter.name" . }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+data:
+  snmp.yaml: |
+{{ toYaml .Values.config | indent 4 }}
+{{- end }}
