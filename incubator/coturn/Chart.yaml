@@ -10,6 +10,6 @@ keywords:
 home: https://github.com/coturn/coturn
 sources:
   - https://github.com/coturn/coturn
-maintainer:
+maintainers:
   - name: Miquel Ortega
     email: lenyos@gmail.com
