@@ -70,11 +70,11 @@ upload:
     jsonKeyfile: ""
     # secretFileName specifies the keyfile name inside the secret
     secretFileName: keyfile.json
-    #existingSecret can be enabled to use an existing secret
-    #existingSecret: mysecret
-    #serviceAccountName to set a specific service account name
-    #serviceAccountName
-    #usingGCPController to enable autogeneration and injection of the service account
+    # existingSecret can be enabled to use an existing secret
+    # existingSecret: mysecret
+    # serviceAccountName to set a specific service account name
+    # serviceAccountName
+    # usingGCPController to enable autogeneration and injection of the service account
     usingGCPController: false
   ssh:
     enabled: false
