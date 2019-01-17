@@ -326,7 +326,7 @@ prometheus:
     port: 8080
 
     ## Custom label selector
-    selector:
+    selector: {}
 
   operator:
     ## Are you using Prometheus Operator?
