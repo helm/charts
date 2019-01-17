@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: wolmi/coturn
-  tag: stable
+  tag: 0.1
   pullPolicy: IfNotPresent
 
 service:
