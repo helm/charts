@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: lmierzwa/karma
-  tag: v0.20
+  tag: v0.21
   pullPolicy: IfNotPresent
 
 nameOverride: ""
@@ -78,6 +78,9 @@ configMap:
   #       uri: http://localhost:9093
   #       timeout: 10s
   #       proxy: true
+  #       headers:
+  #         x-auth-token: some-token
+  #         any-header: string-value
   #     - name: client-auth
   #       uri: https://localhost:9093
   #       timeout: 10s
