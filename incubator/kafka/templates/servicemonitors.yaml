@@ -52,6 +52,7 @@ metadata:
   namespace: {{ .Values.prometheus.operator.serviceMonitor.namespace }}
   labels:
 {{ toYaml .Values.prometheus.operator.serviceMonitor.selector | indent 4 }}
+{{ toYaml .Values.prometheus.agent.selector | indent 4 }}
 spec:
   selector:
     matchLabels:
