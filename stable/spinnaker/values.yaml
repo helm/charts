@@ -98,17 +98,18 @@ spinnakerFeatureFlags:
 nodeSelector: {}
 
 # Redis password to use for the in-cluster redis service
-# Redis is not exposed publically
+# Enable redis to use in-cluster redis
 redis:
+  enabled: true
+  # External Redis option will be enabled if in-cluster redis is disabled
+  external:
+    host: "<EXTERNAL-REDIS-HOST-NAME>"
+    port: 6379
+    # password: ""
   password: password
   nodeSelector: {}
   cluster:
     enabled: false
-# Change this to true if youd like to use external redis
-  external: false
-# Uncomment to specify external redis
-#  host: "<EXTERNAL-REDIS-HOST-NAME>"
-#  port: 6379
 # Uncomment if you don't want to create a PVC for redis
 #  master:
 #    persistence:
