@@ -28,7 +28,9 @@ metadata:
   name: {{ include "kafka.fullname" . }}-exporter
   namespace: {{ .Values.prometheus.operator.serviceMonitor.namespace }}
   labels:
-{{ toYaml .Values.prometheus.operator.serviceMonitor.selector | indent 4 }}
+  {{- range $key, $value := .Values.prometheus.operator.serviceMonitor.selector }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
 spec:
   selector:
     matchLabels:
