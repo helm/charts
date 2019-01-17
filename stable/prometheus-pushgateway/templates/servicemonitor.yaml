@@ -16,6 +16,7 @@ spec:
     {{- if .Values.serviceMonitor.interval }}
     interval: {{ .Values.serviceMonitor.interval }}
     {{- end }}
+    honorLabels: {{ .Values.serviceMonitor.honorLabels }}
   selector:
     matchLabels:
       app: {{ template "prometheus-pushgateway.name" . }}
