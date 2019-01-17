@@ -88,6 +88,8 @@ spec:
               port: service
               {{- if .Values.tls.enabled }}
               scheme: HTTPS
+              {{ else }}
+              scheme: HTTP
               {{- end }}
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
