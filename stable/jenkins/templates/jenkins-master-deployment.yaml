@@ -334,7 +334,7 @@ spec:
       {{- else }}
         emptyDir: {}
       {{- end -}}
-      {{- if and (.Values.Master.JCasC.enabled) (.Values.Master.Sidecar.configAutoReload.enabled) }}
+      {{- if .Values.Master.JCasC.enabled }}
       - name: sc-config-volume
         emptyDir: {}
       {{- end }}

@@ -25,6 +25,13 @@ Master:
   #      <denyAnonymousReadAccess>true</denyAnonymousReadAccess>
   #    </authorizationStrategy>
   HostNetworking: false
+  # When enabling LDAP or another non-Jenkins identity source, the built-in admin account will no longer exist.
+  # Since the AdminUser is used by configAutoReload, in order to use configAutoReload you must change the
+  # .Master.AdminUser to a valid username on your LDAP (or other) server.  This user does not need
+  # to have administrator rights in Jenkins (the default Overall:Read is sufficient) nor will it be granted any
+  # additional rights.  Failure to do this will cause the sidecar container to fail to authenticate via SSH and enter
+  # a restart loop.  Likewise if you disable the non-Jenkins identity store and instead use the Jenkins internal one,
+  # you should revert Master.AdminUser to your preferred admin user:
   AdminUser: admin
   # AdminPassword: <defaults to random>
   OwnSshKey: false
@@ -38,7 +45,7 @@ Master:
       memory: "256Mi"
     limits:
       cpu: "2000m"
-      memory: "2048Mi"
+      memory: "4096Mi"
   # Environment variables that get added to the init container (useful for e.g. http_proxy)
   # InitContainerEnv:
   #   - name: http_proxy
@@ -165,8 +172,8 @@ Master:
     configAutoReload:
       # If enabled: true, Jenkins Configuration as Code will be reloaded on-the-fly without a reboot.  If false or not-specified,
       # jcasc changes will cause a reboot and will only be applied at the subsequent start-up.  Auto-reload uses the Jenkins CLI
-      # over SSH to reapply config when changes to the ConfigScripts are detected.  The admin account will have an
-      # SSH private key (RSA 4096) created unless you specify OwnSshKey: true.  This will be saved to a k8s secret.
+      # over SSH to reapply config when changes to the ConfigScripts are detected.  The admin user (or account you specify in
+      # Master.AdminUser) will have a random SSH private key (RSA 4096) assigned unless you specify OwnSshKey: true.  This will be saved to a k8s secret.
       enabled: false
       # SSH port value can be set to any unused TCP port.  The default, 944, is a non-standard SSH port that has been chosen at random.
       # Is only used to reload jcasc config from the sidecar container running in the Jenkins master pod.
