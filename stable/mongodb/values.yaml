@@ -56,10 +56,11 @@ usePassword: true
 ##
 mongodbEnableIPv6: true
 
-## MongoDB System Log Verbosity Level
-## ref: https://github.com/bitnami/bitnami-docker-mongodb#increase-system-log-verbosity-level
+## MongoDB System Log configuration
+## ref: https://github.com/bitnami/bitnami-docker-mongodb#configuring-system-log-verbosity-level
 ##
 mongodbSystemLogVerbosity: 0
+mongodbDisableSystemLog: false
 
 ## MongoDB additional command line flags
 ##
