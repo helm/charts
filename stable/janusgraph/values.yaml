@@ -66,7 +66,7 @@ properties:
   # cache.db-cache-time: 180000
   # cache.db-cache-size: 0.5
 
-## when using local storage and indexing, choose whether to persist day
+## when using local storage and indexing, choose whether to persist data
 persistence:
   enabled: true  # set to false if you are testing and do not want to persist data
   path: /db

@@ -1,5 +1,5 @@
-apiVersion: apps/v1beta2
-kind: Deployment
+apiVersion: apps/v1beta1
+kind: StatefulSet
 metadata:
   name: {{ template "janusgraph.fullname" . }}
   labels:
@@ -41,10 +41,27 @@ spec:
         - name: janusgraph-config
           configMap:
             name: {{ .Values.configMapOverrideName | default ( printf "%s-config" .Release.Name ) }}
+        {{- if not .Values.persistence.enabled }}
         - name: local-db
-        {{- if .Values.persistence.enabled }}
-          persistentVolumeClaim:
-            claimName: {{ .Values.persistence.existingClaim | default (include "janusgraph.fullname" .) }}
-        {{- else }}
           emptyDir: {}
         {{- end -}}
+
+  {{- if .Values.persistence.enabled }}
+  volumeClaimTemplates:
+    - metadata:
+        name: local-db
+      spec:
+        accessModes:
+          - {{ .Values.persistence.accessMode | quote }}
+        resources:
+          requests:
+            storage: {{ .Values.persistence.size | quote }}
+      {{- if .Values.persistence.storageClass }}
+      {{- if (eq "-" .Values.persistence.storageClass) }}
+        storageClassName: ""
+      {{- else }}
+        storageClassName: "{{ .Values.persistence.storageClass }}"
+      {{- end }}
+      {{- end }}
+  {{- end }}
+
