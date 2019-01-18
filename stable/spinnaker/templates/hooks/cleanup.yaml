@@ -23,6 +23,7 @@ spec:
       containers:
       - name: halyard-install
         image: {{ .Values.halyard.image.repository }}:{{ .Values.halyard.image.tag }}
+        imagePullPolicy: {{ .Values.halyard.image.pullPolicy }}
         volumeMounts:
         - name: halyard-config
           mountPath: /opt/halyard/scripts

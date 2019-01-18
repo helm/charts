@@ -28,6 +28,7 @@ spec:
       initContainers:
       - name: "create-halyard-local"
         image: {{ .Values.halyard.image.repository }}:{{ .Values.halyard.image.tag }}
+        imagePullPolicy: {{ .Values.halyard.image.pullPolicy }}
         command:
         - bash
         - -c
@@ -37,9 +38,12 @@ spec:
           printf 'server.address: 0.0.0.0\n' > /tmp/config/halyard-local.yml && \
           # Use Redis deployed via the dependent Helm chart
           mkdir -p /tmp/spinnaker/.hal/default/service-settings && \
-          printf 'overrideBaseUrl: redis://:{{ .Values.redis.password }}@{{ .Release.Name }}-redis-master:6379\nskipLifeCycleManagement: true\n' > /tmp/spinnaker/.hal/default/service-settings/redis.yml && \
+          printf 'overrideBaseUrl: redis://:{{ .Values.redis.password }}@{{ .Release.Name }}-redis-master:6379\nskipLifeCycleManagement: true\n' > /tmp/spinnaker/.hal/default/service-settings/redis.yml
           # Route the /gate path of Deck to Gate
           printf 'env:\n  API_HOST: http://spin-gate.{{ .Release.Namespace }}:8084/\n' > /tmp/spinnaker/.hal/default/service-settings/deck.yml
+          # set gate profile to work behind a TLS LB/Proxy
+          # see https://github.com/spinnaker/spinnaker/issues/1630
+          printf '\nserver:\n  tomcat:\n    protocolHeader: X-Forwarded-Proto\n    remoteIpHeader: X-Forwarded-For\n    internalProxies: .*\n    httpsServerPort: X-Forwarded-Port\n' > /tmp/spinnaker/.hal/default/profiles/gate-local.yml
         volumeMounts:
         - name: halyard-config
           mountPath: /tmp/config
@@ -87,6 +91,7 @@ spec:
       containers:
       - name: halyard
         image: {{ .Values.halyard.image.repository }}:{{ .Values.halyard.image.tag }}
+        imagePullPolicy: {{ .Values.halyard.image.pullPolicy }}
         ports:
         - containerPort: 8064
           name: daemon

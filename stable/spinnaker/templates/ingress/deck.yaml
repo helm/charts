@@ -14,8 +14,7 @@ spec:
   - host: {{ .Values.ingress.host | quote }}
     http:
       paths:
-      - path: /
-        backend:
+      - backend:
           serviceName: spin-deck
           servicePort: 9000
 {{- if .Values.ingress.tls }}

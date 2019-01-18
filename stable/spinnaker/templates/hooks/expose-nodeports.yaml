@@ -26,6 +26,7 @@ spec:
       containers:
       - name: patch-services
         image: {{ .Values.halyard.image.repository }}:{{ .Values.halyard.image.tag }}
+        imagePullPolicy: {{ .Values.halyard.image.pullPolicy }}
         command:
         - bash
         - -c
