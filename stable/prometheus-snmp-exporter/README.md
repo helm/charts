@@ -90,3 +90,30 @@ $ helm install --name my-release -f values.yaml stable/prometheus-snmp-exporter
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+## Prometheus Configuration
+
+
+The snmp exporter needs to be passed the address as a parameter, this can be done with relabelling.
+
+Example config:
+
+```
+scrape_configs:
+  - job_name: 'snmp'
+    static_configs:
+      - targets:
+        - 192.168.1.2  # SNMP device.
+    metrics_path: /snmp
+    params:
+      module: [if_mib]
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: my-service-name:9116  # The SNMP exporter's Service name and port.
+```
+
+See [prometheus/snmp_exporter/README.md](https://github.com/prometheus/snmp_exporter/) for further information.
