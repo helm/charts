@@ -29,11 +29,23 @@ If release name contains chart name it will be used as a full name.
 {{- end -}}
 
 {{/*
-Create a service name that defaults to app name.
-We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+Create a service name that defaults to release name - Chart name.
 */}}
+
 {{- define "contour.service.fullname" -}}
-{{- .Values.service.nameOverride | default .Chart.Name }}
+{{- if .Values.serviceNameOverride -}}
+{{- .Values.serviceNameOverride | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- printf "%s-%s" .Release.Name .Chart.Name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+{{- end -}}
+
+{{- define "contour.crb.fullname" -}}
+{{- if .Values.crbNameOverride -}}
+{{- .Values.crbNameOverride | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- printf "%s-%s" .Release.Name .Chart.Name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
 {{- end -}}
 
 {{/*
