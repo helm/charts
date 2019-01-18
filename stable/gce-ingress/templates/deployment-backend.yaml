@@ -3,7 +3,8 @@ kind: Deployment
 metadata:
   name: {{ include "gce-ingress.fullname" . }}-backend
   labels:
-    app: {{ include "gce-ingress.name" . }}-backend
+    app: {{ include "gce-ingress.name" . }}
+    component: backend
     chart: {{ include "gce-ingress.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
@@ -14,13 +15,15 @@ spec:
   replicas: {{ .Values.defaultBackend.replicaCount }}
   selector:
     matchLabels:
-      app: {{ include "gce-ingress.name" . }}-backend
+      app: {{ include "gce-ingress.name" . }}
+      component: backend
       release: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ include "gce-ingress.name" . }}-backend
+        app: {{ include "gce-ingress.name" . }}
         release: {{ .Release.Name }}
+        component: backend
     spec:
       containers:
         - name: backend
