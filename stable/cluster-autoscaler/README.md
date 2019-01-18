@@ -115,6 +115,7 @@ The following table lists the configurable parameters of the cluster-autoscaler 
 
 Parameter | Description | Default
 --- | --- | ---
+`fullnameOverride`                     | Override the full resource names                                                                                             | `{release-name}-{cloudProvider}-cluster-autoscaler` (or `{cloudProvider}-cluster-autoscaler` if release-name is `{cloudProvider}-cluster-autoscaler`)
 `affinity` | node/pod affinities | None
 `autoDiscovery.clusterName` | enable autodiscovery for name in ASG tag (only `cloudProvider=aws`). Must be set for `cloudProvider=gce`, but no MIG tagging required.| `""` **required unless autoscalingGroups[] provided**
 `autoscalingGroups[].name` | autoscaling group name | None. Required unless `autoDiscovery.enabled=true`
