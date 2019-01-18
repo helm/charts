@@ -12,6 +12,8 @@ $ helm install stable/phpmyadmin
 
 This chart bootstraps a [phpMyAdmin](https://github.com/bitnami/bitnami-docker-phpmyadmin) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
+Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters.
+
 ## Prerequisites
 
 - Kubernetes 1.8+ with Beta APIs enabled
@@ -42,24 +44,38 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following table lists the configurable parameters of the phpMyAdmin chart and their default values.
 
-|              Parameter               |               Description                |                         Default                         |
-|--------------------------------------|------------------------------------------|---------------------------------------------------------|
-| `image.registry`                     | phpMyAdmin image registry                 | `docker.io`                                             |
-| `image.repository`                   | phpMyAdmin Image name                     | `bitnami/phpmyadmin`                                     |
-| `image.tag`                          | phpMyAdmin Image tag                      | `{VERSION}`                                             |
-| `image.pullPolicy`                   | Image pull policy                        |   `IfNotPresent` |
-| `image.pullSecrets`                  | Specify image pull secrets               | `nil`                                                   |
-| `service.type`            | type of service for phpMyAdmin frontend             | `ClusterIP`                                                  |
-| `service.port`        | port to expose service                   | `80`                                                   |
-| `db.port`            | database port to use to connect                  | `3306`                                     |
-| `db.chartName`                | Database suffix if included in the same release                  | `nil`                                          |
-| `db.host`            | database host to connect to               | `nil`          |
-| `ingress.enabled`            | ingress resource to be added              | `false`          |
-| `ingress.annotations`            | ingress annotations              | `{ingress.kubernetes.io/rewrite-target: /,    nginx.ingress.kubernetes.io/rewrite-target: /}`          |
-| `ingress.path`            | path to access frontend               | `/`          |
-| `ingress.host`            | ingress host               | `nil`          |
-| `ingress.tls`            | tls for ingress               | `[]`          |
-| `resources`                          | CPU/Memory resource requests/limits      | `{}`      |
+|         Parameter          |               Description                |                         Default                         |
+|----------------------------|------------------------------------------|---------------------------------------------------------|
+| `global.imageRegistry`     | Global Docker image registry             | `nil`                                                   |
+| `image.registry`           | phpMyAdmin image registry                | `docker.io`                                             |
+| `image.repository`         | phpMyAdmin image name                    | `bitnami/phpmyadmin`                                    |
+| `image.tag`                | phpMyAdmin image tag                     | `{VERSION}`                                             |
+| `image.pullPolicy`         | Image pull policy                        | `IfNotPresent`                                          |
+| `image.pullSecrets`        | Specify docker-registry secret names as an array               | `[]` (does not add image pull secrets to deployed pods)                                                   |
+| `service.type`             | Type of service for phpMyAdmin frontend  | `ClusterIP`                                             |
+| `service.port`             | Port to expose service                   | `80`                                                    |
+| `db.port`                  | Database port to use to connect          | `3306`                                                  |
+| `db.chartName`             | Database suffix if included in the same release | `nil`                                            |
+| `db.host`                  | Database host to connect to              | `nil`                                                   |
+| `db.bundleTestDB`                  | Deploy a MariaDB instance for testing purposes              | `false`                                                   |
+| `ingress.enabled`          | Ingress resource to be added             | `false`                                                 |
+| `ingress.annotations`      | Ingress annotations                      | `{ingress.kubernetes.io/rewrite-target: /,    nginx.ingress.kubernetes.io/rewrite-target: /}`          |
+| `ingress.path`             | Path to access frontend                  | `/`                                                     |
+| `ingress.host`             | Ingress host                             | `nil`                                                   |
+| `ingress.tls`              | TLS for ingress                          | `[]`                                                    |
+| `resources`                | CPU/Memory resource requests/limits      | `{}`                                                    |
+| `nodeSelector`             | Node labels for pod assignment           | `{}`                                                    |
+| `tolerations`              | List of node taints to tolerate          | `[]`                                                    |
+| `affinity`                 | Map of node/pod affinities               | `{}`                                                    |
+| `podAnnotations`                | Pod annotations                                   | `{}`                                                       |
+| `metrics.enabled`                          | Start a side-car prometheus exporter                                                                           | `false`                                              |
+| `metrics.image.registry`                   | Apache exporter image registry                                                                                  | `docker.io`                                          |
+| `metrics.image.repository`                 | Apache exporter image name                                                                                      | `lusotycoon/apache-exporter`                           |
+| `metrics.image.tag`                        | Apache exporter image tag                                                                                       | `v0.5.0`                                            |
+| `metrics.image.pullPolicy`                 | Image pull policy                                                                                              | `IfNotPresent`                                       |
+| `metrics.image.pullSecrets`                | Specify docker-registry secret names as an array                                                               | `[]` (does not add image pull secrets to deployed pods)  |
+| `metrics.podAnnotations`                   | Additional annotations for Metrics exporter pod                                                                | `{prometheus.io/scrape: "true", prometheus.io/port: "9117"}`                                                   |
+| `metrics.resources`                        | Exporter resource requests/limit                                                                               | {}                        |
 
 For more information please refer to the [bitnami/phpmyadmin](http://github.com/bitnami/bitnami-docker-Phpmyadmin) image documentation.
 
@@ -79,3 +95,14 @@ $ helm install --name my-release -f values.yaml stable/phpmyadmin
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+## Upgrading
+
+### To 1.0.0
+
+Backwards compatibility is not guaranteed unless you modify the labels used on the chart's deployments.
+Use the workaround below to upgrade from versions previous to `1.0.0`. The following example assumes that the release name is `phpmyadmin`:
+
+```console
+$ kubectl patch deployment phpmyadmin-phpmyadmin --type=json -p='[{"op": "remove", "path": "/spec/selector/matchLabels/chart"}]'
+```

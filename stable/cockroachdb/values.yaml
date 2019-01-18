@@ -5,7 +5,7 @@
 
 Name: "cockroachdb"
 Image: "cockroachdb/cockroach"
-ImageTag: "v2.0.5"
+ImageTag: "v2.1.3"
 ImagePullPolicy: "Always"
 Replicas: 3
 MaxUnavailable: 1
@@ -29,7 +29,7 @@ Resources: {}
   # requests:
   #   cpu: "100m"
   #   memory: "512Mi"
-Storage: "1Gi"
+Storage: "100Gi"
 ## Persistent Volume Storage Class for database data
 ## If defined, storageClassName: <StorageClass>
 ## If set to "-", storageClassName: "", which disables dynamic provisioning
@@ -55,10 +55,16 @@ Tolerations: {}
 Secure:
   Enabled: false
   RequestCertsImage: "cockroachdb/cockroach-k8s-request-cert"
-  RequestCertsImageTag: "0.3"
+  RequestCertsImageTag: "0.4"
   ServiceAccount:
     # Specifies whether a service account should be created.
     Create: true
     # The name of the service account to use.
     # If not set and create is true, a name is generated.
     Name:
+
+# If you are deploying a second cockroach instance that should join a first, use the below list to join to the existing instance.
+# Each item in the array should be a FQDN (and port if needed) resolvable by the new pods.
+JoinExisting: []
+# Set a locality (e.g. "region=us-central1,datacenter=us-centra1-a") if you're doing multi-cluster so data is distributed properly
+Locality: ""

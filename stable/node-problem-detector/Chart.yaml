@@ -1,0 +1,19 @@
+name: node-problem-detector
+version: "1.1.4"
+appVersion: v0.6.1
+home: https://github.com/kubernetes/node-problem-detector
+description: Installs the node-problem-detector daemonset for monitoring extra attributes on nodes
+icon: https://github.com/kubernetes/kubernetes/raw/master/logo/logo.png
+keywords:
+- node
+- problem
+- detector
+- monitoring
+sources:
+- https://github.com/kubernetes/charts/stable/node-problem-detector
+- https://github.com/kubernetes/node-problem-detector
+- https://kubernetes.io/docs/concepts/architecture/nodes/#condition
+maintainers:
+- name: max-rocket-internet
+  email: max.williams@deliveryhero.com
+engine: gotpl

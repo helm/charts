@@ -1,0 +1,34 @@
+settings:
+  log_monitors:
+    - kernel-monitor.json
+    - docker-monitor.json
+  custom_plugin_monitors: []
+
+hostpath:
+  logdir: /var/log/
+
+image:
+  repository: k8s.gcr.io/node-problem-detector
+  tag: v0.6.1
+  pullPolicy: IfNotPresent
+
+nameOverride: ""
+fullnameOverride: ""
+
+rbac:
+  create: true
+
+resources: {}
+
+annotations: {}
+
+tolerations: []
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+affinity: {}

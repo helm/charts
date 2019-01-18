@@ -1,6 +1,6 @@
 name: etcd
 home: https://github.com/coreos/etcd
-version: 0.4.1
+version: 0.6.2
 appVersion: 2.2.5
 description: Distributed reliable key-value store for the most critical data of a
   distributed system.

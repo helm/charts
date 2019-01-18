@@ -1,0 +1,19 @@
+apiVersion: v1
+description: Mattermost Team Edition server.
+name: mattermost-team-edition
+version: 2.1.4
+appVersion: 5.6.3
+keywords:
+- mattermost
+- communication
+- team collaboration
+home: https://mattermost.com
+icon: http://www.mattermost.org/wp-content/uploads/2016/04/icon.png
+source:
+- https://github.com/mattermost/mattermost-server
+- https://github.com/mattermost/mattermost-kubernetes
+maintainers:
+  - name: cpanato
+    email: carlos@mattermost.com
+  - name: jwilander
+    email: joram@mattermost.com

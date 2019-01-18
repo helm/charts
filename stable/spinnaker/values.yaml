@@ -1,14 +1,23 @@
 halyard:
-  spinnakerVersion: 1.8.5
+  spinnakerVersion: 1.9.1
   image:
     repository: gcr.io/spinnaker-marketplace/halyard
-    tag: stable
+    tag: 1.9.1
   # Provide a config map with Hal commands that will be run the core config (storage)
   # The config map should contain a script in the config.sh key
-  additionalConfig:
+  additionalScripts:
     enabled: false
     configMapName: my-halyard-config
     configMapKey: config.sh
+    # If you'd rather do an inline script, set create to true and put the content in the data dict like you would a configmap
+    create: false
+    data: {}
+  additionalSecrets:
+    create: false
+    data: {}
+  additionalConfigMaps:
+    create: false
+    data: {}
 
 # Define which registries and repositories you want available in your
 # Spinnaker pipeline definitions
@@ -48,11 +57,26 @@ kubeConfig:
   contexts:
   - default
   deploymentContext: default
+  omittedNameSpaces:
+  - kube-system
+  - kube-public
 
 # Change this if youd like to expose Spinnaker outside the cluster
 ingress:
   enabled: false
   # host: spinnaker.example.org
+  # annotations:
+    # ingress.kubernetes.io/ssl-redirect: 'true'
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  # tls:
+  #  - secretName: -tls
+  #    hosts:
+  #      - domain.com
+
+ingressGate:
+  enabled: false
+  # host: gate.spinnaker.example.org
   # annotations:
     # ingress.kubernetes.io/ssl-redirect: 'true'
     # kubernetes.io/ingress.class: nginx
@@ -102,12 +126,19 @@ minio:
 #  persistence:
 #    enabled: false
 
+# Google Cloud Storage
 gcs:
   enabled: false
   project: my-project-name
   bucket: "<GCS-BUCKET-NAME>"
+  ## if jsonKey is set, will create a secret containing it
   jsonKey: '<INSERT CLOUD STORAGE JSON HERE>'
+  ## override the name of the secret to use for jsonKey, if `jsonKey`
+  ## is empty, it will not create a secret assuming you are creating one
+  ## external to the chart. the key for that secret should be `key.json`.
+  secretName:
 
+# AWS Simple Storage Service
 s3:
   enabled: false
   bucket: "<S3-BUCKET-NAME>"
@@ -116,6 +147,13 @@ s3:
   # endpoint: ""
   # accessKey: ""
   # secretKey: ""
+
+# Azure Storage Account
+azs:
+  enabled: false
+#   storageAccountName: ""
+#   accessKey: ""
+#   containerName: "spinnaker"
 
 rbac:
   # Specifies whether RBAC resources should be created

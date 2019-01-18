@@ -8,8 +8,8 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 data:
-{{- with .Values.plugins }}
-  plugins: {{ . | quote }}
+{{- if .Values.plugins }}
+  plugins: {{ join "," .Values.plugins }}
 {{- end }}
   grafana.ini: |
 {{- range $key, $value := index .Values "grafana.ini" }}
@@ -20,9 +20,10 @@ data:
 {{- end }}
 
 {{- if .Values.datasources }}
+{{ $root := . }}
   {{- range $key, $value := .Values.datasources }}
   {{ $key }}: |
-{{ toYaml $value | indent 4 }}
+{{ tpl (toYaml $value | indent 4) $root }}
   {{- end -}}
 {{- end -}}
 

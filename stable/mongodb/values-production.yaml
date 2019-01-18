@@ -1,3 +1,9 @@
+## Global Docker image registry
+## Please, note that this will override the image registry for all the images, including dependencies, configured to use the global value
+##
+# global:
+#   imageRegistry:
+
 image:
   ## Bitnami MongoDB registry
   ##
@@ -8,7 +14,7 @@ image:
   ## Bitnami MongoDB image tag
   ## ref: https://hub.docker.com/r/bitnami/mongodb/tags/
   ##
-  tag: 4.0.2-debian-9
+  tag: 4.0.3
 
   ## Specify a imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -20,6 +26,11 @@ image:
   ##
   # pullSecrets:
   #   - myRegistrKeySecretName
+
+  ## Set to true if you would like to see extra information on logs
+  ## It turns NAMI debugging in minideb
+  ## ref:  https://github.com/bitnami/minideb-extras/#turn-on-nami-debugging
+  debug: false
 
 ## Enable authentication
 ## ref: https://docs.mongodb.com/manual/tutorial/enable-authentication/
@@ -44,6 +55,12 @@ usePassword: true
 ##
 mongodbEnableIPv6: true
 
+## MongoDB System Log configuration
+## ref: https://github.com/bitnami/bitnami-docker-mongodb#configuring-system-log-verbosity-level
+##
+mongodbSystemLogVerbosity: 0
+mongodbDisableSystemLog: false
+
 ## MongoDB additional command line flags
 ##
 ## Can be used to specify command line flags, for example:
@@ -60,10 +77,14 @@ securityContext:
   fsGroup: 1001
   runAsUser: 1001
 
+## Kubernetes Cluster Domain
+clusterDomain: cluster.local
+
 ## Kubernetes service type
 service:
   annotations: {}
   type: ClusterIP
+  # clusterIP: None
   port: 27017
 
   ## Specify the nodePort value for the LoadBalancer and NodePort service types.
@@ -87,7 +108,7 @@ replicaSet:
   ## Key used for replica set authentication
   ##
   # key: key
-  
+
   ## Number of replicas per each node type
   ##
   replicas:
@@ -103,6 +124,9 @@ replicaSet:
 
 # Annotations to be added to MongoDB pods
 podAnnotations: {}
+
+# Additional pod labels to apply
+podLabels: {}
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -202,3 +226,54 @@ configmap:
 #  security:
 #    authorization: enabled
 #    keyFile: /opt/bitnami/mongodb/conf/keyfile
+
+## Prometheus Exporter / Metrics
+##
+metrics:
+  enabled: true
+
+  image:
+    registry: docker.io
+    repository: forekshub/percona-mongodb-exporter
+    tag: latest
+    pullPolicy: IfNotPresent
+    ## Optionally specify an array of imagePullSecrets.
+    ## Secrets must be manually created in the namespace.
+    ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+    ##
+    # pullSecrets:
+    #   - myRegistrKeySecretName
+
+  ## Metrics exporter resource requests and limits
+  ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  ##
+  # resources: {}
+
+  ## Metrics exporter pod Annotation
+  podAnnotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "9216"
+
+  ## Prometheus Service Monitor
+  ## ref: https://github.com/coreos/prometheus-operator
+  ##      https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md
+  serviceMonitor:
+    ## If the operator is installed in your cluster, set to true to create a Service Monitor Entry
+    enabled: false
+    ## Used to pass Labels that are used by the Prometheus installed in your cluster to select Service Monitors to work with
+    ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#prometheusspec
+    additionalLabels: {}
+
+    ## Specify Metric Relabellings to add to the scrape endpoint
+    ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#endpoint
+    # relabellings:
+
+    alerting:
+      ## Define individual alerting rules as required
+      ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#rulegroup
+      ##      https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/
+      rules: {}
+
+      ## Used to pass Labels that are used by the Prometheus installed in your cluster to select Prometheus Rules to work with
+      ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#prometheusspec
+      additionalLabels: {}

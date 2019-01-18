@@ -6,14 +6,16 @@ replicaCount: 1
 
 image:
   repository: prom/cloudwatch-exporter
-  tag: latest
+  tag: cloudwatch_exporter-0.5.0
   pullPolicy: IfNotPresent
 
 service:
   type: ClusterIP
   port: 80
   targetPort: 9100
+  portName: http
   annotations: {}
+  labels: {}
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -81,3 +83,18 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+# Configurable health checks against the /healthy and /ready endpoints
+livenessProbe:
+  initialDelaySeconds: 30
+  periodSeconds: 5
+  timeoutSeconds: 5
+  successThreshold: 1
+  failureThreshold: 3
+
+readinessProbe:
+  initialDelaySeconds: 30
+  periodSeconds: 5
+  timeoutSeconds: 5
+  successThreshold: 1
+  failureThreshold: 3

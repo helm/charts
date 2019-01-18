@@ -25,8 +25,9 @@ The following table lists the configurable parameters of the filebeat chart and 
 | Parameter                                                | Description                                                                                              | Default                                            |
 | -------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
 | `image.repository`                                       | Docker image repo                                                                                        | `docker.elastic.co/beats/filebeat-oss`             |
-| `image.tag`                                              | Docker image tag                                                                                         | `6.3.1`                                            |
+| `image.tag`                                              | Docker image tag                                                                                         | `6.5.4`                                            |
 | `image.pullPolicy`                                       | Docker image pull policy                                                                                 | `IfNotPresent`                                     |
+| `image.pullSecrets`                                      | Specify image pull secrets                                                                               | `nil`                                              |
 | `config.filebeat.config.prospectors.path`                | Mounted `filebeat-prospectors` configmap                                                                 | `${path.config}/prospectors.d/*.yml`               |
 | `config.filebeat.config.prospectors.reload.enabled`      | Reload prospectors configs as they change                                                                | `false`                                            |
 | `config.filebeat.config.modules.path`                    |                                                                                                          | `${path.config}/modules.d/*.yml`                   |
@@ -40,10 +41,13 @@ The following table lists the configurable parameters of the filebeat chart and 
 | `config.http.enabled`                                    |                                                                                                          | `false`                                            |
 | `config.http.port`                                       |                                                                                                          | `5066`                                             |
 | `indexTemplateLoad`                                      | List of Elasticsearch hosts to load index template, when logstash output is used                         | `[]`                                               |
+| `command`                                                | Custom command (Docker Entrypoint)                                                                       | `[]`                                               |
+| `args`                                                   | Custom args (Docker Cmd)                                                                                 | `[]`                                               |
 | `plugins`                                                | List of beat plugins                                                                                     | `[]`                                               |
-| `extraVars`                                              | A map of additional environment variables                                                                | `{}`                                               |
+| `extraVars`                                              | A list of additional environment variables                                                                | `[]`                                              |
 | `extraVolumes`                                           | Add additional volumes                                                                                   | `[]`                                               |
 | `extraVolumeMounts`                                      | Add additional mounts                                                                                    | `[]`                                               |
+| `extraInitContainers`                                    | Add additional initContainers                                                                            | `[]`                                               |
 | `resources`                                              |                                                                                                          | `{}`                                               |
 |`priorityClassName`                                       | priorityClassName                                                                                        | `nil`                                              |
 | `nodeSelector`                                           |                                                                                                          | `{}`                                               |
@@ -52,7 +56,9 @@ The following table lists the configurable parameters of the filebeat chart and 
 | `affinity`                                               |                                                                                                          | `{}`                                               |
 | `rbac.create`                                            | Specifies whether RBAC resources should be created                                                       | `true`                                             |
 | `serviceAccount.create`                                  | Specifies whether a ServiceAccount should be created                                                     | `true`                                             |
-| `serviceAccount.name`                                    | he name of the ServiceAccount to use                                                                     | `""`                                               |
+| `serviceAccount.name`                                    | the name of the ServiceAccount to use                                                                     | `""`                                               |
+| `podSecurityPolicy.enabled`                              | Should the PodSecurityPolicy be created. Depends on `rbac.create` being set to `true`.                                                                     | `false`                                               |
+| `podSecurityPolicy.annotations`                                    | Annotations to be added to the created PodSecurityPolicy:                                                                    | `""`                                               |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 

@@ -1,5 +1,5 @@
 apiVersion: apps/v1beta1
-kind: StatefulSet
+kind: {{ .Values.kind }}
 metadata:
   name: {{ template "memcached.fullname" . }}
   labels:
@@ -17,6 +17,10 @@ spec:
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: "{{ .Release.Name }}"
         heritage: "{{ .Release.Service }}"
+{{- with .Values.podAnnotations }}
+      annotations:
+{{ toYaml . | indent 8 }}
+{{- end }}
     spec:
       affinity:
         podAntiAffinity:
@@ -82,4 +86,8 @@ spec:
 {{- with .Values.extraVolumes }}
       volumes:
 {{ tpl . $ | indent 6 }}
+{{- end }}
+{{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | trim | indent 8}}
 {{- end }}

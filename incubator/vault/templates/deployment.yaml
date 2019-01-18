@@ -7,6 +7,9 @@ metadata:
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+{{- if .Values.labels }}
+{{ toYaml .Values.labels | indent 4 }}
+{{- end }}
   annotations:
 {{ toYaml .Values.annotations | indent 4 }}
 spec:
@@ -25,7 +28,7 @@ spec:
     spec:
       containers:
       - name: {{ .Chart.Name }}
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        image: "{{ .Values.image.repository }}:{{ default .Chart.AppVersion .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         {{- if .Values.vault.dev }}
         command: ["vault", "server", "-dev", "-dev-listen-address", "[::]:8200"]
@@ -66,6 +69,8 @@ spec:
                 fieldPath: status.podIP
           - name: VAULT_CLUSTER_ADDR
             value: "https://$(POD_IP):8201"
+          - name: VAULT_LOG_LEVEL
+            value: {{ .Values.vault.logLevel | quote }}
         {{- if .Values.vault.extraEnv }}
 {{ toYaml .Values.vault.extraEnv | indent 10 }}
         {{- end }}
@@ -75,7 +80,7 @@ spec:
         - name: vault-root
           mountPath: /root/
         {{- range .Values.vault.customSecrets }}
-        - name: {{ .secretName }}
+        - name: {{ .secretName | replace "." "-"}}
           mountPath: {{ .mountPath }}
         {{- end }}
 {{- if .Values.vault.extraContainers }}
@@ -124,7 +129,7 @@ spec:
         - name: vault-root
           emptyDir: {}
         {{- range .Values.vault.customSecrets }}
-        - name: {{ .secretName }}
+        - name: {{ .secretName | replace "." "-"}}
           secret:
             secretName: {{ .secretName }}
         {{- end }}

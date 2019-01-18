@@ -24,7 +24,7 @@ data:
     globalDimensions:
       kubernetes_cluster: {{ .Values.clusterName }}
 
-    sendMachineID: true
+    sendMachineID: false
 
     observers:
     - type: k8s-api
@@ -45,8 +45,9 @@ data:
     - type: collectd/protocols
     - type: collectd/signalfx-metadata
       procFSPath: /hostfs/proc
+    - type: host-metadata
       etcPath: /hostfs/etc
-      persistencePath: /run
+      procFSPath: /hostfs/proc
     - type: collectd/uptime
     - type: collectd/vmem
 
@@ -67,6 +68,7 @@ data:
     {{ if .Values.gatherClusterMetrics -}}
     # Collects k8s cluster-level metrics
     - type: kubernetes-cluster
+      useNodeName: true
     {{- end }}
 
     {{ if .Values.gatherDockerMetrics -}}

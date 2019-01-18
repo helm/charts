@@ -13,8 +13,16 @@ metadata:
     heritage: "{{ .Release.Service }}"
 spec:
   type: {{ .Values.admin.type }}
-  {{- if and (eq .Values.admin.type "LoadBalancer") .Values.admin.loadBalancerIP }}
+  {{- if eq .Values.admin.type "LoadBalancer" }}
+  {{- if .Values.admin.loadBalancerIP }}
   loadBalancerIP: {{ .Values.admin.loadBalancerIP }}
+  {{- end }}
+  {{- if .Values.admin.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+  {{- range $cidr := .Values.admin.loadBalancerSourceRanges }}
+  - {{ $cidr }}
+  {{- end }}
+  {{- end }}
   {{- end }}
   ports:
   - name: kong-admin
@@ -27,3 +35,4 @@ spec:
   selector:
     app: {{ template "kong.name" . }}
     release: {{ .Release.Name }}
+    component: app

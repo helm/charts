@@ -9,17 +9,17 @@ metadata:
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
   annotations:
-    checksum/confd-config: {{ toYaml .Values.datadog.confd | sha256sum }}
-    checksum/autoconf-config: {{ toYaml .Values.datadog.autoconf | sha256sum }}
+    checksum/confd-config: {{ tpl (toYaml .Values.datadog.confd) . | sha256sum }}
+    checksum/autoconf-config: {{ tpl (toYaml .Values.datadog.autoconf) . | sha256sum }}
 data:
 {{/*
 Merge the legacy autoconf dict before so confd static configurations
 override duplicates
 */}}
 {{- if .Values.datadog.autoconf }}
-{{ toYaml .Values.datadog.autoconf | indent 2 }}
+{{ tpl (toYaml .Values.datadog.autoconf) . | indent 2 }}
 {{- end -}}
 {{- if .Values.datadog.confd }}
-{{ toYaml .Values.datadog.confd | indent 2 }}
+{{ tpl (toYaml .Values.datadog.confd) . | indent 2 }}
 {{- end -}}
 {{- end -}}

@@ -19,3 +19,9 @@
 .project
 .idea/
 *.tmproj
+
+# OWNERS file for Helm repository
+OWNERS
+
+# Test files
+tests

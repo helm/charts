@@ -48,6 +48,10 @@ The following table lists the configurable parameters of the MySQL chart and the
 | -------------------------------------------- | -------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
 | `image`                                      | `mysql` image repository.                                                                    | `mysql`                                              |
 | `imageTag`                                   | `mysql` image tag.                                                                           | `5.7.14`                                             |
+| `busybox.image`                                    | `busybox` image repository.                                                                    | `busybox`                                            |
+| `busybox.tag`                                | `busybox` image tag.                                                                           | `1.29.3`                                             |
+| `testFramework.image`                              | `test-framework` image repository.                                                                    | `dduportal/bats`                                            |
+| `testFramework.tag`                          | `test-framework` image tag.                                                                           | `0.4.0`                                              |
 | `imagePullPolicy`                            | Image pull policy                                                                            | `IfNotPresent`                                       |
 | `existingSecret`                             | Use Existing secret for Password details                                                     | `nil`                                                |
 | `extraVolumes`                               | Additional volumes as a string to be passed to the `tpl` function                            |                                                      |
@@ -86,6 +90,7 @@ The following table lists the configurable parameters of the MySQL chart and the
 | `metrics.readinessProbe.timeoutSeconds`      | When the probe times out                                                                     | 1                                                    |
 | `resources`                                  | CPU/Memory resource requests/limits                                                          | Memory: `256Mi`, CPU: `100m`                         |
 | `configurationFiles`                         | List of mysql configuration files                                                            | `nil`                                                |
+| `service.annotations`                        | Kubernetes annotations for mysql                                                             | {}                                                   |
 | `ssl.enabled`                                | Setup and use SSL for MySQL connections                                                      | `false`                                              |
 | `ssl.secret`                                 | Name of the secret containing the SSL certificates                                           | mysql-ssl-certs                                      |
 | `ssl.certificates[0].name`                   | Name of the secret containing the SSL certificates                                           | `nil`                                                |
@@ -96,6 +101,7 @@ The following table lists the configurable parameters of the MySQL chart and the
 | `initializationFiles`                        | List of SQL files which are run after the container started                                  | `nil`                                                |
 | `timezone`                                   | Container and mysqld timezone (TZ env)                                                       | `nil` (UTC depending on image)                       |
 | `podAnnotations`                             | Map of annotations to add to the pods                                                        | `{}`                                                 |
+| `priorityClassName`                          | Set pod priorityClassName                                                                    | `{}`                                                 |
 
 Some of the parameters above map to the env variables defined in the [MySQL DockerHub image](https://hub.docker.com/_/mysql/).
 

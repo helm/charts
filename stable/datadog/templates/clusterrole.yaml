@@ -9,6 +9,7 @@ metadata:
     release: {{ .Release.Name | quote }}
   name: {{ template "datadog.fullname" . }}
 rules:
+{{- if not .Values.clusterAgent.enabled }}
 - apiGroups:
   - ""
   resources:
@@ -55,6 +56,7 @@ rules:
   - "/healthz"
   verbs:
   - get
+{{- end }}
 - apiGroups:  # Kubelet connectivity
   - ""
   resources:

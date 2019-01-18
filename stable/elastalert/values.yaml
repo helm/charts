@@ -1,5 +1,6 @@
 # number of replicas to run
 replicaCount: 1
+
 # number of helm release revisions to retain
 revisionHistoryLimit: 5
 
@@ -8,6 +9,12 @@ runIntervalMins: 1
 
 # Default rule buffer duration, in minutes
 bufferTimeMins: 15
+
+# Amount of time to retry and deliver failed alerts (1440 minutes per day)
+alertRetryLimitMins: 2880
+
+# Default time before realerting, in minutes
+realertIntervalMins: ""
 
 # For ES 5: The name of the index which stores elastalert's statuses
 # For ES 6: The prefix of the names of indices which store elastalert's statuses.
@@ -21,7 +28,7 @@ image:
   # docker image
   repository: jertel/elastalert-docker
   # docker image tag
-  tag: 0.1.33
+  tag: 0.1.38
   pullPolicy: IfNotPresent
 resources: {}
 
@@ -32,6 +39,30 @@ elasticsearch:
   port: 80
   # whether or not to connect to es_host using TLS
   useSsl: "False"
+  # Username if authenticating to ES with basic auth
+  username: ""
+  # Password if authenticating to ES with basic auth
+  password: ""
+  # whether or not to verify TLS certificates
+  verifyCerts: "True"
+  # Enable certificate based authentication
+  # path to a PEM certificate to use as the client certificate
+  # clientCert: "/certs/client.pem"
+  # path to a private key file to use as the client key
+  # clientKey: "/certs/client-key.pem"
+  # path to a CA cert bundle to use to verify SSL connections
+  # caCerts: "/certs/ca.pem"
+  # # certs volumes, required to mount ssl certificates when elasticsearch has tls enabled
+  # certsVolumes:
+  #   - name: es-certs
+  #     secret:
+  #       defaultMode: 420
+  #       secretName: es-certs
+  # # mount certs volumes, required to mount ssl certificates when elasticsearch has tls enabled
+  # certsVolumeMounts:
+  #   - name: es-certs
+  #     mountPath: /certs
+  #     readOnly: true
 
 # Command and args override for container e.g. (https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/)
 # command: ["YOUR_CUSTOM_COMMAND"]
@@ -70,3 +101,14 @@ rules: {}
   #   pagerduty:
   #   pagerduty_service_key: dummy
   #   pagerduty_client_name: Elastalert Deadman Switch
+
+# Support using node selectors and tolerations
+# nodeSelector:
+#   "node-role.kubernetes.io/infra_worker": "true"
+nodeSelector: {}
+# tolerations:
+#   - key: "node_role"
+#     operator: "Equal"
+#     value: "infra_worker"
+#     effect: "NoSchedule"
+tolerations: []

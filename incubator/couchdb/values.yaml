@@ -40,19 +40,32 @@ persistentVolume:
 ## The CouchDB image
 image:
   repository: couchdb
-  tag: 2.1.1
+  tag: 2.3.0
   pullPolicy: IfNotPresent
 
 ## Sidecar that connects the individual Pods into a cluster
 helperImage:
   repository: kocolosk/couchdb-statefulset-assembler
-  tag: 1.1.0
+  tag: 1.2.0
   pullPolicy: IfNotPresent
 
 ## CouchDB is happy to spin up cluster nodes in parallel, but if you encounter
 ## problems you can try setting podManagementPolicy to the StatefulSet default
 ## `OrderedReady`
 podManagementPolicy: Parallel
+
+## To better tolerate Node failures, we can prevent Kubernetes scheduler from
+## assigning more than one Pod of CouchDB StatefulSet per Node using podAntiAffinity.
+affinity:
+  # podAntiAffinity:
+  #   requiredDuringSchedulingIgnoredDuringExecution:
+  #     - labelSelector:
+  #         matchExpressions:
+  #           - key: "app"
+  #             operator: In
+  #             values:
+  #             - couchdb
+  #       topologyKey: "kubernetes.io/hostname"
 
 ## A StatefulSet requires a headless Service to establish the stable network
 ## identities of the Pods, and that Service is created automatically by this
@@ -105,3 +118,8 @@ erlangFlags:
 couchdbConfig:
   # cluster:
   #   q: 8 # Create 8 shards for each database
+  chttpd:
+    bind_address: any
+    # chttpd.require_valid_user disables all the anonymous requests to the port
+    # 5984 when is set to true.
+    require_valid_user: false

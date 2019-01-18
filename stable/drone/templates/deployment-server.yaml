@@ -15,6 +15,10 @@ spec:
     metadata:
       annotations:
         checksum/secrets: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
+{{- if .Values.metrics.prometheus.enabled }}
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8000"
+{{- end }}
 {{- if .Values.server.annotations }}
 {{ toYaml .Values.server.annotations | indent 8 }}
 {{- end }}

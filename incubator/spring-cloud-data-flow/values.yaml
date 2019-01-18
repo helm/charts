@@ -22,7 +22,7 @@ serviceAccount:
 
 server:
   image: springcloud/spring-cloud-dataflow-server-kubernetes
-  version: 1.6.1.RELEASE
+  version: 1.6.2.RELEASE
   imagePullPolicy: IfNotPresent
   service:
     type: LoadBalancer

@@ -36,6 +36,9 @@ spec:
           {{- range .Values.domainFilters }}
             - --domain-filter={{ . }}
           {{- end }}
+          {{- range .Values.zoneIdFilters }}
+            - --zone-id-filter={{ . }}
+          {{- end }}
             - --policy={{ .Values.policy }}
             - --provider={{ .Values.provider }}
             - --registry={{ .Values.registry }}
@@ -58,33 +61,59 @@ spec:
             - --{{ $key }}
             {{- end }}
           {{- end }}
+          {{- if eq .Values.provider "cloudflare" }}
+            {{- if .Values.cloudflare.proxied }}
+            - --cloudflare-proxied
+            {{- end }}
+          {{- end }}
           {{- if .Values.aws.zoneType }}
             - --aws-zone-type={{ .Values.aws.zoneType }}
           {{- end }}
           {{- if .Values.google.project }}
             - --google-project={{ .Values.google.project }}
           {{- end }}
+          {{- if eq .Values.provider "infoblox" }}
+            - --infoblox-grid-host={{ .Values.infoblox.gridHost }}
+            {{- if .Values.infoblox.domainFilter }}
+            - --domain-filter={{ .Values.infoblox.domainFilter }}
+            {{- end }}
+            {{- if .Values.infoblox.wapiPort }}
+            - --infoblox-wapi-port={{ .Values.infoblox.wapiPort }}
+            {{- end }}
+            {{- if .Values.infoblox.wapiVersion }}
+            - --infoblox-wapi-version={{ .Values.infoblox.wapiVersion }}
+            {{- end }}
+            {{- if .Values.infoblox.noSslVerify }}
+            - --no-infoblox-ssl-verify
+            {{- else }}
+            - --infoblox-ssl-verify
+            {{- end }}
+          {{- end }}
           volumeMounts:
-          {{- if .Values.google.serviceAccountSecret }}
+          {{- if or .Values.google.serviceAccountSecret .Values.google.serviceAccountKey }}
           - name: google-service-account
             mountPath: /etc/secrets/service-account/
           {{- end}}
           {{- if eq .Values.provider "azure" }}
           - name: azure-config-file
+            {{- if not .Values.azure.secretName }}
             mountPath: /etc/kubernetes/azure.json
+            {{- else }}
+            mountPath: /etc/kubernetes/
+            {{- end }}
             readOnly: true
           {{- end }}
           {{- if (and .Values.aws.secretKey .Values.aws.accessKey) }}
           - name: aws-credentials
-            mountPath: /root/.aws
+            mountPath: {{ .Values.aws.credentialsPath }}
             readOnly: true
           {{- end }}
           env:
-        {{- if .Values.google.serviceAccountSecret }}
+        {{- if or .Values.google.serviceAccountSecret .Values.google.serviceAccountKey }}
           - name: GOOGLE_APPLICATION_CREDENTIALS
             value: /etc/secrets/service-account/credentials.json
         {{- end }}
-        {{- if eq .Values.provider "aws" }}
+        {{- if or (eq .Values.provider "aws") (eq .Values.provider "aws-sd") }}
         {{- if .Values.aws.region }}
           - name: AWS_DEFAULT_REGION
             value: {{ .Values.aws.region }}
@@ -99,13 +128,37 @@ spec:
           - name: CF_API_EMAIL
             value: "{{ .Values.cloudflare.email }}"
         {{- end }}
-        {{- $root := . -}}
-        {{- range $key, $value := .Values.extraEnv }}
-          - name: {{ $key }}
+        {{- if .Values.infoblox.wapiConnectionPoolSize }}
+          - name: EXTERNAL_DNS_INFOBLOX_HTTP_POOL_CONNECTIONS
+            value: "{{ .Values.infoblox.wapiConnectionPoolSize }}"
+        {{- end }}
+        {{- if .Values.infoblox.wapiHttpTimeout }}
+          - name: EXTERNAL_DNS_INFOBLOX_HTTP_REQUEST_TIMEOUT
+            value: "{{ .Values.infoblox.wapiHttpTimeout }}"
+        {{- end }}
+        {{- if and .Values.infoblox.wapiUsername .Values.infoblox.wapiPassword }}
+          - name: EXTERNAL_DNS_INFOBLOX_WAPI_USERNAME
             valueFrom:
               secretKeyRef:
+                name: {{ template "external-dns.fullname" . }}
+                key: infoblox_wapi_username
+          - name: EXTERNAL_DNS_INFOBLOX_WAPI_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "external-dns.fullname" . }}
+                key: infoblox_wapi_password
+        {{- end }}
+        {{- $root := . -}}
+        {{- range .Values.extraEnv }}
+          - name: {{ .name }}
+            valueFrom:
+          {{- if .valueFrom }}
+{{ toYaml .valueFrom | indent 14 }}
+          {{- else }}
+              secretKeyRef:
                 name: {{ template "external-dns.fullname" $root }}
-                key: {{ $key }}
+                key: {{ .name }}
+          {{- end }}
         {{- end }}
           livenessProbe:
             httpGet:
@@ -113,6 +166,10 @@ spec:
               port: 7979
           ports:
             - containerPort: 7979
+        {{- if .Values.securityContext }}
+          securityContext:
+{{ toYaml .Values.securityContext | indent 12 }}
+        {{- end }}
         {{- if .Values.resources }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
@@ -121,13 +178,22 @@ spec:
       {{- if .Values.google.serviceAccountSecret }}
       - name: google-service-account
         secret:
-          secretName: "{{.Values.google.serviceAccountSecret}}"
+          secretName: {{ .Values.google.serviceAccountSecret | quote }}
+      {{- else if .Values.google.serviceAccountKey }}
+      - name: google-service-account
+        secret:
+          secretName: {{ template "external-dns.fullname" . }}
       {{- end}}
       {{- if eq .Values.provider "azure" }}
       - name: azure-config-file
+        {{- if (not .Values.azure.secretName)}}
         hostPath:
           path: /etc/kubernetes/azure.json
           type: File
+        {{- else}}
+        secret:
+          secretName: {{.Values.azure.secretName}}
+        {{- end}}
       {{- end }}
       {{- if (and .Values.aws.secretKey .Values.aws.accessKey) }}
       - name: aws-credentials

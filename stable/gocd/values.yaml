@@ -25,6 +25,9 @@ server:
   # Note: If this value is set to true, then, the serviceAccount.name is configured for the GoCD server pod. The service account token is mounted as a secret and is used in the lifecycle hook.
   # Note: An attempt to preconfigure the GoCD server is made. There are cases where the pre-configuration can fail and the GoCD server starts with an empty config.
   shouldPreconfigure: true
+  preconfigureCommand:
+    - "/bin/bash"
+    - "/preconfigure_server.sh"
   image:
     # server.image.repository is the GoCD Server image name
     repository: "gocd/gocd-server"
@@ -44,9 +47,30 @@ server:
   #     cpu: 100m
   #     memory: 1024Mi
 
+  # specify init containers, e.g. to prepopulate home directories etc
+  initContainers: []
+  #  - name: download-kubectl
+  #    image: "ellerbrock/alpine-bash-curl-ssl:latest"
+  #    imagePullPolicy: "IfNotPresent"
+  #    volumeMounts:
+  #      - name: kubectl
+  #        mountPath: /download
+  #    workingDir: /download
+  #    command: ["/bin/bash"]
+  #    args:
+  #      - "-c"
+  #      - 'curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl && chmod +x ./kubectl'
+
+  # specify restart policy for server
+  restartPolicy: Always
+
   ## Additional GoCD server pod labels
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
   nodeSelector: {}
+
+  ## Affinity for assigning pods to specific nodes
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+  affinity: {}
 
   healthCheck:
     # server.healthCheck.initialDelaySeconds is the initial delays in seconds to start the health checks
@@ -62,9 +86,9 @@ server:
     #  server.env.extraEnvVars is the list of environment variables passed to GoCD Server
     extraEnvVars:
       - name: GOCD_PLUGIN_INSTALL_kubernetes-elastic-agents
-        value: https://github.com/gocd/kubernetes-elastic-agents/releases/download/v1.0.1/kubernetes-elastic-agent-1.0.1-107.jar
+        value: https://github.com/gocd/kubernetes-elastic-agents/releases/download/2.1.0-123/kubernetes-elastic-agent-2.1.0-123.jar
       - name: GOCD_PLUGIN_INSTALL_docker-registry-artifact-plugin
-        value: https://github.com/gocd/docker-registry-artifact-plugin/releases/download/1.0.0/docker-registry-artifact-plugin-1.0.0-3.jar
+        value: https://github.com/gocd/docker-registry-artifact-plugin/releases/download/1.0.0-25/docker-registry-artifact-plugin-1.0.0-25.jar
   service:
     # server.service.type is the GoCD Server service type
     type: "NodePort"
@@ -121,6 +145,10 @@ server:
     pvSelector:
 #      matchLabels:
 #        volume-type: ssd
+    name:
+      # server.persistence.name.dockerEntryPoint name of the volume mounted at /docker-entrypoint.d/ on the server
+      dockerEntryPoint: goserver-vol
+      # "" for the volume root
     subpath:
       # godata is where the config, db, plugins are stored
       godata: godata
@@ -128,6 +156,24 @@ server:
       homego: homego
       # custom entrypoint scripts that should be run before starting the GoCD server inside the container.
       dockerEntryPoint: scripts
+    # server.persistence.extraVolumes additional server volumes
+    extraVolumes: []
+    # - name: gocd-server-init-scripts
+    #   configMap:
+    #      name: gocd-server-init-scripts
+    #      defaultMode: 0755
+    # - name: github-key
+    #   secret:
+    #     secretName: github-key
+    #     defaultMode: 0744
+
+    # server.persistence.extraVolumeMounts additional server volumeMounts
+    extraVolumeMounts: []
+    # - name: github-key
+    #   mountPath: /etc/config/keys/
+    #   readOnly: true
+    # - name: gocd-server-init-scripts
+    #   mountPath: /docker-entrypoint.d/
 
   # server.hostAliases allows the modification of the hosts file inside a container
   hostAliases:
@@ -144,8 +190,18 @@ server:
       secretName: gocd-server-ssh
 
 agent:
+  # specifies overrides for agent specific service account creation
+  serviceAccount:
+    # specifies whether the top level service account (also used by the server) should be reused as the service account for gocd agents
+    reuseTopLevelServiceAccount: false
+    # if reuseTopLevelServiceAccount is false, this field specifies the name of an existing service account to be associated with gocd agents
+    # If field is empty, the service account "default" will be used.
+    name:
+
   # agent.replicaCount is the GoCD Agent replicas Count. Specify the number of GoCD agents to run
   replicaCount: 0
+  # agent.deployStrategy is the strategy explained in detail at https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
+  deployStrategy: {}
   image:
     # agent.image.repository is the GoCD Agent image name
     repository: "gocd/gocd-agent-alpine-3.6"
@@ -161,7 +217,10 @@ agent:
     # agent.env.agentAutoRegisterResources is the GoCD Agent auto-register resources
     agentAutoRegisterResources:
     # agent.env.agentAutoRegisterEnvironments is the GoCD Agent auto-register Environments
+    # deprecated because of a typo. Use agent.env.agentAutoRegisterEnvironments instead
     agentAutoRegisterEnvironemnts:
+    # agent.env.agentAutoRegisterEnvironments is the GoCD Agent auto-register Environments
+    agentAutoRegisterEnvironments:
     # agent.env.agentAutoRegisterHostname is the GoCD Agent auto-register hostname
     agentAutoRegisterHostname:
     # agent.env.goAgentSystemProperties is the GoCD Agent system properties
@@ -170,6 +229,8 @@ agent:
     goAgentBootstrapperArgs:
     # agent.env.goAgentBootstrapperJvmArgs is the GoCD Agent bootstrapper JVM args
     goAgentBootstrapperJvmArgs:
+    # agent.env.extraEnvVars is the list of environment variables passed to GoCD Agent
+    extraEnvVars:
   persistence:
     # agent.persistence.enabled is the toggle for agent volume persistence. Change to true if a persistent volume is available and configured manually.
     enabled: false
@@ -188,9 +249,48 @@ agent:
     pvSelector:
 #      matchLabels:
 #        app: godata-gocd-agent
+    name:
+      # agent.persistence.name.dockerEntryPoint name of the volume mounted at /docker-entrypoint.d/ on the agent
+      dockerEntryPoint: goagent-vol
+    # "" for the volume root
     subpath:
       homego: homego
       dockerEntryPoint: scripts
+    # agent.persistence.extraVolumes additional agent volumes
+    extraVolumes: []
+    # - name: gocd-agent-init-scripts
+    #   configMap:
+    #      name: gocd-agent-init-scripts
+    #      defaultMode: 0755
+    # - name: github-key
+    #   secret:
+    #     secretName: github-key
+    #     defaultMode: 0744
+
+    # agent.persistence.extraVolumeMounts additional agent volumeMounts
+    extraVolumeMounts: []
+    # - name: github-key
+    #   mountPath: /etc/config/keys/
+    #   readOnly: true
+    # - name: gocd-agent-init-scripts
+    #   mountPath: /docker-entrypoint.d/
+
+  # specify init containers, e.g. to prepopulate home directories etc
+  initContainers: []
+  #  - name: download-kubectl
+  #    image: "ellerbrock/alpine-bash-curl-ssl:latest"
+  #    imagePullPolicy: "IfNotPresent"
+  #    volumeMounts:
+  #      - name: kubectl
+  #        mountPath: /download
+  #    workingDir: /download
+  #    command: ["/bin/bash"]
+  #    args:
+  #      - "-c"
+  #      - 'curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl && chmod +x ./kubectl'
+
+  # specify restart policy for agents
+  restartPolicy: Always
 
   # agent.privileged is needed for running Docker-in-Docker (DinD) agents
   privileged: false
@@ -233,3 +333,7 @@ agent:
   ## Additional GoCD agent pod labels
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
   nodeSelector: {}
+
+  ## Affinity for assigning pods to specific nodes
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+  affinity: {}

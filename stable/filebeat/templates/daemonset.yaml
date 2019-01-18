@@ -28,14 +28,20 @@ spec:
 {{ toYaml .Values.annotations | indent 8 }}
 {{- end }}
     spec:
+    {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range $sec := .Values.image.pullSecrets }}
+        - name: {{ $sec | quote }}
+      {{- end }}
+    {{- end }}
 {{- if .Values.priorityClassName }}
       priorityClassName: "{{ .Values.priorityClassName }}"
 {{- end }}
-{{- if .Values.indexTemplateLoad }}
       initContainers:
+{{- if .Values.indexTemplateLoad }}
       - name: "load-es-template"
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-        imagePullPolicy: "Always"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
         command:
         - /bin/bash
         - -c
@@ -44,15 +50,26 @@ spec:
           -E output.file.enabled=false
           -E output.elasticsearch.hosts=[{{- range $index, $host := .Values.indexTemplateLoad }}{{ if $index }}, {{ end }}{{ $host | quote }}{{- end }}]
 {{- end }}
+{{- if .Values.extraInitContainers }}
+{{ toYaml .Values.extraInitContainers | indent 6 }}
+{{- end }}
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
+{{- if .Values.command }}
+        command:
+{{ toYaml .Values.command | indent 8 }}
+{{- end }}
         args:
+{{- if .Values.args }}
+{{ toYaml .Values.args | indent 8 }}
+{{- else }}
         - "-e"
 {{- if .Values.plugins }}
         - "--plugin"
         - {{ .Values.plugins | join "," | quote }}
+{{- end }}
 {{- end }}
         env:
         - name: POD_NAMESPACE
@@ -63,9 +80,8 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: spec.nodeName
-{{- range $key, $value := .Values.extraVars }}
-        - name: {{ $key }}
-          value: {{ $value }}
+{{- if .Values.extraVars }}
+{{ toYaml .Values.extraVars | indent 8 }}
 {{- end }}
         {{- if index .Values.config "http.enabled" }}
         ports:
@@ -73,8 +89,10 @@ spec:
         {{- end }}
         securityContext:
           runAsUser: 0
+{{- if .Values.resources }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
+{{- end }}
         volumeMounts:
         - name: filebeat-config
           mountPath: /usr/share/filebeat/filebeat.yml

@@ -86,7 +86,7 @@ The following table lists the configurable parameters of the Hyperledger Fabric 
 
 ## Persistence
 
-The volume stores the Fabric CouchdDB data and configurations at the `/opt/couchdb/data` path of the container.
+The volume stores the Fabric CouchDB data and configurations at the `/opt/couchdb/data` path of the container.
 
 The chart mounts a [Persistent Volume](http://kubernetes.io/docs/user-guide/persistent-volumes/) at this location. The volume is created using dynamic volume provisioning through a PersistentVolumeClaim managed by the chart.
 

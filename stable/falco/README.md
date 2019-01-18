@@ -1,6 +1,6 @@
 # Sysdig Falco
 
-[Sysdig Falco](https://www.sysdig.com/opensource/falco/) is a behavioral activity monitor designed to detect anomalous activity in your applications. You can use Falco to monitor run-time security of your Kubernetes applications and internal components.
+[Sysdig Falco](https://falco.org) is a behavioral activity monitor designed to detect anomalous activity in your applications. You can use Falco to monitor run-time security of your Kubernetes applications and internal components.
 
 To know more about Sysdig Falco have a look at:
 
@@ -45,15 +45,19 @@ The following table lists the configurable parameters of the Falco chart and the
 
 | Parameter                                       | Description                                                          | Default                                                                                |
 | ---                                             | ---                                                                  | ---                                                                                    |
-| `image.repository`                              | The image repository to pull from                                    | `sysdig/falco`                                                                         |
-| `image.tag`                                     | The image tag to pull                                                | `latest`                                                                               |
-| `image.pullPolicy`                              | The image pull policy                                                | `Always`                                                                               |
+| `image.repository`                              | The image repository to pull from                                    | `falcosecurity/falco`                                                                  |
+| `image.tag`                                     | The image tag to pull                                                | `0.13.0`                                                                               |
+| `image.pullPolicy`                              | The image pull policy                                                | `IfNotPresent`                                                                               |
 | `resources`                                     | Specify container resources                                          | `{}`                                                                                   |
+| `extraArgs`                                     | Specify additional container args                                    | `[]`                                                                                   |
 | `rbac.create`                                   | If true, create & use RBAC resources                                 | `true`                                                                                 |
 | `serviceAccount.create`                         | Create serviceAccount                                                | `true`                                                                                 |
 | `serviceAccount.name`                           | Use this value as serviceAccountName                                 | ` `                                                                                    |
 | `fakeEventGenerator.enabled`                    | Run falco-event-generator for sample events                          | `false`                                                                                |
 | `fakeEventGenerator.replicas`                   | How many replicas of falco-event-generator to run                    | `1`                                                                                    |
+| `proxy.httpProxy`                               | Set the Proxy server if is behind a firewall                         | ``                                                                                     |
+| `proxy.httpsProxy`                              | Set the Proxy server if is behind a firewall                         | ``                                                                                     |
+| `proxy.noProxy`                                 | Set the Proxy server if is behind a firewall                         | ``                                                                                     |
 | `ebpf.enabled`                                  | Enable eBPF support for Falco instead of `falco-probe` kernel module | `false`                                                                                |
 | `ebpf.settings.hostNetwork`                     | Needed to enable eBPF JIT at runtime for performance reasons         | `true`                                                                                 |
 | `ebpf.settings.mountEtcVolume`                  | Needed to detect which kernel version are running in Google COS      | `true`                                                                                 |
@@ -81,6 +85,11 @@ The following table lists the configurable parameters of the Falco chart and the
 | `integrations.gcscc.webhookAuthenticationToken` | Token used for authentication and webhook                            | `b27511f86e911f20b9e0f9c8104b4ec4`                                                     |
 | `integrations.natsOutput.enabled`               | Enable NATS Output integration                                       | `false`                                                                                |
 | `integrations.natsOutput.natsUrl`               | The NATS' URL where Falco is going to publish security alerts        | `nats://nats.nats-io.svc.cluster.local:4222`                                           |
+| `integrations.snsOutput.enabled`                | Enable Amazon SNS Output integration                                 | `false`                                                                                |
+| `integrations.snsOutput.topic`                  | The SNS topic where Falco is going to publish security alerts        | ` `                                                                                    |
+| `integrations.snsOutput.aws_access_key_id`      | The AWS Access Key Id credentials for access to SNS n                | ` `                                                                                    |
+| `integrations.snsOutput.aws_secret_access_key`  | The AWS Secret Access Key credential to access to SNS                | ` `                                                                                    |
+| `integrations.snsOutput.aws_default_region`     | The AWS region where SNS is deployed                                 | ` `                                                                                    |
 | `tolerations`                                   | The tolerations for scheduling                                       | `node-role.kubernetes.io/master:NoSchedule`                                            |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,

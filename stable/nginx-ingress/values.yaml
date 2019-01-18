@@ -5,8 +5,10 @@ controller:
   name: controller
   image:
     repository: quay.io/kubernetes-ingress-controller/nginx-ingress-controller
-    tag: "0.18.0"
+    tag: "0.21.0"
     pullPolicy: IfNotPresent
+    # www-data -> uid 33
+    runAsUser: 33
 
   config: {}
   # Will add custom header to Nginx https://github.com/kubernetes/ingress-nginx/tree/master/docs/examples/customization/custom-headers
@@ -145,10 +147,10 @@ controller:
 
   autoscaling:
     enabled: false
-  #  minReplicas: 1
-  #  maxReplicas: 11
-  #  targetCPUUtilizationPercentage: 50
-  #  targetMemoryUtilizationPercentage: 50
+    minReplicas: 1
+    maxReplicas: 11
+    targetCPUUtilizationPercentage: 50
+    targetMemoryUtilizationPercentage: 50
 
   ## Override NGINX template
   customTemplate:
@@ -272,6 +274,10 @@ controller:
       servicePort: 9913
       type: ClusterIP
 
+    serviceMonitor:
+      enabled: false
+      additionalLabels: {}
+
   lifecycle: {}
 
   priorityClassName: ""
@@ -353,6 +359,11 @@ defaultBackend:
 ## Enable RBAC as per https://github.com/kubernetes/ingress/tree/master/examples/rbac/nginx and https://github.com/kubernetes/ingress/issues/266
 rbac:
   create: true
+
+# If true, create & use Pod Security Policy resources
+# https://kubernetes.io/docs/concepts/policy/pod-security-policy/
+podSecurityPolicy:
+  enabled: false
 
 serviceAccount:
   create: true

@@ -14,9 +14,10 @@ spec:
         app: {{ template "fluentd-cloudwatch.name" . }}
         release: "{{ .Release.Name }}"
       annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
         {{ if .Values.awsRole }}iam.amazonaws.com/role: {{ .Values.awsRole }}{{ end }}
 {{- if .Values.podAnnotations }}
-{{ toYaml .Values.annotations | indent 8 }}
+{{ toYaml .Values.podAnnotations | indent 8 }}
 {{- end }}
     spec:
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "fluentd-cloudwatch.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
@@ -40,16 +41,20 @@ spec:
         - name: LOG_GROUP_NAME
           value: {{ .Values.logGroupName }}
 {{- if not .Values.awsRole }}
+{{- if .Values.awsAccessKeyId }}
         - name: AWS_ACCESS_KEY_ID
           valueFrom:
             secretKeyRef:
-              key: aws_access_key_id
+              key: AWS_ACCESS_KEY_ID
               name: {{ template "fluentd-cloudwatch.fullname" . }}
+{{- end }}
+{{- if .Values.awsSecretAccessKey }}
         - name: AWS_SECRET_ACCESS_KEY
           valueFrom:
             secretKeyRef:
-              key: aws_secret_access_key
+              key: AWS_SECRET_ACCESS_KEY
               name: {{ template "fluentd-cloudwatch.fullname" . }}
+{{- end }}
 {{- end }}
 {{- range $env := .Values.extraVars }}
         - {{ $env  }}
@@ -81,3 +86,5 @@ spec:
       tolerations:
 {{ toYaml .Values.tolerations | indent 6 }}
 {{- end }}
+  updateStrategy:
+{{ toYaml .Values.updateStrategy | indent 4 }}

@@ -28,6 +28,12 @@ To install the chart with the release name `my-release`:
 helm install --name my-release stable/cockroachdb
 ```
 
+Note that for a production cluster, you are very likely to want to modify the
+`Storage` and `StorageClass` parameters. This chart defaults to 100 GiB of
+disk space per pod, but you may want more or less depending on your use case,
+and the default persistent volume `StorageClass` in your environment may not be
+what you want for a database (e.g. on GCE and Azure the default is not SSD).
+
 If you are running in secure mode (with configuration parameter `Secure.Enabled`
 set to `true`), then you will have to manually approve the cluster's security
 certificates as the pods are created. You can see the pending
@@ -37,6 +43,24 @@ certificate for each node (e.g.  `default.node.eerie-horse-cockroachdb-0` and
 one client certificate for the job that initializes the cluster (e.g.
 `default.node.root`).
 
+## Upgrading
+### To 2.0.0
+Due to having no explicit selector set for the StatefulSet before version 2.0.0 of
+this chart, upgrading from any version that uses a version of kubernetes that locks
+the selector labels to any other version is impossible without deleting the StatefulSet.
+Luckily there is a way to do it without actually deleting all the resources managed
+by the StatefulSet. Use the workaround below to upgrade from charts versions previous
+to 2.0.0. The following example assumes that the release name is crdb:
+
+```console
+$ kubectl delete statefulset crdb-cockroachdb --cascade=false
+```
+
+Verify that no pod is deleted and then upgrade as normal. A new StatefulSet will
+be created taking over the management of the existing pods upgrading them if needed.
+
+For more information about the upgrading bug see https://github.com/helm/charts/issues/7680.
+
 ## Configuration
 
 The following table lists the configurable parameters of the CockroachDB chart and their default values.
@@ -45,7 +69,7 @@ The following table lists the configurable parameters of the CockroachDB chart a
 | ------------------------------ | ------------------------------------------------ | ----------------------------------------- |
 | `Name`                         | Chart name                                       | `cockroachdb`                             |
 | `Image`                        | Container image name                             | `cockroachdb/cockroach`                   |
-| `ImageTag`                     | Container image tag                              | `v2.0.5`                                  |
+| `ImageTag`                     | Container image tag                              | `v2.1.3`                                  |
 | `ImagePullPolicy`              | Container pull policy                            | `Always`                                  |
 | `Replicas`                     | k8s statefulset replicas                         | `3`                                       |
 | `MaxUnavailable`               | k8s PodDisruptionBudget parameter                | `1`                                       |
@@ -57,9 +81,8 @@ The following table lists the configurable parameters of the CockroachDB chart a
 | `InternalHttpPort`             | CockroachDB HTTP port                            | `8080`                                    |
 | `ExternalHttpPort`             | CockroachDB HTTP port on service                 | `8080`                                    |
 | `HttpName`                     | Name given to the http service port              | `http`                                    |
-| `Cpu`                          | Container requested cpu                          | `100m`                                    |
-| `Memory`                       | Container requested memory                       | `512Mi`                                   |
-| `Storage`                      | Persistent volume size                           | `1Gi`                                     |
+| `Resources`                    | Resource requests and limits                     | `{}`                                      |
+| `Storage`                      | Persistent volume size                           | `100Gi`                                     |
 | `StorageClass`                 | Persistent volume class                          | `null`                                    |
 | `CacheSize`                    | Size of CockroachDB's in-memory cache            | `25%`                                     |
 | `MaxSQLMemory`                 | Max memory to use processing SQL queries         | `25%`                                     |
@@ -70,12 +93,15 @@ The following table lists the configurable parameters of the CockroachDB chart a
 | `Service.Annotations`          | Annotations to apply to the service              | `{}`                                      |
 | `PodManagementPolicy`          | `OrderedReady` or `Parallel` pod creation/deletion order | `Parallel`                        |
 | `UpdateStrategy.type`          | allows setting of RollingUpdate strategy         | `RollingUpdate`                           |
+| `NodeSelector`                 | Node labels for pod assignment                   | `{}`                                      |
+| `Tolerations`                  | List of node taints to tolerate                  | `{}`                                      |
 | `Secure.Enabled`               | Whether to run securely using TLS certificates   | `false`                                   |
 | `Secure.RequestCertsImage`     | Image to use for requesting TLS certificates     | `cockroachdb/cockroach-k8s-request-cert`  |
-| `Secure.RequestCertsImageTag`  | Image tag to use for requesting TLS certificates | `0.3`                                     |
+| `Secure.RequestCertsImageTag`  | Image tag to use for requesting TLS certificates | `0.4`                                     |
 | `Secure.ServiceAccount.Create` | Whether to create a new RBAC service account     | `true`                                    |
-| `Secure.ServiceAccount.Name`   | Name of RBAC service account to use              | ``                                        |
-| `Tolerations` | [Kubernetes tolerations](https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/) to label the pods in the StatefulSet with | `` |
+| `Secure.ServiceAccount.Name`   | Name of RBAC service account to use              | `""`                                      |
+| `JoinExisting`                 | List of already-existing cockroach instances     | `[]`                                      |
+| `Locality`                     | Locality attribute for this deployment           | `""`                                      |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 

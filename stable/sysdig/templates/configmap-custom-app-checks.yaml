@@ -1,0 +1,16 @@
+{{- if .Values.customAppChecks }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "sysdig.fullname" . }}-custom-app-checks
+  labels:
+    app: {{ template "sysdig.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+data:
+{{- range $file, $content :=  .Values.customAppChecks }}
+  {{ $file }}: |-
+{{ $content | indent 4}}
+{{- end }}
+{{- end }}

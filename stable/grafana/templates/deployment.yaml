@@ -19,6 +19,9 @@ spec:
       release: {{ .Release.Name }}
   strategy:
     type: {{ .Values.deploymentStrategy }}
+  {{- if ne .Values.deploymentStrategy "RollingUpdate" }}
+    rollingUpdate: null
+  {{- end }}
   template:
     metadata:
       labels:
@@ -37,8 +40,27 @@ spec:
       securityContext:
 {{ toYaml .Values.securityContext | indent 8 }}
 {{- end }}
-{{- if .Values.dashboards }}
+{{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName }}
+{{- end }}
+{{- if ( or .Values.persistence.enabled .Values.dashboards ) }}
       initContainers:
+{{- end }}
+{{- if .Values.persistence.enabled }}
+        - name: init-chown-data
+          image: "{{ .Values.chownDataImage.repository }}:{{ .Values.chownDataImage.tag }}"
+          imagePullPolicy: {{ .Values.chownDataImage.pullPolicy }}
+          securityContext:
+            runAsUser: 0
+          command: ["chown", "-R", "{{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.runAsUser }}", "/var/lib/grafana"]
+          volumeMounts:
+            - name: storage
+              mountPath: "/var/lib/grafana"
+{{- if .Values.persistence.subPath }}
+              subPath: {{ .Values.persistence.subPath }}
+{{- end }}
+{{- end }}
+{{- if .Values.dashboards }}
         - name: download-dashboards
           image: "{{ .Values.downloadDashboardsImage.repository }}:{{ .Values.downloadDashboardsImage.tag }}"
           imagePullPolicy: {{ .Values.downloadDashboardsImage.pullPolicy }}
@@ -49,7 +71,9 @@ spec:
               subPath: download_dashboards.sh
             - name: storage
               mountPath: "/var/lib/grafana"
+{{- if .Values.persistence.subPath }}
               subPath: {{ .Values.persistence.subPath }}
+{{- end }}
           {{- range .Values.extraSecretMounts }}
             - name: {{ .name }}
               mountPath: {{ .mountPath }}
@@ -72,6 +96,10 @@ spec:
               value: "{{ .Values.sidecar.dashboards.label }}"
             - name: FOLDER
               value: "{{ .Values.sidecar.dashboards.folder }}"
+            {{- if .Values.sidecar.dashboards.searchNamespace }}
+            - name: NAMESPACE
+              value: "{{ .Values.sidecar.dashboards.searchNamespace }}"
+            {{- end }}
           resources:
 {{ toYaml .Values.sidecar.resources | indent 12 }}
           volumeMounts:
@@ -87,6 +115,10 @@ spec:
               value: "{{ .Values.sidecar.datasources.label }}"
             - name: FOLDER
               value: "/etc/grafana/provisioning/datasources"
+            {{- if .Values.sidecar.datasources.searchNamespace }}
+            - name: NAMESPACE
+              value: "{{ .Values.sidecar.datasources.searchNamespace }}"
+            {{- end }}
           resources:
 {{ toYaml .Values.sidecar.resources | indent 12 }}
           volumeMounts:
@@ -100,9 +132,21 @@ spec:
             - name: config
               mountPath: "/etc/grafana/grafana.ini"
               subPath: grafana.ini
+            {{- if not .Values.admin.existingSecret }}
             - name: ldap
               mountPath: "/etc/grafana/ldap.toml"
               subPath: ldap.toml
+            {{- end }}
+            {{- range .Values.extraConfigmapMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              readOnly: {{ .readOnly }}
+            {{- end }}
+            - name: storage
+              mountPath: "/var/lib/grafana"
+{{- if .Values.persistence.subPath }}
+              subPath: {{ .Values.persistence.subPath }}
+{{- end }}
 {{- if .Values.dashboards }}
   {{- range $provider, $dashboards := .Values.dashboards }}
     {{- range $key, $value := $dashboards }}
@@ -134,16 +178,19 @@ spec:
             - name: sc-dashboard-volume
               mountPath: {{ .Values.sidecar.dashboards.folder | quote }}
             - name: sc-dashboard-provider
-              mountPath: "/etc/grafana/provisioning/dashboards"
+              mountPath: "/etc/grafana/provisioning/dashboards/sc-dashboardproviders.yaml"
+              subPath: provider.yaml
 {{- end}}
 {{- if .Values.sidecar.datasources.enabled }}
             - name: sc-datasources-volume
               mountPath: "/etc/grafana/provisioning/datasources"
 {{- end}}
-            - name: storage
-              mountPath: "/var/lib/grafana"
-              subPath: {{ .Values.persistence.subPath }}
           {{- range .Values.extraSecretMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              readOnly: {{ .readOnly }}
+          {{- end }}
+          {{- range .Values.extraVolumeMounts }}
             - name: {{ .name }}
               mountPath: {{ .mountPath }}
               readOnly: {{ .readOnly }}
@@ -159,13 +206,13 @@ spec:
             - name: GF_SECURITY_ADMIN_USER
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "grafana.fullname" . }}
-                  key: admin-user
+                  name: {{ .Values.admin.existingSecret | default (include "grafana.fullname" .) }}
+                  key: {{ .Values.admin.userKey | default "admin-user" }}
             - name: GF_SECURITY_ADMIN_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "grafana.fullname" . }}
-                  key: admin-password
+                  name: {{ .Values.admin.existingSecret | default (include "grafana.fullname" .) }}
+                  key: {{ .Values.admin.passwordKey | default "admin-password" }}
             {{- if .Values.plugins }}
             - name: GF_INSTALL_PLUGINS
               valueFrom:
@@ -178,12 +225,12 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.smtp.existingSecret }}
-                  key: user
+                  key: {{ .Values.smtp.userKey | default "user" }}
             - name: GF_SMTP_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.smtp.existingSecret }}
-                  key: password
+                  key: {{ .Values.smtp.passwordKey | default "password" }}
             {{- end }}
 {{- range $key, $value := .Values.env }}
             - name: "{{ $key }}"
@@ -195,17 +242,9 @@ spec:
                 name: {{ .Values.envFromSecret }}
           {{- end }}
           livenessProbe:
-            httpGet:
-              path: /api/health
-              port: 3000
+{{ toYaml .Values.livenessProbe | indent 12 }}
           readinessProbe:
-            httpGet:
-              path: /api/health
-              port: 3000
-            initialDelaySeconds: 60
-            timeoutSeconds: 30
-            failureThreshold: 10
-            periodSeconds: 10
+{{ toYaml .Values.readinessProbe | indent 12 }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}
@@ -224,6 +263,11 @@ spec:
         - name: config
           configMap:
             name: {{ template "grafana.fullname" . }}
+      {{- range .Values.extraConfigmapMounts }}
+        - name: {{ .name }}
+          configMap:
+            name: {{ .configMap }}
+      {{- end }}
         {{- if .Values.dashboards }}
           {{- range keys .Values.dashboards }}
         - name: dashboards-{{ . }}
@@ -238,6 +282,7 @@ spec:
             name: {{ $name }}
           {{- end }}
         {{- end }}
+        {{- if not .Values.admin.existingSecret }}
         - name: ldap
           secret:
             {{- if .Values.ldap.existingSecret }}
@@ -248,6 +293,7 @@ spec:
             items:
               - key: ldap-toml
                 path: ldap.toml
+        {{- end }}
         - name: storage
       {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
@@ -270,5 +316,10 @@ spec:
         - name: {{ .name }}
           secret:
             secretName: {{ .secretName }}
+            defaultMode: {{ .defaultMode }}
       {{- end }}
-
+      {{- range .Values.extraVolumeMounts }}
+        - name: {{ .name }}
+          persistentVolumeClaim:
+            claimName: {{ .existingClaim }}
+      {{- end }}

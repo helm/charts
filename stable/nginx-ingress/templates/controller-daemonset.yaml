@@ -17,10 +17,9 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/controller-configmap.yaml") . | sha256sum }}
-    {{- if .Values.controller.podAnnotations }}
-{{ toYaml .Values.controller.podAnnotations | indent 8}}
-    {{- end }}
+      {{- range $key, $value := .Values.controller.podAnnotations }}
+        {{ $key }}: {{ $value | quote }}
+      {{- end }}
       labels:
         app: {{ template "nginx-ingress.name" . }}
         component: "{{ .Values.controller.name }}"
@@ -85,8 +84,7 @@ spec:
                 - ALL
                 add:
                 - NET_BIND_SERVICE
-            # www-data -> 33
-            runAsUser: 33
+            runAsUser: {{ .Values.controller.image.runAsUser }}
           {{- end }}
           env:
             - name: POD_NAME
@@ -162,7 +160,7 @@ spec:
               readOnly: true
 {{- end }}
 {{- if .Values.controller.extraVolumeMounts }}
-{{ toYaml .Values.controller.extraVolumeMounts | indent 10}}
+{{ toYaml .Values.controller.extraVolumeMounts | indent 12}}
 {{- end }}
           resources:
 {{ toYaml .Values.controller.resources | indent 12 }}
@@ -200,6 +198,6 @@ spec:
               path: nginx.tmpl
 {{- end }}
 {{- if .Values.controller.extraVolumes }}
-{{ toYaml .Values.controller.extraVolumes | indent 6}}
+{{ toYaml .Values.controller.extraVolumes | indent 8}}
 {{- end }}
 {{- end }}

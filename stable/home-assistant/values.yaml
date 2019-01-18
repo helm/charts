@@ -6,8 +6,9 @@ replicaCount: 1
 
 image:
   repository: homeassistant/home-assistant
-  tag: 0.74.2
+  tag: 0.84.6
   pullPolicy: IfNotPresent
+  pullSecrets: []
 
 service:
   type: ClusterIP
@@ -36,6 +37,8 @@ ingress:
   #    hosts:
   #      - home-assistant.local
 
+hostNetwork: false
+
 persistence:
   enabled: true
   ## home-assistant data Persistent Volume Storage Class
@@ -50,13 +53,23 @@ persistence:
   ## If you want to reuse an existing claim, you can pass the name of the PVC using
   ## the existingClaim variable
   # existingClaim: your-claim
-  accessMode: ReadWriteMany
+  accessMode: ReadWriteOnce
   size: 5Gi
 
-## Additional hass-configurator container environment variable
+## Additional hass container environment variable
 ## For instance to add a http_proxy
 ##
 extraEnv: {}
+
+## Additional hass container environment variable from k8s secrets
+## For instance to add a password
+## can use `!env_var` in the home assistant configuration to reference these variables
+extraEnvSecrets:
+  # Example
+  # This will set ${MQTT_PASSWORD} to the 'password' key from the 'mqtt' secret
+  # MQTT_PASSWORD:
+  #   secret: mqtt
+  #   key: password
 
 configurator:
   enabled: false
@@ -88,86 +101,21 @@ configurator:
   extraEnv: {}
 
   ingress:
-    ## If true, hass-configurator Ingress will be created
-    ##
     enabled: false
-
-    ## hass-configurator Ingress annotations
-    ##
     annotations: {}
-    #   kubernetes.io/ingress.class: nginx
-    #   kubernetes.io/tls-acme: 'true'
-
-    ## hass-configurator Ingress hostnames with optional path
-    ## Must be provided if Ingress is enabled
-    ##
-    hosts: []
-    #   - hass-configurator.domain.com
-    #   - domain.com/hass-configurator
-
-    ## hass-configurator Ingress TLS configuration
-    ## Secrets must be manually created in the namespace
-    ##
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    path: /
+    hosts:
+      - home-assistant.local
     tls: []
-    #   - secretName: hass-configurator-tls
-    #     hosts:
-    #       - hass-configurator.domain.com
-
-  ## hass-configurator Deployment Strategy type
-  # strategy:
-  #   type: Recreate
-
-  ## Node tolerations for hass-configurator scheduling to nodes with taints
-  ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
-  ##
-  tolerations: []
-    # - key: "key"
-    #   operator: "Equal|Exists"
-    #   value: "value"
-    #   effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
-
-  ## Node labels for hass-configurator pod assignment
-  ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
-  ##
-  nodeSelector: {}
-
-  ## Use an alternate scheduler, e.g. "stork".
-  ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
-  ##
-  # schedulerName:
-
-  ## Annotations to be added to hass-configurator pods
-  ##
-  podAnnotations: {}
-
-  replicaCount: 1
-
-  ## hass-configurator resource requests and limits
-  ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
-  ##
-  resources: {}
-    # limits:
-    #   cpu: 10m
-    #   memory: 32Mi
-    # requests:
-    #   cpu: 10m
-    #   memory: 32Mi
-
-  ## Security context to be added to hass-configurator pods
-  ##
-  securityContext: {}
+    #  - secretName: home-assistant-tls
+    #    hosts:
+    #      - home-assistant.local
 
   service:
     type: ClusterIP
     port: 3218
-    ## Specify the nodePort value for the LoadBalancer and NodePort service types.
-    ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
-    ##
-    # nodePort:
-    ## Provide any additional annotations which may be required. This can be used to
-    ## set the LoadBalancer service type to internal only.
-    ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#internal-load-balancer
-    ##
     annotations: {}
     labels: {}
     clusterIP: ""
@@ -175,11 +123,9 @@ configurator:
     ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
     ##
     externalIPs: []
-    ## Use loadBalancerIP to request a specific static IP,
-    ## otherwise leave blank
-    ##
-    loadBalancerIP:
+    loadBalancerIP: ""
     loadBalancerSourceRanges: []
+    # nodePort: 30000
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious

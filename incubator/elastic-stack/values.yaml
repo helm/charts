@@ -8,11 +8,25 @@ kibana:
 
 logstash:
   enabled: true
+  # elasticsearch:
+  #   host: elastic-stack-elasticsearch-client
+
+filebeat:
+  enabled: false
+  # config:
+  #   output.file.enabled: false
+  #   output.logstash:
+  #     hosts: ["elastic-stack-logstash:5044"]
+  # indexTemplateLoad:
+  #   - elastic-stack-elasticsearch-client:9200
 
 fluentd:
   enabled: false
 
 fluent-bit:
+  enabled: false
+
+fluentd-elasticsearch:
   enabled: false
 
 nginx-ldapauth-proxy:
@@ -43,4 +57,7 @@ nginx-ldapauth-proxy:
   # secrets:
   #   ldapBindPassword: PASSWORD
 elasticsearch-curator:
+  enabled: false
+
+elasticsearch-exporter:
   enabled: false

@@ -6,8 +6,8 @@ metadata:
   labels:
     app: {{ template "traefik.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
   {{- if .Values.dashboard.ingress }}
   {{- range $key, $value := .Values.dashboard.ingress.labels }}
     {{ $key }}: {{ $value | quote }}
@@ -27,4 +27,8 @@ spec:
       - backend:
           serviceName: {{ template "traefik.fullname" . }}-dashboard
           servicePort: 80
+  {{- if .Values.dashboard.ingress.tls }}
+  tls:
+{{ toYaml .Values.dashboard.ingress.tls | indent 4 }}
+  {{- end -}}
 {{- end }}

@@ -8,8 +8,8 @@ metadata:
     chart: {{ template "redis.chart" . }}
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
-  annotations:
 {{- if .Values.slave.service.annotations }}
+  annotations:
 {{ toYaml .Values.slave.service.annotations | indent 4 }}
 {{- end }}
 spec:
@@ -22,6 +22,9 @@ spec:
   - name: redis
     port: 6379
     targetPort: redis
+    {{- if .Values.slave.service.nodePort }}
+    nodePort: {{ .Values.slave.service.nodePort }}
+    {{- end }}
   selector:
     app: {{ template "redis.name" . }}
     release: "{{ .Release.Name }}"

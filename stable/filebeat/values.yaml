@@ -1,6 +1,6 @@
 image:
   repository: docker.elastic.co/beats/filebeat-oss
-  tag: 6.3.1
+  tag: 6.5.4
   pullPolicy: IfNotPresent
 
 config:
@@ -57,9 +57,21 @@ indexTemplateLoad: []
 plugins: []
   # - kinesis.so
 
-# A map of additional environment variables
-extraVars: {}
-  # test1: "test2"
+# pass custom command. This is equivalent of Entrypoint in docker
+command: []
+
+# pass custom args. This is equivalent of Cmd in docker
+args: []
+
+# A list of additional environment variables
+extraVars: []
+  # - name: TEST1
+  #   value: TEST2
+  # - name: TEST3
+  #   valueFrom:
+  #     configMapKeyRef:
+  #       name: configmap
+  #       key: config.key
 
 # Add additional volumes and mounts, for example to read other log files on the host
 extraVolumes: []
@@ -70,6 +82,14 @@ extraVolumeMounts: []
   # - name: varlog
   #   mountPath: /host/var/log
   #   readOnly: true
+
+extraInitContainers: []
+  # - name: echo
+  #   image: busybox
+  #   imagePullPolicy: Always
+  #   args:
+  #     - echo
+  #     - hello
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -104,3 +124,18 @@ serviceAccount:
   # The name of the ServiceAccount to use.
   # If not set and create is true, a name is generated using the fullname template
   name:
+
+## Specify if a Pod Security Policy for filebeat must be created
+## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/
+##
+podSecurityPolicy:
+  enabled: False
+  annotations: {}
+    ## Specify pod annotations
+    ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#apparmor
+    ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#seccomp
+    ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#sysctl
+    ##
+    # seccomp.security.alpha.kubernetes.io/allowedProfileNames: '*'
+    # seccomp.security.alpha.kubernetes.io/defaultProfileName: 'docker/default'
+    # apparmor.security.beta.kubernetes.io/defaultProfileName: 'runtime/default'

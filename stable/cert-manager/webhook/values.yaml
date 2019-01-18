@@ -1,0 +1,16 @@
+replicaCount: 1
+
+podAnnotations: {}
+
+# Optional additional arguments for webhook
+extraArgs: []
+
+resources: {}
+  # requests:
+  #   cpu: 10m
+  #   memory: 32Mi
+
+image:
+  repository: quay.io/jetstack/cert-manager-webhook
+  tag: v0.5.2
+  pullPolicy: IfNotPresent
