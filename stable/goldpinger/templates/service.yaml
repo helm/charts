@@ -11,9 +11,9 @@ spec:
   type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.port }}
-      targetPort: http
+      targetPort: {{ .Values.goldpinger.port }}
       protocol: TCP
       name: http
   selector:
-    app: {{ template "goldpinger.name" . }}
-    release: {{ .Release.Name }}
+    app.kubernetes.io/name: {{ include "goldpinger.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}

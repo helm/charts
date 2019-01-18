@@ -13,11 +13,13 @@ spec:
     matchLabels:
       app.kubernetes.io/name: {{ include "goldpinger.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
+      app: goldpinger
   template:
     metadata:
       labels:
         app.kubernetes.io/name: {{ include "goldpinger.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
+        app: goldpinger
     spec:
       serviceAccountName: {{ template "goldpinger.serviceAccountName" . }}
       imagePullSecrets:
