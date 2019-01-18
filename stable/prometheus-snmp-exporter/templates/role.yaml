@@ -1,0 +1,15 @@
+{{- if .Values.rbac.create }}
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ template "prometheus-snmp-exporter.fullname" . }}
+  labels:
+    app: {{ template "prometheus-snmp-exporter.name" . }}
+    chart: {{ template "prometheus-snmp-exporter.chart" .  }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+rules:
+- apiGroups: [""]
+  resources: ["endpoints"]
+  verbs: ["get"]
+{{- end }}
