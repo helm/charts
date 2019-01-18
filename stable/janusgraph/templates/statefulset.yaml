@@ -50,6 +50,11 @@ spec:
   volumeClaimTemplates:
     - metadata:
         name: local-db
+        labels:
+          app: {{ template "janusgraph.name" . }}
+          chart: {{ template "janusgraph.chart" . }}
+          release: "{{ .Release.Name }}"
+          heritage: "{{ .Release.Service }}"
       spec:
         accessModes:
           - {{ .Values.persistence.accessMode | quote }}
