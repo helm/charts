@@ -167,13 +167,6 @@ The following table lists the configurable parameters of the Redis chart and the
 | `master.readinessProbe.successThreshold`   | Minimum consecutive successes for the probe to be considered successful after having failed (redis master pod) | `1`                                                  |
 | `master.readinessProbe.failureThreshold`   | Minimum consecutive failures for the probe to be considered failed after having succeeded.                     | `5`                                                  |
 | `master.priorityClassName`                 | Redis Master pod priorityClassName                                                                             | {}                                                   |
-| `master.sysctlImage.enabled`               | Enable an init container to modify Kernel settings                                                             | `false`                                              |
-| `master.sysctlImage.command`               | sysctlImage command to execute                                                                                 | []                                                   |
-| `master.sysctlImage.registry`              | sysctlImage Init container registry                                                                            | `docker.io`                                          |
-| `master.sysctlImage.repository`            | sysctlImage Init container name                                                                                | `busybox`                                            |
-| `master.sysctlImage.tag`                   | sysctlImage Init container tag                                                                                 | `latest`                                             |
-| `master.sysctlImage.pullPolicy`            | sysctlImage Init container pull policy                                                                         | `Always`                                             |
-| `master.sysctlImage.mountHostSys`          | Mount the host `/sys` folder to `/host-sys`                                                                    | `false`                                              |
 | `volumePermissions.image.registry`         | Init container volume-permissions image registry                                                               | `docker.io`                                          |
 | `volumePermissions.image.repository`       | Init container volume-permissions image name                                                                   | `bitnami/minideb`                                    |
 | `volumePermissions.image.tag`              | Init container volume-permissions image tag                                                                    | `latest`                                             |
@@ -207,13 +200,13 @@ The following table lists the configurable parameters of the Redis chart and the
 | `slave.resources`                          | Redis slave CPU/Memory resource requests/limits                                                                | `master.resources`                                   |
 | `slave.affinity`                           | Enable node/pod affinity for slaves                                                                            | {}                                                   |
 | `slave.priorityClassName`                  | Redis Slave pod priorityClassName                                                                              | {}                                                   |
-| `slave.sysctlImage.enabled`                | Enable an init container to modify Kernel settings                                                             | `false`                                              |
-| `slave.sysctlImage.command`                | sysctlImage command to execute                                                                                 | []                                                   |
-| `slave.sysctlImage.registry`               | sysctlImage Init container registry                                                                            | `docker.io`                                          |
-| `slave.sysctlImage.repository`             | sysctlImage Init container name                                                                                | `busybox`                                            |
-| `slave.sysctlImage.tag`                    | sysctlImage Init container tag                                                                                 | `latest`                                             |
-| `slave.sysctlImage.pullPolicy`             | sysctlImage Init container pull policy                                                                         | `Always`                                             |
-| `slave.sysctlImage.mountHostSys`           | Mount the host `/sys` folder to `/host-sys`                                                                    | `false`                                              |
+| `sysctlImage.enabled`                      | Enable an init container to modify Kernel settings                                                             | `false`                                              |
+| `sysctlImage.command`                      | sysctlImage command to execute                                                                                 | []                                                   |
+| `sysctlImage.registry`                     | sysctlImage Init container registry                                                                            | `docker.io`                                          |
+| `sysctlImage.repository`                   | sysctlImage Init container name                                                                                | `bitnami/minideb`                                    |
+| `sysctlImage.tag`                          | sysctlImage Init container tag                                                                                 | `latest`                                             |
+| `sysctlImage.pullPolicy`                   | sysctlImage Init container pull policy                                                                         | `Always`                                             |
+| `sysctlImage.mountHostSys`                 | Mount the host `/sys` folder to `/host-sys`                                                                    | `false`                                              |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
@@ -272,24 +265,14 @@ The chart optionally can start a metrics exporter for [prometheus](https://prome
 Redis may require some changes in the kernel of the host machine to work as expected, in particular increasing the `somaxconn` value and disabling transparent huge pages.
 To do so, you can set up a privileged initContainer with the `sysctlImage` config values, for example:
 ```
-master:
-  sysctlImage:
-    enabled: true
-    mountHostSys: true
-    command:
-      - /bin/sh
-      - -c
-      - |-
-        sysctl -w net.core.somaxconn=10000
-        echo never > /host-sys/kernel/mm/transparent_hugepage/enabled
-slave:
-  sysctlImage:
-    enabled: true
-    mountHostSys: true
-    command:
-      - /bin/sh
-      - -c
-      - |-
-        sysctl -w net.core.somaxconn=10000
-        echo never > /host-sys/kernel/mm/transparent_hugepage/enabled
+sysctlImage:
+  enabled: true
+  mountHostSys: true
+  command:
+    - /bin/sh
+    - -c
+    - |-
+      install_packages systemd
+      sysctl -w net.core.somaxconn=10000
+      echo never > /host-sys/kernel/mm/transparent_hugepage/enabled
 ```

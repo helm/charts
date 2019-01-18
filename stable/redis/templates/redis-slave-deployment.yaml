@@ -153,17 +153,17 @@ spec:
         - name: config
           mountPath: /opt/bitnami/redis/etc
         {{- end }}
-      {{- if .Values.slave.sysctlImage.enabled }}
+      {{- if .Values.sysctlImage.enabled }}
       initContainers:
         - name: init-sysctl
-          image: {{ template "redis.slave.sysctl.image" . }}
-          {{- if .Values.slave.sysctlImage.mountHostSys }}
+          image: {{ template "redis.sysctl.image" . }}
+          {{- if .Values.sysctlImage.mountHostSys }}
           volumeMounts:
           - name: host-sys
             mountPath: /host-sys
           {{- end }}
           command:
-{{ toYaml .Values.slave.sysctlImage.command | indent 12 }}
+{{ toYaml .Values.sysctlImage.command | indent 12 }}
           securityContext:
             privileged: true
             runAsUser: 0
@@ -185,7 +185,7 @@ spec:
       {{- end }}
       - name: redis-data
         emptyDir: {}
-      {{- if .Values.slave.sysctlImage.mountHostSys }}
+      {{- if .Values.sysctlImage.mountHostSys }}
       - name: host-sys
         hostPath:
           path: /sys

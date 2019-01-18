@@ -166,19 +166,10 @@ Get the password secret.
 {{- end -}}
 
 {{/*
-Return master sysctl image
+Return sysctl image
 */}}
-{{- define "redis.master.sysctl.image" -}}
-{{- $registryName :=  default "docker.io" .Values.master.sysctlImage.registry -}}
-{{- $tag := default "latest" .Values.master.sysctlImage.tag | toString -}}
-{{- printf "%s/%s:%s" $registryName .Values.master.sysctlImage.repository $tag -}}
-{{- end -}}
-
-{{/*
-Return slave sysctl image
-*/}}
-{{- define "redis.slave.sysctl.image" -}}
-{{- $registryName :=  default "docker.io" .Values.slave.sysctlImage.registry -}}
-{{- $tag := default "latest" .Values.slave.sysctlImage.tag | toString -}}
-{{- printf "%s/%s:%s" $registryName .Values.slave.sysctlImage.repository $tag -}}
+{{- define "redis.sysctl.image" -}}
+{{- $registryName :=  default "docker.io" .Values.sysctlImage.registry -}}
+{{- $tag := default "latest" .Values.sysctlImage.tag | toString -}}
+{{- printf "%s/%s:%s" $registryName .Values.sysctlImage.repository $tag -}}
 {{- end -}}
