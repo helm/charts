@@ -694,6 +694,14 @@ web:
   #   - name: CONCOURSE_TSA_LOG_LEVEL
   #     value: "debug"
 
+  ## For managing where secrets should be mounted for the web agents
+  keySecretsPath: "/concourse-keys"
+  authSecretsPath: "/concourse-auth"
+  vaultSecretsPath: "/concourse-vault"
+  postgresqlSecretsPath: "/concourse-postgresql"
+  syslogSecretsPath: "/concourse-syslog"
+  tlsSecretsPath: "/concourse-web-tls"
+
   ## Additional affinities to add to the web pods.
   ##
   # additionalAffinities:
@@ -833,6 +841,9 @@ worker:
   #   - name: CONCOURSE_GARDEN_ALLOW_HOST_ACCESS
   #     value: "true"
 
+
+  ## For managing where secrets should be mounted for worker agents
+  keySecretsPath: "/concourse-keys"
 
   ## Configure additional volumeMounts for the
   ## worker container(s)
