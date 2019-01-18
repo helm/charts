@@ -20,6 +20,7 @@ spec:
       name: http
   selector:
     app: {{ include "gce-ingress.name" . }}
+    component: backend
     release: {{ .Release.Name }}
 
   name: default-http-backend
