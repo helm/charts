@@ -25,6 +25,8 @@ tolerations: []
 #     operator: Exists
 #     effect: NoSchedule
 
+nodeSelector: {}
+
 podAnnotations: {}
 
 awsRegion: us-east-1

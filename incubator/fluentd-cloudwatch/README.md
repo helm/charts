@@ -66,6 +66,7 @@ The following table lists the configurable parameters of the Fluentd Cloudwatch 
 | `rbac.create`                   | If true, create & use RBAC resources                                      | `false`                               |
 | `rbac.serviceAccountName`       | existing ServiceAccount to use (ignored if rbac.create=true)              | `default`                             |
 | `tolerations`                   | Add tolerations                                                           | `[]`                                  |
+| `nodeSelector`                  | Node selector                                                             | `nil`                                 |
 | `extraVars`                     | Add pod environment variables (must be specified as a single line object) | `[]`                                  |
 | `updateStrategy`                | Define daemonset update strategy                                          | `OnDelete`                            |
 
