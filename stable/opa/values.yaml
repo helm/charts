@@ -78,8 +78,8 @@ serviceAccount:
 
 # This proxy allows opa to make Kubernetes SubjectAccessReview checks against the
 # Kubernetes API. You can get a rego function at github.com/open-policy-agent/library
-kubectl:
-  proxy: true
+sar:
+  enabled: false
   image: lachlanevenson/k8s-kubectl
   imageTag: latest
 

@@ -32,9 +32,9 @@ spec:
             - name: config
               readOnly: true
               mountPath: /config
-{{- if .Values.kubectl.proxy }}
-        - name: kubectl
-          image: {{ .Values.kubectl.image }}:{{ .Values.kubectl.imageTag }}
+{{- if .Values.sar.enabled }}
+        - name: sarproxy
+          image: {{ .Values.sar.image }}:{{ .Values.sar.imageTag }}
           command:
             - kubectl
             - proxy
