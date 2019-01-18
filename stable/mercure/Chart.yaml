@@ -12,5 +12,5 @@ icon: https://cdn.jsdelivr.net/gh/dunglas/mercure/public/mercure.svg
 sources:
 - https://github.com/dunglas/mercure
 maintainers:
-- name: Kévin Dunglas
+- name: dunglas
   email: dunglas+mercure@gmail.com
