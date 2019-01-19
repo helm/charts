@@ -23,9 +23,9 @@ spec:
       {{- else}}{{/* Has no annotations */}}
         - path: /
       {{- end }}
-      backend:
-        serviceName: spin-gate
-        servicePort: 8084
+          backend:
+            serviceName: spin-gate
+            servicePort: 8084
 
 {{- if .Values.ingressGate.tls }}
   tls:
