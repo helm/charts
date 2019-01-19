@@ -39,10 +39,6 @@ yourlsUsername: user
 ##
 yourlsTablePrefix: yourls_
 
-## Set to `false` to allow the container to be started with blank passwords
-## ref: https://hub.docker.com/_/yourls/
-allowEmptyPassword: true
-
 # Extra environment variables which will be saved in a release-specific secret
 # or retrieved via valueFrom.
 # extraEnv:

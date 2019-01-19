@@ -44,12 +44,6 @@ spec:
           image: {{ template "yourls.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
           env:
-            - name: ALLOW_EMPTY_PASSWORD
-            {{- if .Values.allowEmptyPassword }}
-              value: "yes"
-            {{- else }}
-              value: "no"
-            {{- end }}
             - name: YOURLS_DB_HOST
             {{- if .Values.mariadb.enabled }}
               value: {{ template "mariadb.fullname" . }}:{{ .Values.mariadb.service.port }}

@@ -58,7 +58,6 @@ The following table lists the configurable parameters of the YOURLS chart and th
 | `yourlsUsername`                 | User of the application                    | `user`                                                  |
 | `yourlsPassword`                 | Application password                       | _random 10 character long alphanumeric string_          |
 | `yourlsTablePrefix`              | Table prefix                               | `yourls_`                                               |
-| `allowEmptyPassword`             | Allow DB blank passwords                   | `true`                                                  |
 | `extraEnv`                       | Additional environment variables           | `[]`                                                    |
 | `replicaCount`                   | Number of YOURLS Pods to run               | `1`                                                     |
 | `mariadb.enabled`                | Deploy MariaDB container(s)                | `true`                                                  |
