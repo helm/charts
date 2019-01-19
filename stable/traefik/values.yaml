@@ -351,6 +351,7 @@ deployment:
   #   key: value
   # podAnnotations:
   #   key: value
+  hostNetwork: false
   hostPort:
     httpEnabled: false
     httpsEnabled: false
