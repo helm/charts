@@ -43,6 +43,7 @@ spec:
           printf 'env:\n  API_HOST: http://spin-gate.{{ .Release.Namespace }}:8084/\n' > /tmp/spinnaker/.hal/default/service-settings/deck.yml
           # set gate profile to work behind a TLS LB/Proxy
           # see https://github.com/spinnaker/spinnaker/issues/1630
+          mkdir -p /tmp/spinnaker/.hal/default/profiles
           printf '\nserver:\n  tomcat:\n    protocolHeader: X-Forwarded-Proto\n    remoteIpHeader: X-Forwarded-For\n    internalProxies: .*\n    httpsServerPort: X-Forwarded-Port\n' > /tmp/spinnaker/.hal/default/profiles/gate-local.yml
         volumeMounts:
         - name: halyard-config
