@@ -107,6 +107,10 @@ mariadb:
 ##
 service:
   type: LoadBalancer
+  ## When using web.service.type: LoadBalancer, sets the user-specified load balancer IP
+  # loadBalancerIP: ""
+  ## When using web.service.type: ClusterIP, sets the user-specified cluster IP
+  # clusterIP: ""
   # HTTP Port
   port: 80
   # HTTPS Port
