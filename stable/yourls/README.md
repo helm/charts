@@ -66,12 +66,15 @@ The following table lists the configurable parameters of the YOURLS chart and th
 | `mariadb.db.name`                | Database name to create                    | `yourls`                                                |
 | `mariadb.db.user`                | Database user to create                    | `yourls`                                                |
 | `mariadb.db.password`            | Password for the database                  | _random 10 character long alphanumeric string_          |
+| `mariadb.service.port`           | Port for the database                      | `3306`                                                  |
 | `externalDatabase.host`          | Host of the external database              | `localhost:3306`                                        |
 | `externalDatabase.user`          | Existing username in the external db       | `yourls`                                                |
 | `externalDatabase.password`      | Password for the above username            | `nil`                                                   |
 | `externalDatabase.database`      | Name of the existing database              | `yourls`                                                |
 | `service.annotations`            | Service annotations                        | `{}`                                                    |
 | `service.type`                   | Kubernetes Service type                    | `LoadBalancer`                                          |
+| `service.loadBalancerIP`         | Load balancer IP                           | `LoadBalancer`                                          |
+| `service.clusterIP`              | Cluster IP                                 | `LoadBalancer`                                          |
 | `service.port`                   | Service HTTP port                          | `80`                                                    |
 | `service.httpsPort`              | Service HTTPS port                         | `443`                                                   |
 | `service.externalTrafficPolicy`  | Enable client source IP preservation       | `Cluster`                                               |
