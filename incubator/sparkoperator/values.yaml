@@ -13,7 +13,7 @@ serviceAccounts:
     create: true
     name:
 
-sparkJobNamespace: default
+sparkJobNamespace: ""
 
 enableWebhook: false
 enableMetrics: true
