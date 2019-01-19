@@ -1,5 +1,5 @@
 name: concourse
-version: 3.6.0
+version: 3.6.1
 appVersion: 4.2.2
 description: Concourse is a simple and scalable CI system.
 icon: https://avatars1.githubusercontent.com/u/7809479
