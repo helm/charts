@@ -22,10 +22,10 @@ spec:
       {{- if or .Values.podAnnotations .Values.metrics.enabled }}
       annotations:
       {{- if .Values.podAnnotations }}
-{{ toYaml .Values.podAnnotations | indent 8 }}
+        {{- toYaml .Values.podAnnotations | nindent 8 }}
       {{- end }}
       {{- if .Values.metrics.podAnnotations }}
-{{ toYaml .Values.metrics.podAnnotations | indent 8 }}
+        {{- toYaml .Values.metrics.podAnnotations | nindent 8 }}
       {{- end }}
       {{- end }}
     spec:
@@ -84,7 +84,7 @@ spec:
                   name: {{ template "yourls.fullname" . }}
                   key: yourls-password
           {{- if .Values.extraEnv }}
-{{ toYaml .Values.extraEnv | indent 12 }}
+            {{- toYaml .Values.extraEnv | nindent 12 }}
           {{- end }}
           ports:
             - name: http
@@ -100,7 +100,7 @@ spec:
               port: https
               scheme: HTTPS
             {{- end }}
-{{ toYaml .Values.livenessProbe | indent 10 }}
+          {{- toYaml .Values.livenessProbe | nindent 10 }}
           readinessProbe:
             httpGet:
               path: /admin/
@@ -110,15 +110,15 @@ spec:
               port: https
               scheme: HTTPS
             {{- end }}
-{{ toYaml .Values.readinessProbe | indent 10 }}
+          {{- toYaml .Values.readinessProbe | nindent 10 }}
           volumeMounts:
             - mountPath: /var/www/html
               name: yourls-data
           {{- if .Values.volumeMounts }}
-{{ toYaml .Values.volumeMounts | indent 12 }}
+            {{- toYaml .Values.volumeMounts | nindent 12 }}
           {{- end }}
           resources:
-{{ toYaml .Values.resources | indent 10 }}
+          {{- toYaml .Values.resources | nindent 10 }}
 {{- if .Values.metrics.enabled }}
         - name: metrics
           image: {{ template "metrics.image" . }}
@@ -140,7 +140,7 @@ spec:
             initialDelaySeconds: 5
             timeoutSeconds: 1
           resources:
-  {{ toYaml .Values.metrics.resources | indent 10 }}
+          {{- toYaml .Values.metrics.resources | nindent 10 }}
 {{- end }}
       volumes:
         - name: yourls-data
@@ -151,17 +151,17 @@ spec:
           emptyDir: {}
         {{ end }}
       {{- if .Values.volumes }}
-{{ toYaml .Values.volumes | indent 8 }}
+        {{- toYaml .Values.volumes | nindent 8 }}
       {{- end }}
       {{- if .Values.nodeSelector }}
       nodeSelector:
-{{ toYaml .Values.nodeSelector | indent 8 }}
+        {{- toYaml .Values.nodeSelector | nindent 8 }}
       {{- end -}}
     {{- with .Values.affinity }}
       affinity:
-{{ toYaml . | indent 8 }}
+        {{- toYaml . | nindent 8 }}
     {{- end }}
     {{- with .Values.tolerations }}
       tolerations:
-{{ toYaml . | indent 8 }}
+        {{- toYaml . | nindent 8 }}
     {{- end }}
