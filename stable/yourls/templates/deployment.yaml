@@ -52,7 +52,7 @@ spec:
             {{- end }}
             - name: YOURLS_DB_HOST
             {{- if .Values.mariadb.enabled }}
-              value: {{ template "mariadb.fullname" . }}:3306
+              value: {{ template "mariadb.fullname" . }}:{{ .Values.mariadb.service.port }}
             {{- else }}
               value: {{ .Values.externalDatabase.host | quote }}
             {{- end }}

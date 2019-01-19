@@ -14,7 +14,7 @@ spec:
       - name: MARIADB_HOST
         value: {{ template "mariadb.fullname" . }}
       - name: MARIADB_PORT
-        value: "3306"
+        value: {{ .Values.mariadb.service.port | quote }}
       - name: YOURLS_DB_NAME
         value: {{ default "" .Values.mariadb.db.name | quote }}
       - name: YOURLS_DB_USER
