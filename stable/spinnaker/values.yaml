@@ -1,8 +1,8 @@
 halyard:
-  spinnakerVersion: 1.9.1
+  spinnakerVersion: 1.11.6
   image:
     repository: gcr.io/spinnaker-marketplace/halyard
-    tag: 1.9.1
+    tag: 1.13.1
   # Provide a config map with Hal commands that will be run the core config (storage)
   # The config map should contain a script in the config.sh key
   additionalScripts:
