@@ -161,7 +161,7 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `kvprovider.etcd.useAPIV3`             | Use V3 or use V2 API of ETCD                                                                                                 | `false`                                           |
 | `dashboard.enabled`                    | Whether to enable the Traefik dashboard                                                                                      | `false`                                           |
 | `dashboard.domain`                     | Domain for the Traefik dashboard                                                                                             | `traefik.example.com`                             |
-| `dashboard.serviceType`                | ServiceType for the Traefik dashboard Service `ClusterIP`                             |
+| `dashboard.serviceType`                | ServiceType for the Traefik dashboard Service                                                                                | `ClusterIP`                                       |
 | `dashboard.service.annotations`        | Annotations for the Traefik dashboard Service definition, specified as a map                                                 | None                                              |
 | `dashboard.ingress.annotations`        | Annotations for the Traefik dashboard Ingress definition, specified as a map                                                 | None                                              |
 | `dashboard.ingress.labels`             | Labels for the Traefik dashboard Ingress definition, specified as a map                                                      | None                                              |
@@ -288,7 +288,7 @@ Then you are good to migrate your old certs into the kvprovider and run traefik 
 
 ### Dashboard Basic Auth
 
-[Basic auth](https://docs.traefik.io/toml/#api-backend) can be specified via `dashboard.auth.basic` as a map of usernames to passwords as below.
+[Basic auth](https://docs.traefik.io/configuration/entrypoints/#authentication) can be specified via `dashboard.auth.basic` as a map of usernames to passwords as below.
 See the linked Traefik documentation for accepted passwords encodings.
 It is advised to single quote passwords to avoid issues with special characters:
 
