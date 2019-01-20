@@ -278,7 +278,7 @@ data:
     u.addProperty(keys_param)
     def inst = Jenkins.getInstance()
     def sshDesc = inst.getDescriptor("org.jenkinsci.main.modules.sshd.SSHD")
-    sshDesc.setPort({{ .Values.Master.Sidecar.configAutoReload.sshTcpPort | default 944 }})
+    sshDesc.setPort({{ .Values.Master.Sidecar.configAutoReload.sshTcpPort | default 1044 }})
     sshDesc.getActualPort()
     sshDesc.save()
 {{- end }}

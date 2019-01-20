@@ -145,11 +145,12 @@ Master:
   #     <<xml here>>
 
   # Below is the implementation of Jenkins Configuration as Code.  Add a key under ConfigScripts for each configuration area,
-  # each of which correspond to a plugin or section of the UI.  Each key (prior to | character) is just a label, and can be any value.
-  # Keys are only used to give the section a meaningful name.  The keys become the name of a configuration yaml file on the master in
-  # /var/jenkins_home/casc_configs (by default) and will be processed by the Configuration as Code Plugin.  The lines after each | become the
-  # content of the configuration yaml file.  The first line after this is a JCasC root element, eg jenkins, credentials, etc.
-  # Best reference is https://<jenkins_url>/configuration-as-code/reference.  The example below creates a welcome message.
+  # where each corresponds to a plugin or section of the UI.  Each key (prior to | character) is just a label, and can be any value.
+  # Keys are only used to give the section a meaningful name.  The only restriction is they may only contain RFC 1123 \ DNS label
+  # characters: lowercase letters, numbers, and hyphens.  The keys become the name of a configuration yaml file on the master in
+  # /var/jenkins_home/casc_configs (by default) and will be processed by the Configuration as Code Plugin.  The lines after each |
+  # become the content of the configuration yaml file.  The first line after this is a JCasC root element, eg jenkins, credentials,
+  # etc.  Best reference is https://<jenkins_url>/configuration-as-code/reference.  The example below creates a welcome message:
   JCasC:
     enabled: false
     PluginVersion: 1.4
@@ -160,7 +161,7 @@ Master:
           systemMessage: Welcome to our CI\CD server.  This Jenkins is configured and managed 'as code'.
 
   Sidecar:
-    image: shadwell/k8s-sidecar:0.0.1
+    image: shadwell/k8s-sidecar:0.0.2
     imagePullPolicy: IfNotPresent
     resources:
     #   limits:
@@ -175,11 +176,12 @@ Master:
       # over SSH to reapply config when changes to the ConfigScripts are detected.  The admin user (or account you specify in
       # Master.AdminUser) will have a random SSH private key (RSA 4096) assigned unless you specify OwnSshKey: true.  This will be saved to a k8s secret.
       enabled: false
-      # SSH port value can be set to any unused TCP port.  The default, 944, is a non-standard SSH port that has been chosen at random.
+      # SSH port value can be set to any unused TCP port.  The default, 1044, is a non-standard SSH port that has been chosen at random.
       # Is only used to reload jcasc config from the sidecar container running in the Jenkins master pod.
       # This TCP port will not be open in the pod (unless you specifically configure this), so Jenkins will not be
-      # accessible via SSH from outside of the pod:
-      sshTcpPort: 944
+      # accessible via SSH from outside of the pod.  Note if you use non-root pod privileges (RunAsUser & FsGroup),
+      # this must be > 1024:
+      sshTcpPort: 1044
       # label that the configmaps with dashboards are marked with:
       label: jenkins_config
       # folder in the pod that should hold the collected dashboards:
