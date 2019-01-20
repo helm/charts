@@ -37,7 +37,7 @@ The following tables lists the configurable parameters of the Unifi chart and th
 | Parameter                                    | Description                                                                                                            | Default                      |
 | -------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | ---------------------------- |
 | `image.repository`                           | Image repository                                                                                                       | `jacobalberty/unifi`         |
-| `image.tag`                                  | Image tag. Possible values listed [here][docker].                                                                      | `5.8.23`                     |
+| `image.tag`                                  | Image tag. Possible values listed [here][docker].                                                                      | `5.9.29`                     |
 | `image.pullPolicy`                           | Image pull policy                                                                                                      | `IfNotPresent`               |
 | `guiService.type`                            | Kubernetes service type for the Unifi GUI                                                                              | `ClusterIP`                  |
 | `guiService.port`                            | Kubernetes port where the Unifi GUI is exposed                                                                         | `8443`                       |
