@@ -5,7 +5,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: jenkins-config-{{ $key }}
+  name: jenkins-config-{{ template "jenkins.fullname" $root }}-{{ $key }}
   labels:
     {{ $.Values.Master.Sidecar.configAutoReload.label | default "jenkins_config" }}: "true"
     release: {{ $root.Release.Name }}
