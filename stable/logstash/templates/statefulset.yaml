@@ -68,13 +68,18 @@ spec:
               value: {{ .Values.exporter.logstash.target.port | quote }}
             ## Elasticsearch output
             - name: ELASTICSEARCH_HOST
-              value: {{ .Values.elasticsearch.host | quote }}
+              value: {{ (tpl .Values.elasticsearch.host .) | quote }}
             - name: ELASTICSEARCH_PORT
               value: {{ .Values.elasticsearch.port | quote }}
             ## Additional env vars
           {{- range $key, $value := .Values.config }}
             - name: {{ $key | upper | replace "." "_" }}
               value: {{ $value | quote }}
+          {{- end }}
+            ## Additional templated env vars
+          {{- range $key, $value := .Values.configTpl }}
+            - name: {{ $key | upper | replace "." "_" }}
+              value: {{ (tpl $value $) | quote }}
           {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
@@ -111,6 +116,11 @@ spec:
           {{- end }}
           resources:
 {{ toYaml .Values.exporter.logstash.resources | indent 12 }}
+{{- end }}
+
+{{- if .Values.extraInitContainers }}
+      initContainers:
+{{ tpl .Values.extraInitContainers . | indent 8 }}
 {{- end }}
 
     {{- with .Values.nodeSelector }}
