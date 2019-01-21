@@ -73,7 +73,7 @@ The following table lists the configurable parameters of the MySQL chart and the
 | `readinessProbe.failureThreshold`            | Minimum consecutive failures for the probe to be considered failed after having succeeded.   | 3                                                    |
 | `persistence.enabled`                        | Create a volume to store data                                                                | true                                                 |
 | `persistence.size`                           | Size of persistent volume claim                                                              | 8Gi RW                                               |
-| `persistence.storageClass`                   | Type of persistent volume claim                                                              | nil  (uses alpha storage class annotation)           |
+| `persistence.storageClass`                   | Type of persistent volume claim                                                              | nil           |
 | `persistence.accessMode`                     | ReadWriteOnce or ReadOnly                                                                    | ReadWriteOnce                                        |
 | `persistence.existingClaim`                  | Name of existing persistent volume                                                           | `nil`                                                |
 | `persistence.subPath`                        | Subdirectory of the volume to mount                                                          | `nil`                                                |
