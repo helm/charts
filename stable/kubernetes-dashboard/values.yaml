@@ -18,6 +18,10 @@ labels: {}
 # kubernetes.io/cluster-service: "true"
 # kubernetes.io/name: "Kubernetes Dashboard"
 
+
+## Disable Login prompt
+enableSkipLogin: false
+
 ## Serve application over HTTP without TLS
 enableInsecureLogin: false
 
