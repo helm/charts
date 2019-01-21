@@ -20,11 +20,7 @@ spec:
     #- 'projected'
     - 'secret'
     #- 'downwardAPI'
-  {{- if .Values.controller.hostNetwork }}
-  hostNetwork: true
-  {{- else }}
-  hostNetwork: false
-  {{- end }}
+  hostNetwork: {{ .Values.controller.hostNetwork | default false }}
   hostIPC: false
   hostPID: false
   runAsUser:
