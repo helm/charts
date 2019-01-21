@@ -116,7 +116,7 @@ def main():
         print("Generating rules from %s" % chart['source'])
         response = requests.get(chart['source'])
         if response.status_code != 200:
-            print('Skipping the file, responce code %s not equals 200' % response.status_code)
+            print('Skipping the file, response code %s not equals 200' % response.status_code)
             continue
         raw_text = response.text
         if chart['type'] == 'yaml':
