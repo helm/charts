@@ -98,6 +98,23 @@ airflow:
     pullSecret: my-docker-repo-secret
 ```
 
+### Airflow connections
+
+Connections define how your Airflow instance connects to environment and 3rd party service providers.
+This helm chart allows you to define your own connections at the time of Airflow initialization.
+For each connection the id and the type has to be defined. All other properties are optional.
+
+Example:
+```yaml
+airflow:
+  connections:
+  - id: my_aws
+    type: aws
+    extra: '{"aws_access_key_id": "**********", "aws_secret_access_key": "***", "region_name":"eu-central-1"}'
+```
+
+Note: As connections may require to include sensitive data - the resulting script is stored encrypted in a kubernetes secret and mounted into the airflow scheduler container. It is probably wise not to put connection data in the default values.yaml and instead create an encrypted my-secret-values.yaml. this way it can be decrypted before the installation and passed to helm with -f <my-secret-values.yaml>
+
 ### Worker Statefulset
 
 Celery workers uses StatefulSet.
@@ -141,6 +158,13 @@ To create a secret, you can use:
 $ kubectl create secret generic redshift-user --from-file=redshift-user=~/secrets/redshift-user.txt
 ```
 Where `redshift-user.txt` contains the user secret as a single text string.
+
+### Use precreated secret for postgres and redis
+
+You can use a precreated secret for the connection credentials to both postgresql and redis. To do
+so specify in values.yaml `existingAirflowSecret`, where the value is the name of the secret which has
+postgresUser, postgresPassword, and redisPassword defined. If not specified, it will fall back to using
+`secrets.yaml` to store the connection credentials by default.
 
 ### Local binaries
 
@@ -221,6 +245,7 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `workers.pod.annotations`                | annotations for the worker pods                         | `{}`                      |
 | `workers.secretsDir`                     | directory in which to mount secrets on worker nodes     | /var/airflow/secrets      |
 | `workers.secrets`                        | secrets to mount as volumes on worker nodes             | []                        |
+| `existingAirflowSecret`                  | secret to use for postgres and redis connection         |                           |
 | `ingress.enabled`                        | enable ingress                                          | `false`                   |
 | `ingress.web.host`                       | hostname for the webserver ui                           | ""                        |
 | `ingress.web.path`                       | path of the werbserver ui (read `values.yaml`)          | ``                        |
@@ -252,9 +277,9 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `postgresql.enabled`                     | create a postgres server                                | `true`                    |
 | `postgresql.uri`                         | full URL to custom postgres setup                       | (undefined)               |
 | `postgresql.portgresHost`                | PostgreSQL Hostname                                     | (undefined)               |
-| `postgresql.postgresqlUsername`          | PostgreSQL User                                         | `postgres`                |
-| `postgresql.postgresqlPassword`          | PostgreSQL Password                                     | `airflow`                 |
-| `postgresql.postgresqlDatabase`          | PostgreSQL Database name                                | `airflow`                 |
+| `postgresql.postgresUser`                | PostgreSQL User                                         | `postgres`                |
+| `postgresql.postgresPassword`            | PostgreSQL Password                                     | `airflow`                 |
+| `postgresql.postgresDatabase`            | PostgreSQL Database name                                | `airflow`                 |
 | `postgresql.persistence.enabled`         | Enable Postgres PVC                                     | `true`                    |
 | `postgresql.persistance.storageClass     | Persistant class                                        | (undefined)               |
 | `postgresql.persistance.accessMode`      | Access mode                                             | `ReadWriteOnce`           |

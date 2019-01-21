@@ -66,17 +66,17 @@ spec:
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "airflow.fullname" . }}
+                  name: {{ template "airflow.secret" . }}
                   key: postgresUser
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "airflow.fullname" . }}
+                  name: {{ template "airflow.secret" . }}
                   key: postgresPassword
             - name: REDIS_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "airflow.fullname" . }}
+                  name: {{ template "airflow.secret" . }}
                   key: redisPassword
           volumeMounts:
           {{- if .Values.persistence.enabled }}
@@ -87,6 +87,10 @@ spec:
               mountPath: {{ .Values.dags.path }}
             - name: scripts
               mountPath: /usr/local/scripts
+            {{- if .Values.airflow.connections }}
+            - name: connections
+              mountPath: /usr/local/connections
+            {{- end}}
           {{- end }}
           args:
             - "bash"
@@ -101,6 +105,10 @@ spec:
               /usr/local/scripts/install-requirements.sh &&
               echo "executing initdb" &&
               airflow initdb &&
+            {{- if .Values.airflow.connections }}
+              echo "adding connections" &&
+              /usr/local/connections/add-connections.sh &&
+            {{- end }}
               echo "executing scheduler" &&
               airflow scheduler -n {{ .Values.airflow.schedulerNumRuns }}
           {{- else }}
@@ -131,4 +139,10 @@ spec:
           configMap:
             name: {{ template "airflow.fullname" . }}-git-clone
             defaultMode: 0755
-        {{- end }}
+          {{- if .Values.airflow.connections }}           
+        - name: connections
+          secret: 
+            secretName: {{ template "airflow.fullname" . }}-connections
+            defaultMode: 0755
+          {{- end }}
+        {{- end }} 

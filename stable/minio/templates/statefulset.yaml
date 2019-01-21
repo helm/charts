@@ -33,20 +33,20 @@ spec:
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           {{- if .Values.tls.enabled }}
-          command: [ "/bin/sh", 
-          "-ce", 
+          command: [ "/bin/sh",
+          "-ce",
           "cp /tmp/config.json {{ .Values.configPath }} &&
           /usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} server
           {{- range $i := until $nodeCount }}
-          https://{{ template `minio.fullname` $ }}-{{ $i }}.{{ template `minio.fullname` $ }}.{{ $.Release.Namespace }}.svc.cluster.local{{ $.Values.mountPath }}
+          https://{{ template `minio.fullname` $ }}-{{ $i }}.{{ template `minio.fullname` $ }}.{{ $.Release.Namespace }}.svc.{{ $.Values.clusterDomain }}{{ $.Values.mountPath }}
           {{- end }}" ]
           {{ else }}
-          command: [ "/bin/sh", 
-          "-ce", 
+          command: [ "/bin/sh",
+          "-ce",
           "cp /tmp/config.json {{ .Values.configPath }} &&
           /usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} server
           {{- range $i := until $nodeCount }}
-          http://{{ template `minio.fullname` $ }}-{{ $i }}.{{ template `minio.fullname` $ }}.{{ $.Release.Namespace }}.svc.cluster.local{{ $.Values.mountPath }}
+          http://{{ template `minio.fullname` $ }}-{{ $i }}.{{ template `minio.fullname` $ }}.{{ $.Release.Namespace }}.svc.{{ $.Values.clusterDomain }}{{ $.Values.mountPath }}
           {{- end }}" ]
           {{ end }}
           volumeMounts:
@@ -86,6 +86,11 @@ spec:
             httpGet:
               path: /minio/health/live
               port: service
+              {{- if .Values.tls.enabled }}
+              scheme: HTTPS
+              {{ else }}
+              scheme: HTTP
+              {{- end }}
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}

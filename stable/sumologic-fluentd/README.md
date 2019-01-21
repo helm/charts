@@ -62,7 +62,8 @@ The following table lists the configurable parameters of the sumologic-fluentd c
 | `podAnnotations` | Annotations to add to the DaemonSet's Pods | `{}` |
 | `tolerations` | List of node taints to tolerate (requires Kubernetes >= 1.6) | `[]` |
 | `updateStrategy` | `OnDelete` or `RollingUpdate` (requires Kubernetes >= 1.6) | `OnDelete` |
-| `sumologic.collectorUrl` | An HTTP collector in SumoLogic that the container can send logs to via HTTP | `Nil` You must provide your own |
+| `sumologic.collectorUrl` | An HTTP collector in SumoLogic that the container can send logs to via HTTP | `Nil` You must provide your own value |
+| `sumologic.collectorUrlExistingSecret` | If set, use the secret with the name provided instead of creating a new one | `Nil` You must reference an existing secret |
 | `sumologic.fluentdSource` | The fluentd input source, `file` or `systemd` | `file` |
 | `sumologic.fluentdUserConfigDir` | A directory of user-defined fluentd configuration files, which must be in the `*.conf` directory in the container | `/fluentd/conf.d/user` |
 | `sumologic.flushInterval` | How frequently to push logs to sumo, in seconds | `5` |
@@ -90,6 +91,8 @@ The following table lists the configurable parameters of the sumologic-fluentd c
 | `sumologic.auditLogPath` | Define the path to the [Kubernetes Audit Log](https://kubernetes.io/docs/tasks/debug-application-cluster/audit/) | `/mnt/log/kube-apiserver-audit.log` |
 | `sumologic.timeKey` | The field name for json formatted sources that should be used as the time. See [time_key](https://docs.fluentd.org/v0.12/articles/formatter_json#time_key-(string,-optional,-defaults-to-%E2%80%9Ctime%E2%80%9D)). | `time`
 | `sumologic.addTimeStamp` | Option to control adding timestamp to logs. | `true`
+| `sumologic.addTime` | Option to control adding time to logs. | `true`
+| `sumologic.addStream` | Option to control adding stream to logs. | `true`
 | `sumologic.containerLogsPath` | Specify the path in_tail should watch for container logs. | `/mnt/log/containers/*.log`
 | `sumologic.proxyUri` | Add the uri of the proxy environment if present. | `Nil`
 | `sumologic.enableStatWatcher` | Option to control the enabling of [stat_watcher](https://docs.fluentd.org/v1.0/articles/in_tail#enable_stat_watcher). | `true`
@@ -105,6 +108,7 @@ The following table lists the configurable parameters of the sumologic-fluentd c
 | `resources.limits.memory` | Memory resource limits | 256Mi |
 | `rbac.create` | Is Role Based Authentication enabled in the cluster | `false` |
 | `rbac.serviceAccountName` | RBAC service account name | {{ fullname }} |
+| `daemonset.priorityClassName` | Priority Class to use for the daemonset | `Nil` |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
@@ -169,12 +173,12 @@ $ helm install --name my-release stable/sumologic-fluentd --set rbac.create=true
 
 ### Excluding and Including data
 
-You have several options controlling the filtering of data that gets sent to Sumo Logic.  
+You have several options controlling the filtering of data that gets sent to Sumo Logic.
 
 #### Excluding data using environment variables
 
 There are several environment variables that can exclude data.  The following table show which  environment variables affect which Fluentd sources.
-                                                                
+
 | Environment Variable | Containers | Docker | Kubernetes | Systemd |
 |----------------------|------------|--------|------------|---------|
 | `EXCLUDE_CONTAINER_REGEX` | ✔ | ✘ | ✘ | ✘ |
