@@ -39,6 +39,12 @@ By default this chart will not have persistent storage, and the API service
 will be *DISABLED*.  This protects against unauthorized access to the API
 with default configuration values.
 
+In addition, by default, pod `securityContext.fsGroup` is set to `1000`. This
+is the user/group that the ChartMuseum container runs as, and is used to
+enable local persitant storage. If your cluster has DenySecurityContext enabled,
+you can set `securityContext` to `{}` and still use this chart with one of
+the cloud storage options.
+
 For a more robust solution supply helm install with a custom values.yaml
 You are also required to create the StorageClass resource ahead of time:
 ```
@@ -72,22 +78,22 @@ their default values. See values.yaml for all available options.
 | `resources.requests.memory`            | Container requested memory                  | `64Mi`                                              |
 | `serviceAccount.create`                | If true, create the service account         | `false`                                             |
 | `serviceAccount.name`                  | Name of the serviceAccount to create or use | `{{ chartmuseum.fullname }}`                        |
-| `securityContext`                      | Map of securityContext for the pod          | `{}`                                                |
+| `securityContext`                      | Map of securityContext for the pod          | `{ fsGroup: 1000 }`                                 |
 | `nodeSelector`                         | Map of node labels for pod assignment       | `{}`                                                |
 | `tolerations`                          | List of node taints to tolerate             | `[]`                                                |
 | `affinity`                             | Map of node/pod affinities                  | `{}`                                                |
 | `env.open.STORAGE`                     | Storage Backend to use                      | `local`                                             |
-| `env.open.ALIBABA_BUCKET`              | Bucket to store charts in for Alibaba       | ``                                                  |
-| `env.open.ALIBABA_PREFIX`              | Prefix to store charts under for Alibaba    | ``                                                  |
-| `env.open.ALIBABA_ENDPOINT`            | Alternative Alibaba endpoint                | ``                                                  |
-| `env.open.ALIBABA_SSE`                 | Server side encryption algorithm to use     | ``                                                  |
-| `env.open.AMAZON_BUCKET`               | Bucket to store charts in for AWS           | ``                                                  |
-| `env.open.AMAZON_ENDPOINT`             | Alternative AWS endpoint                    | ``                                                  |
-| `env.open.AMAZON_PREFIX`               | Prefix to store charts under for AWS        | ``                                                  |
-| `env.open.AMAZON_REGION`               | Region to use for bucket access for AWS     | ``                                                  |
-| `env.open.AMAZON_SSE`                  | Server side encryption algorithm to use     | ``                                                  |
-| `env.open.GOOGLE_BUCKET`               | Bucket to store charts in for GCP           | ``                                                  |
-| `env.open.GOOGLE_PREFIX`               | Prefix to store charts under for GCP        | ``                                                  |
+| `env.open.STORAGE_ALIBABA_BUCKET`      | Bucket to store charts in for Alibaba       | ``                                                  |
+| `env.open.STORAGE_ALIBABA_PREFIX`      | Prefix to store charts under for Alibaba    | ``                                                  |
+| `env.open.STORAGE_ALIBABA_ENDPOINT`    | Alternative Alibaba endpoint                | ``                                                  |
+| `env.open.STORAGE_ALIBABA_SSE`         | Server side encryption algorithm to use     | ``                                                  |
+| `env.open.STORAGE_AMAZON_BUCKET`       | Bucket to store charts in for AWS           | ``                                                  |
+| `env.open.STORAGE_AMAZON_ENDPOINT`     | Alternative AWS endpoint                    | ``                                                  |
+| `env.open.STORAGE_AMAZON_PREFIX`       | Prefix to store charts under for AWS        | ``                                                  |
+| `env.open.STORAGE_AMAZON_REGION`       | Region to use for bucket access for AWS     | ``                                                  |
+| `env.open.STORAGE_AMAZON_SSE`          | Server side encryption algorithm to use     | ``                                                  |
+| `env.open.STORAGE_GOOGLE_BUCKET`       | Bucket to store charts in for GCP           | ``                                                  |
+| `env.open.STORAGE_GOOGLE_PREFIX`       | Prefix to store charts under for GCP        | ``                                                  |
 | `env.open.STORAGE_MICROSOFT_CONTAINER` | Container to store charts under for MS      | ``                                                  |
 | `env.open.STORAGE_MICROSOFT_PREFIX`    | Prefix to store charts under for MS         | ``                                                  |
 | `env.open.STORAGE_OPENSTACK_CONTAINER` | Container to store charts for openstack     | ``                                                  |

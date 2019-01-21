@@ -1,6 +1,7 @@
 rbac:
   create: true
   pspEnabled: true
+  pspUseAppArmor: true
 serviceAccount:
   create: true
   name:
@@ -24,7 +25,7 @@ livenessProbe:
 
 image:
   repository: grafana/grafana
-  tag: 5.4.2
+  tag: 5.4.3
   pullPolicy: IfNotPresent
 
   ## Optionally specify an array of imagePullSecrets.
@@ -38,12 +39,25 @@ securityContext:
   runAsUser: 472
   fsGroup: 472
 
+
+extraConfigmapMounts: []
+  # - name: certs-configmap
+  #   mountPath: /etc/grafana/ssl/
+  #   configMap: certs-configmap
+  #   readOnly: true
+
+
 ## Assign a PriorityClassName to pods if set
 # priorityClassName:
 
 downloadDashboardsImage:
   repository: appropriate/curl
   tag: latest
+  pullPolicy: IfNotPresent
+
+chownDataImage:
+  repository: busybox
+  tag: 1.30.0
   pullPolicy: IfNotPresent
 
 ## Pod Annotations
@@ -105,15 +119,22 @@ affinity: {}
 persistence:
   enabled: false
   # storageClassName: default
-  # accessModes:
-  #   - ReadWriteOnce
-  # size: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  size: 10Gi
   # annotations: {}
   # subPath: ""
   # existingClaim:
 
+# Administrator credentials when not using an existing secret (see below)
 adminUser: admin
 # adminPassword: strongpassword
+
+# Use an existing secret for the admin user.
+admin:
+  existingSecret: ""
+  userKey: admin-user
+  passwordKey: admin-password
 
 ## Use an alternate scheduler, e.g. "stork".
 ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
@@ -189,8 +210,7 @@ dashboardProviders: {}
 dashboards: {}
 #  default:
 #    some-dashboard:
-#      json: |
-#        $RAW_JSON
+#      json: dashboards/custom-dashboard.json
 #    prometheus-stats:
 #      gnetId: 2
 #      revision: 2
@@ -259,8 +279,10 @@ ldap:
 ## ref: http://docs.grafana.org/installation/configuration/#smtp
 smtp:
   # `existingSecret` is a reference to an existing secret containing the smtp configuration
-  # for Grafana in keys `user` and `password`.
+  # for Grafana.
   existingSecret: ""
+  userKey: "user"
+  passwordKey: "password"
 
 ## Sidecars that collect the configmaps with specified label and stores the included files them into the respective folders
 ## Requires at least Grafana 5 to work and can't be used together with parameters dashboardProviders, datasources and dashboards

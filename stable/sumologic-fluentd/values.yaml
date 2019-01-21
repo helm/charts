@@ -1,7 +1,7 @@
 # Default values for sumologic-fluentd.
 image:
   name: sumologic/fluentd-kubernetes-sumologic
-  tag: v2.0.0
+  tag: v2.1.0
   pullPolicy: IfNotPresent
 
 ## Annotations to add to the DaemonSet's Pods
@@ -21,7 +21,10 @@ updateStrategy: OnDelete
 sumologic:
   ## You'll need to set this to sumo collector, before the agent will run.
   ## ref: https://github.com/SumoLogic/fluentd-kubernetes-sumologic#sumologic
-  collectorUrl: ""
+  # collectorUrl:
+
+  ## Use existing Secret which stores collector url instead of creating a new one
+  # collectorUrlExistingSecret:
 
   ## The source of fluentd logs, either file or systemd
   fluentdSource: file
@@ -132,6 +135,12 @@ sumologic:
   ## Option to control adding timestamp to logs. (Default true)
   addTimeStamp: true
 
+  ## Option to control adding time to logs. (Default true)
+  addTime: true
+
+  ## Option to control adding stream to logs. (Default true)
+  addStream: true
+
   ## Fluentd command line options
   ## ref: http://docs.fluentd.org/v0.12/articles/command-line-option
   fluentdOpt: ""
@@ -179,3 +188,7 @@ rbac:
 
   ## Ignored if rbac.create is true
   serviceAccountName: default
+
+daemonset: {}
+  # Priority Class to use for deployed daemonsets
+  # priorityClassName: ""

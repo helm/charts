@@ -5,7 +5,7 @@ strategy:
     maxUnavailable: 0
 image:
   repository: chartmuseum/chartmuseum
-  tag: v0.8.0
+  tag: v0.8.1
   pullPolicy: IfNotPresent
 env:
   open:
@@ -137,7 +137,12 @@ serviceAccount:
   create: false
   # name:
 
-securityContext: {}
+# UID/GID 1000 is the default user "chartmuseum" used in
+# the container image starting in v0.8.0 and above. This
+# is required for local persistant storage. If your cluster
+# does not allow this, try setting securityContext: {}
+securityContext:
+  fsGroup: 1000
 
 nodeSelector: {}
 
