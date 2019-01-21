@@ -113,7 +113,7 @@ spec:
         - name: gcs-key
           mountPath: /opt/gcs
         {{- end }}
-        {{- if and .Values.s3.enabled .Values.s3.accessKey .Values.s3.secretKey }}
+        {{- if and .Values.s3.enabled (or (and .Values.s3.accessKey .Values.s3.secretKey) .Values.s3.secretName) }}
         - name: s3-secrets
           mountPath: /opt/s3
         {{- end }}

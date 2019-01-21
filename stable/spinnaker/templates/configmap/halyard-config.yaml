@@ -39,7 +39,7 @@ data:
     $HAL_COMMAND config storage edit --type s3
     {{ end }}
     {{ if .Values.s3.enabled }}
-    {{- if .Values.s3.secretKey -}} cat /opt/s3/secretKey | {{- end }} $HAL_COMMAND config storage s3 edit \
+    {{- if or .Values.s3.secretKey .Values.s3.secretName -}} cat /opt/s3/secretKey | {{- end }} $HAL_COMMAND config storage s3 edit \
       --bucket {{ .Values.s3.bucket }} \
       {{- if .Values.s3.rootFolder }}
       --root-folder {{ .Values.s3.rootFolder }} \
