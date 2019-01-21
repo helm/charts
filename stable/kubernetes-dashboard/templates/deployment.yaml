@@ -39,6 +39,9 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         args:
+{{- if .Values.enableSkipLogin }}
+          - --enable-skip-login
+{{- end }}        
 {{- if .Values.enableInsecureLogin }}
           - --enable-insecure-login
 {{- else }}
