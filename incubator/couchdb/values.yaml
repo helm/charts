@@ -40,13 +40,13 @@ persistentVolume:
 ## The CouchDB image
 image:
   repository: couchdb
-  tag: 2.2.0
+  tag: 2.3.0
   pullPolicy: IfNotPresent
 
 ## Sidecar that connects the individual Pods into a cluster
 helperImage:
   repository: kocolosk/couchdb-statefulset-assembler
-  tag: 1.1.0
+  tag: 1.2.0
   pullPolicy: IfNotPresent
 
 ## CouchDB is happy to spin up cluster nodes in parallel, but if you encounter

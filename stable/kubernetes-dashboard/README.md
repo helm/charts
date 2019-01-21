@@ -50,6 +50,7 @@ The following table lists the configurable parameters of the kubernetes-dashboar
 | `annotations`                       | Annotations for deployment                                                                                                  | `{}`                                                                       |
 | `replicaCount`                      | Number of replicas                                                                                                          | `1`                                                                        |
 | `extraArgs`                         | Additional container arguments                                                                                              | `[]`                                                                       |
+| `podAnnotations`                    | Annotations to be added to pods                                                                                             | {}                                                                         |
 | `nodeSelector`                      | node labels for pod assignment                                                                                              | `{}`                                                                       |
 | `tolerations`                       | List of node taints to tolerate (requires Kubernetes >= 1.6)                                                                | `[]`                                                                       |
 | `affinity`                         | Affinity for pod assignment                                                                                                  | `[]`                                                                       |
@@ -86,7 +87,12 @@ helm install stable/kubernetes-dashboard --name my-release -f values.yaml
 
 ## Using the dashboard with 'kubectl proxy'
 
-When running 'kubectl proxy', the address `localhost:8001/ui` automatically expands to `http://localhost:8001/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/`. For this to reach the dashboard, the name of the service must be 'kubernetes-dashboard', not any other value as set by Helm. You can manually specify this using the value 'fullnameOverride':
+When running 'kubectl proxy', the address `localhost:8001/ui` automatically expands to:
+
+- `http://localhost:8001/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:https/proxy/` or
+- `http://localhost:8001/api/v1/namespaces/kube-system/services/http:kubernetes-dashboard:http/proxy/` if `enableInsecureLogin=true`
+
+For this to reach the dashboard, the name of the service must be 'kubernetes-dashboard', not any other value as set by Helm. You can manually specify this using the value 'fullnameOverride':
 
 ```
 fullnameOverride: 'kubernetes-dashboard'
@@ -95,3 +101,7 @@ fullnameOverride: 'kubernetes-dashboard'
 ### Ugrade from 0.x.x to 1.x.x
 
 Upgrade from 0.x.x version to 1.x.x version is seamless if you use default `ingress.path` value. If you have non-default `ingress.path` values with version 0.x.x, you need to add your custom path in `ingress.paths` list value as shown as examples in `values.yaml`.
+
+Notes:
+
+- The proxy url changed please refer to the [usage section](#using-the-dashboard-with-kubectl-proxy')

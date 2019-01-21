@@ -80,7 +80,18 @@ airflow:
   ## Configure pod disruption budget for the scheduler
   podDisruptionBudget:
     maxUnavailable: 1
-
+  ## Add custom connections
+  ## Use this to add Airflow connections for operators you use
+  ## For each connection - the id and type have to be defined.
+  ## All the other parameters are optional
+  ## Connections will be created with a script that is stored
+  ## in a K8s secret and mounted into the scheduler container
+  ## Example:
+  ##   connections:
+  ##   - id: my_aws
+  ##     type: aws
+  ##     extra: '{"aws_access_key_id": "**********", "aws_secret_access_key": "***", "region_name":"eu-central-1"}'
+  connections: {}
 ##
 ## Workers configuration
 workers:
@@ -294,6 +305,11 @@ serviceAccount:
   ## The name of the ServiceAccount to use.
   ## If not set and create is true, a name is generated using the fullname template
   name:
+
+##
+## Define existing secret for postgresql and redis
+## If not specified, creates secret with postgres and redis values
+existingAirflowSecret: ""
 
 ##
 ## Configuration values for the postgresql dependency.

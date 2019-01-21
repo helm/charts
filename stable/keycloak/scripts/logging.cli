@@ -1,0 +1,10 @@
+# Allow log level to be configured via environment variable
+/subsystem=logging/console-handler=CONSOLE:write-attribute(name=level, value=${env.WILDFLY_LOGLEVEL:INFO})
+/subsystem=logging/root-logger=ROOT:write-attribute(name=level, value=${env.WILDFLY_LOGLEVEL:INFO})
+
+# Add dedicated eventsListener config element to allow configuring elements.
+/subsystem=keycloak-server/spi=eventsListener:add()
+/subsystem=keycloak-server/spi=eventsListener/provider=jboss-logging:add(enabled=true)
+# Propagate success events to INFO instead of DEBUG, to expose successful logins for log analysis
+/subsystem=keycloak-server/spi=eventsListener/provider=jboss-logging:write-attribute(name=properties.success-level,value=info)
+/subsystem=keycloak-server/spi=eventsListener/provider=jboss-logging:write-attribute(name=properties.error-level,value=warn)

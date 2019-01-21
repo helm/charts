@@ -169,6 +169,10 @@ spec:
         - name: JMX_PORT
           value: "{{ .Values.jmx.port }}"
         {{- end }}
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
         - name: POD_IP
           valueFrom:
             fieldRef:
@@ -221,7 +225,7 @@ spec:
         - -exc
         - |
           unset KAFKA_PORT && \
-          export KAFKA_BROKER_ID=${HOSTNAME##*-} && \
+          export KAFKA_BROKER_ID=${POD_NAME##*-} && \
           export KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://${POD_IP}:9092{{ if kindIs "string" $advertisedListenersOverride }}{{ printf ",%s" $advertisedListenersOverride }}{{ end }} && \
           exec /etc/confluent/docker/run
         volumeMounts:

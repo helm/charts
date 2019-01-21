@@ -55,9 +55,6 @@ rbac:
 #   mountPath: /opt/zookeeper/secret
 
 
-## The name of the storage class which the cluster should use.
-# storageClass: default
-
 ## The subpath within the Kafka container's PV where logs will be stored.
 ## This is combined with `persistence.mountPath`, to create, by default: /opt/kafka/data/logs
 logSubPath: "logs"

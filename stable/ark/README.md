@@ -3,21 +3,6 @@
 This helm chart installs Ark version v0.9.0
 https://github.com/heptio/ark/tree/v0.9.0
 
-## Premise
-In general, Helm cannot install CRDs and resources based on these CRDs in the same Helm chart because CRDs need to be installed before CRD
-resources can be created and Helm cannot guarantee the correct ordering for this to work.
-
-As a workaround, the chart creates a Config resource via post-install hook.
-Since resources created by hooks are not managed by Helm, a pre-delete hook removes the Config CRD when the release is deleted.
-
-At the same time the resources created with the hook are completely transparent to Helm, that is, when you delete the
-chart those resources remain there. Hence we need a second hook for deleting them (see hook-delete.yaml)
-
-## ConfigMap customization
-Since we want to have a customizable chart it's important that the configmap is a template and not a static file.
-To do this we add the keyword `tpl` when reading the file
-- {{ (tpl (.Files.Glob "configuration/").AsConfig .) | indent 2 }}
-
 
 ## Prerequisites
 
@@ -45,22 +30,16 @@ Parameter | Description | Default | Required
 `gcSyncPeriod` | How frequently Ark queries the object storage to delete backup files that have passed their TTL.  | `60m` | yes
 `scheduleSyncPeriod` | How frequently Ark checks its Schedule resource objects to see if a backup needs to be initiated  | `1m` | yes
 `restoreOnlyMode` | When RestoreOnly mode is on, functionality for backups, schedules, and expired backup deletion is turned off. Restores are made from existing backup files in object storage.  | `false` | yes
-`kubectl.image` | A docker image with kubectl, required by hook-deploy.yaml and hook-delete.yaml  | `docker pull claranet/gcloud-kubectl-docker` | yes
 
 Parameter | Description | Default
 --- | --- | ---
 `image.repository` | Image repository | `gcr.io/heptio-images/ark`
 `image.tag` | Image tag | `v0.9.1`
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
-`kubectl.image.repository` | Image repository | `claranet/gcloud-kubectl-docker`
-`kubectl.image.tag` | Image tag | `1.0.0`
-`kubectl.image.pullPolicy` | Image pull policy | `IfNotPresent`
 `podAnnotations` | Annotations for the Ark server pod | `{}`
 `rbac.create` | If true, create and use RBAC resources | `true`
 `rbac.server.serviceAccount.create` | Whether a new service account name that the server will use should be created | `true`
 `rbac.server.serviceAccount.name` | Service account to be used for the server. If not set and `rbac.server.serviceAccount.create` is `true` a name is generated using the fullname template | ``
-`rbac.hook.serviceAccount.create` | Whether a new service account name that the hook will use should be created | `true`
-`rbac.hook.serviceAccount.name` | Service account to be used for the server. If not set and `rbac.hook.serviceAccount.create` is `true` a name is generated using the fullname template | ``
 `resources` | Resource requests and limits | `{}`
 `tolerations` | List of node taints to tolerate | `[]`
 `nodeSelector` | Node labels for pod assignment | `{}`
@@ -74,6 +53,7 @@ Parameter | Description | Default
 `configuration.backupStorageProvider.config.s3Url` | S3 url (primarily used for local storage services like Minio) | ``
 `configuration.backupStorageProvider.config.kmsKeyId` | KMS key for encryption (AWS only) | ``
 `configuration.backupSyncPeriod` | How frequently Ark queries the object storage to make sure that the appropriate Backup resources have been created for existing backup files | `60m`
+`configuration.extraEnvVars` | Key/values for extra environment variables such as AWS_CLUSTER_NAME, etc | `{}`
 `configuration.gcSyncPeriod` | How frequently Ark queries the object storage to delete backup files that have passed their TTL | `60m`
 `configuration.scheduleSyncPeriod` | How frequently Ark checks its Schedule resource objects to see if a backup needs to be initiated | `1m`
 `configuration.resourcePriorities` | An ordered list that describes the order in which Kubernetes resource objects should be restored | `[]`
@@ -81,6 +61,7 @@ Parameter | Description | Default
 `credentials.existingSecret` | If specified and `useSecret` is `true`, uses an existing secret with this name instead of creating one | ``
 `credentials.useSecret` | Whether a secret should be used. Set this to `false` when using `kube2iam` | `true`
 `credentials.secretContents` | Contents for the credentials secret | `{}`
+`schedules` | A dict of schedules | `{}`
 
 
 ## How to
