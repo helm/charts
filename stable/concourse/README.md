@@ -88,6 +88,7 @@ The following table lists the configurable parameters of the Concourse chart and
 | `web.nodeSelector` | Node selector for web nodes | `{}` |
 | `web.service.type` | Concourse Web service type | `ClusterIP` |
 | `web.service.annotations` | Concourse Web Service annotations | `nil` |
+| `web.service.labels` | Additional concourse web service labels | `nil` |
 | `web.service.loadBalancerIP` | The IP to use when web.service.type is LoadBalancer | `nil` |
 | `web.service.loadBalancerSourceRanges` | Concourse Web Service Load Balancer Source IP ranges | `nil` |
 | `web.service.atcNodePort` | Sets the nodePort for atc when using `NodePort` | `nil` |
