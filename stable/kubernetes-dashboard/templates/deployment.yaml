@@ -41,7 +41,7 @@ spec:
         args:
 {{- if .Values.enableSkipLogin }}
           - --enable-skip-login
-{{- else }}        
+{{- end }}        
 {{- if .Values.enableInsecureLogin }}
           - --enable-insecure-login
 {{- else }}
