@@ -23,13 +23,13 @@ helm install --name my-release stable/drone
 An example (secrets redacted) working install of the chart using github as the source control provider:
 
 ```console
-$ helm install --name drone --namespace drone stable/drone
+helm install --name drone --namespace drone stable/drone
 
-$ kubectl create secret generic drone-server-secrets \
+kubectl create secret generic drone-server-secrets \
       --namespace=cicd-drone \
       --from-literal=clientSecret="XXXXXXXXXXXXXXXXXXXXXXXX"
 
-$ helm upgrade drone \
+helm upgrade drone \
   --reuse-values --set 'service.type=LoadBalancer' \
   --set 'service.loadBalancerIP=2.1.60.3' --set 'sourceControl.provider=github' \
   --set 'sourceControl.github.clientID=XXXXXXXX' \
