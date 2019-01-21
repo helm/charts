@@ -116,7 +116,10 @@ their default values. See values.yaml for all available options.
 | `env.open.CACHE`                       | Cache store, can be one of: redis           | ``                                                  |
 | `env.open.CACHE_REDIS_ADDR`            | Address of Redis service (host:port)        | ``                                                  |
 | `env.open.CACHE_REDIS_DB`              | Redis database to be selected after connect | `0`                                                 |
-| `env.field`                            | Expose pod information to containers through environment variables | ``                                              |
+| `env.field`                            | Expose pod information to containers through environment variables | ``                           |
+| `env.existingSecret`                   | Name of the existing secret use values      | ``                                                  |
+| `env.existingSecret.BASIC_AUTH_USER`   | Key name in the secret for the Username     | ``                                                  |
+| `env.existingSecret.BASIC_AUTH_PASS`   | Key name in the secret for the Password     | ``                                                  |
 | `env.secret.BASIC_AUTH_USER`           | Username for basic HTTP authentication      | ``                                                  |
 | `env.secret.BASIC_AUTH_PASS`           | Password for basic HTTP authentication      | ``                                                  |
 | `env.secret.CACHE_REDIS_PASSWORD`      | Redis requirepass server configuration      | ``                                                  |
@@ -313,7 +316,7 @@ Run command to install
 helm install --name my-chartmuseum -f custom.yaml stable/chartmuseum
 ```
 
-To set the values directly in the command line, use the follosing command. Note that we have to base64 encode the json file because we cannot pass a multi-line text as a value.
+To set the values directly in the command line, use the following command. Note that we have to base64 encode the json file because we cannot pass a multi-line text as a value.
 
 ```shell
 export JSONKEY=$(cat my-project-77e35d85a593.json | base64)
@@ -401,6 +404,41 @@ env:
     OS_TENANT_ID: yourtenantid
     OS_USERNAME: yourusername
     OS_PASSWORD: yourpassword
+```
+
+Run command to install
+
+```shell
+helm install --name my-chartmuseum -f custom.yaml stable/chartmuseum
+```
+
+### Using an existing secret
+
+It is possible to pre-create a secret in kubernetes and get this chart to use that
+
+Given you are for example using the above AWS example
+
+You could create a Secret like this
+
+```shell
+ kubectl create secret generic chartmuseum-secret --from-literal="aws-access-key=myaccesskey" --from-literal="aws-secret-access-key=mysecretaccesskey" --from-literal="basic-auth-user=curator" --from-literal="basic-auth-pass=mypassword"
+```
+
+Specify `custom.yaml` with such values
+
+```yaml
+env:
+  open:
+    STORAGE: amazonexistingSecret
+    STORAGE_AMAZON_BUCKET: my-s3-bucket
+    STORAGE_AMAZON_PREFIX:
+    STORAGE_AMAZON_REGION: us-east-1
+  existingSecret: chartmuseum-secret
+  existingSecretMappings:
+    AWS_ACCESS_KEY_ID: aws-access-key
+    AWS_SECRET_ACCESS_KEY: aws-secret-access-key
+    BASIC_AUTH_USER: basic-auth-user
+    BASIC_AUTH_PASS: basic-auth-pass
 ```
 
 Run command to install
