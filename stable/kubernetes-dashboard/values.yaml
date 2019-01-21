@@ -18,12 +18,17 @@ labels: {}
 # kubernetes.io/cluster-service: "true"
 # kubernetes.io/name: "Kubernetes Dashboard"
 
+
+## Enable possibility to skip login
+enableSkipLogin: false
+
 ## Serve application over HTTP without TLS
 enableInsecureLogin: false
 
 ## Additional container arguments
 ##
 # extraArgs:
+#   - --enable-skip-login
 #   - --enable-insecure-login
 #   - --system-banner="Welcome to Kubernetes"
 
