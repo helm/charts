@@ -19,7 +19,7 @@ labels: {}
 # kubernetes.io/name: "Kubernetes Dashboard"
 
 
-## Disable Login prompt
+## Enable possibility to skip login
 enableSkipLogin: false
 
 ## Serve application over HTTP without TLS
