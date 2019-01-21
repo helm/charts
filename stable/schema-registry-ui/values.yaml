@@ -12,6 +12,7 @@ image:
 service:
   type: LoadBalancer
   port: 80
+  annotations: {}
 
 schemaRegistry:
   url: "http://localhost"
