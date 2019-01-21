@@ -28,11 +28,10 @@ charts = [
         'source': 'https://raw.githubusercontent.com/coreos/prometheus-operator/master/contrib/kube-prometheus/manifests/prometheus-rules.yaml',
         'destination': '../templates/alertmanager/rules'
     },
-    # don't uncomment until https://github.com/etcd-io/etcd/pull/10244 is merged
-    # {
-    #     'source': 'https://raw.githubusercontent.com/etcd-io/etcd/master/Documentation/op-guide/etcd3_alert.rules.yml',
-    #     'destination': '../templates/alertmanager/rules'
-    # },
+    {
+        'source': 'https://raw.githubusercontent.com/etcd-io/etcd/master/Documentation/op-guide/etcd3_alert.rules.yml',
+        'destination': '../templates/alertmanager/rules'
+    },
 ]
 
 # Additional conditions map
@@ -185,7 +184,11 @@ def main():
     # read the rules, create a new template file per group
     for chart in charts:
         print("Generating rules from %s" % chart['source'])
-        raw_text = requests.get(chart['source']).text
+        response = requests.get(chart['source'])
+        if response.status_code != 200:
+            print('Skipping the file, responce code %s not equals 200' % response.status_code)
+            continue
+        raw_text = response.text
         yaml_text = yaml.load(raw_text)
         # etcd workaround, their file don't have spec level
         groups = yaml_text['spec']['groups'] if yaml_text.get('spec') else yaml_text['groups']
