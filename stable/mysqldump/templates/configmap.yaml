@@ -78,7 +78,7 @@ data:
 
     {{ if .Values.upload.googlestoragebucket.enabled }}
     echo "upload files to google storage bucket {{ .Values.upload.googlestoragebucket.bucketname }}"
-    gcloud auth activate-service-account --key-file /root/gcloud/keyfile.json
+    gcloud auth activate-service-account --key-file /root/gcloud/{{ .Values.upload.googlestoragebucket.secretFileName }}
     gsutil -m rsync -x '.*\.state' -d ${BACKUP_DIR}/ {{ .Values.upload.googlestoragebucket.bucketname }}
     rcu=$?
     {{ end }}

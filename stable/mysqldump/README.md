@@ -72,6 +72,9 @@ housekeeping.keepDays           | keep last x days of backups in PVC        | 10
 upload.googlestoragebucket.enabled | upload backups to google storage       | false
 upload.googlestoragebucket.bucketname | google storage address              | gs://mybucket/test
 upload.googlestoragebucket.jsonKeyfile | json keyfile for serviceaccount    | ""
+upload.googlestoragebucket.existingSecret | specify a secretname to use     | nil
+upload.googlestoragebucket.usingGCPController | enable the use of the GCP Service Account Controller     | false
+upload.googlestoragebucket.serviceAccountName | specify a service account name to use     | nil
 upload.ssh.enabled              | upload backups via ssh                    | false
 upload.ssh.user                 | ssh user                                  | backup
 upload.ssh.host                 | ssh server url                            | yourdomain.com
@@ -81,6 +84,9 @@ resources                       | resource definitions                      | {}
 nodeSelector                    | node selector                             | {}
 tolerations                     | tolerations                               | []
 affinity                        | affinity                                  | {}
+
+### Auto generating the gcp service account
+By enabling the flag `upload.googlestoragebucket.usingGCPController` and having a GCP Service Account Controller deployed in your cluster, it is possible to autogenerate and inject the service account used for the storage bucket access. For more information see https://github.com/kiwigrid/helm-charts/tree/master/charts/gcp-serviceaccount-controller
 
 ```console
 $ helm install stable/mysqldump --name my-release \
