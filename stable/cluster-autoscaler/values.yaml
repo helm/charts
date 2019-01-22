@@ -53,9 +53,9 @@ image:
 tolerations: []
 
 extraArgs:
-  # v: 4
-  # stderrthreshold: info
-  # logtostderr: true
+  v: 4
+  stderrthreshold: info
+  logtostderr: true
   # write-status-configmap: true
   # leader-elect: true
   # skip-nodes-with-local-storage: false
