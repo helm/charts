@@ -57,6 +57,20 @@ agent:
   ## Agent container resources
   ## Ref https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/
   ##
+
+  # Ref: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.11/#affinity-v1-core
+  # Expects input structure as per specification for example:
+  #   affinity:
+  #     nodeAffinity:
+  #      requiredDuringSchedulingIgnoredDuringExecution:
+  #        nodeSelectorTerms:
+  #        - matchExpressions:
+  #          - key: foo.bar.com/role
+  #            operator: In
+  #            values:
+  #            - master
+  affinity: {}
+
   resources: {}
   ## Additional container arguments
   ##
@@ -129,6 +143,20 @@ server:
   ## Ref: https://kubernetes.io/docs/tasks/manage-daemon/update-daemon-set/
   ##
   updateStrategy: OnDelete
+
+  # Ref: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.11/#affinity-v1-core
+  # Expects input structure as per specification for example:
+  #   affinity:
+  #     nodeAffinity:
+  #      requiredDuringSchedulingIgnoredDuringExecution:
+  #        nodeSelectorTerms:
+  #        - matchExpressions:
+  #          - key: foo.bar.com/role
+  #            operator: In
+  #            values:
+  #            - master
+  affinity: {}
+
   ## Node labels for pod assignment
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
   ##

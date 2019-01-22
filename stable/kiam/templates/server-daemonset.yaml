@@ -37,6 +37,10 @@ spec:
     {{- end }}
       tolerations:
 {{ toYaml .Values.server.tolerations | indent 8 }}
+      {{- if .Values.server.affinity }}
+      affinity:
+{{ toYaml .Values.server.affinity | indent 10 }}
+      {{- end }}
       volumes:
         - name: tls
           secret:
