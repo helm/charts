@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "aws-xray.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "aws-xray.name" . }}
+    helm.sh/chart: {{ include "aws-xray.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  clusterIP: None
+  ports:
+    - port: {{ .Values.service.port }}
+      protocol: UDP
+      name: incoming
+  selector:
+    app.kubernetes.io/name: {{ include "aws-xray.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}

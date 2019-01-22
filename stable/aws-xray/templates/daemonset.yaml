@@ -1,0 +1,56 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: {{ include "aws-xray.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "aws-xray.name" . }}
+    helm.sh/chart: {{ include "aws-xray.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "aws-xray.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "aws-xray.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      serviceAccountName: {{ template "aws-xray.serviceAccountName" . }}
+      imagePullSecrets:
+        - name: {{ .Values.image.pullSecrets }}
+      volumes:
+      - name: config-volume
+        configMap:
+          name: "{{ include "aws-xray.fullname" . }}-config"
+      hostNetwork: true
+      containers:
+      - name: xray-daemon
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command: [ "/usr/bin/xray", "-c", "/aws/xray/config.yaml" ]
+        ports:
+        - name: xray-ingest
+          containerPort: 2000
+          hostPort: 2000
+          protocol: UDP
+        volumeMounts:
+        - name: config-volume
+          mountPath: /aws/xray
+        resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
