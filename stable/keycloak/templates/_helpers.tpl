@@ -76,14 +76,14 @@ Create environment variables for database configuration.
 - name: DB_PORT
   value: "5432"
 - name: DB_DATABASE
-  value: {{ .Values.postgresql.postgresDatabase | quote }}
+  value: {{ .Values.postgresql.postgresqlDatabase | quote }}
 - name: DB_USER
-  value: {{ .Values.postgresql.postgresUser | quote }}
+  value: {{ .Values.postgresql.postgresqlUsername | quote }}
 - name: DB_PASSWORD
   valueFrom:
     secretKeyRef:
       name: {{ template "keycloak.postgresql.fullname" . }}
-      key: postgres-password
+      key: postgresql-password
 {{- else }}
 - name: DB_VENDOR
   value: {{ .Values.keycloak.persistence.dbVendor | quote }}

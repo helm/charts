@@ -212,16 +212,16 @@ keycloak:
 postgresql:
   ### PostgreSQL User to create.
   ##
-  postgresUser: keycloak
+  postgresqlUsername: keycloak
 
   ## PostgreSQL Password for the new user.
   ## If not set, a random 10 characters password will be used.
   ##
-  postgresPassword: ""
+  #postgresqlPassword: ""
 
   ## PostgreSQL Database to create.
   ##
-  postgresDatabase: keycloak
+  postgresqlDatabase: keycloak
 
   ## Persistent Volume Storage configuration.
   ## ref: https://kubernetes.io/docs/user-guide/persistent-volumes

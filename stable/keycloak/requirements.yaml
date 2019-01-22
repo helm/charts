@@ -1,5 +1,5 @@
 dependencies:
   - name: postgresql
-    version: 0.15.0
+    version: 3.9.x
     repository: https://kubernetes-charts.storage.googleapis.com/
     condition: keycloak.persistence.deployPostgres
