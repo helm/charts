@@ -11,6 +11,9 @@ metadata:
     release: {{ .Release.Name | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     component: "{{ .Release.Name }}-{{ .Values.Master.Name }}"
+    {{- range $key, $val := .Values.Master.DeploymentLabels }}
+    {{ $key }}: {{ $val | quote }}
+    {{- end}}
 spec:
   replicas: 1
   strategy:
@@ -113,8 +116,8 @@ spec:
           args: [ "--argumentsRealm.passwd.$(ADMIN_USER)=$(ADMIN_PASSWORD)",  "--argumentsRealm.roles.$(ADMIN_USER)=admin"]
           {{- end }}
           env:
-            - name: JAVA_TOOL_OPTIONS
-              value: "{{ default "" .Values.Master.JavaOpts}}"
+            - name: JAVA_OPTS
+              value: {{ default "" .Values.Master.JavaOpts | quote }}
             - name: JENKINS_OPTS
               value: "{{ if .Values.Master.JenkinsUriPrefix }}--prefix={{ .Values.Master.JenkinsUriPrefix }} {{ end }}{{ default "" .Values.Master.JenkinsOpts}}"
             {{- if .Values.Master.UseSecurity }}
@@ -158,6 +161,7 @@ spec:
               path: "{{ default "" .Values.Master.JenkinsUriPrefix }}/login"
               port: http
             initialDelaySeconds: {{ .Values.Master.HealthProbesReadinessTimeout }}
+            periodSeconds: {{ .Values.Master.HealthProbeReadinessPeriodSeconds }}
 {{- end }}
           # Resources configuration is a little hacky. This was to prevent breaking
           # changes, and should be cleanned up in the future once everybody had

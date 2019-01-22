@@ -7,17 +7,6 @@ image:
   tag: 7.4-community
   # If using a private repository, the name of the imagePullSecret to use
   # pullSecret: my-repo-secret
-# Starting 6.7.6 and 7.4 official sonarqube docker image, command is not required
-# anymore. For older images, uncomment the following lines.
-# command: [
-#   "sh",
-#   "-ce",
-#   "mkdir /scripts &&
-#   cp /tmp-script/startup.sh /scripts/startup.sh &&
-#   chmod 0755 /scripts/startup.sh &&
-#   /scripts/startup.sh
-#   "
-#   ]
 
 # Set security context for sonarqube pod
 securityContext:
@@ -29,7 +18,7 @@ service:
   externalPort: 9000
   internalPort: 9000
   labels:
-  annotations:
+  annotations: {}
   # May be used in example for internal load balancing in GCP:
   # cloud.google.com/load-balancer-type: Internal
   loadBalancerSourceRanges:
@@ -40,12 +29,12 @@ ingress:
   # Used to create an Ingress record.
   hosts:
     - sonar.organization.com
-  annotations:
+  annotations: {}
   # kubernetes.io/ingress.class: nginx
   # kubernetes.io/tls-acme: "true"
   # This property allows for reports up to a certain size to be uploaded to SonarQube
   # nginx.ingress.kubernetes.io/proxy-body-size: "8m"
-  tls:
+  tls: {}
   # Secrets must be manually created in the namespace.
   # - secretName: chart-example-tls
   #   hosts:
@@ -74,9 +63,11 @@ readinessProbe:
   initialDelaySeconds: 60
   periodSeconds: 30
   failureThreshold: 6
+  sonarWebContext: /
 livenessProbe:
   initialDelaySeconds: 60
   periodSeconds: 30
+  sonarWebContext: /
 
 # Set extra env variables. Like proxy settings.
 extraEnv: {}
@@ -137,6 +128,10 @@ postgresql:
   # To use an external PostgreSQL instance, set enabled to false and uncomment
   # the line below:
   # postgresServer: ""
+  # To use an external secret for the password for an external PostgreSQL
+  # instance, set enabled to false and provide the name of the secret on the
+  # line below:
+  # postgresPasswordSecret: ""
   postgresUser: "sonarUser"
   postgresPassword: "sonarPass"
   postgresDatabase: "sonarDB"
@@ -153,6 +148,9 @@ mysql:
   # To use an external mySQL instance, set enabled to false and uncomment
   # the line below:
   # mysqlServer: ""
+  # To use an external secret for the password for an external mySQL instance,
+  # set enabled to false and provide the name of the secret on the line below:
+  # mysqlPasswordSecret: ""
   mysqlUser: "sonarUser"
   mysqlPassword: "sonarPass"
   mysqlDatabase: "sonarDB"

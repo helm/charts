@@ -73,7 +73,7 @@ The following table lists the configurable parameters of the MySQL chart and the
 | `readinessProbe.failureThreshold`            | Minimum consecutive failures for the probe to be considered failed after having succeeded.   | 3                                                    |
 | `persistence.enabled`                        | Create a volume to store data                                                                | true                                                 |
 | `persistence.size`                           | Size of persistent volume claim                                                              | 8Gi RW                                               |
-| `persistence.storageClass`                   | Type of persistent volume claim                                                              | nil  (uses alpha storage class annotation)           |
+| `persistence.storageClass`                   | Type of persistent volume claim                                                              | nil           |
 | `persistence.accessMode`                     | ReadWriteOnce or ReadOnly                                                                    | ReadWriteOnce                                        |
 | `persistence.existingClaim`                  | Name of existing persistent volume                                                           | `nil`                                                |
 | `persistence.subPath`                        | Subdirectory of the volume to mount                                                          | `nil`                                                |
@@ -90,6 +90,7 @@ The following table lists the configurable parameters of the MySQL chart and the
 | `metrics.readinessProbe.timeoutSeconds`      | When the probe times out                                                                     | 1                                                    |
 | `resources`                                  | CPU/Memory resource requests/limits                                                          | Memory: `256Mi`, CPU: `100m`                         |
 | `configurationFiles`                         | List of mysql configuration files                                                            | `nil`                                                |
+| `service.annotations`                        | Kubernetes annotations for mysql                                                             | {}                                                   |
 | `ssl.enabled`                                | Setup and use SSL for MySQL connections                                                      | `false`                                              |
 | `ssl.secret`                                 | Name of the secret containing the SSL certificates                                           | mysql-ssl-certs                                      |
 | `ssl.certificates[0].name`                   | Name of the secret containing the SSL certificates                                           | `nil`                                                |

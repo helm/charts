@@ -135,6 +135,12 @@ sumologic:
   ## Option to control adding timestamp to logs. (Default true)
   addTimeStamp: true
 
+  ## Option to control adding time to logs. (Default true)
+  addTime: true
+
+  ## Option to control adding stream to logs. (Default true)
+  addStream: true
+
   ## Fluentd command line options
   ## ref: http://docs.fluentd.org/v0.12/articles/command-line-option
   fluentdOpt: ""
@@ -182,3 +188,7 @@ rbac:
 
   ## Ignored if rbac.create is true
   serviceAccountName: default
+
+daemonset: {}
+  # Priority Class to use for deployed daemonsets
+  # priorityClassName: ""

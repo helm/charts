@@ -21,6 +21,9 @@ spec:
         app: {{ template "sumologic-fluentd.name" . }}
         release: {{ .Release.Name }}
     spec:
+      {{- if .Values.daemonset.priorityClassName }}
+      priorityClassName: {{ .Values.daemonset.priorityClassName }}
+      {{- end }}
       containers:
         - name: {{ template "sumologic-fluentd.fullname" . }}
           image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
@@ -154,6 +157,14 @@ spec:
             {{- if quote .Values.sumologic.addTimeStamp }}
             - name: ADD_TIMESTAMP
               value: {{ quote .Values.sumologic.addTimeStamp }}
+            {{- end }}
+            {{- if quote .Values.sumologic.addTime }}
+            - name: ADD_TIME
+              value: {{ quote .Values.sumologic.addTime }}
+            {{- end }}
+            {{- if quote .Values.sumologic.addStream }}
+            - name: ADD_STREAM
+              value: {{ quote .Values.sumologic.addStream }}
             {{- end }}
             {{- if quote .Values.sumologic.verifySsl }}
             - name: VERIFY_SSL

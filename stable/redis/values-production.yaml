@@ -79,6 +79,9 @@ password:
 ## Use existing secret (ignores previous password)
 # existingSecret:
 
+## Mount secrets as files instead of environment variables
+usePasswordFile: false
+
 ## Persist data to a persistent volume
 persistence: {}
   ## A manually managed Persistent Volume and Claim
@@ -216,6 +219,8 @@ master:
     ## https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#partitions
     # rollingUpdatePartition:
 
+  ## Redis Master pod priorityClassName
+  # priorityClassName: {}
 
 ##
 ## Redis Slave properties
@@ -293,6 +298,9 @@ slave:
   #   fsGroup: 1001
   #   runAsUser: 1001
 
+  ## Redis slave pod priorityClassName
+  # priorityClassName: {}
+
 ## Prometheus Exporter / Metrics
 ##
 metrics:
@@ -348,6 +356,9 @@ metrics:
     ## [Kube Prometheus Selector Label](https://github.com/helm/charts/tree/master/stable/prometheus-operator#exporters)
     selector:
       prometheus: kube-prometheus
+
+  ## Metrics exporter pod priorityClassName
+  # priorityClassName: {}
 
 ##
 ## Init containers parameters:
