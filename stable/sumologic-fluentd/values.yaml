@@ -14,6 +14,9 @@ tolerations: []
 #     effect: NoSchedule
 #     operator: "Exists"
 
+# Extra environment variables to set for fluentd
+extraEnv: []
+
 ## Allow the DaemonSet to perform a rolling update on helm update
 ## ref: https://kubernetes.io/docs/tasks/manage-daemon/update-daemon-set/
 updateStrategy: OnDelete
