@@ -34,6 +34,7 @@ spec:
             - '--probe.docker.bridge={{ .Values.dockerBridge }}'
             - '--probe.docker=true'
             - '--probe.kubernetes=true'
+            - '--weave=false'
             {{- if .Values.global.probeToken }}
             - '--probe-token={{ .Values.global.probeToken }}'
             {{- else if .Values.global.scopeFrontendAddr }}

@@ -27,4 +27,3 @@ ingress:
     # hosts:
       #  - weave-scope.domain.com
     # tls: []
-

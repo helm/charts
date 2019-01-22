@@ -27,6 +27,7 @@ spec:
           imagePullPolicy: "{{ .Values.global.image.pullPolicy }}"
           args:
             - "--no-probe"
+            - "--weave=false"
           ports:
             - name: http
               containerPort: 4040
