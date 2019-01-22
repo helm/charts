@@ -215,9 +215,9 @@ With NetworkPolicy enabled, traffic will be limited to just port 5432.
 For more precise policy, set `networkPolicy.allowExternal=false`. This will only allow pods with the generated client label to connect to PostgreSQL.
 This label will be displayed in the output of a successful install.
 
-## Deploy chart using official Postgres docker image.
+## Deploy chart using Docker Official PostgreSQL image.
 
-From chart version 4.0.0, it is possible to use the stable/postgresql chart with the official postgres image. In order to it, you can run the following command:
+Besides specifying the new docker repository and tag, it is important to modify the PostgreSQL data dir and volume mount point. Basically, the PostgreSQL data dir cannot be the mount point directly, it has to be a subdirectory.
 
 ```
 helm install --name postgres \
@@ -227,7 +227,11 @@ helm install --name postgres \
              --set persistence.mountPath=/data/ \
              stable/postgresql
 ```
-> Please note that the official image does not support all the features exposed in the stable/postgresql chart. For example, all the replication configuration would be ignored.
+
+## Differences between Bitnami PostgreSQL image and [Docker Official](https://hub.docker.com/_/postgres) image
+
+- The Docker Official PostgreSQL image does not support replication. If you pass any replication environment variable, this would be ignored. The only environment variables supported by the Docker Official image are POSTGRES_USER, POSTGRES_DB, POSTGRES_PASSWORD, POSTGRES_INITDB_ARGS, POSTGRES_INITDB_WALDIR and PGDATA. All the remaining environment variables are additions to the Bitnami PostgreSQL image.
+- The Bitnami PostgreSQL image is non-root by default. This requires that you run the pod with securityContext and updates the permissions of the volume with at initContainer. As a reward for the extra configuration, the pod follows security best practices and is prepared to run on Kubernetes distributions with hard security constraints like OpenShift.
 
 ## Upgrade
 
