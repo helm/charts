@@ -215,7 +215,7 @@ With NetworkPolicy enabled, traffic will be limited to just port 5432.
 For more precise policy, set `networkPolicy.allowExternal=false`. This will only allow pods with the generated client label to connect to PostgreSQL.
 This label will be displayed in the output of a successful install.
 
-## Deploy chart using Docker Official PostgreSQL image.
+## Deploy chart using Docker Official PostgreSQL image
 
 From chart version 4.0.0, it is possible to use the stable/postgresql chart with the Docker Official PostgreSQL image.
 Besides specifying the new docker repository and tag, it is important to modify the PostgreSQL data dir and volume mount point. Basically, the PostgreSQL data dir cannot be the mount point directly, it has to be a subdirectory.
