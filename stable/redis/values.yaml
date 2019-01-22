@@ -99,8 +99,7 @@ master:
   ##
   ## Can be used to specify command line arguments, for example:
   ##
-  command:
-  - "/run.sh"
+  command: "/run.sh"
   ## Redis additional command line flags
   ##
   ## Can be used to specify command line flags, for example:
