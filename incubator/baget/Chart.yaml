@@ -1,0 +1,11 @@
+apiVersion: v1
+appVersion: "v0.1.32-prerelease"
+description: BaGet is a NuGet server built on ASP.Net Core
+keywords:
+  - NuGet
+  - BaGet
+sources:
+  - https://github.com/loic-sharma/BaGet
+name: baget
+home: https://loic-sharma.github.io/BaGet
+version: 0.1.0

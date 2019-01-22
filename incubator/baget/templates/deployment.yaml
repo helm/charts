@@ -1,0 +1,79 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "baget.fullname" . }}
+  labels:
+    app: {{ template "baget.name" . }}
+    chart: {{ template "baget.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "baget.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "baget.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      volumes:
+        - name: baget-data
+        {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ template "baget.fullname" . }}
+        {{- else }}
+          emptyDir: {}
+{{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+            - mountPath: /var/baget/
+              name: baget-data
+          env:
+            - name: ApiKey
+              value: {{ .Values.apiKey }}
+            - name: Database__Type
+              value: {{ .Values.database.type}}
+            - name: Database__ConnectionString
+              value: {{ .Values.database.connectionString }}
+            - name: Storage__Type
+              value: {{ .Values.storage.type }}
+            - name: Storage__Path
+              value: {{ .Values.storage.path }}
+            - name: Search__Type
+              value: {{ .Values.search.type }}
+            - name: Mirror__Enabled
+              value: "{{ .Values.mirror.enabled }}"
+            - name: Mirror__PackageSource
+              value: {{ .Values.mirror.packageSource }}
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
