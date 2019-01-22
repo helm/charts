@@ -198,6 +198,9 @@ spec:
             - name: ENABLE_STAT_WATCHER
               value: {{ quote .Values.sumologic.enableStatWatcher }}
             {{- end }}
+{{- if .Values.extraEnv }}
+{{ toYaml .Values.extraEnv | indent 12 }}
+{{- end }}
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "sumologic-fluentd.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
       volumes:
         - name: pos-files
