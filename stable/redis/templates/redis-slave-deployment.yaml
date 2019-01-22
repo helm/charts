@@ -48,6 +48,9 @@ spec:
       {{- /* Include master securityContext if slave securityContext not defined */ -}}
       {{ include "redis.slave.securityContext" . | indent 6 }}
       serviceAccountName: "{{ template "redis.serviceAccountName" . }}"
+      {{- if .Values.slave.priorityClassName }}
+      priorityClassName: "{{ .Values.slave.priorityClassName }}"
+      {{- end }}
       {{- if (.Values.slave.nodeSelector | default .Values.master.nodeSelector) }}
       nodeSelector:
 {{ toYaml (.Values.slave.nodeSelector | default .Values.master.nodeSelector) | indent 8 }}
@@ -61,7 +64,7 @@ spec:
       {{- end }}
     {{- with .Values.slave.affinity }}
       affinity:
-{{ toYaml . | indent 8 }}
+{{ tpl (toYaml .) $ | indent 8 }}
     {{- end }}
       containers:
       - name: {{ template "redis.fullname" . }}

@@ -12,7 +12,7 @@ about the architecture and use cases.
 ## Quick Start
 
 ```bash
-$ helm install hazelcast/hazelcast-jet
+$ helm install stable/hazelcast-jet
 ```
 
 ## Introduction
@@ -28,7 +28,7 @@ This chart bootstraps a [Hazelcast Jet](https://github.com/hazelcast/hazelcast-j
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release hazelcast/hazelcast-jet
+$ helm install --name my-release stable/hazelcast-jet
 ```
 
 The command deploys Hazelcast Jet on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -94,7 +94,7 @@ The above command sets number of Hazelcast Jet members to 3 and disables REST en
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml hazelcast/hazelcast-jet
+$ helm install --name my-release -f values.yaml stable/hazelcast-jet
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)

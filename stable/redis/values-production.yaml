@@ -218,6 +218,8 @@ master:
     ## https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#partitions
     # rollingUpdatePartition:
 
+  ## Redis Master pod priorityClassName
+  # priorityClassName: {}
 
 ##
 ## Redis Slave properties
@@ -295,6 +297,9 @@ slave:
   #   fsGroup: 1001
   #   runAsUser: 1001
 
+  ## Redis slave pod priorityClassName
+  # priorityClassName: {}
+
 ## Prometheus Exporter / Metrics
 ##
 metrics:
@@ -303,7 +308,7 @@ metrics:
   image:
     registry: docker.io
     repository: oliver006/redis_exporter
-    tag: v0.20.2
+    tag: v0.25.0
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
@@ -350,6 +355,9 @@ metrics:
     ## [Kube Prometheus Selector Label](https://github.com/helm/charts/tree/master/stable/prometheus-operator#exporters)
     selector:
       prometheus: kube-prometheus
+
+  ## Metrics exporter pod priorityClassName
+  # priorityClassName: {}
 
 ##
 ## Init containers parameters:

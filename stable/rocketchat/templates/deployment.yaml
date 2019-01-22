@@ -22,8 +22,8 @@ spec:
       {{- end }}
       containers:
       - name: {{ template "rocketchat.fullname" . }}
-        image: "{{ .Values.image }}"
-        imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
         - name: DEPLOY_PLATFORM
           value: helm-chart
