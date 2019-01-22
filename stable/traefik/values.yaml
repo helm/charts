@@ -12,6 +12,10 @@ replicas: 1
 #   - "--ping"
 #   - "--ping.entrypoint=http"
 
+# extraEnv: {}
+#   http_proxy: http://example.com:8080
+#   no_proxy: localhost
+
 podDisruptionBudget: {}
   # maxUnavailable: 1
   # minAvailable: 2
