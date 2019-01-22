@@ -8,7 +8,11 @@
     {{- $externalListenerPort := add $root.Values.external.firstListenerPort $i }}
     {{- $responsiblePod := printf "%s-%d" (printf "%s" $fullName) $i }}
     {{- $distinctPrefix := printf "%s-%d" $dnsPrefix $i }}
+    {{- $loadBalancerIP := "" }}
+    {{- if eq $root.Values.external.type "LoadBalancer" }}
     {{- $loadBalancerIP := index $root.Values.external.loadBalancerIP $i }}
+    {{- end }}
+
 ---
 apiVersion: v1
 kind: Service
