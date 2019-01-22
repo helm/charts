@@ -68,6 +68,10 @@ busyboxImage:
   tag: 1.27
   pullPolicy: IfNotPresent
 
+## Deployment annotations
+##
+annotations: {}
+
 ## Configure provisioner
 ## https://github.com/kubernetes-incubator/external-storage/tree/master/aws/efs#deployment
 ##
