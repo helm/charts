@@ -9,7 +9,8 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
   annotations:
-    "helm.sh/hook-delete-policy": hook-succeeded
+    "helm.sh/hook": post-install
+    "helm.sh/hook-delete-policy": before-hook-creation
 spec:
   template:
     metadata:
@@ -27,7 +28,7 @@ spec:
           command: ["sh", "-c", "while ! etcdctl --endpoints {{ .Values.store.endpoints }} cluster-health; do sleep 1 && echo -n .; done"]
   {{- end }}
       containers:
-        - name: {{ template "stolon.fullname" . }}
+        - name: {{ template "stolon.fullname" . }}-create-cluster
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["/usr/local/bin/stolonctl"]
@@ -41,6 +42,5 @@ spec:
             - --store-endpoints={{ .Values.store.endpoints }}
             {{- end }}
             - --yes
-            - '{"initMode":"new"{{- if .Values.pgParameters }},"pgParameters":{{ with .Values.pgParameters }}{{ toJson . }}{{- end }}{{- end }}}'
+            - '{ "initMode": "new", {{- range $key, $value := .Values.clusterSpec }} {{ $key | quote }}: {{ if typeIs "string" $value }} {{ $value | quote }} {{ else }} {{ $value }} {{ end }}, {{- end }} "pgParameters": {{ toJson .Values.pgParameters }} }'
 {{ end }}
-
