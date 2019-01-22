@@ -19,11 +19,11 @@ spec:
       release: {{ .Release.Name }}
   template:
     metadata:
-      {{- if .Values.controller.podAnnotations }}
       annotations:
 {{- if .Values.controller.template }}
         checksum/config: {{ include (print $.Template.BasePath "/controller-template.yaml") . | sha256sum }}
 {{- end }}
+      {{- if .Values.controller.podAnnotations }}
 {{ toYaml .Values.controller.podAnnotations | indent 8}}
       {{- end }}
       labels:
