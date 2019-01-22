@@ -160,6 +160,10 @@ spec:
           - name: DD_CRI_SOCKET_PATH
             value: {{ .Values.datadog.criSocketPath | quote }}
           {{- end }}
+          {{- if not .Values.datadog.livenessProbe }}
+          - name: DD_HEALTH_PORT
+            value: "5555"
+          {{- end }}
 {{- if .Values.datadog.env }}
 {{ toYaml .Values.datadog.env | indent 10 }}
 {{- end }}
@@ -204,11 +208,13 @@ spec:
 {{ toYaml .Values.datadog.livenessProbe | indent 10 }}
 {{- else }}
         livenessProbe:
-          exec:
-            command:
-            - ./probe.sh
+          httpGet:
+            path: /health
+            port: 5555
           initialDelaySeconds: 15
-          periodSeconds: 5
+          periodSeconds: 15
+          timeoutSeconds: 5
+          successThreshold: 1
           failureThreshold: 6
 {{- end }}
       volumes:
