@@ -106,11 +106,13 @@ The following table lists the configurable parameters of the chart and its defau
 | `volumeMounts`                  | Volume mounts to configure for logstash container  | (see `values.yaml`)                              |
 | `volumes`                       | Volumes to configure for logstash container        | []                              |
 | `terminationGracePeriodSeconds` | Duration the pod needs to terminate gracefully     | `30`
+| `extraInitContainers`           | Additional init container passed through the tpl   | []
 | `exporter.logstash`             | Prometheus logstash-exporter settings              | (see `values.yaml`)                              |
 | `exporter.logstash.enabled`     | Enables Prometheus logstash-exporter               | `false`                                          |
-| `elasticsearch.host`            | ElasticSearch hostname                             | `elasticsearch-client.default.svc.cluster.local` |
+| `elasticsearch.host`            | ElasticSearch hostname  passed through the tpl     | `elasticsearch-client.default.svc.cluster.local` |
 | `elasticsearch.port`            | ElasticSearch port                                 | `9200`                                           |
 | `config`                        | Logstash configuration key-values                  | (see `values.yaml`)                              |
+| `configTpl`                     | Logstash configuration key-values passed through the tpl    | (see `values.yaml`)                              |
 | `patterns`                      | Logstash patterns configuration                    | `nil`                                            |
 | `inputs`                        | Logstash inputs configuration                      | beats                                            |
 | `filters`                       | Logstash filters configuration                     | `nil`                                            |

@@ -193,6 +193,7 @@ exporter:
 
 elasticsearch:
   host: elasticsearch-client.default.svc.cluster.local
+  # host: "{{ .Release.Name }}-elasticsearch"
   port: 9200
 
 ## ref: https://github.com/elastic/logstash-docker/blob/master/build/logstash/env2yaml/env2yaml.go
@@ -207,11 +208,14 @@ config:
   queue.max_bytes: 1gb  # disk capacity must be greater than the value of `queue.max_bytes`
   queue.type: persisted
 
+# configTpl:
+#   some.example.value: "{{ .Release.Name }}-example"
+
 ## Patterns for filters.
 ## Each YAML heredoc will become a separate pattern file.
-patterns:
-  # main: |-
-  #   TESTING {"foo":.*}$
+# patterns:
+    # main: |-
+    #   TESTING {"foo":.*}$
 
 ## NOTE: To achieve multiple pipelines with this chart, current best practice
 ## is to maintain one pipeline per chart release. In this way configuration is
@@ -244,10 +248,10 @@ inputs:
       # }
     }
 
-filters:
-  # main: |-
-  #   filter {
-  #   }
+# filters:
+    # main: |-
+    #   filter {
+    #   }
 
 outputs:
   main: |-
