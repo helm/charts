@@ -75,13 +75,14 @@ The following table lists the configurable parameters of the chart and its defau
 | `podDisruptionBudget`           | Pod disruption budget                              | `maxUnavailable: 1`                              |
 | `updateStrategy`                | Update strategy                                    | `type: RollingUpdate`                            |
 | `image.repository`              | Container image name                               | `docker.elastic.co/logstash/logstash-oss`        |
-| `image.tag`                     | Container image tag                                | `6.4.2`                                          |
+| `image.tag`                     | Container image tag                                | `6.5.4`                                          |
 | `image.pullPolicy`              | Container image pull policy                        | `IfNotPresent`                                   |
 | `service.type`                  | Service type (ClusterIP, NodePort or LoadBalancer) | `ClusterIP`                                      |
 | `service.annotations`           | Service annotations                                | `{}`                                             |
 | `service.ports`                 | Ports exposed by service                           | beats                                            |
 | `service.loadBalancerIP`        | The load balancer IP for the service               | unset                                            |
 | `service.clusterIP`             | The cluster IP for the service                     | unset                                            |
+| `service.nodePort`              | The nodePort for the service                       | unset                                            |
 | `service.externalTrafficPolicy` | Set externalTrafficPolicy                          | unset                                            |
 | `ports`                         | Ports exposed by logstash container                | beats                                            |
 | `ingress.enabled`               | Enables Ingress                                    | `false`                                          |
@@ -90,6 +91,7 @@ The following table lists the configurable parameters of the chart and its defau
 | `ingress.hosts`                 | Ingress accepted hostnames                         | `["logstash.cluster.local"]`                     |
 | `ingress.tls`                   | Ingress TLS configuration                          | `[]`                                             |
 | `resources`                     | Pod resource requests & limits                     | `{}`                                             |
+| `priorityClassName`             | priorityClassName                                  | `nil`                                            |
 | `nodeSelector`                  | Node selector                                      | `{}`                                             |
 | `tolerations`                   | Tolerations                                        | `[]`                                             |
 | `affinity`                      | Affinity or Anti-Affinity                          | `{}`                                             |

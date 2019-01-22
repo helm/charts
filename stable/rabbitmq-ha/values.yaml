@@ -13,6 +13,18 @@ managementPassword: E9R3fjZm4ejFkVFE
 extraConfig: |
 #  queue_master_locator = min-masters
 
+## Definitions specification within the secret, will always be mounted
+## at /etc/definitions/defintions.json
+definitionsSource: definitions.json
+
+## Place any additional plugins to enable in /etc/rabbitmq/enabled_plugins
+## Ref: https://www.rabbitmq.com/plugins.html
+extraPlugins: |
+  rabbitmq_shovel,
+  rabbitmq_shovel_management,
+  rabbitmq_federation,
+  rabbitmq_federation_management,
+
 definitions:
   users: |-
 #   {
@@ -136,6 +148,12 @@ rabbitmqCert:
   certfile: |
   keyfile: |
 
+## Extra volumes for statefulset
+extraVolumes: []
+
+## Extra volume mounts for statefulset
+extraVolumeMounts: []
+
 ## Authentication mechanism
 ## Ref: http://www.rabbitmq.com/authentication.html
 rabbitmqAuth:
@@ -145,6 +163,13 @@ rabbitmqAuth:
     # auth_mechanisms.1 = PLAIN
     # auth_mechanisms.2 = AMQPLAIN
     # auth_mechanisms.3 = EXTERNAL
+
+## Automatic Partition Handling Strategy (split brain handling)
+## Ref: https://www.rabbitmq.com/partitions.html#automatic-handling
+## Note: pause-if-all-down is not supported without using a custom configmap since it requires extra
+## configuration.
+
+rabbitmqClusterPartitionHandling: autoheal
 
 ## Authentication backend
 ## Ref: https://github.com/rabbitmq/rabbitmq-auth-backend-http
@@ -247,6 +272,11 @@ image:
   ##
   # pullSecrets:
   #   - myRegistrKeySecretName
+
+busyboxImage:
+  repository: busybox
+  tag: latest
+  pullPolicy: Always
 
 ## Duration in seconds the pod needs to terminate gracefully
 terminationGracePeriodSeconds: 10
@@ -399,7 +429,7 @@ prometheus:
     env: {}
     image:
       repository: kbudde/rabbitmq-exporter
-      tag: v0.28.0
+      tag: v0.29.0
       pullPolicy: IfNotPresent
 
     ## Port Prometheus scrapes for metrics
@@ -444,3 +474,6 @@ prometheus:
       ## [Kube Prometheus Selector Label](https://github.com/coreos/prometheus-operator/blob/master/helm/kube-prometheus/values.yaml#L298)
       selector:
         prometheus: kube-prometheus
+
+## Kubernetes Cluster Domain
+clusterDomain: cluster.local

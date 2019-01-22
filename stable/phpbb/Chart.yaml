@@ -1,8 +1,7 @@
 name: phpbb
-version: 3.2.0
-appVersion: 3.2.3
-description: Community forum that supports the notion of users and groups, file attachments,
-  full-text search, notifications and more.
+version: 4.0.3
+appVersion: 3.2.5
+description: Community forum that supports the notion of users and groups, file attachments, full-text search, notifications and more.
 keywords:
 - phpbb
 - forum

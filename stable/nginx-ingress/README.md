@@ -47,12 +47,13 @@ Parameter | Description | Default
 --- | --- | ---
 `controller.name` | name of the controller component | `controller`
 `controller.image.repository` | controller container image repository | `quay.io/kubernetes-ingress-controller/nginx-ingress-controller`
-`controller.image.tag` | controller container image tag | `0.20.0`
+`controller.image.tag` | controller container image tag | `0.21.0`
 `controller.image.pullPolicy` | controller container image pull policy | `IfNotPresent`
 `controller.image.runAsUser` | User ID of the controller process. Value depends on the Linux distribution used inside of the container image. By default uses debian one. | `33`
 `controller.config` | nginx ConfigMap entries | none
 `controller.hostNetwork` | If the nginx deployment / daemonset should run on the host's network namespace. Do not set this when `controller.service.externalIPs` is set and `kube-proxy` is used as there will be a port-conflict for port `80` | false
 `controller.defaultBackendService` | default 404 backend service; required only if `defaultBackend.enabled = false` | `""`
+`controller.dnsPolicy` | If using `hostNetwork=true`, change to `ClusterFirstWithHostNet`. See [pod's dns policy](https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-s-dns-policy) for details | `ClusterFirst`
 `controller.electionID` | election ID to use for the status update | `ingress-controller-leader`
 `controller.extraEnvs` | any additional environment variables to set in the pods | `{}`
 `controller.extraContainers` | Sidecar containers to add to the controller pod. See [LemonLDAP::NG controller](https://github.com/lemonldap-ng-controller/lemonldap-ng-controller) as example | `{}`
@@ -118,10 +119,13 @@ Parameter | Description | Default
 `controller.metrics.service.annotations` | annotations for Prometheus metrics service | `{}`
 `controller.metrics.service.clusterIP` | cluster IP address to assign to service | `""`
 `controller.metrics.service.externalIPs` | Prometheus metrics service external IP addresses | `[]`
+`controller.metrics.service.labels` | labels for metrics service | `{}`
 `controller.metrics.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
 `controller.metrics.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
 `controller.metrics.service.servicePort` | Prometheus metrics service port | `9913`
 `controller.metrics.service.type` | type of Prometheus metrics service to create | `ClusterIP`
+`controller.metrics.serviceMonitor.enabled` | Set this to `true` to create ServiceMonitor for Prometheus operator | `false`
+`controller.metrics.serviceMonitor.additionalLabels` | Additional labels that can be used so ServiceMonitor will be discovered by Prometheus | `{}`
 `controller.customTemplate.configMapName` | configMap containing a custom nginx template | `""`
 `controller.customTemplate.configMapKey` | configMap key containing the nginx template | `""`
 `controller.headers` | configMap key:value pairs containing the [custom headers](https://github.com/kubernetes/ingress-nginx/tree/master/docs/examples/customization/custom-headers) for Nginx | `{}`
@@ -174,6 +178,7 @@ as described [here](https://github.com/kubernetes/ingress-nginx/blob/master/docs
 ```console
 $ helm install stable/nginx-ingress --set controller.extraArgs.v=2
 ```
+> **Tip**: You can use the default [values.yaml](values.yaml)
 
 ## PodDisruptionBudget
 Note that the PodDisruptionBudget resource will only be defined if the replicaCount is greater than one,
@@ -189,27 +194,7 @@ $ helm install stable/nginx-ingress --name my-release \
     --set controller.metrics.enabled=true
 ```
 
-You can add Prometheus annotations to the metrics service using `controller.metrics.service.annotations`. Alternatively, if you use the Prometheus Operator, you need to create a ServiceMonitor as follows:
-
-```yaml
-apiVersion: monitoring.coreos.com/v1
-kind: ServiceMonitor
-metadata:
-  name: nginx-ingress-service-monitor
-spec:
-  jobLabel: nginx-ingress
-  selector:
-    matchLabels:
-      app: nginx-ingress
-      release: <RELEASE>
-  namespaceSelector:
-    matchNames:
-      - <RELEASE_NAMESPACE>
-  endpoints:
-    - port: metrics
-      interval: 30s
-```
-> **Tip**: You can use the default [values.yaml](values.yaml)
+You can add Prometheus annotations to the metrics service using `controller.metrics.service.annotations`. Alternatively, if you use the Prometheus Operator, you can enable ServiceMonitor creation using `controller.metrics.serviceMonitor.enabled`.
 
 ## ExternalDNS Service configuration
 

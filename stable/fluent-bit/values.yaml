@@ -5,8 +5,8 @@ on_minikube: false
 image:
   fluent_bit:
     repository: fluent/fluent-bit
-    tag: 0.14.4
-  pullPolicy: Always
+    tag: 1.0.2
+  pullPolicy: IfNotPresent
 
 # When enabled, exposes json and prometheus metrics on {{ .Release.Name }}-metrics service
 metrics:
@@ -39,6 +39,7 @@ backend:
     index: kubernetes_cluster
     type: flb_type
     logstash_prefix: kubernetes_cluster
+    replace_dots: "On"
     time_key: "@timestamp"
     # Optional username credential for Elastic X-Pack access
     http_user:
@@ -83,6 +84,20 @@ parsers:
   ## Regex required fields are name and regex. JSON required field
   ## is name.
   regex: []
+  ##  json parser config can be defined by providing an extraEntries field.
+  ##  The following entry:
+  ## json:
+  ##   - extraEntries: |
+  ##       Decode_Field_As  escaped log do_next
+  ##       Decode_Field_As  json log
+  ##
+  ##  translates into
+  ##
+  ##   Command       |  Decoder  | Field | Optional Action   |
+  ##   ==============|===========|=======|===================|
+  ##   Decode_Field_As  escaped   log  do_next
+  ##   Decode_Field_As  json log
+  ##
   json: []
 
 env: []
@@ -90,18 +105,37 @@ env: []
 ## Annotations to add to the DaemonSet's Pods
 podAnnotations: {}
 
+## By default there different 'files' provides in the config
+## (fluent-bit.conf, custom_parsers.conf). This defeats
+## changing a configmap (since it uses subPath). If this
+## variable is set, the user is assumed to have provided,
+## in 'existingConfigMap' the entire config (etc/*) of fluent-bit,
+## parsers and system config. In this case, no subPath is
+## used
+fullConfigMap: false
+
 ## ConfigMap override where fullname is {{.Release.Name}}-{{.Values.existingConfigMap}}
 ## Defining existingConfigMap will cause templates/config.yaml
 ## to NOT generate a ConfigMap resource
 ##
 existingConfigMap: ""
 
-## Add extra input sources
-extraInputs: |-
-## Add extra filters
-extraFilters: |-
-## Add extra outputs
-extraOutputs: |-
+rawConfig: |-
+  @INCLUDE fluent-bit-service.conf
+  @INCLUDE fluent-bit-input.conf
+  @INCLUDE fluent-bit-filter.conf
+  @INCLUDE fluent-bit-output.conf
+
+extraEntries:
+  input: |-
+#     # >=1 additional Key/Value entrie(s) for existing Input section
+  filter: |-
+#     # >=1 additional Key/Value entrie(s) for existing Filter section
+  output: |-
+#     # >=1 additional Key/Value entrie(s) for existing Ouput section
+
+## Extra ports to add to the daemonset ports section
+extraPorts: []
 
 ## Extra volumes containing additional files required for fluent-bit to work
 ## (eg. CA certificates)
@@ -114,12 +148,20 @@ extraVolumes: []
 ##
 extraVolumeMounts: []
 
-resources:
-  limits:
-    memory: 100Mi
-  requests:
-    cpu: 100m
-    memory: 100Mi
+resources: {}
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 10m
+  #   memory: 8Mi
+
+# When enabled, pods will bind to the node's network namespace.
+hostNetwork: false
+
+# Which DNS policy to use for the pod.
+# Consider switching to 'ClusterFirstWithHostNet' when 'hostNetwork' is enabled.
+dnsPolicy: ClusterFirst
 
 ## Node tolerations for fluent-bit scheduling to nodes with taints
 ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
@@ -138,6 +180,17 @@ nodeSelector: {}
 input:
   tail:
     memBufLimit: 5MB
+    path: /var/log/containers/*.log
+  systemd:
+    enabled: false
+    filters:
+      systemdUnit:
+        - docker.service
+        - kubelet.service
+        - node-problem-detector.service
+    maxEntries: 1000
+    readFromTail: true
+    tag: host.*
 
 filter:
   kubeURL: https://kubernetes.default.svc:443
@@ -146,16 +199,16 @@ filter:
   kubeTag: kube
 # If true, check to see if the log field content is a JSON string map, if so,
 # it append the map fields as part of the log structure.
-#  mergeJSONLog: true
+  mergeJSONLog: true
 
 # If true, enable the use of monitoring for a pod annotation of
 # fluentbit.io/parser: parser_name. parser_name must be the name
 # of a parser contained within parsers.conf
-#  enableParser: true
+  enableParser: true
 
 # If true, enable the use of monitoring for a pod annotation of
 # fluentbit.io/exclude: true. If present, discard logs from that pod.
-#  enableExclude: true
+  enableExclude: true
 
 rbac:
   # Specifies whether RBAC resources should be created

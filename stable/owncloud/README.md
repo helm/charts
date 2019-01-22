@@ -54,7 +54,7 @@ The following table lists the configurable parameters of the ownCloud chart and 
 | `image.repository`                  | ownCloud Image name                        | `bitnami/owncloud`                                      |
 | `image.tag`                         | ownCloud Image tag                         | `{VERSION}`                                             |
 | `image.pullPolicy`                  | Image pull policy                          | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
-| `image.pullSecrets`                 | Specify image pull secrets                 | `nil`                                                   |
+| `image.pullSecrets`                 | Specify docker-registry secret names as an array | `[]` (does not add image pull secrets to deployed pods) |
 | `ingress.enabled`                   | Enable ingress controller resource         | `false`                                                 |
 | `ingress.hosts[0].name`             | Hostname to your ownCloud installation     | `owncloud.local`                                        |
 | `ingress.hosts[0].path`             | Path within the url structure              | `/`                                                     |
@@ -100,7 +100,7 @@ The following table lists the configurable parameters of the ownCloud chart and 
 | `metrics.image.repository`                 | Apache exporter image name                                                                                      | `lusotycoon/apache-exporter`                           |
 | `metrics.image.tag`                        | Apache exporter image tag                                                                                       | `v0.5.0`                                            |
 | `metrics.image.pullPolicy`                 | Image pull policy                                                                                              | `IfNotPresent`                                       |
-| `metrics.image.pullSecrets`                | Specify docker-registry secret names as an array                                                               | `nil`                                                |
+| `metrics.image.pullSecrets`                | Specify docker-registry secret names as an array                                                               | `[]` (does not add image pull secrets to deployed pods)  |
 | `metrics.podAnnotations`                   | Additional annotations for Metrics exporter pod                                                                | `{prometheus.io/scrape: "true", prometheus.io/port: "9117"}`                                                   |
 | `metrics.resources`                        | Exporter resource requests/limit                                                                               | {}                        |
 
@@ -142,7 +142,8 @@ $ helm install --name my-release -f values.yaml stable/owncloud
 
 The [Bitnami ownCloud](https://github.com/bitnami/bitnami-docker-owncloud) image stores the ownCloud data and configurations at the `/bitnami/owncloud` and `/bitnami/apache` paths of the container.
 
-Persistent Volume Claims are used to keep the data across deployments. This is known to work in GCE, AWS, and minikube.
+Persistent Volume Claims are used to keep the data across deployments. There is a [known issue](https://github.com/kubernetes/kubernetes/issues/39178) in Kubernetes Clusters with EBS in different availability zones. Ensure your cluster is configured properly to create Volumes in the same availability zone where the nodes are running. Kuberentes 1.12 solved this issue with the [Volume Binding Mode](https://kubernetes.io/docs/concepts/storage/storage-classes/#volume-binding-mode).
+
 See the [Configuration](#configuration) section to configure the PVC or to disable persistence.
 
 ## Upgrading

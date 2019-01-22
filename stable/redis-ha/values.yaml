@@ -3,7 +3,7 @@
 ##
 image:
   repository: redis
-  tag: 4.0.11-stretch
+  tag: 5.0.3-alpine
   pullPolicy: IfNotPresent
 ## replicas number for each component
 replicas: 3
@@ -99,6 +99,9 @@ podDisruptionBudget: {}
 auth: false
 # redisPassword:
 
+## Use existing secret containing "auth" key (ignores redisPassword)
+# existingSecret:
+
 persistentVolume:
   enabled: true
   ## redis-ha data Persistent Volume Storage Class
@@ -113,3 +116,5 @@ persistentVolume:
     - ReadWriteOnce
   size: 10Gi
   annotations: {}
+init:
+  resources: {}

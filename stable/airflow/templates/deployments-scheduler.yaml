@@ -1,0 +1,148 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "airflow.fullname" . }}-scheduler
+  labels:
+    app: {{ template "airflow.name" . }}
+    component: scheduler
+    chart: {{ template "airflow.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: 1
+  strategy:
+    # Kill the scheduler as soon as possible. It will restart quickly with all the workers,
+    # minimizing the time they are not synchronized.
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 100%
+  selector:
+    matchLabels:
+      app: {{ template "airflow.name" . }}
+      component: scheduler
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap-airflow.yaml") . | sha256sum }}
+        configmap.fabric8.io/update-on-change: "{{ template "airflow.fullname" . }}-env"
+      labels:
+        app: {{ template "airflow.name" . }}
+        component: scheduler
+        release: {{ .Release.Name }}
+    spec:
+      {{- if .Values.airflow.image.pullSecret }}
+      imagePullSecrets:
+        - name: {{ .Values.airflow.image.pullSecret }}
+      {{- end }}
+      restartPolicy: Always
+      serviceAccountName: {{ template "airflow.serviceAccountName" . }}
+      {{- if .Values.dags.initContainer.enabled }}
+      initContainers:
+        - name: git-clone
+          image: {{ .Values.dags.initContainer.image.repository }}:{{ .Values.dags.initContainer.image.tag }} # Any image with git will do
+          imagePullPolicy: {{ .Values.dags.initContainer.image.pullPolicy }}
+          command:
+            - /usr/local/git/git-clone.sh
+          args:
+            - "{{ .Values.dags.git.url }}"
+            - "{{ .Values.dags.git.ref }}"
+            - "/dags"
+          volumeMounts:
+            - name: git-clone
+              mountPath: /usr/local/git
+            - name: dags-data
+              mountPath: /dags
+      {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}-scheduler
+          image: {{ .Values.airflow.image.repository }}:{{ .Values.airflow.image.tag }}
+          imagePullPolicy: {{ .Values.airflow.image.pullPolicy}}
+          envFrom:
+          - configMapRef:
+              name: "{{ template "airflow.fullname" . }}-env"
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "airflow.secret" . }}
+                  key: postgresUser
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "airflow.secret" . }}
+                  key: postgresPassword
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "airflow.secret" . }}
+                  key: redisPassword
+          volumeMounts:
+          {{- if .Values.persistence.enabled }}
+            - name: dags-data
+              mountPath: {{ .Values.dags.path }}
+          {{- else if .Values.dags.initContainer.enabled }}
+            - name: dags-data
+              mountPath: {{ .Values.dags.path }}
+            - name: scripts
+              mountPath: /usr/local/scripts
+            {{- if .Values.airflow.connections }}
+            - name: connections
+              mountPath: /usr/local/connections
+            {{- end}}
+          {{- end }}
+          args:
+            - "bash"
+            - "-c"
+          {{- if and ( .Values.dags.initContainer.enabled ) ( .Values.dags.initContainer.installRequirements ) }}
+            - >
+              echo 'waiting 10s...' &&
+              sleep 10 &&
+              echo 'installing requirements...' &&
+              mkdir -p /usr/local/airflow/.local/bin &&
+              export PATH=/usr/local/airflow/.local/bin:$PATH &&
+              /usr/local/scripts/install-requirements.sh &&
+              echo "executing initdb" &&
+              airflow initdb &&
+            {{- if .Values.airflow.connections }}
+              echo "adding connections" &&
+              /usr/local/connections/add-connections.sh &&
+            {{- end }}
+              echo "executing scheduler" &&
+              airflow scheduler -n {{ .Values.airflow.schedulerNumRuns }}
+          {{- else }}
+            - >
+              echo 'waiting 10s...' &&
+              sleep 10 &&
+              mkdir -p /usr/local/airflow/.local/bin &&
+              export PATH=/usr/local/airflow/.local/bin:$PATH &&
+              echo "executing initdb" &&
+              airflow initdb &&
+              echo "executing scheduler" &&
+              airflow scheduler -n {{ .Values.airflow.schedulerNumRuns }}
+          {{- end }}
+      volumes:
+        - name: dags-data
+        {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.existingClaim | default (include "airflow.fullname" .) }}
+        {{- else }}
+          emptyDir: {}
+        {{- end }}
+        {{- if .Values.dags.initContainer.enabled }}
+        - name: scripts
+          configMap:
+            name: {{ template "airflow.fullname" . }}-scripts
+            defaultMode: 0755
+        - name: git-clone
+          configMap:
+            name: {{ template "airflow.fullname" . }}-git-clone
+            defaultMode: 0755
+          {{- if .Values.airflow.connections }}           
+        - name: connections
+          secret: 
+            secretName: {{ template "airflow.fullname" . }}-connections
+            defaultMode: 0755
+          {{- end }}
+        {{- end }} 

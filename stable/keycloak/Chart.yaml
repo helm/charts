@@ -1,6 +1,6 @@
 name: keycloak
-version: 4.0.1
-appVersion: 4.5.0.Final
+version: 4.3.0
+appVersion: 4.8.3.Final
 description: Open Source Identity and Access Management For Modern Applications and Services
 keywords:
   - sso
@@ -16,3 +16,5 @@ sources:
 maintainers:
   - name: unguiculus
     email: unguiculus@gmail.com
+  - name: thomasdarimont
+    email: thomas.darimont+github@gmail.com

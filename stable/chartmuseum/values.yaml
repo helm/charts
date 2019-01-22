@@ -5,7 +5,7 @@ strategy:
     maxUnavailable: 0
 image:
   repository: chartmuseum/chartmuseum
-  tag: v0.7.1
+  tag: v0.8.1
   pullPolicy: IfNotPresent
 env:
   open:
@@ -78,6 +78,8 @@ env:
     CACHE_REDIS_ADDR:
     # Redis database to be selected after connect
     CACHE_REDIS_DB: 0
+  field:
+    # POD_IP: status.podIP
   secret:
     # username for basic http authentication
     BASIC_AUTH_USER:
@@ -91,17 +93,23 @@ deployment:
   ## Chartmuseum Deployment annotations
   annotations: {}
   #   name: value
+  labels: {}
+  #   name: value
+  matchlabes: {}
+  #   name: value
 replica:
   ## Chartmuseum Replicas annotations
   annotations: {}
   ## Read more about kube2iam to provide access to s3 https://github.com/jtblin/kube2iam
   #   iam.amazonaws.com/role: role-arn
 service:
+  servicename:
   type: ClusterIP
   # clusterIP: None
   externalPort: 8080
   nodePort:
   annotations: {}
+  labels: {}
 
 resources: {}
 #  limits:
@@ -129,7 +137,12 @@ serviceAccount:
   create: false
   # name:
 
-securityContext: {}
+# UID/GID 1000 is the default user "chartmuseum" used in
+# the container image starting in v0.8.0 and above. This
+# is required for local persistant storage. If your cluster
+# does not allow this, try setting securityContext: {}
+securityContext:
+  fsGroup: 1000
 
 nodeSelector: {}
 
@@ -141,6 +154,8 @@ persistence:
   enabled: false
   accessMode: ReadWriteOnce
   size: 8Gi
+  labels: {}
+  #   name: value
   ## A manually managed Persistent Volume and Claim
   ## Requires persistence.enabled: true
   ## If defined, PVC must be created manually before volume will be bound
@@ -154,6 +169,16 @@ persistence:
   ##   GKE, AWS & OpenStack)
   ##
   # storageClass: "-"
+  # volumeName:
+  pv:
+    enabled: false
+    pvname:
+    capacity:
+      storage: 8Gi
+    accessMode: ReadWriteOnce
+    nfs:
+      server:
+      path:
 
 ## Ingress for load balancer
 ingress:

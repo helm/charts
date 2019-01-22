@@ -6,11 +6,7 @@ metadata:
 {{ toYaml .Values.server.service.annotations | indent 4 }}
 {{- end }}
   labels:
-    app: {{ template "prometheus.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    component: "{{ .Values.server.name }}"
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    {{- include "prometheus.server.labels" . | nindent 4 }}
 {{- if .Values.server.service.labels }}
 {{ toYaml .Values.server.service.labels | indent 4 }}
 {{- end }}
@@ -41,7 +37,5 @@ spec:
       nodePort: {{ .Values.server.service.nodePort }}
     {{- end }}
   selector:
-    app: {{ template "prometheus.name" . }}
-    component: "{{ .Values.server.name }}"
-    release: {{ .Release.Name }}
+    {{- include "prometheus.server.matchLabels" . | nindent 4 }}
   type: "{{ .Values.server.service.type }}"

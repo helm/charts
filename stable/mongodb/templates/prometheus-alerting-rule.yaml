@@ -1,0 +1,17 @@
+{{- if and .Values.metrics.enabled .Values.metrics.serviceMonitor.enabled .Values.metrics.serviceMonitor.alerting.rules }}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: {{ template "mongodb.fullname" . }}
+  labels:
+    app: {{ template "mongodb.name" . }}
+    chart: {{ template "mongodb.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    {{- if .Values.metrics.serviceMonitor.alerting.additionalLabels }}
+{{ toYaml .Values.metrics.serviceMonitor.alerting.additionalLabels | indent 4 }}
+    {{- end }}
+spec:
+  groups:
+{{ toYaml .Values.metrics.serviceMonitor.alerting.rules | indent 4 }}
+{{- end }}

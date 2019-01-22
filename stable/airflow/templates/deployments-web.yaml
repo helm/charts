@@ -1,0 +1,143 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "airflow.fullname" . }}-web
+  labels:
+    app: {{ template "airflow.name" . }}
+    component: web
+    chart: {{ template "airflow.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.airflow.webReplicas }}
+  minReadySeconds: 120
+  strategy:
+    # Smooth rolling update of the Web UI
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: {{ template "airflow.name" . }}
+      component: web
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap-airflow.yaml") . | sha256sum }}
+        configmap.fabric8.io/update-on-change: "{{ template "airflow.fullname" . }}-env"
+      labels:
+        app: {{ template "airflow.name" . }}
+        component: web
+        release: {{ .Release.Name }}
+    spec:
+      {{- if .Values.airflow.image.pullSecret }}
+      imagePullSecrets:
+        - name: {{ .Values.airflow.image.pullSecret }}
+      {{- end }}
+      restartPolicy: Always
+      {{- if .Values.dags.initContainer.enabled }}
+      initContainers:
+        - name: git-clone
+          image: {{ .Values.dags.initContainer.image.repository }}:{{ .Values.dags.initContainer.image.tag }} # Any image with git will do
+          imagePullPolicy: {{ .Values.dags.initContainer.image.pullPolicy }}
+          command:
+            - /usr/local/git/git-clone.sh
+          args:
+            - "{{ .Values.dags.git.url }}"
+            - "{{ .Values.dags.git.ref }}"
+            - "/dags"
+          volumeMounts:
+            - name: git-clone
+              mountPath: /usr/local/git
+            - name: dags-data
+              mountPath: /dags
+      {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}-web
+          image: {{ .Values.airflow.image.repository }}:{{ .Values.airflow.image.tag }}
+          imagePullPolicy: {{ .Values.airflow.image.pullPolicy}}
+          ports:
+            - name: web
+              containerPort: 8080
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: "{{ template "airflow.fullname" . }}-env"
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "airflow.secret" . }}
+                  key: postgresUser
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "airflow.secret" . }}
+                  key: postgresPassword
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "airflow.secret" . }}
+                  key: redisPassword
+          volumeMounts:
+          {{- if .Values.persistence.enabled }}
+            - name: dags-data
+              mountPath: {{ .Values.dags.path }}
+          {{- else if .Values.dags.initContainer.enabled }}
+            - name: dags-data
+              mountPath: {{ .Values.dags.path }}
+            - name: scripts
+              mountPath: /usr/local/scripts
+          {{- end }}
+          args:
+            - "bash"
+            - "-c"
+          {{- if and ( .Values.dags.initContainer.enabled ) ( .Values.dags.initContainer.installRequirements ) }}
+            - >
+              echo 'waiting 60s...' &&
+              sleep 60 &&
+              echo 'installing requirements...' &&
+              mkdir -p /usr/local/airflow/.local/bin &&
+              export PATH=/usr/local/airflow/.local/bin:$PATH &&
+              /usr/local/scripts/install-requirements.sh &&
+              echo 'executing webserver...' &&
+              airflow webserver
+          {{- else }}
+            - >
+              echo 'waiting 60s...' &&
+              sleep 60 &&
+              mkdir -p /usr/local/airflow/.local/bin &&
+              export PATH=/usr/local/airflow/.local/bin:$PATH &&
+              echo 'executing webserver...' &&
+              airflow webserver
+          {{- end }}
+          livenessProbe:
+            httpGet:
+              path: "{{ .Values.ingress.web.path }}/health"
+              port: web
+            ## Keep 6 minutes the delay to allow clean wait of postgres and redis containers
+            initialDelaySeconds: 360
+            periodSeconds: 60
+            timeoutSeconds: 1
+            successThreshold: 1
+            failureThreshold: 5
+      volumes:
+        - name: dags-data
+        {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+              claimName: {{ .Values.persistence.existingClaim | default (include "airflow.fullname" .) }}
+        {{- else }}
+          emptyDir: {}
+        {{- end }}
+        {{- if .Values.dags.initContainer.enabled }}
+        - name: scripts
+          configMap:
+            name: {{ template "airflow.fullname" . }}-scripts
+            defaultMode: 0755
+        - name: git-clone
+          configMap:
+            name: {{ template "airflow.fullname" . }}-git-clone
+            defaultMode: 0755
+        {{- end }}

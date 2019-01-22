@@ -25,9 +25,9 @@ daemonset:
   ## metrics and traces will be accepted from any host able to connect to this host.
   # useHostNetwork: true
 
-  ## Sets the hostPort to the same value of the container port. Can be used as
-  ## for sending custom metrics. The ports will need to be available on all
-  ## hosts.
+  ## Sets the hostPort to the same value of the container port. Needs to be used
+  ## to receive traces in a standard APM set up. Can be used as for sending custom metrics.
+  ## The ports will need to be available on all hosts.
   ## WARNING: Make sure that hosts using this are properly firewalled otherwise
   ## metrics and traces will be accepted from any host able to connect to this host.
   # useHostPort: true
@@ -114,11 +114,26 @@ clusterAgent:
       cpu: 200m
       memory: 256Mi
 
+  ## Override the agent's liveness probe logic from the default:
+  ## In case of issues with the probe, you can disable it with the
+  ## following values, to allow easier investigating:
+  # livenessProbe:
+  #   exec:
+  #     command: ["/bin/true"]
+  ## Override the cluster-agent's readiness probe logic from the default:
+  # readinessProbe:
+
 datadog:
   ## You'll need to set this to your Datadog API key before the agent will run.
   ## ref: https://app.datadoghq.com/account/settings#agent/kubernetes
   ##
   # apiKey:
+
+  ## You can modify the security context used to run the containers by
+  ## modifying the label type below:
+  # securityContext:
+  #   seLinuxOptions:
+  #     seLinuxLabel: "spc_t"
 
   ## Use existing Secret which stores API key instead of creating a new one
   # apiKeyExistingSecret:
@@ -134,6 +149,15 @@ datadog:
   ## See clusterAgent.containerName if clusterAgent.enabled = true
   ##
   name: datadog
+
+  # The site of the Datadog intake to send Agent data to.
+  # Defaults to 'datadoghq.com', set to 'datadoghq.eu' to send data to the EU site.
+  # site: datadoghq.com
+
+  # The host of the Datadog intake server to send Agent data to, only set this option
+  # if you need the Agent to send data to a custom URL.
+  # Overrides the site setting defined in "site".
+  # dd_url: https://app.datadoghq.com
 
   ## Set logging verbosity.
   ## ref: https://github.com/DataDog/docker-dd-agent#environment-variables
@@ -242,6 +266,13 @@ datadog:
   ## Provide a mapping of Kubernetes Annotations to Datadog Tags
   # podAnnotationsAsTags:
   #     iam.amazonaws.com/role: kube_iamrole
+
+  ## Override the agent's liveness probe logic from the default:
+  ## In case of issues with the probe, you can disable it with the
+  ## following values, to allow easier investigating:
+  # livenessProbe:
+  #   exec:
+  #     command: ["/bin/true"]
 
   ## datadog-agent resource requests and limits
   ## Make sure to keep requests and limits equal to keep the pods in the Guaranteed QoS class
