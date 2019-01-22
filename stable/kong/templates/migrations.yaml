@@ -2,21 +2,21 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ template "kong.fullname" . }}-migrations
+  name: {{ template "kong.fullname" . }}-init-migrations
   labels:
     app: {{ template "kong.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
-    component: migrations
+    component: init-migrations
 spec:
   template:
     metadata:
-      name: {{ template "kong.name" . }}-migrations
+      name: {{ template "kong.name" . }}-init-migrations
       labels:
         app: {{ template "kong.name" . }}
         release: "{{ .Release.Name }}"
-        component: migrations
+        component: init-migrations
     spec:
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
@@ -37,7 +37,7 @@ spec:
           valueFrom:
             secretKeyRef:
               name: {{ template "kong.postgresql.fullname" . }}
-              key: postgres-password
+              key: postgresql-password
         command: [ "/bin/sh", "-c", "until nc -zv $KONG_PG_HOST $KONG_PG_PORT -w1; do echo 'waiting for db'; sleep 1; done" ]
       {{- end }}
       containers:
@@ -60,12 +60,12 @@ spec:
           valueFrom:
             secretKeyRef:
               name: {{ template "kong.postgresql.fullname" . }}
-              key: postgres-password
+              key: postgresql-password
         {{- end }}
         {{- if .Values.cassandra.enabled }}
         - name: KONG_CASSANDRA_CONTACT_POINTS
           value: {{ template "kong.cassandra.fullname" . }}
         {{- end }}
-        command: [ "/bin/sh", "-c", "kong migrations up" ]
+        command: [ "/bin/sh", "-c", "kong migrations bootstrap" ]
       restartPolicy: OnFailure
 {{- end }}

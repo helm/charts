@@ -44,6 +44,8 @@ spec:
       - name: config-init
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
+        resources:
+{{ toYaml .Values.init.resources | indent 10 }}
         command:
         - sh
         args:
@@ -53,7 +55,11 @@ spec:
         - name: AUTH
           valueFrom:
             secretKeyRef:
+            {{- if .Values.existingSecret }}
+              name: {{ .Values.existingSecret }}
+            {{- else }}
               name: {{ template "redis-ha.fullname" . }}
+            {{- end }}
               key: auth
 {{- end }}
         volumeMounts:
@@ -75,12 +81,16 @@ spec:
         - name: AUTH
           valueFrom:
             secretKeyRef:
+            {{- if .Values.existingSecret }}
+              name: {{ .Values.existingSecret }}
+            {{- else }}
               name: {{ template "redis-ha.fullname" . }}
+            {{- end }}
               key: auth
 {{- end }}
         livenessProbe:
           exec:
-            command: [ "sh", "/probes/check-quorum.sh", "{{ .Values.redis.port }}"]
+            command: [ "sh", "/probes/readiness.sh", "{{ .Values.redis.port }}"]
           initialDelaySeconds: 15
           periodSeconds: 5
         readinessProbe:
@@ -110,12 +120,16 @@ spec:
         - name: AUTH
           valueFrom:
             secretKeyRef:
+            {{- if .Values.existingSecret }}
+              name: {{ .Values.existingSecret }}
+            {{- else }}
               name: {{ template "redis-ha.fullname" . }}
+            {{- end }}
               key: auth
 {{- end }}
         livenessProbe:
           exec:
-            command: [ "sh", "/probes/check-quorum.sh", "{{ .Values.sentinel.port }}"]
+            command: [ "sh", "/probes/readiness.sh", "{{ .Values.sentinel.port }}"]
           initialDelaySeconds: 15
           periodSeconds: 5
         readinessProbe:

@@ -122,13 +122,13 @@ Postgres is enabled by default.
 | env.cassandra_keyspace            | Cassandra keyspace                                                     | `kong`                |
 | env.cassandra_repl_factor         | Replication factor for the Kong keyspace                               | `2`                   |
 
-For complete list of Kong configurations please check https://getkong.org/docs/0.11.x/configuration/.
+For complete list of Kong configurations please check https://getkong.org/docs/1.0.x/configuration/.
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```console
 $ helm install stable/kong --name my-release \
-  --set=image.tag=0.11.2,env.database=cassandra,cassandra.enabled=true
+  --set=image.tag=1.0.0,env.database=cassandra,cassandra.enabled=true
 ```
 
 Alternatively, a YAML file that specifies the values for the above parameters
@@ -150,11 +150,7 @@ To deploy the ingress controller together with
 kong run the following command:
 
 ```bash
-helm install stable/kong \
-    --set ingressController.enabled=true \
-    --set admin.useTLS=false \
-    --set readinessProbe.httpGet.scheme=HTTP \
-    --set livenessProbe.httpGet.scheme=HTTP
+helm install stable/kong --set ingressController.enabled=true
 ```
 
 **Note**: Kong Ingress controller doesn't support custom SSL certificates
@@ -165,13 +161,15 @@ declare the the Kong configurations and synchronize the configuration with the
 Kong admin API. Each of this new objects  declared in Kubernetes have a
 one-to-one relation with a Kong resource.
 The custom resources are:
+
 - KongConsumer
 - KongCredential
-- kongPlugin
+- KongPlugin
 - KongIngress
 
 You can can learn about kong ingress custom resource definitions here:
-https://github.com/Kong/kubernetes-ingress-controller/blob/master/docs/custom-types.md
+
+- [https://github.com/Kong/kubernetes-ingress-controller/blob/master/docs/custom-resources.md]()
 
 | Parameter        | Description                                 | Default                                                                      |
 | ---------------  | -----------------------------------------   | ---------------------------------------------------------------------------- |
