@@ -35,6 +35,17 @@ spec:
             - /ark
           args:
             - server
+            - --default-backup-storage-location
+            - "default"
+            {{- with .Values.configuration }}
+            - --backup-sync-period
+            - "{{ .backupSyncPeriod }}"
+            - --restic-timeout
+            - "{{ .resticTimeout }}"
+            {{- if .restoreOnlyMode }}
+            - --restore-only
+            {{- end }}
+            {{- end }}
           {{- if eq $provider "azure" }}
           envFrom:
             - secretRef:
@@ -50,7 +61,9 @@ spec:
         {{- if and .Values.credentials.useSecret (or (eq $provider "aws") (eq $provider "gcp")) }}
             - name: cloud-credentials
               mountPath: /credentials
+        {{- end }}
           env:
+        {{- if and .Values.credentials.useSecret (or (eq $provider "aws") (eq $provider "gcp")) }}
           {{- if eq $provider "aws" }}
             - name: AWS_SHARED_CREDENTIALS_FILE
           {{- else }}

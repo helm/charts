@@ -1,0 +1,24 @@
+apiVersion: ark.heptio.com/v1
+kind: VolumeSnapshotLocation
+metadata:
+  name: {{ .Values.configuration.persistentVolumeProvider.name  }}-default
+  labels:
+    chart: {{ template "ark.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    app: {{ template "ark.name" . }}
+spec:
+{{ with .Values.configuration }}
+  {{- with .persistentVolumeProvider }}
+      provider: {{ .name  }}
+    {{ with .config }}
+      config:
+      {{- with .region }}
+        region: {{ . }}
+      {{- end }}
+      {{- with .apitimeout }}
+        apiTimeout: {{ . }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
+{{- end }}

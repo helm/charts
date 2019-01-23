@@ -1,6 +1,6 @@
 image:
   repository: gcr.io/heptio-images/ark
-  tag: v0.9.1
+  tag: v0.10.0
   pullPolicy: IfNotPresent
 
 # Only kube2iam: change the AWS_ACCOUNT_ID and HEPTIO_ARK_ROLE_NAME
@@ -22,7 +22,6 @@ tolerations: []
 nodeSelector: {}
 
 ## Parameters for the ' default' Config resource
-## See https://heptio.github.io/ark/v0.9.0/config-definition
 configuration:
   persistentVolumeProvider: {}
   #  name:
@@ -40,8 +39,7 @@ configuration:
     #  kmsKeyId:
 
   backupSyncPeriod: 60m
-  gcSyncPeriod: 60m
-  scheduleSyncPeriod: 1m
+  resticTimeout: 1h
   resourcePriorities: []
   restoreOnlyMode: false
   # additional key/value pairs to be used as environment variables such as "AWS_CLUSTER_NAME: 'yourcluster.domain.tld'"
