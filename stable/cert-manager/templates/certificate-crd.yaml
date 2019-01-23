@@ -23,4 +23,4 @@ spec:
     shortNames:
 {{ toYaml .Values.certificateResourceShortNames | indent 6 }}
     {{- end -}}
-{{- end -}}
+{{- end }}
