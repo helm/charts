@@ -41,12 +41,16 @@ data:
 
 {{- if .Values.cluster.xpackEnable }}
     # see https://www.elastic.co/guide/en/x-pack/current/xpack-settings.html
+  {{- if .Values.appVersion gt 5.4 or .Values.appVersion eq 5.4 }}
     xpack.ml.enabled: ${XPACK_ML_ENABLED:false}
+  {{- end }}
     xpack.monitoring.enabled: ${XPACK_MONITORING_ENABLED:false}
     xpack.security.enabled: ${XPACK_SECURITY_ENABLED:false}
     xpack.watcher.enabled: ${XPACK_WATCHER_ENABLED:false}
 {{- else }}
+  {{- if .Values.appVersion gt 5.4 or .Values.appVersion eq 5.4 }}
     xpack.ml.enabled: false
+  {{- end }}
     xpack.monitoring.enabled: false
     xpack.security.enabled: false
     xpack.watcher.enabled: false
