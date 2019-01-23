@@ -18,6 +18,9 @@ halyard:
   additionalConfigMaps:
     create: false
     data: {}
+  additionalProfileConfigMaps:
+    create: false
+    data: {}
 
 # Define which registries and repositories you want available in your
 # Spinnaker pipeline definitions
