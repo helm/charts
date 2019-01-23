@@ -25,9 +25,9 @@ daemonset:
   ## metrics and traces will be accepted from any host able to connect to this host.
   # useHostNetwork: true
 
-  ## Sets the hostPort to the same value of the container port. Can be used as
-  ## for sending custom metrics. The ports will need to be available on all
-  ## hosts.
+  ## Sets the hostPort to the same value of the container port. Needs to be used
+  ## to receive traces in a standard APM set up. Can be used as for sending custom metrics.
+  ## The ports will need to be available on all hosts.
   ## WARNING: Make sure that hosts using this are properly firewalled otherwise
   ## metrics and traces will be accepted from any host able to connect to this host.
   # useHostPort: true
