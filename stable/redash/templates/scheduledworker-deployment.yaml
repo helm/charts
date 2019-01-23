@@ -32,13 +32,19 @@ spec:
             - name: config
               mountPath: /config
           env:
+            - name: REDASH_DATABASE_URL
+            {{- if not .Values.postgresql.enabled }}
+              value: {{ default "" .Values.externalPostgreSQL | quote }}
+            {{- end }}
             - name: REDASH_DATABASE_USER
               value: "{{ .Values.postgresql.postgresqlUsername }}"
             - name: REDASH_DATABASE_PASSWORD
+            {{- if .Values.postgresql.enabled }}
               valueFrom:
                 secretKeyRef:
                   name: {{ .Release.Name }}-postgresql
                   key: postgresql-password
+            {{- end }}
             - name: REDASH_DATABASE_HOSTNAME
               value: {{ template "redash.postgresql.fullname" . }}
             - name: REDASH_DATABASE_PORT

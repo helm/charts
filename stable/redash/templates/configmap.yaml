@@ -63,7 +63,11 @@ data:
     # NOTES:
     #   This script should be sourced, not run directly.
     #   All variables are expected to be set by the caller.
-    export REDASH_DATABASE_URL=postgresql://${REDASH_DATABASE_USER}:${REDASH_DATABASE_PASSWORD}@${REDASH_DATABASE_HOSTNAME}:${REDASH_DATABASE_PORT}/${REDASH_DATABASE_DB}
-    echo "Using Database: postgresql://${REDASH_DATABASE_USER}:******@${REDASH_DATABASE_HOSTNAME}:${REDASH_DATABASE_PORT}/${REDASH_DATABASE_DB}"
+    if [ -z "$REDASH_DATABASE_URL" ]; then
+      export REDASH_DATABASE_URL=postgresql://${REDASH_DATABASE_USER}:${REDASH_DATABASE_PASSWORD}@${REDASH_DATABASE_HOSTNAME}:${REDASH_DATABASE_PORT}/${REDASH_DATABASE_DB}
+      echo "Using Database: postgresql://${REDASH_DATABASE_USER}:******@${REDASH_DATABASE_HOSTNAME}:${REDASH_DATABASE_PORT}/${REDASH_DATABASE_DB}"
+    else
+      echo "Using external database"
+    fi
     export REDASH_REDIS_URL=redis://:${REDASH_REDIS_PASSWORD}@${REDASH_REDIS_HOSTNAME}:${REDASH_REDIS_PORT}/${REDASH_REDIS_DB}
     echo "Using Redis: redis://:******@${REDASH_REDIS_HOSTNAME}:${REDASH_REDIS_PORT}/${REDASH_REDIS_DB}"

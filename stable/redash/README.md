@@ -82,11 +82,13 @@ The following table lists the configurable parameters of the Redash chart and th
 | `scheduledWorker.nodeSelector`         | Node labels for scheduledWorker pod assignment        | `{}`               |
 | `scheduledWorker.tolerations`          | List of node taints to tolerate for scheduledWorker pod | `[]`             |
 | `scheduledWorker.affinity`             | Affinity settings for scheduledWorker pod assignment  | `{}`               |
+| `externalPostgreSQL`                   | Connection string for external PostgreSQL server, if disabling the PostgreSQL chart | `nil` |
+| `postgresql.enabled`                   | Whether to use the PostgreSQL chart                   | `true`             |
 | `postgresql.name`                      | Name used for PostgreSQL deployment                   | `postgresql`       |
 | `postgresql.imageTag`                  | PostgreSQL image version                              | `9.5.6-alpine`     |
-| `postgresql.postgresqlUsername`              | PostgreSQL User to create                             | `redash`           |
-| `postgresql.postgresqlPassword`          | PostgreSQL Password for the new user                  | random 10 character long alphanumeric string |
-| `postgresql.postgresqlDatabase`          | PostgreSQL Database to create                         | `redash`           |
+| `postgresql.postgresqlUsername`        | PostgreSQL User to create                             | `redash`           |
+| `postgresql.postgresqlPassword`        | PostgreSQL Password for the new user                  | random 10 character long alphanumeric string |
+| `postgresql.postgresqlDatabase`        | PostgreSQL Database to create                         | `redash`           |
 | `postgresql.persistence.enabled`       | Use a PVC to persist PostgreSQL data                  | `true`             |
 | `postgresql.persistence.size`          | PVC Storage Request size for PostgreSQL volume        | `10Gi`             |
 | `postgresql.persistence.accessMode`    | Use PostgreSQL volume as ReadOnly or ReadWrite        | `ReadWriteOnce`    |

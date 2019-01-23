@@ -143,11 +143,22 @@ scheduledWorker:
   ##
   affinity: {}
 
+##
+## External PostgreSQL configuration
+## To use an external PostgreSQL instead of the automatically deployed
+## postgresql chart: set postgresql.enabled to false then uncomment and
+## configure the externalPostgreSQL connection URL.
+##
+# externalPostgreSQL: postgresql://user:pass@host:5432/database
+
 ## Configuration values for the postgresql dependency
 ## This PostgreSQL instance is used for all Redash state storage
 ## ref: https://github.com/kubernetes/charts/blob/master/stable/postgresql/README.md
 ##
 postgresql:
+  ## Whether to deploy a PostgreSQL server to satisfy the applications database requirements.
+  ## To use an external PostgreSQL set this to false and configure the externalPostgreSQL parameter.
+  enabled: true
   image:
     ## Bitnami supported version closest to the one specified in Redash docker-compose.yml
     ##
