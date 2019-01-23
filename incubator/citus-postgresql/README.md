@@ -84,7 +84,7 @@ There are
 1. A [ConfigMap](https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/) `citus-postresql-ssl-settings` with SSL configuration for Citus nodes.
 1. A [Secret](https://kubernetes.io/docs/concepts/configuration/secret/) `citus-postgresql-secret` that holds credentials for the superuser.
 1. A [Secret](https://kubernetes.io/docs/concepts/configuration/secret/) `citus-postgresql-pgpass` that deploys credentials for all nodes in the cluster as a [.pgpass](https://www.postgresql.org/docs/11/libpq-pgpass.html) file.
-1. A [Secret](https://kubernetes.io/docs/concepts/configuration/secret/) `citus-postgresql-ssl` that holds the SSL cert and key files.
+1. A [Secret](https://kubernetes.io/docs/concepts/configuration/secret/) `citus-postgresql-ssl` that holds the SSL cert and key files.  
 1. A [ServiceAccount](https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/) `citus-manager-sa` for the Citus Membership Manager deployment.
 1. A [Role](https://kubernetes.io/docs/reference/access-authn-authz/rbac/) `pods-list` to query Kubernetes API for pod details and status.
 1. A [RoleBinding](https://kubernetes.io/docs/reference/access-authn-authz/rbac/) `pods-list` to map the Role to the ServiceAccount.
@@ -120,6 +120,7 @@ helm install incubator/citus-postgresql --name citus-postgresql -f <cluster-name
 | `worker.replicaCount` | Replica Count of worker pod in statefulset | `2` |
 | `worker.updateStrategy` | [StatefulSet Update Strategy](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#update-strategies)  | `type: RollingUpdate` |
 | `worker.citusType` | Label to detect worker pods | `citus-worker` |
+| `worker.extraConfigs` | Add [command-line parameters](https://www.postgresql.org/docs/11/config-setting.html#id-1.6.6.4.5) in form of `-c log_connections=yes -c log_destination='syslog'` | - |
 | `worker.resources.requests.cpu` | The amount of CPU to request. | - |
 | `worker.resources.requests.memory` | The amount of memory to request. | - |
 | `worker.resources.limit.cpu` | The upper limit CPU usage for a worker. | - |
@@ -132,6 +133,7 @@ helm install incubator/citus-postgresql --name citus-postgresql -f <cluster-name
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
 | `master.citusType` | Label to detect master pods | `citus-master` |
+| `master.extraConfigs` | Add [command-line parameters](https://www.postgresql.org/docs/11/config-setting.html#id-1.6.6.4.5) in form of `-c log_connections=yes -c log_destination='syslog'` | - |
 | `master.resources.requests.cpu` | The amount of CPU to request. | - |
 | `master.resources.requests.memory` | The amount of memory to request. | - |
 | `master.resources.limit.cpu` | The upper limit CPU usage for the master. | - |

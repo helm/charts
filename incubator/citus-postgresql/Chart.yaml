@@ -7,7 +7,7 @@ sources:
   - https://github.com/citusdata
 maintainers:
   - name: bequiet88
-    email: jochen.huelss@alvary.io
+    email: 83bac691.alvary.io@emea.teams.ms
   - name: chrboehm
     email: info@bakdata.com
 icon: https://raw.githubusercontent.com/citusdata/citus/master/github-banner.png

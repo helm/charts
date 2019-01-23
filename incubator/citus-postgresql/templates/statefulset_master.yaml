@@ -61,7 +61,7 @@ spec:
           && chmod 0644 /home/postgres/ssl/citus.crt
           {{- end }}
           && chown -R postgres:postgres /home/postgres
-          && docker-entrypoint.sh postgres
+          && docker-entrypoint.sh postgres {{ .Values.master.extraConfigs }}
         ports:
         - containerPort: {{ .Values.superuser.port }}
         resources:

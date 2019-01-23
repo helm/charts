@@ -6,11 +6,13 @@ imageTag: 8.1.1
 imagePullPolicy: IfNotPresent
 readiness:
   enabled: true
+maxConnections: 100
 
 ## Citus Worker
 worker:
   replicaCount: 2
   citusType: "citus-worker"
+  extraConfigs:
   updateStrategy:
     type: RollingUpdate
   resources: {}
@@ -26,6 +28,7 @@ worker:
 ## Citus Master
 master:
   citusType: "citus-master"
+  extraConfigs:
   resources: {}
   #  limits:
   #    cpu: 4
