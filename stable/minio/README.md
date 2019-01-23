@@ -308,3 +308,18 @@ $ helm install --set environment.MINIO_BROWSER=on,environment.MINIO_DOMAIN=domai
 ```
 
 You can add as many environment variables as required, using the above format. Just add `environment.<VARIABLE_NAME>=<value>` under `set` flag.
+
+Create buckets after install
+---------------------------
+
+Install the chart, specifying the buckets you want to create after install:
+
+```bash
+$ helm install --set buckets[0].name=bucket1,buckets[0].policy=none,buckets[0].purge=false stable/minio
+```
+
+Description of the configuration parameters used above - 
+1. `buckets[].name` - name of the bucket to create, must be a string with length > 0
+2. `buckets[].policy` - Can be one of none|download|upload|public
+3. `buckets[].purge` - Purge if bucket exists already
+
