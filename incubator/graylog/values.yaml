@@ -26,8 +26,11 @@ graylog:
   ## Graylog image version
   ## Ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
   ##
+  ## Important note: Official Graylog Docker image may replace the existing Docker image tags and cause some corrupt when starting the pod.
+  ## Make sure you strict with the `x` version of Graylog where `x` is ${version}-${x}
+  ##
   image:
-    repository: "graylog/graylog:2.5"
+    repository: "graylog/graylog:2.5.1-3"
     pullPolicy: "IfNotPresent"
 
   replicas: 2
