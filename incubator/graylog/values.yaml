@@ -161,7 +161,7 @@ graylog:
     enabled: false
 
   geoip:
-    ## If true, Maxmind GeoLite2 will be download to /etc/geoip/GeoLite2-City.mmdb
+    ## If true, Maxmind GeoLite2 will be installed to ${GRAYLOG_HOME}/geoip location
     ##
     enabled: false
 

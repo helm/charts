@@ -107,7 +107,7 @@ spec:
                 curl -s --location --retry 3 -o /tmp/GeoLite2-City.tar.gz "https://geolite.maxmind.com/download/geoip/database/GeoLite2-City.tar.gz"
                 curlreturn=$?
                 if [[ $curlreturn -eq 0 ]]; then
-                  mkdir -p /etc/geoip && cd /etc/geoip && tar xvzf /tmp/GeoLite2-City.tar.gz --wildcards "*.mmdb" --strip-components=1 -C /etc/geoip && chown -R graylog:graylog /etc/geoip
+                  mkdir -p ${GRAYLOG_HOME}/geoip && cd ${GRAYLOG_HOME}/geoip && tar xvzf /tmp/GeoLite2-City.tar.gz --wildcards "*.mmdb" --strip-components=1 -C ${GRAYLOG_HOME}/geoip && chown -R graylog:graylog ${GRAYLOG_HOME}/geoip
                 fi
               {{- end }}
                 # Start Graylog
@@ -117,14 +117,15 @@ spec:
                 echo "Graylog Home ${GRAYLOG_HOME}"
                 echo "Graylog User ${GRAYLOG_USER}"
                 echo "JVM Options ${GRAYLOG_SERVER_JAVA_OPTS}"
-                gosu ${GRAYLOG_USER} "${JAVA_HOME}/bin/java" ${GRAYLOG_SERVER_JAVA_OPTS} \
-                    -jar \
-                    -Dlog4j.configurationFile=${GRAYLOG_HOME}/config/log4j2.xml \
-                    -Djava.library.path=${GRAYLOG_HOME}/lib/sigar/ \
-                    -Dgraylog2.installation_source=docker \
-                    ${GRAYLOG_HOME}/graylog.jar \
-                    server \
-                    -f ${GRAYLOG_HOME}/config/graylog.conf ${GRAYLOG_SERVER_OPTS}
+                "${JAVA_HOME}/bin/java" \
+                  ${GRAYLOG_SERVER_JAVA_OPTS} \
+                  -jar \
+                  -Dlog4j.configurationFile=${GRAYLOG_HOME}/config/log4j2.xml \
+                  -Djava.library.path=${GRAYLOG_HOME}/lib/sigar/ \
+                  -Dgraylog2.installation_source=docker \
+                  ${GRAYLOG_HOME}/graylog.jar \
+                  server \
+                  -f ${GRAYLOG_HOME}/config/graylog.conf
           env:
             - name: GRAYLOG_SERVER_JAVA_OPTS
               {{- $javaOpts := "-Djava.net.preferIPv4Stack=true -XX:NewRatio=1 -server -XX:+ResizeTLAB -XX:+UseConcMarkSweepGC -XX:+CMSConcurrentMTEnabled -XX:+CMSClassUnloadingEnabled -XX:+UseParNewGC -XX:-OmitStackTraceInFastThrow" }}
