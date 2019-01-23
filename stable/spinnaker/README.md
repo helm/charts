@@ -146,4 +146,10 @@ halyard:
     create: true
     data:
       metadata.xml: <xml><username>admin</username></xml>
+  additionalProfileConfigMaps:
+    create: true
+    data:
+      orca-local.yml: |-
+        tasks:
+          useManagedServiceAccounts: true
 ```
