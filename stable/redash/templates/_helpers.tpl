@@ -50,12 +50,12 @@ Create a default fully qualified scheduledworker name.
 Create a default fully qualified postgresql name.
 */}}
 {{- define "redash.postgresql.fullname" -}}
-{{- printf "%s-%s" .Release.Name "postgresql" | trunc 43 | trimSuffix "-" -}}
+{{- printf "%s-%s" .Release.Name "postgresql" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{/*
 Create a default fully qualified redis name.
 */}}
 {{- define "redash.redis.fullname" -}}
-{{- printf "%s-%s" .Release.Name "redis" | trunc 43 | trimSuffix "-" -}}
+{{- printf "%s-%s" .Release.Name "redis-master" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}

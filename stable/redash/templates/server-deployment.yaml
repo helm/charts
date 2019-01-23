@@ -37,18 +37,18 @@ spec:
                   name: {{ template "redash.fullname" . }}
                   key: cookieSecret
             - name: REDASH_DATABASE_USER
-              value: "{{ .Values.postgresql.postgresUser }}"
+              value: "{{ .Values.postgresql.postgresqlUsername }}"
             - name: REDASH_DATABASE_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ .Release.Name }}-postgresql
-                  key: postgres-password
+                  key: postgresql-password
             - name: REDASH_DATABASE_HOSTNAME
-              value: {{ template "postgresql.fullname" . }}
+              value: {{ template "redash.postgresql.fullname" . }}
             - name: REDASH_DATABASE_PORT
               value: "{{ .Values.postgresql.service.port }}"
             - name: REDASH_DATABASE_DB
-              value: "{{ .Values.postgresql.postgresDatabase }}"
+              value: "{{ .Values.postgresql.postgresqlDatabase }}"
             - name: REDASH_REDIS_PASSWORD
               valueFrom:
                 secretKeyRef:
@@ -59,7 +59,7 @@ spec:
                 {{- end }}
                   key: redis-password
             - name: REDASH_REDIS_HOSTNAME
-              value: {{ template "redis.fullname" . }}
+              value: {{ template "redash.redis.fullname" . }}
             - name: REDASH_REDIS_PORT
               value: "{{ .Values.redis.master.port }}"
             - name: REDASH_REDIS_DB
@@ -88,18 +88,18 @@ spec:
                   name: {{ template "redash.fullname" . }}
                   key: cookieSecret
             - name: REDASH_DATABASE_USER
-              value: "{{ .Values.postgresql.postgresUser }}"
+              value: "{{ .Values.postgresql.postgresqlUsername }}"
             - name: REDASH_DATABASE_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ .Release.Name }}-postgresql
-                  key: postgres-password
+                  key: postgresql-password
             - name: REDASH_DATABASE_HOSTNAME
               value: {{ template "redash.postgresql.fullname" . }}
             - name: REDASH_DATABASE_PORT
               value: "{{ .Values.postgresql.service.port }}"
             - name: REDASH_DATABASE_DB
-              value: "{{ .Values.postgresql.postgresDatabase }}"
+              value: "{{ .Values.postgresql.postgresqlDatabase }}"
             - name: REDASH_REDIS_PASSWORD
               valueFrom:
                 secretKeyRef:

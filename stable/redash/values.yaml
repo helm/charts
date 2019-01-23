@@ -148,12 +148,15 @@ scheduledWorker:
 ## ref: https://github.com/kubernetes/charts/blob/master/stable/postgresql/README.md
 ##
 postgresql:
-  imageTag: "9.5.6-alpine"
-  postgresUser: redash
+  image:
+    ## Bitnami supported version closest to the one specified in Redash docker-compose.yml
+    ##
+    tag: "9.6.11-debian-9-r66"
+  postgresqlUsername: redash
   ## If the password is not specified, a random password will be generated
   ##
-  # postgresPassword:
-  postgresDatabase: redash
+  # postgresqlPassword:
+  postgresqlDatabase: redash
   service:
     type: ClusterIP
     port: 5432
@@ -182,3 +185,5 @@ redis:
   databaseNumber: 0
   master:
     port: 6379
+  cluster:
+    enabled: false

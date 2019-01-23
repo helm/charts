@@ -33,18 +33,18 @@ spec:
               mountPath: /config
           env:
             - name: REDASH_DATABASE_USER
-              value: "{{ .Values.postgresql.postgresUser }}"
+              value: "{{ .Values.postgresql.postgresqlUsername }}"
             - name: REDASH_DATABASE_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ .Release.Name }}-postgresql
-                  key: postgres-password
+                  key: postgresql-password
             - name: REDASH_DATABASE_HOSTNAME
               value: {{ template "redash.postgresql.fullname" . }}
             - name: REDASH_DATABASE_PORT
               value: "{{ .Values.postgresql.service.port }}"
             - name: REDASH_DATABASE_DB
-              value: "{{ .Values.postgresql.postgresDatabase }}"
+              value: "{{ .Values.postgresql.postgresqlDatabase }}"
             - name: REDASH_REDIS_PASSWORD
               valueFrom:
                 secretKeyRef:

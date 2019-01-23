@@ -84,9 +84,9 @@ The following table lists the configurable parameters of the Redash chart and th
 | `scheduledWorker.affinity`             | Affinity settings for scheduledWorker pod assignment  | `{}`               |
 | `postgresql.name`                      | Name used for PostgreSQL deployment                   | `postgresql`       |
 | `postgresql.imageTag`                  | PostgreSQL image version                              | `9.5.6-alpine`     |
-| `postgresql.postgresUser`              | PostgreSQL User to create                             | `redash`           |
-| `postgresql.postgresPassword`          | PostgreSQL Password for the new user                  | random 10 character long alphanumeric string |
-| `postgresql.postgresDatabase`          | PostgreSQL Database to create                         | `redash`           |
+| `postgresql.postgresqlUsername`              | PostgreSQL User to create                             | `redash`           |
+| `postgresql.postgresqlPassword`          | PostgreSQL Password for the new user                  | random 10 character long alphanumeric string |
+| `postgresql.postgresqlDatabase`          | PostgreSQL Database to create                         | `redash`           |
 | `postgresql.persistence.enabled`       | Use a PVC to persist PostgreSQL data                  | `true`             |
 | `postgresql.persistence.size`          | PVC Storage Request size for PostgreSQL volume        | `10Gi`             |
 | `postgresql.persistence.accessMode`    | Use PostgreSQL volume as ReadOnly or ReadWrite        | `ReadWriteOnce`    |

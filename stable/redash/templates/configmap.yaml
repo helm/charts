@@ -11,6 +11,17 @@ data:
   createdb.sh: |
     #!/usr/bin/env bash
     # Check PostgreSQL is up and create the database on first run.
+
+    # Status command timeout
+    STATUS_TIMEOUT=10
+    # Create tables command timeout
+    CREATE_TIMEOUT=60
+    # Time to wait between attempts
+    RETRY_WAIT=10
+    # Max number of attempts
+    MAX_ATTEMPTS=10
+
+    # Load connection variables
     . /config/dynamicenv.sh
     # Initialize attempt counter
     ATTEMPTS=0
@@ -45,11 +56,8 @@ data:
       echo "Waiting ${RETRY_WAIT} seconds before retrying."
       sleep 10
     done
-    sleep 5
-    if /app/manage.py status 2>&1 | grep 'sqlalchemy.exc.ProgrammingError'; then
-      echo "Database tables not ready, creating tables now."
-      /app/manage.py database create_tables
-    fi
+    echo "Reached ${MAX_ATTEMPTS} attempts, giving up."
+    exit 1
   dynamicenv.sh: |
     # Build connection URLs from environment variables.
     # NOTES:
