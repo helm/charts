@@ -14,6 +14,10 @@ spec:
     matchLabels:
       app: {{ include "webhook.name" . }}
       release: {{ .Release.Name }}
+  {{- with .Values.strategy }}
+  strategy:
+    {{- . | toYaml | nindent 4 }}
+  {{- end }}
   template:
     metadata:
       labels:
@@ -25,12 +29,16 @@ spec:
       {{- end }}
     spec:
       serviceAccountName: {{ include "webhook.fullname" . }}
+      {{- if .Values.global.priorityClassName }}
+      priorityClassName: {{ .Values.global.priorityClassName | quote }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           args:
           - --v=12
+          - --secure-port=6443
           - --tls-cert-file=/certs/tls.crt
           - --tls-private-key-file=/certs/tls.key
           - --disable-admission-plugins=NamespaceLifecycle,MutatingAdmissionWebhook,ValidatingAdmissionWebhook,Initializers
