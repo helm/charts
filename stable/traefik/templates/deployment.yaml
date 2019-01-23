@@ -83,7 +83,9 @@ spec:
           periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 2
+        {{- if .Values.deployment.hostNetwork }}
         hostNetwork: {{ .Values.deployment.hostNetwork }}
+        {{- end }}
         {{- if and .Values.acme.enabled (eq .Values.acme.challengeType "dns-01") .Values.acme.dnsProvider.name }}
         env:
         {{- range $k, $v := (index .Values.acme.dnsProvider .Values.acme.dnsProvider.name) }}
