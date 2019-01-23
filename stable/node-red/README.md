@@ -41,7 +41,7 @@ The following tables lists the configurable parameters of the Sentry chart and t
 | `image.repository`                   | node-red image                             | `nodered/node-red-docker` |
 | `image.tag`                          | node-red image tag                         | `0.19.4-v8` |
 | `image.pullPolicy`                   | node-red image pull policy                 | `IfNotPresent` |
-| `flows`                              | Default flows configuration                | `` |
+| `flows`                              | Default flows configuration                | `flows.json` |
 | `nodeOptions`                        | Node.js runtime arguments                  | `` |
 | `timezone`                           | Default timezone                           | `UTC` |
 | `service.type`                       | Kubernetes service type for the GUI        | `ClusterIP` |

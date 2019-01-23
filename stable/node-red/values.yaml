@@ -12,7 +12,7 @@ image:
 nameOverride: ""
 fullnameOverride: ""
 
-# flows: ""
+flows: "flows.json"
 # nodeOptions: ""
 timezone: "UTC"
 
