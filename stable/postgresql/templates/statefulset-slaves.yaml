@@ -115,7 +115,7 @@ spec:
             command:
             - sh
             - -c
-            - exec pg_isready -U {{ .Values.postgresqlUsername | quote }} -h localhost
+            - exec pg_isready -U {{ .Values.postgresqlUsername | quote }} -d {{ .Values.postgresqlDatabase | quote }} -h localhost
           initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
           periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
           timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
@@ -128,7 +128,7 @@ spec:
             command:
             - sh
             - -c
-            - exec pg_isready -U {{ .Values.postgresqlUsername | quote }} -h localhost
+            - exec pg_isready -U {{ .Values.postgresqlUsername | quote }} -d {{ .Values.postgresqlDatabase | quote }} -h localhost
           initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
           periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
           timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
