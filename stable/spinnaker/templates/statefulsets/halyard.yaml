@@ -39,12 +39,21 @@ spec:
           mkdir -p /tmp/spinnaker/.hal/default/service-settings && \
           printf 'overrideBaseUrl: redis://:{{ .Values.redis.password }}@{{ .Release.Name }}-redis-master:6379\nskipLifeCycleManagement: true\n' > /tmp/spinnaker/.hal/default/service-settings/redis.yml && \
           # Route the /gate path of Deck to Gate
-          printf 'env:\n  API_HOST: http://spin-gate.{{ .Release.Namespace }}:8084/\n' > /tmp/spinnaker/.hal/default/service-settings/deck.yml
+          printf 'env:\n  API_HOST: http://spin-gate.{{ .Release.Namespace }}:8084/\n' > /tmp/spinnaker/.hal/default/service-settings/deck.yml {{ if .Values.halyard.additionalProfileConfigMaps.create }}&& \{{ end }}
+          {{- if .Values.halyard.additionalProfileConfigMaps.create }}
+          rm -rf /tmp/spinnaker/.hal/default/profiles && \
+          mkdir -p /tmp/spinnaker/.hal/default/profiles && \
+          cp /tmp/additionalProfileConfigMaps/* /tmp/spinnaker/.hal/default/profiles/
+          {{- end }}
         volumeMounts:
         - name: halyard-config
           mountPath: /tmp/config
         - name: halyard-home
           mountPath: /tmp/spinnaker
+        {{- if .Values.halyard.additionalProfileConfigMaps.create }}
+        - name: additional-profile-config-maps
+          mountPath: /tmp/additionalProfileConfigMaps
+        {{- end }}
       volumes:
       {{- if .Values.kubeConfig.enabled }}
       - name: kube-config
@@ -81,6 +90,11 @@ spec:
       - name: additional-config-maps
         configMap:
           name: {{ template "spinnaker.fullname" . }}-additional-config-maps
+      {{- end }}
+      {{- if .Values.halyard.additionalProfileConfigMaps.create }}
+      - name: additional-profile-config-maps
+        configMap:
+          name: {{ template "spinnaker.fullname" . }}-additional-profile-config-maps
       {{- end }}
       - name: halyard-config
         emptyDir: {}
