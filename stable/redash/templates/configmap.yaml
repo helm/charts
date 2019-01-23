@@ -12,9 +12,37 @@ data:
     #!/usr/bin/env bash
     # Check PostgreSQL is up and create the database on first run.
     . /config/dynamicenv.sh
-    echo "Checking status."
-    while /app/manage.py status 2>&1 | grep 'sqlalchemy.exc.OperationalError'; do
-      echo "Database not yet functional, waiting."
+    # Initialize attempt counter
+    ATTEMPTS=0
+    while (($ATTEMPTS < $MAX_ATTEMPTS)); do
+      echo "Starting attempt ${ATTEMPTS} of ${MAX_ATTEMPTS}"
+      ATTEMPTS=$((ATTEMPTS+1))
+      STATUS=$(timeout $STATUS_TIMEOUT /app/manage.py status 2>&1)
+      RETCODE=$?
+      echo "Return code: ${RETCODE}"
+      echo "Status: ${STATUS}"
+      case "$RETCODE" in
+        0)
+          echo "Tables already created."
+          exit 0
+          ;;
+        124)
+          echo "Status command timed out after ${STATUS_TIMEOUT} seconds."
+          ;;
+      esac
+      case "$STATUS" in
+        *sqlalchemy.exc.OperationalError*)
+          echo "Database not yet functional, waiting."
+          ;;
+        *sqlalchemy.exc.ProgrammingError*)
+          echo "Database tables not ready, creating tables now."
+          timeout $CREATE_TIMEOUT /app/manage.py database create_tables
+          echo "Tables created, final status:"
+          timeout $STATUS_TIMEOUT /app/manage.py status
+          exit 0
+          ;;
+      esac
+      echo "Waiting ${RETRY_WAIT} seconds before retrying."
       sleep 10
     done
     sleep 5
