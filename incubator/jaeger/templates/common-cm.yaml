@@ -19,6 +19,7 @@ data:
   collector.http-port: {{ .Values.collector.service.httpPort | quote }}
   collector.port: {{ .Values.collector.service.tchannelPort | quote }}
   collector.zipkin.http-port: {{ .Values.collector.service.zipkinPort | quote }}
+  es.index-prefix: {{ .Values.storage.elasticsearch.indexPrefix | quote }}
   es.password: {{ .Values.storage.elasticsearch.password }}
   es.server-urls: {{ template "elasticsearch.client.url" . }}
   es.username: {{ .Values.storage.elasticsearch.user }}

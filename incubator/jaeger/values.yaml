@@ -21,6 +21,7 @@ storage:
     host: elasticsearch
     port: 9200
     user: elastic
+    indexPrefix: jaeger
     password: changeme
     nodesWanOnly: false
 

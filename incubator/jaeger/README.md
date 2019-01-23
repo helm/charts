@@ -207,6 +207,7 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `storage.cassandra.password`             | Provisioned cassandra password      |  password                              |
 | `storage.cassandra.port`                 | Provisioned cassandra port          |  9042                                  |
 | `storage.cassandra.user`                 | Provisioned cassandra username      |  user                                  |
+| `storage.elasticsearch.indexPrefix`      | Provisioned elasticsearch index prefix | jaeger                              |
 | `storage.elasticsearch.host`             | Provisioned elasticsearch host      |  elasticsearch                         |
 | `storage.elasticsearch.password`         | Provisioned elasticsearch password  |  changeme                              |
 | `storage.elasticsearch.port`             | Provisioned elasticsearch port      |  9200                                  |

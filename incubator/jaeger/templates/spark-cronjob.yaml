@@ -61,6 +61,11 @@ spec:
                   key: cassandra.keyspace
               {{- end }}
             {{- if eq .Values.storage.type "elasticsearch" }}
+            - name: ES_INDEX_PREFIX
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "jaeger.fullname" . }}
+                  key: es.index-prefix
             - name: ES_NODES
               valueFrom:
                 configMapKeyRef:
