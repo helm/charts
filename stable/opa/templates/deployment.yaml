@@ -15,6 +15,25 @@ spec:
         app: {{ template "opa.fullname" . }}
       name: {{ template "opa.fullname" . }}
     spec:
+      initContainers:
+        - name: initpolicy
+          image: {{ .Values.mgmt.image }}:{{ .Values.mgmt.imageTag }}
+          command:
+          - /bin/sh
+          - -c
+          - |
+            tr -dc 'A-F0-9' < /dev/urandom | dd bs=1 count=32 2>/dev/null > /authz/mgmt-token
+            TOKEN=`cat /authz/mgmt-token`
+            cat > /authz/authz.rego <<EOF
+            package system.authz
+            default allow = false
+            allow { input.path = [""]; input.method = "POST" }
+            allow { input.path = [""]; input.method = "GET" }
+            allow { input.identity = "$TOKEN" }
+            EOF
+          volumeMounts:
+            - name: authz
+              mountPath: /authz
       containers:
         - name: opa
           image: {{ .Values.image }}:{{ .Values.imageTag }}
@@ -24,7 +43,14 @@ spec:
             - "--config-file=/config/config.yaml"
             - "--tls-cert-file=/certs/tls.crt"
             - "--tls-private-key-file=/certs/tls.key"
+            - "--authentication=token"
+            - "--authorization=basic"
+            - "/authz/authz.rego"
+            - "--ignore=.*"
             - "--addr=0.0.0.0:443"
+{{- if .Values.mgmt.enabled }}
+            - "--addr=127.0.0.1:8181"
+{{- end }}
           volumeMounts:
             - name: certs
               readOnly: true
@@ -32,6 +58,30 @@ spec:
             - name: config
               readOnly: true
               mountPath: /config
+            - name: authz
+              mountPath: /authz
+{{- if .Values.mgmt.enabled }}
+        - name: mgmt
+          image: {{ .Values.mgmt.image }}:{{ .Values.mgmt.imageTag }}
+          args:
+            - --opa-auth-token=$(cat /authz/mgmt-token)
+            - --opa-url=http://localhost:8181/v1
+            - --replicate-path={{ .Values.mgmt.replicate.path }}
+{{- if .Values.mgmt.configmapPolicies.enabled }}
+            - --enable-policies
+            - --policies={{ .Values.mgmt.configmapPolicies.namespaces | join "," }}
+            - --require-policy-label={{ .Values.mgmt.configmapPolicies.requireLabel }}
+{{- end }}
+{{- if gt 0 (len .Values.mgmt.replicate.namespace) }}
+            - --replicate={{ .Values.mgmt.replicate.namespace | join ","}}
+{{- end }}
+{{- if gt 0 (len .Values.mgmt.replicate.cluster) }}
+            - --replicate-cluster={{ .Values.mgmt.replicate.cluster | join ","}}
+{{- end }}
+          volumeMounts:
+            - name: authz
+              mountPath: /authz
+{{- end }}
 {{- if .Values.sar.enabled }}
         - name: sarproxy
           image: {{ .Values.sar.image }}:{{ .Values.sar.imageTag }}
@@ -52,6 +102,8 @@ spec:
         - name: config
           secret:
             secretName: {{ template "opa.fullname" . }}-config
+        - name: authz
+          emptyDir: {}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
       tolerations:

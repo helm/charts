@@ -45,7 +45,23 @@ admissionControllerKey: ""
 
 # Docker image and tag to deploy.
 image: openpolicyagent/opa
-imageTag: 0.10.1
+imageTag: 0.10.2
+
+mgmt:
+  enabled: true
+  image: openpolicyagent/kube-mgmt
+  imageTag: 0.8-dev
+  extraArgs: []
+  configmapPolicies:
+    enabled: false  
+    namespaces: [opa, kube-federation-scheduling-policy]
+    requireLabel: true
+  replicate:
+    cluster: []
+#     - [group/]version/resource
+    namespace: []
+#     - [group/]version/resource
+    path: kubernetes
 
 # Number of OPA replicas to deploy. OPA maintains an eventually consistent
 # cache of policies and data. If you want high availability you can deploy two
