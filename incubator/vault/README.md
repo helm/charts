@@ -65,6 +65,7 @@ The following table lists the configurable parameters of the Vault chart and the
 | `service.loadBalancerSourceRanges`| IP whitelist for service type loadbalancer   | `[]`                            |
 | `service.annotations`             | Annotations for service                  | `{}`                                |
 | `annotations`                     | Annotations for deployment               | `{}`                                |
+| `labels`                          | Extra labels for deployment              | `{}`                                |
 | `ingress.labels`                  | Labels for ingress                       | `{}`                                |
 | `podAnnotations`                  | Annotations for pods                     | `{}`                                |
 | `consulAgent.join`                | If set, start start a consul agent       | `nil`                               |

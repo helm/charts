@@ -119,6 +119,7 @@ Parameter | Description | Default
 `agent.tlsFiles.cert` | Base64 encoded strings for the agent's certificate | `null`
 `agent.tlsFiles.key` | Base64 encoded strings for the agent's private key | `null`
 `agent.tolerations` | Tolerations to be applied to agent pods | `[]`
+`agent.affinity` | Node affinity for pod assignment | `{}`
 `agent.updateStrategy` | Strategy for agent DaemonSet updates (requires Kubernetes 1.6+) | `OnDelete`
 `server.enabled` | If true, create server | `true`
 `server.name` | Server container name | `server`
@@ -150,6 +151,7 @@ Parameter | Description | Default
 `server.tlsFiles.cert` | Base64 encoded strings for the server's certificate | `null`
 `server.tlsFiles.key` | Base64 encoded strings for the server's private key | `null`
 `server.tolerations` | Tolerations to be applied to server pods | `[]`
+`server.affinity` | Node affinity for pod assignment | `{}`
 `server.updateStrategy` | Strategy for server DaemonSet updates (requires Kubernetes 1.6+) | `OnDelete`
 `server.useHostNetwork` | If true, use hostNetwork on server to bypass agent iptable rules | `false`
 `rbac.create` | If `true`, create & use RBAC resources | `true`

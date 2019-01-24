@@ -79,10 +79,16 @@ The following table lists the configurable parameters of the Concourse chart and
 | `web.additionalAffinities` | Additional affinities to apply to web pods. E.g: node affinity | `{}` |
 | `web.env` | Configure additional environment variables for the web containers | `[]` |
 | `web.annotations`| Concourse Web deployment annotations | `nil` |
+| `web.keysSecretsPath` | Specify the mount directory of the web keys secrets | `/concourse-keys` |
+| `web.postgresqlSecrtsPath` | Specify the mount directory of the web postgresql secrets | `/concourse-postgresql` |
+| `web.vaultSecretsPath` | Specify the mount directory of the web vault secrets | `/concourse-vault` |
+| `web.syslogSecretsPath` | Specify the mount directory of the web syslog secrets | `/concourse-syslog` |
+| `web.authSecretsPath` | Specify the mount directory of the web auth secrets | `/concourse-auth` |
 | `web.tolerations` | Tolerations for the web nodes | `[]` |
 | `web.nodeSelector` | Node selector for web nodes | `{}` |
 | `web.service.type` | Concourse Web service type | `ClusterIP` |
 | `web.service.annotations` | Concourse Web Service annotations | `nil` |
+| `web.service.labels` | Additional concourse web service labels | `nil` |
 | `web.service.loadBalancerIP` | The IP to use when web.service.type is LoadBalancer | `nil` |
 | `web.service.loadBalancerSourceRanges` | Concourse Web Service Load Balancer Source IP ranges | `nil` |
 | `web.service.atcNodePort` | Sets the nodePort for atc when using `NodePort` | `nil` |
@@ -98,6 +104,7 @@ The following table lists the configurable parameters of the Concourse chart and
 | `worker.resources` | Concourse Worker resource requests and limits | `{requests: {cpu: "100m", memory: "512Mi"}}` |
 | `worker.env` | Configure additional environment variables for the worker container(s) | `[]` |
 | `worker.annotations` | Annotations to be added to the worker pods | `{}` |
+| `worker.keysSecretsPath` | Specify the mount directory of the worker keys secrets | `/concourse-keys` |
 | `worker.additionalVolumeMounts` | VolumeMounts to be added to the worker pods | `nil` |
 | `worker.additionalVolumes` | Volumes to be added to the worker pods | `nil` |
 | `worker.additionalAffinities` | Additional affinities to apply to worker pods. E.g: node affinity | `{}` |

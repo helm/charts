@@ -130,8 +130,6 @@ spec:
         - name: POSTGRESQL_DATABASE
           value: {{ .Values.postgresqlDatabase | quote }}
         {{- end }}
-        - name: POD_IP
-          valueFrom: { fieldRef: { fieldPath: status.podIP } }
 {{- if .Values.extraEnv }}
 {{ toYaml .Values.extraEnv | indent 8 }}
 {{- end }}
@@ -144,7 +142,11 @@ spec:
             command:
             - sh
             - -c
-            - exec pg_isready -U {{ .Values.postgresqlUsername | quote }} --host $POD_IP
+           {{- if .Values.postgresqlDatabase }}
+            - exec pg_isready -U {{ .Values.postgresqlUsername | quote }} -d {{ .Values.postgresqlDatabase | quote }} -h localhost
+           {{- else }}
+            - exec pg_isready -U {{ .Values.postgresqlUsername | quote }} -h localhost
+           {{- end }}
           initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
           periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
           timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
@@ -157,7 +159,11 @@ spec:
             command:
             - sh
             - -c
-            - exec pg_isready -U {{ .Values.postgresqlUsername | quote }} --host $POD_IP
+           {{- if .Values.postgresqlDatabase }}
+            - exec pg_isready -U {{ .Values.postgresqlUsername | quote }} -d {{ .Values.postgresqlDatabase | quote }} -h localhost
+           {{- else }}
+            - exec pg_isready -U {{ .Values.postgresqlUsername | quote }} -h localhost
+           {{- end }}
           initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
           periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
           timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}

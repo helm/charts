@@ -152,6 +152,7 @@ The following tables lists the configurable parameters of the prometheus-operato
 | `prometheus.prometheusSpec.secrets` | Secrets is a list of Secrets in the same namespace as the Prometheus object, which shall be mounted into the Prometheus Pods. The Secrets are mounted into /etc/prometheus/secrets/<secret-name>. Secrets changes after initial creation of a Prometheus object are not reflected in the running Pods. To change the secrets mounted into the Prometheus Pods, the object must be deleted and recreated with the new list of secrets. | `[]` |
 | `prometheus.prometheusSpec.configMaps` | ConfigMaps is a list of ConfigMaps in the same namespace as the Prometheus object, which shall be mounted into the Prometheus Pods. The ConfigMaps are mounted into /etc/prometheus/configmaps/ | `[]` |
 |`prometheus.prometheusSpec.podAntiAffinity` | Pod anti-affinity can prevent the scheduler from placing Prometheus replicas on the same node. The default value "soft" means that the scheduler should *prefer* to not schedule two replica pods onto the same node but no guarantee is provided. The value "hard" means that the scheduler is *required* to not schedule two replica pods onto the same node. The value "" will disable pod anti-affinity so that no anti-affinity rules will be configured. | `""` |
+|`prometheus.prometheusSpec.podAntiAffinityTopologyKey` | If anti-affinity is enabled sets the topologyKey to use for anti-affinity. This can be changed to, for example `failure-domain.beta.kubernetes.io/zone`| `kubernetes.io/hostname` |
 | `prometheus.prometheusSpec.tolerations` | If specified, the pod's tolerations. | `[]` |
 | `prometheus.prometheusSpec.remoteWrite` | If specified, the remote_write spec. This is an experimental feature, it may change in any upcoming release in a breaking way. | `[]` |
 | `prometheus.prometheusSpec.remoteRead` | If specified, the remote_read spec. This is an experimental feature, it may change in any upcoming release in a breaking way. | `[]` |
@@ -203,6 +204,7 @@ The following tables lists the configurable parameters of the prometheus-operato
 | `alertmanager.alertmanagerSpec.nodeSelector` | Define which Nodes the Pods are scheduled on. | `{}` |
 | `alertmanager.alertmanagerSpec.resources` | Define resources requests and limits for single Pods. | `{}` |
 | `alertmanager.alertmanagerSpec.podAntiAffinity` | Pod anti-affinity can prevent the scheduler from placing Prometheus replicas on the same node. The default value "soft" means that the scheduler should *prefer* to not schedule two replica pods onto the same node but no guarantee is provided. The value "hard" means that the scheduler is *required* to not schedule two replica pods onto the same node. The value "" will disable pod anti-affinity so that no anti-affinity rules will be configured. | `""` |
+|`prometheus.prometheusSpec.podAntiAffinityTopologyKey` | If anti-affinity is enabled sets the topologyKey to use for anti-affinity. This can be changed to, for example `failure-domain.beta.kubernetes.io/zone`| `kubernetes.io/hostname` |
 | `alertmanager.alertmanagerSpec.tolerations` | If specified, the pod's tolerations. | `[]` |
 | `alertmanager.alertmanagerSpec.securityContext` | SecurityContext holds pod-level security attributes and common container settings. This defaults to non root user with uid 1000 and gid 2000 in order to support migration from operator version < 0.26 | `{"runAsNonRoot": true, "runAsUser": 1000, "fsGroup": 2000}` |
 | `alertmanager.alertmanagerSpec.listenLocal` | ListenLocal makes the Alertmanager server listen on loopback, so that it does not bind against the Pod IP. Note this is only for the Alertmanager UI, not the gossip communication. | `false` |
@@ -251,8 +253,8 @@ The following tables lists the configurable parameters of the prometheus-operato
 | `kubeDns.service.selector` | CoreDns service selector | `{"k8s-app" : "kube-dns" }` |
 | `kubeEtcd.enabled` | Deploy components to scrape etcd | `true` |
 | `kubeEtcd.endpoints` | Endpoints where etcd runs. Provide this if running etcd outside the cluster | `[]` |
-| `kubeEtcd.service.port` | Etct port | `4001` |
-| `kubeEtcd.service.targetPort` | Etct targetPort | `4001` |
+| `kubeEtcd.service.port` | Etcd port | `4001` |
+| `kubeEtcd.service.targetPort` | Etcd targetPort | `4001` |
 | `kubeEtcd.service.selector` | Selector for etcd if running inside the cluster | `{"k8s-app":"etcd-server"}` |
 | `kubeEtcd.servicemonitor.scheme` | Etcd servicemonitor scheme | `http` |
 | `kubeEtcd.servicemonitor.insecureSkipVerify` | Skip validating etcd TLS certificate when scraping | `false` |
