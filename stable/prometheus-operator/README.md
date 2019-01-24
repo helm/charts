@@ -253,8 +253,8 @@ The following tables lists the configurable parameters of the prometheus-operato
 | `kubeDns.service.selector` | CoreDns service selector | `{"k8s-app" : "kube-dns" }` |
 | `kubeEtcd.enabled` | Deploy components to scrape etcd | `true` |
 | `kubeEtcd.endpoints` | Endpoints where etcd runs. Provide this if running etcd outside the cluster | `[]` |
-| `kubeEtcd.service.port` | Etct port | `4001` |
-| `kubeEtcd.service.targetPort` | Etct targetPort | `4001` |
+| `kubeEtcd.service.port` | Etcd port | `4001` |
+| `kubeEtcd.service.targetPort` | Etcd targetPort | `4001` |
 | `kubeEtcd.service.selector` | Selector for etcd if running inside the cluster | `{"k8s-app":"etcd-server"}` |
 | `kubeEtcd.servicemonitor.scheme` | Etcd servicemonitor scheme | `http` |
 | `kubeEtcd.servicemonitor.insecureSkipVerify` | Skip validating etcd TLS certificate when scraping | `false` |

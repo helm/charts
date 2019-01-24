@@ -6,7 +6,7 @@
 ##
 nameOverride: ""
 
-## Provide a name to substitue for the full names of resources
+## Provide a name to substitute for the full names of resources
 ##
 fullnameOverride: ""
 
