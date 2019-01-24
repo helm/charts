@@ -50,13 +50,13 @@ spec:
         {{- end }}
         livenessProbe:
           httpGet:
-            path: /ping
+            path: /ping?verbose=true
             port: api
           initialDelaySeconds: 30
           timeoutSeconds: 5
         readinessProbe:
           httpGet:
-            path: /ping
+            path: /ping?verbose=true
             port: api
           initialDelaySeconds: 5
           timeoutSeconds: 1
