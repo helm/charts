@@ -45,7 +45,6 @@ The following table lists the configurable parameters of the Moodle chart and th
 
 | Parameter               | Description                                                                                         | Default             |   |   |
 |-------------------------|-----------------------------------------------------------------------------------------------------|---------------------|---|---|
-| `acmeHosts`             | a comma separated list of hosts for which Let's Encrypt certificates must be issued                 | empty               |   |   |
 | `allowAnonymous`        | set to `1` to allow subscribers with no valid JWT to connect                                        | `0`                 |   |   |
 | `corsAllowedOrigins`    | a comma separated list of allowed CORS origins, can be `*` for all                                  | empty               |   |   |
 | `debug`                 | set to `1` to enable the debug mode (prints recovery stack traces)                                  | `0`                 |   |   |
