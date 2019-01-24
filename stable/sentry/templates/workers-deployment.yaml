@@ -53,22 +53,22 @@ spec:
               name: {{ template "fullname" . }}
               key: sentry-secret
         - name: SENTRY_DB_USER
-          value: {{ default "sentry" .Values.postgresUser | quote }}
+          value: {{ default "sentry" .Values.postgresql.postgresUser | quote }}
         - name: SENTRY_DB_NAME
-          value: {{ default "sentry" .Values.postgresDatabase | quote }}
+          value: {{ default "sentry" .Values.postgresql.postgresDatabase | quote }}
         - name: SENTRY_DB_PASSWORD
           valueFrom:
             secretKeyRef:
             {{- if .Values.postgresql.existingSecret }}
               name: {{ .Values.postgresql.existingSecret }}
             {{- else }}
-              name: {{ template "postgresql.fullname" . }}
+              name: {{ template "postgresql.secret" . }}
             {{- end }}
               key: postgres-password
         - name: SENTRY_POSTGRES_HOST
-          value: {{ template "postgresql.fullname" . }}
+          value: {{ template "postgresql.host" . }}
         - name: SENTRY_POSTGRES_PORT
-          value: "5432"
+          value: {{ template "postgresql.port" . }}
         - name: SENTRY_REDIS_PASSWORD
           valueFrom:
             secretKeyRef:
