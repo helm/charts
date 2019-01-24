@@ -136,6 +136,9 @@ spec:
               subPath: {{ .subPath }}
               readOnly: {{ .readOnly }}
           {{- end }}
+       {{- if .Values.server.sidecarContainers }}
+       {{- toYaml .Values.server.sidecarContainers | nindent 8 }}
+       {{- end }}
     {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
        {{ toYaml .Values.imagePullSecrets | indent 2 }}

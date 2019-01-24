@@ -512,6 +512,7 @@ server:
   ## Prometheus server container name
   ##
   name: server
+  sidecarContainers:
 
   ## Prometheus server container image
   ##
