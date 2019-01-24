@@ -51,7 +51,6 @@ The following table lists the configurable parameters of the Cloudwatch Exporter
 | `service.type`              | Service type                                           | `ClusterIP`                |
 | `service.port`              | The service port                                       | `80`                       |
 | `service.portName`          | The name of the service port                           | `http`                     |
-| `service.targetPort`        | The target port of the container                       | `9100`                     |
 | `service.annotations`       | Custom annotations for service                         | `{}`                       |
 | `service.labels`            | Additional custom labels for the service               | `{}`                       |
 | `resources`                 |                                                        | `{}`                       |
