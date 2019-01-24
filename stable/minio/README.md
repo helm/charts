@@ -108,6 +108,7 @@ The following table lists the configurable parameters of the Minio chart and the
 | `accessKey`                | Default access key (5 to 20 characters) | `AKIAIOSFODNN7EXAMPLE`                              |
 | `secretKey`                | Default secret key (8 to 40 characters) | `wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY`          |
 | `configPath`               | Default config file location        | `~/.minio`                                              |
+| `configPathmc`             | Default config file location for minio client - mc | `~/.mc`                                  |
 | `mountPath`                | Default mount location for persistent drive| `/export`                                        |
 | `clusterDomain`            | domain name of kubernetes cluster where pod is running.| `cluster.local`                      |
 | `service.type`             | Kubernetes service type             | `ClusterIP`                                             |
@@ -307,3 +308,18 @@ $ helm install --set environment.MINIO_BROWSER=on,environment.MINIO_DOMAIN=domai
 ```
 
 You can add as many environment variables as required, using the above format. Just add `environment.<VARIABLE_NAME>=<value>` under `set` flag.
+
+Create buckets after install
+---------------------------
+
+Install the chart, specifying the buckets you want to create after install:
+
+```bash
+$ helm install --set buckets[0].name=bucket1,buckets[0].policy=none,buckets[0].purge=false stable/minio
+```
+
+Description of the configuration parameters used above - 
+1. `buckets[].name` - name of the bucket to create, must be a string with length > 0
+2. `buckets[].policy` - Can be one of none|download|upload|public
+3. `buckets[].purge` - Purge if bucket exists already
+
