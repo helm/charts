@@ -141,10 +141,10 @@ spec:
             - name: metrics
               containerPort: 9101
               protocol: TCP
-          readinessProbe:
+          livenessProbe:
             httpGet:
               path: /
-              port: 9101
+              port: metrics
           resources:
             limits:
               cpu: 200m
