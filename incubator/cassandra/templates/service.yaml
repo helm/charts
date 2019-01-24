@@ -8,7 +8,6 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  clusterIP: None
   type: {{ .Values.service.type }}
   ports:
   - name: intra
