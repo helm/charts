@@ -1031,8 +1031,8 @@ rbac:
 ##
 secrets:
 
-  ## List of username:bcrypted_password combinations for all your local concourse users.
-  localUsers: "test:$2a$10$sDB6AsH2HheOWHILrnHVJOCZq/GYtUYE02ypJJTQBmWJNivYNhP3y"
+  ## List of username:password or username:bcrypted_password combinations for all your local concourse users.
+  localUsers: "test:test"
   ## Create the secret resource from the following values. Set this to
   ## false to manage these secrets outside Helm.
   ##
