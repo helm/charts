@@ -126,6 +126,13 @@ spec:
           mountPath: /opt/halyard/config
         - name: reg-secrets
           mountPath: /opt/registry/passwords
+        {{- if .Values.halyard.additionalEnvVars }}
+        env:
+        {{- range $key, $value := .Values.halyard.additionalEnvVars }}
+        - name: {{ default "none" $key }}
+          value: {{ default "none" $value }}
+        {{- end }}
+        {{- end }}
   volumeClaimTemplates:
   - metadata:
       name: halyard-home

@@ -23,6 +23,8 @@ halyard:
   additionalProfileConfigMaps:
     create: false
     data: {}
+  # Sets environment variables on the Halyard pod, e.g. DEFAULT_JVM_OPTS
+  additionalEnvVars: {}
 
   ## Uncomment if you want to add extra commands to the init script
   ## run by the init container before halyard is started.
