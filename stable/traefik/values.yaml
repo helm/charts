@@ -210,6 +210,12 @@ acme:
       EXOSCALE_ENDPOINT: ""
     gandi:
       GANDI_API_KEY: ""
+    gandiv5:
+      GANDIV5_API_KEY: ""
+      # GANDIV5_POLLING_INTERVAL: "" # default 20 seconds
+      # GANDIV5_TTL: "" # default 300 seconds
+      # GANDIV5_PROPAGATION_TIMEOUT: "" # default 20 minutes
+      # GANDIV5_HTTP_TIMEOUT: "" # default 10 seconds
     godaddy:
       GODADDY_API_KEY: ""
       GODADDY_API_SECRET: ""
