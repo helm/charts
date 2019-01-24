@@ -81,6 +81,7 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `podAnnotations`                                   | Annotations to be added to pods                                                              | {}                                                      |
 | `podLabels`                                        | Additional labels for the pod(s).                                                            | {}                                                      |
 | `resources`                                        | Pod resources                                                                                | {}                                                      |
+| `priorityClassName`                                | Pod priority class name                                                                      | ``                                                      |
 | `nodeSelector`                                     | Node labels for pod assignment                                                               | {}                                                      |
 | `affinity`                                         | Affinity for pod assignment                                                                  | {}                                                      |
 | `tolerations`                                      | Toleration labels for pod assignment                                                         | {}                                                      |
