@@ -29,7 +29,6 @@ resources: {}
   #   memory: 128Mi
 
 aws:
-  region: eu-west-1
   role:
 
   # The name of a pre-created secret in which AWS credentials are stored. When

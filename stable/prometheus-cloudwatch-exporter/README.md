@@ -59,7 +59,6 @@ The following table lists the configurable parameters of the Cloudwatch Exporter
 | `service.annotations`       | Custom annotations for service                         | `{}`                       |
 | `service.labels`            | Additional custom labels for the service               | `{}`                       |
 | `resources`                 |                                                        | `{}`                       |
-| `aws.region`                | AWS Cloudwatch region                                  | `eu-west-1`                |
 | `aws.role`                  | AWS IAM Role To Use                                    |                            |
 | `aws.aws_access_key_id`     | AWS access key id                                      |                            |
 | `aws.aws_secret_access_key` | AWS secret access key                                  |                            |
@@ -79,7 +78,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 ```console
 $ helm install --name my-release \
-  --set aws.region=us-east-1 --set aws.role=my-aws-role \
+    --set aws.role=my-aws-role \
     stable/prometheus-cloudwatch-exporter
 ```
 
