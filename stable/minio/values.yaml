@@ -45,6 +45,7 @@ existingSecret: ""
 accessKey: "AKIAIOSFODNN7EXAMPLE"
 secretKey: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
 configPath: "/root/.minio/"
+configPathmc: "/root/.mc/"
 mountPath: "/export"
 replicas: 4
 
