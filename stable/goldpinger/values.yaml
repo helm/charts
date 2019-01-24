@@ -12,8 +12,6 @@ image:
   # pullSecrets:
   #   - myRegistrKeySecretName
 
-replicaCount: 1
-
 rbac:
   create: true
 serviceAccount:
