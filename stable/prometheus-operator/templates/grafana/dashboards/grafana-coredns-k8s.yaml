@@ -1,4 +1,4 @@
-# Generated from 'grafana-coredns-k8s' from https://raw.githubusercontent.com/helm/charts/master/stable/prometheus-operator/dashboards/grafana-coredns-k8s.json
+# Added manually, should be changed in-place.
 {{- if and .Values.grafana.enabled .Values.grafana.defaultDashboardsEnabled .Values.coreDns.enabled }}
 apiVersion: v1
 kind: ConfigMap

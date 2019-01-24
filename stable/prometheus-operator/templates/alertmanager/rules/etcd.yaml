@@ -1,4 +1,4 @@
-# Generated from 'etcd' group from https://raw.githubusercontent.com/paskal/etcd/master/Documentation/op-guide/etcd3_alert.rules.yml
+# Generated from 'etcd' group from https://raw.githubusercontent.com/etcd-io/etcd/master/Documentation/op-guide/etcd3_alert.rules.yml
 {{- if and .Values.defaultRules.create .Values.kubeEtcd.enabled }}
 apiVersion: {{ printf "%s/v1" (.Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com") }}
 kind: PrometheusRule
