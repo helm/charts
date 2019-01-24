@@ -1,13 +1,13 @@
 {{- if .Values.ingress.enabled -}}
-{{- $fullName := include "chart.fullname" . -}}
+{{- $fullName := include "mercure.fullname" . -}}
 {{- $ingressPaths := .Values.ingress.paths -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: {{ $fullName }}
   labels:
-    app.kubernetes.io/name: {{ include "chart.name" . }}
-    helm.sh/chart: {{ include "chart.chart" . }}
+    app.kubernetes.io/name: {{ include "mercure.name" . }}
+    helm.sh/chart: {{ include "mercure.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
   {{- with .Values.ingress.annotations }}
