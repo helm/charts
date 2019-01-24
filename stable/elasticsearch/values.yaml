@@ -81,17 +81,17 @@ client:
   initResources: {}
     # limits:
     #   cpu: "25m"
-    #   # memory: "128Mi"
+    #   memory: "128Mi"
     # requests:
     #   cpu: "25m"
     #   memory: "128Mi"
   resources:
-    limits:
-      cpu: "1"
-      # memory: "1024Mi"
     requests:
       cpu: "25m"
       memory: "512Mi"
+    # limits:
+    #   cpu: "1"
+    #   memory: "1024Mi"
   priorityClassName: ""
   ## (dict) If specified, apply these annotations to each client Pod
   # podAnnotations:
@@ -132,17 +132,17 @@ master:
   initResources: {}
     # limits:
     #   cpu: "25m"
-    #   # memory: "128Mi"
+    #   memory: "128Mi"
     # requests:
     #   cpu: "25m"
     #   memory: "128Mi"
   resources:
-    limits:
-      cpu: "1"
-      # memory: "1024Mi"
     requests:
       cpu: "25m"
       memory: "512Mi"
+    # limits:
+    #   cpu: "1"
+    #   memory: "1024Mi"
   priorityClassName: ""
   ## (dict) If specified, apply these annotations to each master Pod
   # podAnnotations:
@@ -174,17 +174,17 @@ data:
   initResources: {}
     # limits:
     #   cpu: "25m"
-    #   # memory: "128Mi"
+    #   memory: "128Mi"
     # requests:
     #   cpu: "25m"
     #   memory: "128Mi"
   resources:
-    limits:
-      cpu: "1"
-      # memory: "2048Mi"
     requests:
       cpu: "25m"
       memory: "1536Mi"
+    # limits:
+    #   cpu: "1"
+    #   memory: "2048Mi"
   priorityClassName: ""
   ## (dict) If specified, apply these annotations to each data Pod
   # podAnnotations:

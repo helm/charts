@@ -63,7 +63,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | ------------------------------------ | ------------------------------------------------------------------- | --------------------------------------------------- |
 | `appVersion`                         | Application Version (Elasticsearch)                                 | `6.5.4`                                             |
 | `image.repository`                   | Container image name                                                | `docker.elastic.co/elasticsearch/elasticsearch-oss` |
-| `image.tag`                          | Container image tag                                                 | `6.5.1`                                             |
+| `image.tag`                          | Container image tag                                                 | `6.5.4`                                             |
 | `image.pullPolicy`                   | Container pull policy                                               | `IfNotPresent`                                      |
 | `initImage.repository`               | Init container image name                                           | `busybox`                                           |
 | `initImage.tag`                      | Init container image tag                                            | `latest`                                            |
@@ -77,7 +77,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `cluster.additionalJavaOpts`         | Cluster parameters to be added to `ES_JAVA_OPTS` environment variable | `""`                                              |
 | `client.name`                        | Client component name                                               | `client`                                            |
 | `client.replicas`                    | Client node replicas (deployment)                                   | `2`                                                 |
-| `client.resources`                   | Client node resources requests & limits                             | `{} - cpu limit must be an integer`                 |
+| `client.resources`                   | Client node resources requests & limits                             | Memory: `512Mi`, CPU: `25m`                         |
 | `client.priorityClassName`           | Client priorityClass                                                | `nil`                                               |
 | `client.heapSize`                    | Client node heap size                                               | `512m`                                              |
 | `client.podAnnotations`              | Client Deployment annotations                                       | `{}`                                                |
@@ -100,7 +100,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `master.exposeHttp`                  | Expose http port 9200 on master Pods for monitoring, etc            | `false`                                             |
 | `master.name`                        | Master component name                                               | `master`                                            |
 | `master.replicas`                    | Master node replicas (deployment)                                   | `2`                                                 |
-| `master.resources`                   | Master node resources requests & limits                             | `{} - cpu limit must be an integer`                 |
+| `master.resources`                   | Master node resources requests & limits                             | Memory: `512Mi`, CPU: `25m`                         |
 | `master.priorityClassName`           | Master priorityClass                                                | `nil`                                               |
 | `master.podAnnotations`              | Master Deployment annotations                                       | `{}`                                                |
 | `master.nodeSelector`                | Node labels for master pod assignment                               | `{}`                                                |
@@ -119,7 +119,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `data.additionalJavaOpts`            | Parameters to be added to `ES_JAVA_OPTS` environment variable for data | `""`                                             |
 | `data.exposeHttp`                    | Expose http port 9200 on data Pods for monitoring, etc              | `false`                                             |
 | `data.replicas`                      | Data node replicas (statefulset)                                    | `2`                                                 |
-| `data.resources`                     | Data node resources requests & limits                               | `{} - cpu limit must be an integer`                 |
+| `data.resources`                     | Data node resources requests & limits                               | Memory: `1536Mi`, CPU: `25m`                        |
 | `data.priorityClassName`             | Data priorityClass                                                  | `nil`                                               |
 | `data.heapSize`                      | Data node heap size                                                 | `1536m`                                             |
 | `data.hooks.drain.enabled            | Data nodes: Enable drain pre-stop and post-start hook               | `true`                                              |
