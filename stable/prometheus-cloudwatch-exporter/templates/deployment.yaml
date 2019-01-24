@@ -47,7 +47,7 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /healthy/
+              path: /-/healthy
               port: {{ .Values.service.portName }}
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds}}
             periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
@@ -56,7 +56,7 @@ spec:
             failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
           readinessProbe:
             httpGet:
-              path: /ready/
+              path: /-/ready
               port: {{ .Values.service.portName }}
             initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds}}
             periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
