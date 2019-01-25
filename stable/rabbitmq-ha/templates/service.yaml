@@ -7,9 +7,9 @@ metadata:
 {{- if .Values.service.annotations }}
 {{ toYaml .Values.service.annotations | indent 4 }}
 {{- end }}
-{{- if .Values.prometheus.exporter.enabled }}
-        prometheus.io/scrape: "true"
-        prometheus.io/port: {{ .Values.prometheus.exporter.port | quote }}
+{{- if and .Values.prometheus.exporter.enabled (not .Values.prometheus.operator.enabled) }}
+    prometheus.io/scrape: "true"
+    prometheus.io/port: {{ .Values.prometheus.exporter.port | quote }}
 {{- end }}
   name: {{ template "rabbitmq-ha.fullname" . }}
   labels:
