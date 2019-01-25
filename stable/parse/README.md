@@ -57,7 +57,7 @@ The following table lists the configurable parameters of the Parse chart and the
 | `server.image.repository`             | Parse image name                         | `bitnami/parse`                                         |
 | `server.image.tag`                    | Parse image tag                          | `{VERSION}`                                             |
 | `server.image.pullPolicy`             | Image pull policy                        | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
-| `server.image.pullSecrets`            | Specify image pull secrets               | `nil`                                                   |
+| `server.image.pullSecrets`            | Specify docker-registry secret names as an array               | `[]` (does not add image pull secrets to deployed pods) |
 | `server.securityContext.enabled`      | Enable security context for Parse Server | `true`                                                  |
 | `server.securityContext.fsGroup`      | Group ID for Parse Server container      | `1001`                                                  |
 | `server.securityContext.runAsUser`    | User ID for Parse Server container       | `1001`                                                  |
@@ -74,7 +74,7 @@ The following table lists the configurable parameters of the Parse chart and the
 | `dashboard.securityContext.enabled`   | Enable security context for Dashboard    | `true`                                                  |
 | `dashboard.securityContext.fsGroup`   | Group ID for Dashboard container         | `1001`                                                  |
 | `dashboard.securityContext.runAsUser` | User ID for Dashboard container          | `1001`                                                  |
-| `dashboard.image.pullSecrets`         | Specify image pull secrets               | `nil`                                                   |
+| `dashboard.image.pullSecrets`         | Specify docker-registry secret names as an array               | `[]` (does not add image pull secrets to deployed pods) |
 | `dashboard.username`                  | Dashboard username                       | `user`                                                  |
 | `dashboard.password`                  | Dashboard user password                  | `random 10 character alphanumeric string`               |
 | `dashboard.appName`                   | Dashboard application name               | `MyDashboard`                                           |
