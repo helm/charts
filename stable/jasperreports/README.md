@@ -54,7 +54,7 @@ The following table lists the configurable parameters of the JasperReports chart
 | `image.repository`            | JasperReports Image name                     | `bitnami/jasperreports`                                  |
 | `image.tag`                   | JasperReports Image tag                      | `{VERSION}`                                              |
 | `image.pullPolicy`            | Image pull policy                            | `Always` if `imageTag` is `latest`, else `IfNotPresent`  |
-| `image.pullSecrets`           | Specify image pull secrets                   | `nil`                                                    |
+| `image.pullSecrets`           | Specify docker-registry secret names as an array | `[]` (does not add image pull secrets to deployed pods) |
 | `jasperreportsUsername`       | User of the application                      | `user`                                                   |
 | `jasperreportsPassword`       | Application password                         | _random 10 character long alphanumeric string_           |
 | `jasperreportsEmail`          | User email                                   | `user@example.com`                                       |
@@ -71,14 +71,14 @@ The following table lists the configurable parameters of the JasperReports chart
 | `externalDatabase.password`   | Password for the above username              | `nil`                                                    |
 | `externalDatabase.database`   | Name of the existing database                | `bitnami_jasperreports`                                  |
 | `mariadb.enabled`             | Whether to use the MariaDB chart             | `true`                                                   |
-| `mariadb.db.name`     | Database name to create                      | `bitnami_jasperreports`                                  |
-| `mariadb.db.user`         | Database user to create                      | `bn_jasperreports`                                       |
-| `mariadb.db.password`     | Password for the database                    | `nil`                                                    |
-| `mariadb.rootUser.password` | MariaDB admin password                       | `nil`                                                    |
-| `service.type`                    | Kubernetes Service type                    | `LoadBalancer`                                          |
-| `service.externalTrafficPolicy`   | Enable client source IP preservation       | `Cluster`                                               |
-| `service.port`                    | Service HTTP port                    | `80`                                          |
-| `service.nodePorts.http`                 | Kubernetes http node port                  | `""`                                                    |
+| `mariadb.db.name`             | Database name to create                      | `bitnami_jasperreports`                                  |
+| `mariadb.db.user`             | Database user to create                      | `bn_jasperreports`                                       |
+| `mariadb.db.password`         | Password for the database                    | `nil`                                                    |
+| `mariadb.rootUser.password`   | MariaDB admin password                       | `nil`                                                    |
+| `service.type`                | Kubernetes Service type                      | `LoadBalancer`                                           |
+| `service.externalTrafficPolicy`   | Enable client source IP preservation     | `Cluster`                                                |
+| `service.port`                | Service HTTP port                            | `80`                                                     |
+| `service.nodePorts.http`      | Kubernetes http node port                    | `""`                                                     |
 | `persistence.enabled`         | Enable persistence using PVC                 | `true`                                                   |
 | `persistence.storageClass`    | PVC Storage Class for JasperReports volume   | `nil` (uses alpha storage annotation)                    |
 | `persistence.accessMode`      | PVC Access Mode for JasperReports volume     | `ReadWriteOnce`                                          |
