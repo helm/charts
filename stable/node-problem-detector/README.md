@@ -35,7 +35,7 @@ Custom System log monitor config files can be created, see [here](https://github
 The following table lists the configurable parameters for this chart and their default values.
 
 | Parameter                         | Description                                | Default                                                      |
-| ----------------------------------|--------------------------------------------|--------------------------------------------------------------|
+|-----------------------------------|--------------------------------------------|--------------------------------------------------------------|
 | `affinity`                        | Map of node/pod affinities                 | `{}`                                                         |
 | `annotations`                     | Optional daemonset annotations             | `{}`                                                         |
 | `fullnameOverride`                | Override the fullname of the chart         | `nil`                                                        |
@@ -44,6 +44,7 @@ The following table lists the configurable parameters for this chart and their d
 | `image.tag`                       | Image tag                                  | `v0.6.1`                                                     |
 | `nameOverride`                    | Override the name of the chart             | `nil`                                                        |
 | `rbac.create`                     | RBAC                                       | `true`                                                       |
+| `hostNetwork`                     | Run pod on host network                    | `false`                                                      |
 | `resources`                       | Pod resource requests and limits           | `{}`                                                         |
 | `settings.log_monitors`           | System log monitor config files            | `/config/kernel-monitor.json`, `/config/docker-monitor.json` |
 | `settings.custom_plugin_monitors` | Custom plugin monitor config files         | `[]`                                                         |
