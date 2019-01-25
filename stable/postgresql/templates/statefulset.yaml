@@ -142,7 +142,11 @@ spec:
             command:
             - sh
             - -c
+           {{- if .Values.postgresqlDatabase }}
             - exec pg_isready -U {{ .Values.postgresqlUsername | quote }} -d {{ .Values.postgresqlDatabase | quote }} -h localhost
+           {{- else }}
+            - exec pg_isready -U {{ .Values.postgresqlUsername | quote }} -h localhost
+           {{- end }}
           initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
           periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
           timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
@@ -155,7 +159,11 @@ spec:
             command:
             - sh
             - -c
+           {{- if .Values.postgresqlDatabase }}
             - exec pg_isready -U {{ .Values.postgresqlUsername | quote }} -d {{ .Values.postgresqlDatabase | quote }} -h localhost
+           {{- else }}
+            - exec pg_isready -U {{ .Values.postgresqlUsername | quote }} -h localhost
+           {{- end }}
           initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
           periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
           timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
