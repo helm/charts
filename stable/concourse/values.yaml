@@ -694,6 +694,14 @@ web:
   #   - name: CONCOURSE_TSA_LOG_LEVEL
   #     value: "debug"
 
+  ## For managing where secrets should be mounted for the web agents
+  keySecretsPath: "/concourse-keys"
+  authSecretsPath: "/concourse-auth"
+  vaultSecretsPath: "/concourse-vault"
+  postgresqlSecretsPath: "/concourse-postgresql"
+  syslogSecretsPath: "/concourse-syslog"
+  tlsSecretsPath: "/concourse-web-tls"
+
   ## Additional affinities to add to the web pods.
   ##
   # additionalAffinities:
@@ -737,6 +745,9 @@ web:
 
     ## When using web.service.type: LoadBalancer, sets the user-specified load balancer IP
     # loadBalancerIP: 172.217.1.174
+
+    # # Additional Labels to be added to the web service.
+    # labels:
 
     ## Annotations to be added to the web service.
     ##
@@ -833,6 +844,9 @@ worker:
   #   - name: CONCOURSE_GARDEN_ALLOW_HOST_ACCESS
   #     value: "true"
 
+
+  ## For managing where secrets should be mounted for worker agents
+  keySecretsPath: "/concourse-keys"
 
   ## Configure additional volumeMounts for the
   ## worker container(s)
@@ -1017,8 +1031,8 @@ rbac:
 ##
 secrets:
 
-  ## List of username:bcrypted_password combinations for all your local concourse users.
-  localUsers: "test:$2a$10$sDB6AsH2HheOWHILrnHVJOCZq/GYtUYE02ypJJTQBmWJNivYNhP3y"
+  ## List of username:password or username:bcrypted_password combinations for all your local concourse users.
+  localUsers: "test:test"
   ## Create the secret resource from the following values. Set this to
   ## false to manage these secrets outside Helm.
   ##

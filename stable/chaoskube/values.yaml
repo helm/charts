@@ -5,7 +5,7 @@ name: chaoskube
 image: quay.io/linki/chaoskube
 
 # docker image tag
-imageTag: v0.11.0
+imageTag: v0.12.1
 
 # number of replicas to run
 replicas: 1
