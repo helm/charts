@@ -512,12 +512,13 @@ server:
   ## Prometheus server container name
   ##
   name: server
+  sidecarContainers:
 
   ## Prometheus server container image
   ##
   image:
     repository: prom/prometheus
-    tag: v2.6.0
+    tag: v2.6.1
     pullPolicy: IfNotPresent
 
   ## prometheus server priorityClassName
@@ -551,6 +552,14 @@ server:
   ## Additional Prometheus server container arguments
   ##
   extraArgs: {}
+
+  ## Additional Prometheus server Volume mounts
+  ##
+  extraVolumeMounts: []
+
+  ## Additional Prometheus server Volumes
+  ##
+  extraVolumes: []
 
   ## Additional Prometheus server hostPath mounts
   ##
