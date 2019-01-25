@@ -26,8 +26,8 @@ defaultRules:
     general: true
     k8s: true
     kubeApiserver: true
-    kube-prometheusNodeAlerting: true
-    kube-prometheusNodeRecording: true
+    kubePrometheusNodeAlerting: true
+    kubePrometheusNodeRecording: true
     kubeScheduler: true
     kubernetesAbsent: true
     kubernetesApps: true
