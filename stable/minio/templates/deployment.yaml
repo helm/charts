@@ -26,6 +26,9 @@ spec:
   {{- if .Values.gcsgateway.enabled }}
   replicas: {{ .Values.gcsgateway.replicas }}
   {{- end }}
+  {{- if .Values.ossgateway.enabled }}
+  replicas: {{ .Values.ossgateway.replicas }}
+  {{- end }}
   selector:
     matchLabels:
       app: {{ template "minio.name" . }}
@@ -59,6 +62,12 @@ spec:
           "-ce", 
           "/usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} gateway gcs {{ .Values.gcsgateway.projectId }}" ]
           {{- else }}
+          {{- if .Values.ossgateway.enabled }}
+          command: [ "/bin/sh", 
+          "-ce", 
+          "cp /tmp/config.json {{ .Values.configPath }} && 
+          /usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} gateway oss {{ .Values.ossgateway.endpointURL }}" ]
+          {{- else }}
           {{- if .Values.nasgateway.enabled }}
           command: [ "/bin/sh", 
           "-ce", 
@@ -67,6 +76,7 @@ spec:
           command: [ "/bin/sh", 
           "-ce", 
           "/usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} server {{ .Values.mountPath }}" ]
+          {{- end }}
           {{- end }}
           {{- end }}
           {{- end }}
