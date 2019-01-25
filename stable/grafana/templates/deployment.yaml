@@ -137,6 +137,11 @@ spec:
               mountPath: "/etc/grafana/ldap.toml"
               subPath: ldap.toml
             {{- end }}
+            {{- range .Values.extraConfigmapMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              readOnly: {{ .readOnly }}
+            {{- end }}
             - name: storage
               mountPath: "/var/lib/grafana"
 {{- if .Values.persistence.subPath }}
@@ -258,6 +263,11 @@ spec:
         - name: config
           configMap:
             name: {{ template "grafana.fullname" . }}
+      {{- range .Values.extraConfigmapMounts }}
+        - name: {{ .name }}
+          configMap:
+            name: {{ .configMap }}
+      {{- end }}
         {{- if .Values.dashboards }}
           {{- range keys .Values.dashboards }}
         - name: dashboards-{{ . }}
@@ -266,10 +276,11 @@ spec:
           {{- end }}
         {{- end }}
         {{- if .Values.dashboardsConfigMaps }}
+          {{ $root := . }}
           {{- range $provider, $name := .Values.dashboardsConfigMaps }}
         - name: dashboards-{{ $provider }}
           configMap:
-            name: {{ $name }}
+            name: {{ tpl $name $root }}
           {{- end }}
         {{- end }}
         {{- if not .Values.admin.existingSecret }}

@@ -18,6 +18,7 @@ spec:
         app.kubernetes.io/name: {{ include "node-problem-detector.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
       annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
         scheduler.alpha.kubernetes.io/critical-pod: ''
 {{- if .Values.annotations }}
 {{ toYaml .Values.annotations | indent 8 }}
@@ -31,7 +32,7 @@ spec:
           command:
             - "/bin/sh"
             - "-c"
-            - "exec /node-problem-detector --logtostderr --system-log-monitors={{- range $index, $monitor := .Values.settings.log_monitors }}{{if ne $index 0}},{{end}}/config/{{ $monitor }}{{- end }}"
+            - "exec /node-problem-detector --logtostderr --system-log-monitors={{- range $index, $monitor := .Values.settings.log_monitors }}{{if ne $index 0}},{{end}}/config/{{ $monitor }}{{- end }} {{- if .Values.settings.custom_plugin_monitors }} --custom-plugin-monitors={{- range $index, $monitor := .Values.settings.custom_plugin_monitors }}{{if ne $index 0}},{{end}}{{ $monitor }}{{- end }} {{- end }}"
           securityContext:
             privileged: true
           env:
