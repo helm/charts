@@ -24,12 +24,6 @@ spec:
     spec:
       containers:
         - name: {{ .Chart.Name }}
-          command:
-            - java
-            - -jar
-            - /cloudwatch_exporter.jar
-            - "{{ .Values.service.targetPort }}"
-            - /config/config.yaml
         {{- if not .Values.aws.role }}
         {{- if and .Values.aws.aws_secret_access_key .Values.aws.aws_access_key_id }}
           env:
@@ -49,11 +43,11 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: {{ .Values.service.portName }}
-              containerPort: {{ .Values.service.targetPort }}
+              containerPort: 9106
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /healthy/
+              path: /-/healthy
               port: {{ .Values.service.portName }}
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds}}
             periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
@@ -62,7 +56,7 @@ spec:
             failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
           readinessProbe:
             httpGet:
-              path: /ready/
+              path: /-/ready
               port: {{ .Values.service.portName }}
             initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds}}
             periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
