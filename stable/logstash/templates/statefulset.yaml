@@ -60,6 +60,14 @@ spec:
 {{ toYaml .Values.livenessProbe | indent 12 }}
           readinessProbe:
 {{ toYaml .Values.readinessProbe | indent 12 }}
+          {{- if .Values.command }}
+          command:
+{{ toYaml .Values.command | trimSuffix "\n" | indent 12 }}
+          {{- end }}
+          {{- if .Values.args }}
+          args:
+{{ toYaml .Values.args | trimSuffix "\n" | indent 12 }}
+          {{- end }}
           env:
             ## Logstash monitoring API host and port env vars
             - name: HTTP_HOST

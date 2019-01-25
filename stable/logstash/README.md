@@ -72,6 +72,8 @@ The following table lists the configurable parameters of the chart and its defau
 |              Parameter      |                    Description                     |                     Default                      |
 | --------------------------- | -------------------------------------------------- | ------------------------------------------------ |
 | `replicaCount`                  | Number of replicas                                 | `1`                                              |
+| `command`                       | Custome command                                    | unset                                            |
+| `args`                          | Custom args for command or entrypoint              | unset                                            |
 | `podDisruptionBudget`           | Pod disruption budget                              | `maxUnavailable: 1`                              |
 | `updateStrategy`                | Update strategy                                    | `type: RollingUpdate`                            |
 | `image.repository`              | Container image name                               | `docker.elastic.co/logstash/logstash-oss`        |

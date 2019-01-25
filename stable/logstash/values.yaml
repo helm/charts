@@ -16,6 +16,13 @@ image:
   #  pullSecrets:
   #    - name: "myKubernetesSecret"
 
+# command:
+#   - /usr/local/bin/docker-entrypoint
+# args:
+## Example:
+#   - --silent
+#   - --verbose
+#   - --debug
 service:
   type: ClusterIP
   # clusterIP: None
