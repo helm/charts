@@ -1,5 +1,5 @@
 # Generated from 'alertmanager.rules' group from https://raw.githubusercontent.com/coreos/prometheus-operator/master/contrib/kube-prometheus/manifests/prometheus-rules.yaml
-{{- if and .Values.defaultRules.create }}
+{{- if and .Values.defaultRules.create .Values.defaultRules.rules.alertmanager  }}
 {{- $operatorJob := printf "%s-%s" (include "prometheus-operator.fullname" .) "operator" }}
 {{- $alertmanagerJob := printf "%s-%s" (include "prometheus-operator.fullname" .) "alertmanager" }}
 apiVersion: {{ printf "%s/v1" (.Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com") }}
