@@ -79,11 +79,11 @@ externalDatabase:
 ## ref: https://github.com/bitnami/bitnami-docker-testlink#smtp-configuration
 ##
 smtpEnable: false
-smtpHost:
-smtpPort:
-smtpUser:
-smtpPassword:
-smtpConnectionMode:
+# smtpHost:
+# smtpPort:
+# smtpUser:
+# smtpPassword:
+# smtpConnectionMode:
 
 ##
 ## MariaDB chart configuration
