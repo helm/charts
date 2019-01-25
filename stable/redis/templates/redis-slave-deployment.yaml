@@ -155,18 +155,18 @@ spec:
         {{- end }}
       {{- if .Values.sysctlImage.enabled }}
       initContainers:
-        - name: init-sysctl
-          image: {{ template "redis.sysctl.image" . }}
-          {{- if .Values.sysctlImage.mountHostSys }}
-          volumeMounts:
-          - name: host-sys
-            mountPath: /host-sys
-          {{- end }}
-          command:
-{{ toYaml .Values.sysctlImage.command | indent 12 }}
-          securityContext:
-            privileged: true
-            runAsUser: 0
+      - name: init-sysctl
+        image: {{ template "redis.sysctl.image" . }}
+        {{- if .Values.sysctlImage.mountHostSys }}
+        volumeMounts:
+        - name: host-sys
+          mountPath: /host-sys
+        {{- end }}
+        command:
+{{ toYaml .Values.sysctlImage.command | indent 10 }}
+        securityContext:
+          privileged: true
+          runAsUser: 0
       {{- end }}
       volumes:
       - name: health
