@@ -55,10 +55,11 @@ usePassword: true
 ##
 mongodbEnableIPv6: true
 
-## MongoDB System Log Verbosity Level
-## ref: https://github.com/bitnami/bitnami-docker-mongodb#increase-system-log-verbosity-level
+## MongoDB System Log configuration
+## ref: https://github.com/bitnami/bitnami-docker-mongodb#configuring-system-log-verbosity-level
 ##
 mongodbSystemLogVerbosity: 0
+mongodbDisableSystemLog: false
 
 ## MongoDB additional command line flags
 ##
@@ -137,6 +138,10 @@ resources: {}
 # requests:
 #   cpu: 100m
 #   memory: 256Mi
+
+## Pod priority
+## https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
+# priorityClassName: ""
 
 ## Node selector
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector

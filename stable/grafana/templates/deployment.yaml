@@ -276,10 +276,11 @@ spec:
           {{- end }}
         {{- end }}
         {{- if .Values.dashboardsConfigMaps }}
+          {{ $root := . }}
           {{- range $provider, $name := .Values.dashboardsConfigMaps }}
         - name: dashboards-{{ $provider }}
           configMap:
-            name: {{ $name }}
+            name: {{ tpl $name $root }}
           {{- end }}
         {{- end }}
         {{- if not .Values.admin.existingSecret }}
