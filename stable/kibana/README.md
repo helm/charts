@@ -64,9 +64,12 @@ The following table lists the configurable parameters of the kibana chart and th
 | `serviceAccount.name`                         | name of the serviceAccount to create       | `kibana.fullname`                      |
 | `authProxyEnabled`                            | enables authproxy. Create container in extracontainers   | `false`                  |
 | `extraContainers`                             | Sidecar containers to add to the kibana pod| `{}`                                   |
+| `extraVolumeMounts`                           | additional volumemounts for the kibana pod | `[]`                                   |
+| `extraVolumes`                                | additional volumes to add to the kibana pod| `[]`                                   |
 | `resources`                                   | pod resource requests & limits             | `{}`                                   |
 | `priorityClassName`                           | priorityClassName                          | `nil`                                  |
 | `service.externalPort`                        | external port for the service              | `443`                                  |
+| `service.disableInternalPort`                 | disable internal port when using sidecar   | `false`                                |
 | `service.internalPort`                        | internal port for the service              | `4180`                                 |
 | `service.authProxyPort`                       | port to use when using sidecar authProxy   | None:                                  |
 | `service.externalIPs`                         | external IP addresses                      | None:                                  |
