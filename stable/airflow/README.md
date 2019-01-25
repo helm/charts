@@ -220,6 +220,18 @@ Example of procedure:
   are well installed (for example consuming a `requirements.txt` in your `Dockerfile`)
 - Update the value of `airflow.image` in your `values.yaml` and deploy on your Kubernetes cluster
 
+## Logs
+
+You can store Airflow logs on an external volume and mount this volume inside Airflow pods.
+
+This is useful when running the Kubernetes executor to centralize logs across the
+Airflow UI, scheduler, and kubernetes worker pods, which allows for viewing worker log output
+in the airflow UI.
+
+This is controlled by the `logsPersistence.enabled` setting.
+
+Refer to the `Mount a Shared Persistent Volume` section above for details on using persistent volumes.
+
 ## Helm chart Configuration
 
 The following table lists the configurable parameters of the Airflow chart and their default values.
@@ -263,6 +275,11 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `persistence.storageClass`               | Persistent Volume Storage Class                         | (undefined)               |
 | `persistence.accessMode`                 | PVC access mode                                         | `ReadWriteOnce`           |
 | `persistence.size`                       | Persistant storage size request                         | `1Gi`                     |
+| `logsPersistence.enabled`                | enable persistent storage for logs                      | `false`                   |
+| `logsPersistence.existingClaim`          | if using an existing claim, specify the name here       | `nil`                     |
+| `logsPersistence.storageClass`           | Persistent Volume Storage Class                         | (undefined)               |
+| `logsPersistence.accessMode`             | PVC access mode                                         | `ReadWriteOnce`           |
+| `logsPersistence.size`                   | Persistant storage size request                         | `1Gi`                     |
 | `dags.doNotPickle`                       | should the scheduler disable DAG pickling               | `false`                   |
 | `dags.path`                              | mount path for persistent volume                        | `/usr/local/airflow/dags` |
 | `dags.initContainer.enabled`             | Fetch the source code when the pods starts              | `false`                   |
@@ -271,6 +288,7 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `dags.initContainer.installRequirements` | auto install requirements.txt deps                      | `true`                    |
 | `dags.git.url`                           | url to clone the git repository                         | nil                       |
 | `dags.git.ref`                           | branch name, tag or sha1 to reset to                    | `master`                  |
+| `logs.path`                              | mount path for logs persistent volume                   | `/usr/local/airflow/logs` |
 | `rbac.create`                            | create RBAC resources                                   | `true`                    |
 | `serviceAccount.create`                  | create a service account                                | `true`                    |
 | `serviceAccount.name`                    | the service account name                                | ``                        |
@@ -281,7 +299,7 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `postgresql.postgresPassword`            | PostgreSQL Password                                     | `airflow`                 |
 | `postgresql.postgresDatabase`            | PostgreSQL Database name                                | `airflow`                 |
 | `postgresql.persistence.enabled`         | Enable Postgres PVC                                     | `true`                    |
-| `postgresql.persistance.storageClass     | Persistant class                                        | (undefined)               |
+| `postgresql.persistance.storageClass`    | Persistant class                                        | (undefined)               |
 | `postgresql.persistance.accessMode`      | Access mode                                             | `ReadWriteOnce`           |
 | `redis.enabled`                          | Create a Redis cluster                                  | `true`                    |
 | `redis.password`                         | Redis password                                          | `airflow`                 |
