@@ -57,6 +57,7 @@ The following table lists the configurable parameters of the consul chart and th
 | `ui.enabled`            | Enable Consul Web UI                  | `true`                                                     |
 | `uiService.enabled`     | Create dedicated Consul Web UI svc    | `true`                                                     |
 | `uiService.type`        | Dedicate Consul Web UI svc type       | `NodePort`                                                 |
+| `uiService.annotations` | Extra annotations for UI service      | `{}`                                                       |
 | `acl.enabled`           | Enable basic ACL configuration        | `false`                                                    |
 | `acl.masterToken`       | Master token that was provided in consul ACL config file | `""`                                    |
 | `acl.agentToken`        | Agent token that was provided in consul ACL config file | `""`                                    |

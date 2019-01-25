@@ -32,6 +32,7 @@ spec:
         release: "{{ .Release.Name }}"
         chart: {{ template "mariadb.chart" . }}
     spec:
+      serviceAccountName: "{{ template "mariadb.serviceAccountName" . }}"
       {{- if .Values.securityContext.enabled }}
       securityContext:
         fsGroup: {{ .Values.securityContext.fsGroup }}
@@ -79,6 +80,10 @@ spec:
         - name: {{ . }}
       {{- end}}
       {{- end }}
+      {{- if .Values.master.extraInitContainers }}
+      initContainers:
+{{ tpl .Values.master.extraInitContainers . | indent 6}}
+      {{- end }}
       containers:
       - name: "mariadb"
         image: {{ template "mariadb.image" . }}
@@ -91,7 +96,11 @@ spec:
         - name: MARIADB_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
+            {{- if .Values.existingSecret }}
+              name: {{ .Values.existingSecret }}
+            {{- else }}
               name: {{ template "mariadb.fullname" . }}
+            {{- end }}
               key: mariadb-root-password
         {{- if .Values.db.user }}
         - name: MARIADB_USER
@@ -99,7 +108,11 @@ spec:
         - name: MARIADB_PASSWORD
           valueFrom:
             secretKeyRef:
+            {{- if .Values.existingSecret }}
+              name: {{ .Values.existingSecret }}
+            {{- else }}
               name: {{ template "mariadb.fullname" . }}
+            {{- end }}
               key: mariadb-password
         {{- end }}
         - name: MARIADB_DATABASE
@@ -112,7 +125,11 @@ spec:
         - name: MARIADB_REPLICATION_PASSWORD
           valueFrom:
             secretKeyRef:
+            {{- if .Values.existingSecret }}
+              name: {{ .Values.existingSecret }}
+            {{- else }}
               name: {{ template "mariadb.fullname" . }}
+            {{- end }}
               key: mariadb-replication-password
         {{- end }}
         ports:
@@ -142,20 +159,16 @@ spec:
 {{ toYaml .Values.master.resources | indent 10 }}
         volumeMounts:
         - name: data
-          mountPath: /bitnami/mariadb
-        {{- if  (.Files.Glob "files/docker-entrypoint-initdb.d/*[sh|sql|sql.gz]") }}
+          mountPath: {{ .Values.master.persistence.mountPath }}
+        {{- if or (.Files.Glob "files/docker-entrypoint-initdb.d/*.{sh,sql,sql.gz}") .Values.initdbScriptsConfigMap .Values.initdbScripts }}
         - name: custom-init-scripts
           mountPath: /docker-entrypoint-initdb.d
         {{- end }}
-{{- if .Values.master.config }}
+        {{- if .Values.master.config }}
         - name: config
           mountPath: /opt/bitnami/mariadb/conf/my.cnf
           subPath: my.cnf
-{{- if .Values.master.persistence.existingClaim }}
-        - name: {{ .Values.master.persistence.existingClaim }}
-          mountPath: {{ .Values.master.persistence.mountPath }}
-{{- end }}
-{{- end }}
+       {{- end }}
 {{- if .Values.metrics.enabled }}
       - name: metrics
         image: {{ template "metrics.image" . }}
@@ -164,7 +177,11 @@ spec:
         - name: MARIADB_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
+            {{- if .Values.existingSecret }}
+              name: {{ .Values.existingSecret }}
+            {{- else }}
               name: {{ template "mariadb.fullname" . }}
+            {{- end }}
               key: mariadb-root-password
         command: [ 'sh', '-c', 'DATA_SOURCE_NAME="root:$MARIADB_ROOT_PASSWORD@(localhost:3306)/" /bin/mysqld_exporter' ]
         ports:
@@ -186,22 +203,24 @@ spec:
 {{ toYaml .Values.metrics.resources | indent 10 }}
 {{- end }}
       volumes:
-        {{- if and .Values.master.persistence.enabled .Values.master.persistence.existingClaim }}
-        - name: {{ .Values.master.persistence.existingClaim }}
-          persistentVolumeClaim:
-            claimName: {{ .Values.master.persistence.existingClaim }}
-        {{ end }}
         {{- if .Values.master.config }}
         - name: config
           configMap:
             name: {{ template "master.fullname" . }}
         {{- end }}
-        {{- if  (.Files.Glob "files/docker-entrypoint-initdb.d/*[sh|sql|sql.gz]") }}
+        {{- if or (.Files.Glob "files/docker-entrypoint-initdb.d/*.{sh,sql,sql.gz}") .Values.initdbScriptsConfigMap .Values.initdbScripts }}
         - name: custom-init-scripts
           configMap:
-            name: {{ template "master.fullname" . }}-init-scripts
+            name: {{ template "mariadb.initdbScriptsCM" . }}
         {{- end }}
-{{- if .Values.master.persistence.enabled }}
+{{- if and .Values.master.persistence.enabled .Values.master.persistence.existingClaim }}
+        - name: data
+          persistentVolumeClaim:
+            claimName: {{ .Values.master.persistence.existingClaim }}
+{{- else if not .Values.master.persistence.enabled }}
+        - name: data
+          emptyDir: {}
+{{- else if and .Values.master.persistence.enabled (not .Values.master.persistence.existingClaim) }}
   volumeClaimTemplates:
     - metadata:
         name: data
@@ -225,7 +244,4 @@ spec:
         storageClassName: {{ .Values.master.persistence.storageClass | quote }}
       {{- end }}
       {{- end }}
-{{- else }}
-        - name: "data"
-          emptyDir: {}
 {{- end }}

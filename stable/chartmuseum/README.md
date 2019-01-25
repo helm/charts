@@ -18,8 +18,11 @@ Please also see https://github.com/kubernetes-helm/chartmuseum
     - [permissions grant with IAM instance profile](#permissions-grant-with-iam-instance-profile)
     - [permissions grant with IAM assumed role](#permissions-grant-with-iam-assumed-role)
   - [Using with Google Cloud Storage](#using-with-google-cloud-storage)
+  - [Using with Google Cloud Storage and a Google Service Account](#using-with-google-cloud-storage-and-a-google-service-account)
   - [Using with Microsoft Azure Blob Storage](#using-with-microsoft-azure-blob-storage)
   - [Using with Alibaba Cloud OSS Storage](#using-with-alibaba-cloud-oss-storage)
+  - [Using with Openstack Object Storage](#using-with-openstack-object-storage)
+  - [Using an existing secret](#using-an-existing-secret)
   - [Using with local filesystem storage](#using-with-local-filesystem-storage)
     - [Example storage class](#example-storage-class)
 - [Uninstall](#uninstall)
@@ -83,17 +86,17 @@ their default values. See values.yaml for all available options.
 | `tolerations`                          | List of node taints to tolerate             | `[]`                                                |
 | `affinity`                             | Map of node/pod affinities                  | `{}`                                                |
 | `env.open.STORAGE`                     | Storage Backend to use                      | `local`                                             |
-| `env.open.ALIBABA_BUCKET`              | Bucket to store charts in for Alibaba       | ``                                                  |
-| `env.open.ALIBABA_PREFIX`              | Prefix to store charts under for Alibaba    | ``                                                  |
-| `env.open.ALIBABA_ENDPOINT`            | Alternative Alibaba endpoint                | ``                                                  |
-| `env.open.ALIBABA_SSE`                 | Server side encryption algorithm to use     | ``                                                  |
-| `env.open.AMAZON_BUCKET`               | Bucket to store charts in for AWS           | ``                                                  |
-| `env.open.AMAZON_ENDPOINT`             | Alternative AWS endpoint                    | ``                                                  |
-| `env.open.AMAZON_PREFIX`               | Prefix to store charts under for AWS        | ``                                                  |
-| `env.open.AMAZON_REGION`               | Region to use for bucket access for AWS     | ``                                                  |
-| `env.open.AMAZON_SSE`                  | Server side encryption algorithm to use     | ``                                                  |
-| `env.open.GOOGLE_BUCKET`               | Bucket to store charts in for GCP           | ``                                                  |
-| `env.open.GOOGLE_PREFIX`               | Prefix to store charts under for GCP        | ``                                                  |
+| `env.open.STORAGE_ALIBABA_BUCKET`      | Bucket to store charts in for Alibaba       | ``                                                  |
+| `env.open.STORAGE_ALIBABA_PREFIX`      | Prefix to store charts under for Alibaba    | ``                                                  |
+| `env.open.STORAGE_ALIBABA_ENDPOINT`    | Alternative Alibaba endpoint                | ``                                                  |
+| `env.open.STORAGE_ALIBABA_SSE`         | Server side encryption algorithm to use     | ``                                                  |
+| `env.open.STORAGE_AMAZON_BUCKET`       | Bucket to store charts in for AWS           | ``                                                  |
+| `env.open.STORAGE_AMAZON_ENDPOINT`     | Alternative AWS endpoint                    | ``                                                  |
+| `env.open.STORAGE_AMAZON_PREFIX`       | Prefix to store charts under for AWS        | ``                                                  |
+| `env.open.STORAGE_AMAZON_REGION`       | Region to use for bucket access for AWS     | ``                                                  |
+| `env.open.STORAGE_AMAZON_SSE`          | Server side encryption algorithm to use     | ``                                                  |
+| `env.open.STORAGE_GOOGLE_BUCKET`       | Bucket to store charts in for GCP           | ``                                                  |
+| `env.open.STORAGE_GOOGLE_PREFIX`       | Prefix to store charts under for GCP        | ``                                                  |
 | `env.open.STORAGE_MICROSOFT_CONTAINER` | Container to store charts under for MS      | ``                                                  |
 | `env.open.STORAGE_MICROSOFT_PREFIX`    | Prefix to store charts under for MS         | ``                                                  |
 | `env.open.STORAGE_OPENSTACK_CONTAINER` | Container to store charts for openstack     | ``                                                  |
@@ -116,7 +119,10 @@ their default values. See values.yaml for all available options.
 | `env.open.CACHE`                       | Cache store, can be one of: redis           | ``                                                  |
 | `env.open.CACHE_REDIS_ADDR`            | Address of Redis service (host:port)        | ``                                                  |
 | `env.open.CACHE_REDIS_DB`              | Redis database to be selected after connect | `0`                                                 |
-| `env.field`                            | Expose pod information to containers through environment variables | ``                                              |
+| `env.field`                            | Expose pod information to containers through environment variables | ``                           |
+| `env.existingSecret`                   | Name of the existing secret use values      | ``                                                  |
+| `env.existingSecret.BASIC_AUTH_USER`   | Key name in the secret for the Username     | ``                                                  |
+| `env.existingSecret.BASIC_AUTH_PASS`   | Key name in the secret for the Password     | ``                                                  |
 | `env.secret.BASIC_AUTH_USER`           | Username for basic HTTP authentication      | ``                                                  |
 | `env.secret.BASIC_AUTH_PASS`           | Password for basic HTTP authentication      | ``                                                  |
 | `env.secret.CACHE_REDIS_PASSWORD`      | Redis requirepass server configuration      | ``                                                  |
@@ -313,7 +319,7 @@ Run command to install
 helm install --name my-chartmuseum -f custom.yaml stable/chartmuseum
 ```
 
-To set the values directly in the command line, use the follosing command. Note that we have to base64 encode the json file because we cannot pass a multi-line text as a value.
+To set the values directly in the command line, use the following command. Note that we have to base64 encode the json file because we cannot pass a multi-line text as a value.
 
 ```shell
 export JSONKEY=$(cat my-project-77e35d85a593.json | base64)
@@ -401,6 +407,41 @@ env:
     OS_TENANT_ID: yourtenantid
     OS_USERNAME: yourusername
     OS_PASSWORD: yourpassword
+```
+
+Run command to install
+
+```shell
+helm install --name my-chartmuseum -f custom.yaml stable/chartmuseum
+```
+
+### Using an existing secret
+
+It is possible to pre-create a secret in kubernetes and get this chart to use that
+
+Given you are for example using the above AWS example
+
+You could create a Secret like this
+
+```shell
+ kubectl create secret generic chartmuseum-secret --from-literal="aws-access-key=myaccesskey" --from-literal="aws-secret-access-key=mysecretaccesskey" --from-literal="basic-auth-user=curator" --from-literal="basic-auth-pass=mypassword"
+```
+
+Specify `custom.yaml` with such values
+
+```yaml
+env:
+  open:
+    STORAGE: amazonexistingSecret
+    STORAGE_AMAZON_BUCKET: my-s3-bucket
+    STORAGE_AMAZON_PREFIX:
+    STORAGE_AMAZON_REGION: us-east-1
+  existingSecret: chartmuseum-secret
+  existingSecretMappings:
+    AWS_ACCESS_KEY_ID: aws-access-key
+    AWS_SECRET_ACCESS_KEY: aws-secret-access-key
+    BASIC_AUTH_USER: basic-auth-user
+    BASIC_AUTH_PASS: basic-auth-pass
 ```
 
 Run command to install

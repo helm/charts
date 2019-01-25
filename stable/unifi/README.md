@@ -37,7 +37,7 @@ The following tables lists the configurable parameters of the Unifi chart and th
 | Parameter                                    | Description                                                                                                            | Default                      |
 | -------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | ---------------------------- |
 | `image.repository`                           | Image repository                                                                                                       | `jacobalberty/unifi`         |
-| `image.tag`                                  | Image tag. Possible values listed [here][docker].                                                                      | `5.8.23`                     |
+| `image.tag`                                  | Image tag. Possible values listed [here][docker].                                                                      | `5.9.29`                     |
 | `image.pullPolicy`                           | Image pull policy                                                                                                      | `IfNotPresent`               |
 | `guiService.type`                            | Kubernetes service type for the Unifi GUI                                                                              | `ClusterIP`                  |
 | `guiService.port`                            | Kubernetes port where the Unifi GUI is exposed                                                                         | `8443`                       |
@@ -74,10 +74,9 @@ The following tables lists the configurable parameters of the Unifi chart and th
 | `ingress.hosts`                              | Ingress accepted hostnames                                                                                             | `chart-example.local`        |
 | `ingress.tls`                                | Ingress TLS configuration                                                                                              | `[]`                         |
 | `timezone`                                   | Timezone the Unifi controller should run as, e.g. 'America/New York'                                                   | `UTC`                        |
-| `runAsRoot`                                  | Run the controller as UID0 (root user)                                                                                 | `false`                      |
+| `runAsRoot`                                  | Run the controller as UID0 (root user); if set to false, will give container SETFCAP instead                           | `false`                      |
 | `UID`                                        | Run the controller as user UID                                                                                         | `999`                        |
 | `GID`                                        | Run the controller as group GID                                                                                        | `999`                        |
-| `addSetfcap`                                 | Give the controller container the SETFCAP capability; this is necessary when not running as root                       | `true`                       |
 | `mongodb.enabled`                            | Use external MongoDB for data storage                                                                                  | `false`                      |
 | `mongodb.dbUri`                              | external MongoDB URI                                                                                                   | `mongodb://mongo/unifi`      |
 | `mongodb.statDbUri`                          | external MongoDB statdb URI                                                                                            | `mongodb://mongo/unifi_stat` |
