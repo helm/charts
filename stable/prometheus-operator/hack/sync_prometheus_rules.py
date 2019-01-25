@@ -36,11 +36,22 @@ charts = [
 
 # Additional conditions map
 condition_map = {
-    'kube-apiserver.rules': ' .Values.kubeApiServer.enabled',
-    'kube-scheduler.rules': ' .Values.kubeScheduler.enabled',
-    'node.rules': ' .Values.nodeExporter.enabled',
-    'kubernetes-apps': ' .Values.kubeStateMetrics.enabled',
-    'etcd': ' .Values.kubeEtcd.enabled',
+    'alertmanager.rules': ' .Values.defaultRules.rules.alertmanager',
+    'general.rules': ' .Values.defaultRules.rules.general',
+    'k8s.rules': ' .Values.defaultRules.rules.k8s',
+    'kube-apiserver.rules': ' .Values.kubeApiServer.enabled .Values.defaultRules.rules.kubeApiserver',
+    'kube-prometheus-node-alerting.rules': ' .Values.defaultRules.rules.kubePrometheusNodeAlerting',
+    'kube-prometheus-node-recording.rules': ' .Values.defaultRules.rules.kubePrometheusNodeRecording',
+    'kube-scheduler.rules': ' .Values.kubeScheduler.enabled .Values.defaultRules.rules.kubeScheduler',
+    'kube-absent.rules': ' .Values.defaultRules.rules.kubernetesAbsent',
+    'kubernetes-resources': ' .Values.defaultRules.rules.kubernetesResources',
+    'kubernetes-storage': ' .Values.defaultRules.rules.kubernetesStorage',
+    'kubernetes-system': ' .Values.defaultRules.rules.kubernetesSystem',
+    'node.rules': ' .Values.nodeExporter.enabled .Values.defaultRules.rules.node',
+    'prometheus-operator.rules': ' .Values.defaultRules.rules.prometheusOperator',
+    'prometheus.rules': ' .Values.defaultRules.rules.prometheus',
+    'kubernetes-apps': ' .Values.kubeStateMetrics.enabled .Values.defaultRules.rules.kubernetesApps',
+    'etcd': ' .Values.kubeEtcd.enabled .Values.defaultRules.rules.etcd',
 }
 
 alert_condition_map = {
