@@ -16,7 +16,7 @@ data:
     [repository.upload]
     ENABLED = {{ .Values.service.gogs.repositoryUploadEnabled }}
     ALLOWED_TYPES = {{ .Values.service.gogs.repositoryUploadAllowedTypes }}
-    MAX_FILE_SIZE = {{ .Values.service.gogs.repositoryUploadMaxFileSize }}
+    FILE_MAX_SIZE = {{ .Values.service.gogs.repositoryUploadMaxFileSize }}
     MAX_FILES = {{ .Values.service.gogs.repositoryUploadMaxFiles }}
 
     [server]
