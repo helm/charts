@@ -1,3 +1,4 @@
+{{- if .Values.test.enabled }}
 apiVersion: v1
 kind: Pod
 metadata:
@@ -33,3 +34,4 @@ spec:
       configMap:
         name: {{ template "keycloak.fullname" . }}-test
   restartPolicy: Never
+{{- end }}

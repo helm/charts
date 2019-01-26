@@ -232,6 +232,7 @@ postgresql:
     enabled: false
 
 test:
+  enabled: true
   image:
     repository: unguiculus/docker-python3-phantomjs-selenium
     tag: v1
