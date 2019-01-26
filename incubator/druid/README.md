@@ -47,7 +47,7 @@ This chart exposes 5 endpoints:
 
 ### Druid configuration
 
-Duid configuration can be changed by using environment variables from Docker image.
+Druid configuration can be changed by using environment variables from Docker image.
 
 See the
 [Druid Docker entry point](https://github.com/maver1ck/druid-docker/blob/historical/start-druid.sh)
