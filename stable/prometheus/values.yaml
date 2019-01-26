@@ -246,6 +246,8 @@ alertmanager:
 ## Ref: https://github.com/jimmidyson/configmap-reload
 ##
 configmapReload:
+  enabled: true
+
   ## configmap-reload container name
   ##
   name: configmap-reload
@@ -548,6 +550,10 @@ server:
     ## How frequently to evaluate rules
     ##
     evaluation_interval: 1m
+  
+  ## Allow override of configuration file path argument
+  ##
+  configPath: /etc/config/prometheus.yml
 
   ## Additional Prometheus server container arguments
   ##

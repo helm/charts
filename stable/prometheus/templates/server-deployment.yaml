@@ -53,6 +53,7 @@ spec:
           subPath: "{{ .Values.server.persistentVolume.subPath }}"
       {{- end }}
       containers:
+      {{- if .Values.configmapReload.enabled }}
         - name: {{ template "prometheus.name" . }}-{{ .Values.server.name }}-{{ .Values.configmapReload.name }}
           image: "{{ .Values.configmapReload.image.repository }}:{{ .Values.configmapReload.image.tag }}"
           imagePullPolicy: "{{ .Values.configmapReload.image.pullPolicy }}"
@@ -77,7 +78,7 @@ spec:
               subPath: {{ .subPath }}
               readOnly: {{ .readOnly }}
           {{- end }}
-
+      {{- end }}
         - name: {{ template "prometheus.name" . }}-{{ .Values.server.name }}
           image: "{{ .Values.server.image.repository }}:{{ .Values.server.image.tag }}"
           imagePullPolicy: "{{ .Values.server.image.pullPolicy }}"
@@ -85,7 +86,7 @@ spec:
           {{- if .Values.server.retention }}
             - --storage.tsdb.retention={{ .Values.server.retention }}
           {{- end }}
-            - --config.file=/etc/config/prometheus.yml
+            - --config.file={{ .Values.server.configPath }}
             - --storage.tsdb.path={{ .Values.server.persistentVolume.mountPath }}
             - --web.console.libraries=/etc/prometheus/console_libraries
             - --web.console.templates=/etc/prometheus/consoles
