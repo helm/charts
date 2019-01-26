@@ -154,6 +154,11 @@ spec:
           secretName: {{ .Values.walE.kubernetesSecret }}
       {{- end }}
       {{- end }}
+      {{- if not .Values.persistentVolume.enabled }}
+      - name: storage-volume
+        emptyDir: {}
+      {{- end }}
+  {{- if .Values.persistentVolume.enabled }}
   volumeClaimTemplates:
     - metadata:
         name: storage-volume
@@ -178,3 +183,4 @@ spec:
         storageClassName: "{{ .Values.persistentVolume.storageClass }}"
       {{- end }}
       {{- end }}
+  {{- end }}
