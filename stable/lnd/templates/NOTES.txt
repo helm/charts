@@ -7,6 +7,8 @@ To connect to lnd RPC:
 
   $ kubectl port-forward --namespace {{ .Release.Namespace }} $(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "lnd.name" . }},release={{ .Release.Name }}" -o jsonpath="{ .items[0].metadata.name }") {{ .Values.internalServices.rpcPort }}
 
-2. Test connection with user and password provided in configuration file:
+2. Copy macaroon to local machine:
+
+3. Test connection with lncli:
 
   $ curl --user rpcuser:rpcpassword -k http://127.0.0.1:{{ .Values.internalServices.rpcPort }} --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "getinfo", "params": [] }' -H 'content-type: text/plain;'

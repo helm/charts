@@ -58,7 +58,28 @@ spec:
                 # Make sure we safely quit lnd so we don't corrupt
                 # anything
                 command: ["/bin/lncli", "-n", "{{ .Values.network }}", "stop"]
+        {{- if .Values.autoUnlock }}
+        - name: autounlock
+          image: appropriate/curl
+          command: ["/bin/sh", "-c"]
+          args:
+          - 'sleep 2 && LND_DIR=/root/.lnd && MACAROON_HEADER="Grpc-Metadata-macaroon:
+            $(xxd -p -c 1000 $LND_DIR/data/chain/bitcoin/{{ .Values.network }}/admin.macaroon)" &&
+            curl -X POST --cacert $LND_DIR/tls.cert --header "$MACAROON_HEADER" https://localhost:8080/v1/unlockwallet
+            -d "{\"wallet_password\":\"$(cat /secrets/pwd | tr -d ''\n'' | base64)\"}"
+            && sleep 99999999d'
+          volumeMounts:
+          - mountPath: /root/
+            name: data
+          - mountPath: /secrets
+            name: secrets
+        {{- end }}
       volumes:
+        {{- if .Values.autoUnlock }}
+        - name: secrets
+          secret:
+            secretName: {{ template "lnd.fullname" . }}
+        {{- end }}
         {{- if .Values.configurationFile }}
         - name: config
           emptyDir: {}

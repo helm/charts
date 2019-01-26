@@ -51,3 +51,10 @@ configurationFile:
     # bitcoind.zmqpubrawblock=tcp://127.0.0.1:28332
     # bitcoind.zmqpubrawtx=tcp://127.0.0.1:28333
     rpclisten=0.0.0.0:10009
+    tlsextradomain=
+    tlsextraip=0.0.0.0
+
+# Automatically unlock lnd at startup. This requires a secret
+# with the release name to exist with the key pwd that containers
+# the lndcli unlock password.
+autoUnlock: false
