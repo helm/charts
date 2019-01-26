@@ -50,7 +50,7 @@ spec:
         {{- end }}
       {{- if .Values.php.copyRoot}}
       - name: "copy-root"
-        image: "{{ .Values.php.image }}"
+        image: "{{ .Values.php.repository }}:{{ .Values.php.tag }}"
         imagePullPolicy: "Always"
         command: ["/bin/sh", "-c", "cp -ua /var/www/html/* /data/web/ && cp -ua /var/www/html/.[^.]* /data/web/ && chown 33:33 -R /data/web/"]
         volumeMounts:
@@ -116,7 +116,7 @@ spec:
 {{ toYaml .Values.resources | indent 12 }}
         {{- end }}
       - name: "init-db-clone"
-        image: "{{ .Values.mysql.image }}"
+        image: "{{ .Values.mysql.repository }}:{{ .Values.mysql.tag }}"
         imagePullPolicy: {{ .Values.mysql.pullPolicy }}
         command: ["bash", "/init/init_db_clone.sh"]
         volumeMounts:
@@ -157,7 +157,7 @@ spec:
       {{- end }}
       {{- if .Values.init.manually.enabled }}
       - name: init-manually
-        image: {{ .Values.init.manually.image }}
+        image: "{{ .Values.init.manually.repository }}:{{ .Values.init.manually.tag }}"
         imagePullPolicy: {{ .Values.init.manually.pullPolicy }}
         command: ["bash", "-c", "if [ -z $(ls -A /var/www/html) ]; then echo -e \"touch /done\" > /bin/im-done && chmod +x /bin/im-done && while ! [ -e /done ]; do sleep 5; done; fi"]
         volumeMounts:
@@ -362,7 +362,7 @@ spec:
       containers:
       {{- if .Values.php.fpmEnabled }}
       - name: "httpd"
-        image: "{{ .Values.httpd.image }}"
+        image: "{{ .Values.httpd.repository }}:{{ .Values.httpd.tag }}"
         imagePullPolicy: "Always"
         ports:
         - containerPort: 80
@@ -397,14 +397,14 @@ spec:
 {{ toYaml .Values.resources | indent 12 }}
         {{- end }}
       - name: "php"
-        image: "{{ .Values.php.image }}"
+        image: "{{ .Values.php.repository }}:{{ .Values.php.tag }}"
         {{- if not .Values.php.sockets }}
         ports:
         - containerPort: 9000
         {{- end }}
       {{- else }}
       - name: "httpdphp"
-        image: "{{ .Values.php.image }}"
+        image: "{{ .Values.php.repository }}:{{ .Values.php.tag }}"
         ports:
         - containerPort: 80
       {{- end }}
@@ -469,7 +469,7 @@ spec:
         {{- end }}
       {{- if .Values.mysql.rootPassword }}
       - name: "mysql"
-        image: "{{ .Values.mysql.image }}"
+        image: "{{ .Values.mysql.repository }}:{{ .Values.mysql.tag }}"
         imagePullPolicy: {{ .Values.mysql.pullPolicy }}
         env:
         - name: MYSQL_ROOT_PASSWORD
@@ -514,7 +514,7 @@ spec:
       {{- end }}
       {{ if .Values.sftp.enabled }}
       - name: sftp
-        image: "{{ .Values.sftp.image }}"
+        image: "{{ .Values.sftp.repository }}:{{ .Values.sftp.tag }}"
         command: [/bin/bash, -c, "bash /entrypoint $SFTP_USER:$SFTP_PASSWORD:33:33"]
         ports:
         - containerPort: 22
@@ -663,7 +663,7 @@ spec:
         {{- end }}
       {{ end }}
       {{ if .Values.phpmyadmin.enabled }}
-      - image: "{{ .Values.phpmyadmin.image }}"
+      - image: "{{ .Values.phpmyadmin.repository }}:{{ .Values.phpmyadmin.tag }}"
         name: phpmyadmin
         command: [sh, -c, sed -i 's/listen\ 80/listen {{ .Values.phpmyadmin.port }}/g' /etc/nginx.conf && /run.sh supervisord -n]
         env:

@@ -129,7 +129,8 @@ $ im-done
 | Parameter | Description | Default |
 | - | - | - |
 | `init.manually.enabled` | Enables container for manual initialization | false |
-| `init.manually.image` | Containers image | lead4good/init-wp:latest |
+| `init.manually.repository` | Containers image | lead4good/init-wp |
+| `init.manually.tag` | Containers image tag | latest |
 | `init.manually.pullPolicy` | Image pull policy | Always |
 
 ### Cloning charts
@@ -154,7 +155,8 @@ FPM is enabled by default, this creates an additional HTTPD container which rout
 
 | Parameter | Description | Default |
 | - | - | - |
-| `php.image` | default php image | php:7-fpm-alpine|
+| `php.repository` | default php image | php |
+| `php.tag` | default php image tag | 7-fpm-alpine |
 | `php.pullPolicy` | Image pull policy | Always |
 | `php.fpmEnabled` | Enables FPM functionality, be sure to disable if working with a custom repository based on the apache tag | true |
 | `php.sockets` | If FPM is enabled, enables communication between HTTPD and PHP via sockets instead of TCP | true |
@@ -163,7 +165,8 @@ FPM is enabled by default, this creates an additional HTTPD container which rout
 | `php.copyRoot` | if true, copies the containers web root `/var/www/html` into persistent storage. This must be enabled, if the container already comes with files installed to `/var/www/html`  | false |
 | `php.persistentSubpaths` | instead of enabling persistence for the whole webroot, only subpaths of webroot can be enabled for persistence. Have a look at the [nextcloud example](examples/nextcloud.yaml) to see how it works | _empty_ |
 | `php.resources` | PHP container resource requests/limits | `resources` |
-| `httpd.image` | default httpd image if fpm is enabled | httpd:2.4-alpine |
+| `httpd.repository` | default httpd image if fpm is enabled | httpd |
+| `httpd.tag` | default httpd image tag | 2.4-alpine |
 | `httpd.resources` | HTTPD container resource requests/limits | `resources` |
 
 ### MySQL Container
@@ -176,7 +179,8 @@ The MySQL container is disabled by default, any container with the base image of
 | `mysql.user` | MySQL user | _empty_ |
 | `mysql.password` | MySQL user password | _empty_ |
 | `mysql.database` | MySQL user database | _empty_ |
-| `mysql.image` | MySQL image - choose one of the official [mysql](https://hub.docker.com/_/mysql/), [mariadb](https://hub.docker.com/_/mariadb/) or [percona](https://hub.docker.com/_/percona/) images | mysql:57 |
+| `mysql.repository` | MySQL image - choose one of the official [mysql](https://hub.docker.com/_/mysql/), [mariadb](https://hub.docker.com/_/mariadb/) or [percona](https://hub.docker.com/_/percona/) images | mysql |
+| `mysql.tag` | MySQL image tag | 5.7 |
 | `mysql.imagePullPolicy` | Image pull policy | Always |
 | `mysql.sockets` | Enables communication between MySQL and PHP via sockets instead of TCP | true |
 | `mysql.resources` | Resource requests/limits | `resources` |
@@ -191,7 +195,8 @@ SFTP is an instance of the atmoz/sftp container, through which you can access th
 
 | Parameter | Description | Default |
 | - | - | - |
-| `sftp.image` | default phpmyadmin image | atmoz/sftp:alpine |
+| `sftp.repository` | default sftp image | atmoz/sftp |
+| `sftp.tag` | default sftp image tag | alpine |
 | `sftp.enabled` | Enables sftp service | false |
 | `sftp.port` | Port to advertise service in LoadBalancer mode | 22 |
 | `sftp.nodePort` |  Port to advertise service in Ingress mode| _empty_ |
@@ -250,7 +255,8 @@ An instance of PHPMyAdmin through which you can access the database.
 
 | Parameter | Description | Default |
 | - | - | - |
-| `phpmyadmin.image` | default phpmyadmin image | phpmyadmin:phpmyadmin |
+| `phpmyadmin.repository` | default phpmyadmin image | phpmyadmin |
+| `phpmyadmin.tag` | default phpmyadmin image tag | phpmyadmin |
 | `phpmyadmin.enabled` | Enables phpmyadmin service | false |
 | `phpmyadmin.port` | Port to advertise service in LoadBalancer mode | 8080 |
 | `phpmyadmin.subdomain` | Subdomain to advertise service on if ingress is enabled | phpmyadmin |

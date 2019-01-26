@@ -11,8 +11,10 @@ init:
   manually:
     ## init.manually.enabled Enables container for manual initialization
     enabled: false
-    ## init.manually.image Container image
-    image: "lead4good/init-wp:latest"
+    ## init.manually.repository Container image
+    repository: "lead4good/init-wp"
+    ## init.manually.tag Container image tag
+    tag: "latest"
     ## init.manually.pullPolicy Image pull policy
     pullPolicy: Always
 
@@ -20,8 +22,11 @@ init:
   resources: false
 
 php:
-  ## php.image default php image
-  image: "php:7-fpm-alpine"
+  ## php.repository default php image
+  repository: "php"
+
+  ## php.tag default php image tag
+  tag: "7-fpm-alpine"
 
   ## php.pullPolicy Image pull policy
   pullPolicy: Always
@@ -64,8 +69,11 @@ php:
   #    memory: 1Mi
 
 httpd:
-  ## httpd.image default httpd image
-  image: "httpd:2.4-alpine"
+  ## httpd.repository default httpd image
+  repository: "httpd"
+
+  ## httpd.tag default httpd image tag
+  tag: "2.4-alpine"
 
   ## httpd.resources HTTPD container resource requests/limits
   resources: false
@@ -87,11 +95,14 @@ mysql:
   ## mysql.database MySQL user database
   # database: database
 
-  ## mysql.image MySQL image - choose one of the official images
+  ## mysql.repository MySQL image - choose one of the official images
   ##     [mysql](https://hub.docker.com/_/mysql/)
   ##     [mariadb](https://hub.docker.com/_/mariadb/)
   ##     [percona](https://hub.docker.com/_/percona/)
-  image: "mysql:5.7"
+  repository: "mysql"
+
+  ## mysql.tag MySQL image tag
+  tag: "5.7"
 
   ## mysql.imagePullPolicy Image pull policy
   imagePullPolicy: Always
@@ -106,8 +117,11 @@ mysql:
   #    memory: 1Mi
 
 sftp:
-  ## sftp.image default sftp image
-  image: "atmoz/sftp:alpine"
+  ## sftp.repository default sftp image
+  repository: "atmoz/sftp"
+
+  ## sftp.tag default sftp image tag
+  tag: "alpine"
 
   ## sftp.enabled Enables sftp service
   enabled: false
@@ -198,8 +212,11 @@ svn:
   #    memory: 1Mi
 
 phpmyadmin:
-  ## phpmyadmin.image default phpmyadmin image
-  image: "phpmyadmin/phpmyadmin"
+  ## phpmyadmin.repository default phpmyadmin image
+  repository: "phpmyadmin"
+
+  ## phpmyadmin.tag default phpmyadmin image tag
+  tag: "phpmyadmin"
 
   ## phpmyadmin.enabled Enables phpmyadmin service
   enabled: false
