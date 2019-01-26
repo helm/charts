@@ -139,6 +139,7 @@ Parameter | Description | Default
 `alertmanager.service.servicePort` | alertmanager service port | `80`
 `alertmanager.service.type` | type of alertmanager service to create | `ClusterIP`
 `alertmanagerFiles.alertmanager.yml` | Prometheus alertmanager configuration | example configuration
+`configmapReload.enabled` | enable configmap-reload | `true`
 `configmapReload.name` | configmap-reload container name | `configmap-reload`
 `configmapReload.image.repository` | configmap-reload container image repository | `jimmidyson/configmap-reload`
 `configmapReload.image.tag` | configmap-reload container image tag | `v0.2.2`
@@ -233,6 +234,7 @@ Parameter | Description | Default
 `server.global.scrape_interval` | How frequently to scrape targets by default | `1m`
 `server.global.scrape_timeout` | How long until a scrape request times out | `10s`
 `server.global.evaluation_interval` | How frequently to evaluate rules | `1m`
+`server.configPath` | Path to prometheus config file within container | `/etc/config/prometheus.yml`
 `server.extraArgs` | Additional Prometheus server container arguments | `{}`
 `server.prefixURL` | The prefix slug at which the server can be accessed | ``
 `server.baseURL` | The external url at which the server can be accessed | ``
