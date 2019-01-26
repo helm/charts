@@ -35,7 +35,7 @@ spec:
             - name: HUB_PORT_4444_TCP_ADDR
               value: {{ template "selenium.hub.fullname" . }}
             - name: HUB_PORT_4444_TCP_PORT
-              value: {{ .Values.hub.port | quote }}
+              value: {{ .Values.hub.servicePort | quote }}
             - name: JAVA_TOOL_OPTIONS
               value: {{ default "" .Values.firefoxDebug.javaOpts | quote }}
             - name: SE_OPTS

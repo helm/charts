@@ -84,6 +84,10 @@ spec:
             - name: TZ
               value: {{ .Values.hub.timeZone | quote }}
             {{- end }}
+            {{- if .Values.hub.port }}
+            - name: GRID_HUB_PORT
+              value: {{ .Values.hub.port | quote }}
+            {{- end }}
           resources:
 {{ toYaml .Values.hub.resources | indent 12 }}
       nodeSelector:
