@@ -33,10 +33,14 @@ spec:
         configMap:
           name: {{ .Values.halyard.additionalScripts.configMapName }}
       {{- end }}
-      {{- if .Values.halyard.additionalSecrets.create }}
+      {{- if or .Values.halyard.additionalSecrets.create (hasKey .Values.halyard.additionalSecrets "name") }}
       - name: additional-secrets
         secret:
+        {{- if .Values.halyard.additionalSecrets.create }}
           secretName: {{ template "spinnaker.fullname" . }}-additional-secrets
+        {{- else if .Values.halyard.additionalSecrets.name }}
+          secretName: {{ .Values.halyard.additionalSecrets.name }}
+        {{- end }}
       {{- end }}
       {{- if .Values.halyard.additionalConfigMaps.create }}
       - name: additional-config-maps
@@ -68,7 +72,7 @@ spec:
         - name: additional-config
           mountPath: /opt/halyard/additional
         {{- end }}
-        {{- if .Values.halyard.additionalSecrets.create }}
+        {{- if or .Values.halyard.additionalSecrets.create (hasKey .Values.halyard.additionalSecrets "name") }}
         - name: additional-secrets
           mountPath: /opt/halyard/additionalSecrets
         {{- end }}
