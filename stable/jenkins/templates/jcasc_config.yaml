@@ -13,6 +13,6 @@ metadata:
     component: "{{ $root.Release.Name }}-{{ $.Values.Master.Name }}"
 data:
   {{ $key }}.yaml: |-
-{{ $val | indent 4 }}
+{{ tpl $val $| indent 4 }}
 {{- end }}
 {{- end }}
