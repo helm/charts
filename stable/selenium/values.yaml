@@ -27,6 +27,9 @@ hub:
   ## The port which the hub listens on
   port: 4444
 
+  ## The port the service listens on
+  servicePort: 4444
+
   ## Timeout for probe Hub readiness via HTTP request on hub.probePath
   readinessTimeout: 1
 
