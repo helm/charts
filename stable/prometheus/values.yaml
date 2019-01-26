@@ -550,7 +550,7 @@ server:
     ## How frequently to evaluate rules
     ##
     evaluation_interval: 1m
-  
+
   ## Allow override of configuration file path argument
   ##
   configPath: /etc/config/prometheus.yml
