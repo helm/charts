@@ -1,13 +1,10 @@
 ## Rocket Chat image version
-## ref: https://hub.docker.com/r/library/rocket.chat/tags/
+## ref: https://hub.docker.com/r/rocketchat/rocket.chat/tags
 ##
-image: rocket.chat:0.69.1
-
-## Specify a imagePullPolicy
-## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
-## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
-##
-# imagePullPolicy:
+image:
+  repository: rocketchat/rocket.chat
+  tag: 0.73.2
+  pullPolicy: IfNotPresent
 
 ## Host for the application
 ##
@@ -109,3 +106,6 @@ ingress:
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
+
+service:
+  type: ClusterIP

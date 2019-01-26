@@ -51,7 +51,7 @@ and their default values.
 | Parameter                      | Description                                                                      | Default             |
 | ------------------------------ | -------------------------------------------------------------------------------- | ------------------- |
 | image.repository               | Kong image                                                                       | `kong`              |
-| image.tag                      | Kong image version                                                               | `0.14.1`            |
+| image.tag                      | Kong image version                                                               | `1.0.2`            |
 | image.pullPolicy               | Image pull policy                                                                | `IfNotPresent`      |
 | image.pullSecrets              | Image pull secrets                                                               | `null`              |
 | replicaCount                   | Kong instance count                                                              | `1`                 |
@@ -67,10 +67,14 @@ and their default values.
 | admin.ingress.hosts            | List of ingress hosts.                                                           | `[]`                |
 | admin.ingress.path             | Ingress path.                                                                    | `/`                 |
 | admin.ingress.annotations      | Ingress annotations. See documentation for your ingress controller for details   | `{}`                |
-| proxy.useTLS                   | Secure Proxy traffic                                                             | `true`              |
-| proxy.servicePort              | TCP port on which the Kong Proxy Service is exposed                              | `8443`              |
-| proxy.containerPort            | TCP port on which the Kong app listens for Proxy traffic                         | `8443`              |
-| proxy.nodePort                 | Node port when service type is `NodePort`                                        |                     |
+| proxy.http.enabled             | Enables http on the proxy                                                        | true               |
+| proxy.http.servicePort         | Service port to use for http                                                     | 80                  |
+| proxy.http.containerPort       | Container port to use for http                                                   | 8000                |
+| proxy.http.nodePort            | Node port to use for http                                                        | 32080               |
+| proxy.tls.enabled              | Enables TLS on the proxy                                                         | true                |
+| proxy.tls.containerPort        | Container port to use for TLS                                                    | 8443                |
+| proxy.tls.servicePort          | Service port to use for TLS                                                      | 8443                |
+| proxy.tls.nodePort             | Node port to use for TLS                                                         | 32443               |
 | proxy.type                     | k8s service type. Options: NodePort, ClusterIP, LoadBalancer                     | `NodePort`          |
 | proxy.loadBalancerSourceRanges | Limit proxy access to CIDRs if set and service type is `LoadBalancer`            | `[]`                |
 | proxy.loadBalancerIP           | To reuse an existing ingress static IP for the admin service                     |                     |
@@ -118,13 +122,13 @@ Postgres is enabled by default.
 | env.cassandra_keyspace            | Cassandra keyspace                                                     | `kong`                |
 | env.cassandra_repl_factor         | Replication factor for the Kong keyspace                               | `2`                   |
 
-For complete list of Kong configurations please check https://getkong.org/docs/0.11.x/configuration/.
+For complete list of Kong configurations please check https://getkong.org/docs/1.0.x/configuration/.
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```console
 $ helm install stable/kong --name my-release \
-  --set=image.tag=0.11.2,env.database=cassandra,cassandra.enabled=true
+  --set=image.tag=1.0.0,env.database=cassandra,cassandra.enabled=true
 ```
 
 Alternatively, a YAML file that specifies the values for the above parameters
@@ -146,11 +150,7 @@ To deploy the ingress controller together with
 kong run the following command:
 
 ```bash
-helm install stable/kong \
-    --set ingressController.enabled=true \
-    --set admin.useTLS=false \
-    --set readinessProbe.httpGet.scheme=HTTP \
-    --set livenessProbe.httpGet.scheme=HTTP
+helm install stable/kong --set ingressController.enabled=true
 ```
 
 **Note**: Kong Ingress controller doesn't support custom SSL certificates
@@ -161,13 +161,15 @@ declare the the Kong configurations and synchronize the configuration with the
 Kong admin API. Each of this new objects  declared in Kubernetes have a
 one-to-one relation with a Kong resource.
 The custom resources are:
+
 - KongConsumer
 - KongCredential
-- kongPlugin
+- KongPlugin
 - KongIngress
 
 You can can learn about kong ingress custom resource definitions here:
-https://github.com/Kong/kubernetes-ingress-controller/blob/master/docs/custom-types.md
+
+- [https://github.com/Kong/kubernetes-ingress-controller/blob/master/docs/custom-resources.md]()
 
 | Parameter        | Description                                 | Default                                                                      |
 | ---------------  | -----------------------------------------   | ---------------------------------------------------------------------------- |

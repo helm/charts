@@ -46,21 +46,21 @@ spec:
           - serve
           - /etc/docker/registry/config.yml
           ports:
-            - containerPort: {{ .Values.service.port }}
+            - containerPort: 5000
           livenessProbe:
             httpGet:
 {{- if .Values.tlsSecretName }}
               scheme: HTTPS
 {{- end }}
               path: /
-              port: {{ .Values.service.port }}
+              port: 5000
           readinessProbe:
             httpGet:
 {{- if .Values.tlsSecretName }}
               scheme: HTTPS
 {{- end }}
               path: /
-              port: {{ .Values.service.port }}
+              port: 5000
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           env:
@@ -117,6 +117,10 @@ spec:
             {{- end }}
             - name: REGISTRY_STORAGE_S3_REGION
               value: {{ required ".Values.s3.region is required" .Values.s3.region }}
+          {{- if .Values.s3.regionEndpoint }}
+            - name: REGISTRY_STORAGE_S3_REGIONENDPOINT
+              value: {{ .Values.s3.regionEndpoint }}
+          {{- end }}
             - name: REGISTRY_STORAGE_S3_BUCKET
               value: {{ required ".Values.s3.bucket is required" .Values.s3.bucket }}
           {{- if .Values.s3.encrypt }}

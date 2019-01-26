@@ -14,7 +14,6 @@ spec:
   selector:
     matchLabels:
       app: {{ template "mongodb.name" . }}
-      chart: {{ template "mongodb.chart" . }}
       release: {{ .Release.Name }}
       component: primary
   template:
@@ -37,11 +36,18 @@ spec:
 {{- end }}
       {{- end }}
     spec:
+      {{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName }}
+      {{- end }}
       {{- if .Values.securityContext.enabled }}
       securityContext:
         fsGroup: {{ .Values.securityContext.fsGroup }}
         runAsUser: {{ .Values.securityContext.runAsUser }}
       {{- end }}
+      {{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+      {{- end -}}
       {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
@@ -64,6 +70,18 @@ spec:
           - containerPort: {{ .Values.service.port }}
             name: mongodb
           env:
+          {{- if .Values.image.debug}}
+          - name: NAMI_DEBUG
+            value: "1"
+          {{- end }}
+          - name: MONGODB_SYSTEM_LOG_VERBOSITY
+            value: {{ .Values.mongodbSystemLogVerbosity | quote }}
+          - name: MONGODB_DISABLE_SYSTEM_LOG
+            {{- if .Values.mongodbDisableSystemLog }}
+            value: "yes"
+            {{- else }}
+            value: "no"
+            {{- end }}
           - name: MONGODB_POD_NAME
             valueFrom:
               fieldRef:
@@ -76,10 +94,14 @@ spec:
           - name: MONGODB_ADVERTISED_HOSTNAME
             value: "$(MONGODB_POD_NAME).{{ template "mongodb.fullname" . }}-headless.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}"
             {{- end }}
+          {{- if .Values.mongodbUsername }}
           - name: MONGODB_USERNAME
             value: {{ .Values.mongodbUsername | quote }}
+          {{- end }}
+          {{- if .Values.mongodbDatabase }}
           - name: MONGODB_DATABASE
             value: {{ .Values.mongodbDatabase | quote }}
+          {{- end }}
             {{- if .Values.usePassword }}
             {{- if or .Values.mongodbPassword .Values.existingSecret }}
           - name: MONGODB_PASSWORD
@@ -105,8 +127,10 @@ spec:
           {{- else }}
             value: "no"
           {{- end }}
+          {{- if .Values.mongodbExtraFlags }}
           - name: MONGODB_EXTRA_FLAGS
-            value: {{ default "" .Values.mongodbExtraFlags | join " " }}
+            value: {{ .Values.mongodbExtraFlags | join " " }}
+          {{- end }}
           {{- if .Values.livenessProbe.enabled }}
           livenessProbe:
             exec:
@@ -178,7 +202,7 @@ spec:
             initialDelaySeconds: 5
             timeoutSeconds: 1
           resources:
-  {{ toYaml .Values.metrics.resources | indent 10 }}
+{{ toYaml .Values.metrics.resources | indent 12 }}
 {{- end }}
       volumes:
         {{- if  (.Files.Glob "files/docker-entrypoint-initdb.d/*[sh|js]") }}

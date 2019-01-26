@@ -153,3 +153,23 @@ Create the name of the service account to use
     {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Get the password secret.
+*/}}
+{{- define "redis.secretName" -}}
+{{- if .Values.existingSecret -}}
+{{- printf "%s" .Values.existingSecret -}}
+{{- else -}}
+{{- printf "%s" (include "redis.fullname" .) -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return sysctl image
+*/}}
+{{- define "redis.sysctl.image" -}}
+{{- $registryName :=  default "docker.io" .Values.sysctlImage.registry -}}
+{{- $tag := default "latest" .Values.sysctlImage.tag | toString -}}
+{{- printf "%s/%s:%s" $registryName .Values.sysctlImage.repository $tag -}}
+{{- end -}}

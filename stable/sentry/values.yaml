@@ -89,6 +89,11 @@ service:
   type: LoadBalancer
   externalPort: 9000
   internalPort: 9000
+
+  ## Service annotations
+  ##
+  annotations: {}
+
   ## External IP addresses of service
   ## Default: nil
   ##
@@ -140,15 +145,22 @@ ingress:
 # TODO: add support for plugins https://docs.sentry.io/server/plugins/
 
 postgresql:
+  enabled: true
   postgresDatabase: sentry
   postgresUser: sentry
-  imageTag: "9.5"
+  # Only used when internal PG is disabled
+  # postgresHost: postgres
+  # postgresPassword: postgres
+  # postgresPort: 5432
+  imageTag: "9.6"
   persistence:
     enabled: true
 
 redis:
-  persistence:
-    enabled: true
+  master:
+    persistence:
+      enabled: true
+      # If change pvc size redis.master.persistence.size: 20Gi
 
 config:
   configYml: ""

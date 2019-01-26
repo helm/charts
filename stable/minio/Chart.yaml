@@ -1,8 +1,8 @@
 apiVersion: v1
 description: Minio is a high performance distributed object storage server, designed for large-scale private cloud infrastructure.
 name: minio
-version: 2.2.0
-appVersion: RELEASE.2018-12-06T01-27-43Z
+version: 2.4.0
+appVersion: RELEASE.2019-01-10T00-21-20Z
 keywords:
 - storage
 - object-storage

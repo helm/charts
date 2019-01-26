@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: solidnerd/bookstack
-  tag: 0.24.2
+  tag: 0.24.3
   pullPolicy: IfNotPresent
 
 app:
@@ -160,3 +160,13 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+## Enable ldap authentication. See https://www.bookstackapp.com/docs/admin/ldap-auth/ for details on how to set it up.
+ldap:
+  enabled: false
+  server:
+  base_dn:
+  dn:
+  pass:
+  userFilter:
+  version:

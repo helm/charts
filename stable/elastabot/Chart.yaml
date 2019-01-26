@@ -2,7 +2,7 @@ apiVersion: v1
 appVersion: 1.1.0
 description: A Helm chart for Elastabot - a Slack bot companion for Elasticsearch and ElastAlert
 name: elastabot
-version: 1.1.0
+version: 1.2.0
 home: https://github.com/jertel/elastabot
 sources:
 - https://github.com/jertel/elastabot

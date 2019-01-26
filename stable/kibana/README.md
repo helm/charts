@@ -48,7 +48,7 @@ The following table lists the configurable parameters of the kibana chart and th
 | `livenessProbe.timeoutSeconds`                | number of seconds                          | 10                                     |
 | `image.pullPolicy`                            | Image pull policy                          | `IfNotPresent`                         |
 | `image.repository`                            | Image repository                           | `docker.elastic.co/kibana/kibana-oss`  |
-| `image.tag`                                   | Image tag                                  | `6.5.1`                                |
+| `image.tag`                                   | Image tag                                  | `6.5.4`                                |
 | `image.pullSecrets`                           | Specify image pull secrets                 | `nil`                                  |
 | `commandline.args`                            | add additional commandline args            | `nil`                                  |
 | `ingress.enabled`                             | Enables Ingress                            | `false`                                |
@@ -64,9 +64,12 @@ The following table lists the configurable parameters of the kibana chart and th
 | `serviceAccount.name`                         | name of the serviceAccount to create       | `kibana.fullname`                      |
 | `authProxyEnabled`                            | enables authproxy. Create container in extracontainers   | `false`                  |
 | `extraContainers`                             | Sidecar containers to add to the kibana pod| `{}`                                   |
+| `extraVolumeMounts`                           | additional volumemounts for the kibana pod | `[]`                                   |
+| `extraVolumes`                                | additional volumes to add to the kibana pod| `[]`                                   |
 | `resources`                                   | pod resource requests & limits             | `{}`                                   |
 | `priorityClassName`                           | priorityClassName                          | `nil`                                  |
 | `service.externalPort`                        | external port for the service              | `443`                                  |
+| `service.disableInternalPort`                 | disable internal port when using sidecar   | `false`                                |
 | `service.internalPort`                        | internal port for the service              | `4180`                                 |
 | `service.authProxyPort`                       | port to use when using sidecar authProxy   | None:                                  |
 | `service.externalIPs`                         | external IP addresses                      | None:                                  |
@@ -100,6 +103,8 @@ The following table lists the configurable parameters of the kibana chart and th
 | `securityContext.allowPrivilegeEscalation`    | Allow privilege escalation                 | `false`                                 |
 | `securityContext.runAsUser`                   | User id to run in pods                     | `1000`                                  |
 | `securityContext.fsGroup`                     | fsGroup id to run in pods                  | `2000`                                  |
+| `extraConfigMapMounts`                        | Additional configmaps to be mounted        | `[]`                                    |
+| `deployment.annotations`                      | Annotations for deployment                 | `{}`                                    |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,

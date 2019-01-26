@@ -83,6 +83,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `extraEntries.input`               |    Extra entries for existing [INPUT] section                     | ``                    |
 | `extraEntries.filter`               |    Extra entries for existing [FILTER] section                     | ``                    |
 | `extraEntries.output`               |   Extra entries for existing [OUPUT] section                     | ``                    |
+| `extraPorts`                       | List of extra ports                        |                       |
 | `extraVolumeMounts`                | Mount an extra volume, required to mount ssl certificates when elasticsearch has tls enabled |          |
 | `extraVolume`                      | Extra volume                               |                                                |
 | `filter.enableExclude`                   | Enable the use of monitoring for a pod annotation of `fluentbit.io/exclude: true`. If present, discard logs from that pod.         | `true`                                 |
@@ -93,16 +94,23 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `filter.kubeTag`                   | Optional top-level tag for matching in filter         | `kube`                                 |
 | `filter.mergeJSONLog`                   | If the log field content is a JSON string map, append the map fields as part of the log structure         | `true`                                 |
 | `image.fluent_bit.repository`      | Image                                      | `fluent/fluent-bit`                               |
-| `image.fluent_bit.tag`             | Image tag                                  | `0.14.9`                                          |
-| `image.pullPolicy`                 | Image pull policy                          | `Always`                                          |
+| `image.fluent_bit.tag`             | Image tag                                  | `1.0.3`                                          |
+| `image.pullPolicy`                 | Image pull policy                          | `IfNotPresent`                                          |
 | `image.pullSecrets`                | Specify image pull secrets                 | `nil`                                             |
 | `input.tail.memBufLimit`           | Specify Mem_Buf_Limit in tail input        | `5MB`                                             |
 | `input.tail.path`           | Specify log file(s) through the use of common wildcards.        | `/var/log/containers/*.log`                                             |
+| `input.systemd.enabled`             | [Enable systemd input](https://fluentbit.io/documentation/current/input/systemd.html)                   | `false`                                       |
+| `input.systemd.filters.systemdUnit             | Please see https://fluentbit.io/documentation/current/input/systemd.html                   | `[docker.service, kubelet.service`, `node-problem-detector.service]`                                       |
+| `input.systemd.maxEntries`             | Please see https://fluentbit.io/documentation/current/input/systemd.html                  | `1000`                                       |
+| `input.systemd.readFromTail` | Please see https://fluentbit.io/documentation/current/input/systemd.html | `true`|
+| `input.systemd.tag` | Please see https://fluentbit.io/documentation/current/input/systemd.html | `host.*`|
 | `rbac.create`                      | Specifies whether RBAC resources should be created.   | `true`                                 |
 | `serviceAccount.create`            | Specifies whether a ServiceAccount should be created. | `true`                                 |
 | `serviceAccount.name`              | The name of the ServiceAccount to use.     | `NULL`                                            |
 | `rawConfig`                        | Raw contents of fluent-bit.conf            | `@INCLUDE fluent-bit-service.conf`<br>`@INCLUDE fluent-bit-input.conf`<br>`@INCLUDE fluent-bit-filter.conf`<br>` @INCLUDE fluent-bit-output.conf`                                                                         |
 | `resources`                        | Pod resource requests & limits                                 | `{}`                          |
+| `hostNetwork`                      | Use host's network                         | `false`                                           |
+| `dnsPolicy`                        | Specifies the dnsPolicy to use             | `ClusterFirst`                                    |
 | `tolerations`                      | Optional daemonset tolerations             | `NULL`                                            |
 | `nodeSelector`                     | Node labels for fluent-bit pod assignment  | `NULL`                                            |
 | `metrics.enabled`                  | Specifies whether a service for metrics should be exposed | `false`                            |

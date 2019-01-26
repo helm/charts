@@ -13,7 +13,6 @@ spec:
     matchLabels:
       app: {{ template "mongodb.name" . }}
       release: {{ .Release.Name }}
-      chart: {{ template "mongodb.chart" . }}
       component: arbiter
   serviceName: {{ template "mongodb.fullname" . }}-headless
   replicas: {{ .Values.replicaSet.replicas.arbiter }}
@@ -32,11 +31,18 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
       {{- end }}
     spec:
+      {{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName }}
+      {{- end }}
       {{- if .Values.securityContext.enabled }}
       securityContext:
         fsGroup: {{ .Values.securityContext.fsGroup }}
         runAsUser: {{ .Values.securityContext.runAsUser }}
       {{- end }}
+      {{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+      {{- end -}}
       {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
@@ -59,6 +65,18 @@ spec:
           - containerPort: {{ .Values.service.port }}
             name: mongodb
           env:
+          {{- if .Values.image.debug}}
+          - name: NAMI_DEBUG
+            value: "1"
+          {{- end }}
+          - name: MONGODB_SYSTEM_LOG_VERBOSITY
+            value: {{ .Values.mongodbSystemLogVerbosity | quote }}
+          - name: MONGODB_DISABLE_SYSTEM_LOG
+            {{- if .Values.mongodbDisableSystemLog }}
+            value: "yes"
+            {{- else }}
+            value: "no"
+            {{- end }}
           - name: MONGODB_POD_NAME
             valueFrom:
               fieldRef:
@@ -91,8 +109,10 @@ spec:
           {{- else }}
             value: "no"
           {{- end }}
+          {{- if .Values.mongodbExtraFlags }}
           - name: MONGODB_EXTRA_FLAGS
-            value: {{ default "" .Values.mongodbExtraFlags | join " " }}
+            value: {{ .Values.mongodbExtraFlags | join " " }}
+          {{- end }}
           {{- if .Values.livenessProbe.enabled }}
           livenessProbe:
             tcpSocket:

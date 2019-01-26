@@ -34,3 +34,5 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+replicas: 1
