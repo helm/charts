@@ -136,6 +136,12 @@ spec:
               subPath: {{ .subPath }}
               readOnly: {{ .readOnly }}
           {{- end }}
+          {{- if .Values.server.extraVolumeMounts }}
+          {{ toYaml .Values.server.extraVolumeMounts | nindent 12 }}
+          {{- end }}
+       {{- if .Values.server.sidecarContainers }}
+       {{- toYaml .Values.server.sidecarContainers | nindent 8 }}
+       {{- end }}
     {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
        {{ toYaml .Values.imagePullSecrets | indent 2 }}
@@ -186,6 +192,9 @@ spec:
           configMap:
             name: {{ .configMap }}
       {{- end }}
+{{- if .Values.server.extraVolumes }}
+{{ toYaml .Values.server.extraVolumes | indent 8}}
+{{- end }}
 {{- if .Values.server.persistentVolume.enabled }}
   volumeClaimTemplates:
     - metadata:
