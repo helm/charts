@@ -67,6 +67,7 @@ The following table lists the configurable parameters of the SchemaRegistryUI ch
 | `service.type` | Type of the service | `LoadBalancer` |
 | `service.port` | Port to use | `80` |
 | `service.annotations` | Kubernetes service annotations | `{}` |
+| `service.loadBalancerSourceRanges` | Limit load balancer source IPs to list of CIDRs (where available)) | None |
 | `ingress.enabled` | Ingress rules. Disabled by default | `false` |
 | `ingress.annotations` | Ingress annotations | `{}` |
 | `ingress.path` | Ingress path | `/` |
@@ -74,5 +75,5 @@ The following table lists the configurable parameters of the SchemaRegistryUI ch
 | `ingress.tls` | Ingress TLS configuration | `/` |
 | `nodeSelector` | Node labels for pod assignment | `{}` |
 | `tolerations` | List of node taints to tolerate | `[]` |
-| `affinity` | Node/pod affinites | `{}` |
+| `affinity` | Node/pod affinities | `{}` |
 | `resources` | CPU/Memory resource requests/limits | `{}` |
