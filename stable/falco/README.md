@@ -79,6 +79,9 @@ The following table lists the configurable parameters of the Falco chart and the
 | `falco.programOutput.enabled`                   | Enable program output for security notifications                     | `false`                                                                                |
 | `falco.programOutput.keepAlive`                 | Start the program once or re-spawn when a notification arrives       | `false`                                                                                |
 | `falco.programOutput.program`                   | Command to execute for program output                                | `mail -s "Falco Notification" someone@example.com`                                     |
+| `falco.webserver.enabled`                       | Enable webserver for k8s audit     | `false`                         |
+| `falco.websever.listen_port`                    | Webserver listen port          | `8765`                              |
+| `falco.webserver.k8s_audit_endpoint`            | Audit endpoint for k8s audit POST requests | `/k8s_audit`            |
 | `customRules`                                   | Third party rules enabled for Falco                                  | `{}`                                                                                   |
 | `integrations.gcscc.enabled`                    | Enable Google Cloud Security Command Center integration              | `false`                                                                                |
 | `integrations.gcscc.webhookUrl`                 | The URL where sysdig-gcscc-connector webhook is listening            | `http://sysdig-gcscc-connector.default.svc.cluster.local:8080/events`                  |

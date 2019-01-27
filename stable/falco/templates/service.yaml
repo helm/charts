@@ -1,0 +1,21 @@
+{{- if .Values.falco.webserver.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "falco.fullname" . }}
+  labels:
+    app: {{ template "falco.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  ports:
+  - name: http
+    port: {{ .Values.falco.webserver.listen_port | default "8765"}}
+    protocol: TCP
+    targetPort: {{ .Values.falco.webserver.listen_port | default "8765"}}
+  selector:
+    app: {{ template "falco.fullname" . }}
+    release: {{ .Release.Name | quote }}
+  type: ClusterIP
+{{- end }}

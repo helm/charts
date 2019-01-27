@@ -150,6 +150,11 @@ falco:
     keepAlive: false
     program: mail -s "Falco Notification" someone@example.com
 
+  webserver:
+    enabled: false
+    listen_port: 8765
+    k8s_audit_endpoint: /k8s_audit
+
 customRules: {}
   # Although Falco comes with a nice default rule set for detecting weird
   # behavior in containers, our users are going to customize the run-time

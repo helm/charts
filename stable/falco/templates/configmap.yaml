@@ -135,6 +135,13 @@ data:
       program: {{ .Values.falco.programOutput.program }}
     {{- end }}
 
+    {{- if .Values.falco.webserver.enabled }}
+    webserver:
+      enabled: {{ .Values.falco.webserver.enabled }}
+      listen_port: {{ .Values.falco.webserver.listen_port | default "8765"}}
+      k8s_audit_endpoint: {{ .Values.falco.webserver.k8s_audit_endpoint | default "/k8s_audit"}}
+    {{- end }}
+
   {{- if .Values.integrations.snsOutput.enabled }}
   aws_default_region: {{ .Values.integrations.snsOutput.aws_default_region }}
   {{- end }}
