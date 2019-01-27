@@ -8,6 +8,9 @@ image:
   # pullSecrets:
   #   - myRegistrKeySecretName
 
+nameOverride: ""
+fullnameOverride: ""
+
 # Number of replicas to be deployed
 replicaCount: 1
 
@@ -120,7 +123,7 @@ service:
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
 ##
 persistence:
-  enabled: true
+  enabled: false
   ## nextcloud data Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>
   ## If set to "-", storageClassName: "", which disables dynamic provisioning
@@ -138,10 +141,20 @@ persistence:
   accessMode: ReadWriteOnce
   size: 8Gi
 
-## Configure resource requests and limits
-## ref: http://kubernetes.io/docs/user-guide/compute-resources/
-##
 resources: {}
-#  requests:
-#    memory: 512Mi
-#    cpu: 300m
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

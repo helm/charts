@@ -29,9 +29,9 @@ spec:
       {{- end}}
       {{- end }}
       containers:
-      - name: {{ template "nextcloud.fullname" . }}
+      - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
         {{- if .Values.internalDatabase.enabled }}
         - name: SQLITE_DATABASE
@@ -121,6 +121,18 @@ spec:
         - name: nextcloud-data
           mountPath: /var/www/html/themes
           subPath: themes
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
       volumes:
       - name: nextcloud-data
       {{- if .Values.persistence.enabled }}
