@@ -113,6 +113,9 @@ A variety of other parameters are also configurable. See the comments in the
 | `image.repository`              | couchdb                                |
 | `image.tag`                     | 2.3.0                                  |
 | `image.pullPolicy`              | IfNotPresent                           |
+| `initImage.repository`          | busybox                                |
+| `initImage.tag`                 | latest                                 |
+| `initImage.pullPolicy`          | Always                                 |
 | `ingress.enabled`               | false                                  |
 | `ingress.hosts`                 | chart-example.local                    |
 | `ingress.annotations`           |                                        |
