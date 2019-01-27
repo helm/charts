@@ -18,7 +18,7 @@ replicaCount: 1
 ## ref: https://kubernetes.io/docs/concepts/services-networking/ingress/
 ##
 ingress:
-  enabled: true
+  enabled: false
   annotations: {}
   #  nginx.ingress.kubernetes.io/proxy-body-size: 4G
   #  kubernetes.io/tls-acme: "true"
