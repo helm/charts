@@ -54,6 +54,9 @@ spec:
           {{- range .Values.sources }}
             - --source={{ . }}
           {{- end }}
+          {{ if .Values.dryRun }}
+            - --dry-run
+          {{- end }}
           {{- range $key, $value := .Values.extraArgs }}
             {{- if $value }}
             - --{{ $key }}={{ $value }}
