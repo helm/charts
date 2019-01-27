@@ -48,6 +48,9 @@ spec:
       {{- /* Include master securityContext if slave securityContext not defined */ -}}
       {{ include "redis.slave.securityContext" . | indent 6 }}
       serviceAccountName: "{{ template "redis.serviceAccountName" . }}"
+      {{- if .Values.slave.priorityClassName }}
+      priorityClassName: "{{ .Values.slave.priorityClassName }}"
+      {{- end }}
       {{- if (.Values.slave.nodeSelector | default .Values.master.nodeSelector) }}
       nodeSelector:
 {{ toYaml (.Values.slave.nodeSelector | default .Values.master.nodeSelector) | indent 8 }}
@@ -61,7 +64,7 @@ spec:
       {{- end }}
     {{- with .Values.slave.affinity }}
       affinity:
-{{ toYaml . | indent 8 }}
+{{ tpl (toYaml .) $ | indent 8 }}
     {{- end }}
       containers:
       - name: {{ template "redis.fullname" . }}
@@ -91,6 +94,12 @@ spec:
         - "/opt/bitnami/redis/etc/redis.conf"
         - "--include"
         - "/opt/bitnami/redis/etc/replica.conf"
+        {{- $extraFlags := ( default .Values.master.extraFlags .Values.slave.extraFlags ) }}
+        {{- if $extraFlags }}
+        {{- range $extraFlags }}
+        - {{ . | quote }}
+        {{- end }}
+        {{- end }}
         env:
         - name: REDIS_REPLICATION_MODE
           value: slave
@@ -101,24 +110,23 @@ spec:
         - name: REDIS_MASTER_PORT_NUMBER
           value: {{ .Values.master.service.port | quote }}
         {{- if .Values.usePassword }}
+        {{- if .Values.usePasswordFile }}
+        - name: REDIS_PASSWORD_FILE
+          value: "/opt/bitnami/redis/secrets/redis-password"
+        - name: REDIS_MASTER_PASSWORD_FILE
+          value: "/opt/bitnami/redis/secrets/redis-master-password"
+        {{- else }}
         - name: REDIS_PASSWORD
           valueFrom:
             secretKeyRef:
-              {{- if .Values.existingSecret }}
-              name: {{ .Values.existingSecret }}
-              {{- else }}
-              name: {{ template "redis.fullname" . }}
-              {{- end }}
+              name: {{ template "redis.secretName" . }}
               key: redis-password
         - name: REDIS_MASTER_PASSWORD
           valueFrom:
             secretKeyRef:
-              {{- if .Values.existingSecret }}
-              name: {{ .Values.existingSecret }}
-              {{- else }}
-              name: {{ template "redis.fullname" . }}
-              {{- end }}
+              name: {{ template "redis.secretName" . }}
               key: redis-password
+        {{- end }}
         {{- else }}
         - name: ALLOW_EMPTY_PASSWORD
           value: "yes"
@@ -135,17 +143,41 @@ spec:
         volumeMounts:
         - name: health
           mountPath: /health
+        {{- if .Values.usePasswordFile }}
+        - name: redis-password
+          mountPath: /opt/bitnami/redis/secrets/
+        {{- end }}
         - name: redis-data
           mountPath: /data
         {{- if .Values.configmap }}
         - name: config
           mountPath: /opt/bitnami/redis/etc
         {{- end }}
+      {{- if .Values.sysctlImage.enabled }}
+      initContainers:
+      - name: init-sysctl
+        image: {{ template "redis.sysctl.image" . }}
+        {{- if .Values.sysctlImage.mountHostSys }}
+        volumeMounts:
+        - name: host-sys
+          mountPath: /host-sys
+        {{- end }}
+        command:
+{{ toYaml .Values.sysctlImage.command | indent 10 }}
+        securityContext:
+          privileged: true
+          runAsUser: 0
+      {{- end }}
       volumes:
       - name: health
         configMap:
           name: {{ template "redis.fullname" . }}-health
           defaultMode: 0755
+      {{- if .Values.usePasswordFile }}
+      - name: redis-password
+        secret:
+          secretName: {{ template "redis.secretName" . }}
+      {{- end }}
       {{- if .Values.configmap }}
       - name: config
         configMap:
@@ -153,4 +185,9 @@ spec:
       {{- end }}
       - name: redis-data
         emptyDir: {}
+      {{- if .Values.sysctlImage.mountHostSys }}
+      - name: host-sys
+        hostPath:
+          path: /sys
+      {{- end }}
 {{- end }}

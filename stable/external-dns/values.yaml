@@ -37,10 +37,25 @@ cloudflare:
   apiKey: ""
   email: ""
   proxied: true
+
+# Configuration for OpenStack Designate provider
+designate:
+  # A custom CA (optional)
+  customCA:
+    # Turn custom CA on or off
+    enabled: false
+    # The content of the custom CA file
+    content: ""
+    # Location to mount custom CA
+    directory: "/config/designate"
+    # Filename of the custom CA
+    filename: "designate-ca.pem"
+
 # When using the Google provider, specify the Google project (required when provider=google)
 google:
   project: ""
   serviceAccountSecret: ""
+  serviceAccountKey: ""
 
 # Infoblox keys to inject
 infoblox:

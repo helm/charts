@@ -20,15 +20,18 @@ $ helm install stable/kube-state-metrics
 | `service.port`                        | The port of the container                               | 8080                                        |
 | `prometheusScrape`                    | Whether or not enable prom scrape                       | true                                        |
 | `rbac.create`                         | If true, create & use RBAC resources                    | true                                        |
+| `podSecurityPolicy.enabled`           | If true, create & use PodSecurityPolicy resources       | false                                       |
+| `podSecurityPolicy.annotations`       | Specify pod annotations in the pod security policy      | {}                                          |
 | `rbac.serviceAccountName`             | ServiceAccount to be used (ignored if rbac.create=true) | default                                     |
 | `securityContext.enabled`             | Enable security context                                 | `true`                                      |
 | `securityContext.fsGroup`             | Group ID for the container                              | `65534`                                     |
 | `securityContext.runAsUser`           | User ID for the container                               | `65534`                                     |
-| `priorityClassName`                   | Name of Priority Class to assign pods                   | `nil`                                       | 
+| `priorityClassName`                   | Name of Priority Class to assign pods                   | `nil`                                       |
 | `nodeSelector`                        | Node labels for pod assignment                          | {}                                          |
 | `tolerations`                         | Tolerations for pod assignment	                      | []                                          |
 | `podAnnotations`                      | Annotations to be added to the pod                      | {}                                          |
 | `resources`                           | kube-state-metrics resource requests and limits         | {}                                          |
+| `collectors.configmaps`               | Enable the configmaps collector.                        | true                                        |
 | `collectors.cronjobs`                 | Enable the cronjobs collector.                          | true                                        |
 | `collectors.daemonsets`               | Enable the daemonsets collector.                        | true                                        |
 | `collectors.deployments`              | Enable the deployments collector.                       | true                                        |
@@ -44,5 +47,6 @@ $ helm install stable/kube-state-metrics
 | `collectors.replicasets`              | Enable the replicasets collector.                       | true                                        |
 | `collectors.replicationcontrollers`   | Enable the replicationcontrollers collector.            | true                                        |
 | `collectors.resourcequotas`           | Enable the resourcequotas collector.                    | true                                        |
+| `collectors.secrets`                  | Enable the secrets collector.                           | true                                        |
 | `collectors.services`                 | Enable the services collector.                          | true                                        |
 | `collectors.statefulsets`             | Enable the statefulsets collector.                      | true                                        |

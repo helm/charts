@@ -1,11 +1,15 @@
 settings:
   log_monitors:
-    - /config/kernel-monitor.json
-    - /config/docker-monitor.json
+    - kernel-monitor.json
+    - docker-monitor.json
+  custom_plugin_monitors: []
+
+hostpath:
+  logdir: /var/log/
 
 image:
   repository: k8s.gcr.io/node-problem-detector
-  tag: v0.5.0
+  tag: v0.6.1
   pullPolicy: IfNotPresent
 
 nameOverride: ""
@@ -13,6 +17,10 @@ fullnameOverride: ""
 
 rbac:
   create: true
+
+# Flag to run Node Problem Detector on the host's network. This is typically
+# not recommended, but may be useful for certain use cases.
+hostNetwork: false
 
 resources: {}
 
