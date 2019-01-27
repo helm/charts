@@ -25,6 +25,7 @@ spec:
 {{- end }}
     spec:
       serviceAccountName: {{ template "node-problem-detector.serviceAccountName" . }}
+      hostNetwork: {{ .Values.hostNetwork }}
       containers:
         - name: {{ .Chart.Name }}
           image:  "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
