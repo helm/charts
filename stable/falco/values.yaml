@@ -150,6 +150,9 @@ falco:
     keepAlive: false
     program: mail -s "Falco Notification" someone@example.com
 
+  # enabled: [true|false]: if true, falco will start an embedded webserver to accept k8s audit events
+  # listen_port: The port on which to listen for k8s audit events. Default 8765.
+  # k8s_audit_endpoint: The uri on which to listen for k8s audit events. Default /k8s_audit.
   webserver:
     enabled: false
     listen_port: 8765
