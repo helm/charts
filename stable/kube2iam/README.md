@@ -48,10 +48,11 @@ Parameter | Description | Default
 `host.iptables` | Add iptables rule | `false`
 `host.interface` | Host interface for proxying AWS metadata | `docker0`
 `image.repository` | Image | `jtblin/kube2iam`
-`image.tag` | Image tag | `0.6.4`
+`image.tag` | Image tag | `0.10.4`
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
 `nodeSelector` | node labels for pod assignment | `{}`
 `podAnnotations` | annotations to be added to pods | `{}`
+`priorityClassName` | priorityClassName to be added to pods | `{}`
 `rbac.create` | If true, create & use RBAC resources | `false`
 `rbac.serviceAccountName` | existing ServiceAccount to use (ignored if rbac.create=true) | `default`
 `resources` | pod resource requests & limits | `{}`
