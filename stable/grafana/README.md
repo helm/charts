@@ -88,6 +88,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `admin.userKey`                           | The key in the existing admin secret containing the username. | `"admin-user"`                          |
 | `admin.passwordKey`                       | The key in the existing admin secret containing the password. | `"admin-password"`                      |
 | `rbac.create`                             | Create and use RBAC resources | `true` |
+| `rbac.namespaced`                         | Creates Role and Rolebinding instead of the default ClusterRole and ClusteRoleBindings for the grafana instance  | `false` |
 | `rbac.pspEnabled`                         | Create PodSecurityPolicy (with `rbac.create`, grant roles permissions as well) | `true` |
 | `rbac.pspUseAppArmor`                     | Enforce AppArmor in created PodSecurityPolicy (requires `rbac.pspEnabled`)  | `true` |
 

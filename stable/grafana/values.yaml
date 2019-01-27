@@ -2,6 +2,7 @@ rbac:
   create: true
   pspEnabled: true
   pspUseAppArmor: true
+  namespaced: false
 serviceAccount:
   create: true
   name:
