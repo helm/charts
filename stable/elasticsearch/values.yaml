@@ -166,6 +166,10 @@ data:
     name: data
     size: "30Gi"
     # storageClass: "ssd"
+  volumeHostPath:
+    enabled: false
+    path: /data
+    type: ""
   terminationGracePeriodSeconds: 3600
   antiAffinity: "soft"
   nodeAffinity: {}

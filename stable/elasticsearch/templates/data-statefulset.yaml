@@ -191,7 +191,13 @@ spec:
 {{- end }}
   {{- if not .Values.data.persistence.enabled }}
       - name: data
+    {{- if .Values.data.volumeHostPath.enabled }}
+        hostPath:
+          path: {{ .Values.data.volumeHostPath.path }}
+          type: {{ .Values.data.volumeHostPath.type }}
+    {{- else }}
         emptyDir: {}
+    {{- end }}
   {{- end }}
   updateStrategy:
     type: {{ .Values.data.updateStrategy.type }}
