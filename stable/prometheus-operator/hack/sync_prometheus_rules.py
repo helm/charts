@@ -44,6 +44,7 @@ condition_map = {
     'kube-prometheus-node-recording.rules': ' .Values.defaultRules.rules.kubePrometheusNodeRecording',
     'kube-scheduler.rules': ' .Values.kubeScheduler.enabled .Values.defaultRules.rules.kubeScheduler',
     'kube-absent.rules': ' .Values.defaultRules.rules.kubernetesAbsent',
+    'kubernetes-absent': ' .Values.defaultRules.rules.kubernetesResources',
     'kubernetes-resources': ' .Values.defaultRules.rules.kubernetesResources',
     'kubernetes-storage': ' .Values.defaultRules.rules.kubernetesStorage',
     'kubernetes-system': ' .Values.defaultRules.rules.kubernetesSystem',
