@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
-  name: fluent-bit
+  name: {{ template "fluent-bit.fullname" . }}
   labels:
     app: {{ template "fluent-bit.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
