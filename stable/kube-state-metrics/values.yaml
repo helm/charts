@@ -16,6 +16,22 @@ rbac:
   # Ignored if rbac.create is true
   serviceAccountName: default
 
+## Specify if a Pod Security Policy for kube-state-metrics must be created
+## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/
+##
+podSecurityPolicy:
+  enabled: false
+  annotations: {}
+    ## Specify pod annotations
+    ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#apparmor
+    ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#seccomp
+    ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#sysctl
+    ##
+    # seccomp.security.alpha.kubernetes.io/allowedProfileNames: '*'
+    # seccomp.security.alpha.kubernetes.io/defaultProfileName: 'docker/default'
+    # apparmor.security.beta.kubernetes.io/defaultProfileName: 'runtime/default'
+
+
 securityContext:
   enabled: true
   runAsUser: 65534
@@ -38,6 +54,7 @@ podAnnotations: {}
 # Available collectors for kube-state-metrics. By default all available
 # collectors are enabled.
 collectors:
+  configmaps: true
   cronjobs: true
   daemonsets: true
   deployments: true
@@ -53,6 +70,7 @@ collectors:
   replicasets: true
   replicationcontrollers: true
   resourcequotas: true
+  secrets: true
   services: true
   statefulsets: true
 

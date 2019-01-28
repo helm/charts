@@ -1,5 +1,5 @@
 name: selenium
-version: 0.15.1
+version: 1.0.1
 appVersion: 3.14.0
 description: Chart for selenium grid
 keywords:

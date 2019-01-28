@@ -50,6 +50,8 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `hub.tag` | The selenium hub image tag | `3.14.0` |
 | `hub.pullPolicy` | The pull policy for the hub image | `IfNotPresent` |
 | `hub.port` | The port the hub listens on | `4444` |
+| `hub.servicePort` | The port the hub Service listens on | `4444` |
+
 | `hub.podAnnotations` | Annotations on the hub pod | `{}` |
 | `hub.extraEnvs` |  Any additional environment variables to set in the pods | `[]` |
 | `hub.javaOpts` | The java options for the selenium hub JVM, default sets the maximum heap size to 1,000 mb | `-Xmx1000m` |

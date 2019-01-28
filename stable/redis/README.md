@@ -99,6 +99,7 @@ The following table lists the configurable parameters of the Redis chart and the
 | `cluster.slaveCount`                       | Number of slaves                                                                                               | `1`                                                  |
 | `existingSecret`                           | Name of existing secret object (for password authentication)                                                   | `nil`                                                |
 | `usePassword`                              | Use password                                                                                                   | `true`                                               |
+| `usePasswordFile`                              | Mount passwords as files instead of environment variables                                                                                                   | `false`                                               |
 | `password`                                 | Redis password (ignored if existingSecret set)                                                                 | Randomly generated                                   |
 | `configmap`                                | Redis configuration file to be used                                                                            | `nil`                                                |
 | `networkPolicy.enabled`                    | Enable NetworkPolicy                                                                                           | `false`                                              |
@@ -124,6 +125,7 @@ The following table lists the configurable parameters of the Redis chart and the
 | `metrics.serviceMonitor.namespace`         | Optional namespace which Prometheus is running in                                                              | `nil`                                                |
 | `metrics.serviceMonitor.interval`          | How frequently to scrape metrics (use by default, falling back to Prometheus' default)                         |  `nil`                                               |
 | `metrics.serviceMonitor.selector`          | Default to kube-prometheus install (CoreOS recommended), but should be set according to Prometheus install     | `{ prometheus: kube-prometheus }`                    |
+| `metrics.priorityClassName`                | Metrics exporter pod priorityClassName                                                                         | {}                                                   |
 | `persistence.existingClaim`                | Provide an existing PersistentVolumeClaim                                                                      | `nil`                                                |
 | `master.persistence.enabled`               | Use a PVC to persist data (master node)                                                                        | `true`                                               |
 | `master.persistence.path`                  | Path to mount the volume at, to use other images                                                               | `/data`                                              |
@@ -164,6 +166,7 @@ The following table lists the configurable parameters of the Redis chart and the
 | `master.readinessProbe.timeoutSeconds`     | When the probe times out (redis master pod)                                                                    | `1`                                                  |
 | `master.readinessProbe.successThreshold`   | Minimum consecutive successes for the probe to be considered successful after having failed (redis master pod) | `1`                                                  |
 | `master.readinessProbe.failureThreshold`   | Minimum consecutive failures for the probe to be considered failed after having succeeded.                     | `5`                                                  |
+| `master.priorityClassName`                 | Redis Master pod priorityClassName                                                                             | {}                                                   |
 | `volumePermissions.image.registry`         | Init container volume-permissions image registry                                                               | `docker.io`                                          |
 | `volumePermissions.image.repository`       | Init container volume-permissions image name                                                                   | `bitnami/minideb`                                    |
 | `volumePermissions.image.tag`              | Init container volume-permissions image tag                                                                    | `latest`                                             |
@@ -195,7 +198,15 @@ The following table lists the configurable parameters of the Redis chart and the
 | `slave.securityContext.fsGroup`            | Group ID for the container (redis slave pod)                                                                   | `master.securityContext.fsGroup`                     |
 | `slave.securityContext.runAsUser`          | User ID for the container (redis slave pod)                                                                    | `master.securityContext.runAsUser`                   |
 | `slave.resources`                          | Redis slave CPU/Memory resource requests/limits                                                                | `master.resources`                                   |
-| `slave.affinity`                           | Affinity settings for Redis slave pod assignment                                                               | {}                                                   |
+| `slave.affinity`                           | Enable node/pod affinity for slaves                                                                            | {}                                                   |
+| `slave.priorityClassName`                  | Redis Slave pod priorityClassName                                                                              | {}                                                   |
+| `sysctlImage.enabled`                      | Enable an init container to modify Kernel settings                                                             | `false`                                              |
+| `sysctlImage.command`                      | sysctlImage command to execute                                                                                 | []                                                   |
+| `sysctlImage.registry`                     | sysctlImage Init container registry                                                                            | `docker.io`                                          |
+| `sysctlImage.repository`                   | sysctlImage Init container name                                                                                | `bitnami/minideb`                                    |
+| `sysctlImage.tag`                          | sysctlImage Init container tag                                                                                 | `latest`                                             |
+| `sysctlImage.pullPolicy`                   | sysctlImage Init container pull policy                                                                         | `Always`                                             |
+| `sysctlImage.mountHostSys`                 | Mount the host `/sys` folder to `/host-sys`                                                                    | `false`                                              |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
@@ -249,3 +260,19 @@ $ helm install --set persistence.existingClaim=PVC_NAME stable/redis
 ## Metrics
 
 The chart optionally can start a metrics exporter for [prometheus](https://prometheus.io). The metrics endpoint (port 9121) is exposed in the service. Metrics can be scraped from within the cluster using something similar as the described in the [example Prometheus scrape configuration](https://github.com/prometheus/prometheus/blob/master/documentation/examples/prometheus-kubernetes.yml). If metrics are to be scraped from outside the cluster, the Kubernetes API proxy can be utilized to access the endpoint.
+
+## Host Kernel Settings
+Redis may require some changes in the kernel of the host machine to work as expected, in particular increasing the `somaxconn` value and disabling transparent huge pages.
+To do so, you can set up a privileged initContainer with the `sysctlImage` config values, for example:
+```
+sysctlImage:
+  enabled: true
+  mountHostSys: true
+  command:
+    - /bin/sh
+    - -c
+    - |-
+      install_packages systemd
+      sysctl -w net.core.somaxconn=10000
+      echo never > /host-sys/kernel/mm/transparent_hugepage/enabled
+```
