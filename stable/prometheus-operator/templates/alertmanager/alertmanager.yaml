@@ -62,7 +62,7 @@ spec:
   affinity:
     podAntiAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
-      - topologyKey: {{ .Values.prometheus.alertmanagerSpec.podAntiAffinityTopologyKey }}
+      - topologyKey: {{ .Values.alertmanager.alertmanagerSpec.podAntiAffinityTopologyKey }}
         labelSelector:
           matchLabels:
             app: alertmanager
@@ -73,7 +73,7 @@ spec:
       preferredDuringSchedulingIgnoredDuringExecution:
       - weight: 100
         podAffinityTerm:
-          topologyKey: {{ .Values.prometheus.alertmanagerSpec.podAntiAffinityTopologyKey }}
+          topologyKey: {{ .Values.alertmanager.alertmanagerSpec.podAntiAffinityTopologyKey }}
           labelSelector:
             matchLabels:
               app: alertmanager
