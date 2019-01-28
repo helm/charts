@@ -4,21 +4,21 @@ kind: Deployment
 metadata:
   name: {{ template "prestashop.fullname" . }}
   labels:
-    app: {{ template "prestashop.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app: "{{ template "prestashop.name" . }}"
+    chart: "{{ template "prestashop.chart" . }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
 spec:
   selector:
     matchLabels:
-      app: {{ template "prestashop.fullname" . }}
+      app: {{ template "prestashop.name" . }}
       release: "{{ .Release.Name }}"
   template:
     metadata:
       labels:
-        app: {{ template "prestashop.fullname" . }}
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-        release: "{{ .Release.Name }}"
+        app: "{{ template "prestashop.name" . }}"
+        chart: "{{ template "prestashop.chart" . }}"
+        release: {{ .Release.Name | quote }}
 {{- if or .Values.podAnnotations .Values.metrics.enabled }}
       annotations:
   {{- if .Values.podAnnotations }}
@@ -46,8 +46,18 @@ spec:
         env:
         - name: ALLOW_EMPTY_PASSWORD
           value: {{ .Values.allowEmptyPassword | quote }}
+        {{- if .Values.prestashopCookieCheckIP }}
         - name: PRESTASHOP_COOKIE_CHECK_IP
           value: {{ .Values.prestashopCookieCheckIP | quote }}
+        {{- end }}
+        {{- if .Values.prestashopCountry }}
+        - name: PRESTASHOP_COUNTRY
+          value: {{ .Values.prestashopCountry | quote }}
+        {{- end }}
+        {{- if .Values.prestashopLanguage }}
+        - name: PRESTASHOP_LANGUAGE
+          value: {{ .Values.prestashopLanguage | quote }}
+        {{- end }}
         {{- if .Values.mariadb.enabled }}
         - name: MARIADB_HOST
           value: {{ template "prestashop.mariadb.fullname" . }}

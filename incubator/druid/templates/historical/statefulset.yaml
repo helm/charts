@@ -1,0 +1,141 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: {{ template "druid.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: {{ .Values.historical.name }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "druid.historical.fullname" . }}
+spec:
+  serviceName: {{ template "druid.historical.fullname" . }}
+  replicas: {{ .Values.historical.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "druid.name" . }}
+      release: {{ .Release.Name }}
+      component: {{ .Values.historical.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "druid.name" . }}
+        component: {{ .Values.historical.name }}
+        release: {{ .Release.Name }}
+        {{- with .Values.historical.podAnnotations }}
+      annotations:
+{{ toYaml . | indent 8 }}
+        {{- end }}
+    spec:
+      {{- if or .Values.historical.antiAffinity .Values.historical.nodeAffinity }}
+      affinity:
+      {{- end }}
+      {{- if eq .Values.historical.antiAffinity "hard" }}
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - topologyKey: "kubernetes.io/hostname"
+              labelSelector:
+                matchLabels:
+                  app: "{{ template "druid.name" . }}"
+                  release: "{{ .Release.Name }}"
+                  component: "{{ .Values.historical.name }}"
+      {{- else if eq .Values.historical.antiAffinity "soft" }}
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            podAffinityTerm:
+              topologyKey: kubernetes.io/hostname
+              labelSelector:
+                matchLabels:
+                  app: "{{ template "druid.name" . }}"
+                  release: "{{ .Release.Name }}"
+                  component: "{{ .Values.historical.name }}"
+      {{- end }}
+      {{- with .Values.historical.nodeAffinity }}
+        nodeAffinity:
+{{ toYaml . | indent 10 }}
+      {{- end }}
+{{- if .Values.historical.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.historical.nodeSelector | indent 8 }}
+{{- end }}
+{{- if .Values.historical.tolerations }}
+      tolerations:
+{{ toYaml .Values.historical.tolerations | indent 8 }}
+{{- end }}
+      containers:
+      - name: druid
+        args: [ "historical" ]
+        env:
+        {{- if .Values.zookeeper.enabled }}
+        - name: ZOOKEEPER_HOST
+          value: {{ .Release.Name }}-zookeeper-headless:2181
+        {{- else }}
+        - name: ZOOKEEPER_HOST
+          value: {{ .Values.zkHosts }}
+        {{- end }}
+        {{- if .Values.mysql.enabled }}
+        - name: DB_HOST
+          value: {{ .Release.Name }}-mysql
+        - name: DB_TYPE
+          value: mysql
+        - name: DB_USERNAME
+          value: {{ .Values.mysql.mysqlUser }}
+        - name: DB_PASSWORD
+          value: {{ .Values.mysql.mysqlPassword }}
+        - name: DB_DBNAME
+          value: {{ .Values.mysql.mysqlDatabase }}
+        - name: DB_PORT
+          value: "3306"
+        {{- end }}
+        - name: JAVA_OPTS
+          value: {{ .Values.historical.javaOpts }}
+        {{- range $key, $value := .Values.env }}
+        - name: {{ $key }}
+          value: {{ $value | quote }}
+        {{- end }}
+        resources:
+{{ toYaml .Values.historical.resources | indent 12 }}
+        livenessProbe:
+          initialDelaySeconds: 60
+          httpGet:
+            path: /status/health
+            port: {{ .Values.historical.port }}
+        readinessProbe:
+          initialDelaySeconds: 60
+          httpGet:
+            path: /status/health
+            port: {{ .Values.historical.port }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+        ports:
+        - containerPort: {{ .Values.historical.port }}
+          name: http
+        volumeMounts:
+        - mountPath: /var/druid/
+          name: data
+  {{- if not .Values.historical.persistence.enabled }}
+      volumes:
+      - name: data
+        emptyDir: {}
+  {{- end }}
+  updateStrategy:
+    type: {{ .Values.historical.updateStrategy.type }}
+  {{- if .Values.historical.persistence.enabled }}
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes:
+        - {{ .Values.historical.persistence.accessMode | quote }}
+    {{- if .Values.historical.persistence.storageClass }}
+    {{- if (eq "-" .Values.historical.persistence.storageClass) }}
+      storageClassName: ""
+    {{- else }}
+      storageClassName: "{{ .Values.historical.persistence.storageClass }}"
+    {{- end }}
+    {{- end }}
+      resources:
+        requests:
+          storage: "{{ .Values.historical.persistence.size }}"
+  {{ end }}

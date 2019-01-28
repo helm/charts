@@ -22,8 +22,8 @@ spec:
       {{- end }}
       containers:
       - name: {{ template "rocketchat.fullname" . }}
-        image: "{{ .Values.image }}"
-        imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
         - name: DEPLOY_PLATFORM
           value: helm-chart
@@ -37,6 +37,8 @@ spec:
             secretKeyRef:
               name: {{ template "rocketchat.fullname" . }}
               key: mongo-uri
+        {{ else if .Values.mongodbURL }}
+          value: {{ .Values.mongodbURL }}
         {{ else }}
           value: mongodb://{{ template "rocketchat.mongodb.fullname" . }}:27017/rocketchat
         {{ end }}
