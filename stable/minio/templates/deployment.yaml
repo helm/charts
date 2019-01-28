@@ -26,6 +26,9 @@ spec:
   {{- if .Values.gcsgateway.enabled }}
   replicas: {{ .Values.gcsgateway.replicas }}
   {{- end }}
+  {{- if .Values.ossgateway.enabled }}
+  replicas: {{ .Values.ossgateway.replicas }}
+  {{- end }}
   selector:
     matchLabels:
       app: {{ template "minio.name" . }}
@@ -62,6 +65,12 @@ spec:
           "cp /tmp/config.json {{ .Values.configPath }} && 
           /usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} gateway gcs {{ .Values.gcsgateway.projectId }}" ]
           {{- else }}
+          {{- if .Values.ossgateway.enabled }}
+          command: [ "/bin/sh", 
+          "-ce", 
+          "cp /tmp/config.json {{ .Values.configPath }} && 
+          /usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} gateway oss {{ .Values.ossgateway.endpointURL }}" ]
+          {{- else }}
           {{- if .Values.nasgateway.enabled }}
           command: [ "/bin/sh", 
           "-ce", 
@@ -72,6 +81,7 @@ spec:
           "-ce", 
           "cp /tmp/config.json {{ .Values.configPath }} && 
           /usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} server {{ .Values.mountPath }}" ]
+          {{- end }}
           {{- end }}
           {{- end }}
           {{- end }}
@@ -125,11 +135,13 @@ spec:
             {{- end}}
           livenessProbe:
             httpGet:
-              {{- if .Values.tls.enabled }}
-              scheme: HTTPS
-              {{- end }}
               path: /minio/health/live
               port: service
+              {{- if .Values.tls.enabled }}
+              scheme: HTTPS
+              {{ else }}
+              scheme: HTTP
+              {{- end }}
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}

@@ -7,6 +7,10 @@ metadata:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
   name: {{ template "kibana.fullname" . }}
+{{- if .Values.deployment.annotations }}
+  annotations:
+{{ toYaml .Values.deployment.annotations | indent 4 }}
+{{- end }}
 spec:
   replicas: {{ .Values.replicaCount }}
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
@@ -102,10 +106,12 @@ spec:
         - name: "{{ $key }}"
           value: "{{ $value }}"
         {{- end }}
+{{- if not .Values.service.disableInternalPort }}
         ports:
         - containerPort: {{ .Values.service.internalPort }}
           name: {{ template "kibana.name" . }}
           protocol: TCP
+{{- end }}
         volumeMounts:
         - name: plugins
           mountPath: /usr/share/kibana/plugins
@@ -167,6 +173,9 @@ spec:
           mountPath: "/usr/share/kibana/config/{{ $configFile }}"
           subPath: {{ $configFile }}
         {{- end }}
+{{- if .Values.extraVolumeMounts }}
+{{ toYaml .Values.extraVolumeMounts | indent 10 }}
+{{- end }}
 {{- if .Values.plugins.enabled}}
         - name: plugins
           mountPath: /usr/share/kibana/plugins
@@ -224,4 +233,7 @@ spec:
         - name: {{ .name }}
           configMap:
             name: {{ .configMap }}
+{{- end }}
+{{- if .Values.extraVolumes }}
+{{ toYaml .Values.extraVolumes | indent 8 }}
 {{- end }}

@@ -6,12 +6,12 @@ replicaCount: 3
 # imagePullSecret:
 image:
   repository: vault
-  tag: 0.11.2
+  tag:
   pullPolicy: IfNotPresent
 
 consulAgent:
   repository: consul
-  tag: 1.2.3
+  tag: 1.4.0
   pullPolicy: IfNotPresent
   # If you set join to a consul server endpoint, a consul agent will
   # be started in the vault pod.  If unset, no agent container is
@@ -80,6 +80,9 @@ affinity: |
 
 ## Deployment annotations
 annotations: {}
+
+## Extra Deployment labels
+labels: {}
 
 podAnnotations: {}
 ##    Read more about kube2iam to provide access to s3 https://github.com/jtblin/kube2iam

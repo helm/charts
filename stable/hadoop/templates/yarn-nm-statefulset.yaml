@@ -1,17 +1,16 @@
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
-  name: {{ template "hadoop.fullname" . }}-yarn-nm
+  name: {{ include "hadoop.fullname" . }}-yarn-nm
   annotations:
     checksum/config: {{ include (print $.Template.BasePath "/hadoop-configmap.yaml") . | sha256sum }}
   labels:
-    app: {{ template "hadoop.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    app: {{ include "hadoop.name" . }}
+    chart: {{ include "hadoop.chart" . }}
     release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
     component: yarn-nm
 spec:
-  serviceName: {{ template "hadoop.fullname" . }}-yarn-nm
+  serviceName: {{ include "hadoop.fullname" . }}-yarn-nm
   replicas: {{ .Values.yarn.nodeManager.replicas }}
 {{- if .Values.yarn.nodeManager.parallelCreate }}
   podManagementPolicy: Parallel
@@ -19,7 +18,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "hadoop.name" . }}
+        app: {{ include "hadoop.name" . }}
         release: {{ .Release.Name }}
         component: yarn-nm
     spec:
@@ -30,7 +29,7 @@ spec:
           - topologyKey: "kubernetes.io/hostname"
             labelSelector:
               matchLabels:
-                app:  {{ template "hadoop.name" . }}
+                app:  {{ include "hadoop.name" . }}
                 release: {{ .Release.Name | quote }}
                 component: yarn-nm
         {{- else if eq .Values.antiAffinity "soft" }}
@@ -40,15 +39,15 @@ spec:
               topologyKey: "kubernetes.io/hostname"
               labelSelector:
                 matchLabels:
-                  app:  {{ template "hadoop.name" . }}
+                  app:  {{ include "hadoop.name" . }}
                   release: {{ .Release.Name | quote }}
                   component: yarn-nm
         {{- end }}
       terminationGracePeriodSeconds: 0
       containers:
       - name: yarn-nm
-        image: {{ .Values.image }}
-        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         ports:
         - containerPort: 8088
           name: web
@@ -89,4 +88,4 @@ spec:
       volumes:
       - name: hadoop-config
         configMap:
-          name: {{ template "hadoop.fullname" . }}
+          name: {{ include "hadoop.fullname" . }}
