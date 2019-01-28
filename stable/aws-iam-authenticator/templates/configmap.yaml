@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "aws-iam-authenticator.fullname" . }}
+  labels:
+    app: {{ template "aws-iam-authenticator.name" . }}
+    chart: {{ template "aws-iam-authenticator.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  config.yaml: |
+{{ toYaml .Values.config | indent 4 }}
