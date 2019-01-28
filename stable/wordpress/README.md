@@ -152,7 +152,7 @@ Note that [values-production.yaml](values-production.yaml) includes a replicaCou
 
 ```console
 $ helm install stable/nfs-server-provisioner --set persistence.enabled=true,persistence.size=10Gi
-$ helm install --name my-release -f values-production.yaml --set persistence.storageClass=nfs stable/wordpress
+$ helm install --name my-release -f values-production.yaml --set persistence.storageClass=nfs stable/wordpress --set mariadb.master.persistence.storageClass=nfs
 ```
 
 ## Persistence
