@@ -702,6 +702,21 @@ web:
   syslogSecretsPath: "/concourse-syslog"
   tlsSecretsPath: "/concourse-web-tls"
 
+  ## Configure additional volumes for the
+  ## web container(s)
+  ##
+  # additionalVolumes:
+  #   - name: my-team-authorized-keys
+  #     configMap:
+  #       name: my-team-authorized-keys-config
+
+  ## Configure additional volumeMounts for the
+  ## web container(s)
+  ##
+  # additionalVolumeMounts:
+  #   - name: my-team-authorized-keys
+  #     mountPath: /my-team-authorized-keys
+
   ## Additional affinities to add to the web pods.
   ##
   # additionalAffinities:
@@ -1031,8 +1046,8 @@ rbac:
 ##
 secrets:
 
-  ## List of username:bcrypted_password combinations for all your local concourse users.
-  localUsers: "test:$2a$10$sDB6AsH2HheOWHILrnHVJOCZq/GYtUYE02ypJJTQBmWJNivYNhP3y"
+  ## List of username:password or username:bcrypted_password combinations for all your local concourse users.
+  localUsers: "test:test"
   ## Create the secret resource from the following values. Set this to
   ## false to manage these secrets outside Helm.
   ##
