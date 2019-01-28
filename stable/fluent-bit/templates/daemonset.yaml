@@ -64,7 +64,7 @@ spec:
 {{- else }}
         - name: config
           mountPath: /fluent-bit/etc/fluent-bit.conf
-          subPath: fluent-bit.conf     
+          subPath: fluent-bit.conf
         - name: config
           mountPath: /fluent-bit/etc/fluent-bit-service.conf
           subPath: fluent-bit-service.conf
@@ -77,7 +77,7 @@ spec:
         - name: config
           mountPath: /fluent-bit/etc/fluent-bit-output.conf
           subPath: fluent-bit-output.conf
-          
+
 {{- if .Values.parsers.enabled }}
         - name: config
           mountPath: /fluent-bit/etc/parsers_custom.conf
@@ -106,6 +106,10 @@ spec:
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
     {{- end }}
+      {{ if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+      {{- end }}
     {{- if .Values.tolerations }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
