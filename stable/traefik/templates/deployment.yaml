@@ -103,7 +103,7 @@ spec:
           {{- end }}
         {{- end }}
         {{- if .Values.env }}
-{{ toYaml .Values.env | indent 8 }}
+{{ toYaml .Values.env | indent 10 }}
         {{- end }}
         {{- end }}
         volumeMounts:
