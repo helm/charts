@@ -128,6 +128,9 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `data.persistence.size`              | Data persistent volume size                                         | `30Gi`                                              |
 | `data.persistence.storageClass`      | Data persistent volume Class                                        | `nil`                                               |
 | `data.persistence.accessMode`        | Data persistent Access Mode                                         | `ReadWriteOnce`                                     |
+| `data.volumeHostPath.enabled`        | Non-persistent volume of type `hostPath` enabled/disabled           | `false`                                             |
+| `data.volumeHostPath.path`           | Location of the `hostPath` volume on host                           | `/data`                                             |
+| `data.volumeHostPath.type`           | Type of the `hostPath` volume                                       | `""`                                                |
 | `data.podAnnotations`                | Data StatefulSet annotations                                        | `{}`                                                |
 | `data.nodeSelector`                  | Node labels for data pod assignment                                 | `{}`                                                |
 | `data.tolerations`                   | Data tolerations                                                    | `[]`                                                |
