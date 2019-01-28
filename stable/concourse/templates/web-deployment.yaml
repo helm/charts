@@ -40,6 +40,12 @@ spec:
           imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
           args:
             - "web"
+            {{- if and (.Values.concourse.web.awsSecretsManager.enabled) (.Values.concourse.web.awsSecretsManager.region) }}
+            - '--aws-secretsmanager-region={{ .Values.concourse.web.awsSecretsManager.region | quote }}'
+            {{- end }}
+            {{- if and (.Values.concourse.web.awsSsm.enabled) (.Values.concourse.web.awsSsm.region) }}
+            - '--aws-ssm-region={{ .Values.concourse.web.awsSsm.region | quote }}'
+            {{- end }}
           env:
             {{- if .Values.concourse.web.logLevel }}
             - name: CONCOURSE_LOG_LEVEL
@@ -64,9 +70,9 @@ spec:
             - name: CONCOURSE_TLS_BIND_PORT
               value: {{ .Values.concourse.web.tls.bindPort | default "443" | quote }}
             - name: CONCOURSE_TLS_CERT
-              value: "/concourse-web-tls/client.cert"
+              value: "{{ .Values.web.tlsSecretsPath }}/client.cert"
             - name: CONCOURSE_TLS_KEY
-              value: "/concourse-web-tls/client.key"
+              value: "{{ .Values.web.tlsSecretsPath }}/client.key"
             {{- end }}
             {{- if .Values.concourse.web.tls.enabled }}
             - name: CONCOURSE_EXTERNAL_URL
@@ -203,15 +209,15 @@ spec:
             {{- end }}
             {{- if .Values.secrets.postgresCaCert }}
             - name: CONCOURSE_POSTGRES_CA_CERT
-              value: "/concourse-postgresql/ca.cert"
+              value: "{{ .Values.web.postgresqlSecretsPath }}/ca.cert"
             {{- end }}
             {{- if .Values.secrets.postgresClientCert }}
             - name: CONCOURSE_POSTGRES_CLIENT_CERT
-              value: "/concourse-postgresql/client.cert"
+              value: "{{ .Values.web.postgresqlSecretsPath }}/client.cert"
             {{- end }}
             {{- if .Values.secrets.postgresClientKey }}
             - name: CONCOURSE_POSTGRES_CLIENT_KEY
-              value: "/concourse-postgresql/client.key"
+              value: "{{ .Values.web.postgresqlSecretsPath }}/client.key"
             {{- end }}
             {{- if .Values.concourse.web.postgres.connectTimeout }}
             - name: CONCOURSE_POSTGRES_CONNECT_TIMEOUT
@@ -257,10 +263,6 @@ spec:
                   name: {{ template "concourse.concourse.fullname" . }}
                   key: aws-secretsmanager-session-token
             {{- end }}
-            {{- if .Values.concourse.web.awsSecretsManager.region }}
-            - name: AWS_REGION
-              value: {{ .Values.concourse.web.awsSecretsManager.region | quote }}
-            {{- end }}
             {{- if .Values.concourse.web.awsSecretsManager.pipelineSecretTemplate }}
             - name: CONCOURSE_AWS_SECRETSMANAGER_PIPELINE_SECRET_TEMPLATE
               value: {{ .Values.concourse.web.awsSecretsManager.pipelineSecretTemplate | quote }}
@@ -289,10 +291,6 @@ spec:
                   name: {{ template "concourse.concourse.fullname" . }}
                   key: aws-ssm-session-token
             {{- end }}
-            {{- if .Values.concourse.web.awsSsm.region }}
-            - name: AWS_REGION
-              value: {{ .Values.concourse.web.awsSsm.region | quote }}
-            {{- end }}
             {{- if .Values.concourse.web.awsSsm.pipelineSecretTemplate }}
             - name: CONCOURSE_AWS_SSM_PIPELINE_SECRET_TEMPLATE
               value: {{ .Values.concourse.web.awsSsm.pipelineSecretTemplate | quote }}
@@ -312,7 +310,7 @@ spec:
               value: {{ .Values.concourse.web.vault.authBackend | quote }}
             {{- if .Values.concourse.web.vault.useCaCert }}
             - name: CONCOURSE_VAULT_CA_CERT
-              value: "/concourse-vault/ca.cert"
+              value: "{{ .Values.web.vaultSecretsPath }}/ca.cert"
             {{- end }}
             {{- if eq (default "" .Values.concourse.web.vault.authBackend) "token" }}
             - name: CONCOURSE_VAULT_CLIENT_TOKEN
@@ -323,9 +321,9 @@ spec:
             {{- end }}
             {{- if eq (default "" .Values.concourse.web.vault.authBackend) "cert" }}
             - name: CONCOURSE_VAULT_CLIENT_CERT
-              value: "/concourse-vault/client.cert"
+              value: "{{ .Values.web.vaultSecretsPath }}/client.cert"
             - name: CONCOURSE_VAULT_CLIENT_KEY
-              value: "/concourse-vault/client.key"
+              value: "{{ .Values.web.vaultSecretsPath }}/client.key"
             {{- end }}
             {{- if eq (default "" .Values.concourse.web.vault.authBackend) "approle" }}
             - name: CONCOURSE_VAULT_AUTH_PARAM
@@ -511,7 +509,7 @@ spec:
             {{- end }}
             {{- if .Values.concourse.web.syslog.useCaCert }}
             - name: CONCOURSE_SYSLOG_CA_CERT
-              value: "/concourse-syslog/ca.cert"
+              value: "{{ .Values.web.syslogSecretsPath }}/ca.cert"
             {{- end }}
             {{- end }}
 
@@ -524,7 +522,7 @@ spec:
               value: {{ .Values.concourse.web.auth.duration | quote }}
             {{- end }}
             - name: CONCOURSE_SESSION_SIGNING_KEY
-              value: "/concourse-keys/session_signing_key"
+              value: "{{ .Values.web.keySecretsPath }}/session_signing_key"
 
             {{- if .Values.concourse.web.auth.mainTeam.localUser }}
             - name: CONCOURSE_MAIN_TEAM_LOCAL_USER
@@ -618,7 +616,7 @@ spec:
             {{- end }}
             {{- if .Values.concourse.web.auth.cf.useCaCert }}
             - name: CONCOURSE_CF_CA_CERT
-              value: "/concourse-auth/cf_ca.cert"
+              value: "{{ .Values.web.authSecretsPath }}/cf_ca.cert"
             {{- end }}
             {{- if .Values.concourse.web.auth.cf.skipSslValidation }}
             - name: CONCOURSE_CF_SKIP_SSL_VALIDATION
@@ -643,7 +641,7 @@ spec:
             {{- end }}
             {{- if .Values.concourse.web.auth.github.useCaCert }}
             - name: CONCOURSE_GITHUB_CA_CERT
-              value: "/concourse-auth/github_ca.cert"
+              value: "{{ .Values.web.authSecretsPath }}/github_ca.cert"
             {{- end }}
             {{- end }}
 
@@ -675,7 +673,7 @@ spec:
             {{- end }}
             {{- if .Values.concourse.web.auth.ldap.useCaCert }}
             - name: CONCOURSE_LDAP_CA_CERT
-              value: "/concourse-auth/ldap_ca.cert"
+              value: "{{ .Values.web.authSecretsPath }}/ldap_ca.cert"
             {{- end }}
             {{- if .Values.concourse.web.auth.ldap.displayName }}
             - name: CONCOURSE_LDAP_DISPLAY_NAME
@@ -788,7 +786,7 @@ spec:
             {{- end }}
             {{- if .Values.concourse.web.auth.oauth.useCaCert }}
             - name: CONCOURSE_OAUTH_CA_CERT
-              value: "/concourse-auth/oauth_ca.cert"
+              value: "{{ .Values.web.authSecretsPath }}/oauth_ca.cert"
             {{- end }}
             {{- if .Values.concourse.web.auth.oauth.skipSslValidation }}
             - name: CONCOURSE_OAUTH_SKIP_SSL_VALIDATION
@@ -829,7 +827,7 @@ spec:
             {{- end }}
             {{- if .Values.concourse.web.auth.oidc.useCaCert }}
             - name: CONCOURSE_OIDC_CA_CERT
-              value: "/concourse-auth/oidc_ca.cert"
+              value: "{{ .Values.web.authSecretsPath }}/oidc_ca.cert"
             {{- end }}
             {{- if .Values.concourse.web.auth.oidc.skipSslValidation }}
             - name: CONCOURSE_OIDC_SKIP_SSL_VALIDATION
@@ -856,9 +854,9 @@ spec:
               value: {{ .Values.concourse.web.tsa.peerIp | quote }}
             {{- end }}
             - name: CONCOURSE_TSA_HOST_KEY
-              value: "/concourse-keys/host_key"
+              value: "{{ .Values.web.keySecretsPath }}/host_key"
             - name: CONCOURSE_TSA_AUTHORIZED_KEYS
-              value: "/concourse-keys/worker_key.pub"
+              value: "{{ .Values.web.keySecretsPath }}/worker_key.pub"
             {{- if .Values.concourse.web.tsa.teamAuthorizedKeys }}
             - name: CONCOURSE_TSA_TEAM_AUTHORIZED_KEYS
               value: {{ .Values.concourse.web.tsa.teamAuthorizedKeys | quote }}
@@ -907,36 +905,42 @@ spec:
 {{ toYaml .Values.web.resources | indent 12 }}
           volumeMounts:
             - name: concourse-keys
-              mountPath: /concourse-keys
+              mountPath: {{ .Values.web.keySecretsPath | quote }}
               readOnly: true
             {{- if .Values.concourse.web.tls.enabled }}
             - name: web-tls
-              mountPath: /concourse-web-tls
+              mountPath: {{ .Values.web.tlsSecretsPath | quote }}
               readOnly: true
             {{- end }}
             {{- if .Values.concourse.web.vault.enabled }}
             - name: vault-keys
-              mountPath: /concourse-vault
+              mountPath: {{ .Values.web.vaultSecretsPath | quote }}
               readOnly: true
             {{- end }}
             {{- if not (eq (default "disable" .Values.concourse.web.postgres.sslmode) "disable") }}
             - name: postgresql-keys
-              mountPath: /concourse-postgresql
+              mountPath: {{ .Values.web.postgresqlSecretsPath | quote }}
               readOnly: true
             {{- end }}
             {{- if .Values.concourse.web.syslog.enabled }}
             - name: syslog-keys
-              mountPath: /concourse-syslog
+              mountPath: {{ .Values.web.syslogSecretsPath | quote }}
               readOnly: true
             {{- end }}
             - name: auth-keys
-              mountPath: /concourse-auth
+              mountPath: {{ .Values.web.authSecretsPath | quote }}
               readOnly: true
+{{- if .Values.web.additionalVolumeMounts }}
+{{ toYaml .Values.web.additionalVolumeMounts | indent 12 }}
+{{- end }}
       affinity:
 {{- if .Values.web.additionalAffinities }}
 {{ toYaml .Values.web.additionalAffinities | indent 8 }}
 {{- end }}
       volumes:
+{{- if .Values.web.additionalVolumes }}
+{{ toYaml .Values.web.additionalVolumes | indent 8 }}
+{{- end }}
         - name: concourse-keys
           secret:
             secretName: {{ template "concourse.concourse.fullname" . }}

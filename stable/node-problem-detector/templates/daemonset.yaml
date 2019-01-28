@@ -18,12 +18,14 @@ spec:
         app.kubernetes.io/name: {{ include "node-problem-detector.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
       annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
         scheduler.alpha.kubernetes.io/critical-pod: ''
 {{- if .Values.annotations }}
 {{ toYaml .Values.annotations | indent 8 }}
 {{- end }}
     spec:
       serviceAccountName: {{ template "node-problem-detector.serviceAccountName" . }}
+      hostNetwork: {{ .Values.hostNetwork }}
       containers:
         - name: {{ .Chart.Name }}
           image:  "{{ .Values.image.repository }}:{{ .Values.image.tag }}"

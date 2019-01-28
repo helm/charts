@@ -158,6 +158,14 @@ spec:
             - name: ADD_TIMESTAMP
               value: {{ quote .Values.sumologic.addTimeStamp }}
             {{- end }}
+            {{- if quote .Values.sumologic.addTime }}
+            - name: ADD_TIME
+              value: {{ quote .Values.sumologic.addTime }}
+            {{- end }}
+            {{- if quote .Values.sumologic.addStream }}
+            - name: ADD_STREAM
+              value: {{ quote .Values.sumologic.addStream }}
+            {{- end }}
             {{- if quote .Values.sumologic.verifySsl }}
             - name: VERIFY_SSL
               value: {{ quote .Values.sumologic.verifySsl }}
@@ -190,6 +198,9 @@ spec:
             - name: ENABLE_STAT_WATCHER
               value: {{ quote .Values.sumologic.enableStatWatcher }}
             {{- end }}
+{{- if .Values.extraEnv }}
+{{ toYaml .Values.extraEnv | indent 12 }}
+{{- end }}
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "sumologic-fluentd.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
       volumes:
         - name: pos-files
