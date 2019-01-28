@@ -154,10 +154,18 @@ spec:
         - name: JMX_PORT
           value: "{{ .Values.jmx.port }}"
         {{- end }}
-        - name: POD_IP
+        - name: POD_NAME
           valueFrom:
             fieldRef:
-              fieldPath: status.podIP
+              fieldPath: metadata.name
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
         - name: KAFKA_HEAP_OPTS
           value: {{ .Values.kafkaHeapOptions }}
         {{- if not (hasKey .Values.configurationOverrides "zookeeper.connect") }}
@@ -200,8 +208,8 @@ spec:
         - -exc
         - |
           unset KAFKA_PORT && \
-          export KAFKA_BROKER_ID=${HOSTNAME##*-} && \
-          export KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://${POD_IP}:9092{{ if kindIs "string" $advertisedListenersOverride }}{{ printf ",%s" $advertisedListenersOverride }}{{ end }} && \
+          export KAFKA_BROKER_ID=${POD_NAME##*-} && \
+          export KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://${POD_NAME}.{{ include "kafka.fullname" . }}-headless.${POD_NAMESPACE}:9092{{ if kindIs "string" $advertisedListenersOverride }}{{ printf ",%s" $advertisedListenersOverride }}{{ end }} && \
           exec /etc/confluent/docker/run
         volumeMounts:
         - name: datadir

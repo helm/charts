@@ -5,7 +5,7 @@ strategy:
     maxUnavailable: 0
 image:
   repository: chartmuseum/chartmuseum
-  tag: v0.8.0
+  tag: v0.8.1
   pullPolicy: IfNotPresent
 env:
   open:
@@ -89,6 +89,19 @@ env:
     GOOGLE_CREDENTIALS_JSON:
     # Redis requirepass server configuration
     CACHE_REDIS_PASSWORD:
+  # Name of an existing secret to get the secret values ftom
+  existingSecret:
+  # Stores Enviromnt Variable to secret key name mappings
+  existingSecretMappings:
+    # username for basic http authentication
+    BASIC_AUTH_USER:
+    # password for basic http authentication
+    BASIC_AUTH_PASS:
+    # GCP service account json file
+    GOOGLE_CREDENTIALS_JSON:
+    # Redis requirepass server configuration
+    CACHE_REDIS_PASSWORD:
+
 deployment:
   ## Chartmuseum Deployment annotations
   annotations: {}
@@ -137,7 +150,12 @@ serviceAccount:
   create: false
   # name:
 
-securityContext: {}
+# UID/GID 1000 is the default user "chartmuseum" used in
+# the container image starting in v0.8.0 and above. This
+# is required for local persistant storage. If your cluster
+# does not allow this, try setting securityContext: {}
+securityContext:
+  fsGroup: 1000
 
 nodeSelector: {}
 

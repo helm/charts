@@ -1,5 +1,5 @@
 {{- if .Values.prometheus.enabled }}
-apiVersion: monitoring.coreos.com/v1
+apiVersion: {{ printf "%s/v1" (.Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com") }}
 kind: Prometheus
 metadata:
   name: {{ template "prometheus-operator.fullname" . }}-prometheus
@@ -72,6 +72,8 @@ spec:
   serviceMonitorSelector:
     matchLabels:
       release: {{ .Release.Name | quote }}
+{{ else }}
+  serviceMonitorSelector: {}
 {{- end }}
 {{- if .Values.prometheus.prometheusSpec.serviceMonitorNamespaceSelector }}
   serviceMonitorNamespaceSelector:
@@ -117,7 +119,7 @@ spec:
   affinity:
     podAntiAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
-      - topologyKey: kubernetes.io/hostname
+      - topologyKey: {{ .Values.prometheus.prometheusSpec.podAntiAffinityTopologyKey }}
         labelSelector:
           matchLabels:
             app: prometheus
@@ -128,7 +130,7 @@ spec:
       preferredDuringSchedulingIgnoredDuringExecution:
       - weight: 100
         podAffinityTerm:
-          topologyKey: kubernetes.io/hostname
+          topologyKey: {{ .Values.prometheus.prometheusSpec.podAntiAffinityTopologyKey }}
           labelSelector:
             matchLabels:
               app: prometheus

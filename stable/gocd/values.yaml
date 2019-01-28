@@ -47,6 +47,23 @@ server:
   #     cpu: 100m
   #     memory: 1024Mi
 
+  # specify init containers, e.g. to prepopulate home directories etc
+  initContainers: []
+  #  - name: download-kubectl
+  #    image: "ellerbrock/alpine-bash-curl-ssl:latest"
+  #    imagePullPolicy: "IfNotPresent"
+  #    volumeMounts:
+  #      - name: kubectl
+  #        mountPath: /download
+  #    workingDir: /download
+  #    command: ["/bin/bash"]
+  #    args:
+  #      - "-c"
+  #      - 'curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl && chmod +x ./kubectl'
+
+  # specify restart policy for server
+  restartPolicy: Always
+
   ## Additional GoCD server pod labels
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
   nodeSelector: {}
@@ -69,9 +86,9 @@ server:
     #  server.env.extraEnvVars is the list of environment variables passed to GoCD Server
     extraEnvVars:
       - name: GOCD_PLUGIN_INSTALL_kubernetes-elastic-agents
-        value: https://github.com/gocd/kubernetes-elastic-agents/releases/download/v2.0.0/kubernetes-elastic-agent-2.0.0-113.jar
+        value: https://github.com/gocd/kubernetes-elastic-agents/releases/download/2.1.0-123/kubernetes-elastic-agent-2.1.0-123.jar
       - name: GOCD_PLUGIN_INSTALL_docker-registry-artifact-plugin
-        value: https://github.com/gocd/docker-registry-artifact-plugin/releases/download/1.0.0/docker-registry-artifact-plugin-1.0.0-3.jar
+        value: https://github.com/gocd/docker-registry-artifact-plugin/releases/download/1.0.0-25/docker-registry-artifact-plugin-1.0.0-25.jar
   service:
     # server.service.type is the GoCD Server service type
     type: "NodePort"
@@ -200,7 +217,10 @@ agent:
     # agent.env.agentAutoRegisterResources is the GoCD Agent auto-register resources
     agentAutoRegisterResources:
     # agent.env.agentAutoRegisterEnvironments is the GoCD Agent auto-register Environments
+    # deprecated because of a typo. Use agent.env.agentAutoRegisterEnvironments instead
     agentAutoRegisterEnvironemnts:
+    # agent.env.agentAutoRegisterEnvironments is the GoCD Agent auto-register Environments
+    agentAutoRegisterEnvironments:
     # agent.env.agentAutoRegisterHostname is the GoCD Agent auto-register hostname
     agentAutoRegisterHostname:
     # agent.env.goAgentSystemProperties is the GoCD Agent system properties
@@ -254,6 +274,23 @@ agent:
     #   readOnly: true
     # - name: gocd-agent-init-scripts
     #   mountPath: /docker-entrypoint.d/
+
+  # specify init containers, e.g. to prepopulate home directories etc
+  initContainers: []
+  #  - name: download-kubectl
+  #    image: "ellerbrock/alpine-bash-curl-ssl:latest"
+  #    imagePullPolicy: "IfNotPresent"
+  #    volumeMounts:
+  #      - name: kubectl
+  #        mountPath: /download
+  #    workingDir: /download
+  #    command: ["/bin/bash"]
+  #    args:
+  #      - "-c"
+  #      - 'curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl && chmod +x ./kubectl'
+
+  # specify restart policy for agents
+  restartPolicy: Always
 
   # agent.privileged is needed for running Docker-in-Docker (DinD) agents
   privileged: false
