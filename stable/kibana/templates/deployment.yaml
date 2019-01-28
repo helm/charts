@@ -106,7 +106,7 @@ spec:
         - name: "{{ $key }}"
           value: "{{ $value }}"
         {{- end }}
-{{- if .Values.service.disableInternalPort }}
+{{- if not .Values.service.disableInternalPort }}
         ports:
         - containerPort: {{ .Values.service.internalPort }}
           name: {{ template "kibana.name" . }}
