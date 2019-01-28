@@ -77,6 +77,8 @@ domainFilters: []
 zoneIdFilters: []
 # Filter sources managed by external-dns via annotation using label selector semantics (default: all sources)
 annotationFilter: ""
+## Adjust the interval for DNS updates
+interval: "1m"
 
 # Registry to use for ownership (txt or noop)
 registry: "txt"
