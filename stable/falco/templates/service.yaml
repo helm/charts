@@ -16,6 +16,6 @@ spec:
     targetPort: {{ .Values.falco.webserver.listen_port | default "8765"}}
   selector:
     app: {{ template "falco.fullname" . }}
-    release: {{ .Release.Name | quote }}
+    role: security
   type: ClusterIP
 {{- end }}
