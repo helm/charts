@@ -40,6 +40,12 @@ spec:
           imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
           args:
             - "web"
+            {{- if and (.Values.concourse.web.awsSecretsManager.enabled) (.Values.concourse.web.awsSecretsManager.region) }}
+            - '--aws-secretsmanager-region={{ .Values.concourse.web.awsSecretsManager.region | quote }}'
+            {{- end }}
+            {{- if and (.Values.concourse.web.awsSsm.enabled) (.Values.concourse.web.awsSsm.region) }}
+            - '--aws-ssm-region={{ .Values.concourse.web.awsSsm.region | quote }}'
+            {{- end }}
           env:
             {{- if .Values.concourse.web.logLevel }}
             - name: CONCOURSE_LOG_LEVEL
@@ -257,10 +263,6 @@ spec:
                   name: {{ template "concourse.concourse.fullname" . }}
                   key: aws-secretsmanager-session-token
             {{- end }}
-            {{- if .Values.concourse.web.awsSecretsManager.region }}
-            - name: AWS_REGION
-              value: {{ .Values.concourse.web.awsSecretsManager.region | quote }}
-            {{- end }}
             {{- if .Values.concourse.web.awsSecretsManager.pipelineSecretTemplate }}
             - name: CONCOURSE_AWS_SECRETSMANAGER_PIPELINE_SECRET_TEMPLATE
               value: {{ .Values.concourse.web.awsSecretsManager.pipelineSecretTemplate | quote }}
@@ -288,10 +290,6 @@ spec:
                 secretKeyRef:
                   name: {{ template "concourse.concourse.fullname" . }}
                   key: aws-ssm-session-token
-            {{- end }}
-            {{- if .Values.concourse.web.awsSsm.region }}
-            - name: AWS_REGION
-              value: {{ .Values.concourse.web.awsSsm.region | quote }}
             {{- end }}
             {{- if .Values.concourse.web.awsSsm.pipelineSecretTemplate }}
             - name: CONCOURSE_AWS_SSM_PIPELINE_SECRET_TEMPLATE
@@ -932,11 +930,17 @@ spec:
             - name: auth-keys
               mountPath: {{ .Values.web.authSecretsPath | quote }}
               readOnly: true
+{{- if .Values.web.additionalVolumeMounts }}
+{{ toYaml .Values.web.additionalVolumeMounts | indent 12 }}
+{{- end }}
       affinity:
 {{- if .Values.web.additionalAffinities }}
 {{ toYaml .Values.web.additionalAffinities | indent 8 }}
 {{- end }}
       volumes:
+{{- if .Values.web.additionalVolumes }}
+{{ toYaml .Values.web.additionalVolumes | indent 8 }}
+{{- end }}
         - name: concourse-keys
           secret:
             secretName: {{ template "concourse.concourse.fullname" . }}

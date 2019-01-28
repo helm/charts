@@ -15,9 +15,18 @@ halyard:
   additionalSecrets:
     create: false
     data: {}
+    ## Uncomment if you want to use a pre-created secret rather than feeding data in via helm.
+    # name:
   additionalConfigMaps:
     create: false
     data: {}
+  additionalProfileConfigMaps:
+    create: false
+    data: {}
+
+  ## Uncomment if you want to add extra commands to the init script
+  ## run by the init container before halyard is started.
+  # additionalInitScript: |-
 
 # Define which registries and repositories you want available in your
 # Spinnaker pipeline definitions
