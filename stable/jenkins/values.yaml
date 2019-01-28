@@ -168,6 +168,18 @@ Master:
     #     - jenkins.cluster.local
   AdditionalConfig: {}
 
+  SidecarContainers:
+  # - name: smee
+  #  image: docker.io/twalter/smee-client:1.0.2
+  #  args: ["--port", "{{ .Values.Master.ServicePort }}", "--path", "/github-webhook/"]
+  #  resources:
+  #    limits:
+  #      cpu: 50m
+  #      memory: 128Mi
+  #    requests:
+  #      cpu: 10m
+  #      memory: 32Mi
+
 Agent:
   Enabled: true
   Image: jenkins/jnlp-slave
