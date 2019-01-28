@@ -88,7 +88,6 @@ The following table lists the configurable parameters of the drone charts and th
 | `server.kubernetes.enabled`         | whether to use kubernetes to run pipelines (if `false` will run agents instead)                                            | `true`          |
 | `server.kubernetes.namespace`         | namespace in which to run pipelines, defaults to release namespace.                                            | ``          |
 | `server.kubernetes.pipelineServiceAccount`         | if rbac is enabled, what should name of pipeline service account be?                                            | ``          |
-
 | `server.annotations`        | Drone **server** annotations                                                                  | `{}`                        |
 | `server.resources`          | Drone **server** pod resource requests & limits                                               | `{}`                        |
 | `server.schedulerName`      | Drone **server** alternate scheduler name                                                     | `nil`                       |
