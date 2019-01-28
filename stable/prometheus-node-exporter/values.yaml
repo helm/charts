@@ -50,6 +50,12 @@ rbac:
 # their addresses here
 endpoints: []
 
+## Assign a nodeSelector if operating a hybrid cluster
+##
+nodeSelector: {}
+#   beta.kubernetes.io/arch: amd64
+#   beta.kubernetes.io/os: linux
+
 tolerations:
   - effect: NoSchedule
     operator: Exists
