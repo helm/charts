@@ -148,4 +148,4 @@ reference the default `values.yaml` to understand further options.
 | `roleBindings[n].subject.name` | Identify the name of the subject to be used in the role binding | |
 | `namespace` | Specify a namespace to be created and used, overriding the one on the command line | |
 | `namespaceAttributes.annotations` | Specify annotations to be attached to the namespace | |
-| `namespaceAttributes.lables` | Specify labels to be attached to the namespace | |
+| `namespaceAttributes.labels` | Specify labels to be attached to the namespace | |
