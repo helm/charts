@@ -174,7 +174,7 @@ spec:
           subPath: {{ $configFile }}
         {{- end }}
 {{- if .Values.extraVolumeMounts }}
-{{ toYaml .Values.extraVolumeMounts | indent 10 }}
+{{ toYaml .Values.extraVolumeMounts | indent 8 }}
 {{- end }}
 {{- if .Values.plugins.enabled}}
         - name: plugins
