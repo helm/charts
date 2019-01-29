@@ -339,7 +339,7 @@ kubeApiServer:
     serverName: kubernetes
     insecureSkipVerify: false
 
-  ## If your API endpoint address is not reachble (as in AKS) you can replace it with the kubernetes service
+  ## If your API endpoint address is not reachable (as in AKS) you can replace it with the kubernetes service
   ##
   relabelings: []
   # - sourceLabels:
