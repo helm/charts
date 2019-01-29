@@ -1,4 +1,0 @@
----
-# disable internal service
-service:
-  disableInternalPort: true
