@@ -6,7 +6,7 @@ mysql:
 
 php:
   repository: "wordpress"
-  tag: "php7.1-fpm"
+  tag: "fpm-alpine"
   envVars:
   - name: WORDPRESS_DB_HOST
     value: localhost

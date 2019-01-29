@@ -553,6 +553,14 @@ server:
   ##
   extraArgs: {}
 
+  ## Additional Prometheus server Volume mounts
+  ##
+  extraVolumeMounts: []
+
+  ## Additional Prometheus server Volumes
+  ##
+  extraVolumes: []
+
   ## Additional Prometheus server hostPath mounts
   ##
   extraHostPathMounts: []
