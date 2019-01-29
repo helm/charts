@@ -234,6 +234,7 @@ The following tables lists the configurable parameters of the prometheus-operato
 | Parameter | Description | Default |
 | ----- | ----------- | ------ |
 | `kubeApiServer.enabled` | Deploy `serviceMonitor` to scrape the Kubernetes API server | `true` |
+| `kubeApiServer.relabelings` | Relablings for the API Server ServiceMonitor | `[]` |
 | `kubeApiServer.tlsConfig.serverName` | Name of the server to use when validating TLS certificate | `kubernetes` |
 | `kubeApiServer.tlsConfig.insecureSkipVerify` | Skip TLS certificate validation when scraping | `false` |
 | `kubeApiServer.serviceMonitor.jobLabel` | The name of the label on the target service to use as the job name in prometheus | `component` |
