@@ -21,6 +21,7 @@ rules:
       - "delete"
       - "get"
       - "list"
+      - "watch"
   - apiGroups:
       - ""
     resources:
