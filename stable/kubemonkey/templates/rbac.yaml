@@ -1,0 +1,20 @@
+{{- if .Values.rbac.enabled -}}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ template "kubemonkey.fullname" . }}
+  namespace: {{ .Values.namespace }}
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ template "kubemonkey.fullname" . }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: edit
+subjects:
+  - kind: ServiceAccount
+    name: {{ template "kubemonkey.fullname" . }}
+    namespace: {{ .Values.namespace }}
+{{- end -}}
