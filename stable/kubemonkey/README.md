@@ -95,7 +95,7 @@ $ helm get manifest my-release
 | `args.logLevel`           | go log level                                        | 5                                |
 | `args.logDir`             | log directory                                       | /var/log/kube-monkey             |
 
-after all you can simply edit copy of values.yaml with your prefered configs and run as below
+after all you can simply edit copy of values.yaml with your prefered configs and run as below.
 
 ```console
 $ helm install --name my-release stable/kubemonkey --values values.yaml
