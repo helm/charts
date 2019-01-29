@@ -49,6 +49,7 @@ persistence:
   enabled: true
   size: 8Gi
   accessMode: ReadWriteOnce
+  reclaimPolicy: delete
   subPath:
   ## If defined, storageClassName: <storageClass>
   ## If set to "-", storageClassName: "", which disables dynamic provisioning
