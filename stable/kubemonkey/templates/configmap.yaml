@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "kubemonkey.fullname" . }}
+  namespace: {{ .Values.namespace }}
+data:
+    config.toml: |
+      [kubemonkey]
+      dry_run = {{ .Values.config.dryRun }}
+      run_hour = {{ .Values.config.runHour }}
+      start_hour = {{ .Values.config.startHour }}
+      end_hour = {{ .Values.config.endHour }}
+      blacklisted_namespaces = ["{{ .Values.config.blacklistedNamespaces }}"]
+      whitelisted_namespaces = ["{{ .Values.config.whitelistedNamespaces }}"]
+      time_zone = "{{ .Values.config.timeZone }}"
+      [debug]
+      enabled= {{ .Values.config.debug.enabled }}
+      schedule_immediate_kill= {{ .Values.config.debug.schedule_immediate_kill }}
+
