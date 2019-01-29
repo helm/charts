@@ -69,6 +69,10 @@ datadog:
   #    seLinuxOptions:
   #      seLinuxLabel: "spc_t"
 
+  ## @param clusterName - string - optional
+  ## Set a unique cluster name to allow scoping hosts and Cluster Checks easily
+  # clusterName: ""
+
   ## @param name - string - required
   ## Daemonset/Deployment container name
   ## See clusterAgent.containerName if clusterAgent.enabled = true
@@ -286,6 +290,7 @@ clusterAgent:
   ## ref:
   #
   token: ""
+
   replicas: 1
 
   ## @param metricsProvider - object - required
@@ -293,6 +298,27 @@ clusterAgent:
   #
   metricsProvider:
     enabled: false
+
+  ## @param clusterChecks - object - required
+  ## Enable the Cluster Checks feature on both the cluster-agents and the daemonset
+  ## ref: https://docs.datadoghq.com/agent/autodiscovery/clusterchecks/
+  ## Autodiscovery via Kube Service annotations is automatically enabled
+  ##
+  clusterChecks:
+    enabled: false
+
+  ## @param confd - list of objects - optional
+  ## Provide additional cluster check configurations
+  ## Each key will become a file in /conf.d
+  ## ref: https://docs.datadoghq.com/agent/autodiscovery/
+  # confd:
+  #   mysql.yaml: |-
+  #     cluster_check: true
+  #     instances:
+  #      - server: '<EXTERNAL_IP>'
+  #        port: 3306
+  #        user: datadog
+  #        pass: '<YOUR_CHOSEN_PASSWORD>'
 
   ## @param resources - object -required
   ## Datadog cluster-agent resource requests and limits.

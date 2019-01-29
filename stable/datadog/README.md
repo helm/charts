@@ -53,7 +53,7 @@ The Leader Election is enabled by default in the chart for the Cluster Agent. On
 
 #### Cluster Agent Token
 
-You can specify the Datadog Cluster Agent token used to secure the communication between the Cluster Agent(s)q and the Agents with `clusterAgent.token`.
+You can specify the Datadog Cluster Agent token used to secure the communication between the Cluster Agent(s) and the Agents with `clusterAgent.token`.
 
 **If you don't specify a token, a random one is generated at each deployment so you must use `--recreate-pods` to ensure all pod use the same token.** see[Datadog Chart notes](https://github.com/helm/charts/blob/57d3030941ad2ec2d6f97c86afdf36666658a884/stable/datadog/templates/NOTES.txt#L49-L59) to learn more.
 
@@ -265,7 +265,7 @@ helm install --name <RELEASE_NAME> \
 | `daemonset.useHostPort`                  | If true, use the same ports for both host and container                                   | `nil`                                       |
 | `daemonset.priorityClassName`            | Which Priority Class to associate with the daemonset                                      | `nil`                                       |
 | `datadog.leaderElection`                 | Enable the leader Election feature                                                        | `false`                                     |
-| `datadog.leaderLeaseDuration`            | The duration for which a leader stays elected.                                            | `nil`                                       |
+| `datadog.leaderLeaseDuration`            | The duration for which a leader stays elected.                                            | 60 sec, 15 if Cluster Checks enabled        |
 | `datadog.collectEvents`                  | Enable Kubernetes event collection. Requires leader election.                             | `false`                                     |
 | `deployment.affinity`                    | Node / Pod affinities                                                                     | `{}`                                        |
 | `deployment.tolerations`                 | List of node taints to tolerate                                                           | `[]`                                        |
@@ -281,6 +281,8 @@ helm install --name <RELEASE_NAME> \
 | `clusterAgent.image.pullPolicy`          | Image pull policy                                                                         | `IfNotPresent`                              |
 | `clusterAgent.image.pullSecrets`         | Image pull secrets                                                                        | `nil`                                       |
 | `clusterAgent.metricsProvider.enabled`   | Enable Datadog metrics as a source for HPA scaling                                        | `false`                                     |
+| `clusterAgent.clusterChecks.enabled`   | Enable Cluster Checks on both the Cluster Agent and the Agent daemonset |  `false`                  |
+| `clusterAgent.confd`                     | Additional check configurations (static and Autodiscovery) | `nil`             |
 | `clusterAgent.resources.requests.cpu`    | CPU resource requests                                                                     | `200m`                                      |
 | `clusterAgent.resources.limits.cpu`      | CPU resource limits                                                                       | `200m`                                      |
 | `clusterAgent.resources.requests.memory` | Memory resource requests                                                                  | `256Mi`                                     |
