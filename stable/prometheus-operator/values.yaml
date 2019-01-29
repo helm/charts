@@ -339,6 +339,18 @@ kubeApiServer:
     serverName: kubernetes
     insecureSkipVerify: false
 
+  ## If your API endpoint address is not reachble (as in AKS) you can replace it with the kubernetes service
+  ##
+  relabelings: []
+  # - sourceLabels:
+  #     - __meta_kubernetes_namespace
+  #     - __meta_kubernetes_service_name
+  #     - __meta_kubernetes_endpoint_port_name
+  #   action: keep
+  #   regex: default;kubernetes;https
+  # - targetLabel: __address__
+  #   replacement: kubernetes.default.svc:443
+
   serviceMonitor:
     jobLabel: component
     selector:
