@@ -92,7 +92,7 @@ The following table lists the configurable parameters of the Datadog chart and t
 | `datadog.resources.requests.memory` | Memory resource requests   | `256Mi`                                   |
 | `datadog.resources.limits.memory` | Memory resource limits       | `256Mi`                                   |
 | `datadog.securityContext`   | Allows you to overwrite the default securityContext applied to the container  | `nil`  |
-| `datadog.livenessProbe`     | Overrides the default liveness probe | exec /probe.sh                          |
+| `datadog.livenessProbe`     | Overrides the default liveness probe | http port 5555                          |
 | `datadog.hostname`          | Set the hostname (write it in datadog.conf) | `nil`                            |
 | `datadog.acInclude`         | Include containers based on image name | `nil`                                 |
 | `datadog.acExclude`         | Exclude containers based on image name | `nil`                                 |
