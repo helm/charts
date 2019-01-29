@@ -45,6 +45,7 @@ existingSecret: ""
 accessKey: "AKIAIOSFODNN7EXAMPLE"
 secretKey: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
 configPath: "/root/.minio/"
+configPathmc: "/root/.mc/"
 mountPath: "/export"
 replicas: 4
 
@@ -189,6 +190,12 @@ gcsgateway:
   gcsKeyJson: ""
   # Google cloud project-id
   projectId: ""
+
+ossgateway:
+  enabled: false
+  # Number of parallel instances
+  replicas: 4
+  endpointURL: ""
 
 ## Use minio on NAS backend
 ## https://docs.minio.io/docs/minio-gateway-for-nas
