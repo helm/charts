@@ -121,8 +121,11 @@ concourse:
       teams:
         - main
 
-      ## When true, namespaces are not deleted when the release is deleted.
+      ## Create the Kubernetes namespace for each team listed above.
+      createTeamNamespaces: true
 
+      ## When true, namespaces are not deleted when the release is deleted.
+      ## Irrelevant if the namespaces are not created by this chart.
       keepNamespaces: true
 
       ## Path to Kubernetes config when running ATC outside Kubernetes.
