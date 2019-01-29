@@ -57,7 +57,7 @@ spec:
             - name: http
               containerPort: 8088
               protocol: TCP
-          {{- with .Values.extraEnv }}
+          {{- if .Values.extraEnv }}
           env:
             {{- range $key, $value := .Values.extraEnv }}
             - name: "{{ $key }}"
