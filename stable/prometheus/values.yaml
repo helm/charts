@@ -514,6 +514,9 @@ server:
   name: server
   sidecarContainers:
 
+  ## Path to a config file inside the container
+  ##
+  configPath: /etc/config/prometheus.yml
   ## Prometheus server container image
   ##
   image:
@@ -561,6 +564,12 @@ server:
     #   subPath: ""
     #   hostPath: /etc/kubernetes/certs
     #   readOnly: true
+
+  extraEmptyDirMounts: []
+    # - name: externally-generated-config
+    #   mountPath: /etc/shared-config/
+    #   subPath: prometheus
+    #   readOnly: false
 
   extraConfigmapMounts: []
     # - name: certs-configmap

@@ -85,7 +85,7 @@ spec:
           {{- if .Values.server.retention }}
             - --storage.tsdb.retention={{ .Values.server.retention }}
           {{- end }}
-            - --config.file=/etc/config/prometheus.yml
+            - --config.file={{ .Values.server.configPath }}
             - --storage.tsdb.path={{ .Values.server.persistentVolume.mountPath }}
             - --web.console.libraries=/etc/prometheus/console_libraries
             - --web.console.templates=/etc/prometheus/consoles
@@ -139,6 +139,12 @@ spec:
               subPath: {{ .subPath }}
               readOnly: {{ .readOnly }}
           {{- end }}
+          {{- range .Values.server.extraEmptyDirMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              subPath: {{ .subPath }}
+              readOnly: {{ .readOnly }}
+          {{- end }}
       {{- if .Values.server.sidecarContainers }}
       {{- toYaml .Values.server.sidecarContainers | nindent 8 }}
       {{- end }}
@@ -174,6 +180,10 @@ spec:
         {{- else }}
           emptyDir: {}
         {{- end -}}
+      {{- range .Values.server.extraEmptyDirMounts }}
+        - name: {{ .name }}
+          emptyDir: {}
+      {{- end }}
       {{- range .Values.server.extraHostPathMounts }}
         - name: {{ .name }}
           hostPath:
