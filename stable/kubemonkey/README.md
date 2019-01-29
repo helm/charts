@@ -2,18 +2,19 @@
 
 [Kube-Monkey](https://github.com/asobti/kube-monkey) periodically kills pods in your Kubernetes cluster,that are opt-in based on their own rules.
 
-## Official Helm
+## TL;DR;
 
-TBA to official helm charts,There is no official helm chart yet for kube-monkey.
+```console
+$ helm install --name my-release stable/kubemonkey
+```
+
 
 ## Installing the Chart
 
 To install the chart with the release name `my-release`:
 
 ```console
-$ git clone https://github.com/asobti/kube-monkey
-$ cd kube-monkey/helm
-$ helm install --name my-release kubemonkey
+$ helm install --name my-release stable/kubemonkey
 ```
 
 The command deploys kube-monkey on the Kubernetes cluster in the default configuration. The [configurations](#Configurations) section lists the parameters that can be configured during installation.
@@ -34,14 +35,14 @@ By default `Kube-Monkey` runs in dry-run mode so it doesn't actually kill anythi
 If you're confident you want to use it in real run `helm` with:
 
 ```console
-$ helm install --name my-release kubemonkey --set config.dryRun=false
+$ helm install --name my-release stable/kubemonkey --set config.dryRun=false
 ```
 
 By default `Kube-Monkey` runs in without any white listed namespace assigned so it doesn't actually kill anything.
 If you're confident you want to enable it in real, run `helm` with:
 
 ```console
-$ helm install --name my-release kubemonkey \
+$ helm install --name my-release stable/kubemonkey \
                --set config.dryRun=false \
                --set config.whitelistedNamespaces="namespace1\"\,\"namespace2\"\,\"namespace3"
 ```
@@ -51,7 +52,7 @@ $ helm install --name my-release kubemonkey \
 If you want to see how kube-monkey kills pods immediatley in debub mode.
 
 ```console
-$ helm install --name my-release kubemonkey \
+$ helm install --name my-release stable/kubemonkey \
                --set config.dryRun=false \
                --set config.whitelistedNamespaces="namespace1\"\,\"namespace2\"\,\"namespace3" \
                --set config.debug.enabled=true \
@@ -60,7 +61,7 @@ $ helm install --name my-release kubemonkey \
 If you want change time kube-monkey wakesup and start and end killing pods.
 
 ```console
-$ helm install --name my-release kubemonkey \
+$ helm install --name my-release stable/kubemonkey \
                --set config.dryRun=false \
                --set config.whitelistedNamespaces="namespace1\"\,\"namespace2\"\,\"namespace3" \
                --set config.runHour=10 \
@@ -94,10 +95,10 @@ $ helm get manifest my-release
 | `args.logLevel`           | go log level                                        | 5                                |
 | `args.logDir`             | log directory                                       | /var/log/kube-monkey             |
 
-after all you can simply edit values.yaml with your prefered configs and run as below
+after all you can simply edit copy of values.yaml with your prefered configs and run as below
 
 ```console
-$ helm install --name my-release kubemonkey
+$ helm install --name my-release stable/kubemonkey --values values.yaml
 ```
 example of a modified values.yaml (only important parts are displayed)
 
