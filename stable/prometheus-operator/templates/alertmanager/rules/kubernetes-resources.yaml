@@ -1,5 +1,5 @@
 # Generated from 'kubernetes-resources' group from https://raw.githubusercontent.com/coreos/prometheus-operator/master/contrib/kube-prometheus/manifests/prometheus-rules.yaml
-{{- if and .Values.defaultRules.create }}
+{{- if and .Values.defaultRules.create .Values.defaultRules.rules.kubernetesResources }}
 apiVersion: {{ printf "%s/v1" (.Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com") }}
 kind: PrometheusRule
 metadata:
@@ -86,7 +86,11 @@ spec:
       annotations:
         message: '{{`{{ printf "%0.0f" $value }}`}}% throttling of CPU in namespace {{`{{ $labels.namespace }}`}} for container {{`{{ $labels.container_name }}`}} in pod {{`{{ $labels.pod_name }}`}}.'
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-cputhrottlinghigh
-      expr: "100 * sum(increase(container_cpu_cfs_throttled_periods_total{}[5m])) by (container_name, pod_name, namespace) \n  / \nsum(increase(container_cpu_cfs_periods_total{}[5m])) by (container_name, pod_name, namespace)\n  > 25"
+      expr: |-
+        100 * sum(increase(container_cpu_cfs_throttled_periods_total{container_name!="", }[5m])) by (container_name, pod_name, namespace)
+          /
+        sum(increase(container_cpu_cfs_periods_total{}[5m])) by (container_name, pod_name, namespace)
+          > 25
       for: 15m
       labels:
         severity: warning
