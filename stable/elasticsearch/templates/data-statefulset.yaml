@@ -109,7 +109,7 @@ spec:
         - name: DISCOVERY_SERVICE
           value: {{ template "elasticsearch.fullname" . }}-discovery
         - name: NODE_MASTER
-          value: "false"
+          value: "{{ .Values.data.masterEligible }}"
         - name: PROCESSORS
           valueFrom:
             resourceFieldRef:

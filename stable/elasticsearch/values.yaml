@@ -158,6 +158,7 @@ data:
   name: data
   exposeHttp: false
   replicas: 2
+  masterEligible: false
   heapSize: "1536m"
   # additionalJavaOpts: "-XX:MaxRAM=1536m"
   persistence:

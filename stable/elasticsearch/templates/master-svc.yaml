@@ -15,5 +15,9 @@ spec:
       targetPort: transport
   selector:
     app: {{ template "elasticsearch.name" . }}
+  {{- if and ( eq .Values.master.replicas 0.0 ) ( .Values.data.masterEligible ) }}
+    component: "{{ .Values.data.name }}"
+  {{- else }}
     component: "{{ .Values.master.name }}"
+  {{- end }}
     release: {{ .Release.Name }}
