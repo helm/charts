@@ -74,3 +74,10 @@ Or use chart dependencies with release name
     {{- printf "mongodb://%s-mongodb-replicaset.%s.svc.cluster.local:27017/graylog?replicaSet=rs0" .Release.Name .Release.Namespace -}}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Create chart name and version as used by the chart label.
+*/}}
+{{- define "graylog.chart" -}}
+{{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
+{{- end -}}

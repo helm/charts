@@ -4,7 +4,7 @@ metadata:
   name: {{ template "graylog.fullname" . }}
   labels:
     app.kubernetes.io/name: {{ template "graylog.name" . }}
-    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    helm.sh/chart: {{ template "graylog.chart" . }}
     app.kubernetes.io/managed-by: "{{ .Release.Service }}"
     app.kubernetes.io/instance: "{{ .Release.Name }}"
     app.kubernetes.io/version: "{{ .Chart.AppVersion }}"
@@ -146,5 +146,3 @@ data:
     content_packs_dir = /usr/share/graylog/data/contentpacks
     content_packs_auto_load = grok-patterns.json
     proxied_requests_thread_pool_size = 32
-
-

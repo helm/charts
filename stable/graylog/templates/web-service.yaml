@@ -5,14 +5,14 @@ metadata:
   annotations:
 {{ toYaml .Values.graylog.service.annotations | indent 4 }}
 {{- end }}
-  name: {{ template "graylog.fullname" . }}-master
+  name: {{ template "graylog.fullname" . }}-web
   labels:
     app.kubernetes.io/name: {{ template "graylog.name" . }}
-    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    helm.sh/chart: {{ template "graylog.chart" . }}
     app.kubernetes.io/managed-by: "{{ .Release.Service }}"
     app.kubernetes.io/instance: "{{ .Release.Name }}"
     app.kubernetes.io/version: "{{ .Chart.AppVersion }}"
-    graylog-role: "master"
+    app.kubernetes.io/component: "web"
 spec:
   ports:
     - name: graylog
@@ -36,7 +36,6 @@ spec:
   selector:
     app.kubernetes.io/name: {{ template "graylog.name" . }}
     app.kubernetes.io/instance: "{{ .Release.Name }}"
-    graylog-role: "master"
   type: "{{ .Values.graylog.service.type }}"
 {{- if eq "LoadBalancer" .Values.graylog.service.type }}
   {{- if .Values.graylog.service.loadBalancerIP }}
