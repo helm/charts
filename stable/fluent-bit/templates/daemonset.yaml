@@ -135,7 +135,7 @@ spec:
 {{- if .Values.trackOffsets }}
       - name: tail-db
         hostPath:
-          path: /var/lib/fluent-bit
+          path: {{ .Values.taildb.directory }}
           type: DirectoryOrCreate
 {{- end }}
       - name: config
