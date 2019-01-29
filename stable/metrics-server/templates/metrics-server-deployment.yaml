@@ -20,6 +20,9 @@ spec:
         release: {{ .Release.Name }}
     spec:
       serviceAccountName: {{ template "metrics-server.serviceAccountName" . }}
+{{ if .Values.hostNetwork.enabled }}
+      hostNetwork: true
+{{ end }}
       containers:
         - name: metrics-server
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"

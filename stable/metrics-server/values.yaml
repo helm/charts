@@ -17,6 +17,14 @@ apiService:
   # work with this release.
   create: true
 
+hostNetwork:
+  # Specifies if metrics-server should be started in hostNetwork mode.
+  #
+  # You would require this enabled if you use alternate overlay networking for pods and
+  # API server unable to communicate with metrics-server. As an example, this is required
+  # if you use Weave netwok on EKS
+  enabled: false
+
 image:
   repository: gcr.io/google_containers/metrics-server-amd64
   tag: v0.3.1
