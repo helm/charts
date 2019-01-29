@@ -267,7 +267,7 @@ The following tables lists the configurable parameters of the prometheus-operato
 | `kubeScheduler.endpoints` | Endpoints where scheduler runs. Provide this if running scheduler outside the cluster | `[]` |
 | `kubeScheduler.service.port` | Scheduler port for the service runs on | `10251` |
 | `kubeScheduler.service.targetPort` | Scheduler targetPort for the service runs on | `10251` |
-| `kubeScheduler.service.targetPort.selector` | Scheduler service selector | `{"k8s-app" : "kube-scheduler" }`
+| `kubeScheduler.service.selector` | Scheduler service selector | `{"k8s-app" : "kube-scheduler" }`
 | `kubeStateMetrics.enabled` | Deploy the `kube-state-metrics` chart and configure a servicemonitor to scrape | `true` |
 | `kube-state-metrics.rbac.create` | Create RBAC components in kube-state-metrics. See `global.rbac.create` | `true` |
 | `kube-state-metrics.podSecurityPolicy.enabled` | Create pod security policy resource for kube-state-metrics. | `true` |
