@@ -1,5 +1,5 @@
 # Generated from 'kubernetes-absent' group from https://raw.githubusercontent.com/coreos/prometheus-operator/master/contrib/kube-prometheus/manifests/prometheus-rules.yaml
-{{- if and .Values.defaultRules.create }}
+{{- if and .Values.defaultRules.create .Values.defaultRules.rules.kubernetesAbsent }}
 {{- $operatorJob := printf "%s-%s" (include "prometheus-operator.fullname" .) "operator" }}
 {{- $prometheusJob := printf "%s-%s" (include "prometheus-operator.fullname" .) "prometheus" }}
 {{- $alertmanagerJob := printf "%s-%s" (include "prometheus-operator.fullname" .) "alertmanager" }}

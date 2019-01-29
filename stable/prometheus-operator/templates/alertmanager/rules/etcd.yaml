@@ -1,5 +1,5 @@
 # Generated from 'etcd' group from https://raw.githubusercontent.com/etcd-io/etcd/master/Documentation/op-guide/etcd3_alert.rules.yml
-{{- if and .Values.defaultRules.create .Values.kubeEtcd.enabled }}
+{{- if and .Values.defaultRules.create .Values.kubeEtcd.enabled .Values.defaultRules.rules.etcd }}
 apiVersion: {{ printf "%s/v1" (.Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com") }}
 kind: PrometheusRule
 metadata:

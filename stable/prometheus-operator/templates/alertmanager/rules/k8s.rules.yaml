@@ -1,5 +1,5 @@
 # Generated from 'k8s.rules' group from https://raw.githubusercontent.com/coreos/prometheus-operator/master/contrib/kube-prometheus/manifests/prometheus-rules.yaml
-{{- if and .Values.defaultRules.create }}
+{{- if and .Values.defaultRules.create .Values.defaultRules.rules.k8s }}
 apiVersion: {{ printf "%s/v1" (.Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com") }}
 kind: PrometheusRule
 metadata:
