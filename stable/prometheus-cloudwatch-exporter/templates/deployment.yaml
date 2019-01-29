@@ -25,7 +25,26 @@ spec:
       containers:
         - name: {{ .Chart.Name }}
         {{- if not .Values.aws.role }}
-        {{- if and .Values.aws.aws_secret_access_key .Values.aws.aws_access_key_id }}
+        {{- if .Values.aws.secret.name }}
+          env:
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  key: access_key
+                  name: {{ .Values.aws.secret.name }}
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: secret_key
+                  name: {{ .Values.aws.secret.name }}
+          {{- if .Values.aws.secret.includesSessionToken }}
+            - name: AWS_SESSION_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  key: security_token
+                  name: {{ .Values.aws.secret.name }}
+          {{- end }}
+        {{- else if and .Values.aws.aws_secret_access_key .Values.aws.aws_access_key_id }}
           env:
             - name: AWS_ACCESS_KEY_ID
               valueFrom:
