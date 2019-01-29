@@ -257,12 +257,12 @@ The following tables lists the configurable parameters of the prometheus-operato
 | `kubeEtcd.service.port` | Etcd port | `4001` |
 | `kubeEtcd.service.targetPort` | Etcd targetPort | `4001` |
 | `kubeEtcd.service.selector` | Selector for etcd if running inside the cluster | `{"k8s-app":"etcd-server"}` |
-| `kubeEtcd.servicemonitor.scheme` | Etcd servicemonitor scheme | `http` |
-| `kubeEtcd.servicemonitor.insecureSkipVerify` | Skip validating etcd TLS certificate when scraping | `false` |
-| `kubeEtcd.servicemonitor.serverName` | Etcd server name to validate certificate against when scraping | `""` |
-| `kubeEtcd.servicemonitor.caFile` | Certificate authority file to use when connecting to etcd. See `prometheus.prometheusSpec.secrets` | `""` |
-| `kubeEtcd.servicemonitor.certFile` | Client certificate file to use when connecting to etcd. See `prometheus.prometheusSpec.secrets` | `""` |
-| `kubeEtcd.servicemonitor.keyFile` | Client key file to use when connecting to etcd.  See `prometheus.prometheusSpec.secrets` | `""` |
+| `kubeEtcd.serviceMonitor.scheme` | Etcd servicemonitor scheme | `http` |
+| `kubeEtcd.serviceMonitor.insecureSkipVerify` | Skip validating etcd TLS certificate when scraping | `false` |
+| `kubeEtcd.serviceMonitor.serverName` | Etcd server name to validate certificate against when scraping | `""` |
+| `kubeEtcd.serviceMonitor.caFile` | Certificate authority file to use when connecting to etcd. See `prometheus.prometheusSpec.secrets` | `""` |
+| `kubeEtcd.serviceMonitor.certFile` | Client certificate file to use when connecting to etcd. See `prometheus.prometheusSpec.secrets` | `""` |
+| `kubeEtcd.serviceMonitor.keyFile` | Client key file to use when connecting to etcd.  See `prometheus.prometheusSpec.secrets` | `""` |
 | `kubeScheduler.enabled` | Deploy a `service` and `serviceMonitor` to scrape the Kubernetes scheduler | `true` |
 | `kubeScheduler.endpoints` | Endpoints where scheduler runs. Provide this if running scheduler outside the cluster | `[]` |
 | `kubeScheduler.service.port` | Scheduler port for the service runs on | `10251` |
