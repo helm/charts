@@ -2,9 +2,12 @@
 
 [Kube-Monkey](https://github.com/asobti/kube-monkey) periodically kills pods in your Kubernetes cluster,that are opt-in based on their own rules.
 
-## Official Helm
+## TL;DR
 
-TBA to official helm charts,There is no official helm chart yet for kube-monkey.
+```console
+helm install --name my-release stable/kubemonkey --namespace=kube-monkey
+
+```
 
 ## Installing the Chart
 
