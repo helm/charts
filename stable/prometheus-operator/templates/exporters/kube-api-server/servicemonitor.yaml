@@ -12,6 +12,10 @@ spec:
     interval: 30s
     port: https
     scheme: https
+{{- if .Values.kubeApiServer.relabelings }}
+    relabelings:
+{{ toYaml .Values.kubeApiServer.relabelings | indent 6 }}
+{{- end }}    
     tlsConfig:
       caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
       serverName: {{ .Values.kubeApiServer.tlsConfig.serverName }}
