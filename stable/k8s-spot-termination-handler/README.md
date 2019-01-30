@@ -36,6 +36,7 @@ Parameter | Description | Default
 `rbac.create` | if `true`, create & use RBAC resources | `true`
 `serviceAccount.create` | if `true`, create a service account | `true`
 `serviceAccount.name` | the name of the service account to use. If not set and `create` is `true`, a name is generated using the fullname template. | ``
+`detachAsg` | if `true`, the spot termination handler will detect (standard) AutoScaling Group, and initiate detach when termination notice is detected. | `false`
 `resources` | pod resource requests & limits | `{}`
 `nodeSelector` | node labels for pod assignment | `{}`
 `tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
