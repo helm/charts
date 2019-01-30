@@ -110,8 +110,8 @@ server:
   ##
   # host: "drone.domain.io"
 
-  ## protocol should be http:// or https://
-  protocol: http://
+  ## protocol should be http or https
+  protocol: http
 
   ## Initial admin user
   ## Leaving this blank may make it impossible to log into drone.

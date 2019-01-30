@@ -215,6 +215,9 @@ rbac:
   # Specifies whether RBAC resources should be created
   create: true
 
+taildb:
+  directory: /var/lib/fluent-bit
+
 serviceAccount:
   # Specifies whether a ServiceAccount should be created
   create: true
