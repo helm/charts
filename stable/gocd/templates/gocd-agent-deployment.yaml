@@ -8,6 +8,12 @@ metadata:
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
     component: agent
+    {{- if .Values.server.deployment.annotations }}
+  annotations:
+  {{- range $key, $value := .Values.server.deployment.annotations }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
+  {{- end }}
 spec:
   replicas: {{ .Values.agent.replicaCount }}
   {{- if .Values.agent.deployStrategy }}

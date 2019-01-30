@@ -9,6 +9,12 @@ metadata:
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
     component: server
+  {{- if .Values.server.deployment.annotations }}
+  annotations:
+  {{- range $key, $value := .Values.server.deployment.annotations }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
+  {{- end }}
 spec:
   replicas: 1
   strategy:

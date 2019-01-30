@@ -35,6 +35,10 @@ server:
     tag:
     # server.image.pullPolicy is the GoCD Server image's pull policy
     pullPolicy: "IfNotPresent"
+  
+  deployment:
+    annotations:
+      # deployment.kubernetes.io/revision: 4
 
   ## Configure GoCD server resource requests and limits
   ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -209,6 +213,11 @@ agent:
     tag:
     # agent.image.pullPolicy is the GoCD Agent image's pull policy
     pullPolicy: "IfNotPresent"
+  
+  deployment:
+    annotations:
+      # deployment.kubernetes.io/revision: 4
+
   env:
     # agent.env.goServerUrl is the GoCD Server Url
     goServerUrl:
