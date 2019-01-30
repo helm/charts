@@ -40,7 +40,6 @@ spec:
               key: secret-access-key
 {{- end }}
 {{- if eq .Values.storage.type "gcs" }}
-{{ required "A valid storage credential is required." .Values.storage.credentialsSecret }}
         - name: GCLOUD_SERVICE_KEY
           valueFrom:
             secretKeyRef:
