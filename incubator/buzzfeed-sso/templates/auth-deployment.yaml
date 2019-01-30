@@ -96,9 +96,9 @@ spec:
           {{- if .adminEmail }}
             - name: GOOGLE_ADMIN_EMAIL
               value: {{ .adminEmail | quote }}
-          {{- end }}
             - name: GOOGLE_SERVICE_ACCOUNT_JSON
               value: /creds/sso-serviceaccount.json
+          {{- end }}
             - name: CLIENT_ID
               valueFrom:
                 secretKeyRef:
@@ -122,7 +122,7 @@ spec:
               scheme: HTTP
             initialDelaySeconds: 10
             timeoutSeconds: 1
-        {{- if .Values.provider.google }}
+        {{- if .Values.provider.google.adminEmail }}
           volumeMounts:
             - name: google-service-account
               mountPath: /creds
