@@ -91,8 +91,6 @@ spec:
               value: "true"
             - name: CLUSTER
               value: dev
-            - name: VIRTUAL_HOST
-              value: {{ $authDomain }}
             # Provider variables
           {{- with .Values.provider.google }}
           {{- if .adminEmail }}

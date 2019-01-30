@@ -64,7 +64,6 @@ Parameter | Description | Default
 `auth.secret` | secrets to be generated randomly with `openssl rand -base64 32 | head -c 32`. | REQUIRED if `auth.customSecret` is not set
 `auth.tls` | tls configuration for central sso auth ingress. | `{ secretName: "sso-auth-tls-secret" }`
 `auth.customSecret` | the secret key to reuse (avoids secret creation via helm) | REQUIRED if `auth.secret` is not set
-`proxy.virtualHost` | wildcard domain for redirecting SSO to the backends | REQUIRED
 `proxy.providerUrlInternal` | url for split dns deployments |
 `proxy.cluster` | the cluster name for SSO | `dev`
 `proxy.replicaCount` | desired number of proxy pods | `1`

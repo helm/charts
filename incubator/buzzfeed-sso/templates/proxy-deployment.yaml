@@ -71,8 +71,6 @@ spec:
               value: "true"
             - name: CLUSTER
               value: {{ .Values.proxy.cluster | quote }}
-            - name: VIRTUAL_HOST
-              value: {{ .Values.proxy.virtualHost | quote }}
           {{- if .Values.proxy.providerUrlInternal }}
             - name: PROVIDER_URL_INTERNAL
               value: {{ .Values.proxy.providerUrlInternal | quote }}
