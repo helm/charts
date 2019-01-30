@@ -78,6 +78,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | **General**                   |
 | `annotations`                      | Optional deamonset set annotations        | `NULL`                |
 | `podAnnotations`                   | Optional pod annotations                  | `NULL`                |
+| `podLabels`                        | Optional pod labels                       | `NULL`                |
 | `fullConfigMap`                    | User has provided entire config (parsers + system)  | `false`      |
 | `existingConfigMap`                | ConfigMap override                         | ``                    |
 | `extraEntries.input`               |    Extra entries for existing [INPUT] section                     | ``                    |
