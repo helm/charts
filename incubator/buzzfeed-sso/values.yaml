@@ -78,7 +78,7 @@ ingress:
     # ingress.kubernetes.io/ssl-redirect: "true"
   hosts: []
   #  - domain: mybackend.mydomain.foo
-  #  - path: /
+  #    path: /
   tls: []
   #  - secretName: mybackend-mydomain-tls
   #    hosts:
