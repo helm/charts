@@ -48,7 +48,7 @@ If you're confident you want to enable it in real, run `helm` with:
 
 ```console
 
-$ helm install --name my-release stable/kubemonkey \
+helm install --name my-release stable/kubemonkey \
                --set config.dryRun=false \
                --set config.whitelistedNamespaces="namespace1\"\,\"namespace2\"\,\"namespace3"
 
@@ -68,7 +68,7 @@ helm install --name my-release stable/kubemonkey \
 If you want change time kube-monkey wakesup and start and end killing pods.
 
 ```console
-$ helm install --name my-release stable/kubemonkey \
+helm install --name my-release stable/kubemonkey \
                --set config.dryRun=false \
                --set config.whitelistedNamespaces="namespace1\"\,\"namespace2\"\,\"namespace3" \
                --set config.runHour=10 \
