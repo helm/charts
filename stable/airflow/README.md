@@ -203,6 +203,10 @@ Python dependencies installed.
 
 This is the easiest way of deploying your DAGs to Airflow.
 
+If you are using a private Git repo, you can set `dags.gitSecret` to the name of a secret you created containing private keys and a `known_hosts` file.
+
+For example, this will create a secret named `my-git-secret` from your ed25519 key and known_hosts file stored in your home directory:  `kubectl create secret generic my-git-secret --from-file=id_ed25519=~/.ssh/id_ed25519 --from-file=known_hosts=~/.ssh/known_hosts --from-file=id_id_ed25519.pub=~/.ssh/id_ed25519.pub`
+
 ### Embedded DAGs
 
 If you want more control on the way you deploy your DAGs, you can use embedded DAGs, where DAGs
@@ -288,6 +292,7 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `dags.initContainer.installRequirements` | auto install requirements.txt deps                      | `true`                    |
 | `dags.git.url`                           | url to clone the git repository                         | nil                       |
 | `dags.git.ref`                           | branch name, tag or sha1 to reset to                    | `master`                  |
+| `dags.git.secret`                        | name of a secret containing an ssh deploy key           | nil                       |
 | `logs.path`                              | mount path for logs persistent volume                   | `/usr/local/airflow/logs` |
 | `rbac.create`                            | create RBAC resources                                   | `true`                    |
 | `serviceAccount.create`                  | create a service account                                | `true`                    |
