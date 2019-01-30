@@ -13,6 +13,11 @@ data:
     REPO=$1
     REF=$2
     DIR=$3
+    {{- if .Values.dags.git.secret }}
+    mkdir -p ~/.ssh/
+    cp -rL /keys/* ~/.ssh/
+    chmod 600 ~/.ssh/*
+    {{- end }}
     # Init Containers will re-run on Pod restart. Remove the directory's contents
     # and reprovision when this happens.
     if [ -d "$DIR" ]; then
