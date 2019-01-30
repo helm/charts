@@ -19,9 +19,7 @@ metadata:
     release: {{ .Release.Name }}
   name: {{ template "nginx-ingress.controller.fullname" . }}-metrics
 spec:
-{{- if .Values.controller.metrics.service.clusterIP }}
   clusterIP: "{{ .Values.controller.metrics.service.clusterIP }}"
-{{- end }}
 {{- if .Values.controller.metrics.service.externalIPs }}
   externalIPs:
 {{ toYaml .Values.controller.metrics.service.externalIPs | indent 4 }}
