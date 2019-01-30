@@ -60,7 +60,7 @@ spec:
           containerPort: 3000
         livenessProbe:
           httpGet:
-            path: /
+            path: /api/info
             port: http
           initialDelaySeconds: 60
           timeoutSeconds: 5
