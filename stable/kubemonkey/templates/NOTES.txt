@@ -1,0 +1,5 @@
+1. Wait until the application is rolled out:
+  kubectl -n {{ .Release.Namespace }} rollout status deployment {{ template "kubemonkey.fullname" . }}
+2. Check the logs:
+  kubectl logs -f deployment.apps/{{ template "kubemonkey.fullname" . }} -n {{ .Release.Namespace }}
+

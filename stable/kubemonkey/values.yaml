@@ -1,0 +1,43 @@
+# Default values for kubemonkey.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+rbac:
+  enabled: true
+image:
+  repository: ayushsobti/kube-monkey
+  tag: v0.3.0
+  pullPolicy: IfNotPresent
+config:
+  dryRun: true  
+  runHour: 8
+  startHour: 10
+  endHour: 16
+  blacklistedNamespaces: "kube-system"
+  whitelistedNamespaces:  #ex: "namespace1\",\"namespace2"
+  timeZone: America/New_York
+  debug:
+   enabled: false # if you want to enable debugging and see how pods killed immediately set enabled and schedule_immediate_kill to true
+   schedule_immediate_kill: false
+args:
+  logLevel: 5
+  logDir: /var/log/kube-monkey
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
