@@ -74,7 +74,7 @@ spec:
             - name: VIRTUAL_HOST
               value: {{ .Values.proxy.virtualHost | quote }}
           {{- if .Values.proxy.providerUrlInternal }}
-            - name: PROXY_PROVIDER_URL
+            - name: PROVIDER_URL_INTERNAL
               value: {{ .Values.proxy.providerUrlInternal | quote }}
           {{- end }}
           readinessProbe:
