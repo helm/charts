@@ -18,6 +18,8 @@ labels: {}
 # kubernetes.io/cluster-service: "true"
 # kubernetes.io/name: "Kubernetes Dashboard"
 
+## View settings page without being authorized
+disableSettingsAuthorizer: false
 
 ## Enable possibility to skip login
 enableSkipLogin: false
@@ -28,6 +30,7 @@ enableInsecureLogin: false
 ## Additional container arguments
 ##
 # extraArgs:
+#   - --disable-settings-authorizer
 #   - --enable-skip-login
 #   - --enable-insecure-login
 #   - --system-banner="Welcome to Kubernetes"
