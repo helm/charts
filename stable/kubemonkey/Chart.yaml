@@ -7,6 +7,6 @@ home: https://github.com/asobti/kube-monkey
 sources:
   - https://github.com/asobti/kube-monkey
 maintainers:
-- name: prageeth warnak
+- name: prageethw
   email: prageeth.warnak@team.telstra.com
 engine: gotpl
