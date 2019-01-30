@@ -13,7 +13,7 @@ To install the chart with the release name `my-release`:
 ```console
 $ helm install --name my-release stable/kubemonkey
 ```
-**Note** by default kubemonkey installed to the default namespace, you can assign diffrent namespace (which is the suggested approach ) by passing --namespace=your namespace name.
+**Note :** by default kubemonkey installed to the default namespace, you can assign diffrent namespace (which is the suggested approach ) by passing --namespace=your namespace name.
 
 The command deploys kube-monkey on the Kubernetes cluster in the default configuration. The [configurations](#Configurations) section lists the parameters that can be configured during installation.
 
