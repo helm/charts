@@ -1,5 +1,12 @@
 apiVersion: v1
 appVersion: 0.3.0
-description: A Helm chart for Kubernetes
+description: Kube-Monkey periodically kills pods in your Kubernetes cluster,that are opt-in based on their own rules.
 name: kube-monkey
-version: 1.2
+version: 1.3
+home: https://github.com/asobti/kube-monkey
+sources:
+  - https://github.com/asobti/kube-monkey
+maintainers:
+- name: prageeth warnak
+  email: prageeth.warnak@team.telstra.com
+engine: gotpl
