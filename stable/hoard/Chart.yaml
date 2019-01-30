@@ -1,5 +1,5 @@
 name: hoard
-version: 0.6.0
+version: 0.6.1
 appVersion: 1.1.5
 description: Hoard is a stateless, deterministically encrypted, content-addressed object store
 home: https://github.com/monax/hoard
