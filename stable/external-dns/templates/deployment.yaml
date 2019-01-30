@@ -42,6 +42,7 @@ spec:
             - --policy={{ .Values.policy }}
             - --provider={{ .Values.provider }}
             - --registry={{ .Values.registry }}
+            - --interval={{ .Values.interval }}
           {{- if .Values.txtOwnerId }}
             - --txt-owner-id={{ .Values.txtOwnerId }}
           {{- end }}
@@ -53,6 +54,9 @@ spec:
           {{- end }}
           {{- range .Values.sources }}
             - --source={{ . }}
+          {{- end }}
+          {{ if .Values.dryRun }}
+            - --dry-run
           {{- end }}
           {{- range $key, $value := .Values.extraArgs }}
             {{- if $value }}
@@ -108,6 +112,11 @@ spec:
             mountPath: {{ .Values.aws.credentialsPath }}
             readOnly: true
           {{- end }}
+          {{- if and (eq .Values.provider "designate") .Values.designate.customCA.enabled }}
+          - name: designate-custom-ca
+            mountPath: {{ .Values.designate.customCA.directory }}
+            readOnly: true
+          {{- end }}
           env:
         {{- if or .Values.google.serviceAccountSecret .Values.google.serviceAccountKey }}
           - name: GOOGLE_APPLICATION_CREDENTIALS
@@ -147,6 +156,10 @@ spec:
               secretKeyRef:
                 name: {{ template "external-dns.fullname" . }}
                 key: infoblox_wapi_password
+        {{- end }}
+        {{- if and (eq .Values.provider "designate") .Values.designate.customCA.enabled }}
+          - name: OPENSTACK_CA_FILE
+            value: {{ .Values.designate.customCA.directory }}/{{ .Values.designate.customCA.filename }}
         {{- end }}
         {{- $root := . -}}
         {{- range .Values.extraEnv }}
@@ -199,6 +212,14 @@ spec:
       - name: aws-credentials
         secret:
           secretName: {{ template "external-dns.fullname" . }}
+      {{- end }}
+      {{- if and (eq .Values.provider "designate") .Values.designate.customCA.enabled }}
+      - name: designate-custom-ca
+        configMap:
+          name: {{ template "external-dns.fullname" . }}
+          items:
+          - key: {{ .Values.designate.customCA.filename }}
+            path: {{ .Values.designate.customCA.filename }}
       {{- end }}
     {{- if .Values.nodeSelector }}
       nodeSelector:

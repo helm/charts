@@ -375,3 +375,14 @@ volumePermissions:
 ##
 configmap: |-
   # maxmemory-policy volatile-lru
+
+## Sysctl InitContainer
+## used to perform sysctl operation to modify Kernel settings (needed sometimes to avoid warnings)
+sysctlImage:
+  enabled: false
+  command: []
+  registry: docker.io
+  repository: bitnami/minideb
+  tag: latest
+  pullPolicy: Always
+  mountHostSys: false

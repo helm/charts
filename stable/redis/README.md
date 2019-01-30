@@ -200,6 +200,13 @@ The following table lists the configurable parameters of the Redis chart and the
 | `slave.resources`                          | Redis slave CPU/Memory resource requests/limits                                                                | `master.resources`                                   |
 | `slave.affinity`                           | Enable node/pod affinity for slaves                                                                            | {}                                                   |
 | `slave.priorityClassName`                  | Redis Slave pod priorityClassName                                                                              | {}                                                   |
+| `sysctlImage.enabled`                      | Enable an init container to modify Kernel settings                                                             | `false`                                              |
+| `sysctlImage.command`                      | sysctlImage command to execute                                                                                 | []                                                   |
+| `sysctlImage.registry`                     | sysctlImage Init container registry                                                                            | `docker.io`                                          |
+| `sysctlImage.repository`                   | sysctlImage Init container name                                                                                | `bitnami/minideb`                                    |
+| `sysctlImage.tag`                          | sysctlImage Init container tag                                                                                 | `latest`                                             |
+| `sysctlImage.pullPolicy`                   | sysctlImage Init container pull policy                                                                         | `Always`                                             |
+| `sysctlImage.mountHostSys`                 | Mount the host `/sys` folder to `/host-sys`                                                                    | `false`                                              |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
@@ -253,3 +260,19 @@ $ helm install --set persistence.existingClaim=PVC_NAME stable/redis
 ## Metrics
 
 The chart optionally can start a metrics exporter for [prometheus](https://prometheus.io). The metrics endpoint (port 9121) is exposed in the service. Metrics can be scraped from within the cluster using something similar as the described in the [example Prometheus scrape configuration](https://github.com/prometheus/prometheus/blob/master/documentation/examples/prometheus-kubernetes.yml). If metrics are to be scraped from outside the cluster, the Kubernetes API proxy can be utilized to access the endpoint.
+
+## Host Kernel Settings
+Redis may require some changes in the kernel of the host machine to work as expected, in particular increasing the `somaxconn` value and disabling transparent huge pages.
+To do so, you can set up a privileged initContainer with the `sysctlImage` config values, for example:
+```
+sysctlImage:
+  enabled: true
+  mountHostSys: true
+  command:
+    - /bin/sh
+    - -c
+    - |-
+      install_packages systemd
+      sysctl -w net.core.somaxconn=10000
+      echo never > /host-sys/kernel/mm/transparent_hugepage/enabled
+```
