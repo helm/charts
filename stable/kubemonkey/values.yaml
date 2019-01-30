@@ -14,10 +14,12 @@ config:
   startHour: 10
   endHour: 16
   blacklistedNamespaces: "kube-system"
-  whitelistedNamespaces:  # ex: "namespace1\",\"namespace2"
+  # ex: "namespace1\",\"namespace2"
+  whitelistedNamespaces:
   timeZone: America/New_York
   debug:
-    enabled: false # if you want to enable debugging and see how pods killed immediately set enabled and schedule_immediate_kill to true
+  # if you want to enable debugging and see how pods killed immediately set enabled and schedule_immediate_kill to true
+    enabled: false 
     schedule_immediate_kill: false
 args:
   logLevel: 5
