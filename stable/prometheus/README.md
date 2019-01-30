@@ -230,6 +230,7 @@ Parameter | Description | Default
 `server.image.tag` | Prometheus server container image tag | `v2.6.1`
 `server.image.pullPolicy` | Prometheus server container image pull policy | `IfNotPresent`
 `server.enableAdminApi` |  If true, Prometheus administrative HTTP API will be enabled. Please note, that you should take care of administrative API access protection (ingress or some frontend Nginx with auth) before enabling it. | `false`
+`server.configPath` |  Path to a prometheus server config file on the container FS  | `/etc/config/prometheus.yml`
 `server.global.scrape_interval` | How frequently to scrape targets by default | `1m`
 `server.global.scrape_timeout` | How long until a scrape request times out | `10s`
 `server.global.evaluation_interval` | How frequently to evaluate rules | `1m`
