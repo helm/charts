@@ -43,13 +43,31 @@ The recommended way to install the Anchore Engine Chart is with a customized val
     defaultAdminPassword: <PASSWORD>
     defaultAdminEmail: <EMAIL>
   ```
+## Upgrading to Chart version 0.11.0
+The image map has been removed in all configuration sections in favor of individual keys. This should make configuration for tools like skaffold simpler. If using a custom values file, update your `image.repository`, `image.tag`, & `image.pullPolicy` values with `image` & `imagePullPolicy`.
+
+##### v0.11.0 image config
+
+```
+anchoreGlobal:
+  image: docker.io/anchore/anchore-engine:v0.3.2
+  imagePullPolicy: IfNotPresent
+
+anchoreEnterpriseGlobal:
+  image: docker.io/anchore/enterprise:v0.3.3
+  imagePullPolicy: IfNotPresent
+
+anchoreEnterpriseUI:
+  image: docker.io/anchore/enterprise-ui:v0.3.1
+  imagePullPolicy: IfNotPresent
+```
+
 
 ## Upgrading to Chart version 0.10.0
 
-Ingress resources have been changed to work natively with NGINX ingress controllers. If you're using a different ingress controller, update your values.yaml file accordingly. See the __Using Ingress__ configuration section for examples of NGINX & GCE ingress controller configurations.
+Ingress resources have been changed to work natively with NGINX ingress controllers. If you're using a different ingress controller update your values.yaml file accordingly. See the __Using Ingress__ configuration section for examples of NGINX & GCE ingress controller configurations.
 
-Service configs have been moved from the anchoreGlobal section, to individual component sections in the values.yaml file.
-If you're upgrading from a previous install and are using custom ports or serviceTypes, be sure to update your values.yaml file accordingly.
+Service configs have been moved from the anchoreGlobal section, to individual component sections in the values.yaml file. If you're upgrading from a previous install and are using custom ports or serviceTypes, be sure to update your values.yaml file accordingly.
 
 ##### v0.9.0 service config
 
@@ -74,8 +92,7 @@ Version 0.9.0 of the anchore-engine helm chart includes major changes to the arc
 
 `helm upgrade <release_name> stable/anchore-engine`
 
-When upgrading the Chart from version 0.2.6 to version 0.9.0, it will take approximately 5 minutes for anchore-engine to upgrade the database.
-To ensure that the upgrade has completed, run the `anchore-cli system status` command and verify the engine & db versions match the output below.
+When upgrading the Chart from version 0.2.6 to version 0.9.0, it will take approximately 5 minutes for anchore-engine to upgrade the database. To ensure that the upgrade has completed, run the `anchore-cli system status` command and verify the engine & db versions match the output below.
 
 ```
 Engine DB Version: 0.0.8
@@ -84,8 +101,7 @@ Engine Code Version: 0.3.0
 
 ## Configuration
 
-All configurations should be appended to your custom `anchore_values.yaml` file and utilized when installing the chart.
-While the configuration options of Anchore Engine are extensive, the options provided by the chart are:
+All configurations should be appended to your custom `anchore_values.yaml` file and utilized when installing the chart. While the configuration options of Anchore Engine are extensive, the options provided by the chart are:
 
 ### Exposing the service outside the cluster:
 
