@@ -37,7 +37,6 @@ ingress:
   # Used to create an Ingress and Service record.
   # hosts:
   #   - name: "http-input.local"
-  #     protocol: TCP
   #     serviceName: http-input
   #     servicePort: 9880
   annotations:
