@@ -95,8 +95,10 @@ spec:
               value: {{ $authDomain }}
             # Provider variables
           {{- with .Values.provider.google }}
+          {{- if .adminEmail }}
             - name: GOOGLE_ADMIN_EMAIL
               value: {{ .adminEmail | quote }}
+          {{- end }}
             - name: GOOGLE_SERVICE_ACCOUNT_JSON
               value: /creds/sso-serviceaccount.json
             - name: CLIENT_ID
