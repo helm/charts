@@ -5,6 +5,7 @@
 # rootDomain: 'mydomain.foo'
 
 auth:
+  annotations: {}
   # domain: "sso-auth.mydomain.foo"
   replicaCount: 1
   resources:
@@ -28,6 +29,7 @@ auth:
     secretName: sso-auth-tls-secret
 
 proxy:
+  annotations: {}
   # virtualHost: "*.mydomain.foo"
   # providerUrlInternal: https://sso-auth.mydomain.com
   cluster: dev
