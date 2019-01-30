@@ -152,12 +152,12 @@ spec:
           - name: RABBITMQ_ERL_COOKIE
             valueFrom:
               secretKeyRef:
-                name: {{ if .Values.rabbitmq.existingErlSecret }}{{ .Values.rabbitmq.existingErlSecret }}{{- else }}{{ template "rabbitmq.fullname" . }}{{- end }}
+                name: {{ template "rabbitmq.secretErlangName" . }}
                 key: rabbitmq-erlang-cookie
           - name: RABBITMQ_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: {{ if .Values.rabbitmq.existingPasswordSecret }}{{ .Values.rabbitmq.existingPasswordSecret }}{{- else }}{{ template "rabbitmq.fullname" . }}{{- end }}
+                name: {{ template "rabbitmq.secretPasswordName" . }}
                 key: rabbitmq-password
 {{- if .Values.metrics.enabled }}
       - name: metrics

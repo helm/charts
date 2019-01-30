@@ -145,8 +145,8 @@ The chart mounts a [Persistent Volume](http://kubernetes.io/docs/user-guide/pers
 ### Existing PersistentVolumeClaims
 
 1. Create the PersistentVolume
-2. Create the PersistentVolumeClaim
-3. Install the chart
+1. Create the PersistentVolumeClaim
+1. Install the chart
 
 ```bash
 $ helm install --set persistence.existingClaim=PVC_NAME rabbitmq
