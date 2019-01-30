@@ -11,7 +11,7 @@ TBA to official helm charts,There is no official helm chart yet for kube-monkey.
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name stable/my-release kubemonkey
+$ helm install --name my-release stable/kubemonkey
 ```
 
 The command deploys kube-monkey on the Kubernetes cluster in the default configuration. The [configurations](#Configurations) section lists the parameters that can be configured during installation.
