@@ -8,9 +8,9 @@ metadata:
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
     component: agent
-    {{- if .Values.server.deployment.annotations }}
+    {{- if .Values.agent.deployment.annotations }}
   annotations:
-  {{- range $key, $value := .Values.server.deployment.annotations }}
+  {{- range $key, $value := .Values.agent.deployment.annotations }}
     {{ $key }}: {{ $value | quote }}
   {{- end }}
   {{- end }}
