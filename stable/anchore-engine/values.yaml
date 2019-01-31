@@ -21,11 +21,8 @@ postgresql:
 # Global configuration shared by all anchore-engine services.
 anchoreGlobal:
   # Image used for all anchore engine deployments (excluding enterprise components).
-  image:
-    # Can use 'latest' tag but not recommended
-    repository: docker.io/anchore/anchore-engine
-    tag: v0.3.1
-    pullPolicy: IfNotPresent
+  image: docker.io/anchore/anchore-engine:v0.3.2
+  imagePullPolicy: IfNotPresent
 
   # Create an ingress resource for all external anchore engine services.
   # By default this chart is setup to use the NGINX ingress controller which needs to be installed & configured on your cluster.
@@ -74,10 +71,10 @@ anchoreGlobal:
   internalServicesSsl:
     # specify whether cert is verfied against the local certifacte bundle (allow self-signed certs if set to false)
     verifyCerts: false
-    certDir: "/certs"
+    certDir: /certs
     certSecret: Null
-    certSecretKeyName: "tls.key"
-    certSecretCertName: "tls.crt"
+    certSecretKeyName: tls.key
+    certSecretCertName: tls.crt
 
   # To enable webhooks, set webhooksEnabled: true
   webhooksEnabled: false
@@ -320,14 +317,12 @@ anchoreEnterpriseGlobal:
   # Name of kubernetes secret containing your license.yaml file.
   # Create this secret with the following command - kubectl create secret generic anchore-license --from-file=license.yaml=<PATH TO LICENSE.YAML>
   licenseSecretName: anchore-enterprise-license
+
+  image: docker.io/anchore/enterprise:v0.3.3
+  imagePullPolicy: IfNotPresent
   # Name of the kubernetes secret containing your dockerhub creds with access to the anchore enterprise images.
   # Create this secret with the following command - kubectl create secret docker-registry anchore-dockerhub-creds --docker-server=docker.io --docker-username=<USERNAME> --docker-password=<PASSWORD> --docker-email=<EMAIL_ADDRESS>
   imagePullSecretName: anchore-enterprise-pullcreds
-
-  image:
-    repository: docker.io/anchore/enterprise
-    tag: v0.3.1
-    pullPolicy: IfNotPresent
 
 # Configure the second postgres database instance for the enterprise feeds service.
 # Only utilized if anchoreEnterpriseFeeds.enabled: true
@@ -434,10 +429,8 @@ anchoreEnterpriseUi:
   # single session from being viewed within multiple *tabs* inside the same browser.
   enableSharedLogin: true
 
-  image:
-    repository: docker.io/anchore/enterprise-ui
-    tag: v0.3.1
-    pullPolicy: IfNotPresent
+  image: docker.io/anchore/enterprise-ui:v0.3.1
+  imagePullPolicy: IfNotPresent
 
   # kubernetes service configuration for anchore UI
   service:
