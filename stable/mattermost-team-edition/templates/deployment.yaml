@@ -21,7 +21,7 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/configmap-config.yaml") . | sha256sum }}
+        checksum/config: {{ include (print $.Template.BasePath "/secret-config.yaml") . | sha256sum }}
       labels:
         app.kubernetes.io/name: {{ include "mattermost-team-edition.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
@@ -74,11 +74,8 @@ spec:
           {{- .Values.resources | toYaml | nindent 12 }}
       volumes:
       - name: config-json
-        configMap:
-          name: {{ include "mattermost-team-edition.fullname" . }}-config-json
-          items:
-          - key: config.json
-            path: config.json
+        secret:
+          secretName: {{ include "mattermost-team-edition.fullname" . }}-config-json
       - name: mattermost-data
       {{ if .Values.persistence.data.enabled }}
         persistentVolumeClaim:
