@@ -88,6 +88,7 @@ The following table lists the configurable parameters of the Cassandra chart and
 | `config.cluster_name`                | The name of the cluster.                        | `cassandra`                                                |
 | `config.cluster_size`                | The number of nodes in the cluster.             | `3`                                                        |
 | `config.seed_size`                   | The number of seed nodes used to bootstrap new clients joining the cluster.                            | `2` |
+| `config.seeds`                       | The comma-separated list of seed nodes.         | Automatically generated according to `.Release.Name` and `config.seed_size` |
 | `config.num_tokens`                  | Initdb Arguments                                | `256`                                                      |
 | `config.dc_name`                     | Initdb Arguments                                | `DC1`                                                      |
 | `config.rack_name`                   | Initdb Arguments                                | `RAC1`                                                     |
