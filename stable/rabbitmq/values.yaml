@@ -49,7 +49,7 @@ rabbitmq:
   ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
   ##
   # erlangCookie:
-  # existingErlSecret: name-of-existing-secret
+  # existingErlangSecret: name-of-existing-secret
 
   ## Node name to cluster with. e.g.: `clusternode@hostname`
   ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
