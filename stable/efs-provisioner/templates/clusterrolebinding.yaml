@@ -9,6 +9,8 @@ metadata:
     chart: {{ template "efs-provisioner.chartname" . }}
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
+  annotations:
+{{ toYaml .Values.annotations | indent 4 }}
 subjects:
   - kind: ServiceAccount
     name: {{ template "efs-provisioner.serviceAccountName" . }}
