@@ -60,7 +60,7 @@ spec:
           {{- else }}
             value: "{{ template "drone.fullname" . }}"
           {{- end }}
-          - name: DRONE_SERVER_PROTOCOL
+          - name: DRONE_SERVER_PROTO
             value: {{ .Values.server.protocol }}
           {{- if .Values.server.adminUser }}
           - name: DRONE_USER_CREATE
