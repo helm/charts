@@ -38,8 +38,8 @@ spec:
       for: 15m
       labels:
         severity: critical
-{{- if .Values.kubeApiServer.enabled }}
 {{- end }}
+{{- if .Values.kubeApiServer.enabled }}
     - alert: KubeAPIDown
       annotations:
         message: KubeAPI has disappeared from Prometheus target discovery.
