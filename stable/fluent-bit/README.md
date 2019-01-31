@@ -29,6 +29,8 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 
 | Parameter                  | Description                        | Default                 |
 | -----------------------    | ---------------------------------- | ----------------------- |
+| **Service**                |
+| `service.logLevel`         | Set the logging verbosity level. Allowed values are: error, info, debug and trace | `info` |
 | **Backend Selection**      |
 | `backend.type`             | Set the backend to which Fluent-Bit should flush the information it gathers | `forward` |
 | **Forward Backend**        |

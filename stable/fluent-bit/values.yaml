@@ -8,6 +8,10 @@ image:
     tag: 1.0.3
   pullPolicy: IfNotPresent
 
+# Global properties of the service
+service:
+  logLevel: info
+
 # When enabled, exposes json and prometheus metrics on {{ .Release.Name }}-metrics service
 metrics:
   enabled: false

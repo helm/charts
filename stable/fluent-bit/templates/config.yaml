@@ -13,7 +13,7 @@ data:
     [SERVICE]
         Flush        1
         Daemon       Off
-        Log_Level    info
+        Log_Level    {{ .Values.service.logLevel }} 
         Parsers_File parsers.conf
 {{- if .Values.parsers.enabled }}
         Parsers_File parsers_custom.conf
