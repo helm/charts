@@ -94,6 +94,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `filter.kubeTokenFile`             | Optional custom configmaps       | `/var/run/secrets/kubernetes.io/serviceaccount/token`     |
 | `filter.kubeTag`                   | Optional top-level tag for matching in filter         | `kube`                                 |
 | `filter.mergeJSONLog`                   | If the log field content is a JSON string map, append the map fields as part of the log structure         | `true`                                 |
+| `filter.mergeLogKey`                   | key where the json log object will be merged into         | `log_key`                                 |
 | `image.fluent_bit.repository`      | Image                                      | `fluent/fluent-bit`                               |
 | `image.fluent_bit.tag`             | Image tag                                  | `1.0.3`                                          |
 | `image.pullPolicy`                 | Image pull policy                          | `IfNotPresent`                                          |

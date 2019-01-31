@@ -201,6 +201,7 @@ filter:
 # If true, check to see if the log field content is a JSON string map, if so,
 # it append the map fields as part of the log structure.
   mergeJSONLog: true
+  mergeLogKey: log_key
 
 # If true, enable the use of monitoring for a pod annotation of
 # fluentbit.io/parser: parser_name. parser_name must be the name

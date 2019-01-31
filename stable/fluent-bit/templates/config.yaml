@@ -58,6 +58,7 @@ data:
         Kube_Token_File     {{ .Values.filter.kubeTokenFile }}
 {{- if .Values.filter.mergeJSONLog }}
         Merge_Log           On
+        Merge_Log_Key       {{ .Values.filter.mergeLogKey}}
 {{- end }}
 {{- if .Values.filter.enableParser }}
         K8S-Logging.Parser  On
