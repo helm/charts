@@ -1,6 +1,6 @@
 image:
   repository: gcr.io/heptio-images/ark
-  tag: v0.9.1
+  tag: v0.10.1
   pullPolicy: IfNotPresent
 
 # Only kube2iam: change the AWS_ACCOUNT_ID and HEPTIO_ARK_ROLE_NAME
@@ -38,11 +38,13 @@ configuration:
     #  s3ForcePathStyle:
     #  s3Url:
     #  kmsKeyId:
+    #  resourceGroup:
+    #  storageAccount:
 
   backupSyncPeriod: 60m
-  gcSyncPeriod: 60m
-  scheduleSyncPeriod: 1m
-  resourcePriorities: []
+  metricsAddress: ":8085"
+  resticTimeout: 1h
+  restoreResourcePriorities: namespaces,persistentvolumes,persistentvolumeclaims,secrets,configmaps,serviceaccounts,limitranges,pods
   restoreOnlyMode: false
   # additional key/value pairs to be used as environment variables such as "AWS_CLUSTER_NAME: 'yourcluster.domain.tld'"
   extraEnvVars: {}
@@ -61,3 +63,5 @@ credentials:
   existingSecret:
   useSecret: true
   secretContents: {}
+
+deployRestic: false
