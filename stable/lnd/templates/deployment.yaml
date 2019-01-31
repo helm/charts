@@ -73,6 +73,9 @@ spec:
             name: data
           - mountPath: /secrets
             name: secrets
+          resources:
+            requests:
+              cpu: "10m"
         {{- end }}
       volumes:
         {{- if .Values.autoUnlock }}
