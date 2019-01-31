@@ -1,14 +1,32 @@
 # Ark-server
 
-This helm chart installs Ark version v0.9.0
-https://github.com/heptio/ark/tree/v0.9.0
+This helm chart installs Ark version v0.10.1
+https://github.com/heptio/ark/tree/v0.10.1
 
+## Upgrading to v0.10
+
+Ark v0.10.1 introduces breaking changes. The below instructions are based on the [official upgrade guide](https://github.com/heptio/ark/blob/master/docs/upgrading-to-v0.10.md).
+
+1. Pull the latest changes in this chart. If you're using Helm dependencies, update the chart version you're using in your `requirements.yaml` and run `helm dependency update`.
+
+2. Scale down
+
+```sh
+kubectl scale -n heptio-ark deploy/ark --replicas 0
+```
+
+3. Migrate file structure of your backup storage according to [guide](https://github.com/heptio/ark/blob/master/docs/storage-layout-reorg-v0.10.md)
+4. Upgrade your deployment
+
+```sh
+helm upgrade --force --namespace heptio-ark ark ./ark
+```
 
 ## Prerequisites
 
 ### Secret for cloud provider credentials
 Ark server needs an IAM service account in order to run, if you don't have it you must create it.
-Please follow the official documentation: https://heptio.github.io/ark/v0.9.0/cloud-common
+Please follow the official documentation: https://heptio.github.io/ark/v0.10.0/install-overview
 
 Don't forget the step to create the secret
 ```
@@ -17,7 +35,7 @@ kubectl create secret generic cloud-credentials --namespace <ARK_NAMESPACE> --fr
 
 ### Configuration
 Please change the values.yaml according to your setup
-See here for the official documentation https://heptio.github.io/ark/v0.9.0/config-definition
+See here for the official documentation https://heptio.github.io/ark/v0.10.0/install-overview
 
 Parameter | Description | Default | Required
 --- | --- | --- | ---
@@ -54,9 +72,8 @@ Parameter | Description | Default
 `configuration.backupStorageProvider.config.kmsKeyId` | KMS key for encryption (AWS only) | ``
 `configuration.backupSyncPeriod` | How frequently Ark queries the object storage to make sure that the appropriate Backup resources have been created for existing backup files | `60m`
 `configuration.extraEnvVars` | Key/values for extra environment variables such as AWS_CLUSTER_NAME, etc | `{}`
-`configuration.gcSyncPeriod` | How frequently Ark queries the object storage to delete backup files that have passed their TTL | `60m`
-`configuration.scheduleSyncPeriod` | How frequently Ark checks its Schedule resource objects to see if a backup needs to be initiated | `1m`
-`configuration.resourcePriorities` | An ordered list that describes the order in which Kubernetes resource objects should be restored | `[]`
+`configuration.metricsAddress` | Address to expose metrics | `:8085`
+`configuration.restoreResourcePriorities` | An ordered list that describes the order in which Kubernetes resource objects should be restored | `namespaces,persistentvolumes,persistentvolumeclaims,secrets,configmaps,serviceaccounts,limitranges,pods`
 `configuration.restoreOnlyMode` | When RestoreOnly mode is on, functionality for backups, schedules, and expired backup deletion is turned off. Restores are made from existing backup files in object storage | `false`
 `credentials.existingSecret` | If specified and `useSecret` is `true`, uses an existing secret with this name instead of creating one | ``
 `credentials.useSecret` | Whether a secret should be used. Set this to `false` when using `kube2iam` | `true`
