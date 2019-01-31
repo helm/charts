@@ -77,16 +77,6 @@ spec:
               key: redis-password
         {{- end }}
         {{- end }}
-        command:
-        - /bin/sh
-        - -c
-        - |-
-          if [[ -n $REDIS_PASSWORD_FILE ]]; then
-            password_aux="$(< "${REDIS_PASSWORD_FILE}")"
-            export REDIS_PASSWORD=$password_aux
-          fi
-          /bin/redis_exporter
-
         volumeMounts:
         {{- if .Values.usePasswordFile }}
         - name: redis-password
