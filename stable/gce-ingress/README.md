@@ -1,6 +1,6 @@
 # gce-ingress
 
-[gce-ingress](https://github.com/kubernetes/gce-gce) is an Ingress controller that configures GCE loadbalancers
+[ingress-gce](https://github.com/kubernetes/ingress-gce) is an Ingress controller that configures GCE loadbalancers
 
 To use, add the `kubernetes.io/ingress.class: "gce"` annotation to your Ingress resources.
 
