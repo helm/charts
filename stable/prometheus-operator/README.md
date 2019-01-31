@@ -58,6 +58,22 @@ The following tables lists the configurable parameters of the prometheus-operato
 | `fullNameOverride` | Provide a name to substitute for the full names of resources |`""`|
 | `commonLabels` | Labels to apply to all resources | `[]` |
 | `defaultRules.create` | Create default rules for monitoring the cluster | `true` |
+| `defaultRules.rules.alertmanager` | Create default rules for Alert Manager | `true` |
+| `defaultRules.rules.etcd` | Create default rules for ETCD | `true` |
+| `defaultRules.rules.general` | Create General default rules| `true` |
+| `defaultRules.rules.k8s` | Create K8S default rules| `true` |
+| `defaultRules.rules.kubeApiserver` | Create Api Server default rules| `true` |
+| `defaultRules.rules.kubePrometheusNodeAlerting` | Create Node Alerting default rules| `true` |
+| `defaultRules.rules.kubePrometheusNodeRecording` | Create Node Recording default rules| `true` |
+| `defaultRules.rules.kubeScheduler` | Create Kubernetes Scheduler default rules| `true` |
+| `defaultRules.rules.kubernetesAbsent` | Create Kubernetes Absent (example API Server down) default rules| `true` |
+| `defaultRules.rules.kubernetesApps` | Create Kubernetes Apps  default rules| `true` |
+| `defaultRules.rules.kubernetesResources` | Create Kubernetes Resources  default rules| `true` |
+| `defaultRules.rules.kubernetesStorage` | Create Kubernetes Storage  default rules| `true` |
+| `defaultRules.rules.kubernetesSystem` | Create Kubernetes System  default rules| `true` |
+| `defaultRules.rules.node` | Create Node  default rules| `true` |
+| `defaultRules.rules.PrometheusOperator` | Create Prometheus Operator  default rules| `true` |
+| `defaultRules.rules.prometheus` | Create Prometheus  default rules| `true` |
 | `defaultRules.labels` | Labels for default rules for monitoring the cluster | `{}` |
 | `defaultRules.annotations` | Annotations for default rules for monitoring the cluster | `{}` |
 | `global.rbac.create` | Create RBAC resources | `true` |
@@ -257,17 +273,17 @@ The following tables lists the configurable parameters of the prometheus-operato
 | `kubeEtcd.service.port` | Etcd port | `4001` |
 | `kubeEtcd.service.targetPort` | Etcd targetPort | `4001` |
 | `kubeEtcd.service.selector` | Selector for etcd if running inside the cluster | `{"k8s-app":"etcd-server"}` |
-| `kubeEtcd.servicemonitor.scheme` | Etcd servicemonitor scheme | `http` |
-| `kubeEtcd.servicemonitor.insecureSkipVerify` | Skip validating etcd TLS certificate when scraping | `false` |
-| `kubeEtcd.servicemonitor.serverName` | Etcd server name to validate certificate against when scraping | `""` |
-| `kubeEtcd.servicemonitor.caFile` | Certificate authority file to use when connecting to etcd. See `prometheus.prometheusSpec.secrets` | `""` |
-| `kubeEtcd.servicemonitor.certFile` | Client certificate file to use when connecting to etcd. See `prometheus.prometheusSpec.secrets` | `""` |
-| `kubeEtcd.servicemonitor.keyFile` | Client key file to use when connecting to etcd.  See `prometheus.prometheusSpec.secrets` | `""` |
+| `kubeEtcd.serviceMonitor.scheme` | Etcd servicemonitor scheme | `http` |
+| `kubeEtcd.serviceMonitor.insecureSkipVerify` | Skip validating etcd TLS certificate when scraping | `false` |
+| `kubeEtcd.serviceMonitor.serverName` | Etcd server name to validate certificate against when scraping | `""` |
+| `kubeEtcd.serviceMonitor.caFile` | Certificate authority file to use when connecting to etcd. See `prometheus.prometheusSpec.secrets` | `""` |
+| `kubeEtcd.serviceMonitor.certFile` | Client certificate file to use when connecting to etcd. See `prometheus.prometheusSpec.secrets` | `""` |
+| `kubeEtcd.serviceMonitor.keyFile` | Client key file to use when connecting to etcd.  See `prometheus.prometheusSpec.secrets` | `""` |
 | `kubeScheduler.enabled` | Deploy a `service` and `serviceMonitor` to scrape the Kubernetes scheduler | `true` |
 | `kubeScheduler.endpoints` | Endpoints where scheduler runs. Provide this if running scheduler outside the cluster | `[]` |
 | `kubeScheduler.service.port` | Scheduler port for the service runs on | `10251` |
 | `kubeScheduler.service.targetPort` | Scheduler targetPort for the service runs on | `10251` |
-| `kubeScheduler.service.targetPort.selector` | Scheduler service selector | `{"k8s-app" : "kube-scheduler" }`
+| `kubeScheduler.service.selector` | Scheduler service selector | `{"k8s-app" : "kube-scheduler" }`
 | `kubeStateMetrics.enabled` | Deploy the `kube-state-metrics` chart and configure a servicemonitor to scrape | `true` |
 | `kube-state-metrics.rbac.create` | Create RBAC components in kube-state-metrics. See `global.rbac.create` | `true` |
 | `kube-state-metrics.podSecurityPolicy.enabled` | Create pod security policy resource for kube-state-metrics. | `true` |
