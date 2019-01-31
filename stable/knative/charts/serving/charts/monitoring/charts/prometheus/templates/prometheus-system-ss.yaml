@@ -1,0 +1,71 @@
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Values.prometheusSystemNp.statefulSet.name | quote }}
+  namespace: "knative-monitoring"
+  labels: {{ include "labels" . | nindent 4 }}
+    app: {{ .Values.prometheusSystemNp.statefulSet.app | quote }}
+spec:
+  podManagementPolicy: {{ .Values.prometheusSystemNp.statefulSet.podManagementPolicy | quote }}
+  replicas: {{ .Values.prometheusSystemNp.statefulSet.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.prometheusSystemNp.statefulSet.app | quote }}
+  serviceName: {{ .Values.prometheusSystemNp.statefulSet.name | quote }}
+  template:
+    metadata:
+      labels: {{ include "labels" . | nindent 8 }}
+        app: {{ .Values.prometheusSystemNp.statefulSet.app | quote }}
+    spec:
+      containers:
+      - args:
+        - --config.file=/etc/prometheus/prometheus.yml
+        - --storage.tsdb.path=/prometheus
+        - --storage.tsdb.retention=2d
+        - --storage.tsdb.no-lockfile
+        - --web.enable-lifecycle
+        - --web.route-prefix=/
+        image: {{ .Values.prometheusSystemNp.statefulSet.image.repository }}:{{ .Values.prometheusSystemNp.statefulSet.image.tag }}
+        imagePullPolicy: {{ .Values.prometheusSystemNp.statefulSet.image.imagePullPolicy }}
+        livenessProbe:
+          failureThreshold: {{ .Values.prometheusSystemNp.statefulSet.image.livenessProbe.failureThreshold }}
+          httpGet:
+            path: /-/healthy
+            port: {{ .Values.prometheusSystemNp.statefulSet.image.livenessProbe.port }}
+            scheme: {{ .Values.prometheusSystemNp.statefulSet.image.livenessProbe.scheme }}
+          initialDelaySeconds: {{ .Values.prometheusSystemNp.statefulSet.image.livenessProbe.initialDelaySeconds }}
+          timeoutSeconds: {{ .Values.prometheusSystemNp.statefulSet.image.livenessProbe.timeoutSeconds }}
+        name: {{ .Values.prometheusSystemNp.statefulSet.image.livenessProbe.name }}
+        ports:
+        - containerPort: {{ .Values.prometheusSystemNp.statefulSet.image.livenessProbe.ports.containerPort }}
+          name: {{ .Values.prometheusSystemNp.statefulSet.image.livenessProbe.ports.name }}
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: {{ .Values.prometheusSystemNp.statefulSet.image.readinessProbe.failureThreshold }}
+          httpGet:
+            path: /-/ready
+            port: {{ .Values.prometheusSystemNp.statefulSet.image.readinessProbe.port }}
+            scheme: {{ .Values.prometheusSystemNp.statefulSet.image.readinessProbe.scheme }}
+          timeoutSeconds: {{ .Values.prometheusSystemNp.statefulSet.image.readinessProbe.timeoutSeconds }}
+        resources:
+          requests:
+            memory: {{ .Values.prometheusSystemNp.statefulSet.image.requestResouceMemory }}
+        terminationMessagePath: /dev/termination-log
+        volumeMounts:
+        - mountPath: /etc/prometheus/
+          name: prometheus-config-volume
+        - mountPath: /prometheus/
+          name: prometheus-storage-volume
+      serviceAccountName: {{ .Values.prometheusSystem.svcacct.name | quote }}
+      terminationGracePeriodSeconds: {{ .Values.prometheusSystemNp.statefulSet.terminationGracePeriodSeconds }}
+      volumes:
+      - configMap:
+          defaultMode: 420
+          name: prometheus-scrape-config
+        name: prometheus-config-volume
+      - emptyDir: {}
+        name: prometheus-storage-volume
+  updateStrategy:
+    type: {{ .Values.prometheusSystemNp.statefulSet.updateStrategyType }}
+---

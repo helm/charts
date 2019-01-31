@@ -1,0 +1,27 @@
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: {{ .Values.controller.name | quote }}
+  namespace: "knative-eventing"
+  labels: {{ include "labels" . | nindent 4 }}
+    app: {{ .Values.controller.name | quote }}
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.controller.name | quote }} {{ include "labels" . | nindent 8 }}
+    spec:
+      containers:
+      - image: gcr.io/knative-releases/github.com/knative/eventing/pkg/provisioners/kafka/cmd/controller@sha256:c55c577048f02a37391cab8624def297aaa9c1392a788ac37dc0d57f840f1401
+        name: kafka-channel-controller-controller
+        volumeMounts:
+        - mountPath: /etc/config-provisioner
+          name: kafka-channel-controller-config
+      serviceAccountName: {{ .Values.controller.serviceAccount.name | quote }}
+      volumes:
+      - configMap:
+          name: kafka-channel-controller-config
+        name: kafka-channel-controller-config
+---

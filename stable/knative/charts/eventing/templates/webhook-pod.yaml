@@ -1,0 +1,31 @@
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: {{ .Values.webhook.name | quote }}
+  namespace: "knative-eventing"
+  labels: {{ include "labels" . | nindent 4 }}
+    app: {{ .Values.webhook.name | quote }}
+spec:
+  replicas: {{ .Values.webhook.replicas }}
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "false"
+      labels: {{ include "labels" . | nindent 8 }}
+        app: {{ .Values.webhook.name | quote}} 
+        role: webhook
+    spec:
+      containers:
+      - image: {{ .Values.webhook.image.repository }}:{{ .Values.webhook.image.tag }}
+        name: {{ .Values.webhook.name | quote }}
+        terminationMessagePolicy: FallbackToLogsOnError
+        volumeMounts:
+        - mountPath: /etc/config-logging
+          name: config-logging
+      serviceAccountName: {{ .Values.controller.serviceAccount.name | quote }}
+      volumes:
+      - configMap:
+          name: config-logging
+        name: config-logging
+---

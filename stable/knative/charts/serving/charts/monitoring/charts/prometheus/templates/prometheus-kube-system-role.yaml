@@ -1,0 +1,20 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ .Values.prometheusSystem.rb.roleName | quote }}
+  namespace: kube-system
+  labels: {{ include "labels" . | nindent 4 }}
+    app: {{ .Values.prometheusSystem.rb.roleName | quote }}
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - services
+  - endpoints
+  - pods
+  verbs:
+  - get
+  - list
+  - watch
+---

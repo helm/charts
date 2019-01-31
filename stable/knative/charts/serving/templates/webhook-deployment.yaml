@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.webhook.name | quote }}
+  namespace: "knative-serving"
+  labels: {{ include "labels" . | nindent 4 }}
+    app: {{ .Values.webhook.name | quote }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.webhook.name | quote }}
+      role: webhook
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "false"
+      labels:
+        app: {{ .Values.webhook.name | quote }}
+        role: webhook {{ include "labels" . | nindent 8 }}
+    spec:
+      containers:
+      - image: gcr.io/knative-releases/github.com/knative/serving/cmd/webhook@sha256:1b4320c1d3d70adf4614cd7859082549630c2c3cda19176400673b8cc8df8a7d
+        name: {{ .Values.webhook.name | quote }}
+        volumeMounts:
+        - mountPath: /etc/config-logging
+          name: config-logging
+      serviceAccountName: {{ .Values.controller.serviceAccount.name | quote }}
+      volumes:
+      - configMap:
+          name: config-logging
+        name: config-logging

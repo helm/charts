@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.name | quote }}
+  namespace: {{ .Values.global.istio.namespace | quote }}
+  labels: {{ include "labels" . | nindent 4 }}
+    app: {{ .Values.name | quote }}
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.name | quote }}
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "false"
+      labels: {{ include "labels" . | nindent 8 }}
+        app: {{ .Values.name | quote }}
+    spec:
+      containers:
+      - env:
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+        {{- if .Values.global.serving.monitoring.elasticsearch.enabled }}
+        - name: STORAGE_TYPE
+          value: elasticsearch
+        - name: ES_HOSTS
+          value: "elasticsearch-logging.knative-monitoring.svc.cluster.local:9200"
+        - name: ES_INDEX
+          value: {{ .Values.elasticsearch.index | quote }}
+        - name: ZIPKIN_UI_LOGS_URL
+          value: "http://{{ .Values.elasticsearch.kibana.host }}:{{ .Values.elasticsearch.kibana.port }}/api/v1/namespaces/knative-monitoring/services/{{ .Values.elasticsearch.kibana.serviceName }}/proxy/{{ .Values.elasticsearch.kibana.appPath }}"
+        {{- end }}
+        image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+        name: {{ .Values.name | quote }}
+        ports:
+        - containerPort: {{ .Values.port }}

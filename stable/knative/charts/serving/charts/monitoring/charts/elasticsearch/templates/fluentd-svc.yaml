@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels: {{ include "labels" . | nindent 4 }}
+    app: {{ .Values.fluentd.name | quote }}
+  name: {{ .Values.fluentd.name | quote }}
+  namespace: "knative-monitoring"
+spec:
+  ports:
+  - name: fluentd-tcp
+    port: {{ .Values.fluentd.port }}
+    protocol: TCP
+    targetPort: {{ .Values.fluentd.port }}
+  - name: fluentd-udp
+    port: {{ .Values.fluentd.port }}
+    protocol: UDP
+    targetPort: {{ .Values.fluentd.port }}
+  selector:
+    app: {{ .Values.fluentd.name | quote }}

@@ -1,0 +1,9 @@
+apiVersion: config.istio.io/v1alpha2
+kind: fluentd
+metadata:
+  name: {{ .Values.fluentd.logHandlerName | quote }}
+  namespace: {{ .Values.global.istio.namespace | quote }}
+  labels: {{ include "labels" . | nindent 4 }}
+    app: {{ .Values.fluentd.name | quote }}
+spec:
+  address: "{{ .Values.fluentd.name }}.knative-monitoring:{{ .Values.fluentd.port }}"

@@ -1,0 +1,44 @@
+global:
+  build:
+    namespace: "knative-build"
+
+clusterRole:
+  name: "knative-build-admin"
+
+controller:
+  name: "build-controller"
+  replicas: 1
+  port: 9090
+  targetPort: 9090
+  serviceAccount:
+    name: "build-controller"
+  image: 
+    repository: "gcr.io/knative-releases/github.com/knative/build/cmd/controller@sha256"
+    tag: "2667d0ff68a406e0103c58145edef916edc1b41695b38964dc6ccb0b38c0aedf"
+    pullPolicy: "IfNotPresent"
+
+credsImage:
+  repository: "gcr.io/knative-releases/github.com/knative/build/cmd/creds-init@sha256"
+  tag: "c1c11fafd337f62eea18a1f02b78e6ae6949779bed72d53d19b2870723a8f104"
+
+gitImage:
+  repository: "gcr.io/knative-releases/github.com/knative/build/cmd/git-init@sha256"
+  tag: "6fa8043ed114920cd61e28db3c942647ba48415fe1208acde2fb2ac0746c9164"
+
+nopImage:
+  repository: "gcr.io/knative-releases/github.com/knative/build/cmd/nop@sha256"
+  tag: "f94e6413749759bc3f80d33e76c36509d6a63f7b206d2ca8fff167a0bb9c77f2"
+
+fetcherImage:
+  repository: "gcr.io/cloud-builders/gcs-fetcher"
+
+webhook:
+  name: "build-webhook"
+  replicas: 1
+  port: 443
+  targetPort: 443
+  image:
+    repository: "gcr.io/knative-releases/github.com/knative/build/cmd/webhook@sha256"
+    tag: "58775663a5bc0d782c8505a28cc88616a5e08115959dc62fa07af5ad76c54a97"
+    pullPolicy: "IfNotPresent"
+

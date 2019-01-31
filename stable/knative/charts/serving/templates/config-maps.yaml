@@ -1,0 +1,152 @@
+apiVersion: v1
+data:
+  container-concurrency-target-default: "100"
+  container-concurrency-target-percentage: "1.0"
+  enable-scale-to-zero: "true"
+  enable-vertical-pod-autoscaling: "false"
+  max-scale-up-rate: "10"
+  panic-window: 6s
+  scale-to-zero-grace-period: 2m
+  scale-to-zero-threshold: 5m
+  stable-window: 60s
+  tick-interval: 2s
+kind: ConfigMap
+metadata:
+  name: config-autoscaler
+  namespace: "knative-serving"
+  labels: {{ include "labels" . | nindent 4 }}
+    app: {{ .Values.autoscaler.name | quote }} 
+---
+apiVersion: v1
+data:
+  queueSidecarImage: gcr.io/knative-releases/github.com/knative/serving/cmd/queue@sha256:df0b85347195877985d4ce91daf002febeec50c2d845b58a0a7093d8cdc7c34e
+  registriesSkippingTagResolving: ko.local,dev.local
+kind: ConfigMap
+metadata:
+  name: config-controller
+  namespace: "knative-serving"
+  labels: {{ include "labels" . | nindent 4 }}
+    app: {{ .Values.controller.name | quote }} 
+---
+apiVersion: v1
+data:
+  example.com: ""
+kind: ConfigMap
+metadata:
+  name: config-domain
+  namespace: "knative-serving"
+  labels: {{ include "labels" . | nindent 4 }}
+    app: {{ .Chart.Name }} 
+---
+apiVersion: v1
+data:
+  stale-revision-create-delay: 24h
+  stale-revision-lastpinned-debounce: 5h
+  stale-revision-minimum-generations: "1"
+  stale-revision-timeout: 15h
+kind: ConfigMap
+metadata:
+  name: config-gc
+  namespace: "knative-serving"
+  labels: {{ include "labels" . | nindent 4 }}
+    app: {{ .Chart.Name }} 
+---
+apiVersion: v1
+data:
+  loglevel.activator: info
+  loglevel.autoscaler: info
+  loglevel.controller: info
+  loglevel.queueproxy: info
+  loglevel.webhook: info
+  zap-logger-config: |
+    {
+      "level": "info",
+      "development": false,
+      "outputPaths": ["stdout"],
+      "errorOutputPaths": ["stderr"],
+      "encoding": "json",
+      "encoderConfig": {
+        "timeKey": "ts",
+        "levelKey": "level",
+        "nameKey": "logger",
+        "callerKey": "caller",
+        "messageKey": "msg",
+        "stacktraceKey": "stacktrace",
+        "lineEnding": "",
+        "levelEncoder": "",
+        "timeEncoder": "iso8601",
+        "durationEncoder": "",
+        "callerEncoder": ""
+      }
+    }
+kind: ConfigMap
+metadata:
+  name: config-logging
+  namespace: "knative-serving"
+  labels: {{ include "labels" . | nindent 4 }}
+    app: {{ .Chart.Name }} 
+---
+apiVersion: v1
+data:
+  istio.sidecar.includeOutboundIPRanges: '*'
+kind: ConfigMap
+metadata:
+  name: config-network
+  namespace: "knative-serving"
+  labels: {{ include "labels" . | nindent 4 }}
+    app: {{ .Chart.Name }} 
+---
+apiVersion: v1
+data:
+  logging.enable-var-log-collection: "false"
+  logging.fluentd-sidecar-image: k8s.gcr.io/fluentd-elasticsearch:v2.0.4
+  logging.fluentd-sidecar-output-config: |
+    # Parse json log before sending to Elastic Search
+    <filter **>
+      @type parser
+      key_name log
+      <parse>
+        @type multi_format
+        <pattern>
+          format json
+          time_key fluentd-time # fluentd-time is reserved for structured logs
+          time_format %Y-%m-%dT%H:%M:%S.%NZ
+        </pattern>
+        <pattern>
+          format none
+          message_key log
+        </pattern>
+      </parse>
+    </filter>
+    # Send to Elastic Search
+    <match **>
+      @id elasticsearch
+      @type elasticsearch
+      @log_level info
+      include_tag_key true
+      # Elasticsearch service is in monitoring namespace.
+      host elasticsearch-logging.knative-monitoring
+      port 9200
+      logstash_format true
+      <buffer>
+        @type file
+        path /var/log/fluentd-buffers/kubernetes.system.buffer
+        flush_mode interval
+        retry_type exponential_backoff
+        flush_thread_count 2
+        flush_interval 5s
+        retry_forever
+        retry_max_interval 30
+        chunk_limit_size 2M
+        queue_limit_length 8
+        overflow_action block
+      </buffer>
+    </match>
+  logging.revision-url-template: |
+    http://localhost:8001/api/v1/namespaces/knative-monitoring/services/kibana-logging/proxy/app/kibana#/discover?_a=(query:(match:(kubernetes.labels.knative-dev%2FrevisionUID:(query:'${REVISION_UID}',type:phrase))))
+kind: ConfigMap
+metadata:
+  name: config-observability
+  namespace: "knative-serving"
+  labels: {{ include "labels" . | nindent 4 }}
+    app: {{ .Chart.Name }} 

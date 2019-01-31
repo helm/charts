@@ -1,0 +1,7 @@
+dependencies:
+  - name: in-memory-provisioner
+    version: 0.1.0
+    condition: global.eventing.in-memory-provisioner.enabled
+  - name: kafka-provisioner
+    version: 0.1.0
+    condition: global.eventing.kafka-provisioner.enabled

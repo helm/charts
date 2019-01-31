@@ -1,0 +1,10 @@
+controller:
+  name: "in-memory-channel-controller"
+  serviceAccount:
+    name: "in-memory-channel-controller"
+  
+dispatcher:
+  name: "in-memory-channel-dispatcher"
+  replicas: 1
+  serviceAccount:
+    name: "in-memory-channel-dispatcher"

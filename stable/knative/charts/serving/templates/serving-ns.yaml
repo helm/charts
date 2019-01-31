@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels: {{ include "labels" . | nindent 4 }}
+    app: {{ .Chart.Name }} 
+    istio-injection: enabled
+  name: "knative-serving"

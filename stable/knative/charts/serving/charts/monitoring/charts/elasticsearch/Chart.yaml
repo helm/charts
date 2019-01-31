@@ -1,0 +1,11 @@
+apiVersion: v1
+name: elasticsearch
+version: 0.1.0
+description: Elasticsearch logging for Knative monitoring
+appVersion: "0.2.3"
+icon: https://raw.githubusercontent.com/knative/docs/master/images/logo/rgb/knative-logo-rgb.jpg
+kubeVersion: ">=1.10"
+tillerVersion: ">=2.10.0"
+keywords:
+  - amd64
+  - OpenSource

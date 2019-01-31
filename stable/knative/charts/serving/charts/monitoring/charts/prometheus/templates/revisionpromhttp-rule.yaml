@@ -1,0 +1,18 @@
+---
+apiVersion: config.istio.io/v1alpha2
+kind: rule
+metadata:
+  labels: {{ include "labels" . | nindent 4 }}
+    app: {{ .Values.revision.rule.promHttpName | quote }}
+    istio-protocol: http
+  name: {{ .Values.revision.rule.promHttpName | quote }}
+  namespace: {{ .Values.global.istio.namespace | quote }}
+spec:
+  actions:
+  - handler: revisionpromhandler.prometheus
+    instances:
+    - revisionrequestcount.metric
+    - revisionrequestduration.metric
+    - revisionrequestsize.metric
+    - revisionresponsesize.metric
+---

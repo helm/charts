@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.controller.name | quote }}
+  namespace: {{ .Values.global.build.namespace | quote }}
+  labels: {{ include "labels" . | nindent 4 }}
+    app: {{ .Values.controller.name | quote }}
+spec:
+  replicas: {{ .Values.controller.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.controller.name | quote }}
+  template:
+    metadata:
+      labels: {{ include "labels" . | nindent 8 }}
+        app: {{ .Values.controller.name | quote }}
+    spec:
+      containers:
+      - args:
+        - -logtostderr
+        - -stderrthreshold
+        - INFO
+        - -creds-image
+        - {{ .Values.credsImage.repository }}:{{ .Values.credsImage.tag }}
+        - -git-image
+        - {{ .Values.gitImage.repository }}:{{ .Values.gitImage.tag }}
+        - -nop-image
+        - {{ .Values.nopImage.repository }}:{{ .Values.nopImage.tag }}
+        env:
+        - name: SYSTEM_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        image: "{{ .Values.controller.image.repository }}:{{ .Values.controller.image.tag }}"
+        imagePullPolicy: {{ .Values.controller.image.pullPolicy }}
+        name: {{ .Values.controller.name | quote }}
+        volumeMounts:
+        - mountPath: /etc/config-logging
+          name: config-logging
+      serviceAccountName: {{ .Values.controller.serviceAccount.name | quote }}
+      volumes:
+      - configMap:
+          name: config-logging
+        name: config-logging

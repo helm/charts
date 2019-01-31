@@ -1,0 +1,127 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.grafana.deployment.name | quote }}
+  namespace: "knative-monitoring"
+  labels: {{ include "labels" . | nindent 4 }}
+    app: {{ .Values.grafana.deployment.name | quote }}
+spec:
+  replicas: {{ .Values.grafana.deployment.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.grafana.deployment.name | quote }}
+  template:
+    metadata:
+      labels: {{ include "labels" . | nindent 8 }}
+        app: {{ .Values.grafana.deployment.name | quote }} 
+    spec:
+      containers:
+      - image: {{ .Values.grafana.deployment.image.repository }}:{{ .Values.grafana.deployment.image.tag }}
+        imagePullPolicy: {{ .Values.grafana.deployment.image.pullPolicy }}
+        name: {{ .Values.grafana.deployment.image.name | quote }}
+        ports:
+        - containerPort: {{ .Values.grafana.deployment.image.ports.containerPort }}
+          name: {{ .Values.grafana.deployment.image.ports.name | quote }}
+        resources:
+          limits:
+            cpu: {{ .Values.grafana.deployment.image.resourceLimits.cpu }}
+            memory: {{ .Values.grafana.deployment.image.resourceLimits.memory }}
+          requests:
+            cpu: {{ .Values.grafana.deployment.image.resourceRequests.cpu }}
+            memory: {{ .Values.grafana.deployment.image.resourceRequests.memory }}
+        volumeMounts:
+        - mountPath: /data
+          name: grafana-storage
+        - mountPath: /grafana/conf/provisioning/datasources
+          name: grafana-datasources
+        - mountPath: /grafana/conf/provisioning/dashboards
+          name: grafana-dashboards
+        - mountPath: /grafana-dashboard-definition/knative
+          name: grafana-dashboard-definition-knative
+        - mountPath: /grafana-dashboard-definition/knative-efficiency
+          name: grafana-dashboard-definition-knative-efficiency
+        - mountPath: /grafana-dashboard-definition/istio
+          name: grafana-dashboard-definition-istio
+        - mountPath: /grafana-dashboard-definition/mixer
+          name: grafana-dashboard-definition-mixer
+        - mountPath: /grafana-dashboard-definition/pilot
+          name: grafana-dashboard-definition-pilot
+        - mountPath: /grafana-dashboard-definition/kubernetes-deployment
+          name: grafana-dashboard-definition-kubernetes-deployment
+        - mountPath: /grafana-dashboard-definition/kubernetes-capacity-planning
+          name: grafana-dashboard-definition-kubernetes-capacity-planning
+        - mountPath: /grafana-dashboard-definition/kubernetes-cluster-health
+          name: grafana-dashboard-definition-kubernetes-cluster-health
+        - mountPath: /grafana-dashboard-definition/kubernetes-cluster-status
+          name: grafana-dashboard-definition-kubernetes-cluster-status
+        - mountPath: /grafana-dashboard-definition/kubernetes-control-plane-status
+          name: grafana-dashboard-definition-kubernetes-control-plane-status
+        - mountPath: /grafana-dashboard-definition/kubernetes-resource-requests
+          name: grafana-dashboard-definition-kubernetes-resource-requests
+        - mountPath: /grafana-dashboard-definition/kubernetes-nodes
+          name: grafana-dashboard-definition-kubernetes-nodes
+        - mountPath: /grafana-dashboard-definition/kubernetes-pods
+          name: grafana-dashboard-definition-kubernetes-pods
+        - mountPath: /grafana-dashboard-definition/kubernetes-statefulset
+          name: grafana-dashboard-definition-kubernetes-statefulset
+        - mountPath: /grafana-dashboard-definition/scaling
+          name: scaling-config
+      securityContext:
+        runAsNonRoot: {{ .Values.grafana.deployment.securityContext.runAsNonRoot }}
+        runAsUser: {{ .Values.grafana.deployment.securityContext.runAsUser }}
+      volumes:
+      - emptyDir: {}
+        name: grafana-storage
+      - configMap:
+          name: grafana-datasources
+        name: grafana-datasources
+      - configMap:
+          name: grafana-dashboards
+        name: grafana-dashboards
+      - configMap:
+          name: grafana-dashboard-definition-knative
+        name: grafana-dashboard-definition-knative
+      - configMap:
+          name: grafana-dashboard-definition-knative-efficiency
+        name: grafana-dashboard-definition-knative-efficiency
+      - configMap:
+          name: grafana-dashboard-definition-istio
+        name: grafana-dashboard-definition-istio
+      - configMap:
+          name: grafana-dashboard-definition-mixer
+        name: grafana-dashboard-definition-mixer
+      - configMap:
+          name: grafana-dashboard-definition-pilot
+        name: grafana-dashboard-definition-pilot
+      - configMap:
+          name: grafana-dashboard-definition-kubernetes-deployment
+        name: grafana-dashboard-definition-kubernetes-deployment
+      - configMap:
+          name: grafana-dashboard-definition-kubernetes-capacity-planning
+        name: grafana-dashboard-definition-kubernetes-capacity-planning
+      - configMap:
+          name: grafana-dashboard-definition-kubernetes-cluster-health
+        name: grafana-dashboard-definition-kubernetes-cluster-health
+      - configMap:
+          name: grafana-dashboard-definition-kubernetes-cluster-status
+        name: grafana-dashboard-definition-kubernetes-cluster-status
+      - configMap:
+          name: grafana-dashboard-definition-kubernetes-control-plane-status
+        name: grafana-dashboard-definition-kubernetes-control-plane-status
+      - configMap:
+          name: grafana-dashboard-definition-kubernetes-resource-requests
+        name: grafana-dashboard-definition-kubernetes-resource-requests
+      - configMap:
+          name: grafana-dashboard-definition-kubernetes-nodes
+        name: grafana-dashboard-definition-kubernetes-nodes
+      - configMap:
+          name: grafana-dashboard-definition-kubernetes-pods
+        name: grafana-dashboard-definition-kubernetes-pods
+      - configMap:
+          name: grafana-dashboard-definition-kubernetes-statefulset
+        name: grafana-dashboard-definition-kubernetes-statefulset
+      - configMap:
+          name: scaling-config
+        name: scaling-config
+---

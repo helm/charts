@@ -1,0 +1,10 @@
+dependencies:
+  - name: build
+    version: 0.1.0
+    condition: global.build.enabled
+  - name: eventing
+    version: 0.1.0
+    condition: global.eventing.enabled
+  - name: serving
+    version: 0.1.0
+    condition: global.serving.enabled

@@ -1,0 +1,33 @@
+global:
+  serving:
+    monitoring:
+      enabled: true
+      elasticsearch:
+        enabled: true
+      prometheus:
+        enabled: true
+      zipkin:
+        enabled: true
+  istio:
+    namespace: "istio-system"
+
+activator:
+  name: "activator"
+  replicas: 3
+
+autoscaler:
+  name: "autoscaler"
+  serviceAccount:
+    name: "autoscaler"
+
+controller:
+  name: "controller"
+  serviceAccount:
+    name: "controller"
+
+ingressGateway:
+  name: "knative-ingressgateway"
+  type: "LoadBalancer"
+
+webhook:
+  name: "webhook"

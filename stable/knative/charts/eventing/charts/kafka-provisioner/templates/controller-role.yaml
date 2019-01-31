@@ -1,0 +1,55 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ .Values.controller.name | quote }}
+  labels: {{ include "labels" . | nindent 4 }}
+    app: {{ .Values.controller.name | quote }}
+rules:
+- apiGroups:
+  - eventing.knative.dev
+  resources:
+  - channels
+  - clusterchannelprovisioners
+  verbs:
+  - get
+  - list
+  - watch
+  - update
+- apiGroups:
+  - ""
+  resources:
+  - services
+  - configmaps
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+- apiGroups:
+  - ""
+  resourceNames:
+  - kafka-dispatcher
+  resources:
+  - services
+  verbs:
+  - update
+- apiGroups:
+  - ""
+  resourceNames:
+  - kafka-channel-dispatcher
+  resources:
+  - configmaps
+  verbs:
+  - update
+- apiGroups:
+  - networking.istio.io
+  resources:
+  - virtualservices
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+  - update
+---

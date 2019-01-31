@@ -1,0 +1,26 @@
+global:
+  serving:
+    monitoring:
+      elasticsearch:
+        enabled: true
+  istio:
+    namespace: "istio-system"
+
+name: "zipkin"
+
+port: 9411
+
+replicas: 1
+
+image:
+  name: "docker.io/openzipkin/zipkin"
+  tag: "latest"
+  pullPolicy: "IfNotPresent"
+
+elasticsearch:
+  index: "zipkin"
+  kibana: 
+    host: "localhost"
+    port: 8001
+    serviceName: "kibana-logging"
+    appPath: "app/kibana#/"

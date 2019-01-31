@@ -1,0 +1,17 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ .Values.controller.name | quote }}
+  namespace: "knative-eventing"
+  labels: {{ include "labels" . | nindent 4 }}
+    app: {{ .Values.controller.name | quote }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ .Values.controller.name | quote }}
+subjects:
+- kind: ServiceAccount
+  name: {{ .Values.controller.serviceAccount.name | quote }}
+  namespace: "knative-eventing"
+---

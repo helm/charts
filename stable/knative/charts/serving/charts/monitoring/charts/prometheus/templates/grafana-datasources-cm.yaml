@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+data:
+  prometheus.yaml: |
+    datasources:
+     - name: prometheus
+       type: prometheus
+       access: proxy
+       org_id: 1
+       url: http://prometheus-system-np:8080
+       version: 1
+       editable: false
+kind: ConfigMap
+metadata:
+  name: {{ .Values.grafana.configMaps.datasources | quote }}
+  namespace: "knative-monitoring"
+  labels: {{ include "labels" . | nindent 4 }}
+    app: {{ .Chart.Name }}
+---

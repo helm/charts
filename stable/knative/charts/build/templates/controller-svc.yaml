@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.controller.name | quote }}
+  namespace: {{ .Values.global.build.namespace | quote }}
+  labels: {{ include "labels" . | nindent 4 }}
+    app: {{ .Values.controller.name | quote }}
+spec:
+  ports:
+  - name: metrics
+    port: {{ .Values.controller.port }}
+    protocol: TCP
+    targetPort: {{ .Values.controller.targetPort }}
+  selector:
+    app: {{ .Values.controller.name | quote }}

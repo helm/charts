@@ -1,0 +1,33 @@
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: {{ .Values.dispatcher.name | quote }}
+  namespace: "knative-eventing"
+  labels: {{ include "labels" . | nindent 4 }}
+    app: {{ .Values.dispatcher.name | quote }}
+spec:
+  replicas: {{ .Values.dispatcher.replicas }}
+  selector:
+    matchLabels:
+      clusterChannelProvisioner: in-memory-channel
+      role: dispatcher
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "true"
+      labels: {{ include "labels" . | nindent 8 }}
+        app: {{ .Values.dispatcher.name | quote }}
+        clusterChannelProvisioner: in-memory-channel
+        role: dispatcher
+    spec:
+      containers:
+      - args:
+        - --sidecar_port=8080
+        - --config_map_noticer=watcher
+        - --config_map_namespace=knative-eventing
+        - --config_map_name=in-memory-channel-dispatcher-config-map
+        image: gcr.io/knative-releases/github.com/knative/eventing/cmd/fanoutsidecar@sha256:a04bdbe0ffad3c47286ebfb961648e9f1d2b366aea243e9ea1ae591e706de06d
+        name: dispatcher
+      serviceAccountName: {{ .Values.dispatcher.serviceAccount.name | quote }}
+---

@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels: {{ include "labels" . | nindent 4 }}
+    addonmanager.kubernetes.io/mode: Reconcile
+    app: "elasticsearch-logging"
+    kubernetes.io/cluster-service: "true"
+    version: {{ .Values.elasticsearch.image.tag | quote }}
+  name: "elasticsearch-logging"
+  namespace: "knative-monitoring"
+spec:
+  replicas: {{ .Values.elasticsearch.replicas }}
+  selector:
+    matchLabels:
+      app: "elasticsearch-logging"
+      version: {{ .Values.elasticsearch.image.tag | quote }}
+  serviceName: "elasticsearch-logging"
+  template:
+    metadata:
+      labels: {{ include "labels" . | nindent 8 }}
+        app: "elasticsearch-logging"
+        kubernetes.io/cluster-service: "true"
+        version: {{ .Values.elasticsearch.image.tag | quote }}
+    spec:
+      containers:
+      - env:
+        - name: NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        image: "{{ .Values.elasticsearch.image.repo }}/{{ .Values.elasticsearch.image.name }}:{{ .Values.elasticsearch.image.tag }}"
+        name: "elasticsearch-logging"
+        ports:
+        - containerPort: 9200
+          name: db
+          protocol: TCP
+        - containerPort: 9300
+          name: transport
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 1000m
+          requests:
+            cpu: 100m
+        volumeMounts:
+        - mountPath: {{ .Values.elasticsearch.mountPath | quote }}
+          name: "elasticsearch-logging"
+      initContainers:
+      - command:
+        - /sbin/sysctl
+        - -w
+        - vm.max_map_count=262144
+        image: "{{ .Values.elasticsearch.initContainer.image.name }}:{{ .Values.elasticsearch.initContainer.image.tag }}"
+        name: "elasticsearch-logging-init"
+        securityContext:
+          privileged: true
+      serviceAccountName: {{ .Values.elasticsearch.serviceAccount.name | quote }}
+      volumes:
+      - emptyDir: {}
+        name: "elasticsearch-logging"
+---

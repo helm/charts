@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels: {{ include "labels" . | nindent 4 }}
+    addonmanager.kubernetes.io/mode: Reconcile
+    app: {{ .Values.kibana.name | quote }}
+    kubernetes.io/cluster-service: "true"
+    kubernetes.io/name: Kibana
+  name: {{ .Values.kibana.name | quote }}
+  namespace: "knative-monitoring"
+spec:
+  ports:
+  - port: {{ .Values.kibana.port }}
+    protocol: TCP
+    targetPort: ui
+  selector:
+    app: {{ .Values.kibana.name | quote }}
+  type: {{ .Values.kibana.type | quote }}

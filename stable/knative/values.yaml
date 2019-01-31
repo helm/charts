@@ -1,0 +1,20 @@
+global:
+  build:
+    enabled: true
+    namespace: "knative-build"
+  eventing:
+    enabled: false
+    in-memory-provisioner:
+      enabled: true
+    kafka-provisioner:
+      enabled: false
+  serving:
+    enabled: true
+    monitoring:
+      enabled: true
+      elasticsearch:
+        enabled: true
+      prometheus:
+        enabled: true
+      zipkin:
+        enabled: true

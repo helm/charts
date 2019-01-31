@@ -1,0 +1,21 @@
+---
+apiVersion: config.istio.io/v1alpha2
+kind: metric
+metadata:
+  name: {{ .Values.revision.metrics.requestSizeName | quote }}
+  namespace: {{ .Values.global.istio.namespace | quote }}
+  labels: {{ include "labels" . | nindent 4 }}
+    app: {{ .Values.revision.metrics.requestSizeName | quote }}
+spec:
+  dimensions:
+    destination_configuration: destination.labels["serving.knative.dev/configuration"]
+      | "unknown"
+    destination_k8s_service: destination.service | "unknown"
+    destination_namespace: destination.namespace | "unknown"
+    destination_revision: destination.labels["serving.knative.dev/revision"] | "unknown"
+    destination_service: destination.labels["serving.knative.dev/service"] | "unknown"
+    response_code: response.code | 200
+    source_k8s_service: source.service | "unknown"
+  monitored_resource_type: '"UNSPECIFIED"'
+  value: request.size | 0
+---

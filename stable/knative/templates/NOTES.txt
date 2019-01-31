@@ -1,0 +1,11 @@
+{{ .Chart.Name }} has been installed!
+
+Your release is named {{ .Release.Name }}.
+
+To learn more about the release, try:
+
+  $ helm status {{ .Release.Name }} [--tls]
+  $ helm get {{ .Release.Name }} [--tls]
+
+Once all the pods are in 'Running' or 'Completed' state, your deployment is ready to be used.
+  

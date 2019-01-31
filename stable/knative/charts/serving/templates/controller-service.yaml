@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels: {{ include "labels" . | nindent 4 }}
+    app: {{ .Values.controller.name | quote }} 
+  name: {{ .Values.controller.name | quote }}
+  namespace: "knative-serving"
+spec:
+  ports:
+  - name: metrics
+    port: 9090
+    protocol: TCP
+    targetPort: 9090
+  selector:
+    app: {{ .Values.controller.name | quote }}

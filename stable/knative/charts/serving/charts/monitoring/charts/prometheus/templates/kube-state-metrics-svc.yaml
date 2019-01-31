@@ -1,0 +1,22 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels: {{ include "labels" . | nindent 4 }}
+    app: {{ .Values.kubeState.service.name | quote }} 
+  name: {{ .Values.kubeState.service.name | quote }}
+  namespace: "knative-monitoring"
+spec:
+  clusterIP: None
+  ports:
+  - name: {{ .Values.kubeState.service.mainPort.name | quote }}
+    port: {{ .Values.kubeState.service.mainPort.port }}
+    protocol: TCP
+    targetPort: {{ .Values.kubeState.service.mainPort.targetPort }}
+  - name: {{ .Values.kubeState.service.selfPort.name | quote }}
+    port: {{ .Values.kubeState.service.selfPort.port }}
+    protocol: TCP
+    targetPort: {{ .Values.kubeState.service.selfPort.targetPort }}
+  selector:
+    app: {{ .Values.kubeState.service.name | quote }}
+---

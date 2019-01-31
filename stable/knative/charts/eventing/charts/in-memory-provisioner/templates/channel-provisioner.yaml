@@ -1,0 +1,9 @@
+---
+apiVersion: eventing.knative.dev/v1alpha1
+kind: ClusterChannelProvisioner
+metadata:
+  name: in-memory-channel
+  labels: {{ include "labels" . | nindent 4 }}
+    app: {{ .Chart.Name }}
+spec: {}
+---

@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels: {{ include "labels" . | nindent 4 }}
+    app: {{ .Values.kubeControllerService.name | quote }} 
+  name: {{ .Values.kubeControllerService.name | quote }}
+  namespace: "knative-monitoring"
+spec:
+  clusterIP: None
+  ports:
+  - name: {{ .Values.kubeControllerService.portName | quote }}
+    port: {{ .Values.kubeControllerService.port }}
+    protocol: TCP
+    targetPort: {{ .Values.kubeControllerService.targetPort }}
+  selector:
+    k8s-app: {{ .Values.kubeControllerService.name | quote }}
+  type: {{ .Values.kubeControllerService.type | quote }}
+---

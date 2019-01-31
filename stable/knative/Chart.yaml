@@ -1,0 +1,17 @@
+apiVersion: v1
+appVersion: "0.2.0"
+description: A Helm chart for Kubernetes
+name: knative
+version: 0.1.0
+icon: https://raw.githubusercontent.com/knative/docs/master/images/logo/rgb/knative-logo-rgb.jpg
+keywords:
+  - amd64
+  - build
+  - ci
+  - DevOps
+  - deploy
+  - framework
+  - OpenSource
+  - Pipeline
+kubeVersion: ">=1.10.3"
+tillerVersion: ">=2.10.0"

@@ -1,0 +1,10 @@
+controller:
+  name: "kafka-channel-controller"
+  serviceAccount:
+    name: "kafka-channel-controller"
+  bootstrapServers: ""
+
+dispatcher:
+  name: "kafka-channel-dispatcher"
+  serviceAccount:
+    name: "kafka-channel-dispatcher"
