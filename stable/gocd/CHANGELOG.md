@@ -1,3 +1,9 @@
+### 1.6.6
+
+* [84bd7fe](https://github.com/kubernetes/charts/commit/f44d408):
+
+- If there is no host in template ingress.yaml, use default backend.
+
 ### 1.6.5
 
 * [f44d408](https://github.com/kubernetes/charts/commit/f44d408):
