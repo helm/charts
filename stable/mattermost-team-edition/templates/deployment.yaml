@@ -48,7 +48,7 @@ spec:
         {{- end }}
         ports:
         - name: http
-          containerPort: 80
+          containerPort: {{ .Values.service.internalPort }}
           protocol: TCP
         livenessProbe:
           initialDelaySeconds: 90
@@ -56,14 +56,14 @@ spec:
           periodSeconds: 15
           httpGet:
             path: /api/v4/system/ping
-            port: {{ .Values.service.internalPort }}
+            port: http
         readinessProbe:
           initialDelaySeconds: 15
           timeoutSeconds: 5
           periodSeconds: 15
           httpGet:
             path: /api/v4/system/ping
-            port: {{ .Values.service.internalPort }}
+            port: http
         volumeMounts:
         - mountPath: /mattermost/config/config.json
           name: config-json
