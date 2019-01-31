@@ -78,6 +78,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | **General**                   |
 | `annotations`                      | Optional deamonset set annotations        | `NULL`                |
 | `podAnnotations`                   | Optional pod annotations                  | `NULL`                |
+| `podLabels`                        | Optional pod labels                       | `NULL`                |
 | `fullConfigMap`                    | User has provided entire config (parsers + system)  | `false`      |
 | `existingConfigMap`                | ConfigMap override                         | ``                    |
 | `extraEntries.input`               |    Extra entries for existing [INPUT] section                     | ``                    |
@@ -94,7 +95,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `filter.kubeTag`                   | Optional top-level tag for matching in filter         | `kube`                                 |
 | `filter.mergeJSONLog`                   | If the log field content is a JSON string map, append the map fields as part of the log structure         | `true`                                 |
 | `image.fluent_bit.repository`      | Image                                      | `fluent/fluent-bit`                               |
-| `image.fluent_bit.tag`             | Image tag                                  | `1.0.2`                                          |
+| `image.fluent_bit.tag`             | Image tag                                  | `1.0.3`                                          |
 | `image.pullPolicy`                 | Image pull policy                          | `IfNotPresent`                                          |
 | `image.pullSecrets`                | Specify image pull secrets                 | `nil`                                             |
 | `input.tail.memBufLimit`           | Specify Mem_Buf_Limit in tail input        | `5MB`                                             |
@@ -113,6 +114,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `dnsPolicy`                        | Specifies the dnsPolicy to use             | `ClusterFirst`                                    |
 | `tolerations`                      | Optional daemonset tolerations             | `NULL`                                            |
 | `nodeSelector`                     | Node labels for fluent-bit pod assignment  | `NULL`                                            |
+| `affinity`                         | Expressions for affinity                   | `NULL`                                            |
 | `metrics.enabled`                  | Specifies whether a service for metrics should be exposed | `false`                            |
 | `metrics.service.annotations`      | Optional metrics service annotations       | `NULL`                                            |
 | `metrics.service.port`             | Port on where metrics should be exposed    | `2020`                                            |
