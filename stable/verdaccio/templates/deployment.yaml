@@ -31,6 +31,8 @@ spec:
         - name: {{ template "verdaccio.name" . }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+{{ toYaml .Values.env | indent 12 }}
           ports:
             - containerPort: 4873
               name: http

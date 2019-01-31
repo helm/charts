@@ -26,6 +26,8 @@ nodeSelector: {}
 podAnnotations: {}
 replicaCount: 1
 
+env: {}
+
 resources: {}
   # limits:
   #  cpu: 100m

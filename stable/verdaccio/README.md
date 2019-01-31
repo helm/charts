@@ -53,6 +53,7 @@ and their default values.
 | Parameter                          | Description                                                     | Default                                                  |
 | ---------------------------------- | --------------------------------------------------------------- | -------------------------------------------------------- |
 | `customConfigMap`                  | Use a custom ConfigMap                                          | `false`                                                  |
+| `env`                              | Environment Values                                              | `{}`                                                     |
 | `image.pullPolicy`                 | Image pull policy                                               | `IfNotPresent`                                           |
 | `image.repository`                 | Verdaccio container image repository                            | `verdaccio/verdaccio`                                    |
 | `image.tag`                        | Verdaccio container image tag                                   | `3.10.0`                                                 |
