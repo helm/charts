@@ -563,6 +563,10 @@ prometheusOperator:
   ## Assign a PriorityClassName to pods if set
   # priorityClassName: ""
 
+  ## Define Log Format
+  # Use logfmt (default) or json-formatted logging
+  # logFormat: logfmt
+
   ## If true, the operator will create and maintain a service for scraping kubelets
   ## ref: https://github.com/coreos/prometheus-operator/blob/master/helm/prometheus-operator/README.md
   ##
