@@ -40,6 +40,9 @@ excludedDaysOfYear:
 # Set specific Timezone for Actions to take place
 timezone: UTC
 
+# If nothing set, defaults to "text". Switch to "json" to enable structured logging
+logFormat:
+
 # minimum lifetime of a pod before it's considered for termination (0: immediately)
 minimumAge: 0s
 
