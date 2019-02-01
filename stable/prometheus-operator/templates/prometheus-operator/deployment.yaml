@@ -32,6 +32,9 @@ spec:
           {{- if .Values.prometheusOperator.kubeletService.enabled }}
             - --kubelet-service={{ .Values.prometheusOperator.kubeletService.namespace }}/{{ template "prometheus-operator.fullname" . }}-kubelet
           {{- end }}
+          {{- if .Values.prometheusOperator.logFormat }}
+            - --log-format={{ .Values.prometheusOperator.logFormat }}
+          {{- end }}
             - --logtostderr=true
             - --crd-apigroup={{ .Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com" }}
             - --localhost=127.0.0.1
