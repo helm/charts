@@ -104,6 +104,11 @@ spec:
           mountPath: /mnt
           readOnly: true
 {{ end }}
+{{ if .Values.on_microk8s }}
+        - name: varsnapmicrok8scommonvarlibdockercontainers
+          mountPath: /var/snap/microk8s/common/var/lib/docker/containers
+          readOnly: true
+{{ end }}
       terminationGracePeriodSeconds: 10
     {{- if .Values.nodeSelector }}
       nodeSelector:
@@ -151,4 +156,9 @@ spec:
       - name: mnt
         hostPath:
           path: /mnt
+{{ end }}
+{{ if .Values.on_microk8s }}
+      - name: varsnapmicrok8scommonvarlibdockercontainers
+        hostPath:
+          path: /var/snap/microk8s/common/var/lib/docker/containers
 {{ end }}

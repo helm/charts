@@ -2,6 +2,10 @@
 # enable if started in minikube.
 on_minikube: false
 
+# MicroK8s stores its logs in a separate directory.
+# enable if started in microK8s.
+on_microk8s: false
+
 image:
   fluent_bit:
     repository: fluent/fluent-bit
