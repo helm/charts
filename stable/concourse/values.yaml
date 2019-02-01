@@ -13,7 +13,7 @@ image: concourse/concourse
 ## Concourse image version.
 ## ref: https://hub.docker.com/r/concourse/concourse/tags/
 ##
-imageTag: "4.2.1"
+imageTag: "4.2.2"
 
 ## Specific image digest to use in place of a tag.
 ## ref: https://kubernetes.io/docs/concepts/configuration/overview/#container-images
@@ -24,6 +24,13 @@ imageTag: "4.2.1"
 ## ref: https://kubernetes.io/docs/user-guide/images/#pre-pulling-images
 ##
 imagePullPolicy: IfNotPresent
+
+## Optionally specify an array of imagePullSecrets.
+## Secrets must be manually created in the namespace.
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+##
+# imagePullSecrets:
+#   - myRegistrKeySecretName
 
 ## Configuration values for Concourse.
 ## ref: https://concourse-ci.org/setting-up.html
@@ -36,12 +43,13 @@ concourse:
     # bindIp: 0.0.0.0
     ## Port on which to listen for HTTP traffic.
     bindPort: 8080
-    ## Port on which to listen for HTTPS traffic.
-    # tlsBindPort:
-    ## File containing an SSL certificate.
-    # tlsCert:
-    ## File containing an RSA private key, used to encrypt HTTPS traffic.
-    # tlsKey:
+    ## TLS configurations for the web component to be able to serve HTTPS traffic.
+    ## Once enabled, consumes the certificates set via secrets.
+    #
+    tls:
+      enabled: false
+      ## Port on which to listen for HTTPS traffic.
+      # bindPort:
     ## URL used to reach any ATC from the outside world.
     # externalUrl: http://127.0.0.1:8080
     ## URL used to reach this ATC from other ATCs in the cluster.
@@ -113,8 +121,11 @@ concourse:
       teams:
         - main
 
-      ## When true, namespaces are not deleted when the release is deleted.
+      ## Create the Kubernetes namespace for each team listed above.
+      createTeamNamespaces: true
 
+      ## When true, namespaces are not deleted when the release is deleted.
+      ## Irrelevant if the namespaces are not created by this chart.
       keepNamespaces: true
 
       ## Path to Kubernetes config when running ATC outside Kubernetes.
@@ -649,6 +660,27 @@ web:
   ##
   replicas: 1
 
+  ## Configures the liveness probe used to determine
+  ## if the Web component is up.
+  ## Note.: if you're upgrading Concourse from one version
+  ## to another, the probe will probably fail for some time
+  ## before migrations are finished - in such situations,
+  ## either consider bumping the values set here.
+  livenessProbe:
+    failureThreshold: 5
+    httpGet:
+      path: /api/v1/info
+      port: atc
+    initialDelaySeconds: 10
+    periodSeconds: 15
+    timeoutSeconds: 3
+
+  ## Configures the readiness probes.
+  readinessProbe:
+    httpGet:
+      path: /api/v1/info
+      port: atc
+
   ## Configure resource requests and limits.
   ## ref: https://kubernetes.io/docs/user-guide/compute-resources/
   ##
@@ -664,6 +696,29 @@ web:
   #     value: "debug"
   #   - name: CONCOURSE_TSA_LOG_LEVEL
   #     value: "debug"
+
+  ## For managing where secrets should be mounted for the web agents
+  keySecretsPath: "/concourse-keys"
+  authSecretsPath: "/concourse-auth"
+  vaultSecretsPath: "/concourse-vault"
+  postgresqlSecretsPath: "/concourse-postgresql"
+  syslogSecretsPath: "/concourse-syslog"
+  tlsSecretsPath: "/concourse-web-tls"
+
+  ## Configure additional volumes for the
+  ## web container(s)
+  ##
+  # additionalVolumes:
+  #   - name: my-team-authorized-keys
+  #     configMap:
+  #       name: my-team-authorized-keys-config
+
+  ## Configure additional volumeMounts for the
+  ## web container(s)
+  ##
+  # additionalVolumeMounts:
+  #   - name: my-team-authorized-keys
+  #     mountPath: /my-team-authorized-keys
 
   ## Additional affinities to add to the web pods.
   ##
@@ -709,6 +764,9 @@ web:
     ## When using web.service.type: LoadBalancer, sets the user-specified load balancer IP
     # loadBalancerIP: 172.217.1.174
 
+    # # Additional Labels to be added to the web service.
+    # labels:
+
     ## Annotations to be added to the web service.
     ##
     # annotations:
@@ -728,8 +786,11 @@ web:
   # When using web.service.type: NodePort, sets the nodePort for atc
   #  atcNodePort: 30150
   #
+  # When using web.service.type: NodePort, sets the nodePort for atc tls
+  #  atcTlsNodePort: 30151
+  #
   # When using web.service.type: NodePort, sets the nodePort for tsa
-  #  tsaNodePort: 30151
+  #  tsaNodePort: 30152
 
   ## Ingress configuration.
   ## ref: https://kubernetes.io/docs/user-guide/ingress/
@@ -801,6 +862,9 @@ worker:
   #   - name: CONCOURSE_GARDEN_ALLOW_HOST_ACCESS
   #     value: "true"
 
+
+  ## For managing where secrets should be mounted for worker agents
+  keySecretsPath: "/concourse-keys"
 
   ## Configure additional volumeMounts for the
   ## worker container(s)
@@ -887,6 +951,10 @@ worker:
   ## "OrderedReady" is default. "Parallel" means worker pods will launch or terminate
   ## in parallel.
   podManagementPolicy: Parallel
+
+  ## When persistance is disabled this value will be used to limit the emptyDir volume size
+  ## Ref: https://kubernetes.io/docs/concepts/storage/volumes/#emptydir
+  # emptyDirSize: 20Gi
 
 ## Persistent Volume Storage configuration.
 ## ref: https://kubernetes.io/docs/user-guide/persistent-volumes
@@ -981,12 +1049,17 @@ rbac:
 ##
 secrets:
 
-  ## List of username:bcrypted_password combinations for all your local concourse users.
-  localUsers: "test:$2a$10$sDB6AsH2HheOWHILrnHVJOCZq/GYtUYE02ypJJTQBmWJNivYNhP3y"
+  ## List of username:password or username:bcrypted_password combinations for all your local concourse users.
+  localUsers: "test:test"
   ## Create the secret resource from the following values. Set this to
   ## false to manage these secrets outside Helm.
   ##
   create: true
+
+  ## The TLS certificate and private key for the web component to be able to terminate
+  ## TLS connections.
+  # webTlsCert:
+  # webTlsKey:
 
   ## Concourse Host Keys.
   ## ref: https://concourse-ci.org/install.html#generating-keys

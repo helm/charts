@@ -3,23 +3,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: "{{ template "anchore-engine.enterprise-feeds.fullname" . }}"
+  name: {{ template "anchore-engine.enterprise-feeds.fullname" . }}
   labels:
-    app: "{{ template "anchore-engine.fullname" . }}"
+    app: {{ template "anchore-engine.fullname" . }}
     component: {{ $component }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
   selector:
     matchLabels:
-      app: "{{ template "anchore-engine.fullname" . }}"
+      app: {{ template "anchore-engine.fullname" . }}
       component: {{ $component }}
   replicas: 1
   template:
     metadata:
       labels:
-        app: "{{ template "anchore-engine.fullname" . }}"
+        app: {{ template "anchore-engine.fullname" . }}
         component: {{ $component }}
 {{- if .Values.anchoreEnterpriseFeeds.annotations }}
       annotations:
@@ -29,7 +29,7 @@ spec:
       volumes:
         - name: config-volume
           configMap:
-            name: {{ template "anchore-engine.enterprise-feeds.fullname" .}}
+            name: {{ template "anchore-engine.enterprise-feeds.fullname" . }}
         - name: scratch-volume
 {{ toYaml .Values.anchoreEnterpriseFeeds.scratchVolume.details | indent 10 }}
         - name: anchore-license
@@ -38,13 +38,13 @@ spec:
       imagePullSecrets:
       - name: {{ .Values.anchoreEnterpriseGlobal.imagePullSecretName }}
       containers:
-      - name: {{ .Chart.Name }}-{{ $component }}
-        image: "{{ .Values.anchoreEnterpriseGlobal.image.repository }}:{{ .Values.anchoreEnterpriseGlobal.image.tag }}"
-        imagePullPolicy: {{ .Values.anchoreEnterpriseGlobal.image.pullPolicy }}
+      - name: "{{ .Chart.Name }}-{{ $component }}"
+        image: {{ .Values.anchoreEnterpriseGlobal.image }}
+        imagePullPolicy: {{ .Values.anchoreEnterpriseGlobal.imagePullPolicy }}
         command: ["/usr/local/bin/anchore-enterprise-manager"]
         args: ["service", "start", "feeds"]
         ports:
-        - containerPort: {{ .Values.anchoreGlobal.service.ports.feedsApi }}
+        - containerPort: {{ .Values.anchoreEnterpriseFeeds.service.port }}
           name: feeds-api
         envFrom:
         - secretRef:
@@ -79,22 +79,23 @@ spec:
         - name: anchore-license
           mountPath: /license.yaml
           subPath: license.yaml
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: feeds-api
-          initialDelaySeconds: 60
-          periodSeconds: 10
-          timeoutSeconds: 10
-          failureThreshold: 10
         livenessProbe:
           httpGet:
             path: /health
             port: feeds-api
+          initialDelaySeconds: 120
           timeoutSeconds: 10
-          initialDelaySeconds: 60
-          periodSeconds: 30
-          failureThreshold: 10
+          periodSeconds: 10
+          failureThreshold: 6
+          successThreshold: 1
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: feeds-api
+          timeoutSeconds: 10
+          periodSeconds: 10
+          failureThreshold: 3
+          successThreshold: 1
         resources:
 {{ toYaml .Values.anchoreEnterpriseFeeds.resources | indent 10 }}
     {{- if .Values.anchoreEnterpriseFeeds.nodeSelector }}
@@ -117,16 +118,20 @@ metadata:
   name: {{ template "anchore-engine.enterprise-feeds.fullname" . }}
   labels:
     app: {{ template "anchore-engine.fullname" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     component: {{ $component }}
+  {{- if .Values.anchoreEnterpriseFeeds.service.annotations }}
+  annotations:
+{{ toYaml .Values.anchoreEnterpriseFeeds.service.annotations | indent 4 }}
+  {{- end }}
 spec:
-  type: {{ .Values.anchoreGlobal.service.type }}
+  type: {{ .Values.anchoreEnterpriseFeeds.service.type }}
   ports:
     - name: feeds-api
-      port: {{ .Values.anchoreGlobal.service.ports.feedsApi }}
-      targetPort: {{ .Values.anchoreGlobal.service.ports.feedsApi }}
+      port: {{ .Values.anchoreEnterpriseFeeds.service.port }}
+      targetPort: {{ .Values.anchoreEnterpriseFeeds.service.port }}
       protocol: TCP
   selector:
     app: {{ template "anchore-engine.fullname" . }}

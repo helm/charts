@@ -14,7 +14,10 @@ spec:
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: "{{ .Release.Name }}"
         heritage: "{{ .Release.Service }}"
-      annotations: 
+      {{- if .Values.chromeDebug.podAnnotations }}
+      annotations:
+{{ toYaml .Values.chromeDebug.podAnnotations | indent 8 }}
+      {{- end}}
     spec:
       containers:
         - name: {{ .Chart.Name }}
@@ -32,7 +35,7 @@ spec:
             - name: HUB_PORT_4444_TCP_ADDR
               value: {{ template "selenium.hub.fullname" . }}
             - name: HUB_PORT_4444_TCP_PORT
-              value: {{ .Values.hub.port | quote }}
+              value: {{ .Values.hub.servicePort | quote }}
             - name: JAVA_TOOL_OPTIONS
               value: {{ default "" .Values.chromeDebug.javaOpts | quote }}
             - name: SE_OPTS
@@ -87,6 +90,8 @@ spec:
 {{ if .Values.chromeDebug.volumes -}}
 {{ toYaml .Values.chromeDebug.volumes | indent 8 }}
 {{- end }}
+      hostAliases:
+{{ toYaml .Values.global.hostAliases | indent 8 }}
       nodeSelector:
 {{- if .Values.chromeDebug.nodeSelector }}
 {{ toYaml .Values.chromeDebug.nodeSelector | indent 8  }}

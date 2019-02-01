@@ -1,8 +1,8 @@
 halyard:
-  spinnakerVersion: 1.9.1
+  spinnakerVersion: 1.11.6
   image:
     repository: gcr.io/spinnaker-marketplace/halyard
-    tag: 1.9.1
+    tag: 1.13.1
   # Provide a config map with Hal commands that will be run the core config (storage)
   # The config map should contain a script in the config.sh key
   additionalScripts:
@@ -15,9 +15,30 @@ halyard:
   additionalSecrets:
     create: false
     data: {}
+    ## Uncomment if you want to use a pre-created secret rather than feeding data in via helm.
+    # name:
   additionalConfigMaps:
     create: false
     data: {}
+  additionalProfileConfigMaps:
+    create: false
+    data:
+    ## if you're running spinnaker behind a reverse proxy such as a GCE ingress
+    ## you may need the following profile settings for the gate profile.
+    ## see https://github.com/spinnaker/spinnaker/issues/1630
+    ## otherwise its harmless and will likely become default behavior in the future
+    ## According to the linked github issue.
+      gate-local.yml: |-
+        server:
+          tomcat:
+            protocolHeader: X-Forwarded-Proto
+            remoteIpHeader: X-Forwarded-For
+            internalProxies: .*
+            httpsServerPort: X-Forwarded-Port
+
+  ## Uncomment if you want to add extra commands to the init script
+  ## run by the init container before halyard is started.
+  # additionalInitScript: |-
 
 # Define which registries and repositories you want available in your
 # Spinnaker pipeline definitions
@@ -57,6 +78,9 @@ kubeConfig:
   contexts:
   - default
   deploymentContext: default
+  omittedNameSpaces:
+  - kube-system
+  - kube-public
 
 # Change this if youd like to expose Spinnaker outside the cluster
 ingress:
@@ -128,7 +152,12 @@ gcs:
   enabled: false
   project: my-project-name
   bucket: "<GCS-BUCKET-NAME>"
+  ## if jsonKey is set, will create a secret containing it
   jsonKey: '<INSERT CLOUD STORAGE JSON HERE>'
+  ## override the name of the secret to use for jsonKey, if `jsonKey`
+  ## is empty, it will not create a secret assuming you are creating one
+  ## external to the chart. the key for that secret should be `key.json`.
+  secretName:
 
 # AWS Simple Storage Service
 s3:

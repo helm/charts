@@ -23,10 +23,12 @@ data:
   es.server-urls: {{ template "elasticsearch.client.url" . }}
   es.username: {{ .Values.storage.elasticsearch.user }}
   es.nodes-wan-only: {{ .Values.storage.elasticsearch.nodesWanOnly | quote }}
-  hotrod.agent-host-port: "{{ template "jaeger.hotrod.tracing.host" . }}:{{ .Values.hotrod.tracing.port }}"
+  hotrod.agent-host: {{ template "jaeger.hotrod.tracing.host" . }}
+  hotrod.agent-port: {{ .Values.hotrod.tracing.port | quote }}
   span-storage.type: {{ .Values.storage.type | quote }}
   query.health-check-http-port: {{ .Values.query.healthCheckPort | quote }}
   query.port: {{ .Values.query.service.targetPort | quote }}
+  query.base-path: {{ .Values.query.basePath | quote }}
   # Not implemented
   # cassandra.archive.connections-per-host:
   # cassandra.archive.keyspace:

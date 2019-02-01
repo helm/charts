@@ -28,7 +28,7 @@ Parameter | Description | Default
 --------- | ----------- | -------
 `replicaCount` | How many replicas to run. | 1
 `image.repository` | Name of the image to run, without the tag. | [hackmdio/hackmd](https://github.com/hackmdio/docker-hackmd)
-`image.tag` | The image tag to use. | 1.0.1-ce
+`image.tag` | The image tag to use. | 1.2.1-alpine
 `image.pullPolicy` | The kubernetes image pull policy. | IfNotPresent
 `service.name` | The kubernetes service name to use. | hackmd
 `service.type` | The kubernetes service type to use. | ClusterIP
@@ -51,3 +51,27 @@ Parameter | Description | Default
 `postgresql.postgresHost` | PostgreSQL host (if `postgresql.install == false`)  | `nil`
 `postgresql.postgresPassword` | PostgreSQL Password for the new user | random 10 characters
 `postgresql.postgresDatabase` | PostgreSQL Database to create | `hackmd`
+
+### Use persistent volume for image uploads
+
+If you want to use a Kubernetes Persistent volume for image upload (enabled by default), you can encourter a problem where your volume doesn't have proper ownershuip, so HackMD won't be able to write into it. You can use set the `HMD_IMAGE_UPLOAD_TYPE` to `filesystem` in your `values.yaml` to have the Docker entrypoint change volume's ownership:
+
+```yaml
+extraVars:
+  - name: HMD_IMAGE_UPLOAD_TYPE
+    value: filesystem
+```
+
+### Use behind a TLS reverse proxy
+
+If you use HackMD behind a reverse proxy that does TLS decryption and forwards traffic in plain HTTP, you have to enable the following variables in your `values.yaml`:
+
+```yaml
+extraVars:
+  - name: CMD_DOMAIN
+    value: change.this.to.your.own.fqdn
+  - name: CMD_PROTOCOL_USESSL
+    value: "true"
+  - name: CMD_URL_ADDPORT
+    value: "false"
+```

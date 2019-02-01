@@ -57,6 +57,20 @@ agent:
   ## Agent container resources
   ## Ref https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/
   ##
+
+  # Ref: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.11/#affinity-v1-core
+  # Expects input structure as per specification for example:
+  #   affinity:
+  #     nodeAffinity:
+  #      requiredDuringSchedulingIgnoredDuringExecution:
+  #        nodeSelectorTerms:
+  #        - matchExpressions:
+  #          - key: foo.bar.com/role
+  #            operator: In
+  #            values:
+  #            - master
+  affinity: {}
+
   resources: {}
   ## Additional container arguments
   ##
@@ -86,6 +100,16 @@ agent:
     ca:
     cert:
     key:
+
+  ## Secret name of agent's TLS certificates
+  ##
+  tlsSecret:
+
+  ## Agent TLS Certificate filenames
+  tlsCerts:
+    certFileName: cert
+    keyFileName: key
+    caFileName: ca
 
 server:
   ## If false, server will not be installed
@@ -119,6 +143,20 @@ server:
   ## Ref: https://kubernetes.io/docs/tasks/manage-daemon/update-daemon-set/
   ##
   updateStrategy: OnDelete
+
+  # Ref: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.11/#affinity-v1-core
+  # Expects input structure as per specification for example:
+  #   affinity:
+  #     nodeAffinity:
+  #      requiredDuringSchedulingIgnoredDuringExecution:
+  #        nodeSelectorTerms:
+  #        - matchExpressions:
+  #          - key: foo.bar.com/role
+  #            operator: In
+  #            values:
+  #            - master
+  affinity: {}
+
   ## Node labels for pod assignment
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
   ##
@@ -169,6 +207,10 @@ server:
     cert:
     key:
 
+  ## Secret name of server's TLS certificates
+  ##
+  tlsSecret:
+
   ## Base ARN for IAM roles
   ## If not specified use EC2 metadata service to detect ARN prefix
   ##
@@ -186,6 +228,12 @@ server:
   ## Use hostNetwork for server
   ## Set this to true when running the servers on the same nodes as the agents
   useHostNetwork: false
+
+  ## Agent TLS Certificate filenames
+  tlsCerts:
+    certFileName: cert
+    keyFileName: key
+    caFileName: ca
 
 rbac:
   # Specifies whether RBAC resources should be created

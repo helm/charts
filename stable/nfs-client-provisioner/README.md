@@ -8,6 +8,8 @@ The [NFS client provisioner](https://github.com/kubernetes-incubator/external-st
 $ helm install --set nfs.server=x.x.x.x --set nfs.path=/exported/path stable/nfs-client-provisioner
 ```
 
+For **arm** deployments set `image.repository` to `--set image.repository=quay.io/external_storage/nfs-client-provisioner-arm`
+
 ## Introduction
 
 This charts installs custom [storage class](https://kubernetes.io/docs/concepts/storage/storage-classes/) into a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager. It also installs a [NFS client provisioner](https://github.com/kubernetes-incubator/external-storage/tree/master/nfs-client) into the cluster which dynamically creates persistent volumes from single NFS share.
@@ -64,3 +66,7 @@ The following tables lists the configurable parameters of this chart and their d
 | `podSecurityPolicy.enabled`	    | Create & use Pod Security Policy resources  | `false`						      |
 | `serviceAccount.create`	    | Should we create a ServiceAccount	          | `true`						      |
 | `serviceAccount.name`		    | Name of the ServiceAccount to use           | null						      |
+| `nodeSelector`                    | Node labels for pod assignment              | `{}`                                                      |
+| `affinity`                        | Affinity settings                           | `{}`                                                      |
+| `tolerations`                     | List of node taints to tolerate             | `[]`                                                      |
+
