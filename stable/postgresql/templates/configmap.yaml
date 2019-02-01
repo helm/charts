@@ -2,12 +2,12 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "postgresql.fullname" . }}-configuration
+  name: {{ include "postgresql.fullname" . }}-configuration
   labels:
-    app: {{ template "postgresql.name" . }}
-    chart: {{ template "postgresql.chart" . }}
-    release: {{ .Release.Name | quote }}
-    heritage: {{ .Release.Service | quote }}
+    app.kubernetes.io/name: {{ include "postgresql.name" . }}
+    helm.sh/chart: {{ include "postgresql.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 data:
 {{- if (.Files.Glob "files/postgresql.conf") }}
 {{ (.Files.Glob "files/postgresql.conf").AsConfig | indent 2 }}

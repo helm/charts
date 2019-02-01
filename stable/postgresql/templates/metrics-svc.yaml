@@ -2,12 +2,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "postgresql.fullname" . }}-metrics
+  name: {{ include "postgresql.fullname" . }}-metrics
   labels:
-    app: {{ template "postgresql.name" . }}
-    chart: {{ template "postgresql.chart" . }}
-    release: {{ .Release.Name | quote }}
-    heritage: {{ .Release.Service | quote }}
+    app.kubernetes.io/name: {{ include "postgresql.name" . }}
+    helm.sh/chart: {{ include "postgresql.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/component: metrics
   annotations:
 {{ toYaml .Values.metrics.service.annotations | indent 4 }}
 spec:
@@ -20,7 +21,7 @@ spec:
     port: 9187
     targetPort: metrics
   selector:
-    app: {{ template "postgresql.name" . }}
-    release: {{ .Release.Name }}
-    role: master
+    app.kubernetes.io/name: {{ include "postgresql.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: master
 {{- end }}

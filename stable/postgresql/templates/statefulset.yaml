@@ -1,31 +1,29 @@
 apiVersion: apps/v1beta2
 kind: StatefulSet
 metadata:
-  name: {{ template "postgresql.master.fullname" . }}
+  name: {{ include "postgresql.master.fullname" . }}
   labels:
-    app: {{ template "postgresql.name" . }}
-    chart: {{ template "postgresql.chart" . }}
-    release: {{ .Release.Name | quote }}
-    heritage: {{ .Release.Service | quote }}
+    app.kubernetes.io/name: {{ include "postgresql.name" . }}
+    helm.sh/chart: {{ include "postgresql.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
-  serviceName: {{ template "postgresql.fullname" . }}-headless
+  serviceName: {{ include "postgresql.fullname" . }}-headless
   replicas: 1
   updateStrategy:
     type: {{ .Values.updateStrategy.type }}
   selector:
     matchLabels:
-      app: {{ template "postgresql.name" . }}
-      release: {{ .Release.Name | quote }}
-      role: master
+      app.kubernetes.io/name: {{ include "postgresql.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: master
   template:
     metadata:
-      name: {{ template "postgresql.fullname" . }}
+      name: {{ include "postgresql.fullname" . }}
       labels:
-        app: {{ template "postgresql.name" . }}
-        chart: {{ template "postgresql.chart" . }}
-        release: {{ .Release.Name | quote }}
-        heritage: {{ .Release.Service | quote }}
-        role: master
+        app.kubernetes.io/name: {{ include "postgresql.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/component: master
     spec:
       {{- if .Values.securityContext.enabled }}
       securityContext:
@@ -59,7 +57,7 @@ spec:
       {{- if and .Values.volumePermissions.enabled .Values.persistence.enabled }}
       initContainers:
       - name: init-chmod-data
-        image: {{ template "postgresql.volumePermissions.image" . }}
+        image: {{ include "postgresql.volumePermissions.image" . }}
         imagePullPolicy: "{{ .Values.volumePermissions.image.pullPolicy }}"
         resources:
 {{ toYaml .Values.resources | indent 10 }}
@@ -78,8 +76,8 @@ spec:
           mountPath: /bitnami/postgresql
       {{- end }}
       containers:
-      - name: {{ template "postgresql.fullname" . }}
-        image: {{ template "postgresql.image" . }}
+      - name: {{ include "postgresql.fullname" . }}
+        image: {{ include "postgresql.image" . }}
         imagePullPolicy: "{{ .Values.image.pullPolicy }}"
         resources:
 {{ toYaml .Values.resources | indent 10 }}
@@ -102,7 +100,7 @@ spec:
         - name: POSTGRESQL_REPLICATION_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "postgresql.secretName" . }}
+              name: {{ include "postgresql.secretName" . }}
               key: postgresql-replication-password
         {{- end }}
         {{- if not (eq .Values.replication.synchronousCommit "off")}}
@@ -123,7 +121,7 @@ spec:
         - name: POSTGRESQL_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "postgresql.secretName" . }}
+              name: {{ include "postgresql.secretName" . }}
               key: postgresql-password
         {{- end }}
         {{- if .Values.postgresqlDatabase }}
@@ -193,7 +191,7 @@ spec:
         {{- end }}
 {{- if .Values.metrics.enabled }}
       - name: metrics
-        image: {{ template "metrics.image" . }}
+        image: {{ include "metrics.image" . }}
         imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
         env:
         {{- $database := required "In order to enable metrics you need to specify a database (.Values.postgresqlDatabase)" .Values.postgresqlDatabase }}
@@ -206,7 +204,7 @@ spec:
         - name: DATA_SOURCE_PASS
           valueFrom:
             secretKeyRef:
-              name: {{ template "postgresql.secretName" . }}
+              name: {{ include "postgresql.secretName" . }}
               key: postgresql-password
         {{- end }}
         - name: DATA_SOURCE_USER
@@ -248,22 +246,22 @@ spec:
       {{- if or (.Files.Glob "files/postgresql.conf") (.Files.Glob "files/pg_hba.conf") .Values.postgresqlConfiguration .Values.pgHbaConfiguration .Values.configurationConfigMap}}
       - name: postgresql-config
         configMap:
-          name: {{ template "postgresql.configurationCM" . }}
+          name: {{ include "postgresql.configurationCM" . }}
       {{- end }}
       {{- if or (.Files.Glob "files/conf.d/*.conf") .Values.postgresqlExtendedConf .Values.extendedConfConfigMap }}
       - name: postgresql-extended-config
         configMap:
-          name: {{ template "postgresql.extendedConfigurationCM" . }}
+          name: {{ include "postgresql.extendedConfigurationCM" . }}
       {{- end }}
       {{- if .Values.usePasswordFile }}
       - name: postgresql-password
         secret:
-          secretName: {{ template "postgresql.secretName" . }}
+          secretName: {{ include "postgresql.secretName" . }}
       {{- end }}
       {{- if  or (.Files.Glob "files/docker-entrypoint-initdb.d/*.{sh,sql,sql.gz}") .Values.initdbScriptsConfigMap .Values.initdbScripts }}
       - name: custom-init-scripts
         configMap:
-          name: {{ template "postgresql.initdbScriptsCM" . }}
+          name: {{ include "postgresql.initdbScriptsCM" . }}
       {{- end }}
 {{- if and .Values.persistence.enabled .Values.persistence.existingClaim }}
       - name: data

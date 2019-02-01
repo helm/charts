@@ -2,29 +2,27 @@
 apiVersion: apps/v1beta2
 kind: StatefulSet
 metadata:
-  name: "{{ template "postgresql.fullname" . }}-slave"
+  name: "{{ include "postgresql.fullname" . }}-slave"
   labels:
-    app: {{ template "postgresql.name" . }}
-    chart: {{ template "postgresql.chart" . }}
-    release: {{ .Release.Name | quote }}
-    heritage: {{ .Release.Service | quote }}
+    app.kubernetes.io/name: {{ include "postgresql.name" . }}
+    helm.sh/chart: {{ include "postgresql.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
-  serviceName: {{ template "postgresql.fullname" . }}-headless
+  serviceName: {{ include "postgresql.fullname" . }}-headless
   replicas: {{ .Values.replication.slaveReplicas }}
   selector:
     matchLabels:
-      app: {{ template "postgresql.name" . }}
-      release: {{ .Release.Name | quote }}
-      role: slave
+      app.kubernetes.io/name: {{ include "postgresql.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: slave
   template:
     metadata:
-      name: {{ template "postgresql.fullname" . }}
+      name: {{ include "postgresql.fullname" . }}
       labels:
-        app: {{ template "postgresql.name" . }}
-        chart: {{ template "postgresql.chart" . }}
-        release: {{ .Release.Name | quote }}
-        heritage: {{ .Release.Service | quote }}
-        role: slave
+        app.kubernetes.io/name: {{ include "postgresql.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/component: slave
     spec:
       {{- if .Values.securityContext.enabled }}
       securityContext:
@@ -55,7 +53,7 @@ spec:
       {{- if and .Values.volumePermissions.enabled .Values.persistence.enabled }}
       initContainers:
       - name: init-chmod-data
-        image: {{ template "postgresql.volumePermissions.image" . }}
+        image: {{ include "postgresql.volumePermissions.image" . }}
         imagePullPolicy: "{{ .Values.volumePermissions.image.pullPolicy }}"
         resources:
 {{ toYaml .Values.resources | indent 10 }}
@@ -74,8 +72,8 @@ spec:
           mountPath: /bitnami/postgresql
       {{- end }}
       containers:
-      - name: {{ template "postgresql.fullname" . }}
-        image: {{ template "postgresql.image" . }}
+      - name: {{ include "postgresql.fullname" . }}
+        image: {{ include "postgresql.image" . }}
         imagePullPolicy: "{{ .Values.image.pullPolicy }}"
         resources:
 {{ toYaml .Values.resources | indent 10 }}
@@ -97,13 +95,13 @@ spec:
         - name: POSTGRESQL_REPLICATION_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "postgresql.secretName" . }}
+              name: {{ include "postgresql.secretName" . }}
               key: postgresql-replication-password
         {{- end }}
         - name: POSTGRESQL_CLUSTER_APP_NAME
           value: {{ .Values.replication.applicationName }}
         - name: POSTGRESQL_MASTER_HOST
-          value: {{ template "postgresql.fullname" . }}
+          value: {{ include "postgresql.fullname" . }}
         - name: POSTGRESQL_MASTER_PORT_NUMBER
           value: {{ .Values.service.port | quote }}
         ports:
@@ -164,17 +162,17 @@ spec:
       {{- if .Values.usePasswordFile }}
       - name: postgresql-password
         secret:
-          secretName: {{ template "postgresql.secretName" . }}
+          secretName: {{ include "postgresql.secretName" . }}
       {{ end }}
       {{- if or (.Files.Glob "files/postgresql.conf") (.Files.Glob "files/pg_hba.conf") .Values.postgresqlConfiguration .Values.pgHbaConfiguration .Values.configurationConfigMap}}
       - name: postgresql-config
         configMap:
-          name: {{ template "postgresql.configurationCM" . }}
+          name: {{ include "postgresql.configurationCM" . }}
       {{- end }}
       {{- if or (.Files.Glob "files/conf.d/*.conf") .Values.extendedConfConfigMap }}
       - name: postgresql-extended-config
         configMap:
-          name: {{ template "postgresql.extendedConfigurationCM" . }}
+          name: {{ include "postgresql.extendedConfigurationCM" . }}
       {{- end }}
       {{- if not .Values.persistence.enabled }}
       - name: data
