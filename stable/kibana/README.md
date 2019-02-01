@@ -48,7 +48,7 @@ The following table lists the configurable parameters of the kibana chart and th
 | `livenessProbe.timeoutSeconds`                | number of seconds                          | 10                                     |
 | `image.pullPolicy`                            | Image pull policy                          | `IfNotPresent`                         |
 | `image.repository`                            | Image repository                           | `docker.elastic.co/kibana/kibana-oss`  |
-| `image.tag`                                   | Image tag                                  | `6.5.4`                                |
+| `image.tag`                                   | Image tag                                  | `6.6.0`                                |
 | `image.pullSecrets`                           | Specify image pull secrets                 | `nil`                                  |
 | `commandline.args`                            | add additional commandline args            | `nil`                                  |
 | `ingress.enabled`                             | Enables Ingress                            | `false`                                |
@@ -69,7 +69,6 @@ The following table lists the configurable parameters of the kibana chart and th
 | `resources`                                   | pod resource requests & limits             | `{}`                                   |
 | `priorityClassName`                           | priorityClassName                          | `nil`                                  |
 | `service.externalPort`                        | external port for the service              | `443`                                  |
-| `service.disableInternalPort`                 | disable internal port when using sidecar   | `false`                                |
 | `service.internalPort`                        | internal port for the service              | `4180`                                 |
 | `service.authProxyPort`                       | port to use when using sidecar authProxy   | None:                                  |
 | `service.externalIPs`                         | external IP addresses                      | None:                                  |

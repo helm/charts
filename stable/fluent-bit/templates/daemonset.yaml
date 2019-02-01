@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
-  name: fluent-bit
+  name: {{ template "fluent-bit.fullname" . }}
   labels:
     app: {{ template "fluent-bit.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
@@ -15,6 +15,9 @@ spec:
       labels:
         app: {{ template "fluent-bit.name" . }}
         release: {{ .Release.Name }}
+{{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels | indent 8 }}
+{{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
 {{- if .Values.podAnnotations }}
@@ -135,7 +138,7 @@ spec:
 {{- if .Values.trackOffsets }}
       - name: tail-db
         hostPath:
-          path: /var/lib/fluent-bit
+          path: {{ .Values.taildb.directory }}
           type: DirectoryOrCreate
 {{- end }}
       - name: config
