@@ -1,5 +1,5 @@
 # Generated from 'kubernetes-system' group from https://raw.githubusercontent.com/coreos/prometheus-operator/master/contrib/kube-prometheus/manifests/prometheus-rules.yaml
-{{- if and .Values.defaultRules.create }}
+{{- if and .Values.defaultRules.create .Values.defaultRules.rules.kubernetesSystem }}
 apiVersion: {{ printf "%s/v1" (.Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com") }}
 kind: PrometheusRule
 metadata:
@@ -102,14 +102,14 @@ spec:
         severity: warning
     - alert: KubeClientCertificateExpiration
       annotations:
-        message: Kubernetes API certificate is expiring in less than 7 days.
+        message: A client certificate used to authenticate to the apiserver is expiring in less than 7 days.
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubeclientcertificateexpiration
       expr: histogram_quantile(0.01, sum by (job, le) (rate(apiserver_client_certificate_expiration_seconds_bucket{job="apiserver"}[5m]))) < 604800
       labels:
         severity: warning
     - alert: KubeClientCertificateExpiration
       annotations:
-        message: Kubernetes API certificate is expiring in less than 24 hours.
+        message: A client certificate used to authenticate to the apiserver is expiring in less than 24 hours.
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubeclientcertificateexpiration
       expr: histogram_quantile(0.01, sum by (job, le) (rate(apiserver_client_certificate_expiration_seconds_bucket{job="apiserver"}[5m]))) < 86400
       labels:
