@@ -1,0 +1,5 @@
+dependencies:
+- name: mssql-linux
+  version: 0.5.1
+  repository: https://kubernetes-charts.storage.googleapis.com/
+  condition: mssql-linux.enabled

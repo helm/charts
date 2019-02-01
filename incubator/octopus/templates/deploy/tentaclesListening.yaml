@@ -1,0 +1,83 @@
+{{- if index .Values "tentacles" "enabled" -}}
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "octopus.fullname" . }}-tentacles-listening
+  labels:
+    app: {{ template "octopus.name" . }}
+    chart: {{ template "octopus.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.tentacles.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "octopus.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "octopus.name" . }}
+        tier: backend
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}-listening
+          image: "{{ .Values.tentacles.image.repository }}:{{ .Values.tentacles.image.tag }}"
+          imagePullPolicy: {{ .Values.tentacles.image.pullPolicy }}
+          stdin: true
+          tty: true
+          privileged: true
+          env:
+            - name: WorkerPoolName
+              value: "{{ .Values.tentacles.listening.target.workerpoolname }}"
+            - name: Worker
+              value: "{{ .Values.tentacles.listening.target.worker }}"
+            - name: ServerApiKey
+              value: {{ .Values.octopus.admin.apikey }}
+            - name: ServerUsername
+              value: {{ .Values.octopus.admin.username }}
+            - name: ServerPassword
+              value: {{ .Values.octopus.admin.password }}
+            - name: TargetEnvironment
+              value: {{ .Values.tentacles.listening.target.environment }}
+            - name: TargetRole
+              value: {{ .Values.tentacles.listening.target.role }}
+            - name: ServerUrl
+              value: "https://octopus.cloud.statcan.ca"
+            - name: PublicHostNameConfiguration
+              value: "PrivateIP"
+            - name: CustomPublicHostName
+              value: "octopus-tentacles-listening.cd.svc.cluster.local"
+#            - name: ListeningPort
+#              value: "443"
+          ports:
+            - name: https
+              containerPort: 10933
+              protocol: TCP
+          resources:
+{{ toYaml .Values.tentacles.resources | indent 12 }}
+          volumeMounts:
+            - name: tentaclevol
+              mountPath: C:\Applications
+    {{- with .Values.tentacles.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tentacles.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tentacles.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+      volumes:
+        - name: tentaclevol
+        {{- if .Values.tentacles.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ template "octopus.fullname" . }}-tentacles-listening
+        {{- else }}
+          emptyDir: {}
+        {{- end }}
+{{- end }}

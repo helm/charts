@@ -1,0 +1,30 @@
+{{- if index .Values "tentacles" "enabled" -}}
+{{- if and .Values.tentacles.persistence.enabled (not .Values.tentacles.persistence.existingClaim) -}}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+{{- if .Values.tentacles.persistence.annotations }}
+  annotations:
+{{ toYaml .Values.tentacles.persistence.annotations | indent 4 }}
+{{- end }}
+  name: {{ template "octopus.fullname" . }}-tentacles-polling
+  labels:
+    app: {{ template "octopus.name" . }}
+    chart: {{ template "octopus.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  accessModes:
+    - {{ .Values.tentacles.persistence.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.tentacles.persistence.size | quote }}
+{{- if .Values.tentacles.persistence.storageClass }}
+{{- if (eq "-" .Values.tentacles.persistence.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ .Values.tentacles.persistence.storageClass }}"
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}

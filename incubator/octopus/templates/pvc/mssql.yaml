@@ -1,0 +1,30 @@
+{{- if index .Values "mssql" "enabled" -}}
+{{- if and .Values.mssql.persistence.enabled (not .Values.mssql.persistence.existingClaim) -}}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+{{- if .Values.mssql.persistence.annotations }}
+  annotations:
+{{ toYaml .Values.mssql.persistence.annotations | indent 4 }}
+{{- end }}
+  name: {{ template "octopus.fullname" . }}-mssql
+  labels:
+    app: {{ template "octopus.name" . }}
+    chart: {{ template "octopus.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  accessModes:
+    - {{ .Values.mssql.persistence.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.mssql.persistence.size | quote }}
+{{- if .Values.mssql.persistence.storageClass }}
+{{- if (eq "-" .Values.mssql.persistence.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ .Values.mssql.persistence.storageClass }}"
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}

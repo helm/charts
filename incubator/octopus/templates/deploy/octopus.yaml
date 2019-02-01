@@ -1,0 +1,121 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "octopus.fullname" . }}
+  labels:
+    app: {{ template "octopus.name" . }}
+    chart: {{ template "octopus.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.octopus.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "octopus.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "octopus.name" . }}
+        tier: frontend
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.octopus.image.repository }}:{{ .Values.octopus.image.tag }}"
+          imagePullPolicy: {{ .Values.octopus.image.pullPolicy }}
+          stdin: true
+          tty: true
+          privileged: true
+          env:
+            {{- if .Values.octopus.masterKey }}
+            - name: MasterKey
+              value: {{ .Values.octopus.masterKey }}
+            {{- else }}
+            - name: OctopusAdminUsername
+              value: {{ .Values.octopus.admin.username }}
+            - name: OctopusAdminPassword
+              value: {{ .Values.octopus.admin.password }}
+            {{- end }}
+            - name: sqlDbConnectionString
+              value: "Server=octopus-mssql-linux.cd.svc.cluster.local,{{ .Values.mssql.service.port }};Initial Catalog=Octopus;Persist Security Info=False;User ID=sa;Password={{ .Values.mssql.sa.password }};MultipleActiveResultSets=False;Connection Timeout=300;"
+            {{- if .Values.octopus.masterKey }}
+            - name: MasterKey
+              value: {{ .Values.octopus.masterKey }}
+            {{- end }}
+          lifecycle:
+            postStart:
+              exec:
+                entrypoint: ["cmd"]
+                command:
+                  - cmd
+                  - /C
+                  - "echo %OCTOPUS_MSSQL_LINUX_SERVICE_HOST% octopus-mssql >> C:\\Windows\\System32\\drivers\\etc\\hosts"
+          ports:
+            - name: http
+              containerPort: {{ .Values.octopus.service.port }}
+              protocol: TCP
+            - name: tentacles
+              containerPort: {{ .Values.octopus.tentacles.port }}
+              protocol: TCP
+          volumeMounts:
+            - name: tasklogs
+              mountPath: C:\TaskLogs
+            - name: masterkey
+              mountPath: C:\MasterKey
+            - name: serverlogs
+              mountPath: C:\ServerLogs
+            - name: import
+              mountPath: C:\Import
+            - name: repository
+              mountPath: C:\Repository
+          resources:
+{{ toYaml .Values.octopus.resources | indent 12 }}
+    {{- with .Values.octopus.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.octopus.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.octopus.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+      volumes:
+        - name: tasklogs
+        {{- if .Values.octopus.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ template "octopus.fullname" . }}-tasklogs
+        {{- else }}
+          emptyDir: {}
+        {{- end }}
+        - name: masterkey
+        {{- if .Values.octopus.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ template "octopus.fullname" . }}-masterkey
+        {{- else }}
+          emptyDir: {}
+        {{- end }}
+        - name: serverlogs
+        {{- if .Values.octopus.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ template "octopus.fullname" . }}-serverlogs
+        {{- else }}
+          emptyDir: {}
+        {{- end }}
+        - name: import
+        {{- if .Values.octopus.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ template "octopus.fullname" . }}-import
+        {{- else }}
+          emptyDir: {}
+        {{- end }}
+        - name: repository
+        {{- if .Values.octopus.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ template "octopus.fullname" . }}-repository
+        {{- else }}
+          emptyDir: {}
+        {{- end }}

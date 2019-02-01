@@ -1,0 +1,14 @@
+name: octopus
+version: 0.0.1
+appVersion: 0.0.1
+description: Octopus Deploy is an automated release management tool for modern developers and DevOps teams.
+keywords:
+- octopus
+- deploy
+home: https://octopus.com
+sources:
+- https://github.com/OctopusDeploy/Octopus-Docker
+maintainers:
+- name: sylus
+  email: william.hearn@canada.ca
+engine: gotpl

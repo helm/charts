@@ -1,0 +1,22 @@
+{{- if index .Values "mssql" "enabled" -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "octopus.fullname" . }}-mssql
+  labels:
+    app: {{ template "octopus.name" . }}
+    chart: {{ template "octopus.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.mssql.service.type }}
+  ports:
+    - port: {{ .Values.mssql.service.port }}
+      targetPort: 1433
+      protocol: TCP
+      name: mssql
+  selector:
+    app: {{ template "octopus.name" . }}
+    release: {{ .Release.Name }}
+    tier: backend
+{{- end }}

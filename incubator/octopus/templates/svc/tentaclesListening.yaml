@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "octopus.fullname" . }}-tentacles-listening
+  labels:
+    app: {{ template "octopus.name" . }}
+    chart: {{ template "octopus.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.tentacles.service.type }}
+  ports:
+    - port: 443
+      targetPort: 10933
+      protocol: TCP
+      name: https
+  selector:
+    app: {{ template "octopus.name" . }}
+    release: {{ .Release.Name }}
+    tier: backend

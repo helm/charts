@@ -1,0 +1,72 @@
+{{- if index .Values "mssql" "enabled" -}}
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "octopus.fullname" . }}-mssql
+  labels:
+    app: {{ template "octopus.name" . }}
+    chart: {{ template "octopus.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.mssql.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "octopus.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "octopus.name" . }}
+        tier: backend
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.mssql.image.repository }}:{{ .Values.mssql.image.tag }}"
+          imagePullPolicy: {{ .Values.mssql.image.pullPolicy }}
+          env:
+            - name: sa_password
+              value: {{ .Values.mssql.sa.password }}
+            - name: ACCEPT_EULA
+              value: "Y"
+          ports:
+            - name: mssql
+              containerPort: {{ .Values.mssql.service.port }}
+              protocol: TCP
+          livenessProbe:
+             tcpSocket:
+               port: mssql
+             initialDelaySeconds: {{ .Values.mssql.livenessprobe.initialDelaySeconds }}
+             periodSeconds: {{ .Values.mssql.livenessprobe.periodSeconds }}
+          readinessProbe:
+             tcpSocket:
+               port: mssql
+             initialDelaySeconds: {{ .Values.mssql.readinessprobe.initialDelaySeconds }}
+             periodSeconds: {{ .Values.mssql.readinessprobe.periodSeconds }}
+          resources:
+{{ toYaml .Values.mssql.resources | indent 12 }}
+          volumeMounts:
+            - name: mssqlvol
+              mountPath: /var/opt/mssql/data
+    {{- with .Values.mssql.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.mssql.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.mssql.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+      volumes:
+        - name: mssqlvol
+        {{- if .Values.mssql.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ template "octopus.fullname" . }}-mssql
+        {{- else }}
+          emptyDir: {}
+        {{- end -}}
+{{- end -}}

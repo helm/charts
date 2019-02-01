@@ -1,0 +1,28 @@
+{{- if and .Values.octopus.persistence.enabled (not .Values.octopus.persistence.existingClaim) -}}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+{{- if .Values.octopus.persistence.annotations }}
+  annotations:
+{{ toYaml .Values.octopus.persistence.annotations | indent 4 }}
+{{- end }}
+  name: {{ template "octopus.fullname" . }}-masterkey
+  labels:
+    app: {{ template "octopus.name" . }}
+    chart: {{ template "octopus.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  accessModes:
+    - {{ .Values.octopus.persistence.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.octopus.persistence.size | quote }}
+{{- if .Values.octopus.persistence.storageClass }}
+{{- if (eq "-" .Values.octopus.persistence.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ .Values.octopus.persistence.storageClass }}"
+{{- end }}
+{{- end }}
+{{- end }}

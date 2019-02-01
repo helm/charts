@@ -1,0 +1,68 @@
+{{- if index .Values "tentacles" "polling" "enabled" -}}
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "octopus.fullname" . }}-tentacles-polling
+  labels:
+    app: {{ template "octopus.name" . }}
+    chart: {{ template "octopus.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.tentacles.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "octopus.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "octopus.name" . }}
+        tier: backend
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}-polling
+          image: "{{ .Values.tentacles.image.repository }}:{{ .Values.tentacles.image.tag }}"
+          imagePullPolicy: {{ .Values.tentacles.image.pullPolicy }}
+          stdin: true
+          tty: true
+          env:
+            - name: ServerUsername
+              value: {{ .Values.octopus.admin.username }}
+            - name: ServerPassword
+              value: {{ .Values.octopus.admin.password }}
+            - name: TargetEnvironment
+              value: {{ .Values.tentacle.polling.target.evnrionment }}
+            - name: TargetRole
+              value: {{ .Values.tentacle.polling.target.role }}
+            - name: ServerUrl
+              value: "http://{{ template "octopus.fullname" . }}:{{ .Values.octopus.service.port }}"
+            - name: ServerPort
+              value: {{ .Values.octopus.tentacles.port }}
+          resources:
+{{ toYaml .Values.tentacles.resources | indent 12 }}
+          volumeMounts:
+            - name: tentaclevol
+              mountPath: C:\Applications
+    {{- with .Values.tentacles.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tentacles.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tentacles.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+      volumes:
+        - name: tentaclevol
+        {{- if .Values.tentacles.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ template "octopus.fullname" . }}-tentacles-polling
+        {{- else }}
+          emptyDir: {}
+        {{- end -}}
+{{- end -}}

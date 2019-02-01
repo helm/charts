@@ -1,0 +1,301 @@
+# Default values for octopus.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# Octopus Server
+# https://octopus.com/docs/installation/octopus-in-container/octopus-server-container
+octopus:
+  replicaCount: 1
+  image:
+    repository: octopusdeploy/octopusdeploy
+    tag: 2018.8.8-1803
+    pullPolicy: Always
+
+  admin:
+    username: admin
+    password: "OctopusDeploy@1313"
+    # apikey: ''
+
+  # https://octopus.com/docs/administration/security/data-encryption
+  # masterKey:
+
+  service:
+    type: ClusterIP
+    port: 81
+
+  tentacles:
+    port: 10943
+
+  ingress:
+    enabled: false
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    path: /
+    hosts:
+      - octopus.example.com
+    tls: []
+    #  - secretName: chart-example-tls
+    #    hosts:
+    #      - chart-example.local
+
+  livenessprobe:
+    initialDelaySeconds: 300
+    periodSeconds: 20
+
+  readinessprobe:
+    initialDelaySeconds: 300
+    periodSeconds: 10
+
+  persistence:
+    enabled: true
+    ## A manually managed Persistent Volume and Claim
+    ## Requires persistence.enabled: true
+    ## If defined, PVC must be created manually before volume will be bound
+    # existingClaim:
+
+    ## Drupal data Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
+    ##
+    # storageClass: "-"
+    annotations: {}
+    accessMode: ReadWriteOnce
+    size: 8Gi
+    volumes:
+    #  - name: nothing
+    #    emptyDir: {}
+    mounts:
+    #  - mountPath: /var/nothing
+    #    name: nothing
+    #    readOnly: true
+
+  resources: {}
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #  cpu: 100m
+    #  memory: 128Mi
+    # requests:
+    #  cpu: 100m
+    #  memory: 128Mi
+
+  nodeSelector:
+    beta.kubernetes.io/os: windows
+
+  tolerations:
+    - key: "os"
+      operator: "Equal"
+      value: "windows"
+      effect: "NoSchedule"
+
+  affinity: {}
+
+# Octopus Tentacle(s)
+# https://octopus.com/docs/installation/octopus-in-container/octopus-tentacle-container
+tentacles:
+  enabled: true
+  replicaCount: 1
+
+  service:
+    type: ClusterIP
+    port: 10933
+
+  image:
+    repository: octopusdeploy/tentacle
+    tag: latest
+    pullPolicy: Always
+
+  polling:
+    enabled: false
+    target:
+      environment: Development
+      role: app-server
+
+  listening:
+    target:
+      environment: Development
+      role: web-server
+      workerpoolname: "Default Worker Pool"
+      worker: yes
+
+  persistence:
+    enabled: true
+    ## A manually managed Persistent Volume and Claim
+    ## Requires persistence.enabled: true
+    ## If defined, PVC must be created manually before volume will be bound
+    # existingClaim:
+
+    ## Drupal data Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
+    ##
+    # storageClass: "-"
+    annotations: {}
+    accessMode: ReadWriteOnce
+    size: 8Gi
+    volumes:
+    #  - name: nothing
+    #    emptyDir: {}
+    mounts:
+    #  - mountPath: /var/nothing
+    #    name: nothing
+    #    readOnly: true
+
+  resources: {}
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #  cpu: 100m
+    #  memory: 128Mi
+    # requests:
+    #  cpu: 100m
+    #  memory: 128Mi
+
+  nodeSelector:
+    beta.kubernetes.io/os: windows
+
+  tolerations:
+    - key: "os"
+      operator: "Equal"
+      value: "windows"
+      effect: "NoSchedule"
+
+  affinity: {}
+
+# MSSQL for Windows
+# Probably should be charted itself though mostly only use existing Linux chart.
+mssql:
+  enabled: false
+  replicaCount: 1
+  image:
+    repository: christianacca/mssql-server-windows-express
+    tag: 1803
+    pullPolicy: Always
+
+  sa:
+    password: "OctopusDeploy"
+
+  service:
+    type: ClusterIP
+    port: 1433
+
+  livenessprobe:
+    initialDelaySeconds: 15
+    periodSeconds: 20
+
+  readinessprobe:
+    initialDelaySeconds: 5
+    periodSeconds: 10
+
+  persistence:
+    enabled: true
+    ## A manually managed Persistent Volume and Claim
+    ## Requires persistence.enabled: true
+    ## If defined, PVC must be created manually before volume will be bound
+    # existingClaim:
+
+    ## Drupal data Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
+    ##
+    # storageClass: "-"
+    annotations: {}
+    accessMode: ReadWriteOnce
+    size: 8Gi
+    volumes:
+    #  - name: nothing
+    #    emptyDir: {}
+    mounts:
+    #  - mountPath: /var/nothing
+    #    name: nothing
+    #    readOnly: true
+
+  resources: {}
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #  cpu: 100m
+    #  memory: 128Mi
+    # requests:
+    #  cpu: 100m
+    #  memory: 128Mi
+
+  nodeSelector:
+    beta.kubernetes.io/os: windows
+
+  tolerations:
+    - key: "os"
+      operator: "Equal"
+      value: "windows"
+      effect: "NoSchedule"
+
+  affinity: {}
+
+# MSSQL for Linux
+# https://github.com/helm/charts/tree/master/stable/mssql-linux
+mssql-linux:
+  enabled: true
+  acceptEula:
+    value: "y"
+  edition:
+    value: Express
+  collation: SQL_Latin1_General_CP1_CI_AS
+  lcid: 1033
+  hadr: 0
+  # Override sapassword in templates/secret.yaml
+  sapassword: "OctopusDeploy"
+  image:
+    repository: microsoft/mssql-server-linux
+    tag: 2017-CU11
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 1433
+    # annotations:
+    #   service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+  persistence:
+    enabled: true
+    # existingDataClaim:
+    # existingTransactionLogClaim:
+    # existingBackupClaim:
+    # existingMasterClaim:
+    storageClass: ""
+    dataAccessMode: ReadWriteOnce
+    dataSize: 1Gi
+    transactionLogAccessMode: ReadWriteOnce
+    transactionLogSize: 1Gi
+    backupAccessMode: ReadWriteOnce
+    backupSize: 1Gi
+    masterAccessMode: ReadWriteOnce
+    masterSize: 1Gi
+  livenessprobe:
+    initialDelaySeconds: 15
+    periodSeconds: 20
+  readinessprobe:
+    initialDelaySeconds: 5
+    periodSeconds: 10
+  resources: {}
+    # limits:
+    #  cpu: 100m
+    #  memory: 2Gi
+    # requests:
+    #  cpu: 100m
+    #  memory: 2Gi
+  nodeSelector:
+    beta.kubernetes.io/os: linux
