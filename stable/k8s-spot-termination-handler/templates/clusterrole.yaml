@@ -4,10 +4,10 @@ kind: ClusterRole
 metadata:
   name: {{ template "k8s-spot-termination-handler.fullname" . }}
   labels:
-    app: {{ template "k8s-spot-termination-handler.name" . }}
-    chart: {{ template "k8s-spot-termination-handler.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ template "k8s-spot-termination-handler.name" . }}
+    helm.sh/chart: {{ template "k8s-spot-termination-handler.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 rules:
   # For draining nodes
   - apiGroups:
@@ -16,12 +16,14 @@ rules:
       - nodes
     verbs:
       - get
-      - update
+      - list
+      - patch
   - apiGroups:
       - ""
     resources:
       - pods
     verbs:
+      - get
       - list
   - apiGroups:
       - extensions
@@ -30,6 +32,14 @@ rules:
       - daemonsets
     verbs:
       - get
+      - list
+  - apiGroups:
+      - apps
+    resources:
+      - statefulsets
+    verbs:
+      - get
+      - list
   - apiGroups:
       - ""
     resources:
