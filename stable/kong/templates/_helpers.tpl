@@ -62,3 +62,32 @@ Create the ingress servicePort value string
    {{ .Values.proxy.http.servicePort }}
 {{- end -}}
 {{- end -}}
+
+
+{{/*
+Create dbHost
+This can be used to simplify certain aspects of the chart which
+normally have to choose between Postgres values and Cassandra values.
+For instance, in the initContainers command.
+*/}}
+{{- define "kong.dbHost" -}}
+{{- if .Values.cassandra.enabled -}}
+    {{ template "kong.cassandra.fullname" . }}
+{{- else if .Values.postgresql.enabled -}}
+    {{ template "kong.postgresql.fullname" . }}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Create dbPort
+This can be used to simplify certain aspects of the chart which
+normally have to choose between Postgres values and Cassandra values.
+For instance, in the initContainers command.
+*/}}
+{{- define "kong.dbPort" -}}
+{{- if .Values.cassandra.enabled -}}
+    {{ .Values.cassandra.config.ports.cql }}
+{{- else if .Values.postgresql.enabled -}}
+    {{ .Values.postgresql.service.port }}
+{{- end -}}
+{{- end -}}

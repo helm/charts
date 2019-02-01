@@ -26,31 +26,14 @@ spec:
       {{- end }}
       {{- if or (.Values.postgresql.enabled) (.Values.cassandra.enabled)  }}
       initContainers:
-      {{- if .Values.postgresql.enabled }}
       - name: wait-for-postgres
         image: "{{ .Values.waitImage.repository }}:{{ .Values.waitImage.tag }}"
         env:
-        - name: KONG_PG_HOST
-          value: {{ template "kong.postgresql.fullname" . }}
-        - name: KONG_PG_PORT
-          value: "{{ .Values.postgresql.service.port }}"
-        - name: KONG_PG_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ template "kong.postgresql.fullname" . }}
-              key: postgresql-password
-        command: [ "/bin/sh", "-c", "until nc -zv $KONG_PG_HOST $KONG_PG_PORT -w1; do echo 'waiting for db'; sleep 1; done" ]
-      {{- end }}
-      {{- if .Values.cassandra.enabled }}
-      - name: wait-for-cassandra
-        image: "{{ .Values.waitImage.repository }}:{{ .Values.waitImage.tag }}"
-        env:
-        - name: KONG_CASSANDRA_CONTACT_POINTS
-          value: {{ template "kong.cassandra.fullname" . }}
-        - name: KONG_CASSANDRA_CQL_PORT
-          value: "{{ .Values.cassandra.config.ports.cql }}"
-        command: [ "/bin/sh", "-c", "until nc -zv $KONG_CASSANDRA_CONTACT_POINTS $KONG_CASSANDRA_CQL_PORT -w1; do echo 'waiting for db'; sleep 1; done" ]      
-      {{- end }}
+        - name: KONG_DB_HOST
+          value: {{ template "kong.dbHost" . }}
+        - name: KONG_DB_PORT
+          value: {{ template "kong.dbPort" . }}
+        command: [ "/bin/sh", "-c", "until nc -zv $KONG_DB_HOST $KONG_DB_PORT -w1; do echo 'waiting for db'; sleep 1; done" ]
       {{- end }}
       containers:
       - name: {{ template "kong.name" . }}-migrations
