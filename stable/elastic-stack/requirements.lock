@@ -1,33 +1,33 @@
 dependencies:
 - name: elasticsearch
   repository: https://kubernetes-charts.storage.googleapis.com/
-  version: 1.17.0
+  version: 1.18.0
 - name: kibana
   repository: https://kubernetes-charts.storage.googleapis.com/
-  version: 1.1.2
+  version: 1.4.0
 - name: filebeat
   repository: https://kubernetes-charts.storage.googleapis.com/
-  version: 1.1.2
+  version: 1.2.0
 - name: logstash
   repository: https://kubernetes-charts.storage.googleapis.com/
-  version: 1.4.2
+  version: 1.5.0
 - name: fluentd
   repository: https://kubernetes-charts.storage.googleapis.com/
   version: 1.4.0
 - name: fluent-bit
   repository: https://kubernetes-charts.storage.googleapis.com/
-  version: 1.3.0
+  version: 1.5.1
 - name: fluentd-elasticsearch
   repository: https://kubernetes-charts.storage.googleapis.com/
-  version: 1.5.0
+  version: 2.0.7
 - name: nginx-ldapauth-proxy
   repository: https://kubernetes-charts.storage.googleapis.com/
   version: 0.1.2
 - name: elasticsearch-curator
   repository: https://kubernetes-charts.storage.googleapis.com/
-  version: 1.0.1
+  version: 1.1.0
 - name: elasticsearch-exporter
   repository: https://kubernetes-charts.storage.googleapis.com/
-  version: 0.4.1
-digest: sha256:1fd4a059ff9264193884b83644fd057216c384cc5a0debfe8347e9433bd7d1e2
-generated: 2019-01-14T14:58:05.877505741-05:00
+  version: 1.1.0
+digest: sha256:ca05eec89b2e81d83cd29e72b21fa12864b0a2012a8d0e40fb14ddd07fe0c1bb
+generated: 2019-02-01T13:45:28.032092+01:00
