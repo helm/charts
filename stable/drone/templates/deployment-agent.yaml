@@ -36,7 +36,7 @@ spec:
 {{- end }}
       serviceAccountName: {{ template "drone.serviceAccountName" . }}
       containers:
-      - name: {{ template "drone.fullname" . }}-agent
+      - name: agent
         image: "{{ .Values.images.agent.repository }}:{{ .Values.images.agent.tag }}"
         imagePullPolicy: {{ .Values.images.agent.pullPolicy }}
         ports:
@@ -72,7 +72,7 @@ spec:
           hostPath:
             path: /var/run/docker.sock
 {{- else }}
-      - name: {{ template "drone.fullname" . }}-dind
+      - name: dind
         image: "{{ .Values.images.dind.repository }}:{{ .Values.images.dind.tag }}"
         imagePullPolicy: {{ .Values.images.dind.pullPolicy }}
 {{- if .Values.dind.command }}
