@@ -139,6 +139,9 @@ spec:
           subPath: elasticsearch.keystore
           readOnly: true
 {{- end }}
+{{- if .Values.client.extraContainers }}
+{{ toYaml .Values.client.extraContainers | indent 6 }}
+{{- end }}
 {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
       {{- range $pullSecret := .Values.image.pullSecrets }}

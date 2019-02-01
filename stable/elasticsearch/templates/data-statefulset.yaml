@@ -173,6 +173,9 @@ spec:
             exec:
               command: ["/bin/bash","/post-start-hook.sh"]
 {{- end }}
+{{- if .Values.data.extraContainers }}
+{{ toYaml .Values.data.extraContainers | indent 6 }}
+{{- end }}
       terminationGracePeriodSeconds: {{ .Values.data.terminationGracePeriodSeconds }}
 {{- if .Values.image.pullSecrets }}
       imagePullSecrets:

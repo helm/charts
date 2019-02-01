@@ -112,6 +112,7 @@ client:
     #  - secretName: chart-example-tls
     #    hosts:
     #      - chart-example.local
+  extraContainers: []
 
 master:
   name: master
@@ -153,6 +154,7 @@ master:
     # maxUnavailable: 1
   updateStrategy:
     type: OnDelete
+  extraContainers: []
 
 data:
   name: data
@@ -198,6 +200,7 @@ data:
   hooks:  # post-start and pre-stop hooks
     drain:  # drain the node before stopping it and re-integrate it into the cluster after start
       enabled: true
+  extraContainers: []
 
 ## Additional init containers
 extraInitContainers: |
