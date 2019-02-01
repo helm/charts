@@ -1,4 +1,3 @@
-# TODO: Add health check in source code
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -22,10 +21,10 @@ spec:
       {{- if .Values.podLabels }}
 {{ toYaml .Values.podLabels | indent 8}}
       {{- end }}
+    {{- if .Values.podAnnotations }}
       annotations:
-      {{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
-      {{- end }}
+    {{- end }}
     spec:
       containers:
         - name: {{ .Chart.Name }}
@@ -38,7 +37,7 @@ spec:
             "- --namespace="{{ .Values.namespace.active_in }}
             {{- end }}
             {{- end }}
-          {{ if .Values.debug.enable }}- --debug{{end }}
+            {{ if .Values.debug.enable }}- --debug{{end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}

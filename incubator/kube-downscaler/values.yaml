@@ -5,7 +5,7 @@
 replicaCount: 1
 name: kube-downscaler
 debug:
-  enable: False
+  enable: 'False'
 
 # Namespace where kube-downscaler is going to be deployed.
 namespace:
