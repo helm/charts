@@ -47,10 +47,6 @@ spec:
         - name: "{{ $key }}"
           value: "{{ $value }}"
         {{- end }}
-        ports:
-        - containerPort: {{ .Values.service.internalPort }}
-          name: {{ template "kibana.name" . }}
-          protocol: TCP
         volumeMounts:
         - name: {{ template "kibana.fullname" . }}-dashboards
           mountPath: "/kibanadashboards"
@@ -106,12 +102,6 @@ spec:
         - name: "{{ $key }}"
           value: "{{ $value }}"
         {{- end }}
-{{- if not .Values.service.disableInternalPort }}
-        ports:
-        - containerPort: {{ .Values.service.internalPort }}
-          name: {{ template "kibana.name" . }}
-          protocol: TCP
-{{- end }}
         volumeMounts:
         - name: plugins
           mountPath: /usr/share/kibana/plugins
