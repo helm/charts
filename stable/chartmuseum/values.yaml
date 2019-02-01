@@ -211,9 +211,10 @@ ingress:
 ## Must be provided if Ingress is enabled
 ##
 #   hosts:
-#     chartmuseum.domain.com:
-#         - /charts
-#         - /index.yaml
+#     - name: chartmuseum.domain.com
+#       path: /charts
+#     - name: chartmuseum.domain.com
+#       path: /index.yaml
 
 ## Chartmuseum Ingress TLS configuration
 ## Secrets must be manually created in the namespace

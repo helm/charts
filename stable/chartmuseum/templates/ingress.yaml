@@ -15,17 +15,15 @@ metadata:
 {{ include "chartmuseum.labels.standard" . | indent 4 }}
 spec:
   rules:
-  {{- range $host, $paths := .Values.ingress.hosts }}
-  - host: {{ $host }}
+  {{- range .Values.ingress.hosts }}
+  - host: {{ .name }}
     http:
       paths:
-      {{- range $paths }}
-      - path: {{ . }}
+      - path: {{ default "/" .path }}
         backend:
           serviceName: {{ $serviceName }}
           servicePort: {{ $servicePort }}
-      {{- end -}}
-  {{- end -}}
+  {{- end }}
   {{- if .Values.ingress.tls }}
   tls:
 {{ toYaml .Values.ingress.tls | indent 4 }}
