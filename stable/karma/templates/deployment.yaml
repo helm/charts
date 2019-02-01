@@ -18,6 +18,10 @@ spec:
       labels:
         app.kubernetes.io/name: {{ include "karma.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
+      {{- if .Values.configMap.enabled }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+      {{- end }}
     spec:
       serviceAccountName: {{ template "karma.serviceAccountName" . }}
       containers:
@@ -73,4 +77,3 @@ spec:
         configMap:
           name: {{ .Release.Name }}-config
       {{- end }}
-
