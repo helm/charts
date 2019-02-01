@@ -69,7 +69,6 @@ The following table lists the configurable parameters of the kibana chart and th
 | `resources`                                   | pod resource requests & limits             | `{}`                                   |
 | `priorityClassName`                           | priorityClassName                          | `nil`                                  |
 | `service.externalPort`                        | external port for the service              | `443`                                  |
-| `service.disableInternalPort`                 | disable internal port when using sidecar   | `false`                                |
 | `service.internalPort`                        | internal port for the service              | `4180`                                 |
 | `service.authProxyPort`                       | port to use when using sidecar authProxy   | None:                                  |
 | `service.externalIPs`                         | external IP addresses                      | None:                                  |
