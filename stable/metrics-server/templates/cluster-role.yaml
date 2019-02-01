@@ -26,4 +26,14 @@ rules:
     verbs:
     - get
     - create
+  {{- if .Values.rbac.pspEnabled }}
+  - apiGroups:
+    - extensions
+    resources:
+    - podsecuritypolicies
+    resourceNames:
+    - privileged-{{ template "metrics-server.fullname" . }}
+    verbs:
+    - use
+  {{- end -}}
 {{- end -}}
