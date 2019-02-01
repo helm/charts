@@ -1,5 +1,5 @@
-{{- if and .Values.configuration.backupStorageProvider.name .Values.configuration.backupStorageProvider.bucket -}}
-{{- $provider := .Values.configuration.backupStorageProvider.name -}}
+{{- if .Values.configuration.provider -}}
+{{- $provider := .Values.configuration.provider -}}
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
@@ -31,12 +31,17 @@ spec:
         - name: ark
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if .Values.configuration.metrics.enabled }}
+          ports:
+            - name: metrics
+              containerPort: 8085
+          {{- end }}
           command:
             - /ark
           args:
             - server
           {{- with .Values.configuration }}
-            {{- with .metricAddress }}
+            {{- with .metrics.address }}
             - --metrics-address={{ . }}
             {{- end }}
             {{- with .backupSyncPeriod }}

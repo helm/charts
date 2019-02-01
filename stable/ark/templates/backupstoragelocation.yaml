@@ -1,6 +1,6 @@
 {{- $root := . }}
 {{- with .Values.configuration }}
-{{- with .backupStorageProvider }}
+{{- with .backupStorageLocation }}
 apiVersion: ark.heptio.com/v1
 kind: BackupStorageLocation
 metadata:
