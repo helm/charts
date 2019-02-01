@@ -15,7 +15,7 @@ data:
     mkdir -p /tmp/spinnaker/.hal/default/service-settings
     printf 'overrideBaseUrl: redis://:{{ .Values.redis.password }}@{{ .Release.Name }}-redis-master:6379\nskipLifeCycleManagement: true\n' > /tmp/spinnaker/.hal/default/service-settings/redis.yml
     # Route the /gate path of Deck to Gate
-    printf 'env:\n  API_HOST: http://spin-gate.{{ .Release.Namespace }}:8084/\n' > /tmp/spinnaker/.hal/default/service-settings/deck.yml
+    printf 'env:\n  API_HOST: http://spin-gate.{{ .Release.Namespace }}:8084\n' > /tmp/spinnaker/.hal/default/service-settings/deck.yml
 
     {{- if .Values.halyard.additionalProfileConfigMaps.create }}
     rm -rf /tmp/spinnaker/.hal/default/profiles && \
