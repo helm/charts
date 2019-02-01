@@ -25,7 +25,9 @@ spec:
   {{- end }}
   {{- if .Values.externalIP }}
   externalIPs:
-    - {{ .Values.externalIP }}
+    {{- range $eip := .Values.externalIP }}
+    - {{ $cidr }}
+    {{- end }}
   {{- end }}
   {{- if .Values.loadBalancerSourceRanges }}
   loadBalancerSourceRanges:
