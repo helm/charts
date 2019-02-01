@@ -17,7 +17,7 @@ To install the chart with the release name `my-release`:
 $ helm install --name my-release stable/fluent-bit
 ```
 
-When installing this chart on [Minikube](https://kubernetes.io/docs/getting-started-guides/minikube/), it's required to specify that so the DaemonSet will be able to mount the log files properly, make sure to append the _--set on\_minikube=true_ option at the end of the _helm_ command, e.g:
+When installing this chart on [Minikube](https://kubernetes.io/docs/getting-started-guides/minikube/) or [MicroK8s](https://microk8s.io/), it's required to specify that so the DaemonSet will be able to mount the log files properly, make sure to append the _--set on\_minikube=true_ or _--set on\_microk8s=true_ option at the end of the _helm_ command, e.g:
 
 ```bash
 $ helm install --name my-release stable/fluent-bit --set on_minikube=true
