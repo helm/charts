@@ -45,7 +45,7 @@ spec:
           protocol: TCP
         env:
           - name: DRONE_RPC_SERVER
-            value: {{ .Values.agent.rpc_server }}
+            value: {{ template "drone.fullname" . }}-grpc:9000
           - name: DRONE_RPC_SECRET
             valueFrom:
               secretKeyRef:
