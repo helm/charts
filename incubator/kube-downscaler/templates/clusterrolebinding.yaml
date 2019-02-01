@@ -1,0 +1,19 @@
+{{- if .Values.rbac.create -}}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ include "kube-downscaler.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "kube-downscaler.name" . }}
+    helm.sh/chart: {{ include "kube-downscaler.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: "{{ template "kube-downscaler.fullname" . }}"
+subjects:
+  - kind: ServiceAccount
+    name: "{{ template "kube-downscaler.fullname" . }}"
+    namespace: {{ .Release.Namespace }}
+{{- end -}}
