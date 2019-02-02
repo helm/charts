@@ -6,6 +6,7 @@ metadata:
     app.kubernetes.io/name: {{ include "distributed-jmeter.name" . }}
     helm.sh/chart: {{ include "distributed-jmeter.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
     role: server
 spec:
   replicas: {{ .Values.server.replicaCount }}
