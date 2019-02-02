@@ -7,7 +7,7 @@ metadata:
 spec:
   containers:
   - name: {{ template "orientdb.fullname" .}}-simple-crud-test
-    image: orientdb:latest
+    image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
     env:
       - name: ORIENT_HOST
         value: {{ template "orientdb.fullname" . }}-svc

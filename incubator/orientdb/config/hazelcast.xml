@@ -39,6 +39,7 @@
                 <multicast-group>235.1.1.1</multicast-group>
                 <multicast-port>2434</multicast-port>
             </multicast>
+            <!-- TODO: Use K8s hazelcast plugin: https://github.com/orientechnologies/orientdb-docker  -->
             <tcp-ip enabled="true">
                 {{- range $i, $e := until ( .Values.replicaCount | int ) }}
                 <member>{{ $fullname }}-{{$i}}.{{ $fullname }}-headless.{{ $self.Release.Namespace }}.svc.cluster.local</member>
