@@ -22,6 +22,9 @@ spec:
       {{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
       {{- end }}
+      {{- if .Values.exporter.enabled }}
+{{ toYaml .Values.exporter.annotations | indent 8 }}
+      {{- end }}
       labels:
         release: {{ .Release.Name }}
         app: {{ template "redis-ha.name" . }}
@@ -147,6 +150,25 @@ spec:
           name: data
         - mountPath: /probes
           name: probes
+{{- if .Values.exporter.enabled }}
+      - name: redis-exporter
+        image: "{{ .Values.exporter.image }}:{{ .Values.exporter.tag }}"
+        imagePullPolicy: {{ .Values.exporter.pullPolicy }}
+        args:
+        {{- range $key, $value := .Values.extraArgs }}
+          - --{{ $key }}={{ $value }}
+        {{- end }}
+        env:
+          - name: REDIS_ADDR
+            value: redis://localhost:6379
+        {{- if .Values.auth }}
+          - name: REDIS_PASSWORD
+            value: {{ .Values.redisPassword }}
+        {{- end }}
+        ports:
+          - name: exporter-port
+            containerPort: 9121
+{{- end }}
       volumes:
       - name: config
         configMap:

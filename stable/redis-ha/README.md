@@ -9,8 +9,8 @@ $ helm install stable/redis-ha
 ```
 
 By default this chart install 3 pods total:
- * one pod containing a redis master and sentinel containers
- * two pods each containing redis slave and sentinel containers.
+ * one pod containing a redis master, sentinel container and a prometheus metrics exporter
+ * two pods each containing a redis slave, sentinel containers and a prometheus metrics exporter
 
 ## Introduction
 
@@ -73,7 +73,11 @@ The following table lists the configurable parameters of the Redis chart and the
 | `nodeSelector`                   | Node labels for pod assignment                                                                                               | `{}`                                                      |
 | `tolerations`                    | Toleration labels for pod assignment                                                                                         | `[]`                                                      |
 | `podAntiAffinity.server`         | Antiaffinity for pod assignment of servers, `hard` or `soft`                                                                 | `Hard node and soft zone anti-affinity`                   |
-
+| `exporter.enabled`               | If `true`, the prometheus exporter sidecar is enabled                                                                        | `false`                                                   |
+| `exporter.image`                 | Exporter image                                                                                                               | `oliver006/redis_exporter`                                |
+| `exporter.tag`                   | Exporter tag                                                                                                                 | `v0.28.0`                                                 |
+| `exporter.annotations`           | Prometheus scrape annotations                                                                                                |  `{prometheus.io/path: /metrics, prometheus.io/port: "9121", prometheus.io/scrape: "true"}`                                                     |
+| `exporter.extraArgs`             | Additional args for the exporter                                                                                           | `{}`                                                      |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
