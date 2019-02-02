@@ -4,7 +4,7 @@ Installs XWiki on a kubernetes cluster using the [`xwiki`](https://hub.docker.co
 
 ## Requirements
 
-- Postgres only
+- Postgres only, and you have to take care by yourself that it exists and is configured according to the values you set for this chart.
 
 ## Limitations
 
@@ -12,8 +12,6 @@ Installs XWiki on a kubernetes cluster using the [`xwiki`](https://hub.docker.co
 - Using more than one Pod is currently not supported, so load-balancing between Xwiki instances is not possible.
 
 ## Parameters
-
-**Please read the notes below the table!**
 
 | Parameter                   | Description                                          | Default                 |
 | --------------------------- | ---------------------------------------------------- | ----------------------- |
@@ -43,6 +41,3 @@ Installs XWiki on a kubernetes cluster using the [`xwiki`](https://hub.docker.co
 | `service.port`              | Define the service port                              |  `80`                   |
 | `tolerations`               | Define Pod [`tolerations`](https://is.gd/XaLbxF)     |  `[]`                   |
 
-### Notes
-
-- The `db.*` parameters can unfortunately not be changed once set when using persistence. This is a limitation of the underlying `xwiki` image, which writes a config file on first startup, and then does _not_ change the information when the config file is already present on later starups.
