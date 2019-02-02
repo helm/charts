@@ -55,7 +55,7 @@ data:
     echo "Backing up single db ${MYSQL_DB}"
     {{ if .Values.saveToDirectory }}mkdir -p "${BACKUP_DIR}"/"${MYSQL_DB}"{{ end }}
     mysqldump ${MYSQL_OPTS} -h ${MYSQL_HOST} -P ${MYSQL_PORT} -u ${MYSQL_USERNAME}{{ if .Values.mysql.password }} -p${MYSQL_PASSWORD}{{ end }} --databases ${MYSQL_DB} | gzip > ${BACKUP_DIR}/{{ if .Values.saveToDirectory }}${MYSQL_DB}/{{ end }}${TIMESTAMP}_${MYSQL_DB}.sql.gz
-
+    rc=$?
     {{ else if and (.Values.allDatabases.enabled) (eq .Values.allDatabases.singleBackupFile false)}}
     for MYSQL_DB in $(mysql -h "${MYSQL_HOST}" -u ${MYSQL_USERNAME}{{ if .Values.mysql.password }} -p${MYSQL_PASSWORD}{{ end }} -B -N -e "SHOW DATABASES;"|egrep -v '^(information|performance)_schema$'); do
       echo "Backing up db ${MYSQL_DB}"
