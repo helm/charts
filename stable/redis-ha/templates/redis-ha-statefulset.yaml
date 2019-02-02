@@ -154,6 +154,9 @@ spec:
       - name: probes
         configMap:
           name: {{ template "redis-ha.fullname" . }}-probes
+{{- if .Values.extraContainers }}
+{{ toYaml .Values.extraContainers | indent 6 }}
+{{- end }}
 {{- if .Values.persistentVolume.enabled }}
   volumeClaimTemplates:
   - metadata:

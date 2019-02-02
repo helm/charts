@@ -14,7 +14,7 @@ By default this chart install 3 pods total:
 
 ## Introduction
 
-This chart bootstraps a [Redis](https://redis.io) highly available master/slave statefulset in a [Kubernetes](http://kubernetes.io) cluster using the Helm package manager. 
+This chart bootstraps a [Redis](https://redis.io) highly available master/slave statefulset in a [Kubernetes](http://kubernetes.io) cluster using the Helm package manager.
 
 ## Prerequisites
 
@@ -66,10 +66,11 @@ The following table lists the configurable parameters of the Redis chart and the
 | `sentinel.config`                | Valid sentinel config options in this section will be applied as config options to each sentinel (see below)                 | see values.yaml                                           |
 | `sentinel.customConfig`          | Allows for custom sentinel.conf files to be applied. If this is used then `sentinel.config` is ignored                       | ``                                                        |
 | `sentinel.resources`             | CPU/Memory for sentinel node resource requests/limits                                                                        | `{}`                                                      |
-| `init.resources`             | CPU/Memory for init Container node resource requests/limits                                                                        | `{}` 
+| `init.resources`                 | CPU/Memory for init Container node resource requests/limits                                                                  | `{}`
 | `auth`                           | Enables or disables redis AUTH (Requires `redisPassword` to be set)                                                          | `false`                                                   |
+| `extraContainers`                | Additional sidecar containers                                                                                                | `[]`
 | `redisPassword`                  | A password that configures a `requirepass` and `masterauth` in the conf parameters (Requires `auth: enabled`)                | ``                                                        |
-| `existingSecret`                  | An existing secret containing an `auth` key that configures `requirepass` and `masterauth` in the conf parameters (Requires `auth: enabled`, cannot be used in conjunction with `.Values.redisPassword`)                | ``                                                        |
+| `existingSecret`                 | An existing secret containing an `auth` key that configures `requirepass` and `masterauth` in the conf parameters (Requires `auth: enabled`, cannot be used in conjunction with `.Values.redisPassword`)                | ``                                                        |
 | `nodeSelector`                   | Node labels for pod assignment                                                                                               | `{}`                                                      |
 | `tolerations`                    | Toleration labels for pod assignment                                                                                         | `[]`                                                      |
 | `podAntiAffinity.server`         | Antiaffinity for pod assignment of servers, `hard` or `soft`                                                                 | `Hard node and soft zone anti-affinity`                   |
