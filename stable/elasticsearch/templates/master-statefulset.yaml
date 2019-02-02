@@ -9,7 +9,7 @@ metadata:
     release: {{ .Release.Name }}
   name: {{ template "elasticsearch.master.fullname" . }}
 spec:
-  serviceName: {{ template "elasticsearch.master.fullname" . }}
+  serviceName: {{ template "elasticsearch.fullname" . }}-discovery
   replicas: {{ .Values.master.replicas }}
   template:
     metadata:
