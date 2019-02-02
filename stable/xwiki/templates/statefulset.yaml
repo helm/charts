@@ -1,0 +1,110 @@
+apiVersion: apps/v1beta2
+kind: StatefulSet
+metadata:
+  name: {{ include "xwiki.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "xwiki.name" . }}
+    helm.sh/chart: {{ include "xwiki.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  # without shared storage, no more than 1 replica, also we can't start the next
+  # before killing the old due to the volume attachment. I think.
+  # anyway, safer this way.
+  replicas: 1
+  strategy:
+    type: Recreate
+  # ... aaand continue as usual.
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "xwiki.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "xwiki.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          envFrom:
+            - configMapRef:
+                name: {{ include "xwiki.fullname" . }}-env
+                optional: false
+            - secretRef:
+                name: {{ include "xwiki.fullname" . }}-env-secrets
+                optional: false
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+{{- if .Values.livenessProbe }}
+          livenessProbe:
+{{ toYaml .Values.livenessProbe | indent 12 }}
+{{- end }}
+{{- if .Values.readinessProbe }}
+          readinessProbe:
+{{ toYaml .Values.readinessProbe | indent 12 }}
+{{- end }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+{{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+{{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+{{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+{{- if .Values.persistence.enabled }}
+          volumeMounts:
+          - name: data
+            mountPath: /usr/local/xwiki
+{{- end }}
+{{- if and .Values.persistence.enabled .Values.persistence.existingClaim }}
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.existingClaim }}
+{{- end }}
+{{- if and .Values.persistence.enabled (not .Values.persistence.existingClaim) }}
+  # copied and adapted from redis chart:
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+        labels:
+          app.kubernetes.io/name: {{ include "xwiki.name" . }}
+          app.kubernetes.io/instance: {{ .Release.Name }}
+      spec:
+        accessModes:
+        {{- range .Values.persistence.accessModes }}
+          - {{ . | quote }}
+        {{- end }}
+        resources:
+          requests:
+            storage: {{ .Values.persistence.size | quote }}
+        {{- if or .Values.persistence.claimMatchLabels .Values.persistence.claimMatchExpressions }}
+        selector:
+          {{- if .Values.persistence.claimMatchLabels }}
+          matchLabels:
+{{ toYaml .Values.persistence.claimMatchLabels | indent 12 }}
+          {{- end }}
+          {{- if .Values.persistence.claimMatchExpressions }}
+          matchExpressions:
+{{ toYaml .Values.persistence.claimMatchExpressions | indent 12 }}
+          {{- end }}
+      {{- end }}
+      {{- if .Values.persistence.storageClass }}
+        # set persistence.storageClass to <false> for static provisioning
+        storageClassName: {{ .Values.persistence.storageClass | quote }}
+      {{- else }}
+        # this should force static provisioning instead of dynamic
+        storageClassName: ""
+      {{- end }}
+{{- end }}

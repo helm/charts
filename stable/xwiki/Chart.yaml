@@ -1,0 +1,12 @@
+apiVersion: v1
+name: xwiki
+version: 1.0.0
+description: Install XWiki on Kubernetes
+appVersion: 10.11
+keywords:
+    - wiki
+    - xwiki
+maintainers:
+    - name: flypenguin
+      email: mr.axel.bock@gmail.com
+      url: https://flypenguin.de

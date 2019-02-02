@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "xwiki.fullname" . }}-env
+  labels:
+    app.kubernetes.io/name: {{ include "xwiki.name" . }}
+    helm.sh/chart: {{ include "xwiki.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+data:
+  # the configuration as STRING, so we can save it in a file
+  # in the container
+  DB_USER: {{ .Values.db.user }}
+  DB_HOST: {{ .Values.db.host }}
+  DB_DATABASE: {{ .Values.db.database }}
