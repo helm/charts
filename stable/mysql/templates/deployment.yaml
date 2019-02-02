@@ -84,6 +84,7 @@ spec:
         ports:
         - name: mysql
           containerPort: 3306
+        {{- if .Values.livenessProbe.enabled }}
         livenessProbe:
           exec:
             command:
@@ -100,6 +101,8 @@ spec:
           timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
           successThreshold: {{ .Values.livenessProbe.successThreshold }}
           failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+        {{- end }}
+        {{- if .Values.readinessProbe.enabled }}
         readinessProbe:
           exec:
             command:
@@ -116,6 +119,7 @@ spec:
           timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
           successThreshold: {{ .Values.readinessProbe.successThreshold }}
           failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+        {{- end }}
         volumeMounts:
         - name: data
           mountPath: /var/lib/mysql

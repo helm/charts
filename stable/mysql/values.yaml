@@ -67,6 +67,7 @@ nodeSelector: {}
 tolerations: []
 
 livenessProbe:
+  enabled: true
   initialDelaySeconds: 30
   periodSeconds: 10
   timeoutSeconds: 5
@@ -74,6 +75,7 @@ livenessProbe:
   failureThreshold: 3
 
 readinessProbe:
+  enabled: true
   initialDelaySeconds: 5
   periodSeconds: 10
   timeoutSeconds: 1
