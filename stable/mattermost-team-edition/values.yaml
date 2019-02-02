@@ -66,9 +66,9 @@ ingress:
 ## If use this please disable the mysql chart by setting mysql.enable to false
 externalDB:
   enabled: false
-  
+
   ## postgres or mysql
-  externalDriverType: "" 
+  externalDriverType: ""
 
   ## postgres:  "postgres://<USERNAME>:<PASSWORD>@<HOST>:5432/<DATABASE_NAME>?sslmode=disable&connect_timeout=10"
   ## mysql:     "<USERNAME>:<PASSWORD>@tcp(<HOST>:3306)/<DATABASE_NAME>?charset=utf8mb4,utf8&readTimeout=30s&writeTimeout=30s"
