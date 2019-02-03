@@ -103,6 +103,12 @@ data:
       exit 1
     fi
 
+    {{ if .Values.additionalSteps }}
+    {{- range .Values.additionalSteps }}
+    {{ . }}
+    {{- end }}
+    {{- end }}
+
     {{ if .Values.debug }}
     ls -alh ${BACKUP_DIR}
     {{ end }}
