@@ -58,12 +58,18 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: metadata.name
+          {{- if .Values.jvm.memory }}
           - name: ORIENTDB_OPTS_MEMORY
             value: {{ .Values.jvm.memory | quote }}
+          {{- end }}
+          {{- if .Values.jvm.options }}
           - name: JAVA_OPTS_SCRIPT
             value: {{ .Values.jvm.options | quote }}
+          {{- end }}
+          {{- if .Values.jvm.settings }}
           - name: ORIENTDB_SETTINGS
             value: {{ .Values.jvm.settings | quote }}
+          {{- end }}
         volumeMounts:
                 {{- if .Values.config.overrideHazelcastConfig }}
           - name: orientdb-config-vol
