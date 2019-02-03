@@ -59,7 +59,7 @@ spec:
 {{- $replicas := int .Values.replicas -}}
 {{- range $i := until $replicas -}}
         - name: SENTINEL_ID_{{ $i }}
-          value: {{ printf "%s\nindex: %d" (include "labels.yaml" $) $i | sha1sum }}
+          value: {{ printf "%s\nindex: %d" (include "labels.standard" $) $i | sha1sum }}
 {{ end -}}
 {{- if .Values.auth }}
         - name: AUTH
