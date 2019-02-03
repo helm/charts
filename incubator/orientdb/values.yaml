@@ -49,6 +49,12 @@ tolerations: []
 
 affinity: {}
 
+readinessProbe:
+  enabled: true
+
+livenessProbe:
+  enabled: true
+
 hazelcast:
   groupName: orientdb
   groupPassword: orientdb
@@ -69,3 +75,6 @@ config:
   overrideOrientdbServerConfig: true
   overrideGremlinServerConfig: true
   overrideDistributedDbConfig: true
+
+testing:
+  enabled: false

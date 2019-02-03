@@ -76,11 +76,21 @@ spec:
             subPath: default-distributed-db-config.json
                 {{- end }}
           {{- if .Values.persistence.enabled }}
-          - name: {{ template "orientdb.fullname" . }}-storage
+          - name: storage
             mountPath: /orientdb/databases
-          - name: {{ template "orientdb.fullname" . }}-backup
+          - name: backup
             mountPath: /orientdb/backup
-              {{- end }}
+          {{- end }}
+        {{- if .Values.readinessProbe.enabled }}
+        readinessProbe:
+          tcpSocket:
+            port: http
+        {{- end }}
+        {{- if .Values.livenessProbe.enabled }}
+        livenessProbe:
+          tcpSocket:
+            port: http
+        {{- end }}
 {{- if .Values.distributed.enabled }}
         command: ["dserver.sh"]
 {{- else }}
@@ -113,14 +123,14 @@ spec:
 {{- if .Values.persistence.enabled }}
   volumeClaimTemplates:
   - metadata:
-      name: {{ template "orientdb.fullname" . }}-storage
+      name: storage
     spec:
       accessModes: {{ .Values.persistence.storage.accessMode }}
       resources:
         requests:
           storage: {{ .Values.persistence.storage.size }}
   - metadata:
-      name: {{ template "orientdb.fullname" . }}-backup
+      name: backup
     spec:
       accessModes: {{ .Values.persistence.backup.accessMode }}
       resources:

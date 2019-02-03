@@ -1,3 +1,4 @@
+{{- if .Values.testing.enabled }}
 apiVersion: v1
 kind: Pod
 metadata:
@@ -20,3 +21,4 @@ spec:
             key: root-password
     command: ["sh", "-c", "wget --spider http://${ORIENT_HOST}:${ORIENT_PORT}" ]
   restartPolicy: Never
+{{- end }}
