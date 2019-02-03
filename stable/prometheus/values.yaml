@@ -518,7 +518,7 @@ server:
   ##
   image:
     repository: prom/prometheus
-    tag: v2.6.1
+    tag: v2.7.1
     pullPolicy: IfNotPresent
 
   ## prometheus server priorityClassName
@@ -554,6 +554,9 @@ server:
   ## This flag controls access to the administrative HTTP API which includes functionality such as deleting time
   ## series. This is disabled by default.
   enableAdminApi: false
+
+  ## Path to a configuration file on prometheus server container FS
+  configPath: /etc/config/prometheus.yml
 
   global:
     ## How frequently to scrape targets by default

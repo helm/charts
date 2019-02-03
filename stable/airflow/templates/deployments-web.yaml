@@ -53,6 +53,10 @@ spec:
               mountPath: /usr/local/git
             - name: dags-data
               mountPath: /dags
+            {{- if .Values.dags.git.secret }}
+            - name: git-clone-secret
+              mountPath: /keys
+            {{- end }}
       {{- end }}
       containers:
         - name: {{ .Chart.Name }}-web
@@ -149,4 +153,10 @@ spec:
           configMap:
             name: {{ template "airflow.fullname" . }}-git-clone
             defaultMode: 0755
+        {{- if .Values.dags.git.secret }}
+        - name: git-clone-secret
+          secret:
+            secretName: {{ .Values.dags.git.secret }}
+            defaultMode: 0700
+        {{- end }}
         {{- end }}
