@@ -57,7 +57,7 @@ spec:
         - /readonly-config/init.sh
         env:
 {{- $replicas := int .Values.replicas -}}
-{{- range $i := until $replicas -}}
+{{- range $i := until $replicas }}
         - name: SENTINEL_ID_{{ $i }}
           value: {{ printf "%s\nindex: %d" (include "labels.standard" $) $i | sha1sum }}
 {{ end -}}
