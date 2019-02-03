@@ -14,7 +14,7 @@ wavefront:
 
 
 ## Wavefront Collector is responsible to get all Kubernetes metrics from your cluster.
-## It will capture Kubernetes resources metrics available from the kubelets, 
+## It will capture Kubernetes resources metrics available from the kubelets,
 ## as well as auto-discovery capabilities.
 collector:
   enabled: true
@@ -42,11 +42,11 @@ collector:
   ## If set to true, any Kubernetes labels will be applied to metrics as tags. Defaults to false.
   includeLabels: true
 
-  ## If set to true, all container metrics will be sent to Wavefront. 
+  ## If set to true, all container metrics will be sent to Wavefront.
   ## When set to false, container level metrics are skipped (pod level and above are still sent to Wavefront). Defaults to true.
   # includeContainers: true
 
-  ## The global prefix to be added for Kubernetes metrics. Defaults to `kubernetes.`. 
+  ## The global prefix to be added for Kubernetes metrics. Defaults to `kubernetes.`.
   ## This does not apply to other sources. Use source level prefixes for sources other than the Kubernetes source.
   # prefix: kubernetes.
 
@@ -63,7 +63,7 @@ collector:
   # logVerbosity: 0
 
   ## Discovery capabilities of Wavefront Collector
-  discovery:  
+  discovery:
     enabled: true
 
   ## Rules based discovery collection configuration
@@ -99,18 +99,18 @@ collector:
 
 ## Wavefront Proxy is a metrics forwarder that is used to relay metrics to the Wavefront SaaS service.
 ## It can receive metrics from the Wavefront Collector as well as other metrics collection services
-## within your cluster. The proxy also supports preprocessor rules to allow you to further filter 
-## and enhance your metric names, and tags. Should network connectivity fall between the proxy and 
+## within your cluster. The proxy also supports preprocessor rules to allow you to further filter
+## and enhance your metric names, and tags. Should network connectivity fall between the proxy and
 ## Wavefront SaaS service, the proxy will buffer metrics, which will be flushed when connectivity resumes.
 ## Ref: https://docs.wavefront.com/proxies.html
-proxy: 
+proxy:
   enabled: true
   image:
     repository: wavefronthq/proxy
     tag: 4.35
-    pullPolicy: IfNotPresent  
+    pullPolicy: IfNotPresent
 
-  ## The port number the proxy will listen on for metrics in Wavefront data format. 
+  ## The port number the proxy will listen on for metrics in Wavefront data format.
   ## This is usually 2878
   port: 2878
 
@@ -131,7 +131,7 @@ proxy:
   ## Value should be between 0.0 and 1.0.  Default is 1.0
   # traceSamplingRate: 0.25
 
-  ## When this is set to a value greater than 0, 
+  ## When this is set to a value greater than 0,
   ## spans that are greater than or equal to this value will be sampled.
   # traceSamplingDuration: 500
 
@@ -167,7 +167,7 @@ rbac:
 
 
 ## Specifies whether a ServiceAccount should be created
-serviceAccount: 
+serviceAccount:
   create: true
 
   ## The name of the ServiceAccount to use.
