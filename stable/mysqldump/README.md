@@ -57,6 +57,7 @@ The following tables lists the configurable parameters of the mysqldump chart an
 | schedule                                      | crontab schedule to run on. set as `now` to run as a one time job              | "0/5 \* \* \* \*"            |
 | options                                       | options to pass onto MySQL                                                     | "--opt --single-transaction" |
 | debug                                         | print some extra debug logs during backup                                      | false                        |
+| additionalSteps                               | run these extra shell steps after all backup jobs completed                    | []                           |
 | successfulJobsHistoryLimit                    | number of successful jobs to remember                                          | 5                            |
 | failedJobsHistoryLimit                        | number of failed jobs to remember                                              | 5                            |
 | persistentVolumeClaim                         | existing Persistent Volume Claim to backup to, leave blank to create a new one |                              |
