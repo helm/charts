@@ -43,7 +43,10 @@ failedJobsHistoryLimit: 5
 # additional steps for mysqldump shell script
 # will be inserted after all backup and upload jobs completed successfully.
 # Use "${BACKUP_DIR}/${TIMESTAMP}_${MYSQL_DB}.sql.gz" as dump file name.
+# see examples
 additionalSteps: []
+#  - gsutil cp "${BACKUP_DIR}/${TIMESTAMP}_${MYSQL_DB}.sql.gz" gs://mybucket/latest.sql.gz
+#  - echo "latest sql dump updated"
 
 ## set persistentVolumeClaim to use a PVC that already exists.
 ## if set will override any settings under `persistence` otherwise
