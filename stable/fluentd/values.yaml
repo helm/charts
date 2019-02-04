@@ -19,6 +19,12 @@ output:
 
 env: {}
 
+envConfigMap:
+#  - name: ENVIRONMENT
+#    configMapName: cluster.info
+#    configMapKey: environment
+
+
 service:
   type: ClusterIP
   # type: nodePort:

@@ -52,6 +52,15 @@ spec:
           - name: {{ $key | quote }}
             value: {{ $value | quote }}
           {{- end }}
+          {{- if .Values.envConfigMap }}
+          {{- range $key, $value := .Values.envConfigMap  }}
+          - name: {{ .name }}
+            valueFrom:
+              configMapKeyRef:
+                name: {{ $value.configMapName }}
+                key: {{ $value.configMapKey | quote }}
+          {{- end }}
+          {{- end }}
         resources:
 {{ toYaml .Values.resources | indent 12 }}
         ports:
