@@ -125,6 +125,11 @@ master:
     name: data
     size: "4Gi"
     # storageClass: "ssd"
+  readinessProbe:
+    httpGet:
+      path: /_cluster/health?local=true
+      port: 9200
+    initialDelaySeconds: 5
   antiAffinity: "soft"
   nodeAffinity: {}
   nodeSelector: {}
@@ -166,6 +171,11 @@ data:
     name: data
     size: "30Gi"
     # storageClass: "ssd"
+  readinessProbe:
+    httpGet:
+      path: /_cluster/health?local=true
+      port: 9200
+    initialDelaySeconds: 5
   terminationGracePeriodSeconds: 3600
   antiAffinity: "soft"
   nodeAffinity: {}
