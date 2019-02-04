@@ -20,12 +20,18 @@ ingress:
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
+  labels: {}
   path: /
   hosts: []
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
+  basicAuth:
+    enabled: false
+    name: ~
+    # base64 encoded version of the basic auth file
+    secret: ~
 
 env: {}
 resources: {}

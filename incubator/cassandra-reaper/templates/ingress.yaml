@@ -10,6 +10,7 @@ metadata:
     helm.sh/chart: {{ include "cassandra-reaper.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{ toYaml .Values.ingress.labels | indent 4 }}
 {{- with .Values.ingress.annotations }}
   annotations:
 {{ toYaml . | indent 4 }}
