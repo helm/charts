@@ -2,17 +2,21 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: {{ template "rabbitmq-ha.fullname" . }}
+  name: {{ include "rabbitmq-ha.fullname" . }}
   namespace: {{ .Values.prometheus.operator.serviceMonitor.namespace }}
   labels:
+    app.kubernetes.io/name: {{ include "rabbitmq-ha.name" . }}
+    helm.sh/chart: {{ include "rabbitmq-ha.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- if .Values.prometheus.operator.serviceMonitor.selector }}
 {{ toYaml .Values.prometheus.operator.serviceMonitor.selector | indent 4 }}
 {{- end }}
 spec:
   selector:
     matchLabels:
-      app: {{ template "rabbitmq-ha.name" . }}
-      release: {{ .Release.Name }}
+      app.kubernetes.io/name: {{ include "rabbitmq-ha.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
   endpoints:
   - port: exporter
     interval: {{ .Values.prometheus.operator.serviceMonitor.interval }}

@@ -6,12 +6,12 @@ metadata:
 {{- if .Values.service.annotations }}
 {{ toYaml .Values.service.annotations | indent 4 }}
 {{- end }}
-  name: {{ template "rabbitmq-ha.fullname" . }}-discovery
+  name: {{ include "rabbitmq-ha.fullname" . }}-discovery
   labels:
-    app: {{ template "rabbitmq-ha.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ include "rabbitmq-ha.name" . }}
+    helm.sh/chart: {{ include "rabbitmq-ha.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   clusterIP: None
   ports:
@@ -67,6 +67,6 @@ spec:
     {{- end }}
   publishNotReadyAddresses: true
   selector:
-    app: {{ template "rabbitmq-ha.name" . }}
+    app: {{ include "rabbitmq-ha.name" . }}
     release: {{ .Release.Name }}
   type: ClusterIP

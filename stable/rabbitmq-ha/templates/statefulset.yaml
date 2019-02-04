@@ -1,26 +1,26 @@
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
-  name: {{ template "rabbitmq-ha.fullname" . }}
+  name: {{ include "rabbitmq-ha.fullname" . }}
   labels:
-    app: {{ template "rabbitmq-ha.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ include "rabbitmq-ha.name" . }}
+    helm.sh/chart: {{ include "rabbitmq-ha.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- if .Values.extraLabels }}
 {{ toYaml .Values.extraLabels | indent 4 }}
 {{- end }}
 spec:
   podManagementPolicy: {{ .Values.podManagementPolicy }}
-  serviceName: {{ template "rabbitmq-ha.fullname" . }}-discovery
+  serviceName: {{ include "rabbitmq-ha.fullname" . }}-discovery
   replicas: {{ .Values.replicaCount }}
   updateStrategy:
     type: {{ .Values.updateStrategy }}
   template:
     metadata:
       labels:
-        app: {{ template "rabbitmq-ha.name" . }}
-        release: {{ .Release.Name }}
+        app.kubernetes.io/name: {{ include "rabbitmq-ha.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
 {{- if .Values.extraLabels }}
 {{ toYaml .Values.extraLabels | indent 8 }}
 {{- end }}
@@ -39,7 +39,7 @@ spec:
       {{- end }}
       {{- end }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
-      serviceAccountName: {{ template "rabbitmq-ha.serviceAccountName" . }}
+      serviceAccountName: {{ include "rabbitmq-ha.serviceAccountName" . }}
       initContainers:
         - name: copy-rabbitmq-config
           image: {{ .Values.busyboxImage.repository}}:{{ .Values.busyboxImage.tag}}
@@ -130,15 +130,15 @@ spec:
             - name: RABBITMQ_USE_LONGNAME
               value: "true"
             - name: RABBITMQ_NODENAME
-              value: rabbit@$(MY_POD_NAME).{{ template "rabbitmq-ha.fullname" . }}-discovery.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}
+              value: rabbit@$(MY_POD_NAME).{{ include "rabbitmq-ha.fullname" . }}-discovery.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}
             - name: K8S_HOSTNAME_SUFFIX
-              value: .{{ template "rabbitmq-ha.fullname" . }}-discovery.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}
+              value: .{{ include "rabbitmq-ha.fullname" . }}-discovery.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}
             - name: K8S_SERVICE_NAME
-              value: {{ template "rabbitmq-ha.fullname" . }}-discovery
+              value: {{ include "rabbitmq-ha.fullname" . }}-discovery
             - name: RABBITMQ_ERLANG_COOKIE
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "rabbitmq-ha.secretName" . }}
+                  name: {{ include "rabbitmq-ha.secretName" . }}
                   key: rabbitmq-erlang-cookie
             {{- if .Values.rabbitmqHipeCompile }}
             - name: RABBITMQ_HIPE_COMPILE
@@ -179,12 +179,12 @@ spec:
             - name: RABBIT_USER
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "rabbitmq-ha.secretName" . }}
+                  name: {{ include "rabbitmq-ha.secretName" . }}
                   key: rabbitmq-username
             - name: RABBIT_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "rabbitmq-ha.secretName" . }}
+                  name: {{ include "rabbitmq-ha.secretName" . }}
                   key: rabbitmq-password
             {{- range $key, $value := .Values.prometheus.exporter.env }}
             - name: {{ $key }}
@@ -208,7 +208,7 @@ spec:
             - topologyKey: "kubernetes.io/hostname"
               labelSelector:
                 matchLabels:
-                  app: {{ template "rabbitmq-ha.name" . }}
+                  app: {{ include "rabbitmq-ha.name" . }}
                   release: {{ .Release.Name }}
       {{- else if eq .Values.podAntiAffinity "soft" }}
       affinity:
@@ -219,7 +219,7 @@ spec:
                 topologyKey: kubernetes.io/hostname
                 labelSelector:
                   matchLabels:
-                    app: {{ template "rabbitmq-ha.name" . }}
+                    app: {{ include "rabbitmq-ha.name" . }}
                     release: {{ .Release.Name }}
       {{- end }}
       {{- if .Values.priorityClassName }}
@@ -230,10 +230,10 @@ spec:
           emptyDir: {}
         - name: configmap
           configMap:
-            name: {{ template "rabbitmq-ha.fullname" . }}
+            name: {{ include "rabbitmq-ha.fullname" . }}
         - name: definitions
           secret:
-            secretName: {{ template "rabbitmq-ha.secretName" . }}
+            secretName: {{ include "rabbitmq-ha.secretName" . }}
             items:
             - key: {{ .Values.definitionsSource }}
               path: definitions.json
@@ -241,7 +241,7 @@ spec:
         - name: cert
           secret:
             defaultMode: 420
-            secretName: {{ template "rabbitmq-ha.certSecretName" . }}
+            secretName: {{ include "rabbitmq-ha.certSecretName" . }}
         {{- end }}
         {{- if .Values.extraVolumes }}
 {{ toYaml .Values.extraVolumes | indent 8 }}

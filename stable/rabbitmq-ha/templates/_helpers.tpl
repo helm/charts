@@ -104,3 +104,10 @@ users, virtual hosts, permissions and parameters) to load by the management plug
   ]
 }
 {{- end -}}
+
+{{/*
+Create chart name and version as used by the chart label.
+*/}}
+{{- define "rabbitmq-ha.chart" -}}
+{{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
