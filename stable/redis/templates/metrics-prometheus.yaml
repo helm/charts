@@ -2,15 +2,16 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: {{ template "redis.fullname" . }}
+  name: {{ include "redis.fullname" . }}
   {{- if .Values.metrics.serviceMonitor.namespace }}
   namespace: {{ .Values.metrics.serviceMonitor.namespace }}
   {{- end }}
   labels:
-    app: {{ template "redis.name" . }}
-    chart: {{ template "redis.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ include "redis.name" . }}
+    helm.sh/chart: {{ include "redis.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/component: metrics
     {{- range $key, $value := .Values.metrics.serviceMonitor.selector }}
     {{ $key }}: {{ $value | quote }}
     {{- end }}
@@ -22,8 +23,8 @@ spec:
     {{- end }}
   selector:
     matchLabels:
-      app: {{ template "redis.name" . }}
-      release: {{ .Release.Name }}
+      app.kubernetes.io/name: {{ include "redis.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
   namespaceSelector:
     matchNames:
     - {{ .Release.Namespace }}

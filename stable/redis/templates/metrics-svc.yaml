@@ -2,12 +2,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "redis.fullname" . }}-metrics
+  name: {{ include "redis.fullname" . }}-metrics
   labels:
-    app: {{ template "redis.name" . }}
-    chart: {{ template "redis.chart" . }}
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app.kubernetes.io/name: {{ include "redis.name" . }}
+    helm.sh/chart: {{ include "redis.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/component: metrics
 {{- if .Values.metrics.service.annotations }}
   annotations:
 {{ toYaml .Values.metrics.service.annotations | indent 4 }}
@@ -23,7 +24,7 @@ spec:
     port: 9121
     targetPort: metrics
   selector:
-    app: {{ template "redis.name" . }}
-    release: {{ .Release.Name }}
-    role: metrics
+    app.kubernetes.io/name: {{ include "redis.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: metrics
 {{- end }}

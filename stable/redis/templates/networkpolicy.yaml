@@ -1,18 +1,18 @@
 {{- if .Values.networkPolicy.enabled }}
 kind: NetworkPolicy
-apiVersion: {{ template "networkPolicy.apiVersion" . }}
+apiVersion: {{ include "networkPolicy.apiVersion" . }}
 metadata:
-  name: "{{ template "redis.fullname" . }}"
+  name: "{{ include "redis.fullname" . }}"
   labels:
-    app: {{ template "redis.name" . }}
-    chart: {{ template "redis.chart" . }}
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app.kubernetes.io/name: {{ include "redis.name" . }}
+    helm.sh/chart: {{ include "redis.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   podSelector:
     matchLabels:
-      app: {{ template "redis.name" . }}
-      release: "{{ .Release.Name }}"
+      app.kubernetes.io/name: {{ include "redis.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
   ingress:
     # Allow inbound connections
     - ports:
@@ -21,13 +21,13 @@ spec:
       from:
         - podSelector:
             matchLabels:
-              {{ template "redis.fullname" . }}-client: "true"
+              {{ include "redis.fullname" . }}-client: "true"
         {{- if .Values.metrics.enabled }}
         - podSelector:
             matchLabels:
-              release: "{{ .Release.Name }}"
-              role: metrics
-              app: {{ template "redis.name" . }}
+              app.kubernetes.io/name: {{ include "redis.name" . }}
+              app.kubernetes.io/instance: {{ .Release.Name }}
+              app.kubernetes.io/component: metrics
         {{- end }}
       {{- end }}
     {{- if .Values.metrics.enabled }}

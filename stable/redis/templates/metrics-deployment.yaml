@@ -2,25 +2,25 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "redis.fullname" . }}-metrics
+  name: {{ include "redis.fullname" . }}-metrics
   labels:
-    app: {{ template "redis.name" . }}
-    chart: {{ template "redis.chart" . }}
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app.kubernetes.io/name: {{ include "redis.name" . }}
+    helm.sh/chart: {{ include "redis.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/component: metrics
 spec:
   selector:
     matchLabels:
-        release: "{{ .Release.Name }}"
-        role: metrics
-        app: {{ template "redis.name" . }}
+      app.kubernetes.io/name: {{ include "redis.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: metrics
   template:
     metadata:
       labels:
-        release: "{{ .Release.Name }}"
-        chart: {{ template "redis.chart" . }}
-        role: metrics
-        app: {{ template "redis.name" . }}
+        app.kubernetes.io/name: {{ include "redis.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/component: metrics
       {{- if .Values.metrics.podLabels }}
 {{ toYaml .Values.metrics.podLabels | indent 8 }}
       {{- end }}
@@ -40,7 +40,7 @@ spec:
       nodeSelector:
 {{ toYaml .Values.metrics.nodeSelector | indent 8 }}
       {{- end }}
-      serviceAccountName: "{{ template "redis.serviceAccountName" . }}"
+      serviceAccountName: "{{ include "redis.serviceAccountName" . }}"
       {{- if .Values.metrics.priorityClassName }}
       priorityClassName: "{{ .Values.metrics.priorityClassName }}"
       {{- end }}
@@ -50,7 +50,7 @@ spec:
       {{- end }}
       containers:
       - name: metrics
-        image: {{ template "metrics.image" . }}
+        image: {{ include "metrics.image" . }}
         imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
         args:
         {{- range $key, $value := .Values.metrics.extraArgs }}
@@ -64,7 +64,7 @@ spec:
           value: {{ printf "%s-master:%d" (include "redis.fullname" . ) (int .Values.master.port) | quote }}
         {{- end }}
         - name: REDIS_ALIAS
-          value: {{ template "redis.fullname" . }}
+          value: {{ include "redis.fullname" . }}
         {{- if .Values.usePassword }}
         {{- if .Values.usePasswordFile }}
         - name: REDIS_PASSWORD_FILE
@@ -73,7 +73,7 @@ spec:
         - name: REDIS_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "redis.secretName" . }}
+              name: {{ include "redis.secretName" . }}
               key: redis-password
         {{- end }}
         {{- end }}
@@ -91,6 +91,6 @@ spec:
       {{- if .Values.usePasswordFile }}
         - name: redis-password
           secret:
-            secretName: {{ template "redis.secretName" . }}
+            secretName: {{ include "redis.secretName" . }}
       {{- end }}
 {{- end }}

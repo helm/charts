@@ -1,26 +1,26 @@
 apiVersion: apps/v1beta2
 kind: StatefulSet
 metadata:
-  name: {{ template "redis.fullname" . }}-master
+  name: {{ include "redis.fullname" . }}-master
   labels:
-    app: {{ template "redis.name" . }}
-    chart: {{ template "redis.chart" . }}
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app.kubernetes.io/name: {{ include "redis.name" . }}
+    helm.sh/chart: {{ include "redis.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/component: master
 spec:
   selector:
     matchLabels:
-      release: "{{ .Release.Name }}"
-      role: master
-      app: {{ template "redis.name" . }}
-  serviceName: {{ template "redis.fullname" . }}-master
+      app.kubernetes.io/name: {{ include "redis.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: master
+  serviceName: {{ include "redis.fullname" . }}-master
   template:
     metadata:
       labels:
-        release: "{{ .Release.Name }}"
-        chart: {{ template "redis.chart" . }}
-        role: master
-        app: {{ template "redis.name" . }}
+        app.kubernetes.io/name: {{ include "redis.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/component: master
 {{- if .Values.master.podLabels }}
 {{ toYaml .Values.master.podLabels | indent 8 }}
 {{- end }}
@@ -43,7 +43,7 @@ spec:
         fsGroup: {{ .Values.master.securityContext.fsGroup }}
         runAsUser: {{ .Values.master.securityContext.runAsUser }}
       {{- end }}
-      serviceAccountName: "{{ template "redis.serviceAccountName" . }}"
+      serviceAccountName: "{{ include "redis.serviceAccountName" . }}"
       {{- if .Values.master.priorityClassName }}
       priorityClassName: "{{ .Values.master.priorityClassName }}"
       {{- end }}
@@ -63,8 +63,8 @@ spec:
       schedulerName: "{{ .Values.master.schedulerName }}"
       {{- end }}
       containers:
-      - name: {{ template "redis.fullname" . }}
-        image: "{{ template "redis.image" . }}"
+      - name: {{ include "redis.fullname" . }}
+        image: "{{ include "redis.image" . }}"
         imagePullPolicy: {{ default "" .Values.image.pullPolicy | quote }}
         command:
         - /bin/bash
@@ -98,7 +98,7 @@ spec:
         - name: REDIS_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "redis.secretName" . }}
+              name: {{ include "redis.secretName" . }}
               key: redis-password
         {{- end }}
         {{- else }}
@@ -157,7 +157,7 @@ spec:
       initContainers:
       {{- if $needsVolumePermissions }}
       - name: volume-permissions
-        image: "{{ template "volumePermissions.image" . }}"
+        image: "{{ include "volumePermissions.image" . }}"
         imagePullPolicy: {{ default "" .Values.volumePermissions.image.pullPolicy | quote }}
         command: ["/bin/chown", "-R", "{{ .Values.master.securityContext.runAsUser }}:{{ .Values.master.securityContext.fsGroup }}", "{{ .Values.master.persistence.path }}"]
         securityContext:
@@ -169,7 +169,7 @@ spec:
       {{- end }}
       {{- if .Values.sysctlImage.enabled }}
       - name: init-sysctl
-        image: {{ template "redis.sysctl.image" . }}
+        image: {{ include "redis.sysctl.image" . }}
         {{- if .Values.sysctlImage.mountHostSys }}
         volumeMounts:
         - name: host-sys
@@ -185,17 +185,17 @@ spec:
       volumes:
       - name: health
         configMap:
-          name: {{ template "redis.fullname" . }}-health
+          name: {{ include "redis.fullname" . }}-health
           defaultMode: 0755
       {{- if .Values.usePasswordFile }}
       - name: redis-password
         secret:
-          secretName: {{ template "redis.secretName" . }}
+          secretName: {{ include "redis.secretName" . }}
       {{- end }}
       {{- if .Values.configmap }}
       - name: config
         configMap:
-          name: {{ template "redis.fullname" . }}
+          name: {{ include "redis.fullname" . }}
       {{- end }}
       {{- if not .Values.master.persistence.enabled }}
       - name: "redis-data"
@@ -217,7 +217,7 @@ spec:
     - metadata:
         name: redis-data
         labels:
-          app: "{{ template "redis.name" . }}"
+          app: "{{ include "redis.name" . }}"
           component: "master"
           release: {{ .Release.Name | quote }}
           heritage: {{ .Release.Service | quote }}
