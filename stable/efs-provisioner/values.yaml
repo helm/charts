@@ -54,6 +54,19 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name: ""
 
+## Annotations to be added to deployment
+##
+podAnnotations: {}
+  # iam.amazonaws.com/role: efs-provisioner-role
+
+## Node labels for pod assignment
+##
+nodeSelector: {}
+
+# Affinity for pod assignment
+# Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+affinity: {}
+
 ## Configure resources
 ##
 resources: {}
