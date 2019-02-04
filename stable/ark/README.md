@@ -1,11 +1,14 @@
 # Ark-server
 
+Note, Heptio Ark is now Velero. The Velero team is working hard on v0.11.0, along with detailed
+tooling and documentation for migrating Ark v0.10.x installations to Velero v0.11.0. Stay tuned!
+
 This helm chart installs Ark version v0.10.1
 https://github.com/heptio/ark/tree/v0.10.1
 
 ## Upgrading to v0.10
 
-Ark v0.10.1 introduces breaking changes. The below instructions are based on the [official upgrade guide](https://github.com/heptio/ark/blob/master/docs/upgrading-to-v0.10.md).
+Ark v0.10.1 introduces breaking changes. The below instructions are based on the [official upgrade guide](https://heptio.github.io/velero/v0.10.0/upgrading-to-v0.10).
 
 1. Pull the latest changes in this chart. If you're using Helm dependencies, update the chart version you're using in your `requirements.yaml` and run `helm dependency update`.
 
@@ -15,7 +18,7 @@ Ark v0.10.1 introduces breaking changes. The below instructions are based on the
 kubectl scale -n heptio-ark deploy/ark --replicas 0
 ```
 
-3. Migrate file structure of your backup storage according to [guide](https://github.com/heptio/ark/blob/master/docs/storage-layout-reorg-v0.10.md)
+3. Migrate file structure of your backup storage according to [guide](https://heptio.github.io/velero/v0.10.0/storage-layout-reorg-v0.10.html)
 4. Upgrade your deployment
 
 ```sh
@@ -26,7 +29,7 @@ helm upgrade --force --namespace heptio-ark ark ./ark
 
 ### Secret for cloud provider credentials
 Ark server needs an IAM service account in order to run, if you don't have it you must create it.
-Please follow the official documentation: https://heptio.github.io/ark/v0.10.0/install-overview
+Please follow the official documentation: https://heptio.github.io/velero/v0.10.0/install-overview
 
 Don't forget the step to create the secret
 ```
@@ -35,7 +38,7 @@ kubectl create secret generic cloud-credentials --namespace <ARK_NAMESPACE> --fr
 
 ### Configuration
 Please change the values.yaml according to your setup
-See here for the official documentation https://heptio.github.io/ark/v0.10.0/install-overview
+See here for the official documentation https://heptio.github.io/velero/v0.10.0/install-overview
 
 Parameter | Description | Default | Required
 --- | --- | --- | ---

@@ -21,8 +21,9 @@ tolerations: []
 
 nodeSelector: {}
 
-## Parameters for the ' default' Config resource
-## See https://heptio.github.io/ark/v0.9.0/config-definition
+## Parameters for the a BackupStorageLocation, VolumeSnapshotLocation, and the server.
+## See https://heptio.github.io/velero/v0.10.0/api-types/backupstoragelocation.html,
+## https://heptio.github.io/velero/v0.10.0/api-types/volumesnapshotlocation.html.
 configuration:
   persistentVolumeProvider: {}
   #  name:
