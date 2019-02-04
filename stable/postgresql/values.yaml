@@ -90,6 +90,22 @@ postgresqlUsername: postgres
 ##
 # postgresqlDatabase:
 
+## PostgreSQL data dir
+## ref: https://github.com/bitnami/bitnami-docker-postgresql/blob/master/README.md
+##
+postgresqlDataDir: /bitnami/postgresql
+
+## Specify extra initdb args
+## ref: https://github.com/bitnami/bitnami-docker-postgresql/blob/master/README.md
+##
+# postgresqlInitdbArgs:
+
+## Specify a custom location for the PostgreSQL transaction log
+## ref: https://github.com/bitnami/bitnami-docker-postgresql/blob/master/README.md
+##
+# postgresqlInitdbWalDir:
+
+
 ## PostgreSQL configuration
 ## Specify runtime configuration parameters as a dict, using camelCase, e.g.
 ## {"sharedBuffers": "500MB"}
