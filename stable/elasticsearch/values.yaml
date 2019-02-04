@@ -1,7 +1,7 @@
 # Default values for elasticsearch.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-appVersion: "6.5.4"
+appVersion: "6.6.0"
 
 ## Define serviceAccount names for components. Defaults to component's fully qualified name.
 ##
@@ -33,7 +33,7 @@ podSecurityPolicy:
 
 image:
   repository: "docker.elastic.co/elasticsearch/elasticsearch-oss"
-  tag: "6.5.4"
+  tag: "6.6.0"
   pullPolicy: "IfNotPresent"
   # If specified, use these secrets to access the image
   # pullSecrets:
@@ -125,6 +125,11 @@ master:
     name: data
     size: "4Gi"
     # storageClass: "ssd"
+  readinessProbe:
+    httpGet:
+      path: /_cluster/health?local=true
+      port: 9200
+    initialDelaySeconds: 5
   antiAffinity: "soft"
   nodeAffinity: {}
   nodeSelector: {}
@@ -166,6 +171,11 @@ data:
     name: data
     size: "30Gi"
     # storageClass: "ssd"
+  readinessProbe:
+    httpGet:
+      path: /_cluster/health?local=true
+      port: 9200
+    initialDelaySeconds: 5
   terminationGracePeriodSeconds: 3600
   antiAffinity: "soft"
   nodeAffinity: {}

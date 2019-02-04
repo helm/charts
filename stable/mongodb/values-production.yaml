@@ -14,7 +14,7 @@ image:
   ## Bitnami MongoDB image tag
   ## ref: https://hub.docker.com/r/bitnami/mongodb/tags/
   ##
-  tag: 4.0.3
+  tag: 4.0.5
 
   ## Specify a imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -26,6 +26,11 @@ image:
   ##
   # pullSecrets:
   #   - myRegistrKeySecretName
+
+  ## Set to true if you would like to see extra information on logs
+  ## It turns NAMI debugging in minideb
+  ## ref:  https://github.com/bitnami/minideb-extras/#turn-on-nami-debugging
+  debug: false
 
 ## Enable authentication
 ## ref: https://docs.mongodb.com/manual/tutorial/enable-authentication/
@@ -50,10 +55,11 @@ usePassword: true
 ##
 mongodbEnableIPv6: true
 
-## MongoDB System Log Verbosity Level
-## ref: https://github.com/bitnami/bitnami-docker-mongodb#increase-system-log-verbosity-level
+## MongoDB System Log configuration
+## ref: https://github.com/bitnami/bitnami-docker-mongodb#configuring-system-log-verbosity-level
 ##
 mongodbSystemLogVerbosity: 0
+mongodbDisableSystemLog: false
 
 ## MongoDB additional command line flags
 ##
@@ -132,6 +138,10 @@ resources: {}
 # requests:
 #   cpu: 100m
 #   memory: 256Mi
+
+## Pod priority
+## https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
+# priorityClassName: ""
 
 ## Node selector
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector

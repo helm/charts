@@ -28,6 +28,12 @@ spec:
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "concourse.worker.fullname" . }}{{ else }}{{ .Values.rbac.workerServiceAccountName }}{{ end }}
       tolerations:
 {{ toYaml .Values.worker.tolerations | indent 8 }}
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.imagePullSecrets }}
+        - name: {{ . }}
+      {{- end }}
+      {{- end }}
       terminationGracePeriodSeconds: {{ .Values.worker.terminationGracePeriodSeconds }}
       containers:
         - name: {{ template "concourse.worker.fullname" . }}
@@ -141,9 +147,9 @@ spec:
             - name: CONCOURSE_TSA_HOST
               value: "{{ template "concourse.web.fullname" . }}:{{ .Values.concourse.web.tsa.bindPort}}"
             - name: CONCOURSE_TSA_PUBLIC_KEY
-              value: "/concourse-keys/host_key.pub"
+              value: "{{ .Values.worker.keySecretsPath }}/host_key.pub"
             - name: CONCOURSE_TSA_WORKER_PRIVATE_KEY
-              value: "/concourse-keys/worker_key"
+              value: "{{ .Values.worker.keySecretsPath }}/worker_key"
 
             {{- if .Values.concourse.worker.garden.logLevel }}
             - name: CONCOURSE_GARDEN_LOG_LEVEL
@@ -450,7 +456,7 @@ spec:
             privileged: true
           volumeMounts:
             - name: concourse-keys
-              mountPath: /concourse-keys
+              mountPath: {{ .Values.worker.keySecretsPath | quote }}
               readOnly: true
             - name: concourse-work-dir
               mountPath: {{ .Values.concourse.workingDirectory | default "/concourse-work-dir" | quote }}
@@ -521,7 +527,10 @@ spec:
   {{- else }}
       {{ if include "concourse.are-there-additional-volumes.with-the-name.concourse-work-dir" . | not }}
         - name: concourse-work-dir
-          emptyDir: {}
+          emptyDir:
+            {{- if .Values.worker.emptyDirSize }}
+            sizeLimit: {{ .Values.worker.emptyDirSize | quote }}
+            {{- end }}
       {{- end }}
   {{- end }}
 {{- if semverCompare "^1.7-0" .Capabilities.KubeVersion.GitVersion }}
