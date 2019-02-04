@@ -77,6 +77,7 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `securityContext.fsGroup`            | Group ID for the container                       | `1001`                                                  |
 | `securityContext.runAsUser`          | User ID for the container                        | `1001`                                                  |
 | `resources`                          | resource needs and limits to apply to the pod    | {}                                                      |
+| `priorityClassName`                  | Pod priority class name                          | ``                                                      |
 | `nodeSelector`                       | Node labels for pod assignment                   | {}                                                      |
 | `affinity`                           | Affinity settings for pod assignment             | {}                                                      |
 | `tolerations`                        | Toleration labels for pod assignment             | []                                                      |

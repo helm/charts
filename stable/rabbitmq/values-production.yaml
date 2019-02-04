@@ -149,6 +149,10 @@ resources:
 ## Replica count, set to 3 to provide a default available cluster
 replicas: 3
 
+## Pod priority
+## https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
+# priorityClassName: ""
+
 ## Node labels and tolerations for pod assignment
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
