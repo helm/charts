@@ -181,6 +181,7 @@ affinity: {}
 input:
   tail:
     memBufLimit: 5MB
+    parser: docker
     path: /var/log/containers/*.log
   systemd:
     enabled: false
