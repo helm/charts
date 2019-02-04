@@ -159,12 +159,30 @@ $ kubectl create secret generic redshift-user --from-file=redshift-user=~/secret
 ```
 Where `redshift-user.txt` contains the user secret as a single text string.
 
-### Use precreated secret for postgres and redis
+### Use precreated secret for airflow secrets or environment variables
 
-You can use a precreated secret for the connection credentials to both postgresql and redis. To do
+You can use a precreated secret for the connection credentials, or general environment variables. To do
 so specify in values.yaml `existingAirflowSecret`, where the value is the name of the secret which has
-postgresUser, postgresPassword, and redisPassword defined. If not specified, it will fall back to using
+postgresUser, postgresPassword, and redisPassword etc. is defined. If not specified, it will fall back to using
 `secrets.yaml` to store the connection credentials by default.
+
+Map each specific secret to specific environment variables in your values.yaml. Where envVar is the airflow environment
+variable to populate and secretKey is the key that contains your secret value in your kubernetes secret:
+existingAirflowSecret: my-airflow-secrets
+airflow:
+    secretsMapping:
+      - envVar: AIRFLOW__LDAP__BIND_PASSWORD
+        secretKey: ldapBindPassword
+
+      - envVar: POSTGRES_USER
+        secretKey: airflowPostgresUser
+
+      - envVar: POSTGRES_PASSWORD
+        secretKey: airflowPostgresPassword
+
+      - envVar: REDIS_PASSWORD
+        secretKey: airflowRedisPassword
+
 
 ### Local binaries
 
@@ -254,6 +272,7 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `airflow.webReplicas`                    | how many replicas for web server                        | `1`                       |
 | `airflow.config`                         | custom airflow configuration env variables              | `{}`                      |
 | `airflow.podDisruptionBudget`            | control pod disruption budget                           | `{'maxUnavailable': 1}`   |
+| `airflow.secretsMapping`		           | override any environment variable with a secret	     | 				             |
 | `workers.enabled`                        | enable workers                                          | `true`                    |
 | `workers.replicas`                       | number of workers pods to launch                        | `1`                       |
 | `workers.resources`                      | custom resource configuration for worker pod            | `{}`                      |
