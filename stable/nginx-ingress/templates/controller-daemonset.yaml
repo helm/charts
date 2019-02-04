@@ -125,6 +125,9 @@ spec:
             - name: stats
               containerPort: 18080
               protocol: TCP
+              {{- if .Values.controller.daemonset.useHostPort }}
+              hostPort: {{ .Values.controller.daemonset.hostPorts.stats }}
+              {{- end }}
             {{- if .Values.controller.metrics.enabled }}
             - name: metrics
               containerPort: 10254
