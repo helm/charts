@@ -27,6 +27,9 @@ spec:
     - {{ $cidr }}
   {{- end }}
 {{- end }}
+{{- if .Values.prometheus.service.sessionAffinity }}
+  sessionAffinity: {{ .Values.prometheus.service.sessionAffinity }}
+{{- end }}
   ports:
   - name: web
     {{- if eq .Values.prometheus.service.type "NodePort" }}

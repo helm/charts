@@ -665,6 +665,7 @@ prometheus:
     annotations: {}
     labels: {}
     clusterIP: ""
+    sessionAffinity: ""
 
     ## List of IP addresses at which the Prometheus server service is available
     ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
