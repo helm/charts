@@ -26,6 +26,7 @@ spec:
     spec:
       serviceAccountName: {{ template "node-problem-detector.serviceAccountName" . }}
       hostNetwork: {{ .Values.hostNetwork }}
+      terminationGracePeriodSeconds: 30
       containers:
         - name: {{ .Chart.Name }}
           image:  "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -50,7 +51,6 @@ spec:
             - name: custom-config
               mountPath: /custom-config
               readOnly: true
-          terminationGracePeriodSeconds: 30
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.affinity }}
