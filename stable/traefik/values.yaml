@@ -1,6 +1,6 @@
 ## Default values for Traefik
 image: traefik
-imageTag: 1.7.6
+imageTag: 1.7.7
 ## can switch the service type to NodePort if required
 serviceType: LoadBalancer
 # loadBalancerIP: ""
@@ -70,6 +70,14 @@ ssl:
   permanentRedirect: false
   upstream: false
   insecureSkipVerify: false
+  generateTLS: false
+  # defaultCN: "example.com"
+    # or *.example.com
+  defaultSANList: []
+    # - example.com
+    # - test1.example.com
+  defaultIPList: []
+    # - 1.2.3.4
   # cipherSuites: []
   # https://docs.traefik.io/configuration/entrypoints/#specify-minimum-tls-version
   # tlsMinVersion: VersionTLS12
@@ -238,8 +246,10 @@ acme:
       AWS_SECRET_ACCESS_KEY: ""
     vultr:
       VULTR_API_KEY: ""
-  ## Save ACME certs to a persistent volume. WARNING: If you do not do this, you will re-request
-  ## certs every time a pod (re-)starts and you WILL be rate limited!
+  ## Save ACME certs to a persistent volume.
+  ## WARNING: If you do not do this and you did not have configured
+  ## a kvprovider, you will re-request certs every time a pod (re-)starts
+  ## and you WILL be rate limited!
   persistence:
     enabled: true
     annotations: {}
@@ -261,6 +271,7 @@ acme:
 dashboard:
   enabled: false
   domain: traefik.example.com
+  # serviceType: ClusterIP
   service: {}
     # annotations:
     #   key: value
@@ -269,6 +280,10 @@ dashboard:
     #   key: value
     # labels:
     #   key: value
+    # tls:
+      # - hosts:
+      #   - traefik.example.com
+      #   secretName: traefik-default-cert
   auth: {}
     # basic:
     #   username: password
@@ -359,3 +374,18 @@ tracing:
   #   localAgentHostPort: "127.0.0.1:8126"
   #   debug: false
   #   globalTag: ""
+
+## Create HorizontalPodAutoscaler object.
+##
+# autoscaling:
+#   minReplicas: 1
+#   maxReplicas: 10
+#   metrics:
+#   - type: Resource
+#     resource:
+#       name: cpu
+#       targetAverageUtilization: 60
+#   - type: Resource
+#     resource:
+#       name: memory
+#       targetAverageUtilization: 60

@@ -34,7 +34,7 @@ permission to mount EFS file systems.
 At a minimum you must the supply the EFS file system ID and the AWS region
 
 ```
-helm install stable/efs-provisioner --set efsFileSystemId=fs-12345678 --set awsRegion=us-east-2
+helm install stable/efs-provisioner --set efsProvisioner.efsFileSystemId=fs-12345678 --set efsProvisioner.awsRegion=us-east-2
 ```
 
 All the values documented below and by `helm inspect values`.
@@ -67,6 +67,10 @@ busyboxImage:
   repository: gcr.io/google_containers/busybox
   tag: 1.27
   pullPolicy: IfNotPresent
+
+## Deployment annotations
+##
+annotations: {}
 
 ## Configure provisioner
 ## https://github.com/kubernetes-incubator/external-storage/tree/master/aws/efs#deployment

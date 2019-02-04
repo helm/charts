@@ -1,13 +1,13 @@
- {{- if ne .Values.efsProvisioner.efsFileSystemId "fs-12345678" }}
- {{/*
- The `efsFileSystemId` value must be set.
+{{- if ne .Values.efsProvisioner.efsFileSystemId "fs-12345678" }}
+{{/*
+The `efsFileSystemId` value must be set.
 
- The above `if` condition also prevents the helm integration tests from failing.
- Given that the helm test infrastructure does not have access to valid
- AWS EFS resources, a deployment that references the example `fs-12345678`
- creates pods that will never enter a clean, running state.
+The above `if` condition also prevents the helm integration tests from failing.
+Given that the helm test infrastructure does not have access to valid
+AWS EFS resources, a deployment that references the example `fs-12345678`
+creates pods that will never enter a clean, running state.
 
- Omitting the deployment hacks around this limitation.
+Omitting the deployment hacks around this limitation.
 */}}
 kind: Deployment
 apiVersion: apps/v1beta2
@@ -19,6 +19,8 @@ metadata:
     chart: {{ template "efs-provisioner.chartname" . }}
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
+  annotations:
+{{ toYaml .Values.annotations | indent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
@@ -37,6 +39,8 @@ spec:
       labels:
         app: {{ template "efs-provisioner.name" . }}
         release: "{{ .Release.Name }}"
+      annotations:
+{{ toYaml .Values.annotations | indent 8 }}
     spec:
       serviceAccount: {{ template "efs-provisioner.serviceAccountName" . }}
       {{- if .Values.priorityClassName }}

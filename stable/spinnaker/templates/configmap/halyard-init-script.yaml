@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "spinnaker.fullname" . }}-halyard-init-script
+  labels:
+{{ include "spinnaker.standard-labels" . | indent 4 }}
+data:
+  init.sh: |
+    #!/bin/bash
+
+    # Override Halyard daemon's listen address
+    cp /opt/halyard/config/* /tmp/config
+    printf 'server.address: 0.0.0.0\n' > /tmp/config/halyard-local.yml
+
+    mkdir -p /tmp/spinnaker/.hal/default/service-settings
+
+    {{- if .Values.redis.enabled }}
+    printf 'overrideBaseUrl: redis://:{{ .Values.redis.password }}@{{ .Release.Name }}-redis-master:6379\nskipLifeCycleManagement: true\n' > /tmp/spinnaker/.hal/default/service-settings/redis.yml
+    {{- else }}
+    {{ if .Values.redis.external.password }}
+    printf 'overrideBaseUrl: redis://:{{ .Values.redis.external.password }}@{{ .Values.redis.external.host }}:{{ .Values.redis.external.port }}\nskipLifeCycleManagement: true\n' > /tmp/spinnaker/.hal/default/service-settings/redis.yml
+    {{- else }}
+    printf 'overrideBaseUrl: redis://{{ .Values.redis.external.host }}:{{ .Values.redis.external.port }}\nskipLifeCycleManagement: true\n' > /tmp/spinnaker/.hal/default/service-settings/redis.yml
+    {{- end }}
+    {{- end }}
+    # Route the /gate path of Deck to Gate
+    printf 'env:\n  API_HOST: http://spin-gate.{{ .Release.Namespace }}:8084\n' > /tmp/spinnaker/.hal/default/service-settings/deck.yml
+
+    {{- if .Values.halyard.additionalProfileConfigMaps.create }}
+    rm -rf /tmp/spinnaker/.hal/default/profiles && \
+    mkdir -p /tmp/spinnaker/.hal/default/profiles && \
+    cp /tmp/additionalProfileConfigMaps/* /tmp/spinnaker/.hal/default/profiles/
+    {{- end }}
+
+    {{- if hasKey .Values.halyard "additionalInitScript" }}
+    # additionalInitScript
+    {{ .Values.halyard.additionalInitScript | indent 4 }}
+    {{- end }}

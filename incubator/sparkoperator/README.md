@@ -24,7 +24,7 @@ The following table lists the configurable parameters of the Spark operator char
 | Parameter                 | Description                                                  | Default                                |
 | ------------------------- | ------------------------------------------------------------ | -------------------------------------- |
 | `operatorImageName`       | The name of the operator image                               | `gcr.io/spark-operator/spark-operator` |
-| `operatorVersion`         | The version of the operator to install                       | `v2.4.0-v1alpha1-latest`               |
+| `operatorVersion`         | The version of the operator to install                       | `v2.4.0-v1beta1-latest`               |
 | `imagePullPolicy`         | Docker image pull policy                                     | `IfNotPresent`                         |
 | `sparkJobNamespace`       | K8s namespace where Spark jobs are to be deployed            | `default`                              |
 | `enableWebhook`           | Whether to enable mutating admission webhook                 | false                                   |
@@ -34,7 +34,6 @@ The following table lists the configurable parameters of the Spark operator char
 | `metricsPort`             | Port for the metrics endpoint                                | 10254                                  |
 | `metricsEndpoint`         | Metrics endpoint                                             | "/metrics"                             |
 | `metricsPrefix`           | Prefix for the metrics                                       | ""                                     |
-| `namespace`               | The Kubernetes namespace to manage. Will manage custom resource objects of the managed CRD types for the whole cluster if set to empty string. | ""                                     |
 | `resyncInterval`          | Informer resync interval in seconds                          | 30                                     |
 | `webhookPort`             | Service port of the webhook server                           | 8080                                   |                                    |
 

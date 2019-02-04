@@ -5,8 +5,8 @@ on_minikube: false
 image:
   fluent_bit:
     repository: fluent/fluent-bit
-    tag: 1.0.1
-  pullPolicy: Always
+    tag: 1.0.4
+  pullPolicy: IfNotPresent
 
 # When enabled, exposes json and prometheus metrics on {{ .Release.Name }}-metrics service
 metrics:
@@ -176,12 +176,22 @@ tolerations: []
 ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
 ##
 nodeSelector: {}
+affinity: {}
 
 input:
   tail:
     memBufLimit: 5MB
     path: /var/log/containers/*.log
-
+  systemd:
+    enabled: false
+    filters:
+      systemdUnit:
+        - docker.service
+        - kubelet.service
+        - node-problem-detector.service
+    maxEntries: 1000
+    readFromTail: true
+    tag: host.*
 
 filter:
   kubeURL: https://kubernetes.default.svc:443
@@ -204,6 +214,9 @@ filter:
 rbac:
   # Specifies whether RBAC resources should be created
   create: true
+
+taildb:
+  directory: /var/lib/fluent-bit
 
 serviceAccount:
   # Specifies whether a ServiceAccount should be created
