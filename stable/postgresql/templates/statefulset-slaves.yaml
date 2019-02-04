@@ -64,14 +64,14 @@ spec:
           - -c
           - |
             chown -R {{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.fsGroup }} /bitnami
-            if [ -d /bitnami/postgresql/data ]; then
-              chmod  0700 /bitnami/postgresql/data;
+            if [ -d {{ .Values.persistence.mountPath }}/data ]; then
+              chmod  0700 {{ .Values.persistence.mountPath }}/data;
             fi
         securityContext:
           runAsUser: {{ .Values.volumePermissions.securityContext.runAsUser }}
         volumeMounts:
         - name: data
-          mountPath: /bitnami/postgresql
+          mountPath: {{ .Values.persistence.mountPath }}
       {{- end }}
       containers:
       - name: {{ template "postgresql.fullname" . }}
@@ -86,25 +86,29 @@ spec:
         - name: NAMI_DEBUG
           value: "1"
         {{- end }}
-        - name: POSTGRESQL_REPLICATION_MODE
+        {{- if .Values.persistence.mountPath }}
+        - name: PGDATA
+          value: {{ .Values.persistence.mountPath | quote }}
+        {{- end }}
+        - name: POSTGRES_REPLICATION_MODE
           value: "slave"
-        - name: POSTGRESQL_REPLICATION_USER
+        - name: POSTGRES_REPLICATION_USER
           value: {{ .Values.replication.user | quote }}
         {{- if .Values.usePasswordFile }}
-        - name: POSTGRESQL_REPLICATION_PASSWORD_FILE
+        - name: POSTGRES_REPLICATION_PASSWORD_FILE
           value: "/opt/bitnami/postgresql/secrets/postgresql-replication-password"
         {{- else }}
-        - name: POSTGRESQL_REPLICATION_PASSWORD
+        - name: POSTGRES_REPLICATION_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "postgresql.secretName" . }}
               key: postgresql-replication-password
         {{- end }}
-        - name: POSTGRESQL_CLUSTER_APP_NAME
+        - name: POSTGRES_CLUSTER_APP_NAME
           value: {{ .Values.replication.applicationName }}
-        - name: POSTGRESQL_MASTER_HOST
+        - name: POSTGRES_MASTER_HOST
           value: {{ template "postgresql.fullname" . }}
-        - name: POSTGRESQL_MASTER_PORT_NUMBER
+        - name: POSTGRES_MASTER_PORT_NUMBER
           value: {{ .Values.service.port | quote }}
         ports:
         - name: postgresql
