@@ -15,6 +15,10 @@ imagePullPolicy: "IfNotPresent"
 ## Number of Schema Registry Pods to Deploy
 replicaCount: 1
 
+## Pod Disruption Budget
+podDisruptionBudget:
+  minAvailable: 1
+
 ## Schema Registry Settings Overrides
 ## Configuration Options can be found here: https://docs.confluent.io/current/schema-registry/docs/config.html
 configurationOverrides: {}
@@ -127,6 +131,16 @@ external:
 jmx:
   enabled: true
   port: 5555
+
+## Node Selector
+nodeSelector: {}
+
+## Affinity
+affinity: {}
+
+## Tolerations
+tolerations: []
+
 
 ## Pass any secrets to the pods. The secrets will be mounted to a specfic path
 ## OR presented as Environment Variables. Environment variable names are

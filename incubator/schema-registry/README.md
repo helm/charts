@@ -65,6 +65,7 @@ The following table lists the configurable parameters of the SchemaRegistry char
 | `imageTag` | The `SchemaRegistry` image tag | `5.0.1` |
 | `imagePullPolicy` | Image Pull Policy | `IfNotPresent` |
 | `replicaCount` | The number of `SchemaRegistry` Pods in the Deployment | `1` |
+| `podDisruptionBudget` | Configuration for PodDisruptionBudget | `minAvailable: 1`
 | `configurationOverrides` | `SchemaRegistry` [configuration setting](https://github.com/confluentinc/schema-registry/blob/master/docs/config.rst#configuration-options) overrides in the dictionary format `setting.name: value` | `{}` |
 | `kafkaOpts` | Additional Java arguments to pass to Kafka. | ` ` |
 | `sasl.configPath` | where to store config for sasl configurations | `/etc/kafka-config` |
@@ -97,4 +98,7 @@ The following table lists the configurable parameters of the SchemaRegistry char
 | `external.nodePort` | set Nodeport (valid range depends on CLoud Provider) | `""` |
 | `jmx.enabled` | Enable JMX? | `true` |
 | `jmx.port` | set JMX port | `5555` |
+| `nodeSelector` | Node selector | `{}`
+| `tolerations` | Tolerations | `[]`
+| `affinity` | Affinity or Anti-affinity | `{}`
 | `secrets` | Pass any secrets to the pods.The secret will be mounted to a specific path if required | `[]` |
