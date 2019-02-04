@@ -132,10 +132,7 @@ spec:
         resources:
 {{ toYaml .Values.data.resources | indent 12 }}
         readinessProbe:
-          httpGet:
-            path: /_cluster/health?local=true
-            port: 9200
-          initialDelaySeconds: 5
+{{ toYaml .Values.data.readinessProbe | indent 10 }}
         volumeMounts:
         - mountPath: /usr/share/elasticsearch/data
           name: data
