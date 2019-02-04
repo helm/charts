@@ -8,12 +8,18 @@ metadata:
 rules:
   - apiGroups:
       - ""
-      - extensions
     resources:
-      - ingresses
       - services
       - pods
       - nodes
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - extensions
+    resources:
+      - ingresses
     verbs:
       - get
       - list
