@@ -15,7 +15,7 @@ This chart bootstraps a [Redash](https://github.com/getredash/redash) deployment
 ## Prerequisites
 
 - At least 3 GB of RAM available on your cluster
-- Kubernetes 1.4+ with Beta APIs enabled
+- Kubernetes 1.9+ with Beta APIs enabled
 - PV provisioner support in the underlying infrastructure
 
 ## Installing the Chart
@@ -46,7 +46,6 @@ The following table lists the configurable parameters of the Redash chart and th
 
 | Parameter                              | Description                                           | Default            |
 |----------------------------------------|-------------------------------------------------------|--------------------|
-| `image.registry`                       | Redash Image registry                                 | `docker.io`        |
 | `image.repository`                     | Redash Image name                                     | `redash/redash`    |
 | `image.tag`                            | Redash Image tag                                      | `{VERSION}`        |
 | `image.pullPolicy`                     | Image pull policy                                     | `IfNotPresent`     |

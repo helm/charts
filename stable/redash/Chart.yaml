@@ -1,7 +1,7 @@
 apiVersion: v1
 name: redash
-version: 0.1.0
-appVersion: 4.0.1.b4038
+version: 1.0.0
+appVersion: 6.0.0.b8537
 description: Redash is an open source tool built for teams to query, visualize and collaborate.
 keywords:
 - redash
