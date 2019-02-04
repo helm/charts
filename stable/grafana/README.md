@@ -62,7 +62,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `persistence.subPath`                     | Mount a sub dir of the persistent volume      | `nil`                                                   |
 | `schedulerName`                           | Alternate scheduler name                      | `nil`                                                   |
 | `env`                                     | Extra environment variables passed to pods    | `{}`                                                    |
-| `envFromSecret`                           | Name of a Kubenretes secret (must be manually created in the same namespace) containing values to be added to the environment | `""` |
+| `envFromSecret`                           | Name of a Kubernetes secret (must be manually created in the same namespace) containing values to be added to the environment | `""` |
 | `extraSecretMounts`                       | Additional grafana server secret mounts       | `[]`                                                    |
 | `extraVolumeMounts`                       | Additional grafana server volume mounts       | `[]`                                                    |
 | `extraConfigmapMounts`                    | Additional grafana server configMap volume mounts  | `[]`                                               |
