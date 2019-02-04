@@ -100,3 +100,6 @@ serviceMonitor:
   ## [Kube Prometheus Selector Label](https://github.com/helm/charts/tree/master/stable/prometheus-operator#exporters)
   selector:
     prometheus: kube-prometheus
+  # Retain the job and instance labels of the metrics pushed to the Pushgateway
+  # [Scraping Pushgateway](https://github.com/prometheus/pushgateway#configure-the-pushgateway-as-a-target-to-scrape)
+  honorLabels: true

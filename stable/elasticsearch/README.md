@@ -61,7 +61,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 
 |              Parameter               |                             Description                             |                       Default                       |
 | ------------------------------------ | ------------------------------------------------------------------- | --------------------------------------------------- |
-| `appVersion`                         | Application Version (Elasticsearch)                                 | `6.5.4`                                             |
+| `appVersion`                         | Application Version (Elasticsearch)                                 | `6.6.0`                                             |
 | `image.repository`                   | Container image name                                                | `docker.elastic.co/elasticsearch/elasticsearch-oss` |
 | `image.tag`                          | Container image tag                                                 | `6.5.1`                                             |
 | `image.pullPolicy`                   | Container pull policy                                               | `IfNotPresent`                                      |
@@ -73,6 +73,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `cluster.config`                     | Additional cluster config appended                                  | `{}`                                                |
 | `cluster.keystoreSecret`             | Name of secret holding secure config options in an es keystore      | `nil`                                               |
 | `cluster.env`                        | Cluster environment variables                                       | `{MINIMUM_MASTER_NODES: "2"}`                       |
+| `cluster.bootstrapShellCommand`      | Post-init command to run in separate Job                            | `""`                                                |
 | `cluster.additionalJavaOpts`         | Cluster parameters to be added to `ES_JAVA_OPTS` environment variable | `""`                                              |
 | `client.name`                        | Client component name                                               | `client`                                            |
 | `client.replicas`                    | Client node replicas (deployment)                                   | `2`                                                 |
@@ -88,10 +89,14 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `client.loadBalancerSourceRanges`    | Client loadBalancerSourceRanges                                     | `{}`                                                |
 | `client.antiAffinity`                | Client anti-affinity policy                                         | `soft`                                              |
 | `client.nodeAffinity`                | Client node affinity policy                                         | `{}`                                                |
+| `client.initResources`               | Client initContainer resources requests & limits                    | `{}`                                                |
+| `client.additionalJavaOpts`          | Parameters to be added to `ES_JAVA_OPTS` environment variable for client | `""`                                           |
 | `client.ingress.enabled`             | Enable Client Ingress                                               | `false`                                             |
 | `client.ingress.annotations`         | Client Ingress annotations                                          | `{}`                                                |
 | `client.ingress.hosts`               | Client Ingress Hostnames                                            | `[]`                                                |
 | `client.ingress.tls`                 | Client Ingress TLS configuration                                    | `[]`                                                |
+| `master.initResources`               | Master initContainer resources requests & limits                    | `{}`                                                |
+| `master.additionalJavaOpts`          | Parameters to be added to `ES_JAVA_OPTS` environment variable for master | `""`                                           |
 | `master.exposeHttp`                  | Expose http port 9200 on master Pods for monitoring, etc            | `false`                                             |
 | `master.name`                        | Master component name                                               | `master`                                            |
 | `master.replicas`                    | Master node replicas (deployment)                                   | `2`                                                 |
@@ -107,9 +112,12 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `master.persistence.size`            | Master persistent volume size                                       | `4Gi`                                               |
 | `master.persistence.storageClass`    | Master persistent volume Class                                      | `nil`                                               |
 | `master.persistence.accessMode`      | Master persistent Access Mode                                       | `ReadWriteOnce`                                     |
+| `master.readinessProbe`              | Master container readiness probes                                   | see `values.yaml` for defaults                      |
 | `master.antiAffinity`                | Master anti-affinity policy                                         | `soft`                                              |
 | `master.nodeAffinity`                | Master node affinity policy                                         | `{}`                                                |
 | `master.updateStrategy`              | Master node update strategy policy                                  | `{type: "onDelete"}`                                |
+| `data.initResources`                 | Data initContainer resources requests & limits                      | `{}`                                                |
+| `data.additionalJavaOpts`            | Parameters to be added to `ES_JAVA_OPTS` environment variable for data | `""`                                             |
 | `data.exposeHttp`                    | Expose http port 9200 on data Pods for monitoring, etc              | `false`                                             |
 | `data.replicas`                      | Data node replicas (statefulset)                                    | `2`                                                 |
 | `data.resources`                     | Data node resources requests & limits                               | `{} - cpu limit must be an integer`                 |
@@ -121,6 +129,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `data.persistence.size`              | Data persistent volume size                                         | `30Gi`                                              |
 | `data.persistence.storageClass`      | Data persistent volume Class                                        | `nil`                                               |
 | `data.persistence.accessMode`        | Data persistent Access Mode                                         | `ReadWriteOnce`                                     |
+| `data.readinessProbe`                | Readiness probes for data-containers                                | see `values.yaml` for defaults                      |
 | `data.podAnnotations`                | Data StatefulSet annotations                                        | `{}`                                                |
 | `data.nodeSelector`                  | Node labels for data pod assignment                                 | `{}`                                                |
 | `data.tolerations`                   | Data tolerations                                                    | `[]`                                                |
@@ -190,7 +199,7 @@ Elasticsearch v5 terminology has updated, and now refers to a `Client Node` as a
 
 More info: https://www.elastic.co/guide/en/elasticsearch/reference/5.5/modules-node.html#coordinating-node
 
-## Enabling elasticsearch interal monitoring
+## Enabling elasticsearch internal monitoring
 Requires version 6.3+ and standard non `oss` repository defined. Starting with 6.3 Xpack is partially free and enabled by default. You need to set a new config to enable the collection of these internal metrics. (https://www.elastic.co/guide/en/elasticsearch/reference/6.3/monitoring-settings.html)
 
 To do this through this helm chart override with the three following changes:

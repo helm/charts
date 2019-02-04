@@ -90,6 +90,22 @@ postgresqlUsername: postgres
 ##
 # postgresqlDatabase:
 
+## PostgreSQL data dir
+## ref: https://github.com/bitnami/bitnami-docker-postgresql/blob/master/README.md
+##
+postgresqlDataDir: /bitnami/postgresql
+
+## Specify extra initdb args
+## ref: https://github.com/bitnami/bitnami-docker-postgresql/blob/master/README.md
+##
+# postgresqlInitdbArgs:
+
+## Specify a custom location for the PostgreSQL transaction log
+## ref: https://github.com/bitnami/bitnami-docker-postgresql/blob/master/README.md
+##
+# postgresqlInitdbWalDir:
+
+
 ## PostgreSQL configuration
 ## Specify runtime configuration parameters as a dict, using camelCase, e.g.
 ## {"sharedBuffers": "500MB"}
@@ -97,6 +113,13 @@ postgresqlUsername: postgres
 ## ref: https://www.postgresql.org/docs/current/static/runtime-config.html
 ##
 # postgresqlConfiguration:
+
+## PostgreSQL extended configuration
+## As above, but _appended_ to the main configuration
+## Alternatively, you can put your *.conf under the files/conf.d/ directory
+## https://github.com/bitnami/bitnami-docker-postgresql#allow-settings-to-be-loaded-from-files-other-than-the-default-postgresqlconf
+##
+# postgresqlExtendedConf:
 
 ## PostgreSQL client authentication configuration
 ## Specify content for pg_hba.conf

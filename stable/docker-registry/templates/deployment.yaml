@@ -117,6 +117,10 @@ spec:
             {{- end }}
             - name: REGISTRY_STORAGE_S3_REGION
               value: {{ required ".Values.s3.region is required" .Values.s3.region }}
+          {{- if .Values.s3.regionEndpoint }}
+            - name: REGISTRY_STORAGE_S3_REGIONENDPOINT
+              value: {{ .Values.s3.regionEndpoint }}
+          {{- end }}
             - name: REGISTRY_STORAGE_S3_BUCKET
               value: {{ required ".Values.s3.bucket is required" .Values.s3.bucket }}
           {{- if .Values.s3.encrypt }}
@@ -142,6 +146,10 @@ spec:
                   key: swiftPassword
             - name: REGISTRY_STORAGE_SWIFT_CONTAINER
               value: {{ required ".Values.swift.container is required" .Values.swift.container }}
+{{- end }}
+{{- if .Values.persistence.deleteEnabled }}
+            - name: REGISTRY_STORAGE_DELETE_ENABLED
+              value: "true"
 {{- end }}
           volumeMounts:
 {{- if .Values.secrets.htpasswd }}
