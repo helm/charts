@@ -879,6 +879,17 @@ prometheus:
     ## The value "" will disable pod anti-affinity so that no anti-affinity rules will be configured.
     podAntiAffinity: ""
 
+    ## Node affinity can constrain the Prometheus replicas to only be able to run on particular nodes.
+    ##
+    nodeAffinity: {}
+    #  requiredDuringSchedulingIgnoredDuringExecution:
+    #    nodeSelectorTerms:
+    #    - matchExpressions:
+    #      - key: dedicated
+    #        operator: In
+    #        values:
+    #        - prometheus
+
     ## If anti-affinity is enabled sets the topologyKey to use for anti-affinity.
     ## This can be changed to, for example, failure-domain.beta.kubernetes.io/zone
     ##

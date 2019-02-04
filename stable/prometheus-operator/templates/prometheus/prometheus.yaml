@@ -115,8 +115,9 @@ spec:
   podMetadata:
 {{ toYaml .Values.prometheus.prometheusSpec.podMetadata | indent 4 }}
   {{- end }}
-{{- if eq .Values.prometheus.prometheusSpec.podAntiAffinity "hard" }}
+{{- if or .Values.prometheus.prometheusSpec.podAntiAffinity .Values.prometheus.prometheusSpec.nodeAffinity }}
   affinity:
+  {{- if eq .Values.prometheus.prometheusSpec.podAntiAffinity "hard" }}
     podAntiAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
       - topologyKey: {{ .Values.prometheus.prometheusSpec.podAntiAffinityTopologyKey }}
@@ -124,8 +125,7 @@ spec:
           matchLabels:
             app: prometheus
             prometheus: {{ template "prometheus-operator.fullname" . }}-prometheus
-{{- else if eq .Values.prometheus.prometheusSpec.podAntiAffinity "soft" }}
-  affinity:
+  {{- else if eq .Values.prometheus.prometheusSpec.podAntiAffinity "soft" }}
     podAntiAffinity:
       preferredDuringSchedulingIgnoredDuringExecution:
       - weight: 100
@@ -135,6 +135,10 @@ spec:
             matchLabels:
               app: prometheus
               prometheus: {{ template "prometheus-operator.fullname" . }}-prometheus
+  {{- else if .Values.prometheus.prometheusSpec.nodeAffinity }}
+    nodeAffinity:
+{{ toYaml .Values.prometheus.prometheusSpec.nodeAffinity | indent 6 }}
+  {{- end }}
 {{- end }}
 {{- if .Values.prometheus.prometheusSpec.tolerations }}
   tolerations:
