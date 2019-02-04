@@ -32,8 +32,11 @@ data:
     cd $HADOOP_PREFIX/share/hadoop/common ; for cp in ${ACP//,/ }; do  echo == $cp; curl -LO $cp ; done; cd -
 
     if [[ "${HOSTNAME}" =~ "hdfs-nn" ]]; then
-      mkdir -p /root/hdfs/namenode
-      $HADOOP_PREFIX/bin/hdfs namenode -format -force -nonInteractive
+      NAMENODE_DIR=/root/hdfs/namenode
+      if [[ ! -d "${NAMENODE_DIR}/current" ]]; then
+        mkdir -p $NAMENODE_DIR
+        $HADOOP_PREFIX/bin/hdfs namenode -format -force -nonInteractive
+      fi
       $HADOOP_PREFIX/sbin/hadoop-daemon.sh start namenode
     fi
 
