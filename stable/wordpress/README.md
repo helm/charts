@@ -64,7 +64,7 @@ The following table lists the configurable parameters of the WordPress chart and
 | `wordpressTablePrefix`           | Table prefix                               | `wp_`                                                   |
 | `allowEmptyPassword`             | Allow DB blank passwords                   | `true`                                                  |
 | `allowOverrideNone`              | Set Apache AllowOverride directive to None                   | `false`                                                  |
-| `customHTAccessCM`              | Configmap with custom wordpress-htaccess.conf directives                   | `false`                                                  |
+| `customHTAccessCM`              | Configmap with custom wordpress-htaccess.conf directives                   | `nil`                                                  |
 | `smtpHost`                       | SMTP host                                  | `nil`                                                   |
 | `smtpPort`                       | SMTP port                                  | `nil`                                                   |
 | `smtpUser`                       | SMTP user                                  | `nil`                                                   |
@@ -285,7 +285,6 @@ Then, install the chart:
 ```
 helm install stable/wordpress --set allowOverrideNone=true --set customHTAccessCM=custom-htaccess
 ```
-
 
 ## Upgrading
 
