@@ -262,7 +262,7 @@ grafana.ini:
 ## NOTE: To enable the grafana.ini must be configured with auth.ldap.enabled
 ## ref: http://docs.grafana.org/installation/configuration/#auth-ldap
 ## ref: http://docs.grafana.org/installation/ldap/#configuration
-  ldap:
+  # ldap:
   # `existingSecret` is a reference to an existing secret containing the ldap configuration
   # for Grafana in a key `ldap-toml`.
   #  existingSecret: ""
