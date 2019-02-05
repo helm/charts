@@ -1,0 +1,17 @@
+---
+
+apiVersion: "v1"
+kind: "Service"
+metadata:
+  name: "{{ include "solr.headless-service-name" . }}"
+  labels:
+{{ include "solr.common.labels" . | indent 4 }}
+spec:
+  clusterIP: "None"
+  ports:
+    - port: {{ .Values.port }}
+      name: "solr-headless"
+  selector:
+    app: "{{ template "solr.name" . }}"
+    release: "{{ .Release.Name }}"
+    component: "server"

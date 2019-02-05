@@ -1,0 +1,14 @@
+---
+apiVersion: "policy/v1beta1"
+kind: "PodDisruptionBudget"
+metadata:
+  name: "{{ template "solr.fullname" . }}"
+  labels:
+{{ include "solr.common.labels" . | indent 4 }}
+spec:
+  selector:
+    matchLabels:
+      app: "{{ template "solr.name" . }}"
+      release: "{{ .Release.Name }}"
+      component: "server"
+{{ toYaml .Values.podDisruptionBudget | indent 2 }}
