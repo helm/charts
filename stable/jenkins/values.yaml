@@ -58,6 +58,10 @@ Master:
   ServiceType: LoadBalancer
   # Master Service annotations
   ServiceAnnotations: {}
+  # Master Custom Labels
+  DeploymentLabels:
+  #   foo: bar
+  #   bar: foo
   # Master Service Labels
   ServiceLabels: {}
   #   service.beta.kubernetes.io/aws-load-balancer-backend-protocol: https
@@ -81,9 +85,22 @@ Master:
       ProxyCompatability: true
   CLI: false
   # Kubernetes service type for the JNLP slave service
-  # SETTING THIS TO "LoadBalancer" IS A HUGE SECURITY RISK: https://github.com/kubernetes/charts/issues/1341
+  # SlaveListenerServiceType is the Kubernetes Service type for the JNLP slave service,
+  # either 'LoadBalancer', 'NodePort', or 'ClusterIP'
+  # Note if you set this to 'LoadBalancer', you *must* define annotations to secure it. By default
+  # this will be an external load balancer and allowing inbound 0.0.0.0/0, a HUGE
+  # security risk:  https://github.com/kubernetes/charts/issues/1341
   SlaveListenerServiceType: ClusterIP
   SlaveListenerServiceAnnotations: {}
+
+  # Example of 'LoadBalancer' type of slave listener with annotations securing it
+  # SlaveListenerServiceType: LoadBalancer
+  # SlaveListenerServiceAnnotations:
+  #   service.beta.kubernetes.io/aws-load-balancer-internal: "True"
+  #   service.beta.kubernetes.io/load-balancer-source-ranges: "172.0.0.0/8, 10.0.0.0/8"
+
+  # LoadBalancerSourcesRange is a list of allowed CIDR values, which are combined with ServicePort to
+  # set allowed inbound rules on the security group assigned to the master load balancer
   LoadBalancerSourceRanges:
   - 0.0.0.0/0
   # Optionally assign a known public LB IP
@@ -106,6 +123,9 @@ Master:
     - workflow-aggregator:2.6
     - credentials-binding:1.17
     - git:3.9.1
+  # Enable HTML parsing using OWASP Markup Formatter Plugin (antisamy-markup-formatter), useful with ghprb plugin.
+  # The plugin is not installed by default, please update Master.InstallPlugins.
+  # EnableRawHtmlMarkupFormatter: true
   # Used to approve a list of groovy functions in pipelines used the script-security plugin. Can be viewed under /scriptApproval
   # ScriptApproval:
   #   - "method groovy.json.JsonSlurperClassic parseText java.lang.String"

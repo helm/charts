@@ -65,6 +65,6 @@ spec:
 {{- if .Values.upload.googlestoragebucket.enabled }}
   - name: gcloud-keyfile
     secret:
-      secretName: {{ template "mysqldump.fullname" . }}-gcloud-keyfile
+      secretName: {{ template "mysqldump.gcpsecretName" . }}
       defaultMode: 256
 {{ end }}

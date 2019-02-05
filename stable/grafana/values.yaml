@@ -2,6 +2,7 @@ rbac:
   create: true
   pspEnabled: true
   pspUseAppArmor: true
+  namespaced: false
 serviceAccount:
   create: true
   name:
@@ -25,7 +26,7 @@ livenessProbe:
 
 image:
   repository: grafana/grafana
-  tag: 5.4.2
+  tag: 5.4.3
   pullPolicy: IfNotPresent
 
   ## Optionally specify an array of imagePullSecrets.
@@ -38,6 +39,14 @@ image:
 securityContext:
   runAsUser: 472
   fsGroup: 472
+
+
+extraConfigmapMounts: []
+  # - name: certs-configmap
+  #   mountPath: /etc/grafana/ssl/
+  #   configMap: certs-configmap
+  #   readOnly: true
+
 
 ## Assign a PriorityClassName to pods if set
 # priorityClassName:
@@ -110,6 +119,7 @@ affinity: {}
 ##
 persistence:
   enabled: false
+  initChownData: true
   # storageClassName: default
   accessModes:
     - ReadWriteOnce
@@ -209,6 +219,9 @@ dashboards: {}
 #      datasource: Prometheus
 #    local-dashboard:
 #      url: https://example.com/repository/test.json
+#    local-dashboard-base64:
+#      url: https://example.com/repository/test-b64.json
+#      b64content: true
 
 ## Reference to external ConfigMap per provider. Use provider name as key and ConfiMap name as value.
 ## A provider dashboards must be defined either by external ConfigMaps or in values.yaml, not in both.

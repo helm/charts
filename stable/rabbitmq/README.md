@@ -58,12 +58,12 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `rabbitmq.username`                  | RabbitMQ application username                    | `user`                                                  |
 | `rabbitmq.password`                  | RabbitMQ application password                    | _random 10 character long alphanumeric string_          |
 | `rabbitmq.erlangCookie`              | Erlang cookie                                    | _random 32 character long alphanumeric string_          |
-| `rabbitmq.diskFreeLimit`             | Disk free limit                                  | `"6GiB"`                                                |
 | `rabbitmq.plugins`                   | configuration file for plugins to enable         | `[rabbitmq_management,rabbitmq_peer_discovery_k8s].`    |
 | `rabbitmq.clustering.address_type`   | Switch clustering mode                           | `ip` or `hostname`                                      |
 | `rabbitmq.clustering.k8s_domain`     | Customize internal k8s cluster domain            | `cluster.local`                                         |
 | `rabbitmq.ulimitNofiles`             | Max File Descriptor limit                        | `65536`                                                 |
-| `rabbitmq.configuration`             | rabbitmq.conf content                            | see values.yaml                                         |
+| `rabbitmq.configuration`             | Required cluster configuration                   | See values.yaml                                         |
+| `rabbitmq.extraConfiguration`        | Extra configuration to add to rabbitmq.conf      | See values.yaml                                         |
 | `service.type`                       | Kubernetes Service type                          | `ClusterIP`                                             |
 | `service.amqpPort`                   | Amqp port                                        | `5672`                                                  |
 | `service.distPort`                   | Erlang distribution server port                  | `25672`                                                 |

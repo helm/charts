@@ -48,7 +48,7 @@ The following table lists the configurable parameters of the kibana chart and th
 | `livenessProbe.timeoutSeconds`                | number of seconds                          | 10                                     |
 | `image.pullPolicy`                            | Image pull policy                          | `IfNotPresent`                         |
 | `image.repository`                            | Image repository                           | `docker.elastic.co/kibana/kibana-oss`  |
-| `image.tag`                                   | Image tag                                  | `6.5.4`                                |
+| `image.tag`                                   | Image tag                                  | `6.6.0`                                |
 | `image.pullSecrets`                           | Specify image pull secrets                 | `nil`                                  |
 | `commandline.args`                            | add additional commandline args            | `nil`                                  |
 | `ingress.enabled`                             | Enables Ingress                            | `false`                                |
@@ -64,16 +64,20 @@ The following table lists the configurable parameters of the kibana chart and th
 | `serviceAccount.name`                         | name of the serviceAccount to create       | `kibana.fullname`                      |
 | `authProxyEnabled`                            | enables authproxy. Create container in extracontainers   | `false`                  |
 | `extraContainers`                             | Sidecar containers to add to the kibana pod| `{}`                                   |
+| `extraVolumeMounts`                           | additional volumemounts for the kibana pod | `[]`                                   |
+| `extraVolumes`                                | additional volumes to add to the kibana pod| `[]`                                   |
 | `resources`                                   | pod resource requests & limits             | `{}`                                   |
 | `priorityClassName`                           | priorityClassName                          | `nil`                                  |
 | `service.externalPort`                        | external port for the service              | `443`                                  |
 | `service.internalPort`                        | internal port for the service              | `4180`                                 |
+| `service.portName`                            | service port name                          | None:                                  |
 | `service.authProxyPort`                       | port to use when using sidecar authProxy   | None:                                  |
 | `service.externalIPs`                         | external IP addresses                      | None:                                  |
 | `service.loadBalancerIP`                      | Load Balancer IP address                   | None:                                  |
 | `service.loadBalancerSourceRanges`            | Limit load balancer source IPs to list of CIDRs (where available)) | `[]`           |
 | `service.nodePort`                            | NodePort value if service.type is NodePort | None:                                  |
 | `service.type`                                | type of service                            | `ClusterIP`                            |
+| `service.clusterIP`                           | static clusterIP or None for headless services | None:                              |
 | `service.annotations`                         | Kubernetes service annotations             | None:                                  |
 | `service.labels`                              | Kubernetes service labels                  | None:                                  |
 | `tolerations`                                 | List of node taints to tolerate            | `[]`                                   |

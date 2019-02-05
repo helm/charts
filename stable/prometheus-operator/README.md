@@ -58,6 +58,22 @@ The following tables lists the configurable parameters of the prometheus-operato
 | `fullNameOverride` | Provide a name to substitute for the full names of resources |`""`|
 | `commonLabels` | Labels to apply to all resources | `[]` |
 | `defaultRules.create` | Create default rules for monitoring the cluster | `true` |
+| `defaultRules.rules.alertmanager` | Create default rules for Alert Manager | `true` |
+| `defaultRules.rules.etcd` | Create default rules for ETCD | `true` |
+| `defaultRules.rules.general` | Create General default rules| `true` |
+| `defaultRules.rules.k8s` | Create K8S default rules| `true` |
+| `defaultRules.rules.kubeApiserver` | Create Api Server default rules| `true` |
+| `defaultRules.rules.kubePrometheusNodeAlerting` | Create Node Alerting default rules| `true` |
+| `defaultRules.rules.kubePrometheusNodeRecording` | Create Node Recording default rules| `true` |
+| `defaultRules.rules.kubeScheduler` | Create Kubernetes Scheduler default rules| `true` |
+| `defaultRules.rules.kubernetesAbsent` | Create Kubernetes Absent (example API Server down) default rules| `true` |
+| `defaultRules.rules.kubernetesApps` | Create Kubernetes Apps  default rules| `true` |
+| `defaultRules.rules.kubernetesResources` | Create Kubernetes Resources  default rules| `true` |
+| `defaultRules.rules.kubernetesStorage` | Create Kubernetes Storage  default rules| `true` |
+| `defaultRules.rules.kubernetesSystem` | Create Kubernetes System  default rules| `true` |
+| `defaultRules.rules.node` | Create Node  default rules| `true` |
+| `defaultRules.rules.PrometheusOperator` | Create Prometheus Operator  default rules| `true` |
+| `defaultRules.rules.prometheus` | Create Prometheus  default rules| `true` |
 | `defaultRules.labels` | Labels for default rules for monitoring the cluster | `{}` |
 | `defaultRules.annotations` | Annotations for default rules for monitoring the cluster | `{}` |
 | `global.rbac.create` | Create RBAC resources | `true` |
@@ -70,6 +86,7 @@ The following tables lists the configurable parameters of the prometheus-operato
 | `prometheusOperator.enabled` | Deploy Prometheus Operator. Only one of these should be deployed into the cluster | `true` |
 | `prometheusOperator.serviceAccount` | Create a serviceaccount for the operator | `true` |
 | `prometheusOperator.name` | Operator serviceAccount name | `""` |
+| `prometheusOperator.logFormat` | Operator log output formatting | `"logfmt"` |
 | `prometheusOperator.createCustomResource` | Create CRDs. Required if deploying anything besides the operator itself as part of the release. The operator will create / update these on startup. If your Helm version < 2.10 you will have to either create the CRDs first or deploy the operator first, then the rest of the resources | `true` |
 | `prometheusOperator.crdApiGroup` | Specify the API Group for the CustomResourceDefinitions | `monitoring.coreos.com` |
 | `prometheusOperator.cleanupCustomResource` | Attempt to delete CRDs when the release is removed. This option may be useful while testing but is not recommended, as deleting the CRD definition will delete resources and prevent the operator from being able to clean up resources that it manages | `false` |
@@ -152,6 +169,7 @@ The following tables lists the configurable parameters of the prometheus-operato
 | `prometheus.prometheusSpec.secrets` | Secrets is a list of Secrets in the same namespace as the Prometheus object, which shall be mounted into the Prometheus Pods. The Secrets are mounted into /etc/prometheus/secrets/<secret-name>. Secrets changes after initial creation of a Prometheus object are not reflected in the running Pods. To change the secrets mounted into the Prometheus Pods, the object must be deleted and recreated with the new list of secrets. | `[]` |
 | `prometheus.prometheusSpec.configMaps` | ConfigMaps is a list of ConfigMaps in the same namespace as the Prometheus object, which shall be mounted into the Prometheus Pods. The ConfigMaps are mounted into /etc/prometheus/configmaps/ | `[]` |
 |`prometheus.prometheusSpec.podAntiAffinity` | Pod anti-affinity can prevent the scheduler from placing Prometheus replicas on the same node. The default value "soft" means that the scheduler should *prefer* to not schedule two replica pods onto the same node but no guarantee is provided. The value "hard" means that the scheduler is *required* to not schedule two replica pods onto the same node. The value "" will disable pod anti-affinity so that no anti-affinity rules will be configured. | `""` |
+|`prometheus.prometheusSpec.podAntiAffinityTopologyKey` | If anti-affinity is enabled sets the topologyKey to use for anti-affinity. This can be changed to, for example `failure-domain.beta.kubernetes.io/zone`| `kubernetes.io/hostname` |
 | `prometheus.prometheusSpec.tolerations` | If specified, the pod's tolerations. | `[]` |
 | `prometheus.prometheusSpec.remoteWrite` | If specified, the remote_write spec. This is an experimental feature, it may change in any upcoming release in a breaking way. | `[]` |
 | `prometheus.prometheusSpec.remoteRead` | If specified, the remote_read spec. This is an experimental feature, it may change in any upcoming release in a breaking way. | `[]` |
@@ -203,6 +221,7 @@ The following tables lists the configurable parameters of the prometheus-operato
 | `alertmanager.alertmanagerSpec.nodeSelector` | Define which Nodes the Pods are scheduled on. | `{}` |
 | `alertmanager.alertmanagerSpec.resources` | Define resources requests and limits for single Pods. | `{}` |
 | `alertmanager.alertmanagerSpec.podAntiAffinity` | Pod anti-affinity can prevent the scheduler from placing Prometheus replicas on the same node. The default value "soft" means that the scheduler should *prefer* to not schedule two replica pods onto the same node but no guarantee is provided. The value "hard" means that the scheduler is *required* to not schedule two replica pods onto the same node. The value "" will disable pod anti-affinity so that no anti-affinity rules will be configured. | `""` |
+|`prometheus.prometheusSpec.podAntiAffinityTopologyKey` | If anti-affinity is enabled sets the topologyKey to use for anti-affinity. This can be changed to, for example `failure-domain.beta.kubernetes.io/zone`| `kubernetes.io/hostname` |
 | `alertmanager.alertmanagerSpec.tolerations` | If specified, the pod's tolerations. | `[]` |
 | `alertmanager.alertmanagerSpec.securityContext` | SecurityContext holds pod-level security attributes and common container settings. This defaults to non root user with uid 1000 and gid 2000 in order to support migration from operator version < 0.26 | `{"runAsNonRoot": true, "runAsUser": 1000, "fsGroup": 2000}` |
 | `alertmanager.alertmanagerSpec.listenLocal` | ListenLocal makes the Alertmanager server listen on loopback, so that it does not bind against the Pod IP. Note this is only for the Alertmanager UI, not the gossip communication. | `false` |
@@ -225,6 +244,8 @@ The following tables lists the configurable parameters of the prometheus-operato
 | `grafana.sidecar.dashboards.label` | If the sidecar is enabled, configmaps with this label will be loaded into Grafana as dashboards | `grafana_dashboard` |
 | `grafana.sidecar.datasources.enabled` | Enable the Grafana sidecar to automatically load dashboards with a label `{{ grafana.sidecar.datasources.label }}=1` | `true` |
 | `grafana.sidecar.datasources.label` | If the sidecar is enabled, configmaps with this label will be loaded into Grafana as datasources configurations | `grafana_datasource` |
+| `grafana.rbac.pspUseAppArmor` | Enforce AppArmor in created PodSecurityPolicy (requires rbac.pspEnabled) | `true` |
+| `grafana.extraConfigmapMounts` | Additional grafana server configMap volume mounts | `[]` |
 
 ### Exporters
 | Parameter | Description | Default |
@@ -250,22 +271,23 @@ The following tables lists the configurable parameters of the prometheus-operato
 | `kubeDns.service.selector` | CoreDns service selector | `{"k8s-app" : "kube-dns" }` |
 | `kubeEtcd.enabled` | Deploy components to scrape etcd | `true` |
 | `kubeEtcd.endpoints` | Endpoints where etcd runs. Provide this if running etcd outside the cluster | `[]` |
-| `kubeEtcd.service.port` | Etct port | `4001` |
-| `kubeEtcd.service.targetPort` | Etct targetPort | `4001` |
+| `kubeEtcd.service.port` | Etcd port | `4001` |
+| `kubeEtcd.service.targetPort` | Etcd targetPort | `4001` |
 | `kubeEtcd.service.selector` | Selector for etcd if running inside the cluster | `{"k8s-app":"etcd-server"}` |
-| `kubeEtcd.servicemonitor.scheme` | Etcd servicemonitor scheme | `http` |
-| `kubeEtcd.servicemonitor.insecureSkipVerify` | Skip validating etcd TLS certificate when scraping | `false` |
-| `kubeEtcd.servicemonitor.serverName` | Etcd server name to validate certificate against when scraping | `""` |
-| `kubeEtcd.servicemonitor.caFile` | Certificate authority file to use when connecting to etcd. See `prometheus.prometheusSpec.secrets` | `""` |
-| `kubeEtcd.servicemonitor.certFile` | Client certificate file to use when connecting to etcd. See `prometheus.prometheusSpec.secrets` | `""` |
-| `kubeEtcd.servicemonitor.keyFile` | Client key file to use when connecting to etcd.  See `prometheus.prometheusSpec.secrets` | `""` |
+| `kubeEtcd.serviceMonitor.scheme` | Etcd servicemonitor scheme | `http` |
+| `kubeEtcd.serviceMonitor.insecureSkipVerify` | Skip validating etcd TLS certificate when scraping | `false` |
+| `kubeEtcd.serviceMonitor.serverName` | Etcd server name to validate certificate against when scraping | `""` |
+| `kubeEtcd.serviceMonitor.caFile` | Certificate authority file to use when connecting to etcd. See `prometheus.prometheusSpec.secrets` | `""` |
+| `kubeEtcd.serviceMonitor.certFile` | Client certificate file to use when connecting to etcd. See `prometheus.prometheusSpec.secrets` | `""` |
+| `kubeEtcd.serviceMonitor.keyFile` | Client key file to use when connecting to etcd.  See `prometheus.prometheusSpec.secrets` | `""` |
 | `kubeScheduler.enabled` | Deploy a `service` and `serviceMonitor` to scrape the Kubernetes scheduler | `true` |
 | `kubeScheduler.endpoints` | Endpoints where scheduler runs. Provide this if running scheduler outside the cluster | `[]` |
 | `kubeScheduler.service.port` | Scheduler port for the service runs on | `10251` |
 | `kubeScheduler.service.targetPort` | Scheduler targetPort for the service runs on | `10251` |
-| `kubeScheduler.service.targetPort.selector` | Scheduler service selector | `{"k8s-app" : "kube-scheduler" }`
+| `kubeScheduler.service.selector` | Scheduler service selector | `{"k8s-app" : "kube-scheduler" }`
 | `kubeStateMetrics.enabled` | Deploy the `kube-state-metrics` chart and configure a servicemonitor to scrape | `true` |
 | `kube-state-metrics.rbac.create` | Create RBAC components in kube-state-metrics. See `global.rbac.create` | `true` |
+| `kube-state-metrics.podSecurityPolicy.enabled` | Create pod security policy resource for kube-state-metrics. | `true` |
 | `nodeExporter.enabled` | Deploy the `prometheus-node-exporter` and scrape it | `true` |
 | `nodeExporter.jobLabel` | The name of the label on the target service to use as the job name in prometheus. See `prometheus-node-exporter.podLabels.jobLabel=node-exporter` default | `jobLabel` |
 | `prometheus-node-exporter.podLabels` | Additional labels for pods in the DaemonSet | `{"jobLabel":"node-exporter"}` |

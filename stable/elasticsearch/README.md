@@ -61,7 +61,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 
 |              Parameter               |                             Description                             |                       Default                       |
 | ------------------------------------ | ------------------------------------------------------------------- | --------------------------------------------------- |
-| `appVersion`                         | Application Version (Elasticsearch)                                 | `6.5.4`                                             |
+| `appVersion`                         | Application Version (Elasticsearch)                                 | `6.6.0`                                             |
 | `image.repository`                   | Container image name                                                | `docker.elastic.co/elasticsearch/elasticsearch-oss` |
 | `image.tag`                          | Container image tag                                                 | `6.5.1`                                             |
 | `image.pullPolicy`                   | Container pull policy                                               | `IfNotPresent`                                      |
@@ -112,6 +112,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `master.persistence.size`            | Master persistent volume size                                       | `4Gi`                                               |
 | `master.persistence.storageClass`    | Master persistent volume Class                                      | `nil`                                               |
 | `master.persistence.accessMode`      | Master persistent Access Mode                                       | `ReadWriteOnce`                                     |
+| `master.readinessProbe`              | Master container readiness probes                                   | see `values.yaml` for defaults                      |
 | `master.antiAffinity`                | Master anti-affinity policy                                         | `soft`                                              |
 | `master.nodeAffinity`                | Master node affinity policy                                         | `{}`                                                |
 | `master.updateStrategy`              | Master node update strategy policy                                  | `{type: "onDelete"}`                                |
@@ -128,6 +129,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `data.persistence.size`              | Data persistent volume size                                         | `30Gi`                                              |
 | `data.persistence.storageClass`      | Data persistent volume Class                                        | `nil`                                               |
 | `data.persistence.accessMode`        | Data persistent Access Mode                                         | `ReadWriteOnce`                                     |
+| `data.readinessProbe`                | Readiness probes for data-containers                                | see `values.yaml` for defaults                      |
 | `data.podAnnotations`                | Data StatefulSet annotations                                        | `{}`                                                |
 | `data.nodeSelector`                  | Node labels for data pod assignment                                 | `{}`                                                |
 | `data.tolerations`                   | Data tolerations                                                    | `[]`                                                |

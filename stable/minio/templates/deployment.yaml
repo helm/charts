@@ -26,6 +26,9 @@ spec:
   {{- if .Values.gcsgateway.enabled }}
   replicas: {{ .Values.gcsgateway.replicas }}
   {{- end }}
+  {{- if .Values.ossgateway.enabled }}
+  replicas: {{ .Values.ossgateway.replicas }}
+  {{- end }}
   selector:
     matchLabels:
       app: {{ template "minio.name" . }}
@@ -47,31 +50,33 @@ spec:
           {{- if .Values.s3gateway.enabled }}
           command: [ "/bin/sh",
           "-ce",
-          "cp /tmp/config.json {{ .Values.configPath }} &&
-          /usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} gateway s3" ]
+          "/usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} gateway s3" ]
           {{- else }}
           {{- if .Values.azuregateway.enabled }}
           command: [ "/bin/sh", 
           "-ce", 
-          "cp /tmp/config.json {{ .Values.configPath }} && 
-          /usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} gateway azure" ]
+          "/usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} gateway azure" ]
           {{- else }}
           {{- if .Values.gcsgateway.enabled }}
           command: [ "/bin/sh", 
           "-ce", 
+          "/usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} gateway gcs {{ .Values.gcsgateway.projectId }}" ]
+          {{- else }}
+          {{- if .Values.ossgateway.enabled }}
+          command: [ "/bin/sh", 
+          "-ce", 
           "cp /tmp/config.json {{ .Values.configPath }} && 
-          /usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} gateway gcs {{ .Values.gcsgateway.projectId }}" ]
+          /usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} gateway oss {{ .Values.ossgateway.endpointURL }}" ]
           {{- else }}
           {{- if .Values.nasgateway.enabled }}
           command: [ "/bin/sh", 
           "-ce", 
-          "cp /tmp/config.json {{ .Values.configPath }} && 
-          /usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} gateway nas {{ .Values.mountPath }}" ]
+          "/usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} gateway nas {{ .Values.mountPath }}" ]
           {{- else }}
           command: [ "/bin/sh", 
           "-ce", 
-          "cp /tmp/config.json {{ .Values.configPath }} && 
-          /usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} server {{ .Values.mountPath }}" ]
+          "/usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} server {{ .Values.mountPath }}" ]
+          {{- end }}
           {{- end }}
           {{- end }}
           {{- end }}
@@ -89,9 +94,6 @@ spec:
               mountPath: "/etc/credentials"
               readOnly: true
             {{- end }}
-            - name: minio-server-config
-              mountPath: "/tmp/config.json"
-              subPath: config.json
             - name: minio-config-dir
               mountPath: {{ .Values.configPath }}
             {{- if .Values.tls.enabled }}
@@ -129,9 +131,9 @@ spec:
               port: service
               {{- if .Values.tls.enabled }}
               scheme: HTTPS
+              {{ else }}
+              scheme: HTTP
               {{- end }}
-              path: /minio/health/live
-              port: service
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
@@ -172,9 +174,6 @@ spec:
           emptyDir: {}
         {{- end }}
         {{- end }}
-        - name: minio-server-config
-          configMap:
-            name: {{ template "minio.fullname" . }}
         - name: minio-user
           secret:
             secretName: {{ if .Values.existingSecret }}{{ .Values.existingSecret }}{{ else }}{{ template "minio.fullname" . }}{{ end }}

@@ -14,8 +14,8 @@ config:
   configFile: ""
 
 image:
-  repository: "a5huynh/oauth2_proxy"
-  tag: "2.2"
+  repository: "quay.io/pusher/oauth2_proxy"
+  tag: "v3.0.0"
   pullPolicy: "IfNotPresent"
 
 # Optionally specify an array of imagePullSecrets.

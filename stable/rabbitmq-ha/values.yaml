@@ -13,6 +13,10 @@ managementPassword: E9R3fjZm4ejFkVFE
 extraConfig: |
 #  queue_master_locator = min-masters
 
+## Place advanced.config file in /etc/rabbitmq/advanced.config
+## Ref: https://www.rabbitmq.com/configure.html#advanced-config-file
+advancedConfig: |
+
 ## Definitions specification within the secret, will always be mounted
 ## at /etc/definitions/defintions.json
 definitionsSource: definitions.json

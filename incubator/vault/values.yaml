@@ -28,6 +28,8 @@ service:
   name: vault
   type: ClusterIP
   # type: LoadBalancer
+  # Assign a static LB IP
+  # loadBalancerIP: 203.0.113.32
   loadBalancerSourceRanges: []
   #  - 10.0.0.0/8
   #  - 130.211.204.2/32
@@ -80,6 +82,9 @@ affinity: |
 
 ## Deployment annotations
 annotations: {}
+
+## Extra Deployment labels
+labels: {}
 
 podAnnotations: {}
 ##    Read more about kube2iam to provide access to s3 https://github.com/jtblin/kube2iam

@@ -92,6 +92,12 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
+{{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+{{- range .Values.image.pullSecrets }}
+        - name: {{ . }}
+{{- end }}
+{{- end }}
       volumes:
       - name: config
         configMap:

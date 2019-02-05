@@ -29,6 +29,7 @@ spec:
           command: ["sh",
             "-c",
             "mkdir -p /opt/sonarqube/extensions/plugins/tmp &&
+            rm -f /opt/sonarqube/extensions/plugins/tmp/* &&
             cp /tmp/scripts/install_plugins.sh /opt/sonarqube/extensions/plugins/tmp/install_plugins.sh &&
             chmod 0775 /opt/sonarqube/extensions/plugins/tmp/install_plugins.sh &&
             /opt/sonarqube/extensions/plugins/tmp/install_plugins.sh && pwd && ls -lah
@@ -69,8 +70,9 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - containerPort: {{ .Values.service.internalPort }}
-          {{- if .Values.command }}
-          command: {{ .Values.command }}
+          {{- if .Values.plugins.install }}
+          command:
+            - /usr/local/copy_plugins.sh
           {{- end }}
           env:
             {{- range $key, $value := .Values.extraEnv }}
