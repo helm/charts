@@ -132,7 +132,7 @@ filestore:
   #  bucketName:
 
   ## Currently unconfigured and changing this has no impact on the template configuration.
-  #s3:
+  s3: {}
   #  accessKey:
   #  secretKey:
   #  bucketName:
