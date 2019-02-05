@@ -40,8 +40,11 @@ spec:
               else
                 echo >&2 "Seeding new instance.."
                 cp -r /app/* /app_persist/
-                chown -R satisfy:satisfy /app_persist
+                for ref in $(find /app_persist -mindepth 1 -maxdepth 1 -not -name ".snapshot"); do
+                  chown -R satisfy:satisfy $ref
+                done
               fi
+              echo >&2 "Init completed.."
           securityContext:
             runAsUser: 0
           volumeMounts:
@@ -72,12 +75,22 @@ spec:
             httpGet:
               path: /
               port: http
+            initialDelaySeconds: 5
+            periodSeconds: 20
+            timeoutSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
           {{- end }}
           {{- if .Values.readinessProbe.enabled }}
           readinessProbe:
             httpGet:
               path: /
               port: http
+            initialDelaySeconds: 5
+            periodSeconds: 20
+            timeoutSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
           {{- end }}
           volumeMounts:
             - name: app-persist

@@ -48,10 +48,12 @@ chart and deletes the release.
 `persistence.accessMode`        | Use volume as ReadOnly or ReadWrite    | `ReadWriteOnce`
 `persistence.size`              | Size of data volume                    | `8Gi`
 `satisfy.repoName`              | Satis repository name                  | `myrepo`
-`satisfy.homepage`              | Satis repository URL                   | `http://chart-example.local`
+`satisfy.homepage`              | Satis repository URL                   | `http://composer.local`
 `satisfy.sshPrivateKey`         | SSH Private key used with GIT repos    | `nil`
 
 > When both `image.tag` and `image.digest` are present, `image.digest` will be used. See [Docker docs][1] for more details about using image digest.
+
+FQDN to access the service should be used as `satisfy.homepage` value, whether via Ingress, or LoadBalancer-type service with DNS records matching `satisfy.homepage`, or some other method.
 
 [## Link Reference ##]::
 [1]: https://docs.docker.com/engine/reference/commandline/pull/#pull-an-image-by-digest-immutable-identifier

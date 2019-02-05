@@ -22,14 +22,16 @@ ingress:
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
+    # certmanager.k8s.io/cluster-issuer: self-signed
+    # ingress.kubernetes.io/force-ssl-redirect: "true"
   labels: []
     # traffic-type: external
   hosts: []
-    # - chart-example.local
+    # - composer.local
   tls: []
-  #  - secretName: composer-cert
-  #    hosts:
-  #      - chart-example.local
+   # - secretName: composer-cert
+   #   hosts:
+   #     - composer.local
 
 terminationGracePeriodSeconds: 15
 
@@ -57,6 +59,7 @@ persistence:
   enabled: true
   accessMode: ReadWriteOnce
   size: 8Gi
+  storageClass: ~  # set your PV storage class here
   ## A manually managed Persistent Volume and Claim
   ## Requires persistence.enabled: true
   ## If defined, PVC must be created manually before volume will be bound
@@ -64,8 +67,10 @@ persistence:
 
 
 ## Application settings
+## For more details see Satis documentaion
+## https://getcomposer.org/doc/articles/handling-private-packages-with-satis.md#setup
 satisfy:
   repoName: myrepo
-  homepage: http://chart-example.local
+  homepage: http://composer.local  # set it to FQDN of your ingress
   sshPrivateKey: ~  # set it via CLI
                     # for example: `--set satisfy.sshPrivateKey="$(<~/.ssh/id_rsa)"`
