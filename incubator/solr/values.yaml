@@ -79,17 +79,17 @@ service:
 
 # Configuration for the solr prometheus exporter
 exporter:
-  enabled: false # Deploy the exporter
-  configFile: "/opt/solr/contrib/prometheus-exporter/conf/solr-exporter-config.xml" # The config file to point the exporter to
+  enabled: false  # Deploy the exporter
+  configFile: "/opt/solr/contrib/prometheus-exporter/conf/solr-exporter-config.xml"  # The config file to point the exporter to
   updateStrategy: {}
-  podAnnotations: {} # Annotations to apply to the exporter pod
-  resources: {} # Resource limits for the exporter
-  port: 9983 # The port to run the exporter on
-  threads: 7 # The number of threads the exporter uses to query solr
-  livenessProbe: # Liveness configuration for exporter pod
+  podAnnotations: {}  # Annotations to apply to the exporter pod
+  resources: {}  # Resource limits for the exporter
+  port: 9983  # The port to run the exporter on
+  threads: 7  # The number of threads the exporter uses to query solr
+  livenessProbe:  # Liveness configuration for exporter pod
     initialDelaySeconds: 20
     periodSeconds: 10
-  readinessProbe: # Readiness configuration for exporter pod
+  readinessProbe:  # Readiness configuration for exporter pod
     initialDelaySeconds: 15
     periodSeconds: 5
   service:

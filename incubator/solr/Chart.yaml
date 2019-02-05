@@ -11,5 +11,5 @@ home: "http://lucene.apache.org/solr/"
 sources:
   - "https://gitbox.apache.org/repos/asf?p=lucene-solr.git"
 maintainers:
-  - name: "Ian Thebridge"
+  - name: "ian-thebridge-lucidworks"
     email: "ian.thebridge@lucidworks.com"
