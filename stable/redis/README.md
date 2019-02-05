@@ -277,3 +277,9 @@ sysctlImage:
       sysctl -w net.core.somaxconn=10000
       echo never > /host-sys/kernel/mm/transparent_hugepage/enabled
 ```
+
+## Upgrade
+
+## To 6.0.0
+
+Previous versions of the chart were using an init-container to change the permissions of the volumes. This was done in case the `securityContext` directive in the template was not enough for that (for example, with cephFS). In this new version of the chart, this container is disabled by default (which should not affect most of the deployments). If your installation still requires that init container, execute `helm upgrade` with the `--set volumePermissions.enabled=true`.
