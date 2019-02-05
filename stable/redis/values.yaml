@@ -365,6 +365,7 @@ metrics:
 ## volumePermissions: Change the owner of the persist volume mountpoint to RunAsUser:fsGroup
 ##
 volumePermissions:
+  enabled: false
   image:
     registry: docker.io
     repository: bitnami/minideb
