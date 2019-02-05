@@ -13,7 +13,7 @@ image:
   ## Bitnami Redis image tag
   ## ref: https://github.com/bitnami/bitnami-docker-redis#supported-tags-and-respective-dockerfile-links
   ##
-  tag: 4.0.11
+  tag: 4.0.12
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -79,6 +79,9 @@ password:
 ## Use existing secret (ignores previous password)
 # existingSecret:
 
+## Mount secrets as files instead of environment variables
+usePasswordFile: false
+
 ## Persist data to a persistent volume
 persistence: {}
   ## A manually managed Persistent Volume and Claim
@@ -96,8 +99,7 @@ master:
   ##
   ## Can be used to specify command line arguments, for example:
   ##
-  command:
-  - "/run.sh"
+  command: "/run.sh"
   ## Redis additional command line flags
   ##
   ## Can be used to specify command line flags, for example:
@@ -215,6 +217,9 @@ master:
     ## https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#partitions
     # rollingUpdatePartition:
 
+  ## Redis Master pod priorityClassName
+  # priorityClassName: {}
+
 
 ##
 ## Redis Slave properties
@@ -292,6 +297,9 @@ slave:
   #   fsGroup: 1001
   #   runAsUser: 1001
 
+  ## Redis slave pod priorityClassName
+  # priorityClassName: {}
+
 ## Prometheus Exporter / Metrics
 ##
 metrics:
@@ -300,7 +308,7 @@ metrics:
   image:
     registry: docker.io
     repository: oliver006/redis_exporter
-    tag: v0.20.2
+    tag: v0.28.0
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
@@ -349,11 +357,15 @@ metrics:
     selector:
       prometheus: kube-prometheus
 
+  ## Metrics exporter pod priorityClassName
+  # priorityClassName: {}
+
 ##
 ## Init containers parameters:
 ## volumePermissions: Change the owner of the persist volume mountpoint to RunAsUser:fsGroup
 ##
 volumePermissions:
+  enabled: false
   image:
     registry: docker.io
     repository: bitnami/minideb
@@ -365,3 +377,14 @@ volumePermissions:
 ##
 configmap: |-
   # maxmemory-policy volatile-lru
+
+## Sysctl InitContainer
+## used to perform sysctl operation to modify Kernel settings (needed sometimes to avoid warnings)
+sysctlImage:
+  enabled: false
+  command: []
+  registry: docker.io
+  repository: bitnami/minideb
+  tag: latest
+  pullPolicy: Always
+  mountHostSys: false

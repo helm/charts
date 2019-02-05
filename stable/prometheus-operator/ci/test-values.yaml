@@ -6,7 +6,7 @@
 ##
 nameOverride: ""
 
-## Provide a name to substitue for the full names of resources
+## Provide a name to substitute for the full names of resources
 ##
 fullnameOverride: ""
 
@@ -20,6 +20,23 @@ commonLabels: {}
 ##
 defaultRules:
   create: true
+  rules:
+    alertmanager: true
+    etcd: true
+    general: true
+    k8s: true
+    kubeApiserver: true
+    kubePrometheusNodeAlerting: true
+    kubePrometheusNodeRecording: true
+    kubeScheduler: true
+    kubernetesAbsent: true
+    kubernetesApps: true
+    kubernetesResources: true
+    kubernetesStorage: true
+    kubernetesSystem: true
+    node: true
+    prometheusOperator: true
+    prometheus: true
   ## Labels for default rules
   labels: {}
   ## Annotations for default rules
@@ -129,12 +146,19 @@ alertmanager:
   ##
   service:
     annotations: {}
+    labels: {}
+    clusterIP: ""
 
-    ## Port to expose on each node
-    ## Only used if service.type is 'NodePort'
-    ##
+  ## Port to expose on each node
+  ## Only used if service.type is 'NodePort'
+  ##
     nodePort: 30903
-
+  ## List of IP addresses at which the Prometheus server service is available
+  ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
+  ##
+    externalIPs: []
+    loadBalancerIP: ""
+    loadBalancerSourceRanges: []
     ## Service type
     ##
     type: ClusterIP
@@ -178,7 +202,7 @@ alertmanager:
     replicas: 1
 
     ## Time duration Alertmanager shall retain data for. Default is '120h', and must match the regular expression
-    ## [0-9]+(ms|s|m|h|d|w|y) (milliseconds seconds minutes hours days weeks years).
+    ## [0-9]+(ms|s|m|h) (milliseconds seconds minutes hours).
     ##
     retention: 120h
 
@@ -228,6 +252,11 @@ alertmanager:
     ##
     podAntiAffinity: ""
 
+    ## If anti-affinity is enabled sets the topologyKey to use for anti-affinity.
+    ## This can be changed to, for example, failure-domain.beta.kubernetes.io/zone
+    ##
+    podAntiAffinityTopologyKey: kubernetes.io/hostname
+
     ## If specified, the pod's tolerations.
     ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
     ##
@@ -241,7 +270,10 @@ alertmanager:
     ## This defaults to non root user with uid 1000 and gid 2000.	*v1.PodSecurityContext	false
     ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
     ##
-    securityContext: {}
+    securityContext:
+      runAsNonRoot: true
+      runAsUser: 1000
+      fsGroup: 2000
 
     ## ListenLocal makes the Alertmanager server listen on loopback, so that it does not bind against the Pod IP.
     ## Note this is only for the Alertmanager UI, not the gossip communication.
@@ -309,6 +341,13 @@ grafana:
       enabled: true
       label: grafana_datasource
 
+  extraConfigmapMounts: []
+  # - name: certs-configmap
+  #   mountPath: /etc/grafana/ssl/
+  #   configMap: certs-configmap
+  #   readOnly: true
+
+
 ## Component scraping the kube api server
 ##
 kubeApiServer:
@@ -340,6 +379,16 @@ kubelet:
 ##
 kubeControllerManager:
   enabled: true
+
+  ## If your kube controller manager is not deployed as a pod, specify IPs it can be found on
+  ##
+  endpoints: []
+  # - 10.141.4.22
+  # - 10.141.4.23
+  # - 10.141.4.24
+
+  ## If using kubeControllerManager.endpoints only the port and targetPort are used
+  ##
   service:
     port: 10252
     targetPort: 10252
@@ -406,6 +455,16 @@ kubeEtcd:
 ##
 kubeScheduler:
   enabled: true
+
+  ## If your kube scheduler is not deployed as a pod, specify IPs it can be found on
+  ##
+  endpoints: []
+  # - 10.141.4.22
+  # - 10.141.4.23
+  # - 10.141.4.24
+
+  ## If using kubeScheduler.endpoints only the port and targetPort are used
+  ##
   service:
     port: 10251
     targetPort: 10251
@@ -422,6 +481,8 @@ kubeStateMetrics:
 kube-state-metrics:
   rbac:
     create: true
+  podSecurityPolicy:
+    enabled: true
 
 ## Deploy node exporter as a daemonset to all nodes
 ##
@@ -458,18 +519,38 @@ prometheusOperator:
   ## Configuration for Prometheus operator service
   ##
   service:
-    ## Port to expose on each node
-    ## Only used if service.type is 'NodePort'
-    ##
+    annotations: {}
+    labels: {}
+    clusterIP: ""
+
+  ## Port to expose on each node
+  ## Only used if service.type is 'NodePort'
+  ##
     nodePort: 38080
 
-    ## Service type
-    ##
+
+  ## Loadbalancer IP
+  ## Only use if service.type is "loadbalancer"
+  ##
+    loadBalancerIP: ""
+    loadBalancerSourceRanges: []
+
+  ## Service type
+  ## NodepPort, ClusterIP, loadbalancer
+  ##
     type: ClusterIP
+
+    ## List of IP addresses at which the Prometheus server service is available
+    ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
+    ##
+    externalIPs: []
 
   ## Deploy CRDs used by Prometheus Operator.
   ##
   createCustomResource: true
+
+  ## Customize CRDs API Group
+  crdApiGroup: monitoring.coreos.com
 
   ## Attempt to clean up CRDs created by Prometheus Operator.
   ##
@@ -478,6 +559,9 @@ prometheusOperator:
   ## Labels to add to the operator pod
   ##
   podLabels: {}
+
+  ## Assign a PriorityClassName to pods if set
+  # priorityClassName: ""
 
   ## If true, the operator will create and maintain a service for scraping kubelets
   ## ref: https://github.com/coreos/prometheus-operator/blob/master/helm/prometheus-operator/README.md
@@ -528,11 +612,15 @@ prometheusOperator:
   #       - e2e-az1
   #       - e2e-az2
 
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 65534
+
   ## Prometheus-operator image
   ##
   image:
     repository: quay.io/coreos/prometheus-operator
-    tag: v0.25.0
+    tag: v0.27.0
     pullPolicy: IfNotPresent
 
   ## Configmap-reload image to use for reloading configmaps
@@ -545,12 +633,12 @@ prometheusOperator:
   ##
   prometheusConfigReloaderImage:
     repository: quay.io/coreos/prometheus-config-reloader
-    tag: v0.25.0
+    tag: v0.27.0
 
   ## Hyperkube image to use when cleaning up
   ##
   hyperkubeImage:
-    repository: gcr.io/google-containers/hyperkube
+    repository: k8s.gcr.io/hyperkube
     tag: v1.12.1
     pullPolicy: IfNotPresent
 
@@ -570,11 +658,24 @@ prometheus:
   ## Configuration for Prometheus service
   ##
   service:
+    annotations: {}
+    labels: {}
+    clusterIP: ""
+
+    ## List of IP addresses at which the Prometheus server service is available
+    ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
+    ##
+    externalIPs: []
+
     ## Port to expose on each node
     ## Only used if service.type is 'NodePort'
     ##
     nodePort: 39090
 
+    ## Loadbalancer IP
+    ## Only use if service.type is "loadbalancer"
+    loadBalancerIP: ""
+    loadBalancerSourceRanges: []
     ## Service type
     ##
     type: ClusterIP
@@ -619,17 +720,6 @@ prometheus:
   serviceMonitor:
     selfMonitor: true
 
-  service:
-    annotations: {}
-
-    ## Node Port (only used if service type is NodePort)
-    ##
-    # nodePort: 30816
-
-    ## Service type
-    ##
-    type: ClusterIP
-
   ## Settings affecting prometheusSpec
   ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#prometheusspec
   ##
@@ -651,10 +741,7 @@ prometheus:
     ##
     image:
       repository: quay.io/prometheus/prometheus
-      tag: v2.5.0
-
-    #  repository: quay.io/coreos/prometheus
-    #  tag: v2.5.0
+      tag: v2.6.1
 
     ## Tolerations for use with node taints
     ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
@@ -706,6 +793,12 @@ prometheus:
     ##
     ruleNamespaceSelector: {}
 
+    ## If true, a nil or {} value for prometheus.prometheusSpec.ruleSelector will cause the
+    ## prometheus resource to be created with selectors based on values in the helm deployment,
+    ## which will also match the PrometheusRule resources created
+    ##
+    ruleSelectorNilUsesHelmValues: true
+
     ## Rules CRD selector
     ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/design.md
     ## If unspecified the release `app` and `release` will be used as the label selector
@@ -727,8 +820,14 @@ prometheus:
     #   matchLabels:
     #     role: example-rules
 
+    ## If true, a nil or {} value for prometheus.prometheusSpec.serviceMonitorSelector will cause the
+    ## prometheus resource to be created with selectors based on values in the helm deployment,
+    ## which will also match the servicemonitors created
+    ##
+    serviceMonitorSelectorNilUsesHelmValues: true
+
     ## serviceMonitorSelector will limit which servicemonitors are used to create scrape
-    ## configs in Prometheus. By default all are loaded
+    ## configs in Prometheus. See serviceMonitorSelectorUseHelmLabels
     ##
     serviceMonitorSelector: {}
 
@@ -775,6 +874,11 @@ prometheus:
     ## The value "hard" means that the scheduler is *required* to not schedule two replica pods onto the same node.
     ## The value "" will disable pod anti-affinity so that no anti-affinity rules will be configured.
     podAntiAffinity: ""
+
+    ## If anti-affinity is enabled sets the topologyKey to use for anti-affinity.
+    ## This can be changed to, for example, failure-domain.beta.kubernetes.io/zone
+    ##
+    podAntiAffinityTopologyKey: kubernetes.io/hostname
 
     ## The remote_read spec configuration for Prometheus.
     ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#remotereadspec
@@ -880,7 +984,10 @@ prometheus:
     ## This defaults to non root user with uid 1000 and gid 2000.
     ## https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md
     ##
-    securityContext: {}
+    securityContext:
+      runAsNonRoot: true
+      runAsUser: 1000
+      fsGroup: 2000
 
     ## 	Priority class assigned to the Pods
     ##

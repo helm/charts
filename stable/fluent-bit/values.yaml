@@ -5,8 +5,8 @@ on_minikube: false
 image:
   fluent_bit:
     repository: fluent/fluent-bit
-    tag: 0.14.8
-  pullPolicy: Always
+    tag: 1.0.4
+  pullPolicy: IfNotPresent
 
 # When enabled, exposes json and prometheus metrics on {{ .Release.Name }}-metrics service
 metrics:
@@ -84,6 +84,20 @@ parsers:
   ## Regex required fields are name and regex. JSON required field
   ## is name.
   regex: []
+  ##  json parser config can be defined by providing an extraEntries field.
+  ##  The following entry:
+  ## json:
+  ##   - extraEntries: |
+  ##       Decode_Field_As  escaped log do_next
+  ##       Decode_Field_As  json log
+  ##
+  ##  translates into
+  ##
+  ##   Command       |  Decoder  | Field | Optional Action   |
+  ##   ==============|===========|=======|===================|
+  ##   Decode_Field_As  escaped   log  do_next
+  ##   Decode_Field_As  json log
+  ##
   json: []
 
 env: []
@@ -120,6 +134,9 @@ extraEntries:
   output: |-
 #     # >=1 additional Key/Value entrie(s) for existing Ouput section
 
+## Extra ports to add to the daemonset ports section
+extraPorts: []
+
 ## Extra volumes containing additional files required for fluent-bit to work
 ## (eg. CA certificates)
 ## Ref: https://kubernetes.io/docs/concepts/storage/volumes/
@@ -139,6 +156,13 @@ resources: {}
   #   cpu: 10m
   #   memory: 8Mi
 
+# When enabled, pods will bind to the node's network namespace.
+hostNetwork: false
+
+# Which DNS policy to use for the pod.
+# Consider switching to 'ClusterFirstWithHostNet' when 'hostNetwork' is enabled.
+dnsPolicy: ClusterFirst
+
 ## Node tolerations for fluent-bit scheduling to nodes with taints
 ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
 ##
@@ -152,12 +176,23 @@ tolerations: []
 ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
 ##
 nodeSelector: {}
+affinity: {}
 
 input:
   tail:
     memBufLimit: 5MB
+    parser: docker
     path: /var/log/containers/*.log
-
+  systemd:
+    enabled: false
+    filters:
+      systemdUnit:
+        - docker.service
+        - kubelet.service
+        - node-problem-detector.service
+    maxEntries: 1000
+    readFromTail: true
+    tag: host.*
 
 filter:
   kubeURL: https://kubernetes.default.svc:443
@@ -180,6 +215,9 @@ filter:
 rbac:
   # Specifies whether RBAC resources should be created
   create: true
+
+taildb:
+  directory: /var/lib/fluent-bit
 
 serviceAccount:
   # Specifies whether a ServiceAccount should be created

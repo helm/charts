@@ -14,6 +14,7 @@ spec:
         app: {{ template "fluentd-cloudwatch.name" . }}
         release: "{{ .Release.Name }}"
       annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
         {{ if .Values.awsRole }}iam.amazonaws.com/role: {{ .Values.awsRole }}{{ end }}
 {{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
@@ -85,3 +86,13 @@ spec:
       tolerations:
 {{ toYaml .Values.tolerations | indent 6 }}
 {{- end }}
+      {{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+      {{- end }}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+  updateStrategy:
+{{ toYaml .Values.updateStrategy | indent 4 }}

@@ -12,7 +12,7 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 */}}
 {{- define "postgresql.fullname" -}}
 {{- if .Values.fullnameOverride -}}
-{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
+{{- printf .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
 {{- $name := default .Chart.Name .Values.nameOverride -}}
 {{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
@@ -105,4 +105,48 @@ Return the proper PostgreSQL metrics image name
 {{- $registryName :=  default "docker.io" .Values.metrics.image.registry -}}
 {{- $tag := default "latest" .Values.metrics.image.tag | toString -}}
 {{- printf "%s/%s:%s" $registryName .Values.metrics.image.repository $tag -}}
+{{- end -}}
+
+{{/*
+Get the password secret.
+*/}}
+{{- define "postgresql.secretName" -}}
+{{- if .Values.existingSecret -}}
+{{- printf "%s" .Values.existingSecret -}}
+{{- else -}}
+{{- printf "%s" (include "postgresql.fullname" .) -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Get the configuration ConfigMap name.
+*/}}
+{{- define "postgresql.configurationCM" -}}
+{{- if .Values.configurationConfigMap -}}
+{{- printf "%s" .Values.configurationConfigMap -}}
+{{- else -}}
+{{- printf "%s-configuration" (include "postgresql.fullname" .) -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Get the extended configuration ConfigMap name.
+*/}}
+{{- define "postgresql.extendedConfigurationCM" -}}
+{{- if .Values.extendedConfConfigMap -}}
+{{- printf "%s" .Values.extendedConfConfigMap -}}
+{{- else -}}
+{{- printf "%s-extended-configuration" (include "postgresql.fullname" .) -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Get the initialization scripts ConfigMap name.
+*/}}
+{{- define "postgresql.initdbScriptsCM" -}}
+{{- if .Values.initdbScriptsConfigMap -}}
+{{- printf "%s" .Values.initdbScriptsConfigMap -}}
+{{- else -}}
+{{- printf "%s-init-scripts" (include "postgresql.fullname" .) -}}
+{{- end -}}
 {{- end -}}

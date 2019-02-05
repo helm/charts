@@ -99,6 +99,7 @@ The following table lists the configurable parameters of the Redis chart and the
 | `cluster.slaveCount`                       | Number of slaves                                                                                               | `1`                                                  |
 | `existingSecret`                           | Name of existing secret object (for password authentication)                                                   | `nil`                                                |
 | `usePassword`                              | Use password                                                                                                   | `true`                                               |
+| `usePasswordFile`                              | Mount passwords as files instead of environment variables                                                                                                   | `false`                                               |
 | `password`                                 | Redis password (ignored if existingSecret set)                                                                 | Randomly generated                                   |
 | `configmap`                                | Redis configuration file to be used                                                                            | `nil`                                                |
 | `networkPolicy.enabled`                    | Enable NetworkPolicy                                                                                           | `false`                                              |
@@ -124,6 +125,7 @@ The following table lists the configurable parameters of the Redis chart and the
 | `metrics.serviceMonitor.namespace`         | Optional namespace which Prometheus is running in                                                              | `nil`                                                |
 | `metrics.serviceMonitor.interval`          | How frequently to scrape metrics (use by default, falling back to Prometheus' default)                         |  `nil`                                               |
 | `metrics.serviceMonitor.selector`          | Default to kube-prometheus install (CoreOS recommended), but should be set according to Prometheus install     | `{ prometheus: kube-prometheus }`                    |
+| `metrics.priorityClassName`                | Metrics exporter pod priorityClassName                                                                         | {}                                                   |
 | `persistence.existingClaim`                | Provide an existing PersistentVolumeClaim                                                                      | `nil`                                                |
 | `master.persistence.enabled`               | Use a PVC to persist data (master node)                                                                        | `true`                                               |
 | `master.persistence.path`                  | Path to mount the volume at, to use other images                                                               | `/data`                                              |
@@ -136,12 +138,12 @@ The following table lists the configurable parameters of the Redis chart and the
 | `master.podLabels`                         | Additional labels for Redis master pod                                                                         | {}                                                   |
 | `master.podAnnotations`                    | Additional annotations for Redis master pod                                                                    | {}                                                   |
 | `master.port`                              | Redis master port                                                                                              | `6379`                                               |
-| `master.command`                           | Redis master entrypoint array. The docker image's ENTRYPOINT is used if this is not provided.                  | []                                                   |
-| `master.disableCommands`                   | Comma-separated list of Redis commands to disable (master)                                                     | `FLUSHDB,FLUSHALL`                                   |
+| `master.command`                           | Redis master entrypoint string. The command `redis-server` is executed if this is not provided.                  | `/run.sh`                                                   |
+| `master.disableCommands`                   | Array of Redis commands to disable (master)                                                                    | `["FLUSHDB", "FLUSHALL"]`                                   |
 | `master.extraFlags`                        | Redis master additional command line flags                                                                     | []                                                   |
 | `master.nodeSelector`                      | Redis master Node labels for pod assignment                                                                    | {"beta.kubernetes.io/arch": "amd64"}                 |
 | `master.tolerations`                       | Toleration labels for Redis master pod assignment                                                              | []                                                   |
-| `master.affinity   `                       | Affinity settings for Redis master pod assignment                                                              | []                                                   |
+| `master.affinity`                          | Affinity settings for Redis master pod assignment                                                              | {}                                                   |
 | `master.schedulerName`                     | Name of an alternate scheduler                                                                                 | `nil`                                                |
 | `master.service.type`                      | Kubernetes Service type (redis master)                                                                         | `ClusterIP`                                          |
 | `master.service.port`                      | Kubernetes Service port (redis master)                                                                         | `6379`                                               |
@@ -164,6 +166,8 @@ The following table lists the configurable parameters of the Redis chart and the
 | `master.readinessProbe.timeoutSeconds`     | When the probe times out (redis master pod)                                                                    | `1`                                                  |
 | `master.readinessProbe.successThreshold`   | Minimum consecutive successes for the probe to be considered successful after having failed (redis master pod) | `1`                                                  |
 | `master.readinessProbe.failureThreshold`   | Minimum consecutive failures for the probe to be considered failed after having succeeded.                     | `5`                                                  |
+| `master.priorityClassName`                 | Redis Master pod priorityClassName                                                                             | {}                                                   |
+| `volumePermissions.enabled`         | Enable init container that changes volume permissions in the registry (for cases where the default k8s `runAsUser` and `fsUser` values do not work)                                                               | `false`                                          |
 | `volumePermissions.image.registry`         | Init container volume-permissions image registry                                                               | `docker.io`                                          |
 | `volumePermissions.image.repository`       | Init container volume-permissions image name                                                                   | `bitnami/minideb`                                    |
 | `volumePermissions.image.tag`              | Init container volume-permissions image tag                                                                    | `latest`                                             |
@@ -174,7 +178,7 @@ The following table lists the configurable parameters of the Redis chart and the
 | `slave.service.loadBalancerIP`             | LoadBalancerIP if Redis slave service type is `LoadBalancer`                                                   | `nil`                                                |
 | `slave.port`                               | Redis slave port                                                                                               | `master.port`                                        |
 | `slave.command`                            | Redis slave entrypoint array. The docker image's ENTRYPOINT is used if this is not provided.                   | `master.command`                                     |
-| `slave.disableCommands`                    | Comma-separated list of Redis commands to disable (slave)                                                      | `master.disableCommands`                             |
+| `slave.disableCommands`                    | Array of Redis commands to disable (slave)                                                                     | `master.disableCommands`                             |
 | `slave.extraFlags`                         | Redis slave additional command line flags                                                                      | `master.extraFlags`                                  |
 | `slave.livenessProbe.enabled`              | Turn on and off liveness probe (redis slave pod)                                                               | `master.livenessProbe.enabled`                       |
 | `slave.livenessProbe.initialDelaySeconds`  | Delay before liveness probe is initiated (redis slave pod)                                                     | `master.livenessProbe.initialDelaySeconds`           |
@@ -196,6 +200,14 @@ The following table lists the configurable parameters of the Redis chart and the
 | `slave.securityContext.runAsUser`          | User ID for the container (redis slave pod)                                                                    | `master.securityContext.runAsUser`                   |
 | `slave.resources`                          | Redis slave CPU/Memory resource requests/limits                                                                | `master.resources`                                   |
 | `slave.affinity`                           | Enable node/pod affinity for slaves                                                                            | {}                                                   |
+| `slave.priorityClassName`                  | Redis Slave pod priorityClassName                                                                              | {}                                                   |
+| `sysctlImage.enabled`                      | Enable an init container to modify Kernel settings                                                             | `false`                                              |
+| `sysctlImage.command`                      | sysctlImage command to execute                                                                                 | []                                                   |
+| `sysctlImage.registry`                     | sysctlImage Init container registry                                                                            | `docker.io`                                          |
+| `sysctlImage.repository`                   | sysctlImage Init container name                                                                                | `bitnami/minideb`                                    |
+| `sysctlImage.tag`                          | sysctlImage Init container tag                                                                                 | `latest`                                             |
+| `sysctlImage.pullPolicy`                   | sysctlImage Init container pull policy                                                                         | `Always`                                             |
+| `sysctlImage.mountHostSys`                 | Mount the host `/sys` folder to `/host-sys`                                                                    | `false`                                              |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
@@ -249,3 +261,25 @@ $ helm install --set persistence.existingClaim=PVC_NAME stable/redis
 ## Metrics
 
 The chart optionally can start a metrics exporter for [prometheus](https://prometheus.io). The metrics endpoint (port 9121) is exposed in the service. Metrics can be scraped from within the cluster using something similar as the described in the [example Prometheus scrape configuration](https://github.com/prometheus/prometheus/blob/master/documentation/examples/prometheus-kubernetes.yml). If metrics are to be scraped from outside the cluster, the Kubernetes API proxy can be utilized to access the endpoint.
+
+## Host Kernel Settings
+Redis may require some changes in the kernel of the host machine to work as expected, in particular increasing the `somaxconn` value and disabling transparent huge pages.
+To do so, you can set up a privileged initContainer with the `sysctlImage` config values, for example:
+```
+sysctlImage:
+  enabled: true
+  mountHostSys: true
+  command:
+    - /bin/sh
+    - -c
+    - |-
+      install_packages systemd
+      sysctl -w net.core.somaxconn=10000
+      echo never > /host-sys/kernel/mm/transparent_hugepage/enabled
+```
+
+## Upgrade
+
+## To 6.0.0
+
+Previous versions of the chart were using an init-container to change the permissions of the volumes. This was done in case the `securityContext` directive in the template was not enough for that (for example, with cephFS). In this new version of the chart, this container is disabled by default (which should not affect most of the deployments). If your installation still requires that init container, execute `helm upgrade` with the `--set volumePermissions.enabled=true`.

@@ -93,7 +93,7 @@ can provide it in the `config` parameter. The configuration format is
 
 ```console
 $ cat values.yaml
-config:
+configInline:
   peers:
   - peer-address: 10.0.0.1
     peer-asn: 64512
@@ -101,7 +101,7 @@ config:
   address-pools:
   - name: default
     protocol: bgp
-    cidr:
+    addresses:
     - 198.51.100.0/24
 
 $ helm install --name metallb -f values.yaml stable/metallb

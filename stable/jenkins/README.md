@@ -31,14 +31,16 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `nameOverride`                    | Override the resource name prefix    | `jenkins`                                                                    |
 | `fullnameOverride`                | Override the full resource names     | `jenkins-{release-name}` (or `jenkins` if release-name is `jenkins`)         |
 | `Master.Name`                     | Jenkins master name                  | `jenkins-master`                                                             |
-| `Master.Image`                    | Master image name                    | `jenkinsci/jenkins`                                                          |
+| `Master.Image`                    | Master image name                    | `jenkins/jenkins`                                                            |
 | `Master.ImageTag`                 | Master image tag                     | `lts`                                                                     |
 | `Master.ImagePullPolicy`          | Master image pull policy             | `Always`                                                                     |
 | `Master.ImagePullSecret`          | Master image pull secret             | Not set                                                                      |
 | `Master.Component`                | k8s selector key                     | `jenkins-master`                                                             |
+| `Master.NumExecutors`             | Set Number of executors              | 0                                                                             |
 | `Master.UseSecurity`              | Use basic security                   | `true`                                                                       |
 | `Master.SecurityRealm`            | Custom Security Realm                | Not set                                                                      |
 | `Master.AuthorizationStrategy`    | Jenkins XML job config for AuthorizationStrategy | Not set                                                                      |
+| `Master.DeploymentLabels`         | Custom Deployment labels             | Not set                                                                      |
 | `Master.ServiceLabels`            | Custom Service labels                | Not set                                                                      |
 | `Master.AdminUser`                | Admin username (and password) created as a secret if useSecurity is true | `admin`                                  |
 | `Master.AdminPassword`            | Admin password (and user) created as a secret if useSecurity is true | Random value                                  |
@@ -56,6 +58,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `Master.HealthProbes`             | Enable k8s liveness and readiness probes | `true`                                                                   |
 | `Master.HealthProbesLivenessTimeout`      | Set the timeout for the liveness probe | `120`                                                       |
 | `Master.HealthProbesReadinessTimeout` | Set the timeout for the readiness probe | `60`                                                       |
+| `Master.HealthProbeReadinessPeriodSeconds` | Set how often (in seconds) to perform the liveness probe | `10`                                                       |
 | `Master.HealthProbeLivenessFailureThreshold` | Set the failure threshold for the liveness probe | `12`                                                       |
 | `Master.SlaveListenerPort`        | Listening port for agents            | `50000`                                                                      |
 | `Master.DisabledAgentProtocols`   | Disabled agent protocols             | `JNLP-connect JNLP2-connect`                                                                      |
@@ -76,17 +79,21 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `Master.CredentialsXmlSecret`     | Kubernetes secret that contains a 'credentials.xml' file | Not set                                                  |
 | `Master.SecretsFilesSecret`       | Kubernetes secret that contains 'secrets' files | Not set                                                           |
 | `Master.Jobs`                     | Jenkins XML job configs              | Not set                                                                      |
-| `Master.InstallPlugins`           | List of Jenkins plugins to install   | `kubernetes:1.12.0 workflow-aggregator:2.5 credentials-binding:1.16 git:3.9.1 workflow-job:2.23` |
+| `Master.InstallPlugins`           | List of Jenkins plugins to install   | `kubernetes:1.14.0 workflow-aggregator:2.6 credentials-binding:1.17 git:3.9.1 workflow-job:2.31` |
+| `Master.EnableRawHtmlMarkupFormatter` | Enable HTML parsing using (see below) | Not set                                                                 |
 | `Master.ScriptApproval`           | List of groovy functions to approve  | Not set                                                                      |
 | `Master.NodeSelector`             | Node labels for pod assignment       | `{}`                                                                         |
 | `Master.Affinity`                 | Affinity settings                    | `{}`                                                                         |
 | `Master.Tolerations`              | Toleration labels for pod assignment | `{}`                                                                         |
 | `Master.PodAnnotations`           | Annotations for master pod           | `{}`                                                                         |
 | `NetworkPolicy.Enabled`           | Enable creation of NetworkPolicy resources. | `false`                                                               |
-| `NetworkPolicy.ApiVersion`        | NetworkPolicy ApiVersion             | `extensions/v1beta1`                                                         |
+| `NetworkPolicy.ApiVersion`        | NetworkPolicy ApiVersion             | `networking.k8s.io/v1`                                                         |
 | `rbac.install`                    | Create service account and ClusterRoleBinding for Kubernetes plugin | `false`                                       |
 | `rbac.roleRef`                    | Cluster role name to bind to         | `cluster-admin`                                                              |
-| `rbac.roleBindingKind`            | Role kind (`RoleBinding` or `ClusterRoleBinding`)| `ClusterRoleBinding`                                             |
+| `rbac.roleKind`            | Role kind (`Role` or `ClusterRole`)| `ClusterRole`
+| `rbac.roleBindingKind`            | Role binding kind (`RoleBinding` or `ClusterRoleBinding`)| `ClusterRoleBinding`                                             |
+
+Some third-party systems, e.g. GitHub, use HTML-formatted data in their payload sent to a Jenkins webhooks, e.g. URL of a pull-request being built. To display such data as processed HTML instead of raw text set `Master.EnableRawHtmlMarkupFormatter` to true. This option requires installation of OWASP Markup Formatter Plugin (antisamy-markup-formatter). The plugin is **not** installed by default, please update `Master.InstallPlugins`.
 
 ### Jenkins Agent
 
@@ -97,7 +104,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `Agent.Enabled`            | Enable Kubernetes plugin jnlp-agent podTemplate | `true`                 |
 | `Agent.Image`              | Agent image name                                | `jenkinsci/jnlp-slave` |
 | `Agent.ImagePullSecret`    | Agent image pull secret                         | Not set                |
-| `Agent.ImageTag`           | Agent image tag                                 | `2.62`                 |
+| `Agent.ImageTag`           | Agent image tag                                 | `3.27-1`                 |
 | `Agent.Privileged`         | Agent privileged container                      | `false`                |
 | `Agent.resources`          | Resources allocation (Requests and Limits)      | `{requests: {cpu: 200m, memory: 256Mi}, limits: {cpu: 200m, memory: 256Mi}}`|
 | `Agent.volumes`            | Additional volumes                              | `nil`                  |
@@ -194,6 +201,7 @@ It is possible to mount several volumes using `Persistence.volumes` and `Persist
 | `Persistence.ExistingClaim` | Provide the name of a PVC       | `nil`           |
 | `Persistence.AccessMode`    | The PVC access mode             | `ReadWriteOnce` |
 | `Persistence.Size`          | The size of the PVC             | `8Gi`           |
+| `Persistence.SubPath`       | SubPath for jenkins-home mount  | `nil`           |
 | `Persistence.volumes`       | Additional volumes              | `nil`           |
 | `Persistence.mounts`        | Additional mounts               | `nil`           |
 
@@ -234,6 +242,31 @@ If running upon a cluster with RBAC enabled you will need to do the following:
 * `helm install stable/jenkins --set rbac.install=true`
 * Create a Jenkins credential of type Kubernetes service account with service account name provided in the `helm status` output.
 * Under configure Jenkins -- Update the credentials config in the cloud section to use the service account credential you created in the step above.
+
+## Backup
+
+Adds a backup CronJob for jenkins, along with required RBAC resources.
+
+### Backup Values
+
+| Parameter                   | Description                                | Default                           |
+| --------------------------- | ------------------------------------------ | --------------------------------- |
+| `backup.enabled`            | Enable the use of a backup CronJob         | `false`                           |
+| `backup.schedule`           | Schedule to run jobs                       | `0 2 * * *`                       |
+| `backup.annotations`        | Backup pod annotations                     | iam.amazonaws.com/role: `jenkins` |
+| `backup.image.repo`         | Backup image repository                    | `nuvo/kube-tasks`                 |
+| `backup.image.tag`          | Backup image tag                           | `0.1.2`                           |
+| `backup.extraArgs`          | Additional arguments for kube-tasks        | `[]`                              |
+| `backup.env`                | Backup environment variables               | AWS_REGION: `us-east-1`           |
+| `backup.resources`          | Backup CPU/Memory resource requests/limits | Memory: `1Gi`, CPU: `1`           |
+| `backup.destination`        | Destination to store backup artifacts      | `s3://nuvo-jenkins-data/backup`   |
+
+### Restore from backup
+
+To restore a backup, you can use the `kube-tasks` underlying tool called [skbn](https://github.com/nuvo/skbn), which copies files from cloud storage to Kubernetes.
+The best way to do it would be using a `Job` to copy files from the desired backup tag to the Jenkins pod.
+See the [skbn in-cluster example](https://github.com/nuvo/skbn/tree/master/examples/in-cluster) for more details.
+
 
 ## Run Jenkins as non root user
 
