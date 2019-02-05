@@ -167,7 +167,7 @@ spec:
         - name: RABBIT_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ if .Values.rabbitmq.existingPasswordSecret }}{{ .Values.rabbitmq.existingPasswordSecret }}{{- else }}{{ template "rabbitmq.fullname" . }}{{- end }}
+              name: {{ template "rabbitmq.secretPasswordName" . }}
               key: rabbitmq-password
         - name: RABBIT_URL
           value: "http://localhost:{{ .Values.service.managerPort }}"
