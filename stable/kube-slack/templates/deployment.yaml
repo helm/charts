@@ -18,6 +18,12 @@ spec:
       labels:
         app: {{ template "kube-slack.name" . }}
         release: {{ .Release.Name }}
+      {{- if .Values.annotations }}
+      annotations:
+      {{- range $key, $value := .Values.annotations }}
+        {{ $key }}: {{ $value | quote }}
+      {{- end }}
+      {{- end }} 
     spec:
       containers:
         - name: {{ .Chart.Name }}
