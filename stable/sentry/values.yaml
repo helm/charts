@@ -100,25 +100,42 @@ service:
   # externalIPs:
   # - 192.168.0.1
 
-## Enable persistence using Persistent Volume Claims
-## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
-##
-persistence:
-  enabled: true
-  ## database data Persistent Volume Storage Class
-  ## If defined, storageClassName: <storageClass>
-  ## If set to "-", storageClassName: "", which disables dynamic provisioning
-  ## If undefined (the default) or set to null, no storageClassName spec is
-  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
-  ##   GKE, AWS & OpenStack)
-  ##
-  # storageClass: "-"
-  accessMode: ReadWriteOnce
-  size: 10Gi
+# Configure the location of Sentry artifacts
+filestore:
+  # Set to one of filesystem, gcs or s3 as supported by Sentry.
+  backend: filesystem
 
-  # Where to store sentry files
-  # https://docs.sentry.io/server/filestore/
-  filestore_dir: /var/lib/sentry/files
+  filesystem:
+    path: /var/lib/sentry/files
+
+    ## Enable persistence using Persistent Volume Claims
+    ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+    ##
+    persistence:
+      enabled: true
+      ## database data Persistent Volume Storage Class
+      ## If defined, storageClassName: <storageClass>
+      ## If set to "-", storageClassName: "", which disables dynamic provisioning
+      ## If undefined (the default) or set to null, no storageClassName spec is
+      ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+      ##   GKE, AWS & OpenStack)
+      ##
+      # storageClass: "-"
+      accessMode: ReadWriteOnce
+      size: 10Gi
+
+  ## Point this at a pre-configured secret containing a service account. The resulting
+  ## secret will be mounted at /var/secrets/google
+  gcs:
+    credentialsFile: credentials.json
+  #  secretName:
+  #  bucketName:
+
+  ## Currently unconfigured and changing this has no impact on the template configuration.
+  #s3:
+  #  accessKey:
+  #  secretKey:
+  #  bucketName:
 
 ## Configure ingress resource that allow you to access the
 ## Sentry installation. Set up the URL
