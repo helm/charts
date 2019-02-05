@@ -68,6 +68,7 @@ Parameter | Description | Default
 `configuration.backupStorageLocation.config.s3ForcePathStyle` | Set to `true` for a local storage service like Minio | ``
 `configuration.backupStorageLocation.config.s3Url` | S3 url (primarily used for local storage services like Minio) | ``
 `configuration.backupStorageLocation.config.kmsKeyId` | KMS key for encryption (AWS only) | ``
+`configuration.backupStorageLocation.prefix` | The directory inside a storage bucket where backups are to be uploaded | ``
 `configuration.backupSyncPeriod` | How frequently Ark queries the object storage to make sure that the appropriate Backup resources have been created for existing backup files | `60m`
 `configuration.extraEnvVars` | Key/values for extra environment variables such as AWS_CLUSTER_NAME, etc | `{}`
 `configuration.metrics.enabled` | Enable and expose metrics port | `true`

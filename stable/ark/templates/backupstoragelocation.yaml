@@ -14,13 +14,13 @@ spec:
   provider: {{ .name  }}
   objectStorage:
     bucket: {{ .bucket  }}
+    {{- with .prefix }}
+      prefix: {{ . }}
+    {{- end }}
 {{- with .config }}
   config:
   {{- with .region }}
     region: {{ . }}
-  {{- end }}
-  {{- with .prefix }}
-    prefix: {{ . }}
   {{- end }}
   {{- with .s3ForcePathStyle }}
     s3ForcePathStyle: {{ . }}
