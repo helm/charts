@@ -285,9 +285,9 @@ grafana.ini:
   smtp:
   # `existingSecret` is a reference to an existing secret containing the smtp configuration
   # for Grafana.
-    existingSecret: ""
-    userKey: "user"
-    passwordKey: "password"
+  # existingSecret: ""
+  # userKey: "user"
+  # passwordKey: "password"
 
 ## Sidecars that collect the configmaps with specified label and stores the included files them into the respective folders
 ## Requires at least Grafana 5 to work and can't be used together with parameters dashboardProviders, datasources and dashboards
