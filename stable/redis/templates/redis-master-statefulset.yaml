@@ -66,29 +66,27 @@ spec:
       - name: {{ template "redis.fullname" . }}
         image: "{{ template "redis.image" . }}"
         imagePullPolicy: {{ default "" .Values.image.pullPolicy | quote }}
-        {{- if .Values.master.command }}
         command:
-{{ toYaml .Values.master.command | indent 10 }}
-        {{- end }}
-        args:
-        - "--port"
-        - "$(REDIS_PORT)"
-        {{- if .Values.usePassword }}
-        - "--requirepass"
-        - "$(REDIS_PASSWORD)"
-        {{- else }}
-        - "--protected-mode"
-        - "no"
-        {{- end }}
-        - "--include"
-        - "/opt/bitnami/redis/etc/redis.conf"
-        - "--include"
-        - "/opt/bitnami/redis/etc/master.conf"
-        {{- if .Values.master.extraFlags }}
-        {{- range .Values.master.extraFlags }}
-        - {{ . | quote }}
-        {{- end }}
-        {{- end }}
+        - /bin/bash
+        - -c
+        - |
+          if [[ -n $REDIS_PASSWORD_FILE ]]; then
+            password_aux=`cat ${REDIS_PASSWORD_FILE}`
+            export REDIS_PASSWORD=$password_aux
+          fi
+          ARGS=("--port" "${REDIS_PORT}")
+          {{- if .Values.usePassword }}
+          ARGS+=("--requirepass" "${REDIS_PASSWORD}")
+          {{- else }}
+          ARGS+=("--protected-mode" "no")
+          {{- end }}
+          ARGS+=("--include" "/opt/bitnami/redis/etc/redis.conf")
+          ARGS+=("--include" "/opt/bitnami/redis/etc/master.conf")
+          {{- if .Values.master.command }}
+          {{ .Values.master.command }} ${ARGS[@]}
+          {{- else }}
+          redis-server "${ARGS[@]}"
+          {{- end }}
         env:
         - name: REDIS_REPLICATION_MODE
           value: master
@@ -154,8 +152,10 @@ spec:
         - name: config
           mountPath: /opt/bitnami/redis/etc
         {{- end }}
-      {{- if and ( and .Values.master.persistence.enabled (not .Values.persistence.existingClaim) ) .Values.master.securityContext.enabled }}
+      {{- $needsVolumePermissions := and .Values.volumePermissions.enabled (and ( and .Values.master.persistence.enabled (not .Values.persistence.existingClaim) ) .Values.master.securityContext.enabled) }}
+      {{- if or $needsVolumePermissions .Values.sysctlImage.enabled }}
       initContainers:
+      {{- if $needsVolumePermissions }}
       - name: volume-permissions
         image: "{{ template "volumePermissions.image" . }}"
         imagePullPolicy: {{ default "" .Values.volumePermissions.image.pullPolicy | quote }}
@@ -166,6 +166,21 @@ spec:
         - name: redis-data
           mountPath: {{ .Values.master.persistence.path }}
           subPath: {{ .Values.master.persistence.subPath }}
+      {{- end }}
+      {{- if .Values.sysctlImage.enabled }}
+      - name: init-sysctl
+        image: {{ template "redis.sysctl.image" . }}
+        {{- if .Values.sysctlImage.mountHostSys }}
+        volumeMounts:
+        - name: host-sys
+          mountPath: /host-sys
+        {{- end }}
+        command:
+{{ toYaml .Values.sysctlImage.command | indent 10 }}
+        securityContext:
+          privileged: true
+          runAsUser: 0
+      {{- end }}
       {{- end }}
       volumes:
       - name: health
@@ -191,6 +206,11 @@ spec:
         persistentVolumeClaim:
           claimName: {{ .Values.persistence.existingClaim }}
       {{- end }}
+      {{- end }}
+      {{- if .Values.sysctlImage.mountHostSys }}
+      - name: host-sys
+        hostPath:
+          path: /sys
       {{- end }}
   {{- if and .Values.master.persistence.enabled (not .Values.persistence.existingClaim) }}
   volumeClaimTemplates:

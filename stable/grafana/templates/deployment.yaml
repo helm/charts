@@ -46,7 +46,7 @@ spec:
 {{- if ( or .Values.persistence.enabled .Values.dashboards ) }}
       initContainers:
 {{- end }}
-{{- if .Values.persistence.enabled }}
+{{- if ( and .Values.persistence.enabled .Values.persistence.initChownData ) }}
         - name: init-chown-data
           image: "{{ .Values.chownDataImage.repository }}:{{ .Values.chownDataImage.tag }}"
           imagePullPolicy: {{ .Values.chownDataImage.pullPolicy }}
@@ -276,10 +276,11 @@ spec:
           {{- end }}
         {{- end }}
         {{- if .Values.dashboardsConfigMaps }}
+          {{ $root := . }}
           {{- range $provider, $name := .Values.dashboardsConfigMaps }}
         - name: dashboards-{{ $provider }}
           configMap:
-            name: {{ $name }}
+            name: {{ tpl $name $root }}
           {{- end }}
         {{- end }}
         {{- if not .Values.admin.existingSecret }}
