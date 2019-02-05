@@ -209,5 +209,10 @@ data:
     drain:  # drain the node before stopping it and re-integrate it into the cluster after start
       enabled: true
 
+## Sysctl init container to setup vm.max_map_count
+# see https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html
+# and https://www.elastic.co/guide/en/elasticsearch/reference/current/setup-configuration-memory.html#mlockall
+sysctlInitContainer:
+  enabled: true
 ## Additional init containers
 extraInitContainers: |
