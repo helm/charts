@@ -31,7 +31,7 @@ data:
     {{- end }}
     [entryPoints]
       [entryPoints.http]
-      address = ":80"
+      address = ":8080"
       compress = {{ .Values.gzip.enabled }}
       {{- if .Values.whiteListSourceRange }}
       {{ template "traefik.whiteListSourceRange" . }}
@@ -57,7 +57,7 @@ data:
       {{- if .Values.whiteListSourceRange }}
       {{ template "traefik.whiteListSourceRange" . }}
       {{- end }}
-      address = ":443"
+      address = ":8443"
       compress = {{ .Values.gzip.enabled }}
       {{- if .Values.proxyProtocol.enabled }}
         [entryPoints.https.proxyProtocol]
@@ -104,7 +104,7 @@ data:
       {{- end }}
       {{- if .Values.dashboard.enabled }}
       [entryPoints.traefik]
-      address = ":8080"
+      address = ":8000"
         {{- if .Values.dashboard.auth }}
         {{- if .Values.dashboard.auth.basic }}
         [entryPoints.traefik.auth]
