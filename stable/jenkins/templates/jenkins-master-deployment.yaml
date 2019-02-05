@@ -18,6 +18,7 @@ spec:
   replicas: 1
   strategy:
     type: {{ if .Values.Persistence.Enabled }}Recreate{{ else }}RollingUpdate{{ end }}
+    rollingUpdate:
   selector:
     matchLabels:
       component: "{{ .Release.Name }}-{{ .Values.Master.Component }}"
