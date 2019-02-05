@@ -207,7 +207,7 @@ spec:
       {{- if and .Values.allowOverrideNone .Values.customHTAccessCM}}
       - name: custom-htaccess
         configMap:
-          name: {{ .Values.customHTAccessCM }}
+          name: {{ template "wordpress.customHTAccessCM" . }}
       {{- end }} 
       - name: wordpress-data
       {{- if .Values.persistence.enabled }}
