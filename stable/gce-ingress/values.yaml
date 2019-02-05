@@ -46,7 +46,7 @@ controller:
   replicaCount: 1
   image:
     repository: k8s.gcr.io/ingress-gce-glbc-amd64
-    tag: v1.1.1
+    tag: v1.4.0
     pullPolicy: IfNotPresent
   resources: {}
     # requests:

@@ -1,6 +1,6 @@
 image:
   repository: "docker.elastic.co/kibana/kibana-oss"
-  tag: "6.5.1"
+  tag: "6.6.0"
   pullPolicy: "IfNotPresent"
 
 commandline:
@@ -29,8 +29,13 @@ files:
     # logging.verbose: "true"
     # server.defaultRoute: "/app/kibana"
 
+deployment:
+  annotations: {}
+
 service:
   type: ClusterIP
+  # clusterIP: None
+  # portName: kibana-svc
   externalPort: 443
   internalPort: 5601
   # authProxyPort: 5602 To be used with authProxyEnabled and a proxy extraContainer
@@ -102,6 +107,11 @@ extraContainers: |
 #   ports:
 #     - name: web
 #       containerPort: 9090
+
+extraVolumeMounts: []
+
+extraVolumes: []
+
 resources: {}
   # limits:
   #   cpu: 100m
@@ -177,3 +187,9 @@ securityContext:
   allowPrivilegeEscalation: false
   runAsUser: 1000
   fsGroup: 2000
+
+extraConfigMapMounts: []
+  # - name: logtrail-configs
+  #   configMap: kibana-logtrail
+  #   mountPath: /usr/share/kibana/plugins/logtrail/logtrail.json
+  #   subPath: logtrail.json

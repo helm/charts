@@ -33,7 +33,7 @@ spec:
             - name: HUB_PORT_4444_TCP_ADDR
               value: {{ template "selenium.hub.fullname" . }}
             - name: HUB_PORT_4444_TCP_PORT
-              value: {{ .Values.hub.port | quote }}
+              value: {{ .Values.hub.servicePort | quote }}
             - name: JAVA_TOOL_OPTIONS
               value: {{ default "" .Values.firefox.javaOpts | quote }}
             - name: SE_OPTS
@@ -80,6 +80,8 @@ spec:
             {{- end }}
           resources:
 {{ toYaml .Values.firefox.resources | indent 12 }}
+      hostAliases:
+{{ toYaml .Values.global.hostAliases | indent 8 }}
       nodeSelector:
 {{- if .Values.firefox.nodeSelector }}
 {{ toYaml .Values.firefox.nodeSelector | indent 8  }}

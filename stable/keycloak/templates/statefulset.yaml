@@ -30,11 +30,17 @@ spec:
 {{ toYaml .Values.keycloak.podAnnotations | indent 8 }}
 {{- end }}
     spec:
+{{- with .Values.keycloak.hostAliases }}
+      hostAliases:
+{{ toYaml . | indent 8 }}
+{{- end }}
       securityContext:
 {{ toYaml .Values.keycloak.securityContext | indent 8 }}
     {{- with .Values.keycloak.image.pullSecrets }}
       imagePullSecrets:
-{{ toYaml . | indent 8 }}
+      {{- range . }}
+        - name: {{ . }}
+      {{- end }}
     {{- end }}
     {{- if or .Values.keycloak.persistence.deployPostgres .Values.keycloak.extraInitContainers }}
       initContainers:
@@ -92,15 +98,20 @@ spec:
             - name: http
               containerPort: 8080
               protocol: TCP
+          {{- if $highAvailability }}
+            - name: jgroups
+              containerPort: 7600
+              protocol: TCP
+          {{- end }}
           livenessProbe:
             httpGet:
-              path: /{{ .Values.keycloak.basepath }}/
+              path: {{ if ne .Values.keycloak.basepath "" }}/{{ .Values.keycloak.basepath }}{{ end }}/
               port: http
             initialDelaySeconds: {{ .Values.keycloak.livenessProbe.initialDelaySeconds }}
             timeoutSeconds: {{ .Values.keycloak.livenessProbe.timeoutSeconds }}
           readinessProbe:
             httpGet:
-              path: /{{ .Values.keycloak.basepath }}/realms/master
+              path: {{ if ne .Values.keycloak.basepath "" }}/{{ .Values.keycloak.basepath }}{{ end }}/realms/master
               port: http
             initialDelaySeconds: {{ .Values.keycloak.readinessProbe.initialDelaySeconds }}
             timeoutSeconds: {{ .Values.keycloak.readinessProbe.timeoutSeconds }}

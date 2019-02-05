@@ -2,12 +2,12 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ template "fullname" . }}-apache
+  name: {{ template "testlink.fullname" . }}-apache
   labels:
-    app: {{ template "fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app: "{{ template "testlink.fullname" . }}"
+    chart: "{{ template "testlink.chart" . }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Name | quote }}
 spec:
   accessModes:
     - {{ .Values.persistence.apache.accessMode | quote }}
