@@ -19,6 +19,9 @@ spec:
   {{- with .region }}
     region: {{ . }}
   {{- end }}
+  {{- with .prefix }}
+    prefix: {{ . }}
+  {{- end }}
   {{- with .s3ForcePathStyle }}
     s3ForcePathStyle: {{ . }}
   {{- end }}
