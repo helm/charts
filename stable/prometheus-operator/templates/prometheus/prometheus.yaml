@@ -106,7 +106,9 @@ spec:
     matchLabels:
       app: {{ template "prometheus-operator.name" . }}
       release: {{ .Release.Name | quote }}
-  {{- end }}
+{{ else }}
+  ruleSelector: {}
+{{- end }}
 {{- if .Values.prometheus.prometheusSpec.storageSpec }}
   storage:
 {{ toYaml .Values.prometheus.prometheusSpec.storageSpec | indent 4 }}
