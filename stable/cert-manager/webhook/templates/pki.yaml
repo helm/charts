@@ -12,7 +12,7 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  selfsigned: {}
+  selfSigned: {}
 
 ---
 
@@ -29,6 +29,7 @@ metadata:
     heritage: {{ .Release.Service }}
 spec:
   secretName: {{ include "webhook.rootCACertificate" . }}
+  duration: 43800h # 5y
   issuerRef:
     name: {{ include "webhook.selfSignedIssuer" . }}
   commonName: "ca.webhook.cert-manager"
@@ -66,6 +67,7 @@ metadata:
     heritage: {{ .Release.Service }}
 spec:
   secretName: {{ include "webhook.servingCertificate" . }}
+  duration: 8760h # 1y
   issuerRef:
     name: {{ include "webhook.rootCAIssuer" . }}
   dnsNames:
