@@ -7,6 +7,9 @@ metadata:
     chart: {{ template "logstash.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+{{- with .Values.service.labels }}
+{{ toYaml . | indent 4 }}
+{{- end }}
   annotations:
 {{- with .Values.service.annotations }}
 {{ toYaml . | indent 4 }}
