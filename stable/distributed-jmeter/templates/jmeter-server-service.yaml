@@ -7,7 +7,7 @@ metadata:
     helm.sh/chart: {{ include "distributed-jmeter.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
-    role: server
+    app.kubernetes.io/component: server
 spec:
   clusterIP: None
   ports:
@@ -20,4 +20,4 @@ spec:
   selector:
     app.kubernetes.io/name: {{ include "distributed-jmeter.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
-    role: server
+    app.kubernetes.io/component: server
