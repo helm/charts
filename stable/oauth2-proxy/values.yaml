@@ -12,6 +12,9 @@ config:
   #   pass_basic_auth = false
   #   pass_access_token = true
   configFile: ""
+  # Use an existing secret for OAuth2 credentials
+  # Example:
+  # existingSecret: secret
 
 image:
   repository: "quay.io/pusher/oauth2_proxy"
