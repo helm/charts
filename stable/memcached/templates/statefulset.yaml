@@ -91,3 +91,11 @@ spec:
       nodeSelector:
 {{ toYaml . | trim | indent 8}}
 {{- end }}
+{{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | trim | indent 8}}
+{{- end }}
+{{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | trim | indent 8}}
+{{- end }}
