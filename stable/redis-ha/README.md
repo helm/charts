@@ -9,8 +9,8 @@ $ helm install stable/redis-ha
 ```
 
 By default this chart install 3 pods total:
- * one pod containing a redis master, sentinel container and a prometheus metrics exporter
- * two pods each containing a redis slave, sentinel containers and a prometheus metrics exporter
+ * one pod containing a redis master and sentinel container (optional prometheus metrics exporter sidecar available)
+ * two pods each containing a redis slave and sentinel containers (optional prometheus metrics exporter sidecars available)
 
 ## Introduction
 

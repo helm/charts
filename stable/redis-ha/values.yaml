@@ -98,11 +98,12 @@ exporter:
   tag: v0.28.0
   pullPolicy: IfNotPresent
 
-  # Annotations for prometheus
-  annotations:
-    prometheus.io/port: "9121"
-    prometheus.io/scrape: "true"
-    prometheus.io/path: /metrics
+  # prometheus port & scrape path
+  port: 9121
+  scrapePath: /metrics
+
+  # cpu/memory resource limits/requests
+  resources: {}
 
   # Additional args for redis exporter
   extraArgs: {}

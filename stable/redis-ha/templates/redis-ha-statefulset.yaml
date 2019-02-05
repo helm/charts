@@ -23,7 +23,9 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
       {{- end }}
       {{- if .Values.exporter.enabled }}
-{{ toYaml .Values.exporter.annotations | indent 8 }}
+        prometheus.io/port: "{{ .Values.exporter.port }}"
+        prometheus.io/scrape: "true"
+        prometheus.io/path: {{ .Values.exporter.scrapePath }}
       {{- end }}
       labels:
         release: {{ .Release.Name }}
@@ -163,11 +165,27 @@ spec:
             value: redis://localhost:6379
         {{- if .Values.auth }}
           - name: REDIS_PASSWORD
-            value: {{ .Values.redisPassword }}
+            valueFrom:
+              secretKeyRef:
+              {{- if .Values.existingSecret }}
+                name: {{ .Values.existingSecret }}
+              {{- else }}
+                name: {{ template "redis-ha.fullname" . }}
+              {{- end }}
+                key: auth
         {{- end }}
+        livenessProbe:
+          httpGet:
+            path: {{ .Values.exporter.scrapePath }}
+            port: {{ .Values.exporter.port }}
+          initialDelaySeconds: 15
+          timeoutSeconds: 1
+          periodSeconds: 15
+        resources:
+        {{ toYaml .Values.exporter.resources | indent 10 }}
         ports:
           - name: exporter-port
-            containerPort: 9121
+            containerPort: {{ .Values.exporter.port }}
 {{- end }}
       volumes:
       - name: config
