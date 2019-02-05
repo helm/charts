@@ -67,5 +67,5 @@ persistence:
 satisfy:
   repoName: myrepo
   homepage: http://chart-example.local
-  ssh_private_key: ~  # set it via CLI
-                      # for example: `--set satisfy.ssh_private_key="$(<~/.ssh/id_rsa)"`
+  sshPrivateKey: ~  # set it via CLI
+                    # for example: `--set satisfy.sshPrivateKey="$(<~/.ssh/id_rsa)"`

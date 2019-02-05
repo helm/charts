@@ -60,7 +60,7 @@ spec:
               value: "{{ .Values.satisfy.repoName }}"
             - name: HOMEPAGE
               value: "{{ .Values.satisfy.homepage }}"
-            {{- if .Values.satisfy.ssh_private_key }}
+            {{- if .Values.satisfy.sshPrivateKey }}
             - name: SSH_PRIVATE_KEY
               valueFrom:
                 secretKeyRef:

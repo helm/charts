@@ -5,7 +5,7 @@
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release incubator/satisfy
+$ helm install --name my-release stable/satisfy
 ```
 
 ## Uninstalling the Chart
@@ -49,7 +49,7 @@ chart and deletes the release.
 `persistence.size`              | Size of data volume                    | `8Gi`
 `satisfy.repoName`              | Satis repository name                  | `myrepo`
 `satisfy.homepage`              | Satis repository URL                   | `http://chart-example.local`
-`satisfy.ssh_private_key`       | SSH Private key used with GIT repos    | `nil`
+`satisfy.sshPrivateKey`         | SSH Private key used with GIT repos    | `nil`
 
 > When both `image.tag` and `image.digest` are present, `image.digest` will be used. See [Docker docs][1] for more details about using image digest.
 
