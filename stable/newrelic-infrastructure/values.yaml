@@ -91,4 +91,4 @@ tolerations: []
 updateStrategy: RollingUpdate
 
 # Custom attributes to be passed to the New Relic agent
-customAttribues: '{"clusterName":"$(CLUSTER_NAME)"}'
+customAttribues: "'{\"clusterName\":\"$(CLUSTER_NAME)\"}'"
