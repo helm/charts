@@ -63,7 +63,7 @@ The following table lists the configurable parameters of the WordPress chart and
 | `wordpressBlogName`              | Blog name                                  | `User's Blog!`                                          |
 | `wordpressTablePrefix`           | Table prefix                               | `wp_`                                                   |
 | `allowEmptyPassword`             | Allow DB blank passwords                   | `true`                                                  |
-| `allowOverrideNone`              | Set Apache AllowOverride directive to None                   | `false`                                                  |
+| `allowOverrideNone`              | Set Apache AllowOverride directive to None                   | `no`                                                  |
 | `customHTAccessCM`              | Configmap with custom wordpress-htaccess.conf directives                   | `nil`                                                  |
 | `smtpHost`                       | SMTP host                                  | `nil`                                                   |
 | `smtpPort`                       | SMTP port                                  | `nil`                                                   |
@@ -271,7 +271,7 @@ Any number of name/value pairs may be specified; they are all copied into the li
 For performance and security reasons, it is a good practice to configure Apache with `AllowOverride None`. Instead of using `.htaccess` files, Apache will load the same dircetives at boot time. These directives are located in `/opt/bitnami/wordpress/wordpress-htaccess.conf`. The container image includes by default these directives all of the default `.htaccess` files in WordPress (together with the default plugins). To enable this feature, install the chart with the following value:
 
 ```
-helm install stable/wordpress --set allowOverrideNone=true
+helm install stable/wordpress --set allowOverrideNone=yes
 ```
 
 However, some plugins may include `.htaccess` directives that will not be loaded when `AllowOverride` is set to `None`. A way to make them work would be to create your own `wordpress-htaccess.conf` file with all the required dircectives to make the plugin work. After creating it, then create a ConfigMap with it.
@@ -283,7 +283,7 @@ kubectl create cm custom-htaccess --from-file=/path/to/wordpress-htaccess.conf
 Then, install the chart:
 
 ```
-helm install stable/wordpress --set allowOverrideNone=true --set customHTAccessCM=custom-htaccess
+helm install stable/wordpress --set allowOverrideNone=yes --set customHTAccessCM=custom-htaccess
 ```
 
 ## Upgrading
