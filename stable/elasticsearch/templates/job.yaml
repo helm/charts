@@ -1,6 +1,6 @@
 {{- $root := . }}
-{{- $fullName := template "elasticsearch.fullname" . }}
-{{- $name := template "elasticsearch.name" . }}
+{{- $fullName := include "elasticsearch.fullname" . }}
+{{- $name := include "elasticsearch.name" . }}
 {{- range $i, $hook := .Values.cluster.hooks }}
 ---
 apiVersion: batch/v1
