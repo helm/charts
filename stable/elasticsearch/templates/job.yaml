@@ -1,14 +1,17 @@
+{{- $root := . }}
+{{- $fullName := template "elasticsearch.fullname" . }}
+{{- $name := template "elasticsearch.name" . }}
 {{- range $i, $hook := .Values.cluster.hooks }}
 ---
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ template "elasticsearch.fullname" . }}-hook-{{ $hook.name }}
+  name: {{ $fullName }}-hook-{{ $hook.name }}
   labels:
-    app: {{ template "elasticsearch.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    app: {{ $name }}
+    chart: {{ $root.Chart.Name }}-{{ $root.Chart.Version | replace "+" "_" }}
+    release: {{ $root.Release.Name }}
+    heritage: {{ $root.Release.Service }}
   annotations:
   {{- range $key, $value := $hook.annotations }}
     {{ $key | quote }}: {{ $value | quote }}
@@ -16,12 +19,12 @@ metadata:
 spec:
   template:
     metadata:
-      name: {{ template "elasticsearch.fullname" . }}-hook-{{ $hook.name }}
+      name: {{ $fullName }}-hook-{{ $hook.name }}
       labels:
-        app: {{ template "elasticsearch.name" . }}
-        chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-        release: {{ .Release.Name }}
-        heritage: {{ .Release.Service }}
+        app: {{ $name }}
+        chart: {{ $root.Chart.Name }}-{{ $root.Chart.Version | replace "+" "_" }}
+        release: {{ $root.Release.Name }}
+        heritage: {{ $root.Release.Service }}
     spec:
       containers:
       - name: elasticsearch-hook-{{ $hook.name }}
