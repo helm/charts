@@ -63,7 +63,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | ------------------------------------ | ------------------------------------------------------------------- | --------------------------------------------------- |
 | `appVersion`                         | Application Version (Elasticsearch)                                 | `6.6.0`                                             |
 | `image.repository`                   | Container image name                                                | `docker.elastic.co/elasticsearch/elasticsearch-oss` |
-| `image.tag`                          | Container image tag                                                 | `6.5.1`                                             |
+| `image.tag`                          | Container image tag                                                 | `6.6.0`                                             |
 | `image.pullPolicy`                   | Container pull policy                                               | `IfNotPresent`                                      |
 | `initImage.repository`               | Init container image name                                           | `busybox`                                           |
 | `initImage.tag`                      | Init container image tag                                            | `latest`                                            |
@@ -73,7 +73,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `cluster.config`                     | Additional cluster config appended                                  | `{}`                                                |
 | `cluster.keystoreSecret`             | Name of secret holding secure config options in an es keystore      | `nil`                                               |
 | `cluster.env`                        | Cluster environment variables                                       | `{MINIMUM_MASTER_NODES: "2"}`                       |
-| `cluster.bootstrapShellCommand`      | Post-init command to run in separate Job                            | `""`                                                |
+| `cluster.hooks`                      | Lifecycle hooks to run in separate jobs                             | `[]` see `values.yaml` for examples                 |
 | `cluster.additionalJavaOpts`         | Cluster parameters to be added to `ES_JAVA_OPTS` environment variable | `""`                                              |
 | `client.name`                        | Client component name                                               | `client`                                            |
 | `client.replicas`                    | Client node replicas (deployment)                                   | `2`                                                 |
@@ -123,7 +123,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `data.resources`                     | Data node resources requests & limits                               | `{} - cpu limit must be an integer`                 |
 | `data.priorityClassName`             | Data priorityClass                                                  | `nil`                                               |
 | `data.heapSize`                      | Data node heap size                                                 | `1536m`                                             |
-| `data.hooks.drain.enabled            | Data nodes: Enable drain pre-stop and post-start hook               | `true`                                              |
+| `data.hooks.drain.enabled`           | Data nodes: Enable drain pre-stop and post-start hook               | `true`                                              |
 | `data.persistence.enabled`           | Data persistent enabled/disabled                                    | `true`                                              |
 | `data.persistence.name`              | Data statefulset PVC template name                                  | `data`                                              |
 | `data.persistence.size`              | Data persistent volume size                                         | `30Gi`                                              |

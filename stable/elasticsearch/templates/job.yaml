@@ -1,21 +1,22 @@
-{{- if .Values.cluster.bootstrapShellCommand }}
+{{- range $i, $hook := .Values.cluster.hooks }}
+---
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ template "elasticsearch.fullname" . }}-bootstrap
+  name: {{ template "elasticsearch.fullname" . }}-hook-{{ $hook.name }}
   labels:
     app: {{ template "elasticsearch.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
   annotations:
-    "helm.sh/hook": post-install,post-upgrade
-    "helm.sh/hook-weight": "10"
-    "helm.sh/hook-delete-policy": hook-succeeded
+  {{- range $key, $value := $hook.annotations }}
+    {{ $key | quote }}: {{ $value | quote }}
+  {{- end }}
 spec:
   template:
     metadata:
-      name: {{ template "elasticsearch.fullname" . }}-bootstrap
+      name: {{ template "elasticsearch.fullname" . }}-hook-{{ $hook.name }}
       labels:
         app: {{ template "elasticsearch.name" . }}
         chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
@@ -23,12 +24,12 @@ spec:
         heritage: {{ .Release.Service }}
     spec:
       containers:
-      - name: bootstrap-elasticsearch
+      - name: elasticsearch-hook-{{ $hook.name }}
         image: byrnedo/alpine-curl
         command:
         - "sh"
         - "-c"
-        - {{ .Values.cluster.bootstrapShellCommand | quote }}
+        - {{ $hook.shellCommand | quote }}
       restartPolicy: Never
   backoffLimit: 20
 {{- end }}

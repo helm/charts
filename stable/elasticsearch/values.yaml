@@ -55,8 +55,15 @@ cluster:
   config: {}
   # Custom parameters, as string, to be added to ES_JAVA_OPTS environment variable
   additionalJavaOpts: ""
-  # Command to run at the end of deployment
-  bootstrapShellCommand: ""
+  # Lifecycle hooks to run in separate jobs
+  hooks: []
+    # - name: bootstrap
+    #   shellCommand: "curl -XPUT 'http://elastic-elasticsearch-client.logging:9200/_template/all' -H 'Content-Type: application/json' -d'{\"index_patterns\": \"logstash-*\", \"settings\": {\"number_of_shards\": 3, \"number_of_replicas\": 1}}'"
+    ## Ref: https://github.com/helm/helm/blob/master/docs/charts_hooks.md
+    #   annotations:
+    #     helm.sh/hook: post-install,post-upgrade
+    #     helm.sh/hook-weight: 10
+    #     helm.sh/hook-delete-policy: hook-succeeded
   env:
     # IMPORTANT: https://www.elastic.co/guide/en/elasticsearch/reference/current/important-settings.html#minimum_master_nodes
     # To prevent data loss, it is vital to configure the discovery.zen.minimum_master_nodes setting so that each master-eligible
