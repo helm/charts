@@ -1,0 +1,26 @@
+{{- if and (.Values.rbac.pspEnabled) (not .Values.rbac.psp) }}
+apiVersion: extensions/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: privileged-{{ template "node-problem-detector.fullname" . }}
+spec:
+  allowedCapabilities:
+  - '*'
+  fsGroup:
+    rule: RunAsAny
+  privileged: true
+  runAsUser:
+    rule: RunAsAny
+  seLinux:
+    rule: RunAsAny
+  supplementalGroups:
+    rule: RunAsAny
+  volumes:
+  - '*'
+  hostPID: true
+  hostIPC: true
+  hostNetwork: true
+  hostPorts:
+  - min: 1
+    max: 65536
+{{- end }}

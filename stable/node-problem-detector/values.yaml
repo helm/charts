@@ -46,6 +46,10 @@ fullnameOverride: ""
 
 rbac:
   create: true
+  pspEnabled: true
+  # The psp to use. If not set and psp is enabled an all powerful
+  # psp is created with a name generated using the fullname template
+  psp:
 
 # Flag to run Node Problem Detector on the host's network. This is typically
 # not recommended, but may be useful for certain use cases.

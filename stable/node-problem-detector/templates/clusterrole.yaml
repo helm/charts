@@ -29,4 +29,18 @@ rules:
   - create
   - patch
   - update
+  {{- if .Values.rbac.pspEnabled }}
+- apiGroups:
+  - extensions
+  resources:
+  - podsecuritypolicies
+  resourceNames:
+  {{- if .Values.rbac.psp }}
+  - {{ .Values.rbac.psp }}
+  {{ else }}
+  - privileged-{{ template "node-problem-detector.fullname" . }}
+  {{- end }}
+  verbs:
+  - use
+  {{- end -}}
 {{- end -}}
