@@ -64,6 +64,14 @@ elasticsearch:
   #     mountPath: /certs
   #     readOnly: true
 
+extraConfigOptions: {}
+  # # Options to propagate to all rules, e.g. a common slack_webhook_url or kibana_url
+  # # Please note at the time of implementing this value, it will not work for required_locals
+  # # Which MUST be set at the rule level, these are: ['alert', 'type', 'name', 'index']
+  # generate_kibana_link: true
+  # kibana_url: https://kibana.yourdomain.com
+  # slack_webhook_url: dummy
+
 # Command and args override for container e.g. (https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/)
 # command: ["YOUR_CUSTOM_COMMAND"]
 # args: ["YOUR", "CUSTOM", "ARGS"]
