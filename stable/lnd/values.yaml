@@ -3,8 +3,8 @@
 # Declare variables to be passed into your templates.
 
 image:
-  repository: thesisrobot/lnd
-  tag: v0.5.1-beta-fixed
+  repository: thesisco/lnd
+  tag: v0.5.1-beta-patched-ab5fd865f966388798b2667e3dbb0d8b87a894a6
   pullPolicy: IfNotPresent
 
 # Ports that are exposed to other pods in your cluster
