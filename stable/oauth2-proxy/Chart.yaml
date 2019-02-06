@@ -1,8 +1,8 @@
 name: oauth2-proxy
-version: 0.9.1
+version: 0.9.2
 apiVersion: v1
 appVersion: 3.1.0
-home: http://www.videntity.com/
+home: https://github.com/pusher/oauth2_proxy
 description: A reverse proxy that provides authentication with Google, Github or other providers
 keywords:
 - kubernetes
