@@ -25,6 +25,9 @@ agent:
     iptables: false
     port: 8181
     interface: cali+
+  ## Override for server host
+  ##
+  serverHostOverride:
   ## Prometheus metrics
   ##
   prometheus:

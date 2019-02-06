@@ -105,6 +105,7 @@ Parameter | Description | Default
 `agent.host.iptables` | Add iptables rule | `false`
 `agent.host.interface` | Agent's host interface for proxying AWS metadata | `cali+`
 `agent.host.port` | Agent's listening port | `8181`
+`agent.serverHostOverride` | Override for server host | `null`
 `agent.log.jsonOutput` | Whether or not to output agent log in JSON format | `true`
 `agent.log.level` | Agent log level (`debug`, `info`, `warn` or `error`) | `info`
 `agent.nodeSelector` | Node labels for agent pod assignment | `{}`
