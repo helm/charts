@@ -64,6 +64,16 @@ forwardedHeaders:
   # trustedIPs is required when enabled
   trustedIPs: []
   # - 10.0.0.0/8
+entrypoints:
+  http:
+    address: ':80'
+  https:
+    address: ':443'
+  httpn:
+    address: ':8880'
+  traefik:
+    address: ':8080'
+
 ssl:
   enabled: false
   enforced: false
