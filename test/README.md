@@ -19,7 +19,7 @@ The static analysis currently:
 
 ### Operational Testing
 
-Operational testing allow to deploy a Release for the changed Helm Chart and test it.
+Operational testing allows deploying a Release for the changed Helm Chart to test it.
 
 #### Procedure
 
