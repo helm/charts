@@ -36,7 +36,7 @@ The testing logic has been extrated to the [chart-testing](https://github.com/ku
 
 #### Providing Custom Test Values
 
-Testing charts with default values may not be suitable in all cases. For instance, charts may require some values to be set which should not be part of the chart's default `values.yaml` (such as keys etc.). Furthermore, it is often desirable to test a chart with different configurations, reflecting different use cases (examples: setting a password instead of using the default generated one, activating persistence instead of using the default emptyDir volume, etc.).
+Testing charts with default values may not be suitable in all cases. For instance, charts may require some values to be set which should not be part of the chart's default `values.yaml` (such as keys etc.). Furthermore, it is often desirable to test a chart with different configurations, reflecting different use cases (e.g. setting a password instead of using the default generated one, activating persistence instead of using the default emptyDir volume, etc.).
 
 In order to enable custom test values, create a directory `ci` in the chart's directory and add any number of `*-values.yaml` files to this directory. Only files with a suffix `-values.yaml` are considered. Instead of using the defaults, the chart is then installed and tested separately for each of these files using the `--values` flag.
 
