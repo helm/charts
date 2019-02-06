@@ -116,10 +116,7 @@ spec:
                   key: secretkey
             {{- if .Values.gcsgateway.enabled }}
             - name: GOOGLE_APPLICATION_CREDENTIALS
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "minio.fullname" . }}
-                  key: gcs_key.json
+              value: "/etc/credentials/gcs_key.json"
             {{- end }}
             {{- range $key, $val := .Values.environment }}
             - name: {{ $key }}
