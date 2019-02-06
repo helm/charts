@@ -71,7 +71,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `Master.ExtraPorts`               | Open extra ports, for other uses     | Not set                                                                      |
 | `Master.CustomConfigMap`          | Use a custom ConfigMap               | `false`                                                                      |
 | `Master.AdditionalConfig`          | Add additional config files         | `{}`                                                                      |
-| `Master.OverwriteConfig`          | Replace config w/ ConfigMap on boot  | `false`                                                                      |
+| `Master.OverwriteConfig`          | Overwrite configs and init scripts on boot  | `false`                                                                      |
 | `Master.Ingress.Annotations`      | Ingress annotations                  | `{}`                                                                         |
 | `Master.Ingress.Path`             | Ingress path                         | Not set                                                                         |
 | `Master.Ingress.TLS`              | Ingress TLS configuration            | `[]`                                                                         |

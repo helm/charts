@@ -218,10 +218,14 @@ data:
     yes n | cp -i /var/jenkins_config/config.xml /var/jenkins_home;
     yes n | cp -i /var/jenkins_config/jenkins.CLI.xml /var/jenkins_home;
     yes n | cp -i /var/jenkins_config/jenkins.model.JenkinsLocationConfiguration.xml /var/jenkins_home;
+{{- end }}
 {{- if .Values.Master.AdditionalConfig }}
 {{- range $key, $val := .Values.Master.AdditionalConfig }}
+    {{- if .Values.Master.OverwriteConfig }}
     cp /var/jenkins_config/{{- $key }} /var/jenkins_home;
-{{- end }}
+    {{- else  }}
+    yes n | cp -i /var/jenkins_config/{{- $key }} /var/jenkins_home;
+    {{- end }}
 {{- end }}
 {{- end }}
 {{- if .Values.Master.InstallPlugins }}
@@ -233,22 +237,42 @@ data:
     yes n | cp -i /usr/share/jenkins/ref/plugins/* /var/jenkins_plugins/;
 {{- end }}
 {{- if .Values.Master.ScriptApproval }}
+    {{- if .Values.Master.OverwriteConfig }}
+    cp /var/jenkins_config/scriptapproval.xml /var/jenkins_home/scriptApproval.xml;
+    {{- else }}
     yes n | cp -i /var/jenkins_config/scriptapproval.xml /var/jenkins_home/scriptApproval.xml;
+    {{- end }}
 {{- end }}
 {{- if .Values.Master.InitScripts }}
     mkdir -p /var/jenkins_home/init.groovy.d/;
+    {{- if .Values.Master.OverwriteConfig }}
+    cp /var/jenkins_config/*.groovy /var/jenkins_home/init.groovy.d/;
+    {{- else }}
     yes n | cp -i /var/jenkins_config/*.groovy /var/jenkins_home/init.groovy.d/;
+    {{- end }}
 {{- end }}
 {{- if .Values.Master.CredentialsXmlSecret }}
+    {{- if .Values.Master.OverwriteConfig }}
+    cp /var/jenkins_credentials/credentials.xml /var/jenkins_home;
+    {{- else }}
     yes n | cp -i /var/jenkins_credentials/credentials.xml /var/jenkins_home;
+    {{- end }}
 {{- end }}
 {{- if .Values.Master.SecretsFilesSecret }}
+    {{- if .Values.Master.OverwriteConfig }}
+    cp /var/jenkins_secrets/* /usr/share/jenkins/ref/secrets/;
+    {{- else }}
     yes n | cp -i /var/jenkins_secrets/* /usr/share/jenkins/ref/secrets/;
+    {{- end }}
 {{- end }}
 {{- if .Values.Master.Jobs }}
     for job in $(ls /var/jenkins_jobs); do
       mkdir -p /var/jenkins_home/jobs/$job
+      {{- if .Values.Master.OverwriteConfig }}
+      cp /var/jenkins_jobs/$job /var/jenkins_home/jobs/$job/config.xml
+      {{- else }}
       yes n | cp -i /var/jenkins_jobs/$job /var/jenkins_home/jobs/$job/config.xml
+      {{- end }}
     done
 {{- end }}
 {{- range $key, $val := .Values.Master.InitScripts }}
