@@ -45,6 +45,7 @@ spec:
           volumeMounts:
             - name: log
               mountPath: /var/log
+              readOnly: true
             - name: localtime
               mountPath: /etc/localtime
               readOnly: true
