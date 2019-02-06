@@ -40,7 +40,7 @@ Testing charts with default values may not be suitable in all cases. For instanc
 
 In order to enable custom test values, create a directory `ci` in the chart's directory and add any number of `*-values.yaml` files to this directory. Only files with a suffix `-values.yaml` are considered. Instead of using the defaults, the chart is then installed and tested separately for each of these files using the `--values` flag.
 
-Please note that the "no value at all" set (i.e only using the default values) has to be explicitly defined in a test file in order to be tested.
+Please note that in order to test using the default values when using the `ci` directory, an empty values file must be present in the directory.
 
 For examples, you can take a look at existing tests in this repository (e.g. [Kibana Chart](https://github.com/helm/charts/tree/7755cea24c028db07e2e36933ec13c28efea9a32/stable/kibana/ci)).
 
