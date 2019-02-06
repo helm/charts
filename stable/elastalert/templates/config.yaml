@@ -42,3 +42,4 @@ data:
 {{- end }}
     alert_time_limit:
       minutes: {{ .Values.alertRetryLimitMins }}
+{{ toYaml .Values.extraConfigOptions | indent 4 }}
