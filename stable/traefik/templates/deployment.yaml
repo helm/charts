@@ -69,7 +69,7 @@ spec:
             memory: {{ .Values.memoryLimit | quote }}
         readinessProbe:
           tcpSocket:
-            port: {{ .Values.entrypoints.http.address | quote }}
+            port: {{ template "entrypoints.address.port" .Values.entrypoints.http.address }}
           failureThreshold: 1
           initialDelaySeconds: 10
           periodSeconds: 10
@@ -77,7 +77,7 @@ spec:
           timeoutSeconds: 2
         livenessProbe:
           tcpSocket:
-            port: {{ .Values.entrypoints.http.address | quote }}
+            port: {{ template "entrypoints.address.port" .Values.entrypoints.http.address }}
           failureThreshold: 3
           initialDelaySeconds: 10
           periodSeconds: 10
@@ -108,23 +108,23 @@ spec:
         {{- end }}
         ports:
         - name: http
-          containerPort: {{ .Values.entrypoints.http.address | quote }}
+          containerPort: {{ template "entrypoints.address.port" .Values.entrypoints.http.address }}
           {{- if .Values.deployment.hostPort.httpEnabled }}
           hostPort: 80
           {{- end }}
           protocol: TCP
         - name: httpn
-          containerPort: {{ .Values.entrypoints.httpn.address | quote }}
+          containerPort: {{ template "entrypoints.address.port" .Values.entrypoints.httpn.address }}
           protocol: TCP
         - name: https
-          containerPort: {{ .Values.entrypoints.https.address | quote }}
+          containerPort: {{ template "entrypoints.address.port" .Values.entrypoints.https.address }}
           {{- if .Values.deployment.hostPort.httpsEnabled }}
           hostPort: 443
           {{- end }}
           protocol: TCP
         {{- if .Values.dashboard.enabled }}
         - name: dash
-          containerPort: {{ .Values.entrypoints.traefik.address | quote }}
+          containerPort: {{ template "entrypoints.address.port" .Values.entrypoints.traefik.address }}
           {{- if .Values.deployment.hostPort.dashboardEnabled }}
           hostPort: 8080
           {{- end }}

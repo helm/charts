@@ -22,5 +22,5 @@ spec:
   ports:
   - name: dashboard-http
     port: 80
-    targetPort: 8080
+    targetPort: {{ template "entrypoints.address.port" .Values.entrypoints.traefik.address }}
 {{- end }}

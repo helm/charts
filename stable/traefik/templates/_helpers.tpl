@@ -27,6 +27,15 @@ If release name contains chart name it will be used as a full name.
 {{- end -}}
 
 {{/*
+Using entrypoint address format ([^:]:[0-9]+) as input, return port
+*/}}
+{{- define "entrypoints.address.port"}}
+  {{- with $list := splitList ":" . -}}
+    {{- index $list 1 -}}
+  {{- end -}}
+{{- end -}}
+
+{{/*
 Create the block for the ProxyProtocol's Trusted IPs.
 */}}
 {{- define "traefik.trustedips" -}}
