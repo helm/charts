@@ -40,13 +40,14 @@ spec:
     app: {{ template "traefik.name" . }}
     release: {{ .Release.Name }}
   ports:
-  - port: 80
+  - port: {{ .Values.loadBalancer.http.port }}
     name: http
     {{- if (and (eq .Values.serviceType "NodePort") (not (empty .Values.service.nodePorts.http)))}}
     nodePort: {{ .Values.service.nodePorts.http }}
     {{- end }}
     targetPort: http
-  - port: 443
+  {{- if .Values.loadBalancer.https.enabled }}
+  - port: {{ .Values.loadBalancer.https.port }}
     name: https
     {{- if (and (eq .Values.serviceType "NodePort") (not (empty .Values.service.nodePorts.https)))}}
     nodePort: {{ .Values.service.nodePorts.https }}
@@ -54,6 +55,7 @@ spec:
     {{- if not .Values.ssl.enabled }}
     targetPort: httpn
     {{- end }}
+  {{- end }}
   {{- if (and (.Values.metrics.prometheus.enabled) (not (.Values.metrics.prometheus.restrictAccess)))}}
   - port: 8080
     name: metrics

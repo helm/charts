@@ -5,6 +5,14 @@ imageTag: 1.7.7
 serviceType: LoadBalancer
 # loadBalancerIP: ""
 # loadBalancerSourceRanges: []
+# default listener ports for load balancer
+loadBalancer:
+  http:
+    port: 80
+  https:
+    enabled: true
+    port: 443
+
 whiteListSourceRange: []
 externalTrafficPolicy: Cluster
 replicas: 1
@@ -311,6 +319,8 @@ service:
   nodePorts:
     http: ""
     https: ""
+
+
   ## If static nodePort configuration is required it can be enabled as below
   ## Configure ports in allowable range (eg. 30000 - 32767 on minikube)
   # nodePorts:
