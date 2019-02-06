@@ -42,9 +42,9 @@ In order to enable custom test values, create a directory `ci` in the chart's di
 
 Please note that the "no value at all" set (i.e only using the default values) has to be explicitly defined in a test file in order to be tested.
 
-You can have a look at existing tests in this repository, like the ones defined for the [Kibana Chart](https://github.com/helm/charts/tree/master/stable/kibana/ci).
+For examples, you can take a look at existing tests in this repository (e.g. [Kibana Chart](https://github.com/helm/charts/tree/7755cea24c028db07e2e36933ec13c28efea9a32/stable/kibana/ci)).
 
-Please also note that it is different than a "[Helm Chart Test](https://github.com/helm/helm/blob/master/docs/chart_tests.md)".
+Please also note that it is a different concept than "[Helm Chart Test](https://github.com/helm/helm/blob/master/docs/chart_tests.md)", although the Helm Chart test, if defined, will be run by this test tool for each test values.
 
 #### Triggering
 
