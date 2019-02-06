@@ -1,0 +1,15 @@
+name: snipeit
+version: 1.0.0
+appVersion: 4.6.8
+description: A free open source IT asset/license management system
+keywords:
+- snipeit
+- inventory
+- asset management
+home: https://snipeitapp.com
+icon: https://snipeitapp.com/img/logos/snipe-it-logo-xs.png
+sources:
+- https://github.com/snipe/snipe-it
+maintainers:
+- name: mschmidt291
+  email: max.schmidt@t3n.de

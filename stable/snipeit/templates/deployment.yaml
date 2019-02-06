@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "snipeit.fullname" . }}
+  labels:
+    app: {{ template "snipeit.name" . }}
+    chart: {{ template "snipeit.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+  selector:
+    matchLabels:
+      component: app
+      app: {{ template "snipeit.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        component: app
+        app: {{ template "snipeit.fullname" . }}
+        release: {{ .Release.Name }}
+      annotations:
+        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+    spec:
+      containers:
+        - name: {{ template "snipeit.fullname" . }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: APP_ENV
+              value: {{ .Values.config.snipeit.env | quote }}
+            - name: APP_DEBUG
+              value: {{ .Values.config.snipeit.debug | quote }}
+            - name: APP_URL
+              value: {{ .Values.config.snipeit.url | quote }}
+            - name: APP_TIMEZONE
+              value: {{ .Values.config.snipeit.timezone | quote }}
+            - name: APP_LOCALE
+              value: {{ .Values.config.snipeit.locale | quote }}
+          envFrom:
+            - secretRef:
+                name: {{ template "snipeit.fullname" . }}
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /login
+              port: 80
+            periodSeconds: 15
+            timeoutSeconds: 3
+          readinessProbe:
+            httpGet:
+              path: /login
+              port: 80
+            periodSeconds: 15
+            timeoutSeconds: 3
+        {{- with .Values.resources }}
+          resources:
+            {{ toYaml . | nindent 12 }}
+        {{- end }}
+          volumeMounts:
+            - name: data
+              mountPath: {{ .Values.persistence.www.mountPath }}
+              subPath: {{ .Values.persistence.www.subPath }}
+            - name: data
+              mountPath: {{ .Values.persistence.sessions.mountPath }}
+              subPath: {{ .Values.persistence.sessions.subPath }}
+      volumes:
+        - name: data
+        {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "snipeit.fullname" . }}{{- end }}
+        {{- else }}
+          emptyDir: {}
+        {{- end }}

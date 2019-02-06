@@ -1,0 +1,19 @@
+{{- if (eq (.Values.replicaCount | toString) "0") }}
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ template "snipeit.fullname" . }}
+  labels:
+    app: {{ template "snipeit.name" . }}
+    component: app
+    chart: {{ template "snipeit.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "snipeit.fullname" . }}
+      component: app
+      release: {{ .Release.Name }}
+  maxUnavailable: {{ if .Values.maxUnavailable }}{{ .Values.maxUnavailable }}{{- else }}{{ ceil (div .Values.replicaCount 2) }}{{- end }}
+{{- end }}

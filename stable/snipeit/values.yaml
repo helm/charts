@@ -1,0 +1,90 @@
+replicaCount: 1
+revisionHistoryLimit: 0
+
+## PodDisruptionBudget
+## ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/#specifying-a-poddisruptionbudget
+# maxUnavailable: 1
+
+image:
+  repository: snipe/snipe-it
+  tag: v4.6.8
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  annotations: {}
+
+config:
+  mysql:
+  ## All of these values are only used when mysql.enabled is set to false
+    externalDatabase:
+      user: "snipeit"
+      pass: ""
+      name: db-snipeit
+      host: mysql
+      port: 3306
+
+  snipeit:
+    env: production
+    debug: false
+    url: http://example.local
+    key: ""
+    timezone: Europe/Berlin
+    locale: en
+
+mysql:
+  ## Whether to deploy a mysql server to satisfy the applications database requirements. To use an external database set this to false and configure the externalDatabase parameters
+  enabled: false
+  ## Create a database and a database user
+  ##
+  mysqlUser: snipeit
+  mysqlPassword: ""
+  mysqlDatabase: db-snipeit
+
+  persistence:
+    enabled: true
+      ## mysql data Persistent Volume Storage Class
+      ## If defined, storageClassName: <storageClass>
+      ## If set to "-", storageClassName: "", which disables dynamic provisioning
+      ## If undefined (the default) or set to null, no storageClassName spec is
+      ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+      ##   GKE, AWS & OpenStack)
+      ##
+      # storageClass: "-"
+    accessMode: ReadWriteOnce
+    size: 8Gi
+
+persistence:
+  enabled: true
+  annotations: {}
+  accessMode: ReadWriteMany
+  existingClaim: ""
+  ## database data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  # storageClass: "-"
+  size: 2Gi
+
+  www:
+    mountPath: /var/lib/snipeit
+    subpath: www
+  sessions:
+    mountPath: /var/www/html/storage/framework/sessions
+    subPath: sessions
+
+ingress:
+  enabled: true
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  path: /
+  hosts:
+    - example.local
+  tls: []
+  #  - secretName: example-local
+  #    hosts:
+  #      - example.local

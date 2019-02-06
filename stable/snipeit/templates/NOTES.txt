@@ -1,0 +1,18 @@
+{{- if eq (printf "%s" .Values.config.snipeit.key) "" }}
+##############################################################################
+####   ERROR: You did not provide an Application Key  ####
+##############################################################################
+
+This deployment will be incomplete until you provide an Application Key like this:
+
+helm upgrade {{ .Release.Name }} \
+    --set config.snipeit.key="base64:D5oGA+zhFSVA3VwuoZoQ21RAcwBtJv/RGiqOcZ7BUvI=" stable/snipeit
+
+You can find a unique key by copying it from the container logs.
+{{- else -}}
+{{- if .Values.ingress.enabled }}
+{{- range .Values.ingress.hosts }}
+You can now access SnipeIT through: http{{ if $.Values.ingress.tls }}s{{ end }}://{{ . }}{{ $.Values.ingress.path }}
+{{- end }}
+{{- end }}
+{{- end }}
