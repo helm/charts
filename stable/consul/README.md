@@ -70,6 +70,7 @@ The following table lists the configurable parameters of the consul chart and th
 | `test.imageTag`         | Test container image tag  (used for helm test)     | `v1.4.8-bash`                                 |
 | `test.rbac.create`                      | Create rbac for test container                 | `false`                           |
 | `test.rbac.serviceAccountName`          | Name of existed service account for test container    | ``                         |
+| `additionalLabels`      | Add labels to Pod and StatefulSet     | `{}`                                                       |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
