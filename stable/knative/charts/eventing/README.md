@@ -50,14 +50,14 @@ To install the chart using helm cli:
 
 Knative eventing provides you with an option to choose between Kafka or In memory provisioner.
 
-For in-memory-provisioner in [Values.yaml](https://github.ibm.com/runtimes/cloud-functions-icp/blob/master/knative/charts/eventing/values.yaml) set:
+For in-memory-provisioner in [Values.yaml](./values.yaml) set:
 ```bash
 in-memory-provisioner:
     enabled: true
 kafka-provisioner:
     enabled: false
 ```
-For kafka-provisioner in [Values.yaml](https://github.ibm.com/runtimes/cloud-functions-icp/blob/master/knative/charts/eventing/values.yaml) set:
+For kafka-provisioner in [Values.yaml](./values.yaml) set:
 ```bash
 in-memory-provisioner:
     enabled: false
