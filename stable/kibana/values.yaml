@@ -193,3 +193,22 @@ extraConfigMapMounts: []
   #   configMap: kibana-logtrail
   #   mountPath: /usr/share/kibana/plugins/logtrail/logtrail.json
   #   subPath: logtrail.json
+
+# Add your own init container or uncomment and modify the given example.
+initContainers: []
+  ## Don't start kibana till Elasticsearch is reachable
+  # - name: es-check
+  #   image: "appropriate/curl:latest"
+  #   imagePullPolicy: "IfNotPresent"
+  #   command:
+  #     - "/bin/sh"
+  #     - "-c"
+  #     - |
+  #       is_down=true
+  #       while "$is_down"; do
+  #         if curl -sSf --fail-early --connect-timeout 5 http://elasticsearch:9200; then
+  #           is_down=false
+  #         else
+  #           sleep 5
+  #         fi
+  #       done
