@@ -169,8 +169,8 @@ Master:
   # etc.  Best reference is https://<jenkins_url>/configuration-as-code/reference.  The example below creates a welcome message:
   JCasC:
     enabled: false
-    PluginVersion: 1.4
-    SupportPluginVersion: 1.4
+    PluginVersion: 1.5
+    SupportPluginVersion: 1.5
     ConfigScripts:
       welcome-message: |
         jenkins:
