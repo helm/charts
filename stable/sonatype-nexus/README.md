@@ -66,7 +66,7 @@ The following table lists the configurable parameters of the Nexus chart and the
 | `replicaCount`                              | Number of Nexus service replicas    | `1`                                     |
 | `deploymentStrategy`                        | Deployment Strategy     |  `rollingUpdate` |
 | `nexus.imageName`                           | Nexus image                         | `quay.io/travelaudience/docker-nexus`   |
-| `nexus.imageTag`                            | Version of Nexus                    | `3.9.0`                                 |
+| `nexus.imageTag`                            | Version of Nexus                    | `3.15.2`                                 |
 | `nexus.imagePullPolicy`                     | Nexus image pull policy             | `IfNotPresent`                          |
 | `nexus.env`                                 | Nexus environment variables         | `[{install4jAddVmParams: -Xms1200M -Xmx1200M -XX:MaxDirectMemorySize=2G -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap}]` |
 | `nexus.resources`                           | Nexus resource requests and limits  | `{}`                                    |
@@ -120,7 +120,7 @@ The following table lists the configurable parameters of the Nexus chart and the
 | `nexusBackup.persistence.existingClaim`     | Existing PV name for backup         | `nil`                                   |
 | `ingress.enabled`                           | Create an ingress for Nexus         | `true`                                  |
 | `ingress.annotations`                       | Annotations to enhance ingress configuration  | `{}`                          |
-| `ingress.tls.enabled`                       | Enable TLS                          | `false`                                 |
+| `ingress.tls.enabled`                       | Enable TLS                          | `true`                                 |
 | `ingress.tls.secretName`                    | Name of the secret storing TLS cert, `false` to use the Ingress' default certificate | `nexus-tls`                             |
 | `ingress.path`                              | Path for ingress rules. GCP users should set to `/*` | `/`                    |
 | `tolerations`                               | tolerations list                    | `[]`                                    |
