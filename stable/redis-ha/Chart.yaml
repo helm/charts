@@ -5,7 +5,7 @@ keywords:
 - redis
 - keyvalue
 - database
-version: 3.1.3
+version: 3.1.4
 appVersion: 5.0.3
 description: Highly available Kubernetes implementation of Redis
 icon: https://upload.wikimedia.org/wikipedia/en/thumb/6/6b/Redis_Logo.svg/1200px-Redis_Logo.svg.png
@@ -18,3 +18,4 @@ details:
 sources:
 - https://redis.io/download
 - https://github.com/scality/Zenko/tree/development/1.0/kubernetes/zenko/charts/redis-ha
+- https://github.com/oliver006/redis_exporter
