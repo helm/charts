@@ -67,7 +67,6 @@ spec:
             {{- end }}
           {{- if .Values.controller.stats.enabled }}
             - name: stats
-            - name: stats
               containerPort: {{ .Values.controller.stats.port }}
               protocol: TCP
           {{- end }}

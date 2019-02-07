@@ -159,6 +159,13 @@ $ kubectl create secret generic redshift-user --from-file=redshift-user=~/secret
 ```
 Where `redshift-user.txt` contains the user secret as a single text string.
 
+### Use precreated secret for postgres and redis
+
+You can use a precreated secret for the connection credentials to both postgresql and redis. To do
+so specify in values.yaml `existingAirflowSecret`, where the value is the name of the secret which has
+postgresUser, postgresPassword, and redisPassword defined. If not specified, it will fall back to using
+`secrets.yaml` to store the connection credentials by default.
+
 ### Local binaries
 
 Please note a folder `~/.local/bin` will be automatically created and added to the PATH so that
@@ -196,6 +203,10 @@ Python dependencies installed.
 
 This is the easiest way of deploying your DAGs to Airflow.
 
+If you are using a private Git repo, you can set `dags.gitSecret` to the name of a secret you created containing private keys and a `known_hosts` file.
+
+For example, this will create a secret named `my-git-secret` from your ed25519 key and known_hosts file stored in your home directory:  `kubectl create secret generic my-git-secret --from-file=id_ed25519=~/.ssh/id_ed25519 --from-file=known_hosts=~/.ssh/known_hosts --from-file=id_id_ed25519.pub=~/.ssh/id_ed25519.pub`
+
 ### Embedded DAGs
 
 If you want more control on the way you deploy your DAGs, you can use embedded DAGs, where DAGs
@@ -212,6 +223,18 @@ Example of procedure:
 - Place your DAG inside the `dags` folder of the repository, and ensure your Python dependencies
   are well installed (for example consuming a `requirements.txt` in your `Dockerfile`)
 - Update the value of `airflow.image` in your `values.yaml` and deploy on your Kubernetes cluster
+
+## Logs
+
+You can store Airflow logs on an external volume and mount this volume inside Airflow pods.
+
+This is useful when running the Kubernetes executor to centralize logs across the
+Airflow UI, scheduler, and kubernetes worker pods, which allows for viewing worker log output
+in the airflow UI.
+
+This is controlled by the `logsPersistence.enabled` setting.
+
+Refer to the `Mount a Shared Persistent Volume` section above for details on using persistent volumes.
 
 ## Helm chart Configuration
 
@@ -238,6 +261,7 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `workers.pod.annotations`                | annotations for the worker pods                         | `{}`                      |
 | `workers.secretsDir`                     | directory in which to mount secrets on worker nodes     | /var/airflow/secrets      |
 | `workers.secrets`                        | secrets to mount as volumes on worker nodes             | []                        |
+| `existingAirflowSecret`                  | secret to use for postgres and redis connection         |                           |
 | `ingress.enabled`                        | enable ingress                                          | `false`                   |
 | `ingress.web.host`                       | hostname for the webserver ui                           | ""                        |
 | `ingress.web.path`                       | path of the werbserver ui (read `values.yaml`)          | ``                        |
@@ -255,6 +279,11 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `persistence.storageClass`               | Persistent Volume Storage Class                         | (undefined)               |
 | `persistence.accessMode`                 | PVC access mode                                         | `ReadWriteOnce`           |
 | `persistence.size`                       | Persistant storage size request                         | `1Gi`                     |
+| `logsPersistence.enabled`                | enable persistent storage for logs                      | `false`                   |
+| `logsPersistence.existingClaim`          | if using an existing claim, specify the name here       | `nil`                     |
+| `logsPersistence.storageClass`           | Persistent Volume Storage Class                         | (undefined)               |
+| `logsPersistence.accessMode`             | PVC access mode                                         | `ReadWriteOnce`           |
+| `logsPersistence.size`                   | Persistant storage size request                         | `1Gi`                     |
 | `dags.doNotPickle`                       | should the scheduler disable DAG pickling               | `false`                   |
 | `dags.path`                              | mount path for persistent volume                        | `/usr/local/airflow/dags` |
 | `dags.initContainer.enabled`             | Fetch the source code when the pods starts              | `false`                   |
@@ -263,6 +292,8 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `dags.initContainer.installRequirements` | auto install requirements.txt deps                      | `true`                    |
 | `dags.git.url`                           | url to clone the git repository                         | nil                       |
 | `dags.git.ref`                           | branch name, tag or sha1 to reset to                    | `master`                  |
+| `dags.git.secret`                        | name of a secret containing an ssh deploy key           | nil                       |
+| `logs.path`                              | mount path for logs persistent volume                   | `/usr/local/airflow/logs` |
 | `rbac.create`                            | create RBAC resources                                   | `true`                    |
 | `serviceAccount.create`                  | create a service account                                | `true`                    |
 | `serviceAccount.name`                    | the service account name                                | ``                        |
@@ -273,7 +304,7 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `postgresql.postgresPassword`            | PostgreSQL Password                                     | `airflow`                 |
 | `postgresql.postgresDatabase`            | PostgreSQL Database name                                | `airflow`                 |
 | `postgresql.persistence.enabled`         | Enable Postgres PVC                                     | `true`                    |
-| `postgresql.persistance.storageClass     | Persistant class                                        | (undefined)               |
+| `postgresql.persistance.storageClass`    | Persistant class                                        | (undefined)               |
 | `postgresql.persistance.accessMode`      | Access mode                                             | `ReadWriteOnce`           |
 | `redis.enabled`                          | Create a Redis cluster                                  | `true`                    |
 | `redis.password`                         | Redis password                                          | `airflow`                 |

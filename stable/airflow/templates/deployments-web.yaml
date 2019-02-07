@@ -53,6 +53,10 @@ spec:
               mountPath: /usr/local/git
             - name: dags-data
               mountPath: /dags
+            {{- if .Values.dags.git.secret }}
+            - name: git-clone-secret
+              mountPath: /keys
+            {{- end }}
       {{- end }}
       containers:
         - name: {{ .Chart.Name }}-web
@@ -69,17 +73,17 @@ spec:
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "airflow.fullname" . }}
+                  name: {{ template "airflow.secret" . }}
                   key: postgresUser
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "airflow.fullname" . }}
+                  name: {{ template "airflow.secret" . }}
                   key: postgresPassword
             - name: REDIS_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "airflow.fullname" . }}
+                  name: {{ template "airflow.secret" . }}
                   key: redisPassword
           volumeMounts:
           {{- if .Values.persistence.enabled }}
@@ -90,6 +94,10 @@ spec:
               mountPath: {{ .Values.dags.path }}
             - name: scripts
               mountPath: /usr/local/scripts
+          {{- end }}
+          {{- if .Values.logsPersistence.enabled }}
+            - name: logs-data
+              mountPath: {{ .Values.logs.path }}
           {{- end }}
           args:
             - "bash"
@@ -131,6 +139,11 @@ spec:
         {{- else }}
           emptyDir: {}
         {{- end }}
+        {{- if .Values.logsPersistence.enabled }}
+        - name: logs-data
+          persistentVolumeClaim:
+            claimName: {{ .Values.logsPersistence.existingClaim | default (printf "%s-logs" (include "airflow.fullname" . | trunc 58 )) }}
+        {{- end }}
         {{- if .Values.dags.initContainer.enabled }}
         - name: scripts
           configMap:
@@ -140,4 +153,10 @@ spec:
           configMap:
             name: {{ template "airflow.fullname" . }}-git-clone
             defaultMode: 0755
+        {{- if .Values.dags.git.secret }}
+        - name: git-clone-secret
+          secret:
+            secretName: {{ .Values.dags.git.secret }}
+            defaultMode: 0700
+        {{- end }}
         {{- end }}

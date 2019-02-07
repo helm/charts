@@ -10,7 +10,7 @@
 image:
   registry: docker.io
   repository: bitnami/wordpress
-  tag: 5.0.2
+  tag: 5.0.3
   pullPolicy: IfNotPresent
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.
@@ -58,6 +58,12 @@ wordpressTablePrefix: wp_
 ## Set to `yes` to allow the container to be started with blank passwords
 ## ref: https://github.com/bitnami/bitnami-docker-wordpress#environment-variables
 allowEmptyPassword: "yes"
+
+## Set Apache allowOverride to None
+allowOverrideNone: yes
+
+# ConfigMap with custom wordpress-htaccess.conf file (requires allowOverrideNone to true)
+customHTAccessCM:
 
 ## SMTP mail delivery configuration
 ## ref: https://github.com/bitnami/bitnami-docker-wordpress/#smtp-configuration

@@ -1,9 +1,7 @@
 approvers:
   - lachie83
-  - mgoodness
   - prydonius
   - sameersbn
-  - seanknox
   - viglesiasce
   - foxish
   - unguiculus
@@ -12,3 +10,7 @@ approvers:
   - davidkarlsen
   - paulczar
   - cpanato
+emeritus:
+  - linki
+  - mgoodness
+  - seanknox
