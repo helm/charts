@@ -173,5 +173,7 @@ ssl:
 # To be added to the database server pod(s)
 podAnnotations: {}
 
+podLabels: {}
+
 ## Set pod priorityClassName
 # priorityClassName: {}
