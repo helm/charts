@@ -1,4 +1,4 @@
-{{ if  (.Files.Glob "files/docker-entrypoint-initdb.d/*[sh|js]") }}
+{{ if and (.Files.Glob "files/docker-entrypoint-initdb.d/*.{sh,js}") (not .Values.initdbScriptsConfigMap) }}
 apiVersion: v1
 kind: ConfigMap
 metadata:

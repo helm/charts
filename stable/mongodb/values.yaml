@@ -231,6 +231,13 @@ configmap:
 #    authorization: enabled
 #    #keyFile: /opt/bitnami/mongodb/conf/keyfile
 
+## initdb scripts
+## Specify ConfigMap with scripts to be run at first boot
+## Alternatively, you can put your scripts under the files/docker-entrypoint-initdb.d directory
+## Note: This will override initdbScripts
+##
+# initdbScriptsConfigMap:
+
 ## Prometheus Exporter / Metrics
 ##
 metrics:

@@ -105,6 +105,7 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `readinessProbe.failureThreshold`                  | Minimum consecutive failures for the probe to be considered failed after having succeeded.   | `6`                                                     |
 | `readinessProbe.successThreshold`                  | Minimum consecutive successes for the probe to be considered successful after having failed. | `1`                                                     |
 | `configmap`                                        | MongoDB configuration file to be used                                                        | `nil`                                                   |
+| `initdbScriptsConfigMap`                           | ConfigMap with the initdb scripts                                                            | `nil`                                                   |
 | `metrics.enabled`                                  | Start a side-car prometheus exporter                                                         | `false`                                                 |
 | `metrics.image.registry`                           | MongoDB exporter image registry                                                              | `docker.io`                                             |
 | `metrics.image.repository`                         | MongoDB exporter image name                                                                  | `forekshub/percona-mongodb-exporter`                    |
@@ -172,6 +173,8 @@ Some characteristics of this chart are:
 The [Bitnami MongoDB](https://github.com/bitnami/bitnami-docker-mongodb) image allows you to use your custom scripts to initialize a fresh instance. In order to execute the scripts, they must be located inside the chart folder `files/docker-entrypoint-initdb.d` so they can be consumed as a ConfigMap.
 
 The allowed extensions are `.sh`, and `.js`.
+
+Alternatively, you can also set an external ConfigMap with all the initialization scripts. This is done by setting the `initdbScriptsConfigMap` parameter. Note that this will override the previous option.
 
 ## Persistence
 

@@ -86,3 +86,15 @@ Return the proper image name (for the metrics image)
 {{- printf "%s/%s:%s" $registryName $repositoryName $tag -}}
 {{- end -}}
 
+
+{{ template "mongodb.initdbScriptsCM" . }}
+{{/*
+Get the initialization scripts ConfigMap name.
+*/}}
+{{- define "mongodb.initdbScriptsCM" -}}
+{{- if .Values.initdbScriptsConfigMap -}}
+{{- printf "%s" .Values.initdbScriptsConfigMap -}}
+{{- else -}}
+{{- printf "%s-init-scripts" (include "mongodb.fullname" .) -}}
+{{- end -}}
+{{- end -}}
