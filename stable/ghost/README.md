@@ -54,7 +54,7 @@ The following table lists the configurable parameters of the Ghost chart and the
 | `image.repository`                  | Ghost Image name                                              | `bitnami/ghost`                                          |
 | `image.tag`                         | Ghost Image tag                                               | `{VERSION}`                                              |
 | `image.pullPolicy`                  | Image pull policy                                             | `Always` if `imageTag` is `latest`, else `IfNotPresent`  |
-| `image.pullSecrets`                 | Specify image pull secrets                                    | `nil`                                                    |
+| `image.pullSecrets`                 | Specify docker-registry secret names as an array              | `[]` (does not add image pull secrets to deployed pods)  |
 | `volumePermissions.image.registry`  | Init container volume-permissions image registry              | `docker.io`                                              |
 | `volumePermissions.image.repository`| Init container volume-permissions image name                  | `bitnami/minideb`                                        |
 | `volumePermissions.image.tag`       | Init container volume-permissions image tag                   | `latest`                                                 |
@@ -70,9 +70,9 @@ The following table lists the configurable parameters of the Ghost chart and the
 | `smtpPort`                          | SMTP port                                                     | `nil`                                                    |
 | `smtpUser`                          | SMTP user                                                     | `nil`                                                    |
 | `smtpPassword`                      | SMTP password                                                 | `nil`                                                    |
+| `smtpFromAddress`                   | SMTP from address                                             | `nil`                                                    |
 | `smtpService`                       | SMTP service                                                  | `nil`                                                    |
 | `allowEmptyPassword`                | Allow DB blank passwords                                      | `yes`                                                    |
-| `serviceType`                       | Kubernetes Service type                                       | `LoadBalancer`                                           |
 | `securityContext.enabled`           | Enable security context                                       | `true`                                                   |
 | `securityContext.fsGroup`           | Group ID for the container                                    | `1001`                                                   |
 | `securityContext.runAsUser`         | User ID for the container                                     | `1001`                                                   |
@@ -81,6 +81,7 @@ The following table lists the configurable parameters of the Ghost chart and the
 | `service.nodePorts.http`            | Kubernetes http node port                                     | `""`                                                     |
 | `service.externalTrafficPolicy`     | Enable client source IP preservation                          | `Cluster`                                                |
 | `service.loadBalancerIP`            | LoadBalancerIP for the Ghost service                          | ``                                                       |
+| `service.annotations`            | Service annotations                          | ``                                                       |
 | `ingress.enabled`                   | Enable ingress controller resource                            | `false`                                                  |
 | `ingress.annotations`               | Ingress annotations                                           | `[]`                                                     |
 | `ingress.certManager`               | Add annotations for cert-manager                              | `false`                                                  |

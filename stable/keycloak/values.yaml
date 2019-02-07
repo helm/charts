@@ -11,7 +11,7 @@ keycloak:
 
   image:
     repository: jboss/keycloak
-    tag: 4.5.0.Final
+    tag: 4.8.3.Final
     pullPolicy: IfNotPresent
 
     ## Optionally specify an array of imagePullSecrets.
@@ -61,6 +61,12 @@ keycloak:
     #   value: DEBUG
     # - name: CACHE_OWNERS
     #   value: "2"
+    # - name: DB_QUERY_TIMEOUT
+    #   value: "60"
+    # - name: DB_VALIDATE_ON_MATCH
+    #   value: true
+    # - name: DB_USE_CAST_FAIL
+    #   value: false
 
   affinity: |
     podAntiAffinity:
@@ -125,12 +131,18 @@ keycloak:
     ha: |
       {{ .Files.Get "scripts/ha.cli" }}
 
+    datasource: |
+      {{ .Files.Get "scripts/datasource.cli" }}
+
     # Custom CLI script
     custom: |
 
   ## Add additional volumes and mounts, e. g. for custom themes
   extraVolumes: |
   extraVolumeMounts: |
+
+  ## Add additional ports, eg. for custom admin console
+  extraPorts: |
 
   podDisruptionBudget: {}
     # maxUnavailable: 1

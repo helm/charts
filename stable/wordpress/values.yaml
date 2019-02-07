@@ -10,7 +10,7 @@
 image:
   registry: docker.io
   repository: bitnami/wordpress
-  tag: 5.0.2
+  tag: 5.0.3
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -62,6 +62,12 @@ wordpressTablePrefix: wp_
 ## Set to `false` to allow the container to be started with blank passwords
 ## ref: https://github.com/bitnami/bitnami-docker-wordpress#environment-variables
 allowEmptyPassword: true
+
+## Set Apache allowOverride to None
+allowOverrideNone: no
+
+# ConfigMap with custom wordpress-htaccess.conf file (requires allowOverrideNone to true)
+customHTAccessCM:
 
 ## SMTP mail delivery configuration
 ## ref: https://github.com/bitnami/bitnami-docker-wordpress/#smtp-configuration
@@ -157,6 +163,7 @@ service:
   ## ref http://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip
   ##
   externalTrafficPolicy: Cluster
+  annotations: {}
 
 ## Allow health checks to be pointed at the https port
 healthcheckHttps: false

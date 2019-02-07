@@ -256,6 +256,9 @@ data:
     {{- if .Values.kvprovider.importAcme }}
     storageFile = "/acme/acme.json"
     {{- end }}
+    {{- if or (.Values.kvprovider.importAcme) (eq .Release.Revision 1) }}
+    OverrideCertificates = true
+    {{- end }}
     {{- else }}
     storage = "/acme/acme.json"
     {{- end }}

@@ -1,14 +1,7 @@
 image:
   repository: gcr.io/heptio-images/ark
-  tag: v0.9.1
+  tag: v0.10.1
   pullPolicy: IfNotPresent
-
-# A docker image with kubectl installed
-kubectl:
-  image:
-    repository: claranet/gcloud-kubectl-docker
-    tag: 1.0.0
-    pullPolicy: IfNotPresent
 
 # Only kube2iam: change the AWS_ACCOUNT_ID and HEPTIO_ARK_ROLE_NAME
 podAnnotations: {}
@@ -20,9 +13,6 @@ rbac:
 resources: {}
 
 serviceAccount:
-  hook:
-    create: true
-    name:
   server:
     create: true
     name:
@@ -48,16 +38,30 @@ configuration:
     #  s3ForcePathStyle:
     #  s3Url:
     #  kmsKeyId:
+    #  resourceGroup:
+    #  storageAccount:
 
   backupSyncPeriod: 60m
-  gcSyncPeriod: 60m
-  scheduleSyncPeriod: 1m
-  resourcePriorities: []
+  metricsAddress: ":8085"
+  resticTimeout: 1h
+  restoreResourcePriorities: namespaces,persistentvolumes,persistentvolumeclaims,secrets,configmaps,serviceaccounts,limitranges,pods
   restoreOnlyMode: false
   # additional key/value pairs to be used as environment variables such as "AWS_CLUSTER_NAME: 'yourcluster.domain.tld'"
   extraEnvVars: {}
+
+# Eg:
+# schedules:
+#   mybackup:
+#     schedule: "0 0 * * *"
+#     template:
+#       ttl: "240h"
+#       includedNamespaces:
+#        - foo
+schedules: {}
 
 credentials:
   existingSecret:
   useSecret: true
   secretContents: {}
+
+deployRestic: false
