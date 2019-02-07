@@ -65,7 +65,7 @@ spec:
 {{- end }}
 {{- if or .Values.extraInitContainers .Values.sysctlInitContainer.enabled }}
       initContainers:
-{{- if .Values.enableSysctlInitContainer }}
+{{- if .Values.sysctlInitContainer.enabled }}
       # see https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html
       # and https://www.elastic.co/guide/en/elasticsearch/reference/current/setup-configuration-memory.html#mlockall
       - name: "sysctl"
