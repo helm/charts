@@ -25,6 +25,10 @@ Please also see https://github.com/kubernetes-helm/chartmuseum
   - [Using an existing secret](#using-an-existing-secret)
   - [Using with local filesystem storage](#using-with-local-filesystem-storage)
     - [Example storage class](#example-storage-class)
+  - [Ingress](#ingress)
+    - [Hosts](#hosts)
+    - [Annotations](#annotations)
+    - [Example Ingress configuration](#example-ingress-configuration)
 - [Uninstall](#uninstall)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -135,6 +139,11 @@ their default values. See values.yaml for all available options.
 | `service.labels`                       | Additional labels for service               | `{}`                                                |
 | `deployment.labels`                    | Additional labels for deployment            | `{}`                                                |
 | `deployment.matchlabes`                | Match labels for deployment selector        | `{}`                                                |
+| `ingress.enabled`                      | Enable ingress controller resource          | `false`                                             |
+| `ingress.annotations`                  | Ingress annotations                         | `[]`                                                |
+| `ingress.labels`                       | Ingress labels                              | `[]`                                                |
+| `ingress.hosts[0].name`                | Hostname for the ingress                    | ``                                                  |
+| `ingress.hosts[0].path`                | Path within the url structure               | ``                                                  |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to
 `helm install`.
@@ -501,6 +510,29 @@ parameters:
   pool: chartstore
   userId: user
   userSecretName: thesecret
+```
+
+### Ingress
+
+This chart provides support for ingress resources. If you have an ingress controller installed on your cluster, such as [nginx-ingress](https://hub.kubeapps.com/charts/stable/nginx-ingress) or [traefik](https://hub.kubeapps.com/charts/stable/traefik) you can utilize the ingress controller to expose Kubeapps.
+
+To enable ingress integration, please set `ingress.enabled` to `true`
+
+#### Hosts
+
+Most likely you will only want to have one hostname that maps to this Chartmuseum installation, however, it is possible to have more than one host. To facilitate this, the `ingress.hosts` object is an array.
+
+#### Annotations
+
+For annotations, please see [this document for nginx](https://github.com/kubernetes/ingress-nginx/blob/master/docs/user-guide/nginx-configuration/annotations.md) and [this document for Traefik](https://docs.traefik.io/configuration/backends/kubernetes/#general-annotations). Not all annotations are supported by all ingress controllers, but this document does a good job of indicating which annotation is supported by many popular ingress controllers. Annotations can be set using `ingress.annotations`.
+
+#### Example Ingress configuration
+
+```shell
+helm install --name my-chartmuseum stable/chartmuseum \
+  --set ingress.enabled=true \
+  --set ingress.hosts[0].name=chartmuseum.domain.com \
+  --set ingress.hosts[0].path=/
 ```
 
 ## Uninstall
