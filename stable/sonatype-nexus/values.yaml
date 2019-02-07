@@ -10,7 +10,7 @@ deploymentStrategy: {}
 
 nexus:
   imageName: quay.io/travelaudience/docker-nexus
-  imageTag: 3.14.0
+  imageTag: 3.15.2
   imagePullPolicy: IfNotPresent
   env:
     - name: install4jAddVmParams
@@ -63,7 +63,7 @@ nexusProxy:
   enabled: true
   # svcName: proxy-svc
   imageName: quay.io/travelaudience/docker-nexus-proxy
-  imageTag: 2.4.0
+  imageTag: 2.4.0_8u191
   imagePullPolicy: IfNotPresent
   port: 8080
   targetPort: 8080
