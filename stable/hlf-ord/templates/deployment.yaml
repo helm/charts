@@ -125,7 +125,7 @@ spec:
               echo "\033[0;32m Create ${ORDERER_FILELEDGER_LOCATION} directory to avoid restarts \033[0m"
               mkdir -p ${ORDERER_FILELEDGER_LOCATION}
               mkdir -p ${ORDERER_FILELEDGER_LOCATION}/index
-
+              export ORDERER_GENERAL_TLS_ROOTCAS=[$ORDERER_GENERAL_TLS_ROOTCAS]
               if [ $ORDERER_GENERAL_TLS_CLIENTAUTHREQUIRED ]
               then
                 export ORDERER_GENERAL_TLS_CLIENTROOTCAS=$(echo $(ls $ORDERER_GENERAL_TLS_CLIENTROOTCAS) | echo "[$(sed 's/ /,/g')]")
