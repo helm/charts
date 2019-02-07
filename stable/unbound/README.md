@@ -63,6 +63,7 @@ unbound.serverPort: 53
 | Property                 | Default value               |
 | ------------------------ | --------------------------- |
 | replicaCount             | 1                           |
+| externalIP               | ""                          |
 | unbound.image.repository | markbnj/unbound-docker      |
 | unbound.image.tag        | 0.1.0                       |
 | unbound.image.pullPolicy | IfNotPresent                |
