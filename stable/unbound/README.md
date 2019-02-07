@@ -82,6 +82,7 @@ unbound.serverPort: 53
 | allowedIpRanges          | []                          |
 | forwardZones             | []                          |
 | localRecords             | []                          |
+| localZones               | []                          |
 
 ### Configuration changes
 

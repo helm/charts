@@ -51,3 +51,15 @@ data:
         forward-addr: {{ . }}
         {{- end }}
     {{- end }}
+
+    {{- range .Values.stubZones }}
+
+    stub-zone:
+        name: {{ .name }}
+        {{- range .stubHosts }}
+        stub-host: {{ . }}
+        {{- end }}
+        {{- range .stubIps }}
+        stub-addr: {{ . }}
+        {{- end }}
+    {{- end }}
