@@ -40,6 +40,10 @@ data:
         local-data: "health.check.unbound A 127.0.0.1"
         local-data-ptr: "127.0.0.1 health.check.unbound"
 
+    {{- range .Values.localZones }}
+        local-zone: "{{ .name }}" {{ .localType }}
+    {{- end }}
+
     {{- range .Values.forwardZones }}
 
     forward-zone:

@@ -81,6 +81,7 @@ unbound.serverPort: 53
 | affinity                 | {}                          |
 | allowedIpRanges          | []                          |
 | forwardZones             | []                          |
+| stubZones                | []                          |
 | localRecords             | []                          |
 | localZones               | []                          |
 
