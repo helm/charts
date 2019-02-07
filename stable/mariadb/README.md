@@ -141,7 +141,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 ```bash
 $ helm install --name my-release \
-  --set root.password=secretpassword,user.database=app_database \
+  --set rootUser.password=secretpassword,db.user=app_database \
     stable/mariadb
 ```
 
