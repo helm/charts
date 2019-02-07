@@ -246,7 +246,7 @@ spec:
       - name: secrets-dir
         emptyDir: {}
       - name: jenkins-home
-      {{- if .Values.Persistence.Enabled }}
+      {{- if .Values.Persistence.PersistHomePath }}
         persistentVolumeClaim:
           claimName: {{ .Values.Persistence.ExistingClaim | default (include "jenkins.fullname" .) }}
       {{- else }}

@@ -219,6 +219,16 @@ Persistence:
   ##
   # StorageClass: "-"
 
+  # If `PersistHomePath` is set to `false`, but `Enabled` is set to `true`,
+  # then you can add any custom paths using `volumes` and `mounts` to persist
+  # data, without being forced to also persist the default Jenkins home path.
+  #
+  # This is useful if you want to set up an almost stateless Jenkins set-up
+  # that is bootstrapped at boot, and ignore any configuration changes made
+  # via the Jenkins UI, while still being able to persist data such as job
+  # history, or user profiles.
+  PersistHomePath: true
+
   Annotations: {}
   AccessMode: ReadWriteOnce
   Size: 8Gi
