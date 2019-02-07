@@ -55,9 +55,10 @@ spec:
       {{- end }}
       protocol: TCP
     {{- if and (eq $root.Values.external.type "LoadBalancer") ( $root.Values.external.distinct) }}
-    - name: external-broker-listenport
+    - name: external-listenport
       port: {{ $externalListenerPort }}
       targetPort: {{ $externalListenerPort }}
+      protocol: TCP
     {{- end }}    
     
   {{- if and (eq $root.Values.external.type "LoadBalancer") (eq $loadBalancerIPLen $replicas) }}
