@@ -1,7 +1,7 @@
 apiVersion: v1
 name: lnd
-version: 0.1.1
-appVersion: 0.5.1
+version: 0.1.2
+appVersion: 0.5.2
 description: A golang implementation of a Lightning Network node
 keywords:
   - lnd

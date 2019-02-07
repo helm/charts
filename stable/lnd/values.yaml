@@ -4,7 +4,7 @@
 
 image:
   repository: thesisco/lnd
-  tag: v0.5.1-beta-patched-ab5fd865f966388798b2667e3dbb0d8b87a894a6
+  tag: v0.5.2-beta-patched-9473cd545b5a39e7d37fafeaad743b127265d00c
   pullPolicy: IfNotPresent
 
 # Ports that are exposed to other pods in your cluster
