@@ -58,6 +58,7 @@ spec:
         args:
         - -v=2
         - -namespace={{ .Values.sparkJobNamespace }}
+        - -ingress-url-format={{ .Values.ingressUrlFormat }}
         - -install-crds={{ .Values.installCrds }}
         - -controller-threads={{ .Values.controllerThreads }}
         - -resync-interval={{ .Values.resyncInterval }}
