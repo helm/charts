@@ -6,6 +6,7 @@ pipeline:
     charts:
     - stable/drone
     - stable/rabbitmq-ha
+    - incubator/kafka
     helm_repo: https://charts.infra.redmart.com
     when:
       branch: [master]
