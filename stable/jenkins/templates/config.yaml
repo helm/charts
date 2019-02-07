@@ -30,9 +30,9 @@ data:
       <workspaceDir>${JENKINS_HOME}/workspace/${ITEM_FULLNAME}</workspaceDir>
       <buildsDir>${ITEM_ROOTDIR}/builds</buildsDir>
 {{- if .Values.Master.EnableRawHtmlMarkupFormatter }}
-  <markupFormatter class="hudson.markup.RawHtmlMarkupFormatter" plugin="antisamy-markup-formatter">
-    <disableSyntaxHighlighting>true</disableSyntaxHighlighting>
-  </markupFormatter>
+      <markupFormatter class="hudson.markup.RawHtmlMarkupFormatter" plugin="antisamy-markup-formatter">
+        <disableSyntaxHighlighting>true</disableSyntaxHighlighting>
+      </markupFormatter>
 {{- else }}
       <markupFormatter class="hudson.markup.EscapedMarkupFormatter"/>
 {{- end }}
