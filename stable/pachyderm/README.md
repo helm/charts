@@ -134,10 +134,10 @@ $ helm install --namespace pachyderm --name my-release -f values.yaml stable/pac
 Accessing the pachd service
 ---------------------------
 
-In order to use Pachyderm, please login through ssh to the master node and install the Pachyderm client:
+In order to use Pachyderm you can install the Pachyderm client:
 
 ```console
-$ curl -o /tmp/pachctl.deb -L https://github.com/pachyderm/pachyderm/releases/download/v1.7.3/pachctl_1.7.3_amd64.deb && sudo dpkg -i /tmp/pachctl.deb
+$ curl -o /tmp/pachctl.deb -L https://github.com/pachyderm/pachyderm/releases/download/v1.8.3/pachctl_1.8.3_amd64.deb && sudo dpkg -i /tmp/pachctl.deb
 ```
 
 Please note that the client version should correspond with the pachd service version. For more information please consult: http://pachyderm.readthedocs.io/en/latest/index.html. Also, if you have your kubernetes client properly configured to talk with your remote cluster, you can simply install `pachctl` on your local machine and execute: `pachctl --namespace <namespace> port-forward &`.
