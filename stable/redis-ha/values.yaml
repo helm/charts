@@ -91,6 +91,23 @@ affinity: |
               release: {{ .Release.Name }}
           topologyKey: failure-domain.beta.kubernetes.io/zone
 
+# Prometheus exporter specific configuration options
+exporter:
+  enabled: false
+  image: oliver006/redis_exporter
+  tag: v0.28.0
+  pullPolicy: IfNotPresent
+
+  # prometheus port & scrape path
+  port: 9121
+  scrapePath: /metrics
+
+  # cpu/memory resource limits/requests
+  resources: {}
+
+  # Additional args for redis exporter
+  extraArgs: {}
+
 podDisruptionBudget: {}
   # maxUnavailable: 1
   # minAvailable: 1
