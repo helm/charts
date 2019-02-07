@@ -5,7 +5,7 @@ on_minikube: false
 image:
   fluent_bit:
     repository: fluent/fluent-bit
-    tag: 1.0.3
+    tag: 1.0.4
   pullPolicy: IfNotPresent
 
 # When enabled, exposes json and prometheus metrics on {{ .Release.Name }}-metrics service
@@ -181,6 +181,7 @@ affinity: {}
 input:
   tail:
     memBufLimit: 5MB
+    parser: docker
     path: /var/log/containers/*.log
   systemd:
     enabled: false

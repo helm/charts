@@ -34,9 +34,9 @@ deployment:
 
 service:
   type: ClusterIP
+  # clusterIP: None
+  # portName: kibana-svc
   externalPort: 443
-  # disables the internal port if set to true; to be used with a sidecar
-  disableInternalPort: false
   internalPort: 5601
   # authProxyPort: 5602 To be used with authProxyEnabled and a proxy extraContainer
   ## External IP addresses of service
