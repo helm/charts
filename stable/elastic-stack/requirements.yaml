@@ -6,6 +6,7 @@ dependencies:
 - name: kibana
   version: ^1.4.0
   repository: https://kubernetes-charts.storage.googleapis.com/
+  condition: kibana.enabled
 - name: filebeat
   version: ^1.2.0
   repository: https://kubernetes-charts.storage.googleapis.com/
