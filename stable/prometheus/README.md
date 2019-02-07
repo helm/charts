@@ -46,11 +46,11 @@ Users of this chart will need to update their alerting rules to the new format b
 
 ## Upgrading from previous chart versions.
 
-As of version 5.0, this chart uses Prometheus 2.1. This version of prometheus introduces a new data format and is not compatible with prometheus 1.x. It is recommended to install this as a new release, as updating existing releases will not work. See the [prometheus docs](https://prometheus.io/docs/prometheus/latest/migration/#storage) for instructions on retaining your old data.
+As of version 5.0, this chart uses Prometheus 2.x. This version of prometheus introduces a new data format and is not compatible with prometheus 1.x. It is recommended to install this as a new release, as updating existing releases will not work. See the [prometheus docs](https://prometheus.io/docs/prometheus/latest/migration/#storage) for instructions on retaining your old data.
 
 ### Example migration
 
-Assuming you have an existing release of the prometheus chart, named `prometheus-old`. In order to update to prometheus 2.1 while keeping your old data do the following:
+Assuming you have an existing release of the prometheus chart, named `prometheus-old`. In order to update to prometheus 2.x while keeping your old data do the following:
 
 1. Update the `prometheus-old` release. Disable scraping on every component besides the prometheus server, similar to the configuration below:
 
@@ -156,7 +156,7 @@ Parameter | Description | Default
 `kubeStateMetrics.enabled` | If true, create kube-state-metrics | `true`
 `kubeStateMetrics.name` | kube-state-metrics container name | `kube-state-metrics`
 `kubeStateMetrics.image.repository` | kube-state-metrics container image repository| `quay.io/coreos/kube-state-metrics`
-`kubeStateMetrics.image.tag` | kube-state-metrics container image tag | `v1.4.0`
+`kubeStateMetrics.image.tag` | kube-state-metrics container image tag | `v1.5.0`
 `kubeStateMetrics.image.pullPolicy` | kube-state-metrics container image pull policy | `IfNotPresent`
 `kubeStateMetrics.args` | kube-state-metrics container arguments | `{}`
 `kubeStateMetrics.nodeSelector` | node labels for kube-state-metrics pod assignment | `{}`
@@ -227,18 +227,22 @@ Parameter | Description | Default
 `rbac.create` | If true, create & use RBAC resources | `true`
 `server.name` | Prometheus server container name | `server`
 `server.image.repository` | Prometheus server container image repository | `prom/prometheus`
-`server.image.tag` | Prometheus server container image tag | `v2.6.0`
+`server.image.tag` | Prometheus server container image tag | `v2.7.1`
 `server.image.pullPolicy` | Prometheus server container image pull policy | `IfNotPresent`
 `server.enableAdminApi` |  If true, Prometheus administrative HTTP API will be enabled. Please note, that you should take care of administrative API access protection (ingress or some frontend Nginx with auth) before enabling it. | `false`
+`server.configPath` |  Path to a prometheus server config file on the container FS  | `/etc/config/prometheus.yml`
 `server.global.scrape_interval` | How frequently to scrape targets by default | `1m`
 `server.global.scrape_timeout` | How long until a scrape request times out | `10s`
 `server.global.evaluation_interval` | How frequently to evaluate rules | `1m`
 `server.extraArgs` | Additional Prometheus server container arguments | `{}`
 `server.prefixURL` | The prefix slug at which the server can be accessed | ``
 `server.baseURL` | The external url at which the server can be accessed | ``
+`server.env` | Prometheus server environment variables | `[]`
 `server.extraHostPathMounts` | Additional Prometheus server hostPath mounts | `[]`
 `server.extraConfigmapMounts` | Additional Prometheus server configMap mounts | `[]`
 `server.extraSecretMounts` | Additional Prometheus server Secret mounts | `[]`
+`server.extraVolumeMounts` | Additional Prometheus server Volume mounts | `[]`
+`server.extraVolumes` | Additional Prometheus server Volumes | `[]`
 `server.configMapOverrideName` | Prometheus server ConfigMap override where full-name is `{{.Release.Name}}-{{.Values.server.configMapOverrideName}}` and setting this value will prevent the default server ConfigMap from being generated | `""`
 `server.ingress.enabled` | If true, Prometheus server Ingress will be created | `false`
 `server.ingress.annotations` | Prometheus server Ingress annotations | `[]`
@@ -277,6 +281,7 @@ Parameter | Description | Default
 `server.service.nodePort` | Port to be used as the service NodePort (ignored if `server.service.type` is not `NodePort`) | `0`
 `server.service.servicePort` | Prometheus server service port | `80`
 `server.service.type` | type of Prometheus server service to create | `ClusterIP`
+`server.sidecarContainers` | array of snippets with your sidecar containers for prometheus server | `""`
 `serviceAccounts.alertmanager.create` | If true, create the alertmanager service account | `true`
 `serviceAccounts.alertmanager.name` | name of the alertmanager service account to use or create | `{{ prometheus.alertmanager.fullname }}`
 `serviceAccounts.kubeStateMetrics.create` | If true, create the kubeStateMetrics service account | `true`

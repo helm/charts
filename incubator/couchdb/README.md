@@ -108,11 +108,14 @@ A variety of other parameters are also configurable. See the comments in the
 | `adminPassword`                 | auto-generated                         |
 | `cookieAuthSecret`              | auto-generated                         |
 | `helperImage.repository`        | kocolosk/couchdb-statefulset-assembler |
-| `helperImage.tag`               | 0.1.0                                  |
+| `helperImage.tag`               | 1.2.0                                  |
 | `helperImage.pullPolicy`        | IfNotPresent                           |
 | `image.repository`              | couchdb                                |
-| `image.tag`                     | 2.2.0                                  |
+| `image.tag`                     | 2.3.0                                  |
 | `image.pullPolicy`              | IfNotPresent                           |
+| `initImage.repository`          | busybox                                |
+| `initImage.tag`                 | latest                                 |
+| `initImage.pullPolicy`          | Always                                 |
 | `ingress.enabled`               | false                                  |
 | `ingress.hosts`                 | chart-example.local                    |
 | `ingress.annotations`           |                                        |

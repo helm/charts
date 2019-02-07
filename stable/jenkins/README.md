@@ -40,6 +40,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `Master.UseSecurity`              | Use basic security                   | `true`                                                                       |
 | `Master.SecurityRealm`            | Custom Security Realm                | Not set                                                                      |
 | `Master.AuthorizationStrategy`    | Jenkins XML job config for AuthorizationStrategy | Not set                                                                      |
+| `Master.DeploymentLabels`         | Custom Deployment labels             | Not set                                                                      |
 | `Master.ServiceLabels`            | Custom Service labels                | Not set                                                                      |
 | `Master.AdminUser`                | Admin username (and password) created as a secret if useSecurity is true | `admin`                                  |
 | `Master.AdminPassword`            | Admin password (and user) created as a secret if useSecurity is true | Random value                                  |
@@ -57,6 +58,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `Master.HealthProbes`             | Enable k8s liveness and readiness probes | `true`                                                                   |
 | `Master.HealthProbesLivenessTimeout`      | Set the timeout for the liveness probe | `120`                                                       |
 | `Master.HealthProbesReadinessTimeout` | Set the timeout for the readiness probe | `60`                                                       |
+| `Master.HealthProbeReadinessPeriodSeconds` | Set how often (in seconds) to perform the liveness probe | `10`                                                       |
 | `Master.HealthProbeLivenessFailureThreshold` | Set the failure threshold for the liveness probe | `12`                                                       |
 | `Master.SlaveListenerPort`        | Listening port for agents            | `50000`                                                                      |
 | `Master.DisabledAgentProtocols`   | Disabled agent protocols             | `JNLP-connect JNLP2-connect`                                                                      |
@@ -78,6 +80,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `Master.SecretsFilesSecret`       | Kubernetes secret that contains 'secrets' files | Not set                                                           |
 | `Master.Jobs`                     | Jenkins XML job configs              | Not set                                                                      |
 | `Master.InstallPlugins`           | List of Jenkins plugins to install   | `kubernetes:1.14.0 workflow-aggregator:2.6 credentials-binding:1.17 git:3.9.1 workflow-job:2.31` |
+| `Master.EnableRawHtmlMarkupFormatter` | Enable HTML parsing using (see below) | Not set                                                                 |
 | `Master.ScriptApproval`           | List of groovy functions to approve  | Not set                                                                      |
 | `Master.NodeSelector`             | Node labels for pod assignment       | `{}`                                                                         |
 | `Master.Affinity`                 | Affinity settings                    | `{}`                                                                         |
@@ -89,6 +92,8 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `rbac.roleRef`                    | Cluster role name to bind to         | `cluster-admin`                                                              |
 | `rbac.roleKind`            | Role kind (`Role` or `ClusterRole`)| `ClusterRole`
 | `rbac.roleBindingKind`            | Role binding kind (`RoleBinding` or `ClusterRoleBinding`)| `ClusterRoleBinding`                                             |
+
+Some third-party systems, e.g. GitHub, use HTML-formatted data in their payload sent to a Jenkins webhooks, e.g. URL of a pull-request being built. To display such data as processed HTML instead of raw text set `Master.EnableRawHtmlMarkupFormatter` to true. This option requires installation of OWASP Markup Formatter Plugin (antisamy-markup-formatter). The plugin is **not** installed by default, please update `Master.InstallPlugins`.
 
 ### Jenkins Agent
 

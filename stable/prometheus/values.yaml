@@ -315,7 +315,7 @@ kubeStateMetrics:
   ##
   image:
     repository: quay.io/coreos/kube-state-metrics
-    tag: v1.4.0
+    tag: v1.5.0
     pullPolicy: IfNotPresent
 
   ## kube-state-metrics priorityClassName
@@ -512,12 +512,13 @@ server:
   ## Prometheus server container name
   ##
   name: server
+  sidecarContainers:
 
   ## Prometheus server container image
   ##
   image:
     repository: prom/prometheus
-    tag: v2.6.0
+    tag: v2.7.1
     pullPolicy: IfNotPresent
 
   ## prometheus server priorityClassName
@@ -533,9 +534,29 @@ server:
   ## Maybe same with Ingress host name
   baseURL: ""
 
+  ## Additional server container environment variables
+  ##
+  ## You specify this manually like you would a raw deployment manifest.
+  ## This means you can bind in environment variables from secrets.
+  ##
+  ## e.g. static environment variable:
+  ##  - name: DEMO_GREETING
+  ##    value: "Hello from the environment"
+  ##
+  ## e.g. secret environment variable:
+  ## - name: USERNAME
+  ##   valueFrom:
+  ##     secretKeyRef:
+  ##       name: mysecret
+  ##       key: username
+  env: {}
+
   ## This flag controls access to the administrative HTTP API which includes functionality such as deleting time
   ## series. This is disabled by default.
   enableAdminApi: false
+
+  ## Path to a configuration file on prometheus server container FS
+  configPath: /etc/config/prometheus.yml
 
   global:
     ## How frequently to scrape targets by default
@@ -551,6 +572,14 @@ server:
   ## Additional Prometheus server container arguments
   ##
   extraArgs: {}
+
+  ## Additional Prometheus server Volume mounts
+  ##
+  extraVolumeMounts: []
+
+  ## Additional Prometheus server Volumes
+  ##
+  extraVolumes: []
 
   ## Additional Prometheus server hostPath mounts
   ##

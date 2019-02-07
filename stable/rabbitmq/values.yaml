@@ -10,7 +10,7 @@
 image:
   registry: docker.io
   repository: bitnami/rabbitmq
-  tag: 3.7.10
+  tag: 3.7.11
 
   ## set to true if you would like to see extra information on logs
   ## it turns BASH and NAMI debugging in minideb
@@ -54,12 +54,6 @@ rabbitmq:
   ##
   # rabbitmqClusterNodeName:
 
-  ## RabbitMQ Disk free limit
-  ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
-  ## ref: https://www.rabbitmq.com/disk-alarms.html
-  ##
-  diskFreeLimit: '"6GiB"'
-
   ## RabbitMQ Max File Descriptors
   ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
   ## ref: https://www.rabbitmq.com/install-debian.html#kernel-resource-limits
@@ -75,18 +69,24 @@ rabbitmq:
     address_type: ip
     k8s_domain: cluster.local
 
-  ## Configution file content
+  ## Configuration file content: required cluster configuration
+  ## Do not override unless you know what you are doing. To add more configuration, use `extraConfiguration` instead
   configuration: |-
-      ## Clustering
-      cluster_formation.peer_discovery_backend  = rabbit_peer_discovery_k8s
-      cluster_formation.k8s.host = kubernetes.default.svc.cluster.local
-      cluster_formation.node_cleanup.interval = 10
-      cluster_formation.node_cleanup.only_log_warning = true
-      cluster_partition_handling = autoheal
-      ## queue master locator
-      queue_master_locator=min-masters
-      ## enable guest user
-      loopback_users.guest = false
+    ## Clustering
+    cluster_formation.peer_discovery_backend  = rabbit_peer_discovery_k8s
+    cluster_formation.k8s.host = kubernetes.default.svc.cluster.local
+    cluster_formation.node_cleanup.interval = 10
+    cluster_formation.node_cleanup.only_log_warning = true
+    cluster_partition_handling = autoheal
+    # queue master locator
+    queue_master_locator=min-masters
+    # enable guest user
+    loopback_users.guest = false
+
+  ## Configuration file content: extra configuration
+  ## Use this instead of  `configuration` to add more configuration
+  extraConfiguration: |-
+    #disk_free_limit.absolute = 50MB
 
 ## Kubernetes service type
 service:
