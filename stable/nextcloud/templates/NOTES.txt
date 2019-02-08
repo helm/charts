@@ -1,9 +1,9 @@
 {{- if or .Values.mariadb.enabled .Values.externalDatabase.host -}}
 
 {{- if empty (include "nextcloud.host" .) -}}
-###############################################################################
-### ERROR: You did not provide an external host in your 'helm install' call ###
-###############################################################################
+#################################################################################
+### WARNING: You did not provide an external host in your 'helm install' call ###
+#################################################################################
 
 This deployment will be incomplete until you configure nextcloud with a resolvable
 host. To configure nextcloud with the URL of your service:
@@ -62,11 +62,12 @@ host. To configure nextcloud with the URL of your service:
 
 {{- else -}}
 
-########################################################################################
-### ERROR: You did not provide an external database host in your 'helm install' call ###
-########################################################################################
+#######################################################################################################
+## WARNING: You did not provide an external database host in your 'helm install' call                ##
+## Running Nextcloud with the integrated sqlite database is not recommended for production instances ##
+#######################################################################################################
 
-This deployment will be incomplete until you configure nextcloud with a resolvable database
+For better performance etc. you have to configure nextcloud with a resolvable database
 host. To configure nextcloud to use and external database host:
 
 

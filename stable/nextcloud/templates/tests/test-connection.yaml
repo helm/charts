@@ -14,5 +14,5 @@ spec:
     - name: wget
       image: busybox
       command: ['wget']
-      args:  ['--header', 'Host: {{ .Values.nextcloud.host }}', '{{ include "nextcloud.fullname" . }}:{{ .Values.service.port }}']
+      args:  ['--header', 'Host: {{ .Values.nextcloud.host }}', '{{ include "nextcloud.fullname" . }}:{{ .Values.service.port }}/status.php']
   restartPolicy: Never
