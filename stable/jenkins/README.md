@@ -86,6 +86,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `Master.Affinity`                 | Affinity settings                    | `{}`                                                                         |
 | `Master.Tolerations`              | Toleration labels for pod assignment | `{}`                                                                         |
 | `Master.PodAnnotations`           | Annotations for master pod           | `{}`                                                                         |
+| `Master.SidecarContainers`        | Configures sidecar container(s) for Jenkins master | `{}`                                                           |
 | `Master.CustomConfigMap`          | Deprecated: Use a custom ConfigMap               | `false`                                                                      |
 | `Master.AdditionalConfig`         | Deprecated: Add additional config files         | `{}`                                                                      |
 | `NetworkPolicy.Enabled`           | Enable creation of NetworkPolicy resources. | `false`                                                               |

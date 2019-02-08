@@ -235,6 +235,23 @@ Master:
     #     - jenkins.cluster.local
   AdditionalConfig: {}
 
+  SidecarContainers:
+  ## The example below runs the client for https://smee.io as sidecar container next to Jenkins,
+  ## that allows to trigger build behind a secure firewall.
+  ## https://jenkins.io/blog/2019/01/07/webhook-firewalls/#triggering-builds-with-webhooks-behind-a-secure-firewall
+  ##
+  ## Note: To use it you should go to https://smee.io/new and update the url to the generete one.
+  # - name: smee
+  #  image: docker.io/twalter/smee-client:1.0.2
+  #  args: ["--port", "{{ .Values.Master.ServicePort }}", "--path", "/github-webhook/", "--url", "https://smee.io/new"]
+  #  resources:
+  #    limits:
+  #      cpu: 50m
+  #      memory: 128Mi
+  #    requests:
+  #      cpu: 10m
+  #      memory: 32Mi
+
 Agent:
   Enabled: true
   Image: jenkins/jnlp-slave
