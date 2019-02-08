@@ -4,6 +4,7 @@ pipeline:
     image: alpine/helm:2.12.3
     commands:
     - helm init --client-only
+    - helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com/
     - helm dependency build incubator/kafka
 
   publish_charts:
