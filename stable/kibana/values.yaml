@@ -195,9 +195,10 @@ extraConfigMapMounts: []
   #   subPath: logtrail.json
 
 # Add your own init container or uncomment and modify the given example.
-initContainers: []
+initContainers: {}
   ## Don't start kibana till Elasticsearch is reachable
-  # - name: es-check
+  ##
+  # es-check:  # <- will be used as container name
   #   image: "appropriate/curl:latest"
   #   imagePullPolicy: "IfNotPresent"
   #   command:

@@ -32,7 +32,10 @@ spec:
 {{- if or (.Values.initContainers) (.Values.dashboardImport.dashboards) (.Values.plugins.enabled) }}
       initContainers:
 {{- if .Values.initContainers }}
-{{ toYaml .Values.initContainers | indent 8 }}
+{{- range $key, $value := .Values.initContainers }}
+        - name: "{{ $key }}"
+{{ toYaml $value | indent 10 }}
+{{- end }}
 {{- end }}
 {{- if .Values.dashboardImport.dashboards }}
       - name: {{ .Chart.Name }}-dashboardimport
