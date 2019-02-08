@@ -3,6 +3,7 @@ pipeline:
   build_dependencies:
     image: alpine/helm:2.12.3
     commands:
+    - helm init --client-only
     - helm dependency build incubator/kafka
 
   publish_charts:
