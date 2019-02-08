@@ -102,6 +102,14 @@ spec:
         - mountPath: /ssl
           name: ssl
         {{- end }}
+        {{- if .Values.ssl.enabled }}
+        {{- if .Values.ssl.auth.forward }}
+        {{- if .Values.ssl.auth.forward.tls }}
+        - mountPath: /ssl_auth_forward
+          name: ssl-auth-forward
+        {{- end }}
+        {{- end }}
+        {{- end }}
         {{- if .Values.acme.enabled }}
         - mountPath: /acme
           name: acme
@@ -144,6 +152,15 @@ spec:
       - name: ssl
         secret:
           secretName: {{ template "traefik.fullname" . }}-default-cert
+      {{- end }}
+      {{- if .Values.ssl.enabled }}
+      {{- if .Values.ssl.auth.forward }}
+      {{- if .Values.ssl.auth.forward.tls }}
+      - name: ssl-auth-forward
+        secret:
+          secretName: {{ template "traefik.fullname" . }}-auth-forward-cert
+      {{- end }}
+      {{- end }}
       {{- end }}
       {{- if .Values.acme.enabled }}
       - name: acme

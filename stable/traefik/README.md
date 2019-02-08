@@ -130,6 +130,10 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `ssl.auth.forward.address`             | Sets the URL of the authentication server for forward auth on all SSL entrypoints.                    | None |
 | `ssl.auth.forward.trustForwardHeader`  | Trust existing X-Forwarded-* headers.                                                                 | `false` |
 | `ssl.auth.forward.authResponseHeaders` | Copy headers from the authentication server to the request.                                           | `[]` |
+| `ssl.auth.forward.tls.ca`              | Base64 encoded CA certificate for the TLS connection with the authentication server.                  | None |
+| `ssl.auth.forward.tls.caOptional`      | Checks the certificates if present but do not force to be signed by a specified CA.                   | `false` |
+| `ssl.auth.forward.tls.cert`            | Base64 encoded certificate for the TLS connection with the authentication server.                     | None |
+| `ssl.auth.forward.tls.key`             | Base64 encoded private key for the certificate above.                                                 | None |
 | `acme.enabled`                         | Whether to use Let's Encrypt to obtain certificates                                                                          | `false`                                           |
 | `acme.challengeType`                   | Type of ACME challenge to perform domain validation. `tls-sni-01` (deprecated), `tls-alpn-01` (recommended), `http-01` or `dns-01` | `tls-sni-01`                                |
 | `acme.delayBeforeCheck`         | By default, the provider will verify the TXT DNS challenge record before letting ACME verify. If delayBeforeCheck is greater than zero, this check is delayed for the configured duration in seconds. Useful when Traefik cannot resolve external DNS queries. | `0` |

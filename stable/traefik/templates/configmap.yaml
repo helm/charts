@@ -99,6 +99,13 @@ data:
                 {{- end -}}
                 ]
             {{- end}}
+              {{- if .Values.ssl.auth.forward.tls }}
+              [entryPoints.https.auth.forward.tls]
+                ca = "/ssl_auth_forward/tls_ca.crt"
+                caOptional = {{ default false .Values.ssl.auth.forward.tls.caOptional }}
+                cert = "/ssl_auth_forward/tls.crt"
+                key = "/ssl_auth_forward/tls.key"
+              {{- end }}
           {{- end }}
         {{- end }}
       {{- else }}
