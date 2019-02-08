@@ -90,6 +90,11 @@ ssl:
     # basic:
     #   testuser: $apr1$JXRA7j2s$LpVns9vsme8FHN0r.aSt11
 
+    # forward:
+    #   address: ""
+    #   trustForwardHeader: false
+    #   authResponseHeaders: []
+
 kvprovider:
   ## If you want to run Traefik in HA mode, you will need to setup a KV Provider. Therefore you can choose one of
   ## * etcd

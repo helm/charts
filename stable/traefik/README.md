@@ -127,6 +127,9 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `ssl.defaultCert`                      | Base64 encoded default certificate                                                                                           | A self-signed certificate                         |
 | `ssl.defaultKey`                       | Base64 encoded private key for the certificate above                                                                         | The private key for the certificate above         |
 | `ssl.auth.basic`                       | Basic auth for all SSL endpoints, see Authentication section                                          | unset by default; this means basic auth is disabled |
+| `ssl.auth.forward.address`             | Sets the URL of the authentication server for forward auth on all SSL entrypoints.                    | None |
+| `ssl.auth.forward.trustForwardHeader`  | Trust existing X-Forwarded-* headers.                                                                 | `false` |
+| `ssl.auth.forward.authResponseHeaders` | Copy headers from the authentication server to the request.                                           | `[]` |
 | `acme.enabled`                         | Whether to use Let's Encrypt to obtain certificates                                                                          | `false`                                           |
 | `acme.challengeType`                   | Type of ACME challenge to perform domain validation. `tls-sni-01` (deprecated), `tls-alpn-01` (recommended), `http-01` or `dns-01` | `tls-sni-01`                                |
 | `acme.delayBeforeCheck`         | By default, the provider will verify the TXT DNS challenge record before letting ACME verify. If delayBeforeCheck is greater than zero, this check is delayed for the configured duration in seconds. Useful when Traefik cannot resolve external DNS queries. | `0` |

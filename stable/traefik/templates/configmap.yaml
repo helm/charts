@@ -80,11 +80,26 @@ data:
           KeyFile = "/ssl/tls.key"
       {{- end }}
         {{- if .Values.ssl.auth }}
-        {{- if .Values.ssl.auth.basic }}
         [entryPoints.https.auth]
+          {{- if .Values.ssl.auth.basic }}
           [entryPoints.https.auth.basic]
             users = [{{ range $key, $value := .Values.ssl.auth.basic }}"{{ $key }}:{{ $value }}",{{ end }}]
-        {{- end }}
+          {{- end }}
+          {{- if .Values.ssl.auth.forward }}
+          [entryPoints.https.auth.forward]
+            address = {{ .Values.ssl.auth.forward.address | quote }}
+            {{- if .Values.ssl.auth.forward.trustForwardHeader }}
+            trustForwardHeader = true
+            {{- end }}
+            {{- if .Values.ssl.auth.forward.authResponseHeaders }}
+            authResponseHeaders = [
+                {{- range $idx, $element := .Values.ssl.auth.forward.authResponseHeaders }}
+                    {{- if $idx }}, {{ end }}
+                    {{- $element | quote }}
+                {{- end -}}
+                ]
+            {{- end}}
+          {{- end }}
         {{- end }}
       {{- else }}
       [entryPoints.httpn]
