@@ -57,6 +57,7 @@ The following table lists the configurable parameters of the kibana chart and th
 | `ingress.tls`                                 | Ingress TLS configuration                  | None:                                  |
 | `nodeSelector`                                | node labels for pod assignment             | `{}`                                   |
 | `podAnnotations`                              | annotations to add to each pod             | `{}`                                   |
+| `podLabels`                                   | labels to add to each pod                  | `{}`                                   |
 | `replicaCount`                                | desired number of pods                     | `1`                                    |
 | `revisionHistoryLimit`                        | revisionHistoryLimit                       | `3`                                    |
 | `serviceAccountName`                          | DEPRECATED: use serviceAccount.name        | `nil`                                  |
