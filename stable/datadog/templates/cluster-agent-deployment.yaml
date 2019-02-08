@@ -18,6 +18,20 @@ spec:
       labels:
         app: {{ template "datadog.fullname" . }}-cluster-agent
       name: {{ template "datadog.fullname" . }}-cluster-agent
+      annotations:
+        ad.datadoghq.com/{{ .Values.clusterAgent.containerName }}.check_names: '["prometheus"]'
+        ad.datadoghq.com/{{ .Values.clusterAgent.containerName }}.init_configs: '[{}]'
+        ad.datadoghq.com/{{ .Values.clusterAgent.containerName }}.instances: |
+          [{
+            "prometheus_url": "http://%%host%%:5000/metrics",
+            "namespace": "datadog.cluster_agent",
+            "metrics": [
+              "go_goroutines", "go_memstats_*", "process_*",
+              "api_requests",
+              "datadog_requests", "external_metrics",
+              "cluster_checks_*"
+            ]
+          }]
     spec:
       {{- if .Values.clusterAgent.image.pullSecrets }}
       imagePullSecrets:
