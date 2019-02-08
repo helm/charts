@@ -5,7 +5,7 @@ This chart is depreacated as its maintained in the following repo now:
 https://github.com/kiwigrid/helm-charts/tree/master/charts/graphite
 
 You can add the repo via:
-* helm add repo kiwigrid https://kiwigrid.github.io
+* helm repo add kiwigrid https://kiwigrid.github.io
 
 
 
