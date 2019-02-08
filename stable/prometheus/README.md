@@ -215,6 +215,14 @@ Parameter | Description | Default
 `pushgateway.podAnnotations` | annotations to be added to pushgateway pods | `{}`
 `pushgateway.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
 `pushgateway.replicaCount` | desired number of pushgateway pods | `1`
+`pushgateway.persistentVolume.enabled` | If true, Prometheus pushgateway will create a Persistent Volume Claim | `false`
+`pushgateway.persistentVolume.accessModes` | Prometheus pushgateway data Persistent Volume access modes | `[ReadWriteOnce]`
+`pushgateway.persistentVolume.annotations` | Prometheus pushgateway data Persistent Volume annotations | `{}`
+`pushgateway.persistentVolume.existingClaim` | Prometheus pushgateway data Persistent Volume existing claim name | `""`
+`pushgateway.persistentVolume.mountPath` | Prometheus pushgateway data Persistent Volume mount root path | `/data`
+`pushgateway.persistentVolume.size` | Prometheus pushgateway data Persistent Volume size | `2Gi`
+`pushgateway.persistentVolume.storageClass` | Prometheus server data Persistent Volume Storage Class |  `unset`
+`pushgateway.persistentVolume.subPath` | Subdirectory of Prometheus server data Persistent Volume to mount | `""`
 `pushgateway.priorityClassName` | pushgateway priorityClassName | `nil`
 `pushgateway.resources` | pushgateway pod resource requests & limits | `{}`
 `pushgateway.service.annotations` | annotations for pushgateway service | `{}`
