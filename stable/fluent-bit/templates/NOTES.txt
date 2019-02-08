@@ -1,15 +1,18 @@
 fluent-bit is now running.
 
-{{- if eq .Values.backend.type "forward" }}
+{{- if .Values.backend.forward.enabled }}
 
 It will forward all container logs to the svc named {{ .Values.backend.forward.host }} on port: {{ .Values.backend.forward.port }}
-{{- else if eq .Values.backend.type "es" }}
+{{- else if .Values.backend.stdout.enabled }}
+
+It will forward all container logs to stdout 
+{{- else if .Values.backend.es.enabled }}
 
 It will forward all container logs to the svc named {{ .Values.backend.es.host }} on port: {{ .Values.backend.es.port }}
-{{- else if eq .Values.backend.type "http" }}
+{{- else if .Values.backend.http.enabled }}
 
 It will forward all container logs to the svc named {{ .Values.backend.http.host }} on port: {{ .Values.backend.http.port }}
-{{- else if eq .Values.backend.type "splunk" }}
+{{- else if .Values.backend.splunk.enabled }}
 
 It will forward all container logs to the svc named {{ .Values.backend.splunk.host }} on port: {{ .Values.backend.splunk.port }}
 {{- end }}
