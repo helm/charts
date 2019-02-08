@@ -1,0 +1,16 @@
+apiVersion: v1
+appVersion: 75e576ee
+description: CouchPotato is an automatic NZB and torrent downloader.
+name: couchpotato
+version: 0.0.1
+keywords:
+  - couchpotato
+  - movies
+home: https://couchpota.to/
+sources:
+  - https://github.com/CouchPotato/CouchPotatoServer
+  - https://github.com/linuxserver/docker-couchpotato
+  - https://github.com/helm/charts/tree/master/incubator/couchpotato
+maintainers:
+  - name: mcronce
+    email: mike@quadra-tec.net

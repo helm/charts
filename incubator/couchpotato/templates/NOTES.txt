@@ -1,0 +1,6 @@
+CouchPotato has been installed. You can access the server from within the k8s cluster using:
+
+  {{ template "couchpotato.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
+
+WARNING:  Do not scale the statefulset.  CouchPotato runs everything in one process - the web UI and all the periodic jobs.  If you scale up, those jobs will run multiple times in parallel and you won't be happy with the behavior.
+

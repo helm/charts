@@ -1,0 +1,21 @@
+{{- if and .Values.persistence.config.enabled (not .Values.persistence.config.existingClaim) }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ template "couchpotato.fullname" . }}-config
+  labels:
+    {{- include "couchpotato.labels" . | nindent 4 }}
+spec:
+  accessModes:
+    - {{ .Values.persistence.config.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.config.size | quote }}
+  {{- if .Values.persistence.config.storageClass }}
+  {{- if (eq "-" .Values.persistence.config.storageClass) }}
+  storageClassName: ""
+  {{- else }}
+  storageClassName: "{{ .Values.persistence.config.storageClass }}"
+  {{- end }}
+  {{- end }}
+{{- end }}

@@ -1,0 +1,79 @@
+apiVersion: apps/v1beta2
+kind: StatefulSet
+metadata:
+  name:  {{ template "couchpotato.fullname" . }}
+  labels:
+    {{- include "couchpotato.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  serviceName: {{ template "couchpotato.fullname" . }}
+  selector:
+    matchLabels:
+      {{- include "couchpotato.labels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "couchpotato.labels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: couchpotato
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: PUID
+              value: {{ .Values.settings.uid | quote }}
+            - name: PGID
+              value: {{ .Values.settings.gid | quote }}
+          ports:
+            - name: http
+              containerPort: 5050
+          volumeMounts:
+            - name: config
+              mountPath: /config
+            - name: movies
+              mountPath: /movies
+            - name: downloads
+              mountPath: /downloads
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 90
+            periodSeconds: 5
+            failureThreshold: 10
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 2
+            periodSeconds: 2
+            failureThreshold: 5
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      nodeSelector:
+        {{- toYaml .Values.nodeSelector | nindent 8 }}
+      affinity:
+        {{- toYaml .Values.affinity | nindent 8 }}
+      tolerations:
+        {{- toYaml .Values.tolerations | nindent 8 }}
+      volumes:
+        - name: config
+          {{- if .Values.persistence.config.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.config.existingClaim | default (printf "%s-%s" (include "couchpotato.fullname" .) "config") }}
+        {{- else }}
+            emptyDir: {}
+        {{- end }}
+        - name: movies
+          {{- if not .Values.persistence.movies }}
+          emptyDir: {}
+          {{- else }}
+          {{- toYaml .Values.persistence.movies | nindent 10 }}
+          {{- end }}
+        - name: downloads
+          {{- if not .Values.persistence.downloads }}
+          emptyDir: {}
+          {{- else }}
+          {{- toYaml .Values.persistence.downloads | nindent 10 }}
+          {{- end }}
+
