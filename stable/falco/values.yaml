@@ -2,7 +2,7 @@
 
 image:
   repository: falcosecurity/falco
-  tag: 0.13.0
+  tag: 0.13.1
   pullPolicy: IfNotPresent
 
 resources: {}
