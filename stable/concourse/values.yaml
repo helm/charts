@@ -258,6 +258,8 @@ concourse:
       bindIp: "0.0.0.0"
       ## Port to listen on to expose Prometheus metrics.
       bindPort: 9391
+    prometheusOperator:
+      enabled: false
     riemann:
       enabled: false
       ## Riemann server address to emit metrics to.

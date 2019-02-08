@@ -81,6 +81,8 @@ The following table lists the configurable parameters of the Concourse chart and
 | `web.ingress.enabled` | Enable Concourse Web Ingress | `false` |
 | `web.ingress.hosts` | Concourse Web Ingress Hostnames | `[]` |
 | `web.ingress.tls` | Concourse Web Ingress TLS configuration | `[]` |
+| `web.prometheus.enabled` | Enable Prometheus metrics endpoint | `false` |
+| `web.prometheusOperator.enabled` | Enable Prometheus Operator ServiceMonitor | `false` |
 | `web.keysSecretsPath` | Specify the mount directory of the web keys secrets | `/concourse-keys` |
 | `web.livenessProbe` | Liveness Probe settings | `{"failureThreshold":5,"httpGet":{"path":"/api/v1/info","port":"atc"},"initialDelaySeconds":10,"periodSeconds":15,"timeoutSeconds":3}` |
 | `web.nameOverride` | Override the Concourse Web components name | `nil` |
