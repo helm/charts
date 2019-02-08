@@ -49,20 +49,18 @@ spec:
       {{- else }}
       port: {{ $servicePort }}
       {{- end }}
+      {{- if and (eq $root.Values.external.type "LoadBalancer") (not $root.Values.external.distinct) }}
       targetPort: {{ $externalListenerPort }}
+      {{- else }}
+      targetPort: {{ $servicePort }}
+      {{- end}}
       {{- if eq $root.Values.external.type "NodePort" }}
       nodePort: {{ $externalListenerPort }}
       {{- end }}
       protocol: TCP
-    {{- if and (eq $root.Values.external.type "LoadBalancer") ( $root.Values.external.distinct) }}
-    - name: external-listenport
-      port: {{ $externalListenerPort }}
-      targetPort: {{ $externalListenerPort }}
-      protocol: TCP
-    {{- end }}    
-    
+
   {{- if and (eq $root.Values.external.type "LoadBalancer") (eq $loadBalancerIPLen $replicas) }}
-  loadBalancerIP: {{ index $root.Values.external.loadBalancerIP $i }} 
+  loadBalancerIP: {{ index $root.Values.external.loadBalancerIP $i }}
   {{- end }}
   selector:
     app: {{ include "kafka.name" $root }}
