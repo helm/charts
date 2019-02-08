@@ -1,5 +1,10 @@
 pipeline:
 
+  build_dependencies:
+    image: alpine/helm:2.12.3
+    commands:
+    - helm dependency build incubator/kafka
+
   publish_charts:
     image: docker-registry.infra.redmart.com/devops/drone-helm-push:0.3.0
     pull: true
