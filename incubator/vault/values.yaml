@@ -33,6 +33,7 @@ service:
   #  - 130.211.204.2/32
   externalPort: 8200
   port: 8200
+  # nodePort: None
   # clusterIP: None
   annotations: {}
   #   cloud.google.com/load-balancer-type: "Internal"
