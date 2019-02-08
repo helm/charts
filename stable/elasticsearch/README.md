@@ -112,6 +112,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `master.persistence.size`            | Master persistent volume size                                       | `4Gi`                                               |
 | `master.persistence.storageClass`    | Master persistent volume Class                                      | `nil`                                               |
 | `master.persistence.accessMode`      | Master persistent Access Mode                                       | `ReadWriteOnce`                                     |
+| `master.readinessProbe`              | Master container readiness probes                                   | see `values.yaml` for defaults                      |
 | `master.antiAffinity`                | Master anti-affinity policy                                         | `soft`                                              |
 | `master.nodeAffinity`                | Master node affinity policy                                         | `{}`                                                |
 | `master.updateStrategy`              | Master node update strategy policy                                  | `{type: "onDelete"}`                                |
@@ -128,6 +129,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `data.persistence.size`              | Data persistent volume size                                         | `30Gi`                                              |
 | `data.persistence.storageClass`      | Data persistent volume Class                                        | `nil`                                               |
 | `data.persistence.accessMode`        | Data persistent Access Mode                                         | `ReadWriteOnce`                                     |
+| `data.readinessProbe`                | Readiness probes for data-containers                                | see `values.yaml` for defaults                      |
 | `data.podAnnotations`                | Data StatefulSet annotations                                        | `{}`                                                |
 | `data.nodeSelector`                  | Node labels for data pod assignment                                 | `{}`                                                |
 | `data.tolerations`                   | Data tolerations                                                    | `[]`                                                |
@@ -135,6 +137,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `data.antiAffinity`                  | Data anti-affinity policy                                           | `soft`                                              |
 | `data.nodeAffinity`                  | Data node affinity policy                                           | `{}`                                                |
 | `data.updateStrategy`                | Data node update strategy policy                                    | `{type: "onDelete"}`                                |
+| `sysctlInitContainer.enabled`        | If true, the sysctl init container is enabled (does not stop extraInitContainers from running) | `true`                                              |
 | `extraInitContainers`                | Additional init container passed through the tpl                    | ``                                                  |
 | `podSecurityPolicy.annotations`      | Specify pod annotations in the pod security policy                  | `{}`                                                |
 | `podSecurityPolicy.enabled`          | Specify if a pod security policy must be created                    | `false`                                             |

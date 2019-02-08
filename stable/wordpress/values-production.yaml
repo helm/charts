@@ -59,6 +59,11 @@ wordpressTablePrefix: wp_
 ## ref: https://github.com/bitnami/bitnami-docker-wordpress#environment-variables
 allowEmptyPassword: "yes"
 
+## Set Apache allowOverride to None
+allowOverrideNone: "yes"
+# ConfigMap with custom wordpress-htaccess.conf file (requires allowOverrideNone to true)
+customHTAccessCM:
+
 ## SMTP mail delivery configuration
 ## ref: https://github.com/bitnami/bitnami-docker-wordpress/#smtp-configuration
 ##
