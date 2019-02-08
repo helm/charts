@@ -11,6 +11,9 @@ metadata:
 {{- end }}
   labels:
     {{- include "prometheus.pushgateway.labels" . | nindent 4 }}
+{{- range $key, $value := .Values.pushgateway.ingress.extraLabels }}
+    {{ $key }}: {{ $value }}
+{{- end }}
   name: {{ template "prometheus.pushgateway.fullname" . }}
 spec:
   rules:

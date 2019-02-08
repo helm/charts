@@ -812,6 +812,10 @@ pushgateway:
     #   kubernetes.io/ingress.class: nginx
     #   kubernetes.io/tls-acme: 'true'
 
+    ## pushgateway Ingress additional labels
+    ##
+    extraLabels: {}
+
     ## pushgateway Ingress hostnames with optional path
     ## Must be provided if Ingress is enabled
     ##

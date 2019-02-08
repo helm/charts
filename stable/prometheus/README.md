@@ -209,6 +209,7 @@ Parameter | Description | Default
 `pushgateway.extraArgs` | Additional pushgateway container arguments | `{}`
 `pushgateway.ingress.enabled` | If true, pushgateway Ingress will be created | `false`
 `pushgateway.ingress.annotations` | pushgateway Ingress annotations | `{}`
+`pushgateway.ingress.extraLabels` | pushgateway Ingress additional labels | `{}`
 `pushgateway.ingress.hosts` | pushgateway Ingress hostnames | `[]`
 `pushgateway.ingress.tls` | pushgateway Ingress TLS configuration (YAML) | `[]`
 `pushgateway.nodeSelector` | node labels for pushgateway pod assignment | `{}`
