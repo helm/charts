@@ -53,20 +53,8 @@ The following tables lists the configurable parameters of the Unifi chart and th
 | `controllerService.loadBalancerIP`           | Loadbalance IP for the Unifi Controller                                                                                | `{}`                         |
 | `controllerService.loadBalancerSourceRanges` | List of IP CIDRs allowed access to load balancer (if supported)                                                        | None                         |
 | `controllerService.externalTrafficPolicy`    | Set the externalTrafficPolicy in the Service to either Cluster or Local                                                | `Cluster`                    |
-| `stunService.type`                           | Kubernetes service type for the Unifi STUN                                                                             | `NodePort`                   |
-| `stunService.port`                           | Kubernetes UDP port where the Unifi STUN is exposed                                                                    | `3478`                       |
-| `stunService.annotations`                    | Service annotations for the Unifi STUN                                                                                 | `{}`                         |
-| `stunService.labels`                         | Custom labels                                                                                                          | `{}`                         |
-| `stunService.loadBalancerIP`                 | Loadbalance IP for the Unifi STUN                                                                                      | `{}`                         |
-| `stunService.loadBalancerSourceRanges`       | List of IP CIDRs allowed access to load balancer (if supported)                                                        | None                         |
-| `stunService.externalTrafficPolicy`          | Set the externalTrafficPolicy in the Service to either Cluster or Local                                                | `Cluster`                    |
-| `discoveryService.type`                      | Kubernetes service type for AP discovery                                                                               | `NodePort`                   |
-| `discoveryService.port`                      | Kubernetes UDP port for AP discovery                                                                                   | `10001`                      |
-| `discoveryService.annotations`               | Service annotations for AP discovery                                                                                   | `{}`                         |
-| `discoveryService.labels`                    | Custom labels                                                                                                          | `{}`                         |
-| `discoveryService.loadBalancerIP`            | Loadbalance IP for AP discovery                                                                                        | `{}`                         |
-| `discoveryService.loadBalancerSourceRanges`  | List of IP CIDRs allowed access to load balancer (if supported)                                                        | None                         |
-| `discoveryService.externalTrafficPolicy`     | Set the externalTrafficPolicy in the Service to either Cluster or Local                                                | `Cluster`                    |
+| `controllerService.stun.port`                | Kubernetes UDP port where the Unifi STUN is exposed                                                                    | `3478`                       |
+| `controllerService.discovery.port`           | Kubernetes UDP port for AP discovery                                                                                   | `10001`                      |
 | `ingress.enabled`                            | Enables Ingress                                                                                                        | `false`                      |
 | `ingress.annotations`                        | Ingress annotations                                                                                                    | `{}`                         |
 | `ingress.labels`                             | Custom labels                                                                                                          | `{}`                         |
@@ -117,12 +105,12 @@ Read through the [values.yaml](values.yaml) file. It has several commented out s
   devices run. If you run this as a `NodePort` (the default setting), make sure
   that there is an external load balancer that is directing traffic from port
   8080 to the `NodePort` for this service.
-- `discoveryService`: This needs to be reachable by the unifi devices on the
-  network similar to the controller `Service` but only during the discovery
-  phase. This is a UDP service.
-- `stunService`: Also used periodically by the unifi devices to communicate
-  with the controller using UDP. See [this article][ubnt 3] and [this other
-  article][ubnt 4] for more information.
+
+  the `controllerService` exposes two additional ports:
+  - `discovery`: This needs to be reachable by the unifi devices on network but only during the discovery
+    phase. This is a UDP service.
+  - `stun`: Also used periodically by the unifi devices to communicate
+    with the controller using UDP. See [this article][ubnt 3] and [this other article][ubnt 4] for more information.
 
 [docker]: https://hub.docker.com/r/jacobalberty/unifi/tags/
 [github]: https://github.com/jacobalberty/unifi-docker
