@@ -556,7 +556,7 @@ server:
   enableAdminApi: false
 
   ## This flag controls BD locking 
-  enableTSDBLock: true
+  skipTSDBLock: false
 
   ## Path to a configuration file on prometheus server container FS
   configPath: /etc/config/prometheus.yml
