@@ -3,7 +3,7 @@
 ##
 image:
   repository: rocketchat/rocket.chat
-  tag: 0.73.2
+  tag: 0.74.1
   pullPolicy: IfNotPresent
 
 ## Host for the application
