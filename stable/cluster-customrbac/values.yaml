@@ -1,0 +1,80 @@
+# Default values for cluster-customrbac.
+#
+# This is a YAML-formatted file.
+#
+# As it stands, this file does not request the creation
+# of any RBAC permissions; instead it shows how to define
+# your own set of:
+#   roles, clusterroles, rolebindings and clusterrolebindings.
+#
+# Because separating multiple entries of an array into different
+# yaml files is not supported, this values.yaml file cannot
+# define any objects; if it did, its array entries would cause
+# conflicts with the actual user-defined configuration array entries.
+#
+customrbac:
+  clusterroles: []
+  # - name: clusterole1
+  #   rules:
+  #   - apiGroups:
+  #     - ""
+  #     resources:
+  #     - namespaces
+  #     verbs:
+  #     - get
+  #     - list
+  #     - watch
+  clusterrolebindings: []
+  # - clusterrolename: clusterrole1
+  #   subjects:
+  #     users:
+  #     - user1
+  #     - user2
+  #     groups:
+  #     - group1
+  #     - group2
+  #     serviceaccounts:
+  #     - account1
+  #     - account2
+  # - clusterrolename: clusterrole2
+  #   subjects:
+  #   ...
+  roles: []
+  # - name: role1
+  #   namespace: namespace1
+  #   rules:
+  #   - apiGroups:
+  #     - ""
+  #     resources:
+  #     - namespaces
+  #     verbs:
+  #     - get
+  #     - list
+  #     - watch
+  rolebindings: []
+  # - rolekind: "role" or "clusterrole"
+  #   rolename: role1
+  #   bindings:
+  #   - namespace: namespace1
+  #     subjects:
+  #       users:
+  #       - user1
+  #       - user2
+  #       groups:
+  #       - group1
+  #       - group2
+  #       serviceaccounts:
+  #       - account1
+  #       - account2
+  #   - namespace: namespace2
+  #     subjects:
+  #     ...
+  # - rolekind: "role" or "clusterrole"
+  #   rolename: role2
+  #   bindings:
+  #   - namespace: namespace1
+  #     subjects:
+  #     ...
+  #   - namespace: namespace3
+  #     subjects:
+  #     ...

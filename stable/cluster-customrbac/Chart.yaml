@@ -1,0 +1,13 @@
+apiVersion: v1
+name: cluster-customrbac
+version: 0.1.0
+description: A chart to manage custom RBAC permissions on a Kubernetes cluster
+icon: https://github.com/kubernetes/kubernetes/blob/master/logo/logo.png
+keywords:
+- kubernetes
+- RBAC
+maintainers:
+- name: marckhouzam
+  email: marc.khouzam@ville.montreal.qc.ca
+- name: wjeanneau
+  email: william.jeanneau@gmail.com

@@ -1,0 +1,7 @@
+RBAC permissions in your cluster now match your specified configuration file(s).
+
+To verify these RBAC permissions you can run the following commands:
+  $ kubectl get clusterroles
+  $ kubectl get roles --all-namespaces
+  $ kubectl get clusterrolebindings
+  $ kubectl get rolebindings --all-namespaces
