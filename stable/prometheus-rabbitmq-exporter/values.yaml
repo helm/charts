@@ -33,6 +33,7 @@ rabbitmq:
   url: http://myrabbit:15672
   user: guest
   password: guest
+  capabilities: bert,no_sort
   include_queues: ".*"
   include_vhost: ".*"
   skip_queues: "^$"
