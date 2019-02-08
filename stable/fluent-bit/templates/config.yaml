@@ -68,7 +68,7 @@ data:
 {{ .Values.extraEntries.filter | indent 8 }}
 
   fluent-bit-output.conf: |-
-{{- if .Values.backend.test.enabled }}
+{{- if .Values.backend.file.enabled }}
     [OUTPUT]
         Name  file
         Match {{ .Values.backend.file.match | default "*" }}

@@ -24,7 +24,7 @@ metrics:
 trackOffsets: false
 
 backend:
-  test:
+  file:
     enabled: false
   stdout:
     enabled: true
