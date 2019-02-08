@@ -2,22 +2,17 @@
 # enable user-defined init containers
 
 initContainers:
-  es-check:
-    image: "appropriate/curl:latest"
+  numbers-container:
+    image: "busybox"
     imagePullPolicy: "IfNotPresent"
     command:
       - "/bin/sh"
       - "-c"
       - |
-        is_down=true
-        while "$is_down"; do
-          if curl -sSf --fail-early --connect-timeout 5 http://elasticsearch:9200; then
-            is_down=false
-          else
-            sleep 5
-          fi
+        for i in $(seq 1 10); do
+          echo $i
         done
 
   echo-container:
-    image: busybox
+    image: "busybox"
     command: ['sh', '-c', 'echo Hello from init container! && sleep 3']
