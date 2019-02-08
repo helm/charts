@@ -103,6 +103,9 @@ spec:
               containerPort: 7600
               protocol: TCP
           {{- end }}
+{{- with .Values.keycloak.extraPorts }}
+{{ tpl . $ | indent 12 }}
+{{- end }}
           livenessProbe:
             httpGet:
               path: {{ if ne .Values.keycloak.basepath "" }}/{{ .Values.keycloak.basepath }}{{ end }}/

@@ -60,7 +60,11 @@ spec:
 {{ toYaml .Values.extraVolumeMounts | indent 16 }}
 {{- end }}
               command: [ "curator" ]
+{{- if .Values.dryrun }}
+              args: [ "--dry-run", "--config", "/etc/es-curator/config.yml", "/etc/es-curator/action_file.yml" ]
+{{- else }}
               args: [ "--config", "/etc/es-curator/config.yml", "/etc/es-curator/action_file.yml" ]
+{{- end }}
               resources:
 {{ toYaml .Values.resources | indent 16 }}
     {{- with .Values.nodeSelector }}
