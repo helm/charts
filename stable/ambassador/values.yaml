@@ -67,6 +67,8 @@ service:
         service_port: 8080
   #       diagnostics:
   #         enabled: false
+
+  # externalTrafficPolicy:
   # loadBalancerSourceRanges:
   #   - YOUR_IP_RANGE
 
