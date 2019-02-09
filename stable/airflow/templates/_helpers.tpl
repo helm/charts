@@ -75,3 +75,26 @@ Create the name for the airflow secret.
         {{ template "airflow.fullname" . }}
     {{- end -}}
 {{- end -}}
+
+{{/*
+Map environment vars to secrets
+*/}}
+{{- define "airflow.mapenvsecrets" -}}
+    {{- $secretName := .Release.Name | trunc 63 | trimSuffix "-" }}
+    {{- $mapping := .Values.airflow.defaultSecretsMapping }}
+    {{- if .Values.existingAirflowSecret }}
+      {{- $secretName = .Values.existingAirflowSecret }}
+      {{- if .Values.airflow.secretsMapping }}
+        {{- $mapping = .Values.airflow.secretsMapping }}
+      {{- end }}
+    {{- end }}
+    {{- range $val := $mapping }}
+      {{- if $val }}
+  - name: {{ $val.envVar }}
+    valueFrom:
+      secretKeyRef:
+        name: {{ $secretName }}
+        key: {{ $val.secretKey }}
+      {{- end }}
+    {{- end }}
+{{- end }}
