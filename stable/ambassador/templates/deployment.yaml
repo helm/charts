@@ -64,7 +64,7 @@ spec:
               readOnly: true
         {{- end }}
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}:{{ include "ambassador.imageTag" . }}"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             {{- if .Values.service.http.enabled }}
