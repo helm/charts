@@ -18,12 +18,21 @@ env:
   # Exposing statistics via StatsD
   # STATSD_ENABLED: true
   # STATSD_HOST: statsd-sink
+  # sets the minimum number of seconds between Envoy restarts
+  # AMBASSADOR_RESTART_TIME: 15
+  # sets the number of seconds that the Envoy will wait for open connections to drain on a restart
+  # AMBASSADOR_DRAIN_TIME: 5
+  # sets the number of seconds that Ambassador will wait for the old Envoy to clean up and exit on a restart
+  # AMBASSADOR_SHUTDOWN_TIME: 10
+  # sets the number of seconds that Ambassador will wait for the old Envoy to clean up and exit on a restart
+  # AMBASSADOR_SINGLE_NAMESPACE: true
+
+imagePullSecrets: []
 
 image:
   repository: quay.io/datawire/ambassador
   # tag:
   pullPolicy: IfNotPresent
-  # imagePullSecrets:
 
 nameOverride: ""
 fullnameOverride: ""
@@ -75,13 +84,13 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name:
 
-volumes: {}
+volumes: []
 
-volumeMounts: {}
+volumeMounts: []
 
 podAnnotations:
-  prometheus.io/scrape: "true"
-  prometheus.io/port: "9102"
+  # prometheus.io/scrape: "true"
+  # prometheus.io/port: "9102"
 
 resources:
   {}
@@ -105,6 +114,7 @@ prometheusExporter:
   enabled: false
   repository: prom/statsd-exporter
   tag: v0.8.1
+  pullPolicy: IfNotPresent
   # You can configure the statsd exporter to modify the behavior of mappings and other features.
   # See documentation: https://github.com/prometheus/statsd_exporter/tree/v0.8.1#metric-mapping-and-configuration
   # Uncomment the following line if you wish to specify a custom configuration:
@@ -116,11 +126,3 @@ prometheusExporter:
   #     timer_type: 'histogram'
   #     labels:
   #       cluster_name: "$1"
-
-timing:
-  # sets the minimum number of seconds between Envoy restarts
-  # restart: 15
-  # sets the number of seconds that the Envoy will wait for open connections to drain on a restart
-  # drain: 5
-  # sets the number of seconds that Ambassador will wait for the old Envoy to clean up and exit on a restart
-  # shutdown: 10

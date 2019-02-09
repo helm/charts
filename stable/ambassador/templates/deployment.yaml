@@ -29,7 +29,7 @@ spec:
         {{- if .Values.prometheusExporter.enabled }}
         - name: stats-exporter-mapping-config
           configMap:
-            name: '{{ template "ambassador.fullname" . }}-config'
+            name: '{{ include "ambassador.fullname" . }}-config'
             items:
             - key: exporterConfiguration
               path: mapping-config.yaml
@@ -41,6 +41,7 @@ spec:
         {{- if .Values.prometheusExporter.enabled }}
         - name: prometheus-exporter
           image: "{{ .Values.prometheusExporter.image.repository }}:{{ .Values.prometheusExporter.image.tag }}"
+          imagePullPolicy: {{ .Values.prometheusExporter.image.pullPolicy }}
           ports:
             - name: metrics
               containerPort: 9102
@@ -90,20 +91,6 @@ spec:
                 fieldRef:
                   fieldPath: metadata.namespace
               {{- end -}}
-            {{- if .Values.timing }}
-            {{- if .Values.timing.restart }}
-            - name: AMBASSADOR_RESTART_TIME
-              value: {{ .Values.timing.restart | quote }}
-            {{- end -}}
-            {{- if .Values.timing.drain }}
-            - name: AMBASSADOR_DRAIN_TIME
-              value: {{ .Values.timing.drain | quote }}
-            {{- end -}}
-            {{- if .Values.timing.shutdown }}
-            - name: AMBASSADOR_SHUTDOWN_TIME
-              value: {{ .Values.timing.shutdown | quote }}
-            {{- end -}}
-            {{- end }}
             {{- if .Values.env }}
             {{- range $key,$value := .Values.env }}
             - name: {{ $key | upper | quote}}
@@ -140,8 +127,5 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
     {{- end }}
-    {{- with .Values.image.imagePullSecrets }}
-      imagePullSecrets:
-       - name: {{ toYaml . }}
-    {{- end }}
+      imagePullSecrets: {{ toYaml .Values.imagePullSecrets | nindent 2 }}
 {{- end }}
