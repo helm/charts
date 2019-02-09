@@ -120,7 +120,9 @@ $ helm upgrade --install --wait my-release -f values.yaml stable/ambassador
 
 ---
 
-## Migrating from datawire/ambassador chart
+# Upgrading
+
+## Migrating from `datawire/ambassador` chart (chart version 0.40.0 or 0.50.0)
 
 Chart now runs ambassador as non-root by default, so you might need to update your ambassador module config to match this.
 
@@ -142,9 +144,9 @@ Timings values have been removed in favor of setting the env variables using `en
 
 ### Renamed values
 
-Service ports values have changed names.
+Service ports values have changed names and target ports have new defaults.
 
-| Previous value name         | New value name             | New default value |
+| Previous parameter          | New parameter              | New default value |
 | --------------------------- | -------------------------- | ---------- |
 | `service.enableHttp`        | `service.http.enabled`     | |
 | `service.httpPort`          | `service.http.port`        | |
