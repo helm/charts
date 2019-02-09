@@ -122,6 +122,8 @@ $ helm upgrade --install --wait my-release -f values.yaml stable/ambassador
 
 ## Migrating from datawire/ambassador chart
 
+Chart now runs ambassador as non-root by default, so you might need to update your ambassador module config to match this.
+
 ### Timings
 
 Timings values have been removed in favor of setting the env variables using `env´
@@ -138,20 +140,20 @@ Timings values have been removed in favor of setting the env variables using `en
 | ------------------ | ----------------------------- |
 | `namespace.single` | `AMBASSADOR_SINGLE_NAMESPACE` |
 
-### Renamde values
+### Renamed values
 
 Service ports values have changed names.
 
-| Previous value name         | New value name             |
-| --------------------------- | -------------------------- |
-| `service.enableHttp`        | `service.http.enabled`     |
-| `service.httpPort`          | `service.http.port`        |
-| `service.httpNodePort`      | `service.http.nodePort`    |
-| `service.targetPorts.http`  | `service.http.targetPort`  |
-| `service.enableHttps`       | `service.https.enabled`    |
-| `service.httpsPort`         | `service.https.port`       |
-| `service.httpsNodePort`     | `service.https.nodePort`   |
-| `service.targetPorts.https` | `service.https.targetPort` |
+| Previous value name         | New value name             | New default value |
+| --------------------------- | -------------------------- | ---------- |
+| `service.enableHttp`        | `service.http.enabled`     | |
+| `service.httpPort`          | `service.http.port`        | |
+| `service.httpNodePort`      | `service.http.nodePort`    | |
+| `service.targetPorts.http`  | `service.http.targetPort`  | `8080` |
+| `service.enableHttps`       | `service.https.enabled`    | |
+| `service.httpsPort`         | `service.https.port`       | |
+| `service.httpsNodePort`     | `service.https.nodePort`   | |
+| `service.targetPorts.https` | `service.https.targetPort` | `8443` |
 
 ### Exporter sidecar
 
