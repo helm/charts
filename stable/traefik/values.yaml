@@ -94,11 +94,11 @@ ssl:
     #   address: ""
     #   trustForwardHeader: false
     #   authResponseHeaders: []
-    #     tls:
-    #       ca: ""
-    #       caOptional: false
-    #       cert: ""
-    #       key: ""
+    #   tls:
+    #     ca: ""
+    #     caOptional: false
+    #     cert: ""
+    #     key: ""
 
 kvprovider:
   ## If you want to run Traefik in HA mode, you will need to setup a KV Provider. Therefore you can choose one of
