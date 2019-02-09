@@ -29,6 +29,9 @@ env:
 
 imagePullSecrets: []
 
+securityContext:
+  user: 8888
+
 image:
   repository: quay.io/datawire/ambassador
   # tag:
@@ -45,22 +48,23 @@ service:
   http:
     enabled: true
     port: 80
-    targetPort: 80
+    targetPort: 8080
     # nodePort: 30080
 
   https:
     enabled: true
     port: 443
-    targetPort: 443
+    targetPort: 8443
     # nodePort: 30443
 
-  # annotations:
-  #   getambassador.io/config: |
-  #     ---
-  #     apiVersion: ambassador/v1
-  #     kind: Module
-  #     name: ambassador
-  #     config:
+  annotations:
+    getambassador.io/config: |
+      ---
+      apiVersion: ambassador/v1
+      kind: Module
+      name: ambassador
+      config:
+        service_port: 8080
   #       diagnostics:
   #         enabled: false
   # loadBalancerSourceRanges:

@@ -29,6 +29,8 @@ spec:
         {{- toYaml .Values.podAnnotations | nindent 8 }}
       {{- end }}
     spec:
+      securityContext:
+        runAsUser: {{ .Values.securityContext.user }}
       serviceAccountName: {{ include "ambassador.serviceAccountName" . }}
       volumes:
         {{- if .Values.prometheusExporter.enabled }}

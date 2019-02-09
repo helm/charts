@@ -63,16 +63,17 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `rbac.create`                      | If `true`, create and use RBAC resources                                        | `true`                        |
 | `replicaCount`                     | Number of Ambassador replicas                                                   | `1`                           |
 | `resources`                        | CPU/memory resource requests/limits                                             | `{}`                          |
-| `service.annotations`              | Annotations to apply to Ambassador service                                      | None                          |
+| `securityContext.user`             | If `true`, create a service for Ambassador's admin UI                           | `8888`                        |
+| `service.annotations`              | Annotations to apply to Ambassador service                                      | `{"getambassador.io/config":"---\napiVersion: ambassador/v1\nkind: Module\nname: ambassador\nconfig:\n  service_port: 8080"}` |
 | `service.externalTrafficPolicy`    | Sets the external traffic policy for the service                                | `""`                          |
 | `service.http.enabled`             | if port 80 should be opened for service                                         | `true`                        |
 | `service.http.nodePort`            | If explicit NodePort is required                                                | None                          |
 | `service.http.port`                | if port 443 should be opened for service                                        | `true`                        |
-| `service.http.targetPort`          | Sets the targetPort that maps to the service's cleartext port                   | `80`                          |
+| `service.http.targetPort`          | Sets the targetPort that maps to the service's cleartext port                   | `8080`                        |
 | `service.https.enabled`            | if port 443 should be opened for service                                        | `true`                        |
 | `service.https.nodePort`           | If explicit NodePort is required                                                | None                          |
 | `service.https.port`               | if port 443 should be opened for service                                        | `true`                        |
-| `service.https.targetPort`         | Sets the targetPort that maps to the service's TLS port                         | `443`                         |
+| `service.https.targetPort`         | Sets the targetPort that maps to the service's TLS port                         | `8443`                        |
 | `service.loadBalancerIP`           | IP address to assign (if cloud provider supports it)                            | `""`                          |
 | `service.loadBalancerSourceRanges` | Passed to cloud provider load balancer if created (e.g: AWS ELB)                | None                          |
 | `service.type`                     | Service type to be used                                                         | `LoadBalancer`                |
