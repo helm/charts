@@ -1,0 +1,14 @@
+prometheusExporter:
+  enabled: true
+
+env:
+  AMBASSADOR_SINGLE_NAMESPACE: true
+
+volumes:
+  - name: nothing
+    emptyDir: {}
+
+volumeMounts:
+  - mountPath: /var/nothing
+    name: nothing
+    readOnly: true
