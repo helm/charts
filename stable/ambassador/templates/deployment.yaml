@@ -29,7 +29,7 @@ spec:
         {{- if .Values.prometheusExporter.enabled }}
         - name: stats-exporter-mapping-config
           configMap:
-            name: '{{ include "ambassador.fullname" . }}-config'
+            name: {{ include "ambassador.fullname" . }}-config
             items:
             - key: exporterConfiguration
               path: mapping-config.yaml
@@ -40,8 +40,8 @@ spec:
       containers:
         {{- if .Values.prometheusExporter.enabled }}
         - name: prometheus-exporter
-          image: "{{ .Values.prometheusExporter.image.repository }}:{{ .Values.prometheusExporter.image.tag }}"
-          imagePullPolicy: {{ .Values.prometheusExporter.image.pullPolicy }}
+          image: "{{ .Values.prometheusExporter.repository }}:{{ .Values.prometheusExporter.tag }}"
+          imagePullPolicy: {{ .Values.prometheusExporter.pullPolicy }}
           ports:
             - name: metrics
               containerPort: 9102
@@ -127,5 +127,6 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
     {{- end }}
-      imagePullSecrets: {{ toYaml .Values.imagePullSecrets | nindent 2 }}
+      imagePullSecrets:
+        {{- toYaml .Values.imagePullSecrets | nindent 8 }}
 {{- end }}

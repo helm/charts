@@ -77,7 +77,8 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `adminService.nodePort` | If explicit NodePort for admin service is required  | `true`
 | `adminService.type` | Ambassador's admin service type to be used | `ClusterIP`
 | `prometheusExporter.enabled` | Prometheus exporter side-car enabled | `false`
-| `prometheusExporter.image` | Prometheus exporter image | `prom/statsd-exporter:v0.8.1`
+| `prometheusExporter.repository` | Prometheus exporter image | `prom/statsd-exporter`
+| `prometheusExporter.tag` | Prometheus exporter image | `v0.8.1`
 | `prometheusExporter.pullPolicy` | Image pull policy | `IfNotPresent`
 
 Make sure the configured `service.targetPorts.http` and `service.targetPorts.https` ports match your Ambassador Module's `service_port` and `redirect_cleartext_from` configurations.
