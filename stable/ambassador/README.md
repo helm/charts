@@ -67,7 +67,7 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `service.http.nodePort` | If explicit NodePort is required | None
 | `service.https.enabled` | if port 443 should be opened for service | `true`
 | `service.https.port` | if port 443 should be opened for service | `true`
-| `service.https.targetPorts` | Sets the targetPort that maps to the service's TLS port | `443`
+| `service.https.targetPort` | Sets the targetPort that maps to the service's TLS port | `443`
 | `service.https.nodePort` | If explicit NodePort is required | None
 | `service.type` | Service type to be used | `LoadBalancer`
 | `service.loadBalancerIP` | IP address to assign (if cloud provider supports it) | `""`
@@ -115,3 +115,40 @@ Alternatively, a YAML file that specifies the values for the above parameters ca
 ```console
 $ helm upgrade --install --wait my-release -f values.yaml stable/ambassador
 ```
+
+------
+
+## Migrating from datawire/ambassador chart
+### Timings
+Timings values have been removed in favor of setting the env variables using `env´
+
+| Parameter  | Env variables   |
+| ---------- | --------------- |
+| `timing.restart` | `AMBASSADOR_RESTART_TIME` |
+| `timing.drain` | `AMBASSADOR_DRAIN_TIME` |
+| `timing.shutdown` | `AMBASSADOR_SHUTDOWN_TIME` |
+
+### Single namespace
+
+| Parameter  | Env variables   |
+| ---------- | --------------- |
+| `namespace.single` | `AMBASSADOR_SINGLE_NAMESPACE` |
+
+
+### Renamde values
+Service ports values have changed names.
+| Previous value name | New value name   |
+| ---------- | --------------- |
+| `service.enableHttp` | `service.http.enabled` |
+| `service.httpPort` | `service.http.port` |
+| `service.httpNodePort` | `service.http.nodePort` |
+| `service.targetPorts.http` | `service.http.targetPort` |
+| `service.enableHttps` | `service.https.enabled` |
+| `service.httpsPort` | `service.https.port` |
+| `service.httpsNodePort` | `service.https.nodePort` |
+| `service.targetPorts.https` | `service.https.targetPort` |
+
+### Exporter sidecar
+Pre version `0.50.0` ambassador was using socat and required a sidecar to export statsd metrics. In `0.50.0` ambassador no longer uses socat and doesn't need a sidecar anymore to export its statsd metrics. Statsd metrics are disabled by default and can be enabled by setting environment `STATSD_ENABLED`, this will (in 0.50) send metrics to a service named `statsd-sink`, if you want to send it to another service or namespace it can be changed by setting `STATSD_HOST`
+
+If you are using prometheus the chart allows you to enable a sidecar which can export to prometheus see the `prometheusExporter` values.
