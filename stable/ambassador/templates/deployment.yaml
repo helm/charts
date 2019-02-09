@@ -1,6 +1,9 @@
-{{- if not .Values.daemonSet -}}
 apiVersion: apps/v1
+{{- if .Values.daemonSet }}
+kind: DaemonSet
+{{- else }}
 kind: Deployment
+{{- end }}
 metadata:
   name: {{ include "ambassador.fullname" . }}
   labels:
@@ -9,7 +12,9 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
+{{- if not .Values.daemonSet }}
   replicas: {{ .Values.replicaCount }}
+{{- end }}
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ include "ambassador.name" . }}
@@ -129,4 +134,3 @@ spec:
     {{- end }}
       imagePullSecrets:
         {{- toYaml .Values.imagePullSecrets | nindent 8 }}
-{{- end }}
