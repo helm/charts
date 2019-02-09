@@ -168,6 +168,7 @@ postgresUser, postgresPassword, and redisPassword etc. is defined. If not specif
 
 Map each specific secret to specific environment variables in your values.yaml. Where envVar is the airflow environment
 variable to populate and secretKey is the key that contains your secret value in your kubernetes secret:
+```
 existingAirflowSecret: my-airflow-secrets
 airflow:
     secretsMapping:
@@ -182,7 +183,7 @@ airflow:
 
       - envVar: REDIS_PASSWORD
         secretKey: airflowRedisPassword
-
+```
 
 ### Local binaries
 
