@@ -89,7 +89,7 @@ spec:
             {{- end }}
             {{- end }}
             {{- if .Values.Master.InitContainerEnv }}
-            {{ toYaml .Values.Master.InitContainerEnv | indent 12 }}
+{{ toYaml .Values.Master.InitContainerEnv | indent 12 }}
             {{- end }}
           resources:
 {{ toYaml .Values.Master.resources | indent 12 }}
