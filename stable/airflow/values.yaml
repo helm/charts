@@ -4,6 +4,36 @@
 ##
 ## common settings and setting for the webserver
 airflow:
+
+  ##
+  ## secretsMapping can be overridden in values.yaml as such:
+  ## secretsMapping:
+  ## - envVar: AIRFLOW__LDAP__BIND_PASSWORD
+  ##   secretName: ldapBindPassword
+  ## - envVar: AIRFLOW__ATLAS__PASSWORD
+  ##   secretName: atlasPassword
+  ## - envVar: AIRFLOW__SMTP__PASSWORD
+  ##   secretName: smtpPassword
+  ## - envVar: AIRFLOW__KUBERNETES__GIT_PASSWORD
+  ##   secretName: kubernetesGitPassword
+  ## - envVar: POSTGRES_USER
+  ##   secretName: postgresUser
+  ## - envVar: POSTGRES_PASSWORD
+  ##   secretName: postgresPassword
+  ## - envVar: REDIS_PASSWORD
+  ##   secretName: redisPassword
+  secretsMapping:
+
+
+  ## used only when existingAirflowSecrets is false
+  defaultSecretsMapping:
+  - envVar: POSTGRES_USER
+    secretKey: postgresUser
+  - envVar: POSTGRES_PASSWORD
+    secretKey: postgresPassword
+  - envVar: REDIS_PASSWORD
+    secretKey: redisPassword
+
   ##
   ## You will need to define your fernet key:
   ## Generate fernetKey with:
