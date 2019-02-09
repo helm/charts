@@ -106,6 +106,7 @@ The following table lists the configurable parameters of the kibana chart and th
 | `securityContext.fsGroup`                     | fsGroup id to run in pods                  | `2000`                                  |
 | `extraConfigMapMounts`                        | Additional configmaps to be mounted        | `[]`                                    |
 | `deployment.annotations`                      | Annotations for deployment                 | `{}`                                    |
+| `initContainers`                              | Init containers to add to the kibana deployment | `{}`                               |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
