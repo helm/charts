@@ -43,7 +43,7 @@ spec:
           value: {{ .Values.minecraftServer.announcePlayerAchievements | quote }}
         - name: ENABLE_COMMAND_BLOCK
           value: {{ .Values.minecraftServer.enableCommandBlock | quote }}
-        - name: FORCE_gameMode
+        - name: FORCE_GAMEMODE
           value: {{ .Values.minecraftServer.forcegameMode | quote }}
         - name: GENERATE_STRUCTURES
           value: {{ .Values.minecraftServer.generateStructures | quote }}
