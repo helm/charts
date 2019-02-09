@@ -6,6 +6,7 @@ version: 1.0.0
 home: https://www.getambassador.io/
 sources:
   - https://github.com/datawire/ambassador
+  - https://github.com/prometheus/statsd_exporter
 keywords:
   - api gateway
   - ambassador
