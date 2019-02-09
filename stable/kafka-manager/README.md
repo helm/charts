@@ -48,7 +48,7 @@ Parameter | Description | Default
 `zkHosts` | Zookeeper hosts required by the kafka-manager | `localhost:2181`
 `clusters` | Configuration of the clusters to manage | `{}`
 `applicationSecret` | Kafka-manager application secret | `""`
-`basicAuth.enabled` | If ture, enable basic authentication | `false`
+`basicAuth.enabled` | If true, enable basic authentication | `false`
 `basicAuth.username` | Username for basic auth | `admin`
 `basicAuth.password` | Paswword for basic auth | `""`
 `javaOptions` | Java runtime options | `""`
