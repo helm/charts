@@ -118,6 +118,7 @@ replica:
 service:
   servicename:
   type: ClusterIP
+  externalTrafficPolicy: Local
   # clusterIP: None
   externalPort: 8080
   nodePort:
