@@ -44,43 +44,43 @@ The following tables lists the configurable parameters of the Ambassador chart a
 
 | Parameter                          | Description                                                                     | Default                       |
 | ---------------------------------- | ------------------------------------------------------------------------------- | ----------------------------- |
-| `imagePullSecrets`                 | Image pull secrets                                                              | None                          |
-| `image.repository`                 | Image                                                                           | `quay.io/datawire/ambassador` |
-| `image.tag`                        | Image tag                                                                       | `0.50.0`                      |
-| `image.pullPolicy`                 | Image pull policy                                                               | `IfNotPresent`                |
-| `daemonSet`                        | If `true`, Create a daemonSet. By default Deployment controller will be created | `false`                       |
-| `env`                              | Any additional environment variables for ambassador pods                        | `{}`                          |
-| `replicaCount`                     | Number of Ambassador replicas                                                   | `1`                           |
-| `volumes`                          | Volumes for the ambassador service                                              | `[]`                          |
-| `volumeMounts`                     | Volume mounts for the ambassador service                                        | `[]`                          |
-| `resources`                        | CPU/memory resource requests/limits                                             | `{}`                          |
-| `rbac.create`                      | If `true`, create and use RBAC resources                                        | `true`                        |
-| `serviceAccount.create`            | If `true`, create a new service account                                         | `true`                        |
-| `serviceAccount.name`              | Service account to be used                                                      | `ambassador`                  |
-| `namespace.single`                 | Set the `AMBASSADOR_SINGLE_NAMESPACE` environment variable                      | `false`                       |
-| `namespace.name`                   | Set the `AMBASSADOR_NAMESPACE` environment variable                             | `metadata.namespace`          |
-| `podAnnotations`                   | Additional annotations for ambassador pods                                      | `{}`                          |
-| `ambassador.id`                    | Set the identifier of the Ambassador instance                                   | `default`                     |
-| `service.http.enabled`             | if port 80 should be opened for service                                         | `true`                        |
-| `service.http.port`                | if port 443 should be opened for service                                        | `true`                        |
-| `service.http.targetPort`          | Sets the targetPort that maps to the service's cleartext port                   | `80`                          |
-| `service.http.nodePort`            | If explicit NodePort is required                                                | None                          |
-| `service.https.enabled`            | if port 443 should be opened for service                                        | `true`                        |
-| `service.https.port`               | if port 443 should be opened for service                                        | `true`                        |
-| `service.https.targetPort`         | Sets the targetPort that maps to the service's TLS port                         | `443`                         |
-| `service.https.nodePort`           | If explicit NodePort is required                                                | None                          |
-| `service.type`                     | Service type to be used                                                         | `LoadBalancer`                |
-| `service.loadBalancerIP`           | IP address to assign (if cloud provider supports it)                            | `""`                          |
-| `service.externalTrafficPolicy`    | Sets the external traffic policy for the service                                | `""`                          |
-| `service.annotations`              | Annotations to apply to Ambassador service                                      | None                          |
-| `service.loadBalancerSourceRanges` | Passed to cloud provider load balancer if created (e.g: AWS ELB)                | None                          |
 | `adminService.create`              | If `true`, create a service for Ambassador's admin UI                           | `true`                        |
 | `adminService.nodePort`            | If explicit NodePort for admin service is required                              | `true`                        |
 | `adminService.type`                | Ambassador's admin service type to be used                                      | `ClusterIP`                   |
+| `ambassador.id`                    | Set the identifier of the Ambassador instance                                   | `default`                     |
+| `daemonSet`                        | If `true`, Create a daemonSet. By default Deployment controller will be created | `false`                       |
+| `env`                              | Any additional environment variables for ambassador pods                        | `{}`                          |
+| `image.pullPolicy`                 | Image pull policy                                                               | `IfNotPresent`                |
+| `image.repository`                 | Image                                                                           | `quay.io/datawire/ambassador` |
+| `image.tag`                        | Image tag                                                                       | `0.50.0`                      |
+| `imagePullSecrets`                 | Image pull secrets                                                              | None                          |
+| `namespace.name`                   | Set the `AMBASSADOR_NAMESPACE` environment variable                             | `metadata.namespace`          |
+| `namespace.single`                 | Set the `AMBASSADOR_SINGLE_NAMESPACE` environment variable                      | `false`                       |
+| `podAnnotations`                   | Additional annotations for ambassador pods                                      | `{}`                          |
 | `prometheusExporter.enabled`       | Prometheus exporter side-car enabled                                            | `false`                       |
+| `prometheusExporter.pullPolicy`    | Image pull policy                                                               | `IfNotPresent`                |
 | `prometheusExporter.repository`    | Prometheus exporter image                                                       | `prom/statsd-exporter`        |
 | `prometheusExporter.tag`           | Prometheus exporter image                                                       | `v0.8.1`                      |
-| `prometheusExporter.pullPolicy`    | Image pull policy                                                               | `IfNotPresent`                |
+| `rbac.create`                      | If `true`, create and use RBAC resources                                        | `true`                        |
+| `replicaCount`                     | Number of Ambassador replicas                                                   | `1`                           |
+| `resources`                        | CPU/memory resource requests/limits                                             | `{}`                          |
+| `service.annotations`              | Annotations to apply to Ambassador service                                      | None                          |
+| `service.externalTrafficPolicy`    | Sets the external traffic policy for the service                                | `""`                          |
+| `service.http.enabled`             | if port 80 should be opened for service                                         | `true`                        |
+| `service.http.nodePort`            | If explicit NodePort is required                                                | None                          |
+| `service.http.port`                | if port 443 should be opened for service                                        | `true`                        |
+| `service.http.targetPort`          | Sets the targetPort that maps to the service's cleartext port                   | `80`                          |
+| `service.https.enabled`            | if port 443 should be opened for service                                        | `true`                        |
+| `service.https.nodePort`           | If explicit NodePort is required                                                | None                          |
+| `service.https.port`               | if port 443 should be opened for service                                        | `true`                        |
+| `service.https.targetPort`         | Sets the targetPort that maps to the service's TLS port                         | `443`                         |
+| `service.loadBalancerIP`           | IP address to assign (if cloud provider supports it)                            | `""`                          |
+| `service.loadBalancerSourceRanges` | Passed to cloud provider load balancer if created (e.g: AWS ELB)                | None                          |
+| `service.type`                     | Service type to be used                                                         | `LoadBalancer`                |
+| `serviceAccount.create`            | If `true`, create a new service account                                         | `true`                        |
+| `serviceAccount.name`              | Service account to be used                                                      | `ambassador`                  |
+| `volumeMounts`                     | Volume mounts for the ambassador service                                        | `[]`                          |
+| `volumes`                          | Volumes for the ambassador service                                              | `[]`                          |
 
 Make sure the configured `service.targetPorts.http` and `service.targetPorts.https` ports match your Ambassador Module's `service_port` and `redirect_cleartext_from` configurations.
 
