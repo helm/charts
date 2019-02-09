@@ -71,6 +71,7 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `service.https.nodePort`           | If explicit NodePort is required                                                | None                          |
 | `service.type`                     | Service type to be used                                                         | `LoadBalancer`                |
 | `service.loadBalancerIP`           | IP address to assign (if cloud provider supports it)                            | `""`                          |
+| `service.externalTrafficPolicy`    | Sets the external traffic policy for the service                                | `""`                          |
 | `service.annotations`              | Annotations to apply to Ambassador service                                      | None                          |
 | `service.loadBalancerSourceRanges` | Passed to cloud provider load balancer if created (e.g: AWS ELB)                | None                          |
 | `adminService.create`              | If `true`, create a service for Ambassador's admin UI                           | `true`                        |
