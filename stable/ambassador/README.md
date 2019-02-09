@@ -82,25 +82,26 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `volumeMounts`                     | Volume mounts for the ambassador service                                        | `[]`                          |
 | `volumes`                          | Volumes for the ambassador service                                              | `[]`                          |
 
-Make sure the configured `service.targetPorts.http` and `service.targetPorts.https` ports match your Ambassador Module's `service_port` and `redirect_cleartext_from` configurations.
+**NOTE:** Make sure the configured `service.http.targetPort` and `service.https.targetPort` ports match your [Ambassador Module's](https://www.getambassador.io/reference/modules/#the-ambassador-module) `service_port` and `redirect_cleartext_from` configurations.
 
 If you intend to use `service.annotations`, remember to include the annotation key, for example:
 
 ```
 service:
   type: LoadBalancer
-  port: 80
+
+  http:
+    port: 80
+    targetPort: 8080
+
   annotations:
     getambassador.io/config: |
       ---
-      apiVersion: ambassador/v0
+      apiVersion: ambassador/v1
       kind: Module
-      name:  ambassador
+      name: ambassador
       config:
-        diagnostics:
-          enabled: false
-        redirect_cleartext_from: 80
-        service_port: 443
+        redirect_cleartext_from: 8080
 ```
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
