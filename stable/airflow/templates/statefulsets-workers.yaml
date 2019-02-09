@@ -75,21 +75,7 @@ spec:
             - configMapRef:
                 name: "{{ template "airflow.fullname" . }}-env"
           env:
-            - name: POSTGRES_USER
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "airflow.secret" . }}
-                  key: postgresUser
-            - name: POSTGRES_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "airflow.secret" . }}
-                  key: postgresPassword
-            - name: REDIS_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "airflow.secret" . }}
-                  key: redisPassword
+          {{- include "airflow.mapenvsecrets" . | indent 10 }}
           volumeMounts:
           {{- $secretsDir := .Values.workers.secretsDir -}}
           {{- range .Values.workers.secrets }}
