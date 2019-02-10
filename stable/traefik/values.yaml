@@ -33,6 +33,7 @@ deploymentStrategy: {}
   #   maxUnavailable: 0
   # type: RollingUpdate
 
+securityContext: {}
 nodeSelector: {}
   # key: value
 affinity: {}
