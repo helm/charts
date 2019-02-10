@@ -32,8 +32,14 @@ spec:
       {{- if .Values.priorityClassName }}
       priorityClassName: "{{ .Values.priorityClassName }}"
       {{- end }}
-{{- if or (.Values.dashboardImport.dashboards) (.Values.plugins.enabled) }}
+{{- if or (.Values.initContainers) (.Values.dashboardImport.dashboards) (.Values.plugins.enabled) }}
       initContainers:
+{{- if .Values.initContainers }}
+{{- range $key, $value := .Values.initContainers }}
+        - name: "{{ $key }}"
+{{ toYaml $value | indent 10 }}
+{{- end }}
+{{- end }}
 {{- if .Values.dashboardImport.dashboards }}
       - name: {{ .Chart.Name }}-dashboardimport
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
