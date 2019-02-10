@@ -29,8 +29,10 @@ spec:
         {{- toYaml .Values.podAnnotations | nindent 8 }}
       {{- end }}
     spec:
+      {{- with .Values.securityContext }}
       securityContext:
-        runAsUser: {{ .Values.securityContext.user }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       serviceAccountName: {{ include "ambassador.serviceAccountName" . }}
       volumes:
         {{- if .Values.prometheusExporter.enabled }}
@@ -114,7 +116,7 @@ spec:
             periodSeconds: 3
           {{- with .Values.volumeMounts }}
           volumeMounts:
-          {{- toYaml . | nindent 10 }}
+            {{- toYaml . | nindent 12 }}
           {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}

@@ -30,7 +30,7 @@ env:
 imagePullSecrets: []
 
 securityContext:
-  user: 8888
+  runAsUser: 8888
 
 image:
   repository: quay.io/datawire/ambassador
