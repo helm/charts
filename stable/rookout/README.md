@@ -10,7 +10,7 @@ $ helm install --name my-release stable/rookout --set token=YOUR_ORGANIZATIONAL_
 
 ## Introduction
 
-This chart bootstraps a [Rookout Router](https://docs.rookout.com/docs/installation-agent.html) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
+This chart bootstraps a [Rookout ETL Agent](https://docs.rookout.com/docs/agent-setup.html) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
 ## Prerequisites
 
@@ -45,8 +45,8 @@ The following table lists the configurable parameters of the Rookout Router char
 |            Parameter              |              Description                 |                          Default                        | 
 | --------------------------------- | ---------------------------------------- | ------------------------------------------------------- |
 | `token`                           | Rookout organizational token             | `Nil` You must provide your own token                   |  
-| `tags`                            | Rookout Router tags                      | `Nil` You must provide your own token                   |                         
-| `listenAll`                       | Configuring the agent to listen on all addresses instead of only localhost.                      | `True` You must provide your own token |               
+| `tags`                            | Rookout Router tags                      | `Nil` (Optional) Provide tags to differentiate between multiple Rookout ETL Agents |                
+| `listenAll`                       | Configuring the agent to listen on all addresses instead of only localhost.                      | `True` Listens on all addresses | 
 | `image.registry`                  | Rookout image registry                   | `docker.io`                                             |
 | `image.repository`                | Rookout image name                       | `rookout/agent`                                         |
 | `image.tag`                       | Rookout image tag                        | `{VERSION}`                                             |
@@ -54,13 +54,13 @@ The following table lists the configurable parameters of the Rookout Router char
 | `image.pullSecrets`               | Specify image pull secrets               | `nil`                                                   |
 
 
-The above parameters map to the env variables defined in [rookout/agent](https://docs.rookout.com/docs/agent.html). For more information please refer to the [rookout/agent](https://hub.docker.com/r/rookout/agent/) image documentation.
+The above parameters map to the env variables defined in [rookout/agent](https://docs.rookout.com/docs/agent-setup.html). For more information please refer to the [rookout/agent](https://hub.docker.com/r/rookout/agent/) image documentation.
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```bash
 $ helm install --name my-release \
-  --set token=YOUR_TOKEN_HERE,listenAll=False,tags=tag1;tag2;tag3 \
+  --set token=YOUR_ORGANIZATIONAL_TOKEN,listenAll=False,tags=tag1;tag2;tag3 \
     stable/rookout
 ```
 
