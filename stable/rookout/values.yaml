@@ -23,7 +23,7 @@ rookout:
     ## rookout-agent internal resource limiter limits
     ## CPU must always be integers (1, 2, 3, 4, etc...)
     ## MEMORY must always be an integer representing memory in Mb (512, 1024, 1536, etc...)
-    ## 
+    ##
     ## *IMPORTANT* These values should match the kubernetes resources limits. Internal minimum limit of cpu is `1`
     ##
   internalResources:
