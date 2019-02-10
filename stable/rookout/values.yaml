@@ -1,6 +1,6 @@
 image:
   repository: rookout/agent
-  tag: 0.2.3
+  tag: 0.3.11
   pullPolicy: IfNotPresent
 
 service:
