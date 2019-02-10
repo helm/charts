@@ -31,8 +31,6 @@ spec:
               value: {{ .Values.rookout.token }}
             - name: ROOKOUT_LISTEN_ALL
               value: {{ .Values.rookout.listenAll }}
-            - name: ROOKOUT_AGENT_TAGS
-              value: {{ .Values.rookout.tags }}
             - name: ROOKOUT_AGENT_MAX_CPU
               value: {{ .Values.rookout.internalResources.limits.cpu }}
             - name: ROOKOUT_AGENT_MAX_MEMORY

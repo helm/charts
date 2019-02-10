@@ -7,8 +7,7 @@ service:
   type: ClusterIP
 
 rookout:
-  listenAll: True
-  tags: ''
+  listenAll: False
   token: ''
 
   ## rookout-agent resource requests and limits

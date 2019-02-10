@@ -45,8 +45,7 @@ The following table lists the configurable parameters of the Rookout Router char
 |            Parameter                      |              Description                 |                          Default                        | 
 | ----------------------------------------- | ---------------------------------------- | ------------------------------------------------------- |
 | `rookout.token`                           | Rookout organizational token             | `Nil` You must provide your own token                   |  
-| `rookout.tags`                            | Rookout Router tags                      | `Nil` (Optional) Provide tags to differentiate between multiple Rookout ETL Agents |        
-| `rookout.listenAll`                       | Configuring the agent to listen on all addresses instead of only localhost.                        | `True` Listens on all addresses |
+| `rookout.listenAll`                       | Configuring the agent to listen on all addresses instead of only localhost.                        | `False` Listens only on localhost |
 | `rookout.resources.requests.cpu`          | CPU resource requests                    | `30m`                                                   |
 | `rookout.resources.limits.cpu`            | CPU resource limits                      | `4000m`                                                 |
 | `rookout.resources.requests.memory`       | Memory resource requests                 | `32Mi`                                                  |
@@ -66,10 +65,10 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 ```bash
 $ helm install --name my-release \
-  --set rookout.token=YOUR_ORGANIZATIONAL_TOKEN,listenAll=False,tags=tag1;tag2;tag3 \
+  --set rookout.token=YOUR_ORGANIZATIONAL_TOKEN,listenAll=False \
     stable/rookout
 ```
 
-The above command sets the Rookout Router token to your organizational token. Additionally, it sets the listenAll to `False` and Router tags to `tag1;tag2;tag3`.
+The above command sets the Rookout Router token to your organizational token. Additionally, it sets the listenAll to `False`.
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
