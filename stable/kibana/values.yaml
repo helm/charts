@@ -138,6 +138,9 @@ podAnnotations: {}
 replicaCount: 1
 revisionHistoryLimit: 3
 
+# Custom labels for pod assignment
+podLabels: {}
+
 # To export a dashboard from a running Kibana 6.3.x use:
 # curl --user <username>:<password> -XGET https://kibana.yourdomain.com:5601/api/kibana/dashboards/export?dashboard=<some-dashboard-uuid> > my-dashboard.json
 # A dashboard is defined by a name and a string with the json payload or the download url
