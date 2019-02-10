@@ -27,5 +27,3 @@ tolerations: []
 
 affinity: {}
 replicaCount: 1
-
-
