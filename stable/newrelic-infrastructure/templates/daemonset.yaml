@@ -1,4 +1,4 @@
-{{- if and .Values.licenseKey .Values.cluster }}
+{{- if and ((or (.Values.licenseKey) (.Values.licenseKeyExistingSecret))) (.Values.cluster) }}
 apiVersion: apps/v1beta2
 kind: DaemonSet
 metadata:
@@ -35,7 +35,12 @@ spec:
             - name: NRIA_LICENSE_KEY
               valueFrom:
                 secretKeyRef:
+                  {{- if .Values.licenseKey }}
                   name: {{ template "newrelic.fullname" . }}-config
+                  {{- end }}
+                  {{- if .Values.licenseKeyExistingSecret }}
+                  name: {{ .Values.licenseKeyExistingSecret }}
+                  {{- end }}
                   key: license
             - name: "CLUSTER_NAME"
               value: "{{ .Values.cluster }}"
