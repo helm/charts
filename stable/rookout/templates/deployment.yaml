@@ -34,9 +34,9 @@ spec:
             - name: ROOKOUT_AGENT_TAGS
               value: {{ .Values.rookout.tags }}
             - name: ROOKOUT_AGENT_MAX_CPU
-              value: "4"
+              value: {{ .Values.rookout.internalResources.limits.cpu }}
             - name: ROOKOUT_AGENT_MAX_MEMORY
-              value: "1024"
+              value: {{ .Values.rookout.internalResources.limits.memory }}
           ports:
             - containerPort: 7486
           livenessProbe:

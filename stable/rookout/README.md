@@ -42,20 +42,22 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following table lists the configurable parameters of the Rookout Router chart and their default values.
 
-|            Parameter                |              Description                 |                          Default                        | 
-| ----------------------------------- | ---------------------------------------- | ------------------------------------------------------- |
-| `rookout.token`                     | Rookout organizational token             | `Nil` You must provide your own token                   |  
-| `rookout.tags`                      | Rookout Router tags                      | `Nil` (Optional) Provide tags to differentiate between multiple Rookout ETL Agents |        
-| `rookout.listenAll`                 | Configuring the agent to listen on all addresses instead of only localhost.                        | `True` Listens on all addresses |
-| `rookout.resources.requests.cpu`    | CPU resource requests                    | `30m`                                                   |
-| `rookout.resources.limits.cpu`      | CPU resource limits                      | `4000m`                                                 |
-| `rookout.resources.requests.memory` | Memory resource requests                 | `32Mi`                                                  |
-| `rookout.resources.limits.memory`   | Memory resource limits                   | `4Gi`                                                   |
-| `image.registry`                    | Rookout image registry                   | `docker.io`                                             |
-| `image.repository`                  | Rookout image name                       | `rookout/agent`                                         |
-| `image.tag`                         | Rookout image tag                        | `{VERSION}`                                             |
-| `image.pullPolicy`                  | Image pull policy                        | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
-| `image.pullSecrets`                 | Specify image pull secrets               | `nil`                                                   |
+|            Parameter                      |              Description                 |                          Default                        | 
+| ----------------------------------------- | ---------------------------------------- | ------------------------------------------------------- |
+| `rookout.token`                           | Rookout organizational token             | `Nil` You must provide your own token                   |  
+| `rookout.tags`                            | Rookout Router tags                      | `Nil` (Optional) Provide tags to differentiate between multiple Rookout ETL Agents |        
+| `rookout.listenAll`                       | Configuring the agent to listen on all addresses instead of only localhost.                        | `True` Listens on all addresses |
+| `rookout.resources.requests.cpu`          | CPU resource requests                    | `30m`                                                   |
+| `rookout.resources.limits.cpu`            | CPU resource limits                      | `4000m`                                                 |
+| `rookout.resources.requests.memory`       | Memory resource requests                 | `32Mi`                                                  |
+| `rookout.resources.limits.memory`         | Memory resource limits                   | `1024Mi`                                                |
+| `rookout.internalResources.limits.cpu`    | Rookout ETL Agent internal cpu limit, measured in number of full cpus     | `4`                    |
+| `rookout.internalReources.limits.memory`  | Rookout ETL Agent internal memory limit, measured in Mb                 | `1024`                   |
+| `image.registry`                          | Rookout image registry                   | `docker.io`                                             |
+| `image.repository`                        | Rookout image name                       | `rookout/agent`                                         |
+| `image.tag`                               | Rookout image tag                        | `{VERSION}`                                             |
+| `image.pullPolicy`                        | Image pull policy                        | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
+| `image.pullSecrets`                       | Specify image pull secrets               | `nil`                                                   |
 
 
 The above parameters map to the env variables defined in [rookout/agent](https://docs.rookout.com/docs/agent-setup.html). For more information please refer to the [rookout/agent](https://hub.docker.com/r/rookout/agent/) image documentation.
