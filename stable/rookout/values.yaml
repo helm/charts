@@ -6,11 +6,20 @@ image:
 service:
   type: ClusterIP
 
-listenAll: True
-tags: ''
-
 rookout:
+  listenAll: True
+  tags: ''
   token: ''
+
+  ## rookout-agent resource requests and limits
+  ##
+  resources:
+    requests:
+      cpu: 30m
+      memory: 32Mi
+    limits:
+      cpu: 4000m
+      memory: 1Gi
 
 nodeSelector: {}
 
@@ -18,3 +27,5 @@ tolerations: []
 
 affinity: {}
 replicaCount: 1
+
+

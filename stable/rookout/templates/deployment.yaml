@@ -24,13 +24,15 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          resources:
+{{ toYaml .Values.rookout.resources | indent 12 }}
           env:
             - name: ROOKOUT_TOKEN
-              value: {{ .Values.token }}
+              value: {{ .Values.rookout.token }}
             - name: ROOKOUT_LISTEN_ALL
-              value: {{ .Values.listenAll }}
+              value: {{ .Values.rookout.listenAll }}
             - name: ROOKOUT_AGENT_TAGS
-              value: {{ .Values.tags }}  
+              value: {{ .Values.rookout.tags }}  
           ports:
             - containerPort: 7486
           livenessProbe:

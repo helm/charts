@@ -5,7 +5,7 @@
 ## TL;DR;
 
 ```bash
-$ helm install --name my-release stable/rookout --set token=YOUR_ORGANIZATIONAL_TOKEN
+$ helm install --name my-release stable/rookout --set rookout.token=YOUR_ORGANIZATIONAL_TOKEN
 ```
 
 ## Introduction
@@ -21,7 +21,7 @@ This chart bootstraps a [Rookout ETL Agent](https://docs.rookout.com/docs/agent-
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release stable/rookout --set token=YOUR_ORGANIZATIONAL_TOKEN
+$ helm install --name my-release stable/rookout --set rookout.token=YOUR_ORGANIZATIONAL_TOKEN
 ```
 
 The command deploys Rookout on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -42,16 +42,20 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following table lists the configurable parameters of the Rookout Router chart and their default values.
 
-|            Parameter              |              Description                 |                          Default                        | 
-| --------------------------------- | ---------------------------------------- | ------------------------------------------------------- |
-| `token`                           | Rookout organizational token             | `Nil` You must provide your own token                   |  
-| `tags`                            | Rookout Router tags                      | `Nil` (Optional) Provide tags to differentiate between multiple Rookout ETL Agents |                
-| `listenAll`                       | Configuring the agent to listen on all addresses instead of only localhost.                      | `True` Listens on all addresses | 
-| `image.registry`                  | Rookout image registry                   | `docker.io`                                             |
-| `image.repository`                | Rookout image name                       | `rookout/agent`                                         |
-| `image.tag`                       | Rookout image tag                        | `{VERSION}`                                             |
-| `image.pullPolicy`                | Image pull policy                        | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
-| `image.pullSecrets`               | Specify image pull secrets               | `nil`                                                   |
+|            Parameter                |              Description                 |                          Default                        | 
+| ----------------------------------- | ---------------------------------------- | ------------------------------------------------------- |
+| `rookout.token`                     | Rookout organizational token             | `Nil` You must provide your own token                   |  
+| `rookout.tags`                      | Rookout Router tags                      | `Nil` (Optional) Provide tags to differentiate between multiple Rookout ETL Agents |        
+| `rookout.listenAll`                 | Configuring the agent to listen on all addresses instead of only localhost.                        | `True` Listens on all addresses |
+| `rookout.resources.requests.cpu`    | CPU resource requests                    | `30m`                                                   |
+| `rookout.resources.limits.cpu`      | CPU resource limits                      | `4000m`                                                 |
+| `rookout.resources.requests.memory` | Memory resource requests                 | `32Mi`                                                  |
+| `rookout.resources.limits.memory`   | Memory resource limits                   | `4Gi`                                                   |
+| `image.registry`                    | Rookout image registry                   | `docker.io`                                             |
+| `image.repository`                  | Rookout image name                       | `rookout/agent`                                         |
+| `image.tag`                         | Rookout image tag                        | `{VERSION}`                                             |
+| `image.pullPolicy`                  | Image pull policy                        | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
+| `image.pullSecrets`                 | Specify image pull secrets               | `nil`                                                   |
 
 
 The above parameters map to the env variables defined in [rookout/agent](https://docs.rookout.com/docs/agent-setup.html). For more information please refer to the [rookout/agent](https://hub.docker.com/r/rookout/agent/) image documentation.
@@ -60,7 +64,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 ```bash
 $ helm install --name my-release \
-  --set token=YOUR_ORGANIZATIONAL_TOKEN,listenAll=False,tags=tag1;tag2;tag3 \
+  --set rookout.token=YOUR_ORGANIZATIONAL_TOKEN,listenAll=False,tags=tag1;tag2;tag3 \
     stable/rookout
 ```
 
