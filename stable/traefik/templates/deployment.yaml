@@ -40,6 +40,10 @@ spec:
 {{ toYaml .Values.deployment.podLabels | indent 8 }}
         {{- end }}
     spec:
+      {{- if .Values.securityContext }}
+      securityContext:
+{{ toYaml .Values.securityContext | indent 8 }}
+      {{- end }}
       {{- if .Values.rbac.enabled }}
       serviceAccountName: {{ template "traefik.fullname" . }}
       {{- else }}
