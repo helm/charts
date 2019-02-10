@@ -1,15 +1,18 @@
-{{- if .Values.single.enabled -}}
-{{- if .Values.single.service.enabled -}}
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "fullname" . }}-s
+  name: {{ include "telegraf.fullname" . }}
   labels:
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app.kubernetes.io/name: {{ include "telegraf.name" . }}
+    helm.sh/chart: {{ include "telegraf.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
-  type: {{ .Values.single.service.type }}
+  type: {{ .Values.service.type }}
   ports:
-  {{- range $key, $value := .Values.single.config.inputs }}
+  {{- range $objectKey, $objectValue := .Values.config.inputs }}
+  {{- range $key, $value := . -}}
+    {{- $tp := typeOf $value -}}
     {{- if eq $key "http_listener" }}
   - port: {{ trimPrefix ":" $value.service_address | int64 }}
     targetPort: {{ trimPrefix ":" $value.service_address | int64 }}
@@ -18,6 +21,7 @@ spec:
     {{- if eq $key "statsd" }}
   - port: {{ trimPrefix ":" $value.service_address | int64 }}
     targetPort: {{ trimPrefix ":" $value.service_address | int64 }}
+    protocol: "UDP"
     name: "statsd"
     {{- end }}
     {{- if eq $key "tcp-listener" }}
@@ -28,6 +32,7 @@ spec:
     {{- if eq $key "udp-listener" }}
   - port: {{ trimPrefix ":" $value.service_address | int64 }}
     targetPort: {{ trimPrefix ":" $value.service_address | int64 }}
+    protocol: "UDP"
     name: "udp_listener"
     {{- end }}
     {{- if eq $key "webhooks" }}
@@ -35,8 +40,8 @@ spec:
     targetPort: {{ trimPrefix ":" $value.service_address | int64 }}
     name: "webhooks"
     {{- end }}
+  {{- end -}}
   {{- end }}
   selector:
-    app: {{ template "fullname" . }}-s
-{{- end -}}
-{{- end -}}
+    app.kubernetes.io/name: {{ include "telegraf.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
