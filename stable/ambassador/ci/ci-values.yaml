@@ -1,3 +1,5 @@
+daemonSet: true
+
 prometheusExporter:
   enabled: true
 
