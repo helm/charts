@@ -12,9 +12,9 @@ No further action should be required.
 
 This deployment will be incomplete until you get your token from Rookout. 
 
-Once registered you can request an token at:
+Once registered you can find your token in the organization page at:
 
-    http://rookout.com/
+    https://app.rookout.com/
 
 Then run:
 
