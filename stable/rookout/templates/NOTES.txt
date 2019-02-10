@@ -1,5 +1,5 @@
 {{- if .Values.rookout.token -}}
-Rookouts Routers are connection to Rookouts SDK (The Rook), you should see the status at Rookouts IDE.
+Rookout's ETL Agents are the connection to Rookout's SDK (The Rook), you should see the status in Rookout's IDE.
 
     https://app.rookout.com/app/connectivity/agents
 
