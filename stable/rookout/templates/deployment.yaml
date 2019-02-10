@@ -32,7 +32,11 @@ spec:
             - name: ROOKOUT_LISTEN_ALL
               value: {{ .Values.rookout.listenAll }}
             - name: ROOKOUT_AGENT_TAGS
-              value: {{ .Values.rookout.tags }}  
+              value: {{ .Values.rookout.tags }}
+            - name: ROOKOUT_AGENT_MAX_CPU
+              value: "4"
+            - name: ROOKOUT_AGENT_MAX_MEMORY
+              value: "1024"
           ports:
             - containerPort: 7486
           livenessProbe:
