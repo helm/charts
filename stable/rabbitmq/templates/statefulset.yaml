@@ -152,12 +152,12 @@ spec:
           - name: RABBITMQ_ERL_COOKIE
             valueFrom:
               secretKeyRef:
-                name: {{ template "rabbitmq.fullname" . }}
+                name: {{ template "rabbitmq.secretErlangName" . }}
                 key: rabbitmq-erlang-cookie
           - name: RABBITMQ_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: {{ template "rabbitmq.fullname" . }}
+                name: {{ template "rabbitmq.secretPasswordName" . }}
                 key: rabbitmq-password
 {{- if .Values.metrics.enabled }}
       - name: metrics
@@ -167,7 +167,7 @@ spec:
         - name: RABBIT_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "rabbitmq.fullname" . }}
+              name: {{ template "rabbitmq.secretPasswordName" . }}
               key: rabbitmq-password
         - name: RABBIT_URL
           value: "http://localhost:{{ .Values.service.managerPort }}"
