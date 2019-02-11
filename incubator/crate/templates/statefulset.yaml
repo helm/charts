@@ -73,7 +73,7 @@ spec:
         livenessProbe:
           exec:
             command: ["sh", "-c", "curl http://localhost:4200 2&>/dev/null | grep '\"ok\" : true'"]
-          initialDelaySeconds: 240
+          initialDelaySeconds: 100
           periodSeconds: 60
 {{- if .Values.persistentVolume.enabled }}
   volumeClaimTemplates:
