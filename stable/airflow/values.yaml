@@ -379,11 +379,8 @@ postgresql:
   ## Set to false if bringing your own PostgreSQL.
   enabled: true
   ##
-  ## If bringing your own PostgreSQL, the full uri to use
-  ## e.g. postgres://airflow:changeme@my-postgres.com:5432/airflow?sslmode=disable
-  # uri:
-  ##
-  ## PostgreSQL hostname
+  ## If you are bringing your own PostgreSQL, you should set postgresHost and 
+  ## also probably service.port, postgresUser, postgresPassword, and postgresDatabase
   ## postgresHost:
   ##
   ## PostgreSQL port
@@ -421,7 +418,11 @@ redis:
   ## Set to false if bringing your own redis.
   enabled: true
   ##
+  ## If you are bringing your own redis, you can set the host in redisHost.
+  ## redisHost:
+  ##
   ## Redis password
+  ##
   password: airflow
   ##
   ## Master configuration
