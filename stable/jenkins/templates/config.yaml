@@ -100,7 +100,14 @@ data:
                   </envVars>
                 </org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
               </containers>
-              <envVars/>
+              <envVars>
+{{- range $index, $var := .Values.Agent.envVars }}
+                <org.csanchez.jenkins.plugins.kubernetes.PodEnvVar>
+                  <key>{{ $var.name }}</key>
+                  <value>{{ $var.value }}</value>
+                </org.csanchez.jenkins.plugins.kubernetes.PodEnvVar>
+{{- end }}
+              </envVars>
               <annotations/>
 {{- if .Values.Agent.ImagePullSecret }}
               <imagePullSecrets>
