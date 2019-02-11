@@ -34,7 +34,7 @@ server:
   image:
     registry: docker.io
     repository: bitnami/parse
-    tag: 3.1.1
+    tag: 3.1.3
     ## Specify a imagePullPolicy
     ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
     ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -46,6 +46,14 @@ server:
     ##
     # pullSecrets:
     #   - myRegistrKeySecretName
+
+  ## Parse Server Pod Security Context
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+  ##
+  securityContext:
+    enabled: true
+    fsGroup: 1001
+    runAsUser: 1001
 
   ## Parse Server Port
   ## ref: https://github.com/bitnami/bitnami-docker-parse#configuration
@@ -98,6 +106,14 @@ dashboard:
     ##
     # pullSecrets:
     #   - myRegistrKeySecretName
+
+  ## Parse Dashboard Pod Security Context
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+  ##
+  securityContext:
+    enabled: true
+    fsGroup: 1001
+    runAsUser: 1001
 
   ## Parse Dashboard application username
   ## ref: https://github.com/bitnami/bitnami-docker-parse-dashboard#configuration

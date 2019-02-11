@@ -3,7 +3,7 @@
 
 image:
   repository: kong
-  tag: 0.14.1
+  tag: 1.0.2
   pullPolicy: IfNotPresent
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.
@@ -51,13 +51,23 @@ proxy:
   annotations: {}
   #  service.beta.kubernetes.io/aws-load-balancer-proxy-protocol: "*"
 
-  # HTTPS traffic on the proxy port
-  useTLS: true
-  servicePort: 8443
-  containerPort: 8443
+  # HTTP plain-text traffic
+  http:
+    enabled: true
+    servicePort: 80
+    containerPort: 8000
+    # Set a nodePort which is available if service type is NodePort
+    # nodePort: 32080
+
+  tls:
+    enabled: true
+    servicePort: 443
+    containerPort: 8443
+    # Set a nodePort which is available if service type is NodePort
+    # nodePort: 32443
+
   type: NodePort
-  # Set a nodePort which is available
-  # nodePort: 32443
+
   # Kong proxy ingress settings.
   ingress:
     # Enable/disable exposure using ingress.
@@ -148,8 +158,8 @@ cassandra:
 # PostgreSQL chart configs
 postgresql:
   enabled: true
-  postgresUser: kong
-  postgresDatabase: kong
+  postgresqlUsername: kong
+  postgresqlDatabase: kong
   service:
     port: 5432
 
@@ -160,7 +170,7 @@ ingressController:
   enabled: false
   image:
     repository: kong-docker-kubernetes-ingress-controller.bintray.io/kong-ingress-controller
-    tag: 0.2.2
+    tag: 0.3.0
   replicaCount: 1
   livenessProbe:
     failureThreshold: 3
@@ -183,6 +193,8 @@ ingressController:
     successThreshold: 1
     timeoutSeconds: 5
 
+  installCRDs: true
+
   rbac:
     # Specifies whether RBAC resources should be created
     create: true
@@ -193,3 +205,5 @@ ingressController:
     # The name of the ServiceAccount to use.
     # If not set and create is true, a name is generated using the fullname template
     name:
+
+  ingressClass: kong

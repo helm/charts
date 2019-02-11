@@ -1,3 +1,4 @@
+{{- if not .Values.server.statefulSet.enabled -}}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -6,13 +7,12 @@ metadata:
 {{ toYaml .Values.server.deploymentAnnotations | indent 4 }}
 {{- end }}
   labels:
-    app: {{ template "prometheus.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    component: "{{ .Values.server.name }}"
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    {{- include "prometheus.server.labels" . | nindent 4 }}
   name: {{ template "prometheus.server.fullname" . }}
 spec:
+  selector:
+    matchLabels:
+      {{- include "prometheus.server.matchLabels" . | nindent 6 }}
   replicas: {{ .Values.server.replicaCount }}
   {{- if .Values.server.strategy }}
   strategy:
@@ -25,9 +25,7 @@ spec:
 {{ toYaml .Values.server.podAnnotations | indent 8 }}
     {{- end }}
       labels:
-        app: {{ template "prometheus.name" . }}
-        component: "{{ .Values.server.name }}"
-        release: {{ .Release.Name }}
+        {{- include "prometheus.server.labels" . | nindent 8 }}
     spec:
 {{- if .Values.server.affinity }}
       affinity:
@@ -83,11 +81,15 @@ spec:
         - name: {{ template "prometheus.name" . }}-{{ .Values.server.name }}
           image: "{{ .Values.server.image.repository }}:{{ .Values.server.image.tag }}"
           imagePullPolicy: "{{ .Values.server.image.pullPolicy }}"
+          {{- if .Values.server.env }}
+          env:
+{{ toYaml .Values.server.env | indent 12}}
+          {{- end }}
           args:
           {{- if .Values.server.retention }}
             - --storage.tsdb.retention={{ .Values.server.retention }}
           {{- end }}
-            - --config.file=/etc/config/prometheus.yml
+            - --config.file={{ .Values.server.configPath }}
             - --storage.tsdb.path={{ .Values.server.persistentVolume.mountPath }}
             - --web.console.libraries=/etc/prometheus/console_libraries
             - --web.console.templates=/etc/prometheus/consoles
@@ -141,6 +143,13 @@ spec:
               subPath: {{ .subPath }}
               readOnly: {{ .readOnly }}
           {{- end }}
+          {{- if .Values.server.extraVolumeMounts }}
+            {{ toYaml .Values.server.extraVolumeMounts | nindent 12 }}
+          {{- end }}
+      {{- if .Values.server.sidecarContainers }}
+      {{- toYaml .Values.server.sidecarContainers | nindent 8 }}
+      {{- end }}
+
     {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
        {{ toYaml .Values.imagePullSecrets | indent 2 }}
@@ -173,6 +182,9 @@ spec:
         {{- else }}
           emptyDir: {}
         {{- end -}}
+{{- if .Values.server.extraVolumes }}
+{{ toYaml .Values.server.extraVolumes | indent 8}}
+{{- end }}
       {{- range .Values.server.extraHostPathMounts }}
         - name: {{ .name }}
           hostPath:
@@ -198,3 +210,4 @@ spec:
           configMap:
             name: {{ .configMap }}
       {{- end }}
+{{- end -}}

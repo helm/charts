@@ -87,15 +87,17 @@ The following table lists the configurable parameters of the Traefik chart and t
 | -------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
 | `fullnameOverride`                     | Override the full resource names                                                                                             | `{release-name}-traefik` (or traefik if release-name is traefik) |
 | `image`                                | Traefik image name                                                                                                           | `traefik`                                         |
-| `imageTag`                             | The version of the official Traefik image to use                                                                             | `1.7.4`                                           |
+| `imageTag`                             | The version of the official Traefik image to use                                                                             | `1.7.7`                                           |
 | `serviceType`                          | A valid Kubernetes service type                                                                                              | `LoadBalancer`                                    |
 | `loadBalancerIP`                       | An available static IP you have reserved on your cloud platform                                                              | None                                              |
+| `startupArguments`                       | A list of startup arguments which are passed to traefik                                                              | `[]`                                              |
 | `loadBalancerSourceRanges`             | List of IP CIDRs allowed access to load balancer (if supported)                                                              | None                                              |
 | `externalIP`                           | Static IP for the service                                                                                                    | None                                              |
 | `whiteListSourceRange`                 | Enable IP whitelisting at the entrypoint level.                                                                              | `false`                                           |
 | `externalTrafficPolicy`                | Set the externalTrafficPolicy in the Service to either Cluster or Local                                                      | `Cluster`                                         |
 | `replicas`                             | The number of replicas to run; __NOTE:__ Full Traefik clustering with leader election is not yet supported, which can affect any configured Let's Encrypt setup; see Clustering section | `1` |
 | `podDisruptionBudget`                  | Pod disruption budget                                                                                                        | `{}`                                              |
+| `priorityClassName`                    | Pod priority class name                                                                                                      | `""`                                              |
 | `rootCAs`                              | Register Certificates in the RootCA. These certificates will be use for backends calls. __NOTE:__ You can use file path or cert content directly | `[]`                                              |
 | `cpuRequest`                           | Initial share of CPU requested per Traefik pod                                                                               | `100m`                                            |
 | `memoryRequest`                        | Initial share of memory requested per Traefik pod                                                                            | `20Mi`                                            |
@@ -103,6 +105,7 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `memoryLimit`                          | Memory limit per Traefik pod                                                                                                 | `30Mi`                                            |
 | `rbac.enabled`                         | Whether to enable RBAC with a specific cluster role and binding for Traefik                                                  | `false`                                           |
 | `deploymentStrategy`                   | Specify deployment spec rollout strategy                                                                                     | `{}`                                              |
+| `securityContext`                      | Security context                                                                                                             | `{}`                                              |
 | `nodeSelector`                         | Node labels for pod assignment                                                                                               | `{}`                                              |
 | `affinity`                             | Affinity settings                                                                                                            | `{}`                                              |
 | `tolerations`                          | List of node taints to tolerate                                                                                              | `[]`                                              |
@@ -118,6 +121,10 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `ssl.insecureSkipVerify`               | Whether to verify certs on SSL connections                                                                                   | `false`                                           |
 | `ssl.tlsMinVersion`                    | Minimum TLS version for https entrypoint                                                                                     | None                                              |
 | `ssl.cipherSuites`                     | Specify a non-empty list of TLS ciphers to override the default one | None |
+| `ssl.generateTLS`                      | Generate self sign cert by Helm. If it's `true` the `defaultCert` and the `defaultKey` parameters will be ignored.           | false                                             |
+| `ssl.defaultCN`                        | Specify generated self sign cert CN                                                                                          | ""                                                |
+| `ssl.defaultSANList`                   | Specify generated self sign cert SAN list                                                                                    | `[]`                                              |
+| `ssl.defaultIPList`                    | Specify generated self sign cert IP list                                                                                     | `[]`                                              |
 | `ssl.defaultCert`                      | Base64 encoded default certificate                                                                                           | A self-signed certificate                         |
 | `ssl.defaultKey`                       | Base64 encoded private key for the certificate above                                                                         | The private key for the certificate above         |
 | `ssl.auth.basic`                       | Basic auth for all SSL endpoints, see Authentication section                                          | unset by default; this means basic auth is disabled |
@@ -155,9 +162,11 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `kvprovider.etcd.useAPIV3`             | Use V3 or use V2 API of ETCD                                                                                                 | `false`                                           |
 | `dashboard.enabled`                    | Whether to enable the Traefik dashboard                                                                                      | `false`                                           |
 | `dashboard.domain`                     | Domain for the Traefik dashboard                                                                                             | `traefik.example.com`                             |
+| `dashboard.serviceType`                | ServiceType for the Traefik dashboard Service                                                                                | `ClusterIP`                                       |
 | `dashboard.service.annotations`        | Annotations for the Traefik dashboard Service definition, specified as a map                                                 | None                                              |
 | `dashboard.ingress.annotations`        | Annotations for the Traefik dashboard Ingress definition, specified as a map                                                 | None                                              |
 | `dashboard.ingress.labels`             | Labels for the Traefik dashboard Ingress definition, specified as a map                                                      | None                                              |
+| `dashboard.ingress.tls`                | TLS settings for the Traefik dashboard Ingress definition                                                                    | None                                              |
 | `dashboard.auth.basic`                 | Basic auth for the Traefik dashboard specified as a map, see Authentication section                                          | unset by default; this means basic auth is disabled |
 | `dashboard.statistics.recentErrors`    | Number of recent errors to show in the ‘Health’ tab                                                                          | None                                              |
 | `service.annotations`                  | Annotations for the Traefik Service definition, specified as a map                                                           | None                                              |
@@ -180,6 +189,7 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `accessLogs.fields.headers.defaultMode`| The default behaviour for logging HTTP headers in JSON access logs. Either `keep`, `drop` or `redact`                        | `keep`                                            |
 | `accessLogs.fields.headers.names`      | A map of HTTP-header-specific logging behaviours in JSON access logs, with HTTP header names as keys, and `keep`, `drop` or `redact` as the value for each map entry | None      |
 | `metrics.prometheus.enabled`           | Whether to enable the `/metrics` endpoint for metric collection by Prometheus.                                               | `false`                                           |
+| `metrics.prometheus.restrictAccess`    | Whether to limit access to the metrics port (8080) to the dashboard service. When `false`, it is accessible on the main Traefik service as well. | `false`                       |
 | `metrics.prometheus.buckets`           | A list of response times (in seconds) - for each list element, Traefik will report all response times less than the element. | `[0.1,0.3,1.2,5]`                                 |
 | `metrics.datadog.enabled`              | Whether to enable pushing metrics to Datadog.                                                                                | `false`                                           |
 | `metrics.datadog.address`              | Datadog host in the format <hostname>:<port>                                                                                 | `localhost:8125`                                  |
@@ -188,6 +198,7 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `metrics.statsd.address`               | Statsd host in the format <hostname>:<port>                                                                                  | `localhost:8125`                                  |
 | `metrics.statsd.pushInterval`          | How often to push metrics to Statsd.                                                                                         | `10s`                                             |
 | `deployment.podAnnotations`            | Annotations for the Traefik pod definition                                                                                   | None                                              |
+| `deployment.podLabels`                 | Labels for the Traefik pod definition                                                                                        | None                                              |
 | `deployment.hostPort.httpEnabled`      | Whether to enable hostPort binding to host for http.                                                                         | `false`                                           |
 | `deployment.hostPort.httpsEnabled`     | Whether to enable hostPort binding to host for https.                                                                        | `false`                                           |
 | `deployment.hostPort.dashboardEnabled` | Whether to enable hostPort binding to host for dashboard.                                                                    | `false`                                           |
@@ -206,6 +217,7 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `tracing.datadog.localAgentHostPort`   | Location of the Datadog agent where spans will be sent                                                                       | `127.0.0.1:8126`                                  |
 | `tracing.datadog.debug`                | Enables Datadog debugging                                                                                                    | `false`                                           |
 | `tracing.datadog.globalTag`            | Apply shared tag in a form of Key:Value to all the traces                                                                    | `""`                                           |
+| `autoscaling`                          | HorizontalPodAutoscaler for the traefik Deployment                                                                           | `{}`                                           |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 
@@ -278,7 +290,7 @@ Then you are good to migrate your old certs into the kvprovider and run traefik 
 
 ### Dashboard Basic Auth
 
-[Basic auth](https://docs.traefik.io/toml/#api-backend) can be specified via `dashboard.auth.basic` as a map of usernames to passwords as below.
+[Basic auth](https://docs.traefik.io/configuration/entrypoints/#authentication) can be specified via `dashboard.auth.basic` as a map of usernames to passwords as below.
 See the linked Traefik documentation for accepted passwords encodings.
 It is advised to single quote passwords to avoid issues with special characters:
 

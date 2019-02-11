@@ -32,6 +32,9 @@ spec:
 {{- end }}
       {{- end }}
     spec:
+      {{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName }}
+      {{- end }}
       {{- if .Values.securityContext.enabled }}
       securityContext:
         fsGroup: {{ .Values.securityContext.fsGroup }}
@@ -60,6 +63,10 @@ spec:
         image: {{ template "mongodb.image" . }}
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         env:
+        {{- if .Values.image.debug}}
+        - name: NAMI_DEBUG
+          value: "1"
+        {{- end }}
         {{- if .Values.usePassword }}
         - name: MONGODB_ROOT_PASSWORD
           valueFrom:
@@ -67,8 +74,10 @@ spec:
               name: {{ if .Values.existingSecret }}{{ .Values.existingSecret }}{{- else }}{{ template "mongodb.fullname" . }}{{- end }}
               key: mongodb-root-password
         {{- end }}
+        {{- if .Values.mongodbUsername }}
         - name: MONGODB_USERNAME
-          value: {{ default "" .Values.mongodbUsername | quote }}
+          value: {{ .Values.mongodbUsername | quote }}
+        {{- end }}
         {{- if and .Values.mongodbUsername .Values.mongodbDatabase }}
         - name: MONGODB_PASSWORD
           valueFrom:
@@ -76,16 +85,28 @@ spec:
               name: {{ if .Values.existingSecret }}{{ .Values.existingSecret }}{{- else }}{{ template "mongodb.fullname" . }}{{- end }}
               key: mongodb-password
         {{- end }}
+        - name: MONGODB_SYSTEM_LOG_VERBOSITY
+          value: {{ .Values.mongodbSystemLogVerbosity | quote }}
+        - name: MONGODB_DISABLE_SYSTEM_LOG
+          {{- if .Values.mongodbDisableSystemLog }}
+          value: "yes"
+          {{- else }}
+          value: "no"
+          {{- end }}
+        {{- if .Values.mongodbDatabase }}
         - name: MONGODB_DATABASE
-          value: {{ default "" .Values.mongodbDatabase | quote }}
+          value: {{ .Values.mongodbDatabase | quote }}
+        {{- end }}
         - name: MONGODB_ENABLE_IPV6
         {{- if .Values.mongodbEnableIPv6 }}
           value: "yes"
         {{- else }}
           value: "no"
         {{- end }}
+        {{- if .Values.mongodbExtraFlags }}
         - name: MONGODB_EXTRA_FLAGS
-          value: {{ default "" .Values.mongodbExtraFlags | join " " }}
+          value: {{ .Values.mongodbExtraFlags | join " " }}
+        {{- end }}
         ports:
         - name: mongodb
           containerPort: 27017
@@ -134,12 +155,16 @@ spec:
         image: {{ template "metrics.image" . }}
         imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
         env:
+        {{- if .Values.usePassword }}
         - name: MONGODB_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ if .Values.existingSecret }}{{ .Values.existingSecret }}{{- else }}{{ template "mongodb.fullname" . }}{{- end }}
               key: mongodb-root-password
         command: [ 'sh', '-c', '/bin/mongodb_exporter --mongodb.uri mongodb://root:${MONGODB_ROOT_PASSWORD}@localhost:{{ .Values.service.port }}/admin' ]
+        {{- else }}
+        command: [ 'sh', '-c', '/bin/mongodb_exporter --mongodb.uri mongodb://localhost:{{ .Values.service.port }}' ]
+        {{- end }}
         ports:
         - name: metrics
           containerPort: 9216
@@ -156,7 +181,7 @@ spec:
           initialDelaySeconds: 5
           timeoutSeconds: 1
         resources:
-  {{ toYaml .Values.metrics.resources | indent 10 }}
+{{ toYaml .Values.metrics.resources | indent 10 }}
 {{- end }}
       volumes:
       {{- if  (.Files.Glob "files/docker-entrypoint-initdb.d/*[sh|js]") }}

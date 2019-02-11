@@ -51,12 +51,13 @@ The following table lists the configurable parameters of the phpMyAdmin chart an
 | `image.repository`         | phpMyAdmin image name                    | `bitnami/phpmyadmin`                                    |
 | `image.tag`                | phpMyAdmin image tag                     | `{VERSION}`                                             |
 | `image.pullPolicy`         | Image pull policy                        | `IfNotPresent`                                          |
-| `image.pullSecrets`        | Specify image pull secrets               | `nil`                                                   |
+| `image.pullSecrets`        | Specify docker-registry secret names as an array               | `[]` (does not add image pull secrets to deployed pods)                                                   |
 | `service.type`             | Type of service for phpMyAdmin frontend  | `ClusterIP`                                             |
 | `service.port`             | Port to expose service                   | `80`                                                    |
 | `db.port`                  | Database port to use to connect          | `3306`                                                  |
 | `db.chartName`             | Database suffix if included in the same release | `nil`                                            |
 | `db.host`                  | Database host to connect to              | `nil`                                                   |
+| `db.bundleTestDB`                  | Deploy a MariaDB instance for testing purposes              | `false`                                                   |
 | `ingress.enabled`          | Ingress resource to be added             | `false`                                                 |
 | `ingress.annotations`      | Ingress annotations                      | `{ingress.kubernetes.io/rewrite-target: /,    nginx.ingress.kubernetes.io/rewrite-target: /}`          |
 | `ingress.path`             | Path to access frontend                  | `/`                                                     |
@@ -72,7 +73,7 @@ The following table lists the configurable parameters of the phpMyAdmin chart an
 | `metrics.image.repository`                 | Apache exporter image name                                                                                      | `lusotycoon/apache-exporter`                           |
 | `metrics.image.tag`                        | Apache exporter image tag                                                                                       | `v0.5.0`                                            |
 | `metrics.image.pullPolicy`                 | Image pull policy                                                                                              | `IfNotPresent`                                       |
-| `metrics.image.pullSecrets`                | Specify docker-registry secret names as an array                                                               | `nil`                                                |
+| `metrics.image.pullSecrets`                | Specify docker-registry secret names as an array                                                               | `[]` (does not add image pull secrets to deployed pods)  |
 | `metrics.podAnnotations`                   | Additional annotations for Metrics exporter pod                                                                | `{prometheus.io/scrape: "true", prometheus.io/port: "9117"}`                                                   |
 | `metrics.resources`                        | Exporter resource requests/limit                                                                               | {}                        |
 

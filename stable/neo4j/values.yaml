@@ -22,6 +22,9 @@ authEnabled: true
 ## Defaults to a random 10-character alphanumeric string if not set and authEnabled is true
 # neo4jPassword:
 
+# Specify cluster domain (used eg. as suffix in definition of NEO4J_causal__clustering_initial__discovery__members environment variable)
+clusterDomain: "cluster.local"
+
 # Specs for the images used for running tests against the Helm package
 testImage: "markhneedham/k8s-kubectl"
 testImageTag: "master"
@@ -30,6 +33,9 @@ testImageTag: "master"
 core:
   numberOfServers: 3
   persistentVolume:
+    ## whether or not persistence is enabled
+    ##
+    enabled: true
 
     ## core server data Persistent Volume mount root path
     ##

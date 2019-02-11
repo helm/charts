@@ -47,7 +47,7 @@ Note, returns 127.0.0.1 if using ClusterIP.
 {{- if eq .Values.service.type "ClusterIP" -}}
 127.0.0.1
 {{- else -}}
-{{- index .Values (printf "%sLoadBalancerIP" .Chart.Name) | default "" -}}
+{{- .Values.service.loadBalancerIP | default "" -}}
 {{- end -}}
 {{- end -}}
 

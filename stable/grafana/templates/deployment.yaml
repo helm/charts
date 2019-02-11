@@ -40,8 +40,27 @@ spec:
       securityContext:
 {{ toYaml .Values.securityContext | indent 8 }}
 {{- end }}
-{{- if .Values.dashboards }}
+{{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName }}
+{{- end }}
+{{- if ( or .Values.persistence.enabled .Values.dashboards ) }}
       initContainers:
+{{- end }}
+{{- if ( and .Values.persistence.enabled .Values.persistence.initChownData ) }}
+        - name: init-chown-data
+          image: "{{ .Values.chownDataImage.repository }}:{{ .Values.chownDataImage.tag }}"
+          imagePullPolicy: {{ .Values.chownDataImage.pullPolicy }}
+          securityContext:
+            runAsUser: 0
+          command: ["chown", "-R", "{{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.runAsUser }}", "/var/lib/grafana"]
+          volumeMounts:
+            - name: storage
+              mountPath: "/var/lib/grafana"
+{{- if .Values.persistence.subPath }}
+              subPath: {{ .Values.persistence.subPath }}
+{{- end }}
+{{- end }}
+{{- if .Values.dashboards }}
         - name: download-dashboards
           image: "{{ .Values.downloadDashboardsImage.repository }}:{{ .Values.downloadDashboardsImage.tag }}"
           imagePullPolicy: {{ .Values.downloadDashboardsImage.pullPolicy }}
@@ -52,7 +71,9 @@ spec:
               subPath: download_dashboards.sh
             - name: storage
               mountPath: "/var/lib/grafana"
+{{- if .Values.persistence.subPath }}
               subPath: {{ .Values.persistence.subPath }}
+{{- end }}
           {{- range .Values.extraSecretMounts }}
             - name: {{ .name }}
               mountPath: {{ .mountPath }}
@@ -111,12 +132,21 @@ spec:
             - name: config
               mountPath: "/etc/grafana/grafana.ini"
               subPath: grafana.ini
+            {{- if not .Values.admin.existingSecret }}
             - name: ldap
               mountPath: "/etc/grafana/ldap.toml"
               subPath: ldap.toml
+            {{- end }}
+            {{- range .Values.extraConfigmapMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              readOnly: {{ .readOnly }}
+            {{- end }}
             - name: storage
               mountPath: "/var/lib/grafana"
+{{- if .Values.persistence.subPath }}
               subPath: {{ .Values.persistence.subPath }}
+{{- end }}
 {{- if .Values.dashboards }}
   {{- range $provider, $dashboards := .Values.dashboards }}
     {{- range $key, $value := $dashboards }}
@@ -160,6 +190,11 @@ spec:
               mountPath: {{ .mountPath }}
               readOnly: {{ .readOnly }}
           {{- end }}
+          {{- range .Values.extraVolumeMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              readOnly: {{ .readOnly }}
+          {{- end }}
           ports:
             - name: service
               containerPort: {{ .Values.service.port }}
@@ -171,13 +206,13 @@ spec:
             - name: GF_SECURITY_ADMIN_USER
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "grafana.fullname" . }}
-                  key: admin-user
+                  name: {{ .Values.admin.existingSecret | default (include "grafana.fullname" .) }}
+                  key: {{ .Values.admin.userKey | default "admin-user" }}
             - name: GF_SECURITY_ADMIN_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "grafana.fullname" . }}
-                  key: admin-password
+                  name: {{ .Values.admin.existingSecret | default (include "grafana.fullname" .) }}
+                  key: {{ .Values.admin.passwordKey | default "admin-password" }}
             {{- if .Values.plugins }}
             - name: GF_INSTALL_PLUGINS
               valueFrom:
@@ -190,12 +225,12 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.smtp.existingSecret }}
-                  key: user
+                  key: {{ .Values.smtp.userKey | default "user" }}
             - name: GF_SMTP_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.smtp.existingSecret }}
-                  key: password
+                  key: {{ .Values.smtp.passwordKey | default "password" }}
             {{- end }}
 {{- range $key, $value := .Values.env }}
             - name: "{{ $key }}"
@@ -228,6 +263,11 @@ spec:
         - name: config
           configMap:
             name: {{ template "grafana.fullname" . }}
+      {{- range .Values.extraConfigmapMounts }}
+        - name: {{ .name }}
+          configMap:
+            name: {{ .configMap }}
+      {{- end }}
         {{- if .Values.dashboards }}
           {{- range keys .Values.dashboards }}
         - name: dashboards-{{ . }}
@@ -236,12 +276,14 @@ spec:
           {{- end }}
         {{- end }}
         {{- if .Values.dashboardsConfigMaps }}
+          {{ $root := . }}
           {{- range $provider, $name := .Values.dashboardsConfigMaps }}
         - name: dashboards-{{ $provider }}
           configMap:
-            name: {{ $name }}
+            name: {{ tpl $name $root }}
           {{- end }}
         {{- end }}
+        {{- if not .Values.admin.existingSecret }}
         - name: ldap
           secret:
             {{- if .Values.ldap.existingSecret }}
@@ -252,6 +294,7 @@ spec:
             items:
               - key: ldap-toml
                 path: ldap.toml
+        {{- end }}
         - name: storage
       {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
@@ -275,4 +318,9 @@ spec:
           secret:
             secretName: {{ .secretName }}
             defaultMode: {{ .defaultMode }}
+      {{- end }}
+      {{- range .Values.extraVolumeMounts }}
+        - name: {{ .name }}
+          persistentVolumeClaim:
+            claimName: {{ .existingClaim }}
       {{- end }}

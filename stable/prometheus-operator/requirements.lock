@@ -1,12 +1,12 @@
 dependencies:
 - name: kube-state-metrics
   repository: https://kubernetes-charts.storage.googleapis.com/
-  version: 0.11.0
+  version: 0.13.0
 - name: prometheus-node-exporter
   repository: https://kubernetes-charts.storage.googleapis.com/
-  version: 0.5.1
+  version: 1.1.0
 - name: grafana
   repository: https://kubernetes-charts.storage.googleapis.com/
-  version: 1.18.0
-digest: sha256:b4e1084c1155e8db10cb6508ef313255ebe95a65601bc8a5859e7bad6a4ebd1f
-generated: 2018-11-19T16:25:14.961333Z
+  version: 1.25.0
+digest: sha256:db064dc47d3363e31d6e317385b29bffc30929ed42a0d2951109184e907721e2
+generated: 2019-01-15T16:00:38.946498-08:00

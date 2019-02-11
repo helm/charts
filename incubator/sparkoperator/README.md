@@ -21,14 +21,22 @@ Note that you need to use the `--namespace` flag during `helm install` to specif
 
 The following table lists the configurable parameters of the Spark operator chart and their default values.
 
-| Parameter                 | Description                                           | Default                                |
-| ------------------------- | ----------------------------------------------------- | -------------------------------------- |
-| `operatorImageName`       | The name of the operator image                        | `gcr.io/spark-operator/spark-operator` |
-| `operatorVersion`         | The version of the operator to install                | `v2.3.1-v1alpha1-latest`               |
-| `sparkJobNamespace`       | K8s namespace where Spark jobs are to be deployed.    | `default`                              |
-| `createSparkJobNamespace` | Whether to create the Spark job namespace             | false                                  |
-| `enableWebhook`           | Whether to enable mutating admission webhook          | true                                   |
-| `enableMetrics`           | Whether to expose metrics to be scraped by Premetheus | true                                   |
+| Parameter                 | Description                                                  | Default                                |
+| ------------------------- | ------------------------------------------------------------ | -------------------------------------- |
+| `operatorImageName`       | The name of the operator image                               | `gcr.io/spark-operator/spark-operator` |
+| `operatorVersion`         | The version of the operator to install                       | `v2.4.0-v1beta1-latest`               |
+| `imagePullPolicy`         | Docker image pull policy                                     | `IfNotPresent`                         |
+| `sparkJobNamespace`       | K8s namespace where Spark jobs are to be deployed            | `default`                              |
+| `enableWebhook`           | Whether to enable mutating admission webhook                 | false                                   |
+| `enableMetrics`           | Whether to expose metrics to be scraped by Premetheus        | true                                   |
+| `controllerThreads`       | Number of worker threads used by the SparkApplication controller | 10                                     |
+| `ingressUrlFormat` | Ingress URL format | "" |
+| `installCrds`             | Whether to install CRDs                                      | true                                   |
+| `metricsPort`             | Port for the metrics endpoint                                | 10254                                  |
+| `metricsEndpoint`         | Metrics endpoint                                             | "/metrics"                             |
+| `metricsPrefix`           | Prefix for the metrics                                       | ""                                     |
+| `resyncInterval`          | Informer resync interval in seconds                          | 30                                     |
+| `webhookPort`             | Service port of the webhook server                           | 8080                                   |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. 
 

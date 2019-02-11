@@ -3,13 +3,14 @@
 # Declare variables to be passed into your templates.
 image:
   repository: quay.io/prometheus/node-exporter
-  tag: v0.16.0
+  tag: v0.17.0
   pullPolicy: IfNotPresent
 
 service:
   type: ClusterIP
   port: 9100
   targetPort: 9100
+  nodePort:
   annotations:
     prometheus.io/scrape: "true"
 
@@ -33,6 +34,10 @@ serviceAccount:
   name:
   imagePullSecrets: []
 
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 65534
+
 rbac:
   ## If true, create & use RBAC resources
   ##
@@ -44,6 +49,24 @@ rbac:
 # for deployments that have node_exporter deployed outside of the cluster, list
 # their addresses here
 endpoints: []
+
+## Assign a group of affinity scheduling rules
+##
+affinity: {}
+#   nodeAffinity:
+#     requiredDuringSchedulingIgnoredDuringExecution:
+#       nodeSelectorTerms:
+#         - matchFields:
+#             - key: metadata.name
+#               operator: In
+#               values:
+#                 - target-host-name
+
+## Assign a nodeSelector if operating a hybrid cluster
+##
+nodeSelector: {}
+#   beta.kubernetes.io/arch: amd64
+#   beta.kubernetes.io/os: linux
 
 tolerations:
   - effect: NoSchedule

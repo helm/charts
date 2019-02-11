@@ -4,12 +4,12 @@ kind: ConfigMap
 metadata:
   name: {{ template "fluent-bit.fullname" . }}-config
   labels:
-    app: {{ template "fluent-bit.fullname" . }}
+    app: {{ template "fluent-bit.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 data:
-  fluent-bit.conf: |-
+  fluent-bit-service.conf: |-
     [SERVICE]
         Flush        1
         Daemon       Off
@@ -24,10 +24,11 @@ data:
         HTTP_Port    2020
 {{- end }}
 
+  fluent-bit-input.conf: |-
     [INPUT]
         Name             tail
-        Path             /var/log/containers/*.log
-        Parser           docker
+        Path             {{ .Values.input.tail.path }}
+        Parser           {{ .Values.input.tail.parser }}
         Tag              {{ .Values.filter.kubeTag }}.*
         Refresh_Interval 5
         Mem_Buf_Limit    {{ .Values.input.tail.memBufLimit }}
@@ -36,8 +37,19 @@ data:
         DB               /tail-db/tail-containers-state.db
         DB.Sync          Normal
 {{- end }}
-{{ .Values.extraInputs | indent 8 }}
+{{- if .Values.input.systemd.enabled }}
+    [INPUT]
+        Name            systemd
+        Tag             {{ .Values.input.systemd.tag }}
+{{- range $value := .Values.input.systemd.filters.systemdUnit }}
+        Systemd_Filter  _SYSTEMD_UNIT="{{ $value }}"
+{{- end }}
+        Max_Entries     {{ .Values.input.systemd.maxEntries }}
+        Read_From_Tail  {{ .Values.input.systemd.readFromTail }}
+{{- end }}
+{{ .Values.extraEntries.input | indent 8 }}
 
+  fluent-bit-filter.conf: |-
     [FILTER]
         Name                kubernetes
         Match               {{ .Values.filter.kubeTag }}.*
@@ -53,8 +65,9 @@ data:
 {{- if .Values.filter.enableExclude }}
         K8S-Logging.Exclude On
 {{- end }}
-{{ .Values.extraFilters | indent 8 }}
+{{ .Values.extraEntries.filter | indent 8 }}
 
+  fluent-bit-output.conf: |-
 {{ if eq .Values.backend.type "test" }}
     [OUTPUT]
         Name  file
@@ -81,6 +94,9 @@ data:
         Type  {{ .Values.backend.es.type }}
 {{- if .Values.backend.es.time_key }}
         Time_Key {{ .Values.backend.es.time_key }}
+{{- end }}
+{{- if .Values.backend.es.replace_dots }}
+        Replace_Dots {{ .Values.backend.es.replace_dots }}
 {{- end }}
 {{- if .Values.backend.es.logstash_prefix }}
         Logstash_Prefix {{ .Values.backend.es.logstash_prefix }}
@@ -130,7 +146,11 @@ data:
 {{- end }}
         Format {{ .Values.backend.http.format }}
 {{- end }}
-{{ .Values.extraOutputs | indent 8 }}
+{{ .Values.extraEntries.output | indent 8 }}
+
+
+  fluent-bit.conf: |-
+{{ .Values.rawConfig | indent 4 }}
 
   parsers.conf: |-
 {{- if .Values.parsers.regex }}
@@ -153,7 +173,7 @@ data:
         Name        {{ .name }}
         Format      json
 {{- if .timeKeep }}
-        Time_Keep    {{ .timeKeep }}
+        Time_Keep   {{ .timeKeep }}
 {{- end }}
 {{- if .timeKey }}
         Time_Key    {{ .timeKey }}
@@ -163,8 +183,12 @@ data:
 {{- end }}
 {{- if .decodeFieldAs  }}
         Decode_Field_As {{ .decodeFieldAs }} {{ .decodeField | default "log" }}
+{{- end}}
+{{- if .extraEntries }}
+{{ .extraEntries | indent 8 }}
 {{- end }}
 {{ end }}
 {{- end }}
 
 {{- end -}}
+

@@ -36,7 +36,14 @@ spec:
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: {{ .Release.Name | quote }}
         heritage: {{ .Release.Service | quote }}
+        {{- if .Values.deployment.podLabels }}
+{{ toYaml .Values.deployment.podLabels | indent 8 }}
+        {{- end }}
     spec:
+      {{- if .Values.securityContext }}
+      securityContext:
+{{ toYaml .Values.securityContext | indent 8 }}
+      {{- end }}
       {{- if .Values.rbac.enabled }}
       serviceAccountName: {{ template "traefik.fullname" . }}
       {{- else }}
@@ -50,6 +57,9 @@ spec:
       {{- if .Values.affinity }}
       affinity:
 {{ toYaml .Values.affinity | indent 8 }}
+      {{- end }}
+      {{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName | quote }}
       {{- end }}
       containers:
       - image: {{ .Values.image }}:{{ .Values.imageTag }}
@@ -79,12 +89,14 @@ spec:
           timeoutSeconds: 2
         {{- if and .Values.acme.enabled (eq .Values.acme.challengeType "dns-01") .Values.acme.dnsProvider.name }}
         env:
-        {{- range $k, $_ := (index .Values.acme.dnsProvider .Values.acme.dnsProvider.name) }}
+        {{- range $k, $v := (index .Values.acme.dnsProvider .Values.acme.dnsProvider.name) }}
+          {{- if $v }}
           - name: {{ $k }}
             valueFrom:
               secretKeyRef:
                 name: {{ template "traefik.fullname" $ }}-dnsprovider-config
                 key: {{ $k }}
+          {{- end }}
         {{- end }}
         {{- end }}
         volumeMounts:
@@ -124,6 +136,10 @@ spec:
         {{- end }}
         args:
         - --configfile=/config/traefik.toml
+        {{- range .Values.startupArguments }}
+        - {{ . }}
+        {{- end }}
+
       volumes:
       - name: config
         configMap:

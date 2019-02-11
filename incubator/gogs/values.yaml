@@ -11,7 +11,7 @@ replicaCount: 1
 
 image:
   repository: gogs/gogs
-  tag: 0.11.66
+  tag: 0.11.79
   pullPolicy: IfNotPresent
 
 service:
@@ -24,10 +24,18 @@ service:
   ##
   httpPort: 80
 
-  ## SSH listen port.
+  ## HTTP listen port on Kubernetes node.
   ## ref: https://gogs.io/docs/advanced/configuration_cheat_sheet
   ##
+  httpNodePort:
+
+  ## SSH listen port.
+  ##
   sshPort: 22
+
+  ## SSH listen port on Kubernetes node.
+  ##
+  sshNodePort:
 
   ## SSH_DOMAIN - Domain name to be exposed in SSH clone URL.
   ## ref: https://gogs.io/docs/advanced/configuration_cheat_sheet
@@ -55,6 +63,10 @@ service:
     ## disabled, users can only perform Git operations via SSH.
     ##
     disableHttpGit: false
+
+    ## Lock the path /install to configure gogs
+    ##
+    installLock: true
 
     ## Indicates whether or not to enable repository file upload feature.
     ##
@@ -328,3 +340,5 @@ postgresql:
     ## Enable PostgreSQL persistence using Persistent Volume Claims.
     ##
     enabled: true
+## Security context
+securityContext: {}

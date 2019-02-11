@@ -32,7 +32,11 @@ spec:
           {{- if .Values.prometheusOperator.kubeletService.enabled }}
             - --kubelet-service={{ .Values.prometheusOperator.kubeletService.namespace }}/{{ template "prometheus-operator.fullname" . }}-kubelet
           {{- end }}
+          {{- if .Values.prometheusOperator.logFormat }}
+            - --log-format={{ .Values.prometheusOperator.logFormat }}
+          {{- end }}
             - --logtostderr=true
+            - --crd-apigroup={{ .Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com" }}
             - --localhost=127.0.0.1
             - --prometheus-config-reloader={{ .Values.prometheusOperator.prometheusConfigReloaderImage.repository }}:{{ .Values.prometheusOperator.prometheusConfigReloaderImage.tag }}
             - --config-reloader-image={{ .Values.prometheusOperator.configmapReloadImage.repository }}:{{ .Values.prometheusOperator.configmapReloadImage.tag }}
@@ -44,9 +48,10 @@ spec:
           securityContext:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true
+{{- if .Values.prometheusOperator.securityContext }}
       securityContext:
-        runAsNonRoot: true
-        runAsUser: 65534
+{{ toYaml .Values.prometheusOperator.securityContext | indent 8 }}
+{{- end }}
       serviceAccountName: {{ template "prometheus-operator.operator.serviceAccountName" . }}
     {{- with .Values.prometheusOperator.nodeSelector }}
       nodeSelector:

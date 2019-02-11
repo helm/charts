@@ -35,6 +35,11 @@ persistentVolume:
   ##
   # storageClass: "-"
 
+## This is only available when persistentVolume is false:
+## If persistentVolume is not enabled, one can choose to use memory mode for ETCD by setting memoryMode to "true".
+## The system will create a volume with "medium: Memory"
+memoryMode: false
+
 ## Node labels and tolerations for pod assignment
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature

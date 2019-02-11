@@ -1,11 +1,16 @@
 image:
   repository: docker.elastic.co/beats/metricbeat
-  tag: 6.4.3
+  tag: 6.6.0
   pullPolicy: IfNotPresent
 
 # The instances created by daemonset retrieve most metrics from the host
 daemonset:
   podAnnotations: []
+  tolerations:
+  - key: node-role.kubernetes.io/master
+    operator: Exists
+    effect: NoSchedule
+  nodeSelector: {}
   config:
     metricbeat.config:
       modules:
@@ -57,10 +62,19 @@ daemonset:
             - container
             - volume
           period: 10s
+          host: ${NODE_NAME}
           hosts: ["localhost:10255"]
+          # If using Red Hat OpenShift remove the previous hosts entry and
+          # uncomment these settings:
+          # hosts: ["https://${HOSTNAME}:10250"]
+          # bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+          # ssl.certificate_authorities:
+            # - /var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt
 # The instance created by deployment retrieves metrics that are unique for the whole cluster, like Kubernetes events or kube-state-metrics
 deployment:
   podAnnotations: []
+  tolerations: []
+  nodeSelector: {}
   config:
     metricbeat.config:
       modules:

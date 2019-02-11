@@ -46,7 +46,7 @@ The following table lists the configurable parameters of the Metabase chart and 
 |------------------------|------------------------------------------------------------|-------------------|
 | replicaCount           | desired number of controller pods                          | 1                 |
 | image.repository       | controller container image repository                      | metabase/metabase |
-| image.tag              | controller container image tag                             | v0.30.1           |
+| image.tag              | controller container image tag                             | v0.31.2           |
 | image.pullPolicy       | controller container image pull policy                     | IfNotPresent      |
 | listen.host            | Listening on a specific network host                       | 0.0.0.0           |
 | listen.port            | Listening on a specific network port                       | 3000              |
@@ -74,6 +74,7 @@ The following table lists the configurable parameters of the Metabase chart and 
 | service.annotations    | Service annotations                                        | {}                |
 | ingress.enabled        | Enable ingress controller resource                         | false             |
 | ingress.hosts          | Ingress resource hostnames                                 | null              |
+| ingress.path           | Ingress path                                               | /                 |
 | ingress.labels         | Ingress labels configuration                               | null              |
 | ingress.annotations    | Ingress annotations configuration                          | null              |
 | ingress.tls            | Ingress TLS configuration                                  | null              |
