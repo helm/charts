@@ -71,35 +71,33 @@ spec:
         image: {{ template "redis.image" . }}
         imagePullPolicy: {{ .Values.image.pullPolicy | default "" | quote }}
 {{- $command := default .Values.master.command .Values.slave.command }}
-        {{- if $command }}
         command:
-{{ toYaml $command | indent 10 }}
-        {{- end }}
-        args:
-        - "--port"
-        - "$(REDIS_PORT)"
-        - "--slaveof"
-        - "$(REDIS_MASTER_HOST)"
-        - "$(REDIS_MASTER_PORT_NUMBER)"
-        {{- if .Values.usePassword }}
-        - "--requirepass"
-        - "$(REDIS_PASSWORD)"
-        - "--masterauth"
-        - "$(REDIS_MASTER_PASSWORD)"
-        {{- else }}
-        - "--protected-mode"
-        - "no"
-        {{- end }}
-        - "--include"
-        - "/opt/bitnami/redis/etc/redis.conf"
-        - "--include"
-        - "/opt/bitnami/redis/etc/replica.conf"
-        {{- $extraFlags := ( default .Values.master.extraFlags .Values.slave.extraFlags ) }}
-        {{- if $extraFlags }}
-        {{- range $extraFlags }}
-        - {{ . | quote }}
-        {{- end }}
-        {{- end }}
+        - /bin/bash
+        - -c
+        - |
+          if [[ -n $REDIS_PASSWORD_FILE ]]; then
+            password_aux=`cat ${REDIS_PASSWORD_FILE}`
+            export REDIS_PASSWORD=$password_aux
+          fi
+          if [[ -n $REDIS_MASTER_PASSWORD_FILE ]]; then
+            password_aux=`cat ${REDIS_MASTER_PASSWORD_FILE}`
+            export REDIS_MASTER_PASSWORD=$password_aux
+          fi
+          ARGS=("--port" "${REDIS_PORT}")
+          {{- if .Values.usePassword }}
+          ARGS+=("--requirepass" "${REDIS_PASSWORD}")
+          ARGS+=("--slaveof" "${REDIS_MASTER_HOST}" "${REDIS_MASTER_PORT_NUMBER}")
+          ARGS+=("--masterauth" "${REDIS_MASTER_PASSWORD}")
+          {{- else }}
+          ARGS+=("--protected-mode" "no")
+          {{- end }}
+          ARGS+=("--include" "/opt/bitnami/redis/etc/redis.conf")
+          ARGS+=("--include" "/opt/bitnami/redis/etc/replica.conf")
+          {{- if .Values.master.command }}
+          {{ .Values.master.command }} "${ARGS[@]}"
+          {{- else }}
+          redis-server "${ARGS[@]}"
+          {{- end }}
         env:
         - name: REDIS_REPLICATION_MODE
           value: slave
@@ -114,7 +112,7 @@ spec:
         - name: REDIS_PASSWORD_FILE
           value: "/opt/bitnami/redis/secrets/redis-password"
         - name: REDIS_MASTER_PASSWORD_FILE
-          value: "/opt/bitnami/redis/secrets/redis-master-password"
+          value: "/opt/bitnami/redis/secrets/redis-password"
         {{- else }}
         - name: REDIS_PASSWORD
           valueFrom:
@@ -153,6 +151,21 @@ spec:
         - name: config
           mountPath: /opt/bitnami/redis/etc
         {{- end }}
+      {{- if .Values.sysctlImage.enabled }}
+      initContainers:
+      - name: init-sysctl
+        image: {{ template "redis.sysctl.image" . }}
+        {{- if .Values.sysctlImage.mountHostSys }}
+        volumeMounts:
+        - name: host-sys
+          mountPath: /host-sys
+        {{- end }}
+        command:
+{{ toYaml .Values.sysctlImage.command | indent 10 }}
+        securityContext:
+          privileged: true
+          runAsUser: 0
+      {{- end }}
       volumes:
       - name: health
         configMap:
@@ -170,4 +183,9 @@ spec:
       {{- end }}
       - name: redis-data
         emptyDir: {}
+      {{- if .Values.sysctlImage.mountHostSys }}
+      - name: host-sys
+        hostPath:
+          path: /sys
+      {{- end }}
 {{- end }}

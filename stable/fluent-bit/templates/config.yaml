@@ -28,7 +28,7 @@ data:
     [INPUT]
         Name             tail
         Path             {{ .Values.input.tail.path }}
-        Parser           docker
+        Parser           {{ .Values.input.tail.parser }}
         Tag              {{ .Values.filter.kubeTag }}.*
         Refresh_Interval 5
         Mem_Buf_Limit    {{ .Values.input.tail.memBufLimit }}

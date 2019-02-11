@@ -59,6 +59,8 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `service.type`                            | Kubernetes service type                             | `ClusterIP`                                                       |
 | `service.clusterIp`                       | Specific cluster IP when service type is cluster IP. Use None for headless service | `nil`                              |
 | `service.port`                            | MySQL service port                                  | `3306`                                                            |
+| `serviceAccount.create`                   | Specifies whether a ServiceAccount should be created | `false`                                                          |
+| `serviceAccount.name`                     | The name of the ServiceAccount to create            | Generated using the mariadb.fullname template                     |
 | `securityContext.enabled`                 | Enable security context                             | `true`                                                            |
 | `securityContext.fsGroup`                 | Group ID for the container                          | `1001`                                                            |
 | `securityContext.runAsUser`               | User ID for the container                           | `1001`                                                            |
@@ -139,7 +141,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 ```bash
 $ helm install --name my-release \
-  --set root.password=secretpassword,user.database=app_database \
+  --set rootUser.password=secretpassword,db.user=app_database \
     stable/mariadb
 ```
 

@@ -145,13 +145,24 @@ ingress:
 # TODO: add support for plugins https://docs.sentry.io/server/plugins/
 
 postgresql:
+  enabled: true
   postgresDatabase: sentry
   postgresUser: sentry
-  imageTag: "9.5"
+  # Only used when internal PG is disabled
+  # postgresHost: postgres
+  # postgresPassword: postgres
+  # postgresPort: 5432
+  imageTag: "9.6"
   persistence:
     enabled: true
 
 redis:
+  enabled: true
+  # Only used when internal redis is disabled
+  # host: redis
+  # Just omit the password field if your redis cluster doesn't use password
+  # password: redis
+  # port: 6379
   master:
     persistence:
       enabled: true

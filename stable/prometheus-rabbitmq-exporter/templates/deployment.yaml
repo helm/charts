@@ -44,6 +44,8 @@ spec:
               value: "{{ .Values.rabbitmq.include_vhost }}"
             - name: SKIP_QUEUES
               value: "{{ .Values.rabbitmq.skip_queues }}"
+            - name: SKIPVERIFY
+              value: "{{ .Values.rabbitmq.skip_verify }}"
             - name: SKIP_VHOST
               value: "{{ .Values.rabbitmq.skip_vhost }}"
             - name: RABBIT_EXPORTERS

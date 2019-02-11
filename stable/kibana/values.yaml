@@ -1,6 +1,6 @@
 image:
   repository: "docker.elastic.co/kibana/kibana-oss"
-  tag: "6.5.4"
+  tag: "6.6.0"
   pullPolicy: "IfNotPresent"
 
 commandline:
@@ -34,6 +34,8 @@ deployment:
 
 service:
   type: ClusterIP
+  # clusterIP: None
+  # portName: kibana-svc
   externalPort: 443
   internalPort: 5601
   # authProxyPort: 5602 To be used with authProxyEnabled and a proxy extraContainer
@@ -105,6 +107,11 @@ extraContainers: |
 #   ports:
 #     - name: web
 #       containerPort: 9090
+
+extraVolumeMounts: []
+
+extraVolumes: []
+
 resources: {}
   # limits:
   #   cpu: 100m
@@ -130,6 +137,9 @@ nodeSelector: {}
 podAnnotations: {}
 replicaCount: 1
 revisionHistoryLimit: 3
+
+# Custom labels for pod assignment
+podLabels: {}
 
 # To export a dashboard from a running Kibana 6.3.x use:
 # curl --user <username>:<password> -XGET https://kibana.yourdomain.com:5601/api/kibana/dashboards/export?dashboard=<some-dashboard-uuid> > my-dashboard.json
@@ -186,3 +196,24 @@ extraConfigMapMounts: []
   #   configMap: kibana-logtrail
   #   mountPath: /usr/share/kibana/plugins/logtrail/logtrail.json
   #   subPath: logtrail.json
+
+# Add your own init container or uncomment and modify the given example.
+initContainers: {}
+  ## Don't start kibana till Elasticsearch is reachable.
+  ## Ensure that it is available at http://elasticsearch:9200
+  ##
+  # es-check:  # <- will be used as container name
+  #   image: "appropriate/curl:latest"
+  #   imagePullPolicy: "IfNotPresent"
+  #   command:
+  #     - "/bin/sh"
+  #     - "-c"
+  #     - |
+  #       is_down=true
+  #       while "$is_down"; do
+  #         if curl -sSf --fail-early --connect-timeout 5 http://elasticsearch:9200; then
+  #           is_down=false
+  #         else
+  #           sleep 5
+  #         fi
+  #       done

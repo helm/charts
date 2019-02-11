@@ -46,7 +46,7 @@ The following table lists the configurable parameters of the Mattermost Team Edi
 Parameter                            | Description                                                                                     | Default
 ---                                  | ---                                                                                             | ---
 `image.repository`                   | container image repository                                                                      | `mattermost/mattermost-team-edition`
-`image.tag`                          | container image tag                                                                             | `5.6.3`
+`image.tag`                          | container image tag                                                                             | `5.7.1`
 `image.imagePullPolicy`              | container image pull policy                                                                     | `IfNotPresent`
 `initContainerImage.repository`      | init container image repository                                                                 | `appropriate/curl`
 `initContainerImage.tag`             | init container image tag                                                                        | `latest`
@@ -78,7 +78,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 ```bash
 $ helm install --name my-release \
-  --set image.tag=5.6.3 \
+  --set image.tag=5.7.0 \
   --set mysql.mysqlUser=sampleUser \
   --set mysql.mysqlPassword=samplePassword \
   stable/mattermost-team-edition
