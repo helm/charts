@@ -130,12 +130,12 @@ spec:
           {{- end }}
           {{- range $key, $value := .Values.tcp }}
             - name: "{{ $key }}-tcp"
-              containerPort: {{ $key }}
+              containerPort: {{ $value }}
               protocol: TCP
           {{- end }}
           {{- range $key, $value := .Values.udp }}
             - name: "{{ $key }}-udp"
-              containerPort: {{ $key }}
+              containerPort: {{ $value }}
               protocol: UDP
           {{- end }}
           readinessProbe:
