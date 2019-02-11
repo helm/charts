@@ -16,6 +16,7 @@ Master:
 # ImagePullSecret: jenkins
   Component: "jenkins-master"
   NumExecutors: 0
+  # configAutoReload requires UseSecurity is set to true:
   UseSecurity: true
   # SecurityRealm:
   # Optionally configure a different AuthorizationStrategy using Jenkins XML
@@ -24,15 +25,27 @@ Master:
   #      <denyAnonymousReadAccess>true</denyAnonymousReadAccess>
   #    </authorizationStrategy>
   HostNetworking: false
+  # When enabling LDAP or another non-Jenkins identity source, the built-in admin account will no longer exist.
+  # Since the AdminUser is used by configAutoReload, in order to use configAutoReload you must change the
+  # .Master.AdminUser to a valid username on your LDAP (or other) server.  This user does not need
+  # to have administrator rights in Jenkins (the default Overall:Read is sufficient) nor will it be granted any
+  # additional rights.  Failure to do this will cause the sidecar container to fail to authenticate via SSH and enter
+  # a restart loop.  Likewise if you disable the non-Jenkins identity store and instead use the Jenkins internal one,
+  # you should revert Master.AdminUser to your preferred admin user:
   AdminUser: admin
   # AdminPassword: <defaults to random>
+  OwnSshKey: false
+  # If CasC auto-reload is enabled, an SSH (RSA) keypair is needed.  Can either provide your own, or leave unconfigured\false to allow a random key to be auto-generated.
+  # If you choose to use your own, you must upload your decrypted RSA private key (not the public key above) to a Kubernetes secret using the following command:
+  # kubectl -n <namespace> create secret generic <helm_release_name> --dry-run --from-file=jenkins-admin-private-key=~/.ssh/id_rsa -o yaml |kubectl -n <namespace> apply -f -
+  # Replace ~/.ssh/id_rsa in the above command with the path to your private key file and the <helm_release_name> and <namespace> placeholders to suit.
   resources:
     requests:
       cpu: "50m"
       memory: "256Mi"
     limits:
       cpu: "2000m"
-      memory: "2048Mi"
+      memory: "4096Mi"
   # Environment variables that get added to the init container (useful for e.g. http_proxy)
   # InitContainerEnv:
   #   - name: http_proxy
@@ -116,6 +129,7 @@ Master:
   ExtraPorts:
   # - name: BuildInfoProxy
   #   port: 9000
+
   # List of plugins to be install during Jenkins master start
   InstallPlugins:
     - kubernetes:1.14.0
@@ -123,6 +137,9 @@ Master:
     - workflow-aggregator:2.6
     - credentials-binding:1.17
     - git:3.9.1
+
+  # Enable to always override the installed plugins with the values of 'Master.InstallPlugins' on upgrade or redeployment.
+  # OverwritePlugins: true
   # Enable HTML parsing using OWASP Markup Formatter Plugin (antisamy-markup-formatter), useful with ghprb plugin.
   # The plugin is not installed by default, please update Master.InstallPlugins.
   # EnableRawHtmlMarkupFormatter: true
@@ -144,11 +161,54 @@ Master:
   # Jobs:
   #   test: |-
   #     <<xml here>>
-  CustomConfigMap: false
-  # By default, the configMap is only used to set the initial config the first time
-  # that the chart is installed.  Setting `OverwriteConfig` to `true` will overwrite
-  # the jenkins config with the contents of the configMap every time the pod starts.
-  OverwriteConfig: false
+
+  # Below is the implementation of Jenkins Configuration as Code.  Add a key under ConfigScripts for each configuration area,
+  # where each corresponds to a plugin or section of the UI.  Each key (prior to | character) is just a label, and can be any value.
+  # Keys are only used to give the section a meaningful name.  The only restriction is they may only contain RFC 1123 \ DNS label
+  # characters: lowercase letters, numbers, and hyphens.  The keys become the name of a configuration yaml file on the master in
+  # /var/jenkins_home/casc_configs (by default) and will be processed by the Configuration as Code Plugin.  The lines after each |
+  # become the content of the configuration yaml file.  The first line after this is a JCasC root element, eg jenkins, credentials,
+  # etc.  Best reference is https://<jenkins_url>/configuration-as-code/reference.  The example below creates a welcome message:
+  JCasC:
+    enabled: false
+    PluginVersion: 1.5
+    SupportPluginVersion: 1.5
+    ConfigScripts:
+      welcome-message: |
+        jenkins:
+          systemMessage: Welcome to our CI\CD server.  This Jenkins is configured and managed 'as code'.
+
+  Sidecar:
+    image: shadwell/k8s-sidecar:0.0.2
+    imagePullPolicy: IfNotPresent
+    resources:
+    #   limits:
+    #     cpu: 100m
+    #     memory: 100Mi
+    #   requests:
+    #     cpu: 50m
+    #     memory: 50Mi
+    configAutoReload:
+      # If enabled: true, Jenkins Configuration as Code will be reloaded on-the-fly without a reboot.  If false or not-specified,
+      # jcasc changes will cause a reboot and will only be applied at the subsequent start-up.  Auto-reload uses the Jenkins CLI
+      # over SSH to reapply config when changes to the ConfigScripts are detected.  The admin user (or account you specify in
+      # Master.AdminUser) will have a random SSH private key (RSA 4096) assigned unless you specify OwnSshKey: true.  This will be saved to a k8s secret.
+      enabled: false
+      # SSH port value can be set to any unused TCP port.  The default, 1044, is a non-standard SSH port that has been chosen at random.
+      # Is only used to reload jcasc config from the sidecar container running in the Jenkins master pod.
+      # This TCP port will not be open in the pod (unless you specifically configure this), so Jenkins will not be
+      # accessible via SSH from outside of the pod.  Note if you use non-root pod privileges (RunAsUser & FsGroup),
+      # this must be > 1024:
+      sshTcpPort: 1044
+      # label that the configmaps with dashboards are marked with:
+      label: jenkins_config
+      # folder in the pod that should hold the collected dashboards:
+      folder: /var/jenkins_home/casc_configs
+      # If specified, the sidecar will search for dashboard config-maps inside this namespace.
+      # Otherwise the namespace in which the sidecar is running will be used.
+      # It's also possible to specify ALL to search in all namespaces:
+      # searchNamespace:
+
   # Node labels and tolerations for pod assignment
   # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
   # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
@@ -156,20 +216,43 @@ Master:
   Tolerations: {}
   PodAnnotations: {}
 
+  # The below two configuration-related values are deprecated and replaced by Jenkins Configuration as Code (see above
+  # JCasC key).  They will be deleted in an upcoming version.
+  CustomConfigMap: false
+  # By default, the configMap is only used to set the initial config the first time
+  # that the chart is installed.  Setting `OverwriteConfig` to `true` will overwrite
+  # the jenkins config with the contents of the configMap every time the pod starts.
+  OverwriteConfig: false
+
   Ingress:
     ApiVersion: extensions/v1beta1
     Annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
-
     # Set this path to JenkinsUriPrefix above or use annotations to rewrite path
     # Path: "/jenkins"
-
     TLS:
     # - secretName: jenkins.cluster.local
     #   hosts:
     #     - jenkins.cluster.local
   AdditionalConfig: {}
+
+  SidecarContainers:
+  ## The example below runs the client for https://smee.io as sidecar container next to Jenkins,
+  ## that allows to trigger build behind a secure firewall.
+  ## https://jenkins.io/blog/2019/01/07/webhook-firewalls/#triggering-builds-with-webhooks-behind-a-secure-firewall
+  ##
+  ## Note: To use it you should go to https://smee.io/new and update the url to the generete one.
+  # - name: smee
+  #  image: docker.io/twalter/smee-client:1.0.2
+  #  args: ["--port", "{{ .Values.Master.ServicePort }}", "--path", "/github-webhook/", "--url", "https://smee.io/new"]
+  #  resources:
+  #    limits:
+  #      cpu: 50m
+  #      memory: 128Mi
+  #    requests:
+  #      cpu: 10m
+  #      memory: 32Mi
 
 Agent:
   Enabled: true
@@ -195,6 +278,10 @@ Agent:
   # Allowed types are: ConfigMap, EmptyDir, HostPath, Nfs, Pod, Secret
   # Configure the attributes as they appear in the corresponding Java class for that type
   # https://github.com/jenkinsci/kubernetes-plugin/tree/master/src/main/java/org/csanchez/jenkins/plugins/kubernetes/volumes
+  # Pod-wide ennvironment, these vars are visible to any container in the slave pod
+  envVars:
+  # - name: PATH
+  #   value: /usr/local/bin
   volumes:
   # - type: Secret
   #   secretName: mysecret
@@ -209,7 +296,6 @@ Persistence:
   ## Requires Persistence.Enabled: true
   ## If defined, PVC must be created manually before volume will be bound
   # ExistingClaim:
-
   ## jenkins data Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>
   ## If set to "-", storageClassName: "", which disables dynamic provisioning
@@ -218,7 +304,6 @@ Persistence:
   ##   GKE, AWS & OpenStack)
   ##
   # StorageClass: "-"
-
   Annotations: {}
   AccessMode: ReadWriteOnce
   Size: 8Gi
@@ -254,30 +339,24 @@ backup:
   # Backup must use RBAC
   # So by enabling backup you are enabling RBAC specific for backup
   enabled: false
-
   # Schedule to run jobs. Must be in cron time format
   # Ref: https://crontab.guru/
   schedule: "0 2 * * *"
-
   annotations:
     # Example for authorization to AWS S3 using kube2iam
     # Can also be done using environment variables
     iam.amazonaws.com/role: jenkins
-
   image:
     repository: nuvo/kube-tasks
     tag: 0.1.2
-
   # Additional arguments for kube-tasks
   # Ref: https://github.com/nuvo/kube-tasks#simple-backup
   extraArgs: []
-
   # Add additional environment variables
   env:
   # Example environment variable required for AWS credentials chain
   - name: AWS_REGION
     value: us-east-1
-
   resources:
     requests:
       memory: 1Gi
@@ -285,7 +364,6 @@ backup:
     limits:
       memory: 1Gi
       cpu: 1
-
   # Destination to store the backup artifacts
   # Supported cloud storage services: AWS S3, Minio S3, Azure Blob Storage
   # Additional support can added. Visit this repository for details

@@ -119,6 +119,7 @@ affinity: {}
 ##
 persistence:
   enabled: false
+  initChownData: true
   # storageClassName: default
   accessModes:
     - ReadWriteOnce

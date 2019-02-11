@@ -1,0 +1,24 @@
+# Default values for distributed-jmeter.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+master:
+  ## The number of pods in the master deployment
+  replicaCount: 1
+
+server:
+  ## The number of pods in the server deployment
+  replicaCount: 3
+
+image:
+  ## Specify an imagePullPolicy
+  ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+  pullPolicy: IfNotPresent
+
+  ## The repository and image
+  ## ref: https://hub.docker.com/r/pedrocesarti/jmeter-docker/
+  repository: "pedrocesarti/jmeter-docker"
+
+  ## The tag for the image
+  ## ref: https://hub.docker.com/r/pedrocesarti/jmeter-docker/tags/
+  tag: 3.3

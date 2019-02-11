@@ -146,6 +146,20 @@ def add_rules_conditions(rules, indent=4):
             except ValueError:
                 # we found the last alert in file if there are no alerts after it
                 next_index = len(rules)
+
+            # depending on the rule ordering in alert_condition_map it's possible that an if statement from another rule is present at the end of this block.
+            found_block_end = False
+            last_line_index = next_index
+            while not found_block_end:
+                last_line_index = rules.rindex('\n', index, last_line_index - 1) # find the starting position of the last line
+                last_line = rules[last_line_index + 1:next_index]
+
+                if last_line.startswith('{{- if'):
+                    next_index = last_line_index + 1 # move next_index back if the current block ends in an if statement
+                    continue
+
+                found_block_end = True
+
             rules = rules[:next_index] + '{{- end }}\n' + rules[next_index:]
     return rules
 
