@@ -68,25 +68,32 @@ data:
 {{ .Values.extraEntries.filter | indent 8 }}
 
   fluent-bit-output.conf: |-
-{{ if eq .Values.backend.type "test" }}
+{{- if .Values.backend.file.enabled }}
     [OUTPUT]
         Name  file
-        Match *
+        Match {{ .Values.backend.file.match | default "*" }}
         Path /tmp/fluent-bit.log
-{{ else if eq .Values.backend.type "forward" }}
+{{- end }}
+{{- if .Values.backend.stdout.enabled }}
+    [OUTPUT]
+        Name stdout
+        Match {{ .Values.backend.stdout.match | default "*" }}
+{{- end }}
+{{- if .Values.backend.forward.enabled }}
     [OUTPUT]
         Name          forward
-        Match         *
+        Match         {{ .Values.backend.foward.match | default "*" }}
         Host          {{ .Values.backend.forward.host }}
         Port          {{ .Values.backend.forward.port }}
         Retry_Limit False
 {{- if .Values.backend.forward.shared_key }}
         Shared_Key    {{ .Values.backend.forward.shared_key }}
 {{- end }}
-{{ else if eq .Values.backend.type "es" }}
+{{- end }}
+{{- if .Values.backend.es.enabled }}
     [OUTPUT]
         Name  es
-        Match *
+        Match {{ .Values.backend.es.match | default "*" }}
         Host  {{ .Values.backend.es.host }}
         Port  {{ .Values.backend.es.port }}
         Logstash_Format On
@@ -115,10 +122,11 @@ data:
         tls.ca_file /secure/es-tls-ca.crt
 {{- end }}
 {{- end }}
-{{ else if eq .Values.backend.type "splunk" }}
+{{- end }}
+{{- if .Values.backend.splunk.enabled }}
     [OUTPUT]
         Name  splunk
-        Match *
+        Match {{ .Values.backend.splunk.match | default "*" }}
         Host  {{ .Values.backend.splunk.host }}
         Port  {{ .Values.backend.splunk.port }}
         Splunk_Token  {{ .Values.backend.splunk.token }}
@@ -127,10 +135,11 @@ data:
         TLS.Verify   {{ .Values.backend.splunk.tls_verify }}
         tls.debug {{ .Values.backend.splunk.tls_debug }}
         Message_Key   {{ .Values.backend.splunk.message_key }}
-{{ else if eq .Values.backend.type "http" }}
+{{- end }}
+{{- if .Values.backend.http.enabled }}
     [OUTPUT]
         Name  http
-        Match *
+        Match {{ .Values.backend.http.match | default "*" }}
         Host {{ .Values.backend.http.host }}
         Port {{ .Values.backend.http.port }}
         URI {{ .Values.backend.http.uri }}

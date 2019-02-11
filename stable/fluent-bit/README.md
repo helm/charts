@@ -29,9 +29,12 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 
 | Parameter                  | Description                        | Default                 |
 | -----------------------    | ---------------------------------- | ----------------------- |
-| **Backend Selection**      |
-| `backend.type`             | Set the backend to which Fluent-Bit should flush the information it gathers | `forward` |
+| **file Backend**        |
+| `backend.file.enabled`     | Boolean flag to indicate whether to enable the "file" output plugin | `fluentd` |
+| **stdout Backend**        |
+| `backend.stdout.enabled`     | Boolean flag to indicate whether to enable the "stdout" output plugin | `fluentd` |
 | **Forward Backend**        |
+| `backend.forward.enabled`     | Boolean flag to indicate whether to enable the "forward" output plugin | `fluentd` |
 | `backend.forward.host`     | Target host where Fluent-Bit or Fluentd are listening for Forward messages | `fluentd` |
 | `backend.forward.port`     | TCP Port of the target service | `24284` |
 | `backend.forward.shared_key`       | A key string known by the remote Fluentd used for authorization. | `` |
@@ -39,6 +42,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `backend.forward.tls_verify`       | Force certificate validation  | `on` |
 | `backend.forward.tls_debug`        | Set TLS debug verbosity level. It accept the following values: 0-4 | `1` |
 | **ElasticSearch Backend**  |
+| `backend.es.enabled`          | Boolean flag to indicate whether to enable the es output plugin | `elasticsearch` |
 | `backend.es.host`          | IP address or hostname of the target Elasticsearch instance | `elasticsearch` |
 | `backend.es.port`          | TCP port of the target Elasticsearch instance. | `9200` |
 | `backend.es.index`         | Elastic Index name | `kubernetes_cluster` |
@@ -53,6 +57,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `backend.es.tls_ca`           | TLS CA certificate for the Elastic instance (in PEM format). Specify if tls: on. | `` |
 | `backend.es.tls_debug`        | Set TLS debug verbosity level. It accept the following values: 0-4 | `1` |
 | **HTTP Backend**              |
+| `backend.http.enabled`     | Boolean flag to indicate whether to enable the "http" output plugin | `fluentd` |
 | `backend.http.host`           | IP address or hostname of the target HTTP Server | `127.0.0.1` |
 | `backend.http.port`           | TCP port of the target HTTP Server | `80` |
 | `backend.http.uri`            | Specify an optional HTTP URI for the target web server, e.g: /something | `"/"`
@@ -63,6 +68,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `backend.http.tls_verify`       | Force certificate validation  | `on` |
 | `backend.http.tls_debug`        | Set TLS debug verbosity level. It accept the following values: 0-4 | `1` |
 | **Splunk Backend**              |
+| `backend.splunk.enabled`     | Boolean flag to indicate whether to enable the "splunk" output plugin | `fluentd` |
 | `backend.splunk.host`           | IP address or hostname of the target Splunk Server | `127.0.0.1` |
 | `backend.splunk.port`           | TCP port of the target Splunk Server | `8088` |
 | `backend.splunk.token`            | Specify the Authentication Token for the HTTP Event Collector interface. | `` |

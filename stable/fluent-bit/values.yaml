@@ -24,8 +24,12 @@ metrics:
 trackOffsets: false
 
 backend:
-  type: forward
+  file:
+    enabled: false
+  stdout:
+    enabled: true
   forward:
+    enabled: false
     host: fluentd
     port: 24284
     tls: "off"
@@ -33,6 +37,7 @@ backend:
     tls_debug: 1
     shared_key:
   es:
+    enabled: false
     host: elasticsearch
     port: 9200
     # Elastic Index Name
@@ -53,6 +58,7 @@ backend:
     # TLS debugging levels = 1-4
     tls_debug: 1
   splunk:
+    enabled: false
     host: 127.0.0.1
     port: 8088
     token: ""
@@ -66,6 +72,7 @@ backend:
   ## Ref: http://fluentbit.io/documentation/current/output/http.html
   ##
   http:
+    enabled: false
     host: 127.0.0.1
     port: 80
     uri: "/"
