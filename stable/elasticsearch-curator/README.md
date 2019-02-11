@@ -40,6 +40,7 @@ their default values.
 | `cronjob.failedJobsHistoryLimit`     | Specify the number of failed Jobs to keep             | `nil`                                        |
 | `cronjob.successfulJobsHistoryLimit` | Specify the number of completed Jobs to keep          | `nil`                                        |
 | `pod.annotations`                    | Annotations to add to the pod                         | {}                                           |
+| `dryrun`                              | Run Curator in dry-run mode                          |  `false`                                     |
 | `configMaps.action_file_yml`         | Contents of the Curator action_file.yml               | See values.yaml                              |
 | `configMaps.config_yml`              | Contents of the Curator config.yml (overrides config) | See values.yaml                              |
 | `resources`                          | Resource requests and limits                          | {}                                           |

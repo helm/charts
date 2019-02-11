@@ -59,6 +59,7 @@ The following table lists the configurable parameters and their default values.
 | `rabbitmq.skip_queues`   | regex, matching queue names are not exported                           | `^$`                      |
 | `rabbitmq.include_vhost` | regex vhost filter. Only queues in matching vhosts are exported        | `.*`                      |
 | `rabbitmq.skip_vhost`    | regex, matching vhost names are not exported. First performs include_vhost, then skip_vhost | `^$` |
+| `rabbitmq.skip_verify    | true/0 will ignore certificate errors of the management plugin         | `false`                   |
 | `rabbitmq.exporters`     | List of enabled modules. Just "connections" is not enabled by default  | `exchange,node,overview,queue` |
 | `rabbitmq.output_format` | Log ouput format. TTY and JSON are suported                            | `TTY`                     |
 | `rabbitmq.timeout`       | timeout in seconds for retrieving data from management plugin          | `30`                      |

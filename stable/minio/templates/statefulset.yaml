@@ -35,16 +35,14 @@ spec:
           {{- if .Values.tls.enabled }}
           command: [ "/bin/sh",
           "-ce",
-          "cp /tmp/config.json {{ .Values.configPath }} &&
-          /usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} server
+          "/usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} server
           {{- range $i := until $nodeCount }}
           https://{{ template `minio.fullname` $ }}-{{ $i }}.{{ template `minio.fullname` $ }}.{{ $.Release.Namespace }}.svc.{{ $.Values.clusterDomain }}{{ $.Values.mountPath }}
           {{- end }}" ]
           {{ else }}
           command: [ "/bin/sh",
           "-ce",
-          "cp /tmp/config.json {{ .Values.configPath }} &&
-          /usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} server
+          "/usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} server
           {{- range $i := until $nodeCount }}
           http://{{ template `minio.fullname` $ }}-{{ $i }}.{{ template `minio.fullname` $ }}.{{ $.Release.Namespace }}.svc.{{ $.Values.clusterDomain }}{{ $.Values.mountPath }}
           {{- end }}" ]
@@ -55,9 +53,6 @@ spec:
               {{- if and .Values.persistence.enabled .Values.persistence.subPath }}
               subPath: "{{ .Values.persistence.subPath }}"
               {{- end }}
-            - name: minio-server-config
-              mountPath: "/tmp/config.json"
-              subPath: config.json
             - name: minio-config-dir
               mountPath: {{ .Values.configPath }}
             {{- if .Values.tls.enabled }}
@@ -114,9 +109,6 @@ spec:
         - name: minio-user
           secret:
             secretName: {{ if .Values.existingSecret }}{{ .Values.existingSecret }}{{ else }}{{ template "minio.fullname" . }}{{ end }}
-        - name: minio-server-config
-          configMap:
-            name: {{ template "minio.fullname" . }}
         - name: minio-config-dir
           emptyDir: {}
         {{- if .Values.tls.enabled }}
