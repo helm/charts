@@ -23,4 +23,7 @@ spec:
     matchLabels:
       app: {{ template "elasticsearch-exporter.name" . }}
       release: "{{ .Release.Name }}"
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace }}
 {{- end }}
