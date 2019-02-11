@@ -1,6 +1,6 @@
 # Sematext Agent
 
-Sematext Agent collects a plethora of metrics about hosts (CPU, memory, disk, network, processes), containers (both Docker and rkt) and orchestrator platforms and ships that to [Sematext Cloud](https://sematext.com/cloud).
+Sematext Agent collects metrics about hosts (CPU, memory, disk, network, processes), containers (both Docker and rkt) and orchestrator platforms and ships that to [Sematext Cloud](https://sematext.com/cloud). Sematext Cloud is available in the US and EU regions.
 
 ## Introduction
 
@@ -9,6 +9,7 @@ This chart installs the Sematext Agent to all nodes in your cluster via a `Daemo
 ## Prerequisites
 
 - Kubernetes 1.9+
+- You need to create [a new Docker app in Sematext Cloud](https://apps.sematext.com/ui/integrations/create/docker) to get relevant tokens
 
 ## Installation
 
@@ -19,9 +20,9 @@ $ helm install --name release_name \
     --set containerToken=YOUR_CONTAINER_TOKEN,logsToken=YOUR_LOGS_TOKEN stable/sematext-agent
 ```
 
-After a few minutes, you should see logs, metrics and events being reported in Sematext web UI.
+After a few minutes, you should see logs, metrics, and events reported in Sematext web UI.
 
-**NOTE:** If you want to use Sematext in EU region set the region as well `--set region=EU`.
+**NOTE:** If you want to use Sematext in EU region set the region as well `--set region=EU`. Also, it is worth mentioning that the agent is running as a privileged container.
 
 ## Deleting
 
@@ -35,7 +36,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following table lists the configuration parameters of the sematext-docker-agent chart and their default values.
+The following table lists the configuration parameters of the `sematext-agent` chart and default values.
 
 |           Parameter           |             Description              |                  Default                  |
 |-------------------------------|--------------------------------------|-------------------------------------------|
@@ -65,11 +66,11 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 ```bash
 $ helm install --name release_name \
-    --set containerToken=YOUR_CONTAINER_TOKEN,region=EU \
+    --set containerToken=YOUR_CONTAINER_TOKEN \
     stable/sematext-agent
 ```
 
-Alternatively, you can use a YAML file that specifies the values and it can be provided while installing the chart. For example:
+Alternatively, you can use a YAML file that specifies the values while installing the chart. For example:
 
 ```bash
 $ helm install --name release_name -f custom_values.yaml stable/sematext-agent

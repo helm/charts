@@ -1,6 +1,6 @@
 {{- if or (.Values.infraToken) (.Values.logsToken) (.Values.containerToken) }}
-{{- if .Capabilities.APIVersions.Has "apps/v1beta2" }}
-apiVersion: apps/v1beta2
+{{- if .Capabilities.APIVersions.Has "apps/v1" }}
+apiVersion: apps/v1
 {{- else }}
 apiVersion: extensions/v1beta1
 {{- end }}
