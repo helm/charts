@@ -11,7 +11,7 @@ agent:
 
   image:
     repository: quay.io/uswitch/kiam
-    tag: v3.0-rc1
+    tag: v3.0
     pullPolicy: IfNotPresent
 
   ## Logging settings
@@ -122,7 +122,7 @@ server:
 
   image:
     repository: quay.io/uswitch/kiam
-    tag: v3.0-rc1
+    tag: v3.0
     pullPolicy: IfNotPresent
 
   ## Logging settings
@@ -198,7 +198,7 @@ server:
 
   ## Server probe configuration
   probes:
-    serverAddress: localhost
+    serverAddress: 127.0.0.1
 
   ## Base64-encoded PEM values for server's CA certificate(s), certificate and private key
   ##
