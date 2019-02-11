@@ -45,6 +45,8 @@ Parameter | Description | Default
 `persistence.size` | Persistent Volume size | `2Gi`
 `persistence.storageClass` | Persistent Volume Storage Class |  `unset`
 `extraVars` | Hackmd's extra environment variables | `[]`
+`podAnnotations` | Pod annotations | `{}`
+`sessionSecret` | Hackmd's session secret | `""` (Randomly generated)
 `postgresql.install` | Enable PostgreSQL as a chart dependency | `true`
 `postgresql.imageTag` | The image tag for PostgreSQL | `9.6.2`
 `postgresql.postgresUser` | PostgreSQL User to create | `hackmd`
