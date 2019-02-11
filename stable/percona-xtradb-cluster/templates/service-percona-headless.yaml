@@ -1,13 +1,15 @@
+{{- if .Values.service.percona.headless }}
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "percona-xtradb-cluster.fullname" . }}
+  name: {{ template "percona-xtradb-cluster.fullname" . }}-headless
   labels:
     app: {{ template "percona-xtradb-cluster.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
+  clusterIP: None
   ports:
   - name: mysql
     port: 3306
@@ -15,3 +17,4 @@ spec:
   selector:
     app: {{ template "percona-xtradb-cluster.fullname" . }}
     release: "{{ .Release.Name }}"
+{{- end }}
