@@ -3,24 +3,24 @@ kind: Deployment
 metadata:
   name: {{ template "redash.scheduledWorker.fullname" . }}
   labels:
-    app: {{ template "redash.name" . }}
-    component: scheduledworker
-    chart: {{ template "redash.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ template "redash.name" . }}
+    app.kubernetes.io/component: scheduledworker
+    helm.sh/chart: {{ template "redash.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   replicas: {{ .Values.scheduledWorker.replicaCount }}
   selector:
     matchLabels:
-      app: {{ template "redash.name" . }}
-      component: scheduledworker
-      release: {{ .Release.Name }}
+      app.kubernetes.io/name: {{ template "redash.name" . }}
+      app.kubernetes.io/component: scheduledworker
+      app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ template "redash.name" . }}
-        component: scheduledworker
-        release: {{ .Release.Name }}
+        app.kubernetes.io/name: {{ template "redash.name" . }}
+        app.kubernetes.io/component: scheduledworker
+        app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
       containers:
         - name: {{ template "redash.name" . }}-scheduledworker

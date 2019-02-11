@@ -3,10 +3,10 @@ kind: Service
 metadata:
   name: {{ template "redash.fullname" . }}
   labels:
-    app: {{ template "redash.name" . }}
-    chart: {{ template "redash.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ template "redash.name" . }}
+    helm.sh/chart: {{ template "redash.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   type: {{ .Values.service.type }}
   ports:
@@ -15,6 +15,6 @@ spec:
       protocol: TCP
       name: http
   selector:
-    app: {{ template "redash.name" . }}
-    component: server
-    release: {{ .Release.Name }}
+    app.kubernetes.io/name: {{ template "redash.name" . }}
+    app.kubernetes.io/component: server
+    app.kubernetes.io/instance: {{ .Release.Name }}

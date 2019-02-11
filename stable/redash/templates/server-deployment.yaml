@@ -3,24 +3,24 @@ kind: Deployment
 metadata:
   name: {{ template "redash.fullname" . }}
   labels:
-    app: {{ template "redash.name" . }}
-    component: server
-    chart: {{ template "redash.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ template "redash.name" . }}
+    app.kubernetes.io/component: server
+    helm.sh/chart: {{ template "redash.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   replicas: {{ .Values.server.replicaCount }}
   selector:
     matchLabels:
-      app: {{ template "redash.name" . }}
-      component: server
-      release: {{ .Release.Name }}
+      app.kubernetes.io/name: {{ template "redash.name" . }}
+      app.kubernetes.io/component: server
+      app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ template "redash.name" . }}
-        component: server
-        release: {{ .Release.Name }}
+        app.kubernetes.io/name: {{ template "redash.name" . }}
+        app.kubernetes.io/component: server
+        app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
       initContainers:
         - name: {{ template "redash.name" . }}-server-createdb

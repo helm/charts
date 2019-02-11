@@ -3,10 +3,10 @@ kind: ConfigMap
 metadata:
   name: {{ template "redash.fullname" . }}
   labels:
-    app: {{ template "redash.name" . }}
-    chart: {{ template "redash.chart" . }}
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app.kubernetes.io/name: {{ template "redash.name" . }}
+    helm.sh/chart: {{ template "redash.chart" . }}
+    app.kubernetes.io/instance: "{{ .Release.Name }}"
+    app.kubernetes.io/managed-by: "{{ .Release.Service }}"
 data:
   createdb.sh: |
     #!/usr/bin/env bash
