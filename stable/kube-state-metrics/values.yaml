@@ -1,8 +1,8 @@
 # Default values for kube-state-metrics.
 prometheusScrape: true
 image:
-  repository: quay.io/coreos/kube-state-metrics
-  tag: v1.4.0
+  repository: k8s.gcr.io/kube-state-metrics
+  tag: v1.5.0
   pullPolicy: IfNotPresent
 service:
   port: 8080
@@ -66,6 +66,7 @@ collectors:
   nodes: true
   persistentvolumeclaims: true
   persistentvolumes: true
+  poddisruptionbudgets: true
   pods: true
   replicasets: true
   replicationcontrollers: true
