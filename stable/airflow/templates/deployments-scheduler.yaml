@@ -54,6 +54,10 @@ spec:
               mountPath: /usr/local/git
             - name: dags-data
               mountPath: /dags
+            {{- if .Values.dags.git.secret }}
+            - name: git-clone-secret
+              mountPath: /keys
+            {{- end }}
       {{- end }}
       containers:
         - name: {{ .Chart.Name }}-scheduler
@@ -63,21 +67,7 @@ spec:
           - configMapRef:
               name: "{{ template "airflow.fullname" . }}-env"
           env:
-            - name: POSTGRES_USER
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "airflow.fullname" . }}
-                  key: postgresUser
-            - name: POSTGRES_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "airflow.fullname" . }}
-                  key: postgresPassword
-            - name: REDIS_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "airflow.fullname" . }}
-                  key: redisPassword
+          {{- include "airflow.mapenvsecrets" . | indent 10 }}
           volumeMounts:
           {{- if .Values.persistence.enabled }}
             - name: dags-data
@@ -87,6 +77,14 @@ spec:
               mountPath: {{ .Values.dags.path }}
             - name: scripts
               mountPath: /usr/local/scripts
+            {{- if .Values.airflow.connections }}
+            - name: connections
+              mountPath: /usr/local/connections
+            {{- end}}
+          {{- end }}
+          {{- if .Values.logsPersistence.enabled }}
+            - name: logs-data
+              mountPath: {{ .Values.logs.path }}
           {{- end }}
           args:
             - "bash"
@@ -101,6 +99,10 @@ spec:
               /usr/local/scripts/install-requirements.sh &&
               echo "executing initdb" &&
               airflow initdb &&
+            {{- if .Values.airflow.connections }}
+              echo "adding connections" &&
+              /usr/local/connections/add-connections.sh &&
+            {{- end }}
               echo "executing scheduler" &&
               airflow scheduler -n {{ .Values.airflow.schedulerNumRuns }}
           {{- else }}
@@ -122,6 +124,11 @@ spec:
         {{- else }}
           emptyDir: {}
         {{- end }}
+        {{- if .Values.logsPersistence.enabled }}
+        - name: logs-data
+          persistentVolumeClaim:
+            claimName: {{ .Values.logsPersistence.existingClaim | default (printf "%s-logs" (include "airflow.fullname" . | trunc 58 )) }}
+        {{- end }}
         {{- if .Values.dags.initContainer.enabled }}
         - name: scripts
           configMap:
@@ -131,4 +138,16 @@ spec:
           configMap:
             name: {{ template "airflow.fullname" . }}-git-clone
             defaultMode: 0755
+          {{- if .Values.airflow.connections }}           
+        - name: connections
+          secret: 
+            secretName: {{ template "airflow.fullname" . }}-connections
+            defaultMode: 0755
+          {{- end }}
+        {{- if .Values.dags.git.secret }}
+        - name: git-clone-secret
+          secret:
+            secretName: {{ .Values.dags.git.secret }}
+            defaultMode: 0700
+        {{- end }}
         {{- end }}

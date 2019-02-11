@@ -4,7 +4,7 @@ kind: ConfigMap
 metadata:
   name: {{ template "fluent-bit.fullname" . }}-config
   labels:
-    app: {{ template "fluent-bit.fullname" . }}
+    app: {{ template "fluent-bit.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
@@ -28,7 +28,7 @@ data:
     [INPUT]
         Name             tail
         Path             {{ .Values.input.tail.path }}
-        Parser           docker
+        Parser           {{ .Values.input.tail.parser }}
         Tag              {{ .Values.filter.kubeTag }}.*
         Refresh_Interval 5
         Mem_Buf_Limit    {{ .Values.input.tail.memBufLimit }}
@@ -36,6 +36,16 @@ data:
 {{- if .Values.trackOffsets }}
         DB               /tail-db/tail-containers-state.db
         DB.Sync          Normal
+{{- end }}
+{{- if .Values.input.systemd.enabled }}
+    [INPUT]
+        Name            systemd
+        Tag             {{ .Values.input.systemd.tag }}
+{{- range $value := .Values.input.systemd.filters.systemdUnit }}
+        Systemd_Filter  _SYSTEMD_UNIT="{{ $value }}"
+{{- end }}
+        Max_Entries     {{ .Values.input.systemd.maxEntries }}
+        Read_From_Tail  {{ .Values.input.systemd.readFromTail }}
 {{- end }}
 {{ .Values.extraEntries.input | indent 8 }}
 

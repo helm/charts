@@ -22,11 +22,20 @@ spec:
       labels:
         app: {{ template "atlantis.name" . }}
         release: {{ .Release.Name }}
+      {{- with .Values.podTemplate.annotations }}
+      annotations:
+{{ toYaml . | indent 8 }}
+      {{- end }}
     spec:
       serviceAccountName: {{ template "atlantis.serviceAccountName" . }}
       securityContext:
         fsGroup: 1000
       volumes:
+      {{- if .Values.tlsSecretName }}
+      - name: tls
+        secret:
+          secretName: {{ .Values.tlsSecretName }}
+      {{- end }}
       {{- range $name, $_ := .Values.serviceAccountSecrets }}
       - name: {{ $name }}-volume
         secret:
@@ -52,7 +61,6 @@ spec:
               exec:
                 command: ["/bin/sh", "-c", "cp /etc/secret-gitconfig/gitconfig /home/atlantis/.gitconfig && chown atlantis /home/atlantis/.gitconfig"]
           {{- end}}
-          cmd: atlantis
           args:
             - server
           {{- if .Values.allowRepoConfig }}
@@ -62,10 +70,24 @@ spec:
           - name: atlantis
             containerPort: 4141
           env:
+          {{- range $key, $value := .Values.environment }}
+          - name: {{ $key }}
+            value: {{ $value | quote }}
+          {{- end }}
+          {{- if .Values.logLevel }}
+          - name: ATLANTIS_LOG_LEVEL
+            value: {{ .Values.logLevel | quote}}
+          {{- end }}
+          {{- if .Values.tlsSecretName }}
+          - name: ATLANTIS_SSL_CERT_FILE
+            value: /etc/tls/tls.crt
+          - name: ATLANTIS_SSL_KEY_FILE
+            value: /etc/tls/tls.key
+          {{- end }}
           - name: ATLANTIS_DATA_DIR
             value: /atlantis-data
           - name: ATLANTIS_REPO_WHITELIST
-            value: {{ .Values.orgWhitelist }}
+            value: {{ toYaml .Values.orgWhitelist }}
           - name: ATLANTIS_PORT
             value: "4141"
           {{- if .Values.atlantisUrl }}
@@ -170,6 +192,10 @@ spec:
           - name: aws-volume
             readonly: true
             mountPath: /home/atlantis/.aws
+          {{- end }}
+          {{- if .Values.tlsSecretName }}
+          - name: tls
+            mountPath: /etc/tls/
           {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
