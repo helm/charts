@@ -1,0 +1,2 @@
+env:
+  AMBASSADOR_NO_KUBEWATCH: no_kubewatch
