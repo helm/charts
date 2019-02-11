@@ -23,6 +23,12 @@ rules:
   - get
   - list
   - watch
+- apiGroups: ["quota.openshift.io"]
+  resources:
+  - clusterresourcequotas
+  verbs:
+  - get
+  - list
 {{- if .Values.datadog.collectEvents }}
 - apiGroups:
   - ""

@@ -61,7 +61,6 @@ spec:
               exec:
                 command: ["/bin/sh", "-c", "cp /etc/secret-gitconfig/gitconfig /home/atlantis/.gitconfig && chown atlantis /home/atlantis/.gitconfig"]
           {{- end}}
-          command: ["atlantis"]
           args:
             - server
           {{- if .Values.allowRepoConfig }}
@@ -88,7 +87,7 @@ spec:
           - name: ATLANTIS_DATA_DIR
             value: /atlantis-data
           - name: ATLANTIS_REPO_WHITELIST
-            value: {{ .Values.orgWhitelist }}
+            value: {{ toYaml .Values.orgWhitelist }}
           - name: ATLANTIS_PORT
             value: "4141"
           {{- if .Values.atlantisUrl }}

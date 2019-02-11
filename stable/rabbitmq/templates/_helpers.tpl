@@ -63,3 +63,25 @@ Return the proper metrics image name
 {{- $tag := .Values.metrics.image.tag | toString -}}
 {{- printf "%s/%s:%s" $registryName $repositoryName $tag -}}
 {{- end -}}
+
+{{/*
+Get the password secret.
+*/}}
+{{- define "rabbitmq.secretPasswordName" -}}
+    {{- if .Values.rabbitmq.existingPasswordSecret -}}
+        {{- printf "%s" .Values.rabbitmq.existingPasswordSecret -}}
+    {{- else -}}
+        {{- printf "%s" (include "rabbitmq.fullname" .) -}}
+    {{- end -}}
+{{- end -}}
+
+{{/*
+Get the erlang secret.
+*/}}
+{{- define "rabbitmq.secretErlangName" -}}
+    {{- if .Values.rabbitmq.existingErlangSecret -}}
+        {{- printf "%s" .Values.rabbitmq.existingErlangSecret -}}
+    {{- else -}}
+        {{- printf "%s" (include "rabbitmq.fullname" .) -}}
+    {{- end -}}
+{{- end -}}
