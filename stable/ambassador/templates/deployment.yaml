@@ -38,7 +38,7 @@ spec:
         {{- if .Values.prometheusExporter.enabled }}
         - name: stats-exporter-mapping-config
           configMap:
-            name: {{ include "ambassador.fullname" . }}-config
+            name: {{ include "ambassador.fullname" . }}-exporter-config
             items:
             - key: exporterConfiguration
               path: mapping-config.yaml

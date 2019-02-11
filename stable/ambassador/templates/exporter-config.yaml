@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: '{{ include "ambassador.fullname" . }}-config'
+  name: '{{ include "ambassador.fullname" . }}-exporter-config'
   labels:
     app.kubernetes.io/name: {{ include "ambassador.name" . }}
     helm.sh/chart: {{ include "ambassador.chart" . }}
