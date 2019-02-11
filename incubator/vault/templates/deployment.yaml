@@ -44,10 +44,6 @@ spec:
           name: api
         - containerPort: 8201
           name: cluster-address
-        livenessProbe:
-          # Alive if it is listening for clustering traffic
-          tcpSocket:
-            port: {{ .Values.service.port }}
         readinessProbe:
           # Ready depends on preference
           httpGet:
