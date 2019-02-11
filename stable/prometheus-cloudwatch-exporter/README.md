@@ -53,7 +53,6 @@ The following table lists the configurable parameters of the Cloudwatch Exporter
 | `image.repository`          | Image                                                  | `prom/cloudwatch-exporter` |
 | `image.tag`                 | Image tag                                              | `cloudwatch_exporter-0.5.0`                   |
 | `image.pullPolicy`          | Image pull policy                                      | `IfNotPresent`             |
-| `existingSecret`            | Use an existing secret for aws credentials             | `""`                       |
 | `service.type`              | Service type                                           | `ClusterIP`                |
 | `service.port`              | The service port                                       | `80`                       |
 | `service.portName`          | The name of the service port                           | `http`                     |
@@ -88,6 +87,3 @@ Alternatively, a YAML file that specifies the values for the above parameters ca
 ```console
 $ helm install --name my-release -f values.yaml stable/prometheus-cloudwatch-exporter
 ```
-## Custom Secret
-
-`existingSecret` can be used to override the default secret.yaml provided
