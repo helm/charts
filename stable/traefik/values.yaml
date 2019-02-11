@@ -390,3 +390,6 @@ tracing:
 #     resource:
 #       name: memory
 #       targetAverageUtilization: 60
+
+networkPolicy:
+  enabled: false

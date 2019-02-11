@@ -1,0 +1,27 @@
+{{- if .Values.networkPolicy.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ template "traefik.fullname" . }}
+  labels:
+    app: {{ template "traefik.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+spec:
+  podSelector:
+    matchLabels:
+      app: {{ template "traefik.name" . }}
+      release: {{ .Release.Name | quote }}
+  ingress:
+    - ports:
+      - port: 80
+      {{- if .Values.ssl.enabled }}
+      - port: 443
+      {{- else }}
+      - port: 8880
+      {{- end }}
+      {{- if .Values.dashboard.enabled }}
+      - port: 8080
+      {{- end }}
+{{- end }}
