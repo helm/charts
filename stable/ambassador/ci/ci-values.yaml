@@ -1,4 +1,6 @@
 daemonSet: true
+rbac:
+  create: false
 
 prometheusExporter:
   enabled: true
@@ -15,3 +17,10 @@ volumeMounts:
   - mountPath: /var/nothing
     name: nothing
     readOnly: true
+
+ambassadorConfig: |
+  apiVersion: ambassador/v1
+  kind: Module
+  name: ambassador
+  config:
+    service_port: 8080
