@@ -1,3 +1,4 @@
+{{- if not .Values.daemonSet }}
 apiVersion: v1
 kind: Pod
 metadata:
@@ -16,3 +17,4 @@ spec:
       command: ['wget']
       args:  ['{{ include "ambassador.fullname" . }}:{{ .Values.service.http.port }}/ambassador/v0/check_ready']
   restartPolicy: Never
+{{- end }}
