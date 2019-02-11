@@ -14,17 +14,22 @@ This chart bootstraps a [cloudwatch exporter](http://github.com/prometheus/cloud
 
 ## Prerequisites
 
-- [kube2iam](../../stable/kube2iam) installed to used the **aws.role** config option otherwise configure **aws.aws_access_key_id** and **aws.aws_secret_access_key**
+- [kube2iam](../../stable/kube2iam) installed to used the **aws.role** config option otherwise configure **aws.aws_access_key_id** and **aws.aws_secret_access_key** or **aws.secret.name**
 
 ## Installing the Chart
 
 To install the chart with the release name `my-release`:
 
 ```console
-$ # edit aws.aws_access_key_id and aws.aws_access_key_id with the key/password of a AWS user with a policy to access  Cloudwatch
-$ helm install --name my-release stable/prometheus-cloudwatch-exporter
-$ # or add a role to aws with the [correct policy](https://github.com/prometheus/cloudwatch_exporter#credentials-and-permissions) to add to cloud watch
-$ helm install --name my-release stable/prometheus-cloudwatch-exporter --set awsRole=roll_name_here
+$ # pass AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY as values
+$ helm install --name my-release stable/prometheus-cloudwatch-exporter --set aws.aws_access_key_id=$AWS_ACCESS_KEY_ID,aws.aws_secret_access_key=$AWS_SECRET_ACCESS_KEY
+
+$ # or store them in a secret and pass its name as a value
+$ kubectl create secret generic <SECRET_NAME> --from-literal=access_key=$AWS_ACCESS_KEY_ID --from-literal=secret_key=$AWS_SECRET_ACCESS_KEY
+$ helm install --name my-release stable/prometheus-cloudwatch-exporter --set aws.secret.name=<SECRET_NAME>
+
+$ # or add a role to aws with the [correct policy](https://github.com/prometheus/cloudwatch_exporter#credentials-and-permissions) to add to cloud watch and pass its name as a value
+$ helm install --name my-release stable/prometheus-cloudwatch-exporter --set awsRole=<ROLL_NAME>
 ```
 
 The command deploys Cloudwatch exporter on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -50,13 +55,15 @@ The following table lists the configurable parameters of the Cloudwatch Exporter
 | `image.pullPolicy`          | Image pull policy                                      | `IfNotPresent`             |
 | `service.type`              | Service type                                           | `ClusterIP`                |
 | `service.port`              | The service port                                       | `80`                       |
-| `service.targetPort`        | The target port of the container                       | `9100`                     |
+| `service.portName`          | The name of the service port                           | `http`                     |
 | `service.annotations`       | Custom annotations for service                         | `{}`                       |
+| `service.labels`            | Additional custom labels for the service               | `{}`                       |
 | `resources`                 |                                                        | `{}`                       |
-| `aws.region`                | AWS Cloudwatch region                                  | `eu-west-1`                |
 | `aws.role`                  | AWS IAM Role To Use                                    |                            |
 | `aws.aws_access_key_id`     | AWS access key id                                      |                            |
 | `aws.aws_secret_access_key` | AWS secret access key                                  |                            |
+| `aws.secret.name` | The name of a pre-created secret in which AWS credentials are stored                                 |                            |
+| `aws.secret.includesSessionToken` |  Whether or not the pre-created secret contains an AWS STS session token                                  |                            |
 | `config`                    | Cloudwatch exporter configuration                      | `example configuration`    |
 | `rbac.create`               | If true, create & use RBAC resources                   | `false`                    |
 | `serviceAccount.create`     | Specifies whether a service account should be created. | `true`                     |
@@ -71,7 +78,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 ```console
 $ helm install --name my-release \
-  --set aws.region=us-east-1 --set aws.role=my-aws-role \
+    --set aws.role=my-aws-role \
     stable/prometheus-cloudwatch-exporter
 ```
 

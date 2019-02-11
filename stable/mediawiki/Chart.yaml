@@ -1,8 +1,7 @@
 name: mediawiki
-version: 4.0.2
-appVersion: 1.31.1
-description: Extremely powerful, scalable software and a feature-rich wiki implementation
-  that uses PHP to process and display data stored in a database.
+version: 6.0.2
+appVersion: 1.32.0
+description: Extremely powerful, scalable software and a feature-rich wiki implementation that uses PHP to process and display data stored in a database.
 home: http://www.mediawiki.org/
 icon: https://bitnami.com/assets/stacks/mediawiki/img/mediawiki-stack-220x234.png
 keywords:
@@ -15,6 +14,6 @@ keywords:
 sources:
 - https://github.com/bitnami/bitnami-docker-mediawiki
 maintainers:
-- name: bitnami-bot
+- name: Bitnami
   email: containers@bitnami.com
 engine: gotpl

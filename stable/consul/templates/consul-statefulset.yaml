@@ -38,6 +38,10 @@ spec:
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
     {{- end }}
+    {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+    {{- end }}
       containers:
       - name: "{{ template "consul.fullname" . }}"
         image: "{{ .Values.Image }}:{{ .Values.ImageTag }}"
@@ -99,6 +103,7 @@ spec:
             command:
             - consul
             - members
+            - -http-addr=http://127.0.0.1:{{ .Values.HttpPort }}
           initialDelaySeconds: 300
           timeoutSeconds: 5
         command:

@@ -22,8 +22,10 @@ This chart bootstraps a [Fluentd](https://www.fluentd.org/) [Cloudwatch](https:/
 To install the chart with the release name `my-release`:
 
 ```console
-$ # edit secrets/aws_access_key_id and secrets/aws_access_key_id with the key/password of a AWS user with a policy to access  Cloudwatch
+$ # use ec2 instance role credential
 $ helm install --name my-release incubator/fluentd-cloudwatch
+$ # or add aws_access_key_id and aws_access_key_id with the key/password of a AWS user with a policy to access  Cloudwatch
+$ helm install --name my-release incubator/fluentd-cloudwatch --set awsAccessKeyId=aws_access_key_id_here --set awsSecretAccessKey=aws_secret_access_key_here
 $ # or add a role to aws with the correct policy to add to cloud watch
 $ helm install --name my-release incubator/fluentd-cloudwatch --set awsRole=roll_name_here
 ```
@@ -57,12 +59,17 @@ The following table lists the configurable parameters of the Fluentd Cloudwatch 
 | `annotations` (removed for now) | Annotations                                                               | `nil`                                 |
 | `awsRegion`                     | AWS Cloudwatch region                                                     | `us-east-1`                           |
 | `awsRole`                       | AWS IAM Role To Use                                                       | `nil`                                 |
+| `awsAccessKeyId`                | AWS Access Key Id of a AWS user with a policy to access Cloudwatch        | `nil`                                 |
+| `awsSecretAccessKey`            | AWS Secret Access Key of a AWS user with a policy to access Cloudwatch    | `nil`                                 |
 | `fluentdConfig`                 | Fluentd configuration                                                     | `example configuration`               |
 | `logGroupName`                  | AWS Cloudwatch log group                                                  | `kubernetes`                          |
 | `rbac.create`                   | If true, create & use RBAC resources                                      | `false`                               |
 | `rbac.serviceAccountName`       | existing ServiceAccount to use (ignored if rbac.create=true)              | `default`                             |
 | `tolerations`                   | Add tolerations                                                           | `[]`                                  |
 | `extraVars`                     | Add pod environment variables (must be specified as a single line object) | `[]`                                  |
+| `updateStrategy`                | Define daemonset update strategy                                          | `OnDelete`                            |
+| `nodeSelector`                  | Node labels for pod assignment                                            | `{}`                                  |
+| `affinity`                      | Node affinity for pod assignment                                          | `{}`                                  |
 
 Starting with fluentd-kubernetes-daemonset v0.12.43-cloudwatch, the container runs as user fluentd. To be able to write pos files to the host system, you'll need to run fluentd as root. Add the following extraVars value to run as root.
 

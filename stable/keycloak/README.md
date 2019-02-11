@@ -41,27 +41,30 @@ The following table lists the configurable parameters of the Keycloak chart and 
 Parameter | Description | Default
 --- | --- | ---
 `init.image.repository` | Init image repository | `alpine`
-`init.image.tag` | Init image tag | `3.7`
+`init.image.tag` | Init image tag | `3.8`
 `init.image.pullPolicy` | Init image pull policy | `IfNotPresent`
+`clusterDomain` | The internal Kubernetes cluster domain | `cluster.local`
 `keycloak.replicas` | The number of Keycloak replicas | `1`
 `keycloak.image.repository` | The Keycloak image repository | `jboss/keycloak`
-`keycloak.image.tag` | The Keycloak image tag | `4.2.1.Final`
+`keycloak.image.tag` | The Keycloak image tag | `4.8.3.Final`
 `keycloak.image.pullPolicy` | The Keycloak image pull policy | `IfNotPresent`
 `keycloak.image.pullSecrets` | Image pull secrets | `[]`
 `keycloak.basepath` | Path keycloak is hosted at | `auth`
 `keycloak.username` | Username for the initial Keycloak admin user | `keycloak`
 `keycloak.password` | Password for the initial Keycloak admin user. If not set, a random 10 characters password is created | `""`
-`keycloak.extraInitContainers` | Additional init containers, e. g. for providing themes, etc. Passed through the `tpl` funtion and thus to be configured a string | `""`
-`keycloak.extraContainers` | Additional sidecar containers, e. g. for a database proxy, such as Google's cloudsql-proxy. Passed through the `tpl` funtion and thus to be configured a string | `""`
-`keycloak.extraEnv` | Allows the specification of additional environment variables for Keycloak. Passed through the `tpl` funtion and thus to be configured a string | `""`
-`keycloak.extraVolumeMounts` | Add additional volumes mounts, e. g. for custom themes. Passed through the `tpl` funtion and thus to be configured a string | `""`
-`keycloak.extraVolumes` | Add additional volumes, e. g. for custom themes. Passed through the `tpl` funtion and thus to be configured a string | `""`
+`keycloak.extraInitContainers` | Additional init containers, e. g. for providing themes, etc. Passed through the `tpl` function and thus to be configured a string | `""`
+`keycloak.extraContainers` | Additional sidecar containers, e. g. for a database proxy, such as Google's cloudsql-proxy. Passed through the `tpl` function and thus to be configured a string | `""`
+`keycloak.extraEnv` | Allows the specification of additional environment variables for Keycloak. Passed through the `tpl` function and thus to be configured a string | `""`
+`keycloak.extraVolumeMounts` | Add additional volumes mounts, e. g. for custom themes. Passed through the `tpl` function and thus to be configured a string | `""`
+`keycloak.extraVolumes` | Add additional volumes, e. g. for custom themes. Passed through the `tpl` function and thus to be configured a string | `""`
+`keycloak.extraPorts` | Add additional ports, e. g. for custom admin console port. Passed through the `tpl` function and thus to be configured a string | `""`
 `keycloak.podDisruptionBudget` | Pod disruption budget | `{}`
 `keycloak.resources` | Pod resource requests and limits | `{}`
-`keycloak.affinity` | Pod affinity. Passed through the `tpl` funtion and thus to be configured a string | `Hard node and soft zone anti-affinity`
+`keycloak.affinity` | Pod affinity. Passed through the `tpl` function and thus to be configured a string | `Hard node and soft zone anti-affinity`
 `keycloak.nodeSelector` | Node labels for pod assignment | `{}`
 `keycloak.tolerations` | Node taints to tolerate | `[]`
 `keycloak.podAnnotations` | Extra annotations to add to pod | `{}`
+`keycloak.hostAliases` | Mapping between IP and hostnames that will be injected as entries in the pod's hosts files | `[]`
 `keycloak.securityContext` | Security context for the pod | `{runAsUser: 1000, fsGroup: 1000, runAsNonRoot: true}`
 `keycloak.preStartScript` | Custom script to run before Keycloak starts up | ``
 `keycloak.extraArgs` | Additional arguments to the start command | ``
@@ -72,7 +75,7 @@ Parameter | Description | Default
 `keycloak.cli.nodeIdentifier` | WildFly CLI script for setting the node identifier | See `values.yaml`
 `keycloak.cli.logging` | WildFly CLI script for logging configuration | See `values.yaml`
 `keycloak.cli.reverseProxy` | WildFly CLI script for reverse proxy configuration | See `values.yaml`
-`keycloak.cli.discovery` | WildFly CLI script for cluster discovery | See `values.yaml`
+`keycloak.cli.ha` | Settings for HA setups | See `values.yaml`
 `keycloak.cli.custom` | Additional custom WildFly CLI script | `""`
 `keycloak.service.annotations` | Annotations for the Keycloak service | `{}`
 `keycloak.service.labels` | Additional labels for the Keycloak service | `{}`
@@ -166,13 +169,19 @@ See also:
 
 ```yaml
 keycloak:
-  extraEnv:
+  extraEnv: |
     - name: KEYCLOAK_LOGLEVEL
       value: DEBUG
     - name: WILDFLY_LOGLEVEL
       value: DEBUG
-    - name: CACHE_OWNERS:
+    - name: CACHE_OWNERS
       value: "3"
+    - name: DB_QUERY_TIMEOUT
+      value: "60"
+    - name: DB_VALIDATE_ON_MATCH
+      value: true
+    - name: DB_USE_CAST_FAIL
+      value: false
 ```
 
 ### Providing a Custom Theme
@@ -248,7 +257,7 @@ Because `keycloak.extraContainers` is a string that is passed through the `tpl` 
 ```yaml
 
 # Custom values for Google Cloud SQL
-gcloudsql:
+cloudsql:
   project: my-project
   region: europe-west1
   instance: my-instance
@@ -294,7 +303,7 @@ Everything is in `values.yaml` and can be overridden. Additional CLI commands ma
 
 For high availability, Keycloak should be run with multiple replicas (`keycloak.replicas > 1`).
 WildFly uses Infinispan for caching. These caches can be replicated across all instances forming a cluster.
-If `keycloak.replicas > 1`, the WildFly CLI script `keycloak.cli.discovery` adds JGroups' [JDBC_PING](http://www.jgroups.org/javadoc/org/jgroups/protocols/JDBC_PING.html) for cluster discovery and Keycloak is started with `--server-config standalone-ha.xml`.
+If `keycloak.replicas > 1`, JGroups' DNS_PING is configured for cluster discovery and Keycloak is started with `--server-config standalone-ha.xml`.
 
 ## Why StatefulSet?
 
@@ -304,3 +313,4 @@ This can be problematic because pod names are quite long.
 We would have to truncate the chart's fullname to six characters because pods get a 17-character suffix (e. g. `-697f8b7655-mf5ht`).
 Using a StatefulSet allows us to truncate to 20 characters leaving room for up to 99 replicas, which is much better.
 Additionally, we get stable values for `jboss.node.name` which can be advantageous for cluster discovery.
+The headless service that governs the StatefulSet is used for DNS discovery.

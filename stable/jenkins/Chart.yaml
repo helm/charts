@@ -1,16 +1,20 @@
 name: jenkins
 home: https://jenkins.io/
-version: 0.18.0
-appVersion: 2.121.3
+version: 0.29.3
+appVersion: lts
 description: Open source continuous integration server. It supports multiple SCM tools
   including CVS, Subversion and Git. It can execute Apache Ant and Apache Maven-based
   projects as well as arbitrary scripts.
 sources:
 - https://github.com/jenkinsci/jenkins
 - https://github.com/jenkinsci/docker-jnlp-slave
+- https://github.com/nuvo/kube-tasks
+- https://github.com/jenkinsci/configuration-as-code-plugin
 maintainers:
 - name: lachie83
   email: lachlan.evenson@microsoft.com
 - name: viglesiasce
   email: viglesias@google.com
+- name: maorfr
+  email: maorfr@gmail.com
 icon: https://wiki.jenkins-ci.org/download/attachments/2916393/logo.png

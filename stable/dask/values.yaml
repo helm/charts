@@ -5,7 +5,7 @@ scheduler:
   name: scheduler
   image:
     repository: "daskdev/dask"
-    tag: "0.18.1"
+    tag: 1.1.0
     pullPolicy: IfNotPresent
   replicas: 1
   serviceType: "LoadBalancer"
@@ -26,7 +26,7 @@ worker:
   name: worker
   image:
     repository: "daskdev/dask"
-    tag: "0.18.1"
+    tag: 1.1.0
     pullPolicy: IfNotPresent
   replicas: 3
   aptPackages: >-
@@ -51,7 +51,7 @@ jupyter:
   enabled: true
   image:
     repository: "daskdev/dask-notebook"
-    tag: "0.18.1"
+    tag: 1.1.0
     pullPolicy: IfNotPresent
   replicas: 1
   serviceType: "LoadBalancer"

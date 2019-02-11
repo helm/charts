@@ -3,6 +3,9 @@
 # Declare variables to be passed into your templates.
 replicaCount: 1
 
+podDisruptionBudget: {}
+  # maxUnavailable: 1
+
 image:
   repository: quay.io/pusher/k8s-spot-rescheduler
   tag: v0.2.0
@@ -33,6 +36,10 @@ resources: {}
   # requests:
   #  cpu: 100m
   #  memory: 128Mi
+
+# Affinity for pod assignment
+# Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+affinity: {}
 
 tolerations: []
 

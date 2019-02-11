@@ -24,14 +24,27 @@ spec:
     spec:
       containers:
         - name: {{ .Chart.Name }}
-          command:
-            - java
-            - -jar
-            - /cloudwatch_exporter.jar
-            - "{{ .Values.service.targetPort }}"
-            - /config/config.yaml
         {{- if not .Values.aws.role }}
-        {{- if and .Values.aws.aws_secret_access_key .Values.aws.aws_access_key_id }}
+        {{- if .Values.aws.secret.name }}
+          env:
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  key: access_key
+                  name: {{ .Values.aws.secret.name }}
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: secret_key
+                  name: {{ .Values.aws.secret.name }}
+          {{- if .Values.aws.secret.includesSessionToken }}
+            - name: AWS_SESSION_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  key: security_token
+                  name: {{ .Values.aws.secret.name }}
+          {{- end }}
+        {{- else if and .Values.aws.aws_secret_access_key .Values.aws.aws_access_key_id }}
           env:
             - name: AWS_ACCESS_KEY_ID
               valueFrom:
@@ -48,13 +61,13 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - name: http
-              containerPort: {{ .Values.service.targetPort }}
+            - name: {{ .Values.service.portName }}
+              containerPort: 9106
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /healthy/
-              port: http
+              path: /-/healthy
+              port: {{ .Values.service.portName }}
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds}}
             periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
@@ -62,8 +75,8 @@ spec:
             failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
           readinessProbe:
             httpGet:
-              path: /ready/
-              port: http
+              path: /-/ready
+              port: {{ .Values.service.portName }}
             initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds}}
             periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}

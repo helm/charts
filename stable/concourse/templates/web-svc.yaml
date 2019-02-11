@@ -7,13 +7,16 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
+    {{- range $key, $value := .Values.web.service.labels }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
   annotations:
     {{- range $key, $value := .Values.web.service.annotations }}
     {{ $key }}: {{ $value | quote }}
     {{- end }}
-    {{- if .Values.web.metrics.prometheus.enabled }}
+    {{- if .Values.concourse.web.prometheus.enabled }}
     prometheus.io/scrape: "true"
-    prometheus.io/port: {{ .Values.web.metrics.prometheus.port | quote }}
+    prometheus.io/port: {{ .Values.concourse.web.prometheus.bindPort | quote }}
     {{- end }}
 spec:
   type: {{ .Values.web.service.type }}
@@ -28,20 +31,28 @@ spec:
   {{ end }}
   ports:
     - name: atc
-      port: {{ .Values.concourse.atcPort }}
+      port: {{ .Values.concourse.web.bindPort }}
       targetPort: atc
       {{ if and (eq "NodePort" .Values.web.service.type) .Values.web.service.atcNodePort }}
       nodePort: {{ .Values.web.service.atcNodePort}}
       {{ end }}
+    {{- if .Values.concourse.web.tls.enabled }}
+    - name: atc-tls
+      port: {{ .Values.concourse.web.tls.bindPort }}
+      targetPort: atc-tls
+      {{ if and (eq "NodePort" .Values.web.service.type) .Values.web.service.atcTlsNodePort }}
+      nodePort: {{ .Values.web.service.atcTlsNodePort}}
+      {{ end }}
+    {{- end }}
     - name: tsa
-      port: {{ .Values.concourse.tsaPort }}
+      port: {{ .Values.concourse.web.tsa.bindPort }}
       targetPort: tsa
       {{ if and (eq "NodePort" .Values.web.service.type) .Values.web.service.tsaNodePort }}
       nodePort: {{ .Values.web.service.tsaNodePort}}
       {{ end }}
-    {{- if .Values.web.metrics.prometheus.enabled }}
+    {{- if .Values.concourse.web.prometheus.enabled }}
     - name: prometheus
-      port: {{ .Values.web.metrics.prometheus.port }}
+      port: {{ .Values.concourse.web.prometheus.bindPort }}
       targetPort: prometheus
     {{- end }}
   selector:

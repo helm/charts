@@ -1,0 +1,21 @@
+{{- if .Values.kubeScheduler.enabled }}
+apiVersion: {{ printf "%s/v1" (.Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com") }}
+kind: ServiceMonitor
+metadata:
+  name: {{ template "prometheus-operator.fullname" . }}-kube-scheduler
+  labels:
+    app: {{ template "prometheus-operator.name" . }}-kube-scheduler
+{{ include "prometheus-operator.labels" . | indent 4 }}
+spec:
+  jobLabel: jobLabel
+  selector:
+    matchLabels:
+      app: {{ template "prometheus-operator.name" . }}-kube-scheduler
+      release: {{ .Release.Name | quote }}
+  namespaceSelector:
+    matchNames:
+      - "kube-system"
+  endpoints:
+  - port: http-metrics
+    interval: 15s
+{{- end }}

@@ -1,5 +1,16 @@
 ## Default values for magic-namespace
 
+# Uncomment and set to override the namespace that will be created.
+# namespace: default
+
+# Extra namespace attributes
+# namespaceAttributes:
+  # Labels to be added to the namespace definition
+  # labels: {}
+
+  # Annotations to be added to the namespace definition
+  # annotations: {}
+
 tiller:
   enabled: true
 

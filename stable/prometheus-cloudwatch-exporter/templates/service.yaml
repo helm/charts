@@ -9,13 +9,16 @@ metadata:
     chart: {{ template "prometheus-cloudwatch-exporter.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+{{- if .Values.service.labels }}
+{{ toYaml .Values.service.labels | indent 4 }}
+{{- end }}
 spec:
   type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.port }}
       targetPort: {{ .Values.service.targetPort }}
       protocol: TCP
-      name: http
+      name: {{ .Values.service.portName }}
   selector:
     app: {{ template "prometheus-cloudwatch-exporter.name" . }}
     release: {{ .Release.Name }}

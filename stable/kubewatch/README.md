@@ -39,6 +39,7 @@ The following table lists the configurable parameters of the kubewatch chart and
 
 |               Parameter                  |        Description                   |              Default              |
 | ---------------------------------------- | ------------------------------------ | --------------------------------- |
+| `global.imageRegistry`                   | Global Docker image registry         | `nil`                             |
 | `affinity`                               | node/pod affinities                  | None                              |
 | `image.registry`                         | Image registry                       | `docker.io`                       |
 | `image.repository`                       | Image repository                     | `bitnami/kubewatch`               |
@@ -50,17 +51,22 @@ The following table lists the configurable parameters of the kubewatch chart and
 | `replicaCount`                           | desired number of pods               | `1`                               |
 | `rbac.create`                            | If true, create & use RBAC resources | `true`                            |
 | `serviceAccount.create`                  | If true, create a serviceAccount     | `true`                            |
-| `serviceAccount.name`                    | existing ServiceAccount to use (ignored if rbac.create=true) | ``        | 
+| `serviceAccount.name`                    | existing ServiceAccount to use (ignored if rbac.create=true) | ``        |
 | `resources`                              | pod resource requests & limits       | `{}`                              |
+| `slack.enabled`                          | Enable Slack notifications           | `true`                            |
 | `slack.channel`                          | Slack channel to notify              | `""`                              |
 | `slack.token`                            | Slack API token                      | `""`                              |
+| `hipchat.enabled`                        | Enable HipChat notifications         | `false`                           |
 | `hipchat.url`                            | HipChat URL                          | `""`                              |
 | `hipchat.room`                           | HipChat room to notify               | `""`                              |
 | `hipchat.token`                          | HipChat token                        | `""`                              |
+| `mattermost.enabled`                     | Enable Mattermost notifications      | `false`                           |
 | `mattermost.channel`                     | Mattermost channel to notify         | `""`                              |
 | `mattermost.username`                    | Mattermost user to notify            | `""`                              |
 | `mattermost.url`                         | Mattermost URL                       | `""`                              |
+| `flock.enabled`                          | Enable Flock notifications           | `false`                           |
 | `flock.url`                              | Flock URL                            | `""`                              |
+| `webhook.enabled`                        | Enable Webhook notifications         | `false`                           |
 | `webhook.url`                            | Webhook URL                          | `""`                              |
 | `tolerations`                            | List of node taints to tolerate (requires Kubernetes >= 1.6)                                                                | `[]`                              |
 | `resourcesToWatch`                       | list of resources which kubewatch should watch and notify slack                                                             | `{pod: true, deployment: true}`   |

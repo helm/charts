@@ -33,7 +33,7 @@ The following table lists the configurable parameters of the metricbeat chart an
 |             Parameter               |            Description             |                    Default                |
 |-------------------------------------|------------------------------------|-------------------------------------------|
 | `image.repository`                  | The image repository to pull from  | `docker.elastic.co/beats/metricbeat`       |
-| `image.tag`                         | The image tag to pull              | `6.4.0`                                   |
+| `image.tag`                         | The image tag to pull              | `6.6.0`                                   |
 | `image.pullPolicy`                  | Image pull policy                  | `IfNotPresent`                            |
 | `rbac.create`                       | If true, create & use RBAC resources | `true`                                  |
 | `serviceAccount.create`             | If true, create & use ServiceAccount | `true`       |
@@ -49,9 +49,13 @@ The following table lists the configurable parameters of the metricbeat chart an
 | `daemonset.modules.<name>.config`   | The content of the modules configuration file consumed by metricbeat deployed as daemonset, which is assumed to collect metrics in each nodes. See the [metricbeat.reference.yml](https://www.elastic.co/guide/en/beats/metricbeat/current/metricbeat-reference-yml.html) for full details |
 | `daemonset.modules.<name>.enabled`  | If true, enable configuration | |
 | `daemonset.podAnnotations`          | Pod annotations for daemonset | |
+| `daemonset.nodeSelector`            | Pod node selector for daemonset | `{}` |
+| `daemonset.tolerations`             | Pod taint tolerations for daemonset | `[{"key": "node-role.kubernetes.io/master", "operator": "Exists", "effect": "NoSchedule"}]` |
 | `deployment.modules.<name>.config`  | The content of the modules configuration file consumed by metricbeat deployed as deployment, which is assumed to collect cluster-level metrics. See the [metricbeat.reference.yml](https://www.elastic.co/guide/en/beats/metricbeat/current/metricbeat-reference-yml.html) for full details ||
 | `deployment.modules.<name>.enabled` | If true, enable configuration ||
 | `deployment.podAnnotations`         | Pod annotations for deployment | |
+| `deployment.nodeSelector`           | Pod node selector for deployment | `{}` |
+| `deployment.tolerations`             | Pod taint tolerations for deployment | `[]` |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

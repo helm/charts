@@ -50,11 +50,13 @@ Parameter | Description | Default
 `image.tag` | container image tag | `1.0.2`
 `image.pullPolicy` | container image pull policy | `IfNotPresent`
 `resources` | resource requests & limits | `{}`
-`priorityClassName` | priorityClassName | `nil` |
-`nodeSelector` | Node labels for pod assignment | `{}` |
+`priorityClassName` | priorityClassName | `nil`
+`nodeSelector` | Node labels for pod assignment | `{}`
+`tolerations` | Node tolerations for pod assignment | `{}`
 `podAnnotations` | Pod annotations | `{}` |
 `service.type` | type of service to create | `ClusterIP`
 `service.httpPort` | port for the http service | `9108`
+`service.annotations` | Annotations on the http service | `{}`
 `es.uri` | address of the Elasticsearch node to connect to | `localhost:9200`
 `es.all` | if `true`, query stats for all nodes in the cluster, rather than just the node we connect to | `true`
 `es.indices` | if true, query stats for all indices in the cluster | `true`
@@ -64,6 +66,8 @@ Parameter | Description | Default
 `es.ssl.client.pem` | PEM that contains the client cert to connect to Elasticsearch |
 `es.ssl.client.key` | Private key for client auth when connecting to Elasticsearch |
 `web.path` | path under which to expose metrics | `/metrics`
+`serviceMonitor.enabled` | If true, a ServiceMonitor CRD is created for a prometheus operator | `false`
+`serviceMonitor.labels` | Labels for prometheus operator | `{}`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

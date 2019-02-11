@@ -14,6 +14,8 @@ $ helm install stable/odoo
 
 This chart bootstraps a [Odoo](https://github.com/bitnami/bitnami-docker-odoo) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
+Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters.
+
 ## Prerequisites
 
 - Kubernetes 1.4+ with Beta APIs enabled
@@ -47,11 +49,12 @@ The following table lists the configurable parameters of the Odoo chart and thei
 
 |               Parameter               |                Description                                  |                   Default                      |
 |---------------------------------------|-------------------------------------------------------------|------------------------------------------------|
+| `global.imageRegistry`                | Global Docker image registry                                | `nil`                                          |
 | `image.registry`                      | Odoo image registry                                         | `docker.io`                                    |
 | `image.repository`                    | Odoo Image name                                             | `bitnami/odoo`                                 |
 | `image.tag`                           | Odoo Image tag                                              | `{VERSION}`                                    |
 | `image.pullPolicy`                    | Image pull policy                                           | `Always`                                       |
-| `image.pullSecrets`                   | Specify image pull secrets                                  | `nil`                                          |
+| `image.pullSecrets`                   | Specify docker-registry secret names as an array            | `[]` (does not add image pull secrets to deployed pods) |
 | `odooUsername`                        | User of the application                                     | `user@example.com`                             |
 | `odooPassword`                        | Admin account password                                      | _random 10 character long alphanumeric string_ |
 | `odooEmail`                           | Admin account email                                         | `user@example.com`                             |
@@ -61,13 +64,15 @@ The following table lists the configurable parameters of the Odoo chart and thei
 | `smtpPassword`                        | SMTP password                                               | `nil`                                          |
 | `smtpProtocol`                        | SMTP protocol [`ssl`, `tls`]                                | `nil`                                          |
 | `service.type`                        | Kubernetes Service type                                     | `LoadBalancer`                                 |
+| `service.port`                        | Service HTTP port                                           | `80`                                           |
 | `service.loadBalancer`                | Kubernetes LoadBalancerIP to request                        | `nil`                                          |
-| `service.externalTrafficPolicy`       | Enable client source IP preservation                        | `Cluster`                                        |
+| `service.externalTrafficPolicy`       | Enable client source IP preservation                        | `Cluster`                                      |
 | `service.nodePort`                    | Kubernetes http node port                                   | `""`                                           |
 | `ingress.enabled`                     | Enable ingress controller resource                          | `false`                                        |
 | `ingress.hosts[0].name`               | Hostname to your Odoo installation                          | `odoo.local`                                   |
 | `ingress.hosts[0].path`               | Path within the url structure                               | `/`                                            |
 | `ingress.hosts[0].tls`                | Utilize TLS backend in ingress                              | `false`                                        |
+| `ingress.hosts[0].certManager`        | Add annotations for cert-manager                            | `false`                                        |
 | `ingress.hosts[0].tlsSecret`          | TLS Secret (certificates)                                   | `odoo.local-tls-secret`                        |
 | `ingress.hosts[0].annotations`        | Annotations for this host's ingress record                  | `[]`                                           |
 | `ingress.secrets[0].name`             | TLS Secret Name                                             | `nil`                                          |

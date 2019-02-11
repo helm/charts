@@ -28,10 +28,20 @@ spec:
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "concourse.worker.fullname" . }}{{ else }}{{ .Values.rbac.workerServiceAccountName }}{{ end }}
       tolerations:
 {{ toYaml .Values.worker.tolerations | indent 8 }}
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.imagePullSecrets }}
+        - name: {{ . }}
+      {{- end }}
+      {{- end }}
       terminationGracePeriodSeconds: {{ .Values.worker.terminationGracePeriodSeconds }}
       containers:
         - name: {{ template "concourse.worker.fullname" . }}
+          {{- if .Values.imageDigest }}
+          image: "{{ .Values.image }}@{{ .Values.imageDigest }}"
+          {{- else }}
           image: "{{ .Values.image }}:{{ .Values.imageTag }}"
+          {{- end }}
           imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
           command:
             - /bin/sh
@@ -77,28 +87,366 @@ spec:
                       sleep 5
                     done
           env:
-            - name: CONCOURSE_TSA_HOST
-          {{- if semverCompare "^3.10.x" .Values.imageTag }}
-              value: "{{ template "concourse.web.fullname" . }}:{{ .Values.concourse.tsaPort}}"
-          {{- else }}
-              value: {{ template "concourse.web.fullname" . }}
-            - name: CONCOURSE_TSA_PORT
-              value: {{ .Values.concourse.tsaPort | quote }}
-          {{- end }}
-            - name: CONCOURSE_GARDEN_DOCKER_REGISTRY
-              value: {{ .Values.concourse.dockerRegistry | quote }}
-            - name: CONCOURSE_GARDEN_INSECURE_DOCKER_REGISTRY
-              value: {{ .Values.concourse.insecureDockerRegistry | quote }}
-            - name: CONCOURSE_TSA_PUBLIC_KEY
-              value: "/concourse-keys/host_key.pub"
-            - name: CONCOURSE_TSA_WORKER_PRIVATE_KEY
-              value: "/concourse-keys/worker_key"
+            {{- if .Values.concourse.worker.name }}
+            - name: CONCOURSE_NAME
+              value: {{ .Values.concourse.worker.name | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.tag }}
+            - name: CONCOURSE_TAG
+              value: {{ .Values.concourse.worker.tag | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.team }}
+            - name: CONCOURSE_TEAM
+              value: {{ .Values.concourse.worker.team | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.http_proxy }}
+            - name: http_proxy
+              value: {{ .Values.concourse.worker.http_proxy | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.https_proxy }}
+            - name: https_proxy
+              value: {{ .Values.concourse.worker.https_proxy | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.no_proxy }}
+            - name: no_proxy
+              value: {{ .Values.concourse.worker.no_proxy | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.ephemeral }}
+            - name: CONCOURSE_EPHEMERAL
+              value: {{ .Values.concourse.worker.ephemeral | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.bindDebugPort }}
+            - name: CONCOURSE_BIND_DEBUG_PORT
+              value: {{ .Values.concourse.worker.bindDebugPort | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.certsDir }}
+            - name: CONCOURSE_CERTS_DIR
+              value: {{ .Values.concourse.worker.certsDir | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.workDir }}
             - name: CONCOURSE_WORK_DIR
-              value: {{ .Values.concourse.workingDirectory | quote }}
+              value: {{ .Values.concourse.worker.workDir | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.bindIp }}
+            - name: CONCOURSE_BIND_IP
+              value: {{ .Values.concourse.worker.bindIp | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.bindPort }}
+            - name: CONCOURSE_BIND_PORT
+              value: {{ .Values.concourse.worker.bindPort | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.peerIp }}
+            - name: CONCOURSE_PEER_IP
+              value: {{ .Values.concourse.worker.peerIp | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.logLevel }}
+            - name: CONCOURSE_LOG_LEVEL
+              value: {{ .Values.concourse.worker.logLevel | quote }}
+            {{- end }}
+
+            - name: CONCOURSE_TSA_HOST
+              value: "{{ template "concourse.web.fullname" . }}:{{ .Values.concourse.web.tsa.bindPort}}"
+            - name: CONCOURSE_TSA_PUBLIC_KEY
+              value: "{{ .Values.worker.keySecretsPath }}/host_key.pub"
+            - name: CONCOURSE_TSA_WORKER_PRIVATE_KEY
+              value: "{{ .Values.worker.keySecretsPath }}/worker_key"
+
+            {{- if .Values.concourse.worker.garden.logLevel }}
+            - name: CONCOURSE_GARDEN_LOG_LEVEL
+              value: {{ .Values.concourse.worker.garden.logLevel | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.garden.timeFormat }}
+            - name: CONCOURSE_GARDEN_TIME_FORMAT
+              value: {{ .Values.concourse.worker.garden.timeFormat | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.garden.bindIp }}
+            - name: CONCOURSE_GARDEN_BIND_IP
+              value: {{ .Values.concourse.worker.garden.bindIp | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.garden.bindPort }}
+            - name: CONCOURSE_GARDEN_BIND_PORT
+              value: {{ .Values.concourse.worker.garden.bindPort | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.garden.bindSocket }}
+            - name: CONCOURSE_GARDEN_BIND_SOCKET
+              value: {{ .Values.concourse.worker.garden.bindSocket | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.garden.debugBindIp }}
+            - name: CONCOURSE_GARDEN_DEBUG_BIND_IP
+              value: {{ .Values.concourse.worker.garden.debugBindIp | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.garden.debugBindPort }}
+            - name: CONCOURSE_GARDEN_DEBUG_BIND_PORT
+              value: {{ .Values.concourse.worker.garden.debugBindPort | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.garden.skipSetup }}
+            - name: CONCOURSE_GARDEN_SKIP_SETUP
+              value: {{ .Values.concourse.worker.garden.skipSetup | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.garden.depot }}
+            - name: CONCOURSE_GARDEN_DEPOT
+              value: {{ .Values.concourse.worker.garden.depot | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.garden.propertiesPath }}
+            - name: CONCOURSE_GARDEN_PROPERTIES_PATH
+              value: {{ .Values.concourse.worker.garden.propertiesPath | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.garden.consoleSocketsPath }}
+            - name: CONCOURSE_GARDEN_CONSOLE_SOCKETS_PATH
+              value: {{ .Values.concourse.worker.garden.consoleSocketsPath | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.garden.cleanupProcessDirsOnWait }}
+            - name: CONCOURSE_GARDEN_CLEANUP_PROCESS_DIRS_ON_WAIT
+              value: {{ .Values.concourse.worker.garden.cleanupProcessDirsOnWait | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.garden.disablePrivilegedContainers }}
+            - name: CONCOURSE_GARDEN_DISABLE_PRIVILEGED_CONTAINERS
+              value: {{ .Values.concourse.worker.garden.disablePrivilegedContainers | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.garden.uidMapStart }}
+            - name: CONCOURSE_GARDEN_UID_MAP_START
+              value: {{ .Values.concourse.worker.garden.uidMapStart | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.garden.uidMapLength }}
+            - name: CONCOURSE_GARDEN_UID_MAP_LENGTH
+              value: {{ .Values.concourse.worker.garden.uidMapLength | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.garden.gidMapStart }}
+            - name: CONCOURSE_GARDEN_GID_MAP_START
+              value: {{ .Values.concourse.worker.garden.gidMapStart | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.garden.gidMapLength }}
+            - name: CONCOURSE_GARDEN_GID_MAP_LENGTH
+              value: {{ .Values.concourse.worker.garden.gidMapLength | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.garden.defaultRootfs }}
+            - name: CONCOURSE_GARDEN_DEFAULT_ROOTFS
+              value: {{ .Values.concourse.worker.garden.defaultRootfs | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.garden.defaultGraceTime }}
+            - name: CONCOURSE_GARDEN_DEFAULT_GRACE_TIME
+              value: {{ .Values.concourse.worker.garden.defaultGraceTime | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.garden.destroyContainersOnStartup }}
+            - name: CONCOURSE_GARDEN_DESTROY_CONTAINERS_ON_STARTUP
+              value: {{ .Values.concourse.worker.garden.destroyContainersOnStartup | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.garden.apparmor }}
+            - name: CONCOURSE_GARDEN_APPARMOR
+              value: {{ .Values.concourse.worker.garden.apparmor | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.garden.assetsDir }}
+            - name: CONCOURSE_GARDEN_ASSETS_DIR
+              value: {{ .Values.concourse.worker.garden.assetsDir | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.garden.dadooBin }}
+            - name: CONCOURSE_GARDEN_DADOO_BIN
+              value: {{ .Values.concourse.worker.garden.dadooBin | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.garden.nstarBin }}
+            - name: CONCOURSE_GARDEN_NSTAR_BIN
+              value: {{ .Values.concourse.worker.garden.nstarBin | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.garden.tarBin }}
+            - name: CONCOURSE_GARDEN_TAR_BIN
+              value: {{ .Values.concourse.worker.garden.tarBin | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.garden.iptablesBin }}
+            - name: CONCOURSE_GARDEN_IPTABLES_BIN
+              value: {{ .Values.concourse.worker.garden.iptablesBin | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.garden.iptablesRestoreBin }}
+            - name: CONCOURSE_GARDEN_IPTABLES_RESTORE_BIN
+              value: {{ .Values.concourse.worker.garden.iptablesRestoreBin | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.garden.initBin }}
+            - name: CONCOURSE_GARDEN_INIT_BIN
+              value: {{ .Values.concourse.worker.garden.initBin | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.garden.runtimePlugin }}
+            - name: CONCOURSE_GARDEN_RUNTIME_PLUGIN
+              value: {{ .Values.concourse.worker.garden.runtimePlugin | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.garden.runtimePluginExtraArg }}
+            - name: CONCOURSE_GARDEN_RUNTIME_PLUGIN_EXTRA_ARG
+              value: {{ .Values.concourse.worker.garden.runtimePluginExtraArg | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.garden.graph }}
+            - name: CONCOURSE_GARDEN_GRAPH
+              value: {{ .Values.concourse.worker.garden.graph | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.garden.graphCleanupThresholdInMegabytes }}
+            - name: CONCOURSE_GARDEN_GRAPH_CLEANUP_THRESHOLD_IN_MEGABYTES
+              value: {{ .Values.concourse.worker.garden.graphCleanupThresholdInMegabytes | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.garden.persistentImage }}
+            - name: CONCOURSE_GARDEN_PERSISTENT_IMAGE
+              value: {{ .Values.concourse.worker.garden.persistentImage | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.garden.imagePlugin }}
+            - name: CONCOURSE_GARDEN_IMAGE_PLUGIN
+              value: {{ .Values.concourse.worker.garden.imagePlugin | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.garden.imagePluginExtraArg }}
+            - name: CONCOURSE_GARDEN_IMAGE_PLUGIN_EXTRA_ARG
+              value: {{ .Values.concourse.worker.garden.imagePluginExtraArg | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.garden.privilegedImagePlugin }}
+            - name: CONCOURSE_GARDEN_PRIVILEGED_IMAGE_PLUGIN
+              value: {{ .Values.concourse.worker.garden.privilegedImagePlugin | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.garden.privilegedImagePluginExtraArg }}
+            - name: CONCOURSE_GARDEN_PRIVILEGED_IMAGE_PLUGIN_EXTRA_ARG
+              value: {{ .Values.concourse.worker.garden.privilegedImagePluginExtraArg | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.garden.dockerRegistry }}
+            - name: CONCOURSE_GARDEN_DOCKER_REGISTRY
+              value: {{ .Values.concourse.worker.garden.dockerRegistry | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.garden.insecureDockerRegistry }}
+            - name: CONCOURSE_GARDEN_INSECURE_DOCKER_REGISTRY
+              value: {{ .Values.concourse.worker.garden.insecureDockerRegistry | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.garden.networkPool }}
+            - name: CONCOURSE_GARDEN_NETWORK_POOL
+              value: {{ .Values.concourse.worker.garden.networkPool | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.garden.allowHostAccess }}
+            - name: CONCOURSE_GARDEN_ALLOW_HOST_ACCESS
+              value: {{ .Values.concourse.worker.garden.allowHostAccess | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.garden.denyNetwork }}
+            - name: CONCOURSE_GARDEN_DENY_NETWORK
+              value: {{ .Values.concourse.worker.garden.denyNetwork | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.garden.dnsServer }}
+            - name: CONCOURSE_GARDEN_DNS_SERVER
+              value: {{ .Values.concourse.worker.garden.dnsServer | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.garden.additionalDnsServer }}
+            - name: CONCOURSE_GARDEN_ADDITIONAL_DNS_SERVER
+              value: {{ .Values.concourse.worker.garden.additionalDnsServer | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.garden.additionalHostEntry }}
+            - name: CONCOURSE_GARDEN_ADDITIONAL_HOST_ENTRY
+              value: {{ .Values.concourse.worker.garden.additionalHostEntry | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.garden.externalIp }}
+            - name: CONCOURSE_GARDEN_EXTERNAL_IP
+              value: {{ .Values.concourse.worker.garden.externalIp | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.garden.portPoolStart }}
+            - name: CONCOURSE_GARDEN_PORT_POOL_START
+              value: {{ .Values.concourse.worker.garden.portPoolStart | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.garden.portPoolSize }}
+            - name: CONCOURSE_GARDEN_PORT_POOL_SIZE
+              value: {{ .Values.concourse.worker.garden.portPoolSize | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.garden.portPoolPropertiesPath }}
+            - name: CONCOURSE_GARDEN_PORT_POOL_PROPERTIES_PATH
+              value: {{ .Values.concourse.worker.garden.portPoolPropertiesPath | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.garden.mtu }}
+            - name: CONCOURSE_GARDEN_MTU
+              value: {{ .Values.concourse.worker.garden.mtu | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.garden.networkPlugin }}
+            - name: CONCOURSE_GARDEN_NETWORK_PLUGIN
+              value: {{ .Values.concourse.worker.garden.networkPlugin | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.garden.networkPluginExtraArg }}
+            - name: CONCOURSE_GARDEN_NETWORK_PLUGIN_EXTRA_ARG
+              value: {{ .Values.concourse.worker.garden.networkPluginExtraArg | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.garden.cpuQuotaPerShare }}
+            - name: CONCOURSE_GARDEN_CPU_QUOTA_PER_SHARE
+              value: {{ .Values.concourse.worker.garden.cpuQuotaPerShare | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.garden.tcpMemoryLimit }}
+            - name: CONCOURSE_GARDEN_TCP_MEMORY_LIMIT
+              value: {{ .Values.concourse.worker.garden.tcpMemoryLimit | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.garden.defaultContainerBlockioWeight }}
+            - name: CONCOURSE_GARDEN_DEFAULT_CONTAINER_BLOCKIO_WEIGHT
+              value: {{ .Values.concourse.worker.garden.defaultContainerBlockioWeight | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.garden.maxContainers }}
+            - name: CONCOURSE_GARDEN_MAX_CONTAINERS
+              value: {{ .Values.concourse.worker.garden.maxContainers | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.garden.disableSwapLimit }}
+            - name: CONCOURSE_GARDEN_DISABLE_SWAP_LIMIT
+              value: {{ .Values.concourse.worker.garden.disableSwapLimit | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.garden.metricsEmissionInterval }}
+            - name: CONCOURSE_GARDEN_METRICS_EMISSION_INTERVAL
+              value: {{ .Values.concourse.worker.garden.metricsEmissionInterval | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.garden.dropsondeOrigin }}
+            - name: CONCOURSE_GARDEN_DROPSONDE_ORIGIN
+              value: {{ .Values.concourse.worker.garden.dropsondeOrigin | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.garden.dropsondeDestination }}
+            - name: CONCOURSE_GARDEN_DROPSONDE_DESTINATION
+              value: {{ .Values.concourse.worker.garden.dropsondeDestination | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.garden.containerdSocket }}
+            - name: CONCOURSE_GARDEN_CONTAINERD_SOCKET
+              value: {{ .Values.concourse.worker.garden.containerdSocket | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.garden.useContainerdForProcesses }}
+            - name: CONCOURSE_GARDEN_USE_CONTAINERD_FOR_PROCESSES
+              value: {{ .Values.concourse.worker.garden.useContainerdForProcesses | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.garden.dnsProxyEnable }}
+            - name: CONCOURSE_GARDEN_DNS_PROXY_ENABLE
+              value: {{ .Values.concourse.worker.garden.dnsProxyEnable | quote }}
+            {{- end }}
+
+            {{- if .Values.concourse.worker.baggageclaim.logLevel }}
+            - name: CONCOURSE_BAGGAGECLAIM_LOG_LEVEL
+              value: {{ .Values.concourse.worker.baggageclaim.logLevel | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.baggageclaim.bindIp }}
+            - name: CONCOURSE_BAGGAGECLAIM_BIND_IP
+              value: {{ .Values.concourse.worker.baggageclaim.bindIp | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.baggageclaim.bindPort }}
+            - name: CONCOURSE_BAGGAGECLAIM_BIND_PORT
+              value: {{ .Values.concourse.worker.baggageclaim.bindPort | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.baggageclaim.bindDebugPort }}
+            - name: CONCOURSE_BAGGAGECLAIM_BIND_DEBUG_PORT
+              value: {{ .Values.concourse.worker.baggageclaim.bindDebugPort | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.baggageclaim.volumes }}
+            - name: CONCOURSE_BAGGAGECLAIM_VOLUMES
+              value: {{ .Values.concourse.worker.baggageclaim.volumes | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.baggageclaim.driver }}
             - name: CONCOURSE_BAGGAGECLAIM_DRIVER
-              value: {{ .Values.concourse.baggageclaimDriver | quote }}
+              value: {{ .Values.concourse.worker.baggageclaim.driver | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.baggageclaim.btrfsBin }}
+            - name: CONCOURSE_BAGGAGECLAIM_BTRFS_BIN
+              value: {{ .Values.concourse.worker.baggageclaim.btrfsBin | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.baggageclaim.mkfsBin }}
+            - name: CONCOURSE_BAGGAGECLAIM_MKFS_BIN
+              value: {{ .Values.concourse.worker.baggageclaim.mkfsBin | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.baggageclaim.overlaysDir }}
+            - name: CONCOURSE_BAGGAGECLAIM_OVERLAYS_DIR
+              value: {{ .Values.concourse.worker.baggageclaim.overlaysDir | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.baggageclaim.reapInterval }}
+            - name: CONCOURSE_BAGGAGECLAIM_REAP_INTERVAL
+              value: {{ .Values.concourse.worker.baggageclaim.reapInterval | quote }}
+            {{- end }}
             - name: LIVENESS_PROBE_FATAL_ERRORS
               value: {{ .Values.worker.fatalErrors | quote }}
+
 {{- if .Values.worker.env }}
 {{ toYaml .Values.worker.env | indent 12 }}
 {{- end }}
@@ -108,7 +456,7 @@ spec:
             privileged: true
           volumeMounts:
             - name: concourse-keys
-              mountPath: /concourse-keys
+              mountPath: {{ .Values.worker.keySecretsPath | quote }}
               readOnly: true
             - name: concourse-work-dir
               mountPath: {{ .Values.concourse.workingDirectory | default "/concourse-work-dir" | quote }}
@@ -152,6 +500,13 @@ spec:
                 path: worker_key
               - key: worker-key-pub
                 path: worker_key.pub
+{{- define "concourse.are-there-additional-volumes.with-the-name.concourse-work-dir" }}
+  {{- range .Values.worker.additionalVolumes }}
+    {{- if .name | eq "concourse-work-dir" }}
+      {{- .name }}
+    {{- end }}
+  {{- end }}
+{{- end }}
   {{- if .Values.persistence.enabled }}
   volumeClaimTemplates:
     - metadata:
@@ -170,8 +525,13 @@ spec:
       {{- end }}
       {{- end }}
   {{- else }}
+      {{ if include "concourse.are-there-additional-volumes.with-the-name.concourse-work-dir" . | not }}
         - name: concourse-work-dir
-          emptyDir: {}
+          emptyDir:
+            {{- if .Values.worker.emptyDirSize }}
+            sizeLimit: {{ .Values.worker.emptyDirSize | quote }}
+            {{- end }}
+      {{- end }}
   {{- end }}
 {{- if semverCompare "^1.7-0" .Capabilities.KubeVersion.GitVersion }}
   updateStrategy:

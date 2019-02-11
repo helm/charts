@@ -46,21 +46,21 @@ spec:
           - serve
           - /etc/docker/registry/config.yml
           ports:
-            - containerPort: {{ .Values.service.port }}
+            - containerPort: 5000
           livenessProbe:
             httpGet:
 {{- if .Values.tlsSecretName }}
               scheme: HTTPS
 {{- end }}
               path: /
-              port: {{ .Values.service.port }}
+              port: 5000
           readinessProbe:
             httpGet:
 {{- if .Values.tlsSecretName }}
               scheme: HTTPS
 {{- end }}
               path: /
-              port: {{ .Values.service.port }}
+              port: 5000
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           env:
@@ -86,6 +86,22 @@ spec:
 {{- if eq .Values.storage "filesystem" }}
             - name: REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY
               value: "/var/lib/registry"
+{{- else if eq .Values.storage "azure" }}
+            - name: REGISTRY_STORAGE_AZURE_ACCOUNTNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "docker-registry.fullname" . }}-secret
+                  key: azureAccountName
+            - name: REGISTRY_STORAGE_AZURE_ACCOUNTKEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "docker-registry.fullname" . }}-secret
+                  key: azureAccountKey
+            - name: REGISTRY_STORAGE_AZURE_CONTAINER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "docker-registry.fullname" . }}-secret
+                  key: azureContainer
 {{- else if eq .Values.storage "s3" }}
             {{- if and .Values.secrets.s3.secretKey .Values.secrets.s3.accessKey }}
             - name: REGISTRY_STORAGE_S3_ACCESSKEY
@@ -101,6 +117,10 @@ spec:
             {{- end }}
             - name: REGISTRY_STORAGE_S3_REGION
               value: {{ required ".Values.s3.region is required" .Values.s3.region }}
+          {{- if .Values.s3.regionEndpoint }}
+            - name: REGISTRY_STORAGE_S3_REGIONENDPOINT
+              value: {{ .Values.s3.regionEndpoint }}
+          {{- end }}
             - name: REGISTRY_STORAGE_S3_BUCKET
               value: {{ required ".Values.s3.bucket is required" .Values.s3.bucket }}
           {{- if .Values.s3.encrypt }}
@@ -126,6 +146,10 @@ spec:
                   key: swiftPassword
             - name: REGISTRY_STORAGE_SWIFT_CONTAINER
               value: {{ required ".Values.swift.container is required" .Values.swift.container }}
+{{- end }}
+{{- if .Values.persistence.deleteEnabled }}
+            - name: REGISTRY_STORAGE_DELETE_ENABLED
+              value: "true"
 {{- end }}
           volumeMounts:
 {{- if .Values.secrets.htpasswd }}

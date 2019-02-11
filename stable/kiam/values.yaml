@@ -11,7 +11,7 @@ agent:
 
   image:
     repository: quay.io/uswitch/kiam
-    tag: v2.8
+    tag: v3.0-rc1
     pullPolicy: IfNotPresent
 
   ## Logging settings
@@ -57,6 +57,20 @@ agent:
   ## Agent container resources
   ## Ref https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/
   ##
+
+  # Ref: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.11/#affinity-v1-core
+  # Expects input structure as per specification for example:
+  #   affinity:
+  #     nodeAffinity:
+  #      requiredDuringSchedulingIgnoredDuringExecution:
+  #        nodeSelectorTerms:
+  #        - matchExpressions:
+  #          - key: foo.bar.com/role
+  #            operator: In
+  #            values:
+  #            - master
+  affinity: {}
+
   resources: {}
   ## Additional container arguments
   ##
@@ -87,6 +101,16 @@ agent:
     cert:
     key:
 
+  ## Secret name of agent's TLS certificates
+  ##
+  tlsSecret:
+
+  ## Agent TLS Certificate filenames
+  tlsCerts:
+    certFileName: cert
+    keyFileName: key
+    caFileName: ca
+
 server:
   ## If false, server will not be installed
   ##
@@ -98,7 +122,7 @@ server:
 
   image:
     repository: quay.io/uswitch/kiam
-    tag: v2.8
+    tag: v3.0-rc1
     pullPolicy: IfNotPresent
 
   ## Logging settings
@@ -119,6 +143,20 @@ server:
   ## Ref: https://kubernetes.io/docs/tasks/manage-daemon/update-daemon-set/
   ##
   updateStrategy: OnDelete
+
+  # Ref: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.11/#affinity-v1-core
+  # Expects input structure as per specification for example:
+  #   affinity:
+  #     nodeAffinity:
+  #      requiredDuringSchedulingIgnoredDuringExecution:
+  #        nodeSelectorTerms:
+  #        - matchExpressions:
+  #          - key: foo.bar.com/role
+  #            operator: In
+  #            values:
+  #            - master
+  affinity: {}
+
   ## Node labels for pod assignment
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
   ##
@@ -158,12 +196,20 @@ server:
   ##
   gatewayTimeoutCreation: 50ms
 
+  ## Server probe configuration
+  probes:
+    serverAddress: localhost
+
   ## Base64-encoded PEM values for server's CA certificate(s), certificate and private key
   ##
   tlsFiles:
     ca:
     cert:
     key:
+
+  ## Secret name of server's TLS certificates
+  ##
+  tlsSecret:
 
   ## Base ARN for IAM roles
   ## If not specified use EC2 metadata service to detect ARN prefix
@@ -182,6 +228,12 @@ server:
   ## Use hostNetwork for server
   ## Set this to true when running the servers on the same nodes as the agents
   useHostNetwork: false
+
+  ## Agent TLS Certificate filenames
+  tlsCerts:
+    certFileName: cert
+    keyFileName: key
+    caFileName: ca
 
 rbac:
   # Specifies whether RBAC resources should be created

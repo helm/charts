@@ -1,6 +1,6 @@
 name: datadog
-version: 1.4.1
-appVersion: 6.4.2
+version: 1.20.0
+appVersion: 6.9.0
 description: DataDog Agent
 keywords:
 - monitoring
@@ -18,3 +18,5 @@ maintainers:
   email: ilan@datadoghq.com
 - name: xvello
   email: xavier.vello@datadoghq.com
+- name: charlyf
+  email: charly@datadoghq.com

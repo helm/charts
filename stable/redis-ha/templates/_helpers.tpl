@@ -13,10 +13,17 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
 {{- define "redis-ha.fullname" -}}
+{{- if .Values.fullnameOverride -}}
+{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
 {{- $name := default .Chart.Name .Values.nameOverride -}}
+{{- if contains $name .Release.Name -}}
+{{- .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
 {{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
-
+{{- end -}}
+{{- end -}}
 
 {{- /*
 Credit: @technosophos
@@ -42,17 +49,5 @@ Example output:
 */ -}}
 {{- define "chartref" -}}
   {{- replace "+" "_" .Chart.Version | printf "%s-%s" .Chart.Name -}}
-{{- end -}}
-
-
-{{/*
-Create the name of the service account to use
-*/}}
-{{- define "redis-ha.serviceAccountName" -}}
-{{- if .Values.serviceAccount.create -}}
-    {{ default (include "redis-ha.fullname" .) .Values.serviceAccount.name }}
-{{- else -}}
-    {{ default "default" .Values.serviceAccount.name }}
-{{- end -}}
 {{- end -}}
 

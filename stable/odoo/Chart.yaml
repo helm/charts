@@ -1,6 +1,6 @@
 name: odoo
-version: 3.0.0
-appVersion: 11.0.20180915
+version: 5.0.4
+appVersion: 11.0.20190115
 description: A suite of web based open source business apps.
 home: https://www.odoo.com/
 icon: https://bitnami.com/assets/stacks/odoo/img/odoo-stack-110x117.png

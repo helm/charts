@@ -154,10 +154,18 @@ spec:
         - name: JMX_PORT
           value: "{{ .Values.jmx.port }}"
         {{- end }}
-        - name: POD_IP
+        - name: POD_NAME
           valueFrom:
             fieldRef:
-              fieldPath: status.podIP
+              fieldPath: metadata.name
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
         - name: KAFKA_HEAP_OPTS
           value: {{ .Values.kafkaHeapOptions }}
         {{- if not (hasKey .Values.configurationOverrides "zookeeper.connect") }}
@@ -187,6 +195,10 @@ spec:
             {{- end }}
           {{- end }}
         {{- end }}
+        {{- range $key, $value := .Values.envOverrides }}
+        - name: {{ printf "%s" $key | replace "." "_" | upper | quote }}
+          value: {{ $value | quote }}
+        {{- end }}
         # This is required because the Downward API does not yet support identification of
         # pod numbering in statefulsets. Thus, we are required to specify a command which
         # allows us to extract the pod ID for usage as the Kafka Broker ID.
@@ -196,18 +208,24 @@ spec:
         - -exc
         - |
           unset KAFKA_PORT && \
-          export KAFKA_BROKER_ID=${HOSTNAME##*-} && \
-          export KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://${POD_IP}:9092{{ if kindIs "string" $advertisedListenersOverride }}{{ printf ",%s" $advertisedListenersOverride }}{{ end }} && \
+          export KAFKA_BROKER_ID=${POD_NAME##*-} && \
+          export KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://${POD_NAME}.{{ include "kafka.fullname" . }}-headless.${POD_NAMESPACE}:9092{{ if kindIs "string" $advertisedListenersOverride }}{{ printf ",%s" $advertisedListenersOverride }}{{ end }} && \
           exec /etc/confluent/docker/run
         volumeMounts:
         - name: datadir
           mountPath: {{ .Values.persistence.mountPath | quote }}
         {{- range $secret := .Values.secrets }}
           {{- if $secret.mountPath }}
-            {{- range $key := $secret.keys }}
+            {{- if $secret.keys }}
+              {{- range $key := $secret.keys }}
         - name: {{ include "kafka.fullname" $ }}-{{ $secret.name }}
           mountPath: {{ $secret.mountPath }}/{{ $key }}
           subPath: {{ $key }}
+          readOnly: true
+              {{- end }}
+            {{- else }}
+        - name: {{ include "kafka.fullname" $ }}-{{ $secret.name }}
+          mountPath: {{ $secret.mountPath }}
           readOnly: true
             {{- end }}
           {{- end }}

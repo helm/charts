@@ -3,6 +3,24 @@
 This file documents all notable changes to Sysdig Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v1.2.1
+
+### Minor Changes
+
+* Add checksum annotations to DaemonSet so that rolling upgrades works when a ConfigMap changes.
+
+## v1.2.0
+
+### Major Changes
+
+* Allow to use other Docker registries (ECR, Quay ...) to download the Sysdig agent image.
+
+## v1.1.0
+
+### Major Changes
+
+* Add support for uploading custom app checks for Sysdig agent
+
 ## v1.0.4
 
 ### Minor Changes
@@ -32,7 +50,7 @@ numbering uses [semantic versioning](http://semver.org).
 
 ### Major Changes
 
-* Run Sysdig Agent as [daemonset v2.0](https://github.com/draios/sysdig-cloud-scripts/blob/master/agent_deploy/kubernetes/sysdig-agent-daemonset-v2.yaml).
+* Run Sysdig agent as [daemonset v2.0](https://github.com/draios/sysdig-cloud-scripts/blob/master/agent_deploy/kubernetes/sysdig-agent-daemonset-v2.yaml).
 * Fix value's naming in order to follow [best practices](https://docs.helm.sh/chart_best_practices/#naming-conventions).
 * Use a secure.enabled flag for enabling Sysdig Secure.
 * Allow rbac resource creation or use existing serviceAccountName.

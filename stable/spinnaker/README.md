@@ -64,27 +64,37 @@ for Spinnaker. If you want to add arbitrary clusters need to do the following:
 
 Spinnaker will only give you access to Docker images that have been whitelisted, if you're using a private registry or a private repository you also need to provide credentials.  Update the following values of the chart to do so:
 
-    ```yaml
-    dockerRegistries:
-    - name: dockerhub
-      address: index.docker.io
-      repositories:
-        - library/alpine
-        - library/ubuntu
-        - library/centos
-        - library/nginx
-    # - name: gcr
-    #   address: https://gcr.io
-    #   username: _json_key
-    #   password: '<INSERT YOUR SERVICE ACCOUNT JSON HERE>'
-    #   email: 1234@5678.com
-    ```
+```yaml
+dockerRegistries:
+- name: dockerhub
+  address: index.docker.io
+  repositories:
+    - library/alpine
+    - library/ubuntu
+    - library/centos
+    - library/nginx
+# - name: gcr
+#   address: https://gcr.io
+#   username: _json_key
+#   password: '<INSERT YOUR SERVICE ACCOUNT JSON HERE>'
+#   email: 1234@5678.com
+```
 
 You can provide passwords as a Helm value, or you can use a pre-created secret containing your registry passwords.  The secret should have an item per Registry in the format: `<registry name>: <password>`. In which case you'll specify the secret to use in `dockerRegistryAccountSecret` like so:
 
-    ```yaml
-    dockerRegistryAccountSecret: myregistry-secrets
-    ```
+```yaml
+dockerRegistryAccountSecret: myregistry-secrets
+```
+
+## Specifying persistent storage
+
+Spinnaker supports [many](https://www.spinnaker.io/setup/install/storage/) persistent storage types. Currently, this chart supports the following:
+
+* Azure Storage
+* Google Cloud Storage
+* Minio (local S3-compatible object store)
+* Redis
+* AWS S3
 
 ## Customizing your installation
 
@@ -109,10 +119,37 @@ spinnaker@cd-spinnaker-halyard-0:/workdir$ hal version list
 ### Automated
 If you have known set of commands that you'd like to run after the base config steps or if
 you'd like to override some settings before the Spinnaker deployment is applied, you can enable
-the `halyard.additionalConfig.enabled` flag. You will need to create a config map that contains a key
-containing the `hal` commands you'd like to run. You can set the key via the config map name via `halyard.additionalConfig.configMapName` and the key via `halyard.additionalConfig.configMapKey`. The `DAEMON_ENDPOINT` environment variable can be used in your custom commands to
-get a prepopulated URL that points to your Halyard daemon within the cluster. For example:
+the `halyard.additionalScripts.enabled` flag. You will need to create a config map that contains a key
+containing the `hal` commands you'd like to run. You can set the key via the config map name via `halyard.additionalScripts.configMapName` and the key via `halyard.additionalScripts.configMapKey`. The `DAEMON_ENDPOINT` environment variable can be used in your custom commands to
+get a prepopulated URL that points to your Halyard daemon within the cluster. The `HAL_COMMAND` environment variable does this for you. For example:
 
 ```shell
 hal --daemon-endpoint $DAEMON_ENDPOINT config security authn oauth2 enable
+$HAL_COMMAND config security authn oauth2 enable
+```
+
+If you would rather the chart make the config file for you, you can set `halyard.additionalScripts.create` to `true` and then populate `halyard.additionalScripts.data.SCRIPT_NAME.sh` with the bash script you'd like to run. If you need associated configmaps or secrets you can configure those to be created as well:
+
+```yaml
+halyard:
+  additionalScripts:
+    create: true
+    data: 
+      enable_oauth.sh: |-
+        echo "Setting oauth2 security"
+        $HAL_COMMAND config security authn oauth2 enable
+  additionalSecrets:
+    create: true
+    data:
+      password.txt: aHVudGVyMgo=    
+  additionalConfigMaps:
+    create: true
+    data:
+      metadata.xml: <xml><username>admin</username></xml>
+  additionalProfileConfigMaps:
+    create: true
+    data:
+      orca-local.yml: |-
+        tasks:
+          useManagedServiceAccounts: true
 ```

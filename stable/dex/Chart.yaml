@@ -1,16 +1,18 @@
 name: dex
-version: 0.3.1
-appVersion: 2.10.0
+version: 0.8.0
+appVersion: 2.14.0
 description: CoreOS Dex
 keywords:
 - dex
 - oidc
-icon: https://github.com/coreos/dex/raw/master/Documentation/logos/dex-glyph-color.png
-home: https://github.com/coreos/dex/
+icon: https://github.com/dexidp/dex/raw/master/Documentation/logos/dex-glyph-color.png
+home: https://github.com/dexidp/dex/
 source:
-- https://github.com/coreos/dex/
+- https://github.com/dexidp/dex/
 maintainers:
 - name: kfox1111
   email: Kevin.Fox@pnnl.gov
 - name: sstarcher
   email: shane.starcher@gmail.com
+- name: rendhalver
+  email: pete.brown@powerhrg.com

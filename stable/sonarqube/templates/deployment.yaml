@@ -15,6 +15,8 @@ spec:
         app: {{ template "sonarqube.name" . }}
         release: {{ .Release.Name }}
     spec:
+      securityContext:
+{{ toYaml .Values.securityContext | indent 8 }}
       {{- if .Values.plugins.install }}
       initContainers:
         - name: install-plugins
@@ -26,16 +28,17 @@ spec:
             {{- end }}
           command: ["sh",
             "-c",
-            "mkdir -p /opt/sonarqube/extensions/plugins/ &&
-            cp /tmp/scripts/install_plugins.sh /opt/sonarqube/extensions/plugins/install_plugins.sh &&
-            chmod 0775 /opt/sonarqube/extensions/plugins/install_plugins.sh &&
-            /opt/sonarqube/extensions/plugins/install_plugins.sh
+            "mkdir -p /opt/sonarqube/extensions/plugins/tmp &&
+            rm -f /opt/sonarqube/extensions/plugins/tmp/* &&
+            cp /tmp/scripts/install_plugins.sh /opt/sonarqube/extensions/plugins/tmp/install_plugins.sh &&
+            chmod 0775 /opt/sonarqube/extensions/plugins/tmp/install_plugins.sh &&
+            /opt/sonarqube/extensions/plugins/tmp/install_plugins.sh && pwd && ls -lah
             "
            ]
           volumeMounts:
-            - mountPath: /opt/sonarqube/extensions
+            - mountPath: /opt/sonarqube/extensions/plugins/tmp
               name: sonarqube
-              subPath: extensions
+              subPath: tmp
             - name: install-plugins
               mountPath: /tmp/scripts/
           resources:
@@ -67,15 +70,10 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - containerPort: {{ .Values.service.internalPort }}
-          command: [
-              "sh",
-              "-ce",
-              "mkdir /scripts &&
-              cp /tmp-script/startup.sh /scripts/startup.sh &&
-              chmod 0755 /scripts/startup.sh &&
-              /scripts/startup.sh
-              "
-            ]
+          {{- if .Values.plugins.install }}
+          command:
+            - /usr/local/copy_plugins.sh
+          {{- end }}
           env:
             {{- range $key, $value := .Values.extraEnv }}
             - name: {{ $key }}
@@ -91,47 +89,44 @@ spec:
               valueFrom:
                 secretKeyRef:
                   {{- if eq .Values.database.type "postgresql" }}
-                  name: {{- if .Values.postgresql.enabled }} {{ template "postgresql.fullname" .}} {{- else }} {{ template "sonarqube.fullname" . }} {{- end }}
+                  name: {{- if .Values.postgresql.enabled }} {{ template "postgresql.fullname" .}} {{- else if .Values.postgresql.postgresPasswordSecret }} {{ .Values.postgresql.postgresPasswordSecret }} {{- else }} {{ template "sonarqube.fullname" . }} {{- end }}
                   key: postgres-password
                   {{- else if eq .Values.database.type "mysql" }}
-                  name: {{- if .Values.mysql.enabled }} {{ template "mysql.fullname" .}} {{- else }} {{ template "sonarqube.fullname" . }} {{- end }}
+                  name: {{- if .Values.mysql.enabled }} {{ template "mysql.fullname" .}} {{- else if .Values.mysql.mysqlPasswordSecret }} {{ .Values.mysql.mysqlPasswordSecret }} {{- else }} {{ template "sonarqube.fullname" . }} {{- end }}
                   key: mysql-password
                   {{- end }}
             - name: SONARQUBE_JDBC_URL
               {{- if eq .Values.database.type "postgresql" }}
               value: "jdbc:postgresql://{{ template "postgresql.hostname" . }}:{{- .Values.postgresql.service.port -}}/{{- .Values.postgresql.postgresDatabase -}}"
               {{- else if eq .Values.database.type "mysql" }}
-              value: "jdbc:mysql://{{ template "mysql.hostname" . }}:{{ .Values.mysql.service.port }}/{{ .Values.mysql.mysqlDatabase }}?useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true"
+              value: "jdbc:mysql://{{ template "mysql.hostname" . }}:{{ .Values.mysql.service.port }}/{{ .Values.mysql.mysqlDatabase }}?useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true{{- range $key, $value := .Values.mysql.mysqlParams }}&{{ $key }}={{ $value }}{{- end }}"
               {{- end }}
           livenessProbe:
             httpGet:
-              path: /sessions/new
+              path: {{ .Values.livenessProbe.sonarWebContext }}sessions/new
               port: {{ .Values.service.internalPort }}
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
           readinessProbe:
             httpGet:
-              path: /sessions/new
+              path: {{ .Values.readinessProbe.sonarWebContext }}sessions/new
               port: {{ .Values.service.internalPort }}
             initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
             failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
           volumeMounts:
-            - mountPath: /opt/sonarqube/conf
-              name: sonarqube
-              subPath: conf
-            - mountPath: /tmp-script/
-              name: startup
             {{- if .Values.sonarProperties }}
-            - name: config
-              mountPath: /tmp/conf/
-            {{- end}}
+            - mountPath: /opt/sonarqube/conf/
+              name: config
+            {{- end }}
             - mountPath: /opt/sonarqube/data
               name: sonarqube
               subPath: data
-            - mountPath: /opt/sonarqube/extensions
+            - mountPath: /opt/sonarqube/extensions/plugins/tmp
               name: sonarqube
-              subPath: extensions
+              subPath: tmp
+            - name: copy-plugins
+              mountPath: /usr/local/
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- if .Values.nodeSelector }}
@@ -147,7 +142,7 @@ spec:
 {{ toYaml .Values.affinity | indent 8 }}
     {{- end }}
       volumes:
-      {{- if .Values.sonarProperties}}
+      {{- if .Values.sonarProperties }}
       - name: config
         configMap:
           name: {{ template "sonarqube.fullname" . }}-config
@@ -161,12 +156,13 @@ spec:
           items:
             - key: install_plugins.sh
               path: install_plugins.sh
-      - name: startup
+      - name: copy-plugins
         configMap:
-          name: {{ template "sonarqube.fullname" . }}-startup
+          name: {{ template "sonarqube.fullname" . }}-copy-plugins
+          defaultMode: 0755
           items:
-            - key: startup.sh
-              path: startup.sh
+            - key: copy_plugins.sh
+              path: copy_plugins.sh
       - name: sonarqube
         {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:

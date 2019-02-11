@@ -10,18 +10,32 @@ data:
     <hudson>
       <disabledAdministrativeMonitors/>
       <version>{{ .Values.Master.ImageTag }}</version>
-      <numExecutors>0</numExecutors>
+      <numExecutors>{{ .Values.Master.NumExecutors }}</numExecutors>
       <mode>NORMAL</mode>
       <useSecurity>{{ .Values.Master.UseSecurity }}</useSecurity>
+{{- if not (empty .Values.Master.AuthorizationStrategy ) }}
+{{ .Values.Master.AuthorizationStrategy | indent 6 }}
+{{- else }}
       <authorizationStrategy class="hudson.security.FullControlOnceLoggedInAuthorizationStrategy">
         <denyAnonymousReadAccess>true</denyAnonymousReadAccess>
       </authorizationStrategy>
+{{- end }}
+{{- if .Values.Master.SecurityRealm }}
+{{ .Values.Master.SecurityRealm | indent 6 }}
+{{- else }}
       <securityRealm class="hudson.security.LegacySecurityRealm"/>
+{{- end }}
       <disableRememberMe>false</disableRememberMe>
       <projectNamingStrategy class="jenkins.model.ProjectNamingStrategy$DefaultProjectNamingStrategy"/>
       <workspaceDir>${JENKINS_HOME}/workspace/${ITEM_FULLNAME}</workspaceDir>
       <buildsDir>${ITEM_ROOTDIR}/builds</buildsDir>
+{{- if .Values.Master.EnableRawHtmlMarkupFormatter }}
+      <markupFormatter class="hudson.markup.RawHtmlMarkupFormatter" plugin="antisamy-markup-formatter">
+        <disableSyntaxHighlighting>true</disableSyntaxHighlighting>
+      </markupFormatter>
+{{- else }}
       <markupFormatter class="hudson.markup.EscapedMarkupFormatter"/>
+{{- end }}
       <jdks/>
       <viewsTabBar class="hudson.views.DefaultViewsTabBar"/>
       <myViewsTabBar class="hudson.views.DefaultMyViewsTabBar"/>
@@ -107,10 +121,10 @@ data:
           <namespace>{{ default .Release.Namespace .Values.Master.SlaveKubernetesNamespace }}</namespace>
 {{- if .Values.Master.SlaveKubernetesNamespace }}
           <jenkinsUrl>http://{{ template "jenkins.fullname" . }}.{{.Release.Namespace}}:{{.Values.Master.ServicePort}}{{ default "" .Values.Master.JenkinsUriPrefix }}</jenkinsUrl>
-          <jenkinsTunnel>{{ template "jenkins.fullname" . }}-agent.{{.Release.Namespace}}:50000</jenkinsTunnel>
+          <jenkinsTunnel>{{ template "jenkins.fullname" . }}-agent.{{.Release.Namespace}}:{{ .Values.Master.SlaveListenerPort }}</jenkinsTunnel>
 {{- else }}
           <jenkinsUrl>http://{{ template "jenkins.fullname" . }}:{{.Values.Master.ServicePort}}{{ default "" .Values.Master.JenkinsUriPrefix }}</jenkinsUrl>
-          <jenkinsTunnel>{{ template "jenkins.fullname" . }}-agent:50000</jenkinsTunnel>
+          <jenkinsTunnel>{{ template "jenkins.fullname" . }}-agent:{{ .Values.Master.SlaveListenerPort }}</jenkinsTunnel>
 {{- end }}
           <containerCap>10</containerCap>
           <retentionTimeout>5</retentionTimeout>
@@ -131,7 +145,7 @@ data:
         </hudson.model.AllView>
       </views>
       <primaryView>All</primaryView>
-      <slaveAgentPort>50000</slaveAgentPort>
+      <slaveAgentPort>{{ .Values.Master.SlaveListenerPort }}</slaveAgentPort>
       <disabledAgentProtocols>
 {{- range .Values.Master.DisabledAgentProtocols }}
         <string>{{ . }}</string>
@@ -170,14 +184,18 @@ data:
     <?xml version='1.1' encoding='UTF-8'?>
     <jenkins.model.JenkinsLocationConfiguration>
       <adminAddress>{{ default "" .Values.Master.JenkinsAdminEmail }}</adminAddress>
-{{- if .Values.Master.HostName }}
-{{- if .Values.Master.Ingress.TLS }}
+{{- if .Values.Master.JenkinsUrl }}
+      <jenkinsUrl>{{ .Values.Master.JenkinsUrl }}</jenkinsUrl>
+{{- else }}
+  {{- if .Values.Master.HostName }}
+    {{- if .Values.Master.Ingress.TLS }}
       <jenkinsUrl>https://{{ .Values.Master.HostName }}{{ default "" .Values.Master.JenkinsUriPrefix }}</jenkinsUrl>
-{{- else }}
+    {{- else }}
       <jenkinsUrl>http://{{ .Values.Master.HostName }}{{ default "" .Values.Master.JenkinsUriPrefix }}</jenkinsUrl>
-{{- end }}
-{{- else }}
+    {{- end }}
+  {{- else }}
       <jenkinsUrl>http://{{ template "jenkins.fullname" . }}:{{.Values.Master.ServicePort}}{{ default "" .Values.Master.JenkinsUriPrefix }}</jenkinsUrl>
+  {{- end}}
 {{- end}}
     </jenkins.model.JenkinsLocationConfiguration>
   jenkins.CLI.xml: |-
@@ -196,10 +214,15 @@ data:
     cp /var/jenkins_config/config.xml /var/jenkins_home;
     cp /var/jenkins_config/jenkins.CLI.xml /var/jenkins_home;
     cp /var/jenkins_config/jenkins.model.JenkinsLocationConfiguration.xml /var/jenkins_home;
-{{- else }}
-    cp --no-clobber /var/jenkins_config/config.xml /var/jenkins_home;
-    cp --no-clobber /var/jenkins_config/jenkins.CLI.xml /var/jenkins_home;
-    cp --no-clobber /var/jenkins_config/jenkins.model.JenkinsLocationConfiguration.xml /var/jenkins_home;
+  {{- else }}
+    yes n | cp -i /var/jenkins_config/config.xml /var/jenkins_home;
+    yes n | cp -i /var/jenkins_config/jenkins.CLI.xml /var/jenkins_home;
+    yes n | cp -i /var/jenkins_config/jenkins.model.JenkinsLocationConfiguration.xml /var/jenkins_home;
+  {{- if .Values.Master.AdditionalConfig }}
+{{- range $key, $val := .Values.Master.AdditionalConfig }}
+    cp /var/jenkins_config/{{- $key }} /var/jenkins_home;
+  {{- end }}
+  {{- end }}
 {{- end }}
 {{- if .Values.Master.InstallPlugins }}
     # Install missing plugins
@@ -207,37 +230,88 @@ data:
     rm -rf /usr/share/jenkins/ref/plugins/*.lock
     /usr/local/bin/install-plugins.sh `echo $(cat /var/jenkins_home/plugins.txt)`;
     # Copy plugins to shared volume
-    cp -n /usr/share/jenkins/ref/plugins/* /var/jenkins_plugins;
+    yes n | cp -i /usr/share/jenkins/ref/plugins/* /var/jenkins_plugins/;
 {{- end }}
 {{- if .Values.Master.ScriptApproval }}
-    cp -n /var/jenkins_config/scriptapproval.xml /var/jenkins_home/scriptApproval.xml;
+    yes n | cp -i /var/jenkins_config/scriptapproval.xml /var/jenkins_home/scriptApproval.xml;
+{{- end }}
+{{- if and (.Values.Master.JCasC.enabled) (.Values.Master.Sidecar.configAutoReload.enabled) }}
+  {{- if not .Values.Master.InitScripts }}
+    mkdir -p /var/jenkins_home/init.groovy.d/;
+    yes n | cp -i /var/jenkins_config/*.groovy /var/jenkins_home/init.groovy.d/;
+  {{- end }}
 {{- end }}
 {{- if .Values.Master.InitScripts }}
     mkdir -p /var/jenkins_home/init.groovy.d/;
-    cp -n /var/jenkins_config/*.groovy /var/jenkins_home/init.groovy.d/
+    yes n | cp -i /var/jenkins_config/*.groovy /var/jenkins_home/init.groovy.d/;
+{{- end }}
+{{- if .Values.Master.JCasC.enabled }}
+  {{- if .Values.Master.Sidecar.configAutoReload.enabled }}
+    bash -c 'ssh-keygen -y -f <(echo "${ADMIN_PRIVATE_KEY}") > /var/jenkins_home/key.pub'
+  {{- else }}
+    mkdir -p /var/jenkins_home/casc_configs;
+    rm -rf /var/jenkins_home/casc_configs/*
+    cp -v /var/jenkins_config/*.yaml /var/jenkins_home/casc_configs
+  {{- end }}
 {{- end }}
 {{- if .Values.Master.CredentialsXmlSecret }}
-    cp -n /var/jenkins_credentials/credentials.xml /var/jenkins_home;
+    yes n | cp -i /var/jenkins_credentials/credentials.xml /var/jenkins_home;
 {{- end }}
 {{- if .Values.Master.SecretsFilesSecret }}
-    cp -n /var/jenkins_secrets/* /usr/share/jenkins/ref/secrets;
+    yes n | cp -i /var/jenkins_secrets/* /usr/share/jenkins/ref/secrets/;
 {{- end }}
 {{- if .Values.Master.Jobs }}
     for job in $(ls /var/jenkins_jobs); do
       mkdir -p /var/jenkins_home/jobs/$job
-      cp -n /var/jenkins_jobs/$job /var/jenkins_home/jobs/$job/config.xml
+      yes n | cp -i /var/jenkins_jobs/$job /var/jenkins_home/jobs/$job/config.xml
     done
 {{- end }}
 {{- range $key, $val := .Values.Master.InitScripts }}
   init{{ $key }}.groovy: |-
 {{ $val | indent 4 }}
 {{- end }}
+{{- if .Values.Master.JCasC.enabled }}
+  {{- if .Values.Master.Sidecar.configAutoReload.enabled }}
+  init-add-ssh-key-to-admin.groovy: |-
+    import jenkins.security.*
+    import hudson.model.User
+    import jenkins.security.ApiTokenProperty
+    import jenkins.model.Jenkins
+    User u = User.get("{{ .Values.Master.AdminUser | default "admin" }}")
+    ApiTokenProperty t = u.getProperty(ApiTokenProperty.class)
+    String sshKeyString = new File('/var/jenkins_home/key.pub').text
+    keys_param = new org.jenkinsci.main.modules.cli.auth.ssh.UserPropertyImpl(sshKeyString)
+    u.addProperty(keys_param)
+    def inst = Jenkins.getInstance()
+    def sshDesc = inst.getDescriptor("org.jenkinsci.main.modules.sshd.SSHD")
+    sshDesc.setPort({{ .Values.Master.Sidecar.configAutoReload.sshTcpPort | default 1044 }})
+    sshDesc.getActualPort()
+    sshDesc.save()
+  {{- else }}
+# Only add config to this script if we aren't auto-reloading otherwise the pod will restart upon each config change:
+{{- range $key, $val := .Values.Master.JCasC.ConfigScripts }}
+  {{ $key }}.yaml: |-
+{{ tpl $val $| indent 4 }}
+{{- end }}
+{{- end }}
+{{- end }}
   plugins.txt: |-
 {{- if .Values.Master.InstallPlugins }}
 {{- range $index, $val := .Values.Master.InstallPlugins }}
 {{ $val | indent 4 }}
 {{- end }}
+{{- if .Values.Master.JCasC.enabled }}
+  {{- if not (contains "configuration-as-code" (quote .Values.Master.InstallPlugins)) }}
+    configuration-as-code:{{ .Values.Master.JCasC.PluginVersion }}
+  {{- end }}
+  {{- if not (contains "configuration-as-code-support" (quote .Values.Master.InstallPlugins)) }}
+    configuration-as-code-support:{{ .Values.Master.JCasC.SupportPluginVersion }}
+  {{- end }}
+{{- end }}
 {{- end }}
 {{ else }}
 {{ include "override_config_map" . }}
 {{- end -}}
+{{- if .Values.Master.AdditionalConfig }}
+{{- toYaml .Values.Master.AdditionalConfig | indent 2 }}
+{{- end }}
