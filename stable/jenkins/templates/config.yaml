@@ -231,6 +231,10 @@ data:
   {{- end }}
   {{- end }}
 {{- end }}
+{{- if .Values.Master.OverwritePlugins }}
+    # remove all plugins from shared volume
+    rm -rf /var/jenkins_home/plugins/*
+{{- end }}
 {{- if .Values.Master.InstallPlugins }}
     # Install missing plugins
     cp /var/jenkins_config/plugins.txt /var/jenkins_home;
