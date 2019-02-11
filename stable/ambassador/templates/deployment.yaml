@@ -24,8 +24,9 @@ spec:
       labels:
         app.kubernetes.io/name: {{ include "ambassador.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
-      {{- if .Values.podAnnotations }}
       annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
+      {{- if .Values.podAnnotations }}
         {{- toYaml .Values.podAnnotations | nindent 8 }}
       {{- end }}
     spec:
@@ -42,6 +43,14 @@ spec:
             items:
             - key: exporterConfiguration
               path: mapping-config.yaml
+        {{- end }}
+        {{- if .Values.ambassadorConfig }}
+        - name: ambassador-config
+          configMap:
+            name: {{ include "ambassador.fullname" . }}-file-config
+            items:
+            - key: ambassadorConfig
+              path: ambassador-config.yaml
         {{- end }}
       {{- with .Values.volumes }}
         {{- toYaml . | nindent 8 }}
@@ -114,8 +123,13 @@ spec:
               port: admin
             initialDelaySeconds: 30
             periodSeconds: 3
-          {{- with .Values.volumeMounts }}
           volumeMounts:
+          {{- if .Values.ambassadorConfig }}
+            - name: ambassador-config
+              mountPath: /ambassador/ambassador-config/ambassador-config.yaml
+              subPath: ambassador-config.yaml
+          {{- end }}
+          {{- with .Values.volumeMounts }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
           resources:

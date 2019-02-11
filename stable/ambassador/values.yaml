@@ -133,3 +133,5 @@ prometheusExporter:
   #     timer_type: 'histogram'
   #     labels:
   #       cluster_name: "$1"
+
+ambassadorConfig: ""
