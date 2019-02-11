@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "redash.fullname" . }}
+  name: {{ include "redash.fullname" . }}
   labels:
-    app.kubernetes.io/name: {{ template "redash.name" . }}
-    helm.sh/chart: {{ template "redash.chart" . }}
+    app.kubernetes.io/name: {{ include "redash.name" . }}
+    helm.sh/chart: {{ include "redash.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
@@ -15,6 +15,6 @@ spec:
       protocol: TCP
       name: http
   selector:
-    app.kubernetes.io/name: {{ template "redash.name" . }}
+    app.kubernetes.io/name: {{ include "redash.name" . }}
     app.kubernetes.io/component: server
     app.kubernetes.io/instance: {{ .Release.Name }}

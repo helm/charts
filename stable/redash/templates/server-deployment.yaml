@@ -1,29 +1,29 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "redash.fullname" . }}
+  name: {{ include "redash.fullname" . }}
   labels:
-    app.kubernetes.io/name: {{ template "redash.name" . }}
+    app.kubernetes.io/name: {{ include "redash.name" . }}
     app.kubernetes.io/component: server
-    helm.sh/chart: {{ template "redash.chart" . }}
+    helm.sh/chart: {{ include "redash.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   replicas: {{ .Values.server.replicaCount }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ template "redash.name" . }}
+      app.kubernetes.io/name: {{ include "redash.name" . }}
       app.kubernetes.io/component: server
       app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: {{ template "redash.name" . }}
+        app.kubernetes.io/name: {{ include "redash.name" . }}
         app.kubernetes.io/component: server
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
       initContainers:
-        - name: {{ template "redash.name" . }}-server-createdb
+        - name: {{ include "redash.name" . }}-server-createdb
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["bash", "/config/createdb.sh"]
@@ -34,7 +34,7 @@ spec:
             - name: REDASH_COOKIE_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "redash.fullname" . }}
+                  name: {{ include "redash.fullname" . }}
                   key: cookieSecret
             - name: REDASH_DATABASE_URL
             {{- if not .Values.postgresql.enabled }}
@@ -50,7 +50,7 @@ spec:
                   key: postgresql-password
             {{- end }}
             - name: REDASH_DATABASE_HOSTNAME
-              value: {{ template "redash.postgresql.fullname" . }}
+              value: {{ include "redash.postgresql.fullname" . }}
             - name: REDASH_DATABASE_PORT
               value: "{{ .Values.postgresql.service.port }}"
             - name: REDASH_DATABASE_DB
@@ -65,7 +65,7 @@ spec:
                 {{- end }}
                   key: redis-password
             - name: REDASH_REDIS_HOSTNAME
-              value: {{ template "redash.redis.fullname" . }}
+              value: {{ include "redash.redis.fullname" . }}
             - name: REDASH_REDIS_PORT
               value: "{{ .Values.redis.master.port }}"
             - name: REDASH_REDIS_DB
@@ -79,7 +79,7 @@ spec:
               value: "{{ $value }}"
           {{- end }}
       containers:
-        - name: {{ template "redash.name" . }}-server
+        - name: {{ include "redash.name" . }}-server
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["/bin/sh"]
@@ -91,7 +91,7 @@ spec:
             - name: REDASH_COOKIE_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "redash.fullname" . }}
+                  name: {{ include "redash.fullname" . }}
                   key: cookieSecret
             - name: REDASH_DATABASE_URL
             {{- if not .Values.postgresql.enabled }}
@@ -107,7 +107,7 @@ spec:
                   key: postgresql-password
             {{- end }}
             - name: REDASH_DATABASE_HOSTNAME
-              value: {{ template "redash.postgresql.fullname" . }}
+              value: {{ include "redash.postgresql.fullname" . }}
             - name: REDASH_DATABASE_PORT
               value: "{{ .Values.postgresql.service.port }}"
             - name: REDASH_DATABASE_DB
@@ -122,7 +122,7 @@ spec:
                 {{- end }}
                   key: redis-password
             - name: REDASH_REDIS_HOSTNAME
-              value: {{ template "redash.redis.fullname" . }}
+              value: {{ include "redash.redis.fullname" . }}
             - name: REDASH_REDIS_PORT
               value: "{{ .Values.redis.master.port }}"
             - name: REDASH_REDIS_DB
@@ -162,7 +162,7 @@ spec:
       volumes:
         - name: config
           configMap:
-            name: {{ template "redash.fullname" . }}
+            name: {{ include "redash.fullname" . }}
     {{- with .Values.server.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

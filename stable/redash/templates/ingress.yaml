@@ -6,8 +6,8 @@ kind: Ingress
 metadata:
   name: {{ $fullName }}
   labels:
-    app.kubernetes.io/name: {{ template "redash.name" . }}
-    helm.sh/chart: {{ template "redash.chart" . }}
+    app.kubernetes.io/name: {{ include "redash.name" . }}
+    helm.sh/chart: {{ include "redash.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- with .Values.ingress.annotations }}
