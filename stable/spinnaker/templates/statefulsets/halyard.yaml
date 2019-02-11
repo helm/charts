@@ -34,6 +34,8 @@ spec:
         volumeMounts:
         - name: halyard-config
           mountPath: /tmp/config
+        - name: service-settings
+          mountPath: /tmp/service-settings
         - name: halyard-home
           mountPath: /tmp/spinnaker
         {{- if .Values.halyard.additionalProfileConfigMaps.create }}
@@ -90,6 +92,9 @@ spec:
       {{- end }}
       - name: halyard-config
         emptyDir: {}
+      - name: service-settings
+        configMap:
+          name: {{ template "spinnaker.fullname" . }}-service-settings
       - name: halyard-initscript
         configMap:
           name: {{ template "spinnaker.fullname" . }}-halyard-init-script
