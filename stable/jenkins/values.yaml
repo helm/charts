@@ -138,6 +138,8 @@ Master:
     - credentials-binding:1.17
     - git:3.9.1
 
+  # Enable to always override the installed plugins with the values of 'Master.InstallPlugins' on upgrade or redeployment.
+  # OverwritePlugins: true
   # Enable HTML parsing using OWASP Markup Formatter Plugin (antisamy-markup-formatter), useful with ghprb plugin.
   # The plugin is not installed by default, please update Master.InstallPlugins.
   # EnableRawHtmlMarkupFormatter: true
