@@ -111,6 +111,7 @@ Some third-party systems, e.g. GitHub, use HTML-formatted data in their payload 
 | `Agent.Privileged`         | Agent privileged container                      | `false`                |
 | `Agent.resources`          | Resources allocation (Requests and Limits)      | `{requests: {cpu: 200m, memory: 256Mi}, limits: {cpu: 200m, memory: 256Mi}}`|
 | `Agent.volumes`            | Additional volumes                              | `nil`                  |
+| `Agent.envVars             | Environment variables for the slave Pod         | Not set                |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
