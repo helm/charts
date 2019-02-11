@@ -379,7 +379,7 @@ postgresql:
   ## Set to false if bringing your own PostgreSQL.
   enabled: true
   ##
-  ## If you are bringing your own PostgreSQL, you should set postgresHost and 
+  ## If you are bringing your own PostgreSQL, you should set postgresHost and
   ## also probably service.port, postgresUser, postgresPassword, and postgresDatabase
   ## postgresHost:
   ##
