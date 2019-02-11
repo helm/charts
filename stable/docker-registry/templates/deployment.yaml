@@ -75,7 +75,11 @@ spec:
             - name: REGISTRY_HTTP_SECRET
               valueFrom:
                 secretKeyRef:
+                {{- if .Values.secrets.existingSecretName }}
+                  name: {{ .Values.secrets.existingSecretName }}
+                {{- else }}
                   name: {{ template "docker-registry.fullname" . }}-secret
+                {{- end }}
                   key: haSharedSecret
 {{- if .Values.tlsSecretName }}
             - name: REGISTRY_HTTP_TLS_CERTIFICATE
@@ -90,31 +94,49 @@ spec:
             - name: REGISTRY_STORAGE_AZURE_ACCOUNTNAME
               valueFrom:
                 secretKeyRef:
+              {{- if .Values.secrets.existingSecretName }}
+                  name: {{ .Values.secrets.existingSecretName }}
+              {{- else }}                
                   name: {{ template "docker-registry.fullname" . }}-secret
+              {{- end }}
                   key: azureAccountName
             - name: REGISTRY_STORAGE_AZURE_ACCOUNTKEY
               valueFrom:
                 secretKeyRef:
+              {{- if .Values.secrets.existingSecretName }}
+                  name: {{ .Values.secrets.existingSecretName }}
+              {{- else }}
                   name: {{ template "docker-registry.fullname" . }}-secret
+              {{- end }}
                   key: azureAccountKey
             - name: REGISTRY_STORAGE_AZURE_CONTAINER
               valueFrom:
                 secretKeyRef:
+              {{- if .Values.secrets.existingSecretName }}
+                  name: {{ .Values.secrets.existingSecretName }}
+              {{- else }}
                   name: {{ template "docker-registry.fullname" . }}-secret
+              {{- end }}
                   key: azureContainer
 {{- else if eq .Values.storage "s3" }}
-            {{- if and .Values.secrets.s3.secretKey .Values.secrets.s3.accessKey }}
             - name: REGISTRY_STORAGE_S3_ACCESSKEY
               valueFrom:
                 secretKeyRef:
+                {{- if .Values.secrets.existingSecretName }}
+                  name: {{ .Values.secrets.existingSecretName }}
+                {{- else }}
                   name: {{ template "docker-registry.fullname" . }}-secret
+                {{- end }}
                   key: s3AccessKey
             - name: REGISTRY_STORAGE_S3_SECRETKEY
               valueFrom:
                 secretKeyRef:
+                {{- if .Values.secrets.existingSecretName }}
+                  name: {{ .Values.secrets.existingSecretName }}
+                {{- else }}
                   name: {{ template "docker-registry.fullname" . }}-secret
+                {{- end }}
                   key: s3SecretKey
-            {{- end }}
             - name: REGISTRY_STORAGE_S3_REGION
               value: {{ required ".Values.s3.region is required" .Values.s3.region }}
           {{- if .Values.s3.regionEndpoint }}
@@ -137,12 +159,20 @@ spec:
             - name: REGISTRY_STORAGE_SWIFT_USERNAME
               valueFrom:
                 secretKeyRef:
+                {{- if .Values.secrets.existingSecretName }}
+                  name: {{ .Values.secrets.existingSecretName }}
+                {{- else }}
                   name: {{ template "docker-registry.fullname" . }}-secret
+                {{- end }}
                   key: swiftUsername
             - name: REGISTRY_STORAGE_SWIFT_PASSWORD
               valueFrom:
                 secretKeyRef:
+                {{- if .Values.secrets.existingSecretName }}
+                  name: {{ .Values.secrets.existingSecretName }}
+                {{- else }}
                   name: {{ template "docker-registry.fullname" . }}-secret
+                {{- end }}
                   key: swiftPassword
             - name: REGISTRY_STORAGE_SWIFT_CONTAINER
               value: {{ required ".Values.swift.container is required" .Values.swift.container }}
@@ -180,7 +210,11 @@ spec:
 {{- if .Values.secrets.htpasswd }}
         - name: auth
           secret:
+          {{- if .Values.secrets.existingSecretName }}
+            secretName: {{ .Values.secrets.existingSecretName }}
+          {{- else }}
             secretName: {{ template "docker-registry.fullname" . }}-secret
+          {{- end }}
             items:
             - key: htpasswd
               path: htpasswd
