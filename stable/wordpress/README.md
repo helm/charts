@@ -95,10 +95,10 @@ The following table lists the configurable parameters of the WordPress chart and
 | `ingress.enabled`                | Enable ingress controller resource         | `false`                                                 |
 | `ingress.certManager`            | Add annotations for cert-manager           | `false`                                                 |
 | `ingress.annotations`            | Ingress annotations                        | `[]`                                                    |
-| `ingress.hosts[0].name`          | Hostname to your PrestaShop installation   | `prestashop.local`                                      |
+| `ingress.hosts[0].name`          | Hostname to your Wordpress installation    | `wordpress.local`                                       |
 | `ingress.hosts[0].path`          | Path within the url structure              | `/`                                                     |
 | `ingress.hosts[0].tls`           | Utilize TLS backend in ingress             | `false`                                                 |
-| `ingress.hosts[0].tlsSecret`     | TLS Secret (certificates)                  | `prestashop.local-tls`                                  |
+| `ingress.hosts[0].tlsSecret`     | TLS Secret (certificates)                  | `wordpress.local-tls`                                   |
 | `ingress.secrets[0].name`        | TLS Secret Name                            | `nil`                                                   |
 | `ingress.secrets[0].certificate` | TLS Secret Certificate                     | `nil`                                                   |
 | `ingress.secrets[0].key`         | TLS Secret Key                             | `nil`                                                   |
