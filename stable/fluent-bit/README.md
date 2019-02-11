@@ -78,6 +78,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | **General**                   |
 | `annotations`                      | Optional deamonset set annotations        | `NULL`                |
 | `podAnnotations`                   | Optional pod annotations                  | `NULL`                |
+| `podLabels`                        | Optional pod labels                       | `NULL`                |
 | `fullConfigMap`                    | User has provided entire config (parsers + system)  | `false`      |
 | `existingConfigMap`                | ConfigMap override                         | ``                    |
 | `extraEntries.input`               |    Extra entries for existing [INPUT] section                     | ``                    |
@@ -86,6 +87,8 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `extraPorts`                       | List of extra ports                        |                       |
 | `extraVolumeMounts`                | Mount an extra volume, required to mount ssl certificates when elasticsearch has tls enabled |          |
 | `extraVolume`                      | Extra volume                               |                                                |
+| `service.flush`                    | Interval to flush output (seconds)        | `1`                   |
+| `service.logLevel`                 | Diagnostic level (error/warning/info/debug/trace)        | `info`                   |
 | `filter.enableExclude`                   | Enable the use of monitoring for a pod annotation of `fluentbit.io/exclude: true`. If present, discard logs from that pod.         | `true`                                 |
 | `filter.enableParser`                   | Enable the use of monitoring for a pod annotation of `fluentbit.io/parser: parser_name`. parser_name must be the name of a parser contained within parsers.conf         | `true`                                 |
 | `filter.kubeURL`                   | Optional custom configmaps                 | `https://kubernetes.default.svc:443`            |
@@ -94,13 +97,14 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `filter.kubeTag`                   | Optional top-level tag for matching in filter         | `kube`                                 |
 | `filter.mergeJSONLog`                   | If the log field content is a JSON string map, append the map fields as part of the log structure         | `true`                                 |
 | `image.fluent_bit.repository`      | Image                                      | `fluent/fluent-bit`                               |
-| `image.fluent_bit.tag`             | Image tag                                  | `1.0.3`                                          |
+| `image.fluent_bit.tag`             | Image tag                                  | `1.0.4`                                          |
 | `image.pullPolicy`                 | Image pull policy                          | `IfNotPresent`                                          |
 | `image.pullSecrets`                | Specify image pull secrets                 | `nil`                                             |
 | `input.tail.memBufLimit`           | Specify Mem_Buf_Limit in tail input        | `5MB`                                             |
+| `input.tail.parser`           | Specify Parser in tail input.        | `docker`                                             |
 | `input.tail.path`           | Specify log file(s) through the use of common wildcards.        | `/var/log/containers/*.log`                                             |
 | `input.systemd.enabled`             | [Enable systemd input](https://fluentbit.io/documentation/current/input/systemd.html)                   | `false`                                       |
-| `input.systemd.filters.systemdUnit             | Please see https://fluentbit.io/documentation/current/input/systemd.html                   | `[docker.service, kubelet.service`, `node-problem-detector.service]`                                       |
+| `input.systemd.filters.systemdUnit`             | Please see https://fluentbit.io/documentation/current/input/systemd.html                   | `[docker.service, kubelet.service`, `node-problem-detector.service]`                                       |
 | `input.systemd.maxEntries`             | Please see https://fluentbit.io/documentation/current/input/systemd.html                  | `1000`                                       |
 | `input.systemd.readFromTail` | Please see https://fluentbit.io/documentation/current/input/systemd.html | `true`|
 | `input.systemd.tag` | Please see https://fluentbit.io/documentation/current/input/systemd.html | `host.*`|
@@ -113,6 +117,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `dnsPolicy`                        | Specifies the dnsPolicy to use             | `ClusterFirst`                                    |
 | `tolerations`                      | Optional daemonset tolerations             | `NULL`                                            |
 | `nodeSelector`                     | Node labels for fluent-bit pod assignment  | `NULL`                                            |
+| `affinity`                         | Expressions for affinity                   | `NULL`                                            |
 | `metrics.enabled`                  | Specifies whether a service for metrics should be exposed | `false`                            |
 | `metrics.service.annotations`      | Optional metrics service annotations       | `NULL`                                            |
 | `metrics.service.port`             | Port on where metrics should be exposed    | `2020`                                            |
@@ -135,6 +140,6 @@ $ helm install --name my-release -f values.yaml stable/fluent-bit
 
 ### From < 1.0.0 To 1.0.0
 
-Values `extraInputs`, `extraFilters` and `extraOutputs` have been removed in version `1.0.0` of the fluent-bit chart. 
-To add additional entries to the existing sections, please use the `extraEntries.input`, `extraEntries.filter` and `extraEntries.output` values. 
+Values `extraInputs`, `extraFilters` and `extraOutputs` have been removed in version `1.0.0` of the fluent-bit chart.
+To add additional entries to the existing sections, please use the `extraEntries.input`, `extraEntries.filter` and `extraEntries.output` values.
 For entire sections, please use the `rawConfig` value, inserting blocks of text as desired.

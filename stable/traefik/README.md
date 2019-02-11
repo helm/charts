@@ -105,6 +105,7 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `memoryLimit`                          | Memory limit per Traefik pod                                                                                                 | `30Mi`                                            |
 | `rbac.enabled`                         | Whether to enable RBAC with a specific cluster role and binding for Traefik                                                  | `false`                                           |
 | `deploymentStrategy`                   | Specify deployment spec rollout strategy                                                                                     | `{}`                                              |
+| `securityContext`                      | Security context                                                                                                             | `{}`                                              |
 | `nodeSelector`                         | Node labels for pod assignment                                                                                               | `{}`                                              |
 | `affinity`                             | Affinity settings                                                                                                            | `{}`                                              |
 | `tolerations`                          | List of node taints to tolerate                                                                                              | `[]`                                              |
@@ -216,6 +217,7 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `tracing.datadog.localAgentHostPort`   | Location of the Datadog agent where spans will be sent                                                                       | `127.0.0.1:8126`                                  |
 | `tracing.datadog.debug`                | Enables Datadog debugging                                                                                                    | `false`                                           |
 | `tracing.datadog.globalTag`            | Apply shared tag in a form of Key:Value to all the traces                                                                    | `""`                                           |
+| `autoscaling`                          | HorizontalPodAutoscaler for the traefik Deployment                                                                           | `{}`                                           |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 

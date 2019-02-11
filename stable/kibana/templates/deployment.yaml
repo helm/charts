@@ -24,13 +24,22 @@ spec:
       labels:
         app: {{ template "kibana.name" . }}
         release: "{{ .Release.Name }}"
+{{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels | indent 8 }}
+{{- end }}
     spec:
       serviceAccountName: {{ template "kibana.serviceAccountName" . }}
       {{- if .Values.priorityClassName }}
       priorityClassName: "{{ .Values.priorityClassName }}"
       {{- end }}
-{{- if or (.Values.dashboardImport.dashboards) (.Values.plugins.enabled) }}
+{{- if or (.Values.initContainers) (.Values.dashboardImport.dashboards) (.Values.plugins.enabled) }}
       initContainers:
+{{- if .Values.initContainers }}
+{{- range $key, $value := .Values.initContainers }}
+        - name: "{{ $key }}"
+{{ toYaml $value | indent 10 }}
+{{- end }}
+{{- end }}
 {{- if .Values.dashboardImport.dashboards }}
       - name: {{ .Chart.Name }}-dashboardimport
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -47,10 +56,6 @@ spec:
         - name: "{{ $key }}"
           value: "{{ $value }}"
         {{- end }}
-        ports:
-        - containerPort: {{ .Values.service.internalPort }}
-          name: {{ template "kibana.name" . }}
-          protocol: TCP
         volumeMounts:
         - name: {{ template "kibana.fullname" . }}-dashboards
           mountPath: "/kibanadashboards"
@@ -106,12 +111,6 @@ spec:
         - name: "{{ $key }}"
           value: "{{ $value }}"
         {{- end }}
-{{- if .Values.service.disableInternalPort }}
-        ports:
-        - containerPort: {{ .Values.service.internalPort }}
-          name: {{ template "kibana.name" . }}
-          protocol: TCP
-{{- end }}
         volumeMounts:
         - name: plugins
           mountPath: /usr/share/kibana/plugins
@@ -174,7 +173,7 @@ spec:
           subPath: {{ $configFile }}
         {{- end }}
 {{- if .Values.extraVolumeMounts }}
-{{ toYaml .Values.extraVolumeMounts | indent 10 }}
+{{ toYaml .Values.extraVolumeMounts | indent 8 }}
 {{- end }}
 {{- if .Values.plugins.enabled}}
         - name: plugins

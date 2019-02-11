@@ -20,6 +20,23 @@ commonLabels: {}
 ##
 defaultRules:
   create: true
+  rules:
+    alertmanager: true
+    etcd: true
+    general: true
+    k8s: true
+    kubeApiserver: true
+    kubePrometheusNodeAlerting: true
+    kubePrometheusNodeRecording: true
+    kubeScheduler: true
+    kubernetesAbsent: true
+    kubernetesApps: true
+    kubernetesResources: true
+    kubernetesStorage: true
+    kubernetesSystem: true
+    node: true
+    prometheusOperator: true
+    prometheus: true
   ## Labels for default rules
   labels: {}
   ## Annotations for default rules
@@ -546,6 +563,10 @@ prometheusOperator:
   ## Assign a PriorityClassName to pods if set
   # priorityClassName: ""
 
+  ## Define Log Format
+  # Use logfmt (default) or json-formatted logging
+  # logFormat: logfmt
+
   ## If true, the operator will create and maintain a service for scraping kubelets
   ## ref: https://github.com/coreos/prometheus-operator/blob/master/helm/prometheus-operator/README.md
   ##
@@ -603,7 +624,7 @@ prometheusOperator:
   ##
   image:
     repository: quay.io/coreos/prometheus-operator
-    tag: v0.26.0
+    tag: v0.27.0
     pullPolicy: IfNotPresent
 
   ## Configmap-reload image to use for reloading configmaps
@@ -616,7 +637,7 @@ prometheusOperator:
   ##
   prometheusConfigReloaderImage:
     repository: quay.io/coreos/prometheus-config-reloader
-    tag: v0.26.0
+    tag: v0.27.0
 
   ## Hyperkube image to use when cleaning up
   ##
@@ -662,6 +683,8 @@ prometheus:
     ## Service type
     ##
     type: ClusterIP
+
+    sessionAffinity: ""
 
   rbac:
     ## Create role bindings in the specified namespaces, to allow Prometheus monitoring
@@ -724,10 +747,7 @@ prometheus:
     ##
     image:
       repository: quay.io/prometheus/prometheus
-      tag: v2.5.0
-
-    #  repository: quay.io/coreos/prometheus
-    #  tag: v2.5.0
+      tag: v2.6.1
 
     ## Tolerations for use with node taints
     ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/

@@ -20,6 +20,23 @@ commonLabels: {}
 ##
 defaultRules:
   create: true
+  rules:
+    alertmanager: true
+    etcd: true
+    general: true
+    k8s: true
+    kubeApiserver: true
+    kubePrometheusNodeAlerting: true
+    kubePrometheusNodeRecording: true
+    kubeScheduler: true
+    kubernetesAbsent: true
+    kubernetesApps: true
+    kubernetesResources: true
+    kubernetesStorage: true
+    kubernetesSystem: true
+    node: true
+    prometheusOperator: true
+    prometheus: true
   ## Labels for default rules
   labels: {}
   ## Annotations for default rules
@@ -324,6 +341,13 @@ grafana:
       enabled: true
       label: grafana_datasource
 
+  extraConfigmapMounts: []
+  # - name: certs-configmap
+  #   mountPath: /etc/grafana/ssl/
+  #   configMap: certs-configmap
+  #   readOnly: true
+
+
 ## Component scraping the kube api server
 ##
 kubeApiServer:
@@ -457,6 +481,8 @@ kubeStateMetrics:
 kube-state-metrics:
   rbac:
     create: true
+  podSecurityPolicy:
+    enabled: true
 
 ## Deploy node exporter as a daemonset to all nodes
 ##
@@ -594,7 +620,7 @@ prometheusOperator:
   ##
   image:
     repository: quay.io/coreos/prometheus-operator
-    tag: v0.26.0
+    tag: v0.27.0
     pullPolicy: IfNotPresent
 
   ## Configmap-reload image to use for reloading configmaps
@@ -607,7 +633,7 @@ prometheusOperator:
   ##
   prometheusConfigReloaderImage:
     repository: quay.io/coreos/prometheus-config-reloader
-    tag: v0.26.0
+    tag: v0.27.0
 
   ## Hyperkube image to use when cleaning up
   ##
@@ -715,10 +741,7 @@ prometheus:
     ##
     image:
       repository: quay.io/prometheus/prometheus
-      tag: v2.5.0
-
-    #  repository: quay.io/coreos/prometheus
-    #  tag: v2.5.0
+      tag: v2.6.1
 
     ## Tolerations for use with node taints
     ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/

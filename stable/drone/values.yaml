@@ -4,7 +4,7 @@ images:
   ##
   server:
     repository: "docker.io/drone/drone"
-    tag: 1.0.0-rc.4
+    tag: 1.0.0-rc.5
     pullPolicy: IfNotPresent
 
   ## The official drone (agent) image, change tag to use a different version.
@@ -12,7 +12,7 @@ images:
   ##
   agent:
     repository: "docker.io/drone/agent"
-    tag: 1.0.0-rc.4
+    tag: 1.0.0-rc.5
     pullPolicy: IfNotPresent
 
   ## The official docker (dind) image, change tag to use a different version.
@@ -110,8 +110,8 @@ server:
   ##
   # host: "drone.domain.io"
 
-  ## protocol should be http:// or https://
-  protocol: http://
+  ## protocol should be http or https
+  protocol: http
 
   ## Initial admin user
   ## Leaving this blank may make it impossible to log into drone.

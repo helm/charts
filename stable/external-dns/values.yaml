@@ -77,12 +77,17 @@ domainFilters: []
 zoneIdFilters: []
 # Filter sources managed by external-dns via annotation using label selector semantics (default: all sources)
 annotationFilter: ""
+## Adjust the interval for DNS updates
+interval: "1m"
 
 # Registry to use for ownership (txt or noop)
 registry: "txt"
 
 # When using the TXT registry, a name that identifies this instance of ExternalDNS
 txtOwnerId: ""
+
+# When enabled, prints DNS record changes rather than actually performing them
+dryRun: false
 
 ## Node labels for pod assignment
 ## Ref: https://kubernetes.io/docs/user-guide/node-selection/

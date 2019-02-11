@@ -2,6 +2,7 @@ rbac:
   create: true
   pspEnabled: true
   pspUseAppArmor: true
+  namespaced: false
 serviceAccount:
   create: true
   name:
@@ -118,6 +119,7 @@ affinity: {}
 ##
 persistence:
   enabled: false
+  initChownData: true
   # storageClassName: default
   accessModes:
     - ReadWriteOnce
