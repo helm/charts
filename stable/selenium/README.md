@@ -43,12 +43,16 @@ The following table lists the configurable parameters of the Selenium chart and 
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
 | `global.nodeselector` | Node label to be useed globally for scheduling of all images | `nil` |
+| `global.hostAliases` | A list of hostAliases, that contains ip and hostnames, to be used globally | `[]` |
 | `global.affinity` | Deployemnt affinities to be used globally for scheduling of all images | `nil` |
 | `global.tolerations` | Deployment tolerations to be used globally for scheduling of all images | `nil` |
 | `hub.image` | The selenium hub image | `selenium/hub` |
 | `hub.tag` | The selenium hub image tag | `3.14.0` |
 | `hub.pullPolicy` | The pull policy for the hub image | `IfNotPresent` |
 | `hub.port` | The port the hub listens on | `4444` |
+| `hub.servicePort` | The port the hub Service listens on | `4444` |
+
+| `hub.podAnnotations` | Annotations on the hub pod | `{}` |
 | `hub.javaOpts` | The java options for the selenium hub JVM, default sets the maximum heap size to 1,000 mb | `-Xmx1000m` |
 | `hub.resources` | The resources for the hub container, defaults to minimum half a cpu and maximum 1,000 mb RAM | `{"limits":{"cpu":".5", "memory":"1000Mi"}}` |
 | `hub.serviceType` | The Service type | `LoadBalancer` |
@@ -73,11 +77,15 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `hub.ingress.path` | The path for this ingress from which to route the traffic to the selenium hub | `/` |
 | `hub.ingress.hosts` | The list hosts for which this ingress should resolve the selenium hub | `[selenium-hub.local]` |
 | `hub.ingress.tls` | The tls secret to configure ssl for this ingress | `[]` |
+| `hub.readinessTimeout` | Timeout for hub readiness probe in seconds | `1` |
+| `hub.livenessTimeout` | Timeout for hub liveness probe in seconds | `1` |
+| `hub.probePath` | Path for readiness and liveness probes to check | `/wd/hub/status` |
 | `chrome.enabled` | Schedule a chrome node pod | `false` |
 | `chrome.image` | The selenium node chrome image | `selenium/node-chrome` |
 | `chrome.tag` | The selenium node chrome tag | `3.14.0` |
 | `chrome.pullPolicy` | The pull policy for the node chrome image | `IfNotPresent` |
 | `chrome.replicas` | The number of selenium node chrome pods | `1` |
+| `chrome.podAnnotations` | Annotations on the chrome pods | `{}` |
 | `chrome.javaOpts` | The java options for the selenium node chrome JVM, default sets the maximum heap size to 900 mb | `-Xmx900m` |
 | `chrome.volumeMounts` | Additional volumes to mount, the default provides a larger shared memory | `[{"mountPath":"/dev/shm", "name":"dshm"}]` |
 | `chrome.volumes` | Additional volumes import, the default provides a larger shared memory | `[{"name":"dshm", "emptyDir":{"medium":"Memory"}}]` |
@@ -101,6 +109,7 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `chromeDebug.tag` | The selenium node chrome debug tag | `3.14.0` |
 | `chromeDebug.pullPolicy` | The selenium node chrome debug pull policy | `IfNotPresent` |
 | `chromeDebug.replicas` | The number of selenium node chrome debug pods | `1` |
+| `chromeDebug.podAnnotations` | Annotations on the Chrome debug pod | `{}` |
 | `chromeDebug.javaOpts` | The java options for a selenium node chrome debug JVM, default sets the max heap size to 900 mb | `-Xmx900m` |
 | `chromeDebug.volumeMounts` | Additional volumes to mount, the default provides a larger shared | `[{"mountPath":"/dev/shm", "name":"dshm"}]` |
 | `chromeDebug.volumes` | Additional volumes import, the default provides a larger shared | `[{"name":"dshm", "emptyDir":{"medium":"Memory"}}]` |
@@ -124,6 +133,7 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `firefox.tag` | The selenium node firefox tag | `3.14.0` |
 | `firefox.pullPolicy` | The selenium node firefox pull policy | `IfNotPresent` |
 | `firefox.replicas` | The number of selenium node firefox pods | `1` |
+| `firefox.podAnnotations` | Annotations on the firefox pods | `{}` |
 | `firefox.javaOpts` | The java options for a selenium node firefox JVM, default sets the max heap size to 900 mb | `-Xmx900m` |
 | `firefox.resources` | The resources for the hub container, defaults to minimum half a cpu and maximum 1,000 mb | `{"limits":{"cpu":".5", "memory":"1000Mi"}}` |
 | `firefox.screenWidth` | | `nil` |
@@ -145,6 +155,7 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `firefoxDebug.tag` | The selenium node firefox debug tag | `3.14.0` |
 | `firefoxDebug.pullPolicy` | The selenium node firefox debug pull policy | `IfNotPresent` |
 | `firefoxDebug.replicas` | The numer of selenium node firefox debug pods | `1` |
+| `firefoxDebug.podAnnotations` | Annotations on the firefox debug pods | `{}` |
 | `firefoxDebug.javaOpts` | The java options for a selenium node firefox debug JVM, default sets the max heap size to 900 mb | `-Xmx900m` |
 | `firefoxDebug.resources` | The resources for the selenium node firefox debug container, defaults to minimum half a cpu and maximum 1,000 mb | `{"limits":{"cpu":".5", "memory":"1000Mi"}}` |
 | `firefoxDebug.screenWidth` | | `nil` |

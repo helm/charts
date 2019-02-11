@@ -4,6 +4,14 @@
 image: "mysql"
 imageTag: "5.7.14"
 
+busybox:
+  image: "busybox"
+  tag: "1.29.3"
+
+testFramework:
+  image: "dduportal/bats"
+  tag: "0.4.0"
+
 ## Specify password for root user
 ##
 ## Default: random 10 character string
@@ -52,6 +60,11 @@ extraInitContainers: |
 ## Node selector
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
 nodeSelector: {}
+
+## Tolerations for pod assignment
+## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+##
+tolerations: []
 
 livenessProbe:
   initialDelaySeconds: 30
@@ -125,6 +138,7 @@ metrics:
 ## Configure the service
 ## ref: http://kubernetes.io/docs/user-guide/services/
 service:
+  annotations: {}
   ## Specify a service type
   ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services---service-types
   type: ClusterIP
@@ -158,3 +172,8 @@ ssl:
 
 # To be added to the database server pod(s)
 podAnnotations: {}
+
+podLabels: {}
+
+## Set pod priorityClassName
+# priorityClassName: {}

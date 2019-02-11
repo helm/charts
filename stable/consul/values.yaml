@@ -104,6 +104,7 @@ ui:
 uiService:
   enabled: true
   type: "NodePort"
+  annotations: {}
 
 ConsulConfig: []
 #  - type: secret
@@ -115,8 +116,15 @@ ConsulConfig: []
 uiIngress:
   enabled: false
   annotations: {}
+  labels: {}
   hosts: []
   tls: {}
+
+## Useful when ACLs are enabled
+acl:
+  enabled: false
+  masterToken: ""
+  agentToken: ""
 
 ## test container details
 test:

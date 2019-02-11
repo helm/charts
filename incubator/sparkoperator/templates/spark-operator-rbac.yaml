@@ -2,7 +2,7 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: sparkoperator-cr
+  name: {{ include "sparkoperator.fullname" . }}-cr
   labels:
     app.kubernetes.io/name: {{ include "sparkoperator.name" . }}
     helm.sh/chart: {{ include "sparkoperator.chart" . }}
@@ -14,6 +14,9 @@ rules:
   verbs: ["*"]
 - apiGroups: [""]
   resources: ["services", "configmaps", "secrets"]
+  verbs: ["create", "get", "delete"]
+- apiGroups: ["extensions"]
+  resources: ["ingresses"]
   verbs: ["create", "get", "delete"]
 - apiGroups: [""]
   resources: ["nodes"]
@@ -34,7 +37,7 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: sparkoperator-crb
+  name: {{ include "sparkoperator.fullname" . }}-crb
   namespace: {{ .Release.Namespace }}
   labels:
     app.kubernetes.io/name: {{ include "sparkoperator.name" . }}
@@ -47,6 +50,6 @@ subjects:
     namespace: {{ .Release.Namespace }}
 roleRef:
   kind: ClusterRole
-  name: sparkoperator-cr
+  name: {{ include "sparkoperator.fullname" . }}-cr
   apiGroup: rbac.authorization.k8s.io
 {{- end }}

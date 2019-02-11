@@ -1,3 +1,4 @@
+{{- if .Values.rbac.create }}
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1beta1
 metadata:
@@ -5,9 +6,9 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     app.kubernetes.io/name: {{ include "jaeger-operator.name" . }}
-    helm.sh/chart: {{ include "jaeger-operator.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "jaeger-operator.chart" . }}
 rules:
 - apiGroups:
   - io.jaegertracing
@@ -42,3 +43,4 @@ rules:
   - ingresses
   verbs:
   - "*"
+{{- end }}

@@ -1,6 +1,6 @@
 # ChartMuseum Helm Chart
 
-Deploy your own private ChartMuseum.   
+Deploy your own private ChartMuseum.
 
 Please also see https://github.com/kubernetes-helm/chartmuseum
 
@@ -18,8 +18,11 @@ Please also see https://github.com/kubernetes-helm/chartmuseum
     - [permissions grant with IAM instance profile](#permissions-grant-with-iam-instance-profile)
     - [permissions grant with IAM assumed role](#permissions-grant-with-iam-assumed-role)
   - [Using with Google Cloud Storage](#using-with-google-cloud-storage)
+  - [Using with Google Cloud Storage and a Google Service Account](#using-with-google-cloud-storage-and-a-google-service-account)
   - [Using with Microsoft Azure Blob Storage](#using-with-microsoft-azure-blob-storage)
   - [Using with Alibaba Cloud OSS Storage](#using-with-alibaba-cloud-oss-storage)
+  - [Using with Openstack Object Storage](#using-with-openstack-object-storage)
+  - [Using an existing secret](#using-an-existing-secret)
   - [Using with local filesystem storage](#using-with-local-filesystem-storage)
     - [Example storage class](#example-storage-class)
 - [Uninstall](#uninstall)
@@ -39,8 +42,14 @@ By default this chart will not have persistent storage, and the API service
 will be *DISABLED*.  This protects against unauthorized access to the API
 with default configuration values.
 
-For a more robust solution supply helm install with a custom values.yaml   
-You are also required to create the StorageClass resource ahead of time:   
+In addition, by default, pod `securityContext.fsGroup` is set to `1000`. This
+is the user/group that the ChartMuseum container runs as, and is used to
+enable local persitant storage. If your cluster has DenySecurityContext enabled,
+you can set `securityContext` to `{}` and still use this chart with one of
+the cloud storage options.
+
+For a more robust solution supply helm install with a custom values.yaml
+You are also required to create the StorageClass resource ahead of time:
 ```
 kubectl create -f /path/to/storage_class.yaml
 ```
@@ -52,11 +61,19 @@ their default values. See values.yaml for all available options.
 |----------------------------------------|---------------------------------------------|-----------------------------------------------------|
 | `image.pullPolicy`                     | Container pull policy                       | `IfNotPresent`                                      |
 | `image.repository`                     | Container image to use                      | `chartmuseum/chartmuseum`                           |
-| `image.tag`                            | Container image tag to deploy               | `v0.7.1`                                            |
+| `image.tag`                            | Container image tag to deploy               | `v0.8.0`                                            |
 | `persistence.accessMode`               | Access mode to use for PVC                  | `ReadWriteOnce`                                     |
 | `persistence.enabled`                  | Whether to use a PVC for persistent storage | `false`                                             |
 | `persistence.size`                     | Amount of space to claim for PVC            | `8Gi`                                               |
+| `persistence.labels`                   | Additional labels for PVC                   | `{}`                                                |
 | `persistence.storageClass`             | Storage Class to use for PVC                | `-`                                                 |
+| `persistence.volumeName`               | Volume to use for PVC                       | ``                                                  |
+| `persistence.pv.enabled`               | Whether to use a PV for persistent storage  | `false`                                                 |
+| `persistence.pv.capacity.storage`      | Storage size to use for PV                  | `8Gi`                                                 |
+| `persistence.pv.accessMode`            | Access mode to use for PV                   | `ReadWriteOnce`                                                 |
+| `persistence.pv.nfs.server`            | NFS server for PV                           | ``                                                 |
+| `persistence.pv.nfs.path`              | Storage Path                                | ``                                                 |
+| `persistence.pv.pvname`                | Custom name for private volume              | ``                                                  |
 | `replicaCount`                         | k8s replicas                                | `1`                                                 |
 | `resources.limits.cpu`                 | Container maximum CPU                       | `100m`                                              |
 | `resources.limits.memory`              | Container maximum memory                    | `128Mi`                                             |
@@ -64,22 +81,22 @@ their default values. See values.yaml for all available options.
 | `resources.requests.memory`            | Container requested memory                  | `64Mi`                                              |
 | `serviceAccount.create`                | If true, create the service account         | `false`                                             |
 | `serviceAccount.name`                  | Name of the serviceAccount to create or use | `{{ chartmuseum.fullname }}`                        |
-| `securityContext`                      | Map of securityContext for the pod          | `{}`                                                |
+| `securityContext`                      | Map of securityContext for the pod          | `{ fsGroup: 1000 }`                                 |
 | `nodeSelector`                         | Map of node labels for pod assignment       | `{}`                                                |
 | `tolerations`                          | List of node taints to tolerate             | `[]`                                                |
 | `affinity`                             | Map of node/pod affinities                  | `{}`                                                |
 | `env.open.STORAGE`                     | Storage Backend to use                      | `local`                                             |
-| `env.open.ALIBABA_BUCKET`              | Bucket to store charts in for Alibaba       | ``                                                  |
-| `env.open.ALIBABA_PREFIX`              | Prefix to store charts under for Alibaba    | ``                                                  |
-| `env.open.ALIBABA_ENDPOINT`            | Alternative Alibaba endpoint                | ``                                                  |
-| `env.open.ALIBABA_SSE`                 | Server side encryption algorithm to use     | ``                                                  |
-| `env.open.AMAZON_BUCKET`               | Bucket to store charts in for AWS           | ``                                                  |
-| `env.open.AMAZON_ENDPOINT`             | Alternative AWS endpoint                    | ``                                                  |
-| `env.open.AMAZON_PREFIX`               | Prefix to store charts under for AWS        | ``                                                  |
-| `env.open.AMAZON_REGION`               | Region to use for bucket access for AWS     | ``                                                  |
-| `env.open.AMAZON_SSE`                  | Server side encryption algorithm to use     | ``                                                  |
-| `env.open.GOOGLE_BUCKET`               | Bucket to store charts in for GCP           | ``                                                  |
-| `env.open.GOOGLE_PREFIX`               | Prefix to store charts under for GCP        | ``                                                  |
+| `env.open.STORAGE_ALIBABA_BUCKET`      | Bucket to store charts in for Alibaba       | ``                                                  |
+| `env.open.STORAGE_ALIBABA_PREFIX`      | Prefix to store charts under for Alibaba    | ``                                                  |
+| `env.open.STORAGE_ALIBABA_ENDPOINT`    | Alternative Alibaba endpoint                | ``                                                  |
+| `env.open.STORAGE_ALIBABA_SSE`         | Server side encryption algorithm to use     | ``                                                  |
+| `env.open.STORAGE_AMAZON_BUCKET`       | Bucket to store charts in for AWS           | ``                                                  |
+| `env.open.STORAGE_AMAZON_ENDPOINT`     | Alternative AWS endpoint                    | ``                                                  |
+| `env.open.STORAGE_AMAZON_PREFIX`       | Prefix to store charts under for AWS        | ``                                                  |
+| `env.open.STORAGE_AMAZON_REGION`       | Region to use for bucket access for AWS     | ``                                                  |
+| `env.open.STORAGE_AMAZON_SSE`          | Server side encryption algorithm to use     | ``                                                  |
+| `env.open.STORAGE_GOOGLE_BUCKET`       | Bucket to store charts in for GCP           | ``                                                  |
+| `env.open.STORAGE_GOOGLE_PREFIX`       | Prefix to store charts under for GCP        | ``                                                  |
 | `env.open.STORAGE_MICROSOFT_CONTAINER` | Container to store charts under for MS      | ``                                                  |
 | `env.open.STORAGE_MICROSOFT_PREFIX`    | Prefix to store charts under for MS         | ``                                                  |
 | `env.open.STORAGE_OPENSTACK_CONTAINER` | Container to store charts for openstack     | ``                                                  |
@@ -102,6 +119,10 @@ their default values. See values.yaml for all available options.
 | `env.open.CACHE`                       | Cache store, can be one of: redis           | ``                                                  |
 | `env.open.CACHE_REDIS_ADDR`            | Address of Redis service (host:port)        | ``                                                  |
 | `env.open.CACHE_REDIS_DB`              | Redis database to be selected after connect | `0`                                                 |
+| `env.field`                            | Expose pod information to containers through environment variables | ``                           |
+| `env.existingSecret`                   | Name of the existing secret use values      | ``                                                  |
+| `env.existingSecret.BASIC_AUTH_USER`   | Key name in the secret for the Username     | ``                                                  |
+| `env.existingSecret.BASIC_AUTH_PASS`   | Key name in the secret for the Password     | ``                                                  |
 | `env.secret.BASIC_AUTH_USER`           | Username for basic HTTP authentication      | ``                                                  |
 | `env.secret.BASIC_AUTH_PASS`           | Password for basic HTTP authentication      | ``                                                  |
 | `env.secret.CACHE_REDIS_PASSWORD`      | Redis requirepass server configuration      | ``                                                  |
@@ -110,6 +131,10 @@ their default values. See values.yaml for all available options.
 | `gcp.secret.key`                       | Secret key for te GCP json file             | `credentials.json`                                  |
 | `service.type`                         | Kubernetes Service type                     | `ClusterIP`                                          |
 | `service.clusterIP`                    | Static clusterIP or None for headless services| `nil`                                              |
+| `service.servicename`                  | Custom name for service                     | ``                                                  |
+| `service.labels`                       | Additional labels for service               | `{}`                                                |
+| `deployment.labels`                    | Additional labels for deployment            | `{}`                                                |
+| `deployment.matchlabes`                | Match labels for deployment selector        | `{}`                                                |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to
 `helm install`.
@@ -233,7 +258,7 @@ env:
   open:
     STORAGE: google
     STORAGE_GOOGLE_BUCKET: my-gcs-bucket
-    STORAGE_GOOGLE_PREFIX:    
+    STORAGE_GOOGLE_PREFIX:
 ```
 
 ### Using with Google Cloud Storage and a Google Service Account
@@ -294,7 +319,7 @@ Run command to install
 helm install --name my-chartmuseum -f custom.yaml stable/chartmuseum
 ```
 
-To set the values directly in the command line, use the follosing command. Note that we have to base64 encode the json file because we cannot pass a multi-line text as a value.
+To set the values directly in the command line, use the following command. Note that we have to base64 encode the json file because we cannot pass a multi-line text as a value.
 
 ```shell
 export JSONKEY=$(cat my-project-77e35d85a593.json | base64)
@@ -317,7 +342,7 @@ env:
     STORAGE: microsoft
     STORAGE_MICROSOFT_CONTAINER: mycontainer
     # prefix to store charts for microsoft storage backend
-    STORAGE_MICROSOFT_PREFIX:    
+    STORAGE_MICROSOFT_PREFIX:
   secret:
     AZURE_STORAGE_ACCOUNT: "********" ## azure storage account
     AZURE_STORAGE_ACCESS_KEY: "********" ## azure storage account access key
@@ -390,6 +415,41 @@ Run command to install
 helm install --name my-chartmuseum -f custom.yaml stable/chartmuseum
 ```
 
+### Using an existing secret
+
+It is possible to pre-create a secret in kubernetes and get this chart to use that
+
+Given you are for example using the above AWS example
+
+You could create a Secret like this
+
+```shell
+ kubectl create secret generic chartmuseum-secret --from-literal="aws-access-key=myaccesskey" --from-literal="aws-secret-access-key=mysecretaccesskey" --from-literal="basic-auth-user=curator" --from-literal="basic-auth-pass=mypassword"
+```
+
+Specify `custom.yaml` with such values
+
+```yaml
+env:
+  open:
+    STORAGE: amazonexistingSecret
+    STORAGE_AMAZON_BUCKET: my-s3-bucket
+    STORAGE_AMAZON_PREFIX:
+    STORAGE_AMAZON_REGION: us-east-1
+  existingSecret: chartmuseum-secret
+  existingSecretMappings:
+    AWS_ACCESS_KEY_ID: aws-access-key
+    AWS_SECRET_ACCESS_KEY: aws-secret-access-key
+    BASIC_AUTH_USER: basic-auth-user
+    BASIC_AUTH_PASS: basic-auth-pass
+```
+
+Run command to install
+
+```shell
+helm install --name my-chartmuseum -f custom.yaml stable/chartmuseum
+```
+
 ### Using with local filesystem storage
 By default chartmuseum uses local filesystem storage.
 But on pod recreation it will lose all charts, to prevent that enable persistent storage.
@@ -425,7 +485,7 @@ helm install --name my-chartmuseum -f custom.yaml stable/chartmuseum
 
 #### Example storage class
 
-Example storage-class.yaml provided here for use with a Ceph cluster.   
+Example storage-class.yaml provided here for use with a Ceph cluster.
 
 ```
 kind: StorageClass
@@ -446,7 +506,7 @@ parameters:
 ## Uninstall
 
 By default, a deliberate uninstall will result in the persistent volume
-claim being deleted.   
+claim being deleted.
 
 ```shell
 helm delete my-chartmuseum

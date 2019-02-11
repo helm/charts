@@ -45,6 +45,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `backend.es.type`          | Elastic Type name | `flb_type` |
 | `backend.es.time_key`          | Elastic Time Key | `@timestamp` |
 | `backend.es.logstash_prefix`  | Index Prefix. If Logstash_Prefix is equals to 'mydata' your index will become 'mydata-YYYY.MM.DD'. | `kubernetes_cluster` |
+| `backend.es.replace_dots`     | Enable/Disable Replace_Dots option. | `On` |
 | `backend.es.http_user`        | Optional username credential for Elastic X-Pack access. | `` |
 | `backend.es.http_passwd:`     | Password for user defined in HTTP_User. | `` |
 | `backend.es.tls`              | Enable or disable TLS support | `off` |
@@ -77,30 +78,44 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | **General**                   |
 | `annotations`                      | Optional deamonset set annotations        | `NULL`                |
 | `podAnnotations`                   | Optional pod annotations                  | `NULL`                |
+| `podLabels`                        | Optional pod labels                       | `NULL`                |
+| `fullConfigMap`                    | User has provided entire config (parsers + system)  | `false`      |
 | `existingConfigMap`                | ConfigMap override                         | ``                    |
-| `extraInputs`                      | Add extra Input sections to config         | ``                    |
-| `extraFilters`                     | Add extra Filter sections to config        | ``                    |
-| `extraOutputs`                     | Add extra Output sections to config        | ``                    |
+| `extraEntries.input`               |    Extra entries for existing [INPUT] section                     | ``                    |
+| `extraEntries.filter`               |    Extra entries for existing [FILTER] section                     | ``                    |
+| `extraEntries.output`               |   Extra entries for existing [OUPUT] section                     | ``                    |
+| `extraPorts`                       | List of extra ports                        |                       |
 | `extraVolumeMounts`                | Mount an extra volume, required to mount ssl certificates when elasticsearch has tls enabled |          |
 | `extraVolume`                      | Extra volume                               |                                                |
+| `filter.enableExclude`                   | Enable the use of monitoring for a pod annotation of `fluentbit.io/exclude: true`. If present, discard logs from that pod.         | `true`                                 |
+| `filter.enableParser`                   | Enable the use of monitoring for a pod annotation of `fluentbit.io/parser: parser_name`. parser_name must be the name of a parser contained within parsers.conf         | `true`                                 |
 | `filter.kubeURL`                   | Optional custom configmaps                 | `https://kubernetes.default.svc:443`            |
 | `filter.kubeCAFile`                | Optional custom configmaps       | `/var/run/secrets/kubernetes.io/serviceaccount/ca.crt`    |
 | `filter.kubeTokenFile`             | Optional custom configmaps       | `/var/run/secrets/kubernetes.io/serviceaccount/token`     |
 | `filter.kubeTag`                   | Optional top-level tag for matching in filter         | `kube`                                 |
+| `filter.mergeJSONLog`                   | If the log field content is a JSON string map, append the map fields as part of the log structure         | `true`                                 |
 | `image.fluent_bit.repository`      | Image                                      | `fluent/fluent-bit`                               |
-| `image.fluent_bit.tag`             | Image tag                                  | `0.14.8`                                          |
-| `image.pullPolicy`                 | Image pull policy                          | `Always`                                          |
+| `image.fluent_bit.tag`             | Image tag                                  | `1.0.4`                                          |
+| `image.pullPolicy`                 | Image pull policy                          | `IfNotPresent`                                          |
 | `image.pullSecrets`                | Specify image pull secrets                 | `nil`                                             |
 | `input.tail.memBufLimit`           | Specify Mem_Buf_Limit in tail input        | `5MB`                                             |
+| `input.tail.parser`           | Specify Parser in tail input.        | `docker`                                             |
+| `input.tail.path`           | Specify log file(s) through the use of common wildcards.        | `/var/log/containers/*.log`                                             |
+| `input.systemd.enabled`             | [Enable systemd input](https://fluentbit.io/documentation/current/input/systemd.html)                   | `false`                                       |
+| `input.systemd.filters.systemdUnit`             | Please see https://fluentbit.io/documentation/current/input/systemd.html                   | `[docker.service, kubelet.service`, `node-problem-detector.service]`                                       |
+| `input.systemd.maxEntries`             | Please see https://fluentbit.io/documentation/current/input/systemd.html                  | `1000`                                       |
+| `input.systemd.readFromTail` | Please see https://fluentbit.io/documentation/current/input/systemd.html | `true`|
+| `input.systemd.tag` | Please see https://fluentbit.io/documentation/current/input/systemd.html | `host.*`|
 | `rbac.create`                      | Specifies whether RBAC resources should be created.   | `true`                                 |
 | `serviceAccount.create`            | Specifies whether a ServiceAccount should be created. | `true`                                 |
 | `serviceAccount.name`              | The name of the ServiceAccount to use.     | `NULL`                                            |
-| `resources.limits.cpu`             | CPU limit                                  | `100m`                                            |
-| `resources.limits.memory`          | Memory limit                               | `500Mi`                                           |
-| `resources.requests.cpu`           | CPU request                                | `100m`                                            |
-| `resources.requests.memory`        | Memory request                             | `200Mi`                                           |
+| `rawConfig`                        | Raw contents of fluent-bit.conf            | `@INCLUDE fluent-bit-service.conf`<br>`@INCLUDE fluent-bit-input.conf`<br>`@INCLUDE fluent-bit-filter.conf`<br>` @INCLUDE fluent-bit-output.conf`                                                                         |
+| `resources`                        | Pod resource requests & limits                                 | `{}`                          |
+| `hostNetwork`                      | Use host's network                         | `false`                                           |
+| `dnsPolicy`                        | Specifies the dnsPolicy to use             | `ClusterFirst`                                    |
 | `tolerations`                      | Optional daemonset tolerations             | `NULL`                                            |
 | `nodeSelector`                     | Node labels for fluent-bit pod assignment  | `NULL`                                            |
+| `affinity`                         | Expressions for affinity                   | `NULL`                                            |
 | `metrics.enabled`                  | Specifies whether a service for metrics should be exposed | `false`                            |
 | `metrics.service.annotations`      | Optional metrics service annotations       | `NULL`                                            |
 | `metrics.service.port`             | Port on where metrics should be exposed    | `2020`                                            |
@@ -118,3 +133,11 @@ $ helm install --name my-release -f values.yaml stable/fluent-bit
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+## Upgrading
+
+### From < 1.0.0 To 1.0.0
+
+Values `extraInputs`, `extraFilters` and `extraOutputs` have been removed in version `1.0.0` of the fluent-bit chart.
+To add additional entries to the existing sections, please use the `extraEntries.input`, `extraEntries.filter` and `extraEntries.output` values.
+For entire sections, please use the `rawConfig` value, inserting blocks of text as desired.

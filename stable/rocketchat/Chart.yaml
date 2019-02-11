@@ -1,6 +1,6 @@
 name: rocketchat
-version: 0.1.5
-appVersion: 0.69.1
+version: 0.3.3
+appVersion: 0.74.1
 description: Prepare to take off with the ultimate chat platform, experience the next
   level of team communications
 keywords:
@@ -13,7 +13,7 @@ keywords:
 - javascript
 - meteor
 home: https://rocket.chat/
-icon: https://cdn-www.rocket.chat/images/logo/logo.svg
+icon: https://raw.githubusercontent.com/RocketChat/Rocket.Chat.Artwork/master/Logos/icon.svg
 sources:
 - https://github.com/RocketChat/Docker.Official.Image/
 maintainers:

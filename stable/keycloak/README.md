@@ -46,7 +46,7 @@ Parameter | Description | Default
 `clusterDomain` | The internal Kubernetes cluster domain | `cluster.local`
 `keycloak.replicas` | The number of Keycloak replicas | `1`
 `keycloak.image.repository` | The Keycloak image repository | `jboss/keycloak`
-`keycloak.image.tag` | The Keycloak image tag | `4.5.0.Final`
+`keycloak.image.tag` | The Keycloak image tag | `4.8.3.Final`
 `keycloak.image.pullPolicy` | The Keycloak image pull policy | `IfNotPresent`
 `keycloak.image.pullSecrets` | Image pull secrets | `[]`
 `keycloak.basepath` | Path keycloak is hosted at | `auth`
@@ -57,12 +57,14 @@ Parameter | Description | Default
 `keycloak.extraEnv` | Allows the specification of additional environment variables for Keycloak. Passed through the `tpl` function and thus to be configured a string | `""`
 `keycloak.extraVolumeMounts` | Add additional volumes mounts, e. g. for custom themes. Passed through the `tpl` function and thus to be configured a string | `""`
 `keycloak.extraVolumes` | Add additional volumes, e. g. for custom themes. Passed through the `tpl` function and thus to be configured a string | `""`
+`keycloak.extraPorts` | Add additional ports, e. g. for custom admin console port. Passed through the `tpl` function and thus to be configured a string | `""`
 `keycloak.podDisruptionBudget` | Pod disruption budget | `{}`
 `keycloak.resources` | Pod resource requests and limits | `{}`
 `keycloak.affinity` | Pod affinity. Passed through the `tpl` function and thus to be configured a string | `Hard node and soft zone anti-affinity`
 `keycloak.nodeSelector` | Node labels for pod assignment | `{}`
 `keycloak.tolerations` | Node taints to tolerate | `[]`
 `keycloak.podAnnotations` | Extra annotations to add to pod | `{}`
+`keycloak.hostAliases` | Mapping between IP and hostnames that will be injected as entries in the pod's hosts files | `[]`
 `keycloak.securityContext` | Security context for the pod | `{runAsUser: 1000, fsGroup: 1000, runAsNonRoot: true}`
 `keycloak.preStartScript` | Custom script to run before Keycloak starts up | ``
 `keycloak.extraArgs` | Additional arguments to the start command | ``
@@ -172,8 +174,14 @@ keycloak:
       value: DEBUG
     - name: WILDFLY_LOGLEVEL
       value: DEBUG
-    - name: CACHE_OWNERS:
+    - name: CACHE_OWNERS
       value: "3"
+    - name: DB_QUERY_TIMEOUT
+      value: "60"
+    - name: DB_VALIDATE_ON_MATCH
+      value: true
+    - name: DB_USE_CAST_FAIL
+      value: false
 ```
 
 ### Providing a Custom Theme

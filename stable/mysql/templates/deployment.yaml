@@ -12,6 +12,9 @@ spec:
     metadata:
       labels:
         app: {{ template "mysql.fullname" . }}
+{{- with .Values.podLabels }}
+{{ toYaml . | indent 8 }}
+{{- end }}
 {{- with .Values.podAnnotations }}
       annotations:
 {{ toYaml . | indent 8 }}
@@ -21,9 +24,12 @@ spec:
       imagePullSecrets:
 {{ toYaml .Values.imagePullSecrets | indent 8 }}
       {{- end }}
+      {{- if .Values.priorityClassName }}
+      priorityClassName: "{{ .Values.priorityClassName }}"
+      {{- end }}
       initContainers:
       - name: "remove-lost-found"
-        image: "busybox:1.25.0"
+        image: "{{ .Values.busybox.image}}:{{ .Values.busybox.tag }}"
         imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
         command:  ["rm", "-fr", "/var/lib/mysql/lost+found"]
         volumeMounts:
@@ -39,6 +45,10 @@ spec:
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
       {{- end }}
+      {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+      {{- end }}
       containers:
       - name: {{ template "mysql.fullname" . }}
         image: "{{ .Values.image }}:{{ .Values.imageTag }}"
@@ -49,18 +59,23 @@ spec:
         {{- if .Values.mysqlAllowEmptyPassword }}
         - name: MYSQL_ALLOW_EMPTY_PASSWORD
           value: "true"
-        {{- else }}
+        {{- end }}
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "mysql.secretName" . }}
               key: mysql-root-password
+              {{- if .Values.mysqlAllowEmptyPassword }}
+              optional: true
+              {{- end }}
         - name: MYSQL_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "mysql.secretName" . }}
               key: mysql-password
-        {{- end }}
+              {{- if or .Values.mysqlAllowEmptyPassword (empty .Values.mysqlUser) }}
+              optional: true
+              {{- end }}
         - name: MYSQL_USER
           value: {{ default "" .Values.mysqlUser | quote }}
         - name: MYSQL_DATABASE

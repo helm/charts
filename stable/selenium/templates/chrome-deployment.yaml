@@ -14,7 +14,10 @@ spec:
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: "{{ .Release.Name }}"
         heritage: "{{ .Release.Service }}"
-      annotations: 
+      {{- if .Values.chrome.podAnnotations }}
+      annotations:
+{{ toYaml .Values.chrome.podAnnotations | indent 8 }}
+      {{- end}}
     spec:
       containers:
         - name: {{ .Chart.Name }}
@@ -30,7 +33,7 @@ spec:
             - name: HUB_PORT_4444_TCP_ADDR
               value: {{ template "selenium.hub.fullname" . }}
             - name: HUB_PORT_4444_TCP_PORT
-              value: {{ .Values.hub.port | quote }}
+              value: {{ .Values.hub.servicePort | quote }}
             - name: JAVA_TOOL_OPTIONS
               value: {{ default "" .Values.chrome.javaOpts | quote }}
             - name: SE_OPTS
@@ -85,6 +88,8 @@ spec:
 {{ if .Values.chrome.volumes -}}
 {{ toYaml .Values.chrome.volumes | indent 8 }}
 {{- end }}
+      hostAliases:
+{{ toYaml .Values.global.hostAliases | indent 8 }}
       nodeSelector:
 {{- if .Values.chrome.nodeSelector }}
 {{ toYaml .Values.chrome.nodeSelector | indent 8  }}

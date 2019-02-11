@@ -33,14 +33,14 @@ their default values.
 | `image.pullPolicy`                   | Container pull policy                                 | `IfNotPresent`                               |
 | `image.repository`                   | Container image to use                                | `quay.io/pires/docker-elasticsearch-curator` |
 | `image.tag`                          | Container image tag to deploy                         | `5.5.4`                                      |
+| `hooks`                              | Whether to run job on selected hooks                  | `{ "install": false, "upgrade": false }`     |
 | `cronjob.schedule`                   | Schedule for the CronJob                              | `0 1 * * *`                                  |
 | `cronjob.annotations`                | Annotations to add to the cronjob                     | {}                                           |
 | `cronjob.concurrencyPolicy`          | `Allow|Forbid|Replace` concurrent jobs                | `nil`                                        |
 | `cronjob.failedJobsHistoryLimit`     | Specify the number of failed Jobs to keep             | `nil`                                        |
 | `cronjob.successfulJobsHistoryLimit` | Specify the number of completed Jobs to keep          | `nil`                                        |
 | `pod.annotations`                    | Annotations to add to the pod                         | {}                                           |
-| `config.elasticsearch.hosts`         | Array of Elasticsearch hosts to curate                | - CHANGEME.host                              |
-| `config.elasticsearch.port`          | Elasticsearch port to connect too                     | 9200                                         |
+| `dryrun`                              | Run Curator in dry-run mode                          |  `false`                                     |
 | `configMaps.action_file_yml`         | Contents of the Curator action_file.yml               | See values.yaml                              |
 | `configMaps.config_yml`              | Contents of the Curator config.yml (overrides config) | See values.yaml                              |
 | `resources`                          | Resource requests and limits                          | {}                                           |

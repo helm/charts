@@ -2,12 +2,12 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: "{{ template "anchore-engine.fullname" . }}"
+  name: {{ template "anchore-engine.fullname" . }}
   labels:
-    app: "{{ template "anchore-engine.fullname" . }}"
+    app: {{ template "anchore-engine.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
   {{- if .Values.anchoreGlobal.ingress.annotations }}
   annotations:
 {{ toYaml .Values.anchoreGlobal.ingress.annotations | indent 4 }}
@@ -31,8 +31,8 @@ spec:
         paths:
         - path: {{ $.Values.anchoreApi.ingress.path }}
           backend:
-            serviceName: "{{ template "anchore-engine.api.fullname" $ }}"
-            servicePort: {{ $.Values.anchoreGlobal.service.ports.extApi }}
+            serviceName: {{ template "anchore-engine.api.fullname" $ }}
+            servicePort: {{ $.Values.anchoreApi.service.port }}
     {{- end }}
   {{- if and (and .Values.anchoreEnterpriseGlobal.enabled .Values.anchoreEnterpriseUi.enabled) .Values.anchoreEnterpriseUi.ingress.hosts }}
     {{- range .Values.anchoreEnterpriseUi.ingress.hosts }}
@@ -41,8 +41,8 @@ spec:
         paths:
         - path: {{ $.Values.anchoreEnterpriseUi.ingress.path }}
           backend:
-            serviceName: "{{ template "anchore-engine.enterprise-ui.fullname" $ }}"
-            servicePort: {{ $.Values.anchoreGlobal.service.ports.uiHttp }}
+            serviceName: {{ template "anchore-engine.enterprise-ui.fullname" $ }}
+            servicePort: {{ $.Values.anchoreEnterpriseUi.service.port }}
     {{- end }}
   {{- end }}
     {{- else }}
@@ -50,13 +50,13 @@ spec:
         paths:
         - path: {{ $.Values.anchoreApi.ingress.path }}
           backend:
-            serviceName: "{{ template "anchore-engine.api.fullname" $ }}"
-            servicePort: {{ $.Values.anchoreGlobal.service.ports.extApi }}
+            serviceName: {{ template "anchore-engine.api.fullname" $ }}
+            servicePort: {{ $.Values.anchoreApi.service.port }}
         {{- if and .Values.anchoreEnterpriseGlobal.enabled .Values.anchoreEnterpriseUi.enabled }}
         - path: {{ $.Values.anchoreEnterpriseUi.ingress.path }}
           backend:
-            serviceName: "{{ template "anchore-engine.enterprise-ui.fullname" $ }}"
-            servicePort: {{ $.Values.anchoreGlobal.service.ports.uiHttp }}
+            serviceName: {{ template "anchore-engine.enterprise-ui.fullname" $ }}
+            servicePort: {{ $.Values.anchoreEnterpriseUi.service.port }}
         {{- end }}
   {{- end }}
 {{- end -}}

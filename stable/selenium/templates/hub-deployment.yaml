@@ -13,7 +13,10 @@ spec:
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: "{{ .Release.Name }}"
         heritage: "{{ .Release.Service }}"
-      annotations: 
+      {{- if .Values.hub.podAnnotations }}
+      annotations:
+{{ toYaml .Values.hub.podAnnotations | indent 8 }}
+      {{- end}}
     spec:
       containers:
         - name: {{ .Chart.Name }}
@@ -29,14 +32,14 @@ spec:
               name: http
           livenessProbe:
             httpGet:
-              path: /wd/hub/status
+              path: {{ .Values.hub.probePath }}
               port: {{ .Values.hub.port }}
             initialDelaySeconds: 30
             periodSeconds: 5
             timeoutSeconds: {{ .Values.hub.livenessTimeout }}
           readinessProbe:
             httpGet:
-              path: /wd/hub/status
+              path: {{ .Values.hub.probePath }}
               port: {{ .Values.hub.port }}
             initialDelaySeconds: {{ .Values.hub.readinessDelay }}
             timeoutSeconds: {{ .Values.hub.readinessTimeout }}
@@ -80,6 +83,10 @@ spec:
             {{- if .Values.hub.timeZone }}
             - name: TZ
               value: {{ .Values.hub.timeZone | quote }}
+            {{- end }}
+            {{- if .Values.hub.port }}
+            - name: GRID_HUB_PORT
+              value: {{ .Values.hub.port | quote }}
             {{- end }}
           resources:
 {{ toYaml .Values.hub.resources | indent 12 }}
