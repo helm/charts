@@ -78,7 +78,7 @@ spec:
                 secretKeyRef:
                   name: {{ template "jenkins.fullname" . }}
                   key: jenkins-admin-user
-            {{- if or (.Values.Master.OwnSshKey) (.Values.Master.Sidecar.configAutoReload.enabled) }}
+            {{- if or (.Values.Master.OwnSshKey) (.Values.Master.Sidecars.configAutoReload.enabled) }}
             {{- if .Values.Master.JCasC.enabled }}
             - name: ADMIN_PRIVATE_KEY
               valueFrom:
@@ -130,21 +130,21 @@ spec:
               mountPath: /usr/share/jenkins/ref/secrets/
               name: secrets-dir
       containers:
-{{- if and (.Values.Master.JCasC.enabled) (.Values.Master.Sidecar.configAutoReload.enabled) }}
+{{- if and (.Values.Master.JCasC.enabled) (.Values.Master.Sidecars.configAutoReload.enabled) }}
         - name: {{ template "jenkins.name" . }}-sc-config
-          image: "{{ .Values.Master.Sidecar.image }}"
-          imagePullPolicy: {{ .Values.Master.Sidecar.imagePullPolicy }}
+          image: "{{ .Values.Master.Sidecars.configAutoReload.image }}"
+          imagePullPolicy: {{ .Values.Master.Sidecars.configAutoReload.imagePullPolicy }}
           env:
             - name: JENKINSRELOADCONFIG
               value: "true"
             - name: LABEL
-              value: "{{ .Values.Master.Sidecar.configAutoReload.label }}"
+              value: "{{ .Values.Master.Sidecars.configAutoReload.label }}"
             - name: FOLDER
-              value: "{{ .Values.Master.Sidecar.configAutoReload.folder }}"
+              value: "{{ .Values.Master.Sidecars.configAutoReload.folder }}"
             - name: NAMESPACE
-              value: "{{ .Values.Master.Sidecar.configAutoReload.searchNamespace }}"
+              value: "{{ .Values.Master.Sidecars.configAutoReload.searchNamespace }}"
             - name: SSH_PORT
-              value: "{{ .Values.Master.Sidecar.configAutoReload.sshTcpPort }}"
+              value: "{{ .Values.Master.Sidecars.configAutoReload.sshTcpPort }}"
             - name: JENKINS_PORT
               value: "{{ .Values.Master.ServicePort }}"
             {{- if .Values.Master.UseSecurity }}
@@ -153,7 +153,7 @@ spec:
                 secretKeyRef:
                   name: {{ template "jenkins.fullname" . }}
                   key: jenkins-admin-user
-            {{- if or (.Values.Master.OwnSshKey) (.Values.Master.Sidecar.configAutoReload.enabled) }}
+            {{- if or (.Values.Master.OwnSshKey) (.Values.Master.Sidecars.configAutoReload.enabled) }}
             {{- if .Values.Master.JCasC.enabled }}
             - name: ADMIN_PRIVATE_KEY
               valueFrom:
@@ -164,10 +164,10 @@ spec:
             {{- end }}
             {{- end }}
           resources:
-{{ toYaml .Values.Master.Sidecar.resources | indent 12 }}
+{{ toYaml .Values.Master.Sidecars.configAutoReload.resources | indent 12 }}
           volumeMounts:
             - name: sc-config-volume
-              mountPath: {{ .Values.Master.Sidecar.configAutoReload.folder | quote }}
+              mountPath: {{ .Values.Master.Sidecars.configAutoReload.folder | quote }}
             - name: jenkins-home
               mountPath: /var/jenkins_home
               {{- if .Values.Persistence.SubPath }}
@@ -196,7 +196,7 @@ spec:
                 secretKeyRef:
                   name: {{ template "jenkins.fullname" . }}
                   key: jenkins-admin-user
-            {{- if or (.Values.Master.OwnSshKey) (.Values.Master.Sidecar.configAutoReload.enabled) }}
+            {{- if or (.Values.Master.OwnSshKey) (.Values.Master.Sidecars.configAutoReload.enabled) }}
             {{- if .Values.Master.JCasC.enabled }}
             - name: ADMIN_PRIVATE_KEY
               valueFrom:
@@ -211,7 +211,7 @@ spec:
             {{- end }}
             {{- if .Values.Master.JCasC.enabled }}
             - name: CASC_JENKINS_CONFIG
-              value: {{ .Values.Master.Sidecar.configAutoReload.folder | default "/var/jenkins_home/casc_configs" | quote }}
+              value: {{ .Values.Master.Sidecars.configAutoReload.folder | default "/var/jenkins_home/casc_configs" | quote }}
             {{- end }}
           ports:
             - containerPort: 8080
@@ -295,12 +295,12 @@ spec:
               mountPath: /usr/share/jenkins/ref/secrets/
               name: secrets-dir
               readOnly: false
-{{- if .Values.Master.SidecarContainers}}
-{{ tpl (toYaml .Values.Master.SidecarContainers | indent 8) .}}
+{{- if .Values.Master.Sidecars.other}}
+{{ tpl (toYaml .Values.Master.Sidecars.other | indent 8) .}}
 {{- end }}
-            {{- if and (.Values.Master.JCasC.enabled) (.Values.Master.Sidecar.configAutoReload.enabled) }}
+            {{- if and (.Values.Master.JCasC.enabled) (.Values.Master.Sidecars.configAutoReload.enabled) }}
             - name: sc-config-volume
-              mountPath: {{ .Values.Master.Sidecar.configAutoReload.folder | default "/var/jenkins_home/casc_configs" | quote }}
+              mountPath: {{ .Values.Master.Sidecars.configAutoReload.folder | default "/var/jenkins_home/casc_configs" | quote }}
             {{- end }}
       volumes:
 {{- if .Values.Persistence.volumes }}
