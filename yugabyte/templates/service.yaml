@@ -1,6 +1,35 @@
 {{- $root := . -}}
-
+---
 {{- range .Values.Services }}
+{{- $service := . -}}
+
+{{- if $root.Values.tls.enabled }}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ $service.label }}-yugabyte-tls-cert
+  namespace: "{{ $root.Release.Namespace }}"
+  labels:
+    app: "{{ $service.label }}"
+    heritage: {{ $root.Release.Service | quote }}
+    release: {{ $root.Release.Name | quote }}
+    chart: "{{ $root.Chart.Name }}-{{ $root.Chart.Version }}"
+    component: "{{ $root.Values.Component }}"
+type: Opaque
+data:
+{{- $rootCA := buildCustomCert $root.Values.tls.rootCA.cert $root.Values.tls.rootCA.key -}}
+{{- $replicas := (eq .name "yb-masters") | ternary $root.Values.replicas.master $root.Values.replicas.tserver -}}
+{{- range $index := until ( int ( $replicas ) ) }}
+{{- $node := printf "%s-%d.%s.%s.svc.cluster.local" $service.label $index $service.name $root.Release.Namespace }}
+{{- $dns1 := printf "*.*.%s" $root.Release.Namespace }}
+{{- $dns2 := printf "%s.svc.cluster.local" $dns1 }}
+{{- $server := genSignedCert $node ( default nil ) (list $dns1 $dns2 ) 3650 $rootCA }}
+  node.{{$node}}.crt: {{ $server.Cert | b64enc }}
+  node.{{$node}}.key: {{ $server.Key | b64enc }}
+{{- end }}
+  ca.crt: {{ $rootCA.Cert | b64enc }}
+{{- end }}
 
 ---
 apiVersion: v1
@@ -24,7 +53,6 @@ spec:
     app: "{{ .label }}"
 
 {{ if $root.Values.enableLoadBalancer }}
-{{- $service := . -}}
 {{- range $endpoint :=  $root.Values.serviceEndpoints }}
 {{- if eq $service.label $endpoint.app }}
 ---
@@ -182,7 +210,7 @@ spec:
         {{ if eq .name "yb-masters" }}
           - "/home/yugabyte/bin/yb-master"
           - "--fs_data_dirs={{range $index := until (int ($storageInfo.count))}}{{if ne $index 0}},{{end}}/mnt/disk{{ $index }}{{end}}"
-          - "--rpc_bind_addresses=$(POD_IP)"
+          - "--rpc_bind_addresses=$(HOSTNAME).yb-masters.$(NAMESPACE).svc.cluster.local"
           - "--server_broadcast_addresses=$(HOSTNAME).yb-masters.$(NAMESPACE):7100"
           - "--master_addresses={{range $index := until (int ($root.Values.replicas.master))}}{{if ne $index 0}},{{end}}yb-master-{{ $index }}.yb-masters.$(NAMESPACE):7100{{end}}"
           - "--metric_node_name=$(HOSTNAME)"
@@ -191,10 +219,17 @@ spec:
           {{- range $flag, $override := $root.Values.gflags.master }}
           - "--{{ $flag }}={{ $override }}"
           {{- end}}
+          {{ if $root.Values.tls.enabled }}
+          - "--certs_dir=/opt/certs/yugabyte"
+          - "--allow_insecure_connections=false"
+          - "--use_node_to_node_encryption=true"
+          {{- end }}
         {{ else }}
           - "/home/yugabyte/bin/yb-tserver"
           - "--fs_data_dirs={{range $index := until (int ($storageInfo.count))}}{{if ne $index 0}},{{end}}/mnt/disk{{ $index }}{{end}}"
           - "--server_broadcast_addresses=$(HOSTNAME).yb-tservers.$(NAMESPACE):9100"
+          - "--rpc_bind_addresses=$(HOSTNAME).yb-tservers.$(NAMESPACE).svc.cluster.local"
+          - "--cql_proxy_bind_address=$(HOSTNAME).yb-tservers.$(NAMESPACE).svc.cluster.local"
           {{ if $root.Values.enablePostgres }}
           - "--start_pgsql_proxy"
           - "--pgsql_proxy_bind_address=$(POD_IP):5433"
@@ -206,6 +241,12 @@ spec:
           {{- range $flag, $override := $root.Values.gflags.tserver }}
           - "--{{ $flag }}={{ $override }}"
           {{- end}}
+          {{ if $root.Values.tls.enabled }}
+          - "--certs_dir=/opt/certs/yugabyte"
+          - "--allow_insecure_connections=false"
+          - "--use_node_to_node_encryption=true"
+          - "--use_client_to_server_encryption=true"
+          {{- end }}
         {{ end }}
         ports:
           {{- range $label, $port := .ports }}
@@ -217,10 +258,22 @@ spec:
           - name: datadir{{ $index }}
             mountPath: /mnt/disk{{ $index }}
           {{- end }}
+          {{- if $root.Values.tls.enabled }}
+          - name: {{ .label }}-yugabyte-tls-cert
+            mountPath: /opt/certs/yugabyte
+            readOnly: true
+          {{- end }}
+
+
       volumes:
         {{- range $index := until (int ($storageInfo.count)) }}
         - name: datadir{{ $index }}
           hostPath:
             path: /mnt/disks/ssd{{ $index }}
+        {{- end }}
+        {{- if $root.Values.tls.enabled }}
+        - name: {{ .label }}-yugabyte-tls-cert
+          secret:
+            secretName: {{ .label }}-yugabyte-tls-cert
         {{- end }}
 {{- end }}

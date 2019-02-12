@@ -98,5 +98,10 @@ If you want to create a shared LoadBalancer endpoint for all the services (YQL, 
 ```
 helm install yugabyte -f expose-all-shared.yaml --namespace yb-demo --name yb-demo --wait
 ```
+#### Enable TLS for YugaByte (Note: This is only available for Enterprise Edition)
+The assumption here is you already have the pull secret installed to pull from our private Enterprise Edition registry
+```
+helm install yugabyte --namespace yb-demo --name yb-demo --set=tls.enabled=true --set=Image.repository=quay.io/yugabyte/yugabyte --set=Image.pullSecretName=yugabyte-k8s-pull-secret --wait
+```
 
 Follow the instructions on the NOTES section.
