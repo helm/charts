@@ -93,6 +93,13 @@ and their default values.
 | resources                      | Pod resource requests & limits                                                   | `{}`                |
 | tolerations                    | List of node taints to tolerate                                                  | `[]`                |
 
+### Admin/Proxy listener override
+
+If you specify `env.admin_listen` or `env.proxy_listen`, this chart will use
+the value provided by you as opposed to constructing a listen variable
+from fields like `proxy.http.containerPort` and `proxy.http.enabled`. This allows
+you to be more prescriptive when defining listen directives.
+
 ### Kong-specific parameters
 
 Kong has a choice of either Postgres or Cassandra as a backend datatstore.
