@@ -178,22 +178,22 @@ Master:
         jenkins:
           systemMessage: Welcome to our CI\CD server.  This Jenkins is configured and managed 'as code'.
 
-  Sidecar:
-    image: shadwell/k8s-sidecar:0.0.2
-    imagePullPolicy: IfNotPresent
-    resources:
-    #   limits:
-    #     cpu: 100m
-    #     memory: 100Mi
-    #   requests:
-    #     cpu: 50m
-    #     memory: 50Mi
+  Sidecars:
     configAutoReload:
       # If enabled: true, Jenkins Configuration as Code will be reloaded on-the-fly without a reboot.  If false or not-specified,
       # jcasc changes will cause a reboot and will only be applied at the subsequent start-up.  Auto-reload uses the Jenkins CLI
       # over SSH to reapply config when changes to the ConfigScripts are detected.  The admin user (or account you specify in
       # Master.AdminUser) will have a random SSH private key (RSA 4096) assigned unless you specify OwnSshKey: true.  This will be saved to a k8s secret.
       enabled: false
+      image: shadwell/k8s-sidecar:0.0.2
+      imagePullPolicy: IfNotPresent
+      resources:
+        #   limits:
+        #     cpu: 100m
+        #     memory: 100Mi
+        #   requests:
+        #     cpu: 50m
+        #     memory: 50Mi
       # SSH port value can be set to any unused TCP port.  The default, 1044, is a non-standard SSH port that has been chosen at random.
       # Is only used to reload jcasc config from the sidecar container running in the Jenkins master pod.
       # This TCP port will not be open in the pod (unless you specifically configure this), so Jenkins will not be
@@ -209,6 +209,23 @@ Master:
       # It's also possible to specify ALL to search in all namespaces:
       # searchNamespace:
 
+    # Allows you to inject additional/other sidecars
+    other:
+    ## The example below runs the client for https://smee.io as sidecar container next to Jenkins,
+    ## that allows to trigger build behind a secure firewall.
+    ## https://jenkins.io/blog/2019/01/07/webhook-firewalls/#triggering-builds-with-webhooks-behind-a-secure-firewall
+    ##
+    ## Note: To use it you should go to https://smee.io/new and update the url to the generete one.
+    # - name: smee
+    #   image: docker.io/twalter/smee-client:1.0.2
+    #   args: ["--port", "{{ .Values.Master.ServicePort }}", "--path", "/github-webhook/", "--url", "https://smee.io/new"]
+    #   resources:
+    #     limits:
+    #       cpu: 50m
+    #       memory: 128Mi
+    #     requests:
+    #       cpu: 10m
+    #       memory: 32Mi
   # Node labels and tolerations for pod assignment
   # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
   # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
@@ -236,23 +253,6 @@ Master:
     #   hosts:
     #     - jenkins.cluster.local
   AdditionalConfig: {}
-
-  SidecarContainers:
-  ## The example below runs the client for https://smee.io as sidecar container next to Jenkins,
-  ## that allows to trigger build behind a secure firewall.
-  ## https://jenkins.io/blog/2019/01/07/webhook-firewalls/#triggering-builds-with-webhooks-behind-a-secure-firewall
-  ##
-  ## Note: To use it you should go to https://smee.io/new and update the url to the generete one.
-  # - name: smee
-  #  image: docker.io/twalter/smee-client:1.0.2
-  #  args: ["--port", "{{ .Values.Master.ServicePort }}", "--path", "/github-webhook/", "--url", "https://smee.io/new"]
-  #  resources:
-  #    limits:
-  #      cpu: 50m
-  #      memory: 128Mi
-  #    requests:
-  #      cpu: 10m
-  #      memory: 32Mi
 
 Agent:
   Enabled: true
