@@ -37,8 +37,8 @@ ingress:
 
 #Additional labels for Ingress manifest file
   #labels:
-  # traffic-type: external
-  # traffic-type: internal
+  #  traffic-type: external
+  #  traffic-type: internal
   tls: {}
   # Secrets must be manually created in the namespace.
   # - secretName: chart-example-tls
