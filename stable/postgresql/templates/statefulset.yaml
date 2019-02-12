@@ -106,7 +106,7 @@ spec:
         - name: POSTGRES_REPLICATION_MODE
           value: "master"
         - name: POSTGRES_REPLICATION_USER
-          value: {{ .Values.replication.user | quote }}
+          value: {{ include "postgresql.replication.username" . | quote }}
         {{- if .Values.usePasswordFile }}
         - name: POSTGRES_REPLICATION_PASSWORD_FILE
           value: "/opt/bitnami/postgresql/secrets/postgresql-replication-password"
@@ -127,7 +127,7 @@ spec:
           value: {{ .Values.replication.applicationName }}
         {{- end }}
         - name: POSTGRES_USER
-          value: {{ .Values.postgresqlUsername | quote }}
+          value: {{ include "postgresql.username" . | quote }}
         {{- if .Values.usePasswordFile }}
         - name: POSTGRES_PASSWORD_FILE
           value: "/opt/bitnami/postgresql/secrets/postgresql-password"
@@ -138,26 +138,26 @@ spec:
               name: {{ template "postgresql.secretName" . }}
               key: postgresql-password
         {{- end }}
-        {{- if .Values.postgresqlDatabase }}
+        {{- if (include "postgresql.database" .) }}
         - name: POSTGRES_DB
-          value: {{ .Values.postgresqlDatabase | quote }}
+          value: {{ (include "postgresql.database" .) | quote }}
         {{- end }}
 {{- if .Values.extraEnv }}
 {{ toYaml .Values.extraEnv | indent 8 }}
 {{- end }}
         ports:
         - name: postgresql
-          containerPort: {{ .Values.service.port }}
+          containerPort: {{ template "postgresql.port" . }}
         {{- if .Values.livenessProbe.enabled }}
         livenessProbe:
           exec:
             command:
             - sh
             - -c
-           {{- if .Values.postgresqlDatabase }}
-            - exec pg_isready -U {{ .Values.postgresqlUsername | quote }} -d {{ .Values.postgresqlDatabase | quote }} -h localhost
+           {{- if (include "postgresql.database" .) }}
+            - exec pg_isready -U {{ include "postgresql.username" . | quote }} -d {{ (include "postgresql.database" .) | quote }} -h localhost
            {{- else }}
-            - exec pg_isready -U {{ .Values.postgresqlUsername | quote }} -h localhost
+            - exec pg_isready -U {{ include "postgresql.username" . | quote }} -h localhost
            {{- end }}
           initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
           periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
@@ -171,10 +171,10 @@ spec:
             command:
             - sh
             - -c
-           {{- if .Values.postgresqlDatabase }}
-            - exec pg_isready -U {{ .Values.postgresqlUsername | quote }} -d {{ .Values.postgresqlDatabase | quote }} -h localhost
+           {{- if (include "postgresql.database" .) }}
+            - exec pg_isready -U {{ include "postgresql.username" . | quote }} -d {{ (include "postgresql.database" .) | quote }} -h localhost
            {{- else }}
-            - exec pg_isready -U {{ .Values.postgresqlUsername | quote }} -h localhost
+            - exec pg_isready -U {{ include "postgresql.username" . | quote }} -h localhost
            {{- end }}
           initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
           periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
@@ -208,9 +208,9 @@ spec:
         image: {{ template "metrics.image" . }}
         imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
         env:
-        {{- $database := required "In order to enable metrics you need to specify a database (.Values.postgresqlDatabase)" .Values.postgresqlDatabase }}
+        {{- $database := required "In order to enable metrics you need to specify a database (.Values.postgresqlDatabase or .Values.global.postgresql.postgresqlDatabase)" (include "postgresql.database" .) }}
         - name: DATA_SOURCE_URI
-          value: {{ printf "localhost:%d/%s?sslmode=disable" (int .Values.service.port) $database | quote }}
+          value: {{ printf "localhost:%d/%s?sslmode=disable" (int (include "postgresql.port" .)) $database | quote }}
         {{- if .Values.usePasswordFile }}
         - name: DATA_SOURCE_PASS_FILE
           value: "/opt/bitnami/postgresql/secrets/postgresql-password"
@@ -222,7 +222,7 @@ spec:
               key: postgresql-password
         {{- end }}
         - name: DATA_SOURCE_USER
-          value: {{ .Values.postgresqlUsername }}
+          value: {{ template "postgresql.username" . }}
         {{- if .Values.livenessProbe.enabled }}
         livenessProbe:
           httpGet:
