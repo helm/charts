@@ -55,8 +55,8 @@ gflags:
 
 PodManagementPolicy: Parallel
 
-# Flag to use to enable postgres support on tservers.
-# enablePostgres: false
+# Flag to use to enable YSQL postgres support on tservers.
+# enableYsql: true
 
 enableLoadBalancer: True
 

@@ -230,7 +230,7 @@ spec:
           - "--server_broadcast_addresses=$(HOSTNAME).yb-tservers.$(NAMESPACE):9100"
           - "--rpc_bind_addresses=$(HOSTNAME).yb-tservers.$(NAMESPACE).svc.cluster.local"
           - "--cql_proxy_bind_address=$(HOSTNAME).yb-tservers.$(NAMESPACE).svc.cluster.local"
-          {{ if $root.Values.enablePostgres }}
+          {{ if or $root.Values.enableYsql $root.Values.enablePostgres }}
           - "--start_pgsql_proxy"
           - "--pgsql_proxy_bind_address=$(POD_IP):5433"
           {{ end }}
