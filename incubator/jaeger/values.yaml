@@ -65,7 +65,7 @@ schema:
 # Begin: Override values on the Elasticsearch subchart to customize for Jaeger
 elasticsearch:
   image:
-    tag: "5.4"
+    tag: "6.6"
   cluster:
     name: "tracing"
   data:

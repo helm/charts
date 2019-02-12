@@ -3,11 +3,10 @@ kind: ConfigMap
 metadata:
   name: {{ template "jaeger.fullname" . }}
   labels:
-    app: {{ template "jaeger.name" . }}
-    jaeger-infra: common-configmap
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    app.kubernetes.io/name: {{ template "jaeger.name" . }}
+    helm.sh/chart: {{ include "jaeger.chart" . }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
 data:
   cassandra.contact-points: {{ template "cassandra.contact_points" . }}
   cassandra.datacenter.name: {{ .Values.cassandra.config.dc_name | quote }}
