@@ -100,7 +100,7 @@ spec:
               port: https
               scheme: HTTPS
             {{- end }}
-          {{- toYaml .Values.livenessProbe | nindent 10 }}
+            {{- toYaml .Values.livenessProbe | nindent 12 }}
           readinessProbe:
             httpGet:
               path: /admin/
@@ -110,7 +110,7 @@ spec:
               port: https
               scheme: HTTPS
             {{- end }}
-          {{- toYaml .Values.readinessProbe | nindent 10 }}
+            {{- toYaml .Values.readinessProbe | nindent 12 }}
           volumeMounts:
             - mountPath: /var/www/html
               name: yourls-data
@@ -118,7 +118,7 @@ spec:
             {{- toYaml .Values.volumeMounts | nindent 12 }}
           {{- end }}
           resources:
-          {{- toYaml .Values.resources | nindent 10 }}
+            {{- toYaml .Values.resources | nindent 12 }}
 {{- if .Values.metrics.enabled }}
         - name: metrics
           image: {{ template "metrics.image" . }}
@@ -140,7 +140,7 @@ spec:
             initialDelaySeconds: 5
             timeoutSeconds: 1
           resources:
-          {{- toYaml .Values.metrics.resources | nindent 10 }}
+            {{- toYaml .Values.metrics.resources | nindent 12 }}
 {{- end }}
       volumes:
         - name: yourls-data
