@@ -190,6 +190,10 @@ airflow:
 Please note a folder `~/.local/bin` will be automatically created and added to the PATH so that
 Bash operators can use command line tools installed by `pip install --user` for instance.
 
+## Installing dependencies
+
+Add a `requirements.txt` file at the root of your DAG project (`dags.path` entry at `values.yaml`) and they will be automatically installed. That works for both shared persistent volume and init-container deployment strategies (see below).
+
 ## DAGs Deployment
 
 Several options are provided for synchronizing your Airflow DAGs.
@@ -216,9 +220,6 @@ To share a PV with multiple Pods, the PV needs to have accessMode 'ReadOnlyMany'
 
 If you enable set `dags.init_container.enabled=true`, the pods will try upon startup to fetch the
 git repository defined by `dags.git_repo`, on branch `dags.git_branch` as DAG folder.
-
-You can also add a `requirements.txt` file at the root of your DAG project to have other
-Python dependencies installed.
 
 This is the easiest way of deploying your DAGs to Airflow.
 
