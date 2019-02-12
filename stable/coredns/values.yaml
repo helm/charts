@@ -21,6 +21,10 @@ serviceType: "ClusterIP"
 
 service:
 # clusterIP: ""
+  metrics:
+    enabled: true
+    port: 9153
+    name: metrics
   annotations:
     prometheus.io/scrape: "true"
     prometheus.io/port: "9153"

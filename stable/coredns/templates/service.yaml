@@ -25,8 +25,8 @@ spec:
   clusterIP: {{ .Values.service.clusterIP }}
   {{- end }}
   ports:
-{{- if eq ( index .Values.service.annotations "prometheus.io/scrape" ) "true" }}
-  - {"port": {{( int64 ( index .Values.service.annotations "prometheus.io/port" ))}}, "protocol": "TCP", "name": "metrics", "targetPort": 9153}
+{{- if eq .Values.service.metrics.enabled true }}
+  - {port: {{ .Values.service.metrics.port }}, protocol: TCP, name: {{ .Values.service.metrics.name }}, targetPort: {{ .Values.service.metrics.port }}}
 {{- end }}
 {{ include "coredns.servicePorts" . | indent 2 -}}
   type: {{ default "ClusterIP" .Values.serviceType }}
