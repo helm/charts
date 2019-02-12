@@ -34,6 +34,11 @@ ingress:
   # kubernetes.io/tls-acme: "true"
   # This property allows for reports up to a certain size to be uploaded to SonarQube
   # nginx.ingress.kubernetes.io/proxy-body-size: "8m"
+
+#Additional labels for Ingress manifest file
+  #labels:
+  # traffic-type: external
+  # traffic-type: internal
   tls: {}
   # Secrets must be manually created in the namespace.
   # - secretName: chart-example-tls
@@ -103,6 +108,9 @@ persistence:
 #    - "https://github.com/SonarSource/sonar-ldap/releases/download/2.2-RC3/sonar-ldap-plugin-2.2.0.601.jar"
 plugins:
   install: []
+
+  #initContainerImage: alpine:3.9
+  #deleteDefaultPlugins: true
   resources: {}
   # We allow the plugins init container to have a separate resources declaration because
   # the initContainer does not take as much resources.
