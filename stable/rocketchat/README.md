@@ -20,7 +20,7 @@ $ helm install --set mongodb.mongodbUsername=<your_username_here>,mongodb.mongod
 
 ### If you want to install another version of rocket.chat image you can set the version like this:
 ```bash
-$ helm install --set mongodb.mongodbUsername=<your_username_here>,mongodb.mongodbPassword=<your_password_here>,tag=0.74.0 --name my-rocketchat stable/rocketchat
+$ helm install --set mongodb.mongodbUsername=<your_username_here>,mongodb.mongodbPassword=<your_password_here>,tag=0.74.2 --name my-rocketchat stable/rocketchat
 ```
 
 
