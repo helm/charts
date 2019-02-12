@@ -69,6 +69,7 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
+        {{- if not .Values.env.admin_listen }}
         {{- if .Values.admin.useTLS }}
         - name: KONG_ADMIN_LISTEN
           value: "0.0.0.0:{{ .Values.admin.containerPort }} ssl"
@@ -76,8 +77,11 @@ spec:
         - name: KONG_ADMIN_LISTEN
           value: 0.0.0.0:{{ .Values.admin.containerPort }}
         {{- end }}
+        {{- end }}
+        {{- if not .Values.env.proxy_listen }}
         - name: KONG_PROXY_LISTEN
           value: {{ template "kong.kongProxyListenValue" . }}
+        {{- end }}
         - name: KONG_NGINX_DAEMON
           value: "off"
         - name: KONG_PROXY_ACCESS_LOG
