@@ -37,7 +37,7 @@ app:
   name: "kuberhealthy" # what to name the kuberhealthy deployment
 image:
   repository: quay.io/comcast/kuberhealthy
-  tag: 0.1.1
+  tag: 1.0.0
 resources:
   requests:
     cpu: 100m
