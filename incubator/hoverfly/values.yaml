@@ -6,7 +6,7 @@ image:
   repository: docker.io/spectolabs/hoverfly
   tag: v1.0.0-rc.1
 service:
-  type: LoadBalancer
+  type: ClusterIP
   externalAdminPort: 8888
   adminPort: 8888 
   externalProxyPort: 8500
