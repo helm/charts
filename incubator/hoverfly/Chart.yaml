@@ -1,10 +1,10 @@
 apiVersion: v1
 description: Hoverfly is a lightweight, open source API simulation tool. Using Hoverfly, you can create realistic simulations of the APIs your application depends on.
 name: hoverfly
-version: 0.10.2
+version: 1.0.0-rc.1
 home: https://hoverfly.io
 sources:
 - https://github.com/SpectoLabs/hoverfly
 maintainers:
-- name: SpectoLabs
-  email: contact@specto.io
+- name: tommysitu
+  email: tommy.situ@specto.io
