@@ -26,11 +26,6 @@ spec:
         heritage: {{ .Release.Service | quote }}
         role: slave
     spec:
-      {{- if .Values.securityContext.enabled }}
-      securityContext:
-        fsGroup: {{ .Values.securityContext.fsGroup }}
-        runAsUser: {{ .Values.securityContext.runAsUser }}
-      {{- end }}
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
       {{- range .Values.image.pullSecrets }}
@@ -79,6 +74,11 @@ spec:
         imagePullPolicy: "{{ .Values.image.pullPolicy }}"
         resources:
 {{ toYaml .Values.resources | indent 10 }}
+        {{- if .Values.securityContext.enabled }}
+        securityContext:
+          fsGroup: {{ .Values.securityContext.fsGroup }}
+          runAsUser: {{ .Values.securityContext.runAsUser }}
+        {{- end }}
         env:
         {{- if .Values.image.debug}}
         - name: BASH_DEBUG
