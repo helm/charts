@@ -1,7 +1,6 @@
 # Default values for hoverfly.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-replicaCount: 1
 image:
   repository: docker.io/spectolabs/hoverfly
   tag: v1.0.0-rc.1
@@ -12,6 +11,7 @@ service:
   externalProxyPort: 8500
   proxyPort: 8500
 healthcheckEndpoint: /api/health
+hoverflyFlags:
 resources:
   limits:
     cpu: 0.2

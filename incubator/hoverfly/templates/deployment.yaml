@@ -14,6 +14,10 @@ spec:
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        env:
+          - name: FLAGS
+            value: {{ .Values.hoverflyFlags }}
+        args: ["$(FLAGS)"]
         ports:
         - containerPort: {{ .Values.service.adminPort }}
         - containerPort: {{ .Values.service.proxyPort }}
