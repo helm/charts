@@ -9,6 +9,8 @@ maintainers:
     email: eric.greer@comcast.com
   - name: lolimjake
     email: jacob.martin@comcast.com
+  - name: ihoegen
+    email: ianhoegen@gmail.com
 keywords:
 - kuberhealthy
 - kubernetes
