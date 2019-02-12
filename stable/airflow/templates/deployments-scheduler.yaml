@@ -117,6 +117,10 @@ spec:
               airflow scheduler -n {{ .Values.airflow.schedulerNumRuns }}
           {{- end }}
       volumes:
+        - name: scripts
+          configMap:
+            name: {{ template "airflow.fullname" . }}-scripts
+            defaultMode: 0755
         - name: dags-data
         {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
@@ -130,10 +134,6 @@ spec:
             claimName: {{ .Values.logsPersistence.existingClaim | default (printf "%s-logs" (include "airflow.fullname" . | trunc 58 )) }}
         {{- end }}
         {{- if .Values.dags.initContainer.enabled }}
-        - name: scripts
-          configMap:
-            name: {{ template "airflow.fullname" . }}-scripts
-            defaultMode: 0755
         - name: git-clone
           configMap:
             name: {{ template "airflow.fullname" . }}-git-clone
