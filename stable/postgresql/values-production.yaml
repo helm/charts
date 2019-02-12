@@ -149,6 +149,10 @@ postgresqlDataDir: /bitnami/postgresql
 ## NOTE: This will override initdbScripts
 # initdbScriptsConfigMap:
 
+## Secret with scripts to be run at first boot (in case it contains sensitive information)
+## NOTE: This can work along initdbScripts or initdbScriptsConfigMap
+# initdbScriptsSecret:
+
 ## PostgreSQL service configuration
 service:
   ## PosgresSQL service type

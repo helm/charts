@@ -150,3 +150,10 @@ Get the initialization scripts ConfigMap name.
 {{- printf "%s-init-scripts" (include "postgresql.fullname" .) -}}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Get the initialization scripts Secret name.
+*/}}
+{{- define "postgresql.initdbScriptsSecret" -}}
+{{- printf "%s" .Values.initdbScriptsSecret -}}
+{{- end -}}

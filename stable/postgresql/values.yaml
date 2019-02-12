@@ -150,6 +150,10 @@ postgresqlDataDir: /bitnami/postgresql
 ## NOTE: This will override initdbScripts
 # initdbScriptsConfigMap:
 
+## Secret with scripts to be run at first boot (in case it contains sensitive information)
+## NOTE: This can work along initdbScripts or initdbScriptsConfigMap
+# initdbScriptsSecret:
+
 ## Optional duration in seconds the pod needs to terminate gracefully.
 ## ref: https://kubernetes.io/docs/concepts/workloads/pods/pod/#termination-of-pods
 ##
