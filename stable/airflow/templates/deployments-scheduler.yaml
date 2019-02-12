@@ -69,14 +69,14 @@ spec:
           env:
           {{- include "airflow.mapenvsecrets" . | indent 10 }}
           volumeMounts:
+            - name: scripts
+              mountPath: /usr/local/scripts
           {{- if .Values.persistence.enabled }}
             - name: dags-data
               mountPath: {{ .Values.dags.path }}
           {{- else if .Values.dags.initContainer.enabled }}
             - name: dags-data
               mountPath: {{ .Values.dags.path }}
-            - name: scripts
-              mountPath: /usr/local/scripts
             {{- if .Values.airflow.connections }}
             - name: connections
               mountPath: /usr/local/connections

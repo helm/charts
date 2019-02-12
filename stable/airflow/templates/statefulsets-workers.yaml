@@ -77,6 +77,8 @@ spec:
           env:
           {{- include "airflow.mapenvsecrets" . | indent 10 }}
           volumeMounts:
+            - name: scripts
+              mountPath: /usr/local/scripts
           {{- $secretsDir := .Values.workers.secretsDir -}}
           {{- range .Values.workers.secrets }}
             - name: {{ . }}-volume
@@ -90,8 +92,6 @@ spec:
           {{- else if .Values.dags.initContainer.enabled }}
             - name: dags-data
               mountPath: {{ .Values.dags.path }}
-            - name: scripts
-              mountPath: /usr/local/scripts
           {{- end }}
           args:
             - "bash"
