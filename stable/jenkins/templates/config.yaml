@@ -246,7 +246,7 @@ data:
 {{- if .Values.Master.ScriptApproval }}
     yes n | cp -i /var/jenkins_config/scriptapproval.xml /var/jenkins_home/scriptApproval.xml;
 {{- end }}
-{{- if and (.Values.Master.JCasC.enabled) (.Values.Master.Sidecar.configAutoReload.enabled) }}
+{{- if and (.Values.Master.JCasC.enabled) (.Values.Master.Sidecars.configAutoReload.enabled) }}
   {{- if not .Values.Master.InitScripts }}
     mkdir -p /var/jenkins_home/init.groovy.d/;
     yes n | cp -i /var/jenkins_config/*.groovy /var/jenkins_home/init.groovy.d/;
@@ -257,7 +257,7 @@ data:
     yes n | cp -i /var/jenkins_config/*.groovy /var/jenkins_home/init.groovy.d/;
 {{- end }}
 {{- if .Values.Master.JCasC.enabled }}
-  {{- if .Values.Master.Sidecar.configAutoReload.enabled }}
+  {{- if .Values.Master.Sidecars.configAutoReload.enabled }}
     bash -c 'ssh-keygen -y -f <(echo "${ADMIN_PRIVATE_KEY}") > /var/jenkins_home/key.pub'
   {{- else }}
     mkdir -p /var/jenkins_home/casc_configs;
@@ -282,7 +282,7 @@ data:
 {{ $val | indent 4 }}
 {{- end }}
 {{- if .Values.Master.JCasC.enabled }}
-  {{- if .Values.Master.Sidecar.configAutoReload.enabled }}
+  {{- if .Values.Master.Sidecars.configAutoReload.enabled }}
   init-add-ssh-key-to-admin.groovy: |-
     import jenkins.security.*
     import hudson.model.User
@@ -295,7 +295,7 @@ data:
     u.addProperty(keys_param)
     def inst = Jenkins.getInstance()
     def sshDesc = inst.getDescriptor("org.jenkinsci.main.modules.sshd.SSHD")
-    sshDesc.setPort({{ .Values.Master.Sidecar.configAutoReload.sshTcpPort | default 1044 }})
+    sshDesc.setPort({{ .Values.Master.Sidecars.configAutoReload.sshTcpPort | default 1044 }})
     sshDesc.getActualPort()
     sshDesc.save()
   {{- else }}
