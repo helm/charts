@@ -47,20 +47,6 @@ spec:
 {{ if (and (eq .Values.controllerService.type "NodePort") (not (empty .Values.controllerService.nodePort))) }}
       nodePort: {{.Values.controllerService.nodePort}}
 {{ end }}
-    - port: {{ .Values.controllerService.stun.port }}
-      targetPort: stun
-      protocol: UDP
-      name: stun
-{{ if (and (eq .Values.controllerService.type "NodePort") (not (empty .Values.controllerService.stun.nodePort))) }}
-      nodePort: {{.Values.controllerService.stun.nodePort}}
-{{ end }}
-    - port: {{ .Values.controllerService.discovery.port }}
-      targetPort: discovery
-      protocol: UDP
-      name: discovery
-{{ if (and (eq .Values.controllerService.type "NodePort") (not (empty .Values.controllerService.discovery.nodePort))) }}
-      nodePort: {{.Values.controllerService.discovery.nodePort}}
-{{ end }}
   selector:
     app: {{ template "unifi.name" . }}
     release: {{ .Release.Name }}
