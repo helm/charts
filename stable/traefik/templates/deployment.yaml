@@ -106,6 +106,10 @@ spec:
         - mountPath: /ssl
           name: ssl
         {{- end }}
+        {{- if and .Values.ssl.enabled .Values.ssl.mtls.enabled }}
+        - mountPath: /mtls
+          name: mtls
+        {{- end }}
         {{- if .Values.acme.enabled }}
         - mountPath: /acme
           name: acme
@@ -148,6 +152,11 @@ spec:
       - name: ssl
         secret:
           secretName: {{ template "traefik.fullname" . }}-default-cert
+      {{- end }}
+      {{- if and .Values.ssl.enabled .Values.ssl.mtls.enabled }}
+      - name: mtls
+        configMap:
+          name: {{ template "traefik.fullname" . }}-client-ca-certs
       {{- end }}
       {{- if .Values.acme.enabled }}
       - name: acme

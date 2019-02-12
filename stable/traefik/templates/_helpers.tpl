@@ -104,3 +104,14 @@ Create the block for RootCAs.
 	   {{- end -}}
          ]
 {{- end -}}
+
+Create the block for mTLS ClientCAs.
+*/}}
+{{- define "traefik.ssl.mtls.clientCAs" -}}
+         files = [
+	   {{- range $idx, $_ := .Values.ssl.mtls.clientCaCerts }}
+	     {{- if $idx }}, {{ end }}
+	     {{- printf "/mtls/clientCaCert-%d.crt" $idx | quote }}
+	   {{- end -}}
+         ]
+{{- end -}}
