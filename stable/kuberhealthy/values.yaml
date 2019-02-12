@@ -6,7 +6,7 @@ prometheus:
   enabled: false
   name: "prometheus"
   enableScraping: true
-  serviceMonitor: true
+  serviceMonitor: false
   enableAlerting: true
 
 image:
