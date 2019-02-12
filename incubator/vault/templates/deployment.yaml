@@ -24,7 +24,10 @@ spec:
         app: {{ template "vault.name" . }}
         release: {{ .Release.Name }}
       annotations:
-{{ toYaml .Values.podAnnotations | indent 8 }}
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        {{- range $key, $value := .Values.podAnnotations }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
     spec:
       containers:
       - name: {{ .Chart.Name }}
