@@ -77,6 +77,8 @@ spec:
           env:
           {{- include "airflow.mapenvsecrets" . | indent 10 }}
           volumeMounts:
+            - name: scripts
+              mountPath: /usr/local/scripts
           {{- $secretsDir := .Values.workers.secretsDir -}}
           {{- range .Values.workers.secrets }}
             - name: {{ . }}-volume
@@ -90,8 +92,6 @@ spec:
           {{- else if .Values.dags.initContainer.enabled }}
             - name: dags-data
               mountPath: {{ .Values.dags.path }}
-            - name: scripts
-              mountPath: /usr/local/scripts
           {{- end }}
           args:
             - "bash"
@@ -122,6 +122,10 @@ spec:
           resources:
 {{ toYaml .Values.workers.resources | indent 12 }}
       volumes:
+        - name: scripts
+          configMap:
+            name: {{ template "airflow.fullname" . }}-scripts
+            defaultMode: 0755
         {{- range .Values.workers.secrets }}
         - name: {{ . }}-volume
           secret:
@@ -135,10 +139,6 @@ spec:
           emptyDir: {}
         {{- end }}
         {{- if .Values.dags.initContainer.enabled }}
-        - name: scripts
-          configMap:
-            name: {{ template "airflow.fullname" . }}-scripts
-            defaultMode: 0755
         - name: git-clone
           configMap:
             name: {{ template "airflow.fullname" . }}-git-clone
