@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+  - port: {{ .Values.service.externalAdminPort }}
+    targetPort: {{ .Values.service.adminPort }}
+    protocol: TCP
+    name: admin
+  - port: {{ .Values.service.externalProxyPort }}
+    targetPort: {{ .Values.service.proxyPort }}
+    protocol: TCP
+    name: proxy
+  selector:
+    app: {{ template "fullname" . }}
