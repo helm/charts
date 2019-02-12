@@ -4,6 +4,36 @@
 ##
 ## common settings and setting for the webserver
 airflow:
+
+  ##
+  ## secretsMapping can be overridden in values.yaml as such:
+  ## secretsMapping:
+  ## - envVar: AIRFLOW__LDAP__BIND_PASSWORD
+  ##   secretName: ldapBindPassword
+  ## - envVar: AIRFLOW__ATLAS__PASSWORD
+  ##   secretName: atlasPassword
+  ## - envVar: AIRFLOW__SMTP__PASSWORD
+  ##   secretName: smtpPassword
+  ## - envVar: AIRFLOW__KUBERNETES__GIT_PASSWORD
+  ##   secretName: kubernetesGitPassword
+  ## - envVar: POSTGRES_USER
+  ##   secretName: postgresUser
+  ## - envVar: POSTGRES_PASSWORD
+  ##   secretName: postgresPassword
+  ## - envVar: REDIS_PASSWORD
+  ##   secretName: redisPassword
+  secretsMapping:
+
+
+  ## used only when existingAirflowSecrets is false
+  defaultSecretsMapping:
+  - envVar: POSTGRES_USER
+    secretKey: postgresUser
+  - envVar: POSTGRES_PASSWORD
+    secretKey: postgresPassword
+  - envVar: REDIS_PASSWORD
+    secretKey: redisPassword
+
   ##
   ## You will need to define your fernet key:
   ## Generate fernetKey with:
@@ -349,11 +379,8 @@ postgresql:
   ## Set to false if bringing your own PostgreSQL.
   enabled: true
   ##
-  ## If bringing your own PostgreSQL, the full uri to use
-  ## e.g. postgres://airflow:changeme@my-postgres.com:5432/airflow?sslmode=disable
-  # uri:
-  ##
-  ## PostgreSQL hostname
+  ## If you are bringing your own PostgreSQL, you should set postgresHost and
+  ## also probably service.port, postgresUser, postgresPassword, and postgresDatabase
   ## postgresHost:
   ##
   ## PostgreSQL port
@@ -391,7 +418,11 @@ redis:
   ## Set to false if bringing your own redis.
   enabled: true
   ##
+  ## If you are bringing your own redis, you can set the host in redisHost.
+  ## redisHost:
+  ##
   ## Redis password
+  ##
   password: airflow
   ##
   ## Master configuration
