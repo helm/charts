@@ -122,7 +122,7 @@ data:
 
 ## Sidecar for datasources
 
-If the parameter `sidecar.datasources.enabled` is set, a sidecar container is deployed in the grafana pod. This container watches all config maps in the cluster and filters out the ones with a label as defined in `sidecar.datasources.label`. The files defined in those configmaps are written to a folder and accessed by grafana on startup. Using these yaml files, the data sources in grafana can be modified.
+If the parameter `sidecar.datasources.enabled` is set, an init container is deployed in the grafana pod. This container lists all config maps in the cluster and filters out the ones with a label as defined in `sidecar.datasources.label`. The files defined in those configmaps are written to a folder and accessed by grafana on startup. Using these yaml files, the data sources in grafana can be imported. The configmaps must be created before `helm install` so that the datasources init container can list the configmaps.
 
 Example datasource config adapted from [Grafana](http://docs.grafana.org/administration/provisioning/#example-datasource-config-file):
 ```
