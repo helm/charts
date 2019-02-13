@@ -1,0 +1,23 @@
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "aws-alb-ingress-controller.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "aws-alb-ingress-controller.name" . }}
+    helm.sh/chart: {{ include "aws-alb-ingress-controller.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "aws-alb-ingress-controller.fullname" . }}
+  minReplicas: {{ .Values.hpa.minReplicas }}
+  maxReplicas: {{ .Values.hpa.maxReplicas }}
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+averageUtilization: {{ .Values.hpa.targetUtilization }}

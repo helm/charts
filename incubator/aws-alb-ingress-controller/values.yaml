@@ -99,3 +99,11 @@ tolerations: []
   #    effect: NoSchedule
 
 affinity: {}
+
+pdb:
+  maxUnavailable: 1
+
+hpa:
+  minReplicas: 2
+  maxReplicas: 5
+  targetUtilization: 80

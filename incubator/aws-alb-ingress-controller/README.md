@@ -69,9 +69,13 @@ The following tables lists the configurable parameters of the alb-ingress-contro
 | `scope.ingressClass`      | If provided, the ALB ingress controller will only act on Ingress resources annotated with this class           | `alb`                                                                     |
 | `scope.singleNamespace`   | If true, the ALB ingress controller will only act on Ingress resources in a single namespace                   | `false` (watch all namespaces)                                            |
 | `scope.watchNamespace`    | If scope.singleNamespace=true, the ALB ingress controller will only act on Ingress resources in this namespace | `""` (namespace of the ALB ingress controller)                            |
+| `pdb.maxUnavailable`      | Max unavailable replicas                                                                                       | 1                                                                         |
+| `hpa.minReplicas`         | Min number of replicas                                                                                         | 2                                                                         |
+| `hpa.maxReplicas`         | Max number of replicas                                                                                         | 5                                                                         |
+| `hpa.targetUtilization`   | HPA target CPU Utilization                                                                                     | 80                                                                        |
 
 ```bash
-helm install incubator/aws-alb-ingress-controller --set clusterName=MyClusterName --set autoDiscoverAwsRegion=true --set autoDiscoverAwsVpcID=true --name my-release --namespace kube-system 
+helm install incubator/aws-alb-ingress-controller --set clusterName=MyClusterName --set autoDiscoverAwsRegion=true --set autoDiscoverAwsVpcID=true --name my-release --namespace kube-system
 ```
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
