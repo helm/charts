@@ -45,3 +45,13 @@ tolerations: []
 affinity: {}
 
 replicas: 1
+
+extraVolumeMounts: []
+#  - name: secrets
+#    mountPath: /etc/kubernetes/secrets
+#    readOnly: true
+
+extraVolumes: []
+#  - name: secrets
+#    secret:
+#      secretName: kube-apiserver
