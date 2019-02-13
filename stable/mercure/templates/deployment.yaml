@@ -17,7 +17,9 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: {{ include "mercure.name" . }}
+        helm.sh/chart: {{ include "mercure.chart" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
     spec:
       containers:
         - name: {{ .Chart.Name }}
