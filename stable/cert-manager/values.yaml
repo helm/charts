@@ -24,6 +24,11 @@ image:
   tag: v0.6.0
   pullPolicy: IfNotPresent
 
+# Whether to create the CRD's automatically or not, requires a new enough Helm/Tiller
+#  to support crd hooks. Otherwise you will have to manually create these CRD's:
+#  https://github.com/jetstack/cert-manager/blob/master/deploy/manifests/00-crds.yaml
+createCustomResource: true
+
 # Override the namespace used to store DNS provider credentials etc. for ClusterIssuer
 # resources. By default, the same namespace as cert-manager is deployed within is
 # used. This namespace will not be automatically created by the Helm chart.
