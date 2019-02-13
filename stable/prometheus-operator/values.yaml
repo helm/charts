@@ -795,7 +795,7 @@ prometheus:
     configMaps: []
 
     ## Namespaces to be selected for PrometheusRules discovery.
-    ## If unspecified, only the same namespace as the Prometheus object is in is used.
+    ## If nil, select own namespace. If {}, select all namespaces.
     ##
     ruleNamespaceSelector: {}
 
@@ -805,10 +805,8 @@ prometheus:
     ##
     ruleSelectorNilUsesHelmValues: true
 
-    ## Rules CRD selector
-    ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/design.md
-    ## If unspecified the release `app` and `release` will be used as the label selector
-    ## to load rules
+    ## PrometheusRules to be selected for target discovery.
+    ## If {}, select all ServiceMonitors
     ##
     ruleSelector: {}
     ## Example which select all prometheusrules resources
@@ -832,17 +830,17 @@ prometheus:
     ##
     serviceMonitorSelectorNilUsesHelmValues: true
 
-    ## serviceMonitorSelector will limit which servicemonitors are used to create scrape
-    ## configs in Prometheus. See serviceMonitorSelectorUseHelmLabels
+    ## ServiceMonitors to be selected for target discovery.
+    ## If {}, select all ServiceMonitors
     ##
     serviceMonitorSelector: {}
-
-    # serviceMonitorSelector: {}
+    ## Example which selects ServiceMonitors with label "prometheus" set to "somelabel"
+    # serviceMonitorSelector:
     #   matchLabels:
     #     prometheus: somelabel
 
-    ## serviceMonitorNamespaceSelector will limit namespaces from which serviceMonitors are used to create scrape
-    ## configs in Prometheus. By default all namespaces will be used
+    ## Namespaces to be selected for ServiceMonitor discovery.
+    ## If nil, select own namespace. If {}, select all namespaces.
     ##
     serviceMonitorNamespaceSelector: {}
 
