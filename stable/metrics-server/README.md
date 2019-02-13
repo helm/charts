@@ -21,3 +21,5 @@ Parameter | Description | Default
 `nodeSelector` | Node labels for pod assignment | `{}`
 `affinity` | Node affinity | `{}`
 `replicas` | Number of replicas | `1`
+`extraVolumeMounts` | Ability to provide volume mounts to the pod | `[]`
+`extraVolumes` | Ability to provide volumes to the pod | `[]`
