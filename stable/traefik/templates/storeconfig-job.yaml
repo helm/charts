@@ -2,7 +2,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: "storeconfig-job-{{ .Release.Revision }}"
+  name: "{{ template "traefik.fullname" . }}-storeconfig-job-{{ .Release.Revision }}"
   annotations:
     "helm.sh/hook": post-install,post-upgrade
   labels:
@@ -10,14 +10,14 @@ metadata:
     app: {{ template "traefik.name" . }}
 spec:
   template:
-    metadata: 
-      name: "storeconfig-job-{{ .Release.Revision }}"
+    metadata:
+      name: "{{ template "traefik.fullname" . }}-storeconfig-job-{{ .Release.Revision }}"
       labels:
         app: {{ template "traefik.name" . }}
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     spec:
       restartPolicy: Never
-      containers: 
+      containers:
         - name: storeconfig-job
           image: "{{ .Values.image }}:{{ .Values.imageTag }}"
           args:

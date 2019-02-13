@@ -174,7 +174,7 @@ data:
     [etcd]
     endpoint = {{ .Values.kvprovider.etcd.endpoint | quote }}
     watch = {{ .Values.kvprovider.etcd.watch }}
-    prefix = {{ .Values.kvprovider.etcd.prefix | quote }}
+    prefix = {{ .Values.kvprovider.etcd.prefix | quote | default "traefik" }}
     useAPIV3 = {{ .Values.kvprovider.etcd.useAPIV3 }}
     {{- if .Values.kvprovider.etcd.username }}username = {{ .Values.kvprovider.etcd.username }}{{- end }}
     {{- if .Values.kvprovider.etcd.password }}password = {{ .Values.kvprovider.etcd.password }}{{- end }}
@@ -189,7 +189,7 @@ data:
     [consul]
     endpoint = {{ .Values.kvprovider.consul.endpoint | quote }}
     watch = {{ .Values.kvprovider.consul.watch }}
-    prefix = {{ .Values.kvprovider.consul.prefix | quote }}
+    prefix = {{ .Values.kvprovider.consul.prefix | quote | default "traefik" }}
     {{- if .Values.kvprovider.consul.username }}username = {{ .Values.kvprovider.consul.username | quote }}{{- end }}
     {{- if .Values.kvprovider.consul.password }}password = {{ .Values.kvprovider.consul.password | quote  }}{{- end }}
       {{- if .Values.kvprovider.consul.tls }}
@@ -203,7 +203,7 @@ data:
     [boltdb]
     endpoint = {{ .Values.kvprovider.boltdb.endpoint | quote }}
     watch = {{ .Values.kvprovider.boltdb.watch }}
-    prefix = {{ .Values.kvprovider.boltdb.prefix }}
+    prefix = {{ .Values.kvprovider.boltdb.prefix | quote | default "traefik" }}
     {{- if .Values.kvprovider.boltdb.username }}username = {{ .Values.kvprovider.boltdb.username }}{{- end }}
     {{- if .Values.kvprovider.boltdb.password }}password = {{ .Values.kvprovider.boltdb.password }}{{- end }}
       {{- if .Values.kvprovider.boltdb.tls }}
@@ -217,7 +217,7 @@ data:
     [zookeeper]
     endpoint = {{ .Values.kvprovider.zookeeper.endpoint | quote }}
     watch = {{ .Values.kvprovider.zookeeper.watch }}
-    prefix = {{ .Values.kvprovider.zookeeper.prefix | quote }}
+    prefix = {{ .Values.kvprovider.zookeeper.prefix | quote | default "traefik" }}
     {{- if .Values.kvprovider.zookeeper.username }}username = {{ .Values.kvprovider.zookeeper.username }}{{- end }}
     {{- if .Values.kvprovider.zookeeper.password }}password = {{ .Values.kvprovider.zookeeper.password }}{{- end }}
       {{- if .Values.kvprovider.zookeeper.tls }}
@@ -231,7 +231,33 @@ data:
     [acme]
     email = {{ .Values.acme.email | quote }}
     {{- if .Values.kvprovider.storeAcme }}
-    storage = "traefik/acme/account"
+      {{- if .Values.kvprovider.etcd }}
+        {{- if .Values.kvprovider.etcd.acmePrefix }}
+          storage = "{{ .Values.kvprovider.etcd.acmePrefix }}/acme/account"
+        {{- else }}
+          storage = "{{ .Values.kvprovider.etcd.prefix | default "traefik" }}/acme/account"
+        {{- end }}
+      {{- else if .Values.kvprovider.consul }}
+        {{- if .Values.kvprovider.consul.acmePrefix }}
+          storage = "{{ .Values.kvprovider.consul.acmePrefix }}/acme/account"
+        {{- else }}
+          storage = "{{ .Values.kvprovider.consul.prefix | default "traefik" }}/acme/account"
+        {{- end }}
+      {{- else if .Values.kvprovider.boltdb }}
+        {{- if .Values.kvprovider.boltdb.acmePrefix }}
+          storage = "{{ .Values.kvprovider.boltdb.acmePrefix }}/acme/account"
+        {{- else }}
+          storage = "{{ .Values.kvprovider.boltdb.prefix | default "traefik" }}/acme/account"
+        {{- end }}
+      {{- else if .Values.kvprovider.zookeeper }}
+        {{- if .Values.kvprovider.zookeeper.acmePrefix }}
+          storage = "{{ .Values.kvprovider.zookeeper.acmePrefix }}/acme/account"
+        {{- else }}
+          storage = "{{ .Values.kvprovider.zookeeper.prefix | default "traefik" }}/acme/account"
+        {{- end }}
+      {{- else }}
+      storage = "traefik/acme/account"
+      {{- end }}
     {{- if .Values.kvprovider.importAcme }}
     storageFile = "/acme/acme.json"
     {{- end }}
