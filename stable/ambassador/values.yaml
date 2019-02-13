@@ -82,6 +82,7 @@ adminService:
 rbac:
   # Specifies whether RBAC resources should be created
   create: true
+  namespaced: false
 
 serviceAccount:
   # Specifies whether a service account should be created
