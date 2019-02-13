@@ -54,7 +54,8 @@ The following table lists the configurable parameters of the Cloudwatch Exporter
 | `image.tag`                 | Image tag                                              | `cloudwatch_exporter-0.5.0`                   |
 | `image.pullPolicy`          | Image pull policy                                      | `IfNotPresent`             |
 | `service.type`              | Service type                                           | `ClusterIP`                |
-| `service.port`              | The service port                                       | `80`                       |
+| `service.port`              | The service port                                       | `9106`                     |
+| `service.targetPort`        | The service target port                                | `9106`                     |
 | `service.portName`          | The name of the service port                           | `http`                     |
 | `service.annotations`       | Custom annotations for service                         | `{}`                       |
 | `service.labels`            | Additional custom labels for the service               | `{}`                       |

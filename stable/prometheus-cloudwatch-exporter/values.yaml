@@ -11,7 +11,8 @@ image:
 
 service:
   type: ClusterIP
-  port: 80
+  port: 9106
+  targetPort: 9106
   portName: http
   annotations: {}
   labels: {}
