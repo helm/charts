@@ -110,3 +110,4 @@ readinessProbe:
 serviceMonitor:
   enable: false
   scrapeInterval: 60
+  prometheusNamespace: monitoring
