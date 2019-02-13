@@ -106,3 +106,7 @@ readinessProbe:
   timeoutSeconds: 5
   successThreshold: 1
   failureThreshold: 3
+
+serviceMonitor:
+  enable: false
+  scrapeInterval: 60

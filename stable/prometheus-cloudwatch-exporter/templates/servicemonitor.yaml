@@ -1,0 +1,26 @@
+{{- if .Values.serviceMonitor.enable }}
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ template "releaseName" . }}
+  namespace: {{ .Values.monitoring.namespace }}
+  labels:
+    app: {{ template "prometheus-cloudwatch-exporter.name" . }}
+    chart: {{ template "prometheus-cloudwatch-exporter.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    k8s-app: {{ template "prometheus-cloudwatch-exporter.name" . }}
+spec:
+  jobLabel: app
+  endpoints:
+  - port: {{ .Values.service.portName }}
+    interval: {{ .Values.serviceMonitor.scrapeInterval }}
+  selector:
+    matchLabels:
+      release: {{ .Release.Name }}
+      app: {{ template "prometheus-cloudwatch-exporter.name" . }}
+  namespaceSelector:
+    matchNames:
+    - {{ .Release.Namespace }}
+{{- end }}
