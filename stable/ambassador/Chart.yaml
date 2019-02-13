@@ -2,7 +2,7 @@ apiVersion: v1
 appVersion: 0.50.1
 description: A Helm chart for Datawire Ambassador
 name: ambassador
-version: 1.1.0
+version: 1.1.1
 home: https://www.getambassador.io/
 sources:
   - https://github.com/datawire/ambassador
@@ -15,6 +15,6 @@ keywords:
 maintainers:
   - name: flydiverny
     email: markus@maga.se
-  - name: kflynn
+  - name: Flynn
     email: flynn@datawire.io
 engine: gotpl
