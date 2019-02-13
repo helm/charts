@@ -16,7 +16,3 @@ initContainers:
   echo-container:
     image: "busybox"
     command: ['sh', '-c', 'echo Hello from init container! && sleep 3']
-
-dashboardImport:
-  dashboards:
-    k8s: https://raw.githubusercontent.com/monotek/kibana-dashboards/master/k8s-fluentd-elasticsearch.json

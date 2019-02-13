@@ -1,0 +1,22 @@
+---
+# enable all init container types
+
+# A dashboard is defined by a name and a string with the json payload or the download url
+dashboardImport:
+  dashboards:
+    k8s: https://raw.githubusercontent.com/monotek/kibana-dashboards/master/k8s-fluentd-elasticsearch.json
+
+# Enable the plugin init container with plugins retrieved from an URL
+plugins:
+  enabled: true
+  reset: false
+  # Use <plugin_name,version,url> to add/upgrade plugin
+  values:
+    - logtrail,0.1.30,https://github.com/sivasamyk/logtrail/releases/download/v0.1.30/logtrail-6.4.3-0.1.30.zip
+    # - other_plugin
+
+# Add your own init container
+initContainers:
+  echo-container:
+    image: "busybox"
+    command: ['sh', '-c', 'echo Hello from init container! && sleep 3']
