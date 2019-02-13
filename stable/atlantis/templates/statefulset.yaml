@@ -121,7 +121,7 @@ spec:
           - name: ATLANTIS_GITLAB_TOKEN
             valueFrom:
               secretKeyRef:
-                name: {{ template "atlantis.name" . }}-webhook
+                name: {{ template "atlantis.fullname" . }}-webhook
                 key: gitlab_token
           - name: ATLANTIS_GITLAB_WEBHOOK_SECRET
             valueFrom:
