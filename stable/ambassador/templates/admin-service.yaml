@@ -1,0 +1,24 @@
+{{- if .Values.adminService.create -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "ambassador.fullname" . }}-admins
+  labels:
+    app.kubernetes.io/name: {{ include "ambassador.name" . }}
+    helm.sh/chart: {{ include "ambassador.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  type: {{ .Values.adminService.type }}
+  ports:
+    - port: {{ .Values.adminService.port }}
+      targetPort: admin
+      protocol: TCP
+      name: admin
+      {{- if (and (eq .Values.adminService.type "NodePort") (not (empty .Values.adminService.nodePort))) }}
+      nodePort: {{ .Values.adminService.nodePort }}
+      {{- end }}
+  selector:
+    app.kubernetes.io/name: {{ include "ambassador.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end -}}
