@@ -16,6 +16,7 @@ spec:
   endpoints:
   - port: {{ .Values.service.portName }}
     interval: {{ .Values.serviceMonitor.scrapeInterval }}
+    timeout: {{ .Values.serviceMonitor.scrapeTimeout }}
   selector:
     matchLabels:
       release: {{ .Release.Name }}

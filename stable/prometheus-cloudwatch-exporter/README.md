@@ -75,7 +75,8 @@ The following table lists the configurable parameters of the Cloudwatch Exporter
 | `livenessProbe`             | Liveness probe settings                                |                            |
 | `readinessProbe`            | Readiness probe settings                               |                            |
 | `serviceMonitor.enable`     | If enabled chart will create servicemonitor resource   | `false`                    |
-| `serviceMonitor.scrapeInterval` | period of scraping metrics from cloudwatch exporter| `60s`                      |
+| `serviceMonitor.scrapeInterval` | Period of scraping metrics from cloudwatch exporter| `60s`                      |
+| `serviceMonitor.scrapeTimeout` | Timeout for scraping metrics from cloudwatch exporter| `59s`                      |
 | `serviceMonitor.namespace` | Namespace in which serviceonitor resource will be created | `monitoring`             |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,

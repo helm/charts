@@ -111,4 +111,5 @@ readinessProbe:
 serviceMonitor:
   enable: false
   scrapeInterval: 60s
+  scrapeTimeout: 59s
   namespace: monitoring
