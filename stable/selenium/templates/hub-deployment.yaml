@@ -76,9 +76,9 @@ spec:
             - name: GRID_MAX_SESSION
               value: {{ .Values.hub.gridMaxSession | quote }}
             {{- end }}
-            {{- if .Values.hub.gridUnregisterIfStillDownAfer }}
+            {{- if .Values.hub.gridUnregisterIfStillDownAfter }}
             - name: GRID_UNREGISTER_IF_STILL_DOWN_AFTER
-              value: {{ .Values.hub.gridUnregisterIfStillDownAfer | quote }}
+              value: {{ .Values.hub.gridUnregisterIfStillDownAfter | quote }}
             {{- end }}
             {{- if .Values.hub.timeZone }}
             - name: TZ
