@@ -62,12 +62,11 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `prometheusExporter.repository`    | Prometheus exporter image                                                       | `prom/statsd-exporter`        |
 | `prometheusExporter.tag`           | Prometheus exporter image                                                       | `v0.8.1`                      |
 | `rbac.create`                      | If `true`, create and use RBAC resources                                        | `true`                        |
-| `rbac.namespaced`                  | If `true`, permissions are namespace-scoped rather than cluster-scoped        | `false`                       |
-
-| `replicaCount`                     | Number of Ambassador replicas                                                   | `1`                           |
+| `rbac.namespaced`                  | If `true`, permissions are namespace-scoped rather than cluster-scoped          | `false`                       |
+| `replicaCount`                     | Number of Ambassador replicas                                                   | `3`                           |
 | `resources`                        | CPU/memory resource requests/limits                                             | `{}`                          |
-| `securityContext`             | Set security context for pod                        | `{ "runAsUser": "8888" }`                        |
-| `service.annotations`              | Annotations to apply to Ambassador service                                      | `{"getambassador.io/config":"---\napiVersion: ambassador/v1\nkind: Module\nname: ambassador\nconfig:\n  service_port: 8080"}` |
+| `securityContext`                  | Set security context for pod                                                    | `{ "runAsUser": "8888" }`     |
+| `service.annotations`              | Annotations to apply to Ambassador service                                      | See "Annotations" below       |
 | `service.externalTrafficPolicy`    | Sets the external traffic policy for the service                                | `""`                          |
 | `service.http.enabled`             | if port 80 should be opened for service                                         | `true`                        |
 | `service.http.nodePort`            | If explicit NodePort is required                                                | None                          |
@@ -85,27 +84,31 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `volumeMounts`                     | Volume mounts for the ambassador service                                        | `[]`                          |
 | `volumes`                          | Volumes for the ambassador service                                              | `[]`                          |
 
+
 **NOTE:** Make sure the configured `service.http.targetPort` and `service.https.targetPort` ports match your [Ambassador Module's](https://www.getambassador.io/reference/modules/#the-ambassador-module) `service_port` and `redirect_cleartext_from` configurations.
 
-If you intend to use `service.annotations`, remember to include the annotation key, for example:
+### Annotations
+
+The default annotation applied to the Ambassador service is
 
 ```
-service:
-  type: LoadBalancer
-
-  http:
-    port: 80
-    targetPort: 8080
-
-  annotations:
-    getambassador.io/config: |
-      ---
-      apiVersion: ambassador/v1
-      kind: Module
-      name: ambassador
-      config:
-        redirect_cleartext_from: 8080
+getambassador.io/config: |
+  ---
+  apiVersion: ambassador/v1
+  kind: Module
+  name: ambassador
+  config:
+    service_port: 8080
 ```
+
+If you intend to use `service.annotations`, remember to include the `getambassador.io/config` annotation key as above,
+and remember that you'll have to escape newlines. For example, the annotation above could be defined as
+
+```
+service.annotations: { "getambassador.io/config": "---\napiVersion: ambassador/v1\nkind: Module\nname: ambassador\nconfig:\n  service_port: 8080" }
+```
+
+### Specifying Values
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
