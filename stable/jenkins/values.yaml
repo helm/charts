@@ -89,6 +89,7 @@ Master:
   HealthProbeReadinessPeriodSeconds: 10
   HealthProbeLivenessFailureThreshold: 12
   SlaveListenerPort: 50000
+#  SlaveHostPort: 50000
   DisabledAgentProtocols:
     - JNLP-connect
     - JNLP2-connect
