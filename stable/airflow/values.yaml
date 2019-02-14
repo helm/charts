@@ -5,8 +5,8 @@
 ## common settings and setting for the webserver
 airflow:
 
-  ## When existingAirflowSecret is defined, secretsMapping can be 
-  ## overridden. When no secretName is given then the value of 
+  ## When existingAirflowSecret is defined, secretsMapping can be
+  ## overridden. When no secretName is given then the value of
   ## existingAirflowSecret is assumed.
   ## secretsMapping:
   ## - envVar: AIRFLOW__LDAP__BIND_PASSWORD
