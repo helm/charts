@@ -1,3 +1,8 @@
+{{- $serviceName := include "rabbitmq-ha.fullname" . }}
+{{- if eq .Values.service.type "NodePort" }}
+  {{- $serviceName = printf "%v-discovery"  $serviceName }}
+{{- end }}
+
 {{- if .Values.ingress.enabled }}
 apiVersion: extensions/v1beta1
 kind: Ingress
@@ -23,7 +28,7 @@ spec:
         paths:
           - path: {{ .Values.ingress.path }}
             backend:
-              serviceName: {{ template "rabbitmq-ha.fullname" . }}
+              serviceName: {{ $serviceName }}
               servicePort: {{ .Values.rabbitmqManagerPort }}
 {{- if .Values.ingress.tls }}
   tls:

@@ -133,6 +133,13 @@ rabbitmqNodePort: 5672
 ## Manager port
 rabbitmqManagerPort: 15672
 
+## Customize nodePort number when service type is NodePort
+### Ref: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
+###
+rabbitmqEpmdNodePort: null
+rabbitmqNodeNodePort: null
+rabbitmqManagerNodePort: null
+
 ## Set to true to precompile parts of RabbitMQ with HiPE, a just-in-time
 ## compiler for Erlang. This will increase server throughput at the cost of
 ## increased startup time. You might see 20-50% better performance at the cost
