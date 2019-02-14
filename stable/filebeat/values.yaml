@@ -44,7 +44,7 @@ config:
 
   # When a key contains a period, use this format for setting values on the command line:
   # --set config."http\.enabled"=true
-  http.enabled: false
+  http.enabled: true
   http.port: 5066
 
 # Upload index template to Elasticsearch if Logstash output is enabled
@@ -139,3 +139,32 @@ podSecurityPolicy:
     # seccomp.security.alpha.kubernetes.io/allowedProfileNames: '*'
     # seccomp.security.alpha.kubernetes.io/defaultProfileName: 'docker/default'
     # apparmor.security.beta.kubernetes.io/defaultProfileName: 'runtime/default'
+
+## Add Elastic beat-exporter for Prometheus
+## https://github.com/trustpilot/beat-exporter
+## Dont forget to enable http on config.http.enabled (exposing filebeat stats)
+monitoring:
+  enabled: true
+  image:
+    repository: trustpilot/beat-exporter
+    tag: 0.1.1
+    pullPolicy: IfNotPresent
+  resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 200Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 100Mi
+
+  # pass custom args. This is equivalent of Cmd in docker
+  args: []
+
+  ## default is ":9479". If changed, need pass argument "-web.listen-address <...>"
+  exporterPort: 9479
+  ## Filebeat service port, which exposes Prometheus metrics
+  targetPort: 9479
