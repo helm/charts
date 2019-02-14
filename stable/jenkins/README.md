@@ -114,6 +114,13 @@ Some third-party systems, e.g. GitHub, use HTML-formatted data in their payload 
 | `Agent.resources`          | Resources allocation (Requests and Limits)      | `{requests: {cpu: 200m, memory: 256Mi}, limits: {cpu: 200m, memory: 256Mi}}`|
 | `Agent.volumes`            | Additional volumes                              | `nil`                  |
 | `Agent.envVars             | Environment variables for the slave Pod         | Not set                |
+| `Agent.Command             | Executed command when side container starts     | Not set                |
+| `Agent.Args                | Arguments passed to executed command            | Not set                |
+| `Agent.SideContainerName   | Side container name in agent                    | jnlp                   |
+| `Agent.TTYEnabled          | Allocate pseudo tty to the side container       | false                  |
+| `Agent.ContainerCap        | Maximum number of agent                         | 10                     |
+| `Agent.PodName             | slave Pod base name                             | Not set                |
+
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
