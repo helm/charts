@@ -14,7 +14,7 @@ replicas: 1
 
 image:
   name: "docker.io/openzipkin/zipkin"
-  tag: "latest"
+  tag: "2.12.1"
   pullPolicy: "IfNotPresent"
 
 elasticsearch:
