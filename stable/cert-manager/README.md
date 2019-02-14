@@ -70,6 +70,7 @@ The following table lists the configurable parameters of the cert-manager chart 
 | `image.pullPolicy` | Image pull policy | `IfNotPresent` |
 | `replicaCount`  | Number of cert-manager replicas  | `1` |
 | `createCustomResource` | Create CRD's automatically, requires tiller version with hooks support. Must be manually created if set to false | `true` |
+| `deleteCustomResource` | Delete CRD's automatically, requires tiller version with hooks support. Must be manually removed if set to false | `true` |
 | `clusterResourceNamespace` | Override the namespace used to store DNS provider credentials etc. for ClusterIssuer resources | Same namespace as cert-manager pod
 | `leaderElection.Namespace` | Override the namespace used to store the ConfigMap for leader election | Same namespace as cert-manager pod
 | `extraArgs` | Optional flags for cert-manager | `[]` |

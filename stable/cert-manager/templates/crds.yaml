@@ -6,7 +6,6 @@ metadata:
   name: certificates.certmanager.k8s.io
   annotations:
     "helm.sh/hook": crd-install
-    "helm.sh/hook-delete-policy": before-hook-creation
   labels:
     app: {{ template "cert-manager.name" . }}
     chart: {{ template "cert-manager.chart" . }}
@@ -52,7 +51,6 @@ metadata:
   name: issuers.certmanager.k8s.io
   annotations:
     "helm.sh/hook": crd-install
-    "helm.sh/hook-delete-policy": before-hook-creation
   labels:
     app: {{ template "cert-manager.name" . }}
     chart: {{ template "cert-manager.chart" . }}
@@ -73,7 +71,6 @@ metadata:
   name: clusterissuers.certmanager.k8s.io
   annotations:
     "helm.sh/hook": crd-install
-    "helm.sh/hook-delete-policy": before-hook-creation
   labels:
     app: {{ template "cert-manager.name" . }}
     chart: {{ template "cert-manager.chart" . }}
@@ -94,7 +91,6 @@ metadata:
   name: orders.certmanager.k8s.io
   annotations:
     "helm.sh/hook": crd-install
-    "helm.sh/hook-delete-policy": before-hook-creation
   labels:
     app: {{ template "cert-manager.name" . }}
     chart: {{ template "cert-manager.chart" . }}
@@ -134,7 +130,6 @@ metadata:
   name: challenges.certmanager.k8s.io
   annotations:
     "helm.sh/hook": crd-install
-    "helm.sh/hook-delete-policy": before-hook-creation
   labels:
     app: {{ template "cert-manager.name" . }}
     chart: {{ template "cert-manager.chart" . }}
@@ -164,4 +159,79 @@ spec:
     kind: Challenge
     plural: challenges
   scope: Namespaced
+
+{{- if and (semverCompare ">=2.10" .Capabilities.TillerVersion.SemVer) .Values.deleteCustomResource -}}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: certmanager-crd-delete-hook
+  annotations:
+    "helm.sh/hook": post-delete
+    "helm.sh/hook-delete-policy": hook-succeeded
+    "helm.sh/hook-weight": "1"
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: certmanager-crd-delete-hook
+  annotations:
+    "helm.sh/hook": post-delete
+    "helm.sh/hook-delete-policy": hook-succeeded
+    "helm.sh/hook-weight": "1"
+rules:
+- apiGroups: ["apiextensions.k8s.io"]
+  resources: ["customresourcedefinitions"]
+  verbs: ["list", "delete"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: certmanager-crd-delete-hook
+  annotations:
+    "helm.sh/hook": post-delete
+    "helm.sh/hook-delete-policy": hook-succeeded
+    "helm.sh/hook-weight": "2"
+subjects:
+- name: certmanager-crd-delete-hook
+  kind: ServiceAccount
+  namespace: {{ .Release.Namespace }}
+roleRef:
+  name: certmanager-crd-delete-hook
+  kind: ClusterRole
+  apiGroup: rbac.authorization.k8s.io
+
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: certmanager-crd-delete-hook
+  annotations:
+    "helm.sh/hook": post-delete
+    "helm.sh/hook-delete-policy": hook-succeeded
+    "helm.sh/hook-weight": "3"
+spec:
+  template:
+    metadata:
+      name: certmanager-crd-delete-hook
+    spec:
+      serviceAccountName: certmanager-crd-delete-hook
+      restartPolicy: OnFailure
+      affinity:
+      containers:
+        - name: certmanager-crd-delete-hook-kubectl
+          # image: gcr.io/istio-release/kubectl:release-1.1-20181101-09-15
+          image: gcr.io/google-containers/hyperkube:v1.13.3
+          imagePullPolicy: IfNotPresent
+          command:
+          - /bin/bash
+          - -c
+          - >
+              kubectl get customresourcedefinitions | grep "certmanager" | while read -r entry; do
+                name=$(echo $entry | awk '{print $1}');
+                kubectl delete customresourcedefinitions $name;
+              done
+{{- end -}}
 {{- end -}}
