@@ -29,8 +29,10 @@ aws:
   zoneType: ""
 
 azure:
-# If you don't specify a secret to load azure.json from, you will get the host's /etc/kubernetes/azure.json
+  # If you don't specify a secret to load azure.json from, you will get the host's /etc/kubernetes/azure.json
   secretName: ""
+  # Use the DNS zones from this resource group (optional)
+  resourceGroup: ""
 
 # Cloudflare keys to inject as environment variables
 cloudflare:

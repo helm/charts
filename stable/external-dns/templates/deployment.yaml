@@ -93,6 +93,11 @@ spec:
             - --infoblox-ssl-verify
             {{- end }}
           {{- end }}
+          {{- if eq .Values.provider "azure" }}
+            {{- if .Values.azure.resourceGroup }}
+             - --azure-resource-group={{ .Values.azure.resourceGroup }}
+            {{- end }}
+          {{- end }}
           volumeMounts:
           {{- if or .Values.google.serviceAccountSecret .Values.google.serviceAccountKey }}
           - name: google-service-account
