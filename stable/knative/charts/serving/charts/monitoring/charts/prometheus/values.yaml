@@ -216,7 +216,6 @@ prometheusSystem:
     name: "prometheus-system"
   rb:
     name: "prometheus-system"
-    roleName: "prometheus-system"
     namespace: "default"
   role:
     namespace: "default"
