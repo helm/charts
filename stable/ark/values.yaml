@@ -33,6 +33,7 @@ configuration:
   backupStorageProvider:
     name:
     bucket:
+    prefix:
     config: {}
     #  region:
     #  s3ForcePathStyle:

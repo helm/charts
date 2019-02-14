@@ -66,6 +66,7 @@ Parameter | Description | Default
 `configuration.persistentVolumeProvider.config.apiTimeout` | The API timeout (Azure only) |
 `configuration.backupStorageProvider.name` | The name of the cloud provider that will be used to actually store the backups (`aws`, `azure`, `gcp`) | ``
 `configuration.backupStorageProvider.bucket` | The storage bucket where backups are to be uploaded | ``
+`configuration.backupStorageProvider.prefix` | The directory inside the bucket where backups are to be uploaded | ``
 `configuration.backupStorageProvider.config.region` | The cloud provider region (AWS only) | ``
 `configuration.backupStorageProvider.config.s3ForcePathStyle` | Set to `true` for a local storage service like Minio | ``
 `configuration.backupStorageProvider.config.s3Url` | S3 url (primarily used for local storage services like Minio) | ``
