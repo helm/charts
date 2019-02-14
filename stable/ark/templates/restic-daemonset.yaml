@@ -17,6 +17,10 @@ spec:
     metadata:
       labels:
         name: restic
+      {{- with .Values.podAnnotations }}
+      annotations:
+{{ toYaml . | indent 8 }}
+      {{- end }}
     spec:
       {{- if .Values.serviceAccount.server.create }}
       serviceAccountName: {{ template "ark.serverServiceAccount" . }}
