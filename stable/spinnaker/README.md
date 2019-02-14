@@ -153,3 +153,5 @@ halyard:
         tasks:
           useManagedServiceAccounts: true
 ```
+
+Any files added through `additionalConfigMaps` will be written to disk at `/opt/halyard/additionalConfigMaps`.
