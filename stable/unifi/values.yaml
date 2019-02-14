@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: jacobalberty/unifi
-  tag: 5.9.29
+  tag: 5.10.12
   pullPolicy: IfNotPresent
 
 guiService:
@@ -114,10 +114,39 @@ GID: 999
 
   # define an external mongoDB instead of using the built-in mongodb
 mongodb:
-  enabled: false
-  dbUri: mongodb://mongo/unifi
-  statDbUri: mongodb://mongo/unifi_stat
+  enabled: true
+
+  # If mongodb is not enabled use this to override mongodb's URI
+  # dbUri: mongodb://mongo/unifi
+  # statDbUri: mongodb://mongo/unifi_stat
   databaseName: unifi
+
+  ## MongoDB admin password
+  ### ref: https://github.com/bitnami/bitnami-docker-mongodb/blob/master/README.md#setting-the-root-password-on-first-run
+  ###
+  ## mongodbRootPassword:
+  #
+  ## MongoDB custom user and database
+  ## ref: https://github.com/bitnami/bitnami-docker-mongodb/blob/master/README.md#creating-a-user-and-database-on-first-run
+  ##
+  # mongodbUsername:
+  # mongodbPassword:
+  # mongodbDatabase:
+  ## Enable persistence using Persistent Volume Claims
+  ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+  ##
+  persistence:
+    enabled: true
+    ## mongodb data Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
+    ##
+    # storageClass: "-"
+    accessMode: ReadWriteOnce
+    size: 8Gi
 
 persistence:
   enabled: true

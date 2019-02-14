@@ -69,14 +69,20 @@ spec:
               value: "{{ .Values.UID }}"
             - name: UNIFI_GID
               value: "{{ .Values.GID }}"
-            {{- if .Values.mongodb.enabled }}
             - name: DB_URI
-              value: "{{ .Values.mongodb.dbUri }}"
+            {{ if .Values.mongodb.dbUri }}
+              value: {{ .Values.mongodb.dbUri }}
+            {{ else }}
+              value: mongodb://{{ template "unifi.mongodb.fullname" . }}:27017/unifi
+            {{ end }}
             - name: STATDB_URI
-              value: "{{ .Values.mongodb.statDbUri }}"
+            {{ if .Values.mongodb.statDbUri }}
+              value: {{ .Values.mongodb.statDbUri }}
+            {{ else }}
+              value: mongodb://{{ template "unifi.mongodb.fullname" . }}:27017/unifi_stat
+            {{ end }}
             - name: DB_NAME
               value: "{{ .Values.mongodb.databaseName }}"
-            {{- end }}
           volumeMounts:
             - mountPath: /unifi/data
               name: unifi-data
