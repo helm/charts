@@ -1,6 +1,6 @@
 ## Default values for Traefik
 image: traefik
-imageTag: 1.7.7
+imageTag: 1.7.9
 ## can switch the service type to NodePort if required
 serviceType: LoadBalancer
 # loadBalancerIP: ""
@@ -20,10 +20,8 @@ podDisruptionBudget: {}
 
 # rootCAs: []
 
-cpuRequest: 100m
-memoryRequest: 20Mi
-cpuLimit: 100m
-memoryLimit: 30Mi
+resources: {}
+
 debug:
   enabled: false
 
