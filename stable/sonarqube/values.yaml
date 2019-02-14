@@ -36,7 +36,7 @@ ingress:
   # nginx.ingress.kubernetes.io/proxy-body-size: "8m"
 
 # Additional labels for Ingress manifest file
-  #labels:
+  # labels:
   #  traffic-type: external
   #  traffic-type: internal
   tls: {}
