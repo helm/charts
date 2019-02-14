@@ -20,10 +20,8 @@ podDisruptionBudget: {}
 
 # rootCAs: []
 
-cpuRequest: 100m
-memoryRequest: 20Mi
-cpuLimit: 100m
-memoryLimit: 40Mi
+resources: {}
+
 debug:
   enabled: false
 
