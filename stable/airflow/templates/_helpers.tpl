@@ -97,7 +97,11 @@ Map environment vars to secrets
   - name: {{ $val.envVar }}
     valueFrom:
       secretKeyRef:
+        {{- if $val.secretName }}
+        name: {{ $val.secretName }}
+        {{- else }}
         name: {{ $secretName }}
+        {{- end }}
         key: {{ $val.secretKey }}
       {{- end }}
     {{- end }}
