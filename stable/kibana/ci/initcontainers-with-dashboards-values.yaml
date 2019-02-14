@@ -1,0 +1,36 @@
+---
+# enable user-defined init containers
+
+initContainers:
+  numbers-container:
+    image: "busybox"
+    imagePullPolicy: "IfNotPresent"
+    command:
+      - "/bin/sh"
+      - "-c"
+      - |
+        for i in $(seq 1 10); do
+          echo $i
+        done
+
+  echo-container:
+    image: "busybox"
+    command: ['sh', '-c', 'echo Hello from init container! && sleep 3']
+
+dashboardImport:
+  dashboards:
+    1_create_index: |-
+      {
+        "version": "6.4.2",
+        "objects": [
+          {
+            "id": "a88738e0-d3c1-11e8-b38e-a37c21cf8c95",
+            "version": 2,
+            "attributes": {
+              "title": "logstash-*",
+              "timeFieldName": "@timestamp",
+              "fields": "[{\"name\":\"@timestamp\",\"type\":\"date\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true}]"
+            }
+          }
+        ]
+      }
