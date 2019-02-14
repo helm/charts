@@ -168,3 +168,4 @@ monitoring:
   exporterPort: 9479
   ## Filebeat service port, which exposes Prometheus metrics
   targetPort: 9479
+  
