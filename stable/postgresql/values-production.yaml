@@ -149,6 +149,10 @@ postgresqlDataDir: /bitnami/postgresql
 ## NOTE: This will override initdbScripts
 # initdbScriptsConfigMap:
 
+## Secret with scripts to be run at first boot (in case it contains sensitive information)
+## NOTE: This can work along initdbScripts or initdbScriptsConfigMap
+# initdbScriptsSecret:
+
 ## PostgreSQL service configuration
 service:
   ## PosgresSQL service type
@@ -267,7 +271,7 @@ metrics:
   image:
     registry: docker.io
     repository: wrouesnel/postgres_exporter
-    tag: v0.4.6
+    tag: v0.4.7
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
