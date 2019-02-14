@@ -54,7 +54,7 @@ The following table lists the configurable parameters of the Osclass chart and t
 | `image.repository`                 | Osclass Image name                       | `bitnami/osclass`                                       |
 | `image.tag`                        | Osclass Image tag                        | `{VERSION}`                                             |
 | `image.pullPolicy`                 | Image pull policy                        | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
-| `image.pullSecrets`                | Specify image pull secrets               | `nil`                                                   |
+| `image.pullSecrets`                | Specify docker-registry secret names as an array               | `[]` (does not add image pull secrets to deployed pods) |
 | `osclassHost`                      | Osclass host to create application URLs  | `nil`                                                   |
 | `osclassLoadBalancerIP`            | `loadBalancerIP` for the Osclass Service | `nil`                                                   |
 | `osclassUsername`                  | User of the application                  | `user`                                                  |
@@ -98,7 +98,7 @@ The following table lists the configurable parameters of the Osclass chart and t
 | `metrics.image.repository`                 | Apache exporter image name                                                                                      | `lusotycoon/apache-exporter`                           |
 | `metrics.image.tag`                        | Apache exporter image tag                                                                                       | `v0.5.0`                                            |
 | `metrics.image.pullPolicy`                 | Image pull policy                                                                                              | `IfNotPresent`                                       |
-| `metrics.image.pullSecrets`                | Specify docker-registry secret names as an array                                                               | `nil`                                                |
+| `metrics.image.pullSecrets`                | Specify docker-registry secret names as an array                                                               | `[]` (does not add image pull secrets to deployed pods)  |
 | `metrics.podAnnotations`                   | Additional annotations for Metrics exporter pod                                                                | `{prometheus.io/scrape: "true", prometheus.io/port: "9117"}`                                                   |
 | `metrics.resources`                        | Exporter resource requests/limit                                                                               | {}                        |
 

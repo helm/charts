@@ -88,15 +88,15 @@ spec:
         - name: epmd
           containerPort: 4369
         - name: amqp
-          containerPort: {{ .Values.rabbitmq.amqpPort }}
+          containerPort: {{ .Values.service.port }}
         - name: dist
-          containerPort: {{ .Values.rabbitmq.distPort }}
+          containerPort: {{ .Values.service.distPort }}
         - name: stats
-          containerPort: {{ .Values.rabbitmq.managerPort }}
+          containerPort: {{ .Values.service.managerPort }}
         {{- if .Values.livenessProbe.enabled }}
         livenessProbe:
           exec:
-            command: ["sh", "-c", "test \"$(curl -sS -f --user {{ .Values.rabbitmq.username }}:$RABBITMQ_PASSWORD 127.0.0.1:{{ .Values.rabbitmq.managerPort }}/api/healthchecks/node)\" = '{\"status\":\"ok\"}'"]
+            command: ["sh", "-c", "test \"$(curl -sS -f --user {{ .Values.rabbitmq.username }}:$RABBITMQ_PASSWORD 127.0.0.1:{{ .Values.service.managerPort }}/api/healthchecks/node)\" = '{\"status\":\"ok\"}'"]
           initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
           timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
           periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
@@ -106,7 +106,7 @@ spec:
         {{- if .Values.readinessProbe.enabled }}
         readinessProbe:
           exec:
-            command: ["sh", "-c", "test \"$(curl -sS -f --user {{ .Values.rabbitmq.username }}:$RABBITMQ_PASSWORD 127.0.0.1:{{ .Values.rabbitmq.managerPort }}/api/healthchecks/node)\" = '{\"status\":\"ok\"}'"]
+            command: ["sh", "-c", "test \"$(curl -sS -f --user {{ .Values.rabbitmq.username }}:$RABBITMQ_PASSWORD 127.0.0.1:{{ .Values.service.managerPort }}/api/healthchecks/node)\" = '{\"status\":\"ok\"}'"]
           initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
           timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
           periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
@@ -152,12 +152,12 @@ spec:
           - name: RABBITMQ_ERL_COOKIE
             valueFrom:
               secretKeyRef:
-                name: {{ template "rabbitmq.fullname" . }}
+                name: {{ template "rabbitmq.secretErlangName" . }}
                 key: rabbitmq-erlang-cookie
           - name: RABBITMQ_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: {{ template "rabbitmq.fullname" . }}
+                name: {{ template "rabbitmq.secretPasswordName" . }}
                 key: rabbitmq-password
 {{- if .Values.metrics.enabled }}
       - name: metrics
@@ -167,10 +167,10 @@ spec:
         - name: RABBIT_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "rabbitmq.fullname" . }}
+              name: {{ template "rabbitmq.secretPasswordName" . }}
               key: rabbitmq-password
         - name: RABBIT_URL
-          value: "http://localhost:{{ .Values.rabbitmq.managerPort }}"
+          value: "http://localhost:{{ .Values.service.managerPort }}"
         - name: RABBIT_USER
           value: {{ .Values.rabbitmq.username }}
         ports:

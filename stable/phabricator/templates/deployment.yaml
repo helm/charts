@@ -53,8 +53,9 @@ spec:
             secretKeyRef:
               name: {{ template "phabricator.mariadb.fullname" . }}
               key: mariadb-root-password
+{{- $port:=.Values.service.port | toString }}
         - name: PHABRICATOR_HOST
-          value: {{ include "phabricator.host" . | quote }}
+          value: "{{ include "phabricator.host" . }}{{- if ne $port "80" }}:{{ .Values.service.port }}{{ end }}"
         {{- if .Values.phabricatorAlternateFileDomain }}
         - name: PHABRICATOR_ALTERNATE_FILE_DOMAIN
           value: {{ .Values.phabricatorAlternateFileDomain | quote }}

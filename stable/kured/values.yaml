@@ -3,6 +3,7 @@ image:
   # Appears to be without numbered numbered tags, so using this instead
   tag: 1.1.0
   pullPolicy: IfNotPresent
+  pullSecrets: []
 
 extraArgs: {}
 
@@ -18,3 +19,7 @@ updateStrategy: OnDelete
 tolerations:
   - key: node-role.kubernetes.io/master
     effect: NoSchedule
+
+nodeSelector: {}
+
+podAnnotations: {}

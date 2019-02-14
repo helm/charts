@@ -35,6 +35,23 @@ spec:
             - /ark
           args:
             - server
+          {{- with .Values.configuration }}
+            {{- with .metricAddress }}
+            - --metrics-address={{ . }}
+            {{- end }}
+            {{- with .backupSyncPeriod }}
+            - --backup-sync-period={{ . }}
+            {{- end }}
+            {{- with .resticTimeout }}
+            - --restic-timeout={{ . }}
+            {{- end }}
+            {{- if .restoreOnlyMode }}
+            - --restore-only
+            {{- end }}
+            {{- with .restoreResourcePriorities }}
+            - --restore-resource-priorities={{ . }}
+            {{- end }}
+          {{- end }}
           {{- if eq $provider "azure" }}
           envFrom:
             - secretRef:
@@ -57,6 +74,12 @@ spec:
             - name: GOOGLE_APPLICATION_CREDENTIALS
           {{- end }}
               value: /credentials/cloud
+          {{ if .Values.configuration.extraEnvVars }}
+          {{- range $key, $value := .Values.configuration.extraEnvVars }}
+            - name: {{ default "none" $key }}
+              value: {{ default "none" $value }}
+          {{- end }}
+          {{- end }}
         {{- end }}
       volumes:
         {{- if and .Values.credentials.useSecret (or (eq $provider "aws") (eq $provider "gcp")) }}

@@ -12,7 +12,7 @@
   $ kubectl -n <history-server-namespace> create configmap hdfs-site --from-file=hdfs-site.xml && kubectl -n history-server-namespace create configmap core-site --from-file=core-site.xml
   ```
 
-* Secret (Only if using GCS)
+* Secret (Only if using GCS or S3 without IAM based authentication)
 
   If using GCS as storage, follow the preparatory steps below:
 
@@ -35,6 +35,18 @@
   ```
 
   Then install the chart to enable the history server pod to read from the GCS bucket.
+
+  Similarly, if using S3 as storage, follow the preparatory steps below:
+  ```bash
+  $ aws s3 mb s3://your-spark-event-log-directory # default bucket is s3://spark-hs/
+  $ aws iam list-access-keys --user-name your-user-name --output text | awk '{print $2}' >> aws-access-key
+  $ echo "your-aws-secret-key" >> aws-secret-key
+  ```
+
+  Then create a secret:
+  ```bash
+  $ kubectl create secret generic aws-secrets --from-file=aws-access-key --from-file=aws-secret-key
+  ```
 
 * PVC (Only if using PVC)
 
@@ -74,13 +86,15 @@ For details about installing the chart to use HDFS or GCS, see configurations op
 
 The following tables lists the configurable parameters of the Spark History Sever chart and their default values.
 
+Note that the default image `lightbend/spark-history-server` is built using this [repo](https://github.com/lightbend/spark-history-server-docker).
+
 | Parameter                            | Description                                                       |Default                           |
 | ------------------------------------ |----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
 | hdfs.logDirectory                |The HDFS log directory that starts with "hdfs://"|hdfs://hdfs/history/|
 | hdfs.hdfsSiteConfigMap |The name of the ConfigMap for hdfs-site.xml|hdfs-site|
 | hdfs.coreSiteConfigMap |The name of the ConfigMap for core-site.xml|core-site|
 | hdfs.HADOOP_CONF_DIR |The directory containing core-site.xml and hdfs-site.xml in the image|/etc/hadoop|
-| image.repository |The Docker image used to start the history server daemon|lightbend/spark|
+| image.repository |The Docker image used to start the history server daemon|lightbend/spark-history-server|
 | image.tag |The tag of the image|2.4.0|
 | service.type |The type of history server service that exposes the UI|LoadBalancer|
 | service.port |The port on which the service UI can be accessed.|18080|
@@ -92,6 +106,12 @@ The following tables lists the configurable parameters of the Spark History Seve
 | gcs.secret |Pre-mounted secret name for GCS connection|history-secrets|
 | gcs.key |The JSON key file name|sparkonk8s.json|
 | gcs.logDirectory |The GCS log directory that starts with "gs://"|gs://spark-hs/|
+| s3.enableS3 | Whether to use S3 storage | false |
+| s3.enableIAM | Whether to use IAM based authentication or fall back to using AWS access key ID and secret access key | true |
+| s3.secret | Pre-mounted secret name for S3 connection. Omit if using IAM based authentication | aws-secrets |
+| s3.accessKeyName | The file name that contains the AWS access key ID. Omit if using IAM based authentication | aws-access-key |
+| s3.secretKeyName | The file name that contains the AWS secret access key. Omit if using IAM based authentication | aws-secret-key |
+| s3.logDirectory | The S3 log directory that starts with "s3a://" | s3a://spark-hs/ |
 
 Note that only when `pvc.enablePVC` is set to `true`, the following settings take effect:
 
@@ -105,6 +125,14 @@ Similary, only when `gcs.enableGCS` is `true`, the following settings take effec
 * gcs.secret
 * gcs.key
 * gcs.logDirectory
+
+Similarly, only when `s3.enableS3` is `true`, the following settings take effect:
+
+* s3.enableIAM
+* s3.secret
+* s3.accessKeyName
+* s3.secretKeyName
+* s3.logDirectory
 
 And only when `pvc.enablePVC` and `gcs.enableGCS` are both `false`, is HDFS used, in which case the settings below are in effect:
 
@@ -136,7 +164,7 @@ bin/spark-submit \
     --conf spark.eventLog.enabled=true \
     --conf spark.eventLog.dir=file:/mnt \
     --conf spark.executor.instances=2 \
-    --conf spark.kubernetes.container.image=lightbend/spark:k8s-rc-2.4 \
+    --conf spark.kubernetes.container.image=lightbend/spark-history-server:2.4.0 \
     --conf spark.kubernetes.container.image.pullPolicy=Always \
     --conf spark.kubernetes.driver.volumes.persistentVolumeClaim.checkpointpvc.options.claimName=nfs-pvc \
     --conf spark.kubernetes.driver.volumes.persistentVolumeClaim.checkpointpvc.mount.path=/mnt \
@@ -178,9 +206,23 @@ bin/spark-submit \
     --conf spark.hadoop.google.cloud.auth.service.account.json.keyfile=/etc/secrets/sparkonk8s.json \
     --conf spark.kubernetes.driver.secrets.history-secrets=/etc/secrets \
     --conf spark.kubernetes.executor.secrets.history-secrets=/etc/secrets \
-    --conf spark.kubernetes.container.image=lightbend/spark:k8s-daily-gcs \
-    local:///opt/spark/examples/jars/spark-examples_2.11-2.5.0-SNAPSHOT.jar
+    --conf spark.kubernetes.container.image=lightbend/spark-history-server:2.4.0 \
+    local:///opt/spark/examples/jars/spark-examples_2.11-2.4.0.jar
 ```
 
-Note that the image for your Spark job (i.e. `spark.kubernetes.container.image`, `spark.kubernetes.driver.container.image` and `spark.kubernetes.executor.container.image`) needs to have the [GCS connector](https://cloud.google.com/dataproc/docs/concepts/connectors/cloud-storage) dependency, otherwise the `gs://` scheme won't be recognized.
+Note that the image for your Spark job (i.e. `spark.kubernetes.container.image`, `spark.kubernetes.driver.container.image` and `spark.kubernetes.executor.container.image`) needs to have the [GCS connector](https://cloud.google.com/dataproc/docs/concepts/connectors/cloud-storage) dependency, which is included in `lightbend/spark-history-server:2.4.0`, otherwise the `gs://` scheme won't be recognized.
 
+##### S3
+
+In the case of S3, it is recommended to use IAM based authentication. The IAM role should have equivalent access to AmazonS3FullAccess. To write event logs to S3, you need to provide configs as below: 
+```
+--conf spark.eventLog.enabled=true \
+--conf spark.eventLog.dir=s3a://spark-hs/
+```
+Similar to GCS, note that the image for your Spark job scheme needs to have the necessary dependencies: `hadoop-aws-2.7.5.jar` and `aws-java-sdk-1.7.4.jar`
+
+When not using the IAM based authentication, you need to provide additional configs for authentication as below:
+```bash
+--conf spark.hadoop.fs.s3a.access.key=your-AWS-access-key-ID \
+--conf spark.hadoop.fs.s3a.secret.key=your-AWS-secret-access-key
+```

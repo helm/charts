@@ -40,9 +40,11 @@ The following table lists the configurable parameters of the Sysdig chart and th
 
 | Parameter               | Description                                    | Default                                     |
 | ---                     | ---                                            | ---                                         |
+| `image.registry`        | Sysdig agent image registry                    | `docker.io`                                 |
 | `image.repository`      | The image repository to pull from              | `sysdig/agent`                              |
 | `image.tag`             | The image tag to pull                          | `latest`                                    |
 | `image.pullPolicy`      | The Image pull policy                          | `Always`                                    |
+| `image.pullSecrets`     | Image pull secrets                             | `nil`                                       |
 | `rbac.create`           | If true, create & use RBAC resources           | `true`                                      |
 | `serviceAccount.create` | Create serviceAccount                          | `true`                                      |
 | `serviceAccount.name`   | Use this value as serviceAccountName           | ` `                                         |
@@ -56,7 +58,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 ```bash
 $ helm install --name my-release \
-    --set sysdig.accessKey=YOUR-KEY-HERE,sysdig.AgentTags="role:webserver,location:europe" \
+    --set sysdig.accessKey=YOUR-KEY-HERE,sysdig.settings.tags="role:webserver,location:europe" \
     stable/sysdig
 ```
 
@@ -91,6 +93,38 @@ $ helm install --name sysdig-agent-on-prem \
     --set sysdig.settings.ssl_verify_certificate=false \
     stable/sysdig
 ```
+
+## Using private image registries
+
+To authenticate against an image registry you will need to store the credentials
+in a Secret:
+
+```bash
+kubectl create secret docker-registry NAME \
+ --docker-server=SERVER \
+ --docker-username=USERNAME \
+ --docker-password=TOKEN \
+ --docker-email=EMAIL
+```
+
+The values YAML file will need to point to the Secret you just created (this
+cannot be done using the command-line):
+
+```yaml
+image:
+  pullSecrets:
+    - name: NAME
+```
+
+Finally, set the accessKey value and you are ready to deploy the Sysdig agent
+using the Helm chart:
+
+
+```bash
+helm install --name sysdig-agent -f private-registry-values.yaml stable/sysdig
+```
+
+You can read more details about this in [Kubernetes Documentation](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/).
 
 ## Custom App Checks
 
@@ -145,4 +179,47 @@ $ git clone https://github.com/kubernetes/charts.git
 $ cd stable/sysdig
 $ ./scripts/appchecks2helm appChecks/solr.py appChecks/traefik.py appChecks/nats.py > custom-app-checks.yaml
 $ helm install --name sysdig -f custom-app-checks.yaml stable/sysdig
+```
+
+## Deploying the AWS Marketplace Sysdig agent image
+
+This is an use case similar to pulling images from a private registry. First you
+need to get the authorization token for the AWS Marketplace ECS image registry:
+
+```bash
+aws ecr --region=us-east-1 get-authorization-token --output text --query authorizationData[].authorizationToken | base64 -d | cut -d: -f2
+```
+
+And then use it to create the Secret. Don't forget to replace TOKEN and EMAIL
+with your own values:
+
+```bash
+kubectl create secret docker-registry aws-marketplace-credentials \
+ --docker-server=217273820646.dkr.ecr.us-east-1.amazonaws.com \
+ --docker-username=AWS \
+ --docker-password="TOKEN" \
+ --docker-email="EMAIL"
+```
+
+Next you need to create a values YAML file to pass the specific ECS registry
+configuration (you will find these values when you activate the software from
+the AWS Marketplace):
+
+```yaml
+sysdig:
+  accessKey: XxxXXxXXxXXxxx
+
+image:
+  registry: 217273820646.dkr.ecr.us-east-1.amazonaws.com
+  repository: 2df5da52-6fa2-46f6-b164-5b879e86fd85/cg-3361214151/agent
+  tag: 0.85.1-latest
+  pullSecrets:
+    - name: aws-marketplace-credentials
+```
+
+Finally, set the accessKey value and you are ready to deploy the Sysdig agent
+using the Helm chart:
+
+```bash
+helm install --name sysdig-agent -f aws-marketplace-values.yaml stable/sysdig
 ```

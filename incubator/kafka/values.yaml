@@ -9,7 +9,7 @@ replicas: 3
 image: "confluentinc/cp-kafka"
 
 ## The kafka image tag
-imageTag: "5.0.0-2"  # Confluent image for Kafka 2.0.0
+imageTag: "5.0.1"  # Confluent image for Kafka 2.0.0
 
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -54,9 +54,6 @@ rbac:
 #     - pass
 #   mountPath: /opt/zookeeper/secret
 
-
-## The name of the storage class which the cluster should use.
-# storageClass: default
 
 ## The subpath within the Kafka container's PV where logs will be stored.
 ## This is combined with `persistence.mountPath`, to create, by default: /opt/kafka/data/logs
@@ -147,6 +144,7 @@ external:
   servicePort: 19092
   firstListenerPort: 31090
   domain: cluster.local
+  loadBalancerIP: []
   init:
     image: "lwolf/kubectl_deployer"
     imageTag: "0.4"

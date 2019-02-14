@@ -27,7 +27,7 @@ if [[ -z "${cluster_join}" ]]; then
     --wsrep_node_address="$ipaddr" $CMDARG
 else
     echo "I am not the Primary Node"
-    chown -R mysql:mysql /var/lib/mysql
+    chown -R mysql:mysql /var/lib/mysql || true # default is root:root 777
     touch /var/log/mysqld.log
     chown mysql:mysql /var/log/mysqld.log
     write_password_file

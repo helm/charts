@@ -49,6 +49,9 @@ spec:
             {{- if .Values.db.chartName }}
             - name: DATABASE_HOST
               value: "{{ template "phpmyadmin.dbfullname" . }}"
+            {{- else if .Values.db.bundleTestDB }} 
+            - name: DATABASE_HOST
+              value: "{{ template "mariadb.fullname" . }}"
             {{- else }} 
             - name: DATABASE_HOST
               value: "{{ .Values.db.host }}"

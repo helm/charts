@@ -1,6 +1,6 @@
 image:
   repository: "docker.elastic.co/kibana/kibana-oss"
-  tag: "6.4.2"
+  tag: "6.6.0"
   pullPolicy: "IfNotPresent"
 
 commandline:
@@ -29,8 +29,13 @@ files:
     # logging.verbose: "true"
     # server.defaultRoute: "/app/kibana"
 
+deployment:
+  annotations: {}
+
 service:
   type: ClusterIP
+  # clusterIP: None
+  # portName: kibana-svc
   externalPort: 443
   internalPort: 5601
   # authProxyPort: 5602 To be used with authProxyEnabled and a proxy extraContainer
@@ -56,7 +61,8 @@ service:
 ingress:
   enabled: false
   # hosts:
-    # - chart-example.local
+    # - kibana.localhost.localdomain
+    # - localhost.localdomain/kibana
   # annotations:
   #   kubernetes.io/ingress.class: nginx
   #   kubernetes.io/tls-acme: "true"
@@ -82,6 +88,8 @@ readinessProbe:
   enabled: false
   initialDelaySeconds: 30
   timeoutSeconds: 10
+  periodSeconds: 10
+  successThreshold: 5
 
 # Enable an authproxy. Specify container in extraContainers
 authProxyEnabled: false
@@ -99,6 +107,11 @@ extraContainers: |
 #   ports:
 #     - name: web
 #       containerPort: 9090
+
+extraVolumeMounts: []
+
+extraVolumes: []
+
 resources: {}
   # limits:
   #   cpu: 100m
@@ -125,6 +138,9 @@ podAnnotations: {}
 replicaCount: 1
 revisionHistoryLimit: 3
 
+# Custom labels for pod assignment
+podLabels: {}
+
 # To export a dashboard from a running Kibana 6.3.x use:
 # curl --user <username>:<password> -XGET https://kibana.yourdomain.com:5601/api/kibana/dashboards/export?dashboard=<some-dashboard-uuid> > my-dashboard.json
 # A dashboard is defined by a name and a string with the json payload or the download url
@@ -138,6 +154,7 @@ dashboardImport:
     # k8s: https://raw.githubusercontent.com/monotek/kibana-dashboards/master/k8s-fluentd-elasticsearch.json
 
 # List of plugins to install using initContainer
+# NOTE : We notice that lower resource constraints given to the chart + plugins are likely not going to work well.
 plugins:
   # set to true to enable plugins installation
   enabled: false
@@ -148,3 +165,55 @@ plugins:
     # - elastalert-kibana-plugin,1.0.1,https://github.com/bitsensor/elastalert-kibana-plugin/releases/download/1.0.1/elastalert-kibana-plugin-1.0.1-6.4.2.zip
     # - logtrail,0.1.30,https://github.com/sivasamyk/logtrail/releases/download/v0.1.30/logtrail-6.4.2-0.1.30.zip
     # - other_plugin
+
+persistentVolumeClaim:
+  # set to true to use pvc
+  enabled: false
+  # set to true to use you own pvc
+  existingClaim: false
+  annotations: {}
+
+  accessModes:
+    - ReadWriteOnce
+  size: "5Gi"
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  # storageClass: "-"
+
+# default security context
+securityContext:
+  enabled: false
+  allowPrivilegeEscalation: false
+  runAsUser: 1000
+  fsGroup: 2000
+
+extraConfigMapMounts: []
+  # - name: logtrail-configs
+  #   configMap: kibana-logtrail
+  #   mountPath: /usr/share/kibana/plugins/logtrail/logtrail.json
+  #   subPath: logtrail.json
+
+# Add your own init container or uncomment and modify the given example.
+initContainers: {}
+  ## Don't start kibana till Elasticsearch is reachable.
+  ## Ensure that it is available at http://elasticsearch:9200
+  ##
+  # es-check:  # <- will be used as container name
+  #   image: "appropriate/curl:latest"
+  #   imagePullPolicy: "IfNotPresent"
+  #   command:
+  #     - "/bin/sh"
+  #     - "-c"
+  #     - |
+  #       is_down=true
+  #       while "$is_down"; do
+  #         if curl -sSf --fail-early --connect-timeout 5 http://elasticsearch:9200; then
+  #           is_down=false
+  #         else
+  #           sleep 5
+  #         fi
+  #       done

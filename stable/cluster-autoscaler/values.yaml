@@ -24,7 +24,20 @@ autoscalingGroupsnamePrefix: []
 # Required if cloudProvider=aws
 awsRegion: us-east-1
 
-# Currently only `gce`, `aws` & `spotinst` are supported
+# Required if cloudProvider=azure
+# clientID/ClientSecret with contributor permission to Cluster and Node ResourceGroup
+azureClientID: ""
+azureClientSecret: ""
+# Cluster resource Group
+azureResourceGroup: ""
+azureSubscriptionID: ""
+azureTenantID: ""
+# if using AKS azureVMType should be set to "AKS"
+azureVMType: "AKS"
+azureClusterName: ""
+azureNodeResourceGroup: ""
+
+# Currently only `gce`, `aws`, `azure` & `spotinst` are supported
 cloudProvider: aws
 
 sslCertPath: /etc/ssl/certs/ca-certificates.crt
@@ -34,7 +47,7 @@ cloudConfigPath: /etc/gce.conf
 
 image:
   repository: k8s.gcr.io/cluster-autoscaler
-  tag: v1.12.0
+  tag: v1.13.1
   pullPolicy: IfNotPresent
 
 tolerations: []
@@ -118,3 +131,15 @@ spotinst:
     repository: spotinst/kubernetes-cluster-autoscaler
     tag: 0.6.0
     pullPolicy: IfNotPresent
+
+## Are you using Prometheus Operator?
+serviceMonitor:
+  enabled: false
+  interval: "10s"
+   # Namespace Prometheus is installed in
+  namespace: monitoring
+   ## Defaults to whats used if you follow CoreOS [Prometheus Install Instructions](https://github.com/helm/charts/tree/master/stable/prometheus-operator#tldr)
+   ## [Prometheus Selector Label](https://github.com/helm/charts/tree/master/stable/prometheus-operator#prometheus-operator-1)
+   ## [Kube Prometheus Selector Label](https://github.com/helm/charts/tree/master/stable/prometheus-operator#exporters)
+  selector:
+    prometheus: kube-prometheus

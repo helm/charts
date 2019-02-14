@@ -24,6 +24,11 @@ spec:
         release: "{{ .Release.Name }}"
         component: "dashboard"
     spec:
+      {{- if .Values.dashboard.securityContext.enabled }}
+      securityContext:
+        fsGroup: {{ .Values.dashboard.securityContext.fsGroup }}
+        runAsUser: {{ .Values.dashboard.securityContext.runAsUser }}
+      {{- end }}
       {{- if .Values.dashboard.image.pullSecrets }}
       imagePullSecrets:
       {{- range .Values.dashboard.image.pullSecrets }}

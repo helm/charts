@@ -1,5 +1,5 @@
 {{- if .Values.alertmanager.enabled }}
-apiVersion: monitoring.coreos.com/v1
+apiVersion: {{ printf "%s/v1" (.Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com") }}
 kind: Alertmanager
 metadata:
   name: {{ template "prometheus-operator.fullname" . }}-alertmanager
@@ -13,9 +13,7 @@ spec:
 {{- end }}
   replicas: {{ .Values.alertmanager.alertmanagerSpec.replicas }}
   listenLocal: {{ .Values.alertmanager.alertmanagerSpec.listenLocal }}
-{{- if .Values.global.rbac.create }}
   serviceAccountName: {{ template "prometheus-operator.alertmanager.serviceAccountName" . }}
-{{- end }}
 {{- if .Values.alertmanager.alertmanagerSpec.externalUrl }}
   externalUrl: "{{ .Values.alertmanager.alertmanagerSpec.externalUrl }}"
 {{- end }}
@@ -56,10 +54,6 @@ spec:
   storage:
 {{ toYaml .Values.alertmanager.alertmanagerSpec.storage | indent 4 }}
 {{- end }}
-{{- if .Values.alertmanager.alertmanagerSpec.securityContext }}
-  securityContext:
-{{ toYaml .Values.alertmanager.alertmanagerSpec.securityContext | indent 4 }}
-{{- end }}
 {{- if .Values.alertmanager.alertmanagerSpec.podMetadata }}
   podMetadata:
 {{ toYaml .Values.alertmanager.alertmanagerSpec.podMetadata | indent 4 }}
@@ -68,7 +62,7 @@ spec:
   affinity:
     podAntiAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
-      - topologyKey: kubernetes.io/hostname
+      - topologyKey: {{ .Values.alertmanager.alertmanagerSpec.podAntiAffinityTopologyKey }}
         labelSelector:
           matchLabels:
             app: alertmanager
@@ -79,7 +73,7 @@ spec:
       preferredDuringSchedulingIgnoredDuringExecution:
       - weight: 100
         podAffinityTerm:
-          topologyKey: kubernetes.io/hostname
+          topologyKey: {{ .Values.alertmanager.alertmanagerSpec.podAntiAffinityTopologyKey }}
           labelSelector:
             matchLabels:
               app: alertmanager

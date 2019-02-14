@@ -131,7 +131,7 @@
         "AmazonS3SignV2": false
     },
     "EmailSettings": {
-        "EnableSignUpWithEmail": true,
+        "EnableSignUpWithEmail": {{ .Values.config.enableSignUpWithEmail }},
         "EnableSignInWithEmail": true,
         "EnableSignInWithUsername": true,
         {{ if .Values.config.smtpServer }}
@@ -155,7 +155,7 @@
         "ConnectionSecurity": {{ .Values.config.smtpConnection | default "" | quote }},
         "InviteSalt": "{{ randAlphaNum 32 }}",
         "SendPushNotifications": true,
-        "PushNotificationServer": "https://push.mattermost.com",
+        "PushNotificationServer": "https://push-test.mattermost.com",
         "PushNotificationContents": "generic",
         "EnableEmailBatching": false,
         "EmailBatchingBufferSize": 256,

@@ -42,6 +42,7 @@ spec:
             - --policy={{ .Values.policy }}
             - --provider={{ .Values.provider }}
             - --registry={{ .Values.registry }}
+            - --interval={{ .Values.interval }}
           {{- if .Values.txtOwnerId }}
             - --txt-owner-id={{ .Values.txtOwnerId }}
           {{- end }}
@@ -54,11 +55,19 @@ spec:
           {{- range .Values.sources }}
             - --source={{ . }}
           {{- end }}
+          {{ if .Values.dryRun }}
+            - --dry-run
+          {{- end }}
           {{- range $key, $value := .Values.extraArgs }}
             {{- if $value }}
             - --{{ $key }}={{ $value }}
             {{- else }}
             - --{{ $key }}
+            {{- end }}
+          {{- end }}
+          {{- if eq .Values.provider "cloudflare" }}
+            {{- if .Values.cloudflare.proxied }}
+            - --cloudflare-proxied
             {{- end }}
           {{- end }}
           {{- if .Values.aws.zoneType }}
@@ -67,8 +76,25 @@ spec:
           {{- if .Values.google.project }}
             - --google-project={{ .Values.google.project }}
           {{- end }}
+          {{- if eq .Values.provider "infoblox" }}
+            - --infoblox-grid-host={{ .Values.infoblox.gridHost }}
+            {{- if .Values.infoblox.domainFilter }}
+            - --domain-filter={{ .Values.infoblox.domainFilter }}
+            {{- end }}
+            {{- if .Values.infoblox.wapiPort }}
+            - --infoblox-wapi-port={{ .Values.infoblox.wapiPort }}
+            {{- end }}
+            {{- if .Values.infoblox.wapiVersion }}
+            - --infoblox-wapi-version={{ .Values.infoblox.wapiVersion }}
+            {{- end }}
+            {{- if .Values.infoblox.noSslVerify }}
+            - --no-infoblox-ssl-verify
+            {{- else }}
+            - --infoblox-ssl-verify
+            {{- end }}
+          {{- end }}
           volumeMounts:
-          {{- if .Values.google.serviceAccountSecret }}
+          {{- if or .Values.google.serviceAccountSecret .Values.google.serviceAccountKey }}
           - name: google-service-account
             mountPath: /etc/secrets/service-account/
           {{- end}}
@@ -83,11 +109,16 @@ spec:
           {{- end }}
           {{- if (and .Values.aws.secretKey .Values.aws.accessKey) }}
           - name: aws-credentials
-            mountPath: /root/.aws
+            mountPath: {{ .Values.aws.credentialsPath }}
+            readOnly: true
+          {{- end }}
+          {{- if and (eq .Values.provider "designate") .Values.designate.customCA.enabled }}
+          - name: designate-custom-ca
+            mountPath: {{ .Values.designate.customCA.directory }}
             readOnly: true
           {{- end }}
           env:
-        {{- if .Values.google.serviceAccountSecret }}
+        {{- if or .Values.google.serviceAccountSecret .Values.google.serviceAccountKey }}
           - name: GOOGLE_APPLICATION_CREDENTIALS
             value: /etc/secrets/service-account/credentials.json
         {{- end }}
@@ -105,6 +136,30 @@ spec:
                 key: cloudflare_api_key
           - name: CF_API_EMAIL
             value: "{{ .Values.cloudflare.email }}"
+        {{- end }}
+        {{- if .Values.infoblox.wapiConnectionPoolSize }}
+          - name: EXTERNAL_DNS_INFOBLOX_HTTP_POOL_CONNECTIONS
+            value: "{{ .Values.infoblox.wapiConnectionPoolSize }}"
+        {{- end }}
+        {{- if .Values.infoblox.wapiHttpTimeout }}
+          - name: EXTERNAL_DNS_INFOBLOX_HTTP_REQUEST_TIMEOUT
+            value: "{{ .Values.infoblox.wapiHttpTimeout }}"
+        {{- end }}
+        {{- if and .Values.infoblox.wapiUsername .Values.infoblox.wapiPassword }}
+          - name: EXTERNAL_DNS_INFOBLOX_WAPI_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "external-dns.fullname" . }}
+                key: infoblox_wapi_username
+          - name: EXTERNAL_DNS_INFOBLOX_WAPI_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "external-dns.fullname" . }}
+                key: infoblox_wapi_password
+        {{- end }}
+        {{- if and (eq .Values.provider "designate") .Values.designate.customCA.enabled }}
+          - name: OPENSTACK_CA_FILE
+            value: {{ .Values.designate.customCA.directory }}/{{ .Values.designate.customCA.filename }}
         {{- end }}
         {{- $root := . -}}
         {{- range .Values.extraEnv }}
@@ -124,6 +179,10 @@ spec:
               port: 7979
           ports:
             - containerPort: 7979
+        {{- if .Values.securityContext }}
+          securityContext:
+{{ toYaml .Values.securityContext | indent 12 }}
+        {{- end }}
         {{- if .Values.resources }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
@@ -132,7 +191,11 @@ spec:
       {{- if .Values.google.serviceAccountSecret }}
       - name: google-service-account
         secret:
-          secretName: "{{.Values.google.serviceAccountSecret}}"
+          secretName: {{ .Values.google.serviceAccountSecret | quote }}
+      {{- else if .Values.google.serviceAccountKey }}
+      - name: google-service-account
+        secret:
+          secretName: {{ template "external-dns.fullname" . }}
       {{- end}}
       {{- if eq .Values.provider "azure" }}
       - name: azure-config-file
@@ -149,6 +212,14 @@ spec:
       - name: aws-credentials
         secret:
           secretName: {{ template "external-dns.fullname" . }}
+      {{- end }}
+      {{- if and (eq .Values.provider "designate") .Values.designate.customCA.enabled }}
+      - name: designate-custom-ca
+        configMap:
+          name: {{ template "external-dns.fullname" . }}
+          items:
+          - key: {{ .Values.designate.customCA.filename }}
+            path: {{ .Values.designate.customCA.filename }}
       {{- end }}
     {{- if .Values.nodeSelector }}
       nodeSelector:

@@ -64,27 +64,27 @@ for Spinnaker. If you want to add arbitrary clusters need to do the following:
 
 Spinnaker will only give you access to Docker images that have been whitelisted, if you're using a private registry or a private repository you also need to provide credentials.  Update the following values of the chart to do so:
 
-    ```yaml
-    dockerRegistries:
-    - name: dockerhub
-      address: index.docker.io
-      repositories:
-        - library/alpine
-        - library/ubuntu
-        - library/centos
-        - library/nginx
-    # - name: gcr
-    #   address: https://gcr.io
-    #   username: _json_key
-    #   password: '<INSERT YOUR SERVICE ACCOUNT JSON HERE>'
-    #   email: 1234@5678.com
-    ```
+```yaml
+dockerRegistries:
+- name: dockerhub
+  address: index.docker.io
+  repositories:
+    - library/alpine
+    - library/ubuntu
+    - library/centos
+    - library/nginx
+# - name: gcr
+#   address: https://gcr.io
+#   username: _json_key
+#   password: '<INSERT YOUR SERVICE ACCOUNT JSON HERE>'
+#   email: 1234@5678.com
+```
 
 You can provide passwords as a Helm value, or you can use a pre-created secret containing your registry passwords.  The secret should have an item per Registry in the format: `<registry name>: <password>`. In which case you'll specify the secret to use in `dockerRegistryAccountSecret` like so:
 
-    ```yaml
-    dockerRegistryAccountSecret: myregistry-secrets
-    ```
+```yaml
+dockerRegistryAccountSecret: myregistry-secrets
+```
 
 ## Specifying persistent storage
 
@@ -146,4 +146,10 @@ halyard:
     create: true
     data:
       metadata.xml: <xml><username>admin</username></xml>
+  additionalProfileConfigMaps:
+    create: true
+    data:
+      orca-local.yml: |-
+        tasks:
+          useManagedServiceAccounts: true
 ```

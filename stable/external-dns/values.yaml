@@ -1,7 +1,7 @@
 ## Details about the image to be pulled.
 image:
   name: registry.opensource.zalan.do/teapot/external-dns
-  tag: v0.5.7
+  tag: v0.5.9
   pullSecrets: []
   pullPolicy: IfNotPresent
 
@@ -21,6 +21,8 @@ provider: aws
 aws:
   secretKey: ""
   accessKey: ""
+  # pre external-dns 0.5.9 home dir should be `/root/.aws`
+  credentialsPath: "/.aws"
   roleArn: ""
   region: "us-east-1"
   # Filter for zones of this type (optional, options: public, private)
@@ -34,10 +36,40 @@ azure:
 cloudflare:
   apiKey: ""
   email: ""
+  proxied: true
+
+# Configuration for OpenStack Designate provider
+designate:
+  # A custom CA (optional)
+  customCA:
+    # Turn custom CA on or off
+    enabled: false
+    # The content of the custom CA file
+    content: ""
+    # Location to mount custom CA
+    directory: "/config/designate"
+    # Filename of the custom CA
+    filename: "designate-ca.pem"
+
 # When using the Google provider, specify the Google project (required when provider=google)
 google:
   project: ""
   serviceAccountSecret: ""
+  serviceAccountKey: ""
+
+# Infoblox keys to inject
+infoblox:
+  # Required keys:
+  wapiUsername: ""
+  wapiPassword: ""
+  gridHost: ""
+  # Optional keys:
+  domainFilter: ""
+  noSslVerify: false
+  wapiPort: ""
+  wapiVersion: ""
+  wapiConnectionPoolSize: ""
+  wapiHttpTimeout: ""
 
 ## Limit possible target zones by domain suffixes (optional)
 domainFilters: []
@@ -45,12 +77,17 @@ domainFilters: []
 zoneIdFilters: []
 # Filter sources managed by external-dns via annotation using label selector semantics (default: all sources)
 annotationFilter: ""
+## Adjust the interval for DNS updates
+interval: "1m"
 
 # Registry to use for ownership (txt or noop)
 registry: "txt"
 
 # When using the TXT registry, a name that identifies this instance of ExternalDNS
 txtOwnerId: ""
+
+# When enabled, prints DNS record changes rather than actually performing them
+dryRun: false
 
 ## Node labels for pod assignment
 ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
@@ -104,6 +141,13 @@ rbac:
   ## Ignored if rbac.create is true
   ##
   serviceAccountName: default
+
+securityContext: {}
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 65534 # 65534 is nobody - revise aws.credentialsPath when changing uid
+  # capabilities:
+  #   drop: ["ALL"]
 
 service:
   annotations: {}
