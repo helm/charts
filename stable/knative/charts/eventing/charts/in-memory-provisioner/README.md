@@ -65,8 +65,7 @@ $ helm delete <my-release> --purge [--tls]
 
 To uninstall/delete the crds:
 ```bash
-$ kubectl delete -f knative/charts/eventing/templates/crds.yaml
-$ kubectl delete namespace knative-eventing
+$ kubectl delete -f knative/all-crds.yaml
 ```
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
