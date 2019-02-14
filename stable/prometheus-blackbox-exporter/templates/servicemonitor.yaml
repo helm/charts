@@ -4,10 +4,10 @@ kind: ServiceMonitor
 metadata:
   name: {{ template "prometheus-blackbox-exporter.fullname" . }}
   labels:
-    chart: {{ template "prometheus-blackbox-exporter.chart" . }}
-    app: {{ template "prometheus-blackbox-exporter.name" . }}
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app.kubernetes.io/name: {{ include "prometheus-blackbox-exporter.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "prometheus-blackbox-exporter.chart" . }}
     {{- if .Values.serviceMonitor.labels }}
     {{- toYaml .Values.serviceMonitor.labels | nindent 4 }}
     {{- end }}
@@ -37,8 +37,8 @@ spec:
   jobLabel: "{{ .Release.Name }}"
   selector:
     matchLabels:
-      app: {{ template "prometheus-blackbox-exporter.name" . }}
-      release: "{{ .Release.Name }}"
+      app.kubernetes.io/name: {{ include "prometheus-blackbox-exporter.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
   namespaceSelector:
     matchNames:
       - {{ .Release.Namespace }}

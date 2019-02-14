@@ -94,3 +94,16 @@ $ helm install --name my-release -f values.yaml stable/prometheus-blackbox-expor
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+## Upgrading an existing Release to a new major version
+
+### 1.0.0
+
+This version introduce the new recommended labels.
+
+In order to upgrade, delete the Deployment before upgrading:
+```bash
+$ kubectl delete deployment my-release-prometheus-blackbox-exporter
+```
+
+Note that this will cause downtime of the blackbox.
