@@ -45,7 +45,7 @@ spec:
         ports:
         - containerPort: {{ .Values.service.port }}
           name: api
-        - containerPort: 8201
+        - containerPort: {{ .Values.service.clusterPort }}
           name: cluster-address
         livenessProbe:
           # Alive if it is listening for clustering traffic
