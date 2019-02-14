@@ -81,7 +81,7 @@ data:
     }
 kind: ConfigMap
 metadata:
-  name: config-logging
+  name: "{{ .Chart.Name }}-config-logging"
   namespace: "knative-serving"
   labels: {{ include "labels" . | nindent 4 }}
     app: {{ .Chart.Name }} 

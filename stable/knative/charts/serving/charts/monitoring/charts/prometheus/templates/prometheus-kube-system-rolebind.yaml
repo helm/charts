@@ -9,7 +9,7 @@ metadata:
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: {{ .Values.prometheusSystem.rb.roleName | quote }}
+  name: "kube-system-role"
 subjects:
 - kind: ServiceAccount
   name: {{ .Values.prometheusSystem.svcacct.name | quote }}

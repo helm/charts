@@ -2,10 +2,10 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: {{ .Values.prometheusSystem.rb.roleName | quote }}
+  name: "monitoring-system-role"
   namespace: "knative-monitoring"
   labels: {{ include "labels" . | nindent 4 }}
-    app: {{ .Values.prometheusSystem.rb.roleName | quote }}
+    app: "monitoring-system-role"
 rules:
 - apiGroups:
   - ""

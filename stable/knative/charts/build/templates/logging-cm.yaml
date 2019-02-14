@@ -31,7 +31,7 @@ data:
     }
 kind: ConfigMap
 metadata:
-  name: config-logging
+  name: "{{ .Chart.Name }}-config-logging"
   namespace: {{ .Values.global.build.namespace | quote }}
   labels: {{ include "labels" . | nindent 4 }}
     app: {{ .Chart.Name }}

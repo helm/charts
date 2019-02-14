@@ -2,10 +2,10 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: {{ .Values.prometheusSystem.rb.roleName | quote }}
+  name: "prometheus-system-role"
   namespace: {{ .Values.prometheusSystem.role.namespace | quote }}
   labels: {{ include "labels" . | nindent 4 }}
-    app: {{ .Values.prometheusSystem.rb.roleName | quote }}
+    app: "prometheus-system-role"
 rules:
 - apiGroups:
   - ""
