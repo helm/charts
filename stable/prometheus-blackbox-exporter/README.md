@@ -72,6 +72,11 @@ The following table lists the configurable parameters of the Blackbox-Exporter c
 | `service.type`                         | type of service to create                         | `ClusterIP`                   |
 | `service.port`                         | port for the blackbox http service                | `9115`                        |
 | `service.externalIPs`                  | list of external ips                              | []                            |
+| `serviceMonitor.enabled`               | If true, a ServiceMonitor CRD is created for a prometheus operator | `false`      |
+| `serviceMonitor.labels`                | Labels for prometheus operator                    | `{}`                          |
+| `serviceMonitor.interval`              | Interval for prometheus operator endpoint         | `30s`                         |
+| `serviceMonitor.url`                   | The URL that blackbox will scrape if serviceMonitor is enabled | `http://www.changemeoriwillfail.com/healthz` |
+| `serviceMonitor.urlHumanReadable`      | Optional human readable URL that will appear in Prometheus / AlertManager | `nil` |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
