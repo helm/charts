@@ -291,6 +291,18 @@ Agent:
   # Key Value selectors. Ex:
   # jenkins-agent: v1
 
+  # Executed command when side container gets started
+  Command:
+  Args:
+  # Side container name
+  SideContainerName: jnlp
+  # Doesn't allocate pseudo TTY by default
+  TTYEnabled: false
+  # Max number of spawned agent
+  ContainerCap: 10
+  # Pod name
+  PodName: default
+
 Persistence:
   Enabled: true
   ## A manually managed Persistent Volume and Claim

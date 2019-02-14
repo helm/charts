@@ -46,7 +46,7 @@ data:
 {{- if .Values.Agent.Enabled }}
             <org.csanchez.jenkins.plugins.kubernetes.PodTemplate>
               <inheritFrom></inheritFrom>
-              <name>default</name>
+              <name>{{ .Values.Agent.PodName }}</name>
               <instanceCap>2147483647</instanceCap>
               <idleMinutes>0</idleMinutes>
               <label>{{ .Release.Name }}-{{ .Values.Agent.Component }} {{ .Values.Agent.CustomJenkinsLabels  | join " " }}</label>
@@ -69,7 +69,7 @@ data:
               </volumes>
               <containers>
                 <org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
-                  <name>jnlp</name>
+                  <name>{{ .Values.Agent.SideContainerName }}</name>
                   <image>{{ .Values.Agent.Image }}:{{ .Values.Agent.ImageTag }}</image>
 {{- if .Values.Agent.Privileged }}
                   <privileged>true</privileged>
@@ -78,9 +78,13 @@ data:
 {{- end }}
                   <alwaysPullImage>{{ .Values.Agent.AlwaysPullImage }}</alwaysPullImage>
                   <workingDir>/home/jenkins</workingDir>
-                  <command></command>
+                  <command>{{ .Values.Agent.Command }}</command>
+{{- if .Values.Agent.Args }}
+                  <args>{{ .Values.Agent.Args }}</args>
+{{- else }}
                   <args>${computer.jnlpmac} ${computer.name}</args>
-                  <ttyEnabled>false</ttyEnabled>
+{{- end }}
+                  <ttyEnabled>{{ .Values.Agent.TTYEnabled }}</ttyEnabled>
                   # Resources configuration is a little hacky. This was to prevent breaking
                   # changes, and should be cleanned up in the future once everybody had
                   # enough time to migrate.
@@ -133,7 +137,7 @@ data:
           <jenkinsUrl>http://{{ template "jenkins.fullname" . }}:{{.Values.Master.ServicePort}}{{ default "" .Values.Master.JenkinsUriPrefix }}</jenkinsUrl>
           <jenkinsTunnel>{{ template "jenkins.fullname" . }}-agent:{{ .Values.Master.SlaveListenerPort }}</jenkinsTunnel>
 {{- end }}
-          <containerCap>10</containerCap>
+          <containerCap>{{ .Values.Agent.ContainerCap }}</containerCap>
           <retentionTimeout>5</retentionTimeout>
           <connectTimeout>0</connectTimeout>
           <readTimeout>0</readTimeout>
