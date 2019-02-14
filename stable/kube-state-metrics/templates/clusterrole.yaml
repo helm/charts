@@ -74,13 +74,19 @@ rules:
   resources:
   - persistentvolumeclaims
   verbs: ["list", "watch"]
-{{ end }}
+{{ end -}}
 {{ if .Values.collectors.persistentvolumes }}
 - apiGroups: [""]
   resources:
   - persistentvolumes
   verbs: ["list", "watch"]
-{{ end }}
+{{ end -}}
+{{ if .Values.collectors.poddisruptionbudgets }}
+- apiGroups: ["policy"]
+  resources:
+    - poddisruptionbudgets
+  verbs: ["list", "watch"]
+{{ end -}}
 {{ if .Values.collectors.pods }}
 - apiGroups: [""]
   resources:

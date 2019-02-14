@@ -43,6 +43,7 @@ $ helm install stable/kube-state-metrics
 | `collectors.nodes`                    | Enable the nodes collector.                             | true                                        |
 | `collectors.persistentvolumeclaims`   | Enable the persistentvolumeclaims collector.            | true                                        |
 | `collectors.persistentvolumes`        | Enable the persistentvolumes collector.                 | true                                        |
+| `collectors.poddisruptionbudgets`     | Enable the poddisruptionbudgets collector.              | true
 | `collectors.pods`                     | Enable the pods collector.                              | true                                        |
 | `collectors.replicasets`              | Enable the replicasets collector.                       | true                                        |
 | `collectors.replicationcontrollers`   | Enable the replicationcontrollers collector.            | true                                        |
