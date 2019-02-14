@@ -135,7 +135,7 @@ kubeState:
 nodeExporterService:
   name: "node-exporter"
   portName: "https"
-  port: 9100
+  port: 9102
   type: "ClusterIP"
 
 # resources for prometheus-system-discovery-service

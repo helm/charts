@@ -36,13 +36,13 @@ spec:
           name: sys
           readOnly: true
       - args:
-        - --secure-listen-address=:9100
+        - --secure-listen-address=:{{ .Values.nodeExporterService.port }}
         - --upstream=http://127.0.0.1:9101/
         image: quay.io/coreos/kube-rbac-proxy:v0.3.0
         name: kube-rbac-proxy
         ports:
-        - containerPort: 9100
-          hostPort: 9100
+        - containerPort: {{ .Values.nodeExporterService.port }}
+          hostPort: {{ .Values.nodeExporterService.port }}
           name: https
         resources:
           limits:
