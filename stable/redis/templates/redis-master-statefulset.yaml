@@ -38,6 +38,10 @@ spec:
         - name: {{ . }}
         {{- end}}
       {{- end}}
+      {{- if .Values.master.securityContext.enabled }}
+      securityContext:
+        fsGroup: {{ .Values.master.securityContext.fsGroup }}
+      {{- end }}
       serviceAccountName: "{{ template "redis.serviceAccountName" . }}"
       {{- if .Values.master.priorityClassName }}
       priorityClassName: "{{ .Values.master.priorityClassName }}"
@@ -63,7 +67,7 @@ spec:
         imagePullPolicy: {{ default "" .Values.image.pullPolicy | quote }}
         {{- if .Values.master.securityContext.enabled }}
         securityContext:
-          fsGroup: {{ .Values.master.securityContext.fsGroup }}
+          runAsNonRoot: true
           runAsUser: {{ .Values.master.securityContext.runAsUser }}
         {{- end }}
         command:
