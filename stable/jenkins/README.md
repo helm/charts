@@ -74,6 +74,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `Master.Ingress.Annotations`      | Ingress annotations                  | `{}`                                                                         |
 | `Master.Ingress.Path`             | Ingress path                         | Not set                                                                         |
 | `Master.Ingress.TLS`              | Ingress TLS configuration            | `[]`                                                                         |
+| `Master.JCasC.enabled`            | Wheter Jenkins Configuration as Code is enabled or not | `false`                                                    |
 | `Master.JCasC.ConfigScripts`      | List of Jenkins Config as Code scripts | False                                                                   |
 | `Master.Sidecars.configAutoReload` | Jenkins Config as Code auto-reload settings | False                                                                    |
 | `Master.Sidecars.others`          | Configures additional sidecar container(s) for Jenkins master | `{}`                                                           |
@@ -255,12 +256,12 @@ Config as Code changes (to Master.JCasC.ConfigScripts) can either force a new po
 When enabling LDAP or another non-Jenkins identity source, the built-in admin account will no longer exist.  Since the admin account is used by the sidecar to reload config, in order to use auto-reload, you must change the .Master.AdminUser to a valid username on your LDAP (or other) server.  If you use the matrix-auth plugin, this user must also be granted Overall\Administer rights in Jenkins.  Failure to do this will cause the sidecar container to fail to authenticate via SSH and enter a restart loop.  You can enable LDAP using the example above and add a Config as Code block for matrix security that includes:
 ```yaml
 ConfigScripts:
-	matrix-auth: |
-		Jenkins:
-          authorizationStrategy:
-            projectMatrix:
-              grantedPermissions:
-			    - "Overall/Administer:<AdminUser_LDAP_username>"
+  matrix-auth: |
+    jenkins:
+      authorizationStrategy:
+        projectMatrix:
+          grantedPermissions:
+          - "Overall/Administer:<AdminUser_LDAP_username>"
 ```
 You can instead grant this permission via the UI. When this is done, you can set `Master.Sidecars.configAutoReload.enabled: true` and upon the next Helm upgrade, auto-reload will be successfully enabled.
 
