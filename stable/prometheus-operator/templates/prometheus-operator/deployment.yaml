@@ -35,6 +35,9 @@ spec:
           {{- if .Values.prometheusOperator.logFormat }}
             - --log-format={{ .Values.prometheusOperator.logFormat }}
           {{- end }}
+          {{- if .Values.prometheusOperator.logLevel }}
+            - --log-level={{ .Values.prometheusOperator.logLevel }}
+          {{- end }}
             - --logtostderr=true
             - --crd-apigroup={{ .Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com" }}
             - --localhost=127.0.0.1
