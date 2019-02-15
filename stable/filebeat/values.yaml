@@ -153,7 +153,7 @@ monitoring:
     # Set how frequently Prometheus should scrape
     interval: 30s
     # Set labels for the ServiceMonitor, use this to define your scrape label for Prometheus Operator
-    #labels:
+    # labels:
     # Set path to beats-exporter telemtery-path
     telemetryPath: /metrics
   image:
