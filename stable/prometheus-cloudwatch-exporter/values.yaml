@@ -12,7 +12,6 @@ image:
 service:
   type: ClusterIP
   port: 80
-  targetPort: 9100
   portName: http
   annotations: {}
   labels: {}
@@ -30,9 +29,18 @@ resources: {}
   #   memory: 128Mi
 
 aws:
-  region: eu-west-1
   role:
-  # Note: Do not specify the aws_access_key_id abd aws_secret_access_key if you specified role before
+
+  # The name of a pre-created secret in which AWS credentials are stored. When
+  # set, aws_access_key_id is assumed to be in a field called access_key,
+  # aws_secret_access_key is assumed to be in a field called secret_key, and the
+  # session token, if it exists, is assumed to be in a field called
+  # security_token
+  secret:
+    name:
+    includesSessionToken: false
+
+  # Note: Do not specify the aws_access_key_id and aws_secret_access_key if you specified role or secret.name before
   aws_access_key_id:
   aws_secret_access_key:
 

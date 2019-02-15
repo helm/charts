@@ -33,6 +33,7 @@ their default values.
 | `imagePullSecrets`          | Specify image pull secrets                                                                 | `nil` (does not add image pull secrets to deployed pods) |
 | `persistence.accessMode`    | Access mode to use for PVC                                                                 | `ReadWriteOnce` |
 | `persistence.enabled`       | Whether to use a PVC for the Docker storage                                                | `false`         |
+| `persistence.deleteEnabled` | Enable the deletion of image blobs and manifests by digest                                 | `nil`           |
 | `persistence.size`          | Amount of space to claim for PVC                                                           | `10Gi`          |
 | `persistence.storageClass`  | Storage Class to use for PVC                                                               | `-`             |
 | `persistence.existingClaim` | Name of an existing PVC to use for config                                                  | `nil`           |
@@ -56,6 +57,7 @@ their default values.
 | `haSharedSecret`            | Shared secret for Registry                                                                 | `nil`           |
 | `configData`                | Configuration hash for docker                                                              | `nil`           |
 | `s3.region`                 | S3 region                                                                                  | `nil`           |
+| `s3.regionEndpoint`         | S3 region endpoint                                                                         | `nil`           |
 | `s3.bucket`                 | S3 bucket name                                                                             | `nil`           |
 | `s3.encrypt`                | Store images in encrypted format                                                           | `nil`           |
 | `s3.secure`                 | Use HTTPS                                                                                  | `nil`           |

@@ -93,6 +93,11 @@ spec:
               configMapKeyRef:
                 name: {{ template "jaeger.fullname" . }}
                 key: query.health-check-http-port
+          - name: QUERY_BASE_PATH
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "jaeger.fullname" . }}
+                key: query.base-path
         ports:
         - containerPort: {{ .Values.query.service.targetPort }}
           protocol: TCP

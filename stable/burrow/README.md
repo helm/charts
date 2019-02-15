@@ -52,7 +52,7 @@ The following table lists the configurable parameters of the Burrow chart and it
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
 | `image.repository` | image repository | `"hyperledger/burrow"` |
-| `image.tag` | image tag | `"0.23.1"` |
+| `image.tag` | image tag | `"0.23.3"` |
 | `image.pullPolicy` | image pull policy | `"IfNotPresent"` |
 | `chain.nodes` | number of nodes for the blockchain network | `1` |
 | `chain.logLevel` | log level for the nodes (`debug`, `info`, `warn`) | `"info"` |

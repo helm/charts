@@ -63,7 +63,7 @@ The following table lists the configurable parameters of the Datadog chart and t
 | `datadog.appKey`            | Datadog APP key required to use metricsProvider |  `Nil` You must provide your own key      |
 | `datadog.appKeyExistingSecret` | If set, use the secret with a provided name instead of creating a new one |`nil` |
 | `image.repository`          | The image repository to pull from  | `datadog/agent`                           |
-| `image.tag`                 | The image tag to pull              | `6.6.0`                                   |
+| `image.tag`                 | The image tag to pull              | `6.9.0`                                   |
 | `image.pullPolicy`          | Image pull policy                  | `IfNotPresent`                            |
 | `image.pullSecrets`         | Image pull secrets                 |  `nil`                                    |
 | `rbac.create`               | If true, create & use RBAC resources | `true`                                  |
@@ -91,7 +91,11 @@ The following table lists the configurable parameters of the Datadog chart and t
 | `datadog.resources.limits.cpu` | CPU resource limits             | `200m`                                    |
 | `datadog.resources.requests.memory` | Memory resource requests   | `256Mi`                                   |
 | `datadog.resources.limits.memory` | Memory resource limits       | `256Mi`                                   |
-| `datadog.livenessProbe`     | Overrides the default liveness probe | exec /probe.sh                          |
+| `datadog.securityContext`   | Allows you to overwrite the default securityContext applied to the container  | `nil`  |
+| `datadog.livenessProbe`     | Overrides the default liveness probe | http port 5555                          |
+| `datadog.hostname`          | Set the hostname (write it in datadog.conf) | `nil`                            |
+| `datadog.acInclude`         | Include containers based on image name | `nil`                                 |
+| `datadog.acExclude`         | Exclude containers based on image name | `nil`                                 |
 | `daemonset.podAnnotations`  | Annotations to add to the DaemonSet's Pods | `nil`                             |
 | `daemonset.tolerations`     | List of node taints to tolerate (requires Kubernetes >= 1.6) | `nil`           |
 | `daemonset.nodeSelector`    | Node selectors                     | `nil`                                     |

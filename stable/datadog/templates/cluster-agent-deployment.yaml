@@ -74,6 +74,8 @@ spec:
           {{- if .Values.datadog.collectEvents }}
           - name: DD_COLLECT_KUBERNETES_EVENTS
             value: {{ .Values.datadog.collectEvents | quote}}
+          - name: DD_CLUSTER_AGENT_KUBERNETES_SERVICE_NAME
+            value: {{ template "datadog.clusterAgent.fullname" . }}
           {{- end }}
           - name: DD_CLUSTER_AGENT_AUTH_TOKEN
             valueFrom:

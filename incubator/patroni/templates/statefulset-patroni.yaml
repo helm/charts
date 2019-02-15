@@ -42,6 +42,18 @@ spec:
             secretKeyRef:
               name: {{ template "patroni.fullname" . }}
               key: password-standby
+        {{- if .Values.kubernetes.dcs.enable }}
+        - name: DCS_ENABLE_KUBERNETES_API
+          value: "true"
+        - name: KUBERNETES_LABELS
+          value: {{ (printf "{ \"app\": \"%s\", \"release\": \"%s\" }" (include "patroni.name" .) .Release.Name) | quote }}
+        - name: KUBERNETES_SCOPE_LABEL
+          value: "app"
+        {{- end }}
+        {{- if .Values.kubernetes.configmaps.enable }}
+        - name: KUBERNETES_USE_CONFIGMAPS
+          value: "true"
+        {{- end }}
         {{- if .Values.etcd.enable }}
         {{- if .Values.etcd.deployChart }}
         - name: ETCD_DISCOVERY_DOMAIN
@@ -142,6 +154,11 @@ spec:
           secretName: {{ .Values.walE.kubernetesSecret }}
       {{- end }}
       {{- end }}
+      {{- if not .Values.persistentVolume.enabled }}
+      - name: storage-volume
+        emptyDir: {}
+      {{- end }}
+  {{- if .Values.persistentVolume.enabled }}
   volumeClaimTemplates:
     - metadata:
         name: storage-volume
@@ -166,3 +183,4 @@ spec:
         storageClassName: "{{ .Values.persistentVolume.storageClass }}"
       {{- end }}
       {{- end }}
+  {{- end }}

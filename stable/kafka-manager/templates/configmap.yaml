@@ -12,9 +12,9 @@ metadata:
 data:
   addClusters.sh: |
     #!/bin/bash
-    set -ex
+    set -e
     {{- range $cluster := .Values.clusters }}
-    {{ printf "curl http://%s:9000/clusters -X POST " (include "kafka-manager.fullname" $) -}}
+    {{ printf "curl http://%s:9000/clusters -X POST -f " (include "kafka-manager.fullname" $) -}}
     {{- printf "-d name=%s " (default "default" $cluster.name) -}}
     {{- printf "-d zkHosts=%s " (default (include "kafka-manager.zkHosts" $) $cluster.zkHosts ) -}}
     {{- printf "-d kafkaVersion=%s " (default "1.0.0" $cluster.kafkaVersion) -}}
@@ -46,6 +46,6 @@ data:
     {{- printf "-d tuning.kafkaManagedOffsetGroupCacheSize=%s " (default "1000000" $cluster.tuning.kafkaManagedOffsetGroupCacheSize) -}}
     {{- printf "-d tuning.kafkaManagedOffsetGroupExpireDays=%s " (default "7" $cluster.tuning.kafkaManagedOffsetGroupExpireDays) -}}
     {{- printf "-d securityProtocol=%s " (default "PLAINTEXT" $cluster.securityProtocol) -}}
-    {{- printf "|| exit 1;" -}}
+    {{- printf "$( if $KAFKA_MANAGER_AUTH_ENABLED; then echo -u $KAFKA_MANAGER_USERNAME:$KAFKA_MANAGER_PASSWORD ; fi ) " -}}
     {{- end -}}
 {{- end -}}

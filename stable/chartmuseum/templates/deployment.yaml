@@ -54,6 +54,18 @@ spec:
         - name: GOOGLE_APPLICATION_CREDENTIALS
           value: "/etc/secrets/google/credentials.json"
 {{- end }}
+{{- if .Values.env.existingSecret }}
+{{- $secret_name := .Values.env.existingSecret }}
+{{- range $name, $key := .Values.env.existingSecretMappings }}
+{{- if not ( empty $key) }}
+        - name: {{ $name | quote }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ $secret_name | quote }}
+              key: {{ $key | quote }}
+{{- end }}
+{{- end }}
+{{- else }}
 {{- $secret_name := include "chartmuseum.fullname" . }}
 {{- range $name, $value := .Values.env.secret }}
 {{- if not ( empty $value) }}
@@ -62,6 +74,7 @@ spec:
             secretKeyRef:
               name: {{ $secret_name }}
               key: {{ $name | quote }}
+{{- end }}
 {{- end }}
 {{- end }}
         args:

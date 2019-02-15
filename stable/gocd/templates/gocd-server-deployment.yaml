@@ -47,6 +47,10 @@ spec:
           secret:
             secretName: {{ .Values.server.security.ssh.secretName }}
       {{- end }}
+      {{- if .Values.server.initContainers }}
+      initContainers:
+{{ toYaml .Values.server.initContainers | indent 8 }}
+      {{- end }}
       containers:
         - name: {{ template "gocd.name" . }}-server
           {{- if .Values.server.image.tag }}
@@ -116,6 +120,7 @@ spec:
           {{- end }}
           resources:
 {{ toYaml .Values.server.resources | indent 12 }}
+      restartPolicy: {{ .Values.server.restartPolicy }}
     {{- if .Values.server.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.server.nodeSelector | indent 8 }}

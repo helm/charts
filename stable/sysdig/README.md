@@ -58,7 +58,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 ```bash
 $ helm install --name my-release \
-    --set sysdig.accessKey=YOUR-KEY-HERE,sysdig.AgentTags="role:webserver,location:europe" \
+    --set sysdig.accessKey=YOUR-KEY-HERE,sysdig.settings.tags="role:webserver,location:europe" \
     stable/sysdig
 ```
 

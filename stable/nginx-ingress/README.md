@@ -47,12 +47,13 @@ Parameter | Description | Default
 --- | --- | ---
 `controller.name` | name of the controller component | `controller`
 `controller.image.repository` | controller container image repository | `quay.io/kubernetes-ingress-controller/nginx-ingress-controller`
-`controller.image.tag` | controller container image tag | `0.21.0`
+`controller.image.tag` | controller container image tag | `0.22.0`
 `controller.image.pullPolicy` | controller container image pull policy | `IfNotPresent`
 `controller.image.runAsUser` | User ID of the controller process. Value depends on the Linux distribution used inside of the container image. By default uses debian one. | `33`
 `controller.config` | nginx ConfigMap entries | none
 `controller.hostNetwork` | If the nginx deployment / daemonset should run on the host's network namespace. Do not set this when `controller.service.externalIPs` is set and `kube-proxy` is used as there will be a port-conflict for port `80` | false
 `controller.defaultBackendService` | default 404 backend service; required only if `defaultBackend.enabled = false` | `""`
+`controller.dnsPolicy` | If using `hostNetwork=true`, change to `ClusterFirstWithHostNet`. See [pod's dns policy](https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-s-dns-policy) for details | `ClusterFirst`
 `controller.electionID` | election ID to use for the status update | `ingress-controller-leader`
 `controller.extraEnvs` | any additional environment variables to set in the pods | `{}`
 `controller.extraContainers` | Sidecar containers to add to the controller pod. See [LemonLDAP::NG controller](https://github.com/lemonldap-ng-controller/lemonldap-ng-controller) as example | `{}`
@@ -67,6 +68,7 @@ Parameter | Description | Default
 `controller.daemonset.useHostPort` | If `controller.kind` is `DaemonSet`, this will enable `hostPort` for TCP/80 and TCP/443 | false
 `controller.daemonset.hostPorts.http` | If `controller.daemonset.useHostPort` is `true` and this is non-empty, it sets the hostPort | `"80"`
 `controller.daemonset.hostPorts.https` | If `controller.daemonset.useHostPort` is `true` and this is non-empty, it sets the hostPort | `"443"`
+`controller.daemonset.hostPorts.stats` | If `controller.daemonset.useHostPort` is `true` and this is non-empty, it sets the hostPort | `"18080"`
 `controller.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
 `controller.affinity` | node/pod affinities (requires Kubernetes >=1.6) | `{}`
 `controller.minReadySeconds` | how many seconds a pod needs to be ready before killing the next, during update | `0`

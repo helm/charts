@@ -1,7 +1,7 @@
 name: kubewatch
-version: 0.6.0
+version: 0.6.1
 apiVersion: v1
-appVersion: v0.0.4
+appVersion: 0.0.4
 home: https://github.com/bitnami-labs/kubewatch
 icon: https://bitnami.com/assets/stacks/kubewatch/img/kubewatch-stack-220x234.png
 description: Kubewatch notifies your slack rooms when changes to your cluster occur

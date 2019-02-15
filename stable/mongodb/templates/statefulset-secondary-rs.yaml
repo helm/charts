@@ -37,10 +37,12 @@ spec:
 {{- end }}
       {{- end }}
     spec:
+      {{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName }}
+      {{- end }}
       {{- if .Values.securityContext.enabled }}
       securityContext:
         fsGroup: {{ .Values.securityContext.fsGroup }}
-        runAsUser: {{ .Values.securityContext.runAsUser }}
       {{- end }}
       {{- if .Values.affinity }}
       affinity:
@@ -64,10 +66,27 @@ spec:
         - name: {{ template "mongodb.name" . }}-secondary
           image: {{ template "mongodb.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if .Values.securityContext.enabled }}
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: {{ .Values.securityContext.runAsUser }}
+          {{- end }}
           ports:
           - containerPort: {{ .Values.service.port }}
             name: mongodb
           env:
+          {{- if .Values.image.debug}}
+          - name: NAMI_DEBUG
+            value: "1"
+          {{- end }}
+          - name: MONGODB_SYSTEM_LOG_VERBOSITY
+            value: {{ .Values.mongodbSystemLogVerbosity | quote }}
+          - name: MONGODB_DISABLE_SYSTEM_LOG
+            {{- if .Values.mongodbDisableSystemLog }}
+            value: "yes"
+            {{- else }}
+            value: "no"
+            {{- end }}
           - name: MONGODB_POD_NAME
             valueFrom:
               fieldRef:
@@ -100,8 +119,10 @@ spec:
           {{- else }}
             value: "no"
           {{- end }}
+          {{- if .Values.mongodbExtraFlags }}
           - name: MONGODB_EXTRA_FLAGS
-            value: {{ default "" .Values.mongodbExtraFlags | join " " }}
+            value: {{ .Values.mongodbExtraFlags | join " " }}
+          {{- end }}
           {{- if .Values.livenessProbe.enabled }}
           livenessProbe:
             exec:
@@ -169,7 +190,7 @@ spec:
             initialDelaySeconds: 5
             timeoutSeconds: 1
           resources:
-  {{ toYaml .Values.metrics.resources | indent 10 }}
+{{ toYaml .Values.metrics.resources | indent 12 }}
 {{- end }}
       volumes:
         {{- if .Values.configmap }}

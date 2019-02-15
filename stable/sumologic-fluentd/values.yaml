@@ -1,7 +1,7 @@
 # Default values for sumologic-fluentd.
 image:
   name: sumologic/fluentd-kubernetes-sumologic
-  tag: v2.1.0
+  tag: v2.3.0
   pullPolicy: IfNotPresent
 
 ## Annotations to add to the DaemonSet's Pods
@@ -13,6 +13,9 @@ tolerations: []
 #   - key: node.alpha.kubernetes.io/role
 #     effect: NoSchedule
 #     operator: "Exists"
+
+# Extra environment variables to set for fluentd
+extraEnv: []
 
 ## Allow the DaemonSet to perform a rolling update on helm update
 ## ref: https://kubernetes.io/docs/tasks/manage-daemon/update-daemon-set/
@@ -135,6 +138,12 @@ sumologic:
   ## Option to control adding timestamp to logs. (Default true)
   addTimeStamp: true
 
+  ## Option to control adding time to logs. (Default true)
+  addTime: true
+
+  ## Option to control adding stream to logs. (Default true)
+  addStream: true
+
   ## Fluentd command line options
   ## ref: http://docs.fluentd.org/v0.12/articles/command-line-option
   fluentdOpt: ""
@@ -182,3 +191,7 @@ rbac:
 
   ## Ignored if rbac.create is true
   serviceAccountName: default
+
+daemonset: {}
+  # Priority Class to use for deployed daemonsets
+  # priorityClassName: ""

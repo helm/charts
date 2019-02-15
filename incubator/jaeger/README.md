@@ -190,6 +190,7 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `query.service.queryPort`                | External accessible port            |  80                                    |
 | `query.service.targetPort`               | Internal Query UI port              |  16686                                 |
 | `query.service.type`                     | Service type                        |  ClusterIP                             |
+| `query.basePath`                         | Base path of Query UI               |  /                                     |
 | `schema.annotations`                     | Annotations for the schema job      |  nil                                   |
 | `schema.image`                           | Image to setup cassandra schema     |  jaegertracing/jaeger-cassandra-schema |
 | `schema.mode`                            | Schema mode (prod or test)          |  prod                                  |
@@ -213,7 +214,7 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `storage.elasticsearch.user`             | Provisioned elasticsearch user      |  elastic                               |
 | `storage.elasticsearch.nodesWanOnly`     | Only access specified es host       |  false                                 |
 | `storage.type`                           | Storage type (ES or Cassandra)      |  cassandra                             |
-| `tag`                                    | Image tag/version                   |  1.8.2                                 |
+| `tag`                                    | Image tag/version                   |  1.9.0                                 |
 
 For more information about some of the tunable parameters that Cassandra provides, please visit the helm chart for [cassandra](https://github.com/kubernetes/charts/tree/master/incubator/cassandra) and the official [website](http://cassandra.apache.org/) at apache.org.
 
