@@ -82,7 +82,7 @@ spec:
           - name: JAVA_TIMEZONE
             value: {{ .Values.timeZone }}
           {{- if .Values.javaToolOptions }}
-          - name: JAVA_TOOL_OPTIONS
+          - name: JAVA_OPTS
             value: {{ .Values.javaToolOptions | quote }}
           {{- end }}
           {{- if .Values.pluginsDirectory }}
