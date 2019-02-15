@@ -414,6 +414,17 @@ ingress:
   ## If TLS is set to true, you must declare what secret will store the key/certificate for TLS
   tlsSecret: myTlsSecret
 
+  ## Connect ingress to the discovery service instead of the normal service
+  ## This is useful when ingress is still needed (which requires a ClusterIP Service type)
+  ##  but the primary service needs to be of a different type
+  ## For example: when the nginx-ingress service can only service http requests
+  ##  but the clients communicate with the rabbit server using a different protocol,
+  ##  using NodePort service type on the primary service will allow applications not on the
+  ##  same kuberentes cluster to communicate with the server using a protocol other than http.
+  ##  Then connecting the ingress to the discovery service will allow access to the web portal using nginx-ingress
+  ##
+  useDiscoveryService: false
+
   ## Ingress annotations done as key:value pairs
   annotations:
   #  kubernetes.io/ingress.class: nginx

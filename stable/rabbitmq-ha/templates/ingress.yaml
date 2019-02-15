@@ -1,9 +1,10 @@
+{{- if .Values.ingress.enabled }}
+
 {{- $serviceName := include "rabbitmq-ha.fullname" . }}
-{{- if eq .Values.service.type "NodePort" }}
+{{- if .Values.ingress.useDiscoveryService }}
   {{- $serviceName = printf "%v-discovery"  $serviceName }}
 {{- end }}
 
-{{- if .Values.ingress.enabled }}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
