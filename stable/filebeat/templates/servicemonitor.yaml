@@ -7,12 +7,12 @@ metadata:
 {{ toYaml .Values.monitoring.serviceMonitor.labels | indent 4}}
 {{- end }}
   name: {{ template "filebeat.fullname" . }}-prometheus-exporter
+{{- if .Values.monitoring.serviceMonitor.namespace }}
   namespace: {{ .Values.monitoring.serviceMonitor.namespace }}
+{{- end }}
 spec:
   endpoints:
-  - interval: {{ .Values.monitoring.serviceMonitor.interval }}
-    path: {{ .Values.monitoring.serviceMonitor.telemetryPath }}
-    targetPort: {{ .Values.monitoring.exporterPort }}
+  - targetPort: {{ .Values.monitoring.exporterPort }}
   jobLabel: {{ template "filebeat.fullname" . }}-prometheus-exporter
   namespaceSelector:
     matchNames:
