@@ -162,6 +162,7 @@ FPM is enabled by default, this creates an additional HTTPD container which rout
 | `php.sockets` | If FPM is enabled, enables communication between HTTPD and PHP via sockets instead of TCP | true |
 | `php.oldHTTPRoot` | Additionally mounts the webroot at `php.oldHTTPRoot` to compensate for absolute path file links  | _empty_ |
 | `php.ini` | additional PHP config values, see examples on how to use | _empty_ |
+| `php.fpm` | addditonal PHP FPM config values | _empty_ |
 | `php.copyRoot` | if true, copies the containers web root `/var/www/html` into persistent storage. This must be enabled, if the container already comes with files installed to `/var/www/html`  | false |
 | `php.persistentSubpaths` | instead of enabling persistence for the whole webroot, only subpaths of webroot can be enabled for persistence. Have a look at the [nextcloud example](examples/nextcloud.yaml) to see how it works | _empty_ |
 | `php.resources` | PHP container resource requests/limits | `resources` |

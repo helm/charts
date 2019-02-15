@@ -47,6 +47,10 @@ php:
   # ini: |
   #   short_open_tag=On
 
+  ## php-fpm.conf: additional PHP FPM config values
+  # fpm: |
+  #   pm.max_children = 120
+
   ## php.copyRoot if true, copies the containers web root `/var/www/html` into
   copyRoot: false
 
