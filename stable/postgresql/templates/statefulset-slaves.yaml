@@ -47,6 +47,10 @@ spec:
       {{- if .Values.terminationGracePeriodSeconds }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       {{- end }}
+      {{- if .Values.securityContext.enabled }}
+      securityContext:
+        fsGroup: {{ .Values.securityContext.fsGroup }}
+      {{- end }}
       {{- if and .Values.volumePermissions.enabled .Values.persistence.enabled }}
       initContainers:
       - name: init-chmod-data
@@ -76,7 +80,6 @@ spec:
 {{ toYaml .Values.resources | indent 10 }}
         {{- if .Values.securityContext.enabled }}
         securityContext:
-          fsGroup: {{ .Values.securityContext.fsGroup }}
           runAsUser: {{ .Values.securityContext.runAsUser }}
         {{- end }}
         env:
