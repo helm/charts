@@ -61,6 +61,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `Master.HealthProbeReadinessPeriodSeconds` | Set how often (in seconds) to perform the liveness probe | `10`                                                       |
 | `Master.HealthProbeLivenessFailureThreshold` | Set the failure threshold for the liveness probe | `12`                                                       |
 | `Master.SlaveListenerPort`        | Listening port for agents            | `50000`                                                                      |
+| `Master.SlaveHostPort`        | Host port to listen for agents            | Not set                                                                |
 | `Master.DisabledAgentProtocols`   | Disabled agent protocols             | `JNLP-connect JNLP2-connect`                                                                      |
 | `Master.CSRF.DefaultCrumbIssuer.Enabled` | Enable the default CSRF Crumb issuer | `true`                                                                      |
 | `Master.CSRF.DefaultCrumbIssuer.ProxyCompatability` | Enable proxy compatibility | `true`                                                                      |
@@ -73,6 +74,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `Master.Ingress.Annotations`      | Ingress annotations                  | `{}`                                                                         |
 | `Master.Ingress.Path`             | Ingress path                         | Not set                                                                         |
 | `Master.Ingress.TLS`              | Ingress TLS configuration            | `[]`                                                                         |
+| `Master.JCasC.enabled`            | Wheter Jenkins Configuration as Code is enabled or not | `false`                                                    |
 | `Master.JCasC.ConfigScripts`      | List of Jenkins Config as Code scripts | False                                                                   |
 | `Master.Sidecars.configAutoReload` | Jenkins Config as Code auto-reload settings | False                                                                    |
 | `Master.Sidecars.others`          | Configures additional sidecar container(s) for Jenkins master | `{}`                                                           |
@@ -113,6 +115,13 @@ Some third-party systems, e.g. GitHub, use HTML-formatted data in their payload 
 | `Agent.resources`          | Resources allocation (Requests and Limits)      | `{requests: {cpu: 200m, memory: 256Mi}, limits: {cpu: 200m, memory: 256Mi}}`|
 | `Agent.volumes`            | Additional volumes                              | `nil`                  |
 | `Agent.envVars             | Environment variables for the slave Pod         | Not set                |
+| `Agent.Command             | Executed command when side container starts     | Not set                |
+| `Agent.Args                | Arguments passed to executed command            | Not set                |
+| `Agent.SideContainerName   | Side container name in agent                    | jnlp                   |
+| `Agent.TTYEnabled          | Allocate pseudo tty to the side container       | false                  |
+| `Agent.ContainerCap        | Maximum number of agent                         | 10                     |
+| `Agent.PodName             | slave Pod base name                             | Not set                |
+
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
@@ -247,12 +256,12 @@ Config as Code changes (to Master.JCasC.ConfigScripts) can either force a new po
 When enabling LDAP or another non-Jenkins identity source, the built-in admin account will no longer exist.  Since the admin account is used by the sidecar to reload config, in order to use auto-reload, you must change the .Master.AdminUser to a valid username on your LDAP (or other) server.  If you use the matrix-auth plugin, this user must also be granted Overall\Administer rights in Jenkins.  Failure to do this will cause the sidecar container to fail to authenticate via SSH and enter a restart loop.  You can enable LDAP using the example above and add a Config as Code block for matrix security that includes:
 ```yaml
 ConfigScripts:
-	matrix-auth: |
-		Jenkins:
-          authorizationStrategy:
-            projectMatrix:
-              grantedPermissions:
-			    - "Overall/Administer:<AdminUser_LDAP_username>"
+  matrix-auth: |
+    jenkins:
+      authorizationStrategy:
+        projectMatrix:
+          grantedPermissions:
+          - "Overall/Administer:<AdminUser_LDAP_username>"
 ```
 You can instead grant this permission via the UI. When this is done, you can set `Master.Sidecars.configAutoReload.enabled: true` and upon the next Helm upgrade, auto-reload will be successfully enabled.
 
