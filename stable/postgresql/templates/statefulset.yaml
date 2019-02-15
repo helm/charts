@@ -27,11 +27,6 @@ spec:
         heritage: {{ .Release.Service | quote }}
         role: master
     spec:
-      {{- if .Values.securityContext.enabled }}
-      securityContext:
-        fsGroup: {{ .Values.securityContext.fsGroup }}
-        runAsUser: {{ .Values.securityContext.runAsUser }}
-      {{- end }}
       {{- if or .Values.image.pullSecrets .Values.metrics.image.pullSecrets }}
       imagePullSecrets:
       {{- range .Values.image.pullSecrets }}
@@ -83,6 +78,11 @@ spec:
         imagePullPolicy: "{{ .Values.image.pullPolicy }}"
         resources:
 {{ toYaml .Values.resources | indent 10 }}
+        {{- if .Values.securityContext.enabled }}
+        securityContext:
+          fsGroup: {{ .Values.securityContext.fsGroup }}
+          runAsUser: {{ .Values.securityContext.runAsUser }}
+        {{- end }}
         env:
         {{- if .Values.image.debug}}
         - name: BASH_DEBUG
@@ -185,7 +185,11 @@ spec:
         volumeMounts:
         {{- if or (.Files.Glob "files/docker-entrypoint-initdb.d/*.{sh,sql,sql.gz}") .Values.initdbScriptsConfigMap .Values.initdbScripts }}
         - name: custom-init-scripts
-          mountPath: /docker-entrypoint-initdb.d
+          mountPath: /docker-entrypoint-initdb.d/configmap
+        {{- end }}
+        {{- if .Values.initdbScriptsSecret }}
+        - name: custom-init-scripts-secret
+          mountPath: /docker-entrypoint-initdb.d/secret
         {{- end }}
         {{- if or (.Files.Glob "files/conf.d/*.conf") .Values.postgresqlExtendedConf .Values.extendedConfConfigMap }}
         - name: postgresql-extended-config
@@ -276,6 +280,11 @@ spec:
       - name: custom-init-scripts
         configMap:
           name: {{ template "postgresql.initdbScriptsCM" . }}
+      {{- end }}
+      {{- if .Values.initdbScriptsSecret }}
+      - name: custom-init-scripts-secret
+        secret:
+          secretName: {{ template "postgresql.initdbScriptsSecret" . }}
       {{- end }}
 {{- if and .Values.persistence.enabled .Values.persistence.existingClaim }}
       - name: data
