@@ -187,7 +187,7 @@ spec:
           timeoutSeconds: 1
           periodSeconds: 15
         resources:
-        {{ toYaml .Values.exporter.resources | indent 10 }}
+{{ toYaml .Values.exporter.resources | indent 10 }}
         ports:
           - name: exporter-port
             containerPort: {{ .Values.exporter.port }}
