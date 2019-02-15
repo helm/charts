@@ -16,6 +16,17 @@ Note, if a reviewer who is not an approver in an OWNERS file leaves a comment of
 
 Chart releases must be immutable. Any change to a chart warrants a chart version bump even if it is only changes to the documentation.
 
+## Versioning
+
+The chart `version` should follow [semver](https://semver.org/).
+
+Stable charts should start at `1.0.0` (for maintainability don't create new PRs for stable charts only to meet this criteria, but when reviewing PRs take the opportunity to ensure that this is met).
+
+Any breaking (backwards incompatible) changes to a chart should:
+
+1. Bump the MAJOR version
+2. In the README, under a section called "Upgrading", describe the manual steps necessary to upgrade to the new (specified) MAJOR version
+
 ## Chart Metadata
 
 The `Chart.yaml` should be as complete as possible. The following fields are mandatory:

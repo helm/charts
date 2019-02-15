@@ -684,6 +684,8 @@ prometheus:
     ##
     type: ClusterIP
 
+    sessionAffinity: ""
+
   rbac:
     ## Create role bindings in the specified namespaces, to allow Prometheus monitoring
     ## a role binding in the release namespace will always be created.
