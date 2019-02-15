@@ -87,6 +87,8 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `extraPorts`                       | List of extra ports                        |                       |
 | `extraVolumeMounts`                | Mount an extra volume, required to mount ssl certificates when elasticsearch has tls enabled |          |
 | `extraVolume`                      | Extra volume                               |                                                |
+| `service.flush`                    | Interval to flush output (seconds)        | `1`                   |
+| `service.logLevel`                 | Diagnostic level (error/warning/info/debug/trace)        | `info`                   |
 | `filter.enableExclude`                   | Enable the use of monitoring for a pod annotation of `fluentbit.io/exclude: true`. If present, discard logs from that pod.         | `true`                                 |
 | `filter.enableParser`                   | Enable the use of monitoring for a pod annotation of `fluentbit.io/parser: parser_name`. parser_name must be the name of a parser contained within parsers.conf         | `true`                                 |
 | `filter.kubeURL`                   | Optional custom configmaps                 | `https://kubernetes.default.svc:443`            |
@@ -99,9 +101,10 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `image.pullPolicy`                 | Image pull policy                          | `IfNotPresent`                                          |
 | `image.pullSecrets`                | Specify image pull secrets                 | `nil`                                             |
 | `input.tail.memBufLimit`           | Specify Mem_Buf_Limit in tail input        | `5MB`                                             |
+| `input.tail.parser`           | Specify Parser in tail input.        | `docker`                                             |
 | `input.tail.path`           | Specify log file(s) through the use of common wildcards.        | `/var/log/containers/*.log`                                             |
 | `input.systemd.enabled`             | [Enable systemd input](https://fluentbit.io/documentation/current/input/systemd.html)                   | `false`                                       |
-| `input.systemd.filters.systemdUnit             | Please see https://fluentbit.io/documentation/current/input/systemd.html                   | `[docker.service, kubelet.service`, `node-problem-detector.service]`                                       |
+| `input.systemd.filters.systemdUnit`             | Please see https://fluentbit.io/documentation/current/input/systemd.html                   | `[docker.service, kubelet.service`, `node-problem-detector.service]`                                       |
 | `input.systemd.maxEntries`             | Please see https://fluentbit.io/documentation/current/input/systemd.html                  | `1000`                                       |
 | `input.systemd.readFromTail` | Please see https://fluentbit.io/documentation/current/input/systemd.html | `true`|
 | `input.systemd.tag` | Please see https://fluentbit.io/documentation/current/input/systemd.html | `host.*`|

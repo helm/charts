@@ -77,10 +77,10 @@ The command removes all the Kubernetes components associated with the chart and 
 | `annotations`                             | Deployment annotations                        | `{}`                                                    |
 | `podAnnotations`                          | Pod annotations                               | `{}`                                                    |
 | `sidecar.dashboards.enabled`              | Enabled the cluster wide search for dashboards and adds/updates/deletes them in grafana | `false`       |
-| `sidecar.dashboards.label`                | Label that config maps with dashboards should have to be added | `false`                                |
+| `sidecar.dashboards.label`                | Label that config maps with dashboards should have to be added | `grafana_dashboard`                                |
 | `sidecar.dashboards.searchNamespace`      | If specified, the sidecar will search for dashboard config-maps inside this namespace. Otherwise the namespace in which the sidecar is running will be used. It's also possible to specify ALL to search in all namespaces | `nil`                                |
 | `sidecar.datasources.enabled`             | Enabled the cluster wide search for datasources and adds/updates/deletes them in grafana |`false`       |
-| `sidecar.datasources.label`               | Label that config maps with datasources should have to be added | `false`                               |
+| `sidecar.datasources.label`               | Label that config maps with datasources should have to be added | `grafana_datasource`                               |
 | `sidecar.datasources.searchNamespace`     | If specified, the sidecar will search for datasources config-maps inside this namespace. Otherwise the namespace in which the sidecar is running will be used. It's also possible to specify ALL to search in all namespaces | `nil`                               |
 | `smtp.existingSecret`                     | The name of an existing secret containing the SMTP credentials. | `""`                                  |
 | `smtp.userKey`                            | The key in the existing SMTP secret containing the username. | `"user"`                                 |
@@ -122,7 +122,7 @@ data:
 
 ## Sidecar for datasources
 
-If the parameter `sidecar.datasources.enabled` is set, a sidecar container is deployed in the grafana pod. This container watches all config maps in the cluster and filters out the ones with a label as defined in `sidecar.datasources.label`. The files defined in those configmaps are written to a folder and accessed by grafana on startup. Using these yaml files, the data sources in grafana can be modified.
+If the parameter `sidecar.datasources.enabled` is set, an init container is deployed in the grafana pod. This container lists all config maps in the cluster and filters out the ones with a label as defined in `sidecar.datasources.label`. The files defined in those configmaps are written to a folder and accessed by grafana on startup. Using these yaml files, the data sources in grafana can be imported. The configmaps must be created before `helm install` so that the datasources init container can list the configmaps.
 
 Example datasource config adapted from [Grafana](http://docs.grafana.org/administration/provisioning/#example-datasource-config-file):
 ```
