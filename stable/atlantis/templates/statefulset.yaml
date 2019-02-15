@@ -66,9 +66,6 @@ spec:
           {{- if .Values.allowRepoConfig }}
             - --allow-repo-config
           {{- end }}
-          {{- if .Values.requireApproval }}
-            - --require-approval
-          {{- end }}
           ports:
           - name: atlantis
             containerPort: 4141
@@ -153,6 +150,10 @@ spec:
                 name: {{ template "atlantis.fullname" . }}-webhook
                 key: bitbucket_secret
           {{- end }}
+          {{- end }}
+          {{- if .Values.requireApproval }}
+          - name: ATLANTIS_REQUIRE_APPROVAL
+            value: "true"
           {{- end }}
           {{- if .Values.livenessProbe.enabled }}
           livenessProbe:
