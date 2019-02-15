@@ -19,3 +19,7 @@
 .project
 .idea/
 *.tmproj
+# helm/charts
+OWNERS
+hack/
+ci/
