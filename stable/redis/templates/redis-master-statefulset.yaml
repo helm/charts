@@ -121,7 +121,7 @@ spec:
             command:
             - sh
             - -c
-            - /health/ping_local.sh
+            - /health/ping_local.sh {{ .Values.master.livenessProbe.timeoutSeconds }}
         {{- end }}
         {{- if .Values.master.readinessProbe.enabled}}
         readinessProbe:
@@ -134,7 +134,7 @@ spec:
             command:
             - sh
             - -c
-            - /health/ping_local.sh
+            - /health/ping_local.sh {{ .Values.master.livenessProbe.timeoutSeconds }}
         {{- end }}
         resources:
 {{ toYaml .Values.master.resources | indent 10 }}
