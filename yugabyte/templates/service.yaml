@@ -213,6 +213,7 @@ spec:
           - "--rpc_bind_addresses=$(HOSTNAME).yb-masters.$(NAMESPACE).svc.cluster.local"
           - "--server_broadcast_addresses=$(HOSTNAME).yb-masters.$(NAMESPACE):7100"
           - "--master_addresses={{range $index := until (int ($root.Values.replicas.master))}}{{if ne $index 0}},{{end}}yb-master-{{ $index }}.yb-masters.$(NAMESPACE):7100{{end}}"
+          - "--replication_factor={{ $root.Values.replicas.master }}"
           - "--metric_node_name=$(HOSTNAME)"
           - "--memory_limit_hard_bytes={{ template "yugabyte.memory_hard_limit" $root.Values.resource.master }}"
           - "--stderrthreshold=0"
