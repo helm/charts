@@ -17,7 +17,7 @@ interval: 60
 
 rbac:
   # If true, create & use RBAC resources
-  create: false
+  create: true
   # Ignored if rbac.create is true
   serviceAccountName: default
 
