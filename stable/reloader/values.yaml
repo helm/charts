@@ -8,7 +8,7 @@ reloader:
       group: com.stakater.platform
     image:
       name: stakater/reloader
-      tag: "0.0.18"
+      tag: "v0.0.25"
       pullPolicy: IfNotPresent
     # Support for extra environment variables.
     env:
