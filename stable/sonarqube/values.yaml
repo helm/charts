@@ -87,7 +87,7 @@ persistence:
   enabled: false
   ## Specify an existing volume claim instead of creating a new one.
   ## When using this option all following options like storageClass, accessMode and size are ignored.
-  # existingClaim: 
+  # existingClaim:
 
   ## If defined, storageClassName: <storageClass>
   ## If set to "-", storageClassName: "", which disables dynamic provisioning
