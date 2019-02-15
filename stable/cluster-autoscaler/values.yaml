@@ -53,24 +53,24 @@ image:
 tolerations: []
 
 extraArgs:
-  v: 4
-  stderrthreshold: info
-  logtostderr: true
-  # write-status-configmap: true
-  # leader-elect: true
-  # skip-nodes-with-local-storage: false
-  # expander: least-waste
-  # scale-down-enabled: true
-  # balance-similar-node-groups: true
-  # min-replica-count: 2
-  # scale-down-utilization-threshold: 0.5
-  # scale-down-non-empty-candidates-count: 5
-  # max-node-provision-time: 15m0s
-  # scan-interval: 10s
-  # scale-down-delay: 10m
-  # scale-down-unneeded-time: 10m
-  # skip-nodes-with-local-storage: false
-  # skip-nodes-with-system-pods: true
+  v: "4"
+  stderrthreshold: "info"
+  logtostderr: "true"
+  # write-status-configmap: "true"
+  # leader-elect: "true"
+  # skip-nodes-with-local-storage: "false"
+  # expander: "least-waste"
+  # scale-down-enabled: "true"
+  # balance-similar-node-groups: "true"
+  # min-replica-count: "2"
+  # scale-down-utilization-threshold: "0.5"
+  # scale-down-non-empty-candidates-count: "5"
+  # max-node-provision-time: "15m0s"
+  # scan-interval: "10s"
+  # scale-down-delay: "10m"
+  # scale-down-unneeded-time: "10m"
+  # skip-nodes-with-local-storage: "false"
+  # skip-nodes-with-system-pods: "true"
 
 ## Affinity for pod assignment
 ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity

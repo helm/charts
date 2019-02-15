@@ -60,8 +60,13 @@ spec:
           {{- if eq .Values.cloudProvider "gce" }}
             - --cloud-config={{ .Values.cloudConfigPath }}
             {{- end }}
+          {{- /*
+            Unfortunately there is no isset function or way to check if a variable is nil, so break the
+            templating engine rather than producing unexpected results if the var will evaluate to false
+            but should be shown as a string instead.
+          */ -}}
           {{- range $key, $value := .Values.extraArgs }}
-            - --{{ $key }}{{ if $value }}={{ $value }}{{ end }}
+          - --{{ $key }}{{ if not (eq $value "") }}={{ $value }}{{ end }}
           {{- end }}
 
           env:
