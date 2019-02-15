@@ -51,7 +51,7 @@ and their default values.
 | Parameter                      | Description                                                                      | Default             |
 | ------------------------------ | -------------------------------------------------------------------------------- | ------------------- |
 | image.repository               | Kong image                                                                       | `kong`              |
-| image.tag                      | Kong image version                                                               | `1.0.2`            |
+| image.tag                      | Kong image version                                                               | `1.0.2`             |
 | image.pullPolicy               | Image pull policy                                                                | `IfNotPresent`      |
 | image.pullSecrets              | Image pull secrets                                                               | `null`              |
 | replicaCount                   | Kong instance count                                                              | `1`                 |
@@ -59,6 +59,7 @@ and their default values.
 | admin.servicePort              | TCP port on which the Kong admin service is exposed                              | `8444`              |
 | admin.containerPort            | TCP port on which Kong app listens for admin traffic                             | `8444`              |
 | admin.nodePort                 | Node port when service type is `NodePort`                                        |                     |
+| admin.hostPort                 | Host port to use for admin traffic                                               |                     |
 | admin.type                     | k8s service type, Options: NodePort, ClusterIP, LoadBalancer                     | `NodePort`          |
 | admin.loadBalancerIP           | Will reuse an existing ingress static IP for the admin service                   | `null`              |
 | admin.loadBalancerSourceRanges | Limit admin access to CIDRs if set and service type is `LoadBalancer`            | `[]`                |
@@ -67,14 +68,16 @@ and their default values.
 | admin.ingress.hosts            | List of ingress hosts.                                                           | `[]`                |
 | admin.ingress.path             | Ingress path.                                                                    | `/`                 |
 | admin.ingress.annotations      | Ingress annotations. See documentation for your ingress controller for details   | `{}`                |
-| proxy.http.enabled             | Enables http on the proxy                                                        | true               |
+| proxy.http.enabled             | Enables http on the proxy                                                        | true                |
 | proxy.http.servicePort         | Service port to use for http                                                     | 80                  |
 | proxy.http.containerPort       | Container port to use for http                                                   | 8000                |
 | proxy.http.nodePort            | Node port to use for http                                                        | 32080               |
+| proxy.http.hostPort            | Host port to use for http                                                        |                     |
 | proxy.tls.enabled              | Enables TLS on the proxy                                                         | true                |
 | proxy.tls.containerPort        | Container port to use for TLS                                                    | 8443                |
 | proxy.tls.servicePort          | Service port to use for TLS                                                      | 8443                |
 | proxy.tls.nodePort             | Node port to use for TLS                                                         | 32443               |
+| proxy.tls.hostPort             | Host port to use for TLS                                                         |                     |
 | proxy.type                     | k8s service type. Options: NodePort, ClusterIP, LoadBalancer                     | `NodePort`          |
 | proxy.loadBalancerSourceRanges | Limit proxy access to CIDRs if set and service type is `LoadBalancer`            | `[]`                |
 | proxy.loadBalancerIP           | To reuse an existing ingress static IP for the admin service                     |                     |
