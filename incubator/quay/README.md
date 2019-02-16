@@ -18,3 +18,5 @@ If you want to delete your Chart, use this command
 ```bash
 helm delete  --purge "quay"
 ```
+
+
