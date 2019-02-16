@@ -131,6 +131,17 @@ Alternatively, a YAML file that specifies the values for the parameters can be p
 $ helm install --namespace pachyderm --name my-release -f values.yaml stable/pachyderm
 ```
 
+Specifying a pachyderm version
+------------------------
+
+To specify a pachyderm version run the following command:
+
+```console
+$ helm install --namespace pachyderm --name my-release \
+-set pachd.image.tag=1.7.11,pachd.worker.tag=1.7.11 \
+stable/pachyderm
+```
+
 Accessing the pachd service
 ---------------------------
 
