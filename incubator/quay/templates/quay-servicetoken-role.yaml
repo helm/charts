@@ -1,0 +1,13 @@
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  namespace: quay
+  name: quay-serviceaccount
+rules:
+  - apiGroups: [""] # The API group "" indicates the core API Group.
+    resources: ["secrets"]
+    verbs: ["get", "put", "patch", "update"]
+    nonResourceURLs: []
+  - apiGroups: [""]
+    resources: ["namespaces"]
+verbs: ["get"]

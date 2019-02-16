@@ -1,0 +1,8 @@
+apiVersion: v1
+appVersion: "1.0"
+description: Quay as a Helm chart for K8s
+name: quay
+version: 0.1.0
+maintainers:
+   - name: Naeil EZZOUEIDI
+   - email: naeilzoueidi@ubuntu.com
