@@ -1,0 +1,13 @@
+# This is an empty clusterrole that is only created if this chart was deployed
+# without any configuration.
+# It is mainly aimed at making work the command
+#  helm install .
+# although it will not have any value for the user.
+{{ if and (and (not .Values.customrbac.clusterroles) (not .Values.customrbac.clusterrolebindings)) (and (not .Values.customrbac.roles) (not .Values.customrbac.rolebindings)) -}}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  # Prefix with a ~ to make this clusterrole be listed last to make it easier to be noticed
+  name: ~WARNING-CUSTOMRBAC-DID-NOT-CREATE-ANYTHING~
+rules:
+{{- end }}
