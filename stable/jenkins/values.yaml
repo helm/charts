@@ -244,6 +244,7 @@ Master:
 
   Ingress:
     ApiVersion: extensions/v1beta1
+    Labels: {}
     Annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
