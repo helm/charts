@@ -8,6 +8,9 @@ global:
   # Optional priority class to be used for the cert-manager pods
   priorityClassName: ""
 
+  rbac:
+    create: false
+
 replicaCount: 1
 
 strategy: {}

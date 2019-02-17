@@ -11,6 +11,10 @@ global:
   # Optional priority class to be used for the cert-manager pods
   priorityClassName: ""
 
+  rbac:
+    # Specifies whether RBAC resources should be created
+    create: true
+
 replicaCount: 1
 
 strategy: {}
@@ -32,10 +36,6 @@ clusterResourceNamespace: ""
 leaderElection:
   # Override the namespace used to store the ConfigMap for leader election
   namespace: ""
-
-rbac:
-  # Specifies whether RBAC resources should be created
-  create: true
 
 serviceAccount:
   # Specifies whether a service account should be created

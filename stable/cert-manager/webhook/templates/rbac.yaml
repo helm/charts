@@ -1,3 +1,4 @@
+{{- if .Values.global.rbac.create -}}
 ### Webhook ###
 ---
 # apiserver gets the auth-delegator role to delegate auth decisions to
@@ -66,3 +67,4 @@ rules:
   - clusterissuers
   verbs:
   - create
+{{- end -}}

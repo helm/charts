@@ -129,6 +129,7 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 ---
+{{- if .Values.global.rbac.create -}}
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole
 metadata:
@@ -172,3 +173,4 @@ subjects:
   - name: {{ include "webhook.fullname" . }}-ca-sync
     namespace: {{ .Release.Namespace }}
     kind: ServiceAccount
+{{- end -}}
