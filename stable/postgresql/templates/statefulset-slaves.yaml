@@ -25,6 +25,13 @@ spec:
         release: {{ .Release.Name | quote }}
         heritage: {{ .Release.Service | quote }}
         role: slave
+{{- with .Values.slavePod.labels }}
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.slavePod.annotations }}
+      annotations:
+{{ toYaml . | indent 8 }}
+{{- end }}
     spec:
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
