@@ -1,0 +1,98 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "rutta.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "rutta.name" . }}
+    helm.sh/chart: {{ include "rutta.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "rutta.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "rutta.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+
+    spec:
+      containers:
+      - name: {{ .Chart.Name | quote }}
+        image: {{ .Values.image | default "haaf/rutta:5.0.0-rc.1.597e31a3" | quote }}
+        args:
+        {{- if .Values.router }}
+        - "router"
+        {{- with .Values.router }}
+
+        {{- if .disableCORS }}
+        - "--disable-cors"
+        {{- end }}
+        {{- range .listeners }}
+        - "--listener"
+        - {{ .mode | quote }}
+        - "{{ .binding.ip }}:{{ .binding.port }}"
+        - {{ .codec | quote }}
+        {{- end }}
+
+        {{- range .targets }}
+        - "--target"
+        - {{ . | quote }}
+        {{- end -}}
+
+        {{- end }}
+
+        {{- if .Values.verbose }}
+        - "--verbose"
+        {{- end}}
+
+        {{- if not .Values.disableHealth }}
+        - "--health"
+        - "0.0.0.0:9090"
+        {{- end }}
+
+        {{- end }}
+
+        ports:
+        {{- range .Values.router.listeners }}
+        {{- if (eq .binding.port 9090.0) -}}
+        {{ fail "Port 9090 is reserved for Rutta health checks. Don't add a listener on it, please." }}
+        {{- end }}
+
+        - containerPort: {{ .binding.port | required "Your binding needs a port specified." }}
+          {{- if (eq .mode "udp") }}
+          protocol: "UDP"
+          {{- end }}
+        {{- end }}
+
+        {{- if not .Values.disableHealth }}
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 9090
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 9090
+        {{- end }}
+
+        resources:
+          {{- toYaml .Values.resources | nindent 12 }}
+
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}

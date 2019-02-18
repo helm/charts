@@ -1,0 +1,24 @@
+{{- if .Values.router -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "rutta.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "rutta.name" . }}
+    helm.sh/chart: {{ include "rutta.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+
+spec:
+  ports:
+  {{- range .Values.router.listeners }}
+  - port: {{ .binding.port | required "Your binding needs a port specified." }}
+    {{- if (eq .mode "udp") }}
+    protocol: "UDP"
+    {{- end }}
+    name: "{{ .mode }}-{{ .codec }}"
+  {{- end }}
+  selector:
+    app.kubernetes.io/name: {{ include "rutta.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}

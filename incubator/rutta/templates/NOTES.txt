@@ -1,0 +1,3 @@
+# Rutta
+
+Congratulations on installing Logary Rutta!

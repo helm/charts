@@ -1,0 +1,104 @@
+replicaCount: 3
+
+#nameOverride: ""
+#fullnameOverride: ""
+#image: ""
+
+# Example command:
+# docker run --rm -it haaf/rutta:latest router --listener tcp '*:9090' json \
+#   --listener udp \[::\]:9091 json \
+#   --listener http \[::\]:8080 plain \
+#   --target console://. \
+#   --verbose \
+#   --health 0.0.0.0:9090
+
+# Whether to log Rutta internal logs verbosely or not
+verbose: true
+
+# Disables Rutta health checks -> readinessProbe; also disables
+# future prometheus metrics endpoint
+disableHealth: false
+
+# Router:
+# More help with # docker run --rm -it haaf/rutta:latest router --help
+router:
+  # Disable support for POST-ing logs from other domains
+  disableCORS: false
+
+  # An array of listeners to set up for the router
+  # Router modes:
+  # - pull (ZMQ message separated)
+  # - sub (ZMQ message separated)
+  # - tcp (ZMQ message/newline separated)
+  # - udp (package separated)
+  # - http (request separated)
+  #
+  # We'll create a service port for every listener, but only the single service, "rutta"
+  #
+  # Also note that we'll bind http 0.0.0.0:9090 for health checks of Rutta.
+  #
+  # You can choose to enable/disable the ingress here
+  listeners:
+  - mode: http
+    binding:
+      ip: "0.0.0.0"
+      port: 8080
+    codec: json
+    ingress:
+      enabled: true
+      annotations:
+        # kubernetes.io/ingress.class: nginx
+        kubernetes.io/tls-acme: "true"
+      hosts:
+      - rutta.local
+      tls: []
+      #- secretName: rutta-local-tls
+      #  hosts:
+      #  - rutta.local
+
+  - mode: udp
+    binding:
+      ip: "0.0.0.0"
+      port: 10001
+    codec: json
+
+  - mode: udp
+    binding:
+      ip: "0.0.0.0"
+      port: 10002
+    codec: plain
+
+  # An array of targtes to set up for the router to send to
+  # Router targets:
+  # - aliyun://
+  # - applicationinsights://
+  # - console://
+  # - elasticsearch://
+  # - elmahio://
+  # - influxdb://
+  # - jaeger://
+  # - mixpanel://
+  # - opsgenie://
+  # - rabbitmq://
+  # - stackdriver://logary-test/applog ...
+  targets:
+  - console://./
+
+# shipper: ... TODO
+# proxy: ... TODO
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+nodeSelector: {}
+tolerations: []
+affinity: {}

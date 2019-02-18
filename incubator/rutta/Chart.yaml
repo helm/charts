@@ -1,0 +1,20 @@
+apiVersion: v1
+appVersion: "5.0.0"
+description: A Helm chart for Logary Rutta
+name: rutta
+version: 0.0.1
+home: https://github.com/logary/logary
+logo: https://raw.githubusercontent.com/logary/logary-assets/master/graphics/LogaryLogoSquare.png
+keywords:
+- logs
+- logging
+- metrics
+- structured
+- semantic
+- cep
+- prometheus
+- influx
+- stackdriver
+- rabbitmq
+maintainers:
+- name: Henrik Feldt

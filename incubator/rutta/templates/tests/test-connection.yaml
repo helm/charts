@@ -1,0 +1,27 @@
+{{- $fullName := include "rutta.fullname" . -}}
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "rutta.fullname" . }}-test-connection"
+  labels:
+    app.kubernetes.io/name: {{ include "rutta.name" . }}
+    helm.sh/chart: {{ include "rutta.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+  annotations:
+    "helm.sh/hook": test-success
+
+spec:
+  containers:
+  {{- range .Values.router.listeners -}}
+  {{ if (eq .mode "http") }}
+  - name: curl
+    image: haaf/rutta-curl
+    args:
+    - '-X'
+    - 'OPTIONS'
+    - '-i'
+    - 'http://{{ $fullName }}:{{ .binding.port }}/i/logary'
+  {{ end }}
+  {{- end }}
+  restartPolicy: Never
