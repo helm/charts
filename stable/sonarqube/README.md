@@ -60,6 +60,7 @@ The following table lists the configurable parameters of the Sonarqube chart and
 | `persistence.accessMode`                    | Volumes access mode to be set             | `ReadWriteOnce`                            |
 | `persistence.size`                          | Size of the volume                        | None                                     |
 | `sonarProperties`                           | Custom `sonar.properties` file            | None                                       |
+| `sonarSecretKey`                            | Name of existing secret used for settings encryption | None                            |
 | `database.type`                             | Set to "mysql" to use mysql database       | `postgresql`|
 | `postgresql.enabled`                        | Set to `false` to use external server / mysql database     | `true`                                     |
 | `postgresql.postgresServer`                 | Hostname of the external Postgresql server| `null`                                     |
