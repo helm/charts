@@ -13,6 +13,12 @@ metadata:
 spec:
   endpoints:
   - targetPort: {{ .Values.monitoring.exporterPort }}
+{{- if .Values.monitoring.serviceMonitor.interval }}
+    interval: {{ .Values.monitoring.serviceMonitor.interval }}
+{{- end }}
+{{- if .Values.monitoring.serviceMonitor.telemetryPath }}
+    path: {{ .Values.monitoring.serviceMonitor.telemetryPath }}
+{{- end }}
   jobLabel: {{ template "filebeat.fullname" . }}-prometheus-exporter
   namespaceSelector:
     matchNames:
