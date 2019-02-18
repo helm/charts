@@ -1,6 +1,23 @@
 # prometheus-operator
 
-Installs [prometheus-operator](https://github.com/coreos/prometheus-operator) to create/configure/manage Prometheus clusters atop Kubernetes.
+Installs [prometheus-operator](https://github.com/coreos/prometheus-operator) to create/configure/manage Prometheus clusters atop Kubernetes. This chart includes multiple components and is suitable for a variety of use-cases. 
+
+The default installation is intended to suit monitoring a kubernetes cluster the chart is deployed onto. It is closely matches the kube-prometheus project.
+- [prometheus-operator](https://github.com/coreos/prometheus-operator)
+- [prometheus](https://prometheus.io/)
+- [alertmanager](https://prometheus.io/)
+- [node-exporter](https://github.com/helm/charts/tree/master/stable/prometheus-node-exporter)
+- [kube-state-metrics](https://github.com/helm/charts/tree/master/stable/kube-state-metrics)
+- [grafana](https://github.com/helm/charts/tree/master/stable/grafana)
+- service monitors to scrape internal kubernetes components
+  - kube-apiserver
+  - kube-scheduler
+  - kube-controller-manager
+  - etcd
+  - kube-dns/coredns
+With the installation, the chart also includes dashboards and alerts.
+
+The same chart can be used to run multiple prometheus instances in the same cluster if required. To achieve this, the other components need to be disabled - it is necessary to run only one instance of prometheus-operator and a pair of alertmanager pods for an HA configuration.
 
 ## TL;DR;
 
