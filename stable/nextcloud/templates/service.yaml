@@ -9,6 +9,9 @@ metadata:
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   type: {{ .Values.service.type }}
+  {{- if and (eq .Values.service.type "ClusterIP") .Values.service.clusterIP }}
+  clusterIP: {{ .Values.service.clusterIP }}
+  {{- end }}
   {{- if eq .Values.service.type "LoadBalancer" }}
   loadBalancerIP: {{ default "" .Values.service.loadBalancerIP }}
   {{- end }}
