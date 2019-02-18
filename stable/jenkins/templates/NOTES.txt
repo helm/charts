@@ -26,9 +26,16 @@
 {{- end }}
 
 3. Login with the password from step 1 and the username: {{ .Values.Master.AdminUser }}
+{{ if .Values.Master.JCasC.enabled }}
+4. Use Jenkins Configuration as Code by specifying ConfigScripts in your values.yaml file, see documentation: http://{{ .Values.Master.HostName }}/configuration-as-code and examples: https://github.com/jenkinsci/configuration-as-code-plugin/tree/master/demos
+{{- end }}
 
 For more information on running Jenkins on Kubernetes, visit:
 https://cloud.google.com/solutions/jenkins-on-container-engine
+{{- if .Values.Master.JCasC.enabled }}
+For more information about Jenkins Configuration as Code, visit:
+https://jenkins.io/projects/jcasc/
+{{- end }}
 
 {{- if .Values.Persistence.Enabled }}
 {{- else }}

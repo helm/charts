@@ -8,13 +8,25 @@ metadata:
 rules:
   - apiGroups:
       - ""
-      - extensions
-      - networking.istio.io
     resources:
-      - ingresses
       - services
       - pods
       - nodes
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - extensions
+    resources:
+      - ingresses
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - networking.istio.io
+    resources:
       - gateways
     verbs:
       - get
