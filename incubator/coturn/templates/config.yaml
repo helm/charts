@@ -9,4 +9,4 @@ metadata:
     heritage: {{ .Release.Service }}
 data:
   turnserver.conf: |+
-  {{ template "config_turnserver" .Values.config }}
+  {{ template "coturn.configTurnserver" .Values.config }}

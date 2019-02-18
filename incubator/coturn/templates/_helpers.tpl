@@ -31,7 +31,7 @@ Create chart name and version as used by the chart label.
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
-{{- define "config_turnserver" -}}
+{{- define "coturn.configTurnserver" -}}
 {{- range $key, $value := . -}}
   {{- $tp := typeOf $value }}
   {{- if eq $tp "string"}}
