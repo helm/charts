@@ -822,7 +822,8 @@ prometheus:
     configMaps: []
 
     ## Namespaces to be selected for PrometheusRules discovery.
-    ## If nil, select own namespace. If {}, select all namespaces.
+    ## If nil, select own namespace. Namespaces to be selected for ServiceMonitor discovery.
+    ## See https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#namespaceselector for usage
     ##
     ruleNamespaceSelector: {}
 
@@ -867,7 +868,7 @@ prometheus:
     #     prometheus: somelabel
 
     ## Namespaces to be selected for ServiceMonitor discovery.
-    ## If nil, select own namespace. If {}, select all namespaces.
+    ## See https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#namespaceselector for usage
     ##
     serviceMonitorNamespaceSelector: {}
 
