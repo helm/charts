@@ -292,6 +292,14 @@ alertmanager:
     ##
     additionalPeers: []
 
+  additionalPrometheusRules: []
+  #  - name: my_rule_file
+  #    groups:
+  #      - name: my_group
+  #        rules:
+  #        - record: my_record
+  #          expr: 100 * my_record
+
 ## Using default values from https://github.com/helm/charts/blob/master/stable/grafana/values.yaml
 ##
 grafana:

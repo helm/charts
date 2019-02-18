@@ -1,29 +1,26 @@
 {{- if and .Values.prometheus.enabled .Values.prometheus.additionalServiceMonitors }}
-apiVersion: v1
-kind: List
-items:
 {{- range .Values.prometheus.additionalServiceMonitors }}
-  - apiVersion: {{ printf "%s/v1" ($.Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com") }}
-    kind: ServiceMonitor
-    metadata:
-      name: {{ .name }}
-      labels:
-        app: {{ template "prometheus-operator.name" $ }}-prometheus
-{{ include "prometheus-operator.labels" $ | indent 8 }}
-        {{- if .additionalLabels }}
-{{ toYaml .additionalLabels | indent 8 }}
-        {{- end }}
-    spec:
-      endpoints:
-{{ toYaml .endpoints | indent 8 }}
-    {{- if .jobLabel }}
-      jobLabel: {{ .jobLabel }}
+apiVersion: {{ printf "%s/v1" ($.Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com") }}
+kind: ServiceMonitor
+metadata:
+  name: {{ template "prometheus-operator.name" $ }}-{{ .name }}
+  labels:
+    app: {{ template "prometheus-operator.name" $ }}-prometheus
+{{ include "prometheus-operator.labels" $ | indent 4 }}
+    {{- if .additionalLabels }}
+{{ toYaml .additionalLabels | indent 4 }}
     {{- end }}
-    {{- if .namespaceSelector }}
-      namespaceSelector:
-{{ toYaml .namespaceSelector | indent 8 }}
-    {{- end }}
-      selector:
-{{ toYaml .selector | indent 8 }}
+spec:
+  endpoints:
+{{ toYaml .endpoints | indent 4 }}
+{{- if .jobLabel }}
+  jobLabel: {{ .jobLabel }}
+{{- end }}
+{{- if .namespaceSelector }}
+  namespaceSelector:
+{{ toYaml .namespaceSelector | indent 4 }}
+{{- end }}
+  selector:
+{{ toYaml .selector | indent 4 }}
 {{- end }}
 {{- end }}
