@@ -36,11 +36,11 @@ resources:
   #   cpu: 50m
   #   memory: 200Mi
 
-  tolerations: []
+nodeSelector: {}
 
-  nodeSelector: {}
+tolerations: []
 
-  affinity: {}
+affinity: {}
 
 podLabels: {}
 
