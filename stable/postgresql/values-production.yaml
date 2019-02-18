@@ -10,7 +10,7 @@
 image:
   registry: docker.io
   repository: bitnami/postgresql
-  tag: 10.6.0
+  tag: 10.7.0
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -149,6 +149,10 @@ postgresqlDataDir: /bitnami/postgresql
 ## NOTE: This will override initdbScripts
 # initdbScriptsConfigMap:
 
+## Secret with scripts to be run at first boot (in case it contains sensitive information)
+## NOTE: This can work along initdbScripts or initdbScriptsConfigMap
+# initdbScriptsSecret:
+
 ## PostgreSQL service configuration
 service:
   ## PosgresSQL service type
@@ -202,6 +206,8 @@ master:
   nodeSelector: {}
   affinity: {}
   tolerations: []
+  podLabels: {}
+  podAnnotations: {}
 
 ##
 ## PostgreSQL Slave parameters
@@ -214,6 +220,8 @@ slave:
   nodeSelector: {}
   affinity: {}
   tolerations: []
+  podLabels: {}
+  podAnnotations: {}
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
