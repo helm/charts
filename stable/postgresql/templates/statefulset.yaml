@@ -195,7 +195,7 @@ spec:
         volumeMounts:
         {{- if or (.Files.Glob "files/docker-entrypoint-initdb.d/*.{sh,sql,sql.gz}") .Values.initdbScriptsConfigMap .Values.initdbScripts }}
         - name: custom-init-scripts
-          mountPath: /docker-entrypoint-initdb.d/configmap
+          mountPath: /docker-entrypoint-initdb.d/
         {{- end }}
         {{- if .Values.initdbScriptsSecret }}
         - name: custom-init-scripts-secret
