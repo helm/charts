@@ -77,15 +77,15 @@ spec:
           {{- else if .Values.dags.initContainer.enabled }}
             - name: dags-data
               mountPath: {{ .Values.dags.path }}
-            {{- if .Values.airflow.connections }}
-            - name: connections
-              mountPath: /usr/local/connections
-            {{- end}}
           {{- end }}
           {{- if .Values.logsPersistence.enabled }}
             - name: logs-data
               mountPath: {{ .Values.logs.path }}
           {{- end }}
+          {{- if .Values.airflow.connections }}
+            - name: connections
+              mountPath: /usr/local/connections
+          {{- end}}
           args:
             - "bash"
             - "-c"
@@ -113,6 +113,10 @@ spec:
               export PATH=/usr/local/airflow/.local/bin:$PATH &&
               echo "executing initdb" &&
               airflow initdb &&
+            {{- if .Values.airflow.connections }}
+              echo "adding connections" &&
+              /usr/local/connections/add-connections.sh &&
+            {{- end }}
               echo "executing scheduler" &&
               airflow scheduler -n {{ .Values.airflow.schedulerNumRuns }}
           {{- end }}
@@ -138,16 +142,16 @@ spec:
           configMap:
             name: {{ template "airflow.fullname" . }}-git-clone
             defaultMode: 0755
-          {{- if .Values.airflow.connections }}           
-        - name: connections
-          secret: 
-            secretName: {{ template "airflow.fullname" . }}-connections
-            defaultMode: 0755
-          {{- end }}
         {{- if .Values.dags.git.secret }}
         - name: git-clone-secret
           secret:
             secretName: {{ .Values.dags.git.secret }}
             defaultMode: 0700
         {{- end }}
+        {{- end }}
+        {{- if .Values.airflow.connections }}
+        - name: connections
+          secret:
+            secretName: {{ template "airflow.fullname" . }}-connections
+            defaultMode: 0755
         {{- end }}
