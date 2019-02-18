@@ -7,18 +7,18 @@ spec:
   selector:
     matchLabels:
       app: {{ template "prometheus-node-exporter.name" . }}
-      release: {{ .Release.Name }}  
+      release: {{ .Release.Name }}
   updateStrategy:
     type: RollingUpdate
     rollingUpdate:
-      maxUnavailable: 1      
+      maxUnavailable: 1
   template:
     metadata:
       labels: {{ include "prometheus-node-exporter.labels" . | indent 8 }}
     spec:
 {{- if and .Values.rbac.create .Values.serviceAccount.create }}
       serviceAccountName: {{ template "prometheus-node-exporter.serviceAccountName" . }}
-{{- end }}      
+{{- end }}
 {{- if .Values.securityContext }}
       securityContext:
 {{ toYaml .Values.securityContext | indent 8 }}
@@ -63,6 +63,9 @@ spec:
             - name: {{ $mount.name }}
               mountPath: {{ $mount.mountPath }}
               readOnly: {{ $mount.readOnly }}
+            {{- if $mount.mountPropagation }}
+              mountPropagation: {{ $mount.mountPropagation }}
+            {{- end }}
             {{- end }}
             {{- end }}
       hostNetwork: true
