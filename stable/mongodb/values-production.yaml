@@ -240,7 +240,7 @@ metrics:
     registry: docker.io
     repository: forekshub/percona-mongodb-exporter
     tag: latest
-    pullPolicy: IfNotPresent   
+    pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
     ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
