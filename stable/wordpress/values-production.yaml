@@ -60,8 +60,7 @@ wordpressTablePrefix: wp_
 allowEmptyPassword: "yes"
 
 ## Set Apache allowOverride to None
-allowOverrideNone: yes
-
+allowOverrideNone: "yes"
 # ConfigMap with custom wordpress-htaccess.conf file (requires allowOverrideNone to true)
 customHTAccessCM:
 

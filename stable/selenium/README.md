@@ -51,7 +51,6 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `hub.pullPolicy` | The pull policy for the hub image | `IfNotPresent` |
 | `hub.port` | The port the hub listens on | `4444` |
 | `hub.servicePort` | The port the hub Service listens on | `4444` |
-
 | `hub.podAnnotations` | Annotations on the hub pod | `{}` |
 | `hub.javaOpts` | The java options for the selenium hub JVM, default sets the maximum heap size to 1,000 mb | `-Xmx1000m` |
 | `hub.resources` | The resources for the hub container, defaults to minimum half a cpu and maximum 1,000 mb RAM | `{"limits":{"cpu":".5", "memory":"1000Mi"}}` |
@@ -66,7 +65,7 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `hub.gridTimeout` | | `nil` |
 | `hub.gridBrowserTimeout` | | `nil` |
 | `hub.gridMaxSession` | | `nil` |
-| `hub.gridUnregisterIfStillDownAfer` | | `nil` |
+| `hub.gridUnregisterIfStillDownAfter` | | `nil` |
 | `hub.seOpts` | Command line arguments to pass to hub | `nil` |
 | `hub.timeZone` | The time zone for the container | `nil` |
 | `hub.nodeselector` | Node label to use for scheduling of the hub if set this takes precedence over the global value | `nil` |
@@ -154,7 +153,7 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `firefoxDebug.image` | The selenium node firefox debug image | `selenium/node-firefox-debug` |
 | `firefoxDebug.tag` | The selenium node firefox debug tag | `3.14.0` |
 | `firefoxDebug.pullPolicy` | The selenium node firefox debug pull policy | `IfNotPresent` |
-| `firefoxDebug.replicas` | The numer of selenium node firefox debug pods | `1` |
+| `firefoxDebug.replicas` | The number of selenium node firefox debug pods | `1` |
 | `firefoxDebug.podAnnotations` | Annotations on the firefox debug pods | `{}` |
 | `firefoxDebug.javaOpts` | The java options for a selenium node firefox debug JVM, default sets the max heap size to 900 mb | `-Xmx900m` |
 | `firefoxDebug.resources` | The resources for the selenium node firefox debug container, defaults to minimum half a cpu and maximum 1,000 mb | `{"limits":{"cpu":".5", "memory":"1000Mi"}}` |
