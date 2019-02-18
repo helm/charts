@@ -55,6 +55,7 @@ The following table lists the configurable parameters of the Sonarqube chart and
 | `service.loadBalancerSourceRanges`          | Kubernetes service LB Allowed inbound IP addresses | 0.0.0.0/0                            |
 | `service.loadBalancerIP`                    | Kubernetes service LB Optional fixed external IP   | None                                       |
 | `persistence.enabled`                       | Flag for enabling persistent storage      | false                                      |
+| `persistence.existingClaim`                 | Do not create a new PVC but use this one  | None                                       |
 | `persistence.storageClass`                  | Storage class to be used                  | "-"                                        |
 | `persistence.accessMode`                    | Volumes access mode to be set             | `ReadWriteOnce`                            |
 | `persistence.size`                          | Size of the volume                        | None                                     |
