@@ -20,7 +20,7 @@ spec:
   type: {{ $root.Values.service.type }}
   ports:
     - port: {{ $root.Values.service.port }}
-      targetPort: {{ $root.Values.service.targetPort }}
+      targetPort: container-port
       protocol: TCP
       name: {{ $root.Values.service.portName }}
   selector:
