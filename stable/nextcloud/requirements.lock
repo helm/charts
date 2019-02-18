@@ -1,6 +1,9 @@
 dependencies:
 - name: mariadb
   repository: https://kubernetes-charts.storage.googleapis.com/
-  version: 5.5.0
-digest: sha256:66e8bec50806f6576f4954c145d45b44a55975cad4f10b3bdd6cc4e208055bca
-generated: 2019-01-26T18:57:18.847326+01:00
+  version: 5.5.2
+- name: redis
+  repository: https://kubernetes-charts.storage.googleapis.com/
+  version: 6.1.0
+digest: sha256:bb0db15a8591618d2b69d970a7569c8f34844c842afea8cbdbd2a23f4829149c
+generated: 2019-02-17T00:04:03.94861097-06:00
