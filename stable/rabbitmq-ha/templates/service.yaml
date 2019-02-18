@@ -29,6 +29,9 @@ spec:
   loadBalancerSourceRanges:
 {{ toYaml .Values.service.loadBalancerSourceRanges | indent 4 }}
 {{- end }}
+{{- if .Values.service.externalTrafficPolicy }}
+  externalTrafficPolicy: "{{ .Values.service.externalTrafficPolicy }}"
+{{- end }}
   ports:
     - name: http
       protocol: TCP
