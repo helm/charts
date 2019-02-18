@@ -3,7 +3,7 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: {{ template "releaseName" . }}
+  name: {{ template "prometheus-cloudwatch-exporter.fullname" . }}
   namespace: {{ .Values.serviceMonitor.namespace }}
   labels:
     app: {{ template "prometheus-cloudwatch-exporter.name" . }}
@@ -15,8 +15,12 @@ spec:
   jobLabel: app
   endpoints:
   - port: {{ .Values.service.portName }}
+{{- if .Values.serviceMonitor.scrapeInterval }}
     interval: {{ .Values.serviceMonitor.scrapeInterval }}
+{{- end }}
+{{- if .Values.serviceMonitor.scrapeTimeout }}
     scrapeTimeout: {{ .Values.serviceMonitor.scrapeTimeout }}
+{{- end }}
   selector:
     matchLabels:
       release: {{ .Release.Name }}
