@@ -163,7 +163,7 @@ plugins:
   # Use <plugin_name,version,url> to add/upgrade plugin
   values:
     # - elastalert-kibana-plugin,1.0.1,https://github.com/bitsensor/elastalert-kibana-plugin/releases/download/1.0.1/elastalert-kibana-plugin-1.0.1-6.4.2.zip
-    # - logtrail,0.1.30,https://github.com/sivasamyk/logtrail/releases/download/v0.1.30/logtrail-6.4.2-0.1.30.zip
+    # - logtrail,0.1.31,https://github.com/sivasamyk/logtrail/releases/download/v0.1.31/logtrail-6.6.0-0.1.31.zip
     # - other_plugin
 
 persistentVolumeClaim:
