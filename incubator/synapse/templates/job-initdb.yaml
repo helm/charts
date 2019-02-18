@@ -1,0 +1,73 @@
+{{- if .Values.postgresql.deploy }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  annotations:
+    helm.sh/hook: "post-install"
+    helm.sh/hook-weight: "1"
+    helm.sh/hook-delete-policy: "hook-succeeded"
+  name: {{ template "synapse.fullname" . }}-initdb
+  labels:
+    {{- include "synapse.labels" . | nindent 4 }}
+    app.kubernetes.io/component: initdb
+spec:
+  template:
+    metadata:
+      labels:
+        app: {{ template "synapse.name" . }}
+        chart: {{ template "synapse.chart" . }}
+        release: {{ .Release.Name }}
+        heritage: {{ .Release.Service }}
+        component: initdb
+    spec:
+      restartPolicy: OnFailure
+      initContainers:
+        - name: test-db
+          image: "{{ .Values.postgresql.client.image.repository }}:{{ .Values.postgresql.client.image.tag }}"
+          imagePullPolicy: {{ .Values.postgresql.client.image.pullPolicy | quote }}
+          command: [
+            "bash", "-ex", "-c",
+            "echo \"SHOW DATABASES\" | psql"
+          ]
+          env:
+            - name: PGHOST
+              value: {{ template "postgresql.fullname" . }}
+            - name: PGUSER
+              value: postgres
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ default (printf "%s-%s" (include "synapse.fullname" .) .Values.postgresql.nameOverride) .Values.postgresql.existingSecret | quote }}
+                  key: postgresql-password
+      containers:
+        - name: create-database
+          image: "{{ .Values.postgresql.client.image.repository }}:{{ .Values.postgresql.client.image.tag }}"
+          imagePullPolicy: {{ .Values.postgresql.client.image.pullPolicy | quote }}
+          command: [
+            "bash", "-ex", "-c",
+            "psql -tc \"SELECT 1 FROM pg_database WHERE datname = '${DB_NAME}'\" | grep -q 1 || psql -c \"CREATE DATABASE ${DB_NAME}\"; psql -tc \"SELECT 1 FROM pg_roles WHERE rolname = '${DB_USERNAME}'\" | grep 1 || psql -tc \"CREATE USER ${DB_USERNAME} WITH PASSWORD '${DB_PASSWORD}'\"; psql -c \"GRANT CONNECT,CREATE,TEMP ON DATABASE ${DB_NAME} TO ${DB_USERNAME}\";"
+          ]
+          env:
+            - name: DB_NAME
+              value: {{ .Values.database.name | quote }}
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ default (printf "%s-%s" (include "synapse.fullname" .) "database") .Values.database.secret.name_override | quote }}
+                  key: postgresql-username
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ default (printf "%s-%s" (include "synapse.fullname" .) "database") .Values.database.secret.name_override | quote }}
+                  key: postgresql-password
+            - name: PGHOST
+              value: {{ template "postgresql.fullname" . }}
+            - name: PGUSER
+              value: postgres
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: synapse-db-root
+                  key: postgresql-password
+{{- end }}
+

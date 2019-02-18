@@ -1,0 +1,17 @@
+apiVersion: v1
+appVersion: 0.99.1.1
+description: The reference implementation for a Matrix.org chat server
+name: synapse
+version: 0.0.1
+keywords:
+  - synapse
+  - chat
+  - matrix
+  - riot
+home: https://github.com/matrix-org/synapse
+sources:
+  - https://github.com/matrix-org/synapse
+  - https://github.com/helm/charts/tree/master/incubator/synapse
+maintainers:
+  - name: mcronce
+    email: mike@quadra-tec.net

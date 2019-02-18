@@ -1,0 +1,143 @@
+apiVersion: apps/v1beta2
+kind: StatefulSet
+metadata:
+  name:  {{ template "synapse.fullname" . }}
+  labels:
+    {{- include "synapse.labels" . | nindent 4 }}
+    app.kubernetes.io/component: server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "synapse.labels" . | nindent 6 }}
+      app.kubernetes.io/component: server
+  template:
+    metadata:
+      labels:
+        {{- include "synapse.labels" . | nindent 8 }}
+        app.kubernetes.io/component: server
+    spec:
+      containers:
+        - name: synapse
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 8008
+          env:
+            {{- if .Values.settings.uid }}
+            - name: UID
+              value: {{ .Values.settings.uid | quote }}
+            {{- end }}
+            {{- if .Values.settings.pid }}
+            - name: PID
+              value: {{ .Values.settings.pid | quote }}
+            {{- end }}
+            - name: SYNAPSE_SERVER_NAME
+              value: {{ required "server_name must be set to the public hostname of the server" .Values.server_name | quote }}
+            - name: SYNAPSE_REPORT_STATS
+              value: {{ .Values.settings.report_stats | quote }}
+            {{- if .Values.settings.tls.enable }}
+            {{- if .Values.settings.tls.acme }}
+            - name: SYNAPSE_ACME
+              value: "1"
+            {{- end }}
+            {{- else }}
+            - name: SYNAPSE_NO_TLS
+              value: "1"
+            {{- end }}
+            {{- if .Values.settings.registration.enabled }}
+            - name: SYNAPSE_ENABLE_REGISTRATION
+              value: "1"
+            {{- if .Values.settings.recaptcha.enabled }}
+            - name: SYNAPSE_RECAPTCHA_PUBLIC_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ default (printf "%s-%s" (include "synapse.fullname" .) "recaptcha") .Values.settings.recaptcha.secret.name_override | quote }}
+                  key: public-key
+            - name: SYNAPSE_RECAPTCHA_PRIVATE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ default (printf "%s-%s" (include "synapse.fullname" .) "recaptcha") .Values.settings.recaptcha.secret.name_override | quote }}
+                  key: private-key
+            {{- end }}
+            {{- else }}
+            - name: SYNAPSE_REGISTRATION_SHARED_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ printf "%s-%s" (include "synapse.fullname" .) "registration" | quote }}
+                  key: shared-secret
+            - name: SYNAPSE_MACAROON_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ printf "%s-%s" (include "synapse.fullname" .) "registration" | quote }}
+                  key: macaroon-key
+            {{- end }}
+            {{- if .Values.settings.guest }}
+            - name: SYNAPSE_ALLOW_GUEST
+              value: "1"
+            {{- end }}
+            - name: SYNAPSE_EVENT_CACHE_SIZE
+              value: {{ .Values.settings.event_cache_size | quote }}
+            {{- if .Values.settings.turn.uris }}
+            - name: SYNAPSE_TURN_URIS
+              value: {{ join "," .values.settings.turn.uris | quote }}
+            - name: SYNAPSE_TURN_SECRET
+              valueFrom:
+                secretKeyref:
+                  name: {{ default (printf "%s-%s" (include "synapse.fullname" .) "turn") .Values.settings.turn.secret.name_override | quote }}
+                  key: value
+            {{- end }}
+            - name: SYNAPSE_MAX_UPLOAD_SIZE
+              value: {{ .Values.settings.max_upload_size | quote }}
+            {{- if eq .Values.database.mode "postgresql" }}
+            - name: POSTGRES_HOST
+              {{- if .Values.postgresql.deploy }}
+              value: {{ template "postgresql.fullname" . }}
+              {{- else }}
+              value: {{ required "When database.mode is set to \"postgresql\" and postgresql.deploy is set to false, database.host is required" .Values.database.host | quote }}
+              {{- end }}
+            - name: POSTGRES_PORT
+              value: {{ .Values.database.port | quote }}
+            - name: POSTGRES_DB
+              value: {{ .Values.database.name | quote }}
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ default (printf "%s-%s" (include "synapse.fullname" .) "database") .Values.database.secret.name_override | quote }}
+                  key: postgresql-username
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ default (printf "%s-%s" (include "synapse.fullname" .) "database") .Values.database.secret.name_override | quote }}
+                  key: postgresql-password
+            {{- else if not (eq .Values.database.mode "sqlite") }}
+            {{- fail "database.mode must be set to one of \"sqlite\" or \"postgresql\"" }}
+            {{- end }}
+          volumeMounts:
+            - name: data
+              mountPath: /data
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 2
+            failureThreshold: 5
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      nodeSelector:
+        {{- toYaml .Values.nodeSelector | nindent 8 }}
+      affinity:
+        {{- toYaml .Values.affinity | nindent 8 }}
+      tolerations:
+        {{- toYaml .Values.tolerations | nindent 8 }}
+      volumes:
+        - name: data
+          {{- if .Values.persistence.data.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.data.existingClaim | default (printf "%s-%s" (include "synapse.fullname" .) "data") }}
+          {{- else }}
+          emptyDir: {}
+          {{- end }}
+

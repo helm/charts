@@ -1,0 +1,5 @@
+Synapse has been installed. You can access the server from within the k8s cluster using:
+
+  {{ template "synapse.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
+
+

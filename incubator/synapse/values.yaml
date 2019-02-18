@@ -1,0 +1,125 @@
+# Default values for synapse.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# This is required
+server_name:
+
+# TODO:  I don't think this can be safely scaled, but find out for sure
+# replicaCount: 1
+
+image:
+  # From repository https://github.com/matrix-org/synapse
+  repository: matrixdotorg/synapse
+  tag: v0.99.1.1-py3
+  pullPolicy: IfNotPresent
+
+## Add additional labels to all resources
+extraLabels: {}
+
+settings:
+  uid: "991"
+  gid: "991"
+  report_stats: yes
+  tls:
+    enabled: false
+    acme: true
+  registration:
+    enabled: true
+  guest: false
+  event_cache_size: "10K"
+  recaptcha:
+    enabled: false
+    secret:
+      name_override:
+      deploy:
+        enabled: true
+        public_key:
+        private_key:
+  turn:
+    uris: []
+    secret:
+      name_override:
+      deploy:
+        enabled: true
+        value:
+  max_upload_size: "10M"
+
+postgresql:
+  deploy: false
+  client:
+    image:
+      repository: postgres
+      tag: 11.2-alpine
+      pullPolicy: IfNotPresent
+  nameOverride: db
+  existingSecret: synapse-db-root
+
+database:
+  # Can be "sqlite" or "postgresql"
+  mode: sqlite
+  secret:
+    name_override:
+    deploy:
+      enabled: true
+      username: synapse
+      password:
+  host:
+  port: 5432
+  name: synapse
+
+service:
+  annotations: {}
+  type: ClusterIP
+  clusterIP: ""
+
+  port: 8008
+  ## List of IP addresses at which the service is available
+  ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
+  ##
+  externalIPs: []
+
+  loadBalancerIP: ""
+  loadBalancerSourceRanges: []
+
+ingress:
+  enabled: false
+  class:
+  annotations: {}
+  path: /
+  hosts:
+    - synapse
+  tls: []
+    # - secretName: synapse-tls
+    #    hosts:
+    #      - synapse
+
+## Persist configuration to a persistent volume
+persistence:
+  ## database data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If unset, storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  data:
+    enabled: true
+    existingClaim:
+    storageClass:
+    accessMode: ReadWriteMany
+    size: 8Gi
+
+resources:
+  # requests:
+  #   cpu: "100m"
+  #   memory: "256Mi"
+  # limits:
+  #   cpu: "500m"
+  #   memory: "512Mi"
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
