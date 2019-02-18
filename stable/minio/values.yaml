@@ -6,7 +6,7 @@ clusterDomain: cluster.local
 ##
 image:
   repository: minio/minio
-  tag: RELEASE.2019-01-16T21-44-08Z
+  tag: RELEASE.2019-02-12T21-58-47Z
   pullPolicy: IfNotPresent
 
 ## Set default image, imageTag, and imagePullPolicy for the `mc` (the minio
@@ -14,7 +14,7 @@ image:
 ##
 mcImage:
   repository: minio/mc
-  tag: RELEASE.2019-01-10T00-38-22Z
+  tag: RELEASE.2019-02-13T19-48-27Z
   pullPolicy: IfNotPresent
 
 ## minio server mode, i.e. standalone or distributed.

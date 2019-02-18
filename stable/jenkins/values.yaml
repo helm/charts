@@ -89,6 +89,7 @@ Master:
   HealthProbeReadinessPeriodSeconds: 10
   HealthProbeLivenessFailureThreshold: 12
   SlaveListenerPort: 50000
+#  SlaveHostPort: 50000
   DisabledAgentProtocols:
     - JNLP-connect
     - JNLP2-connect
@@ -243,6 +244,7 @@ Master:
 
   Ingress:
     ApiVersion: extensions/v1beta1
+    Labels: {}
     Annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
@@ -289,6 +291,18 @@ Agent:
   NodeSelector: {}
   # Key Value selectors. Ex:
   # jenkins-agent: v1
+
+  # Executed command when side container gets started
+  Command:
+  Args:
+  # Side container name
+  SideContainerName: jnlp
+  # Doesn't allocate pseudo TTY by default
+  TTYEnabled: false
+  # Max number of spawned agent
+  ContainerCap: 10
+  # Pod name
+  PodName: default
 
 Persistence:
   Enabled: true
