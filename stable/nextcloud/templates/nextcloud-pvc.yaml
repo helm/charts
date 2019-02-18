@@ -1,13 +1,9 @@
-{{- if and .Values.persistence.enabled (not .Values.persistence.existingClaim) -}}
+{{- if .Values.persistence.enabled -}}
+{{- if not .Values.persistence.existingClaim -}}
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ include "satisfy.fullname" . }}
-  labels:
-    app.kubernetes.io/name: {{ include "satisfy.name" . }}
-    helm.sh/chart: {{ include "satisfy.chart" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
+  name: {{ template "nextcloud.fullname" . }}-nextcloud
 spec:
   accessModes:
     - {{ .Values.persistence.accessMode | quote }}
@@ -21,4 +17,5 @@ spec:
   storageClassName: "{{ .Values.persistence.storageClass }}"
 {{- end }}
 {{- end }}
-{{- end }}
+{{- end -}}
+{{- end -}}
