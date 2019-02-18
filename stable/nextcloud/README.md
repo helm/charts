@@ -45,39 +45,46 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following table lists the configurable parameters of the nextcloud chart and their default values.
 
-|              Parameter              |                Description                |                   Default                               |
-|-------------------------------------|-------------------------------------------|-------------------------------------------------------- |
-| `image.repository`                  | nextcloud Image name                       | `nextcloud`                                      |
-| `image.tag`                         | nextcloud Image tag                        | `{VERSION}`                                             |
-| `image.pullPolicy`                  | Image pull policy                         | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
-| `image.pullSecrets`                 | Specify image pull secrets                | `nil`                                                   |
-| `ingress.enabled`                   | Enable use of ingress controllers         | `false`                                                 |
-| `ingress.servicePort`               | Ingress' backend servicePort              | `http`                                                  |
-| `ingress.annotations`               | An array of service annotations           | `nil`                                                   |
-| `ingress.tls`                       | Ingress TLS configuration                 | `[]`                                                    |
-| `nextcloud.host`                     | nextcloud host to create application URLs  | `nextcloud.kube.home`                                                   |
-| `nextcloud.username`                 | User of the application                   | `admin`                                                  |
-| `nextcloud.password`                 | Application password                      | `changeme`                                    |
-| `internalDatabase.enabled`         | Whether to use internal sqlite database    | `true`                                      |
-| `internalDatabase.database`         | Name of the existing database             | `nextcloud`                                      |
-| `externalDatabase.enabled`          | Whether to use external database          | `false`                                                   |
-| `externalDatabase.host`             | Host of the external database             | `nil`                                                   |
-| `externalDatabase.database`         | Name of the existing database             | `nextcloud`                                      |
-| `externalDatabase.user`             | Existing username in the external db      | `nextcloud`                                           |
-| `externalDatabase.password`         | Password for the above username           | `nil`                                                   |
-| `mariadb.enabled`                   | Whether to use the MariaDB chart          | `false`                                                  |
-| `mariadb.db.name`           | Database name to create                   | `nextcloud`                                      |
-| `mariadb.db.password`           | Password for the database                 | `changeme`                                                   |
-| `mariadb.db.user`               | Database user to create                   | `nextcloud`                                           |
-| `mariadb.rootUser.password`       | MariaDB admin password                    | `nil`                                                   |
-| `service.type`                      | Kubernetes Service type                   | `ClusterIp`                                          |
-| `service.loadBalancerIP`            | LoadBalancerIp for service type LoadBalancer                   | `nil`                                          |
-| `persistence.enabled`     | Enable persistence using PVC              | `true`                                                  |
-| `persistence.storageClass` | PVC Storage Class for nextcloud volume     | `nil` (uses alpha storage class annotation)             |
-| `persistence.existingClaim`| An Existing PVC name for nextcloud volume  | `nil` (uses alpha storage class annotation)             |
-| `persistence.accessMode`   | PVC Access Mode for nextcloud volume       | `ReadWriteOnce`                                         |
-| `persistence.size`         | PVC Storage Request for nextcloud volume   | `8Gi`                                                   |
-| `resources`                         | CPU/Memory resource requests/limits       | `{}`                 |
+|              Parameter               |                Description                   |                   Default                               |
+|--------------------------------------|----------------------------------------------|---------------------------------------------------------|
+| `image.repository`                   | nextcloud Image name                         | `nextcloud`                                             |
+| `image.tag`                          | nextcloud Image tag                          | `15.0.4-apache`                                         |
+| `image.pullPolicy`                   | Image pull policy                            | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
+| `image.pullSecrets`                  | Specify image pull secrets                   | `nil`                                                   |
+| `ingress.enabled`                    | Enable use of ingress controllers            | `false`                                                 |
+| `ingress.servicePort`                | Ingress' backend servicePort                 | `http`                                                  |
+| `ingress.annotations`                | An array of service annotations              | `nil`                                                   |
+| `ingress.tls`                        | Ingress TLS configuration                    | `[]`                                                    |
+| `nextcloud.host`                     | nextcloud host to create application URLs    | `nextcloud.kube.home`                                   |
+| `nextcloud.username`                 | User of the application                      | `admin`                                                 |
+| `nextcloud.password`                 | Application password                         | `changeme`                                              |
+| `internalDatabase.enabled`           | Whether to use internal sqlite database      | `true`                                                  |
+| `internalDatabase.database`          | Name of the existing database                | `nextcloud`                                             |
+| `externalDatabase.enabled`           | Whether to use external database             | `false`                                                 |
+| `externalDatabase.host`              | Host of the external database                | `nil`                                                   |
+| `externalDatabase.database`          | Name of the existing database                | `nextcloud`                                             |
+| `externalDatabase.user`              | Existing username in the external db         | `nextcloud`                                             |
+| `externalDatabase.password`          | Password for the above username              | `nil`                                                   |
+| `mariadb.enabled`                    | Whether to use the MariaDB chart             | `false`                                                 |
+| `mariadb.db.name`                    | Database name to create                      | `nextcloud`                                             |
+| `mariadb.db.password`                | Password for the database                    | `changeme`                                              |
+| `mariadb.db.user`                    | Database user to create                      | `nextcloud`                                             |
+| `mariadb.rootUser.password`          | MariaDB admin password                       | `nil`                                                   |
+| `mariadb.replication.enabled`        | Enables Master/Slave Replication             | `true`                                                  |
+| `mariadb.master.persistence.enabled` | Enables persistence for MariaDB              | `true`                                                  |
+| `redis.enabled`                      | Enables using Redis for memory caching       | `false`                                                 |
+| `redis.cluster.enabled`              | Enables Master/Slave Replication             | `false`                                                 |
+| `redis.master.persistence`           | Enables persistence for Redis                | `2Gi`                                                   |
+| `redis.rbac.create`                  | Enables rbac for Redis                       | `true`                                                  |
+| `redis.usePassword`                  | Enables the use of a password with Redis     | `false`                                                 |
+| `service.type`                       | Kubernetes Service type                      | `ClusterIp`                                             |
+| `service.clusterIP`                  | IP for the service                           | None (Use `"None"` for headless)                        |
+| `service.loadBalancerIP`             | LoadBalancerIp for service type LoadBalancer | `nil`                                                   |
+| `persistence.enabled`                | Enable persistence using PVC                 | `true`                                                  |
+| `persistence.storageClass`           | PVC Storage Class for nextcloud volume       | `nil` (uses alpha storage class annotation)             |
+| `persistence.existingClaim`          | An Existing PVC name for nextcloud volume    | `nil` (uses alpha storage class annotation)             |
+| `persistence.size`                   | PVC Storage Request for nextcloud volume     | `8Gi`                                                   |
+| `resources`                          | CPU/Memory resource requests/limits          | `{}`                                                    |
 
 > **Note**:
 >
@@ -117,3 +124,7 @@ The [Nextcloud](https://hub.docker.com/_/nextcloud/) image stores the nextcloud 
 
 Persistent Volume Claims are used to keep the data across deployments. This is known to work in GCE, AWS, and minikube.
 See the [Configuration](#configuration) section to configure the PVC or to disable persistence.
+
+## Redis
+
+Enabling **Redis** will use the `stable/redis` chart. Redis' `host` and `port` are passed to **Nextcloud** as environment variables.
