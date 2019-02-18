@@ -93,6 +93,17 @@ The command removes all the Kubernetes components associated with the chart and 
 | `rbac.pspEnabled`                         | Create PodSecurityPolicy (with `rbac.create`, grant roles permissions as well) | `true` |
 | `rbac.pspUseAppArmor`                     | Enforce AppArmor in created PodSecurityPolicy (requires `rbac.pspEnabled`)  | `true` |
 
+### Example of extraVolumeMounts
+
+```yaml
+- extraVolumeMounts:
+  - name: plugins
+    mountPath: /var/lib/grafana/plugins
+    subPath: configs/grafana/plugins
+    existingClaim: existing-grafana-claim
+    readOnly: false
+```
+
 ## BASE64 dashboards
 
 Dashboards could be storaged in a server that does not return JSON directly and instead of it returns a Base64 encoded file (e.g. Gerrit)
