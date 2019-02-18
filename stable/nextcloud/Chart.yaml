@@ -1,6 +1,6 @@
 name: nextcloud
-version: 1.0.1
-appVersion: 15.0.2
+version: 1.1.1
+appVersion: 15.0.4
 description: A file sharing server that puts the control and security of your own data back into your hands.
 keywords:
 - nextcloud
