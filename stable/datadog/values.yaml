@@ -171,8 +171,18 @@ datadog:
   ##
   # nonLocalTraffic: true
 
+  ## Enable origin detection for container tagging
+  ## https://docs.datadoghq.com/developers/dogstatsd/unix_socket/#using-origin-detection-for-container-tagging
+  ##
+  # dogstatsdOriginDetection: true
+
   ## Enable container runtime socket volume mounting
   useCriSocketVolume: true
+
+  ## Enable dogstatsd over Unix Domain Socket
+  ## ref: https://docs.datadoghq.com/developers/dogstatsd/unix_socket/
+  ##
+  # useDogStatsDSocketVolume: true
 
   ## Set host tags.
   ## ref: https://github.com/DataDog/docker-dd-agent#environment-variables
