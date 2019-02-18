@@ -1,106 +1,114 @@
-apiVersion: apps/v1beta2
+{{- $root := . -}}
+{{- range $region, $options := .Values.config }}
+---
+apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "prometheus-cloudwatch-exporter.fullname" . }}
+  name: {{ template "prometheus-cloudwatch-exporter.fullname" $root }}-{{ $region }}
   labels:
-    app: {{ template "prometheus-cloudwatch-exporter.name" . }}
-    chart: {{ template "prometheus-cloudwatch-exporter.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    app: {{ template "prometheus-cloudwatch-exporter.name" $root }}
+    chart: {{ template "prometheus-cloudwatch-exporter.chart" $root }}
+    release: {{ $root.Release.Name }}
+    heritage: {{ $root.Release.Service }}
+    region: {{ $region }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ $root.Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ template "prometheus-cloudwatch-exporter.name" . }}
-      release: {{ .Release.Name }}
+      app: {{ template "prometheus-cloudwatch-exporter.name" $root }}
+      release: {{ $root.Release.Name }}
+      region: {{ $region }}
   template:
     metadata:
       labels:
-        app: {{ template "prometheus-cloudwatch-exporter.name" . }}
-        release: {{ .Release.Name }}
+        app: {{ template "prometheus-cloudwatch-exporter.name" $root }}
+        release: {{ $root.Release.Name }}
+        region: {{ $region }}
       annotations:
-        {{ if .Values.aws.role}}iam.amazonaws.com/role: {{ .Values.aws.role }}{{ end }}
-        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        {{ if $root.Values.aws.role}}iam.amazonaws.com/role: {{ $root.Values.aws.role }}{{ end }}
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") $root | sha256sum }}
     spec:
       containers:
-        - name: {{ .Chart.Name }}
-        {{- if not .Values.aws.role }}
-        {{- if .Values.aws.secret.name }}
+        - name: {{ $root.Chart.Name }}
+        {{- if not $root.Values.aws.role }}
+        {{- if $root.Values.aws.secret.name }}
           env:
             - name: AWS_ACCESS_KEY_ID
               valueFrom:
                 secretKeyRef:
                   key: access_key
-                  name: {{ .Values.aws.secret.name }}
+                  name: {{ $root.Values.aws.secret.name }}
             - name: AWS_SECRET_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
                   key: secret_key
-                  name: {{ .Values.aws.secret.name }}
-          {{- if .Values.aws.secret.includesSessionToken }}
+                  name: {{ $root.Values.aws.secret.name }}
+          {{- if $root.Values.aws.secret.includesSessionToken }}
             - name: AWS_SESSION_TOKEN
               valueFrom:
                 secretKeyRef:
                   key: security_token
-                  name: {{ .Values.aws.secret.name }}
+                  name: {{ $root.Values.aws.secret.name }}
           {{- end }}
-        {{- else if and .Values.aws.aws_secret_access_key .Values.aws.aws_access_key_id }}
+        {{- else if and $root.Values.aws.aws_secret_access_key $root.Values.aws.aws_access_key_id }}
           env:
             - name: AWS_ACCESS_KEY_ID
               valueFrom:
                 secretKeyRef:
                   key: aws_access_key_id
-                  name: {{ template "prometheus-cloudwatch-exporter.fullname" . }}
+                  name: {{ template "prometheus-cloudwatch-exporter.fullname" $root }}
             - name: AWS_SECRET_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
                   key: aws_secret_access_key
-                  name: {{ template "prometheus-cloudwatch-exporter.fullname" . }}
+                  name: {{ template "prometheus-cloudwatch-exporter.fullname" $root }}
           {{- end }}
           {{- end }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          image: "{{ $root.Values.image.repository }}:{{ $root.Values.image.tag }}"
+          imagePullPolicy: {{ $root.Values.image.pullPolicy }}
           ports:
-            - name: {{ .Values.service.portName }}
+            - name: {{ $root.Values.service.portName }}
               containerPort: 9106
               protocol: TCP
           livenessProbe:
             httpGet:
               path: /-/healthy
-              port: {{ .Values.service.portName }}
-            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds}}
-            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
-            timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
-            successThreshold: {{ .Values.livenessProbe.successThreshold }}
-            failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+              port: {{ $root.Values.service.portName }}
+            initialDelaySeconds: {{ $root.Values.livenessProbe.initialDelaySeconds}}
+            periodSeconds: {{ $root.Values.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ $root.Values.livenessProbe.timeoutSeconds }}
+            successThreshold: {{ $root.Values.livenessProbe.successThreshold }}
+            failureThreshold: {{ $root.Values.livenessProbe.failureThreshold }}
           readinessProbe:
             httpGet:
               path: /-/ready
-              port: {{ .Values.service.portName }}
-            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds}}
-            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
-            timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
-            successThreshold: {{ .Values.readinessProbe.successThreshold }}
-            failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+              port: {{ $root.Values.service.portName }}
+            initialDelaySeconds: {{ $root.Values.readinessProbe.initialDelaySeconds}}
+            periodSeconds: {{ $root.Values.readinessProbe.periodSeconds }}
+            timeoutSeconds: {{ $root.Values.readinessProbe.timeoutSeconds }}
+            successThreshold: {{ $root.Values.readinessProbe.successThreshold }}
+            failureThreshold: {{ $root.Values.readinessProbe.failureThreshold }}
           resources:
-{{ toYaml .Values.resources | indent 12 }}
+{{ toYaml $root.Values.resources | indent 12 }}
           volumeMounts:
             - name: vol-prometheus-cloudwatch-exporter
               mountPath: /config
-     {{- with .Values.nodeSelector }}
+     {{- with $root.Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
     {{- end }}
-    {{- with .Values.affinity }}
+    {{- with $root.Values.affinity }}
       affinity:
 {{ toYaml . | indent 8 }}
     {{- end }}
-    {{- with .Values.tolerations }}
+    {{- with $root.Values.tolerations }}
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
       volumes:
       - configMap:
           defaultMode: 420
-          name: {{ template "prometheus-cloudwatch-exporter.fullname" . }}
+          name: {{ template "prometheus-cloudwatch-exporter.fullname" $root }}-{{ $region }}
         name: vol-prometheus-cloudwatch-exporter
+
+{{- end }}

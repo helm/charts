@@ -1,5 +1,5 @@
 {{- if .Values.rbac.create }}
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   name: {{ template "prometheus-cloudwatch-exporter.fullname" . }}
@@ -11,6 +11,10 @@ metadata:
 rules:
   - apiGroups: [""]
     resources: ["secrets","configmap"]
-    resourceNames: ["{{ template "prometheus-cloudwatch-exporter.fullname" . }}"]
+    resourceNames:
+{{- $root := . -}}
+{{- range $region, $options := .Values.config }}
+      - {{ template "prometheus-cloudwatch-exporter.fullname" $root }}-{{ $region }}
+{{- end }}
     verbs: ["get"]
 {{- end }}

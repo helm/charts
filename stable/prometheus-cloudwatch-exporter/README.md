@@ -1,5 +1,7 @@
 # Cloudwatch exporter
 
+this is a modified fork of https://github.com/helm/charts/tree/master/stable/prometheus-cloudwatch-exporter
+
 * Installs [cloudwatch exporter](http://github.com/prometheus/cloudwatch_exporter)
 
 ## TL;DR;
@@ -54,7 +56,8 @@ The following table lists the configurable parameters of the Cloudwatch Exporter
 | `image.tag`                 | Image tag                                              | `cloudwatch_exporter-0.5.0`                   |
 | `image.pullPolicy`          | Image pull policy                                      | `IfNotPresent`             |
 | `service.type`              | Service type                                           | `ClusterIP`                |
-| `service.port`              | The service port                                       | `80`                       |
+| `service.port`              | The service port                                       | `9106`                     |
+| `service.targetPort`        | The service target port                                | `9106`                     |
 | `service.portName`          | The name of the service port                           | `http`                     |
 | `service.annotations`       | Custom annotations for service                         | `{}`                       |
 | `service.labels`            | Additional custom labels for the service               | `{}`                       |
@@ -64,7 +67,8 @@ The following table lists the configurable parameters of the Cloudwatch Exporter
 | `aws.aws_secret_access_key` | AWS secret access key                                  |                            |
 | `aws.secret.name` | The name of a pre-created secret in which AWS credentials are stored                                 |                            |
 | `aws.secret.includesSessionToken` |  Whether or not the pre-created secret contains an AWS STS session token                                  |                            |
-| `config`                    | Cloudwatch exporter configuration                      | `example configuration`    |
+| `config`                    | Map with Cloudwatch exporter configuration, see values for example             | `see default values.yaml`    |
+| `predefinedMetrics`         | Predefined metrics types that can be used in config section described above | `see default values.yaml` |
 | `rbac.create`               | If true, create & use RBAC resources                   | `false`                    |
 | `serviceAccount.create`     | Specifies whether a service account should be created. | `true`                     |
 | `serviceAccount.name`       | Name of the service account.                           |                            |
@@ -73,6 +77,10 @@ The following table lists the configurable parameters of the Cloudwatch Exporter
 | `affinity`                  | node/pod affinities                                    | `{}`                       |
 | `livenessProbe`             | Liveness probe settings                                |                            |
 | `readinessProbe`            | Readiness probe settings                               |                            |
+| `serviceMonitor.enable`     | If enabled chart will create servicemonitor resource   | `false`                    |
+| `serviceMonitor.scrapeInterval` | Period of scraping metrics from cloudwatch exporter| `inherit from prometheus`                      |
+| `serviceMonitor.scrapeTimeout` | Timeout for scraping metrics from cloudwatch exporter| `inherit from prometheus`                      |
+| `serviceMonitor.namespace` | Namespace in which serviceonitor resource will be created | `monitoring`             |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

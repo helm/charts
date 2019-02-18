@@ -1,12 +1,31 @@
+{{- $root := . -}}
+{{- range $region, $options := .Values.config }}
+---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "prometheus-cloudwatch-exporter.fullname" . }}
+  name: {{ template "prometheus-cloudwatch-exporter.fullname" $root }}-{{ $region }}
   labels:
-    app: {{ template "prometheus-cloudwatch-exporter.name" . }}
-    chart: {{ template "prometheus-cloudwatch-exporter.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    app: {{ template "prometheus-cloudwatch-exporter.name" $root }}
+    chart: {{ template "prometheus-cloudwatch-exporter.chart" $root }}
+    release: {{ $root.Release.Name }}
+    heritage: {{ $root.Release.Service }}
+    region: {{ $region }}
 data:
-  config.yml: |
-{{ printf .Values.config | indent 4 }}
+  config.yml: |-
+    region: {{ $region }}
+{{- range $key, $value := $options.globalOptions }}
+    {{ $key }}: {{ $value }}
+{{- end }}
+    metrics:
+{{- if $options.customMetrics }}
+{{ printf $options.customMetrics | indent 6 }}
+{{- end }}
+{{- range $metricsTypeName := $options.metricTypes }}
+{{- range $predefinedMetricName, $predefinedMetrics:= $root.Values.predefinedMetrics }}
+{{- if eq (print $metricsTypeName) (print $predefinedMetricName) }}
+{{ printf $predefinedMetrics | indent 6 }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}

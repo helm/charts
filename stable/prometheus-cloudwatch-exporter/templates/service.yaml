@@ -1,24 +1,31 @@
+{{- $root := . -}}
+{{- range $region, $options := .Values.config }}
+---
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "prometheus-cloudwatch-exporter.fullname" . }}
+  name: {{ template "prometheus-cloudwatch-exporter.fullname" $root }}-{{ $region }}
   annotations:
-{{ toYaml .Values.service.annotations | indent 4 }}
+{{ toYaml $root.Values.service.annotations | indent 4 }}
   labels:
-    app: {{ template "prometheus-cloudwatch-exporter.name" . }}
-    chart: {{ template "prometheus-cloudwatch-exporter.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
-{{- if .Values.service.labels }}
-{{ toYaml .Values.service.labels | indent 4 }}
+    app: {{ template "prometheus-cloudwatch-exporter.name" $root }}
+    chart: {{ template "prometheus-cloudwatch-exporter.chart" $root }}
+    release: {{ $root.Release.Name }}
+    heritage: {{ $root.Release.Service }}
+    region: {{ $region }}
+{{- if $root.Values.service.labels }}
+{{ toYaml $root.Values.service.labels | indent 4 }}
 {{- end }}
 spec:
-  type: {{ .Values.service.type }}
+  type: {{ $root.Values.service.type }}
   ports:
-    - port: {{ .Values.service.port }}
-      targetPort: {{ .Values.service.targetPort }}
+    - port: {{ $root.Values.service.port }}
+      targetPort: {{ $root.Values.service.targetPort }}
       protocol: TCP
-      name: {{ .Values.service.portName }}
+      name: {{ $root.Values.service.portName }}
   selector:
-    app: {{ template "prometheus-cloudwatch-exporter.name" . }}
-    release: {{ .Release.Name }}
+    app: {{ template "prometheus-cloudwatch-exporter.name" $root }}
+    release: {{ $root.Release.Name }}
+    region: {{ $region }}
+
+{{- end }}
