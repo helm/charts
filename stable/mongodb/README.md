@@ -112,6 +112,7 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `metrics.image.pullPolicy`                         | Image pull policy                                                                            | `IfNotPresent`                                          |
 | `metrics.image.pullSecrets`                        | Specify docker-registry secret names as an array                                             | `[]` (does not add image pull secrets to deployed pods) |
 | `metrics.podAnnotations`                           | Additional annotations for Metrics exporter pod                                              | {}                                                      |
+| `metrics.extraArgs`               | String with extra arguments for the MongoDB Exporter                                                          | ``                                                      |
 | `metrics.resources`                                | Exporter resource requests/limit                                                             | Memory: `256Mi`, CPU: `100m`                            |
 | `metrics.serviceMonitor.enabled`                   | Create ServiceMonitor Resource for scraping metrics using PrometheusOperator                 | `false`                                                 |
 | `metrics.serviceMonitor.additionalLabels`          | Used to pass Labels that are required by the Installed Prometheus Operator                   | {}                                                      |
