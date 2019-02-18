@@ -8,6 +8,13 @@ metadata:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
   name: {{ template "elasticsearch.master.fullname" . }}
+{{- if eq .Values.master.updateStrategy.type "RollingUpdate" }}
+  annotations:
+    checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+{{- end }}
+  spec:
+    serviceName: {{ template "elasticsearch.master.fullname" . }}
+    replicas: {{ .Values.master.replicas }}
 spec:
   serviceName: {{ template "elasticsearch.master.fullname" . }}
   replicas: {{ .Values.master.replicas }}
