@@ -16,7 +16,7 @@ spec:
   type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.port }}
-      targetPort: {{ .Values.service.targetPort }}
+      targetPort: container-port
       protocol: TCP
       name: {{ .Values.service.portName }}
   selector:
