@@ -213,6 +213,8 @@ master:
   nodeSelector: {}
   affinity: {}
   tolerations: []
+  podLabels: {}
+  podAnnotations: {}
 
 ##
 ## PostgreSQL Slave parameters
@@ -225,6 +227,8 @@ slave:
   nodeSelector: {}
   affinity: {}
   tolerations: []
+  podLabels: {}
+  podAnnotations: {}
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
