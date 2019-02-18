@@ -370,7 +370,6 @@ volumePermissions:
     repository: bitnami/minideb
     tag: latest
     pullPolicy: IfNotPresent
-  resources: {}
 
 ## Redis config file
 ## ref: https://redis.io/topics/config
@@ -388,4 +387,3 @@ sysctlImage:
   tag: latest
   pullPolicy: Always
   mountHostSys: false
-  resources: {}

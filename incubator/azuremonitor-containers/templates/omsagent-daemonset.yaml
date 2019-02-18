@@ -32,8 +32,6 @@ spec:
          value: {{ .Values.omsagent.env.clusterName | quote }}
        - name: DISABLE_KUBE_SYSTEM_LOG_COLLECTION
          value: {{ .Values.omsagent.env.doNotCollectKubeSystemLogs | quote }}
-       - name: CONTROLLER_TYPE
-         value: "DaemonSet"
        - name: NODE_IP
          valueFrom:
             fieldRef:
@@ -46,7 +44,7 @@ spec:
        - containerPort: 25224
          protocol: UDP
        volumeMounts:
-        - mountPath: /var/run/host
+        - mountPath: /var/run/docker.sock
           name: docker-sock
         - mountPath: /var/log 
           name: host-log
@@ -74,7 +72,7 @@ spec:
    volumes:
     - name: docker-sock 
       hostPath:
-       path: /var/run
+       path: /var/run/docker.sock
     - name: container-hostname
       hostPath:
        path: /etc/hostname

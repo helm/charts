@@ -81,7 +81,6 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `extendedConfConfigMap`                       | ConfigMap with the extended PostgreSQL configuration files                                                             | `nil`                                                       |
 | `initdbScripts`                               | List of initdb scripts                                                                                                 | `nil`                                                       |
 | `initdbScriptsConfigMap`                      | ConfigMap with the initdb scripts (Note: Overrides `initdbScripts`)                                                    | `nil`                                                       |
-| `initdbScriptsSecret`                      | Secret with initdb scripts that contain sensitive information (Note: can be used with `initdbScriptsConfigMap` or `initdbScripts`)                                                    | `nil`                                                       |
 | `service.type`                                | Kubernetes Service type                                                                                                | `ClusterIP`                                                 |
 | `service.port`                                | PostgreSQL port                                                                                                        | `5432`                                                      |
 | `service.nodePort`                            | Kubernetes Service nodePort                                                                                            | `nil`                                                       |
@@ -97,13 +96,9 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `master.nodeSelector`                         | Node labels for pod assignment (postgresql master)                                                                     | `{}`                                                        |
 | `master.affinity`                             | Affinity labels for pod assignment (postgresql master)                                                                 | `{}`                                                        |
 | `master.tolerations`                          | Toleration labels for pod assignment (postgresql master)                                                               | `[]`                                                        |
-| `master.podAnnotations`                       | Map of annotations to add to the pods (postgresql master)                                                              | `{}`                                                        |
-| `master.podLabels`                            | Map of labels to add to the pods (postgresql master)                                                                   | `{}`                                                        |
 | `slave.nodeSelector`                          | Node labels for pod assignment (postgresql slave)                                                                      | `{}`                                                        |
 | `slave.affinity`                              | Affinity labels for pod assignment (postgresql slave)                                                                  | `{}`                                                        |
 | `slave.tolerations`                           | Toleration labels for pod assignment (postgresql slave)                                                                | `[]`                                                        |
-| `slave.podAnnotations`                        | Map of annotations to add to the pods (postgresql slave)                                                               | `{}`                                                        |
-| `slave.podLabels`                             | Map of labels to add to the pods (postgresql slave)                                                                    | `{}`                                                        |
 | `terminationGracePeriodSeconds`               | Seconds the pod needs to terminate gracefully                                                                          | `nil`                                                       |
 | `resources`                                   | CPU/Memory resource requests/limits                                                                                    | Memory: `256Mi`, CPU: `250m`                                |
 | `securityContext.enabled`                     | Enable security context                                                                                                | `true`                                                      |
@@ -177,7 +172,7 @@ The [Bitnami PostgreSQL](https://github.com/bitnami/bitnami-docker-postgresql) i
 
 Alternatively, you can specify custom scripts using the `initdbScripts` parameter as dict.
 
-In addition to these options, you can also set an external ConfigMap with all the initialization scripts. This is done by setting the `initdbScriptsConfigMap` parameter. Note that this will override the two previous options. If your initialization scripts contain sensitive information such as credentials or passwords, you can use the `initdbScriptsSecret` parameter.
+In addition to these options, you can also set an external ConfigMap with all the initialization scripts. This is done by setting the `initdbScriptsConfigMap` parameter. Note that this will override the two previous options.
 
 The allowed extensions are `.sh`, `.sql` and `.sql.gz`.
 

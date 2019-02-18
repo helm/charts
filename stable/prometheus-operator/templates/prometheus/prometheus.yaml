@@ -93,11 +93,10 @@ spec:
   securityContext:
 {{ toYaml .Values.prometheus.prometheusSpec.securityContext | indent 4 }}
 {{- end }}
+
 {{- if .Values.prometheus.prometheusSpec.ruleNamespaceSelector }}
   ruleNamespaceSelector:
 {{ toYaml .Values.prometheus.prometheusSpec.ruleNamespaceSelector | indent 4 }}
-{{ else }}
-  ruleNamespaceSelector: {}
 {{- end }}
 {{- if .Values.prometheus.prometheusSpec.ruleSelector }}
   ruleSelector:
@@ -107,9 +106,7 @@ spec:
     matchLabels:
       app: {{ template "prometheus-operator.name" . }}
       release: {{ .Release.Name | quote }}
-{{ else }}
-  ruleSelector: {}
-{{- end }}
+  {{- end }}
 {{- if .Values.prometheus.prometheusSpec.storageSpec }}
   storage:
 {{ toYaml .Values.prometheus.prometheusSpec.storageSpec | indent 4 }}

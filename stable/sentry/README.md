@@ -34,8 +34,6 @@ The command deploys Sentry on the Kubernetes cluster in the default configuratio
 
 > **Tip**: List all releases using `helm list`
 
-> **Warning**: This Chart does not support `helm upgrade` an upgrade will currently reset your installation
-
 ## Uninstalling the Chart
 
 To uninstall/delete the `my-release` deployment:

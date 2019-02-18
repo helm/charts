@@ -37,7 +37,6 @@ rabbitmq:
   include_queues: ".*"
   include_vhost: ".*"
   skip_queues: "^$"
-  skip_verify: "false"
   skip_vhost: "^$"
   exporters: "exchange,node,overview,queue"
   output_format: "TTY"

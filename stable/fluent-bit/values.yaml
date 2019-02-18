@@ -178,10 +178,6 @@ tolerations: []
 nodeSelector: {}
 affinity: {}
 
-service:
-  flush: 1
-  logLevel: info
-
 input:
   tail:
     memBufLimit: 5MB

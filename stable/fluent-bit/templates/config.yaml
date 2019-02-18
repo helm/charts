@@ -11,9 +11,9 @@ metadata:
 data:
   fluent-bit-service.conf: |-
     [SERVICE]
-        Flush        {{ .Values.service.flush }} 
+        Flush        1
         Daemon       Off
-        Log_Level    {{ .Values.service.logLevel }}
+        Log_Level    info
         Parsers_File parsers.conf
 {{- if .Values.parsers.enabled }}
         Parsers_File parsers_custom.conf

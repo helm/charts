@@ -87,4 +87,3 @@ extraHostVolumeMounts: {}
 #    hostPath: <hostPath>
 #    mountPath: <mountPath>
 #    readOnly: true|false
-#    mountPropagation: None|HostToContainer|Bidirectional

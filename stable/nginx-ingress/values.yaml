@@ -279,7 +279,6 @@ controller:
     serviceMonitor:
       enabled: false
       additionalLabels: {}
-      namespace: ""
 
   lifecycle: {}
 

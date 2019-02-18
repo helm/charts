@@ -32,10 +32,6 @@ spec:
             {{- range .Values.args }}
             - {{ . | quote }}
             {{- end }}
-{{- if .Values.extraVolumeMounts }}
-          volumeMounts:
-{{ toYaml .Values.extraVolumeMounts | indent 12}}
-  {{- end }}
         {{- with .Values.resources }}
           resources:
 {{ toYaml . | indent 12 }}
@@ -52,7 +48,3 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
-  {{- if .Values.extraVolumes }}
-      volumes:
-  {{ toYaml .Values.extraVolumes | indent 8}}
-  {{- end }}

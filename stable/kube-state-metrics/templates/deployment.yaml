@@ -67,9 +67,6 @@ spec:
 {{  if .Values.collectors.persistentvolumes  }}
         - --collectors=persistentvolumes
 {{  end  }}
-{{  if .Values.collectors.poddisruptionbudgets  }}
-        - --collectors=poddisruptionbudgets
-{{  end  }}
 {{  if .Values.collectors.pods  }}
         - --collectors=pods
 {{  end  }}

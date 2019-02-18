@@ -64,8 +64,6 @@ persistence:
   ##
   # storageClass: "-"
 
-podAnnotations: {}
-
 extraVars: []
 
 nodeSelector: {}

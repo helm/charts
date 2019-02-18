@@ -1,4 +1,0 @@
-mongodb:
-  uri: mongodb://localhost:9216
-serviceMonitor:
-  enabled: false

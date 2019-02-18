@@ -87,7 +87,7 @@ The following tables lists the configurable parameters of the prometheus-operato
 | `prometheusOperator.serviceAccount` | Create a serviceaccount for the operator | `true` |
 | `prometheusOperator.name` | Operator serviceAccount name | `""` |
 | `prometheusOperator.logFormat` | Operator log output formatting | `"logfmt"` |
-| `prometheusOperator.logLevel` | Operator log level. Possible values: "all", "debug",	"info",	"warn",	"error", "none" | `"info"` |
+| `prometheusOperator.logLevel` | Operator log output level | `"info"` |
 | `prometheusOperator.createCustomResource` | Create CRDs. Required if deploying anything besides the operator itself as part of the release. The operator will create / update these on startup. If your Helm version < 2.10 you will have to either create the CRDs first or deploy the operator first, then the rest of the resources | `true` |
 | `prometheusOperator.crdApiGroup` | Specify the API Group for the CustomResourceDefinitions | `monitoring.coreos.com` |
 | `prometheusOperator.cleanupCustomResource` | Attempt to delete CRDs when the release is removed. This option may be useful while testing but is not recommended, as deleting the CRD definition will delete resources and prevent the operator from being able to clean up resources that it manages | `false` |
@@ -144,12 +144,11 @@ The following tables lists the configurable parameters of the prometheus-operato
 | `prometheus.service.externalIPs` | List of IP addresses at which the Prometheus server service is available  | `[]` |
 | `prometheus.service.loadBalancerIP` |  Prometheus Loadbalancer IP | `""` |
 | `prometheus.service.loadBalancerSourceRanges` | Prometheus Load Balancer Source Ranges | `[]` |
-| `prometheus.service.sessionAffinity` | Prometheus Service Session Affinity | `""` |
 | `prometheus.additionalServiceMonitors` | List of `serviceMonitor` objects to create. See https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#servicemonitorspec | `[]` |
 | `prometheus.prometheusSpec.podMetadata` | Standard object’s metadata. More info: https://github.com/kubernetes/community/blob/master/contributors/devel/api-conventions.md#metadata Metadata Labels and Annotations gets propagated to the prometheus pods. | `{}` |
 | `prometheus.prometheusSpec.serviceMonitorSelectorNilUsesHelmValues` | If true, a nil or {} value for prometheus.prometheusSpec.serviceMonitorSelector will cause the prometheus resource to be created with selectors based on values in the helm deployment, which will also match the servicemonitors created | `true` |
-| `prometheus.prometheusSpec.serviceMonitorSelector` | ServiceMonitors to be selected for target discovery. If {}, select all ServiceMonitors | `{}` |
-| `prometheus.prometheusSpec.serviceMonitorNamespaceSelector` | Namespaces to be selected for ServiceMonitor discovery. If nil, select own namespace. If {}, select all namespaces. | `{}` |
+| `prometheus.prometheusSpec.serviceMonitorSelector` | ServiceMonitors to be selected for target discovery. | `{}` |
+| `prometheus.prometheusSpec.serviceMonitorNamespaceSelector` | Namespaces to be selected for ServiceMonitor discovery. If nil, only check own namespace. | `{}` |
 | `prometheus.prometheusSpec.image.repository` | Base image to use for a Prometheus deployment. | `quay.io/prometheus/prometheus` |
 | `prometheus.prometheusSpec.image.tag` | Tag of Prometheus container image to be deployed. | `v2.5.0` |
 | `prometheus.prometheusSpec.paused` | When a Prometheus deployment is paused, no actions except for deletion will be performed on the underlying objects. | `false` |
@@ -163,8 +162,8 @@ The following tables lists the configurable parameters of the prometheus-operato
 | `prometheus.prometheusSpec.routePrefix` | The route prefix Prometheus registers HTTP handlers for. This is useful, if using ExternalURL and a proxy is rewriting HTTP routes of a request, and the actual ExternalURL is still true, but the server serves requests under a different route prefix. For example for use with `kubectl proxy`. | `/` |
 | `prometheus.prometheusSpec.storageSpec` | Storage spec to specify how storage shall be used. | `{}` |
 | `prometheus.prometheusSpec.ruleSelectorNilUsesHelmValues` | If true, a nil or {} value for prometheus.prometheusSpec.ruleSelector will cause the prometheus resource to be created with selectors based on values in the helm deployment, which will also match the PrometheusRule resources created. | `true` |
-| `prometheus.prometheusSpec.ruleSelector` | A selector to select which PrometheusRules to mount for loading alerting rules from. Until (excluding) Prometheus Operator v0.24.0 Prometheus Operator will migrate any legacy rule ConfigMaps to PrometheusRule custom resources selected by RuleSelector. Make sure it does not match any config maps that you do not want to be migrated. If {}, select all PrometheusRules | `{}` |
-| `prometheus.prometheusSpec.ruleNamespaceSelector` | Namespaces to be selected for PrometheusRules discovery. If nil, select own namespace. If {}, select all namespaces. | `{}` |
+| `prometheus.prometheusSpec.ruleSelector` | A selector to select which PrometheusRules to mount for loading alerting rules from. Until (excluding) Prometheus Operator v0.24.0 Prometheus Operator will migrate any legacy rule ConfigMaps to PrometheusRule custom resources selected by RuleSelector. Make sure it does not match any config maps that you do not want to be migrated. | `{}` |
+| `prometheus.prometheusSpec.ruleNamespaceSelector` | Namespaces to be selected for PrometheusRules discovery. If unspecified, only the same namespace as the Prometheus object is in is used. | `{}` |
 | `prometheus.prometheusSpec.alertingEndpoints` | Alertmanagers to which alerts will be sent https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#alertmanagerendpoints Default configuration will connect to the alertmanager deployed as part of this release | `[]` |
 | `prometheus.prometheusSpec.resources` | Define resources requests and limits for single Pods. | `{}` |
 | `prometheus.prometheusSpec.nodeSelector` | Define which Nodes the Pods are scheduled on. | `{}` |

@@ -40,10 +40,6 @@ spec:
 {{ toYaml .Values.deployment.podLabels | indent 8 }}
         {{- end }}
     spec:
-      {{- if .Values.securityContext }}
-      securityContext:
-{{ toYaml .Values.securityContext | indent 8 }}
-      {{- end }}
       {{- if .Values.rbac.enabled }}
       serviceAccountName: {{ template "traefik.fullname" . }}
       {{- else }}
@@ -65,16 +61,12 @@ spec:
       - image: {{ .Values.image }}:{{ .Values.imageTag }}
         name: {{ template "traefik.fullname" . }}
         resources:
-        {{- if or .Values.cpuRequest .Values.memoryRequest .Values.cpuLimit .Values.memoryLimit }}
           requests:
             cpu: {{ .Values.cpuRequest | quote }}
             memory: {{ .Values.memoryRequest | quote }}
           limits:
             cpu: {{ .Values.cpuLimit | quote }}
             memory: {{ .Values.memoryLimit | quote }}
-        {{- else }}
-{{ toYaml .Values.resources | indent 10 }}
-        {{- end }}
         readinessProbe:
           tcpSocket:
             port: 80
