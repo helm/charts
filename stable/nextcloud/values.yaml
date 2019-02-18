@@ -3,7 +3,7 @@
 ##
 image:
   repository: nextcloud
-  tag: 15.0.2-apache
+  tag: 15.0.4-apache
   pullPolicy: IfNotPresent
   # pullSecrets:
   #   - myRegistrKeySecretName
@@ -99,7 +99,6 @@ externalDatabase:
 mariadb:
   ## Whether to deploy a mariadb server to satisfy the applications database requirements. To use an external database set this to false and configure the externalDatabase parameters
   enabled: false
-
   db:
     name: nextcloud
     user: nextcloud
@@ -108,14 +107,35 @@ mariadb:
   ## Enable persistence using Persistent Volume Claims
   ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
   ##
-  persistence:
+  master:
+    persistence:
+      enabled: false
+      size: 8Gi
+
+  replication:
     enabled: false
-    accessMode: ReadWriteOnce
     size: 8Gi
+
+# these values are passed to the subchart, from 'stable/redis'
+# some are used to write into nextcloud's config
+redis:
+  enabled: true
+  cluster:
+    enabled: false
+  rbac:
+    create: true
+  master:
+    persistence:
+      enabled: false
+      size: 2Gi
+  # passwords aren't supported through Nextcloud's environment variables
+  usePassword: false
+
 
 service:
   type: ClusterIP
   port: 8080
+  # clusterIP: "None"
   loadBalancerIP: nil
 
 
