@@ -31,6 +31,13 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- define "nextcloud.mariadb.fullname" -}}
 {{- printf "%s-%s" .Release.Name "mariadb" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+{{/*
+Create a default fully qualified app name.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+*/}}
+{{- define "nextcloud.redis.fullname" -}}
+{{- printf "%s-%s" .Release.Name "redis" | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
 
 {{/*
 Get the user defined LoadBalancerIP for this release.
