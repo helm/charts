@@ -72,6 +72,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `Master.ExtraPorts`               | Open extra ports, for other uses     | Not set                                                                      |
 | `Master.OverwriteConfig`          | Replace config w/ ConfigMap on boot  | `false`                                                                      |
 | `Master.Ingress.Annotations`      | Ingress annotations                  | `{}`                                                                         |
+| `Master.Ingress.Labels`           | Ingress labels                       | `{}`                                                                         |
 | `Master.Ingress.Path`             | Ingress path                         | Not set                                                                         |
 | `Master.Ingress.TLS`              | Ingress TLS configuration            | `[]`                                                                         |
 | `Master.JCasC.enabled`            | Wheter Jenkins Configuration as Code is enabled or not | `false`                                                    |
@@ -108,7 +109,7 @@ Some third-party systems, e.g. GitHub, use HTML-formatted data in their payload 
 | `Agent.AlwaysPullImage`    | Always pull agent container image before build  | `false`                |
 | `Agent.CustomJenkinsLabels`| Append Jenkins labels to the agent              | `{}`                   |
 | `Agent.Enabled`            | Enable Kubernetes plugin jnlp-agent podTemplate | `true`                 |
-| `Agent.Image`              | Agent image name                                | `jenkinsci/jnlp-slave` |
+| `Agent.Image`              | Agent image name                                | `jenkins/jnlp-slave` |
 | `Agent.ImagePullSecret`    | Agent image pull secret                         | Not set                |
 | `Agent.ImageTag`           | Agent image tag                                 | `3.27-1`                 |
 | `Agent.Privileged`         | Agent privileged container                      | `false`                |
