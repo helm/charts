@@ -208,6 +208,13 @@ data:
   hooks:  # post-start and pre-stop hooks
     drain:  # drain the node before stopping it and re-integrate it into the cluster after start
       enabled: true
+    # If you need modify the standart drain hooks, set hooks.drain.enabled to false
+    # and provide your scripts here:
+    custom:
+      enabled: false
+    #  enabled: true
+    #  start: |
+    #  stop: |
 
 ## Sysctl init container to setup vm.max_map_count
 # see https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html

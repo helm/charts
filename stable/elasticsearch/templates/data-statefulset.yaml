@@ -157,7 +157,7 @@ spec:
           subPath: elasticsearch.keystore
           readOnly: true
 {{- end }}
-{{- if .Values.data.hooks.drain.enabled }}
+{{- if or .Values.data.hooks.drain.enabled .Values.data.hooks.custom.enabled }}
         - name: config
           mountPath: /pre-stop-hook.sh
           subPath: pre-stop-hook.sh
