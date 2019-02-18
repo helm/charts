@@ -119,6 +119,10 @@ spec:
             - mountPath: /opt/sonarqube/conf/
               name: config
             {{- end }}
+            {{- if .Values.sonarSecretKey }}
+            - mountPath: /opt/sonarqube/secret/
+              name: secret
+            {{- end }}
             - mountPath: /opt/sonarqube/data
               name: sonarqube
               subPath: data
@@ -149,6 +153,14 @@ spec:
           items:
           - key: sonar.properties
             path: sonar.properties
+      {{- end }}
+      {{- if .Values.sonarSecretKey }}
+      - name: secret
+        secret: 
+          secretName: {{ .Values.sonarSecretKey }}
+          items:
+          - key: sonar-secret.txt
+            path: sonar-secret.txt
       {{- end }}
       - name: install-plugins
         configMap:
