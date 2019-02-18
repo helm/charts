@@ -536,6 +536,10 @@ prometheusOperator:
   ##
     nodePort: 38080
 
+  ## Additional ports to open for Prometheus service 
+  ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#multi-port-services
+  ##
+    additionalPorts: {}
 
   ## Loadbalancer IP
   ## Only use if service.type is "loadbalancer"
