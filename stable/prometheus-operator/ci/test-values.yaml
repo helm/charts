@@ -680,7 +680,7 @@ prometheus:
     ##
     nodePort: 39090
 
-    ## Additional ports to open for Prometheus service 
+    ## Additional ports to open for Prometheus service
     ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#multi-port-services
     ##
     additionalPorts: []
