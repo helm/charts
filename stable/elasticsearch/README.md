@@ -141,6 +141,8 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `data.priorityClassName`             | Data priorityClass                                                  | `nil`                                               |
 | `data.heapSize`                      | Data node heap size                                                 | `1536m`                                             |
 | `data.hooks.drain.enabled`           | Data nodes: Enable drain pre-stop and post-start hook               | `true`                                              |
+| `data.hooks.preStop`                 | Data nodes: Lifecycle hook script to execute prior the pod stops. Ignored if `data.hooks.drain.enabled` is `true` | `nil` |
+| `data.hooks.preStart`                | Data nodes: Lifecycle hook script to execute after the pod starts. Ignored if `data.hooks.drain.enabled` is `true` | `nil`|
 | `data.persistence.enabled`           | Data persistent enabled/disabled                                    | `true`                                              |
 | `data.persistence.name`              | Data statefulset PVC template name                                  | `data`                                              |
 | `data.persistence.size`              | Data persistent volume size                                         | `30Gi`                                              |
