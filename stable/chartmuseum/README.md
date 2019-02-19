@@ -522,7 +522,7 @@ To enable ingress integration, please set `ingress.enabled` to `true`
 
 #### Hosts
 
-Most likely you will only want to have one hostname that maps to this Chartmuseum installation, however, it is possible to have more than one host. To facilitate this, the `ingress.hosts` object is an array.
+Most likely you will only want to have one hostname that maps to this Chartmuseum installation, however, it is possible to have more than one host. To facilitate this, the `ingress.hosts` object is an array.  TLS secrets referenced in the ingress host configuration must be manually created in the namespace.
 
 #### Annotations
 
@@ -535,6 +535,8 @@ helm install --name my-chartmuseum stable/chartmuseum \
   --set ingress.enabled=true \
   --set ingress.hosts[0].name=chartmuseum.domain.com \
   --set ingress.hosts[0].path=/
+  --set ingress.hosts[0].tls=true
+  --set ingress.hosts[0].tlsSecret=chartmuseum.tls-secret
 ```
 
 ## Uninstall
