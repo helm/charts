@@ -34,6 +34,8 @@ deployment:
 
 service:
   type: ClusterIP
+  # clusterIP: None
+  # portName: kibana-svc
   externalPort: 443
   internalPort: 5601
   # authProxyPort: 5602 To be used with authProxyEnabled and a proxy extraContainer
@@ -136,6 +138,9 @@ podAnnotations: {}
 replicaCount: 1
 revisionHistoryLimit: 3
 
+# Custom labels for pod assignment
+podLabels: {}
+
 # To export a dashboard from a running Kibana 6.3.x use:
 # curl --user <username>:<password> -XGET https://kibana.yourdomain.com:5601/api/kibana/dashboards/export?dashboard=<some-dashboard-uuid> > my-dashboard.json
 # A dashboard is defined by a name and a string with the json payload or the download url
@@ -158,7 +163,7 @@ plugins:
   # Use <plugin_name,version,url> to add/upgrade plugin
   values:
     # - elastalert-kibana-plugin,1.0.1,https://github.com/bitsensor/elastalert-kibana-plugin/releases/download/1.0.1/elastalert-kibana-plugin-1.0.1-6.4.2.zip
-    # - logtrail,0.1.30,https://github.com/sivasamyk/logtrail/releases/download/v0.1.30/logtrail-6.4.2-0.1.30.zip
+    # - logtrail,0.1.31,https://github.com/sivasamyk/logtrail/releases/download/v0.1.31/logtrail-6.6.0-0.1.31.zip
     # - other_plugin
 
 persistentVolumeClaim:
@@ -191,3 +196,24 @@ extraConfigMapMounts: []
   #   configMap: kibana-logtrail
   #   mountPath: /usr/share/kibana/plugins/logtrail/logtrail.json
   #   subPath: logtrail.json
+
+# Add your own init container or uncomment and modify the given example.
+initContainers: {}
+  ## Don't start kibana till Elasticsearch is reachable.
+  ## Ensure that it is available at http://elasticsearch:9200
+  ##
+  # es-check:  # <- will be used as container name
+  #   image: "appropriate/curl:latest"
+  #   imagePullPolicy: "IfNotPresent"
+  #   command:
+  #     - "/bin/sh"
+  #     - "-c"
+  #     - |
+  #       is_down=true
+  #       while "$is_down"; do
+  #         if curl -sSf --fail-early --connect-timeout 5 http://elasticsearch:9200; then
+  #           is_down=false
+  #         else
+  #           sleep 5
+  #         fi
+  #       done

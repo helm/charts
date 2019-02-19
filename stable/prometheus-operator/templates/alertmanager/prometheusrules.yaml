@@ -1,0 +1,17 @@
+{{- if and .Values.alertmanager.enabled .Values.alertmanager.additionalPrometheusRules }}
+{{- range .Values.alertmanager.additionalPrometheusRules }}
+apiVersion: {{ printf "%s/v1" ($.Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com") }}
+kind: PrometheusRule
+metadata:
+  name: {{ template "prometheus-operator.name" $ }}-{{ .name }}
+  labels:
+    app: {{ template "prometheus-operator.name" $ }}
+{{ include "prometheus-operator.labels" $ | indent 4 }}
+    {{- if .additionalLabels }}
+{{ toYaml .additionalLabels | indent 4 }}
+    {{- end }}
+spec:
+  groups:
+{{ toYaml .groups| indent 4 }}
+{{- end }}
+{{- end }}
