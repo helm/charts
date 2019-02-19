@@ -355,6 +355,10 @@ grafana:
   #   configMap: certs-configmap
   #   readOnly: true
 
+  ## If true, create a serviceMonitor for grafana
+  ##
+  serviceMonitor:
+    selfMonitor: true
 
 ## Component scraping the kube api server
 ##
