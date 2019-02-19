@@ -71,8 +71,6 @@ Parameter | Description | Default
 `configuration.backupStorageLocation.prefix` | The directory inside a storage bucket where backups are to be uploaded | ``
 `configuration.backupSyncPeriod` | How frequently Ark queries the object storage to make sure that the appropriate Backup resources have been created for existing backup files | `60m`
 `configuration.extraEnvVars` | Key/values for extra environment variables such as AWS_CLUSTER_NAME, etc | `{}`
-`configuration.metrics.enabled` | Enable and expose metrics port | `true`
-`configuration.metrics.address` | Address to expose metrics | `:8085`
 `configuration.provider` | The name of the cloud provider where you are deploying ark to (`aws`, `azure`, `gcp`) |
 `configuration.restoreResourcePriorities` | An ordered list that describes the order in which Kubernetes resource objects should be restored | `namespaces,persistentvolumes,persistentvolumeclaims,secrets,configmaps,serviceaccounts,limitranges,pods`
 `configuration.restoreOnlyMode` | When RestoreOnly mode is on, functionality for backups, schedules, and expired backup deletion is turned off. Restores are made from existing backup files in object storage | `false`
@@ -82,6 +80,11 @@ Parameter | Description | Default
 `credentials.existingSecret` | If specified and `useSecret` is `true`, uses an existing secret with this name instead of creating one | ``
 `credentials.useSecret` | Whether a secret should be used. Set this to `false` when using `kube2iam` | `true`
 `credentials.secretContents` | Contents for the credentials secret | `{}`
+`deployRestic` | If `true`, enable restic deployment | `false`
+`metrics.enabled` | Set this to `true` to enable exporting Prometheus monitoring metrics | `false`
+`metrics.scrapeInterval` | Scrape interval for the Prometheus ServiceMonitor | `30s`
+`metrics.serviceMonitor.enabled` | Set this to `true` to create ServiceMonitor for Prometheus operator | `false`
+`metrics.serviceMonitor.additionalLabels` | Additional labels that can be used so ServiceMonitor will be discovered by Prometheus | `{}`
 `schedules` | A dict of schedules | `{}`
 
 

@@ -47,10 +47,6 @@ configuration:
     #  resourceGroup:
     #  storageAccount:
 
-  metrics:
-    enabled: true
-    address: ":8085"
-
   backupSyncPeriod: 60m
   resticTimeout: 1h
   restoreResourcePriorities: namespaces,persistentvolumes,persistentvolumeclaims,secrets,configmaps,serviceaccounts,limitranges,pods
@@ -74,3 +70,16 @@ credentials:
   secretContents: {}
 
 deployRestic: false
+
+metrics:
+  enabled: false
+  scrapeInterval: 30s
+
+  # Pod annotations for Prometheus
+  podAnnotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "8085"
+
+  serviceMonitor:
+    enabled: false
+    additionalLabels: {}
