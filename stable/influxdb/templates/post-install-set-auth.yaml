@@ -10,7 +10,7 @@ metadata:
   name: {{ template "influxdb.fullname" . }}-set-auth
   annotations:
     "helm.sh/hook": post-install
-    "helm.sh/hook-delete-policy": hook-succeeded
+    "helm.sh/hook-delete-policy": hook-succeeded,before-hook-creation
 spec:
   activeDeadlineSeconds: {{ .Values.setDefaultUser.activeDeadlineSeconds }}
   template:
@@ -37,7 +37,7 @@ spec:
           - "/bin/sh"
           - "-c"
           - |
-             curl -X POST http://{{ template "influxdb.fullname" . }}:{{ .Values.config.http.bind_address }}/query \
+             curl --fail --show-error --retry 10 --connect-timeout 20  -X POST http://{{ template "influxdb.fullname" . }}:{{ .Values.config.http.bind_address }}/query \
              --data-urlencode \
              "q=CREATE USER \"${INFLUXDB_USER}\" WITH PASSWORD '${INFLUXDB_PASSWORD}' {{ .Values.setDefaultUser.user.privileges }}"
       restartPolicy: {{ .Values.setDefaultUser.restartPolicy }}
