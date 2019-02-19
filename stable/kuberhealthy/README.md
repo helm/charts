@@ -54,6 +54,11 @@ deployment:
   maxUnavailable: 1
   imagePullPolicy: IfNotPresent
   namespace: kuberhealthy
+securityContext: # default container security context
+  runAsNonRoot: true
+  runAsUser: 999
+  fsGroup: 999
+  allowPrivilegeEscalation: false
 ```
 
 
