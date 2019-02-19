@@ -107,5 +107,5 @@ spec:
             name: {{ template "sysdig.fullname" . }}-custom-app-checks
         {{- end }}
   updateStrategy:
-    type: {{ default "OnDelete" .Values.daemonset.updateStrategy | quote }}
+{{ toYaml .Values.daemonset.updateStrategy | indent 4 }}
 {{- end }}
