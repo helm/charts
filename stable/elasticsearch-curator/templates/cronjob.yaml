@@ -65,6 +65,13 @@ spec:
 {{- else }}
               args: [ "--config", "/etc/es-curator/config.yml", "/etc/es-curator/action_file.yml" ]
 {{- end }}
+              env:
+{{- if .Values.env }}
+{{- range $key,$value := .Values.env }}
+              - name: {{ $key | upper | quote}}
+                value: {{ $value | quote}}
+{{- end }}
+{{- end }}
               resources:
 {{ toYaml .Values.resources | indent 16 }}
     {{- with .Values.nodeSelector }}
