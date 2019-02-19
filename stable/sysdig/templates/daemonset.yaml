@@ -15,9 +15,6 @@ spec:
       labels:
         app: {{ template "sysdig.fullname" .}}
         role: monitoring
-      annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
-        checksum/custom-app-checks: {{ include (print $.Template.BasePath "/configmap-custom-app-checks.yaml") . | sha256sum }}
     spec:
       serviceAccountName: {{ template "sysdig.serviceAccountName" .}}
       tolerations:
@@ -25,6 +22,7 @@ spec:
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
       hostPID: true
+      terminationGracePeriodSeconds: 5
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
 {{ toYaml .Values.image.pullSecrets | indent 8 }}
@@ -39,12 +37,9 @@ spec:
             privileged: true
           readinessProbe:
             exec:
-              command: [ "test", "-e", "/opt/draios/logs/draios.log" ]
+              command: [ "test", "-e", "/opt/draios/logs/running" ]
             initialDelaySeconds: 10
           volumeMounts:
-            - mountPath: /host/var/run/docker.sock
-              name: docker-sock
-              readOnly: false
             - mountPath: /host/dev
               name: dev-vol
               readOnly: false
@@ -60,6 +55,10 @@ spec:
             - mountPath: /host/usr
               name: usr-vol
               readOnly: true
+            - mountPath: /host/run
+              name: run-vol
+            - mountPath: /host/var/run
+              name: varrun-vol
             - mountPath: /dev/shm
               name: dshm
             - mountPath: /opt/draios/etc/kubernetes/config
@@ -74,9 +73,6 @@ spec:
         - name: dshm
           emptyDir:
             medium: Memory
-        - name: docker-sock
-          hostPath:
-            path: /var/run/docker.sock
         - name: dev-vol
           hostPath:
             path: /dev
@@ -92,6 +88,12 @@ spec:
         - name: usr-vol
           hostPath:
             path: /usr
+        - name: run-vol
+          hostPath:
+            path: /run
+        - name: varrun-vol
+          hostPath:
+            path: /var/run
         - name: sysdig-agent-config
           configMap:
             name: {{ template "sysdig.fullname" . }}
