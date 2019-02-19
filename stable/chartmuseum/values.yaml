@@ -222,7 +222,7 @@ ingress:
 #
 #      ## If TLS is set to true, you must declare what secret will store the key/certificate for TLS
 #      ## Secrets must be added manually to the namespace
-#      tlsSecret: chartmuseum.domain2-tls      
+#      tlsSecret: chartmuseum.domain2-tls
 
 # Adding secrets to tiller is not a great option, so If you want to use an existing
 # secret that contains the json file, you can use the following entries
