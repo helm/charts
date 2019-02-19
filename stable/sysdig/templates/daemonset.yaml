@@ -15,9 +15,6 @@ spec:
       labels:
         app: {{ template "sysdig.fullname" .}}
         role: monitoring
-      annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
-        checksum/custom-app-checks: {{ include (print $.Template.BasePath "/configmap-custom-app-checks.yaml") . | sha256sum }}
     spec:
       serviceAccountName: {{ template "sysdig.serviceAccountName" .}}
       tolerations:
