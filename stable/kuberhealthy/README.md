@@ -31,13 +31,13 @@ prometheus:
   enabled: true # do we deploy a ServiceMonitor spec?
   name: "prometheus" # the name of the Prometheus deployment in your environment.
   enableScraping: true # add the Prometheus scrape annotation to Kuberhealthy pods
-  serviceMonitor: true # use a ServiceMonitor configuration
+  serviceMonitor: false # use a ServiceMonitor configuration, for if using Prometheus Operator
   enableAlerting: true # enable default Kuberhealthy alerts configuration
 app:
   name: "kuberhealthy" # what to name the kuberhealthy deployment
 image:
   repository: quay.io/comcast/kuberhealthy
-  tag: 0.1.1
+  tag: 1.0.0
 resources:
   requests:
     cpu: 100m

@@ -70,30 +70,16 @@ spec:
             - configMapRef:
                 name: "{{ template "airflow.fullname" . }}-env"
           env:
-            - name: POSTGRES_USER
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "airflow.secret" . }}
-                  key: postgresUser
-            - name: POSTGRES_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "airflow.secret" . }}
-                  key: postgresPassword
-            - name: REDIS_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "airflow.secret" . }}
-                  key: redisPassword
+            {{- include "airflow.mapenvsecrets" . | indent 10 }}
           volumeMounts:
+            - name: scripts
+              mountPath: /usr/local/scripts
           {{- if .Values.persistence.enabled }}
             - name: dags-data
               mountPath: {{ .Values.dags.path }}
           {{- else if .Values.dags.initContainer.enabled }}
             - name: dags-data
               mountPath: {{ .Values.dags.path }}
-            - name: scripts
-              mountPath: /usr/local/scripts
           {{- end }}
           {{- if .Values.logsPersistence.enabled }}
             - name: logs-data
@@ -132,6 +118,10 @@ spec:
             successThreshold: 1
             failureThreshold: 5
       volumes:
+        - name: scripts
+          configMap:
+            name: {{ template "airflow.fullname" . }}-scripts
+            defaultMode: 0755
         - name: dags-data
         {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
@@ -145,10 +135,6 @@ spec:
             claimName: {{ .Values.logsPersistence.existingClaim | default (printf "%s-logs" (include "airflow.fullname" . | trunc 58 )) }}
         {{- end }}
         {{- if .Values.dags.initContainer.enabled }}
-        - name: scripts
-          configMap:
-            name: {{ template "airflow.fullname" . }}-scripts
-            defaultMode: 0755
         - name: git-clone
           configMap:
             name: {{ template "airflow.fullname" . }}-git-clone
