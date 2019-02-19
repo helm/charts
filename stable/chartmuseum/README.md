@@ -144,6 +144,8 @@ their default values. See values.yaml for all available options.
 | `ingress.labels`                       | Ingress labels                              | `[]`                                                |
 | `ingress.hosts[0].name`                | Hostname for the ingress                    | ``                                                  |
 | `ingress.hosts[0].path`                | Path within the url structure               | ``                                                  |
+| `ingress.hosts[0].tls `                | Enable TLS on the ingress host              | `false`                                             |
+| `ingress.hosts[0].tlsSecret`           | TLS secret to use (must be manually created)| ``                                                  |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to
 `helm install`.
