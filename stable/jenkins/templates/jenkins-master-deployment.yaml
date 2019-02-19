@@ -30,6 +30,9 @@ spec:
         release: {{ .Release.Name | quote }}
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         component: "{{ .Release.Name }}-{{ .Values.Master.Component }}"
+        {{- range $key, $val := .Values.Master.PodLabels }}
+        {{ $key }}: {{ $val | quote }}
+        {{- end}}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
         {{- if .Values.Master.PodAnnotations }}
