@@ -15,17 +15,15 @@ image:
   # pullSecrets:
   #   - name: myRegistrKeySecretName
 
-resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 30m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 20m
-  #   memory: 128Mi
+resources:
+  # Although resources needed are subjective on the actual workload we provide
+  # a sane defaults ones. If you have more questions or concerns, please refer
+  # to Sysdig Support for more info about it
+  requests:
+    cpu: 100m
+    memory: 512Mi
+  limits:
+    memory: 1024Mi
 
 rbac:
   # true here enables creation of rbac resources
