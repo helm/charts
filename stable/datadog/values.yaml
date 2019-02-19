@@ -206,6 +206,7 @@ datadog:
   # apmEnabled: true
 
   ## Un-comment this to enable live process monitoring
+  ## /etc/passwd will automatically be mounted to allow username resolution
   ## ref: https://docs.datadoghq.com/graphing/infrastructure/process/#kubernetes-daemonset
   ##
   # processAgentEnabled: true
@@ -217,18 +218,14 @@ datadog:
   #   - name:
   #     value:
 
-  ## The dd-agent supports detailed process and container monitoring and
-  ## requires control over the volume and volumeMounts for the daemonset
-  ## or deployment.
-  ## ref: https://docs.datadoghq.com/guides/process/
-  ##
+  ## If needed, you can specify additionnal volumes to mount in the dd-agent container
   # volumes:
   #  - hostPath:
-  #      path: /etc/passwd
-  #    name: passwd
+  #      path: /host/path
+  #    name: myvolume
   # volumeMounts:
-  #   - name: passwd
-  #     mountPath: /etc/passwd
+  #   - name: myvolume
+  #     mountPath: /container/path
   #     readOnly: true
 
   ## Enable leader election mechanism for event collection
