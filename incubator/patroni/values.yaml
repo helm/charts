@@ -1,4 +1,5 @@
 replicaCount: 5
+pgVersion:
 
 image:
   # Image was built from
