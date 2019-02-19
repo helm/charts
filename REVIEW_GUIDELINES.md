@@ -349,3 +349,13 @@ While reviewing Charts that contain workloads such as [Deployments](https://kube
 10. As much as possible complex pre-app setups are configured using [init containers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/).
 
 More [configuration](https://kubernetes.io/docs/concepts/configuration/overview/) best practices.
+
+
+## Tests
+
+This repository follows a [test procedure](https://github.com/helm/charts/blob/master/test/README.md). This allows the charts of this repository to be tested according to several rules (linting, semver checking, deployment testing, etc) for every Pull Request.
+
+The `ci` directory of a given Chart allows testing different use cases, by allowing you to define different sets of values overriding `values.yaml`, one file per set. See the [documentation](https://github.com/helm/charts/blob/master/test/README.md#providing-custom-test-values) for more information.
+
+This directory MUST exist with at least one test file in it.
+
