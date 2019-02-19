@@ -1,6 +1,6 @@
 name: cert-manager
-version: v0.6.0
-appVersion: v0.6.0
+version: v0.6.5
+appVersion: v0.6.1
 description: A Helm chart for cert-manager
 home: https://github.com/jetstack/cert-manager
 keywords:

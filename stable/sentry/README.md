@@ -34,6 +34,8 @@ The command deploys Sentry on the Kubernetes cluster in the default configuratio
 
 > **Tip**: List all releases using `helm list`
 
+> **Warning**: This Chart does not support `helm upgrade` an upgrade will currently reset your installation
+
 ## Uninstalling the Chart
 
 To uninstall/delete the `my-release` deployment:
@@ -108,6 +110,10 @@ The following table lists the configurable parameters of the Sentry chart and th
 | `postgresql.postgresHost`            | External postgres host                      | `nil`                                                      |
 | `postgresql.postgresPassword`        | External postgres password                  | `nil`                                                      |
 | `postgresql.postgresPort`            | External postgres port                      | `5432`                                                     |
+| `redis.enabled`                      | Deploy redis server (see below)             | `true`                                                     |
+| `redis.host`                         | External redis host                         | `nil`                                                      |
+| `redis.password`                     | External redis password                     | `nil`                                                      |
+| `redis.port`                         | External redis port                         | `6379`                                                     |
 | `persistence.enabled`                | Enable persistence using PVC                | `true`                                                     |
 | `persistence.existingClaim`          | Provide an existing `PersistentVolumeClaim` | `nil`                                                      |
 | `persistence.storageClass`           | PVC Storage Class                           | `nil` (uses alpha storage class annotation)                |
@@ -137,6 +143,10 @@ $ helm install --name my-release -f values.yaml stable/sentry
 ## PostgresSQL
 
 By default, PostgreSQL is installed as part of the chart. To use an external PostgreSQL server set `postgresql.enabled` to `false` and then set `postgresql.postgresHost` and `postgresql.postgresPassword`. The other options (`postgresql.postgresDatabase`, `postgresql.postgresUser` and `postgresql.postgresPort`) may also want changing from their default values.
+
+## Redis
+
+By default, Redis is installed as part of the chart. To use an external Redis server/cluster set `redis.enabled` to `false` and then set `redis.host`. If your redis cluster uses password define it with `redis.password`, otherwise just omit it. Check the table above for more configuration options.
 
 ## Persistence
 

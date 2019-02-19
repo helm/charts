@@ -14,7 +14,7 @@ image:
   ## Bitnami MongoDB image tag
   ## ref: https://hub.docker.com/r/bitnami/mongodb/tags/
   ##
-  tag: 4.0.3
+  tag: 4.0.6
 
   ## Specify a imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -248,6 +248,9 @@ metrics:
     # pullSecrets:
     #   - myRegistrKeySecretName
 
+  ## String with extra arguments to the metrics exporter
+  ## ref: https://github.com/dcu/mongodb_exporter/blob/master/mongodb_exporter.go
+  extraArgs: ""
   ## Metrics exporter resource requests and limits
   ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
   ##

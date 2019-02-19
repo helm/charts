@@ -141,6 +141,9 @@ keycloak:
   extraVolumes: |
   extraVolumeMounts: |
 
+  ## Add additional ports, eg. for custom admin console
+  extraPorts: |
+
   podDisruptionBudget: {}
     # maxUnavailable: 1
     # minAvailable: 1

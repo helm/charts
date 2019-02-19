@@ -80,7 +80,6 @@ spec:
             {{- else }}
             {{- if .Values.concourse.web.externalUrl }}
             - name: CONCOURSE_EXTERNAL_URL
-              value:
               value: {{ .Values.concourse.web.externalUrl | quote }}
             {{- end }}
             {{- end }}

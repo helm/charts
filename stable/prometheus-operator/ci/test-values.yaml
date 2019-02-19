@@ -20,6 +20,23 @@ commonLabels: {}
 ##
 defaultRules:
   create: true
+  rules:
+    alertmanager: true
+    etcd: true
+    general: true
+    k8s: true
+    kubeApiserver: true
+    kubePrometheusNodeAlerting: true
+    kubePrometheusNodeRecording: true
+    kubeScheduler: true
+    kubernetesAbsent: true
+    kubernetesApps: true
+    kubernetesResources: true
+    kubernetesStorage: true
+    kubernetesSystem: true
+    node: true
+    prometheusOperator: true
+    prometheus: true
   ## Labels for default rules
   labels: {}
   ## Annotations for default rules
@@ -274,6 +291,14 @@ alertmanager:
     ## AdditionalPeers allows injecting a set of additional Alertmanagers to peer with to form a highly available cluster.
     ##
     additionalPeers: []
+
+  additionalPrometheusRules: []
+  #  - name: my_rule_file
+  #    groups:
+  #      - name: my_group
+  #        rules:
+  #        - record: my_record
+  #          expr: 100 * my_record
 
 ## Using default values from https://github.com/helm/charts/blob/master/stable/grafana/values.yaml
 ##

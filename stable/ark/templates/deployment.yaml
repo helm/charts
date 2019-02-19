@@ -35,6 +35,23 @@ spec:
             - /ark
           args:
             - server
+          {{- with .Values.configuration }}
+            {{- with .metricAddress }}
+            - --metrics-address={{ . }}
+            {{- end }}
+            {{- with .backupSyncPeriod }}
+            - --backup-sync-period={{ . }}
+            {{- end }}
+            {{- with .resticTimeout }}
+            - --restic-timeout={{ . }}
+            {{- end }}
+            {{- if .restoreOnlyMode }}
+            - --restore-only
+            {{- end }}
+            {{- with .restoreResourcePriorities }}
+            - --restore-resource-priorities={{ . }}
+            {{- end }}
+          {{- end }}
           {{- if eq $provider "azure" }}
           envFrom:
             - secretRef:
