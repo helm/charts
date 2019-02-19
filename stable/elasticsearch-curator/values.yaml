@@ -25,6 +25,7 @@ hooks:
 # run curator in dry-run mode
 dryrun: false
 
+command: ["curator"]
 env: {}
 
 configMaps:
