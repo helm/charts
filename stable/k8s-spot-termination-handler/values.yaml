@@ -54,3 +54,7 @@ tolerations: []
   #   effect: "NoSchedule"
 
 affinity: {}
+
+# Configure securityContext of the pods
+securityContext: {}
+  # runAsUser: 65534
