@@ -47,6 +47,7 @@ The following table lists the configurable parameters of the Sysdig chart and th
 | `image.pullSecrets`             | Image pull secrets                             | `nil`                                       |
 | `resources.requests.cpu`        | CPU requested for being run in a node          | `100m`                                      |
 | `resources.requests.memory`     | Memory requested for being run in a node       | `512Mi`                                     |
+| `resources.limits.cpu`          | CPU limit                                      | `200m`                                      |
 | `resources.limits.memory`       | Memory limit                                   | `1024Mi`                                    |
 | `rbac.create`                   | If true, create & use RBAC resources           | `true`                                      |
 | `serviceAccount.create`         | Create serviceAccount                          | `true`                                      |
