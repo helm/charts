@@ -4,7 +4,7 @@
 replicaCount: 1
 image:
   repository: sonarqube
-  tag: 7.4-community
+  tag: 7.6-community
   # If using a private repository, the name of the imagePullSecret to use
   # pullSecret: my-repo-secret
 
@@ -34,6 +34,11 @@ ingress:
   # kubernetes.io/tls-acme: "true"
   # This property allows for reports up to a certain size to be uploaded to SonarQube
   # nginx.ingress.kubernetes.io/proxy-body-size: "8m"
+
+# Additional labels for Ingress manifest file
+  # labels:
+  #  traffic-type: external
+  #  traffic-type: internal
   tls: {}
   # Secrets must be manually created in the namespace.
   # - secretName: chart-example-tls
@@ -85,6 +90,10 @@ resources: {}
 #  memory: 128Mi
 persistence:
   enabled: false
+  ## Specify an existing volume claim instead of creating a new one.
+  ## When using this option all following options like storageClass, accessMode and size are ignored.
+  # existingClaim:
+
   ## If defined, storageClassName: <storageClass>
   ## If set to "-", storageClassName: "", which disables dynamic provisioning
   ## If undefined (the default) or set to null, no storageClassName spec is
@@ -103,6 +112,9 @@ persistence:
 #    - "https://github.com/SonarSource/sonar-ldap/releases/download/2.2-RC3/sonar-ldap-plugin-2.2.0.601.jar"
 plugins:
   install: []
+
+  # initContainerImage: alpine:3.9
+  # deleteDefaultPlugins: true
   resources: {}
   # We allow the plugins init container to have a separate resources declaration because
   # the initContainer does not take as much resources.
@@ -113,6 +125,11 @@ plugins:
 #   sonar.forceAuthentication=true
 #   sonar.security.realm=LDAP
 #   ldap.url=ldaps://organization.com
+
+# Kubernetes secret that contains the encryption key for the sonarqube instance.
+# The secret must contain the key 'sonar-secret.txt'.
+# The 'sonar.secretKeyPath' property will be set automatically.
+# sonarSecretKey: "settings-encryption-secret"
 
 ## Configuration value to select database type
 ## Option to use "postgresql" or "mysql" database type, by default "postgresql" is chosen

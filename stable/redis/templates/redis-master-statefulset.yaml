@@ -125,7 +125,7 @@ spec:
             command:
             - sh
             - -c
-            - /health/ping_local.sh
+            - /health/ping_local.sh {{ .Values.master.livenessProbe.timeoutSeconds }}
         {{- end }}
         {{- if .Values.master.readinessProbe.enabled}}
         readinessProbe:
@@ -138,7 +138,7 @@ spec:
             command:
             - sh
             - -c
-            - /health/ping_local.sh
+            - /health/ping_local.sh {{ .Values.master.livenessProbe.timeoutSeconds }}
         {{- end }}
         resources:
 {{ toYaml .Values.master.resources | indent 10 }}
@@ -166,6 +166,8 @@ spec:
         command: ["/bin/chown", "-R", "{{ .Values.master.securityContext.runAsUser }}:{{ .Values.master.securityContext.fsGroup }}", "{{ .Values.master.persistence.path }}"]
         securityContext:
           runAsUser: 0
+        resources:
+{{ toYaml .Values.volumePermissions.resources | indent 10 }}
         volumeMounts:
         - name: redis-data
           mountPath: {{ .Values.master.persistence.path }}
@@ -174,6 +176,8 @@ spec:
       {{- if .Values.sysctlImage.enabled }}
       - name: init-sysctl
         image: {{ template "redis.sysctl.image" . }}
+        resources:
+{{ toYaml .Values.sysctlImage.resources | indent 10 }}
         {{- if .Values.sysctlImage.mountHostSys }}
         volumeMounts:
         - name: host-sys

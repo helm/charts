@@ -55,8 +55,13 @@ spec:
         - sh
         args:
         - /readonly-config/init.sh
-{{- if .Values.auth }}
         env:
+{{- $replicas := int .Values.replicas -}}
+{{- range $i := until $replicas }}
+        - name: SENTINEL_ID_{{ $i }}
+          value: {{ printf "%s\nindex: %d" (include "labels.standard" $) $i | sha1sum }}
+{{ end -}}
+{{- if .Values.auth }}
         - name: AUTH
           valueFrom:
             secretKeyRef:
@@ -182,7 +187,7 @@ spec:
           timeoutSeconds: 1
           periodSeconds: 15
         resources:
-        {{ toYaml .Values.exporter.resources | indent 10 }}
+{{ toYaml .Values.exporter.resources | indent 10 }}
         ports:
           - name: exporter-port
             containerPort: {{ .Values.exporter.port }}
