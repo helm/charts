@@ -3,6 +3,13 @@
 This file documents all notable changes to Sysdig Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v1.3.2
+
+### Minor Changes
+
+* Provide sane defaults resources for the Sysdig Agent.
+* Use RollingUpdate strategy by default.
+
 ## v1.3.1
 
 ### Minor Changes
