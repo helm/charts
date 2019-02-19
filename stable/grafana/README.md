@@ -93,6 +93,38 @@ The command removes all the Kubernetes components associated with the chart and 
 | `rbac.pspEnabled`                         | Create PodSecurityPolicy (with `rbac.create`, grant roles permissions as well) | `true` |
 | `rbac.pspUseAppArmor`                     | Enforce AppArmor in created PodSecurityPolicy (requires `rbac.pspEnabled`)  | `true` |
 
+## Import dashboards
+
+There are a few methods to import dashboards to Grafana. Below are some examples and explanations as to how to use each method:
+
+```yaml
+dashboards:
+  default:
+    some-dashboard:
+      json: |
+        {
+          "annotations":
+
+          ...
+          # Complete json file here
+          ...
+
+          "title": "Some Dashboard",
+          "uid": "abcd1234",
+          "version": 1
+        }
+    custom-dashboard:
+      # This is a path to a file inside the dashboards directory inside the chart directory
+      file: dashboards/custom-dashboard.json
+    prometheus-stats:
+      # Ref: https://grafana.com/dashboards/2
+      gnetId: 2
+      revision: 2
+      datasource: Prometheus
+    local-dashboard:
+      url: https://raw.githubusercontent.com/user/repository/master/dashboards/dashboard.json
+```
+
 ## BASE64 dashboards
 
 Dashboards could be storaged in a server that does not return JSON directly and instead of it returns a Base64 encoded file (e.g. Gerrit)
