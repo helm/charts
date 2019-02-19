@@ -189,6 +189,7 @@ The following tables lists the configurable parameters of the prometheus-operato
 | Parameter | Description | Default |
 | ----- | ----------- | ------ |
 | `alertmanager.enabled` | Deploy alertmanager | `true` |
+| `alertmanager.serviceMonitor.selfMonitor` | Create a `serviceMonitor` to automatically monitor the alartmanager instance | `true` |
 | `alertmanager.serviceAccount.create` | Create a `serviceAccount` for alertmanager | `true` |
 | `alertmanager.serviceAccount.name` | Name for Alertmanager service account | `""` |
 | `alertmanager.podDisruptionBudget.enabled` | If true, create a pod disruption budget for Alertmanager pods. The created resource cannot be modified once created - it must be deleted to perform a change | `true` |
@@ -236,6 +237,7 @@ The following tables lists the configurable parameters of the prometheus-operato
 | Parameter | Description | Default |
 | ----- | ----------- | ------ |
 | `grafana.enabled` | If true, deploy the grafana sub-chart | `true` |
+| `grafana.serviceMonitor.selfMonitor` | Create a `serviceMonitor` to automatically monitor the grafana instance | `true` |
 | `grafana.adminPassword` | Admin password to log into the grafana UI | "prom-operator" |
 | `grafana.defaultDashboardsEnabled` | Deploy default dashboards. These are loaded using the sidecar | `true` |
 | `grafana.ingress.enabled` | Enables Ingress for Grafana | `false` |
