@@ -1,5 +1,5 @@
 {{- if .Values.agent.enabled -}}
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: {{ template "jaeger.agent.name" . }}
@@ -14,6 +14,11 @@ metadata:
 {{ toYaml .Values.agent.annotations | indent 4 }}
 {{- end }}
 spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "jaeger.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: agent
   template:
     metadata:
 {{- if .Values.agent.podAnnotations }}

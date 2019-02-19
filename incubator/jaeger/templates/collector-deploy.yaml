@@ -1,5 +1,5 @@
 {{- if .Values.collector.enabled -}}
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "jaeger.collector.name" . }}
@@ -15,6 +15,11 @@ metadata:
 {{- end }}
 spec:
   replicas: {{ .Values.collector.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ template "jaeger.name" . }}
+      app.kubernetes.io/component: collector
+      app.kubernetes.io/instance: {{ .Release.Name }}
   strategy:
     type: Recreate
   template:

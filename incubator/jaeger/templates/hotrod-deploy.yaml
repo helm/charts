@@ -1,5 +1,5 @@
 {{- if .Values.hotrod.enabled -}}
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "jaeger.fullname" . }}-hotrod
@@ -12,13 +12,17 @@ metadata:
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   replicas: {{ .Values.hotrod.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ template "jaeger.name" . }}
+      app.kubernetes.io/component: hotrod
+      app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
       labels:
         app.kubernetes.io/name: {{ template "jaeger.name" . }}
         app.kubernetes.io/component: hotrod
         app.kubernetes.io/instance: {{ .Release.Name }}
-        jaeger-infra: hotrod-instance
     spec:
       containers:
         - name: {{ template "jaeger.fullname" . }}-hotrod

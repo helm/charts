@@ -1,6 +1,5 @@
 {{- if .Values.spark.enabled -}}
-{{- if or (.Capabilities.APIVersions.Has "batch/v1beta1") (.Capabilities.APIVersions.Has "batch/v2alpha1") -}}
-apiVersion: {{ template "cronjob.apiVersion" $ }}
+apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
   name: {{ template "jaeger.fullname" . }}-spark
@@ -83,5 +82,4 @@ spec:
             resources:
 {{ toYaml .Values.spark.resources | indent 14 }}
           restartPolicy: OnFailure
-{{- end -}}
 {{- end -}}

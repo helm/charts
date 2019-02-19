@@ -32,17 +32,6 @@ Create chart name and version as used by the chart label.
 {{- end -}}
 
 {{/*
-Return the appropriate apiVersion for cronjob APIs.
-*/}}
-{{- define "cronjob.apiVersion" -}}
-{{- if .Capabilities.APIVersions.Has "batch/v1beta1" -}}
-"batch/v1beta1"
-{{- else -}}
-"batch/v2alpha1"
-{{- end -}}
-{{- end -}}
-
-{{/*
 Create a fully qualified query name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
