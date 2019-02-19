@@ -230,3 +230,11 @@ Standard paths are:
 
 - Containerd socket: `/var/run/containerd/containerd.sock`
 - Cri-o socket: `/var/run/crio/crio.sock`
+
+## Updating
+
+### From < 1.19.0 to >= 1.19.0
+
+Version `1.19.0` introduces the use of release name as full name if it contains the chart name(`datadog` in this case).
+E.g. with a release name of `datadog`, this renames the `DaemonSet` from `datadog-datadog` to `datadog`.
+The suggested approach is to delete the release and reinstall it.
