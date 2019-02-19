@@ -3,6 +3,12 @@
 This file documents all notable changes to Sysdig Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v1.3.1
+
+### Minor Changes
+
+* Revert v1.2.1 changes. The agent automatically restarts when detects a change in the configuration.
+
 ## v1.3.0
 
 ### Major Changes
@@ -11,6 +17,12 @@ numbering uses [semantic versioning](http://semver.org).
 * Check running file on readinessProbe instead of relaying on logs.
 * Mount /run and /var/run instead of Docker socket. It allows to access CRI / containerd socket.
 * Avoid floating references for the image.
+
+## v1.2.2
+
+### Minor Changes
+
+* Fix value in the agent tags example.
 
 ## v1.2.1
 
