@@ -251,3 +251,9 @@ Jaeger offers a multitude of [tags](https://hub.docker.com/u/jaegertracing/) for
 - [x] Fix hard-coded replica count
 - [x] Collector service works both as `NodePort` and `ClusterIP` service types
 - [ ] Sidecar deployment support
+
+## Upgrading
+
+### From < 0.9.0 to >= 0.9.0
+
+Version `0.9.0` introduces recommended labels. The approch to upgrading is to delete and reinstall the release.
