@@ -11,6 +11,6 @@ metadata:
 type: Opaque
 data:
 {{- range $idx, $caCert := .Values.ssl.mtls.clientCaCerts }}
-  clientCaCert-{{ $idx }}.crt: {{ $caCert | b64dec | quote }}
+  clientCaCert-{{ $idx }}.crt: {{ $caCert | quote }}
 {{- end }}
 {{- end }}
