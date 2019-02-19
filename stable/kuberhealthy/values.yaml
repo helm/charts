@@ -31,6 +31,12 @@ deployment:
   maxUnavailable: 1
   imagePullPolicy: IfNotPresent
 
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 999
+  fsGroup: 999
+  allowPrivilegeEscalation: false
+
 # Please remember that changing the service type to LoadBalancer
 # will expose Kuberhealthy to the internet, which could cause
 # error messages shown by Kuberhealthy to be exposed to the
