@@ -20,6 +20,23 @@ commonLabels: {}
 ##
 defaultRules:
   create: true
+  rules:
+    alertmanager: true
+    etcd: true
+    general: true
+    k8s: true
+    kubeApiserver: true
+    kubePrometheusNodeAlerting: true
+    kubePrometheusNodeRecording: true
+    kubeScheduler: true
+    kubernetesAbsent: true
+    kubernetesApps: true
+    kubernetesResources: true
+    kubernetesStorage: true
+    kubernetesSystem: true
+    node: true
+    prometheusOperator: true
+    prometheus: true
   ## Labels for default rules
   labels: {}
   ## Annotations for default rules
@@ -275,6 +292,14 @@ alertmanager:
     ##
     additionalPeers: []
 
+  additionalPrometheusRules: []
+  #  - name: my_rule_file
+  #    groups:
+  #      - name: my_group
+  #        rules:
+  #        - record: my_record
+  #          expr: 100 * my_record
+
 ## Using default values from https://github.com/helm/charts/blob/master/stable/grafana/values.yaml
 ##
 grafana:
@@ -324,6 +349,17 @@ grafana:
       enabled: true
       label: grafana_datasource
 
+  extraConfigmapMounts: []
+  # - name: certs-configmap
+  #   mountPath: /etc/grafana/ssl/
+  #   configMap: certs-configmap
+  #   readOnly: true
+
+  ## If true, create a serviceMonitor for grafana
+  ##
+  serviceMonitor:
+    selfMonitor: true
+
 ## Component scraping the kube api server
 ##
 kubeApiServer:
@@ -350,6 +386,18 @@ kubelet:
     ## https://github.com/coreos/prometheus-operator/issues/926
     ##
     https: false
+    cAdvisorMetricRelabelings:
+    - sourceLabels: [__name__, image]
+      separator: ;
+      regex: container_([a-z_]+);
+      replacement: $1
+      action: drop
+    - sourceLabels: [__name__]
+      separator: ;
+      regex: container_(network_tcp_usage_total|network_udp_usage_total|tasks_state|cpu_load_average_10s)
+      replacement: $1
+      action: drop
+
 
 ## Component scraping the kube controller manager
 ##
@@ -457,6 +505,8 @@ kubeStateMetrics:
 kube-state-metrics:
   rbac:
     create: true
+  podSecurityPolicy:
+    enabled: true
 
 ## Deploy node exporter as a daemonset to all nodes
 ##
@@ -594,7 +644,7 @@ prometheusOperator:
   ##
   image:
     repository: quay.io/coreos/prometheus-operator
-    tag: v0.26.0
+    tag: v0.27.0
     pullPolicy: IfNotPresent
 
   ## Configmap-reload image to use for reloading configmaps
@@ -607,7 +657,7 @@ prometheusOperator:
   ##
   prometheusConfigReloaderImage:
     repository: quay.io/coreos/prometheus-config-reloader
-    tag: v0.26.0
+    tag: v0.27.0
 
   ## Hyperkube image to use when cleaning up
   ##
@@ -715,10 +765,7 @@ prometheus:
     ##
     image:
       repository: quay.io/prometheus/prometheus
-      tag: v2.5.0
-
-    #  repository: quay.io/coreos/prometheus
-    #  tag: v2.5.0
+      tag: v2.6.1
 
     ## Tolerations for use with node taints
     ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/

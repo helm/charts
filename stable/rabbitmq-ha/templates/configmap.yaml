@@ -114,3 +114,8 @@ data:
 {{ .Values.extraConfig | indent 4 }}
 
 {{- end }}
+
+{{- if .Values.advancedConfig }}
+  advanced.config: |
+{{ .Values.advancedConfig | indent 4 }}
+{{- end }}

@@ -71,33 +71,35 @@ The following table lists the configurable parameters of the Concourse chart and
 | `imageTag` | Concourse image version | `4.2.2` |
 | `imagePullPolicy` | Concourse image pull policy | `IfNotPresent` |
 | `imagePullSecrets` | Array of imagePullSecrets in the namespace for pulling images | `[]` |
+| `web.additionalAffinities` | Additional affinities to apply to web pods. E.g: node affinity | `{}` |
+| `web.additionalVolumeMounts` | VolumeMounts to be added to the web pods | `nil` |
+| `web.additionalVolumes` | Volumes to be added to the web pods | `nil` |
+| `web.annotations`| Concourse Web deployment annotations | `nil` |
+| `web.authSecretsPath` | Specify the mount directory of the web auth secrets | `/concourse-auth` |
+| `web.env` | Configure additional environment variables for the web containers | `[]` |
+| `web.ingress.annotations` | Concourse Web Ingress annotations | `{}` |
+| `web.ingress.enabled` | Enable Concourse Web Ingress | `false` |
+| `web.ingress.hosts` | Concourse Web Ingress Hostnames | `[]` |
+| `web.ingress.tls` | Concourse Web Ingress TLS configuration | `[]` |
+| `web.keysSecretsPath` | Specify the mount directory of the web keys secrets | `/concourse-keys` |
+| `web.livenessProbe` | Liveness Probe settings | `{"failureThreshold":5,"httpGet":{"path":"/api/v1/info","port":"atc"},"initialDelaySeconds":10,"periodSeconds":15,"timeoutSeconds":3}` |
 | `web.nameOverride` | Override the Concourse Web components name | `nil` |
+| `web.nodeSelector` | Node selector for web nodes | `{}` |
+| `web.postgresqlSecrtsPath` | Specify the mount directory of the web postgresql secrets | `/concourse-postgresql` |
+| `web.readinessProbe` | Readiness Probe settings | `{"httpGet":{"path":"/api/v1/info","port":"atc"}}` |
 | `web.replicas` | Number of Concourse Web replicas | `1` |
 | `web.resources` | Concourse Web resource requests and limits | `{requests: {cpu: "100m", memory: "128Mi"}}` |
-| `web.readinessProbe` | Readiness Probe settings | `{"httpGet":{"path":"/api/v1/info","port":"atc"}}` |
-| `web.livenessProbe` | Liveness Probe settings | `{"failureThreshold":5,"httpGet":{"path":"/api/v1/info","port":"atc"},"initialDelaySeconds":10,"periodSeconds":15,"timeoutSeconds":3}` |
-| `web.additionalAffinities` | Additional affinities to apply to web pods. E.g: node affinity | `{}` |
-| `web.env` | Configure additional environment variables for the web containers | `[]` |
-| `web.annotations`| Concourse Web deployment annotations | `nil` |
-| `web.keysSecretsPath` | Specify the mount directory of the web keys secrets | `/concourse-keys` |
-| `web.postgresqlSecrtsPath` | Specify the mount directory of the web postgresql secrets | `/concourse-postgresql` |
-| `web.vaultSecretsPath` | Specify the mount directory of the web vault secrets | `/concourse-vault` |
-| `web.syslogSecretsPath` | Specify the mount directory of the web syslog secrets | `/concourse-syslog` |
-| `web.authSecretsPath` | Specify the mount directory of the web auth secrets | `/concourse-auth` |
-| `web.tolerations` | Tolerations for the web nodes | `[]` |
-| `web.nodeSelector` | Node selector for web nodes | `{}` |
-| `web.service.type` | Concourse Web service type | `ClusterIP` |
 | `web.service.annotations` | Concourse Web Service annotations | `nil` |
+| `web.service.atcNodePort` | Sets the nodePort for atc when using `NodePort` | `nil` |
+| `web.service.atcTlsNodePort` | Sets the nodePort for atc tls when using `NodePort` | `nil` |
 | `web.service.labels` | Additional concourse web service labels | `nil` |
 | `web.service.loadBalancerIP` | The IP to use when web.service.type is LoadBalancer | `nil` |
 | `web.service.loadBalancerSourceRanges` | Concourse Web Service Load Balancer Source IP ranges | `nil` |
-| `web.service.atcNodePort` | Sets the nodePort for atc when using `NodePort` | `nil` |
-| `web.service.atcTlsNodePort` | Sets the nodePort for atc tls when using `NodePort` | `nil` |
 | `web.service.tsaNodePort` | Sets the nodePort for tsa when using `NodePort` | `nil` |
-| `web.ingress.enabled` | Enable Concourse Web Ingress | `false` |
-| `web.ingress.annotations` | Concourse Web Ingress annotations | `{}` |
-| `web.ingress.hosts` | Concourse Web Ingress Hostnames | `[]` |
-| `web.ingress.tls` | Concourse Web Ingress TLS configuration | `[]` |
+| `web.service.type` | Concourse Web service type | `ClusterIP` |
+| `web.syslogSecretsPath` | Specify the mount directory of the web syslog secrets | `/concourse-syslog` |
+| `web.tolerations` | Tolerations for the web nodes | `[]` |
+| `web.vaultSecretsPath` | Specify the mount directory of the web vault secrets | `/concourse-vault` |
 | `worker.nameOverride` | Override the Concourse Worker components name | `nil` |
 | `worker.replicas` | Number of Concourse Worker replicas | `2` |
 | `worker.minAvailable` | Minimum number of workers available after an eviction | `1` |

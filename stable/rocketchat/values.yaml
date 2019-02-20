@@ -3,7 +3,7 @@
 ##
 image:
   repository: rocketchat/rocket.chat
-  tag: 0.73.2
+  tag: 0.74.2
   pullPolicy: IfNotPresent
 
 ## Host for the application
@@ -27,10 +27,16 @@ config:
   WebRTC_Enable_Private: false
   WebRTC_Enable_Direct: false
 
+## MongoDB URL if using an externally provisioned MongoDB
+mongodbURL: ~
+
 ##
 ## MongoDB chart configuration
 ##
 mongodb:
+  ## Enable or disable MongoDB dependency completely.
+  enabled: true
+
   ## MongoDB admin password
   ### ref: https://github.com/bitnami/bitnami-docker-mongodb/blob/master/README.md#setting-the-root-password-on-first-run
   ###

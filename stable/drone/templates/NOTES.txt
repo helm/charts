@@ -6,7 +6,7 @@
 {{- if .Values.ingress.enabled }}
 From outside the cluster, the server URL(s) are:
 {{- range .Values.ingress.hosts }}
-     http://{{ . }}
+     {{ $.Values.server.protocol }}://{{ . }}
 {{- end }}
 
 {{- else if contains "NodePort" .Values.service.type }}

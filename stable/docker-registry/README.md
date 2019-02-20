@@ -33,6 +33,7 @@ their default values.
 | `imagePullSecrets`          | Specify image pull secrets                                                                 | `nil` (does not add image pull secrets to deployed pods) |
 | `persistence.accessMode`    | Access mode to use for PVC                                                                 | `ReadWriteOnce` |
 | `persistence.enabled`       | Whether to use a PVC for the Docker storage                                                | `false`         |
+| `persistence.deleteEnabled` | Enable the deletion of image blobs and manifests by digest                                 | `nil`           |
 | `persistence.size`          | Amount of space to claim for PVC                                                           | `10Gi`          |
 | `persistence.storageClass`  | Storage Class to use for PVC                                                               | `-`             |
 | `persistence.existingClaim` | Name of an existing PVC to use for config                                                  | `nil`           |

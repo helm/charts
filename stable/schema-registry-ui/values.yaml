@@ -13,6 +13,8 @@ service:
   type: LoadBalancer
   port: 80
   annotations: {}
+  ## Limit load balancer source ips to list of CIDRs (where available)
+  # loadBalancerSourceRanges: []
 
 schemaRegistry:
   url: "http://localhost"

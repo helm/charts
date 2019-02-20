@@ -1,5 +1,5 @@
 # Generated from 'kubernetes-absent' group from https://raw.githubusercontent.com/coreos/prometheus-operator/master/contrib/kube-prometheus/manifests/prometheus-rules.yaml
-{{- if and .Values.defaultRules.create }}
+{{- if and .Values.defaultRules.create .Values.defaultRules.rules.kubernetesAbsent }}
 {{- $operatorJob := printf "%s-%s" (include "prometheus-operator.fullname" .) "operator" }}
 {{- $prometheusJob := printf "%s-%s" (include "prometheus-operator.fullname" .) "prometheus" }}
 {{- $alertmanagerJob := printf "%s-%s" (include "prometheus-operator.fullname" .) "alertmanager" }}
@@ -38,8 +38,8 @@ spec:
       for: 15m
       labels:
         severity: critical
-{{- if .Values.kubeApiServer.enabled }}
 {{- end }}
+{{- if .Values.kubeApiServer.enabled }}
     - alert: KubeAPIDown
       annotations:
         message: KubeAPI has disappeared from Prometheus target discovery.
