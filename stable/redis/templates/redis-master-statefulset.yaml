@@ -67,7 +67,6 @@ spec:
         imagePullPolicy: {{ default "" .Values.image.pullPolicy | quote }}
         {{- if .Values.master.securityContext.enabled }}
         securityContext:
-          runAsNonRoot: true
           runAsUser: {{ .Values.master.securityContext.runAsUser }}
         {{- end }}
         command:

@@ -81,7 +81,6 @@ spec:
         {{- /* Include master securityContext.runAsUser if slave securityContext.runAsUser not defined */ -}}
         {{- if (.Values.slave.securityContext | default .Values.master.securityContext) }}
         securityContext:
-          runAsNonRoot: true
           {{- if .Values.slave.securityContext }}
           runAsUser: {{ .Values.slave.securityContext.runAsUser }}
           {{- else }}
