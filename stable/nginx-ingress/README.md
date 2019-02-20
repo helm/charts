@@ -45,8 +45,10 @@ The following table lists the configurable parameters of the nginx-ingress chart
 
 Parameter | Description | Default
 --- | --- | ---
+`global.imageRegistry` | Global Docker image registry | `nil`
 `controller.name` | name of the controller component | `controller`
-`controller.image.repository` | controller container image repository | `quay.io/kubernetes-ingress-controller/nginx-ingress-controller`
+`controller.image.registry` | controller container image registry | `quay.io`
+`controller.image.repository` | controller container image repository | `kubernetes-ingress-controller/nginx-ingress-controller`
 `controller.image.tag` | controller container image tag | `0.22.0`
 `controller.image.pullPolicy` | controller container image pull policy | `IfNotPresent`
 `controller.image.runAsUser` | User ID of the controller process. Value depends on the Linux distribution used inside of the container image. By default uses debian one. | `33`
@@ -134,7 +136,8 @@ Parameter | Description | Default
 `controller.updateStrategy` | allows setting of RollingUpdate strategy | `{}`
 `defaultBackend.enabled` | If false, controller.defaultBackendService must be provided | `true`
 `defaultBackend.name` | name of the default backend component | `default-backend`
-`defaultBackend.image.repository` | default backend container image repository | `k8s.gcr.io/defaultbackend`
+`defaultBackend.image.registry` | default backend container image registry | `k8s.gcr.io`
+`defaultBackend.image.repository` | default backend container image repository | `defaultbackend`
 `defaultBackend.image.tag` | default backend container image tag | `1.4`
 `defaultBackend.image.pullPolicy` | default backend container image pull policy | `IfNotPresent`
 `defaultBackend.extraArgs` | Additional default backend container arguments | `{}`
