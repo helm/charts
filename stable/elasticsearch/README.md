@@ -80,6 +80,8 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `client.resources`                   | Client node resources requests & limits                             | `{} - cpu limit must be an integer`                 |
 | `client.priorityClassName`           | Client priorityClass                                                | `nil`                                               |
 | `client.heapSize`                    | Client node heap size                                               | `512m`                                              |
+| `client.readinessProbe`              | Client container readiness probes                                   | see `values.yaml` for defaults                      |
+| `client.livenessProbe`               | Client container liveness probes                                    | see `values.yaml` for defaults                      |
 | `client.podAnnotations`              | Client Deployment annotations                                       | `{}`                                                |
 | `client.nodeSelector`                | Node labels for client pod assignment                               | `{}`                                                |
 | `client.tolerations`                 | Client tolerations                                                  | `[]`                                                |
