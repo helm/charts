@@ -301,9 +301,9 @@ service:
   ## Customize nodePort number when service type is NodePort
   ### Ref: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
   ###
-  rabbitmqEpmdNodePort: null
-  rabbitmqNodeNodePort: null
-  rabbitmqManagerNodePort: null
+  epmdNodePort: null
+  amqpNodePort: null
+  managerNodePort: null
 
 podManagementPolicy: OrderedReady
 
