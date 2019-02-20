@@ -23,7 +23,7 @@ spec:
         paths:
           - path: {{ .Values.ingress.path }}
             backend:
-              serviceName: {{ $serviceName }}
+              serviceName: {{ template "rabbitmq-ha.fullname" . }}
               servicePort: {{ .Values.rabbitmqManagerPort }}
 {{- if .Values.ingress.tls }}
   tls:
