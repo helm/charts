@@ -167,8 +167,9 @@ data:
     fi
     echo "Node ${NODE_NAME} is ready to be used"
 {{- else if .Values.data.hooks.custom.enabled }}
-  pre-stop-hook.sh:
+  pre-stop-hook.sh: |-
 {{ tpl .Values.data.hooks.custom.stop . | indent 4 }}
-  post-start-hook.sh:
+  post-start-hook.sh: |-
 {{ tpl .Values.data.hooks.custom.start . | indent 4 }}
 {{- end }}
+
