@@ -18,6 +18,7 @@ spec:
     honorLabels: true
     port: "{{ .Values.service.httpPort }}"
     path: {{ .Values.web.path }}
+    scheme: http
   jobLabel: "{{ .Release.Name }}"
   selector:
     matchLabels:
