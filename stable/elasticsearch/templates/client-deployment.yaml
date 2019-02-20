@@ -107,15 +107,9 @@ spec:
         resources:
 {{ toYaml .Values.client.resources | indent 12 }}
         readinessProbe:
-          httpGet:
-            path: /_cluster/health
-            port: 9200
-          initialDelaySeconds: 5
+{{ toYaml .Values.client.readinessProbe | indent 10 }}
         livenessProbe:
-          httpGet:
-            path: /_cluster/health?local=true
-            port: 9200
-          initialDelaySeconds: 90
+{{ toYaml .Values.client.livenessProbe | indent 10 }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         ports:
