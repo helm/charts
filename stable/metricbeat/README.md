@@ -51,11 +51,15 @@ The following table lists the configurable parameters of the metricbeat chart an
 | `daemonset.podAnnotations`          | Pod annotations for daemonset | |
 | `daemonset.nodeSelector`            | Pod node selector for daemonset | `{}` |
 | `daemonset.tolerations`             | Pod taint tolerations for daemonset | `[{"key": "node-role.kubernetes.io/master", "operator": "Exists", "effect": "NoSchedule"}]` |
+| `daemonset.resources.requests.cpu`  | CPU resource requests for daemonset |                                           |
+| `daemonset.resources.limits.cpu`    | CPU resource limits for daemonset   |                                           |
 | `deployment.modules.<name>.config`  | The content of the modules configuration file consumed by metricbeat deployed as deployment, which is assumed to collect cluster-level metrics. See the [metricbeat.reference.yml](https://www.elastic.co/guide/en/beats/metricbeat/current/metricbeat-reference-yml.html) for full details ||
 | `deployment.modules.<name>.enabled` | If true, enable configuration ||
 | `deployment.podAnnotations`         | Pod annotations for deployment | |
 | `deployment.nodeSelector`           | Pod node selector for deployment | `{}` |
-| `deployment.tolerations`             | Pod taint tolerations for deployment | `[]` |
+| `deployment.tolerations`            | Pod taint tolerations for deployment | `[]` |
+| `deployment.resources.requests.cpu` | CPU resource requests for daemonset  |                                           |
+| `deployment.resources.limits.cpu`   | CPU resource limits for daemonset    |                                           |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

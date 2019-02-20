@@ -11,6 +11,7 @@ daemonset:
     operator: Exists
     effect: NoSchedule
   nodeSelector: {}
+  resources: {}
   config:
     metricbeat.config:
       modules:
@@ -75,6 +76,7 @@ deployment:
   podAnnotations: []
   tolerations: []
   nodeSelector: {}
+  resources: {}
   config:
     metricbeat.config:
       modules:
