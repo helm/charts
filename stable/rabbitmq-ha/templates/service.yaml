@@ -39,17 +39,17 @@ spec:
     - name: http
       protocol: TCP
       port: {{ .Values.rabbitmqManagerPort }}
-      nodePort: {{ .Values.rabbitmqManagerNodePort }}
+      nodePort: {{ .Values.service.rabbitmqManagerNodePort }}
       targetPort: http
     - name: amqp
       protocol: TCP
       port: {{ .Values.rabbitmqNodePort }}
-      nodePort: {{ .Values.rabbitmqNodeNodePort }}
+      nodePort: {{ .Values.service.rabbitmqNodeNodePort }}
       targetPort: amqp
     - name: epmd
       protocol: TCP
       port: {{ .Values.rabbitmqEpmdPort }}
-      nodePort: {{ .Values.rabbitmqEpmdNodePort }}
+      nodePort: {{ .Values.service.rabbitmqEpmdNodePort }}
       targetPort: epmd
     {{- if .Values.rabbitmqSTOMPPlugin.enabled }}
     - name: stomp-tcp
