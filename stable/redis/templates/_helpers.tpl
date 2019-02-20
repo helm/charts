@@ -102,7 +102,7 @@ readinessProbe:
     command:
     - sh
     - -c
-    - /health/ping_local_and_master.sh
+    - /health/ping_local_and_master.sh {{ $readinessProbe.timeoutSeconds | default .Values.master.readinessProbe.timeoutSeconds }}
 {{- end }}
 {{- end -}}
 {{- end -}}
@@ -124,7 +124,7 @@ livenessProbe:
     command:
     - sh
     - -c
-    - /health/ping_local_and_master.sh
+    - /health/ping_local_and_master.sh {{ $livenessProbe.timeoutSeconds | default .Values.master.livenessProbe.timeoutSeconds }}
 {{- end }}
 {{- end -}}
 {{- end -}}

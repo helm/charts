@@ -27,7 +27,10 @@ spec:
 {{ toYaml .Values.podLabels | indent 8 }}
 {{- end }}
       annotations:
-{{ toYaml .Values.podAnnotations | indent 8 }}
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        {{- range $key, $value := .Values.podAnnotations }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
     spec:
       containers:
       - name: {{ .Chart.Name }}
@@ -45,7 +48,7 @@ spec:
         ports:
         - containerPort: {{ .Values.service.port }}
           name: api
-        - containerPort: 8201
+        - containerPort: {{ .Values.service.clusterPort }}
           name: cluster-address
         livenessProbe:
           # Alive if it is listening for clustering traffic

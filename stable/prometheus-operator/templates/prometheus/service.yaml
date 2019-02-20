@@ -37,5 +37,8 @@ spec:
   selector:
     app: prometheus
     prometheus: {{ template "prometheus-operator.fullname" . }}-prometheus
+{{- if .Values.prometheus.service.sessionAffinity }}
+  sessionAffinity: {{ .Values.prometheus.service.sessionAffinity }}
+{{- end }}
   type: "{{ .Values.prometheus.service.type }}"
 {{- end }}
