@@ -42,6 +42,16 @@ defaultRules:
   ## Annotations for default rules
   annotations: {}
 
+## Provide custom recording or alerting rules to be deployed into the cluster.
+##
+additionalPrometheusRules: []
+#  - name: my-rule-file
+#    groups:
+#      - name: my_group
+#        rules:
+#        - record: my_record
+#          expr: 100 * my_record
+
 ##
 global:
   rbac:
@@ -181,7 +191,7 @@ alertmanager:
     ##
     image:
       repository: quay.io/prometheus/alertmanager
-      tag: v0.15.3
+      tag: v0.16.1
 
     ## Secrets is a list of Secrets in the same namespace as the Alertmanager object, which shall be mounted into the
     ## Alertmanager Pods. The Secrets are mounted into /etc/alertmanager/secrets/.
@@ -291,14 +301,6 @@ alertmanager:
     ## AdditionalPeers allows injecting a set of additional Alertmanagers to peer with to form a highly available cluster.
     ##
     additionalPeers: []
-
-  additionalPrometheusRules: []
-  #  - name: my_rule_file
-  #    groups:
-  #      - name: my_group
-  #        rules:
-  #        - record: my_record
-  #          expr: 100 * my_record
 
 ## Using default values from https://github.com/helm/charts/blob/master/stable/grafana/values.yaml
 ##
@@ -663,7 +665,7 @@ prometheusOperator:
   ##
   image:
     repository: quay.io/coreos/prometheus-operator
-    tag: v0.27.0
+    tag: v0.29.0
     pullPolicy: IfNotPresent
 
   ## Configmap-reload image to use for reloading configmaps
@@ -676,7 +678,7 @@ prometheusOperator:
   ##
   prometheusConfigReloaderImage:
     repository: quay.io/coreos/prometheus-config-reloader
-    tag: v0.27.0
+    tag: v0.29.0
 
   ## Hyperkube image to use when cleaning up
   ##
@@ -786,7 +788,7 @@ prometheus:
     ##
     image:
       repository: quay.io/prometheus/prometheus
-      tag: v2.6.1
+      tag: v2.7.1
 
     ## Tolerations for use with node taints
     ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
@@ -834,7 +836,8 @@ prometheus:
     configMaps: []
 
     ## Namespaces to be selected for PrometheusRules discovery.
-    ## If nil, select own namespace. If {}, select all namespaces.
+    ## If nil, select own namespace. Namespaces to be selected for ServiceMonitor discovery.
+    ## See https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#namespaceselector for usage
     ##
     ruleNamespaceSelector: {}
 
@@ -879,7 +882,7 @@ prometheus:
     #     prometheus: somelabel
 
     ## Namespaces to be selected for ServiceMonitor discovery.
-    ## If nil, select own namespace. If {}, select all namespaces.
+    ## See https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#namespaceselector for usage
     ##
     serviceMonitorNamespaceSelector: {}
 
