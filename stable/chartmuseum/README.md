@@ -131,6 +131,7 @@ their default values. See values.yaml for all available options.
 | `gcp.secret.key`                       | Secret key for te GCP json file             | `credentials.json`                                  |
 | `service.type`                         | Kubernetes Service type                     | `ClusterIP`                                          |
 | `service.clusterIP`                    | Static clusterIP or None for headless services| `nil`                                              |
+| `service.externalTrafficPolicy`        | Source IP preservation (only for Service type NodePort)  | `Local`                                         |
 | `service.servicename`                  | Custom name for service                     | ``                                                  |
 | `service.labels`                       | Additional labels for service               | `{}`                                                |
 | `deployment.labels`                    | Additional labels for deployment            | `{}`                                                |
