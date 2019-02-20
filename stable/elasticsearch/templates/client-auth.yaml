@@ -1,4 +1,4 @@
-{{- if .Values.client.ingress.user -}}
+{{- if and ( .Values.client.ingress.user ) ( .Values.client.ingress.password ) }}
 ---
 apiVersion: v1
 kind: Secret

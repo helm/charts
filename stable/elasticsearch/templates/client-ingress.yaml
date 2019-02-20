@@ -15,7 +15,7 @@ metadata:
   annotations:
 {{ toYaml . | indent 4 }}
 {{- end }}
-{{- if .Values.client.ingress.user -}}
+{{- if and ( .Values.client.ingress.user ) ( .Values.client.ingress.password ) }}
     nginx.ingress.kubernetes.io/auth-type: basic
     nginx.ingress.kubernetes.io/auth-secret: '{{ include "elasticsearch.client.fullname" . }}-auth'
     nginx.ingress.kubernetes.io/auth-realm: "Authentication-Required"
