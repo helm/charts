@@ -1,6 +1,6 @@
 name: elasticsearch
 home: https://www.elastic.co/products/elasticsearch
-version: 1.19.1
+version: 1.20.0
 appVersion: 6.6.0
 description: Flexible and powerful open source, distributed real-time search and analytics
   engine.
