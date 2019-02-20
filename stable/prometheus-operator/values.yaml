@@ -42,6 +42,16 @@ defaultRules:
   ## Annotations for default rules
   annotations: {}
 
+## Provide custom recording or alerting rules to be deployed into the cluster.
+##
+additionalPrometheusRules: []
+#  - name: my-rule-file
+#    groups:
+#      - name: my_group
+#        rules:
+#        - record: my_record
+#          expr: 100 * my_record
+
 ##
 global:
   rbac:
@@ -291,14 +301,6 @@ alertmanager:
     ## AdditionalPeers allows injecting a set of additional Alertmanagers to peer with to form a highly available cluster.
     ##
     additionalPeers: []
-
-  additionalPrometheusRules: []
-  #  - name: my_rule_file
-  #    groups:
-  #      - name: my_group
-  #        rules:
-  #        - record: my_record
-  #          expr: 100 * my_record
 
 ## Using default values from https://github.com/helm/charts/blob/master/stable/grafana/values.yaml
 ##
