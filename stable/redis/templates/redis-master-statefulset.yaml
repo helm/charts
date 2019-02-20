@@ -41,7 +41,6 @@ spec:
       {{- if .Values.master.securityContext.enabled }}
       securityContext:
         fsGroup: {{ .Values.master.securityContext.fsGroup }}
-        runAsUser: {{ .Values.master.securityContext.runAsUser }}
       {{- end }}
       serviceAccountName: "{{ template "redis.serviceAccountName" . }}"
       {{- if .Values.master.priorityClassName }}
@@ -66,6 +65,10 @@ spec:
       - name: {{ template "redis.fullname" . }}
         image: "{{ template "redis.image" . }}"
         imagePullPolicy: {{ default "" .Values.image.pullPolicy | quote }}
+        {{- if .Values.master.securityContext.enabled }}
+        securityContext:
+          runAsUser: {{ .Values.master.securityContext.runAsUser }}
+        {{- end }}
         command:
         - /bin/bash
         - -c
