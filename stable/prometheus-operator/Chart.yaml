@@ -9,8 +9,8 @@ name: prometheus-operator
 sources:
   - https://github.com/coreos/prometheus-operator
   - https://coreos.com/operators/prometheus
-version: 2.6.0
-appVersion: 0.27.0
+version: 3.0.0
+appVersion: 0.29.0
 home: https://github.com/coreos/prometheus-operator
 keywords:
 - operator
