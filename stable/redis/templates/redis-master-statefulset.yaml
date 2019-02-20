@@ -41,7 +41,6 @@ spec:
       {{- if .Values.master.securityContext.enabled }}
       securityContext:
         fsGroup: {{ .Values.master.securityContext.fsGroup }}
-        runAsUser: {{ .Values.master.securityContext.runAsUser }}
       {{- end }}
       serviceAccountName: "{{ template "redis.serviceAccountName" . }}"
       {{- if .Values.master.priorityClassName }}
@@ -66,6 +65,10 @@ spec:
       - name: {{ template "redis.fullname" . }}
         image: "{{ template "redis.image" . }}"
         imagePullPolicy: {{ default "" .Values.image.pullPolicy | quote }}
+        {{- if .Values.master.securityContext.enabled }}
+        securityContext:
+          runAsUser: {{ .Values.master.securityContext.runAsUser }}
+        {{- end }}
         command:
         - /bin/bash
         - -c
@@ -121,7 +124,7 @@ spec:
             command:
             - sh
             - -c
-            - /health/ping_local.sh
+            - /health/ping_local.sh {{ .Values.master.livenessProbe.timeoutSeconds }}
         {{- end }}
         {{- if .Values.master.readinessProbe.enabled}}
         readinessProbe:
@@ -134,7 +137,7 @@ spec:
             command:
             - sh
             - -c
-            - /health/ping_local.sh
+            - /health/ping_local.sh {{ .Values.master.livenessProbe.timeoutSeconds }}
         {{- end }}
         resources:
 {{ toYaml .Values.master.resources | indent 10 }}

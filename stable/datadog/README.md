@@ -83,6 +83,8 @@ The following table lists the configurable parameters of the Datadog chart and t
 | `datadog.tags`              | Set host tags                      | `nil`                                     |
 | `datadog.nonLocalTraffic` | Enable statsd reporting from any external ip | `False`                           |
 | `datadog.useCriSocketVolume` | Enable mounting the container runtime socket in Agent containers | `True` |
+| `datadog.dogstatsdOriginDetection` | Enable origin detection for container tagging | `False`                 |
+| `datadog.useDogStatsDSocketVolume` | Enable dogstatsd over Unix Domain Socket | `False`                      |
 | `datadog.volumes`           | Additional volumes for the daemonset or deployment | `nil`                     |
 | `datadog.volumeMounts`      | Additional volumeMounts for the daemonset or deployment | `nil`                |
 | `datadog.podAnnotationsAsTags` | Kubernetes Annotations to Datadog Tags mapping | `nil`                      |
@@ -228,3 +230,11 @@ Standard paths are:
 
 - Containerd socket: `/var/run/containerd/containerd.sock`
 - Cri-o socket: `/var/run/crio/crio.sock`
+
+## Updating
+
+### From < 1.19.0 to >= 1.19.0
+
+Version `1.19.0` introduces the use of release name as full name if it contains the chart name(`datadog` in this case).
+E.g. with a release name of `datadog`, this renames the `DaemonSet` from `datadog-datadog` to `datadog`.
+The suggested approach is to delete the release and reinstall it.

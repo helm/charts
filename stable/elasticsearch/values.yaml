@@ -106,6 +106,8 @@ client:
     # maxUnavailable: 1
   ingress:
     enabled: false
+    # user: NAME
+    # password: PASSWORD
     annotations: {}
       # kubernetes.io/ingress.class: nginx
       # kubernetes.io/tls-acme: "true"
