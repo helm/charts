@@ -74,6 +74,16 @@ client:
 #    example: client-svc-foo
   heapSize: "512m"
   # additionalJavaOpts: "-XX:MaxRAM=512m"
+  readinessProbe:
+    httpGet:
+      path: /_cluster/health
+      port: 9200
+    initialDelaySeconds: 5
+  livenessProbe:
+    httpGet:
+      path: /_cluster/health?local=true
+      port: 9200
+    initialDelaySeconds: 90
   antiAffinity: "soft"
   nodeAffinity: {}
   nodeSelector: {}
