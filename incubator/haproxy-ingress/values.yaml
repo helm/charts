@@ -75,6 +75,10 @@ controller:
   ##
   podLabels: {}
 
+  ## Priority Class to be used
+  ##
+  priorityClassName: ""
+
   ## Security context settings to be added to the controller pods
   ##
   securityContext: {}
