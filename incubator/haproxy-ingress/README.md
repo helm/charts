@@ -64,6 +64,7 @@ Parameter | Description | Default
 `controller.readinessProbe.timeoutSeconds` | The readiness probe timeout (in seconds) | `1`
 `controller.podAnnotations` | Annotations for the haproxy-ingress-conrtoller pod | `{}`
 `controller.podLabels` | Labels for the haproxy-ingress-conrtoller pod | `{}`
+`controller.priorityClassName` | Priority Class to be used | ``
 `controller.securityContext` | Security context settings for the haproxy-ingress-conrtoller pod | `{}`
 `controller.config` | additional haproxy-ingress [ConfigMap entries](https://github.com/jcmoraisjr/haproxy-ingress/blob/v0.6/README.md#configmap) | `{}`
 `controller.hostNetwork` | Optionally set to true when using CNI based kubernetes installations | `false`

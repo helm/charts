@@ -181,4 +181,7 @@ spec:
       affinity:
 {{ toYaml .Values.controller.affinity | indent 8 }}
     {{- end }}
+    {{- if .Values.controller.priorityClassName }}
+      priorityClassName: {{ .Values.controller.priorityClassName }}
+    {{- end }}
 {{- end }}
