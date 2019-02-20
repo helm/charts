@@ -96,6 +96,9 @@ spec:
           {{- if .Values.server.enableAdminApi }}
             - --web.enable-admin-api
           {{- end }}
+          {{- if .Values.server.skipTSDBLock }}
+            - --storage.tsdb.no-lockfile
+          {{- end }}
           ports:
             - containerPort: 9090
           readinessProbe:
