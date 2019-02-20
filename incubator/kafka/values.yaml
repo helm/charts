@@ -306,6 +306,39 @@ prometheus:
 #        cpu: 100m
 #        memory: 100Mi
 
+    # Tolerations for nodes that have taints on them.
+    # Useful if you want to dedicate nodes to just run kafka-exporter
+    # https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+    tolerations: []
+    # tolerations:
+    # - key: "key"
+    #   operator: "Equal"
+    #   value: "value"
+    #   effect: "NoSchedule"
+
+    ## Pod scheduling preferences (by default keep pods within a release on separate nodes).
+    ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+    ## By default we don't set affinity
+    affinity: {}
+    ## Alternatively, this typical example defines:
+    ## affinity (to encourage Kafka Exporter pods to be collocated with Kafka pods)
+    # affinity:
+    #   podAffinity:
+    #     preferredDuringSchedulingIgnoredDuringExecution:
+    #      - weight: 50
+    #        podAffinityTerm:
+    #          labelSelector:
+    #            matchExpressions:
+    #            - key: app
+    #              operator: In
+    #              values:
+    #                - kafka
+    #          topologyKey: "kubernetes.io/hostname"
+
+    ## Node labels for pod assignment
+    ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+    nodeSelector: {}
+
   operator:
     ## Are you using Prometheus Operator?
     enabled: false
