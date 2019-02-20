@@ -83,6 +83,8 @@ The following table lists the configurable parameters of the Datadog chart and t
 | `datadog.tags`              | Set host tags                      | `nil`                                     |
 | `datadog.nonLocalTraffic` | Enable statsd reporting from any external ip | `False`                           |
 | `datadog.useCriSocketVolume` | Enable mounting the container runtime socket in Agent containers | `True` |
+| `datadog.dogstatsdOriginDetection` | Enable origin detection for container tagging | `False`                 |
+| `datadog.useDogStatsDSocketVolume` | Enable dogstatsd over Unix Domain Socket | `False`                      |
 | `datadog.volumes`           | Additional volumes for the daemonset or deployment | `nil`                     |
 | `datadog.volumeMounts`      | Additional volumeMounts for the daemonset or deployment | `nil`                |
 | `datadog.podAnnotationsAsTags` | Kubernetes Annotations to Datadog Tags mapping | `nil`                      |
