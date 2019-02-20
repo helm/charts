@@ -123,9 +123,13 @@ spec:
 {{- with .Values.dind.extraVolumeMounts }}
 {{ tpl . $ | indent 10 }}
 {{- end }}
+{{- with .Values.dind.extraContainers }}
+{{ tpl . $ | indent 6 }}
+{{- end }}
       volumes:
       - name: docker-graph-storage
         emptyDir: {}
+
 {{- with .Values.agent.extraVolumes }}
 {{ tpl . $ | indent 6 }}
 {{- end }}

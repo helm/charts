@@ -147,7 +147,7 @@ agent:
   ## Drone agent configuration.
   ## Values in here get injected as environment variables.
   ## ref: http://readme.drone.io/admin/installation-reference
-  ##
+  ##  
   env:
     DRONE_DEBUG: "false"
 
@@ -201,6 +201,10 @@ agent:
   ##
   nodeSelector: {}
 
+  extraVolumes: |
+    - name: docker-socket
+      emptyDir: {}
+
 dind:
   ## Enable or disable DinD
   ## If disabled, the drone agent will spawn docker containers on the host. Pay
@@ -236,11 +240,38 @@ dind:
   #    memory: 2Gi
   #    cpu: 1
 
+    
+
+
+
   ## additional volume mounts for DinD, e. g. for nfs volume for cache
   ## ex: https://github.com/kubernetes/charts/tree/master/stable/keycloak
   ##
   extraVolumeMounts: |
-  extraVolumes: |
+     - name: docker-socket
+       mountPath: /var/run/docker.sock
+
+  extraContainers: |
+      - name: drone-gc
+        image: "drone/gc"
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: GC_DEBUG
+          value: true
+        - name: GC_CACHE
+          value: 5gb
+        - name: GC_INTERVAL
+          value: 5m
+
+        securityContext:
+          privileged: true
+        resources:
+          {}
+        volumeMounts:
+          - name: docker-socket
+            mountPath: /var/run/docker.sock
+
+
 
 ## Enable scraping of the /metrics endpoint for Prometheus
 metrics:
