@@ -45,6 +45,7 @@ The following table lists the configurable parameters of the nginx-ingress chart
 
 Parameter | Description | Default
 --- | --- | ---
+`global.imageRegistry` | Global Docker image registry | `nil`
 `controller.name` | name of the controller component | `controller`
 `controller.image.registry` | controller container image registry | `quay.io`
 `controller.image.repository` | controller container image repository | `kubernetes-ingress-controller/nginx-ingress-controller`

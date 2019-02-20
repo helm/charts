@@ -1,3 +1,9 @@
+## Global Docker image registry
+## Please, note that this will override the image registry for all the images, including dependencies, configured to use the global value
+##
+# global:
+#   imageRegistry:
+
 ## nginx configuration
 ## Ref: https://github.com/kubernetes/ingress/blob/master/controllers/nginx/configuration.md
 ##
