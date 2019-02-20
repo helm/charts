@@ -11,14 +11,14 @@ metadata:
     {{- end }}
 spec:
   rules:
-    - host: {{ .Values.nexusProxy.env.nexusDockerHost }}
+    - host: {{ .Values.nexusProxy.env.nexusHttpHost }}
       http:
         paths:
           - backend:
               serviceName: {{ template "nexus.fullname" . }}
               servicePort: {{ .Values.nexusProxy.port }}
             path: {{ .Values.ingress.path }}
-    - host: {{ .Values.nexusProxy.env.nexusHttpHost }}
+    - host: {{ .Values.nexusProxy.env.nexusDockerHost }}
       http:
         paths:
           - backend:
@@ -28,8 +28,8 @@ spec:
 {{- if .Values.ingress.tls.enabled }}
   tls:
     - hosts:
-        - {{ .Values.nexusProxy.env.nexusDockerHost }}
         - {{ .Values.nexusProxy.env.nexusHttpHost }}
+        - {{ .Values.nexusProxy.env.nexusDockerHost }}
       {{- if .Values.ingress.tls.secretName }}
       secretName: {{ .Values.ingress.tls.secretName | quote }}
       {{- end }}
