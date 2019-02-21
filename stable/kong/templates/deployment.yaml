@@ -110,15 +110,24 @@ spec:
         ports:
         - name: admin
           containerPort: {{ .Values.admin.containerPort }}
+          {{- if .Values.admin.hostPort }}
+          hostPort: {{ .Values.admin.hostPort }}
+          {{- end}}
           protocol: TCP
         {{- if .Values.proxy.http.enabled }}
         - name: proxy
           containerPort: {{ .Values.proxy.http.containerPort }}
+          {{- if .Values.proxy.http.hostPort }}
+          hostPort: {{ .Values.proxy.http.hostPort }}
+          {{- end}}
           protocol: TCP
         {{- end }}
         {{- if .Values.proxy.tls.enabled }}
         - name: proxy-tls
           containerPort: {{ .Values.proxy.tls.containerPort }}
+          {{- if .Values.proxy.tls.hostPort }}
+          hostPort: {{ .Values.proxy.tls.hostPort }}
+          {{- end}}
           protocol: TCP
         {{- end }}
         readinessProbe:
