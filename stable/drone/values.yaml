@@ -85,12 +85,12 @@ sourceControl:
   github:
     clientID:
     clientSecretKey: clientSecret
-    secret:
+    Secret:
     server: https://github.com
   gitlab:
     clientID:
     clientSecretKey: clientSecret
-    secret:
+    Secret:
     server:
   gitea:
     server:
@@ -99,7 +99,7 @@ sourceControl:
   bitbucketCloud:
     clientID:
     clientSecret: clientSecret
-    secret:
+    Secret:
   bitbucketServer:
     server:
     consumerKey: consumerKey
