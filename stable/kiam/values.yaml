@@ -225,6 +225,9 @@ server:
   ## Session duration for STS tokens
   ##
   sessionDuration: 15m
+  ## Time before expiration to refresh STS credentials
+  ##
+  sessionRefresh: 5m
   ## Use hostNetwork for server
   ## Set this to true when running the servers on the same nodes as the agents
   useHostNetwork: false
