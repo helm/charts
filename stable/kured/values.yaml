@@ -10,6 +10,9 @@ extraArgs: {}
 rbac:
   create: true
 
+podSecurityPolicy:
+  create: false
+
 serviceAccount:
   create: true
   name:
