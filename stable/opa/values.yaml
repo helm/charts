@@ -45,12 +45,14 @@ admissionControllerKey: ""
 
 # Docker image and tag to deploy.
 image: openpolicyagent/opa
-imageTag: 0.10.2
+imageTag: 0.10.4
+imagePullPolicy: IfNotPresent
 
 mgmt:
   enabled: true
   image: openpolicyagent/kube-mgmt
   imageTag: 0.8-dev
+  imagePullPolicy: IfNotPresent
   extraArgs: []
   configmapPolicies:
     enabled: false  
@@ -84,6 +86,16 @@ rbac:
   # If true, create & use RBAC resources
   #
   create: true
+  rules:
+    cluster: []
+    #- apiGroups:
+    #    - ""
+    #  resources:
+    #  - namespaces
+    #  verbs:
+    #  - get
+    #  - list
+    #  - watch
 
 serviceAccount:
   # Specifies whether a ServiceAccount should be created
@@ -98,6 +110,7 @@ sar:
   enabled: false
   image: lachlanevenson/k8s-kubectl
   imageTag: latest
+  imagePullPolicy: IfNotPresent
 
 # To control the liveness and readiness probes change the fields below.
 readinessProbe:
