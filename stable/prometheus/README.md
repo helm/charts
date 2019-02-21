@@ -94,6 +94,7 @@ Parameter | Description | Default
 --------- | ----------- | -------
 `alertmanager.enabled` | If true, create alertmanager | `true`
 `alertmanager.name` | alertmanager container name | `alertmanager`
+`alertmanager.namespaces` | The namespace where prometheus-server will perform service discovery for alertmanagers | `{}`
 `alertmanager.image.repository` | alertmanager container image repository | `prom/alertmanager`
 `alertmanager.image.tag` | alertmanager container image tag | `v0.15.3`
 `alertmanager.image.pullPolicy` | alertmanager container image pull policy | `IfNotPresent`

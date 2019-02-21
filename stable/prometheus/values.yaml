@@ -32,6 +32,12 @@ alertmanager:
   ##
   name: alertmanager
 
+  ## Namespace in which server will look for alertmanagers pods.
+  ## The default is to perform service discovery in all namespaces.
+  # namespaces:
+  #   names:
+  #     - prometheus
+
   ## alertmanager container image
   ##
   image:
