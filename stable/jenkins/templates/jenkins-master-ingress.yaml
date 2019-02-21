@@ -2,6 +2,10 @@
 apiVersion: {{ .Values.Master.Ingress.ApiVersion }}
 kind: Ingress
 metadata:
+{{- if .Values.Master.Ingress.Labels }}
+  labels:
+{{ toYaml .Values.Master.Ingress.Labels | indent 4 }}
+{{- end }}
 {{- if .Values.Master.Ingress.Annotations }}
   annotations:
 {{ toYaml .Values.Master.Ingress.Annotations | indent 4 }}
