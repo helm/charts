@@ -337,3 +337,8 @@ The following table lists the configurable parameters of the Airflow chart and t
 
 
 Full and up-to-date documentation can be found in the comments of the `values.yaml` file.
+
+## Upgrading
+### To 2.0.0
+The parameter `workers.pod.annotations` has been renamed to `workers.podAnnotations`.  If using a
+custom values file, rename this parameter.
