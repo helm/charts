@@ -75,6 +75,9 @@ replacement_map = {
     'job="alertmanager-main"': {
         'replacement': 'job="{{ $alertmanagerJob }}"',
         'init': '{{- $alertmanagerJob := printf "%s-%s" (include "prometheus-operator.fullname" .) "alertmanager" }}'},
+    'namespace="monitoring"': {
+        'replacement': 'namespace="{{ $namespace }}"',
+        'init': '{{- $namespace := .Release.Namespace }}'},
 }
 
 # standard header
