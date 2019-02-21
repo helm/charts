@@ -293,7 +293,7 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `ingress.flower.host`                    | hostname for the flower ui                              | ""                        |
 | `ingress.flower.path`                    | path of the flower ui (read `values.yaml`)              | ``                        |
 | `ingress.flower.livenessPath`            | path to the liveness probe (read `values.yaml`)         | `/`                       |
-| `ingress.flower.annotations`             | annotations for the web ui ingress                      | `{}`                      |
+| `ingress.flower.annotations`             | annotations for the flower ui ingress                   | `{}`                      |
 | `ingress.flower.tls.enabled`             | enables TLS termination at the ingress                  | `false`                   |
 | `ingress.flower.tls.secretName`          | name of the secret containing the TLS certificate & key | ``                        |
 | `persistence.enabled`                    | enable persistence storage for DAGs                     | `false`                   |
