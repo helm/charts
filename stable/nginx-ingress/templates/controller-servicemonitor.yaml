@@ -17,8 +17,7 @@ metadata:
     {{- end }}
 spec:
   endpoints:
-    - port: metrics
-      interval: 30s
+{{ toYaml .Values.controller.metrics.serviceMonitor.endpoints | indent 4 }}
   namespaceSelector:
     matchNames:
       - {{ .Release.Namespace }}

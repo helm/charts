@@ -278,6 +278,9 @@ controller:
 
     serviceMonitor:
       enabled: false
+      endpoints:
+        - port: metrics
+          interval: 30s
       additionalLabels: {}
       namespace: ""
 
