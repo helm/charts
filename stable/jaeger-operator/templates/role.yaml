@@ -26,6 +26,8 @@ rules:
   - events
   - configmaps
   - secrets
+  - jobs
+  - cronjobs
   verbs:
   - "*"
 - apiGroups:
