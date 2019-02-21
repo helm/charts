@@ -128,6 +128,13 @@ vault:
   #   - name: some-mount
   #     mountPath: /some/path
   extraVolumes: {}
+  ## Additional volumes to be added to the Vault Pod
+  # - name: vault-audit
+  #   emptyDir: {}
+  extraVolumeMounts: {}
+  ## Additional volume mounts to be added to the Vault container
+  # - name: vault-audit
+  #   mountPath: /vault/logs
   # Log level
   # https://www.vaultproject.io/docs/commands/server.html#log-level
   logLevel: "info"

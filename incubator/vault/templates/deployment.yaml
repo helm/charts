@@ -86,12 +86,14 @@ spec:
         - name: {{ .secretName | replace "." "-"}}
           mountPath: {{ .mountPath }}
         {{- end }}
+        {{- if .Values.vault.extraVolumeMounts }}
+{{ toYaml .Values.vault.extraVolumeMounts | indent 8}}
+        {{- end }}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
 {{- if .Values.vault.extraContainers }}
 {{ toYaml .Values.vault.extraContainers | indent 6}}
 {{- end }}
-        resources:
-{{ toYaml .Values.resources | indent 10 }}
-      {{- if .Values.affinity }}
       {{- if .Values.consulAgent.join }}
       - name: {{ .Chart.Name }}-consul-agent
         image: "{{ .Values.consulAgent.repository }}:{{ .Values.consulAgent.tag }}"
@@ -122,6 +124,7 @@ spec:
               -join={{- .Values.consulAgent.join }} \
               -data-dir=/etc/consul
       {{- end }}
+      {{- if .Values.affinity }}
       affinity:
 {{ tpl .Values.affinity . | indent 8 }}
       {{- end }}
