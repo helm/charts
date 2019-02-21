@@ -46,6 +46,12 @@ env:
     STORAGE_OPENSTACK_REGION:
     # path to a CA cert bundle for your openstack endpoint
     STORAGE_OPENSTACK_CACERT:
+    # compartment id for for oracle storage backend
+    STORAGE_ORACLE_COMPARTMENTID:
+    # oci bucket to store charts for oracle storage backend
+    STORAGE_ORACLE_BUCKET:
+    # prefix to store charts for oracle storage backend
+    STORAGE_ORACLE_PREFIX:
     # form field which will be queried for the chart file content
     CHART_POST_FORM_FIELD_NAME: chart
     # form field which will be queried for the provenance file content
@@ -233,3 +239,13 @@ gcp:
     name:
     # Secret key that holds the json value.
     key: credentials.json
+oracle:
+  secret:
+    enabled: false
+    # Name of the secret that contains the encoded config and key
+    name:
+    # Secret key that holds the oci config
+    config: config
+    # Secret key that holds the oci private key
+    key_file: key_file
+
