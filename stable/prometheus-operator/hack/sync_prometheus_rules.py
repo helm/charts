@@ -26,11 +26,11 @@ def change_style(style, representer):
 charts = [
     {
         'source': 'https://raw.githubusercontent.com/coreos/prometheus-operator/master/contrib/kube-prometheus/manifests/prometheus-rules.yaml',
-        'destination': '../templates/alertmanager/rules'
+        'destination': '../templates/prometheus/rules'
     },
     {
         'source': 'https://raw.githubusercontent.com/etcd-io/etcd/master/Documentation/op-guide/etcd3_alert.rules.yml',
-        'destination': '../templates/alertmanager/rules'
+        'destination': '../templates/prometheus/rules'
     },
 ]
 
