@@ -104,7 +104,7 @@ their default values. See values.yaml for all available options.
 | `env.open.STORAGE_OPENSTACK_PREFIX`    | Prefix to store charts for openstack        | ``                                                  |
 | `env.open.STORAGE_OPENSTACK_REGION`    | Region of openstack container               | ``                                                  |
 | `env.open.STORAGE_OPENSTACK_CACERT`    | Path to a CA cert bundle for openstack      | ``                                                  |
-| `env.open.STORAGE_ORACLE_COMPARTMENTID | Compartment ID for Oracle Object Store      | ``                                                  |
+| `env.open.STORAGE_ORACLE_COMPARTMENTID`| Compartment ID for Oracle Object Store      | ``                                                  |
 | `env.open.STORAGE_ORACLE_BUCKET`       | Bucket to store charts in Oracle Object Store  | ``                                                  |
 | `env.open.STORAGE_ORACLE_PREFIX`       | Prefix to store charts for Oracle object Store | ``                                                  |
 | `env.open.CHART_POST_FORM_FIELD_NAME`  | Form field to query for chart file content  | ``                                                  |
@@ -133,8 +133,8 @@ their default values. See values.yaml for all available options.
 | `gcp.secret.enabled`                   | Flag for the GCP service account            | `false`                                             |
 | `gcp.secret.name`                      | Secret name for the GCP json file           | ``                                                  |
 | `gcp.secret.key`                       | Secret key for te GCP json file             | `credentials.json`                                  |
-| `oracle.secret.enabled`                | Flag for OCI account                        | `false`                                             |
-| `oracle.secret.name`                   | Secret name for Oracle OCI config and key   | ``                                                  |
+| `oracle.secret.enabled`                | Flag for Oracle OCI account                 | `false`                                             |
+| `oracle.secret.name`                   | Secret name for OCI config and key          | ``                                                  |
 | `oracle.secret.config`                 | Secret key that holds the OCI config        | `config`                                            |
 | `oracle.secret.key_file`               | Secret key that holds the OCI private key   | `key_file`                                          |
 | `service.type`                         | Kubernetes Service type                     | `ClusterIP`                                          |
