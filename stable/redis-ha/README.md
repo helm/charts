@@ -78,6 +78,18 @@ The following table lists the configurable parameters of the Redis chart and the
 | `exporter.tag`                   | Exporter tag                                                                                                                 | `v0.28.0`                                                 |
 | `exporter.annotations`           | Prometheus scrape annotations                                                                                                |  `{prometheus.io/path: /metrics, prometheus.io/port: "9121", prometheus.io/scrape: "true"}`                                                     |
 | `exporter.extraArgs`             | Additional args for the exporter                                                                                           | `{}`                                                      |
+| `livenessProbe.enabled`          | Enable livenessProbe                                                                                                         | `true`                                                    |
+| `livenessProbe.initialDelaySeconds`| Number of seconds after the container has started before probes are initiated                                              | `15`                                                      |
+| `livenessProbe.timeoutSeconds`   | Number of seconds after which the probe times out                                                                            | `1`                                                       |
+| `livenessProbe.periodSeconds`    | How often (in seconds) to perform the probe                                                                                  | `5`                                                       |
+| `livenessProbe.failureThreshold` | Minimum consecutive failures for the probe to be considered failed after having succeeded                                    | `3`                                                       |
+| `livenessProbe.successThreshold` | Minimum consecutive successes for the probe to be considered successful after having failed                                  | `1`                                                       |
+| `readinessProbe.enabled`         | Enable readinessProbe                                                                                                        | `true`                                                    |
+| `readinessProbe.initialDelaySeconds`| Number of seconds after the container has started before probes are initiated                                             | `15`                                                      |
+| `readinessProbe.timeoutSeconds`  | Number of seconds after which the probe times out                                                                            | `1`                                                       |
+| `readinessProbe.periodSeconds`   | How often (in seconds) to perform the probe                                                                                  | `5`                                                       |
+| `readinessProbe.failureThreshold`| Minimum consecutive failures for the probe to be considered failed after having succeeded                                    | `3`                                                       |
+| `readinessProbe.successThreshold`| Minimum consecutive successes for the probe to be considered successful after having failed                                  | `1`                                                       |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

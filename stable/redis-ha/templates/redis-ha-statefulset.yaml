@@ -98,16 +98,26 @@ spec:
             {{- end }}
               key: auth
 {{- end }}
+{{- if .Values.livenessProbe.enabled }}
         livenessProbe:
           exec:
             command: [ "sh", "/probes/readiness.sh", "{{ .Values.redis.port }}"]
-          initialDelaySeconds: 15
-          periodSeconds: 5
+          initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+          timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+          periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+          failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+          successThreshold: {{ .Values.livenessProbe.successThreshold }}
+{{- end }}
+{{- if .Values.readinessProbe.enabled }}
         readinessProbe:
           exec:
             command: ["sh", "/probes/readiness.sh", "{{ .Values.redis.port }}"]
-          initialDelaySeconds: 15
-          periodSeconds: 5
+          initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+          timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+          periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+          failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+          successThreshold: {{ .Values.readinessProbe.successThreshold }}
+{{- end }}
         resources:
 {{ toYaml .Values.redis.resources | indent 10 }}
         ports:
@@ -137,16 +147,26 @@ spec:
             {{- end }}
               key: auth
 {{- end }}
+{{- if .Values.livenessProbe.enabled }}
         livenessProbe:
           exec:
             command: [ "sh", "/probes/readiness.sh", "{{ .Values.sentinel.port }}"]
-          initialDelaySeconds: 15
-          periodSeconds: 5
+          initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+          timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+          periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+          failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+          successThreshold: {{ .Values.livenessProbe.successThreshold }}
+{{- end }}
+{{- if .Values.readinessProbe.enabled }}
         readinessProbe:
           exec:
             command: ["sh", "/probes/readiness.sh", "{{ .Values.sentinel.port }}"]
-          initialDelaySeconds: 15
-          periodSeconds: 5
+          initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+          timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+          periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+          failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+          successThreshold: {{ .Values.readinessProbe.successThreshold }}
+{{- end }}
         resources:
 {{ toYaml .Values.sentinel.resources | indent 10 }}
         ports:

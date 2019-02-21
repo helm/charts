@@ -135,3 +135,18 @@ persistentVolume:
   annotations: {}
 init:
   resources: {}
+
+livenessProbe:
+  enabled: true
+  initialDelaySeconds: 15
+  timeoutSeconds: 1
+  periodSeconds: 5
+  failureThreshold: 3
+  successThreshold: 1
+readinessProbe:
+  enabled: true
+  initialDelaySeconds: 15
+  timeoutSeconds: 1
+  periodSeconds: 5
+  failureThreshold: 3
+  successThreshold: 1
