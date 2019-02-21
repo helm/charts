@@ -14,7 +14,7 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/secrets: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
+        checksum/secrets: {{ include (print $.Template.BasePath "/secret-shared-rpc.yaml") . | sha256sum }}
 {{- if .Values.metrics.prometheus.enabled }}
         prometheus.io/scrape: "true"
         prometheus.io/port: "8000"
