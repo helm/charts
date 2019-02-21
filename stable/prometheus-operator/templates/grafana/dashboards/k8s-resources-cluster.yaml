@@ -41,7 +41,7 @@ data:
                         "datasource": "$datasource",
                         "fill": 1,
                         "format": "percentunit",
-                        "id": 0,
+                        "id": 1,
                         "legend": {
                             "avg": false,
                             "current": false,
@@ -125,7 +125,7 @@ data:
                         "datasource": "$datasource",
                         "fill": 1,
                         "format": "percentunit",
-                        "id": 1,
+                        "id": 2,
                         "legend": {
                             "avg": false,
                             "current": false,
@@ -209,7 +209,7 @@ data:
                         "datasource": "$datasource",
                         "fill": 1,
                         "format": "percentunit",
-                        "id": 2,
+                        "id": 3,
                         "legend": {
                             "avg": false,
                             "current": false,
@@ -293,7 +293,7 @@ data:
                         "datasource": "$datasource",
                         "fill": 1,
                         "format": "percentunit",
-                        "id": 3,
+                        "id": 4,
                         "legend": {
                             "avg": false,
                             "current": false,
@@ -377,7 +377,7 @@ data:
                         "datasource": "$datasource",
                         "fill": 1,
                         "format": "percentunit",
-                        "id": 4,
+                        "id": 5,
                         "legend": {
                             "avg": false,
                             "current": false,
@@ -461,7 +461,7 @@ data:
                         "datasource": "$datasource",
                         "fill": 1,
                         "format": "percentunit",
-                        "id": 5,
+                        "id": 6,
                         "legend": {
                             "avg": false,
                             "current": false,
@@ -556,7 +556,7 @@ data:
                         "dashes": false,
                         "datasource": "$datasource",
                         "fill": 10,
-                        "id": 6,
+                        "id": 7,
                         "legend": {
                             "avg": false,
                             "current": false,
@@ -654,7 +654,7 @@ data:
                         "dashes": false,
                         "datasource": "$datasource",
                         "fill": 1,
-                        "id": 7,
+                        "id": 8,
                         "legend": {
                             "avg": false,
                             "current": false,
@@ -921,7 +921,7 @@ data:
                         "dashes": false,
                         "datasource": "$datasource",
                         "fill": 10,
-                        "id": 8,
+                        "id": 9,
                         "legend": {
                             "avg": false,
                             "current": false,
@@ -1019,7 +1019,7 @@ data:
                         "dashes": false,
                         "datasource": "$datasource",
                         "fill": 1,
-                        "id": 9,
+                        "id": 10,
                         "legend": {
                             "avg": false,
                             "current": false,
@@ -1277,7 +1277,7 @@ data:
         "schemaVersion": 14,
         "style": "dark",
         "tags": [
-
+            "kubernetes-mixin"
         ],
         "templating": {
             "list": [
@@ -1329,7 +1329,7 @@ data:
             ]
         },
         "timezone": "",
-        "title": "K8s / Compute Resources / Cluster",
+        "title": "Kubernetes / Compute Resources / Cluster",
         "uid": "efa86fd1d0c121a26444b636a3f509a8",
         "version": 0
     }

@@ -1241,7 +1241,7 @@ data:
         "schemaVersion": 14,
         "style": "dark",
         "tags": [
-
+            "kubernetes-mixin"
         ],
         "templating": {
             "list": [
@@ -1319,7 +1319,7 @@ data:
             ]
         },
         "timezone": "",
-        "title": "Nodes",
+        "title": "Kubernetes / Nodes",
         "uid": "fa49a4706d07a042595b664c87fb33ea",
         "version": 0
     }

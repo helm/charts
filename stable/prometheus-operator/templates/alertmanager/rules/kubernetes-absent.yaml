@@ -25,7 +25,7 @@ spec:
       annotations:
         message: Alertmanager has disappeared from Prometheus target discovery.
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-alertmanagerdown
-      expr: absent(up{job="{{ $alertmanagerJob }}"} == 1)
+      expr: absent(up{job="{{ $alertmanagerJob }}",namespace="monitoring"} == 1)
       for: 15m
       labels:
         severity: critical
@@ -103,7 +103,7 @@ spec:
       annotations:
         message: Prometheus has disappeared from Prometheus target discovery.
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-prometheusdown
-      expr: absent(up{job="{{ $prometheusJob }}"} == 1)
+      expr: absent(up{job="{{ $prometheusJob }}",namespace="monitoring"} == 1)
       for: 15m
       labels:
         severity: critical
@@ -112,7 +112,7 @@ spec:
       annotations:
         message: PrometheusOperator has disappeared from Prometheus target discovery.
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-prometheusoperatordown
-      expr: absent(up{job="{{ $operatorJob }}"} == 1)
+      expr: absent(up{job="{{ $operatorJob }}",namespace="monitoring"} == 1)
       for: 15m
       labels:
         severity: critical
