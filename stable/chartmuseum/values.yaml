@@ -9,7 +9,7 @@ image:
   pullPolicy: IfNotPresent
 env:
   open:
-    # storage backend, can be one of: local, alibaba, amazon, google, microsoft
+    # storage backend, can be one of: local, alibaba, amazon, google, microsoft, oracle
     STORAGE: local
     # oss bucket to store charts for alibaba storage backend
     STORAGE_ALIBABA_BUCKET:

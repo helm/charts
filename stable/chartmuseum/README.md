@@ -22,7 +22,7 @@ Please also see https://github.com/kubernetes-helm/chartmuseum
   - [Using with Microsoft Azure Blob Storage](#using-with-microsoft-azure-blob-storage)
   - [Using with Alibaba Cloud OSS Storage](#using-with-alibaba-cloud-oss-storage)
   - [Using with Openstack Object Storage](#using-with-openstack-object-storage)
-  - [Using with Oracle (OCI) Object Storage](#using-with-oracle-object-storage)
+  - [Using with Oracle Object Storage](#using-with-oracle-object-storage)
   - [Using an existing secret](#using-an-existing-secret)
   - [Using with local filesystem storage](#using-with-local-filesystem-storage)
     - [Example storage class](#example-storage-class)
@@ -104,9 +104,9 @@ their default values. See values.yaml for all available options.
 | `env.open.STORAGE_OPENSTACK_PREFIX`    | Prefix to store charts for openstack        | ``                                                  |
 | `env.open.STORAGE_OPENSTACK_REGION`    | Region of openstack container               | ``                                                  |
 | `env.open.STORAGE_OPENSTACK_CACERT`    | Path to a CA cert bundle for openstack      | ``                                                  |
-| `env.open.STORAGE_ORACLE_COMPARTMENTID | Compartment ID for OCI Object Store         | ``                                                  |
-| `env.open.STORAGE_ORACLE_BUCKET`       | Bucket to store charts in OCI Object Store  | ``                                                  |
-| `env.open.STORAGE_ORACLE_PREFIX`       | Prefix to store charts for OCI object Store | ``                                                  |
+| `env.open.STORAGE_ORACLE_COMPARTMENTID | Compartment ID for Oracle Object Store      | ``                                                  |
+| `env.open.STORAGE_ORACLE_BUCKET`       | Bucket to store charts in Oracle Object Store  | ``                                                  |
+| `env.open.STORAGE_ORACLE_PREFIX`       | Prefix to store charts for Oracle object Store | ``                                                  |
 | `env.open.CHART_POST_FORM_FIELD_NAME`  | Form field to query for chart file content  | ``                                                  |
 | `env.open.PROV_POST_FORM_FIELD_NAME`   | Form field to query for chart provenance    | ``                                                  |
 | `env.open.DEPTH`                       | levels of nested repos for multitenancy.    | `0`                                                 |
@@ -134,7 +134,7 @@ their default values. See values.yaml for all available options.
 | `gcp.secret.name`                      | Secret name for the GCP json file           | ``                                                  |
 | `gcp.secret.key`                       | Secret key for te GCP json file             | `credentials.json`                                  |
 | `oracle.secret.enabled`                | Flag for OCI account                        | `false`                                             |
-| `oracle.secret.name`                   | Secret name for OCI config and key          | ``                                                  |
+| `oracle.secret.name`                   | Secret name for Oracle OCI config and key   | ``                                                  |
 | `oracle.secret.config`                 | Secret key that holds the OCI config        | `config`                                            |
 | `oracle.secret.key_file`               | Secret key that holds the OCI private key   | `key_file`                                          |
 | `service.type`                         | Kubernetes Service type                     | `ClusterIP`                                          |
@@ -423,7 +423,7 @@ Run command to install
 ```shell
 helm install --name my-chartmuseum -f custom.yaml stable/chartmuseum
 ```
-### Using with Oracle (OCI) Object Storage
+### Using with Oracle Object Storage
 
 Oracle (OCI) configuration and private key need to be added to a secret and are mounted at /home/chartmuseum/.oci. Your OCI config needs to be under [DEFAULT] and your `key_file` needs to be /home/chartmuseum/.oci/oci.key.  See https://docs.cloud.oracle.com/iaas/Content/API/Concepts/sdkconfig.htm
 
