@@ -280,7 +280,7 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `workers.replicas`                       | number of workers pods to launch                        | `1`                       |
 | `workers.resources`                      | custom resource configuration for worker pod            | `{}`                      |
 | `workers.celery.instances`               | number of parallel celery tasks per worker              | `1`                       |
-| `workers.pod.annotations`                | annotations for the worker pods                         | `{}`                      |
+| `workers.podAnnotations`                 | annotations for the worker pods                         | `{}`                      |
 | `workers.secretsDir`                     | directory in which to mount secrets on worker nodes     | /var/airflow/secrets      |
 | `workers.secrets`                        | secrets to mount as volumes on worker nodes             | []                        |
 | `existingAirflowSecret`                  | secret to use for postgres and redis connection         |                           |

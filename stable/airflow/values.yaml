@@ -150,10 +150,9 @@ workers:
     #   memory: "512Mi"
   ##
   ## Annotations for the Worker pods
-  pod:
-    annotations:
-      ## Example:
-      ## iam.amazonaws.com/role: airflow-worker-Role
+  podAnnotations: {}
+    ## Example:
+    ## iam.amazonaws.com/role: airflow-Role
   ##
   ## Celery worker configuration
   celery:
