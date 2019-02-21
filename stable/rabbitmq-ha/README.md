@@ -69,6 +69,7 @@ and their default values.
 | `existingSecret`                               | Use an existing secret for password & erlang cookie                                                                                                                                                   | `""`                                                       |
 | `extraPlugins`                                 | Additional plugins to add to the default configmap                                                                                                                                                    | `rabbitmq_shovel, rabbitmq_shovel_management, rabbitmq_federation, rabbitmq_federation_management,` |
 | `extraConfig`                                  | Additional configuration to add to default configmap                                                                                                                                                  | `{}`                                                         |
+| `advancedConfig`                               | Additional configuration in classic config format                                                                                                                                                   | `""`                                                           |
 | `definitions.users`                            | Additional users | `""` |
 | `definitions.vhosts`                           | Additional vhosts | `""` |
 | `definitions.parameters`                       | Additional parameters | `""` |
@@ -113,7 +114,7 @@ and their default values.
 | `rabbitmqCert.certfile`                        | base64 encoded server certificate (overwrites existing Secret)                                                                                                                                        | ``                                                         |
 | `rabbitmqCert.existingSecret`                  | Name of an existing `Secret` to mount for amqps                                                                                                                                                       | `""`                                                       |
 | `rabbitmqCert.keyfile`                         | base64 encoded server private key (overwrites existing Secret)                                                                                                                                        | ``                                                         |
-| `rabbitmqClusterPartitionHandling`             | [Automatic Partition Handling Strategy (split brain handling)](https://www.rabbitmq.com/partitions.html#automatic-handling)                                                                           | `autoheal`                                                 | 
+| `rabbitmqClusterPartitionHandling`             | [Automatic Partition Handling Strategy (split brain handling)](https://www.rabbitmq.com/partitions.html#automatic-handling)                                                                           | `autoheal`                                                 |
 | `extraVolumes`                             | Extra volumes to attach to the statefulset                                                                                                                                                           | `[]`                                                     |
 | `extraVolumeMounts`                             | Extra volume mounts to mount to the statefulset                                                                                                                                                           | `[]`                                                     |
 | `rabbitmqEpmdPort`                             | EPMD port used for cross cluster replication                                                                                                                                                          | `4369`                                                     |
@@ -225,7 +226,7 @@ $ helm install --name my-release --set existingConfigMap=true stable/rabbitmq-ha
 
 Similar to custom ConfigMap, `existingSecret` can be used to override the default secret.yaml provided, and
 `rabbitmqCert.existingSecret` can be used to override the default certificates. The custom secret must provide
-the following keys: 
+the following keys:
 
 * `rabbitmq-user`
 * `rabbitmq-password`

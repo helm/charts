@@ -148,6 +148,10 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   # name:
 
+# Use host network for Cassandra pods
+# You must pass seed list into config.seeds property if set to true
+hostNetwork: false
+
 ## Backup cronjob configuration
 ## Ref: https://github.com/nuvo/cain
 backup:

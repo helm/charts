@@ -12,7 +12,7 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 */}}
 {{- define "postgresql.fullname" -}}
 {{- if .Values.fullnameOverride -}}
-{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
+{{- printf .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
 {{- $name := default .Chart.Name .Values.nameOverride -}}
 {{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
@@ -149,4 +149,11 @@ Get the initialization scripts ConfigMap name.
 {{- else -}}
 {{- printf "%s-init-scripts" (include "postgresql.fullname" .) -}}
 {{- end -}}
+{{- end -}}
+
+{{/*
+Get the initialization scripts Secret name.
+*/}}
+{{- define "postgresql.initdbScriptsSecret" -}}
+{{- printf "%s" .Values.initdbScriptsSecret -}}
 {{- end -}}

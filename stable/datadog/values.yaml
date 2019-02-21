@@ -3,7 +3,7 @@ image:
   # This chart is compatible with different images, please choose one
   repository: datadog/agent               # Agent6
   # repository: datadog/dogstatsd         # Standalone DogStatsD6
-  tag: 6.6.0  # Use 6.6.0-jmx to enable jmx fetch collection
+  tag: 6.9.0  # Use 6.9.0-jmx to enable jmx fetch collection
   pullPolicy: IfNotPresent
   ## It is possible to specify docker registry credentials
   ## See https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
@@ -96,7 +96,7 @@ clusterAgent:
   containerName: cluster-agent
   image:
     repository: datadog/cluster-agent
-    tag: 1.0.0
+    tag: 1.1.0
     pullPolicy: IfNotPresent
   enabled: false
   ## This needs to be at least 32 characters a-zA-z
@@ -171,8 +171,18 @@ datadog:
   ##
   # nonLocalTraffic: true
 
+  ## Enable origin detection for container tagging
+  ## https://docs.datadoghq.com/developers/dogstatsd/unix_socket/#using-origin-detection-for-container-tagging
+  ##
+  # dogstatsdOriginDetection: true
+
   ## Enable container runtime socket volume mounting
   useCriSocketVolume: true
+
+  ## Enable dogstatsd over Unix Domain Socket
+  ## ref: https://docs.datadoghq.com/developers/dogstatsd/unix_socket/
+  ##
+  # useDogStatsDSocketVolume: true
 
   ## Set host tags.
   ## ref: https://github.com/DataDog/docker-dd-agent#environment-variables
@@ -196,6 +206,7 @@ datadog:
   # apmEnabled: true
 
   ## Un-comment this to enable live process monitoring
+  ## /etc/passwd will automatically be mounted to allow username resolution
   ## ref: https://docs.datadoghq.com/graphing/infrastructure/process/#kubernetes-daemonset
   ##
   # processAgentEnabled: true
@@ -207,18 +218,14 @@ datadog:
   #   - name:
   #     value:
 
-  ## The dd-agent supports detailed process and container monitoring and
-  ## requires control over the volume and volumeMounts for the daemonset
-  ## or deployment.
-  ## ref: https://docs.datadoghq.com/guides/process/
-  ##
+  ## If needed, you can specify additionnal volumes to mount in the dd-agent container
   # volumes:
   #  - hostPath:
-  #      path: /etc/passwd
-  #    name: passwd
+  #      path: /host/path
+  #    name: myvolume
   # volumeMounts:
-  #   - name: passwd
-  #     mountPath: /etc/passwd
+  #   - name: myvolume
+  #     mountPath: /container/path
   #     readOnly: true
 
   ## Enable leader election mechanism for event collection

@@ -159,17 +159,40 @@ $ kubectl create secret generic redshift-user --from-file=redshift-user=~/secret
 ```
 Where `redshift-user.txt` contains the user secret as a single text string.
 
-### Use precreated secret for postgres and redis
+### Use precreated secret for airflow secrets or environment variables
 
-You can use a precreated secret for the connection credentials to both postgresql and redis. To do
+You can use a precreated secret for the connection credentials, or general environment variables. To do
 so specify in values.yaml `existingAirflowSecret`, where the value is the name of the secret which has
-postgresUser, postgresPassword, and redisPassword defined. If not specified, it will fall back to using
+postgresUser, postgresPassword, and redisPassword etc. is defined. If not specified, it will fall back to using
 `secrets.yaml` to store the connection credentials by default.
+
+Map each specific secret to specific environment variables in your values.yaml. Where envVar is the airflow environment
+variable to populate and secretKey is the key that contains your secret value in your kubernetes secret:
+```yaml
+existingAirflowSecret: my-airflow-secrets
+airflow:
+    secretsMapping:
+      - envVar: AIRFLOW__LDAP__BIND_PASSWORD
+        secretKey: ldapBindPassword
+
+      - envVar: POSTGRES_USER
+        secretKey: airflowPostgresUser
+
+      - envVar: POSTGRES_PASSWORD
+        secretKey: airflowPostgresPassword
+
+      - envVar: REDIS_PASSWORD
+        secretKey: airflowRedisPassword
+```
 
 ### Local binaries
 
 Please note a folder `~/.local/bin` will be automatically created and added to the PATH so that
 Bash operators can use command line tools installed by `pip install --user` for instance.
+
+## Installing dependencies
+
+Add a `requirements.txt` file at the root of your DAG project (`dags.path` entry at `values.yaml`) and they will be automatically installed. That works for both shared persistent volume and init-container deployment strategies (see below).
 
 ## DAGs Deployment
 
@@ -198,10 +221,11 @@ To share a PV with multiple Pods, the PV needs to have accessMode 'ReadOnlyMany'
 If you enable set `dags.init_container.enabled=true`, the pods will try upon startup to fetch the
 git repository defined by `dags.git_repo`, on branch `dags.git_branch` as DAG folder.
 
-You can also add a `requirements.txt` file at the root of your DAG project to have other
-Python dependencies installed.
-
 This is the easiest way of deploying your DAGs to Airflow.
+
+If you are using a private Git repo, you can set `dags.gitSecret` to the name of a secret you created containing private keys and a `known_hosts` file.
+
+For example, this will create a secret named `my-git-secret` from your ed25519 key and known_hosts file stored in your home directory:  `kubectl create secret generic my-git-secret --from-file=id_ed25519=~/.ssh/id_ed25519 --from-file=known_hosts=~/.ssh/known_hosts --from-file=id_id_ed25519.pub=~/.ssh/id_ed25519.pub`
 
 ### Embedded DAGs
 
@@ -250,6 +274,7 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `airflow.webReplicas`                    | how many replicas for web server                        | `1`                       |
 | `airflow.config`                         | custom airflow configuration env variables              | `{}`                      |
 | `airflow.podDisruptionBudget`            | control pod disruption budget                           | `{'maxUnavailable': 1}`   |
+| `airflow.secretsMapping`		           | override any environment variable with a secret	     | 				             |
 | `workers.enabled`                        | enable workers                                          | `true`                    |
 | `workers.replicas`                       | number of workers pods to launch                        | `1`                       |
 | `workers.resources`                      | custom resource configuration for worker pod            | `{}`                      |
@@ -288,6 +313,7 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `dags.initContainer.installRequirements` | auto install requirements.txt deps                      | `true`                    |
 | `dags.git.url`                           | url to clone the git repository                         | nil                       |
 | `dags.git.ref`                           | branch name, tag or sha1 to reset to                    | `master`                  |
+| `dags.git.secret`                        | name of a secret containing an ssh deploy key           | nil                       |
 | `logs.path`                              | mount path for logs persistent volume                   | `/usr/local/airflow/logs` |
 | `rbac.create`                            | create RBAC resources                                   | `true`                    |
 | `serviceAccount.create`                  | create a service account                                | `true`                    |
@@ -302,6 +328,7 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `postgresql.persistance.storageClass`    | Persistant class                                        | (undefined)               |
 | `postgresql.persistance.accessMode`      | Access mode                                             | `ReadWriteOnce`           |
 | `redis.enabled`                          | Create a Redis cluster                                  | `true`                    |
+| `redis.redisHost`                        | Redis Hostname                                          | (undefined)               |
 | `redis.password`                         | Redis password                                          | `airflow`                 |
 | `redis.master.persistence.enabled`       | Enable Redis PVC                                        | `false`                   |
 | `redis.cluster.enabled`                  | enable master-slave cluster                             | `false`                   |
