@@ -12,6 +12,15 @@ rbac:
 
 resources: {}
 
+# this is the k8s spec block for initContainers:
+initContainers: []
+  # - name:
+  #   image:
+  #   volumeMounts:
+  #     - name: plugins
+  #       mountPath: /target
+
+
 serviceAccount:
   server:
     create: true
