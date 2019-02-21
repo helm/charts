@@ -55,7 +55,7 @@ mgmt:
   imagePullPolicy: IfNotPresent
   extraArgs: []
   configmapPolicies:
-    enabled: false  
+    enabled: false
     namespaces: [opa, kube-federation-scheduling-policy]
     requireLabel: true
   replicate:
@@ -88,14 +88,14 @@ rbac:
   create: true
   rules:
     cluster: []
-    #- apiGroups:
-    #    - ""
-    #  resources:
-    #  - namespaces
-    #  verbs:
-    #  - get
-    #  - list
-    #  - watch
+    # - apiGroups:
+    #     - ""
+    #   resources:
+    #   - namespaces
+    #   verbs:
+    #   - get
+    #   - list
+    #   - watch
 
 serviceAccount:
   # Specifies whether a ServiceAccount should be created
