@@ -51,6 +51,7 @@ The following table lists the configurable parameters of the Falco chart and the
 | `resources`                                     | Specify container resources                                          | `{}`                                                                                   |
 | `extraArgs`                                     | Specify additional container args                                    | `[]`                                                                                   |
 | `rbac.create`                                   | If true, create & use RBAC resources                                 | `true`                                                                                 |
+| `podSecurityPolicy.create`                      | If true, create & use podSecurityPolicy                              | `false`                                                                                |
 | `serviceAccount.create`                         | Create serviceAccount                                                | `true`                                                                                 |
 | `serviceAccount.name`                           | Use this value as serviceAccountName                                 | ` `                                                                                    |
 | `fakeEventGenerator.enabled`                    | Run falco-event-generator for sample events                          | `false`                                                                                |
