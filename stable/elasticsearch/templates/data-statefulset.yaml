@@ -105,6 +105,9 @@ spec:
 {{- if .Values.extraInitContainers }}
 {{ tpl .Values.extraInitContainers . | indent 6 }}
 {{- end }}
+{{- if .Values.cluster.plugins }}
+{{ include "plugin-installer" . | indent 6 }}
+{{- end }}
       containers:
       - name: elasticsearch
         env:
@@ -141,6 +144,10 @@ spec:
         - mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
           name: config
           subPath: elasticsearch.yml
+{{- if .Values.cluster.plugins }}
+        - mountPath: /usr/share/elasticsearch/plugins/
+          name: plugindir
+{{- end }}
 {{- if hasPrefix "2." .Values.appVersion }}
         - mountPath: /usr/share/elasticsearch/config/logging.yml
           name: config
@@ -183,6 +190,10 @@ spec:
       - name: config
         configMap:
           name: {{ template "elasticsearch.fullname" . }}
+{{- if .Values.cluster.plugins }}
+      - name: plugindir
+        emptyDir: {}
+{{- end }}
 {{- if .Values.cluster.keystoreSecret }}
       - name: keystore
         secret:
