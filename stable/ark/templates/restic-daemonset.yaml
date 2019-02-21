@@ -36,7 +36,8 @@ spec:
           emptyDir: {}
       containers:
         - name: ark
-          image: gcr.io/heptio-images/ark:latest
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           command:
             - /ark
           args:
