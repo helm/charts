@@ -81,7 +81,8 @@ The image used for this chart is based on Alpine 3.9.0.
 The Java Virtual Machine used for this chart is the OpenJDK JVM 8u192 JRE (headless).
 
 ## ZooKeeper Details
-The ZooKeeper version is the latest beta version (3.5.4).
+The chart defaults to ZooKeeper 3.4.13 (latest released version). However, this cannot be
+safely scaled, for that please use ZooKeeper version 3.5.4 or later..
 
 ## Failover
 You can test failover by killing the leader. Insert a key:
@@ -131,7 +132,7 @@ bar
 ```
 
 ## Scaling
-ZooKeeper can not be safely scaled in versions prior to 3.5.x. This chart currently defaults 3.5.4.
+ZooKeeper can not be safely scaled in versions prior to 3.5.x. This chart currently defaults to 3.4.13 but has been tested with 3.5.4 (beta).
 
 While ZooKeeper 3.5.x does allow for dynamic ensemble reconfiguration (including scaling membership), the current status of the release is still alpha, and 3.5.x is therefore not recommended for production use.
 
