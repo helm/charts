@@ -5,6 +5,9 @@ image:
   tag: "1.7.7-alpine"
   pullPolicy: "Always"
 
+nameOverride: ""
+fullnameOverride: ""
+
 ## Specify a service type
 ## ClusterIP is default
 ## ref: http://kubernetes.io/docs/user-guide/services/
