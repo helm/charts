@@ -1,0 +1,31 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: yb-loadtester
+  labels:
+    app: yb-loadtester
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: yb-loadtester
+  template:
+    metadata:
+      labels:
+        app: yb-loadtester
+    spec:
+      containers:
+      - args:
+        - bash
+        - -c
+        - while true; do sleep 30; done;
+        image: quay.io/yugabyte/yb-sample-apps-itest:latest
+        imagePullPolicy: Always
+        name: yb-loadtester
+        resources:
+          limits:
+            cpu: "31"
+          requests:
+            cpu: "31"
+      imagePullSecrets:
+        - name: yugabyte-k8s-pull-secret
