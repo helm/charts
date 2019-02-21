@@ -98,6 +98,10 @@ spec:
               value: {{ quote $value }}
           {{- end }}
         {{- end }}
+        {{- with .Values.server.securityContext }}
+          securityContext:
+{{ toYaml . | indent 12 }}
+        {{- end }}
           volumeMounts:
             - mountPath: /etc/kiam/tls
               name: tls

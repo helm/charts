@@ -1,0 +1,33 @@
+{{- if .Values.podSecurityPolicy.server.create}}
+apiVersion: extensions/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: {{ template "kiam.fullname" . }}-server
+  labels:
+    app: {{ template "kiam.name" . }}
+    chart: {{ template "kiam.chart" . }}
+    component: "{{ .Values.server.name }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+spec:
+  # Required fields
+  hostNetwork: {{ .Values.server.useHostNetwork }}
+  volumes:
+    - hostPath
+    - secret
+  # Mandatory fields for valid PSP
+  runAsUser:
+    rule: MustRunAsNonRoot
+  seLinux:
+    rule: RunAsAny
+  supplementalGroups:
+    ranges:
+    - max: 65535
+      min: 1
+    rule: MustRunAs
+  fsGroup:
+    ranges:
+    - max: 65535
+      min: 1
+    rule: MustRunAs
+{{- end }}

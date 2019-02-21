@@ -94,6 +94,13 @@ agent:
   ##
   gatewayTimeoutCreation: 50ms
 
+  ## securityContext for the pods
+  ##
+  securityContext:
+    runAsUser: 65534  # run as nobody user | disable or set to root if agent.host.iptables = true
+    # privileged: true  # necessary if agent.host.iptables = true
+
+
   ## Base64-encoded PEM values for agent's CA certificate(s), certificate and private key
   ##
   tlsFiles:
@@ -200,6 +207,11 @@ server:
   probes:
     serverAddress: 127.0.0.1
 
+  ## securityContext for the pods
+  ##
+  securityContext:
+    runAsUser: 65534  # run as nobody user
+
   ## Base64-encoded PEM values for server's CA certificate(s), certificate and private key
   ##
   tlsFiles:
@@ -246,3 +258,10 @@ serviceAccounts:
   server:
     create: true
     name:
+
+# Create appropriate PodSecurityPolicies if necessary
+podSecurityPolicy:
+  agent:
+    create: false
+  server:
+    create: false

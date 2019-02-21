@@ -1,0 +1,20 @@
+{{- if .Values.podSecurityPolicy.server.create -}}
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: RoleBinding
+metadata:
+  labels:
+    app: {{ template "kiam.name" . }}
+    chart: {{ template "kiam.chart" . }}
+    component: "{{ .Values.server.name }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "kiam.fullname" . }}-server
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ template "kiam.fullname" . }}-server
+subjects:
+  - kind: ServiceAccount
+    name: {{ template "kiam.serviceAccountName.server" . }}
+    namespace: {{ .Release.Namespace }}
+{{- end -}}

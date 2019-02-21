@@ -41,10 +41,10 @@ spec:
     {{- end }}
       tolerations:
 {{ toYaml .Values.agent.tolerations | indent 8 }}
-      {{- if .Values.agent.affinity }}
+    {{- if .Values.agent.affinity }}
       affinity:
 {{ toYaml .Values.agent.affinity | indent 10 }}
-      {{- end }}
+    {{- end }}
       volumes:
         - name: tls
           secret:
@@ -63,10 +63,6 @@ spec:
       {{- end }}
       containers:
         - name: {{ template "kiam.name" . }}-{{ .Values.agent.name }}
-        {{- if .Values.agent.host.iptables }}
-          securityContext:
-            privileged: true
-        {{- end }}
           image: "{{ .Values.agent.image.repository }}:{{ .Values.agent.image.tag }}"
           imagePullPolicy: {{ .Values.agent.image.pullPolicy }}
           command:
@@ -107,6 +103,10 @@ spec:
             - name: {{ $name }}
               value: {{ quote $value }}
           {{- end }}
+        {{- with .Values.agent.securityContext }}
+          securityContext:
+{{ toYaml . | indent 12 }}
+        {{- end }}
           volumeMounts:
             - mountPath: /etc/kiam/tls
               name: tls

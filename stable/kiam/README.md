@@ -159,6 +159,8 @@ Parameter | Description | Default
 `serviceAccounts.agent.name` | Name of the agent service account to use or create | `{{ kiam.agent.fullname }}`
 `serviceAccounts.server.create` | If true, create the server service account | `true`
 `serviceAccounts.server.name` | Name of the server service account to use or create | `{{ kiam.server.fullname }}`
+`podSecurityPolicy.agent.create` | If true, create pertinent PodSecurityPolicy and bindings for the agent pods | `false`
+`podSecurityPolicy.server.create` | If true, create pertinent PodSecurityPolicy and bindings for the server pods | `false`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

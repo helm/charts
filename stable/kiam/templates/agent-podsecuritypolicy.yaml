@@ -1,0 +1,40 @@
+{{- if .Values.podSecurityPolicy.agent.create}}
+apiVersion: extensions/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: {{ template "kiam.fullname" . }}-agent
+  labels:
+    app: {{ template "kiam.name" . }}
+    chart: {{ template "kiam.chart" . }}
+    component: "{{ .Values.agent.name }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+spec:
+  # Required fields
+  hostNetwork: true
+  {{- if .Values.agent.host.iptables }}
+  privileged: true
+  allowPrivilegeEscalation: true
+  runAsUser:
+    rule: RunAsAny
+  {{- else }}
+  runAsUser:
+    rule: MustRunAsNonRoot
+  {{- end }}
+  volumes:
+    - hostPath
+    - secret
+  # Mandatory fields for valid PSP
+  seLinux:
+    rule: RunAsAny
+  supplementalGroups:
+    ranges:
+    - max: 65535
+      min: 1
+    rule: MustRunAs
+  fsGroup:
+    ranges:
+    - max: 65535
+      min: 1
+    rule: MustRunAs
+{{- end }}
