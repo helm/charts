@@ -1,4 +1,6 @@
 # Generated from 'k8s-resources-namespace' from https://raw.githubusercontent.com/coreos/prometheus-operator/master/contrib/kube-prometheus/manifests/grafana-dashboardDefinitions.yaml
+# Do not change in-place! In order to change this file first read following link:
+# https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
 {{- if and .Values.grafana.enabled .Values.grafana.defaultDashboardsEnabled }}
 apiVersion: v1
 kind: ConfigMap

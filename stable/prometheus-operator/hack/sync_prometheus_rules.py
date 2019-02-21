@@ -79,6 +79,8 @@ replacement_map = {
 
 # standard header
 header = '''# Generated from '%(name)s' group from %(url)s
+# Do not change in-place! In order to change this file first read following link:
+# https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
 {{- if and .Values.defaultRules.create%(condition)s }}%(init_line)s
 apiVersion: {{ printf "%%s/v1" (.Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com") }}
 kind: PrometheusRule
@@ -151,11 +153,11 @@ def add_rules_conditions(rules, indent=4):
             found_block_end = False
             last_line_index = next_index
             while not found_block_end:
-                last_line_index = rules.rindex('\n', index, last_line_index - 1) # find the starting position of the last line
+                last_line_index = rules.rindex('\n', index, last_line_index - 1)  # find the starting position of the last line
                 last_line = rules[last_line_index + 1:next_index]
 
                 if last_line.startswith('{{- if'):
-                    next_index = last_line_index + 1 # move next_index back if the current block ends in an if statement
+                    next_index = last_line_index + 1  # move next_index back if the current block ends in an if statement
                     continue
 
                 found_block_end = True
