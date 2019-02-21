@@ -15,7 +15,6 @@ keywords:
 sources:
 - https://github.com/drone/drone
 maintainers:
-  maintainers:
 - name: christian-roggia
   email: christian.roggia@gmail.com
 - name: paulczar
