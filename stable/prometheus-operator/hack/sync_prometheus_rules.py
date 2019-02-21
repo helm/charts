@@ -78,6 +78,9 @@ replacement_map = {
     'namespace="monitoring"': {
         'replacement': 'namespace="{{ $namespace }}"',
         'init': '{{- $namespace := .Release.Namespace }}'},
+    'alertmanager-$1': {
+        'replacement': '$1',
+        'init': ''},
 }
 
 # standard header
@@ -179,7 +182,8 @@ def write_group_to_file(group, url, destination):
     for line in replacement_map:
         if line in rules:
             rules = rules.replace(line, replacement_map[line]['replacement'])
-            init_line += '\n' + replacement_map[line]['init']
+            if replacement_map[line]['init']:
+                init_line += '\n' + replacement_map[line]['init']
     # append per-alert rules
     rules = add_rules_conditions(rules)
     # initialize header

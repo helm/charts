@@ -8,5 +8,5 @@ dependencies:
 - name: grafana
   repository: https://kubernetes-charts.storage.googleapis.com/
   version: 2.0.2
-digest: sha256:a12ccb6d9018dc92545ca12417496b0c73d83fc8f985aebdccfb3f4d259e63e1
-generated: 2019-02-21T13:33:44.916743+03:00
+digest: sha256:c3746232f84904ce907eaf0f886e2a076e75d766e81a7c12140c41890d9985f5
+generated: 2019-02-21T22:20:40.7283+03:00
