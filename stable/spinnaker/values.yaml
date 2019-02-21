@@ -35,6 +35,18 @@ halyard:
             remoteIpHeader: X-Forwarded-For
             internalProxies: .*
             httpsServerPort: X-Forwarded-Port
+  ## Override service-settings
+  ## See https://www.spinnaker.io/reference/halyard/custom/
+  additionalServiceSettings:
+    deck:
+      kubernetes:
+        # podAnnotations: {}
+    front50:
+      kubernetes:
+        # podAnnotations: {}
+    gate:
+      kubernetes:
+        # podAnnotations: {}
 
   ## Uncomment if you want to add extra commands to the init script
   ## run by the init container before halyard is started.
