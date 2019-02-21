@@ -5,21 +5,21 @@ kind: ServiceAccount
 metadata:
   name: {{ template "cockroachdb.serviceAccountName" . }}
   labels:
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    component: "{{ .Release.Name }}-{{ .Values.Component }}"
+    heritage: {{ template "cockroachdb.heritageName" . }}
+    release: {{ template "cockroachdb.releaseName" . }}
+    chart: {{ template "cockroachdb.chartName" . }}
+    component: {{ template "cockroachdb.componentName" . }}
 ---
 {{- end }}
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: Role
 metadata:
-  name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}"
+  name: "{{ template "cockroachdb.fullName" . }}"
   labels:
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    component: "{{ .Release.Name }}-{{ .Values.Component }}"
+    heritage: {{ template "cockroachdb.heritageName" . }}
+    release: {{ template "cockroachdb.releaseName" . }}
+    chart: {{ template "cockroachdb.chartName" . }}
+    component: {{ template "cockroachdb.componentName" . }}
 rules:
 - apiGroups:
   - ""
@@ -32,12 +32,12 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole
 metadata:
-  name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}"
+  name: "{{ template "cockroachdb.fullName" . }}"
   labels:
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    component: "{{ .Release.Name }}-{{ .Values.Component }}"
+    heritage: {{ template "cockroachdb.heritageName" . }}
+    release: {{ template "cockroachdb.releaseName" . }}
+    chart: {{ template "cockroachdb.chartName" . }}
+    component: {{ template "cockroachdb.componentName" . }}
 rules:
 - apiGroups:
   - certificates.k8s.io
@@ -51,16 +51,16 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: RoleBinding
 metadata:
-  name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}"
+  name: "{{ template "cockroachdb.fullName" . }}"
   labels:
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    component: "{{ .Release.Name }}-{{ .Values.Component }}"
+    heritage: {{ template "cockroachdb.heritageName" . }}
+    release: {{ template "cockroachdb.releaseName" . }}
+    chart: {{ template "cockroachdb.chartName" . }}
+    component: {{ template "cockroachdb.componentName" . }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}"
+  name: "{{ template "cockroachdb.fullName" . }}"
 subjects:
 - kind: ServiceAccount
   name: {{ template "cockroachdb.serviceAccountName" . }}
@@ -69,12 +69,12 @@ subjects:
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding
 metadata:
-  name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}"
+  name: "{{ template "cockroachdb.fullName" . }}"
   labels:
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    component: "{{ .Release.Name }}-{{ .Values.Component }}"
+    heritage: {{ template "cockroachdb.heritageName" . }}
+    release: {{ template "cockroachdb.releaseName" . }}
+    chart: {{ template "cockroachdb.chartName" . }}
+    component: {{ template "cockroachdb.componentName" . }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
@@ -90,14 +90,14 @@ kind: Service
 metadata:
   # This service is meant to be used by clients of the database. It exposes a ClusterIP that will
   # automatically load balance connections to the different database pods.
-  name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}-public"
+  name: "{{ template "cockroachdb.fullNamePublic" . }}"
   annotations:
 {{ toYaml .Values.Service.annotations | indent 4 }}
   labels:
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    component: "{{ .Release.Name }}-{{ .Values.Component }}"
+    heritage: {{ template "cockroachdb.heritageName" . }}
+    release: {{ template "cockroachdb.releaseName" . }}
+    chart: {{ template "cockroachdb.chartName" . }}
+    component: {{ template "cockroachdb.componentName" . }}
 spec:
   type: {{ .Values.Service.type }}
   ports:
@@ -116,7 +116,7 @@ spec:
     name: {{ .Values.InternalGrpcName }}
     {{- end }}
   selector:
-    component: "{{ .Release.Name }}-{{ .Values.Component }}"
+    component: {{ template "cockroachdb.componentName" . }}
 ---
 apiVersion: v1
 kind: Service
@@ -125,12 +125,12 @@ metadata:
   # set such that they can resolve each other's IP addresses. It does not
   # create a load-balanced ClusterIP and should not be used directly by clients
   # in most circumstances.
-  name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}"
+  name: "{{ template "cockroachdb.fullName" . }}"
   labels:
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    component: "{{ .Release.Name }}-{{ .Values.Component }}"
+    heritage: {{ template "cockroachdb.heritageName" . }}
+    release: {{ template "cockroachdb.releaseName" . }}
+    chart: {{ template "cockroachdb.chartName" . }}
+    component: {{ template "cockroachdb.componentName" . }}
   annotations:
     # Use this annotation in addition to the actual field below because the
     # annotation will stop being respected soon but the field is broken in
@@ -161,42 +161,42 @@ spec:
   publishNotReadyAddresses: true
   clusterIP: None
   selector:
-    component: "{{ .Release.Name }}-{{ .Values.Component }}"
+    component: {{ template "cockroachdb.componentName" . }}
 ---
 apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
-  name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}-budget"
+  name: {{ template "cockroachdb.podDisruptionBudgetServiceName" . }}
   labels:
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    component: "{{ .Release.Name }}-{{ .Values.Component }}"
+    heritage: {{ template "cockroachdb.heritageName" . }}
+    release: {{ template "cockroachdb.releaseName" . }}
+    chart: {{ template "cockroachdb.chartName" . }}
+    component: {{ template "cockroachdb.componentName" . }}
 spec:
   selector:
     matchLabels:
-      component: "{{ .Release.Name }}-{{ .Values.Component }}"
+      component: {{ template "cockroachdb.componentName" . }}
   maxUnavailable: {{ .Values.MaxUnavailable }}
 ---
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
-  name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}"
+  name: "{{ template "cockroachdb.fullName" . }}"
 spec:
-  serviceName: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}"
+  serviceName: "{{ template "cockroachdb.fullName" . }}"
   replicas: {{ default 3 .Values.Replicas }}
   selector:
     matchLabels:
-      heritage: {{ .Release.Service | quote }}
-      release: {{ .Release.Name | quote }}
-      component: "{{ .Release.Name }}-{{ .Values.Component }}"
+      heritage: {{ template "cockroachdb.heritageName" . }}
+      release: {{ template "cockroachdb.releaseName" . }}
+      component: {{ template "cockroachdb.componentName" . }}
   template:
     metadata:
       labels:
-        heritage: {{ .Release.Service | quote }}
-        release: {{ .Release.Name | quote }}
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-        component: "{{ .Release.Name }}-{{ .Values.Component }}"
+        heritage: {{ template "cockroachdb.heritageName" . }}
+        release: {{ template "cockroachdb.releaseName" . }}
+        chart: {{ template "cockroachdb.chartName" . }}
+        component: {{ template "cockroachdb.componentName" . }}
     spec:
 {{- if .Values.Secure.Enabled }}
       serviceAccountName: {{ template "cockroachdb.serviceAccountName" . }}
@@ -216,7 +216,7 @@ spec:
         command:
         - "/bin/ash"
         - "-ecx"
-        - "/request-cert -namespace=${POD_NAMESPACE} -certs-dir=/cockroach-certs -type=node -addresses=localhost,127.0.0.1,$(hostname -f),$(hostname -f|cut -f 1-2 -d '.'),{{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}-public,{{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}-public.$(hostname -f|cut -f 3- -d '.') -symlink-ca-from=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
+        - "/request-cert -namespace=${POD_NAMESPACE} -certs-dir=/cockroach-certs -type=node -addresses=localhost,127.0.0.1,$(hostname -f),$(hostname -f|cut -f 1-2 -d '.'),{{ template "cockroachdb.fullNamePublic" . }},{{ template "cockroachdb.fullNamePublic" . }}.$(hostname -f|cut -f 3- -d '.') -symlink-ca-from=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
         env:
         - name: POD_NAMESPACE
           valueFrom:
@@ -236,7 +236,7 @@ spec:
                 - key: component
                   operator: In
                   values:
-                  - "{{ .Release.Name }}-{{ .Values.Component }}"
+                  - {{ template "cockroachdb.componentName" . }}
               topologyKey: kubernetes.io/hostname
       {{- if .Values.NodeSelector }}
       nodeSelector:
@@ -278,9 +278,9 @@ spec:
 {{ toYaml .Values.Resources | indent 10 }}
         env:
         - name: STATEFULSET_NAME
-          value: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}"
+          value: "{{ template "cockroachdb.fullName" . }}"
         - name: STATEFULSET_FQDN
-          value: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}.{{ .Release.Namespace }}.svc.{{ .Values.ClusterDomain }}"
+          value: {{ template "cockroachdb.statefulsetFqdn" . }}
         - name: COCKROACH_CHANNEL
           value: kubernetes-helm
         volumeMounts:

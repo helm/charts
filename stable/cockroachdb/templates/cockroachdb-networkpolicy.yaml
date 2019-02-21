@@ -3,16 +3,16 @@
 kind: NetworkPolicy
 apiVersion: {{ template "cockroachdb.networkPolicy.apiVersion" . }}
 metadata:
-  name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}"
+  name: "{{ template "cockroachdb.fullName" . }}"
   labels:
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    component: "{{ .Release.Name }}-{{ .Values.Component }}"
+    heritage: {{ template "cockroachdb.heritageName" . }}
+    release: {{ template "cockroachdb.releaseName" . }}
+    chart: {{ template "cockroachdb.chartName" . }}
+    component: {{ template "cockroachdb.componentName" . }}
 spec:
   podSelector:
     matchLabels:
-      component: "{{.Release.Name}}-{{.Values.Component}}"
+      component: {{ template "cockroachdb.componentName" . }}
   ingress:
   - ports:
     - port: {{ .Values.ExternalGrpcPort}}
@@ -21,11 +21,11 @@ spec:
     # Allow clients to connect.
     - podSelector:
         matchLabels:
-          {{.Release.Name}}-{{.Values.Component}}-client: "true"
+          {{ template "cockroachdb.clientName" . }}: "true"
     # Allow other cockroachdb's to connect to form cluster.
     - podSelector:
         matchLabels:
-          component: "{{.Release.Name}}-{{.Values.Component}}"
+          component: {{ template "cockroachdb.componentName" . }}
     {{- end }}
   {{- if ne .Values.InternalGrpcPort .Values.ExternalGrpcPort }}
   - ports:
@@ -34,7 +34,7 @@ spec:
     # Allow other cockroachdb's to connect to form cluster.
     - podSelector:
         matchLabels:
-          component: "{{.Release.Name}}-{{.Values.Component}}"
+          component: {{ template "cockroachdb.componentName" . }}
   {{- end }}
   # Allow connections to admin UI.
   - ports:
