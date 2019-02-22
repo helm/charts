@@ -23,7 +23,7 @@ spec:
   ports:
     {{- if .Values.service.http.enabled }}
     - port: {{ .Values.service.http.port }}
-      targetPort: http
+      targetPort: {{ .Values.service.http.targetPort }}
       protocol: TCP
       name: http
       {{- with .Values.service.http.nodePort }}
@@ -32,7 +32,7 @@ spec:
     {{- end }}
     {{- if .Values.service.https.enabled }}
     - port: {{ .Values.service.https.port }}
-      targetPort: https
+      targetPort: {{ .Values.service.https.targetPort }}
       protocol: TCP
       name: https
       {{- with .Values.service.https.nodePort }}
