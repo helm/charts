@@ -3,7 +3,7 @@ description: A lightweight shipper to audit the activities of users and processe
 icon: https://www.elastic.co/assets/blt27d1fd26b0862613/icon-auditbeat-bb.svg
 name: auditbeat
 version: 0.5.0
-appVersion: 6.6.0
+appVersion: 6.6.1
 home: https://www.elastic.co/products/beats/auditbeat
 sources:
 - https://www.elastic.co/guide/en/beats/auditbeat/current/index.html
