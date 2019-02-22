@@ -1,4 +1,6 @@
 # Generated from 'pods' from https://raw.githubusercontent.com/coreos/prometheus-operator/master/contrib/kube-prometheus/manifests/grafana-dashboardDefinitions.yaml
+# Do not change in-place! In order to change this file first read following link:
+# https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
 {{- if and .Values.grafana.enabled .Values.grafana.defaultDashboardsEnabled }}
 apiVersion: v1
 kind: ConfigMap
@@ -361,7 +363,7 @@ data:
         "schemaVersion": 14,
         "style": "dark",
         "tags": [
-
+            "kubernetes-mixin"
         ],
         "templating": {
             "list": [
@@ -491,7 +493,7 @@ data:
             ]
         },
         "timezone": "",
-        "title": "Pods",
+        "title": "Kubernetes / Pods",
         "uid": "ab4f13a9892a76a4d21ce8c2445bf4ea",
         "version": 0
     }

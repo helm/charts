@@ -1,4 +1,6 @@
 # Generated from 'node.rules' group from https://raw.githubusercontent.com/coreos/prometheus-operator/master/contrib/kube-prometheus/manifests/prometheus-rules.yaml
+# Do not change in-place! In order to change this file first read following link:
+# https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
 {{- if and .Values.defaultRules.create .Values.nodeExporter.enabled .Values.defaultRules.rules.node }}
 apiVersion: {{ printf "%s/v1" (.Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com") }}
 kind: PrometheusRule
@@ -37,6 +39,13 @@ spec:
         * on (namespace, pod) group_left(node)
           node_namespace_pod:kube_pod_info:)
       record: node:node_cpu_utilisation:avg1m
+    - expr: |-
+        node:node_cpu_utilisation:avg1m
+          *
+        node:node_num_cpu:sum
+          /
+        scalar(sum(node:node_num_cpu:sum))
+      record: node:cluster_cpu_utilisation:ratio
     - expr: |-
         sum(node_load1{job="node-exporter"})
         /
@@ -78,8 +87,13 @@ spec:
     - expr: |-
         (node:node_memory_bytes_total:sum - node:node_memory_bytes_available:sum)
         /
-        scalar(sum(node:node_memory_bytes_total:sum))
+        node:node_memory_bytes_total:sum
       record: node:node_memory_utilisation:ratio
+    - expr: |-
+        (node:node_memory_bytes_total:sum - node:node_memory_bytes_available:sum)
+        /
+        scalar(sum(node:node_memory_bytes_total:sum))
+      record: node:cluster_memory_utilisation:ratio
     - expr: |-
         1e3 * sum(
           (rate(node_vmstat_pgpgin{job="node-exporter"}[1m])
@@ -136,25 +150,25 @@ spec:
     - expr: max by (namespace, pod, device) (node_filesystem_avail_bytes{fstype=~"ext[234]|btrfs|xfs|zfs"} / node_filesystem_size_bytes{fstype=~"ext[234]|btrfs|xfs|zfs"})
       record: 'node:node_filesystem_avail:'
     - expr: |-
-        sum(irate(node_network_receive_bytes_total{job="node-exporter",device="eth0"}[1m])) +
-        sum(irate(node_network_transmit_bytes_total{job="node-exporter",device="eth0"}[1m]))
+        sum(irate(node_network_receive_bytes_total{job="node-exporter",device!~"veth.+"}[1m])) +
+        sum(irate(node_network_transmit_bytes_total{job="node-exporter",device!~"veth.+"}[1m]))
       record: :node_net_utilisation:sum_irate
     - expr: |-
         sum by (node) (
-          (irate(node_network_receive_bytes_total{job="node-exporter",device="eth0"}[1m]) +
-          irate(node_network_transmit_bytes_total{job="node-exporter",device="eth0"}[1m]))
+          (irate(node_network_receive_bytes_total{job="node-exporter",device!~"veth.+"}[1m]) +
+          irate(node_network_transmit_bytes_total{job="node-exporter",device!~"veth.+"}[1m]))
         * on (namespace, pod) group_left(node)
           node_namespace_pod:kube_pod_info:
         )
       record: node:node_net_utilisation:sum_irate
     - expr: |-
-        sum(irate(node_network_receive_drop_total{job="node-exporter",device="eth0"}[1m])) +
-        sum(irate(node_network_transmit_drop_total{job="node-exporter",device="eth0"}[1m]))
+        sum(irate(node_network_receive_drop_total{job="node-exporter",device!~"veth.+"}[1m])) +
+        sum(irate(node_network_transmit_drop_total{job="node-exporter",device!~"veth.+"}[1m]))
       record: :node_net_saturation:sum_irate
     - expr: |-
         sum by (node) (
-          (irate(node_network_receive_drop_total{job="node-exporter",device="eth0"}[1m]) +
-          irate(node_network_transmit_drop_total{job="node-exporter",device="eth0"}[1m]))
+          (irate(node_network_receive_drop_total{job="node-exporter",device!~"veth.+"}[1m]) +
+          irate(node_network_transmit_drop_total{job="node-exporter",device!~"veth.+"}[1m]))
         * on (namespace, pod) group_left(node)
           node_namespace_pod:kube_pod_info:
         )

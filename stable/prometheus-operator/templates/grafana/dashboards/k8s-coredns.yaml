@@ -1,9 +1,9 @@
-# Added manually, should be changed in-place.
+# Added manually, can be changed in-place.
 {{- if and .Values.grafana.enabled .Values.grafana.defaultDashboardsEnabled .Values.coreDns.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ printf "%s-%s" (include "prometheus-operator.fullname" $) "grafana-coredns-k8s" | trunc 63 | trimSuffix "-" }}
+  name: {{ printf "%s-%s" (include "prometheus-operator.fullname" $) "k8s-coredns" | trunc 63 | trimSuffix "-" }}
   labels:
     {{- if $.Values.grafana.sidecar.dashboards.label }}
     {{ $.Values.grafana.sidecar.dashboards.label }}: "1"
@@ -11,7 +11,7 @@ metadata:
     app: {{ template "prometheus-operator.name" $ }}-grafana
 {{ include "prometheus-operator.labels" $ | indent 4 }}
 data:
-  grafana-coredns-k8s.json: |-
+  k8s-coredns.json: |-
     {
         "annotations": {
             "list": [

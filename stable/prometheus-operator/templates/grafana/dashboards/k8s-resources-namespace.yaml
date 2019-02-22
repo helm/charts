@@ -1,4 +1,6 @@
 # Generated from 'k8s-resources-namespace' from https://raw.githubusercontent.com/coreos/prometheus-operator/master/contrib/kube-prometheus/manifests/grafana-dashboardDefinitions.yaml
+# Do not change in-place! In order to change this file first read following link:
+# https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
 {{- if and .Values.grafana.enabled .Values.grafana.defaultDashboardsEnabled }}
 apiVersion: v1
 kind: ConfigMap
@@ -40,7 +42,7 @@ data:
                         "dashes": false,
                         "datasource": "$datasource",
                         "fill": 10,
-                        "id": 0,
+                        "id": 1,
                         "legend": {
                             "avg": false,
                             "current": false,
@@ -138,7 +140,7 @@ data:
                         "dashes": false,
                         "datasource": "$datasource",
                         "fill": 1,
-                        "id": 1,
+                        "id": 2,
                         "legend": {
                             "avg": false,
                             "current": false,
@@ -405,7 +407,7 @@ data:
                         "dashes": false,
                         "datasource": "$datasource",
                         "fill": 10,
-                        "id": 2,
+                        "id": 3,
                         "legend": {
                             "avg": false,
                             "current": false,
@@ -503,7 +505,7 @@ data:
                         "dashes": false,
                         "datasource": "$datasource",
                         "fill": 1,
-                        "id": 3,
+                        "id": 4,
                         "legend": {
                             "avg": false,
                             "current": false,
@@ -761,7 +763,7 @@ data:
         "schemaVersion": 14,
         "style": "dark",
         "tags": [
-
+            "kubernetes-mixin"
         ],
         "templating": {
             "list": [
@@ -840,7 +842,7 @@ data:
             ]
         },
         "timezone": "",
-        "title": "K8s / Compute Resources / Namespace",
+        "title": "Kubernetes / Compute Resources / Namespace",
         "uid": "85a562078cdf77779eaa1add43ccec1e",
         "version": 0
     }
