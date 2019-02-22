@@ -32,188 +32,6 @@ image:
   #  pullSecrets:
   #    - name: "<REG_SECRET>"
 
-daemonset:
-
-  ## @param enabled - boolean - required
-  ## You should keep Datadog DaemonSet enabled!
-  ## The exceptional case could be a situation when you need to run
-  ## single DataDog pod per every namespace, but you do not need to
-  ## re-create a DaemonSet for every non-default namespace install.
-  ## Note: StatsD and DogStatsD work over UDP, so you may not
-  ## get guaranteed delivery of the metrics in Datadog-per-namespace setup!
-  #
-  enabled: true
-
-  ## @param useHostNetwork - boolean - optional
-  ## Bind ports on the hostNetwork. Useful for CNI networking where hostPort might
-  ## not be supported. The ports need to be available on all hosts. It Can be
-  ## used for custom metrics instead of a service endpoint.
-  ## 
-  ## WARNING: Make sure that hosts using this are properly firewalled otherwise
-  ## metrics and traces are accepted from any host able to connect to this host.
-  #
-  #  useHostNetwork: true
-
-  ## @param useHostPort - boolean - optional
-  ## Sets the hostPort to the same value of the container port. Needs to be used
-  ## to receive traces in a standard APM set up. Can be used as for sending custom metrics.
-  ## The ports need to be available on all hosts.
-  ##
-  ## WARNING: Make sure that hosts using this are properly firewalled otherwise
-  ## metrics and traces are accepted from any host able to connect to this host.
-  #
-  #  useHostPort: true
-
-  ## @param useHostPID - boolean - optional
-  ## Run the agent in the host's PID namespace. This is required for Dogstatsd origin
-  ## detection to work. See https://docs.datadoghq.com/developers/dogstatsd/unix_socket/
-  #
-  #  useHostPID: true
-
-  ## @param podAnnotations - list of key:value strings - optional 
-  ## Annotations to add to the DaemonSet's Pods
-  #
-  #  podAnnotations:
-  #    <POD_ANNOTATION>: '[{"key": "<KEY>", "value": "<VALUE>"}]'
-
-  ## @param tolerations - array - optional
-  ## Allow the DaemonSet to schedule on tainted nodes (requires Kubernetes >= 1.6)
-  #
-  #  tolerations: []
-
-  ## @param nodeSelector - object - optional
-  ## Allow the DaemonSet to schedule on selected nodes
-  ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
-  #
-  #  nodeSelector: {}
-
-  ## @param affinity - object - optional
-  ## Allow the DaemonSet to schedule ussing affinity rules
-  ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
-  #
-  #  affinity: {}
-
-  ## @param updateStrategy - string - optional
-  ## Allow the DaemonSet to perform a rolling update on helm update
-  ## ref: https://kubernetes.io/docs/tasks/manage-daemon/update-daemon-set/
-  # 
-  #  updateStrategy: RollingUpdate
-
-  ## @param priorityClassName - string - optional
-  ## Sets PriorityClassName if defined.
-  #
-  #  priorityClassName:
-
-deployment:
-  
-  ## @param enabled - boolean - required
-  ## Apart from DaemonSet, deploy Datadog agent pods and related service for
-  ## applications that want to send custom metrics. Provides DogStasD service.
-  #
-  enabled: false
-
-  ## @param replicas - integer - required
-  ## If you want to use datadog.collectEvents, keep deployment.replicas set to 1.
-  #
-  replicas: 1
-
-  ## @param affinity - object - required
-  ## Affinity for pod assignment
-  ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
-  #
-  affinity: {}
-
-  ## @param tolerations - array - required
-  ## Tolerations for pod assignment
-  ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
-  #
-  tolerations: []
-
-  ## @param dogstatsdNodePort - integer - optional
-  ## If you're using a NodePort-type service and need a fixed port, set this parameter.
-  # 
-  #  dogstatsdNodePort: 8125
-
-  ## @param traceNodePort - integer - optional
-  ## If you're using a NodePort-type service and need a fixed port, set this parameter.
-  # 
-  #  traceNodePort: 8126
-
-  ## @param service - object - required
-  ## 
-  #
-  service:
-    type: ClusterIP
-    annotations: {}
-
-  ## @param priorityClassName - string - optional
-  ## Sets PriorityClassName if defined.
-  #
-  #  priorityClassName:
-
-
-kubeStateMetrics:
-
-  ## @param enabled - boolean - required
-  ## If true, deploys the kube-state-metrics deployment.
-  ## ref: https://github.com/kubernetes/charts/tree/master/stable/kube-state-metrics
-  #
-  enabled: true
-
-
-## @param clusterAgent - object - required
-## This is the Datadog Cluster Agent implementation that handles cluster-wide
-## metrics more cleanly, separates concerns for better rbac, and implements
-## the external metrics API so you can autoscale HPAs based on datadog metrics
-## ref: 
-#
-clusterAgent:
-  containerName: cluster-agent
-  image:
-    repository: datadog/cluster-agent
-    tag: 1.1.0
-    pullPolicy: IfNotPresent
-  enabled: false
-
-  ## @param token - string - required
-  ## This needs to be at least 32 characters a-zA-z
-  ## It is a preshared key between the node agents and the cluster agent
-  ## ref: 
-  #
-  token: ""
-  replicas: 1
-
-  ## @param metricsProvider - object - required
-  ## Enable the metricsProvider to be able to scale based on metrics in Datadog
-  #
-  metricsProvider:
-    enabled: false
-
-  ## @param resources - object -required
-  ## Datadog cluster-agent resource requests and limits.
-  #
-  resources:
-    requests:
-      cpu: 200m
-      memory: 256Mi
-    limits:
-      cpu: 200m
-      memory: 256Mi
-
-  ## @param livenessProbe - object - optional
-  ## Override the agent's liveness probe logic from the default:
-  ## In case of issues with the probe, you can disable it with the
-  ## following values, to allow easier investigating:
-  #
-  #  livenessProbe:
-  #    exec:
-  #      command: ["/bin/true"]
-
-  ## @param readinessProbe - object - optional
-  ## Override the cluster-agent's readiness probe logic from the default:
-  #
-  #  readinessProbe:
-
 datadog:
 
   ## @param apiKey - string - required
@@ -441,6 +259,59 @@ datadog:
       cpu: 200m
       memory: 256Mi
 
+## @param clusterAgent - object - required
+## This is the Datadog Cluster Agent implementation that handles cluster-wide
+## metrics more cleanly, separates concerns for better rbac, and implements
+## the external metrics API so you can autoscale HPAs based on datadog metrics
+## ref: 
+#
+clusterAgent:
+  containerName: cluster-agent
+  image:
+    repository: datadog/cluster-agent
+    tag: 1.1.0
+    pullPolicy: IfNotPresent
+  enabled: false
+
+  ## @param token - string - required
+  ## This needs to be at least 32 characters a-zA-z
+  ## It is a preshared key between the node agents and the cluster agent
+  ## ref: 
+  #
+  token: ""
+  replicas: 1
+
+  ## @param metricsProvider - object - required
+  ## Enable the metricsProvider to be able to scale based on metrics in Datadog
+  #
+  metricsProvider:
+    enabled: false
+
+  ## @param resources - object -required
+  ## Datadog cluster-agent resource requests and limits.
+  #
+  resources:
+    requests:
+      cpu: 200m
+      memory: 256Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
+
+  ## @param livenessProbe - object - optional
+  ## Override the agent's liveness probe logic from the default:
+  ## In case of issues with the probe, you can disable it with the
+  ## following values, to allow easier investigating:
+  #
+  #  livenessProbe:
+  #    exec:
+  #      command: ["/bin/true"]
+
+  ## @param readinessProbe - object - optional
+  ## Override the cluster-agent's readiness probe logic from the default:
+  #
+  #  readinessProbe:
+  
 rbac:
 
   ## @param created - boolean - required
@@ -455,6 +326,15 @@ rbac:
 
 tolerations: []
 
+
+kubeStateMetrics:
+
+  ## @param enabled - boolean - required
+  ## If true, deploys the kube-state-metrics deployment.
+  ## ref: https://github.com/kubernetes/charts/tree/master/stable/kube-state-metrics
+  #
+  enabled: true
+
 kube-state-metrics:
   rbac:
     
@@ -467,3 +347,122 @@ kube-state-metrics:
     ## Ignored if rbac.create is true
     #
     serviceAccountName: default
+
+daemonset:
+
+  ## @param enabled - boolean - required
+  ## You should keep Datadog DaemonSet enabled!
+  ## The exceptional case could be a situation when you need to run
+  ## single DataDog pod per every namespace, but you do not need to
+  ## re-create a DaemonSet for every non-default namespace install.
+  ## Note: StatsD and DogStatsD work over UDP, so you may not
+  ## get guaranteed delivery of the metrics in Datadog-per-namespace setup!
+  #
+  enabled: true
+
+  ## @param useHostNetwork - boolean - optional
+  ## Bind ports on the hostNetwork. Useful for CNI networking where hostPort might
+  ## not be supported. The ports need to be available on all hosts. It Can be
+  ## used for custom metrics instead of a service endpoint.
+  ## 
+  ## WARNING: Make sure that hosts using this are properly firewalled otherwise
+  ## metrics and traces are accepted from any host able to connect to this host.
+  #
+  #  useHostNetwork: true
+
+  ## @param useHostPort - boolean - optional
+  ## Sets the hostPort to the same value of the container port. Needs to be used
+  ## to receive traces in a standard APM set up. Can be used as for sending custom metrics.
+  ## The ports need to be available on all hosts.
+  ##
+  ## WARNING: Make sure that hosts using this are properly firewalled otherwise
+  ## metrics and traces are accepted from any host able to connect to this host.
+  #
+  #  useHostPort: true
+
+  ## @param useHostPID - boolean - optional
+  ## Run the agent in the host's PID namespace. This is required for Dogstatsd origin
+  ## detection to work. See https://docs.datadoghq.com/developers/dogstatsd/unix_socket/
+  #
+  #  useHostPID: true
+
+  ## @param podAnnotations - list of key:value strings - optional 
+  ## Annotations to add to the DaemonSet's Pods
+  #
+  #  podAnnotations:
+  #    <POD_ANNOTATION>: '[{"key": "<KEY>", "value": "<VALUE>"}]'
+
+  ## @param tolerations - array - optional
+  ## Allow the DaemonSet to schedule on tainted nodes (requires Kubernetes >= 1.6)
+  #
+  #  tolerations: []
+
+  ## @param nodeSelector - object - optional
+  ## Allow the DaemonSet to schedule on selected nodes
+  ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+  #
+  #  nodeSelector: {}
+
+  ## @param affinity - object - optional
+  ## Allow the DaemonSet to schedule ussing affinity rules
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  #
+  #  affinity: {}
+
+  ## @param updateStrategy - string - optional
+  ## Allow the DaemonSet to perform a rolling update on helm update
+  ## ref: https://kubernetes.io/docs/tasks/manage-daemon/update-daemon-set/
+  # 
+  #  updateStrategy: RollingUpdate
+
+  ## @param priorityClassName - string - optional
+  ## Sets PriorityClassName if defined.
+  #
+  #  priorityClassName:
+
+deployment:
+  
+  ## @param enabled - boolean - required
+  ## Apart from DaemonSet, deploy Datadog agent pods and related service for
+  ## applications that want to send custom metrics. Provides DogStasD service.
+  #
+  enabled: false
+
+  ## @param replicas - integer - required
+  ## If you want to use datadog.collectEvents, keep deployment.replicas set to 1.
+  #
+  replicas: 1
+
+  ## @param affinity - object - required
+  ## Affinity for pod assignment
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  #
+  affinity: {}
+
+  ## @param tolerations - array - required
+  ## Tolerations for pod assignment
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  #
+  tolerations: []
+
+  ## @param dogstatsdNodePort - integer - optional
+  ## If you're using a NodePort-type service and need a fixed port, set this parameter.
+  # 
+  #  dogstatsdNodePort: 8125
+
+  ## @param traceNodePort - integer - optional
+  ## If you're using a NodePort-type service and need a fixed port, set this parameter.
+  # 
+  #  traceNodePort: 8126
+
+  ## @param service - object - required
+  ## 
+  #
+  service:
+    type: ClusterIP
+    annotations: {}
+
+  ## @param priorityClassName - string - optional
+  ## Sets PriorityClassName if defined.
+  #
+  #  priorityClassName:
