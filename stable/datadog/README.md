@@ -31,8 +31,6 @@ helm install --name <RELEASE_NAME> \
 By default, this Chart creates a Secret and puts an API key in that Secret.
 However, you can use manually created secret by setting the `datadog.apiKeyExistingSecret` value. After a few minutes, you should see hosts and metrics being reported in Datadog.
 
-**Note**: Starting with version 1.0.0, this chart does not support deploying Agent 5.x anymore. If you cannot upgrade to Agent 6.x, you can use a previous version of the chart by calling helm install with `--version 0.18.0`.
-
 ### Enabling the Datadog Cluster Agent
 
 Read about the Datadog Cluster Agent in the [official documentation](https://docs.datadoghq.com/agent/kubernetes/cluster/).
@@ -60,6 +58,11 @@ You can specify the Datadog Cluster Agent token used to secure the communication
 **If you don't specify a token, a random one is generated at each deployment so you must use `--recreate-pods` to ensure all pod use the same token.** see[Datadog Chart notes](https://github.com/helm/charts/blob/57d3030941ad2ec2d6f97c86afdf36666658a884/stable/datadog/templates/NOTES.txt#L49-L59) to learn more.
 
 ### Updating
+
+Starting with version 1.0.0, this chart does not support deploying Agent 5.x anymore. If you cannot upgrade to Agent 6.x, you can use a previous version of the chart by calling helm install with `--version 0.18.0`.
+
+See [0.18.1's README](https://github.com/helm/charts/blob/847f737479bb78d89f8fb650db25627558fbe1f0/stable/datadog/README.md) to see which options were supported at the time.
+
 #### From < 1.19.0 to >= 1.19.0
 
 Version `1.19.0` introduces the use of release name as full name if it contains the chart name(`datadog` in this case).

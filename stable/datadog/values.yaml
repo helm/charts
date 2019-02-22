@@ -116,7 +116,6 @@ datadog:
   #    - <KEY_1>:<VALUE_1>
   #    - <KEY_2>:<VALUE_2>
 
-
   ## @param useCriSocketVolume - boolean - required
   ## Enable container runtime socket volume mounting
   #
@@ -331,7 +330,6 @@ rbac:
   serviceAccountName: default
 
 tolerations: []
-
 
 kubeStateMetrics:
 
