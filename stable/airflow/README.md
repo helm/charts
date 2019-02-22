@@ -275,6 +275,7 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `airflow.config`                         | custom airflow configuration env variables              | `{}`                      |
 | `airflow.podDisruptionBudget`            | control pod disruption budget                           | `{'maxUnavailable': 1}`   |
 | `airflow.secretsMapping`		           | override any environment variable with a secret	     | 				             |
+| `airflow.extraConfigmapMounts`           | Additional configMap volume mounts on the airflow pods.         | `[]`                                          |
 | `workers.enabled`                        | enable workers                                          | `true`                    |
 | `workers.replicas`                       | number of workers pods to launch                        | `1`                       |
 | `workers.resources`                      | custom resource configuration for worker pod            | `{}`                      |
@@ -332,5 +333,6 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `redis.password`                         | Redis password                                          | `airflow`                 |
 | `redis.master.persistence.enabled`       | Enable Redis PVC                                        | `false`                   |
 | `redis.cluster.enabled`                  | enable master-slave cluster                             | `false`                   |
+
 
 Full and up-to-date documentation can be found in the comments of the `values.yaml` file.
