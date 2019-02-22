@@ -1,6 +1,6 @@
-{{- if eq .Values.kind "DaemonSet" }}
-apiVersion: apps/v1
-kind: DaemonSet
+{{- if eq .Values.kind "Deployment" }}
+apiVersion: extensions/v1beta1
+kind: Deployment
 metadata:
   name: {{ template "apm-server.fullname" . }}
   labels:
@@ -9,12 +9,9 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  selector:
-    matchLabels:
-      app: {{ template "apm-server.name" . }}
-      release: {{ .Release.Name }}
+  replicas: {{ .Values.replicaCount }}
   minReadySeconds: 10
-  updateStrategy:
+  strategy:
 {{ toYaml .Values.updateStrategy | indent 4 }}
   template:
     metadata:
@@ -51,6 +48,7 @@ spec:
         ports:
           - name: http
             containerPort: 8200
+            protocol: TCP
         securityContext:
           runAsUser: 0
         resources:
