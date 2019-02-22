@@ -2,7 +2,7 @@ Please wait while the OPA is deployed on your cluster.
 
 For example policies that you can enforce with OPA see https://www.openpolicyagent.org.
 
-You can query OPA to see the policies it has loaded:
+You can query OPA to see the policies it has loaded (you will need to turn off authz as described below):
 
 export OPA_POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "opa.fullname" . }}" -o jsonpath="{.items[0].metadata.name}")
 
@@ -53,3 +53,6 @@ spec:
 EOF
 
 kubectl -n opa-example create -f ingress-bad.yaml
+
+If you want to turn off authz for debugging purposes, you can do so by upgrading the chart like so:
+helm upgrade {{ .Release.Name }} stable/opa --reuse-values --set authz.enabled=false
