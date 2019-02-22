@@ -119,6 +119,10 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `metrics.serviceMonitor.relabellings`              | Specify Metric Relabellings to add to the scrape endpoint                                    | `nil`                                                   |
 | `metrics.serviceMonitor.alerting.rules`            | Define individual alerting rules as required                                                 | {}                                                      |
 | `metrics.serviceMonitor.alerting.additionalLabels` | Used to pass Labels that are required by the Installed Prometheus Operator                   | {}                                                      |
+| `metrics.livenessProbe.initialDelaySeconds`       | Iniitial Delay for Liveness Check of Prometheus metrics exporter                             | 15                                                      |
+| `metrics.livenessProbe.timeoutSeconds`             | Timeout for Liveness Check of Prometheus metrics exporter                                    | 5                                                       |
+| `metrics.readinessProbe.initialDelaySeconds`      | Iniitial Delay for Readiness Check of Prometheus metrics exporter                            | 5                                                      |
+| `metrics.readinessProbe.timeoutSeconds`            | Timeout for Readiness Check of Prometheus metrics exporter                                   | 1                                                       |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
