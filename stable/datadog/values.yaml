@@ -466,4 +466,3 @@ deployment:
   ## Sets PriorityClassName if defined.
   #
   #  priorityClassName:
-  
