@@ -6,7 +6,7 @@ icon: https://github.com/ory/hydra/blob/master/docs/images/logo.png
 sources:
 - https://github.com/ory/hydra
 keywords:
-- hdyra
+- hydra
 - authentication
 - authorization
 - auth
