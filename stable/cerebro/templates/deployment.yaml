@@ -58,6 +58,9 @@ spec:
               port: http
           resources:
 {{ toYaml .Values.resources | indent 12 }}
+{{- with .Values.extraContainers }}
+{{ tpl . $ | indent 8 }}
+{{- end }}
       volumes:
         - name: db
           emptyDir: {}

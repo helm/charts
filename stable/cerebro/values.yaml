@@ -20,6 +20,7 @@ deployment:
 service:
   type: ClusterIP
   port: 80
+  targetPort: 9000
   annotations: {}
   labels: {}
 
@@ -54,3 +55,20 @@ config:
   # Secret used to sign session cookies. If empty it will be replaced with a
   # random 64 length string
   secret: ''
+
+extraContainers: |
+#   - name: proxy
+#     image: quay.io/pusher/oauth2_proxy:latest
+#     args:
+#       - -client-id=
+#       - -client-secret=
+#       - -cookie-secret=
+#       - -email-domain=*
+#       - -github-org=
+#       - -http-address=0.0.0.0:9001
+#       - -provider=github
+#       - -redirect-url=https://cerebro.your.domain.com/oauth2/callback
+#       - -upstream=http://127.0.0.1:9000
+#     ports:
+#       - name: http-proxy
+#         containerPort: 9001
