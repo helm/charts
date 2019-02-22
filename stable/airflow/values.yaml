@@ -1,5 +1,10 @@
 # Duplicate this file and put your customization here
 
+extraConfigmapMounts: []
+  # - name: extra-metadata
+  #   mountPath: /opt/metadata
+  #   configMap: airflow-metadata
+  #   readOnly: true
 
 ##
 ## common settings and setting for the webserver
