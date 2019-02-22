@@ -31,6 +31,10 @@ replicas: 3
 ##
 # mysqlDatabase: test
 
+## Configure pxc_strict_mode
+## ref: https://www.percona.com/doc/percona-xtradb-cluster/LATEST/features/pxc-strict-mode.html
+## pxc_strict_mode: ENFORCING
+
 ## hosts to allow root user access from
 # set to "127.0.0.1" to deny remote root.
 allowRootFrom: "%"
