@@ -11,7 +11,7 @@ replicaCount: 1
 
 image:
   repository: gogs/gogs
-  tag: 0.11.79
+  tag: 0.11.86
   pullPolicy: IfNotPresent
 
 service:
@@ -104,6 +104,34 @@ service:
     ## Mail notification
     ##
     serviceEnableNotifyMail: false
+
+    ## Enable this to send mail with SMTP server.
+    ##
+    mailerEnabled: false
+
+    ## SMTP server host.
+    ##
+    mailerHost:
+
+    ## SMTP server user.
+    ##
+    mailerUser:
+
+    ## SMTP server password.
+    ##
+    mailerPasswd:
+
+    ## Mail from address. Format RFC 5322, email@example.com, or "Name" <email@example.com>
+    ##
+    mailerFrom:
+
+    ## Prefix prepended mail subject.
+    ##
+    mailerSubjectPrefix:
+
+    ## Do not verify the self-signed certificates.
+    ##
+    mailerSkipVerify: false
 
     ## Either "memory", "redis", or "memcache", default is "memory"
     ##
@@ -340,5 +368,11 @@ postgresql:
     ## Enable PostgreSQL persistence using Persistent Volume Claims.
     ##
     enabled: true
+
 ## Security context
 securityContext: {}
+
+## Node, affinity and tolerations labels for pod assignment
+nodeSelector: {}
+affinity: {}
+tolerations: []
