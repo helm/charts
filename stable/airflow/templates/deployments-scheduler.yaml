@@ -86,6 +86,11 @@ spec:
             - name: connections
               mountPath: /usr/local/connections
           {{- end}}
+          {{- range .Values.airflow.extraConfigmapMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              readOnly: {{ .readOnly }}
+          {{- end }}
           args:
             - "bash"
             - "-c"
@@ -154,4 +159,9 @@ spec:
           secret:
             secretName: {{ template "airflow.fullname" . }}-connections
             defaultMode: 0755
+        {{- end }}
+        {{- range .Values.airflow.extraConfigmapMounts }}
+        - name: {{ .name }}
+          configMap:
+            name: {{ .configMap }}
         {{- end }}

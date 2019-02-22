@@ -85,6 +85,11 @@ spec:
             - name: logs-data
               mountPath: {{ .Values.logs.path }}
           {{- end }}
+          {{- range .Values.airflow.extraConfigmapMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              readOnly: {{ .readOnly }}
+          {{- end }}
           args:
             - "bash"
             - "-c"
@@ -145,4 +150,9 @@ spec:
             secretName: {{ .Values.dags.git.secret }}
             defaultMode: 0700
         {{- end }}
+        {{- end }}
+        {{- range .Values.airflow.extraConfigmapMounts }}
+        - name: {{ .name }}
+          configMap:
+            name: {{ .configMap }}
         {{- end }}

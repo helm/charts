@@ -1,9 +1,13 @@
 # Duplicate this file and put your customization here
 
-
 ##
 ## common settings and setting for the webserver
 airflow:
+  extraConfigmapMounts: []
+  # - name: extra-metadata
+  #   mountPath: /opt/metadata
+  #   configMap: airflow-metadata
+  #   readOnly: true
 
   ## When existingAirflowSecret is defined, secretsMapping can be
   ## overridden. When no secretName is given then the value of
