@@ -42,6 +42,10 @@ spec:
           value: {{ .Values.REDIS_RECONNECT_ON_ERROR | quote }}
         - name: REDIS_PORT
           value: {{ .Values.REDIS_PORT | quote }}
+        {{- if .Values.server.volumeMounts }}
+        volumeMounts:
+{{ toYaml .Values.server.volumeMounts | indent 10 }}
+        {{- end}}
       - name: api
         image: "{{ .Values.image }}:{{ .Values.imageTag }}"
         imagePullPolicy: {{ .Values.pullPolicy }}
@@ -65,6 +69,10 @@ spec:
           value: {{ .Values.REDIS_RECONNECT_ON_ERROR | quote }}
         - name: REDIS_PORT
           value: {{ .Values.REDIS_PORT | quote }}
+        {{- if .Values.api.volumeMounts }}
+        volumeMounts:
+{{ toYaml .Values.api.volumeMounts | indent 10 }}
+        {{- end}}
         ports:
         - containerPort: 4567
         readinessProbe:
@@ -79,6 +87,7 @@ spec:
             port: 4567
           initialDelaySeconds: 30
           timeoutSeconds: 1
-
-
-
+      {{- if .Values.volumes }}
+      volumes:
+{{ toYaml .Values.volumes | indent 8 }}
+      {{- end}}

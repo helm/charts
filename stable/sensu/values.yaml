@@ -26,12 +26,18 @@ server:
     requests:
       cpu: 100m
       memory: 100Mi
+  volumeMounts: {}
+
 # CPU and Memory limit and request for Sensu Api
 api:
   resources:
     requests:
       cpu: 50m
       memory: 100Mi
+  volumeMounts: {}
+
+# Volumes configuration
+volumes: {}
 
 # Redis configuration
 REDIS_PORT: 6379
