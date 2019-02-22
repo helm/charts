@@ -197,14 +197,14 @@ spec:
             httpGet:
               path: /metrics
               port: metrics
-            initialDelaySeconds: 15
-            timeoutSeconds: 5
+            initialDelaySeconds: {{ default 15 .Values.metrics.livenessProbe.initialDelaySeconds }}
+            timeoutSeconds: {{ default 5 .Values.metrics.livenessProbe.timeoutSeconds }}
           readinessProbe:
             httpGet:
               path: /metrics
               port: metrics
-            initialDelaySeconds: 5
-            timeoutSeconds: 1
+            initialDelaySeconds: {{ default 5 .Values.metrics.readinessProbe.initialDelaySeconds }}
+            timeoutSeconds: {{ default 1 .Values.metrics.readinessProbe.timeoutSeconds }}
           resources:
 {{ toYaml .Values.metrics.resources | indent 12 }}
 {{- end }}
