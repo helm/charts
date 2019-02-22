@@ -51,7 +51,7 @@ imagePullPolicy: IfNotPresent
 mgmt:
   enabled: true
   image: openpolicyagent/kube-mgmt
-  imageTag: 0.8-dev
+  imageTag: 0.8
   imagePullPolicy: IfNotPresent
   extraArgs: []
   configmapPolicies:
