@@ -172,4 +172,10 @@ data:
   post-start-hook.sh: |-
 {{ tpl .Values.data.hooks.custom.start . | indent 4 }}
 {{- end }}
+{{- if .Values.client.hooks.enabled }}
+  client-pre-stop-hook.sh: |-
+{{ tpl .Values.client.hooks.stop . | indent 4 }}
+  client-post-start-hook.sh: |-
+{{ tpl .Values.client.hooks.start . | indent 4 }}
+{{- end }}
 

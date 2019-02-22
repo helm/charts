@@ -127,6 +127,9 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `data.hooks.custom.enabled           | Data nodes: Enable custom pre-stop and post-start hook              | `false`                                             |
 | `data.hooks.custom.start             | Data nodes: custom pre-start                                        | ``                                                  |
 | `data.hooks.custom.stop              | Data nodes: custom pre-stop hook                                    | ``                                                  |
+| `client.hooks.enabled                | Client nodes: Enable pre-stop and post-start hook                   | `false`                                             |
+| `client.hooks.start                  | Client nodes: pre-start hook                                        | ``                                                  |
+| `client.hooks.stop                   | Client nodes: pre-stop hook                                         | ``                                                  |
 | `data.persistence.enabled`           | Data persistent enabled/disabled                                    | `true`                                              |
 | `data.persistence.name`              | Data statefulset PVC template name                                  | `data`                                              |
 | `data.persistence.size`              | Data persistent volume size                                         | `30Gi`                                              |

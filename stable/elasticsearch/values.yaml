@@ -112,6 +112,12 @@ client:
     #  - secretName: chart-example-tls
     #    hosts:
     #      - chart-example.local
+  hooks:
+    enabled: false
+    # enabled: false
+    # start: |
+    # stop: |
+
 
 master:
   name: master
@@ -212,9 +218,9 @@ data:
     # and provide your scripts here:
     custom:
       enabled: false
-    #  enabled: true
-    #  start: |
-    #  stop: |
+      # enabled: true
+      # start: |
+      # stop: |
 
 ## Sysctl init container to setup vm.max_map_count
 # see https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html
