@@ -25,6 +25,9 @@ hooks:
 # run curator in dry-run mode
 dryrun: false
 
+command: ["curator"]
+env: {}
+
 configMaps:
   # Delete indices older than 7 days
   action_file_yml: |-
