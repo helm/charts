@@ -12,7 +12,7 @@ sources:
 - https://github.com/sstarcher/docker-sensu
 - https://github.com/sensu/sensu
 maintainers:
-- name: Shane Starcher
+- name: sstarcher
   email: shane.starcher@gmail.com
 icon: https://raw.githubusercontent.com/sensu/sensu/master/sensu-logo.png
 engine: gotpl
