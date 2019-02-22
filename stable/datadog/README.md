@@ -4,9 +4,14 @@
 
 Datadog [offers two variants](https://hub.docker.com/r/datadog/agent/tags/), switch to a `-jmx` tag if you need to run JMX/java integrations. The chart also supports running [the standalone dogstatsd image](https://hub.docker.com/r/datadog/dogstatsd/tags/).
 
+See the [Datadog JMX integration](https://docs.datadoghq.com/integrations/java/) to learn more.
+
 ## Prerequisites
 
-Kubernetes 1.4+ or OpenShift 3.4+ (1.3 support is currently partial, full support is planned for 6.4.0).
+Kubernetes 1.4+ or OpenShift 3.4+, note that:
+
+* the Datadog Agent supports Kubernetes 1.3+
+* The Datadog chart's defaults are tailored to Kubernetes 1.7.6+, see [Datadog Agent legacy Kubernetes versions documentation](https://github.com/DataDog/datadog-agent/tree/master/Dockerfiles/agent#legacy-kubernetes-versions) for adjustments you might need to make for older versions
 
 ## Quick start
 
@@ -48,7 +53,11 @@ If you want to learn to use this feature, you can check out this [Datadog Cluste
 
 The Leader Election is enabled by default in the chart for the Cluster Agent. Only the Cluster Agent(s) participate in the election, in case you have several replicas configured (using `clusterAgent.replicas`.
 
-You can specify the token used to secure the communication between the Cluster Agent(s)q and the Agents with `clusterAgent.token`. If not specified, a random one is generated and a warning is prompted when installing the chart.
+#### Cluster Agent Token
+
+You can specify the Datadog Cluster Agent token used to secure the communication between the Cluster Agent(s)q and the Agents with `clusterAgent.token`. 
+
+**If you don't specify a token, a random one is generated at each deployment so you must use `--recreate-pods` to ensure all pod use the same token.** see[Datadog Chart notes](https://github.com/helm/charts/blob/57d3030941ad2ec2d6f97c86afdf36666658a884/stable/datadog/templates/NOTES.txt#L49-L59) to learn more.
 
 ### Updating
 #### From < 1.19.0 to >= 1.19.0
@@ -62,7 +71,7 @@ The suggested approach is to delete the release and reinstall it.
 To uninstall/delete the `<RELEASE_NAME>` deployment:
 
 ```bash
-helm delete <RELEASE_NAME>
+helm delete <RELEASE_NAME> --purge
 ```
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
@@ -116,10 +125,9 @@ helm upgrade -f datadog-values.yaml <RELEASE_NAME> stable/datadog --recreate-pod
 
 ### Kubernetes event collection
 
-To enable event collection, set the `datadog.leaderElection`, `datadog.collectEvents` and `rbac.create` options to `true`.
+Use the [Datadog Cluster Agent](#enabling-the-datadog-cluster-agent) to collect Kubernetes events. Please read [the official documentation](https://docs.datadoghq.com/agent/kubernetes/event_collection/) for more context.
 
-It is now recommended to use the Datadog Cluster Agent to collect the events - Refer to the [Enabling the Datadog Cluster Agent](#enabling-the-datadog-cluster-agent) section.
-Please read [the official documentation](https://docs.datadoghq.com/agent/kubernetes/event_collection/) for more context.
+Alternatively set the `datadog.leaderElection`, `datadog.collectEvents` and `rbac.create` options to `true` in order to enable Kubernetes event collection.
 
 ### conf.d and checks.d
 
