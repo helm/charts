@@ -24,7 +24,7 @@ if [[ -z "${cluster_join}" ]]; then
     exec mysqld --user=mysql --wsrep_cluster_name=$SHORT_CLUSTER_NAME --wsrep_node_name=$hostname \
     --wsrep_cluster_address=gcomm:// --wsrep_sst_method=xtrabackup-v2 \
     --wsrep_sst_auth="xtrabackup:$XTRABACKUP_PASSWORD" \
-    --wsrep_node_address="$ipaddr" $CMDARG
+    --wsrep_node_address="$ipaddr" --pxc_strict_mode="$PXC_STRICT_MODE" $CMDARG
 else
     echo "I am not the Primary Node"
     chown -R mysql:mysql /var/lib/mysql || true # default is root:root 777
@@ -34,5 +34,5 @@ else
     exec mysqld --user=mysql --wsrep_cluster_name=$SHORT_CLUSTER_NAME --wsrep_node_name=$hostname \
     --wsrep_cluster_address="gcomm://$cluster_join" --wsrep_sst_method=xtrabackup-v2 \
     --wsrep_sst_auth="xtrabackup:$XTRABACKUP_PASSWORD" \
-    --wsrep_node_address="$ipaddr" $CMDARG
+    --wsrep_node_address="$ipaddr" --pxc_strict_mode="$PXC_STRICT_MODE" $CMDARG
 fi
