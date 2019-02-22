@@ -29,7 +29,7 @@ Redis can be accessed via port {{ .Values.master.port }} on the following DNS na
 {{- else }}
 Redis can be accessed via port {{ .Values.master.port }} on the following DNS name from within your cluster:
 
-{{ template "redis.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+{{ template "redis.fullname" . }}-master.{{ .Release.Namespace }}.svc.cluster.local
 
 {{- end }}
 
@@ -54,7 +54,7 @@ To connect to your Redis server:
    redis-cli -h {{ template "redis.fullname" . }}-master{{ if .Values.usePassword }} -a $REDIS_PASSWORD{{ end }}
    redis-cli -h {{ template "redis.fullname" . }}-slave{{ if .Values.usePassword }} -a $REDIS_PASSWORD{{ end }}
 {{- else }}
-   redis-cli -h {{ template "redis.fullname" . }}{{ if .Values.usePassword }} -a $REDIS_PASSWORD{{ end }}
+   redis-cli -h {{ template "redis.fullname" . }}-master{{ if .Values.usePassword }} -a $REDIS_PASSWORD{{ end }}
 {{- end }}
 
 {{ if and (.Values.networkPolicy.enabled) (not .Values.networkPolicy.allowExternal) }}
