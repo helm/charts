@@ -248,6 +248,9 @@ metrics:
     # pullSecrets:
     #   - myRegistrKeySecretName
 
+  ## String with extra arguments to the metrics exporter
+  ## ref: https://github.com/dcu/mongodb_exporter/blob/master/mongodb_exporter.go
+  extraArgs: ""
   ## Metrics exporter resource requests and limits
   ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
   ##
