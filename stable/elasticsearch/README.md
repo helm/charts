@@ -103,6 +103,8 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `client.antiAffinity`                | Client anti-affinity policy                                         | `soft`                                              |
 | `client.nodeAffinity`                | Client node affinity policy                                         | `{}`                                                |
 | `client.initResources`               | Client initContainer resources requests & limits                    | `{}`                                                |
+| `client.hooks.preStop`               | Client nodes: Lifecycle hook script to execute prior the pod stops  | `nil`                                               |
+| `client.hooks.preStart`              | Client nodes: Lifecycle hook script to execute after the pod starts | `nil`                                               |
 | `client.additionalJavaOpts`          | Parameters to be added to `ES_JAVA_OPTS` environment variable for client | `""`                                           |
 | `client.ingress.enabled`             | Enable Client Ingress                                               | `false`                                             |
 | `client.ingress.user`                | If this & password are set, enable basic-auth on ingress            | `nil`                                               |

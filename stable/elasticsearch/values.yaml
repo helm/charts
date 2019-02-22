@@ -146,6 +146,12 @@ client:
     enabled: false
     minAvailable: 1
     # maxUnavailable: 1
+  hooks: {}
+    ## (string) Script to execute prior the client pod stops.
+    # preStop: |-
+
+    ## (string) Script to execute after the client pod starts.
+    # postStart: |-
   ingress:
     enabled: false
     # user: NAME

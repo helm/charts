@@ -155,6 +155,29 @@ spec:
           subPath: elasticsearch.keystore
           readOnly: true
 {{- end }}
+{{- if .Values.client.hooks.preStop }}
+        - name: config
+          mountPath: /client-pre-stop-hook.sh
+          subPath: client-pre-stop-hook.sh
+{{- end }}
+{{- if .Values.client.hooks.postStart }}
+        - name: config
+          mountPath: /client-post-start-hook.sh
+          subPath: client-post-start-hook.sh
+{{- end }}
+{{- if or .Values.client.hooks.preStop .Values.client.hooks.postStart }}
+        lifecycle:
+  {{- if .Values.client.hooks.preStop }}
+          preStop:
+            exec:
+              command: ["/bin/bash","/client-pre-stop-hook.sh"]
+  {{- end }}
+  {{- if .Values.client.hooks.postStart }}
+          postStart:
+            exec:
+              command: ["/bin/bash","/client-post-start-hook.sh"]
+  {{- end }}
+{{- end }}
 {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
       {{- range $pullSecret := .Values.image.pullSecrets }}
