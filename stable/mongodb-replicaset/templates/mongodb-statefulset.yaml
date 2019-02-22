@@ -45,12 +45,12 @@ spec:
         - name: {{ . }}
       {{- end}}
     {{- end }}
-      {{- if .Values.securityContext.enabled }}
+    {{- if .Values.securityContext.enabled }}
       securityContext:
         runAsUser: {{ .Values.securityContext.runAsUser }}
         fsGroup: {{ .Values.securityContext.fsGroup }}
         runAsNonRoot: {{ .Values.securityContext.runAsNonRoot }}        
-      {{- end }}
+    {{- end }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       initContainers:
         - name: copy-config
