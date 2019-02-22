@@ -96,7 +96,7 @@ spec:
         - name: uploads
         {{- if .Values.persistence.uploads.enabled }}
           persistentVolumeClaim:
-            claimName: {{ .Values.persistence.storage.existingClaim | default (printf "%s-%s" (include "bookstack.fullname" .) "uploads") }}
+            claimName: {{ .Values.persistence.uploads.existingClaim | default (printf "%s-%s" (include "bookstack.fullname" .) "uploads") }}
         {{- else }}
           emptyDir: {}
         {{- end }}
