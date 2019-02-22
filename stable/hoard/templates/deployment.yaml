@@ -23,11 +23,19 @@ spec:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command: ["hoard", "--config", "/conf/hoard.toml"]
+        volumeMounts:
+        - name: config-toml
+          mountPath: /conf
+{{- if eq .Values.storage.type "filesystem" }}
+        - mountPath: /data
+          name: data-dir
+{{- end }}
         ports:
           - containerPort: {{ .Values.service.port }}
             name: http
         env:
-{{- if eq .Values.storage.type "s3" }}
+{{- if eq .Values.storage.type "aws" }}
         - name: AWS_ACCESS_KEY_ID
           valueFrom:
             secretKeyRef:
@@ -39,18 +47,25 @@ spec:
               name: {{ required "A valid storage credential is required." .Values.storage.credentialsSecret }}
               key: secret-access-key
 {{- end }}
-{{- if eq .Values.storage.type "gcs" }}
+{{- if eq .Values.storage.type "azure" }}
+        - name: AZURE_STORAGE_ACCOUNT_NAME
+          valueFrom:
+            secretKeyRef:
+              name: {{ required "A valid storage credential is required." .Values.storage.credentialsSecret }}
+              key: storage-account-name
+        - name: AZURE_STORAGE_ACCOUNT_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ required "A valid storage credential is required." .Values.storage.credentialsSecret }}
+              key: storage-account-key
+{{- end }}
+{{- if eq .Values.storage.type "gcp" }}
         - name: GCLOUD_SERVICE_KEY
           valueFrom:
             secretKeyRef:
               name: {{ required "A valid storage credential is required." .Values.storage.credentialsSecret }}
-              key: secret-access-key
+              key: service-key
 {{- end }}
-        - name: HOARD_JSON_CONFIG
-          valueFrom:
-            configMapKeyRef:
-              name: {{ template "hoard.fullname" . }}
-              key: config.json
         livenessProbe:
           exec:
             command:
@@ -59,15 +74,13 @@ spec:
             - '[ $(echo "marmottes" | hoarctl put | hoarctl get) = "marmottes" ]'
           initialDelaySeconds: 5
           periodSeconds: 45
-{{- if eq .Values.storage.type "local" }}
-        volumeMounts:
-        - mountPath: /data
-          name: data-dir
-{{- end }}
         resources:
 {{ toYaml .Values.resources | indent 12 }}
-{{- if eq .Values.storage.type "local" }}
       volumes:
+      - name: config-toml
+        configMap:
+          name: {{ template "hoard.fullname" . }}
+{{- if eq .Values.storage.type "filesystem" }}
       - name: data-dir
         persistentVolumeClaim:
           claimName: {{ template "hoard.fullname" $ }}
