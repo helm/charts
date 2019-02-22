@@ -1,0 +1,17 @@
+apiVersion: {{ template "rbac.apiVersion" . }}
+kind: ClusterRole
+metadata:
+  name: {{ template "kuberhealthy.name" . }}
+rules:
+  - apiGroups:
+    - ""
+    resources:
+    - pods
+    - namespaces
+    - componentstatuses
+    - nodes
+    verbs:
+    - get
+    - list
+    - watch
+  

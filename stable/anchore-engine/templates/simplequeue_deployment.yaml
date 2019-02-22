@@ -2,23 +2,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: "{{ template "anchore-engine.simplequeue.fullname" . }}"
+  name: {{ template "anchore-engine.simplequeue.fullname" . }}
   labels:
-    app: "{{ template "anchore-engine.fullname" . }}"
+    app: {{ template "anchore-engine.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
     component: {{ $component }}
 spec:
   selector:
     matchLabels:
-      app: "{{ template "anchore-engine.fullname" . }}"
+      app: {{ template "anchore-engine.fullname" . }}
       component: {{ $component }}
   replicas: {{ .Values.anchoreSimpleQueue.replicaCount }}
   template:
     metadata:
       labels:
-        app: "{{ template "anchore-engine.fullname" . }}"
+        app: {{ template "anchore-engine.fullname" . }}
         component: {{ $component }}
 {{- if .Values.anchoreSimpleQueue.annotations }}
       annotations:
@@ -26,9 +26,9 @@ spec:
 {{- end }}
     spec:
       containers:
-      - name: {{ .Chart.Name }}-{{ $component }}
-        image: {{ .Values.anchoreGlobal.image.repository }}:{{ .Values.anchoreGlobal.image.tag }}
-        imagePullPolicy: {{ .Values.anchoreGlobal.image.pullPolicy }}
+      - name: "{{ .Chart.Name }}-{{ $component }}"
+        image: {{ .Values.anchoreGlobal.image }}
+        imagePullPolicy: {{ .Values.anchoreGlobal.imagePullPolicy }}
         command: ["/usr/local/bin/anchore-manager"]
         args: ["service", "start", "simplequeue"]
         envFrom:
@@ -43,7 +43,7 @@ spec:
               fieldPath: metadata.name
         ports:
         - name: simplequeue
-          containerPort: {{ .Values.anchoreGlobal.service.ports.simplequeue }}
+          containerPort: {{ .Values.anchoreSimpleQueue.service.port }}
         volumeMounts:
         - name: config-volume
           mountPath: /config/config.yaml
@@ -57,17 +57,19 @@ spec:
           httpGet:
             path: /health
             port: simplequeue
-          initialDelaySeconds: 10
-          periodSeconds: 60
-          failureThreshold: 5
+          initialDelaySeconds: 120
+          timeoutSeconds: 10
+          periodSeconds: 10
+          failureThreshold: 6
+          successThreshold: 1
         readinessProbe:
           httpGet:
             path: /health
             port: simplequeue
-          initialDelaySeconds: 5
-          periodSeconds: 10
           timeoutSeconds: 10
-          failureThreshold: 10
+          periodSeconds: 10
+          failureThreshold: 3
+          successThreshold: 1
         resources:
 {{ toYaml .Values.anchoreSimpleQueue.resources | indent 10 }}
       volumes:
@@ -99,16 +101,20 @@ metadata:
   name: {{ template "anchore-engine.simplequeue.fullname" . }}
   labels:
     app: {{ template "anchore-engine.fullname" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     component: {{ $component }}
+  {{- if .Values.anchoreSimpleQueue.service.annotations }}
+  annotations:
+{{ toYaml .Values.anchoreSimpleQueue.service.annotations | indent 4 }}
+  {{- end }}
 spec:
-  type: {{ .Values.anchoreGlobal.service.type }}
+  type: {{ .Values.anchoreSimpleQueue.service.type }}
   ports:
     - name: anchore-simplequeue-api
-      port: {{ .Values.anchoreGlobal.service.ports.simplequeue }}
-      targetPort: {{ .Values.anchoreGlobal.service.ports.simplequeue }}
+      port: {{ .Values.anchoreSimpleQueue.service.port }}
+      targetPort: {{ .Values.anchoreSimpleQueue.service.port }}
       protocol: TCP
   selector:
     app: {{ template "anchore-engine.fullname" . }}

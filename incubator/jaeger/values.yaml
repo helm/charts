@@ -6,7 +6,7 @@ provisionDataStore:
   cassandra: true
   elasticsearch: false
 
-tag: 1.4.1
+tag: 1.9.0
 
 storage:
   # allowed values (cassandra, elasticsearch)
@@ -27,7 +27,7 @@ storage:
 # Begin: Override values on the Cassandra subchart to customize for Jaeger
 cassandra:
   image:
-    tag: 3.11
+    tag: 3.11.3
   persistence:
     # To enable persistence, please see the documentation for the Cassandra chart
     enabled: false
@@ -160,6 +160,7 @@ query:
   dnsPolicy: ClusterFirst
   cmdlineParams: {}
   healthCheckPort: 16687
+  basePath: /
   replicaCount: 1
   service:
     annotations: {}

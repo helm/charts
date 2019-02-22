@@ -26,8 +26,8 @@ spec:
       {{- if .Values.enableMetrics }}
       annotations:
         prometheus.io/scrape: "true"
-        prometheus.io/port: "10254"
-        prometheus.io/path: "/metrics"
+        prometheus.io/port: "{{ .Values.metricsPort }}"
+        prometheus.io/path: {{ .Values.metricsEndpoint }}
       {{- end }}
       labels:
         app.kubernetes.io/name: {{ include "sparkoperator.name" . }}
@@ -45,7 +45,7 @@ spec:
       containers:
       - name: sparkoperator
         image: {{ .Values.operatorImageName }}:{{ .Values.operatorVersion }}
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
         {{- if .Values.enableWebhook }}
         volumeMounts:
           - name: webhook-certs
@@ -53,27 +53,27 @@ spec:
         {{- end }}
         {{- if .Values.enableMetrics }}
         ports:
-          - containerPort: 10254
+          - containerPort: {{ .Values.metricsPort }}
         {{ end }}
-        command: ["/usr/bin/spark-operator"]
-        {{- if and (.Values.enableMetrics) (.Values.enableWebhook) }}
         args:
+        - -v=2
+        - -namespace={{ .Values.sparkJobNamespace }}
+        - -ingress-url-format={{ .Values.ingressUrlFormat }}
+        - -install-crds={{ .Values.installCrds }}
+        - -controller-threads={{ .Values.controllerThreads }}
+        - -resync-interval={{ .Values.resyncInterval }}
+        - -logtostderr
+        {{- if .Values.enableMetrics }}
         - -enable-metrics=true
         - -metrics-labels=app_type
+        - -metrics-port={{ .Values.metricsPort }}
+        - -metrics-endpoint={{ .Values.metricsEndpoint }}
+        - -metrics-prefix={{ .Values.metricsPrefix }}
+        {{- end }}
+        {{- if .Values.enableWebhook }}
         - -enable-webhook=true
         - -webhook-svc-namespace={{ .Release.Namespace }}
-        - -logtostderr
-        {{- else if (.Values.enableMetrics) }}
-        args:
-        - -enable-metrics=true
-        - -metrics-labels=app_type
-        - -logtostderr
-        {{- else if (.Values.enableWebhook) }}
-        args:
-        - -enable-webhook=true
-        - -webhook-svc-namespace={{ .Release.Namespace }}
-        - -logtostderr
-        {{- else }}
-        args:
-        - -logtostderr
+        - -webhook-port={{ .Values.webhookPort }}
+        - -webhook-svc-name={{ .Release.Name }}-webhook
+        - -webhook-config-name={{ include "sparkoperator.fullname" . }}-webhook-config
         {{- end }}

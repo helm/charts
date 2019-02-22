@@ -1,0 +1,3 @@
+To verify that the cluster-overprovisioner pods have started, run:
+
+  kubectl --namespace={{ .Release.Namespace }} get pods -l "app.kubernetes.io/name={{ template "cluster-overprovisioner.name" . }},app.kubernetes.io/instance={{ .Release.Name }}"

@@ -5,7 +5,7 @@
 replicaCount: 1
 image:
   repository: metabase/metabase
-  tag: v0.30.1
+  tag: v0.31.2
   pullPolicy: IfNotPresent
 
 # Config Jetty web server
@@ -60,6 +60,8 @@ ingress:
   # Used to create Ingress record (should used with service.type: ClusterIP).
   hosts:
     # - metabase.domain.com
+  # The ingress path. Useful to host metabase on a subpath, such as `/metabase`.
+  path: /
   labels:
     # Used to add custom labels to the Ingress
     # Useful if for example you have multiple Ingress controllers and want your Ingress controllers to bind to specific Ingresses

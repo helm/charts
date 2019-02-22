@@ -63,15 +63,18 @@ The following table lists the configurable parameters of the Datadog chart and t
 | `datadog.appKey`            | Datadog APP key required to use metricsProvider |  `Nil` You must provide your own key      |
 | `datadog.appKeyExistingSecret` | If set, use the secret with a provided name instead of creating a new one |`nil` |
 | `image.repository`          | The image repository to pull from  | `datadog/agent`                           |
-| `image.tag`                 | The image tag to pull              | `6.6.0`                                   |
+| `image.tag`                 | The image tag to pull              | `6.9.0`                                   |
 | `image.pullPolicy`          | Image pull policy                  | `IfNotPresent`                            |
 | `image.pullSecrets`         | Image pull secrets                 |  `nil`                                    |
 | `rbac.create`               | If true, create & use RBAC resources | `true`                                  |
 | `rbac.serviceAccount`       | existing ServiceAccount to use (ignored if rbac.create=true) | `default`       |
-| `datadog.name`              | Container name if Deamonset or Deployment | `datadog`                          |
+| `datadog.name`              | Container name if Daemonset or Deployment | `datadog`                          |
+| `datadog.site`              | Site ('datadoghq.com' or 'datadoghq.eu') | `nil`                                |
+| `datadog.dd_url`            | Datadog intake server              | `nil`                                     |
 | `datadog.env`               | Additional Datadog environment variables | `nil`                               |
 | `datadog.logsEnabled`       | Enable log collection              | `nil`                                     |
 | `datadog.logsConfigContainerCollectAll` | Collect logs from all containers | `nil`                           |
+| `datadog.logsPointerHostPath` | Host path to store the log tailing state in | `/var/lib/datadog-agent/logs`   |
 | `datadog.apmEnabled`        | Enable tracing from the host       | `nil`                                     |
 | `datadog.processAgentEnabled` | Enable live process monitoring   | `nil`                                     |
 | `datadog.checksd`           | Additional custom checks as python code  | `nil`                               |
@@ -80,6 +83,8 @@ The following table lists the configurable parameters of the Datadog chart and t
 | `datadog.tags`              | Set host tags                      | `nil`                                     |
 | `datadog.nonLocalTraffic` | Enable statsd reporting from any external ip | `False`                           |
 | `datadog.useCriSocketVolume` | Enable mounting the container runtime socket in Agent containers | `True` |
+| `datadog.dogstatsdOriginDetection` | Enable origin detection for container tagging | `False`                 |
+| `datadog.useDogStatsDSocketVolume` | Enable dogstatsd over Unix Domain Socket | `False`                      |
 | `datadog.volumes`           | Additional volumes for the daemonset or deployment | `nil`                     |
 | `datadog.volumeMounts`      | Additional volumeMounts for the daemonset or deployment | `nil`                |
 | `datadog.podAnnotationsAsTags` | Kubernetes Annotations to Datadog Tags mapping | `nil`                      |
@@ -88,6 +93,11 @@ The following table lists the configurable parameters of the Datadog chart and t
 | `datadog.resources.limits.cpu` | CPU resource limits             | `200m`                                    |
 | `datadog.resources.requests.memory` | Memory resource requests   | `256Mi`                                   |
 | `datadog.resources.limits.memory` | Memory resource limits       | `256Mi`                                   |
+| `datadog.securityContext`   | Allows you to overwrite the default securityContext applied to the container  | `nil`  |
+| `datadog.livenessProbe`     | Overrides the default liveness probe | http port 5555                          |
+| `datadog.hostname`          | Set the hostname (write it in datadog.conf) | `nil`                            |
+| `datadog.acInclude`         | Include containers based on image name | `nil`                                 |
+| `datadog.acExclude`         | Exclude containers based on image name | `nil`                                 |
 | `daemonset.podAnnotations`  | Annotations to add to the DaemonSet's Pods | `nil`                             |
 | `daemonset.tolerations`     | List of node taints to tolerate (requires Kubernetes >= 1.6) | `nil`           |
 | `daemonset.nodeSelector`    | Node selectors                     | `nil`                                     |
@@ -118,6 +128,8 @@ The following table lists the configurable parameters of the Datadog chart and t
 | `clusterAgent.resources.requests.memory` | Memory resource requests           | `256Mi`                                   |
 | `clusterAgent.resources.limits.memory`   | Memory resource limits             | `256Mi`                                   |
 | `clusterAgent.tolerations`               | List of node taints to tolerate    | `[]`                                      |
+| `clusterAgent.livenessProbe`             | Overrides the default liveness probe | http port 443 if external metrics enabled       |
+| `clusterAgent.readinessProbe`            | Overrides the default readiness probe | http port 443 if external metrics enabled      |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
@@ -218,3 +230,11 @@ Standard paths are:
 
 - Containerd socket: `/var/run/containerd/containerd.sock`
 - Cri-o socket: `/var/run/crio/crio.sock`
+
+## Updating
+
+### From < 1.19.0 to >= 1.19.0
+
+Version `1.19.0` introduces the use of release name as full name if it contains the chart name(`datadog` in this case).
+E.g. with a release name of `datadog`, this renames the `DaemonSet` from `datadog-datadog` to `datadog`.
+The suggested approach is to delete the release and reinstall it.

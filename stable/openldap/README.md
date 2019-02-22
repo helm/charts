@@ -26,6 +26,7 @@ The following table lists the configurable parameters of the openldap chart and 
 | Parameter                          | Description                                                               | Default           |
 | ---------------------------------- | ------------------------------------------------------------------------- | ------------------|
 | `replicaCount`                     | Number of replicas                                                        | `1`               |
+| `strategy`                         | Deployment strategy                                                       | `{}`              |
 | `image.repository`                 | Container image repository                                                | `osixia/openldap` |
 | `image.tag`                        | Container image tag                                                       | `1.1.10`          |
 | `image.pullPolicy`                 | Container pull policy                                                     | `IfNotPresent`    |

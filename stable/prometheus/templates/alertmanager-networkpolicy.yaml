@@ -8,15 +8,12 @@ metadata:
 spec:
   podSelector:
     matchLabels:
-      app: {{ template "prometheus.name" . }}
-      component: "{{ .Values.alertmanager.name }}"
-      release: {{ .Release.Name }}
+      {{- include "prometheus.alertmanager.matchLabels" . | nindent 6 }}
   ingress:
     - from:
       - podSelector:
           matchLabels:
-            release: {{ .Release.Name }}
-            component: "{{ .Values.server.name }}"
+            {{- include "prometheus.server.matchLabels" . | nindent 12 }}
     - ports:
       - port: 9093
 {{- end -}}

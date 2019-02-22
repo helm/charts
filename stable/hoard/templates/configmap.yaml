@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "hoard.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "hoard.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "hoard.chart" . }}
+data:
+  hoard.toml: |
+    ListenAddress = "tcp://0.0.0.0:{{ .Values.service.port }}"
+
+    [Storage]
+      StorageType = "{{ .Values.storage.type }}"
+      AddressEncoding = "{{ .Values.storage.encoding }}"
+      RootDirectory = "/data"
+      RemoteAPI = "{{ .Values.storage.remote }}"
+      Bucket = "{{ .Values.storage.bucket }}"
+      Prefix = "{{ .Values.storage.prefix }}"
+      Region = "{{ .Values.storage.region }}"
+
+    [Logging]
+      LoggingType = "{{ .Values.logging.type }}"
+      Channels = [{{- range .Values.logging.channels }}{{ . | quote }},{{- end }}]

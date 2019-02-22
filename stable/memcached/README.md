@@ -53,6 +53,10 @@ The following table lists the configurable parameters of the Memcached chart and
 | `extraContainers`         | Container sidecar definition(s) as string | Un-set                                        |
 | `extraVolumes`            | Volume definitions to add as string | Un-set                                              |
 | `kind`                    | Install as StatefulSet or Deployment | StatefulSet                                        |
+| `podAnnotations`          | Map of annotations to add to the pod(s) | `{}`                                            |
+| `nodeSelector`            | Simple pod scheduling control | `{}`                                            |
+| `tolerations`             | Allow or deny specific node taints | `{}`                                            |
+| `affinity`                | Advanced pod scheduling control | `{}`                                            |
 
 The above parameters map to `memcached` params. For more information please refer to the [Memcached documentation](https://github.com/memcached/memcached/wiki/ConfiguringServer).
 

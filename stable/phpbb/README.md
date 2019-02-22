@@ -54,7 +54,7 @@ The following table lists the configurable parameters of the phpBB chart and the
 | `image.repository`                | phpBB image name                      | `bitnami/phpbb`                                         |
 | `image.tag`                       | phpBB image tag                       | `{VERSION}`                                             |
 | `image.pullPolicy`                | Image pull policy                     | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
-| `image.pullSecrets`               | Specify image pull secrets            | `nil`                                                   |
+| `image.pullSecrets`               | Specify docker-registry secret names as an array            | `[]` (does not add image pull secrets to deployed pods)                                                   |
 | `phpbbUser`                       | User of the application               | `user`                                                  |
 | `phpbbPassword`                   | Application password                  | _random 10 character long alphanumeric string_          |
 | `phpbbEmail`                      | Admin email                           | `user@example.com`                                      |
@@ -94,7 +94,7 @@ The following table lists the configurable parameters of the phpBB chart and the
 | `metrics.image.repository`                 | Apache exporter image name                                                                                      | `lusotycoon/apache-exporter`                           |
 | `metrics.image.tag`                        | Apache exporter image tag                                                                                       | `v0.5.0`                                            |
 | `metrics.image.pullPolicy`                 | Image pull policy                                                                                              | `IfNotPresent`                                       |
-| `metrics.image.pullSecrets`                | Specify docker-registry secret names as an array                                                               | `nil`                                                |
+| `metrics.image.pullSecrets`                | Specify docker-registry secret names as an array                                                               | `[]` (does not add image pull secrets to deployed pods)                                                |
 | `metrics.podAnnotations`                   | Additional annotations for Metrics exporter pod                                                                | `{prometheus.io/scrape: "true", prometheus.io/port: "9117"}`                                                   |
 | `metrics.resources`                        | Exporter resource requests/limit                                                                               | {}                        |
 

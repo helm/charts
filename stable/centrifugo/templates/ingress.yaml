@@ -4,12 +4,12 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: {{ template "centrifugo.fullname" . }}
+  name: {{ include "centrifugo.fullname" . }}
   labels:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    app: {{ template "centrifugo.name" . }}
+    chart: {{ include "centrifugo.chart" . }}
+    app: {{ include "centrifugo.name" . }}
   annotations:
     {{- range $key, $value := .Values.ingress.annotations }}
       {{ $key }}: {{ $value | quote }}

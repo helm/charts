@@ -53,7 +53,7 @@ spec:
           valueFrom:
             secretKeyRef:
               name: {{ template "kong.postgresql.fullname" . }}
-              key: postgres-password
+              key: postgresql-password
         {{- end }}
         {{- if .Values.cassandra.enabled }}
         - name: KONG_CASSANDRA_CONTACT_POINTS
@@ -76,13 +76,8 @@ spec:
         - name: KONG_ADMIN_LISTEN
           value: 0.0.0.0:{{ .Values.admin.containerPort }}
         {{- end }}
-        {{- if .Values.proxy.useTLS }}
         - name: KONG_PROXY_LISTEN
-          value: "0.0.0.0:{{ .Values.proxy.containerPort }} ssl"
-        {{- else }}
-        - name: KONG_PROXY_LISTEN
-          value: 0.0.0.0:{{ .Values.proxy.containerPort }}
-        {{- end }}
+          value: {{ template "kong.kongProxyListenValue" . }}
         - name: KONG_NGINX_DAEMON
           value: "off"
         - name: KONG_PROXY_ACCESS_LOG
@@ -106,7 +101,7 @@ spec:
           valueFrom:
             secretKeyRef:
               name: {{ template "kong.postgresql.fullname" . }}
-              key: postgres-password
+              key: postgresql-password
         {{- end }}
         {{- if .Values.cassandra.enabled }}
         - name: KONG_CASSANDRA_CONTACT_POINTS
@@ -115,10 +110,26 @@ spec:
         ports:
         - name: admin
           containerPort: {{ .Values.admin.containerPort }}
+          {{- if .Values.admin.hostPort }}
+          hostPort: {{ .Values.admin.hostPort }}
+          {{- end}}
           protocol: TCP
+        {{- if .Values.proxy.http.enabled }}
         - name: proxy
-          containerPort: {{ .Values.proxy.containerPort }}
+          containerPort: {{ .Values.proxy.http.containerPort }}
+          {{- if .Values.proxy.http.hostPort }}
+          hostPort: {{ .Values.proxy.http.hostPort }}
+          {{- end}}
           protocol: TCP
+        {{- end }}
+        {{- if .Values.proxy.tls.enabled }}
+        - name: proxy-tls
+          containerPort: {{ .Values.proxy.tls.containerPort }}
+          {{- if .Values.proxy.tls.hostPort }}
+          hostPort: {{ .Values.proxy.tls.hostPort }}
+          {{- end}}
+          protocol: TCP
+        {{- end }}
         readinessProbe:
 {{ toYaml .Values.readinessProbe | indent 10 }}
         livenessProbe:

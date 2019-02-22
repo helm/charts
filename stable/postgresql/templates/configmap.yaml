@@ -1,4 +1,4 @@
-{{ if or (.Files.Glob "files/postgresql.conf") (.Files.Glob "files/pg_hba.conf") .Values.postgresqlConfiguration .Values.pgHbaConfiguration}}
+{{ if and (or (.Files.Glob "files/postgresql.conf") (.Files.Glob "files/pg_hba.conf") .Values.postgresqlConfiguration .Values.pgHbaConfiguration) (not .Values.configurationConfigMap) }}
 apiVersion: v1
 kind: ConfigMap
 metadata:

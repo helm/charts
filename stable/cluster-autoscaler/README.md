@@ -53,15 +53,23 @@ The [auto-discovery](#auto-discovery) section provides more details and examples
 - `--cloud-provider=gce`
 - `autoscalingGroupsnamePrefix[0].name=your-ig-prefix,autoscalingGroupsnamePrefix[0].maxSize=10,autoscalingGroupsnamePrefix[0].minSize=1`
 
-1) Either provide a yaml file setting `autoscalingGroupsnamePrefix` (see values.yaml) or use `--set` e.g.:
+To use Managed Instance Group (MIG) auto-discovery, provide a YAML file setting `autoscalingGroupsnamePrefix` (see values.yaml) or use `--set` when installing the Chart - e.g.
 
 ```console
 $ helm install stable/cluster-autoscaler \
 --name my-release \
 --set autoDiscovery.clusterName=<CLUSTER NAME> \
 --set cloudProvider=gce \
---set autoDiscovery.clusterName=mycluster \
 --set "autoscalingGroupsnamePrefix[0].name=your-ig-prefix,autoscalingGroupsnamePrefix[0].maxSize=10,autoscalingGroupsnamePrefix[0].minSize=1"
+```
+
+Note that `your-ig-prefix` should be a _prefix_ matching one or more MIGs, and _not_ the full name of the MIG. For example, to match multiple instance groups - `k8s-node-group-a-standard`, `k8s-node-group-b-gpu`, you would use a prefix of `k8s-node-group-`.
+
+In the event you want to explicitly specify MIGs instead of using auto-discovery, set members of the `autoscalingGroups` array directly - e.g.
+
+```
+# where 'n' is the index, starting at 0
+-- set autoscalingGroups[n].name=https://content.googleapis.com/compute/v1/projects/$PROJECTID/zones/$ZONENAME/instanceGroupManagers/$FULL-MIG-NAME,autoscalingGroups[n].maxSize=$MAXSIZE,autoscalingGroups[n].minSize=$MINSIZE
 ```
 
 #### Azure AKS
@@ -113,13 +121,13 @@ Parameter | Description | Default
 `autoscalingGroups[].maxSize` | maximum autoscaling group size | None. Required unless `autoDiscovery.enabled=true`
 `autoscalingGroups[].minSize` | minimum autoscaling group size | None. Required unless `autoDiscovery.enabled=true`
 `awsRegion` | AWS region (required if `cloudProvider=aws`) | `us-east-1`
-`autoscalingGroupsnamePrefix[].name` | GCE MIG name | None. Required for `cloudProvider=gce`
+`autoscalingGroupsnamePrefix[].name` | GCE MIG name prefix (the full name is invalid) | None. Required for `cloudProvider=gce`
 `autoscalingGroupsnamePrefix[].maxSize` | maximum MIG size | None. Required for `cloudProvider=gce`
 `autoscalingGroupsnamePrefix[].minSize` | minimum MIG size |  None. Required for `cloudProvider=gce`
 `sslCertPath` | Path on the host where ssl ca cert exists | `/etc/ssl/certs/ca-certificates.crt`
 `cloudProvider` | `aws` or `spotinst` are currently supported for AWS. `gce` for GCE. `azure` for Azure AKS | `aws`
 `image.repository` | Image | `k8s.gcr.io/cluster-autoscaler`
-`image.tag` | Image tag  | `v1.2.0`
+`image.tag` | Image tag  | `v1.13.1`
 `image.pullPolicy` | Image pull policy  | `IfNotPresent`
 `extraArgs` | additional container arguments | `{}`
 `podDisruptionBudget` | Pod disruption budget | `maxUnavailable: 1`
@@ -146,6 +154,10 @@ Parameter | Description | Default
 `spotinst.image.tag` | Image tag (used if `cloudProvider=spotinst`) | `v0.6.0`
 `spotinst.image.pullPolicy` | Image pull policy (used if `cloudProvider=spotinst`) | `IfNotPresent`
 `tolerations` | List of node taints to tolerate (requires Kubernetes >= 1.6) | `[]`
+`serviceMonitor.enabled` | if `true`, creates a Prometheus Operator ServiceMonitor | `false`
+`serviceMonitor.interval` | Interval that Prometheus scrapes Cluster Autoscaler metrics | `10s`
+`serviceMonitor.namespace` | Namespace which Prometheus is running in | `monitoring`
+`serviceMonitor.selector` | Default to kube-prometheus install (CoreOS recommended), but should be set according to Prometheus install | `{ prometheus: kube-prometheus }`
 `azureClientID` | Service Principal ClientID with contributor permission to Cluster and Node ResourceGroup | none
 `azureClientSecret` | Service Principal ClientSecret with contributor permission to Cluster and Node ResourceGroup | none
 `azureSubscriptionID` | Azure subscription where the resources are located | none

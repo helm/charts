@@ -35,6 +35,9 @@ spec:
         {{- end }}
       {{- end }}
     spec:
+      {{- if .Values.priorityClassName }}
+      priorityClassName: "{{ .Values.priorityClassName }}"
+      {{- end }}
       securityContext:
         runAsUser: 1000
         fsGroup: 1000

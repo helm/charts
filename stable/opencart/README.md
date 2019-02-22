@@ -54,14 +54,14 @@ The following table lists the configurable parameters of the OpenCart chart and 
 | `image.repository`                  | OpenCart Image name                       | `bitnami/opencart`                                       |
 | `image.tag`                         | OpenCart Image tag                        | `{VERSION}`                                              |
 | `image.pullPolicy`                  | Image pull policy                         | `Always` if `imageTag` is `latest`, else `IfNotPresent`  |
-| `image.pullSecrets`                 | Specify image pull secrets                | `nil`                                                    |
+| `image.pullSecrets`                 | Specify docker-registry secret names as an array | `[]` (does not add image pull secrets to deployed pods) |
 | `opencartHost`                      | OpenCart host to create application URLs  | `nil`                                                    |
-| `service.type`                    | Kubernetes Service type                    | `LoadBalancer`                                          |
-| `service.port`                    | Service HTTP port                    | `80`                                          |
-| `service.httpsPort`                    | Service HTTPS port                    | `443`                                          |
-| `service.externalTrafficPolicy`   | Enable client source IP preservation       | `Cluster`                                               |
-| `service.nodePorts.http`                 | Kubernetes http node port                  | `""`                                                    |
-| `service.nodePorts.https`                | Kubernetes https node port                 | `""`                                                    |
+| `service.type`                      | Kubernetes Service type                   | `LoadBalancer`                                           |
+| `service.port`                      | Service HTTP port                         | `80`                                                     |
+| `service.httpsPort`                 | Service HTTPS port                        | `443`                                                    |
+| `service.externalTrafficPolicy`     | Enable client source IP preservation      | `Cluster`                                                |
+| `service.nodePorts.http`            | Kubernetes http node port                 | `""`                                                     |
+| `service.nodePorts.https`           | Kubernetes https node port                | `""`                                                     |
 | `service.loadBalancerIP`            | `loadBalancerIP` for the OpenCart Service | `nil`                                                    |
 | `opencartUsername`                  | User of the application                   | `user`                                                   |
 | `opencartPassword`                  | Application password                      | _random 10 character long alphanumeric string_           |
@@ -78,10 +78,10 @@ The following table lists the configurable parameters of the OpenCart chart and 
 | `externalDatabase.password`         | Password for the above username           | `nil`                                                    |
 | `externalDatabase.database`         | Name of the existing database             | `bitnami_opencart`                                       |
 | `mariadb.enabled`                   | Whether to use MariaDB chart              | `true`                                                   |
-| `mariadb.db.name`           | Database name to create                   | `bitnami_opencart`                                       |
-| `mariadb.db.user`               | Database user to create                   | `bn_opencart`                                            |
-| `mariadb.db.password`           | Password for the database                 | `nil`                                                    |
-| `mariadb.rootUser.password`       | MariaDB admin password                    | `nil`                                                    |
+| `mariadb.db.name`                   | Database name to create                   | `bitnami_opencart`                                       |
+| `mariadb.db.user`                   | Database user to create                   | `bn_opencart`                                            |
+| `mariadb.db.password`               | Password for the database                 | `nil`                                                    |
+| `mariadb.rootUser.password`         | MariaDB admin password                    | `nil`                                                    |
 | `serviceType`                       | Kubernetes Service type                   | `LoadBalancer`                                           |
 | `persistence.enabled`               | Enable persistence using PVC              | `true`                                                   |
 | `persistence.apache.storageClass`   | PVC Storage Class for Apache volume       | `nil` (uses alpha storage class annotation)              |
@@ -91,15 +91,15 @@ The following table lists the configurable parameters of the OpenCart chart and 
 | `persistence.opencart.accessMode`   | PVC Access Mode for OpenCart volume       | `ReadWriteOnce`                                          |
 | `persistence.opencart.size`         | PVC Storage Request for OpenCart volume   | `8Gi`                                                    |
 | `resources`                         | CPU/Memory resource requests/limits       | Memory: `512Mi`, CPU: `300m`                             |
-| `podAnnotations`                | Pod annotations                                   | `{}`                                                       |
-| `metrics.enabled`                          | Start a side-car prometheus exporter                                                                           | `false`                                              |
-| `metrics.image.registry`                   | Apache exporter image registry                                                                                  | `docker.io`                                          |
-| `metrics.image.repository`                 | Apache exporter image name                                                                                      | `lusotycoon/apache-exporter`                           |
-| `metrics.image.tag`                        | Apache exporter image tag                                                                                       | `v0.5.0`                                            |
-| `metrics.image.pullPolicy`                 | Image pull policy                                                                                              | `IfNotPresent`                                       |
-| `metrics.image.pullSecrets`                | Specify docker-registry secret names as an array                                                               | `nil`                                                |
-| `metrics.podAnnotations`                   | Additional annotations for Metrics exporter pod                                                                | `{prometheus.io/scrape: "true", prometheus.io/port: "9117"}`                                                   |
-| `metrics.resources`                        | Exporter resource requests/limit                                                                               | {}                        |
+| `podAnnotations`                    | Pod annotations                           | `{}`                                                     |
+| `metrics.enabled`                   | Start a side-car prometheus exporter      | `false`                                                  |
+| `metrics.image.registry`            | Apache exporter image registry            | `docker.io`                                              |
+| `metrics.image.repository`          | Apache exporter image name                | `lusotycoon/apache-exporter`                             |
+| `metrics.image.tag`                 | Apache exporter image tag                 | `v0.5.0`                                                 |
+| `metrics.image.pullPolicy`          | Image pull policy                         | `IfNotPresent`                                           |
+| `metrics.image.pullSecrets`         | Specify docker-registry secret names as an array | `[]` (does not add image pull secrets to deployed pods)      |
+| `metrics.podAnnotations`            | Additional annotations for Metrics exporter pod  | `{prometheus.io/scrape: "true", prometheus.io/port: "9117"}` |
+| `metrics.resources`                 | Exporter resource requests/limit          | {}                                                       |
 
 The above parameters map to the env variables defined in [bitnami/opencart](http://github.com/bitnami/bitnami-docker-opencart). For more information please refer to the [bitnami/opencart](http://github.com/bitnami/bitnami-docker-opencart) image documentation.
 

@@ -1,17 +1,17 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: {{ template "inbucket.name" . }}
-    chart: {{ template "inbucket.chart" . }}
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
-  name: {{ template "inbucket.fullname" . }}
+    app.kubernetes.io/name: {{ include "inbucket.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "inbucket.chart" . }}
+  name: {{ include "inbucket.fullname" . }}
 spec:
   selector:
     matchLabels:
-      app: {{ template "inbucket.name" . }}
-      release: {{ .Release.Name | quote }}
+      app.kubernetes.io/name: {{ include "inbucket.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
     {{- if .Values.podAnnotations }}
@@ -19,16 +19,18 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
     {{- end }}
       labels:
-        app: {{ template "inbucket.name" . }}
-        release: {{ .Release.Name | quote }}
+        app.kubernetes.io/name: {{ include "inbucket.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+        helm.sh/chart: {{ include "inbucket.chart" . }}
     spec:
       containers:
-        - name: {{ template "inbucket.name" . }}
+        - name: {{ include "inbucket.name" . }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           envFrom:
           - configMapRef:
-              name: {{ template "inbucket.name" . }}-configmap
+              name: {{ include "inbucket.name" . }}-configmap
           ports:
             - name: http
               containerPort: 9000

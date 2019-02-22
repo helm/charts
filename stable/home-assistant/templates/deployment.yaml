@@ -19,6 +19,12 @@ spec:
         app: {{ template "home-assistant.name" . }}
         release: {{ .Release.Name }}
     spec:
+      {{- with .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range . }}
+        - name: {{ . }}
+      {{- end }}
+      {{- end }}
       {{- if .Values.hostNetwork }}
       hostNetwork: {{ .Values.hostNetwork }} 
       {{- end }}
@@ -48,6 +54,13 @@ spec:
             {{- range $key, $value := .Values.extraEnv }}
             - name: {{ $key }}
               value: {{ $value }}
+            {{- end }}
+            {{- range $name, $opts := .Values.extraEnvSecrets }}
+            - name: {{ $name }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $opts.secret }}
+                  key: {{ $opts.key }}
             {{- end }}
           volumeMounts:
           - mountPath: /config

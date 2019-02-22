@@ -4,27 +4,27 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "anchore-engine.enterprise-ui.fullname" . | quote }}
+  name: {{ include "anchore-engine.enterprise-ui.fullname" . }}
   labels:
-    app: {{ include "anchore-engine.fullname" . | quote }}
+    app: {{ include "anchore-engine.fullname" . }}
     component: {{ $component }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
   selector:
     matchLabels:
-      app: "{{ template "anchore-engine.fullname" .}}"
+      app: {{ template "anchore-engine.fullname" . }}
       component: {{ $component }}
   replicas: 1
   template:
     metadata:
       labels:
-        app: "{{ template "anchore-engine.fullname" . }}"
+        app: {{ template "anchore-engine.fullname" . }}
         component: {{ $component }}
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-        release: "{{ .Release.Name }}"
-        heritage: "{{ .Release.Service }}"
+        release: {{ .Release.Name }}
+        heritage: {{ .Release.Service }}
 {{- if .Values.anchoreEnterpriseUi.annotations }}
       annotations:
 {{ toYaml .Values.anchoreEnterpriseUi.annotations | indent 8 }}
@@ -37,9 +37,9 @@ spec:
       imagePullSecrets:
       - name: {{ .Values.anchoreEnterpriseGlobal.imagePullSecretName }}
       containers:
-      - name: {{ .Chart.Name }}-{{ $component }}
-        image: {{ .Values.anchoreEnterpriseUi.image.repository }}:{{ .Values.anchoreEnterpriseUi.image.tag }}
-        imagePullPolicy: {{ .Values.anchoreEnterpriseUi.image.pullPolicy }}
+      - name: "{{ .Chart.Name }}-{{ $component }}"
+        image: {{ .Values.anchoreEnterpriseUi.image }}
+        imagePullPolicy: {{ .Values.anchoreEnterpriseUi.imagePullPolicy }}
         env:
         - name: REDIS_PASSWORD
           valueFrom:
@@ -51,15 +51,15 @@ spec:
           value: {{ index .Values "anchore-ui-redis" "externalEndpoint" | quote }}
         {{- else }}
         - name: ANCHORE_REDIS_URI
-          value: {{ printf "redis://:$(REDIS_PASSWORD)@%s-master:6379" ( include "redis.fullname" . ) }}
+          value: "redis://:$(REDIS_PASSWORD)@{{ template "redis.fullname" . }}-master:6379"
         {{- end }}
         - name: ANCHORE_ENGINE_URI
-          value: 'http://{{ template "anchore-engine.api.fullname" . }}:{{ .Values.anchoreGlobal.service.ports.extApi }}/v1'
+          value: "http://{{ template "anchore-engine.api.fullname" . }}:{{ .Values.anchoreApi.service.port }}/v1"
         - name: ANCHORE_LICENSE_PATH
-          value: '/'
+          value: "/"
         {{- if .Values.anchoreEnterpriseRbac.enabled }}
         - name: ANCHORE_RBAC_URI
-          value: 'http://{{ template "anchore-engine.api.fullname" . }}:{{ .Values.anchoreGlobal.service.ports.rbacApi }}/v1'
+          value: "http://{{ template "anchore-engine.api.fullname" . }}:{{ .Values.anchoreEnterpriseRbac.service.apiPort }}/v1"
         {{- end }}
         - name: ANCHORE_ENABLE_SSL
           value: '{{ .Values.anchoreEnterpriseUi.enableSsl }}'
@@ -73,24 +73,23 @@ spec:
           name: enterprise-ui
         volumeMounts:
         - name: anchore-license
-          mountPath: "/license.yaml"
+          mountPath: /license.yaml
           subPath: license.yaml
+        livenessProbe:
+          httpGet:
+            path: /
+            port: enterprise-ui
+          initialDelaySeconds: 120
+          periodSeconds: 10
+          failureThreshold: 6
+          successThreshold: 1
         readinessProbe:
           httpGet:
             path: /service/health
             port: enterprise-ui
-          initialDelaySeconds: 60
           periodSeconds: 10
-          timeoutSeconds: 10
-          failureThreshold: 10
-        livenessProbe:
-          httpGet:
-            path: /service/health
-            port: enterprise-ui
-          timeoutSeconds: 10
-          initialDelaySeconds: 60
-          periodSeconds: 30
-          failureThreshold: 10
+          failureThreshold: 3
+          successThreshold: 1
         resources:
 {{ toYaml .Values.anchoreEnterpriseUi.resources | indent 10 }}
     {{- if .Values.anchoreEnterpriseUi.nodeSelector }}
@@ -112,21 +111,25 @@ kind: Service
 metadata:
   name: {{ include "anchore-engine.enterprise-ui.fullname" . | quote }}
   labels:
-    app: "{{ template "anchore-engine.fullname" . }}"
+    app: {{ template "anchore-engine.fullname" . }}
     component: {{ $component }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  {{- if .Values.anchoreEnterpriseUi.service.annotations }}
+  annotations:
+{{ toYaml .Values.anchoreEnterpriseUi.service.annotations | indent 4 }}
+  {{- end }}
 spec:
   sessionAffinity: ClientIP
-  type: {{ .Values.anchoreGlobal.service.type }}
+  type: {{ .Values.anchoreEnterpriseUi.service.type }}
   ports:
     - name: enterprise-ui
-      port: {{ .Values.anchoreGlobal.service.ports.uiHttp }}
+      port: {{ .Values.anchoreEnterpriseUi.service.port }}
       protocol: TCP
       targetPort: 3000
   selector:
-    app: "{{ template "anchore-engine.fullname" . }}"
+    app: {{ template "anchore-engine.fullname" . }}
     component: {{ $component }}
 
 {{- end -}}
