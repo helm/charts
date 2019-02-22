@@ -1,6 +1,6 @@
 name: redmine
-version: 8.0.3
-appVersion: 4.0.1
+version: 8.0.4
+appVersion: 4.0.2
 description: A flexible project management web application.
 keywords:
 - redmine
