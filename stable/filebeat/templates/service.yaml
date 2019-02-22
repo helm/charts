@@ -2,6 +2,10 @@
 kind: Service
 apiVersion: v1
 metadata:
+  annotations:
+    prometheus.io/path: /metrics
+    prometheus.io/port: "9479"
+    prometheus.io/scrape: "true"
   name: {{ template "filebeat.fullname" . }}-metrics
   namespace: {{ .Release.Namespace }}
   labels:
