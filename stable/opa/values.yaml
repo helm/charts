@@ -43,6 +43,11 @@ admissionControllerCA: ""
 admissionControllerCert: ""
 admissionControllerKey: ""
 
+authz:
+  # Disable if you don't want authorization.
+  # Mostly useful for debugging.
+  enabled: true
+
 # Docker image and tag to deploy.
 image: openpolicyagent/opa
 imageTag: 0.10.4

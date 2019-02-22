@@ -15,6 +15,7 @@ spec:
         app: {{ template "opa.fullname" . }}
       name: {{ template "opa.fullname" . }}
     spec:
+{{- if .Values.authz.enabled }}
       initContainers:
         - name: initpolicy
           image: {{ .Values.mgmt.image }}:{{ .Values.mgmt.imageTag }}
@@ -35,6 +36,7 @@ spec:
           volumeMounts:
             - name: authz
               mountPath: /authz
+{{- end }}
       containers:
         - name: opa
           image: {{ .Values.image }}:{{ .Values.imageTag }}
@@ -45,11 +47,13 @@ spec:
             - "--config-file=/config/config.yaml"
             - "--tls-cert-file=/certs/tls.crt"
             - "--tls-private-key-file=/certs/tls.key"
+            - "--addr=0.0.0.0:443"
+{{- if .Values.authz.enabled }}
             - "--authentication=token"
             - "--authorization=basic"
             - "/authz/authz.rego"
             - "--ignore=.*"
-            - "--addr=0.0.0.0:443"
+{{- end }}
 {{- if .Values.mgmt.enabled }}
             - "--insecure-addr=127.0.0.1:8181"
 {{- end }}
@@ -67,7 +71,9 @@ spec:
           image: {{ .Values.mgmt.image }}:{{ .Values.mgmt.imageTag }}
           imagePullPolicy: {{ .Values.mgmt.imagePullPolicy }}
           args:
+{{- if .Values.authz.enabled }}
             - --opa-auth-token-file=/authz/mgmt-token
+{{- end }}
             - --opa-url=http://127.0.0.1:8181/v1
             - --replicate-path={{ .Values.mgmt.replicate.path }}
             - --enable-policies={{ .Values.mgmt.configmapPolicies.enabled }}
@@ -81,9 +87,11 @@ spec:
 {{- if gt (len .Values.mgmt.replicate.cluster) 0 }}
             - --replicate-cluster={{ .Values.mgmt.replicate.cluster | join ","}}
 {{- end }}
+{{- if .Values.authz.enabled }}
           volumeMounts:
             - name: authz
               mountPath: /authz
+{{- end }}
 {{- end }}
 {{- if .Values.sar.enabled }}
         - name: sarproxy
@@ -106,8 +114,10 @@ spec:
         - name: config
           secret:
             secretName: {{ template "opa.fullname" . }}-config
+{{- if .Values.authz.enabled }}
         - name: authz
           emptyDir: {}
+{{- end }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
       tolerations:
