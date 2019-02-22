@@ -12,9 +12,6 @@ metadata:
   annotations:
     checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
 {{- end }}
-  spec:
-    serviceName: {{ template "elasticsearch.master.fullname" . }}
-    replicas: {{ .Values.master.replicas }}
 spec:
   serviceName: {{ template "elasticsearch.master.fullname" . }}
   replicas: {{ .Values.master.replicas }}
