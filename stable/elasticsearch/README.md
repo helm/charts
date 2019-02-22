@@ -77,6 +77,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `cluster.additionalJavaOpts`         | Cluster parameters to be added to `ES_JAVA_OPTS` environment variable | `""`                                              |
 | `cluster.loggingYml`                 | Cluster logging configuration for ES v2                             | see `values.yaml` for defaults                      |
 | `cluster.log4j2Properties`           | Cluster logging configuration for ES v5 and 6                       | see `values.yaml` for defaults                      |
+| `cluster.plugins`                    | List of Elasticsearch plugins to install                            | `[]`                                                |
 | `client.name`                        | Client component name                                               | `client`                                            |
 | `client.replicas`                    | Client node replicas (deployment)                                   | `2`                                                 |
 | `client.resources`                   | Client node resources requests & limits                             | `{} - cpu limit must be an integer`                 |
@@ -94,6 +95,8 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `client.initResources`               | Client initContainer resources requests & limits                    | `{}`                                                |
 | `client.additionalJavaOpts`          | Parameters to be added to `ES_JAVA_OPTS` environment variable for client | `""`                                           |
 | `client.ingress.enabled`             | Enable Client Ingress                                               | `false`                                             |
+| `client.ingress.user`                | If this & password are set, enable basic-auth on ingress            | `nil`                                               |
+| `client.ingress.password`            | If this & user are set, enable basic-auth on ingress                | `nil`                                               |
 | `client.ingress.annotations`         | Client Ingress annotations                                          | `{}`                                                |
 | `client.ingress.hosts`               | Client Ingress Hostnames                                            | `[]`                                                |
 | `client.ingress.tls`                 | Client Ingress TLS configuration                                    | `[]`                                                |

@@ -174,4 +174,7 @@ spec:
       securityContext:
 {{ toYaml .Values.controller.securityContext | indent 8 }}
     {{- end }}
+    {{- if .Values.controller.priorityClassName }}
+      priorityClassName: {{ .Values.controller.priorityClassName }}
+    {{- end }}
 {{- end }}
