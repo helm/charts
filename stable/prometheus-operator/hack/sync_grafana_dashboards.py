@@ -45,6 +45,8 @@ condition_map = {
 
 # standard header
 header = '''# Generated from '%(name)s' from %(url)s
+# Do not change in-place! In order to change this file first read following link:
+# https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
 {{- if and .Values.grafana.enabled .Values.grafana.defaultDashboardsEnabled%(condition)s }}
 apiVersion: v1
 kind: ConfigMap

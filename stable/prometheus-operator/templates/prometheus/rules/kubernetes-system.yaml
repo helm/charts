@@ -1,4 +1,6 @@
 # Generated from 'kubernetes-system' group from https://raw.githubusercontent.com/coreos/prometheus-operator/master/contrib/kube-prometheus/manifests/prometheus-rules.yaml
+# Do not change in-place! In order to change this file first read following link:
+# https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
 {{- if and .Values.defaultRules.create .Values.defaultRules.rules.kubernetesSystem }}
 apiVersion: {{ printf "%s/v1" (.Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com") }}
 kind: PrometheusRule
@@ -28,9 +30,9 @@ spec:
         severity: warning
     - alert: KubeVersionMismatch
       annotations:
-        message: There are {{`{{ $value }}`}} different versions of Kubernetes components running.
+        message: There are {{`{{ $value }}`}} different semantic versions of Kubernetes components running.
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubeversionmismatch
-      expr: count(count(kubernetes_build_info{job!="kube-dns"}) by (gitVersion)) > 1
+      expr: count(count by (gitVersion) (label_replace(kubernetes_build_info{job!="kube-dns"},"gitVersion","$1","gitVersion","(v[0-9]*.[0-9]*.[0-9]*).*"))) > 1
       for: 1h
       labels:
         severity: warning

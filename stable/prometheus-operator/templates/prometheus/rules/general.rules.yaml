@@ -1,4 +1,6 @@
 # Generated from 'general.rules' group from https://raw.githubusercontent.com/coreos/prometheus-operator/master/contrib/kube-prometheus/manifests/prometheus-rules.yaml
+# Do not change in-place! In order to change this file first read following link:
+# https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
 {{- if and .Values.defaultRules.create .Values.defaultRules.rules.general }}
 apiVersion: {{ printf "%s/v1" (.Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com") }}
 kind: PrometheusRule
@@ -25,9 +27,19 @@ spec:
       for: 10m
       labels:
         severity: warning
-    - alert: DeadMansSwitch
+    - alert: Watchdog
       annotations:
-        message: This is a DeadMansSwitch meant to ensure that the entire alerting pipeline is functional.
+        message: 'This is an alert meant to ensure that the entire alerting pipeline is functional.
+
+          This alert is always firing, therefore it should always be firing in Alertmanager
+
+          and always fire against a receiver. There are integrations with various notification
+
+          mechanisms that send a notification when this alert is not firing. For example the
+
+          "DeadMansSnitch" integration in PagerDuty.
+
+          '
       expr: vector(1)
       labels:
         severity: none
