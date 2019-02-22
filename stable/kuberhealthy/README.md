@@ -54,6 +54,7 @@ deployment:
   maxUnavailable: 1
   imagePullPolicy: IfNotPresent
   namespace: kuberhealthy
+  podAnnotations: {} # Annotations to be added to pods created by the deployment
 securityContext: # default container security context
   runAsNonRoot: true
   runAsUser: 999
