@@ -37,6 +37,8 @@ spec:
               path: /
               port: http
           env:
+            - name: APP_URL
+              value: {{ .Values.ingress.hosts 0 | quote }}
           {{- if .Values.ldap.enabled }}
             - name: AUTH_METHOD
               value: ldap
@@ -53,6 +55,21 @@ spec:
             - name: LDAP_VERSION
               value: {{ .Values.ldap.version | quote }}
           {{- end }}
+          {{- if .Values.OAuth.google.enabled }}
+            - name: GOOGLE_AUTO_CONFIRM_EMAIL
+              value: {{ .Values.OAuth.google.autoRegister | quote }}
+            - name: GOOGLE_APP_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.OAuth.google.secret | quote }}
+                  key: {{ .Values.OAuth.google.appIdKey | quote }}
+              value: {{ .Values.OAuth.google.appIdKey | quote }}
+            - name: GOOGLE_APP_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.OAuth.google.secret | quote }}
+                  key: {{ .Values.OAuth.google.appSecretKey | quote }}
+          {{- end}}
           {{- if .Values.mariadb.enabled }}
             - name: DB_HOST
               value: {{ template "bookstack.mariadb.fullname" . }}

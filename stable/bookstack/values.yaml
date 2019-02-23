@@ -170,3 +170,11 @@ ldap:
   pass:
   userFilter:
   version:
+
+OAuth:
+  google:
+    enabled: false
+    autoRegister: false
+    secret: OAuthBookstack
+    appIdKey: googleAppSecretKey
+    appSecretKey: googleAppSecretKey
