@@ -124,6 +124,11 @@ chart and their default values.
 | `OAuth.facebook.secret`             | Set name of the secret for OAuth authentication                                                                            | `OAuthBookstack`                            |
 | `OAuth.facebook.appIdKey`           | Set key of the secret for Facebook app id key.                                                                             | `facebookAppSecretKey`                      |
 | `OAuth.facebook.appSecretKey`       | Set key of the secret for Facebook app secret key                                                                          | `facebookAppSecretKey`                      |
+| `OAuth.slack.enabled`               | Enable or disable OAuth authentication with Slack.                                                                         | `fasle`                                     |
+| `OAuth.slack.autoRegister`          | Enable or disable automatic email confirmation for OAuth authentication Slack.                                             | `fasle`                                     |
+| `OAuth.slack.secret`                | Set name of the secret for OAuth authentication                                                                            | `OAuthBookstack`                            |
+| `OAuth.slack.appIdKey`              | Set key of the secret for Slack app id key.                                                                                | `slackAppSecretKey`                         |
+| `OAuth.slack.appSecretKey`          | Set key of the secret for Slack app secret key                                                                             | `slackAppSecretKey`                         |
 
 The above parameters map to the env variables defined in the
 [Bookstack image](https://hub.docker.com/r/solidnerd/bookstack/) and the

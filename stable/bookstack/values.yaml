@@ -197,5 +197,12 @@ OAuth:
     enabled: false
     autoRegister: false
     secret: OAuthBookstack
-    appIdKey: twitterAppSecretKey
-    appSecretKey: twitterAppSecretKey
+    appIdKey: facebookAppSecretKey
+    appSecretKey: facebookAppSecretKey
+
+  slack:
+    enabled: false
+    autoRegister: false
+    secret: OAuthBookstack
+    appIdKey: slackAppSecretKey
+    appSecretKey: slackAppSecretKey
