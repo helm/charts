@@ -8,6 +8,7 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     component: snapshot-operator
+    openebs.io/component-name: openebs-snapshot-operator
 spec:
   replicas: {{ .Values.snapshotOperator.replicas }}
   selector:
@@ -53,6 +54,13 @@ spec:
         # This is supported for openebs snapshot controller version 0.6-RC1 onwards
         - name: OPENEBS_MAYA_SERVICE_NAME
           value: "{{ template "openebs.fullname" . }}-apiservice"
+        livenessProbe:
+          exec:
+            command:
+            - pgrep
+            - ".*controller"
+          initialDelaySeconds: {{ .Values.snapshotOperator.healthCheck.initialDelaySeconds }}
+          periodSeconds: {{ .Values.snapshotOperator.healthCheck.periodSeconds }}
       - name: {{ template "openebs.name" . }}-snapshot-provisioner
         image: "{{ .Values.snapshotOperator.provisioner.image }}:{{ .Values.snapshotOperator.provisioner.imageTag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
@@ -81,6 +89,13 @@ spec:
         # This is supported for openebs snapshot provisioner version 0.6-RC1 onwards
         - name: OPENEBS_MAYA_SERVICE_NAME
           value: "{{ template "openebs.fullname" . }}-apiservice"
+        livenessProbe:
+          exec:
+            command:
+            - pgrep
+            - ".*provisioner"
+          initialDelaySeconds: {{ .Values.snapshotOperator.healthCheck.initialDelaySeconds }}
+          periodSeconds: {{ .Values.snapshotOperator.healthCheck.periodSeconds }}
 {{- if .Values.snapshotOperator.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.snapshotOperator.nodeSelector | indent 8 }}
