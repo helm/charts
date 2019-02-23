@@ -16,6 +16,8 @@ keywords:
 maintainers:
   - name: flydiverny
     email: markus@maga.se
-  - name: Flynn
+  - name: kflynn
     email: flynn@datawire.io
+  - name: nbkrause
+    email: nkrause@datawire.io
 engine: gotpl
