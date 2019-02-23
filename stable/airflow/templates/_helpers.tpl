@@ -87,9 +87,9 @@ Map environment vars to secrets
     {{- $secretName := .Release.Name | trunc 63 | trimSuffix "-" }}
     {{- $mapping := .Values.airflow.defaultSecretsMapping }}
     {{- if .Values.existingAirflowSecret }}
-      {{- $secretName = .Values.existingAirflowSecret }}
+      {{- $secretName := .Values.existingAirflowSecret }}
       {{- if .Values.airflow.secretsMapping }}
-        {{- $mapping = .Values.airflow.secretsMapping }}
+        {{- $mapping := .Values.airflow.secretsMapping }}
       {{- end }}
     {{- end }}
     {{- range $val := $mapping }}
