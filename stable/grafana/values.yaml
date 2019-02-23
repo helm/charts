@@ -297,7 +297,7 @@ smtp:
 sidecar:
   image: kiwigrid/k8s-sidecar:0.0.11
   imagePullPolicy: IfNotPresent
-  resources:
+  resources: {}
 #   limits:
 #     cpu: 100m
 #     memory: 100Mi
