@@ -114,6 +114,11 @@ chart and their default values.
 | `OAuth.github.secret`               | Set name of the secret for OAuth authentication                                                                            | `OAuthBookstack`                            |
 | `OAuth.github.appIdKey`             | Set key of the secret for GitHub app id key.                                                                               | `githubAppSecretKey`                        |
 | `OAuth.github.appSecretKey`         | Set key of the secret for GitHub app secret key                                                                            | `githubAppSecretKey`                        |
+| `OAuth.twitter.enabled`             | Enable or disable OAuth authentication with Twitter.                                                                       | `fasle`                                     |
+| `OAuth.twitter.autoRegister`        | Enable or disable automatic email confirmation for OAuth authentication Twitter.                                           | `fasle`                                     |
+| `OAuth.twitter.secret`              | Set name of the secret for OAuth authentication                                                                            | `OAuthBookstack`                            |
+| `OAuth.twitter.appIdKey`            | Set key of the secret for Twitter app id key.                                                                              | `githubAppSecretKey`                        |
+| `OAuth.twitter.appSecretKey`        | Set key of the secret for Twitter app secret key                                                                           | `githubAppSecretKey`                        |
 
 The above parameters map to the env variables defined in the
 [Bookstack image](https://hub.docker.com/r/solidnerd/bookstack/) and the

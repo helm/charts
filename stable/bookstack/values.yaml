@@ -185,3 +185,10 @@ OAuth:
     secret: OAuthBookstack
     appIdKey: githubAppSecretKey
     appSecretKey: githubAppSecretKey
+
+  twitter:
+    enabled: false
+    autoRegister: false
+    secret: OAuthBookstack
+    appIdKey: twitterAppSecretKey
+    appSecretKey: twitterAppSecretKey
