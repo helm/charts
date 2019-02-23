@@ -107,8 +107,13 @@ chart and their default values.
 | `OAuth.google.enabled`              | Enable or disable OAuth authentication with Google.                                                                        | `fasle`                                     |
 | `OAuth.google.autoRegister`         | Enable or disable automatic email confirmation for OAuth authentication Google.                                            | `fasle`                                     |
 | `OAuth.google.secret`               | Set name of the secret for OAuth authentication                                                                            | `OAuthBookstack`                            |
-| `OAuth.google.appIdKey`             | Set key of the secret for Google app id key.                                                                               | `googleAppSecretKey`                        |
-| `OAuth.google.appSecretKey`         | Set key of the secret for Google app secret key                                                                            | `googleAppSecretKey`                        |
+| `OAuth.google.appIdKey`             | Set key of the secret for GitHub app id key.                                                                               | `googleAppSecretKey`                        |
+| `OAuth.google.appSecretKey`         | Set key of the secret for GitHub app secret key                                                                            | `googleAppSecretKey`                        |
+| `OAuth.github.enabled`              | Enable or disable OAuth authentication with GitHub.                                                                        | `fasle`                                     |
+| `OAuth.github.autoRegister`         | Enable or disable automatic email confirmation for OAuth authentication GitHub.                                            | `fasle`                                     |
+| `OAuth.github.secret`               | Set name of the secret for OAuth authentication                                                                            | `OAuthBookstack`                            |
+| `OAuth.github.appIdKey`             | Set key of the secret for GitHub app id key.                                                                               | `githubAppSecretKey`                        |
+| `OAuth.github.appSecretKey`         | Set key of the secret for GitHub app secret key                                                                            | `githubAppSecretKey`                        |
 
 The above parameters map to the env variables defined in the
 [Bookstack image](https://hub.docker.com/r/solidnerd/bookstack/) and the

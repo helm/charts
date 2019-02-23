@@ -63,12 +63,25 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.OAuth.google.secret | quote }}
                   key: {{ .Values.OAuth.google.appIdKey | quote }}
-              value: {{ .Values.OAuth.google.appIdKey | quote }}
             - name: GOOGLE_APP_SECRET
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.OAuth.google.secret | quote }}
                   key: {{ .Values.OAuth.google.appSecretKey | quote }}
+          {{- end}}
+          {{- if .Values.OAuth.github.enabled }}
+            - name: GITHUB_AUTO_CONFIRM_EMAIL
+              value: {{ .Values.OAuth.github.autoRegister | quote }}
+            - name: GOOGLE_APP_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.OAuth.github.secret | quote }}
+                  key: {{ .Values.OAuth.github.appIdKey | quote }}
+            - name: GOOGLE_APP_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.OAuth.github.secret | quote }}
+                  key: {{ .Values.OAuth.github.appSecretKey | quote }}
           {{- end}}
           {{- if .Values.mariadb.enabled }}
             - name: DB_HOST

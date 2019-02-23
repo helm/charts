@@ -178,3 +178,10 @@ OAuth:
     secret: OAuthBookstack
     appIdKey: googleAppSecretKey
     appSecretKey: googleAppSecretKey
+
+  github:
+    enabled: false
+    autoRegister: false
+    secret: OAuthBookstack
+    appIdKey: githubAppSecretKey
+    appSecretKey: githubAppSecretKey
