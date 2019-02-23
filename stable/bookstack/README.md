@@ -117,8 +117,13 @@ chart and their default values.
 | `OAuth.twitter.enabled`             | Enable or disable OAuth authentication with Twitter.                                                                       | `fasle`                                     |
 | `OAuth.twitter.autoRegister`        | Enable or disable automatic email confirmation for OAuth authentication Twitter.                                           | `fasle`                                     |
 | `OAuth.twitter.secret`              | Set name of the secret for OAuth authentication                                                                            | `OAuthBookstack`                            |
-| `OAuth.twitter.appIdKey`            | Set key of the secret for Twitter app id key.                                                                              | `githubAppSecretKey`                        |
-| `OAuth.twitter.appSecretKey`        | Set key of the secret for Twitter app secret key                                                                           | `githubAppSecretKey`                        |
+| `OAuth.twitter.appIdKey`            | Set key of the secret for Twitter app id key.                                                                              | `twitterAppSecretKey`                       |
+| `OAuth.twitter.appSecretKey`        | Set key of the secret for Twitter app secret key                                                                           | `twitterAppSecretKey`                       |
+| `OAuth.facebook.enabled`            | Enable or disable OAuth authentication with Facebook.                                                                      | `fasle`                                     |
+| `OAuth.facebook.autoRegister`       | Enable or disable automatic email confirmation for OAuth authentication Facebook.                                          | `fasle`                                     |
+| `OAuth.facebook.secret`             | Set name of the secret for OAuth authentication                                                                            | `OAuthBookstack`                            |
+| `OAuth.facebook.appIdKey`           | Set key of the secret for Facebook app id key.                                                                             | `facebookAppSecretKey`                      |
+| `OAuth.facebook.appSecretKey`       | Set key of the secret for Facebook app secret key                                                                          | `facebookAppSecretKey`                      |
 
 The above parameters map to the env variables defined in the
 [Bookstack image](https://hub.docker.com/r/solidnerd/bookstack/) and the

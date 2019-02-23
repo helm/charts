@@ -192,3 +192,10 @@ OAuth:
     secret: OAuthBookstack
     appIdKey: twitterAppSecretKey
     appSecretKey: twitterAppSecretKey
+
+  facebook:
+    enabled: false
+    autoRegister: false
+    secret: OAuthBookstack
+    appIdKey: twitterAppSecretKey
+    appSecretKey: twitterAppSecretKey
