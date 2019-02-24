@@ -195,6 +195,7 @@ spec:
           {{- range .Values.extraVolumeMounts }}
             - name: {{ .name }}
               mountPath: {{ .mountPath }}
+              subPath: {{ .subPath | default "" }}
               readOnly: {{ .readOnly }}
           {{- end }}
           ports:
