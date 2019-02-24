@@ -298,6 +298,13 @@ service:
   loadBalancerSourceRanges: []
   type: ClusterIP
 
+  ## Customize nodePort number when the service type is NodePort
+  ### Ref: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
+  ###
+  epmdNodePort: null
+  amqpNodePort: null
+  managerNodePort: null
+
 podManagementPolicy: OrderedReady
 
 ## Statefulsets rolling update update strategy

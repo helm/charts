@@ -1,6 +1,6 @@
 {{- $root := . }}
 {{- with .Values.configuration }}
-{{- with .persistentVolumeProvider }}
+{{- with .volumeSnapshotLocation }}
 apiVersion: ark.heptio.com/v1
 kind: VolumeSnapshotLocation
 metadata:
