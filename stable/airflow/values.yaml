@@ -132,6 +132,11 @@ airflow:
   ##     type: aws
   ##     extra: '{"aws_access_key_id": "**********", "aws_secret_access_key": "***", "region_name":"eu-central-1"}'
   connections: {}
+  ##
+  ## Annotations for the Scheduler, Worker and Web pods
+  podAnnotations: {}
+    ## Example:
+    ## iam.amazonaws.com/role: airflow-Role
 ##
 ## Workers configuration
 workers:
@@ -150,10 +155,9 @@ workers:
     #   memory: "512Mi"
   ##
   ## Annotations for the Worker pods
-  pod:
-    annotations:
-      ## Example:
-      ## iam.amazonaws.com/role: airflow-worker-Role
+  podAnnotations: {}
+    ## Example:
+    ## iam.amazonaws.com/role: airflow-Role
   ##
   ## Celery worker configuration
   celery:
