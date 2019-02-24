@@ -214,3 +214,11 @@ OAuth:
     appIdKey: azureAppSecretKey
     appSecretKey: azureAppSecretKey
     tenant:
+
+  okta:
+    enabled: false
+    autoRegister: false
+    secret: OAuthBookstack
+    appIdKey: oktaAppSecretKey
+    appSecretKey: oktaAppSecretKey
+    baseUrl:

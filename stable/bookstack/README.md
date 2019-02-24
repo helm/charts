@@ -129,12 +129,18 @@ chart and their default values.
 | `OAuth.slack.secret`                | Set name of the secret for OAuth authentication                                                                            | `OAuthBookstack`                            |
 | `OAuth.slack.appIdKey`              | Set key of the secret for Slack app id key.                                                                                | `slackAppSecretKey`                         |
 | `OAuth.slack.appSecretKey`          | Set key of the secret for Slack app secret key                                                                             | `slackAppSecretKey`                         |
-| `OAuth.azure.enabled`               | Enable or disable OAuth authentication with Slack.                                                                         | `fasle`                                     |
+| `OAuth.azure.enabled`               | Enable or disable OAuth authentication with AzureAD.                                                                       | `fasle`                                     |
 | `OAuth.azure.autoRegister`          | Enable or disable automatic email confirmation for OAuth authentication AzureAD.                                           | `fasle`                                     |
 | `OAuth.azure.secret`                | Set name of the secret for OAuth authentication                                                                            | `OAuthBookstack`                            |
 | `OAuth.azure.appIdKey`              | Set key of the secret for AzureAD app id key.                                                                              | `azureAppSecretKey`                         |
 | `OAuth.azure.appSecretKey`          | Set key of the secret for AzureAD app secret key                                                                           | `azureAppSecretKey`                         |
 | `OAuth.azure.tenant`                | Set the tenant for AzureAD                                                                                                 | `azureAppSecretKey`                         |
+| `OAuth.okta.enabled`                | Enable or disable OAuth authentication with Okta.                                                                          | `fasle`                                     |
+| `OAuth.okta.autoRegister`           | Enable or disable automatic email confirmation for OAuth authentication Okta.                                              | `fasle`                                     |
+| `OAuth.okta.secret`                 | Set name of the secret for OAuth authentication                                                                            | `OAuthBookstack`                            |
+| `OAuth.okta.appIdKey`               | Set key of the secret for Okta app id key.                                                                                 | `oktaAppSecretKey`                          |
+| `OAuth.okta.appSecretKey`           | Set key of the secret for Okta app secret key                                                                              | `oktaAppSecretKey`                          |
+| `OAuth.okta.baseUrl`                | Set the base URL for Okta                                                                                                       | `azureAppSecretKey`                         |
 
 The above parameters map to the env variables defined in the
 [Bookstack image](https://hub.docker.com/r/solidnerd/bookstack/) and the
