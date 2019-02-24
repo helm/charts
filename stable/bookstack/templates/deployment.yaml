@@ -38,7 +38,7 @@ spec:
               port: http
           env:
             - name: APP_URL
-              value: {{ .Values.ingress.hosts 0 | quote }}
+              value: {{ .Values.ingress.hosts | quote }}
           {{- if .Values.ldap.enabled }}
             - name: AUTH_METHOD
               value: ldap
