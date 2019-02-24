@@ -144,7 +144,7 @@ concourse:
       ## Session Token can also be enabled, if required.
       keyAuth:
         enabled: true
-        # useSessionToken: false
+        useSessionToken: false
 
       ## pipeline-specific template for Secrets Manager parameters, defaults to: /concourse/{team}/{pipeline}/{secret}
       ##
@@ -167,7 +167,7 @@ concourse:
       ## Session Token can also be enabled, if required.
       keyAuth:
         enabled: true
-        # useSessionToken: false
+        useSessionToken: false
 
       ## pipeline-specific template for SSM parameters, defaults to: /concourse/{team}/{pipeline}/{secret}
       ##
