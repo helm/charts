@@ -237,3 +237,10 @@ OAuth:
     secret: OAuthBookstack
     appIdKey: twitchAppSecretKey
     appSecretKey: twitchAppSecretKey
+
+  discord:
+    enabled: false
+    autoRegister: false
+    secret: OAuthBookstack
+    appIdKey: discordAppSecretKey
+    appSecretKey: discordAppSecretKey
