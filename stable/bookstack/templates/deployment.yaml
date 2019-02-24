@@ -125,6 +125,22 @@ spec:
                   name: {{ .Values.OAuth.slack.secret | quote }}
                   key: {{ .Values.OAuth.slack.appSecretKey | quote }}
           {{- end}}
+          {{- if .Values.OAuth.azure.enabled }}
+            - name: AZURE_AUTO_CONFIRM_EMAIL
+              value: {{ .Values.OAuth.azure.autoRegister | quote }}
+            - name: AZURE_TENANT
+              value: {{ .Values.OAuth.azure.tenant | quote }}
+            - name: AZURE_APP_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.OAuth.azure.secret | quote }}
+                  key: {{ .Values.OAuth.azure.appIdKey | quote }}
+            - name: AZURE_APP_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.OAuth.azure.secret | quote }}
+                  key: {{ .Values.OAuth.azure.appSecretKey | quote }}
+          {{- end}}
           {{- if .Values.mariadb.enabled }}
             - name: DB_HOST
               value: {{ template "bookstack.mariadb.fullname" . }}

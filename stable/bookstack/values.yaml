@@ -206,3 +206,11 @@ OAuth:
     secret: OAuthBookstack
     appIdKey: slackAppSecretKey
     appSecretKey: slackAppSecretKey
+
+  azure:
+    enabled: false
+    autoRegister: false
+    secret: OAuthBookstack
+    appIdKey: azureAppSecretKey
+    appSecretKey: azureAppSecretKey
+    tenant:
