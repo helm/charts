@@ -140,7 +140,13 @@ chart and their default values.
 | `OAuth.okta.secret`                 | Set name of the secret for OAuth authentication                                                                            | `OAuthBookstack`                            |
 | `OAuth.okta.appIdKey`               | Set key of the secret for Okta app id key.                                                                                 | `oktaAppSecretKey`                          |
 | `OAuth.okta.appSecretKey`           | Set key of the secret for Okta app secret key                                                                              | `oktaAppSecretKey`                          |
-| `OAuth.okta.baseUrl`                | Set the base URL for Okta                                                                                                       | `azureAppSecretKey`                         |
+| `OAuth.okta.baseUrl`                | Set the base URL for Okta                                                                                                  | `azureAppSecretKey`                         |
+| `OAuth.gitlab.enabled`              | Enable or disable OAuth authentication with GitLab.                                                                        | `fasle`                                     |
+| `OAuth.gitlab.autoRegister`         | Enable or disable automatic email confirmation for OAuth authentication GitLab.                                            | `fasle`                                     |
+| `OAuth.gitlab.secret`               | Set name of the secret for OAuth authentication                                                                            | `OAuthBookstack`                            |
+| `OAuth.gitlab.appIdKey`             | Set key of the secret for GitLab app id key.                                                                               | `gitlabAppSecretKey`                        |
+| `OAuth.gitlab.appSecretKey`         | Set key of the secret for GitLab app secret key                                                                            | `gitlabAppSecretKey`                        |
+| `OAuth.gitlab.baseUrl`              | Set the base URL for GitLab (ONLY REQURED FOR SELF-HOSTE)                                                                                                | `azureAppSecretKey`                         |
 
 The above parameters map to the env variables defined in the
 [Bookstack image](https://hub.docker.com/r/solidnerd/bookstack/) and the

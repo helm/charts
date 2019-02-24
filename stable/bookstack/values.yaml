@@ -222,3 +222,11 @@ OAuth:
     appIdKey: oktaAppSecretKey
     appSecretKey: oktaAppSecretKey
     baseUrl:
+
+  gitlab:
+    enabled: false
+    autoRegister: false
+    secret: OAuthBookstack
+    appIdKey: gitlabAppSecretKey
+    appSecretKey: gitlabAppSecretKey
+    baseUrl:
