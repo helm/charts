@@ -230,3 +230,10 @@ OAuth:
     appIdKey: gitlabAppSecretKey
     appSecretKey: gitlabAppSecretKey
     baseUrl:
+
+  twitch:
+    enabled: false
+    autoRegister: false
+    secret: OAuthBookstack
+    appIdKey: twitchAppSecretKey
+    appSecretKey: twitchAppSecretKey

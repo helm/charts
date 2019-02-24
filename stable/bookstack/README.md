@@ -147,6 +147,11 @@ chart and their default values.
 | `OAuth.gitlab.appIdKey`             | Set key of the secret for GitLab app id key.                                                                               | `gitlabAppSecretKey`                        |
 | `OAuth.gitlab.appSecretKey`         | Set key of the secret for GitLab app secret key                                                                            | `gitlabAppSecretKey`                        |
 | `OAuth.gitlab.baseUrl`              | Set the base URL for GitLab (ONLY REQURED FOR SELF-HOSTE)                                                                                                | `azureAppSecretKey`                         |
+| `OAuth.twitch.enabled`              | Enable or disable OAuth authentication with Twitch.                                                                        | `fasle`                                     |
+| `OAuth.twitch.autoRegister`         | Enable or disable automatic email confirmation for OAuth authentication Twitch.                                            | `fasle`                                     |
+| `OAuth.twitch.secret`               | Set name of the secret for OAuth authentication                                                                            | `OAuthBookstack`                            |
+| `OAuth.twitch.appIdKey`             | Set key of the secret for Twitch app id key.                                                                               | `twitchAppSecretKey`                        |
+| `OAuth.twitch.appSecretKey`         | Set key of the secret for Twitch app secret key                                                                            | `twitchAppSecretKey`                        |
 
 The above parameters map to the env variables defined in the
 [Bookstack image](https://hub.docker.com/r/solidnerd/bookstack/) and the

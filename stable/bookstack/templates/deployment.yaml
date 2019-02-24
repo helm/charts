@@ -175,6 +175,20 @@ spec:
                   name: {{ .Values.OAuth.azure.secret | quote }}
                   key: {{ .Values.OAuth.azure.appSecretKey | quote }}
           {{- end}}
+          {{- if .Values.OAuth.twitch.enabled }}
+            - name: TWITCH_AUTO_CONFIRM_EMAIL
+              value: {{ .Values.OAuth.twitch.autoRegister | quote }}
+            - name: TWITCH_APP_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.OAuth.twitch.secret | quote }}
+                  key: {{ .Values.OAuth.twitch.appIdKey | quote }}
+            - name: TWITCH_APP_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.OAuth.twitch.secret | quote }}
+                  key: {{ .Values.OAuth.twitch.appSecretKey | quote }}
+          {{- end}}
           {{- if .Values.mariadb.enabled }}
             - name: DB_HOST
               value: {{ template "bookstack.mariadb.fullname" . }}
