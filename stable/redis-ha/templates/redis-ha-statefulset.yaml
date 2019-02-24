@@ -31,7 +31,7 @@ spec:
         release: {{ .Release.Name }}
         app: {{ template "redis-ha.name" . }}
         {{- range $key, $value := .Values.labels }}
-          {{ $key }}: {{ $value }}
+        {{ $key }}: {{ $value }}
         {{- end }}
     spec:
       {{- if .Values.nodeSelector }}
