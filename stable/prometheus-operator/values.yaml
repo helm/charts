@@ -707,6 +707,10 @@ prometheus:
     labels: {}
     clusterIP: ""
 
+
+    ## To be used with a proxy extraContainer port
+    targetPort: 9090
+
     ## List of IP addresses at which the Prometheus server service is available
     ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
     ##
@@ -1047,7 +1051,7 @@ prometheus:
     thanos: {}
 
     ## Containers allows injecting additional containers. This is meant to allow adding an authentication proxy to a Prometheus pod.
-    ##
+    ##  if using proxy extraContainer  update targetPort with proxy container port
     containers: []
 
     ## Enable additional scrape configs that are managed externally to this chart. Note that the prometheus
