@@ -258,6 +258,16 @@ Master:
     #     - jenkins.cluster.local
   AdditionalConfig: {}
 
+  # Master.HostAliases allows for adding entries to Pod /etc/hosts:
+  # https://kubernetes.io/docs/concepts/services-networking/add-entries-to-pod-etc-hosts-with-host-aliases/
+  HostAliases: []
+  # - ip: 192.168.50.50
+  #   hostnames:
+  #     - something.local
+  # - ip: 10.0.50.50
+  #   hostnames:
+  #     - other.local
+
 Agent:
   Enabled: true
   Image: jenkins/jnlp-slave
