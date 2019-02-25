@@ -117,4 +117,4 @@ In case you have any other ingress controller installed (such as nginx-ingress) 
 
 ## N.B.
 
-This helm chart is still being developed, so in case of any issues/suggestions, please file a github issue.
+This helm chart is still being developed, so in case of any issues/suggestions, please let us know.

@@ -13,20 +13,20 @@ nameOverride: ""
 fullnameOverride: ""
 
 # Database Name for CraftCMS
-craftcmsDatabase: edgefit
+craftcmsDatabase: database
 # Database User Password
-craftcmsDatabasePassword: bUn54ESaENgn8FV0
+craftcmsDatabasePassword: secret
 # Database User Name
-craftcmsDatabaseUser: edgefit
+craftcmsDatabaseUser: user
 
 # Database to be created in MariaDB (should be same as craftcmsDatabase value)
-mysqlDatabase: edgefit
+mysqlDatabase: database
 # User to be created in MariaDB (should be same as craftcmsDatabaseUser value)
-mysqlUser: edgefit
+mysqlUser: user
 # User password to be created in MariaDB (should be same as craftcmsDatabasePassword value)
-mysqlUserPassword: bUn54ESaENgn8FV0
+mysqlUserPassword: secret
 # MariaDB root password
-mysqlRootPassword: Ne8VbmxmXsaxUhQ9
+mysqlRootPassword: change_me
 # put commands here - they can be used to install additional software and/or perform additional actions on each pod restart (related to web service pod only). 
 # Please put && at the end of your command
 additionalSoftware: sed -i 's/101/1000/g' /etc/passwd && sed -i 's/101/1000/g' /etc/group && find /usr/ -uid 101 -exec chown -h 1000 {} + && find /usr -gid 101 -exec chgrp -h 1000 {} + &&
@@ -55,7 +55,7 @@ ingress:
   paths: []
   # put domain which you wish to use for your CraftCMS installation
   hosts:
-    - edge.fit
+    - craft_domain.com
 
 persistence:
   storage:
@@ -77,9 +77,9 @@ traefik:
   enabled: true
   replicas: 1
   # set serviceType to 'NodePort' if you don't want or cannot use LoadBalancer. Otherwise set to 'LoadBalancer'
-  serviceType: "NodePort"
+  serviceType: "LoadBalancer"
   # externalIP should be commented out if 'LoadBalancer' serviceType is in use. Otherwise please set one of your nodes external IP here
-  externalIP: "159.65.110.194"
+  #  externalIP: ""
   ssl:
     enabled: true
     # enforced 'true' - http will be redirected to https
@@ -91,7 +91,7 @@ traefik:
     # set enabled to 'true' if you want certificates to be issued and renewed automatically, otherwise - 'false'
     enabled: true
     # email for Let's Encrypt notifications
-    email: "dennis.nikulin92@gmail.com"
+    email: "your_email@domain.com"
     # set staging to 'false' if you want to have valid certificates
     staging: false
     domains.enabled: true
@@ -99,7 +99,7 @@ traefik:
   dashboard:
     enabled: false
     # domain for traefik dashboard access
-    domain: "traefik.edge.fit"
+    domain: "traefik.domain.com"
     # Basic authentication. Comment out to disable
     auth:
       basic:
