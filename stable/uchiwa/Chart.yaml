@@ -13,7 +13,7 @@ sources:
 - https://github.com/sstarcher/docker-uchiwa
 - https://github.com/sensu/uchiwa
 maintainers:
-- name: Shane Starcher
+- name: sstarcher
   email: shane.starcher@gmail.com
 icon: https://uchiwa.io/img/favicon.png
 engine: gotpl
