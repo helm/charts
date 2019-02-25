@@ -190,6 +190,10 @@ airflow:
 Please note a folder `~/.local/bin` will be automatically created and added to the PATH so that
 Bash operators can use command line tools installed by `pip install --user` for instance.
 
+## Installing dependencies
+
+Add a `requirements.txt` file at the root of your DAG project (`dags.path` entry at `values.yaml`) and they will be automatically installed. That works for both shared persistent volume and init-container deployment strategies (see below).
+
 ## DAGs Deployment
 
 Several options are provided for synchronizing your Airflow DAGs.
@@ -216,9 +220,6 @@ To share a PV with multiple Pods, the PV needs to have accessMode 'ReadOnlyMany'
 
 If you enable set `dags.init_container.enabled=true`, the pods will try upon startup to fetch the
 git repository defined by `dags.git_repo`, on branch `dags.git_branch` as DAG folder.
-
-You can also add a `requirements.txt` file at the root of your DAG project to have other
-Python dependencies installed.
 
 This is the easiest way of deploying your DAGs to Airflow.
 
@@ -273,12 +274,14 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `airflow.webReplicas`                    | how many replicas for web server                        | `1`                       |
 | `airflow.config`                         | custom airflow configuration env variables              | `{}`                      |
 | `airflow.podDisruptionBudget`            | control pod disruption budget                           | `{'maxUnavailable': 1}`   |
-| `airflow.secretsMapping`		           | override any environment variable with a secret	     | 				             |
+| `airflow.secretsMapping`                 | override any environment variable with a secret         |                           |
+| `airflow.extraConfigmapMounts`           | Additional configMap volume mounts on the airflow pods. | `[]`                      |
+| `airflow.podAnnotations`                 | annotations for scheduler, worker and web pods          | `{}`                      |
 | `workers.enabled`                        | enable workers                                          | `true`                    |
 | `workers.replicas`                       | number of workers pods to launch                        | `1`                       |
 | `workers.resources`                      | custom resource configuration for worker pod            | `{}`                      |
 | `workers.celery.instances`               | number of parallel celery tasks per worker              | `1`                       |
-| `workers.pod.annotations`                | annotations for the worker pods                         | `{}`                      |
+| `workers.podAnnotations`                 | annotations for the worker pods                         | `{}`                      |
 | `workers.secretsDir`                     | directory in which to mount secrets on worker nodes     | /var/airflow/secrets      |
 | `workers.secrets`                        | secrets to mount as volumes on worker nodes             | []                        |
 | `existingAirflowSecret`                  | secret to use for postgres and redis connection         |                           |
@@ -291,7 +294,7 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `ingress.flower.host`                    | hostname for the flower ui                              | ""                        |
 | `ingress.flower.path`                    | path of the flower ui (read `values.yaml`)              | ``                        |
 | `ingress.flower.livenessPath`            | path to the liveness probe (read `values.yaml`)         | `/`                       |
-| `ingress.flower.annotations`             | annotations for the web ui ingress                      | `{}`                      |
+| `ingress.flower.annotations`             | annotations for the flower ui ingress                   | `{}`                      |
 | `ingress.flower.tls.enabled`             | enables TLS termination at the ingress                  | `false`                   |
 | `ingress.flower.tls.secretName`          | name of the secret containing the TLS certificate & key | ``                        |
 | `persistence.enabled`                    | enable persistence storage for DAGs                     | `false`                   |
@@ -327,8 +330,15 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `postgresql.persistance.storageClass`    | Persistant class                                        | (undefined)               |
 | `postgresql.persistance.accessMode`      | Access mode                                             | `ReadWriteOnce`           |
 | `redis.enabled`                          | Create a Redis cluster                                  | `true`                    |
+| `redis.redisHost`                        | Redis Hostname                                          | (undefined)               |
 | `redis.password`                         | Redis password                                          | `airflow`                 |
 | `redis.master.persistence.enabled`       | Enable Redis PVC                                        | `false`                   |
 | `redis.cluster.enabled`                  | enable master-slave cluster                             | `false`                   |
 
+
 Full and up-to-date documentation can be found in the comments of the `values.yaml` file.
+
+## Upgrading
+### To 2.0.0
+The parameter `workers.pod.annotations` has been renamed to `workers.podAnnotations`.  If using a
+custom values file, rename this parameter.
