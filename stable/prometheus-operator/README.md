@@ -156,6 +156,7 @@ The following tables lists the configurable parameters of the prometheus-operato
 | `prometheus.ingress.tls` | Prometheus Ingress TLS configuration (YAML) | `[]` |
 | `prometheus.service.type` |  Prometheus Service type | `ClusterIP` |
 | `prometheus.service.clusterIP` | Prometheus service clusterIP IP | `""` |
+| `prometheus.service.targetPort` |  Prometheus Service internal port | `9090` |
 | `prometheus.service.nodePort` |  Prometheus Service port for NodePort service type | `39090` |
 | `prometheus.service.annotations` |  Prometheus Service Annotations | `{}` |
 | `prometheus.service.labels` |  Prometheus Service Labels | `{}` |

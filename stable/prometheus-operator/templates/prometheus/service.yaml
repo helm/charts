@@ -33,7 +33,7 @@ spec:
     nodePort: {{ .Values.prometheus.service.nodePort }}
     {{- end }}
     port: 9090
-    targetPort: web
+    targetPort: {{ .Values.prometheus.service.targetPort }}
   selector:
     app: prometheus
     prometheus: {{ template "prometheus-operator.fullname" . }}-prometheus
