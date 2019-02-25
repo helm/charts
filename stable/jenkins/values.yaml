@@ -393,7 +393,7 @@ backup:
 # https://github.com/jenkinsci/configuration-as-code-plugin/tree/master/demos/kubernetes
 # These will stop working in an upcoming version:
 
-#Agent:
+# Agent:
 #  Enabled: false
 #  Image: jenkins/jnlp-slave
 #  ImageTag: 3.27-1
