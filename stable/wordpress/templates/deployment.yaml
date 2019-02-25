@@ -207,8 +207,8 @@ spec:
       {{- if and .Values.allowOverrideNone .Values.customHTAccessCM}}
       - name: custom-htaccess
         configMap:
-          name: {{ template "wordpress.customHTAccessCM" . }}
-      {{- end }} 
+          name: {{ .Values.customHTAccessCM | quote }}
+      {{- end }}
       - name: wordpress-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
