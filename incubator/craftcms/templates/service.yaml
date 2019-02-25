@@ -1,0 +1,57 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ .Release.Name }}-{{ .Chart.Name }}"
+  labels:
+    app.kubernetes.io/name: "{{ .Release.Name }}-{{ .Chart.Name }}-{{ .Chart.Version }}-web"
+    helm.sh/chart: {{ include "craftcms.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  type: {{ .Values.serviceWeb.type }}
+  ports:
+    - port: {{ .Values.serviceWeb.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: "{{ .Release.Name }}-{{ .Chart.Name }}-{{ .Chart.Version }}-web"
+    app.kubernetes.io/instance: {{ .Release.Name }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ .Release.Name }}-{{ .Chart.Name }}-mysql"
+  labels:
+    app.kubernetes.io/name: "{{ .Release.Name }}-{{ .Chart.Name }}-{{ .Chart.Version }}-mysql"
+    helm.sh/chart: {{ include "craftcms.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  type: {{ .Values.serviceMysql.type }}
+  ports:
+    - port: {{ .Values.serviceMysql.port }}
+      targetPort: {{ .Values.serviceMysql.port }}
+      protocol: TCP
+      name: mysql
+  selector:
+    app.kubernetes.io/name: "{{ .Release.Name }}-{{ .Chart.Name }}-{{ .Chart.Version }}-mysql"
+    app.kubernetes.io/instance: {{ .Release.Name }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ .Release.Name }}-{{ .Chart.Name }}-redis"
+  labels:
+    app.kubernetes.io/name: "{{ .Release.Name }}-{{ .Chart.Name }}-{{ .Chart.Version }}-redis"
+    helm.sh/chart: {{ include "craftcms.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  type: {{ .Values.serviceRedis.type }}
+  ports:
+    - port: {{ .Values.serviceRedis.port }}
+      name: redis
+  selector:
+    app.kubernetes.io/name: "{{ .Release.Name }}-{{ .Chart.Name }}-{{ .Chart.Version }}-web"
+    app.kubernetes.io/instance: {{ .Release.Name }}

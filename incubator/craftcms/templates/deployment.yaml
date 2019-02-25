@@ -1,0 +1,146 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{ .Release.Name }}-{{ .Chart.Name }}-{{ .Chart.Version }}-web"
+  labels:
+    app.kubernetes.io/name: "{{ .Release.Name }}-{{ .Chart.Name }}-{{ .Chart.Version }}-web"
+    helm.sh/chart: {{ include "craftcms.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      kubernetes.io/hostname: "gke-standard-cluster-1-default-pool-6df100f0-rl0b"
+      app.kubernetes.io/name: "{{ .Release.Name }}-{{ .Chart.Name }}-{{ .Chart.Version }}-web"
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: "{{ .Release.Name }}-{{ .Chart.Name }}-{{ .Chart.Version }}-web"
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        kubernetes.io/hostname: "gke-standard-cluster-1-default-pool-6df100f0-rl0b"
+    spec:
+      initContainers:
+      - name: download-craftcms
+        image: "wyveo/craftcms-docker:latest"
+        command: [ "sh", "-c", "if [ ! -f /usr/share/work/helm_validation/copy_done_do_not_remove ]; then echo 'First time run, copying...' && mv /usr/share/nginx/* /usr/share/work/ && mv /usr/share/nginx/.env /usr/share/work/ && chown -R 101:101 /usr/share/work/ && mkdir -p /usr/share/work/helm_validation/ && touch /usr/share/work/helm_validation/copy_done_do_not_remove && touch /usr/share/work/web/healthz.php; else echo 'Content present, skipping...'; fi"]
+        volumeMounts:
+          - mountPath: /usr/share/work/
+            name: "{{ .Release.Name }}-data-pv"
+      - name: security-key-craftcms
+        image: "wyveo/craftcms-docker:latest"
+        command: [ "sh", "-c", "if [ ! -f /usr/share/work/helm_validation/sec_key_done_do_not_remove ]; then echo 'First time run, generating security key' && chmod +x /usr/share/work/craft && /usr/share/work/craft setup/security-key && chown -R 101:101 /usr/share/work/ && mkdir -p /usr/share/work/helm_validation/ && touch /usr/share/work/helm_validation/sec_key_done_do_not_remove; else echo 'Security Key present, skipping...  '; fi"]
+        volumeMounts:
+          - mountPath: /usr/share/work
+            name: "{{ .Release.Name }}-data-pv"
+      containers:
+      - name: "{{ .Chart.Name }}-web"
+        image: "wyveo/craftcms-docker:latest"
+        args:
+        - -c
+        - sed -i '/^session.save_path=*/c\session.save_path=tcp://localhost:6379' /etc/php/7.3/fpm/php.ini && apt update && apt install -y mysql-client && {{ .Values.additionalSoftware }} /start.sh
+        command:
+        - /bin/bash
+        env:
+          - name: DB_DATABASE
+            value: {{ .Values.craftcmsDatabase }}
+          - name: DB_DRIVER
+            value: mysql
+          - name: DB_PASSWORD
+            value: {{ .Values.craftcmsDatabasePassword }}
+          - name: DB_PORT
+            value: "3306"
+          - name: DB_SCHEMA
+            value: public
+          - name: DB_SERVER
+            value: "{{ .Release.Name }}-{{ .Chart.Name }}-mysql"
+          - name: DB_USER
+            value: {{ .Values.craftcmsDatabaseUser }}
+          - name: LANG
+            value: C.UTF-8
+          - name: REDIS_HOST
+            value: "localhost"
+        ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /healthz.php
+            port: http
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /healthz.php
+            port: http
+          periodSeconds: 10
+        volumeMounts:
+          - mountPath: /usr/share/nginx
+            name: "{{ .Release.Name }}-data-pv"
+      - name: "{{ .Chart.Name }}-redis"
+        image: redis:4.0.11-alpine
+        ports:
+            - name: headless
+              containerPort: 6379
+              protocol: TCP
+        volumeMounts:
+          - mountPath: /data
+            name: "{{ .Release.Name }}-redis-pv"
+      restartPolicy: Always
+      volumes:
+        - name: "{{ .Release.Name }}-data-pv"
+          persistentVolumeClaim:
+            claimName: "{{ .Chart.Name }}-{{ .Release.Name }}-data-pvc"
+        - name: "{{ .Release.Name }}-redis-pv"
+          persistentVolumeClaim:
+            claimName: "{{ .Chart.Name }}-{{ .Release.Name }}-redis-pvc"
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{ .Release.Name }}-{{ .Chart.Name }}-{{ .Chart.Version }}-mysql"
+  labels:
+    app.kubernetes.io/name: "{{ .Release.Name }}-{{ .Chart.Name }}-{{ .Chart.Version }}-mysql"
+    helm.sh/chart: {{ include "craftcms.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: "{{ .Release.Name }}-{{ .Chart.Name }}-{{ .Chart.Version }}-mysql"
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: "{{ .Release.Name }}-{{ .Chart.Name }}-{{ .Chart.Version }}-mysql"
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: "{{ .Chart.Name }}-mysql"
+        image: "mariadb:10"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+          - name: MYSQL_ROOT_PASSWORD
+            value: {{ .Values.mysqlRootPassword }}
+          - name: MYSQL_DATABASE
+            value: {{ .Values.mysqlDatabase }}
+          - name: MYSQL_PASSWORD
+            value: {{ .Values.mysqlUserPassword }}
+          - name: MYSQL_USER
+            value: {{ .Values.mysqlUser }}
+        ports:
+            - name: http
+              containerPort: 3306
+              protocol: TCP
+        volumeMounts:
+          - mountPath: /var/lib/mysql
+            name: "{{ .Release.Name }}-mysql-pv"
+      restartPolicy: Always
+      volumes:
+        - name: "{{ .Release.Name }}-mysql-pv"
+          persistentVolumeClaim:
+            claimName: "{{ .Chart.Name }}-{{ .Release.Name }}-mysql-pvc"

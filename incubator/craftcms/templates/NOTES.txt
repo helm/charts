@@ -1,0 +1,56 @@
+*******************************************************************
+*** PLEASE BE PATIENT: CraftCMS may take a few minutes to install ***
+*******************************************************************
+
+Thank you for installing {{ .Chart.Name }}!
+
+Your release is named {{ .Release.Name }}.
+
+To learn more about the release, try:
+
+  $ helm status {{ .Release.Name }}
+  $ helm get {{ .Release.Name }}
+
+Get the CraftCMS URL:
+
+  You should be able to access your new CraftCMS installation through
+
+  http://{{- .Values.ingress.hosts }}/
+
+{{- if contains "LoadBalancer" .Values.serviceWeb.type }}
+
+  NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+        Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "craftcms.fullname" . }}'
+
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "craftcms.fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
+
+{{- $port:=.Values.serviceWeb.port | toString }}
+  echo "CraftCMS URL: http://$SERVICE_IP{{- if ne $port "80" }}:{{ .Values.serviceWeb.port }}{{ end }}/"
+
+{{- else if contains "ClusterIP"  .Values.serviceWeb.type }}
+  {{- if .Values.traefik.enabled }}
+
+  NOTE: you should point your domain to {{ .Values.traefik.externalIP }}
+
+  {{- else }}
+
+If you already have a Traefik or another ingress controller installed - all should work properly.
+Otherwise, please enable Traefik in values file.
+
+If you want to test installation locally without ingress:
+
+  echo "CraftCMS URL: http://127.0.0.1:8080/"
+  kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "craftcms.fullname" . }} 8080:{{ .Values.serviceWeb.port }}
+  {{- end }}
+{{- end }}
+
+{{- if contains "NodePort" .Values.serviceWeb.type }}
+
+  If you wish to use NodePort without ingress on purpose - please run:
+
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services -w {{ template "craftcms.fullname" . }})
+  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo "CraftCMS URL: http://$NODE_IP:$NODE_PORT/"
+
+{{- end }}
+

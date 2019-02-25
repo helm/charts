@@ -1,0 +1,48 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: "{{ .Chart.Name }}-{{ .Release.Name }}-data-pvc"
+  labels:
+    app: "{{ .Chart.Name }}-{{ .Chart.Version }}-web"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  accessModes:
+    - {{ .Values.persistence.accessmode }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.storage.data }}
+
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: "{{ .Chart.Name }}-{{ .Release.Name }}-mysql-pvc"
+  labels:
+    app: "{{ .Chart.Name }}-{{ .Chart.Version }}-mysql"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  accessModes:
+    - {{ .Values.persistence.accessmode }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.storage.mysql }}
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: "{{ .Chart.Name }}-{{ .Release.Name }}-redis-pvc"
+  labels:
+    app: "{{ .Chart.Name }}-{{ .Chart.Version }}-web"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  accessModes:
+    - {{ .Values.persistence.accessmode }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.storage.redis }}
