@@ -39,6 +39,7 @@ data:
       <jdks/>
       <viewsTabBar class="hudson.views.DefaultViewsTabBar"/>
       <myViewsTabBar class="hudson.views.DefaultMyViewsTabBar"/>
+{{- if .Values.Agent }}
       <clouds>
         <org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud plugin="kubernetes@{{ template "jenkins.kubernetes-version" . }}">
           <name>kubernetes</name>
@@ -144,6 +145,7 @@ data:
           <podRetention class="org.csanchez.jenkins.plugins.kubernetes.pod.retention.{{ .Values.Agent.PodRetention }}"/>
         </org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud>
       </clouds>
+{{- end }}
       <quietPeriod>5</quietPeriod>
       <scmCheckoutRetryCount>0</scmCheckoutRetryCount>
       <views>
@@ -163,10 +165,12 @@ data:
 {{- end }}
       </disabledAgentProtocols>
       <label></label>
+{{- if .Values.Master.CSRF }}
 {{- if .Values.Master.CSRF.DefaultCrumbIssuer.Enabled }}
       <crumbIssuer class="hudson.security.csrf.DefaultCrumbIssuer">
 {{- if .Values.Master.CSRF.DefaultCrumbIssuer.ProxyCompatability }}
         <excludeClientIPFromCrumb>true</excludeClientIPFromCrumb>
+{{- end }}
 {{- end }}
       </crumbIssuer>
 {{- end }}
