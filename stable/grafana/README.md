@@ -38,7 +38,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `securityContext`                         | Deployment securityContext                    | `{"runAsUser": 472, "fsGroup": 472}`                    |
 | `priorityClassName`                       | Name of Priority Class to assign pods         | `nil`                                                   |
 | `image.repository`                        | Image repository                              | `grafana/grafana`                                       |
-| `image.tag`                               | Image tag. (`Must be >= 5.0.0`)               | `5.4.3`                                                 |
+| `image.tag`                               | Image tag. (`Must be >= 5.0.0`)               | `6.0.0`                                                 |
 | `image.pullPolicy`                        | Image pull policy                             | `IfNotPresent`                                          |
 | `service.type`                            | Kubernetes service type                       | `ClusterIP`                                             |
 | `service.port`                            | Kubernetes port where service is exposed      | `80`                                                    |
@@ -54,8 +54,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `nodeSelector`                            | Node labels for pod assignment                | `{}`                                                    |
 | `tolerations`                             | Toleration labels for pod assignment          | `[]`                                                    |
 | `affinity`                                | Affinity settings for pod assignment          | `{}`                                                    |
-| `extraContainers`                         | Sidecar containers to add to the grafana pod  | `{}`
-     |
+| `extraContainers`                         | Sidecar containers to add to the grafana pod  | `{}` |
 | `persistence.enabled`                     | Use persistent volume to store data           | `false`                                                 |
 | `persistence.initChownData`               | Change ownership of persistent volume on initialization | `true`                                                  |
 | `persistence.size`                        | Size of persistent volume claim               | `10Gi`                                                  |
