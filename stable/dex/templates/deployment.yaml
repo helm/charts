@@ -61,6 +61,10 @@ spec:
 {{- if ne (len .Values.extraVolumeMounts) 0 }}
 {{ toYaml .Values.extraVolumeMounts | indent 8 }}
 {{- end }}
+{{- if ne (len .Values.extraInitContainers) 0 }}
+      initContainers:
+{{ toYaml .Values.extraInitContainers | indent 8 }}
+{{- end }}
       volumes:
       - secret:
           defaultMode: 420

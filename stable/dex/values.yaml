@@ -49,6 +49,10 @@ ingress:
 
 extraVolumes: []
 extraVolumeMounts: []
+extraInitContainers: []
+  # - name: init-dex
+  #   image: bash:4.4
+  #   command: ['bash', '-c', 'for i in {1..5}; do echo "sleeping $i"; sleep $i; done']
 
 certs:
   image: gcr.io/google_containers/kubernetes-dashboard-init-amd64
