@@ -15,7 +15,6 @@ Master:
   ImagePullPolicy: "Always"
 # ImagePullSecret: jenkins
   Component: "jenkins-master"
-  NumExecutors: 0
   # configAutoReload requires UseSecurity is set to true:
   UseSecurity: true
   # SecurityRealm:
@@ -92,14 +91,6 @@ Master:
   HealthProbeLivenessFailureThreshold: 12
   SlaveListenerPort: 50000
 #  SlaveHostPort: 50000
-  DisabledAgentProtocols:
-    - JNLP-connect
-    - JNLP2-connect
-  CSRF:
-    DefaultCrumbIssuer:
-      Enabled: true
-      ProxyCompatability: true
-  CLI: false
   # Kubernetes service type for the JNLP slave service
   # SlaveListenerServiceType is the Kubernetes Service type for the JNLP slave service,
   # either 'LoadBalancer', 'NodePort', or 'ClusterIP'
@@ -139,7 +130,7 @@ Master:
     - workflow-job:2.31
     - workflow-aggregator:2.6
     - credentials-binding:1.17
-    - git:3.9.1
+    - git:3.9.3
 
   # Enable to always override the installed plugins with the values of 'Master.InstallPlugins' on upgrade or redeployment.
   # OverwritePlugins: true
@@ -173,13 +164,62 @@ Master:
   # become the content of the configuration yaml file.  The first line after this is a JCasC root element, eg jenkins, credentials,
   # etc.  Best reference is https://<jenkins_url>/configuration-as-code/reference.  The example below creates a welcome message:
   JCasC:
-    enabled: false
-    PluginVersion: 1.5
-    SupportPluginVersion: 1.5
+    enabled: true
+    PluginVersion: 1.6
+    SupportPluginVersion: 1.6
     ConfigScripts:
       welcome-message: |
         jenkins:
           systemMessage: Welcome to our CI\CD server.  This Jenkins is configured and managed 'as code'.
+      executors-on-master: |
+        jenkins:
+          numExecutors: 0
+      agent-protocols: |
+        jenkins:
+          agentProtocols:
+            - "JNLP4-connect"
+      csrf: |
+        jenkins:
+          crumbIssuer:
+            standard:
+               excludeClientIPFromCrumb: true
+      remoting-cli: |
+        security:
+            remotingCLI:
+                  enabled: false
+      kubernetes-slave: |
+        jenkins:
+          clouds:
+            - kubernetes:
+                name: "jenkins-slave"
+                serverUrl: https://kubernetes.default
+                skipTlsVerify: true
+                jenkinsUrl: {{ template "jenkins.fullname" . }}:{{.Values.Master.ServicePort}}{{ default "" .Values.Master.JenkinsUriPrefix }}
+                connectTimeout: 0
+                readTimeout: 0
+                containerCapStr: 10
+                maxRequestsPerHostStr: 64
+                retentionTimeout: 5
+                templates:
+                  - name: "default"
+                    label: "jenkins-slave"
+                    idleMinutes: "1"
+                    activeDeadlineSeconds: "120"
+                    slaveConnectTimeout: "1000"
+                    volumes:
+                      - secretVolume:
+                          secretName: mysecret
+                          mountPath: "/var/myapp/mysecret"
+                    containers:
+                      - name: "jnlp"
+                        image: "jenkinsci/jnlp-slave:3.27-1"
+                        alwaysPullImage: true
+                        workingDir: "/home/jenkins"
+                        ttyEnabled: false
+                        resourceRequestCpu: "200m"
+                        resourceLimitCpu: "1000m"
+                        resourceRequestMemory: "256Gi"
+                        resourceLimitMemory: "2Gi"
 
   Sidecars:
     configAutoReload:
@@ -203,11 +243,11 @@ Master:
       # accessible via SSH from outside of the pod.  Note if you use non-root pod privileges (RunAsUser & FsGroup),
       # this must be > 1024:
       sshTcpPort: 1044
-      # label that the configmaps with dashboards are marked with:
+      # label that the configmaps containing Jenkins config are marked with:
       label: jenkins_config
-      # folder in the pod that should hold the collected dashboards:
+      # folder in the pod that should hold the collected config yaml files:
       folder: /var/jenkins_home/casc_configs
-      # If specified, the sidecar will search for dashboard config-maps inside this namespace.
+      # If specified, the sidecar will search for config-maps inside this namespace.
       # Otherwise the namespace in which the sidecar is running will be used.
       # It's also possible to specify ALL to search in all namespaces:
       # searchNamespace:
@@ -236,14 +276,6 @@ Master:
   Tolerations: {}
   PodAnnotations: {}
 
-  # The below two configuration-related values are deprecated and replaced by Jenkins Configuration as Code (see above
-  # JCasC key).  They will be deleted in an upcoming version.
-  CustomConfigMap: false
-  # By default, the configMap is only used to set the initial config the first time
-  # that the chart is installed.  Setting `OverwriteConfig` to `true` will overwrite
-  # the jenkins config with the contents of the configMap every time the pod starts.
-  OverwriteConfig: false
-
   Ingress:
     ApiVersion: extensions/v1beta1
     Labels: {}
@@ -256,7 +288,6 @@ Master:
     # - secretName: jenkins.cluster.local
     #   hosts:
     #     - jenkins.cluster.local
-  AdditionalConfig: {}
 
   # Master.HostAliases allows for adding entries to Pod /etc/hosts:
   # https://kubernetes.io/docs/concepts/services-networking/add-entries-to-pod-etc-hosts-with-host-aliases/
@@ -268,53 +299,24 @@ Master:
   #   hostnames:
   #     - other.local
 
-Agent:
-  Enabled: true
-  Image: jenkins/jnlp-slave
-  ImageTag: 3.27-1
-  CustomJenkinsLabels: []
-# ImagePullSecret: jenkins
-  Component: "jenkins-slave"
-  Privileged: false
-  resources:
-    requests:
-      cpu: "200m"
-      memory: "256Mi"
-    limits:
-      cpu: "200m"
-      memory: "256Mi"
-  # You may want to change this to true while testing a new image
-  AlwaysPullImage: false
-  # Controls how slave pods are retained after the Jenkins build completes
-  # Possible values: Always, Never, OnFailure
-  PodRetention: Never
-  # You can define the volumes that you want to mount for this container
-  # Allowed types are: ConfigMap, EmptyDir, HostPath, Nfs, Pod, Secret
-  # Configure the attributes as they appear in the corresponding Java class for that type
-  # https://github.com/jenkinsci/kubernetes-plugin/tree/master/src/main/java/org/csanchez/jenkins/plugins/kubernetes/volumes
-  # Pod-wide ennvironment, these vars are visible to any container in the slave pod
-  envVars:
-  # - name: PATH
-  #   value: /usr/local/bin
-  volumes:
-  # - type: Secret
-  #   secretName: mysecret
-  #   mountPath: /var/myapp/mysecret
-  NodeSelector: {}
-  # Key Value selectors. Ex:
-  # jenkins-agent: v1
-
-  # Executed command when side container gets started
-  Command:
-  Args:
-  # Side container name
-  SideContainerName: jnlp
-  # Doesn't allocate pseudo TTY by default
-  TTYEnabled: false
-  # Max number of spawned agent
-  ContainerCap: 10
-  # Pod name
-  PodName: default
+  # The below values are deprecated and replaced by Jenkins Configuration as Code.  See above Master.JCasC key and
+  # https://github.com/helm/charts/tree/master/stable/jenkins#configuration-as-code
+  # These will stop working in an upcoming version:
+  # CustomConfigMap: false
+  # By default, the configMap is only used to set the initial config the first time
+  # that the chart is installed.  Setting `OverwriteConfig` to `true` will overwrite
+  # the jenkins config with the contents of the configMap every time the pod starts.
+  # OverwriteConfig: false
+  # CSRF:
+  #   DefaultCrumbIssuer:
+  #     Enabled: true
+  #     ProxyCompatability: true
+  #   NumExecutors: 0
+  # AdditionalConfig: {}
+  # DisabledAgentProtocols:
+  #   - JNLP-connect
+  #   - JNLP2-connect
+  # CLI: false
 
 Persistence:
   Enabled: true
@@ -395,3 +397,57 @@ backup:
   # Additional support can added. Visit this repository for details
   # Ref: https://github.com/nuvo/skbn
   destination: s3://nuvo-jenkins-data/backup
+
+
+# The below values are deprecated and replaced by Jenkins Configuration as Code.  See above Master.JCasC key and
+# https://github.com/helm/charts/tree/master/stable/jenkins#configuration-as-code and
+# https://github.com/jenkinsci/configuration-as-code-plugin/tree/master/demos/kubernetes
+# These will stop working in an upcoming version:
+
+# Agent:
+#  Enabled: false
+#  Image: jenkins/jnlp-slave
+#  ImageTag: 3.27-1
+#  CustomJenkinsLabels: []
+#  # ImagePullSecret: jenkins
+#  Component: "jenkins-slave"
+#  Privileged: false
+#  resources:
+#    requests:
+#      cpu: "200m"
+#      memory: "256Mi"
+#    limits:
+#      cpu: "200m"
+#      memory: "256Mi"
+#  # You may want to change this to true while testing a new image
+#  AlwaysPullImage: false
+#  # Controls how slave pods are retained after the Jenkins build completes
+#  # Possible values: Always, Never, OnFailure
+#  PodRetention: Never
+#  # You can define the volumes that you want to mount for this container
+#  # Allowed types are: ConfigMap, EmptyDir, HostPath, Nfs, Pod, Secret
+#  # Configure the attributes as they appear in the corresponding Java class for that type
+#  # https://github.com/jenkinsci/kubernetes-plugin/tree/master/src/main/java/org/csanchez/jenkins/plugins/kubernetes/volumes
+#  # Pod-wide ennvironment, these vars are visible to any container in the slave pod
+#  envVars:
+#  # - name: PATH
+#  #   value: /usr/local/bin
+#  volumes:
+#  # - type: Secret
+#  #   secretName: mysecret
+#  #   mountPath: /var/myapp/mysecret
+#  NodeSelector: {}
+#  # Key Value selectors. Ex:
+#  # jenkins-agent: v1
+#
+#  # Executed command when side container gets started
+#  Command:
+#  Args:
+#  # Side container name
+#  SideContainerName: jnlp
+#  # Doesn't allocate pseudo TTY by default
+#  TTYEnabled: false
+#  # Max number of spawned agent
+#  ContainerCap: 10
+#  # Pod name
+#  PodName: default

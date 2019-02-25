@@ -30,6 +30,40 @@
 4. Use Jenkins Configuration as Code by specifying ConfigScripts in your values.yaml file, see documentation: http://{{ .Values.Master.HostName }}/configuration-as-code and examples: https://github.com/jenkinsci/configuration-as-code-plugin/tree/master/demos
 {{- end }}
 
+
+{{- if or (.Values.Master.AuthorizationStrategy) (.Values.Master.SecurityRealm) (.Values.Master.NumExecutors) (.Values.Master.CSRF) (.Values.Master.CustomConfigMap) (.Values.Master.AdditionalConfig) (.Values.Master.OverwriteConfig) (.Values.Master.DisabledAgentProtocols) (.Values.Agent) (.Values.Master.CLI) }}
+DEPRICATION NOTICE:
+You are using the following deprecated values that will be removed shortly:
+{{- if .Values.Master.AuthorizationStrategy }}
+Instead of Master.AuthorizationStrategy, switch to Master.JCasC.ConfigScripts.[key-name].authorizationStrategy (https://github.com/jenkinsci/configuration-as-code-plugin/tree/master/demos/global-matrix-auth)
+{{- end }}
+{{- if .Values.Master.SecurityRealm }}
+Instead of Master.SecurityRealm, switch to Master.JCasC.ConfigScripts.[key-name].jenkins.securityRealm (https://github.com/jenkinsci/configuration-as-code-plugin/search?q=SecurityRealm+path%3A%2Fdemos&unscoped_q=SecurityRealm+path%3A%2Fdemos)
+{{- end }}
+{{- if .Values.Master.NumExecutors }}
+Instead of Master.NumExecutors, switch to Master.JCasC.ConfigScripts.[key-name].jenkins.numExecutors (https://github.com/jenkinsci/configuration-as-code-plugin/tree/master/demos/jenkins)
+{{- end }}
+{{- if .Values.Master.CSRF }}
+Instead of Master.CSRF, switch to Master.JCasC.ConfigScripts.[key-name].jenkins.crumbIssuer (See https://github.com/jenkinsci/configuration-as-code-plugin/issues/408#issuecomment-409726432 also https://<jenkins-url>/configuration-as-code/reference#CrumbIssuer-standard)
+{{- end }}
+{{- if .Values.Master.DisabledAgentProtocols }}
+Instead of Master.DisabledAgentProtocols, switch to Master.JCasC.ConfigScripts.<key_name>.jenkins.agentProtocols (https://github.com/jenkinsci/configuration-as-code-plugin/tree/master/plugin/src/test/resources/io/jenkins/plugins/casc/AgentProtocolsTest.yml)
+{{- end }}
+{{- if .Values.Master.CLI }}
+Instead of Master.CLI, switch to Master.JCasC.ConfigScripts.<key_name>.security.remotingCLI.enabled (https://github.com/jenkinsci/configuration-as-code-plugin/tree/master/demos/jenkins/jenkins.yaml#L47)
+{{- end }}
+{{- if .Values.Master.CustomConfigMap }}
+Instead of Master.CustomConfigMap, switch to Master.JCasC.ConfigScripts (https://github.com/jenkinsci/configuration-as-code-plugin/tree/master/demos)
+{{- end }}
+{{- if .Values.Master.AdditionalConfig }}
+Instead of Master.AdditionalConfig, switch to Master.JCasC.ConfigScripts (https://github.com/jenkinsci/configuration-as-code-plugin/tree/master/demos)
+{{- end }}
+{{- if .Values.Agent }}
+Instead of Agent, switch to Master.JCasC.ConfigScripts.[key-name].jenkins.clouds (https://github.com/jenkinsci/configuration-as-code-plugin/tree/master/demos/kubernetes)
+{{- end }}
+Please use Jenkins Configuration as Code instead: https://github.com/helm/charts/tree/master/stable/jenkins/#configuration-as-code
+{{- end }}
+
 For more information on running Jenkins on Kubernetes, visit:
 https://cloud.google.com/solutions/jenkins-on-container-engine
 {{- if .Values.Master.JCasC.enabled }}
