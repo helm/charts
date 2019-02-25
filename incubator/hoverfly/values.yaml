@@ -4,6 +4,7 @@
 image:
   repository: docker.io/spectolabs/hoverfly
   tag: v1.0.0-rc.2
+  pullPolicy: IfNotPresent
 service:
   type: ClusterIP
   externalAdminPort: 8888
@@ -12,10 +13,10 @@ service:
   proxyPort: 8500
 healthcheckEndpoint: /api/health
 hoverflyFlags:
-resources:
-  limits:
-    cpu: 0.2
-    memory: 200Mi
-  requests:
-    cpu: 0.1
-    memory: 100Mi
+#resources:
+#  limits:
+#    cpu: 0.2
+#    memory: 200Mi
+#  requests:
+#    cpu: 0.1
+#    memory: 100Mi
