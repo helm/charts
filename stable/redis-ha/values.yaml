@@ -8,6 +8,9 @@ image:
 ## replicas number for each component
 replicas: 3
 
+## Custom labels for the redis pod
+labels: {}
+
 ## Redis specific configuration options
 redis:
   port: 6379
