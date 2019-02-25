@@ -145,6 +145,8 @@ spec:
               value: {{ default "" .Values.Master.JavaOpts | quote }}
             - name: JENKINS_OPTS
               value: "{{ if .Values.Master.JenkinsUriPrefix }}--prefix={{ .Values.Master.JenkinsUriPrefix }} {{ end }}{{ default "" .Values.Master.JenkinsOpts}}"
+            - name: JENKINS_SLAVE_AGENT_PORT
+              value: "{{ .Values.Master.SlaveListenerPort }}"
             {{- if .Values.Master.UseSecurity }}
             - name: ADMIN_PASSWORD
               valueFrom:
