@@ -3,9 +3,12 @@ image:
   tag: v0.10.1
   pullPolicy: IfNotPresent
 
-# Only kube2iam: change the AWS_ACCOUNT_ID and HEPTIO_ARK_ROLE_NAME
+# Only kube2iam/kiam: change the AWS_ACCOUNT_ID and HEPTIO_ARK_ROLE_NAME
 podAnnotations: {}
 #  iam.amazonaws.com/role: arn:aws:iam::<AWS_ACCOUNT_ID>:role/<HEPTIO_ARK_ROLE_NAME>
+#  prometheus.io/scrape: "true"
+#  prometheus.io/port: "8085"
+#  prometheus.io/path: "/metrics"
 
 rbac:
   create: true
@@ -24,18 +27,21 @@ nodeSelector: {}
 ## Parameters for the ' default' Config resource
 ## See https://heptio.github.io/ark/v0.9.0/config-definition
 configuration:
-  persistentVolumeProvider: {}
+  provider:
+
+  volumeSnapshotLocation: {}
   #  name:
   #  config:
   #    region:
   #    apiTimeout:
 
-  backupStorageProvider:
+  backupStorageLocation:
     name:
     bucket:
     prefix:
     config: {}
     #  region:
+    #  prefix:
     #  s3ForcePathStyle:
     #  s3Url:
     #  kmsKeyId:
@@ -43,7 +49,6 @@ configuration:
     #  storageAccount:
 
   backupSyncPeriod: 60m
-  metricsAddress: ":8085"
   resticTimeout: 1h
   restoreResourcePriorities: namespaces,persistentvolumes,persistentvolumeclaims,secrets,configmaps,serviceaccounts,limitranges,pods
   restoreOnlyMode: false
@@ -66,3 +71,16 @@ credentials:
   secretContents: {}
 
 deployRestic: false
+
+metrics:
+  enabled: false
+  scrapeInterval: 30s
+
+  # Pod annotations for Prometheus
+  podAnnotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "8085"
+
+  serviceMonitor:
+    enabled: false
+    additionalLabels: {}
