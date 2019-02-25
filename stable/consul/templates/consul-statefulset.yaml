@@ -25,6 +25,10 @@ spec:
         chart: {{ template "consul.chart" . }}
         component: "{{ .Release.Name }}-{{ .Values.Component }}"
     spec:
+{{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+      - name: "{{ .Values.imagePullSecrets }}"
+{{- end }}
       securityContext:
         fsGroup: 1000
 {{- if .Values.priorityClassName }}
