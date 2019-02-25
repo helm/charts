@@ -1,6 +1,8 @@
 # Enable RBAC
 rbac:
   create: true
+  security:
+    enable: false
 
 # Create ServiceAccount
 serviceAccount:

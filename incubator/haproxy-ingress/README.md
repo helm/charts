@@ -36,6 +36,7 @@ The following table lists the configurable parameters of the haproxy-ingress cha
 Parameter | Description | Default
 --- | --- | ---
 `rbac.create` | If true, create & use RBAC resources | `true`
+`rbac.security.enable` | If true, and rbac.create is true, create & use PSP resources | `false`
 `serviceAccount.create` | If true, create serviceAccount | `true`
 `serviceAccount.name` | ServiceAccount to be used | ``
 `controller.name` | name of the controller component | `controller`
