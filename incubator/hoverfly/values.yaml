@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 image:
   repository: docker.io/spectolabs/hoverfly
-  tag: v1.0.0-rc.1
+  tag: v1.0.0-rc.2
 service:
   type: ClusterIP
   externalAdminPort: 8888
