@@ -33,6 +33,9 @@ controller:
   #         key: FOO
   #         name: secret-resource
 
+  ## Additional containers that can initialize the pod.
+  initContainers: {}
+
   # custom haproxy template
   template: ""
 
