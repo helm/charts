@@ -182,6 +182,10 @@ spec:
 {{ toYaml .Values.controller.affinity | indent 8 }}
     {{- end }}
     {{- if .Values.controller.priorityClassName }}
-      priorityClassName: {{ .Values.controller.priorityClassName }}
+      priorityClassName: {{ .Values.controller.priorityClassName | quote }}
+    {{- end }}
+    {{- if .Values.controller.securityContext }}
+      securityContext:
+{{ toYaml .Values.controller.securityContext | indent 8 }}
     {{- end }}
 {{- end }}
