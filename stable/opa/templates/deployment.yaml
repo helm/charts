@@ -64,8 +64,10 @@ spec:
             - name: config
               readOnly: true
               mountPath: /config
+{{- if .Values.authz.enabled }}
             - name: authz
               mountPath: /authz
+{{- end }}
 {{- if .Values.mgmt.enabled }}
         - name: mgmt
           image: {{ .Values.mgmt.image }}:{{ .Values.mgmt.imageTag }}

@@ -9,7 +9,8 @@ opa:
       url: "https://www.openpolicyagent.org"
   bundle:
     service: controller
-    name: "kubernetes/admission"
+    name: "helm-kubernetes-quickstart"
+  default_decision: "/helm_kubernetes_quickstart/main"
 
 # To enforce mutating policies, change to MutatingWebhookConfiguration.
 admissionControllerKind: ValidatingWebhookConfiguration
@@ -64,6 +65,8 @@ mgmt:
     namespaces: [opa, kube-federation-scheduling-policy]
     requireLabel: true
   replicate:
+# NOTE IF you use these, remember to update the RBAC rules above to allow
+#      permissions to replicate these things
     cluster: []
 #     - [group/]version/resource
     namespace: []
