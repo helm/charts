@@ -148,7 +148,9 @@ graylog:
       cpu: "500m"
       memory: "1024Mi"
 
-  ## Set Graylog Java heapsize. If this value empty, chart will automatically calculate heapsize from `resources.requests.memory`
+  ## Set Graylog Java heapsize. If this value empty, chart will allocate heapsize using `-XX:+UseCGroupMemoryLimitForHeap`
+  ## ref: https://blogs.oracle.com/java-platform-group/java-se-support-for-docker-cpu-and-memory-limits
+  ##
   # heapSize: "1024g"
 
   ## RollingUpdate update strategy

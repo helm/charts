@@ -131,11 +131,8 @@ spec:
               {{- $javaOpts := "-Djava.net.preferIPv4Stack=true -XX:NewRatio=1 -server -XX:+ResizeTLAB -XX:+UseConcMarkSweepGC -XX:+CMSConcurrentMTEnabled -XX:+CMSClassUnloadingEnabled -XX:+UseParNewGC -XX:-OmitStackTraceInFastThrow" }}
               {{- if .Values.graylog.heapSize -}}
               value: "{{ $javaOpts }} {{ printf "-Xms%s -Xmx%s" .Values.graylog.heapSize .Values.graylog.heapSize}}"
-              {{- else if .Values.graylog.resources.requests.memory -}}
-              {{ $heapSize := regexFind "[\\d]+" .Values.graylog.resources.requests.memory}}
-              value: "{{ $javaOpts }} {{ printf "-Xms%sm -Xmx%sm" $heapSize $heapSize }}"
-              {{- else -}}
-              value: "{{ $javaOpts }}"
+              {{- else }}
+              value: "{{ $javaOpts }} -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap"
               {{- end }}
             - name: GRAYLOG_PASSWORD_SECRET
               valueFrom:
