@@ -15,7 +15,7 @@ spec:
   selector:
     matchLabels:
       app: {{ .Chart.Name }}
-      chart: {{ .Chart.Name }}
+      release: {{ .Release.Name }}
   namespaceSelector:
     matchNames:
       - {{ .Release.Namespace }}
