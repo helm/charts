@@ -110,7 +110,6 @@ datadog:
   ## List of tags to attach to every metric, event and service check collected by this Agent.
   ##
   ## Learn more about tagging: https://docs.datadoghq.com/tagging/
-  ## ref: https://github.com/DataDog/docker-dd-agent#environment-variables
   #
   #  tags:
   #    - <KEY_1>:<VALUE_1>
