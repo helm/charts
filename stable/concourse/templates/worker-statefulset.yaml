@@ -16,18 +16,22 @@ spec:
       labels:
         app: {{ template "concourse.worker.fullname" . }}
         release: "{{ .Release.Name }}"
+      {{- if .Values.worker.annotations }}
       annotations:
-        {{- range $key, $value := .Values.worker.annotations }}
+      {{- range $key, $value := .Values.worker.annotations }}
         {{ $key }}: {{ $value | quote }}
-        {{- end }}
+      {{- end }}
+      {{- end }}
     spec:
     {{- with .Values.worker.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
     {{- end }}
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "concourse.worker.fullname" . }}{{ else }}{{ .Values.rbac.workerServiceAccountName }}{{ end }}
+      {{- if .Values.worker.tolerations }}
       tolerations:
 {{ toYaml .Values.worker.tolerations | indent 8 }}
+      {{- end }}
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
       {{- range .Values.imagePullSecrets }}
