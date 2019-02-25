@@ -27,7 +27,7 @@ mysqlUser: user
 mysqlUserPassword: secret
 # MariaDB root password
 mysqlRootPassword: change_me
-# put commands here - they can be used to install additional software and/or perform additional actions on each pod restart (related to web service pod only). 
+# put commands here - they can be used to install additional software and/or perform additional actions on each pod restart (related to web service pod only).
 # Please put && at the end of your command
 additionalSoftware: sed -i 's/101/1000/g' /etc/passwd && sed -i 's/101/1000/g' /etc/group && find /usr/ -uid 101 -exec chown -h 1000 {} + && find /usr -gid 101 -exec chgrp -h 1000 {} + &&
 
@@ -72,7 +72,7 @@ persistence:
 traefik:
 #  nodeSelector:
 #    kubernetes.io/hostname: "gke-standard-cluster-1-default-pool-6df100f0-rl0b"
-  # set to 'true' to enable traefik ingress controller. If you already have Traefik, 
+  # set to 'true' to enable traefik ingress controller. If you already have Traefik,
   # or have already deployed this helm chart on your cluster - set to 'false'
   enabled: true
   replicas: 1
@@ -101,11 +101,12 @@ traefik:
     # domain for traefik dashboard access
     domain: "traefik.domain.com"
     # Basic authentication. Comment out to disable
+    # format - username: encoded_password
+    # Passwords can be encoded in MD5, SHA1 and BCrypt: you can use htpasswd to generate them
+    # (from traefik docs)
     auth:
       basic:
-        admin: $apr1$rGIU2WB2$74uZGzAlaBIEziaPumMHY1 # format - username: encoded_password. 
-                                                     # Passwords can be encoded in MD5, SHA1 and BCrypt: you can use htpasswd to generate them. 
-                                                     # (from traefik docs)
+        admin: $apr1$rGIU2WB2$74uZGzAlaBIEziaPumMHY1
   rbac:
     enabled: true
   deployment:
