@@ -1,8 +1,0 @@
-web:
-  additionalVolumes:
-  - name: team-authorized-keys
-    configMap:
-      name: hush-house-team-authorized-keys
-  additionalVolumeMounts:
-  - name: team-authorized-keys
-    mountPath: /team-authorized-keys/

@@ -14,16 +14,20 @@ spec:
       labels:
         app: {{ template "concourse.web.fullname" . }}
         release: "{{ .Release.Name }}"
+      {{- if .Values.web.annotations }}
       annotations:
 {{ toYaml .Values.web.annotations | indent 8 }}
+      {{- end }}
     spec:
     {{- with .Values.web.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
     {{- end }}
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "concourse.web.fullname" . }}{{ else }}{{ .Values.rbac.webServiceAccountName }}{{ end }}
+      {{- if .Values.web.tolerations }}
       tolerations:
 {{ toYaml .Values.web.tolerations | indent 8 }}
+      {{- end }}
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
       {{- range .Values.imagePullSecrets }}
@@ -932,10 +936,12 @@ spec:
 {{- if .Values.web.additionalVolumeMounts }}
 {{ toYaml .Values.web.additionalVolumeMounts | indent 12 }}
 {{- end }}
+      {{- if .Values.web.additionalAffinities }}
       affinity:
 {{- if .Values.web.additionalAffinities }}
 {{ toYaml .Values.web.additionalAffinities | indent 8 }}
 {{- end }}
+      {{- end }}
       volumes:
 {{- if .Values.web.additionalVolumes }}
 {{ toYaml .Values.web.additionalVolumes | indent 8 }}
