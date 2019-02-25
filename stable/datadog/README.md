@@ -277,7 +277,7 @@ helm install --name <RELEASE_NAME> \
 | `clusterAgent.token`                     | A cluster-internal secret for agent-to-agent communication. Must be 32+ characters a-zA-Z | Generates a random value                    |
 | `clusterAgent.containerName`             | The container name for the Cluster Agent                                                  | `cluster-agent`                             |
 | `clusterAgent.image.repository`          | The image repository for the cluster-agent                                                | `datadog/cluster-agent`                     |
-| `clusterAgent.image.tag`                 | The image tag to pull                                                                     | `1.0.0`                                     |
+| `clusterAgent.image.tag`                 | The image tag to pull                                                                     | `1.2.0`                                     |
 | `clusterAgent.image.pullPolicy`          | Image pull policy                                                                         | `IfNotPresent`                              |
 | `clusterAgent.image.pullSecrets`         | Image pull secrets                                                                        | `nil`                                       |
 | `clusterAgent.metricsProvider.enabled`   | Enable Datadog metrics as a source for HPA scaling                                        | `false`                                     |
