@@ -12,6 +12,7 @@ image:
 service:
   replicas: 1
   type: ClusterIP
+  annotations:
 
 ## Persist data to a persistent volume
 ##
