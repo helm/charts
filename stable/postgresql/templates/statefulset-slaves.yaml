@@ -25,10 +25,10 @@ spec:
         release: {{ .Release.Name | quote }}
         heritage: {{ .Release.Service | quote }}
         role: slave
-{{- with .Values.slavePod.labels }}
+{{- with .Values.slave.podLabels }}
 {{ toYaml . | indent 8 }}
 {{- end }}
-{{- with .Values.slavePod.annotations }}
+{{- with .Values.slave.podAnnotations }}
       annotations:
 {{ toYaml . | indent 8 }}
 {{- end }}
@@ -166,7 +166,7 @@ spec:
         - name: data
           mountPath: {{ .Values.persistence.mountPath }}
         {{ end }}
-        {{- if or (.Files.Glob "files/conf.d/*.conf") .Values.extendedConfConfigMap }}
+        {{- if or (.Files.Glob "files/conf.d/*.conf") .Values.postgresqlExtendedConf .Values.extendedConfConfigMap }}
         - name: postgresql-extended-config
           mountPath: /bitnami/postgresql/conf/conf.d/
         {{- end }}
@@ -185,7 +185,7 @@ spec:
         configMap:
           name: {{ template "postgresql.configurationCM" . }}
       {{- end }}
-      {{- if or (.Files.Glob "files/conf.d/*.conf") .Values.extendedConfConfigMap }}
+      {{- if or (.Files.Glob "files/conf.d/*.conf") .Values.postgresqlExtendedConf .Values.extendedConfConfigMap }}
       - name: postgresql-extended-config
         configMap:
           name: {{ template "postgresql.extendedConfigurationCM" . }}

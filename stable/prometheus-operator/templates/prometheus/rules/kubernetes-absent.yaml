@@ -1,8 +1,11 @@
 # Generated from 'kubernetes-absent' group from https://raw.githubusercontent.com/coreos/prometheus-operator/master/contrib/kube-prometheus/manifests/prometheus-rules.yaml
+# Do not change in-place! In order to change this file first read following link:
+# https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
 {{- if and .Values.defaultRules.create .Values.defaultRules.rules.kubernetesAbsent }}
 {{- $operatorJob := printf "%s-%s" (include "prometheus-operator.fullname" .) "operator" }}
 {{- $prometheusJob := printf "%s-%s" (include "prometheus-operator.fullname" .) "prometheus" }}
 {{- $alertmanagerJob := printf "%s-%s" (include "prometheus-operator.fullname" .) "alertmanager" }}
+{{- $namespace := .Release.Namespace }}
 apiVersion: {{ printf "%s/v1" (.Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com") }}
 kind: PrometheusRule
 metadata:
@@ -25,7 +28,7 @@ spec:
       annotations:
         message: Alertmanager has disappeared from Prometheus target discovery.
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-alertmanagerdown
-      expr: absent(up{job="{{ $alertmanagerJob }}"} == 1)
+      expr: absent(up{job="{{ $alertmanagerJob }}",namespace="{{ $namespace }}"} == 1)
       for: 15m
       labels:
         severity: critical
@@ -103,7 +106,7 @@ spec:
       annotations:
         message: Prometheus has disappeared from Prometheus target discovery.
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-prometheusdown
-      expr: absent(up{job="{{ $prometheusJob }}"} == 1)
+      expr: absent(up{job="{{ $prometheusJob }}",namespace="{{ $namespace }}"} == 1)
       for: 15m
       labels:
         severity: critical
@@ -112,7 +115,7 @@ spec:
       annotations:
         message: PrometheusOperator has disappeared from Prometheus target discovery.
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-prometheusoperatordown
-      expr: absent(up{job="{{ $operatorJob }}"} == 1)
+      expr: absent(up{job="{{ $operatorJob }}",namespace="{{ $namespace }}"} == 1)
       for: 15m
       labels:
         severity: critical
