@@ -3,3 +3,7 @@ appVersion: "1.0"
 description: A Helm chart for CraftCMS installation
 name: craftcms
 version: 0.1.0
+home: https://craftcms.com/
+sources:
+- https://github.com/wyveo/craftcms-docker
+icon: https://cdn.sstatic.net/Sites/craftcms/img/apple-touch-icon@2.png?v=bb0624cb0264
