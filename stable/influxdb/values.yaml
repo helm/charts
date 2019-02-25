@@ -138,6 +138,10 @@ config:
   meta:
     retention_autocreate: true
     logging_enabled: true
+  logging:
+    format: auto
+    level: info
+    suppressLogo: true
   data:
     query_log_enabled: true
     cache_max_memory_size: 1073741824

@@ -18,6 +18,11 @@ data:
       retention-autocreate = {{ .Values.config.meta.retention_autocreate }}
       logging-enabled = {{ .Values.config.meta.logging_enabled }}
 
+    [logging]
+      format = "{{ .Values.config.logging.format }}"
+      level = "{{ .Values.config.logging.level}}"
+      suppress-logo = "{{ .Values.config.logging.suppressLogo }}"
+
     [data]
       dir = "{{ .Values.config.storage_directory }}/data"
       wal-dir = "{{ .Values.config.storage_directory }}/wal"
