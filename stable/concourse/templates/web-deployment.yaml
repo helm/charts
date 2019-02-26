@@ -35,6 +35,9 @@ spec:
       {{- end }}
       {{- end }}
       containers:
+      {{- if .Values.web.sidecarContainers }}
+      {{- toYaml .Values.web.sidecarContainers | nindent 8 }}
+      {{- end }}
         - name: {{ template "concourse.web.fullname" . }}
           {{- if .Values.imageDigest }}
           image: "{{ .Values.image }}@{{ .Values.imageDigest }}"
