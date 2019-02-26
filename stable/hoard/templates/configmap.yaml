@@ -23,3 +23,21 @@ data:
     [Logging]
       LoggingType = "{{ .Values.logging.type }}"
       Channels = [{{- range .Values.logging.channels }}{{ . | quote }},{{- end }}]
+
+{{- if .Values.openpgp }}
+
+    [Secrets.OpenPGP]
+      ID = "{{ .Values.openpgp.id }}"
+      File = "/secrets/keyring"
+
+{{- end }}
+
+{{- range $key, $val := .Values.secrets }}
+
+    [[Secrets.Symmetric]] 
+      ID = {{ $key | quote }}
+      Passphrase = {{ $val | quote }} 
+
+{{- end }}
+
+    

@@ -31,6 +31,11 @@ spec:
         - mountPath: /data
           name: data-dir
 {{- end }}
+{{- if .Values.openpgp }}
+        - mountPath: /secrets
+          subPath: keyring
+          name: key-ring
+{{- end }}
         ports:
           - containerPort: {{ .Values.service.port }}
             name: http
@@ -39,31 +44,31 @@ spec:
         - name: AWS_ACCESS_KEY_ID
           valueFrom:
             secretKeyRef:
-              name: {{ required "A valid storage credential is required." .Values.storage.credentialsSecret }}
+              name: {{ required "A valid storage credential is required." .Values.storage.secret }}
               key: access-key-id
         - name: AWS_SECRET_ACCESS_KEY
           valueFrom:
             secretKeyRef:
-              name: {{ required "A valid storage credential is required." .Values.storage.credentialsSecret }}
+              name: {{ required "A valid storage credential is required." .Values.storage.secret }}
               key: secret-access-key
 {{- end }}
 {{- if eq .Values.storage.type "azure" }}
         - name: AZURE_STORAGE_ACCOUNT_NAME
           valueFrom:
             secretKeyRef:
-              name: {{ required "A valid storage credential is required." .Values.storage.credentialsSecret }}
+              name: {{ required "A valid storage credential is required." .Values.storage.secret }}
               key: storage-account-name
         - name: AZURE_STORAGE_ACCOUNT_KEY
           valueFrom:
             secretKeyRef:
-              name: {{ required "A valid storage credential is required." .Values.storage.credentialsSecret }}
+              name: {{ required "A valid storage credential is required." .Values.storage.secret }}
               key: storage-account-key
 {{- end }}
 {{- if eq .Values.storage.type "gcp" }}
         - name: GCLOUD_SERVICE_KEY
           valueFrom:
             secretKeyRef:
-              name: {{ required "A valid storage credential is required." .Values.storage.credentialsSecret }}
+              name: {{ required "A valid storage credential is required." .Values.storage.secret }}
               key: service-key
 {{- end }}
         livenessProbe:
@@ -84,6 +89,11 @@ spec:
       - name: data-dir
         persistentVolumeClaim:
           claimName: {{ template "hoard.fullname" $ }}
+{{- end }}
+{{- if .Values.openpgp }}
+      - name: key-ring
+        secret:
+          secretName: {{ required "A valid keyring is required." .Values.openpgp.secret }}
 {{- end }}
 {{- with .Values.nodeSelector }}
       nodeSelector:
