@@ -217,6 +217,8 @@ spec:
           - "--metric_node_name=$(HOSTNAME)"
           - "--memory_limit_hard_bytes={{ template "yugabyte.memory_hard_limit" $root.Values.resource.master }}"
           - "--stderrthreshold=0"
+          - "--num_cpus={{ ceil $root.Values.resource.master.requests.cpu }}"
+          - "--undefok=num_cpus"
           {{- range $flag, $override := $root.Values.gflags.master }}
           - "--{{ $flag }}={{ $override }}"
           {{- end}}
@@ -239,6 +241,8 @@ spec:
           - "--metric_node_name=$(HOSTNAME)"
           - "--memory_limit_hard_bytes={{ template "yugabyte.memory_hard_limit" $root.Values.resource.tserver }}"
           - "--stderrthreshold=0"
+          - "--num_cpus={{ ceil $root.Values.resource.tserver.requests.cpu }}"
+          - "--undefok=num_cpus"
           {{- range $flag, $override := $root.Values.gflags.tserver }}
           - "--{{ $flag }}={{ $override }}"
           {{- end}}
