@@ -104,6 +104,7 @@ The following table lists the configurable parameters of the MySQL chart and the
 | `podAnnotations`                             | Map of annotations to add to the pods                                                        | `{}`                                                 |
 | `podLabels`                                  | Map of labels to add to the pods                                                        | `{}`                                                 |
 | `priorityClassName`                          | Set pod priorityClassName                                                                    | `{}`                                                 |
+| `deploymentLabels`                           | Map of labels to add to the deployment                                                       | `{}`                                                 |
 
 Some of the parameters above map to the env variables defined in the [MySQL DockerHub image](https://hub.docker.com/_/mysql/).
 

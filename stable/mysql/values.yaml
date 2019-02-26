@@ -170,6 +170,9 @@ ssl:
 ## Example: 'Australia/Sydney'
 # timezone:
 
+# To be added to the deployment
+deploymentLabels: {}
+
 # To be added to the database server pod(s)
 podAnnotations: {}
 

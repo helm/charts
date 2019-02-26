@@ -3,10 +3,15 @@ kind: Deployment
 metadata:
   name: {{ template "mysql.fullname" . }}
   labels:
-    app: {{ template "mysql.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
+    {{- if not .Values.deploymentLabels.app }}
+    app: {{ template "mysql.fullname" . }}
+    {{- end }}
+    {{- range $key, $val := .Values.deploymentLabels }}
+    {{ $key }}: {{ $val }}
+    {{- end}}
 spec:
   template:
     metadata:
