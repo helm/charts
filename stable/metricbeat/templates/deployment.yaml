@@ -57,7 +57,11 @@ spec:
         securityContext:
           runAsUser: 0
         resources:
+{{- if .Values.deployment.resources }}
+{{ toYaml .Values.deployment.resources | indent 10 }}
+{{- else if .Values.resources }}
 {{ toYaml .Values.resources | indent 10 }}
+{{- end }}
         volumeMounts:
         - name: metricbeat-config
           mountPath: /usr/share/metricbeat/metricbeat.yml
