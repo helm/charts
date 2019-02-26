@@ -2,6 +2,9 @@
   export DECK_POD=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "cluster=spin-deck" -o jsonpath="{.items[0].metadata.name}")
   kubectl port-forward --namespace {{ .Release.Namespace }} $DECK_POD 9000
 
+  export GATE_POD=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "cluster=spin-gate" -o jsonpath="{.items[0].metadata.name}")
+  kubectl port-forward --namespace {{ .Release.Namespace }} $GATE_POD 8084
+
 2. Visit the Spinnaker UI by opening your browser to: http://127.0.0.1:9000
 
 To customize your Spinnaker installation. Create a shell in your Halyard pod:

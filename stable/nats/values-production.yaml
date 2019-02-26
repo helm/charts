@@ -10,7 +10,7 @@
 image:
   registry: docker.io
   repository: bitnami/nats
-  tag: 1.4.0
+  tag: 1.4.1
   pullPolicy: Always
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.

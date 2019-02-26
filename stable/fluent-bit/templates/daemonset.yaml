@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
-  name: fluent-bit
+  name: {{ template "fluent-bit.fullname" . }}
   labels:
     app: {{ template "fluent-bit.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
@@ -15,6 +15,9 @@ spec:
       labels:
         app: {{ template "fluent-bit.name" . }}
         release: {{ .Release.Name }}
+{{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels | indent 8 }}
+{{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
 {{- if .Values.podAnnotations }}
@@ -64,7 +67,7 @@ spec:
 {{- else }}
         - name: config
           mountPath: /fluent-bit/etc/fluent-bit.conf
-          subPath: fluent-bit.conf     
+          subPath: fluent-bit.conf
         - name: config
           mountPath: /fluent-bit/etc/fluent-bit-service.conf
           subPath: fluent-bit-service.conf
@@ -77,7 +80,7 @@ spec:
         - name: config
           mountPath: /fluent-bit/etc/fluent-bit-output.conf
           subPath: fluent-bit-output.conf
-          
+
 {{- if .Values.parsers.enabled }}
         - name: config
           mountPath: /fluent-bit/etc/parsers_custom.conf
@@ -106,6 +109,10 @@ spec:
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
     {{- end }}
+      {{ if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+      {{- end }}
     {{- if .Values.tolerations }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
@@ -131,7 +138,7 @@ spec:
 {{- if .Values.trackOffsets }}
       - name: tail-db
         hostPath:
-          path: /var/lib/fluent-bit
+          path: {{ .Values.taildb.directory }}
           type: DirectoryOrCreate
 {{- end }}
       - name: config

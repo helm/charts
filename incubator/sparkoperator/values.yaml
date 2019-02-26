@@ -19,6 +19,7 @@ enableWebhook: false
 enableMetrics: true
 
 controllerThreads: 10
+ingressUrlFormat: ""
 installCrds: true
 metricsPort: 10254
 metricsEndpoint: "/metrics"

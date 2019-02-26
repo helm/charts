@@ -1,6 +1,6 @@
 ## Default values for Traefik
 image: traefik
-imageTag: 1.7.7
+imageTag: 1.7.9
 ## can switch the service type to NodePort if required
 serviceType: LoadBalancer
 # loadBalancerIP: ""
@@ -20,10 +20,8 @@ podDisruptionBudget: {}
 
 # rootCAs: []
 
-cpuRequest: 100m
-memoryRequest: 20Mi
-cpuLimit: 100m
-memoryLimit: 30Mi
+resources: {}
+
 debug:
   enabled: false
 
@@ -33,6 +31,7 @@ deploymentStrategy: {}
   #   maxUnavailable: 0
   # type: RollingUpdate
 
+securityContext: {}
 nodeSelector: {}
   # key: value
 affinity: {}
@@ -271,6 +270,7 @@ acme:
 dashboard:
   enabled: false
   domain: traefik.example.com
+  # serviceType: ClusterIP
   service: {}
     # annotations:
     #   key: value
@@ -373,3 +373,18 @@ tracing:
   #   localAgentHostPort: "127.0.0.1:8126"
   #   debug: false
   #   globalTag: ""
+
+## Create HorizontalPodAutoscaler object.
+##
+# autoscaling:
+#   minReplicas: 1
+#   maxReplicas: 10
+#   metrics:
+#   - type: Resource
+#     resource:
+#       name: cpu
+#       targetAverageUtilization: 60
+#   - type: Resource
+#     resource:
+#       name: memory
+#       targetAverageUtilization: 60
