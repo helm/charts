@@ -97,6 +97,7 @@ The following table lists the configurable parameters of the Concourse chart and
 | `web.service.loadBalancerSourceRanges` | Concourse Web Service Load Balancer Source IP ranges | `nil` |
 | `web.service.tsaNodePort` | Sets the nodePort for tsa when using `NodePort` | `nil` |
 | `web.service.type` | Concourse Web service type | `ClusterIP` |
+| `web.sidecarContainers` | Array of extra containers to run alongside the Concourse web container | `nil` |
 | `web.syslogSecretsPath` | Specify the mount directory of the web syslog secrets | `/concourse-syslog` |
 | `web.tolerations` | Tolerations for the web nodes | `[]` |
 | `web.vaultSecretsPath` | Specify the mount directory of the web vault secrets | `/concourse-vault` |
@@ -115,6 +116,7 @@ The following table lists the configurable parameters of the Concourse chart and
 | `worker.fatalErrors` | Newline delimited strings which, when logged, should trigger a restart of the worker | *See [values.yaml](values.yaml)* |
 | `worker.updateStrategy` | `OnDelete` or `RollingUpdate` (requires Kubernetes >= 1.7) | `RollingUpdate` |
 | `worker.podManagementPolicy` | `OrderedReady` or `Parallel` (requires Kubernetes >= 1.7) | `Parallel` |
+| `worker.sidecarContainers` | Array of extra containers to run alongside the Concourse worker container | `nil` |
 | `worker.hardAntiAffinity` | Should the workers be forced (as opposed to preferred) to be on different nodes? | `false` |
 | `worker.emptyDirSize` | When persistance is disabled this value will be used to limit the emptyDir volume size | `nil` |
 | `persistence.enabled` | Enable Concourse persistence using Persistent Volume Claims | `true` |

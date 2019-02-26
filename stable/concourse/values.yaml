@@ -1093,6 +1093,16 @@ web:
   ##
   replicas: 1
 
+  ## Array of extra containers to run alongside the Concourse Web
+  ## container.
+  ##
+  ## Example:
+  ## - name: myapp-container
+  ##   image: busybox
+  ##   command: ['sh', '-c', 'echo Hello && sleep 3600']
+  ##
+  sidecarContainers:
+
   ## Configures the liveness probe used to determine if the Web component is up.
   ## ps.: if you're upgrading Concourse from one version  to another, the probe will
   ## probably fail for some time before migrations are finished - in such situations,
@@ -1280,6 +1290,16 @@ worker:
   ## Number of replicas.
   ##
   replicas: 2
+
+  ## Array of extra containers to run alongside the Concourse worker
+  ## container.
+  ##
+  ## Example:
+  ## - name: myapp-container
+  ##   image: busybox
+  ##   command: ['sh', '-c', 'echo Hello && sleep 3600']
+  ##
+  sidecarContainers:
 
   ## Minimum number of workers available after an eviction
   ## Ref: https://kubernetes.io/docs/admin/disruptions/
