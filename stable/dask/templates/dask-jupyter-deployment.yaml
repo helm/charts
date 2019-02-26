@@ -1,6 +1,6 @@
 {{ if .Values.jupyter.enabled -}}
 
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "dask.fullname" . }}-jupyter
@@ -33,7 +33,7 @@ spec:
           ports:
             - containerPort: 8888
           resources:
-{{ toYaml .Values.jupyter.resources | indent 12 }}
+{{ toYaml .Values.jupyter.resources | trimSuffix "\n" | indent 12 }}
           volumeMounts:
             - name: config-volume
               mountPath: /home/jovyan/.jupyter

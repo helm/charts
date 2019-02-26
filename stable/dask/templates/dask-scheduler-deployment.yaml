@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "dask.fullname" . }}-scheduler
@@ -38,6 +38,6 @@ spec:
             - containerPort: 8786
             - containerPort: 8787
           resources:
-{{ toYaml .Values.scheduler.resources | indent 12 }}
+{{ toYaml .Values.scheduler.resources | trimSuffix "\n" | indent 12 }}
           env:
-{{ toYaml .Values.scheduler.env | indent 12 }}
+{{ toYaml .Values.scheduler.env | trimSuffix "\n" | indent 12 }}
