@@ -27,6 +27,9 @@ spec:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap-airflow.yaml") . | sha256sum }}
         configmap.fabric8.io/update-on-change: "{{ template "airflow.fullname" . }}-env"
+{{- if .Values.airflow.podAnnotations }}
+{{ toYaml .Values.airflow.podAnnotations | indent 8 }}
+{{- end }}
       labels:
         app: {{ template "airflow.name" . }}
         component: scheduler
@@ -86,6 +89,11 @@ spec:
             - name: connections
               mountPath: /usr/local/connections
           {{- end}}
+          {{- range .Values.airflow.extraConfigmapMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              readOnly: {{ .readOnly }}
+          {{- end }}
           args:
             - "bash"
             - "-c"
@@ -154,4 +162,9 @@ spec:
           secret:
             secretName: {{ template "airflow.fullname" . }}-connections
             defaultMode: 0755
+        {{- end }}
+        {{- range .Values.airflow.extraConfigmapMounts }}
+        - name: {{ .name }}
+          configMap:
+            name: {{ .configMap }}
         {{- end }}

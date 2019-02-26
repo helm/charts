@@ -15,9 +15,6 @@ spec:
       labels:
         app: {{ template "sysdig.fullname" .}}
         role: monitoring
-      annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
-        checksum/custom-app-checks: {{ include (print $.Template.BasePath "/configmap-custom-app-checks.yaml") . | sha256sum }}
     spec:
       serviceAccountName: {{ template "sysdig.serviceAccountName" .}}
       tolerations:
@@ -110,5 +107,5 @@ spec:
             name: {{ template "sysdig.fullname" . }}-custom-app-checks
         {{- end }}
   updateStrategy:
-    type: {{ default "OnDelete" .Values.daemonset.updateStrategy | quote }}
+{{ toYaml .Values.daemonset.updateStrategy | indent 4 }}
 {{- end }}

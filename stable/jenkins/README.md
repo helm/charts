@@ -42,6 +42,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `Master.AuthorizationStrategy`    | Jenkins XML job config for AuthorizationStrategy | Not set                                                                      |
 | `Master.DeploymentLabels`         | Custom Deployment labels             | Not set                                                                      |
 | `Master.ServiceLabels`            | Custom Service labels                | Not set                                                                      |
+| `Master.PodLabels`                | Custom Pod labels                    | Not set                                                                      |
 | `Master.AdminUser`                | Admin username (and password) created as a secret if useSecurity is true | `admin`                                  |
 | `Master.AdminPassword`            | Admin password (and user) created as a secret if useSecurity is true | Random value                                  |
 | `Master.JenkinsAdminEmail`        | Email address for the administrator of the Jenkins instance | Not set                                               |
@@ -51,6 +52,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `Master.UsePodSecurityContext`    | Enable pod security context (must be `true` if `RunAsUser` or `FsGroup` are set) | `true`                           |
 | `Master.RunAsUser`                | uid that jenkins runs with           | `0`                                                                          |
 | `Master.FsGroup`                  | uid that will be used for persistent volume | `0`                                                                   |
+| `Master.HostAliases`              | Aliases for IPs in `/etc/hosts`      | `[]`                                                                         |
 | `Master.ServiceAnnotations`       | Service annotations                  | `{}`                                                                         |
 | `Master.ServiceType`              | k8s service type                     | `LoadBalancer`                                                               |
 | `Master.ServicePort`              | k8s service port                     | `8080`                                                                       |
@@ -71,6 +73,8 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `Master.JMXPort`                  | Open a port, for JMX stats           | Not set                                                                      |
 | `Master.ExtraPorts`               | Open extra ports, for other uses     | Not set                                                                      |
 | `Master.OverwriteConfig`          | Replace config w/ ConfigMap on boot  | `false`                                                                      |
+| `Master.HostName`                 | Enables chart ingress, ingress host path      | Not set                                                                         |
+| `Master.Ingress.ApiVersion`      | Ingress api version                  | Not set                                                                         |
 | `Master.Ingress.Annotations`      | Ingress annotations                  | `{}`                                                                         |
 | `Master.Ingress.Labels`           | Ingress labels                       | `{}`                                                                         |
 | `Master.Ingress.Path`             | Ingress path                         | Not set                                                                         |
@@ -115,13 +119,13 @@ Some third-party systems, e.g. GitHub, use HTML-formatted data in their payload 
 | `Agent.Privileged`         | Agent privileged container                      | `false`                |
 | `Agent.resources`          | Resources allocation (Requests and Limits)      | `{requests: {cpu: 200m, memory: 256Mi}, limits: {cpu: 200m, memory: 256Mi}}`|
 | `Agent.volumes`            | Additional volumes                              | `nil`                  |
-| `Agent.envVars             | Environment variables for the slave Pod         | Not set                |
-| `Agent.Command             | Executed command when side container starts     | Not set                |
-| `Agent.Args                | Arguments passed to executed command            | Not set                |
-| `Agent.SideContainerName   | Side container name in agent                    | jnlp                   |
-| `Agent.TTYEnabled          | Allocate pseudo tty to the side container       | false                  |
-| `Agent.ContainerCap        | Maximum number of agent                         | 10                     |
-| `Agent.PodName             | slave Pod base name                             | Not set                |
+| `Agent.envVars`            | Environment variables for the slave Pod         | Not set                |
+| `Agent.Command`            | Executed command when side container starts     | Not set                |
+| `Agent.Args`               | Arguments passed to executed command            | Not set                |
+| `Agent.SideContainerName`  | Side container name in agent                    | jnlp                   |
+| `Agent.TTYEnabled`         | Allocate pseudo tty to the side container       | false                  |
+| `Agent.ContainerCap`       | Maximum number of agent                         | 10                     |
+| `Agent.PodName`            | slave Pod base name                             | Not set                |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
