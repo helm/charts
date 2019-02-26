@@ -1,7 +1,7 @@
 global:
   ## NodeSelector to be used in every deployment
   ## hub, chrome, firefox, chromeDebug and firefoxDebug
-  ## can also be spceifed at chart level see below
+  ## can also be specified at chart level see below
   nodeSelector:
   #  label: value
   ## Configure HostAliases
@@ -26,6 +26,9 @@ hub:
 
   ## The port which the hub listens on
   port: 4444
+
+  ## The port the service listens on
+  servicePort: 4444
 
   ## Timeout for probe Hub readiness via HTTP request on hub.probePath
   readinessTimeout: 1
@@ -99,7 +102,7 @@ hub:
   # gridBrowserTimeout: 0
   # gridMaxSession: 5
   ## In milliseconds
-  # gridUnregisterIfStillDownAfer: 30000
+  # gridUnregisterIfStillDownAfter: 30000
   # timeZone: UTC
 
   ## NodeSelector to be used for the hub

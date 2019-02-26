@@ -10,7 +10,7 @@ keywords:
   - Kafka
   - avro
   - schema-registry
-version: 0.1.1
+version: 0.3.0
 maintainers:
 - email: cristian04@gmail.com
   name: cristian04

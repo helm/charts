@@ -1,4 +1,4 @@
-{{- if .Values.concourse.web.kubernetes.enabled -}}
+{{- if and .Values.concourse.web.kubernetes.enabled .Values.concourse.web.kubernetes.createTeamNamespaces -}}
 {{- range .Values.concourse.web.kubernetes.teams }}
 ---
 apiVersion: v1

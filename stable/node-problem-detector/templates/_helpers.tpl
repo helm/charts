@@ -40,3 +40,11 @@ Create chart name and version as used by the chart label.
 {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Create the name of the configmap for storing custom monitor definitions
+*/}}
+{{- define "node-problem-detector.customConfig" -}}
+{{- $fullname := include "node-problem-detector.fullname" . -}}
+{{- printf "%s-custom-config" $fullname | replace "+" "_" | trunc 63 -}}
+{{- end -}}

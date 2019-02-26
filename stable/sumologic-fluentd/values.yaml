@@ -1,7 +1,7 @@
 # Default values for sumologic-fluentd.
 image:
   name: sumologic/fluentd-kubernetes-sumologic
-  tag: v2.1.0
+  tag: v2.3.0
   pullPolicy: IfNotPresent
 
 ## Annotations to add to the DaemonSet's Pods
@@ -13,6 +13,9 @@ tolerations: []
 #   - key: node.alpha.kubernetes.io/role
 #     effect: NoSchedule
 #     operator: "Exists"
+
+# Extra environment variables to set for fluentd
+extraEnv: []
 
 ## Allow the DaemonSet to perform a rolling update on helm update
 ## ref: https://kubernetes.io/docs/tasks/manage-daemon/update-daemon-set/

@@ -1,6 +1,6 @@
 name: sumologic-fluentd
-version: 0.10.1
-appVersion: 2.1.0
+version: 0.12.0
+appVersion: 2.3.0
 description: Sumologic Log Collector
 keywords:
   - monitoring

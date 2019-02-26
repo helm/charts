@@ -10,6 +10,7 @@ image:
   repository: "amancevice/superset"
   tag: "0.28.1"
   pullPolicy: "IfNotPresent"
+  pullSecrets: []
 
 initFile: |-
   /usr/local/bin/superset-init --username admin --firstname admin --lastname user --email admin@fab.org --password admin

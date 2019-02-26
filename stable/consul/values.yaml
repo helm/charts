@@ -104,6 +104,7 @@ ui:
 uiService:
   enabled: true
   type: "NodePort"
+  annotations: {}
 
 ConsulConfig: []
 #  - type: secret
