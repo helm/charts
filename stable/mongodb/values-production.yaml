@@ -92,6 +92,11 @@ service:
   ##
   # nodePort:
 
+  ## Specify the loadBalancerIP value for LoadBalancer service types.
+  ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer
+  ##
+  # loadBalancerIP:
+
 
 ## Setting up replication
 ## ref: https://github.com/bitnami/bitnami-docker-mongodb#setting-up-a-replication
