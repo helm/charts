@@ -38,3 +38,30 @@ Create chart name and version as used by the chart label.
 {{- define "yugabyte.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+
+{{/*
+  Get YugaByte fs data directories
+*/}}
+{{- define "yugabyte.fs_data_dirs" -}}
+{{range $index := until (int (.count))}}{{if ne $index 0}},{{end}}/mnt/disk{{ $index }}{{end}}
+{{- end -}}
+
+{{/*
+  Get YugaByte master addresses
+*/}}
+{{- define "yugabyte.master_addresses" -}}
+{{- $master_replicas := .Values.replicas.master | int -}}
+  {{- range .Values.Services }}
+    {{- if eq .name "yb-masters" }}
+      {{- $domain_name := .domainName -}}
+      {{range $index := until $master_replicas }}{{if ne $index 0}},{{end}}yb-master-{{ $index }}.yb-masters.$(NAMESPACE).svc.{{ $domain_name }}:7100{{end}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+
+{{/*
+Get the fully qualified server address
+*/}}
+{{- define "yugabyte.server_address" -}}
+{{- printf "$(HOSTNAME).%s.$(NAMESPACE).svc.%s" .name .domainName }}
+{{- end -}}

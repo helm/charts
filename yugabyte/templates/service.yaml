@@ -21,9 +21,9 @@ data:
 {{- $rootCA := buildCustomCert $root.Values.tls.rootCA.cert $root.Values.tls.rootCA.key -}}
 {{- $replicas := (eq .name "yb-masters") | ternary $root.Values.replicas.master $root.Values.replicas.tserver -}}
 {{- range $index := until ( int ( $replicas ) ) }}
-{{- $node := printf "%s-%d.%s.%s.svc.cluster.local" $service.label $index $service.name $root.Release.Namespace }}
+{{- $node := printf "%s-%d.%s.%s.svc.%s" $service.label $index $service.name $root.Release.Namespace $service.domainName }}
 {{- $dns1 := printf "*.*.%s" $root.Release.Namespace }}
-{{- $dns2 := printf "%s.svc.cluster.local" $dns1 }}
+{{- $dns2 := printf "%s.svc.%s" $dns1 $service.domainName }}
 {{- $server := genSignedCert $node ( default nil ) (list $dns1 $dns2 ) 3650 $rootCA }}
   node.{{$node}}.crt: {{ $server.Cert | b64enc }}
   node.{{$node}}.key: {{ $server.Key | b64enc }}
@@ -209,10 +209,10 @@ spec:
         command:
         {{ if eq .name "yb-masters" }}
           - "/home/yugabyte/bin/yb-master"
-          - "--fs_data_dirs={{range $index := until (int ($storageInfo.count))}}{{if ne $index 0}},{{end}}/mnt/disk{{ $index }}{{end}}"
-          - "--rpc_bind_addresses=$(HOSTNAME).yb-masters.$(NAMESPACE).svc.cluster.local"
-          - "--server_broadcast_addresses=$(HOSTNAME).yb-masters.$(NAMESPACE):7100"
-          - "--master_addresses={{range $index := until (int ($root.Values.replicas.master))}}{{if ne $index 0}},{{end}}yb-master-{{ $index }}.yb-masters.$(NAMESPACE):7100{{end}}"
+          - "--fs_data_dirs={{ template "yugabyte.fs_data_dirs" $storageInfo }}"
+          - "--rpc_bind_addresses={{ template "yugabyte.server_address" . }}"
+          - "--server_broadcast_addresses={{ template "yugabyte.server_address" . }}:7100"
+          - "--master_addresses={{ template "yugabyte.master_addresses" $root }}"
           - "--replication_factor={{ $root.Values.replicas.master }}"
           - "--metric_node_name=$(HOSTNAME)"
           - "--memory_limit_hard_bytes={{ template "yugabyte.memory_hard_limit" $root.Values.resource.master }}"
@@ -229,15 +229,15 @@ spec:
           {{- end }}
         {{ else }}
           - "/home/yugabyte/bin/yb-tserver"
-          - "--fs_data_dirs={{range $index := until (int ($storageInfo.count))}}{{if ne $index 0}},{{end}}/mnt/disk{{ $index }}{{end}}"
-          - "--server_broadcast_addresses=$(HOSTNAME).yb-tservers.$(NAMESPACE):9100"
-          - "--rpc_bind_addresses=$(HOSTNAME).yb-tservers.$(NAMESPACE).svc.cluster.local"
-          - "--cql_proxy_bind_address=$(HOSTNAME).yb-tservers.$(NAMESPACE).svc.cluster.local"
+          - "--fs_data_dirs={{ template "yugabyte.fs_data_dirs" $storageInfo }}"
+          - "--server_broadcast_addresses={{ template "yugabyte.server_address" . }}:9100"
+          - "--rpc_bind_addresses={{ template "yugabyte.server_address" . }}"
+          - "--cql_proxy_bind_address={{ template "yugabyte.server_address" . }}"
           {{ if or $root.Values.enableYsql $root.Values.enablePostgres }}
           - "--start_pgsql_proxy"
-          - "--pgsql_proxy_bind_address=$(POD_IP):5433"
+          - "--pgsql_proxy_bind_address={{ template "yugabyte.server_address" . }}:5433"
           {{ end }}
-          - "--tserver_master_addrs={{range $index := until (int ($root.Values.replicas.master))}}{{if ne $index 0}},{{end}}yb-master-{{ $index }}.yb-masters.$(NAMESPACE):7100{{end}}"
+          - "--tserver_master_addrs={{ template "yugabyte.master_addresses" $root }}"
           - "--metric_node_name=$(HOSTNAME)"
           - "--memory_limit_hard_bytes={{ template "yugabyte.memory_hard_limit" $root.Values.resource.tserver }}"
           - "--stderrthreshold=0"

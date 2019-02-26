@@ -11,7 +11,7 @@
   kubectl exec --namespace {{ .Release.Namespace }} -it yb-tserver-0 bash
 
 5. Run CQL shell from inside of a tablet server:
-  kubectl exec --namespace {{ .Release.Namespace }} -it yb-tserver-0 bin/cqlsh
+  kubectl exec --namespace {{ .Release.Namespace }} -it yb-tserver-0 bin/cqlsh yb-tserver-0
 
 6. Cleanup YugaByte Pods
   helm delete {{ .Release.Name }} --purge
