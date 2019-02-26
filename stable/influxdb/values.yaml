@@ -247,3 +247,7 @@ config:
     log_enabled: true
     enabled: true
     run_interval: 1s
+  logging:
+    format: auto
+    level: info
+    supress_logo: false
