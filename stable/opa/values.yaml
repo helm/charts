@@ -51,7 +51,7 @@ authz:
 
 # Docker image and tag to deploy.
 image: openpolicyagent/opa
-imageTag: 0.10.4
+imageTag: 0.10.5
 imagePullPolicy: IfNotPresent
 
 mgmt:
