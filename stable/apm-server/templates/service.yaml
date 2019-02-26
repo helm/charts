@@ -3,10 +3,10 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: {{ template "apm-server.name" . }}
-    chart: {{ template "apm-server.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ include "apm-server.name" . }}
+    helm.sh/chart: {{ include "apm-server.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
   {{- range $key, $value := .Values.service.labels }}
     {{ $key }}: {{ $value | quote }}
   {{- end }}
@@ -43,8 +43,8 @@ spec:
 {{ toYaml .Values.service.externalIPs | indent 4 }}
 {{- end }}
   selector:
-    app: {{ template "apm-server.name" . }}
-    release: {{ .Release.Name }}
+    app.kubernetes.io/name: {{ include "apm-server.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
 {{- if .Values.service.loadBalancerIP }}
   loadBalancerIP: {{ .Values.service.loadBalancerIP }}
 {{- end }}

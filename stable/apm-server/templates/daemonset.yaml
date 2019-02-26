@@ -4,23 +4,23 @@ kind: DaemonSet
 metadata:
   name: {{ template "apm-server.fullname" . }}
   labels:
-    app: {{ template "apm-server.name" . }}
-    chart: {{ template "apm-server.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ include "apm-server.name" . }}
+    helm.sh/chart: {{ include "apm-server.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   selector:
     matchLabels:
-      app: {{ template "apm-server.name" . }}
-      release: {{ .Release.Name }}
+      app.kubernetes.io/name: {{ include "apm-server.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
   minReadySeconds: 10
   updateStrategy:
 {{ toYaml .Values.updateStrategy | indent 4 }}
   template:
     metadata:
       labels:
-        app: {{ template "apm-server.name" . }}
-        release: {{ .Release.Name }}
+        app.kubernetes.io/name: {{ include "apm-server.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
         {{-  range $key, $value := .Values.podLabels }}
         {{ $key }}: {{ $value }}
         {{- end }}
