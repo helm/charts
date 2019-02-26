@@ -40,6 +40,9 @@ spec:
       {{- end }}
       terminationGracePeriodSeconds: {{ .Values.worker.terminationGracePeriodSeconds }}
       containers:
+      {{- if .Values.worker.sidecarContainers }}
+      {{- toYaml .Values.worker.sidecarContainers | nindent 8 }}
+      {{- end }}
         - name: {{ template "concourse.worker.fullname" . }}
           {{- if .Values.imageDigest }}
           image: "{{ .Values.image }}@{{ .Values.imageDigest }}"
