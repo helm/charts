@@ -85,3 +85,12 @@ serviceMonitor:
   ##
   enabled: false
   labels: {}
+
+prometheusRule:
+  ## If true, a PrometheusRule CRD is created for a prometheus operator
+  ## https://github.com/coreos/prometheus-operator
+  ##
+  enabled: false
+  prometheusNamespace: monitoring
+  labels: {}
+    # role: alert-rules

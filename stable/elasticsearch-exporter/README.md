@@ -67,7 +67,11 @@ Parameter | Description | Default
 `es.ssl.client.key` | Private key for client auth when connecting to Elasticsearch |
 `web.path` | path under which to expose metrics | `/metrics`
 `serviceMonitor.enabled` | If true, a ServiceMonitor CRD is created for a prometheus operator | `false`
-`serviceMonitor.labels` | Labels for prometheus operator | `{}`
+`serviceMonitor.labels` | ServiceMonitor labels for prometheus operator | `{}`
+`prometheusRule.enabled` | If true, a PrometheusRule CRD is created for a prometheus operator | `false`
+`prometheusRule.prometheusNamespace` | Namespace for prometheusRule | `monitoring`
+`prometheusRule.labels` | PrometheusRule labels for prometheus operator | `{}`
+
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
