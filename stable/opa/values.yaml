@@ -9,7 +9,8 @@ opa:
       url: "https://www.openpolicyagent.org"
   bundle:
     service: controller
-    name: "kubernetes/admission"
+    name: "helm-kubernetes-quickstart"
+  default_decision: "/helm_kubernetes_quickstart/main"
 
 # To enforce mutating policies, change to MutatingWebhookConfiguration.
 admissionControllerKind: ValidatingWebhookConfiguration
@@ -43,9 +44,34 @@ admissionControllerCA: ""
 admissionControllerCert: ""
 admissionControllerKey: ""
 
+authz:
+  # Disable if you don't want authorization.
+  # Mostly useful for debugging.
+  enabled: true
+
 # Docker image and tag to deploy.
 image: openpolicyagent/opa
-imageTag: 0.10.1
+imageTag: 0.10.4
+imagePullPolicy: IfNotPresent
+
+mgmt:
+  enabled: true
+  image: openpolicyagent/kube-mgmt
+  imageTag: 0.8
+  imagePullPolicy: IfNotPresent
+  extraArgs: []
+  configmapPolicies:
+    enabled: false
+    namespaces: [opa, kube-federation-scheduling-policy]
+    requireLabel: true
+  replicate:
+# NOTE IF you use these, remember to update the RBAC rules above to allow
+#      permissions to replicate these things
+    cluster: []
+#     - [group/]version/resource
+    namespace: []
+#     - [group/]version/resource
+    path: kubernetes
 
 # Number of OPA replicas to deploy. OPA maintains an eventually consistent
 # cache of policies and data. If you want high availability you can deploy two
@@ -68,6 +94,16 @@ rbac:
   # If true, create & use RBAC resources
   #
   create: true
+  rules:
+    cluster: []
+    # - apiGroups:
+    #     - ""
+    #   resources:
+    #   - namespaces
+    #   verbs:
+    #   - get
+    #   - list
+    #   - watch
 
 serviceAccount:
   # Specifies whether a ServiceAccount should be created
@@ -82,6 +118,7 @@ sar:
   enabled: false
   image: lachlanevenson/k8s-kubectl
   imageTag: latest
+  imagePullPolicy: IfNotPresent
 
 # To control the liveness and readiness probes change the fields below.
 readinessProbe:
