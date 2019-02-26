@@ -54,6 +54,10 @@ spec:
         - configMapRef:
             name: {{ template "anchore-engine.fullname" . }}
         env:
+        {{- range $key, $value := .Values.anchoreGlobal.extraEnv }}
+        - name: {{ $key }}
+          value: {{ $value }}
+        {{- end }}
         - name: ANCHORE_POD_NAME
           valueFrom:
             fieldRef:

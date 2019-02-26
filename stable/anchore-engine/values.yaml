@@ -14,41 +14,55 @@ postgresql:
   externalEndpoint: Null
 
   # Configure size of the persitant volume used with helm managed chart.
-  # This is ignored if using an external endpoint.
+  # This should be commented out if using an external endpoint.
   persistence:
-    size: 8Gi
+    size: 20Gi
+
+# Create an ingress resource for all external anchore engine services (API & Enterprise UI).
+# By default this chart is setup to use the NGINX ingress controller which needs to be installed & configured on your cluster.
+# To utilize a GCE/ALB ingress controller comment out the nginx annotations below, change ingress.class, edit path configurions as per the comments, & set API/UI services to use NodePort.
+ingress:
+  enabled: false
+  # Uncomment the following paths for GCE/ALB ingress controller
+  # apiPath: /v1/*
+  # uiPath: /*
+  apiPath: /v1/
+  uiPath: /
+  # Uncomment the following lines to bind on specific hostnames
+  # apiHosts:
+  #   - anchore-api.example.com
+  # uiHosts:
+  #   - anchore-ui.example.com
+  annotations:
+    # kubernetes.io/ingress.class: gce
+    kubernetes.io/ingress.class: nginx
+    # nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    # kubernetes.io/ingress.allow-http: false
+    # kubernetes.io/tls-acme: true
+  tls: []
+  # Secrets must be manually created in the namespace.
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
 
 # Global configuration shared by all anchore-engine services.
 anchoreGlobal:
   # Image used for all anchore engine deployments (excluding enterprise components).
-  image: docker.io/anchore/anchore-engine:v0.3.2
+  image: docker.io/anchore/anchore-engine:v0.3.3
   imagePullPolicy: IfNotPresent
 
-  # Create an ingress resource for all external anchore engine services.
-  # By default this chart is setup to use the NGINX ingress controller which needs to be installed & configured on your cluster.
-  # To utilize a GCE ingress controller comment out the annotations below, also edit path configurion the UI & Api configs as per the comments.
-  # Ingress paths/hosts can be setup for the anchoreApi & anchoreEnterpriseUi deployments in the corresponding values sections.
-  ingress:
-    enabled: false
-    annotations:
-      kubernetes.io/ingress.class: nginx
-      # nginx.ingress.kubernetes.io/ssl-redirect: "false"
-      # kubernetes.io/ingress.allow-http: false
-      # kubernetes.io/tls-acme: true
-    tls: []
-    # Secrets must be manually created in the namespace.
-    #  - secretName: chart-example-tls
-    #    hosts:
-    #      - chart-example.local
+  # Set extra environment variables. These will be set on all containers.
+  extraEnv: {}
+    # FOO: bar
 
   ###
-  # Start of General Anchore Engine Configurations (populates config.yaml)
+  # Start of General Anchore Engine Configurations (populates /config/config.yaml)
   ###
   # Set where default configs are placed at startup. This must be a writable location for the pod.
   serviceDir: /anchore_service_config
   logLevel: INFO
 
-  # If true, if a user adds an ECR registry with username = awsauto then the system will look for an instance profile to use for auth against the registry
+  # If true, when a user adds an ECR registry with username = awsauto then the system will look for an instance profile to use for auth against the registry
   allowECRUseIAMRole: false
 
   # Enable prometheus metrics
@@ -138,17 +152,6 @@ anchoreApi:
     port: 8228
     annotations: {}
 
-  # Used to create Ingress record for the anchore engine external API (api service)
-  # (should used with service.type: ClusterIP or NodePort depending on platform)
-  ingress:
-    # For GCE ingress controllers use the following path
-    # path: /v1/*
-    # By default this is configured to use an NGINX ingress controller.
-    path: /v1/
-    # You can bound on specific hostnames
-    # hosts:
-    #   - anchore-api.local
-
   # resources:
   #  limits:
   #    cpu: 100m
@@ -185,7 +188,7 @@ anchoreCatalog:
   # Event log configuration for webhooks
   events:
     notification:
-      enabled: true
+      enabled: false
       # Send notifications for events with severity level that matches items in this list
       level:
         - error
@@ -339,9 +342,9 @@ anchore-feeds-db:
   externalEndpoint: Null
 
   # Configure size of the persitant volume used with helm managed chart.
-  # This is ignored if using an external endpoint.
+  # This should be commented out if using an external endpoint.
   persistence:
-    size: 8Gi
+    size: 50Gi
 
 # Configure & enable the Anchore Enterprise on-prem feeds service.
 anchoreEnterpriseFeeds:
@@ -437,15 +440,7 @@ anchoreEnterpriseUi:
     type: ClusterIP
     port: 80
     annotations: {}
-
-  ingress:
-    # For GCE ingress controllers use the following path
-    # path: /*
-    # By default this is configured to use an NGINX ingress controller.
-    path: /
-    # You can bound on specific hostnames
-    # hosts:
-    #   - anchore-ui.local
+    sessionAffinity: ClientIP
 
   # resources:
   #  limits:
