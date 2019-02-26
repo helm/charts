@@ -8,10 +8,6 @@ metadata:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
   name: {{ template "elasticsearch.master.fullname" . }}
-{{- if eq .Values.master.updateStrategy.type "RollingUpdate" }}
-  annotations:
-    checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
-{{- end }}
 spec:
   serviceName: {{ template "elasticsearch.master.fullname" . }}
   replicas: {{ .Values.master.replicas }}
@@ -22,10 +18,15 @@ spec:
         component: "{{ .Values.master.name }}"
         release: {{ .Release.Name }}
         role: master
-        {{- if .Values.master.podAnnotations }}
+{{- if or .Values.master.podAnnotations (eq .Values.master.updateStrategy.type "RollingUpdate") }}
       annotations:
+      {{- if .Values.master.podAnnotations }}
 {{ toYaml .Values.master.podAnnotations | indent 8 }}
-        {{- end }}
+      {{- end }}
+      {{- if eq .Values.master.updateStrategy.type "RollingUpdate" }}
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+      {{- end }}
+{{- end }}
     spec:
       serviceAccountName: {{ template "elasticsearch.serviceAccountName.master" . }}
 {{- if .Values.master.priorityClassName }}
