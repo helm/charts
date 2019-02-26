@@ -36,7 +36,15 @@ spec:
 {{ toYaml .Values.controller.podLabels | indent 8 }}
         {{- end }}
     spec:
+    {{- if .Values.controller.podAffinity }}
+      affinity:
+{{ toYaml .Values.controller.podAffinity | indent 8 }}
+    {{- end }}
       serviceAccountName: {{ template "haproxy-ingress.serviceAccountName" . }}
+    {{- if .Values.controller.initContainers }}
+      initContainers:
+{{ toYaml .Values.controller.initContainers | indent 8 }}
+    {{- end }}
       containers:
         - name: haproxy-ingress
           image:  "{{ .Values.controller.image.repository }}:{{ .Values.controller.image.tag }}"
@@ -137,10 +145,10 @@ spec:
             - name: metrics
               containerPort: 9101
               protocol: TCP
-          readinessProbe:
+          livenessProbe:
             httpGet:
               path: /
-              port: 9101
+              port: metrics
           resources:
             limits:
               cpu: 200m
@@ -175,6 +183,6 @@ spec:
 {{ toYaml .Values.controller.securityContext | indent 8 }}
     {{- end }}
     {{- if .Values.controller.priorityClassName }}
-      priorityClassName: {{ .Values.controller.priorityClassName }}
+      priorityClassName: {{ .Values.controller.priorityClassName | quote }}
     {{- end }}
 {{- end }}
