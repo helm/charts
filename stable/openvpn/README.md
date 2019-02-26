@@ -84,6 +84,7 @@ Parameter | Description | Default
 `openvpn.dhcpOptionDomain`     | Push a `dhcp-option DOMAIN` config                                   | `true`
 `openvpn.conf`                 | Arbitrary lines appended to the end of the server configuration file | `nil`
 `openvpn.redirectGateway`      | Redirect all client traffic through VPN                              | `true`
+`nodeSelector`                 | Node labels for pod assignment                                       | `{}`
 
 This chart has been engineered to use kube-dns and route all network traffic to kubernetes pods and services,
 to disable this behaviour set `openvpn.OVPN_K8S_POD_NETWORK` and `openvpn.OVPN_K8S_POD_SUBNET` to `null`.
@@ -112,4 +113,3 @@ Certificates can be found in openvpn pod in the following files:
  `/etc/openvpn/certs/pki/ca.crt`
  `/etc/openvpn/certs/pki/issued/server.crt`
  `/etc/openvpn/certs/pki/dh.pem`
-
