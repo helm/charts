@@ -1,0 +1,35 @@
+Thank you for installing {{ .Chart.Name | upper }}, released at name: {{ .Release.Name }}.
+
+To learn more about the release, try:
+
+  $ helm status {{ .Release.Name }}  # information about running pods and this message
+  $ helm get {{ .Release.Name }}     # get full Kubernetes specification
+
+The Jupyter notebook server exposes external services to
+which you can connect to manage notebooks. You can get these
+addresses by running the following:
+
+{{- if contains "NodePort" .Values.jupyter.serviceType }}
+
+  export JUPYTER_NOTEBOOK_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath='{.items[0].status.addresses[0].address}')
+  export JUPYTER_NOTEBOOK_PORT=$(kubectl get svc --namespace default {{ template "rapids.fullname" . }}-jupyter -o jsonpath='{.spec.ports[0].nodePort}')
+
+{{- else if contains "LoadBalancer" .Values.jupyter.serviceType }}
+
+  export JUPYTER_NOTEBOOK_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "rapids.fullname" . }}-jupyter -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  export JUPYTER_NOTEBOOK_PORT={{ .Values.jupyter.servicePort }}
+
+{{- else if contains "ClusterIP"  .Values.jupyter.serviceType }}
+
+  export JUPYTER_NOTEBOOK_IP="127.0.0.1"
+  export JUPYTER_NOTEBOOK_PORT=8082
+  kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "rapids.fullname" . }}-jupyter $JUPYTER_NOTEBOOK_PORT:{{ .Values.jupyter.servicePort }} &
+
+{{- end }}
+
+  echo http://$JUPYTER_NOTEBOOK_IP:$JUPYTER_NOTEBOOK_PORT       -- Jupyter notebook
+
+NOTE: It may take a few minutes for the LoadBalancer IP to be available. Until then, the commands above will not work for the LoadBalancer service type.  
+You can watch the status by running 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "rapids.fullname" . }}-jupyter'
+
+NOTE: The default password to login to the notebook server is `rapids`. To change this password, refer to the Jupyter password section in values.yaml, or in the README.md.

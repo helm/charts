@@ -1,0 +1,49 @@
+{{ if .Values.jupyter.enabled -}}
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "rapids.fullname" . }}-jupyter
+  labels:
+    app: {{ template "rapids.name" . }}
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: {{ template "rapids.chart" . }}
+    component: jupyter
+spec:
+  replicas: {{ .Values.jupyter.replicas }}
+  selector:
+    matchLabels:
+      app: {{ template "rapids.name" . }}
+      release: {{ .Release.Name | quote }}
+      component: jupyter
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: {{ template "rapids.name" . }}
+        release: {{ .Release.Name | quote }}
+        component: jupyter
+    spec:
+      containers:
+        - name: {{ template "rapids.fullname" . }}-jupyter
+          image: "{{ .Values.jupyter.image.repository }}:{{ .Values.jupyter.image.tag }}"
+          imagePullPolicy: {{ .Values.jupyter.image.pullPolicy }}
+          ports:
+            - containerPort: 8888
+          resources:
+{{ toYaml .Values.jupyter.resources | trimSuffix "\n" | indent 12 }}
+          volumeMounts:
+            - name: config-volume
+              mountPath: /home/jovyan/.jupyter
+          env:
+{{- if .Values.jupyter.env }}
+{{ toYaml .Values.jupyter.env | indent 12 }}
+{{- end }}
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ template "rapids.fullname" . }}-jupyter-config
+
+{{ end }}

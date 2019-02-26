@@ -1,0 +1,16 @@
+---
+name: rapids
+version: 1.0.0
+appVersion: 0.5.1 #0.6?
+description: Distributed computation in Python with task scheduling
+home: https://rapids.ai
+#icon: https://avatars3.githubusercontent.com/u/17131925?v=3&s=200
+sources:
+  - https://github.com/rapidsai/
+maintainers:
+  - name: danielfrg
+    email: df.rodriguez143@gmail.com
+  - name: mrocklin
+    email: mrocklin@gmail.com
+  - name: beberg
+    email: beberg@gmail.com

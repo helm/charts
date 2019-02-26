@@ -1,0 +1,30 @@
+---
+#nameOverride: rapids 
+#fullnameOverride: rapids 
+
+jupyter:
+  name: jupyter
+  enabled: true
+  image:
+    repository: "daskdev/dask-notebook" #"rapidsai/rapids-notebook"? 
+    tag: 1.1.1 #"latest" #"0.5.1"
+    pullPolicy: IfNotPresent
+  replicas: 1
+  #serviceType: "ClusterIP"
+  #serviceType: "NodePort"
+  serviceType: "LoadBalancer"
+  servicePort: 80
+  # This hash corresponds to the password 'rapids'
+  password: 'sha1:d67811ad02c2:f63bceaabf3724046ef5d5b512c217c2492c820d'
+  env: 
+  #  - name: EXTRA_CONDA_PACKAGES
+  #    value: numba xarray -c conda-forge
+  #  - name: EXTRA_PIP_PACKAGES
+  #    value: s3fs dask-ml --upgrade
+  resources: {}
+  #  limits:
+  #    cpu: 2
+  #    memory: 6G
+  #  requests:
+  #    cpu: 2
+  #    memory: 6G
