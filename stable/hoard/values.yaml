@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   repository: quay.io/monax/hoard
-  tag: 2.0.0
+  tag: 3.0.0
   pullPolicy: IfNotPresent
 
 storage:
@@ -12,7 +12,7 @@ storage:
   bucket: ""
   prefix: ""
   region: ""
-  credentialsSecret: ""
+  secret: ""
   encoding: base64
 
 logging:
@@ -29,6 +29,13 @@ persistence:
   persistentVolumeReclaimPolicy: "Retain"
   annotations:
     "helm.sh/resource-policy": keep
+
+# openpgp:
+#   id: "10449759736975846181"
+#   secret: "private-keyring"
+# secrets:
+#   key1: passphrase1
+#   key2: passphrase2
 
 service:
   type: ClusterIP
