@@ -3,10 +3,10 @@ kind: CustomResourceDefinition
 metadata:
   name: ingressroutes.contour.heptio.com
   labels:
-    app: {{ template "contour.fullname" . }}
-    chart: {{ template "contour.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ template "contour.fullname" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "contour.chart" . }}
     component: ingressroute
 spec:
   group: contour.heptio.com

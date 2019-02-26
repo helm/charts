@@ -1,25 +1,21 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: {{ template "contour.fullname" . }}
-    release: {{ .Release.Name }}
-    chart: {{ template "contour.chart" . }}
-    heritage: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ template "contour.fullname" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
   name: {{ template "contour.fullname" . }}
 spec:
   selector:
     matchLabels:
-      app: {{ template "contour.fullname" . }}
-      release: {{ .Release.Name }}
-      chart: {{ template "contour.chart" . }}
+      app.kubernetes.io/name: {{ template "contour.fullname" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
   replicas: {{ .Values.deployment.replicas }}
   template:
     metadata:
       labels:
-        app: {{ template "contour.fullname" . }}
-        release: {{ .Release.Name }}
-        chart: {{ template "contour.chart" . }}
+        app.kubernetes.io/name: {{ template "contour.fullname" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
       annotations:
 {{ toYaml .Values.contour.annotations | indent 8 }}
     spec:
@@ -77,7 +73,6 @@ spec:
             podAffinityTerm:
               labelSelector:
                 matchLabels:
-                  app: {{ template "contour.fullname" . }}
-                  release: {{ .Release.Name }}
-                  chart: {{ template "contour.chart" . }}
+                  app.kubernetes.io/name: {{ template "contour.fullname" . }}
+                  app.kubernetes.io/instance: {{ .Release.Name }}
               topologyKey: kubernetes.io/hostname

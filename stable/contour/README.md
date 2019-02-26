@@ -7,7 +7,7 @@
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release .
+$ helm install --name my-release stable/contour
 ```
 
 ## Uninstalling the Chart
@@ -20,7 +20,7 @@ $ helm delete my-release --purge
 ## Upgrading the Chart
 
 ```bash
-$ helm upgrade --install my-release .
+$ helm upgrade --install my-release stable/contour
 ```
 
 
@@ -32,7 +32,7 @@ The default configuration values for this chart are listed in `values.yaml`.
 |---------------------------------------|-------------------------------------                         |---------------------------------------------------|
 | `deployment.replicas`                 | Number of replica sets                                       | 2                                                 |
 | `contour.image.repository`            | Repository for contour container image                       | gcr.io/heptio-images/contour                      |
-| `contour.image.tag`                   | Contour image tag                                            | master                                            |
+| `contour.image.tag`                   | Contour image tag                                            | v0.5.0                                            |
 | `contour.image.pullPolicy`            | Image pull policy                                            | Always                                            |
 | `contour.command`                     | Command for contour pod                                      | contour                                           |
 | `contour.args`                        | Contour run command arguments                                | `[]`                                              |

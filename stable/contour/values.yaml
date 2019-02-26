@@ -56,8 +56,8 @@ hpa:
 #    minReplicas: 2
 #    maxReplicas: 15
 #    targetCPUUtilizationPercentage: 70
-resources:
-  limits:
-    cpu: "400m"
-  requests:
-    cpu: "200m"
+#resources:
+#  limits:
+#    cpu: "400m"
+#  requests:
+#    cpu: "200m"

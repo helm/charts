@@ -3,10 +3,10 @@ apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
 metadata:
   labels:
-    app: {{ template "contour.fullname" . }}
-    release: {{ .Release.Name }}
-    chart: {{ template "contour.chart" . }}
-    heritage: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ template "contour.fullname" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "contour.chart" . }}
   name: {{ template "contour.fullname" . }}
 spec:
   scaleTargetRef:
