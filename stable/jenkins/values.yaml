@@ -193,7 +193,7 @@ Master:
             - kubernetes:
                 name: "jenkins-slave"
                 serverUrl: https://kubernetes.default
-                skipTlsVerify: true
+                skipTlsVerify: false
                 jenkinsUrl: {{ template "jenkins.fullname" . }}:{{.Values.Master.ServicePort}}{{ default "" .Values.Master.JenkinsUriPrefix }}
                 connectTimeout: 0
                 readTimeout: 0
@@ -206,14 +206,10 @@ Master:
                     idleMinutes: "1"
                     activeDeadlineSeconds: "120"
                     slaveConnectTimeout: "1000"
-                    volumes:
-                      - secretVolume:
-                          secretName: mysecret
-                          mountPath: "/var/myapp/mysecret"
                     containers:
                       - name: "jnlp"
                         image: "jenkinsci/jnlp-slave:3.27-1"
-                        alwaysPullImage: true
+                        alwaysPullImage: false
                         workingDir: "/home/jenkins"
                         ttyEnabled: false
                         resourceRequestCpu: "200m"
