@@ -144,6 +144,7 @@ The following tables lists the configurable parameters of the prometheus-operato
 | `prometheus.enabled` | Deploy prometheus | `true` |
 | `prometheus.serviceMonitor.selfMonitor` | Create a `serviceMonitor` to automatically monitor the prometheus instance | `true` |
 | `prometheus.serviceAccount.create` | Create a default serviceaccount for prometheus to use | `true` |
+| `prometheus.authProxyEnabled`    | enables authproxy. Create container in extracontainers  | `false` |
 | `prometheus.serviceAccount.name` | Name for prometheus serviceaccount | `""` |
 | `prometheus.rbac.roleNamespaces` | Create role bindings in the specified namespaces, to allow Prometheus monitoring a role binding in the release namespace will always be created. | `["kube-system"]` |
 | `prometheus.podDisruptionBudget.enabled` | If true, create a pod disruption budget for prometheus pods. The created resource cannot be modified once created - it must be deleted to perform a change | `true` |
@@ -157,6 +158,7 @@ The following tables lists the configurable parameters of the prometheus-operato
 | `prometheus.service.type` |  Prometheus Service type | `ClusterIP` |
 | `prometheus.service.clusterIP` | Prometheus service clusterIP IP | `""` |
 | `prometheus.service.targetPort` |  Prometheus Service internal port | `9090` |
+| `prometheus.service.authProxyPort` | port to use when using sidecar authProxy | None: |
 | `prometheus.service.nodePort` |  Prometheus Service port for NodePort service type | `39090` |
 | `prometheus.service.annotations` |  Prometheus Service Annotations | `{}` |
 | `prometheus.service.labels` |  Prometheus Service Labels | `{}` |

@@ -24,7 +24,7 @@ spec:
           - path: "{{ $routePrefix }}"
             backend:
               serviceName: {{ $serviceName }}
-              servicePort: 9090
+              servicePort: 80
     {{- end }}
 {{- if .Values.prometheus.ingress.tls }}
   tls:

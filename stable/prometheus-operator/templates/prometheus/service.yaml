@@ -34,6 +34,13 @@ spec:
     {{- end }}
     port: 9090
     targetPort: {{ .Values.prometheus.service.targetPort }}
+  - name: webexpose
+    port: 80
+    {{- if not .Values.prometheus.authProxyEnabled }}
+    targetPort: {{ .Values.prometheus.service.targetPort }}
+    {{- else }}
+    targetPort: {{ .Values.prometheus.service.authProxyPort }}
+    {{- end }}
   selector:
     app: prometheus
     prometheus: {{ template "prometheus-operator.fullname" . }}-prometheus

@@ -700,16 +700,18 @@ prometheus:
     create: true
     name: ""
 
+  # Enable an authproxy. Specify container in extraContainers
+  authProxyEnabled: false
+
   ## Configuration for Prometheus service
   ##
   service:
     annotations: {}
     labels: {}
     clusterIP: ""
-
-
-    ## To be used with a proxy extraContainer port
+    ## internal prometheus service port
     targetPort: 9090
+    # authProxyPort: 4181 To be used with authProxyEnabled and a proxy extraContainer
 
     ## List of IP addresses at which the Prometheus server service is available
     ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
