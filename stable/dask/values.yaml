@@ -1,6 +1,6 @@
 ---
-# nameOverride: dask
-# fullnameOverride: dask
+#nameOverride: dask
+#fullnameOverride: dask
 
 scheduler:
   name: scheduler
@@ -59,8 +59,8 @@ jupyter:
     tag: 1.1.1
     pullPolicy: IfNotPresent
   replicas: 1
-  # serviceType: "ClusterIP"
-  # serviceType: "NodePort"
+  #serviceType: "ClusterIP"
+  #serviceType: "NodePort"
   serviceType: "LoadBalancer"
   servicePort: 80
   # This hash corresponds to the password 'dask'

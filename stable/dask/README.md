@@ -25,6 +25,9 @@ To install the chart with the release name `my-release`:
 helm install --name my-release stable/dask
 ```
 
+Depending on how your cluster was setup, you may also need to specify
+a namespace with the following flag: `--namespace my-namespace`.
+
 ## Default Configuration
 
 The following tables list the configurable parameters of the Dask chart and
