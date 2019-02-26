@@ -52,7 +52,7 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
-  {{- if .Values.extraVolumes }}
+{{- if .Values.extraVolumes }}
       volumes:
-  {{ toYaml .Values.extraVolumes | indent 8}}
-  {{- end }}
+{{ toYaml .Values.extraVolumes | indent 8}}
+{{- end }}
