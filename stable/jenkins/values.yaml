@@ -194,7 +194,7 @@ Master:
                 name: "jenkins-slave"
                 serverUrl: https://kubernetes.default
                 skipTlsVerify: false
-                jenkinsUrl: {{ template "jenkins.fullname" . }}:{{.Values.Master.ServicePort}}{{ default "" .Values.Master.JenkinsUriPrefix }}
+                jenkinsUrl: {{ template "jenkins.fullname" . }}.{{.Release.Namespace}}:{{.Values.Master.ServicePort}}{{ default "" .Values.Master.JenkinsUriPrefix }}
                 connectTimeout: 0
                 readTimeout: 0
                 containerCapStr: 10
