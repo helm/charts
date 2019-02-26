@@ -12,6 +12,7 @@ metadata:
 {{ toYaml . | indent 4 }}
 {{- end }}
   name: {{ template "grafana.fullname" . }}-config-dashboards
+  namespace: {{ .Release.Namespace }}
 data:
   provider.yaml: |-
     apiVersion: 1
