@@ -21,7 +21,7 @@ strategy: {}
 
 image:
   repository: quay.io/jetstack/cert-manager-controller
-  tag: v0.6.0
+  tag: v0.6.2
   pullPolicy: IfNotPresent
 
 # Override the namespace used to store DNS provider credentials etc. for ClusterIssuer
