@@ -35,6 +35,6 @@ even continue reviewing your changes.
 
 #### Checklist
 [Place an '[x]' (no spaces) in all applicable fields. Please remove unrelated fields.]
-- [ ] [DCO](https://www.helm.sh/blog/helm-dco/index.html) signed
+- [ ] [DCO](https://helm.sh/blog/2018-08-27-helm-switch-dco/) signed
 - [ ] Chart Version bumped
 - [ ] Variables are documented in the README.md
