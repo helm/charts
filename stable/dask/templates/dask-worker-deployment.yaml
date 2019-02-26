@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "dask.fullname" . }}-worker
@@ -41,9 +41,9 @@ spec:
           ports:
             - containerPort: 8789
           resources:
-{{ toYaml .Values.worker.resources | indent 12 }}
+{{ toYaml .Values.worker.resources | trimSuffix "\n" | indent 12 }}
           env:
-{{ toYaml .Values.worker.env | indent 12 }}
+{{ toYaml .Values.worker.env | trimSuffix "\n" | indent 12 }}
       tolerations:
         - key: "k8s.dask.org_dedicated"
           operator: "Equal"
