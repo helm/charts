@@ -36,12 +36,14 @@ The following table lists the configurable parameters of the haproxy-ingress cha
 Parameter | Description | Default
 --- | --- | ---
 `rbac.create` | If true, create & use RBAC resources | `true`
+`rbac.security.enable` | If true, and rbac.create is true, create & use PSP resources | `false`
 `serviceAccount.create` | If true, create serviceAccount | `true`
 `serviceAccount.name` | ServiceAccount to be used | ``
 `controller.name` | name of the controller component | `controller`
 `controller.image.repository` | controller container image repository | `quay.io/jcmoraisjr/haproxy-ingress`
-`controller.image.tag` | controller container image tag | `v0.7-beta.5`
+`controller.image.tag` | controller container image tag | `v0.7-beta.7`
 `controller.image.pullPolicy` | controller container image pullPolicy | `IfNotPresent`
+`controller.initContainers` | extra containers that can initialize the haproxy-ingress-controller | `{}`
 `controller.extraArgs` | extra command line arguments for the haproxy-ingress-controller | `{}`
 `controller.extraEnv` | extra environment variables for the haproxy-ingress-controller | `{}`
 `controller.template` | custom template for haproxy-ingress-controller | `{}`
@@ -64,6 +66,7 @@ Parameter | Description | Default
 `controller.readinessProbe.timeoutSeconds` | The readiness probe timeout (in seconds) | `1`
 `controller.podAnnotations` | Annotations for the haproxy-ingress-conrtoller pod | `{}`
 `controller.podLabels` | Labels for the haproxy-ingress-conrtoller pod | `{}`
+`controller.podAffinity` | Add affinity to the controller pods to control scheduling | `{}`
 `controller.priorityClassName` | Priority Class to be used | ``
 `controller.securityContext` | Security context settings for the haproxy-ingress-conrtoller pod | `{}`
 `controller.config` | additional haproxy-ingress [ConfigMap entries](https://github.com/jcmoraisjr/haproxy-ingress/blob/v0.6/README.md#configmap) | `{}`
