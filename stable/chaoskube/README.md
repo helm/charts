@@ -63,6 +63,7 @@ $ helm install stable/chaoskube --set dryRun=false
 | `minimumAge`              | Set minimum pod age to filter pod by                | `0s`                             |
 | `podAnnotations`          | Annotations for the chaoskube pod                   | `{}`                             |
 | `gracePeriod`             | grace period to give pods when terminating them     | `-1s` (pod decides)              |
+| `metricsAddress`          | Listening address for metrics handler               | `:8080`                          |
 
 Setting label and namespaces selectors from the shell can be tricky but is possible (example with zsh):
 
