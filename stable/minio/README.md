@@ -126,6 +126,7 @@ The following table lists the configurable parameters of the Minio chart and the
 | `nodeSelector`             | Node labels for pod assignment      | `{}`                                                    |
 | `affinity`                 | Affinity settings for pod assignment | `{}`                                                   |
 | `tolerations`              | Toleration labels for pod assignment | `[]`                                                   |
+| `podAnnotations`           | Pod annotations                      | `{}`                                                   |
 | `tls.enabled`              | Enable TLS for Minio server | `false`                                                         |
 | `tls.certSecret`           | Kubernetes Secret with `public.crt` and `private.key` files. | `""`                           |
 | `livenessProbe.initialDelaySeconds`  | Delay before liveness probe is initiated        | `5`                               |
