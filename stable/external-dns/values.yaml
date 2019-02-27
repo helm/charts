@@ -51,6 +51,10 @@ designate:
     # Filename of the custom CA
     filename: "designate-ca.pem"
 
+# DigitalOcean API token to inject as environment variable
+digitalocean:
+  apiToken: ""
+
 # When using the Google provider, specify the Google project (required when provider=google)
 google:
   project: ""
