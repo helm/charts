@@ -103,6 +103,11 @@ spec:
           {{- if .Values.datadog.hostname }}
           - name: DD_HOSTNAME
             value: {{ .Values.datadog.hostname | quote }}
+          {{- else if .Values.datadog.useHostIpAsHostname }}  
+          - name: DD_HOSTNAME
+            valueFrom:
+              fieldRef:
+                fieldPath: status.hostIP
           {{- end }}
           {{- if .Values.datadog.acInclude }}
           - name: DD_AC_INCLUDE
