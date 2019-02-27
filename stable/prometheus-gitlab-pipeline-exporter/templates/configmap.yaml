@@ -1,0 +1,9 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "fullname" . }}
+data:
+  {{- with .Values.config }}
+{{ toYaml . | indent 2 }}
+  {{- end }}

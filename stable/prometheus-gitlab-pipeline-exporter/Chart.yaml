@@ -1,0 +1,17 @@
+apiVersion: v1
+appVersion: "0.1.0"
+description: A Helm chart for prometheus gitlab-ci-pipeline-exporter
+name: prometheus-gitlab-pipeline-exporter
+version: 0.4.2
+home: https://github.com/Labbs/gitlab-ci-pipelines-exporter
+sources:
+- https://github.com/Labbs/gitlab-ci-pipelines-exporter
+keywords:
+- gitlab
+- pipeline
+- prometheus
+- exporter
+- ci/cd
+maintainers:
+- email: moutonjeremy@labbs.fr
+  name: moutonjeremy
