@@ -95,11 +95,13 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `persistence.size`                                 | Size of data volume                                                                          | `8Gi`                                                   |
 | `persistence.annotations`                          | Persistent Volume annotations                                                                | `{}`                                                    |
 | `persistence.existingClaim`                        | Name of an existing PVC to use (avoids creating one if this is given)                        | `nil`                                                   |
+| `livenessProbe.enabled`                            | Enable/disable the Liveness probe                                                            | `true`                                                  |
 | `livenessProbe.initialDelaySeconds`                | Delay before liveness probe is initiated                                                     | `30`                                                    |
 | `livenessProbe.periodSeconds`                      | How often to perform the probe                                                               | `10`                                                    |
 | `livenessProbe.timeoutSeconds`                     | When the probe times out                                                                     | `5`                                                     |
 | `livenessProbe.successThreshold`                   | Minimum consecutive successes for the probe to be considered successful after having failed. | `1`                                                     |
 | `livenessProbe.failureThreshold`                   | Minimum consecutive failures for the probe to be considered failed after having succeeded.   | `6`                                                     |
+| `readinessProbe.enabled`                           | Enable/disable the Readiness probe                                                           | `true`                                                  |
 | `readinessProbe.initialDelaySeconds`               | Delay before readiness probe is initiated                                                    | `5`                                                     |
 | `readinessProbe.periodSeconds`                     | How often to perform the probe                                                               | `10`                                                    |
 | `readinessProbe.timeoutSeconds`                    | When the probe times out                                                                     | `5`                                                     |
@@ -120,10 +122,14 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `metrics.serviceMonitor.relabellings`              | Specify Metric Relabellings to add to the scrape endpoint                                    | `nil`                                                   |
 | `metrics.serviceMonitor.alerting.rules`            | Define individual alerting rules as required                                                 | {}                                                      |
 | `metrics.serviceMonitor.alerting.additionalLabels` | Used to pass Labels that are required by the Installed Prometheus Operator                   | {}                                                      |
-| `metrics.livenessProbe.initialDelaySeconds`       | Iniitial Delay for Liveness Check of Prometheus metrics exporter                             | 15                                                      |
-| `metrics.livenessProbe.timeoutSeconds`             | Timeout for Liveness Check of Prometheus metrics exporter                                    | 5                                                       |
-| `metrics.readinessProbe.initialDelaySeconds`      | Iniitial Delay for Readiness Check of Prometheus metrics exporter                            | 5                                                      |
-| `metrics.readinessProbe.timeoutSeconds`            | Timeout for Readiness Check of Prometheus metrics exporter                                   | 1                                                       |
+| `metrics.livenessProbe.enabled`                    | Enable/disable the Liveness Check of Prometheus metrics exporter                             | `false`                                                 |
+| `metrics.livenessProbe.initialDelaySeconds`        | Initial Delay for Liveness Check of Prometheus metrics exporter                              | `15`                                                    |
+| `metrics.livenessProbe.periodSeconds`              | How often to perform Liveness Check of Prometheus metrics exporter                           | `10`                                                    |
+| `metrics.livenessProbe.timeoutSeconds`             | Timeout for Liveness Check of Prometheus metrics exporter                                    | `5`                                                     |
+| `metrics.readinessProbe.enabled`                   | Enable/disable the Readiness Check of Prometheus metrics exporter                            | `false`                                                 |
+| `metrics.readinessProbe.initialDelaySeconds`       | Initial Delay for Readiness Check of Prometheus metrics exporter                             | `5`                                                     |
+| `metrics.readinessProbe.periodSeconds`             | How often to perform Readiness Check of Prometheus metrics exporter                          | `10`                                                    |
+| `metrics.readinessProbe.timeoutSeconds`            | Timeout for Readiness Check of Prometheus metrics exporter                                   | `1`                                                     |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
