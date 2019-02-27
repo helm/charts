@@ -39,8 +39,8 @@ spec:
       priorityClassName: "{{ .Values.priorityClassName }}"
       {{- end }}
       securityContext:
-        runAsUser: 1000
-        fsGroup: 1000
+        runAsUser: {{ .Values.securityContext.runAsUser }}
+        fsGroup: {{ .Values.securityContext.fsGroup }}
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
 {{ toYaml .Values.image.pullSecrets | indent 8 }}
