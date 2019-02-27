@@ -66,6 +66,7 @@ spec:
               mountPath: /config
 {{- if .Values.authz.enabled }}
             - name: authz
+              readOnly: true
               mountPath: /authz
 {{- end }}
 {{- if .Values.mgmt.enabled }}
@@ -92,6 +93,7 @@ spec:
 {{- if .Values.authz.enabled }}
           volumeMounts:
             - name: authz
+              readOnly: true
               mountPath: /authz
 {{- end }}
 {{- end }}
