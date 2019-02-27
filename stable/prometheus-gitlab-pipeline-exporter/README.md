@@ -21,11 +21,11 @@ This chart bootstraps a [gitlab-ci pipeline exporter](https://github.com/Labbs/g
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release stable/prometheus-gitlab-pipeline-exporter --set gitlab.token=my-token
+$ helm install --name my-release stable/prometheus-gitlab-pipeline-exporter --set config.GITLAB_TOKEN=my-token
 
 # If you have an on-premise Gitlab instance
 $ helm install --name my-release stable/prometheus-gitlab-pipeline-exporter \
---set gitlab.token=my-token,gitlab.url=https://gitlab.test.com
+--set config.GITLAB_TOKEN=my-token,config.GITLAB_URL=https://gitlab.test.com
 ```
 
 The command deploys gitlab-ci pipeline exporter on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -46,10 +46,10 @@ The following table lists the configurable parameters of the Cloudwatch Exporter
 
 |          Parameter          |                      Description                       |          Default          |
 | --------------------------- | ------------------------------------------------------ | --------------------------|
-| `gitlab.url`                | Gitlab instance (http/https)                           | `https://gitlab.com`      |
-| `gitlab.token`              | API Acees token                                        |                           |
-| `gitlab.refresh`            | Refresh every x seconds projects and pipelines status  | `30`                      |
-| `gitlab.owned`              | Only get yours repos and pipelines                     | `true`                   |
+| `config.GITLAB_URL`         | Gitlab instance (http/https)                           | `https://gitlab.com`      |
+| `config.GITLAB_TOKEN`       | API Acees token                                        |                           |
+| `config.GITLAB_REFRESH`     | Refresh every x seconds projects and pipelines status  | `30`                      |
+| `config.GITLAB_OWNED`       | Only get yours repos and pipelines                     | `true`                   |
 | `image.tag`                 | Image tag                                              | `v1.1`                    |
 | `image.pullPolicy`          | Image pull policy                                      | `IfNotPresent`            |
 | `service.type`              | Service type                                           | `ClusterIP`               |
@@ -63,7 +63,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 ```console
 $ helm install --name my-release \
-    --set gitlab.token=my-token \
+    --set config.GITLAB_TOKEN=my-token \
     stable/prometheus-gitlab-pipeline-exporter
 ```
 
