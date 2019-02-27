@@ -92,5 +92,9 @@ prometheusRule:
   ##
   enabled: false
   prometheusNamespace: monitoring
+  # Nuber of all nodes in Elasticsearch Cluster (all roles)
+  elasticsearchNodes: 7
+  # Nuber of Data nodes in Elasticsearch Cluster
+  elasticsearchDataNodes: 2
   labels: {}
     # role: alert-rules

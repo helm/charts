@@ -15,23 +15,31 @@ metadata:
   namespace: {{ .Values.prometheusRule.prometheusNamespace }}
 spec:
   groups:
-  - name: elasticsearch
+  - name: elasticsearch_{{ .Release.Name }}
     rules:
     - record: elasticsearch_filesystem_data_used_percent
-      expr: 100 * (elasticsearch_filesystem_data_size_bytes - elasticsearch_filesystem_data_free_bytes)
-        / elasticsearch_filesystem_data_size_bytes
+      expr: 100 * (elasticsearch_filesystem_data_size_bytes{job="{{ .Release.Name }}"} - elasticsearch_filesystem_data_free_bytes{job="{{ .Release.Name }}"})
+        / elasticsearch_filesystem_data_size_bytes{job="{{ .Release.Name }}"}
     - record: elasticsearch_filesystem_data_free_percent
-      expr: 100 - elasticsearch_filesystem_data_used_percent
+      expr: 100 - elasticsearch_filesystem_data_used_percent{job="{{ .Release.Name }}"}
     - alert: ElasticsearchTooFewNodesRunning
-      expr: elasticsearch_cluster_health_number_of_nodes < {{ .Values.prometheusRule.elasticsearchNodes }}
+      expr: elasticsearch_cluster_health_number_of_nodes{job="{{ .Release.Name }}"} < {{ .Values.prometheusRule.elasticsearchNodes }}
       for: 5m
       labels:
         severity: critical
       annotations:
         description: There are only {{ "{{$value}}" }} < {{ .Values.prometheusRule.elasticsearchNodes }} ElasticSearch nodes running
         summary: ElasticSearch running on less than {{ .Values.prometheusRule.elasticsearchNodes }} nodes
+    - alert: ElasticsearchTooFewDataNodesRunning
+      expr: elasticsearch_cluster_health_number_of_data_nodes{job="{{ .Release.Name }}"} < {{ .Values.prometheusRule.elasticsearchDataNodes }}
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        description: There are only {{ "{{$value}}" }} < {{ .Values.prometheusRule.elasticsearchDataNodes }} ElasticSearch Data nodes running
+        summary: ElasticSearch running on less than {{ .Values.prometheusRule.elasticsearchDataNodes }} Data nodes
     - alert: ElasticsearchHeapTooHigh
-      expr: elasticsearch_jvm_memory_used_bytes{area="heap"} / elasticsearch_jvm_memory_max_bytes{area="heap"}
+      expr: elasticsearch_jvm_memory_used_bytes{job="{{ .Release.Name }}", area="heap"} / elasticsearch_jvm_memory_max_bytes{job="{{ .Release.Name }}", area="heap"}
         > 0.9
       for: 15m
       labels:
