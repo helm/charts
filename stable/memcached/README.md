@@ -44,6 +44,7 @@ The following table lists the configurable parameters of the Memcached chart and
 |---------------------------|---------------------------------|---------------------------------------------------------|
 | `image`                   | The image to pull and run       | A recent official memcached tag                         |
 | `imagePullPolicy`         | Image pull policy               | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
+| `replicaCount`            | Number of replicas to use       | 1 (see note below)                                      |
 | `memcached.verbosity`     | Verbosity level (v, vv, or vvv) | Un-set.                                                 |
 | `memcached.maxItemMemory` | Max memory for items (in MB)    | `64`                                                    |
 | `metrics.enabled`         | Expose metrics in prometheus format | false                                               |
@@ -78,3 +79,12 @@ $ helm install --name my-release -f values.yaml stable/memcached
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+### Replicas
+
+Setting more than 1 replica is valid, but data will not be shared
+between replicas, so any replicas are really just separate memcached
+instances. When you send data to the service endpoint, the DNS will
+resolve to one of the replica pods, and data will only be stored in
+that pod. When you retrieve data later, you may not be retrieving from
+the same pod, so the data may appear missing.

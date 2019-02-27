@@ -11,7 +11,7 @@ image: memcached:1.5.12-alpine
 #
 
 ## Replica count
-replicaCount: 3
+replicaCount: 1
 
 ## Pod disruption budget minAvailable count
 ## Ensure this value is lower than replicaCount in order to allow a worker
