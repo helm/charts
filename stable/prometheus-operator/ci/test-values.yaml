@@ -690,6 +690,14 @@ prometheusOperator:
     repository: quay.io/coreos/prometheus-config-reloader
     tag: v0.29.0
 
+  ## Set the prometheus config reloader side-car CPU limit. If unset, uses the prometheus-operator project default
+  ##
+  # configReloaderCpu: 100m
+
+  ## Set the prometheus config reloader side-car memory limit. If unset, uses the prometheus-operator project default
+  ##
+  # configReloaderMemory: 25Mi
+
   ## Hyperkube image to use when cleaning up
   ##
   hyperkubeImage:
@@ -1069,7 +1077,7 @@ prometheus:
     thanos: {}
 
     ## Containers allows injecting additional containers. This is meant to allow adding an authentication proxy to a Prometheus pod.
-    ##
+    ##  if using proxy extraContainer  update targetPort with proxy container port
     containers: []
 
     ## Enable additional scrape configs that are managed externally to this chart. Note that the prometheus

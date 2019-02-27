@@ -710,6 +710,14 @@ prometheusOperator:
     repository: quay.io/coreos/prometheus-config-reloader
     tag: v0.29.0
 
+  ## Set the prometheus config reloader side-car CPU limit. If unset, uses the prometheus-operator project default
+  ##
+  # configReloaderCpu: 100m
+
+  ## Set the prometheus config reloader side-car memory limit. If unset, uses the prometheus-operator project default
+  ##
+  # configReloaderMemory: 25Mi
+
   ## Hyperkube image to use when cleaning up
   ##
   hyperkubeImage:
