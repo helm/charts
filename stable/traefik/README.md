@@ -133,7 +133,7 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `acme.challengeType`                   | Type of ACME challenge to perform domain validation. `tls-sni-01` (deprecated), `tls-alpn-01` (recommended), `http-01` or `dns-01` | `tls-sni-01`                                |
 | `acme.delayBeforeCheck`         | By default, the provider will verify the TXT DNS challenge record before letting ACME verify. If delayBeforeCheck is greater than zero, this check is delayed for the configured duration in seconds. Useful when Traefik cannot resolve external DNS queries. | `0` |
 | `acme.dnsProvider.name`                | Which DNS provider to use. See [here](https://github.com/xenolf/lego/tree/master/providers/dns) for the list of possible values. | `nil`                                         |
-| `acme.dnsProvider.$name`               | The configuration environment variables (encoded as a secret) needed for the DNS provider to do DNS challenge. See [here](#example-aws-route-53). | `{}`                         |
+| `acme.dnsProvider.$name`               | The configuration environment variables (encoded as a secret) needed for the DNS provider to do DNS challenge. Example configuration: [AWS Route 53](#example-aws-route-53), [Google Cloud DNS](#example-gcloud). | `{}` |
 | `acme.email`                           | Email address to be used in certificates obtained from Let's Encrypt                                                         | `admin@example.com`                               |
 | `acme.onHostRule`                      | Whether to generate a certificate for each frontend with Host rule                                                           | `true`                                            |
 | `acme.staging`                         | Whether to get certs from Let's Encrypt's staging environment                                                                | `true`                                            |
@@ -219,6 +219,8 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `tracing.datadog.debug`                | Enables Datadog debugging                                                                                                    | `false`                                           |
 | `tracing.datadog.globalTag`            | Apply shared tag in a form of Key:Value to all the traces                                                                    | `""`                                           |
 | `autoscaling`                          | HorizontalPodAutoscaler for the traefik Deployment                                                                           | `{}`                                           |
+| `configFiles`                          | Config files to make available in the deployment. key=filename, value=file contents                                          | `{}`                                              |
+| `secretFiles`                          | Secret files to make available in the deployment. key=filename, value=file contents                                          | `{}`                                              |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 
@@ -354,12 +356,12 @@ acme:
 
 #### Example: AWS Route 53
 
-Route 53 requires the [following configuration variables to be set](values.yaml#L98-L101):
+Using `route53` as DNS provider requires the following configuration variables to be set:
 - `AWS_ACCESS_KEY_ID`
 - `AWS_SECRET_ACCESS_KEY`
 - `AWS_REGION`
 
-The configuration for the DNS provider would look like this:
+The configuration would look like this:
 
 ```yaml
 acme:
@@ -370,6 +372,28 @@ acme:
       AWS_ACCESS_KEY_ID: ...
       AWS_SECRET_ACCESS_KEY: ...
       AWS_REGION: us-east-1
+```
+
+#### Example: Google Cloud DNS
+
+Using `gcloud` as DNS provider requires the following configuration variables to be set:
+- `GCE_PROJECT`
+- `GCE_SERVICE_ACCOUNT_FILE`
+
+The configuration would look like this:
+
+```yaml
+
+secretFiles:
+  gcloud-credentials.json: '{"type":"service_account","project_id":"<projectName>","private_key_id":"<hash>",...}'
+
+acme:
+  enabled: true
+  dnsProvider:
+    name: gcloud
+    gcloud:
+      GCE_PROJECT: <projectName>
+      GCE_SERVICE_ACCOUNT_FILE: /secrets/gcloud-credentials.json
 ```
 
 ### Proxy Protocol
