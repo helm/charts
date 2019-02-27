@@ -1,4 +1,4 @@
-{{- if and .Values.acme.enabled .Values.acme.persistence.enabled (not .Values.acme.persistence.existingClaim) }}
+{{- if and .Values.acme.enabled .Values.acme.persistence.enabled (not .Values.acme.persistence.existingClaim) (not (eq .Values.deployType "DaemonSet")) }}
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
