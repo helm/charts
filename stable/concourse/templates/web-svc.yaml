@@ -10,6 +10,7 @@ metadata:
     {{- range $key, $value := .Values.web.service.labels }}
     {{ $key }}: {{ $value | quote }}
     {{- end }}
+  {{- if or .Values.web.service.annotations .Values.concourse.web.prometheus.enabled }}
   annotations:
     {{- range $key, $value := .Values.web.service.annotations }}
     {{ $key }}: {{ $value | quote }}
@@ -18,6 +19,7 @@ metadata:
     prometheus.io/scrape: "true"
     prometheus.io/port: {{ .Values.concourse.web.prometheus.bindPort | quote }}
     {{- end }}
+  {{- end }}
 spec:
   type: {{ .Values.web.service.type }}
   {{ if .Values.web.service.loadBalancerSourceRanges }}
