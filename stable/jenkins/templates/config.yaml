@@ -123,6 +123,9 @@ data:
               <imagePullSecrets/>
 {{- end }}
               <nodeProperties/>
+{{- if .Values.Agent.YamlTemplate }}
+              <yaml>{{ .Values.Agent.YamlTemplate | replace "\"" "&quot;" }}</yaml>
+{{- end }}
               <podRetention class="org.csanchez.jenkins.plugins.kubernetes.pod.retention.Default"/>
             </org.csanchez.jenkins.plugins.kubernetes.PodTemplate>
 {{- end -}}
