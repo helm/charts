@@ -1,6 +1,6 @@
 image:
   name: logdna/logdna-agent
-  tag: latest
+  tag: 1.5.6
   pullPolicy: IfNotPresent
 
 logdna:
