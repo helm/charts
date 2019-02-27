@@ -138,3 +138,7 @@ persistentVolume:
   annotations: {}
 init:
   resources: {}
+
+## Use hostPath for data (requires persistentVolume.enabled to be false)
+## hostPath is evaluated as template, placeholders are replaced
+# hostPath: "/data/{{ .Release.Name }}"
