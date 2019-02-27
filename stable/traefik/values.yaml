@@ -55,6 +55,9 @@ tolerations: []
   #   ip: "127.0.0.1"
   #   publishedService: "namespace/servicename"
   #   useDefaultPublishedService: false
+dnsPolicy: ClusterFirst
+hostNetwork:
+  enable: false
 proxyProtocol:
   enabled: false
   # trustedIPs is required when enabled
@@ -375,7 +378,6 @@ tracing:
   #   localAgentHostPort: "127.0.0.1:8126"
   #   debug: false
   #   globalTag: ""
-
 ## Create HorizontalPodAutoscaler object.
 ##
 # autoscaling:
