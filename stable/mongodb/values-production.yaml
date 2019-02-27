@@ -256,10 +256,24 @@ metrics:
   ## String with extra arguments to the metrics exporter
   ## ref: https://github.com/dcu/mongodb_exporter/blob/master/mongodb_exporter.go
   extraArgs: ""
+
   ## Metrics exporter resource requests and limits
   ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
   ##
   # resources: {}
+
+  ## Metrics exporter liveness and readiness probes
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes)
+  livenessProbe:
+    enabled: true
+    initialDelaySeconds: 15
+    periodSeconds: 5
+    timeoutSeconds: 5
+  readinessProbe:
+    enabled: true
+    initialDelaySeconds: 5
+    periodSeconds: 5
+    timeoutSeconds: 1
 
   ## Metrics exporter pod Annotation
   podAnnotations:

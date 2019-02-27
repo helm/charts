@@ -177,18 +177,24 @@ spec:
           ports:
           - name: metrics
             containerPort: 9216
+          {{- if .Values.metrics.livenessProbe.enabled }}
           livenessProbe:
             httpGet:
               path: /metrics
               port: metrics
-            initialDelaySeconds: {{ default 15 .Values.metrics.livenessProbe.initialDelaySeconds }}
-            timeoutSeconds: {{ default 5 .Values.metrics.livenessProbe.timeoutSeconds }}
+            initialDelaySeconds: {{ .Values.metrics.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.metrics.readinessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.metrics.livenessProbe.timeoutSeconds }}
+          {{- end }}
+          {{- if .Values.metrics.readinessProbe.enabled }}
           readinessProbe:
             httpGet:
               path: /metrics
               port: metrics
-            initialDelaySeconds: {{ default 5 .Values.metrics.readinessProbe.initialDelaySeconds }}
-            timeoutSeconds: {{ default 1 .Values.metrics.readinessProbe.timeoutSeconds }}
+            initialDelaySeconds: {{ .Values.metrics.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.metrics.readinessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.metrics.readinessProbe.timeoutSeconds }}
+          {{- end }}
           resources:
 {{ toYaml .Values.metrics.resources | indent 12 }}
 {{- end }}
