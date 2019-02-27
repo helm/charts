@@ -63,6 +63,22 @@ forwardedHeaders:
   # trustedIPs is required when enabled
   trustedIPs: []
   # - 10.0.0.0/8
+
+## Add arbitrary ConfigMaps to deployment
+## Will be mounted to /configs/, i.e. myconfig.json would
+## be mounted to /configs/myconfig.json.
+configFiles: {}
+  # myconfig.json: |
+  #   filecontents...
+
+## Add arbitrary Secrets to deployment
+## Will be mounted to /secrets/, i.e. file.name would
+## be mounted to /secrets/mysecret.txt.
+## The contents will be base64 encoded when added
+secretFiles: {}
+  # mysecret.txt: |
+  #   filecontents...
+
 ssl:
   enabled: false
   enforced: false

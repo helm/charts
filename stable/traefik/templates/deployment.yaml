@@ -114,6 +114,14 @@ spec:
         - mountPath: /acme
           name: acme
         {{- end }}
+        {{- if .Values.configFiles }}
+        - mountPath: /configs
+          name: {{ template "traefik.fullname" $ }}-configs
+        {{ end }}
+        {{- if .Values.secretFiles }}
+        - mountPath: /secrets
+          name: {{ template "traefik.fullname" $ }}-secrets
+        {{- end }}
         ports:
         - name: http
           containerPort: 80
@@ -161,6 +169,16 @@ spec:
       {{- else }}
         emptyDir: {}
       {{- end }}
+      {{- end }}
+      {{- if .Values.configFiles }}
+      - name: {{ template "traefik.fullname" $ }}-configs
+        configMap:
+          name: {{ template "traefik.fullname" $ }}-configs
+      {{ end }}
+      {{- if .Values.secretFiles }}
+      - name: {{ template "traefik.fullname" $ }}-secrets
+        secret:
+          secretName: {{ template "traefik.fullname" $ }}-secrets
       {{- end }}
       {{- if and (.Values.tolerations) (semverCompare "^1.6-0" .Capabilities.KubeVersion.GitVersion) }}
       tolerations:
