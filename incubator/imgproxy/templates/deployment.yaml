@@ -28,6 +28,10 @@ spec:
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
     {{- end }}
+{{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+      - name: "{{ .Release.Name }}-docker-registry-secret"
+{{- end }}
       containers:
       - name: "imgproxy"
         image: "{{ .Values.image.repo }}:{{ .Values.image.tag }}"

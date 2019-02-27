@@ -11,6 +11,11 @@ image:
   tag: v2.1.0
   pullPolicy: IfNotPresent
 
+imagePullSecrets: {}
+  # registry: ""
+  # username: ""
+  # password: ""
+
 # Kubernetes API version to use for imgproxy Deployment
 apiVersion: apps/v1
 
