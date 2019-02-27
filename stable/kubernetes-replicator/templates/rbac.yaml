@@ -1,0 +1,41 @@
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  name: {{ include "kubernetes-replicator.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "kubernetes-replicator.name" . }}
+    helm.sh/chart: {{ include "kubernetes-replicator.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+rules:
+- apiGroups: [""] # "" indicates the core API group
+  resources: ["secrets", "configmaps"]
+  verbs: ["get", "watch", "list", "update", "patch"]
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  name: {{ include "kubernetes-replicator.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "kubernetes-replicator.name" . }}
+    helm.sh/chart: {{ include "kubernetes-replicator.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+roleRef:
+  kind: ClusterRole
+  name: {{ include "kubernetes-replicator.fullname" . }}
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "kubernetes-replicator.fullname" . }}
+    namespace: {{ .Release.Namespace }}
+---
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  name: {{ include "kubernetes-replicator.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "kubernetes-replicator.name" . }}
+    helm.sh/chart: {{ include "kubernetes-replicator.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}

@@ -1,0 +1,18 @@
+apiVersion: v1
+appVersion: "1.0.0-alpha1"
+description: A Helm chart to deploy kubernetes-replicator
+name: kubernetes-replicator
+version: 1.0.1
+keywords:
+- kubernetes-replicator
+- controller
+- replicator
+home: https://github.com/mittwald/kubernetes-replicator
+sources:
+- https://github.com/mittwald/kubernetes-replicator
+maintainers:
+- name: desaintmartin
+  email: cedric@desaintmartin.fr
+- name: martin-helmich
+  email: m.helmich@mittwald.de
+engine: gotpl
