@@ -137,6 +137,22 @@ airflow:
   podAnnotations: {}
     ## Example:
     ## iam.amazonaws.com/role: airflow-Role
+  extraContainers: []
+  ## Additional containers to run alongside the Scheduler, Worker and Web pods
+  ## This could, for example, be used to run a sidecar that syncs DAGs from object storage.
+  # - name: s3-sync
+  #   image: my-user/s3sync:latest
+  #   volumeMounts:
+  #   - name: synchronised-dags
+  #     mountPath: /dags
+  extraVolumeMounts: []
+  ## Additional volumeMounts to the main containers in the Scheduler, Worker and Web pods.
+  # - name: synchronised-dags
+  #   mountPath: /usr/local/airflow/dags
+  extraVolumes: []
+  ## Additional volumes for the Scheduler, Worker and Web pods.
+  # - name: synchronised-dags
+  #   emptyDir: {}
 ##
 ## Workers configuration
 workers:
