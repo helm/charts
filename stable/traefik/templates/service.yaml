@@ -33,7 +33,7 @@ spec:
     - {{ $cidr }}
     {{- end }}
   {{- end }}
-  {{- if .Values.externalTrafficPolicy }}
+  {{- if (and .Values.externalTrafficPolicy (not (eq .Values.serviceType "ClusterIp"))) }}
   externalTrafficPolicy: {{ .Values.externalTrafficPolicy }}
   {{- end }}
   selector:
