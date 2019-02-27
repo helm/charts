@@ -115,3 +115,5 @@ The following table lists the configurable parameters of the chart and its defau
 | `inputs`                        | Logstash inputs configuration                      | beats                                            |
 | `filters`                       | Logstash filters configuration                     | `nil`                                            |
 | `outputs`                       | Logstash outputs configuration                     | elasticsearch                                    |
+| `securityContext.fsGroup`                          | Group ID for the container                                                                   | `1000`                                                  |
+| `securityContext.runAsUser`                        | User ID for the container                                                                    | `1000`                                                  |
