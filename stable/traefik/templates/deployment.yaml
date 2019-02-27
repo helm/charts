@@ -84,6 +84,14 @@ spec:
       {{- range .Values.imagePullSecrets }}
         - name: {{ . }}
       {{- end }}
+      {{- if .Values.net_bind_service.enabled }}
+      securityContext:
+        capabilities:
+          drop:
+            - ALL
+          add:
+            - NET_BIND_SERVICE
+      {{- end }}
       {{- end }}
       containers:
       - image: {{ .Values.image }}:{{ .Values.imageTag }}
