@@ -11,8 +11,9 @@ spec:
   type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.port }}
-      targetPort: {{ .Values.service.port }}
+      targetPort: http
       protocol: TCP
+      name: http
   selector:
     app.kubernetes.io/name: {{ include "collabora-code.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
