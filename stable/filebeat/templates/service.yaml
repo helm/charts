@@ -2,10 +2,12 @@
 kind: Service
 apiVersion: v1
 metadata:
+{{- if .Values.monitoring.enabled  }}
   annotations:
     prometheus.io/path: /metrics
     prometheus.io/port: "9479"
     prometheus.io/scrape: "true"
+{{- end }}
   name: {{ template "filebeat.fullname" . }}-metrics
   namespace: {{ .Release.Namespace }}
   labels:
