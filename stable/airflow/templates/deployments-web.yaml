@@ -93,6 +93,9 @@ spec:
               mountPath: {{ .mountPath }}
               readOnly: {{ .readOnly }}
           {{- end }}
+{{- if .Values.airflow.extraVolumeMounts }}
+{{ toYaml .Values.airflow.extraVolumeMounts | indent 12 }}
+{{- end }}
           args:
             - "bash"
             - "-c"
@@ -125,6 +128,9 @@ spec:
             timeoutSeconds: 1
             successThreshold: 1
             failureThreshold: 5
+{{- if .Values.airflow.extraContainers }}
+{{ toYaml .Values.airflow.extraContainers | indent 8 }}
+{{- end }}
       volumes:
         - name: scripts
           configMap:
@@ -159,3 +165,6 @@ spec:
           configMap:
             name: {{ .configMap }}
         {{- end }}
+{{- if .Values.airflow.extraVolumes }}
+{{ toYaml .Values.airflow.extraVolumes | indent 8 }}
+{{- end }}
