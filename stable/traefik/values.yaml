@@ -58,6 +58,8 @@ tolerations: []
 dnsPolicy: ClusterFirst
 hostNetwork:
   enable: false
+net_bind_service:
+  enabled: false
 proxyProtocol:
   enabled: false
   # trustedIPs is required when enabled
