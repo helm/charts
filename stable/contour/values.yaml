@@ -4,7 +4,7 @@ contour:
   image:
     repository: gcr.io/heptio-images/contour
     tag: v0.5.0
-    pullPolicy: Always
+    pullPolicy: IfNotPresent
   command: contour
   args:
     - serve

@@ -33,7 +33,7 @@ The default configuration values for this chart are listed in `values.yaml`.
 | `deployment.replicas`                 | Number of replica sets                                       | 2                                                 |
 | `contour.image.repository`            | Repository for contour container image                       | gcr.io/heptio-images/contour                      |
 | `contour.image.tag`                   | Contour image tag                                            | v0.5.0                                            |
-| `contour.image.pullPolicy`            | Image pull policy                                            | Always                                            |
+| `contour.image.pullPolicy`            | Image pull policy                                            | IfNotPresent                                             |
 | `contour.command`                     | Command for contour pod                                      | contour                                           |
 | `contour.args`                        | Contour run command arguments                                | `[]`                                              |
 | `contour.annotations`                 | Annotations to enable prometheus monitoring                  | `{}`                                              |

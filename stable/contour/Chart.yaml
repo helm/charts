@@ -1,9 +1,9 @@
 apiVersion: v1
 name: contour
-version: 0.1.6
+version: 0.1.7
 description: Contour envoy based ingress controller installation
-appVersion: "master"
-home: https://github.com/kubernetes/helm
+appVersion: "v0.5.0"
+home: https://github.com/heptio/contour
 keywords:
   - ingress
   - envoy
