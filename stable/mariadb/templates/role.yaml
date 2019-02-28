@@ -5,9 +5,9 @@ metadata:
   name: {{ template "master.fullname" . }}
   labels:
     app: "{{ template "mariadb.name" . }}"
-    chart: {{ template "mariadb.chart" . }}
-    release: {{ .Release.Name | quote }}
-    heritage: {{ .Release.Service | quote }}
+    chart: "{{ template "mariadb.chart" . }}"
+    release: "{{ .Release.Name | quote }}"
+    heritage: "{{ .Release.Service | quote }}"
 rules:
 - apiGroups:
     - ""
