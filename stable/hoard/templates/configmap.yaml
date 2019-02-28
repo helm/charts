@@ -27,7 +27,7 @@ data:
 {{- if .Values.openpgp }}
 
     [Secrets.OpenPGP]
-      ID = "{{ .Values.openpgp.id }}"
+      PrivateID = "{{ .Values.openpgp.id }}"
       File = "/secrets/keyring"
 
 {{- end }}
@@ -35,7 +35,7 @@ data:
 {{- range $key, $val := .Values.secrets }}
 
     [[Secrets.Symmetric]] 
-      ID = {{ $key | quote }}
+      PublicID = {{ $key | quote }}
       Passphrase = {{ $val | quote }} 
 
 {{- end }}
