@@ -4,7 +4,7 @@ metadata:
   name: {{ template "master.fullname" . }}
   labels:
     app: "{{ template "mariadb.name" . }}"
-    chart: {{ template "mariadb.chart" . }}
+    chart: "{{ template "mariadb.chart" . }}"
     component: "master"
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
@@ -13,7 +13,7 @@ spec:
     matchLabels:
       release: "{{ .Release.Name }}"
       component: "master"
-      app: {{ template "mariadb.name" . }}
+      app: "{{ template "mariadb.name" . }}"
   serviceName: "{{ template "master.fullname" . }}"
   replicas: 1
   updateStrategy:
@@ -30,7 +30,7 @@ spec:
         app: "{{ template "mariadb.name" . }}"
         component: "master"
         release: "{{ .Release.Name }}"
-        chart: {{ template "mariadb.chart" . }}
+        chart: "{{ template "mariadb.chart" . }}"
     spec:
       serviceAccountName: "{{ template "mariadb.serviceAccountName" . }}"
       {{- if .Values.securityContext.enabled }}

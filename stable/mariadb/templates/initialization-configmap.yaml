@@ -4,8 +4,8 @@ kind: ConfigMap
 metadata:
   name: {{ template "master.fullname" . }}-init-scripts
   labels:
-    app: {{ template "mariadb.name" . }}
-    chart: {{ template "mariadb.chart" . }}
+    app: "{{ template "mariadb.name" . }}"
+    chart: "{{ template "mariadb.chart" . }}"
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
     component: "master"
