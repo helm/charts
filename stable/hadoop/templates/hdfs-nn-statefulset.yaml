@@ -1,22 +1,21 @@
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
-  name: {{ template "hadoop.fullname" . }}-hdfs-nn
+  name: {{ include "hadoop.fullname" . }}-hdfs-nn
   annotations:
     checksum/config: {{ include (print $.Template.BasePath "/hadoop-configmap.yaml") . | sha256sum }}
   labels:
-    app: {{ template "hadoop.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    app: {{ include "hadoop.name" . }}
+    chart: {{ include "hadoop.chart" . }}
     release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
     component: hdfs-nn
 spec:
-  serviceName: {{ template "hadoop.fullname" . }}-hdfs-nn
+  serviceName: {{ include "hadoop.fullname" . }}-hdfs-nn
   replicas: 1
   template:
     metadata:
       labels:
-        app: {{ template "hadoop.name" . }}
+        app: {{ include "hadoop.name" . }}
         release: {{ .Release.Name }}
         component: hdfs-nn
     spec:
@@ -27,7 +26,7 @@ spec:
           - topologyKey: "kubernetes.io/hostname"
             labelSelector:
               matchLabels:
-                app:  {{ template "hadoop.name" . }}
+                app:  {{ include "hadoop.name" . }}
                 release: {{ .Release.Name | quote }}
                 component: hdfs-nn
         {{- else if eq .Values.antiAffinity "soft" }}
@@ -37,15 +36,15 @@ spec:
               topologyKey: "kubernetes.io/hostname"
               labelSelector:
                 matchLabels:
-                  app:  {{ template "hadoop.name" . }}
+                  app:  {{ include "hadoop.name" . }}
                   release: {{ .Release.Name | quote }}
                   component: hdfs-nn
         {{- end }}
       terminationGracePeriodSeconds: 0
       containers:
       - name: hdfs-nn
-        image: {{ .Values.image }}
-        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         command:
         - "/bin/bash"
         - "/tmp/hadoop-config/bootstrap.sh"
@@ -72,11 +71,11 @@ spec:
       volumes:
       - name: hadoop-config
         configMap:
-          name: {{ template "hadoop.fullname" . }}
+          name: {{ include "hadoop.fullname" . }}
       - name: dfs
       {{- if .Values.persistence.nameNode.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "hadoop.fullname" . }}-hdfs-nn
-      {{- else }}        
+          claimName: {{ include "hadoop.fullname" . }}-hdfs-nn
+      {{- else }}
         emptyDir: {}
       {{- end }}

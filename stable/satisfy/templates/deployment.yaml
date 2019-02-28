@@ -1,0 +1,121 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ include "satisfy.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "satisfy.name" . }}
+    helm.sh/chart: {{ include "satisfy.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "satisfy.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "satisfy.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      {{- with .Values.image.pullSecrets }}
+      imagePullSecrets:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      initContainers:
+        - name: init
+          image: "{{ include "satisfy.image" . }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - /bin/sh
+            - -c
+            - |
+              set -x
+              set -e
+              if [[ -e /app_persist/satis.json ]]; then
+                echo >&2 "Existing installation found, moving on.."
+                exit 0
+              else
+                echo >&2 "Seeding new instance.."
+                cp -r /app/* /app_persist/
+                for ref in $(find /app_persist -mindepth 1 -maxdepth 1 -not -name ".snapshot"); do
+                  chown -R satisfy:satisfy $ref
+                done
+              fi
+              echo >&2 "Init completed.."
+          securityContext:
+            runAsUser: 0
+          volumeMounts:
+            - name: app-persist
+              mountPath: /app_persist
+      containers:
+        - name: satisfy
+          image: "{{ include "satisfy.image" . }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          env:
+            - name: REPO_NAME
+              value: "{{ .Values.satisfy.repoName }}"
+            - name: HOMEPAGE
+              value: "{{ .Values.satisfy.homepage }}"
+            {{- if .Values.satisfy.sshPrivateKey }}
+            - name: SSH_PRIVATE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "satisfy.fullname" . }}
+                  key: SSH_PRIVATE_KEY
+            {{- end }}
+          {{- if .Values.livenessProbe.enabled }}
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 20
+            timeoutSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          {{- end }}
+          {{- if .Values.readinessProbe.enabled }}
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 20
+            timeoutSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          {{- end }}
+          volumeMounts:
+            - name: app-persist
+              mountPath: /app
+{{- with .Values.resources }}
+          resources:
+{{ toYaml . | indent 12 }}
+{{- end }}
+      volumes:
+        - name: app-persist
+        {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ template "satisfy.fullname" . }}
+        {{- else }}
+          emptyDir: {}
+        {{- end -}}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

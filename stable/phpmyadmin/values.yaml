@@ -10,7 +10,7 @@
 image:
   registry: docker.io
   repository: bitnami/phpmyadmin
-  tag: 4.8.3
+  tag: 4.8.5
   ## Specify a imagePullPolicy
   pullPolicy: IfNotPresent
   ## Optionally specify an array of imagePullSecrets.
@@ -35,6 +35,9 @@ db:
   ## please note that this setting precedes dbHost
   # chartName: mariadb
   # host: foo
+  ## If you want to test phpMyAdmin, you can set it to bundle a MariaDB
+  ## instance
+  bundleTestDB: false
 
 ingress:
   enabled: false

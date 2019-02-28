@@ -44,7 +44,16 @@ spec:
             export SPARK_HISTORY_OPTS="$SPARK_HISTORY_OPTS \
             -Dspark.hadoop.google.cloud.auth.service.account.json.keyfile=/etc/secrets/$key \
             -Dspark.history.fs.logDirectory=$logDirectory";
-          else:
+          elif [ "$enableS3" == "true" ]; then
+            export SPARK_HISTORY_OPTS="$SPARK_HISTORY_OPTS \
+              -Dspark.history.fs.logDirectory=$logDirectory
+              -Dspark.hadoop.fs.s3a.impl=org.apache.hadoop.fs.s3a.S3AFileSystem";
+            if [ "$enableIAM" == "false" ]; then
+              export SPARK_HISTORY_OPTS="$SPARK_HISTORY_OPTS \
+              -Dspark.hadoop.fs.s3a.access.key=$(cat /etc/secrets/${accessKeyName}) \
+              -Dspark.hadoop.fs.s3a.secret.key=$(cat /etc/secrets/${secretKeyName})";
+            fi;
+          else
             export SPARK_HISTORY_OPTS="$SPARK_HISTORY_OPTS \
             -Dspark.history.fs.logDirectory=$logDirectory";
           fi;
@@ -60,14 +69,22 @@ spec:
           httpGet:
             path: /
             port: historyport
-        volumeMounts:
         {{- if .Values.pvc.enablePVC }}
+        volumeMounts:
         - name: data
           mountPath: /mnt/{{ .Values.pvc.eventsDir }}
         {{- else if .Values.gcs.enableGCS }}
+        volumeMounts:
         - name: secrets-volume
           mountPath: /etc/secrets
+        {{- else if .Values.s3.enableS3 }}
+        {{- if (not .Values.s3.enableIAM) }}
+        volumeMounts:
+        - name: secrets-volume
+          mountPath: /etc/secrets
+        {{- end }}
         {{- else }}
+        volumeMounts:
         - name: core-site
           mountPath: /etc/hadoop/core-site.xml
           subPath: core-site.xml
@@ -75,16 +92,25 @@ spec:
           mountPath: /etc/hadoop/hdfs-site.xml
           subPath: hdfs-site.xml
         {{- end }}
-      volumes:
       {{- if .Values.pvc.enablePVC }}
+      volumes:
       - name: data
         persistentVolumeClaim:
           claimName: {{ .Values.pvc.existingClaimName }}
       {{- else if .Values.gcs.enableGCS }}
+      volumes:
       - name: secrets-volume
         secret:
           secretName: {{ .Values.gcs.secret }}
+      {{- else if .Values.s3.enableS3 }}
+      {{- if (not .Values.s3.enableIAM) }}
+      volumes:
+      - name: secrets-volume
+        secret:
+          secretName: {{ .Values.s3.secret }}
+      {{- end }}
       {{- else }}
+      volumes:
       - name: hdfs-site
         configMap:
           name: {{ .Values.hdfs.hdfsSiteConfigMap }}

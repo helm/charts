@@ -58,10 +58,10 @@ spec:
     port: {{ .Values.config.opentsdb.bind_address }}
     targetPort: {{ .Values.config.opentsdb.bind_address }}
   {{- end }}
-  {{- if .Values.exposeRpcService }}
+  {{- if .Values.config.rpc.enabled }}
   - name: rpc
-    port: {{ .Values.config.bind_address }}
-    targetPort: {{ .Values.config.bind_address }}
+    port: {{ .Values.config.rpc.bind_address }}
+    targetPort: {{ .Values.config.rpc.bind_address }}
   {{- end }}
   selector:
     app: {{ template "influxdb.fullname" . }}

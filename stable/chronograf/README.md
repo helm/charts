@@ -43,7 +43,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The configurable parameters of the Chronograf chart and 
+The configurable parameters of the Chronograf chart and
 their descriptions can be seen in `values.yaml`. The [full image documentation](https://quay.io/influxdb/chronograf) contains more information about running Chronograf in docker.
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
@@ -69,3 +69,32 @@ $ helm install --name my-release -f values.yaml stable/chronograf
 The [Chronograf](https://quay.io/influxdb/chronograf) image stores data in the `/var/lib/chronograf` directory in the container.
 
 The chart optionally mounts a [Persistent Volume](http://kubernetes.io/docs/user-guide/persistent-volumes/) at this location. The volume is created using dynamic volume provisioning.
+
+## OAuth Using Kubernetes Secret
+
+OAuth, among other things, can be configured in Chronograf using environment variables. For more information please see https://docs.influxdata.com/chronograf/latest/administration/managing-security
+
+Taking Google as an example, to use an existing Kubernetes Secret that contains sensitive information (`GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`), e.g.:
+
+```
+apiVersion: v1
+kind: Secret
+metadata:
+  name: chronograf-google-env-secrets
+  namespace: tick
+type: Opaque
+data:
+    GOOGLE_CLIENT_ID: <BASE64_ENCODED_GOOGLE_CLIENT_ID>
+    GOOGLE_CLIENT_SECRET: <BASE64_ENCODED_GOOGLE_CLIENT_SECRET>
+```
+
+in conjunction with less sensitive information such as `GOOGLE_DOMAINS` and `PUBLIC_URL`, one can make use of the chart's `envFromSecret` and `env` values, e.g. a values file can have the following:
+
+```
+[...]
+env:
+  GOOGLE_DOMAINS: "yourdomain.com"
+  PUBLIC_URL: "https://chronograf.yourdomain.com"
+envFromSecret: chronograf-google-env-secrets
+[...]
+```

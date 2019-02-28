@@ -14,13 +14,13 @@ spec:
     port: 4369
     targetPort: epmd
   - name: amqp
-    port: {{ .Values.rabbitmq.amqpPort }}
+    port: {{ .Values.service.port }}
     targetPort: amqp
   - name: dist
-    port: {{ .Values.rabbitmq.distPort }}
+    port: {{ .Values.service.distPort }}
     targetPort: dist
   - name: stats
-    port: {{ .Values.rabbitmq.managerPort }}
+    port: {{ .Values.service.managerPort }}
     targetPort: stats
   selector:
     app: {{ template "rabbitmq.name" . }}

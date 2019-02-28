@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: coredns/coredns
-  tag: "1.2.0"
+  tag: "1.3.1"
   pullPolicy: IfNotPresent
 
 resources:
@@ -25,11 +25,20 @@ service:
     prometheus.io/scrape: "true"
     prometheus.io/port: "9153"
 
+serviceAccount:
+  create: false
+  # The name of the ServiceAccount to use
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
 rbac:
   # If true, create & use RBAC resources
-  create: false
-  # Ignored if rbac.create is true
-  serviceAccountName: default
+  create: true
+  # If true, create and use PodSecurityPolicy
+  pspEnable: false
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  # name:
 
 # isClusterService specifies whether chart should be deployed as cluster-service or normal k8s app.
 isClusterService: true

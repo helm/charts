@@ -1,0 +1,3 @@
+ingress:
+  hosts:
+    - kibana.localhost.localdomain

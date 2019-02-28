@@ -3,6 +3,9 @@
 # Declare variables to be passed into your templates.
 replicaCount: 1
 
+podDisruptionBudget: {}
+  # maxUnavailable: 1
+
 image:
   repository: quay.io/pusher/k8s-spot-rescheduler
   tag: v0.2.0

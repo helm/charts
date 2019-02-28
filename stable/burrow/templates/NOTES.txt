@@ -1,1 +1,22 @@
-You have now installed Burrow! Congratulations.
+You have successfully provisioned {{ .Values.chain.nodes }} Burrow nodes!
+
+** Please be patient while the chart is being deployed. **
+
+{{- if .Values.peer.ingress.enabled }}
+
+As ingress is enabled, it may take some time to propagate DNS entries.
+
+{{- end }}
+
+{{- if .Values.chain.testing }}
+
+WARNING: This deployment has been configured with pre-generated keys which are publicly accessible, please run the provided `initialize.sh` script locally to regenerate these.
+
+Use the following commands to securely provision the necessary Kubernetes objects with the release name `my-release`:
+
+$ curl -LO https://raw.githubusercontent.com/helm/charts/master/initialize.sh
+$ CHAIN_NODES=4 CHAIN_NAME="my-release" ./initialize.sh
+$ kubectl apply --filename chain-info.yaml
+$ helm install stable/burrow --name my-release --values initialize.yaml
+
+{{- end }}

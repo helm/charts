@@ -1,0 +1,109 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "hoard.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "hoard.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "hoard.chart" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "hoard.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "hoard.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command: ["hoard", "--config", "/conf/hoard.toml"]
+        volumeMounts:
+        - name: config-toml
+          mountPath: /conf
+{{- if eq .Values.storage.type "filesystem" }}
+        - mountPath: /data
+          name: data-dir
+{{- end }}
+{{- if .Values.openpgp }}
+        - mountPath: /secrets
+          subPath: keyring
+          name: key-ring
+{{- end }}
+        ports:
+          - containerPort: {{ .Values.service.port }}
+            name: http
+        env:
+{{- if eq .Values.storage.type "aws" }}
+        - name: AWS_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: {{ required "A valid storage credential is required." .Values.storage.secret }}
+              key: access-key-id
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ required "A valid storage credential is required." .Values.storage.secret }}
+              key: secret-access-key
+{{- end }}
+{{- if eq .Values.storage.type "azure" }}
+        - name: AZURE_STORAGE_ACCOUNT_NAME
+          valueFrom:
+            secretKeyRef:
+              name: {{ required "A valid storage credential is required." .Values.storage.secret }}
+              key: storage-account-name
+        - name: AZURE_STORAGE_ACCOUNT_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ required "A valid storage credential is required." .Values.storage.secret }}
+              key: storage-account-key
+{{- end }}
+{{- if eq .Values.storage.type "gcp" }}
+        - name: GCLOUD_SERVICE_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ required "A valid storage credential is required." .Values.storage.secret }}
+              key: service-key
+{{- end }}
+        livenessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - '[ $(echo "marmottes" | hoarctl put | hoarctl get) = "marmottes" ]'
+          initialDelaySeconds: 5
+          periodSeconds: 45
+        resources:
+{{ toYaml .Values.resources | indent 12 }}
+      volumes:
+      - name: config-toml
+        configMap:
+          name: {{ template "hoard.fullname" . }}
+{{- if eq .Values.storage.type "filesystem" }}
+      - name: data-dir
+        persistentVolumeClaim:
+          claimName: {{ template "hoard.fullname" $ }}
+{{- end }}
+{{- if .Values.openpgp }}
+      - name: key-ring
+        secret:
+          secretName: {{ required "A valid keyring is required." .Values.openpgp.secret }}
+{{- end }}
+{{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+{{- end }}
