@@ -20,6 +20,12 @@ spec:
     type: RollingUpdate
   template:
     metadata:
+      {{- if .Values.deployment.podAnnotations }}
+      annotations:
+      {{- range $key, $value := .Values.deployment.podAnnotations }}
+        {{ $key }}: {{ $value | quote }}
+      {{- end }}
+      {{- end }}
       labels:
         app: {{ template "kuberhealthy.name" . }}
         chart: {{ .Chart.Name }}

@@ -54,6 +54,7 @@ deployment:
   maxUnavailable: 1
   imagePullPolicy: IfNotPresent
   namespace: kuberhealthy
+  podAnnotations: {} # Annotations to be added to pods created by the deployment
   command:
   - /app/kuberhealthy
   # use this to override location of the test-image, see: https://github.com/Comcast/kuberhealthy/blob/master/docs/FLAGS.md
