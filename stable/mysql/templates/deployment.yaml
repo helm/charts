@@ -9,9 +9,9 @@ metadata:
     {{- if not .Values.deploymentLabels.app }}
     app: {{ template "mysql.fullname" . }}
     {{- end }}
-    {{- range $key, $val := .Values.deploymentLabels }}
-    {{ $key }}: {{ $val }}
-    {{- end}}
+{{- with .Values.deploymentLabels }}
+{{ toYaml . | indent 4 }}
+{{- end}}
 spec:
   template:
     metadata:
