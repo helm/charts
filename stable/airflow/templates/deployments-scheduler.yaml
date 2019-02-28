@@ -27,6 +27,9 @@ spec:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap-airflow.yaml") . | sha256sum }}
         configmap.fabric8.io/update-on-change: "{{ template "airflow.fullname" . }}-env"
+{{- if .Values.airflow.podAnnotations }}
+{{ toYaml .Values.airflow.podAnnotations | indent 8 }}
+{{- end }}
       labels:
         app: {{ template "airflow.name" . }}
         component: scheduler
@@ -69,23 +72,31 @@ spec:
           env:
           {{- include "airflow.mapenvsecrets" . | indent 10 }}
           volumeMounts:
+            - name: scripts
+              mountPath: /usr/local/scripts
           {{- if .Values.persistence.enabled }}
             - name: dags-data
               mountPath: {{ .Values.dags.path }}
           {{- else if .Values.dags.initContainer.enabled }}
             - name: dags-data
               mountPath: {{ .Values.dags.path }}
-            - name: scripts
-              mountPath: /usr/local/scripts
-            {{- if .Values.airflow.connections }}
-            - name: connections
-              mountPath: /usr/local/connections
-            {{- end}}
           {{- end }}
           {{- if .Values.logsPersistence.enabled }}
             - name: logs-data
               mountPath: {{ .Values.logs.path }}
           {{- end }}
+          {{- if .Values.airflow.connections }}
+            - name: connections
+              mountPath: /usr/local/connections
+          {{- end}}
+          {{- range .Values.airflow.extraConfigmapMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              readOnly: {{ .readOnly }}
+          {{- end }}
+{{- if .Values.airflow.extraVolumeMounts }}
+{{ toYaml .Values.airflow.extraVolumeMounts | indent 12 }}
+{{- end }}
           args:
             - "bash"
             - "-c"
@@ -113,10 +124,21 @@ spec:
               export PATH=/usr/local/airflow/.local/bin:$PATH &&
               echo "executing initdb" &&
               airflow initdb &&
+            {{- if .Values.airflow.connections }}
+              echo "adding connections" &&
+              /usr/local/connections/add-connections.sh &&
+            {{- end }}
               echo "executing scheduler" &&
               airflow scheduler -n {{ .Values.airflow.schedulerNumRuns }}
           {{- end }}
+{{- if .Values.airflow.extraContainers }}
+{{ toYaml .Values.airflow.extraContainers | indent 8 }}
+{{- end }}
       volumes:
+        - name: scripts
+          configMap:
+            name: {{ template "airflow.fullname" . }}-scripts
+            defaultMode: 0755
         - name: dags-data
         {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
@@ -130,20 +152,10 @@ spec:
             claimName: {{ .Values.logsPersistence.existingClaim | default (printf "%s-logs" (include "airflow.fullname" . | trunc 58 )) }}
         {{- end }}
         {{- if .Values.dags.initContainer.enabled }}
-        - name: scripts
-          configMap:
-            name: {{ template "airflow.fullname" . }}-scripts
-            defaultMode: 0755
         - name: git-clone
           configMap:
             name: {{ template "airflow.fullname" . }}-git-clone
             defaultMode: 0755
-          {{- if .Values.airflow.connections }}           
-        - name: connections
-          secret: 
-            secretName: {{ template "airflow.fullname" . }}-connections
-            defaultMode: 0755
-          {{- end }}
         {{- if .Values.dags.git.secret }}
         - name: git-clone-secret
           secret:
@@ -151,3 +163,17 @@ spec:
             defaultMode: 0700
         {{- end }}
         {{- end }}
+        {{- if .Values.airflow.connections }}
+        - name: connections
+          secret:
+            secretName: {{ template "airflow.fullname" . }}-connections
+            defaultMode: 0755
+        {{- end }}
+        {{- range .Values.airflow.extraConfigmapMounts }}
+        - name: {{ .name }}
+          configMap:
+            name: {{ .configMap }}
+        {{- end }}
+{{- if .Values.airflow.extraVolumes }}
+{{ toYaml .Values.airflow.extraVolumes | indent 8 }}
+{{- end }}

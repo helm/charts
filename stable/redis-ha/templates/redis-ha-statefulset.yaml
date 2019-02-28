@@ -30,6 +30,9 @@ spec:
       labels:
         release: {{ .Release.Name }}
         app: {{ template "redis-ha.name" . }}
+        {{- range $key, $value := .Values.labels }}
+        {{ $key }}: {{ $value }}
+        {{- end }}
     spec:
       {{- if .Values.nodeSelector }}
       nodeSelector:
@@ -187,7 +190,7 @@ spec:
           timeoutSeconds: 1
           periodSeconds: 15
         resources:
-        {{ toYaml .Values.exporter.resources | indent 10 }}
+{{ toYaml .Values.exporter.resources | indent 10 }}
         ports:
           - name: exporter-port
             containerPort: {{ .Values.exporter.port }}

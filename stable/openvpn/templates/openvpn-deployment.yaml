@@ -82,3 +82,7 @@ spec:
         {{- else }}
         emptyDir: {}
         {{- end -}}
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+        {{ toYaml .Values.nodeSelector }}
+      {{- end }}

@@ -65,12 +65,16 @@ spec:
       - image: {{ .Values.image }}:{{ .Values.imageTag }}
         name: {{ template "traefik.fullname" . }}
         resources:
+        {{- if or .Values.cpuRequest .Values.memoryRequest .Values.cpuLimit .Values.memoryLimit }}
           requests:
             cpu: {{ .Values.cpuRequest | quote }}
             memory: {{ .Values.memoryRequest | quote }}
           limits:
             cpu: {{ .Values.cpuLimit | quote }}
             memory: {{ .Values.memoryLimit | quote }}
+        {{- else }}
+{{ toYaml .Values.resources | indent 10 }}
+        {{- end }}
         readinessProbe:
           tcpSocket:
             port: 80
@@ -109,6 +113,14 @@ spec:
         {{- if .Values.acme.enabled }}
         - mountPath: /acme
           name: acme
+        {{- end }}
+        {{- if .Values.configFiles }}
+        - mountPath: /configs
+          name: {{ template "traefik.fullname" $ }}-configs
+        {{ end }}
+        {{- if .Values.secretFiles }}
+        - mountPath: /secrets
+          name: {{ template "traefik.fullname" $ }}-secrets
         {{- end }}
         ports:
         - name: http
@@ -157,6 +169,16 @@ spec:
       {{- else }}
         emptyDir: {}
       {{- end }}
+      {{- end }}
+      {{- if .Values.configFiles }}
+      - name: {{ template "traefik.fullname" $ }}-configs
+        configMap:
+          name: {{ template "traefik.fullname" $ }}-configs
+      {{ end }}
+      {{- if .Values.secretFiles }}
+      - name: {{ template "traefik.fullname" $ }}-secrets
+        secret:
+          secretName: {{ template "traefik.fullname" $ }}-secrets
       {{- end }}
       {{- if and (.Values.tolerations) (semverCompare "^1.6-0" .Capabilities.KubeVersion.GitVersion) }}
       tolerations:

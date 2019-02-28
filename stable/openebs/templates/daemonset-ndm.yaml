@@ -8,7 +8,10 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     component: ndm
+    openebs.io/component-name: ndm
 spec:
+  updateStrategy:
+    type: "RollingUpdate"
   selector:
     matchLabels:
       app: {{ template "openebs.name" . }}
@@ -27,9 +30,6 @@ spec:
       - name: {{ template "openebs.name" . }}-ndm
         image: "{{ .Values.ndm.image }}:{{ .Values.ndm.imageTag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-        command:
-        - /usr/sbin/ndm
-        - start
         securityContext:
           privileged: true
         env:
@@ -56,6 +56,13 @@ spec:
           value: "{{ .Values.ndm.sparse.count }}"
 {{- end }}
 {{- end }}
+        livenessProbe:
+          exec:
+            command:
+            - pgrep
+            - ".*ndm"
+          initialDelaySeconds: {{ .Values.ndm.healthCheck.initialDelaySeconds }}
+          periodSeconds: {{ .Values.ndm.healthCheck.periodSeconds }}
         volumeMounts:
         - name: config
           mountPath: /host/node-disk-manager.config

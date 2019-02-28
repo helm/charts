@@ -1,31 +1,41 @@
 # Duplicate this file and put your customization here
 
-
 ##
 ## common settings and setting for the webserver
 airflow:
+  extraConfigmapMounts: []
+  # - name: extra-metadata
+  #   mountPath: /opt/metadata
+  #   configMap: airflow-metadata
+  #   readOnly: true
 
-  ##
-  ## secretsMapping can be overridden in values.yaml as such:
+  ## When existingAirflowSecret is defined, secretsMapping can be
+  ## overridden. When no secretName is given then the value of
+  ## existingAirflowSecret is assumed.
   ## secretsMapping:
   ## - envVar: AIRFLOW__LDAP__BIND_PASSWORD
-  ##   secretName: ldapBindPassword
+  ##   secretName: ldap
+  ##   secretKey: ldapBindPassword
   ## - envVar: AIRFLOW__ATLAS__PASSWORD
-  ##   secretName: atlasPassword
+  ##   secretKey: atlasPassword
   ## - envVar: AIRFLOW__SMTP__PASSWORD
-  ##   secretName: smtpPassword
+  ##   secretKey: smtpPassword
   ## - envVar: AIRFLOW__KUBERNETES__GIT_PASSWORD
-  ##   secretName: kubernetesGitPassword
+  ##   secretKey: kubernetesGitPassword
   ## - envVar: POSTGRES_USER
-  ##   secretName: postgresUser
+  ##   secretName: postgres
+  ##   secretKey: postgresUser
   ## - envVar: POSTGRES_PASSWORD
-  ##   secretName: postgresPassword
+  ##   secretName: postgres
+  ##   secretKey: postgresPassword
   ## - envVar: REDIS_PASSWORD
-  ##   secretName: redisPassword
+  ##   secretName: redis
+  ##   secretKey: redisPassword
   secretsMapping:
 
 
-  ## used only when existingAirflowSecrets is false
+  ## Used only when existingAirflowSecret is null, in which case
+  ## a secret will be created with a default name and the following mapping.
   defaultSecretsMapping:
   - envVar: POSTGRES_USER
     secretKey: postgresUser
@@ -100,7 +110,7 @@ airflow:
   ## Custom airflow configuration environment variables
   ## Use this to override any airflow setting settings defining environment variables in the
   ## following form: AIRFLOW__<section>__<key>.
-  ## See the Airflow documentation: http://airflow.readthedocs.io/en/latest/configuration.html?highlight=__CORE__#setting-configuration-options)
+  ## See the Airflow documentation: https://airflow.readthedocs.io/en/stable/howto/set-config.html?highlight=setting-configuration
   ## Example:
   ##   config:
   ##     AIRFLOW__CORE__EXPOSE_CONFIG: "True"
@@ -122,6 +132,27 @@ airflow:
   ##     type: aws
   ##     extra: '{"aws_access_key_id": "**********", "aws_secret_access_key": "***", "region_name":"eu-central-1"}'
   connections: {}
+  ##
+  ## Annotations for the Scheduler, Worker and Web pods
+  podAnnotations: {}
+    ## Example:
+    ## iam.amazonaws.com/role: airflow-Role
+  extraContainers: []
+  ## Additional containers to run alongside the Scheduler, Worker and Web pods
+  ## This could, for example, be used to run a sidecar that syncs DAGs from object storage.
+  # - name: s3-sync
+  #   image: my-user/s3sync:latest
+  #   volumeMounts:
+  #   - name: synchronised-dags
+  #     mountPath: /dags
+  extraVolumeMounts: []
+  ## Additional volumeMounts to the main containers in the Scheduler, Worker and Web pods.
+  # - name: synchronised-dags
+  #   mountPath: /usr/local/airflow/dags
+  extraVolumes: []
+  ## Additional volumes for the Scheduler, Worker and Web pods.
+  # - name: synchronised-dags
+  #   emptyDir: {}
 ##
 ## Workers configuration
 workers:
@@ -140,10 +171,9 @@ workers:
     #   memory: "512Mi"
   ##
   ## Annotations for the Worker pods
-  pod:
-    annotations:
-      ## Example:
-      ## iam.amazonaws.com/role: airflow-worker-Role
+  podAnnotations: {}
+    ## Example:
+    ## iam.amazonaws.com/role: airflow-Role
   ##
   ## Celery worker configuration
   celery:
@@ -379,11 +409,8 @@ postgresql:
   ## Set to false if bringing your own PostgreSQL.
   enabled: true
   ##
-  ## If bringing your own PostgreSQL, the full uri to use
-  ## e.g. postgres://airflow:changeme@my-postgres.com:5432/airflow?sslmode=disable
-  # uri:
-  ##
-  ## PostgreSQL hostname
+  ## If you are bringing your own PostgreSQL, you should set postgresHost and
+  ## also probably service.port, postgresUser, postgresPassword, and postgresDatabase
   ## postgresHost:
   ##
   ## PostgreSQL port
@@ -421,7 +448,11 @@ redis:
   ## Set to false if bringing your own redis.
   enabled: true
   ##
+  ## If you are bringing your own redis, you can set the host in redisHost.
+  ## redisHost:
+  ##
   ## Redis password
+  ##
   password: airflow
   ##
   ## Master configuration

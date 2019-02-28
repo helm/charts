@@ -31,9 +31,12 @@ spec:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap-airflow.yaml") . | sha256sum }}
         configmap.fabric8.io/update-on-change: "{{ template "airflow.fullname" . }}-env"
-        {{ range $key, $value := .Values.workers.pod.annotations }}
-        {{ $key }}: {{ $value | quote }}
-        {{- end }}
+{{- if .Values.airflow.podAnnotations }}
+{{ toYaml .Values.airflow.podAnnotations | indent 8 }}
+{{- end }}
+{{- if .Values.workers.podAnnotations }}
+{{ toYaml .Values.workers.podAnnotations | indent 8 }}
+{{- end }}
       labels:
         app: {{ template "airflow.name" . }}
         component: worker
@@ -77,6 +80,8 @@ spec:
           env:
           {{- include "airflow.mapenvsecrets" . | indent 10 }}
           volumeMounts:
+            - name: scripts
+              mountPath: /usr/local/scripts
           {{- $secretsDir := .Values.workers.secretsDir -}}
           {{- range .Values.workers.secrets }}
             - name: {{ . }}-volume
@@ -90,9 +95,15 @@ spec:
           {{- else if .Values.dags.initContainer.enabled }}
             - name: dags-data
               mountPath: {{ .Values.dags.path }}
-            - name: scripts
-              mountPath: /usr/local/scripts
           {{- end }}
+          {{- range .Values.airflow.extraConfigmapMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              readOnly: {{ .readOnly }}
+          {{- end }}
+{{- if .Values.airflow.extraVolumeMounts }}
+{{ toYaml .Values.airflow.extraVolumeMounts | indent 12 }}
+{{- end }}
           args:
             - "bash"
             - "-c"
@@ -121,7 +132,14 @@ spec:
               protocol: TCP
           resources:
 {{ toYaml .Values.workers.resources | indent 12 }}
+{{- if .Values.airflow.extraContainers }}
+{{ toYaml .Values.airflow.extraContainers | indent 8 }}
+{{- end }}
       volumes:
+        - name: scripts
+          configMap:
+            name: {{ template "airflow.fullname" . }}-scripts
+            defaultMode: 0755
         {{- range .Values.workers.secrets }}
         - name: {{ . }}-volume
           secret:
@@ -135,10 +153,6 @@ spec:
           emptyDir: {}
         {{- end }}
         {{- if .Values.dags.initContainer.enabled }}
-        - name: scripts
-          configMap:
-            name: {{ template "airflow.fullname" . }}-scripts
-            defaultMode: 0755
         - name: git-clone
           configMap:
             name: {{ template "airflow.fullname" . }}-git-clone
@@ -150,4 +164,12 @@ spec:
             defaultMode: 0700
         {{- end }}
         {{- end }}
+        {{- range .Values.airflow.extraConfigmapMounts }}
+        - name: {{ .name }}
+          configMap:
+            name: {{ .configMap }}
+        {{- end }}
+{{- if .Values.airflow.extraVolumes }}
+{{ toYaml .Values.airflow.extraVolumes | indent 8 }}
+{{- end }}
 {{- end }}
