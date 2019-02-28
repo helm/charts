@@ -57,12 +57,37 @@ The command removes all the Kubernetes components associated with the chart and 
 
 CRDs created by this chart are not removed by default and should be manually cleaned up:
 
-```
+```console
 kubectl delete crd prometheuses.monitoring.coreos.com
 kubectl delete crd prometheusrules.monitoring.coreos.com
 kubectl delete crd servicemonitors.monitoring.coreos.com
 kubectl delete crd alertmanagers.monitoring.coreos.com
 ```
+
+## Work-Arounds for Known Issues
+
+### Helm fails to create CRDs
+Due to a bug in helm, it is possible for the 4 CRDs that are created by this chart to fail to get fully deployed before Helm attempts to create resources that require them. This affects all versions of Helm with a [potential fix pending](https://github.com/helm/helm/pull/5112). In order to work around this issue when installing the chart you will need to make sure all 4 CRDs exist in the cluster first and disable their previsioning by the chart:
+
+1. Create CRDs
+```console
+kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/master/example/prometheus-operator-crd/alertmanager.crd.yaml
+kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/master/example/prometheus-operator-crd/prometheus.crd.yaml
+kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/master/example/prometheus-operator-crd/prometheusrule.crd.yaml
+kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/master/example/prometheus-operator-crd/servicemonitor.crd.yaml
+```
+
+2. Wait for CRDs to be created, which should only take a few seconds
+
+3. Install the chart, but disabling the CRD provisioning by setting `prometheusOperator.createCustomResource=false`
+```console
+$ helm install --name my-release stable/prometheus-operator --set prometheusOperator.createCustomResource=false
+```
+
+### Helm <2.10 workaround
+The `crd-install` hook is required to deploy the prometheus operator CRDs before they are used. If you are forced to use an earlier version of Helm you can work around this requirement as follows:
+1. Install prometheus-operator by itself, disabling everything but the prometheus-operator component, and also setting `prometheusOperator.serviceMonitor.selfMonitor=false`
+2. Install all the other components, and configure `prometheus.additionalServiceMonitors` to scrape the prometheus-operator service.
 
 ## Configuration
 
@@ -350,11 +375,6 @@ For more in-depth documentation of configuration options meanings, please see
 - [Prometheus Operator](https://github.com/coreos/prometheus-operator)
 - [Prometheus](https://prometheus.io/docs/introduction/overview/)
 - [Grafana](https://github.com/helm/charts/tree/master/stable/grafana#grafana-helm-chart)
-
-## Helm <2.10 workaround
-The `crd-install` hook is required to deploy the prometheus operator CRDs before they are used. If you are forced to use an earlier version of Helm you can work around this requirement as follows:
-1. Install prometheus-operator by itself, disabling everything but the prometheus-operator component, and also setting `prometheusOperator.serviceMonitor.selfMonitor=false`
-2. Install all the other components, and configure `prometheus.additionalServiceMonitors` to scrape the prometheus-operator service.
 
 # Migrating from coreos/prometheus-operator chart
 
