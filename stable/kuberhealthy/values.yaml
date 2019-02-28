@@ -30,6 +30,7 @@ deployment:
   maxSurge: 0
   maxUnavailable: 1
   imagePullPolicy: IfNotPresent
+  podAnnotations: {}
   command:
   - /app/kuberhealthy
   # use this to override location of the test-image, see: https://github.com/Comcast/kuberhealthy/blob/master/docs/FLAGS.md
