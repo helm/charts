@@ -566,6 +566,13 @@ prometheusOperator:
   ##
     nodePort: 38080
 
+  ## Additional ports to open for Prometheus service
+  ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#multi-port-services
+  ##
+    additionalPorts: []
+    #  - name: thanos-cluster
+    #    port: 10900
+    #    nodePort: 30111
 
   ## Loadbalancer IP
   ## Only use if service.type is "loadbalancer"

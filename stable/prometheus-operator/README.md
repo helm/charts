@@ -158,6 +158,7 @@ The following tables lists the configurable parameters of the prometheus-operato
 | `prometheus.service.clusterIP` | Prometheus service clusterIP IP | `""` |
 | `prometheus.service.targetPort` |  Prometheus Service internal port | `9090` |
 | `prometheus.service.nodePort` |  Prometheus Service port for NodePort service type | `39090` |
+| `prometheus.service.additionalPorts` |  Additional Prometheus Service ports to add for NodePort service type | `[]` |
 | `prometheus.service.annotations` |  Prometheus Service Annotations | `{}` |
 | `prometheus.service.labels` |  Prometheus Service Labels | `{}` |
 | `prometheus.service.externalIPs` | List of IP addresses at which the Prometheus server service is available  | `[]` |
