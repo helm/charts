@@ -78,6 +78,8 @@ The following table lists the configurable parameters of the Redis chart and the
 | `exporter.tag`                   | Exporter tag                                                                                                                 | `v0.28.0`                                                 |
 | `exporter.annotations`           | Prometheus scrape annotations                                                                                                |  `{prometheus.io/path: /metrics, prometheus.io/port: "9121", prometheus.io/scrape: "true"}`                                                     |
 | `exporter.extraArgs`             | Additional args for the exporter                                                                                           | `{}`                                                      |
+| `hostPath.path`                  | Use this path on the host for data storage                                                                                           | not set                                                      |
+| `hostPath.chown`                 | Run an init-container as root to set ownership on the hostPath                                                                                         | true                                                      |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

@@ -49,6 +49,20 @@ spec:
       securityContext:
 {{ toYaml .Values.securityContext | indent 8 }}
       initContainers:
+{{- if and .Values.hostPath.path .Values.hostPath.chown }}
+      - name: hostpath-chown
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        securityContext:
+          runAsNonRoot: false
+          runAsUser: 0
+        command:
+        - chown
+        - "{{ .Values.securityContext.runAsUser }}"
+        - /data
+        volumeMounts:
+        - name: data
+          mountPath: /data
+{{- end }}
       - name: config-init
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
@@ -225,6 +239,10 @@ spec:
       storageClassName: "{{ .Values.persistentVolume.storageClass }}"
     {{- end }}
     {{- end }}
+{{- else if .Values.hostPath.path }}
+      - name: data
+        hostPath:
+          path: {{ tpl .Values.hostPath.path .}}
 {{- else }}
       - name: data
         emptyDir: {}
