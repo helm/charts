@@ -84,14 +84,9 @@ Create the name for the airflow secret.
 Map environment vars to secrets
 */}}
 {{- define "airflow.mapenvsecrets" -}}
-    {{- $secretName := printf "%s-env" (include "airflow.fullname" .) }}
-    {{- $mapping := .Values.airflow.defaultSecretsMapping }}
-    {{- if .Values.existingAirflowSecret }}
-      {{- $secretName := .Values.existingAirflowSecret }}
-      {{- if .Values.airflow.secretsMapping }}
-        {{- $mapping := .Values.airflow.secretsMapping }}
-      {{- end }}
-    {{- end }}
+    {{- $defaultSecretName := .Release.Name | trunc 63 | trimSuffix "-" }}
+    {{- $secretName := (eq .Values.existingAirflowSecret "") | ternary $defaultSecretName .Values.existingAirflowSecret }}
+    {{- $mapping := or (eq .Values.existingAirflowSecret "") (empty .Values.airflow.secretsMapping) | ternary .Values.airflow.defaultSecretsMapping .Values.airflow.secretsMapping }}
     {{- range $val := $mapping }}
       {{- if $val }}
   - name: {{ $val.envVar }}
