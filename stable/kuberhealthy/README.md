@@ -37,7 +37,7 @@ app:
   name: "kuberhealthy" # what to name the kuberhealthy deployment
 image:
   repository: quay.io/comcast/kuberhealthy
-  tag: v1.0.1
+  tag: v1.0.2
 resources:
   requests:
     cpu: 100m
@@ -54,6 +54,12 @@ deployment:
   maxUnavailable: 1
   imagePullPolicy: IfNotPresent
   namespace: kuberhealthy
+  command:
+  - /app/kuberhealthy
+  # use this to override location of the test-image, see: https://github.com/Comcast/kuberhealthy/blob/master/docs/FLAGS.md
+  # args:
+  # - -dsPauseContainerImageOverride
+  # - your-repo/google_containers/pause:0.8.0
 securityContext: # default container security context
   runAsNonRoot: true
   runAsUser: 999

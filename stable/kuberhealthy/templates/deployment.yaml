@@ -30,6 +30,11 @@ spec:
       automountServiceAccountToken: true
       containers:
       - image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        command: {{ .Values.deployment.command }}
+        {{- if .Values.deployment.args }}
+        args:
+{{ toYaml .Values.deployment.args | nindent 8 }}
+        {{- end }}
         securityContext:
         {{- toYaml .Values.securityContext | nindent 10 -}}
         imagePullPolicy: {{ .Values.deployment.imagePullPolicy }}
