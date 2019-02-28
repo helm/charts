@@ -1,6 +1,6 @@
 # prometheus-operator
 
-Installs [prometheus-operator](https://github.com/coreos/prometheus-operator) to create/configure/manage Prometheus clusters atop Kubernetes. This chart includes multiple components and is suitable for a variety of use-cases. 
+Installs [prometheus-operator](https://github.com/coreos/prometheus-operator) to create/configure/manage Prometheus clusters atop Kubernetes. This chart includes multiple components and is suitable for a variety of use-cases.
 
 The default installation is intended to suit monitoring a kubernetes cluster the chart is deployed onto. It is closely matches the kube-prometheus project.
 - [prometheus-operator](https://github.com/coreos/prometheus-operator)
@@ -156,6 +156,7 @@ The following tables lists the configurable parameters of the prometheus-operato
 | `prometheus.ingress.tls` | Prometheus Ingress TLS configuration (YAML) | `[]` |
 | `prometheus.service.type` |  Prometheus Service type | `ClusterIP` |
 | `prometheus.service.clusterIP` | Prometheus service clusterIP IP | `""` |
+| `prometheus.service.targetPort` |  Prometheus Service internal port | `9090` |
 | `prometheus.service.nodePort` |  Prometheus Service port for NodePort service type | `39090` |
 | `prometheus.service.annotations` |  Prometheus Service Annotations | `{}` |
 | `prometheus.service.labels` |  Prometheus Service Labels | `{}` |
@@ -226,7 +227,7 @@ The following tables lists the configurable parameters of the prometheus-operato
 | `alertmanager.service.externalIPs` | List of IP addresses at which the Alertmanager server service is available  | `[]` |
 | `alertmanager.service.loadBalancerIP` |  Alertmanager Loadbalancer IP | `""` |
 | `alertmanager.service.loadBalancerSourceRanges` | Alertmanager Load Balancer Source Ranges | `[]` |
-| `alertmanager.config` | Provide YAML to configure Alertmanager. See https://prometheus.io/docs/alerting/configuration/#configuration-file. The default provided works to suppress the DeadMansSwitch alert from `defaultRules.create` | `{"global":{"resolve_timeout":"5m"},"route":{"group_by":["job"],"group_wait":"30s","group_interval":"5m","repeat_interval":"12h","receiver":"null","routes":[{"match":{"alertname":"DeadMansSwitch"},"receiver":"null"}]},"receivers":[{"name":"null"}]}` |
+| `alertmanager.config` | Provide YAML to configure Alertmanager. See https://prometheus.io/docs/alerting/configuration/#configuration-file. The default provided works to suppress the Watchdog alert from `defaultRules.create` | `{"global":{"resolve_timeout":"5m"},"route":{"group_by":["job"],"group_wait":"30s","group_interval":"5m","repeat_interval":"12h","receiver":"null","routes":[{"match":{"alertname":"Watchdog"},"receiver":"null"}]},"receivers":[{"name":"null"}]}` |
 | `alertmanager.alertmanagerSpec.podMetadata` | Standard object’s metadata. More info: https://github.com/kubernetes/community/blob/master/contributors/devel/api-conventions.md#metadata Metadata Labels and Annotations gets propagated to the prometheus pods. | `{}` |
 | `alertmanager.alertmanagerSpec.image.tag` | Tag of Alertmanager container image to be deployed. | `v0.16.1` |
 | `alertmanager.alertmanagerSpec.image.repository` | Base image that is used to deploy pods, without tag. | `quay.io/prometheus/alertmanager` |
@@ -367,7 +368,7 @@ https://github.com/helm/charts/blob/master/stable/prometheus-operator/requiremen
 These components are loaded as dependencies into the chart. The source for both charts is found in the same repository. They are relatively simple components.
 
 ### Grafana
-The Grafana chart is more feature-rich than this chart - it contains a sidecard that is able to load data sources and dashboards from configmaps deployed into the same cluster. For more information check out the [documentatin for the chart](https://github.com/helm/charts/tree/master/stable/grafana)
+The Grafana chart is more feature-rich than this chart - it contains a sidecar that is able to load data sources and dashboards from configmaps deployed into the same cluster. For more information check out the [documentation for the chart](https://github.com/helm/charts/tree/master/stable/grafana)
 
 ### Coreos CRDs
 The CRDs are provisioned using crd-install hooks, rather than relying on a separate chart installation. If you already have these CRDs provisioned and don't want to remove them, you can disable the CRD creation by these hooks by passing `prometheusOperator.createCustomResource=false`
@@ -387,7 +388,7 @@ spec:
   - ReadWriteOnce
   azureDisk:
     cachingMode: None
-    diskName: pvc-prometheus-migration-prometheus-0    
+    diskName: pvc-prometheus-migration-prometheus-0
     diskURI: /subscriptions/f5125d82-2622-4c50-8d25-3f7ba3e9ac4b/resourceGroups/sample-migration-resource-group/providers/Microsoft.Compute/disks/pvc-prometheus-migration-prometheus-0
     fsType: ""
     kind: Managed
