@@ -41,6 +41,9 @@ spec:
         args:
 {{ toYaml .Values.deployment.args | nindent 8 }}
         {{- end }}
+        ports:
+        - containerPort: 8080
+          name: http
         securityContext:
         {{- toYaml .Values.securityContext | nindent 10 -}}
         imagePullPolicy: {{ .Values.deployment.imagePullPolicy }}
