@@ -101,6 +101,10 @@ spec:
       containers:
       - name: halyard
         image: {{ .Values.halyard.image.repository }}:{{ .Values.halyard.image.tag }}
+{{- if .Values.halyard.additionalEnvs.create }}
+        env:
+{{ toYaml .Values.halyard.additionalEnvs.env | indent 8 }}
+{{- end -}}
         ports:
         - containerPort: 8064
           name: daemon
