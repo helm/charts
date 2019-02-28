@@ -74,18 +74,20 @@ spec:
         {{- if and .Values.credentials.useSecret (or (eq $provider "aws") (eq $provider "gcp")) }}
             - name: cloud-credentials
               mountPath: /credentials
+        {{- end }}
           env:
+        {{- if and .Values.credentials.useSecret (or (eq $provider "aws") (eq $provider "gcp")) }}
           {{- if eq $provider "aws" }}
             - name: AWS_SHARED_CREDENTIALS_FILE
           {{- else }}
             - name: GOOGLE_APPLICATION_CREDENTIALS
           {{- end }}
               value: /credentials/cloud
-          {{ if .Values.configuration.extraEnvVars }}
+        {{- end }}
+        {{ if .Values.configuration.extraEnvVars }}
           {{- range $key, $value := .Values.configuration.extraEnvVars }}
             - name: {{ default "none" $key }}
               value: {{ default "none" $value }}
-          {{- end }}
           {{- end }}
         {{- end }}
       volumes:
