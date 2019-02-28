@@ -26,6 +26,8 @@ spec:
         release: {{ .Release.Name | quote }}
         component: jupyter
     spec:
+      imagePullSecrets:
+{{ toYaml .Values.jupyter.image.pullSecrets | trimSuffix "\n" | indent 8 }}
       containers:
         - name: {{ template "dask.fullname" . }}-jupyter
           image: "{{ .Values.jupyter.image.repository }}:{{ .Values.jupyter.image.tag }}"
@@ -43,9 +45,10 @@ spec:
 {{- if .Values.jupyter.env }}
 {{ toYaml .Values.jupyter.env | indent 12 }}
 {{- end }}
+      nodeSelector:
+{{ toYaml .Values.jupyter.nodeSelector | trimSuffix "\n" | indent 8 }}
       volumes:
         - name: config-volume
           configMap:
             name: {{ template "dask.fullname" . }}-jupyter-config
-
 {{ end }}

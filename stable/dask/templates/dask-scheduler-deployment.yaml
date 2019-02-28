@@ -24,6 +24,8 @@ spec:
         release: {{ .Release.Name | quote }}
         component: scheduler
     spec:
+      imagePullSecrets:
+{{ toYaml .Values.scheduler.image.pullSecrets | trimSuffix "\n" | indent 8 }}
       containers:
         - name: {{ template "dask.fullname" . }}-scheduler
           image: "{{ .Values.scheduler.image.repository }}:{{ .Values.scheduler.image.tag }}"
@@ -41,3 +43,5 @@ spec:
 {{ toYaml .Values.scheduler.resources | trimSuffix "\n" | indent 12 }}
           env:
 {{ toYaml .Values.scheduler.env | trimSuffix "\n" | indent 12 }}
+      nodeSelector:
+{{ toYaml .Values.scheduler.nodeSelector | trimSuffix "\n" | indent 8 }}
