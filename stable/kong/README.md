@@ -96,6 +96,21 @@ and their default values.
 | resources                      | Pod resource requests & limits                                                   | `{}`                |
 | tolerations                    | List of node taints to tolerate                                                  | `[]`                |
 
+### Admin/Proxy listener override
+
+If you specify `env.admin_listen` or `env.proxy_listen`, this chart will use
+the value provided by you as opposed to constructing a listen variable
+from fields like `proxy.http.containerPort` and `proxy.http.enabled`. This allows
+you to be more prescriptive when defining listen directives.
+
+**Note:** Overriding `env.proxy_listen` and `env.admin_listen` will potentially cause 
+`admin.containerPort`, `proxy.http.containerPort` and `proxy.tls.containerPort` to become out of sync, 
+and therefore must be updated accordingly.
+
+I.E. updatating to `env.proxy_listen: 0.0.0.0:4444, 0.0.0.0:4443 ssl` will need 
+`proxy.http.containerPort: 4444` and `proxy.tls.containerPort: 4443` to be set in order 
+for the service definition to work properly.
+
 ### Kong-specific parameters
 
 Kong has a choice of either Postgres or Cassandra as a backend datatstore.
