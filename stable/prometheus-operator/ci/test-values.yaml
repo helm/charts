@@ -105,7 +105,7 @@ alertmanager:
       receiver: 'null'
       routes:
       - match:
-          alertname: DeadMansSwitch
+          alertname: Watchdog
         receiver: 'null'
     receivers:
     - name: 'null'
@@ -706,6 +706,10 @@ prometheus:
     annotations: {}
     labels: {}
     clusterIP: ""
+
+
+    ## To be used with a proxy extraContainer port
+    targetPort: 9090
 
     ## List of IP addresses at which the Prometheus server service is available
     ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips

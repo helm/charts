@@ -33,7 +33,7 @@ spec:
     nodePort: {{ .Values.prometheus.service.nodePort }}
     {{- end }}
     port: 9090
-    targetPort: web
+    targetPort: {{ .Values.prometheus.service.targetPort }}
 {{- if .Values.prometheus.service.additionalPorts }}
 {{ toYaml .Values.prometheus.service.additionalPorts | indent 2 }}
 {{- end }}

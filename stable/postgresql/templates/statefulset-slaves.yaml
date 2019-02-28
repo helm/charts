@@ -25,10 +25,10 @@ spec:
         release: {{ .Release.Name | quote }}
         heritage: {{ .Release.Service | quote }}
         role: slave
-{{- with .Values.slavePod.labels }}
+{{- with .Values.slave.podLabels }}
 {{ toYaml . | indent 8 }}
 {{- end }}
-{{- with .Values.slavePod.annotations }}
+{{- with .Values.slave.podAnnotations }}
       annotations:
 {{ toYaml . | indent 8 }}
 {{- end }}
