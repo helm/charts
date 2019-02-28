@@ -42,5 +42,5 @@ spec:
             - --store-endpoints={{ .Values.store.endpoints }}
             {{- end }}
             - --yes
-            - '{ "initMode": "new", {{- range $key, $value := .Values.clusterSpec }} {{ $key | quote }}: {{ if typeIs "string" $value }} {{ $value | quote }} {{ else }} {{ $value }} {{ end }}, {{- end }} "pgParameters": {{ toJson .Values.pgParameters }} }'
+            - '{{template "cluster.init-specification.json" .}}'
 {{ end }}

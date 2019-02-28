@@ -46,6 +46,13 @@ spec:
               export POD_IP=$(hostname -i)
               export STKEEPER_PG_LISTEN_ADDRESS=$POD_IP
               export STOLON_DATA=/stolon-data
+
+              {{- if .Values.standby.enabled -}}
+              cp /etc/secrets/stolon/standbypassword {{ template "standby.passwordfile.path" . }}
+              chmod 600 {{ template "standby.passwordfile.path" . }}
+              chown stolon:stolon {{ template "standby.passwordfile.path" . }}
+              {{- end }}
+
               chown stolon:stolon $STOLON_DATA
               exec gosu stolon stolon-keeper --data-dir $STOLON_DATA
           env:

@@ -59,6 +59,11 @@ store:
 pgParameters: {}
   # maxConnections: 1000
 
+standby:
+  enabled: false
+# primarySlotName: "stolon_readonly_cluster"
+# remoteHost: master-stolon-proxy.default.svc.cluster.local.
+
 ports:
   stolon:
     containerPort: 5432
@@ -69,7 +74,9 @@ job:
   autoCreateCluster: true
   autoUpdateClusterSpec: true
 
-clusterSpec: {}
+clusterSpec:
+  # additionalMasterReplicationSlots:
+  # - "readonly_cluster"
   # sleepInterval: 1s
   # maxStandbys: 5
 
