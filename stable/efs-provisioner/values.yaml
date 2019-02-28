@@ -38,6 +38,7 @@ efsProvisioner:
       gidMin: 40000
       gidMax: 50000
     reclaimPolicy: Delete
+    mountOptions: []
 
 ## Enable RBAC
 ##
