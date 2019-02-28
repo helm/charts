@@ -88,6 +88,9 @@ efsProvisioner:
       gidMin: 40000
       gidMax: 50000
     reclaimPolicy: Delete
+    mountOptions: []
+      # - acregmin=3
+      # - acregmax=60
 
 ## Enable RBAC
 ## Leave serviceAccountName blank for the default name
