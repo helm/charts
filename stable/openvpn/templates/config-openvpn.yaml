@@ -78,6 +78,8 @@ data:
       sed 's|OVPN_K8S_SEARCH|'"${FORMATTED_SEARCH}"'|' -i /etc/openvpn/openvpn.conf
       sed 's|OVPN_K8S_DNS|'"${DNS}"'|' -i /etc/openvpn/openvpn.conf
       sed 's|NETWORK|'"${NETWORK}"'|' -i /etc/openvpn/openvpn.conf
+      echo "up ip_forward..."
+      sysctl -w net.ipv4.ip_forward=1
 
       openvpn --config /etc/openvpn/openvpn.conf
   openvpn.conf: |-
