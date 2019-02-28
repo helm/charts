@@ -234,6 +234,11 @@ master:
     successThreshold: 1
     failureThreshold: 3
 
+  podDisruptionBudget:
+    enabled: false
+    minAvailable: 1
+    # maxUnavailable: 1
+
 slave:
   replicas: 2
 
@@ -329,6 +334,11 @@ slave:
     timeoutSeconds: 1
     successThreshold: 1
     failureThreshold: 3
+
+  podDisruptionBudget:
+    enabled: false
+    minAvailable: 1
+    # maxUnavailable: 1
 
 metrics:
   enabled: true
