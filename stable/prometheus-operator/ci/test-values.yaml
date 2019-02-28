@@ -576,6 +576,13 @@ prometheusOperator:
   ##
     nodePort: 38080
 
+  ## Additional ports to open for Prometheus service
+  ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#multi-port-services
+  ##
+    additionalPorts: []
+    #  - name: thanos-cluster
+    #    port: 10900
+    #    nodePort: 30111
 
   ## Loadbalancer IP
   ## Only use if service.type is "loadbalancer"
@@ -739,14 +746,6 @@ prometheus:
     ##
     nodePort: 39090
 
-    ## Additional ports to open for Prometheus service
-    ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#multi-port-services
-    ##
-    additionalPorts: []
-    #  - name: thanos-cluster
-    #    port: 10900
-    #    nodePort: 30111
-
     ## Loadbalancer IP
     ## Only use if service.type is "loadbalancer"
     loadBalancerIP: ""
@@ -864,6 +863,11 @@ prometheus:
     ## The ConfigMaps are mounted into /etc/prometheus/configmaps/.
     ##
     configMaps: []
+
+    ## QuerySpec defines the query command line flags when starting Prometheus.
+    ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#queryspec
+    ##
+    query: {}
 
     ## Namespaces to be selected for PrometheusRules discovery.
     ## If nil, select own namespace. Namespaces to be selected for ServiceMonitor discovery.
