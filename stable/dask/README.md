@@ -109,7 +109,7 @@ If you want to change the default parameters, you can do this in two ways.
 
 ### YAML Config Files
 
-You can change the default parameterss in `values.yaml`, or create your own 
+You can change the default parameters in `values.yaml`, or create your own
 custom YAML config file, and specify this file when installing your chart with
 the `-f` flag. Example:
 
@@ -134,19 +134,29 @@ helm install --name my-release --set jupyter.enabled=false stable/dask
 The default `daskdev/dask` images have a standard Miniconda installation along
 with some common packages like NumPy and Pandas.  You can install custom packages
 with either Conda or Pip using optional environment variables.  This happens
-when your container starts up.  Consider the following config.yaml file as an
-example:
+when your container starts up.  
+
+> **Note**: The `IP:PORT` of this chart's services will not be accessible until
+extra packages finish installing. Expect to wait at least a minute for the
+Jupyter Server to be accessible if adding packages below, like `numba`. This
+time will vary depending on which extra packages you choose to install.
+
+Consider the following YAML config as an example:
 
 ```yaml
 jupyter:
   env:
-    -  EXTRA_PIP_PACKAGES: s3fs git+https://github.com/user/repo.git --upgrade
-    -  EXTRA_CONDA_PACKAGES: scipy matplotlib -c conda-forge
+    - name: EXTRA_CONDA_PACKAGES
+      value: numba xarray -c conda-forge
+    - name: EXTRA_PIP_PACKAGES
+      value: s3fs dask-ml --upgrade
 
 worker:
   env:
-    -  EXTRA_PIP_PACKAGES: s3fs git+https://github.com/user/repo.git --upgrade
-    -  EXTRA_CONDA_PACKAGES: scipy -c conda-forge
+    - name: EXTRA_CONDA_PACKAGES
+    value: numba xarray -c conda-forge
+    - name: EXTRA_PIP_PACKAGES
+    value: s3fs dask-ml --upgrade
 ```
 
 Note that the Jupyter and Dask worker environments should have matching

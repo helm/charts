@@ -24,6 +24,8 @@ spec:
         release: {{ .Release.Name | quote }}
         component: worker
     spec:
+      imagePullSecrets:
+{{ toYaml .Values.worker.image.pullSecrets | trimSuffix "\n" | indent 8 }}
       containers:
         - name: {{ template "dask.fullname" . }}-worker
           image: "{{ .Values.worker.image.repository }}:{{ .Values.worker.image.tag }}"
@@ -44,6 +46,8 @@ spec:
 {{ toYaml .Values.worker.resources | trimSuffix "\n" | indent 12 }}
           env:
 {{ toYaml .Values.worker.env | trimSuffix "\n" | indent 12 }}
+      nodeSelector:
+{{ toYaml .Values.worker.nodeSelector | trimSuffix "\n" | indent 8 }}
       tolerations:
         - key: "k8s.dask.org_dedicated"
           operator: "Equal"
@@ -53,3 +57,4 @@ spec:
           operator: "Equal"
           value: "worker"
           effect: "NoSchedule"
+
