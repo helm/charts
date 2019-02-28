@@ -318,14 +318,14 @@ Agent:
   # Raw yaml template for the Pod. For example this allows usage of toleration for agent pods.
   # https://github.com/jenkinsci/kubernetes-plugin#using-yaml-to-define-pod-templates
   # https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
-  # YamlTemplate: |-
-  #   apiVersion: v1
-  #   kind: Pod
-  #   spec:
-  #     tolerations:
-  #     - key: "key"
-  #       operator: "Equal"
-  #       value: "value"
+  YamlTemplate: |-
+    apiVersion: v1
+    kind: Pod
+    spec:
+      tolerations:
+      - key: "key"
+        operator: "Equal"
+        value: "value"
 
 Persistence:
   Enabled: true
