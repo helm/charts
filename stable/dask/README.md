@@ -159,6 +159,6 @@ worker:
     value: s3fs dask-ml --upgrade
 ```
 
-Note that the Jupyter and Dask worker environments should have matching
+> **Note**: The Jupyter and Dask-worker environments should have matching
 software environments, at least where a user is likely to distribute that
 functionality.
