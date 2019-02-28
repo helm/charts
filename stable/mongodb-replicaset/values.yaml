@@ -66,6 +66,7 @@ metrics:
 podAnnotations: {}
 
 securityContext:
+  enabled: true
   runAsUser: 999
   fsGroup: 999
   runAsNonRoot: true
