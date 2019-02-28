@@ -49,7 +49,7 @@ spec:
       securityContext:
 {{ toYaml .Values.securityContext | indent 8 }}
       initContainers:
-{{- if .Values.hostPath }}
+{{- if and .Values.hostPath.path .Values.hostPath.chown }}
       - name: hostpath-chown
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         securityContext:
@@ -239,10 +239,10 @@ spec:
       storageClassName: "{{ .Values.persistentVolume.storageClass }}"
     {{- end }}
     {{- end }}
-{{- else if .Values.hostPath }}
+{{- else if .Values.hostPath.path }}
       - name: data
         hostPath:
-          path: {{ tpl .Values.hostPath .}}
+          path: {{ tpl .Values.hostPath.path .}}
 {{- else }}
       - name: data
         emptyDir: {}
