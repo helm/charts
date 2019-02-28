@@ -8,6 +8,9 @@ scheduler:
     repository: "daskdev/dask"
     tag: 1.1.1
     pullPolicy: IfNotPresent
+    # See https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+    pullSecrets:
+    #  - name: regcred
   replicas: 1
   # serviceType: "ClusterIP"
   # serviceType: "NodePort"
@@ -20,6 +23,8 @@ scheduler:
   #  requests:
   #    cpu: 1.8
   #    memory: 6G
+  nodeSelector:
+  #  node-role.kubernetes.io/master: ""
 
 webUI:
   name: webui
@@ -31,6 +36,8 @@ worker:
     repository: "daskdev/dask"
     tag: 1.1.1
     pullPolicy: IfNotPresent
+    pullSecrets:
+    #  - name: regcred
   replicas: 3
   aptPackages: >-
   default_resources:  # overwritten by resource limits if they exist
@@ -50,6 +57,8 @@ worker:
   #    cpu: 1
   #    memory: 3G
   #    nvidia.com/gpu: 1
+  nodeSelector:
+  #  node-role.kubernetes.io/master: ""
 
 jupyter:
   name: jupyter
@@ -58,6 +67,8 @@ jupyter:
     repository: "daskdev/dask-notebook"
     tag: 1.1.1
     pullPolicy: IfNotPresent
+    pullSecrets:
+    #  - name: regcred
   replicas: 1
   #serviceType: "ClusterIP"
   #serviceType: "NodePort"
@@ -67,9 +78,9 @@ jupyter:
   password: 'sha1:aae8550c0a44:9507d45e087d5ee481a5ce9f4f16f37a0867318c'
   env:
   #  - name: EXTRA_CONDA_PACKAGES
-  #    value: numba xarray -c conda-forge
+  #    value: "numba xarray -c conda-forge"
   #  - name: EXTRA_PIP_PACKAGES
-  #    value: s3fs dask-ml --upgrade
+  #    value: "s3fs dask-ml --upgrade"
   resources: {}
   #  limits:
   #    cpu: 2
@@ -77,3 +88,5 @@ jupyter:
   #  requests:
   #    cpu: 2
   #    memory: 6G
+  nodeSelector:
+  #  node-role.kubernetes.io/master: ""
