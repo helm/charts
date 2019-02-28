@@ -16,7 +16,7 @@ replicaCount: 1
 ## Pod disruption budget minAvailable count
 ## Ensure this value is lower than replicaCount in order to allow a worker
 ## node to drain successfully
-pdbMinAvailable: 2
+pdbMinAvailable: 0
 
 ## Select AntiAffinity as either hard or soft, default is hard
 AntiAffinity: "hard"
