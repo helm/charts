@@ -36,6 +36,8 @@ worker:
     repository: "daskdev/dask"
     tag: 1.1.1
     pullPolicy: IfNotPresent
+    #dask_worker: "dask-cuda-worker"
+    dask_worker: "dask-worker"
     pullSecrets:
     #  - name: regcred
   replicas: 3

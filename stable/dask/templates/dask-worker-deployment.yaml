@@ -31,7 +31,7 @@ spec:
           image: "{{ .Values.worker.image.repository }}:{{ .Values.worker.image.tag }}"
           imagePullPolicy: {{ .Values.worker.image.pullPolicy }}
           args:
-            - dask-worker
+            - {{ .Values.worker.image.dask_worker }}
             - {{ template "dask.fullname" . }}-scheduler:{{ .Values.scheduler.servicePort }}
           {{- if .Values.worker.resources.limits }}
             - --nthreads
