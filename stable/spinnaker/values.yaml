@@ -40,6 +40,13 @@ halyard:
   ## run by the init container before halyard is started.
   # additionalInitScript: |-
 
+  # Enable if you want to hand additional Environment Variables to the chart, such as JAVA_OPTS.
+  additionalEnvs:
+    create: false
+    env:
+      - name: JAVA_OPTS
+        value: -Dhttps.proxyHost=proxyurl -Dhttps.proxyPort=8080 -Dhttp.proxyHost=proxyurl -Dhttp.proxyPort=8080 -DnonProxyHosts=.domain,*.domain,localhost,127.0.0.1 -Djavax.net.debug=all
+
 # Define which registries and repositories you want available in your
 # Spinnaker pipeline definitions
 # For more info visit:
