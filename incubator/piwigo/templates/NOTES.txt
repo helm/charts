@@ -1,0 +1,10 @@
+Piwigo has been installed. You can access the server from within the k8s cluster using:
+
+  {{ template "piwigo.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
+
+Please visit it in your browser to run the installation procedure.  You will need the username and password from secret {{ default (printf "%s-%s" (include "piwigo.fullname" .) "db") .Values.mariadb.existingSecret }}
+
+{{- if .Values.mariadb.deploy }}
+The hostname for your MariaDB service is {{ template "mariadb.fullname" }}.{{ .Release.Namespace }}.svc.cluster.local - you will need this for the installation procedure
+{{- end }}
+

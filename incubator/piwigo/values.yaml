@@ -1,0 +1,91 @@
+# Default values for piwigo.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+image:
+  # From repository https://github.com/Piwigo/Piwigo
+  repository: mathieuruellan/piwigo
+  tag: release-2.9.4
+  pullPolicy: IfNotPresent
+
+replicaCount: 1
+
+## Add additional labels to all resources
+extraLabels: {}
+
+mariadb:
+  deploy: false
+  nameOverride: db
+  existingSecret: piwigo-db
+  replication:
+    enabled: false
+  db:
+    user: piwigo
+    password:
+
+database:
+  storage_engine: MyISAM
+
+service:
+  annotations: {}
+  type: ClusterIP
+  clusterIP: ""
+
+  port: 80
+  ## List of IP addresses at which the service is available
+  ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
+  ##
+  externalIPs: []
+
+  loadBalancerIP: ""
+  loadBalancerSourceRanges: []
+
+ingress:
+  enabled: false
+  class:
+  annotations: {}
+  path: /
+  hosts:
+    - piwigo
+  tls: []
+    # - secretName: piwigo-tls
+    #    hosts:
+    #      - piwigo
+
+## Persist configuration to a persistent volume
+persistence:
+  ## Data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If unset, storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  data:
+    enabled: true
+    existingClaim:
+    storageClass:
+    accessMode: ReadWriteMany
+    size: 256Gi
+  config:
+    enabled: true
+    existingClaim:
+    storageClass:
+    accessMode: ReadWriteMany
+    size: 4Gi
+  ## Set this to mount a custom VolumeSpec in for galleries, in cases of e.g. shared storage; leaving it empty will put it in the data volume under "galleries"
+  galleries: {}
+
+resources:
+  requests:
+    cpu: "1"
+    memory: "256Mi"
+  limits:
+    cpu: "2"
+    memory: "512Mi"
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

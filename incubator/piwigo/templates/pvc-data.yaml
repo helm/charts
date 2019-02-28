@@ -1,0 +1,23 @@
+{{- if and .Values.persistence.data.enabled (not .Values.persistence.data.existingClaim) }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ template "piwigo.fullname" . }}-data
+  labels:
+    {{- include "piwigo.labels" . | nindent 4 }}
+    app.kubernetes.io/component: server
+spec:
+  accessModes:
+    - {{ .Values.persistence.data.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.data.size | quote }}
+  {{- if .Values.persistence.data.storageClass }}
+  {{- if not .Values.persistence.data.storageClass }}
+  storageClassName: ""
+  {{- else }}
+  storageClassName: {{ .Values.persistence.data.storageClass | quote }}
+  {{- end }}
+  {{- end }}
+{{- end }}
+

@@ -1,0 +1,17 @@
+apiVersion: v1
+appVersion: 2.9.4
+description: Piwigo is open source photo gallery software for the web.
+name: piwigo
+version: 0.0.1
+keywords:
+  - piwigo
+  - photos
+  - gallery
+home: https://piwigo.org/
+sources:
+  - https://github.com/Piwigo/Piwigo
+  - https://github.com/mathieuruellan/docker-piwigo
+  - https://github.com/helm/charts/tree/master/incubator/piwigo
+maintainers:
+  - name: mcronce
+    email: mike@quadra-tec.net

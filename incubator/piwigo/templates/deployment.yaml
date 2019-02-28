@@ -1,0 +1,93 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name:  {{ template "piwigo.fullname" . }}
+  labels:
+    {{- include "piwigo.labels" . | nindent 4 }}
+    app.kubernetes.io/component: server
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "piwigo.labels" . | nindent 6 }}
+      app.kubernetes.io/component: server
+  template:
+    metadata:
+      labels:
+        {{- include "piwigo.labels" . | nindent 8 }}
+        app.kubernetes.io/component: server
+    spec:
+      containers:
+        - name: piwigo
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 80
+          env:
+            - name: PIWIGO_MYSQL_ENGINE
+              value: {{ .Values.database.storage_engine | quote }}
+          volumeMounts:
+            - mountPath: /var/www/galleries
+              {{- if .Values.persistence.galleries }}
+              name: galleries
+              {{- else }}
+              name: data
+              subPath: galleries
+              {{- end }}
+            - mountPath: /var/www/upload
+              name: data
+              subPath: upload
+            - mountPath: /var/www/_data/i
+              name: data
+              subPath: cache
+            - mountPath: /var/www/_data/combined
+              name: data
+              subPath: combined
+            - mountPath: /config
+              name: config
+              subPath: config
+            - mountPath: /var/www/local
+              name: config
+              subPath: app-config
+            - mountPath: /var/www/plugins
+              name: config
+              subPath: plugins
+            - mountPath: /var/www/themes
+              name: config
+              subPath: themes
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 2
+            failureThreshold: 5
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      nodeSelector:
+        {{- toYaml .Values.nodeSelector | nindent 8 }}
+      affinity:
+        {{- toYaml .Values.affinity | nindent 8 }}
+      tolerations:
+        {{- toYaml .Values.tolerations | nindent 8 }}
+      volumes:
+        {{- if .Values.persistence.galleries }}
+        - name: galleries
+          {{- toYaml .Values.persistence.galleries | nindent 10 }}
+        {{- end }}
+        - name: data
+          {{- if .Values.persistence.data.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.data.existingClaim | default (printf "%s-%s" (include "piwigo.fullname" .) "data") }}
+          {{- else }}
+          emptyDir: {}
+          {{- end }}
+        - name: config
+          {{- if .Values.persistence.config.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.config.existingClaim | default (printf "%s-%s" (include "piwigo.fullname" .) "config") }}
+          {{- else }}
+          emptyDir: {}
+          {{- end }}
+
