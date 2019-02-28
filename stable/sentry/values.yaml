@@ -61,6 +61,11 @@ worker:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  livenessProbeCmd:
+    - sentry
+    - exec
+    - -c
+    - 'import celery, os; print(celery.task.control.inspect().ping().get("celery@{}".format(os.environ["HOSTNAME"]))["ok"])'
   # schedulerName:
 
 # Admin user to create

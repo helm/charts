@@ -46,6 +46,13 @@ spec:
         args: ["run", "worker"]
         ports:
         - containerPort: {{ .Values.service.internalPort }}
+{{- if .Values.worker.livenessProbeCmd }}
+        livenessProbe:
+          periodSeconds: 60
+          exec:
+            command:
+{{ toYaml .Values.worker.livenessProbeCmd | indent 12 }}
+        {{- end }}
         env:
         - name: SENTRY_SECRET_KEY
           valueFrom:

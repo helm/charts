@@ -78,6 +78,7 @@ The following table lists the configurable parameters of the Sentry chart and th
 | `cron.affinity`                      | Affinity settings for cron pod assignment   | `{}`                                                       |
 | `cron.schedulerName`                 | Name of an alternate scheduler for cron pod | `nil`                                                      |
 | `cron.tolerations`                   | Toleration labels for cron pod assignment   | `[]`                                                       |
+| `worker.livenessProbeCmd`              | Liveness probe exec command for worker    | `['sentry', 'exec', '-c', 'import celery, os; print(celery.task.control.inspect().ping().get("celery@{}".format(os.environ["HOSTNAME"]))["ok"]'`                    |
 | `worker.podAnnotations`              | Worker pod annotations                      | `{}`                                                       |
 | `worker.replicacount`                | Amount of worker pods to run                | `2`                                                        |
 | `worker.resources.limits`            | Worker resource limits                      | `{cpu: 300m, memory: 500Mi}`                               |
