@@ -61,6 +61,7 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `mongodbPassword`                                  | MongoDB custom user password                                                                 | `random alphanumeric string (10)`                       |
 | `mongodbDatabase`                                  | Database to create                                                                           | `nil`                                                   |
 | `mongodbEnableIPv6`                                | Switch to enable/disable IPv6 on MongoDB                                                     | `true`                                                  |
+| `mongodbDirectoryPerDB`                            | Switch to enable/disable DirectoryPerDB on MongoDB                                           | `false`                                                 |
 | `mongodbSystemLogVerbosity`                        | MongoDB systen log verbosity level                                                           | `0`                                                     |
 | `mongodbDisableSystemLog`                          | Whether to disable MongoDB system log or not                                                 | `false`                                                 |
 | `mongodbExtraFlags`                                | MongoDB additional command line flags                                                        | []                                                      |

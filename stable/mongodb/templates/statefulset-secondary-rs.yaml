@@ -119,6 +119,12 @@ spec:
           {{- else }}
             value: "no"
           {{- end }}
+          - name: MONGODB_ENABLE_DIRECTORY_PER_DB
+          {{- if .Values.mongodbDirectoryPerDB }}
+            value: "yes"
+          {{- else }}
+            value: "no"
+          {{- end }}
           {{- if .Values.mongodbExtraFlags }}
           - name: MONGODB_EXTRA_FLAGS
             value: {{ .Values.mongodbExtraFlags | join " " }}
