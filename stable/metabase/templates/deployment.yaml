@@ -86,7 +86,6 @@ spec:
           {{- if .Values.javaOpts }}
           - name: JAVA_OPTS
             value: {{ .Values.javaOpts | quote }}
-            {{- end }}
           {{- else }}
             {{- if .Values.log4jProperties }}
           - name: JAVA_OPTS
