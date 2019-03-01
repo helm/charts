@@ -8,6 +8,9 @@ image:
 ## replicas number for each component
 replicas: 3
 
+## Custom labels for the redis pod
+labels: {}
+
 ## Redis specific configuration options
 redis:
   port: 6379
@@ -91,6 +94,23 @@ affinity: |
               release: {{ .Release.Name }}
           topologyKey: failure-domain.beta.kubernetes.io/zone
 
+# Prometheus exporter specific configuration options
+exporter:
+  enabled: false
+  image: oliver006/redis_exporter
+  tag: v0.28.0
+  pullPolicy: IfNotPresent
+
+  # prometheus port & scrape path
+  port: 9121
+  scrapePath: /metrics
+
+  # cpu/memory resource limits/requests
+  resources: {}
+
+  # Additional args for redis exporter
+  extraArgs: {}
+
 podDisruptionBudget: {}
   # maxUnavailable: 1
   # minAvailable: 1
@@ -118,3 +138,15 @@ persistentVolume:
   annotations: {}
 init:
   resources: {}
+
+# To use a hostPath for data, set persistentVolume.enabled to false
+# and define hostPath.path.
+# Warning: this might overwrite existing folders on the host system!
+hostPath:
+  ## path is evaluated as template so placeholders are replaced
+  # path: "/data/{{ .Release.Name }}"
+
+  # if chown is true, an init-container with root permissions is launched to
+  # change the owner of the hostPath folder to the user defined in the
+  # security context
+  chown: true

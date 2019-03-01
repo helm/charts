@@ -12,6 +12,9 @@ spec:
     metadata:
       labels:
         app: {{ template "mysql.fullname" . }}
+{{- with .Values.podLabels }}
+{{ toYaml . | indent 8 }}
+{{- end }}
 {{- with .Values.podAnnotations }}
       annotations:
 {{ toYaml . | indent 8 }}

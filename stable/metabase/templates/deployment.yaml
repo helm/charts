@@ -84,15 +84,12 @@ spec:
           - name: JAVA_TIMEZONE
             value: {{ .Values.timeZone }}
           {{- if .Values.javaToolOptions }}
-          - name: JAVA_TOOL_OPTIONS
-            {{- if .Values.log4jProperties }}
-            value: {{ printf "%s -Dlog4j.configuration=file:/tmp/conf/log4j.properties" .Values.javaToolOptions | quote }}
-            {{- else }}
+          - name: JAVA_OPTS
             value: {{ .Values.javaToolOptions | quote }}
             {{- end }}
           {{- else }}
             {{- if .Values.log4jProperties }}
-          - name: JAVA_TOOL_OPTIONS
+          - name: JAVA_OPTS
             value: "-Dlog4j.configuration=file:/tmp/conf/log4j.properties"
             {{- end }}
           {{- end }}

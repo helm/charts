@@ -2,8 +2,6 @@
 
 [oauth2-proxy](https://github.com/pusher/oauth2_proxy) is a reverse proxy and static file server that provides authentication using Providers (Google, GitHub, and others) to validate accounts by email, domain or group.
 
-**Note - at this time, there is a known incompatibility between `oauth2-proxy` version 2.2 (which is its latest release) and `nginx-ingress` versions >= 0.9beta12. To utilize this chart at this time please use nginx-ingress version 0.9beta11**
-
 ## TL;DR;
 
 ```console
@@ -48,10 +46,11 @@ Parameter | Description | Default
 `config.clientSecret` | oauth client secret | `""`
 `config.cookieSecret` | server specific cookie for the secret; create a new one with `python -c 'import os,base64; print base64.b64encode(os.urandom(16))'` | `""`
 `config.configFile` | custom [oauth2_proxy.cfg](https://github.com/pusher/oauth2_proxy/blob/master/contrib/oauth2_proxy.cfg.example) contents for settings not overridable via environment nor command line | `""`
+`config.existingSecret` | existing Kubernetes secret to use for OAuth2 credentials. See [secret template](https://github.com/helm/charts/blob/master/stable/oauth2-proxy/templates/secret.yaml) for the required values | `nil`
 `extraArgs` | key:value list of extra arguments to give the binary | `{}`
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
-`image.repository` | Image repository | `a5huynh/oauth2_proxy`
-`image.tag` | Image tag | `2.2`
+`image.repository` | Image repository | `quay.io/pusher/oauth2_proxy`
+`image.tag` | Image tag | `v3.1.0`
 `imagePullSecrets` | Specify image pull secrets | `nil` (does not add image pull secrets to deployed pods)
 `ingress.enabled` | enable ingress | `false`
 `nodeSelector` | node labels for pod assignment | `{}`
@@ -59,7 +58,7 @@ Parameter | Description | Default
 `podLabels` | additional labesl to add to each pod | `{}`
 `replicaCount` | desired number of pods | `1`
 `resources` | pod resource requests & limits | `{}`
-`priorityClassName` | priorityClassName | `nil` 
+`priorityClassName` | priorityClassName | `nil`
 `service.port` | port for the service | `80`
 `service.type` | type of service | `ClusterIP`
 `tolerations` | List of node taints to tolerate | `[]`
