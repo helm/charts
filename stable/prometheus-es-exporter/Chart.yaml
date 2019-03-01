@@ -5,3 +5,6 @@ name: prometheus-es-exporter
 version: 0.0.1
 appVersion: "1.0"
 home: https://github.com/braedon/prometheus-es-exporter
+maintainers:
+  - name: Àlex Pérez-Pujol
+    email: alexperezpujol@disroot.org
