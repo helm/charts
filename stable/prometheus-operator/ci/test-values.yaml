@@ -867,6 +867,7 @@ prometheus:
     ## QuerySpec defines the query command line flags when starting Prometheus.
     ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#queryspec
     ##
+
     query: {}
 
     ## Namespaces to be selected for PrometheusRules discovery.
