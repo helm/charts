@@ -206,16 +206,20 @@ spec:
               containerPort: 3000
               protocol: TCP
           env:
+            {{- if not .Values.env.GF_SECURITY_ADMIN_USER }}
             - name: GF_SECURITY_ADMIN_USER
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.admin.existingSecret | default (include "grafana.fullname" .) }}
                   key: {{ .Values.admin.userKey | default "admin-user" }}
+            {{- end }}
+            {{- if not .Values.env.GF_SECURITY_ADMIN_PASSWORD }}
             - name: GF_SECURITY_ADMIN_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.admin.existingSecret | default (include "grafana.fullname" .) }}
                   key: {{ .Values.admin.passwordKey | default "admin-password" }}
+            {{- end }}
             {{- if .Values.plugins }}
             - name: GF_INSTALL_PLUGINS
               valueFrom:
