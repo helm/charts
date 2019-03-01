@@ -44,6 +44,15 @@ daemonset:
     # need it
     type: RollingUpdate
 
+ebpf:
+  # Enable eBPF support for Sysdig Agent
+  enabled: false
+
+  settings:
+    # Needed to correctly detect the kernel version for the eBPF program
+    # Set to false if not running on Google COS
+    mountEtcVolume: true
+
 sysdig:
     # Required: You need your Sysdig Monitor access key before running agents.
     # accessKey: ""
