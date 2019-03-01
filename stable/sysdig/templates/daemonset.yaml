@@ -35,6 +35,11 @@ spec:
 {{ toYaml .Values.resources | indent 12 }}
           securityContext:
             privileged: true
+          {{- if .Values.ebpf.enabled }}
+          env:
+            - name: SYSDIG_BPF_PROBE
+              value:
+          {{- end }}
           readinessProbe:
             exec:
               command: [ "test", "-e", "/opt/draios/logs/running" ]
@@ -65,6 +70,11 @@ spec:
               name: sysdig-agent-config
             - mountPath: /opt/draios/etc/kubernetes/secrets
               name: sysdig-agent-secrets
+            {{- if (and .Values.ebpf.enabled .Values.ebpf.settings.mountEtcVolume) }}
+            - mountPath: /host/etc
+              name: etc-fs
+              readOnly: true
+            {{- end }}
             {{- if .Values.customAppChecks }}
             - mountPath: /opt/draios/lib/python/checks.custom.d
               name: custom-app-checks-volume
@@ -94,6 +104,11 @@ spec:
         - name: varrun-vol
           hostPath:
             path: /var/run
+        {{- if (and .Values.ebpf.enabled .Values.ebpf.settings.mountEtcVolume) }}
+        - name: etc-fs
+          hostPath:
+            path: /etc
+        {{- end }}
         - name: sysdig-agent-config
           configMap:
             name: {{ template "sysdig.fullname" . }}
