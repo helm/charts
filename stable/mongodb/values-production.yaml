@@ -55,6 +55,11 @@ usePassword: true
 ##
 mongodbEnableIPv6: true
 
+## Whether enable/disable DirectoryPerDB on MongoDB
+## ref: https://github.com/bitnami/bitnami-docker-mongodb/blob/master/README.md#enabling/disabling-directoryperdb
+##
+mongodbDirectoryPerDB: false
+
 ## MongoDB System Log configuration
 ## ref: https://github.com/bitnami/bitnami-docker-mongodb#configuring-system-log-verbosity-level
 ##
