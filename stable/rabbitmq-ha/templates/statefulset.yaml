@@ -146,6 +146,12 @@ spec:
             {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
+          {{- if .Values.securityContext.enabled }}
+          securityContext:
+            runAsGroup: {{ .Values.securityContext.runAsGroup }}
+            runAsNonRoot: {{ .Values.securityContext.runAsNonRoot }}
+            runAsUser: {{ .Values.securityContext.runAsUser }}
+          {{- end }}
           volumeMounts:
             - name: {{ .Values.persistentVolume.name }}
               mountPath: /var/lib/rabbitmq
