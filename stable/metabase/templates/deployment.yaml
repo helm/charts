@@ -83,9 +83,9 @@ spec:
             value: {{ .Values.password.length | quote }}
           - name: JAVA_TIMEZONE
             value: {{ .Values.timeZone }}
-          {{- if .Values.javaToolOptions }}
+          {{- if .Values.javaOpts }}
           - name: JAVA_OPTS
-            value: {{ .Values.javaToolOptions | quote }}
+            value: {{ .Values.javaOpts | quote }}
             {{- end }}
           {{- else }}
             {{- if .Values.log4jProperties }}

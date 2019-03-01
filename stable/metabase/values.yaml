@@ -44,7 +44,7 @@ password:
 
 timeZone: UTC
 emojiLogging: true
-# javaToolOptions:
+# javaOpts:
 # pluginsDirectory:
 
 service:
