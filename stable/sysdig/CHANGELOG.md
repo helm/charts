@@ -3,6 +3,13 @@
 This file documents all notable changes to Sysdig Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v1.4.0
+
+### Major Changes
+
+* Use the latest image from Agent (0.89.0) by default.
+* eBPF support added.
+
 ## v1.3.2
 
 ### Minor Changes
