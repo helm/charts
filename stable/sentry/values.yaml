@@ -92,7 +92,7 @@ email:
 # Don't change these unless you know what you're doing
 service:
   name: sentry
-  type: LoadBalancer
+  type: ClusterIP
   externalPort: 9000
   internalPort: 9000
 
