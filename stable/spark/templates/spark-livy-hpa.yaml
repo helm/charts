@@ -1,0 +1,23 @@
+{{- if .Values.Livy.Autoscaling.Enabled }}
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  labels:
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    component: "{{ .Release.Name }}-{{ .Values.Livy.Component }}"
+  name: {{ template "livy-fullname" . }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1beta1
+    kind: Deployment
+    name: {{ template "livy-fullname" . }}
+  minReplicas: {{ .Values.Livy.Replicas }}
+  maxReplicas: {{ .Values.Livy.ReplicasMax }}
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      targetAverageUtilization: {{ .Values.Livy.CpuTargetPercentage }}
+{{- end }}

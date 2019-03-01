@@ -8,17 +8,23 @@ Spark:
 
 Master:
   Name: master
-  Image: "k8s.gcr.io/spark"
-  ImageTag: "1.5.1_v3"
+  Image: "dbanda/spark2.4"
+  ImageTag: "v3"
   Replicas: 1
   Component: "spark-master"
   Cpu: "100m"
-  Memory: "512Mi"
+  Memory: "1024Mi"
   ServicePort: 7077
   ContainerPort: 7077
   # Set Master JVM memory. Default 1g
   # DaemonMemory: 1g
   ServiceType: LoadBalancer
+
+WorkerLB:
+  Name: workerlb
+  Component: "workerlb"
+  ServicePort: 8080
+  ContainerPort: 8080
 
 WebUi:
   Name: webui
@@ -27,32 +33,35 @@ WebUi:
 
 Worker:
   Name: worker
-  Image: "k8s.gcr.io/spark"
-  ImageTag: "1.5.1_v3"
-  Replicas: 3
+  Image: "dbanda/spark2.4"
+  ImageTag: "v3"
+  Replicas: 2
   Component: "spark-worker"
   Cpu: "100m"
-  Memory: "512Mi"
+  Memory: "2048Mi"
   ContainerPort: 8081
   # Set Worker JVM memory. Default 1g
   # DaemonMemory: 1g
   # Set how much total memory workers have to give executors
   # ExecutorMemory: 1g
   Autoscaling:
-    Enabled: false
+    Enabled: true
   ReplicasMax: 10
   CpuTargetPercentage: 50
 
+
 Zeppelin:
   Name: zeppelin
-  Image: "apache/zeppelin"
-  ImageTag: "0.7.3"
+  Image: "dbanda/zeppelin"
+  ImageTag: "v4"
   Replicas: 1
   Component: "zeppelin"
   Cpu: "100m"
+  Memory: "2048Mi"
   ServicePort: 8080
   ContainerPort: 8080
   ServiceType: LoadBalancer
+  Enabled: true
   Ingress:
     Enabled: false
     Path: "/"
@@ -90,3 +99,20 @@ Zeppelin:
       StorageClass: "-"
       Size: 10G
       AccessMode: ReadWriteOnce
+
+Livy:
+  Enabled: true
+  Name: livy
+  Image: "dbanda/livy"
+  ImageTag: "v4"
+  Replicas: 1
+  Component: "livy"
+  Cpu: "100m"
+  Memory: "1024Mi"
+  ServicePort: 8998
+  ContainerPort: 8998
+  ServiceType: LoadBalancer
+  Autoscaling:
+    Enabled: false
+  ReplicasMax: 3
+  CpuTargetPercentage: 50

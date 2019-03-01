@@ -1,0 +1,27 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ template "workerlb-fullname" . }}
+spec:
+  selector:
+    component: "{{ .Release.Name }}-{{ .Values.Worker.Component }}"
+  ports:
+  - name: driverport
+    port: 8085
+    targetPort: 8085
+  - name: webui
+    port: 8081
+    targetPort: 8081
+  - name: monitor
+    port: 4040
+    targetPort: 4040
+  - name: server
+    port: 8888
+    targetPort: 8888
+  - name: misc
+    port: 8889
+    targetPort: 8889
+  - name: webui2
+    port: 8080
+    targetPort: 8080
+  type: LoadBalancer

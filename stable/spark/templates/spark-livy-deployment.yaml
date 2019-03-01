@@ -1,0 +1,66 @@
+{{- if .Values.Livy.Enabled }}
+# Livy deployment 
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "livy-fullname" . }}
+  labels:
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    component: "{{ .Release.Name }}-{{ .Values.Livy.Component }}"
+spec:
+  replicas: {{ default 1 .Values.Livy.Replicas }}
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      component: "{{ .Release.Name }}-{{ .Values.Livy.Component }}"
+  template:
+    metadata:
+      labels:
+        heritage: {{ .Release.Service | quote }}
+        release: {{ .Release.Name | quote }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        component: "{{ .Release.Name }}-{{ .Values.Livy.Component }}"
+    spec:
+      containers:
+        - name: {{ template "livy-fullname" . }}
+          image: "{{ .Values.Livy.Image }}:{{ .Values.Livy.ImageTag }}"
+          ports:
+            - containerPort: {{ .Values.Livy.ContainerPort }}
+              name: http
+          resources:
+            requests:
+              cpu: "{{ .Values.Livy.Cpu }}"
+              memory: "{{ .Values.Livy.Memory }}"
+          env:
+            - name: SPARK_MASTER
+              value: "spark://{{ template "master-fullname" . }}:{{ .Values.Master.ServicePort }}"
+            - name: SPARK_HOME
+              value: "/opt/spark"
+            - name : HADOOP_HOME
+              value : "/opt/hadoop"
+            - name : SPARK_CONF_DIR 
+              value : "/opt/spark/conf"
+            - name : HOST
+              value: "0.0.0.0"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "livy-fullname" . }}
+  labels:
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    component: "{{ .Release.Name }}-{{ .Values.Livy.Component }}"
+spec:
+  ports:
+    - name: http
+      port: {{ .Values.Livy.ServicePort }}
+      targetPort: {{ .Values.Livy.ContainerPort }}
+  selector:
+    component: "{{ .Release.Name }}-{{ .Values.Livy.Component }}"
+  type: {{ .Values.Livy.ServiceType }}
+{{- end }}
