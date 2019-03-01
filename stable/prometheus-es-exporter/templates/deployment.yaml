@@ -1,0 +1,71 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ include "prometheus-es-exporter.fullname" . }}
+  labels:
+    app: {{ include "prometheus-es-exporter.name" . }}
+    chart: {{ include "prometheus-es-exporter.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "prometheus-es-exporter.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args:
+            - "-p"
+            - "{{ .Values.service.port }}"
+            - "-e"
+            - "{{ required "A valid .Values.elasticsearch.url entry required!" .Values.elasticsearch.url }}"
+           {{- if not .Values.elasticsearch.queries }}
+            - "--query-disable"
+           {{- end }}
+           {{- if .Values.containerExtraArgs }}
+           {{- range .Values.containerExtraArgs }}
+            - {{ . }}
+           {{- end }}
+           {{- end }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          volumeMounts:
+            - mountPath: /usr/src/app/exporter.cfg
+              subPath: "exporter.cfg"
+              name: {{ include "prometheus-es-exporter.fullname" . }}
+{{ if .Values.resources }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+{{ end }}
+      volumes:
+        - name: {{ include "prometheus-es-exporter.fullname" . }}
+          configMap:
+            name: {{ include "prometheus-es-exporter.fullname" . }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}

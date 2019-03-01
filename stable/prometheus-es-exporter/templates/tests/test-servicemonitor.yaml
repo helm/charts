@@ -1,0 +1,19 @@
+---
+{{ if .Values.prometheus.serviceMonitor }}
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ .Release.Name }}-servicemonitor-test"
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+  - name: "{{ .Release.Name }}-servicemonitor-test"
+    image: alpine:3.7
+    command:
+      - "sh"
+      - "-c"
+      # TODO use the api instead of using an awful if
+      - "apk add -U curl && curl --silent {{ .Values.elasticsearch.url }} && if [ -n \"`curl --silent http://{{ .Values.prometheus.name }}:9090/targets | grep {{ include "prometheus-es-exporter.fullname" . }}`\" ]; then return 0; else return 1; fi"
+  restartPolicy: Never
+{{ end }}

@@ -1,0 +1,15 @@
+{{ if .Values.elasticsearch.queries }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "prometheus-es-exporter.fullname" . }}
+  labels:
+    app: {{ include "prometheus-es-exporter.name" . }}
+    chart: {{ include "prometheus-es-exporter.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  exporter.cfg: |
+{{ .Values.elasticsearch.queries | indent 4 }}
+{{- end }}

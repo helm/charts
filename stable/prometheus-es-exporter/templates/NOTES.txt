@@ -1,0 +1,12 @@
+{{- if eq (printf "%s" .Values.elasticsearch.url ) "" }}
+########################################################
+####   ERROR: You did not set an elasticsearch url. ####
+########################################################
+
+This deployment will be incomplete until you set the elasticsearch url:
+
+    helm upgrade {{ .Release.Name }} \
+        --set elasticsearch.url="http://elasticsearch:9200" stable/prometheus-es-exporter
+{{- else -}}
+If you created a ServiceMonitor, it may take a while for prometheus to ingest the metrics.
+{{end}}

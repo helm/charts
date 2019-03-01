@@ -1,0 +1,17 @@
+---
+suite: test servicemonitor
+templates:
+  - servicemonitor.yaml
+tests:
+  - it: should render nothing if not enabled
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should render something if enabled
+    set:
+      prometheus.serviceMonitor: true
+      prometheus.name: kube-prometheus
+    asserts:
+      - hasDocuments:
+          count: 1

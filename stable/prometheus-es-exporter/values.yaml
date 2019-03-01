@@ -1,0 +1,56 @@
+---
+# Default values for prometheus-es-exporter.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+elasticsearch:
+  url: ""
+  queries: ""
+#     Example:
+#     [DEFAULT]
+#     QueryIntervalSecs = 15
+#     QueryTimeoutSecs = 10
+#     QueryIndices = _all
+
+#     [query_all]
+#     QueryJson = {
+#     "size": 0,
+#     "query": {
+#       "match_all": {}
+#       }
+#     }
+
+containerExtraArgs: ""
+
+prometheus:
+  serviceMonitor: false
+  name: ""
+
+replicaCount: 1
+
+image:
+  repository: braedon/prometheus-es-exporter
+  tag: 0.5.1
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 9206
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

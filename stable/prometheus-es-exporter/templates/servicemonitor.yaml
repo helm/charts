@@ -1,0 +1,21 @@
+{{ if .Values.prometheus.serviceMonitor }}
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "prometheus-es-exporter.fullname" . }}
+  labels:
+    prometheus: {{ required "A valid .Values.prometheus.name entry required!" .Values.prometheus.name }}
+    app: {{ include "prometheus-es-exporter.name" . }}
+    chart: {{ include "prometheus-es-exporter.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ include "prometheus-es-exporter.name" . }}
+  endpoints:
+  - port: http
+    interval: 60s
+  jobLabel: {{ include "prometheus-es-exporter.fullname" . }}
+{{ end }}

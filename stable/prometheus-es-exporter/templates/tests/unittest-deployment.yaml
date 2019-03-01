@@ -1,0 +1,117 @@
+---
+suite: test deployment
+templates:
+  - deployment.yaml
+tests:
+  - it: should render default args if containerExtraArgs and elasticsearch.queries are not set
+    set:
+      elasticsearch.url: "localhost:9200"
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].args
+          value:
+            - "-p"
+            - "9206"
+            - "-e"
+            - "localhost:9200"
+            - "--query-disable"
+
+  - it: should not disable queries if elasticsearch.queries is set
+    set:
+      elasticsearch.url: "localhost:9200"
+      elasticsearch.queries: |
+        QueryIntervalSecs = 15
+        QueryTimeoutSecs = 10
+        QueryIndices = _all
+        [query_all]
+        QueryJson = {
+            "size": 0,
+            "query": {
+              "match_all": {}
+              }
+            }
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].args
+          value:
+            - "-p"
+            - "9206"
+            - "-e"
+            - "localhost:9200"
+
+  - it: should render extra arg if containerExtraArgs is set
+    set:
+      elasticsearch.url: "localhost:9200"
+      containerExtraArgs:
+        - '"--nodes-stats-disable"'
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content:
+            "--nodes-stats-disable"
+
+  - it: should render nothing if resources are not set
+    set:
+      elasticsearch.url: "localhost:9200"
+    asserts:
+      - isNull:
+          path: spec.template.spec.containers[0].resources
+
+  - it: should render resources if resources are set
+    set:
+      elasticsearch.url: "localhost:9200"
+      resources:
+        limits:
+          cpu: 100m
+          memory: 128Mi
+        requests:
+          cpu: 100m
+          memory: 128Mi
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].resources
+          value:
+            limits:
+              cpu: 100m
+              memory: 128Mi
+            requests:
+              cpu: 100m
+              memory: 128Mi
+
+  - it: should render nothing if nodeSelector is not set
+    set:
+      elasticsearch.url: "localhost:9200"
+    asserts:
+      - isNull:
+          path: spec.template.spec.nodeSelector
+
+  - it: should render nodeSelector if nodeSelector is set
+    set:
+      elasticsearch.url: "localhost:9200"
+      nodeSelector:
+        kops.k8s.io/instancegroup: prometheus
+    asserts:
+      - equal:
+          path: spec.template.spec.nodeSelector
+          value:
+            kops.k8s.io/instancegroup: prometheus
+
+  - it: should render nothing if tolerations is not set
+    set:
+      elasticsearch.url: "localhost:9200"
+    asserts:
+      - isNull:
+          path: spec.template.spec.tolerations
+
+  - it: should render tolerations if tolerations is set
+    set:
+      elasticsearch.url: "localhost:9200"
+      tolerations:
+        - key: "node-role.kubernetes.io/master"
+          effect: NoSchedule
+    asserts:
+      - equal:
+          path: spec.template.spec.tolerations
+          value:
+            - key: "node-role.kubernetes.io/master"
+              effect: NoSchedule
