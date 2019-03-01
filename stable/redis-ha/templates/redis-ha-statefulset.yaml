@@ -48,6 +48,7 @@ spec:
     {{- end }}
       securityContext:
 {{ toYaml .Values.securityContext | indent 8 }}
+      serviceAccountName: {{ template "redis-ha.serviceAccountName" . }}
       initContainers:
 {{- if and .Values.hostPath.path .Values.hostPath.chown }}
       - name: hostpath-chown
