@@ -1,0 +1,84 @@
+﻿{
+  "paragraphs": [
+    {
+      "text": "%md\nContents of /zeppelin/notebook/mmlspark/serving.py\n```\nimport mmlspark\nfrom pyspark.sql.types import *\nfrom pyspark.sql import SparkSession\n\nfrom pyspark.sql.functions import length, col\n\nspark = SparkSession.builder.appName(\"SimpleContServing\").getOrCreate()\nsc = spark.sparkContext\nsc.setLogLevel(\"WARN\")\n\nprint(\"creating df\")\ndf = spark.readStream.continuousServer() \\\n    .address(\"0.0.0.0\", 8888, \"my_api\") \\\n    .load() \\\n    .parseRequest(StructType().add(\"foo\", StringType()).add(\"bar\", IntegerType()))\n\nreplies = df.withColumn(\"fooLength\", length(col(\"foo\")))\\\n    .makeReply(\"fooLength\")\n\nprint(\"creating server\")\nserver = replies\\\n    .writeStream \\\n    .continuousServer() \\\n    .trigger(continuous=\"1 second\") \\\n    .replyTo(\"my_api\") \\\n    .queryName(\"my_query\") \\\n    .option(\"checkpointLocation\", \"file:///tmp/checkpoints\")\n\nprint(\"starting server\")\nquery = server.start()\nquery.awaitTermination()\n\n# Submit the server\n# .\\bin\\spark-submit --packages com.microsoft.ml.spark:mmlspark_2.11:0.14.dev42 --repositories https://mmlspark.azureedge.net/maven  serving2.py\n\n# Test \n# curl -X POST -d '{\"foo\":\"foolen\", \"bar\":43}' -H \"ContentType: application/json\" http://[[ip address of load balancer]]:8888/\n```",
+      "user": "anonymous",
+      "config": {
+        "tableHide": false,
+        "editorSetting": {
+          "language": "markdown",
+          "editOnDblClick": true,
+          "completionSupport": false
+        },
+        "colWidth": 12,
+        "editorMode": "ace/mode/markdown",
+        "fontSize": 9,
+        "editorHide": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "<div class=\"markdown-body\">\n<p>Contents of /zeppelin/notebook/mmlspark/serving.py</p>\n<pre><code>import mmlspark\nfrom pyspark.sql.types import *\nfrom pyspark.sql import SparkSession\n\nfrom pyspark.sql.functions import length, col\n\nspark = SparkSession.builder.appName(&quot;SimpleContServing&quot;).getOrCreate()\nsc = spark.sparkContext\nsc.setLogLevel(&quot;WARN&quot;)\n\nprint(&quot;creating df&quot;)\ndf = spark.readStream.continuousServer() \\\n    .address(&quot;0.0.0.0&quot;, 8888, &quot;my_api&quot;) \\\n    .load() \\\n    .parseRequest(StructType().add(&quot;foo&quot;, StringType()).add(&quot;bar&quot;, IntegerType()))\n\nreplies = df.withColumn(&quot;fooLength&quot;, length(col(&quot;foo&quot;)))\\\n    .makeReply(&quot;fooLength&quot;)\n\nprint(&quot;creating server&quot;)\nserver = replies\\\n    .writeStream \\\n    .continuousServer() \\\n    .trigger(continuous=&quot;1 second&quot;) \\\n    .replyTo(&quot;my_api&quot;) \\\n    .queryName(&quot;my_query&quot;) \\\n    .option(&quot;checkpointLocation&quot;, &quot;file:///tmp/checkpoints&quot;)\n\nprint(&quot;starting server&quot;)\nquery = server.start()\nquery.awaitTermination()\n\n# Submit the server\n# .\\bin\\spark-submit --packages com.microsoft.ml.spark:mmlspark_2.11:0.14.dev42 --repositories https://mmlspark.azureedge.net/maven  serving2.py\n\n# Test \n# curl -X POST -d &#39;{&quot;foo&quot;:&quot;foolen&quot;, &quot;bar&quot;:43}&#39; -H &quot;ContentType: application/json&quot; http://[[ip address of load balancer]]:8888/\n</code></pre>\n</div>"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1543784981107_631020604",
+      "id": "paragraph_1543784981107_631020604",
+      "dateCreated": "2018-12-02T21:44:50+0000",
+      "status": "FINISHED",
+      "focus": true,
+      "$$hashKey": "object:25492",
+      "runtimeInfos": {}
+    },
+    {
+      "text": "#submit the job\n/opt/spark/bin/spark-submit --packages Azure:mmlspark:0.15 /zeppelin/notebook/mmlspark/serving.py",
+      "user": "anonymous",
+      "config": {
+        "editorSetting": {
+          "language": "sh",
+          "editOnDblClick": false,
+          "completionSupport": false
+        },
+        "colWidth": 12,
+        "editorMode": "ace/mode/sh",
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1543735716245_-917868798",
+      "id": "paragraph_1543735716245_-917868798",
+      "dateCreated": "2018-12-02T21:45:50+0000",
+      "status": "FINISHED",
+      "$$hashKey": "object:25493",
+      "runtimeInfos": {}
+    }
+  ],
+  "name": "submitjob",
+  "id": "2DZ7DHX6E",
+  "defaultInterpreterGroup": "sh",
+  "noteParams": {},
+  "noteForms": {},
+  "angularObjects": {},
+  "config": {
+    "isZeppelinNotebookCronEnable": false,
+    "looknfeel": "default",
+    "personalizedMode": "false"
+  },
+  "info": {}
+}

@@ -1,0 +1,1 @@
+Jars in this folder are added to front of the spark classpath (SPARK_DIST_CLASSPATH) . Add jars here to override the default spark jars. This is useful when your spark job depends on a more up to date version of the default spark jars. Use with caution as jars added here can break spark dependencies.

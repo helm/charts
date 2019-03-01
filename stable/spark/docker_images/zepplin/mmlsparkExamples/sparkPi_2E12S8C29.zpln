@@ -1,0 +1,86 @@
+﻿{
+  "angularObjects": {},
+  "config": {
+    "isZeppelinNotebookCronEnable": false,
+    "looknfeel": "default",
+    "personalizedMode": "false"
+  },
+  "defaultInterpreterGroup": "spark",
+  "id": "2E12S8C29",
+  "info": {},
+  "name": "examples",
+  "noteForms": {},
+  "noteParams": {},
+  "paragraphs": [
+    {
+      "$$hashKey": "object:1374",
+      "apps": [],
+      "config": {
+        "colWidth": 12,
+        "editorMode": "ace/mode/python",
+        "editorSetting": {
+          "completionKey": "TAB",
+          "completionSupport": true,
+          "editOnDblClick": false,
+          "language": "python"
+        },
+        "enabled": true,
+        "fontSize": 9,
+        "results": {}
+      },
+      "dateCreated": "2018-12-18T02:42:44+0000",
+      "dateFinished": "2018-12-18T02:47:49+0000",
+      "dateStarted": "2018-12-18T02:47:49+0000",
+      "dateUpdated": "2018-12-18T02:49:01+0000",
+      "focus": true,
+      "id": "paragraph_1545100964740_1392125131",
+      "jobName": "paragraph_1545100964740_1392125131",
+      "progressUpdateIntervalMs": 500,
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "data": "starting pyspark example\nPi is roughly 3.139840\n",
+            "type": "TEXT"
+          }
+        ]
+      },
+      "settings": {
+        "forms": {},
+        "params": {}
+      },
+      "status": "FINISHED",
+      "text": "%spark.pyspark\n#Run the sparkPi example. see https://spark.apache.org/examples.html\n\n\nfrom random import random\n\npartitions = 2\nn = 100000 * partitions\n\ndef f(_):\n    x = random() * 2 - 1\n    y = random() * 2 - 1\n    return 1 if x ** 2 + y ** 2 <= 1 else 0\n\nadd = lambda x,y :x+y\nprint(\"starting pyspark example\")\ncount = sc.parallelize(range(1, n + 1), partitions).map(f).reduce(add)\nprint(\"Pi is roughly %f\" % (4.0 * count / n))\n",
+      "user": "anonymous"
+    },
+    {
+      "$$hashKey": "object:1375",
+      "apps": [],
+      "config": {
+        "colWidth": 12,
+        "editorMode": "ace/mode/python",
+        "editorSetting": {
+          "completionKey": "TAB",
+          "completionSupport": true,
+          "editOnDblClick": false,
+          "language": "python"
+        },
+        "enabled": true,
+        "fontSize": 9,
+        "results": {}
+      },
+      "dateCreated": "2018-12-18T02:43:49+0000",
+      "dateUpdated": "2018-12-18T02:43:49+0000",
+      "id": "paragraph_1545101029964_-451414769",
+      "jobName": "paragraph_1545101029964_-451414769",
+      "progressUpdateIntervalMs": 500,
+      "settings": {
+        "forms": {},
+        "params": {}
+      },
+      "status": "READY",
+      "text": "%spark.pyspark\n",
+      "user": "anonymous"
+    }
+  ]
+}

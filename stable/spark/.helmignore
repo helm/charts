@@ -19,3 +19,5 @@
 .project
 .idea/
 *.tmproj
+# Docker files
+docker_images

@@ -1,0 +1,399 @@
+﻿{
+  "angularObjects": {},
+  "config": {
+    "isZeppelinNotebookCronEnable": false,
+    "looknfeel": "default",
+    "personalizedMode": "false"
+  },
+  "defaultInterpreterGroup": "spark",
+  "id": "2E3REACQR",
+  "info": {},
+  "name": "classification",
+  "noteForms": {},
+  "noteParams": {},
+  "paragraphs": [
+    {
+      "$$hashKey": "object:2824",
+      "apps": [],
+      "config": {
+        "colWidth": 12,
+        "editorMode": "ace/mode/scala",
+        "editorSetting": {
+          "completionKey": "TAB",
+          "completionSupport": true,
+          "editOnDblClick": false,
+          "language": "scala"
+        },
+        "enabled": true,
+        "fontSize": 9,
+        "results": {}
+      },
+      "dateCreated": "2019-02-02T01:48:57+0000",
+      "dateUpdated": "2019-02-02T01:48:57+0000",
+      "focus": true,
+      "id": "paragraph_1549057435487_990463293",
+      "jobName": "paragraph_1549072137250_644378530",
+      "progressUpdateIntervalMs": 500,
+      "results": {
+        "code": "ERROR",
+        "msg": [
+          {
+            "data": "Must be used before SparkInterpreter (%spark) initialized\nHint: put this paragraph before any Spark code and restart Zeppelin/Interpreter",
+            "type": "TEXT"
+          }
+        ]
+      },
+      "settings": {
+        "forms": {},
+        "params": {}
+      },
+      "status": "READY",
+      "text": "%spark.dep\n// include the azure mmlspark dependency\nz.reset()\nz.load(\"Azure:mmlspark:0.15\")\nz.load(\"org.apache.hadoop:hadoop-azure:2.7.0\")\nz.load(\"com.microsoft.azure:azure-storage:8.0.0\")",
+      "user": "anonymous"
+    },
+    {
+      "$$hashKey": "object:2825",
+      "apps": [],
+      "config": {
+        "colWidth": 12,
+        "editorHide": true,
+        "editorMode": "ace/mode/markdown",
+        "editorSetting": {
+          "completionKey": "TAB",
+          "completionSupport": false,
+          "editOnDblClick": true,
+          "language": "markdown"
+        },
+        "enabled": true,
+        "fontSize": 9,
+        "results": {},
+        "tableHide": false
+      },
+      "dateCreated": "2019-02-02T01:48:57+0000",
+      "dateUpdated": "2019-02-02T01:48:57+0000",
+      "id": "paragraph_1549057359425_304668257",
+      "jobName": "paragraph_1549072137254_-1090182772",
+      "progressUpdateIntervalMs": 500,
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "data": "<div class=\"markdown-body\">\n<h2>101 - Training and Evaluating Classifiers with <code>mmlspark</code></h2>\n<p>In this example, we try to predict incomes from the <em>Adult Census</em> dataset.</p>\n<p>First, we import the packages (use <code>help(mmlspark)</code> to view contents),</p>\n</div>",
+            "type": "HTML"
+          }
+        ]
+      },
+      "settings": {
+        "forms": {},
+        "params": {}
+      },
+      "status": "READY",
+      "text": "%md\r\n## 101 - Training and Evaluating Classifiers with `mmlspark`\r\n\r\nIn this example, we try to predict incomes from the *Adult Census* dataset.\r\n\r\nFirst, we import the packages (use `help(mmlspark)` to view contents),",
+      "user": "anonymous"
+    },
+    {
+      "$$hashKey": "object:2826",
+      "apps": [],
+      "config": {
+        "colWidth": 12,
+        "editorMode": "ace/mode/python",
+        "editorSetting": {
+          "completionKey": "TAB",
+          "completionSupport": true,
+          "editOnDblClick": false,
+          "language": "python"
+        },
+        "enabled": true,
+        "fontSize": 9,
+        "results": {}
+      },
+      "dateCreated": "2019-02-02T01:48:57+0000",
+      "dateFinished": "2019-02-02T01:49:36+0000",
+      "dateStarted": "2019-02-02T01:49:35+0000",
+      "dateUpdated": "2019-02-02T01:49:35+0000",
+      "id": "paragraph_1549057383416_-1998320610",
+      "jobName": "paragraph_1549072137254_1585867293",
+      "progressUpdateIntervalMs": 500,
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "data": "Help on package mmlspark:\n\nNAME\n    mmlspark\n\nFILE\n    /zeppelin/local-repo/Azure/mmlspark/0.15/mmlspark-0.15.jar/mmlspark/__init__.py\n\nDESCRIPTION\n    MicrosoftML is a library of Python classes to interface with the\n    Microsoft scala APIs to utilize Apache Spark to create distibuted\n    machine learning models.\n    \n    MicrosoftML simplifies training and scoring classifiers and\n    regressors, as well as facilitating the creation of models using the\n    CNTK library, images, and text.\n\nPACKAGE CONTENTS\n    AnalyzeImage\n    AssembleFeatures\n    BinaryFileReader\n    BingImageReader\n    BingImageSearch\n    CNTKLearner\n    CNTKModel\n    Cacher\n    CheckpointData\n    ClassBalancer\n    CleanMissingData\n    ComputeModelStatistics\n    ComputePerInstanceStatistics\n    CustomInputParser\n    CustomOutputParser\n    DataConversion\n    DescribeImage\n    DetectFace\n    DropColumns\n    DynamicMiniBatchTransformer\n    EnsembleByKey\n    EntityDetector\n    Explode\n    FastVectorAssembler\n    Featurize\n    FindBestModel\n    FindSimilarFace\n    FixedMiniBatchTransformer\n    FlattenBatch\n    FluentAPI\n    GenerateThumbnails\n    GroupFaces\n    HTTPTransformer\n    HyperparamBuilder\n    IdentifyFaces\n    ImageFeaturizer\n    ImageLIME\n    ImageReader\n    ImageSetAugmenter\n    ImageTransformer\n    ImageWriter\n    IndexToValue\n    JSONInputParser\n    JSONOutputParser\n    KeyPhraseExtractor\n    Lambda\n    LanguageDetector\n    LightGBMClassifier\n    LightGBMRegressor\n    ModelDownloader\n    MultiColumnAdapter\n    MultiNGram\n    NER\n    OCR\n    PageSplitter\n    PartitionConsolidator\n    PartitionSample\n    PowerBIWriter\n    RankingAdapter\n    RankingAdapterModel\n    RankingEvaluator\n    RecognizeDomainSpecificContent\n    RecognizeText\n    RenameColumn\n    Repartition\n    SelectColumns\n    ServingFunctions\n    ServingImplicits\n    SimpleHTTPTransformer\n    StringOutputParser\n    SummarizeData\n    SuperpixelTransformer\n    TagImage\n    TextFeaturizer\n    TextPreprocessor\n    TextSentiment\n    TimeIntervalMiniBatchTransformer\n    Timer\n    TrainClassifier\n    TrainRegressor\n    TuneHyperparameters\n    TypeConversionUtils\n    UDFTransformer\n    UnrollBinaryImage\n    UnrollImage\n    Utils\n    ValueIndexer\n    ValueIndexerModel\n    VerifyFaces\n    _BingImageSearch\n    _CNTKLearner\n    _CNTKModel\n    _FindBestModel\n    _ImageFeaturizer\n    _ImageTransformer\n    _JSONOutputParser\n    _LightGBMClassifier\n    _LightGBMRegressor\n    _ResizeImageTransformer\n    _SimpleHTTPTransformer\n    _TrainClassifier\n    _TrainRegressor\n    _TuneHyperparameters\n    _UDFTransformer\n    java_params_patch\n    plot\n\nDATA\n    BinaryFileFields = ['path', 'bytes']\n    BinaryFileSchema = StructType(List(StructField(path,StringType,true),S...\n    DEFAULT_URL = 'https://mmlspark.azureedge.net/datasets/CNTKModels/'\n    ImageFields = ['path', 'height', 'width', 'type', 'bytes']\n    ImageSchema = StructType(List(StructField(path,StringType,true...erTyp...\n    __loader__ = <zipimporter object \"/zeppelin/local-repo/Azure/mmlspark/...\n    continuous_serving_sink = 'org.apache.spark.sql.execution.streaming.co...\n    continuous_serving_source = 'org.apache.spark.sql.execution.streaming....\n    distributed_serving_sink = 'org.apache.spark.sql.execution.streaming.D...\n    distributed_serving_source = 'org.apache.spark.sql.execution.streaming...\n    serving_sink = 'org.apache.spark.sql.execution.streaming.HTTPSinkProvi...\n    serving_source = 'org.apache.spark.sql.execution.streaming.HTTPSourceP...\n\n\n",
+            "type": "TEXT"
+          }
+        ]
+      },
+      "settings": {
+        "forms": {},
+        "params": {}
+      },
+      "status": "FINISHED",
+      "text": "%pyspark\n# Zeppelin needs the path to be updated manually to find mmlspark library\nimport sys\nsys.path.extend(sc.getConf().get(\"spark.jars\").split(\",\"))\n\nimport numpy as np\nimport pandas as pd\nimport mmlspark\n\nhelp(mmlspark)\n",
+      "user": "anonymous"
+    },
+    {
+      "$$hashKey": "object:2827",
+      "apps": [],
+      "config": {
+        "colWidth": 12,
+        "editorHide": true,
+        "editorMode": "ace/mode/markdown",
+        "editorSetting": {
+          "completionKey": "TAB",
+          "completionSupport": false,
+          "editOnDblClick": true,
+          "language": "markdown"
+        },
+        "enabled": true,
+        "fontSize": 9,
+        "results": {},
+        "tableHide": false
+      },
+      "dateCreated": "2019-02-02T01:48:57+0000",
+      "dateUpdated": "2019-02-02T01:48:57+0000",
+      "id": "paragraph_1549057401113_-649467476",
+      "jobName": "paragraph_1549072137258_-1975356816",
+      "progressUpdateIntervalMs": 500,
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "data": "<div class=\"markdown-body\">\n<p>Now let&rsquo;s read the data and split it to train and test sets:</p>\n</div>",
+            "type": "HTML"
+          }
+        ]
+      },
+      "settings": {
+        "forms": {},
+        "params": {}
+      },
+      "status": "READY",
+      "text": "%md\nNow let's read the data and split it to train and test sets:",
+      "user": "anonymous"
+    },
+    {
+      "$$hashKey": "object:2828",
+      "apps": [],
+      "config": {
+        "colWidth": 12,
+        "editorMode": "ace/mode/python",
+        "editorSetting": {
+          "completionKey": "TAB",
+          "completionSupport": true,
+          "editOnDblClick": false,
+          "language": "python"
+        },
+        "enabled": true,
+        "fontSize": 9,
+        "results": {}
+      },
+      "dateCreated": "2019-02-02T01:48:57+0000",
+      "dateFinished": "2019-02-02T02:00:45+0000",
+      "dateStarted": "2019-02-02T02:00:41+0000",
+      "dateUpdated": "2019-02-02T02:00:41+0000",
+      "id": "paragraph_1549057407951_-152079482",
+      "jobName": "paragraph_1549072137258_1516284893",
+      "progressUpdateIntervalMs": 500,
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "data": "    education       marital-status   hours-per-week  income\n0        10th             Divorced             16.0   <=50K\n1        10th             Divorced             20.0   <=50K\n2        10th             Divorced             30.0   <=50K\n3        10th             Divorced             40.0   <=50K\n4        10th             Divorced             40.0   <=50K\n5        10th             Divorced             40.0   <=50K\n6        10th             Divorced             40.0   <=50K\n7        10th             Divorced             40.0   <=50K\n8        10th             Divorced             40.0   <=50K\n9        10th             Divorced             40.0   <=50K\n10       10th             Divorced             40.0   <=50K\n11       10th             Divorced             42.0   <=50K\n12       10th             Divorced             50.0   <=50K\n13       10th             Divorced             50.0   <=50K\n14       10th             Divorced             60.0    >50K\n15       10th             Divorced             70.0   <=50K\n16       10th             Divorced             75.0   <=50K\n17       10th   Married-civ-spouse              2.0   <=50K\n18       10th   Married-civ-spouse              8.0   <=50K\n19       10th   Married-civ-spouse             30.0   <=50K\n20       10th   Married-civ-spouse             30.0    >50K\n21       10th   Married-civ-spouse             35.0   <=50K\n22       10th   Married-civ-spouse             35.0   <=50K\n23       10th   Married-civ-spouse             36.0   <=50K\n24       10th   Married-civ-spouse             38.0   <=50K\n25       10th   Married-civ-spouse             40.0   <=50K\n26       10th   Married-civ-spouse             40.0   <=50K\n27       10th   Married-civ-spouse             40.0   <=50K\n28       10th   Married-civ-spouse             40.0   <=50K\n29       10th   Married-civ-spouse             40.0   <=50K\n..        ...                  ...              ...     ...\n70       10th        Never-married             90.0    >50K\n71       10th            Separated             30.0   <=50K\n72       10th            Separated             32.0   <=50K\n73       10th            Separated             35.0   <=50K\n74       10th            Separated             40.0   <=50K\n75       10th            Separated             40.0   <=50K\n76       10th            Separated             42.0   <=50K\n77       10th            Separated             56.0   <=50K\n78       10th              Widowed             10.0   <=50K\n79       10th              Widowed             12.0   <=50K\n80       10th              Widowed             40.0   <=50K\n81       10th              Widowed             40.0   <=50K\n82       10th              Widowed             50.0    >50K\n83       11th             Divorced             10.0   <=50K\n84       11th             Divorced             12.0   <=50K\n85       11th             Divorced             35.0   <=50K\n86       11th             Divorced             40.0   <=50K\n87       11th             Divorced             40.0   <=50K\n88       11th             Divorced             40.0   <=50K\n89       11th             Divorced             40.0   <=50K\n90       11th             Divorced             40.0   <=50K\n91       11th             Divorced             40.0   <=50K\n92       11th             Divorced             40.0   <=50K\n93       11th             Divorced             40.0   <=50K\n94       11th             Divorced             40.0   <=50K\n95       11th             Divorced             40.0   <=50K\n96       11th             Divorced             43.0   <=50K\n97       11th             Divorced             46.0   <=50K\n98       11th             Divorced             50.0    >50K\n99       11th             Divorced             84.0   <=50K\n\n[100 rows x 4 columns]\n",
+            "type": "TEXT"
+          }
+        ]
+      },
+      "settings": {
+        "forms": {},
+        "params": {}
+      },
+      "status": "FINISHED",
+      "text": "%pyspark\r\ndataFilePath = \"AdultCensusIncome.csv\"\r\nimport os, urllib\r\nif not os.path.isfile(dataFilePath):\r\n    urllib.urlretrieve(\"https://mmlspark.azureedge.net/datasets/\" + dataFilePath, dataFilePath)\r\ndata = spark.createDataFrame(pd.read_csv(dataFilePath, dtype={\" hours-per-week\": np.float64}))\r\ndata = data.select([\" education\", \" marital-status\", \" hours-per-week\", \" income\"])\r\ntrain, test = data.randomSplit([0.75, 0.25], seed=452)\r\ntrain.sample(0.4).limit(100).toPandas()",
+      "user": "anonymous"
+    },
+    {
+      "$$hashKey": "object:2829",
+      "apps": [],
+      "config": {
+        "colWidth": 12,
+        "editorHide": true,
+        "editorMode": "ace/mode/markdown",
+        "editorSetting": {
+          "completionKey": "TAB",
+          "completionSupport": false,
+          "editOnDblClick": true,
+          "language": "markdown"
+        },
+        "enabled": true,
+        "fontSize": 9,
+        "results": {},
+        "tableHide": false
+      },
+      "dateCreated": "2019-02-02T01:48:57+0000",
+      "dateUpdated": "2019-02-02T01:48:57+0000",
+      "id": "paragraph_1549057484059_24239880",
+      "jobName": "paragraph_1549072137258_1319483793",
+      "progressUpdateIntervalMs": 500,
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "data": "<div class=\"markdown-body\">\n<p><code>TrainClassifier</code> can be used to initialize and fit a model, it wraps SparkML classifiers. You can use <code>help(mmlspark.TrainClassifier)</code> to view the different parameters.</p>\n<p>Note that it implicitly converts the data into the format expected by the algorithm: tokenize and hash strings, one-hot encodes categorical variables, assembles the features into a vector and so on. The parameter <code>numFeatures</code> controls the number of hashed features.</p>\n</div>",
+            "type": "HTML"
+          }
+        ]
+      },
+      "settings": {
+        "forms": {},
+        "params": {}
+      },
+      "status": "READY",
+      "text": "%md\n`TrainClassifier` can be used to initialize and fit a model, it wraps SparkML classifiers. You can use `help(mmlspark.TrainClassifier)` to view the different parameters.\n\nNote that it implicitly converts the data into the format expected by the algorithm: tokenize and hash strings, one-hot encodes categorical variables, assembles the features into a vector and so on.  The parameter `numFeatures` controls the number of hashed features.\n",
+      "user": "anonymous"
+    },
+    {
+      "$$hashKey": "object:2830",
+      "apps": [],
+      "config": {
+        "colWidth": 12,
+        "editorMode": "ace/mode/python",
+        "editorSetting": {
+          "completionKey": "TAB",
+          "completionSupport": true,
+          "editOnDblClick": false,
+          "language": "python"
+        },
+        "enabled": true,
+        "fontSize": 9,
+        "results": {}
+      },
+      "dateCreated": "2019-02-02T01:48:57+0000",
+      "dateFinished": "2019-02-02T01:57:19+0000",
+      "dateStarted": "2019-02-02T01:57:15+0000",
+      "dateUpdated": "2019-02-02T02:03:11+0000",
+      "id": "paragraph_1549057519572_-66702001",
+      "jobName": "paragraph_1549072137258_-559288979",
+      "progressUpdateIntervalMs": 500,
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "settings": {
+        "forms": {},
+        "params": {}
+      },
+      "status": "FINISHED",
+      "text": "%pyspark\r\nfrom mmlspark import TrainClassifier\r\nfrom pyspark.ml.classification import LogisticRegression\r\nmodel = TrainClassifier(model=LogisticRegression().setMaxIter(45), labelCol=\" income\", numFeatures=50).fit(train.limit(150))",
+      "user": "anonymous"
+    },
+    {
+      "$$hashKey": "object:2831",
+      "apps": [],
+      "config": {
+        "colWidth": 12,
+        "editorHide": true,
+        "editorMode": "ace/mode/markdown",
+        "editorSetting": {
+          "completionKey": "TAB",
+          "completionSupport": false,
+          "editOnDblClick": true,
+          "language": "markdown"
+        },
+        "enabled": true,
+        "fontSize": 9,
+        "results": {},
+        "tableHide": false
+      },
+      "dateCreated": "2019-02-02T01:48:57+0000",
+      "dateUpdated": "2019-02-02T01:48:57+0000",
+      "id": "paragraph_1549057529499_-2128092826",
+      "jobName": "paragraph_1549072137258_-1616304637",
+      "progressUpdateIntervalMs": 500,
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "data": "<div class=\"markdown-body\">\n<p>After the model is trained, we score it against the test dataset and view metrics.</p>\n</div>",
+            "type": "HTML"
+          }
+        ]
+      },
+      "settings": {
+        "forms": {},
+        "params": {}
+      },
+      "status": "READY",
+      "text": "%md\nAfter the model is trained, we score it against the test dataset and view metrics.\n",
+      "user": "anonymous"
+    },
+    {
+      "$$hashKey": "object:2832",
+      "apps": [],
+      "config": {
+        "colWidth": 12,
+        "editorMode": "ace/mode/python",
+        "editorSetting": {
+          "completionKey": "TAB",
+          "completionSupport": true,
+          "editOnDblClick": false,
+          "language": "python"
+        },
+        "enabled": true,
+        "fontSize": 9,
+        "results": {}
+      },
+      "dateCreated": "2019-02-02T01:48:57+0000",
+      "dateFinished": "2019-02-02T01:57:25+0000",
+      "dateStarted": "2019-02-02T01:57:24+0000",
+      "dateUpdated": "2019-02-02T01:58:15+0000",
+      "id": "paragraph_1549057542828_591079489",
+      "jobName": "paragraph_1549072137258_-490393317",
+      "progressUpdateIntervalMs": 500,
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "data": "  evaluation_type    ...          AUC\n0  Classification    ...     0.826667\n\n[1 rows x 6 columns]\n",
+            "type": "TEXT"
+          }
+        ]
+      },
+      "settings": {
+        "forms": {},
+        "params": {}
+      },
+      "status": "FINISHED",
+      "text": "%pyspark\r\nfrom mmlspark import ComputeModelStatistics, TrainedClassifierModel\r\nprediction = model.transform(test.limit(50))\r\nmetrics = ComputeModelStatistics().transform(prediction)\r\nmetrics.limit(10).toPandas()",
+      "user": "anonymous"
+    },
+    {
+      "$$hashKey": "object:2833",
+      "apps": [],
+      "config": {
+        "colWidth": 12,
+        "editorMode": "ace/mode/markdown",
+        "editorSetting": {
+          "completionKey": "TAB",
+          "completionSupport": false,
+          "editOnDblClick": true,
+          "language": "markdown"
+        },
+        "enabled": true,
+        "fontSize": 9,
+        "results": {}
+      },
+      "dateCreated": "2019-02-02T01:48:57+0000",
+      "dateUpdated": "2019-02-02T01:48:57+0000",
+      "id": "paragraph_1549057554904_234379306",
+      "jobName": "paragraph_1549072137258_-535526505",
+      "progressUpdateIntervalMs": 500,
+      "settings": {
+        "forms": {},
+        "params": {}
+      },
+      "status": "READY",
+      "text": "\r\n",
+      "user": "anonymous"
+    }
+  ]
+}

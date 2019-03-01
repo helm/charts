@@ -1,0 +1,13 @@
+diff --git a/beam/pom.xml b/beam/pom.xml
+index 6af214108..8ac8bd95c 100644
+--- a/beam/pom.xml
++++ b/beam/pom.xml
+@@ -35,7 +35,7 @@
+   <properties>
+     <beam.hadoop.version>2.3.0</beam.hadoop.version>
+     <beam.spark.version>1.6.2</beam.spark.version>
+-    <beam.beam.version>2.0.0</beam.beam.version>
++    <beam.beam.version>2.3.0</beam.beam.version>
+ 
+     <!-- library versions -->
+     <netty.version>4.1.1.Final</netty.version>
