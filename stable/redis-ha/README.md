@@ -121,4 +121,3 @@ Sentinel options supported must be in the the `sentinel <option> <master-group-n
 ```
 
 If more control is needed from either the redis or sentinel config then an entire config can be defined under `redis.customConfig` or `sentinel.customConfig`. Please note that these values will override any configuration options under their respective section. For example, if you define `sentinel.customConfig` then the `sentinel.config` is ignored.
-
