@@ -14,7 +14,7 @@ web:
   replicacount: 1
   resources:
     limits:
-      cpu: 500m
+      cpu: 4000m
       memory: 500Mi
     requests:
       cpu: 300m
@@ -58,7 +58,7 @@ worker:
   resources:
     limits:
       cpu: 300m
-      memory: 500Mi
+      memory: 8196Mi
     requests:
       cpu: 100m
       memory: 100Mi
