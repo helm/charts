@@ -155,6 +155,10 @@ spec:
           - name: ATLANTIS_REQUIRE_APPROVAL
             value: "true"
           {{- end }}
+          {{- if .Values.requireMergeable }}
+          - name: ATLANTIS_REQUIRE_MERGEABLE
+            value: "true"
+          {{- end }}
           {{- if .Values.livenessProbe.enabled }}
           livenessProbe:
             httpGet:
