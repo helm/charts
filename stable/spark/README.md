@@ -11,8 +11,9 @@ Inspired from Helm Classic chart https://github.com/helm/charts
 This chart will do the following:
 
 * 1 x Spark Master with port 8080 exposed on an external LoadBalancer
-* 3 x Spark Workers with HorizontalPodAutoscaler to scale to max 10 pods when CPU hits 50% of 100m
-* 1 x Zeppelin with port 8080 exposed on an external LoadBalancer
+* 3 x Spark Workers with HorizontalPodAutoscaler to scale to max 10 pods when CPU hits 50% of 100m. A LoadBalancer on these worker machines exposes ports 8080, 8888, 8889 and 4040 for purposes such as monitoring or serving spark-serving endpoints.
+* 1 x Zeppelin pod (Optional) with port 8080 exposed on an external LoadBalancer
+* 1 x Livy pod (Optional) with port 8998 exposed on an external LoadBalancer
 * All using Kubernetes Deployments
 
 ## Prerequisites
@@ -36,8 +37,8 @@ The following table lists the configurable parameters of the Spark chart and the
 | Parameter               | Description                        | Default                                                    |
 | ----------------------- | ---------------------------------- | ---------------------------------------------------------- |
 | `Master.Name`           | Spark master name                  | `spark-master`                                             |
-| `Master.Image`          | Container image name               | `k8s.gcr.io/spark`                                         |
-| `Master.ImageTag`       | Container image tag                | `1.5.1_v3`                                                 |
+| `Master.Image`          | Container image name               | `dbanda/spark2.4`                                 |
+| `Master.ImageTag`       | Container image tag                | `v3`                                                      |
 | `Master.Replicas`       | k8s deployment replicas            | `1`                                                        |
 | `Master.Component`      | k8s selector key                   | `spark-master`                                             |
 | `Master.Cpu`            | container requested cpu            | `100m`                                                     |
@@ -60,8 +61,8 @@ The following table lists the configurable parameters of the Spark chart and the
 | Parameter                    | Description                          | Default                                                    |
 | -----------------------      | ------------------------------------ | ---------------------------------------------------------- |
 | `Worker.Name`                | Spark worker name                    | `spark-worker`                                             |
-| `Worker.Image`               | Container image name                 | `k8s.gcr.io/spark`                                         |
-| `Worker.ImageTag`            | Container image tag                  | `1.5.1_v3`                                                 |
+| `Worker.Image`               | Container image name                 | `dbanda/spark2.4`                                 |
+| `Worker.ImageTag`            | Container image tag                  | `v3`                                                      |
 | `Worker.Replicas`            | k8s hpa and deployment replicas      | `3`                                                        |
 | `Worker.ReplicasMax`         | k8s hpa max replicas                 | `10`                                                       |
 | `Worker.Component`           | k8s selector key                     | `spark-worker`                                             |
@@ -76,30 +77,36 @@ The following table lists the configurable parameters of the Spark chart and the
 
 ### Zeppelin
 
-|          Parameter                           |           Description                |                         Default            |
-|----------------------------------------------|--------------------------------------|--------------------------------------------|
-| `Zeppelin.Name`                              | Zeppelin name                        | `zeppelin-controller`                      |
-| `Zeppelin.Image`                             | Container image name                 | `apache/zeppelin`                          |
-| `Zeppelin.ImageTag`                          | Container image tag                  | `0.7.3`                                    |
-| `Zeppelin.Replicas`                          | k8s deployment replicas              | `1`                                        |
-| `Zeppelin.Component`                         | k8s selector key                     | `zeppelin`                                 |
-| `Zeppelin.Cpu`                               | container requested cpu              | `100m`                                     |
-| `Zeppelin.ServicePort`                       | k8s service port                     | `8080`                                     |
-| `Zeppelin.ContainerPort`                     | Container listening port             | `8080`                                     |
-| `Zeppelin.Ingress.Enabled`                   | if `true`, an ingress is created     | `false`                                    |
-| `Zeppelin.Ingress.Annotations`               | annotations for the ingress          | `{}`                                       |
-| `Zeppelin.Ingress.Path`                      | the ingress path                     | `/`                                        |
-| `Zeppelin.Ingress.Hosts`                     | a list of ingress hosts              | `[zeppelin.example.com]`                   |
-| `Zeppelin.Ingress.Tls`                       | a list of [IngressTLS](https://v1-8.docs.kubernetes.io/docs/api-reference/v1.8/#ingresstls-v1beta1-extensions) items | `[]`
-| `Zeppelin.ServiceType `                      | Kubernetes Service type              | `LoadBalancer`                             |
-| `Zeppelin.Persistence.Config.Enabled`        | Enable Persistence for configuration | `false`                                    |
-| `Zeppelin.Persistence.Config.StorageClass`   | Volume storageClassName              | `-` (no dynamic provisioning)              |
-| `Zeppelin.Persistence.Config.Size`           | Configuration Persistence Size       | `10G`                                      |
-| `Zeppelin.Persistence.Config.AccessMode`     | Configuration Persistence AccessMode | `ReadWriteOnce`                            |
-| `Zeppelin.Persistence.Notebook.Enabled`      | Enable Persistence for notebook      | `false`                                    |
-| `Zeppelin.Persistence.Notebook.StorageClass` | Volume storageClassName              | `-` (no dynamic provisioning)              |
-| `Zeppelin.Persistence.Notebook.Size`         | Notebook Persistence Size            | `10G`                                      |
-| `Zeppelin.Persistence.Notebook.AccessMode`   | Notebook Persistence AccessMode      | `ReadWriteOnce`                            |
+|       Parameter                |           Description            |                         Default                          |
+|--------------------------------|----------------------------------|----------------------------------------------------------|
+| `Zeppelin.Name`                | Zeppelin name                    | `zeppelin-controller`                                    |
+| `Zeppelin.Enabled`             | if `true` enable Zeppelin        | `true`                                                   |
+| `Zeppelin.Image`               | Container image name             | `dbanda/zeppelin`                                        |
+| `Zeppelin.ImageTag`            | Container image tag              | `v4`                                                     |
+| `Zeppelin.Replicas`            | k8s deployment replicas          | `1`                                                      |
+| `Zeppelin.Component`           | k8s selector key                 | `zeppelin`                                               |
+| `Zeppelin.Cpu`                 | container requested cpu          | `100m`                                                   |
+| `Zeppelin.ServicePort`         | k8s service port                 | `8080`                                                   |
+| `Zeppelin.ContainerPort`       | Container listening port         | `8080`                                                   |
+| `Zeppelin.Ingress.Enabled`     | if `true`, an ingress is created | `false`                                                  |
+| `Zeppelin.Ingress.Annotations` | annotations for the ingress      | `{}`                                                     |
+| `Zeppelin.Ingress.Path`        | the ingress path                 | `/`                                                      |
+| `Zeppelin.Ingress.Hosts`       | a list of ingress hosts          | `[zeppelin.example.com]`                                 |
+| `Zeppelin.Ingress.Tls`         | a list of [IngressTLS](https://v1-8.docs.kubernetes.io/docs/api-reference/v1.8/#ingresstls-v1beta1-extensions) items | `[]`
+| `Zeppelin.ServiceType `        | Kubernetes Service type          | `LoadBalancer`                                           |
+
+### Livy
+|       Parameter                |           Description            |                         Default                          |
+|--------------------------------|----------------------------------|----------------------------------------------------------|
+| `Livy.Name`                    | Livy name                        | `livy-controller`                                        |
+| `Livy.Enabled`                 | if `true` enable Zeppelin        | `true`                                                   |
+| `Livy.Image`                   | Container image name             | `dbanda/livy`                                            |
+| `Livy.ImageTag`                | Container image tag              | `v4`                                                     |
+| `Livy.Replicas`                | k8s deployment replicas          | `1`                                                      |
+| `Liyy.Component`               | k8s selector key                 | `livy`                                                   |
+| `Livy.Cpu`                     | container requested cpu          | `100m`                                                   |
+| `Livy.ServicePort`             | k8s service port                 | `8998`                                                   |
+| `Livy.ServiceType `            | Kubernetes Service type          | `LoadBalancer`                                           |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
@@ -111,3 +118,22 @@ $ helm install --name my-release -f values.yaml stable/spark
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+## Running Spark Jobs
+
+There are two ways to sumbit jobs to the spark cluster.
+1. Using sparks inbuilt support for K8s clusters. This is mostly suited for jobs that don't require any user interaction or monitoring. See https://spark.apache.org/docs/latest/running-on-kubernetes.html#submitting-applications-to-kubernetes. To sumbit a job, typically you would run `kubectl proxy` to setup a proxy to the cluster at `localhost:8001` usually. The you would run call spark-submit. For example, to run the SparkPi sample app https://spark.apache.org/examples.html, you would run ```bin/spark-submit \
+    --master k8s://https://localhost:8001 \
+    --deploy-mode cluster \
+    --name spark-pi \
+    --class org.apache.spark.examples.SparkPi \
+    --conf spark.executor.instances=5 \
+    --conf spark.kubernetes.container.image=mhamilton723/spark-2.4.0 \
+    local:///opt/spark/examples/jars/spark-examples_2.11-2.4.0.jar ``` 
+This will create a pod based on the supplied container image and use that as the executor for your job. You can access this pod from the K8s dashboard. A downside to this method is that it requires creating a new pod for jobs and it is less transparent about how its jobs are executing. It is possible to sumbit jobs in client mode but that would require openning ports on the driver machine.
+
+2. Using the zeppelin pod. The zeppelin pod exists in the cluster and already has its ports readily visible to the master and works pods and as such can run apps in both client and cluster mode. In addition, the pod contains a running instance of the zepplin notebook on port 8080  that can be used to run spark scripts in either scala, python, or as bash scripts.  To access the notebook look for the `spark-zeppelin` service under service on your dashboard. (if you run `kubectl proxy` you dashboard would be here http://localhost:8001/api/v1/namespaces/kube-system/services/kubernetes-dashboard:/proxy/#!/overview?namespace=default). Click the externel endpoint link.
+
+Because the zeppelin pod is a full debian jessie container with spark 2.4.0 in the `/opt/spark` folder, you can also call spark-submit via the terminal with the `kubectl exec` command. For example, to run SparkPi you would first look for the name of your zeppelin pod under pods in the dashboard. This is will be something like `spark-zeppelin-76b6998f78-zm8c8`. Then run  `kubectl exec spark-zeppelin-76b6998f78-zm8c8 /opt/spark/bin/run-example SparkPi`
+
+3. Using Livy. See https://livy.incubator.apache.org/docs/latest/. The livy rest endpoint is exposed by the livy loadbalancer service. By default, livy uses the `spark-master` pod as the master and livy jobs can be monitored from either the `spark-webui` loadbalancer service on port `8080` or the livy ui endpoint.
