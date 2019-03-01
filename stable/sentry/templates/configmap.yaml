@@ -321,6 +321,7 @@ data:
     SENTRY_WEB_PORT = 9000
     SENTRY_WEB_OPTIONS = {
         # 'workers': 3,  # the number of web workers
+        'limit-post': 1024 * 1024 * 1024 * 2 # fix file upload: https://github.com/getsentry/onpremise/issues/44
     }
 
     ###############
