@@ -81,7 +81,7 @@ image:
 ## enable using atlantis.yaml file
 allowRepoConfig: false
 
-# Require all pull requests be approved prior to apply. 
+# Require all pull requests be approved prior to apply.
 requireApproval: false
 
 # Require all pull requests to meet repository mergeability requirements prior to apply.
