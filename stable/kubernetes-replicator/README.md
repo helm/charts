@@ -1,6 +1,6 @@
 # kubernetes-replicator
 
-kubernetes-replicator is an open source (Apache 2.0 License) custom Kubernetes controller that can be used to make secrets and config maps available in multiple namespaces.
+[kubernetes-replicator](https://github.com/mittwald/kubernetes-replicator) is an open source (Apache 2.0 License) custom Kubernetes controller that can be used to make secrets and config maps available in multiple namespaces.
 
 ## Introduction
 
