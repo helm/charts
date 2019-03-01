@@ -20,7 +20,7 @@ This chart will do the following:
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release stable/elastic-stack
+$ RELEASE_NAME=my-release helm install --set kibana.env.ELASTICSEARCH_URL=http://${RELEASE_NAME}-elasticsearch-client:9200 --name ${RELEASE_NAME} stable/elastic-stack
 ```
 
 ## Deleting the Charts
