@@ -32,7 +32,11 @@ spec:
         paths:
           - path: {{ $ingressPath }}
             backend:
+              {{- if .Values.unifiedService.enabled }}
+              serviceName: {{ $fullName }}
+              {{- else }}
               serviceName: {{ $fullName }}-gui
+              {{- end }}
               servicePort: https-gui
   {{- end }}
 {{- end }}
