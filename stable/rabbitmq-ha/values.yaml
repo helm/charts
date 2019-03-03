@@ -437,7 +437,6 @@ existingSecret: ""
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
 ##
 securityContext:
-  enabled: false
   runAsGroup: 101
   runAsNonRoot: true
   runAsUser: 100
