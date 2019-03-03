@@ -1,0 +1,149 @@
+# Default values for kubernetes-tagger.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+rbac:
+  ## Create RBAC
+  create: true
+  ## Ignored if rbac.create is true
+  ##
+  serviceAccountName: default
+
+secrets:
+  # Secrets for AWS, this will create AWS environment variables
+  aws:
+    accessKey: ""
+    secretKey: ""
+
+config:
+  # Log level
+  # loglevel: info
+  # Log format
+  # logformat: json
+  # AWS configuration
+  aws:
+    # Region
+    region: eu-west-3
+  # Rules to add / delete tags
+  rules: []
+    # # Rule definition add value hardcoded
+    # - tag: tag-hardcoded
+    #   value: hardcoded-value
+    #   action: add
+    # # Rule definition add value from query
+    # - tag: tag-query
+    #   query: persistentvolume.phase
+    #   action: add
+    # # Rule definition with condition
+    # - tag: tag-condition
+    #   query: persistentvolume.name
+    #   action: add
+    #   when:
+    #     - condition: persistentvolume.phase
+    #       value: Bound
+    #       operator: Equal
+    # # Rule definition delete tag
+    # - tag: tag-to-be-deleted
+    #   action: delete
+
+replicaCount: 1
+
+image:
+  repository: oxynozeta/kubernetes-tagger
+  tag: 1.0.1
+  pullPolicy: IfNotPresent
+
+service:
+  annotations: {}
+  clusterIP: ""
+
+  ## List of IP addresses at which the service is available
+  ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
+  ##
+  externalIPs: []
+
+  loadBalancerIP: ""
+  loadBalancerSourceRanges: []
+  port: 80
+  type: ClusterIP
+
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  path: /
+  hosts:
+    - chart-example.local
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 50m
+  #  memory: 56Mi
+  # requests:
+  #  cpu: 50m
+  #  memory: 56Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+deploymentAnnotations: {}
+
+podAnnotations: {}
+podLabels: {}
+
+podDisruptionBudget:
+  enabled: false
+  minAvailable: 1
+  maxUnavailable: ""
+
+## Liveness and Readiness probe values.
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/
+livenessProbe:
+  initialDelaySeconds: 0
+  periodSeconds: 10
+  timeoutSeconds: 1
+  successThreshold: 1
+  failureThreshold: 3
+readinessProbe:
+  initialDelaySeconds: 0
+  periodSeconds: 10
+  timeoutSeconds: 1
+  successThreshold: 1
+  failureThreshold: 3
+
+# Prometheus metrics
+prometheus:
+  pod:
+    ## Enable scrape metrics from annotations
+    enabled: false
+  operator:
+    ## Are you using Prometheus Operator?
+    enabled: false
+
+    serviceMonitor:
+      # Namespace Prometheus is installed in
+      namespace: monitoring
+
+      # Prometheus Service monitor interval
+      internal: 20s
+
+      # Prometheus Service monitor scrape timeout
+      # scrapeTimeout: ""
+
+      ## Defaults to whats used if you follow CoreOS [Prometheus Install Instructions](https://github.com/coreos/prometheus-operator/tree/master/helm#tldr)
+      ## [Prometheus Selector Label](https://github.com/coreos/prometheus-operator/blob/master/helm/prometheus/templates/prometheus.yaml#L65)
+      ## [Kube Prometheus Selector Label](https://github.com/coreos/prometheus-operator/blob/master/helm/kube-prometheus/values.yaml#L298)
+      selector:
+        prometheus: kube-prometheus

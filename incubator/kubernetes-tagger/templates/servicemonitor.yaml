@@ -1,0 +1,22 @@
+{{ if and .Values.prometheus.operator.enabled (not .Values.prometheus.pod.enabled) }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ template "kubernetes-tagger.name" . }}
+  namespace: {{ .Values.prometheus.operator.serviceMonitor.namespace }}
+  labels:
+{{ toYaml .Values.prometheus.operator.serviceMonitor.selector | indent 4 }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "kubernetes-tagger.name" . }}
+      release: {{ .Release.Name }}
+  endpoints:
+  - port: http
+    interval: {{ .Values.prometheus.operator.serviceMonitor.interval }}
+  {{- if .Values.prometheus.operator.serviceMonitor.scrapeTimeout }}
+    scrapeTimeout: {{ .Values.prometheus.operator.serviceMonitor.scrapeTimeout }}
+  {{- end }}
+  namespaceSelector:
+    any: true
+{{ end }}

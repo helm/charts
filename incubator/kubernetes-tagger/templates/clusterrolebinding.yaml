@@ -1,0 +1,19 @@
+{{- if .Values.rbac.create -}}
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ template "kubernetes-tagger.fullname" . }}
+  labels:
+    app: {{ template "kubernetes-tagger.name" . }}
+    chart: {{ template "kubernetes-tagger.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ template "kubernetes-tagger.fullname" . }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ template "kubernetes-tagger.fullname" . }}
+    namespace: {{ .Release.Namespace }}
+{{- end -}}

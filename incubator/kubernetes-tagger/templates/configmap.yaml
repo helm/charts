@@ -1,0 +1,13 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: {{ template "kubernetes-tagger.fullname" . }}
+  labels:
+    app: {{ template "kubernetes-tagger.name" . }}
+    chart: {{ template "kubernetes-tagger.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  config.yaml: |
+    namespace: {{ .Release.Namespace }}
+{{ toYaml .Values.config | indent 4 }}
