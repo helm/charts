@@ -8,10 +8,17 @@ kind: ClusterRole
 metadata:
   name: {{ include "ambassador.fullname" . }}
   labels:
+    {{- if .Values.legacyLabels }}
+    app: {{ include "ambassador.name" . }}
+    chart: {{ include "ambassador.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    {{- else }}
     app.kubernetes.io/name: {{ include "ambassador.name" . }}
     helm.sh/chart: {{ include "ambassador.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
+    {{- end }}
 rules:
   - apiGroups: [""]
     resources:
@@ -33,10 +40,17 @@ kind: ClusterRoleBinding
 metadata:
   name: {{ include "ambassador.fullname" . }}
   labels:
+    {{- if .Values.legacyLabels }}
+    app: {{ include "ambassador.name" . }}
+    chart: {{ include "ambassador.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    {{- else }}
     app.kubernetes.io/name: {{ include "ambassador.name" . }}
     helm.sh/chart: {{ include "ambassador.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
+    {{- end }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   {{- if .Values.rbac.namespaced }}

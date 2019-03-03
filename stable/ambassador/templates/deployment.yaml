@@ -7,23 +7,40 @@ kind: Deployment
 metadata:
   name: {{ include "ambassador.fullname" . }}
   labels:
+    {{- if .Values.legacyLabels }}
+    app: {{ include "ambassador.name" . }}
+    chart: {{ include "ambassador.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    {{- else }}
     app.kubernetes.io/name: {{ include "ambassador.name" . }}
     helm.sh/chart: {{ include "ambassador.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
+    {{- end }}
 spec:
 {{- if not .Values.daemonSet }}
   replicas: {{ .Values.replicaCount }}
 {{- end }}
   selector:
     matchLabels:
+      {{- if .Values.legacyLabels }}
+      app: {{ include "ambassador.name" . }}
+      release: {{ .Release.Name }}
+      {{- else }}
       app.kubernetes.io/name: {{ include "ambassador.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
+      {{- end }}
   template:
     metadata:
       labels:
+        {{- if .Values.legacyLabels }}
+        app: {{ include "ambassador.name" . }}
+        release: {{ .Release.Name }}
+        {{- else }}
         app.kubernetes.io/name: {{ include "ambassador.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
+        {{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
       {{- if .Values.podAnnotations }}

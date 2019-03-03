@@ -55,6 +55,7 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `image.repository`                 | Image                                                                           | `quay.io/datawire/ambassador` |
 | `image.tag`                        | Image tag                                                                       | `0.50.3`                      |
 | `imagePullSecrets`                 | Image pull secrets                                                              | `[]`                          |
+| `legacyLabels`                     | Set this to use same labels and selectors as datawire/ambassador chart used     | `false`                       |
 | `namespace.name`                   | Set the `AMBASSADOR_NAMESPACE` environment variable                             | `metadata.namespace`          |
 | `podAnnotations`                   | Additional annotations for ambassador pods                                      | `{}`                          |
 | `prometheusExporter.enabled`       | Prometheus exporter side-car enabled                                            | `false`                       |
@@ -130,7 +131,7 @@ $ helm upgrade --install --wait my-release -f values.yaml stable/ambassador
 
 ## Migrating from `datawire/ambassador` chart (chart version 0.40.0 or 0.50.0)
 
-Chart now runs ambassador as non-root by default, so you might need to update your ambassador module config to match this.
+Chart now runs ambassador as non-root by default, so you might need to update your ambassador module config to match this. The chart has changed labels and selectors to match best practices, to ease migration you can set `legacyLabels` to `true` and the chart will template with the old label names.
 
 ### Timings
 

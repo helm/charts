@@ -5,6 +5,9 @@
 replicaCount: 3
 daemonSet: false
 
+# Set to true to use same labels and selectors as datawire/ambassador chart used
+legacyLabels: false
+
 ambassador:
   id: default
 

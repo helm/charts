@@ -4,10 +4,17 @@ kind: Service
 metadata:
   name: {{ include "ambassador.fullname" . }}-admins
   labels:
+    {{- if .Values.legacyLabels }}
+    app: {{ include "ambassador.name" . }}
+    chart: {{ include "ambassador.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    {{- else }}
     app.kubernetes.io/name: {{ include "ambassador.name" . }}
     helm.sh/chart: {{ include "ambassador.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
+    {{- end }}
 spec:
   type: {{ .Values.adminService.type }}
   ports:
@@ -19,6 +26,11 @@ spec:
       nodePort: {{ .Values.adminService.nodePort }}
       {{- end }}
   selector:
+    {{- if .Values.legacyLabels }}
+    app: {{ include "ambassador.name" . }}
+    release: {{ .Release.Name }}
+    {{- else }}
     app.kubernetes.io/name: {{ include "ambassador.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
+    {{- end }}
 {{- end -}}

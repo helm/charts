@@ -3,10 +3,17 @@ kind: Service
 metadata:
   name: {{ include "ambassador.fullname" . }}
   labels:
+    {{- if .Values.legacyLabels }}
+    app: {{ include "ambassador.name" . }}
+    chart: {{ include "ambassador.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    {{- else }}
     app.kubernetes.io/name: {{ include "ambassador.name" . }}
     helm.sh/chart: {{ include "ambassador.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
+    {{- end }}
   {{- with .Values.service.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
@@ -40,8 +47,13 @@ spec:
       {{- end }}
     {{- end }}
   selector:
+    {{- if .Values.legacyLabels }}
+    app: {{ include "ambassador.name" . }}
+    release: {{ .Release.Name }}
+    {{- else }}
     app.kubernetes.io/name: {{ include "ambassador.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
+    {{- end }}
   {{- with .Values.service.loadBalancerSourceRanges }}
   loadBalancerSourceRanges:
     {{- toYaml . | nindent 4 }}
