@@ -9,6 +9,34 @@ image:
   tag: 5.9.29
   pullPolicy: IfNotPresent
 
+# If enabled, the controller, discovery, GUI, and STUN services will not be
+# created.
+# Instead, one service will be created with the port and nodePort settings from
+# controllerService, discoveryService, guiService, and stunService.
+# This is useful if, for example, the ClusterIP network is routable and being
+# accessed directly by access points, and the APs don't have a way to discern
+# different services on different IPs.
+unifiedService:
+  enabled: false
+  type: ClusterIP
+  ## Specify the nodePort value for the LoadBalancer and NodePort service types.
+  ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
+  ##
+  # nodePort:
+  ## Provide any additional annotations which may be required. This can be used to
+  ## set the LoadBalancer service type to internal only.
+  ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#internal-load-balancer
+  ##
+  annotations: {}
+  labels: {}
+  ## Use loadBalancerIP to request a specific static IP,
+  ## otherwise leave blank
+  ##
+  loadBalancerIP:
+  # loadBalancerSourceRanges: []
+  ## Set the externalTrafficPolicy in the Service to either Cluster or Local
+  # externalTrafficPolicy: Cluster
+
 guiService:
   type: ClusterIP
   port: 8443

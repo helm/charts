@@ -67,6 +67,13 @@ The following tables lists the configurable parameters of the Unifi chart and th
 | `discoveryService.loadBalancerIP`            | Loadbalance IP for AP discovery                                                                                        | `{}`                         |
 | `discoveryService.loadBalancerSourceRanges`  | List of IP CIDRs allowed access to load balancer (if supported)                                                        | None                         |
 | `discoveryService.externalTrafficPolicy`     | Set the externalTrafficPolicy in the Service to either Cluster or Local                                                | `Cluster`                    |
+| `unifiedService.enabled`                     | Use a single service for GUI, controller, STUN, and discovery                                                          | `false`                      |
+| `unifiedService.type`                        | Kubernetes service type for the unified service                                                                        | `ClusterIP`                  |
+| `unifiedService.annotations`                 | Annotations for the unified service                                                                                    | `{}`                         |
+| `unifiedService.labels`                      | Custom labels for the unified service                                                                                  | `{}`                         |
+| `unifiedService.loadBalancerIP`              | Load balancer IP for the unified service                                                                               | None                         |
+| `unifiedService.loadBalancerSourceRanges`    | List of IP CIDRs allowed access to the load balancer (if supported)                                                    | None                         |
+| `unifiedService.externalTrafficPolicy`       | Set the externalTrafficPolicy in the service to either Cluster or Local                                                | `Cluster`                    |
 | `ingress.enabled`                            | Enables Ingress                                                                                                        | `false`                      |
 | `ingress.annotations`                        | Ingress annotations                                                                                                    | `{}`                         |
 | `ingress.labels`                             | Custom labels                                                                                                          | `{}`                         |
