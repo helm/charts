@@ -1,0 +1,54 @@
+{{- if .Values.graylog.input.udp }}
+apiVersion: v1
+kind: Service
+metadata:
+{{- if .Values.graylog.input.udp.service.annotations }}
+  annotations:
+{{ toYaml .Values.graylog.input.udp.service.annotations | indent 4 }}
+{{- end }}
+  name: {{ template "graylog.fullname" . }}-udp
+  labels:
+    app.kubernetes.io/name: {{ template "graylog.name" . }}
+    helm.sh/chart: {{ template "graylog.chart" . }}
+    app.kubernetes.io/managed-by: "{{ .Release.Service }}"
+    app.kubernetes.io/instance: "{{ .Release.Name }}"
+    app.kubernetes.io/version: "{{ .Chart.AppVersion }}"
+    app.kubernetes.io/component: "UDP"
+spec:
+  ports:
+  {{- range .Values.graylog.input.udp.ports }}
+    - name: {{ .name }}
+      port: {{ .port }}
+      protocol: UDP
+      targetPort: {{ .port }}
+  {{- end }}
+{{- if contains "NodePort" .Values.graylog.input.udp.service.type }}
+  {{- if .Values.graylog.input.udp.service.nodePort }}
+      nodePort:  {{ .Values.graylog.input.udp.service.nodePort }}
+  {{- end }}
+{{- end }}
+{{- if .Values.graylog.input.udp.service.externalIPs }}
+  externalIPs:
+{{ toYaml .Values.graylog.input.udp.service.externalIPs | indent 4 }}
+{{- end }}
+{{- if eq "ClusterIP" .Values.graylog.input.udp.service.type }}
+  {{- if .Values.graylog.input.udp.service.clusterIP }}
+  clusterIP:  {{ .Values.graylog.input.udp.service.clusterIP }}
+  {{- end }}
+{{- end }}  
+  selector:
+    app.kubernetes.io/name: {{ template "graylog.name" . }}
+    app.kubernetes.io/instance: "{{ .Release.Name }}"
+  type: "{{ .Values.graylog.input.udp.service.type }}"
+{{- if eq "LoadBalancer" .Values.graylog.input.udp.service.type }}
+  {{- if .Values.graylog.input.udp.service.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.graylog.input.udp.service.loadBalancerIP }}
+  {{- end -}}
+  {{- if .Values.graylog.input.udp.service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+  {{- range .Values.graylog.input.udp.service.loadBalancerSourceRanges }}
+  - {{ . }}
+  {{- end }}
+  {{- end -}}
+{{- end -}}
+{{- end }}
