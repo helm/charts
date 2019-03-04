@@ -203,6 +203,9 @@ spec:
         resources:
 {{ toYaml .Values.metrics.resources | indent 10 }}
 {{- end }}
+{{- if .Values.sidecars }}
+{{ toYaml .Values.sidecars | indent 6 }}
+{{- end }}
       volumes:
       {{- if and .Values.allowOverrideNone .Values.customHTAccessCM}}
       - name: custom-htaccess

@@ -159,6 +159,8 @@ service:
   ##
   externalTrafficPolicy: Local
   annotations: {}
+  ## Extra ports to expose (normally used with the `sidecar` value)
+  # extraPorts:
 
 ## Allow health checks to be pointed at the https port
 healthcheckHttps: false
@@ -306,3 +308,13 @@ metrics:
   ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
   ##
   # resources: {}
+
+sidecars:
+## Add sidecars to the pod.
+## e.g.
+# - name: your-image-name
+  # image: your-image
+  # imagePullPolicy: Always
+  # ports:
+  # - name: portname
+  #   containerPort: 1234
