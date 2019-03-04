@@ -172,6 +172,17 @@ sidecars:
   - name: portname
    containerPort: 1234
 
+If these sidecars export extra ports, you can add extra port definitions using the `service.extraPorts` value:
+
+```yaml
+service:
+...
+  extraPorts:
+  - name: extraPort
+    port: 11311
+    targetPort: 11311
+```
+
 ## Persistence
 
 The [Bitnami WordPress](https://github.com/bitnami/bitnami-docker-wordpress) image stores the WordPress data and configurations at the `/bitnami` path of the container.
