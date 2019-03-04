@@ -14,7 +14,7 @@ rules:
   verbs: ["*"]
 - apiGroups: [""]
   resources: ["services", "configmaps", "secrets"]
-  verbs: ["create", "get", "delete"]
+  verbs: ["create", "get", "delete", "update"]
 - apiGroups: ["extensions"]
   resources: ["ingresses"]
   verbs: ["create", "get", "delete"]
