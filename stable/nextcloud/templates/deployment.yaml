@@ -110,7 +110,6 @@ spec:
           mountPath: /var/www/html/
           {{- if .Values.persistence.subPath }}
           subPath: {{ .Values.persistence.subPath }}
-          {{ end }}
           {{- else }}
           subPath: root
           {{ end }}
