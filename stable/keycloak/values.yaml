@@ -96,6 +96,7 @@ keycloak:
             topologyKey: failure-domain.beta.kubernetes.io/zone
 
   nodeSelector: {}
+  priorityClassName: ""
   tolerations: []
 
   ## Additional pod labels
