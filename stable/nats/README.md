@@ -163,6 +163,17 @@ sidecars:
    containerPort: 1234
 ```
 
+If these sidecars export extra ports, you can add extra port definitions using the `service.extraPorts` value:
+
+```yaml
+service:
+...
+  extraPorts:
+  - name: extraPort
+    port: 11311
+    targetPort: 11311
+```
+
 ## Production settings and horizontal scaling
 
 The [values-production.yaml](values-production.yaml) file consists a configuration to deploy a scalable and high-available NATS deployment for production environments. We recommend that you base your production configuration on this template and adjust the parameters appropriately.

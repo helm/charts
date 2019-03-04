@@ -89,6 +89,7 @@ The following table lists the configurable parameters of the WordPress chart and
 | `service.externalTrafficPolicy`  | Enable client source IP preservation       | `Cluster`                                               |
 | `service.nodePorts.http`         | Kubernetes http node port                  | `""`                                                    |
 | `service.nodePorts.https`        | Kubernetes https node port                 | `""`                                                    |
+| `service.extraPorts`            | Extra ports to expose in the service (normally used with the `sidecar` value)                        | `nil`                                                    |
 | `healthcheckHttps`               | Use https for liveliness and readiness     | `false`                                                 |
 | `livenessProbeHeaders`           | Headers to use for livenessProbe           | `nil`                                                   |
 | `readinessProbeHeaders`          | Headers to use for readinessProbe          | `nil`                                                   |

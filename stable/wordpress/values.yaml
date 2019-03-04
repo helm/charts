@@ -164,6 +164,8 @@ service:
   ##
   externalTrafficPolicy: Cluster
   annotations: {}
+  ## Extra ports to expose (normally used with the `sidecar` value)
+  # extraPorts:
 
 ## Allow health checks to be pointed at the https port
 healthcheckHttps: false
