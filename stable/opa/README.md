@@ -65,6 +65,8 @@ Reference](https://www.openpolicyagent.org/docs/configuration.html).
 | `admissionControllerKey` | Manually set admission controller key. | Unset |
 | `image` | OPA image to deploy. | `openpolicyagent/opa` |
 | `imageTag` | OPA image tag to deploy. | See [values.yaml](values.yaml) |
+| `logLevel` | Log level that OPA outputs at, (`debug`, `info` or `error`) | `info` |
+| `logFormat` | Log format that OPA produces (`text` or `json`) | `text` |
 | `replicas` | Number of admission controller replicas to deploy. | `1` |
 | `tolerations` | List of node taint tolerations. | `[]` |
 | `nodeSelector` | Node labels for pod assignment. | `{}` |

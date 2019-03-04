@@ -73,6 +73,12 @@ mgmt:
 #     - [group/]version/resource
     path: kubernetes
 
+# Log level for OPA ('debug', 'info', 'error') (app default=info)
+logLevel: info
+
+# Log format for OPA ('text', 'json') (app default=text)
+logFormat: text
+
 # Number of OPA replicas to deploy. OPA maintains an eventually consistent
 # cache of policies and data. If you want high availability you can deploy two
 # or more replicas.
