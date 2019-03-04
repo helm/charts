@@ -138,6 +138,9 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
+{{- if .Values.keycloak.priorityClassName }}
+      priorityClassName: {{ .Values.keycloak.priorityClassName }}
+{{- end }}      
       terminationGracePeriodSeconds: 60
       volumes:
         - name: scripts
