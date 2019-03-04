@@ -108,7 +108,12 @@ spec:
         volumeMounts:
         - name: nextcloud-data
           mountPath: /var/www/html/
+          {{- if .Values.persistence.subPath }}
+          subPath: {{ .Values.persistence.subPath }}
+          {{ end }}
+          {{- else }}
           subPath: root
+          {{ end }}
         - name: nextcloud-data
           mountPath: /var/www/html/data
           subPath: data
