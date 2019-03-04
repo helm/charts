@@ -20,6 +20,8 @@ spec:
         - name: initpolicy
           image: {{ .Values.mgmt.image }}:{{ .Values.mgmt.imageTag }}
           imagePullPolicy: {{ .Values.mgmt.imagePullPolicy }}
+          resources:
+{{ toYaml .Values.mgmt.resources | indent 12 }}
           command:
           - /bin/sh
           - -c
@@ -41,6 +43,8 @@ spec:
         - name: opa
           image: {{ .Values.image }}:{{ .Values.imageTag }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
           args:
             - "run"
             - "--server"
@@ -75,6 +79,8 @@ spec:
         - name: mgmt
           image: {{ .Values.mgmt.image }}:{{ .Values.mgmt.imageTag }}
           imagePullPolicy: {{ .Values.mgmt.imagePullPolicy }}
+          resources:
+{{ toYaml .Values.mgmt.resources | indent 12 }}
           args:
 {{- if .Values.authz.enabled }}
             - --opa-auth-token-file=/authz/mgmt-token
@@ -103,6 +109,8 @@ spec:
         - name: sarproxy
           image: {{ .Values.sar.image }}:{{ .Values.sar.imageTag }}
           imagePullPolicy: {{ .Values.sar.imagePullPolicy }}
+          resources:
+{{ toYaml .Values.sar.resources | indent 12 }}
           command:
             - kubectl
             - proxy
@@ -128,5 +136,3 @@ spec:
 {{ toYaml .Values.nodeSelector | indent 8 }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
-      resources:
-{{ toYaml .Values.resources | indent 8 }}
