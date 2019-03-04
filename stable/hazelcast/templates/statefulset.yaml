@@ -36,6 +36,10 @@ spec:
       - name: {{ template "hazelcast.fullname" . }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+        {{- if .Values.securityContext }}
+        securityContext:
+{{ toYaml .Values.securityContext | indent 10 }}
+        {{- end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         ports:
