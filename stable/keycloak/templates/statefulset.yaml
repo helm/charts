@@ -25,6 +25,9 @@ spec:
       labels:
         app: {{ template "keycloak.name" . }}
         release: "{{ .Release.Name }}"
+      {{- if .Values.keycloak.podLabels }}
+{{ toYaml .Values.keycloak.podLabels | indent 8 }}
+      {{- end }}        
 {{- if .Values.keycloak.podAnnotations }}
       annotations:
 {{ toYaml .Values.keycloak.podAnnotations | indent 8 }}
