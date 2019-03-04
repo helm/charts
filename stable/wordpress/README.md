@@ -119,6 +119,7 @@ The following table lists the configurable parameters of the WordPress chart and
 | `metrics.image.pullSecrets`      | Specify docker-registry secret names as an array        | `[]` (does not add image pull secrets to deployed pods)        |
 | `metrics.podAnnotations`         | Additional annotations for Metrics exporter pod         | `{prometheus.io/scrape: "true", prometheus.io/port: "9117"}`   |
 | `metrics.resources`              | Exporter resource requests/limit           | {}                                                      |
+| `sidecars`                           | Attach additional containers to the pod                                                      | `nil`                                                         |
 
 The above parameters map to the env variables defined in [bitnami/wordpress](http://github.com/bitnami/bitnami-docker-wordpress). For more information please refer to the [bitnami/wordpress](http://github.com/bitnami/bitnami-docker-wordpress) image documentation.
 
@@ -156,6 +157,19 @@ Note that [values-production.yaml](values-production.yaml) includes a replicaCou
 $ helm install stable/nfs-server-provisioner --set persistence.enabled=true,persistence.size=10Gi
 $ helm install --name my-release -f values-production.yaml --set persistence.storageClass=nfs stable/wordpress --set mariadb.master.persistence.storageClass=nfs
 ```
+
+## Sidecars
+
+If you have a need for additional containers to run within the same pod as WordPress (e.g. an additional metrics or logging exporter), you can do so via the `sidecars` config parameter. Simply define your container according to the Kubernetes container spec.
+
+```yaml
+sidecars:
+- name: your-image-name
+  image: your-image
+  imagePullPolicy: Always
+  ports:
+  - name: portname
+   containerPort: 1234
 
 ## Persistence
 
