@@ -72,12 +72,14 @@ Master:
   # Master Service annotations
   ServiceAnnotations: {}
   # Master Custom Labels
-  DeploymentLabels:
+  DeploymentLabels: {}
   #   foo: bar
   #   bar: foo
   # Master Service Labels
   ServiceLabels: {}
   #   service.beta.kubernetes.io/aws-load-balancer-backend-protocol: https
+  # Put labels on jeknins-master pod
+  PodLabels: {}
   # Used to create Ingress record (should used with ServiceType: ClusterIP)
   # HostName: jenkins.cluster.local
   # NodePort: <to set explicitly, choose port between 30000-32767
@@ -255,6 +257,16 @@ Master:
     #   hosts:
     #     - jenkins.cluster.local
   AdditionalConfig: {}
+
+  # Master.HostAliases allows for adding entries to Pod /etc/hosts:
+  # https://kubernetes.io/docs/concepts/services-networking/add-entries-to-pod-etc-hosts-with-host-aliases/
+  HostAliases: []
+  # - ip: 192.168.50.50
+  #   hostnames:
+  #     - something.local
+  # - ip: 10.0.50.50
+  #   hostnames:
+  #     - other.local
 
 Agent:
   Enabled: true
