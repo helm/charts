@@ -8,6 +8,9 @@ image:
     tag: 1.0.4
   pullPolicy: IfNotPresent
 
+nameOverride: ""
+fullnameOverride: ""
+
 # When enabled, exposes json and prometheus metrics on {{ .Release.Name }}-metrics service
 metrics:
   enabled: false
