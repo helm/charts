@@ -42,6 +42,8 @@ tolerations: []
 #     operator: Exists
 #     effect: NoSchedule
 
+podSecurityContext: {}
+
 podAnnotations: {}
 
 awsRegion: us-east-1
