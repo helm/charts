@@ -39,6 +39,8 @@ spec:
       {{- end }}
       {{- end }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      securityContext:
+{{ toYaml .Values.securityContext | indent 10 }}
       serviceAccountName: {{ template "rabbitmq-ha.serviceAccountName" . }}
       initContainers:
         - name: copy-rabbitmq-config
@@ -146,8 +148,6 @@ spec:
             {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
-          securityContext:
-{{ toYaml .Values.securityContext | indent 12 }}
           volumeMounts:
             - name: {{ .Values.persistentVolume.name }}
               mountPath: /var/lib/rabbitmq
