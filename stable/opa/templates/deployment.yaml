@@ -48,6 +48,8 @@ spec:
             - "--tls-cert-file=/certs/tls.crt"
             - "--tls-private-key-file=/certs/tls.key"
             - "--addr=0.0.0.0:443"
+            - "--log-level={{ .Values.logLevel }}"
+            - "--log-format={{ .Values.logFormat }}"
 {{- if .Values.authz.enabled }}
             - "--authentication=token"
             - "--authorization=basic"
