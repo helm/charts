@@ -140,6 +140,23 @@ Postgres is enabled by default.
 | env.cassandra_keyspace            | Cassandra keyspace                                                     | `kong`                |
 | env.cassandra_repl_factor         | Replication factor for the Kong keyspace                               | `2`                   |
 
+
+All `kong.env` parameters can also accept a mapping instead of a value to ensure the parameters can be set through configmaps and secrets.
+
+An example :
+
+```yaml
+kong:
+  env:
+     pg_user: kong
+     pg_password:
+       valueFrom:
+         secretKeyRef:
+            key: kong
+            name: postgres
+```
+ 
+
 For complete list of Kong configurations please check https://getkong.org/docs/1.0.x/configuration/.
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
