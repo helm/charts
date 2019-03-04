@@ -370,6 +370,9 @@ deployment:
     httpEnabled: false
     httpsEnabled: false
     dashboardEnabled: false
+    # httpPort: 80
+    # httpsPort: 443
+    # dashboardPort: 8080
 sendAnonymousUsage: false
 tracing:
   enabled: false

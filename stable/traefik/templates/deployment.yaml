@@ -126,7 +126,7 @@ spec:
         - name: http
           containerPort: 80
           {{- if .Values.deployment.hostPort.httpEnabled }}
-          hostPort: 80
+          hostPort: {{ default 80 .Values.deployment.hostPort.httpPort }}
           {{- end }}
           protocol: TCP
         - name: httpn
@@ -135,14 +135,14 @@ spec:
         - name: https
           containerPort: 443
           {{- if .Values.deployment.hostPort.httpsEnabled }}
-          hostPort: 443
+          hostPort: {{ default 443 .Values.deployment.hostPort.httpsPort }}
           {{- end }}
           protocol: TCP
         {{- if .Values.dashboard.enabled }}
         - name: dash
           containerPort: 8080
           {{- if .Values.deployment.hostPort.dashboardEnabled }}
-          hostPort: 8080
+          hostPort: {{ default 8080 .Values.deployment.hostPort.dashboardPort }}
           {{- end }}
           protocol: TCP
         {{- end }}
