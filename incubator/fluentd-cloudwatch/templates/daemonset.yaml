@@ -20,6 +20,8 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
 {{- end }}
     spec:
+      securityContext:
+{{ toYaml .Values.podSecurityContext | indent 8 }}
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "fluentd-cloudwatch.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
       initContainers:
         - name: copy-fluentd-config
