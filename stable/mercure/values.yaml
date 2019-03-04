@@ -14,7 +14,7 @@ subscriberJwtKey: ""
 
 image:
   repository: dunglas/mercure
-  tag: latest
+  tag: v0
   pullPolicy: IfNotPresent
 
 nameOverride: ""
