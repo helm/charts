@@ -60,6 +60,7 @@ mgmt:
   imageTag: 0.8
   imagePullPolicy: IfNotPresent
   extraArgs: []
+  resources: {}
   configmapPolicies:
     enabled: false
     namespaces: [opa, kube-federation-scheduling-policy]
@@ -125,6 +126,7 @@ sar:
   image: lachlanevenson/k8s-kubectl
   imageTag: latest
   imagePullPolicy: IfNotPresent
+  resources: {}
 
 # To control the liveness and readiness probes change the fields below.
 readinessProbe:
