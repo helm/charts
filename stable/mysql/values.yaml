@@ -61,6 +61,11 @@ extraInitContainers: |
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
 nodeSelector: {}
 
+## Tolerations for pod assignment
+## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+##
+tolerations: []
+
 livenessProbe:
   initialDelaySeconds: 30
   periodSeconds: 10
@@ -167,6 +172,8 @@ ssl:
 
 # To be added to the database server pod(s)
 podAnnotations: {}
+
+podLabels: {}
 
 ## Set pod priorityClassName
 # priorityClassName: {}

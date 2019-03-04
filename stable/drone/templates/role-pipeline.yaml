@@ -10,6 +10,16 @@ metadata:
     heritage: "{{ .Release.Service }}"
 rules:
   - apiGroups:
+      - extensions
+    resources:
+      - deployments
+    verbs:
+      - get
+      - list
+      - watch
+      - patch
+      - update
+  - apiGroups:
       - ""
     resources:
       - namespaces
@@ -17,14 +27,15 @@ rules:
       - secrets
       - pods
     verbs:
-      - "create"
-      - "delete"
-      - "get"
-      - "list"
+      - create
+      - delete
+      - get
+      - list
+      - watch
   - apiGroups:
       - ""
     resources:
-      - "pods/log"
+      - pods/log
     verbs:
-      - "get"
+      - get
 {{ end }}

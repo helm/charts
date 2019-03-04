@@ -12,14 +12,13 @@ data:
     cp /opt/halyard/config/* /tmp/config
     printf 'server.address: 0.0.0.0\n' > /tmp/config/halyard-local.yml
     # Use Redis deployed via the dependent Helm chart
+    rm -rf /tmp/spinnaker/.hal/default/service-settings
     mkdir -p /tmp/spinnaker/.hal/default/service-settings
-    printf 'overrideBaseUrl: redis://:{{ .Values.redis.password }}@{{ .Release.Name }}-redis-master:6379\nskipLifeCycleManagement: true\n' > /tmp/spinnaker/.hal/default/service-settings/redis.yml
-    # Route the /gate path of Deck to Gate
-    printf 'env:\n  API_HOST: http://spin-gate.{{ .Release.Namespace }}:8084/\n' > /tmp/spinnaker/.hal/default/service-settings/deck.yml
+    cp /tmp/service-settings/* /tmp/spinnaker/.hal/default/service-settings/
 
     {{- if .Values.halyard.additionalProfileConfigMaps.create }}
-    rm -rf /tmp/spinnaker/.hal/default/profiles && \
-    mkdir -p /tmp/spinnaker/.hal/default/profiles && \
+    rm -rf /tmp/spinnaker/.hal/default/profiles
+    mkdir -p /tmp/spinnaker/.hal/default/profiles
     cp /tmp/additionalProfileConfigMaps/* /tmp/spinnaker/.hal/default/profiles/
     {{- end }}
 

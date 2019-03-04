@@ -43,7 +43,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The configurable parameters of the Chronograf chart and 
+The configurable parameters of the Chronograf chart and
 their descriptions can be seen in `values.yaml`. The [full image documentation](https://quay.io/influxdb/chronograf) contains more information about running Chronograf in docker.
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,

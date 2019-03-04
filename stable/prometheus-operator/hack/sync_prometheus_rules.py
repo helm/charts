@@ -26,21 +26,32 @@ def change_style(style, representer):
 charts = [
     {
         'source': 'https://raw.githubusercontent.com/coreos/prometheus-operator/master/contrib/kube-prometheus/manifests/prometheus-rules.yaml',
-        'destination': '../templates/alertmanager/rules'
+        'destination': '../templates/prometheus/rules'
     },
     {
         'source': 'https://raw.githubusercontent.com/etcd-io/etcd/master/Documentation/op-guide/etcd3_alert.rules.yml',
-        'destination': '../templates/alertmanager/rules'
+        'destination': '../templates/prometheus/rules'
     },
 ]
 
 # Additional conditions map
 condition_map = {
-    'kube-apiserver.rules': ' .Values.kubeApiServer.enabled',
-    'kube-scheduler.rules': ' .Values.kubeScheduler.enabled',
-    'node.rules': ' .Values.nodeExporter.enabled',
-    'kubernetes-apps': ' .Values.kubeStateMetrics.enabled',
-    'etcd': ' .Values.kubeEtcd.enabled',
+    'alertmanager.rules': ' .Values.defaultRules.rules.alertmanager',
+    'general.rules': ' .Values.defaultRules.rules.general',
+    'k8s.rules': ' .Values.defaultRules.rules.k8s',
+    'kube-apiserver.rules': ' .Values.kubeApiServer.enabled .Values.defaultRules.rules.kubeApiserver',
+    'kube-prometheus-node-alerting.rules': ' .Values.defaultRules.rules.kubePrometheusNodeAlerting',
+    'kube-prometheus-node-recording.rules': ' .Values.defaultRules.rules.kubePrometheusNodeRecording',
+    'kube-scheduler.rules': ' .Values.kubeScheduler.enabled .Values.defaultRules.rules.kubeScheduler',
+    'kubernetes-absent': ' .Values.defaultRules.rules.kubernetesAbsent',
+    'kubernetes-resources': ' .Values.defaultRules.rules.kubernetesResources',
+    'kubernetes-storage': ' .Values.defaultRules.rules.kubernetesStorage',
+    'kubernetes-system': ' .Values.defaultRules.rules.kubernetesSystem',
+    'node.rules': ' .Values.nodeExporter.enabled .Values.defaultRules.rules.node',
+    'prometheus-operator': ' .Values.defaultRules.rules.prometheusOperator',
+    'prometheus.rules': ' .Values.defaultRules.rules.prometheus',
+    'kubernetes-apps': ' .Values.kubeStateMetrics.enabled .Values.defaultRules.rules.kubernetesApps',
+    'etcd': ' .Values.kubeEtcd.enabled .Values.defaultRules.rules.etcd',
 }
 
 alert_condition_map = {
@@ -64,10 +75,18 @@ replacement_map = {
     'job="alertmanager-main"': {
         'replacement': 'job="{{ $alertmanagerJob }}"',
         'init': '{{- $alertmanagerJob := printf "%s-%s" (include "prometheus-operator.fullname" .) "alertmanager" }}'},
+    'namespace="monitoring"': {
+        'replacement': 'namespace="{{ $namespace }}"',
+        'init': '{{- $namespace := .Release.Namespace }}'},
+    'alertmanager-$1': {
+        'replacement': '$1',
+        'init': ''},
 }
 
 # standard header
 header = '''# Generated from '%(name)s' group from %(url)s
+# Do not change in-place! In order to change this file first read following link:
+# https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
 {{- if and .Values.defaultRules.create%(condition)s }}%(init_line)s
 apiVersion: {{ printf "%%s/v1" (.Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com") }}
 kind: PrometheusRule
@@ -135,6 +154,20 @@ def add_rules_conditions(rules, indent=4):
             except ValueError:
                 # we found the last alert in file if there are no alerts after it
                 next_index = len(rules)
+
+            # depending on the rule ordering in alert_condition_map it's possible that an if statement from another rule is present at the end of this block.
+            found_block_end = False
+            last_line_index = next_index
+            while not found_block_end:
+                last_line_index = rules.rindex('\n', index, last_line_index - 1)  # find the starting position of the last line
+                last_line = rules[last_line_index + 1:next_index]
+
+                if last_line.startswith('{{- if'):
+                    next_index = last_line_index + 1  # move next_index back if the current block ends in an if statement
+                    continue
+
+                found_block_end = True
+
             rules = rules[:next_index] + '{{- end }}\n' + rules[next_index:]
     return rules
 
@@ -149,7 +182,8 @@ def write_group_to_file(group, url, destination):
     for line in replacement_map:
         if line in rules:
             rules = rules.replace(line, replacement_map[line]['replacement'])
-            init_line += '\n' + replacement_map[line]['init']
+            if replacement_map[line]['init']:
+                init_line += '\n' + replacement_map[line]['init']
     # append per-alert rules
     rules = add_rules_conditions(rules)
     # initialize header

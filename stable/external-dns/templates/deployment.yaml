@@ -137,6 +137,13 @@ spec:
           - name: CF_API_EMAIL
             value: "{{ .Values.cloudflare.email }}"
         {{- end }}
+        {{- if .Values.digitalocean.apiToken }}
+          - name: DO_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "external-dns.fullname" . }}
+                key: digitalocean_api_token
+        {{- end }}
         {{- if .Values.infoblox.wapiConnectionPoolSize }}
           - name: EXTERNAL_DNS_INFOBLOX_HTTP_POOL_CONNECTIONS
             value: "{{ .Values.infoblox.wapiConnectionPoolSize }}"

@@ -1,0 +1,17 @@
+{{- if .Values.graylog.serverFiles -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "graylog.fullname" . }}-files
+  labels:
+    app.kubernetes.io/name: {{ template "graylog.name" . }}
+    helm.sh/chart: {{ template "graylog.chart" . }}
+    app.kubernetes.io/managed-by: "{{ .Release.Service }}"
+    app.kubernetes.io/instance: "{{ .Release.Name }}"
+    app.kubernetes.io/version: "{{ .Chart.AppVersion }}"
+data:
+{{- range $key, $value := .Values.graylog.serverFiles }}
+  {{ $key }}: |
+{{ $value | default "{}" | indent 4 }}
+{{- end -}}
+{{- end -}}

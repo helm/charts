@@ -63,8 +63,13 @@ The following table lists the configurable parameters of the Vault chart and the
 | `resources.limits.cpu`            | Container requested CPU                  | `nil`                               |
 | `resources.limits.memory`         | Container requested memory               | `nil`                               |
 | `affinity`                        | Affinity settings                        | See values.yaml                     |
+| `service.loadBalancerIP`          | Assign a static IP to the loadbalancer   | `nil`                               |
 | `service.loadBalancerSourceRanges`| IP whitelist for service type loadbalancer   | `[]`                            |
 | `service.annotations`             | Annotations for service                  | `{}`                                |
+| `service.externalPort`            | External port for the service            | `8200`                              |
+| `service.port`                    | The API port Vault is using              | `8200`                              |
+| `service.clusterExternalPort`     | External cluster port for the service    | `nil`                               |
+| `service.clusterPort`             | The cluster port Vault is using          | `8201`                              |
 | `annotations`                     | Annotations for deployment               | `{}`                                |
 | `labels`                          | Extra labels for deployment              | `{}`                                |
 | `ingress.labels`                  | Labels for ingress                       | `{}`                                |
