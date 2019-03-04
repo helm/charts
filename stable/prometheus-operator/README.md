@@ -288,7 +288,8 @@ The following tables lists the configurable parameters of the prometheus-operato
 | `kubeControllerManager.endpoints` | Endpoints where Controller-manager runs. Provide this if running Controller-manager outside the cluster | `[]` |
 | `kubeControllermanager.service.port` | Controller-manager port for the service runs on | `10252` |
 | `kubeControllermanager.service.targetPort` | Controller-manager targetPort for the service runs on | `10252` |
-| `kubeControllermanager.service.selector` | Controller-manager service selector | `{"k8s-app" : "kube-controller-manager" }`
+| `kubeControllermanager.service.selector` | Controller-manager service selector | `{"k8s-app" : "kube-controller-manager" }` |
+| `kubeControllermanager.serviceMonitor.https` | Controller-manager service scrape over https | `false` |
 | `coreDns.enabled` | Deploy coreDns scraping components. Use either this or kubeDns | true |
 | `coreDns.service.port` | CoreDns port | `9153` |
 | `coreDns.service.targetPort` | CoreDns targetPort | `9153` |
@@ -310,7 +311,8 @@ The following tables lists the configurable parameters of the prometheus-operato
 | `kubeScheduler.endpoints` | Endpoints where scheduler runs. Provide this if running scheduler outside the cluster | `[]` |
 | `kubeScheduler.service.port` | Scheduler port for the service runs on | `10251` |
 | `kubeScheduler.service.targetPort` | Scheduler targetPort for the service runs on | `10251` |
-| `kubeScheduler.service.selector` | Scheduler service selector | `{"k8s-app" : "kube-scheduler" }`
+| `kubeScheduler.service.selector` | Scheduler service selector | `{"k8s-app" : "kube-scheduler" }` |
+| `kubeScheduler.serviceMonitor.https` | Scheduler service scrape over https | `false` |
 | `kubeStateMetrics.enabled` | Deploy the `kube-state-metrics` chart and configure a servicemonitor to scrape | `true` |
 | `kube-state-metrics.rbac.create` | Create RBAC components in kube-state-metrics. See `global.rbac.create` | `true` |
 | `kube-state-metrics.podSecurityPolicy.enabled` | Create pod security policy resource for kube-state-metrics. | `true` |

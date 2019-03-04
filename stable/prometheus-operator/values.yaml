@@ -432,6 +432,13 @@ kubeControllerManager:
     targetPort: 10252
     selector:
       k8s-app: kube-controller-manager
+
+  serviceMonitor:
+    ## Enable scraping kube-controller-manager over https.
+    ## Requires proper certs (not self-signed) and delegated authentication/authorization checks
+    ##
+    https: false
+
 ## Component scraping coreDns. Use either this or kubeDns
 ##
 coreDns:
@@ -508,6 +515,12 @@ kubeScheduler:
     targetPort: 10251
     selector:
       k8s-app: kube-scheduler
+
+  serviceMonitor:
+    ## Enable scraping kube-controller-manager over https.
+    ## Requires proper certs (not self-signed) and delegated authentication/authorization checks
+    ##
+    https: false
 
 ## Component scraping kube state metrics
 ##

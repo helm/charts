@@ -18,8 +18,10 @@ spec:
   endpoints:
   - port: http-metrics
     interval: 15s
+    bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+    {{- if .Values.kubeControllerManager.serviceMonitor.https }}
+    scheme: https
     tlsConfig:
       caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-      insecureSkipVerify: true
-    bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+    {{- end }}
 {{- end }}
