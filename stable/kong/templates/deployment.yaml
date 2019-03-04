@@ -59,10 +59,7 @@ spec:
         - name: KONG_CASSANDRA_CONTACT_POINTS
           value: {{ template "kong.cassandra.fullname" . }}
         {{- end }}
-        {{- range $key, $val := .Values.env }}
-        - name: KONG_{{ $key | upper}}
-          value: {{ $val | quote }}
-        {{- end}}
+        {{- include "kong.env" .  | indent 8 }}
         command: [ "/bin/sh", "-c", "until kong start; do echo 'waiting for db'; sleep 1; done; kong stop" ]
       containers:
       - name: {{ template "kong.name" . }}
@@ -92,10 +89,7 @@ spec:
           value: "/dev/stderr"
         - name: KONG_ADMIN_ERROR_LOG
           value: "/dev/stderr"
-        {{- range $key, $val := .Values.env }}
-        - name: KONG_{{ $key | upper}}
-          value: {{ $val | quote }}
-        {{- end}}
+        {{- include "kong.env" .  | indent 8 }}
         {{- if .Values.postgresql.enabled }}
         - name: KONG_PG_HOST
           value: {{ template "kong.postgresql.fullname" . }}

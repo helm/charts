@@ -47,10 +47,7 @@ spec:
         env:
         - name: KONG_NGINX_DAEMON
           value: "off"
-        {{- range $key, $val := .Values.env }}
-        - name: KONG_{{ $key | upper}}
-          value: {{ $val | quote }}
-        {{- end}}
+        {{- include "kong.env" .  | indent 8 }}
         {{- if .Values.postgresql.enabled }}
         - name: KONG_PG_HOST
           value: {{ template "kong.postgresql.fullname" . }}
