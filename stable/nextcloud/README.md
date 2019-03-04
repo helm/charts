@@ -77,6 +77,7 @@ The following table lists the configurable parameters of the nextcloud chart and
 | `persistence.existingClaim`| An Existing PVC name for nextcloud volume  | `nil` (uses alpha storage class annotation)             |
 | `persistence.accessMode`   | PVC Access Mode for nextcloud volume       | `ReadWriteOnce`                                         |
 | `persistence.size`         | PVC Storage Request for nextcloud volume   | `8Gi`                                                   |
+| `persistence.subPath`         | Path within existing claim to mount   | `root`                                                   |
 | `resources`                         | CPU/Memory resource requests/limits       | `{}`                 |
 
 > **Note**:
