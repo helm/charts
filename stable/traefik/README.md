@@ -87,7 +87,7 @@ The following table lists the configurable parameters of the Traefik chart and t
 | -------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
 | `fullnameOverride`                     | Override the full resource names                                                                                             | `{release-name}-traefik` (or traefik if release-name is traefik) |
 | `image`                                | Traefik image name                                                                                                           | `traefik`                                         |
-| `imageTag`                             | The version of the official Traefik image to use                                                                             | `1.7.7`                                           |
+| `imageTag`                             | The version of the official Traefik image to use                                                                             | `1.7.9`                                           |
 | `serviceType`                          | A valid Kubernetes service type                                                                                              | `LoadBalancer`                                    |
 | `loadBalancerIP`                       | An available static IP you have reserved on your cloud platform                                                              | None                                              |
 | `startupArguments`                       | A list of startup arguments which are passed to traefik                                                              | `[]`                                              |
@@ -98,13 +98,15 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `replicas`                             | The number of replicas to run; __NOTE:__ Full Traefik clustering with leader election is not yet supported, which can affect any configured Let's Encrypt setup; see Clustering section | `1` |
 | `podDisruptionBudget`                  | Pod disruption budget                                                                                                        | `{}`                                              |
 | `priorityClassName`                    | Pod priority class name                                                                                                      | `""`                                              |
-| `rootCAs`                              | Register Certificates in the RootCA. These certificates will be use for backends calls. __NOTE:__ You can use file path or cert content directly | `[]`                                              |
-| `cpuRequest`                           | Initial share of CPU requested per Traefik pod                                                                               | `100m`                                            |
-| `memoryRequest`                        | Initial share of memory requested per Traefik pod                                                                            | `20Mi`                                            |
-| `cpuLimit`                             | CPU limit per Traefik pod                                                                                                    | `200m`                                            |
-| `memoryLimit`                          | Memory limit per Traefik pod                                                                                                 | `30Mi`                                            |
+| `rootCAs`                              | Register Certificates in the RootCA. These certificates will be use for backends calls. __NOTE:__ You can use file path or cert content directly | `[]`                          |
+| `resources`                            | Resource definitions for the generated pods                                                                                  | `{}`                                              |
+| `cpuRequest`                           | **DEPRECATED**: use `resources` instead. Initial share of CPU requested per Traefik pod                                      | None                                              |
+| `memoryRequest`                        | **DEPRECATED**: use `resources` instead. Initial share of memory requested per Traefik pod                                   | None                                              |
+| `cpuLimit`                             | **DEPRECATED**: use `resources` instead. CPU limit per Traefik pod                                                           | None                                              |
+| `memoryLimit`                          | **DEPRECATED**: use `resources` instead. Memory limit per Traefik pod                                                        | None                                              |
 | `rbac.enabled`                         | Whether to enable RBAC with a specific cluster role and binding for Traefik                                                  | `false`                                           |
 | `deploymentStrategy`                   | Specify deployment spec rollout strategy                                                                                     | `{}`                                              |
+| `securityContext`                      | Security context                                                                                                             | `{}`                                              |
 | `nodeSelector`                         | Node labels for pod assignment                                                                                               | `{}`                                              |
 | `affinity`                             | Affinity settings                                                                                                            | `{}`                                              |
 | `tolerations`                          | List of node taints to tolerate                                                                                              | `[]`                                              |
@@ -131,7 +133,7 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `acme.challengeType`                   | Type of ACME challenge to perform domain validation. `tls-sni-01` (deprecated), `tls-alpn-01` (recommended), `http-01` or `dns-01` | `tls-sni-01`                                |
 | `acme.delayBeforeCheck`         | By default, the provider will verify the TXT DNS challenge record before letting ACME verify. If delayBeforeCheck is greater than zero, this check is delayed for the configured duration in seconds. Useful when Traefik cannot resolve external DNS queries. | `0` |
 | `acme.dnsProvider.name`                | Which DNS provider to use. See [here](https://github.com/xenolf/lego/tree/master/providers/dns) for the list of possible values. | `nil`                                         |
-| `acme.dnsProvider.$name`               | The configuration environment variables (encoded as a secret) needed for the DNS provider to do DNS challenge. See [here](#example-aws-route-53). | `{}`                         |
+| `acme.dnsProvider.$name`               | The configuration environment variables (encoded as a secret) needed for the DNS provider to do DNS challenge. Example configuration: [AWS Route 53](#example-aws-route-53), [Google Cloud DNS](#example-gcloud). | `{}` |
 | `acme.email`                           | Email address to be used in certificates obtained from Let's Encrypt                                                         | `admin@example.com`                               |
 | `acme.onHostRule`                      | Whether to generate a certificate for each frontend with Host rule                                                           | `true`                                            |
 | `acme.staging`                         | Whether to get certs from Let's Encrypt's staging environment                                                                | `true`                                            |
@@ -199,8 +201,11 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `deployment.podAnnotations`            | Annotations for the Traefik pod definition                                                                                   | None                                              |
 | `deployment.podLabels`                 | Labels for the Traefik pod definition                                                                                        | None                                              |
 | `deployment.hostPort.httpEnabled`      | Whether to enable hostPort binding to host for http.                                                                         | `false`                                           |
+| `deployment.hostPort.httpPort`         | Desired host port used for http requests.                                                                                    | `80`                                              |
 | `deployment.hostPort.httpsEnabled`     | Whether to enable hostPort binding to host for https.                                                                        | `false`                                           |
+| `deployment.hostPort.httpsPort`        | Desired host port used for https requests.                                                                                   | `443`                                             |
 | `deployment.hostPort.dashboardEnabled` | Whether to enable hostPort binding to host for dashboard.                                                                    | `false`                                           |
+| `deployment.hostPort.dashboardPort`    | Desired host port used for accessing dashboard.                                                                              | `8080`                                            |
 | `sendAnonymousUsage`                   | Send anonymous usage statistics.                                                                                             | `false`                                           |
 | `tracing.enabled`                      | Whether to enable request tracing                                                                                            | `false`                                           |
 | `tracing.backend`                      | Tracing backend to use, either `jaeger` or `zipkin` or `datadog`                                                             | None                                              |
@@ -216,6 +221,9 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `tracing.datadog.localAgentHostPort`   | Location of the Datadog agent where spans will be sent                                                                       | `127.0.0.1:8126`                                  |
 | `tracing.datadog.debug`                | Enables Datadog debugging                                                                                                    | `false`                                           |
 | `tracing.datadog.globalTag`            | Apply shared tag in a form of Key:Value to all the traces                                                                    | `""`                                           |
+| `autoscaling`                          | HorizontalPodAutoscaler for the traefik Deployment                                                                           | `{}`                                           |
+| `configFiles`                          | Config files to make available in the deployment. key=filename, value=file contents                                          | `{}`                                              |
+| `secretFiles`                          | Secret files to make available in the deployment. key=filename, value=file contents                                          | `{}`                                              |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 
@@ -351,12 +359,12 @@ acme:
 
 #### Example: AWS Route 53
 
-Route 53 requires the [following configuration variables to be set](values.yaml#L98-L101):
+Using `route53` as DNS provider requires the following configuration variables to be set:
 - `AWS_ACCESS_KEY_ID`
 - `AWS_SECRET_ACCESS_KEY`
 - `AWS_REGION`
 
-The configuration for the DNS provider would look like this:
+The configuration would look like this:
 
 ```yaml
 acme:
@@ -367,6 +375,28 @@ acme:
       AWS_ACCESS_KEY_ID: ...
       AWS_SECRET_ACCESS_KEY: ...
       AWS_REGION: us-east-1
+```
+
+#### Example: Google Cloud DNS
+
+Using `gcloud` as DNS provider requires the following configuration variables to be set:
+- `GCE_PROJECT`
+- `GCE_SERVICE_ACCOUNT_FILE`
+
+The configuration would look like this:
+
+```yaml
+
+secretFiles:
+  gcloud-credentials.json: '{"type":"service_account","project_id":"<projectName>","private_key_id":"<hash>",...}'
+
+acme:
+  enabled: true
+  dnsProvider:
+    name: gcloud
+    gcloud:
+      GCE_PROJECT: <projectName>
+      GCE_SERVICE_ACCOUNT_FILE: /secrets/gcloud-credentials.json
 ```
 
 ### Proxy Protocol

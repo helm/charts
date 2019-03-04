@@ -1,0 +1,4 @@
+concourse:
+  web:
+    kubernetes:
+      keepNamespaces: false

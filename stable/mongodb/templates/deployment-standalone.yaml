@@ -38,7 +38,6 @@ spec:
       {{- if .Values.securityContext.enabled }}
       securityContext:
         fsGroup: {{ .Values.securityContext.fsGroup }}
-        runAsUser: {{ .Values.securityContext.runAsUser }}
       {{- end }}
       {{- if .Values.affinity }}
       affinity:
@@ -62,6 +61,11 @@ spec:
       - name: {{ template "mongodb.fullname" . }}
         image: {{ template "mongodb.image" . }}
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+        {{- if .Values.securityContext.enabled }}
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: {{ .Values.securityContext.runAsUser }}
+        {{- end }}
         env:
         {{- if .Values.image.debug}}
         - name: NAMI_DEBUG
@@ -99,6 +103,12 @@ spec:
         {{- end }}
         - name: MONGODB_ENABLE_IPV6
         {{- if .Values.mongodbEnableIPv6 }}
+          value: "yes"
+        {{- else }}
+          value: "no"
+        {{- end }}
+        - name: MONGODB_ENABLE_DIRECTORY_PER_DB
+        {{- if .Values.mongodbDirectoryPerDB }}
           value: "yes"
         {{- else }}
           value: "no"
@@ -161,9 +171,9 @@ spec:
             secretKeyRef:
               name: {{ if .Values.existingSecret }}{{ .Values.existingSecret }}{{- else }}{{ template "mongodb.fullname" . }}{{- end }}
               key: mongodb-root-password
-        command: [ 'sh', '-c', '/bin/mongodb_exporter --mongodb.uri mongodb://root:${MONGODB_ROOT_PASSWORD}@localhost:{{ .Values.service.port }}/admin' ]
+        command: [ 'sh', '-c', '/bin/mongodb_exporter --mongodb.uri mongodb://root:${MONGODB_ROOT_PASSWORD}@localhost:{{ .Values.service.port }}/admin {{ .Values.metrics.extraArgs }}' ]
         {{- else }}
-        command: [ 'sh', '-c', '/bin/mongodb_exporter --mongodb.uri mongodb://localhost:{{ .Values.service.port }}' ]
+        command: [ 'sh', '-c', '/bin/mongodb_exporter --mongodb.uri mongodb://localhost:{{ .Values.service.port }} {{ .Values.metrics.extraArgs }}' ]
         {{- end }}
         ports:
         - name: metrics
@@ -172,14 +182,14 @@ spec:
           httpGet:
             path: /metrics
             port: metrics
-          initialDelaySeconds: 15
-          timeoutSeconds: 5
+          initialDelaySeconds: {{ default 15 .Values.metrics.livenessProbe.initialDelaySeconds }}
+          timeoutSeconds: {{ default 5 .Values.metrics.livenessProbe.timeoutSeconds }}
         readinessProbe:
           httpGet:
             path: /metrics
             port: metrics
-          initialDelaySeconds: 5
-          timeoutSeconds: 1
+          initialDelaySeconds: {{ default 5 .Values.metrics.readinessProbe.initialDelaySeconds }}
+          timeoutSeconds: {{ default 1 .Values.metrics.readinessProbe.timeoutSeconds }}
         resources:
 {{ toYaml .Values.metrics.resources | indent 10 }}
 {{- end }}

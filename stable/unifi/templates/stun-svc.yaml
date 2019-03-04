@@ -1,3 +1,4 @@
+{{ if not .Values.unifiedService.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -50,3 +51,4 @@ spec:
   selector:
     app: {{ template "unifi.name" . }}
     release: {{ .Release.Name }}
+{{ end }}

@@ -10,7 +10,7 @@
 image:
   registry: docker.io
   repository: bitnami/mariadb
-  tag: 10.1.37
+  tag: 10.1.38
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -49,6 +49,13 @@ serviceAccount:
   ## The name of the ServiceAccount to use.
   ## If not set and create is true, a name is generated using the mariadb.fullname template
   # name:
+
+## Role Based Access
+## Ref: https://kubernetes.io/docs/admin/authorization/rbac/
+##
+
+rbac:
+  create: false
 
 ## Pod Security Context
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
@@ -227,6 +234,11 @@ master:
     successThreshold: 1
     failureThreshold: 3
 
+  podDisruptionBudget:
+    enabled: false
+    minAvailable: 1
+    # maxUnavailable: 1
+
 slave:
   replicas: 2
 
@@ -322,6 +334,11 @@ slave:
     timeoutSeconds: 1
     successThreshold: 1
     failureThreshold: 3
+
+  podDisruptionBudget:
+    enabled: false
+    minAvailable: 1
+    # maxUnavailable: 1
 
 metrics:
   enabled: true

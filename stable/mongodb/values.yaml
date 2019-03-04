@@ -14,7 +14,7 @@ image:
   ## Bitnami MongoDB image tag
   ## ref: https://hub.docker.com/r/bitnami/mongodb/tags/
   ##
-  tag: 4.0.3
+  tag: 4.0.6
 
   ## Specify a imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -50,11 +50,15 @@ usePassword: true
 # mongodbPassword: password
 # mongodbDatabase: database
 
-
 ## Whether enable/disable IPv6 on MongoDB
 ## ref: https://github.com/bitnami/bitnami-docker-mongodb/blob/master/README.md#enabling/disabling-ipv6
 ##
 mongodbEnableIPv6: true
+
+## Whether enable/disable DirectoryPerDB on MongoDB
+## ref: https://github.com/bitnami/bitnami-docker-mongodb/blob/master/README.md#enabling/disabling-directoryperdb
+##
+mongodbDirectoryPerDB: false
 
 ## MongoDB System Log configuration
 ## ref: https://github.com/bitnami/bitnami-docker-mongodb#configuring-system-log-verbosity-level
@@ -92,6 +96,11 @@ service:
   ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
   ##
   # nodePort:
+
+  ## Specify the loadBalancerIP value for LoadBalancer service types.
+  ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer
+  ##
+  # loadBalancerIP:
 
 ## Setting up replication
 ## ref: https://github.com/bitnami/bitnami-docker-mongodb#setting-up-a-replication
@@ -248,10 +257,27 @@ metrics:
     # pullSecrets:
     #   - myRegistrKeySecretName
 
+  ## String with extra arguments to the metrics exporter
+  ## ref: https://github.com/dcu/mongodb_exporter/blob/master/mongodb_exporter.go
+  extraArgs: ""
+
   ## Metrics exporter resource requests and limits
   ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
   ##
   # resources: {}
+
+  ## Metrics exporter liveness and readiness probes
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes)
+  livenessProbe:
+    enabled: false
+    initialDelaySeconds: 15
+    periodSeconds: 5
+    timeoutSeconds: 5
+  readinessProbe:
+    enabled: false
+    initialDelaySeconds: 5
+    periodSeconds: 5
+    timeoutSeconds: 1
 
   ## Metrics exporter pod Annotation
   podAnnotations:

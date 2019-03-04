@@ -11,9 +11,9 @@ metadata:
 data:
   fluent-bit-service.conf: |-
     [SERVICE]
-        Flush        1
+        Flush        {{ .Values.service.flush }} 
         Daemon       Off
-        Log_Level    info
+        Log_Level    {{ .Values.service.logLevel }}
         Parsers_File parsers.conf
 {{- if .Values.parsers.enabled }}
         Parsers_File parsers_custom.conf
@@ -28,7 +28,7 @@ data:
     [INPUT]
         Name             tail
         Path             {{ .Values.input.tail.path }}
-        Parser           docker
+        Parser           {{ .Values.input.tail.parser }}
         Tag              {{ .Values.filter.kubeTag }}.*
         Refresh_Interval 5
         Mem_Buf_Limit    {{ .Values.input.tail.memBufLimit }}

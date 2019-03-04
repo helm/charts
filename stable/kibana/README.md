@@ -48,7 +48,7 @@ The following table lists the configurable parameters of the kibana chart and th
 | `livenessProbe.timeoutSeconds`                | number of seconds                          | 10                                     |
 | `image.pullPolicy`                            | Image pull policy                          | `IfNotPresent`                         |
 | `image.repository`                            | Image repository                           | `docker.elastic.co/kibana/kibana-oss`  |
-| `image.tag`                                   | Image tag                                  | `6.5.4`                                |
+| `image.tag`                                   | Image tag                                  | `6.6.0`                                |
 | `image.pullSecrets`                           | Specify image pull secrets                 | `nil`                                  |
 | `commandline.args`                            | add additional commandline args            | `nil`                                  |
 | `ingress.enabled`                             | Enables Ingress                            | `false`                                |
@@ -57,6 +57,7 @@ The following table lists the configurable parameters of the kibana chart and th
 | `ingress.tls`                                 | Ingress TLS configuration                  | None:                                  |
 | `nodeSelector`                                | node labels for pod assignment             | `{}`                                   |
 | `podAnnotations`                              | annotations to add to each pod             | `{}`                                   |
+| `podLabels`                                   | labels to add to each pod                  | `{}`                                   |
 | `replicaCount`                                | desired number of pods                     | `1`                                    |
 | `revisionHistoryLimit`                        | revisionHistoryLimit                       | `3`                                    |
 | `serviceAccountName`                          | DEPRECATED: use serviceAccount.name        | `nil`                                  |
@@ -69,14 +70,15 @@ The following table lists the configurable parameters of the kibana chart and th
 | `resources`                                   | pod resource requests & limits             | `{}`                                   |
 | `priorityClassName`                           | priorityClassName                          | `nil`                                  |
 | `service.externalPort`                        | external port for the service              | `443`                                  |
-| `service.disableInternalPort`                 | disable internal port when using sidecar   | `false`                                |
 | `service.internalPort`                        | internal port for the service              | `4180`                                 |
+| `service.portName`                            | service port name                          | None:                                  |
 | `service.authProxyPort`                       | port to use when using sidecar authProxy   | None:                                  |
 | `service.externalIPs`                         | external IP addresses                      | None:                                  |
 | `service.loadBalancerIP`                      | Load Balancer IP address                   | None:                                  |
 | `service.loadBalancerSourceRanges`            | Limit load balancer source IPs to list of CIDRs (where available)) | `[]`           |
 | `service.nodePort`                            | NodePort value if service.type is NodePort | None:                                  |
 | `service.type`                                | type of service                            | `ClusterIP`                            |
+| `service.clusterIP`                           | static clusterIP or None for headless services | None:                              |
 | `service.annotations`                         | Kubernetes service annotations             | None:                                  |
 | `service.labels`                              | Kubernetes service labels                  | None:                                  |
 | `tolerations`                                 | List of node taints to tolerate            | `[]`                                   |
@@ -105,6 +107,7 @@ The following table lists the configurable parameters of the kibana chart and th
 | `securityContext.fsGroup`                     | fsGroup id to run in pods                  | `2000`                                  |
 | `extraConfigMapMounts`                        | Additional configmaps to be mounted        | `[]`                                    |
 | `deployment.annotations`                      | Annotations for deployment                 | `{}`                                    |
+| `initContainers`                              | Init containers to add to the kibana deployment | `{}`                               |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
