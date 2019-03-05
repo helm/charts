@@ -32,6 +32,8 @@ deploymentStrategy: {}
   # type: RollingUpdate
 
 securityContext: {}
+env: {}
+
 nodeSelector: {}
   # key: value
 affinity: {}
