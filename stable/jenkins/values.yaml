@@ -39,6 +39,10 @@ Master:
   # If you choose to use your own, you must upload your decrypted RSA private key (not the public key above) to a Kubernetes secret using the following command:
   # kubectl -n <namespace> create secret generic <helm_release_name> --dry-run --from-file=jenkins-admin-private-key=~/.ssh/id_rsa -o yaml |kubectl -n <namespace> apply -f -
   # Replace ~/.ssh/id_rsa in the above command with the path to your private key file and the <helm_release_name> and <namespace> placeholders to suit.
+  RollingUpdate: {}
+  # Ignored if Persistence is enabled
+  # maxSurge: 1
+  # maxUnavailable: 25%
   resources:
     requests:
       cpu: "50m"
