@@ -433,6 +433,14 @@ readinessProbe:
 # Specifies an existing secret to be used for RMQ password and Erlang Cookie
 existingSecret: ""
 
+
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+##
+securityContext:
+  runAsGroup: 101
+  runAsNonRoot: true
+  runAsUser: 100
+
 prometheus:
   ## Configures Prometheus Exporter to expose and scrape stats.
   exporter:
