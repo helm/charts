@@ -85,3 +85,13 @@ Get the erlang secret.
         {{- printf "%s" (include "rabbitmq.fullname" .) -}}
     {{- end -}}
 {{- end -}}
+
+{{/*
+Return the proper image name (for the init container volume-permissions image)
+*/}}
+{{- define "volumePermissions.image" -}}
+{{- $registryName :=  .Values.volumePermissions.image.registry -}}
+{{- $repositoryName := .Values.volumePermissions.image.repository -}}
+{{- $tag := .Values.volumePermissions.image.tag | toString -}}
+{{- printf "%s/%s:%s" $registryName $repositoryName $tag -}}
+{{- end -}}
