@@ -45,6 +45,10 @@ spec:
         ports:
         - name: hazelcast
           containerPort: 5701
+        {{- if .Values.monitoringService.enabled }}
+        - name: monitoring
+          containerPort: {{ .Values.monitoringService.port }}
+        {{- end }}
         {{- if .Values.livenessProbe.enabled }}
         livenessProbe:
           httpGet:

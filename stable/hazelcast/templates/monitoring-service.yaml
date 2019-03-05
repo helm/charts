@@ -1,0 +1,23 @@
+{{- if .Values.monitoringService.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "hazelcast.fullname" . }}-monitoring
+  labels:
+    app: {{ template "hazelcast.name" . }}
+    chart: {{ template "hazelcast.chart" . }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+  annotations:
+{{ toYaml .Values.monitoringService.annotations | indent 4 }}
+spec:
+  type: {{ .Values.monitoringService.type }}
+  selector:
+    app: {{ template "hazelcast.name" . }}
+    release: "{{ .Release.Name }}"
+  ports:
+  - protocol: TCP
+    port: {{ .Values.monitoringService.port }}
+    targetPort: monitoring
+    name: monitoring
+{{- end }}

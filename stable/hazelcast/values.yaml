@@ -132,3 +132,12 @@ securityContext:
   readOnlyRootFilesystem: true
   allowPrivilegeEscalation: false
   defaultAllowPrivilegeEscalation: false
+
+# Allows to enable a Prometheus service to scrape pods, if using a custom image like https://hub.docker.com/r/evryfs/hazelcast-prometheus
+monitoringService:
+  enabled: false
+  type: ClusterIP
+  port: 8080
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/path: "/metrics"
