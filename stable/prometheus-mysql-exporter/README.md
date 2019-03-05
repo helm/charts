@@ -48,6 +48,7 @@ The following table lists the configurable parameters of the mysql exporter char
 | `service.internalPort`                   | The target port of the container                                                                                     | `9104`                                  |
 | `resources`                              | CPU/Memory resource requests/limits                                                                                  | `{}`                                    |
 | `annotations`                            | pod annotations for easier discovery                                                                                 | `see values.yaml`                       |
+| `collectors`                             | Collector configuration                                                                                              | `see values.yaml`                       |
 | `mysql.db`                               | MySQL connection db (optional)                                                                                       | `""`                                    |
 | `mysql.host`                             | MySQL connection host                                                                                                | `localhost`                             |
 | `mysql.param`                            | MySQL connection parameters (optional)                                                                               | `"tcp"`                                 |
@@ -79,3 +80,7 @@ $ helm install --name my-release -f values.yaml stable/prometheus-mysql-exporter
 
 Documentation for the MySQL Exporter can be found here: (https://github.com/prometheus/mysqld_exporter)
 A mysql params overview can be found here: (https://github.com/go-sql-driver/mysql#dsn-data-source-name)
+
+## Collector Flags
+
+Available collector flags can be found in the [values.yaml](https://github.com/kilhyunjun/charts/blob/master/stable/prometheus-mysql-exporter/values.yaml) and a description of each flag can be found in the [mysqld_exporter](https://github.com/prometheus/mysqld_exporter#collector-flags) repository.
