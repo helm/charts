@@ -6,6 +6,6 @@ home: https://github.com/prometheus/mysqld_exporter
 appVersion: v0.11.0
 sources:
   - https://github.com/prometheus/mysqld_exporter
-mantainers:
+maintainers:
   - name: juanchimienti
     email: juan.chimienti@gmail.com
