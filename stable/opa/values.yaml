@@ -33,7 +33,7 @@ admissionControllerRules:
 podDisruptionBudget:
   enabled: false
   minAvailable: 1
-  #maxUnavailable: 1
+# maxUnavailable: 1
 
 # The helm Chart will automatically generate a CA and server certificate for
 # the OPA. If you want to supply your own certificates, set the field below to
