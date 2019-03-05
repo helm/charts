@@ -531,6 +531,16 @@ nodeExporter:
   ##
   jobLabel: jobLabel
 
+  serviceMonitor: {}
+    ## 	metric relabel configs to apply to samples before ingestion.
+    ##
+    # metricRelabelings:
+    # - sourceLabels: [__name__]
+    #   separator: ;
+    #   regex: ^node_mountstats_nfs_(event|operations|transport)_.+
+    #   replacement: $1
+    #   action: drop
+
 ## Configuration for prometheus-node-exporter subchart
 ##
 prometheus-node-exporter:
