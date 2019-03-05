@@ -40,6 +40,7 @@ Auto-discovery finds ASGs tags as below and automatically manages them based on 
 1) tag the ASGs with _key_ `k8s.io/cluster-autoscaler/enabled` and _key_ `kubernetes.io/cluster/<YOUR CLUSTER NAME>`
 2) verify the [IAM Permissions](#iam)
 3) set `autoDiscovery.clusterName=<YOUR CLUSTER NAME>`
+4) set `awsRegion=<YOUR AWS REGION>`
 
 ```console
 $ helm install stable/cluster-autoscaler --name my-release --set autoDiscovery.clusterName=<CLUSTER NAME>

@@ -1,6 +1,7 @@
 rbac:
   # Specifies whether RBAC resources should be created
   create: true
+  pspEnabled: false
 
 serviceAccount:
   # Specifies whether a ServiceAccount should be created
@@ -44,3 +45,13 @@ tolerations: []
 affinity: {}
 
 replicas: 1
+
+extraVolumeMounts: []
+#  - name: secrets
+#    mountPath: /etc/kubernetes/secrets
+#    readOnly: true
+
+extraVolumes: []
+#  - name: secrets
+#    secret:
+#      secretName: kube-apiserver

@@ -87,6 +87,8 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `extraPorts`                       | List of extra ports                        |                       |
 | `extraVolumeMounts`                | Mount an extra volume, required to mount ssl certificates when elasticsearch has tls enabled |          |
 | `extraVolume`                      | Extra volume                               |                                                |
+| `service.flush`                    | Interval to flush output (seconds)        | `1`                   |
+| `service.logLevel`                 | Diagnostic level (error/warning/info/debug/trace)        | `info`                   |
 | `filter.enableExclude`                   | Enable the use of monitoring for a pod annotation of `fluentbit.io/exclude: true`. If present, discard logs from that pod.         | `true`                                 |
 | `filter.enableParser`                   | Enable the use of monitoring for a pod annotation of `fluentbit.io/parser: parser_name`. parser_name must be the name of a parser contained within parsers.conf         | `true`                                 |
 | `filter.kubeURL`                   | Optional custom configmaps                 | `https://kubernetes.default.svc:443`            |
@@ -95,13 +97,16 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `filter.kubeTag`                   | Optional top-level tag for matching in filter         | `kube`                                 |
 | `filter.mergeJSONLog`                   | If the log field content is a JSON string map, append the map fields as part of the log structure         | `true`                                 |
 | `image.fluent_bit.repository`      | Image                                      | `fluent/fluent-bit`                               |
-| `image.fluent_bit.tag`             | Image tag                                  | `1.0.3`                                          |
+| `image.fluent_bit.tag`             | Image tag                                  | `1.0.4`                                          |
 | `image.pullPolicy`                 | Image pull policy                          | `IfNotPresent`                                          |
+| `nameOverride`                      | Override name of app                   | `nil`                                        |
+| `fullnameOverride`                  | Override full name of app              | `nil`                                        |
 | `image.pullSecrets`                | Specify image pull secrets                 | `nil`                                             |
 | `input.tail.memBufLimit`           | Specify Mem_Buf_Limit in tail input        | `5MB`                                             |
+| `input.tail.parser`           | Specify Parser in tail input.        | `docker`                                             |
 | `input.tail.path`           | Specify log file(s) through the use of common wildcards.        | `/var/log/containers/*.log`                                             |
 | `input.systemd.enabled`             | [Enable systemd input](https://fluentbit.io/documentation/current/input/systemd.html)                   | `false`                                       |
-| `input.systemd.filters.systemdUnit             | Please see https://fluentbit.io/documentation/current/input/systemd.html                   | `[docker.service, kubelet.service`, `node-problem-detector.service]`                                       |
+| `input.systemd.filters.systemdUnit`             | Please see https://fluentbit.io/documentation/current/input/systemd.html                   | `[docker.service, kubelet.service`, `node-problem-detector.service]`                                       |
 | `input.systemd.maxEntries`             | Please see https://fluentbit.io/documentation/current/input/systemd.html                  | `1000`                                       |
 | `input.systemd.readFromTail` | Please see https://fluentbit.io/documentation/current/input/systemd.html | `true`|
 | `input.systemd.tag` | Please see https://fluentbit.io/documentation/current/input/systemd.html | `host.*`|
@@ -135,8 +140,12 @@ $ helm install --name my-release -f values.yaml stable/fluent-bit
 
 ## Upgrading
 
-### From < 1.0.0 To 1.0.0
+### From < 1.0.0 To >= 1.0.0
 
-Values `extraInputs`, `extraFilters` and `extraOutputs` have been removed in version `1.0.0` of the fluent-bit chart. 
-To add additional entries to the existing sections, please use the `extraEntries.input`, `extraEntries.filter` and `extraEntries.output` values. 
+Values `extraInputs`, `extraFilters` and `extraOutputs` have been removed in version `1.0.0` of the fluent-bit chart.
+To add additional entries to the existing sections, please use the `extraEntries.input`, `extraEntries.filter` and `extraEntries.output` values.
 For entire sections, please use the `rawConfig` value, inserting blocks of text as desired.
+
+### From < 1.8.0 to >= 1.8.0
+
+Version `1.8.0` introduces the use of release name as full name if it contains the chart name(fluent-bit in this case). E.g. with a release name of `fluent-bit`, this renames the DaemonSet from `fluent-bit-fluent-bit` to `fluent-bit`. The suggested approach is to delete the release and reinstall it.

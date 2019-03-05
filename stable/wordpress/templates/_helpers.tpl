@@ -54,6 +54,13 @@ Create chart name and version as used by the chart label.
 {{- end -}}
 
 {{/*
+Create chart name and version as used by the chart label.
+*/}}
+{{- define "wordpress.customHTAccessCM" -}}
+{{- printf "%s" .Values.customHTAccessCM -}}
+{{- end -}}
+
+{{/*
 Return the proper image name (for the metrics image)
 */}}
 {{- define "metrics.image" -}}
