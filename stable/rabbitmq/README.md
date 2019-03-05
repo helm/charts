@@ -129,6 +129,11 @@ $ helm install --name my-release -f values.yaml stable/rabbitmq
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
+### Load Definitions
+It is possible to [load a RabbitMQ definitions file to configure RabbitMQ](http://www.rabbitmq.com/management.html#load-definitions). Because definitions may contain RabbitMQ credentials, [store the JSON as a Kubernetes secret](https://kubernetes.io/docs/concepts/configuration/secret/#using-secrets-as-files-from-a-pod). Then, specify the `management.load_definitions` value as an `extraConfiguration` and set `loadDefinition.enable` to `true`.
+
+> Loading a definition will take precedence over any configuration done through [Helm values](#configuration).
+
 ## Production configuration
 
 A standard configuration is provided by default that will run on most development environments. To operate this chart in a production environment, we recommend you use the alternative file values-production.yaml provided in this repository.
