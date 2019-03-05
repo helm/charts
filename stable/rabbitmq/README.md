@@ -109,6 +109,11 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `metrics.image.pullPolicy`           | Exporter image pull policy                       | `IfNotPresent`                                          |
 | `metrics.resources`                  | Exporter resource requests/limit                 | `nil`                                                   |
 | `podLabels`                          | Additional labels for the statefulset pod(s).    | {}                                                      |
+| `volumePermissions.enabled`         | Enable init container that changes volume permissions in the data directory (for cases where the default k8s `runAsUser` and `fsUser` values do not work)                                                               | `false`                                          |
+| `volumePermissions.image.registry`         | Init container volume-permissions image registry                                                               | `docker.io`                                          |
+| `volumePermissions.image.repository`       | Init container volume-permissions image name                                                                   | `bitnami/minideb`                                    |
+| `volumePermissions.image.tag`              | Init container volume-permissions image tag                                                                    | `latest`                                             |
+| `volumePermissions.image.pullPolicy`       | Init container volume-permissions image pull policy                                                            | `IfNotPresent`                                       |
 
 The above parameters map to the env variables defined in [bitnami/rabbitmq](http://github.com/bitnami/bitnami-docker-rabbitmq). For more information please refer to the [bitnami/rabbitmq](http://github.com/bitnami/bitnami-docker-rabbitmq) image documentation.
 
