@@ -2,7 +2,7 @@
 ## ref: https://hub.docker.com/r/library/influxdb/tags/
 image:
   repo: "influxdb"
-  tag: "1.7.2-alpine"
+  tag: "1.7.3-alpine"
   pullPolicy: IfNotPresent
 
 ## Specify a service type
@@ -247,3 +247,7 @@ config:
     log_enabled: true
     enabled: true
     run_interval: 1s
+  logging:
+    format: auto
+    level: info
+    supress_logo: false

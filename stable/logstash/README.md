@@ -75,7 +75,7 @@ The following table lists the configurable parameters of the chart and its defau
 | `podDisruptionBudget`           | Pod disruption budget                              | `maxUnavailable: 1`                              |
 | `updateStrategy`                | Update strategy                                    | `type: RollingUpdate`                            |
 | `image.repository`              | Container image name                               | `docker.elastic.co/logstash/logstash-oss`        |
-| `image.tag`                     | Container image tag                                | `6.5.4`                                          |
+| `image.tag`                     | Container image tag                                | `6.6.0`                                          |
 | `image.pullPolicy`              | Container image pull policy                        | `IfNotPresent`                                   |
 | `service.type`                  | Service type (ClusterIP, NodePort or LoadBalancer) | `ClusterIP`                                      |
 | `service.annotations`           | Service annotations                                | `{}`                                             |
@@ -117,3 +117,5 @@ The following table lists the configurable parameters of the chart and its defau
 | `inputs`                        | Logstash inputs configuration                      | beats                                            |
 | `filters`                       | Logstash filters configuration                     | `nil`                                            |
 | `outputs`                       | Logstash outputs configuration                     | elasticsearch                                    |
+| `securityContext.fsGroup`                          | Group ID for the container                                                                   | `1000`                                                  |
+| `securityContext.runAsUser`                        | User ID for the container                                                                    | `1000`                                                  |

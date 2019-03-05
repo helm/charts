@@ -43,10 +43,10 @@ spec:
 {{- if .Values.priorityClassName }}
       priorityClassName: {{ .Values.priorityClassName }}
 {{- end }}
-{{- if ( or .Values.persistence.enabled .Values.dashboards ) }}
+{{- if ( or .Values.persistence.enabled .Values.dashboards .Values.sidecar.datasources.enabled) }}
       initContainers:
 {{- end }}
-{{- if .Values.persistence.enabled }}
+{{- if ( and .Values.persistence.enabled .Values.persistence.initChownData ) }}
         - name: init-chown-data
           image: "{{ .Values.chownDataImage.repository }}:{{ .Values.chownDataImage.tag }}"
           imagePullPolicy: {{ .Values.chownDataImage.pullPolicy }}
@@ -80,6 +80,27 @@ spec:
               readOnly: {{ .readOnly }}
           {{- end }}
 {{- end }}
+{{- if .Values.sidecar.datasources.enabled }}
+        - name: {{ template "grafana.name" . }}-sc-datasources
+          image: "{{ .Values.sidecar.image }}"
+          imagePullPolicy: {{ .Values.sidecar.imagePullPolicy }}
+          env:
+            - name: METHOD
+              value: LIST
+            - name: LABEL
+              value: "{{ .Values.sidecar.datasources.label }}"
+            - name: FOLDER
+              value: "/etc/grafana/provisioning/datasources"
+            {{- if .Values.sidecar.datasources.searchNamespace }}
+            - name: NAMESPACE
+              value: "{{ .Values.sidecar.datasources.searchNamespace }}"
+            {{- end }}
+          resources:
+{{ toYaml .Values.sidecar.resources | indent 12 }}
+          volumeMounts:
+            - name: sc-datasources-volume
+              mountPath: "/etc/grafana/provisioning/datasources"
+{{- end}}
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
       {{- range .Values.image.pullSecrets }}
@@ -105,25 +126,6 @@ spec:
           volumeMounts:
             - name: sc-dashboard-volume
               mountPath: {{ .Values.sidecar.dashboards.folder | quote }}
-{{- end}}
-{{- if .Values.sidecar.datasources.enabled }}
-        - name: {{ template "grafana.name" . }}-sc-datasources
-          image: "{{ .Values.sidecar.image }}"
-          imagePullPolicy: {{ .Values.sidecar.imagePullPolicy }}
-          env:
-            - name: LABEL
-              value: "{{ .Values.sidecar.datasources.label }}"
-            - name: FOLDER
-              value: "/etc/grafana/provisioning/datasources"
-            {{- if .Values.sidecar.datasources.searchNamespace }}
-            - name: NAMESPACE
-              value: "{{ .Values.sidecar.datasources.searchNamespace }}"
-            {{- end }}
-          resources:
-{{ toYaml .Values.sidecar.resources | indent 12 }}
-          volumeMounts:
-            - name: sc-datasources-volume
-              mountPath: "/etc/grafana/provisioning/datasources"
 {{- end}}
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -193,6 +195,7 @@ spec:
           {{- range .Values.extraVolumeMounts }}
             - name: {{ .name }}
               mountPath: {{ .mountPath }}
+              subPath: {{ .subPath | default "" }}
               readOnly: {{ .readOnly }}
           {{- end }}
           ports:
@@ -203,16 +206,20 @@ spec:
               containerPort: 3000
               protocol: TCP
           env:
+            {{- if not .Values.env.GF_SECURITY_ADMIN_USER }}
             - name: GF_SECURITY_ADMIN_USER
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.admin.existingSecret | default (include "grafana.fullname" .) }}
                   key: {{ .Values.admin.userKey | default "admin-user" }}
+            {{- end }}
+            {{- if not .Values.env.GF_SECURITY_ADMIN_PASSWORD }}
             - name: GF_SECURITY_ADMIN_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.admin.existingSecret | default (include "grafana.fullname" .) }}
                   key: {{ .Values.admin.passwordKey | default "admin-password" }}
+            {{- end }}
             {{- if .Values.plugins }}
             - name: GF_INSTALL_PLUGINS
               valueFrom:
@@ -247,6 +254,9 @@ spec:
 {{ toYaml .Values.readinessProbe | indent 12 }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
+{{- if .Values.extraContainers }}
+{{ toYaml .Values.extraContainers | indent 8}}
+{{- end }}
     {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
@@ -276,10 +286,11 @@ spec:
           {{- end }}
         {{- end }}
         {{- if .Values.dashboardsConfigMaps }}
+          {{ $root := . }}
           {{- range $provider, $name := .Values.dashboardsConfigMaps }}
         - name: dashboards-{{ $provider }}
           configMap:
-            name: {{ $name }}
+            name: {{ tpl $name $root }}
           {{- end }}
         {{- end }}
         {{- if not .Values.admin.existingSecret }}

@@ -96,7 +96,12 @@ keycloak:
             topologyKey: failure-domain.beta.kubernetes.io/zone
 
   nodeSelector: {}
+  priorityClassName: ""
   tolerations: []
+
+  ## Additional pod labels
+  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+  podLabels: {}
 
   ## Extra Annotations to be added to pod
   podAnnotations: {}
@@ -140,6 +145,9 @@ keycloak:
   ## Add additional volumes and mounts, e. g. for custom themes
   extraVolumes: |
   extraVolumeMounts: |
+
+  ## Add additional ports, eg. for custom admin console
+  extraPorts: |
 
   podDisruptionBudget: {}
     # maxUnavailable: 1

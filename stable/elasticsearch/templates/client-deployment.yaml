@@ -63,7 +63,9 @@ spec:
       tolerations:
 {{ toYaml .Values.client.tolerations | indent 8 }}
 {{- end }}
+{{- if or .Values.extraInitContainers .Values.sysctlInitContainer.enabled .Values.cluster.plugins }}
       initContainers:
+{{- if .Values.sysctlInitContainer.enabled }}
       # see https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html
       # and https://www.elastic.co/guide/en/elasticsearch/reference/current/setup-configuration-memory.html#mlockall
       - name: "sysctl"
@@ -74,8 +76,13 @@ spec:
         command: ["sysctl", "-w", "vm.max_map_count=262144"]
         securityContext:
           privileged: true
+{{- end }}
 {{- if .Values.extraInitContainers }}
 {{ tpl .Values.extraInitContainers . | indent 6 }}
+{{- end }}
+{{- if .Values.cluster.plugins }}
+{{ include "plugin-installer" . | indent 6 }}
+{{- end }}
 {{- end }}
       containers:
       - name: elasticsearch
@@ -123,6 +130,10 @@ spec:
         - mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
           name: config
           subPath: elasticsearch.yml
+{{- if .Values.cluster.plugins }}
+        - mountPath: /usr/share/elasticsearch/plugins/
+          name: plugindir
+{{- end }}
 {{- if hasPrefix "2." .Values.appVersion }}
         - mountPath: /usr/share/elasticsearch/config/logging.yml
           name: config
@@ -149,6 +160,10 @@ spec:
       - name: config
         configMap:
           name: {{ template "elasticsearch.fullname" . }}
+{{- if .Values.cluster.plugins }}
+      - name: plugindir
+        emptyDir: {}
+{{- end }}
 {{- if .Values.cluster.keystoreSecret }}
       - name: keystore
         secret:

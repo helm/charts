@@ -47,25 +47,28 @@ data:
 
     {{ if .Values.housekeeping.enabled }}
     echo "delete old backups"
-    find ${BACKUP_DIR} -maxdepth 1 -mtime +${KEEP_DAYS} -regex "^${BACKUP_DIR}/[0-9]*_.*\.sql\.gz$" -type f -exec rm {} \;
+    find ${BACKUP_DIR} -maxdepth 2 -mtime +${KEEP_DAYS} -regex "^${BACKUP_DIR}/.*[0-9]*_.*\.sql\.gz$" -type f -exec rm {} \;
     {{ end -}}
 
     {{ if and (.Values.mysql.db) (eq .Values.allDatabases.enabled false) }}
     MYSQL_DB="{{ .Values.mysql.db }}"
     echo "Backing up single db ${MYSQL_DB}"
-    mysqldump ${MYSQL_OPTS} -h ${MYSQL_HOST} -P ${MYSQL_PORT} -u ${MYSQL_USERNAME}{{ if .Values.mysql.password }} -p${MYSQL_PASSWORD}{{ end }} ${MYSQL_DB} | gzip > ${BACKUP_DIR}/${TIMESTAMP}_${MYSQL_DB}.sql.gz
-
+    {{ if .Values.saveToDirectory }}mkdir -p "${BACKUP_DIR}"/"${MYSQL_DB}"{{ end }}
+    mysqldump ${MYSQL_OPTS} -h ${MYSQL_HOST} -P ${MYSQL_PORT} -u ${MYSQL_USERNAME}{{ if .Values.mysql.password }} -p${MYSQL_PASSWORD}{{ end }} --databases ${MYSQL_DB} | gzip > ${BACKUP_DIR}/{{ if .Values.saveToDirectory }}${MYSQL_DB}/{{ end }}${TIMESTAMP}_${MYSQL_DB}.sql.gz
+    rc=$?
     {{ else if and (.Values.allDatabases.enabled) (eq .Values.allDatabases.singleBackupFile false)}}
     for MYSQL_DB in $(mysql -h "${MYSQL_HOST}" -u ${MYSQL_USERNAME}{{ if .Values.mysql.password }} -p${MYSQL_PASSWORD}{{ end }} -B -N -e "SHOW DATABASES;"|egrep -v '^(information|performance)_schema$'); do
       echo "Backing up db ${MYSQL_DB}"
-      mysqldump ${MYSQL_OPTS} -h ${MYSQL_HOST} -u ${MYSQL_USERNAME}{{ if .Values.mysql.password }} -p${MYSQL_PASSWORD}{{ end }} ${MYSQL_DB} | gzip > ${BACKUP_DIR}/${TIMESTAMP}_${MYSQL_DB}.sql.gz
+      {{ if .Values.saveToDirectory }}mkdir -p "${BACKUP_DIR}"/"${MYSQL_DB}"{{ end }}
+      mysqldump ${MYSQL_OPTS} -h ${MYSQL_HOST} -u ${MYSQL_USERNAME}{{ if .Values.mysql.password }} -p${MYSQL_PASSWORD}{{ end }} --databases ${MYSQL_DB} | gzip > ${BACKUP_DIR}/{{ if .Values.saveToDirectory }}${MYSQL_DB}/{{ end }}${TIMESTAMP}_${MYSQL_DB}.sql.gz
       rc=$?
     done
 
     {{ else if and (.Values.allDatabases.enabled) (.Values.allDatabases.singleBackupFile) }}
     echo "Backing up all databases"
     MYSQL_DB="alldatabases"
-    mysqldump ${MYSQL_OPTS} -h ${MYSQL_HOST} -P ${MYSQL_PORT} -u ${MYSQL_USERNAME}{{ if .Values.mysql.password }} -p${MYSQL_PASSWORD}{{ end }} --all-databases | gzip > ${BACKUP_DIR}/${TIMESTAMP}_${MYSQL_DB}.sql.gz
+    {{ if .Values.saveToDirectory }}mkdir -p "${BACKUP_DIR}"/"${MYSQL_DB}"{{ end }}
+    mysqldump ${MYSQL_OPTS} -h ${MYSQL_HOST} -P ${MYSQL_PORT} -u ${MYSQL_USERNAME}{{ if .Values.mysql.password }} -p${MYSQL_PASSWORD}{{ end }} --all-databases | gzip > ${BACKUP_DIR}/{{ if .Values.saveToDirectory }}${MYSQL_DB}/{{ end }}${TIMESTAMP}_${MYSQL_DB}.sql.gz
     rc=$?
     {{- end -}}
 
@@ -78,8 +81,8 @@ data:
 
     {{ if .Values.upload.googlestoragebucket.enabled }}
     echo "upload files to google storage bucket {{ .Values.upload.googlestoragebucket.bucketname }}"
-    gcloud auth activate-service-account --key-file /root/gcloud/keyfile.json
-    gsutil -m rsync -x '.*\.state' -d ${BACKUP_DIR}/ {{ .Values.upload.googlestoragebucket.bucketname }}
+    gcloud auth activate-service-account --key-file /root/gcloud/{{ .Values.upload.googlestoragebucket.secretFileName }}
+    gsutil -m rsync -r -x '.*\.state' -d ${BACKUP_DIR}/ {{ .Values.upload.googlestoragebucket.bucketname }}
     rcu=$?
     {{ end }}
 
@@ -99,6 +102,12 @@ data:
       echo "backup failed"
       exit 1
     fi
+
+    {{ if .Values.additionalSteps }}
+    {{- range .Values.additionalSteps }}
+    {{ . }}
+    {{- end }}
+    {{- end }}
 
     {{ if .Values.debug }}
     ls -alh ${BACKUP_DIR}

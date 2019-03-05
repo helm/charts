@@ -12,6 +12,9 @@ spec:
     metadata:
       labels:
         app: {{ template "mysql.fullname" . }}
+{{- with .Values.podLabels }}
+{{ toYaml . | indent 8 }}
+{{- end }}
 {{- with .Values.podAnnotations }}
       annotations:
 {{ toYaml . | indent 8 }}
@@ -42,6 +45,10 @@ spec:
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
       {{- end }}
+      {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+      {{- end }}
       containers:
       - name: {{ template "mysql.fullname" . }}
         image: "{{ .Values.image }}:{{ .Values.imageTag }}"
@@ -52,18 +59,23 @@ spec:
         {{- if .Values.mysqlAllowEmptyPassword }}
         - name: MYSQL_ALLOW_EMPTY_PASSWORD
           value: "true"
-        {{- else }}
+        {{- end }}
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "mysql.secretName" . }}
               key: mysql-root-password
+              {{- if .Values.mysqlAllowEmptyPassword }}
+              optional: true
+              {{- end }}
         - name: MYSQL_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "mysql.secretName" . }}
               key: mysql-password
-        {{- end }}
+              {{- if or .Values.mysqlAllowEmptyPassword (empty .Values.mysqlUser) }}
+              optional: true
+              {{- end }}
         - name: MYSQL_USER
           value: {{ default "" .Values.mysqlUser | quote }}
         - name: MYSQL_DATABASE

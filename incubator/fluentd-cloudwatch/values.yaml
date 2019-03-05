@@ -19,11 +19,30 @@ resources:
 
 # hostNetwork: false
 
+## Node labels for pod assignment
+## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+##
+nodeSelector: {}
+  # kubernetes.io/role: node
+# Ref: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.11/#affinity-v1-core
+# Expects input structure as per specification for example:
+#   affinity:
+#     nodeAffinity:
+#      requiredDuringSchedulingIgnoredDuringExecution:
+#        nodeSelectorTerms:
+#        - matchExpressions:
+#          - key: foo.bar.com/role
+#            operator: In
+#            values:
+#            - master
+affinity: {}
 ## Add tolerations if specified
 tolerations: []
 #   - key: node-role.kubernetes.io/master
 #     operator: Exists
 #     effect: NoSchedule
+
+podSecurityContext: {}
 
 podAnnotations: {}
 

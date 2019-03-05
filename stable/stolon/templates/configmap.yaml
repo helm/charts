@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "stolon.fullname" . }}
+  labels:
+    app: {{ template "stolon.name" . }}
+    chart: {{ template "stolon.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+{{- if .Values.keeper.hooks.failKeeper.enabled }}
+  pre-stop-hook.sh: |-
+    #!/bin/bash
+    exec &> >(tee -a "/var/log/stolon-hooks.log")
+
+    NODE_NAME=${HOSTNAME}
+    IFS='-' read -ra ADDR <<< "$(hostname)"
+    STKEEPER_UID="keeper${ADDR[-1]}"
+
+    echo "keeper [${STKEEPER_UID}] is failing"
+    stolonctl \
+      --cluster-name={{ template "stolon.fullname" . }} \
+      --store-backend={{ .Values.store.backend }} \
+      {{- if eq .Values.store.backend "kubernetes" }}
+      --kube-resource-kind={{ .Values.store.kubeResourceKind }} \
+      {{- else }}
+      --store-endpoints={{ .Values.store.endpoints }} \
+      {{- end }}
+      failkeeper ${STKEEPER_UID} || true
+
+    echo "Node ${NODE_NAME} is ready to shutdown"
+{{- end }}

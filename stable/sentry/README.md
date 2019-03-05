@@ -12,9 +12,7 @@ $ helm install --wait stable/sentry
 
 This chart bootstraps a [Sentry](https://sentry.io/) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
-It also packages the [PostgreSQL](https://github.com/kubernetes/charts/tree/master/stable/postgresql) and [Redis](https://github.com/kubernetes/charts/tree/master/stable/redis) which are required for Sentry.
-
-> **Warning**: This chart does not yet allow for you to specify your own database host or redis host.
+It also optionally packages the [PostgreSQL](https://github.com/kubernetes/charts/tree/master/stable/postgresql) and [Redis](https://github.com/kubernetes/charts/tree/master/stable/redis) which are required for Sentry.
 
 ## Prerequisites
 
@@ -35,6 +33,8 @@ $ helm install --name my-release --wait stable/sentry
 The command deploys Sentry on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
 
 > **Tip**: List all releases using `helm list`
+
+> **Warning**: This Chart does not support `helm upgrade` an upgrade will currently reset your installation
 
 ## Uninstalling the Chart
 
@@ -104,6 +104,16 @@ The following table lists the configurable parameters of the Sentry chart and th
 | `ingress.annotations`                | Ingress annotations                         | `{}`                                                       |
 | `ingress.hostname`                   | URL to address your Sentry installation     | `sentry.local`                                             |
 | `ingress.tls`                        | Ingress TLS configuration                   | `[]`                                                       |
+| `postgresql.enabled`                 | Deploy postgres server (see below)          | `true`                                                     |
+| `postgresql.postgresDatabase`        | Postgres database name                      | `sentry`                                                   |
+| `postgresql.postgresUser`            | Postgres username                           | `sentry`                                                   |
+| `postgresql.postgresHost`            | External postgres host                      | `nil`                                                      |
+| `postgresql.postgresPassword`        | External postgres password                  | `nil`                                                      |
+| `postgresql.postgresPort`            | External postgres port                      | `5432`                                                     |
+| `redis.enabled`                      | Deploy redis server (see below)             | `true`                                                     |
+| `redis.host`                         | External redis host                         | `nil`                                                      |
+| `redis.password`                     | External redis password                     | `nil`                                                      |
+| `redis.port`                         | External redis port                         | `6379`                                                     |
 | `persistence.enabled`                | Enable persistence using PVC                | `true`                                                     |
 | `persistence.existingClaim`          | Provide an existing `PersistentVolumeClaim` | `nil`                                                      |
 | `persistence.storageClass`           | PVC Storage Class                           | `nil` (uses alpha storage class annotation)                |
@@ -129,6 +139,14 @@ $ helm install --name my-release -f values.yaml stable/sentry
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+## PostgresSQL
+
+By default, PostgreSQL is installed as part of the chart. To use an external PostgreSQL server set `postgresql.enabled` to `false` and then set `postgresql.postgresHost` and `postgresql.postgresPassword`. The other options (`postgresql.postgresDatabase`, `postgresql.postgresUser` and `postgresql.postgresPort`) may also want changing from their default values.
+
+## Redis
+
+By default, Redis is installed as part of the chart. To use an external Redis server/cluster set `redis.enabled` to `false` and then set `redis.host`. If your redis cluster uses password define it with `redis.password`, otherwise just omit it. Check the table above for more configuration options.
 
 ## Persistence
 

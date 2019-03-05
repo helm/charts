@@ -1,5 +1,5 @@
 name: fluentd-cloudwatch
-version: 0.6.4
+version: 0.7.1
 appVersion: v0.12.43-cloudwatch
 description: A Fluentd CloudWatch Helm chart for Kubernetes.
 home: https://www.fluentd.org/
