@@ -55,6 +55,7 @@ configuration:
     #  kmsKeyId:
     #  resourceGroup:
     #  storageAccount:
+    #  publicUrl:
 
   backupSyncPeriod: 60m
   resticTimeout: 1h
