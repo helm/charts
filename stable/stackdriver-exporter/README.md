@@ -78,6 +78,11 @@ Parameter                           | Description                               
 `web.listenAddress`                 | Port to listen on                                                               | `9255`
 `web.path`                          | Path under which to expose metrics                                              | `/metrics`
 `annotations`                       | Deployment annotations                                                          | `{}`
+`affinity`                          | Pod affinity                                                                    | `{}`
+`nodeSelector`                      | Node labels for pod assignment												  | `{}`
+`tolerations`                       | Node taints to tolerate (requires Kubernetes >=1.6) 							  | `[]`
+
+
 
 Specify each parameter using the `--set key=value[,key=value]` argument to
 `helm install`. For example,
