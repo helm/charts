@@ -30,6 +30,14 @@ $ helm install --name my-release stable/mattermost-team-edition
 The command deploys Mattermost on the Kubernetes cluster in the default configuration. The [configuration](#configuration)
 section lists the parameters that can be configured during installation.
 
+## Upgrading the Chart to 3.0.0+
+
+Breaking Helm chart changes was introduced with version 3.0.0. The easiest
+method of resolving them is to simply upgrade the chart and let it fail with and
+provide you with a custom message on what you need to change in your
+configuration. Note that this failure will occur before any changes have been
+made to the k8s cluster.
+
 ## Uninstalling the Chart
 
 To uninstall/delete the `my-release` deployment:
