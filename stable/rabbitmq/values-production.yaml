@@ -96,12 +96,13 @@ service:
   ## Node port
   ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
   ##
-  nodePort: 5672
+  # nodePort: 30672
 
   ## Amqp port
   ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
   ##
-  amqpPort: 5672
+  port: 5672
+
   ## Dist port
   ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
   ##
