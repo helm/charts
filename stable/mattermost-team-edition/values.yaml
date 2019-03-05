@@ -154,6 +154,12 @@ extraInitContainers: []
   #       echo "Done"
   #       fi
 
+# NOTE: These acts as the default values for the config.json file read by the
+# mattermost server itself. You can override the configJSON object just like any
+# Helm template value. Since it is an object, the object you provide will merge
+# with these defaults. Also note that this is YAML, so you can choose to use
+# either JSON or YAML as JSON is a subset of YAML. No matter what you choose,
+# the config.json file that will be generated will be correctly JSON formatted.
 configJSON: {
   "ServiceSettings": {
     "SiteURL": "",
