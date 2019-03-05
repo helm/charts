@@ -37,7 +37,7 @@ spec:
   {{- with .storageAccount }}
     storageAccount: {{ . }}
   {{- end }}
-  {{- if publicUrl }}
+  {{- if .publicUrl }}
   {{- with .publicUrl }}
     publicUrl: {{ . }}
   {{- end }}
