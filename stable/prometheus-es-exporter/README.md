@@ -25,7 +25,7 @@ package manager.
 To install the chart with the release name `my-release`:
 
 ```bash
-helm install --name my-release stable/prometheus-es-explorer --set elasticsearch.url="http://elasticsearch:9200"
+helm install --name my-release stable/prometheus-es-exporter --set elasticsearch.url="http://elasticsearch:9200"
 ```
 
 The command deploys nginx-ingress on the Kubernetes cluster in the default
@@ -66,7 +66,7 @@ Parameter | Description | Default
 `service.port` | port in which the service will be listening | `9206`
 
 ```bash
-helm install stable/prometheus-es-explorer --name my-release \
+helm install stable/prometheus-es-exporter --name my-release \
     --set elasticsearch.url="http://elasticsearch:9200"
 ```
 
@@ -74,7 +74,7 @@ Alternatively, a YAML file that specifies the values for the parameters can be
 provided while installing the chart. For example:
 
 ```bash
-helm install stable/prometheus-es-explorer --name my-release -f values.yaml
+helm install stable/prometheus-es-exporter --name my-release -f values.yaml
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
