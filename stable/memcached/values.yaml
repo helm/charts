@@ -44,10 +44,10 @@ resources:
     memory: 64Mi
     cpu: 50m
 
-# Custom metadata labels to be applied to statefulset and pods
-#customLabels:
-#  foo: bar
-#  bar: foo
+## Custom metadata labels to be applied to statefulset and pods
+# customLabels:
+#   foo: bar
+#   bar: foo
 
 ## Key:value pair for assigning pod to specific sets of nodes
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
