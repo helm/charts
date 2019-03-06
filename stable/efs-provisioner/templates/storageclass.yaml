@@ -11,7 +11,9 @@ metadata:
 {{- if .Values.efsProvisioner.storageClass.isDefault }}
   annotations:
     storageclass.kubernetes.io/is-default-class: "true"
+{{- if .Values.annotations }}
 {{ toYaml .Values.annotations | indent 4 }}
+{{- end }}
 {{- end }}
 provisioner: {{ .Values.efsProvisioner.provisionerName }}
 parameters:
