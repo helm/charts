@@ -16,6 +16,6 @@ spec:
       app: {{ include "prometheus-es-exporter.name" . }}
   endpoints:
   - port: http
-    interval: 60s
+    interval: {{ .Values.prometheus.serviceMonitorInterval }}
   jobLabel: {{ include "prometheus-es-exporter.fullname" . }}
 {{ end }}

@@ -24,6 +24,7 @@ containerExtraArgs: ""
 
 prometheus:
   serviceMonitor: false
+  serviceMonitorInterval: 60s
   name: ""
 
 replicaCount: 1
