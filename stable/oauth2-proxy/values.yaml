@@ -10,11 +10,14 @@ config:
   # Example:
   # existingSecret: secret
   cookieSecret: "XXXXXXXXXX"
+  # Default configuration, to be overridden
+  configFile: |-
+    email_domains = [ "*" ]
+    upstreams = [ "file:///dev/null" ]
   # Custom configuration file: oauth2_proxy.cfg
   # configFile: |-
   #   pass_basic_auth = false
   #   pass_access_token = true
-  configFile: ""
   # Use an existing config map (see configmap.yaml for required fields)
   # Example:
   # existingConfig: config
@@ -31,8 +34,6 @@ image:
   # - name: myRegistryKeySecretName
 
 extraArgs:
-  email-domain: "*"
-  upstream: "file:///dev/null"
   http-address: "0.0.0.0:4180"
 
 # To authorize individual email addresses
