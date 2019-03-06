@@ -17,5 +17,5 @@ sources:
 - https://hub.docker.com/_/tomcat/
 - https://hub.docker.com/_/mariadb/
 maintainers:
-- name: Code Dx, Inc.
+- name: tylercamp
   email: support@codedx.com
