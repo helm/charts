@@ -133,7 +133,7 @@ spec:
         {{- if .Values.command }}
           command:
           {{- range .Values.command.args }}
-            - {{ .  }}
+            - {{ . }}
           {{- end }}
         {{- end}}
           volumeMounts:
