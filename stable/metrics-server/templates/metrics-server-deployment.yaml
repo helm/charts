@@ -12,6 +12,7 @@ spec:
     matchLabels:
       app: {{ template "metrics-server.name" . }}
       release: {{ .Release.Name }}
+  replicas: {{ .Values.replicas }}
   template:
     metadata:
       labels:
@@ -19,6 +20,9 @@ spec:
         release: {{ .Release.Name }}
     spec:
       serviceAccountName: {{ template "metrics-server.serviceAccountName" . }}
+{{ if .Values.hostNetwork.enabled }}
+      hostNetwork: true
+{{ end }}
       containers:
         - name: metrics-server
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -28,6 +32,10 @@ spec:
             {{- range .Values.args }}
             - {{ . | quote }}
             {{- end }}
+{{- if .Values.extraVolumeMounts }}
+          volumeMounts:
+{{ toYaml .Values.extraVolumeMounts | indent 12}}
+  {{- end }}
         {{- with .Values.resources }}
           resources:
 {{ toYaml . | indent 12 }}
@@ -44,3 +52,7 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
+  {{- if .Values.extraVolumes }}
+      volumes:
+  {{ toYaml .Values.extraVolumes | indent 8}}
+  {{- end }}

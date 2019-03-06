@@ -8,11 +8,7 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  {{- if .Values.service.enabled }}
-  serviceName: {{ .Values.service.name }}
-  {{- end }}
   replicas: {{ .Values.replicaCount }}
-  terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
   selector:
     matchLabels:
       app: {{ template "envoy.name" . }}
@@ -45,6 +41,7 @@ spec:
 {{- if .Values.priorityClassName }}
       priorityClassName: "{{ .Values.priorityClassName }}"
 {{- end }}
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       containers:
 
         - name: envoy

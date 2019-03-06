@@ -1,5 +1,10 @@
 The elasticsearch cluster and associated extras have been installed.
 
+***
+Please note that this chart has been deprecated and moved to stable.
+Going forward please use the stable version of this chart.
+***
+
 Kibana can be accessed:
 
   * Within your cluster, at the following DNS name at port 9200:

@@ -1,5 +1,5 @@
 {{- if .Values.kubelet.enabled }}
-apiVersion: monitoring.coreos.com/v1
+apiVersion: {{ printf "%s/v1" (.Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com") }}
 kind: ServiceMonitor
 metadata:
   name: {{ template "prometheus-operator.fullname" . }}-kubelet
@@ -30,9 +30,14 @@ spec:
   - port: http-metrics
     interval: 30s
     honorLabels: true
-  - port: cadvisor
+  - port: http-metrics
+    path: /metrics/cadvisor
     interval: 30s
     honorLabels: true
+{{- if .Values.kubelet.serviceMonitor.cAdvisorMetricRelabelings }}
+    metricRelabelings:
+{{ toYaml .Values.kubelet.serviceMonitor.cAdvisorMetricRelabelings | indent 4 }}
+{{- end }}
   {{- end }}
   jobLabel: k8s-app
   namespaceSelector:

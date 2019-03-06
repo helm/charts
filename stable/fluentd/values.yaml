@@ -12,6 +12,8 @@ image:
 output:
   host: elasticsearch-client.default.svc.cluster.local
   port: 9200
+  scheme: http
+  sslVersion: TLSv1
   buffer_chunk_limit: 2M
   buffer_queue_limit: 8
 
@@ -19,11 +21,16 @@ env: {}
 
 service:
   type: ClusterIP
+  # type: nodePort:
   externalPort: 80
   ports:
     - name: "monitor-agent"
       protocol: TCP
       containerPort: 24220
+
+annotations: {}
+#  prometheus.io/scrape: "true"
+#  prometheus.io/port: "24231"
 
 ingress:
   enabled: false
@@ -86,6 +93,8 @@ configMaps:
       # Replace with the host/port to your Elasticsearch cluster.
       host "#{ENV['OUTPUT_HOST']}"
       port "#{ENV['OUTPUT_PORT']}"
+      scheme "#{ENV['OUTPUT_SCHEME']}"
+      ssl_version "#{ENV['OUTPUT_SSL_VERSION']}"
       logstash_format true
       <buffer>
         @type file

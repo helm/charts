@@ -6,6 +6,8 @@ image:
   pullPolicy: IfNotPresent
 
 nodeSelector: {}
+tolerations: []
+affinity: {}
 
 config:
   modules:

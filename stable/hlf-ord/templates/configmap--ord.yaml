@@ -24,10 +24,11 @@ data:
   ORDERER_GENERAL_GENESISFILE: /hl_config/genesis/genesis.block
   ORDERER_GENERAL_GENESISPROFILE: initial
   ORDERER_GENERAL_TLS_ENABLED: {{ .Values.ord.tls.server.enabled | quote }}
-  ORDERER_GENERAL_TLS_CERTIFICATE: "/var/hyperledger/msp_tls/tls.crt"
-  ORDERER_GENERAL_TLS_PRIVATEKEY: "/var/hyperledger/msp_tls/tls.key"
-  ORDERER_GENERAL_TLS_ROOTCAS: "/var/hyperledger/msp_tls/cert.pem"
+  ORDERER_GENERAL_TLS_CERTIFICATE: "/var/hyperledger/tls/server/pair/tls.crt"
+  ORDERER_GENERAL_TLS_PRIVATEKEY: "/var/hyperledger/tls/server/pair/tls.key"
+  ORDERER_GENERAL_TLS_ROOTCAS: "/var/hyperledger/tls/server/cert/cacert.pem"
   ORDERER_GENERAL_TLS_CLIENTAUTHREQUIRED: {{ .Values.ord.tls.client.enabled | quote }}
-  ORDERER_GENERAL_TLS_CLIENTROOTCAS: "/var/hyperledger/msp_tls/cert.pem"
+  # This is fixed prior to starting the orderer
+  ORDERER_GENERAL_TLS_CLIENTROOTCAS: "/var/hyperledger/tls/client/cert/*"
   GODEBUG: "netdns=go"
   ADMIN_MSP_PATH: /var/hyperledger/admin_msp

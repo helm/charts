@@ -1,14 +1,17 @@
-{{- if or .Values.rbac.create -}}
+{{- if .Values.rbac.create -}}
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: Role
 metadata:
+  labels:
+    app: {{ template "haproxy-ingress.name" . }}
+    chart: {{ template "haproxy-ingress.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
   name: {{ template "haproxy-ingress.fullname" . }}
-  namespace: {{ .Release.Namespace }}
 rules:
   - apiGroups:
       - ""
     resources:
-      - configmaps
       - pods
       - secrets
       - namespaces
@@ -18,21 +21,19 @@ rules:
       - ""
     resources:
       - configmaps
-    verbs:
-      - get
-      - update
-  - apiGroups:
-      - ""
-    resources:
-      - configmaps
-    verbs:
-      - create
-  - apiGroups:
-      - ""
-    resources:
       - endpoints
     verbs:
       - get
       - create
       - update
+{{- if .Values.rbac.security.enable }}
+  - apiGroups:
+      - extensions
+    resources:
+      - podsecuritypolicies
+    resourceNames:
+      - {{ template "haproxy-ingress.fullname" . }}
+    verbs:
+      - use
+{{- end -}}
 {{- end -}}
