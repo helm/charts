@@ -44,7 +44,8 @@ resources:
     memory: 64Mi
     cpu: 50m
 
-#CustomLabels:
+# Custom metadata labels to be applied to statefulset and pods
+#customLabels:
 #  foo: bar
 #  bar: foo
 
