@@ -15,8 +15,12 @@ spec:
       release: {{ .Release.Name }}
   template:
     metadata:
-    {{- if .Values.podAnnotations }}
       annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        checksum/config-emails: {{ include (print $.Template.BasePath "/configmap-authenticated-emails-file.yaml") . | sha256sum }}
+        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+        checksum/google-secret: {{ include (print $.Template.BasePath "/google-secret.yaml") . | sha256sum }}
+    {{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
     {{- end }}
       labels:
