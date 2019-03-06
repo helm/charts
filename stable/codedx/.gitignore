@@ -1,0 +1,6 @@
+*.lic
+*.crt
+*.pem
+*.
+charts/
+requirements.lock

@@ -1,0 +1,77 @@
+{{- if .Values.networkPolicy.mariadb.slave.create -}}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "codedx.netpolicy.slavedb.name" . | quote }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "codedx.commonLabels" . | nindent 4 }}
+spec:
+  podSelector:
+    matchLabels:
+      app: mariadb
+      component: slave
+      release: {{ .Release.Name | quote }}
+  egress:
+  - to:
+    - podSelector:
+        matchLabels:
+          app: mariadb
+          component: master
+          release: {{ .Release.Name | quote }}
+    ports:
+    - port: 3306
+  - ports:
+    {{- include "netpolicy.dns.ports" . | nindent 4 -}}
+  {{- if .Values.mariadb.metrics.enabled }}
+  ingress:
+  # metrics port
+  - from:
+    - podSelector: {}
+    - namespaceSelector: {}
+    ports:
+    - port: 9104
+  {{- end }}
+{{- end }}
+---
+{{ if .Values.networkPolicy.mariadb.master.create -}}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "codedx.netpolicy.masterdb.name" . }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "codedx.commonLabels" . | nindent 4 }}
+spec:
+  podSelector:
+    matchLabels:
+      app: mariadb
+      component: master
+      release: {{ .Release.Name | quote }}
+  ingress:
+    # DB port
+    - from:
+      - podSelector:
+          matchLabels:
+            codedx.com-instance: {{ .Release.Name | quote }}
+      ports:
+      - port: 3306
+    # replication port
+    - from:
+      - podSelector:
+          matchLabels:
+            app: mariadb
+            component: slave
+            release: {{ .Release.Name | quote }}
+      ports:
+      - port: 3306
+    {{- if .Values.mariadb.metrics.enabled }}
+    # metrics port
+    - from:
+      - podSelector: {}
+      - namespaceSelector: {}
+      ports:
+      - port: 9104
+    {{- end }}
+  {{ include "netpolicy.dns.egress" . | nindent 2 -}}
+{{- end -}}

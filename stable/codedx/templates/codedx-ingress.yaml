@@ -1,0 +1,29 @@
+{{- if .Values.ingress.enabled -}}
+{{- range .Values.ingress.hosts -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  {{- $fullName := printf "%s-%s" (include "codedx.fullname" $) .name }}
+  name: {{ include "sanitize" $fullName | quote }}
+  labels:
+    {{- include "codedx.commonLabels" $ | nindent 4 }}
+  annotations:
+{{ toYaml $.Values.ingress.annotations | trim | indent 4 }}
+spec:
+  {{- if .tls }}
+  tls:
+  - hosts:
+    - {{ .name | quote }}
+    secretName: {{ .tlsSecret | quote }}
+  {{- end }}
+  rules:
+  - host: {{ .name | quote }}
+    http:
+      paths:
+      - path: /codedx
+        backend:
+          serviceName: {{ include "codedx.fullname" $ | quote }}
+          servicePort: {{ $.Values.codedxTomcatPort }}
+---
+{{- end -}}
+{{- end -}}

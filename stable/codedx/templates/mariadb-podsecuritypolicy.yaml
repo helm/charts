@@ -1,0 +1,32 @@
+{{- if .Values.podSecurityPolicy.mariadb.create -}}
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: {{ include "codedx.rbac.psp.dbname" . | quote }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "codedx.commonLabels" . | nindent 4 }}
+  annotations:
+{{- toYaml .Values.podSecurityPolicy.mariadb.annotations | trim | nindent 4 }}
+spec:
+  privileged: false
+  allowPrivilegeEscalation: false
+  volumes: ["persistentVolumeClaim", "configMap", "secret"]
+  hostNetwork: false
+  hostIPC: false
+  hostPID: false
+  supplementalGroups:
+    rule: MustRunAs
+    ranges:
+    - min: 1
+      max: 65535
+  fsGroup:
+    rule: MustRunAs
+    ranges:
+    - min: 1
+      max: 65535
+  runAsUser:
+    rule: MustRunAsNonRoot
+  seLinux:
+    rule: RunAsAny
+{{- end -}}

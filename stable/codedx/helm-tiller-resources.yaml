@@ -1,0 +1,57 @@
+# This file defines a Service Account named `helm-tiller` in the `kube-system` namespace, and assigns
+# it a ClusterRole, ClusterRoleBinding, and PodSecurityPolicy. If installing these resources after
+# Helm is already installed, run this command afterwards:
+#
+# $ helm init --upgrade --service-account helm-tiller
+#
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: helm-tiller
+  namespace: kube-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: helm-tiller
+  namespace: kube-system
+rules:
+- apiGroups: ["", "rbac.authorization.k8s.io", "policy", "extensions", "networking.k8s.io", "apps"]
+  resources: ["*"]
+  verbs: ["*"]
+---
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: tiller-psp
+spec:
+  privileged: true
+  seLinux:
+    rule: RunAsAny
+  supplementalGroups:
+    rule: RunAsAny
+  runAsUser:
+    rule: RunAsAny
+  fsGroup:
+    rule: RunAsAny
+  volumes:
+  - configMap
+  - persistentVolumeClaim
+  - secret
+  hostPorts:
+  - min: 1
+    max: 65535
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: helm-tiller
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: helm-tiller
+subjects:
+- kind: ServiceAccount
+  name: helm-tiller
+  namespace: kube-system

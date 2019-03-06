@@ -1,0 +1,62 @@
+{{- if .Values.networkPolicy.codedx.create -}}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "codedx.netpolicy.name" . | quote}}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "codedx.commonLabels" . | nindent 4 }}
+spec:
+  podSelector:
+    matchLabels:
+      codedx.com-instance: {{ .Release.Name | quote }}
+  egress:
+  - to:
+    - podSelector:
+        matchLabels:
+          app: mariadb
+          release: {{ .Release.Name | quote }}
+    ports:
+    - port: 3306
+  - ports:
+    {{- include "netpolicy.dns.ports" . | nindent 4 -}}
+  {{- if .Values.networkPolicy.codedx.ldap }}
+  # LDAP
+  - ports:
+    - port: 389
+      protocol: TCP
+    - port: 389
+      protocol: UDP
+  {{ end -}}
+  {{- if .Values.networkPolicy.codedx.ldaps }}
+  # LDAPS
+  - ports:
+    - port: 636
+      protocol: TCP
+    - port: 636
+      protocol: UDP
+    - port: 3269
+      protocol: TCP
+    - port: 3269
+      protocol: UDP
+  {{ end -}}
+  {{- if .Values.networkPolicy.codedx.http }}
+  # HTTP
+  - ports:
+    - port: 80
+  {{ end -}}
+  {{- if .Values.networkPolicy.codedx.https }}
+  # HTTPS
+  - ports:
+    - port: 443
+  {{ end -}}
+{{- if .Values.networkPolicy.codedx.ingressSelectors }}
+  ingress:
+  - from:
+{{ toYaml .Values.networkPolicy.codedx.ingressSelectors | indent 4 -}}
+    ports:
+    - port: 9090
+{{- else }}
+  ingress: []
+{{- end -}}
+{{- end -}}

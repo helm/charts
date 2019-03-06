@@ -1,0 +1,66 @@
+{{- $defaultRootPassword := "5jqJL2b8hqn3" -}}
+{{- $defaultReplicationPassword := "11uAQKLgv4JM" -}}
+
+This Code Dx instance is for development and test purposes (not suitable for production use).
+
+You can get the default Code Dx admin credentials with:
+    echo username: admin
+    echo password: $(kubectl get secret --namespace {{ .Release.Namespace }} {{ include "codedx.adminSecretName" . }} -o jsonpath="{.data.password}" | base64 --decode)
+NOTE: These credentials will change when `helm upgrade ...` is used. Make sure to change the admin password within Code Dx after installation!
+
+You can get the default MariaDB credentials with:
+    echo username: root
+    echo password: $(kubectl get secret --namespace {{ .Release.Namespace }} {{ include "mariadb.ref.fullname" . }} -o jsonpath="{.data.mariadb-root-password}" | base64 --decode)
+
+{{- if not (include "codedx.license.exists" .) }}
+
+No license was provided during installation - you'll need to provide one when accessing Code Dx for the first time.
+
+{{- end }}
+
+{{ if .Values.ingress.enabled -}}
+Code Dx will be available at the following URLs:
+{{ range .Values.ingress.hosts }}
+{{- if .tls -}}
+- https://{{ .name }}/codedx
+{{ else -}}
+- http://{{ .name }}/codedx
+{{ end -}}
+{{- end -}}
+{{- else -}}
+Code Dx will be available on port {{ .Values.codedxTomcatPort }}. Run this command to check the IP that the service is available at:
+    kubectl get svc -n {{ .Release.Namespace }} -l "app.kubernetes.io/instance={{ .Release.Name }}" --watch
+{{- end }}
+
+Code Dx can be customized by editing the {{ include "codedx.props.configMapName" . | quote }} config map and starting a new pod to reload the changes. If you want to add more Code Dx configuration properties as secrets, mount the secret as a file to Code Dx and give the file path to Code Dx by modifying the `tomcat.env` key of the {{ include "codedx.props.configMapName" . | quote }} config map.
+
+{{- if .Release.IsInstall }}
+{{ if not .Values.codedxProps.dbconnection.createSecret -}}
+
+WARNING: A MariaDB secret was not created for Code Dx. Code Dx will attempt to mount the secret named "{{ include "codedx.mariadb.secretName" . }}" to obtain MariaDB credentials. *Make sure that this secret exists, or Code Dx will fail to start.* The secret should have a key named "codedx.mariadb.props", with a value of:
+
+  swa.db.user = root
+  swa.db.password = <MariaDB ROOT PASSWORD>
+
+{{- end }}
+{{- else -}}
+
+WARNING: When upgrading a Code Dx installation to a new Code Dx version, make sure that new Code Dx instances are NOT terminated before database migration is completed. IT IS HIGHLY RECOMMENDED TO BACK UP YOUR DATABASE BEFORE BEGINNING AN UPGRADE.
+
+To minimize errors, existing Code Dx pods should stopped completely first. The default chart configuration ensures that old Code Dx instances stop before starting a new one.
+
+{{- end }}
+
+{{- if eq .Values.mariadb.rootUser.password $defaultRootPassword }}
+
+  WARNING: The default MariaDB root password is being used - be sure to change this after installation!
+    helm upgrade --set mariadb.rootUser.password=X {{ .Release.Name }} stable/codedx <other-config-options>
+
+{{- end }}
+
+{{- if eq .Values.mariadb.replication.password $defaultReplicationPassword }}
+
+  WARNING: The default MariaDB replication password is being used - be sure to change this after installation!
+    helm upgrade --set mariadb.replication.password=X {{ .Release.Name }} stable/codedx <other-config-options>
+
+{{- end }}

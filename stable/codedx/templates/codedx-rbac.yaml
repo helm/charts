@@ -1,0 +1,41 @@
+{{- if .Values.serviceAccount.create }}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ include "codedx.serviceAccountName" . | quote }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "codedx.commonLabels" . | nindent 4 }}
+{{- end }}
+{{- if .Values.podSecurityPolicy.codedx.bind }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ include "codedx.fullname" . | quote }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "codedx.commonLabels" . | nindent 4 }}
+rules:
+- apiGroups: ["policy"]
+  resources: ["podsecuritypolicies"]
+  verbs: ["use"]
+  resourceNames:
+  - {{ include "codedx.rbac.psp.name" . | quote }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ include "codedx.fullname" . }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "codedx.commonLabels" . | nindent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ include "codedx.fullname" . | quote }}
+subjects:
+- name: {{ include "codedx.serviceAccountName" . | quote }}
+  kind: ServiceAccount
+  namespace: {{ .Release.Namespace | quote }}
+{{- end -}}

@@ -1,0 +1,436 @@
+# Default values for codedx.
+
+# codedxTomcatImage specifies the image to use for the Code Dx deployment.
+# ref: https://hub.docker.com/r/codedx/codedx-tomcat/tags
+#
+codedxTomcatImage: codedx/codedx-tomcat:v3.6.1
+
+# codedxTomcatImagePullSecrets allows you to specify names of secrets to use
+# for pulling the Code Dx image.
+# ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/#create-a-pod-that-uses-your-secret
+#
+codedxTomcatImagePullSecrets: []
+
+# codedxTomcatPort determines the port that the Code Dx Service will be exposed on.
+#
+codedxTomcatPort: 9090
+
+# codedxJavaOpts lets you add custom Java runtime options for Code Dx.
+#
+codedxJavaOpts: ""
+
+# codedxAdminPassword is used when creating the Code Dx "admin" account during the
+# installation process. After installation, you can sign in with "admin" and the
+# value assigned here.
+#
+codedxAdminPassword: ""
+
+# cacertsFile can be used to provide a set of custom Java certificates for Code Dx to use. This is
+# necessary for LDAPS and integration with some external tools. This value is the path to a local
+# file that will be mounted in the Code Dx container at /etc/ssl/certs/java/cacerts. If undefined
+# (or empty), the default `cacerts` file will be used.
+# ref: https://codedx.com/Documentation/InstallGuide.html#TrustingSelfSignedCertificates
+# 
+cacertsFile: ""
+
+# serviceAccount options for Code Dx.
+# Determine the name of the service account to run Code Dx with, and whether to create the ServiceAccount.
+# - If create=true but name=undefined - Will create and use an auto-named service account
+# - If create=false but name!=undefined - Will assign the named service account to the Code Dx deployment
+# - If create=true and name!=undefined - Will create a service account with the given name and use it for the Code Dx deployment
+# - If create=false and name=undefined - Will use 'default' service account for the Code Dx deployment
+#
+serviceAccount:
+  # serviceAccount.create flag can auto-create and use a ServiceAccount for the Code Dx deployment.
+  # Will use the given name if provided, otherwise will auto-generate a name.
+  #
+  create: true
+
+  # serviceAccount.name specifies the name of the ServiceAccount for Code Dx to use. If this is set
+  # and create is false, we assume a ServiceAccount already exists with that name and try to use it.
+  #
+  name:
+
+# Configure the creation and use of a PodSecurityPolicy for the Code Dx deployment.
+# ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/
+#
+podSecurityPolicy:
+  codedx:
+    # The flag podSecurityPolicy.codedx.create can create a suitable PSP for Code Dx
+    # with the given name (or auto-generate a name if undefined.)
+    #
+    create: true
+
+    # podSecurityPolicy.codedx.name assigns the name of the PSP to create and/or use. (optional)
+    #
+    name:
+
+    # The flag podSecurityPolicy.codedx.bind determines whether or not to create a Role
+    # and RoleBinding to use this PSP with the service account described in serviceAccount.
+    #
+    bind: true
+
+    # Use podSecurityPolicy.codedx.annotations to attach custom annotations to the
+    # PodSecurityPolicy created here. (Does nothing if create = false.)
+    #
+    annotations: {}
+  
+  mariadb:
+    # The flag podSecurityPolicy.mariadb.create can create a suitable PSP for MariaDB
+    # with the given name (or auto-generate a name if undefined.)
+    #
+    create: true
+
+    # podSecurityPolicy.mariadb.name assigns the name of the PSP to create and/or use. (optional)
+    #
+    name:
+
+    # The flag podSecurityPolicy.mariadb.bind determines whether or not to create a Role
+    # and RoleBinding to use this PSP with the service account named in mariadb.serviceAccount.
+    #
+    bind: true
+
+    # Use podSecurityPolicy.mariadb.annotations to attach custom annotations to the
+    # PodSecurityPolicy created here. (Does nothing if create = false.)
+    #
+    annotations: {}
+
+
+# Configure NetworkPolicies to restrict which pods can connect with other pods.
+# (Each created network policy will include an egress rule on port 53 to any target for DNS.)
+# ref: https://kubernetes.io/docs/concepts/services-networking/network-policies/
+#
+networkPolicy:
+  # A NetworkPolicy for Code Dx will limit its egress to MariaDB instances, and prevent
+  # ingress from other pods.
+  #
+  codedx:
+
+    # The flag networkPolicy.codedx.create can be used to create a NetworkPolicy with suitable ingress
+    # and egress rules, configured to select only the Code Dx pod.
+    #
+    create: true
+
+    # The flags networkPolicy.codedx.ldap,ldaps,http,https can create egress rules for Code Dx on those ports.
+    # These rules will allow *all* egress from the Code Dx pod on those ports.
+    #
+    ldap: false
+    ldaps: false
+    http: false
+    https: false
+
+    # networkPolicy.codedx.ingressSelectors is an optional list of selectors to attach to Code Dx
+    # ingress rules. Pods matched here will be allowed to connect to Code Dx over HTTP (port 9090).
+    # ref: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.11/#networkpolicypeer-v1-networking-k8s-io
+    #
+    ingressSelectors: []
+    # - podSelector:
+    #     matchLabels:
+    #       abc: "def"
+
+  # NetworkPolicies for MariaDB pods will allow Ingress from only Code Dx and other MariaDB pods. Egress is
+  # allowed to other MariaDB instances. If metrics are enabled, the NetworkPolicies will also allow Ingress
+  # on port 9090 from any source.
+  #
+  mariadb:
+    master:
+      # The flag networkPolicy.mariadb.master.create can be used to create a NetworkPolicy targeting
+      # the MariaDB Master pod(s), allowing only ingress from Code Dx and MariaDB slaves. Egress is
+      # disallowed. (The policy is modified appropriately if MariaDB metrics are enabled for Master.)
+      #
+      create: true
+
+    slave:
+      # The flag networkPolicy.mariadb.slave.create can be used to create a NetworkPolicy targeting
+      # the MariaDB Slave pod(s), allowing only egress to MariaDB master pods. Ingress is disallowed.
+      # (The policy is modified appropriately if MariaDB metrics are enabled for Slave.)
+      #
+      create: true
+
+
+# Persistent storage options for Code Dx's /opt/codedx folder, referred to as its "appdata". This
+# stores log files, analysis inputs, etc. - anything generated by or given to Code Dx. It's strongly
+# recommended to increase the persistence.size value to suit your neads.
+# ref: https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistentvolumeclaims
+#
+persistence:
+  # persistence.storageClass will force a specific storage method for Code Dx's appdata. This should
+  # generally be left blank, so the storage provider can auto-select a backend.
+  # ref: https://kubernetes.io/docs/concepts/storage/persistent-volumes/#class-1
+  #
+  storageClass: ""
+
+  # persistence.accessMode determines how the volume will be shared accross nodes. This should be left
+  # as default.
+  # ref: https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes
+  #
+  accessMode: ReadWriteOnce
+
+  # persistence.size determines how much space to request for Code Dx's appdata volume. This size
+  # should probably be increased based on your needs before performing an install. You may find
+  # Code Dx running out of space rather quickly.
+  #
+  size: 32Gi
+
+  # persistence.existingClaim will force the chart to mount the given claim as Code Dx's
+  # appdata volume. A new PersistentVolumeClaim will not be created if defined.
+  existingClaim: ""
+
+
+# Use the `ingress` object and its properties to configure how Ingress resources are generated
+# for the new Code Dx service. You'll need to make sure an Ingress controller is installed
+# in your cluster for these resources to have any effect.
+# ref: https://kubernetes.io/docs/concepts/services-networking/ingress/
+#
+ingress:
+
+  # Set ingress.enabled to "true" to generate an Ingress rule that forwards request to Code Dx
+  #
+  enabled: false
+
+  # Use ingress.annotations to attach extra annotations to each generated Ingress resource.
+  #
+  annotations:
+    # Increase timeout duration for Code Dx live updates
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    # Remove file size limit, Code Dx enforces this internally
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+
+  # Use ingress.hosts to specify the set of hosts to create Ingress resources for.
+  #
+  hosts:
+
+    # ingress.hosts[].name specifies the FQDN that Code Dx will be hosted on
+    #
+  - name: codedx.local
+
+    # Set ingress.hosts[].tls to "true" to add HTTPS/TLS properties to the generated Ingress resource
+    #
+    tls: true
+
+    # If tls is "true", ingress.hosts[].tlsSecret specifies the name of the TLS secret containing the key and certificate
+    #
+    tlsSecret: tls-secret
+  
+  # Use ingress.secrets[] to auto-create secrets with the given properties if they don't yet exist.
+  #
+  secrets: []
+  #   # ingress.secrets[].name specifies the name of the secret to be created.
+  #   #
+  # - name:
+
+  #   # ingress.secrets[].key specifies the base64-encoded TLS key for the secret.
+  #   #
+  #   key:
+
+  #   # ingress.secrets[].keyFile specifies the location of a file containing the TLS key, which will be base64-encoded.
+  #   # This value is ignored if `key` is defined.
+  #   #
+  #   keyFile: 
+
+  #   # ingress.secrets[].certificate specifies the base64-encoded TLS certificate for the secret.
+  #   #
+  #   certificate: 
+
+  #   # ingress.secrets[].certificateFile specifies the location of a file containing the TLS certificate, which will
+  #   # be base64-encoded. This value is ignored if `certificate` is defined.
+  #   #
+  #   certificateFile:
+
+
+# Specify the type of service that will be exposing Code Dx. Acceptable values are:
+# ClusterIP, NodePort, LoadBalancer
+#
+# If left unassigned, this will have one of the following defaults:
+#   "ClusterIP"    - If "ingress.enabled" = true
+#   "LoadBalancer" - If "ingress.enabled" = false
+#
+serviceType: 
+
+
+# Code Dx Properties Configuration
+#
+#
+#   Code Dx can accept multiple "props" files at startup. This feature is used to store common
+# properties in a ConfigMap (generated from the value at 'codedx.props.file'), and store more
+# sensitive information as secrets.
+#
+# The file retrieved from the value `codedx.props.file` will be created as a ConfigMap and mounted
+#   at /opt/codedx/codedx.props.
+#
+# MariaDB creds provided to this chart will be stored in a secret, containing a "props" file
+#   to be mounted at /opt/codedx/codedx.mariadb.props.
+#
+# Additional sensitive information (ie LDAP config) can also be provided to Code Dx as secrets
+#   mounted as prop files by adding to the "codedx.extraProps" list.
+
+codedxProps:
+  # Specify 'codedx.props.file' to create a config-map for Code Dx based on the given 'codedx.props' file
+  file: codedx.props
+
+  # Specify 'codedx.props.configMap' to use an existing config-map for Code Dx.
+  # This config-map MUST contain:
+  # - a key named 'codedx.props' with the contents of the properties to use. Check the provided
+  #   'codedx.props' file included with this chart and use the same 'swa.db.*' values to ensure that
+  #   Code Dx properly connects to the generated MariaDB instances.
+  # - a key named 'tomcat.env' with the `CATALINA_OPTS` values necessary to load any additional
+  #   props files. (it must at least provide the path to the MariaDB creds.)
+  # 
+  # (If both file and configMap are specified, the existing 'configMap' will be used
+  #  and no new ConfigMap will be created.)
+  #configMap: my-codedx-config-map
+
+  # Specify annotations to attach to a generated ConfigMap
+  annotations: {}
+  #   abc: "123"
+  #   def: "456"
+
+  # Code Dx will mount a secret as a file, containing MariaDB connection info. Use codedxProps.dbconnection
+  # to control how this secret is used.
+  #
+  # The MariaDB secret should have a `codedx.mariadb.props` key containing the text of a "props"-formatted
+  # file that assigns `swa.db.user` and `swa.db.password`, ie:
+  #
+  # swa.db.user = root
+  # swa.db.password = my-mariadb-password
+  #
+  # (Note that the URL for the MariaDB instance is assigned via the `codedx.props` configmap, not this secret.)
+  #
+  dbconnection:
+
+    # The flag codedxProps.dbconnection.createSecret determines whether or not a new secret will be generated.
+    #
+    createSecret: true
+
+    # Use codedxProps.dbconnection.secretName to specify the name of an existing secret to use (if createSecret
+    # is "false") or the name of the secret to be created (if createSecret is "true").
+    #
+    secretName: 
+
+    # Use codedxProps.dbconnection.annotations to attach extra annotations to a generated secret.
+    #
+    annotations: {}
+
+  # Use codedxProps.extra to specify extra secrets to be mounted in Code Dx as props files. Use this for other
+  # sensitive info, ie LDAP config. The secrets will be mounted as /opt/codedx/<key-name> and given to Code Dx. Make
+  # sure the name doesn't conflict with other prop file names. ("codedx.props" and "codedx.mariadb.props"
+  # are reserved.)
+  #
+  extra: []
+  #   # codedxProps.extra[].secretName specifies the name of an existing secret to mount.
+  #   #
+  # - secretName: my-ldap-secret
+
+  #   # codedxProps.extra[].key specifies the name of the key to be mounted from the secret.
+  #   # The file mounted will have the same name as the key here.
+  #   #
+  #   key: ldap-props
+
+
+
+license: {}
+  # Specify 'codedx.license.file' to automatically create a secret based on the given license
+  #
+  # file: my-license-file.lic
+
+  # Specify 'codedx.license.secret' to use an existing secret for the Code Dx license. This secret MUST
+  # contain a key named 'license.lic' with the contents of the license to use.
+  #
+  # (If both file and secret are specified, the existing 'secret' will be used and no new secret
+  #  will be created.)
+  #
+  # secret: my-codedx-license-secret
+
+  # Specify annotations to attach to a generated Secret
+  #
+  # annotations:
+  #   abc: "123"
+  #   def: "456"
+
+
+# Use `loggingConfigFile` to specify a local "logback.xml" file to be inserted into the Code Dx configmap and used,
+# allowing you to customize how Code Dx filters its logs.
+# ref: https://logback.qos.ch/manual/configuration.html
+#
+loggingConfigFile: 
+
+# Specify CPU/memory resource requests/limits for Code Dx on Tomcat.
+# ref: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/
+#
+resources: {}
+
+# Code Dx-specific MariaDB configuration. This should usually be left untouched, unless changing database passwords.
+#
+mariadb:
+  db:
+    # Name of the database for MariaDB to create automatically
+    name: codedx
+  rootUser:
+    password: 5jqJL2b8hqn3
+  replication:
+    password: 11uAQKLgv4JM
+  serviceAccount:
+    # Enable the creation of a MariaDB ServiceAccount for use in PodSecurityPolicies. Note that this version
+    # of the MariaDB chart doesn't create its own ServiceAccount, so the Code Dx chart creates it instead.
+    create: true
+
+  # Configuration files for the MariaDB Master and Slave DBs. These are mostly copies of the original config,
+  # with some changes made to optimize Code Dx performance.
+  master:
+    persistence:
+      size: 32Gi
+    config: |-
+      [mysqld]
+      skip-name-resolve
+      explicit_defaults_for_timestamp
+      basedir=/opt/bitnami/mariadb
+      port=3306
+      socket=/opt/bitnami/mariadb/tmp/mysql.sock
+      tmpdir=/opt/bitnami/mariadb/tmp
+      max_allowed_packet=16M
+      bind-address=0.0.0.0
+      pid-file=/opt/bitnami/mariadb/tmp/mysqld.pid
+      log-error=/opt/bitnami/mariadb/logs/mysqld.log
+      character-set-server=UTF8
+      collation-server=utf8_general_ci
+      optimizer_search_depth=0
+      innodb_flush_log_at_trx_commit=0
+
+      [client]
+      port=3306
+      socket=/opt/bitnami/mariadb/tmp/mysql.sock
+      default-character-set=UTF8
+
+      [manager]
+      port=3306
+      socket=/opt/bitnami/mariadb/tmp/mysql.sock
+      pid-file=/opt/bitnami/mariadb/tmp/mysqld.pid
+  slave:
+    persistence:
+      size: 32Gi
+    config: |-
+      [mysqld]
+      skip-name-resolve
+      explicit_defaults_for_timestamp
+      basedir=/opt/bitnami/mariadb
+      port=3306
+      socket=/opt/bitnami/mariadb/tmp/mysql.sock
+      tmpdir=/opt/bitnami/mariadb/tmp
+      max_allowed_packet=16M
+      bind-address=0.0.0.0
+      pid-file=/opt/bitnami/mariadb/tmp/mysqld.pid
+      log-error=/opt/bitnami/mariadb/logs/mysqld.log
+      character-set-server=UTF8
+      collation-server=utf8_general_ci
+      optimizer_search_depth=0
+      innodb_flush_log_at_trx_commit=0
+
+      [client]
+      port=3306
+      socket=/opt/bitnami/mariadb/tmp/mysql.sock
+      default-character-set=UTF8
+
+      [manager]
+      port=3306
+      socket=/opt/bitnami/mariadb/tmp/mysql.sock
+      pid-file=/opt/bitnami/mariadb/tmp/mysqld.pid

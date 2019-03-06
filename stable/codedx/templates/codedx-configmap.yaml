@@ -1,0 +1,30 @@
+{{- if and .Values.codedxProps.file (not .Values.codedxProps.configMap) -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "codedx.props.configMapName" . | quote }}
+  labels:
+    {{- include "codedx.commonLabels" . | nindent 4 }}
+  annotations:
+{{ toYaml .Values.codedxProps.annotations | trim | indent 4 }}
+data:
+  {{- /* We use `replace` here instead of usual file templating. A `codedx.props` file can contain documenting */ -}}
+  {{- /* comments with sample parameters named ie "{{project.name}}". Rather than try to trim comments from the output */ -}}
+  {{- /* or change the `codedx.props` sample file, we use a simple text-replace for flexibility. */ -}}
+  {{- $dbUrl := (printf "jdbc:mysql://%s-mariadb/codedx" .Release.Name) -}}
+  {{- $propsContents := .Files.Get .Values.codedxProps.file -}}
+
+  {{- $propsContents := ($propsContents | replace "TPL_K8S_DB_URL" $dbUrl) }}
+  codedx.props: |-
+    {{- $propsContents | nindent 4 }}
+
+  tomcat.env: |-
+    CATALINA_OPTS={{ include "codedx.props.params.combined" . }}
+    CATALINA_OPTS="$CATALINA_OPTS {{ default "" .Values.codedxJavaOpts }}"
+
+  {{ if .Values.loggingConfigFile -}}
+  logback.xml: |-
+    {{- .Files.Get .Values.loggingConfigFile | nindent 4 -}}
+  {{- end -}}
+
+{{- end -}}

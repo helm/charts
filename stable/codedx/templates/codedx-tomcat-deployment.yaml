@@ -1,0 +1,163 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ include "codedx.fullname" . | quote }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "codedx.commonLabels" . | nindent 4 }}
+spec:
+  {{ $hasLicense := (include "codedx.license.exists" .) -}}
+  # Code Dx does not officially support more than one instance running against the 
+  # same MariaDB server - doing so will lead to errors in the web interface. More
+  # than one Code Dx instance running during an installation or database schema
+  # upgrade *is very likely to corrupt your database!*
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "codedx.name" . | quote }}
+      app.kubernetes.io/instance: {{ .Release.Name | quote }}
+  template:
+    metadata:
+      labels:
+        {{- include "codedx.commonLabels" . | nindent 8 }}
+        # Extra labels so that the network policy can match against this
+        # (Problems have been found with Calico controller when matching
+        # labels contains a slash "/")
+        codedx.com-instance: {{ .Release.Name | quote }}
+    spec:
+      {{ if .Values.codedxTomcatImagePullSecrets -}}
+      imagePullSecrets: {{ toYaml .Values.codedxTomcatImagePullSecrets | nindent 6 -}}
+      {{ end -}}
+      serviceAccountName: {{ include "codedx.serviceAccountName" . | quote }}
+      serviceAccount: {{ include "codedx.serviceAccountName" . | quote }}
+      securityContext:
+        fsGroup: 1000
+        runAsUser: 1000
+      containers:
+      - env:
+        - name: SUPERUSER_NAME
+          value: "admin"
+        - name: SUPERUSER_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "codedx.adminSecretName" . | quote }}
+              key: password
+        image: {{ required "A tomcat image must be provided! Assign codedxTomcatImage!" .Values.codedxTomcatImage | quote }}
+        name: "{{ include "codedx.name" . }}"
+        readinessProbe:
+          httpGet:
+            path: /codedx/login
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 3
+        livenessProbe:
+          httpGet:
+            path: /codedx/login
+            port: 8080
+          initialDelaySeconds: 600
+          periodSeconds: 15
+          timeoutSeconds: 10
+        command: ["start.sh"]
+        args: {{ include "codedx.props.params.separated" . | nindent 8 }}
+        ports:
+        - containerPort: 8080
+        resources:
+        {{- toYaml .Values.resources | trim | nindent 10 }}
+        volumeMounts:
+        # Code Dx appdata
+        - mountPath: /opt/codedx
+          name: {{ include "volume.fullname" . | quote }}
+        # MariaDB props
+        - mountPath: {{ include "codedx.mariadb.props.path" . | quote }}
+          name: codedx-mariadb-props
+          subPath: {{ include "codedx.mariadb.props.name" . | quote }}
+        # Main Code Dx config
+        - mountPath: /opt/codedx/codedx.props
+          name: codedx-props
+          subPath: codedx.props
+        # Any extra config files from codedx.props.extra
+        {{ range .Values.codedxProps.extra -}}
+        - mountPath: "/opt/codedx/{{ .key }}"
+          name: "codedx-extra-props-{{ .key }}"
+          subPath: {{ .key | quote }}
+        {{- end }}
+        # Command args to have Code Dx load extra props files
+        - mountPath: /usr/local/tomcat/bin/setenv.sh
+          name: codedx-props-env
+          subPath: setenv.sh
+        {{ if $hasLicense -}}
+        - mountPath: /opt/codedx/license.lic
+          name: codedx-license
+          subPath: license.lic
+        {{- end }}
+        {{ if .Values.cacertsFile -}}
+        - mountPath: /etc/ssl/certs/java/cacerts
+          name: codedx-cacerts
+          subPath: cacerts
+        {{- end }}
+        {{ if .Values.loggingConfigFile -}}
+        - mountPath: /opt/codedx/logback.xml
+          name: codedx-logback
+          subPath: logback.xml
+        {{- end }}
+      initContainers:
+        - name: {{ include "dbinit.fullname" . | quote }}
+          image: "ubuntu:18.04"
+          command: ["bash", "-c", "for i in {1..60}; do if (timeout 2 bash -c \"</dev/tcp/{{ .Release.Name }}-mariadb/3306\" echo $?); then echo 'Successfully connected to MariaDB port'; exit 0; else echo 'Retrying database connection...'; sleep 2; fi; done; echo 'MariaDB is unavailable'; exit 1"]
+      restartPolicy: Always
+      volumes:
+      - name: {{ include "volume.fullname" . | quote }}
+        persistentVolumeClaim:
+          claimName: {{ include "volume.fullname" . | quote }}
+      - name: codedx-props
+        configMap:
+          name: {{ include "codedx.props.configMapName" . | quote }}
+          items:
+          - key: codedx.props
+            path: codedx.props
+      - name: codedx-props-env
+        configMap:
+          name: {{ include "codedx.props.configMapName" . | quote }}
+          items:
+          - key: tomcat.env
+            path: setenv.sh
+      - name: codedx-mariadb-props
+        secret:
+          secretName: {{ include "codedx.mariadb.secretName" . | quote }}
+          items:
+          - key: codedx.mariadb.props
+            path: {{ include "codedx.mariadb.props.name" . | quote }}
+      {{ range .Values.codedxProps.extra -}}
+      - name: "codedx-extra-props-{{ .key }}"
+        secret:
+          secretName: {{ .secretName | quote }}
+          items:
+          - key: {{ .key | quote }}
+            path: {{ .key | quote }}
+      {{- end }}
+      {{ if $hasLicense -}}
+      - name: codedx-license
+        secret:
+          secretName: {{ include "codedx.license.secretName" . | quote }}
+          items:
+          - key: license.lic
+            path: license.lic
+      {{- end }}
+      {{ if .Values.cacertsFile -}}
+      - name: codedx-cacerts
+        secret:
+          secretName: {{ include "codedx.cacerts.secretName" . | quote }}
+          items:
+          - key: cacerts
+            path: cacerts
+      {{- end }}
+      {{ if .Values.loggingConfigFile -}}
+      - name: codedx-logback
+        configMap:
+          name: {{ include "codedx.props.configMapName" . | quote }}
+          items:
+          - key: logback.xml
+            path: logback.xml
+      {{- end -}}

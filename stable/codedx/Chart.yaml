@@ -1,0 +1,21 @@
+apiVersion: v1
+name: codedx
+version: 0.1.1
+kubeVersion: ">=1.8.0"
+appVersion: "3.6.1"
+description: A Helm chart for Code Dx (not suitable for production use)
+icon: https://codedx.com/wp-content/uploads/2017/03/CodeDx-logo.png
+home: https://github.com/codedx/codedx-kubernetes
+keywords:
+- codedx
+- security
+- sast
+- scan
+- analysis
+sources:
+- https://hub.docker.com/r/codedx/codedx-tomcat
+- https://hub.docker.com/_/tomcat/
+- https://hub.docker.com/_/mariadb/
+maintainers:
+- name: Code Dx, Inc.
+  email: support@codedx.com

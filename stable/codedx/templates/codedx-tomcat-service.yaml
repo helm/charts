@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "codedx.fullname" . | quote }}
+  labels:
+    {{- include "codedx.commonLabels" . | nindent 4 }}
+spec:
+  type: {{ include "codedx.servicetype" . }}
+  ports:
+  - name: http
+    port: {{ .Values.codedxTomcatPort }}
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app.kubernetes.io/name: {{ include "codedx.name" . | quote }}
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
