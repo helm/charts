@@ -1,4 +1,4 @@
-{{- if .Values.Master.HostName }}
+{{- if .Values.Master.UseIngress }}
 apiVersion: {{ .Values.Master.Ingress.ApiVersion }}
 kind: Ingress
 metadata:
@@ -13,8 +13,12 @@ metadata:
   name: {{ template "jenkins.fullname" . }}
 spec:
   rules:
+{{- if .Values.Master.HostName }}
   - host: {{ .Values.Master.HostName | quote }}
     http:
+{{- else }}
+  - http:
+{{- end }}
       paths:
       - backend:
           serviceName: {{ template "jenkins.fullname" . }}
