@@ -44,6 +44,10 @@ resources:
     memory: 64Mi
     cpu: 50m
 
+#CustomLabels:
+#  foo: bar
+#  bar: foo
+
 ## Key:value pair for assigning pod to specific sets of nodes
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
 nodeSelector: {}
