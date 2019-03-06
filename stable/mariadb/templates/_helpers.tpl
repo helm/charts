@@ -26,14 +26,14 @@ If release name contains chart name it will be used as a full name.
 
 {{- define "master.fullname" -}}
 {{- if .Values.replication.enabled -}}
-{{- printf "%s-%s" .Release.Name "mariadb-master" | trunc 63 | trimSuffix "-" -}}
+{{- printf "%s-%s" (include "mariadb.fullname" .) "master" | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
-{{- printf "%s-%s" .Release.Name "mariadb" | trunc 63 | trimSuffix "-" -}}
+{{- include "mariadb.fullname" . -}}
 {{- end -}}
 {{- end -}}
 
 {{- define "slave.fullname" -}}
-{{- printf "%s-%s" .Release.Name "mariadb-slave" | trunc 63 | trimSuffix "-" -}}
+{{- printf "%s-%s" (include "mariadb.fullname" .) "slave" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{- define "mariadb.chart" -}}
