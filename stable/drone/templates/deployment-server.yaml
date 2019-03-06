@@ -37,8 +37,6 @@ spec:
 {{- if .Values.server.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.server.nodeSelector | indent 8 }}
-      tolerations:
-{{ toYaml .Values.server.tolerations | indent 8 }}
 {{- end }}
       serviceAccountName: {{ template "drone.serviceAccountName" . }}
       containers:
