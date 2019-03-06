@@ -8,8 +8,6 @@ icon: http://druid.io/img/druid_nav.png
 maintainers:
   - name: maver1ck
     email: maciek@brynski.pl
-  - name: gerbal
-    email: grant@7mind.de
 sources:
   - https://github.com/apache/incubator-druid
 keywords:
