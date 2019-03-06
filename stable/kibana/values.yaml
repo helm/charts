@@ -57,6 +57,7 @@ service:
     # kubernetes.io/cluster-service: "true"
   ## Limit load balancer source ips to list of CIDRs (where available)
   # loadBalancerSourceRanges: []
+  selector: {}
 
 ingress:
   enabled: false
