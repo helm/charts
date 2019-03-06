@@ -94,11 +94,11 @@ spec:
         volumeMounts:
 {{- if .Values.config.configFile }}
         - mountPath: /etc/oauth2_proxy
-          name: {{ template "oauth2-proxy.fullname" . }}-configmap
+          name: configmain
 {{- end }}
 {{- if .Values.authenticatedEmailsFile.enabled }}
         - mountPath: /etc/oauth2-proxy
-          name: {{ template "oauth2-proxy.fullname" . }}-configaccesslist
+          name: configaccesslist
           readOnly: true
 {{- end }}
       volumes:
@@ -106,7 +106,7 @@ spec:
       - configMap:
           defaultMode: 420
           name: {{ template "oauth2-proxy.fullname" . }}
-        name: {{ template "oauth2-proxy.fullname" . }}-configmap
+        name: configmain
 {{- end }}
 {{- if .Values.authenticatedEmailsFile.enabled }}
       - configMap:
@@ -122,7 +122,7 @@ spec:
 {{- else }}
             path: authenticated-emails-list
 {{- end }}
-        name: {{ template "oauth2-proxy.fullname" . }}-configaccesslist
+        name: configaccesslist
 {{- end }}
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
