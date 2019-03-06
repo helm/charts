@@ -5,7 +5,7 @@ config:
   # OAuth client secret
   clientSecret: "XXXXXXXX"
   # Create a new secret with the following command
-  # python -c 'import os,base64; print base64.b64encode(os.urandom(16))'
+  # openssl rand -base64 32 | head -c 32 | base64
   # Use an existing secret for OAuth2 credentials (see secret.yaml for required fields)
   # Example:
   # existingSecret: secret
