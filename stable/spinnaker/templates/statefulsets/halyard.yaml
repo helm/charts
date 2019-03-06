@@ -16,6 +16,8 @@ spec:
       labels:
 {{ include "spinnaker.standard-labels" . | indent 8 }}
         component: halyard
+      annotations:
+{{ toYaml .Values.halyard.podAnnotations | indent 8 }}
     spec:
       {{- if .Values.serviceAccount.halyardName }}
       serviceAccountName: {{ .Values.serviceAccount.halyardName }}
