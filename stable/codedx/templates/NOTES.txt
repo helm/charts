@@ -1,8 +1,6 @@
 {{- $defaultRootPassword := "5jqJL2b8hqn3" -}}
 {{- $defaultReplicationPassword := "11uAQKLgv4JM" -}}
 
-This Code Dx instance is for development and test purposes (not suitable for production use).
-
 You can get the default Code Dx admin credentials with:
     echo username: admin
     echo password: $(kubectl get secret --namespace {{ .Release.Namespace }} {{ include "codedx.adminSecretName" . }} -o jsonpath="{.data.password}" | base64 --decode)
