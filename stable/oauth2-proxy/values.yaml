@@ -6,15 +6,18 @@ config:
   clientSecret: "XXXXXXXX"
   # Create a new secret with the following command
   # python -c 'import os,base64; print base64.b64encode(os.urandom(16))'
+  # Use an existing secret for OAuth2 credentials (see secret.yaml for required fields)
+  # Example:
+  # existingSecret: secret
   cookieSecret: "XXXXXXXXXX"
   # Custom configuration file: oauth2_proxy.cfg
   # configFile: |-
   #   pass_basic_auth = false
   #   pass_access_token = true
   configFile: ""
-  # Use an existing secret for OAuth2 credentials
+  # Use an existing config map (see configmap.yaml for required fields)
   # Example:
-  # existingSecret: secret
+  # existingConfig: config
 
 image:
   repository: "quay.io/pusher/oauth2_proxy"

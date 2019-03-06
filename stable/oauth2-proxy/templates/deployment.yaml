@@ -41,7 +41,7 @@ spec:
           - --{{ $key }}
           {{- end }}
         {{- end }}
-        {{- if .Values.config.configFile }}
+        {{- if or .Values.config.existingConfig .Values.config.configFile }}
           - --config=/etc/oauth2_proxy/oauth2_proxy.cfg
         {{- end }}
         {{- if .Values.authenticatedEmailsFile.enabled }}
@@ -92,7 +92,7 @@ spec:
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
-{{- if .Values.config.configFile }}
+{{- if or .Values.config.existingConfig .Values.config.configFile }}
         - mountPath: /etc/oauth2_proxy
           name: configmain
 {{- end }}
@@ -102,10 +102,10 @@ spec:
           readOnly: true
 {{- end }}
       volumes:
-{{- if .Values.config.configFile }}
+{{- if or .Values.config.existingConfig .Values.config.configFile }}
       - configMap:
           defaultMode: 420
-          name: {{ template "oauth2-proxy.fullname" . }}
+          name: {{ if .Values.config.existingConfig }}{{ .Values.config.existingConfig }}{{ else }}{{ template "oauth2-proxy.fullname" . }}{{ end }}
         name: configmain
 {{- end }}
 {{- if .Values.authenticatedEmailsFile.enabled }}

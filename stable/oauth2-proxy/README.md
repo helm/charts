@@ -45,8 +45,9 @@ Parameter | Description | Default
 `config.clientID` | oauth client ID | `""`
 `config.clientSecret` | oauth client secret | `""`
 `config.cookieSecret` | server specific cookie for the secret; create a new one with `python -c 'import os,base64; print base64.b64encode(os.urandom(16))'` | `""`
-`config.configFile` | custom [oauth2_proxy.cfg](https://github.com/pusher/oauth2_proxy/blob/master/contrib/oauth2_proxy.cfg.example) contents for settings not overridable via environment nor command line | `""`
 `config.existingSecret` | existing Kubernetes secret to use for OAuth2 credentials. See [secret template](https://github.com/helm/charts/blob/master/stable/oauth2-proxy/templates/secret.yaml) for the required values | `nil`
+`config.configFile` | custom [oauth2_proxy.cfg](https://github.com/pusher/oauth2_proxy/blob/master/contrib/oauth2_proxy.cfg.example) contents for settings not overridable via environment nor command line | `""`
+`config.existingConfig` | existing Kubernetes configmap to use for the configuration file. See [config template](https://github.com/helm/charts/blob/master/stable/oauth2-proxy/templates/configmap.yaml) for the required values | `nil`
 `extraArgs` | key:value list of extra arguments to give the binary | `{}`
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
 `image.repository` | Image repository | `quay.io/pusher/oauth2_proxy`
