@@ -51,6 +51,12 @@ spec:
           - --authenticated-emails-file=/etc/oauth2-proxy/authenticated-emails-list
         {{- end }}
         {{- end }}
+        {{- with .Values.config.google }}
+        {{- if and .adminEmail (or .serviceAccountJson .existingSecret) }}
+          - --google-admin-email={{ .adminEmail }}
+          - --google-service-account-json=/google/service-account.json
+        {{- end }}
+        {{- end }}
         env:
         - name: OAUTH2_PROXY_CLIENT_ID
           valueFrom:
@@ -92,6 +98,13 @@ spec:
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
+{{- with .Values.config.google }}
+{{- if and .adminEmail (or .serviceAccountJson .existingSecret) }}
+        - name: google-secret
+          mountPath: /google
+          readOnly: true
+{{- end }}
+{{- end }}
 {{- if or .Values.config.existingConfig .Values.config.configFile }}
         - mountPath: /etc/oauth2_proxy
           name: configmain
@@ -102,6 +115,13 @@ spec:
           readOnly: true
 {{- end }}
       volumes:
+{{- with .Values.config.google }}
+{{- if and .adminEmail (or .serviceAccountJson .existingSecret) }}
+      - name: google-secret
+        secret:
+          secretName: {{ if .existingSecret }}{{ .existingSecret }}{{ else }} {{ template "oauth2-proxy.secretName" . }}{{ end }}
+{{- end }}
+{{- end }}
 {{- if or .Values.config.existingConfig .Values.config.configFile }}
       - configMap:
           defaultMode: 420

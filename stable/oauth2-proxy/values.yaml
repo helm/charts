@@ -10,6 +10,12 @@ config:
   # Example:
   # existingSecret: secret
   cookieSecret: "XXXXXXXXXX"
+  google: {}
+    # adminEmail: xxxx
+    # serviceAccountJson: xxxx
+    # Alternatively, use an existing secret (see google-secret.yaml for required fields)
+    # Example:
+    # existingSecret: google-secret
   # Default configuration, to be overridden
   configFile: |-
     email_domains = [ "*" ]
