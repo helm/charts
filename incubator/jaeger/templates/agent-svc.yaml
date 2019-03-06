@@ -4,12 +4,11 @@ kind: Service
 metadata:
   name: {{ template "jaeger.agent.name" . }}
   labels:
-    app: {{ template "jaeger.name" . }}
-    jaeger-infra: agent-service
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    component: agent
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    app.kubernetes.io/name: {{ include "jaeger.name" . }}
+    helm.sh/chart: {{ include "jaeger.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/component: agent
 {{- if .Values.agent.service.annotations }}
   annotations:
 {{ toYaml .Values.agent.service.annotations | indent 4 }}
@@ -34,9 +33,8 @@ spec:
     targetPort: {{ .Values.agent.service.samplingPort }}
   type: {{ .Values.agent.service.type }}
   selector:
-    app: {{ template "jaeger.name" . }}
-    component: agent
-    release: {{ .Release.Name }}
-    jaeger-infra: agent-instance
+    app.kubernetes.io/name: {{ template "jaeger.name" . }}
+    app.kubernetes.io/component: agent
+    app.kubernetes.io/instance: {{ .Release.Name }}
 {{- template "loadBalancerSourceRanges" .Values.agent }}
 {{- end -}}

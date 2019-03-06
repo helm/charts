@@ -4,12 +4,11 @@ kind: Service
 metadata:
   name: {{ template "jaeger.collector.name" . }}
   labels:
-    app: {{ template "jaeger.name" . }}
-    jaeger-infra: collector-service
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    component: collector
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    app.kubernetes.io/name: {{ template "jaeger.name" . }}
+    helm.sh/chart: {{ include "jaeger.chart" . }}
+    app.kubernetes.io/component: collector
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
 {{- if .Values.collector.service.annotations }}
   annotations:
 {{ toYaml .Values.collector.service.annotations | indent 4 }}
@@ -41,10 +40,9 @@ spec:
     targetPort: zipkin
     {{- end }}
   selector:
-    app: {{ template "jaeger.name" . }}
-    component: collector
-    release: {{ .Release.Name }}
-    jaeger-infra: collector-pod
+    app.kubernetes.io/name: {{ template "jaeger.name" . }}
+    app.kubernetes.io/component: collector
+    app.kubernetes.io/instance: {{ .Release.Name }}
   type: {{ .Values.collector.service.type }}
 {{- template "loadBalancerSourceRanges" .Values.collector }}
 {{- end -}}

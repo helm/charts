@@ -5,12 +5,11 @@ kind: Job
 metadata:
   name: {{ template "jaeger.fullname" . }}-cassandra-schema
   labels:
-    app: {{ template "jaeger.name" . }}
-    jaeger-infra: cassandra-schema-job
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    component: cassandra-schema
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    app.kubernetes.io/name: {{ template "jaeger.name" . }}
+    helm.sh/chart: {{ include "jaeger.chart" . }}
+    app.kubernetes.io/component: cassandra-schema
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
 {{- if .Values.schema.annotations }}
   annotations:
 {{ toYaml .Values.schema.annotations | indent 4 }}
