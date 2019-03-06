@@ -1,7 +1,7 @@
 dependencies:
 - name: zookeeper
   version: 1.2.0
-  repository: http://storage.googleapis.com/kubernetes-charts-incubator
+  repository: https://kubernetes-charts-incubator.storage.googleapis.com/
   condition: zookeeper.enabled
 - name: mysql
   version: 0.10.2

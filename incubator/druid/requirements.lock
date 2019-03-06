@@ -1,6 +1,6 @@
 dependencies:
 - name: zookeeper
-  repository: http://storage.googleapis.com/kubernetes-charts-incubator
+  repository: https://kubernetes-charts-incubator.storage.googleapis.com/
   version: 1.2.0
 - name: mysql
   repository: https://kubernetes-charts.storage.googleapis.com/
@@ -8,5 +8,5 @@ dependencies:
 - name: postgresql
   repository: https://kubernetes-charts.storage.googleapis.com/
   version: 3.11.7
-digest: sha256:2ca5bfde552e8e0a86c1089a7d440dc43180ace984ee561f2f574c3512f7c5f5
-generated: 2019-03-06T13:53:13.492074535-05:00
+digest: sha256:6e78343dcad8a1a9d6d92236c18357046488ad4ffeec57ea9a08cefa1465d825
+generated: 2019-03-06T15:12:11.971485109-05:00
