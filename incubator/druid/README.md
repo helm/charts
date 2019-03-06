@@ -50,7 +50,7 @@ This chart exposes 5 endpoints:
 Druid configuration can be changed by using environment variables from Docker image.
 
 See the
-[Druid Docker entry point](https://github.com/maver1ck/druid-docker/blob/historical/start-druid.sh)
+[Druid Docker entry point](https://github.com/apache/incubator-druid/blob/master/distribution/docker/druid.sh)
 for more informations
 
 ### Middle Manager and Historical Statefulset
@@ -67,7 +67,7 @@ The following table lists the configurable parameters of the Druid chart and the
 | `image.repository`                       | Container image name                                    | `maver1ckpl/druid-docker` |
 | `image.tag`                              | Container image tag                                     | `0.12.3-1`                |
 | `image.pullPolicy`                       | Container pull policy                                   | `IfNotPresent`            |
-| `env`                                    | Custom env variables for all components                 | ``                        |
+| `configVars`                             | Druid configuration variables for all components        | ``                        |
 | `historical.name`                        | historical component name                               | `historical`              |
 | `historical.replicaCount`                | historical node replicas (deployment)                   | `1`                       |
 | `historical.port`                        | port of historical component                            | `8083`                    |

@@ -1,13 +1,15 @@
 apiVersion: v1
-appVersion: 0.12.3
+appVersion: 0.13.0
 description: Apache Druid (incubating) is a high performance analytics data store for event-driven data.
 name: druid
-version: 0.1.0
+version: 0.2.0
 home: http://druid.io/
 icon: http://druid.io/img/druid_nav.png
 maintainers:
   - name: maver1ck
     email: maciek@brynski.pl
+  - name: gerbal
+    email: grant@7mind.de
 sources:
   - https://github.com/apache/incubator-druid
 keywords:
