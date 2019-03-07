@@ -140,6 +140,13 @@ reference the default `values.yaml` to understand further options.
 | `tiller.role.type` | Identify the name of the `Role` or `ClusterRole` that will be referenced in the role binding for Tiller's service account. There is seldom any reason to override this. | `admin` |
 | `tiller.includeService` | This deploys a service resource for Tiller. This is not generally needed. Please understand the security implications of this before overriding the default. | `false` |
 | `tiller.onlyListenOnLocalhost` | This prevents Tiller from binding to `0.0.0.0`. This is generally advisable to close known Tiller-based attack vectors. Please understand the security implications of this before overriding the default. | `true` |
+| `tls.enabled` | Whether to enable TLS encryption between Helm and Tiller. | `false` |
+| `tls.verify` | Whether to verify a remote certificate. | `true` |
+| `tls.certPath` | Path to mount certificates into the container. | `/etc/certs` |
+| `tls.secretName` | Provide TLS certs via an existing secret with Path to mount certificates into the container. Must include ca.crt, tls.crt and tls.key files| `nil` |
+| `tls.ca` | a Base64 encoded string to mount ca.crt into the container.  | `nil` |
+| `tls.cert` | a Base64 encoded string to mount tls.cert into the container.  | `nil` |
+| `tls.key` | a Base64 encoded string to mount tls.key into the container.  | `nil` |
 | `serviceAccounts` | An optional array of names of additional service account to create | `nil` |
 | `roleBindings` | An optional array of objects that define role bindings | `nil` |
 | `roleBindings[n].role.kind` | Identify the kind of role (`Role` or `ClusterRole`) to be used in the role binding | |
