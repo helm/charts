@@ -46,6 +46,9 @@ minimumAge: 0s
 # grace period to give pods when terminating them (negative: pod decides)
 gracePeriod: -1s
 
+# Listening address for metrics handler
+metricsAddress: :8080
+
 priorityClassName: ""
 
 # create service account with permission to list and kill pods
