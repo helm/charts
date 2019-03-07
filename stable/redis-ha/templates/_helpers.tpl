@@ -51,3 +51,13 @@ Example output:
   {{- replace "+" "_" .Chart.Version | printf "%s-%s" .Chart.Name -}}
 {{- end -}}
 
+{{/*
+Create the name of the service account to use
+*/}}
+{{- define "redis-ha.serviceAccountName" -}}
+{{- if .Values.serviceAccount.create -}}
+    {{ default (include "redis-ha.fullname" .) .Values.serviceAccount.name }}
+{{- else -}}
+    {{ default "default" .Values.serviceAccount.name }}
+{{- end -}}
+{{- end -}}
