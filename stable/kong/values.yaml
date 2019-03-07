@@ -65,6 +65,7 @@ proxy:
     containerPort: 8443
     # Set a nodePort which is available if service type is NodePort
     # nodePort: 32443
+    ssl_cipher_suite: modern
 
   type: NodePort
 

@@ -78,6 +78,7 @@ and their default values.
 | proxy.tls.servicePort          | Service port to use for TLS                                                      | 8443                |
 | proxy.tls.nodePort             | Node port to use for TLS                                                         | 32443               |
 | proxy.tls.hostPort             | Host port to use for TLS                                                         |                     |
+| proxy.tls.ssl_cipher_suite     | Set the cipher suite to use                                                      | modern              |
 | proxy.type                     | k8s service type. Options: NodePort, ClusterIP, LoadBalancer                     | `NodePort`          |
 | proxy.loadBalancerSourceRanges | Limit proxy access to CIDRs if set and service type is `LoadBalancer`            | `[]`                |
 | proxy.loadBalancerIP           | To reuse an existing ingress static IP for the admin service                     |                     |
@@ -103,12 +104,12 @@ the value provided by you as opposed to constructing a listen variable
 from fields like `proxy.http.containerPort` and `proxy.http.enabled`. This allows
 you to be more prescriptive when defining listen directives.
 
-**Note:** Overriding `env.proxy_listen` and `env.admin_listen` will potentially cause 
-`admin.containerPort`, `proxy.http.containerPort` and `proxy.tls.containerPort` to become out of sync, 
+**Note:** Overriding `env.proxy_listen` and `env.admin_listen` will potentially cause
+`admin.containerPort`, `proxy.http.containerPort` and `proxy.tls.containerPort` to become out of sync,
 and therefore must be updated accordingly.
 
-I.E. updatating to `env.proxy_listen: 0.0.0.0:4444, 0.0.0.0:4443 ssl` will need 
-`proxy.http.containerPort: 4444` and `proxy.tls.containerPort: 4443` to be set in order 
+I.E. updatating to `env.proxy_listen: 0.0.0.0:4444, 0.0.0.0:4443 ssl` will need
+`proxy.http.containerPort: 4444` and `proxy.tls.containerPort: 4443` to be set in order
 for the service definition to work properly.
 
 ### Kong-specific parameters
@@ -155,7 +156,7 @@ kong:
             key: kong
             name: postgres
 ```
- 
+
 
 For complete list of Kong configurations please check https://getkong.org/docs/1.0.x/configuration/.
 

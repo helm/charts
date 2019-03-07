@@ -89,6 +89,10 @@ spec:
           value: "/dev/stderr"
         - name: KONG_ADMIN_ERROR_LOG
           value: "/dev/stderr"
+        {{- if .Values.proxy.tls.ssl_cipher_suite }}
+        - name: KONG_SSL_CIPHER_SUITE
+          value: {{ .Values.proxy.tls.ssl_cipher_suite }}
+        {{- end }}
         {{- include "kong.env" .  | indent 8 }}
         {{- if .Values.postgresql.enabled }}
         - name: KONG_PG_HOST
