@@ -19,6 +19,6 @@ roleRef:
   name: {{ template "coredns.fullname" . }}
 subjects:
 - kind: ServiceAccount
-  name: {{ template "coredns.fullname" . }}
+  name: {{ template "coredns.serviceAccountName" . }}
   namespace: {{ .Release.Namespace }}
 {{- end }}
