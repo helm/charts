@@ -1,3 +1,9 @@
+### 1.6.7
+
+* [cc2e4cb](https://github.com/kubernetes/charts/commit/cc2e4cb):
+
+- Bump up GoCD Version to 19.2.0
+
 ### 1.6.6
 
 * [84bd7fe](https://github.com/kubernetes/charts/commit/f44d408):
