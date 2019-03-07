@@ -1,4 +1,6 @@
 replicaCount: 1
+nameOverride: ""
+fullnameOverride: ""
 
 rbac:
   create: true
@@ -24,6 +26,36 @@ environment:
   # SPARK_DAEMON_JAVA_OPTS: ...
   # SPARK_DAEMON_CLASSPATH: ...
   # SPARK_PUBLIC_DNS: ...
+
+podAnnotations: {}
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  #
+  # To let the application start up quickly give it a big limit
+  # limits:
+  #  cpu: 1000m
+  #  memory: 1Gi
+  # requests:
+  #  cpu: 100m
+  #  memory: 512Mi
+
+
+ingress:
+  enabled: false
+  annotations: {}
+  # kubernetes.io/ingress.class: nginx
+  # kubernetes.io/tls-acme: "true"
+  path: /
+  hosts:
+    - spark-history-server.example.com
+  tls: []
+  #  - secretName:spark-history-server.example.com
+  #    hosts:
+  #      - spark-history-server.example.com
 
 pvc:
   # to use a file system path for Spark events dir, set 'enablePVC' to true and mention the
