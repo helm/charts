@@ -18,10 +18,18 @@ Please also see https://github.com/kubernetes-helm/chartmuseum
     - [permissions grant with IAM instance profile](#permissions-grant-with-iam-instance-profile)
     - [permissions grant with IAM assumed role](#permissions-grant-with-iam-assumed-role)
   - [Using with Google Cloud Storage](#using-with-google-cloud-storage)
+  - [Using with Google Cloud Storage and a Google Service Account](#using-with-google-cloud-storage-and-a-google-service-account)
   - [Using with Microsoft Azure Blob Storage](#using-with-microsoft-azure-blob-storage)
   - [Using with Alibaba Cloud OSS Storage](#using-with-alibaba-cloud-oss-storage)
+  - [Using with Openstack Object Storage](#using-with-openstack-object-storage)
+  - [Using with Oracle Object Storage](#using-with-oracle-object-storage)
+  - [Using an existing secret](#using-an-existing-secret)
   - [Using with local filesystem storage](#using-with-local-filesystem-storage)
     - [Example storage class](#example-storage-class)
+  - [Ingress](#ingress)
+    - [Hosts](#hosts)
+    - [Annotations](#annotations)
+    - [Example Ingress configuration](#example-ingress-configuration)
 - [Uninstall](#uninstall)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -100,6 +108,9 @@ their default values. See values.yaml for all available options.
 | `env.open.STORAGE_OPENSTACK_PREFIX`    | Prefix to store charts for openstack        | ``                                                  |
 | `env.open.STORAGE_OPENSTACK_REGION`    | Region of openstack container               | ``                                                  |
 | `env.open.STORAGE_OPENSTACK_CACERT`    | Path to a CA cert bundle for openstack      | ``                                                  |
+| `env.open.STORAGE_ORACLE_COMPARTMENTID`| Compartment ID for Oracle Object Store      | ``                                                  |
+| `env.open.STORAGE_ORACLE_BUCKET`       | Bucket to store charts in Oracle Object Store  | ``                                                  |
+| `env.open.STORAGE_ORACLE_PREFIX`       | Prefix to store charts for Oracle object Store | ``                                                  |
 | `env.open.CHART_POST_FORM_FIELD_NAME`  | Form field to query for chart file content  | ``                                                  |
 | `env.open.PROV_POST_FORM_FIELD_NAME`   | Form field to query for chart provenance    | ``                                                  |
 | `env.open.DEPTH`                       | levels of nested repos for multitenancy.    | `0`                                                 |
@@ -116,19 +127,34 @@ their default values. See values.yaml for all available options.
 | `env.open.CACHE`                       | Cache store, can be one of: redis           | ``                                                  |
 | `env.open.CACHE_REDIS_ADDR`            | Address of Redis service (host:port)        | ``                                                  |
 | `env.open.CACHE_REDIS_DB`              | Redis database to be selected after connect | `0`                                                 |
-| `env.field`                            | Expose pod information to containers through environment variables | ``                                              |
+| `env.field`                            | Expose pod information to containers through environment variables | ``                           |
+| `env.existingSecret`                   | Name of the existing secret use values      | ``                                                  |
+| `env.existingSecret.BASIC_AUTH_USER`   | Key name in the secret for the Username     | ``                                                  |
+| `env.existingSecret.BASIC_AUTH_PASS`   | Key name in the secret for the Password     | ``                                                  |
 | `env.secret.BASIC_AUTH_USER`           | Username for basic HTTP authentication      | ``                                                  |
 | `env.secret.BASIC_AUTH_PASS`           | Password for basic HTTP authentication      | ``                                                  |
 | `env.secret.CACHE_REDIS_PASSWORD`      | Redis requirepass server configuration      | ``                                                  |
 | `gcp.secret.enabled`                   | Flag for the GCP service account            | `false`                                             |
 | `gcp.secret.name`                      | Secret name for the GCP json file           | ``                                                  |
 | `gcp.secret.key`                       | Secret key for te GCP json file             | `credentials.json`                                  |
+| `oracle.secret.enabled`                | Flag for Oracle OCI account                 | `false`                                             |
+| `oracle.secret.name`                   | Secret name for OCI config and key          | ``                                                  |
+| `oracle.secret.config`                 | Secret key that holds the OCI config        | `config`                                            |
+| `oracle.secret.key_file`               | Secret key that holds the OCI private key   | `key_file`                                          |
 | `service.type`                         | Kubernetes Service type                     | `ClusterIP`                                          |
 | `service.clusterIP`                    | Static clusterIP or None for headless services| `nil`                                              |
+| `service.externalTrafficPolicy`        | Source IP preservation (only for Service type NodePort)  | `Local`                                         |
 | `service.servicename`                  | Custom name for service                     | ``                                                  |
 | `service.labels`                       | Additional labels for service               | `{}`                                                |
 | `deployment.labels`                    | Additional labels for deployment            | `{}`                                                |
 | `deployment.matchlabes`                | Match labels for deployment selector        | `{}`                                                |
+| `ingress.enabled`                      | Enable ingress controller resource          | `false`                                             |
+| `ingress.annotations`                  | Ingress annotations                         | `[]`                                                |
+| `ingress.labels`                       | Ingress labels                              | `[]`                                                |
+| `ingress.hosts[0].name`                | Hostname for the ingress                    | ``                                                  |
+| `ingress.hosts[0].path`                | Path within the url structure               | ``                                                  |
+| `ingress.hosts[0].tls `                | Enable TLS on the ingress host              | `false`                                             |
+| `ingress.hosts[0].tlsSecret`           | TLS secret to use (must be manually created)| ``                                                  |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to
 `helm install`.
@@ -313,7 +339,7 @@ Run command to install
 helm install --name my-chartmuseum -f custom.yaml stable/chartmuseum
 ```
 
-To set the values directly in the command line, use the follosing command. Note that we have to base64 encode the json file because we cannot pass a multi-line text as a value.
+To set the values directly in the command line, use the following command. Note that we have to base64 encode the json file because we cannot pass a multi-line text as a value.
 
 ```shell
 export JSONKEY=$(cat my-project-77e35d85a593.json | base64)
@@ -408,6 +434,79 @@ Run command to install
 ```shell
 helm install --name my-chartmuseum -f custom.yaml stable/chartmuseum
 ```
+### Using with Oracle Object Storage
+
+Oracle (OCI) configuration and private key need to be added to a secret and are mounted at /home/chartmuseum/.oci. Your OCI config needs to be under [DEFAULT] and your `key_file` needs to be /home/chartmuseum/.oci/oci.key.  See https://docs.cloud.oracle.com/iaas/Content/API/Concepts/sdkconfig.htm
+
+```shell
+kubectl create secret generic chartmuseum-secret --from-file=config=".oci/config" --from-file=key_file=".oci/oci.key"
+```
+
+Then you can either use a `VALUES` yaml with your values or set those values in the command line:
+
+```shell
+helm install stable/chartmuseum --debug  --set env.open.STORAGE=oracle,env.open.STORAGE_ORACLE_COMPARTMENTID=ocid1.compartment.oc1..abc123,env.open.STORAGE_ORACLE_BUCKET=myocibucket,env.open.STORAGE_ORACLE_PREFIX=chartmuseum,oracle.secret.enabled=true,oracle.secret.name=chartmuseum-secret
+```
+
+If you prefer to use a yaml file:
+
+```yaml
+env:
+  open:
+    STORAGE: oracle
+    STORAGE_ORACLE_COMPARTMENTID: ocid1.compartment.oc1..abc123
+    STORAGE_ORACLE_BUCKET:        myocibucket
+    STORAGE_ORACLE_PREFIX:        chartmuseum
+
+oracle:
+  secret:
+    enabled: enabled
+    name: chartmuseum-secret
+    config: config
+    key_file: key_file
+
+```
+
+Run command to install
+
+```shell
+helm install --name my-chartmuseum -f custom.yaml stable/chartmuseum
+```
+
+### Using an existing secret
+
+It is possible to pre-create a secret in kubernetes and get this chart to use that
+
+Given you are for example using the above AWS example
+
+You could create a Secret like this
+
+```shell
+ kubectl create secret generic chartmuseum-secret --from-literal="aws-access-key=myaccesskey" --from-literal="aws-secret-access-key=mysecretaccesskey" --from-literal="basic-auth-user=curator" --from-literal="basic-auth-pass=mypassword"
+```
+
+Specify `custom.yaml` with such values
+
+```yaml
+env:
+  open:
+    STORAGE: amazonexistingSecret
+    STORAGE_AMAZON_BUCKET: my-s3-bucket
+    STORAGE_AMAZON_PREFIX:
+    STORAGE_AMAZON_REGION: us-east-1
+  existingSecret: chartmuseum-secret
+  existingSecretMappings:
+    AWS_ACCESS_KEY_ID: aws-access-key
+    AWS_SECRET_ACCESS_KEY: aws-secret-access-key
+    BASIC_AUTH_USER: basic-auth-user
+    BASIC_AUTH_PASS: basic-auth-pass
+```
+
+Run command to install
+
+```shell
+helm install --name my-chartmuseum -f custom.yaml stable/chartmuseum
+```
 
 ### Using with local filesystem storage
 By default chartmuseum uses local filesystem storage.
@@ -460,6 +559,31 @@ parameters:
   pool: chartstore
   userId: user
   userSecretName: thesecret
+```
+
+### Ingress
+
+This chart provides support for ingress resources. If you have an ingress controller installed on your cluster, such as [nginx-ingress](https://hub.kubeapps.com/charts/stable/nginx-ingress) or [traefik](https://hub.kubeapps.com/charts/stable/traefik) you can utilize the ingress controller to expose Kubeapps.
+
+To enable ingress integration, please set `ingress.enabled` to `true`
+
+#### Hosts
+
+Most likely you will only want to have one hostname that maps to this Chartmuseum installation, however, it is possible to have more than one host. To facilitate this, the `ingress.hosts` object is an array.  TLS secrets referenced in the ingress host configuration must be manually created in the namespace.
+
+#### Annotations
+
+For annotations, please see [this document for nginx](https://github.com/kubernetes/ingress-nginx/blob/master/docs/user-guide/nginx-configuration/annotations.md) and [this document for Traefik](https://docs.traefik.io/configuration/backends/kubernetes/#general-annotations). Not all annotations are supported by all ingress controllers, but this document does a good job of indicating which annotation is supported by many popular ingress controllers. Annotations can be set using `ingress.annotations`.
+
+#### Example Ingress configuration
+
+```shell
+helm install --name my-chartmuseum stable/chartmuseum \
+  --set ingress.enabled=true \
+  --set ingress.hosts[0].name=chartmuseum.domain.com \
+  --set ingress.hosts[0].path=/
+  --set ingress.hosts[0].tls=true
+  --set ingress.hosts[0].tlsSecret=chartmuseum.tls-secret
 ```
 
 ## Uninstall

@@ -54,6 +54,18 @@ spec:
         - name: GOOGLE_APPLICATION_CREDENTIALS
           value: "/etc/secrets/google/credentials.json"
 {{- end }}
+{{- if .Values.env.existingSecret }}
+{{- $secret_name := .Values.env.existingSecret }}
+{{- range $name, $key := .Values.env.existingSecretMappings }}
+{{- if not ( empty $key) }}
+        - name: {{ $name | quote }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ $secret_name | quote }}
+              key: {{ $key | quote }}
+{{- end }}
+{{- end }}
+{{- else }}
 {{- $secret_name := include "chartmuseum.fullname" . }}
 {{- range $name, $value := .Values.env.secret }}
 {{- if not ( empty $value) }}
@@ -62,6 +74,7 @@ spec:
             secretKeyRef:
               name: {{ $secret_name }}
               key: {{ $name | quote }}
+{{- end }}
 {{- end }}
 {{- end }}
         args:
@@ -91,6 +104,11 @@ spec:
         volumeMounts:
         - mountPath: /etc/secrets/google
           name: {{ include "chartmuseum.fullname" . }}-gcp
+{{- end }}
+{{- if  .Values.oracle.secret.enabled }}
+        volumeMounts:
+        - mountPath: /home/chartmuseum/.oci
+          name: {{ include "chartmuseum.fullname" . }}-oracle
 {{- end }}
       {{- with .Values.resources }}
         resources:
@@ -139,4 +157,14 @@ spec:
           - key: {{ .Values.gcp.secret.key }}
             path: credentials.json
       {{ end }}
+      {{ end }}
+      {{ if .Values.oracle.secret.enabled }}
+      - name: {{ include "chartmuseum.fullname" . }}-oracle
+        secret:
+          secretName: {{ .Values.oracle.secret.name }}
+          items:
+          - key: {{ .Values.oracle.secret.config }}
+            path: config
+          - key: {{ .Values.oracle.secret.key_file }}
+            path: oci.key
       {{ end }}

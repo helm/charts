@@ -38,7 +38,7 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 */}}
 {{- define "airflow.postgresql.fullname" -}}
 {{- if .Values.postgresql.postgresHost }}
-    {{- printf "%s" .Values.postgresql.postgresHost -}}
+    {{- .Values.postgresql.postgresHost -}}
 {{- else }}
     {{- $name := default "postgresql" .Values.postgresql.nameOverride -}}
     {{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
@@ -46,12 +46,16 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- end -}}
 
 {{/*
-Create a default fully qualified redis cluster name.
+Create a default fully qualified redis cluster name or use the `redisHost` value if defined
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
 {{- define "airflow.redis.fullname" -}}
-{{- $name := default "redis" .Values.redis.nameOverride -}}
-{{- printf "%s-%s-master" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- if .Values.redis.redisHost }}
+    {{- .Values.redis.redisHost -}}
+{{- else }}
+  {{- $name := default "redis" .Values.redis.nameOverride -}}
+  {{- printf "%s-%s-master" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
 {{- end -}}
 
 {{/*
@@ -75,3 +79,30 @@ Create the name for the airflow secret.
         {{ template "airflow.fullname" . }}
     {{- end -}}
 {{- end -}}
+
+{{/*
+Map environment vars to secrets
+*/}}
+{{- define "airflow.mapenvsecrets" -}}
+    {{- $secretName := .Release.Name | trunc 63 | trimSuffix "-" }}
+    {{- $mapping := .Values.airflow.defaultSecretsMapping }}
+    {{- if .Values.existingAirflowSecret }}
+      {{- $secretName := .Values.existingAirflowSecret }}
+      {{- if .Values.airflow.secretsMapping }}
+        {{- $mapping := .Values.airflow.secretsMapping }}
+      {{- end }}
+    {{- end }}
+    {{- range $val := $mapping }}
+      {{- if $val }}
+  - name: {{ $val.envVar }}
+    valueFrom:
+      secretKeyRef:
+        {{- if $val.secretName }}
+        name: {{ $val.secretName }}
+        {{- else }}
+        name: {{ $secretName }}
+        {{- end }}
+        key: {{ $val.secretKey }}
+      {{- end }}
+    {{- end }}
+{{- end }}

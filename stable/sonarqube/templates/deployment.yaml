@@ -20,7 +20,7 @@ spec:
       {{- if .Values.plugins.install }}
       initContainers:
         - name: install-plugins
-          image: joosthofman/wget:1.0
+          image: {{ default "joosthofman/wget:1.0" .Values.plugins.initContainerImage }}
           env:
             {{- range $key, $value := .Values.extraEnv }}
             - name: {{ $key }}
@@ -29,6 +29,7 @@ spec:
           command: ["sh",
             "-c",
             "mkdir -p /opt/sonarqube/extensions/plugins/tmp &&
+            rm -f /opt/sonarqube/extensions/plugins/tmp/* &&
             cp /tmp/scripts/install_plugins.sh /opt/sonarqube/extensions/plugins/tmp/install_plugins.sh &&
             chmod 0775 /opt/sonarqube/extensions/plugins/tmp/install_plugins.sh &&
             /opt/sonarqube/extensions/plugins/tmp/install_plugins.sh && pwd && ls -lah
@@ -118,6 +119,10 @@ spec:
             - mountPath: /opt/sonarqube/conf/
               name: config
             {{- end }}
+            {{- if .Values.sonarSecretKey }}
+            - mountPath: /opt/sonarqube/secret/
+              name: secret
+            {{- end }}
             - mountPath: /opt/sonarqube/data
               name: sonarqube
               subPath: data
@@ -148,6 +153,14 @@ spec:
           items:
           - key: sonar.properties
             path: sonar.properties
+      {{- end }}
+      {{- if .Values.sonarSecretKey }}
+      - name: secret
+        secret: 
+          secretName: {{ .Values.sonarSecretKey }}
+          items:
+          - key: sonar-secret.txt
+            path: sonar-secret.txt
       {{- end }}
       - name: install-plugins
         configMap:

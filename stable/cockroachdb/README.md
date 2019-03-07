@@ -69,7 +69,7 @@ The following table lists the configurable parameters of the CockroachDB chart a
 | ------------------------------ | ------------------------------------------------ | ----------------------------------------- |
 | `Name`                         | Chart name                                       | `cockroachdb`                             |
 | `Image`                        | Container image name                             | `cockroachdb/cockroach`                   |
-| `ImageTag`                     | Container image tag                              | `v2.1.3`                                  |
+| `ImageTag`                     | Container image tag                              | `v2.1.5`                                  |
 | `ImagePullPolicy`              | Container pull policy                            | `Always`                                  |
 | `Replicas`                     | k8s statefulset replicas                         | `3`                                       |
 | `MaxUnavailable`               | k8s PodDisruptionBudget parameter                | `1`                                       |
@@ -102,6 +102,8 @@ The following table lists the configurable parameters of the CockroachDB chart a
 | `Secure.ServiceAccount.Name`   | Name of RBAC service account to use              | `""`                                      |
 | `JoinExisting`                 | List of already-existing cockroach instances     | `[]`                                      |
 | `Locality`                     | Locality attribute for this deployment           | `""`                                      |
+| `ExtraArgs`                    | Additional command-line arguments                | `[]`                                      |
+| `ExtraSecretMounts`            | Additional secrets to mount at cluster members   | `[]`                                      |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 

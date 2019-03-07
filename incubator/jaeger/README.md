@@ -175,8 +175,10 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `elasticsearch.data.persistence.enabled` | To enable storage persistence       |  false (Highly recommended to enable)  |
 | `elasticsearch.image.tag`                | Elasticsearch image tag             |  "5.4"                                 |
 | `elasticsearch.rbac.create`              | To enable RBAC                      |  false                                 |
+| `fullnameOverride`                       | Override full name                  |  `nil`                                 |
 | `hotrod.enabled`                         | Enables the Hotrod demo app         |  false                                 |
 | `hotrod.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`      |
+| `nameOverride`                           | Override name                       | `nil`                                  |
 | `provisionDataStore.cassandra`           | Provision Cassandra Data Store      |  true                                  |
 | `provisionDataStore.elasticsearch`       | Provision Elasticsearch Data Store  |  false                                 |
 | `query.service.annotations`              | Annotations for Query SVC           |  nil                                   |
@@ -214,7 +216,7 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `storage.elasticsearch.user`             | Provisioned elasticsearch user      |  elastic                               |
 | `storage.elasticsearch.nodesWanOnly`     | Only access specified es host       |  false                                 |
 | `storage.type`                           | Storage type (ES or Cassandra)      |  cassandra                             |
-| `tag`                                    | Image tag/version                   |  1.8.2                                 |
+| `tag`                                    | Image tag/version                   |  1.10.0                                 |
 
 For more information about some of the tunable parameters that Cassandra provides, please visit the helm chart for [cassandra](https://github.com/kubernetes/charts/tree/master/incubator/cassandra) and the official [website](http://cassandra.apache.org/) at apache.org.
 
@@ -251,3 +253,9 @@ Jaeger offers a multitude of [tags](https://hub.docker.com/u/jaegertracing/) for
 - [x] Fix hard-coded replica count
 - [x] Collector service works both as `NodePort` and `ClusterIP` service types
 - [ ] Sidecar deployment support
+
+## Upgrading
+
+### From < 0.9.0 to >= 0.9.0
+
+Version `0.9.0` introduces recommended labels. The approch to upgrading is to delete and reinstall the release.

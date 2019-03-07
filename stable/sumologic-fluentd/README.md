@@ -61,6 +61,7 @@ The following table lists the configurable parameters of the sumologic-fluentd c
 |-----------|-------------|---------|
 | `podAnnotations` | Annotations to add to the DaemonSet's Pods | `{}` |
 | `tolerations` | List of node taints to tolerate (requires Kubernetes >= 1.6) | `[]` |
+| `extraEnv` | List of additional env vars to append to pods | `[]` |
 | `updateStrategy` | `OnDelete` or `RollingUpdate` (requires Kubernetes >= 1.6) | `OnDelete` |
 | `sumologic.collectorUrl` | An HTTP collector in SumoLogic that the container can send logs to via HTTP | `Nil` You must provide your own value |
 | `sumologic.collectorUrlExistingSecret` | If set, use the secret with the name provided instead of creating a new one | `Nil` You must reference an existing secret |
@@ -97,7 +98,7 @@ The following table lists the configurable parameters of the sumologic-fluentd c
 | `sumologic.proxyUri` | Add the uri of the proxy environment if present. | `Nil`
 | `sumologic.enableStatWatcher` | Option to control the enabling of [stat_watcher](https://docs.fluentd.org/v1.0/articles/in_tail#enable_stat_watcher). | `true`
 | `image.name` | The image repository and name to pull from | `sumologic/fluentd-kubernetes-sumologic` |
-| `image.tag` | The image tag to pull | `v2.1.0` |
+| `image.tag` | The image tag to pull | `v2.3.0` |
 | `image.pullPolicy` | Image pull policy | `IfNotPresent` |
 | `persistence.enabled` | Boolean value, used to turn on or off fluentd position file persistence, on nodes (requires Kubernetes >= 1.8) | `false` |
 | `persistence.hostPath` | The path, on each node, to a directory for fluentd pos files. You must create the directory on each node first or set `persistence.createPath` (requires Kubernetes >= 1.8) | `/var/run/fluentd-pos` |

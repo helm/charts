@@ -4,5 +4,4 @@ image:
   tag: '1.0.0'
 
 master:
-  command:
-  - "redis-server"
+  command: "redis-server"

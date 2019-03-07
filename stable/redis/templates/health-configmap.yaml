@@ -9,7 +9,12 @@ metadata:
   name: {{ template "redis.fullname" . }}-health
 data:
   ping_local.sh: |-
+{{- if .Values.usePasswordFile }}
+    password_aux=`cat ${REDIS_PASSWORD_FILE}`
+    export REDIS_PASSWORD=$password_aux
+{{- end }}
     response=$(
+      timeout -s 9 $1 \
       redis-cli \
 {{- if .Values.usePassword }}
         -a $REDIS_PASSWORD \
@@ -23,7 +28,12 @@ data:
       exit 1
     fi
   ping_master.sh: |-
+{{- if .Values.usePasswordFile }}
+    password_aux=`cat ${REDIS_MASTER_PASSWORD_FILE}`
+    export REDIS_MASTER_PASSWORD=$password_aux
+{{- end }}
     response=$(
+      timeout -s 9 $1 \
       redis-cli \
 {{- if .Values.usePassword }}
         -a $REDIS_MASTER_PASSWORD \
@@ -39,6 +49,6 @@ data:
   ping_local_and_master.sh: |-
     script_dir="$(dirname "$0")"
     exit_status=0
-    "$script_dir/ping_local.sh" || exit_status=$?
-    "$script_dir/ping_master.sh" || exit_status=$?
+    "$script_dir/ping_local.sh" $1 || exit_status=$?
+    "$script_dir/ping_master.sh" $1 || exit_status=$?
     exit $exit_status

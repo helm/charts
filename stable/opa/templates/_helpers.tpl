@@ -24,6 +24,16 @@ If release name contains chart name it will be used as a full name.
 {{- end -}}
 {{- end -}}
 
+{{- define "opa.sarfullname" -}}
+{{- $name := (include "opa.fullname" . | trunc 59 | trimSuffix "-") -}}
+{{- printf "%s-sar" $name -}}
+{{- end -}}
+
+{{- define "opa.mgmtfullname" -}}
+{{- $name := (include "opa.fullname" . | trunc 58 | trimSuffix "-") -}}
+{{- printf "%s-mgmt" $name -}}
+{{- end -}}
+
 {{/*
 Create chart name and version as used by the chart label.
 */}}
@@ -39,4 +49,15 @@ app: {{ template "opa.fullname" . }}
 chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
 release: "{{ .Release.Name }}"
 heritage: "{{ .Release.Service }}"
+{{- end -}}
+
+{{/*
+Create the name of the service account to use
+*/}}
+{{- define "opa.serviceAccountName" -}}
+{{- if .Values.serviceAccount.create -}}
+    {{ default (include "opa.fullname" .) .Values.serviceAccount.name }}
+{{- else -}}
+    {{ default "default" .Values.serviceAccount.name }}
+{{- end -}}
 {{- end -}}

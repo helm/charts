@@ -24,8 +24,15 @@ spec:
         app: {{ template "vault.name" . }}
         release: {{ .Release.Name }}
       annotations:
-{{ toYaml .Values.podAnnotations | indent 8 }}
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        {{- range $key, $value := .Values.podAnnotations }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
     spec:
+      {{- if .Values.vault.extraInitContainers }}
+      initContainers:
+{{ tpl .Values.vault.extraInitContainers . | indent 6 }}
+      {{- end }}
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ default .Chart.AppVersion .Values.image.tag }}"
@@ -42,7 +49,7 @@ spec:
         ports:
         - containerPort: {{ .Values.service.port }}
           name: api
-        - containerPort: 8201
+        - containerPort: {{ .Values.service.clusterPort }}
           name: cluster-address
         livenessProbe:
           # Alive if in standby or active mode
@@ -127,7 +134,7 @@ spec:
       volumes:
         - name: vault-config
           configMap:
-            name: "{{ template "vault.fullname" . }}-config"
+            name: {{ if .Values.vault.existingConfigName }}{{ .Values.vault.existingConfigName }}{{- else }}"{{ template "vault.fullname" . }}-config"{{- end }}
         - name: vault-root
           emptyDir: {}
         {{- range .Values.vault.customSecrets }}
