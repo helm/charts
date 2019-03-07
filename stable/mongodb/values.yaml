@@ -187,6 +187,15 @@ persistence:
   size: 8Gi
   annotations: {}
 
+## Configure the options for init containers to be run before the main app containers
+## are started. All init containers are run sequentially and must exit without errors
+## for the next one to be started.
+## ref: https://kubernetes.io/docs/concepts/workloads/pods/init-containers/
+# extraInitContainers: |
+#   - name: do-something
+#     image: busybox
+#     command: ['do', 'something']
+
 ## Configure extra options for liveness and readiness probes
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes)
 livenessProbe:
