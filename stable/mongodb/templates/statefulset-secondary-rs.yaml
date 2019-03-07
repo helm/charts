@@ -62,6 +62,10 @@ spec:
         - name: {{ . }}
       {{- end}}
       {{- end }}
+      {{- if .Values.extraInitContainers }}
+      initContainers:
+{{ tpl .Values.extraInitContainers . | indent 6}}
+      {{- end }}
       containers:
         - name: {{ template "mongodb.name" . }}-secondary
           image: {{ template "mongodb.image" . }}
