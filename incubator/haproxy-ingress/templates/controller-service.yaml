@@ -56,7 +56,7 @@ spec:
       nodePort: {{ .nodePort }}
       {{- end }}
   {{- end }}
-  {{- range $key, $value := .Values.tcp }}
+  {{- range $key, $value := .Values.controller.tcp }}
     - name: "{{ $key }}-tcp"
       port: {{ $key }}
       protocol: TCP
