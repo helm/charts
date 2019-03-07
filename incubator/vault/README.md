@@ -58,6 +58,7 @@ The following table lists the configurable parameters of the Vault chart and the
 | `vault.extraInitContainers`       | Init containers to be added to the vault pod | `{}`                            |
 | `vault.extraVolumes`              | Additional volumes to the controller pod | `{}`                                |
 | `vault.customSecrets`             | Custom secrets available to Vault        | `[]`                                |
+| `vault.existingConfigName`        | Location of existing Vault configuration | nil                                 |
 | `vault.config`                    | Vault configuration                      | No default backend                  |
 | `replicaCount`                    | k8s replicas                             | `3`                                 |
 | `resources.limits.cpu`            | Container requested CPU                  | `nil`                               |
