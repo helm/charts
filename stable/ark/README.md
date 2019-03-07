@@ -60,6 +60,7 @@ Parameter | Description | Default
 `rbac.server.serviceAccount.create` | Whether a new service account name that the server will use should be created | `true`
 `rbac.server.serviceAccount.name` | Service account to be used for the server. If not set and `rbac.server.serviceAccount.create` is `true` a name is generated using the fullname template | ``
 `resources` | Resource requests and limits | `{}`
+`initContainers` | InitContainers and their specs to start with the deployment pod | `[]`
 `tolerations` | List of node taints to tolerate | `[]`
 `nodeSelector` | Node labels for pod assignment | `{}`
 `configuration.backupStorageLocation.name` | The name of the cloud provider that will be used to actually store the backups (`aws`, `azure`, `gcp`) | ``
