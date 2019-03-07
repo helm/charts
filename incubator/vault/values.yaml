@@ -128,6 +128,11 @@ vault:
   #   - name: some-mount
   #     mountPath: /some/path
   extraVolumes: {}
+  extraInitContainers: {}
+  ## Init containers to be added
+  # - name: do-something
+  #   image: busybox
+  #   command: ['do', 'something']
   # Log level
   # https://www.vaultproject.io/docs/commands/server.html#log-level
   logLevel: "info"
