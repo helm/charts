@@ -28,8 +28,8 @@ server:
   preconfigureCommand:
     - "/bin/bash"
     - "/preconfigure_server.sh"
-  #server.preStop - array of commands to use in the server pre-stop lifecycle hook
-  #preStop:
+  # server.preStop - array of commands to use in the server pre-stop lifecycle hook
+  # preStop:
   #  - "/bin/bash"
   #  - "/backup_and_stop.sh"
   image:
@@ -204,8 +204,8 @@ agent:
 
   # agent.replicaCount is the GoCD Agent replicas Count. Specify the number of GoCD agents to run
   replicaCount: 0
-  #agent.preStop - array of commands to use in the agent pre-stop lifecycle hook
-  #preStop:
+  # agent.preStop - array of commands to use in the agent pre-stop lifecycle hook
+  # preStop:
   #  - "/bin/bash"
   #  - "/disable_and_stop.sh"
   # agent.deployStrategy is the strategy explained in detail at https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
