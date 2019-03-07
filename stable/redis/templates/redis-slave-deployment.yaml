@@ -118,7 +118,7 @@ spec:
         - name: REDIS_REPLICATION_MODE
           value: slave
         - name: REDIS_MASTER_HOST
-          value: {{ template "redis.fullname" . }}-master
+          value: {{ template "redis.fullname" . }}-master{{ if ne .Release.Namespace "default" }}.{{ .Release.Namespace }}{{ end }}
         - name: REDIS_PORT
           value: {{ .Values.slave.port | default .Values.master.port | quote }}
         - name: REDIS_MASTER_PORT_NUMBER
