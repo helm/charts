@@ -132,7 +132,7 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
         {{- if .Values.command }}
           command:
-          {{- range .Values.command.args }}
+          {{- range .Values.command }}
             - {{ . }}
           {{- end }}
         {{- end}}
