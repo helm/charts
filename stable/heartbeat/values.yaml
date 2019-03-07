@@ -1,6 +1,6 @@
 image:
   repository: docker.elastic.co/beats/heartbeat
-  tag: 6.6.0
+  tag: 6.6.1
   pullPolicy: IfNotPresent
 
 config:
