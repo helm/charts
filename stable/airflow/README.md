@@ -115,6 +115,17 @@ airflow:
 
 Note: As connections may require to include sensitive data - the resulting script is stored encrypted in a kubernetes secret and mounted into the airflow scheduler container. It is probably wise not to put connection data in the default values.yaml and instead create an encrypted my-secret-values.yaml. this way it can be decrypted before the installation and passed to helm with -f <my-secret-values.yaml>
 
+#### Airflow variables
+
+Variables are a generic way to store and retrieve arbitrary content or settings as a simple key value store within Airflow.
+These variables will be automatically imported by the scheduler when it starts up.
+
+Example:
+```yaml
+airflow:
+  variables: '{ "environment": "dev" }'
+```
+
 ### Worker Statefulset
 
 Celery workers uses StatefulSet.
