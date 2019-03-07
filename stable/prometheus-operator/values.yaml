@@ -432,6 +432,13 @@ kubeControllerManager:
     targetPort: 10252
     selector:
       k8s-app: kube-controller-manager
+
+  serviceMonitor:
+    ## Enable scraping kube-controller-manager over https.
+    ## Requires proper certs (not self-signed) and delegated authentication/authorization checks
+    ##
+    https: false
+
 ## Component scraping coreDns. Use either this or kubeDns
 ##
 coreDns:
@@ -509,6 +516,12 @@ kubeScheduler:
     selector:
       k8s-app: kube-scheduler
 
+  serviceMonitor:
+    ## Enable scraping kube-controller-manager over https.
+    ## Requires proper certs (not self-signed) and delegated authentication/authorization checks
+    ##
+    https: false
+
 ## Component scraping kube state metrics
 ##
 kubeStateMetrics:
@@ -530,6 +543,16 @@ nodeExporter:
   ## Use the value configured in prometheus-node-exporter.podLabels
   ##
   jobLabel: jobLabel
+
+  serviceMonitor: {}
+    ## 	metric relabel configs to apply to samples before ingestion.
+    ##
+    # metricRelabelings:
+    # - sourceLabels: [__name__]
+    #   separator: ;
+    #   regex: ^node_mountstats_nfs_(event|operations|transport)_.+
+    #   replacement: $1
+    #   action: drop
 
 ## Configuration for prometheus-node-exporter subchart
 ##
@@ -566,6 +589,13 @@ prometheusOperator:
   ##
     nodePort: 38080
 
+  ## Additional ports to open for Prometheus service
+  ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#multi-port-services
+  ##
+    additionalPorts: []
+    #  - name: thanos-cluster
+    #    port: 10900
+    #    nodePort: 30111
 
   ## Loadbalancer IP
   ## Only use if service.type is "loadbalancer"

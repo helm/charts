@@ -50,6 +50,13 @@ serviceAccount:
   ## If not set and create is true, a name is generated using the mariadb.fullname template
   # name:
 
+## Role Based Access
+## Ref: https://kubernetes.io/docs/admin/authorization/rbac/
+##
+
+rbac:
+  create: false
+
 ## Pod Security Context
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
 ##
@@ -227,6 +234,11 @@ master:
     successThreshold: 1
     failureThreshold: 3
 
+  podDisruptionBudget:
+    enabled: false
+    minAvailable: 1
+    # maxUnavailable: 1
+
 slave:
   replicas: 1
 
@@ -321,6 +333,11 @@ slave:
     timeoutSeconds: 1
     successThreshold: 1
     failureThreshold: 3
+
+  podDisruptionBudget:
+    enabled: false
+    minAvailable: 1
+    # maxUnavailable: 1
 
 metrics:
   enabled: false

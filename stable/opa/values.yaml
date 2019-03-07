@@ -60,6 +60,7 @@ mgmt:
   imageTag: 0.8
   imagePullPolicy: IfNotPresent
   extraArgs: []
+  resources: {}
   configmapPolicies:
     enabled: false
     namespaces: [opa, kube-federation-scheduling-policy]
@@ -72,6 +73,12 @@ mgmt:
     namespace: []
 #     - [group/]version/resource
     path: kubernetes
+
+# Log level for OPA ('debug', 'info', 'error') (app default=info)
+logLevel: info
+
+# Log format for OPA ('text', 'json') (app default=text)
+logFormat: text
 
 # Number of OPA replicas to deploy. OPA maintains an eventually consistent
 # cache of policies and data. If you want high availability you can deploy two
@@ -119,6 +126,7 @@ sar:
   image: lachlanevenson/k8s-kubectl
   imageTag: latest
   imagePullPolicy: IfNotPresent
+  resources: {}
 
 # To control the liveness and readiness probes change the fields below.
 readinessProbe:

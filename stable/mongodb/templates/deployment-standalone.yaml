@@ -57,6 +57,10 @@ spec:
         - name: {{ . }}
       {{- end}}
       {{- end }}
+      {{- if .Values.extraInitContainers }}
+      initContainers:
+{{ tpl .Values.extraInitContainers . | indent 6}}
+      {{- end }}
       containers:
       - name: {{ template "mongodb.fullname" . }}
         image: {{ template "mongodb.image" . }}
@@ -103,6 +107,12 @@ spec:
         {{- end }}
         - name: MONGODB_ENABLE_IPV6
         {{- if .Values.mongodbEnableIPv6 }}
+          value: "yes"
+        {{- else }}
+          value: "no"
+        {{- end }}
+        - name: MONGODB_ENABLE_DIRECTORY_PER_DB
+        {{- if .Values.mongodbDirectoryPerDB }}
           value: "yes"
         {{- else }}
           value: "no"
