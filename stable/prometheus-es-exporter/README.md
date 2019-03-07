@@ -83,7 +83,7 @@ helm install stable/prometheus-es-exporter --name my-release -f values.yaml
 ### Integration tests
 Two tests will be run. One will test that the service is really pointing to the
 pod and the other will only be run if `prometheus.serviceMonitor` is enabled,
-and will test if there's metrics in prometheus. You may execute them like this:
+and will test if there are metrics in prometheus. You may execute them like this:
 
 ```bash
 helm test my-release --cleanup
