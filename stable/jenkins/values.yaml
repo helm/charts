@@ -248,8 +248,8 @@ Master:
   # the jenkins config with the contents of the configMap every time the pod starts.
   OverwriteConfig: false
 
-  UseIngress: false
   Ingress:
+    Enabled: false
     ApiVersion: extensions/v1beta1
     Labels: {}
     Annotations: {}

@@ -1,4 +1,4 @@
-{{- if .Values.Master.UseIngress }}
+{{- if .Values.Master.Ingress.Enabled }}
 apiVersion: {{ .Values.Master.Ingress.ApiVersion }}
 kind: Ingress
 metadata:
