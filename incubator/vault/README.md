@@ -55,8 +55,10 @@ The following table lists the configurable parameters of the Vault chart and the
 | `vault.dev`                       | Use Vault in dev mode                    | true (set to false in production)   |
 | `vault.extraEnv`                  | Extra env vars for Vault pods            | `{}`                                |
 | `vault.extraContainers`           | Sidecar containers to add to the vault pod | `{}`                              |
+| `vault.extraInitContainers`       | Init containers to be added to the vault pod | `{}`                            |
 | `vault.extraVolumes`              | Additional volumes to the controller pod | `{}`                                |
 | `vault.extraVolumeMounts`         | Extra volumes to mount to the controller pod | `{}`                                |
+| `vault.existingConfigName`        | Location of existing Vault configuration | nil                                 |
 | `vault.config`                    | Vault configuration                      | No default backend                  |
 | `replicaCount`                    | k8s replicas                             | `3`                                 |
 | `resources.limits.cpu`            | Container requested CPU                  | `nil`                               |
