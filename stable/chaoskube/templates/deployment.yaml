@@ -18,6 +18,10 @@ spec:
     metadata:
       labels:
 {{ include "labels.standard" . | indent 8 }}
+    {{- if .Values.podAnnotations }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8 }}
+    {{- end }}
     spec:
       containers:
         - name: {{ .Values.name }}
@@ -39,6 +43,7 @@ spec:
             {{- end }}
             - --minimum-age={{ .Values.minimumAge }}
             - --grace-period={{ .Values.gracePeriod }}
+            - --metrics-address={{ .Values.metricsAddress }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           securityContext:
