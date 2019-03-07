@@ -132,7 +132,7 @@ spec:
       volumes:
         - name: vault-config
           configMap:
-            name: "{{ template "vault.fullname" . }}-config"
+            name: {{ if .Values.vault.existingConfigName }}{{ .Values.vault.existingConfigName }}{{- else }}"{{ template "vault.fullname" . }}-config"{{- end }}
         - name: vault-root
           emptyDir: {}
         {{- range .Values.vault.customSecrets }}
