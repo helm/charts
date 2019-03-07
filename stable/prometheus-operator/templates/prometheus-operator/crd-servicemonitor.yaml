@@ -12,20 +12,10 @@ metadata:
     "helm.sh/hook": crd-install
     "helm.sh/hook-delete-policy": "before-hook-creation"
 spec:
-  additionalPrinterColumns:
-  - JSONPath: .metadata.creationTimestamp
-    description: |-
-      CreationTimestamp is a timestamp representing the server time when this object was created. It is not guaranteed to be set in happens-before order across separate operations. Clients may not set this value. It is represented in RFC3339 form and is in UTC.
-
-      Populated by the system. Read-only. Null for lists. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#metadata
-    name: Age
-    type: date
   group: {{ .Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com" }}
   names:
     kind: ServiceMonitor
-    listKind: ServiceMonitorList
     plural: servicemonitors
-    singular: servicemonitor
   scope: Namespaced
   validation:
     openAPIV3Schema:
@@ -156,7 +146,7 @@ spec:
                     type: string
                   relabelings:
                     description: 'RelabelConfigs to apply to samples before ingestion.
-                      More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#<relabel_config>'
+                      More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config'
                     items:
                       description: 'RelabelConfig allows dynamic rewriting of the
                         label set, being applied to samples before ingestion. It defines
@@ -174,7 +164,7 @@ spec:
                           type: integer
                         regex:
                           description: Regular expression against which the extracted
-                            value is matched. default is '(.*)'
+                            value is matched. defailt is '(.*)'
                           type: string
                         replacement:
                           description: Replacement value against which a regex replace

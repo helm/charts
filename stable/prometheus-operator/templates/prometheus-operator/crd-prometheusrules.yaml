@@ -12,20 +12,10 @@ metadata:
     "helm.sh/hook": crd-install
     "helm.sh/hook-delete-policy": "before-hook-creation"
 spec:
-  additionalPrinterColumns:
-  - JSONPath: .metadata.creationTimestamp
-    description: |-
-      CreationTimestamp is a timestamp representing the server time when this object was created. It is not guaranteed to be set in happens-before order across separate operations. Clients may not set this value. It is represented in RFC3339 form and is in UTC.
-
-      Populated by the system. Read-only. Null for lists. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#metadata
-    name: Age
-    type: date
   group: {{ .Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com" }}
   names:
     kind: PrometheusRule
-    listKind: PrometheusRuleList
     plural: prometheusrules
-    singular: prometheusrule
   scope: Namespaced
   validation:
     openAPIV3Schema:
@@ -85,9 +75,7 @@ spec:
             generateName:
               description: |-
                 GenerateName is an optional prefix, used by the server, to generate a unique name ONLY IF the Name field has not been provided. If this field is used, the name returned to the client will be different than the name passed. This value will also be combined with a unique suffix. The provided value has the same validation rules as the Name field, and may be truncated by the length of the suffix required to make the value unique on the server.
-
                 If this field is specified and the generated name exists, the server will NOT return a 409 - instead, it will either return 201 Created or 500 with Reason ServerTimeout indicating a unique name could not be found in the time allotted, and the client should retry (optionally after the time indicated in the Retry-After header).
-
                 Applied only if Name is not specified. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#idempotency
               type: string
             generation:
@@ -151,7 +139,6 @@ spec:
                               field:
                                 description: |-
                                   The field of the resource that has caused this error, as named by its JSON serialization. May include dot and postfix notation for nested attributes. Arrays are zero-indexed.  Fields may appear more than once in an array of causes due to fields having multiple errors. Optional.
-
                                   Examples:
                                     "name" - the field "name" on the current resource
                                     "items[0].name" - the field "name" on the first array entry in "items"
@@ -214,11 +201,12 @@ spec:
                             server has more data available. The value is opaque and
                             may be used to issue another request to the endpoint that
                             served this list to retrieve the next set of available
-                            objects. Continuing a list may not be possible if the
-                            server configuration has changed or more than a few minutes
-                            have passed. The resourceVersion field returned when using
-                            this continue value will be identical to the value in
-                            the first response.
+                            objects. Continuing a consistent list may not be possible
+                            if the server configuration has changed or more than a
+                            few minutes have passed. The resourceVersion field returned
+                            when using this continue value will be identical to the
+                            value in the first response, unless you have received
+                            this token from an error message.
                           type: string
                         resourceVersion:
                           description: 'String that identifies the server''s internal
@@ -259,7 +247,6 @@ spec:
             namespace:
               description: |-
                 Namespace defines the space within each name must be unique. An empty namespace is equivalent to the "default" namespace, but "default" is the canonical representation. Not all objects are required to be scoped to a namespace - the value of this field for those objects will be empty.
-
                 Must be a DNS_LABEL. Cannot be updated. More info: http://kubernetes.io/docs/user-guide/namespaces
               type: string
             ownerReferences:
@@ -270,8 +257,9 @@ spec:
                 There cannot be more than one managing controller.
               items:
                 description: OwnerReference contains enough information to let you
-                  identify an owning object. Currently, an owning object must be in
-                  the same namespace, so there is no namespace field.
+                  identify an owning object. An owning object must be in the same
+                  namespace as the dependent, or be cluster-scoped, so there is no
+                  namespace field.
                 properties:
                   apiVersion:
                     description: API version of the referent.
@@ -304,7 +292,6 @@ spec:
             resourceVersion:
               description: |-
                 An opaque value that represents the internal version of this object that can be used by clients to determine when objects have changed. May be used for optimistic concurrency, change detection, and the watch operation on a resource or set of resources. Clients must treat these values as opaque and passed unmodified back to the server. They may only be valid for a particular resource or set of resources.
-
                 Populated by the system. Read-only. Value must be treated as opaque by clients and . More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#concurrency-control-and-consistency
               type: string
             selfLink:
@@ -314,7 +301,6 @@ spec:
             uid:
               description: |-
                 UID is the unique in time and space value for this object. It is typically generated by the server on successful creation of a resource and is not allowed to change on PUT operations.
-
                 Populated by the system. Read-only. More info: http://kubernetes.io/docs/user-guide/identifiers#uids
               type: string
         spec:
