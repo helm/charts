@@ -1,3 +1,4 @@
+{{ if not .Values.vault.existingConfigName }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -10,3 +11,4 @@ metadata:
 data:
   config.json: |
     {{ .Values.vault.config | toJson }}
+{{ end }}

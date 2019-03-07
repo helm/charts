@@ -144,6 +144,8 @@ vault:
     readyIfSealed: false
     readyIfStandby: true
     readyIfUninitialized: true
+  ## Use an existing config in a named ConfigMap
+  # existingConfigName: vault-cm
   config:
     # A YAML representation of a final vault config.json file.
     # See https://www.vaultproject.io/docs/configuration/ for more information.
