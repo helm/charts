@@ -35,6 +35,7 @@ spec:
         {{ if .Values.config.collectd.enabled -}}
         - name: collectd
           containerPort: {{ .Values.config.collectd.bind_address }}
+          protocol: UDP
         {{- end }}
         {{ if .Values.config.udp.enabled -}}
         - name: udp
