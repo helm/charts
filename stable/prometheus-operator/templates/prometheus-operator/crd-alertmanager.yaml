@@ -13,7 +13,7 @@ metadata:
     "helm.sh/hook-delete-policy": "before-hook-creation"
 spec:
   group: {{ .Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com" }}
-   names:
+  names:
     kind: Alertmanager
     plural: alertmanagers
   scope: Namespaced
