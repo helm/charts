@@ -250,7 +250,6 @@ Master:
 
   Ingress:
     Enabled: false
-    ApiVersion: extensions/v1beta1
     Labels: {}
     Annotations: {}
     # kubernetes.io/ingress.class: nginx

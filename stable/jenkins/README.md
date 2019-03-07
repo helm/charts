@@ -75,7 +75,6 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `Master.OverwriteConfig`          | Replace config w/ ConfigMap on boot  | `false`                                                                      |
 | `Master.HostName`                 | Ingress host path      | Not set                                                                         |
 | `Master.Ingress.Enabled`          | Enables ingress      | `false`                                                                         |
-| `Master.Ingress.ApiVersion`      | Ingress api version                  | Not set                                                                         |
 | `Master.Ingress.Annotations`      | Ingress annotations                  | `{}`                                                                         |
 | `Master.Ingress.Labels`           | Ingress labels                       | `{}`                                                                         |
 | `Master.Ingress.Path`             | Ingress path                         | Not set                                                                         |
