@@ -152,7 +152,7 @@ spec:
 {{- if .Values.dashboards }}
   {{- range $provider, $dashboards := .Values.dashboards }}
     {{- range $key, $value := $dashboards }}
-      {{- if hasKey $value "json" }}
+      {{- if (or (hasKey $value "json") (hasKey $value "file")) }}
             - name: dashboards-{{ $provider }}
               mountPath: "/var/lib/grafana/dashboards/{{ $provider }}/{{ $key }}.json"
               subPath: "{{ $key }}.json"
