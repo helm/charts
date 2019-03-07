@@ -103,7 +103,7 @@ spec:
   ruleSelector:
 {{ toYaml .Values.prometheus.prometheusSpec.ruleSelector | indent 4}}
 {{- else if .Values.prometheus.prometheusSpec.ruleSelectorNilUsesHelmValues }}
-  ruleSelector:    
+  ruleSelector:
     matchLabels:
       app: {{ template "prometheus-operator.name" . }}
       release: {{ .Release.Name | quote }}
@@ -114,10 +114,14 @@ spec:
   storage:
 {{ toYaml .Values.prometheus.prometheusSpec.storageSpec | indent 4 }}
 {{- end }}
-  {{- if .Values.prometheus.prometheusSpec.podMetadata }}
+{{- if .Values.prometheus.prometheusSpec.podMetadata }}
   podMetadata:
 {{ toYaml .Values.prometheus.prometheusSpec.podMetadata | indent 4 }}
-  {{- end }}
+{{- end }}
+{{- if .Values.prometheus.prometheusSpec.query }}
+  query:
+{{ toYaml .Values.prometheus.prometheusSpec.query | indent 4}}
+{{- end }}
 {{- if eq .Values.prometheus.prometheusSpec.podAntiAffinity "hard" }}
   affinity:
     podAntiAffinity:
