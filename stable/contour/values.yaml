@@ -3,7 +3,7 @@ deployment:
 contour:
   image:
     repository: gcr.io/heptio-images/contour
-    tag: v0.5.0
+    tag: v0.9.0
     pullPolicy: IfNotPresent
   command: contour
   args:
@@ -11,13 +11,13 @@ contour:
     - --incluster
   annotations:
     prometheus.io/scrape: "true"
-    prometheus.io/port: "9001"
+    prometheus.io/port: "8002"
     prometheus.io/path: "/stats"
     prometheus.io/format: "prometheus"
 envoy:
   image:
     repository: docker.io/envoyproxy/envoy-alpine
-    tag: v1.6.0
+    tag: v1.9.0
     pullPolicy: IfNotPresent
   command: envoy
   args:

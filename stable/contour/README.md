@@ -32,13 +32,13 @@ The default configuration values for this chart are listed in `values.yaml`.
 |---------------------------------------|-------------------------------------                         |---------------------------------------------------|
 | `deployment.replicas`                 | Number of replica sets                                       | 2                                                 |
 | `contour.image.repository`            | Repository for contour container image                       | gcr.io/heptio-images/contour                      |
-| `contour.image.tag`                   | Contour image tag                                            | v0.5.0                                            |
+| `contour.image.tag`                   | Contour image tag                                            | v0.9.0                                            |
 | `contour.image.pullPolicy`            | Image pull policy                                            | IfNotPresent                                             |
 | `contour.command`                     | Command for contour pod                                      | contour                                           |
 | `contour.args`                        | Contour run command arguments                                | `[]`                                              |
 | `contour.annotations`                 | Annotations to enable prometheus monitoring                  | `{}`                                              |
 | `envoy.image.repository`              | Repository for envoy container image                         | docker.io/envoyproxy/envoy-alpine                 |
-| `envoy.image.tag`                     | Envoy image tag                                              | v1.6.0                                            |
+| `envoy.image.tag`                     | Envoy image tag                                              | v1.9.0                                            |
 | `envoy.image.pullPolicy`              | Image pull policy                                            | IfNotPresent                                      |
 | `envoy.command`                       | Command for envoy pod                                        | envoy                                             |
 | `envoy.args`                          | Envoy run command arguments                                  | `[]`                                              |

@@ -45,9 +45,19 @@ spec:
           {{- range .Values.envoy.args }}
           - {{ .  }}
           {{- end }}
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 8002
+          initialDelaySeconds: 3
+          periodSeconds: 3
         volumeMounts:
         - name: contour-config
           mountPath: /config
+        lifecycle:
+          preStop:
+            exec:
+              command: ["wget", "-qO-", "http://localhost:9001/healthcheck/fail"]
       initContainers:
       - image: "{{ .Values.contour.image.repository }}:{{ .Values.contour.image.tag }}"
         imagePullPolicy: {{ .Values.contour.image.pullPolicy }}
