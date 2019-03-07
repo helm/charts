@@ -29,6 +29,10 @@ spec:
         {{ $key }}: {{ $value | quote }}
         {{- end }}
     spec:
+      {{- if .Values.vault.extraInitContainers }}
+      initContainers:
+{{ tpl .Values.vault.extraInitContainers . | indent 6 }}
+      {{- end }}
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ default .Chart.AppVersion .Values.image.tag }}"
@@ -48,9 +52,11 @@ spec:
         - containerPort: {{ .Values.service.clusterPort }}
           name: cluster-address
         livenessProbe:
-          # Alive if it is listening for clustering traffic
-          tcpSocket:
+          # Alive if in standby or active mode
+          httpGet:
+            path: /v1/sys/health?standbyok=true
             port: {{ .Values.service.port }}
+            scheme: {{ if .Values.vault.config.listener.tcp.tls_disable -}}HTTP{{- else -}}HTTPS{{- end }}
         readinessProbe:
           # Ready depends on preference
           httpGet:
@@ -128,7 +134,7 @@ spec:
       volumes:
         - name: vault-config
           configMap:
-            name: "{{ template "vault.fullname" . }}-config"
+            name: {{ if .Values.vault.existingConfigName }}{{ .Values.vault.existingConfigName }}{{- else }}"{{ template "vault.fullname" . }}-config"{{- end }}
         - name: vault-root
           emptyDir: {}
         {{- range .Values.vault.customSecrets }}

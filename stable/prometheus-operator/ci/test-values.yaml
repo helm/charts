@@ -531,6 +531,16 @@ nodeExporter:
   ##
   jobLabel: jobLabel
 
+  serviceMonitor: {}
+    ## 	metric relabel configs to apply to samples before ingestion.
+    ##
+    # metricRelabelings:
+    # - sourceLabels: [__name__]
+    #   separator: ;
+    #   regex: ^node_mountstats_nfs_(event|operations|transport)_.+
+    #   replacement: $1
+    #   action: drop
+
 ## Configuration for prometheus-node-exporter subchart
 ##
 prometheus-node-exporter:
@@ -566,6 +576,13 @@ prometheusOperator:
   ##
     nodePort: 38080
 
+  ## Additional ports to open for Prometheus service
+  ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#multi-port-services
+  ##
+    additionalPorts: []
+    #  - name: thanos-cluster
+    #    port: 10900
+    #    nodePort: 30111
 
   ## Loadbalancer IP
   ## Only use if service.type is "loadbalancer"
@@ -680,6 +697,14 @@ prometheusOperator:
     repository: quay.io/coreos/prometheus-config-reloader
     tag: v0.29.0
 
+  ## Set the prometheus config reloader side-car CPU limit. If unset, uses the prometheus-operator project default
+  ##
+  # configReloaderCpu: 100m
+
+  ## Set the prometheus config reloader side-car memory limit. If unset, uses the prometheus-operator project default
+  ##
+  # configReloaderMemory: 25Mi
+
   ## Hyperkube image to use when cleaning up
   ##
   hyperkubeImage:
@@ -706,6 +731,10 @@ prometheus:
     annotations: {}
     labels: {}
     clusterIP: ""
+
+
+    ## To be used with a proxy extraContainer port
+    targetPort: 9090
 
     ## List of IP addresses at which the Prometheus server service is available
     ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
@@ -834,6 +863,12 @@ prometheus:
     ## The ConfigMaps are mounted into /etc/prometheus/configmaps/.
     ##
     configMaps: []
+
+    ## QuerySpec defines the query command line flags when starting Prometheus.
+    ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#queryspec
+    ##
+
+    query: {}
 
     ## Namespaces to be selected for PrometheusRules discovery.
     ## If nil, select own namespace. Namespaces to be selected for ServiceMonitor discovery.
@@ -1047,7 +1082,7 @@ prometheus:
     thanos: {}
 
     ## Containers allows injecting additional containers. This is meant to allow adding an authentication proxy to a Prometheus pod.
-    ##
+    ##  if using proxy extraContainer  update targetPort with proxy container port
     containers: []
 
     ## Enable additional scrape configs that are managed externally to this chart. Note that the prometheus

@@ -128,6 +128,11 @@ vault:
   #   - name: some-mount
   #     mountPath: /some/path
   extraVolumes: {}
+  extraInitContainers: {}
+  ## Init containers to be added
+  # - name: do-something
+  #   image: busybox
+  #   command: ['do', 'something']
   # Log level
   # https://www.vaultproject.io/docs/commands/server.html#log-level
   logLevel: "info"
@@ -139,6 +144,8 @@ vault:
     readyIfSealed: false
     readyIfStandby: true
     readyIfUninitialized: true
+  ## Use an existing config in a named ConfigMap
+  # existingConfigName: vault-cm
   config:
     # A YAML representation of a final vault config.json file.
     # See https://www.vaultproject.io/docs/configuration/ for more information.

@@ -56,8 +56,8 @@ Create chart name and version as used by the chart label.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "wordpress.customHTAcessCM" -}}
-{{- printf "%s" .Values.customHTAcessCM -}}
+{{- define "wordpress.customHTAccessCM" -}}
+{{- printf "%s" .Values.customHTAccessCM -}}
 {{- end -}}
 
 {{/*
