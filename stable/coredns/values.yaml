@@ -19,6 +19,12 @@ resources:
 
 serviceType: "ClusterIP"
 
+prometheus:
+  monitor:
+    enabled: false
+    additionalLabels: {}
+    namespace: ""
+
 service:
 # clusterIP: ""
 # loadBalancerIP: ""
