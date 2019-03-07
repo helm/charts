@@ -29,6 +29,10 @@ spec:
         {{ $key }}: {{ $value | quote }}
         {{- end }}
     spec:
+      {{- if .Values.vault.extraInitContainers }}
+      initContainers:
+{{ tpl .Values.vault.extraInitContainers . | indent 6 }}
+      {{- end }}
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ default .Chart.AppVersion .Values.image.tag }}"
