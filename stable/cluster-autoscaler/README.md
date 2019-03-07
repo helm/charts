@@ -41,6 +41,8 @@ Auto-discovery finds ASGs tags as below and automatically manages them based on 
 2) verify the [IAM Permissions](#iam)
 3) set `autoDiscovery.clusterName=<YOUR CLUSTER NAME>`
 4) set `awsRegion=<YOUR AWS REGION>`
+5) set `awsAccessKeyId=<YOUR AWS KEY ID>` if you want to use iam user instead instance role
+6) set `awsSecretAccessKey=<YOUR AWS SECRET KEY>` if you want to use iam user instead instance role
 
 ```console
 $ helm install stable/cluster-autoscaler --name my-release --set autoDiscovery.clusterName=<CLUSTER NAME>
@@ -77,7 +79,7 @@ In the event you want to explicitly specify MIGs instead of using auto-discovery
 ##### Required Parameters
 - `cloudProvider=azure`
 - `autoscalingGroups[0].name=your-agent-pool,autoscalingGroups[0].maxSize=10,autoscalingGroups[0].minSize=1`
-- `azureClientID: "your-service-principal-app-id"` 
+- `azureClientID: "your-service-principal-app-id"`
 - `azureClientSecret: "your-service-principal-client-secret"`
 - `azureSubscriptionID: "your-azure-subscription-id"`
 - `azureTenantID: "your-azure-tenant-id"`
@@ -122,6 +124,8 @@ Parameter | Description | Default
 `autoscalingGroups[].maxSize` | maximum autoscaling group size | None. Required unless `autoDiscovery.enabled=true`
 `autoscalingGroups[].minSize` | minimum autoscaling group size | None. Required unless `autoDiscovery.enabled=true`
 `awsRegion` | AWS region (required if `cloudProvider=aws`) | `us-east-1`
+`awsAccessKeyId` | AWS access key id (if AWS user keys used) | `""`
+`awsSecretAccessKey` | AWS access secret key (if AWS user keys used) | `""`
 `autoscalingGroupsnamePrefix[].name` | GCE MIG name prefix (the full name is invalid) | None. Required for `cloudProvider=gce`
 `autoscalingGroupsnamePrefix[].maxSize` | maximum MIG size | None. Required for `cloudProvider=gce`
 `autoscalingGroupsnamePrefix[].minSize` | minimum MIG size |  None. Required for `cloudProvider=gce`

@@ -68,6 +68,20 @@ spec:
           {{- if eq .Values.cloudProvider "aws" }}
             - name: AWS_REGION
               value: "{{ .Values.awsRegion }}"
+            {{- if not ( empty .Values.awsAccessKeyId) }}
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  key: AwsAccessKeyId
+                  name: {{ template "cluster-autoscaler.fullname" . }}
+            {{- end }}
+            {{- if not ( empty .Values.awsSecretAccessKey) }}
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: AwsSecretAccessKey
+                  name: {{ template "cluster-autoscaler.fullname" . }}
+            {{- end }}
           {{- else if eq .Values.cloudProvider "spotinst" }}
             - name: SPOTINST_TOKEN
               value: "{{ .Values.spotinst.token }}"
