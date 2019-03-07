@@ -86,6 +86,21 @@ resources:
     memory: 16Gi
     cpu: 8
 
+## Configure container probes
+## Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-probes
+livenessProbe:
+  httpGet:
+    path: /ping
+    port: api
+  initialDelaySeconds: 30
+  timeoutSeconds: 5
+readinessProbe:
+  httpGet:
+    path: /ping
+    port: api
+  initialDelaySeconds: 5
+  timeoutSeconds: 1
+
 ingress:
   enabled: false
   tls: false
