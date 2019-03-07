@@ -198,6 +198,11 @@ spec:
         configMap:
           name: {{ template "mongodb.fullname" . }}-init-scripts
       {{- end }}
+      {{- if (.Values.initConfigMap) }}
+      - name: custom-init-scripts
+        configMap:
+          name: {{ .Values.initConfigMap.name }}
+      {{- end }}
       - name: data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
