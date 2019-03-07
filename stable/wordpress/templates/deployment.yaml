@@ -44,8 +44,6 @@ spec:
         image: {{ template "wordpress.image" . }}
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         env:
-        - name: NAMI_DEBUG
-          value: "--log-level=trace"
         - name: ALLOW_EMPTY_PASSWORD
         {{- if .Values.allowEmptyPassword }}
           value: "yes"
