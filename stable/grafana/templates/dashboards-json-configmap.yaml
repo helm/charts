@@ -15,7 +15,7 @@ metadata:
 data:
 {{- range $key, $value := $dashboards }}
 {{- if (or (hasKey $value "json") (hasKey $value "file")) }}
-{{ print $key | indent 2 }}.json:
+{{ print $key | indent 2 }}.json: |-
 {{- if hasKey $value "json" }}
 {{ $value.json | indent 4 }}
 {{- end }}
