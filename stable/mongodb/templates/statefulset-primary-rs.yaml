@@ -222,7 +222,7 @@ spec:
         {{- if (.Values.initConfigMap) }}
         - name: custom-init-scripts
           configMap:
-            name: {{ Values.initConfigMap.name }}
+            name: {{ .Values.initConfigMap.name }}
         {{- end }}
         {{- if .Values.configmap }}
         - name: config
