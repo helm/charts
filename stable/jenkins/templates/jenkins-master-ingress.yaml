@@ -13,12 +13,7 @@ metadata:
   name: {{ template "jenkins.fullname" . }}
 spec:
   rules:
-{{- if .Values.Master.HostName }}
-  - host: {{ .Values.Master.HostName | quote }}
-    http:
-{{- else }}
   - http:
-{{- end }}
       paths:
       - backend:
           serviceName: {{ template "jenkins.fullname" . }}
@@ -26,6 +21,9 @@ spec:
 {{- if .Values.Master.Ingress.Path }}
         path: {{ .Values.Master.Ingress.Path }}
 {{- end -}}
+{{- if .Values.Master.HostName }}
+    host: {{ .Values.Master.HostName | quote }}
+{{- end }}
 {{- if .Values.Master.Ingress.TLS }}
   tls:
 {{ toYaml .Values.Master.Ingress.TLS | indent 4 }}
