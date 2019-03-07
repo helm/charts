@@ -3,6 +3,7 @@
 
 # A dashboard is defined by a name and a string with the json payload or the download url
 dashboardImport:
+  enabled: true
   dashboards:
     k8s: https://raw.githubusercontent.com/monotek/kibana-dashboards/master/k8s-fluentd-elasticsearch.json
 
