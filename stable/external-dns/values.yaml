@@ -14,7 +14,7 @@ sources:
 # Allow external-dns to publish DNS records for ClusterIP services (optional)
 publishInternalServices: false
 
-## The DNS provider where the DNS records will be created (options: aws, google, inmemory, azure )
+## The DNS provider where the DNS records will be created (options: aws, google, inmemory, azure, rfc2136 )
 provider: aws
 
 # AWS Access keys to inject as environment variables
@@ -74,6 +74,15 @@ infoblox:
   wapiVersion: ""
   wapiConnectionPoolSize: ""
   wapiHttpTimeout: ""
+
+rfc2136:
+  host: ""
+  port: 53
+  zone: ""
+  tsigSecret: ""
+  tsigSecretAlg: hmac-sha256
+  tsigKeyname: externaldns-key
+  tsigAxfr: true
 
 ## Limit possible target zones by domain suffixes (optional)
 domainFilters: []
