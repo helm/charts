@@ -12,7 +12,7 @@ $ helm install stable/mongodb
 
 This chart bootstraps a [MongoDB](https://github.com/bitnami/bitnami-docker-mongodb) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
-Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters.
+Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters. This chart has been tested to work with NGINX Ingress, cert-manager, fluentd and Prometheus on top of the [BKPR](https://kubeprod.io/).
 
 ## Prerequisites
 
@@ -61,6 +61,7 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `mongodbPassword`                                  | MongoDB custom user password                                                                 | `random alphanumeric string (10)`                       |
 | `mongodbDatabase`                                  | Database to create                                                                           | `nil`                                                   |
 | `mongodbEnableIPv6`                                | Switch to enable/disable IPv6 on MongoDB                                                     | `true`                                                  |
+| `mongodbDirectoryPerDB`                            | Switch to enable/disable DirectoryPerDB on MongoDB                                           | `false`                                                 |
 | `mongodbSystemLogVerbosity`                        | MongoDB systen log verbosity level                                                           | `0`                                                     |
 | `mongodbDisableSystemLog`                          | Whether to disable MongoDB system log or not                                                 | `false`                                                 |
 | `mongodbExtraFlags`                                | MongoDB additional command line flags                                                        | []                                                      |
@@ -94,7 +95,8 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `persistence.accessMode`                           | Use volume as ReadOnly or ReadWrite                                                          | `ReadWriteOnce`                                         |
 | `persistence.size`                                 | Size of data volume                                                                          | `8Gi`                                                   |
 | `persistence.annotations`                          | Persistent Volume annotations                                                                | `{}`                                                    |
-| `persistence.existingClaim`                        | Name of an existing PVC to use (avoids creating one if this is given)                        | `nil`                                                   |
+| `persistence.existingClaim`                        | Name of an existing PVC to use (avoids creating one if this is given)                       | `nil`                                                   |
+| `extraInitContainers`                     | Additional init containers as a string to be passed to the `tpl` function                          | `{}`   |                                                |
 | `livenessProbe.enabled`                            | Enable/disable the Liveness probe                                                            | `true`                                                  |
 | `livenessProbe.initialDelaySeconds`                | Delay before liveness probe is initiated                                                     | `30`                                                    |
 | `livenessProbe.periodSeconds`                      | How often to perform the probe                                                               | `10`                                                    |
