@@ -73,12 +73,12 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `Master.JMXPort`                  | Open a port, for JMX stats           | Not set                                                                      |
 | `Master.ExtraPorts`               | Open extra ports, for other uses     | Not set                                                                      |
 | `Master.OverwriteConfig`          | Replace config w/ ConfigMap on boot  | `false`                                                                      |
-| `Master.HostName`                 | Ingress host path      | Not set                                                                         |
-| `Master.Ingress.Enabled`          | Enables ingress      | `false`                                                                         |
-| `Master.Ingress.Annotations`      | Ingress annotations                  | `{}`                                                                         |
-| `Master.Ingress.Labels`           | Ingress labels                       | `{}`                                                                         |
-| `Master.Ingress.Path`             | Ingress path                         | Not set                                                                         |
-| `Master.Ingress.TLS`              | Ingress TLS configuration            | `[]`                                                                         |
+| `Master.ingress.Enabled`          | Enables ingress      | `false`                                                                         |
+| `Master.ingress.hostName`         | Ingress host path      | Not set                                                                         |
+| `Master.ingress.annotations`      | Ingress annotations                  | `{}`                                                                         |
+| `Master.ingress.labels`           | Ingress labels                       | `{}`                                                                         |
+| `Master.ingress.path`             | Ingress path                         | Not set                                                                         |
+| `Master.ingress.tls`              | Ingress TLS configuration            | `[]`                                                                         |
 | `Master.JCasC.enabled`            | Wheter Jenkins Configuration as Code is enabled or not | `false`                                                    |
 | `Master.JCasC.ConfigScripts`      | List of Jenkins Config as Code scripts | False                                                                   |
 | `Master.Sidecars.configAutoReload` | Jenkins Config as Code auto-reload settings | False                                                                    |
