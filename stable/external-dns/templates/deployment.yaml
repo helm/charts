@@ -2,7 +2,7 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels: {{ include "external-dns.labels" . | indent 4 }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    chart: {{ template "external-dns.chart" . }}
   name: {{ template "external-dns.fullname" . }}
 spec:
   template:

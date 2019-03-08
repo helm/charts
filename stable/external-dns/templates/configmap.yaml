@@ -4,7 +4,7 @@ kind: ConfigMap
 metadata:
   name: {{ template "external-dns.fullname" . }}
   labels: {{ include "external-dns.labels" . | indent 4 }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    chart: {{ template "external-dns.chart" . }}
 data:
   {{ .Values.designate.customCA.filename }}: |
 {{ .Values.designate.customCA.content | indent 4 }}

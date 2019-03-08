@@ -177,3 +177,16 @@ service:
   type: ClusterIP
 
 priorityClassName: ""
+
+serviceMonitor:
+  enabled: false
+  crdApiGroup: "monitoring.coreos.com"
+  additionalLabels: {}
+  # The list of endpoints will be mapped directly into the ServiceMonitor
+  # as a block of yaml. This is so we can support the various configuration
+  # options of the Prometheus Operator CRD without hardcoded support in the chart.
+  endpoints:
+    - interval: 30s
+      honorLabels: true
+      path: /metrics
+      port: http

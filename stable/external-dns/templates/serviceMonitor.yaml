@@ -1,0 +1,25 @@
+{{- if .Values.serviceMonitor.enabled }}
+apiVersion: {{ printf "%s/v1" ($.Values.serviceMonitor.crdApiGroup) }}
+kind: ServiceMonitor
+metadata:
+  name: {{ template "external-dns.fullname" . }}
+  labels:
+    app: {{ template "external-dns.name" . }}
+    chart: {{ template "external-dns.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    {{- if .Values.serviceMonitor.additionalLabels }}
+{{ toYaml .Values.serviceMonitor.additionalLabels | indent 4 }}
+    {{- end }}
+spec:
+  endpoints:
+{{ toYaml .Values.serviceMonitor.endpoints | indent 6 }}
+  jobLabel: "{{ .Release.Name }}"
+  selector:
+    matchLabels:
+      app: {{ template "external-dns.name" . }}
+      release: "{{ .Release.Name }}"
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace }}
+{{- end }}

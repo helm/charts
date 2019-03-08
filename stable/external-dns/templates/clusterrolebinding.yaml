@@ -3,7 +3,7 @@ apiVersion: rbac.authorization.k8s.io/{{ .Values.rbac.apiVersion }}
 kind: ClusterRoleBinding
 metadata:
   labels: {{ include "external-dns.labels" . | indent 4 }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    chart: {{ template "external-dns.chart" . }}
   name: {{ template "external-dns.fullname" . }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io

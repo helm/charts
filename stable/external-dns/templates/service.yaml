@@ -7,7 +7,7 @@ metadata:
 {{- end }}
   labels:
     app: {{ template "external-dns.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    chart: {{ template "external-dns.chart" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
   name: {{ template "external-dns.fullname" . }}
