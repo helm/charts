@@ -18,7 +18,10 @@ spec:
   replicas: 1
   strategy:
     type: {{ if .Values.Persistence.Enabled }}Recreate{{ else }}RollingUpdate{{ end }}
-    rollingUpdate: {{ if .Values.Persistence.Enabled }}{{ else }}true{{ end }}
+    rollingUpdate:
+    {{- if not .Values.Persistence.Enabled }}
+{{ toYaml .Values.Master.RollingUpdate | indent 6 }}
+    {{- end }}
   selector:
     matchLabels:
       component: "{{ .Release.Name }}-{{ .Values.Master.Component }}"
