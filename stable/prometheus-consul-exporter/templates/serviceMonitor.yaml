@@ -2,9 +2,9 @@
 apiVersion: {{ printf "%s/v1" ($.Values.serviceMonitor.crdApiGroup) }}
 kind: ServiceMonitor
 metadata:
-  name: {{ template "prometheus-consul-exporter.fullname" $ }}
+  name: {{ template "prometheus-consul-exporter.fullname" . }}
   labels:
-    app: {{ template "prometheus-consul-exporter.name" $ }}
+    app: {{ template "prometheus-consul-exporter.name" . }}
     chart: {{ template "prometheus-consul-exporter.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
