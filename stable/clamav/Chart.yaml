@@ -3,3 +3,7 @@ appVersion: "1.0"
 description: A Helm chart for Kubernetes
 name: clamav
 version: 0.1.0
+home: https://www.clamav.net
+maintainers:
+- name: zakkg3
+  email: zakkg3@gmail.com
