@@ -100,7 +100,7 @@ spec:
           - name: config-volume
             mountPath: /opt/bitnami/rabbitmq/conf
           - name: data
-            mountPath: /opt/bitnami/rabbitmq/var/lib/rabbitmq/
+            mountPath: "{{ .Values.persistence.path }}"
         ports:
         - name: epmd
           containerPort: 4369
