@@ -93,6 +93,7 @@ rabbitmq:
   ## Use this instead of  `configuration` to add more configuration
   extraConfiguration: |-
     #disk_free_limit.absolute = 50MB
+    #management.load_definitions = /app/load_definition.json
 
 ## Kubernetes service type
 service:
