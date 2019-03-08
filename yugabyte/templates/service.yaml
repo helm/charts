@@ -231,7 +231,7 @@ spec:
           - "--server_broadcast_addresses={{ template "yugabyte.server_address" . }}:9100"
           - "--rpc_bind_addresses={{ template "yugabyte.server_address" . }}"
           - "--cql_proxy_bind_address={{ template "yugabyte.server_address" . }}"
-          {{ if or $root.Values.enableYsql $root.Values.enablePostgres }}
+          {{ if not $root.Values.disableYsql }}
           - "--start_pgsql_proxy"
           - "--pgsql_proxy_bind_address={{ template "yugabyte.server_address" . }}:5433"
           {{ end }}

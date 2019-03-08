@@ -11,3 +11,4 @@ serviceEndpoints:
     ports:
       yql-port: "9042"
       yedis-port: "6379"
+      ysql-port: "5433"

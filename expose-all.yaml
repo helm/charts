@@ -16,3 +16,9 @@ serviceEndpoints:
     app: "yb-tserver"
     ports:
       yedis-port: "6379"
+
+  - name: "ysql-service"
+    type: LoadBalancer
+    app: "yb-tserver"
+    ports:
+      ysql-port: "5433"

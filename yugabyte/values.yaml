@@ -55,8 +55,8 @@ gflags:
 
 PodManagementPolicy: Parallel
 
-# Flag to use to enable YSQL postgres support on tservers.
-# enableYsql: true
+# Flag to use to disable YugaByte SQL support on tservers.
+# disableYsql: true
 
 enableLoadBalancer: True
 
@@ -84,6 +84,7 @@ Services:
       rpc-port: "7100"
       yql-port: "9042"
       yedis-port: "6379"
+      ysql-port: "5433"
 
 resources: {}
 
