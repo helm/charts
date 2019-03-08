@@ -28,6 +28,13 @@ admissionControllerRules:
     apiVersions: ["*"]
     resources: ["*"]
 
+# Controls a PodDisruptionBudget for the OPA pod. Suggested use if having opa
+# always running for admission control is important
+podDisruptionBudget:
+  enabled: false
+  minAvailable: 1
+# maxUnavailable: 1
+
 # The helm Chart will automatically generate a CA and server certificate for
 # the OPA. If you want to supply your own certificates, set the field below to
 # false and add the PEM encoded CA certificate and server key pair below.
