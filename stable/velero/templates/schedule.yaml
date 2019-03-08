@@ -1,6 +1,6 @@
 {{- $root := . }}
 {{- range $scheduleName, $schedule := .Values.schedules }}
-apiVersion: velero.heptio.com/v1
+apiVersion: velero.io/v1
 kind: Schedule
 metadata:
   name: {{ template "velero.fullname" $root }}-{{ $scheduleName }}

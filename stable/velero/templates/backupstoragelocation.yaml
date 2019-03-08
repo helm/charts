@@ -1,7 +1,7 @@
 {{- $root := . }}
 {{- with .Values.configuration }}
 {{- with .backupStorageLocation }}
-apiVersion: velero.heptio.com/v1
+apiVersion: velero.io/v1
 kind: BackupStorageLocation
 metadata:
   name: default
