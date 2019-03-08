@@ -1,6 +1,6 @@
 image:
   repository: gcr.io/heptio-images/velero
-  tag: v0.11.1
+  tag: v0.11.0
   pullPolicy: IfNotPresent
 
 # Only kube2iam/kiam: change the AWS_ACCOUNT_ID and HEPTIO_VELERO_ROLE_NAME
