@@ -59,7 +59,7 @@ spec:
                 name: {{ template "velero.secretName" . }}
           {{- end }}
           env:
-            - name: HEPTIO_VELERO_NAMESPACE
+            - name: VELERO_NAMESPACE
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace

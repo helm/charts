@@ -1,18 +1,18 @@
 # Velero-server
 
-This helm chart installs Velero version v0.11.1
-https://github.com/heptio/velero/tree/v0.11.1
+This helm chart installs Velero version v0.11.0
+https://github.com/heptio/velero/tree/v0.11.0
 
 ## Upgrading to v0.10
 
-Velero v0.11.1 introduces breaking changes. The below instructions are based on the [official upgrade guide](https://github.com/heptio/velero/blob/master/docs/upgrading-to-v0.10.md).
+Velero v0.11.0 introduces breaking changes. The below instructions are based on the [official upgrade guide](https://github.com/heptio/velero/blob/master/docs/upgrading-to-v0.10.md).
 
 1. Pull the latest changes in this chart. If you're using Helm dependencies, update the chart version you're using in your `requirements.yaml` and run `helm dependency update`.
 
 2. Scale down
 
 ```sh
-kubectl scale -n heptio-velero deploy/velero --replicas 0
+kubectl scale -n velero deploy/velero --replicas 0
 ```
 
 3. Migrate file structure of your backup storage according to [guide](https://github.com/heptio/velero/blob/master/docs/storage-layout-reorg-v0.10.md)
@@ -20,7 +20,7 @@ kubectl scale -n heptio-velero deploy/velero --replicas 0
 5. Upgrade your deployment
 
 ```sh
-helm upgrade --force --namespace heptio-velero velero ./velero
+helm upgrade --force --namespace velero velero ./velero
 ```
 
 ## Prerequisites
@@ -91,7 +91,7 @@ Parameter | Description | Default
 
 ## How to
 ```
-helm install --name velero --namespace heptio-velero ./velero
+helm install --name velero --namespace velero ./velero
 ```
 
 ## Remove heptio/velero

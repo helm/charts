@@ -3,9 +3,9 @@ image:
   tag: v0.11.0
   pullPolicy: IfNotPresent
 
-# Only kube2iam/kiam: change the AWS_ACCOUNT_ID and HEPTIO_VELERO_ROLE_NAME
+# Only kube2iam/kiam: change the AWS_ACCOUNT_ID and VELERO_ROLE_NAME
 podAnnotations: {}
-#  iam.amazonaws.com/role: arn:aws:iam::<AWS_ACCOUNT_ID>:role/<HEPTIO_VELERO_ROLE_NAME>
+#  iam.amazonaws.com/role: arn:aws:iam::<AWS_ACCOUNT_ID>:role/<VELERO_ROLE_NAME>
 #  prometheus.io/scrape: "true"
 #  prometheus.io/port: "8085"
 #  prometheus.io/path: "/metrics"
