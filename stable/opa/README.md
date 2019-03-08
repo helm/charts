@@ -63,6 +63,9 @@ Reference](https://www.openpolicyagent.org/docs/configuration.html).
 | `admissionControllerCA` | Manually set admission controller certificate CA. | Unset |
 | `admissionControllerCert` | Manually set admission controller certificate. | Unset |
 | `admissionControllerKey` | Manually set admission controller key. | Unset |
+| `podDisruptionBudget.enabled` | Enables creation of a PodDisruptionBudget for OPA. | `false` |
+| `podDisruptionBudget.minAvailable` | Sets the minimum number of pods to be available. Cannot be set at the same time as maxUnavailable. | `1` |
+| `podDisruptionBudget.maxUnavailable` | Sets the maximum number of pods to be unavailable. Cannot be set at the same time as minAvailable. | Unset |
 | `image` | OPA image to deploy. | `openpolicyagent/opa` |
 | `imageTag` | OPA image tag to deploy. | See [values.yaml](values.yaml) |
 | `logLevel` | Log level that OPA outputs at, (`debug`, `info` or `error`) | `info` |
