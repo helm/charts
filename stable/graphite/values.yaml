@@ -2,7 +2,7 @@
 
 image:
   repository: graphiteapp/graphite-statsd
-  tag: 1.1.4-3
+  tag: 1.1.5-3
   pullPolicy: IfNotPresent
 
 service:

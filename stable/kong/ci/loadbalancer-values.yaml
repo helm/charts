@@ -1,0 +1,44 @@
+# CI test for LoadBalancer admin/proxy types
+
+admin:
+  useTLS: true
+  type: LoadBalancer
+  loadBalancerSourceRanges:
+    - 192.168.1.1/32
+    - 10.10.10.10/32
+
+proxy:
+  useTLS: true
+  type: LoadBalancer
+  loadBalancerSourceRanges:
+    - 192.168.1.1/32
+    - 10.10.10.10/32
+
+readinessProbe:
+  httpGet:
+    path: "/status"
+    port: admin
+    scheme: HTTPS
+  initialDelaySeconds: 30
+  timeoutSeconds: 1
+  periodSeconds: 10
+  successThreshold: 1
+  failureThreshold: 5
+
+livenessProbe:
+  httpGet:
+    path: "/status"
+    port: admin
+    scheme: HTTPS
+  initialDelaySeconds: 30
+  timeoutSeconds: 5
+  periodSeconds: 30
+  successThreshold: 1
+  failureThreshold: 5
+
+postgresql:
+  enabled: true
+  postgresUser: kong
+  postgresDatabase: kong
+  service:
+    port: 5432

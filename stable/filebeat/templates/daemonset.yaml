@@ -109,6 +109,21 @@ spec:
 {{- if .Values.extraVolumeMounts }}
 {{ toYaml .Values.extraVolumeMounts | indent 8 }}
 {{- end }}
+{{- if .Values.monitoring.enabled }}
+      - name: {{ template "filebeat.fullname" . }}-prometheus-exporter
+        image: "{{ .Values.monitoring.image.repository }}:{{ .Values.monitoring.image.tag }}"
+        imagePullPolicy: {{ .Values.monitoring.image.pullPolicy }}
+        args:
+{{- if .Values.monitoring.args }}
+{{ toYaml .Values.monitoring.args | indent 8 }}
+{{- end }}
+{{- if .Values.monitoring.resources }}
+        resources:
+{{ toYaml .Values.monitoring.resources | indent 10 }}
+{{- end }}
+{{- end }}
+        ports:
+          - containerPort: {{ .Values.monitoring.exporterPort}}
       volumes:
       - name: varlog
         hostPath:

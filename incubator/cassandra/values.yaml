@@ -1,8 +1,8 @@
 ## Cassandra image version
 ## ref: https://hub.docker.com/r/library/cassandra/
 image:
-  repo: "cassandra"
-  tag: "3.11.2"
+  repo: cassandra
+  tag: 3.11.3
   pullPolicy: IfNotPresent
   ## Specify ImagePullSecrets for Pods
   ## ref: https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
@@ -43,9 +43,10 @@ resources: {}
 ## Change cassandra configuration parameters below:
 ## ref: http://docs.datastax.com/en/cassandra/3.0/cassandra/configuration/configCassandra_yaml.html
 ## Recommended max heap size is 1/2 of system memory
-## Recommeneed heap new size is 1/4 of max heap size
+## Recommended heap new size is 1/4 of max heap size
 ## ref: http://docs.datastax.com/en/cassandra/3.0/cassandra/operations/opsTuneJVM.html
 config:
+  cluster_domain: cluster.local
   cluster_name: cassandra
   cluster_size: 3
   seed_size: 2
@@ -65,6 +66,19 @@ config:
     thrift: 9160
     # If a JVM Agent is in place
     # agent: 61621
+
+## Cassandra config files overrides
+configOverrides: {}
+
+## Cassandra docker command overrides
+commandOverrides: []
+
+## Cassandra docker args overrides
+argsOverrides: []
+
+## Custom env variables.
+## ref: https://hub.docker.com/_/cassandra/
+env: {}
 
 ## Liveness and Readiness probe values.
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/
@@ -87,6 +101,10 @@ readinessProbe:
   # nodeSelector:
     # cloud.google.com/gke-nodepool: pool-db
 
+## Additional pod annotations
+## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+podAnnotations: {}
+
 ## Additional pod labels
 ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
 podLabels: {}
@@ -95,6 +113,11 @@ podLabels: {}
 podSettings:
   # Change this to give pods more time to properly leave the cluster when not using persistent storage.
   terminationGracePeriodSeconds: 30
+
+## Pod distruption budget
+podDisruptionBudget: {}
+  # maxUnavailable: 1
+  # minAvailable: 2
 
 podManagementPolicy: OrderedReady
 updateStrategy:
@@ -109,3 +132,78 @@ securityContext:
 ## Affinity for pod assignment
 ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
 affinity: {}
+
+## Node tolerations for pod assignment
+## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+tolerations: []
+
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  # name:
+
+# Use host network for Cassandra pods
+# You must pass seed list into config.seeds property if set to true
+hostNetwork: false
+
+## Backup cronjob configuration
+## Ref: https://github.com/nuvo/cain
+backup:
+  enabled: false
+
+  # Schedule to run jobs. Must be in cron time format
+  # Ref: https://crontab.guru/
+  schedule:
+  - keyspace: keyspace1
+    cron: "0 7 * * *"
+  - keyspace: keyspace2
+    cron: "30 7 * * *"
+
+  annotations:
+    # Example for authorization to AWS S3 using kube2iam
+    # Can also be done using environment variables
+    iam.amazonaws.com/role: cain
+
+  image:
+    repos: nuvo/cain
+    tag: 0.4.1
+
+  # Additional arguments for cain
+  # Ref: https://github.com/nuvo/cain#usage
+  extraArgs: []
+
+  # Add additional environment variables
+  env:
+  # Example environment variable required for AWS credentials chain
+  - name: AWS_REGION
+    value: us-east-1
+
+  resources:
+    requests:
+      memory: 1Gi
+      cpu: 1
+    limits:
+      memory: 1Gi
+      cpu: 1
+
+  # Destination to store the backup artifacts
+  # Supported cloud storage services: AWS S3, Minio S3, Azure Blob Storage
+  # Additional support can added. Visit this repository for details
+  # Ref: https://github.com/nuvo/skbn
+  destination: s3://bucket/cassandra
+
+## Cassandra exported configuration
+## ref: https://github.com/criteo/cassandra_exporter
+exporter:
+  enabled: false
+  image:
+    repo: criteord/cassandra_exporter
+    tag: 2.0.2
+  port: 5556
+  jvmOpts: ""

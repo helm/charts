@@ -3,11 +3,10 @@ kind: ConfigMap
 metadata:
   name: {{ template "jaeger.fullname" . }}
   labels:
-    app: {{ template "jaeger.name" . }}
-    jaeger-infra: common-configmap
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    app.kubernetes.io/name: {{ template "jaeger.name" . }}
+    helm.sh/chart: {{ include "jaeger.chart" . }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
 data:
   cassandra.contact-points: {{ template "cassandra.contact_points" . }}
   cassandra.datacenter.name: {{ .Values.cassandra.config.dc_name | quote }}
@@ -23,10 +22,12 @@ data:
   es.server-urls: {{ template "elasticsearch.client.url" . }}
   es.username: {{ .Values.storage.elasticsearch.user }}
   es.nodes-wan-only: {{ .Values.storage.elasticsearch.nodesWanOnly | quote }}
-  hotrod.agent-host-port: "{{ template "jaeger.hotrod.tracing.host" . }}:{{ .Values.hotrod.tracing.port }}"
+  hotrod.agent-host: {{ template "jaeger.hotrod.tracing.host" . }}
+  hotrod.agent-port: {{ .Values.hotrod.tracing.port | quote }}
   span-storage.type: {{ .Values.storage.type | quote }}
   query.health-check-http-port: {{ .Values.query.healthCheckPort | quote }}
   query.port: {{ .Values.query.service.targetPort | quote }}
+  query.base-path: {{ .Values.query.basePath | quote }}
   # Not implemented
   # cassandra.archive.connections-per-host:
   # cassandra.archive.keyspace:

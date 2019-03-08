@@ -1,10 +1,16 @@
+## Global Docker image registry
+## Please, note that this will override the image registry for all the images, including dependencies, configured to use the global value
+##
+# global:
+#   imageRegistry:
+
 ## Bitnami NATS image version
 ## ref: https://hub.docker.com/r/bitnami/nats/tags/
 ##
 image:
   registry: docker.io
   repository: bitnami/nats
-  tag: 1.3.0-debian-9
+  tag: 1.4.1
   pullPolicy: Always
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.
@@ -139,63 +145,66 @@ networkPolicy:
 ## NATS svc used for client connections
 ## ref: https://github.com/nats-io/gnatsd#running
 ##
-clientService:
-  ## Kubernetes service type
-  type: ClusterIP
-  port: 4222
-  ## Specify the nodePort value for the LoadBalancer and NodePort service types.
-  ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
-  ##
-  # nodePort:
-  ## Provide any additional annotations which may be required. This can be used to
-  ## set the LoadBalancer service type to internal only.
-  ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#internal-load-balancer
-  ##
-  annotations: {}
-  ## Use loadBalancerIP to request a specific static IP,
-  ## otherwise leave blank
-  ##
-  # loadBalancerIP:
+client:
+  service:
+    ## Kubernetes service type
+    type: ClusterIP
+    port: 4222
+    ## Specify the nodePort value for the LoadBalancer and NodePort service types.
+    ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
+    ##
+    # nodePort:
+    ## Provide any additional annotations which may be required. This can be used to
+    ## set the LoadBalancer service type to internal only.
+    ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#internal-load-balancer
+    ##
+    annotations: {}
+    ## Use loadBalancerIP to request a specific static IP,
+    ## otherwise leave blank
+    ##
+    # loadBalancerIP:
 ## Kubernetes svc used for clustering
 ## ref: https://github.com/nats-io/gnatsd#clustering
 ##
-clusterService:
-  ## Kubernetes service type
-  type: ClusterIP
-  port: 6222
-  ## Specify the nodePort value for the LoadBalancer and NodePort service types.
-  ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
-  ##
-  # nodePort:
-  ## Provide any additional annotations which may be required. This can be used to
-  ## set the LoadBalancer service type to internal only.
-  ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#internal-load-balancer
-  ##
-  annotations: {}
-  ## Use loadBalancerIP to request a specific static IP,
-  ## otherwise leave blank
-  ##
-  # loadBalancerIP:
+cluster:
+  service:
+    ## Kubernetes service type
+    type: ClusterIP
+    port: 6222
+    ## Specify the nodePort value for the LoadBalancer and NodePort service types.
+    ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
+    ##
+    # nodePort:
+    ## Provide any additional annotations which may be required. This can be used to
+    ## set the LoadBalancer service type to internal only.
+    ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#internal-load-balancer
+    ##
+    annotations: {}
+    ## Use loadBalancerIP to request a specific static IP,
+    ## otherwise leave blank
+    ##
+    # loadBalancerIP:
 ## NATS svc used for monitoring
 ## ref: https://github.com/nats-io/gnatsd#monitoring
 ##
-monitoringService:
-  ## Kubernetes service type
-  type: ClusterIP
-  port: 8222
-  ## Specify the nodePort value for the LoadBalancer and NodePort service types.
-  ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
-  ##
-  # nodePort:
-  ## Provide any additional annotations which may be required. This can be used to
-  ## set the LoadBalancer service type to internal only.
-  ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#internal-load-balancer
-  ##
-  annotations: {}
-  ## Use loadBalancerIP to request a specific static IP,
-  ## otherwise leave blank
-  ##
-  loadBalancerIP:
+monitoring:
+  service:
+    ## Kubernetes service type
+    type: ClusterIP
+    port: 8222
+    ## Specify the nodePort value for the LoadBalancer and NodePort service types.
+    ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
+    ##
+    # nodePort:
+    ## Provide any additional annotations which may be required. This can be used to
+    ## set the LoadBalancer service type to internal only.
+    ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#internal-load-balancer
+    ##
+    annotations: {}
+    ## Use loadBalancerIP to request a specific static IP,
+    ## otherwise leave blank
+    ##
+    loadBalancerIP:
 
 ## Configure the ingress resource that allows you to access the
 ## NATS Monitoring. Set up the URL
@@ -239,6 +248,42 @@ ingress:
   # - name: nats.local-tls
   #   key:
   #   certificate:
+
+# Optional additional arguments
+extraArgs: []
+
+## Metrics / Prometheus NATS Exporter
+##
+## ref: https://github.com/nats-io/prometheus-nats-exporter
+metrics:
+  enabled: true
+  image:
+    registry: docker.io
+    repository: synadia/prometheus-nats-exporter
+    tag: 0.1.0
+    pullPolicy: IfNotPresent
+    ## Optionally specify an array of imagePullSecrets.
+    ## Secrets must be manually created in the namespace.
+    ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+    ##
+    # pullSecrets:
+    #   - myRegistrKeySecretName
+  ## Metrics exporter resource requests and limits
+  ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  ##
+  # resources: {}
+  ## Metrics exporter port
+  port: 7777
+  ## Metrics exporter annotations
+  podAnnotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "7777"
+  ## Metrics exporter flags
+  args:
+    - -connz
+    - -routez
+    - -subz
+    - -varz
 
 sidecars:
 ## Add sidecars to the pod.

@@ -1,6 +1,6 @@
 # gce-ingress
 
-[gce-ingress](https://github.com/kubernetes/gce-gce) is an Ingress controller that configures GCE loadbalancers
+[ingress-gce](https://github.com/kubernetes/ingress-gce) is an Ingress controller that configures GCE loadbalancers
 
 To use, add the `kubernetes.io/ingress.class: "gce"` annotation to your Ingress resources.
 
@@ -47,7 +47,7 @@ Parameter | Description | Default
 --- | --- | ---
 `controller.name` | name of the controller component | `controller`
 `controller.image.repository` | controller container image repository | `k8s.gcr.io/ingress-gce-glbc-amd64`
-`controller.image.tag` | controller container image tag | `v1.1.1`
+`controller.image.tag` | controller container image tag | `v1.4.0`
 `controller.image.pullPolicy` | controller container image pull policy | `IfNotPresent`
 `controller.config` | gce ConfigMap entries | none
 `controller.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`

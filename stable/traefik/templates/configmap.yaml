@@ -5,8 +5,8 @@ metadata:
   labels:
     app: {{ template "traefik.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
 data:
   traefik.toml: |
     # traefik.toml
@@ -17,6 +17,9 @@ data:
     {{- end }}
     {{- if .Values.sendAnonymousUsage }}
     sendAnonymousUsage = true
+    {{- end }}
+    {{- if .Values.rootCAs }}
+    {{ template "traefik.rootCAs" . }}
     {{- end }}
     {{- if .Values.ssl.insecureSkipVerify }}
     InsecureSkipVerify = true
@@ -37,10 +40,17 @@ data:
         [entryPoints.http.proxyProtocol]
         {{ template "traefik.trustedips" . }}
       {{- end }}
+      {{- if .Values.forwardedHeaders.enabled }}
+        [entryPoints.http.forwardedHeaders]
+        {{ template "traefik.forwardedHeadersTrustedIPs" . }}
+      {{- end }}
         {{- if .Values.ssl.enforced }}
         [entryPoints.http.redirect]
           regex = "^http://(.*)"
           replacement = "https://$1"
+          {{- if .Values.ssl.permanentRedirect }}
+          permanent = true
+          {{- end }}
         {{- end }}
       {{- if .Values.ssl.enabled }}
       [entryPoints.https]
@@ -53,15 +63,29 @@ data:
         [entryPoints.https.proxyProtocol]
         {{ template "traefik.trustedips" . }}
       {{- end }}
+      {{- if .Values.forwardedHeaders.enabled }}
+        [entryPoints.https.forwardedHeaders]
+        {{ template "traefik.forwardedHeadersTrustedIPs" . }}
+      {{- end }}
       {{- if not .Values.ssl.upstream }}
         [entryPoints.https.tls]
           {{- if .Values.ssl.tlsMinVersion }}
-          minVersion = "{{ .Values.ssl.tlsMinVersion }}"
+          minVersion = {{ .Values.ssl.tlsMinVersion | quote }}
+          {{- end }}
+          {{- if .Values.ssl.cipherSuites }}
+          {{ template "traefik.ssl.cipherSuites" . }}
           {{- end }}
           [[entryPoints.https.tls.certificates]]
           CertFile = "/ssl/tls.crt"
           KeyFile = "/ssl/tls.key"
       {{- end }}
+        {{- if .Values.ssl.auth }}
+        {{- if .Values.ssl.auth.basic }}
+        [entryPoints.https.auth]
+          [entryPoints.https.auth.basic]
+            users = [{{ range $key, $value := .Values.ssl.auth.basic }}"{{ $key }}:{{ $value }}",{{ end }}]
+        {{- end }}
+        {{- end }}
       {{- else }}
       [entryPoints.httpn]
       {{- if .Values.whiteListSourceRange }}
@@ -69,6 +93,14 @@ data:
       {{- end }}
       address = ":8880"
       compress = {{ .Values.gzip.enabled }}
+      {{- if .Values.proxyProtocol.enabled }}
+        [entryPoints.httpn.proxyProtocol]
+        {{ template "traefik.trustedips" . }}
+      {{- end }}
+      {{- if .Values.forwardedHeaders.enabled }}
+        [entryPoints.httpn.forwardedHeaders]
+        {{ template "traefik.forwardedHeadersTrustedIPs" . }}
+      {{- end }}
       {{- end }}
       {{- if .Values.dashboard.enabled }}
       [entryPoints.traefik]
@@ -100,13 +132,31 @@ data:
       {{- if .Values.kubernetes.ingressClass }}
     ingressClass = {{ .Values.kubernetes.ingressClass | quote }}
       {{- end}}
+      {{- if .Values.kubernetes.ingressEndpoint }}
+      [kubernetes.ingressEndpoint]
+        {{- if .Values.kubernetes.ingressEndpoint.hostname }}
+      hostname = {{ .Values.kubernetes.ingressEndpoint.hostname | quote }}
+        {{- end}}
+        {{- if .Values.kubernetes.ingressEndpoint.ip }}
+      ip = {{ .Values.kubernetes.ingressEndpoint.ip | quote }}
+        {{- end}}
+        {{- if .Values.kubernetes.ingressEndpoint.publishedService }}
+      publishedService = {{ .Values.kubernetes.ingressEndpoint.publishedService | quote }}
+        {{- else if .Values.kubernetes.ingressEndpoint.useDefaultPublishedService }}
+      publishedService = "{{ .Release.Namespace }}/{{ template "traefik.fullname" . }}"
+        {{- end}}
+      {{- end}}
     {{- end}}
+    {{- if .Values.traefikLogFormat }}
+    [traefikLog]
+      format = {{ .Values.traefikLogFormat | quote }}
+    {{- end }}
     {{- if .Values.accessLogs.enabled }}
     [accessLog]
     {{- if .Values.accessLogs.filePath }}
-    filePath = "{{ .Values.accessLogs.filePath }}"
+    filePath = {{ .Values.accessLogs.filePath | quote }}
     {{- end}}
-      format = "{{ .Values.accessLogs.format }}"
+      format = {{ .Values.accessLogs.format | quote }}
     [accessLog.fields]
       defaultMode = {{ .Values.accessLogs.fields.defaultMode | quote }}
     [accessLog.fields.names]
@@ -122,9 +172,9 @@ data:
     {{- end}}
     {{- if .Values.kvprovider.etcd }}
     [etcd]
-    endpoint = "{{ .Values.kvprovider.etcd.endpoint }}"
+    endpoint = {{ .Values.kvprovider.etcd.endpoint | quote }}
     watch = {{ .Values.kvprovider.etcd.watch }}
-    prefix = "{{ .Values.kvprovider.etcd.prefix }}"
+    prefix = {{ .Values.kvprovider.etcd.prefix | quote }}
     useAPIV3 = {{ .Values.kvprovider.etcd.useAPIV3 }}
     {{- if .Values.kvprovider.etcd.username }}username = {{ .Values.kvprovider.etcd.username }}{{- end }}
     {{- if .Values.kvprovider.etcd.password }}password = {{ .Values.kvprovider.etcd.password }}{{- end }}
@@ -132,7 +182,7 @@ data:
       [etcd.tls]
       {{- end }}
       {{ range $key, $value := .Values.kvprovider.etcd.tls }}
-      {{ $key }} = {{ $value }}
+      {{ $key }} = {{ $value | quote }}
       {{ end }}
     {{- end }}
     {{- if .Values.kvprovider.consul }}
@@ -151,7 +201,7 @@ data:
     {{- end }}
     {{- if .Values.kvprovider.boltdb }}
     [boltdb]
-    endpoint = "{{ .Values.kvprovider.boltdb.endpoint }}"
+    endpoint = {{ .Values.kvprovider.boltdb.endpoint | quote }}
     watch = {{ .Values.kvprovider.boltdb.watch }}
     prefix = {{ .Values.kvprovider.boltdb.prefix }}
     {{- if .Values.kvprovider.boltdb.username }}username = {{ .Values.kvprovider.boltdb.username }}{{- end }}
@@ -165,9 +215,9 @@ data:
     {{- end }}
     {{- if .Values.kvprovider.zookeeper }}
     [zookeeper]
-    endpoint = "{{ .Values.kvprovider.zookeeper.endpoint }}"
+    endpoint = {{ .Values.kvprovider.zookeeper.endpoint | quote }}
     watch = {{ .Values.kvprovider.zookeeper.watch }}
-    prefix = {{ .Values.kvprovider.zookeeper.prefix }}
+    prefix = {{ .Values.kvprovider.zookeeper.prefix | quote }}
     {{- if .Values.kvprovider.zookeeper.username }}username = {{ .Values.kvprovider.zookeeper.username }}{{- end }}
     {{- if .Values.kvprovider.zookeeper.password }}password = {{ .Values.kvprovider.zookeeper.password }}{{- end }}
       {{- if .Values.kvprovider.zookeeper.tls }}
@@ -179,17 +229,20 @@ data:
     {{- end }}
     {{- if .Values.acme.enabled }}
     [acme]
-    email = "{{ .Values.acme.email }}"
+    email = {{ .Values.acme.email | quote }}
     {{- if .Values.kvprovider.storeAcme }}
     storage = "traefik/acme/account"
     {{- if .Values.kvprovider.importAcme }}
     storageFile = "/acme/acme.json"
     {{- end }}
+    {{- if or (.Values.kvprovider.importAcme) (eq .Release.Revision 1) }}
+    OverrideCertificates = true
+    {{- end }}
     {{- else }}
     storage = "/acme/acme.json"
     {{- end }}
     entryPoint = "https"
-    onHostRule = true
+    onHostRule = {{ .Values.acme.onHostRule }}
     {{- if .Values.acme.staging }}
     caServer = "https://acme-staging-v02.api.letsencrypt.org/directory"
     {{- end }}
@@ -198,13 +251,15 @@ data:
     {{- end }}
     {{- if eq .Values.acme.challengeType "dns-01" }}
       [acme.dnsChallenge]
-      provider = "{{ .Values.acme.dnsProvider.name }}"
+      provider = {{ .Values.acme.dnsProvider.name | quote }}
       {{- if .Values.acme.delayBeforeCheck }}
       delayBeforeCheck = {{ .Values.acme.delayBeforeCheck }}
       {{- end }}
     {{- else if eq .Values.acme.challengeType "http-01" }}
       [acme.httpChallenge]
       entryPoint = "http"
+    {{- else if eq .Values.acme.challengeType "tls-alpn-01" }}
+      [acme.tlsChallenge]
     {{- end }}
     {{- if .Values.acme.domains.enabled }}
     {{- if .Values.acme.domains.domainsList }}{{ template "traefik.acme.domains" . }}{{- end }}
@@ -286,6 +341,18 @@ data:
         {{- end }}
         {{- if ne (.Values.tracing.zipkin.id128bit | quote) "" }}
         id128bit = {{ .Values.tracing.zipkin.id128bit }}
+        {{- end }}
+      {{- end }}
+      {{- if eq .Values.tracing.backend "datadog" }}
+      [tracing.datadog]
+        {{- if .Values.tracing.datadog.localAgentHostPort }}
+        localAgentHostPort = {{ .Values.tracing.datadog.localAgentHostPort | quote }}
+        {{- end }}
+        {{- if ne (.Values.tracing.datadog.debug | quote) "" }}
+        debug = {{ .Values.tracing.datadog.debug }}
+        {{- end }}
+        {{- if ne (.Values.tracing.datadog.globalTag | quote) "" }}
+        globalTag = {{ .Values.tracing.datadog.globalTag | quote }}
         {{- end }}
       {{- end }}
     {{- end }}

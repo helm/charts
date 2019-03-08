@@ -1,0 +1,19 @@
+{{- if and .Values.grafana.enabled .Values.grafana.sidecar.datasources.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "prometheus-operator.fullname" . }}-grafana-datasource
+  labels:
+    {{ $.Values.grafana.sidecar.datasources.label }}: "1"
+    app: {{ template "prometheus-operator.name" $ }}-grafana
+{{ include "prometheus-operator.labels" $ | indent 4 }}
+data:
+  datasource.yaml: |-
+    apiVersion: 1
+    datasources:
+    - name: Prometheus
+      type: prometheus
+      url: http://{{ template "prometheus-operator.fullname" . }}-prometheus:9090/{{ trimPrefix "/" .Values.prometheus.prometheusSpec.routePrefix }}
+      access: proxy
+      isDefault: true
+{{- end }}

@@ -3,8 +3,8 @@
 # Declare name/value pairs to be passed into your templates.
 # name: value
 
-image: quay.io/coreos/dex
-imageTag: "v2.10.0"
+image: quay.io/dexidp/dex
+imageTag: "v2.14.0"
 imagePullPolicy: "IfNotPresent"
 
 inMiniKube: false
@@ -33,6 +33,19 @@ ports:
 service:
   type: ClusterIP
   annotations: {}
+
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  path: /
+  hosts:
+    - dex.example.com
+  tls: []
+  #  - secretName: dex-example-tls
+  #    hosts:
+  #      - dex.example.com
 
 extraVolumes: []
 extraVolumeMounts: []

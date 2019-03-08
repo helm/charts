@@ -1,0 +1,22 @@
+{{- if .Values.workers.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "airflow.fullname" . }}-flower
+  labels:
+    app: {{ template "airflow.name" . }}
+    component: flower
+    chart: {{ template "airflow.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.airflow.service.type }}
+  selector:
+    app: {{ template "airflow.name" . }}
+    component: flower
+    release: {{ .Release.Name }}
+  ports:
+    - name: flower
+      protocol: TCP
+      port: 5555
+{{- end }}

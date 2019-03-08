@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: {{ template "keycloak.fullname" . }}-test
+  name: "{{ template "keycloak.fullname" . }}-test-{{ randAlphaNum 5 | lower }}"
   labels:
     app: {{ template "keycloak.name" . }}
     chart: {{ template "keycloak.chart" . }}

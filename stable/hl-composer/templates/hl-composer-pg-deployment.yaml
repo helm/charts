@@ -1,0 +1,52 @@
+{{- if .Values.pg.enabled -}}
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ include "hl-composer.fullname" . }}-pg
+  labels:
+    name: {{ include "hl-composer.fullname" . }}-pg
+{{ include "labels.standard" . | indent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ include "hl-composer.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      name: {{ include "hl-composer.fullname" . }}-pg
+      labels:
+        name: {{ include "hl-composer.fullname" . }}-pg
+{{ include "labels.standard" . | indent 8 }}
+    spec:
+      volumes:
+        - name: persistent-volume
+        {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.existingClaim | default (include "hl-composer.fullname" .) }}
+        {{- else }}
+          emptyDir: {}
+        {{- end }}
+      containers:
+        - name: composer-playground
+          image: "{{ .Values.pg.image.repository }}:{{ .Values.pg.image.tag }}"
+          imagePullPolicy: {{ .Values.pg.image.pullPolicy }}
+          # TODO: Add liveness and readiness probes
+          volumeMounts:
+            - mountPath: /home/composer/.composer
+              name: persistent-volume
+          resources:
+{{ toYaml .Values.pg.resources | indent 12 }}
+    {{- with .Values.pg.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.pg.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.pg.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+{{- end }}

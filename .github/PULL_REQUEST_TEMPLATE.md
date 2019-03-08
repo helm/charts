@@ -29,12 +29,12 @@ even continue reviewing your changes.
 
 #### Which issue this PR fixes
 *(optional, in `fixes #<issue number>(, fixes #<issue_number>, ...)` format, will close that issue when PR gets merged)*
-    - fixes #
+  - fixes #
 
 #### Special notes for your reviewer:
 
 #### Checklist
 [Place an '[x]' (no spaces) in all applicable fields. Please remove unrelated fields.]
-- [ ] [DCO](https://www.helm.sh/blog/helm-dco/index.html) signed
+- [ ] [DCO](https://github.com/helm/charts/blob/master/CONTRIBUTING.md#sign-your-work) signed
 - [ ] Chart Version bumped
 - [ ] Variables are documented in the README.md

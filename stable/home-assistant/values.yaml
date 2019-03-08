@@ -6,8 +6,9 @@ replicaCount: 1
 
 image:
   repository: homeassistant/home-assistant
-  tag: 0.77.1
+  tag: 0.84.6
   pullPolicy: IfNotPresent
+  pullSecrets: []
 
 service:
   type: ClusterIP
@@ -36,6 +37,8 @@ ingress:
   #    hosts:
   #      - home-assistant.local
 
+hostNetwork: false
+
 persistence:
   enabled: true
   ## home-assistant data Persistent Volume Storage Class
@@ -53,10 +56,20 @@ persistence:
   accessMode: ReadWriteOnce
   size: 5Gi
 
-## Additional hass-configurator container environment variable
+## Additional hass container environment variable
 ## For instance to add a http_proxy
 ##
 extraEnv: {}
+
+## Additional hass container environment variable from k8s secrets
+## For instance to add a password
+## can use `!env_var` in the home assistant configuration to reference these variables
+extraEnvSecrets:
+  # Example
+  # This will set ${MQTT_PASSWORD} to the 'password' key from the 'mqtt' secret
+  # MQTT_PASSWORD:
+  #   secret: mqtt
+  #   key: password
 
 configurator:
   enabled: false

@@ -12,6 +12,10 @@ metadata:
 {{- end }}
 spec:
   replicas: {{ .Values.replicaCount }}
+{{- if .Values.strategy }}
+  strategy:
+{{ toYaml .Values.strategy | indent 4 }}
+{{- end }}
   selector:
     matchLabels:
       app: {{ template "openldap.name" . }}
@@ -42,6 +46,9 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+{{- if .Values.customLdifFiles }}
+          args: [--copy-service]
+{{- end }}
           ports:
             - name: ldap-port
               containerPort: 389

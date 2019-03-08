@@ -10,6 +10,10 @@ spec:
     matchLabels:
       app: {{ include "hlf-ord.name" . }}
       release: {{ .Release.Name }}
+  # Ensure we allow our pod to be unavailable, so we can upgrade
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 1
   template:
     metadata:
       labels:
@@ -23,6 +27,41 @@ spec:
         {{- else }}
           emptyDir: {}
         {{- end }}
+        {{- if .Values.secrets.ord.cert }}
+        - name: id-cert
+          secret:
+            secretName: {{ .Values.secrets.ord.cert }}
+        {{- end }}
+        {{- if .Values.secrets.ord.key }}
+        - name: id-key
+          secret:
+            secretName: {{ .Values.secrets.ord.key }}
+        {{- end }}
+        {{- if .Values.secrets.ord.caCert }}
+        - name: cacert
+          secret:
+            secretName: {{ .Values.secrets.ord.caCert }}
+        {{- end }}
+        {{- if .Values.secrets.ord.intCaCert }}
+        - name: intcacert
+          secret:
+            secretName: {{ .Values.secrets.ord.intCaCert }}
+        {{- end }}
+        {{- if .Values.secrets.ord.tls }}
+        - name: tls
+          secret:
+            secretName: {{ .Values.secrets.ord.tls }}
+        {{- end }}
+        {{- if .Values.secrets.ord.tlsRootCert }}
+        - name: tls-rootcert
+          secret:
+            secretName: {{ .Values.secrets.ord.tlsRootCert }}
+        {{- end }}
+        {{- if .Values.secrets.ord.tlsClientRootCert }}
+        - name: tls-clientrootcert
+          secret:
+            secretName: {{ .Values.secrets.ord.tlsClientRootCert }}
+        {{- end }}
         {{- if .Values.secrets.genesis }}
         - name: genesis
           secret:
@@ -33,7 +72,6 @@ spec:
           secret:
             secretName: {{ .Values.secrets.adminCert }}
         {{- end }}
-
         {{- if .Values.secrets.caServerTls }}
         - name: ca-server-tls
           secret:
@@ -47,15 +85,28 @@ spec:
             - name: ord-port
               containerPort: 7050
               protocol: TCP
-          # TODO: Add liveness and readiness probes
+          livenessProbe:
+            exec:
+              command:
+              - ls
+              - /var/hyperledger
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          # TODO: Improve readiness probe (ideally `ps aux | awk '$11=="orderer"'`)
+          readinessProbe:
+            exec:
+              command:
+              - ls
+              - /var/hyperledger
+            initialDelaySeconds: 15
           command:
-            - sh
+            - bash
             - -c
             - |
 
-              while [ ! -d /hl_config/admin/admincerts ] || [ -z "$(ls -A /hl_config/admin/admincerts)" ];
+              while [ ! -d /var/hyperledger/admin_msp/admincerts ] || [ -z "$(ls -A /var/hyperledger/admin_msp/admincerts)" ];
               do
-                echo "\033[0;31m /hl_config/admin/admincerts must contain Ord admin certificates files \033[0m"
+                echo "\033[0;31m /var/hyperledger/admin_msp/admincerts must contain Ord admin certificates files \033[0m"
                 sleep 60
               done
 
@@ -65,100 +116,77 @@ spec:
                 sleep 60
               done
 
-              # Download Fabric CA-client if it does not exist
-              if [ ! -f /bin/fabric-ca-client ]
-              then
-                if [ ! -f /var/hyperledger/fabric-ca-${HLF_TOOLS_BUILD}.tar.gz ]
-                then
-                  # Curl is needed to download Fabric CA-client
-                  apt update
-                  apt install curl -y
-
-                  echo "Downloading Fabric CA-client"
-                  curl -f -s -C - https://nexus.hyperledger.org/content/repositories/releases/org/hyperledger/fabric-ca/hyperledger-fabric-ca/${HLF_TOOLS_BUILD}/hyperledger-fabric-ca-${HLF_TOOLS_BUILD}.tar.gz > /var/hyperledger/fabric-ca-${HLF_TOOLS_BUILD}.tar.gz
-                fi
-                echo "Unzipping Fabric CA-client"
-                tar xzf /var/hyperledger/fabric-ca-${HLF_TOOLS_BUILD}.tar.gz -C /
-              fi
-
-              while [ ! -f ${ORDERER_GENERAL_LOCALMSPDIR}/signcerts/cert.pem ];
+              while [ ! -d ${ORDERER_GENERAL_LOCALMSPDIR}/signcerts ];
               do
-                {{- if .Values.secrets.caServerTls }}
-                echo ">\033[0;35m fabric-ca-client enroll -d -u https://${CA_USERNAME}:${CA_PASSWORD}@${CA_ADDRESS} -M ${ORDERER_GENERAL_LOCALMSPDIR} --tls.certfiles /hl_config/ca_server/tls/tls.crt \033[0m"
-                fabric-ca-client enroll -d -u https://${CA_USERNAME}:${CA_PASSWORD}@${CA_ADDRESS} -M ${ORDERER_GENERAL_LOCALMSPDIR} --tls.certfiles /hl_config/ca_server/tls/tls.crt
-                {{- else }}
-                echo ">\033[0;35m fabric-ca-client enroll -d -u http://${CA_USERNAME}:${CA_PASSWORD}@${CA_ADDRESS} -M ${ORDERER_GENERAL_LOCALMSPDIR} \033[0m"
-                fabric-ca-client enroll -d -u http://${CA_USERNAME}:${CA_PASSWORD}@${CA_ADDRESS} -M ${ORDERER_GENERAL_LOCALMSPDIR}
-                {{- end }}
-
-                if [ ! -f ${ORDERER_GENERAL_LOCALMSPDIR}/signcerts/cert.pem ]
-                then
-                  echo ">\033[0;31m Unable to enroll Orderer, make sure you have registered them first \(sleeping 180 seconds and re-trying\) \033[0m"
-                  sleep 180
-                fi
+                echo "\033[0;31m ${ORDERER_GENERAL_LOCALMSPDIR}/signcerts directory must exist \033[0m"
+                sleep 60
               done
 
-              echo ">\033[0;32m Copy admincerts to ${ORDERER_GENERAL_LOCALMSPDIR}/admincerts \033[0m"
-              mkdir -p ${ORDERER_GENERAL_LOCALMSPDIR}/admincerts
-              cp /hl_config/admin/signcerts/* ${ORDERER_GENERAL_LOCALMSPDIR}/admincerts
-
-              echo ">\033[0;32m Setup admin certificates in ${ADMIN_MSP_PATH} \033[0m"
-              mkdir -p ${ADMIN_MSP_PATH} ${ADMIN_MSP_PATH}/cacerts ${ADMIN_MSP_PATH}/intermediatecerts
-              cp -L -r /hl_config/admin/* ${ADMIN_MSP_PATH}
-              cp ${ORDERER_GENERAL_LOCALMSPDIR}/cacerts/* ${ADMIN_MSP_PATH}/cacerts
-              cp ${ORDERER_GENERAL_LOCALMSPDIR}/intermediatecerts/* ${ADMIN_MSP_PATH}/intermediatecerts
-
-              # Create TLS certificate for Orderer
-              if [ ! -f ${ORDERER_GENERAL_TLS_PRIVATEKEY} ]
-              then
-
-                {{- if .Values.secrets.caServerTls }}
-                echo ">\033[0;35m fabric-ca-client enroll -d --enrollment.profile tls -u https://${CA_USERNAME}:${CA_PASSWORD}@${CA_ADDRESS} -M /tmp/tls --csr.hosts {{ include "hlf-ord.fullname" . }} --tls.certfiles /hl_config/ca_server/tls/tls.crt \033[0m"
-                fabric-ca-client enroll -d --enrollment.profile tls -u https://${CA_USERNAME}:${CA_PASSWORD}@${CA_ADDRESS} -M /tmp/tls --csr.hosts {{ include "hlf-ord.fullname" . }} --tls.certfiles /hl_config/ca_server/tls/tls.crt
-                {{- else }}
-                echo ">\033[0;35m fabric-ca-client enroll -d --enrollment.profile tls -u http://${CA_USERNAME}:${CA_PASSWORD}@${CA_ADDRESS} -M /tmp/tls --csr.hosts {{ include "hlf-ord.fullname" . }} \033[0m"
-                fabric-ca-client enroll -d --enrollment.profile tls -u http://${CA_USERNAME}:${CA_PASSWORD}@${CA_ADDRESS} -M /tmp/tls --csr.hosts {{ include "hlf-ord.fullname" . }}
-                {{- end }}
-
-
-                mkdir -p $(dirname $ORDERER_GENERAL_TLS_PRIVATEKEY)
-                cp /tmp/tls/keystore/* $ORDERER_GENERAL_TLS_PRIVATEKEY
-                mkdir -p $(dirname $ORDERER_GENERAL_TLS_CERTIFICATE)
-                cp /tmp/tls/signcerts/* $ORDERER_GENERAL_TLS_CERTIFICATE
-                rm -rf /tmp/tls
-              fi
-
-              # Create directories to avoid restarts
+              echo "\033[0;32m Create ${ORDERER_FILELEDGER_LOCATION} directory to avoid restarts \033[0m"
               mkdir -p ${ORDERER_FILELEDGER_LOCATION}
               mkdir -p ${ORDERER_FILELEDGER_LOCATION}/index
+
+              if [ $ORDERER_GENERAL_TLS_CLIENTAUTHREQUIRED ]
+              then
+                export ORDERER_GENERAL_TLS_CLIENTROOTCAS=$(echo $(ls $ORDERER_GENERAL_TLS_CLIENTROOTCAS) | echo "[$(sed 's/ /,/g')]")
+              fi
 
               echo ">\033[0;35m orderer \033[0m"
               orderer
           envFrom:
+            {{- if .Values.secrets.ord.cred }}
             - secretRef:
-                name: {{ include "hlf-ord.fullname" . }}
+                # Environmental variables CA_USERNAME and CA_PASSWORD
+                name: {{ .Values.secrets.ord.cred }}
+            {{- end }}
             - configMapRef:
                 name: {{ include "hlf-ord.fullname" . }}--ord
-          ports:
-            - name: ord-port
-              containerPort: 7050
-              protocol: TCP
           volumeMounts:
             - mountPath: /var/hyperledger
               name: data
+            {{- if .Values.secrets.ord.cert }}
+            - mountPath: /var/hyperledger/msp/signcerts
+              name: id-cert
+            {{- end }}
+            {{- if .Values.secrets.ord.key }}
+            - mountPath: /var/hyperledger/msp/keystore
+              name: id-key
+            {{- end }}
+            {{- if .Values.secrets.ord.caCert }}
+            - mountPath: /var/hyperledger/msp/cacerts
+              name: cacert
+            - mountPath: /var/hyperledger/admin_msp/cacerts
+              name: cacert
+            {{- end }}
+            {{- if .Values.secrets.ord.intCaCert }}
+            - mountPath: /var/hyperledger/msp/intermediatecerts
+              name: intcacert
+            - mountPath: /var/hyperledger/admin_msp/intermediatecerts
+              name: intcacert
+            {{- end }}
+            {{- if .Values.secrets.ord.tls }}
+            - mountPath: /var/hyperledger/tls/server/pair
+              name: tls
+            {{- end }}
+            {{- if .Values.secrets.ord.tlsRootCert }}
+            - mountPath: /var/hyperledger/tls/server/cert
+              name: tls-rootcert
+            {{- end }}
+            {{- if .Values.secrets.ord.tlsClientRootCert }}
+            - mountPath: /var/hyperledger/tls/client/cert
+              name: tls-clientrootcert
+            {{- end }}
             {{- if .Values.secrets.genesis }}
             - mountPath: /hl_config/genesis
               name: genesis
             {{- end }}
             {{- if .Values.secrets.adminCert }}
-            - mountPath: /hl_config/admin/admincerts
+            - mountPath: /var/hyperledger/admin_msp/admincerts
               name: admin-cert
-            - mountPath: /hl_config/admin/signcerts
+            - mountPath: /var/hyperledger/admin_msp/signcerts
               name: admin-cert
-            {{- end }}
-            {{- if .Values.secrets.caServerTls }}
-            - mountPath: /hl_config/ca_server/tls
-              name: ca-server-tls
+            - mountPath: /var/hyperledger/msp/admincerts
+              name: admin-cert
             {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}

@@ -16,7 +16,7 @@ host:
 
 image:
   repository: jtblin/kube2iam
-  tag: 0.10.0
+  tag: 0.10.4
   pullPolicy: IfNotPresent
 
 # AWS Access keys to inject as environment variables
@@ -38,6 +38,8 @@ affinity: {}
 ## Annotations to be added to pods
 ##
 podAnnotations: {}
+
+priorityClassName: ""
 
 podLabels: {}
 

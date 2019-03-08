@@ -2,7 +2,7 @@ apiVersion: v1
 appVersion: "2018-07-03"
 description: An OIDC authentication helper for Kubernetes
 name: kuberos
-version: 0.1.0
+version: 0.2.0
 home: https://github.com/negz/kuberos
 sources:
   - https://github.com/negz/kuberos
