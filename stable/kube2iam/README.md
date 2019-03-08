@@ -47,6 +47,7 @@ Parameter | Description | Default
 `host.ip` | IP address of host | `$(HOST_IP)`
 `host.iptables` | Add iptables rule | `false`
 `host.interface` | Host interface for proxying AWS metadata | `docker0`
+`host.port` | kube2iam app port | `8181`
 `image.repository` | Image | `jtblin/kube2iam`
 `image.tag` | Image tag | `0.10.4`
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
@@ -56,6 +57,13 @@ Parameter | Description | Default
 `rbac.create` | If true, create & use RBAC resources | `false`
 `rbac.serviceAccountName` | existing ServiceAccount to use (ignored if rbac.create=true) | `default`
 `resources` | pod resource requests & limits | `{}`
+`service.annotations` | Annotations to added to the service | `{}`
+`service.type` | Desired service type | `ClusterIP`
+`service.metricsPort` | kube2iam metrics port | `9559`
+`serviceMonitor.enabled` | Whether to create the `ServiceMonitor` resource for Prometheus Operator | `false`
+`serviceMonitor.crdApiGroup` | Prometheus Operator CRD resource API group | `monitoring.coreos.com`
+`serviceMonitor.additionalLabels` | Labels to add to the `ServiceMonitor` | `{}`
+`serviceMonitor.endpoints` | List of endpoint configurations to add to the `ServiceMonitor`. Supporting a list means a user can supply the various optional configuration options in the Prometheus Operator CRD without coding each one into the chart. | See the chart values files
 `updateStrategy` | Strategy for DaemonSet updates (requires Kubernetes 1.6+) | `OnDelete`
 `verbose` | Enable verbose output | `false`
 `tolerations` | List of node taints to tolerate (requires Kubernetes 1.6+) | `[]`

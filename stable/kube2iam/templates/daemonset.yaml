@@ -3,7 +3,7 @@ kind: DaemonSet
 metadata:
   labels:
     app: {{ template "kube2iam.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    chart: {{ template "kube2iam.chart" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
   name: {{ template "kube2iam.fullname" . }}
@@ -43,6 +43,7 @@ spec:
             - --verbose
           {{- end }}
             - --app-port={{ .Values.host.port }}
+            - --metrics-port={{ .Values.service.metricsPort }}
           env:
             - name: HOST_IP
               valueFrom:
@@ -74,6 +75,7 @@ spec:
           {{- end }}
           ports:
             - containerPort: {{ .Values.host.port }}
+            - containerPort: {{ .Values.service.metricsPort }}
         {{- if .Values.probe }}
           livenessProbe:
             httpGet:
