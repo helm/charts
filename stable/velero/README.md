@@ -5,23 +5,28 @@ https://github.com/heptio/velero/tree/v0.11.0
 
 ## Upgrading to v0.10
 
-Velero v0.11.0 introduces breaking changes. The below instructions are based on the [official upgrade guide](https://github.com/heptio/velero/blob/master/docs/upgrading-to-v0.10.md).
+Ark v0.10.0 introduces breaking changes. The below instructions are based on the [official upgrade guide](https://heptio.github.io/velero/v0.10.0/upgrading-to-v0.10).
 
 1. Pull the latest changes in this chart. If you're using Helm dependencies, update the chart version you're using in your `requirements.yaml` and run `helm dependency update`.
 
 2. Scale down
 
 ```sh
-kubectl scale -n velero deploy/velero --replicas 0
+kubectl scale -n heptio-ark deploy/ark --replicas 0
 ```
 
-3. Migrate file structure of your backup storage according to [guide](https://github.com/heptio/velero/blob/master/docs/storage-layout-reorg-v0.10.md)
+3. Migrate file structure of your backup storage according to [guide](https://heptio.github.io/velero/v0.10.0/storage-layout-reorg-v0.10.html)
 4. Adjust your `values.yaml` to the new structure and naming
 5. Upgrade your deployment
 
 ```sh
-helm upgrade --force --namespace velero velero ./velero
+helm upgrade --force --namespace heptio-ark ark ./ark
 ```
+## Upgrading to v0.11
+
+As of v0.11.0, Heptio Ark has become Velero.
+
+The [instructions found here](https://heptio.github.io/velero/v0.11.0/migrating-to-velero) will assist you in upgrading from Ark to Velero
 
 ## Prerequisites
 
