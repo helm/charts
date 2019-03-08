@@ -174,7 +174,7 @@ spec:
           name: wordpress-data
           subPath: php
         {{- if and .Values.allowOverrideNone .Values.customHTAccessCM}}
-        - mountPath: /opt/bitnami/wordpress
+        - mountPath: /opt/bitnami/wordpress/wordpress-htaccess.conf
           name: custom-htaccess
           subPath: wordpress-htaccess.conf
         {{- end }}
@@ -201,7 +201,10 @@ spec:
           initialDelaySeconds: 5
           timeoutSeconds: 1
         resources:
-  {{ toYaml .Values.metrics.resources | indent 10 }}
+{{ toYaml .Values.metrics.resources | indent 10 }}
+{{- end }}
+{{- if .Values.sidecars }}
+{{ toYaml .Values.sidecars | indent 6 }}
 {{- end }}
       volumes:
       {{- if and .Values.allowOverrideNone .Values.customHTAccessCM}}
