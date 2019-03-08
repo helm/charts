@@ -1,0 +1,16 @@
+name: cadence
+version: 0.1.0
+appVersion: 0.5.2
+description: Cadence is a distributed, scalable, durable, and highly available orchestration engine to execute asynchronous long-running business logic in a scalable and resilient way.
+icon: https://raw.githubusercontent.com/uber/cadence-web/master/client/assets/logo.svg
+apiVersion: v1
+home: https://cadenceworkflow.io/
+engine: gotpl
+sources:
+  - https://github.com/uber/cadence
+keywords:
+  - cadence
+  - workflow
+maintainers:
+  - name: Banzaicloud
+    email: info@banzaicloud.com

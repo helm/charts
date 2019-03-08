@@ -1,0 +1,138 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "cadence.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "cadence.name" . }}
+    helm.sh/chart: {{ include "cadence.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "cadence.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "cadence.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+
+      initContainers:
+      - name: check-cassandra
+        image: "cassandra:3"
+        command: ['sh', '-c', 'until cqlsh {{ template "cassandra.fullname" . }} -e "describe cluster"; do echo waiting for cassandra; sleep 2; done;']
+
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.server.image.repository }}:{{ .Values.server.image.tag }}"
+          imagePullPolicy: {{ .Values.server.image.pullPolicy }}
+          env:
+          - name: LOG_LEVEL
+            value: "{{ .Values.server.logLevel }}"
+          - name: CASSANDRA_SEEDS
+            value: {{ template "cassandra.fullname" . }}
+          - name: KEYSPACE
+            value: "{{ .Values.cassandra.keyspace }}"
+          - name: VISIBILITY_KEYSPACE
+            value: "{{ .Values.cassandraVisibilityKeyspace }}"
+          - name: CASSANDRA_CONSISTENCY
+            value: "{{ .Values.cassandra.consistency }}"
+          - name: NUM_HISTORY_SHARDS
+            value: "{{ .Values.server.history.numHistoryShards }}"
+          - name: BIND_ON_LOCALHOST
+            value: "{{ .Values.server.bindOnLocalHost }}"
+
+
+          ports:
+          {{- if .Values.server.frontend.enabled }}
+            - name: frontend
+              containerPort: {{ .Values.server.frontend.service.port }}
+              protocol: TCP
+          {{- end }}
+          {{- if .Values.server.matching.enabled }}
+            - name: matching
+              containerPort: {{ .Values.server.matching.service.port }}
+              protocol: TCP
+          {{- end }}
+          {{- if .Values.server.history.enabled }}
+            - name: history
+              containerPort: {{ .Values.server.history.service.port }}
+              protocol: TCP
+          {{- end }}
+          {{- if .Values.server.worker.enabled }}
+            - name: worker
+              containerPort: {{ .Values.server.worker.service.port }}
+              protocol: TCP
+          {{- end }}
+
+          livenessProbe:
+            {{- if .Values.server.frontend.enabled }}
+            initialDelaySeconds: 150
+            tcpSocket:
+              port: {{ .Values.server.frontend.service.port }}
+            {{- end }}
+            {{- if .Values.server.matching.enabled }}
+            initialDelaySeconds: 150
+            tcpSocket:
+              port: {{ .Values.server.matching.service.port }}
+            {{- end }}
+            {{- if .Values.server.history.enabled }}
+            initialDelaySeconds: 150
+            tcpSocket:
+              port: {{ .Values.server.history.service.port }}
+            {{- end }}
+            {{- if .Values.server.worker.enabled }}
+            initialDelaySeconds: 150
+            tcpSocket:
+              port: {{ .Values.server.worker.service.port }}
+            {{- end }}
+
+          readinessProbe:
+            {{- if .Values.server.frontend.enabled }}
+            initialDelaySeconds: 50
+            tcpSocket:
+              port: {{ .Values.server.frontend.service.port }}
+            {{- end }}
+            {{- if .Values.server.matching.enabled }}
+            initialDelaySeconds: 50
+            tcpSocket:
+              port: {{ .Values.server.matching.service.port }}
+            {{- end }}
+            {{- if .Values.server.history.enabled }}
+            initialDelaySeconds: 50
+            tcpSocket:
+              port: {{ .Values.server.history.service.port }}
+            {{- end }}
+            {{- if .Values.server.worker.enabled }}
+            initialDelaySeconds: 50
+            tcpSocket:
+              port: {{ .Values.server.worker.service.port }}
+            {{- end }}
+          volumeMounts:
+          - name: "{{ .Chart.Name }}-config"
+            mountPath: /cadence/config/docker_template.yaml
+            subPath: docker_template.yaml
+
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+
+      volumes:
+      - name: "{{ .Chart.Name }}-config"
+        configMap:
+          name: {{ include "cadence.fullname" . }}
+
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}

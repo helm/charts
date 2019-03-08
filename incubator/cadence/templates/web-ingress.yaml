@@ -1,0 +1,39 @@
+{{- if .Values.web.ingress.enabled -}}
+{{- $serviceName := include "cadence.fullname" . -}}
+{{- $servicePort := .Values.web.service.port -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "cadence.fullname" . }}-web
+  labels:
+    app.kubernetes.io/name: {{ include "cadence.name" . }}-web
+    helm.sh/chart: {{ include "cadence.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- with .Values.web.ingress.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
+spec:
+{{- if .Values.web.ingress.tls }}
+  tls:
+  {{- range .Values.web.ingress.tls }}
+    - hosts:
+      {{- range .hosts }}
+        - {{ . }}
+      {{- end }}
+      secretName: {{ .secretName }}
+  {{- end }}
+{{- end }}
+  rules:
+  {{- range .Values.web.ingress.hosts }}
+  {{- $url := splitList "/" . }}
+    - host: {{ first $url }}
+      http:
+        paths:
+          - path: /{{ rest $url | join "/" }}
+            backend:
+              serviceName: {{ $serviceName }}
+              servicePort: {{ $servicePort }}
+  {{- end}}
+{{- end }}

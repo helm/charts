@@ -1,0 +1,94 @@
+{{- if .Values.server.frontend.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "cadence.fullname" . }}-frontend
+  labels:
+    app.kubernetes.io/name: {{ include "cadence.name" . }}
+    helm.sh/chart: {{ include "cadence.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  type: {{ .Values.server.frontend.service.type }}
+  ports:
+    - port: {{ .Values.server.frontend.service.port }}
+      targetPort: {{ .Values.server.frontend.service.port }}
+      protocol: TCP
+      name: frontend
+  selector:
+    app.kubernetes.io/name: {{ include "cadence.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+
+---
+
+{{- if .Values.server.matching.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "cadence.fullname" . }}-matching
+  labels:
+    app.kubernetes.io/name: {{ include "cadence.name" . }}
+    helm.sh/chart: {{ include "cadence.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  type: {{ .Values.server.matching.service.type }}
+  ports:
+    - port: {{ .Values.server.matching.service.port }}
+      targetPort: {{ .Values.server.matching.service.port }}
+      protocol: TCP
+      name: matching
+  selector:
+    app.kubernetes.io/name: {{ include "cadence.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+
+---
+
+{{- if .Values.server.history.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "cadence.fullname" . }}-history
+  labels:
+    app.kubernetes.io/name: {{ include "cadence.name" . }}
+    helm.sh/chart: {{ include "cadence.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  type: {{ .Values.server.history.service.type }}
+  ports:
+    - port: {{ .Values.server.history.service.port }}
+      targetPort: {{ .Values.server.history.service.port }}
+      protocol: TCP
+      name: history
+  selector:
+    app.kubernetes.io/name: {{ include "cadence.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+
+---
+
+{{- if .Values.server.worker.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "cadence.fullname" . }}-worker
+  labels:
+    app.kubernetes.io/name: {{ include "cadence.name" . }}
+    helm.sh/chart: {{ include "cadence.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  type: {{ .Values.server.worker.service.type }}
+  ports:
+    - port: {{ .Values.server.worker.service.port }}
+      targetPort: {{ .Values.server.worker.service.port }}
+      protocol: TCP
+      name: worker
+  selector:
+    app.kubernetes.io/name: {{ include "cadence.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+

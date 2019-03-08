@@ -1,0 +1,90 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "cadence.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "cadence.name" . }}
+    helm.sh/chart: {{ include "cadence.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+data:
+  docker_template.yaml: |-
+    log:
+        stdout: true
+        level: "${LOG_LEVEL}"
+
+    persistence:
+        defaultStore: cass-default
+        visibilityStore: cass-visibility
+        numHistoryShards: ${NUM_HISTORY_SHARDS}
+        datastores:
+            cass-default:
+                cassandra:
+                    hosts: "${CASSANDRA_SEEDS}"
+                    keyspace: "${KEYSPACE}"
+                    consistency: "${CASSANDRA_CONSISTENCY}"
+            cass-visibility:
+                cassandra:
+                    hosts: "${CASSANDRA_SEEDS}"
+                    keyspace: "${VISIBILITY_KEYSPACE}"
+                    consistency: "${CASSANDRA_CONSISTENCY}"
+
+    ringpop:
+        name: cadence
+        bootstrapMode: hosts
+        bootstrapHosts: ${RINGPOP_SEEDS_JSON_ARRAY}
+        maxJoinDuration: 30s
+
+    services:
+        frontend:
+            rpc:
+                port: {{ .Values.server.frontend.service.port }}
+                bindOnIP: {{ .Values.server.frontend.bindOnIP }}
+
+        matching:
+            rpc:
+                port: {{ .Values.server.matching.service.port }}
+                bindOnIP: {{ .Values.server.matching.bindOnIP }}
+
+        history:
+            rpc:
+                port: {{ .Values.server.history.service.port }}
+                bindOnIP: {{ .Values.server.history.bindOnIP }}
+
+        worker:
+            rpc:
+                port: {{ .Values.server.worker.service.port }}
+                bindOnIP: {{ .Values.server.worker.bindOnIP }}
+    clustersInfo:
+        enableGlobalDomain: false
+        failoverVersionIncrement: 10
+        masterClusterName: "active"
+        currentClusterName: "active"
+        clusterInitialFailoverVersion:
+            active: 0
+        clusterAddress:
+            active:
+                rpcName: "cadence-frontend"
+                rpcAddress: "127.0.0.1:7933"
+
+    dcRedirectionPolicy:
+        policy: "noop"
+        toDC: ""
+
+    archival:
+        enableArchival: true
+        blobstore:
+            storeDirectory: "/tmp/blobstore/"
+            defaultBucket:
+                name: "cadence-development"
+                owner: "cadence"
+                retentionDays: 10
+            customBuckets:
+                - name: "custom-bucket-1"
+                  owner: "custom-owner-1"
+                  retentionDays: 10
+                - name: "custom-bucket-2"
+                  owner: "custom-owner-2"
+                  retentionDays: 5
+
+
