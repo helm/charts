@@ -3,16 +3,16 @@ kind: Deployment
 metadata:
   name: {{ include "prometheus-nats-exporter.fullname" . }}
   labels:
-    app: {{ include "prometheus-nats-exporter.name" . }}
-    chart: {{ include "prometheus-nats-exporter.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ include "prometheus-nats-exporter.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "prometheus-nats-exporter.chart" . }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ include "prometheus-nats-exporter.name" . }}
-      release: {{ .Release.Name }}
+      app.kubernetes.io/name: {{ include "prometheus-nats-exporter.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
       labels:
