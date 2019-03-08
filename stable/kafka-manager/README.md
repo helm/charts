@@ -43,7 +43,7 @@ Parameter | Description | Default
 `serviceAccount.create` | If true, create a service account for kafka-manager | `true`
 `serviceAccount.name` | Name of the service account to create or use | `{{ kafka-manager.fullname }}`
 `image.repository` | Container image repository | `zenko/kafka-manager`
-`image.tag` | Container image tag | `1.0.0`
+`image.tag` | Container image tag | `1.3.3.22`
 `image.pullPolicy` | Container image pull policy | `IfNotPresent`
 `zkHosts` | Zookeeper hosts required by the kafka-manager | `localhost:2181`
 `clusters` | Configuration of the clusters to manage | `{}`
