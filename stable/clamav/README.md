@@ -3,6 +3,7 @@
 ##  An Open-Source antivirus engine for detecting trojans, viruses, malware & other malicious threats.
 
 [ClamAV](https://www.clamav.net/) is the open source standard for mail gateway scanning software.
+ Developed by [Cisco Talos](https://github.com/Cisco-Talos/clamav-devel). This Helm Chart uses the [MailU](https://github.com/Mailu/Mailu) Docker image. 
 
 ## QuickStart
 
