@@ -2,16 +2,16 @@
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding
 metadata:
-  name: {{ template "ark.fullname" . }}-server
+  name: {{ template "velero.fullname" . }}-server
   labels:
-    chart: {{ template "ark.chart" . }}
+    chart: {{ template "velero.chart" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-    app: {{ template "ark.name" . }}
+    app: {{ template "velero.name" . }}
 subjects:
   - kind: ServiceAccount
     namespace: {{ .Release.Namespace }}
-    name: {{ template "ark.serverServiceAccount" . }}
+    name: {{ template "velero.serverServiceAccount" . }}
 roleRef:
   kind: ClusterRole
   name: cluster-admin

@@ -1,15 +1,15 @@
 {{- $root := . }}
 {{- with .Values.configuration }}
 {{- with .volumeSnapshotLocation }}
-apiVersion: ark.heptio.com/v1
+apiVersion: velero.heptio.com/v1
 kind: VolumeSnapshotLocation
 metadata:
   name: default
   labels:
-    chart: {{ template "ark.chart" $root }}
+    chart: {{ template "velero.chart" $root }}
     heritage: {{ $root.Release.Service }}
     release: {{ $root.Release.Name }}
-    app: {{ template "ark.name" $root }}
+    app: {{ template "velero.name" $root }}
 spec:
   provider: {{ .name  }}
   objectStorage:

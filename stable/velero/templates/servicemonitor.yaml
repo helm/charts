@@ -2,11 +2,11 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: {{ template "ark.fullname" . }}
+  name: {{ template "velero.fullname" . }}
   labels:
     release: {{ .Release.Name }}
-    app: {{ template "ark.name" . }}
-    chart: {{ template "ark.chart" . }}
+    app: {{ template "velero.name" . }}
+    chart: {{ template "velero.chart" . }}
     heritage: {{ .Release.Service }}
     {{- if .Values.metrics.serviceMonitor.additionalLabels }}
 {{ toYaml .Values.metrics.serviceMonitor.additionalLabels | indent 4 }}
@@ -15,7 +15,7 @@ spec:
   selector:
     matchLabels:
       release: {{ .Release.Name }}
-      app: {{ template "ark.name" . }}
+      app: {{ template "velero.name" . }}
   endpoints:
   - port: monitoring
     interval: {{ .Values.metrics.scrapeInterval }}

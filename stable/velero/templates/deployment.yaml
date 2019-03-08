@@ -3,23 +3,23 @@
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
-  name: {{ template "ark.fullname" . }}
+  name: {{ template "velero.fullname" . }}
   labels:
     release: {{ .Release.Name }}
-    app: {{ template "ark.name" . }}
-    chart: {{ template "ark.chart" . }}
+    app: {{ template "velero.name" . }}
+    chart: {{ template "velero.chart" . }}
     heritage: {{ .Release.Service }}
 spec:
   replicas: 1
   selector:
     matchLabels:
       release: {{ .Release.Name }}
-      app: {{ template "ark.name" . }}
+      app: {{ template "velero.name" . }}
   template:
     metadata:
       labels:
         release: {{ .Release.Name }}
-        app: {{ template "ark.name" . }}
+        app: {{ template "velero.name" . }}
       {{- if or .Values.podAnnotations .Values.metrics.enabled }}
       annotations:
 {{- if .Values.podAnnotations }}
@@ -31,9 +31,9 @@ spec:
       {{- end }}
     spec:
       restartPolicy: Always
-      serviceAccountName: {{ template "ark.serverServiceAccount" . }}
+      serviceAccountName: {{ template "velero.serverServiceAccount" . }}
       containers:
-        - name: ark
+        - name: velero
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           {{- if .Values.metrics.enabled }}
@@ -42,7 +42,7 @@ spec:
               containerPort: 8085
           {{- end }}
           command:
-            - /ark
+            - /velero
           args:
             - server
           {{- with .Values.configuration }}
@@ -62,7 +62,7 @@ spec:
           {{- if eq $provider "azure" }}
           envFrom:
             - secretRef:
-                name: {{ template "ark.secretName" . }}
+                name: {{ template "velero.secretName" . }}
           {{- end }}
           {{- with .Values.resources }}
           resources:
@@ -83,7 +83,7 @@ spec:
             - name: GOOGLE_APPLICATION_CREDENTIALS
           {{- end }}
               value: /credentials/cloud
-            - name: ARK_SCRATCH_DIR
+            - name: VELERO_SCRATCH_DIR
               value: /scratch
           {{ if .Values.configuration.extraEnvVars }}
           {{- range $key, $value := .Values.configuration.extraEnvVars }}
@@ -100,7 +100,7 @@ spec:
         {{- if and .Values.credentials.useSecret (or (eq $provider "aws") (eq $provider "gcp")) }}
         - name: cloud-credentials
           secret:
-            secretName: {{ template "ark.secretName" . }}
+            secretName: {{ template "velero.secretName" . }}
         {{- end }}
         - name: plugins
           emptyDir: {}

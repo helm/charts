@@ -5,8 +5,8 @@ kind: DaemonSet
 metadata:
   name: restic
   labels:
-    app: {{ template "ark.name" . }}
-    chart: {{ template "ark.chart" . }}
+    app: {{ template "velero.name" . }}
+    chart: {{ template "velero.chart" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 spec:
@@ -19,7 +19,7 @@ spec:
         name: restic
     spec:
       {{- if .Values.serviceAccount.server.create }}
-      serviceAccountName: {{ template "ark.serverServiceAccount" . }}
+      serviceAccountName: {{ template "velero.serverServiceAccount" . }}
       {{- end }}
       securityContext:
         runAsUser: 0
@@ -27,7 +27,7 @@ spec:
         {{- if and .Values.credentials.useSecret (or (eq $provider "aws") (eq $provider "gcp")) }}
         - name: cloud-credentials
           secret:
-            secretName: {{ template "ark.secretName" . }}
+            secretName: {{ template "velero.secretName" . }}
         {{- end }}
         - name: host-pods
           hostPath:
@@ -35,11 +35,11 @@ spec:
         - name: scratch
           emptyDir: {}
       containers:
-        - name: ark
+        - name: velero
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command:
-            - /ark
+            - /velero
           args:
             - restic
             - server
@@ -56,10 +56,10 @@ spec:
           {{- if and .Values.credentials.useSecret (eq $provider "azure") }}
           envFrom:
             - secretRef:
-                name: {{ template "ark.secretName" . }}
+                name: {{ template "velero.secretName" . }}
           {{- end }}
           env:
-            - name: HEPTIO_ARK_NAMESPACE
+            - name: HEPTIO_VELERO_NAMESPACE
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
@@ -67,7 +67,7 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: spec.nodeName
-            - name: ARK_SCRATCH_DIR
+            - name: VELERO_SCRATCH_DIR
               value: /scratch
             {{- if eq $provider "aws" }}
             - name: AWS_SHARED_CREDENTIALS_FILE
