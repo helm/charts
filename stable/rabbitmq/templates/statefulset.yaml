@@ -95,7 +95,7 @@ spec:
           - name: config-volume
             mountPath: /opt/bitnami/rabbitmq/conf
           - name: data
-            mountPath: /opt/bitnami/rabbitmq/var/lib/rabbitmq/
+            mountPath: "{{ .Values.persistence.path }}"
           {{- if .Values.rabbitmq.loadDefinition.enabled }}
           - name: load-definition-volume
             mountPath: /app
