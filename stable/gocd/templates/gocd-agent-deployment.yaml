@@ -141,6 +141,9 @@ spec:
           {{- end }}
           securityContext:
             privileged: {{ .Values.agent.privileged }}
+      {{- if .Values.agent.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ .Values.agent.terminationGracePeriodSeconds }}
+      {{- end }}
       restartPolicy: {{ .Values.agent.restartPolicy }}
     {{- if .Values.agent.nodeSelector }}
       nodeSelector:
