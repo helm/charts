@@ -121,7 +121,7 @@ spec:
           - name: ATLANTIS_GITLAB_TOKEN
             valueFrom:
               secretKeyRef:
-                name: {{ template "atlantis.name" . }}-webhook
+                name: {{ template "atlantis.fullname" . }}-webhook
                 key: gitlab_token
           - name: ATLANTIS_GITLAB_WEBHOOK_SECRET
             valueFrom:
@@ -150,6 +150,14 @@ spec:
                 name: {{ template "atlantis.fullname" . }}-webhook
                 key: bitbucket_secret
           {{- end }}
+          {{- end }}
+          {{- if .Values.requireApproval }}
+          - name: ATLANTIS_REQUIRE_APPROVAL
+            value: "true"
+          {{- end }}
+          {{- if .Values.requireMergeable }}
+          - name: ATLANTIS_REQUIRE_MERGEABLE
+            value: "true"
           {{- end }}
           {{- if .Values.livenessProbe.enabled }}
           livenessProbe:

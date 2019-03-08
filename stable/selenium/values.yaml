@@ -1,7 +1,7 @@
 global:
   ## NodeSelector to be used in every deployment
   ## hub, chrome, firefox, chromeDebug and firefoxDebug
-  ## can also be spceifed at chart level see below
+  ## can also be specified at chart level see below
   nodeSelector:
   #  label: value
   ## Configure HostAliases
@@ -41,6 +41,15 @@ hub:
 
   ## Path for checking readiness and liveness via HTTP Request
   probePath: "/wd/hub/status"
+
+  ## Additional environment variables to set
+  extraEnvs: []
+  # extraEnvs:
+  #   - name: FOO
+  #     valueFrom:
+  #       secretKeyRef:
+  #         key: FOO
+  #         name: secret-resource
 
   ## Set the JAVA_TOOL_OPTIONS environment variable
   ## If you find your selenium hub is OOMKilled, try adding -XX:+UseSerialGC
@@ -102,7 +111,7 @@ hub:
   # gridBrowserTimeout: 0
   # gridMaxSession: 5
   ## In milliseconds
-  # gridUnregisterIfStillDownAfer: 30000
+  # gridUnregisterIfStillDownAfter: 30000
   # timeZone: UTC
 
   ## NodeSelector to be used for the hub
@@ -143,6 +152,15 @@ chrome:
 
   ## Configure annotations on the chrome pods
   podAnnotations: {}
+
+  ## Additional environment variables to set
+  extraEnvs: []
+  # extraEnvs:
+  #   - name: FOO
+  #     valueFrom:
+  #       secretKeyRef:
+  #         key: FOO
+  #         name: secret-resource
 
   ## Set the JAVA_TOOL_OPTIONS environment variable
   ## If you find your selenium node is OOMKilled, try adding -XX:+UseSerialGC
@@ -223,6 +241,15 @@ chromeDebug:
   ## Configure annotations on the chrome debug pods
   podAnnotations: {}
 
+  ## Additional environment variables to set
+  extraEnvs: []
+  # extraEnvs:
+  #   - name: FOO
+  #     valueFrom:
+  #       secretKeyRef:
+  #         key: FOO
+  #         name: secret-resource
+
   ## Set the JAVA_TOOL_OPTIONS environment variable
   ## If you find your selenium hub is OOMKilled, try adding -XX:+UseSerialGC
   javaOpts: "-Xmx900m"
@@ -301,6 +328,15 @@ firefox:
   ## Configure annotations on the firefox pods
   podAnnotations: {}
 
+  ## Additional environment variables to set
+  extraEnvs: []
+  # extraEnvs:
+  #   - name: FOO
+  #     valueFrom:
+  #       secretKeyRef:
+  #         key: FOO
+  #         name: secret-resource
+
   ## Set the JAVA_TOOL_OPTIONS environment variable
   ## If you find your selenium hub is OOMKilled, try adding -XX:+UseSerialGC
   javaOpts: "-Xmx900m"
@@ -365,6 +401,15 @@ firefoxDebug:
 
   ## Configure annotations on the firefox debug pods
   podAnnotations: {}
+
+  ## Additional environment variables to set
+  extraEnvs: []
+  # extraEnvs:
+  #   - name: FOO
+  #     valueFrom:
+  #       secretKeyRef:
+  #         key: FOO
+  #         name: secret-resource
 
   ## Set the JAVA_TOOL_OPTIONS environment variable
   ## If you find your selenium hub is OOMKilled, try adding -XX:+UseSerialGC

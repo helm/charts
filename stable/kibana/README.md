@@ -57,6 +57,7 @@ The following table lists the configurable parameters of the kibana chart and th
 | `ingress.tls`                                 | Ingress TLS configuration                  | None:                                  |
 | `nodeSelector`                                | node labels for pod assignment             | `{}`                                   |
 | `podAnnotations`                              | annotations to add to each pod             | `{}`                                   |
+| `podLabels`                                   | labels to add to each pod                  | `{}`                                   |
 | `replicaCount`                                | desired number of pods                     | `1`                                    |
 | `revisionHistoryLimit`                        | revisionHistoryLimit                       | `3`                                    |
 | `serviceAccountName`                          | DEPRECATED: use serviceAccount.name        | `nil`                                  |
@@ -80,6 +81,7 @@ The following table lists the configurable parameters of the kibana chart and th
 | `service.clusterIP`                           | static clusterIP or None for headless services | None:                              |
 | `service.annotations`                         | Kubernetes service annotations             | None:                                  |
 | `service.labels`                              | Kubernetes service labels                  | None:                                  |
+| `service.selector`                            | Kubernetes service selector                | `{}`                                   |
 | `tolerations`                                 | List of node taints to tolerate            | `[]`                                   |
 | `dashboardImport.timeout`                     | Time in seconds waiting for Kibana to be in green overall state | `60`                                   |
 | `dashboardImport.xpackauth.enabled`           | Enable Xpack auth                          | `false`                                |
@@ -106,6 +108,7 @@ The following table lists the configurable parameters of the kibana chart and th
 | `securityContext.fsGroup`                     | fsGroup id to run in pods                  | `2000`                                  |
 | `extraConfigMapMounts`                        | Additional configmaps to be mounted        | `[]`                                    |
 | `deployment.annotations`                      | Annotations for deployment                 | `{}`                                    |
+| `initContainers`                              | Init containers to add to the kibana deployment | `{}`                               |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
