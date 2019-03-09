@@ -2,7 +2,7 @@
 
 ## Prerequisites Details
 * Kubernetes 1.8
-* PV support on the underlying infrastructure
+* PV support on the underlying infrastructure. [Docker for windows hostpath provisioner is not supported](https://github.com/cockroachdb/docs/issues/3184).
 * If you want to secure your cluster to use TLS certificates for all network
   communication, [Helm must be installed with RBAC
   privileges](https://github.com/kubernetes/helm/blob/master/docs/rbac.md)
@@ -102,6 +102,8 @@ The following table lists the configurable parameters of the CockroachDB chart a
 | `Secure.ServiceAccount.Name`   | Name of RBAC service account to use              | `""`                                      |
 | `JoinExisting`                 | List of already-existing cockroach instances     | `[]`                                      |
 | `Locality`                     | Locality attribute for this deployment           | `""`                                      |
+| `ExtraArgs`                    | Additional command-line arguments                | `[]`                                      |
+| `ExtraSecretMounts`            | Additional secrets to mount at cluster members   | `[]`                                      |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
