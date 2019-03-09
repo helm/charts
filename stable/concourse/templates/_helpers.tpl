@@ -45,3 +45,11 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- define "concourse.namespacePrefix" -}}
 {{- default (printf "%s-" .Release.Name ) .Values.concourse.web.kubernetes.namespacePrefix -}}
 {{- end -}}
+
+{{- define "concourse.are-there-additional-volumes.with-the-name.concourse-work-dir" }}
+  {{- range .Values.worker.additionalVolumes }}
+    {{- if .name | eq "concourse-work-dir" }}
+      {{- .name }}
+    {{- end }}
+  {{- end }}
+{{- end }}
