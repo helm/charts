@@ -135,6 +135,8 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `master.nodeAffinity`                | Master node affinity policy                                         | `{}`                                                |
 | `master.podManagementPolicy`         | Master pod creation strategy                                        | `OrderedReady`                                      |
 | `master.updateStrategy`              | Master node update strategy policy                                  | `{type: "onDelete"}`                                |
+| `master.hooks.preStop`               | Master nodes: Lifecycle hook script to execute prior the pod stops  | `nil`                                               |
+| `master.hooks.preStart`              | Master nodes: Lifecycle hook script to execute after the pod starts | `nil`                                               |
 | `data.initResources`                 | Data initContainer resources requests & limits                      | `{}`                                                |
 | `data.additionalJavaOpts`            | Parameters to be added to `ES_JAVA_OPTS` environment variable for data | `""`                                             |
 | `data.exposeHttp`                    | Expose http port 9200 on data Pods for monitoring, etc              | `false`                                             |

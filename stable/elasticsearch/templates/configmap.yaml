@@ -153,3 +153,12 @@ data:
   client-post-start-hook.sh: |-
 {{ tpl .Values.client.hooks.postStart . | indent 4 }}
 {{- end }}
+
+{{- if .Values.master.hooks.preStop }}
+  master-pre-stop-hook.sh: |-
+{{ tpl .Values.master.hooks.preStop . | indent 4 }}
+{{- end }}
+{{- if .Values.master.hooks.postStart }}
+  master-post-start-hook.sh: |-
+{{ tpl .Values.master.hooks.postStart . | indent 4 }}
+{{- end }}

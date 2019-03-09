@@ -213,6 +213,12 @@ master:
     # maxUnavailable: 1
   updateStrategy:
     type: OnDelete
+  hooks: {}
+    ## (string) Script to execute prior the master pod stops.
+    # preStop: |-
+
+    ## (string) Script to execute after the master pod starts.
+    # postStart: |-
 
 data:
   name: data
