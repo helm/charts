@@ -1196,7 +1196,7 @@ web:
   ##
   ## Ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
   ##
-  annotations:
+  annotations: {}
 
   ## Node selector for web nodes.
   ## Ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
@@ -1533,7 +1533,8 @@ postgresql:
     ##
     enabled: true
 
-    ## Concourse data Persistent Volume Storage Class
+    ## Concourse data Persistent Volume Storage Class.
+    ##
     ## If defined, storageClassName: <storageClass>
     ## If set to "-", storageClassName: "", which disables dynamic provisioning
     ## If undefined (the default) or set to null, no storageClassName spec is
