@@ -31,3 +31,9 @@ data:
       useExecHealthCheck: false
       serviceType: NodePort
     {{- end }}
+{{- if  and .Values.halyard.additionalServiceConfigMaps.create .Values.halyard.additionalServiceConfigMaps.data }}
+{{- range $index, $content := .Values.halyard.additionalServiceConfigMaps.data }}
+  {{ $index }}: |-
+{{ $content | indent 4 }}
+{{- end }}
+{{- end }}

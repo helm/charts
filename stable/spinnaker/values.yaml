@@ -35,6 +35,9 @@ halyard:
             remoteIpHeader: X-Forwarded-For
             internalProxies: .*
             httpsServerPort: X-Forwarded-Port
+  additionalServiceConfigMaps:
+    create: false
+    data: {}
 
   ## Uncomment if you want to add extra commands to the init script
   ## run by the init container before halyard is started.
