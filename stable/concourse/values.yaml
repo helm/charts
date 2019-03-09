@@ -19,7 +19,7 @@ image: concourse/concourse
 ##      of `concourse/concourse`.
 ## Ref: https://hub.docker.com/r/concourse/concourse/tags/
 ##
-imageTag: "4.2.2"
+imageTag: "5.0.0"
 
 ## Specific image digest to use in place of a tag.
 ## Ref: https://kubernetes.io/docs/concepts/configuration/overview/#container-images
@@ -40,7 +40,7 @@ imagePullPolicy: IfNotPresent
 ##   imagePullSecrets:
 ##    - myRegistryKeySecretName
 ##
-imagePullSecrets:
+imagePullSecrets: []
 
 
 ## Configuration values for the Concourse application (worker and web components).
@@ -52,6 +52,19 @@ concourse:
   ## through the `concourse web` command.
   ##
   web:
+    ## Enable equivalent resources across pipelines and teams to share a single version history.
+    ## Ref: https://concourse-ci.org/global-resources.html
+    ##
+    enableGlobalResources: true
+
+    ## The number of attempts secret will be retried to be fetched,
+    ## in case a retryable error happens.
+    ##
+    secretRetryAttempts:
+
+    ## The interval between secret retry retieval attempts.
+    ##
+    secretRetryInterval:
 
     ## Minimum level of logs to see. Possible options: debug, info, error.
     ##
@@ -120,7 +133,7 @@ concourse:
 
     ## Port on which to listen for the pprof debugger endpoints.
     ##
-    debugBindPort:
+    debugBindPort: 8079
 
     ## Length of time for a intercepted session to be idle before terminating.
     ##
@@ -139,7 +152,7 @@ concourse:
     resourceTypeCheckingInterval:
 
     ## Method by which a worker is selected during container placement.
-    ## Possible values: volume-locality | random
+    ## Possible values: volume-locality | random | fewest-build-containers
     containerPlacementStrategy:
 
     ## How long to wait for Baggageclaim to send the response header.
@@ -194,7 +207,7 @@ concourse:
 
       ## Whether or not to use SSL.
       ##
-      sslmode:
+      sslmode: disable
 
       ## Dialing timeout. (0 means wait indefinitely)
       ##
@@ -236,6 +249,9 @@ concourse:
       ##
       configPath:
 
+    ## Configuration for using AWS SSM as a credential manager.
+    ## Ref: https://concourse-ci.org/creds.html#asm
+    ##
     awsSecretsManager:
       ## Enable the use of AWS Secrets Manager for credential management.
       ##
@@ -253,6 +269,9 @@ concourse:
       ##
       teamSecretTemplate:
 
+    ## Configuration for using AWS SSM as a credential manager.
+    ## Ref: https://concourse-ci.org/creds.html#ssm
+    ##
     awsSsm:
       ## Enable the use of AWS SSM.
       ##
@@ -271,7 +290,7 @@ concourse:
       teamSecretTemplate:
 
 
-    ## Configuring for using Vault as a credential manager.
+    ## Configuration for using Vault as a credential manager.
     ## Ref: https://concourse-ci.org/creds.html#vault
     ##
     vault:
@@ -295,7 +314,7 @@ concourse:
       ## Vault authentication backend, leave this blank if using an initial periodic token.
       ## Currently supported backends: token, approle, cert.
       ##
-      authBackend:
+      authBackend: ""
 
       ## Cache returned secrets for their lease duration in memory
       ##
@@ -363,6 +382,10 @@ concourse:
       ## A key-value attribute to attach to emitted metrics.
       ##
       attribute:
+
+      ## Enable capturing of error log metrics.
+      ##
+      captureErrorMetrics: false
 
     datadog:
       enabled: false
@@ -472,6 +495,11 @@ concourse:
       ##
       oneOffGracePeriod: 5m
 
+      ## Period after which to reap containers and volumes that were created but
+      ## went missing from the worker.
+      ##
+      missingGracePeriod:
+
     syslog:
       ## Enables the emission of build logs to external log ingesters through
       ## using the syslog protocol.
@@ -509,16 +537,16 @@ concourse:
       duration:
 
       mainTeam:
+        ## Configuration file for specifying team params.
+        ## Ref: https://concourse-ci.org/managing-teams.html#setting-roles
+        ##
+        config:
+
         ## List of local Concourse users to be included as members of the `main` team.
         ## Make sure you have local users support enabled (`concourse.web.localAuth.enabled`) and
         ## that the users were added (`local-users` secret).
         ##
         localUser: "test"
-
-        ## Setting this flag will whitelist all logged in users in the system. ALL OF THEM.
-        ## If, for example, you've configured GitHub, any user with a GitHub account will have access to your team.
-        ##
-        allowAllUsers: false
 
         ## Authentication (Main Team) (CloudFoundry)
         ##
@@ -538,6 +566,18 @@ concourse:
           ## (Deprecated) List of whitelisted CloudFoundry space guids
           ##
           spaceGuid:
+
+        ## Authentication (Main Team) (Bitbucket Cloud)
+        ##
+        bitbucketCloud:
+
+          ## List of whitelisted Bitbucket Cloud users
+          ##
+          user:
+
+          ## List of whitelisted Bitbucket Cloud teams
+          ##
+          team:
 
         ## Authentication (Main Team) (GitHub)
         ##
@@ -632,6 +672,11 @@ concourse:
         ## CA certificate of GitHub Enterprise deployment
         ##
         useCaCert: false
+
+      ## Authentication (BitbucketCloud)
+      ##
+      bitbucketCloud:
+        enabled: false
 
       ## Authentication (GitLab)
       gitlab:
@@ -809,9 +854,13 @@ concourse:
       ##
       bindPort: 2222
 
+      ## IP address on which to listen for the pprof debugger endpoints (default: 127.0.0.1)
+      ##
+      debugBindIp:
+
       ## Port on which to listen for TSA pprof server.
       ##
-      bindDebugPort:
+      debugBindPort: 2221
 
       ## IP address of this TSA, reachable by the ATCs. Used for forwarded worker addresses.
       ##
@@ -842,6 +891,38 @@ concourse:
       heartbeatInterval:
 
   worker:
+    ## Signal to send to the worker container when shutting down.
+    ## Possible values:
+    ##
+    ## - SIGUSR1: land the worker, and
+    ## - SIGUSR2: retire the worker.
+    ##
+    ## Note.: using SIGUSR2 with persistence enabled implies the use of an
+    ## initContainer that removes any data the existed previously under
+    ## `concourse.worker.workDir` as the action of `retire`ing a worker implies
+    ## that no state comes back with it when re-registering.
+    ##
+    ## Ref: https://concourse-ci.org/concourse-worker.html
+    ## Ref: https://concourse-ci.org/worker-internals.html
+    ##
+    shutdownSignal: SIGUSR2
+
+    ## Duration after which the registration should be swapped to another random SSH gateway.
+    ##
+    rebalanceInterval:
+
+    ## IP address on which to listen for health checking requests.
+    ##
+    healthcheckBindIp:
+
+    ## Port on which to listen for health checking requests.
+    ##
+    healthcheckBindPort: 8888
+
+    ## HTTP timeout for the full duration of health checking.
+    ##
+    healthcheckTimeout:
+
     ## The name to set for the worker during registration. If not specified, the hostname will be used.
     ##
     name:
@@ -870,9 +951,13 @@ concourse:
     ##
     ephemeral:
 
+    ## IP address on which to listen for the pprof debugger endpoints.
+    ##
+    debugBindIp:
+
     ## Port on which to listen for beacon pprof server.
     ##
-    bindDebugPort: 9099
+    debugBindPort: 7776
 
     ## Version of the worker. This is normally baked in to the binary, so this flag is hidden.
     ##
@@ -884,7 +969,7 @@ concourse:
 
     ## IP address on which to listen for the Garden server.
     ##
-    bindIp: 127.0.0.1
+    bindIp:
 
     ## Port on which to listen for the Garden server.
     ##
@@ -894,14 +979,14 @@ concourse:
     ##
     peerIp:
 
-    ## Minimum level of logs to see.
+    ## Minimum level of logs to see. Possible options: debug, info, error.
     ##
-    logLevel: info
+    logLevel:
 
     tsa:
       ## TSA host to forward the worker through. Can be specified multiple times.
       ##
-      host: 127.0.0.1:2222
+      host:
 
       ## File containing a public key to expect from the TSA.
       ##
@@ -912,132 +997,29 @@ concourse:
       workerPrivateKey:
 
     garden:
-      ## Minimum level of logs to see.
-      # logLevel: info
-      ## format of log timestamps
-      # timeFormat: unix-epoch
-      ## Bind with TCP on the given IP.
-      # bindIp:
-      ## Bind with TCP on the given port.
-      bindPort: 7777
-      ## Bind with Unix on the given socket path.
-      # bindSocket: /tmp/garden.sock
-      ## Bind the debug server on the given IP.
-      # debugBindIp:
-      ## Bind the debug server to the given port.
-      # debugBindPort: 17013
-      ## Skip the preparation part of the host that requires root privileges
-      # skipSetup:
-      ## Directory in which to store container data.
-      # depot: /var/run/gdn/depot
-      ## Path in which to store properties.
-      # propertiesPath:
-      ## Path in which to store temporary sockets
-      # consoleSocketsPath:
-      ## Clean up proccess dirs on first invocation of wait
-      # cleanupProcessDirsOnWait:
-      ## Disable creation of privileged containers
-      # disablePrivilegedContainers:
-      ## The lowest numerical subordinate user ID the user is allowed to map
-      # uidMapStart: 1
-      ## The number of numerical subordinate user IDs the user is allowed to map
-      # uidMapLength:
-      ## The lowest numerical subordinate group ID the user is allowed to map
-      # gidMapStart: 1
-      ## The number of numerical subordinate group IDs the user is allowed to map
-      # gidMapLength:
-      ## Default rootfs to use when not specified on container creation.
-      # defaultRootfs:
-      ## Default time after which idle containers should expire.
-      # defaultGraceTime:
-      ## Clean up all the existing containers on startup.
-      # destroyContainersOnStartup:
-      ## Apparmor profile to use for unprivileged container processes
-      # apparmor:
-      ## Directory in which to extract packaged assets
-      # assetsDir: /var/gdn/assets
-      ## Path to the 'dadoo' binary.
-      # dadooBin:
-      ## Path to the 'nstar' binary.
-      # nstarBin:
-      ## Path to the 'tar' binary.
-      # tarBin:
-      ## path to the iptables binary
-      # iptablesBin: /sbin/iptables
-      ## path to the iptables-restore binary
-      # iptablesRestoreBin: /sbin/iptables-restore
-      ## Path execute as pid 1 inside each container.
-      # initBin:
-      ## Path to the runtime plugin binary.
-      # runtimePlugin: runc
-      ## Extra argument to pass to the runtime plugin. Can be specified multiple times.
-      # runtimePluginExtraArg:
-      ## Directory on which to store imported rootfs graph data.
-      # graph:
-      ## Disk usage of the graph dir at which cleanup should trigger, or -1 to disable graph cleanup.
-      # graphCleanupThresholdInMegabytes: -1
-      ## Image that should never be garbage collected. Can be specified multiple times.
-      # persistentImage:
-      ## Path to image plugin binary.
-      # imagePlugin:
-      ## Extra argument to pass to the image plugin to create unprivileged images. Can be specified multiple times.
-      # imagePluginExtraArg:
-      ## Path to privileged image plugin binary.
-      # privilegedImagePlugin:
-      ## Extra argument to pass to the image plugin to create privileged images. Can be specified multiple times.
-      # privilegedImagePluginExtraArg:
-      ## Docker registry API endpoint.
-      # dockerRegistry: registry-1.docker.io
-      ## Docker registry to allow connecting to even if not secure. Can be specified multiple times.
-      # insecureDockerRegistry:
-      ## Network range to use for dynamically allocated container subnets.
-      # networkPool: 10.254.0.0/22
-      ## Allow network access to the host machine.
-      # allowHostAccess:
-      ## Network ranges to which traffic from containers will be denied. Can be specified multiple times.
-      # denyNetwork:
-      ## DNS server IP address to use instead of automatically determined servers. Can be specified multiple times.
-      # dnsServer:
-      ## DNS server IP address to append to the automatically determined servers. Can be specified multiple times.
-      # additionalDnsServer:
-      ## Per line hosts entries. Can be specified multiple times and will be appended verbatim in order to /etc/hosts
-      # additionalHostEntry:
-      ## IP address to use to reach container's mapped ports. Autodetected if not specified.
-      # externalIp:
-      ## Start of the ephemeral port range used for mapped container ports.
-      # portPoolStart: 61001
-      ## Size of the port pool used for mapped container ports.
-      # portPoolSize: 4534
-      ## Path in which to store port pool properties.
-      # portPoolPropertiesPath:
-      ## MTU size for container network interfaces. Defaults to the MTU of the interface used for outbound access by the host. Max allowed value is 1500.
-      # mtu:
-      ## Path to network plugin binary.
-      # networkPlugin:
-      ## Extra argument to pass to the network plugin. Can be specified multiple times.
-      # networkPluginExtraArg:
-      ## Maximum number of microseconds each cpu share assigned to a container allows per quota period
-      # cpuQuotaPerShare: 0
-      ## Set hard limit for the tcp buf memory, value in bytes
-      # tcpMemoryLimit: 0
-      ## Default block IO weight assigned to a container
-      # defaultContainerBlockioWeight: 0
-      ## Maximum number of containers that can be created.
-      # maxContainers: 0
-      ## Disable swap memory limit
-      # disableSwapLimit:
-      ## Interval on which to emit metrics.
-      # metricsEmissionInterval: 1m
-      ## Origin identifier for Dropsonde-emitted metrics.
-      # dropsondeOrigin: garden-linux
-      ## Destination for Dropsonde-emitted metrics.
-      # dropsondeDestination: 127.0.0.1:3457
-      ## Path to a containerd socket.
-      # containerdSocket:
-      ## Use containerd to run processes in containers.
-      # useContainerdForProcesses:
-      ## Enable proxy DNS server.
-      # dnsProxyEnable:
+      ## Path to the 'gdn' executable (or leave as 'gdn' to find it in $PATH)
+      ##
+      bin:
+
+      ## Path to a config file to use for Garden in INI format.
+      ##
+      ## For example, in a ConfigMap:
+      ##
+      ##   [server]
+      ##     max-containers = 100
+      ##
+      ## For information about the possible values:
+      ## Ref: https://bosh.io/jobs/garden?source=github.com/cloudfoundry/garden-runc-release
+      ##
+      config:
+
+      ## Enable a proxy DNS server for Garden
+      ##
+      dnsProxyEnable:
+
+      ## Use the insecure Houdini Garden backend.
+      ##
+      useHoudini:
 
     baggageclaim:
       ## Minimum level of logs to see. Possible values: debug, info, error
@@ -1050,11 +1032,19 @@ concourse:
 
       ## Port on which to listen for API traffic.
       ##
-      bindPort:
+      bindPort: 7788
+
+      ## IP address on which to listen for the pprof debugger endpoints.
+      ##
+      debugBindIp:
+
+      ## Disable remapping of user/group IDs in unprivileged volumes.
+      ##
+      disableUserNamespaces:
 
       ## Port on which to listen for baggageclaim pprof server.
       ##
-      bindDebugPort:
+      debugBindPort: 7787
 
       ## Directory in which to place volume data.
       ##
@@ -1082,6 +1072,8 @@ concourse:
       reapInterval:
 
 ## Configuration values for Concourse Web components.
+## For more information regarding the characteristics of
+## Concourse Web nodes, see https://concourse-ci.org/concourse-web.html.
 ##
 web:
 
@@ -1101,7 +1093,7 @@ web:
   ##   image: busybox
   ##   command: ['sh', '-c', 'echo Hello && sleep 3600']
   ##
-  sidecarContainers:
+  sidecarContainers: []
 
   ## Configures the liveness probe used to determine if the Web component is up.
   ## ps.: if you're upgrading Concourse from one version  to another, the probe will
@@ -1136,12 +1128,14 @@ web:
 
   ## Configure additional environment variables for the
   ## web containers.
+  ## Example:
+  ##
+  ##   - name: CONCOURSE_LOG_LEVEL
+  ##     value: "debug"
+  ##   - name: CONCOURSE_TSA_LOG_LEVEL
+  ##     value: "debug"
   ##
   env:
-  #   - name: CONCOURSE_LOG_LEVEL
-  #     value: "debug"
-  #   - name: CONCOURSE_TSA_LOG_LEVEL
-  #     value: "debug"
 
   ## Where secrets should be mounted for the web container.
   ##
@@ -1153,57 +1147,73 @@ web:
   tlsSecretsPath: "/concourse-web-tls"
 
   ## Configure additional volumes for the
-  ## web container(s)
+  ## web container(s).
+  ##
+  ## Example:
+  ##
+  ##   - name: my-team-authorized-keys
+  ##     configMap:
+  ##       name: my-team-authorized-keys-config
+  ##
   ## Ref: https://kubernetes.io/docs/concepts/storage/volumes/
   ##
-  additionalVolumes:
-  #   - name: my-team-authorized-keys
-  #     configMap:
-  #       name: my-team-authorized-keys-config
+  additionalVolumes: []
 
   ## Configure additional volumeMounts for the
   ## web container(s)
+  ##
+  ## Example:
+  ##
+  ##  - name: my-team-authorized-keys
+  ##    mountPath: /my-team-authorized-keys
+  ##
   ## Ref: https://kubernetes.io/docs/concepts/storage/volumes/
   ##
   additionalVolumeMounts:
-  #   - name: my-team-authorized-keys
-  #     mountPath: /my-team-authorized-keys
 
   ## Additional affinities to add to the web pods.
+  ##
+  ## Example:
+  ##   nodeAffinity:
+  ##     preferredDuringSchedulingIgnoredDuringExecution:
+  ##       - weight: 50
+  ##         preference:
+  ##           matchExpressions:
+  ##             - key: spot
+  ##               operator: NotIn
+  ##               values:
+  ##                 - "true"
+  ##
   ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
   ##
   additionalAffinities:
-  #   nodeAffinity:
-  #     preferredDuringSchedulingIgnoredDuringExecution:
-  #       - weight: 50
-  #         preference:
-  #           matchExpressions:
-  #             - key: spot
-  #               operator: NotIn
-  #               values:
-  #                 - "true"
 
   ## Annotations for the web nodes.
+  ##
+  ## Example:
+  ##   key1: "value1"
+  ##   key2: "value2"
+  ##
   ## Ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
   ##
-  annotations:
-  #   key1: "value1"
-  #   key2: "value2"
+  annotations: {}
 
   ## Node selector for web nodes.
   ## Ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
   ##
-  nodeSelector:
+  nodeSelector: {}
 
   ## Tolerations for the web nodes.
+  ##
+  ## Example:
+  ##   - key: "toleration=key"
+  ##     operator: "Equal"
+  ##     value: "value"
+  ##     effect: "NoSchedule"
+  ##
   ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
   ##
-  tolerations:
-  # tolerations:
-  #  - key: "toleration=key"
-  #    operator: "Equal"
-  #    value: "value"
-  #    effect: "NoSchedule"
+  tolerations: []
 
   ## Service configuration.
   ## Ref: https://kubernetes.io/docs/user-guide/services/
@@ -1225,20 +1235,25 @@ web:
 
     ## Annotations to be added to the web service.
     ##
+    ## Example:
+    ##
+    ##   prometheus.io/probe: "true"
+    ##   prometheus.io/probe_path: "/"
+    ##
+    ## When using `web.service.type: LoadBalancer` in AWS, enable HTTPS with an ACM cert:
+    ##
+    ##   service.beta.kubernetes.io/aws-load-balancer-ssl-cert: "arn:aws:acm:eu-west-1:123456789:certificate/abc123-abc123-abc123-abc123"
+    ##   service.beta.kubernetes.io/aws-load-balancer-backend-protocol: "http"
+    ##   service.beta.kubernetes.io/aws-load-balancer-backend-port: "atc"
+    ##   service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
+    ##
     annotations:
-    #   prometheus.io/probe: "true"
-    #   prometheus.io/probe_path: "/"
-    #
-    #   ## When using web.service.type: LoadBalancer, enable HTTPS with an ACM cert
-    #   service.beta.kubernetes.io/aws-load-balancer-ssl-cert: "arn:aws:acm:eu-west-1:123456789:certificate/abc123-abc123-abc123-abc123"
-    #   service.beta.kubernetes.io/aws-load-balancer-backend-protocol: "http"
-    #   service.beta.kubernetes.io/aws-load-balancer-backend-port: "atc"
-    #   service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
 
     ## When using `web.service.type: LoadBalancer`, whitelist the load balancer to particular IPs
+    ## Example:
+    ##   - 192.168.1.10/32
     ##
     loadBalancerSourceRanges:
-    #   - 192.168.1.10/32
 
     ## When using `web.service.type: NodePort`, sets the nodePort for atc
     ##
@@ -1261,31 +1276,40 @@ web:
     enabled: false
 
     ## Annotations to be added to the web ingress.
+    ## Example:
+    ##   kubernetes.io/ingress.class: nginx
+    ##   kubernetes.io/tls-acme: 'true'
     ##
     annotations:
-    #   kubernetes.io/ingress.class: nginx
-    #   kubernetes.io/tls-acme: 'true'
 
     ## Hostnames.
     ## Must be provided if Ingress is enabled.
+    ## Example:
+    ##   - concourse.domain.com
     ##
     hosts:
-    #   - concourse.domain.com
 
     ## TLS configuration.
     ## Secrets must be manually created in the namespace.
+    ## Example:
+    ##   - secretName: concourse-web-tls
+    ##     hosts:
+    ##       - concourse.domain.com
     ##
     tls:
-    #   - secretName: concourse-web-tls
-    #     hosts:
-    #       - concourse.domain.com
 
 ## Configuration values for Concourse Worker components.
+## For more information regarding the characteristics of
+## Concourse Workers, see https://concourse-ci.org/concourse-worker.html
 ##
 worker:
   ## Override the components name (defaults to worker).
   ##
   nameOverride:
+
+  ## Removes any previous state created in `concourse.worker.workDir`.
+  ##
+  cleanUpWorkDirOnStart: true
 
   ## Number of replicas.
   ##
@@ -1295,16 +1319,34 @@ worker:
   ## container.
   ##
   ## Example:
+  ##
   ## - name: myapp-container
   ##   image: busybox
   ##   command: ['sh', '-c', 'echo Hello && sleep 3600']
   ##
-  sidecarContainers:
+  sidecarContainers: []
 
   ## Minimum number of workers available after an eviction
   ## Ref: https://kubernetes.io/docs/admin/disruptions/
   ##
   minAvailable: 1
+
+  ## Configures the liveness probe used to determine if the Worker component is up.
+  ## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/
+  ##
+  livenessProbe:
+    failureThreshold: 5
+    initialDelaySeconds: 10
+    periodSeconds: 15
+    timeoutSeconds: 3
+    httpGet:
+      path: /
+      port: worker-hc
+
+  ## Configures the readiness probes.
+  ## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/
+  ##
+  readinessProbe: {}
 
   ## Configure resource requests and limits.
   ## Ref: https://kubernetes.io/docs/user-guide/compute-resources/
@@ -1317,19 +1359,12 @@ worker:
   ## Configure additional environment variables for the
   ## worker container(s)
   ##
-  env:
-  #   - name: http_proxy
-  #     value: "http://proxy.your-domain.com:3128"
-  #   - name: https_proxy
-  #     value: "http://proxy.your-domain.com:3128"
-  #   - name: no_proxy
-  #     value: "your-domain.com"
-  #   - name: CONCOURSE_GARDEN_DNS_SERVER
-  #     value: "8.8.8.8"
-  #   - name: CONCOURSE_GARDEN_DNS_PROXY_ENABLE
-  #     value: "true"
-  #   - name: CONCOURSE_GARDEN_ALLOW_HOST_ACCESS
-  #     value: "true"
+  ## Example:
+  ##
+  ##   - name: CONCOURSE_NAME
+  ##     value: "anything"
+  ##
+  env: []
 
   ## For managing where secrets should be mounted for worker agents
   ##
@@ -1338,53 +1373,62 @@ worker:
   ## Configure additional volumeMounts for the
   ## worker container(s)
   ##
-  additionalVolumeMounts:
-  #   - name: concourse-baggageclaim
-  #     mountPath: /baggageclaim
+  ## Example:
+  ##   - name: concourse-baggageclaim
+  ##     mountPath: /baggageclaim
+  ##
+  additionalVolumeMounts: []
 
   ## Annotations to be added to the worker pods.
   ##
-  annotations:
-  #   iam.amazonaws.com/role: arn:aws:iam::123456789012:role/concourse
-  #
+  ## Example:
+  ##
+  ##   iam.amazonaws.com/role: arn:aws:iam::123456789012:role/concourse
+  ##
+  annotations: {}
 
   ## Node selector for the worker nodes.
   ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
   ##
-  nodeSelector:
-  # type: concourse
+  nodeSelector: {}
 
   ## Additional affinities to add to the worker pods.
-  ## Useful if you prefer to run workers on non-spot instances, for example
+  ## Useful if you prefer to run workers on non-spot instances, for example.
   ##
-  additionalAffinities:
-  #   nodeAffinity:
-  #     preferredDuringSchedulingIgnoredDuringExecution:
-  #       - weight: 50
-  #         preference:
-  #           matchExpressions:
-  #             - key: spot
-  #               operator: NotIn
-  #               values:
-  #                 - "true"
+  ## Example:
+  ##
+  ##   nodeAffinity:
+  ##     preferredDuringSchedulingIgnoredDuringExecution:
+  ##       - weight: 50
+  ##         preference:
+  ##           matchExpressions:
+  ##             - key: spot
+  ##               operator: NotIn
+  ##               values:
+  ##                 - "true"
+  ##
+  additionalAffinities: {}
 
   ## Configure additional volumes for the
   ## worker container(s).
+  ## Example:
   ##
-  additionalVolumes:
-  #   - name: concourse-baggageclaim
-  #     hostPath:
-  #       path: /dev/nvme0n1
-  #       type: BlockDevice
-  #
-  # As a special exception, this allows taking over the `concourse-work-dir`
-  # volume (from the default emptyDir) if `persistence.enabled` is false:
-  #
-  # additionalVolumes:
-  #   - name: concourse-work-dir
-  #     hostPath:
-  #       path: /mnt/locally-mounted-fast-disk/concourse
-  #       type: DirectoryOrCreate
+  ##  - name: concourse-baggageclaim
+  ##    hostPath:
+  ##      path: /dev/nvme0n1
+  ##      type: BlockDevice
+  ##
+  ##
+  ## As a special exception, this allows taking over the `concourse-work-dir`
+  ## volume (from the default emptyDir) if `persistence.enabled` is false:
+  ##
+  ##   additionalVolumes:
+  ##     - name: concourse-work-dir
+  ##       hostPath:
+  ##         path: /mnt/locally-mounted-fast-disk/concourse
+  ##         type: DirectoryOrCreate
+  ##
+  additionalVolumes: []
 
   ## Whether the workers should be forced to run on separate nodes.
   ## This is accomplished by setting their AntiAffinity with requiredDuringSchedulingIgnoredDuringExecution as opposed to preferred
@@ -1395,24 +1439,20 @@ worker:
   ## Tolerations for the worker nodes.
   ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
   ##
-  tolerations:
-  #  - key: "toleration=key"
-  #    operator: "Equal"
-  #    value: "value"
-  #    effect: "NoSchedule"
+  ## For example:
+  ##
+  ##   - key: "toleration=key"
+  ##     operator: "Equal"
+  ##     value: "value"
+  ##     effect: "NoSchedule"
+  ##
+  tolerations: []
 
   ## Time to allow the pod to terminate before being forcefully terminated. This should provide time for
   ## the worker to retire, i.e. drain its tasks. See https://concourse-ci.org/worker-internals.html for worker
   ## lifecycle semantics.
   ##
   terminationGracePeriodSeconds: 60
-
-  ## If any of the strings are found in logs, the worker's livenessProbe will fail and trigger a pod restart.
-  ## Specify one string per line, exact matching is used.
-  ##
-  fatalErrors: |-
-    guardian.api.garden-server.create.failed
-    baggageclaim.api.volume-server.create-volume-async.failed-to-create
 
   ## Strategy for StatefulSet updates (requires Kubernetes 1.6+)
   ## Ref: https://kubernetes.io/docs/concepts/workloads/controllers/statefulset
@@ -1493,7 +1533,8 @@ postgresql:
     ##
     enabled: true
 
-    ## Concourse data Persistent Volume Storage Class
+    ## Concourse data Persistent Volume Storage Class.
+    ##
     ## If defined, storageClassName: <storageClass>
     ## If set to "-", storageClassName: "", which disables dynamic provisioning
     ## If undefined (the default) or set to null, no storageClassName spec is
@@ -1679,6 +1720,11 @@ secrets:
   cfClientId:
   cfClientSecret:
   cfCaCert:
+
+  ## Secrets for BitbucketCloud OAuth.
+  ##
+  bitbucketCloudClientId:
+  bitbucketCloudClientSecret:
 
   ## Secrets for GitHub OAuth.
   ##
