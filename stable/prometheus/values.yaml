@@ -32,12 +32,6 @@ alertmanager:
   ##
   name: alertmanager
 
-  ## Namespace in which server will look for alertmanagers pods.
-  ## The default is to perform service discovery in all namespaces.
-  # namespaces:
-  #   names:
-  #     - prometheus
-
   ## alertmanager container image
   ##
   image:
@@ -524,7 +518,7 @@ server:
   ##
   image:
     repository: prom/prometheus
-    tag: v2.7.1
+    tag: v2.7.2
     pullPolicy: IfNotPresent
 
   ## prometheus server priorityClassName
@@ -969,6 +963,11 @@ serverFiles:
   #         annotations:
   #           description: '{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 5 minutes.'
   #           summary: 'Instance {{ $labels.instance }} down'
+
+  alerting:
+    ## Kubernetes namespaces where server will discover alertmanager pods
+    alertmanagerNamespaces: []
+    # - prometheus
 
   rules: {}
 

@@ -23,10 +23,10 @@ data:
       alertmanagers:
       - kubernetes_sd_configs:
           - role: pod
-            {{- if $root.Values.alertmanager.namespaces }}
+            {{- if $root.Values.serverFiles.alerting.alertmanagerNamespaces }}
             namespaces:
               names:
-                {{ toYaml $root.Values.alertmanager.namespaces.names}}
+{{ $root.Values.serverFiles.alerting.alertmanagerNamespaces | toYaml | trimSuffix "\n" | indent 14 }}
             {{- end }}
         tls_config:
           ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
