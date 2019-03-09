@@ -1,13 +1,41 @@
-## URL of your Incoming Webhook in Slack:
-slackUrl: ""
-## Time to wait after pod becomes not ready before notifying
-notReadyMinTime: 60000  # in ms
-
 ## Configuration for the deployment:
 image:
   repository: willwill/kube-slack
-  tag: v3.6.0
+  tag: v4.1.1
   pullPolicy: IfNotPresent
+
+## URL of your Incoming Webhook in Slack:
+slackUrl: "https://hooks.slack.com/services/Txxxxxxxx/Bxxxxxxxx/XXXXXXXXXXXXXXXXXXXXXXXX"
+
+# Override channel to send
+slackChannel: ""
+
+# URL of HTTP proxy used to connect to Slack
+slackProxy: ""
+
+# Time to wait after pod become not ready before notifying
+notReadyMinTime: 60000
+
+# How often to update in milliseconds
+tickRate: 15000
+
+# Repeat notification after this many milliseconds has passed after status returned to normal
+floodExpire: 60000
+
+# Enable/disable metric alerting on cpu
+metricsCpu: true
+
+# Enable/disable metric alerting on memory
+metricsMemory: true
+
+# Set percentage threshold on metric alerts
+metricsPercent: 80
+
+#  If no metrics limit defined, alert if the pod utilization is more than the resource request amount
+metricsRequests: false
+
+# Set to false to disable alert on pod recovery
+recoveryAlert: true
 
 resources: {}
   # limits:

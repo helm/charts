@@ -26,8 +26,26 @@ spec:
           env:
             - name: SLACK_URL
               value: {{ .Values.slackUrl }}
+            - name: SLACK_CHANNEL
+              value: {{ .Values.slackChannel }}
+            - name: SLACK_PROXY
+              value: {{ .Values.slackProxy }}
             - name: NOT_READY_MIN_TIME
               value: {{ .Values.notReadyMinTime | quote }}
+            - name: RECOVERY_ALERT
+              value: {{ .Values.recoveryAlert | quote }}
+            - name: TICK_RATE
+              value: {{ .Values.tickRate | quote }}
+            - name: FLOOD_EXPIRE
+              value: {{ .Values.floodExpire | quote }}
+            - name: METRICS_CPU
+              value: {{ .Values.metricsCpu | quote }}
+            - name: METRICS_MEMORY
+              value: {{ .Values.metricsMemory | quote }}
+            - name: METRICS_PERCENT
+              value: {{ .Values.metricsPercent | quote }}
+            - name: METRICS_REQUESTS
+              value: {{ .Values.metricsRequests | quote }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- if .Values.rbac.create }}
