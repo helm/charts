@@ -172,9 +172,9 @@ data:
     {{- end}}
     {{- if .Values.kvprovider.etcd }}
     [etcd]
-    endpoint = {{ .Values.kvprovider.etcd.endpoint | quote }}
+    {{- if .Values.kvprovider.etcd.endpoint }}endpoint = {{ .Values.kvprovider.etcd.endpoint | quote }}{{- end }}
     watch = {{ .Values.kvprovider.etcd.watch }}
-    prefix = {{ .Values.kvprovider.etcd.prefix | quote }}
+    {{- if .Values.kvprovider.etcd.prefix }}prefix = {{ .Values.kvprovider.etcd.prefix | quote }}{{- end }}
     useAPIV3 = {{ .Values.kvprovider.etcd.useAPIV3 }}
     {{- if .Values.kvprovider.etcd.username }}username = {{ .Values.kvprovider.etcd.username }}{{- end }}
     {{- if .Values.kvprovider.etcd.password }}password = {{ .Values.kvprovider.etcd.password }}{{- end }}
@@ -187,9 +187,9 @@ data:
     {{- end }}
     {{- if .Values.kvprovider.consul }}
     [consul]
-    endpoint = {{ .Values.kvprovider.consul.endpoint | quote }}
+    {{- if .Values.kvprovider.consul.endpoint }}endpoint = {{ .Values.kvprovider.consul.endpoint | quote }}{{- end }}
     watch = {{ .Values.kvprovider.consul.watch }}
-    prefix = {{ .Values.kvprovider.consul.prefix | quote }}
+    {{- if .Values.kvprovider.consul.prefix }}prefix = {{ .Values.kvprovider.consul.prefix | quote }}{{- end }}
     {{- if .Values.kvprovider.consul.username }}username = {{ .Values.kvprovider.consul.username | quote }}{{- end }}
     {{- if .Values.kvprovider.consul.password }}password = {{ .Values.kvprovider.consul.password | quote  }}{{- end }}
       {{- if .Values.kvprovider.consul.tls }}
