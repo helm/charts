@@ -19,7 +19,7 @@ To connect to your database:
       -h {{ template "patroni.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local postgres
 
     # login as admin
-    kubectl run -i -tty --rm psql --image=postgres \
+    kubectl run -i --tty --rm psql --image=postgres \
       --env "PGPASSWORD=$PGPASSWORD_ADMIN" \
       --command -- psql -U admin \
       -h {{ template "patroni.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local postgres
