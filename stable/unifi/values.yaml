@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: jacobalberty/unifi
-  tag: 5.9.29
+  tag: 5.10.19
   pullPolicy: IfNotPresent
 
 # If enabled, the controller, discovery, GUI, and STUN services will not be
