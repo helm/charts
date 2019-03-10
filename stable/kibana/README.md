@@ -81,6 +81,7 @@ The following table lists the configurable parameters of the kibana chart and th
 | `service.clusterIP`                           | static clusterIP or None for headless services | None:                              |
 | `service.annotations`                         | Kubernetes service annotations             | None:                                  |
 | `service.labels`                              | Kubernetes service labels                  | None:                                  |
+| `service.selector`                            | Kubernetes service selector                | `{}`                                   |
 | `tolerations`                                 | List of node taints to tolerate            | `[]`                                   |
 | `dashboardImport.timeout`                     | Time in seconds waiting for Kibana to be in green overall state | `60`                                   |
 | `dashboardImport.xpackauth.enabled`           | Enable Xpack auth                          | `false`                                |
