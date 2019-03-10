@@ -27,6 +27,9 @@ spec:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap-airflow.yaml") . | sha256sum }}
         configmap.fabric8.io/update-on-change: "{{ template "airflow.fullname" . }}-env"
+{{- if .Values.airflow.podAnnotations }}
+{{ toYaml .Values.airflow.podAnnotations | indent 8 }}
+{{- end }}
       labels:
         app: {{ template "airflow.name" . }}
         component: scheduler
@@ -91,6 +94,9 @@ spec:
               mountPath: {{ .mountPath }}
               readOnly: {{ .readOnly }}
           {{- end }}
+{{- if .Values.airflow.extraVolumeMounts }}
+{{ toYaml .Values.airflow.extraVolumeMounts | indent 12 }}
+{{- end }}
           args:
             - "bash"
             - "-c"
@@ -125,6 +131,9 @@ spec:
               echo "executing scheduler" &&
               airflow scheduler -n {{ .Values.airflow.schedulerNumRuns }}
           {{- end }}
+{{- if .Values.airflow.extraContainers }}
+{{ toYaml .Values.airflow.extraContainers | indent 8 }}
+{{- end }}
       volumes:
         - name: scripts
           configMap:
@@ -165,3 +174,6 @@ spec:
           configMap:
             name: {{ .configMap }}
         {{- end }}
+{{- if .Values.airflow.extraVolumes }}
+{{ toYaml .Values.airflow.extraVolumes | indent 8 }}
+{{- end }}

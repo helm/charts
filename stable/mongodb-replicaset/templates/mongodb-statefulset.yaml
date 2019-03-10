@@ -45,8 +45,12 @@ spec:
         - name: {{ . }}
       {{- end}}
     {{- end }}
+    {{- if .Values.securityContext.enabled }}
       securityContext:
-{{ toYaml .Values.securityContext | indent 8 }}
+        runAsUser: {{ .Values.securityContext.runAsUser }}
+        fsGroup: {{ .Values.securityContext.fsGroup }}
+        runAsNonRoot: {{ .Values.securityContext.runAsNonRoot }}        
+    {{- end }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       initContainers:
         - name: copy-config
@@ -292,8 +296,8 @@ spec:
                   -mongodb.tls-cert=/work-dir/mongo.pem
                 {{- end }}
                   -test
-              initialDelaySeconds: 30
-              periodSeconds: 10
+            initialDelaySeconds: 30
+            periodSeconds: 10
 {{ end }}
    {{- with .Values.nodeSelector }}
       nodeSelector:

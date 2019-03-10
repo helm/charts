@@ -126,6 +126,7 @@ The following table lists the configurable parameters of the Minio chart and the
 | `nodeSelector`             | Node labels for pod assignment      | `{}`                                                    |
 | `affinity`                 | Affinity settings for pod assignment | `{}`                                                   |
 | `tolerations`              | Toleration labels for pod assignment | `[]`                                                   |
+| `podAnnotations`           | Pod annotations                      | `{}`                                                   |
 | `tls.enabled`              | Enable TLS for Minio server | `false`                                                         |
 | `tls.certSecret`           | Kubernetes Secret with `public.crt` and `private.key` files. | `""`                           |
 | `livenessProbe.initialDelaySeconds`  | Delay before liveness probe is initiated        | `5`                               |
@@ -145,7 +146,9 @@ The following table lists the configurable parameters of the Minio chart and the
 | `buckets`                  | List of buckets to create after minio install  | `[]`                                         |
 | `s3gateway.enabled`        | Use minio as a [s3 gateway](https://github.com/minio/minio/blob/master/docs/gateway/s3.md)| `false` |
 | `s3gateway.replicas`       | Number of s3 gateway instances to run in parallel | `4` |
+| `s3gateway.serviceEndpoint`| Endpoint to the S3 compatible service | `""` |
 | `azuregateway.enabled`     | Use minio as an [azure gateway](https://docs.minio.io/docs/minio-gateway-for-azure)| `false`  |
+| `azuregateway.replicas`    | Number of azure gateway instances to run in parallel | `4` |
 | `gcsgateway.enabled`       | Use minio as a [Google Cloud Storage gateway](https://docs.minio.io/docs/minio-gateway-for-gcs)| `false` |
 | `gcsgateway.gcsKeyJson`    | credential json file of service account key | `""` |
 | `gcsgateway.projectId`     | Google cloud project id             | `""` |
