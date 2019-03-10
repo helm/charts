@@ -52,9 +52,9 @@ spec:
         - containerPort: {{ .Values.service.clusterPort }}
           name: cluster-address
         livenessProbe:
-          # Alive if in standby or active mode
+          # Alive if Vault is successfully responding to requests
           httpGet:
-            path: /v1/sys/health?standbyok=true
+            path: /v1/sys/health?standbyok=true&sealedcode=204&uninitcode=204
             port: {{ .Values.service.port }}
             scheme: {{ if .Values.vault.config.listener.tcp.tls_disable -}}HTTP{{- else -}}HTTPS{{- end }}
         readinessProbe:
