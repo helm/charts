@@ -94,16 +94,16 @@ spec:
 {{ toYaml .Values.resources | indent 12 }}
       volumes:
 {{- if and .Values.persistence.enabled .Values.persistence.existingClaim }}
-      - name: unifi-data
-      {{- if .Values.persistence.enabled }}
-        persistentVolumeClaim:
-          claimName: {{ .Values.persistence.existingClaim }}
-      {{- else }}
-        emptyDir: {}
-      {{- end }}
+        - name: unifi-data
+        {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.existingClaim }}
+        {{- else }}
+          emptyDir: {}
+        {{- end }}
 {{- else if not .Values.persistence.enabled }}
-      - name: unifi-data
-        emptyDir: {}
+        - name: unifi-data
+          emptyDir: {}
 {{- else if and .Values.persistence.enabled (not .Values.persistence.existingClaim) }}
   volumeClaimTemplates:
   - metadata:
