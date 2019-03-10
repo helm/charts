@@ -97,6 +97,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `rbac.namespaced`                         | Creates Role and Rolebinding instead of the default ClusterRole and ClusteRoleBindings for the grafana instance  | `false` |
 | `rbac.pspEnabled`                         | Create PodSecurityPolicy (with `rbac.create`, grant roles permissions as well) | `true` |
 | `rbac.pspUseAppArmor`                     | Enforce AppArmor in created PodSecurityPolicy (requires `rbac.pspEnabled`)  | `true` |
+| `command`                     | Define command to be executed by grafana container at startup  | `nil` |
 
 ### Example of extraVolumeMounts
 
