@@ -25,6 +25,13 @@ spec:
         release: {{ .Release.Name | quote }}
         heritage: {{ .Release.Service | quote }}
         role: slave
+{{- with .Values.slave.podLabels }}
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.slave.podAnnotations }}
+      annotations:
+{{ toYaml . | indent 8 }}
+{{- end }}
     spec:
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
@@ -46,6 +53,10 @@ spec:
       {{- end }}
       {{- if .Values.terminationGracePeriodSeconds }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      {{- end }}
+      {{- if .Values.securityContext.enabled }}
+      securityContext:
+        fsGroup: {{ .Values.securityContext.fsGroup }}
       {{- end }}
       {{- if and .Values.volumePermissions.enabled .Values.persistence.enabled }}
       initContainers:
@@ -76,7 +87,6 @@ spec:
 {{ toYaml .Values.resources | indent 10 }}
         {{- if .Values.securityContext.enabled }}
         securityContext:
-          fsGroup: {{ .Values.securityContext.fsGroup }}
           runAsUser: {{ .Values.securityContext.runAsUser }}
         {{- end }}
         env:
@@ -156,7 +166,7 @@ spec:
         - name: data
           mountPath: {{ .Values.persistence.mountPath }}
         {{ end }}
-        {{- if or (.Files.Glob "files/conf.d/*.conf") .Values.extendedConfConfigMap }}
+        {{- if or (.Files.Glob "files/conf.d/*.conf") .Values.postgresqlExtendedConf .Values.extendedConfConfigMap }}
         - name: postgresql-extended-config
           mountPath: /bitnami/postgresql/conf/conf.d/
         {{- end }}
@@ -175,7 +185,7 @@ spec:
         configMap:
           name: {{ template "postgresql.configurationCM" . }}
       {{- end }}
-      {{- if or (.Files.Glob "files/conf.d/*.conf") .Values.extendedConfConfigMap }}
+      {{- if or (.Files.Glob "files/conf.d/*.conf") .Values.postgresqlExtendedConf .Values.extendedConfConfigMap }}
       - name: postgresql-extended-config
         configMap:
           name: {{ template "postgresql.extendedConfigurationCM" . }}

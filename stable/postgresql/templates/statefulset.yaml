@@ -26,6 +26,13 @@ spec:
         release: {{ .Release.Name | quote }}
         heritage: {{ .Release.Service | quote }}
         role: master
+{{- with .Values.master.podLabels }}
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.master.podAnnotations }}
+      annotations:
+{{ toYaml . | indent 8 }}
+{{- end }}
     spec:
       {{- if or .Values.image.pullSecrets .Values.metrics.image.pullSecrets }}
       imagePullSecrets:
@@ -50,6 +57,10 @@ spec:
       {{- end }}
       {{- if .Values.terminationGracePeriodSeconds }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      {{- end }}
+      {{- if .Values.securityContext.enabled }}
+      securityContext:
+        fsGroup: {{ .Values.securityContext.fsGroup }}
       {{- end }}
       {{- if and .Values.volumePermissions.enabled .Values.persistence.enabled }}
       initContainers:
@@ -80,7 +91,6 @@ spec:
 {{ toYaml .Values.resources | indent 10 }}
         {{- if .Values.securityContext.enabled }}
         securityContext:
-          fsGroup: {{ .Values.securityContext.fsGroup }}
           runAsUser: {{ .Values.securityContext.runAsUser }}
         {{- end }}
         env:
@@ -185,7 +195,7 @@ spec:
         volumeMounts:
         {{- if or (.Files.Glob "files/docker-entrypoint-initdb.d/*.{sh,sql,sql.gz}") .Values.initdbScriptsConfigMap .Values.initdbScripts }}
         - name: custom-init-scripts
-          mountPath: /docker-entrypoint-initdb.d/configmap
+          mountPath: /docker-entrypoint-initdb.d/
         {{- end }}
         {{- if .Values.initdbScriptsSecret }}
         - name: custom-init-scripts-secret
