@@ -3,21 +3,21 @@ kind: StatefulSet
 metadata:
   name: {{ template "unifi.fullname" . }}
   labels:
-    app: {{ template "unifi.name" . }}
-    chart: {{ template "unifi.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ include "unifi.name" . }}
+    helm.sh/chart: {{ include "unifi.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ template "unifi.name" . }}
-      release: {{ .Release.Name }}
+      app.kubernetes.io/name: {{ include "unifi.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ template "unifi.name" . }}
-        release: {{ .Release.Name }}
+        app.kubernetes.io/name: {{ include "unifi.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
       {{- if .Values.podAnnotations }}
       annotations:
         {{- range $key, $value := .Values.podAnnotations }}
@@ -93,13 +93,38 @@ spec:
           resources:
 {{ toYaml .Values.resources | indent 12 }}
       volumes:
-        - name: unifi-data
-        {{- if .Values.persistence.enabled }}
-          persistentVolumeClaim:
-            claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "unifi.fullname" . }}{{- end }}
-        {{- else }}
-          emptyDir: {}
-        {{ end }}
+{{- if and .Values.persistence.enabled .Values.persistence.existingClaim }}
+      - name: unifi-data
+      {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.persistence.existingClaim }}
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+{{- else if not .Values.persistence.enabled }}
+      - name: unifi-data
+        emptyDir: {}
+{{- else if and .Values.persistence.enabled (not .Values.persistence.existingClaim) }}
+  volumeClaimTemplates:
+  - metadata:
+      name: unifi-data
+      labels:
+        app.kubernetes.io/name: {{ include "unifi.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      accessModes: 
+        - {{ .Values.persistence.accessMode | quote }}
+      resources:
+        requests:
+          storage: {{ .Values.persistence.size | quote }}
+      {{- if .Values.persistence.storageClass }}
+      {{- if (eq "-" .Values.persistence.storageClass) }}
+        storageClassName: ""
+      {{- else }}
+        storageClassName: "{{ .Values.persistence.storageClass }}"
+      {{- end }}
+      {{- end }}
+{{- end }}
     {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
