@@ -50,12 +50,12 @@ spec:
       volumes:
 {{- if and .Values.persistence.enabled .Values.persistence.existingClaim }}
         - name: data
-      {{- if .Values.persistence.enabled }}
+        {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
             claimName: {{ .Values.persistence.existingClaim }}
-      {{- else }}
-         emptyDir: {}
-      {{- end }}
+        {{- else }}
+          emptyDir: {}
+        {{- end }}
 {{- else if not .Values.persistence.enabled }}
         - name: data
           emptyDir: {}
