@@ -34,6 +34,9 @@ spec:
     {{- end }}
     port: 9090
     targetPort: {{ .Values.prometheus.service.targetPort }}
+{{- if .Values.prometheus.service.additionalPorts }}
+{{ toYaml .Values.prometheus.service.additionalPorts | indent 2 }}
+{{- end }}
   selector:
     app: prometheus
     prometheus: {{ template "prometheus-operator.fullname" . }}-prometheus

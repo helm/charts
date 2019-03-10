@@ -139,6 +139,10 @@ spec:
             httpHeaders:
             - name: Host
               value: {{ include "ghost.host" . | quote }}
+            {{- if eq .Values.ghostProtocol "https" }}
+            - name: X-Forwarded-Proto
+              value: https
+            {{- end }}
           initialDelaySeconds: 120
           timeoutSeconds: 5
           failureThreshold: 6
@@ -149,6 +153,10 @@ spec:
             httpHeaders:
             - name: Host
               value: {{ include "ghost.host" . | quote }}
+            {{- if eq .Values.ghostProtocol "https" }}
+            - name: X-Forwarded-Proto
+              value: https
+            {{- end }}
           initialDelaySeconds: 30
           timeoutSeconds: 3
           periodSeconds: 5
