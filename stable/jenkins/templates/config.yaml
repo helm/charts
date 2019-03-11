@@ -198,11 +198,11 @@ data:
 {{- if .Values.Master.JenkinsUrl }}
       <jenkinsUrl>{{ .Values.Master.JenkinsUrl }}</jenkinsUrl>
 {{- else }}
-  {{- if .Values.Master.HostName }}
-    {{- if .Values.Master.Ingress.TLS }}
-      <jenkinsUrl>https://{{ .Values.Master.HostName }}{{ default "" .Values.Master.JenkinsUriPrefix }}</jenkinsUrl>
+  {{- if .Values.Master.ingress.hostName }}
+    {{- if .Values.Master.ingress.tls }}
+      <jenkinsUrl>https://{{ .Values.Master.ingress.hostName }}{{ default "" .Values.Master.JenkinsUriPrefix }}</jenkinsUrl>
     {{- else }}
-      <jenkinsUrl>http://{{ .Values.Master.HostName }}{{ default "" .Values.Master.JenkinsUriPrefix }}</jenkinsUrl>
+      <jenkinsUrl>http://{{ .Values.Master.ingress.hostName }}{{ default "" .Values.Master.JenkinsUriPrefix }}</jenkinsUrl>
     {{- end }}
   {{- else }}
       <jenkinsUrl>http://{{ template "jenkins.fullname" . }}:{{.Values.Master.ServicePort}}{{ default "" .Values.Master.JenkinsUriPrefix }}</jenkinsUrl>

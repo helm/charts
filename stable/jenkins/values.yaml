@@ -248,15 +248,15 @@ Master:
   # the jenkins config with the contents of the configMap every time the pod starts.
   OverwriteConfig: false
 
-  Ingress:
-    ApiVersion: extensions/v1beta1
-    Labels: {}
-    Annotations: {}
+  ingress:
+    enabled: false
+    labels: {}
+    annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
     # Set this path to JenkinsUriPrefix above or use annotations to rewrite path
-    # Path: "/jenkins"
-    TLS:
+    # path: "/jenkins"
+    tls:
     # - secretName: jenkins.cluster.local
     #   hosts:
     #     - jenkins.cluster.local
