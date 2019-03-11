@@ -40,7 +40,6 @@ spec:
 {{- end }}
     spec:
 {{- include "nats.imagePullSecrets" . | indent 6 }}
-      {{- end }}
       {{- if .Values.securityContext.enabled }}
       securityContext:
         fsGroup: {{ .Values.securityContext.fsGroup }}
