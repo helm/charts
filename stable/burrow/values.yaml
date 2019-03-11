@@ -9,6 +9,15 @@ chain:
   extraSeeds: []
   testing: false
 
+config:
+  Logging:
+    ExcludeTrace: true
+    NonBlocking: true
+    RootSink:
+      Output:
+        OutputType: "stderr"
+        Format: "json"
+
 validatorAddresses:
   Validator_0:
     Address: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA

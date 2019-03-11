@@ -38,10 +38,4 @@ data:
         ListenAddress = "tcp://0.0.0.0:{{ .Values.rpcMetrics.port }}"
         MetricsPath = {{ .Values.rpcMetrics.path | quote }}
         BlockSampleSize = {{ .Values.rpcMetrics.blockSampleSize }}
-    [Logging]
-      ExcludeTrace = true
-      NonBlocking = true
-      [Logging.RootSink]
-        [Logging.RootSink.Output]
-          OutputType = "stderr"
-          Format = "json"
+{{ toToml .Values.config | indent 4 }}
