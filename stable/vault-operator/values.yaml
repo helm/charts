@@ -4,7 +4,7 @@ replicaCount: 1
 image:
   repository: quay.io/coreos/vault-operator
   tag: 0.1.9
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
 
 ## Install Default RBAC roles and bindings
 rbac:
