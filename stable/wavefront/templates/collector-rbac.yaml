@@ -4,7 +4,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   labels:
     app.kubernetes.io/name : {{ template "wavefront.fullname" . }}
-    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    helm.sh/chart: {{ template "wavefront.chart" . }}
     app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
     app.kubernetes.io.instance: {{ .Release.Name | quote }}
     app.kubernetes.io/component: collector
