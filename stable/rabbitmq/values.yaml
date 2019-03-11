@@ -113,6 +113,9 @@ service:
   ##
   managerPort: 15672
 
+  ## Service Annoations
+  annotations: {}
+
 # Additional pod labels to apply
 podLabels: {}
 
