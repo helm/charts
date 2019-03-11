@@ -50,6 +50,7 @@ The following table lists the configurable parameters of the MariaDB chart and t
 |             Parameter                     |                     Description                     |                              Default                              |
 |-------------------------------------------|-----------------------------------------------------|-------------------------------------------------------------------|
 | `global.imageRegistry`                    | Global Docker image registry                        | `nil`                                                             |
+| `global.imagePullSecrets`                 | Global Docker registry secret names as an array     | `[]` (does not add image pull secrets to deployed pods)           |
 | `image.registry`                          | MariaDB image registry                              | `docker.io`                                                       |
 | `image.repository`                        | MariaDB Image name                                  | `bitnami/mariadb`                                                 |
 | `image.tag`                               | MariaDB Image tag                                   | `{VERSION}`                                                       |
