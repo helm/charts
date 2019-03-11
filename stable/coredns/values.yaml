@@ -47,6 +47,7 @@ servers:
 - zones:
   - zone: .
   port: 53
+  # nodePort: 32053
   plugins:
   - name: cache
     parameters: 30

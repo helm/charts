@@ -29,6 +29,7 @@ Generate the list of ports automatically from the server definitions
     {{- range .Values.servers -}}
         {{/* Capture port to avoid scoping awkwardness */}}
         {{- $port := toString .port -}}
+        {{- $nodePort := toString (default 0 .nodePort) -}}
 
         {{/* If none of the server blocks has mentioned this port yet take note of it */}}
         {{- if not (hasKey $ports $port) -}}
@@ -36,6 +37,8 @@ Generate the list of ports automatically from the server definitions
         {{- end -}}
         {{/* Retrieve the inner dict that holds the protocols for a given port */}}
         {{- $innerdict := index $ports $port -}}
+        {{/* Set the nodeport on the inner dict */}}
+        {{- $innerdict := set $innerdict "nodePort" $nodePort -}}
 
         {{/*
         Look at each of the zones and check which protocol they serve
@@ -64,12 +67,17 @@ Generate the list of ports automatically from the server definitions
 
     {{/* Write out the ports according to the info collected above */}}
     {{- range $port, $innerdict := $ports -}}
+        {{- $portDict := dict "port" $port -}}
         {{- if index $innerdict "isudp" -}}
-            {{- printf "- {port: %v, protocol: UDP}\n" $port -}}
+            {{- $_ := set $portDict "protocol" "UDP" -}}
         {{- end -}}
         {{- if index $innerdict "istcp" -}}
-            {{- printf "- {port: %v, protocol: TCP}\n" $port -}}
+            {{- $_ := set $portDict "protocol" "TCP" -}}
         {{- end -}}
+        {{- if ne (index $innerdict "nodePort") "0" -}}
+            {{- $_ := set $portDict "nodePort" (index $innerdict "nodePort") -}}
+        {{- end -}}
+        {{- printf "- %v\n" (toJson $portDict) -}}
     {{- end -}}
 {{- end -}}
 
