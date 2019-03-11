@@ -323,7 +323,7 @@ The following tables lists the configurable parameters of the prometheus-operato
 | `coreDns.service.targetPort` | CoreDns targetPort | `9153` |
 | `coreDns.service.selector` | CoreDns service selector | `{"k8s-app" : "coredns" }`
 | `kubeDns.enabled` | Deploy kubeDns scraping components. Use either this or coreDns| `false` |
-| `kubeDns.service.selector` | CoreDns service selector | `{"k8s-app" : "kube-dns" }` |
+| `kubeDns.service.selector` | kubeDns service selector | `{"k8s-app" : "kube-dns" }` |
 | `kubeEtcd.enabled` | Deploy components to scrape etcd | `true` |
 | `kubeEtcd.endpoints` | Endpoints where etcd runs. Provide this if running etcd outside the cluster | `[]` |
 | `kubeEtcd.service.port` | Etcd port | `4001` |
