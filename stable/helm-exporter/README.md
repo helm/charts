@@ -12,6 +12,8 @@ $ helm install stable/helm-exporter
 
 This chart bootstraps a [helm-exporter](https://github.com/sstarcher/helm-exporter) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
+The chart comes with a ServiceMonitor for use with the [Prometheus Operator](https://github.com/helm/charts/tree/master/stable/prometheus-operator).
+
 ## Installing the Chart
 
 To install the chart with the release name `my-release`:
@@ -45,6 +47,10 @@ Parameter | Description | Default
 `nodeSelector` | node labels for pod assignment | `{}`
 `resources` | pod resource requests & limits | `{}`
 `tolerations` | List of node taints to tolerate (requires Kubernetes 1.6+) | `[]`
+`serviceMonitor.create` | Set to true if using the Prometheus Operator | `false`
+`serviceMonitor.interval` | Interval at which metrics should be scraped | ``
+`serviceMonitor.namespace` | The namespace where the Prometheus Operator is deployed | ``
+`serviceMonitor.additionalLabels` | Additional labels to add to the ServiceMonitor | `{}`
 
 ```console
 $ helm install stable/helm-exporter --name my-release
