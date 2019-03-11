@@ -39,9 +39,7 @@ spec:
 {{- end }}
 {{- end }}
     spec:
-      {{- if .Values.image.pullSecrets }}
-      imagePullSecrets:
-{{ toYaml .Values.image.pullSecrets | indent 8 }}
+{{- include "nats.imagePullSecrets" . | indent 6 }}
       {{- end }}
       {{- if .Values.securityContext.enabled }}
       securityContext:
