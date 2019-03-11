@@ -128,21 +128,21 @@ imagePullSecrets:
 {{- range .Values.global.imagePullSecrets }}
   - name: {{ . }}
 {{- end }}
-{{- else if or .Values.image.pullSecrets .Values.metrics.image.pullSecrets }}
+{{- else if or .Values.server.image.pullSecrets .Values.dashboard.image.pullSecrets }}
 imagePullSecrets:
-{{- range .Values.image.pullSecrets }}
+{{- range .Values.server.image.pullSecrets }}
   - name: {{ . }}
 {{- end }}
-{{- range .Values.metrics.image.pullSecrets }}
+{{- range .Values.dashboard.image.pullSecrets }}
   - name: {{ . }}
 {{- end }}
 {{- end -}}
-{{- else if or .Values.image.pullSecrets .Values.metrics.image.pullSecrets }}
+{{- else if or .Values.server.image.pullSecrets .Values.dashboard.image.pullSecrets }}
 imagePullSecrets:
-{{- range .Values.image.pullSecrets }}
+{{- range .Values.server.image.pullSecrets }}
   - name: {{ . }}
 {{- end }}
-{{- range .Values.metrics.image.pullSecrets }}
+{{- range .Values.dashboard.image.pullSecrets }}
   - name: {{ . }}
 {{- end }}
 {{- end -}}
