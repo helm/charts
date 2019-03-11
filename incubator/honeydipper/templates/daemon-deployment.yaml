@@ -1,0 +1,115 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ include "honeydipper.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "honeydipper.name" . }}
+    helm.sh/chart: {{ include "honeydipper.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.daemon.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "honeydipper.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "honeydipper.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      {{- with .Values.daemon.spec }}
+      {{ toYaml . | indent 6 | trim }}
+      {{- end }}
+      containers:
+        {{- if .Values.drivers.redis.local }}
+        - name: {{ .Chart.Name }}-redis
+          image: "redis:latest"
+        {{- end }}
+        - name: {{ .Chart.Name }}
+          {{- if .Values.daemon.useSource }}
+          image: "golang:alpine"
+          command:
+            - "/bin/sh"
+            - "-c"
+            - |
+              apk add openssh git &&
+              go get -u github.com/golang/dep/cmd/dep &&
+              mkdir -p ~/.ssh &&
+              chmod 700 ~/.ssh &&
+              {{- if .Values.daemon.gitIdentityFilePath }}
+              echo $'Host github.com\n\tIdentityFile\t'{{ .Values.daemon.gitIdentityFilePath }}/id_rsa > ~/.ssh/config &&
+              {{- end }}
+              {{- if .Values.daemon.gitHostKey }}
+              echo 'github.com ssh-rsa {{ .Values.daemon.githubHostKey }}' > ~/.ssh/known_hosts &&
+              {{- end }}
+              mkdir -p /go/src/github.com/honeydipper &&
+              cd /go/src/github.com/honeydipper &&
+              git clone {{ .Values.daemon.sourceRepo }} &&
+              cd honeydipper &&
+              git checkout {{ .Values.daemon.useBranch }} &&
+              dep ensure &&
+              go install ./... &&
+              honeydipper {{ range $k, $v := .Values.daemon.args }}{{ quote $v }}{{ end }} ||
+              sleep 3600
+          {{- else }}
+          image: "{{ .Values.daemon.image.repository }}:{{ .Values.daemon.image.tag }}"
+          {{- end }}
+          imagePullPolicy: {{ .Values.daemon.image.pullPolicy }}
+          {{- with .Values.daemon.args }}
+          args:
+            {{ toYaml . | indent 12 | trim }}
+          {{- end }}
+          {{- with .Values.daemon.env }}
+          env:
+            {{- range $envName, $envValue := . }}
+            - name: {{ $envName }}
+              {{- if kindIs "string" $envValue }}
+              value: {{ $envValue }}
+              {{- else }}
+              valueFrom:
+                {{ toYaml $envValue | indent 16 | trim }}
+              {{- end }}
+            {{- end }}
+          {{- end }}
+          {{- with .Values.daemon.resources }}
+          resources:
+            {{ toYaml .Values.daemon.resources | indent 12 | trim }}
+          {{- end }}
+          {{- with .Values.daemon.volumes }}
+          volumeMounts:
+            {{- range $vName, $vMount := . }}
+            - name: {{ $vName }}
+              {{ omit $vMount "spec" | toYaml | indent 14 | trim }}
+            {{- end }}
+          {{- end }}
+          readinessProbe:
+            tcpSocket:
+              port: {{ .Values.drivers.webhook.service.port }}
+            initialDelaySeconds: 20
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: {{ .Values.drivers.webhook.service.port }}
+            initialDelaySeconds: 20
+            periodSeconds: 20
+      {{- with .Values.daemon.nodeSelector }}
+      nodeSelector:
+        {{ toYaml . | indent 8 | trim }}
+      {{- end }}
+      {{- with .Values.daemon.affinity }}
+      affinity:
+        {{ toYaml . | indent 8 | trim }}
+      {{- end }}
+      {{- with .Values.daemon.tolerations }}
+      tolerations:
+        {{ toYaml . | indent 8 | trim }}
+      {{- end }}
+      {{- with .Values.daemon.volumes }}
+      volumes:
+        {{- range $vName, $vMount := . }}
+        - name: {{ $vName }}
+          {{ index $vMount "spec" | toYaml | indent 10 | trim }}
+        {{- end }}
+      {{- end }}

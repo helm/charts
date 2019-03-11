@@ -1,0 +1,4 @@
+daemon:
+  env:
+    REPO: https://github.com/honeydipper/honeydipper
+    BOOTSTRAP_PATH: /deployments/helm/honeydipper/test_fixtures
