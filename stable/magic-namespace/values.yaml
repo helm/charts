@@ -89,8 +89,8 @@ tiller:
 
 ## Optional additional ServiceAccounts
 serviceAccounts:
-# - some-service-account
-# - another-service-account
+- some-service-account
+- another-service-account
 
 ## Optional additional RoleBindings. It is a good idea to specify at least one
 ## to grant administrative permissions to a user or group.
