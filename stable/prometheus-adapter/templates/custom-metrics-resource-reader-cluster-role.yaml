@@ -16,7 +16,13 @@ rules:
   - pods
   - services
   - configmaps
+  {{- if .Values.rules.resources }}
+  - nodes
+  {{- end }}
   verbs:
   - get
   - list
+  {{- if .Values.rules.resources }}
+  - watch
+  {{- end }}
 {{- end -}}

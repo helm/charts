@@ -40,6 +40,7 @@ resources: {}
 
 rules:
   default: true
+  resources: false
   custom: []
 # - seriesQuery: '{__name__=~"^some_metric_count$"}'
 #   resources:
