@@ -74,6 +74,7 @@ clusterSpec: {}
   # maxStandbys: 5
 
 keeper:
+  uid_prefix: "stolon"
   replicaCount: 2
   annotations: {}
   resources: {}
