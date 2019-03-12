@@ -50,6 +50,7 @@ The following table lists the configurable parameters of the OpenCart chart and 
 |              Parameter              |                Description                |                         Default                          |
 |-------------------------------------|-------------------------------------------|----------------------------------------------------------|
 | `global.imageRegistry`              | Global Docker image registry              | `nil`                                                    |
+| `global.imagePullSecrets`           | Global Docker registry secret names as an array | `[]` (does not add image pull secrets to deployed pods) |
 | `image.registry`                    | OpenCart image registry                   | `docker.io`                                              |
 | `image.repository`                  | OpenCart Image name                       | `bitnami/opencart`                                       |
 | `image.tag`                         | OpenCart Image tag                        | `{VERSION}`                                              |
