@@ -20,17 +20,17 @@ spec:
     type: RollingUpdate
   template:
     metadata:
-      {{- if .Values.deployment.podAnnotations }}
+      {{- if or .Values.deployment.podAnnotations .Values.prometheus.enabled }}
       annotations:
       {{- range $key, $value := .Values.deployment.podAnnotations }}
         {{ $key }}: {{ $value | quote }}
       {{- end }}
-      {{- end }}
-      {{- if .Values.prometheus.enabled -}}
-      {{- if .Values.prometheus.enableScraping -}}
+      {{- if .Values.prometheus.enabled }}
+      {{- if .Values.prometheus.enableScraping }}
         prometheus.io/scrape: "true"
         prometheus.io/path: "/metrics"
         prometheus.io/port: "8080"
+      {{- end }}
       {{- end }}
       {{- end }}
       labels:
