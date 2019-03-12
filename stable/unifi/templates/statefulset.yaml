@@ -8,6 +8,7 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
+  podManagementPolicy: "Parallel"
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
