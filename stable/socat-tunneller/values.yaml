@@ -22,5 +22,5 @@ affinity: {}
 podAnnotations: {}
 
 tunnel:
-  host:
-  port:
+  host: myhost
+  port: 9999
