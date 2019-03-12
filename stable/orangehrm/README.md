@@ -50,6 +50,7 @@ The following table lists the configurable parameters of the OrangeHRM chart and
 |              Parameter               |               Description                |                    Default                              |
 |--------------------------------------|------------------------------------------|-------------------------------------------------------- |
 | `global.imageRegistry`               | Global Docker image registry             | `nil`                                                   |
+| `global.imagePullSecrets`            | Global Docker registry secret names as an array | `[]` (does not add image pull secrets to deployed pods) |
 | `image.registry`                     | OrangeHRM image registry                 | `docker.io`                                             |
 | `image.repository`                   | OrangeHRM Image name                     | `bitnami/orangehrm`                                     |
 | `image.tag`                          | OrangeHRM Image tag                      | `{VERSION}`                                             |
