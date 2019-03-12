@@ -130,6 +130,12 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+        {{- if .Values.command }}
+          command:
+          {{- range .Values.command }}
+            - {{ . }}
+          {{- end }}
+        {{- end}}
           volumeMounts:
             - name: config
               mountPath: "/etc/grafana/grafana.ini"
