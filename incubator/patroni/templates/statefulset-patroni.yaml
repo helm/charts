@@ -72,7 +72,7 @@ spec:
         {{- end }}
         {{- end }}
         - name: SCOPE
-          value: {{ template "patroni.fullname" . }}
+          value: {{ template "patroni.name" . }}
         {{- if .Values.walE.enable }}
         - name: USE_WALE
           value: {{ .Values.walE.enable | quote }}
