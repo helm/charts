@@ -50,6 +50,7 @@ The following table lists the configurable parameters of the JasperReports chart
 |           Parameter           |                 Description                  |                         Default                          |
 |-------------------------------|----------------------------------------------|----------------------------------------------------------|
 | `global.imageRegistry`        | Global Docker image registry                 | `nil`                                                    |
+| `global.imagePullSecrets`     | Global Docker registry secret names as an array | `[]` (does not add image pull secrets to deployed pods) |
 | `image.registry`              | JasperReports image registry                 | `docker.io`                                              |
 | `image.repository`            | JasperReports Image name                     | `bitnami/jasperreports`                                  |
 | `image.tag`                   | JasperReports Image tag                      | `{VERSION}`                                              |
