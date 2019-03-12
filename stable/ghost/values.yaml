@@ -26,7 +26,6 @@ image:
   # pullSecrets:
   #   - myRegistryKeySecretName
 
-##
 ## Init containers parameters:
 ## volumePermissions: Change the owner of the persist volume mountpoint to RunAsUser:fsGroup
 ##
@@ -36,6 +35,12 @@ volumePermissions:
     repository: bitnami/minideb
     tag: latest
     pullPolicy: Always
+    ## Optionally specify an array of imagePullSecrets.
+    ## Secrets must be manually created in the namespace.
+    ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+    ##
+    # pullSecrets:
+    #   - myRegistryKeySecretName
 
 ## Ghost protocol, host and path to create application URLs
 ## ref: https://github.com/bitnami/bitnami-docker-ghost#configuration
