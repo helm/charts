@@ -48,6 +48,11 @@ initImage:
   tag: "latest"
   pullPolicy: "Always"
 
+pluginInstaller:
+  resources: {}
+  heapSize: "256m"
+  additionalJavaOpts: ""
+
 cluster:
   name: "elasticsearch"
   # If you want X-Pack installed, switch to an image that includes it, enable this option and toggle the features you want

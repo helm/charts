@@ -87,6 +87,8 @@ plugin installer template
 - name: es-plugin-install
   image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
   imagePullPolicy: {{ .Values.image.pullPolicy }}
+  resources:
+{{ toYaml .Values.pluginInstaller.resources | indent 4 }}
   securityContext:
     capabilities:
       add:
@@ -99,6 +101,9 @@ plugin installer template
       {{- range .Values.cluster.plugins }}
       /usr/share/elasticsearch/bin/elasticsearch-plugin install -b {{ . }}
       {{- end }}
+  env:
+    - name: ES_JAVA_OPTS
+      value: "-Djava.net.preferIPv4Stack=true -Xms{{ .Values.pluginInstaller.heapSize }} -Xmx{{ .Values.pluginInstaller.heapSize }} {{ .Values.cluster.additionalJavaOpts }} {{ .Values.pluginInstaller.additionalJavaOpts }}"
   volumeMounts:
   - mountPath: /usr/share/elasticsearch/plugins/
     name: plugindir
