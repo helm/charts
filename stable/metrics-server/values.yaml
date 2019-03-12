@@ -46,6 +46,11 @@ affinity: {}
 
 replicas: 1
 
+podAnnotations: {}
+#  scheduler.alpha.kubernetes.io/critical-pod: ''
+
+# priorityClassName: system-node-critical
+
 extraVolumeMounts: []
 #  - name: secrets
 #    mountPath: /etc/kubernetes/secrets
