@@ -53,12 +53,20 @@ Parameter | Description | Default
 `image.tag` | Image tag | `v3.1.0`
 `imagePullSecrets` | Specify image pull secrets | `nil` (does not add image pull secrets to deployed pods)
 `ingress.enabled` | enable ingress | `false`
+`livenessProbe.enabled`  | enable Kubernetes livenessProbe. Disable to use oauth2-proxy with Istio mTLS. See [Istio FAQ](https://istio.io/help/faq/security/#k8s-health-checks) | `true`
+`livenessProbe.initialDelaySeconds` | number of seconds | 0
+`livenessProbe.timeoutSeconds` | number of seconds | 1
 `nodeSelector` | node labels for pod assignment | `{}`
 `podAnnotations` | annotations to add to each pod | `{}`
 `podLabels` | additional labesl to add to each pod | `{}`
+`priorityClassName` | priorityClassName | `nil`
+`readinessProbe.enabled` | enable Kubernetes readinessProbe. Disable to use oauth2-proxy with Istio mTLS. See [Istio FAQ](https://istio.io/help/faq/security/#k8s-health-checks) | `true`
+`readinessProbe.initialDelaySeconds` | number of seconds | 0
+`readinessProbe.timeoutSeconds` | number of seconds | 1
+`readinessProbe.periodSeconds` | number of seconds | 10
+`readinessProbe.successThreshold` | number of successes | 1
 `replicaCount` | desired number of pods | `1`
 `resources` | pod resource requests & limits | `{}`
-`priorityClassName` | priorityClassName | `nil`
 `service.port` | port for the service | `80`
 `service.type` | type of service | `ClusterIP`
 `tolerations` | List of node taints to tolerate | `[]`
