@@ -39,12 +39,7 @@ spec:
 {{ toYaml (.Values.slave.podAnnotations | default .Values.master.podAnnotations) | indent 8 }}
       {{- end }}
     spec:
-      {{- if .Values.image.pullSecrets }}
-      imagePullSecrets:
-        {{- range .Values.image.pullSecrets }}
-        - name: {{ . }}
-        {{- end}}
-      {{- end}}
+{{- include "redis.imagePullSecrets" . | indent 6 }}
       {{- /* Include master securityContext.fsGroup if slave securityContext.fsGroup not defined */ -}}
       {{- if (.Values.slave.securityContext | default .Values.master.securityContext) }}
       securityContext:
