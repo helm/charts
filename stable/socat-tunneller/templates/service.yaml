@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "tunneller.fullname" . }}
+  labels:
+    app: {{ include "tunneller.name" . }}
+    chart: {{ include "tunneller.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.tunnel.port }}
+      targetPort: tunnel-port
+      protocol: TCP
+      name: tunnel-port
+  selector:
+    app: {{ include "tunneller.name" . }}
+    release: {{ .Release.Name }}
