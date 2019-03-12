@@ -246,6 +246,11 @@ acme:
       OTC_PASSWORD: ""
       OTC_PROJECT_NAME: ""
       OTC_IDENTITY_ENDPOINT: ""
+    ovh:
+      OVH_ENDPOINT: ""
+      OVH_APPLICATION_KEY: ""
+      OVH_APPLICATION_SECRET: ""
+      OVH_CONSUMER_KEY: ""
     pdns:
       PDNS_API_URL: ""
     rackspace:
