@@ -47,6 +47,7 @@ The following table lists the configurable parameters of the phpMyAdmin chart an
 |         Parameter          |               Description                |                         Default                         |
 |----------------------------|------------------------------------------|---------------------------------------------------------|
 | `global.imageRegistry`     | Global Docker image registry             | `nil`                                                   |
+| `global.imagePullSecrets`  | Global Docker registry secret names as an array | `[]` (does not add image pull secrets to deployed pods) |
 | `image.registry`           | phpMyAdmin image registry                | `docker.io`                                             |
 | `image.repository`         | phpMyAdmin image name                    | `bitnami/phpmyadmin`                                    |
 | `image.tag`                | phpMyAdmin image tag                     | `{VERSION}`                                             |
