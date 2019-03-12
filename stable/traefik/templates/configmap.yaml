@@ -127,7 +127,7 @@ data:
         ]
       {{- end}}
       {{- if .Values.kubernetes.labelSelector }}
-    labelselector = {{ .Values.kubernetes.labelSelector | quote }}
+    labelselector = {{ range $key, $value := .Values.kubernetes.labelSelector }}"{{ $key }}={{ $value }}"{{ end }}
       {{- end}}
       {{- if .Values.kubernetes.ingressClass }}
     ingressClass = {{ .Values.kubernetes.ingressClass | quote }}
