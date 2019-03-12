@@ -14,6 +14,7 @@ data:
     {{ template "global_tags" .Values.single.config.global_tags }}
     {{ template "agent" .Values.single.config.agent }}
     {{ template "outputs" .Values.single.config.outputs }}
+    {{ template "aggregators" .Values.single.config.aggregators }}
     {{ template "inputs" .Values.single.config.inputs -}}
 {{- end -}}
 {{- end -}}
