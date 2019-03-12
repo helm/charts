@@ -26,14 +26,14 @@ If release name contains chart name it will be used as a full name.
 
 {{- define "master.fullname" -}}
 {{- if .Values.replication.enabled -}}
-{{- printf "%s-%s" .Release.Name "mariadb-master" | trunc 63 | trimSuffix "-" -}}
+{{- printf "%s-%s" (include "mariadb.fullname" .) "master" | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
-{{- printf "%s-%s" .Release.Name "mariadb" | trunc 63 | trimSuffix "-" -}}
+{{- include "mariadb.fullname" . -}}
 {{- end -}}
 {{- end -}}
 
 {{- define "slave.fullname" -}}
-{{- printf "%s-%s" .Release.Name "mariadb-slave" | trunc 63 | trimSuffix "-" -}}
+{{- printf "%s-%s" (include "mariadb.fullname" .) "slave" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{- define "mariadb.chart" -}}
@@ -93,5 +93,40 @@ Create the name of the service account to use
     {{ default (include "mariadb.fullname" .) .Values.serviceAccount.name }}
 {{- else -}}
     {{ default "default" .Values.serviceAccount.name }}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return the proper Docker Image Registry Secret Names
+*/}}
+{{- define "mariadb.imagePullSecrets" -}}
+{{/*
+Helm 2.11 supports the assignment of a value to a variable defined in a different scope,
+but Helm 2.9 and 2.10 does not support it, so we need to implement this if-else logic.
+Also, we can not use a single if because lazy evaluation is not an option
+*/}}
+{{- if .Values.global }}
+{{- if .Values.global.imagePullSecrets }}
+imagePullSecrets:
+{{- range .Values.global.imagePullSecrets }}
+  - name: {{ . }}
+{{- end }}
+{{- else if or .Values.image.pullSecrets .Values.metrics.image.pullSecrets }}
+imagePullSecrets:
+{{- range .Values.image.pullSecrets }}
+  - name: {{ . }}
+{{- end }}
+{{- range .Values.metrics.image.pullSecrets }}
+  - name: {{ . }}
+{{- end }}
+{{- end -}}
+{{- else if or .Values.image.pullSecrets .Values.metrics.image.pullSecrets }}
+imagePullSecrets:
+{{- range .Values.image.pullSecrets }}
+  - name: {{ . }}
+{{- end }}
+{{- range .Values.metrics.image.pullSecrets }}
+  - name: {{ . }}
+{{- end }}
 {{- end -}}
 {{- end -}}

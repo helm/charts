@@ -14,7 +14,7 @@ This chart bootstraps an [OpenCart](https://github.com/bitnami/bitnami-docker-op
 
 It also packages the [Bitnami MariaDB chart](https://github.com/kubernetes/charts/tree/master/stable/mariadb) which is required for bootstrapping a MariaDB deployment for the database requirements of the OpenCart application.
 
-Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters.
+Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters. This chart has been tested to work with NGINX Ingress, cert-manager, fluentd and Prometheus on top of the [BKPR](https://kubeprod.io/).
 
 ## Prerequisites
 
@@ -50,6 +50,7 @@ The following table lists the configurable parameters of the OpenCart chart and 
 |              Parameter              |                Description                |                         Default                          |
 |-------------------------------------|-------------------------------------------|----------------------------------------------------------|
 | `global.imageRegistry`              | Global Docker image registry              | `nil`                                                    |
+| `global.imagePullSecrets`           | Global Docker registry secret names as an array | `[]` (does not add image pull secrets to deployed pods) |
 | `image.registry`                    | OpenCart image registry                   | `docker.io`                                              |
 | `image.repository`                  | OpenCart Image name                       | `bitnami/opencart`                                       |
 | `image.tag`                         | OpenCart Image tag                        | `{VERSION}`                                              |

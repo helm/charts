@@ -1,6 +1,6 @@
 # prometheus-operator
 
-Installs [prometheus-operator](https://github.com/coreos/prometheus-operator) to create/configure/manage Prometheus clusters atop Kubernetes. This chart includes multiple components and is suitable for a variety of use-cases. 
+Installs [prometheus-operator](https://github.com/coreos/prometheus-operator) to create/configure/manage Prometheus clusters atop Kubernetes. This chart includes multiple components and is suitable for a variety of use-cases.
 
 The default installation is intended to suit monitoring a kubernetes cluster the chart is deployed onto. It is closely matches the kube-prometheus project.
 - [prometheus-operator](https://github.com/coreos/prometheus-operator)
@@ -57,12 +57,37 @@ The command removes all the Kubernetes components associated with the chart and 
 
 CRDs created by this chart are not removed by default and should be manually cleaned up:
 
-```
+```console
 kubectl delete crd prometheuses.monitoring.coreos.com
 kubectl delete crd prometheusrules.monitoring.coreos.com
 kubectl delete crd servicemonitors.monitoring.coreos.com
 kubectl delete crd alertmanagers.monitoring.coreos.com
 ```
+
+## Work-Arounds for Known Issues
+
+### Helm fails to create CRDs
+Due to a bug in helm, it is possible for the 4 CRDs that are created by this chart to fail to get fully deployed before Helm attempts to create resources that require them. This affects all versions of Helm with a [potential fix pending](https://github.com/helm/helm/pull/5112). In order to work around this issue when installing the chart you will need to make sure all 4 CRDs exist in the cluster first and disable their previsioning by the chart:
+
+1. Create CRDs
+```console
+kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/master/example/prometheus-operator-crd/alertmanager.crd.yaml
+kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/master/example/prometheus-operator-crd/prometheus.crd.yaml
+kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/master/example/prometheus-operator-crd/prometheusrule.crd.yaml
+kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/master/example/prometheus-operator-crd/servicemonitor.crd.yaml
+```
+
+2. Wait for CRDs to be created, which should only take a few seconds
+
+3. Install the chart, but disabling the CRD provisioning by setting `prometheusOperator.createCustomResource=false`
+```console
+$ helm install --name my-release stable/prometheus-operator --set prometheusOperator.createCustomResource=false
+```
+
+### Helm <2.10 workaround
+The `crd-install` hook is required to deploy the prometheus operator CRDs before they are used. If you are forced to use an earlier version of Helm you can work around this requirement as follows:
+1. Install prometheus-operator by itself, disabling everything but the prometheus-operator component, and also setting `prometheusOperator.serviceMonitor.selfMonitor=false`
+2. Install all the other components, and configure `prometheus.additionalServiceMonitors` to scrape the prometheus-operator service.
 
 ## Configuration
 
@@ -134,6 +159,8 @@ The following tables lists the configurable parameters of the prometheus-operato
 | `prometheusOperator.configmapReloadImage.tag` | Tag for configmapReload image | `v0.0.1` |
 | `prometheusOperator.prometheusConfigReloaderImage.repository` | Repository for config-reloader image | `quay.io/coreos/prometheus-config-reloader` |
 | `prometheusOperator.prometheusConfigReloaderImage.tag` | Tag for config-reloader image | `v0.29.0` |
+| `prometheusOperator.configReloaderCpu` | Set the prometheus config reloader side-car CPU limit. If unset, uses the prometheus-operator project default | `nil` |
+| `prometheusOperator.configReloaderMemory` | Set the prometheus config reloader side-car memory limit. If unset, uses the prometheus-operator project default | `nil` |
 | `prometheusOperator.hyperkubeImage.repository` | Repository for hyperkube image used to perform maintenance tasks | `k8s.gcr.io/hyperkube` |
 | `prometheusOperator.hyperkubeImage.tag` | Tag for hyperkube image used to perform maintenance tasks | `v1.12.1` |
 | `prometheusOperator.hyperkubeImage.repository` | Image pull policy for hyperkube image used to perform maintenance tasks | `IfNotPresent` |
@@ -156,7 +183,9 @@ The following tables lists the configurable parameters of the prometheus-operato
 | `prometheus.ingress.tls` | Prometheus Ingress TLS configuration (YAML) | `[]` |
 | `prometheus.service.type` |  Prometheus Service type | `ClusterIP` |
 | `prometheus.service.clusterIP` | Prometheus service clusterIP IP | `""` |
+| `prometheus.service.targetPort` |  Prometheus Service internal port | `9090` |
 | `prometheus.service.nodePort` |  Prometheus Service port for NodePort service type | `39090` |
+| `prometheus.service.additionalPorts` |  Additional Prometheus Service ports to add for NodePort service type | `[]` |
 | `prometheus.service.annotations` |  Prometheus Service Annotations | `{}` |
 | `prometheus.service.labels` |  Prometheus Service Labels | `{}` |
 | `prometheus.service.externalIPs` | List of IP addresses at which the Prometheus server service is available  | `[]` |
@@ -188,6 +217,7 @@ The following tables lists the configurable parameters of the prometheus-operato
 | `prometheus.prometheusSpec.nodeSelector` | Define which Nodes the Pods are scheduled on. | `{}` |
 | `prometheus.prometheusSpec.secrets` | Secrets is a list of Secrets in the same namespace as the Prometheus object, which shall be mounted into the Prometheus Pods. The Secrets are mounted into /etc/prometheus/secrets/<secret-name>. Secrets changes after initial creation of a Prometheus object are not reflected in the running Pods. To change the secrets mounted into the Prometheus Pods, the object must be deleted and recreated with the new list of secrets. | `[]` |
 | `prometheus.prometheusSpec.configMaps` | ConfigMaps is a list of ConfigMaps in the same namespace as the Prometheus object, which shall be mounted into the Prometheus Pods. The ConfigMaps are mounted into /etc/prometheus/configmaps/ | `[]` |
+| `prometheus.prometheusSpec.query` | QuerySpec defines the query command line flags when starting Prometheus. Not all parameters are supported by the operator - [see coreos documentation](https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#queryspec) | `{}` |
 |`prometheus.prometheusSpec.podAntiAffinity` | Pod anti-affinity can prevent the scheduler from placing Prometheus replicas on the same node. The default value "soft" means that the scheduler should *prefer* to not schedule two replica pods onto the same node but no guarantee is provided. The value "hard" means that the scheduler is *required* to not schedule two replica pods onto the same node. The value "" will disable pod anti-affinity so that no anti-affinity rules will be configured. | `""` |
 |`prometheus.prometheusSpec.podAntiAffinityTopologyKey` | If anti-affinity is enabled sets the topologyKey to use for anti-affinity. This can be changed to, for example `failure-domain.beta.kubernetes.io/zone`| `kubernetes.io/hostname` |
 | `prometheus.prometheusSpec.tolerations` | If specified, the pod's tolerations. | `[]` |
@@ -226,7 +256,7 @@ The following tables lists the configurable parameters of the prometheus-operato
 | `alertmanager.service.externalIPs` | List of IP addresses at which the Alertmanager server service is available  | `[]` |
 | `alertmanager.service.loadBalancerIP` |  Alertmanager Loadbalancer IP | `""` |
 | `alertmanager.service.loadBalancerSourceRanges` | Alertmanager Load Balancer Source Ranges | `[]` |
-| `alertmanager.config` | Provide YAML to configure Alertmanager. See https://prometheus.io/docs/alerting/configuration/#configuration-file. The default provided works to suppress the DeadMansSwitch alert from `defaultRules.create` | `{"global":{"resolve_timeout":"5m"},"route":{"group_by":["job"],"group_wait":"30s","group_interval":"5m","repeat_interval":"12h","receiver":"null","routes":[{"match":{"alertname":"DeadMansSwitch"},"receiver":"null"}]},"receivers":[{"name":"null"}]}` |
+| `alertmanager.config` | Provide YAML to configure Alertmanager. See https://prometheus.io/docs/alerting/configuration/#configuration-file. The default provided works to suppress the Watchdog alert from `defaultRules.create` | `{"global":{"resolve_timeout":"5m"},"route":{"group_by":["job"],"group_wait":"30s","group_interval":"5m","repeat_interval":"12h","receiver":"null","routes":[{"match":{"alertname":"Watchdog"},"receiver":"null"}]},"receivers":[{"name":"null"}]}` |
 | `alertmanager.alertmanagerSpec.podMetadata` | Standard object’s metadata. More info: https://github.com/kubernetes/community/blob/master/contributors/devel/api-conventions.md#metadata Metadata Labels and Annotations gets propagated to the prometheus pods. | `{}` |
 | `alertmanager.alertmanagerSpec.image.tag` | Tag of Alertmanager container image to be deployed. | `v0.16.1` |
 | `alertmanager.alertmanagerSpec.image.repository` | Base image that is used to deploy pods, without tag. | `quay.io/prometheus/alertmanager` |
@@ -286,13 +316,14 @@ The following tables lists the configurable parameters of the prometheus-operato
 | `kubeControllerManager.endpoints` | Endpoints where Controller-manager runs. Provide this if running Controller-manager outside the cluster | `[]` |
 | `kubeControllermanager.service.port` | Controller-manager port for the service runs on | `10252` |
 | `kubeControllermanager.service.targetPort` | Controller-manager targetPort for the service runs on | `10252` |
-| `kubeControllermanager.service.selector` | Controller-manager service selector | `{"k8s-app" : "kube-controller-manager" }`
+| `kubeControllermanager.service.selector` | Controller-manager service selector | `{"k8s-app" : "kube-controller-manager" }` |
+| `kubeControllermanager.serviceMonitor.https` | Controller-manager service scrape over https | `false` |
 | `coreDns.enabled` | Deploy coreDns scraping components. Use either this or kubeDns | true |
 | `coreDns.service.port` | CoreDns port | `9153` |
 | `coreDns.service.targetPort` | CoreDns targetPort | `9153` |
 | `coreDns.service.selector` | CoreDns service selector | `{"k8s-app" : "coredns" }`
 | `kubeDns.enabled` | Deploy kubeDns scraping components. Use either this or coreDns| `false` |
-| `kubeDns.service.selector` | CoreDns service selector | `{"k8s-app" : "kube-dns" }` |
+| `kubeDns.service.selector` | kubeDns service selector | `{"k8s-app" : "kube-dns" }` |
 | `kubeEtcd.enabled` | Deploy components to scrape etcd | `true` |
 | `kubeEtcd.endpoints` | Endpoints where etcd runs. Provide this if running etcd outside the cluster | `[]` |
 | `kubeEtcd.service.port` | Etcd port | `4001` |
@@ -308,12 +339,14 @@ The following tables lists the configurable parameters of the prometheus-operato
 | `kubeScheduler.endpoints` | Endpoints where scheduler runs. Provide this if running scheduler outside the cluster | `[]` |
 | `kubeScheduler.service.port` | Scheduler port for the service runs on | `10251` |
 | `kubeScheduler.service.targetPort` | Scheduler targetPort for the service runs on | `10251` |
-| `kubeScheduler.service.selector` | Scheduler service selector | `{"k8s-app" : "kube-scheduler" }`
+| `kubeScheduler.service.selector` | Scheduler service selector | `{"k8s-app" : "kube-scheduler" }` |
+| `kubeScheduler.serviceMonitor.https` | Scheduler service scrape over https | `false` |
 | `kubeStateMetrics.enabled` | Deploy the `kube-state-metrics` chart and configure a servicemonitor to scrape | `true` |
 | `kube-state-metrics.rbac.create` | Create RBAC components in kube-state-metrics. See `global.rbac.create` | `true` |
 | `kube-state-metrics.podSecurityPolicy.enabled` | Create pod security policy resource for kube-state-metrics. | `true` |
 | `nodeExporter.enabled` | Deploy the `prometheus-node-exporter` and scrape it | `true` |
 | `nodeExporter.jobLabel` | The name of the label on the target service to use as the job name in prometheus. See `prometheus-node-exporter.podLabels.jobLabel=node-exporter` default | `jobLabel` |
+| `nodeExporter.serviceMonitor.metricRelabelings` | Metric relablings for the `prometheus-node-exporter` ServiceMonitor | `[]` |
 | `prometheus-node-exporter.podLabels` | Additional labels for pods in the DaemonSet | `{"jobLabel":"node-exporter"}` |
 | `prometheus-node-exporter.extraArgs` | Additional arguments for the node exporter container | `["--collector.filesystem.ignored-mount-points=^/(dev|proc|sys|var/lib/docker/.+)($|/)", "--collector.filesystem.ignored-fs-types=^(autofs|binfmt_misc|cgroup|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|mqueue|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|sysfs|tracefs)$"]` |
 
@@ -344,11 +377,6 @@ For more in-depth documentation of configuration options meanings, please see
 - [Prometheus](https://prometheus.io/docs/introduction/overview/)
 - [Grafana](https://github.com/helm/charts/tree/master/stable/grafana#grafana-helm-chart)
 
-## Helm <2.10 workaround
-The `crd-install` hook is required to deploy the prometheus operator CRDs before they are used. If you are forced to use an earlier version of Helm you can work around this requirement as follows:
-1. Install prometheus-operator by itself, disabling everything but the prometheus-operator component, and also setting `prometheusOperator.serviceMonitor.selfMonitor=false`
-2. Install all the other components, and configure `prometheus.additionalServiceMonitors` to scrape the prometheus-operator service.
-
 # Migrating from coreos/prometheus-operator chart
 
 The multiple charts have been combined into a single chart that installs prometheus operator, prometheus, alertmanager, grafana as well as the multitude of exporters necessary to monitor a cluster.
@@ -367,7 +395,7 @@ https://github.com/helm/charts/blob/master/stable/prometheus-operator/requiremen
 These components are loaded as dependencies into the chart. The source for both charts is found in the same repository. They are relatively simple components.
 
 ### Grafana
-The Grafana chart is more feature-rich than this chart - it contains a sidecard that is able to load data sources and dashboards from configmaps deployed into the same cluster. For more information check out the [documentatin for the chart](https://github.com/helm/charts/tree/master/stable/grafana)
+The Grafana chart is more feature-rich than this chart - it contains a sidecar that is able to load data sources and dashboards from configmaps deployed into the same cluster. For more information check out the [documentation for the chart](https://github.com/helm/charts/tree/master/stable/grafana)
 
 ### Coreos CRDs
 The CRDs are provisioned using crd-install hooks, rather than relying on a separate chart installation. If you already have these CRDs provisioned and don't want to remove them, you can disable the CRD creation by these hooks by passing `prometheusOperator.createCustomResource=false`
@@ -387,7 +415,7 @@ spec:
   - ReadWriteOnce
   azureDisk:
     cachingMode: None
-    diskName: pvc-prometheus-migration-prometheus-0    
+    diskName: pvc-prometheus-migration-prometheus-0
     diskURI: /subscriptions/f5125d82-2622-4c50-8d25-3f7ba3e9ac4b/resourceGroups/sample-migration-resource-group/providers/Microsoft.Compute/disks/pvc-prometheus-migration-prometheus-0
     fsType: ""
     kind: Managed

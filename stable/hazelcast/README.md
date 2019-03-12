@@ -73,6 +73,17 @@ The following table lists the configurable parameters of the Hazelcast chart and
 | `rbac.create`                              | Enable installing RBAC Role authorization                                                                      | `true`                                               |
 | `serviceAccount.create`                    | Enable installing Service Account                                                                              | `true`                                               |
 | `serviceAccount.name`                      | Name of Service Account, if not set, the name is generated using the fullname template                         | `nil`                                                |
+| `securityContext.fsGroup`                  | Group ID associated with the Hazelcast container                                                               | `65534`                                              |
+| `securityContext.runAsUser`                | User ID associated with the Hazelcast container                                                                | `65534`                                              |
+| `securityContext.runAsNonRoot`             | Runs Hazelcast container as non-root user                                                                      | `true`                                               |
+| `securityContext.readOnlyRootFilesystem`   | Read only root filesystem                                                                                      | `true`                                               |
+| `securityContext.allowPrivilegeEscalation` | Allows privilege escalation                                                                                    | `false`                                              |
+| `securityContext.defaultAllowPrivilegeEscalation` | Default allow privilege escalation                                                                             | `false`                                              |
+| `metrics.enabled`                          | Turn on and off JMX Prometheus metrics available at `/metrics`                                                 | `false`                                              |
+| `metrics.service.type`                     | Type of the metrics service                                                                                    | `ClusterIP`                                          |
+| `metrics.service.port`                     | Port of the `/metrics` endpoint and the metrics service                                                        | `8080`                                               |
+| `metrics.service.annotations`              | Annotations for the Prometheus discovery                                                                       |                                                      |
+
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
