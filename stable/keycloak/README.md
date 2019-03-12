@@ -306,7 +306,7 @@ Everything is in `values.yaml` and can be overridden. Additional CLI commands ma
 
 For high availability, Keycloak should be run with multiple replicas (`keycloak.replicas > 1`).
 WildFly uses Infinispan for caching. These caches can be replicated across all instances forming a cluster.
-If `keycloak.replicas > 1`, JGroups' DNS_PING is configured for cluster discovery and Keycloak is started with `--server-config standalone-ha.xml`.
+If `keycloak.replicas > 1`, JGroups' KUBE_PING is configured for cluster discovery and Keycloak is started with `--server-config standalone-ha.xml`.
 
 ## Why StatefulSet?
 
@@ -316,4 +316,3 @@ This can be problematic because pod names are quite long.
 We would have to truncate the chart's fullname to six characters because pods get a 17-character suffix (e. g. `-697f8b7655-mf5ht`).
 Using a StatefulSet allows us to truncate to 20 characters leaving room for up to 99 replicas, which is much better.
 Additionally, we get stable values for `jboss.node.name` which can be advantageous for cluster discovery.
-The headless service that governs the StatefulSet is used for DNS discovery.

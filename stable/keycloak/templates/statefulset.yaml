@@ -65,6 +65,9 @@ spec:
 {{ tpl .Values.keycloak.extraInitContainers . | indent 8 }}
       {{- end }}
     {{- end }}
+{{- if $highAvailability }}
+      serviceAccountName: {{ template "keycloak.fullname" . }}-service-account
+{{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.keycloak.image.repository }}:{{ .Values.keycloak.image.tag }}"
@@ -81,12 +84,6 @@ spec:
                   name: {{ template "keycloak.fullname" . }}-http
                   key: password
           {{- end }}
-          {{- if $highAvailability }}
-            - name: JGROUPS_DISCOVERY_PROTOCOL
-              value: "dns.DNS_PING"
-            - name: JGROUPS_DISCOVERY_PROPERTIES
-              value: "dns_query={{ template "keycloak.fullname" . }}-headless.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}"
-          {{- end }}
 {{ include "keycloak.dbEnvVars" . | indent 12 }}
 {{- with .Values.keycloak.extraEnv }}
 {{ tpl . $ | indent 12 }}
@@ -94,6 +91,16 @@ spec:
           volumeMounts:
             - name: scripts
               mountPath: /scripts
+{{- if $highAvailability }}
+            - name: scripts
+              mountPath: /opt/jboss/tools/cli/jgroups/discovery/kubernetes.cli
+              subPath: kubernetes.cli
+              mode: 0444
+            - name: scripts
+              mountPath: /opt/jboss/tools/jgroups.sh
+              subPath: jgroups.sh
+              mode: 0555
+{{- end }}
 {{- with .Values.keycloak.extraVolumeMounts }}
 {{ tpl . $ | indent 12 }}
 {{- end }}

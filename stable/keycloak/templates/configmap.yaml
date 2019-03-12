@@ -58,3 +58,21 @@ data:
 
     run-batch
     stop-embedded-server
+
+{{- if $highAvailability }}
+  kubernetes.cli: |
+    embed-server --server-config=standalone-ha.xml --std-out=echo
+    batch
+    /subsystem=jgroups/stack=udp/protocol=PING:remove()
+    /subsystem=jgroups/stack=udp/protocol=kubernetes.KUBE_PING:add(add-index=0, properties={"namespace"=>"{{ .Release.Namespace }}","labels"=>"app={{ template "keycloak.name" . }}"})
+
+    /subsystem=jgroups/stack=tcp/protocol=MPING:remove()
+    /subsystem=jgroups/stack=tcp/protocol=kubernetes.KUBE_PING:add(add-index=0, properties={"namespace"=>"{{ .Release.Namespace }}","labels"=>"app={{ template "keycloak.name" . }}"})
+    run-batch
+    stop-embedded-server
+
+  jgroups.sh: |
+    #!/bin/bash
+    set -e
+    /opt/jboss/keycloak/bin/jboss-cli.sh --file="/opt/jboss/tools/cli/jgroups/discovery/kubernetes.cli"
+{{- end }}
