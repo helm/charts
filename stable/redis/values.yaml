@@ -374,6 +374,12 @@ volumePermissions:
     repository: bitnami/minideb
     tag: latest
     pullPolicy: IfNotPresent
+    ## Optionally specify an array of imagePullSecrets.
+    ## Secrets must be manually created in the namespace.
+    ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+    ##
+    # pullSecrets:
+    #   - myRegistryKeySecretName
   resources: {}
 
 ## Redis config file
@@ -391,5 +397,11 @@ sysctlImage:
   repository: bitnami/minideb
   tag: latest
   pullPolicy: Always
+  ## Optionally specify an array of imagePullSecrets.
+  ## Secrets must be manually created in the namespace.
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  ##
+  # pullSecrets:
+  #   - myRegistryKeySecretName
   mountHostSys: false
   resources: {}
