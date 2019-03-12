@@ -86,6 +86,43 @@ We truncate at 24 chars because some Kubernetes name fields are limited to this 
 {{- end }}
 {{- end -}}
 
+{{- define "aggregators" -}}
+{{- range $aggregators, $config := . }}
+    [[aggregators.{{ $aggregators }}]]
+  {{- if $config }}
+    {{- range $key, $value := $config -}}
+      {{- $tp := typeOf $value }}
+      {{- if eq $tp "string"}}
+      {{ $key }} = {{ $value | quote }}
+      {{- end }}
+      {{- if eq $tp "float64"}}
+      {{ $key }} = {{ $value | int64 }}
+      {{- end }}
+      {{- if eq $tp "int"}}
+      {{ $key }} = {{ $value | int64 }}
+      {{- end }}
+      {{- if eq $tp "bool"}}
+      {{ $key }} = {{ $value }}
+      {{- end }}
+      {{- if eq $tp "[]interface {}" }}
+      {{ $key }} = [
+          {{- $numOut := len $value }}
+          {{- $numOut := sub $numOut 1 }}
+          {{- range $b, $val := $value }}
+            {{- $i := int64 $b }}
+            {{- if eq $i $numOut }}
+        {{ $val | quote }}
+            {{- else }}
+        {{ $val | quote }},
+            {{- end }}
+          {{- end }}
+      ]
+      {{- end }}
+    {{- end }}
+  {{- end }}
+{{- end }}
+{{- end -}}
+
 {{- define "inputs" -}}
 {{- range $input, $config := . -}}
     [[inputs.{{- $input }}]]
