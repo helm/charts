@@ -18,11 +18,20 @@ spec:
       labels:
         app: {{ template "metrics-server.name" . }}
         release: {{ .Release.Name }}
+      {{- if .Values.podAnnotations }}
+      annotations:
+      {{- range $key, $value := .Values.podAnnotations }}
+        {{ $key }}: {{ $value | quote }}
+      {{- end }}
+      {{- end }}
     spec:
+{{- if .Values.priorityClassName }}
+      priorityClassName: "{{ .Values.priorityClassName }}"
+{{- end }}
       serviceAccountName: {{ template "metrics-server.serviceAccountName" . }}
-{{ if .Values.hostNetwork.enabled }}
+{{- if .Values.hostNetwork.enabled }}
       hostNetwork: true
-{{ end }}
+{{- end }}
       containers:
         - name: metrics-server
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
