@@ -5,7 +5,7 @@
 ## TL;DR;
 
 ```bash
-$ helm install seq
+$ helm install stable/seq
 ```
 
 ## Introduction
@@ -22,7 +22,7 @@ This chart bootstraps a [Seq](https://hub.docker.com/r/datalust/seq/) deployment
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release seq
+$ helm install --name my-release stable/seq
 ```
 
 The command deploys Seq on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -98,5 +98,5 @@ By default, the chart mounts a [Persistent Volume](http://kubernetes.io/docs/use
 1. Install the chart
 
 ```bash
-$ helm install --set persistence.existingClaim=PVC_NAME seq
+$ helm install --set persistence.existingClaim=PVC_NAME stable/seq
 ```
