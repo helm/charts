@@ -73,6 +73,9 @@ The following table lists the configurable parameters of the external-dns chart 
 | `designate.customCA.mountPath`     | When using the Designate provider, set the mountPath in which to mount the custom CA configuration       | "/config/designate"                                      |
 | `designate.customCA.filename`      | When using the Designate provider, set the custom CA configuration filename                              | "designate-ca.pem"                                       |
 | `digitalocean.apiToken`            | When using the DigitalOcean provider, `DO_TOKEN` to set (optional)                                       | `""`                                                     |
+| `dyn.customerName`                | When using Dyn provider, specify the Dyn Customer Name.                                                                     | `""`                                               |
+| `dyn.username`                     | When using Dyn provider, specify the Dyn Username.                                                                         | `""`                                               |
+| `dyn.password`                     | When using Dyn provider, specify the Dyn Password.                                                                         | `""`   
 | `google.project`                   | When using the Google provider, specify the Google project (required when provider=google)               | `""`                                                     |
 | `google.serviceAccountSecret`      | When using the Google provider, specify the existing secret which contains credentials.json (optional)   | `""`                                                     |
 | `google.serviceAccountKey`         | When using the Google provider, specify the service account key JSON file. (required when `google.serviceAccountSecret` is not provided. In this case a new secret will be created holding this service account | `""` |

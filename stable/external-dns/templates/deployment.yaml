@@ -203,6 +203,28 @@ spec:
               name: {{ template "external-dns.fullname" . }}
               key: digitalocean_api_token
         {{- end }}
+        # Dyn environment variables
+        {{- if .Values.dyn.customerName }}
+          - name: EXTERNAL_DNS_DYN_CUSTOMER_NAME
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "external-dns.fullname" . }}
+                key: dyn_customer_name
+        {{- end }}
+        {{- if .Values.dyn.username }}
+          - name: EXTERNAL_DNS_DYN_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "external-dns.fullname" . }}
+                key: dyn_username
+        {{- end }}
+        {{- if .Values.dyn.password }}
+          - name: EXTERNAL_DNS_DYN_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "external-dns.fullname" . }}
+                key: dyn_password
+        {{- end }}
         # Google environment variables
         {{- if eq .Values.provider "google" }}
         - name: GOOGLE_APPLICATION_CREDENTIALS

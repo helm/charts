@@ -40,7 +40,7 @@ sources:
 # - crd
 
 ## DNS provider where the DNS records will be created. Available providers are:
-## - aws, azure, cloudflare, designate, digitalocoean, google, infoblox, rfc2136
+## - aws, azure, cloudflare, designate, digitalocoean, dyn, google, infoblox, rfc2136
 ##
 provider: aws
 
@@ -119,6 +119,12 @@ digitalocean:
   ## `DO_TOKEN` to set in the environment
   ##
   apiToken: ""
+
+# Configuration for Dyn provider.
+dyn:
+  customer_name: ""
+  username: ""
+  password: ""
 
 ## Google configuration to be set via arguments/env. variables
 ##
