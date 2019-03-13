@@ -43,8 +43,9 @@ spec:
 {{- if .Values.priorityClassName }}
       priorityClassName: {{ .Values.priorityClassName }}
 {{- end }}
-{{- if ( or .Values.persistence.enabled .Values.dashboards .Values.sidecar.datasources.enabled) }}
+{{- if ( or .Values.persistence.enabled .Values.dashboards .Values.sidecar.datasources.enabled .Values.custominitcontainers) }}
       initContainers:
+{{ toYaml .Values.custominitcontainers | indent 8 }}
 {{- end }}
 {{- if ( and .Values.persistence.enabled .Values.persistence.initChownData ) }}
         - name: init-chown-data
