@@ -1,6 +1,6 @@
 image:
   repository: "docker.elastic.co/kibana/kibana-oss"
-  tag: "6.6.0"
+  tag: "6.6.1"
   pullPolicy: "IfNotPresent"
 
 commandline:
@@ -153,6 +153,24 @@ dashboardImport:
     password: mypass
   dashboards: {}
     # k8s: https://raw.githubusercontent.com/monotek/kibana-dashboards/master/k8s-fluentd-elasticsearch.json
+
+objectsImport:
+  timeout: 60
+  xpackauth:
+    enabled: false
+    username: myuser
+    password: mypass
+  objects: {}
+#    halfpipe_index_patterns: |-
+#      [
+#        {
+#          "type": "index-pattern",
+#          "id": "my-pattern",
+#          "attributes": {
+#            "title": "my-pattern-*"
+#          }
+#        }
+#      ]
 
 # List of plugins to install using initContainer
 # NOTE : We notice that lower resource constraints given to the chart + plugins are likely not going to work well.

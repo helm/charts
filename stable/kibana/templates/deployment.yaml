@@ -32,7 +32,7 @@ spec:
       {{- if .Values.priorityClassName }}
       priorityClassName: "{{ .Values.priorityClassName }}"
       {{- end }}
-{{- if or (.Values.initContainers) (.Values.dashboardImport.dashboards) (.Values.plugins.enabled) }}
+{{- if or (.Values.initContainers) (.Values.dashboardImport.dashboards) (.Values.objectsImport.objects) (.Values.plugins.enabled) }}
       initContainers:
 {{- if .Values.initContainers }}
 {{- range $key, $value := .Values.initContainers }}
@@ -62,6 +62,34 @@ spec:
         - name: {{ template "kibana.fullname" . }}-importscript
           mountPath: "/tmp/dashboardImport.sh"
           subPath: dashboardImport.sh
+        {{- range $configFile := (keys .Values.files) }}
+        - name: {{ template "kibana.name" $ }}
+          mountPath: "/usr/share/kibana/config/{{ $configFile }}"
+          subPath: {{ $configFile }}
+        {{- end }}
+{{- end }}
+{{- if .Values.objectsImport.objects }}
+      - name: {{ .Chart.Name }}-objectsimport
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command: ["/bin/bash"]
+        args:
+          - "-c"
+          - "/tmp/objectsImport.sh"
+{{- if .Values.commandline.args }}
+{{ toYaml .Values.commandline.args | indent 10 }}
+{{- end }}
+        env:
+        {{- range $key, $value := .Values.env }}
+        - name: "{{ $key }}"
+          value: "{{ $value }}"
+        {{- end }}
+        volumeMounts:
+        - name: {{ template "kibana.fullname" . }}-objects
+          mountPath: "/kibanaobjects"
+        - name: {{ template "kibana.fullname" . }}-objects-importscript
+          mountPath: "/tmp/objectsImport.sh"
+          subPath: objectsImport.sh
         {{- range $configFile := (keys .Values.files) }}
         - name: {{ template "kibana.name" $ }}
           mountPath: "/usr/share/kibana/config/{{ $configFile }}"
@@ -226,6 +254,15 @@ spec:
         - name: {{ template "kibana.fullname" . }}-importscript
           configMap:
             name: {{ template "kibana.fullname" . }}-importscript
+            defaultMode: 0777
+{{- end }}
+{{- if .Values.objectsImport.objects }}
+        - name: {{ template "kibana.fullname" . }}-objects
+          configMap:
+            name: {{ template "kibana.fullname" . }}-objects
+        - name: {{ template "kibana.fullname" . }}-objects-importscript
+          configMap:
+            name: {{ template "kibana.fullname" . }}-objects-importscript
             defaultMode: 0777
 {{- end }}
 {{- range .Values.extraConfigMapMounts }}
