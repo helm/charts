@@ -39,8 +39,29 @@ HELM_RELEASE=$3
 POD_NAME=$(kubectl get pods -n "$NAMESPACE" -l "app=openvpn,release=$HELM_RELEASE" -o jsonpath='{.items[0].metadata.name}')
 SERVICE_NAME=$(kubectl get svc -n "$NAMESPACE" -l "app=openvpn,release=$HELM_RELEASE" -o jsonpath='{.items[0].metadata.name}')
 SERVICE_IP=$(kubectl get svc -n "$NAMESPACE" "$SERVICE_NAME" -o go-template='{{range $k, $v := (index .status.loadBalancer.ingress 0)}}{{$v}}{{end}}')
-kubectl -n "$NAMESPACE" exec -it "$POD_NAME" /etc/openvpn/setup/newClientCert.sh "$KEY_NAME" "$SERVICE_IP"
-kubectl -n "$NAMESPACE" exec -it "$POD_NAME" cat "/etc/openvpn/certs/pki/$KEY_NAME.ovpn" > "$KEY_NAME.ovpn"
+
+kubectl -n "$NAMESPACE" exec -it "$POD_NAME" /etc/openvpn/setup/newClientCert.sh "$KEY_NAME" "$SERVICE_IP" > "$KEY_NAME.ovpn"
+```
+
+You can also retrieve an already-created client with the following script:
+
+```bash
+#!/bin/bash
+
+if [ $# -ne 3 ]
+then
+  echo "Usage: $0 <CLIENT_KEY_NAME> <NAMESPACE> <HELM_RELEASE>"
+  exit
+fi
+
+KEY_NAME=$1
+NAMESPACE=$2
+HELM_RELEASE=$3
+POD_NAME=$(kubectl get pods -n "$NAMESPACE" -l "app=openvpn,release=$HELM_RELEASE" -o jsonpath='{.items[0].metadata.name}')
+SERVICE_NAME=$(kubectl get svc -n "$NAMESPACE" -l "app=openvpn,release=$HELM_RELEASE" -o jsonpath='{.items[0].metadata.name}')
+SERVICE_IP=$(kubectl get svc -n "$NAMESPACE" "$SERVICE_NAME" -o go-template='{{range $k, $v := (index .status.loadBalancer.ingress 0)}}{{$v}}{{end}}')
+
+kubectl -n "$NAMESPACE" exec -it "$POD_NAME" cat "/etc/openvpn/pki/$KEY_NAME.ovpn" > "$KEY_NAME.ovpn"
 ```
 
 The entire list of helper scripts can be found on [templates/config-openvpn.yaml](templates/config-openvpn.yaml)
@@ -55,8 +76,8 @@ Parameter | Description | Default
 ---                            | ---                                                                  | ---
 `replicaCount`                 | amount of parallel openvpn replicas to be started                    | `1`
 `updateStrategy`               | update strategy for deployment                                       | `{}`
-`image.repository`             | `openvpn` image repository                                           | `jfelten/openvpn-docker`
-`image.tag`                    | `openvpn` image tag                                                  | `1.1.0`
+`image.repository`             | `openvpn` image repository                                           | `kylemanna/openvpn`
+`image.tag`                    | `openvpn` image tag                                                  | `2.3`
 `image.pullPolicy`             | Image pull policy                                                    | `IfNotPresent`
 `service.type`                 | k8s service type exposing ports, e.g. `NodePort`                     | `LoadBalancer`
 `service.externalPort`         | TCP port reported when creating configuration files                  | `443`

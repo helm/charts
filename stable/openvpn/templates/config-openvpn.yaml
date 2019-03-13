@@ -10,32 +10,30 @@ metadata:
 data:
   setup-certs.sh: |-
     #!/bin/bash
-    EASY_RSA_LOC="/etc/openvpn/certs"
+    EASY_RSA_LOC="/etc/openvpn"
     SERVER_CERT="${EASY_RSA_LOC}/pki/issued/server.crt"
     if [ -e "$SERVER_CERT" ]
     then
       echo "found existing certs - reusing"
     else
-      cp -R /usr/share/easy-rsa/* $EASY_RSA_LOC
-      cd $EASY_RSA_LOC
-      ./easyrsa init-pki
-      echo "ca\n" | ./easyrsa build-ca nopass
-      ./easyrsa build-server-full server nopass
-      ./easyrsa gen-dh
+      ovpn_genconfig -u HELMSERVER
+      echo "ca\n" | ovpn_initpki nopass
     fi
-
 
   newClientCert.sh: |-
       #!/bin/bash
-      EASY_RSA_LOC="/etc/openvpn/certs"
+      EASY_RSA_LOC="/etc/openvpn"
+      CLIENT_NAME=$1
+      REMOTE_ADDR=$2
+
       cd $EASY_RSA_LOC
-      MY_IP_ADDR="$2"
-      ./easyrsa build-client-full $1 nopass
+      easyrsa build-client-full $CLIENT_NAME nopass
+
       cat >${EASY_RSA_LOC}/pki/$1.ovpn <<EOF
       client
       nobind
       dev tun
-      remote ${MY_IP_ADDR} {{ .Values.service.externalPort }} {{ .Values.openvpn.OVPN_PROTO }}
+      remote ${REMOTE_ADDR} {{ .Values.service.externalPort }} {{ .Values.openvpn.OVPN_PROTO }}
       {{- if .Values.openvpn.redirectGateway }}
       redirect-gateway def1
       {{- end }}
@@ -54,17 +52,13 @@ data:
   configure.sh: |-
       #!/bin/sh
       /etc/openvpn/setup/setup-certs.sh
+
       iptables -t nat -A POSTROUTING -s {{ .Values.openvpn.OVPN_NETWORK }}/{{ .Values.openvpn.OVPN_SUBNET }} -o eth0 -j MASQUERADE
       mkdir -p /dev/net
       if [ ! -c /dev/net/tun ]; then
           mknod /dev/net/tun c 10 200
       fi
 
-      if [ "$DEBUG" == "1" ]; then
-          echo ========== ${OVPN_CONFIG} ==========
-          cat "${OVPN_CONFIG}"
-          echo ====================================
-      fi
       IP=$(ip route get 8.8.8.8 | awk '/8.8.8.8/ {print $NF}')
       BASEIP=`echo $IP | cut -d"." -f1-3`
       NETWORK=`echo $BASEIP".0"`
@@ -79,14 +73,21 @@ data:
       sed 's|OVPN_K8S_DNS|'"${DNS}"'|' -i /etc/openvpn/openvpn.conf
       sed 's|NETWORK|'"${NETWORK}"'|' -i /etc/openvpn/openvpn.conf
 
+      if [ "$DEBUG" == "1" ]; then
+        echo ========== /etc/openvpn/openvpn.conf ==========
+        cat /etc/openvpn/openvpn.conf
+        echo ===============================================
+      fi
+
       openvpn --config /etc/openvpn/openvpn.conf
+
   openvpn.conf: |-
       server {{ .Values.openvpn.OVPN_NETWORK }} {{ .Values.openvpn.OVPN_SUBNET }}
       verb 3
-      key /etc/openvpn/certs/pki/private/server.key
-      ca /etc/openvpn/certs/pki/ca.crt
-      cert /etc/openvpn/certs/pki/issued/server.crt
-      dh /etc/openvpn/certs/pki/dh.pem
+      key /etc/openvpn/pki/private/HELMSERVER.key
+      ca /etc/openvpn/pki/ca.crt
+      cert /etc/openvpn/pki/issued/HELMSERVER.crt
+      dh /etc/openvpn/pki/dh.pem
 
       key-direction 0
       keepalive 10 60
