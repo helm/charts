@@ -1,0 +1,19 @@
+{{- if and .Values.pushgateway.enabled .Values.networkPolicy.enabled -}}
+apiVersion: {{ template "prometheus.networkPolicy.apiVersion" . }}
+kind: NetworkPolicy
+metadata:
+  name: {{ template "prometheus.pushgateway.fullname" . }}
+  labels:
+    {{- include "prometheus.pushgateway.labels" . | nindent 4 }}
+spec:
+  podSelector:
+    matchLabels:
+      {{- include "prometheus.pushgateway.matchLabels" . | nindent 6 }}
+  ingress:
+    - from:
+      - podSelector:
+          matchLabels:
+            {{- include "prometheus.server.matchLabels" . | nindent 12 }}
+    - ports:
+      - port: 9091
+{{- end -}}
