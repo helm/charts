@@ -16,8 +16,8 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ include "prometheus-nats-exporter.name" . }}
-        release: {{ .Release.Name }}
+        app.kubernetes.io/name: {{ include "prometheus-nats-exporter.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
       annotations:
 {{- if .Values.annotations }}
 {{ toYaml .Values.annotations | indent 8 }}
