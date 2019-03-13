@@ -50,7 +50,7 @@ spec:
             value: "1"
           {{- end }}
           - name: TILLER_TLS_CERTS
-            value: {{ quote .Values.tiller.tls.certPath }}
+            value: /etc/certs
           {{- end }}
           {{- if .Values.tiller.onlyListenOnLocalhost }}
           command: ["/tiller"]
@@ -86,7 +86,7 @@ spec:
             timeoutSeconds: 1
           volumeMounts:
           {{- if .Values.tiller.tls.enabled }}
-          - mountPath: {{ quote .Values.tiller.tls.certPath }}
+          - mountPath: /etc/certs
             name: tiller-certs
             readOnly: true
           {{- end }}

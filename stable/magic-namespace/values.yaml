@@ -30,9 +30,6 @@ tiller:
     ## Verify remote certificate
     verify: true
 
-    ## The directory where Tiller's TLS certificates are located
-    certPath: /etc/certs
-
     ## A custom secret to mount instead of specifying Base64 Values below
     secretName: ""
 
