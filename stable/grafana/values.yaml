@@ -348,3 +348,15 @@ sidecar:
     # Otherwise the namespace in which the sidecar is running will be used.
     # It's also possible to specify ALL to search in all namespaces
     searchNamespace: null
+
+## Custom container to be run as initcontainer which has access to "storage" volume used by grafana mounted on "/var/lib/grafana"
+custominitcontainers: []
+# custominitcontainers:
+#   - name: download-custom-datasource
+#     image: "alpine/git:1.0.7"
+#     imagePullPolicy: Always
+#     command: ["clone", "https://github.com/logzio/grafana-logzio-datasource.git"]
+#     volumeMounts:
+#       - name: storage
+#         mountPath: "/git"
+#         subPath: "plugins"
