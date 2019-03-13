@@ -39,8 +39,7 @@ image:
 # imagePullSecrets:
   # - name: myRegistryKeySecretName
 
-extraArgs:
-  http-address: "0.0.0.0:4180"
+extraArgs: {}
 
 # To authorize individual email addresses
 # That is part of extraArgs but since this needs special treatment we need to do a separate section
