@@ -1,12 +1,11 @@
 # Default values for buzzfeed-sso.
-# Commented values are required for SSO to work
 
-# emailDomain: 'email.mydomain.foo'
-# rootDomain: 'mydomain.foo'
+emailDomain: "<your_email_domain>"  # Required. e.g "email.mydomain.foo"
+rootDomain: "<your_root_domain>"  # Required. e.g "mydomain.foo"
 
 auth:
   annotations: {}
-  # domain: "sso-auth.mydomain.foo"
+  domain: "<your_auth_domain>"  # Required. e.g "sso-auth.mydomain.foo"
   replicaCount: 1
   resources:
     limits:
@@ -20,7 +19,7 @@ auth:
     port: 80
   # Generate these secrets with the command:
   # 'openssl rand -base64 32 | head -c 32 | base64'
-  secret: {}
+  secret: {}  # Required (if customSecret is not set)
     # codeSecret: ''
     # cookieSecret: ''
   # # Or if you do not want to create the secret via helm
@@ -46,7 +45,7 @@ proxy:
     port: 80
   # Generate these secrets with the command:
   # 'openssl rand -base64 32 | head -c 32 | base64'
-  secret: {}
+  secret: {}  # Required (if customSecret is not set)
     # clientId: ''
     # clientSecret: ''
     # cookieSecret: ''
@@ -54,7 +53,7 @@ proxy:
   # customSecret: my-sso-proxy-secret
 
 provider:
-  google: {}
+  google: {}  # Required.
   # google:
   #   adminEmail: me@mydomain.foo
   #   secret:

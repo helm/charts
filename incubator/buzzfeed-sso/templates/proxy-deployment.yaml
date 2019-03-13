@@ -1,3 +1,4 @@
+{{- if or .Values.proxy.customSecret .Values.proxy.secret -}}
 {{- $fullName := include "buzzfeed-sso.fullname" . -}}
 {{- $proxySecret := .Values.proxy.customSecret | default ($fullName) -}}
 {{- $name := include "buzzfeed-sso.name" . -}}
@@ -108,3 +109,4 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
+{{- end }}

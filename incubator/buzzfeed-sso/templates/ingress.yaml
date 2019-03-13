@@ -1,3 +1,4 @@
+{{- if ne .Values.auth.domain "<your_auth_domain>" -}}
 {{- $fullName := include "buzzfeed-sso.fullname" . -}}
 {{- $authDomain := .Values.auth.domain -}}
 apiVersion: extensions/v1beta1
@@ -44,3 +45,4 @@ spec:
             backend:
               serviceName: {{ $fullName }}-auth
               servicePort: http
+{{- end }}
