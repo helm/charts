@@ -29,7 +29,6 @@ auth:
 
 proxy:
   annotations: {}
-  # virtualHost: "*.mydomain.foo"
   # providerUrlInternal: https://sso-auth.mydomain.com
   cluster: dev
   replicaCount: 1

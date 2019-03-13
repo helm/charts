@@ -119,7 +119,6 @@ auth:
   domain: sso-auth.coolcompany.foo
 
 proxy:
-  virtualHost: '*.coolcompany.foo'
   cluster: dev
 
 google:
@@ -165,7 +164,6 @@ auth:
   customSecret: my-sso-auth-secret
 
 proxy:
-  virtualHost: '*.coolcompany.foo'
   cluster: dev
   customSecret: my-sso-proxy-secret
 
