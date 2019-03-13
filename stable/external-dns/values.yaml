@@ -14,7 +14,7 @@ sources:
 # Allow external-dns to publish DNS records for ClusterIP services (optional)
 publishInternalServices: false
 
-## The DNS provider where the DNS records will be created (options: aws, google, inmemory, azure, rfc2136 )
+## The DNS provider where the DNS records will be created (options: aws, google, inmemory, azure, dyn, rfc2136 )
 provider: aws
 
 # AWS Access keys to inject as environment variables
@@ -54,6 +54,13 @@ designate:
 # DigitalOcean API token to inject as environment variable
 digitalocean:
   apiToken: ""
+
+# Configuration for Dyn provider.
+dyn:
+  customer_name: ""
+  username: ""
+  password: ""
+  zoneId: ""
 
 # When using the Google provider, specify the Google project (required when provider=google)
 google:
