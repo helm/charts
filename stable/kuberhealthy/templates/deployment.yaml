@@ -84,10 +84,6 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: metadata.namespace
-          - name: GRACE_PERIOD_TIMEOUT_SECONDS
-            valueFrom:
-              fieldRef:
-                fieldPath: spec.terminationGracePeriodSeconds
         readinessProbe:
           failureThreshold: 3
           initialDelaySeconds: 2
