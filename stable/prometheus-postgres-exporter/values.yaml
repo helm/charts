@@ -44,9 +44,9 @@ serviceAccount:
 config:
   datasource:
     host:
-    user:
+    user: postgres
     # Only one of password and passwordSecret can be specified
-    password:
+    password: somepassword
     # Specify passwordSecret if DB password is stored in secret.
     passwordSecret: {}
     # Secret name
