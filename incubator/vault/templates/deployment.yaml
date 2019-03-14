@@ -54,9 +54,12 @@ spec:
         livenessProbe:
           # Alive if in standby or active mode
           httpGet:
-            path: /v1/sys/health?standbyok=true
+            path: /v1/sys/health?standbyok=true&
+              {{- if .Values.vault.liveness.aliveIfUninitialized -}}uninitcode=204&{{- end }}
             port: {{ .Values.service.port }}
             scheme: {{ if .Values.vault.config.listener.tcp.tls_disable -}}HTTP{{- else -}}HTTPS{{- end }}
+            initialDelaySeconds: {{ .Values.vault.liveness.initialDelaySeconds }}
+            periodSeconds: {{ .Values.vault.liveness.periodSeconds }}
         readinessProbe:
           # Ready depends on preference
           httpGet:
@@ -66,6 +69,8 @@ spec:
               {{- if .Values.vault.readiness.readyIfUninitialized -}}uninitcode=204&{{- end }}
             port: {{ .Values.service.port }}
             scheme: {{ if .Values.vault.config.listener.tcp.tls_disable -}}HTTP{{- else -}}HTTPS{{- end }}
+            initialDelaySeconds: {{ .Values.vault.readiness.initialDelaySeconds }}
+            periodSeconds: {{ .Values.vault.readiness.periodSeconds }}
         securityContext:
           readOnlyRootFilesystem: true
           capabilities:
@@ -97,7 +102,6 @@ spec:
 {{- end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
-      {{- if .Values.affinity }}
       {{- if .Values.consulAgent.join }}
       - name: {{ .Chart.Name }}-consul-agent
         image: "{{ .Values.consulAgent.repository }}:{{ .Values.consulAgent.tag }}"
@@ -128,8 +132,17 @@ spec:
               -join={{- .Values.consulAgent.join }} \
               -data-dir=/etc/consul
       {{- end }}
+      {{- if .Values.affinity }}
       affinity:
 {{ tpl .Values.affinity . | indent 8 }}
+      {{- end }}
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
       {{- end }}
       volumes:
         - name: vault-config

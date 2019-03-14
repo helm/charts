@@ -71,6 +71,13 @@ resources: {}
   # requests:
   #   cpu: 100m
   #   memory: 128Mi
+
+## Node selector
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+nodeSelector: {}
+
+## Affinity
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
 affinity: |
   podAntiAffinity:
     preferredDuringSchedulingIgnoredDuringExecution:
@@ -81,6 +88,10 @@ affinity: |
           matchLabels:
             app: {{ template "vault.name" . }}
             release: {{ .Release.Name }}
+
+## Tolerations
+## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+tolerations: []
 
 ## Deployment annotations
 annotations: {}
@@ -140,10 +151,16 @@ vault:
   # - name: extra-volume
   #   secret:
   #     secretName: some-secret
+  liveness:
+    aliveIfUninitialized: false
+    initialDelaySeconds: 30
+    periodSeconds: 10
   readiness:
     readyIfSealed: false
     readyIfStandby: true
     readyIfUninitialized: true
+    initialDelaySeconds: 10
+    periodSeconds: 10
   ## Use an existing config in a named ConfigMap
   # existingConfigName: vault-cm
   config:
