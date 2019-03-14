@@ -60,4 +60,6 @@ spec:
             timeoutSeconds: 1
             successThreshold: 1
             failureThreshold: 5
+          resources:
+{{ toYaml .Values.flower.resources | indent 12 }}
 {{- end }}
