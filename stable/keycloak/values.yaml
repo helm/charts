@@ -53,6 +53,11 @@ keycloak:
   ## If not set, a random 10 characters password will be used
   password: ""
 
+  jgroups:
+    discoveryProtocol: dns.DNS_PING
+    discoveryProperties: >
+      "dns_query={{ template "keycloak.fullname" . }}-headless.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}"
+
   ## Allows the specification of additional environment variables for Keycloak
   extraEnv: |
     # - name: KEYCLOAK_LOGLEVEL

@@ -27,7 +27,7 @@ spec:
         release: "{{ .Release.Name }}"
       {{- if .Values.keycloak.podLabels }}
 {{ toYaml .Values.keycloak.podLabels | indent 8 }}
-      {{- end }}        
+      {{- end }}
 {{- if .Values.keycloak.podAnnotations }}
       annotations:
 {{ toYaml .Values.keycloak.podAnnotations | indent 8 }}
@@ -83,9 +83,9 @@ spec:
           {{- end }}
           {{- if $highAvailability }}
             - name: JGROUPS_DISCOVERY_PROTOCOL
-              value: "dns.DNS_PING"
+              value: {{ .Values.keycloak.jgroups.discoveryProtocol }}
             - name: JGROUPS_DISCOVERY_PROPERTIES
-              value: "dns_query={{ template "keycloak.fullname" . }}-headless.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}"
+              value: {{ tpl .Values.keycloak.jgroups.discoveryProperties . }}
           {{- end }}
 {{ include "keycloak.dbEnvVars" . | indent 12 }}
 {{- with .Values.keycloak.extraEnv }}
@@ -140,7 +140,7 @@ spec:
     {{- end }}
 {{- if .Values.keycloak.priorityClassName }}
       priorityClassName: {{ .Values.keycloak.priorityClassName }}
-{{- end }}      
+{{- end }}
       terminationGracePeriodSeconds: 60
       volumes:
         - name: scripts
