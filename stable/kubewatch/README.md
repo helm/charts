@@ -40,6 +40,7 @@ The following table lists the configurable parameters of the kubewatch chart and
 |               Parameter                  |        Description                   |              Default              |
 | ---------------------------------------- | ------------------------------------ | --------------------------------- |
 | `global.imageRegistry`                   | Global Docker image registry         | `nil`                             |
+| `global.imagePullSecrets`                | Global Docker registry secret names as an array | `[]` (does not add image pull secrets to deployed pods) |
 | `affinity`                               | node/pod affinities                  | None                              |
 | `image.registry`                         | Image registry                       | `docker.io`                       |
 | `image.repository`                       | Image repository                     | `bitnami/kubewatch`               |
