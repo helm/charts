@@ -35,7 +35,7 @@ However, you can use manually created secret by setting the `datadog.apiKeyExist
 
 Read about the Datadog Cluster Agent in the [official documentation](https://docs.datadoghq.com/agent/kubernetes/cluster/).
 
-Run the following if you want to deploy the chart with the Datadog Cluster Agent: 
+Run the following if you want to deploy the chart with the Datadog Cluster Agent:
 
 ```bash
 helm install --name datadog-monitoring \
@@ -53,21 +53,23 @@ The Leader Election is enabled by default in the chart for the Cluster Agent. On
 
 #### Cluster Agent Token
 
-You can specify the Datadog Cluster Agent token used to secure the communication between the Cluster Agent(s)q and the Agents with `clusterAgent.token`. 
+You can specify the Datadog Cluster Agent token used to secure the communication between the Cluster Agent(s)q and the Agents with `clusterAgent.token`.
 
 **If you don't specify a token, a random one is generated at each deployment so you must use `--recreate-pods` to ensure all pod use the same token.** see[Datadog Chart notes](https://github.com/helm/charts/blob/57d3030941ad2ec2d6f97c86afdf36666658a884/stable/datadog/templates/NOTES.txt#L49-L59) to learn more.
 
-### Updating
+### Upgrading
 
-Starting with version 1.0.0, this chart does not support deploying Agent 5.x anymore. If you cannot upgrade to Agent 6.x, you can use a previous version of the chart by calling helm install with `--version 0.18.0`.
-
-See [0.18.1's README](https://github.com/helm/charts/blob/847f737479bb78d89f8fb650db25627558fbe1f0/stable/datadog/README.md) to see which options were supported at the time.
-
-#### From < 1.19.0 to >= 1.19.0
+#### From 1.19.0 onwards
 
 Version `1.19.0` introduces the use of release name as full name if it contains the chart name(`datadog` in this case).
 E.g. with a release name of `datadog`, this renames the `DaemonSet` from `datadog-datadog` to `datadog`.
 The suggested approach is to delete the release and reinstall it.
+
+#### From 1.0.0 onwards
+
+Starting with version 1.0.0, this chart does not support deploying Agent 5.x anymore. If you cannot upgrade to Agent 6.x, you can use a previous version of the chart by calling helm install with `--version 0.18.0`.
+
+See [0.18.1's README](https://github.com/helm/charts/blob/847f737479bb78d89f8fb650db25627558fbe1f0/stable/datadog/README.md) to see which options were supported at the time.
 
 ### Uninstalling the Chart
 
@@ -81,7 +83,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-As a best practice, a YAML file that specifies the values for the chart parameters should be provided to configure the chart: 
+As a best practice, a YAML file that specifies the values for the chart parameters should be provided to configure the chart:
 
 1.  **Copy the default [`datadog-values.yaml`](/values.yaml) value file.**
 2.  Set the `apiKey` parameter with your [Datadog API key](https://app.datadoghq.com/account/settings#api).
@@ -112,7 +114,7 @@ helm upgrade -f datadog-values.yaml <RELEASE_NAME> stable/datadog --recreate-pod
 
 ### Enabling Process Collection
 
-Update your [datadog-values.yaml](/values.yaml) file with the process collection configuration: 
+Update your [datadog-values.yaml](/values.yaml) file with the process collection configuration:
 
 ```
 datadog:
@@ -134,9 +136,9 @@ Alternatively set the `datadog.leaderElection`, `datadog.collectEvents` and `rba
 
 ### conf.d and checks.d
 
-The Datadog [entrypoint](https://github.com/DataDog/datadog-agent/blob/master/Dockerfiles/agent/entrypoint/89-copy-customfiles.sh) copies files with a `.yaml` extension found in `/conf.d` and files with `.py` extension in `/check.d` to `/etc/datadog-agent/conf.d` and `/etc/datadog-agent/checks.d` respectively. 
+The Datadog [entrypoint](https://github.com/DataDog/datadog-agent/blob/master/Dockerfiles/agent/entrypoint/89-copy-customfiles.sh) copies files with a `.yaml` extension found in `/conf.d` and files with `.py` extension in `/check.d` to `/etc/datadog-agent/conf.d` and `/etc/datadog-agent/checks.d` respectively.
 
-The keys for `datadog.confd` and `datadog.checksd` should mirror the content found in their respective ConfigMaps. Update your [datadog-values.yaml](/values.yaml) file with the check configurations: 
+The keys for `datadog.confd` and `datadog.checksd` should mirror the content found in their respective ConfigMaps. Update your [datadog-values.yaml](/values.yaml) file with the check configurations:
 
 ```yaml
 datadog:
@@ -173,7 +175,7 @@ For more details, please refer to [the documentation](https://docs.datadoghq.com
 
 ### Kubernetes Labels and Annotations
 
-To map Kubernetes pod labels and annotations to Datadog tags, provide a dictionary with kubernetes labels/annotations as keys and Datadog tags key as values in your [datadog-values.yaml](/values.yaml) file: 
+To map Kubernetes pod labels and annotations to Datadog tags, provide a dictionary with kubernetes labels/annotations as keys and Datadog tags key as values in your [datadog-values.yaml](/values.yaml) file:
 
 ```yaml
 podAnnotationsAsTags:
@@ -220,6 +222,8 @@ helm install --name <RELEASE_NAME> \
 | `image.tag`                              | The image tag to pull                                                                     | `6.9.0`                                     |
 | `image.pullPolicy`                       | Image pull policy                                                                         | `IfNotPresent`                              |
 | `image.pullSecrets`                      | Image pull secrets                                                                        | `nil`                                       |
+| `nameOverride`                           | Override name of app                                                                      | `nil`                                       |
+| `fullnameOverride`                       | Override full name of app                                                                 | `nil`                                       |
 | `rbac.create`                            | If true, create & use RBAC resources                                                      | `true`                                      |
 | `rbac.serviceAccount`                    | existing ServiceAccount to use (ignored if rbac.create=true)                              | `default`                                   |
 | `datadog.name`                           | Container name if Daemonset or Deployment                                                 | `datadog`                                   |

@@ -32,6 +32,9 @@ image:
   #  pullSecrets:
   #    - name: "<REG_SECRET>"
 
+nameOverride: ""
+fullnameOverride: ""
+
 datadog:
 
   ## @param apiKey - string - required
