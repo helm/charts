@@ -29,8 +29,8 @@ spec:
 {{- end }}
   ports:
     - name: service
-      port: 9000
-      targetPort: {{ .Values.service.port }}
+      port: {{ .Values.service.port }}
+      targetPort: 9000
       protocol: TCP
 {{- if (and (eq .Values.service.type "NodePort") ( .Values.service.nodePort)) }}
       nodePort: {{ .Values.service.nodePort }}
