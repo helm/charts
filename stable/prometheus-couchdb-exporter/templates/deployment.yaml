@@ -36,14 +36,12 @@ spec:
               containerPort: 9984
           livenessProbe:
             httpGet:
-              path: /
+              path: /status
               port: http
-              initialDelaySeconds: 60
           readinessProbe:
             httpGet:
-              path: /
+              path: /status
               port: http
-              initialDelaySeconds: 60
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}
