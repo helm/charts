@@ -10,6 +10,12 @@ global:
 
   # Optional priority class to be used for the cert-manager pods
   priorityClassName: ""
+  rbac:
+    create: true
+
+  leaderElection:
+    # Override the namespace used to store the ConfigMap for leader election
+    namespace: ""
 
 replicaCount: 1
 
@@ -21,21 +27,13 @@ strategy: {}
 
 image:
   repository: quay.io/jetstack/cert-manager-controller
-  tag: v0.6.2
+  tag: v0.7.0
   pullPolicy: IfNotPresent
 
 # Override the namespace used to store DNS provider credentials etc. for ClusterIssuer
 # resources. By default, the same namespace as cert-manager is deployed within is
 # used. This namespace will not be automatically created by the Helm chart.
 clusterResourceNamespace: ""
-
-leaderElection:
-  # Override the namespace used to store the ConfigMap for leader election
-  namespace: ""
-
-rbac:
-  # Specifies whether RBAC resources should be created
-  create: true
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -89,6 +87,9 @@ ingressShim: {}
   # defaultACMEDNS01ChallengeProvider: ""
 
 webhook:
+  enabled: true
+
+cainjector:
   enabled: true
 
 # Use these variables to configure the HTTP_PROXY environment variables

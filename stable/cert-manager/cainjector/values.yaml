@@ -10,6 +10,10 @@ global:
   rbac:
     create: true
 
+  leaderElection:
+    # Override the namespace used to store the ConfigMap for leader election
+    namespace: ""
+
 replicaCount: 1
 
 strategy: {}
@@ -20,7 +24,7 @@ strategy: {}
 
 podAnnotations: {}
 
-# Optional additional arguments for webhook
+# Optional additional arguments for cainjector
 extraArgs: []
 
 resources: {}
@@ -29,13 +33,6 @@ resources: {}
   #   memory: 32Mi
 
 image:
-  repository: quay.io/jetstack/cert-manager-webhook
+  repository: quay.io/jetstack/cert-manager-cainjector
   tag: v0.7.0
   pullPolicy: IfNotPresent
-
-# if true, the apiserver's cabundle will be automatically injected into the
-# webhook's ValidatingWebhookConfiguration resource by the CA injector.
-# in future this will default to false, as the apiserver can use the loopback
-# configuration caBundle to talk to itself in kubernetes 1.11+
-# see https://github.com/kubernetes/kubernetes/pull/62649
-injectAPIServerCA: true

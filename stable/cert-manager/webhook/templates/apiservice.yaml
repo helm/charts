@@ -7,6 +7,8 @@ metadata:
     chart: {{ include "webhook.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+  annotations:
+    certmanager.k8s.io/inject-ca-from: "{{ .Release.Namespace }}/{{ include "webhook.servingCertificate" . }}"
 spec:
   group: admission.certmanager.k8s.io
   groupPriorityMinimum: 1000

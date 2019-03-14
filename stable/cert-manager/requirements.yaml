@@ -1,6 +1,10 @@
 # requirements.yaml
 dependencies:
 - name: webhook
-  version: "v0.6.4"
+  version: "v0.7.0"
   repository: "file://webhook"
   condition: webhook.enabled
+- name: cainjector
+  version: "v0.7.0"
+  repository: "file://cainjector"
+  condition: cainjector.enabled

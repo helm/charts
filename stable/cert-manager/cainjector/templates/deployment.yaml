@@ -1,18 +1,18 @@
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
-  name: {{ include "webhook.fullname" . }}
+  name: {{ include "cainjector.fullname" . }}
   namespace: {{ .Release.Namespace | quote }}
   labels:
-    app: {{ include "webhook.name" . }}
-    chart: {{ include "webhook.chart" . }}
+    app: {{ include "cainjector.name" . }}
+    chart: {{ include "cainjector.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ include "webhook.name" . }}
+      app: {{ include "cainjector.name" . }}
       release: {{ .Release.Name }}
   {{- with .Values.strategy }}
   strategy:
@@ -21,14 +21,14 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ include "webhook.name" . }}
+        app: {{ include "cainjector.name" . }}
         release: {{ .Release.Name }}
       annotations:
       {{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
       {{- end }}
     spec:
-      serviceAccountName: {{ include "webhook.fullname" . }}
+      serviceAccountName: {{ include "cainjector.fullname" . }}
       {{- if .Values.global.priorityClassName }}
       priorityClassName: {{ .Values.global.priorityClassName | quote }}
       {{- end }}
@@ -37,13 +37,14 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           args:
-          - --v=12
-          - --secure-port=6443
-          - --tls-cert-file=/certs/tls.crt
-          - --tls-private-key-file=/certs/tls.key
-        {{- if .Values.extraArgs }}
+          {{- if .Values.global.leaderElection.namespace }}
+          - --leader-election-namespace={{ .Values.global.leaderElection.namespace }}
+          {{- else }}
+          - --leader-election-namespace=$(POD_NAMESPACE)
+          {{- end }}
+          {{- if .Values.extraArgs }}
 {{ toYaml .Values.extraArgs | indent 10 }}
-        {{- end }}
+          {{- end }}
           env:
           - name: POD_NAMESPACE
             valueFrom:
@@ -51,13 +52,6 @@ spec:
                 fieldPath: metadata.namespace
           resources:
 {{ toYaml .Values.resources | indent 12 }}
-          volumeMounts:
-          - name: certs
-            mountPath: /certs
-      volumes:
-      - name: certs
-        secret:
-          secretName: {{ include "webhook.servingCertificate" . }}
     {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

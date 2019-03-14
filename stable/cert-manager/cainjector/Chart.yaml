@@ -1,8 +1,8 @@
-name: webhook
+name: cainjector
 apiVersion: v1
 version: "v0.7.0"
 appVersion: "v0.7.0"
-description: A Helm chart for deploying the cert-manager webhook component
+description: A Helm chart for deploying the cert-manager cainjector component
 home: https://github.com/jetstack/cert-manager
 sources:
   - https://github.com/jetstack/cert-manager

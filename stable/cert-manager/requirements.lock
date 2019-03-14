@@ -1,6 +1,9 @@
 dependencies:
 - name: webhook
   repository: file://webhook
-  version: v0.6.4
-digest: sha256:a0af88ca014f7195e521457f22c31d8bf28c7c90b0c9a088bfc5cb8ab188b769
-generated: 2019-02-19T11:13:47.831977937Z
+  version: v0.7.0
+- name: cainjector
+  repository: file://cainjector
+  version: v0.7.0
+digest: sha256:7042a8ac7a0499463fc2c780575a9e8b964fa0edc3b194ecd34a7b3cf6ec225d
+generated: 2019-03-14T10:23:24.620892+08:00
