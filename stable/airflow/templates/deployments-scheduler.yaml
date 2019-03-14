@@ -89,6 +89,10 @@ spec:
             - name: connections
               mountPath: /usr/local/connections
           {{- end}}
+          {{- if .Values.airflow.variables }}
+            - name: variables
+              mountPath: /usr/local/variables/
+          {{- end}}
           {{- range .Values.airflow.extraConfigmapMounts }}
             - name: {{ .name }}
               mountPath: {{ .mountPath }}
@@ -114,6 +118,10 @@ spec:
               echo "adding connections" &&
               /usr/local/connections/add-connections.sh &&
             {{- end }}
+            {{- if .Values.airflow.variables }}
+              echo "adding variables" &&
+              airflow variables -i /usr/local/variables/variables.json &&
+            {{- end }}
               echo "executing scheduler" &&
               airflow scheduler -n {{ .Values.airflow.schedulerNumRuns }}
           {{- else }}
@@ -127,6 +135,10 @@ spec:
             {{- if .Values.airflow.connections }}
               echo "adding connections" &&
               /usr/local/connections/add-connections.sh &&
+            {{- end }}
+            {{- if .Values.airflow.variables }}
+              echo "adding variables" &&
+              airflow variables -i /usr/local/variables/variables.json &&
             {{- end }}
               echo "executing scheduler" &&
               airflow scheduler -n {{ .Values.airflow.schedulerNumRuns }}
@@ -167,6 +179,12 @@ spec:
         - name: connections
           secret:
             secretName: {{ template "airflow.fullname" . }}-connections
+            defaultMode: 0755
+        {{- end }}
+        {{- if .Values.airflow.variables }}
+        - name: variables
+          configMap:
+            name: {{ template "airflow.fullname" . }}-variables
             defaultMode: 0755
         {{- end }}
         {{- range .Values.airflow.extraConfigmapMounts }}

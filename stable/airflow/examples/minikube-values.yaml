@@ -10,6 +10,8 @@ airflow:
     AIRFLOW__CORE__LOGGING_LEVEL: DEBUG
     AIRFLOW__CORE__LOAD_EXAMPLES: True
 
+  variables: '{ "environment": "dev" }'
+
 workers:
   replicas: 1
   celery:
