@@ -191,6 +191,9 @@ acme:
   ## Configure dnsProvider to perform domain verification using dns challenge
   ## Applicable only if using the dns-01 challenge type
   delayBeforeCheck: 0
+  resolvers: []
+    # - 1.1.1.1:53
+    # - 8.8.8.8:53
   dnsProvider:
     name: nil
     auroradns:
@@ -246,6 +249,11 @@ acme:
       OTC_PASSWORD: ""
       OTC_PROJECT_NAME: ""
       OTC_IDENTITY_ENDPOINT: ""
+    ovh:
+      OVH_ENDPOINT: ""
+      OVH_APPLICATION_KEY: ""
+      OVH_APPLICATION_SECRET: ""
+      OVH_CONSUMER_KEY: ""
     pdns:
       PDNS_API_URL: ""
     rackspace:

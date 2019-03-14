@@ -130,6 +130,12 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+        {{- if .Values.command }}
+          command:
+          {{- range .Values.command }}
+            - {{ . }}
+          {{- end }}
+        {{- end}}
           volumeMounts:
             - name: config
               mountPath: "/etc/grafana/grafana.ini"
@@ -152,7 +158,7 @@ spec:
 {{- if .Values.dashboards }}
   {{- range $provider, $dashboards := .Values.dashboards }}
     {{- range $key, $value := $dashboards }}
-      {{- if hasKey $value "json" }}
+      {{- if (or (hasKey $value "json") (hasKey $value "file")) }}
             - name: dashboards-{{ $provider }}
               mountPath: "/var/lib/grafana/dashboards/{{ $provider }}/{{ $key }}.json"
               subPath: "{{ $key }}.json"

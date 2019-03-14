@@ -1,4 +1,5 @@
 # Deploy singleton instance in the whole cluster for some unique data sources, like kube-state-metrics
+{{- if .Values.deployment.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -90,4 +91,5 @@ spec:
           secretName: {{ template "metricbeat.fullname" . }}-deployment-modules
 {{- if .Values.extraVolumes }}
 {{ toYaml .Values.extraVolumes | indent 6 }}
+{{- end }}
 {{- end }}

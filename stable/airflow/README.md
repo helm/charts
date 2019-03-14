@@ -115,6 +115,17 @@ airflow:
 
 Note: As connections may require to include sensitive data - the resulting script is stored encrypted in a kubernetes secret and mounted into the airflow scheduler container. It is probably wise not to put connection data in the default values.yaml and instead create an encrypted my-secret-values.yaml. this way it can be decrypted before the installation and passed to helm with -f <my-secret-values.yaml>
 
+#### Airflow variables
+
+Variables are a generic way to store and retrieve arbitrary content or settings as a simple key value store within Airflow.
+These variables will be automatically imported by the scheduler when it starts up.
+
+Example:
+```yaml
+airflow:
+  variables: '{ "environment": "dev" }'
+```
+
 ### Worker Statefulset
 
 Celery workers uses StatefulSet.
@@ -280,6 +291,9 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `airflow.extraContainers`                | additional containers to run in the scheduler, worker & web pods | `[]`             |
 | `airflow.extraVolumeMounts`              | additional volumeMounts to the main container in scheduler, worker & web pods | `[]`|
 | `airflow.extraVolumes`                   | additional volumes for the scheduler, worker & web pods | `[]`                      |
+| `flower.resources`                       | custom resource configuration for flower pod            | `{}`                      |
+| `web.resources`                          | custom resource configuration for web pod               | `{}`                      |
+| `scheduler.resources`                    | custom resource configuration for scheduler pod         | `{}`                      |
 | `workers.enabled`                        | enable workers                                          | `true`                    |
 | `workers.replicas`                       | number of workers pods to launch                        | `1`                       |
 | `workers.resources`                      | custom resource configuration for worker pod            | `{}`                      |

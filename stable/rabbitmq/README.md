@@ -48,6 +48,7 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | Parameter                            | Description                                      | Default                                                 |
 | ------------------------------------ | ------------------------------------------------ | ------------------------------------------------------- |
 | `global.imageRegistry`               | Global Docker image registry                     | `nil`                                                   |
+| `global.imagePullSecrets`            | Global Docker registry secret names as an array  | `[]` (does not add image pull secrets to deployed pods) |
 | `image.registry`                     | Rabbitmq Image registry                          | `docker.io`                                             |
 | `image.repository`                   | Rabbitmq Image name                              | `bitnami/rabbitmq`                                      |
 | `image.tag`                          | Rabbitmq Image tag                               | `{VERSION}`                                             |
@@ -67,7 +68,7 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `rabbitmq.configuration`             | Required cluster configuration                   | See values.yaml                                         |
 | `rabbitmq.extraConfiguration`        | Extra configuration to add to rabbitmq.conf      | See values.yaml                                         |
 | `service.type`                       | Kubernetes Service type                          | `ClusterIP`                                             |
-| `service.amqpPort`                   | Amqp port                                        | `5672`                                                  |
+| `service.port`                       | Amqp port                                        | `5672`                                                  |
 | `service.distPort`                   | Erlang distribution server port                  | `25672`                                                 |
 | `service.nodePort`                   | Node port override, if serviceType NodePort      | _random available between 30000-32767_                  |
 | `service.managerPort`                | RabbitMQ Manager port                            | `15672`                                                 |
@@ -75,6 +76,7 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `persistence.storageClass`           | Storage class of backing PVC                     | `nil` (uses alpha storage class annotation)             |
 | `persistence.accessMode`             | Use volume as ReadOnly or ReadWrite              | `ReadWriteOnce`                                         |
 | `persistence.size`                   | Size of data volume                              | `8Gi`                                                   |
+| `persistence.path`                   | Mount path of the data volume                    | `/opt/bitnami/rabbitmq/var/lib/rabbitmq`               |
 | `securityContext.enabled`            | Enable security context                          | `true`                                                  |
 | `securityContext.fsGroup`            | Group ID for the container                       | `1001`                                                  |
 | `securityContext.runAsUser`          | User ID for the container                        | `1001`                                                  |
@@ -108,6 +110,12 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `metrics.image.pullPolicy`           | Exporter image pull policy                       | `IfNotPresent`                                          |
 | `metrics.resources`                  | Exporter resource requests/limit                 | `nil`                                                   |
 | `podLabels`                          | Additional labels for the statefulset pod(s).    | {}                                                      |
+| `volumePermissions.enabled`         | Enable init container that changes volume permissions in the data directory (for cases where the default k8s `runAsUser` and `fsUser` values do not work)                                                               | `false`                                          |
+| `volumePermissions.image.registry`         | Init container volume-permissions image registry                                                               | `docker.io`                                          |
+| `volumePermissions.image.repository`       | Init container volume-permissions image name                                                                   | `bitnami/minideb`                                    |
+| `volumePermissions.image.tag`              | Init container volume-permissions image tag                                                                    | `latest`                                             |
+| `volumePermissions.image.pullPolicy`       | Init container volume-permissions image pull policy                                                            | `IfNotPresent`                                       |
+| `volumePermissions.resources`                  | Init container resource requests/limit                 | `nil`                                                   |
 
 The above parameters map to the env variables defined in [bitnami/rabbitmq](http://github.com/bitnami/bitnami-docker-rabbitmq). For more information please refer to the [bitnami/rabbitmq](http://github.com/bitnami/bitnami-docker-rabbitmq) image documentation.
 
@@ -128,6 +136,32 @@ $ helm install --name my-release -f values.yaml stable/rabbitmq
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+### Load Definitions
+It is possible to [load a RabbitMQ definitions file to configure RabbitMQ](http://www.rabbitmq.com/management.html#load-definitions). Because definitions may contain RabbitMQ credentials, [store the JSON as a Kubernetes secret](https://kubernetes.io/docs/concepts/configuration/secret/#using-secrets-as-files-from-a-pod). Within the secret's data, choose a key name that corresponds with the desired load definitions filename (i.e. `load_definition.json`) and use the JSON object as the value. For example:
+
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: rabbitmq-load-definition
+type: Opaque
+stringData:
+  load_definition.json: |-
+    {
+      "vhosts": [
+        {
+          "name": "/"
+        }
+      ]
+    }
+```
+
+Then, specify the `management.load_definitions` property as an `extraConfiguration` pointing to the load definition file path within the container (i.e. `/app/load_definition.json`) and set `loadDefinition.enable` to `true`.
+
+Any load definitions specified will be available within in the container at `/app`.
+
+> Loading a definition will take precedence over any configuration done through [Helm values](#configuration).
 
 ## Production configuration
 
