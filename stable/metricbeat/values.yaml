@@ -5,6 +5,7 @@ image:
 
 # The instances created by daemonset retrieve most metrics from the host
 daemonset:
+  enabled: true
   podAnnotations: []
   tolerations:
   - key: node-role.kubernetes.io/master
@@ -73,6 +74,7 @@ daemonset:
             # - /var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt
 # The instance created by deployment retrieves metrics that are unique for the whole cluster, like Kubernetes events or kube-state-metrics
 deployment:
+  enabled: true
   podAnnotations: []
   tolerations: []
   nodeSelector: {}
