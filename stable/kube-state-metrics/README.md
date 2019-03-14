@@ -20,9 +20,11 @@ $ helm install stable/kube-state-metrics
 | `service.port`                        | The port of the container                               | 8080                                        |
 | `prometheusScrape`                    | Whether or not enable prom scrape                       | true                                        |
 | `rbac.create`                         | If true, create & use RBAC resources                    | true                                        |
+| `serviceAccount.create`               | If true, and rbac true, create & use serviceAccount     | true                                        |
+| `serviceAccount.name`                 | If not set & create is true, use template fullname      |                                             |
+| `serviceAccount.imagePullSecrets`     | Specify image pull secrets field                        | `[]`                                        |
 | `podSecurityPolicy.enabled`           | If true, create & use PodSecurityPolicy resources       | false                                       |
 | `podSecurityPolicy.annotations`       | Specify pod annotations in the pod security policy      | {}                                          |
-| `rbac.serviceAccountName`             | ServiceAccount to be used (ignored if rbac.create=true) | default                                     |
 | `securityContext.enabled`             | Enable security context                                 | `true`                                      |
 | `securityContext.fsGroup`             | Group ID for the container                              | `65534`                                     |
 | `securityContext.runAsUser`           | User ID for the container                               | `65534`                                     |
