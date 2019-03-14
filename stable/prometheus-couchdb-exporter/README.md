@@ -57,6 +57,7 @@ The following table lists the configurable parameters and their default values.
 | `nodeSelector`         | node labels for pod assignment                      | {}                                      |
 | `tolerations`          | tolerations for pod assignment                      | {}                                      |
 | `affinity`             | affinity settings for proxy pod assignments         | {}                                      |
+| `podAnnotations`       | annotations to add to each pod                      | {}                                      |
 | `couchdb.uri`          | address of the couchdb                              | `http://couchdb.default.svc:5984`       |
 | `couchdb.databases`    | comma separated databases to monitor                | `_all_dbs`                              |
 

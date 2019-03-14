@@ -56,6 +56,8 @@ tolerations: []
 
 affinity: {}
 
+podAnnotations: {}
+
 ## CouchDB exporter configuratons
 couchdb:
   ## URI ofthe couchdb instance
