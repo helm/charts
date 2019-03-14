@@ -83,6 +83,7 @@ The following table lists the configurable parameters of the Percona chart and t
 | `metricsExporter.commandOverrides` | Overrides default docker command for metrics exporter | `[]` |
 | `metricsExporter.argsOverrides`   | Overrides default docker args for metrics exporter     | `[]` |
 | `podDisruptionBudget` | Pod disruption budget | `{enabled: false, maxUnavailable: 1}` |
+| `service.percona.headless` | if set to true makes the percona service [headless](https://kubernetes.io/docs/concepts/services-networking/service/#headless-services) | false |
 
 
 Some of the parameters above map to the env variables defined in the [Percona XtraDB Cluster DockerHub image](https://hub.docker.com/r/percona/percona-xtradb-cluster/).
