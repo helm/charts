@@ -7,13 +7,13 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
-  name: "{{ template "datadog.clusterAgent.fullname" . }}"
+  name: "{{ template "datadog.fullname" . }}-cluster-agent"
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
   name: extension-apiserver-authentication-reader
 subjects:
   - kind: ServiceAccount
-    name: {{ template "datadog.clusterAgent.fullname" . }}
+    name: {{ template "datadog.fullname" . }}-cluster-agent
     namespace: {{ .Release.Namespace }}
 {{- end -}}

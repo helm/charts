@@ -132,6 +132,12 @@ airflow:
   ##     type: aws
   ##     extra: '{"aws_access_key_id": "**********", "aws_secret_access_key": "***", "region_name":"eu-central-1"}'
   connections: {}
+
+  ## Add airflow variables
+  ## This should be a json string with your variables in it
+  ## Examples:
+  ##   variables: '{ "environment": "dev" }'
+  variables: {}
   ##
   ## Annotations for the Scheduler, Worker and Web pods
   podAnnotations: {}

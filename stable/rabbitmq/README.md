@@ -48,6 +48,7 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | Parameter                            | Description                                      | Default                                                 |
 | ------------------------------------ | ------------------------------------------------ | ------------------------------------------------------- |
 | `global.imageRegistry`               | Global Docker image registry                     | `nil`                                                   |
+| `global.imagePullSecrets`            | Global Docker registry secret names as an array  | `[]` (does not add image pull secrets to deployed pods) |
 | `image.registry`                     | Rabbitmq Image registry                          | `docker.io`                                             |
 | `image.repository`                   | Rabbitmq Image name                              | `bitnami/rabbitmq`                                      |
 | `image.tag`                          | Rabbitmq Image tag                               | `{VERSION}`                                             |
@@ -135,6 +136,32 @@ $ helm install --name my-release -f values.yaml stable/rabbitmq
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+### Load Definitions
+It is possible to [load a RabbitMQ definitions file to configure RabbitMQ](http://www.rabbitmq.com/management.html#load-definitions). Because definitions may contain RabbitMQ credentials, [store the JSON as a Kubernetes secret](https://kubernetes.io/docs/concepts/configuration/secret/#using-secrets-as-files-from-a-pod). Within the secret's data, choose a key name that corresponds with the desired load definitions filename (i.e. `load_definition.json`) and use the JSON object as the value. For example:
+
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: rabbitmq-load-definition
+type: Opaque
+stringData:
+  load_definition.json: |-
+    {
+      "vhosts": [
+        {
+          "name": "/"
+        }
+      ]
+    }
+```
+
+Then, specify the `management.load_definitions` property as an `extraConfiguration` pointing to the load definition file path within the container (i.e. `/app/load_definition.json`) and set `loadDefinition.enable` to `true`.
+
+Any load definitions specified will be available within in the container at `/app`.
+
+> Loading a definition will take precedence over any configuration done through [Helm values](#configuration).
 
 ## Production configuration
 
