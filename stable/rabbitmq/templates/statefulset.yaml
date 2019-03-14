@@ -48,6 +48,20 @@ spec:
 {{ toYaml .Values.tolerations | indent 8 }}
       {{- end }}
       terminationGracePeriodSeconds: 10
+      {{- if and .Values.volumePermissions.enabled .Values.persistence.enabled .Values.securityContext.enabled }}
+      initContainers:
+      - name: volume-permissions
+        image: "{{ template "volumePermissions.image" . }}"
+        imagePullPolicy: {{ default "" .Values.volumePermissions.image.pullPolicy | quote }}
+        command: ["/bin/chown", "-R", "{{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.fsGroup }}", "{{ .Values.persistence.path }}"]
+        securityContext:
+          runAsUser: 0
+        resources:
+{{ toYaml .Values.volumePermissions.resources | indent 10 }}
+        volumeMounts:
+        - name: data
+          mountPath: "{{ .Values.persistence.path }}"
+      {{- end }}      
       containers:
       - name: rabbitmq
         image: {{ template "rabbitmq.image" . }}
@@ -81,7 +95,7 @@ spec:
           - name: config-volume
             mountPath: /opt/bitnami/rabbitmq/conf
           - name: data
-            mountPath: /opt/bitnami/rabbitmq/var/lib/rabbitmq/
+            mountPath: "{{ .Values.persistence.path }}"
           {{- if .Values.rabbitmq.loadDefinition.enabled }}
           - name: load-definition-volume
             mountPath: /app
