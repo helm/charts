@@ -18,6 +18,20 @@ spec:
       labels:
         app: {{ template "datadog.fullname" . }}-cluster-agent
       name: {{ template "datadog.fullname" . }}-cluster-agent
+      annotations:
+        ad.datadoghq.com/{{ .Values.clusterAgent.containerName }}.check_names: '["prometheus"]'
+        ad.datadoghq.com/{{ .Values.clusterAgent.containerName }}.init_configs: '[{}]'
+        ad.datadoghq.com/{{ .Values.clusterAgent.containerName }}.instances: |
+          [{
+            "prometheus_url": "http://%%host%%:5000/metrics",
+            "namespace": "datadog.cluster_agent",
+            "metrics": [
+              "go_goroutines", "go_memstats_*", "process_*",
+              "api_requests",
+              "datadog_requests", "external_metrics",
+              "cluster_checks_*"
+            ]
+          }]
     spec:
       {{- if .Values.clusterAgent.image.pullSecrets }}
       imagePullSecrets:
@@ -53,6 +67,18 @@ spec:
                 name: {{ template "datadog.appKeySecretName" . }}
                 key: app-key
           {{- end }}
+          {{- if .Values.clusterAgent.clusterChecks.enabled }}
+          - name: DD_CLUSTER_CHECKS_ENABLED
+            value: {{ .Values.clusterAgent.clusterChecks.enabled | quote }}
+          - name: DD_EXTRA_CONFIG_PROVIDERS
+            value: "kube_services"
+          - name: DD_EXTRA_LISTENERS
+            value: "kube_services"
+          {{- end }}
+          {{- if .Values.datadog.clusterName }}
+          - name: DD_CLUSTER_NAME
+            value: {{ .Values.datadog.clusterName | quote }}
+          {{- end }}
           {{- if .Values.datadog.site }}
           - name: DD_SITE
             value: {{ .Values.datadog.site | quote }}
@@ -70,6 +96,9 @@ spec:
           {{- if .Values.datadog.leaderLeaseDuration }}
           - name: DD_LEADER_LEASE_DURATION
             value: {{ .Values.datadog.leaderLeaseDuration | quote }}
+          {{- else if .Values.clusterAgent.clusterChecks.enabled }}
+          - name: DD_LEADER_LEASE_DURATION
+            value: "15"
           {{- end }}
           {{- if .Values.datadog.collectEvents }}
           - name: DD_COLLECT_KUBERNETES_EVENTS
@@ -106,6 +135,16 @@ spec:
             port: 443
             path: /healthz
             scheme: HTTPS
+{{- end }}
+{{- if .Values.clusterAgent.confd }}
+        volumeMounts:
+          - name: confd
+            mountPath: /conf.d
+            readOnly: true
+      volumes:
+        - name: confd
+          configMap:
+            name: {{ template "datadog.fullname" . }}-cluster-agent-confd
 {{- end }}
       {{- if .Values.clusterAgent.tolerations }}
       tolerations:
