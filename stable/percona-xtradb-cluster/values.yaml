@@ -129,3 +129,9 @@ podDisruptionBudget:
   enabled: false
   # minAvailable: 1
   maxUnavailable: 1
+
+## Set the percona kubernetes service headless (no load-balancing)
+## ref: https://kubernetes.io/docs/concepts/services-networking/service/#headless-services
+service:
+  percona:
+    headless: false
