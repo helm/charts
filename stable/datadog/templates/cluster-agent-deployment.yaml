@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "datadog.clusterAgent.fullname" . }}
+  name: {{ template "datadog.fullname" . }}-cluster-agent
   labels:
     app: "{{ template "datadog.fullname" . }}"
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
@@ -12,12 +12,12 @@ spec:
   replicas: {{ .Values.clusterAgent.replicas }}
   selector:
     matchLabels:
-      app: {{ template "datadog.clusterAgent.fullname" . }}
+      app: {{ template "datadog.fullname" . }}-cluster-agent
   template:
     metadata:
       labels:
-        app: {{ template "datadog.clusterAgent.fullname" . }}
-      name: {{ template "datadog.clusterAgent.fullname" . }}
+        app: {{ template "datadog.fullname" . }}-cluster-agent
+      name: {{ template "datadog.fullname" . }}-cluster-agent
     spec:
       {{- if .Values.clusterAgent.image.pullSecrets }}
       imagePullSecrets:
@@ -75,12 +75,12 @@ spec:
           - name: DD_COLLECT_KUBERNETES_EVENTS
             value: {{ .Values.datadog.collectEvents | quote}}
           - name: DD_CLUSTER_AGENT_KUBERNETES_SERVICE_NAME
-            value: {{ template "datadog.clusterAgent.fullname" . }}
+            value: {{ template "datadog.fullname" . }}-cluster-agent
           {{- end }}
           - name: DD_CLUSTER_AGENT_AUTH_TOKEN
             valueFrom:
               secretKeyRef:
-                name: {{ template "datadog.clusterAgent.fullname" . }}
+                name: {{ template "datadog.fullname" . }}-cluster-agent
                 key: token
           - name: DD_KUBE_RESOURCES_NAMESPACE
             value: {{ .Release.Namespace }}
@@ -115,5 +115,5 @@ spec:
       affinity:
 {{ toYaml .Values.clusterAgent.affinity | indent 8 }}
       {{- end }}
-      serviceAccountName: {{ if .Values.rbac.create }}{{ template "datadog.clusterAgent.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+      serviceAccountName: {{ if .Values.rbac.create }}{{ template "datadog.fullname" . }}-cluster-agent{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
 {{ end }}
