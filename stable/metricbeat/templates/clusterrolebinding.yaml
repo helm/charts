@@ -1,4 +1,3 @@
-{{- if .Values.deployment.enabled }}
 {{- if .Values.rbac.create -}}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -17,5 +16,4 @@ subjects:
 - kind: ServiceAccount
   name: {{ template "metricbeat.serviceAccountName" . }}
   namespace: {{ .Release.Namespace }}
-{{- end -}}
 {{- end -}}
