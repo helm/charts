@@ -149,6 +149,9 @@ persistence:
   # If you change this value, you might have to adjust `rabbitmq.diskFreeLimit` as well.
   size: 8Gi
 
+  # persistence directory, maps to the rabbitmq data directory
+  path: /opt/bitnami/rabbitmq/var/lib/rabbitmq
+
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 ##
@@ -237,3 +240,16 @@ metrics:
   annotations:
     prometheus.io/scrape: "true"
     prometheus.io/port: "9090"
+
+##
+## Init containers parameters:
+## volumePermissions: Change the owner of the persist volume mountpoint to RunAsUser:fsGroup
+##
+volumePermissions:
+  enabled: false
+  image:
+    registry: docker.io
+    repository: bitnami/minideb
+    tag: latest
+    pullPolicy: IfNotPresent
+  resources: {}

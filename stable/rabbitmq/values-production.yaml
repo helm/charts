@@ -104,12 +104,13 @@ service:
   ## Node port
   ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
   ##
-  nodePort: 5672
+  # nodePort: 30672
 
   ## Amqp port
   ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
   ##
-  amqpPort: 5672
+  port: 5672
+
   ## Dist port
   ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
   ##
@@ -147,6 +148,9 @@ persistence:
 
   # If you change this value, you might have to adjust `rabbitmq.diskFreeLimit` as well.
   size: 8Gi
+
+  # persistence directory, maps to the rabbitmq data directory
+  path: /opt/bitnami/rabbitmq/var/lib/rabbitmq
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -240,3 +244,16 @@ metrics:
   annotations:
     prometheus.io/scrape: "true"
     prometheus.io/port: "9090"
+
+##
+## Init containers parameters:
+## volumePermissions: Change the owner of the persist volume mountpoint to RunAsUser:fsGroup
+##
+volumePermissions:
+  enabled: true
+  image:
+    registry: docker.io
+    repository: bitnami/minideb
+    tag: latest
+    pullPolicy: IfNotPresent
+  resources: {}
