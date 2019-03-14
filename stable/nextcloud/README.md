@@ -72,7 +72,7 @@ The following table lists the configurable parameters of the nextcloud chart and
 | `mariadb.rootUser.password`       | MariaDB admin password                    | `nil`                                                   |
 | `service.type`                      | Kubernetes Service type                   | `ClusterIp`                                          |
 | `service.loadBalancerIP`            | LoadBalancerIp for service type LoadBalancer                   | `nil`                                          |
-| `persistence.enabled`     | Enable persistence using PVC              | `true`                                                  |
+| `persistence.enabled`     | Enable persistence using PVC              | `false`                                                  |
 | `persistence.storageClass` | PVC Storage Class for nextcloud volume     | `nil` (uses alpha storage class annotation)             |
 | `persistence.existingClaim`| An Existing PVC name for nextcloud volume  | `nil` (uses alpha storage class annotation)             |
 | `persistence.accessMode`   | PVC Access Mode for nextcloud volume       | `ReadWriteOnce`                                         |
@@ -116,4 +116,4 @@ $ helm install --name my-release -f values.yaml stable/nextcloud
 The [Nextcloud](https://hub.docker.com/_/nextcloud/) image stores the nextcloud data and configurations at the `/var/www/html` paths of the container.
 
 Persistent Volume Claims are used to keep the data across deployments. This is known to work in GCE, AWS, and minikube.
-See the [Configuration](#configuration) section to configure the PVC or to disable persistence.
+See the [Configuration](#configuration) section to enable persistence and configuration of the PVC.
