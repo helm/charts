@@ -21,8 +21,8 @@ spec:
 {{- if .Values.Master.ingress.path }}
         path: {{ .Values.Master.ingress.path }}
 {{- end -}}
-{{- if .Values.Master.hostName }}
-    host: {{ .Values.Master.hostName | quote }}
+{{- if .Values.Master.ingress.hostName }}
+    host: {{ .Values.Master.ingress.hostName | quote }}
 {{- end }}
 {{- if .Values.Master.ingress.tls }}
   tls:
