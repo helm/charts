@@ -82,6 +82,11 @@ spec:
             mountPath: /opt/bitnami/rabbitmq/conf
           - name: data
             mountPath: /opt/bitnami/rabbitmq/var/lib/rabbitmq/
+          {{- if .Values.rabbitmq.loadDefinition.enabled }}
+          - name: load-definition-volume
+            mountPath: /app
+            readOnly: true
+          {{- end }}
         ports:
         - name: epmd
           containerPort: 4369
@@ -204,6 +209,11 @@ spec:
               path: rabbitmq.conf
             - key: enabled_plugins
               path: enabled_plugins
+        {{- if .Values.rabbitmq.loadDefinition.enabled }}
+        - name: load-definition-volume
+          secret:
+            secretName: {{ .Values.rabbitmq.loadDefinition.secretName | quote }}
+        {{- end }}
       {{- if not .Values.persistence.enabled }}
         - name: data
           emptyDir: {}
