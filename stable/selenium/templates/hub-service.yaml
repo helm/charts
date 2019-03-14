@@ -25,7 +25,7 @@ spec:
   - name: hub
     port: {{ .Values.hub.servicePort }}
     targetPort: {{ .Values.hub.port }}
-    {{- if .Values.hub.nodePort }}
+    {{- if and ( eq .Values.hub.serviceType "NodePort") .Values.hub.nodePort }}
     nodePort: {{ .Values.hub.nodePort }}
     {{- end }}
   selector:
