@@ -14,7 +14,7 @@ serviceAccount:
 
 image:
   repository: kubeaws/kube-spot-termination-notice-handler
-  tag: 1.10.8-1
+  tag: 1.13.0-1
   pullPolicy: IfNotPresent
 
 # Poll the metadata every pollInterval seconds for termination events:
@@ -31,6 +31,9 @@ enableLogspout: false
 
 # Trigger instance removal from AutoScaling Group on termination notice
 detachAsg: false
+
+# Grace period for node draining
+gracePeriod: 120
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious

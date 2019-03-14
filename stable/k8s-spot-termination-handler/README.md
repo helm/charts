@@ -27,7 +27,7 @@ The following table lists the configurable parameters of the k8s-spot-terminatio
 Parameter | Description | Default
 --- | --- | ---
 `image.repository` | container image repository | `kubeaws/kube-spot-termination-notice-handler`
-`image.tag` | container image tag | `1.10.8-1`
+`image.tag` | container image tag | `1.13.0-1`
 `image.pullPolicy` | container image pull policy | `IfNotPresent`
 `pollInterval` | the interval in seconds between attempts to poll EC2 metadata API for termination events | `"5"`
 `slackUrl` | Slack webhook URL to send messages when a termination notice is received | _not defined_
@@ -37,6 +37,7 @@ Parameter | Description | Default
 `serviceAccount.create` | if `true`, create a service account | `true`
 `serviceAccount.name` | the name of the service account to use. If not set and `create` is `true`, a name is generated using the fullname template. | ``
 `detachAsg` | if `true`, the spot termination handler will detect (standard) AutoScaling Group, and initiate detach when termination notice is detected. | `false`
+`gracePeriod` | Grace period for node draining | `120`
 `resources` | pod resource requests & limits | `{}`
 `nodeSelector` | node labels for pod assignment | `{}`
 `tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
