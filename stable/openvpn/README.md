@@ -18,7 +18,7 @@ Check pod status, replacing `$HELM_RELEASE` with the name of your release, via:
 
 ```bash
 POD_NAME=$(kubectl get pods -l "app=openvpn,release=$HELM_RELEASE" -o jsonpath='{.items[0].metadata.name}') \
-&& kubectl log "$POD_NAME" --follow
+&& kubectl logs "$POD_NAME" --follow
 ```
 
 When all components of the openvpn chart have started use the following script to generate a client key:
