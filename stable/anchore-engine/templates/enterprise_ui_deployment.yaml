@@ -41,6 +41,14 @@ spec:
         image: {{ .Values.anchoreEnterpriseUi.image }}
         imagePullPolicy: {{ .Values.anchoreEnterpriseUi.imagePullPolicy }}
         env:
+        {{- range $key, $value := .Values.anchoreGlobal.extraEnv }}
+        - name: {{ $key }}
+          value: {{ $value }}
+        {{- end }}
+        {{- range $key, $value := .Values.anchoreEnterpriseUi.extraEnv }}
+        - name: {{ $key }}
+          value: {{ $value }}
+        {{- end }}
         - name: REDIS_PASSWORD
           valueFrom:
             secretKeyRef:
@@ -121,7 +129,7 @@ metadata:
 {{ toYaml .Values.anchoreEnterpriseUi.service.annotations | indent 4 }}
   {{- end }}
 spec:
-  sessionAffinity: ClientIP
+  sessionAffinity: {{ .Values.anchoreEnterpriseUi.service.sessionAffinity }}
   type: {{ .Values.anchoreEnterpriseUi.service.type }}
   ports:
     - name: enterprise-ui
