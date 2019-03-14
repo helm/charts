@@ -44,7 +44,7 @@ The following table lists the configurable parameters and their default values.
 | ---------------------- | --------------------------------------------------- | --------------------------------------- |
 | `replicaCount`         | desired number of prometheus-couchdb-exporter pods  | `1`                                     |
 | `image.repository`     | prometheus-couchdb-exporter image repository        | `gesellix/couchdb-prometheus-exporter`  |
-| `image.tag`            | prometheus-couchdb-exporter image tag               | `16`                                    |
+| `image.tag`            | prometheus-couchdb-exporter image tag               | `22`                                    |
 | `image.pullPolicy`     | image pull policy                                   | `IfNotPresent`                          |
 | `service.type`         | desired service type                                | `ClusterIP`                             |
 | `service.port`         | service external port                               | `9984`                                  |
