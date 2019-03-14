@@ -79,7 +79,7 @@ affinity: |
         topologyKey: kubernetes.io/hostname
         labelSelector:
           matchLabels:
-            app: {{ template "vault.fullname" . }}
+            app: {{ template "vault.name" . }}
             release: {{ .Release.Name }}
 
 ## Deployment annotations
