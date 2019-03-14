@@ -28,6 +28,7 @@ rules:
 - apiGroups: [""]
   resources:
   - nodes/stats
+  - nodes/metrics
   verbs: ["get"]
 - nonResourceURLs: ["/metrics"]
   verbs: ["get"]
