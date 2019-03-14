@@ -14,7 +14,7 @@ This chart bootstraps a [JasperReports](https://github.com/bitnami/bitnami-docke
 
 It also packages the [Bitnami MariaDB chart](https://github.com/kubernetes/charts/tree/master/stable/mariadb) which bootstraps a MariaDB deployment required by the JasperReports application.
 
-Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters.
+Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters. This chart has been tested to work with NGINX Ingress, cert-manager, fluentd and Prometheus on top of the [BKPR](https://kubeprod.io/).
 
 ## Prerequisites
 
@@ -50,6 +50,7 @@ The following table lists the configurable parameters of the JasperReports chart
 |           Parameter           |                 Description                  |                         Default                          |
 |-------------------------------|----------------------------------------------|----------------------------------------------------------|
 | `global.imageRegistry`        | Global Docker image registry                 | `nil`                                                    |
+| `global.imagePullSecrets`     | Global Docker registry secret names as an array | `[]` (does not add image pull secrets to deployed pods) |
 | `image.registry`              | JasperReports image registry                 | `docker.io`                                              |
 | `image.repository`            | JasperReports Image name                     | `bitnami/jasperreports`                                  |
 | `image.tag`                   | JasperReports Image tag                      | `{VERSION}`                                              |

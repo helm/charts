@@ -42,6 +42,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `Master.AuthorizationStrategy`    | Jenkins XML job config for AuthorizationStrategy | Not set                                                                      |
 | `Master.DeploymentLabels`         | Custom Deployment labels             | Not set                                                                      |
 | `Master.ServiceLabels`            | Custom Service labels                | Not set                                                                      |
+| `Master.PodLabels`                | Custom Pod labels                    | Not set                                                                      |
 | `Master.AdminUser`                | Admin username (and password) created as a secret if useSecurity is true | `admin`                                  |
 | `Master.AdminPassword`            | Admin password (and user) created as a secret if useSecurity is true | Random value                                  |
 | `Master.JenkinsAdminEmail`        | Email address for the administrator of the Jenkins instance | Not set                                               |
@@ -51,6 +52,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `Master.UsePodSecurityContext`    | Enable pod security context (must be `true` if `RunAsUser` or `FsGroup` are set) | `true`                           |
 | `Master.RunAsUser`                | uid that jenkins runs with           | `0`                                                                          |
 | `Master.FsGroup`                  | uid that will be used for persistent volume | `0`                                                                   |
+| `Master.HostAliases`              | Aliases for IPs in `/etc/hosts`      | `[]`                                                                         |
 | `Master.ServiceAnnotations`       | Service annotations                  | `{}`                                                                         |
 | `Master.ServiceType`              | k8s service type                     | `LoadBalancer`                                                               |
 | `Master.ServicePort`              | k8s service port                     | `8080`                                                                       |
@@ -61,6 +63,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `Master.HealthProbeReadinessPeriodSeconds` | Set how often (in seconds) to perform the liveness probe | `10`                                                       |
 | `Master.HealthProbeLivenessFailureThreshold` | Set the failure threshold for the liveness probe | `12`                                                       |
 | `Master.SlaveListenerPort`        | Listening port for agents            | `50000`                                                                      |
+| `Master.SlaveHostPort`        | Host port to listen for agents            | Not set                                                                |
 | `Master.DisabledAgentProtocols`   | Disabled agent protocols             | `JNLP-connect JNLP2-connect`                                                                      |
 | `Master.CSRF.DefaultCrumbIssuer.Enabled` | Enable the default CSRF Crumb issuer | `true`                                                                      |
 | `Master.CSRF.DefaultCrumbIssuer.ProxyCompatability` | Enable proxy compatibility | `true`                                                                      |
@@ -69,23 +72,34 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `Master.LoadBalancerIP`           | Optional fixed external IP           | Not set                                                                      |
 | `Master.JMXPort`                  | Open a port, for JMX stats           | Not set                                                                      |
 | `Master.ExtraPorts`               | Open extra ports, for other uses     | Not set                                                                      |
-| `Master.CustomConfigMap`          | Use a custom ConfigMap               | `false`                                                                      |
-| `Master.AdditionalConfig`          | Add additional config files         | `{}`                                                                      |
 | `Master.OverwriteConfig`          | Replace config w/ ConfigMap on boot  | `false`                                                                      |
-| `Master.Ingress.Annotations`      | Ingress annotations                  | `{}`                                                                         |
-| `Master.Ingress.Path`             | Ingress path                         | Not set                                                                         |
-| `Master.Ingress.TLS`              | Ingress TLS configuration            | `[]`                                                                         |
+| `Master.ingress.enabled`          | Enables ingress      | `false`                                                                         |
+| `Master.ingress.hostName`         | Ingress host name      | Not set                                                                         |
+| `Master.ingress.annotations`      | Ingress annotations                  | `{}`                                                                         |
+| `Master.ingress.labels`           | Ingress labels                       | `{}`                                                                         |
+| `Master.ingress.path`             | Ingress path                         | Not set                                                                         |
+| `Master.ingress.tls`              | Ingress TLS configuration            | `[]`                                                                         |
+| `Master.JCasC.enabled`            | Wheter Jenkins Configuration as Code is enabled or not | `false`                                                    |
+| `Master.JCasC.ConfigScripts`      | List of Jenkins Config as Code scripts | False                                                                      |
+| `Master.Sidecars.configAutoReload` | Jenkins Config as Code auto-reload settings |                                                                      |
+| `Master.Sidecars.configAutoReload.enabled` | Jenkins Config as Code auto-reload settings (Attention: rbac needs to be enabled otherwise the sidecar can't read the config map) | `false`                                                      |
+| `Master.Sidecars.configAutoReload.image` | Image which triggers the reload | `shadwell/k8s-sidecar:0.0.2`                        ````                       |
+| `Master.Sidecars.others`          | Configures additional sidecar container(s) for Jenkins master | `{}`                                                |
 | `Master.InitScripts`              | List of Jenkins init scripts         | Not set                                                                      |
 | `Master.CredentialsXmlSecret`     | Kubernetes secret that contains a 'credentials.xml' file | Not set                                                  |
 | `Master.SecretsFilesSecret`       | Kubernetes secret that contains 'secrets' files | Not set                                                           |
 | `Master.Jobs`                     | Jenkins XML job configs              | Not set                                                                      |
 | `Master.InstallPlugins`           | List of Jenkins plugins to install   | `kubernetes:1.14.0 workflow-aggregator:2.6 credentials-binding:1.17 git:3.9.1 workflow-job:2.31` |
+| `Master.OverwritePlugins`         | Overwrite installed plugins on start.| `false`                                                                      |
 | `Master.EnableRawHtmlMarkupFormatter` | Enable HTML parsing using (see below) | Not set                                                                 |
 | `Master.ScriptApproval`           | List of groovy functions to approve  | Not set                                                                      |
 | `Master.NodeSelector`             | Node labels for pod assignment       | `{}`                                                                         |
 | `Master.Affinity`                 | Affinity settings                    | `{}`                                                                         |
 | `Master.Tolerations`              | Toleration labels for pod assignment | `{}`                                                                         |
 | `Master.PodAnnotations`           | Annotations for master pod           | `{}`                                                                         |
+| `Master.CustomConfigMap`          | Deprecated: Use a custom ConfigMap               | `false`                                                                      |
+| `Master.AdditionalConfig`         | Deprecated: Add additional config files         | `{}`
+| `Master.JenkinsUriPrefix`         | Root Uri Jenkins will be served on         | Not set
 | `NetworkPolicy.Enabled`           | Enable creation of NetworkPolicy resources. | `false`                                                               |
 | `NetworkPolicy.ApiVersion`        | NetworkPolicy ApiVersion             | `networking.k8s.io/v1`                                                         |
 | `rbac.install`                    | Create service account and ClusterRoleBinding for Kubernetes plugin | `false`                                       |
@@ -102,12 +116,20 @@ Some third-party systems, e.g. GitHub, use HTML-formatted data in their payload 
 | `Agent.AlwaysPullImage`    | Always pull agent container image before build  | `false`                |
 | `Agent.CustomJenkinsLabels`| Append Jenkins labels to the agent              | `{}`                   |
 | `Agent.Enabled`            | Enable Kubernetes plugin jnlp-agent podTemplate | `true`                 |
-| `Agent.Image`              | Agent image name                                | `jenkinsci/jnlp-slave` |
+| `Agent.Image`              | Agent image name                                | `jenkins/jnlp-slave` |
 | `Agent.ImagePullSecret`    | Agent image pull secret                         | Not set                |
 | `Agent.ImageTag`           | Agent image tag                                 | `3.27-1`                 |
 | `Agent.Privileged`         | Agent privileged container                      | `false`                |
 | `Agent.resources`          | Resources allocation (Requests and Limits)      | `{requests: {cpu: 200m, memory: 256Mi}, limits: {cpu: 200m, memory: 256Mi}}`|
 | `Agent.volumes`            | Additional volumes                              | `nil`                  |
+| `Agent.envVars`            | Environment variables for the slave Pod         | Not set                |
+| `Agent.Command`            | Executed command when side container starts     | Not set                |
+| `Agent.Args`               | Arguments passed to executed command            | Not set                |
+| `Agent.SideContainerName`  | Side container name in agent                    | jnlp                   |
+| `Agent.TTYEnabled`         | Allocate pseudo tty to the side container       | false                  |
+| `Agent.ContainerCap`       | Maximum number of agent                         | 10                     |
+| `Agent.PodName`            | slave Pod base name                             | Not set                |
+
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
@@ -215,25 +237,53 @@ It is possible to mount several volumes using `Persistence.volumes` and `Persist
 $ helm install --name my-release --set Persistence.ExistingClaim=PVC_NAME stable/jenkins
 ```
 
-## Custom ConfigMap
-
-When creating a new parent chart with this chart as a dependency, the `CustomConfigMap` parameter can be used to override the default config.xml provided.
-It also allows for providing additional xml configuration files that will be copied into `/var/jenkins_home`. In the parent chart's values.yaml,
-set the `jenkins.Master.CustomConfigMap` value to true like so
+## Configuration as Code
+Jenkins Configuration as Code is now a standard component in the Jenkins project.  Add a key under ConfigScripts for each configuration area, where each corresponds to a plugin or section of the UI.  The keys (prior to | character) are just labels, and can be any value.  They are only used to give the section a meaningful name.  The only restriction is they must conform to RFC 1123 definition of a DNS label, so may only contain lowercase letters, numbers, and hyphens.  Each key will become the name of a configuration yaml file on the master in /var/jenkins_home/casc_configs (by default) and will be processed by the Configuration as Code Plugin during Jenkins startup.  The lines after each | become the content of the configuration yaml file.  The first line after this is a JCasC root element, eg jenkins, credentials, etc.  Best reference is the Documentation link here: https://<jenkins_url>/configuration-as-code.  The example below creates ldap settings:
 
 ```yaml
-jenkins:
-  Master:
-    CustomConfigMap: true
+ConfigScripts:
+  ldap-settings: |
+    jenkins:
+      securityRealm:
+        ldap:
+          configurations:
+            configurations:
+              - server: ldap.acme.com
+                rootDN: dc=acme,dc=uk
+                managerPasswordSecret: ${LDAP_PASSWORD}
+              - groupMembershipStrategy:
+                  fromUserRecord:
+                    attributeName: "memberOf"
 ```
 
-and provide the file `templates/config.tpl` in your parent chart for your use case. You can start by copying the contents of `config.yaml` from this chart into your parent charts `templates/config.tpl` as a basis for customization. Finally, you'll need to wrap the contents of `templates/config.tpl` like so:
+Further JCasC examples can be found [here.](https://github.com/jenkinsci/configuration-as-code-plugin/tree/master/demos)
+### Config as Code with and without auto-reload 
+Config as Code changes (to Master.JCasC.ConfigScripts) can either force a new pod to be created and only be applied at next startup, or can be auto-reloaded on-the-fly.  If you choose `Master.Sidecars.autoConfigReload.enabled: true`, a second, auxiliary container will be installed into the Jenkins master pod, known as a "sidecar".  This watches for changes to ConfigScripts, copies the content onto the Jenkins file-system and issues a CLI command via SSH to reload configuration.  The admin user (or account you specify in Master.AdminUser) will have a random SSH private key (RSA 4096) assigned unless you specify `Master.OwnSshKey: true`.  This will be saved to a k8s secret.  You can monitor this sidecar's logs using command `kubectl logs <master_pod> -c jenkins-sc-config -f`
+If you want to enable auto-reload then you also need to configure rbac as the container which triggers the reload needs to watch the config maps.
 
 ```yaml
-{{- define "override_config_map" }}
-    <CONTENTS_HERE>
-{{ end }}
+Master:
+  JCasC:
+    enabled: true
+  Sidecars:
+    configAutoReload:
+      enabled: true
+rbac:
+  install: true
 ```
+
+### Auto-reload with non-Jenkins identities
+When enabling LDAP or another non-Jenkins identity source, the built-in admin account will no longer exist.  Since the admin account is used by the sidecar to reload config, in order to use auto-reload, you must change the .Master.AdminUser to a valid username on your LDAP (or other) server.  If you use the matrix-auth plugin, this user must also be granted Overall\Administer rights in Jenkins.  Failure to do this will cause the sidecar container to fail to authenticate via SSH and enter a restart loop.  You can enable LDAP using the example above and add a Config as Code block for matrix security that includes:
+```yaml
+ConfigScripts:
+  matrix-auth: |
+    jenkins:
+      authorizationStrategy:
+        projectMatrix:
+          grantedPermissions:
+          - "Overall/Administer:<AdminUser_LDAP_username>"
+```
+You can instead grant this permission via the UI. When this is done, you can set `Master.Sidecars.configAutoReload.enabled: true` and upon the next Helm upgrade, auto-reload will be successfully enabled.
 
 ## RBAC
 
@@ -365,4 +415,26 @@ Master:
     -Dhttp.proxyPort=3128
     -Dhttps.proxyHost=192.168.64.1
     -Dhttps.proxyPort=3128
+```
+
+## Custom ConfigMap
+
+The following configuration method is deprecated and will be removed in an upcoming version of this chart.
+We recommend you use Jenkins Configuration as Code to configure instead.
+When creating a new parent chart with this chart as a dependency, the `CustomConfigMap` parameter can be used to override the default config.xml provided.
+It also allows for providing additional xml configuration files that will be copied into `/var/jenkins_home`. In the parent chart's values.yaml,
+set the `jenkins.Master.CustomConfigMap` value to true like so
+
+```yaml
+jenkins:
+  Master:
+    CustomConfigMap: true
+```
+
+and provide the file `templates/config.tpl` in your parent chart for your use case. You can start by copying the contents of `config.yaml` from this chart into your parent charts `templates/config.tpl` as a basis for customization. Finally, you'll need to wrap the contents of `templates/config.tpl` like so:
+
+```yaml
+{{- define "override_config_map" }}
+    <CONTENTS_HERE>
+{{ end }}
 ```

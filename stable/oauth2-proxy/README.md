@@ -2,8 +2,6 @@
 
 [oauth2-proxy](https://github.com/pusher/oauth2_proxy) is a reverse proxy and static file server that provides authentication using Providers (Google, GitHub, and others) to validate accounts by email, domain or group.
 
-**Note - at this time, there is a known incompatibility between `oauth2-proxy` version 2.2 (which is its latest release) and `nginx-ingress` versions >= 0.9beta12. To utilize this chart at this time please use nginx-ingress version 0.9beta11**
-
 ## TL;DR;
 
 ```console
@@ -51,16 +49,24 @@ Parameter | Description | Default
 `config.existingSecret` | existing Kubernetes secret to use for OAuth2 credentials. See [secret template](https://github.com/helm/charts/blob/master/stable/oauth2-proxy/templates/secret.yaml) for the required values | `nil`
 `extraArgs` | key:value list of extra arguments to give the binary | `{}`
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
-`image.repository` | Image repository | `a5huynh/oauth2_proxy`
-`image.tag` | Image tag | `2.2`
+`image.repository` | Image repository | `quay.io/pusher/oauth2_proxy`
+`image.tag` | Image tag | `v3.1.0`
 `imagePullSecrets` | Specify image pull secrets | `nil` (does not add image pull secrets to deployed pods)
 `ingress.enabled` | enable ingress | `false`
+`livenessProbe.enabled`  | enable Kubernetes livenessProbe. Disable to use oauth2-proxy with Istio mTLS. See [Istio FAQ](https://istio.io/help/faq/security/#k8s-health-checks) | `true`
+`livenessProbe.initialDelaySeconds` | number of seconds | 0
+`livenessProbe.timeoutSeconds` | number of seconds | 1
 `nodeSelector` | node labels for pod assignment | `{}`
 `podAnnotations` | annotations to add to each pod | `{}`
 `podLabels` | additional labesl to add to each pod | `{}`
+`priorityClassName` | priorityClassName | `nil`
+`readinessProbe.enabled` | enable Kubernetes readinessProbe. Disable to use oauth2-proxy with Istio mTLS. See [Istio FAQ](https://istio.io/help/faq/security/#k8s-health-checks) | `true`
+`readinessProbe.initialDelaySeconds` | number of seconds | 0
+`readinessProbe.timeoutSeconds` | number of seconds | 1
+`readinessProbe.periodSeconds` | number of seconds | 10
+`readinessProbe.successThreshold` | number of successes | 1
 `replicaCount` | desired number of pods | `1`
 `resources` | pod resource requests & limits | `{}`
-`priorityClassName` | priorityClassName | `nil`
 `service.port` | port for the service | `80`
 `service.type` | type of service | `ClusterIP`
 `tolerations` | List of node taints to tolerate | `[]`
