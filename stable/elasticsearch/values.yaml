@@ -124,6 +124,7 @@ client:
   nodeAffinity: {}
   nodeSelector: {}
   tolerations: []
+  # terminationGracePeriodSeconds: 60
   initResources: {}
     # limits:
     #   cpu: "25m"
@@ -188,6 +189,7 @@ master:
   nodeAffinity: {}
   nodeSelector: {}
   tolerations: []
+  # terminationGracePeriodSeconds: 60
   initResources: {}
     # limits:
     #   cpu: "25m"

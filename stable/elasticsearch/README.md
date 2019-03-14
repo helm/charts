@@ -95,6 +95,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `client.podAnnotations`              | Client Deployment annotations                                       | `{}`                                                |
 | `client.nodeSelector`                | Node labels for client pod assignment                               | `{}`                                                |
 | `client.tolerations`                 | Client tolerations                                                  | `[]`                                                |
+| `client.terminationGracePeriodSeconds` | Client nodes: Termination grace period (seconds)                  | `nil`                                               |
 | `client.serviceAnnotations`          | Client Service annotations                                          | `{}`                                                |
 | `client.serviceType`                 | Client service type                                                 | `ClusterIP`                                         |
 | `client.httpNodePort`                | Client service HTTP NodePort port number. Has no effect if client.serviceType is not `NodePort`.   | `nil`                                         |
@@ -123,6 +124,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `master.podAnnotations`              | Master Deployment annotations                                       | `{}`                                                |
 | `master.nodeSelector`                | Node labels for master pod assignment                               | `{}`                                                |
 | `master.tolerations`                 | Master tolerations                                                  | `[]`                                                |
+| `master.terminationGracePeriodSeconds` | Master nodes: Termination grace period (seconds)                  | `nil`                                               |
 | `master.heapSize`                    | Master node heap size                                               | `512m`                                              |
 | `master.name`                        | Master component name                                               | `master`                                            |
 | `master.persistence.enabled`         | Master persistent enabled/disabled                                  | `true`                                              |

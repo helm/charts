@@ -64,6 +64,9 @@ spec:
       tolerations:
 {{ toYaml .Values.client.tolerations | indent 8 }}
 {{- end }}
+{{- if .Values.client.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ .Values.client.terminationGracePeriodSeconds }}
+{{- end }}
 {{- if or .Values.extraInitContainers .Values.sysctlInitContainer.enabled .Values.cluster.plugins }}
       initContainers:
 {{- if .Values.sysctlInitContainer.enabled }}
