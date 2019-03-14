@@ -83,6 +83,18 @@ Create the block for acme.domains.
 {{- end -}}
 
 {{/*
+Create the block for acme.resolvers.
+*/}}
+{{- define "traefik.acme.dnsResolvers" -}}
+         resolvers = [
+	   {{- range $idx, $ips := .Values.acme.resolvers }}
+	     {{- if $idx }},{{ end }}
+	     {{- $ips | quote }}
+	   {{- end -}}
+         ]
+{{- end -}}
+
+{{/*
 Create custom cipherSuites block
 */}}
 {{- define "traefik.ssl.cipherSuites" -}}
