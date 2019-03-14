@@ -211,8 +211,8 @@ integrations:
   #     filename: /var/run/falco/nats
   pubsubOutput:
     enabled: false
-    credentials_data: ""
-    project_id: ""
+    credentialsData: ""
+    projectID: ""
 
 
 # Allow falco to run on Kubernetes 1.6 masters.
