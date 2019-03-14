@@ -216,6 +216,10 @@ readinessProbe:
   failureThreshold: 6
   successThreshold: 1
 
+# Define custom config map with init scripts
+initConfigMap: {}
+#  name: "init-config-map"
+
 # Entries for the MongoDB config file
 configmap:
 #  # Where and how to store data.
