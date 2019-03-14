@@ -74,6 +74,10 @@ rabbitmq:
     address_type: ip
     k8s_domain: cluster.local
 
+  loadDefinition:
+    enabled: false
+    secretName: load-definition
+
   ## Configuration file content: required cluster configuration
   ## Do not override unless you know what you are doing. To add more configuration, use `extraConfiguration` instead
   configuration: |-
@@ -92,6 +96,7 @@ rabbitmq:
   ## Use this instead of  `configuration` to add more configuration
   extraConfiguration: |-
     #disk_free_limit.absolute = 50MB
+    #management.load_definitions = /app/load_definition.json
 
 ## Kubernetes service type
 service:
