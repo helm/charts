@@ -144,7 +144,7 @@ spec:
       volumes:
         - name: confd
           configMap:
-            name: {{ template "datadog.clusterAgentConfd.fullname"  . }}
+            name: {{ template "datadog.fullname" . }}-cluster-agent-confd
 {{- end }}
       {{- if .Values.clusterAgent.tolerations }}
       tolerations:

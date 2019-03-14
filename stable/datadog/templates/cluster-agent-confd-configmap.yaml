@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: { template "datadog.fullname" . }}-cluster-agent-confd
+  name: {{ template "datadog.fullname" . }}-cluster-agent-confd
   labels:
     app: "{{ template "datadog.fullname" . }}"
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
