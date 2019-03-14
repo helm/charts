@@ -82,7 +82,7 @@ airflow:
     ## image pull secret for private images
     pullSecret:
   ##
-  ## Set schedulerNumRuns to control how the schduler behaves:
+  ## Set schedulerNumRuns to control how the scheduler behaves:
   ##   -1 will let him looping indefinitively but it will never update the DAG
   ##   1 will have the scheduler quit after each refresh, but kubernetes will restart it.
   ##
@@ -159,6 +159,35 @@ airflow:
   ## Additional volumes for the Scheduler, Worker and Web pods.
   # - name: synchronised-dags
   #   emptyDir: {}
+
+scheduler:
+  resources:
+    scheduler: {}
+    # limits:
+    #   cpu: "1000m"
+    #   memory: "1Gi"
+    # requests:
+    #   cpu: "500m"
+    #   memory: "512Mi"
+
+
+flower:
+  resources: {}
+    # limits:
+    #   cpu: "100m"
+    #   memory: "128Mi"
+    # requests:
+    #   cpu: "100m"
+    #   memory: "128Mi"
+
+web:
+  resources: {}
+    # limits:
+    #   cpu: "300m"
+    #   memory: "1Gi"
+    # requests:
+    #   cpu: "100m"
+    #   memory: "512Mi"
 ##
 ## Workers configuration
 workers:
