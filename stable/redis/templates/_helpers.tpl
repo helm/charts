@@ -196,7 +196,7 @@ Return sysctl image
 */}}
 {{- define "redis.sysctl.image" -}}
 {{- $registryName :=  default "docker.io" .Values.sysctlImage.registry -}}
-{{- $repositoryName := .Values.sysctlImage.image.repository -}}
+{{- $repositoryName := .Values.sysctlImage.repository -}}
 {{- $tag := default "latest" .Values.sysctlImage.tag | toString -}}
 {{/*
 Helm 2.11 supports the assignment of a value to a variable defined in a different scope,
