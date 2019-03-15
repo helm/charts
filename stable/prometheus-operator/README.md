@@ -2,7 +2,7 @@
 
 Installs [prometheus-operator](https://github.com/coreos/prometheus-operator) to create/configure/manage Prometheus clusters atop Kubernetes. This chart includes multiple components and is suitable for a variety of use-cases.
 
-The default installation is intended to suit monitoring a kubernetes cluster the chart is deployed onto. It is closely matches the kube-prometheus project.
+The default installation is intended to suit monitoring a kubernetes cluster the chart is deployed onto. It closely matches the kube-prometheus project.
 - [prometheus-operator](https://github.com/coreos/prometheus-operator)
 - [prometheus](https://prometheus.io/)
 - [alertmanager](https://prometheus.io/)
@@ -79,7 +79,7 @@ kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/ma
 
 2. Wait for CRDs to be created, which should only take a few seconds
 
-3. Install the chart, but disabling the CRD provisioning by setting `prometheusOperator.createCustomResource=false`
+3. Install the chart, but disable the CRD provisioning by setting `prometheusOperator.createCustomResource=false`
 ```console
 $ helm install --name my-release stable/prometheus-operator --set prometheusOperator.createCustomResource=false
 ```
@@ -91,7 +91,7 @@ The `crd-install` hook is required to deploy the prometheus operator CRDs before
 
 ## Configuration
 
-The following tables lists the configurable parameters of the prometheus-operator chart and their default values.
+The following tables list the configurable parameters of the prometheus-operator chart and their default values.
 
 ### General
 | Parameter | Description | Default |
@@ -368,7 +368,7 @@ $ helm install --name my-release stable/prometheus-operator -f values1.yaml,valu
 
 ## Developing Prometheus Rules and Grafana Dashboards
 
-This chart Grafana Dashboards and Prometheus Rules are just a copy from coreos/prometheus-operator and other sources, synced (with alterations) by scripts in [hack](hack) folder. In order to introduce any changes you need to first [add them to original repo](https://github.com/coreos/prometheus-operator/blob/master/contrib/kube-prometheus/docs/developing-prometheus-rules-and-grafana-dashboards.md) and then sync there by scripts.
+This chart Grafana Dashboards and Prometheus Rules are just a copy from coreos/prometheus-operator and other sources, synced (with alterations) by scripts in [hack](hack) folder. In order to introduce any changes you need to first [add them to the original repo](https://github.com/coreos/prometheus-operator/blob/master/contrib/kube-prometheus/docs/developing-prometheus-rules-and-grafana-dashboards.md) and then sync there by scripts.
 
 ## Further Information
 
@@ -385,7 +385,7 @@ There is no simple and direct migration path between the charts as the changes a
 
 The capabilities of the old chart are all available in the new chart, including the ability to run multiple prometheus instances on a single cluster - you will need to disable the parts of the chart you do not wish to deploy.
 
-You can check out the tickets for this change [here](https://github.com/coreos/prometheus-operator/issues/592) and [here](https://github.com/helm/charts/pull/6765)
+You can check out the tickets for this change [here](https://github.com/coreos/prometheus-operator/issues/592) and [here](https://github.com/helm/charts/pull/6765).
 
 ## High-level overview of Changes
 The chart has 3 dependencies, that can be seen in the chart's requirements file:
@@ -401,7 +401,7 @@ The Grafana chart is more feature-rich than this chart - it contains a sidecar t
 The CRDs are provisioned using crd-install hooks, rather than relying on a separate chart installation. If you already have these CRDs provisioned and don't want to remove them, you can disable the CRD creation by these hooks by passing `prometheusOperator.createCustomResource=false`
 
 ### Kubelet Service
-Because the kubelet service has a new name in the chart, make sure to clean up the old kubelet service in the `kube-system` namespace to prevent counting container metrics twice
+Because the kubelet service has a new name in the chart, make sure to clean up the old kubelet service in the `kube-system` namespace to prevent counting container metrics twice.
 
 ### Persistent Volumes
 If you would like to keep the data of the current persistent volumes, it should be possible to attach existing volumes to new PVCs and PVs that are created using the conventions in the new chart. For example, in order to use an existing Azure disk for a helm release called `prometheus-migration` the following resources can be created:
