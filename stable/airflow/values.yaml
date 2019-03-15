@@ -514,3 +514,13 @@ redis:
   ## Disable cluster management by default.
   cluster:
     enabled: false
+
+# Enable this if you're using https://github.com/coreos/prometheus-operator
+# Don't forget you need to install something like https://github.com/epoch8/airflow-exporter in your airflow docker container
+serviceMonitor:
+  enabled: false
+  interval: "30s"
+  path: /admin/metrics
+  ## [Kube Prometheus Selector Label](https://github.com/helm/charts/tree/master/stable/prometheus-operator#exporters)
+  selector:
+    prometheus: kube-prometheus
