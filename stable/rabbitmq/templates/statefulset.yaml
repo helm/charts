@@ -51,7 +51,7 @@ spec:
       {{- if and .Values.volumePermissions.enabled .Values.persistence.enabled .Values.securityContext.enabled }}
       initContainers:
       - name: volume-permissions
-        image: "{{ template "volumePermissions.image" . }}"
+        image: "{{ template "rabbitmq.volumePermissions.image" . }}"
         imagePullPolicy: {{ default "" .Values.volumePermissions.image.pullPolicy | quote }}
         command: ["/bin/chown", "-R", "{{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.fsGroup }}", "{{ .Values.persistence.path }}"]
         securityContext:
@@ -61,7 +61,7 @@ spec:
         volumeMounts:
         - name: data
           mountPath: "{{ .Values.persistence.path }}"
-      {{- end }}      
+      {{- end }}
       containers:
       - name: rabbitmq
         image: {{ template "rabbitmq.image" . }}
@@ -178,7 +178,7 @@ spec:
                 key: rabbitmq-password
 {{- if .Values.metrics.enabled }}
       - name: metrics
-        image: {{ template "metrics.image" . }}
+        image: {{ template "rabbitmq.metrics.image" . }}
         imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
         env:
         - name: RABBIT_PASSWORD
