@@ -45,7 +45,7 @@ spec:
       {{- end }}
       containers:
       - name: metrics
-        image: {{ template "metrics.image" . }}
+        image: {{ template "redis.metrics.image" . }}
         imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
         args:
         {{- range $key, $value := .Values.metrics.extraArgs }}
