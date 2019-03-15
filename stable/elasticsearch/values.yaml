@@ -3,6 +3,10 @@
 # Declare variables to be passed into your templates.
 appVersion: "6.6.1"
 
+## Any additional labels to allow across the environment. Useful for billing, and
+## resource tracking. Defaults to no additional labels
+labels: {}
+
 ## Define serviceAccount names for components. Defaults to component's fully qualified name.
 ##
 serviceAccounts:

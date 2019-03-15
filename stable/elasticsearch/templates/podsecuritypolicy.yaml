@@ -8,6 +8,9 @@ metadata:
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
+    {{- if .Values.labels }}
+{{ toYaml .Values.labels | indent 4 }}
+    {{- end }}
   annotations:
 {{- if .Values.podSecurityPolicy.annotations }}
 {{ toYaml .Values.podSecurityPolicy.annotations | indent 4 }}

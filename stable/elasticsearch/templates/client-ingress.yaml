@@ -11,6 +11,9 @@ metadata:
     component: "{{ .Values.client.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
+    {{- if .Values.labels }}
+{{ toYaml .Values.labels | indent 4 }}
+    {{- end }}
 {{- with .Values.client.ingress.annotations }}
   annotations:
 {{ toYaml . | indent 4 }}

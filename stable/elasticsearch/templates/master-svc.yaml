@@ -7,6 +7,9 @@ metadata:
     component: "{{ .Values.master.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
+    {{- if .Values.labels }}
+{{ toYaml .Values.labels | indent 4 }}
+    {{- end }}
   name: {{ template "elasticsearch.fullname" . }}-discovery
 spec:
   clusterIP: None

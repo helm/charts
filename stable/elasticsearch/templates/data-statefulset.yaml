@@ -7,6 +7,9 @@ metadata:
     component: "{{ .Values.data.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
+    {{- if .Values.labels }}
+{{ toYaml .Values.labels | indent 4 }}
+    {{- end }}
   name: {{ template "elasticsearch.data.fullname" . }}
 spec:
   serviceName: {{ template "elasticsearch.data.fullname" . }}

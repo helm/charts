@@ -8,6 +8,9 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
+    {{- if .Values.labels }}
+{{ toYaml .Values.labels | indent 4 }}
+    {{- end }}
 roleRef:
   kind: Role
   name: {{ template "elasticsearch.fullname" . }}
@@ -23,4 +26,3 @@ subjects:
   name: {{ template "elasticsearch.serviceAccountName.master" . }}
   namespace: {{ .Release.Namespace }}
 {{- end }}
-

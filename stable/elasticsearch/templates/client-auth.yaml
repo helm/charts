@@ -4,8 +4,12 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: '{{ include "elasticsearch.client.fullname" . }}-auth'
+{{- if .Values.labels }}
+  labels:
+{{ toYaml .Values.labels | indent 4 }}
+{{- end }}
+
 type: Opaque
 data:
   auth: {{ printf "%s:{PLAIN}%s\n" .Values.client.ingress.user .Values.client.ingress.password | b64enc | quote }}
 {{- end }}
-

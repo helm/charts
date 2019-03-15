@@ -7,6 +7,9 @@ metadata:
     component: "{{ .Values.master.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
+    {{- if .Values.labels }}
+{{ toYaml .Values.labels | indent 4 }}
+    {{- end }}
   name: {{ template "elasticsearch.master.fullname" . }}
 spec:
   serviceName: {{ template "elasticsearch.master.fullname" . }}
@@ -18,6 +21,9 @@ spec:
         component: "{{ .Values.master.name }}"
         release: {{ .Release.Name }}
         role: master
+        {{- if .Values.labels }}
+{{ toYaml .Values.labels | indent 8 }}
+        {{- end }}
         {{- if .Values.master.podAnnotations }}
       annotations:
 {{ toYaml .Values.master.podAnnotations | indent 8 }}

@@ -7,6 +7,9 @@ metadata:
     component: "{{ .Values.client.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
+    {{- if .Values.labels }}
+{{ toYaml .Values.labels | indent 4 }}
+    {{- end }}
   name: {{ template "elasticsearch.client.fullname" . }}
 {{- if .Values.client.serviceAnnotations }}
   annotations:
