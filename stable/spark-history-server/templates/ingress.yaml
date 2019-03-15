@@ -9,7 +9,7 @@ metadata:
     helm.sh/chart: {{ include "spark-history-server.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
-    annotations:
+  annotations:
 {{- range $key, $value := .Values.ingress.annotations }}
       {{ $key }}: {{ $value | quote }}
 {{- end }}
