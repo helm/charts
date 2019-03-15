@@ -182,7 +182,7 @@ spec:
 {{ toYaml .Values.resources | indent 12 }}
 {{- if .Values.metrics.enabled }}
         - name: metrics
-          image: {{ template "metrics.image" . }}
+          image: {{ template "mongodb.metrics.image" . }}
           imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
           env:
           {{- if .Values.usePassword }}
