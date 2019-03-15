@@ -81,6 +81,8 @@ proxy:
     # Ingress path.
     path: /
 
+  externalIPs: []
+
 # Set runMigrations to run Kong migrations
 runMigrations: true
 
