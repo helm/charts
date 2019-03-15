@@ -29,7 +29,6 @@ service:
 ## ref: http://kubernetes.io/docs/user-guide/services/#type-loadbalancer
 ##
 #
-
 server:
   ## Bitnami Parse image version
   ## ref: https://hub.docker.com/r/bitnami/parse/tags/
