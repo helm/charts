@@ -20,7 +20,7 @@ collector:
   enabled: true
   image:
     repository: wavefronthq/wavefront-kubernetes-collector
-    tag: 0.9.6
+    tag: 0.9.7
     pullPolicy: IfNotPresent
 
   ## If set to true, metrics will be sent to Wavefront via a Wavefront Proxy.
