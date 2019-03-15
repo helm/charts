@@ -10,27 +10,29 @@ Please also see https://github.com/kubernetes-helm/chartmuseum
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
 
-- [Prerequisites](#prerequisites)
-- [Configuration](#configuration)
-- [Installation](#installation)
-  - [Using with Amazon S3](#using-with-amazon-s3)
-    - [permissions grant with access keys](#permissions-grant-with-access-keys)
-    - [permissions grant with IAM instance profile](#permissions-grant-with-iam-instance-profile)
-    - [permissions grant with IAM assumed role](#permissions-grant-with-iam-assumed-role)
-  - [Using with Google Cloud Storage](#using-with-google-cloud-storage)
-  - [Using with Google Cloud Storage and a Google Service Account](#using-with-google-cloud-storage-and-a-google-service-account)
-  - [Using with Microsoft Azure Blob Storage](#using-with-microsoft-azure-blob-storage)
-  - [Using with Alibaba Cloud OSS Storage](#using-with-alibaba-cloud-oss-storage)
-  - [Using with Openstack Object Storage](#using-with-openstack-object-storage)
-  - [Using with Oracle Object Storage](#using-with-oracle-object-storage)
-  - [Using an existing secret](#using-an-existing-secret)
-  - [Using with local filesystem storage](#using-with-local-filesystem-storage)
-    - [Example storage class](#example-storage-class)
-  - [Ingress](#ingress)
-    - [Hosts](#hosts)
-    - [Annotations](#annotations)
-    - [Example Ingress configuration](#example-ingress-configuration)
-- [Uninstall](#uninstall)
+- [ChartMuseum Helm Chart](#chartmuseum-helm-chart)
+  - [Table of Content](#table-of-content)
+  - [Prerequisites](#prerequisites)
+  - [Configuration](#configuration)
+  - [Installation](#installation)
+    - [Using with Amazon S3](#using-with-amazon-s3)
+      - [permissions grant with access keys](#permissions-grant-with-access-keys)
+      - [permissions grant with IAM instance profile](#permissions-grant-with-iam-instance-profile)
+      - [permissions grant with IAM assumed role](#permissions-grant-with-iam-assumed-role)
+    - [Using with Google Cloud Storage](#using-with-google-cloud-storage)
+    - [Using with Google Cloud Storage and a Google Service Account](#using-with-google-cloud-storage-and-a-google-service-account)
+    - [Using with Microsoft Azure Blob Storage](#using-with-microsoft-azure-blob-storage)
+    - [Using with Alibaba Cloud OSS Storage](#using-with-alibaba-cloud-oss-storage)
+    - [Using with Openstack Object Storage](#using-with-openstack-object-storage)
+    - [Using with Oracle Object Storage](#using-with-oracle-object-storage)
+    - [Using an existing secret](#using-an-existing-secret)
+    - [Using with local filesystem storage](#using-with-local-filesystem-storage)
+      - [Example storage class](#example-storage-class)
+    - [Ingress](#ingress)
+      - [Hosts](#hosts)
+      - [Annotations](#annotations)
+      - [Example Ingress configuration](#example-ingress-configuration)
+  - [Uninstall](#uninstall)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -155,6 +157,8 @@ their default values. See values.yaml for all available options.
 | `ingress.hosts[0].path`                | Path within the url structure               | ``                                                  |
 | `ingress.hosts[0].tls `                | Enable TLS on the ingress host              | `false`                                             |
 | `ingress.hosts[0].tlsSecret`           | TLS secret to use (must be manually created)| ``                                                  |
+| `ingress.hosts[0].serviceName`         | The name of the service to route traffic to. | `{{ .Values.service.externalPort }}`               |
+| `ingress.hosts[0].servicePort`         | The port of the service to route traffic to. | `{{ .chartmuseum. }}`                              |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to
 `helm install`.
@@ -570,6 +574,8 @@ To enable ingress integration, please set `ingress.enabled` to `true`
 #### Hosts
 
 Most likely you will only want to have one hostname that maps to this Chartmuseum installation, however, it is possible to have more than one host. To facilitate this, the `ingress.hosts` object is an array.  TLS secrets referenced in the ingress host configuration must be manually created in the namespace.
+
+In most cases, you should not specify values for `ingress.hosts[0].serviceName` and `ingress.hosts[0].servicePort`. However, some ingress controllers support advanced scenarios requiring you to specify these values. For example, [setting up an SSL redirect using the AWS ALB Ingress Controller](https://kubernetes-sigs.github.io/aws-alb-ingress-controller/guide/tasks/ssl_redirect/).
 
 #### Annotations
 
