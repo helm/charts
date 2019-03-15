@@ -79,12 +79,11 @@ The following table lists the configurable parameters of the chart and its defau
 | `image.pullPolicy`              | Container image pull policy                        | `IfNotPresent`                                   |
 | `service.type`                  | Service type (ClusterIP, NodePort or LoadBalancer) | `ClusterIP`                                      |
 | `service.annotations`           | Service annotations                                | `{}`                                             |
-| `service.ports`                 | Ports exposed by service                           | beats                                            |
 | `service.loadBalancerIP`        | The load balancer IP for the service               | unset                                            |
 | `service.clusterIP`             | The cluster IP for the service                     | unset                                            |
 | `service.nodePort`              | The nodePort for the service                       | unset                                            |
 | `service.externalTrafficPolicy` | Set externalTrafficPolicy                          | unset                                            |
-| `ports`                         | Ports exposed by logstash container                | beats                                            |
+| `exposePorts`                   | Ports exposed by the Logstash container and service | `[{name: monitor, port: 9600}]`                  |
 | `ingress.enabled`               | Enables Ingress                                    | `false`                                          |
 | `ingress.annotations`           | Ingress annotations                                | `{}`                                             |
 | `ingress.path`                  | Ingress path                                       | `/`                                              |
