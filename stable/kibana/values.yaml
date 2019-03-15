@@ -146,6 +146,7 @@ podLabels: {}
 # curl --user <username>:<password> -XGET https://kibana.yourdomain.com:5601/api/kibana/dashboards/export?dashboard=<some-dashboard-uuid> > my-dashboard.json
 # A dashboard is defined by a name and a string with the json payload or the download url
 dashboardImport:
+  enabled: false
   timeout: 60
   xpackauth:
     enabled: false
@@ -155,6 +156,7 @@ dashboardImport:
     # k8s: https://raw.githubusercontent.com/monotek/kibana-dashboards/master/k8s-fluentd-elasticsearch.json
 
 objectsImport:
+  enabled: false
   timeout: 60
   xpackauth:
     enabled: false
