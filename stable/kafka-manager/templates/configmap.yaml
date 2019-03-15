@@ -14,15 +14,15 @@ data:
     #!/bin/bash
     set -e
     {{- range $cluster := .Values.clusters }}
-    {{ printf "curl 'http://%s:9000/clusters -X POST -f " (include "kafka-manager.fullname" $) -}}
+    {{ printf "curl http://%s:9000/clusters -X POST -f " (include "kafka-manager.fullname" $) -}}
     {{- printf "-d name=%s " (default "default" $cluster.name) -}}
     {{- printf "-d zkHosts=%s " (default (include "kafka-manager.zkHosts" $) $cluster.zkHosts ) -}}
     {{- printf "-d kafkaVersion=%s " (default "1.0.0" $cluster.kafkaVersion) -}}
-    {{- printf "-d jmxEnabled=%s " (default "false" $cluster.jmxEnabled) -}}
+    {{- printf "-d jmxEnabled=%B " (default "false" $cluster.jmxEnabled) -}}
     {{- printf "-d jmxUser=%s " (default "" $cluster.jmxUser) -}}
     {{- printf "-d jmxPass=%s " (default "" $cluster.jmxPass) -}}
     {{- printf "-d jmxSsl=%s " (default "false" $cluster.jmxSsl) -}}
-    {{- printf "-d logkafkaEnabled=%s " (default "false" $cluster.logkafkaEnabled) -}}
+    {{- printf "-d logkafkaEnabled=%B " (default "false" $cluster.logkafkaEnabled) -}}
     {{- printf "-d pollConsumers=%s " (default "false" $cluster.pollConsumers) -}}
     {{- printf "-d filterConsumers=%s " (default "false" $cluster.filterConsumers) -}}
     {{- printf "-d activeOffsetCacheEnabled=%s " (default "false" $cluster.activeOffsetCacheEnabled) -}}
@@ -46,6 +46,6 @@ data:
     {{- printf "-d tuning.kafkaManagedOffsetGroupCacheSize=%s " (default "1000000" $cluster.tuning.kafkaManagedOffsetGroupCacheSize) -}}
     {{- printf "-d tuning.kafkaManagedOffsetGroupExpireDays=%s " (default "7" $cluster.tuning.kafkaManagedOffsetGroupExpireDays) -}}
     {{- printf "-d securityProtocol=%s " (default "PLAINTEXT" $cluster.securityProtocol) -}}
-    {{- printf "$( if $KAFKA_MANAGER_AUTH_ENABLED; then echo -u $KAFKA_MANAGER_USERNAME:$KAFKA_MANAGER_PASSWORD ; fi ) '" -}}
+    {{- printf "$( if $KAFKA_MANAGER_AUTH_ENABLED; then echo -u $KAFKA_MANAGER_USERNAME:$KAFKA_MANAGER_PASSWORD ; fi ) " -}}
     {{- end -}}
 {{- end -}}
