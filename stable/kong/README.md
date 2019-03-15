@@ -81,6 +81,7 @@ and their default values.
 | proxy.type                     | k8s service type. Options: NodePort, ClusterIP, LoadBalancer                     | `NodePort`          |
 | proxy.loadBalancerSourceRanges | Limit proxy access to CIDRs if set and service type is `LoadBalancer`            | `[]`                |
 | proxy.loadBalancerIP           | To reuse an existing ingress static IP for the admin service                     |                     |
+| proxy.externalIPs              | IPs for which nodes in the cluster will also accept traffic for the proxy        | `[]`                |
 | proxy.ingress.enabled          | Enable ingress resource creation (works with proxy.type=ClusterIP)               | `false`             |
 | proxy.ingress.tls              | Name of secret resource, containing TLS secret                                   |                     |
 | proxy.ingress.hosts            | List of ingress hosts.                                                           | `[]`                |
