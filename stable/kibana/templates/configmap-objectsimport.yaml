@@ -1,0 +1,68 @@
+{{- if .Values.objectsImport.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "kibana.fullname" . }}-objects-importscript
+  labels:
+    app: {{ template "kibana.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  objectsImport.sh: |
+    #!/usr/bin/env bash
+    #
+    # kibana objects import script
+    #
+
+    cd /kibanaobjects
+
+    echo "Starting Kibana..."
+
+    /usr/local/bin/kibana-docker $@ &
+
+    echo "Waiting up to {{ .Values.objectsImport.timeout }} seconds for Kibana to get in green overall state..."
+
+    for i in {1..{{ .Values.objectsImport.timeout }}}; do
+      curl -s localhost:5601/api/status | python -c 'import sys, json; print json.load(sys.stdin)["status"]["overall"]["state"]' 2> /dev/null | grep green > /dev/null && break || sleep 1
+    done
+
+    for OBJECT_FILE in *; do
+      echo -e "Importing ${OBJECT_FILE} objects..."
+
+      if ! python -c 'import sys, json; print json.load(sys.stdin)' < "${OBJECT_FILE}" &> /dev/null ; then
+        echo "${OBJECT_FILE} is not valid JSON, assuming it's an URL..."
+        TMP_FILE="$(mktemp)"
+        curl -s $(cat ${OBJECT_FILE}) > ${TMP_FILE}
+        curl -v {{ if .Values.objectsImport.xpackauth.enabled }}--user {{ .Values.objectsImport.xpackauth.username }}:{{ .Values.objectsImport.xpackauth.password }}{{ end }} -s --connect-timeout 60 --max-time 60 -XPOST localhost:5601/api/saved_objects/_bulk_create?overwrite=true -H 'kbn-xsrf:true' -H 'Content-type:application/json' -d @${TMP_FILE}
+        rm ${TMP_FILE}
+      else
+        echo "Valid JSON found in ${OBJECT_FILE}, importing..."
+        cat ./${OBJECT_FILE}
+        curl -v {{ if .Values.objectsImport.xpackauth.enabled }}--user {{ .Values.objectsImport.xpackauth.username }}:{{ .Values.objectsImport.xpackauth.password }}{{ end }} -s --connect-timeout 60 --max-time 60 -XPOST localhost:5601/api/saved_objects/_bulk_create?overwrite=true -H 'kbn-xsrf:true' -H 'Content-type:application/json' -d @./${OBJECT_FILE}
+      fi
+
+      if [ "$?" != "0" ]; then
+        echo -e "\nImport of ${OBJECT_FILE} objects failed... Exiting..."
+        exit 1
+      else
+        echo -e "\nImport of ${OBJECT_FILE} objects finished :-)"
+      fi
+
+    done
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "kibana.fullname" . }}-objects
+  labels:
+    app: {{ template "kibana.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+{{- range $key, $value := .Values.objectsImport.objects }}
+  {{ $key }}: |-
+{{ $value | indent 4 }}
+{{- end -}}
+{{- end -}}
