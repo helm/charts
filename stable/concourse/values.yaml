@@ -874,10 +874,6 @@ concourse:
       ##
       authorizedKeys:
 
-      ## Path to file containing keys to authorize, in SSH authorized_keys format (one public key per line).
-      ##
-      teamAuthorizedKeys:
-
       ## ATC API endpoints to which workers will be registered.
       ##
       atcUrl:
@@ -1140,6 +1136,7 @@ web:
   ## Where secrets should be mounted for the web container.
   ##
   keySecretsPath: "/concourse-keys"
+  teamSecretsPath: "/team-authorized-keys"
   authSecretsPath: "/concourse-auth"
   vaultSecretsPath: "/concourse-vault"
   postgresqlSecretsPath: "/concourse-postgresql"
@@ -1577,6 +1574,19 @@ secrets:
   ## false to manage these secrets outside Helm.
   ##
   create: true
+
+  ## Array of team names and public keys for team external workers.
+  ##
+  ## Example:
+  ## - team: main
+  ##   key: |-
+  ##     ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDYBQ9fG6IML+qsFaMh1Pl+81wyUwRilHdfhItAiAsLVQsOwI5+V4pn5aLhHPBuRQqIqYmbkZ7I1VUIN1+90PVJ3X7l9qqanb85AHMtLujw1j9u0zDyH2XHgpUloknUQzUSLIZjjU3Hn3Uo/XikF+vT8104isO7Ym8Xp7sIcRuvOQ3nuRsFVCRogxpLTVHD/k57rwYVqWWLaKLwvx01ZVXOq4GHk/BVaKa9ODC/dNgbZMfwvVVXuf7/NFGmSMyXb49Si4aoP4Gn7jAX6GngBbm/bgKqO0skQy/ggQm/YVF+s5q4EhleMBLVJKD1VpM5LeLDFpiu/y4bVd8wUcgK+QQ9 Concourse
+  ##
+  ## Make sure to chack the security caveats here: https://concourse-ci.org/teams-caveats.html
+  ## Extra Reads: https://github.com/concourse/concourse/issues/1865#issuecomment-464166994
+  ## https://concourse-ci.org/global-resources.html#complications-with-reusing-containers
+  ##
+  teamAuthorizedKeys:
 
   ## List of `username:password` or `username:bcrypted_password` combinations for all your local concourse users.
   ##

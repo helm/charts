@@ -877,9 +877,9 @@ spec:
               value: "{{ .Values.web.keySecretsPath }}/host_key"
             - name: CONCOURSE_TSA_AUTHORIZED_KEYS
               value: "{{ .Values.web.keySecretsPath }}/worker_key.pub"
-            {{- if .Values.concourse.web.tsa.teamAuthorizedKeys }}
+            {{- if .Values.secrets.teamAuthorizedKeys }}
             - name: CONCOURSE_TSA_TEAM_AUTHORIZED_KEYS
-              value: {{ .Values.concourse.web.tsa.teamAuthorizedKeys | quote }}
+              value: "{{- $root := . -}}{{- range $i, $v := .Values.secrets.teamAuthorizedKeys }}{{- if $i}},{{- end}}{{ $v.team }}:{{ $root.Values.web.teamSecretsPath }}/{{ $v.team }}-authorized-key.pub{{- end }}"
             {{- end }}
             {{- if .Values.concourse.web.tsa.atcUrl }}
             - name: CONCOURSE_TSA_ATC_URL
@@ -936,6 +936,11 @@ spec:
             - name: concourse-keys
               mountPath: {{ .Values.web.keySecretsPath | quote }}
               readOnly: true
+            {{- if .Values.secrets.teamAuthorizedKeys }}
+            - name: team-authorized-keys
+              mountPath: {{ .Values.web.teamSecretsPath | quote }}
+              readOnly: true
+            {{- end }}
             {{- if .Values.concourse.web.tls.enabled }}
             - name: web-tls
               mountPath: {{ .Values.web.tlsSecretsPath | quote }}
@@ -978,6 +983,17 @@ spec:
                 path: session_signing_key
               - key: worker-key-pub
                 path: worker_key.pub
+        {{- if .Values.secrets.teamAuthorizedKeys }}
+        - name: team-authorized-keys
+          secret:
+            secretName: {{ template "concourse.concourse.fullname" . }}
+            defaultMode: 0400
+            items:
+            {{- range .Values.secrets.teamAuthorizedKeys }}
+            - key: {{ .team }}-team-authorized-key
+              path: {{ .team }}-authorized-key.pub
+            {{- end }}
+        {{- end }}
         {{- if .Values.concourse.web.tls.enabled }}
         - name: web-tls
           secret:
