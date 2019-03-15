@@ -17,9 +17,14 @@ spec:
   externalTrafficPolicy: {{ .Values.service.externalTrafficPolicy }}
 {{- end }}
   ports:
-  {{- range $key, $value := .Values.service.ports }}
-    - name: {{ $key }}
-{{ toYaml $value | indent 6 }}
+  {{- range .Values.exposePorts }}
+  {{- if gt (int .servicePort) -1 }}
+  {{- $protocol := .protocol | default "tcp" | lower }}
+    - name: {{ .name | default (printf "%v-%v" $protocol .port) }}
+      port: {{ .servicePort | default .port }}
+      targetPort: {{ .port }}
+      protocol: {{ $protocol | upper }}
+  {{- end }}
   {{- end }}
   selector:
     app: {{ template "logstash.name" . }}

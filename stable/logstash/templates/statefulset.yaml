@@ -52,10 +52,12 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - name: monitor
-              containerPort: {{ .Values.exporter.logstash.target.port }}
-              protocol: TCP
-{{ toYaml .Values.ports | indent 12 }}
+          {{- range .Values.exposePorts }}
+          {{- $protocol := .protocol | default "tcp" | lower }}
+            - name: {{ .name | default (printf "%v-%v" $protocol .port) }}
+              containerPort: {{ .port }}
+              protocol: {{ $protocol | upper }}
+          {{- end }}
           livenessProbe:
 {{ toYaml .Values.livenessProbe | indent 12 }}
           readinessProbe:

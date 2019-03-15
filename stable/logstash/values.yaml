@@ -27,37 +27,25 @@ service:
     # external-dns.alpha.kubernetes.io/hostname: logstash.cluster.local
     # service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled: "true"
     # service.beta.kubernetes.io/aws-load-balancer-internal: "true"
-  ports:
-    # syslog-udp:
-    #   port: 1514
-    #   targetPort: syslog-udp
-    #   protocol: UDP
-    # syslog-tcp:
-    #   port: 1514
-    #   targetPort: syslog-tcp
-    #   protocol: TCP
-    beats:
-      port: 5044
-      targetPort: beats
-      protocol: TCP
-    # http:
-    #  port: 8080
-    #  targetPort: http
-    #  protocol: TCP
-    # loadBalancerIP: 10.0.0.1
-ports:
-  # - name: syslog-udp
-  #   containerPort: 1514
-  #   protocol: UDP
-  # - name: syslog-tcp
-  #   containerPort: 1514
-  #   protocol: TCP
-  - name: beats
-    containerPort: 5044
-    protocol: TCP
-  # - name: http
-  #   containerPort: 8080
-  #   protocol: TCP
+
+exposePorts:
+  - name: monitor
+    port: 9600
+# - name: syslog-udp
+#   port: 1514
+#   protocol: udp
+# - name: syslog-tcp
+#   port: 1514
+#   protocol: tcp
+# - port: 5044
+#   # By default, the protocol is TCP.
+#   # By default, the name of the port is '<protocol>-<port>'.
+# - port: 8080
+#   servicePort: 80
+#   # By default, the exposed service port is the exposed container port, but can be overridden.
+# - port: 9999
+#   servicePort: -1
+#   # A negative value for 'servicePort' will not expose a service port.
 
 ingress:
   enabled: false
