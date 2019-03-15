@@ -417,7 +417,7 @@ kubelet:
     ## Enable scraping the kubelet over https. For requirements to enable this see
     ## https://github.com/coreos/prometheus-operator/issues/926
     ##
-    https: false
+    https: true
     # cAdvisorMetricRelabelings:
     # - sourceLabels: [__name__, image]
     #   separator: ;
@@ -449,7 +449,14 @@ kubeControllerManager:
     port: 10252
     targetPort: 10252
     selector:
-      k8s-app: kube-controller-manager
+      component: kube-controller-manager
+
+  serviceMonitor:
+    ## Enable scraping kube-controller-manager over https.
+    ## Requires proper certs (not self-signed) and delegated authentication/authorization checks
+    ##
+    https: false
+
 ## Component scraping coreDns. Use either this or kubeDns
 ##
 coreDns:
@@ -458,7 +465,7 @@ coreDns:
     port: 9153
     targetPort: 9153
     selector:
-      k8s-app: coredns
+      k8s-app: kube-dns
 
 ## Component scraping kubeDns. Use either this or coreDns
 ##
@@ -482,10 +489,10 @@ kubeEtcd:
   ## Etcd service. If using kubeEtcd.endpoints only the port and targetPort are used
   ##
   service:
-    port: 4001
-    targetPort: 4001
+    port: 2379
+    targetPort: 2379
     selector:
-      k8s-app: etcd-server
+      component: etcd
 
   ## Configure secure access to the etcd cluster by loading a secret into prometheus and
   ## specifying security configuration below. For example, with a secret named etcd-client-cert
@@ -525,7 +532,13 @@ kubeScheduler:
     port: 10251
     targetPort: 10251
     selector:
-      k8s-app: kube-scheduler
+      component: kube-scheduler
+
+  serviceMonitor:
+    ## Enable scraping kube-controller-manager over https.
+    ## Requires proper certs (not self-signed) and delegated authentication/authorization checks
+    ##
+    https: false
 
 ## Component scraping kube state metrics
 ##
@@ -885,7 +898,6 @@ prometheus:
     ## QuerySpec defines the query command line flags when starting Prometheus.
     ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#queryspec
     ##
-
     query: {}
 
     ## Namespaces to be selected for PrometheusRules discovery.
