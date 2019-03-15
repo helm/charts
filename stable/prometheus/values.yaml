@@ -716,6 +716,9 @@ server:
     ##
     subPath: ""
 
+  emptyDir:
+    sizeLimit: ""
+
   ## Annotations to be added to Prometheus server pods
   ##
   podAnnotations: {}
