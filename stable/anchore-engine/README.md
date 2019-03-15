@@ -8,7 +8,6 @@ Each of these services can be scaled and configured independently.
 
 See [Anchore Engine](https://github.com/anchore/anchore-engine) for more project details.
 
-
 ## Chart Details
 
 The chart is split into global and service specific configurations for the OSS Anchore Engine, as well as global and services specific configurations for the Enterprise components.
@@ -22,11 +21,14 @@ For a description of each component, view the official documentation at: [Anchor
 ## Installing the Anchore Engine OSS Chart
 TL;DR - `helm install stable/anchore-engine`
 
+Anchore Engine will take approximately 3 minutes to bootstrap. After the initial bootstrap period, Anchore Engine will begin a vulnerability feed sync. During this time, image analysis will show zero vulnerabilities until the sync is completed. This sync can take multiple hours depending on which feeds are enabled. The following anchore-cli command is available to poll the system and report back when the engine is bootstrapped and the vulnerability feeds are all synced up. `anchore-cli system wait`
+
+
 The recommended way to install the Anchore Engine Chart is with a customized values file and a custom release name. Create a new file named `anchore_values.yaml` and add all desired custom values (examples below); then run the following command:
 
   `helm install --name <release_name> -f anchore_values.yaml stable/anchore-engine`
 
-Note: It is highly recommended to set non-default passwords when deploying. All passwords are set to defaults specified in the chart.
+*Note: It is highly recommended to set non-default passwords when deploying. All passwords are set to defaults specified in the chart.*
 
 ##### Install using chart managed PostgreSQL service with custom passwords.
   ```
@@ -42,14 +44,65 @@ Note: It is highly recommended to set non-default passwords when deploying. All 
     defaultAdminEmail: <EMAIL>
   ```
 
+## Upgrading to Chart version 0.12.0
+Redis dependency chart major version updated to v6.1.3 - check redis chart readme for instructions for upgrade.
+
+The ingress configuration has been consolidated to a single global section. This should make it easier to manage the ingress resource. Before performing an upgrade ensure you update your custom values file to reflect this change.
+
+#### Chart v0.12.0 ingress config
+```
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: gce
+  apiPath: /v1/*
+  uiPath: /*
+  apiHosts:
+  - anchore-api.example.com
+  uiHosts:
+  - anchore-ui.example.com
+```
+
+## Upgrading to Chart version 0.11.0
+The image map has been removed in all configuration sections in favor of individual keys. This should make configuration for tools like skaffold simpler. If using a custom values file, update your `image.repository`, `image.tag`, & `image.pullPolicy` values with `image` & `imagePullPolicy`.
+
+#### Chart v0.11.0 image config
+```
+anchoreGlobal:
+  image: docker.io/anchore/anchore-engine:v0.3.2
+  imagePullPolicy: IfNotPresent
+
+anchoreEnterpriseGlobal:
+  image: docker.io/anchore/enterprise:v0.3.3
+  imagePullPolicy: IfNotPresent
+
+anchoreEnterpriseUI:
+  image: docker.io/anchore/enterprise-ui:v0.3.1
+  imagePullPolicy: IfNotPresent
+```
+
+
+## Upgrading to Chart version 0.10.0
+
+Ingress resources have been changed to work natively with NGINX ingress controllers. If you're using a different ingress controller update your values.yaml file accordingly. See the __Using Ingress__ configuration section for examples of NGINX & GCE ingress controller configurations.
+
+Service configs have been moved from the anchoreGlobal section, to individual component sections in the values.yaml file. If you're upgrading from a previous install and are using custom ports or serviceTypes, be sure to update your values.yaml file accordingly.
+
+#### Chart v0.10.0 service config
+```
+anchoreApi:
+  service:
+    type: ClusterIP
+    port: 8228
+```
+
 ## Upgrading to Chart version 0.9.0
 
 Version 0.9.0 of the anchore-engine helm chart includes major changes to the architecture, values.yaml file, as well as introduced Anchore Enterprise components. Due to these changes, it is highly recommended that upgrades are handled with caution. Any custom values.yaml files will also need to be adjusted to match the new structure. Version upgrades have only been validated when upgrading from 0.2.6 -> 0.9.0.
 
 `helm upgrade <release_name> stable/anchore-engine`
 
-When upgrading the Chart from version 0.2.6 to version 0.9.0, it will take approximately 5 minutes for anchore-engine to upgrade the database.
-To ensure that the upgrade has completed, run the `anchore-cli system status` command and verify the engine & db versions match the output below.
+When upgrading the Chart from version 0.2.6 to version 0.9.0, it will take approximately 5 minutes for anchore-engine to upgrade the database. To ensure that the upgrade has completed, run the `anchore-cli system status` command and verify the engine & db versions match the output below.
 
 ```
 Engine DB Version: 0.0.8
@@ -58,26 +111,52 @@ Engine Code Version: 0.3.0
 
 ## Configuration
 
-All configurations should be appended to your custom `anchore_values.yaml` file and utilized when installing the chart.
-While the configuration options of Anchore Engine are extensive, the options provided by the chart are:
+All configurations should be appended to your custom `anchore_values.yaml` file and utilized when installing the chart. While the configuration options of Anchore Engine are extensive, the options provided by the chart are:
 
-#### Exposing the service outside the cluster:
+### Exposing the service outside the cluster:
 
-Use ingress, which enables SSL termination at the LB:
+#### Using Ingress
+
+This configuration allows SSL termination using your chosen ingress controller.
+
+##### NGINX Ingress Controller
+```
+ingress:
+  enabled: true
+```
+
+##### GCE Ingress Controller
   ```
-  anchoreGlobal:
-    ingress:
-      enabled: true
+  ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/ingress.class: gce
+    apiPath: /v1/*
+    uiPath: /*
+    apiHosts:
+      - anchore-api.example.com
+    uiHosts:
+      - anchore-ui.example.com
+
+  anchoreApi:
+    service:
+      type: NodePort
+
+  anchoreEnterpriseUi:
+    service
+      type: NodePort
   ```
 
-Use a LoadBalancer service type:
+##### Using Service Type
   ```
-  anchoreGlobal:
+  anchoreApi:
     service:
       type: LoadBalancer
   ```
 
-#### Install using an existing/external PostgreSQL service:
+### Install using an existing/external PostgreSQL instance
+*Note: it is recommended to use an external Postgresql instance for production installs*
+
   ```
   postgresql:
     postgresPassword: <PASSWORD>
@@ -92,6 +171,7 @@ Use a LoadBalancer service type:
   ```
 
 ### Archive Driver
+*Note: it is recommended to use an external archive driver for production installs.*
 
 The archive subsystem of Anchore Engine is what stores large json documents and can consume quite a lot of storage if
 you analyze a lot of images. A general rule for storage provisioning is 10MB per image analyzed, so with thousands of
@@ -238,7 +318,7 @@ To configure the events:
 
 ### Scaling Individual Components
 
-As of Anchore Engine v0.3.0, all services can now be scaled-out by increasing the replica counts. The chart now supports
+As of Chart version 0.9.0, all services can now be scaled-out by increasing the replica counts. The chart now supports
 this configuration.
 
 To set a specific number of service containers:
@@ -257,6 +337,11 @@ To update the number in a running configuration:
 ## Adding Enterprise Components
 
  The following features are available to Anchore Enterprise customers. Please contact the Anchore team for more information about getting a license for the enterprise features. [Anchore Enterprise Demo](https://anchore.com/demo/)
+
+    * Role based access control
+    * Graphical User Interface
+    * On-prem feeds service
+    * Snyk vulnerability data
 
 ### Enabling Enterprise Services
 Enterprise services require an Anchore Enterprise license, as well as credentials with
@@ -277,7 +362,8 @@ To use this Helm chart with the enterprise services enabled, perform these steps
     `helm install --name <release_name> -f /path/to/anchore_values.yaml stable/anchore-engine`
 
 ##### Example anchore_values.yaml file for installing Anchore Enterprise
-Note: This installs with chart managed PostgreSQL & Redis databases.
+*Note: This installs with chart managed PostgreSQL & Redis databases. This is not a production ready config.*
+
   ```
   ## anchore_values.yaml
 

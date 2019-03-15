@@ -33,3 +33,45 @@ Create the name of the service account to use
     {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Create the KONG_PROXY_LISTEN value string
+*/}}
+{{- define "kong.kongProxyListenValue" -}}
+
+{{- if and .Values.proxy.http.enabled .Values.proxy.tls.enabled -}}
+   0.0.0.0:{{ .Values.proxy.http.containerPort }},0.0.0.0:{{ .Values.proxy.tls.containerPort }} ssl
+{{- else -}}
+{{- if .Values.proxy.http.enabled -}}
+   0.0.0.0:{{ .Values.proxy.http.containerPort }}
+{{- end -}}
+{{- if .Values.proxy.tls.enabled -}}
+   0.0.0.0:{{ .Values.proxy.tls.containerPort }} ssl
+{{- end -}}
+{{- end -}}
+
+{{- end }}
+
+{{/*
+Create the ingress servicePort value string
+*/}}
+{{- define "kong.ingress.servicePort" -}}
+{{- if .Values.proxy.tls.enabled -}}
+   {{ .Values.proxy.tls.servicePort }}
+{{- else -}}
+   {{ .Values.proxy.http.servicePort }}
+{{- end -}}
+{{- end -}}
+
+
+{{- define "kong.env" -}}
+{{- range $key, $val := .Values.env }}
+- name: KONG_{{ $key | upper}}
+{{- $valueType := printf "%T" $val -}}
+{{ if eq $valueType "map[string]interface {}" }}
+{{ toYaml $val | indent 2 -}}
+{{- else }}
+  value: {{ $val | quote -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}

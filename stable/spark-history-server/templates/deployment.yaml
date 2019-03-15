@@ -18,6 +18,10 @@ spec:
       labels:
         app.kubernetes.io/name: {{ include "spark-history-server.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
+{{- if .Values.podAnnotations }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8 }}
+{{- end }}
     spec:
       serviceAccountName: {{ include "spark-history-server.serviceAccountName" . }}
       containers:
@@ -33,6 +37,8 @@ spec:
         - name: historyport
           containerPort: {{ .Values.service.port }}
           protocol: TCP
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
         command:
         - "/bin/sh"
         - "-c"

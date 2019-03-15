@@ -10,7 +10,7 @@ controller:
     functionController:
       image:
         repository: kubeless/function-controller
-        tag: v1.0.0
+        tag: v1.0.1
         pullPolicy: IfNotPresent
     httpTriggerController:
       image:
@@ -20,7 +20,7 @@ controller:
     cronJobTriggerController:
       image:
         repository: bitnami/cronjob-trigger-controller
-        tag: v1.0.0-alpha.9
+        tag: v1.0.0
         pullPolicy: IfNotPresent
   ## Kubeless Controller resource requests and limits
   ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -87,6 +87,24 @@ config:
             ],
             "name": "dotnetcore2.0",
             "version": "2.0"
+         },
+         {
+            "images": [
+               {
+                  "command": "/app/compile-function.sh $KUBELESS_INSTALL_VOLUME",
+                  "image": "allantargino/aspnetcore-build@sha256:36123cf0279b87c5d27d69558062678a5353cc6db238af46bd5c0e508109f659",
+                  "phase": "compilation"
+               },
+               {
+                  "env": {
+                     "DOTNETCORE_HOME": "$(KUBELESS_INSTALL_VOLUME)/packages"
+                  },
+                  "image": "allantargino/kubeless-dotnetcore@sha256:6d6c659807881e9dac7adde305867163ced5711ef77a3a76e50112bca1ba14cf",
+                  "phase": "runtime"
+               }
+            ],
+            "name": "dotnetcore2.1",
+            "version": "2.1"
          }
       ]
    },
@@ -126,11 +144,11 @@ config:
             "images": [
                {
                   "command": "/compile-function.sh",
-                  "image": "kubeless/java-init@sha256:a14d846bfe53f359f706a260b95f0a9a755883b053dbd17b724e7a3cdff5bae6",
+                  "image": "kubeless/java-init@sha256:36cc37836437aaa5ac82f49ba20781d45bd5efcd9e2d022fcaae487a058572c2",
                   "phase": "compilation"
                },
                {
-                  "image": "kubeless/java@sha256:d2a59e50e8181174ad3c6096cd5d3ce82f46b7e22a6f3a109b0816787e7190d9",
+                  "image": "kubeless/java@sha256:2dbc44c0e2467a27558776edb2aed85055361e2f0b74443800851ee658576a88",
                   "phase": "runtime"
                }
             ],
@@ -262,6 +280,24 @@ config:
             ],
             "name": "python36",
             "version": "3.6"
+         },
+         {
+            "images": [
+               {
+                  "command": "pip install --prefix=$KUBELESS_INSTALL_VOLUME -r $KUBELESS_DEPS_FILE",
+                  "image": "python:3.7",
+                  "phase": "installation"
+               },
+               {
+                  "env": {
+                     "PYTHONPATH": "$(KUBELESS_INSTALL_VOLUME)/lib/python3.7/site-packages:$(KUBELESS_INSTALL_VOLUME)"
+                  },
+                  "image": "kubeless/python@sha256:dbf616cb06a262482c00f5b53e1de17571924032e0ad000865ec6b5357ff35bf",
+                  "phase": "runtime"
+               }
+            ],
+            "name": "python37",
+            "version": "3.7"
          }
       ]
    },
@@ -364,7 +400,7 @@ config:
                   "env": {
                      "NODE_PATH": "$(KUBELESS_INSTALL_VOLUME)/node_modules"
                   },
-                  "image": "henrike42/kubeless/runtimes/nodejs/distroless:0.0.2",
+                  "image": "kubeless/nodejs-distroless@sha256:1fa0469c5520f4e08d89b1fafd2cacf03f098b96ea04997fa52bb9ef2a180fb3",
                   "phase": "runtime"
                }
             ],
@@ -398,7 +434,6 @@ config:
          }
       ]
    }]'
-
 
 ## UI configuration
 ui:
@@ -440,7 +475,7 @@ kafkaTrigger:
   deployment:
     image:
       repository: bitnami/kafka-trigger-controller
-      tag: v1.0.0-beta.0
+      tag: v1.0.0
       pullPolicy: IfNotPresent
   env:
     kafkaBrokers: localhost:9092

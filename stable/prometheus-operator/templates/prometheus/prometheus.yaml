@@ -1,5 +1,5 @@
 {{- if .Values.prometheus.enabled }}
-apiVersion: monitoring.coreos.com/v1
+apiVersion: {{ printf "%s/v1" (.Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com") }}
 kind: Prometheus
 metadata:
   name: {{ template "prometheus-operator.fullname" . }}-prometheus
@@ -68,10 +68,12 @@ spec:
 {{- if .Values.prometheus.prometheusSpec.serviceMonitorSelector }}
   serviceMonitorSelector:
 {{ toYaml .Values.prometheus.prometheusSpec.serviceMonitorSelector | indent 4 }}
-{{ else}}
+{{ else if .Values.prometheus.prometheusSpec.serviceMonitorSelectorNilUsesHelmValues  }}
   serviceMonitorSelector:
     matchLabels:
       release: {{ .Release.Name | quote }}
+{{ else }}
+  serviceMonitorSelector: {}
 {{- end }}
 {{- if .Values.prometheus.prometheusSpec.serviceMonitorNamespaceSelector }}
   serviceMonitorNamespaceSelector:
@@ -91,32 +93,40 @@ spec:
   securityContext:
 {{ toYaml .Values.prometheus.prometheusSpec.securityContext | indent 4 }}
 {{- end }}
-
 {{- if .Values.prometheus.prometheusSpec.ruleNamespaceSelector }}
   ruleNamespaceSelector:
 {{ toYaml .Values.prometheus.prometheusSpec.ruleNamespaceSelector | indent 4 }}
+{{ else }}
+  ruleNamespaceSelector: {}
 {{- end }}
+{{- if .Values.prometheus.prometheusSpec.ruleSelector }}
   ruleSelector:
-  {{- if .Values.prometheus.prometheusSpec.ruleSelector }}
 {{ toYaml .Values.prometheus.prometheusSpec.ruleSelector | indent 4}}
-  {{- else }}
+{{- else if .Values.prometheus.prometheusSpec.ruleSelectorNilUsesHelmValues }}
+  ruleSelector:
     matchLabels:
       app: {{ template "prometheus-operator.name" . }}
       release: {{ .Release.Name | quote }}
-  {{- end }}
+{{ else }}
+  ruleSelector: {}
+{{- end }}
 {{- if .Values.prometheus.prometheusSpec.storageSpec }}
   storage:
 {{ toYaml .Values.prometheus.prometheusSpec.storageSpec | indent 4 }}
 {{- end }}
-  {{- if .Values.prometheus.prometheusSpec.podMetadata }}
+{{- if .Values.prometheus.prometheusSpec.podMetadata }}
   podMetadata:
 {{ toYaml .Values.prometheus.prometheusSpec.podMetadata | indent 4 }}
-  {{- end }}
+{{- end }}
+{{- if .Values.prometheus.prometheusSpec.query }}
+  query:
+{{ toYaml .Values.prometheus.prometheusSpec.query | indent 4}}
+{{- end }}
 {{- if eq .Values.prometheus.prometheusSpec.podAntiAffinity "hard" }}
   affinity:
     podAntiAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
-      - topologyKey: kubernetes.io/hostname
+      - topologyKey: {{ .Values.prometheus.prometheusSpec.podAntiAffinityTopologyKey }}
         labelSelector:
           matchLabels:
             app: prometheus
@@ -127,7 +137,7 @@ spec:
       preferredDuringSchedulingIgnoredDuringExecution:
       - weight: 100
         podAffinityTerm:
-          topologyKey: kubernetes.io/hostname
+          topologyKey: {{ .Values.prometheus.prometheusSpec.podAntiAffinityTopologyKey }}
           labelSelector:
             matchLabels:
               app: prometheus

@@ -6,7 +6,7 @@ This chart will allow us to use redis as a pure in-memory cache, this uses a spe
 * Kubernetes 1.6+
 
 Install Redis-cache chart as an in-memory cache.
-* Uses 7MB [redis:4.0.11-alpine](https://hub.docker.com/r/library/redis/tags/4.0.11-alpine/) image which is extremely light weight
+* Uses 7MB [redis:4.0.12-alpine](https://hub.docker.com/r/library/redis/tags/4.0.12-alpine/) image which is extremely light weight
 * Uses [redis-sentinel-k8s](https://github.com/dhilipkumars/redis-sentinel-micro/tree/k8s) for automatic slave promotion if master fails, feel free to fork.
 * Super fast caching as no persistence involved
 * Has Pod Disruption Budget

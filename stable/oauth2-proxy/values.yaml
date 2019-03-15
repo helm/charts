@@ -12,10 +12,13 @@ config:
   #   pass_basic_auth = false
   #   pass_access_token = true
   configFile: ""
+  # Use an existing secret for OAuth2 credentials
+  # Example:
+  # existingSecret: secret
 
 image:
-  repository: "a5huynh/oauth2_proxy"
-  tag: "2.2"
+  repository: "quay.io/pusher/oauth2_proxy"
+  tag: "v3.1.0"
   pullPolicy: "IfNotPresent"
 
 # Optionally specify an array of imagePullSecrets.
@@ -88,6 +91,21 @@ tolerations: []
 # Node labels for pod assignment
 # Ref: https://kubernetes.io/docs/user-guide/node-selection/
 nodeSelector: {}
+
+# Configure Kubernetes liveness and readiness probes.
+# Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/
+# Disable both when deploying with Istio 1.0 mTLS. https://istio.io/help/faq/security/#k8s-health-checks
+livenessProbe:
+  enabled: true
+  initialDelaySeconds: 0
+  timeoutSeconds: 1
+
+readinessProbe:
+  enabled: true
+  initialDelaySeconds: 0
+  timeoutSeconds: 1
+  periodSeconds: 10
+  successThreshold: 1
 
 podAnnotations: {}
 podLabels: {}

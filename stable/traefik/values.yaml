@@ -1,6 +1,6 @@
 ## Default values for Traefik
 image: traefik
-imageTag: 1.7.4
+imageTag: 1.7.9
 ## can switch the service type to NodePort if required
 serviceType: LoadBalancer
 # loadBalancerIP: ""
@@ -8,17 +8,20 @@ serviceType: LoadBalancer
 whiteListSourceRange: []
 externalTrafficPolicy: Cluster
 replicas: 1
+# startupArguments:
+#   - "--ping"
+#   - "--ping.entrypoint=http"
 
 podDisruptionBudget: {}
   # maxUnavailable: 1
   # minAvailable: 2
 
+# priorityClassName: ""
+
 # rootCAs: []
 
-cpuRequest: 100m
-memoryRequest: 20Mi
-cpuLimit: 100m
-memoryLimit: 30Mi
+resources: {}
+
 debug:
   enabled: false
 
@@ -27,6 +30,9 @@ deploymentStrategy: {}
   #   maxSurge: 1
   #   maxUnavailable: 0
   # type: RollingUpdate
+
+securityContext: {}
+env: {}
 
 nodeSelector: {}
   # key: value
@@ -59,12 +65,36 @@ forwardedHeaders:
   # trustedIPs is required when enabled
   trustedIPs: []
   # - 10.0.0.0/8
+
+## Add arbitrary ConfigMaps to deployment
+## Will be mounted to /configs/, i.e. myconfig.json would
+## be mounted to /configs/myconfig.json.
+configFiles: {}
+  # myconfig.json: |
+  #   filecontents...
+
+## Add arbitrary Secrets to deployment
+## Will be mounted to /secrets/, i.e. file.name would
+## be mounted to /secrets/mysecret.txt.
+## The contents will be base64 encoded when added
+secretFiles: {}
+  # mysecret.txt: |
+  #   filecontents...
+
 ssl:
   enabled: false
   enforced: false
   permanentRedirect: false
   upstream: false
   insecureSkipVerify: false
+  generateTLS: false
+  # defaultCN: "example.com"
+    # or *.example.com
+  defaultSANList: []
+    # - example.com
+    # - test1.example.com
+  defaultIPList: []
+    # - 1.2.3.4
   # cipherSuites: []
   # https://docs.traefik.io/configuration/entrypoints/#specify-minimum-tls-version
   # tlsMinVersion: VersionTLS12
@@ -161,6 +191,9 @@ acme:
   ## Configure dnsProvider to perform domain verification using dns challenge
   ## Applicable only if using the dns-01 challenge type
   delayBeforeCheck: 0
+  resolvers: []
+    # - 1.1.1.1:53
+    # - 8.8.8.8:53
   dnsProvider:
     name: nil
     auroradns:
@@ -216,6 +249,11 @@ acme:
       OTC_PASSWORD: ""
       OTC_PROJECT_NAME: ""
       OTC_IDENTITY_ENDPOINT: ""
+    ovh:
+      OVH_ENDPOINT: ""
+      OVH_APPLICATION_KEY: ""
+      OVH_APPLICATION_SECRET: ""
+      OVH_CONSUMER_KEY: ""
     pdns:
       PDNS_API_URL: ""
     rackspace:
@@ -233,8 +271,10 @@ acme:
       AWS_SECRET_ACCESS_KEY: ""
     vultr:
       VULTR_API_KEY: ""
-  ## Save ACME certs to a persistent volume. WARNING: If you do not do this, you will re-request
-  ## certs every time a pod (re-)starts and you WILL be rate limited!
+  ## Save ACME certs to a persistent volume.
+  ## WARNING: If you do not do this and you did not have configured
+  ## a kvprovider, you will re-request certs every time a pod (re-)starts
+  ## and you WILL be rate limited!
   persistence:
     enabled: true
     annotations: {}
@@ -256,6 +296,7 @@ acme:
 dashboard:
   enabled: false
   domain: traefik.example.com
+  # serviceType: ClusterIP
   service: {}
     # annotations:
     #   key: value
@@ -264,6 +305,10 @@ dashboard:
     #   key: value
     # labels:
     #   key: value
+    # tls:
+      # - hosts:
+      #   - traefik.example.com
+      #   secretName: traefik-default-cert
   auth: {}
     # basic:
     #   username: password
@@ -313,6 +358,9 @@ rbac:
 metrics:
   prometheus:
     enabled: false
+    ## If true, prevents exposing port 8080 on the main Traefik service, reserving
+    ## it to the dashboard service only
+    restrictAccess: false
     # buckets: [0.1,0.3,1.2,5]
   datadog:
     enabled: false
@@ -332,6 +380,9 @@ deployment:
     httpEnabled: false
     httpsEnabled: false
     dashboardEnabled: false
+    # httpPort: 80
+    # httpsPort: 443
+    # dashboardPort: 8080
 sendAnonymousUsage: false
 tracing:
   enabled: false
@@ -351,3 +402,18 @@ tracing:
   #   localAgentHostPort: "127.0.0.1:8126"
   #   debug: false
   #   globalTag: ""
+
+## Create HorizontalPodAutoscaler object.
+##
+# autoscaling:
+#   minReplicas: 1
+#   maxReplicas: 10
+#   metrics:
+#   - type: Resource
+#     resource:
+#       name: cpu
+#       targetAverageUtilization: 60
+#   - type: Resource
+#     resource:
+#       name: memory
+#       targetAverageUtilization: 60

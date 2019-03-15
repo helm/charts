@@ -14,7 +14,7 @@ This chart bootstraps a [TestLink](https://github.com/bitnami/bitnami-docker-tes
 
 It also packages the [Bitnami MariaDB chart](https://github.com/kubernetes/charts/tree/master/stable/mariadb) which is required for bootstrapping a MariaDB deployment for the database requirements of the TestLink application.
 
-Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters.
+Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters. This chart has been tested to work with NGINX Ingress, cert-manager, fluentd and Prometheus on top of the [BKPR](https://kubeprod.io/).
 
 ## Prerequisites
 
@@ -50,11 +50,12 @@ The following table lists the configurable parameters of the TestLink chart and 
 |              Parameter              |               Description               |                         Default                         |
 |-------------------------------------|-----------------------------------------|---------------------------------------------------------|
 | `global.imageRegistry`              | Global Docker image registry            | `nil`                                                   |
+| `global.imagePullSecrets`           | Global Docker registry secret names as an array | `[]` (does not add image pull secrets to deployed pods) |
 | `image.registry`                    | TestLink image registry                 | `docker.io`                                             |
 | `image.repository`                  | TestLink image name                     | `bitnami/testlink`                                      |
 | `image.tag`                         | TestLink image tag                      | `{VERSION}`                                             |
 | `image.pullPolicy`                  | Image pull policy                       | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
-| `image.pullSecrets`                 | Specify image pull secrets              | `nil`                                                   |
+| `image.pullSecrets`                 | Specify docker-registry secret names as an array  | `[]` (does not add image pull secrets to deployed pods) |
 | `testlinkUsername`                  | Admin username                          | `user`                                                  |
 | `testlinkPassword`                  | Admin user password                     | _random 10 character long alphanumeric string_          |
 | `testlinkEmail`                     | Admin user email                        | `user@example.com`                                      |
@@ -91,14 +92,14 @@ The following table lists the configurable parameters of the TestLink chart and 
 | `persistence.testlink.size`         | PVC Storage Request for TestLink volume | `8Gi`                                                   |
 | `resources`                         | CPU/Memory resource requests/limits     | Memory: `512Mi`, CPU: `300m`                            |
 | `podAnnotations`                | Pod annotations                                   | `{}`                                                       |
-| `metrics.enabled`                          | Start a side-car prometheus exporter                                                                           | `false`                                              |
-| `metrics.image.registry`                   | Apache exporter image registry                                                                                  | `docker.io`                                          |
-| `metrics.image.repository`                 | Apache exporter image name                                                                                      | `lusotycoon/apache-exporter`                           |
-| `metrics.image.tag`                        | Apache exporter image tag                                                                                       | `v0.5.0`                                            |
-| `metrics.image.pullPolicy`                 | Image pull policy                                                                                              | `IfNotPresent`                                       |
-| `metrics.image.pullSecrets`                | Specify docker-registry secret names as an array                                                               | `nil`                                                |
-| `metrics.podAnnotations`                   | Additional annotations for Metrics exporter pod                                                                | `{prometheus.io/scrape: "true", prometheus.io/port: "9117"}`                                                   |
-| `metrics.resources`                        | Exporter resource requests/limit                                                                               | {}                        |
+| `metrics.enabled`                          | Start a side-car prometheus exporter                        | `false`                                              |
+| `metrics.image.registry`                   | Apache exporter image registry                              | `docker.io`                                          |
+| `metrics.image.repository`                 | Apache exporter image name                                  | `lusotycoon/apache-exporter`                           |
+| `metrics.image.tag`                        | Apache exporter image tag                                   | `v0.5.0`                                            |
+| `metrics.image.pullPolicy`                 | Image pull policy                                           | `IfNotPresent`                                       |
+| `metrics.image.pullSecrets`                | Specify docker-registry secret names as an array            | `[]` (does not add image pull secrets to deployed pods)  |
+| `metrics.podAnnotations`                   | Additional annotations for Metrics exporter pod             | `{prometheus.io/scrape: "true", prometheus.io/port: "9117"}`                                                   |
+| `metrics.resources`                        | Exporter resource requests/limit                            | {}                        |
 
 The above parameters map to the env variables defined in [bitnami/testlink](http://github.com/bitnami/bitnami-docker-testlink). For more information please refer to the [bitnami/testlink](http://github.com/bitnami/bitnami-docker-testlink) image documentation.
 

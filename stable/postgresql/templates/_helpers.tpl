@@ -12,7 +12,7 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 */}}
 {{- define "postgresql.fullname" -}}
 {{- if .Values.fullnameOverride -}}
-{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
+{{- printf .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
 {{- $name := default .Chart.Name .Values.nameOverride -}}
 {{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
@@ -25,10 +25,11 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 */}}
 {{- define "postgresql.master.fullname" -}}
 {{- $name := default .Chart.Name .Values.nameOverride -}}
+{{- $fullname := default (printf "%s-%s" .Release.Name $name) .Values.fullnameOverride -}}
 {{- if .Values.replication.enabled -}}
-{{- printf "%s-%s-%s" .Release.Name $name "master" | trunc 63 | trimSuffix "-" -}}
+{{- printf "%s-%s" $fullname "master" | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
-{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- printf "%s" $fullname | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 {{- end -}}
 
@@ -96,12 +97,117 @@ Also, we can't use a single if because lazy evaluation is not an option
 {{- end -}}
 {{- end -}}
 
-
 {{/*
 Return the proper PostgreSQL metrics image name
 */}}
-{{- define "metrics.image" -}}
+{{- define "postgresql.metrics.image" -}}
 {{- $registryName :=  default "docker.io" .Values.metrics.image.registry -}}
+{{- $repositoryName := .Values.metrics.image.repository -}}
 {{- $tag := default "latest" .Values.metrics.image.tag | toString -}}
-{{- printf "%s/%s:%s" $registryName .Values.metrics.image.repository $tag -}}
+{{/*
+Helm 2.11 supports the assignment of a value to a variable defined in a different scope,
+but Helm 2.9 and 2.10 doesn't support it, so we need to implement this if-else logic.
+Also, we can't use a single if because lazy evaluation is not an option
+*/}}
+{{- if .Values.global }}
+    {{- if .Values.global.imageRegistry }}
+        {{- printf "%s/%s:%s" .Values.global.imageRegistry $repositoryName $tag -}}
+    {{- else -}}
+        {{- printf "%s/%s:%s" $registryName $repositoryName $tag -}}
+    {{- end -}}
+{{- else -}}
+    {{- printf "%s/%s:%s" $registryName $repositoryName $tag -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Get the password secret.
+*/}}
+{{- define "postgresql.secretName" -}}
+{{- if .Values.existingSecret -}}
+{{- printf "%s" .Values.existingSecret -}}
+{{- else -}}
+{{- printf "%s" (include "postgresql.fullname" .) -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Get the configuration ConfigMap name.
+*/}}
+{{- define "postgresql.configurationCM" -}}
+{{- if .Values.configurationConfigMap -}}
+{{- printf "%s" .Values.configurationConfigMap -}}
+{{- else -}}
+{{- printf "%s-configuration" (include "postgresql.fullname" .) -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Get the extended configuration ConfigMap name.
+*/}}
+{{- define "postgresql.extendedConfigurationCM" -}}
+{{- if .Values.extendedConfConfigMap -}}
+{{- printf "%s" .Values.extendedConfConfigMap -}}
+{{- else -}}
+{{- printf "%s-extended-configuration" (include "postgresql.fullname" .) -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Get the initialization scripts ConfigMap name.
+*/}}
+{{- define "postgresql.initdbScriptsCM" -}}
+{{- if .Values.initdbScriptsConfigMap -}}
+{{- printf "%s" .Values.initdbScriptsConfigMap -}}
+{{- else -}}
+{{- printf "%s-init-scripts" (include "postgresql.fullname" .) -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Get the initialization scripts Secret name.
+*/}}
+{{- define "postgresql.initdbScriptsSecret" -}}
+{{- printf "%s" .Values.initdbScriptsSecret -}}
+{{- end -}}
+
+{{/*
+Return the proper Docker Image Registry Secret Names
+*/}}
+{{- define "postgresql.imagePullSecrets" -}}
+{{/*
+Helm 2.11 supports the assignment of a value to a variable defined in a different scope,
+but Helm 2.9 and 2.10 does not support it, so we need to implement this if-else logic.
+Also, we can not use a single if because lazy evaluation is not an option
+*/}}
+{{- if .Values.global }}
+{{- if .Values.global.imagePullSecrets }}
+imagePullSecrets:
+{{- range .Values.global.imagePullSecrets }}
+  - name: {{ . }}
+{{- end }}
+{{- else if or .Values.image.pullSecrets .Values.metrics.image.pullSecrets .Values.volumePermissions.image.pullSecrets }}
+imagePullSecrets:
+{{- range .Values.image.pullSecrets }}
+  - name: {{ . }}
+{{- end }}
+{{- range .Values.metrics.image.pullSecrets }}
+  - name: {{ . }}
+{{- end }}
+{{- range .Values.volumePermissions.image.pullSecrets }}
+  - name: {{ . }}
+{{- end }}
+{{- end -}}
+{{- else if or .Values.image.pullSecrets .Values.metrics.image.pullSecrets .Values.volumePermissions.image.pullSecrets }}
+imagePullSecrets:
+{{- range .Values.image.pullSecrets }}
+  - name: {{ . }}
+{{- end }}
+{{- range .Values.metrics.image.pullSecrets }}
+  - name: {{ . }}
+{{- end }}
+{{- range .Values.volumePermissions.image.pullSecrets }}
+  - name: {{ . }}
+{{- end }}
+{{- end -}}
 {{- end -}}

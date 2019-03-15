@@ -1,0 +1,17 @@
+name: nextcloud
+version: 1.0.2
+appVersion: 15.0.2
+description: A file sharing server that puts the control and security of your own data back into your hands.
+keywords:
+- nextcloud
+- storage
+- http
+- web
+- php
+home: https://nextcloud.com/
+icon: https://cdn.rawgit.com/docker-library/docs/defa5ffc7123177acd60ddef6e16bddf694cc35f/nextcloud/logo.svg
+sources:
+- https://github.com/nextcloud/docker
+maintainers:
+- name: chrisingenhaag
+  email: christian.ingenhaag@googlemail.com

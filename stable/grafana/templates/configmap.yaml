@@ -20,9 +20,10 @@ data:
 {{- end }}
 
 {{- if .Values.datasources }}
+{{ $root := . }}
   {{- range $key, $value := .Values.datasources }}
   {{ $key }}: |
-{{ toYaml $value | indent 4 }}
+{{ tpl (toYaml $value | indent 4) $root }}
   {{- end -}}
 {{- end -}}
 
@@ -51,11 +52,13 @@ data:
     curl -sk \
     --connect-timeout 60 \
     --max-time 60 \
+      {{- if not $value.b64content }}
     -H "Accept: application/json" \
     -H "Content-Type: application/json;charset=UTF-8" \
-    {{- if $value.url -}}{{ $value.url }}{{- else -}} https://grafana.com/api/dashboards/{{ $value.gnetId }}/revisions/{{- if $value.revision -}}{{ $value.revision }}{{- else -}}1{{- end -}}/download{{- end -}}{{ if $value.datasource }}| sed 's|\"datasource\":[^,]*|\"datasource\": \"{{ $value.datasource }}\"|g'{{ end }} \
-    > /var/lib/grafana/dashboards/{{ $provider }}/{{ $key }}.json
       {{- end }}
+    {{- if $value.url -}}{{ $value.url }}{{- else -}} https://grafana.com/api/dashboards/{{ $value.gnetId }}/revisions/{{- if $value.revision -}}{{ $value.revision }}{{- else -}}1{{- end -}}/download{{- end -}}{{ if $value.datasource }}| sed 's|\"datasource\":[^,]*|\"datasource\": \"{{ $value.datasource }}\"|g'{{ end }}{{- if $value.b64content -}} | base64 -d {{- end -}} \
+    > /var/lib/grafana/dashboards/{{ $provider }}/{{ $key }}.json
+      {{- end -}}
     {{- end }}
   {{- end }}
 {{- end }}

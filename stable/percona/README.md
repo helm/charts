@@ -48,6 +48,7 @@ The following table lists the configurable parameters of the Percona chart and t
 
 | Parameter                  | Description                        | Default                                                    |
 | -----------------------    | ---------------------------------- | ---------------------------------------------------------- |
+| `image`                    | `percona` image.                   | Percona official image on Docker Hub                       |
 | `imageTag`                 | `percona` image tag.                 | Most recent release                                        |
 | `imagePullPolicy`          | Image pull policy                  | `IfNotPresent`                                             |
 | `perconaRootPassword`        | Password for the `root` user.      | `nil`                                                      |

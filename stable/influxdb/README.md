@@ -80,3 +80,9 @@ Influxdb requires also a user to be set in order for authentication to be enforc
 To handle this setup on startup, a job can be enabled in `values.yaml` by setting `.Values.setDefaultUser.enabled` to `true`.
 
 Make sure to uncomment or configure the job settings after enabling it. If a password is not set, a random password will be generated.
+
+## Upgrading
+
+### From < 1.0.0 To >= 1.0.0
+
+Values `.Values.config.bind_address` and `.Values.exposeRpc` no longer exist. They have been replaced with `.Values.config.rpc.bind_address` and `.Values.config.rpc.enabled` respectively. Please adjust your values file accordingly.

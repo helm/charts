@@ -1,5 +1,5 @@
-{{- if and .Values.configuration.backupStorageProvider.name .Values.configuration.backupStorageProvider.bucket -}}
-{{- $provider := .Values.configuration.backupStorageProvider.name -}}
+{{- if .Values.configuration.provider -}}
+{{- $provider := .Values.configuration.provider -}}
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
@@ -20,10 +20,15 @@ spec:
       labels:
         release: {{ .Release.Name }}
         app: {{ template "ark.name" . }}
-    {{- with .Values.podAnnotations }}
+      {{- if or .Values.podAnnotations .Values.metrics.enabled }}
       annotations:
-{{ toYaml . | indent 8 }}
-    {{- end }}
+{{- if .Values.podAnnotations }}
+{{ toYaml .Values.podAnnotations | indent 8 }}
+{{- end }}
+{{- if .Values.metrics.enabled }}
+{{ toYaml .Values.metrics.podAnnotations | indent 8 }}
+{{- end }}
+      {{- end }}
     spec:
       restartPolicy: Always
       serviceAccountName: {{ template "ark.serverServiceAccount" . }}
@@ -31,10 +36,29 @@ spec:
         - name: ark
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if .Values.metrics.enabled }}
+          ports:
+            - name: monitoring
+              containerPort: 8085
+          {{- end }}
           command:
             - /ark
           args:
             - server
+          {{- with .Values.configuration }}
+            {{- with .backupSyncPeriod }}
+            - --backup-sync-period={{ . }}
+            {{- end }}
+            {{- with .resticTimeout }}
+            - --restic-timeout={{ . }}
+            {{- end }}
+            {{- if .restoreOnlyMode }}
+            - --restore-only
+            {{- end }}
+            {{- with .restoreResourcePriorities }}
+            - --restore-resource-priorities={{ . }}
+            {{- end }}
+          {{- end }}
           {{- if eq $provider "azure" }}
           envFrom:
             - secretRef:
@@ -50,6 +74,8 @@ spec:
         {{- if and .Values.credentials.useSecret (or (eq $provider "aws") (eq $provider "gcp")) }}
             - name: cloud-credentials
               mountPath: /credentials
+            - name: scratch
+              mountPath: /scratch
           env:
           {{- if eq $provider "aws" }}
             - name: AWS_SHARED_CREDENTIALS_FILE
@@ -57,7 +83,19 @@ spec:
             - name: GOOGLE_APPLICATION_CREDENTIALS
           {{- end }}
               value: /credentials/cloud
+            - name: ARK_SCRATCH_DIR
+              value: /scratch
+          {{ if .Values.configuration.extraEnvVars }}
+          {{- range $key, $value := .Values.configuration.extraEnvVars }}
+            - name: {{ default "none" $key }}
+              value: {{ default "none" $value }}
+          {{- end }}
+          {{- end }}
         {{- end }}
+{{- if .Values.initContainers }}
+      initContainers:
+{{ toYaml .Values.initContainers | indent 8 }}
+{{- end }}
       volumes:
         {{- if and .Values.credentials.useSecret (or (eq $provider "aws") (eq $provider "gcp")) }}
         - name: cloud-credentials
@@ -65,6 +103,8 @@ spec:
             secretName: {{ template "ark.secretName" . }}
         {{- end }}
         - name: plugins
+          emptyDir: {}
+        - name: scratch
           emptyDir: {}
     {{- with .Values.nodeSelector }}
       nodeSelector:

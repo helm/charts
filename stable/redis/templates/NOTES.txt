@@ -29,7 +29,7 @@ Redis can be accessed via port {{ .Values.master.port }} on the following DNS na
 {{- else }}
 Redis can be accessed via port {{ .Values.master.port }} on the following DNS name from within your cluster:
 
-{{ template "redis.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+{{ template "redis.fullname" . }}-master.{{ .Release.Namespace }}.svc.cluster.local
 
 {{- end }}
 
@@ -43,7 +43,7 @@ To connect to your Redis server:
 
 1. Run a Redis pod that you can use as a client:
 
-   kubectl run --namespace {{ .Release.Namespace }} {{ template "redis.fullname" . }}-client --rm --tty -i \
+   kubectl run --namespace {{ .Release.Namespace }} {{ template "redis.fullname" . }}-client --rm --tty -i --restart='Never' \
    {{ if .Values.usePassword }} --env REDIS_PASSWORD=$REDIS_PASSWORD \{{ end }}
    {{- if and (.Values.networkPolicy.enabled) (not .Values.networkPolicy.allowExternal) }}--labels="{{ template "redis.name" . }}-client=true" \{{- end }}
    --image {{ template "redis.image" . }} -- bash
@@ -54,7 +54,7 @@ To connect to your Redis server:
    redis-cli -h {{ template "redis.fullname" . }}-master{{ if .Values.usePassword }} -a $REDIS_PASSWORD{{ end }}
    redis-cli -h {{ template "redis.fullname" . }}-slave{{ if .Values.usePassword }} -a $REDIS_PASSWORD{{ end }}
 {{- else }}
-   redis-cli -h {{ template "redis.fullname" . }}{{ if .Values.usePassword }} -a $REDIS_PASSWORD{{ end }}
+   redis-cli -h {{ template "redis.fullname" . }}-master{{ if .Values.usePassword }} -a $REDIS_PASSWORD{{ end }}
 {{- end }}
 
 {{ if and (.Values.networkPolicy.enabled) (not .Values.networkPolicy.allowExternal) }}

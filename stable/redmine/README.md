@@ -14,7 +14,7 @@ This chart bootstraps a [Redmine](https://github.com/bitnami/bitnami-docker-redm
 
 It also packages the [Bitnami MariaDB chart](https://github.com/kubernetes/charts/tree/master/stable/mariadb) and the [PostgreSQL chart](https://github.com/kubernetes/charts/tree/master/stable/postgresql) which are required for bootstrapping a MariaDB/PostgreSQL deployment for the database requirements of the Redmine application.
 
-Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters.
+Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters. This chart has been tested to work with NGINX Ingress, cert-manager, fluentd and Prometheus on top of the [BKPR](https://kubeprod.io/).
 
 ## Prerequisites
 
@@ -58,11 +58,12 @@ The following table lists the configurable parameters of the Redmine chart and t
 |            Parameter                |              Description                   |                          Default                        |
 | ----------------------------------- | ------------------------------------------ | ------------------------------------------------------- |
 | `global.imageRegistry`              | Global Docker image registr  y             | `nil`                                                   |
+| `global.imagePullSecrets`           | Global Docker registry secret names as an array | `[]` (does not add image pull secrets to deployed pods) |
 | `image.registry`                    | Redmine image registry                     | `docker.io`                                             |
 | `image.repository`                  | Redmine image name                         | `bitnami/redmine`                                       |
 | `image.tag`                         | Redmine image tag                          | `{VERSION}`                                             |
 | `image.pullPolicy`                  | Image pull policy                          | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
-| `image.pullSecrets`                 | Specify image pull secrets                 | `nil`                                                   |
+| `image.pullSecrets`                 | Specify docker-registry secret names as an array                 | `[]` (does not add image pull secrets to deployed pods)   |
 | `redmineUsername`                   | User of the application                    | `user`                                                  |
 | `redminePassword`                   | Application password                       | _random 10 character long alphanumeric string_          |
 | `redmineEmail`                      | Admin email                                | `user@example.com`                                      |

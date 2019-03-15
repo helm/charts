@@ -12,7 +12,7 @@ $ helm install stable/phpmyadmin
 
 This chart bootstraps a [phpMyAdmin](https://github.com/bitnami/bitnami-docker-phpmyadmin) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
-Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters.
+Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters. This chart has been tested to work with NGINX Ingress, cert-manager, fluentd and Prometheus on top of the [BKPR](https://kubeprod.io/).
 
 ## Prerequisites
 
@@ -47,16 +47,18 @@ The following table lists the configurable parameters of the phpMyAdmin chart an
 |         Parameter          |               Description                |                         Default                         |
 |----------------------------|------------------------------------------|---------------------------------------------------------|
 | `global.imageRegistry`     | Global Docker image registry             | `nil`                                                   |
+| `global.imagePullSecrets`  | Global Docker registry secret names as an array | `[]` (does not add image pull secrets to deployed pods) |
 | `image.registry`           | phpMyAdmin image registry                | `docker.io`                                             |
 | `image.repository`         | phpMyAdmin image name                    | `bitnami/phpmyadmin`                                    |
 | `image.tag`                | phpMyAdmin image tag                     | `{VERSION}`                                             |
 | `image.pullPolicy`         | Image pull policy                        | `IfNotPresent`                                          |
-| `image.pullSecrets`        | Specify image pull secrets               | `nil`                                                   |
+| `image.pullSecrets`        | Specify docker-registry secret names as an array               | `[]` (does not add image pull secrets to deployed pods)                                                   |
 | `service.type`             | Type of service for phpMyAdmin frontend  | `ClusterIP`                                             |
 | `service.port`             | Port to expose service                   | `80`                                                    |
 | `db.port`                  | Database port to use to connect          | `3306`                                                  |
 | `db.chartName`             | Database suffix if included in the same release | `nil`                                            |
 | `db.host`                  | Database host to connect to              | `nil`                                                   |
+| `db.bundleTestDB`                  | Deploy a MariaDB instance for testing purposes              | `false`                                                   |
 | `ingress.enabled`          | Ingress resource to be added             | `false`                                                 |
 | `ingress.annotations`      | Ingress annotations                      | `{ingress.kubernetes.io/rewrite-target: /,    nginx.ingress.kubernetes.io/rewrite-target: /}`          |
 | `ingress.path`             | Path to access frontend                  | `/`                                                     |
@@ -72,7 +74,7 @@ The following table lists the configurable parameters of the phpMyAdmin chart an
 | `metrics.image.repository`                 | Apache exporter image name                                                                                      | `lusotycoon/apache-exporter`                           |
 | `metrics.image.tag`                        | Apache exporter image tag                                                                                       | `v0.5.0`                                            |
 | `metrics.image.pullPolicy`                 | Image pull policy                                                                                              | `IfNotPresent`                                       |
-| `metrics.image.pullSecrets`                | Specify docker-registry secret names as an array                                                               | `nil`                                                |
+| `metrics.image.pullSecrets`                | Specify docker-registry secret names as an array                                                               | `[]` (does not add image pull secrets to deployed pods)  |
 | `metrics.podAnnotations`                   | Additional annotations for Metrics exporter pod                                                                | `{prometheus.io/scrape: "true", prometheus.io/port: "9117"}`                                                   |
 | `metrics.resources`                        | Exporter resource requests/limit                                                                               | {}                        |
 
