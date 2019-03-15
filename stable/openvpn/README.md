@@ -85,6 +85,9 @@ Parameter | Description | Default
 `openvpn.conf`                 | Arbitrary lines appended to the end of the server configuration file | `nil`
 `openvpn.redirectGateway`      | Redirect all client traffic through VPN                              | `true`
 `nodeSelector`                 | Node labels for pod assignment                                       | `{}`
+`certAuthority`                | Whether to setup the EasyRSA certificate authority                   | `true`
+`templates.serverConf`         | A manual OpenVPN configuration file to use                           | `see templates/config-openvpn.yaml`
+`templates.startupCommands`    | Arbitrary bash that will be prepended to the `configure.sh` script          | `""`
 
 This chart has been engineered to use kube-dns and route all network traffic to kubernetes pods and services,
 to disable this behaviour set `openvpn.OVPN_K8S_POD_NETWORK` and `openvpn.OVPN_K8S_POD_SUBNET` to `null`.

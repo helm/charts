@@ -53,7 +53,14 @@ data:
 
   configure.sh: |-
       #!/bin/sh
+{{ if .Values.openvpn.certAuthority }}
       /etc/openvpn/setup/setup-certs.sh
+{{ end }}
+
+{{ if .Values.openvpn.templates.startupCommands }}
+{{ indent 6 .Values.openvpn.templates.startupCommands }}
+{{ end }}
+
       iptables -t nat -A POSTROUTING -s {{ .Values.openvpn.OVPN_NETWORK }}/{{ .Values.openvpn.OVPN_SUBNET }} -o eth0 -j MASQUERADE
       mkdir -p /dev/net
       if [ ! -c /dev/net/tun ]; then
@@ -81,6 +88,9 @@ data:
 
       openvpn --config /etc/openvpn/openvpn.conf
   openvpn.conf: |-
+{{ if .Values.openvpn.templates.serverConf }}
+{{ indent 6 .Values.openvpn.templates.serverConf }}
+{{ else }}
       server {{ .Values.openvpn.OVPN_NETWORK }} {{ .Values.openvpn.OVPN_SUBNET }}
       verb 3
       key /etc/openvpn/certs/pki/private/server.key
@@ -117,3 +127,4 @@ data:
       {{- if .Values.openvpn.conf }}
 {{ indent 6 .Values.openvpn.conf }}
       {{- end -}}
+{{ end }}
