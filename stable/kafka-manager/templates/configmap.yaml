@@ -18,11 +18,11 @@ data:
     {{- printf "-d name=%s " (default "default" $cluster.name) -}}
     {{- printf "-d zkHosts=%s " (default (include "kafka-manager.zkHosts" $) $cluster.zkHosts ) -}}
     {{- printf "-d kafkaVersion=%s " (default "1.0.0" $cluster.kafkaVersion) -}}
-    {{- printf "-d jmxEnabled=%B " (default "false" $cluster.jmxEnabled) -}}
+    {{- printf "-d jmxEnabled=%s " (default "false" $cluster.jmxEnabled) -}}
     {{- printf "-d jmxUser=%s " (default "" $cluster.jmxUser) -}}
     {{- printf "-d jmxPass=%s " (default "" $cluster.jmxPass) -}}
     {{- printf "-d jmxSsl=%s " (default "false" $cluster.jmxSsl) -}}
-    {{- printf "-d logkafkaEnabled=%B " (default "false" $cluster.logkafkaEnabled) -}}
+    {{- printf "-d logkafkaEnabled=%s " (default "false" $cluster.logkafkaEnabled) -}}
     {{- printf "-d pollConsumers=%s " (default "false" $cluster.pollConsumers) -}}
     {{- printf "-d filterConsumers=%s " (default "false" $cluster.filterConsumers) -}}
     {{- printf "-d activeOffsetCacheEnabled=%s " (default "false" $cluster.activeOffsetCacheEnabled) -}}
