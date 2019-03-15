@@ -18,7 +18,7 @@ data:
     {{- printf "-d name=%s " (default "default" $cluster.name) -}}
     {{- printf "-d zkHosts=%s " (default (include "kafka-manager.zkHosts" $) $cluster.zkHosts ) -}}
     {{- printf "-d kafkaVersion=%s " (default "1.0.0" $cluster.kafkaVersion) -}}
-    {{- printf "-d jmxEnabled=%s " (default "false" $cluster.jmxEnabled) -}}
+    {{- printf "-d jmxEnabled=%s " (default "false" $cluster.jmxEnabled | quote) -}}
     {{- printf "-d jmxUser=%s " (default "" $cluster.jmxUser) -}}
     {{- printf "-d jmxPass=%s " (default "" $cluster.jmxPass) -}}
     {{- printf "-d jmxSsl=%s " (default "false" $cluster.jmxSsl) -}}
