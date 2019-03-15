@@ -224,6 +224,9 @@ spec:
       name: atlantis-data
     spec:
       accessModes: ["ReadWriteOnce"] # Volume should not be shared by multiple nodes.
+      {{- if .Values.atlantis_data_storageClass }}
+      storageClass: {{ .Values.atlantis_data_storageClass }} # Storage class of the volume
+      {{- end }}
       resources:
         requests:
           # The biggest thing Atlantis stores is the Git repo when it checks it out.
