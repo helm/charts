@@ -327,18 +327,18 @@ updateStrategy: OnDelete
 ##
 resources: {}
   # limits:
-  #   cpu: 100mm
+  #   cpu: 100m
   #   memory: 1Gi
   # requests:
-  #   cpu: 100mm
+  #   cpu: 100m
   #   memory: 1Gi
 initContainer:
   resources: {}
   #   limits:
-  #     cpu: 100mm
+  #     cpu: 100m
   #     memory: 128Mi
   #   requests:
-  #     cpu: 100mm
+  #     cpu: 100m
   #     memory: 128Mi
 
 ## Data Persistency
