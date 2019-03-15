@@ -1,0 +1,153 @@
+rbac:
+  create: true
+  pspEnabled: true
+
+serviceAccount:
+  create: true
+  name:
+
+loki:
+  replicas: 1
+  deploymentStrategy: RollingUpdate
+
+  image:
+    repository: grafana/loki
+    tag: master
+    # Always pull while in BETA
+    pullPolicy: Always
+
+  service:
+    port: 3100
+    annotations: {}
+    labels: {}
+
+  readinessProbe: {}
+
+  livenessProbe: {}
+
+  resources:
+    {}
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+
+  ## Pod Annotations
+  # podAnnotations: {}
+
+  ## Deployment annotations
+  # annotations: {}
+
+  ## Assign a PriorityClassName to pods if set
+  # priorityClassName:
+
+  ## Node labels for pod assignment
+  ## ref: https://kubernetes.io/docs/user-guide/node-selection/
+  #
+  nodeSelector: {}
+
+  ## Tolerations for pod assignment
+  ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  ##
+  tolerations: []
+
+  ## Affinity for pod assignment
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  ##
+  affinity: {}
+
+  ## Enable persistence using Persistent Volume Claims
+  ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+  ## If you set enabled as "True", you need :
+  ## - create a pv which above 10Gi and has same namespace with loki
+  ## - keep storageClassName same with below setting
+  persistence:
+    enabled: false
+    accessModes:
+      - ReadWriteOnce
+    size: 10Gi
+    storageClassName: default
+    # annotations: {}
+    # subPath: ""
+    # existingClaim:
+
+  config:
+    auth_enabled: false
+    ingester:
+      lifecycler:
+        ring:
+          store: inmemory
+          replication_factor: 1
+    schema_configs:
+      - from: 0
+        store: boltdb
+        object_store: filesystem
+        schema: v9
+        index:
+          prefix: index_
+          period: 168h
+    storage_configs:
+      - name: boltdb
+        directory: /data/loki/index
+      - name: filesystem
+        directory: /data/loki/chunks
+
+promtail:
+  nameOverride: promtail
+  deploymentStrategy: RollingUpdate
+
+  entryParser: docker
+
+  dataRoot: /var/lib/docker
+
+  image:
+    repository: grafana/promtail
+    tag: master
+    # Always pull while in BETA
+    pullPolicy: Always
+
+  service:
+    port: 3100
+    annotations: {}
+    labels: {}
+
+  readinessProbe: {}
+
+  livenessProbe: {}
+
+  resources:
+    {}
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+
+  ## Pod Annotations
+  # podAnnotations: {}
+
+  ## Deployment annotations
+  # annotations: {}
+
+  ## Assign a PriorityClassName to pods if set
+  # priorityClassName:
+
+  ## Node labels for pod assignment
+  ## ref: https://kubernetes.io/docs/user-guide/node-selection/
+  #
+  nodeSelector: {}
+
+  ## Tolerations for pod assignment
+  ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  ##
+  tolerations:
+    - key: node-role.kubernetes.io/master
+      effect: NoSchedule
+
+  ## Affinity for pod assignment
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  ##
+  affinity: {}
