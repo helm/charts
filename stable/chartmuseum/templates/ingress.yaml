@@ -21,8 +21,8 @@ spec:
       paths:
       - path: {{ default "/" .path | quote }}
         backend:
-          serviceName: {{ $serviceName }}
-          servicePort: {{ $servicePort }}
+          serviceName: {{ default $serviceName .serviceName }}
+          servicePort: {{ default $servicePort .servicePort }}
   {{- end }}
   tls:
   {{- range .Values.ingress.hosts }}
