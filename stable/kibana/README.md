@@ -89,6 +89,12 @@ The following table lists the configurable parameters of the kibana chart and th
 | `dashboardImport.xpackauth.username`       | Optional Xpack username                                                | `myuser`                              |
 | `dashboardImport.xpackauth.password`       | Optional Xpack password                                                | `mypass`                              |
 | `dashboardImport.dashboards`               | Dashboards                                                             | `{}`                                  |
+| `objectsImport.enabled`                    | Enable objects import                                                  | `false`                               |
+| `objectsImport.timeout`                    | Time in seconds waiting for Kibana to be in green overall state        | `60`                                  |
+| `objectsImport.xpackauth.enabled`          | Enable Xpack auth                                                      | `false`                               |
+| `objectsImport.xpackauth.username`         | Optional Xpack username                                                | `myuser`                              |
+| `objectsImport.xpackauth.password`         | Optional Xpack password                                                | `mypass`                              |
+| `objectsImport.objects   `                 | Saved objects (visualization, dashboard, search, index-pattern, ...)   | `{}`                                  |
 | `plugins.enabled`                          | Enable installation of plugins.                                        | `false`                               |
 | `plugins.reset`                            | Optional : Remove all installed plugins before installing all new ones | `false`                               |
 | `plugins.values`                           | List of plugins to install. Format                                     | None:                                 |
