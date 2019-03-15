@@ -130,7 +130,7 @@ kubectl create secret generic openvpn-keystore-secret --from-file=./server.key -
 You can deploy temporary openvpn chart, create secret from generated certificates, and then re-deploy openvpn, providing the secret.
 Certificates can be found in openvpn pod in the following files:
 
- `/etc/openvpn/certs/pki/private/server.key`
- `/etc/openvpn/certs/pki/ca.crt`
- `/etc/openvpn/certs/pki/issued/server.crt`
- `/etc/openvpn/certs/pki/dh.pem`
+ `/etc/openvpn/pki/private/server.key`
+ `/etc/openvpn/pki/ca.crt`
+ `/etc/openvpn/pki/issued/server.crt`
+ `/etc/openvpn/pki/dh.pem`
