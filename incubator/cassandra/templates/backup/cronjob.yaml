@@ -7,7 +7,7 @@
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: {{ template "cassandra.fullname" $ }}-backup-{{ $schedule.keyspace }}
+  name: {{ template "cassandra.fullname" $ }}-backup-{{ $schedule.keyspace | replace "_" "-" }}
   labels:
     app: {{ template "cassandra.name" $ }}-cain
     chart: {{ template "cassandra.chart" $ }}
