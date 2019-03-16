@@ -44,8 +44,15 @@ serviceAccount:
 config:
   datasource:
     host:
-    user:
-    password:
+    user: postgres
+    # Only one of password and passwordSecret can be specified
+    password: somepassword
+    # Specify passwordSecret if DB password is stored in secret.
+    passwordSecret: {}
+    # Secret name
+    #  name:
+    # Password key inside secret
+    #  key:
     port: "5432"
     database: ''
     sslmode: disable
