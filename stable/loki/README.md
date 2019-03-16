@@ -41,10 +41,11 @@ Loki has server named "loki" and client named "promtail".
 
 ### Loki
 
-| `loki.replicas`                                           | Number of nodes                   | `1`                                                 |
-| `loki.deploymentStrategy`                                 | Deployment strategy         | `RollingUpdate`                                           |
+| `loki.enabled`                                            | Deploy loki or not                            | `true`                                  |
+| `loki.replicas`                                           | Number of nodes                               | `1`                                     |
+| `loki.deploymentStrategy`                                 | Deployment strategy                           | `RollingUpdate`                         |
 | `loki.image.repository`                                   | Image repository                              | `grafana/loki`                          |
-| `loki.image.tag`                                          | Image tag           | `master`                                                          |
+| `loki.image.tag`                                          | Image tag                                     | `master`                                |
 | `loki.image.pullPolicy`                                   | Image pull policy                             | `Always`                                |
 | `loki.service.port`                                       | Kubernetes port where service is exposed      | `3100`                                  |
 | `loki.service.annotations`                                | Service annotations                           | `{}`                                    |
@@ -66,6 +67,7 @@ Loki has server named "loki" and client named "promtail".
 
 ### Promtail
 
+| `promtail.enabled`                                        | Deploy promtail or not                        | `true`                                  |
 | `promtail.nameOverride`                                   | Promtail name                                 | `promtail`                              |
 | `deploymentStrategy`                                      | Deployment strategy                           | `RollingUpdate`                         |
 | `entryParser`                                             | Entry parser                                  | `docker`                                |

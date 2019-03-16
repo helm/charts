@@ -1,3 +1,4 @@
+{{- if .Values.loki.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -43,5 +44,6 @@ data:
   {{- range .Values.loki.config.storage_configs }}
       {{ .name }}:
         directory: {{ .directory }}
-  {{- end -}}
-{{- end -}}
+  {{- end }}
+{{- end }}
+{{- end }}
