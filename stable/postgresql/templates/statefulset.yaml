@@ -34,15 +34,7 @@ spec:
 {{ toYaml . | indent 8 }}
 {{- end }}
     spec:
-      {{- if or .Values.image.pullSecrets .Values.metrics.image.pullSecrets }}
-      imagePullSecrets:
-      {{- range .Values.image.pullSecrets }}
-        - name: {{ . }}
-      {{- end}}
-      {{- range .Values.metrics.image.pullSecrets }}
-        - name: {{ . }}
-      {{- end}}
-      {{- end }}
+{{- include "postgresql.imagePullSecrets" . | indent 6 }}
       {{- if .Values.master.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.master.nodeSelector | indent 8 }}
@@ -219,7 +211,7 @@ spec:
         {{- end }}
 {{- if .Values.metrics.enabled }}
       - name: metrics
-        image: {{ template "metrics.image" . }}
+        image: {{ template "postgresql.metrics.image" . }}
         imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
         env:
         {{- $database := required "In order to enable metrics you need to specify a database (.Values.postgresqlDatabase)" .Values.postgresqlDatabase }}

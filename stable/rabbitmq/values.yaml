@@ -1,8 +1,11 @@
-## Global Docker image registry
-## Please, note that this will override the image registry for all the images, including dependencies, configured to use the global value
+## Global Docker image parameters
+## Please, note that this will override the image parameters, including dependencies, configured to use the global value
+## Current available global Docker image parameters: imageRegistry and imagePullSecrets
 ##
 # global:
-#   imageRegistry:
+#   imageRegistry: myRegistryName
+#   imagePullSecrets:
+#     - myRegistryKeySecretName
 
 ## Bitnami RabbitMQ image version
 ## ref: https://hub.docker.com/r/bitnami/rabbitmq/tags/
@@ -10,7 +13,7 @@
 image:
   registry: docker.io
   repository: bitnami/rabbitmq
-  tag: 3.7.12
+  tag: 3.7.13
 
   ## set to true if you would like to see extra information on logs
   ## it turns BASH and NAMI debugging in minideb
@@ -27,7 +30,7 @@ image:
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
   ##
   # pullSecrets:
-  #   - myRegistrKeySecretName
+  #   - myRegistryKeySecretName
 
 ## does your cluster have rbac enabled? assume yes by default
 rbacEnabled: true
@@ -71,6 +74,10 @@ rabbitmq:
     address_type: ip
     k8s_domain: cluster.local
 
+  loadDefinition:
+    enabled: false
+    secretName: load-definition
+
   ## Configuration file content: required cluster configuration
   ## Do not override unless you know what you are doing. To add more configuration, use `extraConfiguration` instead
   configuration: |-
@@ -89,6 +96,7 @@ rabbitmq:
   ## Use this instead of  `configuration` to add more configuration
   extraConfiguration: |-
     #disk_free_limit.absolute = 50MB
+    #management.load_definitions = /app/load_definition.json
 
 ## Kubernetes service type
 service:
@@ -140,6 +148,9 @@ persistence:
 
   # If you change this value, you might have to adjust `rabbitmq.diskFreeLimit` as well.
   size: 8Gi
+
+  # persistence directory, maps to the rabbitmq data directory
+  path: /opt/bitnami/rabbitmq/var/lib/rabbitmq
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -219,7 +230,32 @@ metrics:
     repository: kbudde/rabbitmq-exporter
     tag: v0.29.0
     pullPolicy: IfNotPresent
+    ## Optionally specify an array of imagePullSecrets.
+    ## Secrets must be manually created in the namespace.
+    ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+    ##
+    # pullSecrets:
+    #   - myRegistryKeySecretName
   resources: {}
   annotations:
     prometheus.io/scrape: "true"
     prometheus.io/port: "9090"
+
+##
+## Init containers parameters:
+## volumePermissions: Change the owner of the persist volume mountpoint to RunAsUser:fsGroup
+##
+volumePermissions:
+  enabled: false
+  image:
+    registry: docker.io
+    repository: bitnami/minideb
+    tag: latest
+    pullPolicy: IfNotPresent
+    ## Optionally specify an array of imagePullSecrets.
+    ## Secrets must be manually created in the namespace.
+    ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+    ##
+    # pullSecrets:
+    #   - myRegistryKeySecretName
+  resources: {}

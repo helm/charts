@@ -26,7 +26,7 @@ livenessProbe:
 
 image:
   repository: grafana/grafana
-  tag: 5.4.3
+  tag: 6.0.0
   pullPolicy: IfNotPresent
 
   ## Optionally specify an array of imagePullSecrets.
@@ -74,6 +74,8 @@ chownDataImage:
 service:
   type: ClusterIP
   port: 80
+  targetPort: 3000
+    # targetPort: 4181 To be used with a proxy extraContainer
   annotations: {}
   labels: {}
 
@@ -114,6 +116,23 @@ tolerations: []
 ##
 affinity: {}
 
+## Enable an Specify container in extraContainers. This is meant to allow adding an authentication proxy to a grafana pod
+extraContainers: |
+# - name: proxy
+#   image: quay.io/gambol99/keycloak-proxy:latest
+#   args:
+#   - -provider=github
+#   - -client-id=
+#   - -client-secret=
+#   - -github-org=<ORG_NAME>
+#   - -email-domain=*
+#   - -cookie-secret=
+#   - -http-address=http://0.0.0.0:4181
+#   - -upstream-url=http://127.0.0.1:3000
+#   ports:
+#     - name: proxy-web
+#       containerPort: 4181
+
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
 ##
@@ -137,6 +156,13 @@ admin:
   existingSecret: ""
   userKey: admin-user
   passwordKey: admin-password
+
+## Define command to be executed at startup by grafana container
+## Needed if using `vault-env` to manage secrets (ref: https://banzaicloud.com/blog/inject-secrets-into-pods-vault/)
+## Default is "run.sh" as defined in grafana's Dockerfile
+# command:
+# - "sh"
+# - "/run.sh"
 
 ## Use an alternate scheduler, e.g. "stork".
 ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
@@ -295,9 +321,9 @@ smtp:
 ## Sidecars that collect the configmaps with specified label and stores the included files them into the respective folders
 ## Requires at least Grafana 5 to work and can't be used together with parameters dashboardProviders, datasources and dashboards
 sidecar:
-  image: kiwigrid/k8s-sidecar:0.0.10
+  image: kiwigrid/k8s-sidecar:0.0.13
   imagePullPolicy: IfNotPresent
-  resources:
+  resources: {}
 #   limits:
 #     cpu: 100m
 #     memory: 100Mi
