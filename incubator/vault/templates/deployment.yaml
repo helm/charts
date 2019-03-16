@@ -56,6 +56,7 @@ spec:
           httpGet:
             path: /v1/sys/health?standbyok=true&
               {{- if .Values.vault.liveness.aliveIfUninitialized -}}uninitcode=204&{{- end }}
+              {{- if .Values.vault.liveness.aliveIfSealed -}}sealedcode=204&{{- end }}
             port: {{ .Values.service.port }}
             scheme: {{ if .Values.vault.config.listener.tcp.tls_disable -}}HTTP{{- else -}}HTTPS{{- end }}
             initialDelaySeconds: {{ .Values.vault.liveness.initialDelaySeconds }}
