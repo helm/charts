@@ -16,11 +16,15 @@ spec:
   endpoints:
   - interval: 10s
     honorLabels: true
-    port: "{{ .Values.service.httpPort }}"
+    port: http
     path: {{ .Values.web.path }}
+    scheme: http
   jobLabel: "{{ .Release.Name }}"
   selector:
     matchLabels:
       app: {{ template "elasticsearch-exporter.name" . }}
       release: "{{ .Release.Name }}"
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace }}
 {{- end }}

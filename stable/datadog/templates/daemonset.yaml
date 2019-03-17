@@ -68,6 +68,10 @@ spec:
               secretKeyRef:
                 name: {{ template "datadog.apiSecretName" . }}
                 key: api-key
+          {{- if .Values.datadog.clusterName }}
+          - name: DD_CLUSTER_NAME
+            value: {{ .Values.datadog.clusterName | quote }}
+          {{- end }}
           {{- if .Values.datadog.site }}
           - name: DD_SITE
             value: {{ .Values.datadog.site | quote }}
@@ -83,6 +87,10 @@ spec:
           {{- if .Values.datadog.nonLocalTraffic }}
           - name: DD_DOGSTATSD_NON_LOCAL_TRAFFIC
             value: {{ .Values.datadog.nonLocalTraffic | quote }}
+          {{- end }}
+          {{- if .Values.datadog.dogstatsdOriginDetection }}
+          - name: DD_DOGSTATSD_ORIGIN_DETECTION
+            value: {{ .Values.datadog.dogstatsdOriginDetection | quote }}
           {{- end }}
           {{- if .Values.datadog.tags }}
           - name: DD_TAGS
@@ -125,11 +133,11 @@ spec:
           - name: DD_CLUSTER_AGENT_ENABLED
             value: {{ .Values.clusterAgent.enabled | quote }}
           - name: DD_CLUSTER_AGENT_KUBERNETES_SERVICE_NAME
-            value: {{ template "datadog.clusterAgent.fullname" . }}
+            value: {{ template "datadog.fullname" . }}-cluster-agent
           - name: DD_CLUSTER_AGENT_AUTH_TOKEN
             valueFrom:
               secretKeyRef:
-                name: {{ template "datadog.clusterAgent.fullname" . }}
+                name: {{ template "datadog.fullname" . }}-cluster-agent
                 key: token
           {{- end }}
           - name: KUBERNETES
@@ -164,6 +172,14 @@ spec:
           - name: DD_HEALTH_PORT
             value: "5555"
           {{- end }}
+          {{- if .Values.datadog.useDogStatsDSocketVolume }}
+          - name: DD_DOGSTATSD_SOCKET
+            value: "/var/run/datadog/dsd.socket"
+          {{- end }}
+          {{- if .Values.clusterAgent.clusterChecks.enabled }}
+          - name: DD_EXTRA_CONFIG_PROVIDERS
+            value: "clusterchecks"
+          {{- end }}
 {{- if .Values.datadog.env }}
 {{ toYaml .Values.datadog.env | indent 10 }}
 {{- end }}
@@ -172,6 +188,10 @@ spec:
           - name: runtimesocket
             mountPath: {{ default "/var/run/docker.sock" .Values.datadog.criSocketPath | quote }}
             readOnly: true
+          {{- end }}
+          {{- if .Values.datadog.useDogStatsDSocketVolume }}
+          - name: dsdsocket
+            mountPath: "/var/run/datadog"
           {{- end }}
           - name: procdir
             mountPath: /host/proc
@@ -223,6 +243,11 @@ spec:
             path: {{ default "/var/run/docker.sock" .Values.datadog.criSocketPath | quote }}
           name: runtimesocket
         {{- end }}
+        {{- if .Values.datadog.useDogStatsDSocketVolume }}
+        - hostPath:
+            path: "/var/run/datadog/"
+          name: dsdsocket
+        {{- end }}
         - hostPath:
             path: /proc
           name: procdir
@@ -234,12 +259,12 @@ spec:
         {{- if (or (.Values.datadog.confd) (.Values.datadog.autoconf)) }}
         - name: confd
           configMap:
-            name: {{ template "datadog.confd.fullname" . }}
+            name: {{ template "datadog.fullname" . }}-confd
         {{- end }}
         {{- if .Values.datadog.checksd }}
         - name: checksd
           configMap:
-            name: {{ template "datadog.checksd.fullname" . }}
+            name: {{ template "datadog.fullname" . }}-checksd
         {{- end }}
         {{- if .Values.datadog.logsEnabled }}
         - hostPath:

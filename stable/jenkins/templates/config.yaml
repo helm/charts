@@ -46,7 +46,7 @@ data:
 {{- if .Values.Agent.Enabled }}
             <org.csanchez.jenkins.plugins.kubernetes.PodTemplate>
               <inheritFrom></inheritFrom>
-              <name>default</name>
+              <name>{{ .Values.Agent.PodName }}</name>
               <instanceCap>2147483647</instanceCap>
               <idleMinutes>0</idleMinutes>
               <label>{{ .Release.Name }}-{{ .Values.Agent.Component }} {{ .Values.Agent.CustomJenkinsLabels  | join " " }}</label>
@@ -69,7 +69,7 @@ data:
               </volumes>
               <containers>
                 <org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
-                  <name>jnlp</name>
+                  <name>{{ .Values.Agent.SideContainerName }}</name>
                   <image>{{ .Values.Agent.Image }}:{{ .Values.Agent.ImageTag }}</image>
 {{- if .Values.Agent.Privileged }}
                   <privileged>true</privileged>
@@ -78,9 +78,13 @@ data:
 {{- end }}
                   <alwaysPullImage>{{ .Values.Agent.AlwaysPullImage }}</alwaysPullImage>
                   <workingDir>/home/jenkins</workingDir>
-                  <command></command>
+                  <command>{{ .Values.Agent.Command }}</command>
+{{- if .Values.Agent.Args }}
+                  <args>{{ .Values.Agent.Args }}</args>
+{{- else }}
                   <args>${computer.jnlpmac} ${computer.name}</args>
-                  <ttyEnabled>false</ttyEnabled>
+{{- end }}
+                  <ttyEnabled>{{ .Values.Agent.TTYEnabled }}</ttyEnabled>
                   # Resources configuration is a little hacky. This was to prevent breaking
                   # changes, and should be cleanned up in the future once everybody had
                   # enough time to migrate.
@@ -100,7 +104,14 @@ data:
                   </envVars>
                 </org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
               </containers>
-              <envVars/>
+              <envVars>
+{{- range $index, $var := .Values.Agent.envVars }}
+                <org.csanchez.jenkins.plugins.kubernetes.PodEnvVar>
+                  <key>{{ $var.name }}</key>
+                  <value>{{ $var.value }}</value>
+                </org.csanchez.jenkins.plugins.kubernetes.PodEnvVar>
+{{- end }}
+              </envVars>
               <annotations/>
 {{- if .Values.Agent.ImagePullSecret }}
               <imagePullSecrets>
@@ -126,7 +137,7 @@ data:
           <jenkinsUrl>http://{{ template "jenkins.fullname" . }}:{{.Values.Master.ServicePort}}{{ default "" .Values.Master.JenkinsUriPrefix }}</jenkinsUrl>
           <jenkinsTunnel>{{ template "jenkins.fullname" . }}-agent:{{ .Values.Master.SlaveListenerPort }}</jenkinsTunnel>
 {{- end }}
-          <containerCap>10</containerCap>
+          <containerCap>{{ .Values.Agent.ContainerCap }}</containerCap>
           <retentionTimeout>5</retentionTimeout>
           <connectTimeout>0</connectTimeout>
           <readTimeout>0</readTimeout>
@@ -187,11 +198,11 @@ data:
 {{- if .Values.Master.JenkinsUrl }}
       <jenkinsUrl>{{ .Values.Master.JenkinsUrl }}</jenkinsUrl>
 {{- else }}
-  {{- if .Values.Master.HostName }}
-    {{- if .Values.Master.Ingress.TLS }}
-      <jenkinsUrl>https://{{ .Values.Master.HostName }}{{ default "" .Values.Master.JenkinsUriPrefix }}</jenkinsUrl>
+  {{- if .Values.Master.ingress.hostName }}
+    {{- if .Values.Master.ingress.tls }}
+      <jenkinsUrl>https://{{ .Values.Master.ingress.hostName }}{{ default "" .Values.Master.JenkinsUriPrefix }}</jenkinsUrl>
     {{- else }}
-      <jenkinsUrl>http://{{ .Values.Master.HostName }}{{ default "" .Values.Master.JenkinsUriPrefix }}</jenkinsUrl>
+      <jenkinsUrl>http://{{ .Values.Master.ingress.hostName }}{{ default "" .Values.Master.JenkinsUriPrefix }}</jenkinsUrl>
     {{- end }}
   {{- else }}
       <jenkinsUrl>http://{{ template "jenkins.fullname" . }}:{{.Values.Master.ServicePort}}{{ default "" .Values.Master.JenkinsUriPrefix }}</jenkinsUrl>
@@ -224,6 +235,10 @@ data:
   {{- end }}
   {{- end }}
 {{- end }}
+{{- if .Values.Master.OverwritePlugins }}
+    # remove all plugins from shared volume
+    rm -rf /var/jenkins_home/plugins/*
+{{- end }}
 {{- if .Values.Master.InstallPlugins }}
     # Install missing plugins
     cp /var/jenkins_config/plugins.txt /var/jenkins_home;
@@ -235,7 +250,7 @@ data:
 {{- if .Values.Master.ScriptApproval }}
     yes n | cp -i /var/jenkins_config/scriptapproval.xml /var/jenkins_home/scriptApproval.xml;
 {{- end }}
-{{- if and (.Values.Master.JCasC.enabled) (.Values.Master.Sidecar.configAutoReload.enabled) }}
+{{- if and (.Values.Master.JCasC.enabled) (.Values.Master.Sidecars.configAutoReload.enabled) }}
   {{- if not .Values.Master.InitScripts }}
     mkdir -p /var/jenkins_home/init.groovy.d/;
     yes n | cp -i /var/jenkins_config/*.groovy /var/jenkins_home/init.groovy.d/;
@@ -249,7 +264,7 @@ data:
     yes n | cp -i /var/jenkins_config/*.groovy /var/jenkins_home/init.groovy.d/;
 {{- end }}
 {{- if .Values.Master.JCasC.enabled }}
-  {{- if .Values.Master.Sidecar.configAutoReload.enabled }}
+  {{- if .Values.Master.Sidecars.configAutoReload.enabled }}
     bash -c 'ssh-keygen -y -f <(echo "${ADMIN_PRIVATE_KEY}") > /var/jenkins_home/key.pub'
   {{- else }}
     mkdir -p /var/jenkins_home/casc_configs;
@@ -274,7 +289,7 @@ data:
 {{ $val | indent 4 }}
 {{- end }}
 {{- if .Values.Master.JCasC.enabled }}
-  {{- if .Values.Master.Sidecar.configAutoReload.enabled }}
+  {{- if .Values.Master.Sidecars.configAutoReload.enabled }}
   init-add-ssh-key-to-admin.groovy: |-
     import jenkins.security.*
     import hudson.model.User
@@ -287,7 +302,7 @@ data:
     u.addProperty(keys_param)
     def inst = Jenkins.getInstance()
     def sshDesc = inst.getDescriptor("org.jenkinsci.main.modules.sshd.SSHD")
-    sshDesc.setPort({{ .Values.Master.Sidecar.configAutoReload.sshTcpPort | default 1044 }})
+    sshDesc.setPort({{ .Values.Master.Sidecars.configAutoReload.sshTcpPort | default 1044 }})
     sshDesc.getActualPort()
     sshDesc.save()
   {{- else }}

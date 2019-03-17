@@ -1,6 +1,6 @@
 image:
   repository: "docker.elastic.co/kibana/kibana-oss"
-  tag: "6.6.0"
+  tag: "6.6.1"
   pullPolicy: "IfNotPresent"
 
 commandline:
@@ -57,6 +57,7 @@ service:
     # kubernetes.io/cluster-service: "true"
   ## Limit load balancer source ips to list of CIDRs (where available)
   # loadBalancerSourceRanges: []
+  selector: {}
 
 ingress:
   enabled: false
@@ -145,6 +146,7 @@ podLabels: {}
 # curl --user <username>:<password> -XGET https://kibana.yourdomain.com:5601/api/kibana/dashboards/export?dashboard=<some-dashboard-uuid> > my-dashboard.json
 # A dashboard is defined by a name and a string with the json payload or the download url
 dashboardImport:
+  enabled: false
   timeout: 60
   xpackauth:
     enabled: false
@@ -163,7 +165,7 @@ plugins:
   # Use <plugin_name,version,url> to add/upgrade plugin
   values:
     # - elastalert-kibana-plugin,1.0.1,https://github.com/bitsensor/elastalert-kibana-plugin/releases/download/1.0.1/elastalert-kibana-plugin-1.0.1-6.4.2.zip
-    # - logtrail,0.1.30,https://github.com/sivasamyk/logtrail/releases/download/v0.1.30/logtrail-6.4.2-0.1.30.zip
+    # - logtrail,0.1.31,https://github.com/sivasamyk/logtrail/releases/download/v0.1.31/logtrail-6.6.0-0.1.31.zip
     # - other_plugin
 
 persistentVolumeClaim:

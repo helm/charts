@@ -8,11 +8,6 @@ metadata:
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     helm.sh/chart: {{ include "hoard.chart" . }}
 data:
-  config.json: |
-{{- if eq .Values.storage.type "s3" }}
-    {"ListenAddress":"tcp://0.0.0.0:{{ .Values.service.port }}","Storage":{"StorageType":"s3","AddressEncoding":"base64","Region":"{{ .Values.storage.region }}","S3Bucket":"{{ .Values.storage.bucket }}","S3Prefix":"{{ .Values.storage.prefix }}","CredentialsProviderChain":[{"Provider":"remote"},{"Provider":"env"}]},"Logging":{"LoggingType":"json","Channels":["info","trace"]}}
-{{- else if eq .Values.storage.type "gcs" }}
-    {"ListenAddress":"tcp://0.0.0.0:{{ .Values.service.port }}","Storage":{"StorageType":"gcs","AddressEncoding":"base64","GCSBucket":"{{ .Values.storage.bucket }}","GCSPrefix":"{{ .Values.storage.prefix }}"},"Logging":{"LoggingType":"json","Channels":["info","trace"]}}
-{{- else }}
-    {"ListenAddress":"tcp://0.0.0.0:{{ .Values.service.port }}","Storage":{"StorageType":"filesystem","AddressEncoding":"base64","RootDirectory":"/data"},"Logging":{"LoggingType":"json","Channels":["info","trace"]}}
-{{- end }}
+  hoard.conf: |
+{{ toYaml .Values.config | indent 4 }}
+    

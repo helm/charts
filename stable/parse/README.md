@@ -12,7 +12,7 @@ $ helm install stable/parse
 
 This chart bootstraps a [Parse](https://github.com/bitnami/bitnami-docker-parse) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
-Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters.
+Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters. This chart has been tested to work with NGINX Ingress, cert-manager, fluentd and Prometheus on top of the [BKPR](https://kubeprod.io/).
 
 ## Prerequisites
 
@@ -48,6 +48,7 @@ The following table lists the configurable parameters of the Parse chart and the
 |             Parameter                 |              Description                 |                   Default                               |
 |---------------------------------------|------------------------------------------|-------------------------------------------------------- |
 | `global.imageRegistry`                | Global Docker image registry             | `nil`                                                   |
+| `global.imagePullSecrets`             | Global Docker registry secret names as an array | `[]` (does not add image pull secrets to deployed pods) |
 | `service.type`                        | Kubernetes Service type                  | `LoadBalancer`                                          |
 | `service.port`                        | Service HTTP port (Dashboard)            | `80`                                                    |
 | `service.loadBalancerIP`              | `loadBalancerIP` for the Parse Service   | `nil`                                                   |
