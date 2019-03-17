@@ -55,5 +55,11 @@ configmap:
   authServerUrl: http://url-to-keycloak.example.com/auth
   resource: CLIENT_ID
   secret: CLIENT_SECRET
-  pattern: /admin
-  rolesAllowed: admin
+  # See keycloak documentation for constraints configuration. At least one constraint must
+  # be given, which might as well just contain a pattern without further qualification.
+  # Pattern can have a single wildcard at the end.
+  # https://www.keycloak.org/docs/latest/server_installation/index.html#constraint-config
+  constraints:
+    pattern: /admin
+    roles-allowed:
+      - admin

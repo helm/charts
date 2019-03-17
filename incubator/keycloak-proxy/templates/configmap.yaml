@@ -28,14 +28,8 @@ data:
                   "secret": "{{ .Values.configmap.secret }}"
                 }
              },
-             "constraints":[
-               {
-                  "pattern":"{{ .Values.configmap.pattern }}",
-                  "roles-allowed":[
-                    "{{ .Values.configmap.rolesAllowed }}"
-                  ]
-               }
-             ],
+             "constraints":
+{{ toPrettyJson .Values.configmap.constraints | indent 14 }},
              "proxy-address-forwarding": true
           }
        ]

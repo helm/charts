@@ -63,8 +63,7 @@ Parameter | Description | Default
 `configmap.authServerUrl` | The base URL of the Keycloak server. All other Keycloak pages and REST service endpoints are derived from this. It is usually of the form https://host:port/auth | `http://url-to-keycloak.example.com/auth`
 `configmap.resource` | The client-id of the application. Each application has a client-id that is used to identify the application | `CLIENT_ID`
 `configmap.secret` | Specify the credentials of the application. This is an object notation where the key is the credential type and the value is the value of the credential type. Currently password and jwt is supported. This is REQUIRED only for clients with 'Confidential' access type | `CLIENT_SECRET`
-`configmap.pattern` | URL pattern to match relative to the base-path of the application. Must start with '/' REQUIRED. You may only have one wildcard and it must come at the end of the pattern | `/admin`
-`configmap.rolesAllowed` | Array of strings of roles allowed to access this url pattern | `admin`
+`configmap.constraints`| List of constraints to apply while proxying. Refer to the [Keycloak manual](https://www.keycloak.org/docs/latest/server_installation/index.html#constraint-config) for options. At least one constraint is REQUIRED. | `[ { 'pattern': '/admin', 'roles': ['admin'] } ]`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
