@@ -1,5 +1,5 @@
 name: selenium
-version: 1.0.3
+version: 1.0.4
 appVersion: 3.14.0
 description: Chart for selenium grid
 keywords:
@@ -13,4 +13,6 @@ maintainers:
   email: techops@adaptly.com
 - name: diemol
   email: diemol@gmail.com
+- name: ekirmayer
+  email: ekirmayer@hotmail.com
 engine: gotpl
