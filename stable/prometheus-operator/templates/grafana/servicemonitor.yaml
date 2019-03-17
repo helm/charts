@@ -17,5 +17,5 @@ spec:
   endpoints:
   - port: service
     interval: 30s
-    path: "{{ trimSuffix "/" .Values.grafana.ingress.path }}/metrics"
+    path: "/metrics"
 {{- end }}
