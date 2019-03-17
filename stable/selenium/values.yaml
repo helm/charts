@@ -30,6 +30,9 @@ hub:
   ## The port the service listens on
   servicePort: 4444
 
+  ## The node port the service exposed on
+  # nodePort: 30044
+
   ## Timeout for probe Hub readiness via HTTP request on hub.probePath
   readinessTimeout: 1
 
