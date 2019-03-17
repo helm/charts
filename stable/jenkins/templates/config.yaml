@@ -258,6 +258,9 @@ data:
 {{- end }}
 {{- if .Values.Master.InitScripts }}
     mkdir -p /var/jenkins_home/init.groovy.d/;
+    {{- if .Values.Master.OverwriteConfig }}
+    rm -f /var/jenkins_home/init.groovy.d/*.groovy
+    {{- end }}
     yes n | cp -i /var/jenkins_config/*.groovy /var/jenkins_home/init.groovy.d/;
 {{- end }}
 {{- if .Values.Master.JCasC.enabled }}

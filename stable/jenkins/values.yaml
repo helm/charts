@@ -246,6 +246,7 @@ Master:
   # By default, the configMap is only used to set the initial config the first time
   # that the chart is installed.  Setting `OverwriteConfig` to `true` will overwrite
   # the jenkins config with the contents of the configMap every time the pod starts.
+  # This will also overwrite all init scripts
   OverwriteConfig: false
 
   ingress:
