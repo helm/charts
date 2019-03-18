@@ -12,6 +12,9 @@ spec:
   replicas: 1
   updateStrategy:
     type: {{ .Values.updateStrategy.type }}
+    {{- if (eq "Recreate" .Values.updateStrategy.type) }}
+    rollingUpdate: null
+    {{- end }}
   selector:
     matchLabels:
       app: {{ template "postgresql.name" . }}
@@ -26,21 +29,15 @@ spec:
         release: {{ .Release.Name | quote }}
         heritage: {{ .Release.Service | quote }}
         role: master
+{{- with .Values.master.podLabels }}
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.master.podAnnotations }}
+      annotations:
+{{ toYaml . | indent 8 }}
+{{- end }}
     spec:
-      {{- if .Values.securityContext.enabled }}
-      securityContext:
-        fsGroup: {{ .Values.securityContext.fsGroup }}
-        runAsUser: {{ .Values.securityContext.runAsUser }}
-      {{- end }}
-      {{- if or .Values.image.pullSecrets .Values.metrics.image.pullSecrets }}
-      imagePullSecrets:
-      {{- range .Values.image.pullSecrets }}
-        - name: {{ . }}
-      {{- end}}
-      {{- range .Values.metrics.image.pullSecrets }}
-        - name: {{ . }}
-      {{- end}}
-      {{- end }}
+{{- include "postgresql.imagePullSecrets" . | indent 6 }}
       {{- if .Values.master.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.master.nodeSelector | indent 8 }}
@@ -55,6 +52,10 @@ spec:
       {{- end }}
       {{- if .Values.terminationGracePeriodSeconds }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      {{- end }}
+      {{- if .Values.securityContext.enabled }}
+      securityContext:
+        fsGroup: {{ .Values.securityContext.fsGroup }}
       {{- end }}
       {{- if and .Values.volumePermissions.enabled .Values.persistence.enabled }}
       initContainers:
@@ -83,6 +84,10 @@ spec:
         imagePullPolicy: "{{ .Values.image.pullPolicy }}"
         resources:
 {{ toYaml .Values.resources | indent 10 }}
+        {{- if .Values.securityContext.enabled }}
+        securityContext:
+          runAsUser: {{ .Values.securityContext.runAsUser }}
+        {{- end }}
         env:
         {{- if .Values.image.debug}}
         - name: BASH_DEBUG
@@ -185,7 +190,11 @@ spec:
         volumeMounts:
         {{- if or (.Files.Glob "files/docker-entrypoint-initdb.d/*.{sh,sql,sql.gz}") .Values.initdbScriptsConfigMap .Values.initdbScripts }}
         - name: custom-init-scripts
-          mountPath: /docker-entrypoint-initdb.d
+          mountPath: /docker-entrypoint-initdb.d/
+        {{- end }}
+        {{- if .Values.initdbScriptsSecret }}
+        - name: custom-init-scripts-secret
+          mountPath: /docker-entrypoint-initdb.d/secret
         {{- end }}
         {{- if or (.Files.Glob "files/conf.d/*.conf") .Values.postgresqlExtendedConf .Values.extendedConfConfigMap }}
         - name: postgresql-extended-config
@@ -205,7 +214,7 @@ spec:
         {{- end }}
 {{- if .Values.metrics.enabled }}
       - name: metrics
-        image: {{ template "metrics.image" . }}
+        image: {{ template "postgresql.metrics.image" . }}
         imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
         env:
         {{- $database := required "In order to enable metrics you need to specify a database (.Values.postgresqlDatabase)" .Values.postgresqlDatabase }}
@@ -276,6 +285,11 @@ spec:
       - name: custom-init-scripts
         configMap:
           name: {{ template "postgresql.initdbScriptsCM" . }}
+      {{- end }}
+      {{- if .Values.initdbScriptsSecret }}
+      - name: custom-init-scripts-secret
+        secret:
+          secretName: {{ template "postgresql.initdbScriptsSecret" . }}
       {{- end }}
 {{- if and .Values.persistence.enabled .Values.persistence.existingClaim }}
       - name: data

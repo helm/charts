@@ -6,7 +6,10 @@ provisionDataStore:
   cassandra: true
   elasticsearch: false
 
-tag: 1.8.2
+tag: 1.10.0
+
+nameOverride: ""
+fullnameOverride: ""
 
 storage:
   # allowed values (cassandra, elasticsearch)
@@ -65,7 +68,7 @@ schema:
 # Begin: Override values on the Elasticsearch subchart to customize for Jaeger
 elasticsearch:
   image:
-    tag: "5.4"
+    tag: "6.6"
   cluster:
     name: "tracing"
   data:

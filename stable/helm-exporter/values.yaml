@@ -26,3 +26,10 @@ serviceAccount:
   # The name of the ServiceAccount to use.
   # If not set and create is true, a name is generated using the fullname template
   name:
+
+serviceMonitor:
+  # Specifies whether a ServiceMonitor should be created
+  create: false
+  interval:
+  namespace:
+  additionalLabels: {}

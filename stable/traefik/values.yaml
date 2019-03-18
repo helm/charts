@@ -1,6 +1,6 @@
 ## Default values for Traefik
 image: traefik
-imageTag: 1.7.7
+imageTag: 1.7.9
 ## can switch the service type to NodePort if required
 serviceType: LoadBalancer
 # loadBalancerIP: ""
@@ -20,10 +20,8 @@ podDisruptionBudget: {}
 
 # rootCAs: []
 
-cpuRequest: 100m
-memoryRequest: 20Mi
-cpuLimit: 100m
-memoryLimit: 30Mi
+resources: {}
+
 debug:
   enabled: false
 
@@ -32,6 +30,9 @@ deploymentStrategy: {}
   #   maxSurge: 1
   #   maxUnavailable: 0
   # type: RollingUpdate
+
+securityContext: {}
+env: {}
 
 nodeSelector: {}
   # key: value
@@ -64,6 +65,22 @@ forwardedHeaders:
   # trustedIPs is required when enabled
   trustedIPs: []
   # - 10.0.0.0/8
+
+## Add arbitrary ConfigMaps to deployment
+## Will be mounted to /configs/, i.e. myconfig.json would
+## be mounted to /configs/myconfig.json.
+configFiles: {}
+  # myconfig.json: |
+  #   filecontents...
+
+## Add arbitrary Secrets to deployment
+## Will be mounted to /secrets/, i.e. file.name would
+## be mounted to /secrets/mysecret.txt.
+## The contents will be base64 encoded when added
+secretFiles: {}
+  # mysecret.txt: |
+  #   filecontents...
+
 ssl:
   enabled: false
   enforced: false
@@ -174,6 +191,9 @@ acme:
   ## Configure dnsProvider to perform domain verification using dns challenge
   ## Applicable only if using the dns-01 challenge type
   delayBeforeCheck: 0
+  resolvers: []
+    # - 1.1.1.1:53
+    # - 8.8.8.8:53
   dnsProvider:
     name: nil
     auroradns:
@@ -229,6 +249,11 @@ acme:
       OTC_PASSWORD: ""
       OTC_PROJECT_NAME: ""
       OTC_IDENTITY_ENDPOINT: ""
+    ovh:
+      OVH_ENDPOINT: ""
+      OVH_APPLICATION_KEY: ""
+      OVH_APPLICATION_SECRET: ""
+      OVH_CONSUMER_KEY: ""
     pdns:
       PDNS_API_URL: ""
     rackspace:
@@ -355,6 +380,9 @@ deployment:
     httpEnabled: false
     httpsEnabled: false
     dashboardEnabled: false
+    # httpPort: 80
+    # httpsPort: 443
+    # dashboardPort: 8080
 sendAnonymousUsage: false
 tracing:
   enabled: false
