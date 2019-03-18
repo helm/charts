@@ -212,6 +212,10 @@ spec:
               subPath: {{ .subPath | default "" }}
               readOnly: {{ .readOnly }}
           {{- end }}
+          {{- range .Values.extraEmptyDirMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+          {{- end }}
           ports:
             - name: service
               containerPort: {{ .Values.service.port }}
@@ -347,4 +351,8 @@ spec:
         - name: {{ .name }}
           persistentVolumeClaim:
             claimName: {{ .existingClaim }}
+      {{- end }}
+      {{- range .Values.extraEmptyDirMounts }}
+        - name: {{ .name }}
+          emptyDir: {}
       {{- end }}

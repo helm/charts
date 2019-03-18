@@ -48,6 +48,11 @@ extraConfigmapMounts: []
   #   readOnly: true
 
 
+extraEmptyDirMounts: []
+  # - name: provisioning-notifiers
+  #   mountPath: /etc/grafana/provisioning/notifiers
+
+
 ## Assign a PriorityClassName to pods if set
 # priorityClassName:
 
