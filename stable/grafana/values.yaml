@@ -116,6 +116,8 @@ tolerations: []
 ##
 affinity: {}
 
+extraInitContainers: []
+
 ## Enable an Specify container in extraContainers. This is meant to allow adding an authentication proxy to a grafana pod
 extraContainers: |
 # - name: proxy
