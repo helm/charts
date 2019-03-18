@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 
 HELM_RELEASE_NAME=prom-op
-CHART=stable/prometheus-operator
-CHART_VERSION=4.3.0
+CHART=./
 NAMESPACE=monitoring
 VALUES_FILES=values.yaml
 
@@ -39,7 +38,6 @@ fi
 
 if [ "$1" = "prometheus-operator" ]; then
   helm upgrade $HELM_RELEASE_NAME $CHART \
-    --version   $CHART_VERSION \
     --namespace $NAMESPACE     \
     --values    $VALUES_FILES  \
     --set       grafana.podAnnotations.redeploy-hack="$(cat /proc/sys/kernel/random/uuid)" \
