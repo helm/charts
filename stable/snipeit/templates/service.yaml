@@ -1,13 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "snipeit.fullname" . }}
+  name: {{ include "snipeit.fullname" . }}
   labels:
-    app: {{ template "snipeit.name" . }}
-    component: app
-    chart: {{ template "snipeit.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ include "snipeit.name" . }}
+    helm.sh/chart: {{ include "snipeit.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- with .Values.service.annotations }}
   annotations:
     {{ toYaml . | nindent 4 }}
@@ -19,6 +18,5 @@ spec:
       port: 80
       protocol: TCP
   selector:
-    app: {{ template "snipeit.name" . }}
-    component: app
-    release: {{ .Release.Name }}
+    app.kubernetes.io/name: {{ include "snipeit.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}

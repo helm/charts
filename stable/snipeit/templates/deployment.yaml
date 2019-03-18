@@ -1,31 +1,29 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "snipeit.fullname" . }}
+  name: {{ include "snipeit.fullname" . }}
   labels:
-    app: {{ template "snipeit.name" . }}
-    chart: {{ template "snipeit.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ include "snipeit.name" . }}
+    helm.sh/chart: {{ include "snipeit.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   replicas: {{ .Values.replicaCount }}
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
   selector:
     matchLabels:
-      component: app
-      app: {{ template "snipeit.name" . }}
-      release: {{ .Release.Name }}
+      app.kubernetes.io/name: {{ include "snipeit.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        component: app
-        app: {{ template "snipeit.fullname" . }}
-        release: {{ .Release.Name }}
+        app.kubernetes.io/name: {{ include "snipeit.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
       annotations:
         checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
     spec:
       containers:
-        - name: {{ template "snipeit.fullname" . }}
+        - name: {{ include "snipeit.fullname" . }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
@@ -41,7 +39,7 @@ spec:
               value: {{ .Values.config.snipeit.locale | quote }}
           envFrom:
             - secretRef:
-                name: {{ template "snipeit.fullname" . }}
+                name: {{ include "snipeit.fullname" . }}
           ports:
             - name: http
               containerPort: 80
@@ -73,7 +71,7 @@ spec:
         - name: data
         {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
-            claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "snipeit.fullname" . }}{{- end }}
+            claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ include "snipeit.fullname" . }}{{- end }}
         {{- else }}
           emptyDir: {}
         {{- end }}

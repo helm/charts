@@ -2,12 +2,12 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ template "snipeit.fullname" . }}
+  name: {{ include "snipeit.fullname" . }}
   labels:
-    app: {{ template "snipeit.name" . }}
-    chart: {{ template "snipeit.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ include "snipeit.name" . }}
+    helm.sh/chart: {{ include "snipeit.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- with .Values.persistence.annotations }}
   annotations:
     {{ toYaml . | nindent 4 }}

@@ -34,7 +34,7 @@ config:
 
 mysql:
   ## Whether to deploy a mysql server to satisfy the applications database requirements. To use an external database set this to false and configure the externalDatabase parameters
-  enabled: false
+  enabled: true
   ## Create a database and a database user
   ##
   mysqlUser: snipeit
