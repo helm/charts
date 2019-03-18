@@ -113,7 +113,7 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `readinessProbe.successThreshold`                  | Minimum consecutive successes for the probe to be considered successful after having failed. | `1`                                                     |
 | `initConfigMap.name`                               | Custom config map with init scripts                                                          | `nil`                                                   |
 | `configmap`                                        | MongoDB configuration file to be used                                                        | `nil`                                                   |
-| `ingress.enabled`                                  | Enables Ingress                                                                              | `false`                                                 |
+| `ingress.enabled`                                  | Enables Ingress. Tested with nginx-ingress version `1.3.1`                                   | `false`                                                 |
 | `ingress.annotations`                              | Ingress annotations                                                                          | `{}`                                                    |
 | `ingress.labels`                                   | Custom labels                                                                                | `{}`                                                    |
 | `ingress.hosts`                                    | Ingress accepted hostnames                                                                   | `[]`                                                    |
@@ -212,3 +212,14 @@ Use the workaround below to upgrade from versions previous to 5.0.0. The followi
 ```consoloe
 $ kubectl delete statefulset my-release-mongodb-arbiter my-release-mongodb-primary my-release-mongodb-secondary --cascade=false
 ```
+
+## Configure Ingress
+Currently we can expose mongodb externally using nginx-ingres. If you are using `nginx-ingress=1.3.x` check [this options](https://github.com/helm/charts/blob/master/stable/nginx-ingress/values.yaml#L383)
+on how to expose TCP ports. If you installed mongodb in `default` namespace, then an example would be:
+```yaml
+tcp:
+  27017: "default/mongodb:27017"
+```
+
+After that you will be able to access mongodb on the ingress endpoint without 
+specifying port.
