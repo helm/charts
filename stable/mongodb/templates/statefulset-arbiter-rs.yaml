@@ -16,6 +16,11 @@ spec:
       component: arbiter
   serviceName: {{ template "mongodb.fullname" . }}-headless
   replicas: {{ .Values.replicaSet.replicas.arbiter }}
+  updateStrategy:
+    type: {{ .Values.updateStrategy.type }}
+    {{- if (eq "Recreate" .Values.updateStrategy.type) }}
+    rollingUpdate: null
+    {{- end }}
   template:
     metadata:
       labels:
