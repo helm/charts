@@ -63,6 +63,7 @@ alert_condition_map = {
     'PrometheusOperatorDown': '.Values.prometheusOperator.enabled',
     'NodeExporterDown': '.Values.nodeExporter.enabled',
     'CoreDNSDown': '.Values.kubeDns.enabled',
+    'AlertmanagerDown': '.Values.alertmanager.enabled',
 }
 
 replacement_map = {

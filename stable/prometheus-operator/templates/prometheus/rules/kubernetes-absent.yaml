@@ -24,6 +24,7 @@ spec:
   groups:
   - name: kubernetes-absent
     rules:
+{{- if .Values.alertmanager.enabled }}
     - alert: AlertmanagerDown
       annotations:
         message: Alertmanager has disappeared from Prometheus target discovery.
@@ -32,6 +33,7 @@ spec:
       for: 15m
       labels:
         severity: critical
+{{- end }}
 {{- if .Values.kubeDns.enabled }}
     - alert: CoreDNSDown
       annotations:
