@@ -18,7 +18,10 @@ spec:
   serviceName: "{{ template "slave.fullname" . }}"
   replicas: {{ .Values.slave.replicas }}
   updateStrategy:
-    type: RollingUpdate
+    type: {{ .Values.slave.updateStrategy.type }}
+    {{- if (eq "Recreate" .Values.slave.updateStrategy.type) }}
+    rollingUpdate: null
+    {{- end }}
   template:
     metadata:
       {{- if .Values.slave.annotations }}
