@@ -98,7 +98,7 @@ tolerations: []
 
 affinity: {}
 
-deploymentAnnotations: {}
+annotations: {}
 
 podAnnotations: {}
 podLabels: {}
