@@ -177,6 +177,11 @@ spec:
               mountPath: "/etc/grafana/provisioning/datasources/datasources.yaml"
               subPath: datasources.yaml
 {{- end }}
+{{- if .Values.notifiers }}
+            - name: config
+              mountPath: "/etc/grafana/provisioning/notifiers/notifiers.yaml"
+              subPath: notifiers.yaml
+{{- end }}
 {{- if .Values.dashboardProviders }}
             - name: config
               mountPath: "/etc/grafana/provisioning/dashboards/dashboardproviders.yaml"

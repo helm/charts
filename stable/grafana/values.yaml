@@ -211,6 +211,24 @@ datasources: {}
 #      access: proxy
 #      isDefault: true
 
+## Configure notifiers
+## ref: http://docs.grafana.org/administration/provisioning/#alert-notification-channels
+##
+notifiers: {}
+#  notifiers.yaml:
+#    notifiers:
+#    - name: email-notifier
+#      type: email
+#      uid: email1
+#      # either:
+#      org_id: 1
+#      # or
+#      org_name: Main Org.
+#      is_default: true
+#      settings:
+#        addresses: an_email_address@example.com
+#    delete_notifiers:
+
 ## Configure grafana dashboard providers
 ## ref: http://docs.grafana.org/administration/provisioning/#dashboards
 ##

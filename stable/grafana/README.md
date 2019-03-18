@@ -70,6 +70,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `extraConfigmapMounts`                    | Additional grafana server configMap volume mounts  | `[]`                                               |
 | `plugins`                                 | Plugins to be loaded along with Grafana       | `[]`                                                    |
 | `datasources`                             | Configure grafana datasources (passed through tpl) | `{}`                                                    |
+| `notifiers`                               | Configure grafana notifiers | `{}`                                                                      |
 | `dashboardProviders`                      | Configure grafana dashboard providers         | `{}`                                                    |
 | `dashboards`                              | Dashboards to import                          | `{}`                                                    |
 | `dashboardsConfigMaps`                    | ConfigMaps reference that contains dashboards | `{}`                                                    |
