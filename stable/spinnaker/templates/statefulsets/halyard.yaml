@@ -13,6 +13,10 @@ spec:
       component: halyard
   template:
     metadata:
+      {{- if .Values.halyard.additionalAnnotations }}
+      annotations:
+{{ toYaml .Values.halyard.additionalAnnotations | indent 8 }}
+      {{- end }}
       labels:
 {{ include "spinnaker.standard-labels" . | indent 8 }}
         component: halyard
