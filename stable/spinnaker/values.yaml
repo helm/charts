@@ -41,8 +41,8 @@ halyard:
   # additionalInitScript: |-
 
   ## Uncomment if you want to add annotations on halyard and install-using-hal pods
-  additionalAnnotations:
-    iam.amazonaws.com/role: <role_arn>
+  #annotations:
+  #  iam.amazonaws.com/role: <role_arn>
 
 # Define which registries and repositories you want available in your
 # Spinnaker pipeline definitions

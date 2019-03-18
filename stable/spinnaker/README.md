@@ -160,6 +160,6 @@ Any files added through `additionalConfigMaps` will be written to disk at `/opt/
 
 ```yaml
 halyard:
-  additionalAnnotations:
+  annotations:
     iam.amazonaws.com/role: <role_arn>
 ```

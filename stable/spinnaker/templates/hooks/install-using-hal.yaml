@@ -11,9 +11,9 @@ metadata:
 spec:
   template:
     metadata:
-    {{- if .Values.halyard.additionalAnnotations }}
+    {{- if .Values.halyard.annotations }}
       annotations:
-{{ toYaml .Values.halyard.additionalAnnotations | indent 8 }}
+{{ toYaml .Values.halyard.annotations | indent 8 }}
     {{- end }}
       labels:
 {{ include "spinnaker.standard-labels" . | indent 8 }}
