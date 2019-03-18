@@ -51,11 +51,11 @@ data:
           },
           {
             "key": "PodConfiguration",
-            "value": "apiVersion: v1\nkind: Pod\nmetadata:\n  name: pod-name-prefix-{{ `{{ POD_POSTFIX }}` }}\n  labels:\n    app: web\nspec:\n  serviceAccountName: {{ template "gocd.agentServiceAccountName" . }}\n  containers:\n    - name: gocd-agent-container-{{ `{{ CONTAINER_POSTFIX }}` }}\n      image: gocd/gocd-agent-docker-dind:v{{ .Chart.AppVersion }}\n      securityContext:\n        privileged: true"
+            "value": "apiVersion: v1\nkind: Pod\nmetadata:\n  name: gocd-agent-{{ `{{ POD_POSTFIX }}` }}\n  labels:\n    app: web\nspec:\n  serviceAccountName: {{ template "gocd.agentServiceAccountName" . }}\n  containers:\n    - name: gocd-agent-container-{{ `{{ CONTAINER_POSTFIX }}` }}\n      image: gocd/gocd-agent-docker-dind:v{{ .Chart.AppVersion }}\n      securityContext:\n        privileged: true"
           },
           {
-            "key": "SpecifiedUsingPodConfiguration",
-            "value": "true"
+            "key": "PodSpecType",
+            "value": "yaml"
           },
           {
             "key": "Privileged",
