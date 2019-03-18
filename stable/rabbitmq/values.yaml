@@ -164,6 +164,11 @@ replicas: 1
 ## https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
 # priorityClassName: ""
 
+## updateStrategy for RabbitMQ statefulset
+## ref: https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#update-strategies
+updateStrategy:
+  type: RollingUpdate
+
 ## Node labels and tolerations for pod assignment
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
