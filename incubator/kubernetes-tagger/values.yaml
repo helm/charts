@@ -50,7 +50,7 @@ replicaCount: 1
 
 image:
   repository: oxynozeta/kubernetes-tagger
-  tag: 1.0.1
+  tag: 1.1.0
   pullPolicy: IfNotPresent
 
 service:
