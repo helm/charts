@@ -25,20 +25,15 @@ spec:
         release: {{ .Release.Name | quote }}
         heritage: {{ .Release.Service | quote }}
         role: slave
-{{- with .Values.slavePod.labels }}
+{{- with .Values.slave.podLabels }}
 {{ toYaml . | indent 8 }}
 {{- end }}
-{{- with .Values.slavePod.annotations }}
+{{- with .Values.slave.podAnnotations }}
       annotations:
 {{ toYaml . | indent 8 }}
 {{- end }}
     spec:
-      {{- if .Values.image.pullSecrets }}
-      imagePullSecrets:
-      {{- range .Values.image.pullSecrets }}
-        - name: {{ . }}
-      {{- end}}
-      {{- end }}
+{{- include "postgresql.imagePullSecrets" . | indent 6 }}
       {{- if .Values.slave.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.slave.nodeSelector | indent 8 }}
@@ -196,6 +191,9 @@ spec:
       {{- end }}
   updateStrategy:
     type: {{ .Values.updateStrategy.type }}
+    {{- if (eq "Recreate" .Values.updateStrategy.type) }}
+    rollingUpdate: null
+    {{- end }}
 {{- if .Values.persistence.enabled }}
   volumeClaimTemplates:
     - metadata:

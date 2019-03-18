@@ -1,9 +1,13 @@
 # Duplicate this file and put your customization here
 
-
 ##
 ## common settings and setting for the webserver
 airflow:
+  extraConfigmapMounts: []
+  # - name: extra-metadata
+  #   mountPath: /opt/metadata
+  #   configMap: airflow-metadata
+  #   readOnly: true
 
   ## When existingAirflowSecret is defined, secretsMapping can be
   ## overridden. When no secretName is given then the value of
@@ -78,7 +82,7 @@ airflow:
     ## image pull secret for private images
     pullSecret:
   ##
-  ## Set schedulerNumRuns to control how the schduler behaves:
+  ## Set schedulerNumRuns to control how the scheduler behaves:
   ##   -1 will let him looping indefinitively but it will never update the DAG
   ##   1 will have the scheduler quit after each refresh, but kubernetes will restart it.
   ##
@@ -106,7 +110,7 @@ airflow:
   ## Custom airflow configuration environment variables
   ## Use this to override any airflow setting settings defining environment variables in the
   ## following form: AIRFLOW__<section>__<key>.
-  ## See the Airflow documentation: http://airflow.readthedocs.io/en/latest/configuration.html?highlight=__CORE__#setting-configuration-options)
+  ## See the Airflow documentation: https://airflow.readthedocs.io/en/stable/howto/set-config.html?highlight=setting-configuration
   ## Example:
   ##   config:
   ##     AIRFLOW__CORE__EXPOSE_CONFIG: "True"
@@ -128,6 +132,62 @@ airflow:
   ##     type: aws
   ##     extra: '{"aws_access_key_id": "**********", "aws_secret_access_key": "***", "region_name":"eu-central-1"}'
   connections: {}
+
+  ## Add airflow variables
+  ## This should be a json string with your variables in it
+  ## Examples:
+  ##   variables: '{ "environment": "dev" }'
+  variables: {}
+  ##
+  ## Annotations for the Scheduler, Worker and Web pods
+  podAnnotations: {}
+    ## Example:
+    ## iam.amazonaws.com/role: airflow-Role
+  extraContainers: []
+  ## Additional containers to run alongside the Scheduler, Worker and Web pods
+  ## This could, for example, be used to run a sidecar that syncs DAGs from object storage.
+  # - name: s3-sync
+  #   image: my-user/s3sync:latest
+  #   volumeMounts:
+  #   - name: synchronised-dags
+  #     mountPath: /dags
+  extraVolumeMounts: []
+  ## Additional volumeMounts to the main containers in the Scheduler, Worker and Web pods.
+  # - name: synchronised-dags
+  #   mountPath: /usr/local/airflow/dags
+  extraVolumes: []
+  ## Additional volumes for the Scheduler, Worker and Web pods.
+  # - name: synchronised-dags
+  #   emptyDir: {}
+
+scheduler:
+  resources:
+    scheduler: {}
+    # limits:
+    #   cpu: "1000m"
+    #   memory: "1Gi"
+    # requests:
+    #   cpu: "500m"
+    #   memory: "512Mi"
+
+
+flower:
+  resources: {}
+    # limits:
+    #   cpu: "100m"
+    #   memory: "128Mi"
+    # requests:
+    #   cpu: "100m"
+    #   memory: "128Mi"
+
+web:
+  resources: {}
+    # limits:
+    #   cpu: "300m"
+    #   memory: "1Gi"
+    # requests:
+    #   cpu: "100m"
+    #   memory: "512Mi"
 ##
 ## Workers configuration
 workers:
@@ -146,10 +206,9 @@ workers:
     #   memory: "512Mi"
   ##
   ## Annotations for the Worker pods
-  pod:
-    annotations:
-      ## Example:
-      ## iam.amazonaws.com/role: airflow-worker-Role
+  podAnnotations: {}
+    ## Example:
+    ## iam.amazonaws.com/role: airflow-Role
   ##
   ## Celery worker configuration
   celery:
@@ -455,3 +514,13 @@ redis:
   ## Disable cluster management by default.
   cluster:
     enabled: false
+
+# Enable this if you're using https://github.com/coreos/prometheus-operator
+# Don't forget you need to install something like https://github.com/epoch8/airflow-exporter in your airflow docker container
+serviceMonitor:
+  enabled: false
+  interval: "30s"
+  path: /admin/metrics
+  ## [Kube Prometheus Selector Label](https://github.com/helm/charts/tree/master/stable/prometheus-operator#exporters)
+  selector:
+    prometheus: kube-prometheus
