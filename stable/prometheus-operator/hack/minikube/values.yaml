@@ -1,0 +1,24 @@
+# Disable authentication for grafana
+# grafana:
+#   grafana.ini:
+#     users:
+#       viewers_can_edit: true
+#     auth:
+#       disable_login_form: true
+#       disable_signout_menu: true
+#     auth.anonymous:
+#       enabled: true
+#       org_name: Everybody
+#       org_role: Viewer
+
+# Use the cmd.sh script to fix defaults
+prometheus:
+  prometheusSpec:
+    secrets: [etcd-certs]
+kubeEtcd:
+  serviceMonitor:
+    scheme: https
+    insecureSkipVerify: true
+    caFile:   /etc/prometheus/secrets/etcd-certs/ca.crt
+    certFile: /etc/prometheus/secrets/etcd-certs/client.crt
+    keyFile:  /etc/prometheus/secrets/etcd-certs/client.key
