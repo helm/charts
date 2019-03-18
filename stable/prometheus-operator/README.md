@@ -2,7 +2,7 @@
 
 Installs [prometheus-operator](https://github.com/coreos/prometheus-operator) to create/configure/manage Prometheus clusters atop Kubernetes. This chart includes multiple components and is suitable for a variety of use-cases.
 
-The default installation is intended to suit monitoring a kubernetes cluster the chart is deployed onto. It is closely matches the kube-prometheus project.
+The default installation is intended to suit monitoring a kubernetes cluster the chart is deployed onto. It closely matches the kube-prometheus project.
 - [prometheus-operator](https://github.com/coreos/prometheus-operator)
 - [prometheus](https://prometheus.io/)
 - [alertmanager](https://prometheus.io/)
@@ -57,16 +57,41 @@ The command removes all the Kubernetes components associated with the chart and 
 
 CRDs created by this chart are not removed by default and should be manually cleaned up:
 
-```
+```console
 kubectl delete crd prometheuses.monitoring.coreos.com
 kubectl delete crd prometheusrules.monitoring.coreos.com
 kubectl delete crd servicemonitors.monitoring.coreos.com
 kubectl delete crd alertmanagers.monitoring.coreos.com
 ```
 
+## Work-Arounds for Known Issues
+
+### Helm fails to create CRDs
+Due to a bug in helm, it is possible for the 4 CRDs that are created by this chart to fail to get fully deployed before Helm attempts to create resources that require them. This affects all versions of Helm with a [potential fix pending](https://github.com/helm/helm/pull/5112). In order to work around this issue when installing the chart you will need to make sure all 4 CRDs exist in the cluster first and disable their previsioning by the chart:
+
+1. Create CRDs
+```console
+kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/master/example/prometheus-operator-crd/alertmanager.crd.yaml
+kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/master/example/prometheus-operator-crd/prometheus.crd.yaml
+kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/master/example/prometheus-operator-crd/prometheusrule.crd.yaml
+kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/master/example/prometheus-operator-crd/servicemonitor.crd.yaml
+```
+
+2. Wait for CRDs to be created, which should only take a few seconds
+
+3. Install the chart, but disable the CRD provisioning by setting `prometheusOperator.createCustomResource=false`
+```console
+$ helm install --name my-release stable/prometheus-operator --set prometheusOperator.createCustomResource=false
+```
+
+### Helm <2.10 workaround
+The `crd-install` hook is required to deploy the prometheus operator CRDs before they are used. If you are forced to use an earlier version of Helm you can work around this requirement as follows:
+1. Install prometheus-operator by itself, disabling everything but the prometheus-operator component, and also setting `prometheusOperator.serviceMonitor.selfMonitor=false`
+2. Install all the other components, and configure `prometheus.additionalServiceMonitors` to scrape the prometheus-operator service.
+
 ## Configuration
 
-The following tables lists the configurable parameters of the prometheus-operator chart and their default values.
+The following tables list the configurable parameters of the prometheus-operator chart and their default values.
 
 ### General
 | Parameter | Description | Default |
@@ -134,6 +159,8 @@ The following tables lists the configurable parameters of the prometheus-operato
 | `prometheusOperator.configmapReloadImage.tag` | Tag for configmapReload image | `v0.0.1` |
 | `prometheusOperator.prometheusConfigReloaderImage.repository` | Repository for config-reloader image | `quay.io/coreos/prometheus-config-reloader` |
 | `prometheusOperator.prometheusConfigReloaderImage.tag` | Tag for config-reloader image | `v0.29.0` |
+| `prometheusOperator.configReloaderCpu` | Set the prometheus config reloader side-car CPU limit. If unset, uses the prometheus-operator project default | `nil` |
+| `prometheusOperator.configReloaderMemory` | Set the prometheus config reloader side-car memory limit. If unset, uses the prometheus-operator project default | `nil` |
 | `prometheusOperator.hyperkubeImage.repository` | Repository for hyperkube image used to perform maintenance tasks | `k8s.gcr.io/hyperkube` |
 | `prometheusOperator.hyperkubeImage.tag` | Tag for hyperkube image used to perform maintenance tasks | `v1.12.1` |
 | `prometheusOperator.hyperkubeImage.repository` | Image pull policy for hyperkube image used to perform maintenance tasks | `IfNotPresent` |
@@ -190,6 +217,7 @@ The following tables lists the configurable parameters of the prometheus-operato
 | `prometheus.prometheusSpec.nodeSelector` | Define which Nodes the Pods are scheduled on. | `{}` |
 | `prometheus.prometheusSpec.secrets` | Secrets is a list of Secrets in the same namespace as the Prometheus object, which shall be mounted into the Prometheus Pods. The Secrets are mounted into /etc/prometheus/secrets/<secret-name>. Secrets changes after initial creation of a Prometheus object are not reflected in the running Pods. To change the secrets mounted into the Prometheus Pods, the object must be deleted and recreated with the new list of secrets. | `[]` |
 | `prometheus.prometheusSpec.configMaps` | ConfigMaps is a list of ConfigMaps in the same namespace as the Prometheus object, which shall be mounted into the Prometheus Pods. The ConfigMaps are mounted into /etc/prometheus/configmaps/ | `[]` |
+| `prometheus.prometheusSpec.query` | QuerySpec defines the query command line flags when starting Prometheus. Not all parameters are supported by the operator - [see coreos documentation](https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#queryspec) | `{}` |
 |`prometheus.prometheusSpec.podAntiAffinity` | Pod anti-affinity can prevent the scheduler from placing Prometheus replicas on the same node. The default value "soft" means that the scheduler should *prefer* to not schedule two replica pods onto the same node but no guarantee is provided. The value "hard" means that the scheduler is *required* to not schedule two replica pods onto the same node. The value "" will disable pod anti-affinity so that no anti-affinity rules will be configured. | `""` |
 |`prometheus.prometheusSpec.podAntiAffinityTopologyKey` | If anti-affinity is enabled sets the topologyKey to use for anti-affinity. This can be changed to, for example `failure-domain.beta.kubernetes.io/zone`| `kubernetes.io/hostname` |
 | `prometheus.prometheusSpec.tolerations` | If specified, the pod's tolerations. | `[]` |
@@ -257,6 +285,7 @@ The following tables lists the configurable parameters of the prometheus-operato
 | ----- | ----------- | ------ |
 | `grafana.enabled` | If true, deploy the grafana sub-chart | `true` |
 | `grafana.serviceMonitor.selfMonitor` | Create a `serviceMonitor` to automatically monitor the grafana instance | `true` |
+| `grafana.additionalDataSources` | Configure additional grafana datasources | `[]` |
 | `grafana.adminPassword` | Admin password to log into the grafana UI | "prom-operator" |
 | `grafana.defaultDashboardsEnabled` | Deploy default dashboards. These are loaded using the sidecar | `true` |
 | `grafana.ingress.enabled` | Enables Ingress for Grafana | `false` |
@@ -295,7 +324,7 @@ The following tables lists the configurable parameters of the prometheus-operato
 | `coreDns.service.targetPort` | CoreDns targetPort | `9153` |
 | `coreDns.service.selector` | CoreDns service selector | `{"k8s-app" : "coredns" }`
 | `kubeDns.enabled` | Deploy kubeDns scraping components. Use either this or coreDns| `false` |
-| `kubeDns.service.selector` | CoreDns service selector | `{"k8s-app" : "kube-dns" }` |
+| `kubeDns.service.selector` | kubeDns service selector | `{"k8s-app" : "kube-dns" }` |
 | `kubeEtcd.enabled` | Deploy components to scrape etcd | `true` |
 | `kubeEtcd.endpoints` | Endpoints where etcd runs. Provide this if running etcd outside the cluster | `[]` |
 | `kubeEtcd.service.port` | Etcd port | `4001` |
@@ -340,7 +369,7 @@ $ helm install --name my-release stable/prometheus-operator -f values1.yaml,valu
 
 ## Developing Prometheus Rules and Grafana Dashboards
 
-This chart Grafana Dashboards and Prometheus Rules are just a copy from coreos/prometheus-operator and other sources, synced (with alterations) by scripts in [hack](hack) folder. In order to introduce any changes you need to first [add them to original repo](https://github.com/coreos/prometheus-operator/blob/master/contrib/kube-prometheus/docs/developing-prometheus-rules-and-grafana-dashboards.md) and then sync there by scripts.
+This chart Grafana Dashboards and Prometheus Rules are just a copy from coreos/prometheus-operator and other sources, synced (with alterations) by scripts in [hack](hack) folder. In order to introduce any changes you need to first [add them to the original repo](https://github.com/coreos/prometheus-operator/blob/master/contrib/kube-prometheus/docs/developing-prometheus-rules-and-grafana-dashboards.md) and then sync there by scripts.
 
 ## Further Information
 
@@ -348,11 +377,6 @@ For more in-depth documentation of configuration options meanings, please see
 - [Prometheus Operator](https://github.com/coreos/prometheus-operator)
 - [Prometheus](https://prometheus.io/docs/introduction/overview/)
 - [Grafana](https://github.com/helm/charts/tree/master/stable/grafana#grafana-helm-chart)
-
-## Helm <2.10 workaround
-The `crd-install` hook is required to deploy the prometheus operator CRDs before they are used. If you are forced to use an earlier version of Helm you can work around this requirement as follows:
-1. Install prometheus-operator by itself, disabling everything but the prometheus-operator component, and also setting `prometheusOperator.serviceMonitor.selfMonitor=false`
-2. Install all the other components, and configure `prometheus.additionalServiceMonitors` to scrape the prometheus-operator service.
 
 # Migrating from coreos/prometheus-operator chart
 
@@ -362,7 +386,7 @@ There is no simple and direct migration path between the charts as the changes a
 
 The capabilities of the old chart are all available in the new chart, including the ability to run multiple prometheus instances on a single cluster - you will need to disable the parts of the chart you do not wish to deploy.
 
-You can check out the tickets for this change [here](https://github.com/coreos/prometheus-operator/issues/592) and [here](https://github.com/helm/charts/pull/6765)
+You can check out the tickets for this change [here](https://github.com/coreos/prometheus-operator/issues/592) and [here](https://github.com/helm/charts/pull/6765).
 
 ## High-level overview of Changes
 The chart has 3 dependencies, that can be seen in the chart's requirements file:
@@ -378,7 +402,7 @@ The Grafana chart is more feature-rich than this chart - it contains a sidecar t
 The CRDs are provisioned using crd-install hooks, rather than relying on a separate chart installation. If you already have these CRDs provisioned and don't want to remove them, you can disable the CRD creation by these hooks by passing `prometheusOperator.createCustomResource=false`
 
 ### Kubelet Service
-Because the kubelet service has a new name in the chart, make sure to clean up the old kubelet service in the `kube-system` namespace to prevent counting container metrics twice
+Because the kubelet service has a new name in the chart, make sure to clean up the old kubelet service in the `kube-system` namespace to prevent counting container metrics twice.
 
 ### Persistent Volumes
 If you would like to keep the data of the current persistent volumes, it should be possible to attach existing volumes to new PVCs and PVs that are created using the conventions in the new chart. For example, in order to use an existing Azure disk for a helm release called `prometheus-migration` the following resources can be created:

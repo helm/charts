@@ -8,6 +8,7 @@ rbac:
   # Specifies whether RBAC resources should be created
   create: true
   pspEnabled: true
+  pspUseAppArmor: true
 serviceAccount:
   # Specifies whether a ServiceAccount should be created
   create: true

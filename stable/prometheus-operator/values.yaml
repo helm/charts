@@ -357,6 +357,22 @@ grafana:
   #   configMap: certs-configmap
   #   readOnly: true
 
+  ## Configure additional grafana datasources
+  ## ref: http://docs.grafana.org/administration/provisioning/#datasources
+  additionalDataSources: []
+  # - name: prometheus-sample
+  #   access: proxy
+  #   basicAuth: true
+  #   basicAuthPassword: pass
+  #   basicAuthUser: daco
+  #   editable: false
+  #   jsonData:
+  #       tlsSkipVerify: true
+  #   orgId: 1
+  #   type: prometheus
+  #   url: https://prometheus.svc:9090
+  #   version: 1
+
   ## If true, create a serviceMonitor for grafana
   ##
   serviceMonitor:
@@ -710,6 +726,14 @@ prometheusOperator:
     repository: quay.io/coreos/prometheus-config-reloader
     tag: v0.29.0
 
+  ## Set the prometheus config reloader side-car CPU limit. If unset, uses the prometheus-operator project default
+  ##
+  # configReloaderCpu: 100m
+
+  ## Set the prometheus config reloader side-car memory limit. If unset, uses the prometheus-operator project default
+  ##
+  # configReloaderMemory: 25Mi
+
   ## Hyperkube image to use when cleaning up
   ##
   hyperkubeImage:
@@ -868,6 +892,11 @@ prometheus:
     ## The ConfigMaps are mounted into /etc/prometheus/configmaps/.
     ##
     configMaps: []
+
+    ## QuerySpec defines the query command line flags when starting Prometheus.
+    ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#queryspec
+    ##
+    query: {}
 
     ## Namespaces to be selected for PrometheusRules discovery.
     ## If nil, select own namespace. Namespaces to be selected for ServiceMonitor discovery.
