@@ -16,4 +16,7 @@ data:
       url: http://{{ template "prometheus-operator.fullname" . }}-prometheus:9090/{{ trimPrefix "/" .Values.prometheus.prometheusSpec.routePrefix }}
       access: proxy
       isDefault: true
+{{- if .Values.grafana.additionalDataSources }}
+{{ toYaml .Values.grafana.additionalDataSources | indent 4}}
+{{- end }}
 {{- end }}
