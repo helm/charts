@@ -74,6 +74,8 @@ spec:
                 name: "{{ template "airflow.fullname" . }}-env"
           env:
             {{- include "airflow.mapenvsecrets" . | indent 10 }}
+          resources:
+{{ toYaml .Values.web.resources | indent 12 }}
           volumeMounts:
             - name: scripts
               mountPath: /usr/local/scripts

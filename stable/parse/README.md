@@ -48,6 +48,7 @@ The following table lists the configurable parameters of the Parse chart and the
 |             Parameter                 |              Description                 |                   Default                               |
 |---------------------------------------|------------------------------------------|-------------------------------------------------------- |
 | `global.imageRegistry`                | Global Docker image registry             | `nil`                                                   |
+| `global.imagePullSecrets`             | Global Docker registry secret names as an array | `[]` (does not add image pull secrets to deployed pods) |
 | `service.type`                        | Kubernetes Service type                  | `LoadBalancer`                                          |
 | `service.port`                        | Service HTTP port (Dashboard)            | `80`                                                    |
 | `service.loadBalancerIP`              | `loadBalancerIP` for the Parse Service   | `nil`                                                   |
