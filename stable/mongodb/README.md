@@ -88,6 +88,7 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `nodeSelector`                                     | Node labels for pod assignment                                                               | {}                                                      |
 | `affinity`                                         | Affinity for pod assignment                                                                  | {}                                                      |
 | `tolerations`                                      | Toleration labels for pod assignment                                                         | {}                                                      |
+| `updateStrategy`                                   | Statefulsets update strategy policy                                                          | `RollingUpdate`                                         |
 | `securityContext.enabled`                          | Enable security context                                                                      | `true`                                                  |
 | `securityContext.fsGroup`                          | Group ID for the container                                                                   | `1001`                                                  |
 | `securityContext.runAsUser`                        | User ID for the container                                                                    | `1001`                                                  |
