@@ -17,6 +17,13 @@ spec:
     interval: {{ .Values.serviceMonitor.interval }}
     {{- end }}
     honorLabels: {{ .Values.serviceMonitor.honorLabels }}
+    path: {{ .Values.serviceMonitor.path }}
+    {{- if .Values.serviceMonitor.scrapeTimeout }}
+    scrapeTimeout: {{ .Values.serviceMonitor.scrapeTimeout }}
+    {{- end }}
+    {{- if .Values.serviceMonitor.params.enabled }}
+{{ toYaml .Values.conf.params.conf | indent 6 }}
+    {{- end }}
   selector:
     matchLabels:
       app: {{ template "prometheus-snmp-exporter.name" . }}
