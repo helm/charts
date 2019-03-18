@@ -362,6 +362,24 @@ grafana:
   serviceMonitor:
     selfMonitor: true
 
+  ## Configure additional grafana datasources
+  ## ref: http://docs.grafana.org/administration/provisioning/#datasources
+  ##
+  additionalDataSources: []
+  # - name: prometheus-sample
+  #   access: proxy
+  #   basicAuth: true
+  #   basicAuthPassword: pass
+  #   basicAuthUser: daco
+  #   editable: false
+  #   jsonData:
+  #       tlsSkipVerify: true
+  #   orgId: 1
+  #   type: prometheus
+  #   url: https://prometheus.svc:9090
+  #   version: 1
+
+
 ## Component scraping the kube api server
 ##
 kubeApiServer:
