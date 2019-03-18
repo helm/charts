@@ -38,8 +38,10 @@ The following table lists the configurable parameters of the openldap chart and 
 | `service.ldapPort`                 | External service port for LDAP                                            | `389`             |
 | `service.loadBalancerIP`           | IP address to assign to load balancer (if supported)                      | `""`              |
 | `service.loadBalancerSourceRanges` | List of IP CIDRs allowed access to load balancer (if supported)           | `[]`              |
-| `service.sslLdapPort`              | External service port for SSL+LDAP                                        | `636`             |
+| `service.sslLdapPort`              | External service port for SSL+LDAP, only used if `tls.enabled` is set     | `636`             |
 | `service.type`                     | Service type                                                              | `ClusterIP`       |
+| `tls.enabled`                      | Set to enable TLS/LDAPS - should also set `tls.secret`                    | `false`           |
+| `tls.secret`                       | Secret containing TLS cert and key (eg, generated via cert-manager)       | `""`              |
 | `env`                              | List of key value pairs as env variables to be sent to the docker image. See https://github.com/osixia/docker-openldap for available ones | `[see values.yaml]`  |
 | `adminPassword`                    | Password for admin user. Unset to auto-generate the password              | None              |
 | `configPassword`                   | Password for config user. Unset to auto-generate the password             | None              |

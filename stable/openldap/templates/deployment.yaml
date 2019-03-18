@@ -43,6 +43,16 @@ spec:
           mountPath: /ldifworkingdir
       {{- end }}
       containers:
+        {{- if .Values.tls.enabled }}
+        - name: {{ .Chart.Name }}-tls
+          image: busybox
+          command: ['sh', '-c', 'cp /tls/* /certs; while true; do sleep 10000; done']
+          volumeMounts:
+            - name: tls
+              mountPath: /tls
+            - name: certs
+              mountPath: /certs
+        {{- end }}
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
@@ -54,6 +64,13 @@ spec:
               containerPort: 389
             - name: ssl-ldap-port
               containerPort: 636
+          {{- if .Values.tls.enabled }}
+          env:
+            - name: LDAP_TLS_CRT_FILENAME
+              value: tls.crt
+            - name: LDAP_TLS_KEY_FILENAME
+              value: tls.key
+          {{- end }}
           envFrom:
             - configMapRef:
                 name: {{ template "openldap.fullname" . }}-env
@@ -69,6 +86,10 @@ spec:
             {{- if .Values.customLdifFiles }}
             - name: ldifworkingdir
               mountPath: /container/service/slapd/assets/config/bootstrap/ldif/custom
+            {{- end }}
+            {{- if .Values.tls.enabled }}
+            - name: certs
+              mountPath: /container/service/slapd/assets/certs
             {{- end }}
           livenessProbe:
             tcpSocket:
@@ -103,6 +124,14 @@ spec:
             name: {{ template "openldap.fullname" . }}-customldif
         - name: ldifworkingdir
           emptyDir: {}
+        {{- end }}
+        {{- if .Values.tls.enabled }}
+        - name: tls
+          secret:
+            secretName: {{ .Values.tls.secret }}
+        - name: certs
+          emptyDir:
+            medium: Memory
         {{- end }}
         - name: data
         {{- if .Values.persistence.enabled }}

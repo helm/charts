@@ -32,10 +32,12 @@ spec:
       protocol: TCP
       port: {{ .Values.service.ldapPort }}
       targetPort: ldap-port
+{{- if .Values.tls.enabled }}
     - name: ssl-ldap-port
       protocol: TCP
       port: {{ .Values.service.sslLdapPort }}
       targetPort: ssl-ldap-port
+{{- end }}
   selector:
     app: {{ template "openldap.name" . }}
     release: {{ .Release.Name }}
