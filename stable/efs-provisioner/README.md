@@ -112,6 +112,9 @@ nodeSelector: {}
 # Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
 affinity: {}
 
+# Tolerations for node tains
+tolerations: {}
+
 ## Configure resources
 ##
 resources: {}
