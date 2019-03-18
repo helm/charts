@@ -148,10 +148,12 @@ The following table lists the configurable parameters of the Druid chart and the
 | `coordinator.tolerations`                 | coordinator tolerations                                  | `[]`                      |
 | `coordinator.javaOpts`                    | coordinator node java options                            | `--Xms1G -Xmx1G`          |
 | `coordinator.nodeAffinity`                | coordinator node affinity policy                         | `{}`                      |
-| `coordinator.ingress.enabled`             | enable ingress                                             | `false`                   |
+| `coordinator.ingress.enabled`             | enable ingress                                           | `false`                   |
 | `coordinator.ingress.hosts`               | hosts for the coordinator api                            | `[ "chart-example.local" ]` |
 | `coordinator.ingress.path`                | path of the coordinator api                              | `/`                       |
 | `coordinator.ingress.annotations`         | annotations for the coordinator api ingress              | `{}`                      |
-| `coordinator.ingress.tls`                 | TLS configuration for the ingress                          | `[]`                      |
+| `coordinator.ingress.tls`                 | TLS configuration for the ingress                        | `[]`                      |
+| `gCloudStorage.enabled`                   | Look for secret to set google cloud credentials          | `false`                      |
+| `gCloudStorage.secretName`                | secretName to be mounted as google cloud credentials     | `false`                      |
 
 Full and up-to-date documentation can be found in the comments of the `values.yaml` file.

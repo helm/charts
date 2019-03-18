@@ -26,3 +26,6 @@ data:
   druid_metadata_storage_connector_user: {{ .Values.postgresql.postgresqlUsername }}
   druid_metadata_storage_connector_password: {{ .Values.postgresql.postgresqlPassword }}
 {{- end }}
+{{- if .Values.gCloudStorage.enabled }}
+  GOOGLE_APPLICATION_CREDENTIALS: /var/secrets/google/key.json
+{{- end }}

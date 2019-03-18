@@ -92,10 +92,19 @@ spec:
         volumeMounts:
         - mountPath: /var/druid/
           name: data
-  {{- if not .Values.historical.persistence.enabled }}
+  {{- if .Values.gCloudStorage.enabled }}
+        - name: google-cloud-key
+          mountPath: /var/secrets/google
+  {{- end }}
       volumes:
+  {{- if not .Values.historical.persistence.enabled }}
       - name: data
         emptyDir: {}
+  {{- end }}
+  {{- if .Values.gCloudStorage.enabled }}
+      - name: google-cloud-key
+        secret:
+          secretName: {{ .Values.gCloudStorage.secretName }}
   {{- end }}
   updateStrategy:
     type: {{ .Values.historical.updateStrategy.type }}

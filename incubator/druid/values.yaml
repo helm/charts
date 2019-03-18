@@ -29,6 +29,10 @@ configVars:
   # druid_azure_maxTries: "3"
   DRUID_LOG4J: <?xml version="1.0" encoding="UTF-8" ?><Configuration status="WARN"><Appenders><Console name="Console" target="SYSTEM_OUT"><PatternLayout pattern="%d{ISO8601} %p [%t] %c - %m%n"/></Console></Appenders><Loggers><Root level="info"><AppenderRef ref="Console"/></Root><Logger name="org.apache.druid.jetty.RequestLog" additivity="false" level="DEBUG"><AppenderRef ref="Console"/></Logger></Loggers></Configuration>
 
+gCloudStorage:
+  enabled: true
+  secretName: google-cloud-key
+
 broker:
   replicaCount: 1
 
