@@ -26,6 +26,9 @@ spec:
       caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
       insecureSkipVerify: true
     bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+{{- if .Values.kubelet.serviceMonitor.cAdvisorMetricRelabelings }}
+    metricRelabelings:
+{{ toYaml .Values.kubelet.serviceMonitor.cAdvisorMetricRelabelings | indent 4 }}
 {{- end }}
   {{- else }}
   - port: http-metrics
