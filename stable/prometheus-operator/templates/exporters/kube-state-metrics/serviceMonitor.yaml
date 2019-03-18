@@ -9,7 +9,7 @@ metadata:
 spec:
   jobLabel: app
   endpoints:
-  - interval: 30s
+  - interval: {{ .Values.kubeStateMetrics.serviceMonitor.interval }}
     port: http
     honorLabels: true
   selector:

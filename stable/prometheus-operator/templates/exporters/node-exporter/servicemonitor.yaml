@@ -14,7 +14,7 @@ spec:
       release: {{ .Release.Name }}
   endpoints:
   - port: metrics
-    interval: 30s
+    interval: {{ .Values.nodeExporter.serviceMonitor.interval }}
 {{- if .Values.nodeExporter.serviceMonitor.metricRelabelings }}
     metricRelabelings:
 {{ toYaml .Values.nodeExporter.serviceMonitor.metricRelabelings | indent 4 }}

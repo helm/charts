@@ -9,7 +9,7 @@ metadata:
 spec:
   endpoints:
   - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
-    interval: 30s
+    interval: {{ .Values.kubeApiServer.serviceMonitor.interval }}
     port: https
     scheme: https
 {{- if .Values.kubeApiServer.relabelings }}

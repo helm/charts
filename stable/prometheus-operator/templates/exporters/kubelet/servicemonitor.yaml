@@ -11,7 +11,7 @@ spec:
   {{- if .Values.kubelet.serviceMonitor.https }}
   - port: https-metrics
     scheme: https
-    interval: 15s
+    interval: {{ .Values.kubelet.serviceMonitor.interval }}
     tlsConfig:
       caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
       insecureSkipVerify: true
@@ -20,19 +20,20 @@ spec:
   - port: https-metrics
     scheme: https
     path: /metrics/cadvisor
-    interval: 30s
+    interval: {{ .Values.kubelet.serviceMonitor.interval }}
     honorLabels: true
     tlsConfig:
       caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
       insecureSkipVerify: true
     bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+{{- end }}
   {{- else }}
   - port: http-metrics
-    interval: 30s
+    interval: {{ .Values.kubelet.serviceMonitor.interval }}
     honorLabels: true
   - port: http-metrics
     path: /metrics/cadvisor
-    interval: 30s
+    interval: {{ .Values.kubelet.serviceMonitor.interval }}
     honorLabels: true
 {{- if .Values.kubelet.serviceMonitor.cAdvisorMetricRelabelings }}
     metricRelabelings:

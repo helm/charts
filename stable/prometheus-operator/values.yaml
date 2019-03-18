@@ -399,6 +399,9 @@ kubeApiServer:
   #   replacement: kubernetes.default.svc:443
 
   serviceMonitor:
+    ## Scrape interval. If not set, the Prometheus default scrape interval is used.
+    ##
+    interval: ""
     jobLabel: component
     selector:
       matchLabels:
@@ -412,11 +415,18 @@ kubelet:
   namespace: kube-system
 
   serviceMonitor:
+    ## Scrape interval. If not set, the Prometheus default scrape interval is used.
+    ##
+    interval: ""
+
     ## Enable scraping the kubelet over https. For requirements to enable this see
     ## https://github.com/coreos/prometheus-operator/issues/926
     ##
     https: true
-    # cAdvisorMetricRelabelings:
+
+    ## Metric relabellings to apply to samples before ingestion
+    ##
+    cAdvisorMetricRelabelings: []
     # - sourceLabels: [__name__, image]
     #   separator: ;
     #   regex: container_([a-z_]+);
@@ -450,6 +460,10 @@ kubeControllerManager:
       component: kube-controller-manager
 
   serviceMonitor:
+    ## Scrape interval. If not set, the Prometheus default scrape interval is used.
+    ##
+    interval: ""
+
     ## Enable scraping kube-controller-manager over https.
     ## Requires proper certs (not self-signed) and delegated authentication/authorization checks
     ##
@@ -464,6 +478,10 @@ coreDns:
     targetPort: 9153
     selector:
       k8s-app: kube-dns
+  serviceMonitor:
+    ## Scrape interval. If not set, the Prometheus default scrape interval is used.
+    ##
+    interval: ""
 
 ## Component scraping kubeDns. Use either this or coreDns
 ##
@@ -472,6 +490,10 @@ kubeDns:
   service:
     selector:
       k8s-app: kube-dns
+  serviceMonitor:
+    ## Scrape interval. If not set, the Prometheus default scrape interval is used.
+    ##
+    interval: ""
 ## Component scraping etcd
 ##
 kubeEtcd:
@@ -504,6 +526,9 @@ kubeEtcd:
   ##   keyFile: /etc/prometheus/secrets/etcd-client-cert/etcd-client-key
   ##
   serviceMonitor:
+    ## Scrape interval. If not set, the Prometheus default scrape interval is used.
+    ##
+    interval: ""
     scheme: http
     insecureSkipVerify: false
     serverName: ""
@@ -533,6 +558,9 @@ kubeScheduler:
       component: kube-scheduler
 
   serviceMonitor:
+    ## Scrape interval. If not set, the Prometheus default scrape interval is used.
+    ##
+    interval: ""
     ## Enable scraping kube-controller-manager over https.
     ## Requires proper certs (not self-signed) and delegated authentication/authorization checks
     ##
@@ -542,6 +570,10 @@ kubeScheduler:
 ##
 kubeStateMetrics:
   enabled: true
+  serviceMonitor:
+    ## Scrape interval. If not set, the Prometheus default scrape interval is used.
+    ##
+    interval: ""
 
 ## Configuration for kube-state-metrics subchart
 ##
@@ -560,10 +592,14 @@ nodeExporter:
   ##
   jobLabel: jobLabel
 
-  serviceMonitor: {}
+  serviceMonitor:
+    ## Scrape interval. If not set, the Prometheus default scrape interval is used.
+    ##
+    interval: ""
+
     ## 	metric relabel configs to apply to samples before ingestion.
     ##
-    # metricRelabelings:
+    metricRelabelings: []
     # - sourceLabels: [__name__]
     #   separator: ;
     #   regex: ^node_mountstats_nfs_(event|operations|transport)_.+
