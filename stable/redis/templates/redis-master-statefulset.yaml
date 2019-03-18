@@ -248,3 +248,4 @@ spec:
     rollingUpdate:
       partition: {{ .Values.master.statefulset.rollingUpdatePartition }}
     {{- end }}
+    {{- end }}
