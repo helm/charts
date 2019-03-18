@@ -94,7 +94,7 @@ Get the initialization scripts ConfigMap name.
 {{- if .Values.initdbScriptsConfigMap -}}
 {{- printf "%s" .Values.initdbScriptsConfigMap -}}
 {{- else -}}
-{{- printf "%s-init-scripts" (include "mariadb.fullname" .) -}}
+{{- printf "%s-init-scripts" (include "master.fullname" .) -}}
 {{- end -}}
 {{- end -}}
 
