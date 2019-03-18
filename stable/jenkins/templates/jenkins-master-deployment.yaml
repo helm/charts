@@ -106,6 +106,9 @@ spec:
 {{ toYaml .Values.Master.resources | indent 12 }}
           volumeMounts:
             -
+              mountPath: /tmp
+              name: tmp
+            -
               mountPath: /var/jenkins_home
               name: jenkins-home
               {{- if .Values.Persistence.SubPath }}
@@ -133,6 +136,9 @@ spec:
               readOnly: true
             {{- end }}
             {{- if .Values.Master.InstallPlugins }}
+            -
+              mountPath: /usr/share/jenkins/ref/plugins
+              name: plugins
             -
               mountPath: /var/jenkins_plugins
               name: plugin-dir
@@ -228,6 +234,9 @@ spec:
 {{- if .Values.Persistence.mounts }}
 {{ toYaml .Values.Persistence.mounts | indent 12 }}
 {{- end }}
+            -
+              mountPath: /tmp
+              name: tmp
             -
               mountPath: /var/jenkins_home
               name: jenkins-home
@@ -326,6 +335,10 @@ spec:
 {{- if .Values.Persistence.volumes }}
 {{ toYaml .Values.Persistence.volumes | indent 6 }}
 {{- end }}
+      - name: plugins
+        emptyDir: {}
+      - name: tmp
+        emptyDir: {}
       - name: jenkins-config
         configMap:
           name: {{ template "jenkins.fullname" . }}
