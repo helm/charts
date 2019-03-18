@@ -27,6 +27,13 @@ data:
   {{- end -}}
 {{- end -}}
 
+{{- if .Values.notifiers }}
+  {{- range $key, $value := .Values.notifiers }}
+  {{ $key }}: |
+{{ toYaml $value | indent 4 }}
+  {{- end -}}
+{{- end -}}
+
 {{- if .Values.dashboardProviders }}
   {{- range $key, $value := .Values.dashboardProviders }}
   {{ $key }}: |
