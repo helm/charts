@@ -139,6 +139,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | `prometheusOperator.kubeletService.enabled` | If true, the operator will create and maintain a service for scraping kubelets | `true` |
 | `prometheusOperator.kubeletService.namespace` | Namespace to deploy kubelet service | `kube-system` |
 | `prometheusOperator.serviceMonitor.selfMonitor` | Enable monitoring of prometheus operator | `true` |
+| `prometheus.serviceMonitor.interval` | Scrape interval. If not set, the Prometheus default scrape interval is used | `nil` |
 | `prometheusOperator.service.type` | Prometheus operator service type | `ClusterIP` |
 | `prometheusOperator.service.clusterIP` | Prometheus operator service clusterIP IP | `""` |
 | `prometheusOperator.service.nodePort` | Port to expose prometheus operator service on each node | `38080` |
@@ -170,6 +171,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | ----- | ----------- | ------ |
 | `prometheus.enabled` | Deploy prometheus | `true` |
 | `prometheus.serviceMonitor.selfMonitor` | Create a `serviceMonitor` to automatically monitor the prometheus instance | `true` |
+| `prometheus.serviceMonitor.interval` | Scrape interval. If not set, the Prometheus default scrape interval is used | `nil` |
 | `prometheus.serviceAccount.create` | Create a default serviceaccount for prometheus to use | `true` |
 | `prometheus.serviceAccount.name` | Name for prometheus serviceaccount | `""` |
 | `prometheus.rbac.roleNamespaces` | Create role bindings in the specified namespaces, to allow Prometheus monitoring a role binding in the release namespace will always be created. | `["kube-system"]` |
@@ -238,6 +240,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | ----- | ----------- | ------ |
 | `alertmanager.enabled` | Deploy alertmanager | `true` |
 | `alertmanager.serviceMonitor.selfMonitor` | Create a `serviceMonitor` to automatically monitor the alartmanager instance | `true` |
+| `alertmanager.serviceMonitor.interval` | Scrape interval. If not set, the Prometheus default scrape interval is used | `nil` |
 | `alertmanager.serviceAccount.create` | Create a `serviceAccount` for alertmanager | `true` |
 | `alertmanager.serviceAccount.name` | Name for Alertmanager service account | `""` |
 | `alertmanager.podDisruptionBudget.enabled` | If true, create a pod disruption budget for Alertmanager pods. The created resource cannot be modified once created - it must be deleted to perform a change | `true` |

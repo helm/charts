@@ -176,6 +176,9 @@ alertmanager:
   ## If true, create a serviceMonitor for alertmanager
   ##
   serviceMonitor:
+    ## Scrape interval. If not set, the Prometheus default scrape interval is used.
+    ##
+    interval: ""
     selfMonitor: true
 
   ## Settings affecting alertmanagerSpec
@@ -376,6 +379,9 @@ grafana:
   ## If true, create a serviceMonitor for grafana
   ##
   serviceMonitor:
+    ## Scrape interval. If not set, the Prometheus default scrape interval is used.
+    ##
+    interval: ""
     selfMonitor: true
 
 ## Component scraping the kube api server
@@ -700,6 +706,9 @@ prometheusOperator:
   ## Create a servicemonitor for the operator
   ##
   serviceMonitor:
+    ## Scrape interval. If not set, the Prometheus default scrape interval is used.
+    ##
+    interval: ""
     selfMonitor: true
 
   ## Resource limits & requests
@@ -859,6 +868,9 @@ prometheus:
       #     - prometheus.example.com
 
   serviceMonitor:
+    ## Scrape interval. If not set, the Prometheus default scrape interval is used.
+    ##
+    interval: ""
     selfMonitor: true
 
   ## Settings affecting prometheusSpec

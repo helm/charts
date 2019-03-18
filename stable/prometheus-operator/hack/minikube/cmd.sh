@@ -3,7 +3,7 @@
 HELM_RELEASE_NAME=prom-op
 CHART=./
 NAMESPACE=monitoring
-VALUES_FILES=values.yaml
+VALUES_FILES=./hack/minikube/values.yaml
 
 if [ "$1" = "reset-minikube" ]; then
   minikube delete
