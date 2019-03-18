@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "uchiwa.fullname" . }}
   labels:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
@@ -11,7 +11,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "uchiwa.fullname" . }}
         release: {{ .Release.Name | quote }}
     spec:
       containers:
@@ -43,3 +43,11 @@ spec:
             port: {{ .Values.port }}
         ports:
         - containerPort: {{ .Values.port }}
+        volumeMounts:
+          - mountPath: /etc/sensu/
+            name: uchiwa-config
+      volumes:
+        - configMap:
+            defaultMode: 420
+            name: {{ template "uchiwa.fullname" . }}
+          name: uchiwa-config
