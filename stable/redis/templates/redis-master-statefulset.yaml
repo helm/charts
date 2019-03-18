@@ -242,6 +242,10 @@ spec:
   updateStrategy:
     type: {{ .Values.master.statefulset.updateStrategy }}
     {{- if .Values.master.statefulset.rollingUpdatePartition }}
+    {{- if (eq "Recreate" .Values.master.statefulset.updateStrategy) }}
+    rollingUpdate: null
+    {{- else }}
     rollingUpdate:
       partition: {{ .Values.master.statefulset.rollingUpdatePartition }}
+    {{- end }}
     {{- end }}
