@@ -80,7 +80,7 @@ The following table lists the configurable parameters of the Cassandra chart and
 
 | Parameter                  | Description                                     | Default                                                    |
 | -----------------------    | ---------------------------------------------   | ---------------------------------------------------------- |
-| `image.repository`                         | `cassandra` image repository                    | `cassandra`                                                |
+| `image.repo`                         | `cassandra` image repository                    | `cassandra`                                                |
 | `image.tag`                          | `cassandra` image tag                           | `3.11.3`                                                   |
 | `image.pullPolicy`                   | Image pull policy                               | `Always` if `imageTag` is `latest`, else `IfNotPresent`    |
 | `image.pullSecrets`                  | Image pull secrets                              | `nil`                                                      |
@@ -129,8 +129,8 @@ The following table lists the configurable parameters of the Cassandra chart and
 | `backup.enabled`                     | Enable backup on chart installation             | `false`                                                    |
 | `backup.schedule`                    | Keyspaces to backup, each with cron time        |                                                            |
 | `backup.annotations`                 | Backup pod annotations                          | iam.amazonaws.com/role: `cain`                             |
-| `backup.image.repo`                  | Backup image repository                         | `nuvo/cain`                                                |
-| `backup.image.tag`                   | Backup image tag                                | `0.4.1`                                                    |
+| `backup.image.repository`            | Backup image repository                         | `maorfr/cain`                                              |
+| `backup.image.tag`                   | Backup image tag                                | `0.6.0`                                                    |
 | `backup.extraArgs`                   | Additional arguments for cain                   | `[]`                                                       |
 | `backup.env`                         | Backup environment variables                    | AWS_REGION: `us-east-1`                                    |
 | `backup.resources`                   | Backup CPU/Memory resource requests/limits      | Memory: `1Gi`, CPU: `1`                                    |
