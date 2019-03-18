@@ -50,6 +50,7 @@ The following table lists the configurable parameters of the MediaWiki chart and
 |              Parameter               |               Description                                   |                         Default                         |
 |--------------------------------------|-------------------------------------------------------------|---------------------------------------------------------|
 | `global.imageRegistry`               | Global Docker image registry                                | `nil`                                                   |
+| `global.imagePullSecrets`            | Global Docker registry secret names as an array             | `[]` (does not add image pull secrets to deployed pods) |
 | `image.registry`                     | MediaWiki image registry                                    | `docker.io`                                             |
 | `image.repository`                   | MediaWiki Image name                                        | `bitnami/mediawiki`                                     |
 | `image.tag`                          | MediaWiki Image tag                                         | `{VERSION}`                                             |

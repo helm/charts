@@ -50,6 +50,7 @@ The following table lists the configurable parameters of the Ghost chart and the
 | Parameter                           | Description                                                   | Default                                                  |
 |-------------------------------------|---------------------------------------------------------------|----------------------------------------------------------|
 | `global.imageRegistry`              | Global Docker image registry                                  | `nil`                                                    |
+| `global.imagePullSecrets`           | Global Docker registry secret names as an array               | `[]` (does not add image pull secrets to deployed pods)  |
 | `image.registry`                    | Ghost image registry                                          | `docker.io`                                              |
 | `image.repository`                  | Ghost Image name                                              | `bitnami/ghost`                                          |
 | `image.tag`                         | Ghost Image tag                                               | `{VERSION}`                                              |
