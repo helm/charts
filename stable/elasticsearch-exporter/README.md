@@ -71,7 +71,7 @@ Parameter | Description | Default
 `prometheusRule.enabled` | If true, a PrometheusRule CRD is created for a prometheus operator | `false`
 `prometheusRule.prometheusNamespace` | Namespace for prometheusRule | `monitoring`
 `prometheusRule.elasticsearchNodes` | Number of all nodes in Elasticsearch cluster (all roles) | `7`
-`prometheusRule.elasticsearchDateNodes` | Number of Data nodes in Elasticsearch cluster | `2`
+`prometheusRule.elasticsearchDataNodes` | Number of Data nodes in Elasticsearch cluster | `2`
 
 `prometheusRule.labels` | PrometheusRule labels for prometheus operator | `{}`
 
