@@ -1,10 +1,6 @@
-{{- if eq .Values.kind "Deployment" -}}
-{{- if semverCompare "^1.9-0" .Capabilities.KubeVersion.GitVersion }}
-apiVersion: apps/v1
-{{- else }}
-apiVersion: apps/v1beta1
-{{- end }}
-kind: Deployment
+{{- if eq .Values.kind "Daemonset" -}}
+apiVersion: extensions/v1beta1
+kind: DaemonSet
 metadata:
   name: {{ template "traefik.fullname" . }}
   labels:
@@ -13,7 +9,6 @@ metadata:
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
 spec:
-  replicas: {{ default 1 .Values.replicas }}
   selector:
     matchLabels:
       app: {{ template "traefik.name" . }}
