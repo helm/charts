@@ -26,6 +26,15 @@ spec:
       - name: {{ template "scdf.fullname" . }}-skipper
         image: {{ .Values.skipper.image }}:{{ .Values.skipper.version }}
         imagePullPolicy: {{ .Values.skipper.imagePullPolicy }}
+        volumeMounts:
+          {{- if .Values.rabbitmq.enabled}}
+          - name: rabbitmq
+            mountPath: /etc/secrets/rabbitmq
+            readOnly: true
+          {{- end}}
+          - name: mysql
+            mountPath: /etc/secrets/mysql
+            readOnly: true
         ports:
         - containerPort: 7577
           name: http
@@ -46,28 +55,34 @@ spec:
           periodSeconds: 15
           timeoutSeconds: 5
         env:
-        - name: SPRING_DATASOURCE_URL
-          value: 'jdbc:mysql://${{ printf "{" }}{{ template "scdf.envrelease" . }}_MYSQL_SERVICE_HOST}:3306/skipper'
-        - name: SPRING_DATASOURCE_USERNAME
-          value: root
-        - name: SPRING_DATASOURCE_PASSWORD
+        - name: KUBERNETES_NAMESPACE
           valueFrom:
-            secretKeyRef:
-              name: {{ printf "%s-%s" .Release.Name "mysql" | trunc 63 | trimSuffix "-" }}
-              key: mysql-root-password
-        - name: SPRING_DATASOURCE_DRIVER_CLASS_NAME
-          value: org.mariadb.jdbc.Driver
+            fieldRef:
+              fieldPath: "metadata.namespace"
+        - name: SERVER_PORT
+          value: '7577'
+        - name: SPRING_CLOUD_KUBERNETES_SECRETS_ENABLE_API
+          value: 'true'
+        - name: SPRING_CLOUD_KUBERNETES_SECRETS_PATHS
+          value: /etc/secrets
+        - name: SPRING_CLOUD_KUBERNETES_CONFIG_NAME
+          value: {{ template "scdf.fullname" . }}-skipper
+        {{- if .Values.rabbitmq.enabled}}
         - name: RABBITMQ_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ printf "%s-%s" .Release.Name "rabbitmq" | trunc 63 | trimSuffix "-" }}
               key: rabbitmq-password
-        - name: SPRING_APPLICATION_JSON
-          valueFrom:
-            configMapKeyRef:
-              name: {{ template "scdf.fullname" . }}-skipper
-              key: spring.application.json
-          value: 
+        {{- end}}
+      volumes:
+        {{- if .Values.rabbitmq.enabled}}
+        - name: rabbitmq
+          secret:
+            secretName: {{ printf "%s-%s" .Release.Name "rabbitmq" | trunc 63 | trimSuffix "-" }}
+        {{- end}}
+        - name: mysql
+          secret:
+            secretName: {{ printf "%s-%s" .Release.Name "mysql" | trunc 63 | trimSuffix "-" }}
       initContainers:
       - name: init-mysql-wait
         image: busybox
