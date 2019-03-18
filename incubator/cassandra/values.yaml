@@ -171,8 +171,8 @@ backup:
     iam.amazonaws.com/role: cain
 
   image:
-    repos: nuvo/cain
-    tag: 0.4.1
+    repository: maorfr/cain
+    tag: 0.6.0
 
   # Additional arguments for cain
   # Ref: https://github.com/nuvo/cain#usage
@@ -191,6 +191,10 @@ backup:
     limits:
       memory: 1Gi
       cpu: 1
+
+  # Name of the secret containing the credentials of the service account used by GOOGLE_APPLICATION_CREDENTIALS, as a credentials.json file
+  # google:
+    # serviceAccountSecret:
 
   # Destination to store the backup artifacts
   # Supported cloud storage services: AWS S3, Minio S3, Azure Blob Storage
