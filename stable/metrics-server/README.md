@@ -1,6 +1,6 @@
 # metrics-server
 
-Metrics Server is a cluster-wide aggregator of resource usage data.
+[Metrics Server](https://github.com/kubernetes-incubator/metrics-server) is a cluster-wide aggregator of resource usage data.
 
 ## Configuration
 
@@ -21,3 +21,7 @@ Parameter | Description | Default
 `nodeSelector` | Node labels for pod assignment | `{}`
 `affinity` | Node affinity | `{}`
 `replicas` | Number of replicas | `1`
+`extraVolumeMounts` | Ability to provide volume mounts to the pod | `[]`
+`extraVolumes` | Ability to provide volumes to the pod | `[]`
+`podAnnotations` | annotations to be added to pods | `{}`
+`priorityClassName` | priorityClassName to be added to pods | `""`
