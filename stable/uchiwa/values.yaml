@@ -33,3 +33,22 @@ host: '0.0.0.0'
 port: 3000
 refresh: 10
 loglevel: info
+
+config: {}
+# Example config input below:
+# config: |-
+#   {
+#     "sensu": [
+#     {
+#       "name": "Sensu",
+#       "host": "YOUR-SENSU-HOST",
+#       "port": UNQUOTED-SENSU-PORT
+#     }
+#     ],
+#     "uchiwa": {
+#       "host": "0.0.0.0",
+#       "port": UNQUOTED-UCHIWA-PORT,
+#       "refresh": 10,
+#       "loglevel": "info"
+#     }
+#   }

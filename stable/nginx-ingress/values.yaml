@@ -12,7 +12,7 @@ controller:
   image:
     registry: quay.io
     repository: kubernetes-ingress-controller/nginx-ingress-controller
-    tag: "0.22.0"
+    tag: "0.23.0"
     pullPolicy: IfNotPresent
     # www-data -> uid 33
     runAsUser: 33

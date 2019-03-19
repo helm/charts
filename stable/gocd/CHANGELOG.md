@@ -1,3 +1,15 @@
+### 1.7.1
+
+* [0b0e2bf](https://github.com/kubernetes/charts/commit/0b0e2bf):
+
+- Bump k8s elastic agent plugin to latest.
+
+### 1.7.0
+
+* [908b129](https://github.com/kubernetes/charts/commit/908b129):
+
+- Bump up GoCD Version to 19.2.0
+
 ### 1.6.6
 
 * [84bd7fe](https://github.com/kubernetes/charts/commit/f44d408):
