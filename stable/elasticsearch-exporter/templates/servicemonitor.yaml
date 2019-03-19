@@ -16,8 +16,9 @@ spec:
   endpoints:
   - interval: 10s
     honorLabels: true
-    port: "{{ .Values.service.httpPort }}"
+    port: http
     path: {{ .Values.web.path }}
+    scheme: http
   jobLabel: "{{ .Release.Name }}"
   selector:
     matchLabels:
