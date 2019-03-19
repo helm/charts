@@ -60,6 +60,7 @@ Parameter | Description | Default
 `nodeSelector` | node selector logic | `{}`
 `tolerations` | resource tolerations | `{}`
 `affinity` | node affinity | `{}`
+`podLabels`  | Extra labels applied to the pod as part of the deployment | `{}`
 `hubot.config` | hubot configuration (environment variables) | `{}`
 `hubot.scriptsFolder` | hubot scripts folder path | `/minddocbot/scripts`
 `hubot.scripts` | custom hubot scripts | `{ health.coffee: <script content> }`

@@ -18,6 +18,9 @@ spec:
       labels:
         app: {{ template "hubot.name" . }}
         release: {{ .Release.Name }}
+        {{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels | indent 8 }}
+        {{- end }}
     spec:
       volumes:
         - name: {{ template "hubot.fullname" . }}-scripts

@@ -44,6 +44,9 @@ tolerations: []
 
 affinity: {}
 
+# Enables you to add extra labels that will be applied to the pob, i.e. redis-client: "true" (value must be a string).
+# podLabels: {}
+
 hubot:
   config: {}
 
