@@ -1,0 +1,3 @@
+## Default values for Traefik
+image: traefik
+imageTag: 2.0.0-alpha1
