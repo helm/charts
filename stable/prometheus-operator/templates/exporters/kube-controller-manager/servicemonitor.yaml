@@ -17,7 +17,9 @@ spec:
       - "kube-system"
   endpoints:
   - port: http-metrics
-    interval: 15s
+    {{- if .Values.kubeControllerManager.serviceMonitor.interval }}
+    interval: {{ .Values.kubeControllerManager.serviceMonitor.interval }}
+    {{- end }}
     bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
     {{- if .Values.kubeControllerManager.serviceMonitor.https }}
     scheme: https

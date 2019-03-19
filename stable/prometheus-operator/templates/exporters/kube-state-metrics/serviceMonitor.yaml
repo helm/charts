@@ -9,8 +9,10 @@ metadata:
 spec:
   jobLabel: app
   endpoints:
-  - interval: 30s
-    port: http
+  - port: http
+    {{- if .Values.kubeStateMetrics.serviceMonitor.interval }}
+    interval: {{ .Values.kubeStateMetrics.serviceMonitor.interval }}
+    {{- end }}
     honorLabels: true
   selector:
     matchLabels:
