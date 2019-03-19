@@ -31,6 +31,10 @@ replicas: 3
 ##
 # mysqlDatabase: test
 
+## Configure pxc_strict_mode
+## ref: https://www.percona.com/doc/percona-xtradb-cluster/LATEST/features/pxc-strict-mode.html
+## pxc_strict_mode: ENFORCING
+
 ## hosts to allow root user access from
 # set to "127.0.0.1" to deny remote root.
 allowRootFrom: "%"
@@ -125,3 +129,9 @@ podDisruptionBudget:
   enabled: false
   # minAvailable: 1
   maxUnavailable: 1
+
+## Set the percona kubernetes service headless (no load-balancing)
+## ref: https://kubernetes.io/docs/concepts/services-networking/service/#headless-services
+service:
+  percona:
+    headless: false

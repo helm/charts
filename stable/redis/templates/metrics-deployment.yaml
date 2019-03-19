@@ -30,12 +30,7 @@ spec:
 {{ toYaml .Values.metrics.podAnnotations | indent 8 }}
       {{- end }}
     spec:
-      {{- if .Values.metrics.image.pullSecrets }}
-      imagePullSecrets:
-        {{- range .Values.metrics.image.pullSecrets }}
-        - name: {{ . }}
-        {{- end}}
-      {{- end }}
+{{- include "redis.imagePullSecrets" . | indent 6 }}
       {{- if .Values.metrics.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.metrics.nodeSelector | indent 8 }}
@@ -50,7 +45,7 @@ spec:
       {{- end }}
       containers:
       - name: metrics
-        image: {{ template "metrics.image" . }}
+        image: {{ template "redis.metrics.image" . }}
         imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
         args:
         {{- range $key, $value := .Values.metrics.extraArgs }}
@@ -77,16 +72,6 @@ spec:
               key: redis-password
         {{- end }}
         {{- end }}
-        command:
-        - /bin/sh
-        - -c
-        - |-
-          if [[ -n $REDIS_PASSWORD_FILE ]]; then
-            password_aux="$(< "${REDIS_PASSWORD_FILE}")"
-            export REDIS_PASSWORD=$password_aux
-          fi
-          /bin/redis_exporter
-
         volumeMounts:
         {{- if .Values.usePasswordFile }}
         - name: redis-password

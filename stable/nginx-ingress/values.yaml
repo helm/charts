@@ -5,7 +5,7 @@ controller:
   name: controller
   image:
     repository: quay.io/kubernetes-ingress-controller/nginx-ingress-controller
-    tag: "0.21.0"
+    tag: "0.23.0"
     pullPolicy: IfNotPresent
     # www-data -> uid 33
     runAsUser: 33
@@ -31,6 +31,8 @@ controller:
     hostPorts:
       http: 80
       https: 443
+      ## healthz endpoint
+      stats: 18080
 
   ## Required only if defaultBackend.enabled = false
   ## Must be <namespace>/<service_name>
@@ -277,6 +279,7 @@ controller:
     serviceMonitor:
       enabled: false
       additionalLabels: {}
+      namespace: ""
 
   lifecycle: {}
 

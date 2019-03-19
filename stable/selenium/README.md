@@ -50,7 +50,10 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `hub.tag` | The selenium hub image tag | `3.14.0` |
 | `hub.pullPolicy` | The pull policy for the hub image | `IfNotPresent` |
 | `hub.port` | The port the hub listens on | `4444` |
+| `hub.servicePort` | The port the hub Service listens on | `4444` |
+| `hub.nodePort` | The port the hub is exposed when Nodeport mode is selected | `nil` |
 | `hub.podAnnotations` | Annotations on the hub pod | `{}` |
+| `hub.extraEnvs` |  Any additional environment variables to set in the pods | `[]` |
 | `hub.javaOpts` | The java options for the selenium hub JVM, default sets the maximum heap size to 1,000 mb | `-Xmx1000m` |
 | `hub.resources` | The resources for the hub container, defaults to minimum half a cpu and maximum 1,000 mb RAM | `{"limits":{"cpu":".5", "memory":"1000Mi"}}` |
 | `hub.serviceType` | The Service type | `LoadBalancer` |
@@ -64,7 +67,7 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `hub.gridTimeout` | | `nil` |
 | `hub.gridBrowserTimeout` | | `nil` |
 | `hub.gridMaxSession` | | `nil` |
-| `hub.gridUnregisterIfStillDownAfer` | | `nil` |
+| `hub.gridUnregisterIfStillDownAfter` | | `nil` |
 | `hub.seOpts` | Command line arguments to pass to hub | `nil` |
 | `hub.timeZone` | The time zone for the container | `nil` |
 | `hub.nodeselector` | Node label to use for scheduling of the hub if set this takes precedence over the global value | `nil` |
@@ -84,6 +87,7 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `chrome.pullPolicy` | The pull policy for the node chrome image | `IfNotPresent` |
 | `chrome.replicas` | The number of selenium node chrome pods | `1` |
 | `chrome.podAnnotations` | Annotations on the chrome pods | `{}` |
+| `chrome.extraEnvs` |  Any additional environment variables to set in the pods | `[]` |
 | `chrome.javaOpts` | The java options for the selenium node chrome JVM, default sets the maximum heap size to 900 mb | `-Xmx900m` |
 | `chrome.volumeMounts` | Additional volumes to mount, the default provides a larger shared memory | `[{"mountPath":"/dev/shm", "name":"dshm"}]` |
 | `chrome.volumes` | Additional volumes import, the default provides a larger shared memory | `[{"name":"dshm", "emptyDir":{"medium":"Memory"}}]` |
@@ -108,6 +112,7 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `chromeDebug.pullPolicy` | The selenium node chrome debug pull policy | `IfNotPresent` |
 | `chromeDebug.replicas` | The number of selenium node chrome debug pods | `1` |
 | `chromeDebug.podAnnotations` | Annotations on the Chrome debug pod | `{}` |
+| `chromeDebug.extraEnvs` |  Any additional environment variables to set in the pods | `[]` |
 | `chromeDebug.javaOpts` | The java options for a selenium node chrome debug JVM, default sets the max heap size to 900 mb | `-Xmx900m` |
 | `chromeDebug.volumeMounts` | Additional volumes to mount, the default provides a larger shared | `[{"mountPath":"/dev/shm", "name":"dshm"}]` |
 | `chromeDebug.volumes` | Additional volumes import, the default provides a larger shared | `[{"name":"dshm", "emptyDir":{"medium":"Memory"}}]` |
@@ -132,6 +137,7 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `firefox.pullPolicy` | The selenium node firefox pull policy | `IfNotPresent` |
 | `firefox.replicas` | The number of selenium node firefox pods | `1` |
 | `firefox.podAnnotations` | Annotations on the firefox pods | `{}` |
+| `firefox.extraEnvs` |  Any additional environment variables to set in the pods | `[]` |
 | `firefox.javaOpts` | The java options for a selenium node firefox JVM, default sets the max heap size to 900 mb | `-Xmx900m` |
 | `firefox.resources` | The resources for the hub container, defaults to minimum half a cpu and maximum 1,000 mb | `{"limits":{"cpu":".5", "memory":"1000Mi"}}` |
 | `firefox.screenWidth` | | `nil` |
@@ -152,8 +158,9 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `firefoxDebug.image` | The selenium node firefox debug image | `selenium/node-firefox-debug` |
 | `firefoxDebug.tag` | The selenium node firefox debug tag | `3.14.0` |
 | `firefoxDebug.pullPolicy` | The selenium node firefox debug pull policy | `IfNotPresent` |
-| `firefoxDebug.replicas` | The numer of selenium node firefox debug pods | `1` |
+| `firefoxDebug.replicas` | The number of selenium node firefox debug pods | `1` |
 | `firefoxDebug.podAnnotations` | Annotations on the firefox debug pods | `{}` |
+| `firefoxDebug.extraEnvs` |  Any additional environment variables to set in the pods | `[]` |
 | `firefoxDebug.javaOpts` | The java options for a selenium node firefox debug JVM, default sets the max heap size to 900 mb | `-Xmx900m` |
 | `firefoxDebug.resources` | The resources for the selenium node firefox debug container, defaults to minimum half a cpu and maximum 1,000 mb | `{"limits":{"cpu":".5", "memory":"1000Mi"}}` |
 | `firefoxDebug.screenWidth` | | `nil` |

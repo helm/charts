@@ -42,6 +42,7 @@ spec:
             - --policy={{ .Values.policy }}
             - --provider={{ .Values.provider }}
             - --registry={{ .Values.registry }}
+            - --interval={{ .Values.interval }}
           {{- if .Values.txtOwnerId }}
             - --txt-owner-id={{ .Values.txtOwnerId }}
           {{- end }}
@@ -53,6 +54,9 @@ spec:
           {{- end }}
           {{- range .Values.sources }}
             - --source={{ . }}
+          {{- end }}
+          {{ if .Values.dryRun }}
+            - --dry-run
           {{- end }}
           {{- range $key, $value := .Values.extraArgs }}
             {{- if $value }}
@@ -89,6 +93,20 @@ spec:
             - --infoblox-ssl-verify
             {{- end }}
           {{- end }}
+          {{- if eq .Values.provider "rfc2136" }}
+            - --rfc2136-host={{ required "rfc2136.host must be supplied for provider 'rfc2136'" .Values.rfc2136.host }}
+            - --rfc2136-port={{ .Values.rfc2136.port }}
+            - --rfc2136-zone={{ required "rfc2136.zone must be supplied for provider 'rfc2136'" .Values.rfc2136.zone }}
+            {{- if .Values.rfc2136.tsigKeyname }}
+            - --rfc2136-tsig-secret-alg={{ .Values.rfc2136.tsigSecretAlg }}
+            - --rfc2136-tsig-keyname={{ .Values.rfc2136.tsigKeyname }}
+              {{- if .Values.rfc2136.tsigAxfr }}
+            - --rfc2136-tsig-axfr
+              {{- end }}
+            {{- else }}
+            - --rfc2136-insecure=false
+            {{- end }}
+          {{- end }}
           volumeMounts:
           {{- if or .Values.google.serviceAccountSecret .Values.google.serviceAccountKey }}
           - name: google-service-account
@@ -106,6 +124,11 @@ spec:
           {{- if (and .Values.aws.secretKey .Values.aws.accessKey) }}
           - name: aws-credentials
             mountPath: {{ .Values.aws.credentialsPath }}
+            readOnly: true
+          {{- end }}
+          {{- if and (eq .Values.provider "designate") .Values.designate.customCA.enabled }}
+          - name: designate-custom-ca
+            mountPath: {{ .Values.designate.customCA.directory }}
             readOnly: true
           {{- end }}
           env:
@@ -128,6 +151,13 @@ spec:
           - name: CF_API_EMAIL
             value: "{{ .Values.cloudflare.email }}"
         {{- end }}
+        {{- if .Values.digitalocean.apiToken }}
+          - name: DO_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "external-dns.fullname" . }}
+                key: digitalocean_api_token
+        {{- end }}
         {{- if .Values.infoblox.wapiConnectionPoolSize }}
           - name: EXTERNAL_DNS_INFOBLOX_HTTP_POOL_CONNECTIONS
             value: "{{ .Values.infoblox.wapiConnectionPoolSize }}"
@@ -147,6 +177,17 @@ spec:
               secretKeyRef:
                 name: {{ template "external-dns.fullname" . }}
                 key: infoblox_wapi_password
+        {{- end }}
+        {{- if and .Values.rfc2136.tsigSecret }}
+          - name: EXTERNAL_DNS_RFC2136_TSIG_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "external-dns.fullname" . }}
+                key: rfc2136_tsig_secret
+        {{- end }}
+        {{- if and (eq .Values.provider "designate") .Values.designate.customCA.enabled }}
+          - name: OPENSTACK_CA_FILE
+            value: {{ .Values.designate.customCA.directory }}/{{ .Values.designate.customCA.filename }}
         {{- end }}
         {{- $root := . -}}
         {{- range .Values.extraEnv }}
@@ -199,6 +240,14 @@ spec:
       - name: aws-credentials
         secret:
           secretName: {{ template "external-dns.fullname" . }}
+      {{- end }}
+      {{- if and (eq .Values.provider "designate") .Values.designate.customCA.enabled }}
+      - name: designate-custom-ca
+        configMap:
+          name: {{ template "external-dns.fullname" . }}
+          items:
+          - key: {{ .Values.designate.customCA.filename }}
+            path: {{ .Values.designate.customCA.filename }}
       {{- end }}
     {{- if .Values.nodeSelector }}
       nodeSelector:

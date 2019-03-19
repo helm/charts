@@ -12,7 +12,7 @@ $ helm install stable/mongodb
 
 This chart bootstraps a [MongoDB](https://github.com/bitnami/bitnami-docker-mongodb) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
-Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters.
+Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters. This chart has been tested to work with NGINX Ingress, cert-manager, fluentd and Prometheus on top of the [BKPR](https://kubeprod.io/).
 
 ## Prerequisites
 
@@ -48,6 +48,7 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | Parameter                                          | Description                                                                                  | Default                                                 |
 | -------------------------------------------------- | -------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
 | `global.imageRegistry`                             | Global Docker image registry                                                                 | `nil`                                                   |
+| `global.imagePullSecrets`                          | Global Docker registry secret names as an array                                              | `[]` (does not add image pull secrets to deployed pods) |
 | `image.registry`                                   | MongoDB image registry                                                                       | `docker.io`                                             |
 | `image.repository`                                 | MongoDB Image name                                                                           | `bitnami/mongodb`                                       |
 | `image.tag`                                        | MongoDB Image tag                                                                            | `{VERSION}`                                             |
@@ -61,6 +62,7 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `mongodbPassword`                                  | MongoDB custom user password                                                                 | `random alphanumeric string (10)`                       |
 | `mongodbDatabase`                                  | Database to create                                                                           | `nil`                                                   |
 | `mongodbEnableIPv6`                                | Switch to enable/disable IPv6 on MongoDB                                                     | `true`                                                  |
+| `mongodbDirectoryPerDB`                            | Switch to enable/disable DirectoryPerDB on MongoDB                                           | `false`                                                 |
 | `mongodbSystemLogVerbosity`                        | MongoDB systen log verbosity level                                                           | `0`                                                     |
 | `mongodbDisableSystemLog`                          | Whether to disable MongoDB system log or not                                                 | `false`                                                 |
 | `mongodbExtraFlags`                                | MongoDB additional command line flags                                                        | []                                                      |
@@ -68,6 +70,7 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `service.type`                                     | Kubernetes Service type                                                                      | `ClusterIP`                                             |
 | `service.clusterIP`                                | Static clusterIP or None for headless services                                               | `nil`                                                   |
 | `service.nodePort`                                 | Port to bind to for NodePort service type                                                    | `nil`                                                   |
+| `service.loadBalancerIP`                           | Static IP Address to use for LoadBalancer service type                                       | `nil`                                                   |
 | `port`                                             | MongoDB service port                                                                         | `27017`                                                 |
 | `replicaSet.enabled`                               | Switch to enable/disable replica set configuration                                           | `false`                                                 |
 | `replicaSet.name`                                  | Name of the replica set                                                                      | `rs0`                                                   |
@@ -85,6 +88,7 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `nodeSelector`                                     | Node labels for pod assignment                                                               | {}                                                      |
 | `affinity`                                         | Affinity for pod assignment                                                                  | {}                                                      |
 | `tolerations`                                      | Toleration labels for pod assignment                                                         | {}                                                      |
+| `updateStrategy`                                   | Statefulsets update strategy policy                                                          | `RollingUpdate`                                         |
 | `securityContext.enabled`                          | Enable security context                                                                      | `true`                                                  |
 | `securityContext.fsGroup`                          | Group ID for the container                                                                   | `1001`                                                  |
 | `securityContext.runAsUser`                        | User ID for the container                                                                    | `1001`                                                  |
@@ -93,17 +97,21 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `persistence.accessMode`                           | Use volume as ReadOnly or ReadWrite                                                          | `ReadWriteOnce`                                         |
 | `persistence.size`                                 | Size of data volume                                                                          | `8Gi`                                                   |
 | `persistence.annotations`                          | Persistent Volume annotations                                                                | `{}`                                                    |
-| `persistence.existingClaim`                        | Name of an existing PVC to use (avoids creating one if this is given)                        | `nil`                                                   |
+| `persistence.existingClaim`                        | Name of an existing PVC to use (avoids creating one if this is given)                       | `nil`                                                   |
+| `extraInitContainers`                     | Additional init containers as a string to be passed to the `tpl` function                          | `{}`   |                                                |
+| `livenessProbe.enabled`                            | Enable/disable the Liveness probe                                                            | `true`                                                  |
 | `livenessProbe.initialDelaySeconds`                | Delay before liveness probe is initiated                                                     | `30`                                                    |
 | `livenessProbe.periodSeconds`                      | How often to perform the probe                                                               | `10`                                                    |
 | `livenessProbe.timeoutSeconds`                     | When the probe times out                                                                     | `5`                                                     |
 | `livenessProbe.successThreshold`                   | Minimum consecutive successes for the probe to be considered successful after having failed. | `1`                                                     |
 | `livenessProbe.failureThreshold`                   | Minimum consecutive failures for the probe to be considered failed after having succeeded.   | `6`                                                     |
+| `readinessProbe.enabled`                           | Enable/disable the Readiness probe                                                           | `true`                                                  |
 | `readinessProbe.initialDelaySeconds`               | Delay before readiness probe is initiated                                                    | `5`                                                     |
 | `readinessProbe.periodSeconds`                     | How often to perform the probe                                                               | `10`                                                    |
 | `readinessProbe.timeoutSeconds`                    | When the probe times out                                                                     | `5`                                                     |
 | `readinessProbe.failureThreshold`                  | Minimum consecutive failures for the probe to be considered failed after having succeeded.   | `6`                                                     |
 | `readinessProbe.successThreshold`                  | Minimum consecutive successes for the probe to be considered successful after having failed. | `1`                                                     |
+| `initConfigMap.name`                               | Custom config map with init scripts                                                          | `nil`                                                   |
 | `configmap`                                        | MongoDB configuration file to be used                                                        | `nil`                                                   |
 | `metrics.enabled`                                  | Start a side-car prometheus exporter                                                         | `false`                                                 |
 | `metrics.image.registry`                           | MongoDB exporter image registry                                                              | `docker.io`                                             |
@@ -112,12 +120,21 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `metrics.image.pullPolicy`                         | Image pull policy                                                                            | `IfNotPresent`                                          |
 | `metrics.image.pullSecrets`                        | Specify docker-registry secret names as an array                                             | `[]` (does not add image pull secrets to deployed pods) |
 | `metrics.podAnnotations`                           | Additional annotations for Metrics exporter pod                                              | {}                                                      |
+| `metrics.extraArgs`               | String with extra arguments for the MongoDB Exporter                                                          | ``                                                      |
 | `metrics.resources`                                | Exporter resource requests/limit                                                             | Memory: `256Mi`, CPU: `100m`                            |
 | `metrics.serviceMonitor.enabled`                   | Create ServiceMonitor Resource for scraping metrics using PrometheusOperator                 | `false`                                                 |
 | `metrics.serviceMonitor.additionalLabels`          | Used to pass Labels that are required by the Installed Prometheus Operator                   | {}                                                      |
 | `metrics.serviceMonitor.relabellings`              | Specify Metric Relabellings to add to the scrape endpoint                                    | `nil`                                                   |
 | `metrics.serviceMonitor.alerting.rules`            | Define individual alerting rules as required                                                 | {}                                                      |
 | `metrics.serviceMonitor.alerting.additionalLabels` | Used to pass Labels that are required by the Installed Prometheus Operator                   | {}                                                      |
+| `metrics.livenessProbe.enabled`                    | Enable/disable the Liveness Check of Prometheus metrics exporter                             | `false`                                                 |
+| `metrics.livenessProbe.initialDelaySeconds`        | Initial Delay for Liveness Check of Prometheus metrics exporter                              | `15`                                                    |
+| `metrics.livenessProbe.periodSeconds`              | How often to perform Liveness Check of Prometheus metrics exporter                           | `10`                                                    |
+| `metrics.livenessProbe.timeoutSeconds`             | Timeout for Liveness Check of Prometheus metrics exporter                                    | `5`                                                     |
+| `metrics.readinessProbe.enabled`                   | Enable/disable the Readiness Check of Prometheus metrics exporter                            | `false`                                                 |
+| `metrics.readinessProbe.initialDelaySeconds`       | Initial Delay for Readiness Check of Prometheus metrics exporter                             | `5`                                                     |
+| `metrics.readinessProbe.periodSeconds`             | How often to perform Readiness Check of Prometheus metrics exporter                          | `10`                                                    |
+| `metrics.readinessProbe.timeoutSeconds`            | Timeout for Readiness Check of Prometheus metrics exporter                                   | `1`                                                     |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
@@ -170,6 +187,7 @@ Some characteristics of this chart are:
 ## Initialize a fresh instance
 
 The [Bitnami MongoDB](https://github.com/bitnami/bitnami-docker-mongodb) image allows you to use your custom scripts to initialize a fresh instance. In order to execute the scripts, they must be located inside the chart folder `files/docker-entrypoint-initdb.d` so they can be consumed as a ConfigMap.
+Also you can create a custom config map and give it via `initConfigMap`(check options for more details).
 
 The allowed extensions are `.sh`, and `.js`.
 

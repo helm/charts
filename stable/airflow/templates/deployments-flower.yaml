@@ -45,21 +45,7 @@ spec:
             - configMapRef:
                 name: "{{ template "airflow.fullname" . }}-env"
           env:
-            - name: POSTGRES_USER
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "airflow.secret" . }}
-                  key: postgresUser
-            - name: POSTGRES_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "airflow.secret" . }}
-                  key: postgresPassword
-            - name: REDIS_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "airflow.secret" . }}
-                  key: redisPassword
+          {{- include "airflow.mapenvsecrets" . | indent 10 }}
           ports:
             - name: flower
               containerPort: 5555
@@ -74,4 +60,6 @@ spec:
             timeoutSeconds: 1
             successThreshold: 1
             failureThreshold: 5
+          resources:
+{{ toYaml .Values.flower.resources | indent 12 }}
 {{- end }}

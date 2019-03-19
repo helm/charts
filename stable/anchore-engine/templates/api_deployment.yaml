@@ -2,23 +2,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: "{{ template "anchore-engine.api.fullname" . }}"
+  name: {{ template "anchore-engine.api.fullname" . }}
   labels:
-    app: "{{ template "anchore-engine.fullname" . }}"
+    app: {{ template "anchore-engine.fullname" . }}
     component: {{ $component }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
   selector:
     matchLabels:
-      app: "{{ template "anchore-engine.fullname" . }}"
+      app: {{ template "anchore-engine.fullname" . }}
       component: {{ $component }}
   replicas: {{ .Values.anchoreApi.replicaCount }}
   template:
     metadata:
       labels:
-        app: "{{ template "anchore-engine.fullname" . }}"
+        app: {{ template "anchore-engine.fullname" . }}
         component: {{ $component }}
 {{- if .Values.anchoreApi.annotations }}
       annotations:
@@ -28,7 +28,7 @@ spec:
       volumes:
         - name: config-volume
           configMap:
-            name: {{ template "anchore-engine.fullname" .}}
+            name: {{ template "anchore-engine.fullname" . }}
         {{- if and .Values.anchoreEnterpriseGlobal.enabled .Values.anchoreEnterpriseRbac.enabled }}
         - name: anchore-license
           secret:
@@ -43,9 +43,9 @@ spec:
             secretName: {{ .Values.anchoreGlobal.internalServicesSsl.certSecret }}
         {{- end }}
       containers:
-      - name: {{ .Chart.Name }}-{{ $component }}
-        image: {{ .Values.anchoreGlobal.image.repository }}:{{ .Values.anchoreGlobal.image.tag }}
-        imagePullPolicy: {{ .Values.anchoreGlobal.image.pullPolicy }}
+      - name: "{{ .Chart.Name }}-{{ $component }}"
+        image: {{ .Values.anchoreGlobal.image }}
+        imagePullPolicy: {{ .Values.anchoreGlobal.imagePullPolicy }}
         command: ["/usr/local/bin/anchore-manager"]
         args: ["service", "start", "apiext"]
         envFrom:
@@ -54,6 +54,14 @@ spec:
         - configMapRef:
             name: {{ template "anchore-engine.fullname" . }}
         env:
+        {{- range $key, $value := .Values.anchoreGlobal.extraEnv }}
+        - name: {{ $key }}
+          value: {{ $value }}
+        {{- end }}
+        {{- range $key, $value := .Values.anchoreApi.extraEnv }}
+        - name: {{ $key }}
+          value: {{ $value }}
+        {{- end }}
         - name: ANCHORE_POD_NAME
           valueFrom:
             fieldRef:
@@ -92,8 +100,8 @@ spec:
 
       {{- if and .Values.anchoreEnterpriseGlobal.enabled .Values.anchoreEnterpriseRbac.enabled }}
       - name: {{ .Chart.Name }}-rbac-manager
-        image: "{{ .Values.anchoreEnterpriseGlobal.image.repository }}:{{ .Values.anchoreEnterpriseGlobal.image.tag }}"
-        imagePullPolicy: {{ .Values.anchoreEnterpriseGlobal.image.pullPolicy }}
+        image: {{ .Values.anchoreEnterpriseGlobal.image }}
+        imagePullPolicy: {{ .Values.anchoreEnterpriseGlobal.imagePullPolicy }}
         command: ["/usr/local/bin/anchore-enterprise-manager"]
         args: ["service", "start", "rbac_manager"]
         envFrom:
@@ -102,6 +110,14 @@ spec:
         - configMapRef:
             name: {{ template "anchore-engine.fullname" . }}
         env:
+        {{- range $key, $value := .Values.anchoreGlobal.extraEnv }}
+        - name: {{ $key }}
+          value: {{ $value }}
+        {{- end }}
+        {{- range $key, $value := .Values.anchoreEnterpriseRbac.extraEnv }}
+        - name: {{ $key }}
+          value: {{ $value }}
+        {{- end }}
         - name: ANCHORE_POD_NAME
           valueFrom:
             fieldRef:
@@ -142,8 +158,8 @@ spec:
 {{ toYaml .Values.anchoreEnterpriseRbac.managerResources | indent 10 }}
 
       - name: {{ .Chart.Name }}-rbac-authorizer
-        image: "{{ .Values.anchoreEnterpriseGlobal.image.repository }}:{{ .Values.anchoreEnterpriseGlobal.image.tag }}"
-        imagePullPolicy: {{ .Values.anchoreEnterpriseGlobal.image.pullPolicy }}
+        image: {{ .Values.anchoreEnterpriseGlobal.image }}
+        imagePullPolicy: {{ .Values.anchoreEnterpriseGlobal.imagePullPolicy }}
         command: ["/usr/local/bin/anchore-enterprise-manager"]
         args: ["service", "start", "rbac_authorizer"]
         envFrom:
@@ -152,6 +168,14 @@ spec:
         - configMapRef:
             name: {{ template "anchore-engine.fullname" . }}
         env:
+        {{- range $key, $value := .Values.anchoreGlobal.extraEnv }}
+        - name: {{ $key }}
+          value: {{ $value }}
+        {{- end }}
+        {{- range $key, $value := .Values.anchoreEnterpriseRbac.extraEnv }}
+        - name: {{ $key }}
+          value: {{ $value }}
+        {{- end }}
         - name: ANCHORE_POD_NAME
           valueFrom:
             fieldRef:

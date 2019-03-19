@@ -14,5 +14,6 @@ data:
 {{- end -}}
 {{- range $key, $value := .Values.templates }}
   {{ $key }}: |-
-{{ $value | default "" | tpl . | indent 4 }}
+{{ $valueWithDefault := default "" $value -}}
+{{ tpl $valueWithDefault $ | indent 4 }}
 {{- end -}}

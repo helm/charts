@@ -1,4 +1,6 @@
 # Generated from 'statefulset' from https://raw.githubusercontent.com/coreos/prometheus-operator/master/contrib/kube-prometheus/manifests/grafana-dashboardDefinitions.yaml
+# Do not change in-place! In order to change this file first read following link:
+# https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
 {{- if and .Values.grafana.enabled .Values.grafana.defaultDashboardsEnabled }}
 apiVersion: v1
 kind: ConfigMap
@@ -13,6 +15,12 @@ metadata:
 data:
   statefulset.json: |-
     {
+        "__inputs": [
+
+        ],
+        "__requires": [
+
+        ],
         "annotations": {
             "list": [
 
@@ -754,7 +762,7 @@ data:
         "schemaVersion": 14,
         "style": "dark",
         "tags": [
-
+            "kubernetes-mixin"
         ],
         "templating": {
             "list": [
@@ -858,7 +866,7 @@ data:
             ]
         },
         "timezone": "",
-        "title": "StatefulSets",
+        "title": "Kubernetes / StatefulSets",
         "uid": "a31c1f46e6f727cb37c0d731a7245005",
         "version": 0
     }

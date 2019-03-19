@@ -1,16 +1,18 @@
 image:
   repository: docker.elastic.co/beats/metricbeat
-  tag: 6.5.4
+  tag: 6.6.1
   pullPolicy: IfNotPresent
 
 # The instances created by daemonset retrieve most metrics from the host
 daemonset:
+  enabled: true
   podAnnotations: []
   tolerations:
   - key: node-role.kubernetes.io/master
     operator: Exists
     effect: NoSchedule
   nodeSelector: {}
+  resources: {}
   config:
     metricbeat.config:
       modules:
@@ -72,9 +74,11 @@ daemonset:
             # - /var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt
 # The instance created by deployment retrieves metrics that are unique for the whole cluster, like Kubernetes events or kube-state-metrics
 deployment:
+  enabled: true
   podAnnotations: []
   tolerations: []
   nodeSelector: {}
+  resources: {}
   config:
     metricbeat.config:
       modules:
