@@ -28,6 +28,13 @@ server:
   preconfigureCommand:
     - "/bin/bash"
     - "/preconfigure_server.sh"
+  # server.preStop - array of commands to use in the server pre-stop lifecycle hook
+  # preStop:
+  #  - "/bin/bash"
+  #  - "/backup_and_stop.sh"
+  # server.terminationGracePeriodSeconds is the optional duration in seconds the gocd server pod needs to terminate gracefully.
+  # Note: SIGTERM is issued immediately after the pod deletion request is sent. If the pod doesn't terminate, k8s waits for terminationGracePeriodSeconds before issuing SIGKILL.
+  # server.terminationGracePeriodSeconds: 60
   image:
     # server.image.repository is the GoCD Server image name
     repository: "gocd/gocd-server"
@@ -200,11 +207,18 @@ agent:
 
   # agent.replicaCount is the GoCD Agent replicas Count. Specify the number of GoCD agents to run
   replicaCount: 0
+  # agent.preStop - array of commands to use in the agent pre-stop lifecycle hook
+  # preStop:
+  #  - "/bin/bash"
+  #  - "/disable_and_stop.sh"
   # agent.deployStrategy is the strategy explained in detail at https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
+  # agent.terminationGracePeriodSeconds is the optional duration in seconds the gocd agent pods need to terminate gracefully.
+  # Note: SIGTERM is issued immediately after the pod deletion request is sent. If the pod doesn't terminate, k8s waits for terminationGracePeriodSeconds before issuing SIGKILL.
+  # agent.terminationGracePeriodSeconds: 60
   deployStrategy: {}
   image:
     # agent.image.repository is the GoCD Agent image name
-    repository: "gocd/gocd-agent-alpine-3.6"
+    repository: "gocd/gocd-agent-alpine-3.9"
     # agent.image.tag is the GoCD Agent image's tag
     tag:
     # agent.image.pullPolicy is the GoCD Agent image's pull policy
