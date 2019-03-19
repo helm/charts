@@ -11,6 +11,11 @@ metadata:
 spec:
   serviceName: {{ template "mongodb.fullname" . }}-headless
   replicas: 1
+  updateStrategy:
+    type: {{ .Values.updateStrategy.type }}
+    {{- if (eq "Recreate" .Values.updateStrategy.type) }}
+    rollingUpdate: null
+    {{- end }}
   selector:
     matchLabels:
       app: {{ template "mongodb.name" . }}
@@ -106,7 +111,7 @@ spec:
             value: {{ .Values.mongodbDatabase | quote }}
           {{- end }}
             {{- if .Values.usePassword }}
-            {{- if or .Values.mongodbPassword .Values.existingSecret }}
+            {{- if and .Values.mongodbUsername (or .Values.mongodbPassword .Values.existingSecret) }}
           - name: MONGODB_PASSWORD
             valueFrom:
               secretKeyRef:

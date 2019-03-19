@@ -1,3 +1,9 @@
+### 1.7.1
+
+* [0b0e2bf](https://github.com/kubernetes/charts/commit/0b0e2bf):
+
+- Bump k8s elastic agent plugin to latest.
+
 ### 1.7.0
 
 * [908b129](https://github.com/kubernetes/charts/commit/908b129):
