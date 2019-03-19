@@ -141,9 +141,9 @@ spec:
               secretKeyRef:
                 name: {{ template "atlantis.fullname" . }}-webhook
                 key: bitbucket_token
-          {{- if .Values.bitbucket.base_url }}
+          {{- if .Values.bitbucket.baseUrl }}
           - name: ATLANTIS_BITBUCKET_BASE_URL
-            value: {{ .Values.bitbucket.base_url }}
+            value: {{ .Values.bitbucket.baseUrl }}
           - name: ATLANTIS_BITBUCKET_WEBHOOK_SECRET
             valueFrom:
               secretKeyRef:
@@ -206,6 +206,10 @@ spec:
             mountPath: /etc/tls/
           {{- end }}
           resources:
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+        - name: {{ .Values.imagePullSecrets }}
+      {{- end }}
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}
       nodeSelector:
@@ -224,11 +228,11 @@ spec:
       name: atlantis-data
     spec:
       accessModes: ["ReadWriteOnce"] # Volume should not be shared by multiple nodes.
-      {{- if .Values.atlantis_data_storageClass }}
-      storageClass: {{ .Values.atlantis_data_storageClass }} # Storage class of the volume
+      {{- if .Values.storageClassName }}
+      storageClassName: {{ .Values.storageClassName }} # Storage class of the volume
       {{- end }}
       resources:
         requests:
           # The biggest thing Atlantis stores is the Git repo when it checks it out.
           # It deletes the repo after the pull request is merged.
-          storage: {{ .Values.atlantis_data_storage }}
+          storage: {{ .Values.atlantisDataStorage }}
