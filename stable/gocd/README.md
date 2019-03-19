@@ -71,7 +71,9 @@ The following tables list the configurable parameters of the GoCD chart and thei
 | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------- | ------------------- |
 | `server.enabled`                           | Enable GoCD Server. Supported values are `true`, `false`. When enabled, the GoCD server deployment is done on helm install.  | `true`              |
 | `server.shouldPreconfigure`                | Preconfigure GoCD Server to have a default elastic agent profile and Kubernetes elastic agent plugin settings. Supported values are `true`, `false`.  | `true`              |
-| `server.preconfigureCommand`               | Preconfigure GOCD Server with a custom command (shell,python, etc ...). Supported value is a list. | `["/bin/bash", "/preconfigure_server.sh"]`|
+| `server.preconfigureCommand`               | Preconfigure GOCD Server with a custom command (shell,python, etc ...). Supported value is a list.            | `["/bin/bash", "/preconfigure_server.sh"]`|
+| `server.preStop`                           | Perform cleanup and backup before stopping the gocd server. Supported value is a list.                        | `nil`               |
+| `server.terminationGracePeriodSeconds`     | Optional duration in seconds the gocd server pod needs to terminate gracefully.                               | `nil`               |
 | `server.image.repository`                  | GoCD server image                                                                                             | `gocd/gocd-server`  |
 | `server.image.tag`                         | GoCD server image tag                                                                                         | `.Chart.appVersion` |
 | `server.image.pullPolicy`                  | Image pull policy                                                                                             | `IfNotPresent`      |
@@ -156,10 +158,14 @@ $ kubectl create secret generic gocd-server-ssh \
 
 ### GoCD Agent
 
+ *Note: This is only for static gocd agents brought up in the cluster via the helm chart. The elastic agent pods need to be separately configured using [elastic agent profiles](https://docs.gocd.org/current/configuration/elastic_agents.html#elastic-agent-profile)*
+
 | Parameter                                 | Description                                                                                                                                                                      | Default                      |
 | ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- |
 | `agent.replicaCount`                      | GoCD Agent replicas Count. By default, no agents are provided.                                                                                                                   | `0`                          |
-| `agent.deployStrategy`                      | GoCD Agent [deployment strategy](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy).                                                                                                                   | `{}`                          |
+| `agent.preStop        `                   | Perform cleanup and backup before stopping the gocd server. Supported value is a list.                                                                                           | `nil`                        |
+| `agent.terminationGracePeriodSeconds`     | Optional duration in seconds the gocd agent pods need to terminate gracefully.                                                                                                   | `nil`                        |
+| `agent.deployStrategy`                    | GoCD Agent [deployment strategy](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy).                                                                | `{}`                         |
 | `agent.image.repository`                  | GoCD agent image                                                                                                                                                                 | `gocd/gocd-agent-alpine-3.6` |
 | `agent.image.tag`                         | GoCD agent image tag                                                                                                                                                             | `.Chart.appVersion`          |
 | `agent.image.pullPolicy`                  | Image pull policy                                                                                                                                                                | `IfNotPresent`               |
