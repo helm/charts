@@ -26,7 +26,7 @@ livenessProbe:
 
 image:
   repository: grafana/grafana
-  tag: 6.0.0
+  tag: 6.0.2
   pullPolicy: IfNotPresent
 
   ## Optionally specify an array of imagePullSecrets.
