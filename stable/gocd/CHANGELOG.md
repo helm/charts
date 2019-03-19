@@ -1,3 +1,13 @@
+### 1.8.0
+
+* [8ec8c89](https://github.com/helm/charts/commit/8ec8c89):
+
+- Update agent image to gocd-agent-alpine-3.9
+
+* [dcd3332](https://github.com/helm/charts/commit/dcd3332):
+
+- Introduce server and agent pre stop hooks for users to optionally provide pre stop scripts.
+
 ### 1.7.1
 
 * [0b0e2bf](https://github.com/kubernetes/charts/commit/0b0e2bf):

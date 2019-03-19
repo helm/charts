@@ -132,8 +132,18 @@ spec:
               readOnly: true
               mountPath: /home/go/.ssh
           {{- end }}
+          {{- if .Values.agent.preStop }}
+          lifecycle:
+            preStop:
+              exec:
+               command:
+{{ toYaml .Values.agent.preStop | indent 18 }}
+          {{- end }}
           securityContext:
             privileged: {{ .Values.agent.privileged }}
+      {{- if .Values.agent.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ .Values.agent.terminationGracePeriodSeconds }}
+      {{- end }}
       restartPolicy: {{ .Values.agent.restartPolicy }}
     {{- if .Values.agent.nodeSelector }}
       nodeSelector:
