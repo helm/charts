@@ -211,6 +211,7 @@ integrations:
   #     filename: /var/run/falco/nats
   pubsubOutput:
     enabled: false
+    topic: ""
     credentialsData: ""
     projectID: ""
 

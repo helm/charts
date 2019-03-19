@@ -113,12 +113,12 @@ spec:
             - name: AWS_ACCESS_KEY_ID
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "falco.fullname" . }}-sns
+                  name: {{ template "falco.fullname" . }}
                   key: aws_access_key_id
             - name: AWS_SECRET_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "falco.fullname" . }}-sns
+                  name: {{ template "falco.fullname" . }}
                   key: aws_secret_access_key
             - name: AWS_DEFAULT_REGION
               valueFrom:
@@ -130,7 +130,7 @@ spec:
         - name: {{ .Chart.Name }}-pubsub
           image: sysdiglabs/falco-pubsub:latest
           imagePullPolicy: Always
-          args: [ "/bin/falco-pubsub" ]
+          args: [ "/bin/falco-pubsub", "-t", {{ .Values.integrations.pubsubOutput.topic | quote }}]
           volumeMounts:
             - mountPath: /var/run/falco/
               name: shared-pipe
@@ -138,13 +138,13 @@ spec:
             - name: GOOGLE_PROJECT_ID
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "falco.fullname" . }}-pubsub
-                  key: project-id
+                  name: {{ template "falco.fullname" . }}
+                  key: gcp-project-id
             - name: GOOGLE_CREDENTIALS_DATA
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "falco.fullname" . }}-pubsub
-                  key: credentials-data
+                  name: {{ template "falco.fullname" . }}
+                  key: gcp-credentials-data
       {{- end }}
       {{- if (or .Values.integrations.natsOutput.enabled .Values.integrations.snsOutput.enabled .Values.integrations.pubsubOutput.enabled) }}
       initContainers:
