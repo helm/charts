@@ -32,7 +32,7 @@ spec:
       {{- end }}
       {{- if .Values.graylog.metrics.enabled }}
         prometheus.io/scrape: "true"
-        prometheus.io/port: "{{ default 9000 .Values.graylog.service.targetPort }}"
+        prometheus.io/port: "9000"
       {{- end }}
     spec:
       serviceAccountName: {{ template "graylog.serviceAccountName" . }}
@@ -153,7 +153,7 @@ spec:
               value: {{ $value | quote }}
             {{- end }}
           ports:
-            - containerPort: {{ default 9000 .Values.graylog.service.targetPort }}
+            - containerPort: 9000
               name: graylog
           {{- with .Values.graylog.input }}
           {{- if .udp }}
