@@ -25,4 +25,9 @@ parameters:
   gidAllocate: "false"
 {{- end }}
 reclaimPolicy: {{ .Values.efsProvisioner.storageClass.reclaimPolicy }}
-mountOptions: {{ toYaml .Values.efsProvisioner.storageClass.mountOptions | indent 2 }}
+{{- if .Values.efsProvisioner.storageClass.mountOptions }}
+mountOptions:
+  {{- range .Values.efsProvisioner.storageClass.mountOptions }}
+  - {{ . }}
+  {{- end }}
+{{- end }}
