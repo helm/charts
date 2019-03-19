@@ -40,13 +40,17 @@ Parameter | Description | Default
 --- | --- | ---
 `affinity` | node/pod affinities | None
 `authenticatedEmailsFile.enabled` | Enables authorize individual email addresses | `false`
-`authenticatedEmailsFile.template` | Name of the configmap what is handled outside of that chart | `""`
+`authenticatedEmailsFile.template` | Name of the configmap that is handled outside of that chart | `""`
 `authenticatedEmailsFile.restricted_access | (email addresses)[https://github.com/pusher/oauth2_proxy#email-authentication] list config | `""`
 `config.clientID` | oauth client ID | `""`
 `config.clientSecret` | oauth client secret | `""`
-`config.cookieSecret` | server specific cookie for the secret; create a new one with `python -c 'import os,base64; print base64.b64encode(os.urandom(16))'` | `""`
-`config.configFile` | custom [oauth2_proxy.cfg](https://github.com/pusher/oauth2_proxy/blob/master/contrib/oauth2_proxy.cfg.example) contents for settings not overridable via environment nor command line | `""`
+`config.cookieSecret` | server specific cookie for the secret; create a new one with `openssl rand -base64 32 | head -c 32 | base64` | `""`
 `config.existingSecret` | existing Kubernetes secret to use for OAuth2 credentials. See [secret template](https://github.com/helm/charts/blob/master/stable/oauth2-proxy/templates/secret.yaml) for the required values | `nil`
+`config.configFile` | custom [oauth2_proxy.cfg](https://github.com/pusher/oauth2_proxy/blob/master/contrib/oauth2_proxy.cfg.example) contents for settings not overridable via environment nor command line | `""`
+`config.existingConfig` | existing Kubernetes configmap to use for the configuration file. See [config template](https://github.com/helm/charts/blob/master/stable/oauth2-proxy/templates/configmap.yaml) for the required values | `nil`
+`config.google.adminEmail` | user impersonated by the google service account | `""`
+`config.google.serviceAccountJson` | google service account json contents | `""`
+`config.google.existingConfig` | existing Kubernetes configmap to use for the service account file. See [google secret template](https://github.com/helm/charts/blob/master/stable/oauth2-proxy/templates/google-secret.yaml) for the required values | `nil`
 `extraArgs` | key:value list of extra arguments to give the binary | `{}`
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
 `image.repository` | Image repository | `quay.io/pusher/oauth2_proxy`
