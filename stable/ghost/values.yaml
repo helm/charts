@@ -231,6 +231,13 @@ ingress:
     ## Set this to true in order to enable TLS on the ingress record
     tls: false
 
+    ## Optionally specify the TLS hosts for the ingress record
+    ## Useful when the Ingress controller supports www-redirection
+    ## If not specified, the above host name will be used
+    # tlsHosts:
+    # - www.ghost.local
+    # - ghost.local
+
     ## If TLS is set to true, you must declare what secret will store the key/certificate for TLS
     tlsSecret: ghost.local-tls
 
