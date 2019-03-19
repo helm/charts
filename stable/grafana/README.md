@@ -70,6 +70,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `extraConfigmapMounts`                    | Additional grafana server configMap volume mounts  | `[]`                                               |
 | `plugins`                                 | Plugins to be loaded along with Grafana       | `[]`                                                    |
 | `datasources`                             | Configure grafana datasources (passed through tpl) | `{}`                                                    |
+| `notifiers`                               | Configure grafana notifiers | `{}`                                                                      |
 | `dashboardProviders`                      | Configure grafana dashboard providers         | `{}`                                                    |
 | `dashboards`                              | Dashboards to import                          | `{}`                                                    |
 | `dashboardsConfigMaps`                    | ConfigMaps reference that contains dashboards | `{}`                                                    |
@@ -78,7 +79,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `ldap.config  `                           | Grafana's LDAP configuration                  | `""`                                                    |
 | `annotations`                             | Deployment annotations                        | `{}`                                                    |
 | `podAnnotations`                          | Pod annotations                               | `{}`                                                    |
-| `sidecar.image`              | Sidecar image | `kiwigrid/k8s-sidecar:0.0.11`       |
+| `sidecar.image`              | Sidecar image | `kiwigrid/k8s-sidecar:0.0.13`       |
 | `sidecar.imagePullPolicy`              | Sidecar image pull policy | `IfNotPresent`       |
 | `sidecar.resources`              | Sidecar resources | `{}`       |
 | `sidecar.dashboards.enabled`              | Enabled the cluster wide search for dashboards and adds/updates/deletes them in grafana | `false`       |
@@ -97,6 +98,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `rbac.namespaced`                         | Creates Role and Rolebinding instead of the default ClusterRole and ClusteRoleBindings for the grafana instance  | `false` |
 | `rbac.pspEnabled`                         | Create PodSecurityPolicy (with `rbac.create`, grant roles permissions as well) | `true` |
 | `rbac.pspUseAppArmor`                     | Enforce AppArmor in created PodSecurityPolicy (requires `rbac.pspEnabled`)  | `true` |
+| `command`                     | Define command to be executed by grafana container at startup  | `nil` |
 
 ### Example of extraVolumeMounts
 

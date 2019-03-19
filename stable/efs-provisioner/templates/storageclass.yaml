@@ -27,4 +27,9 @@ parameters:
   gidAllocate: "false"
 {{- end }}
 reclaimPolicy: {{ .Values.efsProvisioner.storageClass.reclaimPolicy }}
-mountOptions: {{ .Values.efsProvisioner.storageClass.mountOptions }}
+{{- if .Values.efsProvisioner.storageClass.mountOptions }}
+mountOptions:
+  {{- range .Values.efsProvisioner.storageClass.mountOptions }}
+  - {{ . }}
+  {{- end }}
+{{- end }}

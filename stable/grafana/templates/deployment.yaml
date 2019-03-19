@@ -130,6 +130,12 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+        {{- if .Values.command }}
+          command:
+          {{- range .Values.command }}
+            - {{ . }}
+          {{- end }}
+        {{- end}}
           volumeMounts:
             - name: config
               mountPath: "/etc/grafana/grafana.ini"
@@ -152,7 +158,7 @@ spec:
 {{- if .Values.dashboards }}
   {{- range $provider, $dashboards := .Values.dashboards }}
     {{- range $key, $value := $dashboards }}
-      {{- if hasKey $value "json" }}
+      {{- if (or (hasKey $value "json") (hasKey $value "file")) }}
             - name: dashboards-{{ $provider }}
               mountPath: "/var/lib/grafana/dashboards/{{ $provider }}/{{ $key }}.json"
               subPath: "{{ $key }}.json"
@@ -170,6 +176,11 @@ spec:
             - name: config
               mountPath: "/etc/grafana/provisioning/datasources/datasources.yaml"
               subPath: datasources.yaml
+{{- end }}
+{{- if .Values.notifiers }}
+            - name: config
+              mountPath: "/etc/grafana/provisioning/notifiers/notifiers.yaml"
+              subPath: notifiers.yaml
 {{- end }}
 {{- if .Values.dashboardProviders }}
             - name: config
