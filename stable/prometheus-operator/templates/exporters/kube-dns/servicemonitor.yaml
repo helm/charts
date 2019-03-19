@@ -17,9 +17,13 @@ spec:
       - "kube-system"
   endpoints:
   - port: http-metrics-dnsmasq
-    interval: 15s
+    {{- if .Values.kubeDns.serviceMonitor.interval }}
+    interval: {{ .Values.kubeDns.serviceMonitor.interval }}
+    {{- end }}
     bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
   - port: http-metrics-skydns
-    interval: 15s
+    {{- if .Values.kubeDns.serviceMonitor.interval }}
+    interval: {{ .Values.kubeDns.serviceMonitor.interval }}
+    {{- end }}
     bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
 {{- end }}
