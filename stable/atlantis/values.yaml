@@ -138,7 +138,7 @@ resources:
     cpu: 100m
 
 # Disk space for Atlantis to check out repositories
-atlantis_data_storage: 5Gi
+atlantisDataStorage: 5Gi
 
 replicaCount: 1
 
