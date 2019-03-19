@@ -294,7 +294,9 @@ spec:
 {{- if and .Values.persistence.enabled .Values.persistence.existingClaim }}
       - name: data
         persistentVolumeClaim:
-          claimName: {{ .Values.persistence.existingClaim }}
+{{- with .Values.persistence.existingClaim }}
+          claimName: {{ tpl . $ }}
+{{- end }}
 {{- else if not .Values.persistence.enabled }}
       - name: data
         emptyDir: {}
