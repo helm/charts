@@ -105,6 +105,7 @@ Parameter | Description | Default
 `test.image.repository` | Test image repository | `unguiculus/docker-python3-phantomjs-selenium`
 `test.image.tag` | Test image tag | `v1`
 `test.image.pullPolicy` | Test image pull policy | `IfNotPresent`
+`test.securityContext` | Security context for the test pod | `{runAsUser: 1000, fsGroup: 1000, runAsNonRoot: true}`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
