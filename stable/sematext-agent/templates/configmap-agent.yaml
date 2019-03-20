@@ -13,9 +13,9 @@ data:
   {{ $key }}: {{ $val | quote }}
   {{- end }}
   {{- if .Values.customUrl }}
-  SERVER_BASE_URL: {{ default "" .Values.customUrl.metricsServer | quote }}
-  EVENTS_RECEIVER_URL: {{ default "" .Values.customUrl.eventServer | quote }}
-  LOGS_RECEIVER_URL: {{ default "" .Values.customUrl.logsServer | quote }}
+  SERVER_BASE_URL: {{ default "" .Values.customUrl.serverBaseUrl | quote }}
+  EVENTS_RECEIVER_URL: {{ default "" .Values.customUrl.eventsRecieverUrl | quote }}
+  LOGS_RECEIVER_URL: {{ default "" .Values.customUrl.logsReceiverUrl | quote }}
   {{- else if eq .Values.region "EU" }}
   SERVER_BASE_URL: "https://spm-receiver.eu.sematext.com"
   EVENTS_RECEIVER_URL: "https://event-receiver.eu.sematext.com"
