@@ -53,6 +53,8 @@ spec:
           securityContext:
             runAsUser: 0
           command: ["chown", "-R", "{{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.runAsUser }}", "/var/lib/grafana"]
+          resources:
+{{ toYaml .Values.persistence.resources | indent 12 }}
           volumeMounts:
             - name: storage
               mountPath: "/var/lib/grafana"

@@ -98,13 +98,13 @@ ingress:
   #    hosts:
   #      - chart-example.local
 
-resources: {}
-#  limits:
-#    cpu: 100m
-#    memory: 128Mi
-#  requests:
-#    cpu: 100m
-#    memory: 128Mi
+resources: 
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
 
 ## Node labels for pod assignment
 ## ref: https://kubernetes.io/docs/user-guide/node-selection/
@@ -144,8 +144,15 @@ extraContainers: |
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
 ##
 persistence:
-  enabled: false
+  enabled: true
   initChownData: true
+  resources: {}
+   #limits:
+   #  cpu: 100m
+   #  memory: 100Mi
+   #requests:
+   #  cpu: 50m
+   #  memory: 50Mi
   # storageClassName: default
   accessModes:
     - ReadWriteOnce
@@ -153,6 +160,7 @@ persistence:
   # annotations: {}
   # subPath: ""
   # existingClaim:
+  
 
 # Administrator credentials when not using an existing secret (see below)
 adminUser: admin
