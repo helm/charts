@@ -268,7 +268,7 @@ replicaCount: 3
 
 image:
   repository: rabbitmq
-  tag: 3.7-alpine
+  tag: 3.7.12-alpine
   pullPolicy: IfNotPresent
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.
@@ -327,18 +327,18 @@ updateStrategy: OnDelete
 ##
 resources: {}
   # limits:
-  #   cpu: 100mm
+  #   cpu: 100m
   #   memory: 1Gi
   # requests:
-  #   cpu: 100mm
+  #   cpu: 100m
   #   memory: 1Gi
 initContainer:
   resources: {}
   #   limits:
-  #     cpu: 100mm
+  #     cpu: 100m
   #     memory: 128Mi
   #   requests:
-  #     cpu: 100mm
+  #     cpu: 100m
   #     memory: 128Mi
 
 ## Data Persistency
@@ -437,6 +437,7 @@ existingSecret: ""
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
 ##
 securityContext:
+  fsGroup: 101
   runAsGroup: 101
   runAsNonRoot: true
   runAsUser: 100

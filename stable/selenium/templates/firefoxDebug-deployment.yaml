@@ -29,7 +29,7 @@ spec:
               name: jmx
               protocol: TCP
             {{- end }}
-            - containerPort: 5900 
+            - containerPort: 5900
               name: vnc
           env:
             - name: HUB_PORT_4444_TCP_ADDR
@@ -79,6 +79,9 @@ spec:
             {{- if .Values.firefoxDebug.timeZone }}
             - name: TZ
               value: {{ .Values.firefoxDebug.timeZone | quote }}
+            {{- end }}
+            {{- if .Values.firefoxDebug.extraEnvs }}
+{{ toYaml .Values.firefoxDebug.extraEnvs | indent 12 }}
             {{- end }}
           resources:
 {{ toYaml .Values.firefoxDebug.resources | indent 12 }}
