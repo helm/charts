@@ -181,7 +181,6 @@ spec:
       name: data
       labels:
         app: {{ template "cassandra.name" . }}
-        chart: {{ template "cassandra.chart" . }}
         release: {{ .Release.Name }}
         heritage: {{ .Release.Service }}
     spec:
