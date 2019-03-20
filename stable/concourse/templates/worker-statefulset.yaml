@@ -47,11 +47,16 @@ spec:
           image: "{{ .Values.image }}:{{ .Values.imageTag }}"
           {{- end }}
           imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+          securityContext:
+            privileged: true
           command:
             - /bin/sh
           args:
             - -ce
             - |-
+              for v in $(btrfs subvolume list --sort=-ogen {{ .Values.concourse.worker.workDir }} | awk '{print $9}'); do
+                btrfs subvolume delete {{ .Values.concourse.worker.workDir }}/$v
+              done
               rm -rf {{ .Values.concourse.worker.workDir }}/*
           volumeMounts:
             - name: concourse-work-dir
