@@ -54,6 +54,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `nodeSelector`                            | Node labels for pod assignment                | `{}`                                                    |
 | `tolerations`                             | Toleration labels for pod assignment          | `[]`                                                    |
 | `affinity`                                | Affinity settings for pod assignment          | `{}`                                                    |
+| `extraInitContainers`                     | Init containers to add to the grafana pod     | `{}` |
 | `extraContainers`                         | Sidecar containers to add to the grafana pod  | `{}` |
 | `persistence.enabled`                     | Use persistent volume to store data           | `false`                                                 |
 | `persistence.initChownData`               | Change ownership of persistent volume on initialization | `true`                                                  |
@@ -68,6 +69,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `extraSecretMounts`                       | Additional grafana server secret mounts       | `[]`                                                    |
 | `extraVolumeMounts`                       | Additional grafana server volume mounts       | `[]`                                                    |
 | `extraConfigmapMounts`                    | Additional grafana server configMap volume mounts  | `[]`                                               |
+| `extraEmptyDirMounts`                     | Additional grafana server emptyDir volume mounts   | `[]`                                               |
 | `plugins`                                 | Plugins to be loaded along with Grafana       | `[]`                                                    |
 | `datasources`                             | Configure grafana datasources (passed through tpl) | `{}`                                                    |
 | `notifiers`                               | Configure grafana notifiers | `{}`                                                                      |
