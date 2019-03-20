@@ -43,7 +43,7 @@ spec:
 {{- if .Values.priorityClassName }}
       priorityClassName: {{ .Values.priorityClassName }}
 {{- end }}
-{{- if ( or .Values.persistence.enabled .Values.dashboards .Values.sidecar.datasources.enabled) }}
+{{- if ( or .Values.persistence.enabled .Values.dashboards .Values.sidecar.datasources.enabled .Values.extraInitContainers) }}
       initContainers:
 {{- end }}
 {{- if ( and .Values.persistence.enabled .Values.persistence.initChownData ) }}
@@ -101,6 +101,9 @@ spec:
             - name: sc-datasources-volume
               mountPath: "/etc/grafana/provisioning/datasources"
 {{- end}}
+{{- if .Values.extraInitContainers }}
+{{ toYaml .Values.extraInitContainers | indent 8 }}
+{{- end }}
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
       {{- range .Values.image.pullSecrets }}
@@ -208,6 +211,10 @@ spec:
               mountPath: {{ .mountPath }}
               subPath: {{ .subPath | default "" }}
               readOnly: {{ .readOnly }}
+          {{- end }}
+          {{- range .Values.extraEmptyDirMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
           {{- end }}
           ports:
             - name: service
@@ -344,4 +351,8 @@ spec:
         - name: {{ .name }}
           persistentVolumeClaim:
             claimName: {{ .existingClaim }}
+      {{- end }}
+      {{- range .Values.extraEmptyDirMounts }}
+        - name: {{ .name }}
+          emptyDir: {}
       {{- end }}

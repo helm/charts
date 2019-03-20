@@ -48,6 +48,11 @@ extraConfigmapMounts: []
   #   readOnly: true
 
 
+extraEmptyDirMounts: []
+  # - name: provisioning-notifiers
+  #   mountPath: /etc/grafana/provisioning/notifiers
+
+
 ## Assign a PriorityClassName to pods if set
 # priorityClassName:
 
@@ -115,6 +120,8 @@ tolerations: []
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
 ##
 affinity: {}
+
+extraInitContainers: []
 
 ## Enable an Specify container in extraContainers. This is meant to allow adding an authentication proxy to a grafana pod
 extraContainers: |
