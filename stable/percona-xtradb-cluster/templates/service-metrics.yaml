@@ -1,4 +1,4 @@
-{{ if .Values.metricsExporter }}
+{{ if .Values.metricsExporter.enabled }}
 ---
 apiVersion: v1
 kind: Service
