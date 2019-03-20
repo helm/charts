@@ -74,16 +74,22 @@ The following table lists the configurable parameters of the Redmine chart and t
 | `smtpUser`                          | SMTP user                                  | `nil`                                                   |
 | `smtpPassword`                      | SMTP password                              | `nil`                                                   |
 | `smtpTls`                           | Use TLS encryption with SMTP               | `nil`                                                   |
-| `databaseType.postgresql`           | Select postgresql database                 | `false`                                                 |
-| `databaseType.mariadb`              | Select mariadb database                    | `true`                                                  |
+| `databaseType.postgresql`           | Select PostgreSQL as database              | `false`                                                 |
+| `databaseType.mariadb`              | Select MariaDB as database                 | `true`                                                  |
+| `mariadb.enabled`                   | Whether to deploy a MariaDB server to satisfy the applications database requirements     | `true`    |
 | `mariadb.rootUser.password`         | MariaDB admin password                     | `nil`                                                   |
+| `postgresql.enabled`                | Whether to deploy a PostgreSQL server to satisfy the applications database requirements  | `false`   |
 | `postgresql.postgresqlPassword`     | PostgreSQL admin password                  | `nil`                                                   |
-| `service.type`                    | Kubernetes Service type                    | `LoadBalancer`                                          |
-| `service.port`                    | Service HTTP port                  | `80`                                          |
-| `service.nodePorts.http`                 | Kubernetes http node port                  | `""`                                                    |
-| `service.externalTrafficPolicy`   | Enable client source IP preservation       | `Cluster`                                               |
-| `service.loadBalancerIP`   | LoadBalancer service IP address       | `""`                                               |
-| `service.loadBalancerSourceRanges`   | An array of load balancer sources          | `0.0.0.0/0`                                             |
+| `externalDatabase.host`             | Host of the external database              | `localhost`                                             |
+| `externalDatabase.user`             | External db admin user                     | `root`                                                  |
+| `externalDatabase.password`         | Password for the admin user                | `""`                                                    |
+| `externalDatabase.port`             | Database port number                       | `3306`                                                  |
+| `service.type`                      | Kubernetes Service type                    | `LoadBalancer`                                          |
+| `service.port`                      | Service HTTP port                          | `80`                                                    |
+| `service.nodePorts.http`            | Kubernetes http node port                  | `""`                                                    |
+| `service.externalTrafficPolicy`     | Enable client source IP preservation       | `Cluster`                                               |
+| `service.loadBalancerIP`            | LoadBalancer service IP address            | `""`                                                    |
+| `service.loadBalancerSourceRanges`  | An array of load balancer sources          | `0.0.0.0/0`                                             |
 | `ingress.enabled`                   | Enable or disable the ingress              | `false`                                                 |
 | `ingress.hosts[0].name`             | Hostname to your Redmine installation      | `redmine.local  `                                       |
 | `ingress.hosts[0].path`             | Path within the url structure              | `/`                                                     |
