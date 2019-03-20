@@ -38,7 +38,7 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          args: ["-Dconfig.file=/etc/cerebro/application.conf"]
+          args: ["-Dconfig.file=/opt/cerebro/conf/application.conf"]
           ports:
             - name: http
               containerPort: 9000
