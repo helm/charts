@@ -35,6 +35,7 @@ spec:
       initContainers:
       - name: wait-for-db
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
         - name: KONG_PROXY_ACCESS_LOG
           value: "/dev/stdout"
