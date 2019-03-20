@@ -19,5 +19,5 @@ spec:
     {{- if .Values.grafana.serviceMonitor.interval }}
     interval: {{ .Values.grafana.serviceMonitor.interval }}
     {{- end }}
-    path: "{{ trimSuffix "/" .Values.grafana.ingress.path }}/metrics"
+    path: "/metrics"
 {{- end }}
