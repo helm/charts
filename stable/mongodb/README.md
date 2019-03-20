@@ -88,6 +88,7 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `nodeSelector`                                     | Node labels for pod assignment                                                               | {}                                                      |
 | `affinity`                                         | Affinity for pod assignment                                                                  | {}                                                      |
 | `tolerations`                                      | Toleration labels for pod assignment                                                         | {}                                                      |
+| `updateStrategy`                                   | Statefulsets update strategy policy                                                          | `RollingUpdate`                                         |
 | `securityContext.enabled`                          | Enable security context                                                                      | `true`                                                  |
 | `securityContext.fsGroup`                          | Group ID for the container                                                                   | `1001`                                                  |
 | `securityContext.runAsUser`                        | User ID for the container                                                                    | `1001`                                                  |
@@ -110,6 +111,7 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `readinessProbe.timeoutSeconds`                    | When the probe times out                                                                     | `5`                                                     |
 | `readinessProbe.failureThreshold`                  | Minimum consecutive failures for the probe to be considered failed after having succeeded.   | `6`                                                     |
 | `readinessProbe.successThreshold`                  | Minimum consecutive successes for the probe to be considered successful after having failed. | `1`                                                     |
+| `initConfigMap.name`                               | Custom config map with init scripts                                                          | `nil`                                                   |
 | `configmap`                                        | MongoDB configuration file to be used                                                        | `nil`                                                   |
 | `metrics.enabled`                                  | Start a side-car prometheus exporter                                                         | `false`                                                 |
 | `metrics.image.registry`                           | MongoDB exporter image registry                                                              | `docker.io`                                             |
@@ -185,6 +187,7 @@ Some characteristics of this chart are:
 ## Initialize a fresh instance
 
 The [Bitnami MongoDB](https://github.com/bitnami/bitnami-docker-mongodb) image allows you to use your custom scripts to initialize a fresh instance. In order to execute the scripts, they must be located inside the chart folder `files/docker-entrypoint-initdb.d` so they can be consumed as a ConfigMap.
+Also you can create a custom config map and give it via `initConfigMap`(check options for more details).
 
 The allowed extensions are `.sh`, and `.js`.
 
