@@ -40,6 +40,10 @@ halyard:
   ## run by the init container before halyard is started.
   # additionalInitScript: |-
 
+  ## Uncomment if you want to add annotations on halyard and install-using-hal pods
+  # annotations:
+  #   iam.amazonaws.com/role: <role_arn>
+
 # Define which registries and repositories you want available in your
 # Spinnaker pipeline definitions
 # For more info visit:
