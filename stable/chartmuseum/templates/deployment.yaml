@@ -105,6 +105,11 @@ spec:
         - mountPath: /etc/secrets/google
           name: {{ include "chartmuseum.fullname" . }}-gcp
 {{- end }}
+{{- if  .Values.oracle.secret.enabled }}
+        volumeMounts:
+        - mountPath: /home/chartmuseum/.oci
+          name: {{ include "chartmuseum.fullname" . }}-oracle
+{{- end }}
       {{- with .Values.resources }}
         resources:
 {{ toYaml . | indent 10 }}
@@ -152,4 +157,14 @@ spec:
           - key: {{ .Values.gcp.secret.key }}
             path: credentials.json
       {{ end }}
+      {{ end }}
+      {{ if .Values.oracle.secret.enabled }}
+      - name: {{ include "chartmuseum.fullname" . }}-oracle
+        secret:
+          secretName: {{ .Values.oracle.secret.name }}
+          items:
+          - key: {{ .Values.oracle.secret.config }}
+            path: config
+          - key: {{ .Values.oracle.secret.key_file }}
+            path: oci.key
       {{ end }}
