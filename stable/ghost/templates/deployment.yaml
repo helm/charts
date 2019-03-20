@@ -85,7 +85,11 @@ spec:
         - name: GHOST_PROTOCOL
           value: {{  .Values.ghostProtocol | quote }}
         - name: GHOST_PORT_NUMBER
+        {{- if .Values.ghostPort }}
+          value: {{ .Values.ghostPort | quote }}
+        {{- else }}
           value: {{ .Values.service.port | quote }}
+        {{- end }}
         - name: GHOST_USERNAME
           value: {{ .Values.ghostUsername | quote }}
         - name: GHOST_PASSWORD

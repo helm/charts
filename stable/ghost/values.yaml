@@ -42,11 +42,12 @@ volumePermissions:
     # pullSecrets:
     #   - myRegistryKeySecretName
 
-## Ghost protocol, host and path to create application URLs
+## Ghost protocol, host, port and path to create application URLs
 ## ref: https://github.com/bitnami/bitnami-docker-ghost#configuration
 ##
 ghostProtocol: http
 # ghostHost:
+# ghostPort:
 ghostPath: /
 
 
