@@ -78,20 +78,8 @@ Also, we can't use a single if because lazy evaluation is not an option
 Return PostgreSQL password
 */}}
 {{- define "postgresql.password" -}}
-{{- if .Values.global }}
-    {{- if .Values.global.postgresql }}
-        {{- if .Values.global.postgresql.postgresqlPassword }}
-            {{- .Values.global.postgresql.postgresqlPassword -}}
-        {{- else if .Values.postgresqlPassword -}}
-            {{- .Values.postgresqlPassword -}}
-        {{- else -}}
-            {{- randAlphaNum 10 -}}
-        {{- end -}}
-    {{- else if .Values.postgresqlPassword -}}
-        {{- .Values.postgresqlPassword -}}
-    {{- else -}}
-        {{- randAlphaNum 10 -}}
-    {{- end -}}
+{{- if .Values.global.postgresql.postgresqlPassword }}
+    {{- .Values.global.postgresql.postgresqlPassword -}}
 {{- else if .Values.postgresqlPassword -}}
     {{- .Values.postgresqlPassword -}}
 {{- else -}}
@@ -103,20 +91,8 @@ Return PostgreSQL password
 Return PostgreSQL replication password
 */}}
 {{- define "postgresql.replication.password" -}}
-{{- if .Values.global }}
-    {{- if .Values.global.postgresql }}
-        {{- if .Values.global.postgresql.replicationPassword }}
-            {{- .Values.global.postgresql.replicationPassword -}}
-        {{- else if .Values.replication.password -}}
-            {{- .Values.replication.password -}}
-        {{- else -}}
-            {{- randAlphaNum 10 -}}
-        {{- end -}}
-    {{- else if .Values.replication.password -}}
-        {{- .Values.replication.password -}}
-    {{- else -}}
-        {{- randAlphaNum 10 -}}
-    {{- end -}}
+{{- if .Values.global.postgresql.replicationPassword }}
+    {{- .Values.global.postgresql.replicationPassword -}}
 {{- else if .Values.replication.password -}}
     {{- .Values.replication.password -}}
 {{- else -}}
@@ -128,16 +104,8 @@ Return PostgreSQL replication password
 Return PostgreSQL username
 */}}
 {{- define "postgresql.username" -}}
-{{- if .Values.global }}
-    {{- if .Values.global.postgresql }}
-        {{- if .Values.global.postgresql.postgresqlUsername }}
-            {{- .Values.global.postgresql.postgresqlUsername -}}
-        {{- else -}}
-            {{- .Values.postgresqlUsername -}}
-        {{- end -}}
-    {{- else -}}
-        {{- .Values.postgresqlUsername -}}
-    {{- end -}}
+{{- if .Values.global.postgresql.postgresqlUsername }}
+    {{- .Values.global.postgresql.postgresqlUsername -}}
 {{- else -}}
     {{- .Values.postgresqlUsername -}}
 {{- end -}}
@@ -148,16 +116,8 @@ Return PostgreSQL username
 Return PostgreSQL replication username
 */}}
 {{- define "postgresql.replication.username" -}}
-{{- if .Values.global }}
-    {{- if .Values.global.postgresql }}
-        {{- if .Values.global.postgresql.replicationUser }}
-            {{- .Values.global.postgresql.replicationUser -}}
-        {{- else -}}
-            {{- .Values.replication.user -}}
-        {{- end -}}
-    {{- else -}}
-        {{- .Values.replication.user -}}
-    {{- end -}}
+{{- if .Values.global.postgresql.replicationUser }}
+    {{- .Values.global.postgresql.replicationUser -}}
 {{- else -}}
     {{- .Values.replication.user -}}
 {{- end -}}
@@ -167,16 +127,8 @@ Return PostgreSQL replication username
 Return PostgreSQL port
 */}}
 {{- define "postgresql.port" -}}
-{{- if .Values.global }}
-    {{- if .Values.global.postgresql }}
-        {{- if .Values.global.postgresql.servicePort }}
-            {{- .Values.global.postgresql.servicePort -}}
-        {{- else -}}
-            {{- .Values.service.port -}}
-        {{- end -}}
-    {{- else -}}
-        {{- .Values.service.port -}}
-    {{- end -}}
+{{- if .Values.global.postgresql.servicePort }}
+    {{- .Values.global.postgresql.servicePort -}}
 {{- else -}}
     {{- .Values.service.port -}}
 {{- end -}}
@@ -186,16 +138,8 @@ Return PostgreSQL port
 Return PostgreSQL created database
 */}}
 {{- define "postgresql.database" -}}
-{{- if .Values.global }}
-    {{- if .Values.global.postgresql }}
-        {{- if .Values.global.postgresql.postgresqlDatabase }}
-            {{- .Values.global.postgresql.postgresqlDatabase -}}
-        {{- else if .Values.postgresqlDatabase -}}
-            {{- .Values.postgresqlDatabase -}}
-        {{- end -}}
-    {{- else if .Values.postgresqlDatabase -}}
-        {{- .Values.postgresqlDatabase -}}
-    {{- end -}}
+{{- if .Values.global.postgresql.postgresqlDatabase }}
+    {{- .Values.global.postgresql.postgresqlDatabase -}}
 {{- else if .Values.postgresqlDatabase -}}
     {{- .Values.postgresqlDatabase -}}
 {{- end -}}
@@ -251,20 +195,8 @@ Also, we can't use a single if because lazy evaluation is not an option
 Get the password secret.
 */}}
 {{- define "postgresql.secretName" -}}
-{{- if .Values.global }}
-    {{- if .Values.global.postgresql }}
-        {{- if .Values.global.postgresql.existingSecret }}
-            {{- printf "%s" .Values.global.postgresql.existingSecret -}}
-        {{- else if .Values.existingSecret -}}
-            {{- printf "%s" .Values.existingSecret -}}
-        {{- else -}}
-            {{- printf "%s" (include "postgresql.fullname" .) -}}
-        {{- end -}}
-    {{- else if .Values.existingSecret -}}
-        {{- printf "%s" .Values.existingSecret -}}
-    {{- else -}}
-        {{- printf "%s" (include "postgresql.fullname" .) -}}
-    {{- end -}}
+{{- if .Values.global.postgresql.existingSecret }}
+    {{- printf "%s" .Values.global.postgresql.existingSecret -}}
 {{- else if .Values.existingSecret -}}
     {{- printf "%s" .Values.existingSecret -}}
 {{- else -}}
@@ -276,17 +208,7 @@ Get the password secret.
 Return true if a secret object should be created
 */}}
 {{- define "postgresql.createSecret" -}}
-{{- if .Values.global }}
-    {{- if .Values.global.postgresql }}
-        {{- if .Values.global.postgresql.existingSecret }}
-        {{- else if .Values.existingSecret -}}
-        {{- else -}}
-            {{- true -}}
-        {{- end -}}
-    {{- else if .Values.existingSecret -}}
-    {{- else -}}
-        {{- true -}}
-    {{- end -}}
+{{- if .Values.global.postgresql.existingSecret }}
 {{- else if .Values.existingSecret -}}
 {{- else -}}
     {{- true -}}
