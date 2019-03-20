@@ -12,6 +12,8 @@ metadata:
   annotations:
     "helm.sh/hook": test-success
 spec:
+  securityContext:
+{{ toYaml .Values.test.securityContext | indent 8 }}
   containers:
     - name: {{ .Chart.Name }}-test
       image: "{{ .Values.test.image.repository }}:{{ .Values.test.image.tag }}"
