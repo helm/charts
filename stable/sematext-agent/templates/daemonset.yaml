@@ -1,4 +1,4 @@
-{{- if or (.Values.infraToken) (.Values.logsToken) (.Values.containerToken) }}
+{{- if or (.Values.infraToken) (.Values.logseneToken) (.Values.containerToken) }}
 {{- if .Capabilities.APIVersions.Has "apps/v1" }}
 apiVersion: apps/v1
 {{- else }}
@@ -53,6 +53,10 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: spec.nodeName
+          - name: STA_NAMESPACE
+            valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
           envFrom:
           - configMapRef:
               name: {{ template "sematext-agent.fullname" . }}-agent
@@ -80,6 +84,9 @@ spec:
               mountPath: /var/run/docker.sock
             - name: journal
               mountPath: /opt/spm/st-agent
+            - name: lib
+              mountPath: /host/usr/lib
+              readOnly: true
             - name: autodisco-template
               mountPath: /etc/agent
           securityContext:
@@ -126,6 +133,9 @@ spec:
         - name: journal
           hostPath:
             path: /opt/spm/st-agent
+        - name: lib
+          hostPath:
+            path: /host/usr/lib
         - name: autodisco-template
           configMap:
             name: {{ template "sematext-agent.fullname" . }}-agent-autodisco
