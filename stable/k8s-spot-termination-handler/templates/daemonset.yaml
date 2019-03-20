@@ -28,6 +28,14 @@ spec:
             - name: SLACK_URL
               value: {{ . | quote }}
             {{- end }}
+            {{- with .Values.gmail }}
+            - name: GMAIL_USER
+              value: {{ .user | quote }}
+            - name: GMAIL_PASS
+              value: {{ .pass | quote }}
+            - name: GMAIL_EMAILTO
+              value: {{ .emailto | quote }}
+            {{- end }}
             {{- with .Values.detachAsg }}
             - name: DETACH_ASG
               value: {{ . | quote }}

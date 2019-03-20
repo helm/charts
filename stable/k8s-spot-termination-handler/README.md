@@ -31,6 +31,9 @@ Parameter | Description | Default
 `image.pullPolicy` | container image pull policy | `IfNotPresent`
 `pollInterval` | the interval in seconds between attempts to poll EC2 metadata API for termination events | `"5"`
 `slackUrl` | Slack webhook URL to send messages when a termination notice is received | _not defined_
+`gmail.user` | A gmail user account to authenticate for mail notifications | _not defined_
+`gmail.pass` | The above account's password for authentication | _not defined_
+`gmail.emailto` | The target email address to send the notification to | _not defined_
 `clusterName` | if `slackUrl` is set - use this cluster name in Slack messages | _not defined_
 `enableLogspout` | if `true`, enable the Logspout log capturing. Logspout should be deployed separately | `false`
 `rbac.create` | if `true`, create & use RBAC resources | `true`
