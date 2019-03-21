@@ -1,3 +1,4 @@
+{{- if .Values.priorityClassDefault.enabled }}
 apiVersion: scheduling.k8s.io/{{ template "PriorityClass.apiVersion" . }}
 kind: PriorityClass
 metadata:
@@ -10,3 +11,4 @@ metadata:
 value: {{ .Values.priorityClassDefault.value }}
 globalDefault: true
 description: "Default priority class for all pods"
+{{- end }}

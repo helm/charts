@@ -60,7 +60,7 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `rabbitmq.password`                  | RabbitMQ application password                    | _random 10 character long alphanumeric string_          |
 | `rabbitmq.existingPasswordSecret`    | Existing secret with RabbitMQ credentials        | nil                                                     |
 | `rabbitmq.erlangCookie`              | Erlang cookie                                    | _random 32 character long alphanumeric string_          |
-| `rabbitmq.existingErlSecret`         | Existing secret with RabbitMQ Erlang cookie      | nil                                                     |
+| `rabbitmq.existingErlangSecret`      | Existing secret with RabbitMQ Erlang cookie      | nil                                                     |
 | `rabbitmq.plugins`                   | configuration file for plugins to enable         | `[rabbitmq_management,rabbitmq_peer_discovery_k8s].`    |
 | `rabbitmq.clustering.address_type`   | Switch clustering mode                           | `ip` or `hostname`                                      |
 | `rabbitmq.clustering.k8s_domain`     | Customize internal k8s cluster domain            | `cluster.local`                                         |
@@ -76,7 +76,7 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `persistence.storageClass`           | Storage class of backing PVC                     | `nil` (uses alpha storage class annotation)             |
 | `persistence.accessMode`             | Use volume as ReadOnly or ReadWrite              | `ReadWriteOnce`                                         |
 | `persistence.size`                   | Size of data volume                              | `8Gi`                                                   |
-| `persistence.path`                   | Mount path of the data volume                    | `/opt/bitnami/rabbitmq/var/lib/rabbitmq`               |
+| `persistence.path`                   | Mount path of the data volume                    | `/opt/bitnami/rabbitmq/var/lib/rabbitmq`                |
 | `securityContext.enabled`            | Enable security context                          | `true`                                                  |
 | `securityContext.fsGroup`            | Group ID for the container                       | `1001`                                                  |
 | `securityContext.runAsUser`          | User ID for the container                        | `1001`                                                  |
@@ -85,6 +85,7 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `nodeSelector`                       | Node labels for pod assignment                   | {}                                                      |
 | `affinity`                           | Affinity settings for pod assignment             | {}                                                      |
 | `tolerations`                        | Toleration labels for pod assignment             | []                                                      |
+| `updateStrategy`                     | Statefulset update strategy policy               | `RollingUpdate`                                         |
 | `ingress.enabled`                    | Enable ingress resource for Management console   | `false`                                                 |
 | `ingress.hostName`                   | Hostname to your RabbitMQ installation           | `nil`                                                   |
 | `ingress.path`                       | Path within the url structure                    | `/`                                                     |

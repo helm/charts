@@ -12,9 +12,13 @@ spec:
   replicas: {{ .Values.replicaCount }}
   updateStrategy:
     type: {{ .Values.statefulset.updateStrategy }}
+    {{- if (eq "Recreate" .Values.statefulset.updateStrategy) }}
+    rollingUpdate: null
+    {{- else }}
     {{- if .Values.statefulset.rollingUpdatePartition }}
     rollingUpdate:
       partition: {{ .Values.statefulset.rollingUpdatePartition }}
+    {{- end }}
     {{- end }}
   selector:
     matchLabels:
@@ -129,7 +133,7 @@ spec:
         {{- end }}
 {{- if .Values.metrics.enabled }}
       - name: metrics
-        image: {{ template "metrics.image" . }}
+        image: {{ template "nats.metrics.image" . }}
         imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
         args:
 {{ toYaml .Values.metrics.args | indent 10 -}}
