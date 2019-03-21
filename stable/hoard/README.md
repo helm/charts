@@ -32,14 +32,23 @@ The following table lists the configurable parameters of the Hoard chart and its
 | --------- | ----------- | ------- |
 | `replicaCount` | number of daemons | `1` |
 | `image.repository` | docker image | `"quay.io/monax/hoard"` |
-| `image.tag` | version | `"2.0.0"` |
+| `image.tag` | version | `"3.0.1"` |
 | `image.pullPolicy` | pull policy | `"IfNotPresent"` |
-| `storage.type` | backend object store (aws, azure, filesystem, gcp, ipfs)| `"filesystem"` |
-| `storage.remote` | remote api location (ipfs only) | `""` |
-| `storage.region` | object store location (cloud only) | `""` |
-| `storage.bucket` | object storage container (cloud only) | `""` |
-| `storage.prefix` | bucket folder (cloud only) | `""` |
-| `storage.credentialsSecret` | required secret for cloud providers | `""` |
+| `config.listenaddress` | address to listen on | `tcp://:53431` |
+| `config.storage.storagetype` | backend object store (aws, azure, filesystem, gcp, ipfs) | `filesystem` |
+| `config.storage.addressencoding` | object address encoding | `base64` |
+| `config.storage.filesystemconfig.rootdirectory` | object address encoding | `"/data"` |
+| `config.storage.cloudconfig.bucket` | object storage container (cloud only) | `""` |
+| `config.storage.cloudconfig.prefix` | bucket folder (cloud only) | `""` |
+| `config.storage.cloudconfig.region` | object store location (cloud only) | `""` |
+| `config.storage.ipfsconfig.remoteapi` | remote api location (ipfs only) | `""` |
+| `config.logging.loggingtype` | format for logging output | `"json"` |
+| `config.logging.channels` | logging types | `[]` |
+| `config.secrets.symmetric` | symmetric secrets (publicid, passphrase) | `[]` |
+| `config.secrets.openpgp.privateid` | id of private key to sign with | `""` |
+| `config.secrets.openpgp.file` | name of the file mounted from secret | `"/secrets/keyring"` |
+| `secrets.creds` | required secret for cloud providers | `"cloud-credentials"` |
+| `secrets.keyring` | required secret for openpgp grants | `"private-keyring"` |
 | `persistence.size` | size of local store | `"10Gi"` |
 | `persistence.storageClass` | pvc type | `"standard"` |
 | `persistence.accessMode` | pvc access | `"ReadWriteOnce"` |
@@ -74,20 +83,28 @@ For each of the supported cloud back-ends, please ensure you have the appropriat
 
 ```bash
 kubectl create secret generic cloud-credentials --from-literal access-key-id=${AWS_ACCESS_KEY_ID} --from-literal secret-access-key=${AWS_SECRET_ACCESS_KEY}
-helm install --name my-release stable/hoard --set storage.type=aws,storage.region="eu-central-1",storage.bucket="my-bucket",storage.prefix="folder",storage.credentialsSecret="cloud-credentials"
+helm install --name my-release stable/hoard --set storage.type=aws,storage.region="eu-central-1",storage.bucket="my-bucket",storage.prefix="folder",storage.secret="cloud-credentials"
 ```
 
 ### [Azure](https://docs.microsoft.com/en-us/azure/storage/common/storage-account-manage)
 
 ```bash
 kubectl create secret generic cloud-credentials --from-literal storage-account-name=${AZURE_STORAGE_ACCOUNT_NAME} --from-literal storage-account-key=${AZURE_STORAGE_ACCOUNT_KEY}
-helm install --name my-release stable/hoard --set storage.type=azure,storage.bucket="my-bucket",storage.prefix="folder",storage.credentialsSecret="cloud-credentials"
+helm install --name my-release stable/hoard --set storage.type=azure,storage.bucket="my-bucket",storage.prefix="folder",storage.secret="cloud-credentials"
 ```
 
 ### [GCP](https://cloud.google.com/iam/docs/creating-managing-service-account-keys)
 
 ```bash
 kubectl create secret generic cloud-credentials --from-literal service-key=${GCLOUD_SERVICE_KEY}
-helm install --name my-release stable/hoard --set storage.type=gcp,storage.bucket="my-bucket",storage.prefix="folder",storage.credentialsSecret="cloud-credentials"
+helm install --name my-release stable/hoard --set storage.type=gcp,storage.bucket="my-bucket",storage.prefix="folder",storage.secret="cloud-credentials"
 ```
 
+## OpenPGP Grants
+
+Once configured, hoard can share access to a secret file by encrypting it with the public key of the recipient:
+
+```
+kubectl create secret generic private-keyring --from-file ${GOPATH}/src/github.com/monax/hoard/grant/private.key.asc
+helm install --name my-release stable/hoard --set openpgp.id="10449759736975846181",openpgp.secret=private-keyring
+```
