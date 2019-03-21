@@ -71,7 +71,7 @@ helm install --namespace "graylog" -n "graylog" --set servers.replicas=5 stable/
 The command above will install 1 master and 4 coordinating.
 
 ## Install Chart with specific node pool
-Sometime you may need to deploy your graylog to specific node pool to allocate resources. 
+Sometime you may need to deploy your graylog to specific node pool to allocate resources.
 For example, you have 6 vms in node pools and you want to deploy graylog to node which labeled as `cloud.google.com/gke-nodepool: graylog-pool`
 
 Set the following values in `values.yaml`
@@ -96,8 +96,11 @@ The following table lists the configurable parameters of the Cassandra chart and
 | `graylog.affinity`                      | Graylog server affinity                                                                                                                               | `{}`                                  |
 | `graylog.tolerations`                   | Graylog server tolerations                                                                                                                            | `[]`                                  |
 | `graylog.nodeSelector`                  | Graylog server node selector                                                                                                                          | `{}`                                  |
+| `graylog.env`                           | Graylog server env variables                                                                                                                          | `{}`                                  |
 | `graylog.service.type`                  | Kubernetes Service type                                                                                                                               | `ClusterIP`                           |
 | `graylog.service.port`                  | Graylog Service port                                                                                                                                  | `9000`                                |
+| `graylog.service.master.port`           | Graylog Master Service port                                                                                                                           | `9000`                                |
+| `graylog.service.master.anotations`     | Graylog Master Service annotations                                                                                                                    | `{}`                                  |
 | `graylog.podAnnotations`                | Kubernetes Pod annotations                                                                                                                            | `{}`                                  |
 | `graylog.terminationGracePeriodSeconds` | Pod termination grace period                                                                                                                          | `120`                                 |
 | `graylog.updateStrategy`                | Update Strategy of the StatefulSet                                                                                                                    | `OnDelete`                            |
@@ -141,7 +144,7 @@ You can enable input ports by edit the `input` values. For example, you want to 
     tcp:
       service:
         type: LoadBalancer
-        loadBalancerIP: 
+        loadBalancerIP:
       ports:
         - name: gelf1
           port: 12222
@@ -191,7 +194,7 @@ graylog:
       -----END PRIVATE KEY-----
 ```
 
-Then configure Graylog input to 
+Then configure Graylog input to
 
 | Parameter      | Value                           |
 |----------------|---------------------------------|
