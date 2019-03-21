@@ -83,6 +83,10 @@ spec:
             {{- end }}
           resources:
 {{ toYaml .Values.firefox.resources | indent 12 }}
+{{- if or .Values.global.imagePullSecrets .Values.firefox.imagePullSecrets }}
+      imagePullSecrets: 
+      - name: {{ .Values.firefox.imagePullSecrets | default .Values.global.imagePullSecrets | quote }}
+{{- end }}
       hostAliases:
 {{ toYaml .Values.global.hostAliases | indent 8 }}
       nodeSelector:
