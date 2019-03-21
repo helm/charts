@@ -3,6 +3,11 @@
 This file documents all notable changes to Sysdig Falco Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v0.5.7
+
+* Upgrade to Falco 0.14.0
+* Upgrade rules to Falco 0.14.0
+
 ## v0.5.6
 
 * Allow extra container args
