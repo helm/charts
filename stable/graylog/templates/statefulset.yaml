@@ -148,6 +148,10 @@ spec:
                 secretKeyRef:
                   name: {{ template "graylog.fullname" . }}
                   key: graylog-password-sha2
+            {{- range $key, $value :=  .Values.graylog.env }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+            {{- end }}
           ports:
             - containerPort: 9000
               name: graylog
