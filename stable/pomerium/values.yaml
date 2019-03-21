@@ -1,0 +1,111 @@
+# For detailed explanation of each of the configuration settings see
+# https://www.pomerium.io/docs/config-reference.htmls
+
+# settings that are shared by all services
+config:
+  # secrets can be generated with `head -c32 /dev/urandom | base64`
+  sharedSecret: "LL3g/NoKkao7mTec2/wYSOZAki1VbR89q+kqbdFj0c4="
+  cookieSecret: "tAhd5A5Y8R/H/msFhkNdt8dCym2SatVbh4UrcDk3+Ms="
+  # default is to use a self-signed cert, should _NOT_ be used inproduction
+  key: "LS0tLS1CRUdJTiBFQyBQUklWQVRFIEtFWS0tLS0tCk1IY0NBUUVFSUtzZ3pUNDdBQXlzTkJNa1BJYnVJV1BodFEwN2RzWGx4WjB5Z3pjV3VXaVVvQW9HQ0NxR1NNNDkKQXdFSG9VUURRZ0FFLzMyY2c0YWpuWHpyT2pORjlXczROK2NyUTdwTGVWOGt6Y3R6cGN1S2F1KzAzVmZXRlRaTQpaTmh2cFQrUzZlS3QzSW1ycExsRTlKRFN6dDZwcUI0UVZRPT0KLS0tLS1FTkQgRUMgUFJJVkFURSBLRVktLS0tLQo="
+  cert: "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUJFekNCdWdJSkFLK3VPcmsyVzFRTk1Bb0dDQ3FHU000OUJBTUNNQkV4RHpBTkJnTlZCQU1NQm5WdWRYTmwKWkRBZ0Z3MHhPVEF6TWpBeU1UTTNNemRhR0E4ME56VTNNREl4TkRJeE16Y3pOMW93RVRFUE1BMEdBMVVFQXd3RwpkVzUxYzJWa01Ga3dFd1lIS29aSXpqMENBUVlJS29aSXpqMERBUWNEUWdBRS8zMmNnNGFqblh6ck9qTkY5V3M0Ck4rY3JRN3BMZVY4a3pjdHpwY3VLYXUrMDNWZldGVFpNWk5odnBUK1M2ZUt0M0ltcnBMbEU5SkRTenQ2cHFCNFEKVlRBS0JnZ3Foa2pPUFFRREFnTklBREJGQWlFQTQwSjYycmJjcThYK0EzdTdQemRBNjRhaTJFbWhMQzZkRERYaQpwNmZpaHhFQ0lDRGFWcVkrUHFmZG5Ja1ZQVTFWdU5zNDl5RkJyd2IxYTlqcUdWQzlLaG1GCi0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K"
+  policyFile: |-
+    - from: httpbin.corp.pomerium.io
+      to: http://httpbin
+      allowed_domains:
+      - pomerium.io
+    - from: external-httpbin.corp.pomerium.io
+      to: httpbin.org
+      allowed_domains:
+      - gmail.com
+    - from: weirdlyssl.corp.pomerium.io
+      to: http://neverssl.com
+      allowed_users:
+      - bdd@pomerium.io
+      allowed_groups:
+      - admins
+      - developers
+    - from: hello.corp.pomerium.io
+      to: http://hello:8080
+      allowed_groups:
+      - admins
+
+authenticate:
+  name: authenticate
+  redirectUrl: https://auth.corp.pomerium.io/oauth2/callback
+  proxyRootDomains: pomerium.io
+  # see https://www.pomerium.io/docs/identity-providers.html
+  idp:
+    provider: google
+    # url: https://example.oktapreview.com/oauth2/default
+    clientID: ""
+    clientSecret: ""
+
+authorize:
+  name: authorize
+
+proxy:
+  name: proxy
+  authenticateServiceUrl: https://auth.corp.pomerium.io
+  authorizeServiceUrl: https://access.corp.pomerium.io
+
+# For any other settings that are optional. for a complete listing see:
+# https://www.pomerium.io/docs/config-reference.html
+extraEnv: {}
+extraArgs: {}
+extraVolumes: {}
+
+image:
+  repository: "pomerium/pomerium"
+  tag: "latest"
+  pullPolicy: "IfNotPresent"
+
+service:
+  # Service type can be set to ClusterIP, NodePort or LoadBalancer.
+  type: ClusterIP
+  externalPort: 443
+  annotations: {}
+  labels: {}
+
+ingress:
+  enabled: false
+  annotations:
+    {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  # path: /
+  hosts:
+  #   - "*.corp.example.com"
+  #   - "auth.corp.example.com"
+  #   - "access.corp.example.com"
+  tls: []
+  #  - secretName: corp.pomerium.com-tls
+  #    hosts:
+  #
+
+resources:
+  {}
+  # limits:
+  #   cpu: 100m
+  #   memory: 300Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 300Mi
+
+priorityClassName: ""
+
+# Affinity for pod assignment
+# Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+# affinity: {}
+
+# Tolerations for pod assignment
+# Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+# tolerations: []
+
+# Node labels for pod assignment
+# Ref: https://kubernetes.io/docs/user-guide/node-selection/
+# nodeSelector: {}
+
+podAnnotations: {}
+podLabels: {}
+replicaCount: 1

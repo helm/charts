@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "pomerium.fullname" . }}
+  labels:
+    app: {{ template "pomerium.name" . }}
+    chart: {{ template "pomerium.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+data:
+  policy.yaml: {{toYaml .Values.config.policyFile | indent 4}}
