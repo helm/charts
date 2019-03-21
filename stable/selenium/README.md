@@ -46,8 +46,10 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `global.hostAliases` | A list of hostAliases, that contains ip and hostnames, to be used globally | `[]` |
 | `global.affinity` | Deployemnt affinities to be used globally for scheduling of all images | `nil` |
 | `global.tolerations` | Deployment tolerations to be used globally for scheduling of all images | `nil` |
+| `global.imagePullSecrets` | The secret to use for pulling the images for all deployments | `nil` |
 | `hub.image` | The selenium hub image | `selenium/hub` |
-| `hub.tag` | The selenium hub image tag | `3.14.0` |
+| `hub.tag` | The selenium hub image tag | `3.141.59` |
+| `hub.imagePullSecrets` | The secret to use for pulling the image. Will override the global parameter if set | `nil` |
 | `hub.pullPolicy` | The pull policy for the hub image | `IfNotPresent` |
 | `hub.port` | The port the hub listens on | `4444` |
 | `hub.servicePort` | The port the hub Service listens on | `4444` |
@@ -83,7 +85,8 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `hub.probePath` | Path for readiness and liveness probes to check | `/wd/hub/status` |
 | `chrome.enabled` | Schedule a chrome node pod | `false` |
 | `chrome.image` | The selenium node chrome image | `selenium/node-chrome` |
-| `chrome.tag` | The selenium node chrome tag | `3.14.0` |
+| `chrome.tag` | The selenium node chrome tag | `3.141.59` |
+| `chrome.imagePullSecrets` | The secret to use for pulling the image. Will override the global parameter if set | `nil` |
 | `chrome.pullPolicy` | The pull policy for the node chrome image | `IfNotPresent` |
 | `chrome.replicas` | The number of selenium node chrome pods | `1` |
 | `chrome.podAnnotations` | Annotations on the chrome pods | `{}` |
@@ -108,7 +111,8 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `chrome.tolerations` | Deployment tolerations to use for scheduling of the chrome if set this takes precedence over the global value | `nil` |
 | `chromeDebug.enabled` | Schedule a selenium node chrome debug pod | `false` |
 | `chromeDebug.image` | The selenium node chrome debug image | `selenium/node-chrome-debug` |
-| `chromeDebug.tag` | The selenium node chrome debug tag | `3.14.0` |
+| `chromeDebug.tag` | The selenium node chrome debug tag | `3.141.59` |
+| `chromeDebug.imagePullSecrets` | The secret to use for pulling the image. Will override the global parameter if set | `nil` |
 | `chromeDebug.pullPolicy` | The selenium node chrome debug pull policy | `IfNotPresent` |
 | `chromeDebug.replicas` | The number of selenium node chrome debug pods | `1` |
 | `chromeDebug.podAnnotations` | Annotations on the Chrome debug pod | `{}` |
@@ -133,7 +137,8 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `chromeDebug.tolerations` | Deployment tolerations to use for scheduling of the chromeDebug if set this takes precedence over the global value | `nil` |
 | `firefox.enabled` | Schedule a selenium node firefox pod | `false` |
 | `firefox.image` | The selenium node firefox image | `selenium/node-firefox` |
-| `firefox.tag` | The selenium node firefox tag | `3.14.0` |
+| `firefox.tag` | The selenium node firefox tag | `3.141.59` |
+| `firefox.imagePullSecrets` | The secret to use for pulling the image. Will override the global parameter if set | `nil` |
 | `firefox.pullPolicy` | The selenium node firefox pull policy | `IfNotPresent` |
 | `firefox.replicas` | The number of selenium node firefox pods | `1` |
 | `firefox.podAnnotations` | Annotations on the firefox pods | `{}` |
@@ -156,7 +161,8 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `firefox.tolerations` | Deployment tolerations to use for scheduling of the firefox if set this takes precedence over the global value | `nil` |
 | `firefoxDebug.enabled` | Schedule a selenium node firefox debug pod | `false` |
 | `firefoxDebug.image` | The selenium node firefox debug image | `selenium/node-firefox-debug` |
-| `firefoxDebug.tag` | The selenium node firefox debug tag | `3.14.0` |
+| `firefoxDebug.tag` | The selenium node firefox debug tag | `3.141.59` |
+| `firefoxDebug.imagePullSecrets` | The secret to use for pulling the image. Will override the global parameter if set | `nil` |
 | `firefoxDebug.pullPolicy` | The selenium node firefox debug pull policy | `IfNotPresent` |
 | `firefoxDebug.replicas` | The number of selenium node firefox debug pods | `1` |
 | `firefoxDebug.podAnnotations` | Annotations on the firefox debug pods | `{}` |
