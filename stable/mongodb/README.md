@@ -214,12 +214,16 @@ $ kubectl delete statefulset my-release-mongodb-arbiter my-release-mongodb-prima
 ```
 
 ## Configure Ingress
-Currently you can expose MongoDB externally using nginx-ingres. If you are using `nginx-ingress=1.3.x` check [these options](https://github.com/helm/charts/blob/master/stable/nginx-ingress/values.yaml#L383)
-on how to expose TCP ports. If you installed mongodb in `default` namespace, then an example would be:
+MongoDB can exposed externally using the [NGINX Ingress Controller](https://github.com/kubernetes/ingress-nginx). To do so, it's necessary to:
+
+- Install the MongoDB chart setting the parameter `ingress.enabled=true`.
+- Create a ConfigMap to map the external port to use and the internal service/port where to redirect the requests (see https://github.com/kubernetes/ingress-nginx/blob/master/docs/user-guide/exposing-tcp-udp-services.md for more information). 
+
+For instance, if you installed the MongoDB chart in the `default` namespace, you can install the [stable/nginx-ingress chart](https://github.com/helm/charts/tree/master/stable/nginx-ingress) setting the "tcp" parameter in the **values.yaml** used to install the chart as shown below:
+
 ```yaml
+...
+
 tcp:
   27017: "default/mongodb:27017"
 ```
-
-After that you will be able to access mongodb on the ingress endpoint without 
-specifying port(default 80).
