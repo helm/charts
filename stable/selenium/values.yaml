@@ -14,7 +14,7 @@ global:
   ## to be used in every deployment hub, chrome, firefox, chromeDebug and firefoxDebug
   ## can also be specified at chart level see below.
   ## Specifying secret at a chart level will override the global option
-  imagePullSecrets: 
+  imagePullSecrets:
 
 hub:
   ## The repository and image
