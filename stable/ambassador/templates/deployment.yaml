@@ -99,10 +99,8 @@ spec:
             - name: AMBASSADOR_ID
               value: {{ .Values.ambassador.id | quote }}
             {{- end }}
-            - name: AMBASSADOR_SINGLE_NAMESPACE
-              value: {{.Values.namespace.single | quote}}
             - name: AMBASSADOR_NAMESPACE
-              {{- if .Values.namespace.name }}
+              {{- if .Values.namespace }}
               value: {{ .Values.namespace.name | quote }}
               {{ else }}
               valueFrom:
