@@ -5,9 +5,6 @@
 replicaCount: 3
 daemonSet: false
 
-# ambassador:
-#  id: default
-
 # namespace:
   # name: default
 
