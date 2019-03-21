@@ -267,6 +267,13 @@ This is controlled by the `logsPersistence.enabled` setting.
 
 Refer to the `Mount a Shared Persistent Volume` section above for details on using persistent volumes.
 
+## Service monitor
+
+The service monitor is something introduced by the [CoresOS prometheus operator](https://github.com/coreos/prometheus-operator).
+To be able to expose metrics to prometheus you need install a plugin, this can be added to the docker image. A good one is: https://github.com/epoch8/airflow-exporter.
+This exposes dag and task based metrics from Airflow.
+For service monitor configuration see the generic [Helm chart Configuration](#helm-chart-configuration).
+
 ## Helm chart Configuration
 
 The following table lists the configurable parameters of the Airflow chart and their default values.
@@ -351,6 +358,10 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `redis.password`                         | Redis password                                          | `airflow`                 |
 | `redis.master.persistence.enabled`       | Enable Redis PVC                                        | `false`                   |
 | `redis.cluster.enabled`                  | enable master-slave cluster                             | `false`                   |
+| `serviceMonitor.enabled`                 | enable service monitor                                  | `false`                   |
+| `serviceMonitor.interval`                | Interval at which metrics should be scraped             | `30s`                     |
+| `serviceMonitor.path`                    | The path at which the metrics should be scraped         | `/admin/metrics`          |
+| `serviceMonitor.selector`                | label Selector for Prometheus to find ServiceMonitors   | `prometheus: kube-prometheus` |
 
 
 Full and up-to-date documentation can be found in the comments of the `values.yaml` file.
