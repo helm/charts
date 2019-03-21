@@ -976,10 +976,6 @@ concourse:
     ##
     bindPort: 7777
 
-    ## IP used to reach this worker from the ATC nodes.
-    ##
-    peerIp:
-
     ## Minimum level of logs to see. Possible options: debug, info, error.
     ##
     logLevel:
