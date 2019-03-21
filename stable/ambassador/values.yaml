@@ -20,9 +20,9 @@ env:
   # AMBASSADOR_DRAIN_TIME: 5
   # sets the number of seconds that Ambassador will wait for the old Envoy to clean up and exit on a restart
   # AMBASSADOR_SHUTDOWN_TIME: 10
-  # Tells Ambassador to only use resources in the namespace set by namespace.name
+  # tells Ambassador to only use resources in the namespace set by namespace.name
   # AMBASSADOR_SINGLE_NAMESPACE: true
-  # labels Ambassador will an ID to allow for configuring multiple Ambassadors in a cluster
+  # labels Ambassador with an ID to allow for configuring multiple Ambassadors in a cluster
   # AMBASSADOR_ID: default
 
 imagePullSecrets: []
