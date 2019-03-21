@@ -136,17 +136,6 @@ spec:
               value: {{ .Values.concourse.web.externalUrl | quote }}
             {{- end }}
             {{- end }}
-            {{- if .Values.concourse.web.peerUrl }}
-            - name: CONCOURSE_PEER_URL
-              value: {{ .Values.concourse.web.peerUrl | quote }}
-            {{- else }}
-            - name: POD_IP
-              valueFrom:
-                fieldRef:
-                  fieldPath: status.podIP
-            - name: CONCOURSE_PEER_URL
-              value: "http://$(POD_IP):$(CONCOURSE_BIND_PORT)"
-            {{- end }}
             {{- if .Values.concourse.web.encryption.enabled }}
             - name: CONCOURSE_ENCRYPTION_KEY
               valueFrom:
@@ -873,9 +862,16 @@ spec:
             - name: CONCOURSE_TSA_DEBUG_BIND_PORT
               value: {{ .Values.concourse.web.tsa.debugBindPort | quote }}
             {{- end }}
-            {{- if .Values.concourse.web.tsa.peerIp }}
-            - name: CONCOURSE_TSA_PEER_IP
-              value: {{ .Values.concourse.web.tsa.peerIp | quote }}
+            {{- if .Values.concourse.web.tsa.peerAddress }}
+            - name: CONCOURSE_TSA_PEER_ADDRESS
+              value: {{ .Values.concourse.web.tsa.peerAddress | quote }}
+            {{- else }}
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: CONCOURSE_TSA_PEER_ADDRESS
+              value: "$(POD_IP)"
             {{- end }}
             - name: CONCOURSE_TSA_HOST_KEY
               value: "{{ .Values.web.keySecretsPath }}/host_key"

@@ -231,10 +231,6 @@ spec:
             - name: CONCOURSE_BAGGAGECLAIM_OVERLAYS_DIR
               value: {{ .Values.concourse.worker.baggageclaim.overlaysDir | quote }}
             {{- end }}
-            {{- if .Values.concourse.worker.baggageclaim.reapInterval }}
-            - name: CONCOURSE_BAGGAGECLAIM_REAP_INTERVAL
-              value: {{ .Values.concourse.worker.baggageclaim.reapInterval | quote }}
-            {{- end }}
             {{- if .Values.concourse.worker.baggageclaim.disableUserNamespaces }}
             - name: CONCOURSE_BAGGAGECLAIM_DISABLE_USER_NAMESPACES
               value: {{ .Values.concourse.worker.baggageclaim.disableUserNamespaces | quote }}

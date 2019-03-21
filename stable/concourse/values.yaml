@@ -100,13 +100,6 @@ concourse:
     ##
     externalUrl:
 
-    ## URL used to reach this ATC from other ATCs in the cluster.
-    ## By default, this corresponds to `$(POD_IP):$(CONCOURSE_BIND_PORT)`.
-    ##
-    ## Example: http://127.0.0.1:8080
-    ##
-    peerUrl:
-
     encryption:
       ## Enable encryption of pipeline configuration. Encryption keys can be set via secrets
       ## (`encryption-key` and `old-encryption-key` fields).
@@ -874,10 +867,6 @@ concourse:
       ##
       debugBindPort: 2221
 
-      ## IP address of this TSA, reachable by the ATCs. Used for forwarded worker addresses.
-      ##
-      peerIp:
-
       ## Path to private key to use for the SSH server.
       ##
       hostKey:
@@ -897,6 +886,10 @@ concourse:
       ## Interval on which to heartbeat workers to the ATC.
       ##
       heartbeatInterval:
+
+      ## Network address of this TSA node, reachable by other web nodes. Used for forwarded worker addresses. (default: $POD_IP)
+      ##
+      peerAddress:
 
   worker:
     ## Signal to send to the worker container when shutting down.
@@ -1074,10 +1067,6 @@ concourse:
       ## Path to directory in which to store overlay data
       ##
       overlaysDir:
-
-      ## Interval on which to reap expired volumes.
-      ##
-      reapInterval:
 
 ## Configuration values for Concourse Web components.
 ## For more information regarding the characteristics of
