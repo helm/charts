@@ -122,6 +122,8 @@ spec:
 {{ toYaml .Values.monitoring.resources | indent 10 }}
 {{- end }}
 {{- end }}
+        ports:
+          - containerPort: {{ .Values.monitoring.exporterPort}}
       volumes:
       - name: varlog
         hostPath:
