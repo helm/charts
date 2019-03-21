@@ -127,6 +127,16 @@ $ helm upgrade --install --wait my-release -f values.yaml stable/ambassador
 
 # Upgrading
 
+## To 2.0.0
+
+### Ambassador ID
+
+ambassador.id has been removed in favor of setting it via an environment variable in `env`. `AMBASSADOR_ID` defaults to `default` if not set in the environment. This is mainly used for [running multiple Ambassadors](https://www.getambassador.io/reference/running#ambassador_id) in the same cluster.
+
+| Parameter       | Env variables   |
+| --------------- | --------------- |
+| `ambassador.id` | `AMBASSADOR_ID` |
+
 ## Migrating from `datawire/ambassador` chart (chart version 0.40.0 or 0.50.0)
 
 Chart now runs ambassador as non-root by default, so you might need to update your ambassador module config to match this.
@@ -140,14 +150,6 @@ Timings values have been removed in favor of setting the env variables using `en
 | `timing.restart`  | `AMBASSADOR_RESTART_TIME`  |
 | `timing.drain`    | `AMBASSADOR_DRAIN_TIME`    |
 | `timing.shutdown` | `AMBASSADOR_SHUTDOWN_TIME` |
-
-### Ambassador ID
-
-ambassador.id has been removed in favor of setting it via an environment variable in `env`. `AMBASSADOR_ID` defaults to `default` if not set in the environment. This is mainly used for [running multiple Ambassadors](https://www.getambassador.io/reference/running#ambassador_id) in the same cluster.
-
-| Parameter       | Env variables   |
-| --------------- | --------------- |
-| `ambassador.id` | `AMBASSADOR_ID` |
 
 ### Single namespace
 
