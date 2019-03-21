@@ -96,6 +96,8 @@ persistence: {}
 ## Redis Master parameters
 ##
 master:
+  ## Number of master replicas
+  replicas: 1
   ## Redis port
   port: 6379
   ## Redis command arguments
