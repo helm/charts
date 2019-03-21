@@ -47,7 +47,6 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `adminService.create`              | If `true`, create a service for Ambassador's admin UI                           | `true`                        |
 | `adminService.nodePort`            | If explicit NodePort for admin service is required                              | `true`                        |
 | `adminService.type`                | Ambassador's admin service type to be used                                      | `ClusterIP`                   |
-| `ambassador.id`                    | Set the identifier of the Ambassador instance                                   | `default`                     |
 | `ambassadorConfig`                 | Config thats mounted to `/ambassador/ambassador-config`                         | `""`                          |
 | `daemonSet`                        | If `true`, Create a daemonSet. By default Deployment controller will be created | `false`                       |
 | `env`                              | Any additional environment variables for ambassador pods                        | `{}`                          |
@@ -127,6 +126,16 @@ $ helm upgrade --install --wait my-release -f values.yaml stable/ambassador
 ---
 
 # Upgrading
+
+## To 2.0.0
+
+### Ambassador ID
+
+ambassador.id has been removed in favor of setting it via an environment variable in `env`. `AMBASSADOR_ID` defaults to `default` if not set in the environment. This is mainly used for [running multiple Ambassadors](https://www.getambassador.io/reference/running#ambassador_id) in the same cluster.
+
+| Parameter       | Env variables   |
+| --------------- | --------------- |
+| `ambassador.id` | `AMBASSADOR_ID` |
 
 ## Migrating from `datawire/ambassador` chart (chart version 0.40.0 or 0.50.0)
 
