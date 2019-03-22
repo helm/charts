@@ -76,6 +76,13 @@ spec:
             - name: {{ $key | upper | replace "." "_" }}
               value: {{ $value | quote }}
           {{- end }}
+          {{- range $key, $value := .Values.secrets }}
+            - name: {{ $key | upper | replace "." "_" }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $value.secret }}
+                  key: {{ $value.key }}
+          {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           volumeMounts:
