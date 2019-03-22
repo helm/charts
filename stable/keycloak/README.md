@@ -101,9 +101,11 @@ Parameter | Description | Default
 `postgresql.postgresUser` | The PostgreSQL user (if `keycloak.persistence.deployPostgres=true`) | `keycloak`
 `postgresql.postgresPassword` | The PostgreSQL password (if `keycloak.persistence.deployPostgres=true`) | `""`
 `postgresql.postgresDatabase` | The PostgreSQL database (if `keycloak.persistence.deployPostgres=true`) | `keycloak`
+`test.enabled` | If `true`, test pods get scheduled | `true`
 `test.image.repository` | Test image repository | `unguiculus/docker-python3-phantomjs-selenium`
 `test.image.tag` | Test image tag | `v1`
 `test.image.pullPolicy` | Test image pull policy | `IfNotPresent`
+`test.securityContext` | Security context for the test pod | `{runAsUser: 1000, fsGroup: 1000, runAsNonRoot: true}`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 

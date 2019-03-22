@@ -38,7 +38,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `securityContext`                         | Deployment securityContext                    | `{"runAsUser": 472, "fsGroup": 472}`                    |
 | `priorityClassName`                       | Name of Priority Class to assign pods         | `nil`                                                   |
 | `image.repository`                        | Image repository                              | `grafana/grafana`                                       |
-| `image.tag`                               | Image tag. (`Must be >= 5.0.0`)               | `6.0.0`                                                 |
+| `image.tag`                               | Image tag. (`Must be >= 5.0.0`)               | `6.0.2`                                                 |
 | `image.pullPolicy`                        | Image pull policy                             | `IfNotPresent`                                          |
 | `service.type`                            | Kubernetes service type                       | `ClusterIP`                                             |
 | `service.port`                            | Kubernetes port where service is exposed      | `80`                                                    |
@@ -54,6 +54,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `nodeSelector`                            | Node labels for pod assignment                | `{}`                                                    |
 | `tolerations`                             | Toleration labels for pod assignment          | `[]`                                                    |
 | `affinity`                                | Affinity settings for pod assignment          | `{}`                                                    |
+| `extraInitContainers`                     | Init containers to add to the grafana pod     | `{}` |
 | `extraContainers`                         | Sidecar containers to add to the grafana pod  | `{}` |
 | `persistence.enabled`                     | Use persistent volume to store data           | `false`                                                 |
 | `persistence.initChownData`               | Change ownership of persistent volume on initialization | `true`                                                  |
@@ -68,8 +69,10 @@ The command removes all the Kubernetes components associated with the chart and 
 | `extraSecretMounts`                       | Additional grafana server secret mounts       | `[]`                                                    |
 | `extraVolumeMounts`                       | Additional grafana server volume mounts       | `[]`                                                    |
 | `extraConfigmapMounts`                    | Additional grafana server configMap volume mounts  | `[]`                                               |
+| `extraEmptyDirMounts`                     | Additional grafana server emptyDir volume mounts   | `[]`                                               |
 | `plugins`                                 | Plugins to be loaded along with Grafana       | `[]`                                                    |
 | `datasources`                             | Configure grafana datasources (passed through tpl) | `{}`                                                    |
+| `notifiers`                               | Configure grafana notifiers | `{}`                                                                      |
 | `dashboardProviders`                      | Configure grafana dashboard providers         | `{}`                                                    |
 | `dashboards`                              | Dashboards to import                          | `{}`                                                    |
 | `dashboardsConfigMaps`                    | ConfigMaps reference that contains dashboards | `{}`                                                    |
@@ -78,7 +81,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `ldap.config  `                           | Grafana's LDAP configuration                  | `""`                                                    |
 | `annotations`                             | Deployment annotations                        | `{}`                                                    |
 | `podAnnotations`                          | Pod annotations                               | `{}`                                                    |
-| `sidecar.image`              | Sidecar image | `kiwigrid/k8s-sidecar:0.0.11`       |
+| `sidecar.image`              | Sidecar image | `kiwigrid/k8s-sidecar:0.0.13`       |
 | `sidecar.imagePullPolicy`              | Sidecar image pull policy | `IfNotPresent`       |
 | `sidecar.resources`              | Sidecar resources | `{}`       |
 | `sidecar.dashboards.enabled`              | Enabled the cluster wide search for dashboards and adds/updates/deletes them in grafana | `false`       |
