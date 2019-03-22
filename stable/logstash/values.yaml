@@ -216,7 +216,7 @@ secrets: {
   # # Example command to create secret
   # # kubectl create secret generic elasticsearch-secrets --from-literal=ELASTICSEARCH_USER=admin --from-literal=ELASTICSEARCH_PASSWORD=p@ssw0rd
   # elasticsearch_user:
-  #   secret: elasticsearch-secrets 
+  #   secret: elasticsearch-secrets
   #   value: USER
   # elasticsearch_password:
   #   secret: elasticsearch-secrets
