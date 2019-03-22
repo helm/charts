@@ -1,3 +1,4 @@
+{{- if not .Values.config.existingConfig }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -9,3 +10,4 @@ metadata:
     release: {{ .Release.Name }}
 data:
   policy.yaml: {{toYaml .Values.config.policyFile | indent 4}}
+{{- end }}

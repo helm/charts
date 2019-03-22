@@ -2,7 +2,7 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: {{ include "pomerium.fullname" }}
+  name: {{ include "pomerium.fullname" . }}
   labels:
     app.kubernetes.io/name: {{ include "pomerium.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
@@ -30,7 +30,7 @@ spec:
         paths:
           - path: {{ .Values.ingress.path }}
             backend:
-              serviceName: {{ include "pomerium.fullname" }}
+              serviceName: {{ include "pomerium.fullname" .}}
               servicePort: http
   {{- end }}
 {{- end }}

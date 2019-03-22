@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: {{ template "pomerium.name" . }}
+    app: {{ template "pomerium.name" . }}-{{ .Values.authenticate.name }}
     chart: {{ template "pomerium.chart" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
@@ -15,7 +15,7 @@ spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ template "pomerium.name" . }}
+      app: {{ template "pomerium.name" . }}-{{ .Values.authenticate.name }}
       release: {{ .Release.Name }}
   template:
     metadata:
@@ -24,7 +24,7 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
 {{- end }}
       labels:
-        app: {{ template "pomerium.name" . }}
+        app: {{ template "pomerium.name" . }}-{{ .Values.authenticate.name }}
         chart: {{ template "pomerium.chart" . }}
         heritage: {{ .Release.Service }}
         release: {{ .Release.Name }}
@@ -53,12 +53,12 @@ spec:
         - name: COOKIE_SECRET
           valueFrom:
             secretKeyRef:
-              name: {{ template "pomerium.fullname" . }}
+              name: {{ if not .Values.config.existingSecret }}{{ template "pomerium.fullname" . }}{{ else }}{{ .Values.config.existingSecret }}{{ end }}
               key: cookie-secret
         - name: SHARED_SECRET
           valueFrom:
             secretKeyRef:
-              name: {{ template "pomerium.fullname" . }}
+              name: {{ if not .Values.config.existingSecret }}{{ template "pomerium.fullname" . }}{{ else }}{{ .Values.config.existingSecret }}{{ end }}
               key: shared-secret
         - name: REDIRECT_URL
           value: {{ .Values.authenticate.redirectUrl }}
@@ -69,12 +69,12 @@ spec:
         - name: IDP_CLIENT_ID
           valueFrom:
             secretKeyRef:
-              name:  {{ template "pomerium.fullname" . }}
+              name:  {{ if not .Values.config.existingSecret }}{{ template "pomerium.fullname" . }}{{ else }}{{ .Values.config.existingSecret }}{{ end }}
               key: idp-client-id
         - name: IDP_CLIENT_SECRET
           valueFrom:
             secretKeyRef:
-              name:  {{ template "pomerium.fullname" . }}
+              name:  {{ if not .Values.config.existingSecret }}{{ template "pomerium.fullname" . }}{{ else }}{{ .Values.config.existingSecret }}{{ end }}
               key: idp-client-secret
 {{- if .Values.authenticate.idp.url }}
         - name: IDP_PROVIDER_URL
@@ -83,20 +83,18 @@ spec:
         - name: CERTIFICATE
           valueFrom:
             secretKeyRef:
-              name: {{ template "pomerium.fullname" . }}
-              key: authenticate-cert
+              name:  {{ if not .Values.config.existingSecret }}{{ template "pomerium.fullname" . }}{{ else }}{{ .Values.config.existingSecret }}{{ end }}
+              key:  authenticate-cert
         - name: CERTIFICATE_KEY
           valueFrom:
             secretKeyRef:
-              name: {{ template "pomerium.fullname" . }}
-              key: authenticate-key
-{{- if .Values.config.ca }}
+              name:  {{ if not .Values.config.existingSecret }}{{ template "pomerium.fullname" . }}{{ else }}{{ .Values.config.existingSecret }}{{ end }}
+              key:  authenticate-key
         - name: CERTIFICATE_AUTHORITY
           valueFrom:
             secretKeyRef:
-              name: {{ template "pomerium.fullname" . }}
-              key: ca-cert
-{{- end }}
+              name:  {{ if not .Values.config.existingSecret }}{{ template "pomerium.fullname" . }}{{ else }}{{ .Values.config.existingSecret }}{{ end }}
+              key:  ca-cert
 {{- range $name, $value := .Values.extraEnv }}
         - name: {{ $name }}
           value: {{ quote $value }}
@@ -115,17 +113,13 @@ spec:
             path: /ping
             port: https
             scheme: HTTPS
-        
-        
         volumeMounts:
         - mountPath: /etc/pomerium/
           name: policy
-     
       volumes:
       - name: policy
         configMap:
           name: {{ template "pomerium.fullname" . }}
-      
       resources:
 {{ toYaml .Values.resources | indent 10 }}
 {{- if .Values.extraVolumes }}

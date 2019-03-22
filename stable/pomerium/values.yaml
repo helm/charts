@@ -3,6 +3,8 @@
 
 # settings that are shared by all services
 config:
+  # existingSecret:
+  # existingConfig:
   # secrets can be generated with `head -c32 /dev/urandom | base64`
   sharedSecret: "LL3g/NoKkao7mTec2/wYSOZAki1VbR89q+kqbdFj0c4="
   cookieSecret: "tAhd5A5Y8R/H/msFhkNdt8dCym2SatVbh4UrcDk3+Ms="
@@ -81,6 +83,8 @@ proxy:
       # - 1.2.3.4
   authenticateServiceUrl: https://auth.corp.pomerium.io
   authorizeServiceUrl: https://access.corp.pomerium.io
+  # authorizeUseInternalUrl:
+  # authenticateUseInternalUrl:
 
 # For any other settings that are optional. for a complete listing see:
 # https://www.pomerium.io/docs/config-reference.html
