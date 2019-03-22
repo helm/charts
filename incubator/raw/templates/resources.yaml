@@ -3,3 +3,7 @@
 ---
 {{- toYaml (merge . $template) -}}
 {{- end }}
+{{- range $i, $t := .Values.templates }}
+---
+{{- toYaml (merge (tpl $t $ | fromYaml) $template) -}}
+{{- end }}

@@ -63,3 +63,19 @@ resources: []
 #    value: 70000
 #    globalDefault: false
 #    description: "This priority class should only be used for low priority app pods."
+
+templates:
+# This is here to pass the chart ci
+- |
+  apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: raw
+#
+#  - |
+#    apiVersion: v1
+#    kind: Secret
+#    metadata:
+#      name: common-secret
+#    stringData:
+#      mykey: {{ .Values.mysecret }}
