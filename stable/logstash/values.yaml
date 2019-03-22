@@ -211,6 +211,25 @@ config:
   queue.max_bytes: 1gb  # disk capacity must be greater than the value of `queue.max_bytes`
   queue.type: persisted
 
+## Create environment variables with values from kubernetes secrets
+secrets: {
+  # # Example command to create secret
+  # # kubectl create secret generic elasticsearch-secrets --from-literal=ELASTICSEARCH_USER=admin --from-literal=ELASTICSEARCH_PASSWORD=p@ssw0rd
+  # elasticsearch_user:
+  #   secret: elasticsearch-secrets 
+  #   value: USER
+  # elasticsearch_password:
+  #   secret: elasticsearch-secrets
+  #   value: PASSWORD
+
+  # # Reference the environment variables in pipeline config (note case change)
+  # #
+  # # output {
+  # #   elasticseardch {
+  # #     user: "${ELASTICSEARCH_USER}"
+  # #     password: "${ELASTICSEARCH_PASSWORD}"
+}
+
 ## Patterns for filters.
 ## Each YAML heredoc will become a separate pattern file.
 patterns:
