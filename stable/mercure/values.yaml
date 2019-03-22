@@ -11,6 +11,9 @@ logFormat: "FLUENTD"
 publishAllowedOrigins: ""
 publisherJwtKey: ""
 subscriberJwtKey: ""
+heartbeatInterval: "0s"
+readTimeout: "0s"
+writeTimeout: "0s"
 
 image:
   repository: dunglas/mercure

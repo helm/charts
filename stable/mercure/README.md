@@ -54,6 +54,9 @@ The following table lists the configurable parameters of the Moodle chart and th
 | `publishAllowedOrigins` | a comma separated list of origins allowed to publish (only applicable when using cookie-based auth) | empty               |   |   |
 | `publisherJwtKey`       | must contain the secret key to valid publishers' JWT, can be omited in favor of `jwtKey`            | empty               |   |   |
 | `subscriberJwtKey`      | must contain the secret key to valid subscribers' JWT, can be omited in favor of `jwtKey`           | empty               |   |   |
+| `heartbeatInterval`     | interval between heartbeats (useful with some proxies, and old browsers)                            | `0s`                |   |   |
+| `readTimeout`           | maximum duration for reading the entire request, including the body                                 | `0s`                |   |   |
+| `writeTimeout`          | maximum duration before timing out writes of the response                                           | `0s`                |   |   |
 | `image.repository`      | controller container image repository                                                               | `dunglas/mercure`   |   |   |
 | `image.tag`             | controller container image tag                                                                      | `v0.3.2`            |   |   |
 | `image.pullPolicy`      | controller container image pull policy                                                              | `IfNotPresent`      |   |   |
@@ -69,7 +72,6 @@ The following table lists the configurable parameters of the Moodle chart and th
 | `resources`             | controller pod resource requests & limits                                                           | `{}`                |   |   |
 | `nodeSelector`          | node labels for controller pod assignment                                                           | `{}`                |   |   |
 | `tolerations`           | controller pod toleration for taints                                                                | `{}`                |   |   |
-|                         |                                                                                                     |                     |   |   |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

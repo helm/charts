@@ -17,3 +17,6 @@ data:
   demo: {{ .Values.demo | quote }}
   logFormat: {{ .Values.logFormat | quote }}
   publishAllowedOrigins: {{ .Values.publishAllowedOrigins | quote }}
+  heartbeatInterval: {{ .Values.heartbeatInterval | quote }}
+  readTimeout: {{ .Values.readTimeout | quote }}
+  writeTimeout: {{ .Values.writeTimeout | quote }}
