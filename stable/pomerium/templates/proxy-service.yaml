@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: {{ template "pomerium.fullname" . }}-{{ .Values.proxy.name }}
   labels:
-    app: {{ template "pomerium.name" . }}
+    app: {{ template "pomerium.name" . }}-{{ .Values.proxy.name }}
     chart: {{ template "pomerium.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}

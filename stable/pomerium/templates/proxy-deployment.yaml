@@ -55,11 +55,11 @@ spec:
             secretKeyRef:
               name: {{ if not .Values.config.existingSecret }}{{ template "pomerium.fullname" . }}{{ else }}{{ .Values.config.existingSecret }}{{ end }}
               key: cookie-secret
-        - name: COOKIE_SECRET
+        - name: SHARED_SECRET
           valueFrom:
             secretKeyRef:
               name: {{ if not .Values.config.existingSecret }}{{ template "pomerium.fullname" . }}{{ else }}{{ .Values.config.existingSecret }}{{ end }}
-              key: cookie-secret
+              key: shared-secret
         - name: AUTHENTICATE_SERVICE_URL
           value: {{ .Values.proxy.authenticateServiceUrl }}
         - name: AUTHORIZE_SERVICE_URL
@@ -72,23 +72,30 @@ spec:
         - name: AUTHORIZE_INTERNAL_URL
           value: {{ template "pomerium.fullname" . }}-{{ .Values.authorize.name }}
 {{- end }}
+{{- if .Values.config.policyFile}}
         - name: POLICY_FILE
           value: /etc/pomerium/policy.yaml
+{{- end }}}
+{{- if .Values.config.policy}}
         - name: POLICY
           value: {{ .Values.config.policy }}
+{{- end }}
         - name: CERTIFICATE
           valueFrom:
             secretKeyRef:
               name: {{ if not .Values.config.existingSecret }}{{ template "pomerium.fullname" . }}{{ else }}{{ .Values.config.existingSecret }}{{ end }}
+              key: proxy-cert
         - name: CERTIFICATE_KEY
           valueFrom:
             secretKeyRef:
               name: {{ if not .Values.config.existingSecret }}{{ template "pomerium.fullname" . }}{{ else }}{{ .Values.config.existingSecret }}{{ end }}
+              key: proxy-key
 {{- if .Values.config.ca }}
         - name: CERTIFICATE_AUTHORITY
           valueFrom:
             secretKeyRef:
               name: {{ if not .Values.config.existingSecret }}{{ template "pomerium.fullname" . }}{{ else }}{{ .Values.config.existingSecret }}{{ end }}
+              key:  ca-cert
 {{- end }}
 {{- range $name, $value := .Values.extraEnv }}
         - name: {{ $name }}
@@ -114,7 +121,7 @@ spec:
       volumes:
       - name: policy
         configMap:
-          name: {{ template "pomerium.fullname" . }}
+          name: {{ if not .Values.config.existingConfig }}{{ include "pomerium.fullname" . }}{{ else }}{{ .Values.config.existingConfig }}{{ end }}
       resources:
 {{ toYaml .Values.resources | indent 10 }}
 {{- if .Values.extraVolumes }}

@@ -50,14 +50,19 @@ spec:
         env:
         - name: SERVICES
           value: authorize
-        - name: COOKIE_SECRET
+        - name: SHARED_SECRET
           valueFrom:
             secretKeyRef:
               name: {{ if not .Values.config.existingSecret }}{{ template "pomerium.fullname" . }}{{ else }}{{ .Values.config.existingSecret }}{{ end }}
+              key: shared-secret
+{{- if .Values.config.policyFile}}
         - name: POLICY_FILE
           value: /etc/pomerium/policy.yaml
+{{- end }}}
+{{- if .Values.config.policy}}
         - name: POLICY
           value: {{ .Values.config.policy }}
+{{- end }}
         - name: CERTIFICATE
           valueFrom:
             secretKeyRef:
