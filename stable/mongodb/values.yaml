@@ -195,6 +195,19 @@ persistence:
   size: 8Gi
   annotations: {}
 
+# Expose mongodb via ingress. This is possible if using nginx-ingress
+# https://kubernetes.github.io/ingress-nginx/user-guide/exposing-tcp-udp-services/
+ingress:
+  enabled: false
+  annotations: {}
+  labels: {}
+  paths:
+    - /
+  hosts: []
+  tls:
+    - secretName: secret-tls
+      hosts: []
+
 ## Configure the options for init containers to be run before the main app containers
 ## are started. All init containers are run sequentially and must exit without errors
 ## for the next one to be started.
