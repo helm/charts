@@ -13,7 +13,7 @@
 image:
   registry: docker.io
   repository: bitnami/ghost
-  tag: 2.16.4
+  tag: 2.18.2
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -42,11 +42,12 @@ volumePermissions:
     # pullSecrets:
     #   - myRegistryKeySecretName
 
-## Ghost protocol, host and path to create application URLs
+## Ghost protocol, host, port and path to create application URLs
 ## ref: https://github.com/bitnami/bitnami-docker-ghost#configuration
 ##
 ghostProtocol: http
 # ghostHost:
+# ghostPort:
 ghostPath: /
 
 
@@ -230,6 +231,13 @@ ingress:
 
     ## Set this to true in order to enable TLS on the ingress record
     tls: false
+
+    ## Optionally specify the TLS hosts for the ingress record
+    ## Useful when the Ingress controller supports www-redirection
+    ## If not specified, the above host name will be used
+    # tlsHosts:
+    # - www.ghost.local
+    # - ghost.local
 
     ## If TLS is set to true, you must declare what secret will store the key/certificate for TLS
     tlsSecret: ghost.local-tls

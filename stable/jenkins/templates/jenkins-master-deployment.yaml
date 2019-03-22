@@ -105,40 +105,37 @@ spec:
           resources:
 {{ toYaml .Values.Master.resources | indent 12 }}
           volumeMounts:
-            -
-              mountPath: /var/jenkins_home
+            - mountPath: /tmp
+              name: tmp
+            - mountPath: /var/jenkins_home
               name: jenkins-home
               {{- if .Values.Persistence.SubPath }}
               subPath: {{ .Values.Persistence.SubPath }}
               {{- end }}
-            -
-              mountPath: /var/jenkins_config
+            - mountPath: /var/jenkins_config
               name: jenkins-config
             {{- if .Values.Master.CredentialsXmlSecret }}
-            -
-              mountPath: /var/jenkins_credentials
+            - mountPath: /var/jenkins_credentials
               name: jenkins-credentials
               readOnly: true
             {{- end }}
             {{- if .Values.Master.SecretsFilesSecret }}
-            -
-              mountPath: /var/jenkins_secrets
+            - mountPath: /var/jenkins_secrets
               name: jenkins-secrets
               readOnly: true
             {{- end }}
             {{- if .Values.Master.Jobs }}
-            -
-              mountPath: /var/jenkins_jobs
+            - mountPath: /var/jenkins_jobs
               name: jenkins-jobs
               readOnly: true
             {{- end }}
             {{- if .Values.Master.InstallPlugins }}
-            -
-              mountPath: /var/jenkins_plugins
+            - mountPath: /usr/share/jenkins/ref/plugins
+              name: plugins
+            - mountPath: /var/jenkins_plugins
               name: plugin-dir
             {{- end }}
-            -
-              mountPath: /usr/share/jenkins/ref/secrets/
+            - mountPath: /usr/share/jenkins/ref/secrets/
               name: secrets-dir
       containers:
         - name: {{ template "jenkins.fullname" . }}
@@ -228,43 +225,38 @@ spec:
 {{- if .Values.Persistence.mounts }}
 {{ toYaml .Values.Persistence.mounts | indent 12 }}
 {{- end }}
-            -
-              mountPath: /var/jenkins_home
+            - mountPath: /tmp
+              name: tmp
+            - mountPath: /var/jenkins_home
               name: jenkins-home
               readOnly: false
               {{- if .Values.Persistence.SubPath }}
               subPath: {{ .Values.Persistence.SubPath }}
               {{- end }}
-            -
-              mountPath: /var/jenkins_config
+            - mountPath: /var/jenkins_config
               name: jenkins-config
               readOnly: true
             {{- if .Values.Master.CredentialsXmlSecret }}
-            -
-              mountPath: /var/jenkins_credentials
+            - mountPath: /var/jenkins_credentials
               name: jenkins-credentials
               readOnly: true
             {{- end }}
             {{- if .Values.Master.SecretsFilesSecret }}
-            -
-              mountPath: /var/jenkins_secrets
+            - mountPath: /var/jenkins_secrets
               name: jenkins-secrets
               readOnly: true
             {{- end }}
             {{- if .Values.Master.Jobs }}
-            -
-              mountPath: /var/jenkins_jobs
+            - mountPath: /var/jenkins_jobs
               name: jenkins-jobs
               readOnly: true
             {{- end }}
             {{- if .Values.Master.InstallPlugins }}
-            -
-              mountPath: /usr/share/jenkins/ref/plugins/
+            - mountPath: /usr/share/jenkins/ref/plugins/
               name: plugin-dir
               readOnly: false
             {{- end }}
-            -
-              mountPath: /usr/share/jenkins/ref/secrets/
+            - mountPath: /usr/share/jenkins/ref/secrets/
               name: secrets-dir
               readOnly: false
             {{- if and (.Values.Master.JCasC.enabled) (.Values.Master.Sidecars.configAutoReload.enabled) }}
@@ -326,6 +318,10 @@ spec:
 {{- if .Values.Persistence.volumes }}
 {{ toYaml .Values.Persistence.volumes | indent 6 }}
 {{- end }}
+      - name: plugins
+        emptyDir: {}
+      - name: tmp
+        emptyDir: {}
       - name: jenkins-config
         configMap:
           name: {{ template "jenkins.fullname" . }}
