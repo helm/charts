@@ -117,3 +117,4 @@ The following table lists the configurable parameters of the chart and its defau
 | `outputs`                       | Logstash outputs configuration                     | elasticsearch                                    |
 | `securityContext.fsGroup`                          | Group ID for the container                                                                   | `1000`                                                  |
 | `securityContext.runAsUser`                        | User ID for the container                                                                    | `1000`                                                  |
+| `secrets`                       | Environment variables to populate from Kubernetes secrets values | `{}`                               |
