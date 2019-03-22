@@ -75,6 +75,21 @@ spec:
                 secretKeyRef:
                   name: {{ include "mercure.fullname" . }}
                   key: subscriberJwtKey
+            - name: HEARTBEAT_INTERVAL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "mercure.fullname" . }}
+                  key: heartbeatInterval
+            - name: READ_TIMEOUT
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "mercure.fullname" . }}
+                  key: readTimeout
+            - name: WRITE_TIMEOUT
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "mercure.fullname" . }}
+                  key: writeTimeout
           livenessProbe:
             httpGet:
               path: /
