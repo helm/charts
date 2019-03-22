@@ -24,6 +24,10 @@ spec:
     spec:
       containers:
         - name: {{ .Chart.Name }}
+          {{- if .Values.logging.enabled }}
+          command: [ "java", "-Djava.util.logging.config.file=/config/logging.properties", "-jar", "/cloudwatch_exporter.jar"]
+          args: ["9106", "/config/config.yml"]
+          {{- end }}
         {{- if not .Values.aws.role }}
         {{- if .Values.aws.secret.name }}
           env:

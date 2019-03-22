@@ -106,3 +106,14 @@ readinessProbe:
   timeoutSeconds: 5
   successThreshold: 1
   failureThreshold: 3
+
+logging:
+  enabled: false
+  config: |
+    handlers= java.util.logging.FileHandler, java.util.logging.ConsoleHandler
+    .level=ALL
+    java.util.logging.FileHandler.pattern = /tmp/cloudwatch-exporter%%u.log
+    java.util.logging.FileHandler.limit = 50000
+    java.util.logging.FileHandler.count = 1
+    java.util.logging.FileHandler.formatter=java.util.logging.SimpleFormatter
+    org.apache.http.level = SEVERE

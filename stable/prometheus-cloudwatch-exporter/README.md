@@ -73,6 +73,8 @@ The following table lists the configurable parameters of the Cloudwatch Exporter
 | `affinity`                  | node/pod affinities                                    | `{}`                       |
 | `livenessProbe`             | Liveness probe settings                                |                            |
 | `readinessProbe`            | Readiness probe settings                               |                            |
+| `logging.enabled`           | Enables Logging                                        | `false`                    |
+| `logging.config`            | Java logging properties config                         | `example configuration`    |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

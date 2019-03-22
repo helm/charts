@@ -10,3 +10,7 @@ metadata:
 data:
   config.yml: |
 {{ printf .Values.config | indent 4 }}
+{{- if .Values.logging.enabled }}
+  logging.properties: |
+{{ printf .Values.logging.config | indent 4 }}
+{{- end }}
