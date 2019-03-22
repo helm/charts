@@ -201,7 +201,7 @@ acme:
     # - 8.8.8.8:53
   dnsProvider:
     name: nil
-    skipSecretCreation: false
+    existingSecretName: ""
     auroradns:
       AURORA_USER_ID: ""
       AURORA_KEY: ""
