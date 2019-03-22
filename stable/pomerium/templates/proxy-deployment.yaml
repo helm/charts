@@ -111,10 +111,10 @@ spec:
         
         volumeMounts:
         - mountPath: /etc/pomerium/
-          name: {{ template "pomerium.fullname" . }}-policy
+          name: policy
      
       volumes:
-      - name: {{ template "pomerium.fullname" . }}-policy
+      - name: policy
         configMap:
           name: {{ template "pomerium.fullname" . }}
       
