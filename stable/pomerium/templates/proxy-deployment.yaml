@@ -6,7 +6,7 @@ metadata:
     chart: {{ template "pomerium.chart" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "pomerium.fullname" . }}-proxy
+  name: {{ template "pomerium.fullname" . }}-{{ .Values.proxy.name }}
 {{- if .Values.annotations }}
   annotations:
 {{ toYaml .Values.annotations | indent 4 }}
@@ -49,7 +49,7 @@ spec:
 {{- end }}
         env:
         - name: SERVICES
-          value: authorize
+          value: proxy
         - name: COOKIE_SECRET
           valueFrom:
             secretKeyRef:
@@ -72,26 +72,22 @@ spec:
         - name: POLICY
           value: {{ .Values.config.policy }}
 {{- end }}
-{{- if .Values.config.cert }}
         - name: CERTIFICATE
           valueFrom:
             secretKeyRef:
               name: {{ template "pomerium.fullname" . }}
-              key: certificate
-{{- end }}
-{{- if .Values.config.key }}
+              key: proxy-cert
         - name: CERTIFICATE_KEY
           valueFrom:
             secretKeyRef:
               name: {{ template "pomerium.fullname" . }}
-              key: certificate-key
-{{- end }}
+              key: proxy-key
 {{- if .Values.config.ca }}
         - name: CERTIFICATE_AUTHORITY
           valueFrom:
             secretKeyRef:
               name: {{ template "pomerium.fullname" . }}
-              key: certificate-authority
+              key: ca-cert
 {{- end }}
 {{- range $name, $value := .Values.extraEnv }}
         - name: {{ $name }}

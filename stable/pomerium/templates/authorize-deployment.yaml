@@ -6,7 +6,7 @@ metadata:
     chart: {{ template "pomerium.chart" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "pomerium.fullname" . }}-authorize
+  name: {{ template "pomerium.fullname" . }}-{{ .Values.authorize.name }}
 {{- if .Values.annotations }}
   annotations:
 {{ toYaml .Values.annotations | indent 4 }}
@@ -63,26 +63,22 @@ spec:
         - name: POLICY
           value: {{ .Values.config.policy }}
 {{- end }}
-{{- if .Values.config.cert }}
         - name: CERTIFICATE
           valueFrom:
             secretKeyRef:
               name: {{ template "pomerium.fullname" . }}
-              key: certificate
-{{- end }}
-{{- if .Values.config.key }}
+              key: authorize-cert
         - name: CERTIFICATE_KEY
           valueFrom:
             secretKeyRef:
               name: {{ template "pomerium.fullname" . }}
-              key: certificate-key
-{{- end }}
+              key: authorize-key
 {{- if .Values.config.ca }}
         - name: CERTIFICATE_AUTHORITY
           valueFrom:
             secretKeyRef:
               name: {{ template "pomerium.fullname" . }}
-              key: certificate-authority
+              key: ca-cert
 {{- end }}
 {{- range $name, $value := .Values.extraEnv }}
         - name: {{ $name }}
