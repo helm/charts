@@ -12,7 +12,7 @@ $ helm install stable/postgresql
 
 This chart bootstraps a [PostgreSQL](https://github.com/bitnami/bitnami-docker-postgresql) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
-Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters.
+Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters. This chart has been tested to work with NGINX Ingress, cert-manager, fluentd and Prometheus on top of the [BKPR](https://kubeprod.io/).
 
 ## Prerequisites
 
@@ -48,6 +48,13 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | Parameter                                     | Description                                                                                                            | Default                                                     |
 | --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
 | `global.imageRegistry`                        | Global Docker Image registry                                                                                           | `nil`                                                       |
+| `global.postgresql.postgresqlDatabase`                        | PostgreSQL database (overrides `postgresqlDatabase`)                                                                                          | `nil`                                                       |
+| `global.postgresql.postgresqlUsername`                       | PostgreSQL username (overrides `postgresqlUsername`)                                                                                          | `nil`                                                       |
+| `global.postgresql.existingSecret`                     | Name of existing secret to use for PostgreSQL passwords (overrides `existingSecret`)                                                                                          | `nil`                                                       |
+| `global.postgresql.postgresqlPassword`                      | Name of existing secret to use for PostgreSQL passwords (overrides `postgresqlPassword`)                                                                                          | `nil`                                                       |
+| `global.postgresql.servicePort`                      | PostgreSQL port (overrides `service.port`)                                                                                          | `nil`                                                       |
+| `global.postgresql.replicationPassword`                      | Replication user password (overrides `replication.password`)                                                                                          | `nil`                                                       |
+| `global.imagePullSecrets`                     | Global Docker registry secret names as an array                                                                         | `[]` (does not add image pull secrets to deployed pods)                                                       |
 | `image.registry`                              | PostgreSQL Image registry                                                                                              | `docker.io`                                                 |
 | `image.repository`                            | PostgreSQL Image name                                                                                                  | `bitnami/postgresql`                                        |
 | `image.tag`                                   | PostgreSQL Image tag                                                                                                   | `{VERSION}`                                                 |
@@ -88,7 +95,7 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `service.annotations`                         | Annotations for PostgreSQL service                                                                                     | {}                                                          |
 | `service.loadBalancerIP`                      | loadBalancerIP if service type is `LoadBalancer`                                                                       | `nil`                                                       |
 | `persistence.enabled`                         | Enable persistence using PVC                                                                                           | `true`                                                      |
-| `persistence.existingClaim`                   | Provide an existing `PersistentVolumeClaim`                                                                            | `nil`                                                       |
+| `persistence.existingClaim`                   | Provide an existing `PersistentVolumeClaim`, the value is evaluated as a template.                                     | `nil`                                                       |
 | `persistence.mountPath`                       | Path to mount the volume at                                                                                            | `/bitnami/postgresql`                                       |
 | `persistence.storageClass`                    | PVC Storage Class for PostgreSQL volume                                                                                | `nil`                                                       |
 | `persistence.accessMode`                      | PVC Access Mode for PostgreSQL volume                                                                                  | `ReadWriteOnce`                                             |
@@ -238,6 +245,42 @@ helm install --name postgres \
 
 - The Docker Official PostgreSQL image does not support replication. If you pass any replication environment variable, this would be ignored. The only environment variables supported by the Docker Official image are POSTGRES_USER, POSTGRES_DB, POSTGRES_PASSWORD, POSTGRES_INITDB_ARGS, POSTGRES_INITDB_WALDIR and PGDATA. All the remaining environment variables are specific to the Bitnami PostgreSQL image.
 - The Bitnami PostgreSQL image is non-root by default. This requires that you run the pod with `securityContext` and updates the permissions of the volume with an `initContainer`. A key benefit of this configuration is that the pod follows security best practices and is prepared to run on Kubernetes distributions with hard security constraints like OpenShift.
+
+## Use of global variables
+
+In more complex scenarios, we may have the following tree of dependencies
+
+```
+                     +--------------+
+                     |              |
+        +------------+   Chart 1    +-----------+
+        |            |              |           |
+        |            --------+------+           |
+        |                    |                  |
+        |                    |                  |
+        |                    |                  |
+        |                    |                  |
+        v                    v                  v
++-------+------+    +--------+------+  +--------+------+
+|              |    |               |  |               |
+|  PostgreSQL  |    |  Sub-chart 1  |  |  Sub-chart 2  |
+|              |    |               |  |               |
++--------------+    +---------------+  +---------------+
+```
+
+The three charts below depend on the parent chart Chart 1. However, subcharts 1 and 2 may need to connect to PostgreSQL as well. In order to do so, subcharts 1 and 2 need to know the PostgreSQL credentials, so one option for deploying could be:
+
+```
+helm install chart1 --set postgresql.postgresqlPassword=testtest --set subchart1.postgresql.postgresqlPassword=testtest --set subchart2.postgresql.postgresqlPassword=testtest --set postgresql.postgresqlDatabase=db1 --set subchart1.postgresql.postgresqlDatabase=db1 --set subchart1.postgresql.postgresqlDatabase=db1
+```
+
+If the number of dependent sub-charts increases, executing `helm install` can become increasingly difficult. An alternative would be to set the credentials using global variables as follows:
+
+```
+helm install chart1 --set global.postgresql.postgresqlPassword=testtest --set global.postgresql.postgresqlDatabase=db1
+```
+
+This way, the credentials will be available in all of the subcharts.
 
 ## Upgrade
 

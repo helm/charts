@@ -88,8 +88,15 @@ spec:
             - name: GRID_HUB_PORT
               value: {{ .Values.hub.port | quote }}
             {{- end }}
+            {{- if .Values.hub.extraEnvs }}
+{{ toYaml .Values.hub.extraEnvs | indent 12 }}
+            {{- end }}
           resources:
 {{ toYaml .Values.hub.resources | indent 12 }}
+{{- if or .Values.global.imagePullSecrets .Values.hub.imagePullSecrets }}
+      imagePullSecrets: 
+      - name: {{ .Values.hub.imagePullSecrets | default .Values.global.imagePullSecrets | quote }}
+{{- end }}
       nodeSelector:
 {{- if .Values.hub.nodeSelector }}
 {{ toYaml .Values.hub.nodeSelector | indent 8  }}

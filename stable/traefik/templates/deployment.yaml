@@ -91,7 +91,7 @@ spec:
           periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 2
-        {{- if and .Values.acme.enabled (eq .Values.acme.challengeType "dns-01") .Values.acme.dnsProvider.name }}
+        {{- if or (and .Values.acme.enabled (eq .Values.acme.challengeType "dns-01") .Values.acme.dnsProvider.name) .Values.env }}
         env:
         {{- range $k, $v := (index .Values.acme.dnsProvider .Values.acme.dnsProvider.name) }}
           {{- if $v }}
@@ -101,6 +101,9 @@ spec:
                 name: {{ template "traefik.fullname" $ }}-dnsprovider-config
                 key: {{ $k }}
           {{- end }}
+        {{- end }}
+        {{- if .Values.env }}
+{{ toYaml .Values.env | indent 10 }}
         {{- end }}
         {{- end }}
         volumeMounts:
@@ -114,11 +117,19 @@ spec:
         - mountPath: /acme
           name: acme
         {{- end }}
+        {{- if .Values.configFiles }}
+        - mountPath: /configs
+          name: {{ template "traefik.fullname" $ }}-configs
+        {{ end }}
+        {{- if .Values.secretFiles }}
+        - mountPath: /secrets
+          name: {{ template "traefik.fullname" $ }}-secrets
+        {{- end }}
         ports:
         - name: http
           containerPort: 80
           {{- if .Values.deployment.hostPort.httpEnabled }}
-          hostPort: 80
+          hostPort: {{ default 80 .Values.deployment.hostPort.httpPort }}
           {{- end }}
           protocol: TCP
         - name: httpn
@@ -127,14 +138,14 @@ spec:
         - name: https
           containerPort: 443
           {{- if .Values.deployment.hostPort.httpsEnabled }}
-          hostPort: 443
+          hostPort: {{ default 443 .Values.deployment.hostPort.httpsPort }}
           {{- end }}
           protocol: TCP
         {{- if .Values.dashboard.enabled }}
         - name: dash
           containerPort: 8080
           {{- if .Values.deployment.hostPort.dashboardEnabled }}
-          hostPort: 8080
+          hostPort: {{ default 8080 .Values.deployment.hostPort.dashboardPort }}
           {{- end }}
           protocol: TCP
         {{- end }}
@@ -161,6 +172,16 @@ spec:
       {{- else }}
         emptyDir: {}
       {{- end }}
+      {{- end }}
+      {{- if .Values.configFiles }}
+      - name: {{ template "traefik.fullname" $ }}-configs
+        configMap:
+          name: {{ template "traefik.fullname" $ }}-configs
+      {{ end }}
+      {{- if .Values.secretFiles }}
+      - name: {{ template "traefik.fullname" $ }}-secrets
+        secret:
+          secretName: {{ template "traefik.fullname" $ }}-secrets
       {{- end }}
       {{- if and (.Values.tolerations) (semverCompare "^1.6-0" .Capabilities.KubeVersion.GitVersion) }}
       tolerations:
