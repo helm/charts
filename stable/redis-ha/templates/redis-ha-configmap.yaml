@@ -78,7 +78,8 @@ data:
             sentinel_update "$ANNOUNCE_IP"
             sed -i "s/^.*slaveof.*//" "$REDIS_CONF"
         else
-            DEFAULT_MASTER="$(getent hosts "$SERVICE-announce-0" | awk '{ print $1 }')"
+            # first pod should be up & registered in headless service by now
+            DEFAULT_MASTER="$(getent hosts "$SERVICE-server-0.$SERVICE" | awk '{ print $1 }')"
             if [ -z "$DEFAULT_MASTER" ]; then
                 echo "Unable to resolve host"
                 exit 1
@@ -118,7 +119,6 @@ data:
     echo "Initializing config.."
     copy_config
 
-    ANNOUNCE_IP=$(getent hosts "$SERVICE-announce-$INDEX" | awk '{ print $1 }')
     if [ -z "$ANNOUNCE_IP" ]; then
         "Could not resolve the announce ip for this pod"
         exit 1
