@@ -1,0 +1,18 @@
+description: Predator is an open-source distributed performance testing framework
+name: predator
+version: 1.0.0
+appVersion: 1.0.5
+icon: https://zooz.github.io/predator/logo.png
+home: https://zooz.github.io/predator
+maintainers:
+- name: enudler
+  email: enudler@gmail.com
+sources:
+- https://github.com/Zooz/predator
+keywords:
+- performance
+- node.js
+- rest
+- stress
+- test
+- load

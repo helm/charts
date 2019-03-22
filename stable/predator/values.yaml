@@ -1,0 +1,45 @@
+replicaCount: 1
+
+image:
+  repository: zooz/predator
+  tag: latest
+  pullPolicy: Always
+
+nameOverride: ""
+fullnameOverride: ""
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: false
+  annotations: {}
+  path: /
+  hosts:
+    - predator.local
+  tls: []
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+database:
+  type: SQLITE
+  name:
+  address:
+  username:
+  password:
+  cassandra:
+    replicationFactor: 1
+    keySpaceStrategy: SimpleStrategy
+    localDataCenter:
+  sqlite:
+    storage: predator
+
+internalAddress:
+kubernetesUrl: https://kubernetes.default.svc
+jobPlatform: KUBERNETES
+apiVersion: v1

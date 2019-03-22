@@ -1,0 +1,93 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "predator.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: {{ include "predator.name" . }}
+    helm.sh/chart: {{ include "predator.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: 1
+  namespace: {{ .Release.Namespace }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "predator.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "predator.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      serviceAccountName: {{ include "predator.fullname" . }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+          - name: "DATABASE_USERNAME"
+            valueFrom:
+              secretKeyRef:
+                key:  DATABASE_USERNAME
+                name: {{ .Release.Name }}
+          - name: "DATABASE_PASSWORD"
+            valueFrom:
+              secretKeyRef:
+                key:  DATABASE_PASSWORD
+                name: {{ .Release.Name }}
+          - name: DATABASE_TYPE
+            value: {{ .Values.database.type }}
+          - name: DATABASE_NAME
+            value: {{ .Values.database.name }}
+          - name: DATABASE_ADDRESS
+            value: {{ .Values.database.address }}
+  {{if eq .Values.database.type "CASSANDRA"}}
+          - name: CASSANDRA_REPLICATION_FACTOR
+            value: {{ .Values.database.cassandra.replicationFactor | quote }}
+          - name: CASSANDRA_CONSISTENCY
+            value: {{ .Values.database.cassandra.consistency }}
+          - name: CASSANDRA_KEY_SPACE_STRATEGY
+            value: {{ .Values.database.cassandra.keySpaceStrategy }}
+          - name: CASSANDRA_LOCAL_DATA_CENTER
+            value: {{ .Values.database.cassandra.localDataCenter }}
+  {{end}}
+  {{if eq .Values.database.type "SQLITE"}}
+          - name: SQLITE_STORAGE
+            value: {{ .Values.database.sqlite.storage }}
+  {{end}}
+          - name: JOB_PLATFORM
+            value: {{ .Values.jobPlatform }}
+          - name: KUBERNETES_URL
+            value: {{ .Values.kubernetesUrl }}
+          - name: KUBERNETES_NAMESPACE
+            value: {{ .Release.Namespace }}
+          - name: INTERNAL_ADDRESS
+            value: http://{{ include "predator.fullname" . }}.{{ .Release.Namespace }}:{{ .Values.service.port }}/{{ .Values.apiVersion }}
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
