@@ -113,12 +113,13 @@ ingress:
   #   - kubernetes-dashboard.domain.com
 
   ## Kubernetes Dashboard Ingress TLS configuration
-  ## Secrets must be manually created in the namespace
+  ## Secrets can be manually created in the namespace
+  ## or will be generated automatically.
   ##
   # tls:
-  #   - secretName: kubernetes-dashboard-tls
-  #     hosts:
-  #       - kubernetes-dashboard.domain.com
+  #   secretName: ""
+  #   hosts:
+  #     name: kubernetes-dashboard.domain.com
 
 rbac:
   # Specifies whether RBAC resources should be created

@@ -41,3 +41,10 @@ Create the name of the service account to use
     {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Create the name of the TLS Secret to use
+*/}}
+{{- define "kubernetes-dashboard.tlsSecretName" -}}
+{{- printf "%s-tls" .Chart.Name -}}
+{{- end -}}

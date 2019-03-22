@@ -2,6 +2,7 @@
 {{- $serviceName := include "kubernetes-dashboard.fullname" . -}}
 {{- $servicePort := .Values.service.externalPort -}}
 {{- $paths := .Values.ingress.paths -}}
+{{- $tls := .Values.ingress.tls -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -16,6 +17,16 @@ metadata:
 {{ toYaml .Values.ingress.annotations | indent 4 }}
 {{- end }}
 spec:
+{{- if $tls }}
+  tls:
+    - hosts:
+        - {{ $tls.hosts.name }}
+      {{- if $tls.secretName }}
+      secretName: {{ $tls.secretName }}
+      {{- else }}
+      secretName:  "{{ template "kubernetes-dashboard.tlsSecretName" . }}" 
+      {{- end }}
+{{- end }}
   rules:
   {{- if .Values.ingress.hosts }}
   {{- range $host := .Values.ingress.hosts }}
@@ -38,9 +49,5 @@ spec:
               serviceName: {{ $serviceName }}
               servicePort: {{ $servicePort }}
   {{- end -}}
-  {{- end -}}
-  {{- if .Values.ingress.tls }}
-  tls:
-{{ toYaml .Values.ingress.tls | indent 4 }}
   {{- end -}}
 {{- end -}}
