@@ -119,7 +119,7 @@ mariadb:
 # these values are passed to the subchart, from 'stable/redis'
 # some are used to write into nextcloud's config
 redis:
-  enabled: true
+  enabled: false
   cluster:
     enabled: false
   rbac:
