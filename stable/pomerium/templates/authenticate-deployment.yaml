@@ -113,13 +113,6 @@ spec:
             path: /ping
             port: https
             scheme: HTTPS
-        volumeMounts:
-        - mountPath: /etc/pomerium/
-          name: policy
-      volumes:
-      - name: policy
-        configMap:
-          name: {{ template "pomerium.fullname" . }}
       resources:
 {{ toYaml .Values.resources | indent 10 }}
 {{- if .Values.extraVolumes }}
