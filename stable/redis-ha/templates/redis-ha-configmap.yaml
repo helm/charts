@@ -79,7 +79,7 @@ data:
             sed -i "s/^.*slaveof.*//" "$REDIS_CONF"
         else
             # first pod should be up & registered in headless service by now
-            DEFAULT_MASTER="$(getent hosts "$SERVICE-server-0.$SERVICE" | awk '{ print $1 }')"
+            DEFAULT_MASTER="$SERVICE-server-0.$SERVICE"
             if [ -z "$DEFAULT_MASTER" ]; then
                 echo "Unable to resolve host"
                 exit 1
@@ -119,6 +119,7 @@ data:
     echo "Initializing config.."
     copy_config
 
+    ANNOUNCE_IP="$SERVICE-server-0.$SERVICE"
     if [ -z "$ANNOUNCE_IP" ]; then
         "Could not resolve the announce ip for this pod"
         exit 1
