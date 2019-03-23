@@ -34,6 +34,9 @@ spec:
       - name: anchore-license
         secret:
           secretName: {{ .Values.anchoreEnterpriseGlobal.licenseSecretName }}
+      - name: anchore-ui-config
+        secret:
+          secretName: {{ template "anchore-engine.enterprise-ui.fullname" . }}
       imagePullSecrets:
       - name: {{ .Values.anchoreEnterpriseGlobal.imagePullSecretName }}
       containers:
@@ -49,15 +52,15 @@ spec:
         - name: {{ $key }}
           value: {{ $value }}
         {{- end }}
+        {{- if and (index .Values "anchore-ui-redis" "externalEndpoint") (not (index .Values "anchore-ui-redis" "enabled")) }}
+        - name: ANCHORE_REDIS_URI
+          value: {{ index .Values "anchore-ui-redis" "externalEndpoint" | quote }}
+        {{- else }}
         - name: REDIS_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "redis.fullname" . }}
               key: redis-password
-        {{- if and (index .Values "anchore-ui-redis" "externalEndpoint") (not (index .Values "anchore-ui-redis" "enabled")) }}
-        - name: ANCHORE_REDIS_URI
-          value: {{ index .Values "anchore-ui-redis" "externalEndpoint" | quote }}
-        {{- else }}
         - name: ANCHORE_REDIS_URI
           value: "redis://:$(REDIS_PASSWORD)@{{ template "redis.fullname" . }}-master:6379"
         {{- end }}
@@ -83,21 +86,23 @@ spec:
         - name: anchore-license
           mountPath: /license.yaml
           subPath: license.yaml
+        - name: anchore-ui-config
+          mountPath: /config/config-ui.yaml
+          subPath: config-ui.yaml
         livenessProbe:
-          httpGet:
-            path: /
+          tcpSocket:
             port: enterprise-ui
           initialDelaySeconds: 120
           periodSeconds: 10
           failureThreshold: 6
           successThreshold: 1
-        readinessProbe:
-          httpGet:
-            path: /service/health
-            port: enterprise-ui
-          periodSeconds: 10
-          failureThreshold: 3
-          successThreshold: 1
+        # readinessProbe:
+        #   httpGet:
+        #     path: /service/health
+        #     port: enterprise-ui
+        #   periodSeconds: 10
+        #   failureThreshold: 3
+        #   successThreshold: 1
         resources:
 {{ toYaml .Values.anchoreEnterpriseUi.resources | indent 10 }}
     {{- if .Values.anchoreEnterpriseUi.nodeSelector }}
