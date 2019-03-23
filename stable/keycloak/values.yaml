@@ -96,7 +96,12 @@ keycloak:
             topologyKey: failure-domain.beta.kubernetes.io/zone
 
   nodeSelector: {}
+  priorityClassName: ""
   tolerations: []
+
+  ## Additional pod labels
+  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+  podLabels: {}
 
   ## Extra Annotations to be added to pod
   podAnnotations: {}
@@ -235,7 +240,12 @@ postgresql:
     enabled: false
 
 test:
+  enabled: true
   image:
     repository: unguiculus/docker-python3-phantomjs-selenium
     tag: v1
     pullPolicy: IfNotPresent
+  securityContext:
+    runAsUser: 1000
+    fsGroup: 1000
+    runAsNonRoot: true

@@ -78,12 +78,19 @@ spec:
             - name: TZ
               value: {{ .Values.chrome.timeZone | quote }}
             {{- end }}
+            {{- if .Values.chrome.extraEnvs }}
+{{ toYaml .Values.chrome.extraEnvs | indent 12 }}
+            {{- end }}
           volumeMounts:
 {{ if .Values.chrome.volumeMounts -}}
 {{ toYaml .Values.chrome.volumeMounts | indent 12 }}
 {{- end }}
           resources:
 {{ toYaml .Values.chrome.resources | indent 12 }}
+{{- if or .Values.global.imagePullSecrets .Values.chrome.imagePullSecrets }}
+      imagePullSecrets: 
+      - name: {{ .Values.chrome.imagePullSecrets | default .Values.global.imagePullSecrets | quote }}
+{{- end }}
       volumes:
 {{ if .Values.chrome.volumes -}}
 {{ toYaml .Values.chrome.volumes | indent 8 }}
