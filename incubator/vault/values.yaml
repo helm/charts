@@ -152,7 +152,8 @@ vault:
   #   secret:
   #     secretName: some-secret
   liveness:
-    aliveIfUninitialized: false
+    aliveIfUninitialized: true
+    aliveIfSealed: true
     initialDelaySeconds: 30
     periodSeconds: 10
   readiness:
