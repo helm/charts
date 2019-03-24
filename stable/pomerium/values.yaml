@@ -3,6 +3,7 @@
 
 # settings that are shared by all services
 config:
+  # routes under this wildcard comain are handled by pomerium
   rootDomain: corp.pomerium.io
   # existingSecret:
   # existingConfig:
