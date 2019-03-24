@@ -1,6 +1,7 @@
 {{- if .Values.ingress.enabled -}}
 {{- $fullName := include "unifi.fullname" . -}}
 {{- $ingressPath := .Values.ingress.path -}}
+{{- $unifiedServiceEnabled := .Values.unifiedService.enabled -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -32,7 +33,7 @@ spec:
         paths:
           - path: {{ $ingressPath }}
             backend:
-              {{- if .Values.unifiedService.enabled }}
+              {{- if $unifiedServiceEnabled }}
               serviceName: {{ $fullName }}
               {{- else }}
               serviceName: {{ $fullName }}-gui
