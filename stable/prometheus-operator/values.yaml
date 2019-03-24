@@ -144,11 +144,18 @@ alertmanager:
     hosts: []
       # - alertmanager.domain.com
 
+<<<<<<< HEAD
     ## Paths to use for ingress rules - one path should match the alertmanagerSpec.routePrefix
     ##
     paths: []
     # - /
 
+||||||| merged common ancestors
+=======
+    ## Ingress path, defaults to routePrefix if unset
+    # path: "/"
+
+>>>>>>> [prometheus-operator]: enable overriding of ingress path
     ## TLS configuration for Alertmanager Ingress
     ## Secret must be manually created in the namespace
     ##
@@ -343,10 +350,19 @@ grafana:
     #   - grafana.domain.com
     hosts: []
 
+<<<<<<< HEAD
     ## Path for grafana ingress
     path: /
 
     ## TLS configuration for grafana Ingress
+||||||| merged common ancestors
+    ## TLS configuration for prometheus Ingress
+=======
+    ## Ingress path
+    path: "/"
+
+    ## TLS configuration for prometheus Ingress
+>>>>>>> [prometheus-operator]: enable overriding of ingress path
     ## Secret must be manually created in the namespace
     ##
     tls: []
@@ -871,11 +887,18 @@ prometheus:
     #   - prometheus.domain.com
     hosts: []
 
+<<<<<<< HEAD
     ## Paths to use for ingress rules - one path should match the prometheusSpec.routePrefix
     ##
     paths: []
     # - /
 
+||||||| merged common ancestors
+=======
+    ## Ingress path, defaults to routePrefix if unset
+    # path: "/"
+
+>>>>>>> [prometheus-operator]: enable overriding of ingress path
     ## TLS configuration for Prometheus Ingress
     ## Secret must be manually created in the namespace
     ##

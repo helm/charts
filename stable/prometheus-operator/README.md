@@ -183,7 +183,12 @@ The following tables list the configurable parameters of the prometheus-operator
 | `prometheus.ingress.annotations` | Prometheus Ingress annotations | `{}` |
 | `prometheus.ingress.labels` | Prometheus Ingress additional labels | `{}` |
 | `prometheus.ingress.hosts` | Prometheus Ingress hostnames | `[]` |
+<<<<<<< HEAD
 | `prometheus.ingress.paths` | Prometheus Ingress paths | `[]` |
+||||||| merged common ancestors
+=======
+| `prometheus.ingress.path` | Prometheus Ingress path | default to `prometheus.prometheusSpec.routePrefix` |
+>>>>>>> [prometheus-operator]: enable overriding of ingress path
 | `prometheus.ingress.tls` | Prometheus Ingress TLS configuration (YAML) | `[]` |
 | `prometheus.service.type` |  Prometheus Service type | `ClusterIP` |
 | `prometheus.service.clusterIP` | Prometheus service clusterIP IP | `""` |
@@ -252,7 +257,12 @@ The following tables list the configurable parameters of the prometheus-operator
 | `alertmanager.ingress.annotations` | Alertmanager Ingress annotations | `{}` |
 | `alertmanager.ingress.labels` | Alertmanager Ingress additional labels | `{}` |
 | `alertmanager.ingress.hosts` | Alertmanager Ingress hostnames | `[]` |
+<<<<<<< HEAD
 | `alertmanager.ingress.paths` | Alertmanager Ingress paths | `[]` |
+||||||| merged common ancestors
+=======
+| `alertmanager.ingress.path` | Alertmanager Ingress path | default to `alertmanager.alertmanagerSpec.routePrefix` |
+>>>>>>> [prometheus-operator]: enable overriding of ingress path
 | `alertmanager.ingress.tls` | Alertmanager Ingress TLS configuration (YAML) | `[]` |
 | `alertmanager.service.type` | Alertmanager Service type | `ClusterIP` |
 | `alertmanager.service.clusterIP` | Alertmanager service clusterIP IP | `""` |
@@ -297,7 +307,8 @@ The following tables list the configurable parameters of the prometheus-operator
 | `grafana.ingress.enabled` | Enables Ingress for Grafana | `false` |
 | `grafana.ingress.annotations` | Ingress annotations for Grafana | `{}` |
 | `grafana.ingress.labels` | Custom labels for Grafana Ingress | `{}` |
-| `grafana.ingress.hosts` | Ingress accepted hostnames for Grafana| `[]` |
+| `grafana.ingress.path` | Ingress accepted path for Grafana | `"/"` |
+| `grafana.ingress.hosts` | Ingress accepted hostnames for Grafana | `[]` |
 | `grafana.ingress.tls` | Ingress TLS configuration for Grafana | `[]` |
 | `grafana.sidecar.dashboards.enabled` | Enable the Grafana sidecar to automatically load dashboards with a label `{{ grafana.sidecar.dashboards.label }}=1` | `true` |
 | `grafana.sidecar.dashboards.label` | If the sidecar is enabled, configmaps with this label will be loaded into Grafana as dashboards | `grafana_dashboard` |

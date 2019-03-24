@@ -1,4 +1,11 @@
 {{- if and .Values.alertmanager.enabled .Values.alertmanager.ingress.enabled }}
+<<<<<<< HEAD
+||||||| merged common ancestors
+{{- $routePrefix := .Values.alertmanager.alertmanagerSpec.routePrefix }}
+=======
+{{- $routePrefix := .Values.alertmanager.alertmanagerSpec.routePrefix }}
+{{- $ingressPath := .Values.alertmanager.ingress.path }}
+>>>>>>> [prometheus-operator]: enable overriding of ingress path
 {{- $serviceName := printf "%s-%s" (include "prometheus-operator.fullname" .) "alertmanager" }}
 {{- $servicePort := 9093 -}}
 {{- $routePrefix := list .Values.alertmanager.alertmanagerSpec.routePrefix }}
@@ -24,8 +31,14 @@ spec:
     - host: {{ tpl $host $ }}
       http:
         paths:
+<<<<<<< HEAD
   {{- range $p := $paths }}
           - path: {{ tpl $p $ }}
+||||||| merged common ancestors
+          - path: "{{ $routePrefix }}"
+=======
+          - path: "{{ default $routePrefix $ingressPath }}"
+>>>>>>> [prometheus-operator]: enable overriding of ingress path
             backend:
               serviceName: {{ $serviceName }}
               servicePort: {{ $servicePort }}
