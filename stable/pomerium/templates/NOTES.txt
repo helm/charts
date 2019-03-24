@@ -43,7 +43,7 @@ control provider:
         --set config.key=$(base64 -i privkey.pem) \
         --set config.policy="$(cat policy.example.yaml | base64)" \
         --set authenticate.idp.provider="google" \
-        --set authenticate.proxyRootDomains="pomerium.io" \
+        --set config.rootDomain="corp.pomerium.io" \
         --set authenticate.redirectUrl="https://auth.corp.pomerium.io/oauth2/callback" \
         --set authenticate.idp.clientID="REPLACE_ME" \
         --set authenticate.idp.clientSecret="REPLACE_ME" \

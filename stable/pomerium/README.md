@@ -25,7 +25,7 @@ helm install --name my-release \
 	--set config.cert=$(base64 -i cert.pem) \
 	--set config.key=$(base64 -i privkey.pem) \
 	--set config.policy=$(cat policy.example.yaml) \
-	--set authentiate.proxyRootDomains="pomerium.io" \
+	--set config.rootDomain="corp.pomerium.io" \
 	--set authentiate.redirectUrl="https://auth.corp.pomerium.io/oauth2/callback" \
     --set authentiate.idp.provider="google" \
 	--set authentiate.idp.clientID="" \
@@ -58,7 +58,7 @@ A full listing of Pomerium's configuration variables can be found on the [config
 | `config.policyFile`             | Relative file location of the policy file which contains the routes, and their access policies. [See more](https://www.pomerium.io/docs/config-reference.html#policy).                                     |                                                 |
 | `authenticate.name`             | Name of the authenticate service.                                                                                                                                                                          | `authenticate`                                  |
 | `authenticate.redirectUrl`      | Redirect URL is the url the user will be redirected to following authentication with the third-party identity provider (IdP). [See more](https://www.pomerium.io/docs/config-reference.html#redirect-url). | `https://auth.corp.pomerium.io/oauth2/callback` |
-| `authenticate.proxyRootDomains` | Proxy Root Domains specifies the sub-domains that can proxy requests. [See more](https://www.pomerium.io/docs/config-reference.html#proxy-root-domains).                                                   | `pomerium.io`                                   |
+| `config.rootDomain`             | Proxy Root Domains specifies the sub-domains that can proxy requests. [See more](https://www.pomerium.io/docs/config-reference.html#proxy-root-domains).                                                   | `pomerium.io`                                   |
 | `authenticate.idp.provider`     | Identity [Provider Name](https://www.pomerium.io/docs/config-reference.html#identity-provider-name).                                                                                                       | `google`                                        |
 | `authenticate.idp.url`          | Identity [Provider URL](https://www.pomerium.io/docs/config-reference.html#identity-provider-url).                                                                                                         |                                                 |
 | `authenticate.idp.clientID`     | Identity Provider oauth [client ID](https://www.pomerium.io/docs/config-reference.html#identity-provider-client-id).                                                                                       | ``                                              |

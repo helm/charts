@@ -20,7 +20,8 @@ spec:
     - port: {{ .Values.service.externalPort }}
       targetPort: https
       protocol: TCP
-      name: http
+      name: https
+
 {{- if hasKey .Values.service "nodePort" }}
     nodePort: {{ .Values.service.nodePort }}
 {{- end }}

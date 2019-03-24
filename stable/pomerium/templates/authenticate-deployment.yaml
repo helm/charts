@@ -63,7 +63,7 @@ spec:
         - name: REDIRECT_URL
           value: {{ .Values.authenticate.redirectUrl }}
         - name: PROXY_ROOT_DOMAIN
-          value: {{ .Values.authenticate.proxyRootDomains }}
+          value: {{ .Values.config.rootDomain }}
         - name: IDP_PROVIDER
           value: {{ .Values.authenticate.idp.provider }}
         - name: IDP_CLIENT_ID

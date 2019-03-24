@@ -17,20 +17,32 @@ spec:
   tls:
   {{- range .Values.ingress.tls }}
     - hosts:
-      {{- range .hosts }}
-        - {{ . | quote }}
-      {{- end }}
+        - '*.{{ .Values.config.rootDomain }}'
+        - {{ .Values.authorize.name }}.{{ .Values.config.rootDomain }}
+        - {{ .Values.authenticate.name }}.{{ .Values.config.rootDomain }}
       secretName: {{ .secretName }}
   {{- end }}
 {{- end }}
   rules:
-  {{- range .Values.ingress.hosts }}
-    - host: {{ . | quote }}
+    - host: '*.{{ .Values.config.rootDomain }}'
       http:
         paths:
-          - path: {{ .Values.ingress.path }}
+          - paths:
             backend:
-              serviceName: {{ include "pomerium.fullname" .}}
-              servicePort: http
-  {{- end }}
+              serviceName: {{ include "pomerium.fullname" .}}-{{ .Values.proxy.name }}
+              servicePort: https
+    - host: {{ .Values.authorize.name }}.{{ .Values.config.rootDomain }}
+      http:
+        paths:
+          - paths:
+            backend:
+              serviceName: {{ include "pomerium.fullname" .}}-{{ .Values.authorize.name }}
+              servicePort: https
+    - host: {{ .Values.authenticate.name }}.{{ .Values.config.rootDomain }}
+      http:
+        paths:
+          - paths:
+            backend:
+              serviceName: {{ include "pomerium.fullname" .}}-{{ .Values.authenticate.name }}
+              servicePort: https
 {{- end }}

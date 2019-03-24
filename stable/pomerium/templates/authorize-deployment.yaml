@@ -58,7 +58,7 @@ spec:
 {{- if .Values.config.policyFile}}
         - name: POLICY_FILE
           value: /etc/pomerium/policy.yaml
-{{- end }}}
+{{- end }}
 {{- if .Values.config.policy}}
         - name: POLICY
           value: {{ .Values.config.policy }}
@@ -96,13 +96,15 @@ spec:
             path: /ping
             port: https
             scheme: HTTPS
+{{- if .Values.config.policyFile}}
         volumeMounts:
         - mountPath: /etc/pomerium/
           name: policy
       volumes:
       - name: policy
         configMap:
-          name: {{ template "pomerium.fullname" . }}
+          name: {{ if not .Values.config.existingConfig }}{{ include "pomerium.fullname" . }}{{ else }}{{ .Values.config.existingConfig }}{{ end }}
+{{- end }}
       resources:
 {{ toYaml .Values.resources | indent 10 }}
 {{- if .Values.extraVolumes }}

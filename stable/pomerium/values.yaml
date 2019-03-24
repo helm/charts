@@ -3,11 +3,14 @@
 
 # settings that are shared by all services
 config:
+  rootDomain: corp.pomerium.io
   # existingSecret:
   # existingConfig:
   # secrets can be generated with `head -c32 /dev/urandom | base64`
   sharedSecret: "LL3g/NoKkao7mTec2/wYSOZAki1VbR89q+kqbdFj0c4="
   cookieSecret: "tAhd5A5Y8R/H/msFhkNdt8dCym2SatVbh4UrcDk3+Ms="
+  # generate TLS by building a dummy ca
+  generateTLS: true
   policyFile: |-
     - from: httpbin.corp.pomerium.io
       to: http://httpbin
@@ -28,13 +31,6 @@ config:
       to: http://hello:8080
       allowed_groups:
       - admins
-tls:
-  generateTLS: true
-  certificateAuthority: ""
-  # defaultCN: *.example.com
-  # default is to use a self-signed cert, should _NOT_ be used inproduction
-  key: "LS0tLS1CRUdJTiBFQyBQUklWQVRFIEtFWS0tLS0tCk1IY0NBUUVFSUtzZ3pUNDdBQXlzTkJNa1BJYnVJV1BodFEwN2RzWGx4WjB5Z3pjV3VXaVVvQW9HQ0NxR1NNNDkKQXdFSG9VUURRZ0FFLzMyY2c0YWpuWHpyT2pORjlXczROK2NyUTdwTGVWOGt6Y3R6cGN1S2F1KzAzVmZXRlRaTQpaTmh2cFQrUzZlS3QzSW1ycExsRTlKRFN6dDZwcUI0UVZRPT0KLS0tLS1FTkQgRUMgUFJJVkFURSBLRVktLS0tLQo="
-  cert: "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUJFekNCdWdJSkFLK3VPcmsyVzFRTk1Bb0dDQ3FHU000OUJBTUNNQkV4RHpBTkJnTlZCQU1NQm5WdWRYTmwKWkRBZ0Z3MHhPVEF6TWpBeU1UTTNNemRhR0E4ME56VTNNREl4TkRJeE16Y3pOMW93RVRFUE1BMEdBMVVFQXd3RwpkVzUxYzJWa01Ga3dFd1lIS29aSXpqMENBUVlJS29aSXpqMERBUWNEUWdBRS8zMmNnNGFqblh6ck9qTkY5V3M0Ck4rY3JRN3BMZVY4a3pjdHpwY3VLYXUrMDNWZldGVFpNWk5odnBUK1M2ZUt0M0ltcnBMbEU5SkRTenQ2cHFCNFEKVlRBS0JnZ3Foa2pPUFFRREFnTklBREJGQWlFQTQwSjYycmJjcThYK0EzdTdQemRBNjRhaTJFbWhMQzZkRERYaQpwNmZpaHhFQ0lDRGFWcVkrUHFmZG5Ja1ZQVTFWdU5zNDl5RkJyd2IxYTlqcUdWQzlLaG1GCi0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K"
 
 authenticate:
   name: authenticate
@@ -50,7 +46,6 @@ authenticate:
       # - 1.2.3.4
 
   redirectUrl: https://auth.corp.pomerium.io/oauth2/callback
-  proxyRootDomains: pomerium.io
   # see https://www.pomerium.io/docs/identity-providers.html
   idp:
     provider: google
@@ -99,26 +94,22 @@ image:
 
 service:
   # Service type can be set to ClusterIP, NodePort or LoadBalancer.
-  type: ClusterIP
+  type: NodePort
   externalPort: 443
-  annotations: {}
+  annotations:
+    {}
+    # cloud.google.com/app-protocols: '{"https":"HTTPS"}'
   labels: {}
 
 ingress:
-  enabled: false
+  enabled: true
   annotations:
     {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   # path: /
-  hosts:
-  #   - "*.corp.example.com"
-  #   - "auth.corp.example.com"
-  #   - "access.corp.example.com"
   tls: []
   #  - secretName: corp.pomerium.com-tls
-  #    hosts:
-  #
 
 resources:
   {}
