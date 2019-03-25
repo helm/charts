@@ -154,25 +154,25 @@ persistence:
   # existingClaim:
 
 initChownData:
-  ## If false, data ownership will not be reset at startup
-  ## This allows the prometheus-server to be run with an arbitrary user
-  ##
+## If false, data ownership will not be reset at startup
+## This allows the prometheus-server to be run with an arbitrary user
+##
   enabled: true
 
-  ## initChownData container name
-  ##
+## initChownData container name
+##
   name: init-chown-data
 
-  ## initChownData container image
-  ##
+## initChownData container image
+##
   image:
     repository: busybox
     tag: latest
     pullPolicy: IfNotPresent
 
-  ## initChownData resource requests and limits
-  ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
-  ##
+## initChownData resource requests and limits
+## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
+##
   resources: 
     limits:
       cpu: 100m
