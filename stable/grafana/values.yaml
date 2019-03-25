@@ -145,14 +145,6 @@ extraContainers: |
 ##
 persistence:
   enabled: false
-  initChownData: true
-  resources: {}
-#   limits:
-#     cpu: 100m
-#     memory: 100Mi
-#   requests:
-#     cpu: 50m
-#     memory: 50Mi
   # storageClassName: default
   accessModes:
     - ReadWriteOnce
@@ -160,6 +152,35 @@ persistence:
   # annotations: {}
   # subPath: ""
   # existingClaim:
+
+initChownData:
+  ## If false, data ownership will not be reset at startup
+  ## This allows the prometheus-server to be run with an arbitrary user
+  ##
+  enabled: true
+
+  ## initChownData container name
+  ##
+  name: init-chown-data
+
+  ## initChownData container image
+  ##
+  image:
+    repository: busybox
+    tag: latest
+    pullPolicy: IfNotPresent
+
+  ## initChownData resource requests and limits
+  ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  ##
+  resources: 
+    limits:
+      cpu: 100m
+      memory: 128Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
 
 # Administrator credentials when not using an existing secret (see below)
 adminUser: admin
