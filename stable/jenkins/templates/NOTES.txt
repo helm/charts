@@ -8,6 +8,7 @@ Master.Ingress.Annotations --> Master.ingress.annotations
 Master.Ingress.Labels --> Master.ingress.labels
 Master.Ingress.Path --> Master.ingress.path
 Master.Ingress.TLS --> Master.ingress.tls
+Master.OwnSshKey, a bool, has been replaced with Master.AdminSshKey, which is expected to be a string containing the actual key
 
 1. Get your '{{ .Values.Master.AdminUser }}' user password by running:
   printf $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "jenkins.fullname" . }} -o jsonpath="{.data.jenkins-admin-password}" | base64 --decode);echo
