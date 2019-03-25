@@ -139,6 +139,7 @@ The following table lists the configurable parameters of the Concourse chart and
 | `secrets.postgresUser` | PostgreSQL User Name | `nil` |
 | `secrets.sessionSigningKey` | Concourse Session Signing Private Key | *See [values.yaml](values.yaml)* |
 | `secrets.syslogCaCert` | SSL certificate to verify Syslog server | `nil` |
+| `secrets.teamAuthorizedKeys` | Array of team names and worker public keys for external workers | `nil` |
 | `secrets.vaultAuthParam` | Paramter to pass when logging in via the backend | `nil` |
 | `secrets.vaultCaCert` | CA certificate use to verify the vault server SSL cert | `nil` |
 | `secrets.vaultClientCert` | Vault Client Certificate | `nil` |

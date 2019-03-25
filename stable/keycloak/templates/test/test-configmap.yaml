@@ -18,7 +18,7 @@ data:
     from urllib.parse import urlparse
 
     print('Creating PhantomJS driver...')
-    driver = webdriver.PhantomJS()
+    driver = webdriver.PhantomJS(service_log_path='/tmp/ghostdriver.log')
 
     base_url = 'http://{{ template "keycloak.fullname" . }}-http{{ if ne 80 (int .Values.keycloak.service.port) }}{{ .Values.keycloak.service.port }}{{ end }}'
 

@@ -72,7 +72,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `Master.LoadBalancerIP`           | Optional fixed external IP           | Not set                                                                      |
 | `Master.JMXPort`                  | Open a port, for JMX stats           | Not set                                                                      |
 | `Master.ExtraPorts`               | Open extra ports, for other uses     | Not set                                                                      |
-| `Master.OverwriteConfig`          | Replace config w/ ConfigMap on boot  | `false`                                                                      |
+| `Master.OverwriteConfig`          | Replace init scripts and config w/ ConfigMap on boot  | `false`                                                                      |
 | `Master.ingress.enabled`          | Enables ingress      | `false`                                                                         |
 | `Master.ingress.hostName`         | Ingress host name      | Not set                                                                         |
 | `Master.ingress.annotations`      | Ingress annotations                  | `{}`                                                                         |
@@ -258,7 +258,7 @@ ConfigScripts:
 
 Further JCasC examples can be found [here.](https://github.com/jenkinsci/configuration-as-code-plugin/tree/master/demos)
 ### Config as Code with and without auto-reload 
-Config as Code changes (to Master.JCasC.ConfigScripts) can either force a new pod to be created and only be applied at next startup, or can be auto-reloaded on-the-fly.  If you choose `Master.Sidecars.autoConfigReload.enabled: true`, a second, auxiliary container will be installed into the Jenkins master pod, known as a "sidecar".  This watches for changes to ConfigScripts, copies the content onto the Jenkins file-system and issues a CLI command via SSH to reload configuration.  The admin user (or account you specify in Master.AdminUser) will have a random SSH private key (RSA 4096) assigned unless you specify `Master.OwnSshKey: true`.  This will be saved to a k8s secret.  You can monitor this sidecar's logs using command `kubectl logs <master_pod> -c jenkins-sc-config -f`
+Config as Code changes (to Master.JCasC.ConfigScripts) can either force a new pod to be created and only be applied at next startup, or can be auto-reloaded on-the-fly.  If you choose `Master.Sidecars.autoConfigReload.enabled: true`, a second, auxiliary container will be installed into the Jenkins master pod, known as a "sidecar".  This watches for changes to ConfigScripts, copies the content onto the Jenkins file-system and issues a CLI command via SSH to reload configuration.  The admin user (or account you specify in Master.AdminUser) will have a random SSH private key (RSA 4096) assigned unless you specify a key in `Master.AdminSshKey`.  This will be saved to a k8s secret.  You can monitor this sidecar's logs using command `kubectl logs <master_pod> -c jenkins-sc-config -f`
 If you want to enable auto-reload then you also need to configure rbac as the container which triggers the reload needs to watch the config maps.
 
 ```yaml
