@@ -131,6 +131,9 @@ spec:
             exec /bin/consul agent \
               $GOSSIP_KEY \
               -join={{- .Values.consulAgent.join }} \
+              {{- if .Values.consulAgent.datacenter }}
+              -datacenter={{- .Values.consulAgent.datacenter}} \
+              {{- end }}
               -data-dir=/etc/consul
       {{- end }}
       {{- if .Values.affinity }}

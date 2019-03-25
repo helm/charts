@@ -24,6 +24,9 @@ consulAgent:
   #
   # Optionally override the agent's http port
   HttpPort: 8500
+  # Datacenter flag - by default it's dc1. Usfeful when joing already
+  # set up cluster
+  # datacenter: dc1
 service:
   name: vault
   type: ClusterIP
