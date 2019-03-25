@@ -1,6 +1,11 @@
 ## Default values for Traefik
 image: traefik
 imageTag: 1.7.9
+
+testFramework:
+  image: "dduportal/bats"
+  tag: "0.4.0"
+
 ## can switch the service type to NodePort if required
 serviceType: LoadBalancer
 # loadBalancerIP: ""
