@@ -85,10 +85,6 @@ data:
       proxy_set_header Host $host;
 
       location / {
-        root /yugaware-ui/public/;
-        try_files $uri /index.html;
-      }
-      location /api {
         proxy_pass http://127.0.0.1:9000;
       }
 

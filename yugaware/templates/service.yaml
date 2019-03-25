@@ -163,14 +163,6 @@ spec:
                 configMapKeyRef:
                   name: {{ .Release.Name }}-yugaware-global-config
                   key: app_secret
-          lifecycle:
-            postStart:
-              exec:
-                command:
-                  - 'cp'
-                  - '-R'
-                  - '/opt/yugabyte/yugaware/public'
-                  - '/opt/yugaware-ui'
           ports:
             - containerPort: 9000
               name: yugaware
@@ -185,8 +177,6 @@ spec:
             subPath: releases
           - name: thirdparty-deps
             mountPath: /opt/third-party
-          - name: yugaware-ui
-            mountPath: /opt/yugaware-ui
           - name: yugaware-storage
             mountPath: /opt/swamper_targets/
             subPath: swamper_targets
@@ -197,8 +187,6 @@ spec:
           volumeMounts:
           - mountPath: /etc/nginx/conf.d/
             name: nginx-config
-          - mountPath: /yugaware-ui
-            name: yugaware-ui
         - name: dnsmasq
           image: "janeczku/go-dnsmasq:release-1.0.7"
           args:
