@@ -21,10 +21,4 @@ rules:
   - apiGroups: [""]
     resources: ["events"]
     verbs: ["create", "update", "patch"]
-{{- if .Values.podSecurityPolicy.enabled }}
-  - apiGroups:      ['extensions']
-    resources:      ['podsecuritypolicies']
-    verbs:          ['use']
-    resourceNames:  [{{ template "nfs-client-provisioner.fullname" . }}]
-{{- end }}
 {{- end }}
