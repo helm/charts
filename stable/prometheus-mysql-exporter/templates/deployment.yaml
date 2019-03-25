@@ -18,6 +18,9 @@ spec:
       labels:
         app: {{ template "prometheus-mysql-exporter.name" . }}
         release: {{ .Release.Name }}
+{{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels | trim | indent 8 }}
+{{- end }}
       annotations:
       {{- if .Values.cloudsqlproxy.enabled }}
         checksum/config: {{ include (print .Template.BasePath "/secret.yaml") . | sha256sum }}
