@@ -13,16 +13,12 @@ metadata:
 {{ toYaml . | indent 4 }}
 {{- end }}
 spec:
-{{- if .Values.ingress.tls }}
   tls:
-  {{- range .Values.ingress.tls }}
-    - hosts:
+    - secretName: {{ .Values.ingress.secretName }}
+      hosts:
         - '*.{{ .Values.config.rootDomain }}'
         - {{ .Values.authorize.name }}.{{ .Values.config.rootDomain }}
         - {{ .Values.authenticate.name }}.{{ .Values.config.rootDomain }}
-      secretName: {{ .secretName }}
-  {{- end }}
-{{- end }}
   rules:
     - host: '*.{{ .Values.config.rootDomain }}'
       http:

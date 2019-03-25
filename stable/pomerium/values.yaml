@@ -4,13 +4,11 @@
 # settings that are shared by all services
 config:
   # routes under this wildcard comain are handled by pomerium
-  rootDomain: corp.pomerium.io
+  domain: corp.pomerium.io
   # existingSecret:
   # existingConfig:
-  # secrets can be generated with `head -c32 /dev/urandom | base64`
-  sharedSecret: "LL3g/NoKkao7mTec2/wYSOZAki1VbR89q+kqbdFj0c4="
-  cookieSecret: "tAhd5A5Y8R/H/msFhkNdt8dCym2SatVbh4UrcDk3+Ms="
-  # generate TLS by building a dummy ca
+  sharedSecret: ""
+  cookieSecret: ""
   generateTLS: true
   policyFile: |-
     - from: httpbin.corp.pomerium.io
@@ -35,83 +33,64 @@ config:
 
 authenticate:
   name: authenticate
-  tls:
-    cert: ""
-    key: ""
-    defaultSANList:
-      []
-      # - example.com
-      # - corp.example.com
-    defaultIPList:
-      []
-      # - 1.2.3.4
-
-  redirectUrl: https://auth.corp.pomerium.io/oauth2/callback
+  redirectUrl: ""
   # see https://www.pomerium.io/docs/identity-providers.html
   idp:
     provider: google
     # url: https://example.oktapreview.com/oauth2/default
     clientID: "REPLACE_ME"
     clientSecret: "REPLACE_ME"
+    serviceAccount: ""
+  tls:
+    cert: ""
+    key: ""
+    defaultSANList: []
+    defaultIPList: []
 
 authorize:
   name: authorize
   tls:
     cert: ""
     key: ""
-    defaultSANList:
-      # - access.corp.example.com
-    defaultIPList:
-      []
-      # - 1.2.3.4
+    defaultSANList: []
+    defaultIPList: []
 
 proxy:
   name: proxy
   tls:
     cert: ""
     key: ""
-    defaultSANList:
-      []
-      # - example.com
-      # - corp.example.com
-    defaultIPList:
-      []
-      # - 1.2.3.4
-  authenticateServiceUrl: https://auth.corp.pomerium.io
-  authorizeServiceUrl: https://access.corp.pomerium.io
-  # authorizeUseInternalUrl:
-  # authenticateUseInternalUrl:
-
-# For any other settings that are optional. for a complete listing see:
-# https://www.pomerium.io/docs/config-reference.html
-extraEnv: {}
-extraArgs: {}
-extraVolumes: {}
-
-image:
-  repository: "pomerium/pomerium"
-  tag: "latest"
-  pullPolicy: "IfNotPresent"
+    defaultSANList: []
+    defaultIPList: []
+  authenticateServiceUrl: ""
+  authorizeServiceUrl: ""
+  authorizeUseInternalUrl: ""
+  authenticateUseInternalUrl: ""
 
 service:
   # Service type can be set to ClusterIP, NodePort or LoadBalancer.
-  type: NodePort
+  type: ClusterIP
   externalPort: 443
   annotations:
-    {}
-    # cloud.google.com/app-protocols: '{"https":"HTTPS"}'
+    # {}
+    # if using GKE's build int load balancer
+    cloud.google.com/app-protocols: '{"https":"HTTPS"}'
+    kubernetes.io/ingress.allow-http: "false"
   labels: {}
 
 ingress:
+  secretName: pomerium-tls
+  secret:
+    certificate: ""
+    key: ""
   enabled: true
   annotations:
-    {}
+    # {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
-  # path: /
-  tls: []
-  #  - secretName: corp.pomerium.com-tls
-
+    # if using GKE's build int load balancer
+    cloud.google.com/app-protocols: '{"https":"HTTPS"}'
+    kubernetes.io/ingress.allow-http: "false"
 resources:
   {}
   # limits:
@@ -138,3 +117,14 @@ priorityClassName: ""
 podAnnotations: {}
 podLabels: {}
 replicaCount: 1
+
+# For any other settings that are optional. for a complete listing see:
+# https://www.pomerium.io/docs/config-reference.html
+extraEnv: {}
+extraArgs: {}
+extraVolumes: {}
+
+image:
+  repository: "pomerium/pomerium"
+  tag: "latest"
+  pullPolicy: "Always"

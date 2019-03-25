@@ -1,3 +1,6 @@
+{{- $configSecretName := default (include "pomerium.fullname" .) .Values.config.existingSecret }}
+{{- $tlsSecretName := default (printf "%s-tls" (include "pomerium.fullname" .)) .Values.authenticate.tls.existingSecret }}
+{{- $idpSecretName := default (printf "%s-idp" (include "pomerium.fullname" .)) .Values.authenticate.idp.existingSecret }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -53,15 +56,15 @@ spec:
         - name: COOKIE_SECRET
           valueFrom:
             secretKeyRef:
-              name: {{ if not .Values.config.existingSecret }}{{ template "pomerium.fullname" . }}{{ else }}{{ .Values.config.existingSecret }}{{ end }}
+              name: {{ $configSecretName }}
               key: cookie-secret
         - name: SHARED_SECRET
           valueFrom:
             secretKeyRef:
-              name: {{ if not .Values.config.existingSecret }}{{ template "pomerium.fullname" . }}{{ else }}{{ .Values.config.existingSecret }}{{ end }}
+              name: {{ $configSecretName }}
               key: shared-secret
         - name: REDIRECT_URL
-          value: {{ .Values.authenticate.redirectUrl }}
+          value: {{ default (printf "https://%s.%s/oauth2/callback" .Values.authenticate.name  .Values.config.rootDomain ) .Values.authenticate.redirectUrl }}
         - name: PROXY_ROOT_DOMAIN
           value: {{ .Values.config.rootDomain }}
         - name: IDP_PROVIDER
@@ -69,12 +72,12 @@ spec:
         - name: IDP_CLIENT_ID
           valueFrom:
             secretKeyRef:
-              name:  {{ if not .Values.config.existingSecret }}{{ template "pomerium.fullname" . }}{{ else }}{{ .Values.config.existingSecret }}{{ end }}
+              name:  {{ $configSecretName }}
               key: idp-client-id
         - name: IDP_CLIENT_SECRET
           valueFrom:
             secretKeyRef:
-              name:  {{ if not .Values.config.existingSecret }}{{ template "pomerium.fullname" . }}{{ else }}{{ .Values.config.existingSecret }}{{ end }}
+              name:  {{ $configSecretName }}
               key: idp-client-secret
 {{- if .Values.authenticate.idp.url }}
         - name: IDP_PROVIDER_URL
@@ -83,17 +86,17 @@ spec:
         - name: CERTIFICATE
           valueFrom:
             secretKeyRef:
-              name:  {{ if not .Values.config.existingSecret }}{{ template "pomerium.fullname" . }}{{ else }}{{ .Values.config.existingSecret }}{{ end }}
+              name:  {{ $configSecretName }}
               key:  authenticate-cert
         - name: CERTIFICATE_KEY
           valueFrom:
             secretKeyRef:
-              name:  {{ if not .Values.config.existingSecret }}{{ template "pomerium.fullname" . }}{{ else }}{{ .Values.config.existingSecret }}{{ end }}
+              name:  {{ $configSecretName }}
               key:  authenticate-key
         - name: CERTIFICATE_AUTHORITY
           valueFrom:
             secretKeyRef:
-              name:  {{ if not .Values.config.existingSecret }}{{ template "pomerium.fullname" . }}{{ else }}{{ .Values.config.existingSecret }}{{ end }}
+              name:  {{ $configSecretName }}
               key:  ca-cert
 {{- range $name, $value := .Values.extraEnv }}
         - name: {{ $name }}

@@ -1,3 +1,5 @@
+{{- $configName := default (include "pomerium.fullname" .) .Values.config.existingConfig }}
+{{- $configSecretName := default (include "pomerium.fullname" .) .Values.config.existingSecret }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -53,26 +55,22 @@ spec:
         - name: COOKIE_SECRET
           valueFrom:
             secretKeyRef:
-              name: {{ if not .Values.config.existingSecret }}{{ template "pomerium.fullname" . }}{{ else }}{{ .Values.config.existingSecret }}{{ end }}
+              name: {{ $configSecretName }}
               key: cookie-secret
         - name: SHARED_SECRET
           valueFrom:
             secretKeyRef:
-              name: {{ if not .Values.config.existingSecret }}{{ template "pomerium.fullname" . }}{{ else }}{{ .Values.config.existingSecret }}{{ end }}
+              name: {{ $configSecretName }}
               key: shared-secret
         - name: AUTHENTICATE_SERVICE_URL
-          value: {{ .Values.proxy.authenticateServiceUrl }}
+          value: {{ default (printf "https://%s.%s" .Values.authenticate.name .Values.config.rootDomain ) .Values.proxy.authenticateServiceUrl }}
         - name: AUTHORIZE_SERVICE_URL
-          value: {{ .Values.proxy.authorizeServiceUrl }}
-{{- if .Values.proxy.authenticateUseInternalUrl }}
+          value: {{ default (printf "https://%s.%s" .Values.authorize.name .Values.config.rootDomain ) .Values.proxy.authorizeServiceUrl }}
         - name: AUTHENTICATE_INTERNAL_URL
-          value: {{ template "pomerium.fullname" . }}-{{ .Values.authenticate.name }}
-{{- end }}
-{{- if .Values.proxy.authorizeUseInternalUrl }}
+          value: {{ default (printf "%s-%s.%s.svc.cluster.local" (include "pomerium.fullname" .) .Values.authenticate.name .Release.Namespace ) .Values.proxy.authenticateUseInternalUrl}}
         - name: AUTHORIZE_INTERNAL_URL
-          value: {{ template "pomerium.fullname" . }}-{{ .Values.authorize.name }}
-{{- end }}
-{{- if .Values.config.policyFile}}
+          value: {{ default (printf "%s-%s.%s.svc.cluster.local" (include "pomerium.fullname" .) .Values.authorize.name .Release.Namespace ) .Values.proxy.authorizeUseInternalUrl}}
+{{- if or .Values.config.existingConfig .Values.config.policyFile}}
         - name: POLICY_FILE
           value: /etc/pomerium/policy.yaml
 {{- end }}
@@ -83,20 +81,18 @@ spec:
         - name: CERTIFICATE
           valueFrom:
             secretKeyRef:
-              name: {{ if not .Values.config.existingSecret }}{{ template "pomerium.fullname" . }}{{ else }}{{ .Values.config.existingSecret }}{{ end }}
+              name: {{ $configSecretName }}
               key: proxy-cert
         - name: CERTIFICATE_KEY
           valueFrom:
             secretKeyRef:
-              name: {{ if not .Values.config.existingSecret }}{{ template "pomerium.fullname" . }}{{ else }}{{ .Values.config.existingSecret }}{{ end }}
+              name: {{ $configSecretName }}
               key: proxy-key
-{{- if .Values.config.ca }}
         - name: CERTIFICATE_AUTHORITY
           valueFrom:
             secretKeyRef:
-              name: {{ if not .Values.config.existingSecret }}{{ template "pomerium.fullname" . }}{{ else }}{{ .Values.config.existingSecret }}{{ end }}
+              name: {{ $configSecretName }}
               key:  ca-cert
-{{- end }}
 {{- range $name, $value := .Values.extraEnv }}
         - name: {{ $name }}
           value: {{ quote $value }}
@@ -115,14 +111,14 @@ spec:
             path: /ping
             port: https
             scheme: HTTPS
-{{- if .Values.config.policyFile}}
+{{- if or .Values.config.existingConfig .Values.config.policyFile}}
         volumeMounts:
         - mountPath: /etc/pomerium/
           name: policy
       volumes:
       - name: policy
         configMap:
-          name: {{ if not .Values.config.existingConfig }}{{ include "pomerium.fullname" . }}{{ else }}{{ .Values.config.existingConfig }}{{ end }}
+          name: {{ $configName }}
 {{- end }}
       resources:
 {{ toYaml .Values.resources | indent 10 }}

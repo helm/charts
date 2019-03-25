@@ -1,3 +1,5 @@
+{{- $configName := default (include "pomerium.fullname" .) .Values.config.existingConfig }}
+{{- $configSecretName := default (include "pomerium.fullname" .) .Values.config.existingSecret }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -53,9 +55,9 @@ spec:
         - name: SHARED_SECRET
           valueFrom:
             secretKeyRef:
-              name: {{ if not .Values.config.existingSecret }}{{ template "pomerium.fullname" . }}{{ else }}{{ .Values.config.existingSecret }}{{ end }}
+              name: {{ $configSecretName }}
               key: shared-secret
-{{- if .Values.config.policyFile}}
+{{- if or .Values.config.existingConfig .Values.config.policyFile}}
         - name: POLICY_FILE
           value: /etc/pomerium/policy.yaml
 {{- end }}
@@ -66,17 +68,17 @@ spec:
         - name: CERTIFICATE
           valueFrom:
             secretKeyRef:
-              name: {{ if not .Values.config.existingSecret }}{{ template "pomerium.fullname" . }}{{ else }}{{ .Values.config.existingSecret }}{{ end }}
+              name: {{ $configSecretName }}
               key: authorize-cert
         - name: CERTIFICATE_KEY
           valueFrom:
             secretKeyRef:
-              name: {{ if not .Values.config.existingSecret }}{{ template "pomerium.fullname" . }}{{ else }}{{ .Values.config.existingSecret }}{{ end }}
+              name: {{ $configSecretName }}
               key: authorize-key
         - name: CERTIFICATE_AUTHORITY
           valueFrom:
             secretKeyRef:
-              name: {{ if not .Values.config.existingSecret }}{{ template "pomerium.fullname" . }}{{ else }}{{ .Values.config.existingSecret }}{{ end }}
+              name: {{ $configSecretName }}
               key: ca-cert
 {{- range $name, $value := .Values.extraEnv }}
         - name: {{ $name }}
@@ -96,14 +98,14 @@ spec:
             path: /ping
             port: https
             scheme: HTTPS
-{{- if .Values.config.policyFile}}
+{{- if or .Values.config.existingConfig .Values.config.policyFile}}
         volumeMounts:
         - mountPath: /etc/pomerium/
           name: policy
       volumes:
       - name: policy
         configMap:
-          name: {{ if not .Values.config.existingConfig }}{{ include "pomerium.fullname" . }}{{ else }}{{ .Values.config.existingConfig }}{{ end }}
+          name: {{ $configName }}
 {{- end }}
       resources:
 {{ toYaml .Values.resources | indent 10 }}
