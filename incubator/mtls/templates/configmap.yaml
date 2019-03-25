@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "mtls.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "mtls.name" . }}
+    helm.sh/chart: {{ include "mtls.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+data:
+{{- range $key, $value := .Values.configMaps }}
+  {{ $key }}: |-
+{{ $value | indent 4 }}
+{{- end }}

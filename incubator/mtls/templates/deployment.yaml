@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "mtls.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "mtls.name" . }}
+    helm.sh/chart: {{ include "mtls.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "mtls.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "mtls.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 4000
+              protocol: TCP
+          volumeMounts:
+            - name: config
+              mountPath: /home/mtls/config.ini
+              subPath: config.ini
+            {{- if .Values.configMaps.seeds }}
+            - name: seeds
+              mountPath: /tmp/seeds
+              subPath: seeds
+            {{- end }}
+          livenessProbe:
+            httpGet:
+              path: /ca
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /ca
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+        - name: config
+          configMap:
+            name: {{ include "mtls.fullname" . }}
+            items:
+              - key: config.ini
+                path: config.ini
+        {{- if .Values.configMaps.seeds }}
+        - name: seeds
+          configMap:
+            name: {{ include "mtls.fullname" . }}
+            items:
+              - key: seeds
+                path: seeds
+        {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
