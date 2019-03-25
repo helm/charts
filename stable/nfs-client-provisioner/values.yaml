@@ -44,11 +44,6 @@ rbac:
   # Specifies whether RBAC resources should be created
   create: true
 
-# If true, create & use Pod Security Policy resources
-# https://kubernetes.io/docs/concepts/policy/pod-security-policy/
-podSecurityPolicy:
-  enabled: false
-
 serviceAccount:
   # Specifies whether a ServiceAccount should be created
   create: true
