@@ -89,7 +89,7 @@ spec:
                 secretKeyRef:
                   name: {{ template "jenkins.fullname" . }}
                   key: jenkins-admin-user
-            {{- if or (.Values.Master.OwnSshKey) (.Values.Master.Sidecars.configAutoReload.enabled) }}
+            {{- if or (.Values.Master.AdminSshKey) (.Values.Master.Sidecars.configAutoReload.enabled) }}
             {{- if .Values.Master.JCasC.enabled }}
             - name: ADMIN_PRIVATE_KEY
               valueFrom:
@@ -162,7 +162,7 @@ spec:
                 secretKeyRef:
                   name: {{ template "jenkins.fullname" . }}
                   key: jenkins-admin-user
-            {{- if or (.Values.Master.OwnSshKey) (.Values.Master.Sidecars.configAutoReload.enabled) }}
+            {{- if or (.Values.Master.AdminSshKey) (.Values.Master.Sidecars.configAutoReload.enabled) }}
             {{- if .Values.Master.JCasC.enabled }}
             - name: ADMIN_PRIVATE_KEY
               valueFrom:
@@ -287,7 +287,7 @@ spec:
                 secretKeyRef:
                   name: {{ template "jenkins.fullname" . }}
                   key: jenkins-admin-user
-            {{- if or (.Values.Master.OwnSshKey) (.Values.Master.Sidecars.configAutoReload.enabled) }}
+            {{- if or (.Values.Master.AdminSshKey) (.Values.Master.Sidecars.configAutoReload.enabled) }}
             {{- if .Values.Master.JCasC.enabled }}
             - name: ADMIN_PRIVATE_KEY
               valueFrom:
