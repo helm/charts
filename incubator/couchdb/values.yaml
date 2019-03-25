@@ -77,6 +77,7 @@ affinity:
 ## chart without any additional configuration. The Service block below refers
 ## to a second Service that governs how clients connect to the CouchDB cluster.
 service:
+  # annotations:
   enabled: true
   type: ClusterIP
   externalPort: 5984

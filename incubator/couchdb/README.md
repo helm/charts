@@ -125,6 +125,7 @@ A variety of other parameters are also configurable. See the comments in the
 | `podManagementPolicy`           | Parallel                               |
 | `affinity`                      |                                        |
 | `resources`                     |                                        |
+| `service.annotations`           |                                        |
 | `service.enabled`               | true                                   |
 | `service.type`                  | ClusterIP                              |
 | `service.externalPort`          | 5984                                   |
