@@ -37,8 +37,8 @@ If release name contains chart name it will be used as a full name.
 Generate private key for jenkins CLI
 */}}
 {{- define "jenkins.gen-key" -}}
-{{- if not .Values.Master.OwnSshKey -}}
+{{- if not .Values.Master.AdminSshKey -}}
 {{- $key := genPrivateKey "rsa" -}}
-jenkins-admin-private-key: {{ $key | b64enc }}
+jenkins-admin-private-key: {{ $key | b64enc | quote }}
 {{- end -}}
 {{- end -}}
