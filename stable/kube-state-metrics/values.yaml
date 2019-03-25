@@ -5,6 +5,8 @@ image:
   tag: v1.5.0
   pullPolicy: IfNotPresent
 
+replicas: 1
+
 service:
   port: 8080
   # Default to clusterIP for backward compatibility
