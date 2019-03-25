@@ -54,6 +54,7 @@ The following table lists the configurable parameters of the Magento chart and t
 | `image.registry`                     | Magento image registry                     | `docker.io`                                              |
 | `image.repository`                   | Magento Image name                         | `bitnami/magento`                                        |
 | `image.tag`                          | Magento Image tag                          | `{VERSION}`                                              |
+| `image.debug`                        | Specify if debug values should be set      | `false`                                                  |
 | `image.pullPolicy`                   | Image pull policy                          | `Always` if `imageTag` is `latest`, else `IfNotPresent`  |
 | `image.pullSecrets`                  | Specify docker-registry secret names as an array | `[]` (does not add image pull secrets to deployed pods) |
 | `magentoHost`                        | Magento host to create application URLs    | `nil`                                                    |
