@@ -77,7 +77,7 @@ Determine database name based on use of postgresql dependency.
 {{- end -}}
 
 {{/*
-Determine database ssl mode based on use of postgresql dependency.
+Determine database SSL mode based on use of postgresql dependency.
 */}}
 {{- define "gogs.database.ssl_mode" -}}
 {{- if .Values.postgresql.install -}}
