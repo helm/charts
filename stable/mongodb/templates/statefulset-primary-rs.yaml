@@ -174,7 +174,7 @@ spec:
           volumeMounts:
             - name: datadir
               mountPath: /bitnami/mongodb
-            {{- if  or (.Files.Glob "files/docker-entrypoint-initdb.d/*[sh|js]") (.Values.initConfigMap) }}
+            {{- if  or (.Files.Glob "files/docker-entrypoint-initdb.d/*[sh|js|json]") (.Values.initConfigMap) }}
             - name: custom-init-scripts
               mountPath: /docker-entrypoint-initdb.d
             {{- end }}
@@ -219,7 +219,7 @@ spec:
 {{ toYaml .Values.metrics.resources | indent 12 }}
 {{- end }}
       volumes:
-        {{- if (.Files.Glob "files/docker-entrypoint-initdb.d/*[sh|js]") }}
+        {{- if (.Files.Glob "files/docker-entrypoint-initdb.d/*[sh|js|json]") }}
         - name: custom-init-scripts
           configMap:
             name: {{ template "mongodb.fullname" . }}-init-scripts

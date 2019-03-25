@@ -97,8 +97,8 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `persistence.accessMode`                           | Use volume as ReadOnly or ReadWrite                                                          | `ReadWriteOnce`                                         |
 | `persistence.size`                                 | Size of data volume                                                                          | `8Gi`                                                   |
 | `persistence.annotations`                          | Persistent Volume annotations                                                                | `{}`                                                    |
-| `persistence.existingClaim`                        | Name of an existing PVC to use (avoids creating one if this is given)                       | `nil`                                                   |
-| `extraInitContainers`                     | Additional init containers as a string to be passed to the `tpl` function                          | `{}`   |                                                |
+| `persistence.existingClaim`                        | Name of an existing PVC to use (avoids creating one if this is given)                        | `nil`                                                   |
+| `extraInitContainers`                              | Additional init containers as a string to be passed to the `tpl` function                    | `{}`                                                    |                                                   |
 | `livenessProbe.enabled`                            | Enable/disable the Liveness probe                                                            | `true`                                                  |
 | `livenessProbe.initialDelaySeconds`                | Delay before liveness probe is initiated                                                     | `30`                                                    |
 | `livenessProbe.periodSeconds`                      | How often to perform the probe                                                               | `10`                                                    |
@@ -113,6 +113,11 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `readinessProbe.successThreshold`                  | Minimum consecutive successes for the probe to be considered successful after having failed. | `1`                                                     |
 | `initConfigMap.name`                               | Custom config map with init scripts                                                          | `nil`                                                   |
 | `configmap`                                        | MongoDB configuration file to be used                                                        | `nil`                                                   |
+| `ingress.enabled`                                  | Enables Ingress. Tested with nginx-ingress version `1.3.1`                                   | `false`                                                 |
+| `ingress.annotations`                              | Ingress annotations                                                                          | `{}`                                                    |
+| `ingress.labels`                                   | Custom labels                                                                                | `{}`                                                    |
+| `ingress.hosts`                                    | Ingress accepted hostnames                                                                   | `[]`                                                    |
+| `ingress.tls`                                      | Ingress TLS configuration                                                                    | `[]`                                                    |
 | `metrics.enabled`                                  | Start a side-car prometheus exporter                                                         | `false`                                                 |
 | `metrics.image.registry`                           | MongoDB exporter image registry                                                              | `docker.io`                                             |
 | `metrics.image.repository`                         | MongoDB exporter image name                                                                  | `forekshub/percona-mongodb-exporter`                    |
@@ -206,4 +211,19 @@ Use the workaround below to upgrade from versions previous to 5.0.0. The followi
 
 ```consoloe
 $ kubectl delete statefulset my-release-mongodb-arbiter my-release-mongodb-primary my-release-mongodb-secondary --cascade=false
+```
+
+## Configure Ingress
+MongoDB can exposed externally using the [NGINX Ingress Controller](https://github.com/kubernetes/ingress-nginx). To do so, it's necessary to:
+
+- Install the MongoDB chart setting the parameter `ingress.enabled=true`.
+- Create a ConfigMap to map the external port to use and the internal service/port where to redirect the requests (see https://github.com/kubernetes/ingress-nginx/blob/master/docs/user-guide/exposing-tcp-udp-services.md for more information). 
+
+For instance, if you installed the MongoDB chart in the `default` namespace, you can install the [stable/nginx-ingress chart](https://github.com/helm/charts/tree/master/stable/nginx-ingress) setting the "tcp" parameter in the **values.yaml** used to install the chart as shown below:
+
+```yaml
+...
+
+tcp:
+  27017: "default/mongodb:27017"
 ```
