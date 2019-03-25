@@ -56,6 +56,11 @@ spec:
               name: {{ template "kong.postgresql.fullname" . }}
               key: postgresql-password
         {{- end }}
+        - name: KONG_PG_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "kong.postgresql.fullname" . }}
+              key: postgresql-password
         {{- if .Values.cassandra.enabled }}
         - name: KONG_CASSANDRA_CONTACT_POINTS
           value: {{ template "kong.cassandra.fullname" . }}
@@ -102,6 +107,11 @@ spec:
               name: {{ template "kong.postgresql.fullname" . }}
               key: postgresql-password
         {{- end }}
+        - name: KONG_PG_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "kong.postgresql.fullname" . }}
+              key: postgresql-password
         {{- if .Values.cassandra.enabled }}
         - name: KONG_CASSANDRA_CONTACT_POINTS
           value: {{ template "kong.cassandra.fullname" . }}
