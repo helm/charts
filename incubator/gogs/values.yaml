@@ -183,7 +183,7 @@ service:
 
     ## Database SSL Mode for Postgres.  Unused unless `postgresql.install` is false.
     ##
-    databaseSSLMode: disable  
+    databaseSSLMode: disable
 
     ## Hook task queue length, increase if webhook shooting starts hanging
     ##
