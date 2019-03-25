@@ -46,7 +46,7 @@ Parameter | Description | Default
 `clusterDomain` | The internal Kubernetes cluster domain | `cluster.local`
 `keycloak.replicas` | The number of Keycloak replicas | `1`
 `keycloak.image.repository` | The Keycloak image repository | `jboss/keycloak`
-`keycloak.image.tag` | The Keycloak image tag | `4.8.3.Final`
+`keycloak.image.tag` | The Keycloak image tag | `5.0.0`
 `keycloak.image.pullPolicy` | The Keycloak image pull policy | `IfNotPresent`
 `keycloak.image.pullSecrets` | Image pull secrets | `[]`
 `keycloak.basepath` | Path keycloak is hosted at | `auth`
