@@ -10,6 +10,9 @@ image:
   pullPolicy: IfNotPresent
   pullSecrets: []
 
+# upgrade strategy type (e.g. Recreate or RollingUpdate)
+strategyType: Recreate
+
 service:
   type: ClusterIP
   port: 8123
