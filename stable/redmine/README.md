@@ -100,6 +100,10 @@ The following table lists the configurable parameters of the Redmine chart and t
 | `ingress.secrets[0].name`           | TLS Secret Name                            | `nil`                                                   |
 | `ingress.secrets[0].certificate`    | TLS Secret Certificate                     | `nil`                                                   |
 | `ingress.secrets[0].key`            | TLS Secret Key                             | `nil`                                                   |
+| `nodeSelector`                      | Node labels for pod assignment             | `{}`                                                    |
+| `tolerations`                       | List of node taints to tolerate            | `{}`                                                    |
+| `affinity`                          | Map of node/pod affinities                 | `{}`                                                    |
+| `podAnnotations`                    | Pod annotations                            | `{}`                                                    |
 | `persistence.enabled`               | Enable persistence using PVC               | `true`                                                  |
 | `persistence.existingClaim`         | The name of an existing PVC                | `nil`                                                   |
 | `persistence.storageClass`          | PVC Storage Class                          | `nil` (uses alpha storage class annotation)             |
