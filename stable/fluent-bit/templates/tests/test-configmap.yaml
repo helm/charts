@@ -16,6 +16,12 @@ data:
     @test "Test Access" {
       fluentd -c /tests/fluentd.conf --dry-run
     }
+    {{- else if eq .Values.backend.type "es"}}
+    @test "Test Elasticssearch Indices" {
+      url="http://{{ .Values.backend.es.host }}:{{ .Values.backend.es.port }}/_cat/indices?format=json"
+      result=$(curl url | jq -cr '.[] | select((.index | contains("kubernetes_cluster")) and (.health != "green"))')
+      [ "$result" == "" ]
+    }
     {{- end }}
 
   fluentd.conf: |-
