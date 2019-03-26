@@ -286,6 +286,56 @@ ConfigScripts:
 ```
 You can instead grant this permission via the UI. When this is done, you can set `Master.Sidecars.configAutoReload.enabled: true` and upon the next Helm upgrade, auto-reload will be successfully enabled.
 
+### Credentials
+The CasC plugin can be used to add credentials from Kubernetes secrets to Jenkins credentials.
+
+Create a Kubernetes secret (we'll use two different types in the following example). The data must be base64 encoded as described in the Kubernetes documentation. Later on you'll see that the secret data will be split up in separate files.
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: jenkins-credentials-secret
+type: Opaque
+data:
+  MY_PASSWORD: Zm9v
+  MY_TOKEN: YmFy
+```
+
+Add a reference and environment variable to the Helm values so the CasC plugin can find the Kubernetes secrets. The `SecretsFilesSecret` must match the `metadata.name` in the Kubernetes secret.
+```yaml
+jenkins:
+  Master:
+    SecretsFilesSecret: jenkins-credentials-secret
+    ContainerEnv:
+      - name: SECRETS
+        value: /var/jenkins_secrets
+```
+
+Add the credentials to the Helm configuration with references to the secrets files. The references must match with the data definitions in the Kubernetes secret. Note: the definition `service-credentials: |` is just a description.
+```yaml
+jenkins:
+  Master:
+    JCasC:
+      enabled: True
+      ConfigScripts:
+        service-credentials: |
+          credentials:
+            system:
+              domainCredentials:
+                - credentials:
+                  - usernamePassword:
+                      scope: GLOBAL
+                      username: username
+                      password: "${MY_PASSWORD}"
+                      id: my-account
+                      description: "Username password"
+                  - string:
+                      scope: GLOBAL
+                      secret: "${MY_TOKEN}"
+                      id: my-token
+                      description: "Secret text"
+```
+
 ## RBAC
 
 If running upon a cluster with RBAC enabled you will need to do the following:
