@@ -14,7 +14,7 @@ metadata:
 {{- end }}
 spec:
   tls:
-    - secretName: {{ .Values.ingress.secretName }}
+    - secretName: {{ default .Values.ingress.secretName .Values.ingress.secret.name}}
       hosts:
         - '*.{{ .Values.config.rootDomain }}'
         - {{ .Values.authorize.name }}.{{ .Values.config.rootDomain }}

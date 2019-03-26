@@ -1,6 +1,4 @@
-{{- $configSecretName := default (include "pomerium.fullname" .) .Values.config.existingSecret }}
-{{- $tlsSecretName := default (printf "%s-tls" (include "pomerium.fullname" .)) .Values.authenticate.tls.existingSecret }}
-{{- $idpSecretName := default (printf "%s-idp" (include "pomerium.fullname" .)) .Values.authenticate.idp.existingSecret }}
+{{- $secretName := default (include "pomerium.fullname" .) .Values.config.existingSecret }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -56,12 +54,12 @@ spec:
         - name: COOKIE_SECRET
           valueFrom:
             secretKeyRef:
-              name: {{ $configSecretName }}
+              name: {{ $secretName }}
               key: cookie-secret
         - name: SHARED_SECRET
           valueFrom:
             secretKeyRef:
-              name: {{ $configSecretName }}
+              name: {{ $secretName }}
               key: shared-secret
         - name: REDIRECT_URL
           value: {{ default (printf "https://%s.%s/oauth2/callback" .Values.authenticate.name  .Values.config.rootDomain ) .Values.authenticate.redirectUrl }}
@@ -72,31 +70,36 @@ spec:
         - name: IDP_CLIENT_ID
           valueFrom:
             secretKeyRef:
-              name:  {{ $configSecretName }}
+              name:  {{ $secretName }}
               key: idp-client-id
         - name: IDP_CLIENT_SECRET
           valueFrom:
             secretKeyRef:
-              name:  {{ $configSecretName }}
+              name:  {{ $secretName }}
               key: idp-client-secret
 {{- if .Values.authenticate.idp.url }}
         - name: IDP_PROVIDER_URL
           value: {{ .Values.authenticate.idp.url }}
 {{- end }}
+{{- if .Values.authenticate.idp.serviceAccount }}
+        - name: IDP_SERVICE_ACCOUNT
+          value: {{ .Values.authenticate.idp.serviceAccount }}
+{{- end }}
+
         - name: CERTIFICATE
           valueFrom:
             secretKeyRef:
-              name:  {{ $configSecretName }}
+              name:  {{ $secretName }}
               key:  authenticate-cert
         - name: CERTIFICATE_KEY
           valueFrom:
             secretKeyRef:
-              name:  {{ $configSecretName }}
+              name:  {{ $secretName }}
               key:  authenticate-key
         - name: CERTIFICATE_AUTHORITY
           valueFrom:
             secretKeyRef:
-              name:  {{ $configSecretName }}
+              name:  {{ $secretName }}
               key:  ca-cert
 {{- range $name, $value := .Values.extraEnv }}
         - name: {{ $name }}

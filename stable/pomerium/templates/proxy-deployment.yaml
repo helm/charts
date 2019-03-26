@@ -1,5 +1,5 @@
 {{- $configName := default (include "pomerium.fullname" .) .Values.config.existingConfig }}
-{{- $configSecretName := default (include "pomerium.fullname" .) .Values.config.existingSecret }}
+{{- $secretName := default (include "pomerium.fullname" .) .Values.config.existingSecret }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -55,21 +55,21 @@ spec:
         - name: COOKIE_SECRET
           valueFrom:
             secretKeyRef:
-              name: {{ $configSecretName }}
+              name: {{ $secretName }}
               key: cookie-secret
         - name: SHARED_SECRET
           valueFrom:
             secretKeyRef:
-              name: {{ $configSecretName }}
+              name: {{ $secretName }}
               key: shared-secret
         - name: AUTHENTICATE_SERVICE_URL
           value: {{ default (printf "https://%s.%s" .Values.authenticate.name .Values.config.rootDomain ) .Values.proxy.authenticateServiceUrl }}
         - name: AUTHORIZE_SERVICE_URL
           value: {{ default (printf "https://%s.%s" .Values.authorize.name .Values.config.rootDomain ) .Values.proxy.authorizeServiceUrl }}
         - name: AUTHENTICATE_INTERNAL_URL
-          value: {{ default (printf "%s-%s.%s.svc.cluster.local" (include "pomerium.fullname" .) .Values.authenticate.name .Release.Namespace ) .Values.proxy.authenticateUseInternalUrl}}
+          value: {{ default (printf "%s-%s.%s.svc.cluster.local" (include "pomerium.fullname" .) .Values.authenticate.name .Release.Namespace ) .Values.proxy.authenticateInternalUrl}}
         - name: AUTHORIZE_INTERNAL_URL
-          value: {{ default (printf "%s-%s.%s.svc.cluster.local" (include "pomerium.fullname" .) .Values.authorize.name .Release.Namespace ) .Values.proxy.authorizeUseInternalUrl}}
+          value: {{ default (printf "%s-%s.%s.svc.cluster.local" (include "pomerium.fullname" .) .Values.authorize.name .Release.Namespace ) .Values.proxy.authorizeInternalUrl}}
 {{- if or .Values.config.existingConfig .Values.config.policyFile}}
         - name: POLICY_FILE
           value: /etc/pomerium/policy.yaml
@@ -81,17 +81,17 @@ spec:
         - name: CERTIFICATE
           valueFrom:
             secretKeyRef:
-              name: {{ $configSecretName }}
+              name: {{ $secretName }}
               key: proxy-cert
         - name: CERTIFICATE_KEY
           valueFrom:
             secretKeyRef:
-              name: {{ $configSecretName }}
+              name: {{ $secretName }}
               key: proxy-key
         - name: CERTIFICATE_AUTHORITY
           valueFrom:
             secretKeyRef:
-              name: {{ $configSecretName }}
+              name: {{ $secretName }}
               key:  ca-cert
 {{- range $name, $value := .Values.extraEnv }}
         - name: {{ $name }}

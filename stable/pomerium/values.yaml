@@ -3,8 +3,8 @@
 
 # settings that are shared by all services
 config:
-  # routes under this wildcard comain are handled by pomerium
-  domain: corp.pomerium.io
+  # routes under this wildcard domain are handled by pomerium
+  rootDomain: corp.pomerium.io
   # existingSecret:
   # existingConfig:
   sharedSecret: ""
@@ -64,33 +64,34 @@ proxy:
     defaultIPList: []
   authenticateServiceUrl: ""
   authorizeServiceUrl: ""
-  authorizeUseInternalUrl: ""
-  authenticateUseInternalUrl: ""
+  authorizeInternalUrl: ""
+  authenticateInternalUrl: ""
 
 service:
   # Service type can be set to ClusterIP, NodePort or LoadBalancer.
   type: ClusterIP
   externalPort: 443
   annotations:
-    # {}
+    {}
     # if using GKE's build int load balancer
-    cloud.google.com/app-protocols: '{"https":"HTTPS"}'
-    kubernetes.io/ingress.allow-http: "false"
+    # cloud.google.com/app-protocols: '{"https":"HTTPS"}'
+    # kubernetes.io/ingress.allow-http: "false"
   labels: {}
 
 ingress:
-  secretName: pomerium-tls
+  secretName: ""
   secret:
-    certificate: ""
+    name: ""
+    cert: ""
     key: ""
   enabled: true
   annotations:
-    # {}
+    {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
     # if using GKE's build int load balancer
-    cloud.google.com/app-protocols: '{"https":"HTTPS"}'
-    kubernetes.io/ingress.allow-http: "false"
+    # cloud.google.com/app-protocols: '{"https":"HTTPS"}'
+    # kubernetes.io/ingress.allow-http: "false"
 resources:
   {}
   # limits:

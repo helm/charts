@@ -1,5 +1,5 @@
 {{- $configName := default (include "pomerium.fullname" .) .Values.config.existingConfig }}
-{{- $configSecretName := default (include "pomerium.fullname" .) .Values.config.existingSecret }}
+{{- $secretName := default (include "pomerium.fullname" .) .Values.config.existingSecret }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -55,7 +55,7 @@ spec:
         - name: SHARED_SECRET
           valueFrom:
             secretKeyRef:
-              name: {{ $configSecretName }}
+              name: {{ $secretName }}
               key: shared-secret
 {{- if or .Values.config.existingConfig .Values.config.policyFile}}
         - name: POLICY_FILE
@@ -68,17 +68,17 @@ spec:
         - name: CERTIFICATE
           valueFrom:
             secretKeyRef:
-              name: {{ $configSecretName }}
+              name: {{ $secretName }}
               key: authorize-cert
         - name: CERTIFICATE_KEY
           valueFrom:
             secretKeyRef:
-              name: {{ $configSecretName }}
+              name: {{ $secretName }}
               key: authorize-key
         - name: CERTIFICATE_AUTHORITY
           valueFrom:
             secretKeyRef:
-              name: {{ $configSecretName }}
+              name: {{ $secretName }}
               key: ca-cert
 {{- range $name, $value := .Values.extraEnv }}
         - name: {{ $name }}
