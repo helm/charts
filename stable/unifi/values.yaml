@@ -4,6 +4,9 @@
 
 replicaCount: 1
 
+# upgrade strategy type (e.g. Recreate or RollingUpdate)
+strategyType: Recreate
+
 image:
   repository: jacobalberty/unifi
   tag: 5.10.19

@@ -2,7 +2,7 @@
 {{- $fullName := include "unifi.fullname" . -}}
 {{- $ingressPath := .Values.ingress.path -}}
 {{- $unifiedServiceEnabled := .Values.unifiedService.enabled -}}
-apiVersion: extensions/v1
+apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: {{ $fullName }}
