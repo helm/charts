@@ -46,7 +46,7 @@ podSettings:
 ```
 
 ## Install Chart with specific cluster size
-By default, this Chart will create a cassandra with 3 nodes. If you want to change the cluster size during installation, you can use `--set config.cluster_size={value}` argument. Or edit `values.yaml`
+By default, this Chart will create a Cassandra with 3 nodes. If you want to change the cluster size during installation, you can use `--set config.cluster_size={value}` argument. Or edit `values.yaml`
 
 For example:
 Set cluster size to 5
@@ -56,13 +56,13 @@ helm install --namespace "cassandra" -n "cassandra" --set config.cluster_size=5 
 ```
 
 ## Install Chart with specific resource size
-By default, this Chart will create a cassandra with CPU 2 vCPU and 4Gi of memory which is suitable for development environment.
+By default, this Chart will create a Cassandra with CPU 2 vCPU and 4Gi of memory which is suitable for development environment.
 If you want to use this Chart for production, I would recommend to update the CPU to 4 vCPU and 16Gi. Also increase size of `max_heap_size` and `heap_new_size`.
 To update the settings, edit `values.yaml`
 
 ## Install Chart with specific node
-Sometime you may need to deploy your cassandra to specific nodes to allocate resources. You can use node selector by edit `nodes.enabled=true` in `values.yaml`
-For example, you have 6 vms in node pools and you want to deploy cassandra to node which labeled as `cloud.google.com/gke-nodepool: pool-db`
+Sometime you may need to deploy your Cassandra to specific nodes to allocate resources. You can use node selector by edit `nodes.enabled=true` in `values.yaml`
+For example, you have 6 vms in node pools and you want to deploy Cassandra to node which labeled as `cloud.google.com/gke-nodepool: pool-db`
 
 Set the following values in `values.yaml`
 
@@ -145,15 +145,15 @@ The following table lists the configurable parameters of the Cassandra chart and
 | `tolerations`                        | Kubernetes node tolerations                     | `[]`                                                       |
 
 
-## Scale cassandra
-When you want to change the cluster size of your cassandra, you can use the helm upgrade command.
+## Scale Cassandra
+When you want to change the cluster size of your Cassandra, you can use the helm upgrade command.
 
 ```bash
 helm upgrade --set config.cluster_size=5 cassandra incubator/cassandra
 ```
 
-## Get cassandra status
-You can get your cassandra cluster status by running the command
+## Get Cassandra status
+You can get your Cassandra cluster status by running the command
 
 ```bash
 kubectl exec -it --namespace cassandra $(kubectl get pods --namespace cassandra -l app=cassandra-cassandra -o jsonpath='{.items[0].metadata.name}') nodetool status
