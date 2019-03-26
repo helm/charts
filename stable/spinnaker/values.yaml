@@ -186,6 +186,10 @@ azs:
 #   accessKey: ""
 #   containerName: "spinnaker"
 
+clouddriver:
+  podAnnotations: {}
+    # iam.amazonaws.com/role: <role_arn>
+
 rbac:
   # Specifies whether RBAC resources should be created
   create: true
