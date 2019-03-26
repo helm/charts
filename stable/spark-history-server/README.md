@@ -112,6 +112,12 @@ Note that the default image `lightbend/spark-history-server` is built using this
 | s3.accessKeyName | The file name that contains the AWS access key ID. Omit if using IAM based authentication | aws-access-key |
 | s3.secretKeyName | The file name that contains the AWS secret access key. Omit if using IAM based authentication | aws-secret-key |
 | s3.logDirectory | The S3 log directory that starts with "s3a://" | s3a://spark-hs/ |
+| ingress.enabled | if `true`, an ingress is created | false |
+| ingress.annotations | annotations for the ingress | {} |
+| ingress.path | if `true`, an ingress is created | / |
+| ingress.hosts | a list of ingress hosts | [spark-history-server.example.com] |
+| ingress.tls | a list of [IngressTLS](https://v1-9.docs.kubernetes.io/docs/reference/generated/kubernetes-api/v1.9/#ingresstls-v1beta1-extensions) items | [] |
+| resources | Resource requests and limits | {} |
 
 Note that only when `pvc.enablePVC` is set to `true`, the following settings take effect:
 

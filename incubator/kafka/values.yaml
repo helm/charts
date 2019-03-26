@@ -353,6 +353,13 @@ prometheus:
       selector:
         prometheus: kube-prometheus
 
+## Kafka Config job configuration
+##
+configJob:
+  ## Specify the number of retries before considering kafka-config job as failed.
+  ## https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/#pod-backoff-failure-policy
+  backoffLimit: 6
+
 ## Topic creation and configuration.
 ## The job will be run on a deployment only when the config has been changed.
 ## - If 'partitions' and 'replicationFactor' are specified we create the topic (with --if-not-exists.)
