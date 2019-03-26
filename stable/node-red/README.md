@@ -62,6 +62,7 @@ The following tables lists the configurable parameters of the Sentry chart and t
 | `persistence.existingClaim`          | Use an existing PVC to persist data        | `nil` |
 | `persistence.storageClass`           | Type of persistent volume claim            | `-` |
 | `persistence.accessModes`            | Persistence access modes                   | `ReadWriteOnce` |
+| `persistence.subPath`                | Mount a sub dir of the persistent volume   | `nil` |
 | `resources`                          | CPU/Memory resource requests/limits        | `{}` |
 | `nodeSelector`                       | Node labels for pod assignment             | `{}` |
 | `tolerations`                        | Toleration labels for pod assignment       | `[]` |
