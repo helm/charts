@@ -38,6 +38,7 @@ spec:
   healthCheckNodePort: {{ .Values.controller.service.healthCheckNodePort }}
 {{- end }}
   ports:
+  {{- if .Values.controller.enableStaticPorts }}
   {{- range .Values.controller.service.httpPorts }}
     - name: "{{ .port }}-http"
       port: {{ .port }}
@@ -55,6 +56,7 @@ spec:
       {{- if (not (empty .nodePort)) }}
       nodePort: {{ .nodePort }}
       {{- end }}
+  {{- end }}
   {{- end }}
   {{- range $key, $value := .Values.controller.tcp }}
     - name: "{{ tpl $key $ }}-tcp"

@@ -65,10 +65,12 @@ spec:
             {{- end }}
           {{- end }}
           ports:
+          {{- if .Values.controller.enableStaticPorts }}
             - name: http
               containerPort: 80
             - name: https
               containerPort: 443
+          {{- end }}
           {{- if .Values.controller.stats.enabled }}
             - name: stats
               containerPort: {{ .Values.controller.stats.port }}
