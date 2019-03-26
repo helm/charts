@@ -206,12 +206,12 @@ spec:
             mountPath: /etc/tls/
           {{- end }}
           resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
         - name: {{ .Values.imagePullSecrets }}
       {{- end }}
-{{ toYaml .Values.resources | indent 12 }}
-    {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
     {{- end }}
