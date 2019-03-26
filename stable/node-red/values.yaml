@@ -4,6 +4,9 @@
 
 replicaCount: 1
 
+# upgrade strategy type (e.g. Recreate or RollingUpdate)
+strategyType: Recreate
+
 image:
   repository: nodered/node-red-docker
   tag: 0.19.6-v8
