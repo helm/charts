@@ -1,6 +1,6 @@
 name: prisma
 version: 1.1.1
-appVersion: 1.29
+appVersion: 1.29.1
 kubeVersion: "^1.8.0-0"
 description: Prisma turns your database into a realtime GraphQL API
 home: https://www.prisma.io/
