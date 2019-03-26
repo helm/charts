@@ -47,7 +47,7 @@ spec:
       initContainers:
 {{- end }}
 {{- if ( and .Values.persistence.enabled .Values.initChownData.enabled ) }}
-        - name: "{{ .Values.initChownData.name }}"
+        - name: init-chown-data
           image: "{{ .Values.initChownData.image.repository }}:{{ .Values.initChownData.image.tag }}"
           imagePullPolicy: {{ .Values.initChownData.image.pullPolicy }}
           securityContext:

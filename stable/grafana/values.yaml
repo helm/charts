@@ -61,11 +61,6 @@ downloadDashboardsImage:
   tag: latest
   pullPolicy: IfNotPresent
 
-chownDataImage:
-  repository: busybox
-  tag: 1.30.0
-  pullPolicy: IfNotPresent
-
 ## Pod Annotations
 # podAnnotations: {}
 
@@ -159,15 +154,11 @@ initChownData:
   ##
   enabled: true
 
-  ## initChownData container name
-  ##
-  name: init-chown-data
-
   ## initChownData container image
   ##
   image:
     repository: busybox
-    tag: latest
+    tag: 1.30
     pullPolicy: IfNotPresent
 
   ## initChownData resource requests and limits

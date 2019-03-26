@@ -63,7 +63,6 @@ The command removes all the Kubernetes components associated with the chart and 
 | `persistence.storageClassName`            | Type of persistent volume claim               | `nil`                                                   |
 | `persistence.accessModes`                 | Persistence access modes                      | `[ReadWriteOnce]`                                       |
 | `persistence.subPath`                     | Mount a sub dir of the persistent volume      | `nil`                                                   |
-| `persistence.resources`                   | Persistence initContainer resources           | `{}`                                                    |
 | `initChownData.enabled`                   | If false, don't reset data ownership at startup | true                                                  |
 | `initChownData.name`                      | init-chown-data container name                | `init-chown-data`                                       |
 | `initChownData.image.repository`          | init-chown-data container image repository    | `busybox`                                               |
