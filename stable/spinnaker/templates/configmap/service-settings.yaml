@@ -35,4 +35,5 @@ data:
     kubernetes:
     {{- if .Values.clouddriver.podAnnotations }}
       podAnnotations:
-    {{ toYaml .Values.clouddriver.podAnnotations | indent 8 }}
+{{ toYaml .Values.clouddriver.podAnnotations | indent 8 }}
+    {{- end }}
