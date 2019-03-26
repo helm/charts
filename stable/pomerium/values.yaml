@@ -37,9 +37,9 @@ authenticate:
   # see https://www.pomerium.io/docs/identity-providers.html
   idp:
     provider: google
-    # url: https://example.oktapreview.com/oauth2/default
     clientID: "REPLACE_ME"
     clientSecret: "REPLACE_ME"
+    url: ""
     serviceAccount: ""
   tls:
     cert: ""

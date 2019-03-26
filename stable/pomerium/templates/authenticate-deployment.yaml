@@ -77,15 +77,13 @@ spec:
             secretKeyRef:
               name:  {{ $secretName }}
               key: idp-client-secret
-{{- if .Values.authenticate.idp.url }}
         - name: IDP_PROVIDER_URL
           value: {{ .Values.authenticate.idp.url }}
-{{- end }}
-{{- if .Values.authenticate.idp.serviceAccount }}
         - name: IDP_SERVICE_ACCOUNT
-          value: {{ .Values.authenticate.idp.serviceAccount }}
-{{- end }}
-
+          valueFrom:
+            secretKeyRef:
+              name:  {{ $secretName }}
+              key: idp-service-account
         - name: CERTIFICATE
           valueFrom:
             secretKeyRef:
