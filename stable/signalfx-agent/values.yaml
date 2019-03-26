@@ -5,6 +5,10 @@ agentVersion: 3.6.1
 # The access token for SignalFx.  REQUIRED
 signalFxAccessToken: ""
 
+apiUrl: "https://app.signalfx.com"
+
+ingestUrl: "https://ingest.signalfx.com"
+
 # Docker image configuration
 image:
   # Image pull policy for the agent pod

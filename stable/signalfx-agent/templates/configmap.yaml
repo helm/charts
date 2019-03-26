@@ -15,8 +15,12 @@ data:
 {{ toYaml .Values.agentConfig | indent 4 }}
 {{- else }}
     signalFxAccessToken: ${SFX_ACCESS_TOKEN}
-
+    apiUrl: {{ .Values.apiUrl |quote }}
+    ingestUrl: {{ .Values.ingestUrl|quote }}
     intervalSeconds: {{ .Values.metricIntervalSeconds }}
+
+    procPath: /hostfs/proc
+    etcPath: /hostfs/etc
 
     logging:
       level: {{ .Values.logLevel | default "info" }}
@@ -44,13 +48,9 @@ data:
     - type: collectd/memory
     - type: collectd/protocols
     - type: collectd/signalfx-metadata
-      procFSPath: /hostfs/proc
     - type: host-metadata
-      etcPath: /hostfs/etc
-      procFSPath: /hostfs/proc
     - type: collectd/uptime
     - type: collectd/vmem
-
     - type: collectd/processes
       processes:
       - collectd
