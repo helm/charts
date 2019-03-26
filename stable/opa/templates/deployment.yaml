@@ -92,11 +92,11 @@ spec:
             - --policies={{ .Values.mgmt.configmapPolicies.namespaces | join "," }}
             - --require-policy-label={{ .Values.mgmt.configmapPolicies.requireLabel }}
 {{- end }}
-{{- if gt (len .Values.mgmt.replicate.namespace) 0 }}
-            - --replicate={{ .Values.mgmt.replicate.namespace | join ","}}
+{{- range .Values.mgmt.replicate.namespace }}
+            - --replicate={{ . }}
 {{- end }}
-{{- if gt (len .Values.mgmt.replicate.cluster) 0 }}
-            - --replicate-cluster={{ .Values.mgmt.replicate.cluster | join ","}}
+{{- range .Values.mgmt.replicate.cluster }}
+            - --replicate-cluster={{ . }}
 {{- end }}
 {{- if .Values.authz.enabled }}
           volumeMounts:
