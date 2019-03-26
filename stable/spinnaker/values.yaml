@@ -134,6 +134,8 @@ redis:
     host: "<EXTERNAL-REDIS-HOST-NAME>"
     port: 6379
     # password: ""
+  # Enable if you are using a hosted Redis
+  hosted: false
   password: password
   nodeSelector: {}
   cluster:

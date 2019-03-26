@@ -23,6 +23,11 @@ data:
       useExecHealthCheck: false
       serviceType: NodePort
     {{- end }}
+    {{- if .Values.redis.hosted }}
+    redis:
+      configuration:
+        secure: true
+    {{- end }}
   deck.yml: |-
     env:
       API_HOST: http://spin-gate.{{ .Release.Namespace }}:8084
