@@ -159,7 +159,7 @@ sysdig:
           key: value
 ```
 
-The first section, deploys the Custom App Check in a Kubernetes configmap, and the second configures it using dragent.yaml file. So that deploy Sysdig Chart using this file:
+The first section, deploys the Custom App Check in a Kubernetes configmap, and the second configures it using `dragent.yaml` file. So that deploy Sysdig Chart using this file:
 
 ```bash
 $ helm install --name sysdig-agent-1 \
@@ -172,6 +172,71 @@ $ helm install --name sysdig-agent-1 \
 And that's all, you will have your Custom App Check up and running.
 
 You can get more information about [Custom App Checks in Sysdig's Official Documentation](https://sysdigdocs.atlassian.net/wiki/spaces/Monitor/pages/204767436/).
+
+## Modify Sysdig config
+
+The Sysdig agent uses a file called `dragent.yaml` to store the configuration.
+
+This is set uing the `sysdig.settings` parameter, so imagine you want to scrape Prometheus metrics, you need to write this `settings.yaml` file:
+
+```yaml
+sysdig:
+  settings:
+    prometheus:
+      enabled: true
+      histograms: true
+      process_filter:
+        - include:
+          kubernetes.pod.annotation.prometheus.io/scrape: true
+          conf:
+            port_filter:
+              - include: 42422
+              - include: 9093
+
+```
+
+To deploy it, we just need to execute:
+
+```bash
+$ helm install --name sysdig-agent-1 \
+    --set sysdig.accessKey=SYSDIG_ACCESS_KEY \
+    -f settings.yaml \
+    stable/sysdig
+```
+
+## Upgrade Sysdig config
+
+Let's imagine we need to modify the config from the agent and we need to increase the metrics limit or the ports filtered from the previous Prometheus config
+
+```yaml
+
+sysdig:
+  settings:
+    prometheus:
+      enabled: true
+      histograms: true
+      max_metrics: 2000
+      max_metrics_per_process: 400
+      process_filter:
+        - include:
+          kubernetes.pod.annotation.prometheus.io/scrape: true
+          conf:
+            port_filter:
+              - include: 42422
+              - include: 9102
+              - include: 9093
+              - include: 10514
+              - include: 15090
+```
+
+You can upgrade the configuration with:
+
+```bash
+$ helm upgrade sysdig \
+    --set sysdig.accessKey=SYSDIG_ACESS_KEY \
+    -f settings.yaml \
+    stable/sysdig
+```
 
 ### Automating the generation of custom-app-checks.yaml file
 
