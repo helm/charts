@@ -69,6 +69,17 @@ The following table lists the configurable parameters of the OrangeHRM chart and
 | `service.externalTrafficPolicy`   | Enable client source IP preservation       | `Cluster`                                               |
 | `service.nodePorts.http`                 | Kubernetes http node port                  | `""`                                                    |
 | `service.nodePorts.https`                | Kubernetes https node port                 | `""`                                                    |
+| `ingress.enabled`                   | Enable ingress controller resource                            | `false`                                                  |
+| `ingress.annotations`               | Ingress annotations                                           | `[]`                                                     |
+| `ingress.certManager`               | Add annotations for cert-manager                              | `false`                                                  |
+| `ingress.hosts[0].name`             | Hostname to your OrangeHRM installation                           | `orangehrm.local`                                            |
+| `ingress.hosts[0].path`             | Path within the url structure                                 | `/`                                                      |
+| `ingress.hosts[0].tls`              | Utilize TLS backend in ingress                                | `false`                                                  |
+| `ingress.hosts[0].tlsHosts`         | Array of TLS hosts for ingress record (defaults to `ingress.hosts[0].name` if `nil`)                               | `nil`                                                  |
+| `ingress.hosts[0].tlsSecret`        | TLS Secret (certificates)                                     | `orangehrm.local-tls-secret`                                 |
+| `ingress.secrets[0].name`           | TLS Secret Name                                               | `nil`                                                    |
+| `ingress.secrets[0].certificate`    | TLS Secret Certificate                                        | `nil`                                                    |
+| `ingress.secrets[0].key`            | TLS Secret Key                                                | `nil`                                                    |
 | `resources`                          | CPU/Memory resource requests/limits      | Memory: `512Mi`, CPU: `300m`                            |
 | `persistence.enabled`                | Enable persistence using PVC             | `true`                                                  |
 | `persistence.apache.storageClass`    | PVC Storage Class for Apache volume      | `nil` (uses alpha storage class annotation)             |
