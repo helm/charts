@@ -102,9 +102,9 @@ wasbs:
   secret: azure-secrets
   sasKeyName: azure-blob-sas-key
   storageAccountKeyName: azure-storage-account-key
-  container:
-  storageAccount:
-  logDirectory: wasbs://spark-hs/
+  storageAccountNameKeyName: azure-storage-account-name
+  containerKeyName: azure-blob-container-name
+  logDirectory: wasbs:///spark-hs
 
 imagePullSecrets: []
 
