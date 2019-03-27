@@ -1,6 +1,6 @@
 image:
   repository: docker.elastic.co/beats/filebeat-oss
-  tag: 6.6.2
+  tag: 6.7.0
   pullPolicy: IfNotPresent
 
 config:
