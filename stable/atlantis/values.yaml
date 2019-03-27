@@ -7,7 +7,7 @@
 # atlantisUrl: http://10.0.0.0
 
 # Replace this with your own repo whitelist:
-orgWhitelist: github.com/yourorg/*
+orgWhitelist: <replace-me>
 # logLevel: "debug"
 
 # If using GitHub, specify like the following:
@@ -40,7 +40,7 @@ orgWhitelist: github.com/yourorg/*
 
 # When referencing Terraform modules in private repositories, it may be helpful
 # (necessary?) to use redirection in a .gitconfig like so:
-# gitconfig:
+# gitconfig: |
   # [url "https://YOUR_GH_TOKEN@github.com"]
   #   insteadOf = https://github.com
   # [url "https://YOUR_GH_TOKEN@github.com"]
@@ -75,8 +75,15 @@ serviceAccountSecrets:
 
 image:
   repository: runatlantis/atlantis
-  tag: v0.4.13
+  tag: v0.6.0
   pullPolicy: IfNotPresent
+
+## Optionally specify an array of imagePullSecrets.
+## Secrets must be manually created in the namespace.
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+##
+# imagePullSecrets:
+# - myRegistryKeySecretName
 
 ## enable using atlantis.yaml file
 allowRepoConfig: false
@@ -138,7 +145,7 @@ resources:
     cpu: 100m
 
 # Disk space for Atlantis to check out repositories
-atlantisDataStorage: 5Gi
+dataStorage: 5Gi
 
 replicaCount: 1
 
