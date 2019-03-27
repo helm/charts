@@ -87,6 +87,10 @@ spec:
 {{- end }}
           resources:
 {{ toYaml .Values.chrome.resources | indent 12 }}
+{{- if or .Values.global.imagePullSecrets .Values.chrome.imagePullSecrets }}
+      imagePullSecrets: 
+      - name: {{ .Values.chrome.imagePullSecrets | default .Values.global.imagePullSecrets | quote }}
+{{- end }}
       volumes:
 {{ if .Values.chrome.volumes -}}
 {{ toYaml .Values.chrome.volumes | indent 8 }}
