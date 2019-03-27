@@ -388,6 +388,11 @@ deployment:
     # httpPort: 80
     # httpsPort: 443
     # dashboardPort: 8080
+  containerPort:
+    httpPort: 80
+    httpnPort: 8880
+    httpsPort: 443
+    dashboardPort: 8080
 sendAnonymousUsage: false
 tracing:
   enabled: false
