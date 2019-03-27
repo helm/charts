@@ -8,6 +8,10 @@ image:
     tag: 1.0.5
   pullPolicy: IfNotPresent
 
+testFramework:
+  image: "dduportal/bats"
+  tag: "0.4.0"
+
 nameOverride: ""
 fullnameOverride: ""
 
