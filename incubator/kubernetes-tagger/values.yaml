@@ -137,7 +137,7 @@ prometheus:
       namespace: monitoring
 
       # Prometheus Service monitor interval
-      internal: 20s
+      interval: 20s
 
       # Prometheus Service monitor scrape timeout
       # scrapeTimeout: ""
