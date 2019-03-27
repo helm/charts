@@ -36,13 +36,27 @@ spec:
               mountPath: /tmp/seeds
               subPath: seeds
             {{- end }}
+            - name: ca-key
+              mountPath: /home/mtls/secrets/certs/authority/RootCA.key
+              subPath: RootCA.key
+              readOnly: false
+            - name: ca-cert
+              mountPath: /home/mtls/secrets/certs/authority/RootCA.pem
+              subPath: RootCA.pem
+              readOnly: false
+            {{- if .Values.persistence.enabled }}
+            - name: sqlite3
+              mountPath: /home/mtls/
+              subPath: mtls-server.db
+              readOnly: false
+            {{- end }}
           livenessProbe:
             httpGet:
-              path: /ca
+              path: /version
               port: http
           readinessProbe:
             httpGet:
-              path: /ca
+              path: /version
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
@@ -53,6 +67,12 @@ spec:
             items:
               - key: config.ini
                 path: config.ini
+        - name: ca-key
+          secret:
+            secretName: ca-key
+        - name: ca-cert
+          secret:
+            secretName: ca-cert
         {{- if .Values.configMaps.seeds }}
         - name: seeds
           configMap:
@@ -60,6 +80,11 @@ spec:
             items:
               - key: seeds
                 path: seeds
+        {{- end }}
+        {{- if .Values.persistence.enabled }}
+        - name: sqlite3
+          persistentVolumeClaim:
+            claimName: {{ template "mtls.fullname" . }}
         {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
