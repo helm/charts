@@ -8,7 +8,7 @@ rbac:
 serviceAccounts:
   spark:
     create: true
-    name:
+    name: spark
   sparkoperator:
     create: true
     name:
