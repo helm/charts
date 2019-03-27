@@ -2,13 +2,13 @@
 apiVersion: "policy/v1beta1"
 kind: "PodDisruptionBudget"
 metadata:
-  name: "{{ template "solr.fullname" . }}"
+  name: "{{ include "solr.fullname" . }}"
   labels:
 {{ include "solr.common.labels" . | indent 4 }}
 spec:
   selector:
     matchLabels:
-      app: "{{ template "solr.name" . }}"
-      release: "{{ .Release.Name }}"
-      component: "server"
+      app.kubernetes.io/name: "{{ include "solr.name" . }}"
+      app.kubernetes.io/instance: "{{ .Release.Name }}"
+      app.kubernetes.io/component: "server"
 {{ toYaml .Values.podDisruptionBudget | indent 2 }}

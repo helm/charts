@@ -20,7 +20,7 @@ terminationGracePeriodSeconds: 180
 image:
   repository: solr
   tag: 7.6.0
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
 
 # Solr pod liveness
 livenessProbe:
@@ -40,7 +40,7 @@ affinity: {}
 
 # Update Strategy for solr pods
 updateStrategy:
-  type: "OnDelete"
+  type: "RollingUpdate"
 
 # The log level of the Solr instances
 logLevel: "INFO"

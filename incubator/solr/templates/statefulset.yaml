@@ -6,23 +6,23 @@ metadata:
   name: {{ include "solr.fullname" . }}
   labels:
 {{ include "solr.common.labels" . | indent 4 }}
-    component: server
+    app.kubernetes.io/component: server
 spec:
   selector:
     matchLabels:
-      app: "{{ template "solr.name" . }}"
-      release: "{{ .Release.Name }}"
-      component: "server"
-  serviceName: {{ template "solr.headless-service-name" . }}
+      app.kubernetes.io/name: "{{ include "solr.name" . }}"
+      app.kubernetes.io/instance: "{{ .Release.Name }}"
+      app.kubernetes.io/component: "server"
+  serviceName: {{ include "solr.headless-service-name" . }}
   replicas: {{ .Values.replicaCount }}
   updateStrategy:
     {{ toYaml .Values.updateStrategy | indent 4}}
   template:
     metadata:
       labels:
-        app: "{{ template "solr.name" . }}"
-        release: "{{ .Release.Name }}"
-        component: "server"
+        app.kubernetes.io/name: "{{ include "solr.name" . }}"
+        app.kubernetes.io/instance: "{{ .Release.Name }}"
+        app.kubernetes.io/component: "server"
       annotations:
 {{ toYaml .Values.podAnnotations | indent 8 }}
     spec:
@@ -46,7 +46,7 @@ spec:
 {{- end }}
         - name: solr-xml
           configMap:
-            name: {{ template "solr.configmap-name" . }}
+            name: {{ include "solr.configmap-name" . }}
             items:
               - key: solr.xml
                 path: solr.xml
@@ -60,7 +60,7 @@ spec:
               COUNTER=0;
               while [  $COUNTER -lt 120 ]; do
                 for i in {{ $vals := . -}}{{ range $i, $e := until ( int .Values.zookeeper.replicaCount ) -}}
-                  "{{- template "solr.zookeeper-name" $vals }}-{{ $i }}.{{ template "solr.zookeeper-service-name" $vals }}" {{ end -}};
+                  "{{- include "solr.zookeeper-name" $vals }}-{{ $i }}.{{ include "solr.zookeeper-service-name" $vals }}" {{ end -}};
                   do mode=$(echo srvr | nc $i 2181 | grep "Mode");
                     if [ "$mode" == "Mode: leader" ] || [ "$mode" == "Mode: standalone" ]; then
                       exit 0;
@@ -77,7 +77,7 @@ spec:
           volumeMounts:
             - name: "solr-xml"
               mountPath: "/tmp"
-            - name: "{{ template "solr.pvc-name" . }}"
+            - name: "{{ include "solr.pvc-name" . }}"
               mountPath: "/tmp-config"
 
 {{- if .Values.tls.enabled }}
@@ -109,7 +109,7 @@ spec:
               done
               rm crt-*
 {{ end }}
-              /opt/solr/server/scripts/cloud-scripts/zkcli.sh -zkhost "{{ template "solr.zookeeper-name" . }}:2181" -cmd clusterprop -name urlScheme -val https
+              /opt/solr/server/scripts/cloud-scripts/zkcli.sh -zkhost "{{ include "solr.zookeeper-name" . }}:2181" -cmd clusterprop -name urlScheme -val https
           volumeMounts:
             - name: "keystore-volume"
               mountPath: "/tmp/keystore"
@@ -144,9 +144,9 @@ spec:
                 fieldRef:
                   fieldPath: metadata.name
             - name: "SOLR_HOST"
-              value: "$(POD_HOSTNAME).{{ template "solr.headless-service-name" . }}"
+              value: "$(POD_HOSTNAME).{{ include "solr.headless-service-name" . }}"
             - name: "ZK_HOST"
-              value: "{{ template "solr.zookeeper-name" . }}:2181"
+              value: "{{ include "solr.zookeeper-name" . }}:2181"
             - name: "SOLR_LOG_LEVEL"
               value: "{{ .Values.logLevel }}"
 {{ if .Values.tls.enabled }}
@@ -182,7 +182,7 @@ spec:
               path: /solr/admin/info/system
               port: {{ .Values.port }}
           volumeMounts:
-            - name: {{ template "solr.pvc-name" . }}
+            - name: {{ include "solr.pvc-name" . }}
               mountPath: /opt/solr/server/home
 {{ if .Values.tls.enabled }}
             - name: "keystore-volume"
@@ -190,7 +190,7 @@ spec:
 {{ end }}
   volumeClaimTemplates:
     - metadata:
-        name: {{ template "solr.pvc-name" . }}
+        name: {{ include "solr.pvc-name" . }}
         annotations:
           pv.beta.kubernetes.io/gid: "8983"
       spec:

@@ -84,8 +84,8 @@ Create chart name and version as used by the chart label.
   Define the labels that should be applied to all resources in the chart
 */}}
 {{- define "solr.common.labels" -}}
-app: {{ template "solr.name" . }}
-chart: {{ template "solr.chart" . }}
-release: {{ .Release.Name }}
-heritage: {{ .Release.Service }}
+app.kubernetes.io/name: {{ include "solr.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+helm.sh/chart: {{ include "solr.chart" . }}
 {{- end -}}

@@ -7,7 +7,7 @@ metadata:
   name: "{{ include "solr.exporter-name" . }}"
   labels:
 {{ include "solr.common.labels" . | indent 4 }}
-    component: "exporter"
+    app.kubernetes.io/component: "exporter"
   annotations:
 {{ toYaml .Values.exporter.service.annotations | indent 4}}
 spec:
@@ -16,9 +16,9 @@ spec:
     - port: {{ .Values.exporter.port }}
       name: "solr-client"
   selector:
-    app: "{{ template "solr.name" . }}"
-    release: "{{ .Release.Name }}"
-    component: "exporter"
+    app.kubernetes.io/name: "{{ include "solr.name" . }}"
+    app.kubernetes.io/instance: "{{ .Release.Name }}"
+    app.kubernetes.io/component: "exporter"
 
 
 ---
@@ -29,13 +29,13 @@ metadata:
   name: {{ include "solr.exporter-name" . }}
   labels:
 {{ include "solr.common.labels" . | indent 4 }}
-    component: "exporter"
+    app.kubernetes.io/component: "exporter"
 spec:
   selector:
     matchLabels:
-      app: "{{ template "solr.name" . }}"
-      release: "{{ .Release.Name }}"
-      component: "exporter"
+      app.kubernetes.io/name: "{{ include "solr.name" . }}"
+      app.kubernetes.io/instance: "{{ .Release.Name }}"
+      app.kubernetes.io/component: "exporter"
   replicas: 1
   strategy:
     {{ toYaml .Values.exporter.updateStrategy | indent 4}}
@@ -43,7 +43,7 @@ spec:
     metadata:
       labels:
 {{ include "solr.common.labels" . | indent 8 }}
-        component: "exporter"
+        app.kubernetes.io/component: "exporter"
       annotations:
 {{ toYaml .Values.exporter.podAnnotations | indent 8 }}
     spec:
@@ -63,7 +63,7 @@ spec:
             - "-p"
             - "{{ .Values.exporter.port }}"
             - "-z"
-            - "{{ template "solr.zookeeper-name" . }}:2181"
+            - "{{ include "solr.zookeeper-name" . }}:2181"
             - "-n"
             - "{{ .Values.exporter.threads }}"
             - "-f"
