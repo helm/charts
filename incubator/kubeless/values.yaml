@@ -10,12 +10,12 @@ controller:
     functionController:
       image:
         repository: kubeless/function-controller
-        tag: v1.0.1
+        tag: v1.0.3
         pullPolicy: IfNotPresent
     httpTriggerController:
       image:
         repository: bitnami/http-trigger-controller
-        tag: v1.0.0-alpha.9
+        tag: v1.0.0
         pullPolicy: IfNotPresent
     cronJobTriggerController:
       image:
