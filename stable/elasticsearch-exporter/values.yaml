@@ -32,6 +32,9 @@ service:
   httpPort: 9108
   annotations: {}
 
+## Extra environment variables that will be passed into the exporter pod
+env: {}
+
 es:
   ## Address (host and port) of the Elasticsearch node we should connect to.
   ## This could be a local node (localhost:9200, for instance), or the address
