@@ -143,6 +143,7 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `acme.domains.domainsList`             | List of domains & (optional) subject names                                                                                   | `[]`                                              |
 | `acme.domains.domainsList.main`        | Main domain name of the generated certificate                                                                                | *.example.com                                     |
 | `acme.domains.domainsList.sans`        | optional list of alternative subject names to give to the certificate                                                        | `[]`                                              |
+| `acme.resolvers`                       | DNS servers list to use for DNS challenge                                                                                    | `[]`                                              |
 | `acme.persistence.enabled`             | Create a volume to store ACME certs (if ACME is enabled)                                                                     | `true`                                            |
 | `acme.persistence.annotations`         | PVC annotations                                                                                                              | `{}`                                              |
 | `acme.persistence.storageClass`        | Type of `StorageClass` to request, will be cluster-specific                                                                  | `nil` (uses alpha storage class annotation)       |
@@ -221,10 +222,12 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `tracing.zipkin.id128Bit`              | Use Zipkin 128 bit root span IDs                                                                                             | `true`                                            |
 | `tracing.datadog.localAgentHostPort`   | Location of the Datadog agent where spans will be sent                                                                       | `127.0.0.1:8126`                                  |
 | `tracing.datadog.debug`                | Enables Datadog debugging                                                                                                    | `false`                                           |
-| `tracing.datadog.globalTag`            | Apply shared tag in a form of Key:Value to all the traces                                                                    | `""`                                           |
-| `autoscaling`                          | HorizontalPodAutoscaler for the traefik Deployment                                                                           | `{}`                                           |
+| `tracing.datadog.globalTag`            | Apply shared tag in a form of Key:Value to all the traces                                                                    | `""`                                              |
+| `autoscaling`                          | HorizontalPodAutoscaler for the traefik Deployment                                                                           | `{}`                                              |
 | `configFiles`                          | Config files to make available in the deployment. key=filename, value=file contents                                          | `{}`                                              |
 | `secretFiles`                          | Secret files to make available in the deployment. key=filename, value=file contents                                          | `{}`                                              |
+| `testFramework.image`                  | `test-framework` image repository.                                                                                           | `dduportal/bats`                                  |
+| `testFramework.tag`                    | `test-framework` image tag.                                                                                                  | `0.4.0`                                           |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 

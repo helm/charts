@@ -50,6 +50,7 @@ The following table lists the configurable parameters of the Osclass chart and t
 |             Parameter              |               Description                |                   Default                               |
 |------------------------------------|------------------------------------------|-------------------------------------------------------- |
 | `global.imageRegistry`             | Global Docker image registry             | `nil`                                                   |
+| `global.imagePullSecrets`          | Global Docker registry secret names as an array | `[]` (does not add image pull secrets to deployed pods) |
 | `image.registry`                   | Osclass image registry                   | `docker.io`                                             |
 | `image.repository`                 | Osclass Image name                       | `bitnami/osclass`                                       |
 | `image.tag`                        | Osclass Image tag                        | `{VERSION}`                                             |
