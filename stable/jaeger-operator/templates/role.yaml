@@ -11,12 +11,6 @@ metadata:
     helm.sh/chart: {{ include "jaeger-operator.chart" . }}
 rules:
 - apiGroups:
-  - io.jaegertracing
-  resources:
-  - "*"
-  verbs:
-  - "*"
-- apiGroups:
   - ""
   resources:
   - pods
@@ -28,7 +22,7 @@ rules:
   - secrets
   - serviceaccounts
   verbs:
-  - "*"
+  - '*'
 - apiGroups:
   - apps
   resources:
@@ -37,7 +31,20 @@ rules:
   - replicasets
   - statefulsets
   verbs:
-  - "*"
+  - '*'
+- apiGroups:
+  - monitoring.coreos.com
+  resources:
+  - servicemonitors
+  verbs:
+  - get
+  - create
+- apiGroups:
+  - io.jaegertracing
+  resources:
+  - '*'
+  verbs:
+  - '*'
 - apiGroups:
   - extensions
   resources:
@@ -49,33 +56,14 @@ rules:
   resources:
   - jobs
   - cronjobs
-  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
-- apiGroups:
-  - monitoring.coreos.com
-  resources:
-  - servicemonitors
   verbs:
-  - get
-  - create
+  - "*"
 - apiGroups:
   - route.openshift.io
   resources:
   - routes
   verbs:
   - "*"
-- apiGroups:
-  - rbac.authorization.k8s.io
-  resources:
-  - roles
-  - rolebindings
-  verbs:
-  - '*'
-- apiGroups:
-  - elasticsearch.jaegertracing.io
-  resources:
-  - jaeger
-  verbs:
-  - 'get'
 - apiGroups:
   - logging.openshift.io
   resources:
