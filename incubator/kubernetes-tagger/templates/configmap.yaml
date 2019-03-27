@@ -3,11 +3,11 @@ apiVersion: v1
 metadata:
   name: {{ template "kubernetes-tagger.fullname" . }}
   labels:
-    app: {{ template "kubernetes-tagger.name" . }}
-    chart: {{ template "kubernetes-tagger.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ include "kubernetes-tagger.name" . }}
+    helm.sh/chart: {{ include "kubernetes-tagger.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 data:
   config.yaml: |
     namespace: {{ .Release.Namespace }}
-{{ toYaml .Values.config | indent 4 }}
+    {{ toYaml .Values.config | nindent 4 }}

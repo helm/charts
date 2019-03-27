@@ -4,15 +4,15 @@ kind: PodDisruptionBudget
 metadata:
   name: {{ template "kubernetes-tagger.fullname" . }}
   labels:
-    app: {{ template "kubernetes-tagger.name" . }}
-    chart: {{ template "kubernetes-tagger.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ include "kubernetes-tagger.name" . }}
+    helm.sh/chart: {{ include "kubernetes-tagger.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   selector:
     matchLabels:
-      app: {{ template "kubernetes-tagger.name" . }}
-      release: {{ .Release.Name }}
+      app.kubernetes.io/name: {{ include "kubernetes-tagger.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
   {{- if .Values.podDisruptionBudget.minAvailable }}
   minAvailable: {{ .Values.podDisruptionBudget.minAvailable }}
   {{- end  }}
