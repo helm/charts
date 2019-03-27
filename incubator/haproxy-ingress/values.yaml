@@ -118,6 +118,9 @@ controller:
   tcp: {}
   #  8080: "default/example-tcp-svc:9000"
 
+  # optionally disable static ports, including the default 80 and 443
+  enableStaticPorts: true
+
   ## Use host ports 80 and 443
   daemonset:
     useHostPort: false
