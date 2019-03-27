@@ -100,6 +100,9 @@ affinity: {}
   #           app: {{ template "dex.name" . }}
   #           release: "{{ .Release.Name }}"
 
+podDisruptionBudget: {}
+  # maxUnavailable: 1
+
 config:
   issuer: http://dex.io:8080
   storage:
