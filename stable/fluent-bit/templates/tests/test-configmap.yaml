@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "fluent-bit.fullname" . }}-test
+  labels:
+    app: {{ template "fluent-bit.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+data:
+  run.sh: |-
+    {{- if eq .Values.backend.type "forward"}}
+    {{- if eq .Values.backend.forward.tls "on"}}
+    fluent-gem install fluent-plugin-secure-forward
+    {{- end }}
+    @test "Test Access" {
+      fluentd -c /tests/fluentd.conf --dry-run
+    }
+    {{- else if eq .Values.backend.type "es"}}
+    @test "Test Elasticssearch Indices" {
+      url="http://{{ .Values.backend.es.host }}:{{ .Values.backend.es.port }}/_cat/indices?format=json"
+      result=$(curl url | jq -cr '.[] | select((.index | contains("kubernetes_cluster")) and (.health != "green"))')
+      [ "$result" == "" ]
+    }
+    {{- end }}
+
+  fluentd.conf: |-
+    <source>
+      {{- if eq .Values.backend.forward.tls "off" }}
+      @type forward
+      bind 0.0.0.0
+      port {{ .Values.backend.forward.port }}
+      {{- else }}
+      @type secure_forward
+      self_hostname myserver.local
+      secure no
+      {{- end }}
+      shared_key {{ .Values.backend.forward.shared_key }}
+    </source>
+
+    <match **>
+      @type stdout
+    </match>
