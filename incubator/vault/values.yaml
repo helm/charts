@@ -112,6 +112,9 @@ podAnnotations: {}
 #     exec:
 #       command: ["./unseal -s my-unseal-keys"]
 
+# Priority class name for pods
+priorityClassName: ""
+
 vault:
   # Only used to enable dev mode. When in dev mode, the rest of this config
   # section below is not used to configure Vault. See
