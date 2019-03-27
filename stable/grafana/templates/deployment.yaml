@@ -46,13 +46,15 @@ spec:
 {{- if ( or .Values.persistence.enabled .Values.dashboards .Values.sidecar.datasources.enabled .Values.extraInitContainers) }}
       initContainers:
 {{- end }}
-{{- if ( and .Values.persistence.enabled .Values.persistence.initChownData ) }}
+{{- if ( and .Values.persistence.enabled .Values.initChownData.enabled ) }}
         - name: init-chown-data
-          image: "{{ .Values.chownDataImage.repository }}:{{ .Values.chownDataImage.tag }}"
-          imagePullPolicy: {{ .Values.chownDataImage.pullPolicy }}
+          image: "{{ .Values.initChownData.image.repository }}:{{ .Values.initChownData.image.tag }}"
+          imagePullPolicy: {{ .Values.initChownData.image.pullPolicy }}
           securityContext:
             runAsUser: 0
           command: ["chown", "-R", "{{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.runAsUser }}", "/var/lib/grafana"]
+          resources:
+{{ toYaml .Values.initChownData.resources | indent 12 }}
           volumeMounts:
             - name: storage
               mountPath: "/var/lib/grafana"
