@@ -20,3 +20,6 @@
 .idea/
 *.tmproj
 .vscode/
+# Artifacts
+ouput/
+charts/

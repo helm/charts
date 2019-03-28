@@ -36,18 +36,13 @@ spec:
               mountPath: /tmp/seeds
               subPath: seeds
             {{- end }}
-            - name: ca-key
-              mountPath: /home/mtls/secrets/certs/authority/RootCA.key
-              subPath: RootCA.key
-              readOnly: false
-            - name: ca-cert
-              mountPath: /home/mtls/secrets/certs/authority/RootCA.pem
-              subPath: RootCA.pem
+            - name: ca-creds
+              mountPath: /home/mtls/secrets/certs/authority
               readOnly: false
             {{- if .Values.persistence.enabled }}
             - name: sqlite3
-              mountPath: /home/mtls/
-              subPath: mtls-server.db
+              mountPath: /home/mtls/database
+              subPath: database
               readOnly: false
             {{- end }}
           livenessProbe:
@@ -67,12 +62,14 @@ spec:
             items:
               - key: config.ini
                 path: config.ini
-        - name: ca-key
+        - name: ca-creds
           secret:
-            secretName: ca-key
-        - name: ca-cert
-          secret:
-            secretName: ca-cert
+            secretName: {{ include "mtls.fullname" . }}
+            items:
+              - key: ca-key
+                path: RootCA.key
+              - key: ca-pem
+                path: RootCA.pem
         {{- if .Values.configMaps.seeds }}
         - name: seeds
           configMap:

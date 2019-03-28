@@ -74,7 +74,7 @@ configMaps:
     engine=sqlite3
 
     [storage.sqlite3]
-    db_path=mtls-server.db
+    db_path=database/mtls-server.db
   # If you want to seed the PGP Trust Store, you can do so by adding ASCII
   # armored PGP keys
   # seeds: |
