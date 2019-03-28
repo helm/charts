@@ -2,13 +2,14 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-replicaCount: 1
-
 image:
   repository: homeassistant/home-assistant
-  tag: 0.84.6
+  tag: 0.89.1
   pullPolicy: IfNotPresent
   pullSecrets: []
+
+# upgrade strategy type (e.g. Recreate or RollingUpdate)
+strategyType: Recreate
 
 service:
   type: ClusterIP
