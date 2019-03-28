@@ -131,13 +131,24 @@ Alternatively, a YAML file that specifies the values for the parameters can be p
 $ helm install --namespace pachyderm --name my-release -f values.yaml stable/pachyderm
 ```
 
+Specifying a pachyderm version
+------------------------
+
+To specify a pachyderm version run the following command:
+
+```console
+$ helm install --namespace pachyderm --name my-release \
+-set pachd.image.tag=1.7.11,pachd.worker.tag=1.7.11 \
+stable/pachyderm
+```
+
 Accessing the pachd service
 ---------------------------
 
 In order to use Pachyderm, please login through ssh to the master node and install the Pachyderm client:
 
 ```console
-$ curl -o /tmp/pachctl.deb -L https://github.com/pachyderm/pachyderm/releases/download/v1.7.3/pachctl_1.7.3_amd64.deb && sudo dpkg -i /tmp/pachctl.deb
+$ curl -o /tmp/pachctl.deb -L https://github.com/pachyderm/pachyderm/releases/download/v1.7.11/pachctl_1.7.11_amd64.deb && sudo dpkg -i /tmp/pachctl.deb
 ```
 
 Please note that the client version should correspond with the pachd service version. For more information please consult: http://pachyderm.readthedocs.io/en/latest/index.html. Also, if you have your kubernetes client properly configured to talk with your remote cluster, you can simply install `pachctl` on your local machine and execute: `pachctl --namespace <namespace> port-forward &`.
