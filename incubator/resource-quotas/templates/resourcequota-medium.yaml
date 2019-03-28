@@ -1,0 +1,20 @@
+{{- range $namespace, $v := .Values.namespaces }}
+{{- if $medium := index $v "medium" }}
+---
+apiVersion: v1
+kind: ResourceQuota
+namespace: {{ $namespace | quote }}
+metadata:
+  name: "{{ $namespace }}-medium"
+spec:
+  hard:
+  {{- range $k, $v := $medium}}
+    {{ $k }}: {{ $v | quote }}
+  {{- end }}
+  scopeSelector:
+    matchExpressions:
+      - operator : In
+        scopeName: PriorityClass
+        values: ["medium"]
+{{- end }}
+{{- end }}

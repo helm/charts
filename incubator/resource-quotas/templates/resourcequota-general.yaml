@@ -1,0 +1,15 @@
+{{- range $namespace, $quotas := .Values.namespaces }}
+{{- if $general := index $quotas "general" }}
+---
+apiVersion: v1
+kind: ResourceQuota
+namespace: {{ $namespace | quote }}
+metadata:
+  name: "{{ $namespace }}-general"
+spec:
+  hard:
+  {{- range $k, $v := $general}}
+    {{ $k }}: {{ $v | quote }}
+  {{- end }}
+{{- end }}
+{{- end }}

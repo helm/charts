@@ -1,0 +1,33 @@
+{{- range $namespace, $quotas := .Values.namespaces }}
+{{- if $limitrange := index $quotas "limitrange-container" -}}
+{{- $request := index $limitrange "request" -}}
+{{- $limit := index $limitrange "limit" }}
+{{- $min := index $limitrange "min" -}}
+{{- $max := index $limitrange "max" }}
+---
+apiVersion: v1
+kind: LimitRange
+namespace: {{ $namespace | quote }}
+metadata:
+  name: "{{ $namespace }}-container"
+spec:
+  limits:
+    - type: Container
+      defaultRequest:
+      {{- range $k, $v := $request }}
+        {{ $k }}: {{ $v | quote }}
+      {{- end }}
+      default:
+      {{- range $k, $v := $limit }}
+        {{ $k }}: {{ $v | quote }}
+      {{- end }}
+      min:
+      {{- range $k, $v := $min }}
+        {{ $k }}: {{ $v | quote }}
+      {{- end }}
+      max:
+      {{- range $k, $v := $max }}
+        {{ $k }}: {{ $v | quote }}
+      {{- end }}
+{{- end }}
+{{- end }}

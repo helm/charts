@@ -1,0 +1,260 @@
+namespaces:
+
+  # ---- NS ----
+  default:                                # Namespace name. The settings below forbid default namespace usage even when it is existing
+
+    limitrange-container:                 # ranges and quotas set by default for each CONTAINER that has not configured their own requests and limits
+      request:                            # default requests for one container
+        cpu: "0"
+        memory: "0"
+        ephemeral-storage: "0"
+      limit:                              # default limits for one container
+        cpu: "0"
+        memory: "0"
+        ephemeral-storage: "0"
+      min:                                # a container can't request less than the values
+        cpu: "0"
+        memory: "0"
+        ephemeral-storage: "0"
+      max:                                # a container can't request more than the values
+        cpu: "0"
+        memory: "0"
+        ephemeral-storage: "0"
+
+    limitrange-pod:                       # PODs can't request resources beyond the limits
+      min:                                # a pod can't request less than the values
+        cpu: "0"
+        memory: "0"
+        ephemeral-storage: "0"
+      max:                                # a pod can't request more than the values
+        cpu: "0"
+        memory: "0"
+        ephemeral-storage: "0"
+
+    limitrange-pvc:                       # one PersistentVolumeClaim can't request resources beyond the limits
+      min:                                # a PVC can't request less than the values
+        storage: "0"
+      max:                                # a PVC can't request more than the values
+        storage: "0"
+
+    general:                              # default quotas for the entire namespace for all pods without priority classes
+      pods: "0"
+      requests.cpu: "0"
+      requests.memory: "0"
+      requests.ephemeral-storage: "0"
+      requests.storage: "0"
+      limits.cpu: "0"
+      limits.memory: "0"
+      limits.ephemeral-storage: "0"
+      count/persistentvolumeclaims: "0"
+      count/services: "0"
+      services.loadbalancers: "0"
+      services.nodeports: "0"
+      count/secrets: "0"
+      count/configmaps: "0"
+      count/replicationcontrollers: "0"
+      count/deployments.apps: "0"
+      count/replicasets.apps: "0"
+      count/statefulsets.apps: "0"
+      count/jobs.batch: "0"
+      count/cronjobs.batch: "0"
+      count/ingresses.extensions: "0"
+
+    # To use the following settings for PriorityClasses make sure you have enabled ResourceQuotaScopeSelectors
+    # https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/
+    high: ~                                 # total quotas for the entire namespace for all pods with PriorityClass: "high"
+    medium: ~                               # total quotas for the entire namespace for all pods with PriorityClass: "medium"
+    low: ~                                  # total quotas for the entire namespace for all pods with PriorityClass: "low"
+
+  # ---- NS ----
+  kube-system:
+
+    limitrange-container:
+      request:
+        cpu: "10m"
+        memory: "32Mi"
+        ephemeral-storage: "100Mi"
+      limit:
+        cpu: "300m"
+        memory: "1Gi"
+        ephemeral-storage: "1Gi"
+      min:
+        cpu: "10m"
+        memory: "32Mi"
+        ephemeral-storage: "100Mi"
+      max:
+        cpu: "500m"
+        memory: "1Gi"
+        ephemeral-storage: "1Gi"
+
+    limitrange-pod:
+      min:
+        cpu: "10m"
+        memory: "32Mi"
+        ephemeral-storage: "100Mi"
+      max:                                  # limitrange-container.* x 5 to allow 5 containers per pod
+        cpu: "500m"
+        memory: "5Gi"
+        ephemeral-storage: "5Gi"
+
+    limitrange-pvc:
+      min:
+        storage: "0"
+      max:
+        storage: "0"
+
+    general:
+      pods: "200"
+      requests.cpu: "1"
+      requests.memory: "4Gi"
+      requests.ephemeral-storage: "4Gi"
+      requests.storage: "0"
+      limits.cpu: "1"
+      limits.memory: "4Gi"
+      limits.ephemeral-storage: "4Gi"
+      count/persistentvolumeclaims: "0"
+      count/services: "10"
+      services.loadbalancers: "5"
+      services.nodeports: "0"
+      count/secrets: "1000"
+      count/configmaps: "1000"
+      count/replicationcontrollers: "0"
+      count/deployments.apps: "20"
+      count/replicasets.apps: "60"
+      count/statefulsets.apps: "0"
+      count/jobs.batch: "20"
+      count/cronjobs.batch: "5"
+      count/ingresses.extensions: "0"
+
+    high: ~
+    medium: ~
+    low: ~
+
+  # ---- NS ----
+#  your-namespace:
+#
+#    limitrange-container:
+#      request:
+#        cpu: "10m"
+#        memory: "32Mi"
+#        ephemeral-storage: "100Mi"
+#      limit:
+#        cpu: "300m"
+#        memory: "512Mi"
+#        ephemeral-storage: "1Gi"
+#      min:
+#        cpu: "10m"
+#        memory: "32Mi"
+#        ephemeral-storage: "100Mi"
+#      max:
+#        cpu: "1600m"
+#        memory: "7Gi"
+#        ephemeral-storage: "10Gi"
+#
+#    limitrange-pod:
+#      min:
+#        cpu: "10m"
+#        memory: "32Mi"
+#        ephemeral-storage: "100Mi"
+#      max:
+#        cpu: "1600m"
+#        memory: "7Gi"
+#        ephemeral-storage: "20Gi"
+#
+#    limitrange-pvc:
+#      min:
+#        storage: "0"
+#      max:
+#        storage: "0"
+#
+#    general:
+#      pods: "200"
+#      requests.cpu: "4"
+#      requests.memory: "32Gi"
+#      requests.ephemeral-storage: "64Gi"
+#      requests.storage: "0"
+#      limits.cpu: "8"
+#      limits.memory: "64Gi"
+#      limits.ephemeral-storage: "128Gi"
+#      count/persistentvolumeclaims: "0"
+#      count/services: "30"
+#      services.loadbalancers: "15"
+#      services.nodeports: "0"
+#      count/secrets: "1000"
+#      count/configmaps: "1000"
+#      count/replicationcontrollers: "0"
+#      count/deployments.apps: "30"
+#      count/replicasets.apps: "90"
+#      count/statefulsets.apps: "0"
+#      count/jobs.batch: "30"
+#      count/cronjobs.batch: "10"
+#      count/ingresses.extensions: "10"
+#
+#    high:
+#      pods: "200"
+#      requests.cpu: "4"
+#      requests.memory: "32Gi"
+#      requests.ephemeral-storage: "64Gi"
+#      requests.storage: "0"
+#      limits.cpu: "8"
+#      limits.memory: "64Gi"
+#      limits.ephemeral-storage: "128Gi"
+#      count/persistentvolumeclaims: "0"
+#      count/services: "30"
+#      services.loadbalancers: "15"
+#      services.nodeports: "0"
+#      count/secrets: "1000"
+#      count/configmaps: "1000"
+#      count/replicationcontrollers: "0"
+#      count/deployments.apps: "30"
+#      count/replicasets.apps: "90"
+#      count/statefulsets.apps: "0"
+#      count/jobs.batch: "30"
+#      count/cronjobs.batch: "10"
+#      count/ingresses.extensions: "10"
+#
+#    medium:
+#      pods: "200"
+#      requests.cpu: "4"
+#      requests.memory: "32Gi"
+#      requests.ephemeral-storage: "64Gi"
+#      requests.storage: "0"
+#      limits.cpu: "8"
+#      limits.memory: "64Gi"
+#      limits.ephemeral-storage: "128Gi"
+#      count/persistentvolumeclaims: "0"
+#      count/services: "30"
+#      services.loadbalancers: "15"
+#      services.nodeports: "0"
+#      count/secrets: "1000"
+#      count/configmaps: "1000"
+#      count/replicationcontrollers: "0"
+#      count/deployments.apps: "30"
+#      count/replicasets.apps: "90"
+#      count/statefulsets.apps: "0"
+#      count/jobs.batch: "30"
+#      count/cronjobs.batch: "10"
+#      count/ingresses.extensions: "10"
+#
+#    low:
+#      pods: "200"
+#      requests.cpu: "4"
+#      requests.memory: "32Gi"
+#      requests.ephemeral-storage: "64Gi"
+#      requests.storage: "0"
+#      limits.cpu: "8"
+#      limits.memory: "64Gi"
+#      limits.ephemeral-storage: "128Gi"
+#      count/persistentvolumeclaims: "0"
+#      count/services: "30"
+#      services.loadbalancers: "15"
+#      services.nodeports: "0"
+#      count/secrets: "1000"
+#      count/configmaps: "1000"
+#      count/replicationcontrollers: "0"
+#      count/deployments.apps: "30"
+#      count/replicasets.apps: "90"
+#      count/statefulsets.apps: "0"
+#      count/jobs.batch: "30"
+#      count/cronjobs.batch: "10"
+#      count/ingresses.extensions: "10"

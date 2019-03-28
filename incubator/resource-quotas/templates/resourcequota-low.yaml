@@ -1,0 +1,20 @@
+{{- range $namespace, $quotas := .Values.namespaces }}
+{{- if $low := index $quotas "low" }}
+---
+apiVersion: v1
+kind: ResourceQuota
+namespace: {{ $namespace | quote }}
+metadata:
+  name: "{{ $namespace }}-low"
+spec:
+  hard:
+  {{- range $k, $v := $low}}
+    {{ $k }}: {{ $v | quote }}
+  {{- end }}
+  scopeSelector:
+    matchExpressions:
+      - operator : In
+        scopeName: PriorityClass
+        values: ["low"]
+{{- end }}
+{{- end }}

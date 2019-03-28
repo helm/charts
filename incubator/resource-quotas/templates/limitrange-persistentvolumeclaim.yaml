@@ -1,0 +1,24 @@
+{{- range $namespace, $quotas := .Values.namespaces }}
+{{- if $limitrange := index $quotas "limitrange-pvc" -}}
+{{- $min := index $limitrange "min" -}}
+{{- $max := index $limitrange "max" }}
+---
+apiVersion: v1
+kind: LimitRange
+namespace: {{ $namespace | quote }}
+metadata:
+  name: "{{ $namespace }}-pvc"
+spec:
+  limits:
+    - type: PersistentVolumeClaim
+      min:
+      {{- range $k, $v := $min }}
+        {{ $k }}: {{ $v | quote }}
+      {{- end }}
+      max:
+      {{- range $k, $v := $max }}
+        {{ $k }}: {{ $v | quote }}
+      {{- end }}
+
+{{- end }}
+{{- end }}
