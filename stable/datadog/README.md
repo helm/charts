@@ -281,8 +281,8 @@ helm install --name <RELEASE_NAME> \
 | `clusterAgent.image.pullPolicy`          | Image pull policy                                                                         | `IfNotPresent`                              |
 | `clusterAgent.image.pullSecrets`         | Image pull secrets                                                                        | `nil`                                       |
 | `clusterAgent.metricsProvider.enabled`   | Enable Datadog metrics as a source for HPA scaling                                        | `false`                                     |
-| `clusterAgent.clusterChecks.enabled`   | Enable Cluster Checks on both the Cluster Agent and the Agent daemonset |  `false`                  |
-| `clusterAgent.confd`                     | Additional check configurations (static and Autodiscovery) | `nil`             |
+| `clusterAgent.clusterChecks.enabled`     | Enable Cluster Checks on both the Cluster Agent and the Agent daemonset                   | `false`                                     |
+| `clusterAgent.confd`                     | Additional check configurations (static and Autodiscovery)                                | `nil`                                       |
 | `clusterAgent.resources.requests.cpu`    | CPU resource requests                                                                     | `200m`                                      |
 | `clusterAgent.resources.limits.cpu`      | CPU resource limits                                                                       | `200m`                                      |
 | `clusterAgent.resources.requests.memory` | Memory resource requests                                                                  | `256Mi`                                     |
@@ -290,3 +290,12 @@ helm install --name <RELEASE_NAME> \
 | `clusterAgent.tolerations`               | List of node taints to tolerate                                                           | `[]`                                        |
 | `clusterAgent.livenessProbe`             | Overrides the default liveness probe                                                      | http port 443 if external metrics enabled   |
 | `clusterAgent.readinessProbe`            | Overrides the default readiness probe                                                     | http port 443 if external metrics enabled   |
+| `clusterchecksDeployment.enabled`        | Enable Datadog agent deployment dedicated for running Cluster Checks. It allows having different resources (Request/Limit) for Cluster Checks agent pods.  | `false` |
+| `clusterchecksDeployment.env`                            | Additional Datadog environment variables for Cluster Checks Deployment    | `nil`                                       |
+| `clusterchecksDeployment.resources.requests.cpu`         | CPU resource requests                                                     | `200m`                                      |
+| `clusterchecksDeployment.resources.limits.cpu`           | CPU resource limits                                                       | `200m`                                      |
+| `clusterchecksDeployment.resources.requests.memory`      | Memory resource requests                                                  | `256Mi`                                     |
+| `clusterchecksDeployment.resources.limits.memory`        | Memory resource limits                                                    | `256Mi`                                     |
+| `clusterchecksDeployment.nodeSelector`                   | Node selectors                                                            | `nil`                                       |
+| `clusterchecksDeployment.affinity`                       | Node affinities                                                           | avoid running pods on the same node         |
+| `clusterchecksDeployment.livenessProbe`                  | Overrides the default liveness probe                                      | http port 5555                              |
