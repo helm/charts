@@ -1,6 +1,6 @@
 image:
   repository: docker.elastic.co/beats/metricbeat
-  tag: 6.6.1
+  tag: 6.7.0
   pullPolicy: IfNotPresent
 
 # The instances created by daemonset retrieve most metrics from the host
