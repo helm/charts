@@ -96,7 +96,7 @@ sourceControl:
     server:
   bitbucketCloud:
     clientID:
-    clientSecret: clientSecret
+    clientSecretKey: clientSecret
   bitbucketServer:
     server:
     consumerKey: consumerKey
