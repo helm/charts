@@ -23,7 +23,11 @@ spec:
         app: {{ template "filebeat.name" . }}
         release: {{ .Release.Name }}
       annotations:
+      {{- if empty .Values.overrideConfig }}
         checksum/secret: {{ toYaml .Values.config | sha256sum }}
+      {{- else }}
+        checksum/secret: {{ toYaml .Values.overrideConfig | sha256sum }}
+      {{- end }}
 {{- if .Values.annotations }}
 {{ toYaml .Values.annotations | indent 8 }}
 {{- end }}
