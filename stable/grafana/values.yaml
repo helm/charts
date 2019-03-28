@@ -61,11 +61,6 @@ downloadDashboardsImage:
   tag: latest
   pullPolicy: IfNotPresent
 
-chownDataImage:
-  repository: busybox
-  tag: 1.30.0
-  pullPolicy: IfNotPresent
-
 ## Pod Annotations
 # podAnnotations: {}
 
@@ -145,7 +140,6 @@ extraContainers: |
 ##
 persistence:
   enabled: false
-  initChownData: true
   # storageClassName: default
   accessModes:
     - ReadWriteOnce
@@ -153,6 +147,31 @@ persistence:
   # annotations: {}
   # subPath: ""
   # existingClaim:
+
+initChownData:
+  ## If false, data ownership will not be reset at startup
+  ## This allows the prometheus-server to be run with an arbitrary user
+  ##
+  enabled: true
+
+  ## initChownData container image
+  ##
+  image:
+    repository: busybox
+    tag: "1.30"
+    pullPolicy: IfNotPresent
+
+  ## initChownData resource requests and limits
+  ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  ##
+  resources: {}
+  #  limits:
+  #    cpu: 100m
+  #    memory: 128Mi
+  #  requests:
+  #    cpu: 100m
+  #    memory: 128Mi
+
 
 # Administrator credentials when not using an existing secret (see below)
 adminUser: admin
