@@ -44,6 +44,9 @@ spec:
                     "-es.all={{ .Values.es.all }}",
                     "-es.indices={{ .Values.es.indices }}",
                     "-es.timeout={{ .Values.es.timeout }}",
+                    {{- if .Values.es.sslSkipVerify }}
+                    "-es.ssl-skip-verify=true",
+                    {{- end }}
                     {{- if .Values.es.ssl.enabled }}
                     "-es.ca=/ssl/ca.pem",
                     "-es.client-cert=/ssl/client.pem",
