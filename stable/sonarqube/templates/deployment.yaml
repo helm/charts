@@ -129,19 +129,19 @@ spec:
             - mountPath: /opt/sonarqube/extensions/plugins/tmp
               name: sonarqube
               subPath: tmp
-            - mountPath: "/opt/sonarqube/extensions/downloads"
+            - mountPath: /opt/sonarqube/extensions/downloads
               name: sonarqube
               subPath: downloads
-            - mountPath: "/opt/sonarqube/extensions/plugins"
+            - mountPath: /opt/sonarqube/extensions/plugins
               name: sonarqube
               subPath: plugins
             - mountPath: /opt/sonarqube/temp
               name: sonarqube
               subPath: temp
-            - mountPath: "/opt/sonarqube/logs"
+            - mountPath: /opt/sonarqube/logs
               name: sonarqube
               subPath: logs
-            - mountPath: "/tmp"
+            - mountPath: /tmp
               name: tmp-dir
             - name: copy-plugins
               mountPath: /usr/local/
