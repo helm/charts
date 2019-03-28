@@ -1,20 +1,32 @@
 # Default values for kube-state-metrics.
 prometheusScrape: true
 image:
-  repository: quay.io/coreos/kube-state-metrics
-  tag: v1.4.0
+  repository: k8s.gcr.io/kube-state-metrics
+  tag: v1.5.0
   pullPolicy: IfNotPresent
+
+replicas: 1
+
 service:
   port: 8080
   # Default to clusterIP for backward compatibility
   type: ClusterIP
   nodePort: 0
   loadBalancerIP: ""
+
 rbac:
   # If true, create & use RBAC resources
   create: true
-  # Ignored if rbac.create is true
-  serviceAccountName: default
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created, require rbac true
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+  # Reference to one or more secrets to be used when pulling images
+  # ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  imagePullSecrets: []
 
 ## Specify if a Pod Security Policy for kube-state-metrics must be created
 ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/
@@ -66,6 +78,7 @@ collectors:
   nodes: true
   persistentvolumeclaims: true
   persistentvolumes: true
+  poddisruptionbudgets: true
   pods: true
   replicasets: true
   replicationcontrollers: true

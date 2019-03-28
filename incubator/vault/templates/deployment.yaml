@@ -24,8 +24,15 @@ spec:
         app: {{ template "vault.name" . }}
         release: {{ .Release.Name }}
       annotations:
-{{ toYaml .Values.podAnnotations | indent 8 }}
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        {{- range $key, $value := .Values.podAnnotations }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
     spec:
+      {{- if .Values.vault.extraInitContainers }}
+      initContainers:
+{{ tpl .Values.vault.extraInitContainers . | indent 6 }}
+      {{- end }}
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ default .Chart.AppVersion .Values.image.tag }}"
@@ -42,12 +49,18 @@ spec:
         ports:
         - containerPort: {{ .Values.service.port }}
           name: api
-        - containerPort: 8201
+        - containerPort: {{ .Values.service.clusterPort }}
           name: cluster-address
         livenessProbe:
-          # Alive if it is listening for clustering traffic
-          tcpSocket:
+          # Alive if Vault is successfully responding to requests
+          httpGet:
+            path: /v1/sys/health?standbyok=true&
+              {{- if .Values.vault.liveness.aliveIfUninitialized -}}uninitcode=204&{{- end }}
+              {{- if .Values.vault.liveness.aliveIfSealed -}}sealedcode=204&{{- end }}
             port: {{ .Values.service.port }}
+            scheme: {{ if .Values.vault.config.listener.tcp.tls_disable -}}HTTP{{- else -}}HTTPS{{- end }}
+            initialDelaySeconds: {{ .Values.vault.liveness.initialDelaySeconds }}
+            periodSeconds: {{ .Values.vault.liveness.periodSeconds }}
         readinessProbe:
           # Ready depends on preference
           httpGet:
@@ -57,6 +70,8 @@ spec:
               {{- if .Values.vault.readiness.readyIfUninitialized -}}uninitcode=204&{{- end }}
             port: {{ .Values.service.port }}
             scheme: {{ if .Values.vault.config.listener.tcp.tls_disable -}}HTTP{{- else -}}HTTPS{{- end }}
+            initialDelaySeconds: {{ .Values.vault.readiness.initialDelaySeconds }}
+            periodSeconds: {{ .Values.vault.readiness.periodSeconds }}
         securityContext:
           readOnlyRootFilesystem: true
           capabilities:
@@ -88,7 +103,6 @@ spec:
 {{- end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
-      {{- if .Values.affinity }}
       {{- if .Values.consulAgent.join }}
       - name: {{ .Chart.Name }}-consul-agent
         image: "{{ .Values.consulAgent.repository }}:{{ .Values.consulAgent.tag }}"
@@ -119,13 +133,22 @@ spec:
               -join={{- .Values.consulAgent.join }} \
               -data-dir=/etc/consul
       {{- end }}
+      {{- if .Values.affinity }}
       affinity:
 {{ tpl .Values.affinity . | indent 8 }}
+      {{- end }}
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
       {{- end }}
       volumes:
         - name: vault-config
           configMap:
-            name: "{{ template "vault.fullname" . }}-config"
+            name: {{ if .Values.vault.existingConfigName }}{{ .Values.vault.existingConfigName }}{{- else }}"{{ template "vault.fullname" . }}-config"{{- end }}
         - name: vault-root
           emptyDir: {}
         {{- range .Values.vault.customSecrets }}

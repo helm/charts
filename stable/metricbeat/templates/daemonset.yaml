@@ -1,3 +1,4 @@
+{{- if .Values.daemonset.enabled }}
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
@@ -61,7 +62,11 @@ spec:
         securityContext:
           runAsUser: 0
         resources:
+{{- if .Values.daemonset.resources }}
+{{ toYaml .Values.daemonset.resources | indent 10 }}
+{{- else if .Values.resources }}
 {{ toYaml .Values.resources | indent 10 }}
+{{- end }}
         volumeMounts:
         - name: config
           mountPath: /usr/share/metricbeat/metricbeat.yml
@@ -121,4 +126,5 @@ spec:
 {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}
 {{- end }}

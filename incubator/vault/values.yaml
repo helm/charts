@@ -35,6 +35,8 @@ service:
   #  - 130.211.204.2/32
   externalPort: 8200
   port: 8200
+  # clusterExternalPort: 8201
+  clusterPort: 8201
   # clusterIP: None
   annotations: {}
   #   cloud.google.com/load-balancer-type: "Internal"
@@ -69,6 +71,13 @@ resources: {}
   # requests:
   #   cpu: 100m
   #   memory: 128Mi
+
+## Node selector
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+nodeSelector: {}
+
+## Affinity
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
 affinity: |
   podAntiAffinity:
     preferredDuringSchedulingIgnoredDuringExecution:
@@ -77,8 +86,12 @@ affinity: |
         topologyKey: kubernetes.io/hostname
         labelSelector:
           matchLabels:
-            app: {{ template "vault.fullname" . }}
+            app: {{ template "vault.name" . }}
             release: {{ .Release.Name }}
+
+## Tolerations
+## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+tolerations: []
 
 ## Deployment annotations
 annotations: {}
@@ -126,6 +139,11 @@ vault:
   #   - name: some-mount
   #     mountPath: /some/path
   extraVolumes: {}
+  extraInitContainers: {}
+  ## Init containers to be added
+  # - name: do-something
+  #   image: busybox
+  #   command: ['do', 'something']
   # Log level
   # https://www.vaultproject.io/docs/commands/server.html#log-level
   logLevel: "info"
@@ -133,10 +151,19 @@ vault:
   # - name: extra-volume
   #   secret:
   #     secretName: some-secret
+  liveness:
+    aliveIfUninitialized: true
+    aliveIfSealed: true
+    initialDelaySeconds: 30
+    periodSeconds: 10
   readiness:
     readyIfSealed: false
     readyIfStandby: true
     readyIfUninitialized: true
+    initialDelaySeconds: 10
+    periodSeconds: 10
+  ## Use an existing config in a named ConfigMap
+  # existingConfigName: vault-cm
   config:
     # A YAML representation of a final vault config.json file.
     # See https://www.vaultproject.io/docs/configuration/ for more information.

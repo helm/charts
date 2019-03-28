@@ -30,6 +30,12 @@ spec:
     protocol: TCP
     targetPort: {{ .Values.service.port }}
     name: api
+  {{- if .Values.service.clusterExternalPort }}
+  - port: {{ .Values.service.clusterExternalPort }}
+    protocol: TCP
+    targetPort: {{ .Values.service.clusterPort }}
+    name: cluster
+  {{- end }}
   selector:
     app: {{ template "vault.name" . }}
     release: {{ .Release.Name }}
