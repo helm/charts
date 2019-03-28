@@ -17,10 +17,6 @@ This system itself will not use Client Certificate Authentication as it uses a
 detached signed PGP message to check for authentication when generating
 certificates from a CSR. To seed admin store. Please read below
 
-## Seeding the Trust Store
-
-TBD
-
 ## Installing the Chart
 
 To install the chart, use the following:
@@ -32,7 +28,7 @@ $ helm repo add incuabor https://storage.googleapis.com/kubernetes-charts-incuba
 installing.
 $ ./scripts/setup.sh
 $ ./scripts/create-ca.sh
-$ helm install incubator/mtls -f values.yaml
+$ helm install stable/mtls -f values.yaml
 ```
 
 ## Configuration
@@ -40,6 +36,23 @@ $ helm install incubator/mtls -f values.yaml
 The following table lists the configurable parameters of the MTLS Chart and
 their defaults.
 
-
+| Parameter | Description | Default |
+| --------- | ----------- | ------- |
+| `image.repository` | `mtls` image repository | `drgrove/mtls` |
+| `image.tag` | `mtls` image tag. | `v0.11.0` |
+| `image.pullPolicy` | Image pull policy | `IfNotPresent` |
+| `secrets.ca_key` | RSA key for CA | |
+| `secrets.ca_crt` | PEM format CA Certificate | |
+| `configMaps.config.ini` | Base configuration for `mtls` | See values.yaml |
+| `seeds` | ASCII Armored PGP Keys for Seeding Trust Database | {} |
+| `persistence.enabled` | Create a volume to store data | true |
+| `persistence.size` | Size of persistent volume claim | 10Gi RW |
+| `persistence.storageClass` | Type of persistent volume claim | nil |
+| `persistence.accessMode` | ReadWriteOnce or ReadOnly | ReadWriteOnce |
+| `persistence.existingClaim` | Name of existing persistent volume | `nil` |
+| `persistence.subPath` | Subdirectory of the volume to mount | `nil` |
+| `persistence.annotations` | Persistent Volume annotations | {} |
+| `nodeSelector` | Node labels for pod assignment | {} |
+| `tolerations` | Pod taint tolerations for deployment | {} |
 
 [mtls-server]: https://github.com/drGrove/mtls-server
