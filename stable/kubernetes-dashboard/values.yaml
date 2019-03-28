@@ -7,6 +7,7 @@ image:
   repository: k8s.gcr.io/kubernetes-dashboard-amd64
   tag: v1.10.1
   pullPolicy: IfNotPresent
+  pullSecrets: []
 
 replicaCount: 1
 
@@ -127,6 +128,20 @@ rbac:
   # Specifies whether cluster-admin ClusterRole will be used for dashboard
   # ServiceAccount (NOT RECOMMENDED).
   clusterAdminRole: false
+
+  # Start in ReadOnly mode.
+  # Only dashboard-related Secrets and ConfigMaps will still be available for writing.
+  #
+  # Turn OFF clusterAdminRole to use clusterReadOnlyRole.
+  #
+  # The basic idea of the clusterReadOnlyRole comparing to the clusterAdminRole
+  # is not to hide all the secrets and sensitive data but more
+  # to avoid accidental changes in the cluster outside the standard CI/CD.
+  #
+  # Same as for clusterAdminRole, it is NOT RECOMMENDED to use this version in production.
+  # Instead you should review the role and remove all potentially sensitive parts such as
+  # access to persistentvolumes, pods/log etc.
+  clusterReadOnlyRole: false
 
 serviceAccount:
   # Specifies whether a service account should be created
