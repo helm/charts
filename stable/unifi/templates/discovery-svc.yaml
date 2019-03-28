@@ -4,10 +4,10 @@ kind: Service
 metadata:
   name: {{ template "unifi.fullname" . }}-discovery
   labels:
-    app: {{ template "unifi.name" . }}
-    chart: {{ template "unifi.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ include "unifi.name" . }}
+    helm.sh/chart: {{ include "unifi.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- if .Values.discoveryService.labels }}
 {{ toYaml .Values.discoveryService.labels | indent 4 }}
 {{- end }}
@@ -49,6 +49,6 @@ spec:
       nodePort: {{.Values.discoveryService.nodePort}}
 {{ end }}
   selector:
-    app: {{ template "unifi.name" . }}
-    release: {{ .Release.Name }}
+    app.kubernetes.io/name: {{ include "unifi.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
 {{ end }}
