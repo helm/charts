@@ -16,7 +16,7 @@ secrets:
   # These secrets default to none so that mTLS will generate them automatically
   # based on the config provided below in the config.ini [ca] section
   ca_key: ""
-  ca_pem: ""
+  ca_crt: ""
 
 # Persist SQLite data to a persistent volume
 persistence:
@@ -75,9 +75,16 @@ configMaps:
 
     [storage.sqlite3]
     db_path=database/mtls-server.db
-  # If you want to seed the PGP Trust Store, you can do so by adding ASCII
-  # armored PGP keys
-  # seeds: |
+
+seeds: {}
+# If you want to seed the PGP Trust Store, you can do so by adding ASCII
+# armored PGP keys. Using <fingerprint>.asc as the key and the ASCII armored
+# key as the value
+#   FINGERPRINT.asc: |
+#     ----- BEGIN PGP PUBLIC KEY BLOCK-----
+#
+#     ...
+#     ----- END PGP PUBLIC KEY BLOCK-----
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious

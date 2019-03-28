@@ -31,10 +31,9 @@ spec:
             - name: config
               mountPath: /home/mtls/config.ini
               subPath: config.ini
-            {{- if .Values.configMaps.seeds }}
+            {{- if .Values.seeds }}
             - name: seeds
               mountPath: /tmp/seeds
-              subPath: seeds
             {{- end }}
             - name: ca-creds
               mountPath: /home/mtls/secrets/certs/authority
@@ -66,17 +65,14 @@ spec:
           secret:
             secretName: {{ include "mtls.fullname" . }}
             items:
-              - key: ca-key
+              - key: ca.key
                 path: RootCA.key
-              - key: ca-pem
+              - key: ca.crt
                 path: RootCA.pem
-        {{- if .Values.configMaps.seeds }}
+        {{- if .Values.seeds }}
         - name: seeds
           configMap:
-            name: {{ include "mtls.fullname" . }}
-            items:
-              - key: seeds
-                path: seeds
+            name: {{ include "mtls.fullname" . }}-seeds
         {{- end }}
         {{- if .Values.persistence.enabled }}
         - name: sqlite3
