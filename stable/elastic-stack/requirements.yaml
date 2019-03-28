@@ -16,7 +16,7 @@ dependencies:
   repository: https://kubernetes-charts.storage.googleapis.com/
   condition: logstash.enabled
 - name: fluentd
-  version: ^1.3.0
+  version: ^1.5.1
   repository: https://kubernetes-charts.storage.googleapis.com/
   condition: fluentd.enabled
 - name: fluent-bit
