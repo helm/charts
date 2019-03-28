@@ -53,6 +53,13 @@ es:
   ##
   timeout: 30s
 
+
+  ##
+  ## If true, skip SSL verification when connecting to Elasticsearch
+  ## Requires image.tag >= 1.0.4rc1
+  ssl-skip-verify: false
+
+
   ssl:
     ## If true, a secure connection to ES cluster is used (requires SSL certs below)
     ##
