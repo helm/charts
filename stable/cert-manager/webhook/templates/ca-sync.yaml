@@ -64,7 +64,11 @@ spec:
     spec:
       serviceAccountName: {{ include "webhook.fullname" . }}-ca-sync
       restartPolicy: OnFailure
-      securityContext: {{ .Values.securityContext }}
+      {{- with .Values.securityContext }}
+      securityContext:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+
       containers:
       - name: ca-helper
         image: {{ .Values.caSyncImage.repository }}:{{ .Values.caSyncImage.tag }}
