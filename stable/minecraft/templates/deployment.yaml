@@ -23,6 +23,22 @@ spec:
         imagePullPolicy: Always
         resources:
 {{ toYaml .Values.resources | indent 10 }}
+        readinessProbe:
+          exec:
+            command:
+              - mcstatus
+              - localhost:25565
+              - status
+          initialDelaySeconds: 30
+          periodSeconds: 5
+        livenessProbe:
+          exec:
+            command:
+              - mcstatus
+              - localhost:25565
+              - status
+          initialDelaySeconds: 30
+          periodSeconds: 15
         env:
         - name: EULA
           value: {{ .Values.minecraftServer.eula | quote }}
