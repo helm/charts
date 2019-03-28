@@ -3,10 +3,10 @@ kind: Service
 metadata:
   name: {{ template "home-assistant.fullname" . }}
   labels:
-    app: {{ template "home-assistant.name" . }}
-    chart: {{ template "home-assistant.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ include "home-assistant.name" . }}
+    helm.sh/chart: {{ include "home-assistant.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- if .Values.service.labels }}
 {{ toYaml .Values.service.labels | indent 4 }}
 {{- end }}
@@ -54,5 +54,5 @@ spec:
 {{ end }}
 {{- end }}
   selector:
-    app: {{ template "home-assistant.name" . }}
-    release: {{ .Release.Name }}
+    app.kubernetes.io/name: {{ include "home-assistant.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}

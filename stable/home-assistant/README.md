@@ -39,6 +39,7 @@ The following tables lists the configurable parameters of the Home Assistant cha
 | `image.tag`                | Image tag. Possible values listed [here](https://hub.docker.com/r/homeassistant/home-assistant/tags/).| `0.84.6`|
 | `image.pullPolicy`         | Image pull policy | `IfNotPresent` |
 | `image.pullSecrets`        | Secrets to use when pulling the image | `[]` |
+| `strategyType`             | Specifies the strategy used to replace old Pods by new ones | `Recreate` |
 | `service.type`             | Kubernetes service type for the home-assistant GUI | `ClusterIP` |
 | `service.port`             | Kubernetes port where the home-assistant GUI is exposed| `8123` |
 | `service.annotations`      | Service annotations for the home-assistant GUI | `{}` |
@@ -80,7 +81,6 @@ The following tables lists the configurable parameters of the Home Assistant cha
 | `configurator.nodeSelector`             | Node labels for pod assignment for the configurator UI | `{}` |
 | `configurator.schedulerName`            | Use an alternate scheduler, e.g. "stork" for the configurator UI | `` |
 | `configurator.podAnnotations`           | Affinity settings for pod assignment for the configurator UI | `{}` |
-| `configurator.replicaCount`             | Number of replicas for the configurator UI | `1` |
 | `configurator.resources`                | CPU/Memory resource requests/limits for the configurator UI | `{}` |
 | `configurator.securityContext`          | Security context to be added to hass-configurator pods for the configurator UI | `{}` |
 | `configurator.service.type`             | Kubernetes service type for the configurator UI | `ClusterIP` |
