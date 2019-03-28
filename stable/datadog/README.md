@@ -291,6 +291,7 @@ helm install --name <RELEASE_NAME> \
 | `clusterAgent.livenessProbe`             | Overrides the default liveness probe                                                      | http port 443 if external metrics enabled   |
 | `clusterAgent.readinessProbe`            | Overrides the default readiness probe                                                     | http port 443 if external metrics enabled   |
 | `clusterchecksDeployment.enabled`        | Enable Datadog agent deployment dedicated for running Cluster Checks. It allows having different resources (Request/Limit) for Cluster Checks agent pods.  | `false` |
+| `clusterchecksDeployment.env`                            | Additional Datadog environment variables for Cluster Checks Deployment    | `nil`                                       |
 | `clusterchecksDeployment.resources.requests.cpu`         | CPU resource requests                                                     | `200m`                                      |
 | `clusterchecksDeployment.resources.limits.cpu`           | CPU resource limits                                                       | `200m`                                      |
 | `clusterchecksDeployment.resources.requests.memory`      | Memory resource requests                                                  | `256Mi`                                     |

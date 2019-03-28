@@ -88,6 +88,8 @@ spec:
                 app: {{ template "datadog.fullname" . }}-clusterchecks
             topologyKey: kubernetes.io/hostname
 {{- end }}
+      {{- if .Values.clusterchecksDeployment.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.clusterchecksDeployment.nodeSelector | indent 8 }}
+      {{- end }}
 {{ end }}
