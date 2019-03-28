@@ -11,7 +11,7 @@ keycloak:
 
   image:
     repository: jboss/keycloak
-    tag: 4.8.3.Final
+    tag: 5.0.0
     pullPolicy: IfNotPresent
 
     ## Optionally specify an array of imagePullSecrets.
@@ -240,7 +240,12 @@ postgresql:
     enabled: false
 
 test:
+  enabled: true
   image:
     repository: unguiculus/docker-python3-phantomjs-selenium
     tag: v1
     pullPolicy: IfNotPresent
+  securityContext:
+    runAsUser: 1000
+    fsGroup: 1000
+    runAsNonRoot: true
