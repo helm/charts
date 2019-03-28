@@ -10,7 +10,7 @@ terminationGracePeriodSeconds: 30
 
 image:
   repository: docker.elastic.co/logstash/logstash-oss
-  tag: 6.6.2
+  tag: 6.7.0
   pullPolicy: IfNotPresent
   ## Add secrets manually via kubectl on kubernetes cluster and reference here
   #  pullSecrets:
