@@ -34,7 +34,6 @@ spec:
       restartPolicy: {{ .Values.restartPolicy }}
       securityContext:
         runAsNonRoot: true
-        runAsUser: 1000
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
