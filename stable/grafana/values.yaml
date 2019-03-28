@@ -26,7 +26,7 @@ livenessProbe:
 
 image:
   repository: grafana/grafana
-  tag: 6.0.2
+  tag: "6.0.2"
   pullPolicy: IfNotPresent
 
   ## Optionally specify an array of imagePullSecrets.
@@ -158,7 +158,7 @@ initChownData:
   ##
   image:
     repository: busybox
-    tag: 1.30
+    tag: "1.30"
     pullPolicy: IfNotPresent
 
   ## initChownData resource requests and limits
