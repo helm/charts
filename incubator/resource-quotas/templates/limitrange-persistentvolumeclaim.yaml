@@ -1,0 +1,24 @@
+{{- if $limitrange := index .Values "limitrange-pvc" -}}
+{{- $min := index $limitrange "min" -}}
+{{- $max := index $limitrange "max" }}
+---
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: "{{ .Release.Namespace }}-pvc"
+spec:
+  limits:
+    - type: PersistentVolumeClaim
+      {{- if $min }}
+      min:
+      {{- range $k, $v := $min }}
+        {{ $k }}: {{ $v | quote }}
+      {{- end }}
+      {{- end }}
+      {{- if $max }}
+      max:
+      {{- range $k, $v := $max }}
+        {{ $k }}: {{ $v | quote }}
+      {{- end }}
+      {{- end }}
+{{- end }}

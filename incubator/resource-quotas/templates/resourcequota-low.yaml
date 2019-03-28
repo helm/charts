@@ -1,0 +1,17 @@
+{{- if $low := index .Values "low" }}
+---
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: "{{ .Release.Namespace }}-low"
+spec:
+  hard:
+  {{- range $k, $v := $low}}
+    {{ $k }}: {{ $v | quote }}
+  {{- end }}
+  scopeSelector:
+    matchExpressions:
+      - operator : In
+        scopeName: PriorityClass
+        values: ["low"]
+{{- end }}

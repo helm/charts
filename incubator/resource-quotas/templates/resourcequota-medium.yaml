@@ -1,0 +1,17 @@
+{{- if $medium := index .Values "medium" }}
+---
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: "{{ .Release.Namespace }}-medium"
+spec:
+  hard:
+  {{- range $k, $v := $medium}}
+    {{ $k }}: {{ $v | quote }}
+  {{- end }}
+  scopeSelector:
+    matchExpressions:
+      - operator : In
+        scopeName: PriorityClass
+        values: ["medium"]
+{{- end }}

@@ -1,0 +1,12 @@
+{{- if $general := index .Values "general" }}
+---
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: "{{ .Release.Namespace }}-general"
+spec:
+  hard:
+  {{- range $k, $v := $general}}
+    {{ $k }}: {{ $v | quote }}
+  {{- end }}
+{{- end }}

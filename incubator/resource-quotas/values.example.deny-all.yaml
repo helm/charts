@@ -1,0 +1,62 @@
+limitrange-container:                 # ranges and quotas set by default for each CONTAINER that has not configured their own requests and limits
+  request:                            # default requests for one container
+    cpu: "0"
+    memory: "0"
+    ephemeral-storage: "0"
+  limit:                              # default limits for one container
+    cpu: "0"
+    memory: "0"
+    ephemeral-storage: "0"
+  min:                                # a container can't request less than the values
+    cpu: "0"
+    memory: "0"
+    ephemeral-storage: "0"
+  max:                                # a container can't request more than the values
+    cpu: "0"
+    memory: "0"
+    ephemeral-storage: "0"
+
+limitrange-pod:                       # PODs can't request resources beyond the limits
+  min:                                # a pod can't request less than the values
+    cpu: "0"
+    memory: "0"
+    ephemeral-storage: "0"
+  max:                                # a pod can't request more than the values
+    cpu: "0"
+    memory: "0"
+    ephemeral-storage: "0"
+
+limitrange-pvc:                       # one PersistentVolumeClaim can't request resources beyond the limits
+  min:                                # a PVC can't request less than the values
+    storage: "0"
+  max:                                # a PVC can't request more than the values
+    storage: "0"
+
+general:                              # default quotas for the entire namespace for all pods without priority classes
+  pods: "0"
+  requests.cpu: "0"
+  requests.memory: "0"
+  requests.ephemeral-storage: "0"
+  requests.storage: "0"
+  limits.cpu: "0"
+  limits.memory: "0"
+  limits.ephemeral-storage: "0"
+  count/persistentvolumeclaims: "0"
+  count/services: "0"
+  services.loadbalancers: "0"
+  services.nodeports: "0"
+  count/secrets: "0"
+  count/configmaps: "0"
+  count/replicationcontrollers: "0"
+  count/deployments.apps: "0"
+  count/replicasets.apps: "0"
+  count/statefulsets.apps: "0"
+  count/jobs.batch: "0"
+  count/cronjobs.batch: "0"
+  count/ingresses.extensions: "0"
+
+# To use the following settings for PriorityClasses make sure you have enabled ResourceQuotaScopeSelectors
+# https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/
+high: {}                                # total quotas for the entire namespace for all pods with PriorityClass: "high"
+medium: {}                              # total quotas for the entire namespace for all pods with PriorityClass: "medium"
+low: {}                                 # total quotas for the entire namespace for all pods with PriorityClass: "low"

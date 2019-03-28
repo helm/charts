@@ -1,0 +1,26 @@
+{{- if $limitrange := index .Values "limitrange-pod" -}}
+{{- $request := index $limitrange "request" -}}
+{{- $limit := index $limitrange "limit" }}
+{{- $min := index $limitrange "min" -}}
+{{- $max := index $limitrange "max" }}
+---
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: "{{ .Release.Namespace }}-pod"
+spec:
+  limits:
+    - type: Pod
+      {{- if $min }}
+      min:
+      {{- range $k, $v := $min }}
+        {{ $k }}: {{ $v | quote }}
+      {{- end }}
+      {{- end }}
+      {{- if $max }}
+      max:
+      {{- range $k, $v := $max }}
+        {{ $k }}: {{ $v | quote }}
+      {{- end }}
+      {{- end }}
+{{- end }}

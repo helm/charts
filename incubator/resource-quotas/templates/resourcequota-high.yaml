@@ -1,0 +1,17 @@
+{{- if $high := index .Values "high" }}
+---
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: "{{ .Release.Namespace }}-high"
+spec:
+  hard:
+  {{- range $k, $v := $high}}
+    {{ $k }}: {{ $v | quote }}
+  {{- end }}
+  scopeSelector:
+    matchExpressions:
+      - operator : In
+        scopeName: PriorityClass
+        values: ["high"]
+{{- end }}
