@@ -47,6 +47,9 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /data
+{{- if .Values.persistence.subPath }}
+              subPath: {{ .Values.persistence.subPath }}
+{{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
       volumes:
