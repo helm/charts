@@ -1,7 +1,7 @@
 # Default values for elasticsearch.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-appVersion: "6.6.1"
+appVersion: "6.7.0"
 
 ## Any additional labels to allow across the environment. Useful for billing, and
 ## resource tracking. Defaults to no additional labels
