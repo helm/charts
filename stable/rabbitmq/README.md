@@ -191,10 +191,17 @@ $ helm install --set persistence.existingClaim=PVC_NAME rabbitmq
 
 ## Upgrading
 
+### To 5.0.0
+
+This major release changes the clustering method from `ip` to `hostname`.
+This change is needed to fix the persistence. The data dir will now depend on the hostname which is stable instead of the pod IP that might change.
+
+> IMPORTANT: Note that if you upgrade from a previous version you will lose your data.
+
 ### To 3.0.0
 
 Backwards compatibility is not guaranteed unless you modify the labels used on the chart's deployments.
-Use the workaround below to upgrade from versions previous to 3.0.0. The following example assumes that the release name is opencart:
+Use the workaround below to upgrade from versions previous to 3.0.0. The following example assumes that the release name is rabbitmq:
 
 ```console
 $ kubectl delete statefulset rabbitmq --cascade=false
