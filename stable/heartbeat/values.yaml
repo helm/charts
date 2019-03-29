@@ -58,6 +58,15 @@ resources: {}
   #  cpu: 100m
   #  memory: 100Mi
 
+priorityClassName: ""
+
+nodeSelector: {}
+
+tolerations:
+- key: node-role.kubernetes.io/master
+  operator: Exists
+  effect: NoSchedule
+
 rbac:
   # Specifies whether RBAC resources should be created
   create: true
