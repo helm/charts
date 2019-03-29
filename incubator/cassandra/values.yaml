@@ -233,7 +233,7 @@ restore:
 
   # Additional arguments for cain
   # Ref: https://github.com/maorfr/cain#usage
-  extraArgs: []    
+  extraArgs: []
 
   # Name of the secret containing the credentials of the service account used by GOOGLE_APPLICATION_CREDENTIALS, as a credentials.json file
   # google:
@@ -245,13 +245,12 @@ restore:
       cpu: 1
     limits:
       memory: 1Gi
-      cpu: 1  
+      cpu: 1
 
 ## Configuration for restore
   config:
     keyspace: keyspace1
     parallel: "0"
-    tag: "4552cdbciuec5"  
+    tag: "4552cdbciuec5"
     schema: "46846cd"
     src: s3://cassandra-backup/cassandra/default/test-Cluster
-
