@@ -136,6 +136,16 @@ The following table lists the configurable parameters of the Cassandra chart and
 | `backup.resources`                   | Backup CPU/Memory resource requests/limits      | Memory: `1Gi`, CPU: `1`                                    |
 | `backup.destination`                 | Destination to store backup artifacts           | `s3://bucket/cassandra`                                    |
 | `backup.google.serviceAccountSecret` | Secret containing credentials if GCS is used as destination |                                                |
+| `restore.enabled`                     | Enable restore on chart installation             | `false`                                                    |
+| `restore.schedule`                    | Keyspaces to restore        |                                                            |
+| `restore.annotations`                 | restore pod annotations                          | iam.amazonaws.com/role: `cain`                             |
+| `restore.image.repository`            | restore image repository                         | `maorfr/cain`                                              |
+| `restore.image.tag`                   | restore image tag                                | `latest`                                                    |
+| `restore.extraArgs`                   | Additional arguments for cain                   | `[]`                                                       |
+| `restore.env`                         | restore environment variables                    | AWS_REGION: `us-east-1`                                    |
+| `restore.resources`                   | restore CPU/Memory resource requests/limits      | Memory: `1Gi`, CPU: `1`                                    |
+| `restore.destination`                 | Destination to store restore artifacts           | `s3://cassandra-backup/cassandra/default/test-Cluster`                                    |
+| `restore.google.serviceAccountSecret` | Secret containing credentials if GCS is used as destination |       
 | `exporter.enabled`                   | Enable Cassandra exporter                       | `false`                                                    |
 | `exporter.image.repo`                | Exporter image repository                       | `criteord/cassandra_exporter`                              |
 | `exporter.image.tag`                 | Exporter image tag                              | `2.0.2`                                                    |

@@ -211,3 +211,47 @@ exporter:
     tag: 2.0.2
   port: 5556
   jvmOpts: ""
+
+## Restore Configuration
+## https://github.com/maorfr/cain
+restore:
+  enabled: false
+
+  env:
+  # Example environment variable required for AWS credentials chain
+  - name: AWS_REGION
+    value: us-east-1
+
+  image:
+    repository: maorfr/cain
+    tag: latest
+
+  annotations:
+    # Example for authorization to AWS S3 using kube2iam
+    # Can also be done using environment variables
+    iam.amazonaws.com/role: cain
+
+  # Additional arguments for cain
+  # Ref: https://github.com/maorfr/cain#usage
+  extraArgs: []    
+
+  # Name of the secret containing the credentials of the service account used by GOOGLE_APPLICATION_CREDENTIALS, as a credentials.json file
+  # google:
+    # serviceAccountSecret:
+
+  resources:
+    requests:
+      memory: 1Gi
+      cpu: 1
+    limits:
+      memory: 1Gi
+      cpu: 1  
+
+## Configuration for restore
+  config:
+    keyspace: keyspace1
+    parallel: "0"
+    tag: "4552cdbciuec5"  
+    schema: "46846cd"
+    src: s3://cassandra-backup/cassandra/default/test-Cluster
+

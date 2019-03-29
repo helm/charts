@@ -1,0 +1,50 @@
+{{- if .Values.restore.enabled }}
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: {{ template "cassandra.fullname" $ }}-restore
+  labels:
+    app: {{ template "cassandra.name" $ }}-cain
+    chart: {{ template "cassandra.chart" $ }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"  
+spec:
+  restartPolicy: OnFailure
+  serviceAccountName: {{ template "cassandra.serviceAccountName" $ }}
+  containers:
+  - name: {{ template "cassandra.fullname" $ }}-restore
+    image: "{{ .Values.restore.image.repository }}:{{ .Values.restore.image.tag }}"
+    command: ["cain"]
+    args:
+    - restore
+    - --namespace
+    - {{ .Release.Namespace }}
+    - --selector
+    - release={{ .Release.Name }},app={{ template "cassandra.name" $ }}
+    - --keyspace
+    - {{ .Values.restore.config.keyspace }}
+    - --src
+    - {{ .Values.restore.config.src }}
+    - --parallel
+    - "{{ .Values.restore.config.parallel }}"
+    - --tag
+    - "{{ .Values.restore.config.tag }}"
+    - --schema
+    - "{{ .Values.restore.config.schema }}"
+    {{- with .Values.restore.extraArgs }}
+{{ toYaml . | indent 4 }}
+    {{- end }}    
+    env:
+    {{- with .Values.restore.env }}
+{{ toYaml . | indent 6 }}
+    {{- end }}
+    resources:
+    {{- with .Values.restore.resources }}
+{{ toYaml . | indent 6 }}
+    {{- end }}  
+  {{- with .Values.tolerations }}
+  tolerations:
+  {{ toYaml . | indent 4 }}
+  {{- end }}  
+  {{- end }}       
