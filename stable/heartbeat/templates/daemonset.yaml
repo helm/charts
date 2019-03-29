@@ -81,8 +81,10 @@ spec:
       priorityClassName: {{ .Values.priorityClassName }}
 {{- end }}
       terminationGracePeriodSeconds: 60
+{{- if .Values.hostNetwork }}
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
+{{- end }}
       serviceAccountName: {{ template "heartbeat.serviceAccountName" . }}
 {{- if .Values.tolerations }}
       tolerations:

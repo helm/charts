@@ -32,6 +32,8 @@ config:
 plugins: []
   # - kinesis.so
 
+hostNetwork: false
+
 # A map of additional environment variables
 extraVars: {}
   # test1: "test2"
