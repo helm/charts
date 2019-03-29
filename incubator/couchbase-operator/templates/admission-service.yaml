@@ -1,0 +1,14 @@
+{{- if and .Values.admissionService.create .Values.deployments.admissionController }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "admission-controller.service.name" . }}
+spec:
+  selector:
+    app: {{ template "admission-controller.name" . }}
+  ports:
+  - protocol: TCP
+    port: {{ .Values.admissionService.port }}
+    targetPort: {{ .Values.admissionService.targetPort }}
+{{- end }}

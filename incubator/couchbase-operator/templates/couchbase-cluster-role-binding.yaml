@@ -1,0 +1,20 @@
+{{- if and .Values.rbac.create  .Values.deployments.couchbaseOperator -}}
+---
+kind: {{ printf "%sBinding" (include "couchbase-operator.rbacRole" .) }}
+apiVersion: rbac.authorization.k8s.io/{{ required "A valid .Values.rbac.apiVersion entry required!" .Values.rbac.apiVersion }}
+metadata:
+  name: {{ template "couchbase-operator.fullname" . }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: {{ template "couchbase-operator.name" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+subjects:
+- kind: ServiceAccount
+  name: {{ template "couchbase-operator.serviceAccountName" . }}
+  namespace: {{ .Release.Namespace }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: {{ template "couchbase-operator.rbacRole" . }}
+  name: {{ template "couchbase-operator.fullname" . }}
+{{- end }}

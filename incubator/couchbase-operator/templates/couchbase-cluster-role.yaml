@@ -1,0 +1,70 @@
+{{- if and .Values.rbac.create .Values.rbac.clusterRoleAccess -}}
+---
+apiVersion: rbac.authorization.k8s.io/{{ .Values.rbac.apiVersion }}
+kind: ClusterRole
+metadata:
+  name: {{ template "couchbase-operator.fullname" . }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: {{ template "couchbase-operator.name" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+rules:
+- apiGroups:
+  - couchbase.com
+  resources:
+  - couchbaseclusters
+  verbs:
+  - get
+  - list
+  - watch
+  - update
+- apiGroups:
+  - apiextensions.k8s.io
+  resources:
+  - customresourcedefinitions
+  verbs:
+  - get
+  - create
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  - services
+  - endpoints
+  - persistentvolumeclaims
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+  - update
+  - delete
+- apiGroups:
+  - ""
+  resources:
+  - pods/exec
+  verbs:
+  - create
+- apiGroups:
+  - ""
+  resources:
+  - events
+  verbs:
+  - create
+  - patch
+- apiGroups:
+  - ""
+  resources:
+  - secrets
+  verbs:
+  - get
+- apiGroups:
+  - policy
+  resources:
+  - poddisruptionbudgets
+  verbs:
+  - get
+  - create
+  - delete
+{{- end }}

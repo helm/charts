@@ -1,0 +1,31 @@
+{{- if and .Values.rbac.create .Values.deployments.admissionController -}}
+---
+apiVersion: rbac.authorization.k8s.io/{{ .Values.rbac.apiVersion }}
+kind: ClusterRole
+metadata:
+  name: {{ template "admission-controller.fullname" . }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: {{ template "admission-controller.name" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+rules:
+- apiGroups:
+  - couchbase.com
+  resources:
+  - couchbaseclusters
+  verbs:
+  - get
+- apiGroups:
+  - ""
+  resources:
+  - secrets
+  verbs:
+  - get
+- apiGroups:
+  - storage.k8s.io
+  resources:
+  - storageclasses
+  verbs:
+  - get
+{{- end }}

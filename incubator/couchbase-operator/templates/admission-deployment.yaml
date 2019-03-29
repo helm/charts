@@ -1,0 +1,112 @@
+{{- if .Values.deployments.admissionController }}
+{{ $tls := fromYaml ( include "admission-controller.gen-certs" . ) }}
+{{- if .Values.admissionSecret.create }}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ template "admission-controller.secret.name" . }}
+type: Opaque
+data:
+  tls-cert-file: {{ $tls.clientCert }}
+  tls-private-key-file: {{ $tls.clientKey }}
+{{- end }}
+---
+apiVersion: admissionregistration.k8s.io/v1beta1
+kind: ValidatingWebhookConfiguration
+metadata:
+  name: {{ template "admission-controller.fullname" . }}
+webhooks:
+- name: {{ include "admission-controller.service.fullname" . }}
+  rules:
+  - apiGroups:
+    - couchbase.com
+    apiVersions:
+    - v1
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - couchbaseclusters
+  clientConfig:
+    service:
+      namespace: {{ .Release.Namespace }}
+      name: {{ template "admission-controller.service.name" . }}
+      path: "/couchbaseclusters/validate"
+    caBundle: {{ $tls.caCert }}
+---
+apiVersion: admissionregistration.k8s.io/v1beta1
+kind: MutatingWebhookConfiguration
+metadata:
+  name: {{ template "admission-controller.fullname" . }}
+webhooks:
+- name: {{ include "admission-controller.service.fullname" . }}
+  rules:
+  - apiGroups:
+    - couchbase.com
+    apiVersions:
+    - v1
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - couchbaseclusters
+  clientConfig:
+    service:
+      namespace: {{ .Release.Namespace }}
+      name: {{ template "admission-controller.service.name" . }}
+      path: "/couchbaseclusters/mutate"
+    caBundle: {{ $tls.caCert }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "admission-controller.fullname" . }}
+  labels:
+    app: {{ template "admission-controller.name" . }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ template "admission-controller.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "admission-controller.name" . }}
+      annotations:
+        checksum/config: {{ printf "%s%s" $tls.clientCert $tls.clientKey | sha256sum }}
+    spec:
+      imagePullSecrets:
+  {{- range .Values.admissionController.imagePullSecrets }}
+      - name: "{{ . }}"
+  {{- end }}
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.admissionController.image.repository }}:{{ .Values.admissionController.image.tag }}"
+        imagePullPolicy: {{ .Values.admissionController.imagePullPolicy }}
+
+        command:
+        - couchbase-operator-admission
+        args:
+          - "--logtostderr"
+          - "--stderrthreshold"
+          - "0"
+          - "-v"
+          - {{if .Values.admissionController.verboseLogging }} "1" {{else}} "0" {{end}}
+          - "--tls-cert-file"
+          - "/var/run/secrets/couchbase.com/couchbase-operator-admission/tls-cert-file"
+          - "--tls-private-key-file"
+          - "/var/run/secrets/couchbase.com/couchbase-operator-admission/tls-private-key-file"
+        ports:
+        - name: https
+          containerPort: {{ .Values.admissionService.port }}
+        volumeMounts:
+        - name: couchbase-operator-admission
+          mountPath: "/var/run/secrets/couchbase.com/couchbase-operator-admission"
+          readOnly: true
+      volumes:
+      - name: couchbase-operator-admission
+        secret:
+          secretName: {{ template "admission-controller.secret.name" . }}
+      serviceAccountName:  {{ template "admission-controller.serviceAccountName" . }}
+{{- end }}
