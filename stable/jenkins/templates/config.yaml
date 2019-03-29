@@ -171,7 +171,27 @@ data:
       </crumbIssuer>
 {{- end }}
       <nodeProperties/>
+{{- if .Values.ImagePullSecrets }}
+      <globalNodeProperties>
+        <hudson.slaves.EnvironmentVariablesNodeProperty>
+          <envVars serialization="custom">
+            <unserializable-parents/>
+            <tree-map>
+              <default>
+                <comparator class="hudson.util.CaseInsensitiveComparator"/>
+              </default>
+              <int>{{ len .Values.ImagePullSecrets }}</int>
+{{- range $index, $ips := .Values.ImagePullSecrets }}
+              <string>{{ $ips.envName }}</string>
+              <string>{{ $ips.secretName }}</string>
+{{- end }}
+            </tree-map>
+          </envVars>
+        </hudson.slaves.EnvironmentVariablesNodeProperty>
+      </globalNodeProperties>
+{{- else }}
       <globalNodeProperties/>
+{{- end }}
       <noUsageStatistics>true</noUsageStatistics>
     </hudson>
 {{- if .Values.Master.ScriptApproval }}
