@@ -1,14 +1,16 @@
+{{- if .Values.user_seeds }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "mtls.fullname" . }}-seeds
+  name: {{ include "mtls.fullname" . }}-user-seeds
   labels:
     app.kubernetes.io/name: {{ include "mtls.name" . }}
     helm.sh/chart: {{ include "mtls.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 data:
-{{- range $key, $value := .Values.seeds }}
+{{- range $key, $value := .Values.user_seeds }}
   {{ $key }}: |-
-{{ $value | indent 4 }}
+{{ $value | indent 6 }}
+{{- end }}
 {{- end }}

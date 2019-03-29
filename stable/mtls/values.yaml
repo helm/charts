@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: drgrove/mtls-server
-  tag: v0.11.0
+  tag: v0.12.0
   pullPolicy: IfNotPresent
 
 nameOverride: ""
@@ -57,7 +57,8 @@ configMaps:
     ; Minimum lifetime in seconds
     min_lifetime=60
     ; Maximum lifetime in seconds, if 0 it is disabled
-    max_lifetime=0
+    ; default max_lifetime is 2 days
+    max_lifetime=82800
 
     [ca]
     key=secrets/certs/authority/RootCA.key
@@ -76,15 +77,15 @@ configMaps:
     [storage.sqlite3]
     db_path=database/mtls-server.db
 
-seeds: {}
-# If you want to seed the PGP Trust Store, you can do so by adding ASCII
-# armored PGP keys. Using <fingerprint>.asc as the key and the ASCII armored
-# key as the value
-#   FINGERPRINT.asc: |
-#     ----- BEGIN PGP PUBLIC KEY BLOCK-----
-#
-#     ...
-#     ----- END PGP PUBLIC KEY BLOCK-----
+user_seeds: {}
+admin_seeds: {}
+  # If you want to seed the PGP Trust Store, you can do so by adding ASCII
+  # armored PGP keys. Using <fingerprint>.asc as the key and the ASCII armored
+  # key as the value
+  # FINGERPRINT.asc: |
+  #   ----- BEGIN PGP PUBLIC KEY BLOCK-----
+  #   ...
+  #   ----- END PGP PUBLIC KEY BLOCK-----
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious

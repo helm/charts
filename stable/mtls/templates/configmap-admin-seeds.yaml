@@ -1,0 +1,16 @@
+{{- if .Values.admin_seeds }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "mtls.fullname" . }}-admin-seeds
+  labels:
+    app.kubernetes.io/name: {{ include "mtls.name" . }}
+    helm.sh/chart: {{ include "mtls.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+data:
+{{- range $key, $value := .Values.admin_seeds }}
+  {{ $key }}: |-
+{{ $value | indent 6 }}
+{{- end }}
+{{- end }}

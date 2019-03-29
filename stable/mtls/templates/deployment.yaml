@@ -19,6 +19,9 @@ spec:
         app.kubernetes.io/name: {{ include "mtls.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
+      securityContext:
+        runAsUser: 1000
+        fsGroup: 1000
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -31,13 +34,17 @@ spec:
             - name: config
               mountPath: /home/mtls/config.ini
               subPath: config.ini
-            {{- if .Values.seeds }}
-            - name: seeds
-              mountPath: /tmp/seeds
-            {{- end }}
             - name: ca-creds
               mountPath: /home/mtls/secrets/certs/authority
               readOnly: false
+            {{- if .Values.user_seeds }}
+            - name: user-seeds
+              mountPath: /tmp/seeds/user
+            {{- end }}
+            {{- if .Values.admin_seeds }}
+            - name: admin-seeds
+              mountPath: /tmp/seeds/admin
+            {{- end }}
             {{- if .Values.persistence.enabled }}
             - name: sqlite3
               mountPath: /home/mtls/database
@@ -69,10 +76,15 @@ spec:
                 path: RootCA.key
               - key: ca.crt
                 path: RootCA.pem
-        {{- if .Values.seeds }}
-        - name: seeds
+        {{- if .Values.user_seeds }}
+        - name: user-seeds
           configMap:
-            name: {{ include "mtls.fullname" . }}-seeds
+            name: {{ include "mtls.fullname" . }}-user-seeds
+        {{- end }}
+        {{- if .Values.admin_seeds }}
+        - name: admin-seeds
+          configMap:
+            name: {{ include "mtls.fullname" . }}-admin-seeds
         {{- end }}
         {{- if .Values.persistence.enabled }}
         - name: sqlite3
