@@ -59,6 +59,11 @@ rabbitmq:
   ##
   # rabbitmqClusterNodeName:
 
+  ## Value for the RABBITMQ_LOGS environment variable
+  ## ref: https://www.rabbitmq.com/logging.html#log-file-location
+  ##
+  logs: '-'
+
   ## RabbitMQ Max File Descriptors
   ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
   ## ref: https://www.rabbitmq.com/install-debian.html#kernel-resource-limits
