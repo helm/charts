@@ -10,7 +10,7 @@ By default this chart only ships a single output to a file on the local system. 
 
 ## Prerequisites
 
--   Kubernetes 1.9+
+- Kubernetes 1.9+
 
 ## Installing the Chart
 
@@ -53,6 +53,9 @@ The following table lists the configurable parameters of the heartbeat chart and
 | `resources.limits.cpu`              | CPU resource limits                                                                                                                                                                                   |                                     |
 | `resources.requests.memory`         | Memory resource requests                                                                                                                                                                              |                                     |
 | `resources.limits.memory`           | Memory resource limits                                                                                                                                                                                |                                     |
+| `priorityClassName`                 | Priority class name                                                                                                                                                                                   |                                     |
+| `nodeSelector`                      | Node Selector                                                                                                                                                                                         |                                     |
+| `tolerations`                       | Pod's tolerations                                                                                                                                                                                     |                                     |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
