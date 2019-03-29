@@ -43,7 +43,7 @@ The following table lists the configurable parameters of the bitcoind chart and 
 Parameter                  | Description                        | Default
 -----------------------    | ---------------------------------- | ----------------------------------------------------------
 `image.repository`         | Image source repository name       | `arilot/docker-bitcoind`
-`image.tag`                | `bitcoind` release tag.            | `0.15.1`
+`image.tag`                | `bitcoind` release tag.            | `0.17.1`
 `image.pullPolicy`         | Image pull policy                  | `IfNotPresent`
 `service.rpcPort`          | RPC port                           | `8332`
 `service.p2pPort`          | P2P port                           | `8333`
