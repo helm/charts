@@ -42,9 +42,9 @@ spec:
       labels:
         app: {{ template "minio.name" . }}
         release: {{ .Release.Name }}
-      {{- if .Values.podAnnotations }}
+      {{- with .Values.podAnnotations }}
       annotations:
-{{ toYaml .Values.podAnnotations | indent 8 }}
+{{ toYaml . | indent 8 }}
       {{- end }}
     spec:
       {{- if .Values.priorityClassName }}
