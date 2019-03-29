@@ -1,0 +1,53 @@
+{{- if .Values.contracts.enabled }}
+{{- $refDir := printf "/ref" }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ template "burrow.fullname" $ }}-contracts
+  namespace: {{ $.Release.Namespace | quote }}
+  labels:
+    app: {{ template "burrow.name" $ }}
+    chart: {{ template "burrow.chart" $ }}
+    heritage: {{ $.Release.Service }}
+    release: {{ $.Release.Name }}
+  annotations:
+    "helm.sh/hook": "post-install"
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  template:
+    spec:
+      # we always want burrow & solc installed
+      initContainers:
+      - name: burrow
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        command: ['sh', '-c', 'cp /usr/local/bin/* /tmp']
+        volumeMounts:
+        - name: bin
+          mountPath: /tmp
+      containers:
+      - name: contracts-deploy
+        image: "{{ .Values.contracts.image }}:{{ $.Values.contracts.tag }}"
+        imagePullPolicy: Always
+        volumeMounts:
+        - name: bin
+          mountPath: /usr/local/bin/
+        - mountPath: {{ $refDir }}
+          name: ref-dir
+        env:
+        - name: CHAIN_URL_GRPC
+          value: {{ template "burrow.fullname" $ }}-grpc:{{ .Values.rpcGRPC.service.port }}
+{{- include "settings" . | indent 8 }}
+        command: ["/bin/sh", "-c", "{{ .Values.contracts.deploy }}"]
+      restartPolicy: Never
+      volumes:
+      - name: bin
+        emptyDir: {}
+      - name: ref-dir
+        projected:
+          sources:
+            - configMap:
+                name: {{ template "burrow.fullname" $ }}-config
+            - configMap:
+                name: {{ template "burrow.fullname" $ }}-genesis
+  backoffLimit: 0
+{{- end }}
