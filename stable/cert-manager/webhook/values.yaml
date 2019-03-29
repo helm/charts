@@ -35,3 +35,8 @@ caSyncImage:
   repository: quay.io/munnerz/apiextensions-ca-helper
   tag: v0.1.0
   pullPolicy: IfNotPresent
+
+
+# Give the opportunity to set a security Context
+# ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+securityContext: {}
