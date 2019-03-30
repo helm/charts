@@ -103,8 +103,8 @@ spec:
             - "-c"
           {{- if and ( .Values.dags.initContainer.enabled ) ( .Values.dags.initContainer.installRequirements ) }}
             - >
-              echo 'waiting 60s...' &&
-              sleep 60 &&
+              echo 'waiting {{ .Values.web.initialStartupDelay }}s...' &&
+              sleep {{ .Values.web.initialStartupDelay }} &&
               echo 'installing requirements...' &&
               mkdir -p /usr/local/airflow/.local/bin &&
               export PATH=/usr/local/airflow/.local/bin:$PATH &&
@@ -113,8 +113,8 @@ spec:
               airflow webserver
           {{- else }}
             - >
-              echo 'waiting 60s...' &&
-              sleep 60 &&
+              echo 'waiting {{ .Values.web.initialStartupDelay }}s...' &&
+              sleep {{ .Values.web.initialStartupDelay }} &&
               mkdir -p /usr/local/airflow/.local/bin &&
               export PATH=/usr/local/airflow/.local/bin:$PATH &&
               echo 'executing webserver...' &&
@@ -125,7 +125,7 @@ spec:
               path: "{{ .Values.ingress.web.path }}/health"
               port: web
             ## Keep 6 minutes the delay to allow clean wait of postgres and redis containers
-            initialDelaySeconds: 360
+            initialDelaySeconds: {{ .Values.web.initialDelaySeconds }}
             periodSeconds: 60
             timeoutSeconds: 1
             successThreshold: 1
