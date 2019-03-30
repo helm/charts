@@ -188,6 +188,8 @@ web:
     # requests:
     #   cpu: "100m"
     #   memory: "512Mi"
+  initialStartupDelay: "60"
+  initialDelaySeconds: "360"
 ##
 ## Workers configuration
 workers:
