@@ -13,13 +13,13 @@ spec:
     type: {{ .Values.strategyType }}
   selector:
     matchLabels:
-      app: {{ template "home-assistant.name" . }}
-      release: {{ .Release.Name }}
+      app.kubernetes.io/name: {{ include "home-assistant.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ template "home-assistant.name" . }}
-        release: {{ .Release.Name }}
+        app.kubernetes.io/name: {{ include "home-assistant.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
       {{- with .Values.image.pullSecrets }}
       imagePullSecrets:
