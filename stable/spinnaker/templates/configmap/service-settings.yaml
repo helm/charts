@@ -31,3 +31,9 @@ data:
       useExecHealthCheck: false
       serviceType: NodePort
     {{- end }}
+  clouddriver.yml: |-
+    {{- if .Values.clouddriver.annotations }}
+    kubernetes:
+      podAnnotations:
+    {{ toYaml .Values.clouddriver.annotations | indent 4 }}
+    {{- end }}

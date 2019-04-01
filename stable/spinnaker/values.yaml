@@ -197,3 +197,8 @@ serviceAccount:
   # If left blank it is auto-generated from the fullname of the release
   halyardName:
   spinnakerName:
+
+clouddriver:
+  annotations:
+    # Uncomment if you want to add annotations on clouddriver pod
+    # iam.amazonaws.com/role: <role_arn>
