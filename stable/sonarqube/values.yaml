@@ -176,3 +176,8 @@ mysql:
   # Specify the TCP port that mySQL should use
   service:
     port: 3306
+#
+# Additional labels to add to the pods:
+# podLabels:
+#   key: value
+podLabels: {}
