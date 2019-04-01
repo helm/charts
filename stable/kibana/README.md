@@ -44,6 +44,7 @@ The following table lists the configurable parameters of the kibana chart and th
 | `env`                                      | Environment variables to configure Kibana                              | `{}`                                  |
 | `files`                                    | Kibana configuration files                                             | None                                  |
 | `livenessProbe.enabled`                    | livenessProbe to be enabled?                                           | `false`                               |
+| `livenessProbe.path`                       | path for livenessProbe                                                 | `/status`                             |
 | `livenessProbe.initialDelaySeconds`        | number of seconds                                                      | 30                                    |
 | `livenessProbe.timeoutSeconds`             | number of seconds                                                      | 10                                    |
 | `image.pullPolicy`                         | Image pull policy                                                      | `IfNotPresent`                        |
@@ -99,6 +100,7 @@ The following table lists the configurable parameters of the kibana chart and th
 | `persistentVolumeClaim.size`               | Size of the PVC                                                        | `5Gi`                                 |
 | `persistentVolumeClaim.storageClass`       | Storage class of the PVC                                               | None:                                 |
 | `readinessProbe.enabled`                   | readinessProbe to be enabled?                                          | `false`                               |
+| `readinessProbe.path`                      | path for readinessProbe                                                | `/status`                             |
 | `readinessProbe.initialDelaySeconds`       | number of seconds                                                      | 30                                    |
 | `readinessProbe.timeoutSeconds`            | number of seconds                                                      | 10                                    |
 | `readinessProbe.periodSeconds`             | number of seconds                                                      | 10                                    |

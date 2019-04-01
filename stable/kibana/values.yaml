@@ -82,11 +82,13 @@ serviceAccount:
 
 livenessProbe:
   enabled: false
+  path: /status
   initialDelaySeconds: 30
   timeoutSeconds: 10
 
 readinessProbe:
   enabled: false
+  path: /status
   initialDelaySeconds: 30
   timeoutSeconds: 10
   periodSeconds: 10
