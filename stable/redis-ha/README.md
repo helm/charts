@@ -9,12 +9,12 @@ $ helm install stable/redis-ha
 ```
 
 By default this chart install 3 pods total:
- * one pod containing a redis master and sentinel containers
- * two pods each containing redis slave and sentinel containers.
+ * one pod containing a redis master and sentinel container (optional prometheus metrics exporter sidecar available)
+ * two pods each containing a redis slave and sentinel containers (optional prometheus metrics exporter sidecars available)
 
 ## Introduction
 
-This chart bootstraps a [Redis](https://redis.io) highly available master/slave statefulset in a [Kubernetes](http://kubernetes.io) cluster using the Helm package manager. 
+This chart bootstraps a [Redis](https://redis.io) highly available master/slave statefulset in a [Kubernetes](http://kubernetes.io) cluster using the Helm package manager.
 
 ## Prerequisites
 
@@ -51,34 +51,45 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following table lists the configurable parameters of the Redis chart and their default values.
 
-| Parameter                        | Description                                                                                                                  | Default                                                   |
-| -------------------------------- | -----------------------------------------------------                                                                        | --------------------------------------------------------- |
-| `image`                          | Redis image                                                                                                                  | `redis`                                                   |
-| `tag`                            | Redis tag                                                                                                                    | `4.0.11-stretch`                                          |
-| `replicas`                       | Number of redis master/slave pods                                                                                            | `3`                                                       |
-| `redis.port`                     | Port to access the redis service                                                                                             | `6379`                                                    |
-| `redis.masterGroupName`          | Redis convention for naming the cluster group                                                                                | `mymaster`                                                |
-| `redis.config`                   | Any valid redis config options in this section will be applied to each server (see below)                                    | see values.yaml                                           |
-| `redis.customConfig`             | Allows for custom redis.conf files to be applied. If this is used then `redis.config` is ignored                             | ``                                                        |
-| `redis.resources`                | CPU/Memory for master/slave nodes resource requests/limits                                                                   | `{}`                                                      |
-| `sentinel.port`                  | Port to access the sentinel service                                                                                          | `26379`                                                   |
-| `sentinel.quorum`                | Minimum number of servers necessary to maintain quorum                                                                       | `2`                                                       |
-| `sentinel.config`                | Valid sentinel config options in this section will be applied as config options to each sentinel (see below)                 | see values.yaml                                           |
-| `sentinel.customConfig`          | Allows for custom sentinel.conf files to be applied. If this is used then `sentinel.config` is ignored                       | ``                                                        |
-| `sentinel.resources`             | CPU/Memory for sentinel node resource requests/limits                                                                        | `{}`                                                      |
-| `auth`                           | Enables or disables redis AUTH (Requires `redisPassword` to be set)                                                          | `false`                                                   |
-| `redisPassword`                  | A password that configures a `requirepass` and `masterauth` in the conf parameters (Requires `auth: enabled`)                | ``                                                        |
-| `nodeSelector`                   | Node labels for pod assignment                                                                                               | `{}`                                                      |
-| `tolerations`                    | Toleration labels for pod assignment                                                                                         | `[]`                                                      |
-| `podAntiAffinity.server`         | Antiaffinity for pod assignment of servers, `hard` or `soft`                                                                 | `Hard node and soft zone anti-affinity`                   |
-
+| Parameter                | Description                                                                                                                                                                                              | Default                                                                                    |
+|:-------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:-------------------------------------------------------------------------------------------|
+| `image`                  | Redis image                                                                                                                                                                                              | `redis`                                                                                    |
+| `tag`                    | Redis tag                                                                                                                                                                                                | `5.0.3-alpine`                                                                             |
+| `replicas`               | Number of redis master/slave pods                                                                                                                                                                        | `3`                                                                                        |
+| `serviceAccount.create`  | Specifies whether a ServiceAccount should be created                                                                                                                                                     | `true`                                                                                     |
+| `serviceAccount.name`    | The name of the ServiceAccount to create                                                                                                                                                                 | Generated using the redis-ha.fullname template                                             |
+| `rbac.create`            | Create and use RBAC resources                                                                                                                                                                            | `true`                                                                                     |
+| `redis.port`             | Port to access the redis service                                                                                                                                                                         | `6379`                                                                                     |
+| `redis.masterGroupName`  | Redis convention for naming the cluster group                                                                                                                                                            | `mymaster`                                                                                 |
+| `redis.config`           | Any valid redis config options in this section will be applied to each server (see below)                                                                                                                | see values.yaml                                                                            |
+| `redis.customConfig`     | Allows for custom redis.conf files to be applied. If this is used then `redis.config` is ignored                                                                                                         | ``                                                                                         |
+| `redis.resources`        | CPU/Memory for master/slave nodes resource requests/limits                                                                                                                                               | `{}`                                                                                       |
+| `sentinel.port`          | Port to access the sentinel service                                                                                                                                                                      | `26379`                                                                                    |
+| `sentinel.quorum`        | Minimum number of servers necessary to maintain quorum                                                                                                                                                   | `2`                                                                                        |
+| `sentinel.config`        | Valid sentinel config options in this section will be applied as config options to each sentinel (see below)                                                                                             | see values.yaml                                                                            |
+| `sentinel.customConfig`  | Allows for custom sentinel.conf files to be applied. If this is used then `sentinel.config` is ignored                                                                                                   | ``                                                                                         |
+| `sentinel.resources`     | CPU/Memory for sentinel node resource requests/limits                                                                                                                                                    | `{}`                                                                                       |
+| `init.resources`         | CPU/Memory for init Container node resource requests/limits                                                                                                                                              | `{}`                                                                                       |
+| `auth`                   | Enables or disables redis AUTH (Requires `redisPassword` to be set)                                                                                                                                      | `false`                                                                                    |
+| `redisPassword`          | A password that configures a `requirepass` and `masterauth` in the conf parameters (Requires `auth: enabled`)                                                                                            | ``                                                                                         |
+| `existingSecret`         | An existing secret containing an `auth` key that configures `requirepass` and `masterauth` in the conf parameters (Requires `auth: enabled`, cannot be used in conjunction with `.Values.redisPassword`) | ``                                                                                         |
+| `nodeSelector`           | Node labels for pod assignment                                                                                                                                                                           | `{}`                                                                                       |
+| `tolerations`            | Toleration labels for pod assignment                                                                                                                                                                     | `[]`                                                                                       |
+| `podAntiAffinity.server` | Antiaffinity for pod assignment of servers, `hard` or `soft`                                                                                                                                             | `Hard node and soft zone anti-affinity`                                                    |
+| `exporter.enabled`       | If `true`, the prometheus exporter sidecar is enabled                                                                                                                                                    | `false`                                                                                    |
+| `exporter.image`         | Exporter image                                                                                                                                                                                           | `oliver006/redis_exporter`                                                                 |
+| `exporter.tag`           | Exporter tag                                                                                                                                                                                             | `v0.31.0`                                                                                  |
+| `exporter.annotations`   | Prometheus scrape annotations                                                                                                                                                                            | `{prometheus.io/path: /metrics, prometheus.io/port: "9121", prometheus.io/scrape: "true"}` |
+| `exporter.extraArgs`     | Additional args for the exporter                                                                                                                                                                         | `{}`                                                                                       |
+| `hostPath.path`          | Use this path on the host for data storage                                                                                                                                                               | not set                                                                                    |
+| `hostPath.chown`         | Run an init-container as root to set ownership on the hostPath                                                                                                                                           | true                                                                                       |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```bash
 $ helm install \
   --set image=redis \
-  --set tag=4.0.11-stretch \
+  --set tag=5.0.3-alpine \
     stable/redis-ha
 ```
 
@@ -112,4 +123,3 @@ Sentinel options supported must be in the the `sentinel <option> <master-group-n
 ```
 
 If more control is needed from either the redis or sentinel config then an entire config can be defined under `redis.customConfig` or `sentinel.customConfig`. Please note that these values will override any configuration options under their respective section. For example, if you define `sentinel.customConfig` then the `sentinel.config` is ignored.
-

@@ -1,5 +1,5 @@
 {{- if .Values.kubeStateMetrics.enabled }}
-apiVersion: monitoring.coreos.com/v1
+apiVersion: {{ printf "%s/v1" (.Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com") }}
 kind: ServiceMonitor
 metadata:
   name: {{ template "prometheus-operator.fullname" . }}-kube-state-metrics
@@ -9,8 +9,10 @@ metadata:
 spec:
   jobLabel: app
   endpoints:
-  - interval: 30s
-    port: http
+  - port: http
+    {{- if .Values.kubeStateMetrics.serviceMonitor.interval }}
+    interval: {{ .Values.kubeStateMetrics.serviceMonitor.interval }}
+    {{- end }}
     honorLabels: true
   selector:
     matchLabels:

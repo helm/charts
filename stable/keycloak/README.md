@@ -46,7 +46,7 @@ Parameter | Description | Default
 `clusterDomain` | The internal Kubernetes cluster domain | `cluster.local`
 `keycloak.replicas` | The number of Keycloak replicas | `1`
 `keycloak.image.repository` | The Keycloak image repository | `jboss/keycloak`
-`keycloak.image.tag` | The Keycloak image tag | `4.5.0.Final`
+`keycloak.image.tag` | The Keycloak image tag | `5.0.0`
 `keycloak.image.pullPolicy` | The Keycloak image pull policy | `IfNotPresent`
 `keycloak.image.pullSecrets` | Image pull secrets | `[]`
 `keycloak.basepath` | Path keycloak is hosted at | `auth`
@@ -57,12 +57,16 @@ Parameter | Description | Default
 `keycloak.extraEnv` | Allows the specification of additional environment variables for Keycloak. Passed through the `tpl` function and thus to be configured a string | `""`
 `keycloak.extraVolumeMounts` | Add additional volumes mounts, e. g. for custom themes. Passed through the `tpl` function and thus to be configured a string | `""`
 `keycloak.extraVolumes` | Add additional volumes, e. g. for custom themes. Passed through the `tpl` function and thus to be configured a string | `""`
+`keycloak.extraPorts` | Add additional ports, e. g. for custom admin console port. Passed through the `tpl` function and thus to be configured a string | `""`
 `keycloak.podDisruptionBudget` | Pod disruption budget | `{}`
+`keycloak.priorityClassName` | Pod priority classname | `{}`
 `keycloak.resources` | Pod resource requests and limits | `{}`
 `keycloak.affinity` | Pod affinity. Passed through the `tpl` function and thus to be configured a string | `Hard node and soft zone anti-affinity`
 `keycloak.nodeSelector` | Node labels for pod assignment | `{}`
 `keycloak.tolerations` | Node taints to tolerate | `[]`
+`keycloak.podLabels` | Extra labels to add to pod | `{}`
 `keycloak.podAnnotations` | Extra annotations to add to pod | `{}`
+`keycloak.hostAliases` | Mapping between IP and hostnames that will be injected as entries in the pod's hosts files | `[]`
 `keycloak.securityContext` | Security context for the pod | `{runAsUser: 1000, fsGroup: 1000, runAsNonRoot: true}`
 `keycloak.preStartScript` | Custom script to run before Keycloak starts up | ``
 `keycloak.extraArgs` | Additional arguments to the start command | ``
@@ -97,9 +101,11 @@ Parameter | Description | Default
 `postgresql.postgresUser` | The PostgreSQL user (if `keycloak.persistence.deployPostgres=true`) | `keycloak`
 `postgresql.postgresPassword` | The PostgreSQL password (if `keycloak.persistence.deployPostgres=true`) | `""`
 `postgresql.postgresDatabase` | The PostgreSQL database (if `keycloak.persistence.deployPostgres=true`) | `keycloak`
+`test.enabled` | If `true`, test pods get scheduled | `true`
 `test.image.repository` | Test image repository | `unguiculus/docker-python3-phantomjs-selenium`
 `test.image.tag` | Test image tag | `v1`
 `test.image.pullPolicy` | Test image pull policy | `IfNotPresent`
+`test.securityContext` | Security context for the test pod | `{runAsUser: 1000, fsGroup: 1000, runAsNonRoot: true}`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
@@ -172,8 +178,14 @@ keycloak:
       value: DEBUG
     - name: WILDFLY_LOGLEVEL
       value: DEBUG
-    - name: CACHE_OWNERS:
+    - name: CACHE_OWNERS
       value: "3"
+    - name: DB_QUERY_TIMEOUT
+      value: "60"
+    - name: DB_VALIDATE_ON_MATCH
+      value: true
+    - name: DB_USE_CAST_FAIL
+      value: false
 ```
 
 ### Providing a Custom Theme

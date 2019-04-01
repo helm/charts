@@ -49,7 +49,10 @@ The following table lists the configurable parameters of the mongodb chart and t
 | `image.tag`                         | MongoDB image tag                                                         | `3.6`                                               |
 | `image.pullPolicy`                  | MongoDB image pull policy                                                 | `IfNotPresent`                                      |
 | `podAnnotations`                    | Annotations to be added to MongoDB pods                                   | `{}`                                                |
-| `securityContext`                   | Security context for the pod                                              | `{runAsUser: 999, fsGroup: 999, runAsNonRoot: true}`|
+| `securityContext.enabled`           | Enable security context                                                   | `true`                                              |
+| `securityContext.fsGroup`           | Group ID for the container                                                | `999`                                               |
+| `securityContext.runAsUser`         | User ID for the container                                                 | `999`                                               |
+| `securityContext.runAsNonRoot`      |                                                                           | `true`                                              |
 | `resources`                         | Pod resource requests and limits                                          | `{}`                                                |
 | `persistentVolume.enabled`          | If `true`, persistent volume claims are created                           | `true`                                              |
 | `persistentVolume.storageClass`     | Persistent volume storage class                                           | ``                                                  |
@@ -86,6 +89,7 @@ The following table lists the configurable parameters of the mongodb chart and t
 | `nodeSelector`                      | Node labels for pod assignment                                            | `{}`                                                |
 | `affinity`                          | Node/pod affinities                                                       | `{}`                                                |
 | `tolerations`                       | List of node taints to tolerate                                           | `[]`                                                |
+| `priorityClassName`                 | Pod priority class name                                                   | ``                                                  |
 | `livenessProbe.failureThreshold`    | Liveness probe failure threshold                                          | `3`                                                 |
 | `livenessProbe.initialDelaySeconds` | Liveness probe initial delay seconds                                      | `30`                                                |
 | `livenessProbe.periodSeconds`       | Liveness probe period seconds                                             | `10`                                                |

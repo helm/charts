@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "spinnaker.fullname" . }}-service-settings
+  labels:
+{{ include "spinnaker.standard-labels" . | indent 4 }}
+data:
+  redis.yml: |-
+
+    {{- if .Values.redis.enabled }}
+    overrideBaseUrl: redis://:{{ .Values.redis.password }}@{{ .Release.Name }}-redis-master:6379
+    {{- else }}
+    {{ if .Values.redis.external.password }}
+    overrideBaseUrl: redis://:{{ .Values.redis.external.password }}@{{ .Values.redis.external.host }}:{{ .Values.redis.external.port }}
+    {{- else }}
+    overrideBaseUrl: redis://{{ .Values.redis.external.host }}:{{ .Values.redis.external.port }}
+    {{- end }}
+    {{- end }}
+    skipLifeCycleManagement: true
+  gate.yml: |-
+    kubernetes:
+    {{- if .Values.ingress.enabled }}
+      useExecHealthCheck: false
+      serviceType: NodePort
+    {{- end }}
+  deck.yml: |-
+    env:
+      API_HOST: http://spin-gate.{{ .Release.Namespace }}:8084
+    kubernetes:
+    {{- if .Values.ingress.enabled }}
+      useExecHealthCheck: false
+      serviceType: NodePort
+    {{- end }}

@@ -3,23 +3,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: "{{ template "anchore-engine.enterprise-feeds.fullname" . }}"
+  name: {{ template "anchore-engine.enterprise-feeds.fullname" . }}
   labels:
-    app: "{{ template "anchore-engine.fullname" . }}"
+    app: {{ template "anchore-engine.fullname" . }}
     component: {{ $component }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
   selector:
     matchLabels:
-      app: "{{ template "anchore-engine.fullname" . }}"
+      app: {{ template "anchore-engine.fullname" . }}
       component: {{ $component }}
   replicas: 1
   template:
     metadata:
       labels:
-        app: "{{ template "anchore-engine.fullname" . }}"
+        app: {{ template "anchore-engine.fullname" . }}
         component: {{ $component }}
 {{- if .Values.anchoreEnterpriseFeeds.annotations }}
       annotations:
@@ -29,7 +29,7 @@ spec:
       volumes:
         - name: config-volume
           configMap:
-            name: {{ template "anchore-engine.enterprise-feeds.fullname" .}}
+            name: {{ template "anchore-engine.enterprise-feeds.fullname" . }}
         - name: scratch-volume
 {{ toYaml .Values.anchoreEnterpriseFeeds.scratchVolume.details | indent 10 }}
         - name: anchore-license
@@ -38,9 +38,9 @@ spec:
       imagePullSecrets:
       - name: {{ .Values.anchoreEnterpriseGlobal.imagePullSecretName }}
       containers:
-      - name: {{ .Chart.Name }}-{{ $component }}
-        image: "{{ .Values.anchoreEnterpriseGlobal.image.repository }}:{{ .Values.anchoreEnterpriseGlobal.image.tag }}"
-        imagePullPolicy: {{ .Values.anchoreEnterpriseGlobal.image.pullPolicy }}
+      - name: "{{ .Chart.Name }}-{{ $component }}"
+        image: {{ .Values.anchoreEnterpriseGlobal.image }}
+        imagePullPolicy: {{ .Values.anchoreEnterpriseGlobal.imagePullPolicy }}
         command: ["/usr/local/bin/anchore-enterprise-manager"]
         args: ["service", "start", "feeds"]
         ports:
@@ -50,6 +50,14 @@ spec:
         - secretRef:
             name: {{ template "anchore-engine.fullname" . }}
         env:
+        {{- range $key, $value := .Values.anchoreGlobal.extraEnv }}
+        - name: {{ $key }}
+          value: {{ $value }}
+        {{- end }}
+        {{- range $key, $value := .Values.anchoreEnterpriseFeeds.extraEnv }}
+        - name: {{ $key }}
+          value: {{ $value }}
+        {{- end }}
         {{- if and (index .Values "anchore-feeds-db" "externalEndpoint") (not (index .Values "anchore-feeds-db" "enabled")) }}
         - name: ANCHORE_DB_HOST
           value: {{ index .Values "anchore-feeds-db" "externalEndpoint" | quote }}
@@ -118,7 +126,7 @@ metadata:
   name: {{ template "anchore-engine.enterprise-feeds.fullname" . }}
   labels:
     app: {{ template "anchore-engine.fullname" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     component: {{ $component }}

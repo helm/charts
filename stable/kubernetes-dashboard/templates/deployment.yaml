@@ -24,6 +24,10 @@ spec:
     type: RollingUpdate
   template:
     metadata:
+    {{- if .Values.podAnnotations }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8 }}
+    {{- end }}
       labels:
         app: {{ template "kubernetes-dashboard.name" . }}
         release: {{ .Release.Name }}
@@ -35,6 +39,9 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         args:
+{{- if .Values.enableSkipLogin }}
+          - --enable-skip-login
+{{- end }}        
 {{- if .Values.enableInsecureLogin }}
           - --enable-insecure-login
 {{- else }}
@@ -74,6 +81,12 @@ spec:
           timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
+    {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end }}
+    {{- end }}
     {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
@@ -89,6 +102,6 @@ spec:
 {{ toYaml .Values.tolerations | indent 8 }}
     {{- end }}
     {{- if .Values.affinity }}
-        affinity:
+      affinity:
 {{ toYaml .Values.affinity | indent 8 }}
     {{- end }}

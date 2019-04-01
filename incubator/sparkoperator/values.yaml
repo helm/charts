@@ -1,5 +1,5 @@
 operatorImageName: gcr.io/spark-operator/spark-operator
-operatorVersion: v2.4.0-v1alpha1-latest
+operatorVersion: v2.4.0-v1beta1-0.8.1
 imagePullPolicy: IfNotPresent
 
 rbac:
@@ -13,15 +13,21 @@ serviceAccounts:
     create: true
     name:
 
-sparkJobNamespace: default
+sparkJobNamespace: ""
 
 enableWebhook: false
 enableMetrics: true
 
 controllerThreads: 10
+ingressUrlFormat: ""
 installCrds: true
 metricsPort: 10254
 metricsEndpoint: "/metrics"
 metricsPrefix: ""
 resyncInterval: 30
 webhookPort: 8080
+
+## Node labels for pod assignment
+## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+##
+nodeSelector: {}

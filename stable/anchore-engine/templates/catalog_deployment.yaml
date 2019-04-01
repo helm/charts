@@ -2,23 +2,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: "{{ template "anchore-engine.catalog.fullname" . }}"
+  name: {{ template "anchore-engine.catalog.fullname" . }}
   labels:
-    app: "{{ template "anchore-engine.fullname" . }}"
+    app: {{ template "anchore-engine.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
     component: {{ $component }}
 spec:
   selector:
     matchLabels:
-      app: "{{ template "anchore-engine.fullname" . }}"
+      app: {{ template "anchore-engine.fullname" . }}
       component: {{ $component }}
   replicas: {{ .Values.anchoreCatalog.replicaCount }}
   template:
     metadata:
       labels:
-        app: "{{ template "anchore-engine.fullname" . }}"
+        app: {{ template "anchore-engine.fullname" . }}
         component: {{ $component }}
 {{- if .Values.anchoreCatalog.annotations }}
       annotations:
@@ -27,8 +27,8 @@ spec:
     spec:
       containers:
       - name: {{ .Chart.Name }}-{{ $component }}
-        image: {{ .Values.anchoreGlobal.image.repository }}:{{ .Values.anchoreGlobal.image.tag }}
-        imagePullPolicy: {{ .Values.anchoreGlobal.image.pullPolicy }}
+        image: {{ .Values.anchoreGlobal.image }}
+        imagePullPolicy: {{ .Values.anchoreGlobal.imagePullPolicy }}
         command: ["/usr/local/bin/anchore-manager"]
         args: ["service", "start", "catalog"]
         envFrom:
@@ -37,6 +37,14 @@ spec:
         - configMapRef:
             name: {{ template "anchore-engine.fullname" . }}
         env:
+        {{- range $key, $value := .Values.anchoreGlobal.extraEnv }}
+        - name: {{ $key }}
+          value: {{ $value }}
+        {{- end }}
+        {{- range $key, $value := .Values.anchoreCatalog.extraEnv }}
+        - name: {{ $key }}
+          value: {{ $value }}
+        {{- end }}
         - name: ANCHORE_POD_NAME
           valueFrom:
             fieldRef:
@@ -75,7 +83,7 @@ spec:
       volumes:
         - name: config-volume
           configMap:
-            name: {{ template "anchore-engine.fullname" .}}
+            name: {{ template "anchore-engine.fullname" . }}
         {{- if .Values.anchoreGlobal.internalServicesSslEnabled }}
         - name: certs
           secret:
@@ -101,7 +109,7 @@ metadata:
   name: {{ template "anchore-engine.catalog.fullname" . }}
   labels:
     app: {{ template "anchore-engine.fullname" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     component: {{ $component }}

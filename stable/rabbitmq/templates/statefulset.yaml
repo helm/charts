@@ -10,6 +10,11 @@ metadata:
 spec:
   serviceName: {{ template "rabbitmq.fullname" . }}-headless
   replicas: {{ .Values.replicas }}
+  updateStrategy:
+    type: {{ .Values.updateStrategy.type }}
+    {{- if (eq "Recreate" .Values.updateStrategy.type) }}
+    rollingUpdate: null
+    {{- end }}
   selector:
     matchLabels:
       app: {{ template "rabbitmq.name" . }}
@@ -28,18 +33,16 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
       {{- end }}
     spec:
-      {{- if .Values.image.pullSecrets }}
-      imagePullSecrets:
-      {{- range .Values.image.pullSecrets }}
-        - name: {{ . }}
-      {{- end}}
-      {{- end }}
+{{- include "rabbitmq.imagePullSecrets" . | indent 6 }}
       {{- if .Values.rbacEnabled}}
       serviceAccountName: {{ template "rabbitmq.fullname" . }}
       {{- end }}
       {{- if .Values.affinity }}
       affinity:
 {{ toYaml .Values.affinity | indent 8 }}
+      {{- end }}
+      {{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName }}
       {{- end }}
       {{- if .Values.nodeSelector }}
       nodeSelector:
@@ -50,6 +53,20 @@ spec:
 {{ toYaml .Values.tolerations | indent 8 }}
       {{- end }}
       terminationGracePeriodSeconds: 10
+      {{- if and .Values.volumePermissions.enabled .Values.persistence.enabled .Values.securityContext.enabled }}
+      initContainers:
+      - name: volume-permissions
+        image: "{{ template "rabbitmq.volumePermissions.image" . }}"
+        imagePullPolicy: {{ default "" .Values.volumePermissions.image.pullPolicy | quote }}
+        command: ["/bin/chown", "-R", "{{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.fsGroup }}", "{{ .Values.persistence.path }}"]
+        securityContext:
+          runAsUser: 0
+        resources:
+{{ toYaml .Values.volumePermissions.resources | indent 10 }}
+        volumeMounts:
+        - name: data
+          mountPath: "{{ .Values.persistence.path }}"
+      {{- end }}
       containers:
       - name: rabbitmq
         image: {{ template "rabbitmq.image" . }}
@@ -71,9 +88,6 @@ spec:
             ulimit -n "${RABBITMQ_ULIMIT_NOFILES}"
             #replace the default password that is generated
             sed -i "s/CHANGEME/$RABBITMQ_PASSWORD/g" /opt/bitnami/rabbitmq/etc/rabbitmq/rabbitmq.conf
-            # Move logs to stdout
-            ln -sF /dev/stdout /opt/bitnami/rabbitmq/var/log/rabbitmq/rabbit@${MY_POD_IP}.log
-            ln -sF /dev/stdout /opt/bitnami/rabbitmq/var/log/rabbitmq/rabbit@${MY_POD_IP}_upgrade.log
             exec rabbitmq-server
         {{- if .Values.resources }}
         resources:
@@ -83,7 +97,12 @@ spec:
           - name: config-volume
             mountPath: /opt/bitnami/rabbitmq/conf
           - name: data
-            mountPath: /opt/bitnami/rabbitmq/var/lib/rabbitmq/
+            mountPath: "{{ .Values.persistence.path }}"
+          {{- if .Values.rabbitmq.loadDefinition.enabled }}
+          - name: load-definition-volume
+            mountPath: /app
+            readOnly: true
+          {{- end }}
         ports:
         - name: epmd
           containerPort: 4369
@@ -145,6 +164,8 @@ spec:
           - name: RABBITMQ_NODENAME
             value: "rabbit@$(MY_POD_IP)"
           {{- end }}
+          - name: RABBITMQ_LOGS
+            value: {{ .Values.rabbitmq.logs | quote }}
           - name: RABBITMQ_ULIMIT_NOFILES
             value: {{ .Values.rabbitmq.ulimitNofiles | quote }}
           - name: RABBITMQ_USE_LONGNAME
@@ -152,22 +173,22 @@ spec:
           - name: RABBITMQ_ERL_COOKIE
             valueFrom:
               secretKeyRef:
-                name: {{ template "rabbitmq.fullname" . }}
+                name: {{ template "rabbitmq.secretErlangName" . }}
                 key: rabbitmq-erlang-cookie
           - name: RABBITMQ_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: {{ template "rabbitmq.fullname" . }}
+                name: {{ template "rabbitmq.secretPasswordName" . }}
                 key: rabbitmq-password
 {{- if .Values.metrics.enabled }}
       - name: metrics
-        image: {{ template "metrics.image" . }}
+        image: {{ template "rabbitmq.metrics.image" . }}
         imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
         env:
         - name: RABBIT_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "rabbitmq.fullname" . }}
+              name: {{ template "rabbitmq.secretPasswordName" . }}
               key: rabbitmq-password
         - name: RABBIT_URL
           value: "http://localhost:{{ .Values.service.managerPort }}"
@@ -206,6 +227,11 @@ spec:
               path: rabbitmq.conf
             - key: enabled_plugins
               path: enabled_plugins
+        {{- if .Values.rabbitmq.loadDefinition.enabled }}
+        - name: load-definition-volume
+          secret:
+            secretName: {{ .Values.rabbitmq.loadDefinition.secretName | quote }}
+        {{- end }}
       {{- if not .Values.persistence.enabled }}
         - name: data
           emptyDir: {}

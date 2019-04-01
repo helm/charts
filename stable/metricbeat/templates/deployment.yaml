@@ -1,4 +1,5 @@
 # Deploy singleton instance in the whole cluster for some unique data sources, like kube-state-metrics
+{{- if .Values.deployment.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -57,7 +58,11 @@ spec:
         securityContext:
           runAsUser: 0
         resources:
+{{- if .Values.deployment.resources }}
+{{ toYaml .Values.deployment.resources | indent 10 }}
+{{- else if .Values.resources }}
 {{ toYaml .Values.resources | indent 10 }}
+{{- end }}
         volumeMounts:
         - name: metricbeat-config
           mountPath: /usr/share/metricbeat/metricbeat.yml
@@ -86,4 +91,5 @@ spec:
           secretName: {{ template "metricbeat.fullname" . }}-deployment-modules
 {{- if .Values.extraVolumes }}
 {{ toYaml .Values.extraVolumes | indent 6 }}
+{{- end }}
 {{- end }}

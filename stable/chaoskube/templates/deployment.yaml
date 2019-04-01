@@ -17,12 +17,11 @@ spec:
   template:
     metadata:
       labels:
-        component: "server"
 {{ include "labels.standard" . | indent 8 }}
-{{- with .Values.podAnnotations }}
+    {{- if .Values.podAnnotations }}
       annotations:
-{{ toYaml . | indent 8 }}
-{{- end }}
+{{ toYaml .Values.podAnnotations | indent 8 }}
+    {{- end }}
     spec:
       containers:
         - name: {{ .Values.name }}
@@ -43,8 +42,16 @@ spec:
             - --debug
             {{- end }}
             - --minimum-age={{ .Values.minimumAge }}
+            - --grace-period={{ .Values.gracePeriod }}
+            - --metrics-address={{ .Values.metricsAddress }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 65534
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
 {{- if .Values.priorityClassName }}
       priorityClassName: "{{ .Values.priorityClassName }}"
 {{- end }}

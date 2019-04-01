@@ -14,7 +14,7 @@ This chart bootstraps a [TestLink](https://github.com/bitnami/bitnami-docker-tes
 
 It also packages the [Bitnami MariaDB chart](https://github.com/kubernetes/charts/tree/master/stable/mariadb) which is required for bootstrapping a MariaDB deployment for the database requirements of the TestLink application.
 
-Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters.
+Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters. This chart has been tested to work with NGINX Ingress, cert-manager, fluentd and Prometheus on top of the [BKPR](https://kubeprod.io/).
 
 ## Prerequisites
 
@@ -50,11 +50,12 @@ The following table lists the configurable parameters of the TestLink chart and 
 |              Parameter              |               Description               |                         Default                         |
 |-------------------------------------|-----------------------------------------|---------------------------------------------------------|
 | `global.imageRegistry`              | Global Docker image registry            | `nil`                                                   |
+| `global.imagePullSecrets`           | Global Docker registry secret names as an array | `[]` (does not add image pull secrets to deployed pods) |
 | `image.registry`                    | TestLink image registry                 | `docker.io`                                             |
 | `image.repository`                  | TestLink image name                     | `bitnami/testlink`                                      |
 | `image.tag`                         | TestLink image tag                      | `{VERSION}`                                             |
 | `image.pullPolicy`                  | Image pull policy                       | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
-| `image.pullSecrets`                 | Specify image pull secrets              | `nil`                                                   |
+| `image.pullSecrets`                 | Specify docker-registry secret names as an array  | `[]` (does not add image pull secrets to deployed pods) |
 | `testlinkUsername`                  | Admin username                          | `user`                                                  |
 | `testlinkPassword`                  | Admin user password                     | _random 10 character long alphanumeric string_          |
 | `testlinkEmail`                     | Admin user email                        | `user@example.com`                                      |
@@ -65,6 +66,17 @@ The following table lists the configurable parameters of the TestLink chart and 
 | `smtpPassword`                      | SMTP password                           | `nil`                                                   |
 | `smtpConnectionMode`                | SMTP connection mode [`ssl`, `tls`]     | `nil`                                                   |
 | `allowEmptyPassword`                | Allow DB blank passwords                | `yes`                                                   |
+| `ingress.enabled`                   | Enable ingress controller resource                            | `false`                                                  |
+| `ingress.annotations`               | Ingress annotations                                           | `[]`                                                     |
+| `ingress.certManager`               | Add annotations for cert-manager                              | `false`                                                  |
+| `ingress.hosts[0].name`             | Hostname to your testlink installation                           | `testlink.local`                                            |
+| `ingress.hosts[0].path`             | Path within the url structure                                 | `/`                                                      |
+| `ingress.hosts[0].tls`              | Utilize TLS backend in ingress                                | `false`                                                  |
+| `ingress.hosts[0].tlsHosts`         | Array of TLS hosts for ingress record (defaults to `ingress.hosts[0].name` if `nil`)                               | `nil`                                                  |
+| `ingress.hosts[0].tlsSecret`        | TLS Secret (certificates)                                     | `testlink.local-tls-secret`                                 |
+| `ingress.secrets[0].name`           | TLS Secret Name                                               | `nil`                                                    |
+| `ingress.secrets[0].certificate`    | TLS Secret Certificate                                        | `nil`                                                    |
+| `ingress.secrets[0].key`            | TLS Secret Key                                                | `nil`                                                    |
 | `externalDatabase.host`             | Host of the external database           | `nil`                                                   |
 | `externalDatabase.port`             | Port of the external database           | `3306`                                                  |
 | `externalDatabase.user`             | Existing username in the external db    | `bn_testlink`                                           |
@@ -91,14 +103,14 @@ The following table lists the configurable parameters of the TestLink chart and 
 | `persistence.testlink.size`         | PVC Storage Request for TestLink volume | `8Gi`                                                   |
 | `resources`                         | CPU/Memory resource requests/limits     | Memory: `512Mi`, CPU: `300m`                            |
 | `podAnnotations`                | Pod annotations                                   | `{}`                                                       |
-| `metrics.enabled`                          | Start a side-car prometheus exporter                                                                           | `false`                                              |
-| `metrics.image.registry`                   | Apache exporter image registry                                                                                  | `docker.io`                                          |
-| `metrics.image.repository`                 | Apache exporter image name                                                                                      | `lusotycoon/apache-exporter`                           |
-| `metrics.image.tag`                        | Apache exporter image tag                                                                                       | `v0.5.0`                                            |
-| `metrics.image.pullPolicy`                 | Image pull policy                                                                                              | `IfNotPresent`                                       |
-| `metrics.image.pullSecrets`                | Specify docker-registry secret names as an array                                                               | `nil`                                                |
-| `metrics.podAnnotations`                   | Additional annotations for Metrics exporter pod                                                                | `{prometheus.io/scrape: "true", prometheus.io/port: "9117"}`                                                   |
-| `metrics.resources`                        | Exporter resource requests/limit                                                                               | {}                        |
+| `metrics.enabled`                          | Start a side-car prometheus exporter                        | `false`                                              |
+| `metrics.image.registry`                   | Apache exporter image registry                              | `docker.io`                                          |
+| `metrics.image.repository`                 | Apache exporter image name                                  | `lusotycoon/apache-exporter`                           |
+| `metrics.image.tag`                        | Apache exporter image tag                                   | `v0.5.0`                                            |
+| `metrics.image.pullPolicy`                 | Image pull policy                                           | `IfNotPresent`                                       |
+| `metrics.image.pullSecrets`                | Specify docker-registry secret names as an array            | `[]` (does not add image pull secrets to deployed pods)  |
+| `metrics.podAnnotations`                   | Additional annotations for Metrics exporter pod             | `{prometheus.io/scrape: "true", prometheus.io/port: "9117"}`                                                   |
+| `metrics.resources`                        | Exporter resource requests/limit                            | {}                        |
 
 The above parameters map to the env variables defined in [bitnami/testlink](http://github.com/bitnami/bitnami-docker-testlink). For more information please refer to the [bitnami/testlink](http://github.com/bitnami/bitnami-docker-testlink) image documentation.
 

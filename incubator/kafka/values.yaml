@@ -55,9 +55,6 @@ rbac:
 #   mountPath: /opt/zookeeper/secret
 
 
-## The name of the storage class which the cluster should use.
-# storageClass: default
-
 ## The subpath within the Kafka container's PV where logs will be stored.
 ## This is combined with `persistence.mountPath`, to create, by default: /opt/kafka/data/logs
 logSubPath: "logs"
@@ -309,6 +306,39 @@ prometheus:
 #        cpu: 100m
 #        memory: 100Mi
 
+    # Tolerations for nodes that have taints on them.
+    # Useful if you want to dedicate nodes to just run kafka-exporter
+    # https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+    tolerations: []
+    # tolerations:
+    # - key: "key"
+    #   operator: "Equal"
+    #   value: "value"
+    #   effect: "NoSchedule"
+
+    ## Pod scheduling preferences (by default keep pods within a release on separate nodes).
+    ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+    ## By default we don't set affinity
+    affinity: {}
+    ## Alternatively, this typical example defines:
+    ## affinity (to encourage Kafka Exporter pods to be collocated with Kafka pods)
+    # affinity:
+    #   podAffinity:
+    #     preferredDuringSchedulingIgnoredDuringExecution:
+    #      - weight: 50
+    #        podAffinityTerm:
+    #          labelSelector:
+    #            matchExpressions:
+    #            - key: app
+    #              operator: In
+    #              values:
+    #                - kafka
+    #          topologyKey: "kubernetes.io/hostname"
+
+    ## Node labels for pod assignment
+    ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+    nodeSelector: {}
+
   operator:
     ## Are you using Prometheus Operator?
     enabled: false
@@ -322,6 +352,13 @@ prometheus:
       ## [Kube Prometheus Selector Label](https://github.com/coreos/prometheus-operator/blob/master/helm/kube-prometheus/values.yaml#L298)
       selector:
         prometheus: kube-prometheus
+
+## Kafka Config job configuration
+##
+configJob:
+  ## Specify the number of retries before considering kafka-config job as failed.
+  ## https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/#pod-backoff-failure-policy
+  backoffLimit: 6
 
 ## Topic creation and configuration.
 ## The job will be run on a deployment only when the config has been changed.

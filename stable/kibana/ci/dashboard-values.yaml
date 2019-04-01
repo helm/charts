@@ -2,6 +2,7 @@
 # enable the dashboard init container with dashboard embedded in configmap
 
 dashboardImport:
+  enabled: true
   dashboards:
     1_create_index: |-
       {
@@ -18,4 +19,3 @@ dashboardImport:
           }
         ]
       }
-

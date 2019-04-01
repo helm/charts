@@ -44,23 +44,51 @@ The recommended way to install the Anchore Engine Chart is with a customized val
     defaultAdminEmail: <EMAIL>
   ```
 
-## Upgrading to Chart version 0.10.0
+## Upgrading to Chart version 0.12.0
+Redis dependency chart major version updated to v6.1.3 - check redis chart readme for instructions for upgrade.
 
-Ingress resources have been changed to work natively with NGINX ingress controllers. If you're using a different ingress controller, update your values.yaml file accordingly. See the __Using Ingress__ configuration section for examples of NGINX & GCE ingress controller configurations.
+The ingress configuration has been consolidated to a single global section. This should make it easier to manage the ingress resource. Before performing an upgrade ensure you update your custom values file to reflect this change.
 
-Service configs have been moved from the anchoreGlobal section, to individual component sections in the values.yaml file.
-If you're upgrading from a previous install and are using custom ports or serviceTypes, be sure to update your values.yaml file accordingly.
+#### Chart v0.12.0 ingress config
+```
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: gce
+  apiPath: /v1/*
+  uiPath: /*
+  apiHosts:
+  - anchore-api.example.com
+  uiHosts:
+  - anchore-ui.example.com
+```
 
-##### v0.9.0 service config
+## Upgrading to Chart version 0.11.0
+The image map has been removed in all configuration sections in favor of individual keys. This should make configuration for tools like skaffold simpler. If using a custom values file, update your `image.repository`, `image.tag`, & `image.pullPolicy` values with `image` & `imagePullPolicy`.
 
+#### Chart v0.11.0 image config
 ```
 anchoreGlobal:
-  service:
-    type: ClusterIP
-    apiPort: 8228
+  image: docker.io/anchore/anchore-engine:v0.3.2
+  imagePullPolicy: IfNotPresent
+
+anchoreEnterpriseGlobal:
+  image: docker.io/anchore/enterprise:v0.3.3
+  imagePullPolicy: IfNotPresent
+
+anchoreEnterpriseUI:
+  image: docker.io/anchore/enterprise-ui:v0.3.1
+  imagePullPolicy: IfNotPresent
 ```
 
-##### v0.10.0 service config
+
+## Upgrading to Chart version 0.10.0
+
+Ingress resources have been changed to work natively with NGINX ingress controllers. If you're using a different ingress controller update your values.yaml file accordingly. See the __Using Ingress__ configuration section for examples of NGINX & GCE ingress controller configurations.
+
+Service configs have been moved from the anchoreGlobal section, to individual component sections in the values.yaml file. If you're upgrading from a previous install and are using custom ports or serviceTypes, be sure to update your values.yaml file accordingly.
+
+#### Chart v0.10.0 service config
 ```
 anchoreApi:
   service:
@@ -74,8 +102,7 @@ Version 0.9.0 of the anchore-engine helm chart includes major changes to the arc
 
 `helm upgrade <release_name> stable/anchore-engine`
 
-When upgrading the Chart from version 0.2.6 to version 0.9.0, it will take approximately 5 minutes for anchore-engine to upgrade the database.
-To ensure that the upgrade has completed, run the `anchore-cli system status` command and verify the engine & db versions match the output below.
+When upgrading the Chart from version 0.2.6 to version 0.9.0, it will take approximately 5 minutes for anchore-engine to upgrade the database. To ensure that the upgrade has completed, run the `anchore-cli system status` command and verify the engine & db versions match the output below.
 
 ```
 Engine DB Version: 0.0.8
@@ -84,40 +111,38 @@ Engine Code Version: 0.3.0
 
 ## Configuration
 
-All configurations should be appended to your custom `anchore_values.yaml` file and utilized when installing the chart.
-While the configuration options of Anchore Engine are extensive, the options provided by the chart are:
+All configurations should be appended to your custom `anchore_values.yaml` file and utilized when installing the chart. While the configuration options of Anchore Engine are extensive, the options provided by the chart are:
 
 ### Exposing the service outside the cluster:
 
 #### Using Ingress
 
-This configuration allows SSL termination at the LB.
-
-*Note: Ingress controllers can use custom hosts or paths for routing requests. Custom paths or hosts should be set in the corresponding component configuration - anchoreEnterpriseUI.ingress or anchoreApi.ingress*
+This configuration allows SSL termination using your chosen ingress controller.
 
 ##### NGINX Ingress Controller
 ```
-anchoreGlobal:
-  ingress:
-    enabled: true
+ingress:
+  enabled: true
 ```
 
 ##### GCE Ingress Controller
   ```
-  anchoreGlobal:
-    ingress:
-      enabled: true
-      annotations: null
+  ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/ingress.class: gce
+    apiPath: /v1/*
+    uiPath: /*
+    apiHosts:
+      - anchore-api.example.com
+    uiHosts:
+      - anchore-ui.example.com
 
   anchoreApi:
-    ingress:
-      path: /v1/*
     service:
       type: NodePort
 
   anchoreEnterpriseUi:
-    ingress:
-      path: /*
     service
       type: NodePort
   ```

@@ -88,6 +88,7 @@ The following table lists the configurable parameters of the Cassandra chart and
 | `config.cluster_name`                | The name of the cluster.                        | `cassandra`                                                |
 | `config.cluster_size`                | The number of nodes in the cluster.             | `3`                                                        |
 | `config.seed_size`                   | The number of seed nodes used to bootstrap new clients joining the cluster.                            | `2` |
+| `config.seeds`                       | The comma-separated list of seed nodes.         | Automatically generated according to `.Release.Name` and `config.seed_size` |
 | `config.num_tokens`                  | Initdb Arguments                                | `256`                                                      |
 | `config.dc_name`                     | Initdb Arguments                                | `DC1`                                                      |
 | `config.rack_name`                   | Initdb Arguments                                | `RAC1`                                                     |
@@ -128,12 +129,13 @@ The following table lists the configurable parameters of the Cassandra chart and
 | `backup.enabled`                     | Enable backup on chart installation             | `false`                                                    |
 | `backup.schedule`                    | Keyspaces to backup, each with cron time        |                                                            |
 | `backup.annotations`                 | Backup pod annotations                          | iam.amazonaws.com/role: `cain`                             |
-| `backup.image.repo`                  | Backup image repository                         | `nuvo/cain`                                                |
-| `backup.image.tag`                   | Backup image tag                                | `0.4.1`                                                    |
+| `backup.image.repository`            | Backup image repository                         | `maorfr/cain`                                              |
+| `backup.image.tag`                   | Backup image tag                                | `0.6.0`                                                    |
 | `backup.extraArgs`                   | Additional arguments for cain                   | `[]`                                                       |
 | `backup.env`                         | Backup environment variables                    | AWS_REGION: `us-east-1`                                    |
 | `backup.resources`                   | Backup CPU/Memory resource requests/limits      | Memory: `1Gi`, CPU: `1`                                    |
 | `backup.destination`                 | Destination to store backup artifacts           | `s3://bucket/cassandra`                                    |
+| `backup.google.serviceAccountSecret` | Secret containing credentials if GCS is used as destination |                                                |
 | `exporter.enabled`                   | Enable Cassandra exporter                       | `false`                                                    |
 | `exporter.image.repo`                | Exporter image repository                       | `criteord/cassandra_exporter`                              |
 | `exporter.image.tag`                 | Exporter image tag                              | `2.0.2`                                                    |
