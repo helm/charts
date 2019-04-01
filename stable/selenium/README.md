@@ -42,7 +42,7 @@ The following table lists the configurable parameters of the Selenium chart and 
 
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
-| `global.nodeselector` | Node label to be useed globally for scheduling of all images | `nil` |
+| `global.nodeSelector` | Node label to be useed globally for scheduling of all images | `nil` |
 | `global.hostAliases` | A list of hostAliases, that contains ip and hostnames, to be used globally | `[]` |
 | `global.affinity` | Deployemnt affinities to be used globally for scheduling of all images | `nil` |
 | `global.tolerations` | Deployment tolerations to be used globally for scheduling of all images | `nil` |
@@ -56,8 +56,8 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `hub.nodePort` | The port the hub is exposed when Nodeport mode is selected | `nil` |
 | `hub.podAnnotations` | Annotations on the hub pod | `{}` |
 | `hub.extraEnvs` |  Any additional environment variables to set in the pods | `[]` |
-| `hub.javaOpts` | The java options for the selenium hub JVM, default sets the maximum heap size to 1,000 mb | `-Xmx1000m` |
-| `hub.resources` | The resources for the hub container, defaults to minimum half a cpu and maximum 1,000 mb RAM | `{"limits":{"cpu":".5", "memory":"1000Mi"}}` |
+| `hub.javaOpts` | The java options for the selenium hub JVM, default sets the maximum heap size to 400 mb | `-Xmx400m` |
+| `hub.resources` | The resources for the hub container, defaults to minimum half a cpu and maximum 512 mb RAM | `{"limits":{"cpu":".5", "memory":"512Mi"}}` |
 | `hub.serviceType` | The Service type | `LoadBalancer` |
 | `hub.serviceLoadBalancerIP` | The Public IP for the Load Balancer | `nil` |
 | `hub.loadBalancerSourceRanges` | A list of IP CIDRs allowed access to load balancer (if supported) | `[]` |
@@ -72,7 +72,7 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `hub.gridUnregisterIfStillDownAfter` | | `nil` |
 | `hub.seOpts` | Command line arguments to pass to hub | `nil` |
 | `hub.timeZone` | The time zone for the container | `nil` |
-| `hub.nodeselector` | Node label to use for scheduling of the hub if set this takes precedence over the global value | `nil` |
+| `hub.nodeSelector` | Node label to use for scheduling of the hub if set this takes precedence over the global value | `nil` |
 | `hub.affinity` | Deployemnt affinities to use for scheduling of the hub if set this takes precedence over the global value | `nil` |
 | `hub.tolerations` | Deployment tolerations to use for scheduling of the hub if set this takes precedence over the global value | `nil` |
 | `hub.ingress.enabled` | Configure an ingress for the selenium hub | `false` |
@@ -106,7 +106,7 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `chrome.nodePort` | The port to listen on | `nil` |
 | `chrome.seOpts` | Command line arguments to pass to node | `nil` |
 | `chrome.timeZone` | The time zone for the container | `nil` |
-| `chrome.nodeselector` | Node label to use for scheduling of chrome images if set this takes precedence over the global value | `nil` |
+| `chrome.nodeSelector` | Node label to use for scheduling of chrome images if set this takes precedence over the global value | `nil` |
 | `chrome.affinity` | Deployemnt affinities to use for scheduling of the chrome if set this takes precedence over the global value | `nil` |
 | `chrome.tolerations` | Deployment tolerations to use for scheduling of the chrome if set this takes precedence over the global value | `nil` |
 | `chromeDebug.enabled` | Schedule a selenium node chrome debug pod | `false` |
@@ -132,7 +132,7 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `chromeDebug.nodePort` | The port to listen on | `nil` |
 | `chromeDebug.seOpts` | Command line arguments to pass to node | `nil` |
 | `chromeDebug.timeZone` | The time zone for the container | `nil` |
-| `chromeDebug.nodeselector` | Node label to use for scheduling of chromeDebug images if set this takes precedence over the global value | `nil` |
+| `chromeDebug.nodeSelector` | Node label to use for scheduling of chromeDebug images if set this takes precedence over the global value | `nil` |
 | `chromeDebug.affinity` | Deployemnt affinities to use for scheduling of the chromeDebug if set this takes precedence over the global value | `nil` |
 | `chromeDebug.tolerations` | Deployment tolerations to use for scheduling of the chromeDebug if set this takes precedence over the global value | `nil` |
 | `firefox.enabled` | Schedule a selenium node firefox pod | `false` |
@@ -156,7 +156,7 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `firefox.nodePort` | The port to listen on | `nil` |
 | `firefox.seOpts` | Command line arguments to pass to node | `nil` |
 | `firefox.timeZone` | The time zone for the container | `nil` |
-| `firefox.nodeselector` | Node label to use for scheduling of firefox images if set this takes precedence over the global value | `nil` |
+| `firefox.nodeSelector` | Node label to use for scheduling of firefox images if set this takes precedence over the global value | `nil` |
 | `firefox.affinity` | Deployemnt affinities to use for scheduling of the firefox if set this takes precedence over the global value | `nil` |
 | `firefox.tolerations` | Deployment tolerations to use for scheduling of the firefox if set this takes precedence over the global value | `nil` |
 | `firefoxDebug.enabled` | Schedule a selenium node firefox debug pod | `false` |
@@ -180,7 +180,7 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `firefoxDebug.nodePort` | The port to listen on | `nil` |
 | `firefoxDebug.seOpts` | Command line arguments to pass to node | `nil` |
 | `firefoxDebug.timeZone` | The time zone for the container | `nil` |
-| `firefoxDebug.nodeselector` | Node label to use for scheduling of firefoxDebug images if set this takes precedence over the global value | `nil` |
+| `firefoxDebug.nodeSelector` | Node label to use for scheduling of firefoxDebug images if set this takes precedence over the global value | `nil` |
 | `firefoxDebug.affinity` | Deployemnt affinities to use for scheduling of the firefoxDebug if set this takes precedence over the global value | `nil` |
 | `firefoxDebug.tolerations` | Deployment tolerations to use for scheduling of the firefoxDebug if set this takes precedence over the global value | `nil` |
 
