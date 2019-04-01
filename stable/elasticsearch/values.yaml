@@ -118,6 +118,8 @@ client:
     #  - secretName: chart-example-tls
     #    hosts:
     #      - chart-example.local
+  # if true, expose port 9300 on the client
+  enableTransportApi: false
 
 master:
   name: master
