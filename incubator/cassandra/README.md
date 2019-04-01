@@ -31,7 +31,7 @@ helm upgrade "cassandra" incubator/cassandra
 
 This version fixes https://github.com/helm/charts/issues/7803 by removing mutable labels in `spec.VolumeClaimTemplate.metadata.labels` so that it is upgradable.
 
-Before 0.12.0, in order to upgrade, you have to delete the Cassandra StatefulSet before upgrading: 
+Until this version, in order to upgrade, you have to delete the Cassandra StatefulSet before upgrading: 
 ```bash
 $ kubectl delete statefulset --cascade=false my-cassandra-release
 ```
