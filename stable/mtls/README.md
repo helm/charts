@@ -51,7 +51,7 @@ ingress:
     # Enable client certificate authentication
     nginx.ingress.kubernetes.io/auth-tls-verify-client: "on"
     # Create the secret containing the trusted ca certificates
-    nginx.ingress.kubernetes.io/auth-tls-secret: "default/mtls"
+    nginx.ingress.kubernetes.io/auth-tls-secret: "<NAMESPACE>/<FULLNAME>-certs"
     # Specify the verification depth in the client certificates chain
     nginx.ingress.kubernetes.io/auth-tls-verify-depth: "1"
     # Specify if certificates are passed to upstream server

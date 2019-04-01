@@ -34,9 +34,11 @@ spec:
             - name: config
               mountPath: /home/mtls/config.ini
               subPath: config.ini
+            {{- if and .Values.secrets.enabled .Values.secrets.data }}
             - name: ca-creds
               mountPath: /home/mtls/secrets/certs/authority
               readOnly: false
+            {{- end }}
             {{- if .Values.user_seeds }}
             - name: user-seeds
               mountPath: /tmp/seeds/user
@@ -45,10 +47,22 @@ spec:
             - name: admin-seeds
               mountPath: /tmp/seeds/admin
             {{- end }}
-            {{- if .Values.persistence.enabled }}
-            - name: sqlite3
+            {{- if .Values.persistence.sqlite3.enabled }}
+            - name: persistence
               mountPath: /home/mtls/database
               subPath: database
+              readOnly: false
+            {{- end }}
+            {{- if .Values.persistence.user_gnupg.enabled }}
+            - name: persistence
+              mountPath: {{ .Values.config.gnupg.user }}
+              subPath: user_gnupg
+              readOnly: false
+            {{- end }}
+            {{- if .Values.persistence.admin_gnupg.enabled }}
+            - name: persistence
+              mountPath: {{ .Values.config.gnupg.admin }}
+              subPath: admin_gnupg
               readOnly: false
             {{- end }}
           livenessProbe:
@@ -64,18 +78,24 @@ spec:
       volumes:
         - name: config
           configMap:
+            {{- if .Values.existingSecret }}
+            name: {{ .Values.existingSecret }}
+            {{- else }}
             name: {{ include "mtls.fullname" . }}
+            {{- end }}
             items:
               - key: config.ini
                 path: config.ini
+        {{- if and .Values.secrets.enabled .Values.secrets.data }}
         - name: ca-creds
           secret:
-            secretName: {{ include "mtls.fullname" . }}
+            secretName: {{ include "mtls.fullname" . }}-certs
             items:
               - key: ca.key
                 path: RootCA.key
               - key: ca.crt
                 path: RootCA.pem
+        {{- end }}
         {{- if .Values.user_seeds }}
         - name: user-seeds
           configMap:
@@ -86,8 +106,8 @@ spec:
           configMap:
             name: {{ include "mtls.fullname" . }}-admin-seeds
         {{- end }}
-        {{- if .Values.persistence.enabled }}
-        - name: sqlite3
+        {{- if or (or .Values.persistence.user_gnupg.enabled .Values.persistence.admin_gnupg.enabled) .Values.persistence.sqlite3.enabled }}
+        - name: persistence
           persistentVolumeClaim:
             claimName: {{ template "mtls.fullname" . }}
         {{- end }}

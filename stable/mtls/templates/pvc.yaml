@@ -1,4 +1,4 @@
-{{- if and .Values.persistence.enabled -}}
+{{- if or (or .Values.persistence.sqlite3.enabled .Values.persistence.user_gnupg.enabled) .Values.persistence.admin_gnupg.enabled -}}
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:

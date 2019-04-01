@@ -13,14 +13,27 @@ nameOverride: ""
 fullnameOverride: ""
 
 secrets:
-  # These secrets default to none so that mTLS will generate them automatically
-  # based on the config provided below in the config.ini [ca] section
-  ca_key: ""
-  ca_crt: ""
+  enabled: false
+  data: {}
+    # These secrets default to none so that mTLS will generate them automatically
+    # based on the config provided below in the config.ini [ca] section
+    # ca.key: ""
+    # ca.crt: ""
 
 # Persist SQLite data to a persistent volume
 persistence:
-  enabled: true
+  sqlite3:
+    enabled: true
+  user_gnupg:
+    enabled: true
+  admin_gnupg:
+    enabled: true
+  ## Since this is one volume, your access mode and size should be the size you
+  ## will need for all of these folders. In general the size of this data is
+  ## small since we store only the certificates and some extra data in the
+  ## database as well as the users/admins PGP keys. It's highly recommended to
+  ## seed the database with PGP keys from WKD as this has the smallest
+  ## footprint, but note that some users may have rather large keys.
   ## If defined, storageClassName: <storageClass>
   ## If set to "-", storageClassName: "", which disables dynamic provisioning
   ## If undefined (the default) or set to null, no storageClassName spec is
@@ -51,31 +64,26 @@ ingress:
   #    hosts:
   #      - chart-example.local
   #
-configMaps:
-  config.ini: |
-    [mtls]
-    ; Minimum lifetime in seconds
-    min_lifetime=60
-    ; Maximum lifetime in seconds, if 0 it is disabled
-    ; default max_lifetime is 2 days
-    max_lifetime=82800
-
-    [ca]
-    key=secrets/certs/authority/RootCA.key
-    cert=secrets/certs/authority/RootCA.pem
-    issuer=My Company Name
-    ; Multiple alt names can be added comma separated
-    alternate_name=*.myname.com
-
-    [gnupg]
-    user=secrets/gnupg/
-    admin=secrets/gnupg_admin/
-
-    [storage]
-    engine=sqlite3
-
-    [storage.sqlite3]
-    db_path=database/mtls-server.db
+config:
+  mtls:
+    # Minimum lifetime in seconds
+    min_lifetime: 60
+    # Maximum lifetime in seconds, if 0 it is disabled
+    # default max_lifetime is 2 days
+    max_lifetime: 82800
+  ca:
+    key: /home/mtls/secrets/certs/authority/RootCA.key
+    cert: /home/mtls/secrets/certs/authority/RootCA.pem
+    issuer: My Company Name
+    alternate_name:
+      - "*.myname.com"
+  gnupg:
+    user: /home/mtls/secrets/gnupg/
+    admin: /home/mtls/secrets/admin_gnupg/
+  storage:
+    engine: sqlite3
+  storage.sqlite3:
+    db_path: /home/mtls/database/mtls-server.db
 
 user_seeds: {}
 admin_seeds: {}

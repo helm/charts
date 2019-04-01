@@ -19,3 +19,49 @@
   echo "Visit http://127.0.0.1:8080 to use your application"
   kubectl port-forward $POD_NAME 8080:4000
 {{- end }}
+{{- if not .Values.secrets.data }}
+
+############################################################################
+###   WARNING: Your CA KEY and CA CERTIFICATE are being generated on pod ###
+###   when the pod is terminated you will lose this certificate and key. ###
+###      See values.yaml's secrets.ca_key and secrets.ca_crt             ###
+############################################################################
+
+This configuration will not allow other services to take advanced of Client
+Certificate Authentication via MTLS.
+
+This is due to the fact that the nginx-ingress requires the ability to connect
+to a specific secret to be able to verify client certicates. You'll need to
+generate the certificates either on your own or by running the following
+commands:
+
+$ ./scripts/setup.sh
+$ ./scripts/create-ca.sh
+
+{{- else }}
+To enable client certificate authentication on your ingress. You will need to add the following annotations to your ingress:
+
+ingress:
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    # Enable client certificate authentication
+    nginx.ingress.kubernetes.io/auth-tls-verify-client: "on"
+    # Create the secret containing the trusted ca certificates
+    {{- if .Release.namespace }}
+    nginx.ingress.kubernetes.io/auth-tls-secret: "{{ .Release.namespace }}/{{ include "mtls.fullname" . }}-certs"
+    {{- else }}
+    nginx.ingress.kubernetes.io/auth-tls-secret: "default/{{ include "mtls.fullname" . }}-certs"
+    {{- end}}
+    # Specify the verification depth in the client certificates chain
+    nginx.ingress.kubernetes.io/auth-tls-verify-depth: "1"
+    # Specify if certificates are passed to upstream server
+    nginx.ingress.kubernetes.io/auth-tls-pass-certificate-to-upstream: "false"
+{{- end }}
+{{- if not .Values.persistence.sqlite3.enabled }}
+
+############################################################################
+###   WARNING: Persistence is disabled!!! You will lose your SQLite3     ###
+###                database when the mtls pod is terminated.             ###
+###      See values.yaml's persistence.enabled directive.                ###
+############################################################################
+{{- end }}
