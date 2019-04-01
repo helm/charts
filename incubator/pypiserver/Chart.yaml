@@ -8,5 +8,5 @@ sources:
   - https://github.com/pypiserver/pypiserver
   - https://pypi.org/project/pypiserver/
 maintainers:
-  - name: Clement Gautier
+  - name: ClementGautier
     email: clement@gautier.im
