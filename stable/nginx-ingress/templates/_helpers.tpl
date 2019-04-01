@@ -69,10 +69,9 @@ Create the name of the service account to use
 Return the proper nginx-ingress controller image name
 */}}
 {{- define "nginx-ingress.image" -}}
-{{- $registryName :=  .Values.controller.image.registry -}}
+{{- $registryName := default "docker.io" .Values.controller.image.registry -}}
 {{- $repositoryName := .Values.controller.image.repository -}}
 {{- $tag := .Values.controller.image.tag | toString -}}
-{{- printf "%s/%s:%s" $registryName $repositoryName $tag -}}
 {{/*
 Helm 2.11 supports the assignment of a value to a variable defined in a different scope,
 but Helm 2.9 and 2.10 doesn't support it, so we need to implement this if-else logic.
@@ -93,10 +92,9 @@ Also, we can't use a single if because lazy evaluation is not an option
 Return the proper default backend image name
 */}}
 {{- define "defaultBackend.image" -}}
-{{- $registryName :=  .Values.defaultBackend.image.registry -}}
+{{- $registryName := default "docker.io" .Values.defaultBackend.image.registry -}}
 {{- $repositoryName := .Values.defaultBackend.image.repository -}}
 {{- $tag := .Values.defaultBackend.image.tag | toString -}}
-{{- printf "%s/%s:%s" $registryName $repositoryName $tag -}}
 {{/*
 Helm 2.11 supports the assignment of a value to a variable defined in a different scope,
 but Helm 2.9 and 2.10 doesn't support it, so we need to implement this if-else logic.
