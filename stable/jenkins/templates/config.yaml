@@ -181,9 +181,9 @@ data:
                 <comparator class="hudson.util.CaseInsensitiveComparator"/>
               </default>
               <int>{{ len .Values.ImagePullSecrets }}</int>
-{{- range $index, $ips := .Values.ImagePullSecrets }}
-              <string>{{ $ips.envName }}</string>
-              <string>{{ $ips.secretName }}</string>
+{{- range $key, $value := .Values.ImagePullSecrets }}
+              <string>{{ required "A valid .Values.ImagePullSecrets.*.envName entry required!" $value.envName }}</string>
+              <string>{{ $key }}</string>
 {{- end }}
             </tree-map>
           </envVars>

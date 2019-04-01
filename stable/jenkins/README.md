@@ -208,6 +208,74 @@ ServiceLabels:
   expose: true
 ```
 
+## Adding ImagePullSecrets
+
+`ImagePullSecrets` can be used to create ImagePullSecrets in Kubernetes. These ImagePullSecrets are intended for use within Jenkins to allow builds to [pull docker images from private registries](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/). Builds will be able to reference these secrets using the environment variable specified in `ImagePullSecrets.secret-name.envName`. For example,
+
+**Helm values:**
+
+```yaml
+ImagePullSecrets:
+  secret-name1:
+    envName: MY_SECRET
+    registry: my.first.registry
+    username: someuser
+    password: apassword
+  secret-name2:
+    envName: MY_SECRET2
+    registry: my.second.registry
+    username: someuser2
+    password: apassword2
+```
+
+**A Jenkins Pipeline Using the Created ImagePullSecret With the Kubernetes Plugin:**
+
+```
+pipeline {
+    agent {
+        kubernetes {
+            label 'pipeline-agent'
+            defaultContainer 'jnlp'
+            yaml """
+                apiVersion: v1
+                kind: Pod
+                metadata:
+                  labels:
+                    app.kubernetes.io/name: jenkins
+                spec:
+                  imagePullSecrets:
+                    - name: ${env.MY_SECRET} # Specify here all of the imagePullSecrets to be used for pulling private docker images that are specified within spec.containers[].image
+                    - name: ${env.MY_SECRET2}
+                  containers:
+                  - name: privateone
+                    image: my.first.registry/someimageone
+                    command:
+                    - cat
+                    tty: true
+                  - name: privatetwo
+                    image: my.second.registry/someimagetwo
+                    command:
+                    - cat
+                    tty: true
+            """
+        }
+    }
+
+    stages {
+        stage('Run Private Images') {
+            steps {
+                container('privateone') {
+                    echo 'Running in privateone...'
+                }
+                container('privatetwo') {
+                    echo 'Running in privatetwo...'
+                }
+            }
+        }
+    }
+}
+```
+
 ## Persistence
 
 The Jenkins image stores persistence under `/var/jenkins_home` path of the container. A dynamically managed Persistent Volume

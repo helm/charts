@@ -405,9 +405,11 @@ backup:
   destination: s3://nuvo-jenkins-data/backup
 
 # Optionally define a list of ImagePullSecrets to create. Each secret will be set as a Jenkins
-# Global Environment Variable with a key of `envName` and a value of `secretName`
+# Global Environment Variable with a key of `secret-name.envName` and a value of `secret-name`.
+# The secrets will be created in k8s with a name of `secret-name` in the same namespace that the
+# Jenkins master pod is deployed into.
 # ImagePullSecrets:
-#   - secretName: 
+#   secret-name: 
 #     envName: 
 #     registry: 
 #     username: 
