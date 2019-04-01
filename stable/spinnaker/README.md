@@ -163,3 +163,11 @@ halyard:
   annotations:
     iam.amazonaws.com/role: <role_arn>
 ```
+
+### Set custom annotations for the clouddriver pod
+
+```yaml
+clouddriver:
+  annotations:
+    iam.amazonaws.com/role: <role_arn>
+```
