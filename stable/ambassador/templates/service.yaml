@@ -38,12 +38,6 @@ spec:
       nodePort: {{ toYaml . }}
       {{- end }}
     {{- end }}
-    {{- if .Values.prometheusExporter.enabled }}
-    - port: {{ .Values.service.metrics.port }}
-      targetPort: metrics
-      protocol: TCP
-      name: metrics
-    {{- end }}
   selector:
     app.kubernetes.io/name: {{ include "ambassador.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
