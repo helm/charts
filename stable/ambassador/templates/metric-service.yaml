@@ -1,0 +1,21 @@
+{{- if .Values.prometheusExporter.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "ambassador.fullname" . }}-metrics
+  labels:
+    app.kubernetes.io/name: {{ include "ambassador.name" . }}
+    helm.sh/chart: {{ include "ambassador.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: {{ .Values.prometheusExporter.port }}
+      targetPort: metrics
+      protocol: TCP
+      name: metrics
+  selector:
+    app.kubernetes.io/name: {{ include "ambassador.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end -}}
