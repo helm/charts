@@ -17,12 +17,15 @@ $ helm install stable/kube-state-metrics
 | `image.repository`                    | The image repository to pull from                       | k8s.gcr.io/kube-state-metrics               |
 | `image.tag`                           | The image tag to pull from                              | `v1.5.0`                                    |
 | `image.pullPolicy`                    | Image pull policy                                       | IfNotPresent                                |
+| `replicas`                            | Number of replicas                                      | 1                                           |
 | `service.port`                        | The port of the container                               | 8080                                        |
 | `prometheusScrape`                    | Whether or not enable prom scrape                       | true                                        |
 | `rbac.create`                         | If true, create & use RBAC resources                    | true                                        |
+| `serviceAccount.create`               | If true, and rbac true, create & use serviceAccount     | true                                        |
+| `serviceAccount.name`                 | If not set & create is true, use template fullname      |                                             |
+| `serviceAccount.imagePullSecrets`     | Specify image pull secrets field                        | `[]`                                        |
 | `podSecurityPolicy.enabled`           | If true, create & use PodSecurityPolicy resources       | false                                       |
 | `podSecurityPolicy.annotations`       | Specify pod annotations in the pod security policy      | {}                                          |
-| `rbac.serviceAccountName`             | ServiceAccount to be used (ignored if rbac.create=true) | default                                     |
 | `securityContext.enabled`             | Enable security context                                 | `true`                                      |
 | `securityContext.fsGroup`             | Group ID for the container                              | `65534`                                     |
 | `securityContext.runAsUser`           | User ID for the container                               | `65534`                                     |
