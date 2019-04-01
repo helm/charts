@@ -1019,9 +1019,13 @@ concourse:
     ##
     rebalanceInterval:
 
+    ## Duration after which a worker should give up draining forwarded connections on shutdown.
+    ##
+    connectionDrainTimeout: 1h
+
     ## IP address on which to listen for health checking requests.
     ##
-    healthcheckBindIp:
+    healthcheckBindIp: 0.0.0.0
 
     ## Port on which to listen for health checking requests.
     ##
@@ -1029,7 +1033,7 @@ concourse:
 
     ## HTTP timeout for the full duration of health checking.
     ##
-    healthcheckTimeout:
+    healthcheckTimeout: 5s
 
     ## The name to set for the worker during registration. If not specified, the hostname will be used.
     ##
@@ -1061,7 +1065,7 @@ concourse:
 
     ## IP address on which to listen for the pprof debugger endpoints.
     ##
-    debugBindIp:
+    debugBindIp: 127.0.0.1
 
     ## Port on which to listen for beacon pprof server.
     ##
@@ -1077,15 +1081,23 @@ concourse:
 
     ## IP address on which to listen for the Garden server.
     ##
-    bindIp:
+    bindIp: 127.0.0.1
 
     ## Port on which to listen for the Garden server.
     ##
     bindPort: 7777
 
+    ## IP used to reach this worker from the ATC nodes.
+    ##
+    peerIp:
+
+    ## Interval on which containers and volumes will be garbage collected from the worker.
+    ##
+    sweepInterval: 30s
+
     ## Minimum level of logs to see. Possible options: debug, info, error.
     ##
-    logLevel:
+    logLevel: info
 
     ## Maximum number of containers which can be swept in parallel.
     ##
@@ -1120,7 +1132,7 @@ concourse:
     garden:
       ## Path to the 'gdn' executable (or leave as 'gdn' to find it in $PATH)
       ##
-      bin:
+      bin: gdn
 
       ## Path to a config file to use for Garden in INI format.
       ##
@@ -1145,11 +1157,11 @@ concourse:
     baggageclaim:
       ## Minimum level of logs to see. Possible values: debug, info, error
       ##
-      logLevel:
+      logLevel: info
 
       ## IP address on which to listen for API traffic.
       ##
-      bindIp:
+      bindIp: 127.0.0.1
 
       ## Port on which to listen for API traffic.
       ##
@@ -1157,15 +1169,15 @@ concourse:
 
       ## IP address on which to listen for the pprof debugger endpoints.
       ##
-      debugBindIp:
-
-      ## Disable remapping of user/group IDs in unprivileged volumes.
-      ##
-      disableUserNamespaces:
+      debugBindIp: 127.0.0.1
 
       ## Port on which to listen for baggageclaim pprof server.
       ##
       debugBindPort: 7787
+
+      ## Disable remapping of user/group IDs in unprivileged volumes.
+      ##
+      disableUserNamespaces:
 
       ## Directory in which to place volume data.
       ##
@@ -1178,15 +1190,19 @@ concourse:
 
       ## Path to btrfs binary
       ##
-      btrfsBin:
+      btrfsBin: btrfs
 
       ## Path to mkfs.btrfs binary
       ##
-      mkfsBin:
+      mkfsBin: mkfs.btrfs
 
       ## Path to directory in which to store overlay data
       ##
       overlaysDir:
+
+      ## Interval on which to reap expired volumes.
+      ##
+      reapInterval: 10s
 
 ## Configuration values for Concourse Web components.
 ## For more information regarding the characteristics of
