@@ -71,7 +71,7 @@ gangway:
   # is not generally considered a good idea. If you have to use an
   # empty secret and accept the risks that come with that then you can
   # set this to true.
-  #allowEmptyClientSecret: false
+  # allowEmptyClientSecret: false
 
   # The JWT claim to use as the username. This is used in UI.
   # Default is "nickname". This is combined with the clusterName
@@ -91,19 +91,19 @@ gangway:
 
   # The path to a root CA to trust for self signed certificates at the Oauth2 URLs
   # Env var: GANGWAY_TRUSTED_CA_PATH
-  #trustedCAPath: /cacerts/rootca.crt
+  # trustedCAPath: /cacerts/rootca.crt
 
   # The path gangway uses to create urls (defaults to "")
   # Env var: GANGWAY_HTTP_PATH
-  #httpPath: "https://${GANGWAY_HTTP_PATH}"
+  # httpPath: "https://${GANGWAY_HTTP_PATH}"
 
   # The key to use when encrypting the contents of cookies.
   # You can leave this blank and the chart will generate a random key, however
   # you must use that with caution. Subsequent upgrades to the deployment will
-  # regenerate this key which will cause Gangway to error when attempting to 
-  # decrypt cookies stored in users' browsers which were encrypted with the old 
-  # key. 
-  # TL;DR: Safe to use the auto generation in test environments, provide your 
+  # regenerate this key which will cause Gangway to error when attempting to
+  # decrypt cookies stored in users' browsers which were encrypted with the old
+  # key.
+  # TL;DR: Safe to use the auto generation in test environments, provide your
   # own in procution.
   # sessionKey:
 
