@@ -49,6 +49,10 @@ spec:
 {{- if .Values.priorityClassName }}
           priorityClassName: "{{ .Values.priorityClassName }}"
 {{- end }}
+{{- if .Values.image.pullSecret }}
+          imagePullSecrets:
+            - name: {{ .Values.image.pullSecret }}
+{{- end }}
           containers:
             - name: {{ .Chart.Name }}
               image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -73,6 +77,15 @@ spec:
 {{- range $key,$value := .Values.env }}
               - name: {{ $key | upper | quote}}
                 value: {{ $value | quote}}
+{{- end }}
+{{- end }}
+{{- if .Values.envFromSecrets }}
+{{- range $key,$value := .Values.envFromSecrets }}
+              - name: {{ $key | upper | quote}}
+                valueFrom:
+                  secretKeyRef:
+                    name: {{ $value.from.secret | quote}}
+                    key: {{ $value.from.key | quote}}
 {{- end }}
 {{- end }}
               resources:
