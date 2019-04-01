@@ -85,10 +85,7 @@ spec:
             - --{{ $key }}={{ $value }}
 {{- end }}
           env:
-{{- range $key, $value := $.Values.env }}
-            - name: "{{ $key }}"
-              value: "{{ $value }}"
-{{- end }}
+{{- include "settings" $ | indent 10 }}
           volumeMounts:
             - mountPath: {{ $refDir }}
               name: ref-dir
