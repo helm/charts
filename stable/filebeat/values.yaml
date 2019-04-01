@@ -140,6 +140,8 @@ podSecurityPolicy:
     # seccomp.security.alpha.kubernetes.io/defaultProfileName: 'docker/default'
     # apparmor.security.beta.kubernetes.io/defaultProfileName: 'runtime/default'
 
+privileged: false
+
 ## Add Elastic beat-exporter for Prometheus
 ## https://github.com/trustpilot/beat-exporter
 ## Dont forget to enable http on config.http.enabled (exposing filebeat stats)
