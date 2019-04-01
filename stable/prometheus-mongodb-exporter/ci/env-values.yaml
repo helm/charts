@@ -7,3 +7,4 @@ serviceMonitor:
   enabled: false
 env:
   TEST_ENV: test
+  MONGODDB_URI: mongodb://hostfromenv:9216
