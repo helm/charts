@@ -645,7 +645,7 @@ prometheusOperator:
   ## Port to expose on each node
   ## Only used if service.type is 'NodePort'
   ##
-    nodePort: 38080
+    nodePort: 30080
 
   ## Additional ports to open for Prometheus service
   ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#multi-port-services
@@ -818,7 +818,7 @@ prometheus:
     ## Port to expose on each node
     ## Only used if service.type is 'NodePort'
     ##
-    nodePort: 39090
+    nodePort: 30090
 
     ## Loadbalancer IP
     ## Only use if service.type is "loadbalancer"
