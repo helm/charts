@@ -182,7 +182,6 @@ spec:
       labels:
         app: {{ template "cassandra.name" . }}
         release: {{ .Release.Name }}
-        heritage: {{ .Release.Service }}
     spec:
       accessModes:
         - {{ .Values.persistence.accessMode | quote }}
