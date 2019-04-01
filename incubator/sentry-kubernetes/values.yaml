@@ -24,3 +24,7 @@ serviceAccount:
 rbac:
   # Specifies whether RBAC resources should be created
   create: true
+
+# The values to set in the PodDisruptionBudget spec (minAvailable/maxUnavailable)
+# If not set then a PodDisruptionBudget will not be created
+podDisruptionBudget:
