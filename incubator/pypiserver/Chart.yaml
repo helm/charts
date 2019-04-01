@@ -1,0 +1,12 @@
+name: pypiserver
+home: https://github.com/pypiserver/pypiserver
+version: 0.0.1
+appVersion: 1.2.7
+description: PyPI compatible server for pip or easy_install.
+icon: https://raw.githubusercontent.com/pypiserver/pypiserver/master/pypiserver_logo.png
+sources:
+  - https://github.com/pypiserver/pypiserver
+  - https://pypi.org/project/pypiserver/
+maintainers:
+  - name: Clement Gautier
+    email: clement@gautier.im

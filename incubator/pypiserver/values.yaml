@@ -1,0 +1,80 @@
+## If you want more than 1 replica you will have to use a ReadWriteMany volume
+replicaCount: 1
+
+image:
+  repository: pypiserver/pypiserver
+  tag: v1.2.7
+  pullPolicy: IfNotPresent
+  pullSecrets: []
+
+auth:
+  ## comma-separated list of (case-insensitive) actions to authenticate
+  ## Use '.' or '' for empty. Requires to have set the password (option below).
+  ## Available actions are update, download and list
+  actions: update
+  ## List of username / encoded passwords that will be put to the htpasswd file
+  ## use `htpasswd -n -b username password` to generate them
+  credentials: {}
+
+ingress:
+  enabled: false
+  labels: {}
+  annotations: {}
+  # kubernetes.io/ingress.class: nginx
+  # kubernetes.io/tls-acme: "true"
+  # path: "/pypiserver"
+  tls: []
+  # - secretName: pypiserver.cluster.local
+  #   hosts:
+  #     - pypiserver.cluster.local
+
+service:
+  type: ClusterIP
+  port: 8080
+  annotations: {}
+  labels: {}
+  clusterIP: ""
+  ## List of IP addresses at which the pypiserver service is available
+  ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
+  externalIPs: []
+  loadBalancerIP: ""
+  loadBalancerSourceRanges: []
+  # nodePort: 30000
+
+persistence:
+  enabled: false
+  ## PyPi server packages Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  # storageClass: "-"
+  ##
+  ## If you want to reuse an existing claim, you can pass the name of the PVC
+  ## using the existingClaim variable
+  # existingClaim: your-claim
+  ##
+  ## The Access mode should be ReadWriteMany if you decide to scale up to more
+  ## than one replica
+  accessMode: ReadWriteOnce
+  size: 5Gi
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
