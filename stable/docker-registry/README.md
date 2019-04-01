@@ -76,4 +76,4 @@ Specify each parameter using the `--set key=value[,key=value]` argument to
 `helm install`.
 
 To generate htpasswd file, run this docker command:
-`docker run --entrypoint htpasswd registry:2 -Bbn user password > ./htpasswd`.
+`docker run --rm --entrypoint htpasswd registry:2 -Bbn user password > ./htpasswd`.
