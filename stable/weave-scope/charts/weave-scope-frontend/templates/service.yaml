@@ -8,6 +8,9 @@ metadata:
   name: {{ .Values.global.service.name | default (include "toplevel.fullname" .) }}
   annotations:
     {{- include "weave-scope-frontend.annotations" . | indent 4 }}
+    {{- if .Values.global.service.annotations }}
+    {{- toYaml .Values.global.service.annotations | nindent 4 }}
+    {{- end }}
 spec:
   ports:
     - name: http

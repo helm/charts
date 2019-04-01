@@ -55,6 +55,7 @@ Note that most of this documentation is repeated in `values.yaml`; if you're in 
 | **service.name** | the short name desired for the frontend service (optional, but if not specified by the user a value will be calculated) -- this is a global so we can access its value easily from the agent subchart | `weave-scope-app` |
 | **service.port** | the port exposed by the Scope frontend service (required if weave-scope-frontend is enabled) -- this is a global so we can access its value easily from the agent subchart | `80` |
 | **service.type** | the type of the frontend service (required if weave-scope-frontend is enabled): ClusterIP, NodePort or LoadBalancer -- this is a global to keep it with the other values for configuring the frontend service | `ClusterIP` |
+| **service.annotations** | annotations for the frontend service | `{}` |
 
 
 ### Weave Scope frontend values
