@@ -118,6 +118,7 @@ affinity: {}
 # Enabling the prometheus exporter creates a sidecar and configures ambassador to use it
 prometheusExporter:
   enabled: false
+  port: 9102
   repository: prom/statsd-exporter
   tag: v0.8.1
   pullPolicy: IfNotPresent
