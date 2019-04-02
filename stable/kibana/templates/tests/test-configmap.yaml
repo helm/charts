@@ -14,7 +14,7 @@ data:
       skip "Can't guarentee pod names with selector"
       {{- else }}
       {{- $port := .Values.service.externalPort }}
-      url="http://{{ template "kibana.fullname" . }}{{ if $port }}:{{ $port }}{{ end }}/api/status"
+      url="http://{{ template "kibana.fullname" . }}{{ if $port }}:{{ $port }}{{ end }}/api{{ .Values.livenessProbe.path }}"
 
       # retry for 1 minute
       run curl -s -o /dev/null -I -w "%{http_code}" --retry 30 --retry-delay 2 $url
