@@ -48,7 +48,7 @@ proxy:
 
 ebpf:
   # Enable eBPF support for Falco
-  enabled: false
+  enabled: true
 
   settings:
     # Needed to enable eBPF JIT at runtime for performance reasons.
