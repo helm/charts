@@ -95,3 +95,21 @@ s3:
   # secretKey is AWS secret key. Omit for IAM role-based or provider-based authentication.
   secretKeyName: aws-secret-key
   logDirectory: s3a://spark-hs/
+
+wasbs:
+  enableWASBS: false
+  sasKeyMode: true
+  secret: azure-secrets
+  sasKeyName: azure-blob-sas-key
+  storageAccountKeyName: azure-storage-account-key
+  storageAccountNameKeyName: azure-storage-account-name
+  containerKeyName: azure-blob-container-name
+  logDirectory: wasbs:///spark-hs
+
+imagePullSecrets: []
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
