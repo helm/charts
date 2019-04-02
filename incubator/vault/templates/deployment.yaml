@@ -98,6 +98,9 @@ spec:
         - name: {{ .secretName | replace "." "-"}}
           mountPath: {{ .mountPath }}
         {{- end }}
+{{- if .Values.vault.extraParameters }}
+{{ toYaml .Values.vault.extraParameters | indent 8}}
+{{- end }}
 {{- if .Values.vault.extraContainers }}
 {{ toYaml .Values.vault.extraContainers | indent 6}}
 {{- end }}

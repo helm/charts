@@ -131,6 +131,12 @@ vault:
   extraEnv: {}
   #   - name: VAULT_API_ADDR
   #     value: "https://vault.internal.domain.name:8200"
+  extraParameters: {}
+  ## Additional parameters for the Vault cotainer. Permits any custom parameters such as 
+  ## envFrom, but not limited. These parameters will be mounted directly under the Vault container.
+  #    envFrom:
+  #    - configMapRef:
+  #        name: custom-config
   extraContainers: {}
   ## Additional containers to be added to the Vault pod
   # - name: vault-sidecar
