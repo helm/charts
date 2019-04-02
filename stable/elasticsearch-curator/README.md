@@ -52,6 +52,6 @@ their default values.
 | `priorityClassName`                  | priorityClassName                                           | `nil`                                        |
 | `extraVolumeMounts`                  | Mount extra volume(s),                                      |                                              |
 | `extraVolumes`                       | Extra volumes                                               |                                              |
-
+| `securityContext`                    | Configure PodSecurityContext                          |
 Specify each parameter using the `--set key=value[,key=value]` argument to
 `helm install`.
