@@ -98,7 +98,7 @@ spec:
       - name: odoo-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "odoo.fullname" . }}
+          claimName: {{ .Values.persistence.existingClaim | default (include "odoo.fullname" .) }}
       {{- else }}
         emptyDir: {}
       {{- end }}
