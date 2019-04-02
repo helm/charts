@@ -161,7 +161,8 @@ spec:
           {{- end }}
           volumeMounts:
             - name: datadir
-              mountPath: /bitnami/mongodb
+              mountPath: {{ .Values.persistence.mountPath }}
+              subPath: {{ .Values.persistence.subPath }}
             {{- if .Values.configmap }}
             - name: config
               mountPath: /opt/bitnami/mongodb/conf/mongodb.conf
