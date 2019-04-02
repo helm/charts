@@ -26,6 +26,16 @@ spec:
         {{ $key }}: {{ $value | quote }}
       {{- end }}
       {{- end }}
+      {{- if .Values.prometheus.enabled -}}
+      {{- if .Values.prometheus.enableScraping -}}
+      {{- if not .Values.deployment.podAnnotations }}
+      annotations:
+      {{- end}}
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/metrics"
+        prometheus.io/port: "8080"
+      {{- end }}
+      {{- end }}
       labels:
         app: {{ template "kuberhealthy.name" . }}
         chart: {{ .Chart.Name }}
