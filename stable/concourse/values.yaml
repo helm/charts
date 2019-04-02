@@ -311,6 +311,10 @@ concourse:
       ##
       pathPrefix:
 
+      ## Path under which to lookup shared credentials.
+      ##
+      sharedPath:
+
       ## if the Vault server is using a self-signed certificate, set this to true,
       ## and provide a value for the cert in secrets (field `vault-ca-cert`).
       ##

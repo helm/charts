@@ -346,6 +346,10 @@ spec:
               value: {{ .Values.concourse.web.vault.url | quote }}
             - name: CONCOURSE_VAULT_PATH_PREFIX
               value: {{ .Values.concourse.web.vault.pathPrefix | quote }}
+            {{- if.Values.concourse.web.vault.sharedPath }}
+            - name: CONCOURSE_VAULT_SHARED_PATH
+              value: {{ .Values.concourse.web.vault.sharedPath | quote }}
+            {{- end }}
             - name: CONCOURSE_VAULT_AUTH_BACKEND
               value: {{ .Values.concourse.web.vault.authBackend | quote }}
             {{- if .Values.concourse.web.vault.useCaCert }}
