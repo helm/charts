@@ -182,6 +182,5 @@ spec:
         - name: shared-pipe
           emptyDir: {}
         {{- end }}
-
   updateStrategy:
-    type: {{ default "OnDelete" .Values.daemonset.updateStrategy | quote }}
+{{ toYaml .Values.daemonset.updateStrategy | indent 4 }}

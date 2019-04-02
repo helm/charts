@@ -34,12 +34,13 @@ fakeEventGenerator:
   enabled: false
   replicas: 1
 
-daemonset: {}
-  # Allow the DaemonSet to perform a rolling update on helm update
+daemonset:
+  # Perform rolling updates by default in the DaemonSet agent
   # ref: https://kubernetes.io/docs/tasks/manage-daemon/update-daemon-set/
-  # If you do want to specify resources, uncomment the following lines, adjust
-  # them as necessary, and remove the curly braces after 'resources:'.
-  # updateStrategy: RollingUpdate
+  updateStrategy:
+    # You can also customize maxUnavailable, maxSurge or minReadySeconds if you
+    # need it
+    type: RollingUpdate
 
 # If is behind a proxy you can set the proxy server
 proxy:
