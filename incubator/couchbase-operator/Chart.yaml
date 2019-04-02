@@ -15,5 +15,5 @@ icon: https://couchbase-partners.github.io/helm-charts/assets/img/CB_Logomark_22
 sources:
 - https://github.com/couchbase/docker/tree/master/enterprise/couchbase-operator/1.0.0
 maintainers:
-- name: Couchbase, Inc
-  email: kubernetes-dev@couchbase.com
+- name: tahmmee
+  email: tahmmee@gmail.com
