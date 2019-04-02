@@ -68,6 +68,7 @@ postgresql:
     enabled: true
     ## If you want to reuse an existing claim, you can pass the name of the PVC using
     ## the existingClaim variable
+    ##
     # existingClaim: your-claim
 
     ## postgresql data Persistent Volume Storage Class
