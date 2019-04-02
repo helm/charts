@@ -1,6 +1,7 @@
 # Default values for falco.
 
 image:
+  registry: docker.io
   repository: falcosecurity/falco
   tag: 0.14.0
   pullPolicy: IfNotPresent

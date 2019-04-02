@@ -45,6 +45,7 @@ The following table lists the configurable parameters of the Falco chart and the
 
 | Parameter                                       | Description                                                          | Default                                                                                |
 | ---                                             | ---                                                                  | ---                                                                                    |
+| `image.registry`                                | The image registry to pull from                                      | `docker.io`                                                                            |
 | `image.repository`                              | The image repository to pull from                                    | `falcosecurity/falco`                                                                  |
 | `image.tag`                                     | The image tag to pull                                                | `0.14.0`                                                                               |
 | `image.pullPolicy`                              | The image pull policy                                                | `IfNotPresent`                                                                         |
