@@ -438,7 +438,7 @@ daemonset:
   #  nodeSelector: {}
 
   ## @param affinity - object - optional
-  ## Allow the DaemonSet to schedule ussing affinity rules
+  ## Allow the DaemonSet to schedule using affinity rules
   ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
   #
   #  affinity: {}
@@ -499,3 +499,64 @@ deployment:
   ## Sets PriorityClassName if defined.
   #
   #  priorityClassName:
+
+clusterchecksDeployment:
+
+  ## @param enabled - boolean - required
+  ## If true, deploys agent dedicated for running the Cluster Checks instead of running in the Daemonset's agents.
+  ## ref: https://docs.datadoghq.com/agent/autodiscovery/clusterchecks/
+  #
+  enabled: false
+
+  ## @param replicas - integer - required
+  ## If you want to deploy the cluckerchecks agent in HA, keep at least clusterchecksDeployment.replicas set to 2.
+  ## And increase the clusterchecksDeployment.replicas according to the number of Cluster Checks.
+  #
+  replicas: 2
+
+  ## @param resources - object -required
+  ## Datadog clusterchecks-agent resource requests and limits.
+  #
+  resources:
+    requests:
+      cpu: 200m
+      memory: 500Mi
+    limits:
+      cpu: 200m
+      memory: 500Mi
+
+  ## @param affinity - object - optional
+  ## Allow the ClusterChecks Deployment to schedule using affinity rules.
+  ## By default, ClusterChecks Deployment Pods are forced to run on different Nodes.
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  #
+  # affinity:
+
+  ## @param nodeSelector - object - optional
+  ## Allow the ClusterChecks Deploument to schedule on selected nodes
+  ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+  #
+  #  nodeSelector: {}
+
+  ## @param tolerations - array - required
+  ## Tolerations for pod assignment
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  #
+  tolerations: []
+
+  ## @param livenessProbe - object - optional
+  ## Override the agent's liveness probe logic from the default:
+  ## In case of issues with the probe, you can disable it with the
+  ## following values, to allow easier investigating:
+  #
+  #  livenessProbe:
+  #    exec:
+  #      command: ["/bin/true"]
+
+  ## @param env - list of object - optional
+  ## The dd-agent supports many environment variables
+  ## ref: https://github.com/DataDog/datadog-agent/tree/master/Dockerfiles/agent#environment-variables
+  #
+  #  env:
+  #    - name: <ENV_VAR_NAME>
+  #      value: <ENV_VAR_VALUE>

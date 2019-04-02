@@ -17,6 +17,11 @@ spec:
   podManagementPolicy: "Parallel"
   serviceName: {{ template "mongodb.fullname" . }}-headless
   replicas: {{ .Values.replicaSet.replicas.secondary }}
+  updateStrategy:
+    type: {{ .Values.updateStrategy.type }}
+    {{- if (eq "Recreate" .Values.updateStrategy.type) }}
+    rollingUpdate: null
+    {{- end }}
   template:
     metadata:
       labels:
