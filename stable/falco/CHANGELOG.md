@@ -7,9 +7,9 @@ numbering uses [semantic versioning](http://semver.org).
 
 ### Major Changes
 
-* Disable eBPF by default on Falco. We revert this change because the vast
-  majority of our users are using the kernel module approach, is better to be
-  a bit more conservative and don't bother our user base.
+* Disable eBPF by default on Falco. We activated eBPF by default to make the
+  CI pass, but now we found a better method to make the CI pass without
+  bothering our users.
 
 ## v0.6.0
 
