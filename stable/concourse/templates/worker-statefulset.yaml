@@ -237,11 +237,11 @@ spec:
             {{- end }}
             {{- if .Values.concourse.worker.volumeSweeperMaxInFlight }}
             - name: CONCOURSE_VOLUME_SWEEPER_MAX_IN_FLIGHT
-              value: {{ .Values.concourse.worker.volumeSweeperMaxInFlight }}
+              value: {{ .Values.concourse.worker.volumeSweeperMaxInFlight | quote }}
             {{- end }}
             {{- if .Values.concourse.worker.containerSweeperMaxInFlight }}
             - name: CONCOURSE_CONTAINER_SWEEPER_MAX_IN_FLIGHT
-              value: {{ .Values.concourse.worker.containerSweeperMaxInFlight }}
+              value: {{ .Values.concourse.worker.containerSweeperMaxInFlight | quote }}
             {{- end }}
 {{- if .Values.worker.env }}
 {{ toYaml .Values.worker.env | indent 12 }}

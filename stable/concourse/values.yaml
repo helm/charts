@@ -999,11 +999,11 @@ concourse:
     ##
     logLevel:
 
-    ## Maximum number of containers which can be swept in parallel. (default: 5)
+    ## Maximum number of containers which can be swept in parallel.
     ##
     containerSweeperMaxInFlight: 5
 
-    ## Maximum number of volumes which can be swept in parallel. (default: 5)
+    ## Maximum number of volumes which can be swept in parallel.
     ##
     volumeSweeperMaxInFlight: 5
 
