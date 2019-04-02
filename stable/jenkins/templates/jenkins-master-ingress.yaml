@@ -1,5 +1,5 @@
 {{- if .Values.Master.ingress.enabled }}
-apiVersion: extensions/v1beta1
+apiVersion: {{ .Values.Master.ingress.apiVersion }}
 kind: Ingress
 metadata:
 {{- if .Values.Master.ingress.labels }}
