@@ -3,6 +3,14 @@
 This file documents all notable changes to Sysdig Falco Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v0.7.0
+
+### Major Changes
+
+* Disable eBPF by default on Falco. We activated eBPF by default to make the
+  CI pass, but now we found a better method to make the CI pass without
+  bothering our users.
+
 ## v0.6.0
 
 ### Major Changes
