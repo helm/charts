@@ -44,7 +44,7 @@ The following table lists the configurable parameters of the Blackbox-Exporter c
 |               Parameter                |                    Description                    |            Default            |
 | -------------------------------------- | ------------------------------------------------- | ----------------------------- |
 | `config`                               | Prometheus blackbox configuration                 | {}                            |
-| `secretConfig`                         | Whether to treat blackbox configuration as secret | false                         |
+| `secretConfig`                         | Whether to treat blackbox configuration as secret | `false`                       |
 | `configmapReload.name`                 | configmap-reload container name                   | `configmap-reload`            |
 | `configmapReload.image.repository`     | configmap-reload container image repository       | `jimmidyson/configmap-reload` |
 | `configmapReload.image.tag`            | configmap-reload container image tag              | `v0.2.2`                      |
