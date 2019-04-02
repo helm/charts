@@ -8,5 +8,5 @@ sources:
   - https://www.github.com/drGrove/mtls-server/
   - https://hub.docker.com/r/drgrove/mtls-server/
 maintainers:
-  - name: Daniel Grove
+  - name: drGrove
     email: danny@drgrovellc.com
