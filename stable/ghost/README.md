@@ -61,6 +61,7 @@ The following table lists the configurable parameters of the Ghost chart and the
 | `volumePermissions.image.tag`       | Init container volume-permissions image tag                   | `latest`                                                 |
 | `volumePermissions.image.pullPolicy`| Init container volume-permissions image pull policy           | `Always`                                                 |
 | `ghostHost`                         | Ghost host to create application URLs                         | `nil`                                                    |
+| `ghostPort`                         | Ghost port to use in application URLs (defaults to `service.port` if `nil`) | `nil`                                                    |
 | `ghostProtocol`                     | Protocol (http or https) to use in the application URLs       | `http`                                                   |
 | `ghostPath`                         | Ghost path to create application URLs                         | `nil`                                                    |
 | `ghostUsername`                     | User of the application                                       | `user@example.com`                                       |
@@ -89,6 +90,7 @@ The following table lists the configurable parameters of the Ghost chart and the
 | `ingress.hosts[0].name`             | Hostname to your Ghost installation                           | `ghost.local`                                            |
 | `ingress.hosts[0].path`             | Path within the url structure                                 | `/`                                                      |
 | `ingress.hosts[0].tls`              | Utilize TLS backend in ingress                                | `false`                                                  |
+| `ingress.hosts[0].tlsHosts`         | Array of TLS hosts for ingress record (defaults to `ingress.hosts[0].name` if `nil`)                               | `nil`                                                  |
 | `ingress.hosts[0].tlsSecret`        | TLS Secret (certificates)                                     | `ghost.local-tls-secret`                                 |
 | `ingress.secrets[0].name`           | TLS Secret Name                                               | `nil`                                                    |
 | `ingress.secrets[0].certificate`    | TLS Secret Certificate                                        | `nil`                                                    |

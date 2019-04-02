@@ -10,6 +10,11 @@ metadata:
 spec:
   serviceName: {{ template "rabbitmq.fullname" . }}-headless
   replicas: {{ .Values.replicas }}
+  updateStrategy:
+    type: {{ .Values.updateStrategy.type }}
+    {{- if (eq "Recreate" .Values.updateStrategy.type) }}
+    rollingUpdate: null
+    {{- end }}
   selector:
     matchLabels:
       app: {{ template "rabbitmq.name" . }}
@@ -48,6 +53,20 @@ spec:
 {{ toYaml .Values.tolerations | indent 8 }}
       {{- end }}
       terminationGracePeriodSeconds: 10
+      {{- if and .Values.volumePermissions.enabled .Values.persistence.enabled .Values.securityContext.enabled }}
+      initContainers:
+      - name: volume-permissions
+        image: "{{ template "rabbitmq.volumePermissions.image" . }}"
+        imagePullPolicy: {{ default "" .Values.volumePermissions.image.pullPolicy | quote }}
+        command: ["/bin/chown", "-R", "{{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.fsGroup }}", "{{ .Values.persistence.path }}"]
+        securityContext:
+          runAsUser: 0
+        resources:
+{{ toYaml .Values.volumePermissions.resources | indent 10 }}
+        volumeMounts:
+        - name: data
+          mountPath: "{{ .Values.persistence.path }}"
+      {{- end }}
       containers:
       - name: rabbitmq
         image: {{ template "rabbitmq.image" . }}
@@ -69,9 +88,6 @@ spec:
             ulimit -n "${RABBITMQ_ULIMIT_NOFILES}"
             #replace the default password that is generated
             sed -i "s/CHANGEME/$RABBITMQ_PASSWORD/g" /opt/bitnami/rabbitmq/etc/rabbitmq/rabbitmq.conf
-            # Move logs to stdout
-            ln -sF /dev/stdout /opt/bitnami/rabbitmq/var/log/rabbitmq/rabbit@${MY_POD_IP}.log
-            ln -sF /dev/stdout /opt/bitnami/rabbitmq/var/log/rabbitmq/rabbit@${MY_POD_IP}_upgrade.log
             exec rabbitmq-server
         {{- if .Values.resources }}
         resources:
@@ -81,7 +97,7 @@ spec:
           - name: config-volume
             mountPath: /opt/bitnami/rabbitmq/conf
           - name: data
-            mountPath: /opt/bitnami/rabbitmq/var/lib/rabbitmq/
+            mountPath: "{{ .Values.persistence.path }}"
           {{- if .Values.rabbitmq.loadDefinition.enabled }}
           - name: load-definition-volume
             mountPath: /app
@@ -148,6 +164,8 @@ spec:
           - name: RABBITMQ_NODENAME
             value: "rabbit@$(MY_POD_IP)"
           {{- end }}
+          - name: RABBITMQ_LOGS
+            value: {{ .Values.rabbitmq.logs | quote }}
           - name: RABBITMQ_ULIMIT_NOFILES
             value: {{ .Values.rabbitmq.ulimitNofiles | quote }}
           - name: RABBITMQ_USE_LONGNAME
@@ -164,7 +182,7 @@ spec:
                 key: rabbitmq-password
 {{- if .Values.metrics.enabled }}
       - name: metrics
-        image: {{ template "metrics.image" . }}
+        image: {{ template "rabbitmq.metrics.image" . }}
         imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
         env:
         - name: RABBIT_PASSWORD

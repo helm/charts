@@ -2,7 +2,7 @@
 
 Installs [prometheus-operator](https://github.com/coreos/prometheus-operator) to create/configure/manage Prometheus clusters atop Kubernetes. This chart includes multiple components and is suitable for a variety of use-cases.
 
-The default installation is intended to suit monitoring a kubernetes cluster the chart is deployed onto. It is closely matches the kube-prometheus project.
+The default installation is intended to suit monitoring a kubernetes cluster the chart is deployed onto. It closely matches the kube-prometheus project.
 - [prometheus-operator](https://github.com/coreos/prometheus-operator)
 - [prometheus](https://prometheus.io/)
 - [alertmanager](https://prometheus.io/)
@@ -79,7 +79,7 @@ kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/ma
 
 2. Wait for CRDs to be created, which should only take a few seconds
 
-3. Install the chart, but disabling the CRD provisioning by setting `prometheusOperator.createCustomResource=false`
+3. Install the chart, but disable the CRD provisioning by setting `prometheusOperator.createCustomResource=false`
 ```console
 $ helm install --name my-release stable/prometheus-operator --set prometheusOperator.createCustomResource=false
 ```
@@ -91,7 +91,7 @@ The `crd-install` hook is required to deploy the prometheus operator CRDs before
 
 ## Configuration
 
-The following tables lists the configurable parameters of the prometheus-operator chart and their default values.
+The following tables list the configurable parameters of the prometheus-operator chart and their default values.
 
 ### General
 | Parameter | Description | Default |
@@ -139,9 +139,10 @@ The following tables lists the configurable parameters of the prometheus-operato
 | `prometheusOperator.kubeletService.enabled` | If true, the operator will create and maintain a service for scraping kubelets | `true` |
 | `prometheusOperator.kubeletService.namespace` | Namespace to deploy kubelet service | `kube-system` |
 | `prometheusOperator.serviceMonitor.selfMonitor` | Enable monitoring of prometheus operator | `true` |
+| `prometheus.serviceMonitor.interval` | Scrape interval. If not set, the Prometheus default scrape interval is used | `nil` |
 | `prometheusOperator.service.type` | Prometheus operator service type | `ClusterIP` |
 | `prometheusOperator.service.clusterIP` | Prometheus operator service clusterIP IP | `""` |
-| `prometheusOperator.service.nodePort` | Port to expose prometheus operator service on each node | `38080` |
+| `prometheusOperator.service.nodePort` | Port to expose prometheus operator service on each node | `30080` |
 | `prometheusOperator.service.annotations` | Annotations to be added to the prometheus operator service | `{}` |
 | `prometheusOperator.service.labels` |  Prometheus Operator Service Labels | `{}` |
 | `prometheusOperator.service.externalIPs` | List of IP addresses at which the Prometheus Operator server service is available  | `[]` |
@@ -170,6 +171,7 @@ The following tables lists the configurable parameters of the prometheus-operato
 | ----- | ----------- | ------ |
 | `prometheus.enabled` | Deploy prometheus | `true` |
 | `prometheus.serviceMonitor.selfMonitor` | Create a `serviceMonitor` to automatically monitor the prometheus instance | `true` |
+| `prometheus.serviceMonitor.interval` | Scrape interval. If not set, the Prometheus default scrape interval is used | `nil` |
 | `prometheus.serviceAccount.create` | Create a default serviceaccount for prometheus to use | `true` |
 | `prometheus.serviceAccount.name` | Name for prometheus serviceaccount | `""` |
 | `prometheus.rbac.roleNamespaces` | Create role bindings in the specified namespaces, to allow Prometheus monitoring a role binding in the release namespace will always be created. | `["kube-system"]` |
@@ -184,7 +186,7 @@ The following tables lists the configurable parameters of the prometheus-operato
 | `prometheus.service.type` |  Prometheus Service type | `ClusterIP` |
 | `prometheus.service.clusterIP` | Prometheus service clusterIP IP | `""` |
 | `prometheus.service.targetPort` |  Prometheus Service internal port | `9090` |
-| `prometheus.service.nodePort` |  Prometheus Service port for NodePort service type | `39090` |
+| `prometheus.service.nodePort` |  Prometheus Service port for NodePort service type | `30090` |
 | `prometheus.service.additionalPorts` |  Additional Prometheus Service ports to add for NodePort service type | `[]` |
 | `prometheus.service.annotations` |  Prometheus Service Annotations | `{}` |
 | `prometheus.service.labels` |  Prometheus Service Labels | `{}` |
@@ -196,7 +198,7 @@ The following tables lists the configurable parameters of the prometheus-operato
 | `prometheus.prometheusSpec.podMetadata` | Standard object’s metadata. More info: https://github.com/kubernetes/community/blob/master/contributors/devel/api-conventions.md#metadata Metadata Labels and Annotations gets propagated to the prometheus pods. | `{}` |
 | `prometheus.prometheusSpec.serviceMonitorSelectorNilUsesHelmValues` | If true, a nil or {} value for prometheus.prometheusSpec.serviceMonitorSelector will cause the prometheus resource to be created with selectors based on values in the helm deployment, which will also match the servicemonitors created | `true` |
 | `prometheus.prometheusSpec.serviceMonitorSelector` | ServiceMonitors to be selected for target discovery. If {}, select all ServiceMonitors | `{}` |
-| `prometheus.prometheusSpec.serviceMonitorNamespaceSelector` | Namespaces to be selected for ServiceMonitor discovery. See [namespaceSelector](https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#namespaceselector) for usage | `{}` |
+| `prometheus.prometheusSpec.serviceMonitorNamespaceSelector` | Namespaces to be selected for ServiceMonitor discovery. See [metav1.LabelSelector](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.11/#labelselector-v1-meta) for usage | `{}` |
 | `prometheus.prometheusSpec.image.repository` | Base image to use for a Prometheus deployment. | `quay.io/prometheus/prometheus` |
 | `prometheus.prometheusSpec.image.tag` | Tag of Prometheus container image to be deployed. | `v2.7.1` |
 | `prometheus.prometheusSpec.paused` | When a Prometheus deployment is paused, no actions except for deletion will be performed on the underlying objects. | `false` |
@@ -238,6 +240,7 @@ The following tables lists the configurable parameters of the prometheus-operato
 | ----- | ----------- | ------ |
 | `alertmanager.enabled` | Deploy alertmanager | `true` |
 | `alertmanager.serviceMonitor.selfMonitor` | Create a `serviceMonitor` to automatically monitor the alartmanager instance | `true` |
+| `alertmanager.serviceMonitor.interval` | Scrape interval. If not set, the Prometheus default scrape interval is used | `nil` |
 | `alertmanager.serviceAccount.create` | Create a `serviceAccount` for alertmanager | `true` |
 | `alertmanager.serviceAccount.name` | Name for Alertmanager service account | `""` |
 | `alertmanager.podDisruptionBudget.enabled` | If true, create a pod disruption budget for Alertmanager pods. The created resource cannot be modified once created - it must be deleted to perform a change | `true` |
@@ -285,6 +288,7 @@ The following tables lists the configurable parameters of the prometheus-operato
 | ----- | ----------- | ------ |
 | `grafana.enabled` | If true, deploy the grafana sub-chart | `true` |
 | `grafana.serviceMonitor.selfMonitor` | Create a `serviceMonitor` to automatically monitor the grafana instance | `true` |
+| `grafana.additionalDataSources` | Configure additional grafana datasources | `[]` |
 | `grafana.adminPassword` | Admin password to log into the grafana UI | "prom-operator" |
 | `grafana.defaultDashboardsEnabled` | Deploy default dashboards. These are loaded using the sidecar | `true` |
 | `grafana.ingress.enabled` | Enables Ingress for Grafana | `false` |
@@ -307,46 +311,55 @@ The following tables lists the configurable parameters of the prometheus-operato
 | `kubeApiServer.tlsConfig.serverName` | Name of the server to use when validating TLS certificate | `kubernetes` |
 | `kubeApiServer.tlsConfig.insecureSkipVerify` | Skip TLS certificate validation when scraping | `false` |
 | `kubeApiServer.serviceMonitor.jobLabel` | The name of the label on the target service to use as the job name in prometheus | `component` |
-| `kubeApiServer.serviceMonitor.selector` | The service selector | `{"matchLabels":{"component":"apiserver","provider":"kubernetes"}}`
+| `kubeApiServer.serviceMonitor.selector` | The service selector | `{"matchLabels":{"component":"apiserver","provider":"kubernetes"}}` |
+| `kubeApiServer.serviceMonitor.interval` | Scrape interval. If not set, the Prometheus default scrape interval is used | `nil` |
 | `kubelet.enabled` | Deploy servicemonitor to scrape the kubelet service. See also `prometheusOperator.kubeletService` | `true` |
 | `kubelet.namespace` | Namespace where the kubelet is deployed. See also `prometheusOperator.kubeletService.namespace` | `kube-system` |
-| `kubelet.serviceMonitor.https` | Enable scraping of the kubelet over HTTPS. For more information, see https://github.com/coreos/prometheus-operator/issues/926 | `false` |
+| `kubelet.serviceMonitor.https` | Enable scraping of the kubelet over HTTPS. For more information, see https://github.com/coreos/prometheus-operator/issues/926 | `true` |
 | `kubelet.serviceMonitor.cAdvisorMetricRelabelings` | The `metric_relabel_configs` for scraping cAdvisor. | `` |
+| `kubelet.serviceMonitor.interval` | Scrape interval. If not set, the Prometheus default scrape interval is used | `nil` |
 | `kubeControllerManager.enabled` | Deploy a `service` and `serviceMonitor` to scrape the Kubernetes controller-manager | `true` |
 | `kubeControllerManager.endpoints` | Endpoints where Controller-manager runs. Provide this if running Controller-manager outside the cluster | `[]` |
 | `kubeControllermanager.service.port` | Controller-manager port for the service runs on | `10252` |
 | `kubeControllermanager.service.targetPort` | Controller-manager targetPort for the service runs on | `10252` |
-| `kubeControllermanager.service.selector` | Controller-manager service selector | `{"k8s-app" : "kube-controller-manager" }` |
+| `kubeControllermanager.service.selector` | Controller-manager service selector | `{"component" : "kube-controller-manager" }` |
 | `kubeControllermanager.serviceMonitor.https` | Controller-manager service scrape over https | `false` |
+| `kubeControllermanager.serviceMonitor.interval` | Scrape interval. If not set, the Prometheus default scrape interval is used | `nil` |
 | `coreDns.enabled` | Deploy coreDns scraping components. Use either this or kubeDns | true |
 | `coreDns.service.port` | CoreDns port | `9153` |
 | `coreDns.service.targetPort` | CoreDns targetPort | `9153` |
-| `coreDns.service.selector` | CoreDns service selector | `{"k8s-app" : "coredns" }`
+| `coreDns.service.selector` | CoreDns service selector | `{"k8s-app" : "kube-dns" }` |
+| `coreDns.serviceMonitor.interval` | Scrape interval. If not set, the Prometheus default scrape interval is used | `nil` |
 | `kubeDns.enabled` | Deploy kubeDns scraping components. Use either this or coreDns| `false` |
 | `kubeDns.service.selector` | kubeDns service selector | `{"k8s-app" : "kube-dns" }` |
+| `kubeDns.serviceMonitor.interval` | Scrape interval. If not set, the Prometheus default scrape interval is used | `nil` |
 | `kubeEtcd.enabled` | Deploy components to scrape etcd | `true` |
 | `kubeEtcd.endpoints` | Endpoints where etcd runs. Provide this if running etcd outside the cluster | `[]` |
 | `kubeEtcd.service.port` | Etcd port | `4001` |
 | `kubeEtcd.service.targetPort` | Etcd targetPort | `4001` |
-| `kubeEtcd.service.selector` | Selector for etcd if running inside the cluster | `{"k8s-app":"etcd-server"}` |
+| `kubeEtcd.service.selector` | Selector for etcd if running inside the cluster | `{"component":"etcd"}` |
 | `kubeEtcd.serviceMonitor.scheme` | Etcd servicemonitor scheme | `http` |
 | `kubeEtcd.serviceMonitor.insecureSkipVerify` | Skip validating etcd TLS certificate when scraping | `false` |
 | `kubeEtcd.serviceMonitor.serverName` | Etcd server name to validate certificate against when scraping | `""` |
 | `kubeEtcd.serviceMonitor.caFile` | Certificate authority file to use when connecting to etcd. See `prometheus.prometheusSpec.secrets` | `""` |
 | `kubeEtcd.serviceMonitor.certFile` | Client certificate file to use when connecting to etcd. See `prometheus.prometheusSpec.secrets` | `""` |
 | `kubeEtcd.serviceMonitor.keyFile` | Client key file to use when connecting to etcd.  See `prometheus.prometheusSpec.secrets` | `""` |
+| `kubeEtcd.serviceMonitor.interval` | Scrape interval. If not set, the Prometheus default scrape interval is used | `nil` |
 | `kubeScheduler.enabled` | Deploy a `service` and `serviceMonitor` to scrape the Kubernetes scheduler | `true` |
 | `kubeScheduler.endpoints` | Endpoints where scheduler runs. Provide this if running scheduler outside the cluster | `[]` |
 | `kubeScheduler.service.port` | Scheduler port for the service runs on | `10251` |
 | `kubeScheduler.service.targetPort` | Scheduler targetPort for the service runs on | `10251` |
-| `kubeScheduler.service.selector` | Scheduler service selector | `{"k8s-app" : "kube-scheduler" }` |
+| `kubeScheduler.service.selector` | Scheduler service selector | `{"component" : "kube-scheduler" }` |
 | `kubeScheduler.serviceMonitor.https` | Scheduler service scrape over https | `false` |
+| `kubeScheduler.serviceMonitor.interval` | Scrape interval. If not set, the Prometheus default scrape interval is used | `nil` |
 | `kubeStateMetrics.enabled` | Deploy the `kube-state-metrics` chart and configure a servicemonitor to scrape | `true` |
+| `kubeStateMetrics.serviceMonitor.interval` | Scrape interval. If not set, the Prometheus default scrape interval is used | `nil` |
 | `kube-state-metrics.rbac.create` | Create RBAC components in kube-state-metrics. See `global.rbac.create` | `true` |
 | `kube-state-metrics.podSecurityPolicy.enabled` | Create pod security policy resource for kube-state-metrics. | `true` |
 | `nodeExporter.enabled` | Deploy the `prometheus-node-exporter` and scrape it | `true` |
 | `nodeExporter.jobLabel` | The name of the label on the target service to use as the job name in prometheus. See `prometheus-node-exporter.podLabels.jobLabel=node-exporter` default | `jobLabel` |
 | `nodeExporter.serviceMonitor.metricRelabelings` | Metric relablings for the `prometheus-node-exporter` ServiceMonitor | `[]` |
+| `nodeExporter.serviceMonitor.interval` | Scrape interval. If not set, the Prometheus default scrape interval is used | `nil` |
 | `prometheus-node-exporter.podLabels` | Additional labels for pods in the DaemonSet | `{"jobLabel":"node-exporter"}` |
 | `prometheus-node-exporter.extraArgs` | Additional arguments for the node exporter container | `["--collector.filesystem.ignored-mount-points=^/(dev|proc|sys|var/lib/docker/.+)($|/)", "--collector.filesystem.ignored-fs-types=^(autofs|binfmt_misc|cgroup|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|mqueue|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|sysfs|tracefs)$"]` |
 
@@ -368,7 +381,7 @@ $ helm install --name my-release stable/prometheus-operator -f values1.yaml,valu
 
 ## Developing Prometheus Rules and Grafana Dashboards
 
-This chart Grafana Dashboards and Prometheus Rules are just a copy from coreos/prometheus-operator and other sources, synced (with alterations) by scripts in [hack](hack) folder. In order to introduce any changes you need to first [add them to original repo](https://github.com/coreos/prometheus-operator/blob/master/contrib/kube-prometheus/docs/developing-prometheus-rules-and-grafana-dashboards.md) and then sync there by scripts.
+This chart Grafana Dashboards and Prometheus Rules are just a copy from coreos/prometheus-operator and other sources, synced (with alterations) by scripts in [hack](hack) folder. In order to introduce any changes you need to first [add them to the original repo](https://github.com/coreos/prometheus-operator/blob/master/contrib/kube-prometheus/docs/developing-prometheus-rules-and-grafana-dashboards.md) and then sync there by scripts.
 
 ## Further Information
 
@@ -385,7 +398,7 @@ There is no simple and direct migration path between the charts as the changes a
 
 The capabilities of the old chart are all available in the new chart, including the ability to run multiple prometheus instances on a single cluster - you will need to disable the parts of the chart you do not wish to deploy.
 
-You can check out the tickets for this change [here](https://github.com/coreos/prometheus-operator/issues/592) and [here](https://github.com/helm/charts/pull/6765)
+You can check out the tickets for this change [here](https://github.com/coreos/prometheus-operator/issues/592) and [here](https://github.com/helm/charts/pull/6765).
 
 ## High-level overview of Changes
 The chart has 3 dependencies, that can be seen in the chart's requirements file:
@@ -401,7 +414,7 @@ The Grafana chart is more feature-rich than this chart - it contains a sidecar t
 The CRDs are provisioned using crd-install hooks, rather than relying on a separate chart installation. If you already have these CRDs provisioned and don't want to remove them, you can disable the CRD creation by these hooks by passing `prometheusOperator.createCustomResource=false`
 
 ### Kubelet Service
-Because the kubelet service has a new name in the chart, make sure to clean up the old kubelet service in the `kube-system` namespace to prevent counting container metrics twice
+Because the kubelet service has a new name in the chart, make sure to clean up the old kubelet service in the `kube-system` namespace to prevent counting container metrics twice.
 
 ### Persistent Volumes
 If you would like to keep the data of the current persistent volumes, it should be possible to attach existing volumes to new PVCs and PVs that are created using the conventions in the new chart. For example, in order to use an existing Azure disk for a helm release called `prometheus-migration` the following resources can be created:

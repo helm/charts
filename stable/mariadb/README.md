@@ -82,6 +82,7 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `master.affinity`                         | Master affinity (in addition to master.antiAffinity when set)  | `{}`                                                   |
 | `master.antiAffinity`                     | Master pod anti-affinity policy                     | `soft`                                                            |
 | `master.tolerations`                      | List of node taints to tolerate (master)            | `[]`                                                              |
+| `master.updateStrategy`                   | Master statefulset update strategy policy           | `RollingUpdate`                                                   |
 | `master.persistence.enabled`              | Enable persistence using PVC                        | `true`                                                            |
 | `master.persistence.existingClaim`        | Provide an existing `PersistentVolumeClaim`         | `nil`                                                             |
 | `master.persistence.mountPath`            | Path to mount the volume at                         | `/bitnami/mariadb`                                                |
@@ -113,6 +114,7 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `slave.affinity`                          | Slave affinity (in addition to slave.antiAffinity when set) | `{}`                                                      |
 | `slave.antiAffinity`                      | Slave pod anti-affinity policy                      | `soft`                                                            |
 | `slave.tolerations`                       | List of node taints to tolerate for (slave)         | `[]`                                                              |
+| `slave.updateStrategy`                    | Slave statefulset update strategy policy            | `RollingUpdate`                                                   |
 | `slave.persistence.enabled`               | Enable persistence using a `PersistentVolumeClaim`  | `true`                                                            |
 | `slave.persistence.annotations`           | Persistent Volume Claim annotations                 | `{}`                                                              |
 | `slave.persistence.storageClass`          | Persistent Volume Storage Class                     | ``                                                                |
