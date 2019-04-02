@@ -316,7 +316,7 @@ spec:
 
       volumes:
 {{- if .Values.Persistence.volumes }}
-{{ toYaml .Values.Persistence.volumes | indent 6 }}
+{{ tpl (toYaml .Values.Persistence.volumes | indent 6) . }}
 {{- end }}
       - name: plugins
         emptyDir: {}
