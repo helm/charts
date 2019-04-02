@@ -16,5 +16,15 @@ spec:
       app: {{ template "prometheus-rabbitmq-exporter.name" . }}
       release: {{ .Release.Name }}
   endpoints:
-    - port: rabbitmq-exporter
+    - port: publish
+  {{- if .Values.prometheus.monitor.interval }}
+      interval: {{ .Values.prometheus.monitor.interval }}
+  {{- end }}
+  {{- if .Values.prometheus.monitor.namespace }}
+  namespaceSelector:
+    matchNames:
+    {{- range .Values.prometheus.monitor.namespace }}
+    - {{ . }}
+    {{- end }}
+  {{- end }}
 {{- end }}

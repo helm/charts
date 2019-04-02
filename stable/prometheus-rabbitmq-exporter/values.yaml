@@ -53,3 +53,5 @@ prometheus:
   monitor:
     enabled: false
     additionalLabels: {}
+    interval: 15s
+    namespace: []
