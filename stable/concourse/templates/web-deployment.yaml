@@ -807,6 +807,14 @@ spec:
             - name: CONCOURSE_OAUTH_SKIP_SSL_VALIDATION
               value: {{ .Values.concourse.web.auth.oauth.skipSslValidation | quote }}
             {{- end }}
+            {{- if .Values.concourse.web.auth.oauth.userNameKey }}
+            - name: CONCOURSE_OAUTH_USER_NAME_KEY
+              value: {{ .Values.concourse.web.auth.oauth.userNameKey | quote }}
+            {{- end }}
+            {{- if .Values.concourse.web.auth.oauth.userIdKey }}
+            - name: CONCOURSE_OAUTH_USER_ID_KEY
+              value: {{ .Values.concourse.web.auth.oauth.userIdKey | quote }}
+            {{- end }}
             {{- end }}
             {{- if .Values.concourse.web.auth.oidc.enabled }}
             {{- if .Values.concourse.web.auth.oidc.displayName }}
@@ -846,6 +854,10 @@ spec:
             {{- if .Values.concourse.web.auth.oidc.skipSslValidation }}
             - name: CONCOURSE_OIDC_SKIP_SSL_VALIDATION
               value: {{ .Values.concourse.web.auth.oidc.skipSslValidation | quote }}
+            {{- end }}
+            {{- if .Values.concourse.web.auth.oidc.userNameKey }}
+            - name: CONCOURSE_OIDC_USER_NAME_KEY
+              value: {{ .Values.concourse.web.auth.oidc.userNameKey | quote }}
             {{- end }}
             {{- end }}
             {{- if .Values.concourse.web.tsa.logLevel }}

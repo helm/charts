@@ -822,6 +822,16 @@ concourse:
         ##
         skipSslValidation:
 
+        ## The user id key indicates which claim to use to map an external user id to a
+        ## Concourse user id.
+        ##
+        userIdKey: user_id
+
+        ## The user name key indicates which claim to use to map an external user name to a
+        ## Concourse user name.
+        ##
+        userNameKey: user_name
+
       ## Authentication (OIDC)
       oidc:
         enabled: false
@@ -849,6 +859,11 @@ concourse:
         ## Skip SSL validation
         ##
         skipSslValidation:
+
+        ## The user name key indicates which claim to use to map an external user name to a
+        ## Concourse user name.
+        ##
+        userNameKey: username
 
     tsa:
       ## Minimum level of logs to see. Possible values: debug, info, error.
