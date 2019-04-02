@@ -34,11 +34,9 @@ Master:
   # you should revert Master.AdminUser to your preferred admin user:
   AdminUser: admin
   # AdminPassword: <defaults to random>
-  OwnSshKey: false
-  # If CasC auto-reload is enabled, an SSH (RSA) keypair is needed.  Can either provide your own, or leave unconfigured\false to allow a random key to be auto-generated.
-  # If you choose to use your own, you must upload your decrypted RSA private key (not the public key above) to a Kubernetes secret using the following command:
-  # kubectl -n <namespace> create secret generic <helm_release_name> --dry-run --from-file=jenkins-admin-private-key=~/.ssh/id_rsa -o yaml |kubectl -n <namespace> apply -f -
-  # Replace ~/.ssh/id_rsa in the above command with the path to your private key file and the <helm_release_name> and <namespace> placeholders to suit.
+  # AdminSshKey: <defaults to auto-generated>
+  # If CasC auto-reload is enabled, an SSH (RSA) keypair is needed.  Can either provide your own, or leave unconfigured to allow a random key to be auto-generated.
+  # If you supply your own, it is recommended that the values file that contains your key not be committed to source control in an unencrypted format
   RollingUpdate: {}
   # Ignored if Persistence is enabled
   # maxSurge: 1
@@ -190,7 +188,7 @@ Master:
       # If enabled: true, Jenkins Configuration as Code will be reloaded on-the-fly without a reboot.  If false or not-specified,
       # jcasc changes will cause a reboot and will only be applied at the subsequent start-up.  Auto-reload uses the Jenkins CLI
       # over SSH to reapply config when changes to the ConfigScripts are detected.  The admin user (or account you specify in
-      # Master.AdminUser) will have a random SSH private key (RSA 4096) assigned unless you specify OwnSshKey: true.  This will be saved to a k8s secret.
+      # Master.AdminUser) will have a random SSH private key (RSA 4096) assigned unless you specify AdminSshKey.  This will be saved to a k8s secret.
       enabled: false
       image: shadwell/k8s-sidecar:0.0.2
       imagePullPolicy: IfNotPresent
@@ -248,6 +246,11 @@ Master:
   # the jenkins config with the contents of the configMap every time the pod starts.
   # This will also overwrite all init scripts
   OverwriteConfig: false
+
+  # By default, the Jobs Map is only used to set the initial jobs the first time
+  # that the chart is installed.  Setting `overwriteJobs` to `true` will overwrite
+  # the jenkins jobs configuration with the contents of Jobs every time the pod starts.
+  overwriteJobs: false
 
   ingress:
     enabled: false
