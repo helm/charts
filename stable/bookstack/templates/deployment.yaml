@@ -89,7 +89,7 @@ spec:
           - name: uploads
             mountPath: /var/www/bookstack/public/uploads
           - name: storage
-            mountPath: /var/www/bookstack/public/storage
+            mountPath: /var/www/bookstack/storage/uploads
           resources:
 {{ toYaml .Values.resources | indent 12 }}
       volumes:
