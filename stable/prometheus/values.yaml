@@ -769,6 +769,11 @@ server:
     loadBalancerIP: ""
     loadBalancerSourceRanges: []
     servicePort: 80
+    extraPorts:
+    # - name: grpc
+    #   port: 10901
+    #   protocol: TCP
+    #   targetPort: 10901
     type: ClusterIP
 
   ## Prometheus server pod termination grace period

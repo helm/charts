@@ -289,6 +289,7 @@ Parameter | Description | Default
 `server.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
 `server.service.nodePort` | Port to be used as the service NodePort (ignored if `server.service.type` is not `NodePort`) | `0`
 `server.service.servicePort` | Prometheus server service port | `80`
+`server.service.extraPorts` | list of extra ports to expose | `nil`
 `server.service.type` | type of Prometheus server service to create | `ClusterIP`
 `server.sidecarContainers` | array of snippets with your sidecar containers for prometheus server | `""`
 `serviceAccounts.alertmanager.create` | If true, create the alertmanager service account | `true`

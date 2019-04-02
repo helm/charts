@@ -36,6 +36,9 @@ spec:
     {{- if .Values.server.service.nodePort }}
       nodePort: {{ .Values.server.service.nodePort }}
     {{- end }}
+    {{- if .Values.server.service.extraPorts }}
+    {{- toYaml .Values.server.service.extraPorts | nindent 4 }}
+    {{- end }}
   selector:
     {{- include "prometheus.server.matchLabels" . | nindent 4 }}
   type: "{{ .Values.server.service.type }}"
