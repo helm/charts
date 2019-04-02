@@ -1,21 +1,21 @@
 # Default values for falco.
 
 image:
+  registry: docker.io
   repository: falcosecurity/falco
-  tag: 0.13.0
+  tag: 0.14.0
   pullPolicy: IfNotPresent
 
-resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 30m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 20m
-  #   memory: 128Mi
+resources:
+  # Although resources needed are subjective on the actual workload we provide
+  # a sane defaults ones. If you have more questions or concerns, please refer
+  # to Sysdig Support for more info about it
+  requests:
+    cpu: 100m
+    memory: 512Mi
+  limits:
+    cpu: 200m
+    memory: 1024Mi
 
 extraArgs: []
 
@@ -33,12 +33,13 @@ fakeEventGenerator:
   enabled: false
   replicas: 1
 
-daemonset: {}
-  # Allow the DaemonSet to perform a rolling update on helm update
+daemonset:
+  # Perform rolling updates by default in the DaemonSet agent
   # ref: https://kubernetes.io/docs/tasks/manage-daemon/update-daemon-set/
-  # If you do want to specify resources, uncomment the following lines, adjust
-  # them as necessary, and remove the curly braces after 'resources:'.
-  # updateStrategy: RollingUpdate
+  updateStrategy:
+    # You can also customize maxUnavailable, maxSurge or minReadySeconds if you
+    # need it
+    type: RollingUpdate
 
 # If is behind a proxy you can set the proxy server
 proxy:
@@ -48,7 +49,7 @@ proxy:
 
 ebpf:
   # Enable eBPF support for Falco
-  enabled: false
+  enabled: true
 
   settings:
     # Needed to enable eBPF JIT at runtime for performance reasons.
