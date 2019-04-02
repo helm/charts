@@ -3,6 +3,10 @@ image:
   tag: "6.7.0"
   pullPolicy: "IfNotPresent"
 
+testFramework:
+  image: "dduportal/bats"
+  tag: "0.4.0"
+
 commandline:
   args: []
 
@@ -17,11 +21,11 @@ env: {}
   # SERVER_DEFAULTROUTE: "/app/kibana"
 
 files:
-  kibana.yml: {}
+  kibana.yml:
     ## Default Kibana configuration from kibana-docker.
-    # server.name: kibana
-    # server.host: "0"
-    # elasticsearch.url: http://elasticsearch:9200
+    server.name: kibana
+    server.host: "0"
+    elasticsearch.url: http://elasticsearch:9200
 
     ## Custom config properties below
     ## Ref: https://www.elastic.co/guide/en/kibana/current/settings.html
