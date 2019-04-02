@@ -200,7 +200,7 @@ concourse:
 
     ## Method by which a worker is selected during container placement.
     ## Possible values: volume-locality | random | fewest-build-containers
-    containerPlacementStrategy: volume-locailty
+    containerPlacementStrategy: volume-locality
 
     ## How long to wait for Baggageclaim to send the response header.
     ##
@@ -258,7 +258,7 @@ concourse:
 
       ## The port to connect to.
       ##
-      port:
+      port: 5432
 
       ## Path to a UNIX domain socket to connect to.
       ##
@@ -572,13 +572,6 @@ concourse:
     xFrameOptions:
 
     gc:
-      ## Enables overriding the default values that Concourse sets
-      ## for the parameters related to scheduling.
-      ##
-      ## **Do not change this values unless you're sure about what you're doing**.
-      ##
-      overrideDefaults: false
-
       ## Interval on which to perform garbage collection.
       ##
       interval: 30s
@@ -600,7 +593,7 @@ concourse:
 
       ## Client hostname with which the build logs will be sent to the syslog server.
       ##
-      hostName: atc-syslog-drainer
+      hostname: atc-syslog-drainer
 
       ## Remote syslog server address with port (Example: 0.0.0.0:514).
       ##
