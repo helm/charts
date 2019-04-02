@@ -93,6 +93,8 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `securityContext.fsGroup`                          | Group ID for the container                                                                   | `1001`                                                  |
 | `securityContext.runAsUser`                        | User ID for the container                                                                    | `1001`                                                  |
 | `persistence.enabled`                              | Use a PVC to persist data                                                                    | `true`                                                  |
+| `persistence.mountPath`                            | Path to mount the volume at                                                                  | `/bitnami/mongodb`                                      |
+| `persistence.subPath`                              | Subdirectory of the volume to mount at                                                       | `""`                                                     |
 | `persistence.storageClass`                         | Storage class of backing PVC                                                                 | `nil` (uses alpha storage class annotation)             |
 | `persistence.accessMode`                           | Use volume as ReadOnly or ReadWrite                                                          | `ReadWriteOnce`                                         |
 | `persistence.size`                                 | Size of data volume                                                                          | `8Gi`                                                   |
@@ -217,7 +219,7 @@ $ kubectl delete statefulset my-release-mongodb-arbiter my-release-mongodb-prima
 MongoDB can exposed externally using the [NGINX Ingress Controller](https://github.com/kubernetes/ingress-nginx). To do so, it's necessary to:
 
 - Install the MongoDB chart setting the parameter `ingress.enabled=true`.
-- Create a ConfigMap to map the external port to use and the internal service/port where to redirect the requests (see https://github.com/kubernetes/ingress-nginx/blob/master/docs/user-guide/exposing-tcp-udp-services.md for more information). 
+- Create a ConfigMap to map the external port to use and the internal service/port where to redirect the requests (see https://github.com/kubernetes/ingress-nginx/blob/master/docs/user-guide/exposing-tcp-udp-services.md for more information).
 
 For instance, if you installed the MongoDB chart in the `default` namespace, you can install the [stable/nginx-ingress chart](https://github.com/helm/charts/tree/master/stable/nginx-ingress) setting the "tcp" parameter in the **values.yaml** used to install the chart as shown below:
 

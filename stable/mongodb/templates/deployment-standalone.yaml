@@ -147,7 +147,8 @@ spec:
         {{- end }}
         volumeMounts:
         - name: data
-          mountPath: /bitnami/mongodb
+          mountPath: {{ .Values.persistence.mountPath }}
+          subPath: {{ .Values.persistence.subPath }}
         {{- if  or (.Files.Glob "files/docker-entrypoint-initdb.d/*[sh|js|json]") (.Values.initConfigMap) }}
         - name: custom-init-scripts
           mountPath: /docker-entrypoint-initdb.d
