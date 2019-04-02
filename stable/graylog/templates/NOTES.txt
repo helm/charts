@@ -23,7 +23,7 @@ To connect to your Graylog server:
 2. The Graylog root users
 
   echo "User: {{ .Values.graylog.rootUsername }}"
-  echo "Password: $(kubectl get secret {{ template "graylog.fullname" . }} -o "jsonpath={.data['auth']}" | base64 -D)"
+  echo "Password: $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "graylog.fullname" . }} -o "jsonpath={.data['graylog-password-secret']}" | base64 --decode)"
 
 To send logs to graylog:
 
