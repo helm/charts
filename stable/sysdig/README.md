@@ -225,11 +225,11 @@ sysdig:
   settings:
     app_checks:
       - name: myredis
-	[...]
+        [...]
       - name: mymongo
-	[...]
+        [...]
       - name: mytraefik
-	[...]
+        [...]
 ```
 
 You can generate an additional values YAML file with the custom AppChecks:
