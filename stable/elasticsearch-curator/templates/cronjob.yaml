@@ -102,3 +102,7 @@ spec:
           tolerations:
 {{ toYaml . | indent 12 }}
     {{- end }}
+    {{- with .Values.securityContext }}
+          securityContext:
+{{ toYaml . | indent 12 }}
+    {{- end }}
