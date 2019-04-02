@@ -3,26 +3,8 @@
 This helm chart installs Velero version v0.11.0
 https://github.com/heptio/velero/tree/v0.11.0
 
-## Upgrading to v0.10
 
-Ark v0.10.0 introduces breaking changes. The below instructions are based on the [official upgrade guide](https://heptio.github.io/velero/v0.10.0/upgrading-to-v0.10).
-
-1. Pull the latest changes in this chart. If you're using Helm dependencies, update the chart version you're using in your `requirements.yaml` and run `helm dependency update`.
-
-2. Scale down
-
-```sh
-kubectl scale -n heptio-ark deploy/ark --replicas 0
-```
-
-3. Migrate file structure of your backup storage according to [guide](https://heptio.github.io/velero/v0.10.0/storage-layout-reorg-v0.10.html)
-4. Adjust your `values.yaml` to the new structure and naming
-5. Upgrade your deployment
-
-```sh
-helm upgrade --force --namespace heptio-ark ark ./ark
-```
-## Upgrading to v0.11
+## Upgrading to v0.11.0
 
 As of v0.11.0, Heptio Ark has become Velero.
 
@@ -32,7 +14,7 @@ The [instructions found here](https://heptio.github.io/velero/v0.11.0/migrating-
 
 ### Secret for cloud provider credentials
 Velero server needs an IAM service account in order to run, if you don't have it you must create it.
-Please follow the official documentation: https://heptio.github.io/velero/v0.10.0/install-overview
+Please follow the official documentation: https://heptio.github.io/velero/v0.11.0/install-overview
 
 Don't forget the step to create the secret
 ```
@@ -41,7 +23,7 @@ kubectl create secret generic cloud-credentials --namespace <VELERO_NAMESPACE> -
 
 ### Configuration
 Please change the values.yaml according to your setup
-See here for the official documentation https://heptio.github.io/velero/v0.10.0/install-overview
+See here for the official documentation https://heptio.github.io/velero/v0.11.0/install-overview
 
 Parameter | Description | Default | Required
 --- | --- | --- | ---
@@ -58,7 +40,7 @@ Parameter | Description | Default | Required
 Parameter | Description | Default
 --- | --- | ---
 `image.repository` | Image repository | `gcr.io/heptio-images/velero`
-`image.tag` | Image tag | `v0.9.1`
+`image.tag` | Image tag | `v0.11.0`
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
 `podAnnotations` | Annotations for the Velero server pod | `{}`
 `rbac.create` | If true, create and use RBAC resources | `true`
