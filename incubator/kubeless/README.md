@@ -56,6 +56,7 @@ The following table lists the configurable parameters of the Kubeless chart and 
 | Parameter                                                         | Description                                | Default                                   |
 | ----------------------------------------------------------------- | ------------------------------------------ | ----------------------------------------- |
 | `rbac.create`                                                     | Create RBAC backed ServiceAccount          | `false`                                   |
+| `config.functionsNamespace`                                       | Functions namespace                        | ""                                        |
 | `config.builderImage`                                             | Function builder image                     | `kubeless/function-image-builder`         |
 | `config.builderImagePullSecret`                                   | Secret to pull builder image               | ""                                        |
 | `config.builderImage`                                             | Provision image                            | `kubeless/unzip`                          |
