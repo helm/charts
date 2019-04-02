@@ -980,6 +980,14 @@ concourse:
     ##
     logLevel:
 
+    ## Maximum number of containers which can be swept in parallel. (default: 5)
+    ##
+    containerSweeperMaxInFlight: 5
+
+    ## Maximum number of volumes which can be swept in parallel. (default: 5)
+    ##
+    volumeSweeperMaxInFlight: 5
+
     tsa:
       ## TSA host to forward the worker through. Can be specified multiple times.
       ##

@@ -235,6 +235,14 @@ spec:
             - name: CONCOURSE_BAGGAGECLAIM_DISABLE_USER_NAMESPACES
               value: {{ .Values.concourse.worker.baggageclaim.disableUserNamespaces | quote }}
             {{- end }}
+            {{- if .Values.concourse.worker.volumeSweeperMaxInFlight }}
+            - name: CONCOURSE_VOLUME_SWEEPER_MAX_IN_FLIGHT
+              value: {{ .Values.concourse.worker.volumeSweeperMaxInFlight }}
+            {{- end }}
+            {{- if .Values.concourse.worker.containerSweeperMaxInFlight }}
+            - name: CONCOURSE_CONTAINER_SWEEPER_MAX_IN_FLIGHT
+              value: {{ .Values.concourse.worker.containerSweeperMaxInFlight }}
+            {{- end }}
 {{- if .Values.worker.env }}
 {{ toYaml .Values.worker.env | indent 12 }}
 {{- end }}
