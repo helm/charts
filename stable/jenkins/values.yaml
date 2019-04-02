@@ -409,8 +409,8 @@ backup:
 # The secrets will be created in k8s with a name of `secret-name` in the same namespace that the
 # Jenkins master pod is deployed into.
 # ImagePullSecrets:
-#   secret-name: 
-#     envName: 
-#     registry: 
-#     username: 
-#     password: 
+#   secret-name:
+#     envName:
+#     registry:
+#     username:
+#     password:
