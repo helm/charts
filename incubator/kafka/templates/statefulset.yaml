@@ -31,29 +31,6 @@ spec:
 {{- if .Values.schedulerName }}
       schedulerName: "{{ .Values.schedulerName }}"
 {{- end }}
-{{- if .Values.rbac.enabled }}
-      serviceAccountName: {{ .Release.Name }}
-{{- end }}
-    {{- if .Values.external.enabled }}
-      ## ref: https://github.com/Yolean/kubernetes-kafka/blob/master/kafka/50kafka.yml
-      initContainers:
-      - name: init-ext
-        image: "{{ .Values.external.init.image }}:{{ .Values.external.init.imageTag }}"
-        imagePullPolicy: "{{ .Values.external.init.imagePullPolicy }}"
-        command:
-          - sh
-          - -euxc
-          - "kubectl label pods ${POD_NAME} --namespace ${POD_NAMESPACE} pod=${POD_NAME} --overwrite"
-        env:
-          - name: POD_NAME
-            valueFrom:
-              fieldRef:
-                fieldPath: metadata.name
-          - name: POD_NAMESPACE
-            valueFrom:
-              fieldRef:
-                fieldPath: metadata.namespace
-    {{- end }}
 {{- if .Values.tolerations }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
