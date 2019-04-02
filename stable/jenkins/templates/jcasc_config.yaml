@@ -7,6 +7,7 @@ kind: ConfigMap
 metadata:
   name: jenkins-config-{{ template "jenkins.fullname" $root }}-{{ $key }}
   labels:
+    {{ template "jenkins.fullname" $root }}-jenkins-config: "true"
     {{ $.Values.Master.Sidecars.configAutoReload.label | default "jenkins_config" }}: "true"
     release: {{ $root.Release.Name }}
     chart: "{{ $root.Chart.Name }}-{{ $root.Chart.Version }}"
