@@ -9,6 +9,8 @@ numbering uses [semantic versioning](http://semver.org).
 * Upgrade rules to Falco 0.14.0
 * Enable eBPF by default on Falco
 * Allow to download Falco images from different registries than `docker.io`
+* Use rollingUpdate strategy by default
+* Provide sane defauls for falco resource management
 
 ## v0.5.6
 
