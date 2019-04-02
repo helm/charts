@@ -100,3 +100,6 @@ priorityClassName: ""
 #   - name: es-certs
 #     mountPath: /certs
 #     readOnly: true
+
+securityContext:
+  runAsUser: 16  # run as cron user instead of root
