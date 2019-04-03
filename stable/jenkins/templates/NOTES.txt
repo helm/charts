@@ -62,3 +62,14 @@ Configure the Kubernetes plugin in Jenkins to use the following Service Account 
   Create a Jenkins credential of type Kubernetes service account with service account name {{ template "jenkins.fullname" . }}
   Under configure Jenkins -- Update the credentials config in the cloud section to use the service account credential you created in the step above.
 {{- end }}
+
+{{ if and .Values.rbac.install .Values.rbac.additionalRoleBinding }}
+WARNING: the following fields will be deprecated in the coming versions:
+
+- rbac.additionalRoleBinding
+- rbac.roleRef
+- rbac.roleKind
+- rbac.roleBindingKind
+
+and with it we will deprecate the support for cluster-admin.
+{{- end }}
