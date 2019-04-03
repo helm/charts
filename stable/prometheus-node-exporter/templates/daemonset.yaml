@@ -68,7 +68,7 @@ spec:
             {{- end }}
             {{- end }}
             {{- end }}
-      hostNetwork: true
+      hostNetwork: {{ .Values.hostNetwork }}
       hostPID: true
 {{- if .Values.affinity }}
       affinity:
