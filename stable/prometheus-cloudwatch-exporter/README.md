@@ -29,7 +29,7 @@ $ kubectl create secret generic <SECRET_NAME> --from-literal=access_key=$AWS_ACC
 $ helm install --name my-release stable/prometheus-cloudwatch-exporter --set aws.secret.name=<SECRET_NAME>
 
 $ # or add a role to aws with the [correct policy](https://github.com/prometheus/cloudwatch_exporter#credentials-and-permissions) to add to cloud watch and pass its name as a value
-$ helm install --name my-release stable/prometheus-cloudwatch-exporter --set awsRole=<ROLL_NAME>
+$ helm install --name my-release stable/prometheus-cloudwatch-exporter --set aws.role=<ROLL_NAME>
 ```
 
 The command deploys Cloudwatch exporter on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
