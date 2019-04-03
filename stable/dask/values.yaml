@@ -17,6 +17,9 @@ scheduler:
     # requests:
     #   cpu: 1.8
     #   memory: 6G
+  tolerations: []
+  nodeSelector: {}
+  affinity: {}
 
 webUI:
   name: webui
@@ -45,6 +48,9 @@ worker:
     # requests:
     #   cpu: 1
     #   memory: 3G
+  tolerations: []
+  nodeSelector: {}
+  affinity: {}
 
 jupyter:
   name: jupyter
@@ -69,3 +75,6 @@ jupyter:
     # requests:
     #   cpu: 2
     #   memory: 6G
+  tolerations: []
+  nodeSelector: {}
+  affinity: {}
