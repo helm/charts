@@ -1,0 +1,34 @@
+files:
+  kibana.yml:
+    ## Ref: https://www.elastic.co/guide/en/kibana/current/settings.html
+    server.ssl.enabled: "true"
+    server.ssl.certificate: "/etc/kibana/certs/tls.crt"
+    server.ssl.key: "/etc/kibana/certs/tls.key"
+extraVolumeMounts:
+  - name: tls-certs
+    mountPath: /etc/kibana/certs/
+    readOnly: true
+extraVolumes:
+  - name: tls-certs
+    emptyDir: {}
+livenessProbe:
+  enabled: true
+  scheme: HTTPS
+readinessProbe:
+  enabled: true
+  scheme: HTTPS
+initContainers:
+  # Create self signed TLS certs
+  tls-generator:
+    image: "frapsoft/openssl"
+    imagePullPolicy: "IfNotPresent"
+    command:
+      - "/bin/ash"
+      - "-c"
+      - |
+        openssl req -new -newkey rsa:4096 -days 365 -nodes -x509 \
+        -subj "/C=US/ST=California/L=SanFrancisco/O=Mesosphere/CN=kubeaddons" \
+        -keyout /etc/kibana/certs/tls.key -out /etc/kibana/certs/tls.crt
+    volumeMounts:
+      - name: tls-certs
+        mountPath: "/etc/kibana/certs/"
