@@ -105,8 +105,9 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `NetworkPolicy.Enabled`           | Enable creation of NetworkPolicy resources. | `false`                                                               |
 | `NetworkPolicy.ApiVersion`        | NetworkPolicy ApiVersion             | `networking.k8s.io/v1`                                                         |
 | `rbac.install`                    | Create service account and ClusterRoleBinding for Kubernetes plugin | `false`                                       |
+| `rbac.additionalRoleBinding`      | If you want to add a (cluster) role binding as specified below      | `false`                                       |
 | `rbac.roleRef`                    | Cluster role name to bind to         | `cluster-admin`                                                              |
-| `rbac.roleKind`            | Role kind (`Role` or `ClusterRole`)| `ClusterRole`
+| `rbac.roleKind`                   | Role kind (`Role` or `ClusterRole`)  | `ClusterRole`
 | `rbac.roleBindingKind`            | Role binding kind (`RoleBinding` or `ClusterRoleBinding`)| `ClusterRoleBinding`                                             |
 
 Some third-party systems, e.g. GitHub, use HTML-formatted data in their payload sent to a Jenkins webhooks, e.g. URL of a pull-request being built. To display such data as processed HTML instead of raw text set `Master.EnableRawHtmlMarkupFormatter` to true. This option requires installation of OWASP Markup Formatter Plugin (antisamy-markup-formatter). The plugin is **not** installed by default, please update `Master.InstallPlugins`.
