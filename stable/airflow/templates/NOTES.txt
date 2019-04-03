@@ -22,9 +22,9 @@ URL to Airflow and Flower:
    echo http://$SERVICE_IP/
 
    {{- else if contains "ClusterIP" .Values.airflow.service.type }}
-   export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "component={{ .Values.airflow.name }}" -o jsonpath="{.items[0].metadata.name}")
-   echo http://127.0.0.1:{{ .Values.airflow.externalPortHttp }}
-   kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME {{ .Values.airflow.externalPortHttp }}:{{ .Values.airflow.internalPortHttp }}
+   export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "component=web,app={{ template "airflow.name" . }}" -o jsonpath="{.items[0].metadata.name}")
+   echo http://127.0.0.1:8080
+   kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME 8080:8080
 
 2. Open Airflow in your web browser
 {{- end }}
