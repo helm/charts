@@ -64,6 +64,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `Master.HealthProbeLivenessFailureThreshold` | Set the failure threshold for the liveness probe | `12`                                                       |
 | `Master.SlaveListenerPort`        | Listening port for agents            | `50000`                                                                      |
 | `Master.SlaveHostPort`        | Host port to listen for agents            | Not set                                                                |
+| `Master.SlaveKubernetesNamespace` | The namespace where agents should be started (Note: the namespace must exist) | Not set                                                                |
 | `Master.DisabledAgentProtocols`   | Disabled agent protocols             | `JNLP-connect JNLP2-connect`                                                                      |
 | `Master.CSRF.DefaultCrumbIssuer.Enabled` | Enable the default CSRF Crumb issuer | `true`                                                                      |
 | `Master.CSRF.DefaultCrumbIssuer.ProxyCompatability` | Enable proxy compatibility | `true`                                                                      |

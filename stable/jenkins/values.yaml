@@ -110,6 +110,7 @@ Master:
   # security risk:  https://github.com/kubernetes/charts/issues/1341
   SlaveListenerServiceType: ClusterIP
   SlaveListenerServiceAnnotations: {}
+  SlaveKubernetesNamespace:
 
   # Example of 'LoadBalancer' type of slave listener with annotations securing it
   # SlaveListenerServiceType: LoadBalancer
