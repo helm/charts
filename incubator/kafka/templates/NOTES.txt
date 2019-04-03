@@ -20,7 +20,7 @@ Once you have the testclient pod above running, you can list all kafka
 topics with:
 
   kubectl -n {{ .Release.Namespace }} exec testclient -- /opt/kafka/bin/kafka-topics.sh --zookeeper {{ .Release.Name }}-zookeeper:2181 --list
-n
+
 To create a new topic:
 
   kubectl -n {{ .Release.Namespace }} exec testclient -- /opt/kafka/bin/kafka-topics.sh --zookeeper {{ .Release.Name }}-zookeeper:2181 --topic test1 --create --partitions 1 --replication-factor 1
