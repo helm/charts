@@ -34,6 +34,18 @@ spec:
 {{ tpl .Values.vault.extraInitContainers . | indent 6 }}
       {{- end }}
       containers:
+      {{- if .Values.metrics.enabled }}
+      - name: {{ .Chart.Name }}-metrics
+        image: "{{ .Values.metrics.repository }}:{{ .Values.metrics.tag }}"
+        imagePullPolicy: {{ .Values.metrics.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.metrics.statsdPort }}
+          name: exporter-statsd
+          protocol: "UDP"
+        - containerPort: {{ .Values.metrics.promPort }}
+          name: exporter-prom
+          protocol: "TCP"
+      {{- end }}
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ default .Chart.AppVersion .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}

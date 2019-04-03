@@ -11,7 +11,7 @@ This directory contains a Kubernetes chart to deploy a Vault server.
 This chart will do the following:
 
 * Implement a Vault deployment
-* Optionally, deploy a consul agent in the pod
+* Optionally, deploy a consul agent in the pod and a Prometheus exporter for metrics
 
 Please note that a backend service for Vault (for example, Consul) must
 be deployed beforehand and configured with the `vault.config` option. YAML
@@ -60,6 +60,7 @@ The following table lists the configurable parameters of the Vault chart and the
 | `vault.customSecrets`             | Custom secrets available to Vault        | `[]`                                |
 | `vault.existingConfigName`        | Location of existing Vault configuration | nil                                 |
 | `vault.config`                    | Vault configuration                      | No default backend                  |
+| `metrics.enabled`                 | Enable Vault metrics exporter            | false                               |
 | `replicaCount`                    | k8s replicas                             | `3`                                 |
 | `resources.limits.cpu`            | Container requested CPU                  | `nil`                               |
 | `resources.limits.memory`         | Container requested memory               | `nil`                               |
@@ -107,6 +108,24 @@ If you are using the `stable/consul` helm chart, consul communications
 are encrypted with a gossip key.  You can configure a secret with the
 same format as that chart and specify it in the
 `consulAgent.gossipKeySecretName` parameter.
+
+## Optional Vault Metrics
+
+If you enable Vault metrics, uncomment the telemetry options in Vault's config.
+
+```yaml
+vault:
+  config:
+    telemetry:
+      statsite_address: "127.0.0.1:9125"
+```
+
+Once the Vault pod is ready, it can be accessed metrics using `kubectl port-forward`:
+
+```console
+$ kubectl port-forward vault-pod 9102
+$ curl localhost:9102/metrics
+```
 
 ## Using Vault
 

@@ -9,6 +9,16 @@ image:
   tag:
   pullPolicy: IfNotPresent
 
+metrics:
+  enabled: False
+
+  repository: prom/statsd-exporter
+  tag: v0.9.0
+  pullPolicy: IfNotPresent
+
+  statsdPort: 9125
+  promPort: 9102
+
 consulAgent:
   repository: consul
   tag: 1.4.0
@@ -176,6 +186,9 @@ vault:
         tls_cipher_suites: TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA,TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA,TLS_RSA_WITH_AES_128_GCM_SHA256,TLS_RSA_WITH_AES_256_GCM_SHA384,TLS_RSA_WITH_AES_128_CBC_SHA,TLS_RSA_WITH_AES_256_CBC_SHA
         # tls_cert_file: /vault/tls/server.crt
         # tls_key_file: /vault/tls/server.key
+    #telemetry:
+    #  statsite_address: "127.0.0.1:9125"
+
     # See https://www.vaultproject.io/docs/configuration/storage/ for storage backends
     storage:
       # consul:
