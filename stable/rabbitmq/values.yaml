@@ -126,6 +126,11 @@ service:
   ##
   managerPort: 15672
 
+  ## Service annotations
+  annotations:
+    # service.beta.kubernetes.io/aws-load-balancer-internal: 0.0.0.0/0
+
+
 # Additional pod labels to apply
 podLabels: {}
 
