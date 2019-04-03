@@ -52,8 +52,8 @@ their default values.
 | `priorityClassName`                  | priorityClassName                                           | `nil`                                        |
 | `extraVolumeMounts`                  | Mount extra volume(s),                                      |                                              |
 | `extraVolumes`                       | Extra volumes                                               |                                              |
+| `extraInitContainers`                | Init containers to add to the cronjob container             | {}                                           |
 | `securityContext`                    | Configure PodSecurityContext                                |                                              |
-| `initContainers`                     | Init containers to add to the cronjob container             | {}                                           |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to
 `helm install`.

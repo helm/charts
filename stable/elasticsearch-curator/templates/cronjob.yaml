@@ -53,9 +53,9 @@ spec:
           imagePullSecrets:
             - name: {{ .Values.image.pullSecret }}
 {{- end }}
-{{- if .Values.initContainers }}
+{{- if .Values.extraInitContainers }}
           initContainers:
-{{- range $key, $value := .Values.initContainers }}
+{{- range $key, $value := .Values.extraInitContainers }}
           - name: "{{ $key }}"
 {{ toYaml $value | indent 12 }}
 {{- end }}
