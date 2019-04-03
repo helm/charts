@@ -295,6 +295,7 @@ spec:
             {{- end }}
             {{- end }}
             {{- if .Values.concourse.web.awsSecretsManager.enabled }}
+            {{- if .Values.concourse.web.awsSecretsManager.keyAuth.enabled }}
             - name: CONCOURSE_AWS_SECRETSMANAGER_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
@@ -305,12 +306,13 @@ spec:
                 secretKeyRef:
                   name: {{ template "concourse.concourse.fullname" . }}
                   key: aws-secretsmanager-secret-key
-            {{- if .Values.secrets.awsSecretsManagerSessionToken }}
+            {{- if .Values.concourse.web.awsSecretsManager.keyAuth.useSessionToken }}
             - name: CONCOURSE_AWS_SECRETSMANAGER_SESSION_TOKEN
               valueFrom:
                 secretKeyRef:
                   name: {{ template "concourse.concourse.fullname" . }}
                   key: aws-secretsmanager-session-token
+            {{- end }}
             {{- end }}
             {{- if .Values.concourse.web.awsSecretsManager.pipelineSecretTemplate }}
             - name: CONCOURSE_AWS_SECRETSMANAGER_PIPELINE_SECRET_TEMPLATE
@@ -322,6 +324,7 @@ spec:
             {{- end }}
             {{- end }}
             {{- if .Values.concourse.web.awsSsm.enabled }}
+            {{- if .Values.concourse.web.awsSsm.keyAuth.enabled }}
             - name: CONCOURSE_AWS_SSM_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
@@ -332,12 +335,13 @@ spec:
                 secretKeyRef:
                   name: {{ template "concourse.concourse.fullname" . }}
                   key: aws-ssm-secret-key
-            {{- if .Values.secrets.awsSsmSessionToken }}
+            {{- if .Values.concourse.web.awsSsm.keyAuth.useSessionToken }}
             - name: CONCOURSE_AWS_SSM_SESSION_TOKEN
               valueFrom:
                 secretKeyRef:
                   name: {{ template "concourse.concourse.fullname" . }}
                   key: aws-ssm-session-token
+            {{- end }}
             {{- end }}
             {{- if .Values.concourse.web.awsSsm.pipelineSecretTemplate }}
             - name: CONCOURSE_AWS_SSM_PIPELINE_SECRET_TEMPLATE

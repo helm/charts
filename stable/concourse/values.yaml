@@ -261,6 +261,12 @@ concourse:
       ##
       region:
 
+      ## Configure authentication using an access key and secret key. If disabled, IAM role auth is assumed.
+      ## Session Token can also be enabled, if required.
+      keyAuth:
+        enabled: true
+        useSessionToken: false
+
       ## pipeline-specific template for Secrets Manager parameters, defaults to: /concourse/{team}/{pipeline}/{secret}
       ##
       pipelineSecretTemplate:
@@ -280,6 +286,12 @@ concourse:
       ## AWS region to use when reading from SSM
       ##
       region:
+
+      ## Configure authentication using an access key and secret key. If disabled, IAM role auth is assumed.
+      ## Session Token can also be enabled, if required.
+      keyAuth:
+        enabled: true
+        useSessionToken: false
 
       ## pipeline-specific template for SSM parameters, defaults to: /concourse/{team}/{pipeline}/{secret}
       ##
