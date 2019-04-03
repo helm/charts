@@ -61,9 +61,9 @@ The following table lists the configurable parameters of the elasticsearch chart
 
 |              Parameter               |                             Description                             |                       Default                       |
 | ------------------------------------ | ------------------------------------------------------------------- | --------------------------------------------------- |
-| `appVersion`                         | Application Version (Elasticsearch)                                 | `6.6.2`                                             |
+| `appVersion`                         | Application Version (Elasticsearch)                                 | `6.7.0`                                             |
 | `image.repository`                   | Container image name                                                | `docker.elastic.co/elasticsearch/elasticsearch-oss` |
-| `image.tag`                          | Container image tag                                                 | `6.6.2`                                             |
+| `image.tag`                          | Container image tag                                                 | `6.7.0`                                             |
 | `image.pullPolicy`                   | Container pull policy                                               | `IfNotPresent`                                      |
 | `initImage.repository`               | Init container image name                                           | `busybox`                                           |
 | `initImage.tag`                      | Init container image tag                                            | `latest`                                            |
@@ -118,6 +118,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `master.readinessProbe`              | Master container readiness probes                                   | see `values.yaml` for defaults                      |
 | `master.antiAffinity`                | Master anti-affinity policy                                         | `soft`                                              |
 | `master.nodeAffinity`                | Master node affinity policy                                         | `{}`                                                |
+| `master.podManagementPolicy`         | Master pod creation strategy                                        | `OrderedReady`                                      |
 | `master.updateStrategy`              | Master node update strategy policy                                  | `{type: "onDelete"}`                                |
 | `data.initResources`                 | Data initContainer resources requests & limits                      | `{}`                                                |
 | `data.additionalJavaOpts`            | Parameters to be added to `ES_JAVA_OPTS` environment variable for data | `""`                                             |
@@ -139,6 +140,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `data.terminationGracePeriodSeconds` | Data termination grace period (seconds)                             | `3600`                                              |
 | `data.antiAffinity`                  | Data anti-affinity policy                                           | `soft`                                              |
 | `data.nodeAffinity`                  | Data node affinity policy                                           | `{}`                                                |
+| `data.podManagementPolicy`           | Data pod creation strategy                                          | `OrderedReady`                                      |
 | `data.updateStrategy`                | Data node update strategy policy                                    | `{type: "onDelete"}`                                |
 | `sysctlInitContainer.enabled`        | If true, the sysctl init container is enabled (does not stop extraInitContainers from running) | `true`                                              |
 | `extraInitContainers`                | Additional init container passed through the tpl                    | ``                                                  |

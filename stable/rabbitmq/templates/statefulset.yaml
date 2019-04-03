@@ -88,9 +88,6 @@ spec:
             ulimit -n "${RABBITMQ_ULIMIT_NOFILES}"
             #replace the default password that is generated
             sed -i "s/CHANGEME/$RABBITMQ_PASSWORD/g" /opt/bitnami/rabbitmq/etc/rabbitmq/rabbitmq.conf
-            # Move logs to stdout
-            ln -sF /dev/stdout /opt/bitnami/rabbitmq/var/log/rabbitmq/rabbit@${MY_POD_IP}.log
-            ln -sF /dev/stdout /opt/bitnami/rabbitmq/var/log/rabbitmq/rabbit@${MY_POD_IP}_upgrade.log
             exec rabbitmq-server
         {{- if .Values.resources }}
         resources:
@@ -167,6 +164,8 @@ spec:
           - name: RABBITMQ_NODENAME
             value: "rabbit@$(MY_POD_IP)"
           {{- end }}
+          - name: RABBITMQ_LOGS
+            value: {{ .Values.rabbitmq.logs | quote }}
           - name: RABBITMQ_ULIMIT_NOFILES
             value: {{ .Values.rabbitmq.ulimitNofiles | quote }}
           - name: RABBITMQ_USE_LONGNAME

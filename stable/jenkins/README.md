@@ -74,6 +74,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `Master.ExtraPorts`               | Open extra ports, for other uses     | Not set                                                                      |
 | `Master.OverwriteConfig`          | Replace init scripts and config w/ ConfigMap on boot  | `false`                                                                      |
 | `Master.ingress.enabled`          | Enables ingress      | `false`                                                                         |
+| `Master.ingress.apiVersion`       | Ingress API version                  | `extensions/v1beta1`                                                         |
 | `Master.ingress.hostName`         | Ingress host name      | Not set                                                                         |
 | `Master.ingress.annotations`      | Ingress annotations                  | `{}`                                                                         |
 | `Master.ingress.labels`           | Ingress labels                       | `{}`                                                                         |
@@ -89,6 +90,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `Master.CredentialsXmlSecret`     | Kubernetes secret that contains a 'credentials.xml' file | Not set                                                  |
 | `Master.SecretsFilesSecret`       | Kubernetes secret that contains 'secrets' files | Not set                                                           |
 | `Master.Jobs`                     | Jenkins XML job configs              | Not set                                                                      |
+| `Master.overwriteJobs`          | Replace jobs w/ ConfigMap on boot  | `false`                                                                      |
 | `Master.InstallPlugins`           | List of Jenkins plugins to install   | `kubernetes:1.14.0 workflow-aggregator:2.6 credentials-binding:1.17 git:3.9.1 workflow-job:2.31` |
 | `Master.OverwritePlugins`         | Overwrite installed plugins on start.| `false`                                                                      |
 | `Master.EnableRawHtmlMarkupFormatter` | Enable HTML parsing using (see below) | Not set                                                                 |

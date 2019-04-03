@@ -64,6 +64,7 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `rabbitmq.plugins`                   | configuration file for plugins to enable         | `[rabbitmq_management,rabbitmq_peer_discovery_k8s].`    |
 | `rabbitmq.clustering.address_type`   | Switch clustering mode                           | `ip` or `hostname`                                      |
 | `rabbitmq.clustering.k8s_domain`     | Customize internal k8s cluster domain            | `cluster.local`                                         |
+| `rabbitmq.logs`                      | Value for the RABBITMQ_LOGS environment variable | `-`                                                     |
 | `rabbitmq.ulimitNofiles`             | Max File Descriptor limit                        | `65536`                                                 |
 | `rabbitmq.configuration`             | Required cluster configuration                   | See values.yaml                                         |
 | `rabbitmq.extraConfiguration`        | Extra configuration to add to rabbitmq.conf      | See values.yaml                                         |
@@ -72,6 +73,7 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `service.distPort`                   | Erlang distribution server port                  | `25672`                                                 |
 | `service.nodePort`                   | Node port override, if serviceType NodePort      | _random available between 30000-32767_                  |
 | `service.managerPort`                | RabbitMQ Manager port                            | `15672`                                                 |
+| `service.annotations`                | service annotations as an array                  | []                                                      |
 | `persistence.enabled`                | Use a PVC to persist data                        | `false`                                                 |
 | `persistence.storageClass`           | Storage class of backing PVC                     | `nil` (uses alpha storage class annotation)             |
 | `persistence.accessMode`             | Use volume as ReadOnly or ReadWrite              | `ReadWriteOnce`                                         |

@@ -20,14 +20,17 @@ spec:
         app: {{ template "metricbeat.name" . }}
         release: {{ .Release.Name }}
       annotations:
-        checksum/modules: {{ toYaml .Values.deployment.modules | sha256sum }}
-        checksum/config: {{ toYaml .Values.deployment.config | sha256sum }}
+        checksum/config: {{ toYaml (default .Values.deployment.config .Values.deployment.overrideConfig) | sha256sum }}
+        checksum/modules: {{ toYaml (default .Values.deployment.modules .Values.deployment.overrideModules) | sha256sum }}
 {{- if .Values.deployment.podAnnotations }}
   {{- range $key, $value := .Values.deployment.podAnnotations }}
         {{ $key }}: {{ $value }}
   {{- end }}
 {{- end }}
     spec:
+{{- if .Values.deployment.priorityClassName }}
+      priorityClassName: {{ .Values.deployment.priorityClassName }}
+{{- end }}
       serviceAccountName: {{ template "metricbeat.serviceAccountName" . }}
       containers:
       - name: {{ .Chart.Name }}

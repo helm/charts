@@ -56,6 +56,9 @@ rbac:
 # their addresses here
 endpoints: []
 
+# Expose the service to the host network
+hostNetwork: true
+
 ## Assign a group of affinity scheduling rules
 ##
 affinity: {}
