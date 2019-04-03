@@ -311,6 +311,9 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `workers.secretsDir`                     | directory in which to mount secrets on worker nodes     | /var/airflow/secrets      |
 | `workers.secrets`                        | secrets to mount as volumes on worker nodes             | []                        |
 | `existingAirflowSecret`                  | secret to use for postgres and redis connection         |                           |
+| `nodeSelector`                           | Node labels for pod assignment                          | `{}`                      |
+| `affinity`                               | Affinity labels for pod assignment                      | `{}`                      |
+| `tolerations`                            | Toleration labels for pod assignment                    | `[]`                      |
 | `ingress.enabled`                        | enable ingress                                          | `false`                   |
 | `ingress.web.host`                       | hostname for the webserver ui                           | ""                        |
 | `ingress.web.path`                       | path of the werbserver ui (read `values.yaml`)          | ``                        |
