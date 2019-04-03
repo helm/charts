@@ -43,7 +43,7 @@ keycloak:
   ## Custom script that is run before Keycloak is started.
   preStartScript:
 
-  ## Pod lifecycle hooks
+  ## lifecycleHooks defines the container lifecycle hooks
   lifecycleHooks: |
     #postStart:
     #  exec:
