@@ -35,6 +35,7 @@ controller:
 
 ## Kubeless configuration
 config:
+  functionsNamespace: ""
   builderImage: kubeless/function-image-builder
   builderImagePullSecret: ""
   deploymentTemplate: '{}'

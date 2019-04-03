@@ -142,7 +142,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | `prometheus.serviceMonitor.interval` | Scrape interval. If not set, the Prometheus default scrape interval is used | `nil` |
 | `prometheusOperator.service.type` | Prometheus operator service type | `ClusterIP` |
 | `prometheusOperator.service.clusterIP` | Prometheus operator service clusterIP IP | `""` |
-| `prometheusOperator.service.nodePort` | Port to expose prometheus operator service on each node | `38080` |
+| `prometheusOperator.service.nodePort` | Port to expose prometheus operator service on each node | `30080` |
 | `prometheusOperator.service.annotations` | Annotations to be added to the prometheus operator service | `{}` |
 | `prometheusOperator.service.labels` |  Prometheus Operator Service Labels | `{}` |
 | `prometheusOperator.service.externalIPs` | List of IP addresses at which the Prometheus Operator server service is available  | `[]` |
@@ -186,7 +186,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | `prometheus.service.type` |  Prometheus Service type | `ClusterIP` |
 | `prometheus.service.clusterIP` | Prometheus service clusterIP IP | `""` |
 | `prometheus.service.targetPort` |  Prometheus Service internal port | `9090` |
-| `prometheus.service.nodePort` |  Prometheus Service port for NodePort service type | `39090` |
+| `prometheus.service.nodePort` |  Prometheus Service port for NodePort service type | `30090` |
 | `prometheus.service.additionalPorts` |  Additional Prometheus Service ports to add for NodePort service type | `[]` |
 | `prometheus.service.annotations` |  Prometheus Service Annotations | `{}` |
 | `prometheus.service.labels` |  Prometheus Service Labels | `{}` |

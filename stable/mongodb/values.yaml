@@ -17,7 +17,7 @@ image:
   ## Bitnami MongoDB image tag
   ## ref: https://hub.docker.com/r/bitnami/mongodb/tags/
   ##
-  tag: 4.0.7
+  tag: 4.0.8
 
   ## Specify a imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -180,7 +180,18 @@ persistence:
   ## A manually managed Persistent Volume and Claim
   ## Requires persistence.enabled: true
   ## If defined, PVC must be created manually before volume will be bound
+  ##
   # existingClaim:
+
+  ## The path the volume will be mounted at, useful when using different
+  ## MongoDB images.
+  ##
+  mountPath: /bitnami/mongodb
+
+  ## The subdirectory of the volume to mount to, useful in dev environments
+  ## and one PV for multiple services.
+  ##
+  subPath: ""
 
   ## mongodb data Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>
@@ -307,11 +318,15 @@ metrics:
     initialDelaySeconds: 15
     periodSeconds: 5
     timeoutSeconds: 5
+    failureThreshold: 3
+    successThreshold: 1
   readinessProbe:
     enabled: false
     initialDelaySeconds: 5
     periodSeconds: 5
     timeoutSeconds: 1
+    failureThreshold: 3
+    successThreshold: 1
 
   ## Metrics exporter pod Annotation
   podAnnotations:
