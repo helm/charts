@@ -3,7 +3,14 @@ kind: Deployment
 metadata:
   name: {{ include "couchbase-operator.fullname" . }}
   labels:
-    app: {{ template "couchbase-operator.name" . }}
+    app.kubernetes.io/name: {{ include "couchbase-operator.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "couchbase-operator.chart" . }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "couchbase-operator.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
 spec:
   replicas: 1
   selector:
@@ -41,13 +48,13 @@ spec:
           - name: readiness-port
             containerPort: {{ .Values.couchbaseOperator.readinessProbe.port}}
         readinessProbe:
-        httpGet:
-          path: /readyz
-          port: readiness-port
-        initialDelaySeconds: {{ .Values.couchbaseOperator.readinessProbe.initialDelaySeconds }}
-        periodSeconds: {{ .Values.couchbaseOperator.readinessProbe.periodSeconds }}
-        timeoutSeconds: {{ .Values.couchbaseOperator.readinessProbe.timeoutSeconds }}
-        failureThreshold: {{ .Values.couchbaseOperator.readinessProbe.failureThreshold }}
+          httpGet:
+            path: /readyz
+            port: readiness-port
+          initialDelaySeconds: {{ .Values.couchbaseOperator.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.couchbaseOperator.readinessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.couchbaseOperator.readinessProbe.timeoutSeconds }}
+          failureThreshold: {{ .Values.couchbaseOperator.readinessProbe.failureThreshold }}
         resources:
 {{ toYaml .Values.couchbaseOperator.resources | indent 12 }}
     {{- with .Values.couchbaseOperator.nodeSelector }}
