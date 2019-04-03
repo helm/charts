@@ -10,7 +10,7 @@ This chart bootstraps a [Citus Postgresql Cluster](https://www.citusdata.com/). 
 ## Docker Image Source
 
 * [Citus](https://github.com/citusdata/docker)
-* [Citus Membership Mamanger](https://github.com/bakdata/citus-k8s-membership-manager)
+* [Citus Membership Manager](https://github.com/bakdata/citus-k8s-membership-manager)
 * [Prometheus sidecar](https://github.com/wrouesnel/postgres_exporter)
 
 ## Installed Components
