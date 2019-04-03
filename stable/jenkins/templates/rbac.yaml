@@ -32,6 +32,39 @@ subjects:
 
 ---
 
+# The sidecar container which is responsible for reloading configuration changes
+# needs permissions to watch ConfigMaps
+{{- if .Values.Master.Sidecars.configAutoReload}}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ template "jenkins.fullname" . }}-casc-reload
+  namespace: {{ .Release.Namespace}}
+rules:
+- apiGroups: [""]
+  resources: ["configmaps"]
+  verbs: ["get", "watch", "list"]
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ $serviceName }}-watch-configmaps
+  namespace: {{ .Release.Namespace}}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ template "jenkins.fullname" . }}-casc-reload
+subjects:
+- kind: ServiceAccount
+  name: {{ $serviceName }}
+  namespace: {{ .Release.Namespace }}
+
+{{- end}}
+
+---
+
 # Additional ClusterRoleBinding / RoleBinding
 {{ if .Values.rbac.additionalRoleBinding }}
 {{- if .Capabilities.APIVersions.Has "rbac.authorization.k8s.io/v1beta1" }}
