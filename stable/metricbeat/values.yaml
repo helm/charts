@@ -7,6 +7,7 @@ image:
 daemonset:
   enabled: true
   podAnnotations: []
+  priorityClassName: ""
   tolerations:
   - key: node-role.kubernetes.io/master
     operator: Exists
@@ -80,6 +81,7 @@ daemonset:
 deployment:
   enabled: true
   podAnnotations: []
+  priorityClassName: ""
   tolerations: []
   nodeSelector: {}
   resources: {}

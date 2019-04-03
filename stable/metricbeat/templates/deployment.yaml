@@ -28,6 +28,9 @@ spec:
   {{- end }}
 {{- end }}
     spec:
+{{- if .Values.deployment.priorityClassName }}
+      priorityClassName: {{ .Values.deployment.priorityClassName }}
+{{- end }}
       serviceAccountName: {{ template "metricbeat.serviceAccountName" . }}
       containers:
       - name: {{ .Chart.Name }}
