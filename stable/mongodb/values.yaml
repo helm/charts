@@ -318,11 +318,15 @@ metrics:
     initialDelaySeconds: 15
     periodSeconds: 5
     timeoutSeconds: 5
+    failureThreshold: 3
+    successThreshold: 1
   readinessProbe:
     enabled: false
     initialDelaySeconds: 5
     periodSeconds: 5
     timeoutSeconds: 1
+    failureThreshold: 3
+    successThreshold: 1
 
   ## Metrics exporter pod Annotation
   podAnnotations:

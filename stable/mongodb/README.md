@@ -138,10 +138,14 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `metrics.livenessProbe.initialDelaySeconds`        | Initial Delay for Liveness Check of Prometheus metrics exporter                              | `15`                                                    |
 | `metrics.livenessProbe.periodSeconds`              | How often to perform Liveness Check of Prometheus metrics exporter                           | `10`                                                    |
 | `metrics.livenessProbe.timeoutSeconds`             | Timeout for Liveness Check of Prometheus metrics exporter                                    | `5`                                                     |
+| `metrics.livenessProbe.failureThreshold`           | Failure Threshold for Liveness Check of Prometheus metrics exporter                          | `3`                                                     |
+| `metrics.livenessProbe.successThreshold`           | Success Threshold for Liveness Check of Prometheus metrics exporter                          | `1`                                                     |
 | `metrics.readinessProbe.enabled`                   | Enable/disable the Readiness Check of Prometheus metrics exporter                            | `false`                                                 |
 | `metrics.readinessProbe.initialDelaySeconds`       | Initial Delay for Readiness Check of Prometheus metrics exporter                             | `5`                                                     |
 | `metrics.readinessProbe.periodSeconds`             | How often to perform Readiness Check of Prometheus metrics exporter                          | `10`                                                    |
 | `metrics.readinessProbe.timeoutSeconds`            | Timeout for Readiness Check of Prometheus metrics exporter                                   | `1`                                                     |
+| `metrics.readinessProbe.failureThreshold`           | Failure Threshold for Readiness Check of Prometheus metrics exporter                        | `3`                                                     |
+| `metrics.readinessProbe.successThreshold`           | Success Threshold for Readiness Check of Prometheus metrics exporter                        | `1`                                                     |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
