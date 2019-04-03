@@ -60,6 +60,6 @@ spec:
   selector:
     app: {{ include "kafka.name" $root }}
     release: {{ $root.Release.Name }}
-    pod: {{ $responsiblePod | quote }}
+    statefulset.kubernetes.io/pod-name: {{ $responsiblePod | quote }}
   {{- end }}
 {{- end }}
