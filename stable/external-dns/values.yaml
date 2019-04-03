@@ -1,7 +1,7 @@
 ## Details about the image to be pulled.
 image:
   name: registry.opensource.zalan.do/teapot/external-dns
-  tag: v0.5.9
+  tag: v0.5.12
   pullSecrets: []
   pullPolicy: IfNotPresent
 
