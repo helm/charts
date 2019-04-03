@@ -27,6 +27,7 @@ spec:
       {{- end }}
       annotations:
         checksum/patterns: {{ include (print $.Template.BasePath "/patterns-config.yaml") . | sha256sum }}
+        checksum/templates: {{ include (print $.Template.BasePath "/files-config.yaml") . | sha256sum }}
         checksum/pipeline: {{ include (print $.Template.BasePath "/pipeline-config.yaml") . | sha256sum }}
       {{- if .Values.podAnnotations }}
         ## Custom pod annotations
@@ -130,6 +131,9 @@ spec:
         - name: patterns
           configMap:
             name: {{ template "logstash.fullname" . }}-patterns
+        - name: files
+          configMap:
+            name: {{ template "logstash.fullname" . }}-files
         - name: pipeline
           configMap:
             name: {{ template "logstash.fullname" . }}-pipeline

@@ -150,6 +150,8 @@ volumeMounts:
     mountPath: /usr/share/logstash/data
   - name: patterns
     mountPath: /usr/share/logstash/patterns
+  - name: files
+    mountPath: /usr/share/logstash/files
   - name: pipeline
     mountPath: /usr/share/logstash/pipeline
 
@@ -216,6 +218,33 @@ config:
 patterns:
   # main: |-
   #   TESTING {"foo":.*}$
+
+## Custom files that can be referenced by plugins.
+## Each YAML heredoc will become located in the logstash home directory under
+## the files subdirectory.
+files:
+  # logstash-template.json: |-
+  #   {
+  #     "order": 0,
+  #     "version": 1,
+  #     "index_patterns": [
+  #       "logstash-*"
+  #     ],
+  #     "settings": {
+  #       "index": {
+  #         "refresh_interval": "5s"
+  #       }
+  #     },
+  #     "mappings": {
+  #       "doc": {
+  #         "_meta": {
+  #           "version": "1.0.0"
+  #         },
+  #         "enabled": false
+  #       }
+  #     },
+  #     "aliases": {}
+  #   }
 
 ## NOTE: To achieve multiple pipelines with this chart, current best practice
 ## is to maintain one pipeline per chart release. In this way configuration is
