@@ -151,6 +151,7 @@ spec:
           httpGet:
             path: {{ .Values.livenessProbe.path }}
             port: {{ .Values.service.internalPort }}
+            scheme: {{ .Values.livenessProbe.scheme }}
           initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
           timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
 {{- end }}
@@ -159,6 +160,7 @@ spec:
           httpGet:
             path: {{ .Values.readinessProbe.path }}
             port: {{ .Values.service.internalPort }}
+            scheme: {{ .Values.readinessProbe.scheme }}
           initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
           timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
           successThreshold: {{ .Values.readinessProbe.successThreshold }}

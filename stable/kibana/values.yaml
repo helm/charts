@@ -87,12 +87,14 @@ serviceAccount:
 livenessProbe:
   enabled: false
   path: /status
+  scheme: HTTP
   initialDelaySeconds: 30
   timeoutSeconds: 10
 
 readinessProbe:
   enabled: false
   path: /status
+  scheme: HTTP
   initialDelaySeconds: 30
   timeoutSeconds: 10
   periodSeconds: 10
