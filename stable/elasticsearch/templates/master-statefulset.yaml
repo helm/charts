@@ -191,6 +191,7 @@ spec:
       - name: data
         emptyDir: {}
   {{- end }}
+  podManagementPolicy: {{ .Values.master.podManagementPolicy }}
   updateStrategy:
     type: {{ .Values.master.updateStrategy.type }}
   {{- if .Values.master.persistence.enabled }}

@@ -158,6 +158,7 @@ master:
   ## (dict) If specified, apply these annotations to each master Pod
   # podAnnotations:
   #   example: master-foo
+  podManagementPolicy: OrderedReady
   podDisruptionBudget:
     enabled: false
     minAvailable: 2  # Same as `cluster.env.MINIMUM_MASTER_NODES`
@@ -209,6 +210,7 @@ data:
     enabled: false
     # minAvailable: 1
     maxUnavailable: 1
+  podManagementPolicy: OrderedReady
   updateStrategy:
     type: OnDelete
   hooks:  # post-start and pre-stop hooks
