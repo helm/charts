@@ -112,6 +112,9 @@ spec:
 {{ toYaml .Values.extraVolumes | indent 6 }}
 {{- end }}
       terminationGracePeriodSeconds: 60
+{{- if .Values.daemonset.priorityClassName }}
+      priorityClassName: {{ .Values.daemonset.priorityClassName }}
+{{- end }}
       serviceAccountName: {{ template "metricbeat.serviceAccountName" . }}
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
