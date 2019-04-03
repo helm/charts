@@ -112,6 +112,7 @@ The following table lists the configurable parameters of the chart and its defau
 | `elasticsearch.port`            | ElasticSearch port                                 | `9200`                                           |
 | `config`                        | Logstash configuration key-values                  | (see `values.yaml`)                              |
 | `patterns`                      | Logstash patterns configuration                    | `nil`                                            |
+| `files`                         | Logstash custom files configuration                | `nil`                                            |
 | `inputs`                        | Logstash inputs configuration                      | beats                                            |
 | `filters`                       | Logstash filters configuration                     | `nil`                                            |
 | `outputs`                       | Logstash outputs configuration                     | elasticsearch                                    |
