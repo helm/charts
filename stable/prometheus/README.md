@@ -233,6 +233,7 @@ Parameter | Description | Default
 `pushgateway.service.servicePort` | pushgateway service port | `9091`
 `pushgateway.service.type` | type of pushgateway service to create | `ClusterIP`
 `rbac.create` | If true, create & use RBAC resources | `true`
+`rbac.podSecurityPolicy.enabled` | If true, create & use pod security policies resources | `false`
 `server.name` | Prometheus server container name | `server`
 `server.image.repository` | Prometheus server container image repository | `prom/prometheus`
 `server.image.tag` | Prometheus server container image tag | `v2.8.0`

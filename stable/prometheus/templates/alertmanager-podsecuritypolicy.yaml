@@ -1,18 +1,18 @@
 {{- if .Values.rbac.create }}
 {{- if .Values.rbac.podSecurityPolicy.enabled }}
-apiVersion: extensions/v1beta1
+apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:
-  name: {{ template "prometheus.nodeExporter.fullname" . }}
+  name: {{ template "prometheus.alertmanager.fullname" . }}
   labels:
     app: {{ template "prometheus.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    component: "{{ .Values.nodeExporter.name }}"
+    component: "{{ .Values.alertmanager.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
   annotations:
-{{- if .Values.nodeExporter.podSecurityPolicy.annotations }}
-{{ toYaml .Values.nodeExporter.podSecurityPolicy.annotations | indent 4 }}
+{{- if .Values.alertmanager.podSecurityPolicy.annotations }}
+{{ toYaml .Values.alertmanager.podSecurityPolicy.annotations | indent 4 }}
 {{- end }}
 spec:
   privileged: false
@@ -21,19 +21,15 @@ spec:
     - ALL
   volumes:
     - 'configMap'
-    - 'hostPath'
+    - 'persistentVolumeClaim'
+    - 'emptyDir'
     - 'secret'
   allowedHostPaths:
-    - pathPrefix: /proc
+    - pathPrefix: /etc
       readOnly: true
-    - pathPrefix: /sys
-      readOnly: true
-  {{- range .Values.nodeExporter.extraHostPathMounts }}
-    - pathPrefix: {{ .hostPath }}
-      readOnly: {{ .readOnly }}
-  {{- end }}
-  hostNetwork: {{ .Values.nodeExporter.hostNetwork }}
-  hostPID: {{ .Values.nodeExporter.hostPID }}
+    - pathPrefix: {{ .Values.alertmanager.persistentVolume.mountPath }}
+  hostNetwork: false
+  hostPID: false
   hostIPC: false
   runAsUser:
     rule: 'RunAsAny'
@@ -51,9 +47,9 @@ spec:
       # Forbid adding the root group.
       - min: 1
         max: 65535
-  readOnlyRootFilesystem: false
-  hostPorts:
-    - min: 1
-      max: 65535
+  readOnlyRootFilesystem: true
+  # hostPorts:
+  #   - min: 1
+  #     max: 65535
 {{- end }}
 {{- end }}
