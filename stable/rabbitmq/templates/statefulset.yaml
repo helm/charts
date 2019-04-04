@@ -88,6 +88,17 @@ spec:
             ulimit -n "${RABBITMQ_ULIMIT_NOFILES}"
             #replace the default password that is generated
             sed -i "s/CHANGEME/$RABBITMQ_PASSWORD/g" /opt/bitnami/rabbitmq/etc/rabbitmq/rabbitmq.conf
+            #api check for probes
+            cat > /opt/bitnami/rabbitmq/sbin/rabbitmq-api-check <<EOF
+            #!/bin/sh
+            set -e
+            URL=\$1
+            EXPECTED=\$2
+            ACTUAL=\$(curl --silent --show-error --fail "\${URL}")
+            echo "\${ACTUAL}"
+            test "\${EXPECTED}" = "\${ACTUAL}"
+            EOF
+            chmod a+x /opt/bitnami/rabbitmq/sbin/rabbitmq-api-check
             exec rabbitmq-server
         {{- if .Values.resources }}
         resources:
@@ -115,7 +126,10 @@ spec:
         {{- if .Values.livenessProbe.enabled }}
         livenessProbe:
           exec:
-            command: ["sh", "-c", "test \"$(curl -sS -f --user {{ .Values.rabbitmq.username }}:$RABBITMQ_PASSWORD 127.0.0.1:{{ .Values.service.managerPort }}/api/healthchecks/node)\" = '{\"status\":\"ok\"}'"]
+            command:
+              - sh
+              - -c
+              - rabbitmq-api-check "http://{{ .Values.rabbitmq.username }}:$RABBITMQ_PASSWORD@127.0.0.1:{{ .Values.service.managerPort }}/api/healthchecks/node" '{"status":"ok"}'
           initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
           timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
           periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
@@ -125,7 +139,10 @@ spec:
         {{- if .Values.readinessProbe.enabled }}
         readinessProbe:
           exec:
-            command: ["sh", "-c", "test \"$(curl -sS -f --user {{ .Values.rabbitmq.username }}:$RABBITMQ_PASSWORD 127.0.0.1:{{ .Values.service.managerPort }}/api/healthchecks/node)\" = '{\"status\":\"ok\"}'"]
+            command:
+              - sh
+              - -c
+              - rabbitmq-api-check "http://{{ .Values.rabbitmq.username }}:$RABBITMQ_PASSWORD@127.0.0.1:{{ .Values.service.managerPort }}/api/healthchecks/node" '{"status":"ok"}'
           initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
           timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
           periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
