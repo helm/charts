@@ -75,7 +75,7 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `replication.enabled`                     | MariaDB replication enabled                         | `true`                                                            |
 | `replication.user`                        |MariaDB replication user                             | `replicator`                                                      |
 | `replication.password`                    | MariaDB replication user password. Ignored if existing secret is provided. | _random 10 character alphanumeric string_  |
-| `initdbScripts`                           | List of initdb scripts                              | `nil`                                                             |
+| `initdbScripts`                           | Dictionary of initdb scripts                              | `nil`                                                             |
 | `initdbScriptsConfigMap`                  | ConfigMap with the initdb scripts (Note: Overrides `initdbScripts`) | `nil`                                             |
 | `master.annotations[].key`                | key for the the annotation list item                |  `nil`                                                            |
 | `master.annotations[].value`              | value for the the annotation list item              |  `nil`                                                            |
