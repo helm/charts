@@ -124,6 +124,15 @@ kvprovider:
   ## storeAcme has to be enabled to support HA Support using acme, but at least one kvprovider is needed
   storeAcme: false
   importAcme: false
+  ## to be able to activate backup make sure, you are storing your acme state in a KV Provider and you have a custom pvc configured.
+  backupAcme:
+    enabled: false
+    schedule: "0 0 * * *"
+    ## Currently and most propably in future crowdfox/traefik-backup-image is only capable of backing up certificates from etcd.
+    ## If you want to backup from another kv backend you can create an own image and switch "backend" to the backend you are using
+    backend: etcd
+    image: crowdfox/traefik-backup-image
+    imageTag: latest
 
   # etcd:
     # endpoint: etcd-service:2379

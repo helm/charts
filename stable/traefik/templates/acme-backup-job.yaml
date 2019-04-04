@@ -1,0 +1,46 @@
+{{- if .Values.kvprovider.backupAcme.enabled }}
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: "traefik-acme-backup"
+spec:
+  schedule: "{{ .Values.kvprovider.backupAcme.schedule | default "0 0 * * *" }}"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: {{ template "traefik.name" . }}
+            chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        spec:
+
+          restartPolicy: OnFailure
+          containers:
+          - name: traefik-acme-exporter
+            image: {{ .Values.kvprovider.backupAcme.image | default "crowdfox/traefik-backup-image" }}:{{ .Values.kvprovider.backupAcme.imageTag | default "latest" }}
+            args:
+            - /bin/bash
+            - -c
+            - /export.sh > /acme/acme-backup.json
+            env:
+            - name: ENDPOINTS
+              value: "{{ index (index .Values.kvprovider .Values.kvprovider.backupAcme.backend ) "endpoint" }}"
+{{- if .Values.kvprovider.etcd }}
+            - name: ACME_PATH
+              value: "{{ .Values.kvprovider.etcd.prefix }}/acme/account/object"
+{{- if not .Values.kvprovider.etcd.useAPIV3 }}
+            - name: ETCDCTL_API
+              value: "2"
+{{- end }}
+{{- end }}
+            volumeMounts:
+            - mountPath: /acme
+              name: acme
+          volumes:
+          - name: acme
+            persistentVolumeClaim:
+              claimName: {{ .Values.acme.persistence.existingClaim | default (printf "%s-acme" (include "traefik.fullname" .)) }}
+{{- end -}}
