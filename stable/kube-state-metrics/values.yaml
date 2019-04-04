@@ -43,7 +43,7 @@ podSecurityPolicy:
     # seccomp.security.alpha.kubernetes.io/defaultProfileName: 'docker/default'
     # apparmor.security.beta.kubernetes.io/defaultProfileName: 'runtime/default'
 
-
+## Container level securityContext
 securityContext:
   enabled: true
   runAsUser: 65534
