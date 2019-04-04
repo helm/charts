@@ -31,6 +31,23 @@ spec:
       securityContext:
         fsGroup: 1000
       volumes:
+      containers:
+      {{- if .Values.vault }}
+      - name: vault-token
+        emptyDir:
+          medium: Memory
+      - name: vault-config
+        configMap:
+          name: atlantis-vault-autoauth
+      - name: atlantis-consul-template
+        configMap:
+          name: atlantis-consul-template
+      - name: shared-data
+        emptyDir: {}
+      - name: entrypoint
+        configMap:
+          name: atlantis-entrypoint
+      {{- end }}
       {{- if .Values.tlsSecretName }}
       - name: tls
         secret:
@@ -58,6 +75,40 @@ spec:
       {{- end }}
       {{- end }}
       containers:
+      {{- if .Values.vault }}
+        - name: vault-agent-auth
+          image: vault
+          volumeMounts:
+            - name: vault-config
+              mountPath: /etc/vault
+            - name: vault-token
+              mountPath: /home/vault
+          env:
+            - name: VAULT_ADDR
+              value: {{ .Values.vault.vaultAddr }}
+            - name: VAULT_SKIP_VERIFY
+              value: '1'
+          args:
+            - agent
+            - -config=/etc/vault/vault-agent-config.hcl
+            - -log-level=debug
+        - name: consul-template
+          image: hashicorp/consul-template:alpine
+          volumeMounts:
+            - name: vault-token
+              mountPath: /home/vault
+            - name: atlantis-consul-template
+              mountPath: /etc/consul-template
+            - name: shared-data
+              mountPath: /etc/secrets
+          env:
+            - name: HOME
+              value: /home/vault
+            - name: VAULT_ADDR
+              value: {{ .Values.vault.vaultAddr }}
+          args:
+            - -config=/etc/consul-template/consul-template-config.hcl
+      {{- end }}
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
@@ -156,14 +207,10 @@ spec:
                 name: {{ template "atlantis.fullname" . }}-webhook
                 key: bitbucket_secret
           {{- end }}
+          {{- range .Values.envVar }}
+           - name: {{ .name }}
+             value: {{ .value }}
           {{- end }}
-          {{- if .Values.requireApproval }}
-          - name: ATLANTIS_REQUIRE_APPROVAL
-            value: "true"
-          {{- end }}
-          {{- if .Values.requireMergeable }}
-          - name: ATLANTIS_REQUIRE_MERGEABLE
-            value: "true"
           {{- end }}
           {{- if .Values.livenessProbe.enabled }}
           livenessProbe:

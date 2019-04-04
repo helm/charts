@@ -1,0 +1,26 @@
+{{- if .Values.vault }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: atlantis-consul-template
+  namespace: atlantis
+data:
+  consul-template-config.hcl: |
+    vault {
+      vault_agent_token_file = "/home/vault/.vault-token"
+      retry {
+        backoff = "30s"
+      }
+      ssl {
+        verify = false
+      }
+    }
+
+    template {
+      destination = "/etc/secrets/values.sh"
+      contents = <<EOH
+      export VAULT_ADDR="{{ .Values.vault.vaultAddr }}"
+      export VAULT_TOKEN="{{"{{"}} file "/home/vault/.vault-token" {{"}}"}}"
+      EOH
+    }
+{{- end }}

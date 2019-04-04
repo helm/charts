@@ -1,0 +1,24 @@
+{{- if .Values.vault }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: atlantis-vault-autoauth
+  namespace: atlantis
+data:
+  vault-agent-config.hcl: |
+    pid_file = "/home/vault/pidfile"
+
+    auto_auth {
+      method "kubernetes" {
+        mount_path = "{{ .Values.vault.mountPath }}"
+        config = {
+          role = "{{ .Values.vault.vaultRole }}"
+        }
+      }
+      sink "file" {
+        config = {
+          path = "/home/vault/.vault-token"
+        }
+      }
+    }
+{{- end}}

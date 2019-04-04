@@ -57,6 +57,7 @@ The following options are supported.  See [values.yaml](values.yaml) for more de
 | `storageClassName`                          | Storage class of the volume mounted for the Atlantis data directory.                                                                                                                                                                                                                                      | n/a     |
 | `tlsSecretName`                             | Name of a Secret for Atlantis' HTTPS certificate containing the following data items `tls.crt` with the public certificate and `tls.key` with the private key.                                                                                                                                            | n/a     |
 
+
 ## Upgrading
 ### From 1.* to 2.*
 * The following value names have changed:

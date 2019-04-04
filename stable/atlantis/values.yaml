@@ -69,6 +69,24 @@ serviceAccountSecrets:
   # credentials-staging: <json file as base64 encoded string>
 
 
+environment:
+  # To specify Azure credentials to be mapped as env vars if deploying to Azure cloud
+  #  - name: ARM_CLIENT_SECRET
+  #    value: myvalue
+  #  - name: ARM_SUBSCRIPTION_ID
+  #    value: myvalue2
+  #  - name: ARM_TENANT_ID
+  #    value: myvalue2
+  #  - name: ARM_CLIENT_ID
+  #    value: myvalue2
+
+# To specify vault variables for hashicorp vault integration with k8s
+# vault:
+#   vaultAddr: <Your vault address>
+#   vaultRole: <Your vault role>
+#   mountPath: <your vault mount path>
+
+
 ## -------------------------- ##
 # Default values for atlantis (override as needed).
 ## -------------------------- ##

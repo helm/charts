@@ -1,0 +1,15 @@
+{{- if .Values.vault }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: atlantis-entrypoint
+  namespace: atlantis
+data:
+  entrypoint.sh: |
+    while [ ! -f /etc/secrets/values.sh ]
+    do
+      sleep 5
+    done
+    source /etc/secrets/values.sh
+    /usr/local/bin/docker-entrypoint.sh server
+{{- end}}
