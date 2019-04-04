@@ -52,11 +52,16 @@ Parameter | Description | Default
 `config.google.serviceAccountJson` | google service account json contents | `""`
 `config.google.existingConfig` | existing Kubernetes configmap to use for the service account file. See [google secret template](https://github.com/helm/charts/blob/master/stable/oauth2-proxy/templates/google-secret.yaml) for the required values | `nil`
 `extraArgs` | key:value list of extra arguments to give the binary | `{}`
+`extraVolumes` | Add additional volumes. E.g., for a TLS secret. | `{}`
+`extraVolumeMounts` | Add additional volumes mounts. E.g., for a TLS secret.
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
 `image.repository` | Image repository | `quay.io/pusher/oauth2_proxy`
 `image.tag` | Image tag | `v3.1.0`
 `imagePullSecrets` | Specify image pull secrets | `nil` (does not add image pull secrets to deployed pods)
 `ingress.enabled` | enable ingress | `false`
+`listen.address` | The address to listen on | `0.0.0.0`
+`listen.port` | The port to listen on | `4180`
+`listen.scheme` | The scheme to listen on. E.g., `http` or `https`. If `https` you muse also provide `tls-cert` and `tls-key` as `extraArgs`  | `http`
 `livenessProbe.enabled`  | enable Kubernetes livenessProbe. Disable to use oauth2-proxy with Istio mTLS. See [Istio FAQ](https://istio.io/help/faq/security/#k8s-health-checks) | `true`
 `livenessProbe.initialDelaySeconds` | number of seconds | 0
 `livenessProbe.timeoutSeconds` | number of seconds | 1
@@ -89,3 +94,24 @@ $ helm install stable/oauth2-proxy --name my-release -f values.yaml
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+## TLS example
+
+```
+extraVolumes:
+- name: tls-secret-volume
+  secret:
+    secretName: tls-secret
+extraVolumeMounts:
+- name: tls-secret-volume
+  mountPath: /path/to/tls-secret
+extraArgs:
+  tls-cert: /path/to/tls-secret/tls.crt
+  tls-key: /path/to/tls-secret/tls.key
+listen:
+  scheme: https
+  address: 0.0.0.0
+  port: 4443
+service:
+  port: 443
+```
