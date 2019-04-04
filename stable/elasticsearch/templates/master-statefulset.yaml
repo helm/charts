@@ -101,7 +101,7 @@ spec:
           runAsUser: 0
         volumeMounts:
         - mountPath: /usr/share/elasticsearch/data
-          name: data
+          name: {{ .Values.master.persistence.name }}
 {{- if .Values.extraInitContainers }}
 {{ tpl .Values.extraInitContainers . | indent 6 }}
 {{- end }}
@@ -144,7 +144,7 @@ spec:
 {{ end }}
         volumeMounts:
         - mountPath: /usr/share/elasticsearch/data
-          name: data
+          name: {{ .Values.master.persistence.name }}
         - mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
           name: config
           subPath: elasticsearch.yml
