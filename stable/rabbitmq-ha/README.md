@@ -66,7 +66,8 @@ and their default values.
 | Parameter                                      | Description                                                                                                                                                                                           | Default                                                    |
 |------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------|
 | `existingConfigMap`                            | Use an existing ConfigMap                                                                                                                                                                             | `false`                                                    |
-| `existingSecret`                               | Use an existing secret for password & erlang cookie                                                                                                                                                   | `""`                                                       |
+| `generateSecret`                               | Generate the secret for password & erlang cookie                                                                                                                                                      | `true`                                                     |
+| `secretName`                               | The name of the secret to use for the secret containing password and erlang cookie                                                                                                                        | ""                                                      |
 | `extraPlugins`                                 | Additional plugins to add to the default configmap                                                                                                                                                    | `rabbitmq_shovel, rabbitmq_shovel_management, rabbitmq_federation, rabbitmq_federation_management,` |
 | `extraConfig`                                  | Additional configuration to add to default configmap                                                                                                                                                  | `{}`                                                         |
 | `advancedConfig`                               | Additional configuration in classic config format                                                                                                                                                   | `""`                                                           |
@@ -235,7 +236,7 @@ $ helm install --name my-release --set existingConfigMap=true stable/rabbitmq-ha
 
 ### Custom Secret
 
-Similar to custom ConfigMap, `existingSecret` can be used to override the default secret.yaml provided, and
+Similar to custom ConfigMap, `secretName` can be used to override the default secret.yaml provided, and
 `rabbitmqCert.existingSecret` can be used to override the default certificates. The custom secret must provide
 the following keys:
 
