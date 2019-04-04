@@ -694,6 +694,10 @@ prometheusOperator:
   ##
   podLabels: {}
 
+  ## Annotations to add to the operator pod
+  ##
+  podAnnotations: {}
+
   ## Assign a PriorityClassName to pods if set
   # priorityClassName: ""
 
