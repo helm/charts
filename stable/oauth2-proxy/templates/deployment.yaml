@@ -38,7 +38,7 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         args:
-          - --http-address=0.0.0.0:4180
+          - --{{ .Values.listen.scheme }}-address={{ .Values.listen.address }}:{{ .Values.listen.port }}
         {{- range $key, $value := .Values.extraArgs }}
           {{- if $value }}
           - --{{ $key }}={{ $value }}
@@ -79,22 +79,24 @@ spec:
               name:  {{ template "oauth2-proxy.secretName" . }}
               key: cookie-secret
         ports:
-          - containerPort: 4180
-            name: http
+          - containerPort: {{ .Values.listen.port }}
+            name: {{ .Values.listen.scheme }}
             protocol: TCP
 {{- if .Values.livenessProbe.enabled }}
         livenessProbe:
           httpGet:
+            scheme: {{ .Values.listen.scheme | upper }}
             path: /ping
-            port: http
+            port: {{ .Values.listen.scheme }}
           initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
           timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
 {{- end }}
 {{- if .Values.readinessProbe.enabled }}
         readinessProbe:
           httpGet:
+            scheme: {{ .Values.listen.scheme | upper }}
             path: /ping
-            port: http
+            port: {{ .Values.listen.scheme }}
           initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
           timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
           successThreshold: {{ .Values.readinessProbe.successThreshold }}
@@ -103,6 +105,9 @@ spec:
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
+{{- if ne (len .Values.extraVolumeMounts) 0 }}
+{{ toYaml .Values.extraVolumeMounts | indent 8 }}
+{{- end }}
 {{- with .Values.config.google }}
 {{- if and .adminEmail (or .serviceAccountJson .existingSecret) }}
         - name: google-secret
@@ -120,6 +125,9 @@ spec:
           readOnly: true
 {{- end }}
       volumes:
+{{- if ne (len .Values.extraVolumes) 0 }}
+{{ toYaml .Values.extraVolumes | indent 6 -}}
+{{- end }}
 {{- with .Values.config.google }}
 {{- if and .adminEmail (or .serviceAccountJson .existingSecret) }}
       - name: google-secret
