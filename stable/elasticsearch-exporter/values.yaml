@@ -21,6 +21,12 @@ resources: {}
 
 priorityClassName: ""
 
+nodeSelector: {}
+
+tolerations: {}
+
+podAnnotations: {}
+
 service:
   type: ClusterIP
   httpPort: 9108
@@ -72,3 +78,10 @@ web:
   ## Path under which to expose metrics.
   ##
   path: /metrics
+
+serviceMonitor:
+  ## If true, a ServiceMonitor CRD is created for a prometheus operator
+  ## https://github.com/coreos/prometheus-operator
+  ##
+  enabled: false
+  labels: {}

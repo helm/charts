@@ -42,3 +42,13 @@ Create the name of the service account to use
     {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Create default labels
+*/}}
+{{- define "prometheus-pushgateway.defaultLabels" -}}
+{{- $labelChart := include "prometheus-pushgateway.chart" $ -}}
+{{- $labelApp := include "prometheus-pushgateway.name" $ -}}
+{{- $labels := dict "app" $labelApp "chart" $labelChart "release" .Release.Name "heritage" .Release.Service -}}
+{{ merge .extraLabels $labels | toYaml | indent 4 }}
+{{- end -}}

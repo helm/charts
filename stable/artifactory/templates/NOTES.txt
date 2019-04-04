@@ -1,5 +1,7 @@
 Congratulations. You have just deployed JFrog Artifactory!
 
+#### THIS CHART IS DEPRECATED! ####
+
 1. Get the Artifactory URL by running these commands:
 
    {{- if .Values.ingress.enabled }}

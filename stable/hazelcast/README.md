@@ -53,6 +53,8 @@ The following table lists the configurable parameters of the Hazelcast chart and
 | `hazelcast.javaOpts`                       | Additional JAVA_OPTS properties for Hazelcast member                                                           | `nil`                                                |
 | `hazelcast.configurationFiles`             | Hazelcast configuration files                                                                                  | `{DEFAULT_HAZELCAST_XML}`                            |
 | `nodeSelector`                             | Hazelcast Node labels for pod assignment                                                                       | `nil`                                                |
+| `gracefulShutdown.enabled`                 | Turn on and off Graceful Shutdown                                                                              | `true`                                               |
+| `gracefulShutdown.maxWaitSeconds`          | Maximum time to wait for the Hazelcast POD to shut down                                                        | `600`                                                |
 | `livenessProbe.enabled`                    | Turn on and off liveness probe                                                                                 | `true`                                               |
 | `livenessProbe.initialDelaySeconds`        | Delay before liveness probe is initiated                                                                       | `30`                                                 |
 | `livenessProbe.periodSeconds`              | How often to perform the probe                                                                                 | `10`                                                 |
@@ -71,6 +73,17 @@ The following table lists the configurable parameters of the Hazelcast chart and
 | `rbac.create`                              | Enable installing RBAC Role authorization                                                                      | `true`                                               |
 | `serviceAccount.create`                    | Enable installing Service Account                                                                              | `true`                                               |
 | `serviceAccount.name`                      | Name of Service Account, if not set, the name is generated using the fullname template                         | `nil`                                                |
+| `securityContext.fsGroup`                  | Group ID associated with the Hazelcast container                                                               | `65534`                                              |
+| `securityContext.runAsUser`                | User ID associated with the Hazelcast container                                                                | `65534`                                              |
+| `securityContext.runAsNonRoot`             | Runs Hazelcast container as non-root user                                                                      | `true`                                               |
+| `securityContext.readOnlyRootFilesystem`   | Read only root filesystem                                                                                      | `true`                                               |
+| `securityContext.allowPrivilegeEscalation` | Allows privilege escalation                                                                                    | `false`                                              |
+| `securityContext.defaultAllowPrivilegeEscalation` | Default allow privilege escalation                                                                             | `false`                                              |
+| `metrics.enabled`                          | Turn on and off JMX Prometheus metrics available at `/metrics`                                                 | `false`                                              |
+| `metrics.service.type`                     | Type of the metrics service                                                                                    | `ClusterIP`                                          |
+| `metrics.service.port`                     | Port of the `/metrics` endpoint and the metrics service                                                        | `8080`                                               |
+| `metrics.service.annotations`              | Annotations for the Prometheus discovery                                                                       |                                                      |
+
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

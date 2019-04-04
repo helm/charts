@@ -1,0 +1,112 @@
+{{- if or .Values.proxy.customSecret .Values.proxy.secret -}}
+{{- $fullName := include "buzzfeed-sso.fullname" . -}}
+{{- $proxySecret := .Values.proxy.customSecret | default ($fullName) -}}
+{{- $name := include "buzzfeed-sso.name" . -}}
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: {{ $fullName }}-proxy
+  labels:
+    app: {{ $name }}
+    chart: {{ template "buzzfeed-sso.chart" . }}
+    component: {{ $name }}-proxy
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.proxy.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ $name }}
+      component: {{ $name }}-proxy
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+        {{- with .Values.proxy.annotations }}
+{{ toYaml . | indent 8 }}
+        {{- end }}
+      labels:
+        app: {{ $name }}
+        component: {{ $name }}-proxy
+        release: {{ .Release.Name }}
+    spec:
+      volumes:
+        - name: {{ $fullName }}
+          configMap:
+            name: {{ $fullName }}
+      containers:
+        - name: {{ .Chart.Name }}-proxy
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["/bin/sso-proxy"]
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          env:
+            - name: CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $proxySecret }}
+                  key: proxy-client-id
+            - name: CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $proxySecret }}
+                  key: proxy-client-secret
+            - name: COOKIE_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $proxySecret }}
+                  key: proxy-cookie-secret
+            - name: EMAIL_DOMAIN
+              value: {{ .Values.emailDomain | quote }}
+            - name: UPSTREAM_CONFIGS
+              value: /sso/upstream_configs.yml
+            - name: PROVIDER_URL
+              value: https://{{ .Values.auth.domain }}
+            # STATSD_HOST and STATSD_PORT must be defined or the app wont launch, they dont need to be a real host / port, but they do need to be defined.
+            - name: STATSD_HOST
+              value: localhost
+            - name: STATSD_PORT
+              value: "11111"
+            - name: COOKIE_SECURE
+              value: "true"
+            - name: CLUSTER
+              value: {{ .Values.proxy.cluster | quote }}
+          {{- if .Values.proxy.providerUrlInternal }}
+            - name: PROVIDER_URL_INTERNAL
+              value: {{ .Values.proxy.providerUrlInternal | quote }}
+          {{- end }}
+          readinessProbe:
+            httpGet:
+              path: /ping
+              port: 4180
+              scheme: HTTP
+          livenessProbe:
+            httpGet:
+              path: /ping
+              port: 4180
+              scheme: HTTP
+            initialDelaySeconds: 10
+            timeoutSeconds: 1
+          volumeMounts:
+            - name: {{ $fullName }}
+              mountPath: /sso
+          resources:
+{{ toYaml .Values.proxy.resources | indent 12 }}
+    {{- with .Values.proxy.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.proxy.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.proxy.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+{{- end }}

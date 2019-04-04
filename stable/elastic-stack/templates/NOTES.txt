@@ -1,0 +1,33 @@
+The elasticsearch cluster and associated extras have been installed.
+
+{{- if .Values.kibana.enabled }}
+Kibana can be accessed:
+
+  * Within your cluster, at the following DNS name at port 9200:
+
+    {{ template "kibana.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+
+  * From outside the cluster, run these commands in the same shell:
+    {{- if contains "NodePort" .Values.kibana.service.type }}
+
+    export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "kibana.fullname" . }})
+    export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+    echo http://$NODE_IP:$NODE_PORT
+    {{- else if contains "LoadBalancer" .Values.kibana.service.type }}
+
+     WARNING: You have likely exposed your Elasticsearch cluster direct to the internet.
+              Elasticsearch does not implement any security for public facing clusters by default.
+              As a minimum level of security; switch to ClusterIP/NodePort and place an Nginx gateway infront of the cluster in order to lock down access to dangerous HTTP endpoints and verbs.
+
+     NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+           You can watch the status of by running 'kubectl get svc -w {{ template "kibana.fullname" . }}'
+
+    export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "kibana.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+    echo http://$SERVICE_IP:9200
+    {{- else if contains "ClusterIP"  .Values.kibana.service.type }}
+
+    export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "kibana.name" . }},release={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
+    echo "Visit http://127.0.0.1:5601 to use Kibana"
+    kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME 5601:5601
+    {{- end }}
+{{- end }}

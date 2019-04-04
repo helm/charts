@@ -1,0 +1,24 @@
+{{- if and .Values.persistence.storage.enabled (not .Values.persistence.storage.existingClaim) -}}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ template "bookstack.fullname" . }}-storage
+  labels:
+    app: {{ template "bookstack.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  accessModes:
+    - {{ .Values.persistence.storage.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.storage.size | quote }}
+{{- if .Values.persistence.storage.storageClass }}
+{{- if (eq "-" .Values.persistence.storage.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ .Values.persistence.storage.storageClass }}"
+{{- end }}
+{{- end }}
+{{- end }}

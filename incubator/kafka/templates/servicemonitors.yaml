@@ -14,6 +14,9 @@ spec:
   endpoints:
   - port: jmx-exporter
     interval: {{ .Values.prometheus.jmx.interval }}
+  {{- if .Values.prometheus.jmx.scrapeTimeout }}
+    scrapeTimeout: {{ .Values.prometheus.jmx.scrapeTimeout }}
+  {{- end }}
   namespaceSelector:
     any: true
 {{ end }}
@@ -34,6 +37,9 @@ spec:
   endpoints:
   - port: kafka-exporter
     interval: {{ .Values.prometheus.kafka.interval }}
+  {{- if .Values.prometheus.kafka.scrapeTimeout }}
+    scrapeTimeout: {{ .Values.prometheus.kafka.scrapeTimeout }}
+  {{- end }}
   namespaceSelector:
     any: true
 {{ end }}

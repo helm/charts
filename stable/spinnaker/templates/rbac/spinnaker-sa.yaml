@@ -1,0 +1,26 @@
+# In the case of a local cluster Spinnaker needs
+# to be able to deploy to all namespaces in the cluster.
+{{- if not .Values.kubeConfig.enabled }}
+{{- if .Values.rbac.create }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  {{- if .Values.serviceAccount.spinnakerName }}
+  name: {{ .Values.serviceAccount.spinnakerName }}
+  {{- else }}
+  name: {{ template "spinnaker.fullname" . }}-spinnaker
+  {{- end }}
+  labels:
+{{ include "spinnaker.standard-labels" . | indent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- namespace: {{ .Release.Namespace }}
+  kind: ServiceAccount
+  # Clouddriver does not currently allow config of its
+  # service account.
+  name: default
+{{- end }}
+{{- end }}

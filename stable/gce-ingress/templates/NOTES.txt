@@ -1,0 +1,51 @@
+GCE Ingress has been deployed.  You should be able to create Ingress resources.
+
+Example:
+```yaml
+apiVersion: extensions/v1
+kind: Deployment
+metadata:
+  name: example
+  labels:
+    run: example
+spec:
+  selector:
+    matchLabels:
+      run: example
+  template:
+    metadata:
+      labels:
+        run: example
+    spec:
+      containers:
+      - image: nginx:1.13.5-alpine
+        imagePullPolicy: IfNotPresent
+        name: example
+---
+apiVersion: v1
+kind: Service
+  type: NodePort
+metadata:
+  name: example
+  labels:
+    run: example
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    run: example
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: example
+  annotations:
+    kubernetes.io/ingress.class: "gce"
+spec:
+  backend:
+    # This assumes http-svc exists and routes to healthy endpoints.
+    serviceName: example
+    servicePort: 80
+```

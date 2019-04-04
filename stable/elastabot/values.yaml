@@ -21,6 +21,9 @@ elasticsearch:
 # Elastalert settings. Elastalert chart information is available here:
 # https://github.com/kubernetes/charts/tree/master/stable/elastalert
 elastalert:
+  # Index prefix for elastalert
+  index: "elastalert"
+
   # How far back in time to search for recently-fired alerts, in Elasticsearch
   recentAlertMinutes: 4320
 

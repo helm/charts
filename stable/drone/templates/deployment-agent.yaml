@@ -1,3 +1,4 @@
+{{- if not .Values.server.kubernetes.enabled -}}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -35,13 +36,17 @@ spec:
 {{- end }}
       serviceAccountName: {{ template "drone.serviceAccountName" . }}
       containers:
-      - name: {{ template "drone.fullname" . }}-agent
+      - name: agent
         image: "{{ .Values.images.agent.repository }}:{{ .Values.images.agent.tag }}"
         imagePullPolicy: {{ .Values.images.agent.pullPolicy }}
+        ports:
+        - name: http
+          containerPort: 3000
+          protocol: TCP
         env:
-          - name: DRONE_SERVER
-            value: {{ template "drone.fullname" . }}:9000
-          - name: DRONE_SECRET
+          - name: DRONE_RPC_SERVER
+            value: {{ template "drone.fullname" . }}-grpc:9000
+          - name: DRONE_RPC_SECRET
             valueFrom:
               secretKeyRef:
                 name: {{ template "drone.fullname" . }}
@@ -67,7 +72,7 @@ spec:
           hostPath:
             path: /var/run/docker.sock
 {{- else }}
-      - name: {{ template "drone.fullname" . }}-dind
+      - name: dind
         image: "{{ .Values.images.dind.repository }}:{{ .Values.images.dind.tag }}"
         imagePullPolicy: {{ .Values.images.dind.pullPolicy }}
 {{- if .Values.dind.command }}
@@ -94,3 +99,4 @@ spec:
       - name: docker-graph-storage
         emptyDir: {}
 {{- end }}
+{{- end -}}

@@ -33,9 +33,11 @@ The following tables list the configurable parameters of the Dask chart and thei
 | -------------------------- | -------------------------| -----------------|
 | `scheduler.name`           | Dask scheduler name      | `scheduler`      |
 | `scheduler.image`          | Container image name     | `daskdev/dask`   |
-| `scheduler.imageTag`       | Container image tag      | `0.18.1`         |
+| `scheduler.imageTag`       | Container image tag      | `1.1.0`         |
 | `scheduler.replicas`       | k8s deployment replicas  | `1`              |
-| `scheduler.resources`      | Container resources      | `{}`             |
+| `scheduler.tolerations`    | Tolerations              | `[]`             |
+| `scheduler.nodeSelector`   | nodeSelector             | `{}`             |
+| `scheduler.affinity`       | Container affinity       | `{}`             |
 
 ### Dask webUI
 
@@ -50,9 +52,12 @@ The following tables list the configurable parameters of the Dask chart and thei
 | -----------------------      | ---------------------------------| ---------------|
 | `worker.name`                | Dask worker name                 | `worker`       |
 | `worker.image`               | Container image name             | `daskdev/dask` |
-| `worker.imageTag`            | Container image tag              | `0.18.1`       |
+| `worker.imageTag`            | Container image tag              | `1.1.0`        |
 | `worker.replicas`            | k8s hpa and deployment replicas  | `3`            |
 | `worker.resources`           | Container resources              | `{}`           |
+| `worker.tolerations`         | Tolerations                      | `[]`           |
+| `worker.nodeSelector`        | nodeSelector                     | `{}`           |
+| `worker.affinity`            | Container affinity               | `{}`           |
 |
 
 ### jupyter
@@ -62,10 +67,13 @@ The following tables list the configurable parameters of the Dask chart and thei
 | `jupyter.name`          | Jupyter name                     | `jupyter`                |
 | `jupyter.enabled`       | Include optional Jupyter server  | `true`                   |
 | `jupyter.image`         | Container image name             | `daskdev/dask-notebook`  |
-| `jupyter.imageTag`      | Container image tag              | `0.18.1`                 |
+| `jupyter.imageTag`      | Container image tag              | `1.1.0`                  |
 | `jupyter.replicas`      | k8s deployment replicas          | `1`                      |
 | `jupyter.servicePort`   | k8s service port                 | `80`                     |
 | `jupyter.resources`     | Container resources              | `{}`                     |
+| `jupyter.tolerations`   | Tolerations                      | `[]`                     |
+| `jupyter.nodeSelector`  | nodeSelector                     | `{}`                     |
+| `jupyter.affinity`      | Container affinity               | `{}`                     |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 

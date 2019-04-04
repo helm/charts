@@ -1,0 +1,36 @@
+{{ if .Values.rbac.create -}}
+{{ if .Values.serviceAccount.create -}}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ include "gce-ingress.serviceAccountName" . }}
+{{ end -}}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ include "gce-ingress.fullname" . }}
+rules:
+- apiGroups: [""]
+  resources: ["secrets", "endpoints", "services", "pods", "nodes", "namespaces", "configmaps", "events"]
+  verbs: ["get", "list", "watch", "update", "create", "patch"]
+- apiGroups: ["extensions"]
+  resources: ["ingresses"]
+  verbs: ["get", "list", "watch", "update"]
+- apiGroups: ["extensions"]
+  resources: ["ingresses/status"]
+  verbs: ["update"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ include "gce-ingress.fullname" . }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ include "gce-ingress.fullname" . }}
+subjects:
+- kind: ServiceAccount
+  name: {{ include "gce-ingress.serviceAccountName" . }}
+  namespace: {{ .Release.Namespace }}
+{{ end -}}

@@ -1,0 +1,69 @@
+# Default values for prometheus-couchdb-exporter.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+  # Specifies whether a PodSecurityPolicy should be created
+  pspEnabled: true
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+replicaCount: 1
+
+image:
+  repository: gesellix/couchdb-prometheus-exporter
+  tag: 16
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 9984
+
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  path: /
+  hosts:
+    # - chart-example.local
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+## CouchDB exporter configuratons
+couchdb:
+  ## URI ofthe couchdb instance
+  uri: http://couchdb.default.svc:5984
+  ## Specify the list of databases to get the disk usage stats as comma seperates like "db-1,db-2"
+  ## or to get stats for every database, please use "_all_dbs"
+  databases: _all_dbs
+  ## CouchDB username
+  # username:
+  ## CouchDB Password
+  # password:

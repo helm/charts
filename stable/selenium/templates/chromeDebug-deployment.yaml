@@ -14,7 +14,10 @@ spec:
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: "{{ .Release.Name }}"
         heritage: "{{ .Release.Service }}"
-      annotations: 
+      {{- if .Values.chromeDebug.podAnnotations }}
+      annotations:
+{{ toYaml .Values.chromeDebug.podAnnotations | indent 8 }}
+      {{- end}}
     spec:
       containers:
         - name: {{ .Chart.Name }}
@@ -26,13 +29,13 @@ spec:
               name: jmx
               protocol: TCP
             {{- end }}
-            - containerPort: 5900 
+            - containerPort: 5900
               name: vnc
           env:
             - name: HUB_PORT_4444_TCP_ADDR
               value: {{ template "selenium.hub.fullname" . }}
             - name: HUB_PORT_4444_TCP_PORT
-              value: {{ .Values.hub.port | quote }}
+              value: {{ .Values.hub.servicePort | quote }}
             - name: JAVA_TOOL_OPTIONS
               value: {{ default "" .Values.chromeDebug.javaOpts | quote }}
             - name: SE_OPTS
@@ -77,20 +80,41 @@ spec:
             - name: TZ
               value: {{ .Values.chromeDebug.timeZone | quote }}
             {{- end }}
+            {{- if .Values.chromeDebug.extraEnvs }}
+{{ toYaml .Values.chromeDebug.extraEnvs | indent 12 }}
+            {{- end }}
           volumeMounts:
 {{ if .Values.chromeDebug.volumeMounts -}}
 {{ toYaml .Values.chromeDebug.volumeMounts | indent 12 }}
 {{- end }}
           resources:
 {{ toYaml .Values.chromeDebug.resources | indent 12 }}
+{{- if or .Values.global.imagePullSecrets .Values.chromeDebug.imagePullSecrets }}
+      imagePullSecrets: 
+      - name: {{ .Values.chromeDebug.imagePullSecrets | default .Values.global.imagePullSecrets | quote }}
+{{- end }}
       volumes:
 {{ if .Values.chromeDebug.volumes -}}
 {{ toYaml .Values.chromeDebug.volumes | indent 8 }}
 {{- end }}
+      hostAliases:
+{{ toYaml .Values.global.hostAliases | indent 8 }}
       nodeSelector:
 {{- if .Values.chromeDebug.nodeSelector }}
 {{ toYaml .Values.chromeDebug.nodeSelector | indent 8  }}
 {{- else if .Values.global.nodeSelector }}
 {{ toYaml .Values.global.nodeSelector | indent 8  }}
+{{- end }}
+      affinity:
+{{- if .Values.chromeDebug.affinity }}
+{{ toYaml .Values.chromeDebug.affinity | indent 8  }}
+{{- else if .Values.global.affinity }}
+{{ toYaml .Values.global.affinity | indent 8  }}
+{{- end }}
+      tolerations:
+{{- if .Values.chromeDebug.tolerations }}
+{{ toYaml .Values.chromeDebug.tolerations | indent 8  }}
+{{- else if .Values.global.tolerations }}
+{{ toYaml .Values.global.tolerations | indent 8  }}
 {{- end }}
 {{- end -}}

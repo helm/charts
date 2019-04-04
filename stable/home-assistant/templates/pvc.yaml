@@ -1,14 +1,14 @@
-{{- if and .Values.persistence.enabled (not .Values.persistence.existingClaim) }}
+{{- if .Values.persistence.enabled -}}
+{{- if not .Values.persistence.existingClaim -}}
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: {{ template "home-assistant.fullname" . }}
   labels:
-    app: {{ template "home-assistant.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    component: server
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app.kubernetes.io/name: {{ include "home-assistant.name" . }}
+    helm.sh/chart: {{ include "home-assistant.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   accessModes:
     - {{ .Values.persistence.accessMode | quote }}
@@ -22,4 +22,5 @@ spec:
   storageClassName: "{{ .Values.persistence.storageClass }}"
 {{- end }}
 {{- end }}
+{{- end -}}
 {{- end -}}

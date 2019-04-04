@@ -1,4 +1,8 @@
+{{- if .Capabilities.APIVersions.Has "apps/v1beta1" }}
+apiVersion: apps/v1beta1
+{{- else }}
 apiVersion: apps/v1
+{{- end }}
 kind: Deployment
 metadata:
   name: {{ include "chaoskube.fullname" . }}
@@ -14,6 +18,10 @@ spec:
     metadata:
       labels:
 {{ include "labels.standard" . | indent 8 }}
+    {{- if .Values.podAnnotations }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8 }}
+    {{- end }}
     spec:
       containers:
         - name: {{ .Values.name }}
@@ -33,8 +41,17 @@ spec:
             {{- if .Values.debug }}
             - --debug
             {{- end }}
+            - --minimum-age={{ .Values.minimumAge }}
+            - --grace-period={{ .Values.gracePeriod }}
+            - --metrics-address={{ .Values.metricsAddress }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 65534
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
 {{- if .Values.priorityClassName }}
       priorityClassName: "{{ .Values.priorityClassName }}"
 {{- end }}

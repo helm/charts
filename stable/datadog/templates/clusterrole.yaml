@@ -9,6 +9,7 @@ metadata:
     release: {{ .Release.Name | quote }}
   name: {{ template "datadog.fullname" . }}
 rules:
+{{- if not .Values.clusterAgent.enabled }}
 - apiGroups:
   - ""
   resources:
@@ -22,6 +23,12 @@ rules:
   - get
   - list
   - watch
+- apiGroups: ["quota.openshift.io"]
+  resources:
+  - clusterresourcequotas
+  verbs:
+  - get
+  - list
 {{- if .Values.datadog.collectEvents }}
 - apiGroups:
   - ""
@@ -55,6 +62,7 @@ rules:
   - "/healthz"
   verbs:
   - get
+{{- end }}
 - apiGroups:  # Kubelet connectivity
   - ""
   resources:

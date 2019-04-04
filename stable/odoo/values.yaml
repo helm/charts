@@ -1,10 +1,19 @@
+## Global Docker image parameters
+## Please, note that this will override the image parameters, including dependencies, configured to use the global value
+## Current available global Docker image parameters: imageRegistry and imagePullSecrets
+##
+# global:
+#   imageRegistry: myRegistryName
+#   imagePullSecrets:
+#     - myRegistryKeySecretName
+
 ## Bitnami Odoo image version
 ## ref: https://hub.docker.com/r/bitnami/odoo/tags/
 ##
 image:
   registry: docker.io
   repository: bitnami/odoo
-  tag: 11.0.20180715-debian-9
+  tag: 11.0.20190315
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -15,7 +24,7 @@ image:
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
   ##
   # pullSecrets:
-  #   - myRegistrKeySecretName
+  #   - myRegistryKeySecretName
 
 ## User of the application
 ## ref: https://github.com/bitnami/bitnami-docker-odoo#configuration
@@ -44,17 +53,24 @@ odooEmail: user@example.com
 ##
 ## PostgreSQL chart configuration
 ##
+## https://github.com/helm/charts/blob/master/stable/postgresql/values.yaml
+##
 postgresql:
   ## PostgreSQL password
   ## ref: https://hub.docker.com/_/postgres/
   ##
-  # postgresPassword:
+  # postgresqlPassword:
 
   ## Enable persistence using Persistent Volume Claims
   ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
   ##
   persistence:
     enabled: true
+    ## If you want to reuse an existing claim, you can pass the name of the PVC using
+    ## the existingClaim variable
+    ##
+    # existingClaim: your-claim
+
     ## postgresql data Persistent Volume Storage Class
     ## If defined, storageClassName: <storageClass>
     ## If set to "-", storageClassName: "", which disables dynamic provisioning
@@ -81,7 +97,8 @@ service:
   ## otherwise leave blank
   ##
   # loadBalancerIP:
-
+  # HTTP Port
+  port: 80
   ## Use nodePort to requets some specific port when usin NodePort
   ##
   nodePort: ""
@@ -108,17 +125,18 @@ ingress:
     ## A side effect of this will be that the backend odoo service will be connected at port 443
     tls: false
 
+    ## Set this to true in order to add the corresponding annotations for cert-manager
+    certManager: false
+
     ## If TLS is set to true, you must declare what secret will store the key/certificate for TLS
     tlsSecret: odoo.local-tls
 
     ## Ingress annotations done as key:value pairs
-    ## If you're using kube-lego, you will want to add:
-    ## kubernetes.io/tls-acme: true
-    ##
     ## For a full list of possible ingress annotations, please see
     ## ref: https://github.com/kubernetes/ingress-nginx/blob/master/docs/annotations.md
     ##
     ## If tls is set to true, annotation ingress.kubernetes.io/secure-backends: "true" will automatically be set
+    ## If certManager is set to true, annotation kubernetes.io/tls-acme: "true" will automatically be set
     annotations:
     #  kubernetes.io/ingress.class: nginx
     #  kubernetes.io/tls-acme: true
@@ -129,7 +147,7 @@ ingress:
   ## -----BEGIN RSA PRIVATE KEY-----
   ##
   ## name should line up with a tlsSecret set further up
-  ## If you're using kube-lego, this is unneeded, as it will create the secret for you if it is not set
+  ## If you're using cert-manager, this is unneeded, as it will create the secret for you if it is not set
   ##
   ## It is also possible to create and manage the certificates outside of this helm chart
   ## Please see README.md for more information

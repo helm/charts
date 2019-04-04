@@ -14,6 +14,9 @@ spec:
       labels:
         app: {{ template "minecraft.fullname" . }}
     spec:
+      securityContext:
+        runAsUser: {{ .Values.securityContext.runAsUser }}
+        fsGroup: {{ .Values.securityContext.fsGroup }}
       containers:
       - name: {{ template "minecraft.fullname" . }}
         image: "{{ .Values.image }}:{{ .Values.imageTag }}"
@@ -23,6 +26,31 @@ spec:
         env:
         - name: EULA
           value: {{ .Values.minecraftServer.eula | quote }}
+        - name: TYPE
+          value: {{ default "" .Values.minecraftServer.type | quote }}
+        {{- if eq .Values.minecraftServer.type "FORGE" }}
+        {{- if .Values.minecraftServer.forgeInstallerUrl }}
+        - name: FORGE_INSTALLER_URL
+          value: {{ .Values.minecraftServer.forgeInstallerUrl | quote }}
+        {{- else }}
+        - name: FORGEVERSION
+          value: {{ .Values.minecraftServer.forgeVersion | quote }}
+        {{- end }}
+        {{- else if eq .Values.minecraftServer.type "SPIGOT" }}
+        - name: SPIGOT_DOWNLOAD_URL
+          value: {{ .Values.minecraftServer.spigotDownloadUrl | quote }}
+        {{- else if eq .Values.minecraftServer.type "BUKKIT" }}
+        - name: BUKKIT_DOWNLOAD_URL
+          value: {{ .Values.minecraftServer.bukkitDownloadUrl | quote }}
+        {{- else if eq .Values.minecraftServer.type "PAPER" }}
+        - name: PAPER_DOWNLOAD_URL
+          value: {{ .Values.minecraftServer.paperDownloadUrl | quote }}
+        {{- else if eq .Values.minecraftServer.type "FTB" }}
+        - name: FTB_SERVER_MOD
+          value: {{ .Values.minecraftServer.ftbServerMod | quote }}
+        - name: FTB_LEGACYJAVAFIXER
+          value: {{ default false .Values.minecraftServer.ftbLegacyJavaFixer | quote }}
+        {{- end }}
         - name: VERSION
           value: {{ .Values.minecraftServer.version | quote }}
         - name: DIFFICULTY
@@ -75,6 +103,18 @@ spec:
           value: {{ default "" .Values.minecraftServer.generatorSettings | quote }}
         - name: LEVEL
           value: {{ .Values.minecraftServer.worldSaveName | quote }}
+        {{- if .Values.minecraftServer.downloadWorldUrl }}
+        - name: WORLD
+          value: {{ .Values.minecraftServer.downloadWorldUrl | quote }}
+        {{- end }}
+        {{- if .Values.minecraftServer.downloadModpackUrl }}
+        - name: MODPACK
+          value: {{ .Values.minecraftServer.downloadModpackUrl | quote }}
+        {{- if .Values.minecraftServer.removeOldMods }}
+        - name: REMOVE_OLD_MODS
+          value: "TRUE"
+        {{- end }}
+        {{- end }}
         - name: ONLINE_MODE
           value: {{ .Values.minecraftServer.onlineMode | quote }}
         - name: JVM_OPTS
@@ -88,6 +128,13 @@ spec:
             secretKeyRef:
               name: {{ template "minecraft.fullname" . }}
               key: rcon-password
+        {{- end }}
+
+        {{- if .Values.minecraftServer.query.enabled }}
+        - name: ENABLE_QUERY
+          value: "true"
+        - name: QUERY_PORT
+          value: {{ .Values.minecraftServer.query.port }}
         {{- end }}
 
         ports:

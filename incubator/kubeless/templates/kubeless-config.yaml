@@ -1,6 +1,7 @@
 apiVersion: v1
 data:
-  builder-image: "{{ .Values.config.builderImage }}:{{ .Values.controller.deployment.image.tag }}"
+  functions-namespace: "{{ .Values.config.functionsNamespace | default .Release.Namespace }}"
+  builder-image: "{{ .Values.config.builderImage }}:{{ .Values.controller.deployment.functionController.image.tag }}"
   builder-image-secret: "{{ .Values.config.builderImagePullSecret }}"
   deployment: "{{ .Values.config.deploymentTemplate }}"
   enable-build-step: "{{ .Values.config.enableBuildStep }}"

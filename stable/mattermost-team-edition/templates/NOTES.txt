@@ -1,0 +1,31 @@
+You can easily connect to the remote instance from your browser. Forward the webserver port to localhost:8065
+
+- kubectl port-forward --namespace {{ .Release.Namespace }} $(kubectl get pods --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/name={{ include "mattermost-team-edition.name" . }},app.kubernetes.io/instance={{ .Release.Name }}" -o jsonpath='{ .items[0].metadata.name }') 8080:8065
+
+{{ if .Values.ingress.enabled }}
+
+Mattermost will be available at the URL, if you setup the nginx-ingress or other type of ingress:
+
+{{ if .Values.ingress.tls }}
+{{ range .Values.ingress.hosts }}
+  https://{{ . }}
+{{ end }}
+
+{{ else }}
+
+{{ range .Values.ingress.hosts }}
+  http://{{ . }}
+{{ end }}
+
+{{ end }}
+
+{{ else }}
+
+To expose Mattermost via an Ingress you need to set host and enable ingress.
+
+helm install --set host=mattermost.yourdomain.com --set ingress.enabled=true stable/mattermost-team-edition
+{{ end }}
+
+{{ include "mattermost.warnings" . }}
+
+{{ include "mattermost.deprecations" . }}

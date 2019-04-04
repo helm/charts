@@ -1,0 +1,253 @@
+## NOTE:
+## You have to provide a node seed
+##   * either by specifying nodeSeed directly
+##   * or by specifying existingNodeSeedSecret that points to an existing secret
+## You can generate a node seed by running the following command:
+##   docker run --rm -it --entrypoint '' satoshipay/stellar-core stellar-core --genseed
+
+## WARNING: make sure to replace this in your configuration or use existingNodeSeedSecret
+nodeSeed: SDUFQA7YL3KTWZNKOXX7XXIYU4R5R6JKELMREKHDQOYY2WPUGXFVJN52
+# existingNodeSeedSecret:
+#   name: stellar-core
+#   key: nodeSeed
+
+nodeIsValidator: true
+
+networkPassphrase: Public Global Stellar Network ; September 2015
+
+catchupComplete: false
+catchupRecent: 0
+
+maxPeerConnections: 50
+
+knownPeers:
+  - stellar1.tempo.eu.com
+  - au.stellar.ibm.com
+  - br.stellar.ibm.com
+  - ca.stellar.ibm.com
+  - no.stellar.ibm.com
+  - it.stellar.ibm.com
+  - hk.stellar.ibm.com
+  - in.stellar.ibm.com
+  - uk.stellar.ibm.com
+  - us.stellar.ibm.com
+  - stellar0.keybase.io
+  - stellar1.satoshipay.io
+  - stellar2.satoshipay.io
+  - stellar3.satoshipay.io
+  - core-live-a.stellar.org
+  - core-live-b.stellar.org
+  - core-live-c.stellar.org
+  - ohio-1.stellar.stellarport.io
+  - ohio-2.stellar.stellarport.io
+  - validator1.stellar.stronghold.co
+  - validator2.stellar.stronghold.co
+  - validator3.stellar.stronghold.co
+  - validator4.stellar.stronghold.co
+  - validator5.stellar.stronghold.co
+
+preferredPeers:
+  - stellar1.tempo.eu.com
+  - au.stellar.ibm.com
+  - br.stellar.ibm.com
+  - ca.stellar.ibm.com
+  - no.stellar.ibm.com
+  - it.stellar.ibm.com
+  - hk.stellar.ibm.com
+  - in.stellar.ibm.com
+  - uk.stellar.ibm.com
+  - us.stellar.ibm.com
+  - stellar0.keybase.io
+  - stellar1.satoshipay.io
+  - stellar2.satoshipay.io
+  - stellar3.satoshipay.io
+  - core-live-a.stellar.org
+  - core-live-b.stellar.org
+  - core-live-c.stellar.org
+  - validator1.stellar.stronghold.co
+  - validator2.stellar.stronghold.co
+  - validator3.stellar.stronghold.co
+  - validator4.stellar.stronghold.co
+  - validator5.stellar.stronghold.co
+
+nodeNames:
+  - publicKey: GAOO3LWBC4XF6VWRP5ESJ6IBHAISVJMSBTALHOQM2EZG7Q477UWA6L7U
+    name: eno
+  - publicKey: GCKWUQGSVO45ZV3QK7POYL7HMFWDKWJVMFVEGUJKCAEVUITUCTQWFSM6
+    name: ibm_au
+  - publicKey: GBUJA3Z5TLAKLI5MEH4TETLXJBQVSVW74MNEKP5UUHTP3IMLNSUPOTVA
+    name: ibm_br
+  - publicKey: GB2HF2NHRKKFZYFDGD7MUENOYROOEK7SWYV2APYOODP6P7BUJTLILKIL
+    name: ibm_ca
+  - publicKey: GDRA72H7JWXAXWJKOONQOPH3JKNSH5MQ6BO5K74C3X6FO2G3OG464BPU
+    name: ibm_no
+  - publicKey: GAEEH4TBR7YQQWKJ2FIT57HXZZTMK2BX5LY4POJUYFSEZ7Y2ONHPPTES
+    name: ibm_it
+  - publicKey: GBJ7T3BTLX2BP3T5Q4256PUF7JMDAB35LLO32QRDYE67TDDMN7H33GGE
+    name: ibm_hk
+  - publicKey: GCH3O5PTCZVR4G65W3B4XDKWI5V677HQB3QO7CW4YPVYDDFBE2GE7G6V
+    name: ibm_in
+  - publicKey: GAENPO2XRTTMAJXDWM3E3GAALNLG4HVMKJ4QF525TR25RI42YPEDULOW
+    name: ibm_uk
+  - publicKey: GARBCBH4YSHUJLYEPKEPMVYZIJ3ZSQR3QCJ245CWGY64X72JLN4A6RSG
+    name: ibm_us
+  - publicKey: GCWJKM4EGTGJUVSWUJDPCQEOEP5LHSOFKSA4HALBTOO4T4H3HCHOM6UX
+    name: keybase0
+  - publicKey: GC5SXLNAM3C4NMGK2PXK4R34B5GNZ47FYQ24ZIBFDFOCU6D4KBN4POAE
+    name: satoshipay1
+  - publicKey: GBJQUIXUO4XSNPAUT6ODLZUJRV2NPXYASKUBY4G5MYP3M47PCVI55MNT
+    name: satoshipay2
+  - publicKey: GAK6Z5UVGUVSEK6PEOCAYJISTT5EJBB34PN3NOLEQG2SUKXRVV2F6HZY
+    name: satoshipay3
+  - publicKey: GCGB2S2KGYARPVIA37HYZXVRM2YZUEXA6S33ZU5BUDC6THSB62LZSTYH
+    name: sdf_watcher1
+  - publicKey: GCM6QMP3DLRPTAZW2UZPCPX2LF3SXWXKPMP3GKFZBDSF3QZGV2G5QSTK
+    name: sdf_watcher2
+  - publicKey: GABMKJM6I25XI4K7U6XWMULOUQIQ27BCTMLS6BYYSOWKTBUXVRJSXHYQ
+    name: sdf_watcher3
+  - publicKey: GBB32UXWEXGZUE7H7LUVNNZRT3ZMZ3YH7SP3V5EFBILUVL3NCTSSK3IZ
+    name: stellarport1
+  - publicKey: GC5A5WKAPZU5ASNMLNCAMLW7CVHMLJJAKHSZZHE2KWGAJHZ4EW6TQ7PB
+    name: stellarport2
+  - publicKey: GDIQKLQVOCD5UD6MUI5D5PTPVX7WTP5TAPP5OBMOLENBBD5KG434KYQ2
+    name: stronghold1
+  - publicKey: GA7MREQ7673YDVANF4WBPN7LBQM4BSH4BQUFUTC4YLSSQCQUQTXRVBZN
+    name: stronghold2
+  - publicKey: GDHV7FL7JP6LUEWWYUOA4C3QAFQ4LZ6OHFBWFIL6IFIS3AOBI2DHV62F
+    name: stronghold3
+  - publicKey: GBGDBLFKR3LORWOI65LVC7ES5OGZ4GHILEHCBVKPW2PMP2OL43F6B2JJ
+    name: stronghold4
+  - publicKey: GCBXBCIKCCVUIHAZ5QFWK6CKSX4AESOJ33IQNUE42BP7J66X23TM6WPF
+    name: stronghold5
+  - publicKey: GCJCSMSPIWKKPR7WEPIQG63PDF7JGGEENRC33OKVBSPUDIRL6ZZ5M7OO
+    name: tempo
+  - publicKey: GD7FVHL2KUTUYNOJFRUUDJPDRO2MAZJ5KP6EBCU6LKXHYGZDUFBNHXQI
+    name: umbrel
+
+quorumSet:
+  - threshold_percent: 66
+    validators:
+      - $$eno
+      - $$keybase0
+      - $$tempo
+      - $$umbrel
+  - path: ibm
+    threshold_percent: 51
+    validators:
+      - $$ibm_au
+      - $$ibm_br
+      - $$ibm_ca
+      - $$ibm_no
+      - $$ibm_it
+      - $$ibm_hk
+      - $$ibm_in
+      - $$ibm_uk
+      - $$ibm_us
+  - path: satoshipay
+    threshold_percent: 51
+    validators:
+      - $$satoshipay1
+      - $$satoshipay2
+      - $$satoshipay3
+  - path: sdf
+    threshold_percent: 51
+    validators:
+      - $$sdf_watcher1
+      - $$sdf_watcher2
+      - $$sdf_watcher3
+  - path: stronghold
+    threshold_percent: 51
+    validators:
+      - $$stronghold1
+      - $$stronghold2
+      - $$stronghold3
+      - $$stronghold4
+      - $$stronghold5
+
+history:
+  sdf1:
+    get: "curl -sf http://history.stellar.org/prd/core-live/core_live_001/{0} -o {1}"
+  sdf2:
+    get: "curl -sf http://history.stellar.org/prd/core-live/core_live_002/{0} -o {1}"
+  sdf3:
+    get: "curl -sf http://history.stellar.org/prd/core-live/core_live_003/{0} -o {1}"
+
+initializeHistoryArchives: false
+
+environment: {}
+
+postgresql:
+  enabled: true
+  postgresDatabase: stellar-core
+  postgresUser: postgres
+  # options from https://github.com/helm/charts/tree/master/stable/postgresql
+  # postgresPassword:
+
+postgresqlConnectTimeout: 5
+
+## NOTE:
+## existingDatabase is only used if postgresql.enabled is false
+existingDatabase:
+  passwordSecret:
+    name: postgresql-core
+    key: password
+  ## NOTE:
+  ## $(DATABASE_PASSWORD) is automatically replaced with the value of the passwordSecret
+  # url: postgresql://dbname=stellar-core host=postgresql-core password=$(DATABASE_PASSWORD)
+
+image:
+  repository: satoshipay/stellar-core
+  tag: '10.0.0-2'
+  # flavor: aws
+  # flavor: gcloud
+  pullPolicy: IfNotPresent
+
+peerService:
+  type: LoadBalancer
+  port: 11625
+  # loadBalancerIP: 35.13.37.42
+  # externalTrafficPolicy: Local
+
+httpService:
+  type: ClusterIP
+  port: 11626
+
+persistence:
+  enabled: true
+
+  ## A manually managed Persistent Volume and Claim
+  ## Requires persistence.enabled: true
+  ## If defined, PVC must be created manually before volume will be bound
+  # existingClaim:
+
+  ## database data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  # storageClass: "-"
+  accessMode: ReadWriteOnce
+  size: 8Gi
+
+  subPath: "stellar-core"
+  mountPath: /data
+
+  ## Annotations for the persistent volume claim
+  # annotations:
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 512Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+serviceAccount:
+  create: true
+  name:

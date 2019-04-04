@@ -32,6 +32,12 @@ rules:
       - get
       - list
       - watch
+  - apiGroups:
+      - extensions
+    resources:
+      - ingresses/status
+    verbs:
+      - update
 ---
 kind: ClusterRoleBinding
 {{- if semverCompare "^1.8-0" .Capabilities.KubeVersion.GitVersion }}

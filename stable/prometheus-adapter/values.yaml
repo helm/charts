@@ -3,12 +3,12 @@ affinity: {}
 
 image:
   repository: directxman12/k8s-prometheus-adapter-amd64
-  tag: v0.2.1
+  tag: v0.4.1
   pullPolicy: IfNotPresent
 
 logLevel: 4
 
-metricsRelistInterval: 30s
+metricsRelistInterval: 1m
 
 nodeSelector: {}
 
@@ -30,7 +30,7 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name:
 
-resources:
+resources: {}
   # requests:
   #   cpu: 100m
   #   memory: 128Mi
@@ -40,7 +40,7 @@ resources:
 
 rules:
   default: true
-  custom: {}
+  custom: []
 # - seriesQuery: '{__name__=~"^some_metric_count$"}'
 #   resources:
 #     template: <<.Resource>>
@@ -48,6 +48,9 @@ rules:
 #     matches: ""
 #     as: "my_custom_metric"
 #   metricsQuery: sum(<<.Series>>{<<.LabelMatchers>>}) by (<<.GroupBy>>)
+  # Mounts a configMap with pre-generated rules for use. Overrides the
+  # default and custom entries
+  existing:
 
 service:
   annotations: {}

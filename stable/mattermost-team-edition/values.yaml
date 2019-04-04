@@ -1,0 +1,383 @@
+# Default values for mattermost-team-edition.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+image:
+  repository: mattermost/mattermost-team-edition
+  tag: 5.9.0
+  imagePullPolicy: IfNotPresent
+
+initContainerImage:
+  repository: appropriate/curl
+  tag: latest
+  imagePullPolicy: IfNotPresent
+
+## How many old ReplicaSets for Mattermost Deployment you want to retain
+revisionHistoryLimit: 1
+
+## Enable persistence using Persistent Volume Claims
+## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+## ref: https://docs.gitlab.com/ee/install/requirements.html#storage
+##
+persistence:
+  ## This volume persists generated data from users, like images, attachments...
+  ##
+  data:
+    enabled: true
+    size: 10Gi
+    ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
+    ## Default: volume.alpha.kubernetes.io/storage-class: default
+    ##
+    # storageClass:
+    accessMode: ReadWriteOnce
+  # existingClaim: ""
+
+service:
+  type: ClusterIP
+  externalPort: 8065
+  internalPort: 8065
+
+ingress:
+  enabled: false
+  path: /
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # certmanager.k8s.io/issuer:  your-issuer
+    # nginx.ingress.kubernetes.io/proxy-body-size: 50m
+    # nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
+    # nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+    # nginx.ingress.kubernetes.io/proxy-buffering: "on"
+    # nginx.ingress.kubernetes.io/configuration-snippet: |
+    #   proxy_cache mattermost_cache;
+    #   proxy_cache_revalidate on;
+    #   proxy_cache_min_uses 2;
+    #   proxy_cache_use_stale timeout;
+    #   proxy_cache_lock on;
+    #### To use the nginx cache you will need to set an http-snippet in the ingress-nginx configmap
+    #### http-snippet: |
+    ####     proxy_cache_path /var/cache/nginx levels=1:2 keys_zone=mattermost_cache:10m max_size=3g inactive=120m use_temp_path=off;
+  hosts:
+    - mattermost.example.com
+  tls:
+    # - secretName: mattermost.example.com-tls
+    #   hosts:
+    #     - mattermost.example.com
+
+
+## If use this please disable the mysql chart by setting mysql.enable to false
+externalDB:
+  enabled: false
+
+  ## postgres or mysql
+  externalDriverType: ""
+
+  ## postgres:  "postgres://<USERNAME>:<PASSWORD>@<HOST>:5432/<DATABASE_NAME>?sslmode=disable&connect_timeout=10"
+  ## mysql:     "<USERNAME>:<PASSWORD>@tcp(<HOST>:3306)/<DATABASE_NAME>?charset=utf8mb4,utf8&readTimeout=30s&writeTimeout=30s"
+  externalConnectionString: ""
+
+mysql:
+  enabled: true
+  mysqlRootPassword: ""
+  mysqlUser: ""
+  mysqlPassword: ""
+  mysqlDatabase: mattermost
+
+  repository: mysql
+  tag: 5.7
+  imagePullPolicy: IfNotPresent
+
+  persistence:
+    enabled: true
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
+    ##
+    storageClass: ""
+    accessMode: ReadWriteOnce
+    size: 10Gi
+  # existingClaim: ""
+
+## Additional env vars
+extraEnvVars: []
+  # This is an example of extra env vars when using with the deployment with GitLab Helm Charts
+  # - name: POSTGRES_PASSWORD_GITLAB
+  #   valueFrom:
+  #     secretKeyRef:
+  #       # NOTE: Needs to be manually created
+  #       # kubectl create secret generic gitlab-postgresql-password --namespace <NAMESPACE> --from-literal postgres-password=<PASSWORD>
+  #       name: gitlab-postgresql-password
+  #       key: postgres-password
+  # - name: POSTGRES_USER_GITLAB
+  #   value: gitlab
+  # - name: POSTGRES_HOST_GITLAB
+  #   value: gitlab-postgresql
+  # - name: POSTGRES_PORT_GITLAB
+  #   value: "5432"
+  # - name: POSTGRES_DB_NAME_MATTERMOST
+  #   value: mm5
+  # - name: MM_SQLSETTINGS_DRIVERNAME
+  #   value: "postgres"
+  # - name: MM_SQLSETTINGS_DATASOURCE
+  #   value: postgres://$(POSTGRES_USER_GITLAB):$(POSTGRES_PASSWORD_GITLAB)@$(POSTGRES_HOST_GITLAB):$(POSTGRES_PORT_GITLAB)/$(POSTGRES_DB_NAME_MATTERMOST)?sslmode=disable&connect_timeout=10
+
+## Additional init containers
+extraInitContainers: []
+  # This is an example of extra Init Container when using with the deployment with GitLab Helm Charts
+  # - name: bootstrap-database
+  #   image: "postgres:9.6-alpine"
+  #   imagePullPolicy: IfNotPresent
+  #   env:
+  #     - name: POSTGRES_PASSWORD_GITLAB
+  #       valueFrom:
+  #         secretKeyRef:
+  #           name: gitlab-postgresql-password
+  #           key: postgres-password
+  #     - name: POSTGRES_USER_GITLAB
+  #       value: gitlab
+  #     - name: POSTGRES_HOST_GITLAB
+  #       value: gitlab-postgresql
+  #     - name: POSTGRES_PORT_GITLAB
+  #       value: "5432"
+  #     - name: POSTGRES_DB_NAME_MATTERMOST
+  #       value: mm5
+  #   command:
+  #     - sh
+  #     - "-c"
+  #     - |
+  #       if PGPASSWORD=$POSTGRES_PASSWORD_GITLAB psql -h $POSTGRES_HOST_GITLAB -p $POSTGRES_PORT_GITLAB -U $POSTGRES_USER_GITLAB -lqt | cut -d \| -f 1 | grep -qw $POSTGRES_DB_NAME_MATTERMOST; then
+  #       echo "database already exist, exiting initContainer"
+  #       exit 0
+  #       else
+  #       echo "Database does not exist. creating...."
+  #       PGPASSWORD=$POSTGRES_PASSWORD_GITLAB createdb -h $POSTGRES_HOST_GITLAB -p $POSTGRES_PORT_GITLAB -U $POSTGRES_USER_GITLAB $POSTGRES_DB_NAME_MATTERMOST
+  #       echo "Done"
+  #       fi
+
+# NOTE: These acts as the default values for the config.json file read by the
+# mattermost server itself. You can override the configJSON object just like any
+# Helm template value. Since it is an object, the object you provide will merge
+# with these defaults. Also note that this is YAML, so you can choose to use
+# either JSON or YAML as JSON is a subset of YAML. No matter what you choose,
+# the config.json file that will be generated will be correctly JSON formatted.
+configJSON: {
+  "ServiceSettings": {
+    "SiteURL": "",
+    "LicenseFileLocation": "",
+    "ListenAddress": ":8065",
+    "ConnectionSecurity": "",
+    "TLSCertFile": "",
+    "TLSKeyFile": "",
+    "UseLetsEncrypt": false,
+    "LetsEncryptCertificateCacheFile": "./config/letsencrypt.cache",
+    "Forward80To443": false,
+    "ReadTimeout": 300,
+    "WriteTimeout": 300,
+    "MaximumLoginAttempts": 10,
+    "GoroutineHealthThreshold": -1,
+    "GoogleDeveloperKey": "",
+    "EnableOAuthServiceProvider": false,
+    "EnableIncomingWebhooks": true,
+    "EnableOutgoingWebhooks": true,
+    "EnableCommands": true,
+    "EnableOnlyAdminIntegrations": false,
+    "EnablePostUsernameOverride": false,
+    "EnablePostIconOverride": false,
+    "EnableLinkPreviews": false,
+    "EnableTesting": false,
+    "EnableDeveloper": false,
+    "EnableSecurityFixAlert": true,
+    "EnableInsecureOutgoingConnections": false,
+    "EnableMultifactorAuthentication": false,
+    "EnforceMultifactorAuthentication": false,
+    "AllowCorsFrom": "",
+    "SessionLengthWebInDays": 30,
+    "SessionLengthMobileInDays": 30,
+    "SessionLengthSSOInDays": 30,
+    "SessionCacheInMinutes": 10,
+    "WebsocketSecurePort": 443,
+    "WebsocketPort": 80,
+    "WebserverMode": "gzip",
+    "EnableCustomEmoji": false,
+    "RestrictCustomEmojiCreation": "all",
+    "RestrictPostDelete": "all",
+    "AllowEditPost": "always",
+    "PostEditTimeLimit": 300,
+    "TimeBetweenUserTypingUpdatesMilliseconds": 5000,
+    "EnablePostSearch": true,
+    "EnableUserTypingMessages": true,
+    "EnableUserStatuses": true,
+    "ClusterLogTimeoutMilliseconds": 2000
+  },
+  "TeamSettings": {
+    "SiteName": "Mattermost",
+    "MaxUsersPerTeam": 50000,
+    "EnableTeamCreation": true,
+    "EnableUserCreation": true,
+    "EnableOpenServer": true,
+    "RestrictCreationToDomains": "",
+    "EnableCustomBrand": false,
+    "CustomBrandText": "",
+    "CustomDescriptionText": "",
+    "RestrictDirectMessage": "any",
+    "RestrictTeamInvite": "all",
+    "RestrictPublicChannelManagement": "all",
+    "RestrictPrivateChannelManagement": "all",
+    "RestrictPublicChannelCreation": "all",
+    "RestrictPrivateChannelCreation": "all",
+    "RestrictPublicChannelDeletion": "all",
+    "RestrictPrivateChannelDeletion": "all",
+    "RestrictPrivateChannelManageMembers": "all",
+    "UserStatusAwayTimeout": 300,
+    "MaxChannelsPerTeam": 50000,
+    "MaxNotificationsPerChannel": 1000
+  },
+  "SqlSettings": {
+    "DriverName": "",
+    "DataSource": "",
+    "DataSourceReplicas": [],
+    "DataSourceSearchReplicas": [],
+    "MaxIdleConns": 20,
+    "MaxOpenConns": 35,
+    "Trace": false,
+    "AtRestEncryptKey": "",
+    "QueryTimeout": 30
+  },
+  "LogSettings": {
+    "EnableConsole": true,
+    "ConsoleLevel": "INFO",
+    "EnableFile": true,
+    "FileLevel": "INFO",
+    "FileFormat": "",
+    "FileLocation": "",
+    "EnableWebhookDebugging": true,
+    "EnableDiagnostics": true
+  },
+  "PasswordSettings": {
+    "MinimumLength": 5,
+    "Lowercase": false,
+    "Number": false,
+    "Uppercase": false,
+    "Symbol": false
+  },
+  "FileSettings": {
+    "EnableFileAttachments": true,
+    "MaxFileSize": 52428800,
+    "DriverName": "local",
+    "Directory": "./data/",
+    "EnablePublicLink": false,
+    "PublicLinkSalt": "",
+    "ThumbnailWidth": 120,
+    "ThumbnailHeight": 100,
+    "PreviewWidth": 1024,
+    "PreviewHeight": 0,
+    "ProfileWidth": 128,
+    "ProfileHeight": 128,
+    "InitialFont": "luximbi.ttf",
+    "AmazonS3AccessKeyId": "",
+    "AmazonS3SecretAccessKey": "",
+    "AmazonS3Bucket": "",
+    "AmazonS3Region": "",
+    "AmazonS3Endpoint": "s3.amazonaws.com",
+    "AmazonS3SSL": false,
+    "AmazonS3SignV2": false
+  },
+  "EmailSettings": {
+    "EnableSignUpWithEmail": true,
+    "EnableSignInWithEmail": true,
+    "EnableSignInWithUsername": true,
+    "SendEmailNotifications": false,
+    "RequireEmailVerification": false,
+    "FeedbackName": "",
+    "FeedbackEmail": "",
+    "FeedbackOrganization": "",
+    "SMTPUsername": "",
+    "SMTPPassword": "",
+    "EnableSMTPAuth": "",
+    "SMTPServer": "",
+    "SMTPPort": "",
+    "ConnectionSecurity": "",
+    "InviteSalt": "",
+    "SendPushNotifications": true,
+    "PushNotificationServer": "https://push-test.mattermost.com",
+    "PushNotificationContents": "generic",
+    "EnableEmailBatching": false,
+    "EmailBatchingBufferSize": 256,
+    "EmailBatchingInterval": 30,
+    "SkipServerCertificateVerification": false
+  },
+  "RateLimitSettings": {
+    "Enable": false,
+    "PerSec": 10,
+    "MaxBurst": 100,
+    "MemoryStoreSize": 10000,
+    "VaryByRemoteAddr": true,
+    "VaryByHeader": ""
+  },
+  "PrivacySettings": {
+    "ShowEmailAddress": true,
+    "ShowFullName": true
+  },
+  "SupportSettings": {
+    "TermsOfServiceLink": "https://about.mattermost.com/default-terms/",
+    "PrivacyPolicyLink": "https://about.mattermost.com/default-privacy-policy/",
+    "AboutLink": "https://about.mattermost.com/default-about/",
+    "HelpLink": "https://about.mattermost.com/default-help/",
+    "ReportAProblemLink": "https://about.mattermost.com/default-report-a-problem/",
+    "SupportEmail": "feedback@mattermost.com"
+  },
+  "AnnouncementSettings": {
+    "EnableBanner": false,
+    "BannerText": "",
+    "BannerColor": "#f2a93b",
+    "BannerTextColor": "#333333",
+    "AllowBannerDismissal": true
+  },
+  "GitLabSettings": {
+    "Enable": false,
+    "Secret": "",
+    "Id": "",
+    "Scope": "",
+    "AuthEndpoint": "",
+    "TokenEndpoint": "",
+    "UserApiEndpoint": ""
+  },
+  "LocalizationSettings": {
+    "DefaultServerLocale": "en",
+    "DefaultClientLocale": "en",
+    "AvailableLocales": ""
+  },
+  "NativeAppSettings": {
+    "AppDownloadLink": "https://about.mattermost.com/downloads/",
+    "AndroidAppDownloadLink": "https://about.mattermost.com/mattermost-android-app/",
+    "IosAppDownloadLink": "https://about.mattermost.com/mattermost-ios-app/"
+  },
+  "AnalyticsSettings": {
+    "MaxUsersForStatistics": 2500
+  },
+  "WebrtcSettings": {
+    "Enable": false,
+    "GatewayWebsocketUrl": "",
+    "GatewayAdminUrl": "",
+    "GatewayAdminSecret": "",
+    "StunURI": "",
+    "TurnURI": "",
+    "TurnUsername": "",
+    "TurnSharedKey": ""
+  },
+  "DisplaySettings": {
+    "CustomUrlSchemes": [],
+    "ExperimentalTimezone": true
+  },
+  "TimezoneSettings": {
+    "SupportedTimezonesPath": "timezones.json"
+  },
+  "PluginSettings": {
+    "Enable": true,
+    "EnableUploads": true,
+    "Directory": "./plugins",
+    "ClientDirectory": "./client/plugins",
+    "Plugins": {},
+    "PluginStates": {}
+  }
+}

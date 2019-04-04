@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "stellar-core.fullname" . }}-peer
+  labels:
+    app: {{ template "stellar-core.name" . }}
+    chart: {{ template "stellar-core.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.peerService.type }}
+  ports:
+    - port: {{ .Values.peerService.port }}
+      targetPort: peer
+      protocol: TCP
+      name: peer
+  {{- with .Values.peerService.loadBalancerIP }}
+  loadBalancerIP: {{ . }}
+  {{- end }}
+  {{- with .Values.peerService.externalTrafficPolicy }}
+  externalTrafficPolicy: {{ . }}
+  {{- end }}
+  selector:
+    app: {{ template "stellar-core.name" . }}
+    release: {{ .Release.Name }}

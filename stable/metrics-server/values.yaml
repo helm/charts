@@ -1,6 +1,7 @@
 rbac:
   # Specifies whether RBAC resources should be created
   create: true
+  pspEnabled: false
 
 serviceAccount:
   # Specifies whether a ServiceAccount should be created
@@ -17,13 +18,23 @@ apiService:
   # work with this release.
   create: true
 
+hostNetwork:
+  # Specifies if metrics-server should be started in hostNetwork mode.
+  #
+  # You would require this enabled if you use alternate overlay networking for pods and
+  # API server unable to communicate with metrics-server. As an example, this is required
+  # if you use Weave netwok on EKS
+  enabled: false
+
 image:
   repository: gcr.io/google_containers/metrics-server-amd64
-  tag: v0.2.1
+  tag: v0.3.1
   pullPolicy: IfNotPresent
 
 args:
-  - --source=kubernetes.summary_api:''
+  - --logtostderr
+# enable this if you have self-signed certificates, see: https://github.com/kubernetes-incubator/metrics-server
+#  - --kubelet-insecure-tls
 
 resources: {}
 
@@ -32,3 +43,20 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+replicas: 1
+
+podAnnotations: {}
+#  scheduler.alpha.kubernetes.io/critical-pod: ''
+
+# priorityClassName: system-node-critical
+
+extraVolumeMounts: []
+#  - name: secrets
+#    mountPath: /etc/kubernetes/secrets
+#    readOnly: true
+
+extraVolumes: []
+#  - name: secrets
+#    secret:
+#      secretName: kube-apiserver

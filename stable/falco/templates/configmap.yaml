@@ -27,7 +27,7 @@ data:
       {{- end }}
 
     # Whether to output events in json or text
-    {{- if (or .Values.integrations.gcscc.enabled .Values.integrations.natsOutput.enabled) }}
+    {{- if (or .Values.integrations.gcscc.enabled .Values.integrations.natsOutput.enabled .Values.integrations.snsOutput.enabled) }}
     json_output: true
     {{- else }}
     json_output: {{ .Values.falco.jsonOutput }}
@@ -37,7 +37,7 @@ data:
     # itself (e.g. "File below a known binary directory opened for writing
     # (user=root ....") in the json output.
 
-    {{- if .Values.integrations.natsOutput.enabled }}
+    {{- if (or .Values.integrations.natsOutput.enabled .Values.integrations.snsOutput.enabled) }}
     json_include_output_property: true
     {{- else }}
     json_include_output_property: {{ .Values.falco.jsonIncludeOutputProperty }}
@@ -93,7 +93,7 @@ data:
     # Also, the file will be closed and reopened if falco is signaled with
     # SIGUSR1.
 
-    {{- if .Values.integrations.natsOutput.enabled }}
+    {{- if (or .Values.integrations.natsOutput.enabled .Values.integrations.snsOutput.enabled) }}
     file_output:
       enabled: true
       keep_alive: true
@@ -110,7 +110,7 @@ data:
 
     # Possible additional things you might want to do with program output:
     #   - send to a slack webhook:
-    #         program: "jq '{text: .output}' | curl -d @- -X POST https://hooks.slack.com/services/XXX"
+    #         program: "\"jq '{text: .output}' | curl -d @- -X POST https://hooks.slack.com/services/XXX\""
     #   - logging (alternate method than syslog):
     #         program: logger -t falco-test
     #   - send over a network connection:
@@ -134,5 +134,9 @@ data:
       keep_alive: {{ .Values.falco.programOutput.keepAlive }}
       program: {{ .Values.falco.programOutput.program }}
     {{- end }}
+
+  {{- if .Values.integrations.snsOutput.enabled }}
+  aws_default_region: {{ .Values.integrations.snsOutput.aws_default_region }}
+  {{- end }}
 
 {{ (.Files.Glob "rules/*").AsConfig | indent 2 }}

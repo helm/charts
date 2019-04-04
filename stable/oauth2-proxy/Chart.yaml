@@ -1,7 +1,7 @@
 name: oauth2-proxy
-version: 0.5.0
+version: 0.11.0
 apiVersion: v1
-appVersion: 2.2
+appVersion: 3.1.0
 home: http://www.videntity.com/
 description: A reverse proxy that provides authentication with Google, Github or other providers
 keywords:
@@ -12,8 +12,8 @@ keywords:
 - google
 - github
 maintainers:
-- name: compleatang
-  email: casey@monax.io
+  - name: miouge1
+    email: maxime@root314.com
 sources:
-- https://github.com/bitly/oauth2_proxy
+- https://github.com/pusher/oauth2_proxy
 engine: gotpl

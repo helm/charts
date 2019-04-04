@@ -12,6 +12,10 @@ metadata:
 {{- end }}
 spec:
   replicas: {{ .Values.replicaCount }}
+{{- if .Values.strategy }}
+  strategy:
+{{ toYaml .Values.strategy | indent 4 }}
+{{- end }}
   selector:
     matchLabels:
       app: {{ template "openldap.name" . }}
@@ -27,10 +31,24 @@ spec:
         app: {{ template "openldap.name" . }}
         release: {{ .Release.Name }}
     spec:
+      {{- if .Values.customLdifFiles }}
+      initContainers:
+      - name: {{ .Chart.Name }}-init
+        image: busybox
+        command: ['sh', '-c', 'cp /customldif/* /ldifworkingdir']
+        volumeMounts:
+        - name: customldif
+          mountPath: /customldif
+        - name: ldifworkingdir
+          mountPath: /ldifworkingdir
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+{{- if .Values.customLdifFiles }}
+          args: [--copy-service]
+{{- end }}
           ports:
             - name: ldap-port
               containerPort: 389
@@ -49,7 +67,7 @@ spec:
               mountPath: /etc/ldap/slapd.d
               subPath: config-data
             {{- if .Values.customLdifFiles }}
-            - name: customldif
+            - name: ldifworkingdir
               mountPath: /container/service/slapd/assets/config/bootstrap/ldif/custom
             {{- end }}
           livenessProbe:
@@ -83,6 +101,8 @@ spec:
         - name: customldif
           configMap:
             name: {{ template "openldap.fullname" . }}-customldif
+        - name: ldifworkingdir
+          emptyDir: {}
         {{- end }}
         - name: data
         {{- if .Values.persistence.enabled }}

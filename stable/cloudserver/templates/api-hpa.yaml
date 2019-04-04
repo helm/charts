@@ -1,0 +1,18 @@
+{{- if .Values.api.autoscaling.enabled -}}
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ template "cloudserver.fullname" . }}
+  labels:
+    app: {{ template "cloudserver.name" . }}
+    chart: {{ template "cloudserver.chart" . }}
+    component: api
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ template "cloudserver.fullname" . }}
+{{ toYaml .Values.api.autoscaling.config | indent 2 }}
+{{- end -}}

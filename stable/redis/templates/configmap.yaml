@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app: {{ template "redis.name" . }}
+    chart: {{ template "redis.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "redis.fullname" . }}
+data:
+  redis.conf: |-
+{{- if .Values.configmap }}
+    # User-supplied configuration:
+{{ .Values.configmap | indent 4 }}
+{{- end }}
+  master.conf: |-
+    dir {{ .Values.master.persistence.path }}
+{{- if .Values.master.disableCommands }}
+{{- range .Values.master.disableCommands }}
+    rename-command {{ . }} ""
+{{- end }}
+{{- end }}
+  replica.conf: |-
+    dir /data
+{{- $replicaDisabledCommands := default .Values.master.disableCommands .Values.slave.disableCommands }}
+{{- if $replicaDisabledCommands }}
+{{- range $replicaDisabledCommands }}
+    rename-command {{ . }} ""
+{{- end }}
+{{- end }}

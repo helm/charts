@@ -1,5 +1,5 @@
 Superset can be accessed via port {{ .Values.service.port }} on the following DNS name from within your cluster:
-{{ template "superset.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+{{ include "superset.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
 
 Initially you can login with username/password: admin/admin.
 

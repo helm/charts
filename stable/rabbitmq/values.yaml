@@ -1,10 +1,19 @@
+## Global Docker image parameters
+## Please, note that this will override the image parameters, including dependencies, configured to use the global value
+## Current available global Docker image parameters: imageRegistry and imagePullSecrets
+##
+# global:
+#   imageRegistry: myRegistryName
+#   imagePullSecrets:
+#     - myRegistryKeySecretName
+
 ## Bitnami RabbitMQ image version
 ## ref: https://hub.docker.com/r/bitnami/rabbitmq/tags/
 ##
 image:
   registry: docker.io
   repository: bitnami/rabbitmq
-  tag: 3.7.7-debian-9
+  tag: 3.7.14
 
   ## set to true if you would like to see extra information on logs
   ## it turns BASH and NAMI debugging in minideb
@@ -21,69 +30,109 @@ image:
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
   ##
   # pullSecrets:
-  #   - myRegistrKeySecretName
+  #   - myRegistryKeySecretName
 
 ## does your cluster have rbac enabled? assume yes by default
 rbacEnabled: true
 
 ## section of specific values for rabbitmq
 rabbitmq:
-   ## RabbitMQ application username
-  ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq/blob/master/README.md#creating-a-database-user-on-first-run
+  ## RabbitMQ application username
+  ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
   ##
   username: user
 
   ## RabbitMQ application password
-  ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq/blob/master/README.md#creating-a-database-user-on-first-run
+  ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
   ##
   # password:
+  # existingPasswordSecret: name-of-existing-secret
 
   ## Erlang cookie to determine whether different nodes are allowed to communicate with each other
   ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
   ##
   # erlangCookie:
-
-  ## Node port
-  ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
-  ##
-  nodePort: 5672
+  # existingErlangSecret: name-of-existing-secret
 
   ## Node name to cluster with. e.g.: `clusternode@hostname`
   ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
   ##
   # rabbitmqClusterNodeName:
 
-  ## RabbitMQ Manager port
-  ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
+  ## Value for the RABBITMQ_LOGS environment variable
+  ## ref: https://www.rabbitmq.com/logging.html#log-file-location
   ##
-  managerPort: 15672
+  logs: '-'
 
-  ## RabbitMQ Disk free limit
+  ## RabbitMQ Max File Descriptors
   ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
-  ## ref: https://www.rabbitmq.com/disk-alarms.html
+  ## ref: https://www.rabbitmq.com/install-debian.html#kernel-resource-limits
   ##
-  diskFreeLimit: '"6GiB"'
+  ulimitNofiles: '65536'
 
   ## Plugins to enable
   plugins: |-
       [rabbitmq_management, rabbitmq_peer_discovery_k8s].
 
-  ## Configution file content
+  ## Clustering settings
+  clustering:
+    address_type: ip
+    k8s_domain: cluster.local
+
+  loadDefinition:
+    enabled: false
+    secretName: load-definition
+
+  ## Configuration file content: required cluster configuration
+  ## Do not override unless you know what you are doing. To add more configuration, use `extraConfiguration` instead
   configuration: |-
-      ## Clustering
-      cluster_formation.peer_discovery_backend  = rabbit_peer_discovery_k8s
-      cluster_formation.k8s.host = kubernetes.default.svc.cluster.local
-      cluster_formation.k8s.address_type = ip
-      cluster_formation.node_cleanup.interval = 10
-      cluster_formation.node_cleanup.only_log_warning = true
-      cluster_partition_handling = autoheal
-      ## queue master locator
-      queue_master_locator=min-masters
-      ## enable guest user
-      loopback_users.guest = false
+    ## Clustering
+    cluster_formation.peer_discovery_backend  = rabbit_peer_discovery_k8s
+    cluster_formation.k8s.host = kubernetes.default.svc.cluster.local
+    cluster_formation.node_cleanup.interval = 10
+    cluster_formation.node_cleanup.only_log_warning = true
+    cluster_partition_handling = autoheal
+    # queue master locator
+    queue_master_locator=min-masters
+    # enable guest user
+    loopback_users.guest = false
+
+  ## Configuration file content: extra configuration
+  ## Use this instead of  `configuration` to add more configuration
+  extraConfiguration: |-
+    #disk_free_limit.absolute = 50MB
+    #management.load_definitions = /app/load_definition.json
 
 ## Kubernetes service type
-serviceType: ClusterIP
+service:
+  type: ClusterIP
+  ## Node port
+  ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
+  ##
+  # nodePort: 30672
+
+  ## Amqp port
+  ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
+  ##
+  port: 5672
+
+  ## Dist port
+  ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
+  ##
+  distPort: 25672
+
+  ## RabbitMQ Manager port
+  ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
+  ##
+  managerPort: 15672
+
+  ## Service annotations
+  annotations:
+    # service.beta.kubernetes.io/aws-load-balancer-internal: 0.0.0.0/0
+
+
+# Additional pod labels to apply
+podLabels: {}
 
 ## Pod Security Context
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
@@ -110,6 +159,9 @@ persistence:
   # If you change this value, you might have to adjust `rabbitmq.diskFreeLimit` as well.
   size: 8Gi
 
+  # persistence directory, maps to the rabbitmq data directory
+  path: /opt/bitnami/rabbitmq/var/lib/rabbitmq
+
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 ##
@@ -117,6 +169,15 @@ resources: {}
 
 ## Replica count, set to 1 to provide a default available cluster
 replicas: 1
+
+## Pod priority
+## https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
+# priorityClassName: ""
+
+## updateStrategy for RabbitMQ statefulset
+## ref: https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#update-strategies
+updateStrategy:
+  type: RollingUpdate
 
 ## Node labels and tolerations for pod assignment
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
@@ -139,6 +200,7 @@ ingress:
   ## The list of hostnames to be covered with this ingress record.
   ## Most likely this will be just one host, but in the event more hosts are needed, this is an array
   ## hostName: foo.bar.com
+  path: /
 
   ## Set this to true in order to enable TLS on the ingress record
   ## A side effect of this will be that the backend wordpress service will be connected at port 443
@@ -163,11 +225,52 @@ ingress:
 livenessProbe:
   enabled: true
   initialDelaySeconds: 120
-  timeoutSeconds: 5
+  timeoutSeconds: 20
+  periodSeconds: 30
   failureThreshold: 6
+  successThreshold: 1
 
 readinessProbe:
   enabled: true
   initialDelaySeconds: 10
-  timeoutSeconds: 3
-  periodSeconds: 5
+  timeoutSeconds: 20
+  periodSeconds: 30
+  failureThreshold: 3
+  successThreshold: 1
+
+metrics:
+  enabled: false
+  image:
+    registry: docker.io
+    repository: kbudde/rabbitmq-exporter
+    tag: v0.29.0
+    pullPolicy: IfNotPresent
+    ## Optionally specify an array of imagePullSecrets.
+    ## Secrets must be manually created in the namespace.
+    ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+    ##
+    # pullSecrets:
+    #   - myRegistryKeySecretName
+  resources: {}
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "9090"
+
+##
+## Init containers parameters:
+## volumePermissions: Change the owner of the persist volume mountpoint to RunAsUser:fsGroup
+##
+volumePermissions:
+  enabled: false
+  image:
+    registry: docker.io
+    repository: bitnami/minideb
+    tag: latest
+    pullPolicy: IfNotPresent
+    ## Optionally specify an array of imagePullSecrets.
+    ## Secrets must be manually created in the namespace.
+    ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+    ##
+    # pullSecrets:
+    #   - myRegistryKeySecretName
+  resources: {}

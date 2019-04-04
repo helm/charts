@@ -1,0 +1,115 @@
+replicaCount: 1
+nameOverride: ""
+fullnameOverride: ""
+
+rbac:
+  create: true
+
+serviceAccount:
+  create: true
+  name:
+
+image:
+  repository: lightbend/spark-history-server
+  tag: 2.4.0
+  pullPolicy: IfNotPresent
+
+service:
+  type: LoadBalancer
+  port: 18080
+
+environment:
+# Note: do not configure Spark history events directory using SPARK_HISTORY_OPTS. It will be
+# configured by this chart based on the values in "pvc", "gcs" or "hdfs" attribute.
+  # SPARK_HISTORY_OPTS: ...
+  # SPARK_DAEMON_MEMORY: 1g
+  # SPARK_DAEMON_JAVA_OPTS: ...
+  # SPARK_DAEMON_CLASSPATH: ...
+  # SPARK_PUBLIC_DNS: ...
+
+podAnnotations: {}
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  #
+  # To let the application start up quickly give it a big limit
+  # limits:
+  #  cpu: 1000m
+  #  memory: 1Gi
+  # requests:
+  #  cpu: 100m
+  #  memory: 512Mi
+
+
+ingress:
+  enabled: false
+  annotations: {}
+  # kubernetes.io/ingress.class: nginx
+  # kubernetes.io/tls-acme: "true"
+  path: /
+  hosts:
+    - spark-history-server.example.com
+  tls: []
+  #  - secretName:spark-history-server.example.com
+  #    hosts:
+  #      - spark-history-server.example.com
+
+pvc:
+  # to use a file system path for Spark events dir, set 'enablePVC' to true and mention the
+  # name of an already created persistent volume claim in existingClaimName.
+  # The volume will be mounted on /data in the pod
+  enablePVC: true
+  existingClaimName: nfs-pvc
+  eventsDir: "/"
+
+# Settings for the sub-chart
+# When pvc.enablePVC is true, make sure:
+# pvc.existingClaimName == nfs.pvcName
+nfs:
+  enableExampleNFS: true
+  pvName: nfs-pv
+  pvcName: nfs-pvc
+
+gcs:
+  enableGCS: false
+  secret: history-secrets
+  key: sparkonk8s.json
+  logDirectory: gs://spark-hs/
+
+hdfs:
+  hdfsSiteConfigMap: hdfs-site
+  coreSiteConfigMap: core-site
+  logDirectory: hdfs://hdfs/history/
+  HADOOP_CONF_DIR: /etc/hadoop
+
+s3:
+  enableS3: false
+  enableIAM: true
+  # Omit for IAM role-based or provider-based authentication.
+  secret: aws-secrets
+  # accessKeyName is a is AWS access key ID. Omit for IAM role-based or provider-based authentication.
+  accessKeyName: aws-access-key
+  # secretKey is AWS secret key. Omit for IAM role-based or provider-based authentication.
+  secretKeyName: aws-secret-key
+  logDirectory: s3a://spark-hs/
+
+wasbs:
+  enableWASBS: false
+  sasKeyMode: true
+  secret: azure-secrets
+  sasKeyName: azure-blob-sas-key
+  storageAccountKeyName: azure-storage-account-key
+  storageAccountNameKeyName: azure-storage-account-name
+  containerKeyName: azure-blob-container-name
+  logDirectory: wasbs:///spark-hs
+
+imagePullSecrets: []
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
