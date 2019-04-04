@@ -381,6 +381,10 @@ volumePermissions:
     # pullSecrets:
     #   - myRegistryKeySecretName
   resources: {}
+  # resources:
+  #   requests:
+  #     memory: 128Mi
+  #     cpu: 100m
 
 ## Redis config file
 ## ref: https://redis.io/topics/config
@@ -405,3 +409,7 @@ sysctlImage:
   #   - myRegistryKeySecretName
   mountHostSys: false
   resources: {}
+  # resources:
+  #   requests:
+  #     memory: 128Mi
+  #     cpu: 100m
