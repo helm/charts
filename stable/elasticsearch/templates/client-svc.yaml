@@ -17,6 +17,9 @@ spec:
   ports:
     - name: http
       port: 9200
+{{- if and .Values.client.nodePort (eq .Values.client.serviceType "NodePort") }}
+      nodePort: {{ .Values.client.nodePort }}
+{{- end }}
       targetPort: http
   selector:
     app: {{ template "elasticsearch.name" . }}
