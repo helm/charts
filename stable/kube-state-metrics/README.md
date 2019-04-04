@@ -32,6 +32,7 @@ $ helm install stable/kube-state-metrics
 | `securityContext.runAsUser`           | User ID for the container                               | `65534`                                     |
 | `priorityClassName`                   | Name of Priority Class to assign pods                   | `nil`                                       |
 | `nodeSelector`                        | Node labels for pod assignment                          | {}                                          |
+| `affinity`                            | Affinity settings for pod assignment                    | {}                                          |
 | `tolerations`                         | Tolerations for pod assignment                          | []                                          |
 | `podAnnotations`                      | Annotations to be added to the pod                      | {}                                          |
 | `resources`                           | kube-state-metrics resource requests and limits         | {}                                          |
