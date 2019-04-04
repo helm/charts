@@ -15,9 +15,9 @@ spec:
   type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.port }}
-      targetPort: http
+      targetPort: {{ .Values.listen.scheme }}
       protocol: TCP
-      name: http
+      name: {{ .Values.listen.scheme }}
   selector:
     app: {{ template "oauth2-proxy.name" . }}
     release: {{ .Release.Name }}
