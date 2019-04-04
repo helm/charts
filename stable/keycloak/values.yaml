@@ -49,9 +49,15 @@ keycloak:
   ## Username for the initial Keycloak admin user
   username: keycloak
 
-  ## Password for the initial Keycloak admin user
+  ## Password for the initial Keycloak admin user. Applicable only if existingSecret is not set.
   ## If not set, a random 10 characters password will be used
   password: ""
+
+  # Specifies an existing secret to be used for the admin password
+  existingSecret: ""
+
+  # The key in the existing secret that stores the password
+  existingSecretKey: password
 
   ## Allows the specification of additional environment variables for Keycloak
   extraEnv: |

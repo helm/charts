@@ -78,8 +78,12 @@ spec:
             - name: KEYCLOAK_PASSWORD
               valueFrom:
                 secretKeyRef:
+                  {{- if .Values.keycloak.existingSecret }}
+                  name: {{ .Values.keycloak.existingSecret }}
+                  {{- else }}
                   name: {{ template "keycloak.fullname" . }}-http
-                  key: password
+                  {{- end }}
+                  key: {{ .Values.keycloak.existingSecretKey }}
           {{- end }}
           {{- if $highAvailability }}
             - name: JGROUPS_DISCOVERY_PROTOCOL
