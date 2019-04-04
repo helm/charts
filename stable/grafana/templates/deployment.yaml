@@ -36,9 +36,9 @@ spec:
 {{- if .Values.schedulerName }}
       schedulerName: "{{ .Values.schedulerName }}"
 {{- end }}
-{{- if .Values.securityContext }}
+{{- if .Values.securityContext.fsGroup }}
       securityContext:
-{{ toYaml .Values.securityContext | indent 8 }}
+        fsGroup: {{ .Values.securityContext.fsGroup }}
 {{- end }}
 {{- if .Values.priorityClassName }}
       priorityClassName: {{ .Values.priorityClassName }}
@@ -66,6 +66,10 @@ spec:
         - name: download-dashboards
           image: "{{ .Values.downloadDashboardsImage.repository }}:{{ .Values.downloadDashboardsImage.tag }}"
           imagePullPolicy: {{ .Values.downloadDashboardsImage.pullPolicy }}
+{{- if .Values.securityContext }}
+          securityContext:
+{{ toYaml .Values.securityContext | indent 12 }}
+{{- end }}
           command: ["sh", "/etc/grafana/download_dashboards.sh"]
           volumeMounts:
             - name: config
@@ -86,6 +90,10 @@ spec:
         - name: {{ template "grafana.name" . }}-sc-datasources
           image: "{{ .Values.sidecar.image }}"
           imagePullPolicy: {{ .Values.sidecar.imagePullPolicy }}
+{{- if .Values.securityContext }}
+          securityContext:
+{{ toYaml .Values.securityContext | indent 12 }}
+{{- end }}
           env:
             - name: METHOD
               value: LIST
@@ -117,6 +125,10 @@ spec:
         - name: {{ template "grafana.name" . }}-sc-dashboard
           image: "{{ .Values.sidecar.image }}"
           imagePullPolicy: {{ .Values.sidecar.imagePullPolicy }}
+{{- if .Values.securityContext }}
+          securityContext:
+{{ toYaml .Values.securityContext | indent 12 }}
+{{- end }}
           env:
             - name: LABEL
               value: "{{ .Values.sidecar.dashboards.label }}"
@@ -135,6 +147,10 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+{{- if .Values.securityContext }}
+          securityContext:
+{{ toYaml .Values.securityContext | indent 12 }}
+{{- end }}
         {{- if .Values.command }}
           command:
           {{- range .Values.command }}
