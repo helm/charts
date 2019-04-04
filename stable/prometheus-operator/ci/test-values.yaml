@@ -645,7 +645,7 @@ prometheusOperator:
   ## Port to expose on each node
   ## Only used if service.type is 'NodePort'
   ##
-    nodePort: 38080
+    nodePort: 30080
 
   ## Additional ports to open for Prometheus service
   ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#multi-port-services
@@ -685,6 +685,10 @@ prometheusOperator:
   ## Labels to add to the operator pod
   ##
   podLabels: {}
+
+  ## Annotations to add to the operator pod
+  ##
+  podAnnotations: {}
 
   ## Assign a PriorityClassName to pods if set
   # priorityClassName: ""
@@ -818,7 +822,7 @@ prometheus:
     ## Port to expose on each node
     ## Only used if service.type is 'NodePort'
     ##
-    nodePort: 39090
+    nodePort: 30090
 
     ## Loadbalancer IP
     ## Only use if service.type is "loadbalancer"
