@@ -435,9 +435,10 @@ readinessProbe:
   timeoutSeconds: 3
   periodSeconds: 5
 
-# Specifies an existing secret to be used for RMQ password and Erlang Cookie
-existingSecret: ""
-
+# Specifies the name of the secret to be used for RMQ password and Erlang Cookie
+# and wheterh or not helm should generate that secret
+secretName: ""
+generateSecret: true
 
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
 ##

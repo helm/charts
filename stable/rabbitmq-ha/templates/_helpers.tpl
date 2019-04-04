@@ -39,7 +39,7 @@ Create the name of the service account to use
 Generate chart secret name
 */}}
 {{- define "rabbitmq-ha.secretName" -}}
-{{ default (include "rabbitmq-ha.fullname" .) .Values.existingSecret }}
+{{ default (include "rabbitmq-ha.fullname" .) .Values.secretName }}
 {{- end -}}
 
 {{/*
