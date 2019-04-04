@@ -119,3 +119,12 @@ readinessProbe:
 podAnnotations: {}
 podLabels: {}
 replicaCount: 1
+
+extraVolumes: []
+
+extraVolumeMounts: []
+
+listen:
+  scheme: http
+  address: 0.0.0.0
+  port: 4180
