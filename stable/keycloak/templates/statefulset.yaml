@@ -73,7 +73,7 @@ spec:
             - /scripts/keycloak.sh
         {{- if .Values.keycloak.lifecycleHooks }}
           lifecycle:
-{{ tpl .Values.keycloak.lifecycleHooks . |indent 12 }}
+{{ tpl .Values.keycloak.lifecycleHooks . | indent 12 }}
         {{- end }}
           env:
           {{- if .Release.IsInstall }}
