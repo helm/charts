@@ -48,6 +48,7 @@ backend:
   es:
     host: elasticsearch
     port: 9200
+    path: ""
     # Elastic Index Name
     index: kubernetes_cluster
     type: flb_type

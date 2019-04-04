@@ -90,6 +90,9 @@ data:
         Match *
         Host  {{ .Values.backend.es.host }}
         Port  {{ .Values.backend.es.port }}
+{{- if .Values.backend.es.path }}
+        Path {{ .Values.backend.es.path }}
+{{- end }}
         Logstash_Format On
         Retry_Limit False
         Type  {{ .Values.backend.es.type }}
