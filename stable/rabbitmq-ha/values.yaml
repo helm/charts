@@ -436,7 +436,7 @@ readinessProbe:
   periodSeconds: 5
 
 # Specifies the name of the secret to be used for RMQ password and Erlang Cookie
-# and wheterh or not helm should generate that secret
+# and whether or not helm should generate that secret
 secretName: ""
 generateSecret: true
 
