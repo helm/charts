@@ -49,7 +49,7 @@ Parameter | Description | Default
 `service.type` | type of service | `ClusterIP`
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
 `image.repository` | Image repository | `gcr.io/google-containers/fluentd-elasticsearch`
-`image.tag` | Image tag | `v2.3.1`
+`image.tag` | Image tag | `v2.4.0`
 `imagePullSecrets` | Specify image pull secrets | `nil` (does not add image pull secrets to deployed pods)
 `ingress.enabled` | enable ingress | `false`
 `nodeSelector` | node labels for pod assignment | `{}`
