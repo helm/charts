@@ -11,14 +11,20 @@ image:
 
 nameOverride: ""
 fullnameOverride: ""
+FQDN: &fqdn chart-example.local
+
+env:
+  # Environment Variables
+  FQDN: *fqdn
+  # PROTOCOL: https
+  # CONFIG_PATH: ""
 
 secrets:
   enabled: false
-  data: {}
-    # These secrets default to none so that mTLS will generate them automatically
-    # based on the config provided below in the config.ini [ca] section
-    # ca.key: ""
-    # ca.crt: ""
+  interemediateDomain: ""
+  # The domain for the intermediate certificate to pull from the output folder.
+  # If no interemediateDomain is set then it will use the root ca folder to
+  # pull these files.
 
 # Persist SQLite data to a persistent volume
 persistence:
@@ -58,7 +64,7 @@ ingress:
   paths:
     - /
   hosts:
-    - chart-example.local
+    - *fqdn
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:

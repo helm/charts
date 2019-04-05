@@ -5,6 +5,18 @@ if [[ "$PWD" == "$DIR" ]]; then
   exit 1
 fi
 
+echo "Creating Root Certificate Output Folders..."
+mkdir -p output/ca/certs \
+  output/ca/crl \
+  output/ca/newcerts \
+  output/ca/private \
+  output/ca/csr
+chmod 700 output/ca/private
+touch output/ca/index.txt
+echo 1000 > output/ca/serial
+cp ${DIR}/ca.cnf output/ca/openssl.cnf
+sed -i "s|^dir = /root/ca|dir = ${PWD}/output/ca|g" output/ca/openssl.cnf
+
 echo "Generating 4096 RSA Key..."
 EXTRA=""
 if [[ -z $NOPASSWORD ]]; then
@@ -14,7 +26,7 @@ openssl \
   genrsa \
   $EXTRA  \
   -out output/ca/private/ca.key.pem 4096
-chmod 400 output/ca/private/ca.key.pem
+# chmod 400 output/ca/private/ca.key.pem
 
 if [[ -z "$SUBJ" ]]; then
   if [[ -z "$C" ]]; then

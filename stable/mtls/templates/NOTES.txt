@@ -19,7 +19,7 @@
   echo "Visit http://127.0.0.1:8080 to use your application"
   kubectl port-forward $POD_NAME 8080:4000
 {{- end }}
-{{- if not .Values.secrets.data }}
+{{- if or (not .Values.existingSecret) .Values.secrets.enabled -}}
 
 ############################################################################
 ###   WARNING: Your CA KEY and CA CERTIFICATE are being generated on pod ###
@@ -35,8 +35,8 @@ to a specific secret to be able to verify client certicates. You'll need to
 generate the certificates either on your own or by running the following
 commands:
 
-$ ./scripts/setup.sh
 $ ./scripts/create-ca.sh
+$ ./scripts/create-intermediate.sh
 
 {{- else }}
 To enable client certificate authentication on your ingress. You will need to add the following annotations to your ingress:

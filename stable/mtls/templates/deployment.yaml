@@ -26,6 +26,16 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: FQDN
+              value: {{ .Values.FQDN }}
+          {{- if or (not .Values.existingSecretPassword) .Values.secrets.enabled }}
+            - name: CA_KEY_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "mtls.fullname" . }}-cert-password
+                  key: password
+          {{- end }}
           ports:
             - name: http
               containerPort: 4000

@@ -1,2 +1,4 @@
 output/
 charts/
+/*.yaml
+/values.yaml
