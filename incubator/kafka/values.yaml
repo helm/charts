@@ -35,11 +35,6 @@ updateStrategy:
 ## ref: https://kubernetes.io/docs/tutorials/stateful-application/basic-stateful-set/#pod-management-policy
 podManagementPolicy: OrderedReady
 
-## If RBAC is enabled on the cluster, the Kafka init container needs a service account
-## with permissisions sufficient to apply pod labels
-rbac:
-  enabled: false
-
 ## Useful if using any custom authorizer
 ## Pass in some secrets to use (if required)
 # secrets:
@@ -352,6 +347,13 @@ prometheus:
       ## [Kube Prometheus Selector Label](https://github.com/coreos/prometheus-operator/blob/master/helm/kube-prometheus/values.yaml#L298)
       selector:
         prometheus: kube-prometheus
+
+## Kafka Config job configuration
+##
+configJob:
+  ## Specify the number of retries before considering kafka-config job as failed.
+  ## https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/#pod-backoff-failure-policy
+  backoffLimit: 6
 
 ## Topic creation and configuration.
 ## The job will be run on a deployment only when the config has been changed.

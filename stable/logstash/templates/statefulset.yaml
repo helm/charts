@@ -27,6 +27,7 @@ spec:
       {{- end }}
       annotations:
         checksum/patterns: {{ include (print $.Template.BasePath "/patterns-config.yaml") . | sha256sum }}
+        checksum/templates: {{ include (print $.Template.BasePath "/files-config.yaml") . | sha256sum }}
         checksum/pipeline: {{ include (print $.Template.BasePath "/pipeline-config.yaml") . | sha256sum }}
       {{- if .Values.podAnnotations }}
         ## Custom pod annotations
@@ -39,8 +40,8 @@ spec:
       priorityClassName: "{{ .Values.priorityClassName }}"
       {{- end }}
       securityContext:
-        runAsUser: 1000
-        fsGroup: 1000
+        runAsUser: {{ .Values.securityContext.runAsUser }}
+        fsGroup: {{ .Values.securityContext.fsGroup }}
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
 {{ toYaml .Values.image.pullSecrets | indent 8 }}
@@ -130,6 +131,9 @@ spec:
         - name: patterns
           configMap:
             name: {{ template "logstash.fullname" . }}-patterns
+        - name: files
+          configMap:
+            name: {{ template "logstash.fullname" . }}-files
         - name: pipeline
           configMap:
             name: {{ template "logstash.fullname" . }}-pipeline
