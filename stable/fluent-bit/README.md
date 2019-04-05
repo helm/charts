@@ -28,7 +28,7 @@ $ helm install --name my-release stable/fluent-bit --set on_minikube=true
 The following table lists the configurable parameters of the Fluent-Bit chart and the default values.
 
 | Parameter                  | Description                        | Default                 |
-| -----------------------    | ---------------------------------- | ----------------------- |
+| ---------------------------|------------------------------------|-------------------------|
 | **Backend Selection**      |
 | `backend.type`             | Set the backend to which Fluent-Bit should flush the information it gathers | `forward` |
 | **Forward Backend**        |
@@ -105,6 +105,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `input.tail.memBufLimit`           | Specify Mem_Buf_Limit in tail input        | `5MB`                                             |
 | `input.tail.parser`                | Specify Parser in tail input.        | `docker`                                             |
 | `input.tail.path`                  | Specify log file(s) through the use of common wildcards.        | `/var/log/containers/*.log`                                             |
+| `input.tail.exclude_path`          | Set one or multiple shell patterns separated by commas to exclude files matching a certain criteria, e.g: exclude_path=\*.gz,\*.zip| ""      |
 | `input.systemd.enabled`            | [Enable systemd input](https://docs.fluentbit.io/manual/input/systemd)                   | `false`                                       |
 | `input.systemd.filters.systemdUnit` | Please see https://docs.fluentbit.io/manual/input/systemd | `[docker.service, kubelet.service`, `node-problem-detector.service]`                                       |
 | `input.systemd.maxEntries`         | Please see https://docs.fluentbit.io/manual/input/systemd | `1000`                             |

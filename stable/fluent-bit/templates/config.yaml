@@ -33,6 +33,9 @@ data:
         Refresh_Interval 5
         Mem_Buf_Limit    {{ .Values.input.tail.memBufLimit }}
         Skip_Long_Lines  On
+{{- with .Values.input.tail.exclude_path }}
+        Exclude_Path     {{ . }}
+{{- end }}
 {{- if .Values.trackOffsets }}
         DB               /tail-db/tail-containers-state.db
         DB.Sync          Normal
