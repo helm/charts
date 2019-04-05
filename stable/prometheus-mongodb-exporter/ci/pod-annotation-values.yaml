@@ -1,0 +1,10 @@
+---
+# Test adding pod annotations
+
+mongodb:
+  uri: mongodb://localhost:9216
+serviceMonitor:
+  enabled: false
+podAnnotations:
+  test.io/key1: true
+  test.io/key2: https://example.com

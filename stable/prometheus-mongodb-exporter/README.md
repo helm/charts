@@ -45,6 +45,7 @@ service:
 | `mongodb.uri` | The required [URI](https://docs.mongodb.com/manual/reference/connection-string) to connect to MongoDB | `` |
 | `nameOverride` | Override the application name  | `` |
 | `nodeSelector` | Node labels for pod assignment | `{}` |
+| `podAnnotations` | Annotations for the pod | `{}` |
 | `priorityClassName` | Pod priority class name | `` |
 | `replicas` | Number of replicas in the replica set | `1` |
 | `resources` | Pod resource requests and limits | `{}` |
