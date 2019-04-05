@@ -58,10 +58,10 @@ spec:
             mountPath: /opt/graphite/conf/
           - name: {{ template "graphite.fullname" . }}-statsd-configmap
             subPath: config_tcp.js
-            mountPath: /opt/statsd/config_tcp.js
+            mountPath: /opt/statsd/config/tcp.js
           - name: {{ template "graphite.fullname" . }}-statsd-configmap
             subPath: config_udp.js
-            mountPath: /opt/statsd/config_udp.js
+            mountPath: /opt/statsd/config/udp.js
           - name: {{ template "graphite.fullname" . }}-pvc
             mountPath: /opt/graphite/storage/
       volumes:
