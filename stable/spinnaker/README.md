@@ -171,3 +171,11 @@ clouddriver:
   annotations:
     iam.amazonaws.com/role: <role_arn>
 ```
+
+### Set custom annotations for the front50 pod
+
+```yaml
+front50:
+  annotations:
+    iam.amazonaws.com/role: <role_arn>
+```

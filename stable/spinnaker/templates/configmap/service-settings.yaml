@@ -37,3 +37,9 @@ data:
       podAnnotations:
     {{ toYaml .Values.clouddriver.annotations | indent 4 }}
     {{- end }}
+  front50.yml: |-
+    {{- if .Values.front50.annotations }}
+    kubernetes:
+      podAnnotations:
+    {{ toYaml .Values.front50.annotations | indent 4 }}
+    {{- end }}

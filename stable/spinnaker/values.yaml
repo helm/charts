@@ -202,3 +202,8 @@ clouddriver:
   annotations:
     # Uncomment if you want to add annotations on clouddriver pod
     # iam.amazonaws.com/role: <role_arn>
+
+front50:
+  annotations:
+    # Uncomment if you want to add annotations on front50 pod
+    # iam.amazonaws.com/role: <role_arn>
