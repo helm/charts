@@ -422,3 +422,16 @@ tracing:
 #     resource:
 #       name: memory
 #       targetAverageUtilization: 60
+
+## Timeouts
+##
+# timeouts:
+#   ## responding are timeouts for incoming requests to the Traefik instance
+#   responding:
+#     readTimeout: 0s
+#     writeTimeout: 0s
+#     idleTimeout: 180s
+#   ## forwarding are timeouts for requests forwarded to the backend servers
+#   forwarding:
+#     dialTimeout: 30s
+#     responseHeaderTimeout: 0s
