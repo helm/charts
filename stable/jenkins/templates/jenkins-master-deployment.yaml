@@ -17,9 +17,11 @@ metadata:
 spec:
   replicas: 1
   strategy:
-    type: {{ if .Values.Persistence.Enabled }}Recreate{{ else }}RollingUpdate{{ end }}
+    {{- if .Values.Persistence.Enabled }}
+    type: Recreate
+    {{- else -}}
+    type: RollingUpdate
     rollingUpdate:
-    {{- if not .Values.Persistence.Enabled }}
 {{ toYaml .Values.Master.RollingUpdate | indent 6 }}
     {{- end }}
   selector:
