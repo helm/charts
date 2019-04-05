@@ -11,7 +11,7 @@ image:
 
 rundeck:
   env:
-    RUNDECK_GRAILS_URL: "http://rundeck.edward.svc.cluster.local"
+    RUNDECK_GRAILS_URL: "http://{{ .Release.Name }}.{{ .Release.Namespace }}.svc.cluster.local"
     RUNDECK_SERVER_FORWARDED: "true"
     RUNDECK_LOGGING_STRATEGY: "CONSOLE"
     # RUNDECK_DATABASE_DRIVER: com.mysql.jdbc.Driver
@@ -23,7 +23,7 @@ rundeck:
     # RUNDECK_PLUGIN_EXECUTIONFILESTORAGE_S3_REGION: ${RUNDECK_PLUGIN_EXECUTIONFILESTORAGE_S3_REGION}
     # RUNDECK_STORAGE_CONVERTER_1_CONFIG_PASSWORD: ${RUNDECK_STORAGE_PASSWORD}
     # RUNDECK_CONFIG_STORAGE_CONVERTER_1_CONFIG_PASSWORD: ${RUNDECK_STORAGE_PASSWORD}
-  #sshSecrets: "edward-secret"
+  # sshSecrets: "ssh-secret"
   awsCredentialsSecret: ""
 
 nameOverride: ""
