@@ -62,6 +62,7 @@ The following table lists the configurable parameters of the etcd-operator chart
 | `customResources.createEtcdClusterCRD`            | Create a custom resource: EtcdCluster                                | `false`                                        |
 | `customResources.createBackupCRD`                 | Create an a custom resource: EtcdBackup                              | `false`                                        |
 | `customResources.createRestoreCRD`                | Create an a custom resource: EtcdRestore                             | `false`                                        |
+| `customResources.createEtcdClusterCRDPDB`                | Create a Pod Disruption Budget for the EtcdCluster resource                             | `true`                                        |
 | `etcdOperator.name`                               | Etcd Operator name                                                   | `etcd-operator`                                |
 | `etcdOperator.replicaCount`                       | Number of operator replicas to create (only 1 is supported)          | `1`                                            |
 | `etcdOperator.image.repository`                   | etcd-operator container image                                        | `quay.io/coreos/etcd-operator`                 |

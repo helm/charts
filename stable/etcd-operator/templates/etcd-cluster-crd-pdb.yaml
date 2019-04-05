@@ -1,0 +1,11 @@
+{{- if .Values.customResources.createEtcdClusterCRDPDB }}
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ .Values.etcdCluster.name }}
+spec:
+  minAvailable: {{ add1 (div .Values.etcdCluster.size 2) }}
+  selector:
+    matchLabels:
+      etcd_cluster: {{ .Values.etcdCluster.name }}
+{{- end }}
