@@ -1,6 +1,6 @@
 image:
   repository: docker.elastic.co/apm/apm-server
-  tag: 6.2.4
+  tag: 6.6.2
   pullPolicy: IfNotPresent
 
 config:

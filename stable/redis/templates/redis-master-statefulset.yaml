@@ -32,12 +32,7 @@ spec:
 {{ toYaml .Values.master.podAnnotations | indent 8 }}
       {{- end }}
     spec:
-      {{- if .Values.image.pullSecrets }}
-      imagePullSecrets:
-        {{- range .Values.image.pullSecrets }}
-        - name: {{ . }}
-        {{- end}}
-      {{- end}}
+{{- include "redis.imagePullSecrets" . | indent 6 }}
       {{- if .Values.master.securityContext.enabled }}
       securityContext:
         fsGroup: {{ .Values.master.securityContext.fsGroup }}
@@ -160,7 +155,7 @@ spec:
       initContainers:
       {{- if $needsVolumePermissions }}
       - name: volume-permissions
-        image: "{{ template "volumePermissions.image" . }}"
+        image: "{{ template "redis.volumePermissions.image" . }}"
         imagePullPolicy: {{ default "" .Values.volumePermissions.image.pullPolicy | quote }}
         command: ["/bin/chown", "-R", "{{ .Values.master.securityContext.runAsUser }}:{{ .Values.master.securityContext.fsGroup }}", "{{ .Values.master.persistence.path }}"]
         securityContext:
@@ -247,6 +242,10 @@ spec:
   updateStrategy:
     type: {{ .Values.master.statefulset.updateStrategy }}
     {{- if .Values.master.statefulset.rollingUpdatePartition }}
+    {{- if (eq "Recreate" .Values.master.statefulset.updateStrategy) }}
+    rollingUpdate: null
+    {{- else }}
     rollingUpdate:
       partition: {{ .Values.master.statefulset.rollingUpdatePartition }}
+    {{- end }}
     {{- end }}
