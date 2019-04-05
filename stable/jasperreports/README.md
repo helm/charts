@@ -66,6 +66,17 @@ The following table lists the configurable parameters of the JasperReports chart
 | `smtpPassword`                | SMTP password                                | `nil`                                                    |
 | `smtpProtocol`                | SMTP protocol [`ssl`, `none`]                | `nil`                                                    |
 | `allowEmptyPassword`          | Allow DB blank passwords                     | `yes`                                                    |
+| `ingress.enabled`                   | Enable ingress controller resource                            | `false`                                                  |
+| `ingress.annotations`               | Ingress annotations                                           | `[]`                                                     |
+| `ingress.certManager`               | Add annotations for cert-manager                              | `false`                                                  |
+| `ingress.hosts[0].name`             | Hostname to your JasperReports installation                           | `jasperreports.local`                                            |
+| `ingress.hosts[0].path`             | Path within the url structure                                 | `/`                                                      |
+| `ingress.hosts[0].tls`              | Utilize TLS backend in ingress                                | `false`                                                  |
+| `ingress.hosts[0].tlsHosts`         | Array of TLS hosts for ingress record (defaults to `ingress.hosts[0].name` if `nil`)                               | `nil`                                                  |
+| `ingress.hosts[0].tlsSecret`        | TLS Secret (certificates)                                     | `jasperreports.local-tls-secret`                                 |
+| `ingress.secrets[0].name`           | TLS Secret Name                                               | `nil`                                                    |
+| `ingress.secrets[0].certificate`    | TLS Secret Certificate                                        | `nil`                                                    |
+| `ingress.secrets[0].key`            | TLS Secret Key                                                | `nil`                                                    |
 | `externalDatabase.host`       | Host of the external database                | `nil`                                                    |
 | `externalDatabase.port`       | Port of the external database                | `3306`                                                   |
 | `externalDatabase.user`       | Existing username in the external db         | `bn_jasperreports`                                       |

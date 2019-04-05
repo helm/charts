@@ -51,6 +51,12 @@ spec:
         secret:
           secretName: {{ template "atlantis.fullname" . }}-aws
       {{- end }}
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.imagePullSecrets }}
+      - name: {{ . }}
+      {{- end }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -141,9 +147,9 @@ spec:
               secretKeyRef:
                 name: {{ template "atlantis.fullname" . }}-webhook
                 key: bitbucket_token
-          {{- if .Values.bitbucket.baseUrl }}
+          {{- if .Values.bitbucket.baseURL }}
           - name: ATLANTIS_BITBUCKET_BASE_URL
-            value: {{ .Values.bitbucket.baseUrl }}
+            value: {{ .Values.bitbucket.baseURL }}
           - name: ATLANTIS_BITBUCKET_WEBHOOK_SECRET
             valueFrom:
               secretKeyRef:
@@ -193,12 +199,12 @@ spec:
           {{- end }}
           {{- if .Values.gitconfig}}
           - name: gitconfig-volume
-            readonly: true
+            readOnly: true
             mountPath: /etc/secret-gitconfig
           {{- end }}
           {{- if .Values.aws}}
           - name: aws-volume
-            readonly: true
+            readOnly: true
             mountPath: /home/atlantis/.aws
           {{- end }}
           {{- if .Values.tlsSecretName }}
@@ -206,10 +212,6 @@ spec:
             mountPath: /etc/tls/
           {{- end }}
           resources:
-      {{- if .Values.imagePullSecrets }}
-      imagePullSecrets:
-        - name: {{ .Values.imagePullSecrets }}
-      {{- end }}
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}
       nodeSelector:
@@ -235,4 +237,4 @@ spec:
         requests:
           # The biggest thing Atlantis stores is the Git repo when it checks it out.
           # It deletes the repo after the pull request is merged.
-          storage: {{ .Values.atlantisDataStorage }}
+          storage: {{ .Values.dataStorage }}

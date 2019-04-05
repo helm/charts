@@ -46,12 +46,14 @@ Parameter | Description | Default
 `clusterDomain` | The internal Kubernetes cluster domain | `cluster.local`
 `keycloak.replicas` | The number of Keycloak replicas | `1`
 `keycloak.image.repository` | The Keycloak image repository | `jboss/keycloak`
-`keycloak.image.tag` | The Keycloak image tag | `4.8.3.Final`
+`keycloak.image.tag` | The Keycloak image tag | `5.0.0`
 `keycloak.image.pullPolicy` | The Keycloak image pull policy | `IfNotPresent`
 `keycloak.image.pullSecrets` | Image pull secrets | `[]`
 `keycloak.basepath` | Path keycloak is hosted at | `auth`
 `keycloak.username` | Username for the initial Keycloak admin user | `keycloak`
-`keycloak.password` | Password for the initial Keycloak admin user. If not set, a random 10 characters password is created | `""`
+`keycloak.password` | Password for the initial Keycloak admin user (if `keycloak.existingSecret=""`). If not set, a random 10 characters password is created | `""`
+`keycloak.existingSecret` | Specifies an existing secret to be used for the admin password | `""`
+`keycloak.existingSecretKey` |  The key in `keycloak.existingSecret` that stores the admin password | `password`
 `keycloak.extraInitContainers` | Additional init containers, e. g. for providing themes, etc. Passed through the `tpl` function and thus to be configured a string | `""`
 `keycloak.extraContainers` | Additional sidecar containers, e. g. for a database proxy, such as Google's cloudsql-proxy. Passed through the `tpl` function and thus to be configured a string | `""`
 `keycloak.extraEnv` | Allows the specification of additional environment variables for Keycloak. Passed through the `tpl` function and thus to be configured a string | `""`
