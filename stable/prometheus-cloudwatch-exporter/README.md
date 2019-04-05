@@ -73,6 +73,16 @@ The following table lists the configurable parameters of the Cloudwatch Exporter
 | `affinity`                  | node/pod affinities                                    | `{}`                       |
 | `livenessProbe`             | Liveness probe settings                                |                            |
 | `readinessProbe`            | Readiness probe settings                               |                            |
+| `servicemonitor.enabled`    | Use servicemonitor from prometheus operator            | `false`                    |
+| `servicemonitor.namespace`  | Namespace thes Servicemonitor  is installed in         |                            |
+| `servicemonitor.interval`   | How frequently Prometheus should scrape                |                            |
+| `servicemonitor.telemetryPath` |  path to cloudwatch-exporter telemtery-path         |                            |
+| `servicemonitor.labels`     |   labels for the ServiceMonitor passed to Prometheus Operator      |  `{}`          |
+| `ingress.enabled`           | Enables Ingress                                        | `false`                    |
+| `ingress.annotations`       | Ingress annotations                                    | `{}`                       |
+| `ingress.labels`            | Custom labels                                          | `{}`                       |
+| `ingress.hosts`             | Ingress accepted hostnames                             | `[]`                       |
+| `ingress.tls`               | Ingress TLS configuration                              | `[]`                       |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

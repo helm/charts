@@ -1,9 +1,9 @@
 apiVersion: v1
-appVersion: "v1.0.1"
+appVersion: "v1.0.2"
 home: https://comcast.github.io/kuberhealthy/
 description: The official Helm chart for Kuberhealthy.
 name: kuberhealthy
-version: 1.1.2
+version: 1.2.4
 maintainers:
   - name: integrii
     email: eric.greer@comcast.com
@@ -19,6 +19,7 @@ keywords:
 - comcast
 - health
 - cluster
+- prometheus
 sources:
 - https://github.com/Comcast/kuberhealthy
 - https://github.com/helm/charts/tree/master/stable/kuberhealthy

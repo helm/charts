@@ -77,3 +77,31 @@ configmapReload:
   ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
   ##
   resources: {}
+
+# Enable this if you're using https://github.com/coreos/prometheus-operator
+serviceMonitor:
+  enabled: false
+  namespace: monitoring
+
+  # fallback to the prometheus default unless specified
+  # interval: 10s
+
+  ## Defaults to what's used if you follow CoreOS [Prometheus Install Instructions](https://github.com/helm/charts/tree/master/stable/prometheus-operator#tldr)
+  ## [Prometheus Selector Label](https://github.com/helm/charts/tree/master/stable/prometheus-operator#prometheus-operator-1)
+  ## [Kube Prometheus Selector Label](https://github.com/helm/charts/tree/master/stable/prometheus-operator#exporters)
+  selector:
+    prometheus: kube-prometheus
+  # Retain the job and instance labels of the metrics pushed to the snmp-exporter
+  # [Scraping SNMP-exporter](https://github.com/prometheus/snmp_exporter#configure-the-snmp_exporter-as-a-target-to-scrape)
+  honorLabels: true
+
+  params:
+    enabled: false
+    conf:
+      module:
+      - if_mib
+      target:
+      - 127.0.0.1
+
+  path: /snmp
+  scrapeTimeout: 10s
