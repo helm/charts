@@ -105,7 +105,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `Master.JenkinsUriPrefix`         | Root Uri Jenkins will be served on         | Not set
 | `NetworkPolicy.Enabled`           | Enable creation of NetworkPolicy resources. | `false`                                                               |
 | `NetworkPolicy.ApiVersion`        | NetworkPolicy ApiVersion             | `networking.k8s.io/v1`                                                         |
-| `rbac.install`                    | Create service account and ClusterRoleBinding for Kubernetes plugin | `false`                                       |
+| `rbac.create`                     | Create service account and ClusterRoleBinding for Kubernetes plugin | `true`                                       |
 | `rbac.additionalRoleBinding`      | If you want to add a (cluster) role binding as specified below      | `false`                                       |
 | `rbac.roleRef`                    | Cluster role name to bind to         | `cluster-admin`                                                              |
 | `rbac.roleKind`                   | Role kind (`Role` or `ClusterRole`)  | `ClusterRole`
@@ -291,11 +291,9 @@ You can instead grant this permission via the UI. When this is done, you can set
 
 ## RBAC
 
-If running upon a cluster with RBAC enabled you will need to do the following:
+RBAC is enabled by default if you want to disable it you will need to do the following:
 
-* `helm install stable/jenkins --set rbac.install=true`
-* Create a Jenkins credential of type Kubernetes service account with service account name provided in the `helm status` output.
-* Under configure Jenkins -- Update the credentials config in the cloud section to use the service account credential you created in the step above.
+* `helm install stable/jenkins --set rbac.create=false`
 
 ## Backup
 

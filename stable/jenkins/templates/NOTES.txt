@@ -9,6 +9,7 @@ Master.Ingress.Labels --> Master.ingress.labels
 Master.Ingress.Path --> Master.ingress.path
 Master.Ingress.TLS --> Master.ingress.tls
 Master.OwnSshKey, a bool, has been replaced with Master.AdminSshKey, which is expected to be a string containing the actual key
+rbac.install --> rbac.create
 
 1. Get your '{{ .Values.Master.AdminUser }}' user password by running:
   printf $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "jenkins.fullname" . }} -o jsonpath="{.data.jenkins-admin-password}" | base64 --decode);echo
@@ -57,7 +58,7 @@ https://jenkins.io/projects/jcasc/
 #################################################################################
 {{- end }}
 
-{{ if and .Values.rbac.install .Values.rbac.additionalRoleBinding }}
+{{ if and .Values.rbac.create .Values.rbac.additionalRoleBinding }}
 WARNING: the following fields will be deprecated in the coming versions:
 
 - rbac.additionalRoleBinding

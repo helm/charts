@@ -1,4 +1,4 @@
-{{ if .Values.rbac.install }}
+{{ if .Values.rbac.create }}
 {{- $serviceName := include "jenkins.fullname" . -}}
 
 # This role is used to allow Jenkins scheduling of agents via Kubernetes plugin.

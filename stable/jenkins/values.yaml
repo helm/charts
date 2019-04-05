@@ -361,7 +361,7 @@ NetworkPolicy:
 
 ## Install Default RBAC roles and bindings
 rbac:
-  install: true
+  create: true
   serviceAccountName: default
 
   additionalRoleBinding: false

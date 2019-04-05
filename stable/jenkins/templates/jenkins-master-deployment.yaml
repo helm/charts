@@ -63,7 +63,7 @@ spec:
 {{- end }}
 {{- end }}
 {{- end }}
-      serviceAccountName: {{ if .Values.rbac.install }}{{ template "jenkins.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+      serviceAccountName: {{ if .Values.rbac.create }}{{ template "jenkins.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
 {{- if .Values.Master.HostNetworking }}
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
