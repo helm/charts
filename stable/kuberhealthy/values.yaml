@@ -21,6 +21,22 @@ resources:
     cpu: 400m
     memory: 200Mi
 
+# Disable certain checks by setting enabled to false
+componentStatusCheck:
+  enabled: true
+
+daemonSetCheck:
+  enabled: true
+
+dnsStatusCheck:
+  enabled: true
+
+podRestartsCheck:
+  enabled: true
+
+podStatusCheck:
+  enabled: true
+
 tolerations:
   # change to true to tolerate and deploy to masters
   master: false
