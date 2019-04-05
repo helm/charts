@@ -19,7 +19,7 @@ spec:
   strategy:
     {{- if .Values.Persistence.Enabled }}
     type: Recreate
-    {{- else -}}
+    {{- else }}
     type: RollingUpdate
     rollingUpdate:
 {{ toYaml .Values.Master.RollingUpdate | indent 6 }}
