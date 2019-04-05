@@ -3,21 +3,21 @@ kind: Deployment
 metadata:
   name: {{ include "tunneller.fullname" . }}
   labels:
-    app: {{ include "tunneller.name" . }}
-    chart: {{ include "tunneller.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ include "tunneller.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "tunneller.chart" . }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ include "tunneller.name" . }}
-      release: {{ .Release.Name }}
+      app.kubernetes.io/name: {{ include "tunneller.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ include "tunneller.name" . }}
-        release: {{ .Release.Name }}
+        app.kubernetes.io/name: {{ include "tunneller.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
 {{- with .Values.podAnnotations }}
       annotations:
 {{ toYaml . | indent 8 }}
