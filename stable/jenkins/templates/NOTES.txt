@@ -57,12 +57,6 @@ https://jenkins.io/projects/jcasc/
 #################################################################################
 {{- end }}
 
-{{- if .Values.rbac.install }}
-Configure the Kubernetes plugin in Jenkins to use the following Service Account name {{ template "jenkins.fullname" . }} using the following steps:
-  Create a Jenkins credential of type Kubernetes service account with service account name {{ template "jenkins.fullname" . }}
-  Under configure Jenkins -- Update the credentials config in the cloud section to use the service account credential you created in the step above.
-{{- end }}
-
 {{ if and .Values.rbac.install .Values.rbac.additionalRoleBinding }}
 WARNING: the following fields will be deprecated in the coming versions:
 
