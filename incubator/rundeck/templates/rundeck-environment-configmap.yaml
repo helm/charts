@@ -4,6 +4,4 @@ metadata:
   name: {{ .Release.Name }}-environment-configmap
 type: Opaque
 data:
-  {{- range $key, $value := .Values.rundeck.env }}
-    {{ $key }}: {{ $value }}
-  {{- end }}
+{{ toYaml .Values.rundeck.env | indent 4}}

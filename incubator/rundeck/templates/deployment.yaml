@@ -99,7 +99,7 @@ spec:
         {{- if .Values.rundeck.sshSecrets }}
         - name: sshkeys
           secret:
-            secretName: {{ .Values.rundeck.sshSecrets}}
+            secretName: {{ .Values.rundeck.sshSecrets }}
         {{- end }}
         {{- if .Values.rundeck.awsCredentialsSecret }}
         - name: aws-credentials
