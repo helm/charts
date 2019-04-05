@@ -81,6 +81,8 @@ tolerations:
   - effect: NoSchedule
     operator: Exists
 
+podAnnotations: {}
+
 ## Assign a PriorityClassName to pods if set
 # priorityClassName: ""
 
