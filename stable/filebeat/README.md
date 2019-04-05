@@ -25,7 +25,7 @@ The following table lists the configurable parameters of the filebeat chart and 
 | Parameter                                                | Description                                                                                              | Default                                            |
 | -------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
 | `image.repository`                                       | Docker image repo                                                                                        | `docker.elastic.co/beats/filebeat-oss`             |
-| `image.tag`                                              | Docker image tag                                                                                         | `6.6.2`                                            |
+| `image.tag`                                              | Docker image tag                                                                                         | `6.7.0`                                            |
 | `image.pullPolicy`                                       | Docker image pull policy                                                                                 | `IfNotPresent`                                     |
 | `image.pullSecrets`                                      | Specify image pull secrets                                                                               | `nil`                                              |
 | `config.filebeat.config.prospectors.path`                | Mounted `filebeat-prospectors` configmap                                                                 | `${path.config}/prospectors.d/*.yml`               |
@@ -59,6 +59,7 @@ The following table lists the configurable parameters of the filebeat chart and 
 | `serviceAccount.name`                                    | the name of the ServiceAccount to use                                                                     | `""`                                               |
 | `podSecurityPolicy.enabled`                              | Should the PodSecurityPolicy be created. Depends on `rbac.create` being set to `true`.                                                                     | `false`                                               |
 | `podSecurityPolicy.annotations`                                    | Annotations to be added to the created PodSecurityPolicy:                                                                    | `""`                                               |
+| `privileged`                                             | Specifies wheter to run as privileged                                                                    | `false`                                            |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
