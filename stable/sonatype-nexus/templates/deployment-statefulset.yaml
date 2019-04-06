@@ -192,12 +192,20 @@ spec:
               value: "60"
             - name: TRIGGER_FILE
               value: .backup
+            {{- if .Values.nexusBackup.serviceAccountFile }}
+            - name: CLOUD_IAM_SERVICE_ACCOUNT_KEY_PATH
+              value: /var/secrets/serviceaccount/key.json
+            {{- end }}
           volumeMounts:
             - mountPath: /nexus-data
               name: {{ template "nexus.fullname" . }}-data
             - mountPath: /nexus-data/backup
               name: {{ template "nexus.fullname" . }}-backup
-        {{- end }}
+            {{- if .Values.nexusBackup.serviceAccountFile }}
+            - mountPath: /var/secrets/serviceaccount
+              name: nexus-backup-service-account
+            {{- end }}
+	    {{- end }}
         {{- if .Values.deployment.additionalContainers }}
 {{ toYaml .Values.deployment.additionalContainers | indent 8 }}
         {{- end }}
@@ -236,6 +244,11 @@ spec:
           {{- else }}
           emptyDir: {}
           {{- end }}
+          {{- if .Values.nexusBackup.serviceAccountFile }}
+        - name: nexus-backup-service-account
+          secret:
+            secretName: nexus-backup-service-account
+	      {{- end }}
         {{- end }}
         {{- if .Values.config.enabled }}
         - name: {{ template "nexus.name" . }}-conf

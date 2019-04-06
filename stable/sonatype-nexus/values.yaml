@@ -115,6 +115,7 @@ nexusBackup:
   env:
     targetBucket:
   nexusAdminPassword: "admin123"
+  serviceAccountFile:
   persistence:
     enabled: true
     # existingClaim:
