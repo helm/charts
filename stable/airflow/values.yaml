@@ -8,6 +8,14 @@ airflow:
   #   mountPath: /opt/metadata
   #   configMap: airflow-metadata
   #   readOnly: true
+  #
+  # Example of configmap mount with subPath
+  # - name: extra-metadata
+  #   mountPath: /opt/metadata/file.yaml
+  #   configMap: airflow-metadata
+  #   readOnly: true
+  #   subPath: file.yaml
+
 
   ## When existingAirflowSecret is defined, secretsMapping can be
   ## overridden. When no secretName is given then the value of
