@@ -106,6 +106,9 @@ spec:
             - name: {{ .name }}
               mountPath: {{ .mountPath }}
               readOnly: {{ .readOnly }}
+              {{ if .subPath }}
+              subPath: {{ .subPath }}
+              {{ end }}
           {{- end }}
 {{- if .Values.airflow.extraVolumeMounts }}
 {{ toYaml .Values.airflow.extraVolumeMounts | indent 12 }}
