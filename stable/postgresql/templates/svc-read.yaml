@@ -19,7 +19,7 @@ spec:
   {{- end }}
   ports:
   - name: postgresql
-    port:  {{ .Values.service.port }}
+    port:  {{ template "postgresql.port" . }}
     targetPort: postgresql
     {{- if .Values.service.nodePort }}
     nodePort: {{ .Values.service.nodePort }}

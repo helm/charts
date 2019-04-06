@@ -1,3 +1,4 @@
+{{- if .Values.daemonset.enabled }}
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
@@ -23,8 +24,8 @@ spec:
         app: {{ template "metricbeat.name" . }}
         release: {{ .Release.Name }}
       annotations:
-        checksum/daemonset: {{ toYaml .Values.daemonset.modules | sha256sum }}
-        checksum/config: {{ toYaml .Values.daemonset.config | sha256sum }}
+        checksum/config: {{ toYaml (default .Values.daemonset.config .Values.daemonset.overrideConfig) | sha256sum }}
+        checksum/modules: {{ toYaml (default .Values.daemonset.modules .Values.daemonset.overrideModules) | sha256sum }}
 {{- if .Values.daemonset.podAnnotations }}
   {{- range $key, $value := .Values.daemonset.podAnnotations }}
         {{ $key }}: {{ $value }}
@@ -61,7 +62,11 @@ spec:
         securityContext:
           runAsUser: 0
         resources:
+{{- if .Values.daemonset.resources }}
+{{ toYaml .Values.daemonset.resources | indent 10 }}
+{{- else if .Values.resources }}
 {{ toYaml .Values.resources | indent 10 }}
+{{- end }}
         volumeMounts:
         - name: config
           mountPath: /usr/share/metricbeat/metricbeat.yml
@@ -107,6 +112,9 @@ spec:
 {{ toYaml .Values.extraVolumes | indent 6 }}
 {{- end }}
       terminationGracePeriodSeconds: 60
+{{- if .Values.daemonset.priorityClassName }}
+      priorityClassName: {{ .Values.daemonset.priorityClassName }}
+{{- end }}
       serviceAccountName: {{ template "metricbeat.serviceAccountName" . }}
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
@@ -121,4 +129,5 @@ spec:
 {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}
 {{- end }}

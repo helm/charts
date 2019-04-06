@@ -89,6 +89,9 @@ spec:
         {{- end }}
         securityContext:
           runAsUser: 0
+{{- if .Values.privileged }}
+          privileged: true
+{{- end }}
 {{- if .Values.resources }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
@@ -121,6 +124,8 @@ spec:
         resources:
 {{ toYaml .Values.monitoring.resources | indent 10 }}
 {{- end }}
+        ports:
+          - containerPort: {{ .Values.monitoring.exporterPort}}
 {{- end }}
       volumes:
       - name: varlog

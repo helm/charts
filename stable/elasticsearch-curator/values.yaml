@@ -25,6 +25,9 @@ hooks:
 # run curator in dry-run mode
 dryrun: false
 
+command: ["curator"]
+env: {}
+
 configMaps:
   # Delete indices older than 7 days
   action_file_yml: |-
@@ -97,3 +100,6 @@ priorityClassName: ""
 #   - name: es-certs
 #     mountPath: /certs
 #     readOnly: true
+
+securityContext:
+  runAsUser: 16  # run as cron user instead of root

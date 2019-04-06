@@ -3,6 +3,48 @@
 This file documents all notable changes to Sysdig Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v1.4.2
+
+### Minor Changes
+
+* Use the latest image from Agent (0.89.4) by default.
+* Use latest shovel logo.
+
+## v1.4.0
+
+### Major Changes
+
+* Use the latest image from Agent (0.89.0) by default.
+* eBPF support added.
+
+## v1.3.2
+
+### Minor Changes
+
+* Provide sane defaults resources for the Sysdig Agent.
+* Use RollingUpdate strategy by default.
+
+## v1.3.1
+
+### Minor Changes
+
+* Revert v1.2.1 changes. The agent automatically restarts when detects a change in the configuration.
+
+## v1.3.0
+
+### Major Changes
+
+* Use a lower pod termination grace period for avoiding data gaps when pod fails to terminate quickly.
+* Check running file on readinessProbe instead of relaying on logs.
+* Mount /run and /var/run instead of Docker socket. It allows to access CRI / containerd socket.
+* Avoid floating references for the image.
+
+## v1.2.2
+
+### Minor Changes
+
+* Fix value in the agent tags example.
+
 ## v1.2.1
 
 ### Minor Changes

@@ -73,6 +73,8 @@ The following table lists the configurable parameters of the SNMP-Exporter chart
 | `rbac.create` 		                     | Use Role-based Access Control		               | `true`	                       |
 | `serviceAccount.create`	               | Should we create a ServiceAccount	             | `true`                 	     |
 | `serviceAccount.name`		               | Name of the ServiceAccount to use               | `null`		                     |
+| `serviceMonitor.enabled`               | Enables ServiceMonitor                          | `false`                       |
+
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
