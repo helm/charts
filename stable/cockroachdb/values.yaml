@@ -5,7 +5,7 @@
 
 Name: "cockroachdb"
 Image: "cockroachdb/cockroach"
-ImageTag: "v2.1.3"
+ImageTag: "v2.1.5"
 ImagePullPolicy: "Always"
 Replicas: 3
 MaxUnavailable: 1
@@ -68,3 +68,7 @@ Secure:
 JoinExisting: []
 # Set a locality (e.g. "region=us-central1,datacenter=us-centra1-a") if you're doing multi-cluster so data is distributed properly
 Locality: ""
+# Additional command-line arguments you want to pass to the `cockroach start` commands
+ExtraArgs: []
+# ExtraSecretMounts is a list of names from secrets in the same namespace as the cockroachdb cluster, which shall be mounted into /etc/cockroach/secrets/ for every cluster member.
+ExtraSecretMounts: []

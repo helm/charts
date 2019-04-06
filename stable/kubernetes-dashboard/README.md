@@ -47,12 +47,15 @@ The following table lists the configurable parameters of the kubernetes-dashboar
 | `image.repository`                  | Repository for container image                                                                                              | `k8s.gcr.io/kubernetes-dashboard-amd64`                                    |
 | `image.tag`                         | Image tag                                                                                                                   | `v1.10.1`                                                                  |
 | `image.pullPolicy`                  | Image pull policy                                                                                                           | `IfNotPresent`                                                             |
+| `image.pullSecrets`                 | Image pull secrets                                                                                                          | `[]`                                                                      |
 | `annotations`                       | Annotations for deployment                                                                                                  | `{}`                                                                       |
 | `replicaCount`                      | Number of replicas                                                                                                          | `1`                                                                        |
 | `extraArgs`                         | Additional container arguments                                                                                              | `[]`                                                                       |
+| `podAnnotations`                    | Annotations to be added to pods                                                                                             | {}                                                                         |
 | `nodeSelector`                      | node labels for pod assignment                                                                                              | `{}`                                                                       |
 | `tolerations`                       | List of node taints to tolerate (requires Kubernetes >= 1.6)                                                                | `[]`                                                                       |
 | `affinity`                         | Affinity for pod assignment                                                                                                  | `[]`                                                                       |
+| `enableSkipLogin`                   | Enable possibility to skip login                                                                                      | `false`                                                                    |
 | `enableInsecureLogin`              | Serve application over HTTP without TLS                                                                                      | `false`                                                                    |
 | `service.externalPort`              | Dashboard external port                                                                                                     | 443                                                                        |
 | `service.internalPort`              | Dashboard internal port                                                                                                     | 443                                                                        |
@@ -64,6 +67,7 @@ The following table lists the configurable parameters of the kubernetes-dashboar
 | `resources`                         | Pod resource requests & limits                                                                                              | `limits: {cpu: 100m, memory: 100Mi}, requests: {cpu: 100m, memory: 100Mi}` |
 | `rbac.create`                       | Create & use RBAC resources                                                                                                 | `true`                                                                     |
 | `rbac.clusterAdminRole`             | "cluster-admin" ClusterRole will be used for dashboard ServiceAccount ([NOT RECOMMENDED](#access-control))                  | `false`                                                                    |
+| `rbac.clusterReadOnlyRole`          | If clusterAdminRole disabled, an additional role will be created with read only permissions to all resources listed inside. | `false`                                                                    |
 | `serviceAccount.create`             | Whether a new service account name that the agent will use should be created.                                               | `true`                                                                     |
 | `serviceAccount.name`               | Service account to be used. If not set and serviceAccount.create is `true` a name is generated using the fullname template. |                                                                            |
 | `livenessProbe.initialDelaySeconds` | Number of seconds to wait before sending first probe                                                                        | 30                                                                         |
@@ -97,10 +101,10 @@ For this to reach the dashboard, the name of the service must be 'kubernetes-das
 fullnameOverride: 'kubernetes-dashboard'
 ```
 
-### Ugrade from 0.x.x to 1.x.x
+### Upgrade from 0.x.x to 1.x.x
 
 Upgrade from 0.x.x version to 1.x.x version is seamless if you use default `ingress.path` value. If you have non-default `ingress.path` values with version 0.x.x, you need to add your custom path in `ingress.paths` list value as shown as examples in `values.yaml`.
 
 Notes:
 
-- The proxy url changed please refer to the [usage section](#using-the-dashboard-with-kubectl-proxy')
+- The proxy url changed please refer to the [usage section](#using-the-dashboard-with-kubectl-proxy)

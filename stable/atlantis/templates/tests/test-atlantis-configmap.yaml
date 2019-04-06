@@ -5,7 +5,7 @@ metadata:
 data:
   run.sh: |-
     @test "Atlantis UI is available" {
-      ATLANTIS_URL=http://{{ template "atlantis.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
+      ATLANTIS_URL={{ template "atlantis.url" . }}
       echo "Trying Atlantis at: $ATLANTIS_URL"
       curl $ATLANTIS_URL
     }

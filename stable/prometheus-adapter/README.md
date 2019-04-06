@@ -40,6 +40,7 @@ The following table lists the configurable parameters of the Prometheus Adapter 
 | `image.repository`              | Image repository                                                                | `directxman12/k8s-prometheus-adapter-amd64` |
 | `image.tag`                     | Image tag                                                                       | `v0.4.1`                                    |
 | `image.pullPolicy`              | Image pull policy                                                               | `IfNotPresent`                              |
+| `image.pullSecrets`             | Image pull secrets                                                              | `{}`                                        |
 | `logLevel`                      | Log level                                                                       | `4`                                         |
 | `metricsRelistInterval`         | Interval at which to re-list the set of all available metrics from Prometheus   | `1m`                                        |
 | `nodeSelector`                  | Node labels for pod assignment                                                  | `{}`                                        |

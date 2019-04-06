@@ -5,7 +5,7 @@ name: chaoskube
 image: quay.io/linki/chaoskube
 
 # docker image tag
-imageTag: v0.11.0
+imageTag: v0.12.1
 
 # number of replicas to run
 replicas: 1
@@ -45,6 +45,9 @@ minimumAge: 0s
 
 # grace period to give pods when terminating them (negative: pod decides)
 gracePeriod: -1s
+
+# Listening address for metrics handler
+metricsAddress: :8080
 
 priorityClassName: ""
 

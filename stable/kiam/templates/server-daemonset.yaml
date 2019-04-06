@@ -37,6 +37,10 @@ spec:
     {{- end }}
       tolerations:
 {{ toYaml .Values.server.tolerations | indent 8 }}
+      {{- if .Values.server.affinity }}
+      affinity:
+{{ toYaml .Values.server.affinity | indent 10 }}
+      {{- end }}
       volumes:
         - name: tls
           secret:
@@ -63,9 +67,9 @@ spec:
             {{- end }}
             - --level={{ .Values.server.log.level }}
             - --bind=0.0.0.0:{{ .Values.server.service.targetPort }}
-            - --cert=/etc/kiam/tls/cert
-            - --key=/etc/kiam/tls/key
-            - --ca=/etc/kiam/tls/ca
+            - --cert=/etc/kiam/tls/{{ .Values.server.tlsCerts.certFileName }}
+            - --key=/etc/kiam/tls/{{ .Values.server.tlsCerts.keyFileName }}
+            - --ca=/etc/kiam/tls/{{ .Values.server.tlsCerts.caFileName }}
             {{- if .Values.server.roleBaseArn }}
             - --role-base-arn={{ .Values.server.roleBaseArn }}
             {{- else }}
@@ -107,9 +111,9 @@ spec:
               command:
                 - /kiam
                 - health
-                - --cert=/etc/kiam/tls/cert
-                - --key=/etc/kiam/tls/key
-                - --ca=/etc/kiam/tls/ca
+                - --cert=/etc/kiam/tls/{{ .Values.server.tlsCerts.certFileName }}
+                - --key=/etc/kiam/tls/{{ .Values.server.tlsCerts.keyFileName }}
+                - --ca=/etc/kiam/tls/{{ .Values.server.tlsCerts.caFileName }}
                 - --server-address={{ .Values.server.probes.serverAddress }}:{{ .Values.server.service.targetPort }}
                 - --server-address-refresh=2s
                 - --timeout=5s
@@ -122,9 +126,9 @@ spec:
               command:
                 - /kiam
                 - health
-                - --cert=/etc/kiam/tls/cert
-                - --key=/etc/kiam/tls/key
-                - --ca=/etc/kiam/tls/ca
+                - --cert=/etc/kiam/tls/{{ .Values.server.tlsCerts.certFileName }}
+                - --key=/etc/kiam/tls/{{ .Values.server.tlsCerts.keyFileName }}
+                - --ca=/etc/kiam/tls/{{ .Values.server.tlsCerts.caFileName }}
                 - --server-address={{ .Values.server.probes.serverAddress }}:{{ .Values.server.service.targetPort }}
                 - --server-address-refresh=2s
                 - --timeout=5s

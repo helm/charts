@@ -3,10 +3,30 @@
 ##
 image:
   repository: redis
-  tag: 4.0.11-alpine
+  tag: 5.0.3-alpine
   pullPolicy: IfNotPresent
 ## replicas number for each component
 replicas: 3
+
+## Custom labels for the redis pod
+labels: {}
+
+## Pods Service Account
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
+serviceAccount:
+  ## Specifies whether a ServiceAccount should be created
+  ##
+  create: true
+  ## The name of the ServiceAccount to use.
+  ## If not set and create is true, a name is generated using the redis-ha.fullname template
+  # name:
+
+## Role Based Access
+## Ref: https://kubernetes.io/docs/admin/authorization/rbac/
+##
+
+rbac:
+  create: true
 
 ## Redis specific configuration options
 redis:
@@ -91,6 +111,23 @@ affinity: |
               release: {{ .Release.Name }}
           topologyKey: failure-domain.beta.kubernetes.io/zone
 
+# Prometheus exporter specific configuration options
+exporter:
+  enabled: false
+  image: oliver006/redis_exporter
+  tag: v0.31.0
+  pullPolicy: IfNotPresent
+
+  # prometheus port & scrape path
+  port: 9121
+  scrapePath: /metrics
+
+  # cpu/memory resource limits/requests
+  resources: {}
+
+  # Additional args for redis exporter
+  extraArgs: {}
+
 podDisruptionBudget: {}
   # maxUnavailable: 1
   # minAvailable: 1
@@ -98,6 +135,9 @@ podDisruptionBudget: {}
 ## Configures redis with AUTH (requirepass & masterauth conf params)
 auth: false
 # redisPassword:
+
+## Use existing secret containing "auth" key (ignores redisPassword)
+# existingSecret:
 
 persistentVolume:
   enabled: true
@@ -113,3 +153,17 @@ persistentVolume:
     - ReadWriteOnce
   size: 10Gi
   annotations: {}
+init:
+  resources: {}
+
+# To use a hostPath for data, set persistentVolume.enabled to false
+# and define hostPath.path.
+# Warning: this might overwrite existing folders on the host system!
+hostPath:
+  ## path is evaluated as template so placeholders are replaced
+  # path: "/data/{{ .Release.Name }}"
+
+  # if chown is true, an init-container with root permissions is launched to
+  # change the owner of the hostPath folder to the user defined in the
+  # security context
+  chown: true

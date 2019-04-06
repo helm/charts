@@ -6,7 +6,7 @@ clusterDomain: cluster.local
 ##
 image:
   repository: minio/minio
-  tag: RELEASE.2018-12-06T01-27-43Z
+  tag: RELEASE.2019-03-13T21-59-47Z
   pullPolicy: IfNotPresent
 
 ## Set default image, imageTag, and imagePullPolicy for the `mc` (the minio
@@ -14,7 +14,7 @@ image:
 ##
 mcImage:
   repository: minio/mc
-  tag: RELEASE.2018-12-05T22-59-07Z
+  tag: RELEASE.2019-03-13T21-05-06Z
   pullPolicy: IfNotPresent
 
 ## minio server mode, i.e. standalone or distributed.
@@ -45,6 +45,7 @@ existingSecret: ""
 accessKey: "AKIAIOSFODNN7EXAMPLE"
 secretKey: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
 configPath: "/root/.minio/"
+configPathmc: "/root/.mc/"
 mountPath: "/export"
 replicas: 4
 
@@ -94,7 +95,7 @@ service:
   type: ClusterIP
   clusterIP: ~
   port: 9000
-  # nodePort: 31311
+  nodePort: 31311
   # externalIPs:
   #   - externalIp1
   annotations: {}
@@ -121,6 +122,9 @@ ingress:
 nodeSelector: {}
 tolerations: []
 affinity: {}
+
+# Additational pod annotations
+podAnnotations: {}
 
 ## Liveness and Readiness probe values.
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/
@@ -156,9 +160,21 @@ defaultBucket:
   ## Purge if bucket exists already
   purge: false
 
+## Create multiple buckets after minio install
+## Enabling `defaultBucket` will take priority over this list
+##
+buckets: []
+  # - name: bucket1
+  #   policy: none
+  #   purge: false
+  # - name: bucket2
+  #   policy: none
+  #   purge: false
+
 s3gateway:
   enabled: false
   replicas: 4
+  serviceEndpoint: ""
 
 ## Use minio as an azure blob gateway, you should disable data persistence so no volume claim are created.
 ## https://docs.minio.io/docs/minio-gateway-for-azure
@@ -178,6 +194,12 @@ gcsgateway:
   gcsKeyJson: ""
   # Google cloud project-id
   projectId: ""
+
+ossgateway:
+  enabled: false
+  # Number of parallel instances
+  replicas: 4
+  endpointURL: ""
 
 ## Use minio on NAS backend
 ## https://docs.minio.io/docs/minio-gateway-for-nas
@@ -215,96 +237,6 @@ environment:
   # MINIO_DOMAIN: ""
   ## Add other environment variables relevant to Minio server here. These values will be added to the container(s) as this Chart is deployed
 
-## https://docs.minio.io/docs/minio-bucket-notification-guide
-## https://github.com/minio/minio/blob/master/docs/config
-minioConfig:
-  region: "us-east-1"
-  browser: "on"
-  domain: ""
-  worm: "off"
-  storageClass:
-    standardStorageClass: ""
-    reducedRedundancyStorageClass: ""
-  cache:
-    drives: []
-    expiry: 90
-    maxuse: 80
-    exclude: []
-  aqmp:
-    enable: false
-    url: ""
-    exchange: ""
-    routingKey: ""
-    exchangeType: ""
-    deliveryMode: 0
-    mandatory: false
-    immediate: false
-    durable: false
-    internal: false
-    noWait: false
-    autoDeleted: false
-  nats:
-    enable: false
-    address: ""
-    subject: ""
-    username: ""
-    password: ""
-    token: ""
-    secure: false
-    pingInterval: 0
-    enableStreaming: false
-    clusterID: ""
-    clientID: ""
-    async: false
-    maxPubAcksInflight: 0
-  elasticsearch:
-    enable: false
-    format: "namespace"
-    url: ""
-    index: ""
-  redis:
-    enable: false
-    format: "namespace"
-    address: ""
-    password: ""
-    key: ""
-  postgresql:
-    enable: false
-    format: "namespace"
-    connectionString: ""
-    table: ""
-    host: ""
-    port: ""
-    user: ""
-    password: ""
-    database: ""
-  kafka:
-    enable: false
-    brokers: "null"
-    topic: ""
-  webhook:
-    enable: false
-    endpoint: ""
-  mysql:
-    enable: false
-    format: "namespace"
-    dsnString: ""
-    table: ""
-    host: ""
-    port: ""
-    user: ""
-    password: ""
-    database: ""
-  mqtt:
-    enable: false
-    broker: ""
-    topic: ""
-    qos: 0
-    clientId: ""
-    username: ""
-    password: ""
-    reconnectInterval: 0
-    keepAliveInterval: 0
 networkPolicy:
   enabled: false
   allowExternal: true

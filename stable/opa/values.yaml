@@ -9,7 +9,8 @@ opa:
       url: "https://www.openpolicyagent.org"
   bundle:
     service: controller
-    name: "kubernetes/admission"
+    name: "helm-kubernetes-quickstart"
+  default_decision: "/helm_kubernetes_quickstart/main"
 
 # To enforce mutating policies, change to MutatingWebhookConfiguration.
 admissionControllerKind: ValidatingWebhookConfiguration
@@ -27,6 +28,13 @@ admissionControllerRules:
     apiVersions: ["*"]
     resources: ["*"]
 
+# Controls a PodDisruptionBudget for the OPA pod. Suggested use if having opa
+# always running for admission control is important
+podDisruptionBudget:
+  enabled: false
+  minAvailable: 1
+# maxUnavailable: 1
+
 # The helm Chart will automatically generate a CA and server certificate for
 # the OPA. If you want to supply your own certificates, set the field below to
 # false and add the PEM encoded CA certificate and server key pair below.
@@ -43,9 +51,41 @@ admissionControllerCA: ""
 admissionControllerCert: ""
 admissionControllerKey: ""
 
+authz:
+  # Disable if you don't want authorization.
+  # Mostly useful for debugging.
+  enabled: true
+
 # Docker image and tag to deploy.
 image: openpolicyagent/opa
-imageTag: 0.10.1
+imageTag: 0.10.5
+imagePullPolicy: IfNotPresent
+
+mgmt:
+  enabled: true
+  image: openpolicyagent/kube-mgmt
+  imageTag: 0.8
+  imagePullPolicy: IfNotPresent
+  extraArgs: []
+  resources: {}
+  configmapPolicies:
+    enabled: false
+    namespaces: [opa, kube-federation-scheduling-policy]
+    requireLabel: true
+  replicate:
+# NOTE IF you use these, remember to update the RBAC rules above to allow
+#      permissions to replicate these things
+    cluster: []
+#     - [group/]version/resource
+    namespace: []
+#     - [group/]version/resource
+    path: kubernetes
+
+# Log level for OPA ('debug', 'info', 'error') (app default=info)
+logLevel: info
+
+# Log format for OPA ('text', 'json') (app default=text)
+logFormat: text
 
 # Number of OPA replicas to deploy. OPA maintains an eventually consistent
 # cache of policies and data. If you want high availability you can deploy two
@@ -63,6 +103,37 @@ nodeSelector: {}
 # To control the CPU and memory resource limits and requests for OPA, set the
 # field below.
 resources: {}
+
+rbac:
+  # If true, create & use RBAC resources
+  #
+  create: true
+  rules:
+    cluster: []
+    # - apiGroups:
+    #     - ""
+    #   resources:
+    #   - namespaces
+    #   verbs:
+    #   - get
+    #   - list
+    #   - watch
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+# This proxy allows opa to make Kubernetes SubjectAccessReview checks against the
+# Kubernetes API. You can get a rego function at github.com/open-policy-agent/library
+sar:
+  enabled: false
+  image: lachlanevenson/k8s-kubectl
+  imageTag: latest
+  imagePullPolicy: IfNotPresent
+  resources: {}
 
 # To control the liveness and readiness probes change the fields below.
 readinessProbe:

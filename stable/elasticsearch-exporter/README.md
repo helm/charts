@@ -66,6 +66,8 @@ Parameter | Description | Default
 `es.ssl.client.pem` | PEM that contains the client cert to connect to Elasticsearch |
 `es.ssl.client.key` | Private key for client auth when connecting to Elasticsearch |
 `web.path` | path under which to expose metrics | `/metrics`
+`serviceMonitor.enabled` | If true, a ServiceMonitor CRD is created for a prometheus operator | `false`
+`serviceMonitor.labels` | Labels for prometheus operator | `{}`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
