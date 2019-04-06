@@ -1,0 +1,15 @@
+# Default values for datapower.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+image:
+  pullPolicy: IfNotPresent
+
+persistence:
+  ## persistence.enabled Enables persistent volume - PV provisioner support necessary
+  enabled: true
+  ## persistence.keep Keep persistent volume after helm delete
+  keep: false
+  ## persistence.accessMode PVC Access Mode
+  accessMode: ReadWriteMany
+  ## persistence.size PVC Size
+  size: 20Gi

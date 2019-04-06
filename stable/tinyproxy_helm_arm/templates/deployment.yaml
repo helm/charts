@@ -1,0 +1,43 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    chart: {{ .Chart.Name}}-{{ .Chart.Version | replace "+" "_" }}
+    app: {{ template "fullname" . }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}
+    spec:
+      hostAliases:
+      - ip: 127.0.0.1
+        hostnames:
+        - tinyproxy
+      containers:
+      - name: {{ .Chart.Name }}
+        image: castironclay/tinyproxy_arm:v0.1.1
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command: ["/opt/docker-tinyproxy/run.sh"]
+        stdin: true
+        tty: true
+        resources:
+          limits:
+            memory: 200Mi
+        ports:
+        - containerPort: 8888
+          name: proxy
+          hostPort: 8888
+          protocol: TCP
+        arguments:
+          - '-p'
+          - '8888:8888'
+          - 'ANY'
+      volumes:
+        - name: {{ template "fullname" . }}-pvc
+          persistentVolumeClaim:
+            claimName: {{ template "fullname" . }}-pvc
