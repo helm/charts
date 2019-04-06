@@ -2,7 +2,7 @@ apiVersion: v1
 appVersion: 1.8.4
 home: https://tinyproxy.github.io/
 description: tinyproxy
-name: tinyproxy
+name: tinyproxy_helm_arm
 icon: https://alternative.me/icons2/tinyproxy.png
 maintainers:
 - name: castironclay
