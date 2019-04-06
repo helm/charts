@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "fullname" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  selector:
+    app: {{ template "fullname" . }} 
+  ports:
+  - name:       {{ template "fullname" . }}-dns1
+    port: 8888
+    targetPort: 8888
+    protocol: TCP
+  type: LoadBalancer  
+  selector:
+    app: {{ template "fullname" . }}
