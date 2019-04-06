@@ -4,6 +4,12 @@ home: https://tinyproxy.github.io/
 description: tinyproxy
 name: tinyproxy
 icon: https://alternative.me/icons2/tinyproxy.png
+maintainers:
+- name: castironclay
+  email: clycopp@gmail.com
+description: tinyproxy
+name: tinyproxy
+icon: https://alternative.me/icons2/tinyproxy.png
 version: 1.0.0
 sources:
 tillerVersion: ">=2.4.0"
