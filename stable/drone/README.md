@@ -70,6 +70,7 @@ The following table lists the configurable parameters of the drone charts and th
 | `ingress.enabled`           | Enables Ingress for Drone                                                                     | `false`                     |
 | `ingress.annotations`       | Ingress annotations                                                                           | `{}`                        |
 | `ingress.hosts`             | Ingress accepted hostnames                                                                    | `nil`                       |
+| `ingress.path`              | Ingress path mapping                                                                          | ``                       |
 | `ingress.tls`               | Ingress TLS configuration                                                                     | `[]`                        |
 | `sourceControl.provider`               | name of source control provider [github,gitlab,gitea,gogs,bitbucketCloud,bitbucketServer]              | ``       |
 | `sourceControl.secret`               | name of secret containing source control keys and passwords              | ``       |
