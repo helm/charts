@@ -1,15 +1,16 @@
 {{- if .Values.ingress.enabled -}}
 {{- $fullName := include "unifi.fullname" . -}}
 {{- $ingressPath := .Values.ingress.path -}}
+{{- $unifiedServiceEnabled := .Values.unifiedService.enabled -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: {{ $fullName }}
   labels:
-    app: {{ template "unifi.name" . }}
-    chart: {{ template "unifi.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ include "unifi.name" . }}
+    helm.sh/chart: {{ include "unifi.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- with .Values.ingress.annotations }}
   annotations:
 {{ toYaml . | indent 4 }}
@@ -32,7 +33,11 @@ spec:
         paths:
           - path: {{ $ingressPath }}
             backend:
+              {{- if $unifiedServiceEnabled }}
+              serviceName: {{ $fullName }}
+              {{- else }}
               serviceName: {{ $fullName }}-gui
+              {{- end }}
               servicePort: https-gui
   {{- end }}
 {{- end }}

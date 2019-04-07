@@ -78,26 +78,33 @@ spec:
             - name: TZ
               value: {{ .Values.firefox.timeZone | quote }}
             {{- end }}
+            {{- if .Values.firefox.extraEnvs }}
+{{ toYaml .Values.firefox.extraEnvs | indent 12 }}
+            {{- end }}
           resources:
 {{ toYaml .Values.firefox.resources | indent 12 }}
+{{- if or .Values.global.imagePullSecrets .Values.firefox.imagePullSecrets }}
+      imagePullSecrets: 
+      - name: {{ .Values.firefox.imagePullSecrets | default .Values.global.imagePullSecrets | quote }}
+{{- end }}
       hostAliases:
 {{ toYaml .Values.global.hostAliases | indent 8 }}
       nodeSelector:
 {{- if .Values.firefox.nodeSelector }}
-{{ toYaml .Values.firefox.nodeSelector | indent 8  }}
+{{ toYaml .Values.firefox.nodeSelector | trim | indent 8  }}
 {{- else if .Values.global.nodeSelector }}
-{{ toYaml .Values.global.nodeSelector | indent 8  }}
+{{ toYaml .Values.global.nodeSelector | trim | indent 8  }}
 {{- end }}
       affinity:
 {{- if .Values.firefox.affinity }}
-{{ toYaml .Values.firefox.affinity | indent 8  }}
+{{ toYaml .Values.firefox.affinity | trim | indent 8  }}
 {{- else if .Values.global.affinity }}
-{{ toYaml .Values.global.affinity | indent 8  }}
+{{ toYaml .Values.global.affinity | trim | indent 8  }}
 {{- end }}
       tolerations:
 {{- if .Values.firefox.tolerations }}
-{{ toYaml .Values.firefox.tolerations | indent 8  }}
+{{ toYaml .Values.firefox.tolerations | trim | indent 8  }}
 {{- else if .Values.global.tolerations }}
-{{ toYaml .Values.global.tolerations | indent 8  }}
+{{ toYaml .Values.global.tolerations | trim | indent 8  }}
 {{- end }}
 {{- end -}}

@@ -49,4 +49,22 @@ web:
   # Path under which to expose metrics.
   path: /metrics
 
+## Pod affinity
+##
+affinity: {}
+
 annotations: {}
+
+## Node labels for stackdriver-exporter pod assignment
+## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+##
+nodeSelector: {}
+
+## Node tolerations for stackdriver-exporter scheduling to nodes with taints
+## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+##
+tolerations: []
+  # - key: "key"
+  #   operator: "Equal|Exists"
+  #   value: "value"
+  #   effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"

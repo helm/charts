@@ -14,7 +14,7 @@ This chart bootstraps a [Moodle](https://github.com/bitnami/bitnami-docker-moodl
 
 It also packages the [Bitnami MariaDB chart](https://github.com/kubernetes/charts/tree/master/stable/mariadb) which is required for bootstrapping a MariaDB deployment for the database requirements of the Moodle application.
 
-Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters.
+Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters. This chart has been tested to work with NGINX Ingress, cert-manager, fluentd and Prometheus on top of the [BKPR](https://kubeprod.io/).
 
 ## Prerequisites
 
@@ -50,6 +50,7 @@ The following table lists the configurable parameters of the Moodle chart and th
 |              Parameter                |                                       Description                                            |                   Default                               |
 |---------------------------------------|----------------------------------------------------------------------------------------------|-------------------------------------------------------- |
 | `global.imageRegistry`                | Global Docker image registry                                                                 | `nil`                                         |
+| `global.imagePullSecrets`             | Global Docker registry secret names as an array                                              | `[]` (does not add image pull secrets to deployed pods) |
 | `image.registry`                      | Moodle image registry                                                                        | `docker.io`                                   |
 | `image.repository`                    | Moodle Image name                                                                            | `bitnami/moodle`                              |
 | `image.tag`                           | Moodle Image tag                                                                             | `{VERSION}`                                   |

@@ -1,6 +1,6 @@
 image:
   repository: docker.elastic.co/beats/filebeat-oss
-  tag: 6.6.0
+  tag: 6.7.0
   pullPolicy: IfNotPresent
 
 config:
@@ -139,6 +139,8 @@ podSecurityPolicy:
     # seccomp.security.alpha.kubernetes.io/allowedProfileNames: '*'
     # seccomp.security.alpha.kubernetes.io/defaultProfileName: 'docker/default'
     # apparmor.security.beta.kubernetes.io/defaultProfileName: 'runtime/default'
+
+privileged: false
 
 ## Add Elastic beat-exporter for Prometheus
 ## https://github.com/trustpilot/beat-exporter
