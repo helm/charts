@@ -17,6 +17,9 @@ spec:
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: "{{ .Release.Name }}"
         heritage: "{{ .Release.Service }}"
+{{- with .Values.podLabels }}
+{{ toYaml . | indent 8 }}
+{{- end}}
 {{- with .Values.podAnnotations }}
       annotations:
 {{ toYaml . | indent 8 }}
@@ -89,5 +92,13 @@ spec:
 {{- end }}
 {{- with .Values.nodeSelector }}
       nodeSelector:
+{{ toYaml . | trim | indent 8}}
+{{- end }}
+{{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | trim | indent 8}}
+{{- end }}
+{{- with .Values.affinity }}
+      affinity:
 {{ toYaml . | trim | indent 8}}
 {{- end }}

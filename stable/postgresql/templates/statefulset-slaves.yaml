@@ -25,18 +25,15 @@ spec:
         release: {{ .Release.Name | quote }}
         heritage: {{ .Release.Service | quote }}
         role: slave
+{{- with .Values.slave.podLabels }}
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.slave.podAnnotations }}
+      annotations:
+{{ toYaml . | indent 8 }}
+{{- end }}
     spec:
-      {{- if .Values.securityContext.enabled }}
-      securityContext:
-        fsGroup: {{ .Values.securityContext.fsGroup }}
-        runAsUser: {{ .Values.securityContext.runAsUser }}
-      {{- end }}
-      {{- if .Values.image.pullSecrets }}
-      imagePullSecrets:
-      {{- range .Values.image.pullSecrets }}
-        - name: {{ . }}
-      {{- end}}
-      {{- end }}
+{{- include "postgresql.imagePullSecrets" . | indent 6 }}
       {{- if .Values.slave.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.slave.nodeSelector | indent 8 }}
@@ -51,6 +48,10 @@ spec:
       {{- end }}
       {{- if .Values.terminationGracePeriodSeconds }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      {{- end }}
+      {{- if .Values.securityContext.enabled }}
+      securityContext:
+        fsGroup: {{ .Values.securityContext.fsGroup }}
       {{- end }}
       {{- if and .Values.volumePermissions.enabled .Values.persistence.enabled }}
       initContainers:
@@ -72,6 +73,7 @@ spec:
         volumeMounts:
         - name: data
           mountPath: {{ .Values.persistence.mountPath }}
+          subPath: {{ .Values.persistence.subPath }}
       {{- end }}
       containers:
       - name: {{ template "postgresql.fullname" . }}
@@ -79,6 +81,10 @@ spec:
         imagePullPolicy: "{{ .Values.image.pullPolicy }}"
         resources:
 {{ toYaml .Values.resources | indent 10 }}
+        {{- if .Values.securityContext.enabled }}
+        securityContext:
+          runAsUser: {{ .Values.securityContext.runAsUser }}
+        {{- end }}
         env:
         {{- if .Values.image.debug}}
         - name: BASH_DEBUG
@@ -93,7 +99,7 @@ spec:
         - name: POSTGRES_REPLICATION_MODE
           value: "slave"
         - name: POSTGRES_REPLICATION_USER
-          value: {{ .Values.replication.user | quote }}
+          value: {{ include "postgresql.replication.username" . | quote }}
         {{- if .Values.usePasswordFile }}
         - name: POSTGRES_REPLICATION_PASSWORD_FILE
           value: "/opt/bitnami/postgresql/secrets/postgresql-replication-password"
@@ -109,20 +115,20 @@ spec:
         - name: POSTGRES_MASTER_HOST
           value: {{ template "postgresql.fullname" . }}
         - name: POSTGRES_MASTER_PORT_NUMBER
-          value: {{ .Values.service.port | quote }}
+          value: {{ include "postgresql.port" . | quote }}
         ports:
         - name: postgresql
-          containerPort: {{ .Values.service.port }}
+          containerPort: {{ template "postgresql.port" . }}
         {{- if .Values.livenessProbe.enabled }}
         livenessProbe:
           exec:
             command:
             - sh
             - -c
-           {{- if .Values.postgresqlDatabase }}
-            - exec pg_isready -U {{ .Values.postgresqlUsername | quote }} -d {{ .Values.postgresqlDatabase | quote }} -h localhost
+           {{- if (include "postgresql.database" .) }}
+            - exec pg_isready -U {{ include "postgresql.username" . | quote }} -d {{ (include "postgresql.database" .) | quote }} -h localhost
            {{- else }}
-            - exec pg_isready -U {{ .Values.postgresqlUsername | quote }} -h localhost
+            - exec pg_isready -U {{ include "postgresql.username" . | quote }} -h localhost
            {{- end }}
           initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
           periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
@@ -136,10 +142,10 @@ spec:
             command:
             - sh
             - -c
-           {{- if .Values.postgresqlDatabase }}
-            - exec pg_isready -U {{ .Values.postgresqlUsername | quote }} -d {{ .Values.postgresqlDatabase | quote }} -h localhost
+           {{- if (include "postgresql.database" .) }}
+            - exec pg_isready -U {{ include "postgresql.username" . | quote }} -d {{ (include "postgresql.database" .) | quote }} -h localhost
            {{- else }}
-            - exec pg_isready -U {{ .Values.postgresqlUsername | quote }} -h localhost
+            - exec pg_isready -U {{ include "postgresql.username" . | quote }} -h localhost
            {{- end }}
           initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
           periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
@@ -155,8 +161,9 @@ spec:
         {{- if .Values.persistence.enabled }}
         - name: data
           mountPath: {{ .Values.persistence.mountPath }}
+          subPath: {{ .Values.persistence.subPath }}
         {{ end }}
-        {{- if or (.Files.Glob "files/conf.d/*.conf") .Values.extendedConfConfigMap }}
+        {{- if or (.Files.Glob "files/conf.d/*.conf") .Values.postgresqlExtendedConf .Values.extendedConfConfigMap }}
         - name: postgresql-extended-config
           mountPath: /bitnami/postgresql/conf/conf.d/
         {{- end }}
@@ -175,7 +182,7 @@ spec:
         configMap:
           name: {{ template "postgresql.configurationCM" . }}
       {{- end }}
-      {{- if or (.Files.Glob "files/conf.d/*.conf") .Values.extendedConfConfigMap }}
+      {{- if or (.Files.Glob "files/conf.d/*.conf") .Values.postgresqlExtendedConf .Values.extendedConfConfigMap }}
       - name: postgresql-extended-config
         configMap:
           name: {{ template "postgresql.extendedConfigurationCM" . }}
@@ -186,6 +193,9 @@ spec:
       {{- end }}
   updateStrategy:
     type: {{ .Values.updateStrategy.type }}
+    {{- if (eq "Recreate" .Values.updateStrategy.type) }}
+    rollingUpdate: null
+    {{- end }}
 {{- if .Values.persistence.enabled }}
   volumeClaimTemplates:
     - metadata:

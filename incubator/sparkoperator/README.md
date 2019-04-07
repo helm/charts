@@ -30,12 +30,13 @@ The following table lists the configurable parameters of the Spark operator char
 | `enableWebhook`           | Whether to enable mutating admission webhook                 | false                                   |
 | `enableMetrics`           | Whether to expose metrics to be scraped by Premetheus        | true                                   |
 | `controllerThreads`       | Number of worker threads used by the SparkApplication controller | 10                                     |
+| `ingressUrlFormat` | Ingress URL format | "" |
 | `installCrds`             | Whether to install CRDs                                      | true                                   |
 | `metricsPort`             | Port for the metrics endpoint                                | 10254                                  |
 | `metricsEndpoint`         | Metrics endpoint                                             | "/metrics"                             |
 | `metricsPrefix`           | Prefix for the metrics                                       | ""                                     |
 | `resyncInterval`          | Informer resync interval in seconds                          | 30                                     |
-| `webhookPort`             | Service port of the webhook server                           | 8080                                   |                                    |
+| `webhookPort`             | Service port of the webhook server                           | 8080                                   |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. 
 

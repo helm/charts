@@ -35,11 +35,6 @@ updateStrategy:
 ## ref: https://kubernetes.io/docs/tutorials/stateful-application/basic-stateful-set/#pod-management-policy
 podManagementPolicy: OrderedReady
 
-## If RBAC is enabled on the cluster, the Kafka init container needs a service account
-## with permissisions sufficient to apply pod labels
-rbac:
-  enabled: false
-
 ## Useful if using any custom authorizer
 ## Pass in some secrets to use (if required)
 # secrets:
@@ -306,6 +301,39 @@ prometheus:
 #        cpu: 100m
 #        memory: 100Mi
 
+    # Tolerations for nodes that have taints on them.
+    # Useful if you want to dedicate nodes to just run kafka-exporter
+    # https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+    tolerations: []
+    # tolerations:
+    # - key: "key"
+    #   operator: "Equal"
+    #   value: "value"
+    #   effect: "NoSchedule"
+
+    ## Pod scheduling preferences (by default keep pods within a release on separate nodes).
+    ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+    ## By default we don't set affinity
+    affinity: {}
+    ## Alternatively, this typical example defines:
+    ## affinity (to encourage Kafka Exporter pods to be collocated with Kafka pods)
+    # affinity:
+    #   podAffinity:
+    #     preferredDuringSchedulingIgnoredDuringExecution:
+    #      - weight: 50
+    #        podAffinityTerm:
+    #          labelSelector:
+    #            matchExpressions:
+    #            - key: app
+    #              operator: In
+    #              values:
+    #                - kafka
+    #          topologyKey: "kubernetes.io/hostname"
+
+    ## Node labels for pod assignment
+    ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+    nodeSelector: {}
+
   operator:
     ## Are you using Prometheus Operator?
     enabled: false
@@ -319,6 +347,13 @@ prometheus:
       ## [Kube Prometheus Selector Label](https://github.com/coreos/prometheus-operator/blob/master/helm/kube-prometheus/values.yaml#L298)
       selector:
         prometheus: kube-prometheus
+
+## Kafka Config job configuration
+##
+configJob:
+  ## Specify the number of retries before considering kafka-config job as failed.
+  ## https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/#pod-backoff-failure-policy
+  backoffLimit: 6
 
 ## Topic creation and configuration.
 ## The job will be run on a deployment only when the config has been changed.

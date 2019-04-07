@@ -1,8 +1,11 @@
-## Global Docker image registry
-## Please, note that this will override the image registry for all the images, including dependencies, configured to use the global value
+## Global Docker image parameters
+## Please, note that this will override the image parameters, including dependencies, configured to use the global value
+## Current available global Docker image parameters: imageRegistry and imagePullSecrets
 ##
 # global:
-#   imageRegistry:
+#   imageRegistry: myRegistryName
+#   imagePullSecrets:
+#     - myRegistryKeySecretName
 
 ## Bitnami WordPress image version
 ## ref: https://hub.docker.com/r/bitnami/wordpress/tags/
@@ -10,14 +13,14 @@
 image:
   registry: docker.io
   repository: bitnami/wordpress
-  tag: 5.0.3
+  tag: 5.1.1
   pullPolicy: IfNotPresent
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
   ##
   # pullSecrets:
-  #   - myRegistrKeySecretName
+  #   - myRegistryKeySecretName
 
 ## User of the application
 ## ref: https://github.com/bitnami/bitnami-docker-wordpress#environment-variables
@@ -58,6 +61,11 @@ wordpressTablePrefix: wp_
 ## Set to `yes` to allow the container to be started with blank passwords
 ## ref: https://github.com/bitnami/bitnami-docker-wordpress#environment-variables
 allowEmptyPassword: "yes"
+
+## Set Apache allowOverride to None
+allowOverrideNone: "yes"
+# ConfigMap with custom wordpress-htaccess.conf file (requires allowOverrideNone to true)
+customHTAccessCM:
 
 ## SMTP mail delivery configuration
 ## ref: https://github.com/bitnami/bitnami-docker-wordpress/#smtp-configuration
@@ -154,6 +162,8 @@ service:
   ##
   externalTrafficPolicy: Local
   annotations: {}
+  ## Extra ports to expose (normally used with the `sidecar` value)
+  # extraPorts:
 
 ## Allow health checks to be pointed at the https port
 healthcheckHttps: false
@@ -292,7 +302,7 @@ metrics:
     ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
     ##
     # pullSecrets:
-    #   - myRegistrKeySecretName
+    #   - myRegistryKeySecretName
      ## Metrics exporter pod Annotation and Labels
   podAnnotations:
     prometheus.io/scrape: "true"
@@ -301,3 +311,13 @@ metrics:
   ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
   ##
   # resources: {}
+
+sidecars:
+## Add sidecars to the pod.
+## e.g.
+# - name: your-image-name
+  # image: your-image
+  # imagePullPolicy: Always
+  # ports:
+  # - name: portname
+  #   containerPort: 1234

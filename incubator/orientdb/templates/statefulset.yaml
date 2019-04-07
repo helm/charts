@@ -1,0 +1,145 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ template "orientdb.fullname" . }}
+  labels:
+    app: {{ template "orientdb.name" . }}
+    chart: {{ template "orientdb.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "orientdb.name" . }}
+      release: {{ .Release.Name }}
+  serviceName: {{ template "orientdb.fullname" . }}-headless
+  template:
+    metadata:
+      labels:
+        app: {{ template "orientdb.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      terminationGracePeriodSeconds: 10
+      initContainers:
+        # orientdb-server-config.xml is an executable file while kubernetes mounts
+        # configmaps as read-only (since 1.94). This is a workaround to mount it as
+        # configmap first and then copy it over to its final location
+      - name: "fix-orientdb-server-config"
+        image: "busybox"
+        imagePullPolicy: IfNotPresent
+        command: [ "sh", "-c", "cp  /configmap/* /config" ]
+        volumeMounts:
+        - name: orientdb-configmap-vol
+          mountPath: /configmap
+        - name: orientdb-config-vol
+          mountPath: /config
+
+      containers:
+      - name: {{ template "orientdb.name" . }}
+        image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+          - containerPort: {{ .Values.service.orientHttp }}
+            name: http
+          - containerPort: {{ .Values.service.hazelcast }}
+            name: hazelcast
+          - containerPort: {{ .Values.service.orientBinary }}
+            name: binary
+          - containerPort: {{ .Values.service.gremlinWebsocket }}
+            name: gremlin
+        env:
+          - name: ORIENTDB_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "orientdb.fullname" . }}-secret
+                key: root-password
+          - name: ORIENTDB_NODE_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          {{- if .Values.jvm.memory }}
+          - name: ORIENTDB_OPTS_MEMORY
+            value: {{ .Values.jvm.memory | quote }}
+          {{- end }}
+          {{- if .Values.jvm.options }}
+          - name: JAVA_OPTS_SCRIPT
+            value: {{ .Values.jvm.options | quote }}
+          {{- end }}
+          {{- if .Values.jvm.settings }}
+          - name: ORIENTDB_SETTINGS
+            value: {{ .Values.jvm.settings | quote }}
+          {{- end }}
+        volumeMounts:
+                {{- if .Values.config.overrideHazelcastConfig }}
+          - name: orientdb-config-vol
+            mountPath: /orientdb/config/hazelcast.xml
+            subPath: hazelcast.xml
+                {{- end }}
+                {{- if .Values.config.overrideDistributedDbConfig}}
+          - name: orientdb-config-vol
+            mountPath: /orientdb/config/default-distributed-db-config.json
+            subPath: default-distributed-db-config.json
+                {{- end }}
+          {{- if .Values.persistence.enabled }}
+          - name: storage
+            mountPath: /orientdb/databases
+          - name: backup
+            mountPath: /orientdb/backup
+          {{- end }}
+        {{- if .Values.readinessProbe.enabled }}
+        readinessProbe:
+          tcpSocket:
+            port: http
+        {{- end }}
+        {{- if .Values.livenessProbe.enabled }}
+        livenessProbe:
+          tcpSocket:
+            port: http
+        {{- end }}
+{{- if .Values.distributed.enabled }}
+        command: ["dserver.sh"]
+{{- else }}
+        command: ["server.sh"]
+{{- end}}
+        resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+      volumes:
+        - name: orientdb-configmap-vol
+          configMap:
+            name: {{ template "orientdb.fullname" . }}-configmap
+        - name: orientdb-config-vol
+          emptyDir: {}
+{{- if .Values.image.pullSecret }} 
+      imagePullSecrets:
+        - name: {{ .Values.image.pullSecret }}
+{{- end }} 
+{{- if .Values.persistence.enabled }}
+  volumeClaimTemplates:
+  - metadata:
+      name: storage
+    spec:
+      accessModes: {{ .Values.persistence.storage.accessMode }}
+      resources:
+        requests:
+          storage: {{ .Values.persistence.storage.size }}
+  - metadata:
+      name: backup
+    spec:
+      accessModes: {{ .Values.persistence.backup.accessMode }}
+      resources:
+        requests:
+          storage: {{ .Values.persistence.backup.size }}
+{{- end}}

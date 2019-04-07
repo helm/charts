@@ -18,7 +18,7 @@ $ helm install stable/redis --values values-production.yaml
 
 This chart bootstraps a [Redis](https://github.com/bitnami/bitnami-docker-redis) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
-Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters.
+Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters. This chart has been tested to work with NGINX Ingress, cert-manager, fluentd and Prometheus on top of the [BKPR](https://kubeprod.io/).
 
 ## Prerequisites
 
@@ -90,6 +90,7 @@ The following table lists the configurable parameters of the Redis chart and the
 | Parameter                                  | Description                                                                                                    | Default                                              |
 |--------------------------------------------|----------------------------------------------------------------------------------------------------------------|------------------------------------------------------|
 | `global.imageRegistry`                     | Global Docker image registry                                                                                   | `nil`                                                |
+| `global.imagePullSecrets`                  | Global Docker registry secret names as an array                                                                | `[]` (does not add image pull secrets to deployed pods) |
 | `image.registry`                           | Redis Image registry                                                                                           | `docker.io`                                          |
 | `image.repository`                         | Redis Image name                                                                                               | `bitnami/redis`                                      |
 | `image.tag`                                | Redis Image tag                                                                                                | `{VERSION}`                                          |
@@ -111,7 +112,7 @@ The following table lists the configurable parameters of the Redis chart and the
 | `metrics.enabled`                          | Start a side-car prometheus exporter                                                                           | `false`                                              |
 | `metrics.image.registry`                   | Redis exporter image registry                                                                                  | `docker.io`                                          |
 | `metrics.image.repository`                 | Redis exporter image name                                                                                      | `oliver006/redis_exporter`                           |
-| `metrics.image.tag`                        | Redis exporter image tag                                                                                       | `v0.20.2`                                            |
+| `metrics.image.tag`                        | Redis exporter image tag                                                                                       | `v0.31.0`                                            |
 | `metrics.image.pullPolicy`                 | Image pull policy                                                                                              | `IfNotPresent`                                       |
 | `metrics.image.pullSecrets`                | Specify docker-registry secret names as an array                                                               | `nil`                                                |
 | `metrics.extraArgs`                        | Extra arguments for the binary; possible values [here](https://github.com/oliver006/redis_exporter#flags)      | {}                                                   |
@@ -167,10 +168,12 @@ The following table lists the configurable parameters of the Redis chart and the
 | `master.readinessProbe.successThreshold`   | Minimum consecutive successes for the probe to be considered successful after having failed (redis master pod) | `1`                                                  |
 | `master.readinessProbe.failureThreshold`   | Minimum consecutive failures for the probe to be considered failed after having succeeded.                     | `5`                                                  |
 | `master.priorityClassName`                 | Redis Master pod priorityClassName                                                                             | {}                                                   |
+| `volumePermissions.enabled`         | Enable init container that changes volume permissions in the registry (for cases where the default k8s `runAsUser` and `fsUser` values do not work)                                                               | `false`                                          |
 | `volumePermissions.image.registry`         | Init container volume-permissions image registry                                                               | `docker.io`                                          |
 | `volumePermissions.image.repository`       | Init container volume-permissions image name                                                                   | `bitnami/minideb`                                    |
 | `volumePermissions.image.tag`              | Init container volume-permissions image tag                                                                    | `latest`                                             |
 | `volumePermissions.image.pullPolicy`       | Init container volume-permissions image pull policy                                                            | `IfNotPresent`                                       |
+| `volumePermissions.resources       `       | Init container volume-permissions CPU/Memory resource requests/limits                                          | {}                                                   |
 | `slave.service.type`                       | Kubernetes Service type (redis slave)                                                                          | `ClusterIP`                                          |
 | `slave.service.nodePort`                   | Kubernetes Service nodePort (redis slave)                                                                      | `nil`                                                |
 | `slave.service.annotations`                | annotations for redis slave service                                                                            | {}                                                   |
@@ -207,6 +210,7 @@ The following table lists the configurable parameters of the Redis chart and the
 | `sysctlImage.tag`                          | sysctlImage Init container tag                                                                                 | `latest`                                             |
 | `sysctlImage.pullPolicy`                   | sysctlImage Init container pull policy                                                                         | `Always`                                             |
 | `sysctlImage.mountHostSys`                 | Mount the host `/sys` folder to `/host-sys`                                                                    | `false`                                              |
+| `sysctlImage.resources`                    | sysctlImage Init container CPU/Memory resource requests/limits                                                 | {}                                                   |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
@@ -276,3 +280,9 @@ sysctlImage:
       sysctl -w net.core.somaxconn=10000
       echo never > /host-sys/kernel/mm/transparent_hugepage/enabled
 ```
+
+## Upgrade
+
+## To 6.0.0
+
+Previous versions of the chart were using an init-container to change the permissions of the volumes. This was done in case the `securityContext` directive in the template was not enough for that (for example, with cephFS). In this new version of the chart, this container is disabled by default (which should not affect most of the deployments). If your installation still requires that init container, execute `helm upgrade` with the `--set volumePermissions.enabled=true`.

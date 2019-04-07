@@ -37,6 +37,18 @@ spec:
         - name: {{ .Values.airflow.image.pullSecret }}
       {{- end }}
       restartPolicy: Always
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+      {{- end }}
+      {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}-flower
           image: {{ .Values.airflow.image.repository }}:{{ .Values.airflow.image.tag }}
@@ -45,21 +57,7 @@ spec:
             - configMapRef:
                 name: "{{ template "airflow.fullname" . }}-env"
           env:
-            - name: POSTGRES_USER
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "airflow.secret" . }}
-                  key: postgresUser
-            - name: POSTGRES_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "airflow.secret" . }}
-                  key: postgresPassword
-            - name: REDIS_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "airflow.secret" . }}
-                  key: redisPassword
+          {{- include "airflow.mapenvsecrets" . | indent 10 }}
           ports:
             - name: flower
               containerPort: 5555
@@ -74,4 +72,6 @@ spec:
             timeoutSeconds: 1
             successThreshold: 1
             failureThreshold: 5
+          resources:
+{{ toYaml .Values.flower.resources | indent 12 }}
 {{- end }}

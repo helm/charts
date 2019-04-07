@@ -1,0 +1,76 @@
+affinity: {}
+
+annotations: {}
+
+extraArgs:
+- -collect.collection=true
+- -collect.database=true
+- -collect.indexusage=true
+- -collect.topmetrics=true
+
+fullnameOverride: ""
+
+image:
+  pullPolicy: IfNotPresent
+  repository: ssalaues/mongodb-exporter
+  tag: 0.6.1
+
+imagePullSecrets: []
+
+livenessProbe:
+  httpGet:
+    path: /
+    port: metrics
+  initialDelaySeconds: 10
+
+# mongodb://metrics-user:password@mongodb:27017
+mongodb:
+  uri:
+
+nameOverride: ""
+
+nodeSelector: {}
+
+priorityClassName: ""
+
+readinessProbe:
+  httpGet:
+    path: /
+    port: metrics
+  initialDelaySeconds: 10
+
+replicas: 1
+
+resources: {}
+# limits:
+#   cpu: 250mm
+#   memory: 192Mi
+# requests:
+#   cpu: 100mm
+#   memory: 128Mi
+
+# Extra environment variables that will be passed into the exporter pod
+env: {}
+
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop: ["all"]
+  readOnlyRootFilesystem: true
+  runAsNonRoot: true
+  runAsUser: 10000
+
+service:
+  annotations: {}
+  #  prometheus.io/scrape: "true"
+  #  prometheus.io/port: "9216"
+  port: 9216
+  type: ClusterIP
+
+serviceMonitor:
+  enabled: true
+  interval: 30s
+  namespace:
+  additionalLabels: {}
+
+tolerations: []

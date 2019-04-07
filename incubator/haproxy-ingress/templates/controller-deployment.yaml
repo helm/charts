@@ -36,7 +36,15 @@ spec:
 {{ toYaml .Values.controller.podLabels | indent 8 }}
         {{- end }}
     spec:
+    {{- if .Values.controller.podAffinity }}
+      affinity:
+{{ toYaml .Values.controller.podAffinity | indent 8 }}
+    {{- end }}
       serviceAccountName: {{ template "haproxy-ingress.serviceAccountName" . }}
+    {{- if .Values.controller.initContainers }}
+      initContainers:
+{{ toYaml .Values.controller.initContainers | indent 8 }}
+    {{- end }}
       containers:
         - name: haproxy-ingress
           image:  "{{ .Values.controller.image.repository }}:{{ .Values.controller.image.tag }}"
@@ -57,10 +65,12 @@ spec:
             {{- end }}
           {{- end }}
           ports:
+          {{- if .Values.controller.enableStaticPorts }}
             - name: http
               containerPort: 80
             - name: https
               containerPort: 443
+          {{- end }}
           {{- if .Values.controller.stats.enabled }}
             - name: stats
               containerPort: {{ .Values.controller.stats.port }}
@@ -69,8 +79,8 @@ spec:
             - name: healthz
               containerPort: {{ .Values.controller.healthzPort }}
           {{- range $key, $value := .Values.controller.tcp }}
-            - name: "{{ $key }}-tcp"
-              containerPort: {{ $key }}
+            - name: "{{ tpl $key $ }}-tcp"
+              containerPort: {{ tpl $key $ }}
               protocol: TCP
           {{- end }}
           livenessProbe:
@@ -137,10 +147,10 @@ spec:
             - name: metrics
               containerPort: 9101
               protocol: TCP
-          readinessProbe:
+          livenessProbe:
             httpGet:
               path: /
-              port: 9101
+              port: metrics
           resources:
             limits:
               cpu: 200m
@@ -173,5 +183,8 @@ spec:
     {{- if .Values.controller.securityContext }}
       securityContext:
 {{ toYaml .Values.controller.securityContext | indent 8 }}
+    {{- end }}
+    {{- if .Values.controller.priorityClassName }}
+      priorityClassName: {{ .Values.controller.priorityClassName | quote }}
     {{- end }}
 {{- end }}

@@ -38,6 +38,7 @@ spec:
   healthCheckNodePort: {{ .Values.controller.service.healthCheckNodePort }}
 {{- end }}
   ports:
+  {{- if .Values.controller.enableStaticPorts }}
   {{- range .Values.controller.service.httpPorts }}
     - name: "{{ .port }}-http"
       port: {{ .port }}
@@ -56,11 +57,12 @@ spec:
       nodePort: {{ .nodePort }}
       {{- end }}
   {{- end }}
-  {{- range $key, $value := .Values.tcp }}
-    - name: "{{ $key }}-tcp"
-      port: {{ $key }}
+  {{- end }}
+  {{- range $key, $value := .Values.controller.tcp }}
+    - name: "{{ tpl $key $ }}-tcp"
+      port: {{ tpl $key $ }}
       protocol: TCP
-      targetPort: "{{ $key }}-tcp"
+      targetPort: "{{ tpl $key $ }}-tcp"
   {{- end }}
   selector:
     app: {{ template "haproxy-ingress.name" . }}

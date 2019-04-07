@@ -1,3 +1,15 @@
+#### This chart is undergoing work which may result in breaking changes. ####
+#### Please consult the following table and the README ####
+
+Master.HostName --> Master.ingress.hostName
+New value - Master.ingress.enabled
+Master.Ingress.ApiVersion --> Master.ingress.apiVersion
+Master.Ingress.Annotations --> Master.ingress.annotations
+Master.Ingress.Labels --> Master.ingress.labels
+Master.Ingress.Path --> Master.ingress.path
+Master.Ingress.TLS --> Master.ingress.tls
+Master.OwnSshKey, a bool, has been replaced with Master.AdminSshKey, which is expected to be a string containing the actual key
+
 1. Get your '{{ .Values.Master.AdminUser }}' user password by running:
   printf $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "jenkins.fullname" . }} -o jsonpath="{.data.jenkins-admin-password}" | base64 --decode);echo
 
@@ -26,9 +38,16 @@
 {{- end }}
 
 3. Login with the password from step 1 and the username: {{ .Values.Master.AdminUser }}
+{{ if .Values.Master.JCasC.enabled }}
+4. Use Jenkins Configuration as Code by specifying ConfigScripts in your values.yaml file, see documentation: http://{{ .Values.Master.HostName }}/configuration-as-code and examples: https://github.com/jenkinsci/configuration-as-code-plugin/tree/master/demos
+{{- end }}
 
 For more information on running Jenkins on Kubernetes, visit:
 https://cloud.google.com/solutions/jenkins-on-container-engine
+{{- if .Values.Master.JCasC.enabled }}
+For more information about Jenkins Configuration as Code, visit:
+https://jenkins.io/projects/jcasc/
+{{- end }}
 
 {{- if .Values.Persistence.Enabled }}
 {{- else }}

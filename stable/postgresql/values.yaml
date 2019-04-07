@@ -1,8 +1,12 @@
-## Global Docker image registry
-### Please, note that this will override the image registry for all the images, including dependencies, configured to use the global value
-###
-## global:
-##   imageRegistry:
+## Global Docker image parameters
+## Please, note that this will override the image parameters, including dependencies, configured to use the global value
+## Current available global Docker image parameters: imageRegistry and imagePullSecrets
+##
+global:
+  postgresql: {}
+#   imageRegistry: myRegistryName
+#   imagePullSecrets:
+#     - myRegistryKeySecretName
 
 ## Bitnami PostgreSQL image version
 ## ref: https://hub.docker.com/r/bitnami/postgresql/tags/
@@ -10,19 +14,18 @@
 image:
   registry: docker.io
   repository: bitnami/postgresql
-  tag: 10.6.0
+  tag: 10.7.0
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
   ##
   pullPolicy: Always
-
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
   ##
   # pullSecrets:
-  #   - myRegistrKeySecretName
+  #   - myRegistryKeySecretName
 
   ## Set to true if you would like to see extra information on logs
   ## It turns BASH and NAMI debugging in minideb
@@ -44,6 +47,12 @@ volumePermissions:
     ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
     ##
     pullPolicy: Always
+    ## Optionally specify an array of imagePullSecrets.
+    ## Secrets must be manually created in the namespace.
+    ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+    ##
+    # pullSecrets:
+    #   - myRegistryKeySecretName
   ## Init container Security Context
   securityContext:
     runAsUser: 0
@@ -138,7 +147,7 @@ postgresqlDataDir: /bitnami/postgresql
 # extendedConfConfigMap:
 
 ## initdb scripts
-## Specify dictionnary of scripts to be run at first boot
+## Specify dictionary of scripts to be run at first boot
 ## Alternatively, you can put your scripts under the files/docker-entrypoint-initdb.d directory
 ##
 # initdbScripts:
@@ -149,6 +158,10 @@ postgresqlDataDir: /bitnami/postgresql
 ## ConfigMap with scripts to be run at first boot
 ## NOTE: This will override initdbScripts
 # initdbScriptsConfigMap:
+
+## Secret with scripts to be run at first boot (in case it contains sensitive information)
+## NOTE: This can work along initdbScripts or initdbScriptsConfigMap
+# initdbScriptsSecret:
 
 ## Optional duration in seconds the pod needs to terminate gracefully.
 ## ref: https://kubernetes.io/docs/concepts/workloads/pods/pod/#termination-of-pods
@@ -185,8 +198,20 @@ persistence:
   enabled: true
   ## A manually managed Persistent Volume and Claim
   ## If defined, PVC must be created manually before volume will be bound
+  ## The value is evaluated as a template, so, for example, the name can depend on .Release or .Chart
+  ##
   # existingClaim:
+
+  ## The path the volume will be mounted at, useful when using different
+  ## PostgreSQL images.
+  ##
   mountPath: /bitnami/postgresql
+
+  ## The subdirectory of the volume to mount to, useful in dev environments
+  ## and one PV for multiple services.
+  ##
+  subPath: ""
+
   # storageClass: "-"
   accessModes:
     - ReadWriteOnce
@@ -209,6 +234,8 @@ master:
   nodeSelector: {}
   affinity: {}
   tolerations: []
+  podLabels: {}
+  podAnnotations: {}
 
 ##
 ## PostgreSQL Slave parameters
@@ -221,6 +248,8 @@ slave:
   nodeSelector: {}
   affinity: {}
   tolerations: []
+  podLabels: {}
+  podAnnotations: {}
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -274,14 +303,14 @@ metrics:
   image:
     registry: docker.io
     repository: wrouesnel/postgres_exporter
-    tag: v0.4.6
+    tag: v0.4.7
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
     ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
     ##
     # pullSecrets:
-    #   - myRegistrKeySecretName
+    #   - myRegistryKeySecretName
 
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes)
   ## Configure extra options for liveness and readiness probes
