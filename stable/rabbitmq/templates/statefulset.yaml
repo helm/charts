@@ -9,6 +9,7 @@ metadata:
     heritage: "{{ .Release.Service }}"
 spec:
   serviceName: {{ template "rabbitmq.fullname" . }}-headless
+  podManagementPolicy: "Parallel"
   replicas: {{ .Values.replicas }}
   selector:
     matchLabels:
