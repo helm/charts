@@ -51,6 +51,16 @@ spec:
         ports:
           - name: http
             containerPort: 8200
+        livenessProbe:
+          httpGet:
+            path: /healthcheck
+            port: http
+          initialDelaySeconds: 60
+        readinessProbe:
+          httpGet:
+            path: /healthcheck
+            port: http
+          initialDelaySeconds: 60
         securityContext:
           runAsUser: 0
         resources:
