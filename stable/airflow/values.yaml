@@ -8,6 +8,14 @@ airflow:
   #   mountPath: /opt/metadata
   #   configMap: airflow-metadata
   #   readOnly: true
+  #
+  # Example of configmap mount with subPath
+  # - name: extra-metadata
+  #   mountPath: /opt/metadata/file.yaml
+  #   configMap: airflow-metadata
+  #   readOnly: true
+  #   subPath: file.yaml
+
 
   ## When existingAirflowSecret is defined, secretsMapping can be
   ## overridden. When no secretName is given then the value of
@@ -188,6 +196,8 @@ web:
     # requests:
     #   cpu: "100m"
     #   memory: "512Mi"
+  initialStartupDelay: "60"
+  initialDelaySeconds: "360"
 ##
 ## Workers configuration
 workers:
@@ -222,7 +232,13 @@ workers:
   ## Secrets which will be mounted as a file at `secretsDir/<secret name>`.
   secrets: []
 
-
+## Support Node, affinity and tolerations for airflow and workers labels for pod assignment
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
+nodeSelector: {}
+affinity: {}
+tolerations: []
 ##
 ## Ingress configuration
 ingress:
