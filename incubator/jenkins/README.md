@@ -1,7 +1,9 @@
 # Jenkins Helm Chart
 
 Jenkins master and slave cluster utilizing the Jenkins Kubernetes plugin
+
 * https://wiki.jenkins-ci.org/display/JENKINS/Kubernetes+Plugin
+
 Inspired by the awesome work of Carlos Sanchez <mailto:carlos@apache.org>
 
 ## Note
