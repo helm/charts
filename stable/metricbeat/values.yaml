@@ -7,6 +7,7 @@ image:
 daemonset:
   enabled: true
   podAnnotations: []
+  priorityClassName: ""
   tolerations:
   - key: node-role.kubernetes.io/master
     operator: Exists
@@ -25,6 +26,8 @@ daemonset:
       filename: metricbeat
       rotate_every_kb: 10000
       number_of_files: 5
+  # If overrideConfig is not empty, metricbeat chart's default config won't be used at all.
+  overrideConfig: {}
   modules:
     system:
       enabled: true
@@ -72,10 +75,13 @@ daemonset:
           # bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
           # ssl.certificate_authorities:
             # - /var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt
+  # If overrideModules is not empty, metricbeat chart's default modules won't be used at all.
+  overrideModules: {}
 # The instance created by deployment retrieves metrics that are unique for the whole cluster, like Kubernetes events or kube-state-metrics
 deployment:
   enabled: true
   podAnnotations: []
+  priorityClassName: ""
   tolerations: []
   nodeSelector: {}
   resources: {}
@@ -91,6 +97,8 @@ deployment:
       filename: metricbeat
       rotate_every_kb: 10000
       number_of_files: 5
+  # If overrideConfig is not empty, metricbeat chart's default config won't be used at all.
+  overrideConfig: {}
   modules:
     kubernetes:
       enabled: true
@@ -106,6 +114,8 @@ deployment:
             # - event
           period: 10s
           hosts: ["kube-state-metrics:8080"]
+  # If overrideModules is not empty, metricbeat chart's default modules won't be used at all.
+  overrideModules: {}
 
 # List of beat plugins
 plugins: []
@@ -143,6 +153,7 @@ resources: {}
 rbac:
   # Specifies whether RBAC resources should be created
   create: true
+  pspEnabled: false
 
 serviceAccount:
   # Specifies whether a ServiceAccount should be created
