@@ -59,6 +59,7 @@ The following table lists the configurable parameters of the filebeat chart and 
 | `serviceAccount.name`                                    | the name of the ServiceAccount to use                                                                     | `""`                                               |
 | `podSecurityPolicy.enabled`                              | Should the PodSecurityPolicy be created. Depends on `rbac.create` being set to `true`.                                                                     | `false`                                               |
 | `podSecurityPolicy.annotations`                                    | Annotations to be added to the created PodSecurityPolicy:                                                                    | `""`                                               |
+| `privileged`                                             | Specifies wheter to run as privileged                                                                    | `false`                                            |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 

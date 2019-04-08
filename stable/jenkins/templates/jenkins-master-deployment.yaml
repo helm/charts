@@ -272,7 +272,7 @@ spec:
             - name: JENKINSRELOADCONFIG
               value: "true"
             - name: LABEL
-              value: "{{ .Values.Master.Sidecars.configAutoReload.label }}"
+              value: "{{ template "jenkins.fullname" . }}-jenkins-config"
             - name: FOLDER
               value: "{{ .Values.Master.Sidecars.configAutoReload.folder }}"
             - name: NAMESPACE
@@ -316,7 +316,7 @@ spec:
 
       volumes:
 {{- if .Values.Persistence.volumes }}
-{{ toYaml .Values.Persistence.volumes | indent 6 }}
+{{ tpl (toYaml .Values.Persistence.volumes | indent 6) . }}
 {{- end }}
       - name: plugins
         emptyDir: {}
