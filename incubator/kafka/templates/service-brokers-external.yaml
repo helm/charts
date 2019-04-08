@@ -45,7 +45,7 @@ spec:
   ports:
     - name: external-broker
       {{- if and (eq $root.Values.external.type "LoadBalancer") (not $root.Values.external.distinct) }}
-      port: {{ $externalListenerPort }}
+      port: {{ $externalFirstListenerPort }}
       {{- else }}
       port: {{ $servicePort }}
       {{- end }}
