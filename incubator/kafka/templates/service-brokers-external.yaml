@@ -2,7 +2,6 @@
   {{- $fullName := include "kafka.fullname" . }}
   {{- $replicas := .Values.replicas | int }}
   {{- $servicePort := .Values.external.servicePort }}
-  {{- $externalTargetPort := .Values.headless.port }}
   {{- $dnsPrefix := printf "%s" .Release.Name }}
   {{- $root := . }}
   {{- range $i, $e := until $replicas }}
@@ -50,10 +49,8 @@ spec:
       {{- else }}
       port: {{ $servicePort }}
       {{- end }}
-      {{- if and (eq $root.Values.external.type "LoadBalancer") (not $root.Values.external.distinct) }}
-      targetPort: {{ $externalTargetPort  }}
-      {{- else if and (eq $root.Values.external.type "NodePort") (not $root.Values.external.distinct)  }}
-      targetPort: {{ $externalTargetPort  }}
+      {{- if and (eq $root.Values.external.type "LoadBalancer") ($root.Values.external.distinct) }}
+      targetPort: {{ $servicePort }}
       {{- else }}
       targetPort: {{ $externalListenerPort }}
       {{- end }}
