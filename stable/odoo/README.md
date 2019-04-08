@@ -14,7 +14,7 @@ $ helm install stable/odoo
 
 This chart bootstraps a [Odoo](https://github.com/bitnami/bitnami-docker-odoo) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
-Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters.
+Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters. This chart has been tested to work with NGINX Ingress, cert-manager, fluentd and Prometheus on top of the [BKPR](https://kubeprod.io/).
 
 ## Prerequisites
 
@@ -50,6 +50,7 @@ The following table lists the configurable parameters of the Odoo chart and thei
 |               Parameter               |                Description                                  |                   Default                      |
 |---------------------------------------|-------------------------------------------------------------|------------------------------------------------|
 | `global.imageRegistry`                | Global Docker image registry                                | `nil`                                          |
+| `global.imagePullSecrets`             | Global Docker registry secret names as an array             | `[]` (does not add image pull secrets to deployed pods) |
 | `image.registry`                      | Odoo image registry                                         | `docker.io`                                    |
 | `image.repository`                    | Odoo Image name                                             | `bitnami/odoo`                                 |
 | `image.tag`                           | Odoo Image tag                                              | `{VERSION}`                                    |
@@ -79,6 +80,8 @@ The following table lists the configurable parameters of the Odoo chart and thei
 | `ingress.secrets[0].certificate`      | TLS Secret Certificate                                      | `nil`                                          |
 | `ingress.secrets[0].key`              | TLS Secret Key                                              | `nil`                                          |
 | `resources`                           | CPU/Memory resource requests/limits                         | Memory: `512Mi`, CPU: `300m`                   |
+| `persistence.enabled`                 | Enable persistence using PVC                                | `true`                                         |
+| `persistence.existingClaim`           | Enable persistence using an existing PVC                    | `nil`                                          |
 | `persistence.storageClass`            | PVC Storage Class                                           | `nil` (uses alpha storage class annotation)    |
 | `persistence.accessMode`              | PVC Access Mode                                             | `ReadWriteOnce`                                |
 | `persistence.size`                    | PVC Storage Request                                         | `8Gi`                                          |

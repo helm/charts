@@ -296,8 +296,8 @@ spec:
                   -mongodb.tls-cert=/work-dir/mongo.pem
                 {{- end }}
                   -test
-              initialDelaySeconds: 30
-              periodSeconds: 10
+            initialDelaySeconds: 30
+            periodSeconds: 10
 {{ end }}
    {{- with .Values.nodeSelector }}
       nodeSelector:

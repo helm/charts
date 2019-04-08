@@ -49,6 +49,19 @@ spec:
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
       serviceAccountName: {{ template "airflow.serviceAccountName" . }}
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+      {{- end }}
+      {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+      {{- end }}
+
       {{- if .Values.dags.initContainer.enabled }}
       initContainers:
         - name: git-clone
@@ -100,7 +113,13 @@ spec:
             - name: {{ .name }}
               mountPath: {{ .mountPath }}
               readOnly: {{ .readOnly }}
+              {{ if .subPath }}
+              subPath: {{ .subPath }}
+              {{ end }}
           {{- end }}
+{{- if .Values.airflow.extraVolumeMounts }}
+{{ toYaml .Values.airflow.extraVolumeMounts | indent 12 }}
+{{- end }}
           args:
             - "bash"
             - "-c"
@@ -129,6 +148,9 @@ spec:
               protocol: TCP
           resources:
 {{ toYaml .Values.workers.resources | indent 12 }}
+{{- if .Values.airflow.extraContainers }}
+{{ toYaml .Values.airflow.extraContainers | indent 8 }}
+{{- end }}
       volumes:
         - name: scripts
           configMap:
@@ -163,4 +185,7 @@ spec:
           configMap:
             name: {{ .configMap }}
         {{- end }}
+{{- if .Values.airflow.extraVolumes }}
+{{ toYaml .Values.airflow.extraVolumes | indent 8 }}
+{{- end }}
 {{- end }}
