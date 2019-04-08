@@ -43,7 +43,7 @@ spec:
       - name: {{ .Chart.Name }}-workers
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-        args: ["run", "worker"]
+        args: ["run", "worker", "-c", {{ quote .Values.worker.concurrency }}]
         ports:
         - containerPort: {{ .Values.service.internalPort }}
         env:

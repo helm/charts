@@ -51,6 +51,10 @@ cron:
 # How many worker instances to run
 worker:
   replicacount: 2
+  # `-c` or `--concurrency` flag for the `sentry run worker` command.
+  # Specifies the number of child processes processing the queue for a
+  # particular worker pod.
+  concurrency: 4
   resources:
     limits:
       cpu: 300m
