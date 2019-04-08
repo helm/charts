@@ -1,0 +1,45 @@
+{{ if and .Values.exporters.jmx.enabled .Values.exporters.operator.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "zookeeper.fullname" . }}-jmx
+  namespace: {{ .Values.exporters.operator.serviceMonitor.namespace }}
+  labels:
+{{ toYaml .Values.exporters.operator.serviceMonitor.selector | indent 4 }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ include "zookeeper.name" . }}
+      release: {{ .Release.Name }}
+  endpoints:
+  - port: jmxxp
+    interval: {{ .Values.exporters.jmx.interval }}
+  {{- if .Values.exporters.jmx.scrapeTimeout }}
+    scrapeTimeout: {{ .Values.exporters.jmx.scrapeTimeout }}
+  {{- end }}
+  namespaceSelector:
+    any: true
+{{ end }}
+---
+{{ if and .Values.exporters.jmx.enabled .Values.exporters.operator.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "zookeeper.fullname" . }}-exporter
+  namespace: {{ .Values.exporters.operator.serviceMonitor.namespace }}
+  labels:
+{{ toYaml .Values.exporters.operator.serviceMonitor.selector | indent 4 }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ include "zookeeper.name" . }}
+      release: {{ .Release.Name }}
+  endpoints:
+  - port: zookeeperxp
+    interval: {{ .Values.exporters.zookeeper.interval }}
+  {{- if .Values.exporters.zookeeper.scrapeTimeout }}
+    scrapeTimeout: {{ .Values.exporters.zookeeper.scrapeTimeout }}
+  {{- end }}
+  namespaceSelector:
+    any: true
+{{ end }}

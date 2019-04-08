@@ -153,6 +153,10 @@ exporters:
       repository: sscaling/jmx-prometheus-exporter
       tag: 0.3.0
       pullPolicy: IfNotPresent
+    ## Interval at which Prometheus scrapes metrics, note: only used by Prometheus Operator
+    interval: 10s
+    ## Timeout at which Prometheus timeouts scrape run, note: only used by Prometheus Operator
+    scrapeTimeout: 10s
     config:
       lowercaseOutputName: false
       ## ref: https://github.com/prometheus/jmx_exporter/blob/master/example_configs/zookeeper.yaml
@@ -210,6 +214,10 @@ exporters:
       repository: josdotso/zookeeper-exporter
       tag: v1.1.2
       pullPolicy: IfNotPresent
+    ## Interval at which Prometheus scrapes metrics, note: only used by Prometheus Operator
+    interval: 10s
+    ## Timeout at which Prometheus timeouts scrape run, note: only used by Prometheus Operator
+    scrapeTimeout: 10s
     config:
       logLevel: info
       resetOnScrape: "true"
@@ -238,6 +246,20 @@ exporters:
       timeoutSeconds: 60
       failureThreshold: 8
       successThreshold: 1
+      
+  operator:
+    ## Are you using Prometheus Operator?
+    enabled: false
+
+    serviceMonitor:
+      # Namespace Prometheus is installed in
+      namespace: monitoring
+
+      ## Defaults to whats used if you follow CoreOS [Prometheus Install Instructions](https://github.com/coreos/prometheus-operator/tree/master/helm#tldr)
+      ## [Prometheus Selector Label](https://github.com/coreos/prometheus-operator/blob/master/helm/prometheus/templates/prometheus.yaml#L65)
+      ## [Kube Prometheus Selector Label](https://github.com/coreos/prometheus-operator/blob/master/helm/kube-prometheus/values.yaml#L298)
+      selector:
+        prometheus: kube-prometheus
 
 ## Use an alternate scheduler, e.g. "stork".
 ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/

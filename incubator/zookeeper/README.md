@@ -17,6 +17,7 @@ This chart will do the following:
 * Create a Service configured to connect to the available ZooKeeper instance on the configured client port.
 * Optionally apply a [Pod Anti-Affinity](https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#inter-pod-affinity-and-anti-affinity-beta-feature) to spread the ZooKeeper ensemble across nodes.
 * Optionally start JMX Exporter and Zookeeper Exporter containers inside Zookeeper pods.
+* Optionally start [ServiceMonitors](https://sysdig.com/blog/kubernetes-monitoring-prometheus-operator-part3) to autoconfigure JMX and Zookeeper Exporter endpoints
 * Optionally create a job which creates Zookeeper chroots (e.g. `/kafka1`).
 
 ## Installing the Chart

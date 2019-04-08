@@ -18,6 +18,20 @@ spec:
     - name: {{ $key }}
 {{ toYaml $value | indent 6 }}
   {{- end }}
+  
+{{- if .Values.exporters.jmx.enabled }}
+    - name: jmxxp
+      port: {{ .Values.exporters.jmx.ports.jmxxp.containerPort }}
+      targetPort: jmxxp
+      protocol: {{ .Values.exporters.jmx.ports.jmxxp.protocol }}
+{{- end }}
+{{- if .Values.exporters.zookeeper.enabled }}
+    - name: zookeeperxp
+      port: {{ .Values.exporters.zookeeper.ports.zookeeperxp.containerPort }}
+      targetPort: zookeeperxp
+      protocol: {{ .Values.exporters.zookeeper.ports.zookeeperxp.protocol }}
+{{- end }}
+
   selector:
     app: {{ template "zookeeper.name" . }}
     release: {{ .Release.Name }}
