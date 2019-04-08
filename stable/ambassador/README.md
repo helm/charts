@@ -55,6 +55,7 @@ The following tables lists the configurable parameters of the Ambassador chart a
 | `image.tag`                        | Image tag                                                                       | `0.53.1`                      |
 | `imagePullSecrets`                 | Image pull secrets                                                              | `[]`                          |
 | `namespace.name`                   | Set the `AMBASSADOR_NAMESPACE` environment variable                             | `metadata.namespace`          |
+| `scope.singleNamespace`            | Set the `AMBASSADOR_SINGLE_NAMESPACE` environment variable                      | `false`                       |
 | `podAnnotations`                   | Additional annotations for ambassador pods                                      | `{}`                          |
 | `prometheusExporter.enabled`       | Prometheus exporter side-car enabled                                            | `false`                       |
 | `prometheusExporter.pullPolicy`    | Image pull policy                                                               | `IfNotPresent`                |
