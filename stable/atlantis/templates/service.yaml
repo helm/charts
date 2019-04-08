@@ -12,13 +12,11 @@ metadata:
 {{ toYaml . | indent 4 }}
   {{- end }}
 spec:
-  type: {{ .Values.service.type }}
-  template:
-    metadata:
-{{- with .Values.podTemplate.annotations }}
-      annotations:
-{{ toYaml . | indent 8 }}
+{{- if .Values.service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+{{ toYaml .Values.service.loadBalancerSourceRanges | indent 4 }}
 {{- end }}
+  type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.port }}
       targetPort: 4141

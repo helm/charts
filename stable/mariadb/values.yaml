@@ -1,8 +1,11 @@
-## Global Docker image registry
-## Please, note that this will override the image registry for all the images, including dependencies, configured to use the global value
+## Global Docker image parameters
+## Please, note that this will override the image parameters, including dependencies, configured to use the global value
+## Current available global Docker image parameters: imageRegistry and imagePullSecrets
 ##
 # global:
-#   imageRegistry:
+#   imageRegistry: myRegistryName
+#   imagePullSecrets:
+#     - myRegistryKeySecretName
 
 ## Bitnami MariaDB image
 ## ref: https://hub.docker.com/r/bitnami/mariadb/tags/
@@ -10,7 +13,7 @@
 image:
   registry: docker.io
   repository: bitnami/mariadb
-  tag: 10.1.37
+  tag: 10.1.38
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -21,7 +24,7 @@ image:
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
   ##
   # pullSecrets:
-  #   - myRegistrKeySecretName
+  #   - myRegistryKeySecretName
 
   ## Set to true if you would like to see extra information on logs
   ## It turns BASH and NAMI debugging in minideb
@@ -40,6 +43,23 @@ service:
   #   master: 30001
   #   slave: 30002
 
+## Pods Service Account
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
+serviceAccount:
+  ## Specifies whether a ServiceAccount should be created
+  ##
+  create: false
+  ## The name of the ServiceAccount to use.
+  ## If not set and create is true, a name is generated using the mariadb.fullname template
+  # name:
+
+## Role Based Access
+## Ref: https://kubernetes.io/docs/admin/authorization/rbac/
+##
+
+rbac:
+  create: false
+
 ## Pod Security Context
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
 ##
@@ -48,13 +68,14 @@ securityContext:
   fsGroup: 1001
   runAsUser: 1001
 
+# # Use existing secret (ignores root, db and replication passwords)
+# existingSecret:
+
 rootUser:
   ## MariaDB admin password
   ## ref: https://github.com/bitnami/bitnami-docker-mariadb#setting-the-root-password-on-first-run
   ##
   password:
-  ## Use existing secret (ignores root, db and replication passwords)
-  # existingSecret:
   ##
   ## Option to force users to specify a password. That is required for 'helm upgrade' to work properly.
   ## If it is not force, a random password will be generated.
@@ -95,7 +116,7 @@ replication:
   forcePassword: false
 
 ## initdb scripts
-## Specify dictionnary of scripts to be run at first boot
+## Specify dictionary of scripts to be run at first boot
 ## Alternatively, you can put your scripts under the files/docker-entrypoint-initdb.d directory
 ##
 # initdbScripts:
@@ -129,6 +150,11 @@ master:
   ##
   tolerations: []
 
+  ## updateStrategy for MariaDB Master StatefulSet
+  ## ref: https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#update-strategies
+  updateStrategy:
+    type: RollingUpdate
+
   ## Enable persistence using Persistent Volume Claims
   ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
   ##
@@ -158,6 +184,10 @@ master:
     ##
     size: 8Gi
     ##
+  extraInitContainers: |
+  # - name: do-something
+  #   image: busybox
+  #   command: ['do', 'something']
 
   ## Configure MySQL with a custom my.cnf file
   ## ref: https://mysql.com/kb/en/mysql/configuring-mysql-with-mycnf/#example-of-configuration-file
@@ -212,6 +242,11 @@ master:
     successThreshold: 1
     failureThreshold: 3
 
+  podDisruptionBudget:
+    enabled: false
+    minAvailable: 1
+    # maxUnavailable: 1
+
 slave:
   replicas: 1
 
@@ -236,6 +271,11 @@ slave:
   ##
   tolerations: []
 
+  ## updateStrategy for MariaDB Slave StatefulSet
+  ## ref: https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#update-strategies
+  updateStrategy:
+    type: RollingUpdate
+
   persistence:
     ## If true, use a Persistent Volume Claim, If false, use emptyDir
     ##
@@ -248,6 +288,10 @@ slave:
     ##
     size: 8Gi
     ##
+  extraInitContainers: |
+  # - name: do-something
+  #   image: busybox
+  #   command: ['do', 'something']
 
   ## Configure MySQL slave with a custom my.cnf file
   ## ref: https://mysql.com/kb/en/mysql/configuring-mysql-with-mycnf/#example-of-configuration-file
@@ -303,6 +347,11 @@ slave:
     successThreshold: 1
     failureThreshold: 3
 
+  podDisruptionBudget:
+    enabled: false
+    minAvailable: 1
+    # maxUnavailable: 1
+
 metrics:
   enabled: false
   image:
@@ -310,6 +359,12 @@ metrics:
     repository: prom/mysqld-exporter
     tag: v0.10.0
     pullPolicy: IfNotPresent
+    ## Optionally specify an array of imagePullSecrets.
+    ## Secrets must be manually created in the namespace.
+    ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+    ##
+    # pullSecrets:
+    #   - myRegistryKeySecretName
   resources: {}
   annotations:
     prometheus.io/scrape: "true"

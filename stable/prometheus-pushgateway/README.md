@@ -42,6 +42,7 @@ The following table lists the configurable parameters of the pushgateway chart a
 | --------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | --------------------------------- |
 | `affinity`                  | Affinity settings for pod assignment                                                                                          | `{}`                              |
 | `extraArgs`                 | Optional flags for pushgateway                                                                                                | `[]`                              |
+| `extraVars`                 | Optional environment variables for pushgateway                                                                                | `[]`                              |
 | `image.repository`          | Image repository                                                                                                              | `prom/pushgateway`                |
 | `image.tag`                 | Image tag                                                                                                                     | `v0.6.0`                          |
 | `image.pullPolicy`          | Image pull policy                                                                                                             | `IfNotPresent`                    |
@@ -66,6 +67,7 @@ The following table lists the configurable parameters of the pushgateway chart a
 | `serviceMonitor.namespace`  | Namespace which Prometheus is running in                                                                                      | `monitoring`                      |
 | `serviceMonitor.interval`   | How frequently to scrape metrics (use by default, falling back to Prometheus' default)                                        |  `nil`                            |
 | `serviceMonitor.selector`   | Default to kube-prometheus install (CoreOS recommended), but should be set according to Prometheus install                    | `{ prometheus: kube-prometheus }` |
+| `serviceMonitor.honorLabels`| if `true`, label conflicts are resolved by keeping label values from the scraped data                                         | `true`                            |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

@@ -59,6 +59,7 @@ The following table lists the configurable parameters of the Percona chart and t
 | `allowRootFrom`            | Remote hosts to allow root access, set to `127.0.0.1` to disable remote root  | `%` |
 | `mysqlRootPassword`        | Password for the `root` user.      | `not-a-secure-password`                                                      |
 | `xtraBackupPassword`       | Password for the `xtrabackup` user. | `replicate-my-data` |
+| `pxc_strict_mode`          | Setting for `pxc_strict_mode`.     | ENFORCING                                                  |
 | `mysqlUser`                | Username of new user to create.    | `nil`                                                      |
 | `mysqlPassword`            | Password for the new user.         | `nil`                                                      |
 | `mysqlDatabase`            | Name for new database to create.   | `nil`                                                      |
@@ -82,6 +83,7 @@ The following table lists the configurable parameters of the Percona chart and t
 | `metricsExporter.commandOverrides` | Overrides default docker command for metrics exporter | `[]` |
 | `metricsExporter.argsOverrides`   | Overrides default docker args for metrics exporter     | `[]` |
 | `podDisruptionBudget` | Pod disruption budget | `{enabled: false, maxUnavailable: 1}` |
+| `service.percona.headless` | if set to true makes the percona service [headless](https://kubernetes.io/docs/concepts/services-networking/service/#headless-services) | false |
 
 
 Some of the parameters above map to the env variables defined in the [Percona XtraDB Cluster DockerHub image](https://hub.docker.com/r/percona/percona-xtradb-cluster/).
@@ -170,3 +172,18 @@ If you are using a certificate your configurationFiles must include the three ss
     ssl-cert=/ssl/server-cert.pem
     ssl-key=/ssl/server-key.pem
 ```
+
+## PXC Strict Mode
+
+PXC Strict Mode is designed to avoid the use of experimental and unsupported features in Percona XtraDB Cluster. It performs a number of validations at startup and during runtime.
+
+Depending on the actual mode you select, upon encountering a failed validation, the server will either throw an error (halting startup or denying the operation), or log a warning and continue running as normal. The following modes are available:
+
+* DISABLED: Do not perform strict mode validations and run as normal.
+* PERMISSIVE: If a vaidation fails, log a warning and continue running as normal.
+* ENFORCING: If a validation fails during startup, halt the server and throw an error. If a validation fails during runtime, deny the operation and throw an error.
+* MASTER: The same as ENFORCING except that the validation of explicit table locking is not performed. This mode can be used with clusters in which write operations are isolated to a single node.
+
+By default, PXC Strict Mode is set to ENFORCING, except if the node is acting as a standalone server or the node is bootstrapping, then PXC Strict Mode defaults to DISABLED.
+
+Source: https://www.percona.com/doc/percona-xtradb-cluster/LATEST/features/pxc-strict-mode.html

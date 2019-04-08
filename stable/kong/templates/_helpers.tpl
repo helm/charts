@@ -62,3 +62,16 @@ Create the ingress servicePort value string
    {{ .Values.proxy.http.servicePort }}
 {{- end -}}
 {{- end -}}
+
+
+{{- define "kong.env" -}}
+{{- range $key, $val := .Values.env }}
+- name: KONG_{{ $key | upper}}
+{{- $valueType := printf "%T" $val -}}
+{{ if eq $valueType "map[string]interface {}" }}
+{{ toYaml $val | indent 2 -}}
+{{- else }}
+  value: {{ $val | quote -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}

@@ -33,6 +33,9 @@ testImageTag: "master"
 core:
   numberOfServers: 3
   persistentVolume:
+    ## whether or not persistence is enabled
+    ##
+    enabled: true
 
     ## core server data Persistent Volume mount root path
     ##

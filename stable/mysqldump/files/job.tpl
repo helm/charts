@@ -12,6 +12,9 @@ spec:
     volumeMounts:
     - name: backups
       mountPath: /backup
+{{- if .Values.persistence.subPath }}
+      subPath: {{ .Values.persistence.subPath }}
+{{- end }}
     - name: mysql-backup-script
       mountPath: /scripts
 {{- if .Values.upload.ssh.enabled }}
@@ -62,6 +65,6 @@ spec:
 {{- if .Values.upload.googlestoragebucket.enabled }}
   - name: gcloud-keyfile
     secret:
-      secretName: {{ template "mysqldump.fullname" . }}-gcloud-keyfile
+      secretName: {{ template "mysqldump.gcpsecretName" . }}
       defaultMode: 256
 {{ end }}

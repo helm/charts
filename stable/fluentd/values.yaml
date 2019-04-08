@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 image:
   repository: gcr.io/google-containers/fluentd-elasticsearch
-  tag: v2.3.1
+  tag: v2.4.0
   pullPolicy: IfNotPresent
   # pullSecrets:
   #   - secret1
@@ -21,11 +21,16 @@ env: {}
 
 service:
   type: ClusterIP
+  # type: nodePort:
   externalPort: 80
   ports:
     - name: "monitor-agent"
       protocol: TCP
       containerPort: 24220
+
+annotations: {}
+#  prometheus.io/scrape: "true"
+#  prometheus.io/port: "24231"
 
 ingress:
   enabled: false

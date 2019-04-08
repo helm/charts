@@ -37,6 +37,22 @@ spec:
               path: /
               port: http
           env:
+          {{- if .Values.ldap.enabled }}
+            - name: AUTH_METHOD
+              value: ldap
+            - name: LDAP_SERVER
+              value: {{ .Values.ldap.server | quote }}
+            - name: LDAP_BASE_DN
+              value: {{ .Values.ldap.base_dn | quote }}
+            - name: LDAP_DN
+              value: {{ .Values.ldap.dn | quote }}
+            - name: LDAP_PASS
+              value: {{ .Values.ldap.pass | quote }}
+            - name: LDAP_USER_FILTER
+              value: {{ .Values.ldap.userFilter | quote }}
+            - name: LDAP_VERSION
+              value: {{ .Values.ldap.version | quote }}
+          {{- end }}
           {{- if .Values.mariadb.enabled }}
             - name: DB_HOST
               value: {{ template "bookstack.mariadb.fullname" . }}
@@ -73,14 +89,14 @@ spec:
           - name: uploads
             mountPath: /var/www/bookstack/public/uploads
           - name: storage
-            mountPath: /var/www/bookstack/public/storage
+            mountPath: /var/www/bookstack/storage/uploads
           resources:
 {{ toYaml .Values.resources | indent 12 }}
       volumes:
         - name: uploads
         {{- if .Values.persistence.uploads.enabled }}
           persistentVolumeClaim:
-            claimName: {{ .Values.persistence.storage.existingClaim | default (printf "%s-%s" (include "bookstack.fullname" .) "uploads") }}
+            claimName: {{ .Values.persistence.uploads.existingClaim | default (printf "%s-%s" (include "bookstack.fullname" .) "uploads") }}
         {{- else }}
           emptyDir: {}
         {{- end }}

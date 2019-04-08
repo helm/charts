@@ -1,8 +1,11 @@
-## Global Docker image registry
-## Please, note that this will override the image registry for all the images, including dependencies, configured to use the global value
+## Global Docker image parameters
+## Please, note that this will override the image parameters, including dependencies, configured to use the global value
+## Current available global Docker image parameters: imageRegistry and imagePullSecrets
 ##
 # global:
-#   imageRegistry:
+#   imageRegistry: myRegistryName
+#   imagePullSecrets:
+#     - myRegistryKeySecretName
 
 ## Bitnami Redmine image version
 ## ref: https://hub.docker.com/r/bitnami/redmine/tags/
@@ -10,7 +13,7 @@
 image:
   registry: docker.io
   repository: bitnami/redmine
-  tag: 4.0.0
+  tag: 4.0.3
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -21,7 +24,7 @@ image:
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
   ##
   # pullSecrets:
-  #   - myRegistrKeySecretName
+  #   - myRegistryKeySecretName
 
 ## User of the application
 ## ref: https://github.com/bitnami/bitnami-docker-redmine/#environment-variables
@@ -30,7 +33,7 @@ redmineUsername: user
 
 ## Application password
 ## Defaults to a random 10-character alphanumeric string if not set
-## ref: https://github.com/bitnami/bitnami-docker-wordpress#environment-variables
+## ref: https://github.com/bitnami/bitnami-docker-redmine#environment-variables
 ##
 # redminePassword:
 
@@ -117,6 +120,8 @@ mariadb:
 ## https://github.com/helm/charts/blob/master/stable/postgresql/values.yaml
 ##
 postgresql:
+  ## Whether to deploy a PostgreSQL server to satisfy the applications database requirements. To use an external database set this to false and configure the externalDatabase parameters
+  enabled: false
   ## PostgreSQL admin password
   ## ref: https://github.com/bitnami/bitnami-docker-postgresql/blob/master/README.md#setting-the-root-password-on-first-run
   ##
@@ -142,6 +147,22 @@ postgresql:
     # storageClass: "-"
     accessMode: ReadWriteOnce
     size: 8Gi
+
+## All of these values are only used when:
+## a) mariadb.enabled is set to false and databaseType.mariadb is set to true
+## b) postgresql.enabled is set to false and databaseType.postgresql is set to true
+externalDatabase:
+  ## Database host
+  host: localhost
+
+  ## Database Admin User
+  user: root
+
+  ## Database Admin Password
+  password: ""
+
+  ## Database port number (use 5432 when using PostgreSQL)
+  port: 3306
 
 ## Kubernetes configuration
 ##   minikube: NodePort
@@ -180,7 +201,7 @@ ingress:
   - name: redmine.local
 
     ## Set this to true in order to enable TLS on the ingress record
-    ## A side effect of this will be that the backend wordpress service will be connected at port 443
+    ## A side effect of this will be that the backend redmine service will be connected at port 443
     tls: false
 
     ## Set this to true in order to add the corresponding annotations for cert-manager
@@ -196,6 +217,26 @@ ingress:
     ## If certManager is set to true, annotation kubernetes.io/tls-acme: "true" will automatically be set
     annotations:
     #  kubernetes.io/ingress.class: nginx
+
+## Node labels for pod assignment
+## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+##
+nodeSelector: {}
+
+## Tolerations for pod assignment
+## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+##
+tolerations: {}
+
+## Affinity for pod assignment
+## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+##
+affinity: {}
+
+## Pod annotations
+## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+##
+podAnnotations: {}
 
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/

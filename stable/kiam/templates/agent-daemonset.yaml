@@ -41,6 +41,10 @@ spec:
     {{- end }}
       tolerations:
 {{ toYaml .Values.agent.tolerations | indent 8 }}
+      {{- if .Values.agent.affinity }}
+      affinity:
+{{ toYaml .Values.agent.affinity | indent 10 }}
+      {{- end }}
       volumes:
         - name: tls
           secret:
@@ -78,9 +82,9 @@ spec:
             {{- end }}
             - --level={{ .Values.agent.log.level }}
             - --port={{ .Values.agent.host.port }}
-            - --cert=/etc/kiam/tls/cert
-            - --key=/etc/kiam/tls/key
-            - --ca=/etc/kiam/tls/ca
+            - --cert=/etc/kiam/tls/{{ .Values.agent.tlsCerts.certFileName }}
+            - --key=/etc/kiam/tls/{{ .Values.agent.tlsCerts.keyFileName }}
+            - --ca=/etc/kiam/tls/{{ .Values.agent.tlsCerts.caFileName }}
             - --server-address={{ template "kiam.fullname" . }}-server:{{ .Values.server.service.port }}
             {{- if .Values.agent.prometheus.scrape }}
             - --prometheus-listen-addr=0.0.0.0:{{ .Values.agent.prometheus.port }}

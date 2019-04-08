@@ -6,12 +6,12 @@ replicaCount: 3
 # imagePullSecret:
 image:
   repository: vault
-  tag: 0.11.2
+  tag:
   pullPolicy: IfNotPresent
 
 consulAgent:
   repository: consul
-  tag: 1.2.3
+  tag: 1.4.0
   pullPolicy: IfNotPresent
   # If you set join to a consul server endpoint, a consul agent will
   # be started in the vault pod.  If unset, no agent container is
@@ -28,11 +28,15 @@ service:
   name: vault
   type: ClusterIP
   # type: LoadBalancer
+  # Assign a static LB IP
+  # loadBalancerIP: 203.0.113.32
   loadBalancerSourceRanges: []
   #  - 10.0.0.0/8
   #  - 130.211.204.2/32
   externalPort: 8200
   port: 8200
+  # clusterExternalPort: 8201
+  clusterPort: 8201
   # clusterIP: None
   annotations: {}
   #   cloud.google.com/load-balancer-type: "Internal"
@@ -67,6 +71,13 @@ resources: {}
   # requests:
   #   cpu: 100m
   #   memory: 128Mi
+
+## Node selector
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+nodeSelector: {}
+
+## Affinity
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
 affinity: |
   podAntiAffinity:
     preferredDuringSchedulingIgnoredDuringExecution:
@@ -75,11 +86,18 @@ affinity: |
         topologyKey: kubernetes.io/hostname
         labelSelector:
           matchLabels:
-            app: {{ template "vault.fullname" . }}
+            app: {{ template "vault.name" . }}
             release: {{ .Release.Name }}
+
+## Tolerations
+## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+tolerations: []
 
 ## Deployment annotations
 annotations: {}
+
+## Extra Deployment labels
+labels: {}
 
 podAnnotations: {}
 ##    Read more about kube2iam to provide access to s3 https://github.com/jtblin/kube2iam
@@ -121,6 +139,11 @@ vault:
   #   - name: some-mount
   #     mountPath: /some/path
   extraVolumes: {}
+  extraInitContainers: {}
+  ## Init containers to be added
+  # - name: do-something
+  #   image: busybox
+  #   command: ['do', 'something']
   # Log level
   # https://www.vaultproject.io/docs/commands/server.html#log-level
   logLevel: "info"
@@ -128,10 +151,19 @@ vault:
   # - name: extra-volume
   #   secret:
   #     secretName: some-secret
+  liveness:
+    aliveIfUninitialized: true
+    aliveIfSealed: true
+    initialDelaySeconds: 30
+    periodSeconds: 10
   readiness:
     readyIfSealed: false
     readyIfStandby: true
     readyIfUninitialized: true
+    initialDelaySeconds: 10
+    periodSeconds: 10
+  ## Use an existing config in a named ConfigMap
+  # existingConfigName: vault-cm
   config:
     # A YAML representation of a final vault config.json file.
     # See https://www.vaultproject.io/docs/configuration/ for more information.
