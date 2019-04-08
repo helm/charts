@@ -252,6 +252,9 @@ data:
     {{- if eq .Values.acme.challengeType "dns-01" }}
       [acme.dnsChallenge]
       provider = {{ .Values.acme.dnsProvider.name | quote }}
+      {{- if .Values.acme.resolvers }}
+      {{ template "traefik.acme.dnsResolvers" . }}
+      {{- end }}
       {{- if .Values.acme.delayBeforeCheck }}
       delayBeforeCheck = {{ .Values.acme.delayBeforeCheck }}
       {{- end }}
@@ -355,4 +358,27 @@ data:
         globalTag = {{ .Values.tracing.datadog.globalTag | quote }}
         {{- end }}
       {{- end }}
+    {{- end }}
+    {{- if .Values.timeouts }}
+    {{- if .Values.timeouts.responding }}
+    [respondingTimeouts]
+      {{- if .Values.timeouts.responding.readTimeout }}
+      readTimeout = {{ .Values.timeouts.responding.readTimeout }}
+      {{- end }}
+      {{- if .Values.timeouts.responding.writeTimeout }}
+      writeTimeout = {{ .Values.timeouts.responding.writeTimeout }}
+      {{- end }}
+      {{- if .Values.timeouts.responding.idleTimeout }}
+      idleTimeout = {{ .Values.timeouts.responding.idleTimeout }}
+      {{- end }}
+    {{- end }}
+    {{- if .Values.timeouts.forwarding }}
+    [forwardingTimeouts]
+      {{- if .Values.timeouts.forwarding.dialTimeout }}
+      dialTimeout = {{ .Values.timeouts.forwarding.dialTimeout }}
+      {{- end }}
+      {{- if .Values.timeouts.forwarding.responseHeaderTimeout }}
+      responseHeaderTimeout = {{ .Values.timeouts.forwarding.responseHeaderTimeout }}
+      {{- end }}
+    {{- end }}
     {{- end }}
