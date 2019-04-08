@@ -43,6 +43,12 @@ keycloak:
   ## Custom script that is run before Keycloak is started.
   preStartScript:
 
+  ## lifecycleHooks defines the container lifecycle hooks
+  lifecycleHooks: |
+    # postStart:
+    #   exec:
+    #     command: ["/bin/sh", "-c", "ls"]
+
   ## Additional arguments to start command e.g. -Dkeycloak.import= to load a realm
   extraArgs: ""
 
