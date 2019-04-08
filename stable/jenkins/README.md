@@ -6,6 +6,20 @@ Jenkins master and slave cluster utilizing the Jenkins Kubernetes plugin
 
 Inspired by the awesome work of Carlos Sanchez <mailto:carlos@apache.org>
 
+## Note
+
+A new version of this chart is currently under development in the `incubator` repository under [incubator/jenkins](/incubator/jenkins).
+
+The goal is to make this chart follow [chart best practices](https://helm.sh/docs/chart_best_practices/), and then return it to the `stable` repository.
+The reason behind making this copy is that despite the chart being in major version `0`, it is in the `stable` repository. This means that the chart version indicates that [anything can change at any time](https://semver.org/#spec-item-4), but is in effect considered stable.
+
+If you are wondering where your PR should go, here are some rules of thumb:
+* If this is a breaking change, it should go to `incubator` only.
+* If this is a new feature, it should go to `incubator` and then optionally to `stable`.
+* If this is a fix, it should go to `stable` and then to `incubator`.
+  * To avoid regression, be sure to reference the `stable` PR when creating the `incubator` PR.
+* If you are introducing documentation, it should go to `incubator` and then to `stable`.
+
 ## Chart Details
 
 This chart will do the following:
