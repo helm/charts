@@ -80,7 +80,7 @@ spec:
           imagePullPolicy: "{{ .Values.server.image.pullPolicy }}"
           args:
           {{- if .Values.server.retention }}
-            - --storage.tsdb.retention={{ .Values.server.retention }}
+            - --storage.tsdb.retention.time={{ .Values.server.retention }}
           {{- end }}
             - --config.file={{ .Values.server.configPath }}
             - --storage.tsdb.path={{ .Values.server.persistentVolume.mountPath }}
