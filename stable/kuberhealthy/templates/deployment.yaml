@@ -75,6 +75,26 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: metadata.namespace
+        {{- if .Values.componentStatusCheck.enabled }}
+          - name: COMPONENT_STATUS_CHECK
+            value: {{ .Values.componentStatusCheck.enabled }}
+        {{- end }}
+        {{- if .Values.daemonSetCheck.enabled }}
+          - name: DAEMON_SET_CHECK
+            value: {{ .Values.daemonSetCheck.enabled }}
+        {{- end }}
+        {{- if .Values.dnsStatusCheck.enabled }}
+          - name: DNS_STATUS_CHECK
+            value: {{ .Values.dnsStatusCheck.enabled }}
+        {{- end }}
+        {{- if .Values.podRestartsCheck.enabled }}
+          - name: POD_RESTARTS_CHECK
+            value: {{ .Values.podRestartsCheck.enabled }}
+        {{- end }}
+        {{- if .Values.podStatusCheck.enabled }}
+          - name: POD_STATUS_CHECK
+            value: {{ .Values.podStatusCheck.enabled }}
+        {{- end }}
         readinessProbe:
           failureThreshold: 3
           initialDelaySeconds: 2
