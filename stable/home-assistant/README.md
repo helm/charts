@@ -125,7 +125,7 @@ Because this may be a limitation, the [Home Assistant Configurator UI](https://g
 
 ## Git sync secret
 
-In order to sync the home assistent from a git repo, you have to store a ssh key as a kubernetes git secret
+In order to sync the home assistent config from a git repo, you have to store a ssh key as a kubernetes git secret
 ```console
 kubectl create secret generic git-creds --from-file=id_rsa=git/k8s_id_rsa --from-file=known_hosts=git/known_hosts --from-file=ida_rsa.pub=git/k8s_id_rsa.pub
 ```
