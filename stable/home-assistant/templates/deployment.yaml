@@ -112,13 +112,6 @@ spec:
               port: http
               initialDelaySeconds: 15
           env:
-            {{- if .Values.configurator.hassApiPassword }}
-            - name: HC_HASS_API_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "home-assistant.fullname" . }}-configurator
-                  key: hass-api-password
-            {{- end }}
             {{- if (.Values.configurator.username) and (.Values.configurator.password) }}
             - name: HC_USERNAME
               valueFrom:
