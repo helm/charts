@@ -76,6 +76,7 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `service.annotations`                | service annotations as an array                  | []                                                      |
 | `persistence.enabled`                | Use a PVC to persist data                        | `false`                                                 |
 | `persistence.storageClass`           | Storage class of backing PVC                     | `nil` (uses alpha storage class annotation)             |
+| `persistence.existingClaim`           | RabbitMQ data Persistent Volume existing claim name                     |  ""          |
 | `persistence.accessMode`             | Use volume as ReadOnly or ReadWrite              | `ReadWriteOnce`                                         |
 | `persistence.size`                   | Size of data volume                              | `8Gi`                                                   |
 | `persistence.path`                   | Mount path of the data volume                    | `/opt/bitnami/rabbitmq/var/lib/rabbitmq`                |
