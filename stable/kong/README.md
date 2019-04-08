@@ -51,7 +51,7 @@ and their default values.
 | Parameter                      | Description                                                                      | Default             |
 | ------------------------------ | -------------------------------------------------------------------------------- | ------------------- |
 | image.repository               | Kong image                                                                       | `kong`              |
-| image.tag                      | Kong image version                                                               | `1.0.2`             |
+| image.tag                      | Kong image version                                                               | `1.1`               |
 | image.pullPolicy               | Image pull policy                                                                | `IfNotPresent`      |
 | image.pullSecrets              | Image pull secrets                                                               | `null`              |
 | replicaCount                   | Kong instance count                                                              | `1`                 |
@@ -158,13 +158,13 @@ kong:
 ```
  
 
-For complete list of Kong configurations please check https://getkong.org/docs/1.0.x/configuration/.
+For complete list of Kong configurations please check https://getkong.org/docs/latest/configuration/.
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```console
 $ helm install stable/kong --name my-release \
-  --set=image.tag=1.0.0,env.database=cassandra,cassandra.enabled=true
+  --set=image.tag=1.1,env.database=cassandra,cassandra.enabled=true
 ```
 
 Alternatively, a YAML file that specifies the values for the above parameters
