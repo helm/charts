@@ -1,22 +1,22 @@
 {{- if eq .Values.mode "distributed" }}
 {{ $nodeCount := .Values.replicas | int }}
-apiVersion: v1	
-kind: Service	
-metadata:	
+apiVersion: v1
+kind: Service
+metadata:
   name: {{ template "minio.fullname" . }}-svc
-  labels:	
-    app: {{ template "minio.name" . }}	
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"	
-    release: "{{ .Release.Name }}"	
-    heritage: "{{ .Release.Service }}"	
-spec:	
-  clusterIP: None	
-  ports:	
-    - name: service	
-      port: {{ .Values.service.port }}	
+  labels:
+    app: {{ template "minio.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  clusterIP: None
+  ports:
+    - name: service
+      port: {{ .Values.service.port }}
       protocol: TCP
-  selector:	
-    app: {{ template "minio.name" . }}	
+  selector:
+    app: {{ template "minio.name" . }}
 ---
 apiVersion: apps/v1beta1
 kind: StatefulSet

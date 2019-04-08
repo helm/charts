@@ -1,7 +1,7 @@
 apiVersion: v1
 name: magento
-version: 4.3.1
-appVersion: 2.3.0
+version: 4.5.1
+appVersion: 2.3.1
 description: A feature-rich flexible e-commerce solution. It includes transaction options, multi-store functionality, loyalty programs, product categorization and shopper filtering, promotion rules, and more.
 keywords:
 - magento
