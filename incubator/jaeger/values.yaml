@@ -167,6 +167,7 @@ query:
   replicaCount: 1
   service:
     annotations: {}
+    # Valid service types: ClusterIP, NodePort
     type: ClusterIP
     # List of IP ranges that are allowed to access the load balancer (if supported)
     loadBalancerSourceRanges: []
@@ -174,6 +175,8 @@ query:
     queryPort: 80
     # targetPort: the internal port the UI and API are exposed on
     targetPort: 16686
+    ##  nodePort: expose service via NodePort
+    nodePort: 31789
   ingress:
     enabled: false
     annotations: {}
