@@ -1,7 +1,7 @@
-appVersion: v0.8.6
+appVersion: v1.0.0
 description: A security-first open source OAuth2 and OpenID Connect server for existing and new enterprise infrastructures.
 name: hydra
-version: 0.0.11
+version: 0.1.0
 keywords:
 - hydra
 - authentication
@@ -20,3 +20,8 @@ maintainers:
   email: kminehart@wehco.com
 - name: 20zinnm
   email: meyerzinn@gmail.com
+- name: gregdhill
+  email: greg.hill@monax.io
+apiVersion: v1
+engine: gotpl
+deprecated: false

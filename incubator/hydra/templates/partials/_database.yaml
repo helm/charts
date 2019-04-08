@@ -1,0 +1,9 @@
+{{- define "database" -}}
+{{- if .Values.postgresql.enabled -}}
+- name: DSN
+  value: postgres://{{ .Values.postgresql.postgresUser }}:{{ .Values.postgresql.postgresPassword }}@{{ .Release.Name }}-postgresql:5432/{{ .Values.postgresql.postgresDatabase }}?sslmode=disable&max_conns=20&max_idle_conns=4
+{{- else -}}
+- name: DSN
+  value: memory
+{{- end -}}
+{{- end -}}

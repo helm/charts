@@ -10,10 +10,10 @@ metadata:
 {{ toYaml .Values.ingress.annotations | indent 4}}
 {{- end }}
   labels:
-    app: {{ template "hydra.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app.kubernetes.io/name: {{ include "hydra.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "hydra.chart" . }}
 spec:
   rules:
   {{- range .Values.ingress.hosts }}

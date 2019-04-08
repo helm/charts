@@ -1,23 +1,16 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "hydra.fullname" . }}
+  name: {{ include "hydra.fullname" . }}
   labels:
-    app: {{ template "hydra.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app.kubernetes.io/name: {{ include "hydra.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "hydra.chart" . }}
 data:
-  # Hydra  
-  BCRYPT_COST: {{ .Values.config.hydra.bcryptCost | quote }}
-  LOG_LEVEL: {{ .Values.config.hydra.logLevel | quote }}
-  LOG_FORMAT: {{ .Values.config.hydra.logFormat | quote }}
-  # OAuth2
-  CONSENT_URL: {{ .Values.config.oauth2.consentURL | quote }}
-  ISSUER: {{ .Values.config.oauth2.issuer | quote }}
-  AUTH_CODE_LIFESPAN: {{ .Values.config.oauth2.authCodeLifespan | quote }}
-  ID_TOKEN_LIFESPAN: {{ .Values.config.oauth2.idTokenLifespan | quote }}
-  ACCESS_TOKEN_LIFESPAN: {{ .Values.config.oauth2.accessTokenLifespan | quote }}
-  CHALLENGE_TOKEN_LIFESPAN: {{ .Values.config.oauth2.challengeTokenLifespan | quote }}
-  # HTTP
-  HTTPS_ALLOW_TERMINATION_FROM: {{ .Values.config.http.httpsAllowTerminationFrom | quote }}
+  config.yaml: |
+    {{ toYaml .Values.config }}
+
+
+
+

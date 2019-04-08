@@ -1,9 +1,11 @@
-{{- if and (not .Values.postgresql.enabled) (not .Values.config.hydra.databaseURL) }}
+{{- if .Values.postgresql.enabled }}
+
 #########################################################################
 ## WARNING: You have not specified a Database to connect to.           ##
 #########################################################################
 
 This deployment will be incomplete until you provide the databaseURL to connect to, or enable the postgresql dependency
+
 {{- end }}
 
 To connect to Hydra, you can use:
@@ -16,7 +18,7 @@ To connect to Hydra, you can use:
   echo http://$SERVICE_IP:4444/
 NOTE: It may take a few minutes for the LoadBalancer IP to be available. Watch the status with:
   kubectl get svc -w --namespace {{ .Release.Namespace }} {{ template "hydra.fullname" . }}
-{{- else if contains "ClusterIP"  .Values.service.type }}
+{{- else if contains "ClusterIP" .Values.service.type }}
   export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "hydra.name" . }}" -o jsonpath="{.items[0].metadata.name}")
   echo http://127.0.0.1:8080/
   kubectl port-forward $POD_NAME 8080:80

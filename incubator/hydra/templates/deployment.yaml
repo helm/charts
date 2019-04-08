@@ -1,47 +1,65 @@
-
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "hydra.fullname" . }}
+  name: {{ include "hydra.fullname" . }}
   labels:
-    app: {{ template "hydra.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app.kubernetes.io/name: {{ include "hydra.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "hydra.chart" . }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ template "hydra.name" . }}
+      app.kubernetes.io/name: {{ include "hydra.name" . }}
   template:
     metadata:
-      name: {{ template "hydra.fullname" . }}
+      name: {{ include "hydra.fullname" . }}
       labels:
-        app: {{ template "hydra.name" . }}
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-        release: "{{ .Release.Name }}"
-        heritage: "{{ .Release.Service }}"
+        app.kubernetes.io/name: {{ include "hydra.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+        helm.sh/chart: {{ include "hydra.chart" . }}
     spec:
+{{- if .Values.postgresql.enabled }}
+      initContainers:
+      - name: db
+        image: {{ printf "%s:%s" .Values.image .Values.imageTag | quote }}
+        imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+        args:
+        - migrate 
+        - sql
+        - -e
+        env:
+{{ include "database" . | indent 8 }}
+{{ include "settings" . | indent 8 }}
+{{- end }}
       containers:
-        - name: hydra
-          image: {{ printf "%s:%s" .Values.image .Values.imageTag | quote }}
-          imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
-          command: ["/bin/sh", "-c"]
-          args: ["hydra migrate sql ${DATABASE_URL} && hydra host"]
-          ports:
-            - name: service
-              containerPort: 4444
-          envFrom:
-            - configMapRef:
-                name: {{ template "hydra.fullname" . }}
-            - secretRef:
-                name: {{ template "hydra.fullname" . }}
-                optional: false
-          livenessProbe:
-            httpGet:
-              path: /health
-              port: 4444
-            initialDelaySeconds: 3
-            periodSeconds: 3
-          resources:
-{{ toYaml .Values.resources | indent 12 }}
+      - name: hydra
+        image: {{ printf "%s:%s" .Values.image .Values.imageTag | quote }}
+        imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+        args:
+        - serve
+        - all
+        - -c /hydra/config.yaml
+        ports:
+        - name: service
+          containerPort: 4444
+        env:
+{{ include "database" . | indent 8 }}
+{{ include "settings" . | indent 8 }}
+        volumeMounts:
+          - name: config
+            mountPath: /hydra
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 4444
+          initialDelaySeconds: 3
+          periodSeconds: 3
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+      volumes:
+        - name: config
+          configMap:
+            name: {{ include "hydra.fullname" . }}

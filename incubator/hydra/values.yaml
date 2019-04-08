@@ -1,103 +1,105 @@
-image: "oryd/hydra"
-imageTag: "v0.9.1"
-imagePullPolicy: "Always"
+image: oryd/hydra
+imageTag: v1.0.0
+imagePullPolicy: IfNotPresent
 
-service:
-  ## For minikube, set this to NodePort, elsewhere use LoadBalancer
-  ## ref: http://kubernetes.io/docs/user-guide/services/#publishing-services---service-types
-  type: "LoadBalancer"
-  port: 4444
-  ## Optional annotations for hydra service.
-  ## Example use: https://kubernetes.io/docs/concepts/services-networking/service/#internal-load-balancer-on-aws
-  annotations: {}
-  #   service.beta.kubernetes.io/aws-load-balancer-internal: 0.0.0.0/0
-
+# More options here: https://www.ory.sh/docs/hydra/configuration
 config:
-  # Core Controls
-  hydra:
-    ## Configure access to an external database.
-    ## For this setting to be used you need to disable the included postgresql database below.
-    #databaseURL: 
+  # Whitelist one or multiple CIDR address ranges and allow them to terminate TLS connections.
+  # Be aware that the X-Forwarded-Proto header must be set and must never be modifiable by anyone but your proxy / gateway / load balancer. Supports ipv4 and ipv6.
+  # Hydra serves http instead of https when this option is set.
+  serve:
+    tls:
+      allow_termination_from:
+        - 0.0.0.0/0
 
-    # A secret that is at least 16 characters long. If none is provided, one will be generated.
-    systemSecret:
-    # A secret that is used to encrypt cookie sessions. Defaults to SYSTEM_SECRET. It is recommended to use a separate secret in production.
-    cookieSecret:
-    # Set the bcrypt hashing cost. This is a trade off between security and performance. Range is 4 =< x =< 31.
-    bcryptCost: 10
-    # Set the log level, supports "panic", "fatal", "error", "warn", "info" and "debug". Defaults to "info".
-    logLevel: "debug"
-    # Leave empty for text based log format, or set to "json" for JSON formatting.
-    logFormat:
+  log:
+    level: info
+    format: json
 
-  # OAuth2 Controls
-  oauth2:
+  urls:
+    self:
+      # The issuer is used for identification in all OAuth2 tokens. Should be the public url of the server.
+      issuer: https://localhost:4444/
+      public: https://localhost:4444/
+    login: https://my-login.app/login
     # The URL of the consent endpoint.
-    consentURL: "https://example.com/consent"
-    # The issuer is used for identification in all OAuth2 tokens. Should be the public url of the server.
-    issuer: "hydra.example.com"
-    # Lifespan of OAuth2 authorize codes. Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".
-    authCodeLifespan: "10m"
-    # Lifespan of OpenID Connect ID Tokens. Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".
-    idTokenLifespan: "1h"
-    # Lifespan of OAuth2 access tokens. Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".
-    accessTokenLifespan: "5m"
-    #  Lifespan of OAuth2 consent tokens. Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".
-    challengeTokenLifespan: "10m"
+    consent: https://my-consent.app/consent
+    error: https://my-error.app/error
+    post_logout_redirect: https://my-example.app/logout-successful
 
-  # HTTP Controls
-  http:
-    # Whitelist one or multiple CIDR address ranges and allow them to terminate TLS connections.
-    # Be aware that the X-Forwarded-Proto header must be set and must never be modifiable by anyone but your proxy / gateway / load balancer. Supports ipv4 and ipv6.
-    # Hydra serves http instead of https when this option is set.
-    httpsAllowTerminationFrom: "0.0.0.0/0"
+  oauth2:
+    ttl:
+      # Lifespan of OAuth2 consent tokens. Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".
+      login_consent_request: 1h
+      # Lifespan of OAuth2 access tokens. Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".
+      access_token: 1h
+      refresh_token: 720h
+      # Lifespan of OpenID Connect ID Tokens. Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".
+      id_token: 1h
+      # Lifespan of OAuth2 authorize codes. Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".
+      auth_code: 10m
+    expose_internal_errors: true
+    hashers:
+      bcrypt:
+        cost: 10
 
-ingress:
-  # If true, hydra Ingress will be created
-  #
-  enabled: false
+  secrets:
+    # A secret that is at least 16 characters long.
+    system:
+      - this-is-the-primary-secret
+    # A secret that is used to encrypt cookie sessions.
+    cookie:
+      - this-is-the-primary-secret
 
-  # hydra Ingress annotations
-  annotations: {}
-  #   kubernetes.io/ingress.class: "nginx"
-  #   kubernetes.io/tls-acme: true
-
-  # hydra Ingress hostnames
-  # Must be provided if Ingress is enabled
-  #
-  hosts: []
-  #   - "hydra.example.com"
-
-  # hydra Ingress TLS configuration
-  # Secrets must be created in the namespace, and is not done for you in this chart
-  #
-  tls: []
-  #   - secretName: "hydra-tls"
-  #     hosts:
-  #       - "hydra.example.com"
-
+environment:
+  inline: {}
+  secrets: []
 
 # Configuration values for the postgresql dependency.
 # ref: https://github.com/kubernetes/charts/blob/master/stable/postgresql/README.md
 postgresql:
-  # Sets whether the postgresql helm chart is used as a dependency
-  enabled: true
+  enabled: false
 
   imageTag: "9.6"
   cpu: "250m"
   memory: "256Mi"
 
   postgresUser: "hydra"
-  # Important: change this when deploying in production.
+  # DO NOT USE IN PRODUCTION
   postgresPassword: "hydra"
   postgresDatabase: "hydra"
 
   persistence:
     size: "10Gi"
 
-# Configure resource requests and limits
-# ref: http://kubernetes.io/docs/user-guide/compute-resources/
-resources:
-  requests:
-    memory: "128Mi"
-    cpu: "100m"
+service:
+  type: ClusterIP
+  port: 4444
+  annotations: {}
+
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: "nginx"
+    # kubernetes.io/tls-acme: true
+  path: /
+  hosts:
+    - hydra.local
+  tls: []
+  # - secretName: hydra-tls
+  #   hosts:
+  #   - hydra.local
+
+resources: {}
+#   limits:
+#     cpu: 500m
+#     memory: 1Gi
+#   requests:
+#     cpu: 100m
+#     memory: 256Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
