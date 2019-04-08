@@ -246,7 +246,6 @@ exporters:
       timeoutSeconds: 60
       failureThreshold: 8
       successThreshold: 1
-      
   operator:
     ## Are you using Prometheus Operator?
     enabled: false
