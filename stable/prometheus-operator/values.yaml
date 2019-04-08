@@ -1057,14 +1057,13 @@ prometheus:
 
     ## The remote_read spec configuration for Prometheus.
     ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#remotereadspec
-    remoteRead: {}
+    remoteRead: []
     # - url: http://remote1/read
 
     ## The remote_write spec configuration for Prometheus.
     ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#remotewritespec
-    remoteWrite: {}
-      # remoteWrite:
-      #   - url: http://remote1/push
+    remoteWrite: []
+    # - url: http://remote1/push
 
     ## Resource limits & requests
     ##
