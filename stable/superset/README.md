@@ -54,7 +54,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `persistence.enabled`      | Enable persistence                              | `false`                                                      |
 | `persistence.existingClaim`| Provide an existing PersistentVolumeClaim       | `""`                                                         |
 | `persistence.storageClass` | Storage class of backing PVC                    | `nil` (uses alpha storage class annotation)                  |
-| `persistence.accessMode`   | Use volume as ReadOnly or ReadWrite             | `ReadWriteOnce`                                              |
+| `persistence.accessModes`   | Use volume as ReadOnly or ReadWrite             | `ReadWriteOnce`                                              |
 | `persistence.size`         | Size of data volume                             | `8Gi`                                                        |
 | `resources`                | CPU/Memory resource requests/limits             | Memory: `256Mi`, CPU: `50m`   / Memory: `500Mi`, CPU: `500m` |
 | `service.port`             | TCP port                                        | `9000`                                                       |
