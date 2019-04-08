@@ -360,6 +360,7 @@ grafana:
       label: grafana_dashboard
     datasources:
       enabled: true
+      defaultDatasourceEnabled: true
       label: grafana_datasource
 
   extraConfigmapMounts: []
