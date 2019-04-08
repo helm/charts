@@ -1,0 +1,21 @@
+{{- define "emailInfo" -}}
+- name: MAIL_DRIVER
+  value: {{ .Values.email.type }}
+- name: MAIL_HOST
+  value: {{ .Values.email.host }}
+- name: MAIL_PORT
+  value: {{ .Values.email.port | quote }}
+- name: MAIL_USERNAME
+  value: {{ .Values.email.userName }}
+- name: MAIL_PASSWORD
+  valueFrom:
+    secretKeyRef:
+      name: {{ default "sendgrid-credentials" .Values.email.sendgrid.credentialsSecretName }}
+      key: key
+- name: MAIL_ADDRESS
+  value: {{ .Values.email.fromEmail }}
+- name: MAIL_NAME
+  value: {{ .Values.email.fromName }}
+- name: MAIL_ENCRYPTION
+  value: tls
+{{- end -}}

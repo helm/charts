@@ -1,0 +1,38 @@
+# https://github.com/gregdhill/cachet-prometheus
+{{- if and (.Values.cachet.enabled) (.Values.cachet.prometheus.enabled) }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ template "status.name" . }}-cachet-prometheus
+    chart: {{ template "status.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "status.fullname" . }}-cachet-prometheus
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "status.name" . }}-cachet-prometheus
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "status.name" . }}-cachet-prometheus
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: bridge
+          image: "gregdhill/cachet-prometheus:{{ .Values.cachet.prometheus.version }}"
+          env:
+            - name: CACHET_URL
+              value: "{{ index .Values.ingress.hosts 0 }}"
+            - name: CACHET_KEY
+              value: "{{ .Values.cachet.prometheus.api_token }}"
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}
+{{- end }}

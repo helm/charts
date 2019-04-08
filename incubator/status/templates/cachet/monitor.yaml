@@ -1,0 +1,43 @@
+# https://github.com/CastawayLabs/cachet-monitor
+{{- if and (.Values.cachet.enabled) (.Values.cachet.monitor.enabled) }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ template "status.name" . }}-cachet-monitor
+    chart: {{ template "status.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "status.fullname" . }}-cachet-monitor
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "status.name" . }}-cachet-monitor
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "status.name" . }}-cachet-monitor
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: monitor
+          image: "castawaylabs/cachet-monitor:{{ .Values.cachet.monitor.version }}"
+          volumeMounts:
+            - mountPath: /etc/cachet-monitor.config.json
+              subPath: cachet-monitor.config.json
+              name: config-volume
+          ports:
+            - containerPort: {{ .Values.service.internalPort }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ template "status.fullname" . }}-cachet-monitor
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}
+{{- end }}

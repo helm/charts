@@ -1,0 +1,20 @@
+{{- if and (.Values.cachet.enabled) (.Values.cachet.prometheus.enabled) }}
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ template "status.name" . }}-cachet-prometheus
+    chart: {{ template "status.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  name:  {{ template "status.fullname" . }}-cachet-prometheus
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.externalPort }}
+      targetPort: {{ .Values.service.externalPort }}
+      protocol: TCP
+  selector:
+    app: {{ template "status.name" . }}-cachet-prometheus
+    release: {{ .Release.Name }}
+{{- end }}

@@ -1,0 +1,109 @@
+cachet:
+  enabled: true
+  image:
+    repository: cachethq/docker
+    tag: 2.3.14
+    pullPolicy: IfNotPresent
+  prometheus:
+    enabled: false
+    version: latest
+    api_token: ""
+  monitor:
+    enabled: false
+    version: latest
+    config:
+      api_url: https://status.page/api/v1
+      api_token: ""
+      interval: 60
+      monitors:
+      - name: Website
+        url: "https://example.com"
+        metric_id: 1
+        component_id: 1
+        threshold: 80
+        expected_status_code: 200
+        strict_tls: true
+      insecure_api: false
+
+statping:
+  enabled: false
+  image:
+    repository: hunterlong/statping
+    tag: latest
+    pullPolicy: IfNotPresent
+
+staytus:
+  enabled: false
+  image:
+    repository: quay.io/galexrt/staytus
+    tag: latest
+    pullPolicy: IfNotPresent
+
+environment:
+  APP_KEY: ""
+  VIRTUAL_HOST: localhost
+  VIRTUAL_PORT: 8080
+  NAME: Company
+  DESCRIPTION: Service Uptime Reporting
+  DOMAIN: https://status.page
+  ADMIN_USER: username
+  ADMIN_PASS: password
+  ADMIN_EMAIL: "company@example.com"
+
+postgresql:
+  enabled: true
+  postgresqlDatabase: status_page
+  postgresqlUsername: status_page
+  postgresqlPassword: password
+  image:
+    tag: "9.6"
+  persistence:
+    annotations:
+      resourcePolicy: keep
+
+mariadb:
+  enabled: false
+  db:
+    name: status_page
+    user: status_page
+    password: password
+  rootUser:
+    password: password
+  replication:
+    enabled: false
+
+email:
+  type: smtp
+  host: smtp.sendgrid.net
+  port: 587
+  userName: apikey
+  fromName: "company"
+  fromEmail: "company@example.com"
+  sendgrid:
+    credentialsSecretName: "sendgrid-credentials"
+
+replicaCount: 1
+
+resources: {}
+  # limits:
+  #   cpu: 400m
+  #   memory: 512Mi
+  # requests:
+  #   cpu: 250m
+  #   memory: 256Mi
+
+service:
+  type: ClusterIP
+  externalPort: 80
+  internalPort: 8000
+
+ingress:
+  enabled: false
+  annotations: {}
+  path: /
+  hosts:
+    - status.page
+  tls: []
+  #  - secretName: status-tls
+  #    hosts:
+  #      - status.page

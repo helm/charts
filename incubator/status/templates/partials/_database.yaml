@@ -1,0 +1,55 @@
+{{- define "dbInfo" -}}
+
+- name: DB_PORT
+  value: {{ printf "%d" 5432 | quote }}
+
+- name: DB_HOST
+{{- if .Values.mariadb.enabled }}
+  value: {{ .Release.Name }}-mariadb
+{{- else }}
+  value: {{ .Release.Name }}-postgresql
+{{- end }}
+
+{{- if .Values.mariadb.enabled }}
+- name: DB_DATABASE
+  value: {{ .Values.mariadb.db.name }}
+- name: DB_ADAPTER
+  value: mysql2
+{{- else }}
+- name: DB_DATABASE
+  value: {{ .Values.postgresql.postgresqlDatabase }}
+- name: DB_DRIVER
+  value: pgsql
+- name: DB_CONN
+  value: postgres
+{{- end }}
+
+- name: DB_USER
+{{- if .Values.mariadb.enabled }}
+  value: {{ .Values.mariadb.db.user }}
+{{- else }}
+  value: {{ .Values.postgresql.postgresqlUsername }}
+{{- end }}
+
+- name: DB_USERNAME
+{{- if .Values.mariadb.enabled }}
+  value: {{ .Values.mariadb.db.user }}
+{{- else }}
+  value: {{ .Values.postgresql.postgresqlUsername }}
+{{- end }}
+
+- name: DB_PASS
+{{- if .Values.mariadb.enabled }}
+  value: {{ .Values.mariadb.db.password }}
+{{- else }}
+  value: {{ .Values.postgresql.postgresqlPassword }}
+{{- end }}
+
+- name: DB_PASSWORD
+{{- if .Values.mariadb.enabled }}
+  value: {{ .Values.mariadb.db.password }}
+{{- else }}
+  value: {{ .Values.postgresql.postgresqlPassword }}
+{{- end }}
+
+{{- end -}}

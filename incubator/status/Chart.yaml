@@ -1,0 +1,21 @@
+name: status
+version: 0.0.1
+appVersion: 0.0.1
+description: Status
+home: https://github.com/helm/charts
+icon: https://helm.sh/src/img/helm-logo.svg
+keywords:
+- status
+- uptime
+- health
+- monitoring
+sources:
+- https://github.com/CachetHQ/Cachet
+- https://github.com/hunterlong/statping
+- https://github.com/adamcooke/staytus
+maintainers:
+- name: gregdhill
+  email: greg.hill@monax.io
+apiVersion: v1
+engine: gotpl
+deprecated: false

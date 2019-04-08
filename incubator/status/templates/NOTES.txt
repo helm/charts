@@ -1,0 +1,7 @@
+{{- if .Values.cachet.enabled }}
+You have successfully installed Cachet!
+{{- else if .Values.statping.enabled }}
+You have successfully installed Statping!
+{{- else if .Values.staytus.enabled }}
+You have successfully installed Staytus!
+{{- end }}

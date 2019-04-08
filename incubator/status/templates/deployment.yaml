@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ template "status.name" . }}
+    chart: {{ template "status.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "status.fullname" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "status.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "status.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: report
+{{- if .Values.cachet.enabled }}
+          image: "{{ .Values.cachet.image.repository }}:{{ .Values.cachet.image.tag }}"
+          imagePullPolicy: {{ .Values.cachet.image.pullPolicy }}
+{{- else if .Values.statping.enabled }}
+          image: "{{ .Values.statping.image.repository }}:{{ .Values.statping.image.tag }}"
+          imagePullPolicy: {{ .Values.statping.image.pullPolicy }}
+{{- else if .Values.staytus.enabled }}
+          image: "{{ .Values.staytus.image.repository }}:{{ .Values.staytus.image.tag }}"
+          imagePullPolicy: {{ .Values.staytus.image.pullPolicy }}
+{{- end }}
+          env:
+{{ include "dbInfo" . | indent 12 }}
+{{ include "emailInfo" . | indent 12 }}
+{{- range $key, $val := .Values.environment }}
+            - name: {{ $key }}
+              value: {{ $val | quote }}
+{{- end}}
+          ports:
+            - containerPort: {{ .Values.service.internalPort }}
+{{- if .Values.cachet.enabled }}
+          livenessProbe:
+            httpGet:
+              path: /api/v1/ping
+              port: {{ .Values.service.internalPort }}
+          readinessProbe:
+            httpGet:
+              path: /api/v1/ping
+              port: {{ .Values.service.internalPort }}
+{{- end }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}

@@ -1,0 +1,14 @@
+{{- if and (.Values.cachet.enabled) (.Values.cachet.monitor.enabled) }}
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  labels:
+    app: {{ template "status.name" . }}-cachet-monitor
+    chart: {{ template "status.chart" $ }}
+    heritage: {{ $.Release.Service }}
+    release: {{ $.Release.Name }}
+  name: {{ template "status.fullname" . }}-cachet-monitor
+data:
+  cachet-monitor.config.json: |
+    {{ .Values.cachet.monitor.config | toJson }}
+{{- end }}
