@@ -87,7 +87,7 @@ spec:
             - mountPath: /etc/falco/rules.d
               name: rules-volume
             {{- end }}
-            {{- if (or .Values.integrations.natsOutput.enabled .Values.integrations.snsOutput.enabled) }}
+            {{- if (or .Values.integrations.natsOutput.enabled .Values.integrations.snsOutput.enabled .Values.integrations.pubsubOutput.enabled) }}
             - mountPath: /var/run/falco/
               name: shared-pipe
               readOnly: false
@@ -126,7 +126,27 @@ spec:
                   name: {{ template "falco.fullname" . }}
                   key: aws_default_region
       {{- end }}
-      {{- if (or .Values.integrations.natsOutput.enabled .Values.integrations.snsOutput.enabled) }}
+      {{- if .Values.integrations.pubsubOutput.enabled }}
+        - name: {{ .Chart.Name }}-pubsub
+          image: sysdiglabs/falco-pubsub:latest
+          imagePullPolicy: Always
+          args: [ "/bin/falco-pubsub", "-t", {{ .Values.integrations.pubsubOutput.topic | quote }}]
+          volumeMounts:
+            - mountPath: /var/run/falco/
+              name: shared-pipe
+          env:
+            - name: GOOGLE_PROJECT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "falco.fullname" . }}
+                  key: gcp-project-id
+            - name: GOOGLE_CREDENTIALS_DATA
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "falco.fullname" . }}
+                  key: gcp-credentials-data
+      {{- end }}
+      {{- if (or .Values.integrations.natsOutput.enabled .Values.integrations.snsOutput.enabled .Values.integrations.pubsubOutput.enabled) }}
       initContainers:
           - name: init-pipe
             image: busybox
@@ -178,7 +198,7 @@ spec:
           configMap:
             name: {{ template "falco.fullname" . }}-rules
         {{- end }}
-        {{- if (or .Values.integrations.natsOutput.enabled .Values.integrations.snsOutput.enabled) }}
+        {{- if (or .Values.integrations.natsOutput.enabled .Values.integrations.snsOutput.enabled .Values.integrations.pubsubOutput.enabled) }}
         - name: shared-pipe
           emptyDir: {}
         {{- end }}
