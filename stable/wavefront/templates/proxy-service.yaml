@@ -1,0 +1,35 @@
+{{- if .Values.proxy.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/name : {{ template "wavefront.fullname" . }}
+    helm.sh/chart: {{ template "wavefront.chart" . }}
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+    app.kubernetes.io.instance: {{ .Release.Name | quote }}
+    app.kubernetes.io/component: proxy
+  name: {{ template "wavefront.proxy.fullname" . }}
+spec:
+  ports:
+  - name: wavefront
+    port: {{ .Values.proxy.port }}
+    protocol: TCP
+  {{- if .Values.proxy.tracePort }}
+  - name: wavefront-trace
+    port: {{ .Values.proxy.tracePort }}
+    protocol: TCP
+  {{- end }}
+  {{- if .Values.proxy.jaegerPort }}
+  - name: jaeger
+    port: {{ .Values.proxy.jaegerPort }}
+    protocol: TCP
+  {{- end }}
+  {{- if .Values.proxy.zipkinPort }}
+  - name: zipkin
+    port: {{ .Values.proxy.zipkinPort }}
+    protocol: TCP
+  {{- end }}
+  selector:
+    app.kubernetes.io/name : {{ template "wavefront.fullname" .}}
+    app.kubernetes.io/component: proxy
+{{ end }}
