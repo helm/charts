@@ -23,4 +23,5 @@ spec:
     nodePort: {{ .Values.service.nodePort }}
     {{- end }}
   selector:
-    app: {{ template "odoo.fullname" . }}
+    app: {{ template "odoo.name" . }}
+    release: {{ .Release.Name | quote }}
