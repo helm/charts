@@ -3,23 +3,25 @@
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
-  name: {{ template "velero.fullname" . }}
+  name: {{ include "velero.fullname" . }}
   labels:
-    release: {{ .Release.Name }}
-    app: {{ template "velero.name" . }}
-    chart: {{ template "velero.chart" . }}
-    heritage: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ template "velero.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ template "velero.chart" . }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      release: {{ .Release.Name }}
-      app: {{ template "velero.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/name: {{ template "velero.name" . }}
   template:
     metadata:
       labels:
-        release: {{ .Release.Name }}
-        app: {{ template "velero.name" . }}
+        app.kubernetes.io/name: {{ template "velero.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+        helm.sh/chart: {{ template "velero.chart" . }}
       {{- if or .Values.podAnnotations .Values.metrics.enabled }}
       annotations:
 {{- if .Values.podAnnotations }}

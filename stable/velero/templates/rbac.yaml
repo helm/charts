@@ -4,10 +4,11 @@ kind: ClusterRoleBinding
 metadata:
   name: {{ template "velero.fullname" . }}-server
   labels:
-    chart: {{ template "velero.chart" . }}
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
-    app: {{ template "velero.name" . }}
+    app.kubernetes.io/component: server
+    app.kubernetes.io/name: {{ template "velero.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ template "velero.chart" . }}
 subjects:
   - kind: ServiceAccount
     namespace: {{ .Release.Namespace }}

@@ -3,10 +3,10 @@ kind: CustomResourceDefinition
 metadata:
   name: podvolumebackups.velero.io
   labels:
-    chart: {{ template "velero.chart" . }}
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
-    app: {{ template "velero.name" . }}
+    app.kubernetes.io/name: {{ template "velero.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ template "velero.chart" . }}
   annotations:
     "helm.sh/hook": crd-install
     "helm.sh/hook-delete-policy": "before-hook-creation"
