@@ -47,9 +47,9 @@ configuration:
   backupStorageLocation:
     name:
     bucket:
+    # prefix:
     config: {}
     #  region:
-    #  prefix:
     #  s3ForcePathStyle:
     #  s3Url:
     #  kmsKeyId:
