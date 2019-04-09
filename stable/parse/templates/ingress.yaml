@@ -4,8 +4,8 @@ kind: Ingress
 metadata:
   name: {{ template "parse.fullname" . }}
   labels:
-    app: "{{ template "parse.fullname" . }}"
-    chart: "{{ template "parse.chart" . }}"
+    app: {{ template "parse.fullname" . }}
+    chart: {{ template "parse.chart" . }}
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
   annotations:
@@ -17,7 +17,8 @@ metadata:
     {{- end }}
 spec:
   rules:
-  {{- range .Values.ingress.dashbard.hosts }}
+  {{- if .Values.dashboard.enabled }}
+  {{- range .Values.ingress.dashboard.hosts }}
   - host: {{ .name }}
     http:
       paths:
@@ -25,6 +26,7 @@ spec:
         backend:
           serviceName: {{ template "parse.fullname" $ }}
           servicePort: dashboard-http
+  {{- end }}
   {{- end }}
   {{- range .Values.ingress.server.hosts }}
   - host: {{ .name }}
@@ -36,6 +38,7 @@ spec:
           servicePort: server-http
   {{- end }}
   tls:
+  {{- if .Values.dashboard.enabled }}
   {{- range .Values.ingress.dashboard.hosts }}
   {{- if .tls }}
   - hosts:
@@ -47,6 +50,7 @@ spec:
     - {{ .name }}
   {{- end }}
     secretName: {{ .tlsSecret }}
+  {{- end }}
   {{- end }}
   {{- end }}
   {{- range .Values.ingress.server.hosts }}
