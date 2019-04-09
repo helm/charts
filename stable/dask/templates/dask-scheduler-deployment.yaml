@@ -42,6 +42,16 @@ spec:
           resources:
 {{ toYaml .Values.scheduler.resources | trimSuffix "\n" | indent 12 }}
           env:
-{{ toYaml .Values.scheduler.env | trimSuffix "\n" | indent 12 }}
+{{ toYaml .Values.scheduler.env | indent 12 }}
+    {{- with .Values.scheduler.nodeSelector }}
       nodeSelector:
-{{ toYaml .Values.scheduler.nodeSelector | trimSuffix "\n" | indent 8 }}
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.scheduler.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.scheduler.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

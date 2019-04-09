@@ -4,7 +4,7 @@ metadata:
   name: {{ template "master.fullname" . }}
   labels:
     app: "{{ template "mariadb.name" . }}"
-    chart: {{ template "mariadb.chart" . }}
+    chart: "{{ template "mariadb.chart" . }}"
     component: "master"
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
@@ -13,11 +13,14 @@ spec:
     matchLabels:
       release: "{{ .Release.Name }}"
       component: "master"
-      app: {{ template "mariadb.name" . }}
+      app: "{{ template "mariadb.name" . }}"
   serviceName: "{{ template "master.fullname" . }}"
   replicas: 1
   updateStrategy:
-    type: RollingUpdate
+    type: {{ .Values.master.updateStrategy.type }}
+    {{- if (eq "Recreate" .Values.master.updateStrategy.type) }}
+    rollingUpdate: null
+    {{- end }}
   template:
     metadata:
       {{- if .Values.master.annotations }}
@@ -30,7 +33,7 @@ spec:
         app: "{{ template "mariadb.name" . }}"
         component: "master"
         release: "{{ .Release.Name }}"
-        chart: {{ template "mariadb.chart" . }}
+        chart: "{{ template "mariadb.chart" . }}"
     spec:
       serviceAccountName: "{{ template "mariadb.serviceAccountName" . }}"
       {{- if .Values.securityContext.enabled }}
@@ -74,12 +77,7 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
       {{- end }}
-      {{- if .Values.image.pullSecrets }}
-      imagePullSecrets:
-      {{- range .Values.image.pullSecrets }}
-        - name: {{ . }}
-      {{- end}}
-      {{- end }}
+{{- include "mariadb.imagePullSecrets" . | indent 6 }}
       {{- if .Values.master.extraInitContainers }}
       initContainers:
 {{ tpl .Values.master.extraInitContainers . | indent 6}}
@@ -171,7 +169,7 @@ spec:
        {{- end }}
 {{- if .Values.metrics.enabled }}
       - name: metrics
-        image: {{ template "metrics.image" . }}
+        image: {{ template "mariadb.metrics.image" . }}
         imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
         env:
         - name: MARIADB_ROOT_PASSWORD

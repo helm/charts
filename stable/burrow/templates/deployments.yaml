@@ -60,35 +60,59 @@ spec:
               mkdir -p {{ $workDir }}/.burrow/config && \
               cp nodekey-Validator_{{ . }} {{ $workDir }}/.burrow/config/node_key.json && \
               chmod 600 {{ $workDir }}/.burrow/config/node_key.json
-      containers:
-        - name: node
+{{- if $.Values.chain.restore.enabled }}
+        - name: retreive
+          image: appropriate/curl
+          imagePullPolicy: {{ $.Values.image.pullPolicy }}
+          workingDir: {{ $workDir }}
+          command:
+          - curl
+          args:
+          - -o
+          - dumpFile
+          - {{ $.Values.chain.restore.dumpURL }}
+          volumeMounts:
+            - mountPath: {{ $workDir }}
+              name: work-dir
+        - name: restore
           image: "{{ $.Values.image.repository }}:{{ $.Values.image.tag }}"
           imagePullPolicy: {{ $.Values.image.pullPolicy }}
           workingDir: {{ $workDir }}
           command:
-          - "burrow"
+          - burrow
           args:
-          - "start"
-          - "--config"
+          - restore
+          - dumpFile
+          volumeMounts:
+            - mountPath: {{ $workDir }}
+              name: work-dir
+{{- end }}
+      containers:
+        - name: burrow
+          image: "{{ $.Values.image.repository }}:{{ $.Values.image.tag }}"
+          imagePullPolicy: {{ $.Values.image.pullPolicy }}
+          workingDir: {{ $workDir }}
+          command:
+          - burrow
+          args:
+          - start
+          - --config
           - "{{ $refDir }}/burrow.toml"
-          - "--genesis"
+          - --genesis
           - "{{ $refDir }}/genesis.json"
-          - "--validator-address"
+          - --validator-address
           - {{ (index $.Values.validatorAddresses ( printf "Validator_%d" $nodeIndex )).Address | quote }}
-          - "--validator-moniker"
+          - --validator-moniker
           - {{ printf "%s-validator-%s" $.Values.organization $nodeNumber | quote }}
 {{- if (and $.Values.peer.ingress.enabled (not (eq (len $.Values.peer.ingress.hosts) 0))) }}
-          - "--external-address"
+          - --external-address
           - "{{ $nodeNumber }}.{{ index $.Values.peer.ingress.hosts 0 }}:{{ $.Values.peer.service.port }}"
 {{- end }}
 {{- range $key, $value := $.Values.extraArgs }}
             - --{{ $key }}={{ $value }}
 {{- end }}
           env:
-{{- range $key, $value := $.Values.env }}
-            - name: "{{ $key }}"
-              value: "{{ $value }}"
-{{- end }}
+{{- include "settings" $ | indent 10 }}
           volumeMounts:
             - mountPath: {{ $refDir }}
               name: ref-dir
