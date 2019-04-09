@@ -32,7 +32,7 @@ data:
         ListenAddress = "tcp://0.0.0.0:{{ .Values.rpcProfiler.port }}"
       [RPC.GRPC]
         Enabled = {{ .Values.rpcGRPC.enabled }}
-        ListenAddress = "0.0.0.0:{{ .Values.rpcGRPC.service.port }}"
+        ListenAddress = "tcp://0.0.0.0:{{ .Values.rpcGRPC.service.port }}"
       [RPC.Metrics]
         Enabled = {{ .Values.rpcMetrics.enabled }}
         ListenAddress = "tcp://0.0.0.0:{{ .Values.rpcMetrics.port }}"
