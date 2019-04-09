@@ -1,7 +1,7 @@
 # Ark-server
 
-This helm chart installs Ark version v0.10.1
-https://github.com/heptio/ark/tree/v0.10.1
+This helm chart installs Ark version v0.10.2
+https://github.com/heptio/ark/tree/v0.10.2
 
 ## Upgrading to v0.10
 
