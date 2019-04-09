@@ -1,16 +1,15 @@
-{{- $root := . }}
-{{- with .Values.configuration }}
-{{- with .backupStorageLocation }}
 apiVersion: velero.io/v1
 kind: BackupStorageLocation
 metadata:
   name: default
   labels:
-    app.kubernetes.io/name: {{ include "velero.name" $root }}
-    app.kubernetes.io/instance: {{ $root.Release.Name }}
-    app.kubernetes.io/managed-by: {{ $root.Release.Service }}
-    helm.sh/chart: {{ include "velero.chart" $root }}
+    app.kubernetes.io/name: {{ include "velero.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "velero.chart" . }}
 spec:
+{{- with .Values.configuration }}
+{{- with .backupStorageLocation }}
   provider: {{ .name  }}
   objectStorage:
     bucket: {{ .bucket  }}
