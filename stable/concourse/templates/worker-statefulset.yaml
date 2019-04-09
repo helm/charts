@@ -82,10 +82,8 @@ spec:
             preStop:
               exec:
                 command:
-                  - "kill"
-                  - "-s"
-                  - {{ .Values.concourse.worker.shutdownSignal | quote }}
-                  - "1"
+                  - "/bin/bash"
+                  - "/pre-stop-hook.sh"
           env:
             {{- if .Values.concourse.worker.rebalanceInterval }}
             - name: CONCOURSE_REBALANCE_INTERVAL
@@ -259,6 +257,10 @@ spec:
               readOnly: true
             - name: concourse-work-dir
               mountPath: {{ .Values.concourse.worker.workDir | quote }}
+            - name: pre-stop-hook
+              mountPath: /pre-stop-hook.sh
+              subPath: pre-stop-hook.sh
+
 {{- if .Values.worker.additionalVolumeMounts }}
 {{ toYaml .Values.worker.additionalVolumeMounts | indent 12 }}
 {{- end }}
@@ -288,6 +290,9 @@ spec:
 {{- if .Values.worker.additionalVolumes }}
 {{ toYaml .Values.worker.additionalVolumes | indent 8 }}
 {{- end }}
+        - name: pre-stop-hook
+          configMap:
+            name: {{ template "concourse.worker.fullname" . }}
         - name: concourse-keys
           secret:
             secretName: {{ template "concourse.concourse.fullname" . }}
