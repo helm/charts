@@ -211,6 +211,14 @@ spec:
           value: "http://localhost:{{ .Values.service.managerPort }}"
         - name: RABBIT_USER
           value: {{ .Values.rabbitmq.username }}
+        {{ if .Values.metrics.capabilities }}
+        - name: RABBIT_CAPABILITIES
+          value: "{{ .Values.metrics.capabilities }}"
+        {{- end }}
+        {{- range $key, $value := .Values.metrics.env }}
+        - name: {{ $key }}
+          value: {{ $value | quote }}
+        {{- end }}
         ports:
         - name: metrics
           containerPort: 9090
