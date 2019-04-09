@@ -5,10 +5,10 @@ kind: DaemonSet
 metadata:
   name: restic
   labels:
-    app.kubernetes.io/name: {{ template "velero.name" . }}
+    app.kubernetes.io/name: {{ include "velero.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
-    helm.sh/chart: {{ template "velero.chart" . }}
+    helm.sh/chart: {{ include "velero.chart" . }}
 spec:
   selector:
     matchLabels:
@@ -17,17 +17,17 @@ spec:
     metadata:
       labels:
         name: restic
-        app.kubernetes.io/name: {{ template "velero.name" . }}
+        app.kubernetes.io/name: {{ include "velero.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
         app.kubernetes.io/managed-by: {{ .Release.Service }}
-        helm.sh/chart: {{ template "velero.chart" . }}
+        helm.sh/chart: {{ include "velero.chart" . }}
       {{- with .Values.podAnnotations }}
       annotations:
 {{ toYaml . | indent 8 }}
       {{- end }}
     spec:
       {{- if .Values.serviceAccount.server.create }}
-      serviceAccountName: {{ template "velero.serverServiceAccount" . }}
+      serviceAccountName: {{ include "velero.serverServiceAccount" . }}
       {{- end }}
       securityContext:
         runAsUser: 0
@@ -35,7 +35,7 @@ spec:
         {{- if and .Values.credentials.useSecret (or (eq $provider "aws") (eq $provider "gcp")) }}
         - name: cloud-credentials
           secret:
-            secretName: {{ template "velero.secretName" . }}
+            secretName: {{ include "velero.secretName" . }}
         {{- end }}
         - name: host-pods
           hostPath:
@@ -64,7 +64,7 @@ spec:
           {{- if and .Values.credentials.useSecret (eq $provider "azure") }}
           envFrom:
             - secretRef:
-                name: {{ template "velero.secretName" . }}
+                name: {{ include "velero.secretName" . }}
           {{- end }}
           env:
             - name: VELERO_NAMESPACE

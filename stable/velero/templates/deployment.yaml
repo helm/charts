@@ -5,23 +5,23 @@ kind: Deployment
 metadata:
   name: {{ include "velero.fullname" . }}
   labels:
-    app.kubernetes.io/name: {{ template "velero.name" . }}
+    app.kubernetes.io/name: {{ include "velero.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
-    helm.sh/chart: {{ template "velero.chart" . }}
+    helm.sh/chart: {{ include "velero.chart" . }}
 spec:
   replicas: 1
   selector:
     matchLabels:
       app.kubernetes.io/instance: {{ .Release.Name }}
-      app.kubernetes.io/name: {{ template "velero.name" . }}
+      app.kubernetes.io/name: {{ include "velero.name" . }}
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: {{ template "velero.name" . }}
+        app.kubernetes.io/name: {{ include "velero.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
         app.kubernetes.io/managed-by: {{ .Release.Service }}
-        helm.sh/chart: {{ template "velero.chart" . }}
+        helm.sh/chart: {{ include "velero.chart" . }}
       {{- if or .Values.podAnnotations .Values.metrics.enabled }}
       annotations:
 {{- if .Values.podAnnotations }}
@@ -33,7 +33,7 @@ spec:
       {{- end }}
     spec:
       restartPolicy: Always
-      serviceAccountName: {{ template "velero.serverServiceAccount" . }}
+      serviceAccountName: {{ include "velero.serverServiceAccount" . }}
       containers:
         - name: velero
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -64,7 +64,7 @@ spec:
           {{- if eq $provider "azure" }}
           envFrom:
             - secretRef:
-                name: {{ template "velero.secretName" . }}
+                name: {{ include "velero.secretName" . }}
           {{- end }}
           {{- with .Values.resources }}
           resources:
@@ -102,7 +102,7 @@ spec:
         {{- if and .Values.credentials.useSecret (or (eq $provider "aws") (eq $provider "gcp")) }}
         - name: cloud-credentials
           secret:
-            secretName: {{ template "velero.secretName" . }}
+            secretName: {{ include "velero.secretName" . }}
         {{- end }}
         - name: plugins
           emptyDir: {}

@@ -49,6 +49,6 @@ Create the name for the credentials secret.
 {{- if .Values.credentials.existingSecret -}}
   {{- .Values.credentials.existingSecret -}}
 {{- else -}}
-  {{- template "velero.fullname" . -}}
+  {{- include "velero.fullname" . -}}
 {{- end -}}
 {{- end -}}
