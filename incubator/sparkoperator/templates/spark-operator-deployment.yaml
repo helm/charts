@@ -56,7 +56,7 @@ spec:
           - containerPort: {{ .Values.metricsPort }}
         {{ end }}
         args:
-        - -v=2
+        - -v={{ .Values.logLevel }}
         - -namespace={{ .Values.sparkJobNamespace }}
         - -ingress-url-format={{ .Values.ingressUrlFormat }}
         - -install-crds={{ .Values.installCrds }}
