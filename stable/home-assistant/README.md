@@ -36,7 +36,7 @@ The following tables lists the configurable parameters of the Home Assistant cha
 | Parameter                  | Description                         | Default                                                 |
 |----------------------------|-------------------------------------|---------------------------------------------------------|
 | `image.repository`         | Image repository | `homeassistant/home-assistant` |
-| `image.tag`                | Image tag. Possible values listed [here](https://hub.docker.com/r/homeassistant/home-assistant/tags/).| `0.84.6`|
+| `image.tag`                | Image tag. Possible values listed [here](https://hub.docker.com/r/homeassistant/home-assistant/tags/).| `0.90.2`|
 | `image.pullPolicy`         | Image pull policy | `IfNotPresent` |
 | `image.pullSecrets`        | Secrets to use when pulling the image | `[]` |
 | `strategyType`             | Specifies the strategy used to replace old Pods by new ones | `Recreate` |
@@ -59,6 +59,10 @@ The following tables lists the configurable parameters of the Home Assistant cha
 | `persistence.existingClaim`| Use an existing PVC to persist data | `nil` |
 | `persistence.storageClass` | Type of persistent volume claim | `-` |
 | `persistence.accessMode`  | Persistence access modes | `ReadWriteMany` |
+| `git.enabled`                  | Use git-sync in init container | `false` |
+| `git.secret`                   | Git secret to use for git-sync | `git-creds` | 
+| `git.syncPath`                 | Git sync path | `/config` |
+| `git.keyPath`                  | Git ssh key path | `/root/.ssh` |
 | `extraEnv`          | Extra ENV vars to pass to the home-assistant container | `{}` |
 | `extraEnvSecrets`   | Extra env vars to pass to the home-assistant container from k8s secrets - see `values.yaml` for an example | `{}` |
 | `configurator.enabled`     | Enable the optional [configuration UI](https://github.com/danielperna84/hass-configurator) | `false` |
@@ -118,3 +122,10 @@ Read through the [values.yaml](values.yaml) file. It has several commented out s
 Much of the home assistant configuration occurs inside the various files persisted to the `/config` directory.  This will require external access to the persistent storage location where the home assistant configuration data is stored.
 
 Because this may be a limitation, the [Home Assistant Configurator UI](https://github.com/danielperna84/hass-configurator) is added to the chart as an option to provide a webUI for editing the various configuration files.
+
+## Git sync secret
+
+In order to sync the home assistent from a git repo, you have to store a ssh key as a kubernetes git secret
+```console
+kubectl create secret generic git-creds --from-file=id_rsa=git/k8s_id_rsa --from-file=known_hosts=git/known_hosts --from-file=ida_rsa.pub=git/k8s_id_rsa.pub
+```
