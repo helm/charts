@@ -45,7 +45,7 @@ The chart can be customized using the following configurable parameters:
 | `replicaCount`                  | Aerospike Brokers                                               | `1`                          |
 | `command`                       | Custom command (Docker Entrypoint)                              | `[]`                         |
 | `args`                          | Custom args (Docker Cmd)                                        | `[]`                         |
-| `persistentVolume`              | Config of persistent volumes for storage-engine                 | `{}`                         |
+| `persistentVolume.enabled`      | Config of persistent volumes for storage-engine                 | `false`                      |
 | `confFile`                      | Config filename. This file should be included in the chart path | `aerospike.conf`             |
 | `resources`                     | Resource requests and limits                                    | `{}`                         |
 | `nodeSelector`                  | Labels for pod assignment                                       | `{}`                         |

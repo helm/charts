@@ -1,6 +1,6 @@
 # Default values for aerospike.
 terminationGracePeriodSeconds: 30
-replicaCount: 1
+replicaCount: 3
 nodeSelector: {}
 image:
   repository: aerospike/aerospike-server
@@ -15,7 +15,8 @@ args: []
 
 # Set as empty object {} if no volumes need to be created
 # See confFile below
-persistentVolume: {}
+persistentVolume:
+  enabled: false
   # - mountPath: /opt/aerospike/data
   #   name: aerospike-data
   #   template:
@@ -105,8 +106,10 @@ confFile: |-
       replication-factor 2
       memory-size 1G
       default-ttl 5d
-      storage-engine device {
-          file /opt/aerospike/data/test.dat
-          filesize 4G
-      }
+      # If you do want to specify storage-engine, uncomment the following
+      # lines, adjust them as necessary
+      # storage-engine device {
+      #     file /opt/aerospike/data/test.dat
+      #     filesize 4G
+      # }
   }

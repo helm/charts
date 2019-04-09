@@ -1,3 +1,4 @@
+{{- if .Values.persistentVolume.enabled -}}
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
@@ -70,3 +71,4 @@ spec:
     spec:
       {{ toYaml $pv.template | indent 6 }}
   {{- end }}
+{{- end -}}
