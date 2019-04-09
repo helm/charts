@@ -122,7 +122,7 @@ data:
     namespaces = [
         {{- range $idx, $element := .Values.kubernetes.namespaces }}
             {{- if $idx }}, {{ end }}
-            {{- $element | quote }}
+            {{- tpl $element $ | quote }}
         {{- end -}}
         ]
       {{- end}}
