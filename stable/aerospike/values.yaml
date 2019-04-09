@@ -4,7 +4,7 @@ replicaCount: 1
 nodeSelector: {}
 image:
   repository: aerospike/aerospike-server
-  tag: 4.5.0.5
+  tag: 4.5.2.1
   pullPolicy: IfNotPresent
 
 # pass custom command. This is equivalent of Entrypoint in docker

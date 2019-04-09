@@ -40,7 +40,7 @@ The chart can be customized using the following configurable parameters:
 | Parameter                       | Description                                                     | Default                      |
 | ------------------------------- | ----------------------------------------------------------------| -----------------------------|
 | `image.repository`              | Aerospike Container image name                                  | `aerospike/aerospike-server` |
-| `image.tag`                     | Aerospike Container image tag                                   | `4.5.0.5`                    |
+| `image.tag`                     | Aerospike Container image tag                                   | `4.5.2.1`                    |
 | `image.pullPolicy`              | Aerospike Container pull policy                                 | `Always`                     |
 | `replicaCount`                  | Aerospike Brokers                                               | `1`                          |
 | `command`                       | Custom command (Docker Entrypoint)                              | `[]`                         |
