@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "aerospike.fullname" . }}-mesh
+  name: {{ include "aerospike.fullname" . }}-mesh
   labels:
-    app: {{ template "aerospike.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    app: {{ include "aerospike.name" . }}
+    chart: {{ include "aerospike.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
   annotations:
@@ -23,5 +23,5 @@ spec:
       protocol: TCP
       name: aerospike-mesh
   selector:
-    app: {{ template "aerospike.name" . }}
+    app: {{ include "aerospike.name" . }}
     release: {{ .Release.Name }}

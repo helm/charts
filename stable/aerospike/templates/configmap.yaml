@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "aerospike.fullname" . }}
+  name: {{ include "aerospike.fullname" . }}
   labels:
-    app: {{ template "aerospike.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    app: {{ include "aerospike.name" . }}
+    chart: {{ include "aerospike.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 data:

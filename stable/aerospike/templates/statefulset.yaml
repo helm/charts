@@ -1,24 +1,24 @@
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
-  name: {{ template "aerospike.fullname" . }}
+  name: {{ include "aerospike.fullname" . }}
   labels:
-    app: {{ template "aerospike.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    app: {{ include "aerospike.name" . }}
+    chart: {{ include "aerospike.chart" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  serviceName: {{ template "aerospike.fullname" . }}-mesh
+  serviceName: {{ include "aerospike.fullname" . }}-mesh
   replicas: {{ .Values.replicaCount }}
   template:
     metadata:
       labels:
-        app: {{ template "aerospike.name" . }}
+        app: {{ include "aerospike.name" . }}
         release: {{ .Release.Name }}
     spec:
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       containers:
-      - name: {{ template "aerospike.fullname" . }}
+      - name: {{ include "aerospike.fullname" . }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
 {{ if .Values.command }}
@@ -59,7 +59,7 @@ spec:
       volumes:
       - name: config-volume
         configMap:
-          name: {{ template "aerospike.fullname" . }}
+          name: {{ include "aerospike.fullname" . }}
           items:
           - key: aerospike.conf
             path: aerospike.conf
