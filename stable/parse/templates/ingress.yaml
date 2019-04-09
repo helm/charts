@@ -38,6 +38,7 @@ spec:
           servicePort: server-http
   {{- end }}
   tls:
+  {{- if .Values.dashboard.enabled }}
   {{- range .Values.ingress.dashboard.hosts }}
   {{- if .tls }}
   - hosts:
@@ -49,6 +50,7 @@ spec:
     - {{ .name }}
   {{- end }}
     secretName: {{ .tlsSecret }}
+  {{- end }}
   {{- end }}
   {{- end }}
   {{- range .Values.ingress.server.hosts }}
