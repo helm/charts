@@ -52,7 +52,7 @@ The following table lists the configurable parameters of the Burrow chart and it
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
 | `image.repository` | image repository | `"hyperledger/burrow"` |
-| `image.tag` | image tag | `"0.24.6"` |
+| `image.tag` | image tag | `"0.25.0"` |
 | `image.pullPolicy` | image pull policy | `"IfNotPresent"` |
 | `chain.nodes` | number of nodes for the blockchain network | `1` |
 | `chain.logLevel` | log level for the nodes (`debug`, `info`, `warn`) | `"info"` |
@@ -62,6 +62,8 @@ The following table lists the configurable parameters of the Burrow chart and it
 | `contracts.image` | contract deployer image | `""` |
 | `contracts.tag` | contract deployer tag | `""` |
 | `contracts.deploy` | command to run in post-install hook | `""` |
+| `chain.restore.enabled` | toggle chain restore mechanism | `false` |
+| `chain.restore.dumpURL` | accessible dump file from absolute url | `""` |
 | `validatorAddresses` | list of validators to deploy | `[]` |
 | `env` | environment variables to configure burrow | `{}` |
 | `extraArgs` | extra arguments to give to the build in `burrow start` command | `{}` |
