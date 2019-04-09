@@ -22,15 +22,15 @@ spec:
         app.kubernetes.io/instance: {{ .Release.Name }}
         app.kubernetes.io/managed-by: {{ .Release.Service }}
         helm.sh/chart: {{ include "velero.chart" . }}
-      {{- if or .Values.podAnnotations .Values.metrics.enabled }}
+    {{- if or .Values.podAnnotations .Values.metrics.enabled }}
       annotations:
-{{- if .Values.podAnnotations }}
-{{ toYaml .Values.podAnnotations | indent 8 }}
-{{- end }}
-{{- if .Values.metrics.enabled }}
-{{ toYaml .Values.metrics.podAnnotations | indent 8 }}
-{{- end }}
+      {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- with .Values.metrics.enabled }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- end }}
     spec:
       restartPolicy: Always
       serviceAccountName: {{ include "velero.serverServiceAccount" . }}
@@ -68,7 +68,7 @@ spec:
           {{- end }}
           {{- with .Values.resources }}
           resources:
-{{ toYaml . | indent 12 }}
+            {{- toYaml . | nindent 12 }}
           {{- end }}
           volumeMounts:
             - name: plugins
@@ -87,8 +87,8 @@ spec:
               value: /credentials/cloud
             - name: VELERO_SCRATCH_DIR
               value: /scratch
-          {{ if .Values.configuration.extraEnvVars }}
-          {{- range $key, $value := .Values.configuration.extraEnvVars }}
+          {{ with .Values.configuration.extraEnvVars }}
+          {{- range $key, $value := . }}
             - name: {{ default "none" $key }}
               value: {{ default "none" $value }}
           {{- end }}
@@ -96,7 +96,7 @@ spec:
         {{- end }}
 {{- if .Values.initContainers }}
       initContainers:
-{{ toYaml .Values.initContainers | indent 8 }}
+        {{- toYaml .Values.initContainers | nindent 8 }}
 {{- end }}
       volumes:
         {{- if and .Values.credentials.useSecret (or (eq $provider "aws") (eq $provider "gcp")) }}
@@ -110,10 +110,10 @@ spec:
           emptyDir: {}
     {{- with .Values.nodeSelector }}
       nodeSelector:
-{{ toYaml . | indent 8 }}
+        {{- toYaml . | nindent 8 }}
     {{- end }}
     {{- with .Values.tolerations }}
       tolerations:
-{{ toYaml . | indent 8 }}
+        {{- toYaml . | nindent 8 }}
     {{- end }}
 {{- end -}}

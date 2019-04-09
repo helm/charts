@@ -12,7 +12,7 @@ spec:
   schedule: {{ $schedule.schedule | quote }}
 {{- with $schedule.template }}
   template:
-{{ toYaml . | indent 8 }}
+    {{- toYaml . | nindent 4 }}
 {{- end }}
 ---
 {{- end }}

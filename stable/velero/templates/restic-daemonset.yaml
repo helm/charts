@@ -23,7 +23,7 @@ spec:
         helm.sh/chart: {{ include "velero.chart" . }}
       {{- with .Values.podAnnotations }}
       annotations:
-{{ toYaml . | indent 8 }}
+        {{- toYaml . | nindent 8 }}
       {{- end }}
     spec:
       {{- if .Values.serviceAccount.server.create }}
@@ -91,6 +91,6 @@ spec:
             {{- end }}
           {{- with .Values.resources }}
           resources:
-{{ toYaml . | indent 12 }}
+            {{- toYaml . | nindent 12 }}
           {{- end }}
 {{- end }}
