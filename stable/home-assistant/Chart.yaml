@@ -2,7 +2,7 @@ apiVersion: v1
 appVersion: 0.90.2
 description: Home Assistant
 name: home-assistant
-version: 0.6.2
+version: 0.7.0
 keywords:
 - home-assistant
 - hass
