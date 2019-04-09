@@ -154,6 +154,7 @@ The following table lists the configurable parameters of the Concourse chart and
 | `web.additionalVolumes` | Volumes to be added to the web pods | `nil` |
 | `web.annotations`| Concourse Web deployment annotations | `nil` |
 | `web.authSecretsPath` | Specify the mount directory of the web auth secrets | `/concourse-auth` |
+| `web.enabled` | enable or disable the web component | `true` |
 | `web.env` | Configure additional environment variables for the web containers | `[]` |
 | `web.ingress.annotations` | Concourse Web Ingress annotations | `{}` |
 | `web.ingress.enabled` | Enable Concourse Web Ingress | `false` |
@@ -193,6 +194,7 @@ The following table lists the configurable parameters of the Concourse chart and
 | `worker.annotations` | Annotations to be added to the worker pods | `{}` |
 | `worker.cleanUpWorkDirOnStart` | Removes any previous state created in `concourse.worker.workDir` | `true` |
 | `worker.emptyDirSize` | When persistance is disabled this value will be used to limit the emptyDir volume size | `nil` |
+| `worker.enabled` | enable or disable the worker component | `true` |
 | `worker.env` | Configure additional environment variables for the worker container(s) | `[]` |
 | `worker.hardAntiAffinity` | Should the workers be forced (as opposed to preferred) to be on different nodes? | `false` |
 | `worker.keySecretsPath` | Specify the mount directory of the worker keys secrets | `/concourse-keys` |
