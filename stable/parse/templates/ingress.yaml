@@ -4,8 +4,8 @@ kind: Ingress
 metadata:
   name: {{ template "parse.fullname" . }}
   labels:
-    app: "{{ template "parse.fullname" . }}"
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: {{ template "parse.fullname" . }}
+    chart: {{ template "parse.chart" . }}
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
   annotations:
