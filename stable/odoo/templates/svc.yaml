@@ -24,3 +24,4 @@ spec:
     {{- end }}
   selector:
     app: {{ template "odoo.name" . }}
+    release: {{ .Release.Name | quote }}
