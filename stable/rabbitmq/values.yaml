@@ -76,7 +76,7 @@ rabbitmq:
 
   ## Clustering settings
   clustering:
-    address_type: ip
+    address_type: hostname
     k8s_domain: cluster.local
 
   loadDefinition:
@@ -144,7 +144,7 @@ securityContext:
 
 persistence:
   ## this enables PVC templates that will create one per pod
-  enabled: false
+  enabled: true
 
   ## rabbitmq data Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>
