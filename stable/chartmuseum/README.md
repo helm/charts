@@ -10,29 +10,30 @@ Please also see https://github.com/kubernetes-helm/chartmuseum
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
 
-- [ChartMuseum Helm Chart](#chartmuseum-helm-chart)
-  - [Table of Content](#table-of-content)
-  - [Prerequisites](#prerequisites)
-  - [Configuration](#configuration)
-  - [Installation](#installation)
-    - [Using with Amazon S3](#using-with-amazon-s3)
-      - [permissions grant with access keys](#permissions-grant-with-access-keys)
-      - [permissions grant with IAM instance profile](#permissions-grant-with-iam-instance-profile)
-      - [permissions grant with IAM assumed role](#permissions-grant-with-iam-assumed-role)
-    - [Using with Google Cloud Storage](#using-with-google-cloud-storage)
-    - [Using with Google Cloud Storage and a Google Service Account](#using-with-google-cloud-storage-and-a-google-service-account)
-    - [Using with Microsoft Azure Blob Storage](#using-with-microsoft-azure-blob-storage)
-    - [Using with Alibaba Cloud OSS Storage](#using-with-alibaba-cloud-oss-storage)
-    - [Using with Openstack Object Storage](#using-with-openstack-object-storage)
-    - [Using with Oracle Object Storage](#using-with-oracle-object-storage)
-    - [Using an existing secret](#using-an-existing-secret)
-    - [Using with local filesystem storage](#using-with-local-filesystem-storage)
-      - [Example storage class](#example-storage-class)
-    - [Ingress](#ingress)
-      - [Hosts](#hosts)
-      - [Annotations](#annotations)
-      - [Example Ingress configuration](#example-ingress-configuration)
-  - [Uninstall](#uninstall)
+- [Prerequisites](#prerequisites)
+- [Configuration](#configuration)
+- [Installation](#installation)
+  - [Using with Amazon S3](#using-with-amazon-s3)
+    - [permissions grant with access keys](#permissions-grant-with-access-keys)
+    - [permissions grant with IAM instance profile](#permissions-grant-with-iam-instance-profile)
+    - [permissions grant with IAM assumed role](#permissions-grant-with-iam-assumed-role)
+  - [Using with Google Cloud Storage](#using-with-google-cloud-storage)
+  - [Using with Google Cloud Storage and a Google Service Account](#using-with-google-cloud-storage-and-a-google-service-account)
+  - [Using with Microsoft Azure Blob Storage](#using-with-microsoft-azure-blob-storage)
+  - [Using with Alibaba Cloud OSS Storage](#using-with-alibaba-cloud-oss-storage)
+  - [Using with Openstack Object Storage](#using-with-openstack-object-storage)
+  - [Using with Oracle Object Storage](#using-with-oracle-object-storage)
+  - [Using an existing secret](#using-an-existing-secret)
+  - [Using with local filesystem storage](#using-with-local-filesystem-storage)
+    - [Example storage class](#example-storage-class)
+  - [Authentication](#authentication)
+    - [Basic Authentication](#basic-authentication)
+    - [Bearer/Token auth](#bearertoken-auth)
+  - [Ingress](#ingress)
+    - [Hosts](#hosts)
+    - [Annotations](#annotations)
+    - [Example Ingress configuration](#example-ingress-configuration)
+- [Uninstall](#uninstall)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -129,6 +130,9 @@ their default values. See values.yaml for all available options.
 | `env.open.CACHE`                       | Cache store, can be one of: redis           | ``                                                  |
 | `env.open.CACHE_REDIS_ADDR`            | Address of Redis service (host:port)        | ``                                                  |
 | `env.open.CACHE_REDIS_DB`              | Redis database to be selected after connect | `0`                                                 |
+| `env.open.BEARER_AUTH`                 | Enable bearer auth                          | `false`                                             |
+| `env.open.AUTH_REALM`                  | Realm used for bearer authentication        | ``                                                  |
+| `env.open.AUTH_SERVICE`                | Service used for bearer authentication      | ``                                                  |
 | `env.field`                            | Expose pod information to containers through environment variables | ``                           |
 | `env.existingSecret`                   | Name of the existing secret use values      | ``                                                  |
 | `env.existingSecret.BASIC_AUTH_USER`   | Key name in the secret for the Username     | ``                                                  |
@@ -143,6 +147,8 @@ their default values. See values.yaml for all available options.
 | `oracle.secret.name`                   | Secret name for OCI config and key          | ``                                                  |
 | `oracle.secret.config`                 | Secret key that holds the OCI config        | `config`                                            |
 | `oracle.secret.key_file`               | Secret key that holds the OCI private key   | `key_file`                                          |
+| `bearerAuth.secret.enabled`            | Flag for bearer auth public key secret      | ``                                                  |
+| `bearerAuth.secret.publicKey`          | The name of the secret with the public key  | ``                                                  |
 | `service.type`                         | Kubernetes Service type                     | `ClusterIP`                                          |
 | `service.clusterIP`                    | Static clusterIP or None for headless services| `nil`                                              |
 | `service.externalTrafficPolicy`        | Source IP preservation (only for Service type NodePort)  | `Local`                                         |
@@ -563,6 +569,62 @@ parameters:
   pool: chartstore
   userId: user
   userSecretName: thesecret
+```
+
+### Authentication
+
+By default this chart does not have any authentication configured and allows anyone to fetch or upload (assuming the API is enabled) charts there are two supported methods of authentication
+
+#### Basic Authentication
+
+This allows all API routes to be protected by HTTP basic auth, this is configured either as plain text in the values that gets stored as a secret in the kubernetes cluster by setting:
+
+```yaml
+env:
+  secret:
+    BASIC_AUTH_USERNAME: curator
+    BASIC_AUTH_PASSWORD: mypassword 
+```
+
+Or by using values from an existing secret in the cluster that can be created using:
+
+'''shell
+kubectl create secret generic chartmuseum-secret --from-literal="basic-auth-user=curator" --from-literal="basic-auth-pass=mypassword"
+'''
+
+This secret can be used in the values file as follows:
+
+```yaml
+env:
+  existingSecret: chartmuseum-secret
+  existingSecretMappings:
+    BASIC_AUTH_USER: basic-auth-user
+    BASIC_AUTH_PASS: basic-auth-pass
+```
+
+#### Bearer/Token auth
+
+When using this ChartMuseum is configured with a public key, and will accept RS256 JWT tokens signed by the associated private key, passed in the Authorization header. You can use the [chartmuseum/auth](https://github.com/chartmuseum/auth) Go library to generate valid JWT tokens. For more information about how this works, please see [chartmuseum/auth-server-example](https://github.com/chartmuseum/auth-server-example)
+
+To use this the public key should be stored in a secret this can be done with
+
+```shell
+kubectl create secret generic chartmuseum-public-key --from-file=public-key.pem
+```
+
+And Bearer/Token auth can be configured using the following values
+
+```yaml
+env:
+  open:
+    BEARER_AUTH: true
+    AUTH_REALM: <realm>
+    AUTH_SERVICE: <service>
+
+bearerAuth:
+  secret:
+    enabled: true
+    publicKeySecret: chartmuseum-public-key
 ```
 
 ### Ingress
