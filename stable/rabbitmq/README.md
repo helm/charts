@@ -111,7 +111,9 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `metrics.image.repository`           | Exporter image name                              | `kbudde/rabbitmq-exporter`                              |
 | `metrics.image.tag`                  | Exporter image tag                               | `v0.29.0`                                               |
 | `metrics.image.pullPolicy`           | Exporter image pull policy                       | `IfNotPresent`                                          |
+| `metrics.env`                        | Exporter [configuration environment variables](https://github.com/kbudde/rabbitmq_exporter#configuration) | `{}` |
 | `metrics.resources`                  | Exporter resource requests/limit                 | `nil`                                                   |
+| `metrics.capabilities`               | Exporter: Comma-separated list of extended [scraping capabilities supported by the target RabbitMQ server](https://github.com/kbudde/rabbitmq_exporter#extended-rabbitmq-capabilities) | `bert,no_sort` |
 | `podLabels`                          | Additional labels for the statefulset pod(s).    | {}                                                      |
 | `volumePermissions.enabled`         | Enable init container that changes volume permissions in the data directory (for cases where the default k8s `runAsUser` and `fsUser` values do not work)                                                               | `false`                                          |
 | `volumePermissions.image.registry`         | Init container volume-permissions image registry                                                               | `docker.io`                                          |
