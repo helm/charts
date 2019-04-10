@@ -106,6 +106,9 @@ The command removes all the Kubernetes components associated with the chart and 
 | `rbac.pspEnabled`                         | Create PodSecurityPolicy (with `rbac.create`, grant roles permissions as well) | `true` |
 | `rbac.pspUseAppArmor`                     | Enforce AppArmor in created PodSecurityPolicy (requires `rbac.pspEnabled`)  | `true` |
 | `command`                     | Define command to be executed by grafana container at startup  | `nil` |
+| `testFramework.image`                     | `test-framework` image repository.             | `dduportal/bats`                                       |
+| `testFramework.tag`                       | `test-framework` image tag.                    | `0.4.0`                                                |
+
 
 ### Example of extraVolumeMounts
 
