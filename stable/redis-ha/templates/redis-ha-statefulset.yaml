@@ -64,7 +64,7 @@ spec:
           runAsNonRoot: false
           privileged: true
           runAsUser: 0
-      {{- end }}        
+      {{- end }}
 {{- if and .Values.hostPath.path .Values.hostPath.chown }}
       - name: hostpath-chown
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
@@ -232,6 +232,11 @@ spec:
       - name: probes
         configMap:
           name: {{ template "redis-ha.fullname" . }}-probes
+      {{- if .Values.sysctlImage.mountHostSys }}
+      - name: host-sys
+        hostPath:
+          path: /sys
+      {{- end }}          
 {{- if .Values.persistentVolume.enabled }}
   volumeClaimTemplates:
   - metadata:
