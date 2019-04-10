@@ -590,6 +590,13 @@ kubeStateMetrics:
     ##
     interval: ""
 
+    ## 	metric relabel configs to apply to samples before ingestion.
+    ##
+    metricRelabelings: []
+    # - action: keep
+    #   regex: 'kube_(daemonset|deployment|pod|namespace|node|statefulset).+'
+    #   sourceLabels: [__name__]
+
 ## Configuration for kube-state-metrics subchart
 ##
 kube-state-metrics:
