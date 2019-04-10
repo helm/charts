@@ -860,6 +860,17 @@ spec:
               value: {{ .Values.concourse.web.auth.oidc.userNameKey | quote }}
             {{- end }}
             {{- end }}
+            {{- if .Values.concourse.web.peerAddress }}
+            - name: CONCOURSE_PEER_ADDRESS
+              value: {{ .Values.concourse.web.peerAddress | quote }}
+            {{- else }}
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: CONCOURSE_PEER_ADDRESS
+              value: "$(POD_IP)"
+            {{- end }}
             {{- if .Values.concourse.web.tsa.logLevel }}
             - name: CONCOURSE_TSA_LOG_LEVEL
               value: {{ .Values.concourse.web.tsa.logLevel | quote }}
@@ -877,17 +888,6 @@ spec:
             {{- if .Values.concourse.web.tsa.debugBindPort }}
             - name: CONCOURSE_TSA_DEBUG_BIND_PORT
               value: {{ .Values.concourse.web.tsa.debugBindPort | quote }}
-            {{- end }}
-            {{- if .Values.concourse.web.tsa.peerAddress }}
-            - name: CONCOURSE_TSA_PEER_ADDRESS
-              value: {{ .Values.concourse.web.tsa.peerAddress | quote }}
-            {{- else }}
-            - name: POD_IP
-              valueFrom:
-                fieldRef:
-                  fieldPath: status.podIP
-            - name: CONCOURSE_TSA_PEER_ADDRESS
-              value: "$(POD_IP)"
             {{- end }}
             - name: CONCOURSE_TSA_HOST_KEY
               value: "{{ .Values.web.keySecretsPath }}/host_key"

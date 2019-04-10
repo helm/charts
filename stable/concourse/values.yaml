@@ -182,6 +182,10 @@ concourse:
     ##
     defaultTaskMemoryLimit:
 
+    ## Network address of this web node, reachable by other web nodes. Used for forwarded worker addresses. (default: $POD_IP)
+    ##
+    peerAddress:
+
     ## Configurations regarding how the web component is able to connect to a postgres
     ## instance.
     ##
@@ -905,10 +909,6 @@ concourse:
       ## Interval on which to heartbeat workers to the ATC.
       ##
       heartbeatInterval:
-
-      ## Network address of this TSA node, reachable by other web nodes. Used for forwarded worker addresses. (default: $POD_IP)
-      ##
-      peerAddress:
 
   worker:
     ## Signal to send to the worker container when shutting down.
