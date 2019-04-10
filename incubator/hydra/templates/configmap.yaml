@@ -9,8 +9,4 @@ metadata:
     helm.sh/chart: {{ include "hydra.chart" . }}
 data:
   config.yaml: |
-    {{ toYaml .Values.config }}
-
-
-
-
+{{ toYaml .Values.config | indent 4 }}

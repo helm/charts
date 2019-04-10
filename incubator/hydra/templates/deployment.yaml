@@ -41,7 +41,7 @@ spec:
         args:
         - serve
         - all
-        - -c /hydra/config.yaml
+        - --config=/hydra/config.yaml
         ports:
         - name: service
           containerPort: 4444
