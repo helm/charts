@@ -41,7 +41,7 @@ Parameter | Description | Default
 `serviceAccount.name` | ServiceAccount to be used | ``
 `controller.name` | name of the controller component | `controller`
 `controller.image.repository` | controller container image repository | `quay.io/jcmoraisjr/haproxy-ingress`
-`controller.image.tag` | controller container image tag | `v0.7-beta.7`
+`controller.image.tag` | controller container image tag | `v0.7.1`
 `controller.image.pullPolicy` | controller container image pullPolicy | `IfNotPresent`
 `controller.initContainers` | extra containers that can initialize the haproxy-ingress-controller | `[]`
 `controller.extraArgs` | extra command line arguments for the haproxy-ingress-controller | `{}`
