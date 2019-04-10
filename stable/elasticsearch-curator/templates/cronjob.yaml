@@ -53,6 +53,13 @@ spec:
           imagePullSecrets:
             - name: {{ .Values.image.pullSecret }}
 {{- end }}
+{{- if .Values.extraInitContainers }}
+          initContainers:
+{{- range $key, $value := .Values.extraInitContainers }}
+          - name: "{{ $key }}"
+{{ toYaml $value | indent 12 }}
+{{- end }}
+{{- end }}
           containers:
             - name: {{ .Chart.Name }}
               image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
