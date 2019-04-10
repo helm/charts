@@ -45,6 +45,8 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `backend.es.type`          | Elastic Type name | `flb_type` |
 | `backend.es.time_key`          | Elastic Time Key | `@timestamp` |
 | `backend.es.logstash_prefix`  | Index Prefix. If Logstash_Prefix is equals to 'mydata' your index will become 'mydata-YYYY.MM.DD'. | `kubernetes_cluster` |
+| `backend.es.include_tag_key`  | Enable/Disable Include_Tag_Key option. | `Off` |
+| `backend.es.logstash_format`  | Enable/Disable Logstash_Format option. | `On` |
 | `backend.es.replace_dots`     | Enable/Disable Replace_Dots option. | `On` |
 | `backend.es.http_user`        | Optional username credential for Elastic X-Pack access. | `` |
 | `backend.es.http_passwd:`     | Password for user defined in HTTP_User. | `` |
