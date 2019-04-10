@@ -43,7 +43,7 @@ Parameter | Description | Default
 `controller.image.repository` | controller container image repository | `quay.io/jcmoraisjr/haproxy-ingress`
 `controller.image.tag` | controller container image tag | `v0.7-beta.7`
 `controller.image.pullPolicy` | controller container image pullPolicy | `IfNotPresent`
-`controller.initContainers` | extra containers that can initialize the haproxy-ingress-controller | `{}`
+`controller.initContainers` | extra containers that can initialize the haproxy-ingress-controller | `[]`
 `controller.extraArgs` | extra command line arguments for the haproxy-ingress-controller | `{}`
 `controller.extraEnv` | extra environment variables for the haproxy-ingress-controller | `{}`
 `controller.template` | custom template for haproxy-ingress-controller | `{}`

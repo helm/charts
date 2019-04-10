@@ -36,7 +36,7 @@ controller:
   #         name: secret-resource
 
   ## Additional containers that can initialize the pod.
-  initContainers: {}
+  initContainers: []
 
   # custom haproxy template
   template: ""
