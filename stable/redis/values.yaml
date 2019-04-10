@@ -7,6 +7,12 @@
 #   imagePullSecrets:
 #     - myRegistryKeySecretName
 
+## Redis pod Security Context
+securityContext:
+  enabled: true
+  fsGroup: 1001
+  runAsUser: 1001
+
 ## Bitnami Redis image version
 ## ref: https://hub.docker.com/r/bitnami/redis/tags/
 ##
@@ -183,12 +189,6 @@ master:
     annotations: {}
     loadBalancerIP:
 
-  ## Redis Master Pod Security Context
-  securityContext:
-    enabled: true
-    fsGroup: 1001
-    runAsUser: 1001
-
   ## Enable persistence using Persistent Volume Claims
   ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
   ##
@@ -234,6 +234,8 @@ slave:
   service:
     ## Redis Slave Service type
     type: ClusterIP
+    ## Redis port
+    port: 6379
     ## Specify the nodePort value for the LoadBalancer and NodePort service types.
     ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
     ##
@@ -246,12 +248,15 @@ slave:
     annotations: {}
     loadBalancerIP:
 
-  ## Redis port
-  # port: 6379
+  ## Can be used to specify command line arguments, for example:
+  ##
+  command: "/run.sh"
   ## Redis extra flags
-  # extraFlags: []
+  extraFlags: []
   ## List of Redis commands to disable
-  # disableCommands: []
+  disableCommands:
+  - FLUSHDB
+  - FLUSHALL
 
   ## Redis Slave pod/node affinity/anti-affinity
   ##
@@ -260,20 +265,20 @@ slave:
   ## Configure extra options for Redis Slave liveness and readiness probes
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes)
   ##
-  # livenessProbe:
-  #   enabled: true
-  #   initialDelaySeconds: 30
-  #   periodSeconds: 10
-  #   timeoutSeconds: 5
-  #   successThreshold: 1
-  #   failureThreshold: 5
-  # readinessProbe:
-  #   enabled: true
-  #   initialDelaySeconds: 5
-  #   periodSeconds: 10
-  #   timeoutSeconds: 10
-  #   successThreshold: 1
-  #   failureThreshold: 5
+  livenessProbe:
+    enabled: true
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    timeoutSeconds: 5
+    successThreshold: 1
+    failureThreshold: 5
+  readinessProbe:
+    enabled: true
+    initialDelaySeconds: 5
+    periodSeconds: 10
+    timeoutSeconds: 10
+    successThreshold: 1
+    failureThreshold: 5
 
   ## Redis slave Resource
   # resources:
@@ -291,14 +296,8 @@ slave:
   # schedulerName:
 
   ## Redis slave pod Annotation and Labels
-  # podLabels: {}
-  # podAnnotations: {}
-
-  ## Redis slave pod Security Context
-  # securityContext:
-  #   enabled: true
-  #   fsGroup: 1001
-  #   runAsUser: 1001
+  podLabels: {}
+  podAnnotations: {}
 
   ## Redis slave pod priorityClassName
   # priorityClassName: {}

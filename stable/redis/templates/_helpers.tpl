@@ -112,64 +112,6 @@ Also, we can't use a single if because lazy evaluation is not an option
 {{- end -}}
 
 {{/*
-Return slave readiness probe
-*/}}
-{{- define "redis.slave.readinessProbe" -}}
-{{- $readinessProbe := .Values.slave.readinessProbe | default .Values.master.readinessProbe -}}
-{{- if $readinessProbe }}
-{{- if $readinessProbe.enabled }}
-readinessProbe:
-  initialDelaySeconds: {{ $readinessProbe.initialDelaySeconds | default .Values.master.readinessProbe.initialDelaySeconds }}
-  periodSeconds: {{ $readinessProbe.periodSeconds | default .Values.master.readinessProbe.periodSeconds }}
-  timeoutSeconds: {{ $readinessProbe.timeoutSeconds | default .Values.master.readinessProbe.timeoutSeconds }}
-  successThreshold: {{ $readinessProbe.successThreshold | default .Values.master.readinessProbe.successThreshold }}
-  failureThreshold: {{ $readinessProbe.failureThreshold | default .Values.master.readinessProbe.failureThreshold }}
-  exec:
-    command:
-    - sh
-    - -c
-    - /health/ping_local_and_master.sh {{ $readinessProbe.timeoutSeconds | default .Values.master.readinessProbe.timeoutSeconds }}
-{{- end }}
-{{- end -}}
-{{- end -}}
-
-{{/*
-Return slave liveness probe
-*/}}
-{{- define "redis.slave.livenessProbe" -}}
-{{- $livenessProbe := .Values.slave.livenessProbe | default .Values.master.livenessProbe -}}
-{{- if $livenessProbe }}
-{{- if $livenessProbe.enabled }}
-livenessProbe:
-  initialDelaySeconds: {{ $livenessProbe.initialDelaySeconds | default .Values.master.livenessProbe.initialDelaySeconds }}
-  periodSeconds: {{ $livenessProbe.periodSeconds | default .Values.master.livenessProbe.periodSeconds }}
-  timeoutSeconds: {{ $livenessProbe.timeoutSeconds | default .Values.master.livenessProbe.timeoutSeconds }}
-  successThreshold: {{ $livenessProbe.successThreshold | default .Values.master.livenessProbe.successThreshold }}
-  failureThreshold: {{ $livenessProbe.failureThreshold | default .Values.master.livenessProbe.failureThreshold}}
-  exec:
-    command:
-    - sh
-    - -c
-    - /health/ping_local_and_master.sh {{ $livenessProbe.timeoutSeconds | default .Values.master.livenessProbe.timeoutSeconds }}
-{{- end }}
-{{- end -}}
-{{- end -}}
-
-{{/*
-Return slave security context
-*/}}
-{{- define "redis.slave.securityContext" -}}
-{{- $securityContext := .Values.slave.securityContext | default .Values.master.securityContext -}}
-{{- if $securityContext }}
-{{- if $securityContext.enabled }}
-securityContext:
-  fsGroup: {{ $securityContext.fsGroup | default .Values.master.securityContext.fsGroup }}
-  runAsUser: {{ $securityContext.runAsUser | default .Values.master.securityContext.runAsUser }}
-{{- end }}
-{{- end }}
-{{- end -}}
-
-{{/*
 Create the name of the service account to use
 */}}
 {{- define "redis.serviceAccountName" -}}

@@ -28,38 +28,33 @@ spec:
         chart: {{ template "redis.chart" . }}
         role: slave
         app: {{ template "redis.name" . }}
-      {{- if (.Values.slave.podLabels | default .Values.master.podLabels) }}
-{{ toYaml (.Values.slave.podLabels | default .Values.master.podLabels) | indent 8 }}
+      {{- if .Values.slave.podLabels }}
+{{ toYaml .Values.slave.podLabels | indent 8 }}
       {{- end }}
       annotations:
         checksum/health: {{ include (print $.Template.BasePath "/health-configmap.yaml") . | sha256sum }}
         checksum/configmap: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
         checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
-      {{- if (.Values.slave.podAnnotations | default .Values.master.podAnnotations) }}
-{{ toYaml (.Values.slave.podAnnotations | default .Values.master.podAnnotations) | indent 8 }}
+      {{- if .Values.slave.podAnnotations }}
+{{ toYaml .Values.slave.podAnnotations | indent 8 }}
       {{- end }}
     spec:
 {{- include "redis.imagePullSecrets" . | indent 6 }}
-      {{- /* Include master securityContext.fsGroup if slave securityContext.fsGroup not defined */ -}}
-      {{- if (.Values.slave.securityContext | default .Values.master.securityContext) }}
+      {{- if .Values.securityContext.enabled }}
       securityContext:
-        {{- if .Values.slave.securityContext }}
-        fsGroup: {{ .Values.slave.securityContext.fsGroup }}
-        {{- else }}
-        fsGroup: {{ .Values.master.securityContext.fsGroup }}
-        {{- end }}
+        fsGroup: {{ .Values.securityContext.fsGroup }}
       {{- end }}
       serviceAccountName: "{{ template "redis.serviceAccountName" . }}"
       {{- if .Values.slave.priorityClassName }}
       priorityClassName: "{{ .Values.slave.priorityClassName }}"
       {{- end }}
-      {{- if (.Values.slave.nodeSelector | default .Values.master.nodeSelector) }}
+      {{- if .Values.slave.nodeSelector }}
       nodeSelector:
-{{ toYaml (.Values.slave.nodeSelector | default .Values.master.nodeSelector) | indent 8 }}
+{{ toYaml .Values.slave.nodeSelector | indent 8 }}
       {{- end }}
-      {{- if (.Values.slave.tolerations | default .Values.master.tolerations) }}
+      {{- if .Values.slave.tolerations }}
       tolerations:
-{{ toYaml (.Values.slave.tolerations | default .Values.master.tolerations) | indent 8 }}
+{{ toYaml .Values.slave.tolerations | indent 8 }}
       {{- end }}
       {{- if .Values.slave.schedulerName }}
       schedulerName: "{{ .Values.slave.schedulerName }}"
@@ -72,16 +67,11 @@ spec:
       - name: {{ template "redis.fullname" . }}
         image: {{ template "redis.image" . }}
         imagePullPolicy: {{ .Values.image.pullPolicy | default "" | quote }}
-{{- $command := default .Values.master.command .Values.slave.command }}
-        {{- /* Include master securityContext.runAsUser if slave securityContext.runAsUser not defined */ -}}
-        {{- if (.Values.slave.securityContext | default .Values.master.securityContext) }}
+        {{- if .Values.securityContext.enabled }}
         securityContext:
-          {{- if .Values.slave.securityContext }}
-          runAsUser: {{ .Values.slave.securityContext.runAsUser }}
-          {{- else }}
-          runAsUser: {{ .Values.master.securityContext.runAsUser }}
-          {{- end }}
+          runAsUser: {{ .Values.securityContext.runAsUser }}
         {{- end }}
+{{- $command := .Values.slave.command }}
         command:
         - /bin/bash
         - -c
@@ -115,7 +105,7 @@ spec:
         - name: REDIS_MASTER_HOST
           value: {{ template "redis.fullname" . }}-master
         - name: REDIS_PORT
-          value: {{ .Values.slave.port | default .Values.master.port | quote }}
+          value: {{ .Values.slave.port | quote }}
         - name: REDIS_MASTER_PORT_NUMBER
           value: {{ .Values.master.service.port | quote }}
         {{- if .Values.usePassword }}
@@ -142,13 +132,31 @@ spec:
         {{- end }}
         ports:
         - name: redis
-          containerPort: {{ .Values.slave.port | default .Values.master.port }}
-        {{- /* Include master livenessProbe if slave livenessProbe not defined */ -}}
-        {{ include "redis.slave.livenessProbe" . | indent 8 }}
-        {{- /* Include master readinessProbe if slave readinessProbe not defined */ -}}
-        {{ include "redis.slave.readinessProbe" . | indent 8 }}
+          containerPort: {{ .Values.slave.port }}
+        livenessProbe:
+          initialDelaySeconds: {{ .Values.slave.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.slave.livenessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.slave.livenessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.slave.livenessProbe.successThreshold }}
+          failureThreshold: {{ .Values.slave.livenessProbe.failureThreshold}}
+          exec:
+            command:
+            - sh
+            - -c
+            - /health/ping_local_and_master.sh {{ .Values.slave.livenessProbe.timeoutSeconds }}
+        readinessProbe:
+          initialDelaySeconds: {{ .Values.slave.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.slave.readinessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.slave.readinessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.slave.readinessProbe.successThreshold }}
+          failureThreshold: {{ .Values.slave.readinessProbe.failureThreshold }}
+          exec:
+            command:
+            - sh
+            - -c
+            - /health/ping_local_and_master.sh {{ .Values.slave.readinessProbe.timeoutSeconds }}
         resources:
-{{ toYaml (.Values.slave.resources | default .Values.master.resources) | indent 10 }}
+{{ toYaml .Values.slave.resources | indent 10 }}
         volumeMounts:
         - name: health
           mountPath: /health
