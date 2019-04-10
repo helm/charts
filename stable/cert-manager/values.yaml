@@ -19,6 +19,15 @@ strategy: {}
   #   maxSurge: 0
   #   maxUnavailable: 1
 
+crds:
+  create: true
+  cleanup: true
+
+hyperkubeImage:
+  repository: k8s.gcr.io/hyperkube
+  tag: v1.12.1
+  pullPolicy: IfNotPresent
+
 image:
   repository: quay.io/jetstack/cert-manager-controller
   tag: v0.6.2

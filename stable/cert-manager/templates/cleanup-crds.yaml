@@ -1,0 +1,43 @@
+{{- if .Values.crds.cleanup }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ template "cert-manager.fullname" . }}-cleanup
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    "helm.sh/hook": pre-delete
+    "helm.sh/hook-weight": "3"
+    "helm.sh/hook-delete-policy": hook-succeeded
+  labels:
+    app: {{ template "cert-manager.name" . }}
+spec:
+  template:
+    metadata:
+      name: {{ template "cert-manager.fullname" . }}cleanup
+      labels:
+        app: {{ template "cert-manager.name" . }}
+    spec:
+    {{- if .Values.rbac.create }}
+      serviceAccountName: {{ template "cert-manager.serviceAccountName" . }}
+    {{- end }}
+      containers:
+        - name: kubectl
+          image: "{{ .Values.hyperkubeImage.repository }}:{{ .Values.hyperkubeImage.tag }}"
+          imagePullPolicy: "{{ .Values.hyperkubeImage.pullPolicy }}"
+          command:
+          - /bin/sh
+          - -c
+          - >
+              kubectl delete certificates --all;
+              kubectl delete issuers --all;
+              kubectl delete clusterissuers --all;
+              kubectl delete orders --all;
+              kubectl delete challenges --all;
+              sleep 10;
+              kubectl delete crd certificates.certmanager.k8s.io;
+              kubectl delete crd issuers.certmanager.k8s.io;
+              kubectl delete crd clusterissuers.certmanager.k8s.io;
+              kubectl delete crd orders.certmanager.k8s.io;
+              kubectl delete crd challenges.certmanager.k8s.io;
+      restartPolicy: OnFailure
+{{- end }}

@@ -18,11 +18,6 @@ functionality in cert-manager can be found in the [getting started docs](https:/
 To install the chart with the release name `my-release`:
 
 ```console
-## IMPORTANT: you MUST install the cert-manager CRDs **before** installing the
-## cert-manager Helm chart
-$ kubectl apply \
-    -f https://raw.githubusercontent.com/jetstack/cert-manager/release-0.6/deploy/manifests/00-crds.yaml
-
 ## IMPORTANT: if you are deploying into a namespace that **already exists**,
 ## you MUST ensure the namespace has an additional label on it in order for
 ## the deployment to succeed
