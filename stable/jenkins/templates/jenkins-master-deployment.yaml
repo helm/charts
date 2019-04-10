@@ -141,7 +141,7 @@ spec:
         - name: {{ template "jenkins.fullname" . }}
           image: "{{ .Values.Master.Image }}:{{ .Values.Master.ImageTag }}"
           imagePullPolicy: "{{ .Values.Master.ImagePullPolicy }}"
-          {{- if .Values.Master.UseSecurity }}
+          {{- if and (.Values.Master.UseSecurity) (.Values.Master.passContainerArgs) }}
           args: [ "--argumentsRealm.passwd.$(ADMIN_USER)=$(ADMIN_PASSWORD)",  "--argumentsRealm.roles.$(ADMIN_USER)=admin"]
           {{- end }}
           env:

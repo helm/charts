@@ -18,6 +18,7 @@ Master:
   NumExecutors: 0
   # configAutoReload requires UseSecurity is set to true:
   UseSecurity: true
+  passContainerArgs: true
   # SecurityRealm:
   # Optionally configure a different AuthorizationStrategy using Jenkins XML
   # AuthorizationStrategy: |-
