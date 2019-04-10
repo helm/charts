@@ -43,7 +43,7 @@ spec:
         ports:
 {{- if .Values.metrics.enabled }}
         - name: metrics
-          containerPort: 2020
+          containerPort: {{ .Values.metrics.service.port | default "2020" }}
           protocol: TCP
 {{- end -}}
 {{- if .Values.extraPorts }}

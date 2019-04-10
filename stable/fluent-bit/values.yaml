@@ -48,6 +48,8 @@ backend:
     logstash_prefix: kubernetes_cluster
     replace_dots: "On"
     time_key: "@timestamp"
+    include_tag_key: "Off"
+    logstash_format: "On"
     # Optional username credential for Elastic X-Pack access
     http_user:
     # Password for user defined in HTTP_User
