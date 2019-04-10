@@ -58,6 +58,11 @@ wordpressBlogName: User's Blog!
 ##
 wordpressTablePrefix: wp_
 
+## Skip wizard installation (only if you use an external database that already contains WordPress data)
+## ref: https://github.com/bitnami/bitnami-docker-wordpress#connect-wordpress-docker-container-to-an-existing-database
+##
+wordpressSkipInstall: no
+
 ## Set to `yes` to allow the container to be started with blank passwords
 ## ref: https://github.com/bitnami/bitnami-docker-wordpress#environment-variables
 allowEmptyPassword: "yes"
