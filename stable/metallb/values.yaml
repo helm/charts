@@ -40,6 +40,10 @@ rbac:
   # create specifies whether to install and use RBAC rules.
   create: true
 
+psp:
+  # create specifies whether to install and use Pod Security Policies.
+  create: true
+
 prometheus:
   # scrape annotations specifies whether to add Prometheus metric
   # auto-collection annotations to pods. See

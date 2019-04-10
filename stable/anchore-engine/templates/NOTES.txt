@@ -9,7 +9,7 @@ To configure your anchore-cli run:
 
     ANCHORE_CLI_USER=admin
     ANCHORE_CLI_PASS=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "anchore-engine.fullname" . }} -o jsonpath="{.data.ANCHORE_ADMIN_PASSWORD}" | base64 --decode; echo)
-{{ if .Values.anchoreApi.ingress.enabled }}
+{{ if .Values.ingress.enabled }}
    ANCHORE_CLI_URL=http://$(kubectl get ingress --namespace {{ .Release.Namespace }} {{ template "anchore-engine.api.fullname" . }} -o jsonpath="{.status.loadBalancer.ingress[0].ip}")/v1/
 {{ else }}
 Using the service endpoint from within the cluster you can use:

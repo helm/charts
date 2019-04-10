@@ -38,7 +38,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `securityContext`                         | Deployment securityContext                    | `{"runAsUser": 472, "fsGroup": 472}`                    |
 | `priorityClassName`                       | Name of Priority Class to assign pods         | `nil`                                                   |
 | `image.repository`                        | Image repository                              | `grafana/grafana`                                       |
-| `image.tag`                               | Image tag. (`Must be >= 5.0.0`)               | `6.0.0`                                                 |
+| `image.tag`                               | Image tag. (`Must be >= 5.0.0`)               | `6.1.3`                                                 |
 | `image.pullPolicy`                        | Image pull policy                             | `IfNotPresent`                                          |
 | `service.type`                            | Kubernetes service type                       | `ClusterIP`                                             |
 | `service.port`                            | Kubernetes port where service is exposed      | `80`                                                    |
@@ -48,28 +48,36 @@ The command removes all the Kubernetes components associated with the chart and 
 | `ingress.enabled`                         | Enables Ingress                               | `false`                                                 |
 | `ingress.annotations`                     | Ingress annotations                           | `{}`                                                    |
 | `ingress.labels`                          | Custom labels                                 | `{}`                                                    |
+| `ingress.path`                            | Ingress accepted path                         | `/`                                                     |
 | `ingress.hosts`                           | Ingress accepted hostnames                    | `[]`                                                    |
 | `ingress.tls`                             | Ingress TLS configuration                     | `[]`                                                    |
 | `resources`                               | CPU/Memory resource requests/limits           | `{}`                                                    |
 | `nodeSelector`                            | Node labels for pod assignment                | `{}`                                                    |
 | `tolerations`                             | Toleration labels for pod assignment          | `[]`                                                    |
 | `affinity`                                | Affinity settings for pod assignment          | `{}`                                                    |
+| `extraInitContainers`                     | Init containers to add to the grafana pod     | `{}` |
 | `extraContainers`                         | Sidecar containers to add to the grafana pod  | `{}` |
 | `persistence.enabled`                     | Use persistent volume to store data           | `false`                                                 |
-| `persistence.initChownData`               | Change ownership of persistent volume on initialization | `true`                                                  |
 | `persistence.size`                        | Size of persistent volume claim               | `10Gi`                                                  |
 | `persistence.existingClaim`               | Use an existing PVC to persist data           | `nil`                                                   |
 | `persistence.storageClassName`            | Type of persistent volume claim               | `nil`                                                   |
 | `persistence.accessModes`                 | Persistence access modes                      | `[ReadWriteOnce]`                                       |
 | `persistence.subPath`                     | Mount a sub dir of the persistent volume      | `nil`                                                   |
+| `initChownData.enabled`                   | If false, don't reset data ownership at startup | true                                                  |
+| `initChownData.image.repository`          | init-chown-data container image repository    | `busybox`                                               |
+| `initChownData.image.tag`                 | init-chown-data container image tag           | `latest`                                                |
+| `initChownData.image.pullPolicy`          | init-chown-data container image pull policy   | `IfNotPresent`                                          |
+| `initChownData.resources`                 | init-chown-data pod resource requests & limits | `{}`                                                   |
 | `schedulerName`                           | Alternate scheduler name                      | `nil`                                                   |
 | `env`                                     | Extra environment variables passed to pods    | `{}`                                                    |
 | `envFromSecret`                           | Name of a Kubenretes secret (must be manually created in the same namespace) containing values to be added to the environment | `""` |
 | `extraSecretMounts`                       | Additional grafana server secret mounts       | `[]`                                                    |
 | `extraVolumeMounts`                       | Additional grafana server volume mounts       | `[]`                                                    |
 | `extraConfigmapMounts`                    | Additional grafana server configMap volume mounts  | `[]`                                               |
+| `extraEmptyDirMounts`                     | Additional grafana server emptyDir volume mounts   | `[]`                                               |
 | `plugins`                                 | Plugins to be loaded along with Grafana       | `[]`                                                    |
 | `datasources`                             | Configure grafana datasources (passed through tpl) | `{}`                                                    |
+| `notifiers`                               | Configure grafana notifiers | `{}`                                                                      |
 | `dashboardProviders`                      | Configure grafana dashboard providers         | `{}`                                                    |
 | `dashboards`                              | Dashboards to import                          | `{}`                                                    |
 | `dashboardsConfigMaps`                    | ConfigMaps reference that contains dashboards | `{}`                                                    |
@@ -78,8 +86,8 @@ The command removes all the Kubernetes components associated with the chart and 
 | `ldap.config  `                           | Grafana's LDAP configuration                  | `""`                                                    |
 | `annotations`                             | Deployment annotations                        | `{}`                                                    |
 | `podAnnotations`                          | Pod annotations                               | `{}`                                                    |
-| `sidecar.image`              | Sidecar image | `kiwigrid/k8s-sidecar:0.0.11`       |
-| `sidecar.imagePullPolicy`              | Sidecar image pull policy | `IfNotPresent`       |
+| `sidecar.image`                           | Sidecar image                                 | `kiwigrid/k8s-sidecar:0.0.16`                           |
+| `sidecar.imagePullPolicy`                 | Sidecar image pull policy                     | `IfNotPresent`                                          |
 | `sidecar.resources`              | Sidecar resources | `{}`       |
 | `sidecar.dashboards.enabled`              | Enabled the cluster wide search for dashboards and adds/updates/deletes them in grafana | `false`       |
 | `sidecar.dashboards.label`                | Label that config maps with dashboards should have to be added | `grafana_dashboard`                                |
@@ -97,6 +105,10 @@ The command removes all the Kubernetes components associated with the chart and 
 | `rbac.namespaced`                         | Creates Role and Rolebinding instead of the default ClusterRole and ClusteRoleBindings for the grafana instance  | `false` |
 | `rbac.pspEnabled`                         | Create PodSecurityPolicy (with `rbac.create`, grant roles permissions as well) | `true` |
 | `rbac.pspUseAppArmor`                     | Enforce AppArmor in created PodSecurityPolicy (requires `rbac.pspEnabled`)  | `true` |
+| `command`                     | Define command to be executed by grafana container at startup  | `nil` |
+| `testFramework.image`                     | `test-framework` image repository.             | `dduportal/bats`                                       |
+| `testFramework.tag`                       | `test-framework` image tag.                    | `0.4.0`                                                |
+
 
 ### Example of extraVolumeMounts
 
