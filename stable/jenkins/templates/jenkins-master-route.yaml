@@ -1,0 +1,31 @@
+{{- if .Values.Master.route.enabled }}
+apiVersion: {{ .Values.Master.route.apiVersion }}
+kind: Route
+metadata:
+{{- if .Values.Master.route.labels }}
+  labels:
+    app: {{ template "jenkins.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+    component: "{{ .Release.Name }}-{{ .Values.Master.Name }}"
+{{ toYaml .Values.Master.route.labels | indent 4 }}
+{{- end }}
+{{- if .Values.Master.route.annotations }}
+  annotations:
+{{ toYaml .Values.Master.route.annotations | indent 4 }}
+{{- end }}
+  name: {{ template "jenkins.fullname" . }}
+spec:
+  host: {{ .Values.Master.route.path }}
+  port:
+    targetPort: http
+  tls:
+    insecureEdgeTerminationPolicy: Redirect
+    termination: edge
+  to:
+    kind: Service
+    name: {{ template "jenkins.fullname" . }}
+    weight: 100
+  wildcardPolicy: None
+{{- end }}

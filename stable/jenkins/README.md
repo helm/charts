@@ -80,6 +80,11 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `Master.ingress.labels`           | Ingress labels                       | `{}`                                                                         |
 | `Master.ingress.path`             | Ingress path                         | Not set                                                                         |
 | `Master.ingress.tls`              | Ingress TLS configuration            | `[]`                                                                         |
+| `Master.route.enabled`          | Enables openshift route      | `false`                                                                         |
+| `Master.route.apiVersion`       | Route API version                  | `route.openshift.io/v1`                                                         |
+| `Master.route.annotations`      | Route annotations                  | `{}`                                                                         |
+| `Master.route.labels`           | Route labels                       | `{}`                                                                         |
+| `Master.route.path`             | Route path                         | Not set                                                                         |
 | `Master.JCasC.enabled`            | Wheter Jenkins Configuration as Code is enabled or not | `false`                                                    |
 | `Master.JCasC.ConfigScripts`      | List of Jenkins Config as Code scripts | False                                                                      |
 | `Master.Sidecars.configAutoReload` | Jenkins Config as Code auto-reload settings |                                                                      |
