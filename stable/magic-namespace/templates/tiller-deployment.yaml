@@ -30,7 +30,7 @@ spec:
     spec:
       serviceAccountName: tiller
       containers:
-        - name: {{ .Chart.Name }}
+        - name: tiller
           image: "{{ .Values.tiller.image.repository }}:{{ .Values.tiller.image.tag }}"
           imagePullPolicy: {{ .Values.tiller.image.pullPolicy }}
           env:
