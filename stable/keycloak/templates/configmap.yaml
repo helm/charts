@@ -20,8 +20,8 @@ data:
     echo 'Running custom pre-start script...'
 {{ . | indent 4 }}
   {{- end }}
-    # Moving standalone.xml earlier as it get moved to next line when templating this chart
-    exec /opt/jboss/tools/docker-entrypoint.sh -b 0.0.0.0 {{ if $highAvailability }} -c standalone-ha.xml{{ else }} -c standalone.xml{{ end }} {{ .Values.keycloak.extraArgs }}    
+
+    exec /opt/jboss/tools/docker-entrypoint.sh -b 0.0.0.0 {{ .Values.keycloak.extraArgs }}{{- if $highAvailability }} -c standalone-ha.xml{{ else }} -c standalone.xml{{ end }}
     exit "$?"
 
   keycloak.cli: |
