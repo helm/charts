@@ -67,6 +67,9 @@ spec:
       protocol: UDP
       targetPort: "{{ $key }}-udp"
   {{- end }}
+  {{- if .Values.controller.service.customPorts }}
+{{ toYaml .Values.controller.service.customPorts | indent 4}}
+  {{- end }}
   selector:
     app: {{ template "nginx-ingress.name" . }}
     component: "{{ .Values.controller.name }}"

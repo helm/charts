@@ -186,6 +186,13 @@ controller:
       http: http
       https: https
 
+    ## Open-ended port definitions. These will be added to the end of the `Ports` list in the controller service manifest.
+    # customPorts:
+    # - name: myport-at-8123
+    #   port: 8123
+    #   protocol: TCP
+    #   targetPort: http
+
     type: LoadBalancer
 
     # type: NodePort
