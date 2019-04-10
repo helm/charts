@@ -7,12 +7,6 @@
 #   imagePullSecrets:
 #     - myRegistryKeySecretName
 
-## Redis pod Security Context
-securityContext:
-  enabled: true
-  fsGroup: 1001
-  runAsUser: 1001
-
 ## Bitnami Redis image version
 ## ref: https://hub.docker.com/r/bitnami/redis/tags/
 ##
@@ -77,6 +71,12 @@ rbac:
     #    resourceNames:
     #      - gce.unprivileged
     rules: []
+
+## Redis pod Security Context
+securityContext:
+  enabled: true
+  fsGroup: 1001
+  runAsUser: 1001
 
 ## Use password authentication
 usePassword: true
