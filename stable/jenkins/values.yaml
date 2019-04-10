@@ -360,6 +360,7 @@ NetworkPolicy:
 rbac:
   install: false
   serviceAccountName: default
+  serviceAccountAnnotations: {}
   # Role reference
   roleRef: cluster-admin
   # Role kind (Role or ClusterRole)
