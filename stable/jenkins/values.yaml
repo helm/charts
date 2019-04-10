@@ -260,6 +260,7 @@ Master:
     # kubernetes.io/tls-acme: "true"
     # Set this path to JenkinsUriPrefix above or use annotations to rewrite path
     # path: "/jenkins"
+    # hostName: jenkins.example.com
     tls:
     # - secretName: jenkins.cluster.local
     #   hosts:
