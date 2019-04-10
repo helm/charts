@@ -187,8 +187,7 @@ spec:
           unset KAFKA_PORT && \
           export KAFKA_BROKER_ID=${POD_NAME##*-} && \
           {{- if eq .Values.external.type "LoadBalancer" }}
-          export LOAD_BALANCER_IPS="$(echo '{{ .Values.external.loadBalancerIP }}' | awk '{ print substr($0, 2, length($0) -2) }')" && \
-          export LOAD_BALANCER_IP="$(echo $LOAD_BALANCER_IPS | awk -v id=${KAFKA_BROKER_ID} -v sp=' ' '{ split($0, a , sp); print a[id+1] }')" && \
+          export LOAD_BALANCER_IP=$(echo '{{ .Values.external.loadBalancerIP }}' | tr -d '[]' | cut -d ' ' -f "$(($KAFKA_BROKER_ID + 1))") && \
           {{- end }}
           export KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://${POD_NAME}.{{ include "kafka.fullname" . }}-headless.${POD_NAMESPACE}:9092{{ if kindIs "string" $advertisedListenersOverride }}{{ printf ",%s" $advertisedListenersOverride }}{{ end }} && \
           exec /etc/confluent/docker/run
