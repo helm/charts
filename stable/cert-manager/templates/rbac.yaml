@@ -9,6 +9,9 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 rules:
+  - apiGroups: ['extensions']
+    resources: ['podsecuritypolicies']
+    verbs:     ['use']
   - apiGroups: ["certmanager.k8s.io"]
     resources: ["certificates", "certificates/finalizers", "issuers", "clusterissuers", "orders", "orders/finalizers", "challenges"]
     verbs: ["*"]
@@ -18,6 +21,11 @@ rules:
   - apiGroups: ["extensions"]
     resources: ["ingresses"]
     verbs: ["*"]
+  {{- if .Values.crds.cleanup }}
+  - apiGroups: ["apiextensions.k8s.io"]
+    resources: ["customresourcedefinitions"]
+    verbs: ["list", "delete"]
+  {{- end }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding

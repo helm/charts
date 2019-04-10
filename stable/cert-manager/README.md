@@ -18,6 +18,11 @@ functionality in cert-manager can be found in the [getting started docs](https:/
 To install the chart with the release name `my-release`:
 
 ```console
+## IMPORTANT: you MUST install the cert-manager CRDs **before** installing the
+## cert-manager Helm chart
+$ kubectl apply \
+    -f https://raw.githubusercontent.com/jetstack/cert-manager/release-0.6/deploy/manifests/00-crds.yaml
+
 ## IMPORTANT: if you are deploying into a namespace that **already exists**,
 ## you MUST ensure the namespace has an additional label on it in order for
 ## the deployment to succeed
@@ -91,6 +96,8 @@ The following table lists the configurable parameters of the cert-manager chart 
 | `podAnnotations` | Annotations to add to the cert-manager pod | `{}` |
 | `podDnsPolicy` | Optional cert-manager pod [DNS policy](https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pods-dns-policy) |  |
 | `podDnsConfig` | Optional cert-manager pod [DNS configurations](https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pods-dns-config) |  |
+| `crds.create` | Create CRDs. If your Helm version < 2.10 you will have to either create the CRDs first | `true` |
+| `crds.cleanup` | Attempt to delete CRDs when the release is removed. | `false` |
 | `podLabels` | Labels to add to the cert-manager pod | `{}` |
 | `priorityClassName`| Priority class name for cert-manager and webhook pods | `""` |
 | `http_proxy` | Value of the `HTTP_PROXY` environment variable in the cert-manager pod | |
@@ -107,6 +114,9 @@ The following table lists the configurable parameters of the cert-manager chart 
 | `webhook.caSyncImage.repository` | CA sync image repository | `quay.io/munnerz/apiextensions-ca-helper` |
 | `webhook.caSyncImage.tag` | CA sync image tag | `v0.1.0` |
 | `webhook.caSyncImage.pullPolicy` | CA sync image pull policy | `IfNotPresent` |
+| `hyperkubeImage.repository` | Repository for hyperkube image used to perform maintenance tasks | `k8s.gcr.io/hyperkube` |
+| `hyperkubeImage.tag` | Tag for hyperkube image used to perform maintenance tasks | `v1.12.1` |
+| `hyperkubeImage.repository` | Image pull policy for hyperkube image used to perform maintenance tasks | `IfNotPresent` |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 

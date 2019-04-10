@@ -21,7 +21,7 @@ strategy: {}
 
 crds:
   create: true
-  cleanup: true
+  cleanup: false
 
 hyperkubeImage:
   repository: k8s.gcr.io/hyperkube

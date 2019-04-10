@@ -13,7 +13,7 @@ metadata:
 spec:
   template:
     metadata:
-      name: {{ template "cert-manager.fullname" . }}cleanup
+      name: {{ template "cert-manager.fullname" . }}-cleanup
       labels:
         app: {{ template "cert-manager.name" . }}
     spec:
