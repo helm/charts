@@ -101,7 +101,6 @@ The following table lists the configurable parameters of the WordPress chart and
 | `ingress.hosts[0].path`          | Path within the url structure              | `/`                                                     |
 | `ingress.tls[0].hosts[0]`        | TLS hosts                                  | `wordpress.local`                                       |
 | `ingress.tls[0].secretName`      | TLS Secret (certificates)                  | `wordpress.local-tls`                                   |
-| `ingress.hosts[0].tls`           | Utilize TLS backend in ingress             | `false`                                                 |
 | `ingress.secrets[0].name`        | TLS Secret Name                            | `nil`                                                   |
 | `ingress.secrets[0].certificate` | TLS Secret Certificate                     | `nil`                                                   |
 | `ingress.secrets[0].key`         | TLS Secret Key                             | `nil`                                                   |
