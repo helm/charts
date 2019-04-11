@@ -220,7 +220,7 @@ spec:
         imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
        {{- if .Values.securityContext.enabled }}
         securityContext:
-          runAsUser: {{ .Values.securityContext.runAsUser }}
+          runAsUser: {{ .Values.metrics.securityContext.runAsUser }}
       {{- end }}        
         env:
         {{- $database := required "In order to enable metrics you need to specify a database (.Values.postgresqlDatabase or .Values.global.postgresql.postgresqlDatabase)" (include "postgresql.database" .) }}
