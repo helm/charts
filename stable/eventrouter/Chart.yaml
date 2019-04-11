@@ -1,7 +1,7 @@
 apiVersion: v1
 description: A Helm chart for eventruter (https://github.com/heptiolabs/eventrouter)
 name: eventrouter
-version: 0.2.0
+version: 0.2.1
 appVersion: 0.2
 home: https://github.com/heptiolabs/eventrouter
 sources:
