@@ -24,6 +24,11 @@ stringData:
     {{- if .Values.anchoreEnterpriseRbac.enabled }}
     rbac_uri: 'http://{{ template "anchore-engine.api.fullname" . }}:{{ .Values.anchoreEnterpriseRbac.service.apiPort }}/v1'
     {{- end }}
+    {{- if and (index .Values "anchore-ui-db" "externalEndpoint") (not (index .Values "anchore-ui-db" "enabled")) }}
+    appdb_uri: "postgresql://{{ index .Values "anchore-ui-db" "postgresUser" }}:{{ index .Values "anchore-ui-db" "postgresPassword" }}@{{ index .Values "anchore-ui-db" "externalEndpoint" }}:5432/{{ index .Values "anchore-ui-db" "postgresDatabase" }}"
+    {{- else }}
+    appdb_uri: "postgresql://{{ index .Values "anchore-ui-db" "postgresUser" }}:{{ index .Values "anchore-ui-db" "postgresPassword" }}@{{ template "postgres.anchore-ui-db.fullname" . }}:5432/{{ index .Values "anchore-ui-db" "postgresDatabase" }}"
+    {{- end }}
     license_path: '/'
     enable_ssl: {{ .Values.anchoreEnterpriseUi.enableSsl }}
     enable_proxy: {{ .Values.anchoreEnterpriseUi.enableProxy }}

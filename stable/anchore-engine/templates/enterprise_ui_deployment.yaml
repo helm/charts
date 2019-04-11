@@ -76,6 +76,13 @@ spec:
           value: '{{ .Values.anchoreEnterpriseUi.enableProxy }}'
         - name: ANCHORE_ALLOW_SHARED_LOGIN
           value: '{{ .Values.anchoreEnterpriseUi.enableSharedLogin }}'
+        {{- if and (index .Values "anchore-ui-db" "externalEndpoint") (not (index .Values "anchore-ui-db" "enabled")) }}
+        - name: ANCHORE_APPDB_URI
+          value: "postgresql://{{ index .Values "anchore-ui-db" "postgresUser" }}:{{ index .Values "anchore-ui-db" "postgresPassword" }}@{{ index .Values "anchore-ui-db" "externalEndpoint" }}:5432/{{ index .Values "anchore-ui-db" "postgresDatabase" }}"
+        {{- else }}
+        - name: ANCHORE_APPDB_URI
+          value: "postgresql://{{ index .Values "anchore-ui-db" "postgresUser" }}:{{ index .Values "anchore-ui-db" "postgresPassword" }}@{{ template "postgres.anchore-ui-db.fullname" . }}:5432/{{ index .Values "anchore-ui-db" "postgresDatabase" }}"
+        {{- end }}
         ports:
         - containerPort: 3000
           protocol: TCP
@@ -94,13 +101,13 @@ spec:
           periodSeconds: 10
           failureThreshold: 6
           successThreshold: 1
-        # readinessProbe:
-        #   httpGet:
-        #     path: /service/health
-        #     port: enterprise-ui
-        #   periodSeconds: 10
-        #   failureThreshold: 3
-        #   successThreshold: 1
+        readinessProbe:
+          httpGet:
+            path: /service/health
+            port: enterprise-ui
+          periodSeconds: 10
+          failureThreshold: 3
+          successThreshold: 1
         resources:
 {{ toYaml .Values.anchoreEnterpriseUi.resources | indent 10 }}
     {{- if .Values.anchoreEnterpriseUi.nodeSelector }}
