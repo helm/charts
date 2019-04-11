@@ -44,13 +44,11 @@ spec:
         - configMapRef:
             name: {{ template "anchore-engine.fullname" . }}
         env:
-        {{- range $key, $value := .Values.anchoreGlobal.extraEnv }}
-        - name: {{ $key }}
-          value: {{ $value }}
+        {{- with .Values.anchoreGlobal.extraEnv }}
+        {{- toYaml . | nindent 8 }}
         {{- end }}
-        {{- range $key, $value := .Values.anchoreAnalyzer.extraEnv }}
-        - name: {{ $key }}
-          value: {{ $value }}
+        {{- with .Values.anchoreAnalyzer.extraEnv }}
+        {{- toYaml . | nindent 8 }}
         {{- end }}
         - name: ANCHORE_POD_NAME
           valueFrom:

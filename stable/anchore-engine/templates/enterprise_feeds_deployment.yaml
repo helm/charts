@@ -57,13 +57,11 @@ spec:
         - secretRef:
             name: {{ template "anchore-engine.fullname" . }}
         env:
-        {{- range $key, $value := .Values.anchoreGlobal.extraEnv }}
-        - name: {{ $key }}
-          value: {{ $value }}
+        {{- with .Values.anchoreGlobal.extraEnv }}
+        {{- toYaml . | nindent 8 }}
         {{- end }}
-        {{- range $key, $value := .Values.anchoreEnterpriseFeeds.extraEnv }}
-        - name: {{ $key }}
-          value: {{ $value }}
+        {{- with .Values.anchoreEnterpriseFeeds.extraEnv }}
+        {{- toYaml . | nindent 8 }}
         {{- end }}
         {{- if and (index .Values "anchore-feeds-db" "externalEndpoint") (not (index .Values "anchore-feeds-db" "enabled")) }}
         - name: ANCHORE_DB_HOST
