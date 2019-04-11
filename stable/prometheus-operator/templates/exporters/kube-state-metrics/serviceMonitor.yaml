@@ -14,6 +14,10 @@ spec:
     interval: {{ .Values.kubeStateMetrics.serviceMonitor.interval }}
     {{- end }}
     honorLabels: true
+{{- if .Values.kubeStateMetrics.serviceMonitor.metricRelabelings }}
+    metricRelabelings:
+{{ toYaml .Values.kubeStateMetrics.serviceMonitor.metricRelabelings | indent 4 }}
+{{- end }}
   selector:
     matchLabels:
       app: kube-state-metrics
