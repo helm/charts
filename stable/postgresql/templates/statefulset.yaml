@@ -218,7 +218,7 @@ spec:
       - name: metrics
         image: {{ template "postgresql.metrics.image" . }}
         imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
-       {{- if .Values.securityContext.enabled }}
+       {{- if .Values.metrics.securityContext.enabled }}
         securityContext:
           runAsUser: {{ .Values.metrics.securityContext.runAsUser }}
       {{- end }}        
