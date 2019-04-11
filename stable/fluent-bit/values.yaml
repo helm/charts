@@ -226,6 +226,8 @@ filter:
 rbac:
   # Specifies whether RBAC resources should be created
   create: true
+  pspEnabled: false
+  pspUseAppArmor: false
 
 taildb:
   directory: /var/lib/fluent-bit

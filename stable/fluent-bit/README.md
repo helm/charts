@@ -111,6 +111,8 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `input.systemd.readFromTail`       | Please see https://docs.fluentbit.io/manual/input/systemd | `true`                             |
 | `input.systemd.tag`                | Please see https://docs.fluentbit.io/manual/input/systemd | `host.*`                           |
 | `rbac.create`                      | Specifies whether RBAC resources should be created.   | `true`                                 |
+| `rbac.pspEnabled`                  | Deploy and use a dedicated PodSecurityPolicy          | `true`                                 |
+| `rbac.pspUseAppArmor`              | Enable AppArmor in the dedicated PodSecurityPolicy    | `true`                                 |
 | `serviceAccount.create`            | Specifies whether a ServiceAccount should be created. | `true`                                 |
 | `serviceAccount.name`              | The name of the ServiceAccount to use.     | `NULL`                                            |
 | `rawConfig`                        | Raw contents of fluent-bit.conf            | `@INCLUDE fluent-bit-service.conf`<br>`@INCLUDE fluent-bit-input.conf`<br>`@INCLUDE fluent-bit-filter.conf`<br>` @INCLUDE fluent-bit-output.conf`                                                                         |
