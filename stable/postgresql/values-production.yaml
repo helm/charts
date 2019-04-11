@@ -304,6 +304,12 @@ metrics:
     ##
     # pullSecrets:
     #   - myRegistryKeySecretName
+  ## Pod Security Context
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+  ##
+  securityContext:
+    enabled: false
+    runAsUser: 1001
 
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes)
   ## Configure extra options for liveness and readiness probes

@@ -141,6 +141,8 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `metrics.image.tag`                           | PostgreSQL Image tag                                                                                                   | `v0.4.7`                                                    |
 | `metrics.image.pullPolicy`                    | PostgreSQL Image pull policy                                                                                           | `IfNotPresent`                                              |
 | `metrics.image.pullSecrets`                   | Specify Image pull secrets                                                                                             | `nil` (does not add image pull secrets to deployed pods)    |
+| `metrics.securityContext.enabled`             | Enable security context for metrics                                                                                    | `false`                                                     |
+| `metrics.securityContext.runAsUser`           | User ID for the container for metrics                                                                                  | `1001`                                                      |
 | `extraEnv`                                    | Any extra environment variables you would like to pass on to the pod                                                   | `{}`                                                        |
 | `updateStrategy`                              | Update strategy policy                                                                                                 | `{type: "onDelete"}`                                        |
 
