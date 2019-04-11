@@ -53,7 +53,7 @@ spec:
             mountPath: /hydra
         livenessProbe:
           httpGet:
-            path: /health
+            path: /health/alive
             port: 4444
           initialDelaySeconds: 3
           periodSeconds: 3
