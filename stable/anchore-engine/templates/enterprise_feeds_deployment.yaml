@@ -30,8 +30,8 @@ spec:
         - name: config-volume
           configMap:
             name: {{ template "anchore-engine.enterprise-feeds.fullname" . }}
-        - name: scratch-volume
-{{ toYaml .Values.anchoreEnterpriseFeeds.scratchVolume.details | indent 10 }}
+        - name: {{ $component}}-scratch
+{{ toYaml .Values.anchoreGlobal.scratchVolume.details | indent 10 }}
         - name: anchore-license
           secret:
             secretName: {{ .Values.anchoreEnterpriseGlobal.licenseSecretName }}
@@ -85,8 +85,8 @@ spec:
         - name: config-volume
           mountPath: /config/config.yaml
           subPath: config.yaml
-        - name: scratch-volume
-          mountPath: {{ .Values.anchoreEnterpriseFeeds.scratchVolume.mountPath }}
+        - name: {{ $component }}-scratch
+          mountPath: {{ .Values.anchoreGlobal.scratchVolume.mountPath }}
         - name: anchore-license
           mountPath: /license.yaml
           subPath: license.yaml

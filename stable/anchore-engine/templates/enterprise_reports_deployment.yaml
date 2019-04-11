@@ -1,0 +1,134 @@
+{{- if and .Values.anchoreEnterpriseGlobal.enabled .Values.anchoreEnterpriseReports.enabled -}}
+{{- $component := "enterprise-reports" -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "anchore-engine.enterprise-reports.fullname" . }}
+  labels:
+    app: {{ template "anchore-engine.fullname" . }}
+    component: {{ $component }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "anchore-engine.fullname" . }}
+      component: {{ $component }}
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ template "anchore-engine.fullname" . }}
+        component: {{ $component }}
+{{- if .Values.anchoreEnterpriseReports.annotations }}
+      annotations:
+{{ toYaml .Values.anchoreEnterpriseReports.annotations | indent 8 }}
+{{- end }}
+    spec:
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ template "anchore-engine.enterprise-reports.fullname" . }}
+        - name: {{ $component }}-scratch
+{{ toYaml .Values.anchoreGlobal.scratchVolume.details | indent 10 }}
+        - name: anchore-license
+          secret:
+            secretName: {{ .Values.anchoreEnterpriseGlobal.licenseSecretName }}
+      imagePullSecrets:
+      - name: {{ .Values.anchoreEnterpriseGlobal.imagePullSecretName }}
+      containers:
+      - name: "{{ .Chart.Name }}-{{ $component }}"
+        image: {{ .Values.anchoreEnterpriseGlobal.image }}
+        imagePullPolicy: {{ .Values.anchoreEnterpriseGlobal.imagePullPolicy }}
+        command: ["/usr/local/bin/anchore-enterprise-manager"]
+        args: ["service", "start", "reports"]
+        ports:
+        - containerPort: {{ .Values.anchoreEnterpriseReports.service.port }}
+          name: reports-api
+        envFrom:
+        - secretRef:
+            name: {{ template "anchore-engine.fullname" . }}
+        - configMapRef:
+            name: {{ template "anchore-engine.fullname" . }}
+        env:
+        {{- range $key, $value := .Values.anchoreGlobal.extraEnv }}
+        - name: {{ $key }}
+          value: {{ $value }}
+        {{- end }}
+        {{- range $key, $value := .Values.anchoreEnterpriseReports.extraEnv }}
+        - name: {{ $key }}
+          value: {{ $value }}
+        {{- end }}
+        - name: ANCHORE_POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        volumeMounts:
+        - name: config-volume
+          mountPath: /config/config.yaml
+          subPath: config.yaml
+        - name: {{ $component }}-scratch
+          mountPath: {{ .Values.anchoreGlobal.scratchVolume.mountPath }}
+        - name: anchore-license
+          mountPath: /license.yaml
+          subPath: license.yaml
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: reports-api
+          initialDelaySeconds: 120
+          timeoutSeconds: 10
+          periodSeconds: 10
+          failureThreshold: 6
+          successThreshold: 1
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: reports-api
+          timeoutSeconds: 10
+          periodSeconds: 10
+          failureThreshold: 3
+          successThreshold: 1
+        resources:
+{{ toYaml .Values.anchoreEnterpriseReports.resources | indent 10 }}
+    {{- if .Values.anchoreEnterpriseReports.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.anchoreEnterpriseReports.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- with .Values.anchoreEnterpriseReports.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.anchoreEnterpriseReports.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "anchore-engine.enterprise-reports.fullname" . }}
+  labels:
+    app: {{ template "anchore-engine.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: {{ $component }}
+  {{- if .Values.anchoreEnterpriseReports.service.annotations }}
+  annotations:
+{{ toYaml .Values.anchoreEnterpriseReports.service.annotations | indent 4 }}
+  {{- end }}
+spec:
+  type: {{ .Values.anchoreEnterpriseReports.service.type }}
+  ports:
+    - name: reports-api
+      port: {{ .Values.anchoreEnterpriseReports.service.port }}
+      targetPort: {{ .Values.anchoreEnterpriseReports.service.port }}
+      protocol: TCP
+  selector:
+    app: {{ template "anchore-engine.fullname" . }}
+    component: {{ $component }}
+
+{{- end -}}

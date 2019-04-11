@@ -22,7 +22,7 @@ data:
     # Anchore Service Configuration File from ConfigMap
 
     service_dir: {{ .Values.anchoreGlobal.serviceDir }}
-    tmp_dir: {{ default "/scratch" .Values.anchoreAnalyzer.scratchVolume.mountPath }}
+    tmp_dir: {{ default "/tmp" .Values.anchoreGlobal.scratchVolume.mountPath }}
     log_level: {{ .Values.anchoreGlobal.logLevel }}
     cleanup_images: {{ .Values.anchoreGlobal.cleanupImages }}
 

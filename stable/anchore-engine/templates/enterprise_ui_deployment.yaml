@@ -76,12 +76,12 @@ spec:
           value: '{{ .Values.anchoreEnterpriseUi.enableProxy }}'
         - name: ANCHORE_ALLOW_SHARED_LOGIN
           value: '{{ .Values.anchoreEnterpriseUi.enableSharedLogin }}'
-        {{- if and (index .Values "anchore-ui-db" "externalEndpoint") (not (index .Values "anchore-ui-db" "enabled")) }}
+        {{- if and ( .Values.postgresql.externalEndpoint) (not ( .Values.postgresql.enabled)) }}
         - name: ANCHORE_APPDB_URI
-          value: "postgresql://{{ index .Values "anchore-ui-db" "postgresUser" }}:{{ index .Values "anchore-ui-db" "postgresPassword" }}@{{ index .Values "anchore-ui-db" "externalEndpoint" }}:5432/{{ index .Values "anchore-ui-db" "postgresDatabase" }}"
+          value: "postgresql://{{ .Values.postgresql.postgresUser }}:{{ .Values.postgresql.postgresPassword }}@{{ .Values.postgresql.externalEndpoint }}:5432/{{ .Values.postgresql.postgresDatabase }}"
         {{- else }}
         - name: ANCHORE_APPDB_URI
-          value: "postgresql://{{ index .Values "anchore-ui-db" "postgresUser" }}:{{ index .Values "anchore-ui-db" "postgresPassword" }}@{{ template "postgres.anchore-ui-db.fullname" . }}:5432/{{ index .Values "anchore-ui-db" "postgresDatabase" }}"
+          value: "postgresql://{{ .Values.postgresql.postgresUser }}:{{ .Values.postgresql.postgresPassword }}@{{ template "postgres.fullname" . }}:5432/{{ .Values.postgresql.postgresDatabase }}"
         {{- end }}
         ports:
         - containerPort: 3000
