@@ -6,7 +6,7 @@ appVersion: 0.10.2
 deprecated: true
 description: DEPRECATED A Helm chart for ark
 name: ark
-version: 5.0.0
+version: 4.2.2
 home: https://github.com/heptio/ark
 icon: https://cdn-images-1.medium.com/max/1600/1*-9mb3AKnKdcL_QD3CMnthQ.png
 sources:
