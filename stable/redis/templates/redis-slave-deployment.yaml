@@ -133,6 +133,7 @@ spec:
         ports:
         - name: redis
           containerPort: {{ .Values.slave.port }}
+        {{- if .Values.slave.livenessProbe.enabled }}
         livenessProbe:
           initialDelaySeconds: {{ .Values.slave.livenessProbe.initialDelaySeconds }}
           periodSeconds: {{ .Values.slave.livenessProbe.periodSeconds }}
@@ -144,6 +145,9 @@ spec:
             - sh
             - -c
             - /health/ping_local_and_master.sh {{ .Values.slave.livenessProbe.timeoutSeconds }}
+        {{- end }}
+
+        {{- if .Values.slave.readinessProbe.enabled }}
         readinessProbe:
           initialDelaySeconds: {{ .Values.slave.readinessProbe.initialDelaySeconds }}
           periodSeconds: {{ .Values.slave.readinessProbe.periodSeconds }}
@@ -155,6 +159,7 @@ spec:
             - sh
             - -c
             - /health/ping_local_and_master.sh {{ .Values.slave.readinessProbe.timeoutSeconds }}
+        {{- end }}
         resources:
 {{ toYaml .Values.slave.resources | indent 10 }}
         volumeMounts:
