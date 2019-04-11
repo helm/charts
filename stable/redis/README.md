@@ -195,6 +195,14 @@ The following table lists the configurable parameters of the Redis chart and the
 | `slave.readinessProbe.timeoutSeconds`      | When the probe times out (redis slave pod)                                                                     | `master.readinessProbe.timeoutSeconds`               |
 | `slave.readinessProbe.successThreshold`    | Minimum consecutive successes for the probe to be considered successful after having failed (redis slave pod)  | `master.readinessProbe.successThreshold`             |
 | `slave.readinessProbe.failureThreshold`    | Minimum consecutive failures for the probe to be considered failed after having succeeded. (redis slave pod)   | `master.readinessProbe.failureThreshold`             |
+| `slave.persistence.enabled`               | Use a PVC to persist data (slave node)                                                                        | `true`                                               |
+| `slave.persistence.path`                  | Path to mount the volume at, to use other images                                                               | `/data`                                              |
+| `slave.persistence.subPath`               | Subdirectory of the volume to mount at                                                                         | `""`                                                 |
+| `slave.persistence.storageClass`          | Storage class of backing PVC                                                                                   | `generic`                                            |
+| `slave.persistence.accessModes`           | Persistent Volume Access Modes                                                                                 | `[ReadWriteOnce]`                                    |
+| `slave.persistence.size`                  | Size of data volume                                                                                            | `8Gi`                                                |
+| `slave.statefulset.updateStrategy`        | Update strategy for StatefulSet                                                                                | onDelete                                             |
+| `slave.statefulset.rollingUpdatePartition`| Partition update strategy                                                                                      | `nil`                                                |
 | `slave.podLabels`                          | Additional labels for Redis slave pod                                                                          | `master.podLabels`                                   |
 | `slave.podAnnotations`                     | Additional annotations for Redis slave pod                                                                     | `master.podAnnotations`                              |
 | `slave.schedulerName`                      | Name of an alternate scheduler                                                                                 | `nil`                                                |
@@ -279,8 +287,13 @@ sysctlImage:
       echo never > /host-sys/kernel/mm/transparent_hugepage/enabled
 ```
 
+## Notable changes
+
+### 7.0.0
+In order to improve the performance in case of slave failure, we added persistence to the read-only slaves. That means that we moved from Deployment to StatefulSets. This should not affect upgrades from previous versions of the chart, as the deployments did not contain any persistence at all.
+
 ## Upgrade
 
-## To 6.0.0
+### To 6.0.0
 
 Previous versions of the chart were using an init-container to change the permissions of the volumes. This was done in case the `securityContext` directive in the template was not enough for that (for example, with cephFS). In this new version of the chart, this container is disabled by default (which should not affect most of the deployments). If your installation still requires that init container, execute `helm upgrade` with the `--set volumePermissions.enabled=true`.

@@ -21,7 +21,7 @@ data:
 {{- end }}
 {{- end }}
   replica.conf: |-
-    dir /data
+    dir {{ .Values.slave.persistence.path }}
 {{- if .Values.slave.disableCommands }}
 {{- range .Values.slave.disableCommands }}
     rename-command {{ . }} ""
