@@ -1,0 +1,15 @@
+# Run: helm install  --dry-run --debug -f ci/extraArgs-values.yaml .
+# Validate that expected values is generated under the Deployment spec.template.spec.containers.command:
+
+extraArgs:
+  n0: 0            # expects - --n0=0          not --n0
+  n1: 1            # expects - --n1=1
+  n2: 2            # expects - --n2=2
+  bTrue: true      # expects - --bTrue         not --bTrue=true
+  bFalse: false    # expects - --sFalse=false
+  sTrue: "true"    # expects - --sTrue         not --sTrue=true
+  sFalse: "false"  # expects - --sFalse=false  not --bFalse
+
+# needed to trigger the command
+autoDiscovery:
+  clusterName: testing
