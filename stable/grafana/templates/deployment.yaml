@@ -97,6 +97,12 @@ spec:
             - name: NAMESPACE
               value: "{{ .Values.sidecar.datasources.searchNamespace }}"
             {{- end }}
+            {{- if .Values.sidecar.datasources.env }}
+            {{- range $name, $value := .Values.sidecar.datasources.env }}
+            - name: {{ $name  }}
+              value: "{{ $value }}"
+            {{ end -}}
+            {{ end -}}
           resources:
 {{ toYaml .Values.sidecar.resources | indent 12 }}
           volumeMounts:
@@ -126,6 +132,12 @@ spec:
             - name: NAMESPACE
               value: "{{ .Values.sidecar.dashboards.searchNamespace }}"
             {{- end }}
+            {{- if .Values.sidecar.datasources.env }}
+            {{- range $name, $value := .Values.sidecar.datasources.env }}
+            - name: {{ $name }}
+              value: "{{ $value }}"
+            {{ end -}}
+            {{ end -}}
           resources:
 {{ toYaml .Values.sidecar.resources | indent 12 }}
           volumeMounts:

@@ -88,13 +88,15 @@ The command removes all the Kubernetes components associated with the chart and 
 | `podAnnotations`                          | Pod annotations                               | `{}`                                                    |
 | `sidecar.image`                           | Sidecar image                                 | `kiwigrid/k8s-sidecar:0.0.16`                           |
 | `sidecar.imagePullPolicy`                 | Sidecar image pull policy                     | `IfNotPresent`                                          |
-| `sidecar.resources`              | Sidecar resources | `{}`       |
+| `sidecar.resources`                       | Sidecar resources | `{}`       |
 | `sidecar.dashboards.enabled`              | Enabled the cluster wide search for dashboards and adds/updates/deletes them in grafana | `false`       |
 | `sidecar.dashboards.label`                | Label that config maps with dashboards should have to be added | `grafana_dashboard`                                |
 | `sidecar.dashboards.searchNamespace`      | If specified, the sidecar will search for dashboard config-maps inside this namespace. Otherwise the namespace in which the sidecar is running will be used. It's also possible to specify ALL to search in all namespaces | `nil`                                |
+| `sidecar.dashboards.env`                  | Additional ENV variables for the dashboards container | `{}` |
 | `sidecar.datasources.enabled`             | Enabled the cluster wide search for datasources and adds/updates/deletes them in grafana |`false`       |
 | `sidecar.datasources.label`               | Label that config maps with datasources should have to be added | `grafana_datasource`                               |
 | `sidecar.datasources.searchNamespace`     | If specified, the sidecar will search for datasources config-maps inside this namespace. Otherwise the namespace in which the sidecar is running will be used. It's also possible to specify ALL to search in all namespaces | `nil`                               |
+| `sidecar.datasources.env`                 | Additional ENV variables for the datasources container | `{}` |
 | `smtp.existingSecret`                     | The name of an existing secret containing the SMTP credentials. | `""`                                  |
 | `smtp.userKey`                            | The key in the existing SMTP secret containing the username. | `"user"`                                 |
 | `smtp.passwordKey`                        | The key in the existing SMTP secret containing the password. | `"password"`                             |
