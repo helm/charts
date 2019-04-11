@@ -105,6 +105,8 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `NetworkPolicy.Enabled`           | Enable creation of NetworkPolicy resources. | `false`                                                               |
 | `NetworkPolicy.ApiVersion`        | NetworkPolicy ApiVersion             | `networking.k8s.io/v1`                                                         |
 | `rbac.install`                    | Create service account and ClusterRoleBinding for Kubernetes plugin | `false`                                       |
+| `rbac.serviceAccountName`         | Name of service account     | `default` |
+| `rbac.serviceAccountAnnotations`  | Service Account annotations | `{}` |
 | `rbac.roleRef`                    | Cluster role name to bind to         | `cluster-admin`                                                              |
 | `rbac.roleKind`            | Role kind (`Role` or `ClusterRole`)| `ClusterRole`
 | `rbac.roleBindingKind`            | Role binding kind (`RoleBinding` or `ClusterRoleBinding`)| `ClusterRoleBinding`                                             |
