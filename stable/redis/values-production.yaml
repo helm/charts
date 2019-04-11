@@ -249,6 +249,9 @@ slave:
     annotations: {}
     loadBalancerIP:
 
+  ## Redis slave port
+  port: 6379
+
   ## Can be used to specify command line arguments, for example:
   ##
   command: "/run.sh"
