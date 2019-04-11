@@ -3,7 +3,7 @@ description: A Helm chart to deploy the New Relic Infrastructure Agent as a Daem
 name: newrelic-infrastructure
 version: 0.9.0
 appVersion: 1.7.0
-home: https://hub.docker.com/r/newrelic/infrastructure/
+home: https://hub.docker.com/r/newrelic/infrastructure-k8s/
 source:
   - https://github.com/kubernetes/kubernetes/tree/master/examples/newrelic-infrastructure
 engine: gotpl

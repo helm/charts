@@ -13,6 +13,8 @@ This chart will deploy the New Relic Infrastructure agent as a Daemonset.
 | `config`                  | A `newrelic.yml` file if you wish to provide.                |                         |
 | `kubeStateMetricsUrl`     | If provided, the discovery process for kube-state-metrics endpoint won't be triggered. Example: http://172.17.0.3:8080 |
 | `kubeStateMetricsTimeout` | Timeout for accessing kube-state-metrics in milliseconds. If not set the newrelic default is 5000 | |
+| `rbac.create`             | Enable Role-based authentication                             | `true`                     |
+| `rbac.pspEnabled`         | Enable pod security policy support                           | `false`                    |
 | `image.name`              | The container to pull.                                       | `newrelic/infrastructure`  |
 | `image.pullPolicy`        | The pull policy.                                             | `IfNotPresent`             |
 | `image.tag`               | The version of the container to pull.                        | `1.7.0`            |

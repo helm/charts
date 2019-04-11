@@ -71,12 +71,15 @@ rabbitmq:
   ulimitNofiles: '65536'
 
   ## Plugins to enable
-  plugins: |-
-      [rabbitmq_management, rabbitmq_peer_discovery_k8s].
+  plugins: "rabbitmq_management rabbitmq_peer_discovery_k8s"
+
+  ## Extra plugins to enable
+  ## Use this instead of `plugins` to add new plugins
+  # extraPlugins: ""
 
   ## Clustering settings
   clustering:
-    address_type: ip
+    address_type: hostname
     k8s_domain: cluster.local
 
   loadDefinition:
@@ -144,7 +147,7 @@ securityContext:
 
 persistence:
   ## this enables PVC templates that will create one per pod
-  enabled: false
+  enabled: true
 
   ## rabbitmq data Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>
@@ -251,6 +254,13 @@ metrics:
     ##
     # pullSecrets:
     #   - myRegistryKeySecretName
+
+  ## environment variables to configure rabbitmq_exporter
+  ## ref: https://github.com/kbudde/rabbitmq_exporter#configuration
+  env: {}
+  ## Comma-separated list of extended scraping capabilities supported by the target RabbitMQ server
+  ## ref: https://github.com/kbudde/rabbitmq_exporter#extended-rabbitmq-capabilities
+  capabilities: "bert,no_sort"
   resources: {}
   annotations:
     prometheus.io/scrape: "true"
