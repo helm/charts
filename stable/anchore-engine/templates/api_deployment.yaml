@@ -57,7 +57,7 @@ spec:
         args: ["service", "start", "apiext"]
         envFrom:
         - secretRef:
-            name: {{ template "anchore-engine.fullname" . }}
+            name: {{ default (include "anchore-engine.fullname" .) .Values.anchoreGlobal.existingSecret }}
         - configMapRef:
             name: {{ template "anchore-engine.fullname" . }}
         env:
@@ -111,7 +111,7 @@ spec:
         args: ["service", "start", "rbac_manager"]
         envFrom:
         - secretRef:
-            name: {{ template "anchore-engine.fullname" . }}
+            name: {{ default (include "anchore-engine.fullname" .) .Values.anchoreGlobal.existingSecret }}
         - configMapRef:
             name: {{ template "anchore-engine.fullname" . }}
         env:
@@ -167,7 +167,7 @@ spec:
         args: ["service", "start", "rbac_authorizer"]
         envFrom:
         - secretRef:
-            name: {{ template "anchore-engine.fullname" . }}
+            name: {{ default (include "anchore-engine.fullname" .) .Values.anchoreGlobal.existingSecret }}
         - configMapRef:
             name: {{ template "anchore-engine.fullname" . }}
         env:

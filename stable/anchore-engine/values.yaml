@@ -67,6 +67,9 @@ anchoreGlobal:
   extraEnv: {}
     # FOO: bar
 
+  # Specifies an existing secret to be used for admin and db passwords
+  existingSecret: ""
+
   ###
   # Start of General Anchore Engine Configurations (populates /config/config.yaml)
   ###
