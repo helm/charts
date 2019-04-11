@@ -11,6 +11,12 @@ icon: https://newrelic.com/assets/newrelic/source/NewRelic-logo-square.svg
 maintainers:
   - name: rk295
     email: robin@kearney.co.uk
+  - name: jfjoly
+    email: jjoly@newrelic.com
+  - name: smoya
+  - name: areina
+  - name: douglascamata
+  - name: rk295
 keywords:
   - infrastructure
   - newrelic
