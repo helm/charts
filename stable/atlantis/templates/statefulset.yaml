@@ -75,7 +75,7 @@ spec:
           args:
             - server
           {{- if .Values.serverSideConfig.enabled }}
-          - --repo-config=/etc/atlantis/repos.yaml
+            - --repo-config=/etc/atlantis/repos.yaml
           {{- end }}
           ports:
           - name: atlantis
