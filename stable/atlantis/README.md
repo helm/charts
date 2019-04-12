@@ -56,6 +56,7 @@ The following options are supported.  See [values.yaml](values.yaml) for more de
 | `service.loadBalancerSourceRanges`          | Array of whitelisted IP addresses for the Atlantis Service. If no value is specified, the Service will allow incoming traffic from all IP addresses (0.0.0.0/0).                                                                                                                                          | n/a     |
 | `storageClassName`                          | Storage class of the volume mounted for the Atlantis data directory.                                                                                                                                                                                                                                      | n/a     |
 | `tlsSecretName`                             | Name of a Secret for Atlantis' HTTPS certificate containing the following data items `tls.crt` with the public certificate and `tls.key` with the private key.                                                                                                                                            | n/a     |
+| `ingress.path`                             | Path to use in the `Ingress`. Should be set to `/*` if using gce-ingress in Google Cloud.                                                                                                                                                                                                              | `/`     |
 
 ## Upgrading
 ### From 1.* to 2.*
