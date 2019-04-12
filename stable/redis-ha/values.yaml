@@ -106,9 +106,15 @@ affinity: |
       - weight: 100
         podAffinityTerm:
           labelSelector:
-            matchLabels:
-              app:  {{ template "redis-ha.name" . }}
-              release: {{ .Release.Name }}
+            matchExpressions:
+            - key: app
+              operator: In
+              values:
+              - {{ template "redis-ha.name" . }}
+            - key: release
+              operator: In
+              values:
+              - {{ .Release.Name }}
           topologyKey: failure-domain.beta.kubernetes.io/zone
 
 # Prometheus exporter specific configuration options
