@@ -508,6 +508,16 @@ clusterchecksDeployment:
   #
   enabled: false
 
+  rbac:
+    ## @param dedicated - boolean - required
+    ## If true, use a dedicated RBAC resource for the cluster checks agent(s)
+    #
+    dedicated: false
+    ## @param serviceAccountName - string - required
+    ## Ignored if rbac.create is true
+    #
+    serviceAccountName: default
+
   ## @param replicas - integer - required
   ## If you want to deploy the cluckerchecks agent in HA, keep at least clusterchecksDeployment.replicas set to 2.
   ## And increase the clusterchecksDeployment.replicas according to the number of Cluster Checks.

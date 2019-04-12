@@ -1,4 +1,4 @@
-{{- if and .Values.clusterAgent.clusterChecks.enabled .Values.clusterchecksDeployment.enabled }}
+{{- if and .Values.clusterAgent.enabled .Values.clusterAgent.clusterChecks.enabled .Values.clusterchecksDeployment.enabled -}}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -16,7 +16,11 @@ spec:
         app: {{ template "datadog.fullname" . }}-clusterchecks
       name: {{ template "datadog.fullname" . }}-clusterchecks
     spec:
+      {{- if .Values.clusterchecksDeployment.rbac.dedicated }}
+      serviceAccountName: {{ if .Values.rbac.create }}{{ template "datadog.fullname" . }}-cluster-checks{{ else }}"{{ .Values.clusterchecksDeployment.rbac.serviceAccountName }}"{{ end }}
+      {{- else }}
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "datadog.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+      {{- end }}
       containers:
       - name: {{ default .Chart.Name .Values.datadog.name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"

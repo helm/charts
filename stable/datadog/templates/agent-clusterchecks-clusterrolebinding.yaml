@@ -1,4 +1,4 @@
-{{- if and .Values.rbac.create (not .Values.clusterchecksDeployment.rbac.dedicated) -}}
+{{- if and .Values.rbac.create .Values.clusterAgent.enabled .Values.clusterAgent.clusterChecks.enabled .Values.clusterchecksDeployment.enabled -}}
 apiVersion: {{ template "rbac.apiVersion" . }}
 kind: ClusterRoleBinding
 metadata:
@@ -7,13 +7,13 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
-  name: {{ template "datadog.fullname" . }}
+  name: {{ template "datadog.fullname" . }}-cluster-checks
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
   name: {{ template "datadog.fullname" . }}
 subjects:
   - kind: ServiceAccount
-    name: {{ template "datadog.fullname" . }}
+    name: {{ template "datadog.fullname" . }}-cluster-checks
     namespace: {{ .Release.Namespace }}
 {{- end -}}
