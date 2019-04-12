@@ -1,6 +1,6 @@
+{{- if .Values.ingress.enabled }}
 {{- $servicePort := .Values.service.externalPort -}}
 {{- $serviceName := include "chartmuseum.fullname" . -}}
-{{- if .Values.ingress.enabled }}
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
