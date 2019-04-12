@@ -53,8 +53,8 @@ spec:
       {{- end }}
       {{- if .Values.serverSideConfig.enabled }}
       - name: atlantis-config
-      configMap:
-        name:  {{ template "atlantis.fullname" . }}
+        configMap:
+          name:  {{ template "atlantis.fullname" . }}
       {{- end }}
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:

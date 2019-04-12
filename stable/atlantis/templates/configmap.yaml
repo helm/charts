@@ -9,4 +9,4 @@ metadata:
     heritage: {{ .Release.Service }}
 data:
   repos.yaml: |
-  {{ .Values.serverSideConfig.config | indent 4 }}
+{{ .Values.serverSideConfig.config | indent 4 }}
