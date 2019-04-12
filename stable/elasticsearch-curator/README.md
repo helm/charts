@@ -28,27 +28,32 @@ $ helm install stable/elasticsearch-curator
 The following table lists the configurable parameters of the docker-registry chart and
 their default values.
 
-|          Parameter                   |                      Description                      |                   Default                    |
-| :----------------------------------- | :---------------------------------------------------- | :------------------------------------------- |
-| `image.pullPolicy`                   | Container pull policy                                 | `IfNotPresent`                               |
-| `image.repository`                   | Container image to use                                | `quay.io/pires/docker-elasticsearch-curator` |
-| `image.tag`                          | Container image tag to deploy                         | `5.5.4`                                      |
-| `hooks`                              | Whether to run job on selected hooks                  | `{ "install": false, "upgrade": false }`     |
-| `cronjob.schedule`                   | Schedule for the CronJob                              | `0 1 * * *`                                  |
-| `cronjob.annotations`                | Annotations to add to the cronjob                     | {}                                           |
-| `cronjob.concurrencyPolicy`          | `Allow|Forbid|Replace` concurrent jobs                | `nil`                                        |
-| `cronjob.failedJobsHistoryLimit`     | Specify the number of failed Jobs to keep             | `nil`                                        |
-| `cronjob.successfulJobsHistoryLimit` | Specify the number of completed Jobs to keep          | `nil`                                        |
-| `pod.annotations`                    | Annotations to add to the pod                         | {}                                           |
-| `dryrun`                             | Run Curator in dry-run mode                           | `false`                                     |
-| `env`                                | Environment variables to add to the cronjob container | {}                                           |
-| `command`                            | Command to execute                                    | ["curator"]                                  |
-| `configMaps.action_file_yml`         | Contents of the Curator action_file.yml               | See values.yaml                              |
-| `configMaps.config_yml`              | Contents of the Curator config.yml (overrides config) | See values.yaml                              |
-| `resources`                          | Resource requests and limits                          | {}                                           |
-| `priorityClassName`                  | priorityClassName                                     | `nil`                                        |
-| `extraVolumeMounts`                  | Mount extra volume(s),                                |                                              |
-| `extraVolumes`                       | Extra volumes                                         |                                              |
+|          Parameter                   |                         Description                         |                   Default                    |
+| :----------------------------------- | :---------------------------------------------------------- | :------------------------------------------- |
+| `image.pullPolicy`                   | Container pull policy                                       | `IfNotPresent`                               |
+| `image.repository`                   | Container image to use                                      | `quay.io/pires/docker-elasticsearch-curator` |
+| `image.tag`                          | Container image tag to deploy                               | `5.5.4`                                      |
+| `hooks`                              | Whether to run job on selected hooks                        | `{ "install": false, "upgrade": false }`     |
+| `cronjob.schedule`                   | Schedule for the CronJob                                    | `0 1 * * *`                                  |
+| `cronjob.annotations`                | Annotations to add to the cronjob                           | {}                                           |
+| `cronjob.concurrencyPolicy`          | `Allow|Forbid|Replace` concurrent jobs                      | `nil`                                        |
+| `cronjob.failedJobsHistoryLimit`     | Specify the number of failed Jobs to keep                   | `nil`                                        |
+| `cronjob.successfulJobsHistoryLimit` | Specify the number of completed Jobs to keep                | `nil`                                        |
+| `pod.annotations`                    | Annotations to add to the pod                               | {}                                           |
+| `dryrun`                             | Run Curator in dry-run mode                                 | `false`                                      |
+| `env`                                | Environment variables to add to the cronjob container       | {}                                           |
+| `envFromSecrets`                     | Environment variables from secrets to the cronjob container | {}                                           |
+| `envFromSecrets.*.from.secret`       | - `secretKeyRef.name` used for environment variable         |                                              |              
+| `envFromSecrets.*.from.key`          | - `secretKeyRef.key` used for environment variable          |                                              |              
+| `command`                            | Command to execute                                          | ["curator"]                                  |
+| `configMaps.action_file_yml`         | Contents of the Curator action_file.yml                     | See values.yaml                              |
+| `configMaps.config_yml`              | Contents of the Curator config.yml (overrides config)       | See values.yaml                              |
+| `resources`                          | Resource requests and limits                                | {}                                           |
+| `priorityClassName`                  | priorityClassName                                           | `nil`                                        |
+| `extraVolumeMounts`                  | Mount extra volume(s),                                      |                                              |
+| `extraVolumes`                       | Extra volumes                                               |                                              |
+| `extraInitContainers`                | Init containers to add to the cronjob container             | {}                                           |
+| `securityContext`                    | Configure PodSecurityContext                                |                                              |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to
 `helm install`.

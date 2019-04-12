@@ -88,9 +88,17 @@ spec:
             ulimit -n "${RABBITMQ_ULIMIT_NOFILES}"
             #replace the default password that is generated
             sed -i "s/CHANGEME/$RABBITMQ_PASSWORD/g" /opt/bitnami/rabbitmq/etc/rabbitmq/rabbitmq.conf
-            # Move logs to stdout
-            ln -sF /dev/stdout /opt/bitnami/rabbitmq/var/log/rabbitmq/rabbit@${MY_POD_IP}.log
-            ln -sF /dev/stdout /opt/bitnami/rabbitmq/var/log/rabbitmq/rabbit@${MY_POD_IP}_upgrade.log
+            #api check for probes
+            cat > /opt/bitnami/rabbitmq/sbin/rabbitmq-api-check <<EOF
+            #!/bin/sh
+            set -e
+            URL=\$1
+            EXPECTED=\$2
+            ACTUAL=\$(curl --silent --show-error --fail "\${URL}")
+            echo "\${ACTUAL}"
+            test "\${EXPECTED}" = "\${ACTUAL}"
+            EOF
+            chmod a+x /opt/bitnami/rabbitmq/sbin/rabbitmq-api-check
             exec rabbitmq-server
         {{- if .Values.resources }}
         resources:
@@ -118,7 +126,10 @@ spec:
         {{- if .Values.livenessProbe.enabled }}
         livenessProbe:
           exec:
-            command: ["sh", "-c", "test \"$(curl -sS -f --user {{ .Values.rabbitmq.username }}:$RABBITMQ_PASSWORD 127.0.0.1:{{ .Values.service.managerPort }}/api/healthchecks/node)\" = '{\"status\":\"ok\"}'"]
+            command:
+              - sh
+              - -c
+              - rabbitmq-api-check "http://{{ .Values.rabbitmq.username }}:$RABBITMQ_PASSWORD@127.0.0.1:{{ .Values.service.managerPort }}/api/healthchecks/node" '{"status":"ok"}'
           initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
           timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
           periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
@@ -128,7 +139,10 @@ spec:
         {{- if .Values.readinessProbe.enabled }}
         readinessProbe:
           exec:
-            command: ["sh", "-c", "test \"$(curl -sS -f --user {{ .Values.rabbitmq.username }}:$RABBITMQ_PASSWORD 127.0.0.1:{{ .Values.service.managerPort }}/api/healthchecks/node)\" = '{\"status\":\"ok\"}'"]
+            command:
+              - sh
+              - -c
+              - rabbitmq-api-check "http://{{ .Values.rabbitmq.username }}:$RABBITMQ_PASSWORD@127.0.0.1:{{ .Values.service.managerPort }}/api/healthchecks/node" '{"status":"ok"}'
           initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
           timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
           periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
@@ -167,6 +181,8 @@ spec:
           - name: RABBITMQ_NODENAME
             value: "rabbit@$(MY_POD_IP)"
           {{- end }}
+          - name: RABBITMQ_LOGS
+            value: {{ .Values.rabbitmq.logs | quote }}
           - name: RABBITMQ_ULIMIT_NOFILES
             value: {{ .Values.rabbitmq.ulimitNofiles | quote }}
           - name: RABBITMQ_USE_LONGNAME
@@ -195,6 +211,14 @@ spec:
           value: "http://localhost:{{ .Values.service.managerPort }}"
         - name: RABBIT_USER
           value: {{ .Values.rabbitmq.username }}
+        {{ if .Values.metrics.capabilities }}
+        - name: RABBIT_CAPABILITIES
+          value: "{{ .Values.metrics.capabilities }}"
+        {{- end }}
+        {{- range $key, $value := .Values.metrics.env }}
+        - name: {{ $key }}
+          value: {{ $value | quote }}
+        {{- end }}
         ports:
         - name: metrics
           containerPort: 9090

@@ -13,7 +13,7 @@
 image:
   registry: docker.io
   repository: bitnami/rabbitmq
-  tag: 3.7.13
+  tag: 3.7.14
 
   ## set to true if you would like to see extra information on logs
   ## it turns BASH and NAMI debugging in minideb
@@ -59,6 +59,11 @@ rabbitmq:
   ##
   # rabbitmqClusterNodeName:
 
+  ## Value for the RABBITMQ_LOGS environment variable
+  ## ref: https://www.rabbitmq.com/logging.html#log-file-location
+  ##
+  logs: '-'
+
   ## RabbitMQ Max File Descriptors
   ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
   ## ref: https://www.rabbitmq.com/install-debian.html#kernel-resource-limits
@@ -66,12 +71,15 @@ rabbitmq:
   ulimitNofiles: '65536'
 
   ## Plugins to enable
-  plugins: |-
-      [rabbitmq_management, rabbitmq_peer_discovery_k8s].
+  plugins: "rabbitmq_management rabbitmq_peer_discovery_k8s"
+
+  ## Extra plugins to enable
+  ## Use this instead of `plugins` to add new plugins
+  # extraPlugins: ""
 
   ## Clustering settings
   clustering:
-    address_type: ip
+    address_type: hostname
     k8s_domain: cluster.local
 
   loadDefinition:
@@ -121,6 +129,11 @@ service:
   ##
   managerPort: 15672
 
+  ## Service annotations
+  annotations:
+    # service.beta.kubernetes.io/aws-load-balancer-internal: 0.0.0.0/0
+
+
 # Additional pod labels to apply
 podLabels: {}
 
@@ -134,7 +147,7 @@ securityContext:
 
 persistence:
   ## this enables PVC templates that will create one per pod
-  enabled: false
+  enabled: true
 
   ## rabbitmq data Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>
@@ -241,6 +254,13 @@ metrics:
     ##
     # pullSecrets:
     #   - myRegistryKeySecretName
+
+  ## environment variables to configure rabbitmq_exporter
+  ## ref: https://github.com/kbudde/rabbitmq_exporter#configuration
+  env: {}
+  ## Comma-separated list of extended scraping capabilities supported by the target RabbitMQ server
+  ## ref: https://github.com/kbudde/rabbitmq_exporter#extended-rabbitmq-capabilities
+  capabilities: "bert,no_sort"
   resources: {}
   annotations:
     prometheus.io/scrape: "true"
