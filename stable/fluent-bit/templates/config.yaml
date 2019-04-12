@@ -21,7 +21,7 @@ data:
 {{- if .Values.metrics.enabled }}
         HTTP_Server  On
         HTTP_Listen  0.0.0.0
-        HTTP_Port    {{ .Values.metrics.service.port | default "2020" }}
+        HTTP_Port    {{ .Values.metrics.service.port }}
 {{- end }}
 
   fluent-bit-input.conf: |-
