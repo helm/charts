@@ -112,7 +112,7 @@ The following table lists the configurable parameters of the Redis chart and the
 | `metrics.enabled`                          | Start a side-car prometheus exporter                                                                           | `false`                                              |
 | `metrics.image.registry`                   | Redis exporter image registry                                                                                  | `docker.io`                                          |
 | `metrics.image.repository`                 | Redis exporter image name                                                                                      | `oliver006/redis_exporter`                           |
-| `metrics.image.tag`                        | Redis exporter image tag                                                                                       | `v0.20.2`                                            |
+| `metrics.image.tag`                        | Redis exporter image tag                                                                                       | `v0.31.0`                                            |
 | `metrics.image.pullPolicy`                 | Image pull policy                                                                                              | `IfNotPresent`                                       |
 | `metrics.image.pullSecrets`                | Specify docker-registry secret names as an array                                                               | `nil`                                                |
 | `metrics.extraArgs`                        | Extra arguments for the binary; possible values [here](https://github.com/oliver006/redis_exporter#flags)      | {}                                                   |
@@ -173,6 +173,7 @@ The following table lists the configurable parameters of the Redis chart and the
 | `volumePermissions.image.repository`       | Init container volume-permissions image name                                                                   | `bitnami/minideb`                                    |
 | `volumePermissions.image.tag`              | Init container volume-permissions image tag                                                                    | `latest`                                             |
 | `volumePermissions.image.pullPolicy`       | Init container volume-permissions image pull policy                                                            | `IfNotPresent`                                       |
+| `volumePermissions.resources       `       | Init container volume-permissions CPU/Memory resource requests/limits                                          | {}                                                   |
 | `slave.service.type`                       | Kubernetes Service type (redis slave)                                                                          | `ClusterIP`                                          |
 | `slave.service.nodePort`                   | Kubernetes Service nodePort (redis slave)                                                                      | `nil`                                                |
 | `slave.service.annotations`                | annotations for redis slave service                                                                            | {}                                                   |
@@ -209,6 +210,7 @@ The following table lists the configurable parameters of the Redis chart and the
 | `sysctlImage.tag`                          | sysctlImage Init container tag                                                                                 | `latest`                                             |
 | `sysctlImage.pullPolicy`                   | sysctlImage Init container pull policy                                                                         | `Always`                                             |
 | `sysctlImage.mountHostSys`                 | Mount the host `/sys` folder to `/host-sys`                                                                    | `false`                                              |
+| `sysctlImage.resources`                    | sysctlImage Init container CPU/Memory resource requests/limits                                                 | {}                                                   |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

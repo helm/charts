@@ -1,6 +1,11 @@
 ## Default values for Traefik
 image: traefik
 imageTag: 1.7.9
+
+testFramework:
+  image: "dduportal/bats"
+  tag: "0.4.0"
+
 ## can switch the service type to NodePort if required
 serviceType: LoadBalancer
 # loadBalancerIP: ""
@@ -191,6 +196,9 @@ acme:
   ## Configure dnsProvider to perform domain verification using dns challenge
   ## Applicable only if using the dns-01 challenge type
   delayBeforeCheck: 0
+  resolvers: []
+    # - 1.1.1.1:53
+    # - 8.8.8.8:53
   dnsProvider:
     name: nil
     auroradns:
@@ -414,3 +422,16 @@ tracing:
 #     resource:
 #       name: memory
 #       targetAverageUtilization: 60
+
+## Timeouts
+##
+# timeouts:
+#   ## responding are timeouts for incoming requests to the Traefik instance
+#   responding:
+#     readTimeout: 0s
+#     writeTimeout: 0s
+#     idleTimeout: 180s
+#   ## forwarding are timeouts for requests forwarded to the backend servers
+#   forwarding:
+#     dialTimeout: 30s
+#     responseHeaderTimeout: 0s

@@ -6,7 +6,7 @@ clusterDomain: cluster.local
 ##
 image:
   repository: minio/minio
-  tag: RELEASE.2019-02-12T21-58-47Z
+  tag: RELEASE.2019-03-13T21-59-47Z
   pullPolicy: IfNotPresent
 
 ## Set default image, imageTag, and imagePullPolicy for the `mc` (the minio
@@ -14,7 +14,7 @@ image:
 ##
 mcImage:
   repository: minio/mc
-  tag: RELEASE.2019-02-13T19-48-27Z
+  tag: RELEASE.2019-03-13T21-05-06Z
   pullPolicy: IfNotPresent
 
 ## minio server mode, i.e. standalone or distributed.
@@ -95,7 +95,7 @@ service:
   type: ClusterIP
   clusterIP: ~
   port: 9000
-  # nodePort: 31311
+  nodePort: 31311
   # externalIPs:
   #   - externalIp1
   annotations: {}
@@ -237,96 +237,6 @@ environment:
   # MINIO_DOMAIN: ""
   ## Add other environment variables relevant to Minio server here. These values will be added to the container(s) as this Chart is deployed
 
-## https://docs.minio.io/docs/minio-bucket-notification-guide
-## https://github.com/minio/minio/blob/master/docs/config
-minioConfig:
-  region: "us-east-1"
-  browser: "on"
-  domain: ""
-  worm: "off"
-  storageClass:
-    standardStorageClass: ""
-    reducedRedundancyStorageClass: ""
-  cache:
-    drives: []
-    expiry: 90
-    maxuse: 80
-    exclude: []
-  aqmp:
-    enable: false
-    url: ""
-    exchange: ""
-    routingKey: ""
-    exchangeType: ""
-    deliveryMode: 0
-    mandatory: false
-    immediate: false
-    durable: false
-    internal: false
-    noWait: false
-    autoDeleted: false
-  nats:
-    enable: false
-    address: ""
-    subject: ""
-    username: ""
-    password: ""
-    token: ""
-    secure: false
-    pingInterval: 0
-    enableStreaming: false
-    clusterID: ""
-    clientID: ""
-    async: false
-    maxPubAcksInflight: 0
-  elasticsearch:
-    enable: false
-    format: "namespace"
-    url: ""
-    index: ""
-  redis:
-    enable: false
-    format: "namespace"
-    address: ""
-    password: ""
-    key: ""
-  postgresql:
-    enable: false
-    format: "namespace"
-    connectionString: ""
-    table: ""
-    host: ""
-    port: ""
-    user: ""
-    password: ""
-    database: ""
-  kafka:
-    enable: false
-    brokers: "null"
-    topic: ""
-  webhook:
-    enable: false
-    endpoint: ""
-  mysql:
-    enable: false
-    format: "namespace"
-    dsnString: ""
-    table: ""
-    host: ""
-    port: ""
-    user: ""
-    password: ""
-    database: ""
-  mqtt:
-    enable: false
-    broker: ""
-    topic: ""
-    qos: 0
-    clientId: ""
-    username: ""
-    password: ""
-    reconnectInterval: 0
-    keepAliveInterval: 0
 networkPolicy:
   enabled: false
   allowExternal: true

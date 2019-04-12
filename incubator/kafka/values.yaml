@@ -35,11 +35,6 @@ updateStrategy:
 ## ref: https://kubernetes.io/docs/tutorials/stateful-application/basic-stateful-set/#pod-management-policy
 podManagementPolicy: OrderedReady
 
-## If RBAC is enabled on the cluster, the Kafka init container needs a service account
-## with permissisions sufficient to apply pod labels
-rbac:
-  enabled: false
-
 ## Useful if using any custom authorizer
 ## Pass in some secrets to use (if required)
 # secrets:
@@ -132,15 +127,18 @@ headless:
 ## External access.
 ##
 external:
+  enabled: false
+  # type can be either NodePort or LoadBalancer
   type: NodePort
   # annotations:
   #  service.beta.kubernetes.io/openstack-internal-load-balancer: "true"
   dns:
     useInternal: false
     useExternal: true
-  # create an A record for each statefulset pod
+  # If using external service type LoadBalancer and external dns, set distinct to true below.
+  # This creates an A record for each statefulset pod/broker. You should then map the
+  # A record of the broker to the EXTERNAL IP given by the LoadBalancer in your DNS server.
   distinct: false
-  enabled: false
   servicePort: 19092
   firstListenerPort: 31090
   domain: cluster.local
@@ -170,9 +168,14 @@ configurationOverrides:
   ## - http://kafka.apache.org/documentation/#security_configbroker
   ## - https://cwiki.apache.org/confluence/display/KAFKA/KIP-103%3A+Separation+of+Internal+and+External+traffic
   ##
-  ## Setting "advertised.listeners" here appends to "PLAINTEXT://${POD_IP}:9092,"
+  ## Setting "advertised.listeners" here appends to "PLAINTEXT://${POD_IP}:9092,", ensure you update the domain
+  ## If external service type is Nodeport:
   # "advertised.listeners": |-
   #   EXTERNAL://kafka.cluster.local:$((31090 + ${KAFKA_BROKER_ID}))
+  ## If external service type is LoadBalancer:
+  # "advertised.listeners": |-
+  #   EXTERNAL://kafka-$((${KAFKA_BROKER_ID})).cluster.local:19092
+  ## Uncomment to define the EXTERNAL Listener protocol
   # "listener.security.protocol.map": |-
   #   PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT
 

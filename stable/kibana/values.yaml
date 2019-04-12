@@ -1,7 +1,11 @@
 image:
   repository: "docker.elastic.co/kibana/kibana-oss"
-  tag: "6.6.0"
+  tag: "6.7.0"
   pullPolicy: "IfNotPresent"
+
+testFramework:
+  image: "dduportal/bats"
+  tag: "0.4.0"
 
 commandline:
   args: []
@@ -82,11 +86,13 @@ serviceAccount:
 
 livenessProbe:
   enabled: false
+  path: /status
   initialDelaySeconds: 30
   timeoutSeconds: 10
 
 readinessProbe:
   enabled: false
+  path: /status
   initialDelaySeconds: 30
   timeoutSeconds: 10
   periodSeconds: 10
@@ -146,6 +152,7 @@ podLabels: {}
 # curl --user <username>:<password> -XGET https://kibana.yourdomain.com:5601/api/kibana/dashboards/export?dashboard=<some-dashboard-uuid> > my-dashboard.json
 # A dashboard is defined by a name and a string with the json payload or the download url
 dashboardImport:
+  enabled: false
   timeout: 60
   xpackauth:
     enabled: false
