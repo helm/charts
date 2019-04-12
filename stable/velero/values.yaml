@@ -34,7 +34,7 @@ tolerations: []
 nodeSelector: {}
 
 ## Parameters for the ' default' Config resource
-## See https://heptio.github.io/velero/v0.9.0/config-definition
+## See https://heptio.github.io/velero/v0.11.0/config-definition
 configuration:
   provider:
 
