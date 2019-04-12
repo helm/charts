@@ -10,10 +10,21 @@ metadata:
     release: "{{ .Release.Name }}"
 data:
   run.sh: |-
-    @test "Test csfr token" {
+    @test "Test Token Login" {
       url="http{{ if not .Values.enableInsecureLogin }}s{{ end }}://{{ template "kubernetes-dashboard.fullname" . }}:443"
 
       csrftoken=$(curl -k "${url}/api/v1/csrftoken/login" | jq -cr '.token')
       [ "$csrftoken" != "" ]
+
+      token=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
+      result=$(curl -k -X POST -H "x-csrf-token: ${csrftoken}" -H "Content-Type: application/json" \
+        -d '{"username":"","password":"","token":"'$token'","kubeConfig":""}' \
+        "${url}/api/v1/login")
+
+      jweToken=$(echo $result | jq .jweToken)
+      [ "$jweToken" != "" ]
+
+      errors=$(echo $result | jq .errors)
+      [ "$errors" == "[]" ]
     }
 {{- end }}

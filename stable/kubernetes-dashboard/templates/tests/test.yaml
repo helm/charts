@@ -11,6 +11,8 @@ metadata:
   annotations:
     "helm.sh/hook": test-success
 spec:
+  serviceAccountName: {{ template "kubernetes-dashboard.fullname" . }}
+  automountServiceAccountToken: true
   initContainers:
     - name: test-framework
       image: "{{ .Values.testFramework.image}}:{{ .Values.testFramework.tag }}"
