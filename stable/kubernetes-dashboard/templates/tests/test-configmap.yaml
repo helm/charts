@@ -1,0 +1,19 @@
+{{- if and .Values.rbac.create .Values.rbac.clusterAdminRole }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "kubernetes-dashboard.fullname" . }}-test
+  labels:
+    app: {{ template "kubernetes-dashboard.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+data:
+  run.sh: |-
+    @test "Test csfr token" {
+      url="http{{ if not .Values.enableInsecureLogin }}s{{ end }}://{{ template "kubernetes-dashboard.fullname" . }}:443"
+
+      csrftoken=$(curl -k "${url}/api/v1/csrftoken/login" | jq -cr '.token')
+      [ "$csrftoken" != "" ]
+    }
+{{- end }}

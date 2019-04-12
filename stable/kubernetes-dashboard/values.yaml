@@ -9,6 +9,10 @@ image:
   pullPolicy: IfNotPresent
   pullSecrets: []
 
+testFramework:
+  image: "dduportal/bats"
+  tag: "0.4.0"
+
 replicaCount: 1
 
 ## Here annotations can be added to the kubernetes dashboard deployment
