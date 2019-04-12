@@ -260,7 +260,7 @@ spec:
       {{- if not .Values.persistence.enabled }}
         - name: data
           emptyDir: {}
-      {{- else if (ne "" .Values.persistence.existingClaim) }}
+      {{- else if .Values.persistence.existingClaim }}
         - name: data
           persistentVolumeClaim:
             claimName: {{ .Values.persistence.existingClaim }}
