@@ -211,3 +211,10 @@ exporter:
     tag: 2.0.2
   port: 5556
   jvmOpts: ""
+  resources: {}
+    # limits:
+    #   cpu: 1
+    #   memory: 1Gi
+    # requests:
+    #   cpu: 1
+    #   memory: 1Gi
