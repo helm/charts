@@ -77,9 +77,6 @@ spec:
           {{- if .Values.serverSideConfig.enabled }}
           - --repo-config=/etc/atlantis/repos.yaml
           {{- end }}
-          {{- if .Values.allowRepoConfig }}
-            - --allow-repo-config
-          {{- end }}
           ports:
           - name: atlantis
             containerPort: 4141
@@ -164,14 +161,6 @@ spec:
                 name: {{ template "atlantis.fullname" . }}-webhook
                 key: bitbucket_secret
           {{- end }}
-          {{- end }}
-          {{- if .Values.requireApproval }}
-          - name: ATLANTIS_REQUIRE_APPROVAL
-            value: "true"
-          {{- end }}
-          {{- if .Values.requireMergeable }}
-          - name: ATLANTIS_REQUIRE_MERGEABLE
-            value: "true"
           {{- end }}
           {{- if .Values.livenessProbe.enabled }}
           livenessProbe:
