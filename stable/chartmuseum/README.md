@@ -32,6 +32,7 @@ Please also see https://github.com/kubernetes-helm/chartmuseum
   - [Ingress](#ingress)
     - [Hosts](#hosts)
     - [Annotations](#annotations)
+    - [Extra Paths](#extra-paths)
     - [Example Ingress configuration](#example-ingress-configuration)
 - [Uninstall](#uninstall)
 
@@ -165,6 +166,9 @@ their default values. See values.yaml for all available options.
 | `ingress.hosts[0].tlsSecret`            | TLS secret to use (must be manually created)                       | ``                                   |
 | `ingress.hosts[0].serviceName`          | The name of the service to route traffic to.                       | `{{ .Values.service.externalPort }}` |
 | `ingress.hosts[0].servicePort`          | The port of the service to route traffic to.                       | `{{ .chartmuseum. }}`                |
+| `ingress.extraPaths[0].path`            | Path within the url structure.                                     | ``                                   |
+| `ingress.extraPaths[0].service`         | The name of the service to route traffic to.                       | ``                                   |
+| `ingress.extraPaths[0].port`            | The port of the service to route traffic to.                       | ``                                   |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to
 `helm install`.
@@ -638,6 +642,19 @@ To enable ingress integration, please set `ingress.enabled` to `true`
 Most likely you will only want to have one hostname that maps to this Chartmuseum installation, however, it is possible to have more than one host. To facilitate this, the `ingress.hosts` object is an array.  TLS secrets referenced in the ingress host configuration must be manually created in the namespace.
 
 In most cases, you should not specify values for `ingress.hosts[0].serviceName` and `ingress.hosts[0].servicePort`. However, some ingress controllers support advanced scenarios requiring you to specify these values. For example, [setting up an SSL redirect using the AWS ALB Ingress Controller](https://kubernetes-sigs.github.io/aws-alb-ingress-controller/guide/tasks/ssl_redirect/).
+
+#### Extra Paths
+
+Specifying extra paths to prepend to every host configuration is especially useful when configuring [custom actions with AWS ALB Ingress Controller](https://kubernetes-sigs.github.io/aws-alb-ingress-controller/guide/ingress/annotation/#actions).
+
+```shell
+helm install --name my-chartmuseum stable/chartmuseum \
+  --set ingress.enabled=true \
+  --set ingress.hosts[0].name=chartmuseum.domain.com \
+  --set ingress.extraPaths[0].service=ssl-redirect \
+  --set ingress.extraPaths[0].port=use-annotation \
+```
+
 
 #### Annotations
 
