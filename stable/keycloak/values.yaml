@@ -66,19 +66,13 @@ keycloak:
   existingSecretKey: password
 
   ## Allows the specification of additional environment variables for Keycloak
-  extraEnv: |
-    # - name: KEYCLOAK_LOGLEVEL
-    #   value: DEBUG
-    # - name: WILDFLY_LOGLEVEL
-    #   value: DEBUG
-    # - name: CACHE_OWNERS
-    #   value: "2"
-    # - name: DB_QUERY_TIMEOUT
-    #   value: "60"
-    # - name: DB_VALIDATE_ON_MATCH
-    #   value: true
-    # - name: DB_USE_CAST_FAIL
-    #   value: false
+  extraEnv: {}
+   # KEYCLOAK_LOGLEVEL: DEBUG
+   # WILDFLY_LOGLEVEL: DEBUG
+   # CACHE_OWNERS: 2
+   # DB_QUERY_TIMEOUT 60
+   # DB_VALIDATE_ON_MATCH: true
+   # DB_USE_CAST_FAIL: false
 
   affinity: |
     podAntiAffinity:

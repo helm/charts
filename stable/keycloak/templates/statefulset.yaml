@@ -97,7 +97,14 @@ spec:
           {{- end }}
 {{ include "keycloak.dbEnvVars" . | indent 12 }}
 {{- with .Values.keycloak.extraEnv }}
+{{- if eq (typeOf .) "string" }}
 {{ tpl . $ | indent 12 }}
+{{- else }}
+{{- range $key, $value := . }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+{{- end }}
+{{- end }}
 {{- end }}
           volumeMounts:
             - name: scripts

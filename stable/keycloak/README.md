@@ -56,7 +56,7 @@ Parameter | Description | Default
 `keycloak.existingSecretKey` |  The key in `keycloak.existingSecret` that stores the admin password | `password`
 `keycloak.extraInitContainers` | Additional init containers, e. g. for providing themes, etc. Passed through the `tpl` function and thus to be configured a string | `""`
 `keycloak.extraContainers` | Additional sidecar containers, e. g. for a database proxy, such as Google's cloudsql-proxy. Passed through the `tpl` function and thus to be configured a string | `""`
-`keycloak.extraEnv` | Allows the specification of additional environment variables for Keycloak. Passed through the `tpl` function and thus to be configured a string | `""`
+`keycloak.extraEnv` | Allows the specification of additional environment variables for Keycloak. To be configured as a dict in the form `key: value` | `{}`
 `keycloak.extraVolumeMounts` | Add additional volumes mounts, e. g. for custom themes. Passed through the `tpl` function and thus to be configured a string | `""`
 `keycloak.extraVolumes` | Add additional volumes, e. g. for custom themes. Passed through the `tpl` function and thus to be configured a string | `""`
 `keycloak.extraPorts` | Add additional ports, e. g. for custom admin console port. Passed through the `tpl` function and thus to be configured a string | `""`
@@ -124,7 +124,6 @@ The `tpl` function allows us to pass string values from `values.yaml` through th
 
 * `keycloak.extraInitContainers`
 * `keycloak.extraContainers`
-* `keycloak.extraEnv`
 * `keycloak.affinity`
 * `keycloak.extraVolumeMounts`
 * `keycloak.extraVolumes`
@@ -176,19 +175,13 @@ See also:
 
 ```yaml
 keycloak:
-  extraEnv: |
-    - name: KEYCLOAK_LOGLEVEL
-      value: DEBUG
-    - name: WILDFLY_LOGLEVEL
-      value: DEBUG
-    - name: CACHE_OWNERS
-      value: "3"
-    - name: DB_QUERY_TIMEOUT
-      value: "60"
-    - name: DB_VALIDATE_ON_MATCH
-      value: true
-    - name: DB_USE_CAST_FAIL
-      value: false
+  extraEnv:
+    KEYCLOAK_LOGLEVEL: DEBUG
+    WILDFLY_LOGLEVEL: DEBUG
+    CACHE_OWNERS: 3
+    DB_QUERY_TIMEOUT: 60
+    DB_VALIDATE_ON_MATCH: true
+    DB_USE_CAST_FAIL: false
 ```
 
 ### Providing a Custom Theme
