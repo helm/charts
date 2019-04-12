@@ -73,6 +73,9 @@ Parameter | Description | Default
 `resources` | pod resource requests & limits | `{}`
 `service.port` | port for the service | `80`
 `service.type` | type of service | `ClusterIP`
+`service.clusterIP` | cluster ip address | `nil`
+`service.loadBalancerIP` | ip of load balancer | `nil`
+`service.loadBalancerSourceRanges` | allowed source ranges in load balancer | `nil`
 `tolerations` | List of node taints to tolerate | `[]`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
