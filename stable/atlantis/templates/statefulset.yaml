@@ -51,6 +51,11 @@ spec:
         secret:
           secretName: {{ template "atlantis.fullname" . }}-aws
       {{- end }}
+      {{- if .Values.serverSideConfig.enabled }}
+      - name: atlantis-config
+      configMap:
+        name:  {{ template "atlantis.fullname" . }}
+      {{- end }}
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
       {{- range .Values.imagePullSecrets }}
@@ -69,6 +74,9 @@ spec:
           {{- end}}
           args:
             - server
+          {{- if .Values.serverSideConfig.enabled }}
+          - --repo-config=/etc/atlantis/repos.yaml
+          {{- end }}
           {{- if .Values.allowRepoConfig }}
             - --allow-repo-config
           {{- end }}
@@ -210,6 +218,11 @@ spec:
           {{- if .Values.tlsSecretName }}
           - name: tls
             mountPath: /etc/tls/
+          {{- end }}
+          {{- if .Values.serverSideConfig.enabled }}
+          - name: atlantis-config
+            mountPath: /etc/atlantis
+            readOnly: true
           {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
