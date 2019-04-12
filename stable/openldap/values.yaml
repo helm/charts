@@ -31,7 +31,7 @@ tls:
   secret: ""  # The name of a kubernetes.io/tls type secret to use for TLS
   CA:
     enabled: false
-    secret: "" # The name of a generic secret to use for custom CA certificate (ca.crt)
+    secret: ""  # The name of a generic secret to use for custom CA certificate (ca.crt)
 ## Add additional labels to all resources
 extraLabels: {}
 
