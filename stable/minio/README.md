@@ -93,10 +93,10 @@ The following table lists the configurable parameters of the Minio chart and the
 | Parameter                  | Description                         | Default                                                 |
 |----------------------------|-------------------------------------|---------------------------------------------------------|
 | `image.repository`         | Image repository                    | `minio/minio`                                           |
-| `image.tag`                | Minio image tag. Possible values listed [here](https://hub.docker.com/r/minio/minio/tags/).| `RELEASE.2019-03-13T21-59-47Z`|
+| `image.tag`                | Minio image tag. Possible values listed [here](https://hub.docker.com/r/minio/minio/tags/).| `RELEASE.2019-04-09T01-22-30Z`|
 | `image.pullPolicy`         | Image pull policy                   | `IfNotPresent`                                          |
 | `mcImage.repository`       | Client image repository             | `minio/mc`                                              |
-| `mcImage.tag`              | mc image tag. Possible values listed [here](https://hub.docker.com/r/minio/mc/tags/).| `RELEASE.2019-03-13T21-05-06Z`|
+| `mcImage.tag`              | mc image tag. Possible values listed [here](https://hub.docker.com/r/minio/mc/tags/).| `RELEASE.2019-04-03T17-59-57Z`|
 | `mcImage.pullPolicy`       | mc Image pull policy                | `IfNotPresent`                                          |
 | `ingress.enabled`          | Enables Ingress                     | `false`                                                 |
 | `ingress.annotations`      | Ingress annotations                 | `{}`                                                    |
