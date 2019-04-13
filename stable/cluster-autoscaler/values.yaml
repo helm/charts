@@ -59,7 +59,6 @@ extraArgs:
   logtostderr: true
   # write-status-configmap: true
   # leader-elect: true
-  # skip-nodes-with-local-storage: false
   # expander: least-waste
   # scale-down-enabled: true
   # balance-similar-node-groups: true
