@@ -58,7 +58,7 @@ spec:
         - name: PROVISIONER_NAME
           value: {{ .Values.efsProvisioner.provisionerName }}
         resources:
-{{ toYaml .Values.resources | indent 12 }}
+          {{- toYaml .Values.resources | nindent 12 }}
         volumeMounts:
         - name: pv-volume
           subPath: {{ (trimPrefix "/" .Values.efsProvisioner.path) }}
