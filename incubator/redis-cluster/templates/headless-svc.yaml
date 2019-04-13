@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "redis-cluster.fullname" . }}-headless
+  labels:
+    app: {{ template "redis-cluster.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  ports:
+  - port: {{ .Values.service.clientPort }}
+    targetPort: {{ .Values.service.clientPort }}
+    name: client
+  - port: {{ .Values.service.gossipPort }}
+    targetPort: {{ .Values.service.gossipPort }}
+    name: gossip
+  clusterIP: None
+  selector:
+    app: {{ template "redis-cluster.fullname" . }}

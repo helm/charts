@@ -1,0 +1,61 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ template "redis-cluster.fullname" . }}-create-cluster
+  labels:
+    app: {{ template "redis-cluster.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  template:
+    metadata:
+      name: "{{.Release.Name}}"
+      labels:
+        heritage: {{.Release.Service | quote }}
+        release: {{.Release.Name | quote }}
+    spec:
+      serviceAccountName: {{ template "redis-cluster.fullname" . }}
+      restartPolicy: Never
+      containers:
+      - name: create-cluster
+        image: {{ template "redis.image" . }}
+        imagePullPolicy: {{ .Values.image.pullPolicy | default "" | quote }}
+        command:
+          - "sh"
+        args:
+          - "-c"
+          - |
+            set -e
+            set -x
+            echo "Starting create-cluster job"
+
+            # checks if cluster is already created
+            if redis-cli -h  {{ template "redis-cluster.fullname" . }} cluster info | grep -q 'cluster_state:ok';
+            then
+              echo "Cluster already created"
+              exit 0
+            fi
+
+            apt-get update
+            apt-get install jq curl --yes
+            KUBE_TOKEN=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
+            curl -sSk -H "Authorization: Bearer $KUBE_TOKEN" https://$KUBERNETES_SERVICE_HOST:$KUBERNETES_PORT_443_TCP_PORT/api/v1/namespaces/$NAMESPACE/pods?labelSelector=app=$APP_NAME > pods.json
+            # REDIS_URLS=$(cat pods.json | jq '.items[] | .status.podIP+":${REDIS_CLIENT_PORT}"' | jq -s '. | join(" ")' | sed -e 's/^"//' -e 's/"$//')
+
+            REDIS_URLS=$(cat pods.json | jq '.items[] | .status.podIP' | sed -e 's/^"//' -e 's/"$//' | awk -v PORT=$REDIS_CLIENT_PORT '{url=$1":"PORT; printf url"\n"}')
+            echo 'yes' | redis-cli --cluster create $REDIS_URLS --cluster-replicas 1
+        env:
+          - name: NAMESPACE
+            value: {{ .Release.Namespace }}
+          - name: APP_NAME
+            value: {{ template "redis-cluster.fullname" . }}
+          - name: REDIS_CLIENT_PORT
+            value: {{ .Values.service.clientPort | quote }}
+      initContainers:
+      {{- $root := . }}
+      {{- range $i, $e := until (atoi (printf "%d" (int64 $root.Values.replicas))) }}
+        - name: wait-for-redis-{{ $e }}
+          image: jwilder/dockerize
+          command: ['dockerize', '-timeout', '180s', '-wait', 'tcp://{{- template "redis-cluster.fullname" $root -}}-{{- $e -}}.{{- template "redis-cluster.podHost" $root -}}']
+      {{- end }}

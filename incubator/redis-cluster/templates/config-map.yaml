@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "redis-cluster.fullname" . }}
+  labels:
+    app: {{ template "redis-cluster.fullname" . }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+data:
+  {{- if .Values.redisConfig }}
+  redis.conf: |-
+{{ .Values.redisConfig | indent 4 }}
+  {{- else }}
+  redis.conf: |-
+  cluster-enabled yes
+  cluster-config-file /data/nodes.conf
+  cluster-node-timeout 60000
+  {{- end }}

@@ -1,0 +1,30 @@
+image:
+  registry: docker.io
+  repository: redis
+  tag: 5.0.0
+  pullPolicy: Always
+replicas: 6
+persistence:
+  size: 1Gi
+annotations: {}
+labels: {}
+redisConfig: |-
+  cluster-node-timeout 60000
+  cluster-enabled yes
+  cluster-config-file /data/nodes.conf
+service:
+  clientPort: 6379
+  gossipPort: 16379
+statefulset:
+  affinity: |
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 1
+        podAffinityTerm:
+          topologyKey: "kubernetes.io/hostname"
+          labelSelector:
+            matchExpressions:
+            - key: app
+              operator: In
+              values:
+              - "{{ template "redis-cluster.fullname" . }}"

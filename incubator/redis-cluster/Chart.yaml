@@ -1,0 +1,14 @@
+name: redis-cluster
+version: 0.1.0
+appVersion: 5.0
+description: Redis is an open source, advanced key-value store. It is often referred to as a data structure server since keys can contain strings, hashes, lists, sets and sorted sets. This chart will allow you to install a redis cluster which allows the ability to reshard keys from one node to another while the cluster is running, together with a failover procedure that makes sure the system is able to survive certain kinds of failures.
+keywords:
+- redis-cluster
+- keyvalue
+home: http://redis.io/
+maintainers:
+  - name: 'Vidhi Gupta'
+    email: vidhigupta0494@gmail.com
+  - name: 'Prabhu Jayakumar'
+    email: j.prabhu91@gmail.com
+
