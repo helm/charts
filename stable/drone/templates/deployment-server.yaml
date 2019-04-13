@@ -44,15 +44,15 @@ spec:
         image: "{{ .Values.images.server.repository }}:{{ .Values.images.server.tag }}"
         imagePullPolicy: {{ .Values.images.server.pullPolicy }}
         env:
-        {{- if .Values.server.kubernetes.enabled }}
+          {{- if .Values.server.kubernetes.enabled }}
           - name: DRONE_KUBERNETES_ENABLED
             value: "true"
           - name: DRONE_KUBERNETES_NAMESPACE
             value: {{ default .Release.Namespace .Values.server.kubernetes.namespace }}
           - name: DRONE_KUBERNETES_SERVICE_ACCOUNT
             value: {{ template "drone.pipelineServiceAccount" . }}
-        {{- end }}
-          - name: DRONE_ALWAYS_AUTH
+          {{- end }}
+          - name: DRONE_GIT_ALWAYS_AUTH
             value: {{ .Values.server.alwaysAuth | quote }}
           - name: DRONE_SERVER_HOST
           {{- if hasKey .Values.server "host" }}
@@ -66,6 +66,8 @@ spec:
           - name: DRONE_USER_CREATE
             value: username:{{ .Values.server.adminUser }},machine:false,admin:true
           {{- end }}
+          - name: DRONE_RPC_HOST
+            value: {{ template "drone.fullname" . }}.{{ .Release.Namespace }}
           - name: DRONE_RPC_SECRET
             valueFrom:
               secretKeyRef:
