@@ -51,6 +51,7 @@ chart and their default values.
 | `postgresql.postgresUser`        | PostgreSQL User to create                                    | `gogs`                                                     |
 | `postgresql.postgresPassword`    | PostgreSQL Password for the new user                         | `gogs`                                                     |
 | `postgresql.postgresDatabase`    | PostgreSQL Database to create                                | `gogs`                                                     |
+| `postgresql.postgresSSLMode`     | PostgreSQL SSL Mode                                          | `disable`                                                  |
 | `postgresql.persistence.enabled` | Enable PostgreSQL persistence using Persistent Volume Claims | `true`                                                     |
 | `service.httpNodePort`           | Enable a static port where the Gogs http service is exposed on each Node’s IP | `nil`                                     |
 | `service.sshNodePort`            | Enable a static port where the Gogs ssh service is exposed on each Node’s IP | `nil`                                      |

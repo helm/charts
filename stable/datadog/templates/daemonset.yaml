@@ -68,6 +68,10 @@ spec:
               secretKeyRef:
                 name: {{ template "datadog.apiSecretName" . }}
                 key: api-key
+          {{- if .Values.datadog.clusterName }}
+          - name: DD_CLUSTER_NAME
+            value: {{ .Values.datadog.clusterName | quote }}
+          {{- end }}
           {{- if .Values.datadog.site }}
           - name: DD_SITE
             value: {{ .Values.datadog.site | quote }}
@@ -129,11 +133,11 @@ spec:
           - name: DD_CLUSTER_AGENT_ENABLED
             value: {{ .Values.clusterAgent.enabled | quote }}
           - name: DD_CLUSTER_AGENT_KUBERNETES_SERVICE_NAME
-            value: {{ template "datadog.clusterAgent.fullname" . }}
+            value: {{ template "datadog.fullname" . }}-cluster-agent
           - name: DD_CLUSTER_AGENT_AUTH_TOKEN
             valueFrom:
               secretKeyRef:
-                name: {{ template "datadog.clusterAgent.fullname" . }}
+                name: {{ template "datadog.fullname" . }}-cluster-agent
                 key: token
           {{- end }}
           - name: KUBERNETES
@@ -171,6 +175,10 @@ spec:
           {{- if .Values.datadog.useDogStatsDSocketVolume }}
           - name: DD_DOGSTATSD_SOCKET
             value: "/var/run/datadog/dsd.socket"
+          {{- end }}
+          {{- if and .Values.clusterAgent.clusterChecks.enabled  (not .Values.clusterchecksDeployment.enabled) }}
+          - name: DD_EXTRA_CONFIG_PROVIDERS
+            value: "clusterchecks"
           {{- end }}
 {{- if .Values.datadog.env }}
 {{ toYaml .Values.datadog.env | indent 10 }}
@@ -251,12 +259,12 @@ spec:
         {{- if (or (.Values.datadog.confd) (.Values.datadog.autoconf)) }}
         - name: confd
           configMap:
-            name: {{ template "datadog.confd.fullname" . }}
+            name: {{ template "datadog.fullname" . }}-confd
         {{- end }}
         {{- if .Values.datadog.checksd }}
         - name: checksd
           configMap:
-            name: {{ template "datadog.checksd.fullname" . }}
+            name: {{ template "datadog.fullname" . }}-checksd
         {{- end }}
         {{- if .Values.datadog.logsEnabled }}
         - hostPath:

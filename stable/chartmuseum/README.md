@@ -26,6 +26,9 @@ Please also see https://github.com/kubernetes-helm/chartmuseum
   - [Using an existing secret](#using-an-existing-secret)
   - [Using with local filesystem storage](#using-with-local-filesystem-storage)
     - [Example storage class](#example-storage-class)
+  - [Authentication](#authentication)
+    - [Basic Authentication](#basic-authentication)
+    - [Bearer/Token auth](#bearertoken-auth)
   - [Ingress](#ingress)
     - [Hosts](#hosts)
     - [Annotations](#annotations)
@@ -127,6 +130,9 @@ their default values. See values.yaml for all available options.
 | `env.open.CACHE`                       | Cache store, can be one of: redis           | ``                                                  |
 | `env.open.CACHE_REDIS_ADDR`            | Address of Redis service (host:port)        | ``                                                  |
 | `env.open.CACHE_REDIS_DB`              | Redis database to be selected after connect | `0`                                                 |
+| `env.open.BEARER_AUTH`                 | Enable bearer auth                          | `false`                                             |
+| `env.open.AUTH_REALM`                  | Realm used for bearer authentication        | ``                                                  |
+| `env.open.AUTH_SERVICE`                | Service used for bearer authentication      | ``                                                  |
 | `env.field`                            | Expose pod information to containers through environment variables | ``                           |
 | `env.existingSecret`                   | Name of the existing secret use values      | ``                                                  |
 | `env.existingSecret.BASIC_AUTH_USER`   | Key name in the secret for the Username     | ``                                                  |
@@ -141,6 +147,8 @@ their default values. See values.yaml for all available options.
 | `oracle.secret.name`                   | Secret name for OCI config and key          | ``                                                  |
 | `oracle.secret.config`                 | Secret key that holds the OCI config        | `config`                                            |
 | `oracle.secret.key_file`               | Secret key that holds the OCI private key   | `key_file`                                          |
+| `bearerAuth.secret.enabled`            | Flag for bearer auth public key secret      | ``                                                  |
+| `bearerAuth.secret.publicKey`          | The name of the secret with the public key  | ``                                                  |
 | `service.type`                         | Kubernetes Service type                     | `ClusterIP`                                          |
 | `service.clusterIP`                    | Static clusterIP or None for headless services| `nil`                                              |
 | `service.externalTrafficPolicy`        | Source IP preservation (only for Service type NodePort)  | `Local`                                         |
@@ -155,6 +163,8 @@ their default values. See values.yaml for all available options.
 | `ingress.hosts[0].path`                | Path within the url structure               | ``                                                  |
 | `ingress.hosts[0].tls `                | Enable TLS on the ingress host              | `false`                                             |
 | `ingress.hosts[0].tlsSecret`           | TLS secret to use (must be manually created)| ``                                                  |
+| `ingress.hosts[0].serviceName`         | The name of the service to route traffic to. | `{{ .Values.service.externalPort }}`               |
+| `ingress.hosts[0].servicePort`         | The port of the service to route traffic to. | `{{ .chartmuseum. }}`                              |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to
 `helm install`.
@@ -561,6 +571,62 @@ parameters:
   userSecretName: thesecret
 ```
 
+### Authentication
+
+By default this chart does not have any authentication configured and allows anyone to fetch or upload (assuming the API is enabled) charts there are two supported methods of authentication
+
+#### Basic Authentication
+
+This allows all API routes to be protected by HTTP basic auth, this is configured either as plain text in the values that gets stored as a secret in the kubernetes cluster by setting:
+
+```yaml
+env:
+  secret:
+    BASIC_AUTH_USERNAME: curator
+    BASIC_AUTH_PASSWORD: mypassword 
+```
+
+Or by using values from an existing secret in the cluster that can be created using:
+
+'''shell
+kubectl create secret generic chartmuseum-secret --from-literal="basic-auth-user=curator" --from-literal="basic-auth-pass=mypassword"
+'''
+
+This secret can be used in the values file as follows:
+
+```yaml
+env:
+  existingSecret: chartmuseum-secret
+  existingSecretMappings:
+    BASIC_AUTH_USER: basic-auth-user
+    BASIC_AUTH_PASS: basic-auth-pass
+```
+
+#### Bearer/Token auth
+
+When using this ChartMuseum is configured with a public key, and will accept RS256 JWT tokens signed by the associated private key, passed in the Authorization header. You can use the [chartmuseum/auth](https://github.com/chartmuseum/auth) Go library to generate valid JWT tokens. For more information about how this works, please see [chartmuseum/auth-server-example](https://github.com/chartmuseum/auth-server-example)
+
+To use this the public key should be stored in a secret this can be done with
+
+```shell
+kubectl create secret generic chartmuseum-public-key --from-file=public-key.pem
+```
+
+And Bearer/Token auth can be configured using the following values
+
+```yaml
+env:
+  open:
+    BEARER_AUTH: true
+    AUTH_REALM: <realm>
+    AUTH_SERVICE: <service>
+
+bearerAuth:
+  secret:
+    enabled: true
+    publicKeySecret: chartmuseum-public-key
+```
+
 ### Ingress
 
 This chart provides support for ingress resources. If you have an ingress controller installed on your cluster, such as [nginx-ingress](https://hub.kubeapps.com/charts/stable/nginx-ingress) or [traefik](https://hub.kubeapps.com/charts/stable/traefik) you can utilize the ingress controller to expose Kubeapps.
@@ -570,6 +636,8 @@ To enable ingress integration, please set `ingress.enabled` to `true`
 #### Hosts
 
 Most likely you will only want to have one hostname that maps to this Chartmuseum installation, however, it is possible to have more than one host. To facilitate this, the `ingress.hosts` object is an array.  TLS secrets referenced in the ingress host configuration must be manually created in the namespace.
+
+In most cases, you should not specify values for `ingress.hosts[0].serviceName` and `ingress.hosts[0].servicePort`. However, some ingress controllers support advanced scenarios requiring you to specify these values. For example, [setting up an SSL redirect using the AWS ALB Ingress Controller](https://kubernetes-sigs.github.io/aws-alb-ingress-controller/guide/tasks/ssl_redirect/).
 
 #### Annotations
 
