@@ -378,6 +378,8 @@ sidecar:
 #   requests:
 #     cpu: 50m
 #     memory: 50Mi
+  # skipTlsVerify Set to true to skip tls verification for kube api calls
+  # skipTlsVerify: true
   dashboards:
     enabled: false
     # label that the configmaps with dashboards are marked with
