@@ -1,4 +1,4 @@
-{{- if .Values.nodeExporter.enabled }}
+{{- if or .Values.nodeExporter.enabled .Values.nodeExporter.existingRelease }}
 apiVersion: {{ printf "%s/v1" (.Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com") }}
 kind: ServiceMonitor
 metadata:
@@ -8,10 +8,19 @@ metadata:
 {{ include "prometheus-operator.labels" . | indent 4 }}
 spec:
   jobLabel: {{ .Values.nodeExporter.jobLabel }}
+  {{- if .Values.nodeExporter.existingRelease }}
+  namespaceSelector:
+    matchNames:
+    - {{ .Values.nodeExporter.existingRelease.namespace }}
+  {{- end }}
   selector:
     matchLabels:
+      {{- if .Values.nodeExporter.existingRelease }}
+{{ toYaml .Values.nodeExporter.existingRelease.labels | indent 6 }}
+      {{- else }}
       app: prometheus-node-exporter
       release: {{ .Release.Name }}
+      {{- end }}
   endpoints:
   - port: metrics
     {{- if .Values.nodeExporter.serviceMonitor.interval }}

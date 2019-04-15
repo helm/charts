@@ -94,7 +94,7 @@ spec:
       labels:
         severity: critical
 {{- end }}
-{{- if .Values.nodeExporter.enabled }}
+{{- if or .Values.nodeExporter.enabled .Values.nodeExporter.existingRelease }}
     - alert: NodeExporterDown
       annotations:
         message: NodeExporter has disappeared from Prometheus target discovery.

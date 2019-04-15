@@ -365,6 +365,8 @@ The following tables list the configurable parameters of the prometheus-operator
 | `kube-state-metrics.podSecurityPolicy.enabled` | Create pod security policy resource for kube-state-metrics. | `true` |
 | `nodeExporter.enabled` | Deploy the `prometheus-node-exporter` and scrape it | `true` |
 | `nodeExporter.jobLabel` | The name of the label on the target service to use as the job name in prometheus. See `prometheus-node-exporter.podLabels.jobLabel=node-exporter` default | `jobLabel` |
+| `nodeExporter.existingRelease.namespace` | Namespace of the existing `prometheus-node-exporter` release | `nil` |
+| `nodeExporter.existingRelease.labels` | Labels used to target the existing `prometheus-node-exporter` release | `{}` |
 | `nodeExporter.serviceMonitor.metricRelabelings` | Metric relablings for the `prometheus-node-exporter` ServiceMonitor | `[]` |
 | `nodeExporter.serviceMonitor.interval` | Scrape interval. If not set, the Prometheus default scrape interval is used | `nil` |
 | `prometheus-node-exporter.podLabels` | Additional labels for pods in the DaemonSet | `{"jobLabel":"node-exporter"}` |

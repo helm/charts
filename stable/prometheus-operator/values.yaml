@@ -624,6 +624,15 @@ nodeExporter:
   ##
   jobLabel: jobLabel
 
+  ## Namespace and labels used to target the Endpoints of an existing release
+  ## of prometheus-node-exporter
+  ##
+  existingRelease: {}
+    # namespace:
+    # labels:
+    #   key1: value1
+    #   key2: value2
+
   serviceMonitor:
     ## Scrape interval. If not set, the Prometheus default scrape interval is used.
     ##
