@@ -62,6 +62,7 @@ The following table lists the configurable parameters of the Sentry chart and th
 | `image.tag`                          | Sentry image tag                            | `9.0`                                                      |
 | `imagePullPolicy`                    | Image pull policy                           | `IfNotPresent`                                             |
 | `web.podAnnotations`                 | Web pod annotations                         | `{}`                                                       |
+| `web.podLabels`                     | Worker pod extra labels                     | `{}`                                                       |
 | `web.replicacount`                   | Amount of web pods to run                   | `1`                                                        |
 | `web.resources.limits`               | Web resource limits                         | `{cpu: 500m, memory: 500Mi}`                               |
 | `web.resources.requests`             | Web resource requests                       | `{cpu: 300m, memory: 300Mi}`                               |
@@ -71,6 +72,7 @@ The following table lists the configurable parameters of the Sentry chart and th
 | `web.schedulerName`                  | Name of an alternate scheduler for web pod  | `nil`                                                      |
 | `web.tolerations`                    | Toleration labels for web pod assignment    | `[]`                                                       |
 | `cron.podAnnotations`                | Cron pod annotations                        | `{}`                                                       |
+| `cron.podLabels`                     | Worker pod extra labels                     | `{}`                                                       |
 | `cron.replicacount`                  | Amount of cron pods to run                  | `1`                                                        |
 | `cron.resources.limits`              | Cron resource limits                        | `{cpu: 200m, memory: 200Mi}`                               |
 | `cron.resources.requests`            | Cron resource requests                      | `{cpu: 100m, memory: 100Mi}`                               |
@@ -79,6 +81,7 @@ The following table lists the configurable parameters of the Sentry chart and th
 | `cron.schedulerName`                 | Name of an alternate scheduler for cron pod | `nil`                                                      |
 | `cron.tolerations`                   | Toleration labels for cron pod assignment   | `[]`                                                       |
 | `worker.podAnnotations`              | Worker pod annotations                      | `{}`                                                       |
+| `worker.podLabels`                   | Worker pod extra labels                     | `{}`                                                       |
 | `worker.replicacount`                | Amount of worker pods to run                | `2`                                                        |
 | `worker.resources.limits`            | Worker resource limits                      | `{cpu: 300m, memory: 500Mi}`                               |
 | `worker.resources.requests`          | Worker resource requests                    | `{cpu: 100m, memory: 100Mi}`                               |
