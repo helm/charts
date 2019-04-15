@@ -42,7 +42,7 @@ data:
         Name            systemd
         Tag             {{ .Values.input.systemd.tag }}
 {{- range $value := .Values.input.systemd.filters.systemdUnit }}
-        Systemd_Filter  _SYSTEMD_UNIT="{{ $value }}"
+        Systemd_Filter  _SYSTEMD_UNIT={{ $value }}
 {{- end }}
         Max_Entries     {{ .Values.input.systemd.maxEntries }}
         Read_From_Tail  {{ .Values.input.systemd.readFromTail }}
