@@ -139,6 +139,13 @@ spec:
           imagePullPolicy: "{{ .Values.controller.metrics.image.pullPolicy }}"
           args:
             - '--haproxy.scrape-uri=http://localhost:{{ .Values.controller.stats.port }}/haproxy?stats;csv'
+          {{- range $key, $value := .Values.controller.metrics.extraArgs }}
+            {{- if $value }}
+            - --{{ $key }}={{ $value }}
+            {{- else }}
+            - --{{ $key }}
+            {{- end }}
+          {{- end }}
           ports:
             - name: metrics
               containerPort: 9101
@@ -148,12 +155,7 @@ spec:
               path: /
               port: metrics
           resources:
-            limits:
-              cpu: 200m
-              memory: 512Mi
-            requests:
-              cpu: 100m
-              memory: 256Mi
+{{ toYaml .Values.controller.metrics.resources | indent 12 }}
       {{- end }}
 {{- if .Values.controller.template }}
       volumes:
