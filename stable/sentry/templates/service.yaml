@@ -22,6 +22,9 @@ spec:
     targetPort: {{ .Values.service.internalPort }}
     protocol: TCP
     name: {{ .Values.service.name }}
+{{- if and (.Values.service.nodePort) (eq .Values.service.type "NodePort") }}
+    nodePort: {{ .Values.service.nodePort }}
+{{- end }}
 {{- if .Values.service.externalIPs }}
   externalIPs:
 {{ toYaml .Values.service.externalIPs | indent 4 }}
