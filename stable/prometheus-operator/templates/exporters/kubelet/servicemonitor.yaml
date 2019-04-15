@@ -21,7 +21,7 @@ spec:
     honorLabels: true
     {{- if .Values.kubelet.serviceMonitor.metricRelabelings }}
     metricRelabelings:
-{{ toYaml .Values.kubelet.serviceMonitor.metricRelabelings | indent 4 }}
+{{ tpl (toYaml .Values.kubelet.serviceMonitor.metricRelabelings | indent 4) . }}
     {{- end }}
   - port: https-metrics
     scheme: https
@@ -36,7 +36,7 @@ spec:
     bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
 {{- if .Values.kubelet.serviceMonitor.cAdvisorMetricRelabelings }}
     metricRelabelings:
-{{ toYaml .Values.kubelet.serviceMonitor.cAdvisorMetricRelabelings | indent 4 }}
+{{ tpl (toYaml .Values.kubelet.serviceMonitor.cAdvisorMetricRelabelings | indent 4) . }}
 {{- end }}
   {{- else }}
   - port: http-metrics
@@ -46,7 +46,7 @@ spec:
     honorLabels: true
     {{- if .Values.kubelet.serviceMonitor.metricRelabelings }}
     metricRelabelings:
-{{ toYaml .Values.kubelet.serviceMonitor.metricRelabelings | indent 4 }}
+{{ tpl (toYaml .Values.kubelet.serviceMonitor.metricRelabelings | indent 4) . }}
     {{- end }}
   - port: http-metrics
     path: /metrics/cadvisor
@@ -56,7 +56,7 @@ spec:
     honorLabels: true
 {{- if .Values.kubelet.serviceMonitor.cAdvisorMetricRelabelings }}
     metricRelabelings:
-{{ toYaml .Values.kubelet.serviceMonitor.cAdvisorMetricRelabelings | indent 4 }}
+{{ tpl (toYaml .Values.kubelet.serviceMonitor.cAdvisorMetricRelabelings | indent 4) . }}
 {{- end }}
   {{- end }}
   jobLabel: k8s-app
