@@ -289,7 +289,6 @@ Master:
   # - ip: 10.0.50.50
   #   hostnames:
   #     - other.local
-  #
 
 Agent:
   Enabled: true
