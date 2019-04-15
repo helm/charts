@@ -1,0 +1,51 @@
+{{- if .Values.service.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/name: {{ include "apm-server.name" . }}
+    helm.sh/chart: {{ include "apm-server.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+  {{- range $key, $value := .Values.service.labels }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
+  name: {{ template "apm-server.fullname" . }}
+  {{- with .Values.service.annotations }}
+  annotations:
+    {{- range $key, $value := . }}
+      {{ $key }}: {{ $value | quote }}
+    {{- end }}
+  {{- end }}
+spec:
+  {{- if .Values.service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+    {{- range $cidr := .Values.service.loadBalancerSourceRanges }}
+    - {{ $cidr }}
+    {{- end }}
+  {{- end }}
+  type: {{ .Values.service.type }}
+  {{- if and (eq .Values.service.type "ClusterIP") .Values.service.clusterIP }}
+  clusterIP: {{ .Values.service.clusterIP }}
+  {{- end }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+{{ if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.nodePort))) }}
+      nodePort: {{ .Values.service.nodePort }}
+{{ end }}
+{{- if .Values.service.portName }}
+      name: {{ .Values.service.portName }}
+{{- end }}
+{{- if .Values.service.externalIPs }}
+  externalIPs:
+{{ toYaml .Values.service.externalIPs | indent 4 }}
+{{- end }}
+  selector:
+    app.kubernetes.io/name: {{ include "apm-server.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+{{- if .Values.service.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.service.loadBalancerIP }}
+{{- end }}
+{{- end }}
