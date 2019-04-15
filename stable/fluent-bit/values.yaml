@@ -129,14 +129,22 @@ existingConfigMap: ""
 
 rawConfig: |-
   @INCLUDE fluent-bit-service.conf
-  @INCLUDE fluent-bit-input.conf
-  @INCLUDE fluent-bit-filter.conf
+  @INCLUDE fluent-bit-kubernetes-input.conf
+  @INCLUDE fluent-bit-kubernetes-filter.conf
+  @INCLUDE fluent-bit-systemd-input.conf
+  @INCLUDE fluent-bit-kmsg-input.conf
+  @INCLUDE fluent-bit-kmsg-filter.conf
   @INCLUDE fluent-bit-output.conf
 
+# These are the extraEntries that can be appended to the sections respectively
 extraEntries:
-  input: |-
+  kubernetes_input: |-
 #     # >=1 additional Key/Value entrie(s) for existing Input section
-  filter: |-
+  kubernetes_filter: |-
+#     # >=1 additional Key/Value entrie(s) for existing Filter section
+  systemd_input: |-
+#     # >=1 additional Key/Value entrie(s) for existing Input section
+  kmsg_filter: |-
 #     # >=1 additional Key/Value entrie(s) for existing Filter section
   output: |-
 #     # >=1 additional Key/Value entrie(s) for existing Ouput section
@@ -194,6 +202,9 @@ input:
     memBufLimit: 5MB
     parser: docker
     path: /var/log/containers/*.log
+  kmsg:
+    enabled: false
+    tag: kernel
   systemd:
     enabled: false
     filters:

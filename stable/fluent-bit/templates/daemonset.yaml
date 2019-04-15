@@ -34,9 +34,35 @@ spec:
       containers:
       - name: fluent-bit
         image: "{{ .Values.image.fluent_bit.repository }}:{{ .Values.image.fluent_bit.tag }}"
+{{- if .Values.input.kmsg.enabled }}
+        securityContext:
+          privileged: true
+{{- end }}
         imagePullPolicy: "{{ .Values.image.pullPolicy }}"
         env:
-{{ toYaml .Values.env | indent 10 }}
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: HOST_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP
+{{- if .Values.env }}
+{{ toYaml .Values.env | indent 8 }}
+{{- end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
 {{- if or .Values.metrics.enabled .Values.extraPorts }}
@@ -56,6 +82,10 @@ spec:
         - name: varlibdockercontainers
           mountPath: /var/lib/docker/containers
           readOnly: true
+{{- if .Values.input.kmsg.enabled }}
+        - name: kmsg
+          mountPath: /dev/kmsg
+{{- end }}
       {{- if .Values.input.systemd.enabled }}
         - name: etcmachineid
           mountPath: /etc/machine-id
@@ -72,11 +102,20 @@ spec:
           mountPath: /fluent-bit/etc/fluent-bit-service.conf
           subPath: fluent-bit-service.conf
         - name: config
-          mountPath: /fluent-bit/etc/fluent-bit-input.conf
-          subPath: fluent-bit-input.conf
+          mountPath: /fluent-bit/etc/fluent-bit-kubernetes-input.conf
+          subPath: fluent-bit-kubernetes-input.conf
         - name: config
-          mountPath: /fluent-bit/etc/fluent-bit-filter.conf
-          subPath: fluent-bit-filter.conf
+          mountPath: /fluent-bit/etc/fluent-bit-systemd-input.conf
+          subPath: fluent-bit-systemd-input.conf
+        - name: config
+          mountPath: /fluent-bit/etc/fluent-bit-kmsg-input.conf
+          subPath: fluent-bit-kmsg-input.conf
+        - name: config
+          mountPath: /fluent-bit/etc/fluent-bit-kubernetes-filter.conf
+          subPath: fluent-bit-kubernetes-filter.conf
+        - name: config
+          mountPath: /fluent-bit/etc/fluent-bit-kmsg-filter.conf
+          subPath: fluent-bit-kmsg-filter.conf
         - name: config
           mountPath: /fluent-bit/etc/fluent-bit-output.conf
           subPath: fluent-bit-output.conf
@@ -124,6 +163,11 @@ spec:
       - name: varlibdockercontainers
         hostPath:
           path: /var/lib/docker/containers
+{{- if .Values.input.kmsg.enabled }}
+      - name: kmsg
+        hostPath:
+          path: /dev/kmsg
+{{- end }}
     {{- if .Values.input.systemd.enabled }}
       - name: etcmachineid
         hostPath:

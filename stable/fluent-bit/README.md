@@ -81,9 +81,12 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `podLabels`                        | Optional pod labels                       | `NULL`                |
 | `fullConfigMap`                    | User has provided entire config (parsers + system)  | `false`      |
 | `existingConfigMap`                | ConfigMap override                         | ``                    |
-| `extraEntries.input`               |    Extra entries for existing [INPUT] section                     | ``                    |
-| `extraEntries.filter`              |    Extra entries for existing [FILTER] section                     | ``                    |
-| `extraEntries.output`              |   Extra entries for existing [OUPUT] section                     | ``                    |
+| `extraEntries.kubernetes_input`    |    Extra entries for existing Kubernetes [INPUT] section           | ``                    |
+| `extraEntries.systemd_input`       |    Extra entries for the optional systemd [INPUT] section          | ``                    |
+| `extraEntries.kubernetes_input`    |    Extra entries for existing Kubernetes [INPUT] section           | ``                    |
+| `extraEntries.kubernetes_filter`   |    Extra entries for existing Kubernetes [FILTER] section          | ``                    |
+| `extraEntries.kmsg_filter`         |    Extra entries for the optional kmsg [FILTER] section            | ``                    |
+| `extraEntries.output`              |    Extra entries for existing [OUPUT] section                      | ``                    |
 | `extraPorts`                       | List of extra ports                        |                       |
 | `extraVolumeMounts`                | Mount an extra volume, required to mount ssl certificates when elasticsearch has tls enabled |          |
 | `extraVolume`                      | Extra volume                               |                                                |
@@ -94,7 +97,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `filter.kubeURL`                   | Optional custom configmaps                 | `https://kubernetes.default.svc:443`            |
 | `filter.kubeCAFile`                | Optional custom configmaps       | `/var/run/secrets/kubernetes.io/serviceaccount/ca.crt`    |
 | `filter.kubeTokenFile`             | Optional custom configmaps       | `/var/run/secrets/kubernetes.io/serviceaccount/token`     |
-| `filter.kubeTag`                   | Optional top-level tag for matching in filter         | `kube`                                 |
+| `filter.kubeTag`                   | Optional top-level tag for matching in filter         | `kube`  (`.*` is automatically appended) |
 | `filter.mergeJSONLog`              | If the log field content is a JSON string map, append the map fields as part of the log structure         | `true`                                 |
 | `image.fluent_bit.repository`      | Image                                      | `fluent/fluent-bit`                               |
 | `image.fluent_bit.tag`             | Image tag                                  | `1.0.6`                                          |
@@ -105,11 +108,13 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `input.tail.memBufLimit`           | Specify Mem_Buf_Limit in tail input        | `5MB`                                             |
 | `input.tail.parser`                | Specify Parser in tail input.        | `docker`                                             |
 | `input.tail.path`                  | Specify log file(s) through the use of common wildcards.        | `/var/log/containers/*.log`                                             |
+| `input.kmsg.enabled`               | [Enable kmsg input](https://docs.fluentbit.io/manual/input/kmsg) **Warning: Enabling this sets `securityContext.privileged: true`**| `false` |
+| `input.kmsg.tag`                   | Top-level tag for kmsg | `kernel` |
 | `input.systemd.enabled`            | [Enable systemd input](https://docs.fluentbit.io/manual/input/systemd)                   | `false`                                       |
 | `input.systemd.filters.systemdUnit` | Please see https://docs.fluentbit.io/manual/input/systemd | `[docker.service, kubelet.service`, `node-problem-detector.service]`                                       |
 | `input.systemd.maxEntries`         | Please see https://docs.fluentbit.io/manual/input/systemd | `1000`                             |
 | `input.systemd.readFromTail`       | Please see https://docs.fluentbit.io/manual/input/systemd | `true`                             |
-| `input.systemd.tag`                | Please see https://docs.fluentbit.io/manual/input/systemd | `host.*`                           |
+| `input.systemd.tag`                | Please see https://docs.fluentbit.io/manual/input/systemd | `host` (`.*` is automatically appended) |
 | `rbac.create`                      | Specifies whether RBAC resources should be created.   | `true`                                 |
 | `serviceAccount.create`            | Specifies whether a ServiceAccount should be created. | `true`                                 |
 | `serviceAccount.name`              | The name of the ServiceAccount to use.     | `NULL`                                            |
