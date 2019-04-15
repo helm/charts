@@ -43,6 +43,20 @@ The following table lists the configurable parameters of the apm-server chart an
 | `image.repository`                  | The image repository to pull from  | `docker.elastic.co/apm/apm-server`        |
 | `image.tag`                         | The image tag to pull              | `6.2.4`                                   |
 | `image.pullPolicy`                  | Image pull policy                  | `IfNotPresent`                            |
+| `kind`                              | Install as Deployment or DaemonSet | `Deployment`                              |
+| `replicaCount`                      | Number of replicas when kind is Deployment | `1`                               |
+| `updateStrategy`                    | Allows setting of RollingUpdate strategy | `{}`                                |
+| `service.enabled`                   | If true, create service pointing to APM Server | `true`                        |
+| `service.type`                      | type of service                          | `ClusterIP`                         |
+| `service.port`                      | Service port                             | `8200`                              |
+| `service.portName`                  | Service port name                        | None                                |
+| `service.clusterIP`                 | Static clusterIP or None for headless services | None                          |
+| `service.externalIPs`               | External IP addresses                    | None                                |
+| `service.loadBalancerIP`            | Load Balancer IP address                 | None                                |
+| `service.loadBalancerSourceRanges`  | Limit load balancer source IPs to list of CIDRs (where available)  | `[]`      |
+| `service.nodePort`                  | NodePort value if service.type is NodePort | None                              |
+| `service.annotations`               | Kubernetes service annotations           | None                                |
+| `service.labels`                    | Kubernetes service labels                | None                                |
 | `rbac.create`                       | If true, create & use RBAC resources | `true`                                  |
 | `rbac.serviceAccount`               | existing ServiceAccount to use (ignored if rbac.create=true) | `default`       |
 | `config`                            | The content of the configuration file consumed by apm-server. See the [apm-server documentation](https://www.elastic.co/guide/en/beats/apm-server/current/apm-server-reference-yml.html) for full details | |
@@ -53,6 +67,9 @@ The following table lists the configurable parameters of the apm-server chart an
 | `resources.limits.cpu`              | CPU resource limits                |                                           |
 | `resources.requests.memory`         | Memory resource requests           |                                           |
 | `resources.limits.memory`           | Memory resource limits             |                                           |
+| `nodeSelector`                      | Node labels for pod assignment     | `{}`                                      |
+| `tolerations`                       | List of node taints to tolerate    | `[]`                                      |
+| `affinity`                          | Node/Pod affinities                | None                                      |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
