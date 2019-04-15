@@ -20,7 +20,6 @@ Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment
 - PV provisioner support in the underlying infrastructure
 
 ## Installing the Chart
-
 To install the chart with the release name `my-release`:
 
 ```console
