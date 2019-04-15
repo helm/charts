@@ -27,6 +27,9 @@ spec:
       serviceAccountName: {{ template "node-problem-detector.serviceAccountName" . }}
       hostNetwork: {{ .Values.hostNetwork }}
       terminationGracePeriodSeconds: 30
+      {{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName | quote }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image:  "{{ .Values.image.repository }}:{{ .Values.image.tag }}"

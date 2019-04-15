@@ -41,9 +41,9 @@ Parameter | Description | Default
 `serviceAccount.name` | ServiceAccount to be used | ``
 `controller.name` | name of the controller component | `controller`
 `controller.image.repository` | controller container image repository | `quay.io/jcmoraisjr/haproxy-ingress`
-`controller.image.tag` | controller container image tag | `v0.7-beta.7`
+`controller.image.tag` | controller container image tag | `v0.7.1`
 `controller.image.pullPolicy` | controller container image pullPolicy | `IfNotPresent`
-`controller.initContainers` | extra containers that can initialize the haproxy-ingress-controller | `{}`
+`controller.initContainers` | extra containers that can initialize the haproxy-ingress-controller | `[]`
 `controller.extraArgs` | extra command line arguments for the haproxy-ingress-controller | `{}`
 `controller.extraEnv` | extra environment variables for the haproxy-ingress-controller | `{}`
 `controller.template` | custom template for haproxy-ingress-controller | `{}`
@@ -74,6 +74,7 @@ Parameter | Description | Default
 `controller.dnsPolicy` | Optionally change this to ClusterFirstWithHostNet in case you have 'hostNetwork: true' | `ClusterFirst`
 `controller.kind` | Type of deployment, DaemonSet or Deployment | `Deployment`
 `controller.tcp` | TCP [service ConfigMap](https://github.com/jcmoraisjr/haproxy-ingress/blob/v0.6/README.md#tcp-services-configmap): `<port>: <namespace>/<servicename>:<portnumber>[:[<in-proxy>][:<out-proxy>]]` | `{}`
+`controller.enableStaticPorts` | Set to `false` to only rely on ports from `controller.tcp` | `true`
 `controller.daemonset.useHostPort` | Set to true to use host ports 80 and 443 | `false`
 `controller.daemonset.hostPorts.http` | If `controller.daemonset.useHostPort` is `true` and this is non-empty sets the hostPort for http | `"80"`
 `controller.daemonset.hostPorts.https` | If `controller.daemonset.useHostPort` is `true` and this is non-empty sets the hostPort for https | `"443"`

@@ -155,7 +155,7 @@ spec:
       initContainers:
       {{- if $needsVolumePermissions }}
       - name: volume-permissions
-        image: "{{ template "volumePermissions.image" . }}"
+        image: "{{ template "redis.volumePermissions.image" . }}"
         imagePullPolicy: {{ default "" .Values.volumePermissions.image.pullPolicy | quote }}
         command: ["/bin/chown", "-R", "{{ .Values.master.securityContext.runAsUser }}:{{ .Values.master.securityContext.fsGroup }}", "{{ .Values.master.persistence.path }}"]
         securityContext:
@@ -170,6 +170,7 @@ spec:
       {{- if .Values.sysctlImage.enabled }}
       - name: init-sysctl
         image: {{ template "redis.sysctl.image" . }}
+        imagePullPolicy: {{ default "" .Values.sysctlImage.pullPolicy | quote }}
         resources:
 {{ toYaml .Values.sysctlImage.resources | indent 10 }}
         {{- if .Values.sysctlImage.mountHostSys }}
@@ -242,6 +243,10 @@ spec:
   updateStrategy:
     type: {{ .Values.master.statefulset.updateStrategy }}
     {{- if .Values.master.statefulset.rollingUpdatePartition }}
+    {{- if (eq "Recreate" .Values.master.statefulset.updateStrategy) }}
+    rollingUpdate: null
+    {{- else }}
     rollingUpdate:
       partition: {{ .Values.master.statefulset.rollingUpdatePartition }}
+    {{- end }}
     {{- end }}
