@@ -55,6 +55,7 @@ service:
 | `service.type` | The type of service to expose | `ClusterIP` |
 | `serviceMonitor.enabled` | Set to true if using the Prometheus Operator | `true` |
 | `serviceMonitor.interval` | Interval at which metrics should be scraped | `30s` |
+| `serviceMonitor.scrapeTimeout` | Interval at which metric scrapes should time out | `10s` |
 | `serviceMonitor.namespace` | The namespace where the Prometheus Operator is deployed | `` |
 | `serviceMonitor.additionalLabels` | Additional labels to add to the ServiceMonitor | `{}` |
 | `tolerations` | List of node taints to tolerate  | `[]` |
