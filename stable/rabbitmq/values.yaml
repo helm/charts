@@ -70,6 +70,12 @@ rabbitmq:
   ##
   ulimitNofiles: '65536'
 
+  ## RabbitMQ maximum available scheduler threads and online scheduler threads
+  ## ref: https://hamidreza-s.github.io/erlang/scheduling/real-time/preemptive/migration/2016/02/09/erlang-scheduler-details.html#scheduler-threads
+  ##
+  maxAvailableSchedulers: 2
+  onlineSchedulers: 1
+
   ## Plugins to enable
   plugins: "rabbitmq_management rabbitmq_peer_discovery_k8s"
 
