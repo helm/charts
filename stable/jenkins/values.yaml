@@ -205,8 +205,6 @@ Master:
       # accessible via SSH from outside of the pod.  Note if you use non-root pod privileges (RunAsUser & FsGroup),
       # this must be > 1024:
       sshTcpPort: 1044
-      # label that the configmaps with dashboards are marked with:
-      label: jenkins_config
       # folder in the pod that should hold the collected dashboards:
       folder: /var/jenkins_home/casc_configs
       # If specified, the sidecar will search for dashboard config-maps inside this namespace.
@@ -254,12 +252,15 @@ Master:
 
   ingress:
     enabled: false
+    # For Kubernetes v1.14+, use 'networking.k8s.io/v1beta1'
+    apiVersion: extensions/v1beta1
     labels: {}
     annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
     # Set this path to JenkinsUriPrefix above or use annotations to rewrite path
     # path: "/jenkins"
+    # hostName: jenkins.example.com
     tls:
     # - secretName: jenkins.cluster.local
     #   hosts:
@@ -360,6 +361,7 @@ NetworkPolicy:
 rbac:
   install: false
   serviceAccountName: default
+  serviceAccountAnnotations: {}
   # Role reference
   roleRef: cluster-admin
   # Role kind (Role or ClusterRole)

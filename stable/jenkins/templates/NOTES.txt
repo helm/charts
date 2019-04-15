@@ -3,7 +3,7 @@
 
 Master.HostName --> Master.ingress.hostName
 New value - Master.ingress.enabled
-Master.Ingress.ApiVersion - Deprecated
+Master.Ingress.ApiVersion --> Master.ingress.apiVersion
 Master.Ingress.Annotations --> Master.ingress.annotations
 Master.Ingress.Labels --> Master.ingress.labels
 Master.Ingress.Path --> Master.ingress.path
