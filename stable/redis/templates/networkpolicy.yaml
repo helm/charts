@@ -16,7 +16,34 @@ spec:
   ingress:
     # Allow inbound connections
     - ports:
-      - port: 6379
+      - port: {{ .Values.redisPort }}
+      {{- if not .Values.networkPolicy.allowExternal }}
+      from:
+        - podSelector:
+            matchLabels:
+              {{ template "redis.fullname" . }}-client: "true"
+        {{- if .Values.metrics.enabled }}
+        - podSelector:
+            matchLabels:
+              release: "{{ .Release.Name }}"
+              role: metrics
+              app: {{ template "redis.name" . }}
+        {{- end }}
+      {{- end }}
+      - port: {{ .Values.sentinel.port }}
+      {{- if not .Values.networkPolicy.allowExternal }}
+      from:
+        - podSelector:
+            matchLabels:
+              {{ template "redis.fullname" . }}-client: "true"
+        {{- if .Values.metrics.enabled }}
+        - podSelector:
+            matchLabels:
+              release: "{{ .Release.Name }}"
+              role: metrics
+              app: {{ template "redis.name" . }}
+        {{- end }}
+      {{- end }}
       {{- if not .Values.networkPolicy.allowExternal }}
       from:
         - podSelector:

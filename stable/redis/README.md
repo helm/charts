@@ -141,7 +141,7 @@ The following table lists the configurable parameters of the Redis chart and the
 | `master.statefulset.rollingUpdatePartition`| Partition update strategy                                                                                      | `nil`                                                |
 | `master.podLabels`                         | Additional labels for Redis master pod                                                                         | {}                                                   |
 | `master.podAnnotations`                    | Additional annotations for Redis master pod                                                                    | {}                                                   |
-| `master.port`                              | Redis master port                                                                                              | `6379`                                               |
+| `redisPort`                              | Redis port (in both master and slaves)                                                                                             | `6379`                                               |
 | `master.command`                           | Redis master entrypoint string. The command `redis-server` is executed if this is not provided.                  | `/run.sh`                                                   |
 | `master.disableCommands`                   | Array of Redis commands to disable (master)                                                                    | `["FLUSHDB", "FLUSHALL"]`                                   |
 | `master.extraFlags`                        | Redis master additional command line flags                                                                     | []                                                   |
@@ -179,7 +179,6 @@ The following table lists the configurable parameters of the Redis chart and the
 | `slave.service.annotations`                | annotations for redis slave service                                                                            | {}                                                   |
 | `slave.service.port`                      | Kubernetes Service port (redis slave)                                                                         | `6379`                                               |
 | `slave.service.loadBalancerIP`             | LoadBalancerIP if Redis slave service type is `LoadBalancer`                                                   | `nil`                                                |
-| `slave.port`                               | Redis slave port                                                                                               | `master.port`                                        |
 | `slave.command`                            | Redis slave entrypoint array. The docker image's ENTRYPOINT is used if this is not provided.                   | `master.command`                                     |
 | `slave.disableCommands`                    | Array of Redis commands to disable (slave)                                                                     | `master.disableCommands`                             |
 | `slave.extraFlags`                         | Redis slave additional command line flags                                                                      | `master.extraFlags`                                  |
@@ -209,7 +208,41 @@ The following table lists the configurable parameters of the Redis chart and the
 | `slave.resources`                          | Redis slave CPU/Memory resource requests/limits                                                                | `master.resources`                                   |
 | `slave.affinity`                           | Enable node/pod affinity for slaves                                                                            | {}                                                   |
 | `slave.priorityClassName`                  | Redis Slave pod priorityClassName                                                                              | {}                                                   |
-| `sysctlImage.enabled`                      | Enable an init container to modify Kernel settings                                                             | `false`                                              |
+| `sentinel.enabled`                       | Enable sentinel containers                                                                          | `false`                                          |
+| `sentinel.masterSet`                       | Name of the sentinel master set                                                                          | `mymaster`                                          |
+| `sentinel.initialCheckTimeout`                       | Timeout for querying the redis sentinel service for the active sentinel list                                                                          | `5`                                          |
+| `sentinel.quorum`                       | Quorum for electing a new master                                                                          | `2`                                          |
+| `sentinel.downAfterMilliseconds`                       | Timeout for detecting a Redis node is down                                                                          | `60000`                                          |
+| `sentinel.failoverTimeout`                       | Timeout for performing a election failover                                                                          | `18000`                                          |
+| `sentinel.parallelSyncs`                       | Number of parallel syncs in the cluster                                                                          | `1`                                          |
+| `sentinel.port`                       | Redis Sentinel port                                                                          | `26379`                                          |
+| `sentinel.service.type`                       | Kubernetes Service type (redis sentinel)                                                                          | `ClusterIP`                                          |
+| `sentinel.service.nodePort`                   | Kubernetes Service nodePort (redis sentinel)                                                                      | `nil`                                                |
+| `sentinel.service.annotations`                | annotations for redis sentinel service                                                                            | {}                                                   |
+| `sentinel.service.redisPort`                      | Kubernetes Service port for Redis read only operations                                                                        | `6379`                                               |
+| `sentinel.service.sentinelPort`                      | Kubernetes Service port for Redis sentinel                                                                        | `26379`                                               |
+| `sentinel.service.redisNodePort`                      | Kubernetes Service node port for Redis read only operations                                                                        | ``                                               |
+| `sentinel.service.sentinelNodePort`                      | Kubernetes Service node port for Redis sentinel                                                                        | ``                                               |
+| `sentinel.service.loadBalancerIP`             | LoadBalancerIP if Redis sentinel service type is `LoadBalancer`                                                   | `nil`                                                |
+| `sentinel.livenessProbe.enabled`              | Turn on and off liveness probe (redis sentinel pod)                                                               | `master.livenessProbe.enabled`                       |
+| `sentinel.livenessProbe.initialDelaySeconds`  | Delay before liveness probe is initiated (redis sentinel pod)                                                     | `master.livenessProbe.initialDelaySeconds`           |
+| `sentinel.livenessProbe.periodSeconds`        | How often to perform the probe (redis sentinel container)                                                               | `master.livenessProbe.periodSeconds`                 |
+| `sentinel.livenessProbe.timeoutSeconds`       | When the probe times out (redis sentinel container)                                                                     | `master.livenessProbe.timeoutSeconds`                |
+| `sentinel.livenessProbe.successThreshold`     | Minimum consecutive successes for the probe to be considered successful after having failed (redis sentinel container)  | `master.livenessProbe.successThreshold`              |
+| `sentinel.livenessProbe.failureThreshold`     | Minimum consecutive failures for the probe to be considered failed after having succeeded.                     | `master.livenessProbe.failureThreshold`              |
+| `sentinel.readinessProbe.enabled`             | Turn on and off sentinel.readiness probe (redis sentinel pod)                                                        | `master.readinessProbe.enabled`                      |
+| `sentinel.readinessProbe.initialDelaySeconds` | Delay before sentinel.readiness probe is initiated (redis sentinel pod)                                              | `master.readinessProbe.initialDelaySeconds`          |
+| `sentinel.readinessProbe.periodSeconds`       | How often to perform the probe (redis sentinel pod)                                                               | `master.readinessProbe.periodSeconds`                |
+| `sentinel.readinessProbe.timeoutSeconds`      | When the probe times out (redis sentinel container)                                                                     | `master.readinessProbe.timeoutSeconds`               |
+| `sentinel.readinessProbe.successThreshold`    | Minimum consecutive successes for the probe to be considered successful after having failed (redis sentinel container)  | `master.readinessProbe.successThreshold`             |
+| `sentinel.readinessProbe.failureThreshold`    | Minimum consecutive failures for the probe to be considered failed after having succeeded. (redis sentinel container)   | `master.readinessProbe.failureThreshold`             |
+| `sentinel.resources`                          | Redis sentinel CPU/Memory resource requests/limits                                                                | `master.resources`                                   |
+| `sentinelImage.registry`                           | Redis Sentinel Image registry                                                                                           | `docker.io`                                          |
+| `sentinelImage.repository`                         | Redis Sentinel Image name                                                                                               | `bitnami/redis-sentinel`                                      |
+| `sentinelImage.tag`                                | Redis Sentinel Image tag                                                                                                | `{VERSION}`                                          |
+| `sentinelImage.pullPolicy`                         | Image pull policy                                                                                              | `Always`                                             |
+| `sentinelImage.pullSecrets`                        | Specify docker-registry secret names as an array                                                               | `nil`                                                |
+| `cluster.enabled`                          | Use master-slave topology               | `sysctlImage.enabled`                      | Enable an init container to modify Kernel settings                                                             | `false`                                              |
 | `sysctlImage.command`                      | sysctlImage command to execute                                                                                 | []                                                   |
 | `sysctlImage.registry`                     | sysctlImage Init container registry                                                                            | `docker.io`                                          |
 | `sysctlImage.repository`                   | sysctlImage Init container name                                                                                | `bitnami/minideb`                                    |
@@ -286,11 +319,38 @@ sysctlImage:
       sysctl -w net.core.somaxconn=10000
       echo never > /host-sys/kernel/mm/transparent_hugepage/enabled
 ```
+## Cluster topologies
+
+### Default: Master-Slave
+
+When installing the chart with `cluster.enabled=true`, it will deploy a Redis master StatefulSet (only one master node allowed) and a Redis slave StatefulSet. The slaves will be read-replicas of the master. Two services will be exposed:
+
+   - Redis Master service: Points to the master, where read-write operations can be performed
+   - Redis Slave service: Points to the slaves, where only read operations are allowed.
+I 
+In case the master crashes, the slaves will wait until the master node is respawned again by the Kubernetes Controller Manager.
+
+### Master-Slave with Sentinel
+
+When installing the chart with `cluster.enabled=true` and `sentinel.enabled=true`, it will deploy a Redis master StatefulSet (only one master allowed) and a Redis slave StatefulSet. In this case, the pods will contain en extra container with Redis Sentinel. This container will form a cluster of Redis Sentinel nodes, which will promote a new master in case the actual one fails. In addition to this, only one service is exposed:
+
+   - Redis service: Exposes port 6379 for Redis read-only operations and port 26379 for accesing Redis Sentinel.
+
+For read-only operations, you access the service using port 6379. For write operations, first access the Redis Sentinel cluster and query the current master using the following Redis command:
+
+```
+SENTINEL get-master-addr-by-name <name of your MasterSet. Example: mymaster>
+```
+This command will return the address of the current master, which can be accessed from inside the cluster.
+
+In case the current master crashes, the Sentinel containers will elect a new master node.
 
 ## Notable changes
 
 ### 7.0.0
 In order to improve the performance in case of slave failure, we added persistence to the read-only slaves. That means that we moved from Deployment to StatefulSets. This should not affect upgrades from previous versions of the chart, as the deployments did not contain any persistence at all.
+
+This version also allows enabling Redis Sentinel containers inside of the Redis Pods (feature disabled by default). In case the master crashes, a new Redis node will be elected as master. In order to query the current master (no redis master service is exposed), you need to query first the Sentinel cluster. More information [in this section](#master-slave-with-sentinel).
 
 ## Upgrade
 

@@ -16,7 +16,7 @@ spec:
 {{- if .Values.cluster.slaveCount }}
   replicas: {{ .Values.cluster.slaveCount }}
 {{- end }}
-  serviceName: {{ template "redis.fullname" . }}-slave
+  serviceName: {{ template "redis.fullname" . }}-headless
   selector:
     matchLabels:
         release: "{{ .Release.Name }}"
@@ -84,6 +84,12 @@ spec:
             password_aux=`cat ${REDIS_MASTER_PASSWORD_FILE}`
             export REDIS_MASTER_PASSWORD=$password_aux
           fi
+          if [[ ! -f /opt/bitnami/redis/etc/replica.conf ]];then
+            cp /opt/bitnami/redis/mounted-etc/replica.conf /opt/bitnami/redis/etc/replica.conf
+          fi
+          if [[ ! -f /opt/bitnami/redis/etc/redis.conf ]];then
+            cp /opt/bitnami/redis/mounted-etc/redis.conf /opt/bitnami/redis/etc/redis.conf
+          fi          
           ARGS=("--port" "${REDIS_PORT}")
           {{- if .Values.usePassword }}
           ARGS+=("--requirepass" "${REDIS_PASSWORD}")
@@ -103,11 +109,11 @@ spec:
         - name: REDIS_REPLICATION_MODE
           value: slave
         - name: REDIS_MASTER_HOST
-          value: {{ template "redis.fullname" . }}-master
+          value: {{ template "redis.fullname" . }}-master-0.{{ template "redis.fullname" . }}-headless.{{ .Release.Namespace }}.svc.cluster.local
         - name: REDIS_PORT
-          value: {{ .Values.slave.port | quote }}
+          value: {{ .Values.redisPort | quote }}
         - name: REDIS_MASTER_PORT_NUMBER
-          value: {{ .Values.slave.service.port | quote }}
+          value: {{ .Values.redisPort | quote }}
         {{- if .Values.usePassword }}
         {{- if .Values.usePasswordFile }}
         - name: REDIS_PASSWORD_FILE
@@ -132,7 +138,7 @@ spec:
         {{- end }}
         ports:
         - name: redis
-          containerPort: {{ .Values.slave.port }}
+          containerPort: {{ .Values.redisPort }}
         {{- if .Values.slave.livenessProbe.enabled }}
         livenessProbe:
           initialDelaySeconds: {{ .Values.slave.livenessProbe.initialDelaySeconds }}
@@ -144,7 +150,11 @@ spec:
             command:
             - sh
             - -c
+            {{- if .Values.sentinel.enabled }}
+            - /health/ping_local.sh {{ .Values.slave.livenessProbe.timeoutSeconds }}
+            {{- else }}
             - /health/ping_local_and_master.sh {{ .Values.slave.livenessProbe.timeoutSeconds }}
+            {{- end }}
         {{- end }}
 
         {{- if .Values.slave.readinessProbe.enabled }}
@@ -158,7 +168,11 @@ spec:
             command:
             - sh
             - -c
-            - /health/ping_local_and_master.sh {{ .Values.slave.readinessProbe.timeoutSeconds }}
+            {{- if .Values.sentinel.enabled }}
+            - /health/ping_local.sh {{ .Values.slave.livenessProbe.timeoutSeconds }}
+            {{- else }}
+            - /health/ping_local_and_master.sh {{ .Values.slave.livenessProbe.timeoutSeconds }}
+            {{- end }}
         {{- end }}
         resources:
 {{ toYaml .Values.slave.resources | indent 10 }}
@@ -171,10 +185,102 @@ spec:
         {{- end }}
         - name: redis-data
           mountPath: /data
-        {{- if .Values.configmap }}
         - name: config
+          mountPath: /opt/bitnami/redis/mounted-etc
+        - name: redis-tmp-conf
           mountPath: /opt/bitnami/redis/etc
+      {{- if and .Values.cluster.enabled .Values.sentinel.enabled }}
+      - name: sentinel
+        image: "{{ template "sentinel.image" . }}"
+        imagePullPolicy: {{ default "" .Values.sentinelImage.pullPolicy | quote }}
+        {{- if .Values.securityContext.enabled }}
+        securityContext:
+          runAsUser: {{ .Values.securityContext.runAsUser }}
         {{- end }}
+        command:
+        - /bin/bash
+        - -c
+        - |
+          if [[ -n $REDIS_PASSWORD_FILE ]]; then
+            password_aux=`cat ${REDIS_PASSWORD_FILE}`
+            export REDIS_PASSWORD=$password_aux
+          fi
+          if [[ ! -f /opt/bitnami/redis-sentinel/etc/sentinel.conf ]];then
+            cp /opt/bitnami/redis-sentinel/mounted-etc/sentinel.conf /opt/bitnami/redis-sentinel/etc/sentinel.conf
+            {{- if .Values.usePassword }}
+            printf "\nsentinel auth-pass {{ .Values.sentinel.masterSet }} $REDIS_PASSWORD" >> /opt/bitnami/redis-sentinel/etc/sentinel.conf
+            {{- end }}
+          fi
+          echo "Getting information about current running sentinels"
+          # Get information from existing sentinels
+          existing_sentinels=$(timeout -s 9 {{ .Values.sentinel.initialCheckTimeout }} redis-cli --raw -h {{ template "redis.fullname" . }} -a $REDIS_PASSWORD -p {{ .Values.sentinel.service.sentinelPort }} SENTINEL sentinels {{ .Values.sentinel.masterSet }})
+          echo "$existing_sentinels" | awk -f /health/parse_sentinels.awk | tee -a  /opt/bitnami/redis-sentinel/etc/sentinel.conf
+
+          redis-server /opt/bitnami/redis-sentinel/etc/sentinel.conf --sentinel
+        env:
+        {{- if .Values.usePassword }}
+        {{- if .Values.usePasswordFile }}
+        - name: REDIS_PASSWORD_FILE
+          value: "/opt/bitnami/redis/secrets/redis-password"
+        {{- else }}
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "redis.secretName" . }}
+              key: redis-password
+        {{- end }}
+        {{- else }}
+        - name: ALLOW_EMPTY_PASSWORD
+          value: "yes"
+        {{- end }}
+        - name: REDIS_SENTINEL_PORT
+          value: {{ .Values.sentinel.port | quote }}
+        ports:
+        - name: redis-sentinel
+          containerPort: {{ .Values.sentinel.port }}
+        {{- if .Values.sentinel.livenessProbe.enabled }}
+        livenessProbe:
+          initialDelaySeconds: {{ .Values.sentinel.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.sentinel.livenessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.sentinel.livenessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.sentinel.livenessProbe.successThreshold }}
+          failureThreshold: {{ .Values.sentinel.livenessProbe.failureThreshold }}
+          exec:
+            command:
+            - sh
+            - -c
+            - /health/ping_sentinel.sh {{ .Values.sentinel.livenessProbe.timeoutSeconds }}
+        {{- end }}
+        {{- if .Values.sentinel.readinessProbe.enabled}}
+        readinessProbe:
+          initialDelaySeconds: {{ .Values.sentinel.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.sentinel.readinessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.sentinel.readinessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.sentinel.readinessProbe.successThreshold }}
+          failureThreshold: {{ .Values.sentinel.readinessProbe.failureThreshold }}
+          exec:
+            command:
+            - sh
+            - -c
+            - /health/ping_sentinel.sh {{ .Values.sentinel.livenessProbe.timeoutSeconds }}
+        {{- end }}
+        resources:
+{{ toYaml .Values.sentinel.resources | indent 10 }}
+        volumeMounts:
+        - name: health
+          mountPath: /health
+        {{- if .Values.usePasswordFile }}
+        - name: redis-password
+          mountPath: /opt/bitnami/redis/secrets/
+        {{- end }}
+        - name: redis-data
+          mountPath: {{ .Values.master.persistence.path }}
+          subPath: {{ .Values.master.persistence.subPath }}
+        - name: config
+          mountPath: /opt/bitnami/redis-sentinel/mounted-etc
+        - name: sentinel-tmp-conf
+          mountPath: /opt/bitnami/redis-sentinel/etc
+      {{- end }}
       {{- $needsVolumePermissions := and .Values.volumePermissions.enabled (and .Values.slave.persistence.enabled .Values.securityContext.enabled) }}
       {{- if or $needsVolumePermissions .Values.sysctlImage.enabled }}
       initContainers:
@@ -220,16 +326,18 @@ spec:
         secret:
           secretName: {{ template "redis.secretName" . }}
       {{- end }}
-      {{- if .Values.configmap }}
       - name: config
         configMap:
           name: {{ template "redis.fullname" . }}
-      {{- end }}
       {{- if .Values.sysctlImage.mountHostSys }}
       - name: host-sys
         hostPath:
           path: /sys
       {{- end }}
+      - name: sentinel-tmp-conf
+        emptyDir: {}
+      - name: redis-tmp-conf
+        emptyDir: {}
   {{- if and .Values.slave.persistence.enabled }}
   volumeClaimTemplates:
     - metadata:
