@@ -74,6 +74,7 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `service.nodePort`                   | Node port override, if serviceType NodePort      | _random available between 30000-32767_                  |
 | `service.managerPort`                | RabbitMQ Manager port                            | `15672`                                                 |
 | `service.annotations`                | service annotations as an array                  | []                                                      |
+| `service.loadBalancerSourceRanges`   | Address that are allowed when svc is LoadBalancer| {}                                                      |
 | `persistence.enabled`                | Use a PVC to persist data                        | `false`                                                 |
 | `persistence.storageClass`           | Storage class of backing PVC                     | `nil` (uses alpha storage class annotation)             |
 | `persistence.accessMode`             | Use volume as ReadOnly or ReadWrite              | `ReadWriteOnce`                                         |
