@@ -20,6 +20,9 @@ spec:
       labels:
         app: {{ template "fullname" . }}
         release: "{{ .Release.Name }}"
+        {{- if .Values.worker.podLabels }}
+{{ toYaml .Values.worker.podLabels | indent 8 }}
+        {{- end }}
     spec:
       restartPolicy: Never
       {{- if .Values.image.imagePullSecrets }}

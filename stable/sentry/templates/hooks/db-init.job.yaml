@@ -20,6 +20,9 @@ spec:
       labels:
         app: {{ template "fullname" . }}
         release: "{{ .Release.Name }}"
+        {{- if .Values.worker.podLabels }}
+{{ toYaml .Values.worker.podLabels | indent 8 }}
+        {{- end }}
     spec:
       restartPolicy: Never
       {{- if .Values.image.imagePullSecrets }}
@@ -69,11 +72,11 @@ spec:
         - name: SENTRY_REDIS_PORT
           value: {{ template "redis.port" . }}
         - name: SENTRY_EMAIL_HOST
-          value: {{ default "" .Values.smtpHost | quote }}
+          value: {{ default "" .Values.email.host | quote }}
         - name: SENTRY_EMAIL_PORT
-          value: {{ default "" .Values.smtpPort | quote }}
+          value: {{ default "" .Values.email.port | quote }}
         - name: SENTRY_EMAIL_USER
-          value: {{ default "" .Values.smtpUser | quote }}
+          value: {{ default "" .Values.email.user | quote }}
         - name: SENTRY_EMAIL_PASSWORD
           valueFrom:
             secretKeyRef:
