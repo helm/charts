@@ -43,6 +43,13 @@ spec:
             secretName: {{ .Values.anchoreGlobal.internalServicesSsl.certSecret }}
         {{- end }}
       containers:
+      {{- if .Values.cloudsql.enabled  }}
+      - name: cloudsql-proxy
+        image: {{ .Values.cloudsql.image.repository }}:{{ .Values.cloudsql.image.tag }}
+        imagePullPolicy: {{ .Values.cloudsql.image.pullPolicy }}
+        command: ["/cloud_sql_proxy"]
+        args: ["-instances={{ .Values.cloudsql.instance }}=tcp:5432"]
+      {{- end }}
       - name: "{{ .Chart.Name }}-{{ $component }}"
         image: {{ .Values.anchoreGlobal.image }}
         imagePullPolicy: {{ .Values.anchoreGlobal.imagePullPolicy }}
