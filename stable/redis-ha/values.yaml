@@ -28,6 +28,16 @@ serviceAccount:
 rbac:
   create: true
 
+sysctlImage:
+  enabled: false
+  command: []
+  registry: docker.io
+  repository: bitnami/minideb
+  tag: latest
+  pullPolicy: Always
+  mountHostSys: false
+
+
 ## Redis specific configuration options
 redis:
   port: 6379

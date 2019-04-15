@@ -83,7 +83,14 @@ The following table lists the configurable parameters of the Redis chart and the
 | `exporter.extraArgs`     | Additional args for the exporter                                                                                                                                                                         | `{}`                                                                                       |
 | `podDisruptionBudget`    | Pod Disruption Budget rules                                                                                                                                                                              | `{}`                                                                                       |
 | `hostPath.path`          | Use this path on the host for data storage                                                                                                                                                               | not set                                                                                    |
-| `hostPath.chown`         | Run an init-container as root to set ownership on the hostPath                                                                                                                                           | true                                                                                       |
+| `hostPath.chown`         | Run an init-container as root to set ownership on the hostPath                                                                                                                                           | `true`                                                                                       |
+| `sysctlImage.enabled`                      | Enable an init container to modify Kernel settings                                                             | `false`                                              |
+| `sysctlImage.command`                      | sysctlImage command to execute                                                                                 | []                                                   |
+| `sysctlImage.registry`                     | sysctlImage Init container registry                                                                            | `docker.io`                                          |
+| `sysctlImage.repository`                   | sysctlImage Init container name                                                                                | `bitnami/minideb`                                    |
+| `sysctlImage.tag`                          | sysctlImage Init container tag                                                                                 | `latest`                                             |
+| `sysctlImage.pullPolicy`                   | sysctlImage Init container pull policy                                                                         | `Always`                                             |
+| `sysctlImage.mountHostSys`                 | Mount the host `/sys` folder to `/host-sys`                                                                    | `false`                                              |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
@@ -124,3 +131,19 @@ Sentinel options supported must be in the the `sentinel <option> <master-group-n
 ```
 
 If more control is needed from either the redis or sentinel config then an entire config can be defined under `redis.customConfig` or `sentinel.customConfig`. Please note that these values will override any configuration options under their respective section. For example, if you define `sentinel.customConfig` then the `sentinel.config` is ignored.
+
+## Host Kernel Settings
+Redis may require some changes in the kernel of the host machine to work as expected, in particular increasing the `somaxconn` value and disabling transparent huge pages.
+To do so, you can set up a privileged initContainer with the `sysctlImage` config values, for example:
+```
+sysctlImage:
+  enabled: true
+  mountHostSys: true
+  command:
+    - /bin/sh
+    - -c
+    - |-
+      install_packages systemd
+      sysctl -w net.core.somaxconn=10000
+      echo never > /host-sys/kernel/mm/transparent_hugepage/enabled
+```
