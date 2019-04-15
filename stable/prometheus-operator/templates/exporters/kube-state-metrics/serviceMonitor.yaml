@@ -1,4 +1,4 @@
-{{- if .Values.kubeStateMetrics.enabled }}
+{{- if or .Values.kubeStateMetrics.enabled .Values.kubeStateMetrics.existingRelease }}
 apiVersion: {{ printf "%s/v1" (.Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com") }}
 kind: ServiceMonitor
 metadata:
@@ -18,8 +18,17 @@ spec:
     metricRelabelings:
 {{ toYaml .Values.kubeStateMetrics.serviceMonitor.metricRelabelings | indent 4 }}
 {{- end }}
+  {{- if .Values.kubeStateMetrics.existingRelease }}
+  namespaceSelector:
+    matchNames:
+    - {{ .Values.kubeStateMetrics.existingRelease.namespace }}
+  {{- end }}
   selector:
     matchLabels:
+      {{- if .Values.kubeStateMetrics.existingRelease }}
+{{ toYaml .Values.kubeStateMetrics.existingRelease.labels | indent 6 }}
+      {{- else }}
       app: kube-state-metrics
       release: "{{ .Release.Name }}"
+      {{- end }}
 {{- end }}

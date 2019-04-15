@@ -74,7 +74,7 @@ spec:
       labels:
         severity: critical
 {{- end }}
-{{- if .Values.kubeStateMetrics.enabled }}
+{{- if or .Values.kubeStateMetrics.enabled .Values.kubeStateMetrics.existingRelease }}
     - alert: KubeStateMetricsDown
       annotations:
         message: KubeStateMetrics has disappeared from Prometheus target discovery.

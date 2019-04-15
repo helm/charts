@@ -357,6 +357,8 @@ The following tables list the configurable parameters of the prometheus-operator
 | `kubeScheduler.serviceMonitor.https` | Scheduler service scrape over https | `false` |
 | `kubeScheduler.serviceMonitor.interval` | Scrape interval. If not set, the Prometheus default scrape interval is used | `nil` |
 | `kubeStateMetrics.enabled` | Deploy the `kube-state-metrics` chart and configure a servicemonitor to scrape | `true` |
+| `kubeStateMetrics.existingRelease.namespace` | Namespace of the existing `kube-state-metrics` release | `nil` |
+| `kubeStateMetrics.existingRelease.labels` | Labels used to target the existing `kube-state-metrics` release | `{}` |
 | `kubeStateMetrics.serviceMonitor.interval` | Scrape interval. If not set, the Prometheus default scrape interval is used | `nil` |
 | `kubeStateMetrics.serviceMonitor.metricRelabelings` | Metric relablings for the `kube-state-metrics` ServiceMonitor | `[]` |
 | `kube-state-metrics.rbac.create` | Create RBAC components in kube-state-metrics. See `global.rbac.create` | `true` |
