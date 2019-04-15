@@ -100,6 +100,7 @@ The following table lists the configurable parameters of the Sentry chart and th
 | `service.externalPort`               | Kubernetes external service port            | `9000`                                                     |
 | `service.internalPort`               | Kubernetes internal service port            | `9000`                                                     |
 | `service.annotations`                | Service annotations                         | `{}`                                                       |
+| `service.nodePort`                   | Kubernetes service NodePort port            | Randomly chosen by Kubernetes                              |
 | `ingress.enabled`                    | Enable ingress controller resource          | `false`                                                    |
 | `ingress.annotations`                | Ingress annotations                         | `{}`                                                       |
 | `ingress.hostname`                   | URL to address your Sentry installation     | `sentry.local`                                             |
