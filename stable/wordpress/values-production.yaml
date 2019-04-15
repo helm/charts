@@ -225,11 +225,12 @@ ingress:
   - name: wordpress.local
     path: /
 
-    # Set this to true in order to enable TLS on the ingress record
-    tls: false
-
-    ## If TLS is set to true, you must declare what secret will store the key/certificate for TLS
-    tlsSecret: wordpress.local-tls
+  ## The tls configuration for the ingress
+  ## see: https://kubernetes.io/docs/concepts/services-networking/ingress/#tls
+  tls:
+  - hosts:
+      - wordpress.local
+    secretName: wordpress.local-tls
 
   secrets:
   ## If you're providing your own certificates, please use this to add the certificates as secrets
