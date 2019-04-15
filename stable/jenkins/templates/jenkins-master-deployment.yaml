@@ -73,6 +73,9 @@ spec:
         {{- toYaml .Values.Master.HostAliases | nindent 8 }}
       {{- end }}
       initContainers:
+        {{- if .Values.Master.ExtraInitContainers }}
+          {{ toYaml .Values.Master.ExtraInitContainers | indent 8 }}
+        {{- end }}
         - name: "copy-default-config"
           image: "{{ .Values.Master.Image }}:{{ .Values.Master.ImageTag }}"
           imagePullPolicy: "{{ .Values.Master.ImagePullPolicy }}"
@@ -143,6 +146,10 @@ spec:
           imagePullPolicy: "{{ .Values.Master.ImagePullPolicy }}"
           {{- if .Values.Master.UseSecurity }}
           args: [ "--argumentsRealm.passwd.$(ADMIN_USER)=$(ADMIN_PASSWORD)",  "--argumentsRealm.roles.$(ADMIN_USER)=admin"]
+          {{- end }}
+          {{- if .Values.Master.AddLifecycle }}
+          lifecycle:
+            {{ toYaml .Values.Master.AddLifecycle | indent 12 }}
           {{- end }}
           env:
             - name: JAVA_OPTS
