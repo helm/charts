@@ -1,6 +1,6 @@
-{{- if eq .Values.kind "DaemonSet" }}
+{{- if eq .Values.kind "Deployment" }}
 apiVersion: apps/v1
-kind: DaemonSet
+kind: Deployment
 metadata:
   name: {{ template "apm-server.fullname" . }}
   labels:
@@ -9,12 +9,13 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ include "apm-server.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
   minReadySeconds: 10
-  updateStrategy:
+  strategy:
 {{ toYaml .Values.updateStrategy | indent 4 }}
   template:
     metadata:
@@ -51,6 +52,7 @@ spec:
         ports:
           - name: http
             containerPort: 8200
+            protocol: TCP
         livenessProbe:
           httpGet:
             path: /healthcheck
