@@ -88,6 +88,9 @@ image:
 ## enable using atlantis.yaml file
 allowRepoConfig: false
 
+# Silence repository whitelist errors on pull requests (e.g. this repository is not whitelisted)
+silenceWhitelistErrors: false
+
 # Require all pull requests be approved prior to apply.
 requireApproval: false
 

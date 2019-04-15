@@ -1,29 +1,36 @@
 # Atlantis
+
 [Atlantis](https://www.runatlantis.io/) is a tool for safe collaboration on [Terraform](https://www.terraform.io/) repositories.
 
 ## Introduction
-This chart creates a single pod in a StatefulSet running Atlantis.  Atlantis persists Terraform [plan files](https://www.terraform.io/docs/commands/plan.html) and [lock files](https://www.terraform.io/docs/state/locking.html) to disk for the duration of a Pull/Merge Request.  These files are stored in a PersistentVolumeClaim to survive Pod failures.
+
+This chart creates a single pod in a StatefulSet running Atlantis. Atlantis persists Terraform [plan files](https://www.terraform.io/docs/commands/plan.html) and [lock files](https://www.terraform.io/docs/state/locking.html) to disk for the duration of a Pull/Merge Request. These files are stored in a PersistentVolumeClaim to survive Pod failures.
 
 ## Prerequisites
--   Kubernetes 1.9+
--   PersistentVolume support
+
+- Kubernetes 1.9+
+- PersistentVolume support
 
 ## Required Configuration
-In order for Atlantis to start and run successfully:
-1. At least one of the following sets of credentials must be defined:
-    -  `github`
-    -  `gitlab`
-    -  `bitbucket`
 
-    Refer to [values.yaml](values.yaml) for detailed examples.
+In order for Atlantis to start and run successfully:
+
+1. At least one of the following sets of credentials must be defined:
+
+   - `github`
+   - `gitlab`
+   - `bitbucket`
+
+   Refer to [values.yaml](values.yaml) for detailed examples.
 
 1. Supply a value for `orgWhitelist`, e.g. `github.org/myorg/*`.
 
 ## Customization
-The following options are supported.  See [values.yaml](values.yaml) for more detailed documentation and examples:
+
+The following options are supported. See [values.yaml](values.yaml) for more detailed documentation and examples:
 
 | Parameter                                   | Description                                                                                                                                                                                                                                                                                               | Default |
-|---------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------|
+| ------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
 | `allowRepoConfig`                           | Whether to allow the use of [atlantis.yaml files](https://www.runatlantis.io/docs/atlantis-yaml-reference.html).                                                                                                                                                                                          | `false` |
 | `dataStorage`                               | Amount of storage available for Atlantis' data directory (mostly used to check out git repositories).                                                                                                                                                                                                     | `5Gi`   |
 | `aws.config`                                | Contents of a file to be mounted to `~/.aws/config`.                                                                                                                                                                                                                                                      | n/a     |
@@ -34,7 +41,7 @@ The following options are supported.  See [values.yaml](values.yaml) for more de
 | `bitbucket.baseURL`                         | Base URL of Bitbucket Server installation.                                                                                                                                                                                                                                                                | n/a     |
 | `environment`                               | Map of environment variables for the container.                                                                                                                                                                                                                                                           | `{}`    |
 | `imagePullSecrets`                          | List of secrets for pulling images from private registries.                                                                                                                                                                                                                                               | `[]`    |
-| `gitconfig`                                 | Contents of a file to be mounted to `~/.gitconfig`.  Use to allow redirection for Terraform modules in private git repositories.                                                                                                                                                                          | n/a     |
+| `gitconfig`                                 | Contents of a file to be mounted to `~/.gitconfig`. Use to allow redirection for Terraform modules in private git repositories.                                                                                                                                                                           | n/a     |
 | `github.user`                               | Name of the Atlantis GitHub user.                                                                                                                                                                                                                                                                         | n/a     |
 | `github.token`                              | Personal access token for the Atlantis GitHub user.                                                                                                                                                                                                                                                       | n/a     |
 | `github.secret`                             | Repository or organization-wide webhook secret for the Atlantis GitHub integration. All repositories in GitHub that are to be integrated with Atlantis must share the same value.                                                                                                                         | n/a     |
@@ -54,27 +61,31 @@ The following options are supported.  See [values.yaml](values.yaml) for more de
 | `serviceAccountSecrets.credentials-staging` | JSON string representing secrets for a Google Cloud Platform staging service account. Only applicable if hosting Atlantis on GKE.                                                                                                                                                                         | n/a     |
 | `service.port`                              | Port of the `Service`.                                                                                                                                                                                                                                                                                    | `80`    |
 | `service.loadBalancerSourceRanges`          | Array of whitelisted IP addresses for the Atlantis Service. If no value is specified, the Service will allow incoming traffic from all IP addresses (0.0.0.0/0).                                                                                                                                          | n/a     |
+| `silenceWhitelistErrors`                    | Silence repository Atlantis whitelist errors.                                                                                                                                                                                                                                                             | `false` |
 | `storageClassName`                          | Storage class of the volume mounted for the Atlantis data directory.                                                                                                                                                                                                                                      | n/a     |
 | `tlsSecretName`                             | Name of a Secret for Atlantis' HTTPS certificate containing the following data items `tls.crt` with the public certificate and `tls.key` with the private key.                                                                                                                                            | n/a     |
 
 ## Upgrading
-### From 1.* to 2.*
-* The following value names have changed:
-  * `allow_repo_config` => `allowRepoConfig`
-  * `atlantis_data_storage` => `dataStorage` **NOTE: more than just a snake_case change**
-  * `atlantis_data_storageClass` => `storageClassName` **NOTE: more than just a snake_case change**
-  * `bitbucket.base_url` => `bitbucket.baseURL`
+
+### From 1._ to 2._
+
+- The following value names have changed:
+  - `allow_repo_config` => `allowRepoConfig`
+  - `atlantis_data_storage` => `dataStorage` **NOTE: more than just a snake_case change**
+  - `atlantis_data_storageClass` => `storageClassName` **NOTE: more than just a snake_case change**
+  - `bitbucket.base_url` => `bitbucket.baseURL`
 
 ## Testing the Deployment
+
 To perform a smoke test of the deployment (i.e. ensure that the Atlantis UI is up and running):
 
-1. Install the chart.  Supply your own values file or use `test-values.yaml`, which has a minimal set of values required in order for Atlantis to start.
+1. Install the chart. Supply your own values file or use `test-values.yaml`, which has a minimal set of values required in order for Atlantis to start.
 
-    ```bash
-    helm install -f test-values.yaml --name my-atlantis stable/atlantis --debug
-    ```
+   ```bash
+   helm install -f test-values.yaml --name my-atlantis stable/atlantis --debug
+   ```
 
 1. Run the tests:
-    ```bash
-    helm test my-atlantis
-    ```
+   ```bash
+   helm test my-atlantis
+   ```
