@@ -64,11 +64,11 @@ Parameter | Description | Default
 `controller.readinessProbe.periodSeconds` | The readiness probe period (in seconds) | `10`
 `controller.readinessProbe.successThreshold` | The readiness probe success threshold | `1`
 `controller.readinessProbe.timeoutSeconds` | The readiness probe timeout (in seconds) | `1`
-`controller.podAnnotations` | Annotations for the haproxy-ingress-conrtoller pod | `{}`
-`controller.podLabels` | Labels for the haproxy-ingress-conrtoller pod | `{}`
+`controller.podAnnotations` | Annotations for the haproxy-ingress-controller pod | `{}`
+`controller.podLabels` | Labels for the haproxy-ingress-controller pod | `{}`
 `controller.podAffinity` | Add affinity to the controller pods to control scheduling | `{}`
 `controller.priorityClassName` | Priority Class to be used | ``
-`controller.securityContext` | Security context settings for the haproxy-ingress-conrtoller pod | `{}`
+`controller.securityContext` | Security context settings for the haproxy-ingress-controller pod | `{}`
 `controller.config` | additional haproxy-ingress [ConfigMap entries](https://github.com/jcmoraisjr/haproxy-ingress/blob/v0.6/README.md#configmap) | `{}`
 `controller.hostNetwork` | Optionally set to true when using CNI based kubernetes installations | `false`
 `controller.dnsPolicy` | Optionally change this to ClusterFirstWithHostNet in case you have 'hostNetwork: true' | `ClusterFirst`
@@ -85,7 +85,7 @@ Parameter | Description | Default
 `controller.minReadySeconds` | seconds to avoid killing pods before we are ready | `0`
 `controller.replicaCount` | the number of replicas to deploy (when `controller.kind` is `Deployment`) | `1`
 `controller.minAvailable` | PodDisruptionBudget minimum available controller pods | `1`
-`controller.resources` | controller pod resource requests & limits | `{}`
+`controller.resources` | controller container resource requests & limits | `{}`
 `controller.autoscaling.enabled` | enabling controller horizontal pod autoscaling (when `controller.kind` is `Deployment`) | `false`
 `controller.autoscaling.minReplicas` | minimum number of replicas | 
 `controller.autoscaling.maxReplicas` | maximum number of replicas | 
