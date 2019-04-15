@@ -188,7 +188,7 @@ spec:
           {{- if and .Values.rabbitmq.maxAvailableSchedulers }}
           - name: RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS
             value: {{ printf "+S %s:%s" (toString .Values.rabbitmq.maxAvailableSchedulers) (toString .Values.rabbitmq.onlineSchedulers) -}}
-         {{- end }}
+          {{- end }}
           - name: RABBITMQ_USE_LONGNAME
             value: "true"
           - name: RABBITMQ_ERL_COOKIE
