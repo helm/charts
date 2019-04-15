@@ -102,6 +102,8 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `Master.CustomConfigMap`          | Deprecated: Use a custom ConfigMap               | `false`                                                                      |
 | `Master.AdditionalConfig`         | Deprecated: Add additional config files         | `{}`
 | `Master.JenkinsUriPrefix`         | Root Uri Jenkins will be served on         | Not set
+| `Master.CustomInitContainers`     | Custom init-container specification in raw-yaml format | Not set
+| `Master.Lifetime`                 | Lifetime specification for master-container | Not set
 | `NetworkPolicy.Enabled`           | Enable creation of NetworkPolicy resources. | `false`                                                               |
 | `NetworkPolicy.ApiVersion`        | NetworkPolicy ApiVersion             | `networking.k8s.io/v1`                                                         |
 | `rbac.install`                    | Create service account and ClusterRoleBinding for Kubernetes plugin | `false`                                       |
