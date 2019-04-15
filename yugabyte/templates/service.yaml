@@ -121,6 +121,8 @@ spec:
     {{- range $index := until (int ($storageInfo.count )) }}
     - metadata:
         name: datadir{{ $index }}
+        annotations:
+          volume.beta.kubernetes.io/storage-class: {{ $storageInfo.storageClass }}
         labels:
           heritage: {{ $root.Release.Service | quote }}
           release: {{ $root.Release.Name | quote }}
@@ -166,6 +168,16 @@ spec:
       {{- end }}
       affinity:
         # Set the anti-affinity selector scope to YB masters.
+        {{ if $root.Values.AZ }}
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: failure-domain.beta.kubernetes.io/zone
+                operator: In
+                values:
+                - {{ $root.Values.AZ }}
+        {{ end }}
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
           - weight: 100
@@ -212,8 +224,13 @@ spec:
           - "--fs_data_dirs={{ template "yugabyte.fs_data_dirs" $storageInfo }}"
           - "--rpc_bind_addresses={{ template "yugabyte.server_address" . }}"
           - "--server_broadcast_addresses={{ template "yugabyte.server_address" . }}:7100"
+          {{ if $root.Values.isMultiAz }}
+          - "--master_addresses={{ $root.Values.masterAddresses}}"
+          - "--replication_factor={{ $root.Values.replicas.totalMasters }}"
+          {{ else }}
           - "--master_addresses={{ template "yugabyte.master_addresses" $root }}"
           - "--replication_factor={{ $root.Values.replicas.master }}"
+          {{ end }}
           - "--metric_node_name=$(HOSTNAME)"
           - "--memory_limit_hard_bytes={{ template "yugabyte.memory_hard_limit" $root.Values.resource.master }}"
           - "--stderrthreshold=0"
@@ -235,7 +252,11 @@ spec:
           - "--start_pgsql_proxy"
           - "--pgsql_proxy_bind_address={{ template "yugabyte.server_address" . }}:5433"
           {{ end }}
+          {{ if $root.Values.isMultiAz }}
+          - "--tserver_master_addrs={{ $root.Values.masterAddresses}}"
+          {{ else }}
           - "--tserver_master_addrs={{ template "yugabyte.master_addresses" $root }}"
+          {{ end }}
           - "--metric_node_name=$(HOSTNAME)"
           - "--memory_limit_hard_bytes={{ template "yugabyte.memory_hard_limit" $root.Values.resource.tserver }}"
           - "--stderrthreshold=0"

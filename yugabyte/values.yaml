@@ -60,6 +60,8 @@ PodManagementPolicy: Parallel
 
 enableLoadBalancer: True
 
+isMultiAz: False
+
 serviceEndpoints:
   - name: "yb-master-ui"
     type: LoadBalancer
