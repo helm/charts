@@ -2,7 +2,7 @@
 
 # Anchore engine has a dependency on Postgresql, configure here
 postgresql:
-  # To use an external DB, uncomment & set 'enabled: false'
+  # To use an external DB or Google CloudSQL in GKE, uncomment & set 'enabled: false'
   # externalEndpoint, postgresUser, postgresPassword & postgresDatabase are required values for external postgres
   # enabled: false
   postgresUser: anchoreengine
@@ -17,6 +17,18 @@ postgresql:
   # This should be commented out if using an external endpoint.
   persistence:
     size: 20Gi
+
+# Google CloudSQL support in GKE via gce-proxy
+cloudsql:
+  # To use CloudSQL in GKE set 'enable: true'
+  enabled: false
+  # set CloudSQL instance: 'project:zone:instancname'
+  instance: ""
+  image:
+    # set repo and image tag of gce-proxy
+    repository: gcr.io/cloudsql-docker/gce-proxy
+    tag: 1.12
+    pullPolicy: IfNotPresent
 
 # Create an ingress resource for all external anchore engine services (API & Enterprise UI).
 # By default this chart is setup to use the NGINX ingress controller which needs to be installed & configured on your cluster.
@@ -350,7 +362,7 @@ anchoreEnterpriseGlobal:
 # Configure the second postgres database instance for the enterprise feeds service.
 # Only utilized if anchoreEnterpriseFeeds.enabled: true
 anchore-feeds-db:
-  # To use an external DB, uncomment & set 'enabled: false'
+  # To use an external DB or Google CloudSQL, uncomment & set 'enabled: false'
   # externalEndpoint, postgresUser, postgresPassword & postgresDatabase are required values for external postgres
   # enabled: false
   postgresUser: anchoreengine
