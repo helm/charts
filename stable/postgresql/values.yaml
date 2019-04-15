@@ -342,4 +342,3 @@ metrics:
 
 # Define custom environment variables to pass to the image here
 extraEnv: {}
-
