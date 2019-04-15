@@ -121,6 +121,7 @@ The following table lists the configurable parameters of the Minio chart and the
 | `persistence.storageClass` | Storage class name of PVC           | `nil`                                                   |
 | `persistence.accessMode`   | ReadWriteOnce or ReadOnly           | `ReadWriteOnce`                                         |
 | `persistence.subPath`      | Mount a sub directory of the persistent volume if set | `""`                                  |
+| `persistence.annotations`  | Add annotations to the pvc          | `{}`                                                    |
 | `resources`                | CPU/Memory resource requests/limits | Memory: `256Mi`, CPU: `100m`                            |
 | `priorityClassName`        | Pod priority settings               | `""`                                                    |
 | `nodeSelector`             | Node labels for pod assignment      | `{}`                                                    |
