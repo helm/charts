@@ -62,6 +62,7 @@ The following table lists the configurable parameters of the Percona chart and t
 | `resources`                | CPU/Memory resource requests/limits | Memory: `256Mi`, CPU: `100m`                              |
 | `nodeSelector`             | Node labels for pod assignment     | `{}`							|
 | `tolerations`              | Node labels for pod assignment     | `[]`							|
+| `affinity`                 | Node labels for pod assignment     | `{}`                            |
 
 Some of the parameters above map to the env variables defined in the [Percona Server DockerHub image](https://hub.docker.com/_/percona/).
 
