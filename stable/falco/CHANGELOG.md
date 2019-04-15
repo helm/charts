@@ -3,6 +3,10 @@
 This file documents all notable changes to Sysdig Falco Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v0.7.1
+
+* Add Google Pub/Sub Output integration
+
 ## v0.7.0
 
 ### Major Changes

@@ -72,6 +72,22 @@ extraEnvSecrets:
   #   secret: mqtt
   #   key: password
 
+git:
+  enabled: false
+
+  ## we just use the hass-configurator container image
+  ## you can use any image which has git and openssh installed
+  ##
+  image:
+    repository: causticlab/hass-configurator-docker
+    tag: x86_64-0.3.1
+    pullPolicy: IfNotPresent
+
+  # repo:
+  secret: git-creds
+  syncPath: /config
+  keyPath: /root/.ssh
+
 configurator:
   enabled: false
 

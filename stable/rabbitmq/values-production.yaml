@@ -70,13 +70,22 @@ rabbitmq:
   ##
   ulimitNofiles: '65536'
 
+  ## RabbitMQ maximum available scheduler threads and online scheduler threads
+  ## ref: https://hamidreza-s.github.io/erlang/scheduling/real-time/preemptive/migration/2016/02/09/erlang-scheduler-details.html#scheduler-threads
+  ##
+  maxAvailableSchedulers: 2
+  onlineSchedulers: 1
+
   ## Plugins to enable
-  plugins: |-
-      [rabbitmq_management, rabbitmq_peer_discovery_k8s].
+  plugins: "rabbitmq_management rabbitmq_peer_discovery_k8s"
+
+  ## Extra plugins to enable
+  ## Use this instead of `plugins` to add new plugins
+  # extraPlugins: ""
 
   ## Clustering settings
   clustering:
-    address_type: ip
+    address_type: hostname
     k8s_domain: cluster.local
 
   loadDefinition:
@@ -259,6 +268,12 @@ metrics:
     ##
     # pullSecrets:
     #   - myRegistryKeySecretName
+  ## environment variables to configure rabbitmq_exporter
+  ## ref: https://github.com/kbudde/rabbitmq_exporter#configuration
+  env: {}
+  ## Comma-separated list of extended scraping capabilities supported by the target RabbitMQ server
+  ## ref: https://github.com/kbudde/rabbitmq_exporter#extended-rabbitmq-capabilities
+  capabilities: "bert,no_sort"
   resources: {}
   annotations:
     prometheus.io/scrape: "true"
