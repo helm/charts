@@ -320,6 +320,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | `kubelet.enabled` | Deploy servicemonitor to scrape the kubelet service. See also `prometheusOperator.kubeletService` | `true` |
 | `kubelet.namespace` | Namespace where the kubelet is deployed. See also `prometheusOperator.kubeletService.namespace` | `kube-system` |
 | `kubelet.serviceMonitor.https` | Enable scraping of the kubelet over HTTPS. For more information, see https://github.com/coreos/prometheus-operator/issues/926 | `true` |
+| `kubelet.serviceMonitor.metricRelabelings` | The `metric_relabel_configs` for scraping the kubelet. | `` |
 | `kubelet.serviceMonitor.cAdvisorMetricRelabelings` | The `metric_relabel_configs` for scraping cAdvisor. | `` |
 | `kubelet.serviceMonitor.interval` | Scrape interval. If not set, the Prometheus default scrape interval is used | `nil` |
 | `kubeControllerManager.enabled` | Deploy a `service` and `serviceMonitor` to scrape the Kubernetes controller-manager | `true` |

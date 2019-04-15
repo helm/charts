@@ -441,6 +441,10 @@ kubelet:
 
     ## Metric relabellings to apply to samples before ingestion
     ##
+    metricRelabelings: []
+
+    ## Metric relabellings to apply to samples before ingestion
+    ##
     cAdvisorMetricRelabelings: []
     # - sourceLabels: [__name__, image]
     #   separator: ;
