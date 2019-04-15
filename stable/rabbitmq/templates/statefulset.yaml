@@ -185,6 +185,10 @@ spec:
             value: {{ .Values.rabbitmq.logs | quote }}
           - name: RABBITMQ_ULIMIT_NOFILES
             value: {{ .Values.rabbitmq.ulimitNofiles | quote }}
+          {{- if and .Values.rabbitmq.maxAvailableSchedulers }}
+          - name: RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS
+            value: {{ printf "+S %s:%s" (toString .Values.rabbitmq.maxAvailableSchedulers) (toString .Values.rabbitmq.onlineSchedulers) -}}
+          {{- end }}
           - name: RABBITMQ_USE_LONGNAME
             value: "true"
           - name: RABBITMQ_ERL_COOKIE
