@@ -95,7 +95,6 @@ Parameter | Description | Default
 `controller.tolerations` | to control scheduling to servers with taints | `[]`
 `controller.affinity` | to control scheduling | `{}`
 `controller.nodeSelector` | to control scheduling | `{}`
-`controller.accessLogsSidecar` | enable a sidecar container that collects access logs from haproxy and outputs to stdout | `true`
 `controller.service.annotations` | annotations for controller service | `{}`
 `controller.service.labels` | labels for controller service | `{}`
 `controller.service.clusterIP` | internal controller cluster service IP | `""`
@@ -126,6 +125,11 @@ Parameter | Description | Default
 `controller.metrics.service.loadBalancerSourceRanges` |  | `[]`
 `controller.metrics.service.servicePort` | the port number exposed by the metrics service | `1936`
 `controller.metrics.service.type` | type of controller service to create | `ClusterIP`
+`controller.logs.enabled` | enable an access-logs sidecar container that collects access logs from haproxy and outputs to stdout | `false`
+`controller.logs.image.repository` | access-logs container image repository | `quay.io/prometheus/haproxy-exporter`
+`controller.logs.image.tag` | access-logs image tag | `v0.10.0`
+`controller.logs.image.pullPolicy` | access-logs image pullPolicy | `IfNotPresent`
+`controller.logs.resources` | access-logs container resource requests & limits |  `{}`
 `defaultBackend.enabled` | whether to use the default backend component | `true`
 `defaultBackend.name` | name of the default backend component | `default-backend`
 `defaultBackend.image.repository` | default backend container image repository | `gcr.io/google_containers/defaultbackend`
