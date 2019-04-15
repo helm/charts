@@ -281,7 +281,7 @@ data:
 {{- if .Values.Master.Jobs }}
     for job in $(ls /var/jenkins_jobs); do
       mkdir -p /var/jenkins_home/jobs/$job
-      yes n | cp -i /var/jenkins_jobs/$job /var/jenkins_home/jobs/$job/config.xml
+      yes {{ if not .Values.Master.overwriteJobs }}n{{ end }} | cp -i /var/jenkins_jobs/$job /var/jenkins_home/jobs/$job/config.xml
     done
 {{- end }}
 {{- range $key, $val := .Values.Master.InitScripts }}

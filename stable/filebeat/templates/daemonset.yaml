@@ -23,7 +23,7 @@ spec:
         app: {{ template "filebeat.name" . }}
         release: {{ .Release.Name }}
       annotations:
-        checksum/secret: {{ toYaml .Values.config | sha256sum }}
+        checksum/secret: {{ toYaml (default .Values.config .Values.overrideConfig) | sha256sum }}
 {{- if .Values.annotations }}
 {{ toYaml .Values.annotations | indent 8 }}
 {{- end }}
@@ -89,6 +89,9 @@ spec:
         {{- end }}
         securityContext:
           runAsUser: 0
+{{- if .Values.privileged }}
+          privileged: true
+{{- end }}
 {{- if .Values.resources }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
@@ -121,9 +124,9 @@ spec:
         resources:
 {{ toYaml .Values.monitoring.resources | indent 10 }}
 {{- end }}
-{{- end }}
         ports:
           - containerPort: {{ .Values.monitoring.exporterPort}}
+{{- end }}
       volumes:
       - name: varlog
         hostPath:

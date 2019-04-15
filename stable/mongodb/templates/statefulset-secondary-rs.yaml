@@ -161,7 +161,8 @@ spec:
           {{- end }}
           volumeMounts:
             - name: datadir
-              mountPath: /bitnami/mongodb
+              mountPath: {{ .Values.persistence.mountPath }}
+              subPath: {{ .Values.persistence.subPath }}
             {{- if .Values.configmap }}
             - name: config
               mountPath: /opt/bitnami/mongodb/conf/mongodb.conf
@@ -195,6 +196,8 @@ spec:
             initialDelaySeconds: {{ .Values.metrics.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.metrics.readinessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.metrics.livenessProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.metrics.livenessProbe.failureThreshold }}
+            successThreshold: {{ .Values.metrics.livenessProbe.successThreshold }}
           {{- end }}
           {{- if .Values.metrics.readinessProbe.enabled }}
           readinessProbe:
@@ -204,6 +207,8 @@ spec:
             initialDelaySeconds: {{ .Values.metrics.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.metrics.readinessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.metrics.readinessProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.metrics.readinessProbe.failureThreshold }}
+            successThreshold: {{ .Values.metrics.readinessProbe.successThreshold }}
           {{- end }}
           resources:
 {{ toYaml .Values.metrics.resources | indent 12 }}
