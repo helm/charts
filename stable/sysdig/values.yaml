@@ -54,8 +54,8 @@ ebpf:
     mountEtcVolume: true
 
 sysdig:
-    # Required: You need your Sysdig Monitor access key before running agents.
-    # accessKey: ""
+  # Required: You need your Sysdig Monitor access key before running agents.
+  accessKey: ""
 
   settings: {}
     ### Agent tags
