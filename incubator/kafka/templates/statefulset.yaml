@@ -131,10 +131,10 @@ spec:
         - name: JMX_PORT
           value: "{{ .Values.jmx.port }}"
         {{- end }}
-        - name: POD_NAME
+        - name: POD_IP
           valueFrom:
             fieldRef:
-              fieldPath: metadata.name
+              fieldPath: status.podIP
         - name: POD_NAME
           valueFrom:
             fieldRef:
