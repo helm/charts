@@ -31,3 +31,5 @@ webhookPort: 8080
 ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
 ##
 nodeSelector: {}
+
+logLevel: 2

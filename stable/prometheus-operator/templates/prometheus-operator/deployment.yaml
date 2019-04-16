@@ -20,6 +20,10 @@ spec:
 {{- if .Values.prometheusOperator.podLabels }}
 {{ toYaml .Values.prometheusOperator.podLabels | indent 8 }}
 {{- end }}
+{{- if .Values.prometheusOperator.podAnnotations }}
+      annotations:
+{{ toYaml .Values.prometheusOperator.podAnnotations | indent 8 }}
+{{- end }}
     spec:
     {{- if .Values.prometheusOperator.priorityClassName }}
       priorityClassName: {{ .Values.prometheusOperator.priorityClassName }}
@@ -42,7 +46,7 @@ spec:
             - --crd-apigroup={{ .Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com" }}
             - --localhost=127.0.0.1
             - --prometheus-config-reloader={{ .Values.prometheusOperator.prometheusConfigReloaderImage.repository }}:{{ .Values.prometheusOperator.prometheusConfigReloaderImage.tag }}
-            - --config-reloader-image={{ .Values.prometheusOperator.configmapReloadImage.repository }}:{{ .Values.prometheusOperator.configmapReloadImage.tag }}          
+            - --config-reloader-image={{ .Values.prometheusOperator.configmapReloadImage.repository }}:{{ .Values.prometheusOperator.configmapReloadImage.tag }}
           {{- if .Values.prometheusOperator.configReloaderCpu }}
             - --config-reloader-cpu={{ .Values.prometheusOperator.configReloaderCpu }}
           {{- end }}
