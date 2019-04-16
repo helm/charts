@@ -115,6 +115,10 @@ podAnnotations: {}
 # Priority class name for pods
 priorityClassName: ""
 
+# Minimum number of seconds that newly created replicas must be ready without any containers
+# crashing
+minReadySeconds: 0
+
 vault:
   # Only used to enable dev mode. When in dev mode, the rest of this config
   # section below is not used to configure Vault. See

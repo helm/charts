@@ -76,6 +76,7 @@ The following table lists the configurable parameters of the Vault chart and the
 | `ingress.labels`                  | Labels for ingress                       | `{}`                                |
 | `podAnnotations`                  | Annotations for pods                     | `{}`                                |
 | `priorityClassName`               | Priority class name for pods             | `""`                                |
+| `minReadySeconds`                 | Minimum number of seconds that newly created replicas must be ready without any containers crashing | `0`                                |
 | `consulAgent.join`                | If set, start start a consul agent       | `nil`                               |
 | `consulAgent.repository`          | Container image for consul agent         | `consul`                            |
 | `consulAgent.tag`                 | Container image tag for consul agent     | `1.4.0`                             |
