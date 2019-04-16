@@ -3,10 +3,7 @@
   image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
   command: ["bash", "-c"]
   args:
-    - cp -r /etc/datadog-agent /opt ;
-      {{- if .Values.datadog.networkTracerEnabled }}
-      touch /opt/datadog-agent/network-tracer.yaml
-      {{- end }}
+    - cp -r /etc/datadog-agent /opt
   volumeMounts:
     - name: config
       mountPath: /opt/datadog-agent

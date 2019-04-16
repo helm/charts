@@ -22,12 +22,6 @@ spec:
         checksum/autoconf-config: {{ tpl (toYaml .Values.datadog.autoconf) . | sha256sum }}
         checksum/confd-config: {{ tpl (toYaml .Values.datadog.confd) . | sha256sum }}
         checksum/checksd-config: {{ tpl (toYaml .Values.datadog.checksd) . | sha256sum }}
-        {{- if .Values.daemonset.useDedicatedContainers }}
-        {{- if and (.Values.datadog.processAgentEnabled) (.Values.datadog.networkTracerEnabled) }}
-        container.apparmor.security.beta.kubernetes.io/{{ .Chart.Name }}-process-agent: unconfined
-        container.apparmor.security.beta.kubernetes.io/{{ .Chart.Name }}-network-tracer: unconfined
-        {{- end }}
-        {{- end }}
       {{- if .Values.daemonset.podAnnotations }}
 {{ toYaml .Values.daemonset.podAnnotations | indent 8 }}
       {{- end }}
@@ -56,9 +50,6 @@ spec:
         {{- if .Values.datadog.apmEnabled }}
           {{- include "container-trace-agent" . | nindent 8 }}
         {{- end }}
-        {{- if .Values.datadog.networkTracerEnabled }}
-          {{- include "container-network-tracer" . | nindent 8 }}
-        {{- end }}
         {{- if .Values.datadog.processAgentEnabled }}
           {{- include "container-process-agent" . | nindent 8 }}
         {{- end }}
@@ -74,13 +65,6 @@ spec:
         {{- if .Values.daemonset.useDedicatedContainers }}
         - name: config
           emptyDir: {}
-        {{- if .Values.datadog.networkTracerEnabled }}
-        - name: network-run
-          emptyDir: {}
-        - hostPath:
-            path: /sys/kernel/debug
-          name: debugfs
-        {{- end }}
         {{- end }}
         {{- if .Values.datadog.useCriSocketVolume }}
         - hostPath:

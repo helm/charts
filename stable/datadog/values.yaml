@@ -195,16 +195,6 @@ datadog:
   #
   # processAgentEnabled: false
 
-
-  ## @param networkTracerEnabled - boolean - optional - default: false
-  ## Enable this to activate eBPF-based network tracing.
-  ## Note: this is a beta future, it requires running both the process-agent and
-  ## the network-tracer containers with an unconfined apparmor profile. The network-tracer
-  ## container also needs to run with elevated capabilities (sys_admin and sys_resource)
-  ## for eBPF to be used.
-  #
-  # networkTracerEnabled: false
-
   ## @param env - list of object - optional
   ## The dd-agent supports many environment variables
   ## ref: https://github.com/DataDog/datadog-agent/tree/master/Dockerfiles/agent#environment-variables
@@ -424,23 +414,6 @@ daemonset:
     ## will run sequentially after Datadog initContainers.
     #
     # init:
-
-    networkTracer:
-      ## @param env - list - required
-      ## Additionnal environment variables for the network-tracer container.
-      #
-      # env:
-
-      ## @param resources - object - required
-      ## Resource requests and limits for the network-tracer container.
-      #
-      resources:
-        requests:
-          cpu: 100m
-          memory: 200Mi
-        limits:
-          cpu: 100m
-          memory: 200Mi
 
     processAgent:
       ## @param env - list - required

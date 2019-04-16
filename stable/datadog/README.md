@@ -235,7 +235,6 @@ helm install --name <RELEASE_NAME> \
 | `datadog.logsConfigContainerCollectAll`  | Collect logs from all containers                                                          | `nil`                                       |
 | `datadog.logsPointerHostPath`            | Host path to store the log tailing state in                                               | `/var/lib/datadog-agent/logs`               |
 | `datadog.apmEnabled`                     | Enable tracing from the host                                                              | `nil`                                       |
-| `datadog.networkTracerEnabled`           | Enable advanced network tracing with eBPF (BETA)                                          | `nil`                                       |
 | `datadog.processAgentEnabled`            | Enable live process monitoring                                                            | `nil`                                       |
 | `datadog.checksd`                        | Additional custom checks as python code                                                   | `nil`                                       |
 | `datadog.confd`                          | Additional check configurations (static and Autodiscovery)                                | `nil`                                       |
@@ -267,11 +266,6 @@ helm install --name <RELEASE_NAME> \
 | `daemonset.useHostPort`                  | If true, use the same ports for both host and container                                   | `nil`                                       |
 | `daemonset.useDedicatedContainers`       | If true, each Datadog agent will run in a separate container                              | `nil`                                       |
 | `daemonset.containers.init`              | Additional list of containers that will run during pod initialization                     | `nil`                                       |
-| `daemonset.containers.networkTracer.env`                         | Additional list of environment variables to use in the network-tracer container        | `nil`                                         |
-| `daemonset.containers.networkTracer.resources.limits.cpu`        | CPU resource limits for the network-tracer container                                  	| `100m`                                        |
-| `daemonset.containers.networkTracer.resources.requests.cpu`      | CPU resource requests for the network-tracer container                                 | `100m`                                        |
-| `daemonset.containers.networkTracer.resources.limits.memory`     | Memory resource limits for the network-tracer container                                | `200Mi`                                       |
-| `daemonset.containers.networkTracer.resources.requests.memory`   | Memory resource requests for the network-tracer container                              | `200Mi`                                       |
 | `daemonset.containers.processAgent.env`                          | Additional list of environment variables to use in the process-agent container         | `nil`                                         |
 | `daemonset.containers.processAgent.resources.limits.cpu`         | CPU resource limits for the process-agent container                                    | `100m`                                        |
 | `daemonset.containers.processAgent.resources.requests.cpu`       | CPU resource requests for the process-agent container                                  | `100m`                                        |
