@@ -256,9 +256,9 @@ spec:
     - metadata:
         name: {{ .Values.persistentVolume.name }}
         annotations:
-        {{- range $key, $value := .Values.persistentVolume.annotations }}
+          {{- range $key, $value := .Values.persistentVolume.annotations }}
           {{ $key }}: {{ $value }}
-        {{- end }}
+          {{- end }}
       spec:
         accessModes:
         {{- range .Values.persistentVolume.accessModes }}
