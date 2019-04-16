@@ -24,7 +24,9 @@ spec:
         release: {{ .Release.Name }}
       annotations:
         checksum/configmap: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
-{{ toYaml .Values.annotations | indent 8 }}
+        {{- if .Values.annotations }}
+        {{- toYaml .Values.annotations | nindent 8 }}
+        {{- end }}
     spec:
 {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
