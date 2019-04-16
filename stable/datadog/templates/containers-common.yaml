@@ -1,0 +1,19 @@
+{{- define "containers-common" -}}
+- name: DD_API_KEY
+  valueFrom:
+    secretKeyRef:
+      name: {{ template "datadog.apiSecretName" . }}
+      key: api-key
+{{- if semverCompare "^1.7-0" .Capabilities.KubeVersion.GitVersion }}
+- name: DD_KUBERNETES_KUBELET_HOST
+  valueFrom:
+    fieldRef:
+      fieldPath: status.hostIP
+{{- end }}
+{{- if .Values.datadog.hostname }}
+- name: DD_HOSTNAME
+  value: {{ .Values.datadog.hostname | quote }}
+{{- end }}
+- name: KUBERNETES
+  value: "yes"
+{{- end -}}

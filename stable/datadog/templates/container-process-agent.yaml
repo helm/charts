@@ -1,0 +1,48 @@
+{{- define "container-process-agent" -}}
+- name: {{ .Chart.Name }}-process-agent
+  image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+  imagePullPolicy: {{ .Values.image.pullPolicy }}
+  command:
+    - process-agent
+    - -config=/etc/datadog-agent/datadog.yaml
+    {{- if .Values.datadog.networkTracerEnabled }}
+    - -network-config=/etc/datadog-agent/network-tracer.yaml
+    {{- end }}
+  resources:
+{{ toYaml .Values.daemonset.containers.processAgent.resources | indent 4 }}
+  env:
+    {{- include "containers-common" . | nindent 4 }}
+    - name: DD_NETWORK_TRACING_ENABLED
+      value: {{ .Values.datadog.networkTracerEnabled | quote }}
+    {{- if .Values.datadog.networkTracerEnabled }}
+    - name: DD_NETWORK_TRACING_EXTERNAL
+      value: "true"
+    - name: DD_NETTRACER_SOCKET
+      value: /var/run/network/tracer.sock
+    {{- end }}
+    - name: DD_PROCESS_AGENT_ENABLED
+      value: {{ .Values.datadog.processAgentEnabled | quote }}
+{{- if .Values.daemonset.containers.processAgent.env }}
+{{ toYaml .Values.daemonset.containers.processAgent.env | indent 4 }}
+{{- end }}
+  volumeMounts:
+    - name: cgroups
+      mountPath: /host/sys/fs/cgroup
+      readOnly: true
+    - name: config
+      mountPath: /etc/datadog-agent
+    {{- if .Values.datadog.networkTracerEnabled }}
+    - name: debugfs
+      mountPath: /sys/kernel/debug
+    - name: network-run
+      mountPath: /var/run/network
+    {{- end }}
+    - name: procdir
+      mountPath: /host/proc
+      readOnly: true
+    {{- if .Values.datadog.useCriSocketVolume }}
+    - name: runtimesocket
+      mountPath: {{ default "/var/run/docker.sock" .Values.datadog.criSocketPath | quote }}
+      readOnly: true
+    {{- end }}
+{{- end -}}
