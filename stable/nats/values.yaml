@@ -64,6 +64,11 @@ podAnnotations: {}
 ##
 podLabels: {}
 
+## Pod Priority Class
+## ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
+##
+# priorityClassName: ""
+
 ## Update strategy, can be set to RollingUpdate or OnDelete by default.
 ## https://kubernetes.io/docs/tutorials/stateful-application/basic-stateful-set/#updating-statefulsets
 statefulset:

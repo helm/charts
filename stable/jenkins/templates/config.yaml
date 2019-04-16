@@ -258,6 +258,9 @@ data:
 {{- end }}
 {{- if .Values.Master.InitScripts }}
     mkdir -p /var/jenkins_home/init.groovy.d/;
+    {{- if .Values.Master.OverwriteConfig }}
+    rm -f /var/jenkins_home/init.groovy.d/*.groovy
+    {{- end }}
     yes n | cp -i /var/jenkins_config/*.groovy /var/jenkins_home/init.groovy.d/;
 {{- end }}
 {{- if .Values.Master.JCasC.enabled }}
@@ -278,7 +281,7 @@ data:
 {{- if .Values.Master.Jobs }}
     for job in $(ls /var/jenkins_jobs); do
       mkdir -p /var/jenkins_home/jobs/$job
-      yes n | cp -i /var/jenkins_jobs/$job /var/jenkins_home/jobs/$job/config.xml
+      yes {{ if not .Values.Master.overwriteJobs }}n{{ end }} | cp -i /var/jenkins_jobs/$job /var/jenkins_home/jobs/$job/config.xml
     done
 {{- end }}
 {{- range $key, $val := .Values.Master.InitScripts }}

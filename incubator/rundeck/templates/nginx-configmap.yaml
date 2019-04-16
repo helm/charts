@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-nginx-configmap
+type: Opaque
+data:
+  nginx.conf: |-
+{{ .Files.Get "files/nginx/nginx.conf" | indent 4 }}

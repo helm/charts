@@ -75,6 +75,77 @@ Also, we can't use a single if because lazy evaluation is not an option
 {{- end -}}
 
 {{/*
+Return PostgreSQL password
+*/}}
+{{- define "postgresql.password" -}}
+{{- if .Values.global.postgresql.postgresqlPassword }}
+    {{- .Values.global.postgresql.postgresqlPassword -}}
+{{- else if .Values.postgresqlPassword -}}
+    {{- .Values.postgresqlPassword -}}
+{{- else -}}
+    {{- randAlphaNum 10 -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return PostgreSQL replication password
+*/}}
+{{- define "postgresql.replication.password" -}}
+{{- if .Values.global.postgresql.replicationPassword }}
+    {{- .Values.global.postgresql.replicationPassword -}}
+{{- else if .Values.replication.password -}}
+    {{- .Values.replication.password -}}
+{{- else -}}
+    {{- randAlphaNum 10 -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return PostgreSQL username
+*/}}
+{{- define "postgresql.username" -}}
+{{- if .Values.global.postgresql.postgresqlUsername }}
+    {{- .Values.global.postgresql.postgresqlUsername -}}
+{{- else -}}
+    {{- .Values.postgresqlUsername -}}
+{{- end -}}
+{{- end -}}
+
+
+{{/*
+Return PostgreSQL replication username
+*/}}
+{{- define "postgresql.replication.username" -}}
+{{- if .Values.global.postgresql.replicationUser }}
+    {{- .Values.global.postgresql.replicationUser -}}
+{{- else -}}
+    {{- .Values.replication.user -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return PostgreSQL port
+*/}}
+{{- define "postgresql.port" -}}
+{{- if .Values.global.postgresql.servicePort }}
+    {{- .Values.global.postgresql.servicePort -}}
+{{- else -}}
+    {{- .Values.service.port -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return PostgreSQL created database
+*/}}
+{{- define "postgresql.database" -}}
+{{- if .Values.global.postgresql.postgresqlDatabase }}
+    {{- .Values.global.postgresql.postgresqlDatabase -}}
+{{- else if .Values.postgresqlDatabase -}}
+    {{- .Values.postgresqlDatabase -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Return the proper image name to change the volume permissions
 */}}
 {{- define "postgresql.volumePermissions.image" -}}
@@ -124,10 +195,23 @@ Also, we can't use a single if because lazy evaluation is not an option
 Get the password secret.
 */}}
 {{- define "postgresql.secretName" -}}
-{{- if .Values.existingSecret -}}
-{{- printf "%s" .Values.existingSecret -}}
+{{- if .Values.global.postgresql.existingSecret }}
+    {{- printf "%s" .Values.global.postgresql.existingSecret -}}
+{{- else if .Values.existingSecret -}}
+    {{- printf "%s" .Values.existingSecret -}}
 {{- else -}}
-{{- printf "%s" (include "postgresql.fullname" .) -}}
+    {{- printf "%s" (include "postgresql.fullname" .) -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return true if a secret object should be created
+*/}}
+{{- define "postgresql.createSecret" -}}
+{{- if .Values.global.postgresql.existingSecret }}
+{{- else if .Values.existingSecret -}}
+{{- else -}}
+    {{- true -}}
 {{- end -}}
 {{- end -}}
 

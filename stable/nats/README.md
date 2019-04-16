@@ -76,6 +76,7 @@ The following table lists the configurable parameters of the NATS chart and thei
 | `statefulset.updateStrategy`         | Statefulsets Update strategy                                                                 | `OnDelete`                                                    |
 | `statefulset.rollingUpdatePartition` | Partition for Rolling Update strategy                                                        | `nil`                                                         |
 | `podLabels`                          | Additional labels to be added to pods                                                        | {}                                                            |
+| `priorityClassName`                  | Name of pod priority class                                                                   | `nil`                                                         |
 | `podAnnotations`                     | Annotations to be added to pods                                                              | {}                                                            |
 | `nodeSelector`                       | Node labels for pod assignment                                                               | `nil`                                                         |
 | `schedulerName`                      | Name of an alternate                                                                         | `nil`                                                         |

@@ -84,6 +84,12 @@ env:
     CACHE_REDIS_ADDR:
     # Redis database to be selected after connect
     CACHE_REDIS_DB: 0
+    # enable bearer auth
+    BEARER_AUTH: false
+    # auth realm used for bearer auth
+    AUTH_REALM:
+    # auth service used for bearer auth
+    AUTH_SERVICE:
   field:
     # POD_IP: status.podIP
   secret:
@@ -249,3 +255,7 @@ oracle:
     config: config
     # Secret key that holds the oci private key
     key_file: key_file
+bearerAuth:
+  secret:
+    enabled: false
+    publicKeySecret: chartmuseum-public-key

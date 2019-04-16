@@ -52,7 +52,7 @@ spec:
           - name: DRONE_KUBERNETES_SERVICE_ACCOUNT
             value: {{ template "drone.pipelineServiceAccount" . }}
         {{- end }}
-          - name: DRONE_ALWAYS_AUTH
+          - name: DRONE_GIT_ALWAYS_AUTH
             value: {{ .Values.server.alwaysAuth | quote }}
           - name: DRONE_SERVER_HOST
           {{- if hasKey .Values.server "host" }}
