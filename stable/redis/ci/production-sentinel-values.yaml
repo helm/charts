@@ -43,7 +43,7 @@ cluster:
 ## Use redis sentinel in the redis port. This will disable the master and slave services and 
 ## create one redis service with ports to the sentinel and the redis instances
 sentinel:
-  enabled: false
+  enabled: true
   ## Bitnami Redis Sentintel image version
   ## ref: https://hub.docker.com/r/bitnami/redis-sentinel/tags/
   ##
