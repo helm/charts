@@ -10,23 +10,25 @@ metadata:
 data:
   setup-certs.sh: |-
     #!/bin/bash
-    EASY_RSA_LOC="/etc/openvpn"
+    EASY_RSA_LOC="/etc/openvpn/certs"
     SERVER_CERT="${EASY_RSA_LOC}/pki/issued/server.crt"
     if [ -e "$SERVER_CERT" ]
     then
       echo "found existing certs - reusing"
     else
+      export EASYRSA_PKI=$EASY_RSA_LOC
       ovpn_genconfig -u server
       echo "ca\n" | ovpn_initpki nopass
     fi
 
   newClientCert.sh: |-
       #!/bin/bash
-      EASY_RSA_LOC="/etc/openvpn"
+      EASY_RSA_LOC="/etc/openvpn/certs"
       CLIENT_NAME=$1
       REMOTE_ADDR=$2
 
       cd $EASY_RSA_LOC
+      export EASYRSA_PKI=$EASY_RSA_LOC
       easyrsa build-client-full $CLIENT_NAME nopass
 
       cat >${EASY_RSA_LOC}/pki/$1.ovpn <<EOF
@@ -84,10 +86,10 @@ data:
   openvpn.conf: |-
       server {{ .Values.openvpn.OVPN_NETWORK }} {{ .Values.openvpn.OVPN_SUBNET }}
       verb 3
-      key /etc/openvpn/pki/private/server.key
-      ca /etc/openvpn/pki/ca.crt
-      cert /etc/openvpn/pki/issued/server.crt
-      dh /etc/openvpn/pki/dh.pem
+      key /etc/openvpn/certs/pki/private/server.key
+      ca /etc/openvpn/certs/pki/ca.crt
+      cert /etc/openvpn/certs/pki/issued/server.crt
+      dh /etc/openvpn/certs/pki/dh.pem
 
       key-direction 0
       keepalive 10 60
