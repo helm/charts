@@ -33,8 +33,10 @@ queryLayer:
     - '--query.replica-label=prometheus_replica'
     - '--query.auto-downsampling'
     - '--cluster.disable'
-  pointToLocalSidecars: true # Make a sidecar svc deployed with the same chart a target for this queryLayer. Implies --store= parameter.
-  queryApiService:        # Expose Thanos query-layer query API
+# Make a sidecar svc deployed with the same chart a target for this queryLayer. Implies --store= parameter.
+  pointToLocalSidecars: true
+# Expose Thanos query-layer query API
+  queryApiService:
     enabled: true
     annotations:
     clusterIP:
@@ -44,7 +46,8 @@ queryLayer:
     nodePort:
     servicePort: 9090
     type: LoadBalancer
-  storeApiService:        # Expose Thanos query-layer store API
+# Expose Thanos query-layer store API
+  storeApiService:
     enabled: true
     annotations:
       prometheus.io/scrape: 'true'
@@ -199,17 +202,20 @@ ruleLayer:
     - '--eval-interval=10s'
     - '--objstore.config-file=/etc/thanos-rule/bucket.yaml'
   deploymentAnnotations:
-  pointToLocalQuery:         # Implies --query binary Arg. Values is an address of a Service with local to that Chart queryLayer backends.
-    enabled: true         # Implies --query binary Arg. Values is an address of a Service with local to that Chart queryLayer backends.
+# Implies --query binary Arg. Values is an address of a Service with local to that Chart queryLayer backends.
+  pointToLocalQuery:
+    enabled: true
     uri: ''
+# Volume for --data-dir parameter
   extraEmptyDirMounts:
-    - name: data                  # Volume for --data-dir parameter
+    - name: data
       mountPath: /thanos-rule-data/
   configMap:
     name: config
     mountPath: /etc/thanos-rule/
     data:
-      bucket.yaml:                 # config for --objstore.config-file parameter
+# config for --objstore.config-file parameter
+      bucket.yaml:
         type: GCS
         config:
           bucket: thanos-chart-test
