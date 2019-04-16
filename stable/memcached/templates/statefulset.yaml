@@ -50,13 +50,20 @@ spec:
         imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
         command:
         - memcached
-        - -m {{ .Values.memcached.maxItemMemory  }}
+        - -m {{ .Values.memcached.maxItemMemory }}
         {{- if .Values.memcached.extendedOptions }}
         - -o
         - {{ .Values.memcached.extendedOptions }}
         {{- end }}
         {{- if .Values.memcached.verbosity }}
         - -{{ .Values.memcached.verbosity }}
+        {{- end }}
+        {{- range $key, $value := .Values.memcached.extraArgs }}
+        {{- if $value }}
+        - -{{ $key }} {{ $value }}
+        {{- else }}
+        - -{{ $key }}
+        {{- end }}
         {{- end }}
         ports:
         - name: memcache
