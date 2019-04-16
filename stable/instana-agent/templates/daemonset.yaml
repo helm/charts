@@ -41,8 +41,19 @@ spec:
             - name: INSTANA_AGENT_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "instana-agent.baseName" . }}-secret
+                  name: {{ template "instana-agent.baseName" . }}-agent-secret
                   key: key
+            {{- if .Values.agent.mode }}
+            - name: INSTANA_AGENT_MODE
+              value: {{ int .Values.agent.mode | quote }}
+            {{- end }}
+            {{- if .Values.agent.downloadKey }}
+            - name: INSTANA_DOWNLOAD_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "instana-agent.baseName" . }}-download-secret
+                  key: key
+            {{- end }}
             {{- if .Values.agent.proxyHost }}
             - name: INSTANA_AGENT_PROXY_HOST
               value: {{ .Values.agent.proxyHost | quote }}

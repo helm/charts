@@ -8,6 +8,10 @@ zone:
 agent:
   # agent.key is the secret token which your agent uses to authenticate to Instana's servers.
   key: null
+  # agent.mode is used to set agent mode and it can be APM, INFRASTRUCTURE or AWS
+  # mode: APM
+  # agent.downloadKey is optional, if used it doesn't have to match agent.key
+  # downloadKey: null
   # agent.listenAddress is the IP address the agent HTTP server will listen to.
   # listenAddress: *
   # agent.leaderElectorPort is the port on which the leader elector sidecar is exposed.
