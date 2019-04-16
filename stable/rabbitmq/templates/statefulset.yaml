@@ -171,15 +171,19 @@ spec:
           - name: K8S_SERVICE_NAME
             value: "{{ template "rabbitmq.fullname" . }}-headless"
           - name: K8S_ADDRESS_TYPE
-            value: {{ .Values.rabbitmq.clustering.address_type }}
+            value: {{ .Values.rabbitmq.clustering.address_type }}        
           {{- if (eq "hostname" .Values.rabbitmq.clustering.address_type) }}
           - name: RABBITMQ_NODENAME
-            value: "rabbit@$(MY_POD_NAME).$(K8S_SERVICE_NAME).$(MY_POD_NAMESPACE).svc.{{ .Values.rabbitmq.clustering.k8s_domain }}"
+            value: "rabbit@$(HOSTNAME).$(K8S_SERVICE_NAME).$(MY_POD_NAMESPACE).svc.{{ .Values.rabbitmq.clustering.k8s_domain }}"
           - name: K8S_HOSTNAME_SUFFIX
             value: ".$(K8S_SERVICE_NAME).$(MY_POD_NAMESPACE).svc.{{ .Values.rabbitmq.clustering.k8s_domain }}"
           {{- else }}
           - name: RABBITMQ_NODENAME
+            {{- if .Values.rabbitmq.rabbitmqClusterNodeName }}
+            value: {{ .Values.rabbitmq.rabbitmqClusterNodeName | quote }}
+            {{- else }}
             value: "rabbit@$(MY_POD_IP)"
+            {{- end }}
           {{- end }}
           - name: RABBITMQ_LOGS
             value: {{ .Values.rabbitmq.logs | quote }}
