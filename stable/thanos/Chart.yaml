@@ -1,0 +1,13 @@
+name: thanos
+version: 1.0.0
+appVersion: 0.3.2
+description: Thanos is a highly available Prometheus setup with long term storage capabilities.
+home: https://improbable.io/blog/thanos-prometheus-at-scale
+icon: https://raw.githubusercontent.com/improbable-eng/thanos/master/website/static/icon-light.png
+sources:
+  - https://github.com/improbable-eng/thanos
+maintainers:
+  - name: Ivan Kiselev
+    email: kiselev_ivan@pm.me
+engine: gotpl
+tillerVersion: ">=2.8.0"

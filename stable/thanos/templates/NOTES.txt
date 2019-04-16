@@ -1,0 +1,62 @@
+{{- with .Values.ingress -}}
+{{- if .enabled -}}
+#############################
+####  Your ingress info  ####
+#############################
+{{- if .query -}}
+You query interface must be available now (or in a short time) on: {{ .host }}{{ .query.path }}
+{{- end -}} {{/* if .query */}}
+{{- if .rule -}}
+You rule interface must be available now (or in a short time) on: {{ .host }}{{ .query.path }}
+{{- end -}} {{/* if .rule */}}
+{{- end -}} {{/* if .enabled */}}
+{{- end -}} {{/* with .Values.queryLayer */}}
+
+
+{{- if and (eq (printf "%s" $.Values.storeLayer.secret.google ) "") $.Values.storeLayer.enabled }}
+##############################################################################
+####   ERROR: You did not set the value for Store Layer Service Account   ####
+##############################################################################
+
+This deployment will be incomplete until you set the Values.storeLayer.secret.google.
+
+Pods are going to stuck CrashLoopBackOff due to storage unavailability.
+
+Please, do set the value:
+
+    helm upgrade {{ .Release.Name }} \
+        --set storeLayer.secret.google="$MY_LOVELY_SERVICE_ACCOUNT"
+{{- end }}
+
+{{- if and (eq (printf "%s" $.Values.ruleLayer.secret.google) "") $.Values.ruleLayer.enabled }}
+
+##############################################################################
+####   ERROR: You did not set the value for Rule Layer Service Account    ####
+##############################################################################
+
+This deployment will be incomplete until you set the Values.ruleLayer.secret.google.
+
+Alerts metrics and recording rules are not going to be stored anywhere.
+
+Please, do set the value:
+
+    helm upgrade {{ .Release.Name }} \
+        --set ruleLayer.secret.google="$MY_LOVELY_SERVICE_ACCOUNT"
+{{- end }}
+
+{{- if and (eq (printf "%s" $.Values.compactLayer.secret.google ) "") $.Values.compactLayer.enabled }}
+
+##############################################################################
+####   ERROR: You did not set the value for Compact Layer Service Account ####
+##############################################################################
+
+This deployment will be incomplete until you set the Values.compactLayer.secret.google.
+
+Series stored in the long-term storage are not going to be compacted and queries for a long time range are going to be extremely slow.
+
+Please, do set the value:
+
+    helm upgrade {{ .Release.Name }} \
+        --set compactLayer.secret.google="$MY_LOVELY_SERVICE_ACCOUNT"
+{{- end }}
+

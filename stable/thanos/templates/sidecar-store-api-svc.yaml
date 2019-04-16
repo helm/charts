@@ -1,0 +1,35 @@
+{{- with .Values.sidecarLayer -}}
+{{- if .storeApiService.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  annotations: {{- .storeApiService.annotations | default dict | toYaml | trim | nindent 4 }}
+  labels: {{- include "thanos.sidecar.labels" $ | nindent 4 }}
+  name: {{ print (include "thanos.fullname" $) "-" .component | quote }}
+spec:
+{{- if .storeApiService.clusterIP }}
+  clusterIP: {{ .storeApiService.clusterIP }}
+{{- end }}
+  externalIPs: {{ .storeApiService.externalIPs | default list | toYaml | trim | nindent 4 }}
+{{- if .storeApiService.loadBalancerIP }}
+  loadBalancerIP: {{ .storeApiService.loadBalancerIP }}
+{{- end }}
+{{- if .storeApiService.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+  {{- range $cidr := .storeApiService.loadBalancerSourceRanges }}
+    - {{ $cidr }}
+  {{- end }}
+{{- end }}
+  ports:
+    - name: grpc
+      port: {{ .storeApiService.servicePort }}
+      protocol: TCP
+      targetPort: 10901
+    {{- if .storeApiService.nodePort }}
+      nodePort: {{ .storeApiService.nodePort }}
+    {{- end }}
+  selector:
+{{ .storeApiService.selector | default dict | toYaml | trim | indent 4 }}
+  type: {{ .storeApiService.type | quote }}
+{{- end }} {{/* if .storeApiService.enabled */}}
+{{- end }} {{/* .Values.storeLayer */}}

@@ -1,0 +1,102 @@
+{{- with .Values.compactLayer -}}
+{{- if .enabled -}}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  annotations: {{- .statefulSetAnnotations | default dict | toYaml | trim | nindent 4 }}
+  labels: {{- include "thanos.compact.labels" $ | nindent 4 }}
+  name: {{ print (include "thanos.fullname" $) "-" .component | quote }}
+spec:
+  {{- if .persistence.enabled }}
+  volumeClaimTemplates:
+  - metadata:
+      name: persistent-data
+      labels: {{- include "thanos.compact.matchLabels" $ | nindent 8 }}
+    storageClass: {{ .persistence.storageClass | quote }}
+    spec:
+      accessModes:
+      {{- range .persistence.accessModes }}
+      - {{ . }}
+      {{- end }}
+      resources:
+        requests:
+          storage: {{ .persistence.size | trim | quote }}
+  {{- end }}
+  serviceName: {{ print (include "thanos.name" $) "-compact" | quote }}
+  selector:
+    matchLabels:
+{{ include "thanos.compact.matchLabels" $ | default dict | indent 6 }}
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations: {{- .podAnnotations | default dict | toYaml | trim | nindent 8 }}
+      labels: {{- include "thanos.compact.labels" $ | nindent 8 }}
+    spec:
+      {{- if .priorityClassName }}
+      priorityClassName: {{ .priorityClassName | quote | trim }}
+      {{- end }}
+      containers:
+        - name: thanos-compact
+          image: {{ print .image.repository ":" .image.tag | quote }}
+          imagePullPolicy: {{ .image.pullPolicy | quote }}
+          args:
+            - compact
+            {{- if .persistence.enabled }}
+            - '--data-dir={{ .persistence.mountPath }}'
+            {{- end }}
+            {{- range .binaryArgs }}
+            - {{ . }}
+            {{- end }}
+          resources: {{- .resources | default dict | toYaml | trim | nindent 12}}
+          volumeMounts:
+          {{- range .extraEmptyDirMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+          {{- end }}
+          {{- if .configMap }}
+            - name: {{ print (include "thanos.fullname" $) "-" .component "-" .configMap.name| quote }}
+              mountPath: {{ .configMap.mountPath }}
+          {{- end }}
+          {{- if .secret }}
+            - name: secret-volume
+              mountPath: /etc/secret/
+          {{- end }}
+          {{- if .persistence.enabled }}
+            - mountPath: {{ .persistence.mountPath }}
+              name: persistent-data
+          {{- end }}
+          env:
+          {{- if .secret.google }}
+            - name: GOOGLE_APPLICATION_CREDENTIALS
+              value: /etc/secret/google
+          {{- end }}
+      imagePullSecrets:
+      {{- range $.Values.imagePullSecrets }}
+      {{- . | default dict | toYaml | trim | nindent 8 }}
+      {{- end }}
+      nodeSelector: {{- .nodeSelector | default dict | toYaml | trim | nindent 8 }}
+      securityContext: {{- .securityContext | default dict | toYaml | trim | nindent 8 }}
+      tolerations: {{- .tolerations | default list | toYaml | trim | nindent 8 }}
+      affinity: {{- .affinity | default dict | toYaml | trim | nindent 8 }}
+      terminationGracePeriodSeconds: {{ .terminationGracePeriodSeconds }}
+      volumes:
+      {{- if .secret }}
+        - name: secret-volume
+          secret:
+            secretName: {{ print (include "thanos.fullname" $) "-" .component | quote }}
+      {{- end }}
+      {{- range .extraEmptyDirMounts }}
+        - name: {{ .name }}
+          emptyDir: {}
+      {{- end }}
+      {{- if .configMap }}
+        - name: {{ print (include "thanos.fullname" $) "-" .component "-" .configMap.name| quote }}
+          configMap:
+            name: {{ print (include "thanos.fullname" $) "-" .component "-" .configMap.name| quote }}
+      {{- end }}
+
+{{- end -}} {{/* if .enabled */}}
+{{- end -}} {{/* with .Values.compactLayer */}}
+

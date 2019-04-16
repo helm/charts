@@ -1,0 +1,104 @@
+{{- with .Values.ruleLayer -}}
+{{- if .enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations: {{- .deploymentAnnotations | default dict | toYaml | trim | nindent 4 }}
+  labels: {{- include "thanos.rule.labels" $ | nindent 4 }}
+  name: {{ print (include "thanos.fullname" $) "-" .component | quote }}
+spec:
+  selector:
+    matchLabels:
+{{ include "thanos.rule.matchLabels" $ | indent 6 }}
+  replicas: {{ .replicaCount }}
+  strategy: {{- .strategy | default dict | toYaml | trim | nindent 4 }}
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/rule-configmap.yaml") $ | sha256sum }}
+        checksum/config-alert: {{ include (print $.Template.BasePath "/rule-alert-configmap.yaml") $ | sha256sum }}
+      {{- if .podAnnotations }}
+      {{- .podAnnotations | default dict | toYaml | trim | nindent 8 }}
+      {{- end }}
+      labels: {{- include "thanos.rule.labels" $ | nindent 8 }}
+    spec:
+      affinity: {{- .affinity | default dict | toYaml | trim | nindent 8 }}
+      {{- if .priorityClassName }}
+      priorityClassName: {{ .priorityClassName | quote | trim }}
+      {{- end }}
+      containers:
+        - name: thanos-rule
+          image: {{ print .image.repository ":" .image.tag | quote  }}
+          imagePullPolicy: {{ .image.pullPolicy | quote | trim }}
+          args:
+            - rule
+            {{- if .pointToLocalQuery.enabled }}
+            - '--query={{ print (include "thanos.fullname" $) "-" $.Values.queryLayer.component "-http" }}.{{ $.Release.Namespace }}.svc.cluster.local:{{ $.Values.queryLayer.queryApiService.servicePort }}{{ .pointToLocalQuery.uri }}'
+            {{- end }}
+            - '--http-address=0.0.0.0:10902'
+            {{- range .binaryArgs }}
+            - {{ . }}
+            {{- end }}
+            {{- if .alerting }}
+            - '--rule-file=/etc/thanos-alerts/rules.yaml'
+            {{- end }}
+          ports:
+            - name: ui
+              containerPort: 10902
+          resources: {{- .resources | default dict | toYaml | trim | nindent 12 }}
+          volumeMounts:
+          {{- range .extraEmptyDirMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+          {{- end }}
+          {{- if .configMap }}
+            - name: {{ print (include "thanos.fullname" $) "-" .component "-" .configMap.name | quote }}
+              mountPath: {{ .configMap.mountPath }}
+          {{- end }}
+          {{- if .alerting }}
+            - name: {{ print (include "thanos.fullname" $) "-" .component "-alerts" | quote }}
+              mountPath: /etc/thanos-alerts/
+          {{- end }}
+          {{- if .secret }}
+            - name: secret-volume
+              mountPath: /etc/secret/
+          {{- end }}
+          env:
+          {{- if .secret.google }}
+            - name: GOOGLE_APPLICATION_CREDENTIALS
+              value: /etc/secret/google
+          {{- end }}
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+      imagePullSecrets:
+      {{- range $.Values.imagePullSecrets }}
+      {{- . | default dict | toYaml | trim | nindent 8 }}
+      {{- end }}
+      nodeSelector: {{- .nodeSelector | default dict | toYaml | trim | nindent 8 }}
+      securityContext: {{- .securityContext | default dict | toYaml | trim | nindent 8 }}
+      tolerations: {{- .tolerations | default list | toYaml | trim | nindent 8 }}
+      terminationGracePeriodSeconds: {{ .terminationGracePeriodSeconds }}
+      volumes:
+      {{- if .secret }}
+        - name: secret-volume
+          secret:
+            secretName: {{ print (include "thanos.fullname" $) "-" .component | quote }}
+      {{- end }}
+      {{- range .extraEmptyDirMounts }}
+        - name: {{ .name }}
+          emptyDir: {}
+      {{- end }}
+      {{- if .configMap }}
+        - name: {{ print (include "thanos.fullname" $) "-" .component "-" .configMap.name | quote }}
+          configMap:
+            name: {{ print (include "thanos.fullname" $) "-" .component "-" .configMap.name | quote }}
+      {{- end }}
+      {{- if .alerting }}
+        - name: {{ print (include "thanos.fullname" $) "-" .component "-alerts" | quote }}
+          configMap:
+            name: {{ print (include "thanos.fullname" $) "-" .component "-alerts" | quote }}
+      {{- end }}
+{{- end -}}  {{/* if .enabled */}}
+{{- end -}}  {{/* if .Values.ruleLayer */}}

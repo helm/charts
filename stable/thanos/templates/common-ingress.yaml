@@ -1,0 +1,28 @@
+{{- with .Values.ingress -}}
+{{- if .enabled -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations: {{- .annotations | default dict | toYaml | trim | nindent 4 }}
+  labels: {{- include "thanos.ingress.labels" $ | nindent 4 }}
+  name: {{ print (include "thanos.fullname" $) "-" .component | quote }}
+spec:
+  rules:
+  - host: {{ .host }}
+    http:
+      paths:
+{{- if .ruler }}
+      - path: {{ .ruler.path }}
+        backend:
+          serviceName: {{ print (include "thanos.fullname" $) "-" $.Values.ruleLayer.component | quote }}
+          servicePort: {{ $.Values.ruleLayer.ruleUiService.servicePort }}
+{{- end }}
+{{- if .query }}
+      - path: {{ .query.path }}
+        backend:
+          serviceName: {{ print (include "thanos.fullname" $) "-" $.Values.queryLayer.component "-http"| quote }}
+          servicePort: {{ $.Values.queryLayer.queryApiService.servicePort }}
+{{- end }}
+  tls: {{- .tls | default list | toYaml | trim | nindent 2 }}
+{{- end -}} {{/* if .enabled */}}
+{{- end -}} {{/* with .Values.queryLayer */}}

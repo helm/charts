@@ -1,0 +1,244 @@
+imagePullSecrets:
+
+ingress:
+  component: common
+  enabled: false
+
+sidecarLayer:
+  component: sidecar
+  storeApiService:
+    selector:
+      app: prometheus
+      component: server
+    enabled: false
+    annotations:
+      prometheus.io/scrape: 'false'
+    clusterIP: None
+    externalIPs:
+    loadBalancerIP:
+    loadBalancerSourceRanges:
+    nodePort:
+    servicePort: 10901
+    type: ClusterIP
+
+queryLayer:
+  enabled: true
+  component: query
+  labels:
+    env: test
+  binaryArgs:
+    - '--log.level=debug'
+    - '--query.timeout=1m'
+    - '--query.max-concurrent=40'
+    - '--query.replica-label=prometheus_replica'
+    - '--query.auto-downsampling'
+    - '--cluster.disable'
+  pointToLocalSidecars: true # Make a sidecar svc deployed with the same chart a target for this queryLayer. Implies --store= parameter.
+  queryApiService:        # Expose Thanos query-layer query API
+    enabled: true
+    annotations:
+    clusterIP:
+    externalIPs:
+    loadBalancerIP:
+    loadBalancerSourceRanges:
+    nodePort:
+    servicePort: 9090
+    type: LoadBalancer
+  storeApiService:        # Expose Thanos query-layer store API
+    enabled: true
+    annotations:
+      prometheus.io/scrape: 'true'
+    clusterIP:
+    externalIPs:
+    loadBalancerIP:
+    loadBalancerSourceRanges:
+    nodePort:
+    servicePort: 10901
+    type: LoadBalancer
+  deploymentAnnotations:
+  image:
+    pullPolicy: IfNotPresent
+    repository: improbable/thanos
+    tag: v0.3.2
+  nodeSelector:
+  podAnnotations:
+  priorityClassName:
+  replicaCount: 3
+  resources:
+    limits:
+      memory: "1Gi"
+      cpu: "1"
+  schedulerName:
+  securityContext:
+  strategy:
+  terminationGracePeriodSeconds: 15
+  tolerations:
+
+storeLayer:
+  enabled: true
+  component: store
+  persistence:
+    enabled: true
+    size: 50Gi
+    storageClass: ''
+    mountPath: /thanos-store-persistent-data/
+    accessModes:
+    - ReadWriteOnce
+  labels:
+    env: test
+  binaryArgs:
+    - '--log.level=debug'
+    - '--cluster.disable'
+    - '--http-address=0.0.0.0:10902'
+    - '--objstore.config-file=/etc/thanos-store/bucket.yaml'
+## If you don't want to use PVC - use extraEmptyDirMounts and uncomment this with new value
+##    - --data-dir=
+  statefulSetAnnotations:
+  extraEmptyDirMounts:
+#    - name: data        # Volume for --data-dir parameter
+#      mountPath: /thanos-store-data/
+  configMap:
+    name: config
+    mountPath: /etc/thanos-store/
+    data:
+      bucket.yaml:
+        type: GCS
+        config:
+          bucket: thanos-chart-test
+  secret:
+    google: ''
+  image:
+    pullPolicy: IfNotPresent
+    repository: improbable/thanos
+    tag: v0.3.2
+  nodeSelector:
+  podAnnotations:
+  priorityClassName:
+  replicaCount: 2
+  resources:
+    limits:
+      memory: "1.5Gi"
+      cpu: "250m"
+  schedulerName:
+  securityContext:
+  storeApiService:
+    annotations:
+      prometheus.io/scrape: 'false'
+    clusterIP: None
+    externalIPs:
+    loadBalancerIP:
+    loadBalancerSourceRanges:
+    nodePort:
+    servicePort: 10901
+    type: ClusterIP
+    enabled: true
+  terminationGracePeriodSeconds: 15
+  tolerations:
+
+compactLayer:
+  enabled: true
+  component: compact
+  persistence:
+    enabled: true
+    size: 50Gi
+    storageClass: ''
+    mountPath: /thanos-compact-persistent-data/
+    accessModes:
+    - ReadWriteOnce
+  labels:
+    env: test
+  binaryArgs:
+    - '-w'
+    - '--log.level=debug'
+    - '--objstore.config-file=/etc/thanos-compact/bucket.yaml'
+    - '--retention.resolution-raw=2y'
+    - '--retention.resolution-5m=182d'
+    - '--retention.resolution-1h=1y'
+## If you don't want to use PVC - use extaEmptyDirMounts and uncomment this with new value
+##    - --data-dir=
+  extraEmptyDirMounts:
+#  - name: data        # Volume for --data-dir parameter
+#    mountPath: /thanos-compact-data/
+  configMap:
+    name: config
+    mountPath: /etc/thanos-compact/
+    data:
+      bucket.yaml:
+        type: GCS
+        config:
+          bucket: thanos-chart-test
+  secret:
+    google: ''
+  statefulSetAnnotations:
+  image:
+    pullPolicy: IfNotPresent
+    repository: improbable/thanos
+    tag: v0.3.2
+  nodeSelector:
+  podAnnotations:
+  priorityClassName:
+  resources:
+    limits:
+      memory: "2Gi"
+      cpu: "1"
+  schedulerName:
+  securityContext:
+  terminationGracePeriodSeconds: 15
+  tolerations:
+
+ruleLayer:
+  enabled: true
+  component: rule
+  labels:
+    env: test
+  alerting: ''
+  binaryArgs:
+    - '--log.level=debug'
+    - '--cluster.disable'
+    - '--data-dir=/thanos-rule-data/'
+    - '--eval-interval=10s'
+    - '--objstore.config-file=/etc/thanos-rule/bucket.yaml'
+  deploymentAnnotations:
+  pointToLocalQuery:         # Implies --query binary Arg. Values is an address of a Service with local to that Chart queryLayer backends.
+    enabled: true         # Implies --query binary Arg. Values is an address of a Service with local to that Chart queryLayer backends.
+    uri: ''
+  extraEmptyDirMounts:
+    - name: data                  # Volume for --data-dir parameter
+      mountPath: /thanos-rule-data/
+  configMap:
+    name: config
+    mountPath: /etc/thanos-rule/
+    data:
+      bucket.yaml:                 # config for --objstore.config-file parameter
+        type: GCS
+        config:
+          bucket: thanos-chart-test
+  secret:
+    google: ''
+  ruleUiService:        # Expose UI
+    enabled: true
+    annotations:
+    clusterIP:
+    externalIPs:
+    loadBalancerIP:
+    loadBalancerSourceRanges:
+    nodePort:
+    servicePort: 10902
+    type: LoadBalancer
+  image:
+    pullPolicy: IfNotPresent
+    repository: improbable/thanos
+    tag: v0.3.2
+  nodeSelector:
+  podAnnotations:
+  priorityClassName:
+  replicaCount: 3
+  resources:
+    limits:
+      memory: "1.5Gi"
+      cpu: "250m"
+  schedulerName:
+  securityContext:
+  strategy:
+  terminationGracePeriodSeconds: 15
+  tolerations:

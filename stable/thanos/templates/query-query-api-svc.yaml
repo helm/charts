@@ -1,0 +1,37 @@
+{{- with .Values.queryLayer -}}
+{{- if .enabled -}}
+{{- if .queryApiService.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  annotations: {{- .queryApiService.annotations | default dict | toYaml | trim | nindent 4 }}
+  labels: {{- include "thanos.query.labels" $ | nindent 4 }}
+  name: {{ print (include "thanos.fullname" $) "-" .component "-http"| quote }}
+spec:
+{{- if .queryApiService.clusterIP }}
+  clusterIP: {{ .queryApiService.clusterIP }}
+{{- end }}
+  externalIPs: {{ .queryApiService.externalIPs | default list | toYaml | trim | nindent 4 }}
+{{- if .queryApiService.loadBalancerIP }}
+  loadBalancerIP: {{ .queryApiService.loadBalancerIP }}
+{{- end }}
+{{- if .queryApiService.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+  {{- range $cidr := .queryApiService.loadBalancerSourceRanges }}
+    - {{ $cidr }}
+  {{- end }}
+{{- end }}
+  ports:
+    - name: http
+      port: {{ .queryApiService.servicePort }}
+      protocol: TCP
+      targetPort: 10902
+    {{- if .queryApiService.nodePort }}
+      nodePort: {{ .queryApiService.nodePort }}
+    {{- end }}
+  selector:
+{{ include "thanos.query.matchLabels" $ | indent 4 }}
+  type: {{ .queryApiService.type | quote }}
+{{- end }} {{/* if .enabled */}}
+{{- end }} {{/* if .queryApiService.enabled */}}
+{{- end }} {{/* with .Values.queryLayer */}}

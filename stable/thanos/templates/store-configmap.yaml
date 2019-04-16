@@ -1,0 +1,16 @@
+{{- with .Values.storeLayer -}}
+{{- if .enabled -}}
+{{- if .configMap }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels: {{- include "thanos.store.labels" $ | nindent 4 }}
+  name: {{ print (include "thanos.fullname" $) "-" .component "-" .configMap.name | quote }}
+data:
+{{- range $key, $value := .configMap.data }}
+{{- $key | nindent 2 }}: |
+{{- $value | default dict | toYaml | trim | nindent 4 }}
+{{- end -}} {{/* range $key, $value := .configMap.data */}}
+{{- end -}} {{/* if .configMap */}}
+{{- end -}} {{/* if .enabled */}}
+{{- end -}} {{/*  with .Values.storeLayer */}}

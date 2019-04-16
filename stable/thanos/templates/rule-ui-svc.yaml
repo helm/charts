@@ -1,0 +1,37 @@
+{{- with .Values.ruleLayer -}}
+{{- if .enabled -}}
+{{- if .ruleUiService.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  annotations: {{- .ruleUiService.annotations | default dict | toYaml | trim | nindent 4 }}
+  labels: {{- include "thanos.rule.labels" $ | nindent 4 }}
+  name: {{ print (include "thanos.fullname" $) "-" .component | quote }}
+spec:
+{{- if .ruleUiService.clusterIP }}
+  clusterIP: {{ .ruleUiService.clusterIP }}
+{{- end }}
+  externalIPs: {{ .ruleUiService.externalIPs | default list | toYaml | trim | nindent 4 }}
+{{- if .ruleUiService.loadBalancerIP }}
+  loadBalancerIP: {{ .ruleUiService.loadBalancerIP }}
+{{- end }}
+{{- if .ruleUiService.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+  {{- range $cidr := .ruleUiService.loadBalancerSourceRanges }}
+    - {{ $cidr }}
+  {{- end }}
+{{- end }}
+  ports:
+    - name: http
+      port: {{ .ruleUiService.servicePort }}
+      protocol: TCP
+      targetPort: 10902
+    {{- if .ruleUiService.nodePort }}
+      nodePort: {{ .ruleUiService.nodePort }}
+    {{- end }}
+  selector:
+{{ include "thanos.rule.matchLabels" $ | indent 4 }}
+  type: {{ .ruleUiService.type | quote }}
+{{- end -}} {{/* if .ruleUiService.enabled */}}
+{{- end -}} {{/* if .enabled */}}
+{{- end -}} {{/* with .Values.ruleLayer */}}
