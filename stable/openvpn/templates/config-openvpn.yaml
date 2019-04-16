@@ -16,7 +16,7 @@ data:
     then
       echo "found existing certs - reusing"
     else
-      ovpn_genconfig -u HELMSERVER
+      ovpn_genconfig -u server
       echo "ca\n" | ovpn_initpki nopass
     fi
 
@@ -84,9 +84,9 @@ data:
   openvpn.conf: |-
       server {{ .Values.openvpn.OVPN_NETWORK }} {{ .Values.openvpn.OVPN_SUBNET }}
       verb 3
-      key /etc/openvpn/pki/private/HELMSERVER.key
+      key /etc/openvpn/pki/private/server.key
       ca /etc/openvpn/pki/ca.crt
-      cert /etc/openvpn/pki/issued/HELMSERVER.crt
+      cert /etc/openvpn/pki/issued/server.crt
       dh /etc/openvpn/pki/dh.pem
 
       key-direction 0
