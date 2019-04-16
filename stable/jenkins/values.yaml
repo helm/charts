@@ -234,6 +234,9 @@ Master:
   # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
   NodeSelector: {}
   Tolerations: {}
+  # Leverage a PriorityClass to ensure your pods survive resource shortages
+  # ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
+  # PriorityClass: system-cluster-critical
   PodAnnotations: {}
 
   # The below two configuration-related values are deprecated and replaced by Jenkins Configuration as Code (see above
