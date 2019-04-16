@@ -3,9 +3,10 @@
 [Thanos](https://github.com/improbable-eng/thanos), a Thanos is a set of components that can be composed into a highly available metric system with unlimited storage capacity, which can be added seamlessly on top of existing Prometheus deployments.
 
 ## TL;DR;
-
+Replace all the `thanos-chart-test` with existing buckets
+Set all the creds for buckets in `.Values.ruleLayer.secret.google`, `.Values.storeLayer.secret.google`, `.Values.compactLayer.secret.google`
 ```console
-$ helm install stable/thanos-components
+$ helm install stable/thanos-components -f values.yaml
 ```
 
 ## TODO
