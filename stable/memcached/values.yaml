@@ -32,8 +32,8 @@ memcached:
   ## Additional command line arguments to pass to memcached
   ## E.g. to specify a maximum value size
   ## extraArgs:
-  ##   I: "2m"
-  extraArgs: {}
+  ##   - -I 2m
+  extraArgs: []
 
 ## Define various attributes of the service
 serviceAnnotations: {}

@@ -58,13 +58,9 @@ spec:
         {{- if .Values.memcached.verbosity }}
         - -{{ .Values.memcached.verbosity }}
         {{- end }}
-        {{- range $key, $value := .Values.memcached.extraArgs }}
-        {{- if $value }}
-        - -{{ $key }} {{ $value }}
-        {{- else }}
-        - -{{ $key }}
-        {{- end }}
-        {{- end }}
+{{- with .Values.memcached.extraArgs }}
+{{ toYaml . | indent 8 }}
+{{- end }}
         ports:
         - name: memcache
           containerPort: 11211
