@@ -69,9 +69,9 @@ Also, we can't use a single if because lazy evaluation is not an option
 Return the proper Redis Sentinel image name
 */}}
 {{- define "sentinel.image" -}}
-{{- $registryName := .Values.sentinelImage.registry -}}
-{{- $repositoryName := .Values.sentinelImage.repository -}}
-{{- $tag := .Values.sentinelImage.tag | toString -}}
+{{- $registryName := .Values.sentinel.image.registry -}}
+{{- $repositoryName := .Values.sentinel.image.repository -}}
+{{- $tag := .Values.sentinel.image.tag | toString -}}
 {{/*
 Helm 2.11 supports the assignment of a value to a variable defined in a different scope,
 but Helm 2.9 and 2.10 doesn't support it, so we need to implement this if-else logic.

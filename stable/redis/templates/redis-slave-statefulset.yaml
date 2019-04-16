@@ -192,7 +192,7 @@ spec:
       {{- if and .Values.cluster.enabled .Values.sentinel.enabled }}
       - name: sentinel
         image: "{{ template "sentinel.image" . }}"
-        imagePullPolicy: {{ default "" .Values.sentinelImage.pullPolicy | quote }}
+        imagePullPolicy: {{ default "" .Values.sentinel.image.pullPolicy | quote }}
         {{- if .Values.securityContext.enabled }}
         securityContext:
           runAsUser: {{ .Values.securityContext.runAsUser }}

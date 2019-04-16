@@ -38,7 +38,7 @@ securityContext:
 ## Bitnami Redis Sentintel image version
 ## ref: https://hub.docker.com/r/bitnami/redis/tags/
 ##
-sentinelImage:
+sentinel.image:
   registry: docker.io
   repository: bitnami/redis-sentinel
   ## Bitnami Redis image tag
