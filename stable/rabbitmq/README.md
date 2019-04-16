@@ -67,6 +67,8 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `rabbitmq.clustering.k8s_domain`     | Customize internal k8s cluster domain            | `cluster.local`                                         |
 | `rabbitmq.logs`                      | Value for the RABBITMQ_LOGS environment variable | `-`                                                     |
 | `rabbitmq.ulimitNofiles`             | Max File Descriptor limit                        | `65536`                                                 |
+| `rabbitmq.maxAvailableSchedulers     | RabbitMQ maximum available scheduler threads     | `2`                                                     |
+| `rabbitmq.onlineSchedulers           | RabbitMQ online scheduler threads                | `1`                                                     |
 | `rabbitmq.configuration`             | Required cluster configuration                   | See values.yaml                                         |
 | `rabbitmq.extraConfiguration`        | Extra configuration to add to rabbitmq.conf      | See values.yaml                                         |
 | `service.type`                       | Kubernetes Service type                          | `ClusterIP`                                             |
