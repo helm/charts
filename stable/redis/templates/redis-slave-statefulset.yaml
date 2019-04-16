@@ -67,7 +67,7 @@ spec:
       containers:
       - name: {{ template "redis.fullname" . }}
         image: {{ template "redis.image" . }}
-        imagePullPolicy: {{ .Values.image.pullPolicy | default "" | quote }}
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         {{- if .Values.securityContext.enabled }}
         securityContext:
           runAsUser: {{ .Values.securityContext.runAsUser }}
@@ -192,7 +192,7 @@ spec:
       {{- if and .Values.cluster.enabled .Values.sentinel.enabled }}
       - name: sentinel
         image: "{{ template "sentinel.image" . }}"
-        imagePullPolicy: {{ default "" .Values.sentinel.image.pullPolicy | quote }}
+        imagePullPolicy: {{ .Values.sentinel.image.pullPolicy | quote }}
         {{- if .Values.securityContext.enabled }}
         securityContext:
           runAsUser: {{ .Values.securityContext.runAsUser }}
@@ -287,7 +287,7 @@ spec:
       {{- if $needsVolumePermissions }}
       - name: volume-permissions
         image: "{{ template "redis.volumePermissions.image" . }}"
-        imagePullPolicy: {{ default "" .Values.volumePermissions.image.pullPolicy | quote }}
+        imagePullPolicy: {{ .Values.volumePermissions.image.pullPolicy | quote }}
         command: ["/bin/chown", "-R", "{{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.fsGroup }}", "{{ .Values.slave.persistence.path }}"]
         securityContext:
           runAsUser: 0
