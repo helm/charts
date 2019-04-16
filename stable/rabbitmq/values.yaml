@@ -165,6 +165,9 @@ persistence:
   # storageClass: "-"
   accessMode: ReadWriteOnce
 
+  ## Existing PersistentVolumeClaims
+  # existingClaim: ""
+
   # If you change this value, you might have to adjust `rabbitmq.diskFreeLimit` as well.
   size: 8Gi
 
