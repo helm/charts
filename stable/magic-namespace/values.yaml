@@ -23,6 +23,9 @@ tiller:
 
   maxHistory: 0
 
+  ## Storage driver to use. One of 'configmap', 'memory', or 'secret'
+  storage: configmap
+
   tls:
     ## Enable TLS encryption between Helm and Tiller
     enabled: false
