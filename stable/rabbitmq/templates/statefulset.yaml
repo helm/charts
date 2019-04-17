@@ -179,7 +179,11 @@ spec:
             value: ".$(K8S_SERVICE_NAME).$(MY_POD_NAMESPACE).svc.{{ .Values.rabbitmq.clustering.k8s_domain }}"
           {{- else }}
           - name: RABBITMQ_NODENAME
-            value: "rabbit@$(MY_POD_IP)"
+            {{- if .Values.rabbitmq.rabbitmqClusterNodeName }}
+            value: {{ .Values.rabbitmq.rabbitmqClusterNodeName | quote }}
+            {{- else }}
+            value: "rabbit@$(MY_POD_NAME)"
+            {{- end }}
           {{- end }}
           - name: RABBITMQ_LOGS
             value: {{ .Values.rabbitmq.logs | quote }}
