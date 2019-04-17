@@ -129,5 +129,5 @@ extraVolumes: {}
 
 image:
   repository: "pomerium/pomerium"
-  tag: "latest"
+  tag: "v0.0.3"
   pullPolicy: "Always"
