@@ -327,19 +327,24 @@ updateStrategy: OnDelete
 ##
 resources: {}
   # limits:
-  #   cpu: 100mm
+  #   cpu: 100m
   #   memory: 1Gi
   # requests:
-  #   cpu: 100mm
+  #   cpu: 100m
   #   memory: 1Gi
 initContainer:
   resources: {}
   #   limits:
-  #     cpu: 100mm
+  #     cpu: 100m
   #     memory: 128Mi
   #   requests:
-  #     cpu: 100mm
+  #     cpu: 100m
   #     memory: 128Mi
+
+## Use an alternate scheduler, e.g. "stork".
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+# schedulerName:
 
 ## Data Persistency
 persistentVolume:
@@ -497,3 +502,8 @@ prometheus:
 
 ## Kubernetes Cluster Domain
 clusterDomain: cluster.local
+
+## Pod Disruption Budget
+podDisruptionBudget: {}
+  # maxUnavailable: 1
+  # minAvailable: 1

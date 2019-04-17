@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "wordpress.fullname" . }}
@@ -96,6 +96,8 @@ spec:
           value: {{ .Values.allowOverrideNone | quote }}
         - name: WORDPRESS_BLOG_NAME
           value: {{ .Values.wordpressBlogName | quote }}
+        - name: WORDPRESS_SKIP_INSTALL
+          value: {{ .Values.wordpressSkipInstall | quote }}
         - name: WORDPRESS_TABLE_PREFIX
           value: {{ .Values.wordpressTablePrefix | quote }}
         {{- if .Values.smtpHost }}
@@ -177,7 +179,7 @@ spec:
 {{ toYaml .Values.resources | indent 10 }}
 {{- if .Values.metrics.enabled }}
       - name: metrics
-        image: {{ template "metrics.image" . }}
+        image: {{ template "wordpress.metrics.image" . }}
         imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
         command: [ '/bin/apache_exporter', '-scrape_uri', 'http://status.localhost:80/server-status/?auto']
         ports:

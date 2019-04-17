@@ -1,6 +1,6 @@
 name: burrow
-version: 1.0.6
-appVersion: 0.24.3
+version: 1.1.5
+appVersion: 0.25.0
 description: Burrow is a permissionable smart contract machine
 home: https://github.com/hyperledger/burrow
 icon: https://raw.githubusercontent.com/hyperledger/burrow/develop/docs/assets/images/burrow.png

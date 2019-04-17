@@ -144,6 +144,11 @@ alertmanager:
     hosts: []
       # - alertmanager.domain.com
 
+    ## Paths to use for ingress rules - one path should match the alertmanagerSpec.routePrefix
+    ##
+    paths: []
+    # - /
+
     ## TLS configuration for Alertmanager Ingress
     ## Secret must be manually created in the namespace
     ##
@@ -176,6 +181,9 @@ alertmanager:
   ## If true, create a serviceMonitor for alertmanager
   ##
   serviceMonitor:
+    ## Scrape interval. If not set, the Prometheus default scrape interval is used.
+    ##
+    interval: ""
     selfMonitor: true
 
   ## Settings affecting alertmanagerSpec
@@ -191,7 +199,7 @@ alertmanager:
     ##
     image:
       repository: quay.io/prometheus/alertmanager
-      tag: v0.16.1
+      tag: v0.16.2
 
     ## Secrets is a list of Secrets in the same namespace as the Alertmanager object, which shall be mounted into the
     ## Alertmanager Pods. The Secrets are mounted into /etc/alertmanager/secrets/.
@@ -314,11 +322,11 @@ grafana:
   adminPassword: prom-operator
 
   ingress:
-    ## If true, Prometheus Ingress will be created
+    ## If true, Grafana Ingress will be created
     ##
     enabled: false
 
-    ## Annotations for Prometheus Ingress
+    ## Annotations for Grafana Ingress
     ##
     annotations: {}
       # kubernetes.io/ingress.class: nginx
@@ -332,16 +340,19 @@ grafana:
     ## Must be provided if Ingress is enable.
     ##
     # hosts:
-    #   - prometheus.domain.com
+    #   - grafana.domain.com
     hosts: []
 
-    ## TLS configuration for prometheus Ingress
+    ## Path for grafana ingress
+    path: /
+
+    ## TLS configuration for grafana Ingress
     ## Secret must be manually created in the namespace
     ##
     tls: []
-    # - secretName: prometheus-general-tls
+    # - secretName: grafana-general-tls
     #   hosts:
-    #   - prometheus.example.com
+    #   - grafana.example.com
 
   sidecar:
     dashboards:
@@ -349,6 +360,7 @@ grafana:
       label: grafana_dashboard
     datasources:
       enabled: true
+      defaultDatasourceEnabled: true
       label: grafana_datasource
 
   extraConfigmapMounts: []
@@ -357,9 +369,28 @@ grafana:
   #   configMap: certs-configmap
   #   readOnly: true
 
+  ## Configure additional grafana datasources
+  ## ref: http://docs.grafana.org/administration/provisioning/#datasources
+  additionalDataSources: []
+  # - name: prometheus-sample
+  #   access: proxy
+  #   basicAuth: true
+  #   basicAuthPassword: pass
+  #   basicAuthUser: daco
+  #   editable: false
+  #   jsonData:
+  #       tlsSkipVerify: true
+  #   orgId: 1
+  #   type: prometheus
+  #   url: https://prometheus.svc:9090
+  #   version: 1
+
   ## If true, create a serviceMonitor for grafana
   ##
   serviceMonitor:
+    ## Scrape interval. If not set, the Prometheus default scrape interval is used.
+    ##
+    interval: ""
     selfMonitor: true
 
 ## Component scraping the kube api server
@@ -383,6 +414,9 @@ kubeApiServer:
   #   replacement: kubernetes.default.svc:443
 
   serviceMonitor:
+    ## Scrape interval. If not set, the Prometheus default scrape interval is used.
+    ##
+    interval: ""
     jobLabel: component
     selector:
       matchLabels:
@@ -396,11 +430,18 @@ kubelet:
   namespace: kube-system
 
   serviceMonitor:
+    ## Scrape interval. If not set, the Prometheus default scrape interval is used.
+    ##
+    interval: ""
+
     ## Enable scraping the kubelet over https. For requirements to enable this see
     ## https://github.com/coreos/prometheus-operator/issues/926
     ##
-    https: false
-    # cAdvisorMetricRelabelings:
+    https: true
+
+    ## Metric relabellings to apply to samples before ingestion
+    ##
+    cAdvisorMetricRelabelings: []
     # - sourceLabels: [__name__, image]
     #   separator: ;
     #   regex: container_([a-z_]+);
@@ -431,9 +472,13 @@ kubeControllerManager:
     port: 10252
     targetPort: 10252
     selector:
-      k8s-app: kube-controller-manager
+      component: kube-controller-manager
 
   serviceMonitor:
+    ## Scrape interval. If not set, the Prometheus default scrape interval is used.
+    ##
+    interval: ""
+
     ## Enable scraping kube-controller-manager over https.
     ## Requires proper certs (not self-signed) and delegated authentication/authorization checks
     ##
@@ -447,7 +492,11 @@ coreDns:
     port: 9153
     targetPort: 9153
     selector:
-      k8s-app: coredns
+      k8s-app: kube-dns
+  serviceMonitor:
+    ## Scrape interval. If not set, the Prometheus default scrape interval is used.
+    ##
+    interval: ""
 
 ## Component scraping kubeDns. Use either this or coreDns
 ##
@@ -456,6 +505,10 @@ kubeDns:
   service:
     selector:
       k8s-app: kube-dns
+  serviceMonitor:
+    ## Scrape interval. If not set, the Prometheus default scrape interval is used.
+    ##
+    interval: ""
 ## Component scraping etcd
 ##
 kubeEtcd:
@@ -471,10 +524,10 @@ kubeEtcd:
   ## Etcd service. If using kubeEtcd.endpoints only the port and targetPort are used
   ##
   service:
-    port: 4001
-    targetPort: 4001
+    port: 2379
+    targetPort: 2379
     selector:
-      k8s-app: etcd-server
+      component: etcd
 
   ## Configure secure access to the etcd cluster by loading a secret into prometheus and
   ## specifying security configuration below. For example, with a secret named etcd-client-cert
@@ -488,6 +541,9 @@ kubeEtcd:
   ##   keyFile: /etc/prometheus/secrets/etcd-client-cert/etcd-client-key
   ##
   serviceMonitor:
+    ## Scrape interval. If not set, the Prometheus default scrape interval is used.
+    ##
+    interval: ""
     scheme: http
     insecureSkipVerify: false
     serverName: ""
@@ -514,9 +570,12 @@ kubeScheduler:
     port: 10251
     targetPort: 10251
     selector:
-      k8s-app: kube-scheduler
+      component: kube-scheduler
 
   serviceMonitor:
+    ## Scrape interval. If not set, the Prometheus default scrape interval is used.
+    ##
+    interval: ""
     ## Enable scraping kube-controller-manager over https.
     ## Requires proper certs (not self-signed) and delegated authentication/authorization checks
     ##
@@ -526,6 +585,17 @@ kubeScheduler:
 ##
 kubeStateMetrics:
   enabled: true
+  serviceMonitor:
+    ## Scrape interval. If not set, the Prometheus default scrape interval is used.
+    ##
+    interval: ""
+
+    ## 	metric relabel configs to apply to samples before ingestion.
+    ##
+    metricRelabelings: []
+    # - action: keep
+    #   regex: 'kube_(daemonset|deployment|pod|namespace|node|statefulset).+'
+    #   sourceLabels: [__name__]
 
 ## Configuration for kube-state-metrics subchart
 ##
@@ -544,10 +614,14 @@ nodeExporter:
   ##
   jobLabel: jobLabel
 
-  serviceMonitor: {}
+  serviceMonitor:
+    ## Scrape interval. If not set, the Prometheus default scrape interval is used.
+    ##
+    interval: ""
+
     ## 	metric relabel configs to apply to samples before ingestion.
     ##
-    # metricRelabelings:
+    metricRelabelings: []
     # - sourceLabels: [__name__]
     #   separator: ;
     #   regex: ^node_mountstats_nfs_(event|operations|transport)_.+
@@ -587,7 +661,7 @@ prometheusOperator:
   ## Port to expose on each node
   ## Only used if service.type is 'NodePort'
   ##
-    nodePort: 38080
+    nodePort: 30080
 
   ## Additional ports to open for Prometheus service
   ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#multi-port-services
@@ -628,6 +702,10 @@ prometheusOperator:
   ##
   podLabels: {}
 
+  ## Annotations to add to the operator pod
+  ##
+  podAnnotations: {}
+
   ## Assign a PriorityClassName to pods if set
   # priorityClassName: ""
 
@@ -648,6 +726,9 @@ prometheusOperator:
   ## Create a servicemonitor for the operator
   ##
   serviceMonitor:
+    ## Scrape interval. If not set, the Prometheus default scrape interval is used.
+    ##
+    interval: ""
     selfMonitor: true
 
   ## Resource limits & requests
@@ -757,7 +838,7 @@ prometheus:
     ## Port to expose on each node
     ## Only used if service.type is 'NodePort'
     ##
-    nodePort: 39090
+    nodePort: 30090
 
     ## Loadbalancer IP
     ## Only use if service.type is "loadbalancer"
@@ -798,6 +879,11 @@ prometheus:
     #   - prometheus.domain.com
     hosts: []
 
+    ## Paths to use for ingress rules - one path should match the prometheusSpec.routePrefix
+    ##
+    paths: []
+    # - /
+
     ## TLS configuration for Prometheus Ingress
     ## Secret must be manually created in the namespace
     ##
@@ -807,6 +893,9 @@ prometheus:
       #     - prometheus.example.com
 
   serviceMonitor:
+    ## Scrape interval. If not set, the Prometheus default scrape interval is used.
+    ##
+    interval: ""
     selfMonitor: true
 
   ## Settings affecting prometheusSpec
@@ -830,7 +919,7 @@ prometheus:
     ##
     image:
       repository: quay.io/prometheus/prometheus
-      tag: v2.7.1
+      tag: v2.7.2
 
     ## Tolerations for use with node taints
     ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
@@ -975,14 +1064,13 @@ prometheus:
 
     ## The remote_read spec configuration for Prometheus.
     ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#remotereadspec
-    remoteRead: {}
+    remoteRead: []
     # - url: http://remote1/read
 
     ## The remote_write spec configuration for Prometheus.
     ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#remotewritespec
-    remoteWrite: {}
-      # remoteWrite:
-      #   - url: http://remote1/push
+    remoteWrite: []
+    # - url: http://remote1/push
 
     ## Resource limits & requests
     ##
