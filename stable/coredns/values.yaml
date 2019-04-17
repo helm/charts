@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: coredns/coredns
-  tag: "1.3.1"
+  tag: "1.4.0"
   pullPolicy: IfNotPresent
 
 resources:
@@ -21,6 +21,8 @@ serviceType: "ClusterIP"
 
 service:
 # clusterIP: ""
+# loadBalancerIP: ""
+# externalTrafficPolicy: ""
   annotations:
     prometheus.io/scrape: "true"
     prometheus.io/port: "9153"
@@ -58,7 +60,7 @@ servers:
     parameters: round_robin
   - name: prometheus
     parameters: 0.0.0.0:9153
-  - name: proxy
+  - name: forward
     parameters: . /etc/resolv.conf
 
 # Complete example with all the options:

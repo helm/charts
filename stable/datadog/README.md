@@ -53,7 +53,7 @@ The Leader Election is enabled by default in the chart for the Cluster Agent. On
 
 #### Cluster Agent Token
 
-You can specify the Datadog Cluster Agent token used to secure the communication between the Cluster Agent(s)q and the Agents with `clusterAgent.token`.
+You can specify the Datadog Cluster Agent token used to secure the communication between the Cluster Agent(s) and the Agents with `clusterAgent.token`.
 
 **If you don't specify a token, a random one is generated at each deployment so you must use `--recreate-pods` to ensure all pod use the same token.** see[Datadog Chart notes](https://github.com/helm/charts/blob/57d3030941ad2ec2d6f97c86afdf36666658a884/stable/datadog/templates/NOTES.txt#L49-L59) to learn more.
 
@@ -219,7 +219,7 @@ helm install --name <RELEASE_NAME> \
 | `datadog.appKey`                         | Datadog APP key required to use metricsProvider                                           | `Nil` You must provide your own key         |
 | `datadog.appKeyExistingSecret`           | If set, use the secret with a provided name instead of creating a new one                 | `nil`                                       |
 | `image.repository`                       | The image repository to pull from                                                         | `datadog/agent`                             |
-| `image.tag`                              | The image tag to pull                                                                     | `6.9.0`                                     |
+| `image.tag`                              | The image tag to pull                                                                     | `6.10.1`                                     |
 | `image.pullPolicy`                       | Image pull policy                                                                         | `IfNotPresent`                              |
 | `image.pullSecrets`                      | Image pull secrets                                                                        | `nil`                                       |
 | `nameOverride`                           | Override name of app                                                                      | `nil`                                       |
@@ -265,7 +265,7 @@ helm install --name <RELEASE_NAME> \
 | `daemonset.useHostPort`                  | If true, use the same ports for both host and container                                   | `nil`                                       |
 | `daemonset.priorityClassName`            | Which Priority Class to associate with the daemonset                                      | `nil`                                       |
 | `datadog.leaderElection`                 | Enable the leader Election feature                                                        | `false`                                     |
-| `datadog.leaderLeaseDuration`            | The duration for which a leader stays elected.                                            | `nil`                                       |
+| `datadog.leaderLeaseDuration`            | The duration for which a leader stays elected.                                            | 60 sec, 15 if Cluster Checks enabled        |
 | `datadog.collectEvents`                  | Enable Kubernetes event collection. Requires leader election.                             | `false`                                     |
 | `deployment.affinity`                    | Node / Pod affinities                                                                     | `{}`                                        |
 | `deployment.tolerations`                 | List of node taints to tolerate                                                           | `[]`                                        |
@@ -277,10 +277,12 @@ helm install --name <RELEASE_NAME> \
 | `clusterAgent.token`                     | A cluster-internal secret for agent-to-agent communication. Must be 32+ characters a-zA-Z | Generates a random value                    |
 | `clusterAgent.containerName`             | The container name for the Cluster Agent                                                  | `cluster-agent`                             |
 | `clusterAgent.image.repository`          | The image repository for the cluster-agent                                                | `datadog/cluster-agent`                     |
-| `clusterAgent.image.tag`                 | The image tag to pull                                                                     | `1.0.0`                                     |
+| `clusterAgent.image.tag`                 | The image tag to pull                                                                     | `1.2.0`                                     |
 | `clusterAgent.image.pullPolicy`          | Image pull policy                                                                         | `IfNotPresent`                              |
 | `clusterAgent.image.pullSecrets`         | Image pull secrets                                                                        | `nil`                                       |
 | `clusterAgent.metricsProvider.enabled`   | Enable Datadog metrics as a source for HPA scaling                                        | `false`                                     |
+| `clusterAgent.clusterChecks.enabled`     | Enable Cluster Checks on both the Cluster Agent and the Agent daemonset                   | `false`                                     |
+| `clusterAgent.confd`                     | Additional check configurations (static and Autodiscovery)                                | `nil`                                       |
 | `clusterAgent.resources.requests.cpu`    | CPU resource requests                                                                     | `200m`                                      |
 | `clusterAgent.resources.limits.cpu`      | CPU resource limits                                                                       | `200m`                                      |
 | `clusterAgent.resources.requests.memory` | Memory resource requests                                                                  | `256Mi`                                     |
@@ -288,3 +290,14 @@ helm install --name <RELEASE_NAME> \
 | `clusterAgent.tolerations`               | List of node taints to tolerate                                                           | `[]`                                        |
 | `clusterAgent.livenessProbe`             | Overrides the default liveness probe                                                      | http port 443 if external metrics enabled   |
 | `clusterAgent.readinessProbe`            | Overrides the default readiness probe                                                     | http port 443 if external metrics enabled   |
+| `clusterchecksDeployment.enabled`        | Enable Datadog agent deployment dedicated for running Cluster Checks. It allows having different resources (Request/Limit) for Cluster Checks agent pods.  | `false` |
+| `clusterchecksDeployment.env`                            | Additional Datadog environment variables for Cluster Checks Deployment                        | `nil`                                       |
+| `clusterchecksDeployment.resources.requests.cpu`         | CPU resource requests                                                                         | `200m`                                      |
+| `clusterchecksDeployment.resources.limits.cpu`           | CPU resource limits                                                                           | `200m`                                      |
+| `clusterchecksDeployment.resources.requests.memory`      | Memory resource requests                                                                      | `256Mi`                                     |
+| `clusterchecksDeployment.resources.limits.memory`        | Memory resource limits                                                                        | `256Mi`                                     |
+| `clusterchecksDeployment.nodeSelector`                   | Node selectors                                                                                | `nil`                                       |
+| `clusterchecksDeployment.affinity`                       | Node affinities                                                                               | avoid running pods on the same node         |
+| `clusterchecksDeployment.livenessProbe`                  | Overrides the default liveness probe                                                          | http port 5555                              |
+| `clusterchecksDeployment.rbac.dedicated`                  | If true, use dedicated RBAC resources for clusterchecks agent's pods                          | `false`                                     |
+| `clusterchecksDeployment.rbac.serviceAccount`            | existing ServiceAccount to use (ignored if rbac.create=true) for clusterchecks                | `default`                                   |

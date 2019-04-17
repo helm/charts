@@ -8,6 +8,14 @@ airflow:
   #   mountPath: /opt/metadata
   #   configMap: airflow-metadata
   #   readOnly: true
+  #
+  # Example of configmap mount with subPath
+  # - name: extra-metadata
+  #   mountPath: /opt/metadata/file.yaml
+  #   configMap: airflow-metadata
+  #   readOnly: true
+  #   subPath: file.yaml
+
 
   ## When existingAirflowSecret is defined, secretsMapping can be
   ## overridden. When no secretName is given then the value of
@@ -82,7 +90,7 @@ airflow:
     ## image pull secret for private images
     pullSecret:
   ##
-  ## Set schedulerNumRuns to control how the schduler behaves:
+  ## Set schedulerNumRuns to control how the scheduler behaves:
   ##   -1 will let him looping indefinitively but it will never update the DAG
   ##   1 will have the scheduler quit after each refresh, but kubernetes will restart it.
   ##
@@ -159,6 +167,37 @@ airflow:
   ## Additional volumes for the Scheduler, Worker and Web pods.
   # - name: synchronised-dags
   #   emptyDir: {}
+
+scheduler:
+  resources:
+    scheduler: {}
+    # limits:
+    #   cpu: "1000m"
+    #   memory: "1Gi"
+    # requests:
+    #   cpu: "500m"
+    #   memory: "512Mi"
+
+
+flower:
+  resources: {}
+    # limits:
+    #   cpu: "100m"
+    #   memory: "128Mi"
+    # requests:
+    #   cpu: "100m"
+    #   memory: "128Mi"
+
+web:
+  resources: {}
+    # limits:
+    #   cpu: "300m"
+    #   memory: "1Gi"
+    # requests:
+    #   cpu: "100m"
+    #   memory: "512Mi"
+  initialStartupDelay: "60"
+  initialDelaySeconds: "360"
 ##
 ## Workers configuration
 workers:
@@ -193,7 +232,13 @@ workers:
   ## Secrets which will be mounted as a file at `secretsDir/<secret name>`.
   secrets: []
 
-
+## Support Node, affinity and tolerations for airflow and workers labels for pod assignment
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
+nodeSelector: {}
+affinity: {}
+tolerations: []
 ##
 ## Ingress configuration
 ingress:
@@ -485,3 +530,13 @@ redis:
   ## Disable cluster management by default.
   cluster:
     enabled: false
+
+# Enable this if you're using https://github.com/coreos/prometheus-operator
+# Don't forget you need to install something like https://github.com/epoch8/airflow-exporter in your airflow docker container
+serviceMonitor:
+  enabled: false
+  interval: "30s"
+  path: /admin/metrics
+  ## [Kube Prometheus Selector Label](https://github.com/helm/charts/tree/master/stable/prometheus-operator#exporters)
+  selector:
+    prometheus: kube-prometheus
