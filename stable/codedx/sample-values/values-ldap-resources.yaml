@@ -1,0 +1,16 @@
+# This file defines a kubernetes Secret for Code Dx containing LDAP connection info.
+# The usage of this file is described in the accompanying file 'values-ldap.yaml'.
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: codedx-ldap
+  namespace: default
+type: Opaque
+data:
+  codedx.ldap.props: |-
+    # Modify these values and replace this with its base64-encoded version
+    auth.ldap.url = ldap://my.ldap.com
+    auth.ldap.systemUsername = admin
+    auth.ldap.systemPassword = password
+    auth.ldap.authenticationMechanism = simple

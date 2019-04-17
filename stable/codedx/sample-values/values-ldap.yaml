@@ -1,0 +1,22 @@
+# This file is an example in using secrets to store LDAP configuration data for
+# Code Dx. This may be preferred if your configuration requires a username and
+# password for binding against your LDAP server.
+#
+# This file relies on pre-existing secrets in a specific format. Sample resource
+# definitions can be found in the accompanying 'values-ldap-resources.yaml'
+# file, which can be modified and used directly with `kubectl create -f ...`
+#
+# The contents of this file can be added to your own custom values.yaml file.
+
+# Allow egress on LDAP ports from Code Dx
+networkPolicy:
+  codedx:
+    ldap: true
+    ldaps: true
+
+# Add a .props file containing the LDAP configuration info, contained in a secret
+# in case an LDAP system user and password are needed.
+codedxProps:
+  extra:
+  - secretName: codedx-ldap
+    key: codedx.ldap.props

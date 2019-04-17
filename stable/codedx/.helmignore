@@ -1,4 +1,7 @@
 .git/
 .gitignore
-helm-tiller-resources.yaml
+sample-values/
+docs/
+res/
+LICENSE
 OWNERS

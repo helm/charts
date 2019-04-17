@@ -1,0 +1,28 @@
+# This file is an example in using an Ingress controller with Code Dx.
+# The contents of this file can be added to your own custom values.yaml file.
+
+ingress:
+  enabled: true
+  annotations:
+    # Increase timeout duration for Code Dx live updates
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    # Remove file size limit, Code Dx enforces this internally
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+
+    # Extra annotations for certmanager, if used
+    kubernetes.io/tls-acme: true
+    certmanager.k8s.io/cluster-issuer: letsencrypt-prod
+  
+  hosts:
+    # With this setup, Code Dx will be available at https://codedx.mywebsite.com/codedx.
+  - name: codedx.mywebsite.com
+    tls: true
+    # (Not necessary if TLS is disabled)
+    tlsSecret: my-secret
+
+  # (These are unnecessary if using some cert management plugin, or if
+  # the secret already exists)
+  secrets:
+  - name: my-secret
+    key: "Replace this with your base64-encoded TLS key."
+    certificate: "Replace this with your base64-encoded TLS certificate."

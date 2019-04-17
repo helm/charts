@@ -1,0 +1,165 @@
+#   Copyright 2019 Code Dx, Inc
+#
+#   Licensed under the Apache License, Version 2.0 (the "License");
+#   you may not use this file except in compliance with the License.
+#   You may obtain a copy of the License at
+#
+#       http://www.apache.org/licenses/LICENSE-2.0
+#
+#   Unless required by applicable law or agreed to in writing, software
+#   distributed under the License is distributed on an "AS IS" BASIS,
+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#   See the License for the specific language governing permissions and
+#   limitations under the License.
+
+# NOTE: Any changes made to this config file will only take effect when
+# Tomcat is restarted.
+
+# db configuration for using MySQL
+swa.db.url = TPL_K8S_DB_URL
+swa.db.driver = com.mysql.jdbc.Driver
+
+# Use 'swa.user.rememberme' to control the level of "remember me" support
+# in the user login form:
+#  - 'full' will cause users to be able to bypass the login form even after their
+#    session has expired, via a special cookie, as long as they marked the "remember
+#    me" checkbox on the login form.
+#  - 'username-only' will auto-fill the username field in the login form after
+#    the user has logged in for the first time, as long as they marked the "remember
+#    me" checkbox on the login form.
+#  - 'off' will not show a "remember me" checkbox; users must always complete the
+#    login form to log back in once their session has expired.
+#
+# If unspecified, the default value is 'full'
+swa.user.rememberme = full
+
+# The configuration below allows tweaking the number of concurrent jobs running at
+# the same time. Higher numbers translate to more available resources of that type.
+# [minimum is 1000, default is 2000]
+# swa.jobs.cpu-limit = 2000
+# swa.jobs.memory-limit = 2000
+# swa.jobs.database-limit = 2000
+
+# the amount of time job results are cached for, in minutes
+# [default is 60]
+# swa.jobs.expiration = 60
+
+# The maximum allowed size (in megabytes) of a single file in a multi-part upload
+# [default is 2048]
+# swa.upload.maxfilesize = 2048
+
+# The maximum allowed size (in megabytes) of a complete upload
+# [default is 2048]
+# swa.upload.maxuploadsize = 2048
+
+# Whether to keep raw tool outputs or bytecode
+# [default is true]
+# swa.storage.keep-raw-inputs = true
+
+# Whether or not to keep archived inputs
+# [default is false]
+# swa.storage.keep-archived-inputs = false
+
+# Whether to keep all log files for tools that Code Dx runs.
+# If false, only failure logs are kept.
+# [default is false]
+# swa.tools.keep-all-logs = false
+
+# Code Dx shiro configuration properties
+# Active directory configuration is optional
+# Replace the following entries with your company's info
+# shiro.activedirectory.url = ldap://127.0.0.1:389/
+# shiro.activedirectory.realm.systemUsername = admin
+# shiro.activedirectory.realm.systemPassword = secret
+# shiro.activedirectory.realm.authenticationMechanism = simple
+# shiro.activedirectory.realm.userDnTemplate = cn={0},ou=users,dc=codedx,dc=com
+
+
+# Whether to disable bundled tools entirely.
+# If set to true, bundled tools will not be run on any analysis inputs.
+# [default is false]
+# bundled-tools.disable = false
+
+# The maximum memory (in megabytes) allocated for PHP tools
+# [default is 1024]
+# php.tools.maxmemory = 1024
+
+# The maximum memory (in megabytes) allocated for Java tools
+# [default is 1024]
+# java.tools.maxmemory = 1024
+
+# The maximum memory (in megabytes) of Ruby-based tools.
+# Note that Ruby-based tools will run in a JVM via JRuby.
+# ruby.tools.maxmemory = 1024
+
+# The maximum memory (in megabytes) allocated for CAT.NET
+# [default is 2048]
+# cat.net.maxmemory=2048
+
+# The maximum memory (in megabytes) allocated for Python-based tools.
+# Note that Python-based tools will run in a JVM via Jython
+# python.tools.maxmemory=1024
+
+# Optional Tool Path Overrides
+# fxcop.path =
+# cat.net.path =
+
+# Optional override for the path to Mono (used for .NET support on Linux and OS X)
+# mono.path =
+
+# Allow projects' git configurations to point to local
+# repositories (within Code Dx's filesystem). For security
+# reasons, this is set to 'false' by default. Use 'true'
+# to enable this setting.
+# git.config.allow-local-urls = false
+
+# Optional custom filename template for generated reports
+# The appropriate file extension will be added depending on the type of report generated.
+# See the install guide for more details on valid values.
+# [default is {{project.name}} ({{date:dd MMM YYYY}})]
+# report.filename-template = {{project.name}} ({{date:dd MMM YYYY}})
+
+# Optional custom logo to be shown on the cover of PDF reports
+# Either place the logo in the same folder as this file, or specify an absolute path.
+# For best results, the specified image should be at least 432 pixels wide and/or 144 pixels tall.
+# [default is no logo]
+# report.pdf.custom-logo = logo.png
+
+# Whether or not to include the Code Dx logo on the PDF report cover page
+# This setting is Enterprise-only.
+# [default is true]
+# report.pdf.show-code-dx-logo = true
+
+# Template for the document title for PDF reports
+# See the install guide for more details on valid values.
+# This setting is Enterprise-only.
+# [default is Assessment Report: {{project.name}}]
+# report.pdf.pdf-title = Assessment Report: {{project.name}}
+
+# Template for the title shown on the PDF report cover page
+# See the install guide for more details on valid values.
+# This setting is Enterprise-only.
+# [default is Assessment Report]
+# report.pdf.cover-page-title = Assessment Report
+
+# Template for the header on PDF report pages
+# See the install guide for more details on valid values.
+# This setting is Enterprise-only.
+# [default is {{project.name}} - Code Dx Assessment Report]
+# report.pdf.page-header = {{project.name}} - Code Dx Assessment Report
+
+# The limit for request/response body size to be shown in PDF reports, in bytes
+# [default is 8192]
+# report.pdf.dast-body-limit = 8192
+
+# The limit for number of findings to show simple details for in PDF reports
+# [default is 50000]
+# report.pdf.details-simple-limit = 50000
+
+# The limit for number of findings to show source code for in PDF reports
+# [default is 5000]
+# report.pdf.details-source-limit = 5000
+
+# The limit for number of findings to show request and response bodies for in PDF reports
+# [default is 1000]
+# report.pdf.dast-finding-limit = 1000

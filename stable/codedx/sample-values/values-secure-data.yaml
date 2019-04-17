@@ -1,0 +1,27 @@
+# This file is an example in using existing secrets for:
+# - Code Dx to use for its license and database credentials
+# - MariaDB to use for its admin and replication credentials
+#
+# Pre-existing secrets are preferred to creation by the chart, since the values
+# need to be kept in plaintext when the configuration is modified.
+#
+# This file relies on pre-existing secrets in a specific format. Sample resource
+# definitions can be found in the accompanying 'values-secure-data-resource.yaml'
+# file, which can be modified and used directly with `kubectl create -f ...`
+#
+# Note that this doesn't handle the Code Dx Admin password - this should be
+# changed immediately after installation within the Code Dx web interface. That
+# secret is only used during the first installation.
+#
+# The contents of this file can be added to your own custom values.yaml file.
+
+license:
+  secret: codedx-secret
+
+codedxProps:
+  dbconnection:
+    createSecret: false
+    secretName: codedx-secret
+
+mariadb:
+  existingSecret: mariadb-secret

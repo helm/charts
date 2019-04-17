@@ -1,0 +1,26 @@
+# This file defines a set of kubernetes Secrets for MariaDB and Code Dx.
+# The usage of this file is described in the accompanying file 'values-secure-data.yaml'.
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: codedx-secret
+  namespace: default
+type: Opaque
+data:
+  license.lic: "Replace this with your base64-encoded Code Dx license."
+  password: "Replace this with the base64-encoded password to use when Code Dx auto-creates its 'admin' account."
+  codedx.mariadb.props: |-
+    # Replace the password below, then replace this value with its base64-encoded version.
+    swa.db.user = root
+    swa.db.password = <Replace this with a new MariaDB root password.>
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mariadb-secret
+  namespace: default
+type: Opaque
+data:
+  mariadb-root-password: "Replace this with a new base64-encoded MariaDB root password."
+  mariadb-replication-password: "Replace this with a new base64-encoded MariaDB replication user password."

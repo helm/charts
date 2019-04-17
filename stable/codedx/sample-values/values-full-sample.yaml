@@ -1,0 +1,52 @@
+# This is a complete example values.yaml file that may be used with a Code Dx installation.
+# Note that this requires pre-existing secrets, which were described in other example files.
+#
+# The contents of this file can be added to your own custom values.yaml file.
+
+codedxTomcatImage: codedx/codedx-tomcat:v3.6.1
+
+persistence:
+  size: 32Gi
+
+license:
+  secret: codedx-secret
+
+codedxProps:
+  dbconnection:
+    createSecret: false
+    secretName: codedx-secret
+  extra:
+  - secretName: codedx-ldap
+    key: codedx.ldap.props
+
+cacertsFile: custom-cacerts
+
+networkPolicy:
+  codedx:
+    ldap: true
+    ldaps: true
+    http: true
+    https: true
+
+ingress:
+  enabled: true
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+    kubernetes.io/tls-acme: true
+    certmanager.k8s.io/cluster-issuer: letsencrypt-prod
+  
+  hosts:
+  - name: live.codedx.com
+    tls: true
+    tlsSecret: live.codedx.com-live
+
+mariadb:
+  existingSecret: mariadb-secret
+  master:
+    persistence:
+      size: 32Gi
+  slave:
+    replicas: 1
+    persistence:
+      size: 32Gi
