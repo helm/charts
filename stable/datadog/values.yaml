@@ -436,7 +436,7 @@ daemonset:
       ## @param env - list - required
       ## Additionnal environment variables for the trace-agent container.
       #
-      # env:
+      # env:
 
       ## @param resources - object - required
       ## Resource requests and limits for the trace-agent container.
