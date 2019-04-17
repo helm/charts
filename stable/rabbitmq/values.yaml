@@ -139,6 +139,11 @@ service:
   annotations:
     # service.beta.kubernetes.io/aws-load-balancer-internal: 0.0.0.0/0
 
+  ## Load Balancer sources
+  ## https://kubernetes.io/docs/tasks/access-application-cluster/configure-cloud-provider-firewall/#restrict-access-for-loadbalancer-service
+  ##
+  # loadBalancerSourceRanges:
+  # - 10.10.10.0/24
 
 # Additional pod labels to apply
 podLabels: {}
@@ -164,6 +169,9 @@ persistence:
   ##
   # storageClass: "-"
   accessMode: ReadWriteOnce
+
+  ## Existing PersistentVolumeClaims
+  # existingClaim: ""
 
   # If you change this value, you might have to adjust `rabbitmq.diskFreeLimit` as well.
   size: 8Gi
