@@ -15,6 +15,13 @@ Master:
   ImagePullPolicy: "Always"
 # ImagePullSecret: jenkins
   Component: "jenkins-master"
+  # Optionally configure lifetime for master-container
+  lifecycle:
+  #  postStart:
+  #    exec:
+  #      command:
+  #      - "uname"
+  #      - "-a"
   NumExecutors: 0
   # configAutoReload requires UseSecurity is set to true:
   UseSecurity: true
@@ -182,6 +189,13 @@ Master:
       welcome-message: |
         jenkins:
           systemMessage: Welcome to our CI\CD server.  This Jenkins is configured and managed 'as code'.
+
+  # Optionally specify additional init-containers
+  customInitContainers: []
+  #   - name: CustomInit
+  #     image: "alpine:3.7"
+  #     imagePullPolicy: Always
+  #     command: [ "uname", "-a" ]
 
   Sidecars:
     configAutoReload:

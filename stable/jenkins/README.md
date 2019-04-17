@@ -102,6 +102,8 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `Master.CustomConfigMap`          | Deprecated: Use a custom ConfigMap               | `false`                                                                      |
 | `Master.AdditionalConfig`         | Deprecated: Add additional config files         | `{}`
 | `Master.JenkinsUriPrefix`         | Root Uri Jenkins will be served on         | Not set
+| `Master.customInitContainers`     | Custom init-container specification in raw-yaml format | Not set
+| `Master.lifecycle`              | Lifecycle specification for master-container | Not set
 | `Master.PriorityClassName`        | The name of a `PriorityClass` to apply to the Master pod | Not set                                                  |
 | `NetworkPolicy.Enabled`           | Enable creation of NetworkPolicy resources. | `false`                                                               |
 | `NetworkPolicy.ApiVersion`        | NetworkPolicy ApiVersion             | `networking.k8s.io/v1`                                                         |
