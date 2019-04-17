@@ -13,8 +13,5 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: {{ template "apm-server.fullname" . }}
-  minReplicas: {{ .Values.autoscaling.minReplicas }}
-  maxReplicas: {{ .Values.autoscaling.maxReplicas }}
-  metrics:
-{{ toYaml .Values.autoscaling.metrics | indent 4 }}
+{{ (unset .Values.autoscaling "enabled") | toYaml | indent 2 }} 
 {{- end }}
