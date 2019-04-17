@@ -360,6 +360,7 @@ rbac:
   serviceAccountName: default
 
 tolerations: []
+podLabels: {}
 
 kubeStateMetrics:
 
