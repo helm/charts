@@ -4,7 +4,7 @@
 
 image:
   repository: btcpayserver/lnd
-  tag: v0.5.2-beta-3
+  tag: v0.6-beta
   pullPolicy: IfNotPresent
 
 # Ports that are exposed to other pods in your cluster
