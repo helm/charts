@@ -35,7 +35,7 @@ securityContext:
   fsGroup: 1001
   runAsUser: 1001
 
-  ## Cluster settings
+## Cluster settings
 cluster:
   enabled: true
   slaveCount: 3
