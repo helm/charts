@@ -30,7 +30,7 @@ codedxAdminPassword: ""
 # file that will be mounted in the Code Dx container at /etc/ssl/certs/java/cacerts. If undefined
 # (or empty), the default `cacerts` file will be used.
 # ref: https://codedx.com/Documentation/InstallGuide.html#TrustingSelfSignedCertificates
-# 
+#
 cacertsFile: ""
 
 # serviceAccount options for Code Dx.
@@ -74,7 +74,7 @@ podSecurityPolicy:
     # PodSecurityPolicy created here. (Does nothing if create = false.)
     #
     annotations: {}
-  
+
   mariadb:
     # The flag podSecurityPolicy.mariadb.create can create a suitable PSP for MariaDB
     # with the given name (or auto-generate a name if undefined.)
@@ -211,7 +211,7 @@ ingress:
     # If tls is "true", ingress.hosts[].tlsSecret specifies the name of the TLS secret containing the key and certificate
     #
     tlsSecret: tls-secret
-  
+
   # Use ingress.secrets[] to auto-create secrets with the given properties if they don't yet exist.
   #
   secrets: []
@@ -226,11 +226,11 @@ ingress:
   #   # ingress.secrets[].keyFile specifies the location of a file containing the TLS key, which will be base64-encoded.
   #   # This value is ignored if `key` is defined.
   #   #
-  #   keyFile: 
+  #   keyFile:
 
   #   # ingress.secrets[].certificate specifies the base64-encoded TLS certificate for the secret.
   #   #
-  #   certificate: 
+  #   certificate:
 
   #   # ingress.secrets[].certificateFile specifies the location of a file containing the TLS certificate, which will
   #   # be base64-encoded. This value is ignored if `certificate` is defined.
@@ -245,7 +245,7 @@ ingress:
 #   "ClusterIP"    - If "ingress.enabled" = true
 #   "LoadBalancer" - If "ingress.enabled" = false
 #
-serviceType: 
+serviceType:
 
 
 # Code Dx Properties Configuration
@@ -275,10 +275,10 @@ codedxProps:
   #   Code Dx properly connects to the generated MariaDB instances.
   # - a key named 'tomcat.env' with the `CATALINA_OPTS` values necessary to load any additional
   #   props files. (it must at least provide the path to the MariaDB creds.)
-  # 
+  #
   # (If both file and configMap are specified, the existing 'configMap' will be used
   #  and no new ConfigMap will be created.)
-  #configMap: my-codedx-config-map
+  # configMap: my-codedx-config-map
 
   # Specify annotations to attach to a generated ConfigMap
   annotations: {}
@@ -305,7 +305,7 @@ codedxProps:
     # Use codedxProps.dbconnection.secretName to specify the name of an existing secret to use (if createSecret
     # is "false") or the name of the secret to be created (if createSecret is "true").
     #
-    secretName: 
+    secretName:
 
     # Use codedxProps.dbconnection.annotations to attach extra annotations to a generated secret.
     #
@@ -325,7 +325,6 @@ codedxProps:
   #   # The file mounted will have the same name as the key here.
   #   #
   #   key: ldap-props
-
 
 
 license: {}
@@ -352,7 +351,7 @@ license: {}
 # allowing you to customize how Code Dx filters its logs.
 # ref: https://logback.qos.ch/manual/configuration.html
 #
-loggingConfigFile: 
+loggingConfigFile:
 
 # Specify CPU/memory resource requests/limits for Code Dx on Tomcat.
 # ref: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/
