@@ -182,7 +182,7 @@ spec:
             {{- if .Values.rabbitmq.rabbitmqClusterNodeName }}
             value: {{ .Values.rabbitmq.rabbitmqClusterNodeName | quote }}
             {{- else }}
-            value: "rabbit@$(MY_POD_IP)"
+            value: "rabbit@$(MY_POD_NAME)"
             {{- end }}
           {{- end }}
           - name: RABBITMQ_LOGS
