@@ -65,7 +65,7 @@ spec:
           args:
           - 'sleep 2 && LND_DIR=/root/.lnd && MACAROON_HEADER="Grpc-Metadata-macaroon:
             $(xxd -p -c 1000 $LND_DIR/data/chain/bitcoin/{{ .Values.network }}/admin.macaroon)" &&
-            curl -f -X POST --cacert $LND_DIR/tls.cert --header "$MACAROON_HEADER" https://localhost:8080/v1/unlockwallet
+            curl --fail-early --cacert $LND_DIR/tls.cert --header "$MACAROON_HEADER" https://localhost:8080/v1/unlockwallet
             -d "{\"wallet_password\":\"$(cat /secrets/pwd | tr -d ''\n'' | base64)\"}"
             && sleep 99999999d'
           volumeMounts:
