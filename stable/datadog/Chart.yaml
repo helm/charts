@@ -1,5 +1,5 @@
 name: datadog
-version: 1.27.0
+version: 1.27.1
 appVersion: 6.10.1
 description: DataDog Agent
 keywords:
@@ -16,7 +16,5 @@ maintainers:
   email: haissam@datadoghq.com
 - name: irabinovitch
   email: ilan@datadoghq.com
-- name: xvello
-  email: xavier.vello@datadoghq.com
 - name: charlyf
   email: charly@datadoghq.com
