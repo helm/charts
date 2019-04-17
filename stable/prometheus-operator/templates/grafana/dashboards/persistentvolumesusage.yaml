@@ -1,4 +1,4 @@
-# Generated from 'persistentvolumesusage' from https://raw.githubusercontent.com/coreos/prometheus-operator/master/contrib/kube-prometheus/manifests/grafana-dashboardDefinitions.yaml
+# Generated from 'persistentvolumesusage' from https://raw.githubusercontent.com/coreos/kube-prometheus/master/manifests/grafana-dashboardDefinitions.yaml
 # Do not change in-place! In order to change this file first read following link:
 # https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
 {{- if and .Values.grafana.enabled .Values.grafana.defaultDashboardsEnabled }}
@@ -84,7 +84,7 @@ data:
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "(kubelet_volume_stats_capacity_bytes{job=\"kubelet\", persistentvolumeclaim=\"$volume\"} - kubelet_volume_stats_available_bytes{job=\"kubelet\", persistentvolumeclaim=\"$volume\"}) / kubelet_volume_stats_capacity_bytes{job=\"kubelet\", persistentvolumeclaim=\"$volume\"} * 100\n",
+                                "expr": "(kubelet_volume_stats_capacity_bytes{cluster=\"$cluster\", job=\"kubelet\", persistentvolumeclaim=\"$volume\"} - kubelet_volume_stats_available_bytes{cluster=\"$cluster\", job=\"kubelet\", persistentvolumeclaim=\"$volume\"}) / kubelet_volume_stats_capacity_bytes{cluster=\"$cluster\", job=\"kubelet\", persistentvolumeclaim=\"$volume\"} * 100\n",
                                 "format": "time_series",
                                 "intervalFactor": 1,
                                 "legendFormat": "{{`{{ Usage }}`}}",
@@ -98,7 +98,7 @@ data:
                         "timeShift": null,
                         "title": "Volume Space Usage",
                         "tooltip": {
-                            "shared": true,
+                            "shared": false,
                             "sort": 0,
                             "value_type": "individual"
                         },
@@ -188,7 +188,7 @@ data:
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "kubelet_volume_stats_inodes_used{job=\"kubelet\", persistentvolumeclaim=\"$volume\"} / kubelet_volume_stats_inodes{job=\"kubelet\", persistentvolumeclaim=\"$volume\"} * 100\n",
+                                "expr": "kubelet_volume_stats_inodes_used{cluster=\"$cluster\", job=\"kubelet\", persistentvolumeclaim=\"$volume\"} / kubelet_volume_stats_inodes{cluster=\"$cluster\", job=\"kubelet\", persistentvolumeclaim=\"$volume\"} * 100\n",
                                 "format": "time_series",
                                 "intervalFactor": 1,
                                 "legendFormat": "{{`{{ Usage }}`}}",
@@ -202,7 +202,7 @@ data:
                         "timeShift": null,
                         "title": "Volume inodes Usage",
                         "tooltip": {
-                            "shared": true,
+                            "shared": false,
                             "sort": 0,
                             "value_type": "individual"
                         },
@@ -274,6 +274,32 @@ data:
 
                     },
                     "datasource": "$datasource",
+                    "hide": 2,
+                    "includeAll": false,
+                    "label": "cluster",
+                    "multi": false,
+                    "name": "cluster",
+                    "options": [
+
+                    ],
+                    "query": "label_values(kubelet_volume_stats_capacity_bytes, cluster)",
+                    "refresh": 2,
+                    "regex": "",
+                    "sort": 0,
+                    "tagValuesQuery": "",
+                    "tags": [
+
+                    ],
+                    "tagsQuery": "",
+                    "type": "query",
+                    "useTags": false
+                },
+                {
+                    "allValue": null,
+                    "current": {
+
+                    },
+                    "datasource": "$datasource",
                     "hide": 0,
                     "includeAll": false,
                     "label": "Namespace",
@@ -282,7 +308,7 @@ data:
                     "options": [
 
                     ],
-                    "query": "label_values(kubelet_volume_stats_capacity_bytes{job=\"kubelet\"}, exported_namespace)",
+                    "query": "label_values(kubelet_volume_stats_capacity_bytes{cluster=\"$cluster\", job=\"kubelet\"}, namespace)",
                     "refresh": 2,
                     "regex": "",
                     "sort": 0,
@@ -308,7 +334,7 @@ data:
                     "options": [
 
                     ],
-                    "query": "label_values(kubelet_volume_stats_capacity_bytes{job=\"kubelet\", exported_namespace=\"$namespace\"}, persistentvolumeclaim)",
+                    "query": "label_values(kubelet_volume_stats_capacity_bytes{cluster=\"$cluster\", job=\"kubelet\", namespace=\"$namespace\"}, persistentvolumeclaim)",
                     "refresh": 2,
                     "regex": "",
                     "sort": 0,
