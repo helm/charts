@@ -202,10 +202,10 @@ The following tables list the configurable parameters of the prometheus-operator
 | `prometheus.prometheusSpec.serviceMonitorSelector` | ServiceMonitors to be selected for target discovery. If {}, select all ServiceMonitors | `{}` |
 | `prometheus.prometheusSpec.serviceMonitorNamespaceSelector` | Namespaces to be selected for ServiceMonitor discovery. See [metav1.LabelSelector](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.11/#labelselector-v1-meta) for usage | `{}` |
 | `prometheus.prometheusSpec.image.repository` | Base image to use for a Prometheus deployment. | `quay.io/prometheus/prometheus` |
-| `prometheus.prometheusSpec.image.tag` | Tag of Prometheus container image to be deployed. | `v2.7.1` |
+| `prometheus.prometheusSpec.image.tag` | Tag of Prometheus container image to be deployed. | `v2.7.2` |
 | `prometheus.prometheusSpec.paused` | When a Prometheus deployment is paused, no actions except for deletion will be performed on the underlying objects. | `false` |
 | `prometheus.prometheusSpec.replicas` | Number of instances to deploy for a Prometheus deployment. | `1` |
-| `prometheus.prometheusSpec.retention` | Time duration Prometheus shall retain data for. Must match the regular expression `[0-9]+(ms\|s\|m\|h\|d\|w\|y)` (milliseconds seconds minutes hours days weeks years). | `120h` |
+| `prometheus.prometheusSpec.retention` | Time duration Prometheus shall retain data for. Must match the regular expression `[0-9]+(ms\|s\|m\|h\|d\|w\|y)` (milliseconds seconds minutes hours days weeks years). | `10d` |
 | `prometheus.prometheusSpec.logLevel` | Log level for Prometheus to be configured with. | `info` |
 | `prometheus.prometheusSpec.scrapeInterval` | Interval between consecutive scrapes. | `""` |
 | `prometheus.prometheusSpec.evaluationInterval` | Interval between consecutive evaluations. | `""` |
@@ -264,7 +264,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | `alertmanager.service.loadBalancerSourceRanges` | Alertmanager Load Balancer Source Ranges | `[]` |
 | `alertmanager.config` | Provide YAML to configure Alertmanager. See https://prometheus.io/docs/alerting/configuration/#configuration-file. The default provided works to suppress the Watchdog alert from `defaultRules.create` | `{"global":{"resolve_timeout":"5m"},"route":{"group_by":["job"],"group_wait":"30s","group_interval":"5m","repeat_interval":"12h","receiver":"null","routes":[{"match":{"alertname":"Watchdog"},"receiver":"null"}]},"receivers":[{"name":"null"}]}` |
 | `alertmanager.alertmanagerSpec.podMetadata` | Standard object’s metadata. More info: https://github.com/kubernetes/community/blob/master/contributors/devel/api-conventions.md#metadata Metadata Labels and Annotations gets propagated to the prometheus pods. | `{}` |
-| `alertmanager.alertmanagerSpec.image.tag` | Tag of Alertmanager container image to be deployed. | `v0.16.1` |
+| `alertmanager.alertmanagerSpec.image.tag` | Tag of Alertmanager container image to be deployed. | `v0.16.2` |
 | `alertmanager.alertmanagerSpec.image.repository` | Base image that is used to deploy pods, without tag. | `quay.io/prometheus/alertmanager` |
 | `alertmanager.alertmanagerSpec.secrets` | Secrets is a list of Secrets in the same namespace as the Alertmanager object, which shall be mounted into the Alertmanager Pods. The Secrets are mounted into /etc/alertmanager/secrets/<secret-name>. | `[]` |
 | `alertmanager.alertmanagerSpec.configMaps` | ConfigMaps is a list of ConfigMaps in the same namespace as the Alertmanager object, which shall be mounted into the Alertmanager Pods. The ConfigMaps are mounted into /etc/alertmanager/configmaps/ | `[]` |
