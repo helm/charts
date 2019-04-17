@@ -1,4 +1,4 @@
-# Generated from 'kubernetes-resources' group from https://raw.githubusercontent.com/coreos/prometheus-operator/master/contrib/kube-prometheus/manifests/prometheus-rules.yaml
+# Generated from 'kubernetes-resources' group from https://raw.githubusercontent.com/coreos/kube-prometheus/master/manifests/prometheus-rules.yaml
 # Do not change in-place! In order to change this file first read following link:
 # https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
 {{- if and .Values.defaultRules.create .Values.defaultRules.rules.kubernetesResources }}
@@ -53,7 +53,7 @@ spec:
         message: Cluster has overcommitted CPU resource requests for Namespaces.
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubecpuovercommit
       expr: |-
-        sum(kube_resourcequota{job="kube-state-metrics", type="hard", resource="requests.cpu"})
+        sum(kube_resourcequota{job="kube-state-metrics", type="hard", resource="cpu"})
           /
         sum(node:node_num_cpu:sum)
           > 1.5
@@ -65,7 +65,7 @@ spec:
         message: Cluster has overcommitted memory resource requests for Namespaces.
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubememovercommit
       expr: |-
-        sum(kube_resourcequota{job="kube-state-metrics", type="hard", resource="requests.memory"})
+        sum(kube_resourcequota{job="kube-state-metrics", type="hard", resource="memory"})
           /
         sum(node_memory_MemTotal_bytes{job="node-exporter"})
           > 1.5
