@@ -16,7 +16,7 @@ Master:
 # ImagePullSecret: jenkins
   Component: "jenkins-master"
   # Optionally configure lifetime for master-container
-  Lifecycle:
+  lifecycle:
   #  postStart:
   #    exec:
   #      command:
@@ -191,7 +191,7 @@ Master:
           systemMessage: Welcome to our CI\CD server.  This Jenkins is configured and managed 'as code'.
 
   # Optionally specify additional init-containers
-  CustomInitContainers: []
+  customInitContainers: []
   #   - name: CustomInit
   #     image: "alpine:3.7"
   #     imagePullPolicy: Always
