@@ -201,6 +201,7 @@ acme:
     # - 8.8.8.8:53
   dnsProvider:
     name: nil
+    existingSecretName: ""
     auroradns:
       AURORA_USER_ID: ""
       AURORA_KEY: ""
@@ -225,6 +226,8 @@ acme:
       DNSMADEEASY_SANDBOX: ""
     dnspod:
       DNSPOD_API_KEY: ""
+    dreamhost:
+      DREAMHOST_API_KEY: ""
     dyn:
       DYN_CUSTOMER_NAME: ""
       DYN_USER_NAME: ""
