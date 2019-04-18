@@ -42,3 +42,14 @@ Generate private key for jenkins CLI
 jenkins-admin-private-key: {{ $key | b64enc | quote }}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Create the name of the service account to use
+*/}}
+{{- define "jenkins.serviceAccountName" -}}
+{{- if .Values.serviceAccount.create -}}
+    {{ default (include "jenkins.fullname" .) .Values.serviceAccount.name }}
+{{- else -}}
+    {{ default "default" .Values.serviceAccount.name }}
+{{- end -}}
+{{- end -}}
