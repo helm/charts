@@ -13,7 +13,7 @@ master:
   image: "jenkins/jenkins"
   imageTag: "lts"
   imagePullPolicy: "Always"
-  imagePullSecret:
+  imagePullSecretName:
   component: "jenkins-master"
   # Optionally configure lifetime for master-container
   lifecycle:
@@ -295,14 +295,15 @@ master:
   #   hostnames:
   #     - other.local
 
-Agent:
-  Enabled: true
-  Image: jenkins/jnlp-slave
-  ImageTag: 3.27-1
-  CustomJenkinsLabels: []
-# ImagePullSecret: jenkins
-  Component: "jenkins-slave"
-  Privileged: false
+agent:
+  enabled: true
+  image: jenkins/jnlp-slave
+  imageTag: 3.27-1
+  customJenkinsLabels: []
+  # name of the secret to be used for image pulling
+  imagePullSecretName:
+  component: "jenkins-slave"
+  privileged: false
   resources:
     requests:
       cpu: "200m"
@@ -311,10 +312,10 @@ Agent:
       cpu: "200m"
       memory: "256Mi"
   # You may want to change this to true while testing a new image
-  AlwaysPullImage: false
+  alwaysPullImage: false
   # Controls how slave pods are retained after the Jenkins build completes
   # Possible values: Always, Never, OnFailure
-  PodRetention: Never
+  podRetention: Never
   # You can define the volumes that you want to mount for this container
   # Allowed types are: ConfigMap, EmptyDir, HostPath, Nfs, Pod, Secret
   # Configure the attributes as they appear in the corresponding Java class for that type
@@ -327,21 +328,21 @@ Agent:
   # - type: Secret
   #   secretName: mysecret
   #   mountPath: /var/myapp/mysecret
-  NodeSelector: {}
+  nodeSelector: {}
   # Key Value selectors. Ex:
   # jenkins-agent: v1
 
   # Executed command when side container gets started
-  Command:
-  Args:
+  command:
+  args:
   # Side container name
-  SideContainerName: jnlp
+  sideContainerName: jnlp
   # Doesn't allocate pseudo TTY by default
   TTYEnabled: false
   # Max number of spawned agent
-  ContainerCap: 10
+  containerCap: 10
   # Pod name
-  PodName: default
+  podName: default
 
 Persistence:
   Enabled: true

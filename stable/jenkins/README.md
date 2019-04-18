@@ -123,23 +123,22 @@ Some third-party systems, e.g. GitHub, use HTML-formatted data in their payload 
 
 | Parameter                  | Description                                     | Default                |
 | -------------------------- | ----------------------------------------------- | ---------------------- |
-| `Agent.AlwaysPullImage`    | Always pull agent container image before build  | `false`                |
-| `Agent.CustomJenkinsLabels`| Append Jenkins labels to the agent              | `{}`                   |
-| `Agent.Enabled`            | Enable Kubernetes plugin jnlp-agent podTemplate | `true`                 |
-| `Agent.Image`              | Agent image name                                | `jenkins/jnlp-slave` |
-| `Agent.ImagePullSecret`    | Agent image pull secret                         | Not set                |
-| `Agent.ImagePullSecret`    | Agent image pull secret                         | Not set                |
-| `Agent.ImageTag`           | Agent image tag                                 | `3.27-1`                 |
-| `Agent.Privileged`         | Agent privileged container                      | `false`                |
-| `Agent.resources`          | Resources allocation (Requests and Limits)      | `{requests: {cpu: 200m, memory: 256Mi}, limits: {cpu: 200m, memory: 256Mi}}`|
-| `Agent.volumes`            | Additional volumes                              | `nil`                  |
-| `Agent.envVars`            | Environment variables for the slave Pod         | Not set                |
-| `Agent.Command`            | Executed command when side container starts     | Not set                |
-| `Agent.Args`               | Arguments passed to executed command            | Not set                |
-| `Agent.SideContainerName`  | Side container name in agent                    | jnlp                   |
-| `Agent.TTYEnabled`         | Allocate pseudo tty to the side container       | false                  |
-| `Agent.ContainerCap`       | Maximum number of agent                         | 10                     |
-| `Agent.PodName`            | slave Pod base name                             | Not set                |
+| `agent.alwaysPullImage`    | Always pull agent container image before build  | `false`                |
+| `agent.customJenkinsLabels`| Append Jenkins labels to the agent              | `{}`                   |
+| `agent.enabled`            | Enable Kubernetes plugin jnlp-agent podTemplate | `true`                 |
+| `agent.image`              | Agent image name                                | `jenkins/jnlp-slave`   |
+| `agent.imagePullSecret`    | Agent image pull secret                         | Not set                |
+| `agent.imageTag`           | Agent image tag                                 | `3.27-1`               |
+| `agent.privileged`         | Agent privileged container                      | `false`                |
+| `agent.resources`          | Resources allocation (Requests and Limits)      | `{requests: {cpu: 200m, memory: 256Mi}, limits: {cpu: 200m, memory: 256Mi}}`|
+| `agent.volumes`            | Additional volumes                              | `nil`                  |
+| `agent.envVars`            | Environment variables for the slave Pod         | Not set                |
+| `agent.command`            | Executed command when side container starts     | Not set                |
+| `agent.args`               | Arguments passed to executed command            | Not set                |
+| `agent.sideContainerName`  | Side container name in agent                    | jnlp                   |
+| `agent.TTYEnabled`         | Allocate pseudo tty to the side container       | false                  |
+| `agent.containerCap`       | Maximum number of agent                         | 10                     |
+| `agent.podName`            | slave Pod base name                             | Not set                |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
@@ -157,7 +156,7 @@ $ helm install --name my-release -f values.yaml stable/jenkins
 Your Jenkins Agents will run as pods, and it's possible to inject volumes where needed:
 
 ```yaml
-Agent:
+agent:
   volumes:
   - type: Secret
     secretName: jenkins-mysecrets

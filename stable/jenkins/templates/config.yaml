@@ -43,23 +43,23 @@ data:
         <org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud plugin="kubernetes@{{ template "jenkins.kubernetes-version" . }}">
           <name>kubernetes</name>
           <templates>
-{{- if .Values.Agent.Enabled }}
+{{- if .Values.agent.enabled }}
             <org.csanchez.jenkins.plugins.kubernetes.PodTemplate>
               <inheritFrom></inheritFrom>
-              <name>{{ .Values.Agent.PodName }}</name>
+              <name>{{ .Values.agent.podName }}</name>
               <instanceCap>2147483647</instanceCap>
               <idleMinutes>0</idleMinutes>
-              <label>{{ .Release.Name }}-{{ .Values.Agent.Component }} {{ .Values.Agent.CustomJenkinsLabels  | join " " }}</label>
+              <label>{{ .Release.Name }}-{{ .Values.agent.component }} {{ .Values.agent.customJenkinsLabels  | join " " }}</label>
               <nodeSelector>
                 {{- $local := dict "first" true }}
-                {{- range $key, $value := .Values.Agent.NodeSelector }}
+                {{- range $key, $value := .Values.agent.nodeSelector }}
                   {{- if not $local.first }},{{- end }}
                   {{- $key }}={{ $value }}
                   {{- $_ := set $local "first" false }}
                 {{- end }}</nodeSelector>
                 <nodeUsageMode>NORMAL</nodeUsageMode>
               <volumes>
-{{- range $index, $volume := .Values.Agent.volumes }}
+{{- range $index, $volume := .Values.agent.volumes }}
                 <org.csanchez.jenkins.plugins.kubernetes.volumes.{{ $volume.type }}Volume>
 {{- range $key, $value := $volume }}{{- if not (eq $key "type") }}
                   <{{ $key }}>{{ $value }}</{{ $key }}>
@@ -69,29 +69,29 @@ data:
               </volumes>
               <containers>
                 <org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
-                  <name>{{ .Values.Agent.SideContainerName }}</name>
-                  <image>{{ .Values.Agent.Image }}:{{ .Values.Agent.ImageTag }}</image>
-{{- if .Values.Agent.Privileged }}
+                  <name>{{ .Values.agent.sideContainerName }}</name>
+                  <image>{{ .Values.agent.image }}:{{ .Values.agent.imageTag }}</image>
+{{- if .Values.agent.privileged }}
                   <privileged>true</privileged>
 {{- else }}
                   <privileged>false</privileged>
 {{- end }}
-                  <alwaysPullImage>{{ .Values.Agent.AlwaysPullImage }}</alwaysPullImage>
+                  <alwaysPullImage>{{ .Values.agent.alwaysPullImage }}</alwaysPullImage>
                   <workingDir>/home/jenkins</workingDir>
-                  <command>{{ .Values.Agent.Command }}</command>
-{{- if .Values.Agent.Args }}
-                  <args>{{ .Values.Agent.Args }}</args>
+                  <command>{{ .Values.agent.command }}</command>
+{{- if .Values.agent.args }}
+                  <args>{{ .Values.agent.args }}</args>
 {{- else }}
                   <args>${computer.jnlpmac} ${computer.name}</args>
 {{- end }}
-                  <ttyEnabled>{{ .Values.Agent.TTYEnabled }}</ttyEnabled>
+                  <ttyEnabled>{{ .Values.agent.TTYEnabled }}</ttyEnabled>
                   # Resources configuration is a little hacky. This was to prevent breaking
                   # changes, and should be cleanned up in the future once everybody had
                   # enough time to migrate.
-                  <resourceRequestCpu>{{.Values.Agent.Cpu | default .Values.Agent.resources.requests.cpu}}</resourceRequestCpu>
-                  <resourceRequestMemory>{{.Values.Agent.Memory | default .Values.Agent.resources.requests.memory}}</resourceRequestMemory>
-                  <resourceLimitCpu>{{.Values.Agent.Cpu | default .Values.Agent.resources.limits.cpu}}</resourceLimitCpu>
-                  <resourceLimitMemory>{{.Values.Agent.Memory | default .Values.Agent.resources.limits.memory}}</resourceLimitMemory>
+                  <resourceRequestCpu>{{.Values.agent.resources.requests.cpu}}</resourceRequestCpu>
+                  <resourceRequestMemory>{{.Values.agent.resources.requests.memory}}</resourceRequestMemory>
+                  <resourceLimitCpu>{{.Values.agent.resources.limits.cpu}}</resourceLimitCpu>
+                  <resourceLimitMemory>{{.Values.agent.resources.limits.memory}}</resourceLimitMemory>
                   <envVars>
                     <org.csanchez.jenkins.plugins.kubernetes.ContainerEnvVar>
                       <key>JENKINS_URL</key>
@@ -105,7 +105,7 @@ data:
                 </org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
               </containers>
               <envVars>
-{{- range $index, $var := .Values.Agent.envVars }}
+{{- range $index, $var := .Values.agent.envVars }}
                 <org.csanchez.jenkins.plugins.kubernetes.PodEnvVar>
                   <key>{{ $var.name }}</key>
                   <value>{{ $var.value }}</value>
@@ -113,10 +113,10 @@ data:
 {{- end }}
               </envVars>
               <annotations/>
-{{- if .Values.Agent.ImagePullSecret }}
+{{- if .Values.agent.imagePullSecretName }}
               <imagePullSecrets>
                 <org.csanchez.jenkins.plugins.kubernetes.PodImagePullSecret>
-                  <name>{{ .Values.Agent.ImagePullSecret }}</name>
+                  <name>{{ .Values.agent.imagePullSecretName }}</name>
                 </org.csanchez.jenkins.plugins.kubernetes.PodImagePullSecret>
               </imagePullSecrets>
 {{- else }}
@@ -137,11 +137,11 @@ data:
           <jenkinsUrl>http://{{ template "jenkins.fullname" . }}:{{.Values.master.servicePort}}{{ default "" .Values.master.jenkinsUriPrefix }}</jenkinsUrl>
           <jenkinsTunnel>{{ template "jenkins.fullname" . }}-agent:{{ .Values.master.slaveListenerPort }}</jenkinsTunnel>
 {{- end }}
-          <containerCap>{{ .Values.Agent.ContainerCap }}</containerCap>
+          <containerCap>{{ .Values.agent.containerCap }}</containerCap>
           <retentionTimeout>5</retentionTimeout>
           <connectTimeout>0</connectTimeout>
           <readTimeout>0</readTimeout>
-          <podRetention class="org.csanchez.jenkins.plugins.kubernetes.pod.retention.{{ .Values.Agent.PodRetention }}"/>
+          <podRetention class="org.csanchez.jenkins.plugins.kubernetes.pod.retention.{{ .Values.agent.podRetention }}"/>
         </org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud>
       </clouds>
       <quietPeriod>5</quietPeriod>

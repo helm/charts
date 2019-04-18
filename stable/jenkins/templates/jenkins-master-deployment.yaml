@@ -367,7 +367,7 @@ spec:
       - name: sc-config-volume
         emptyDir: {}
       {{- end }}
-{{- if .Values.master.imagePullSecret }}
+{{- if .Values.master.imagePullSecretName }}
       imagePullSecrets:
-      - name: {{ .Values.master.imagePullSecret }}
+      - name: {{ .Values.master.imagePullSecretName }}
 {{- end -}}

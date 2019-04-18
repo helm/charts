@@ -15,19 +15,19 @@ spec:
     - from:
       - podSelector:
           matchLabels:
-            "jenkins/{{ .Release.Name }}-{{ .Values.Agent.Component }}": "true"
+            "jenkins/{{ .Release.Name }}-{{ .Values.agent.component }}": "true"
       ports:
       - port: {{ .Values.master.slaveListenerPort }}
-{{- if .Values.Agent.Enabled }}
+{{- if .Values.agent.enabled }}
 ---
 kind: NetworkPolicy
 apiVersion: {{ .Values.networkPolicy.apiVersion }}
 metadata:
-  name: "{{ .Release.Name }}-{{ .Values.Agent.Component }}"
+  name: "{{ .Release.Name }}-{{ .Values.agent.component }}"
 spec:
   podSelector:
     matchLabels:
       # DefaultDeny
-      "jenkins/{{ .Release.Name }}-{{ .Values.Agent.Component }}": "true"
+      "jenkins/{{ .Release.Name }}-{{ .Values.agent.component }}": "true"
 {{- end }}
 {{- end }}
