@@ -18,6 +18,10 @@ spec:
     metricRelabelings:
 {{ toYaml .Values.kubeStateMetrics.serviceMonitor.metricRelabelings | indent 4 }}
 {{- end }}
+{{- if .Values.kubeStateMetrics.serviceMonitor.relabelings }}
+    relabelings:
+{{ toYaml .Values.kubeStateMetrics.serviceMonitor.relabelings | indent 4 }}
+{{- end }}
   selector:
     matchLabels:
       app: kube-state-metrics
