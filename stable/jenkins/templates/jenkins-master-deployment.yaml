@@ -220,17 +220,9 @@ spec:
             initialDelaySeconds: {{ .Values.master.healthProbesReadinessTimeout }}
             periodSeconds: {{ .Values.master.healthProbeReadinessPeriodSeconds }}
 {{- end }}
-          # Resources configuration is a little hacky. This was to prevent breaking
-          # changes, and should be cleaned up in the future once everybody had
-          # enough time to migrate.
+
           resources:
-{{ if or .Values.master.cpu .Values.master.memory }}
-            requests:
-              cpu: "{{ .Values.master.cpu }}"
-              memory: "{{ .Values.master.memory }}"
-{{ else }}
 {{ toYaml .Values.master.resources | indent 12 }}
-{{ end }}
           volumeMounts:
 {{- if .Values.persistence.mounts }}
 {{ toYaml .Values.persistence.mounts | indent 12 }}
