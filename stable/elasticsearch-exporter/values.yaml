@@ -84,4 +84,8 @@ serviceMonitor:
   ## https://github.com/coreos/prometheus-operator
   ##
   enabled: false
+  #  namespace: monitoring
   labels: {}
+  interval: 10s
+  scrapeTimeout: 10s
+  scheme: http
