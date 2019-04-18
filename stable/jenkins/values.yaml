@@ -25,12 +25,14 @@ master:
   numExecutors: 0
   # configAutoReload requires UseSecurity is set to true:
   useSecurity: true
-  securityRealm:
-  # Optionally configure a different AuthorizationStrategy using Jenkins XML
-  # authorizationStrategy: |-
-  #    <authorizationStrategy class="hudson.security.FullControlOnceLoggedInAuthorizationStrategy">
-  #      <denyAnonymousReadAccess>true</denyAnonymousReadAccess>
-  #    </authorizationStrategy>
+  # Allows to configure different SecurityRealm using Jenkins XML
+  securityRealm: |-
+    <securityRealm class="hudson.security.LegacySecurityRealm"/>
+  # Allows to configure different AuthorizationStrategy using Jenkins XML
+  authorizationStrategy: |-
+     <authorizationStrategy class="hudson.security.FullControlOnceLoggedInAuthorizationStrategy">
+       <denyAnonymousReadAccess>true</denyAnonymousReadAccess>
+     </authorizationStrategy>
   hostNetworking: false
   # When enabling LDAP or another non-Jenkins identity source, the built-in admin account will no longer exist.
   # Since the AdminUser is used by configAutoReload, in order to use configAutoReload you must change the

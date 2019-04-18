@@ -13,18 +13,8 @@ data:
       <numExecutors>{{ .Values.master.numExecutors }}</numExecutors>
       <mode>NORMAL</mode>
       <useSecurity>{{ .Values.master.useSecurity }}</useSecurity>
-{{- if not (empty .Values.master.authorizationStrategy ) }}
 {{ .Values.master.authorizationStrategy | indent 6 }}
-{{- else }}
-      <authorizationStrategy class="hudson.security.FullControlOnceLoggedInAuthorizationStrategy">
-        <denyAnonymousReadAccess>true</denyAnonymousReadAccess>
-      </authorizationStrategy>
-{{- end }}
-{{- if .Values.master.securityRealm }}
 {{ .Values.master.securityRealm | indent 6 }}
-{{- else }}
-      <securityRealm class="hudson.security.LegacySecurityRealm"/>
-{{- end }}
       <disableRememberMe>false</disableRememberMe>
       <projectNamingStrategy class="jenkins.model.ProjectNamingStrategy$DefaultProjectNamingStrategy"/>
       <workspaceDir>${JENKINS_HOME}/workspace/${ITEM_FULLNAME}</workspaceDir>
