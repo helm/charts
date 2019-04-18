@@ -161,9 +161,9 @@ spec:
             - sh
             - -c
            {{- if (include "postgresql.database" .) }}
-            - exec pg_isready -U {{ include "postgresql.username" . | quote }} -d {{ (include "postgresql.database" .) | quote }} -h localhost
+            - exec pg_isready -U {{ include "postgresql.username" . | quote }} -d {{ (include "postgresql.database" .) | quote }} -h 127.0.0.1
            {{- else }}
-            - exec pg_isready -U {{ include "postgresql.username" . | quote }} -h localhost
+            - exec pg_isready -U {{ include "postgresql.username" . | quote }} -h 127.0.0.1
            {{- end }}
           initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
           periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
@@ -178,9 +178,9 @@ spec:
             - sh
             - -c
            {{- if (include "postgresql.database" .) }}
-            - exec pg_isready -U {{ include "postgresql.username" . | quote }} -d {{ (include "postgresql.database" .) | quote }} -h localhost
+            - exec pg_isready -U {{ include "postgresql.username" . | quote }} -d {{ (include "postgresql.database" .) | quote }} -h 127.0.0.1
            {{- else }}
-            - exec pg_isready -U {{ include "postgresql.username" . | quote }} -h localhost
+            - exec pg_isready -U {{ include "postgresql.username" . | quote }} -h 127.0.0.1
            {{- end }}
           initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
           periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
@@ -225,7 +225,7 @@ spec:
         env:
         {{- $database := required "In order to enable metrics you need to specify a database (.Values.postgresqlDatabase or .Values.global.postgresql.postgresqlDatabase)" (include "postgresql.database" .) }}
         - name: DATA_SOURCE_URI
-          value: {{ printf "localhost:%d/%s?sslmode=disable" (int (include "postgresql.port" .)) $database | quote }}
+          value: {{ printf "127.0.0.1:%d/%s?sslmode=disable" (int (include "postgresql.port" .)) $database | quote }}
         {{- if .Values.usePasswordFile }}
         - name: DATA_SOURCE_PASS_FILE
           value: "/opt/bitnami/postgresql/secrets/postgresql-password"
