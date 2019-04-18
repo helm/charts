@@ -34,6 +34,10 @@ spec:
     metricRelabelings:
 {{ toYaml .Values.kubelet.serviceMonitor.cAdvisorMetricRelabelings | indent 4 }}
 {{- end }}
+{{- if .Values.kubelet.serviceMonitor.cAdvisorRelabelings }}
+    relabelings:
+{{ toYaml .Values.kubelet.serviceMonitor.cAdvisorRelabelings | indent 4 }}
+{{- end }}
   {{- else }}
   - port: http-metrics
     {{- if .Values.kubelet.serviceMonitor.interval }}
@@ -49,6 +53,10 @@ spec:
 {{- if .Values.kubelet.serviceMonitor.cAdvisorMetricRelabelings }}
     metricRelabelings:
 {{ toYaml .Values.kubelet.serviceMonitor.cAdvisorMetricRelabelings | indent 4 }}
+{{- end }}
+{{- if .Values.kubelet.serviceMonitor.cAdvisorRelabelings }}
+    relabelings:
+{{ toYaml .Values.kubelet.serviceMonitor.cAdvisorRelabelings | indent 4 }}
 {{- end }}
   {{- end }}
   jobLabel: k8s-app
