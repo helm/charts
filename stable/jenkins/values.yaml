@@ -9,7 +9,7 @@
 # fullnameOverride:
 
 master:
-  name: jenkins-master
+  name: "jenkins-master"
   image: "jenkins/jenkins"
   imageTag: "lts"
   imagePullPolicy: "Always"
@@ -41,7 +41,7 @@ master:
   # additional rights.  Failure to do this will cause the sidecar container to fail to authenticate via SSH and enter
   # a restart loop.  Likewise if you disable the non-Jenkins identity store and instead use the Jenkins internal one,
   # you should revert master.adminUser to your preferred admin user:
-  adminUser: admin
+  adminUser: "admin"
   # adminPassword: <defaults to random>
   # adminSshKey: <defaults to auto-generated>
   # If CasC auto-reload is enabled, an SSH (RSA) keypair is needed.  Can either provide your own, or leave unconfigured to allow a random key to be auto-generated.
@@ -117,7 +117,7 @@ master:
   # Note if you set this to 'LoadBalancer', you *must* define annotations to secure it. By default
   # this will be an external load balancer and allowing inbound 0.0.0.0/0, a HUGE
   # security risk:  https://github.com/kubernetes/charts/issues/1341
-  slaveListenerServiceType: ClusterIP
+  slaveListenerServiceType: "ClusterIP"
   slaveListenerServiceAnnotations: {}
   slaveKubernetesNamespace:
 
@@ -223,7 +223,7 @@ master:
       # this must be > 1024:
       sshTcpPort: 1044
       # folder in the pod that should hold the collected dashboards:
-      folder: /var/jenkins_home/casc_configs
+      folder: "/var/jenkins_home/casc_configs"
       # If specified, the sidecar will search for JCasC config-maps inside this namespace.
       # Otherwise the namespace in which the sidecar is running will be used.
       # It's also possible to specify ALL to search in all namespaces:
@@ -273,7 +273,7 @@ master:
   ingress:
     enabled: false
     # For Kubernetes v1.14+, use 'networking.k8s.io/v1beta1'
-    apiVersion: extensions/v1beta1
+    apiVersion: "extensions/v1beta1"
     labels: {}
     annotations: {}
     # kubernetes.io/ingress.class: nginx
@@ -299,8 +299,8 @@ master:
 
 agent:
   enabled: true
-  image: jenkins/jnlp-slave
-  imageTag: 3.27-1
+  image: "jenkins/jnlp-slave"
+  imageTag: "3.27-1"
   customJenkinsLabels: []
   # name of the secret to be used for image pulling
   imagePullSecretName:
@@ -317,7 +317,7 @@ agent:
   alwaysPullImage: false
   # Controls how slave pods are retained after the Jenkins build completes
   # Possible values: Always, Never, OnFailure
-  podRetention: Never
+  podRetention: "Never"
   # You can define the volumes that you want to mount for this container
   # Allowed types are: ConfigMap, EmptyDir, HostPath, Nfs, Pod, Secret
   # Configure the attributes as they appear in the corresponding Java class for that type
@@ -338,13 +338,13 @@ agent:
   command:
   args:
   # Side container name
-  sideContainerName: jnlp
+  sideContainerName: "jnlp"
   # Doesn't allocate pseudo TTY by default
   TTYEnabled: false
   # Max number of spawned agent
   containerCap: 10
   # Pod name
-  podName: default
+  podName: "default"
 
 persistence:
   enabled: true
@@ -361,8 +361,8 @@ persistence:
   ##
   storageClass:
   annotations: {}
-  accessMode: ReadWriteOnce
-  size: 8Gi
+  accessMode: "ReadWriteOnce"
+  size: "8Gi"
   volumes:
   #  - name: nothing
   #    emptyDir: {}
@@ -400,18 +400,18 @@ backup:
   annotations:
     # Example for authorization to AWS S3 using kube2iam
     # Can also be done using environment variables
-    iam.amazonaws.com/role: jenkins
+    iam.amazonaws.com/role: "jenkins"
   image:
-    repository: nuvo/kube-tasks
-    tag: 0.1.2
+    repository: "nuvo/kube-tasks"
+    tag: "0.1.2"
   # Additional arguments for kube-tasks
   # Ref: https://github.com/nuvo/kube-tasks#simple-backup
   extraArgs: []
   # Add additional environment variables
   env:
   # Example environment variable required for AWS credentials chain
-  - name: AWS_REGION
-    value: us-east-1
+  - name: "AWS_REGION"
+    value: "us-east-1"
   resources:
     requests:
       memory: 1Gi
@@ -423,4 +423,4 @@ backup:
   # Supported cloud storage services: AWS S3, Minio S3, Azure Blob Storage
   # Additional support can added. Visit this repository for details
   # Ref: https://github.com/nuvo/skbn
-  destination: s3://nuvo-jenkins-data/backup
+  destination: "s3://nuvo-jenkins-data/backup"
