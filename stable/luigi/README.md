@@ -50,6 +50,8 @@ The following table lists the configurable parameters of the Sentry chart and th
 | `persistence.enabled`                | Persistence flag                           | `false`                                                    |
 | `ingressUI.enabled`                  | UI Ingress Flag                            | `false`                                                    |
 | `ingressAPI.enabled`                 | API Ingress Flag                           | `false`                                                    |
+| `podDisruptionBudget.enabled`        | Pod Disruption Budget Flag                 | `false`                                                     |
+| `podDisruptionBudget.minAvailable`   | Pod Disruption Minimum Available Pods      | `1`                                                        |
 
 Dependent charts can also have values overwritten. Preface values with postgresql.* or redis.*
 

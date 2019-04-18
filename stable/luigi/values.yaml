@@ -83,3 +83,7 @@ mysql:
   mysqlAllowEmptyPassword: true
   persistence:
     enabled: false
+
+podDisruptionBudget:
+  enabled: false
+  minAvailable: 1

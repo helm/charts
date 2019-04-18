@@ -1,0 +1,19 @@
+{{- if .Values.podDisruptionBudget.enabled -}}
+
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ template "luigi.fullname" . }}
+  labels:
+    app: {{ template "luigi.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  minAvailable: {{ .Values.podDisruptionBudget.minAvailable }}
+  selector:
+    matchLabels:
+      app: {{ template "luigi.name" . }}
+      release: {{ .Release.Name }}
+
+{{- end -}}
