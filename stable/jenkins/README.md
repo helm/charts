@@ -108,8 +108,8 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.customInitContainers`     | Custom init-container specification in raw-yaml format | Not set                 |
 | `master.lifecycle`                | Lifecycle specification for master-container | Not set                           |
 | `master.priorityClassName`        | The name of a `priorityClass` to apply to the master pod | Not set               |
-| `NetworkPolicy.Enabled`           | Enable creation of NetworkPolicy resources. | `false`                            |
-| `NetworkPolicy.ApiVersion`        | NetworkPolicy ApiVersion             | `networking.k8s.io/v1`                    |
+| `networkPolicy.enabled`           | Enable creation of NetworkPolicy resources. | `false`                            |
+| `networkPolicy.apiVersion`        | NetworkPolicy ApiVersion             | `networking.k8s.io/v1`                    |
 | `rbac.install`                    | Create service account and ClusterRoleBinding for Kubernetes plugin | `false`    |
 | `rbac.serviceAccountName`         | Name of service account              | `default`                                 |
 | `rbac.serviceAccountAnnotations`  | Service Account annotations          | `{}`                                      |
@@ -179,7 +179,7 @@ the DefaultDeny namespace annotation. Note: this will enforce policy for _all_ p
 
 Install helm chart with network policy enabled:
 
-    $ helm install stable/jenkins --set NetworkPolicy.Enabled=true
+    $ helm install stable/jenkins --set networkPolicy.enabled=true
 
 ## Adding customized securityRealm
 

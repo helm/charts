@@ -1,6 +1,6 @@
-{{- if .Values.NetworkPolicy.Enabled }}
+{{- if .Values.networkPolicy.enabled }}
 kind: NetworkPolicy
-apiVersion: {{ .Values.NetworkPolicy.ApiVersion }}
+apiVersion: {{ .Values.networkPolicy.apiVersion }}
 metadata:
   name: "{{ .Release.Name }}-{{ .Values.master.component }}"
 spec:
@@ -21,7 +21,7 @@ spec:
 {{- if .Values.Agent.Enabled }}
 ---
 kind: NetworkPolicy
-apiVersion: {{ .Values.NetworkPolicy.ApiVersion }}
+apiVersion: {{ .Values.networkPolicy.apiVersion }}
 metadata:
   name: "{{ .Release.Name }}-{{ .Values.Agent.Component }}"
 spec:
