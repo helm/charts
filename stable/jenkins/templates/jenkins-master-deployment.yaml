@@ -17,9 +17,9 @@ metadata:
 spec:
   replicas: 1
   strategy:
-    type: {{ if .Values.Persistence.Enabled }}Recreate{{ else }}RollingUpdate{{ end }}
+    type: {{ if .Values.persistence.enabled }}Recreate{{ else }}RollingUpdate{{ end }}
     rollingUpdate:
-    {{- if not .Values.Persistence.Enabled }}
+    {{- if not .Values.persistence.enabled }}
 {{ toYaml .Values.master.rollingUpdate | indent 6 }}
     {{- end }}
   selector:
@@ -115,8 +115,8 @@ spec:
               name: tmp
             - mountPath: /var/jenkins_home
               name: jenkins-home
-              {{- if .Values.Persistence.SubPath }}
-              subPath: {{ .Values.Persistence.SubPath }}
+              {{- if .Values.persistence.subPath }}
+              subPath: {{ .Values.persistence.subPath }}
               {{- end }}
             - mountPath: /var/jenkins_config
               name: jenkins-config
@@ -232,16 +232,16 @@ spec:
 {{ toYaml .Values.master.resources | indent 12 }}
 {{ end }}
           volumeMounts:
-{{- if .Values.Persistence.mounts }}
-{{ toYaml .Values.Persistence.mounts | indent 12 }}
+{{- if .Values.persistence.mounts }}
+{{ toYaml .Values.persistence.mounts | indent 12 }}
 {{- end }}
             - mountPath: /tmp
               name: tmp
             - mountPath: /var/jenkins_home
               name: jenkins-home
               readOnly: false
-              {{- if .Values.Persistence.SubPath }}
-              subPath: {{ .Values.Persistence.SubPath }}
+              {{- if .Values.persistence.subPath }}
+              subPath: {{ .Values.persistence.subPath }}
               {{- end }}
             - mountPath: /var/jenkins_config
               name: jenkins-config
@@ -314,8 +314,8 @@ spec:
               mountPath: {{ .Values.master.sidecars.configAutoReload.folder | quote }}
             - name: jenkins-home
               mountPath: /var/jenkins_home
-              {{- if .Values.Persistence.SubPath }}
-                subPath: {{ .Values.Persistence.SubPath }}
+              {{- if .Values.persistence.subPath }}
+                subPath: {{ .Values.persistence.subPath }}
               {{- end }}
 {{- end}}
 
@@ -325,8 +325,8 @@ spec:
 {{- end }}
 
       volumes:
-{{- if .Values.Persistence.volumes }}
-{{ tpl (toYaml .Values.Persistence.volumes | indent 6) . }}
+{{- if .Values.persistence.volumes }}
+{{ tpl (toYaml .Values.persistence.volumes | indent 6) . }}
 {{- end }}
       - name: plugins
         emptyDir: {}
@@ -357,9 +357,9 @@ spec:
       - name: secrets-dir
         emptyDir: {}
       - name: jenkins-home
-      {{- if .Values.Persistence.Enabled }}
+      {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ .Values.Persistence.ExistingClaim | default (include "jenkins.fullname" .) }}
+          claimName: {{ .Values.persistence.existingClaim | default (include "jenkins.fullname" .) }}
       {{- else }}
         emptyDir: {}
       {{- end -}}

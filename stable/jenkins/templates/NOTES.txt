@@ -37,7 +37,7 @@ For more information about Jenkins Configuration as Code, visit:
 https://jenkins.io/projects/jcasc/
 {{- end }}
 
-{{- if .Values.Persistence.Enabled }}
+{{- if .Values.persistence.enabled }}
 {{- else }}
 #################################################################################
 ######   WARNING: Persistence is disabled!!! You will lose your data when   #####

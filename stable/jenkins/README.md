@@ -223,19 +223,20 @@ The Jenkins image stores persistence under `/var/jenkins_home` path of the conta
 Claim is used to keep the data across deployments, by default. This is known to work in GCE, AWS, and minikube. Alternatively,
 a previously configured Persistent Volume Claim can be used.
 
-It is possible to mount several volumes using `Persistence.volumes` and `Persistence.mounts` parameters.
+It is possible to mount several volumes using `persistence.volumes` and `persistence.mounts` parameters.
 
 ### Persistence Values
 
 | Parameter                   | Description                     | Default         |
 | --------------------------- | ------------------------------- | --------------- |
-| `Persistence.Enabled`       | Enable the use of a Jenkins PVC | `true`          |
-| `Persistence.ExistingClaim` | Provide the name of a PVC       | `nil`           |
-| `Persistence.AccessMode`    | The PVC access mode             | `ReadWriteOnce` |
-| `Persistence.Size`          | The size of the PVC             | `8Gi`           |
-| `Persistence.SubPath`       | SubPath for jenkins-home mount  | `nil`           |
-| `Persistence.volumes`       | Additional volumes              | `nil`           |
-| `Persistence.mounts`        | Additional mounts               | `nil`           |
+| `persistence.enabled`       | Enable the use of a Jenkins PVC | `true`          |
+| `persistence.existingClaim` | Provide the name of a PVC       | `nil`           |
+| `persistence.annotations`   | Annotations for the PVC         | `{}` |
+| `persistence.accessMode`    | The PVC access mode             | `ReadWriteOnce` |
+| `persistence.size`          | The size of the PVC             | `8Gi`           |
+| `persistence.subPath`       | SubPath for jenkins-home mount  | `nil`           |
+| `persistence.volumes`       | Additional volumes              | `nil`           |
+| `persistence.mounts`        | Additional mounts               | `nil`           |
 
 #### Existing PersistentVolumeClaim
 
@@ -244,7 +245,7 @@ It is possible to mount several volumes using `Persistence.volumes` and `Persist
 3. Install the chart
 
 ```bash
-$ helm install --name my-release --set Persistence.ExistingClaim=PVC_NAME stable/jenkins
+$ helm install --name my-release --set persistence.existingClaim=PVC_NAME stable/jenkins
 ```
 
 ## Configuration as Code
