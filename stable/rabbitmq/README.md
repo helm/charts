@@ -56,6 +56,7 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `image.pullSecrets`                  | Specify docker-registry secret names as an array | `nil`                                                   |
 | `image.debug`                        | Specify if debug values should be set            | `false`                                                 |
 | `rbacEnabled`                        | Specify if rbac is enabled in your cluster       | `true`                                                  |
+| `podManagementPolicy`                | Pod management policy                            | `OrderedReady`                                          |
 | `rabbitmq.username`                  | RabbitMQ application username                    | `user`                                                  |
 | `rabbitmq.password`                  | RabbitMQ application password                    | _random 10 character long alphanumeric string_          |
 | `rabbitmq.existingPasswordSecret`    | Existing secret with RabbitMQ credentials        | nil                                                     |
