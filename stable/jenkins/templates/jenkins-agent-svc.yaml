@@ -3,9 +3,11 @@ kind: Service
 metadata:
   name: {{ template "jenkins.fullname" . }}-agent
   labels:
-    app: {{ template "jenkins.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    component: "{{ .Release.Name }}-{{ .Values.master.component }}"
+    "app.kubernetes.io/name": '{{ template "jenkins.name" .}}'
+    "helm.sh/chart": "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    "app.kubernetes.io/managed-by": "{{ .Release.Service }}"
+    "app.kubernetes.io/instance": "{{ .Release.Name }}"
+    "app.kubernetes.io/component": "{{ .Values.master.componentName }}"
 {{- if .Values.master.slaveListenerServiceAnnotations }}
   annotations:
 {{ toYaml .Values.master.slaveListenerServiceAnnotations | indent 4 }}

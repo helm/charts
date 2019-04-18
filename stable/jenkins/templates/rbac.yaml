@@ -7,6 +7,12 @@ kind: Role
 metadata:
   name: {{ $serviceName }}-schedule-agents
   namespace: {{ .Values.master.slaveKubernetesNamespace | default .Release.Namespace}}
+  labels:
+    "app.kubernetes.io/name": '{{ template "jenkins.name" .}}'
+    "helm.sh/chart": "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    "app.kubernetes.io/managed-by": "{{ .Release.Service }}"
+    "app.kubernetes.io/instance": "{{ .Release.Name }}"
+    "app.kubernetes.io/component": "{{ .Values.master.componentName }}"
 rules:
 - apiGroups: [""]
   resources: ["pods", "pods/exec", "pods/log"]
@@ -21,6 +27,12 @@ kind: RoleBinding
 metadata:
   name: {{ $serviceName }}-schedule-agents
   namespace: {{ .Values.master.slaveKubernetesNamespace | default .Release.Namespace}}
+  labels:
+    "app.kubernetes.io/name": '{{ template "jenkins.name" .}}'
+    "helm.sh/chart": "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    "app.kubernetes.io/managed-by": "{{ .Release.Service }}"
+    "app.kubernetes.io/instance": "{{ .Release.Name }}"
+    "app.kubernetes.io/component": "{{ .Values.master.componentName }}"
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -40,6 +52,12 @@ kind: Role
 metadata:
   name: {{ template "jenkins.fullname" . }}-casc-reload
   namespace: {{ .Release.Namespace}}
+  labels:
+    "app.kubernetes.io/name": '{{ template "jenkins.name" .}}'
+    "helm.sh/chart": "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    "app.kubernetes.io/managed-by": "{{ .Release.Service }}"
+    "app.kubernetes.io/instance": "{{ .Release.Name }}"
+    "app.kubernetes.io/component": "{{ .Values.master.componentName }}"
 rules:
 - apiGroups: [""]
   resources: ["configmaps"]
@@ -52,6 +70,12 @@ kind: RoleBinding
 metadata:
   name: {{ $serviceName }}-watch-configmaps
   namespace: {{ .Release.Namespace}}
+  labels:
+    "app.kubernetes.io/name": '{{ template "jenkins.name" .}}'
+    "helm.sh/chart": "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    "app.kubernetes.io/managed-by": "{{ .Release.Service }}"
+    "app.kubernetes.io/instance": "{{ .Release.Name }}"
+    "app.kubernetes.io/component": "{{ .Values.master.componentName }}"
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role

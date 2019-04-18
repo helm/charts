@@ -10,7 +10,7 @@ metadata:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    component: "{{ .Release.Name }}-{{ .Values.master.name }}"
+    component: "{{ .Release.Name }}-{{ .Values.master.componentName }}"
     {{- range $key, $val := .Values.master.deploymentLabels }}
     {{ $key }}: {{ $val | quote }}
     {{- end}}

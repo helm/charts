@@ -9,7 +9,7 @@
 # fullnameOverride:
 
 master:
-  name: "jenkins-master"
+  componentName: "jenkins-master"
   image: "jenkins/jenkins"
   imageTag: "lts"
   imagePullPolicy: "Always"
@@ -394,6 +394,8 @@ backup:
   # Backup must use RBAC
   # So by enabling backup you are enabling RBAC specific for backup
   enabled: false
+  # Used for label app.kubernetes.io/component
+  componentName: "backup"
   # Schedule to run jobs. Must be in cron time format
   # Ref: https://crontab.guru/
   schedule: "0 2 * * *"
