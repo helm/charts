@@ -2,11 +2,11 @@
 kind: NetworkPolicy
 apiVersion: {{ .Values.NetworkPolicy.ApiVersion }}
 metadata:
-  name: "{{ .Release.Name }}-{{ .Values.Master.Component }}"
+  name: "{{ .Release.Name }}-{{ .Values.master.component }}"
 spec:
   podSelector:
     matchLabels:
-      component: "{{ .Release.Name }}-{{ .Values.Master.Component }}"
+      component: "{{ .Release.Name }}-{{ .Values.master.component }}"
   ingress:
     # Allow web access to the UI
     - ports:
@@ -17,7 +17,7 @@ spec:
           matchLabels:
             "jenkins/{{ .Release.Name }}-{{ .Values.Agent.Component }}": "true"
       ports:
-      - port: {{ .Values.Master.SlaveListenerPort }}
+      - port: {{ .Values.master.slaveListenerPort }}
 {{- if .Values.Agent.Enabled }}
 ---
 kind: NetworkPolicy

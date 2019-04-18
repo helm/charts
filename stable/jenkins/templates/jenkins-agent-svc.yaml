@@ -5,19 +5,19 @@ metadata:
   labels:
     app: {{ template "jenkins.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    component: "{{ .Release.Name }}-{{ .Values.Master.Component }}"
-{{- if .Values.Master.SlaveListenerServiceAnnotations }}
+    component: "{{ .Release.Name }}-{{ .Values.master.component }}"
+{{- if .Values.master.slaveListenerServiceAnnotations }}
   annotations:
-{{ toYaml .Values.Master.SlaveListenerServiceAnnotations | indent 4 }}
+{{ toYaml .Values.master.slaveListenerServiceAnnotations | indent 4 }}
 {{- end }}
 spec:
   ports:
-    - port: {{ .Values.Master.SlaveListenerPort }}
-      targetPort: {{ .Values.Master.SlaveListenerPort }}
-      {{ if (and (eq .Values.Master.SlaveListenerServiceType "NodePort") (not (empty .Values.Master.SlaveListenerPort))) }}
-      nodePort: {{.Values.Master.SlaveListenerPort}}
+    - port: {{ .Values.master.slaveListenerPort }}
+      targetPort: {{ .Values.master.slaveListenerPort }}
+      {{ if (and (eq .Values.master.slaveListenerServiceType "NodePort") (not (empty .Values.master.slaveListenerPort))) }}
+      nodePort: {{.Values.master.slaveListenerPort}}
       {{end}}
       name: slavelistener
   selector:
-    component: "{{ .Release.Name }}-{{ .Values.Master.Component }}"
-  type: {{ .Values.Master.SlaveListenerServiceType }}
+    component: "{{ .Release.Name }}-{{ .Values.master.component }}"
+  type: {{ .Values.master.slaveListenerServiceType }}
