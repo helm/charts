@@ -1,0 +1,39 @@
+# Default values for schema-registry-ui.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: landoop/kafka-topics-ui
+  tag: 0.9.4
+  pullPolicy: IfNotPresent
+
+service:
+  type: LoadBalancer
+  port: 80
+  annotations: {}
+  ## Limit load balancer source ips to list of CIDRs (where available)
+  # loadBalancerSourceRanges: []
+
+kafkaRest:
+  url: "http://localhost"
+  port: 8082
+  proxy: true
+
+ingress:
+  enabled: false
+  annotations: {}
+  path: /
+  hosts:
+    - kafka-topics-ui.local
+  tls: []
+
+
+resources: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
