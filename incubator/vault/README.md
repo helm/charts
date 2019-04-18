@@ -118,3 +118,29 @@ $ kubectl port-forward vault-pod 8200
 $ export VAULT_ADDR=http://127.0.0.1:8200
 $ vault status
 ```
+
+## Migrating Custom Secrets
+
+Previous versions of this chart had a configuration option `vault.customSecrets`.
+Custom secrets should now be expressed with `vault.extraVolumeMounts`. For example:
+
+```yaml
+vault:
+  customSecrets:
+    - secretName: vault-tls
+      mountPath: /vault/tls
+```
+
+Would be expressed as:
+
+```yaml
+vault:
+  extraVolumes:
+    - name: vault-tls
+      secret:
+        secretName: vault-tls
+  extraVolumeMounts:
+    - name: vault-tls
+      mountPath: /vault/tls
+      readOnly: true
+```
