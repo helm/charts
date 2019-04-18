@@ -166,7 +166,7 @@ password:
 ## Mount secrets as files instead of environment variables
 usePasswordFile: false
 
-## Persist data to a persistent volume
+## Persist data to a persistent volume (Redis Master)
 persistence: {}
   ## A manually managed Persistent Volume and Claim
   ## Requires persistence.enabled: true
@@ -310,6 +310,8 @@ slave:
   service:
     ## Redis Slave Service type
     type: ClusterIP
+    ## Redis port
+    port: 6379
     ## Specify the nodePort value for the LoadBalancer and NodePort service types.
     ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
     ##
