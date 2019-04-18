@@ -52,7 +52,37 @@ The command removes all the Kubernetes components associated with the chart and 
 A major chart version change (like v1.2.3 -> v2.0.0) indicates that there is an
 incompatible breaking change needing manual actions.
 
-### 5.0.0
+### To 7.0.0
+
+This version causes a change in the Redis Master StatefulSet definition, so the command helm upgrade would not work out of the box. As an alternative, one of the following could be done:
+
+  - Recommended: Create a clone of the Redis Master PVC (for example, using projects like [this one](https://github.com/edseymour/pvc-transfer)). Then launch a fresh release reusing this cloned PVC.
+
+   ```
+   helm install stable/redis --set persistence.existingClaim=<NEW PVC>
+   ```
+
+  - Alternative (not recommended, do at your own risk): `helm delete --purge` does not remove the PVC assigned to the Redis Master StatefulSet. As a consequence, the following commands can be done to upgrade the release
+
+   ```
+   helm delete --purge <RELEASE>
+   helm install stable/redis --name <RELEASE>
+   ```
+
+Previous versions of the chart were not using persistence in the slaves, so this upgrade would add it to them. Another important change is that no values are inherited from master to slaves. For example, in 6.0.0 `slaves.readinessProbe.periodSeconds`, if empty, would be set to `master.readinessProbe.periodSeconds`. This approach lacked transparency and was difficult to maintain. From now on, all the slave parameters must be configured just as it is done with the masters.
+
+Some values have changed as well:
+
+   - `master.port` and `slave.port` have been changed to `redisPort` (same value for both master and slaves)
+   - `master.securityContext` and `slave.securityContext` have been changed to `securityContext`(same values for both master and slaves)
+
+By default, the upgrade will not change the cluster topology. In case you want to use Redis Sentinel, you must explicitly set `sentinel.enabled` to `true`.
+
+### To 6.0.0
+
+Previous versions of the chart were using an init-container to change the permissions of the volumes. This was done in case the `securityContext` directive in the template was not enough for that (for example, with cephFS). In this new version of the chart, this container is disabled by default (which should not affect most of the deployments). If your installation still requires that init container, execute `helm upgrade` with the `--set volumePermissions.enabled=true`.
+
+### To 5.0.0
 
 The default image in this release may be switched out for any image containing the `redis-server`
 and `redis-cli` binaries. If `redis-server` is not the default image ENTRYPOINT, `master.command`
@@ -351,9 +381,37 @@ In case the current master crashes, the Sentinel containers will elect a new mas
 In order to improve the performance in case of slave failure, we added persistence to the read-only slaves. That means that we moved from Deployment to StatefulSets. This should not affect upgrades from previous versions of the chart, as the deployments did not contain any persistence at all.
 
 This version also allows enabling Redis Sentinel containers inside of the Redis Pods (feature disabled by default). In case the master crashes, a new Redis node will be elected as master. In order to query the current master (no redis master service is exposed), you need to query first the Sentinel cluster. Find more information [in this section](#master-slave-with-sentinel).
+<<<<<<< HEAD
+=======
 
 ## Upgrade
+
+### To 7.0.0
+This version causes a change in the Redis Master StatefulSet definition, so the command helm upgrade would not work out of the box. As an alternative, one of the following could be done:
+
+  - Recommended: Create a clone of the Redis Master PVC (for example, using projects like [this one](https://github.com/edseymour/pvc-transfer)). Then launch a fresh release reusing this cloned PVC.
+
+   ```
+   helm install stable/redis --set persistence.existingClaim=<NEW PVC>
+   ```
+
+  - Alternative (not recommended, do at your own risk): `helm delete --purge` does not remove the PVC assigned to the Redis Master StatefulSet. As a consequence, the following commands can be done to upgrade the release
+
+   ```
+   helm delete --purge <RELEASE>
+   helm install stable/redis --name <RELEASE>
+   ```
+
+Previous versions of the chart were not using persistence in the slaves, so this upgrade would add it to them. Another important change is that no values are inherited from master to slaves. For example, in 6.0.0 `slaves.readinessProbe.periodSeconds`, if empty, would be set to `master.readinessProbe.periodSeconds`. This approach lacked transparency and was difficult to maintain. From now on, all the slave parameters must be configured just as it is done with the masters.
+
+Some values have changed as well:
+
+   - `master.port` and `slave.port` have been changed to `redisPort` (same value for both master and slaves)
+   - `master.securityContext` and `slave.securityContext` have been changed to `securityContext`(same values for both master and slaves)
+
+By default, the upgrade will not change the cluster topology. In case you want to use Redis Sentinel, you must explicitly set `sentinel.enabled` to `true`.
 
 ### To 6.0.0
 
 Previous versions of the chart were using an init-container to change the permissions of the volumes. This was done in case the `securityContext` directive in the template was not enough for that (for example, with cephFS). In this new version of the chart, this container is disabled by default (which should not affect most of the deployments). If your installation still requires that init container, execute `helm upgrade` with the `--set volumePermissions.enabled=true`.
+>>>>>>> 4881ee46d778118dc46eef27add9453e956398ed
