@@ -3,7 +3,7 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: {{ template "contour.fullname" . }}
+  name: {{ template "contour.crb.fullname" . }}
   labels:
     app.kubernetes.io/name: {{ template "contour.fullname" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}

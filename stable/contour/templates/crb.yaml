@@ -15,6 +15,6 @@ roleRef:
   name: {{ template "contour.crb.fullname" . }}
 subjects:
   - kind: ServiceAccount
-    name: {{ template "contour.fullname" . }}
+    name: {{ template "contour.serviceAccountName" . }}
     namespace: {{ .Release.Namespace }}
 {{- end -}}
