@@ -88,6 +88,17 @@ client:
 #    example: client-svc-foo
   heapSize: "512m"
   # additionalJavaOpts: "-XX:MaxRAM=512m"
+  affinity: {}
+  # Expects to schedule elasticsearch following this custom rules:
+  # NOTE: If set antiAffinity or nodeAffinity values would be omitted
+  #     podAffinity:
+  #      requiredDuringSchedulingIgnoredDuringExecution:
+  #        labelSelector:
+  #        - matchExpressions:
+  #          - key: app
+  #            operator: In
+  #            values:
+  #            - myapp-es-sidecar
   antiAffinity: "soft"
   nodeAffinity: {}
   nodeSelector: {}
@@ -146,6 +157,17 @@ master:
       path: /_cluster/health?local=true
       port: 9200
     initialDelaySeconds: 5
+  affinity: {}
+  # Expects to schedule elasticsearch following this custom rules:
+  # NOTE: If set antiAffinity or nodeAffinity values would be omitted
+  #     podAffinity:
+  #      requiredDuringSchedulingIgnoredDuringExecution:
+  #        labelSelector:
+  #        - matchExpressions:
+  #          - key: app
+  #            operator: In
+  #            values:
+  #            - myapp-es-sidecar
   antiAffinity: "soft"
   nodeAffinity: {}
   nodeSelector: {}
@@ -194,6 +216,17 @@ data:
       port: 9200
     initialDelaySeconds: 5
   terminationGracePeriodSeconds: 3600
+  affinity: {}
+  # Expects to schedule elasticsearch following this custom rules:
+  # NOTE: If set antiAffinity or nodeAffinity values would be omitted
+  #     podAffinity:
+  #      requiredDuringSchedulingIgnoredDuringExecution:
+  #        labelSelector:
+  #        - matchExpressions:
+  #          - key: app
+  #            operator: In
+  #            values:
+  #            - myapp-es-sidecar
   antiAffinity: "soft"
   nodeAffinity: {}
   nodeSelector: {}

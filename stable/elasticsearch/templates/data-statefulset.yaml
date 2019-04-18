@@ -29,9 +29,12 @@ spec:
 {{- end }}
       securityContext:
         fsGroup: 1000
-      {{- if or .Values.data.antiAffinity .Values.data.nodeAffinity }}
+      {{- if or .Values.data.affinity .Values.data.antiAffinity .Values.data.nodeAffinity }}
       affinity:
       {{- end }}
+      {{- if .Values.data.affinity }}
+      {{ toYaml .Values.data.affinity | indent 4 }}
+      {{- else }}
       {{- if eq .Values.data.antiAffinity "hard" }}
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -56,6 +59,7 @@ spec:
       {{- with .Values.data.nodeAffinity }}
         nodeAffinity:
 {{ toYaml . | indent 10 }}
+      {{- end }}
       {{- end }}
 {{- if .Values.data.nodeSelector }}
       nodeSelector:

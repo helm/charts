@@ -89,6 +89,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `client.httpNodePort`                | Client service HTTP NodePort port number. Has no effect if client.serviceType is not `NodePort`.   | `nil`                                         |
 | `client.loadBalancerIP`              | Client loadBalancerIP                                               | `{}`                                                |
 | `client.loadBalancerSourceRanges`    | Client loadBalancerSourceRanges                                     | `{}`                                                |
+| `client.affinity`                    | Client affinity policy define custom affinity rules                 | `{}`                                                |
 | `client.antiAffinity`                | Client anti-affinity policy                                         | `soft`                                              |
 | `client.nodeAffinity`                | Client node affinity policy                                         | `{}`                                                |
 | `client.initResources`               | Client initContainer resources requests & limits                    | `{}`                                                |
@@ -118,6 +119,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `master.persistence.storageClass`    | Master persistent volume Class                                      | `nil`                                               |
 | `master.persistence.accessMode`      | Master persistent Access Mode                                       | `ReadWriteOnce`                                     |
 | `master.readinessProbe`              | Master container readiness probes                                   | see `values.yaml` for defaults                      |
+| `master.affinity`                    | Master affinity policy define custom affinity rules                 | `{}`                                                |
 | `master.antiAffinity`                | Master anti-affinity policy                                         | `soft`                                              |
 | `master.nodeAffinity`                | Master node affinity policy                                         | `{}`                                                |
 | `master.podManagementPolicy`         | Master pod creation strategy                                        | `OrderedReady`                                      |
@@ -140,6 +142,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `data.nodeSelector`                  | Node labels for data pod assignment                                 | `{}`                                                |
 | `data.tolerations`                   | Data tolerations                                                    | `[]`                                                |
 | `data.terminationGracePeriodSeconds` | Data termination grace period (seconds)                             | `3600`                                              |
+| `data.affinity`                      | Data affinity policy define custom affinity rules                   | `{}`                                                |
 | `data.antiAffinity`                  | Data anti-affinity policy                                           | `soft`                                              |
 | `data.nodeAffinity`                  | Data node affinity policy                                           | `{}`                                                |
 | `data.podManagementPolicy`           | Data pod creation strategy                                          | `OrderedReady`                                      |
