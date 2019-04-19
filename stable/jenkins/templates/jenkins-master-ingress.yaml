@@ -2,8 +2,13 @@
 apiVersion: {{ .Values.master.ingress.apiVersion }}
 kind: Ingress
 metadata:
-{{- if .Values.master.ingress.labels }}
   labels:
+    "app.kubernetes.io/name": '{{ template "jenkins.name" .}}'
+    "helm.sh/chart": "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    "app.kubernetes.io/managed-by": "{{ .Release.Service }}"
+    "app.kubernetes.io/instance": "{{ .Release.Name }}"
+    "app.kubernetes.io/component": "{{ .Values.master.componentName }}"
+{{- if .Values.master.ingress.labels }}
 {{ toYaml .Values.master.ingress.labels | indent 4 }}
 {{- end }}
 {{- if .Values.master.ingress.annotations }}

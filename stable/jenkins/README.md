@@ -36,7 +36,6 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.imageTag`                 | Master image tag                     | `lts`                                     |
 | `master.imagePullPolicy`          | Master image pull policy             | `Always`                                  |
 | `master.imagePullSecret`          | Master image pull secret             | Not set                                   |
-| `master.component`                | k8s selector key                     | `jenkins-master`                          |
 | `master.numExecutors`             | Set Number of executors              | 0                                         |
 | `master.useSecurity`              | Use basic security                   | `true`                                    |
 | `master.securityRealm`            | Custom Security Realm                | Not set                                   |

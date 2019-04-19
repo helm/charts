@@ -54,14 +54,14 @@ spec:
             preferredDuringSchedulingIgnoredDuringExecution:
             - labelSelector:
                 matchExpressions:
-                - key: app
+                - key: "app.kubernetes.io/name"
                   operator: In
                   values:
-                  - {{ template "jenkins.fullname" . }}
-                - key: release
+                  - '{{ template "jenkins.name" .}}'
+                - key: "app.kubernetes.io/instance"
                   operator: In
                   values:
-                  - {{ .Release.Name }}
+                  - "{{ .Release.Name }}"
               topologyKey: "kubernetes.io/hostname"
       {{- with .Values.tolerations }}
         tolerations:

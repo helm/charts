@@ -2,11 +2,18 @@
 kind: NetworkPolicy
 apiVersion: {{ .Values.networkPolicy.apiVersion }}
 metadata:
-  name: "{{ .Release.Name }}-{{ .Values.master.component }}"
+  name: "{{ .Release.Name }}-{{ .Values.master.componentName }}"
+  labels:
+    "app.kubernetes.io/name": '{{ template "jenkins.name" .}}'
+    "helm.sh/chart": "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    "app.kubernetes.io/managed-by": "{{ .Release.Service }}"
+    "app.kubernetes.io/instance": "{{ .Release.Name }}"
+    "app.kubernetes.io/component": "{{ .Values.master.componentName }}"
 spec:
   podSelector:
     matchLabels:
-      component: "{{ .Release.Name }}-{{ .Values.master.component }}"
+      "app.kubernetes.io/component": "{{ .Values.master.componentName }}"
+      "app.kubernetes.io/instance": "{{ .Release.Name }}"
   ingress:
     # Allow web access to the UI
     - ports:
@@ -15,7 +22,7 @@ spec:
     - from:
       - podSelector:
           matchLabels:
-            "jenkins/{{ .Release.Name }}-{{ .Values.agent.component }}": "true"
+            "jenkins/{{ .Release.Name }}-{{ .Values.agent.componentName }}": "true"
       ports:
       - port: {{ .Values.master.slaveListenerPort }}
 {{- if .Values.agent.enabled }}
@@ -23,11 +30,17 @@ spec:
 kind: NetworkPolicy
 apiVersion: {{ .Values.networkPolicy.apiVersion }}
 metadata:
-  name: "{{ .Release.Name }}-{{ .Values.agent.component }}"
+  name: "{{ .Release.Name }}-{{ .Values.agent.componentName }}"
+  labels:
+    "app.kubernetes.io/name": '{{ template "jenkins.name" .}}'
+    "helm.sh/chart": "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    "app.kubernetes.io/managed-by": "{{ .Release.Service }}"
+    "app.kubernetes.io/instance": "{{ .Release.Name }}"
+    "app.kubernetes.io/component": "{{ .Values.master.componentName }}"
 spec:
   podSelector:
     matchLabels:
       # DefaultDeny
-      "jenkins/{{ .Release.Name }}-{{ .Values.agent.component }}": "true"
+      "jenkins/{{ .Release.Name }}-{{ .Values.agent.componentName }}": "true"
 {{- end }}
 {{- end }}

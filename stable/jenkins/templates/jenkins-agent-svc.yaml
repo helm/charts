@@ -21,5 +21,6 @@ spec:
       {{end}}
       name: slavelistener
   selector:
-    component: "{{ .Release.Name }}-{{ .Values.master.component }}"
+    "app.kubernetes.io/component": "{{ .Values.master.componentName }}"
+    "app.kubernetes.io/instance": "{{ .Release.Name }}"
   type: {{ .Values.master.slaveListenerServiceType }}

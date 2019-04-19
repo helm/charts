@@ -7,10 +7,11 @@ kind: Deployment
 metadata:
   name: {{ template "jenkins.fullname" . }}
   labels:
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    component: "{{ .Release.Name }}-{{ .Values.master.componentName }}"
+    "app.kubernetes.io/name": '{{ template "jenkins.name" .}}'
+    "helm.sh/chart": "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    "app.kubernetes.io/managed-by": "{{ .Release.Service }}"
+    "app.kubernetes.io/instance": "{{ .Release.Name }}"
+    "app.kubernetes.io/component": "{{ .Values.master.componentName }}"
     {{- range $key, $val := .Values.master.deploymentLabels }}
     {{ $key }}: {{ $val | quote }}
     {{- end}}
@@ -23,15 +24,16 @@ spec:
     {{- end }}
   selector:
     matchLabels:
-      component: "{{ .Release.Name }}-{{ .Values.master.component }}"
+      "app.kubernetes.io/component": "{{ .Values.master.componentName }}"
+      "app.kubernetes.io/instance": "{{ .Release.Name }}"
   template:
     metadata:
       labels:
-        app: {{ template "jenkins.fullname" . }}
-        heritage: {{ .Release.Service | quote }}
-        release: {{ .Release.Name | quote }}
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-        component: "{{ .Release.Name }}-{{ .Values.master.component }}"
+        "app.kubernetes.io/name": '{{ template "jenkins.name" .}}'
+        "helm.sh/chart": "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        "app.kubernetes.io/managed-by": "{{ .Release.Service }}"
+        "app.kubernetes.io/instance": "{{ .Release.Name }}"
+        "app.kubernetes.io/component": "{{ .Values.master.componentName }}"
         {{- range $key, $val := .Values.master.podLabels }}
         {{ $key }}: {{ $val | quote }}
         {{- end}}

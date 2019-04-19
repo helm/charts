@@ -3,11 +3,11 @@ kind: Service
 metadata:
   name: {{template "jenkins.fullname" . }}
   labels:
-    app: {{ template "jenkins.fullname" . }}
-    heritage: {{.Release.Service | quote }}
-    release: {{.Release.Name | quote }}
-    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-    component: "{{.Release.Name}}-{{.Values.master.component}}"
+    "app.kubernetes.io/name": '{{ template "jenkins.name" .}}'
+    "helm.sh/chart": "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    "app.kubernetes.io/managed-by": "{{ .Release.Service }}"
+    "app.kubernetes.io/instance": "{{ .Release.Name }}"
+    "app.kubernetes.io/component": "{{ .Values.master.componentName }}"
     {{- if .Values.master.serviceLabels }}
 {{ toYaml .Values.master.serviceLabels | indent 4 }}
     {{- end }}
@@ -24,7 +24,8 @@ spec:
       nodePort: {{.Values.master.nodePort}}
       {{end}}
   selector:
-    component: "{{.Release.Name}}-{{.Values.master.component}}"
+    "app.kubernetes.io/component": "{{ .Values.master.componentName }}"
+    "app.kubernetes.io/instance": "{{ .Release.Name }}"
   type: {{.Values.master.serviceType}}
   {{if eq .Values.master.serviceType "LoadBalancer"}}
 {{- if .Values.master.loadBalancerSourceRanges }}
