@@ -268,7 +268,6 @@ Master:
   # Openshift route
   route:
     enabled: true
-    apiVersion: "route.openshift.io/v1"
     labels: {}
     annotations: {}
     # path: "/jenkins"
