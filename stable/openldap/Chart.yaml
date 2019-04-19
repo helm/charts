@@ -1,6 +1,6 @@
 name: openldap
 home: https://www.openldap.org
-version: 0.3.0
+version: 0.4.0
 appVersion: 2.4.44
 description: Community developed LDAP software
 icon: http://www.openldap.org/images/headers/LDAPworm.gif
