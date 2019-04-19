@@ -324,6 +324,7 @@ dashboard:
     ## Number of recent errors to show in the ‘Health’ tab
     # recentErrors:
 service:
+  enabled: true
   # annotations:
   #   key: value
   # labels:
