@@ -29,9 +29,3 @@ server = replies\
 print("starting server")
 query = server.start()
 query.awaitTermination()
-
-# Submit the server
-# .\bin\spark-submit --packages com.microsoft.ml.spark:mmlspark_2.11:0.14.dev42 --repositories https://mmlspark.azureedge.net/maven  serving2.py
-
-# Test 
-# curl -X POST -d '{"foo":"foolen", "bar":43}' -H "ContentType: application/json" http://[[ip address of load balancer]]:8888/

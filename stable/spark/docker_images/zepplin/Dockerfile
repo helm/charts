@@ -1,4 +1,3 @@
-# FROM ubuntu:16.04
 FROM java:openjdk-8-jdk
 MAINTAINER Dalitso Banda <dalitsohb@gmail.com>
 

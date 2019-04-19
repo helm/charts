@@ -137,3 +137,7 @@ This will create a pod based on the supplied container image and use that as the
 Because the zeppelin pod is a full debian jessie container with spark 2.4.0 in the `/opt/spark` folder, you can also call spark-submit via the terminal with the `kubectl exec` command. For example, to run SparkPi you would first look for the name of your zeppelin pod under pods in the dashboard. This is will be something like `spark-zeppelin-76b6998f78-zm8c8`. Then run  `kubectl exec spark-zeppelin-76b6998f78-zm8c8 /opt/spark/bin/run-example SparkPi`
 
 3. Using Livy. See https://livy.incubator.apache.org/docs/latest/. The livy rest endpoint is exposed by the livy loadbalancer service. By default, livy uses the `spark-master` pod as the master and livy jobs can be monitored from either the `spark-webui` loadbalancer service on port `8080` or the livy ui endpoint.
+
+## Upgrading
+
+To upgrade to this chart from 0.2.2 you will have to update the docker images to point the images in `values.yaml`. The dockerfiles for these images are here https://github.com/Azure/mmlspark/tree/master/tools/helm/docker_images.  To enable livy, you will need to create a livy deployment with a load balancer and optional pod scaler as described in `spark-livy-deployment.yaml` and `spark-livy-hpa.yaml`. Ensure that your livy pods have the right `SPARK_MASTER` environment variables.

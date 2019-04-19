@@ -21,3 +21,5 @@
 *.tmproj
 # Docker files
 docker_images
+# OWNERS file for Kubernetes
+OWNERS
