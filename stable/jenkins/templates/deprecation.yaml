@@ -1,0 +1,15 @@
+{{- if .Values.Master }}
+   {{ fail "Master.* values have been renamed, please check the documentation" }}
+{{- end }}
+
+{{- if .Values.Agent }}
+   {{ fail "Agent.* values have been renamed, please check the documentation" }}
+{{- end }}
+
+{{- if .Values.Persistence }}
+   {{ fail "Persistence.* values have been renamed, please check the documentation" }}
+{{- end }}
+
+{{- if .Values.NetworkPolicy }}
+   {{ fail "NetworkPolicy.* values have been renamed, please check the documentation" }}
+{{- end }}
