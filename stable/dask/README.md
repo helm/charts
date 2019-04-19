@@ -162,9 +162,9 @@ jupyter:
 worker:
   env:
     - name: EXTRA_CONDA_PACKAGES
-    value: numba xarray -c conda-forge
+      value: numba xarray -c conda-forge
     - name: EXTRA_PIP_PACKAGES
-    value: s3fs dask-ml --upgrade
+      value: s3fs dask-ml --upgrade
 ```
 
 > **Note**: The Jupyter and Dask-worker environments should have matching
