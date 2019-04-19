@@ -8,6 +8,7 @@ icon: http://spark.apache.org/images/spark-logo-trademark.png
 sources:
   - https://github.com/kubernetes/kubernetes/tree/master/examples/spark
   - https://github.com/apache/spark
+  - https://github.com/Azure/mmlspark/tree/master/tools/helm/docker_images
 maintainers:
   - name: lachie83
     email: lachlan.evenson@gmail.com
@@ -15,6 +16,3 @@ maintainers:
     email: dalitsohb@gmail.com
   - name: mhamilton723
     email: mhamilton723@gmail.com
-
-
-
