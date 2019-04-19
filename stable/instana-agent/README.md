@@ -12,7 +12,7 @@ Kubernetes 1.8.x - 1.13.x
 
 Working `helm` and `tiller`.
 
-_Note:_ Tiller may need a service account and role binding if RBAC is enabled in your cluster. [1]
+_Note:_ Tiller may need a service account and role binding if RBAC is enabled in your cluster.
 
 ## Installing the Chart
 
@@ -121,40 +121,3 @@ The following table lists the configurable parameters of the Instana chart and t
 ### Agent
 
 There is a [config map](templates/configmap.yaml) which you can edit to configure the agent. This configuration will be used for all instana agents on all nodes.
-
-#### Notes
-
-[1] - [https://docs.helm.sh/using_helm/#installing-helm](https://docs.helm.sh/using_helm/#installing-helm)
-
-Most Kubernetes clusters have RBAC enabled, therefore, create a service account for helm to use, for example:
-
-```yaml
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: tiller
-  namespace: kube-system
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  name: tiller
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: cluster-admin
-subjects:
-  - kind: ServiceAccount
-    name: tiller
-    namespace: kube-system
-```
-
-```bash
-$ kubectl create -f tiller-service-account.yaml
-```
-
-Install tiller to your cluster with
-
-```bash
-$ helm init --service-account tiller
-```
