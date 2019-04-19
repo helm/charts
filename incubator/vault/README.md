@@ -81,6 +81,7 @@ The following table lists the configurable parameters of the Vault chart and the
 | `consulAgent.pullPolicy`          | Container pull policy for consul agent   | `IfNotPresent`                      |
 | `consulAgent.gossipKeySecretName` | k8s secret containing gossip key         | `nil` (see values.yaml for details) |
 | `consulAgent.HttpPort`            | HTTP port for consul agent API           | `8500`                              |
+| `consulAgent.resources`           | Container resources for consul agent     | `nil`                               |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
