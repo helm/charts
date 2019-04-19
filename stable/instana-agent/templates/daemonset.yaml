@@ -11,10 +11,10 @@ spec:
     metadata:
       labels:
         k8s.instana.io/name: {{ template "instana-agent.baseName" . }}
-{{- if .Values.agent.pod.annotations }}
+      {{- if .Values.agent.pod.annotations }}
       annotations:
-{{ toYaml .Values.agent.pod.annotations | indent 8}}
-{{- end }}
+        {{ toYaml .Values.agent.pod.annotations | nindent 8}}
+      {{- end }}
     spec:
       serviceAccount: {{ template "instana-agent.serviceAccount" . }}
       hostIPC: true
@@ -134,10 +134,10 @@ spec:
             periodSeconds: 5
           ports:
             - containerPort: {{ .Values.agent.leaderElectorPort }}
-{{- if .Values.agent.pod.tolerations }}
+      {{- if .Values.agent.pod.tolerations }}
       tolerations:
-{{ toYaml .Values.agent.pod.tolerations | indent 8}}
-{{- end }}
+        {{ toYaml .Values.agent.pod.tolerations | nindent 8 }}
+      {{- end }}
       volumes:
         - name: dev
           hostPath:
