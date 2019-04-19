@@ -86,6 +86,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `client.tolerations`                 | Client tolerations                                                  | `[]`                                                |
 | `client.serviceAnnotations`          | Client Service annotations                                          | `{}`                                                |
 | `client.serviceType`                 | Client service type                                                 | `ClusterIP`                                         |
+| `client.httpNodePort`                | Client service HTTP NodePort port number. Has no effect if client.serviceType is not `NodePort`.   | `nil`                                         |
 | `client.loadBalancerIP`              | Client loadBalancerIP                                               | `{}`                                                |
 | `client.loadBalancerSourceRanges`    | Client loadBalancerSourceRanges                                     | `{}`                                                |
 | `client.antiAffinity`                | Client anti-affinity policy                                         | `soft`                                              |
