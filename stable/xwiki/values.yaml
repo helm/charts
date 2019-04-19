@@ -8,7 +8,7 @@ db:
 
 persistence:
   enabled: false
-  size: 1GiB
+  size: 1Gi
   existingClaim: false
   storageClass: default
   accessModes:

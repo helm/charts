@@ -12,13 +12,13 @@ spec:
   # before killing the old due to the volume attachment. I think.
   # anyway, safer this way.
   replicas: 1
-  strategy:
-    type: Recreate
-  # ... aaand continue as usual.
+  updateStrategy:
+    type: RollingUpdate
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ include "xwiki.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
+  serviceName: {{ include "xwiki.fullname" . }}
   template:
     metadata:
       labels:

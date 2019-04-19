@@ -33,11 +33,10 @@ Installs XWiki on a kubernetes cluster using the [`xwiki`](https://hub.docker.co
 | `persistence.enabled`       | Enable persistence using PVC                         | `false`                 |
 | `persistence.accessModes`   | PVC Access Modes for PostgreSQL volume               | `[ReadWriteOnce]`       |
 | `persistence.existingClaim` | Provide an existing `PersistentVolumeClaim`          | `false`                 |
-| `persistence.size`          | PVC Storage Request for PostgreSQL volume            | `1GiB`                  |
+| `persistence.size`          | PVC Storage Request for PostgreSQL volume            | `1Gi`                   |
 | `persistence.storageClass`  | PVC Storage Class for PostgreSQL volume              | `false`                 |
 | `readinessProbe`            | Define a [readiness probe](https://is.gd/z0lJO3)     | unset                   |
 | `resources`                 | Define Pod [`resources`](https://is.gd/pZtMlt)       |  `{}`                   |
 | `service.type`              | Define the service type                              |  `ClusterIP`            |
 | `service.port`              | Define the service port                              |  `80`                   |
 | `tolerations`               | Define Pod [`tolerations`](https://is.gd/XaLbxF)     |  `[]`                   |
-
