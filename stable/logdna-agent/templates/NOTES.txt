@@ -1,0 +1,27 @@
+{{- if not .Values.logdna.key -}}
+#############################################################
+###  ERROR: Please specify an ingestion key `logdna.key`  ###
+#############################################################
+
+
+Please follow directions from https://app.logdna.com/pages/add-source
+
+Try:
+
+helm upgrade {{ .Release.Name }} --set logdna.key=INGESTION_KEY \
+  stable/logdna-agent
+
+
+Tags support:
+
+helm upgrade {{ .Release.Name }} --set logdna.key=INGESTION_KEY,logdna.tags=production \
+  stable/logdna-agent
+
+{{- else -}}
+
+LogDNA's collector agent(s) are being deployed to each node in your cluster.
+You should see logs in https://app.logdna.com in a few seconds.
+
+For help, please click on Help (top right corner of https://app.logdna.com)
+
+{{- end }}
