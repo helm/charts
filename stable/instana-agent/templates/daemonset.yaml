@@ -22,13 +22,8 @@ spec:
       hostPID: true
       containers:
         - name: {{ template "instana-agent.baseName" . }}
-{{- if .Values.agent.image }}
           image: "{{ .Values.agent.image.name }}:{{ .Values.agent.image.tag }}"
           imagePullPolicy: {{ .Values.agent.image.pullPolicy }}
-{{- else -}}
-          image: "instana/agent:latest"
-          imagePullPolicy: IfNotPresent
-{{- end }}
           env:
             - name: INSTANA_AGENT_LEADER_ELECTOR_PORT
               value: {{ int .Values.agent.leaderElectorPort | quote }}
