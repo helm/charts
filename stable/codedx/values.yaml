@@ -3,7 +3,7 @@
 # codedxTomcatImage specifies the image to use for the Code Dx deployment.
 # ref: https://hub.docker.com/r/codedx/codedx-tomcat/tags
 #
-codedxTomcatImage: codedx/codedx-tomcat:v3.7.0
+codedxTomcatImage: codedx/codedx-tomcat:v4.0.0
 
 # codedxTomcatImagePullSecrets allows you to specify names of secrets to use
 # for pulling the Code Dx image.
