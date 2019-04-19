@@ -25,7 +25,7 @@ spec:
         component: worker
     spec:
       imagePullSecrets:
-{{ toYaml .Values.worker.image.pullSecrets | trimSuffix "\n" | indent 8 }}
+        {{- toYaml .Values.worker.image.pullSecrets | nindent 8 }}
       containers:
         - name: {{ template "dask.fullname" . }}-worker
           image: "{{ .Values.worker.image.repository }}:{{ .Values.worker.image.tag }}"
@@ -43,18 +43,18 @@ spec:
           ports:
             - containerPort: 8789
           resources:
-{{ toYaml .Values.worker.resources | trimSuffix "\n" | indent 12 }}
+            {{- toYaml .Values.worker.resources | nindent 12 }}
           env:
-{{ toYaml .Values.worker.env | indent 12 }}
+            {{- toYaml .Values.worker.env | nindent 12 }}
     {{- with .Values.worker.nodeSelector }}
       nodeSelector:
-{{ toYaml . | indent 8 }}
+        {{- toYaml . | nindent 8 }}
     {{- end }}
     {{- with .Values.worker.affinity }}
       affinity:
-{{ toYaml . | indent 8 }}
+        {{- toYaml . | nindent 8 }}
     {{- end }}
     {{- with .Values.worker.tolerations }}
       tolerations:
-{{ toYaml . | indent 8 }}
+        {{- toYaml . | nindent 8 }}
     {{- end }}
