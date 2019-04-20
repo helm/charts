@@ -21,6 +21,6 @@ roleRef:
   name: {{ .Values.rbac.roleRef }}
 subjects:
 - kind: ServiceAccount
-  name: {{ $serviceName }}
+  name: {{ .Values.rbac.serviceAccountName }}
   namespace: {{ .Release.Namespace }}
 {{ end }}
