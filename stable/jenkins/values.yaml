@@ -426,5 +426,4 @@ backup:
   # Additional support can added. Visit this repository for details
   # Ref: https://github.com/nuvo/skbn
   destination: "s3://nuvo-jenkins-data/backup"
-
 checkDeprecation: true
