@@ -1,3 +1,9 @@
+### 1.8.1
+
+* [0f99647](https://github.com/helm/charts/commit/0f99647):
+
+- Update docker registry artifact plugin to latest stable release.
+
 ### 1.8.0
 
 * [8ec8c89](https://github.com/helm/charts/commit/8ec8c89):
