@@ -12,7 +12,7 @@ metadata:
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- with .Values.drivers.webhook.ingress.annotations }}
   annotations:
-{{ toYaml . | indent 4 }}
+{{- toYaml . | nindent 4 }}
 {{- end }}
 spec:
 {{- if .Values.drivers.webhook.ingress.tls }}

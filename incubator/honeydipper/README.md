@@ -24,11 +24,6 @@ The following options are supported . See [values.yaml](./values.yaml) for more 
 
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
-| daemon.useSource | Instead of use prebuilt docker image, compile and run from source code | `false` |
-| daemon.useBranch | If using source code, specify the branch/tag to use | `master` |
-| daemon.sourceRepo | If using source code, specify alternative repo to use, should be a fork of official source code | `https://github.com/honeydipper/honeydipper.git` |
-| daemon.gitIdentityFilePath | If cloning source code from private repo using ssh protocol, use this to specify path to the id_rsa file, not including the file name | `/root` |
-| daemon.githubHostKey | If cloning source code from private repo using ssh protocol, use this to specify the github host key to avoid git ssh failure | current github host key |
 | daemon.spec | Additional pod spec settings for daemon deploy, can be anything other than `containers`, `nodeSelector`, `affinity`, `tolerations` or `volumes` | |
 | daemon.replicaCount | The number of replicas of daemons to start | 1 |
 | daemon.image.repository | The docker image for Honeydipper daemon | `honeydipper/honeydipper` |

@@ -9,18 +9,6 @@ fullnameOverride: ""
 
 # daemon is used to specify the settings for the daemon
 daemon:
-  # useSource true means building the daemon using source code instead of prebuilt image
-  useSource: false
-  # useBranch specifies which branch of source code to use
-  useBranch: "master"
-  # sourceRepo specifies the repo to download source code from, could be a clone of original https://github.com/honeydipper/honeydipper.git
-  sourceRepo: "https://github.com/honeydipper/honeydipper.git"
-
-  # gitIdentityFilePath points to the ssh key to use for cloning source code from private repo
-  gitIdentityFilePath: "/root"
-  # githubHostKey is the github.com host key
-  githubHostKey: "AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ=="
-
   # spec is used to create the container spec in the manifest file
   spec: {}
 
@@ -32,9 +20,9 @@ daemon:
     # repository is the image repository for the daemon container
     repository: honeydipper/honeydipper
     # tag is the version of the docker image to use
-    tag: "latest"
+    tag: "0.1.8"
     # pullPolicy specify when to refresh the image
-    pullPolicy: Always
+    pullPolicy: IfNotPresent
 
   # args are the arguments passed to the daemon, a list of services to run in the daemon
   args: []
