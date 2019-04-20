@@ -56,7 +56,7 @@ spec:
 {{ toYaml .Values.master.affinity | indent 8 }}
       {{- end }}
       {{- if and (.Capabilities.APIVersions.Has "scheduling.k8s.io/v1beta1") (.Values.master.priorityClassName) }}
-      priorityClassName: {{ .Values.master.priorityClass }}
+      priorityClassName: {{ .Values.master.priorityClassName }}
       {{- end }}
 {{- if .Values.master.usePodSecurityContext }}
       securityContext:

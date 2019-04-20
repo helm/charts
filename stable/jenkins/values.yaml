@@ -9,12 +9,12 @@
 # fullnameOverride:
 
 master:
+  # Used for label app.kubernetes.io/component
   componentName: "jenkins-master"
   image: "jenkins/jenkins"
   imageTag: "lts"
   imagePullPolicy: "Always"
   imagePullSecretName:
-  component: "jenkins-master"
   # Optionally configure lifetime for master-container
   lifecycle:
   #  postStart:
@@ -132,14 +132,14 @@ master:
   loadBalancerSourceRanges:
   - 0.0.0.0/0
   # Optionally assign a known public LB IP
-  # LoadBalancerIP: 1.2.3.4
+  # loadBalancerIP: 1.2.3.4
   # Optionally configure a JMX port
   # requires additional javaOpts, ie
   # javaOpts: >
   #   -Dcom.sun.management.jmxremote.port=4000
   #   -Dcom.sun.management.jmxremote.authenticate=false
   #   -Dcom.sun.management.jmxremote.ssl=false
-  # JMXPort: 4000
+  # jmxPort: 4000
   # Optionally configure other ports to expose in the master container
   extraPorts:
   # - name: BuildInfoProxy
@@ -154,7 +154,7 @@ master:
     - git:3.9.1
 
   # Enable to always override the installed plugins with the values of 'master.installPlugins' on upgrade or redeployment.
-  # OverwritePlugins: true
+  # overwritePlugins: true
   # Enable HTML parsing using OWASP Markup Formatter Plugin (antisamy-markup-formatter), useful with ghprb plugin.
   # The plugin is not installed by default, please update master.installPlugins.
   enableRawHtmlMarkupFormatter: false
@@ -426,3 +426,5 @@ backup:
   # Additional support can added. Visit this repository for details
   # Ref: https://github.com/nuvo/skbn
   destination: "s3://nuvo-jenkins-data/backup"
+
+checkDeprecation: true
