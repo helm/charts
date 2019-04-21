@@ -200,12 +200,12 @@ data:
 {{- else }}
   {{- if .Values.Master.ingress.hostName }}
     {{- if .Values.Master.ingress.tls }}
-      <jenkinsUrl>https://{{ .Values.Master.ingress.hostName }}{{ default "" .Values.Master.JenkinsUriPrefix }}</jenkinsUrl>
+      <jenkinsUrl>{{ default "https" .Values.Master.JenkinsUrlProtocol }}://{{ .Values.Master.ingress.hostName }}{{ default "" .Values.Master.JenkinsUriPrefix }}</jenkinsUrl>
     {{- else }}
-      <jenkinsUrl>http://{{ .Values.Master.ingress.hostName }}{{ default "" .Values.Master.JenkinsUriPrefix }}</jenkinsUrl>
+      <jenkinsUrl>{{ default "http" .Values.Master.JenkinsUrlProtocol }}://{{ .Values.Master.ingress.hostName }}{{ default "" .Values.Master.JenkinsUriPrefix }}</jenkinsUrl>
     {{- end }}
   {{- else }}
-      <jenkinsUrl>http://{{ template "jenkins.fullname" . }}:{{.Values.Master.ServicePort}}{{ default "" .Values.Master.JenkinsUriPrefix }}</jenkinsUrl>
+      <jenkinsUrl>{{ default "http" .Values.Master.JenkinsUrlProtocol }}://{{ template "jenkins.fullname" . }}:{{.Values.Master.ServicePort}}{{ default "" .Values.Master.JenkinsUriPrefix }}</jenkinsUrl>
   {{- end}}
 {{- end}}
     </jenkins.model.JenkinsLocationConfiguration>

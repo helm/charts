@@ -80,6 +80,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `Master.ingress.labels`           | Ingress labels                       | `{}`                                                                         |
 | `Master.ingress.path`             | Ingress path                         | Not set                                                                         |
 | `Master.ingress.tls`              | Ingress TLS configuration            | `[]`                                                                         |
+| `Master.JenkinsUrlProtocol`       | Set protocol for JenkinsLocationConfiguration.xml | Set to `https` if `Master.ingress.tls`, `http` otherwise       |
 | `Master.JCasC.enabled`            | Wheter Jenkins Configuration as Code is enabled or not | `false`                                                    |
 | `Master.JCasC.ConfigScripts`      | List of Jenkins Config as Code scripts | False                                                                      |
 | `Master.Sidecars.configAutoReload` | Jenkins Config as Code auto-reload settings |                                                                      |
