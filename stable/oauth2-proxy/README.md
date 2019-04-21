@@ -41,7 +41,7 @@ Parameter | Description | Default
 `affinity` | node/pod affinities | None
 `authenticatedEmailsFile.enabled` | Enables authorize individual email addresses | `false`
 `authenticatedEmailsFile.template` | Name of the configmap that is handled outside of that chart | `""`
-`authenticatedEmailsFile.restricted_access | (email addresses)[https://github.com/pusher/oauth2_proxy#email-authentication] list config | `""`
+`authenticatedEmailsFile.restricted_access` | [email addresses](https://github.com/pusher/oauth2_proxy#email-authentication) list config | `""`
 `config.clientID` | oauth client ID | `""`
 `config.clientSecret` | oauth client secret | `""`
 `config.cookieSecret` | server specific cookie for the secret; create a new one with `openssl rand -base64 32 | head -c 32 | base64` | `""`
