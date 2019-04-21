@@ -300,6 +300,8 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `airflow.extraVolumes`                   | additional volumes for the scheduler, worker & web pods | `[]`                      |
 | `flower.resources`                       | custom resource configuration for flower pod            | `{}`                      |
 | `web.resources`                          | custom resource configuration for web pod               | `{}`                      |
+| `web.initialStartupDelay`                | amount of time webserver pod should sleep before initializing webserver             | `60`  |
+| `web.initialDelaySeconds`                | initial delay on livenessprobe before checking if webserver is available    | `360` |
 | `scheduler.resources`                    | custom resource configuration for scheduler pod         | `{}`                      |
 | `workers.enabled`                        | enable workers                                          | `true`                    |
 | `workers.replicas`                       | number of workers pods to launch                        | `1`                       |
@@ -309,6 +311,9 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `workers.secretsDir`                     | directory in which to mount secrets on worker nodes     | /var/airflow/secrets      |
 | `workers.secrets`                        | secrets to mount as volumes on worker nodes             | []                        |
 | `existingAirflowSecret`                  | secret to use for postgres and redis connection         |                           |
+| `nodeSelector`                           | Node labels for pod assignment                          | `{}`                      |
+| `affinity`                               | Affinity labels for pod assignment                      | `{}`                      |
+| `tolerations`                            | Toleration labels for pod assignment                    | `[]`                      |
 | `ingress.enabled`                        | enable ingress                                          | `false`                   |
 | `ingress.web.host`                       | hostname for the webserver ui                           | ""                        |
 | `ingress.web.path`                       | path of the werbserver ui (read `values.yaml`)          | ``                        |

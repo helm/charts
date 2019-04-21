@@ -116,7 +116,7 @@ replication:
   forcePassword: false
 
 ## initdb scripts
-## Specify dictionnary of scripts to be run at first boot
+## Specify dictionary of scripts to be run at first boot
 ## Alternatively, you can put your scripts under the files/docker-entrypoint-initdb.d directory
 ##
 # initdbScripts:

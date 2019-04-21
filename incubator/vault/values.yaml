@@ -9,6 +9,13 @@ image:
   tag:
   pullPolicy: IfNotPresent
 
+vaultExporter:
+  enabled: false
+  repository: grapeshot/vault_exporter
+  tag: v0.1.2
+  pullPolicy: IfNotPresent
+  vaultAddress: 127.0.0.1:8200
+  # tlsCAFile: /vault/tls/ca.crt
 consulAgent:
   repository: consul
   tag: 1.4.0
@@ -152,7 +159,8 @@ vault:
   #   secret:
   #     secretName: some-secret
   liveness:
-    aliveIfUninitialized: false
+    aliveIfUninitialized: true
+    aliveIfSealed: true
     initialDelaySeconds: 30
     periodSeconds: 10
   readiness:
