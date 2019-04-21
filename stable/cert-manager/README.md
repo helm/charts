@@ -1,5 +1,10 @@
 # cert-manager
 
+> **This Helm chart is deprecated**.
+> All future changes to the cert-manager Helm chart should be made in the
+> [official repository](https://github.com/jetstack/cert-manager/tree/master/deploy).
+> The latest version of the chart can be found on the [Helm Hub](https://hub.helm.sh/charts/jetstack/cert-manager).
+
 cert-manager is a Kubernetes addon to automate the management and issuance of
 TLS certificates from various issuing sources.
 

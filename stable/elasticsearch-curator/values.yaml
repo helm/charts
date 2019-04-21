@@ -100,3 +100,41 @@ priorityClassName: ""
 #   - name: es-certs
 #     mountPath: /certs
 #     readOnly: true
+
+# Add your own init container or uncomment and modify the given example.
+extraInitContainers: {}
+  ## Don't configure S3 repository till Elasticsearch is reachable.
+  ## Ensure that it is available at http://elasticsearch:9200
+  ##
+  # elasticsearch-s3-repository:
+  #   image: jwilder/dockerize:latest
+  #   imagePullPolicy: "IfNotPresent"
+  #   command:
+  #   - "/bin/sh"
+  #   - "-c"
+  #   args:
+  #   - |
+  #     ES_HOST=elasticsearch
+  #     ES_PORT=9200
+  #     ES_REPOSITORY=backup
+  #     S3_REGION=us-east-1
+  #     S3_BUCKET=bucket
+  #     S3_BASE_PATH=backup
+  #     S3_COMPRESS=true
+  #     S3_STORAGE_CLASS=standard
+  #     apk add curl --no-cache && \
+  #     dockerize -wait http://${ES_HOST}:${ES_PORT} --timeout 120s && \
+  #     cat <<EOF | curl -sS -XPUT -H "Content-Type: application/json" -d @- http://${ES_HOST}:${ES_PORT}/_snapshot/${ES_REPOSITORY} \
+  #     {
+  #       "type": "s3",
+  #       "settings": {
+  #         "bucket": "${S3_BUCKET}",
+  #         "base_path": "${S3_BASE_PATH}",
+  #         "region": "${S3_REGION}",
+  #         "compress": "${S3_COMPRESS}",
+  #         "storage_class": "${S3_STORAGE_CLASS}"
+  #       }
+  #     }
+
+securityContext:
+  runAsUser: 16  # run as cron user instead of root
