@@ -67,6 +67,10 @@ servers:
 # - zones:                 # the `zones` block can be left out entirely, defaults to "."
 #   - zone: hello.world.   # optional, defaults to "."
 #     scheme: tls://       # optional, defaults to "" (which equals "dns://" in CoreDNS)
+#   - zone: foo.bar.
+#     scheme: dns://
+#     use_tcp: true        # set this parameter to optionally expose the port on tcp as well as udp for the DNS protocol
+#                          # Note that this will not work if you are also exposing tls or grpc on the same server
 #   port: 12345            # optional, defaults to "" (which equals 53 in CoreDNS)
 #   plugins:               # the plugins to use for this server block
 #   - name: kubernetes     # name of plugin, if used multiple times ensure that the plugin supports it!
