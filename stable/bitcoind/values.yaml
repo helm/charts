@@ -1,7 +1,7 @@
 # Default values for bitcoind.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-
+terminationGracePeriodSeconds: 30
 image:
   repository: arilot/docker-bitcoind
   tag: 0.15.1
