@@ -81,6 +81,12 @@ The following table lists the configurable parameters of the Vault chart and the
 | `consulAgent.pullPolicy`          | Container pull policy for consul agent   | `IfNotPresent`                      |
 | `consulAgent.gossipKeySecretName` | k8s secret containing gossip key         | `nil` (see values.yaml for details) |
 | `consulAgent.HttpPort`            | HTTP port for consul agent API           | `8500`                              |
+| `vaultExporter.enabled`           | Enable or disable vault exporter         | `false`                             |
+| `vaultExporter.repository`        | Container image for vault exporter       | `grapeshot/vault_exporter`          |
+| `vaultExporter.tag`               | Container image tag for vault exporter   | `v0.1.2`                            |
+| `vaultExporter.pullPolicy`        | Image pull policy that sould be used     | `IfNotPresent`                      |
+| `vaultExporter.vaultAddress`      | Vault address that exporter should use   | `127.0.0.1:8200`                    |
+| `vaultExporter.tlsCAFile`         | Vault TLS CA certificate mount path      | `/vault/tls/ca.crt`                 |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
@@ -107,6 +113,15 @@ If you are using the `stable/consul` helm chart, consul communications
 are encrypted with a gossip key.  You can configure a secret with the
 same format as that chart and specify it in the
 `consulAgent.gossipKeySecretName` parameter.
+
+## Optional Vault Exporter
+If you want to monitor Vault with Prometheus you can simply enable the Vault exporter
+which then runs as a sidecar container within the same pod as Vault itself. To use the
+exporter just set `vaultExporter.enabled` to true and set the other variables according to
+your needs.
+
+If your Vault is set up with TLS make sure to specify the CA certificate path properly.
+This is done through the parameter `vaultExporter.tlsCAFile`.
 
 ## Using Vault
 
