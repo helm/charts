@@ -49,7 +49,11 @@ spec:
       {{- else }}
       port: {{ $servicePort }}
       {{- end }}
+      {{- if and (eq $root.Values.external.type "LoadBalancer") ($root.Values.external.distinct) }}
+      targetPort: {{ $servicePort }}
+      {{- else }}
       targetPort: {{ $externalListenerPort }}
+      {{- end }}
       {{- if eq $root.Values.external.type "NodePort" }}
       nodePort: {{ $externalListenerPort }}
       {{- end }}
@@ -60,6 +64,6 @@ spec:
   selector:
     app: {{ include "kafka.name" $root }}
     release: {{ $root.Release.Name }}
-    pod: {{ $responsiblePod | quote }}
+    statefulset.kubernetes.io/pod-name: {{ $responsiblePod | quote }}
   {{- end }}
 {{- end }}
