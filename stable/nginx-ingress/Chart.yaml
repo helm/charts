@@ -1,5 +1,5 @@
 name: nginx-ingress
-version: 1.5.0
+version: 1.5.1
 appVersion: 0.24.0
 home: https://github.com/kubernetes/ingress-nginx
 description: An nginx Ingress controller that uses ConfigMap to store the nginx configuration.
