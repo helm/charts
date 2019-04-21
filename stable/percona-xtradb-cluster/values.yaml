@@ -101,6 +101,38 @@ metricsExporter:
   commandOverrides: []
   argsOverrides: []
 
+prometheus:
+  ## Are you using [Prometheus Operator](https://coreos.com/operators/prometheus/docs/latest/user-guides/getting-started.html)?
+  operator:
+    ## Setting to true will create Prometheus-Operator specific resources like ServiceMonitors
+    enabled: false
+
+    ## Configures alerts for Prometheus to pick up
+    prometheusRule:
+      enabled: true
+
+      ## Labels to add to alerts
+      labels: {}
+
+      ## Namespace which Prometheus is installed in
+      # namespace: monitoring
+
+      ## Label Selector for Prometheus to find alert rules
+      # selector:
+      #   prometheus: kube-prometheus
+
+    ## Configures targets for Prometheus to pick up
+    serviceMonitor:
+      ## Interval at which Prometheus will scrape metrics exporter
+      interval: 10s
+
+      ## Namespace which Prometheus is installed in
+      # namespace: monitoring
+
+      ## Label Selector for Prometheus to find ServiceMonitors
+      # selector:
+      #   prometheus: kube-prometheus
+
 ## When set to true will create sidecar to tail mysql log
 logTail: true
 

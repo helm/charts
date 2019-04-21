@@ -26,7 +26,7 @@ livenessProbe:
 
 image:
   repository: grafana/grafana
-  tag: 6.1.3
+  tag: 6.1.4
   pullPolicy: IfNotPresent
 
 testFramework:
@@ -378,6 +378,8 @@ sidecar:
 #   requests:
 #     cpu: 50m
 #     memory: 50Mi
+  # skipTlsVerify Set to true to skip tls verification for kube api calls
+  # skipTlsVerify: true
   dashboards:
     enabled: false
     # label that the configmaps with dashboards are marked with

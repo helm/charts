@@ -20,7 +20,6 @@ Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment
 - PV provisioner support in the underlying infrastructure
 
 ## Installing the Chart
-
 To install the chart with the release name `my-release`:
 
 ```console
@@ -94,6 +93,7 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `service.nodePort`                            | Kubernetes Service nodePort                                                                                            | `nil`                                                       |
 | `service.annotations`                         | Annotations for PostgreSQL service                                                                                     | {}                                                          |
 | `service.loadBalancerIP`                      | loadBalancerIP if service type is `LoadBalancer`                                                                       | `nil`                                                       |
+| `service.loadBalancerSourceRanges`   | Address that are allowed when svc is LoadBalancer| {}                                                      |
 | `persistence.enabled`                         | Enable persistence using PVC                                                                                           | `true`                                                      |
 | `persistence.existingClaim`                   | Provide an existing `PersistentVolumeClaim`, the value is evaluated as a template.                                     | `nil`                                                       |
 | `persistence.mountPath`                       | Path to mount the volume at                                                                                            | `/bitnami/postgresql`                                       |
@@ -141,6 +141,8 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `metrics.image.tag`                           | PostgreSQL Image tag                                                                                                   | `v0.4.7`                                                    |
 | `metrics.image.pullPolicy`                    | PostgreSQL Image pull policy                                                                                           | `IfNotPresent`                                              |
 | `metrics.image.pullSecrets`                   | Specify Image pull secrets                                                                                             | `nil` (does not add image pull secrets to deployed pods)    |
+| `metrics.securityContext.enabled`             | Enable security context for metrics                                                                                    | `false`                                                     |
+| `metrics.securityContext.runAsUser`           | User ID for the container for metrics                                                                                  | `1001`                                                      |
 | `extraEnv`                                    | Any extra environment variables you would like to pass on to the pod                                                   | `{}`                                                        |
 | `updateStrategy`                              | Update strategy policy                                                                                                 | `{type: "onDelete"}`                                        |
 
