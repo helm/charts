@@ -19,3 +19,7 @@ reclaimPolicy: {{ .Values.storageClass.reclaimPolicy }}
 parameters:
 {{ toYaml . | indent 2 }}
 {{- end }}
+{{- with .Values.storageClass.mountOptions }}
+mountOptions:
+{{ toYaml . | indent 2 }}
+{{- end }}
