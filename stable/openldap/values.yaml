@@ -25,6 +25,13 @@ image:
 # Spcifies an existing secret to be used for admin and config user passwords
 existingSecret: ""
 
+# settings for enabling TLS
+tls:
+  enabled: false
+  secret: ""  # The name of a kubernetes.io/tls type secret to use for TLS
+  CA:
+    enabled: false
+    secret: ""  # The name of a generic secret to use for custom CA certificate (ca.crt)
 ## Add additional labels to all resources
 extraLabels: {}
 
@@ -33,7 +40,7 @@ service:
   clusterIP: ""
 
   ldapPort: 389
-  sslLdapPort: 636
+  sslLdapPort: 636  # Only used if tls.enabled is true
   ## List of IP addresses at which the service is available
   ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
   ##
