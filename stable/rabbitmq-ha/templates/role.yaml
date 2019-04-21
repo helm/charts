@@ -4,7 +4,7 @@ kind: Role
 metadata:
   labels:
     app: {{ template "rabbitmq-ha.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    chart: {{ template "rabbitmq-ha.chart" . }}
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
 {{- if .Values.extraLabels }}

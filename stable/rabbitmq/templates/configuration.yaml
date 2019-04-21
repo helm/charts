@@ -9,7 +9,7 @@ metadata:
     heritage: "{{ .Release.Service }}"
 data:
   enabled_plugins: |-
-{{ .Values.rabbitmq.plugins | indent 4 }}
+{{ template "rabbitmq.plugins" . }}
   rabbitmq.conf: |-
     ##username and password
     default_user={{.Values.rabbitmq.username}}

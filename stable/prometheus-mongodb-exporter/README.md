@@ -48,12 +48,14 @@ service:
 | `priorityClassName` | Pod priority class name | `` |
 | `replicas` | Number of replicas in the replica set | `1` |
 | `resources` | Pod resource requests and limits | `{}` |
+| `env` | Extra environment variables passed to pod | `{}` |
 | `securityContext` | Security context for the pod | See values.yaml |
 | `service.annotations` | Annotations to be added to the service | `{}` |
 | `service.port` | The port to expose | `9216` |
 | `service.type` | The type of service to expose | `ClusterIP` |
 | `serviceMonitor.enabled` | Set to true if using the Prometheus Operator | `true` |
 | `serviceMonitor.interval` | Interval at which metrics should be scraped | `30s` |
+| `serviceMonitor.scrapeTimeout` | Interval at which metric scrapes should time out | `10s` |
 | `serviceMonitor.namespace` | The namespace where the Prometheus Operator is deployed | `` |
 | `serviceMonitor.additionalLabels` | Additional labels to add to the ServiceMonitor | `{}` |
 | `tolerations` | List of node taints to tolerate  | `[]` |

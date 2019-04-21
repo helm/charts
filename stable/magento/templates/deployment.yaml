@@ -39,6 +39,12 @@ spec:
         image: {{ template "magento.image" . }}
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         env:
+        {{- if .Values.image.debug}}
+        - name: BASH_DEBUG
+          value: "1"
+        - name: NAMI_DEBUG
+          value: "1"
+        {{- end }}
         - name: MARIADB_HOST
         {{- if .Values.mariadb.enabled }}
           value: {{ template "magento.mariadb.fullname" . }}

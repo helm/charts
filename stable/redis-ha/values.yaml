@@ -28,6 +28,16 @@ serviceAccount:
 rbac:
   create: true
 
+sysctlImage:
+  enabled: false
+  command: []
+  registry: docker.io
+  repository: bitnami/minideb
+  tag: latest
+  pullPolicy: Always
+  mountHostSys: false
+
+
 ## Redis specific configuration options
 redis:
   port: 6379
@@ -115,7 +125,7 @@ affinity: |
 exporter:
   enabled: false
   image: oliver006/redis_exporter
-  tag: v0.28.0
+  tag: v0.31.0
   pullPolicy: IfNotPresent
 
   # prometheus port & scrape path
