@@ -10,6 +10,7 @@ updateStrategy:
   #   maxUnavailable: 0
 
 podAnnotations: {}
+podLabels: {}
 
 image:
   repository: registry
