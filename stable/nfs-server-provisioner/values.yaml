@@ -53,6 +53,8 @@ storageClass:
   ## Ignored if storageClass.create is false
   name: nfs
 
+  # set to null to prevent expansion
+  allowVolumeExpansion: true
   ## StorageClass parameters
   parameters: {}
 
