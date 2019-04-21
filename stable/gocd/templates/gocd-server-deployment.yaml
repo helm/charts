@@ -111,15 +111,26 @@ spec:
               readOnly: true
               mountPath: /home/go/.ssh
           {{- end }}
-          {{- if .Values.server.shouldPreconfigure }}
+          {{- if or .Values.server.shouldPreconfigure .Values.server.preStop }}
           lifecycle:
+            {{- if .Values.server.shouldPreconfigure}}
             postStart:
               exec:
                 command:
-{{ toYaml .Values.server.preconfigureCommand | indent 18 }}                
+{{ toYaml .Values.server.preconfigureCommand | indent 18 }}
+            {{- end }}
+            {{- if .Values.server.preStop}}
+            preStop:
+              exec:
+                command:
+{{ toYaml .Values.server.preStop | indent 18 }}
+            {{- end }}
           {{- end }}
           resources:
 {{ toYaml .Values.server.resources | indent 12 }}
+      {{- if .Values.server.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ .Values.server.terminationGracePeriodSeconds }}
+      {{- end }}
       restartPolicy: {{ .Values.server.restartPolicy }}
     {{- if .Values.server.nodeSelector }}
       nodeSelector:

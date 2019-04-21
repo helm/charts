@@ -56,8 +56,11 @@ storageClass:
   # set to null to prevent expansion
   allowVolumeExpansion: true
   ## StorageClass parameters
-  parameters:
-    mountOptions: vers=4.1
+  parameters: {}
+
+  mountOptions:
+    - vers=4.1
+    - noatime
 
   ## ReclaimPolicy field of the class, which can be either Delete or Retain
   reclaimPolicy: Delete

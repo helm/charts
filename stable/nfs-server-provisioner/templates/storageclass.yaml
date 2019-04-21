@@ -22,3 +22,7 @@ allowVolumeExpansion: {{ .Values.storageClass.allowVolumeExpansion }}
 parameters:
 {{ toYaml . | indent 2 }}
 {{- end }}
+{{- with .Values.storageClass.mountOptions }}
+mountOptions:
+{{ toYaml . | indent 2 }}
+{{- end }}

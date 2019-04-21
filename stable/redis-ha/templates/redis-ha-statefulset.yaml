@@ -30,6 +30,9 @@ spec:
       labels:
         release: {{ .Release.Name }}
         app: {{ template "redis-ha.name" . }}
+        {{- range $key, $value := .Values.labels }}
+        {{ $key }}: {{ $value }}
+        {{- end }}
     spec:
       {{- if .Values.nodeSelector }}
       nodeSelector:
@@ -45,7 +48,37 @@ spec:
     {{- end }}
       securityContext:
 {{ toYaml .Values.securityContext | indent 8 }}
+      serviceAccountName: {{ template "redis-ha.serviceAccountName" . }}
       initContainers:
+      {{- if .Values.sysctlImage.enabled }}
+      - name: init-sysctl
+        image: {{ template "redis.sysctl.image" . }}
+        {{- if .Values.sysctlImage.mountHostSys }}
+        volumeMounts:
+        - name: host-sys
+          mountPath: /host-sys
+        {{- end }}
+        command:
+{{ toYaml .Values.sysctlImage.command | indent 10 }}
+        securityContext:
+          runAsNonRoot: false
+          privileged: true
+          runAsUser: 0
+      {{- end }}
+{{- if and .Values.hostPath.path .Values.hostPath.chown }}
+      - name: hostpath-chown
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        securityContext:
+          runAsNonRoot: false
+          runAsUser: 0
+        command:
+        - chown
+        - "{{ .Values.securityContext.runAsUser }}"
+        - /data
+        volumeMounts:
+        - name: data
+          mountPath: /data
+{{- end }}
       - name: config-init
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
@@ -59,7 +92,7 @@ spec:
 {{- $replicas := int .Values.replicas -}}
 {{- range $i := until $replicas }}
         - name: SENTINEL_ID_{{ $i }}
-          value: {{ printf "%s\nindex: %d" (include "labels.standard" $) $i | sha1sum }}
+          value: {{ printf "%s\n%s\nindex: %d" (include "redis-ha.name" $) ($.Release.Name) $i | sha1sum }}
 {{ end -}}
 {{- if .Values.auth }}
         - name: AUTH
@@ -199,6 +232,11 @@ spec:
       - name: probes
         configMap:
           name: {{ template "redis-ha.fullname" . }}-probes
+      {{- if .Values.sysctlImage.mountHostSys }}
+      - name: host-sys
+        hostPath:
+          path: /sys
+      {{- end }}          
 {{- if .Values.persistentVolume.enabled }}
   volumeClaimTemplates:
   - metadata:
@@ -222,6 +260,10 @@ spec:
       storageClassName: "{{ .Values.persistentVolume.storageClass }}"
     {{- end }}
     {{- end }}
+{{- else if .Values.hostPath.path }}
+      - name: data
+        hostPath:
+          path: {{ tpl .Values.hostPath.path .}}
 {{- else }}
       - name: data
         emptyDir: {}
