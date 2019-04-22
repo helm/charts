@@ -139,7 +139,7 @@ spec:
           secretName: {{ template "filebeat.fullname" . }}
       - name: data
         hostPath:
-          path: /var/lib/filebeat
+          path: {{ .Values.data.hostPath }}
           type: DirectoryOrCreate
 {{- if .Values.extraVolumes }}
 {{ toYaml .Values.extraVolumes | indent 6 }}
