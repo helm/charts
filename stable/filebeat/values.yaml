@@ -50,6 +50,10 @@ config:
 # If overrideConfig is not empty, filebeat chart's default config won't be used at all.
 overrideConfig: {}
 
+# Path on the host to mount to /usr/share/filebeat/data in the container.
+data:
+  hostPath: /var/lib/filebeat
+
 # Upload index template to Elasticsearch if Logstash output is enabled
 # https://www.elastic.co/guide/en/beats/filebeat/current/filebeat-template.html
 # List of Elasticsearch hosts
