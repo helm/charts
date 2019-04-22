@@ -136,17 +136,6 @@ spec:
               value: {{ .Values.concourse.web.externalUrl | quote }}
             {{- end }}
             {{- end }}
-            {{- if .Values.concourse.web.peerUrl }}
-            - name: CONCOURSE_PEER_URL
-              value: {{ .Values.concourse.web.peerUrl | quote }}
-            {{- else }}
-            - name: POD_IP
-              valueFrom:
-                fieldRef:
-                  fieldPath: status.podIP
-            - name: CONCOURSE_PEER_URL
-              value: "http://$(POD_IP):$(CONCOURSE_BIND_PORT)"
-            {{- end }}
             {{- if .Values.concourse.web.encryption.enabled }}
             - name: CONCOURSE_ENCRYPTION_KEY
               valueFrom:
@@ -357,6 +346,10 @@ spec:
               value: {{ .Values.concourse.web.vault.url | quote }}
             - name: CONCOURSE_VAULT_PATH_PREFIX
               value: {{ .Values.concourse.web.vault.pathPrefix | quote }}
+            {{- if.Values.concourse.web.vault.sharedPath }}
+            - name: CONCOURSE_VAULT_SHARED_PATH
+              value: {{ .Values.concourse.web.vault.sharedPath | quote }}
+            {{- end }}
             - name: CONCOURSE_VAULT_AUTH_BACKEND
               value: {{ .Values.concourse.web.vault.authBackend | quote }}
             {{- if .Values.concourse.web.vault.useCaCert }}
@@ -814,6 +807,14 @@ spec:
             - name: CONCOURSE_OAUTH_SKIP_SSL_VALIDATION
               value: {{ .Values.concourse.web.auth.oauth.skipSslValidation | quote }}
             {{- end }}
+            {{- if .Values.concourse.web.auth.oauth.userNameKey }}
+            - name: CONCOURSE_OAUTH_USER_NAME_KEY
+              value: {{ .Values.concourse.web.auth.oauth.userNameKey | quote }}
+            {{- end }}
+            {{- if .Values.concourse.web.auth.oauth.userIdKey }}
+            - name: CONCOURSE_OAUTH_USER_ID_KEY
+              value: {{ .Values.concourse.web.auth.oauth.userIdKey | quote }}
+            {{- end }}
             {{- end }}
             {{- if .Values.concourse.web.auth.oidc.enabled }}
             {{- if .Values.concourse.web.auth.oidc.displayName }}
@@ -854,6 +855,21 @@ spec:
             - name: CONCOURSE_OIDC_SKIP_SSL_VALIDATION
               value: {{ .Values.concourse.web.auth.oidc.skipSslValidation | quote }}
             {{- end }}
+            {{- if .Values.concourse.web.auth.oidc.userNameKey }}
+            - name: CONCOURSE_OIDC_USER_NAME_KEY
+              value: {{ .Values.concourse.web.auth.oidc.userNameKey | quote }}
+            {{- end }}
+            {{- end }}
+            {{- if .Values.concourse.web.peerAddress }}
+            - name: CONCOURSE_PEER_ADDRESS
+              value: {{ .Values.concourse.web.peerAddress | quote }}
+            {{- else }}
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: CONCOURSE_PEER_ADDRESS
+              value: "$(POD_IP)"
             {{- end }}
             {{- if .Values.concourse.web.tsa.logLevel }}
             - name: CONCOURSE_TSA_LOG_LEVEL
@@ -872,10 +888,6 @@ spec:
             {{- if .Values.concourse.web.tsa.debugBindPort }}
             - name: CONCOURSE_TSA_DEBUG_BIND_PORT
               value: {{ .Values.concourse.web.tsa.debugBindPort | quote }}
-            {{- end }}
-            {{- if .Values.concourse.web.tsa.peerIp }}
-            - name: CONCOURSE_TSA_PEER_IP
-              value: {{ .Values.concourse.web.tsa.peerIp | quote }}
             {{- end }}
             - name: CONCOURSE_TSA_HOST_KEY
               value: "{{ .Values.web.keySecretsPath }}/host_key"

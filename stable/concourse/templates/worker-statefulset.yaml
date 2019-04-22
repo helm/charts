@@ -231,13 +231,17 @@ spec:
             - name: CONCOURSE_BAGGAGECLAIM_OVERLAYS_DIR
               value: {{ .Values.concourse.worker.baggageclaim.overlaysDir | quote }}
             {{- end }}
-            {{- if .Values.concourse.worker.baggageclaim.reapInterval }}
-            - name: CONCOURSE_BAGGAGECLAIM_REAP_INTERVAL
-              value: {{ .Values.concourse.worker.baggageclaim.reapInterval | quote }}
-            {{- end }}
             {{- if .Values.concourse.worker.baggageclaim.disableUserNamespaces }}
             - name: CONCOURSE_BAGGAGECLAIM_DISABLE_USER_NAMESPACES
               value: {{ .Values.concourse.worker.baggageclaim.disableUserNamespaces | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.volumeSweeperMaxInFlight }}
+            - name: CONCOURSE_VOLUME_SWEEPER_MAX_IN_FLIGHT
+              value: {{ .Values.concourse.worker.volumeSweeperMaxInFlight | quote }}
+            {{- end }}
+            {{- if .Values.concourse.worker.containerSweeperMaxInFlight }}
+            - name: CONCOURSE_CONTAINER_SWEEPER_MAX_IN_FLIGHT
+              value: {{ .Values.concourse.worker.containerSweeperMaxInFlight | quote }}
             {{- end }}
 {{- if .Values.worker.env }}
 {{ toYaml .Values.worker.env | indent 12 }}
