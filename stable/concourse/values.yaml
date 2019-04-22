@@ -1101,8 +1101,8 @@ concourse:
 ##
 web:
 
-  ## enable/disable web component
-  ## This can allow users to create worker only releases by setting this to false
+  ## Enable or disable the web component.
+  ## This allows the creation of worker-only releases by setting this to false.
   ##
   enabled: true
 
@@ -1334,7 +1334,7 @@ web:
 ##
 worker:
 
-  ## enable/disable worker component
+  ## Enable or disable the worker component.
   ## This can allow users to create web only releases by setting this to false
   ##
   enabled: true
