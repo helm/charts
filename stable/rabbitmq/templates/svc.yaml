@@ -18,6 +18,12 @@ metadata:
 {{- end }}
 spec:
   type: {{ .Values.service.type }}
+{{- if and (eq .Values.service.type "LoadBalancer") .Values.service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+  {{ with .Values.service.loadBalancerSourceRanges }}
+{{ toYaml . | indent 4 }}
+{{- end }}
+{{- end }}
   ports:
   - name: epmd
     port: 4369

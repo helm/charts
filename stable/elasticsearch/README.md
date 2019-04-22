@@ -86,6 +86,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `client.tolerations`                 | Client tolerations                                                  | `[]`                                                |
 | `client.serviceAnnotations`          | Client Service annotations                                          | `{}`                                                |
 | `client.serviceType`                 | Client service type                                                 | `ClusterIP`                                         |
+| `client.httpNodePort`                | Client service HTTP NodePort port number. Has no effect if client.serviceType is not `NodePort`.   | `nil`                                         |
 | `client.loadBalancerIP`              | Client loadBalancerIP                                               | `{}`                                                |
 | `client.loadBalancerSourceRanges`    | Client loadBalancerSourceRanges                                     | `{}`                                                |
 | `client.antiAffinity`                | Client anti-affinity policy                                         | `soft`                                              |
@@ -152,6 +153,8 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `serviceAccounts.master.name`        | Name of the master service account to use or create                 | `{{ elasticsearch.master.fullname }}`               |
 | `serviceAccounts.data.create`        | If true, create the data service account                            | `true`                                              |
 | `serviceAccounts.data.name`          | Name of the data service account to use or create                   | `{{ elasticsearch.data.fullname }}`                 |
+| `testFramework.image`                | `test-framework` image repository.                                  | `dduportal/bats`                                    |
+| `testFramework.tag`                  | `test-framework` image tag.                                         | `0.4.0`                                             |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 

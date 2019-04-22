@@ -20,8 +20,6 @@ env:
   # AMBASSADOR_DRAIN_TIME: 5
   # sets the number of seconds that Ambassador will wait for the old Envoy to clean up and exit on a restart
   # AMBASSADOR_SHUTDOWN_TIME: 10
-  # tells Ambassador to only use resources in the namespace set by namespace.name
-  # AMBASSADOR_SINGLE_NAMESPACE: true
   # labels Ambassador with an ID to allow for configuring multiple Ambassadors in a cluster
   # AMBASSADOR_ID: default
 
@@ -32,7 +30,7 @@ securityContext:
 
 image:
   repository: quay.io/datawire/ambassador
-  tag: 0.52.0
+  tag: 0.53.1
   pullPolicy: IfNotPresent
 
 nameOverride: ""
@@ -81,6 +79,10 @@ rbac:
   # Specifies whether RBAC resources should be created
   create: true
   namespaced: false
+
+scope:
+  # tells Ambassador to only use resources in the namespace or namespace set by namespace.name
+  singleNamespace: false
 
 serviceAccount:
   # Specifies whether a service account should be created
