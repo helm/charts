@@ -57,17 +57,15 @@ spec:
         args: ["service", "start", "apiext"]
         envFrom:
         - secretRef:
-            name: {{ template "anchore-engine.fullname" . }}
+            name: {{ default (include "anchore-engine.fullname" .) .Values.anchoreGlobal.existingSecret }}
         - configMapRef:
             name: {{ template "anchore-engine.fullname" . }}
         env:
-        {{- range $key, $value := .Values.anchoreGlobal.extraEnv }}
-        - name: {{ $key }}
-          value: {{ $value }}
+        {{- with .Values.anchoreGlobal.extraEnv }}
+        {{- toYaml . | nindent 8 }}
         {{- end }}
-        {{- range $key, $value := .Values.anchoreApi.extraEnv }}
-        - name: {{ $key }}
-          value: {{ $value }}
+        {{- with .Values.anchoreApi.extraEnv }}
+        {{- toYaml . | nindent 8 }}
         {{- end }}
         - name: ANCHORE_POD_NAME
           valueFrom:
@@ -113,17 +111,15 @@ spec:
         args: ["service", "start", "rbac_manager"]
         envFrom:
         - secretRef:
-            name: {{ template "anchore-engine.fullname" . }}
+            name: {{ default (include "anchore-engine.fullname" .) .Values.anchoreGlobal.existingSecret }}
         - configMapRef:
             name: {{ template "anchore-engine.fullname" . }}
         env:
-        {{- range $key, $value := .Values.anchoreGlobal.extraEnv }}
-        - name: {{ $key }}
-          value: {{ $value }}
+        {{- with .Values.anchoreGlobal.extraEnv }}
+        {{- toYaml . | nindent 10 }}
         {{- end }}
-        {{- range $key, $value := .Values.anchoreEnterpriseRbac.extraEnv }}
-        - name: {{ $key }}
-          value: {{ $value }}
+        {{- with .Values.anchoreEnterpriseRbac.extraEnv }}
+        {{- toYaml . | nindent 10 }}
         {{- end }}
         - name: ANCHORE_POD_NAME
           valueFrom:
@@ -171,17 +167,15 @@ spec:
         args: ["service", "start", "rbac_authorizer"]
         envFrom:
         - secretRef:
-            name: {{ template "anchore-engine.fullname" . }}
+            name: {{ default (include "anchore-engine.fullname" .) .Values.anchoreGlobal.existingSecret }}
         - configMapRef:
             name: {{ template "anchore-engine.fullname" . }}
         env:
-        {{- range $key, $value := .Values.anchoreGlobal.extraEnv }}
-        - name: {{ $key }}
-          value: {{ $value }}
+        {{- with .Values.anchoreGlobal.extraEnv }}
+        {{- toYaml . | nindent 10 }}
         {{- end }}
-        {{- range $key, $value := .Values.anchoreEnterpriseRbac.extraEnv }}
-        - name: {{ $key }}
-          value: {{ $value }}
+        {{- with .Values.anchoreEnterpriseRbac.extraEnv }}
+        {{- toYaml . | nindent 10 }}
         {{- end }}
         - name: ANCHORE_POD_NAME
           valueFrom:
