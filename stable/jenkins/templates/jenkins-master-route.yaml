@@ -1,23 +1,23 @@
-{{- if .Values.Master.route.enabled }}
+{{- if .Values.master.route.enabled }}
 apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
-{{- if .Values.Master.route.labels }}
+{{- if .Values.master.route.labels }}
   labels:
     app: {{ template "jenkins.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
-    component: "{{ .Release.Name }}-{{ .Values.Master.Name }}"
-{{ toYaml .Values.Master.route.labels | indent 4 }}
+    component: "{{ .Release.Name }}-{{ .Values.master.componentName }}"
+{{ toYaml .Values.master.route.labels | indent 4 }}
 {{- end }}
-{{- if .Values.Master.route.annotations }}
+{{- if .Values.master.route.annotations }}
   annotations:
-{{ toYaml .Values.Master.route.annotations | indent 4 }}
+{{ toYaml .Values.master.route.annotations | indent 4 }}
 {{- end }}
   name: {{ template "jenkins.fullname" . }}
 spec:
-  host: {{ .Values.Master.route.path }}
+  host: {{ .Values.master.route.path }}
   port:
     targetPort: http
   tls:
