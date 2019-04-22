@@ -1,5 +1,5 @@
-# baseName is the value which will be used as the base resource name for various resources associated with the agent.
-# baseName: instana-agent
+# name is the value which will be used as the base resource name for various resources associated with the agent.
+# name: instana-agent
 
 zone:
   # zone.name is the uniquely-identifiable name by which your cluster will be known inside Instana.

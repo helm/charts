@@ -3,14 +3,14 @@
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
-  name: {{ template "instana-agent.baseName" . }}
+  name: {{ template "instana-agent.name" . }}
   labels:
     {{- include "instana-agent.helmChartLabels" . | nindent 4 }}
 spec:
   template:
     metadata:
       labels:
-        k8s.instana.io/name: {{ template "instana-agent.baseName" . }}
+        k8s.instana.io/name: {{ template "instana-agent.name" . }}
       {{- if .Values.agent.pod.annotations }}
       annotations:
         {{ toYaml .Values.agent.pod.annotations | nindent 8}}
@@ -21,7 +21,7 @@ spec:
       hostNetwork: true
       hostPID: true
       containers:
-        - name: {{ template "instana-agent.baseName" . }}
+        - name: {{ template "instana-agent.name" . }}
           image: "{{ .Values.agent.image.name }}:{{ .Values.agent.image.tag }}"
           imagePullPolicy: {{ .Values.agent.image.pullPolicy }}
           env:
@@ -36,7 +36,7 @@ spec:
             - name: INSTANA_AGENT_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "instana-agent.baseName" . }}-agent-secret
+                  name: {{ template "instana-agent.name" . }}-agent-secret
                   key: key
             {{- if .Values.agent.mode }}
             - name: INSTANA_AGENT_MODE
@@ -46,7 +46,7 @@ spec:
             - name: INSTANA_DOWNLOAD_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "instana-agent.baseName" . }}-download-secret
+                  name: {{ template "instana-agent.name" . }}-download-secret
                   key: key
             {{- end }}
             {{- if .Values.agent.proxyHost }}
@@ -114,7 +114,7 @@ spec:
               cpu: {{ default 1.5 .Values.agent.pod.limits.cpu }}
           ports:
             - containerPort: 42699
-        - name: {{ template "instana-agent.baseName" . }}-leader-elector
+        - name: {{ template "instana-agent.name" . }}-leader-elector
           image: instana/leader-elector:0.5.1
           env:
             - name: INSTANA_AGENT_POD_NAME
@@ -156,6 +156,6 @@ spec:
             path: /etc/machine-id
         - name: configuration
           configMap:
-            name: {{ template "instana-agent.baseName" . }}-configuration
+            name: {{ template "instana-agent.name" . }}-configuration
 {{- end -}}
 {{- end -}}
