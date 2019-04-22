@@ -32,10 +32,6 @@ Parameter | Description | Default | Required
 `region` | AWS region  | `nil` | only if using AWS
 `apitimeout` | Api Timeout  | `nil` | only if using Azure
 `credentials` | Credentials  | `nil` | Yes (not required for kube2iam)
-`backupSyncPeriod` | How frequently Velero queries the object storage to make sure that the appropriate Backup resources have been created for existing backup files. | `60m` | yes
-`gcSyncPeriod` | How frequently Velero queries the object storage to delete backup files that have passed their TTL.  | `60m` | yes
-`scheduleSyncPeriod` | How frequently Velero checks its Schedule resource objects to see if a backup needs to be initiated  | `1m` | yes
-`restoreOnlyMode` | When RestoreOnly mode is on, functionality for backups, schedules, and expired backup deletion is turned off. Restores are made from existing backup files in object storage.  | `false` | yes
 
 Parameter | Description | Default
 --- | --- | ---
@@ -57,10 +53,11 @@ Parameter | Description | Default
 `configuration.backupStorageLocation.config.s3Url` | S3 url (primarily used for local storage services like Minio) | ``
 `configuration.backupStorageLocation.config.kmsKeyId` | KMS key for encryption (AWS only) | ``
 `configuration.backupStorageLocation.prefix` | The directory inside a storage bucket where backups are to be uploaded | ``
-`configuration.backupSyncPeriod` | How frequently Velero queries the object storage to make sure that the appropriate Backup resources have been created for existing backup files | `60m`
+`configuration.backupSyncPeriod` | How frequently Velero queries the object storage to make sure that the appropriate Backup resources have been created for existing backup files | `1m`
 `configuration.extraEnvVars` | Key/values for extra environment variables such as AWS_CLUSTER_NAME, etc | `{}`
 `configuration.provider` | The name of the cloud provider where you are deploying velero to (`aws`, `azure`, `gcp`) |
 `configuration.restoreResourcePriorities` | An ordered list that describes the order in which Kubernetes resource objects should be restored | `namespaces,persistentvolumes,persistentvolumeclaims,secrets,configmaps,serviceaccounts,limitranges,pods`
+`configuration.resticTimeout` | How long backups/restores of pod volumes should be allowed to run before timing out. | `60m`
 `configuration.restoreOnlyMode` | When RestoreOnly mode is on, functionality for backups, schedules, and expired backup deletion is turned off. Restores are made from existing backup files in object storage | `false`
 `configuration.volumeSnapshotLocation.name` | The name of the cloud provider the cluster is using for persistent volumes, if any | `{}`
 `configuration.volumeSnapshotLocation.config.region` | The cloud provider region (AWS only) | ``

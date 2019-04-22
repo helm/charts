@@ -57,10 +57,15 @@ configuration:
     #  storageAccount:
     #  publicUrl:
 
-  backupSyncPeriod: 60m
-  resticTimeout: 1h
-  restoreResourcePriorities: namespaces,persistentvolumes,persistentvolumeclaims,secrets,configmaps,serviceaccounts,limitranges,pods
-  restoreOnlyMode: false
+  # These are server-level settings passed as CLI flags to the `velero server` command. Velero
+  # uses default values if they're not passed in, so they only need to be explicitly specified
+  # here if using a non-default value.
+  # --------------------
+  # backupSyncPeriod: 1m
+  # resticTimeout: 1h
+  # restoreResourcePriorities: namespaces,persistentvolumes,persistentvolumeclaims,secrets,configmaps,serviceaccounts,limitranges,pods
+  # restoreOnlyMode: false
+  
   # additional key/value pairs to be used as environment variables such as "AWS_CLUSTER_NAME: 'yourcluster.domain.tld'"
   extraEnvVars: {}
 
