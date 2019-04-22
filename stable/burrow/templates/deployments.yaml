@@ -61,7 +61,7 @@ spec:
               cp nodekey-Validator_{{ . }} {{ $workDir }}/.burrow/config/node_key.json && \
               chmod 600 {{ $workDir }}/.burrow/config/node_key.json
 {{- if $.Values.chain.restore.enabled }}
-        - name: retreive
+        - name: retrieve
           image: appropriate/curl
           imagePullPolicy: {{ $.Values.image.pullPolicy }}
           workingDir: {{ $workDir }}
@@ -82,13 +82,23 @@ spec:
           - burrow
           args:
           - restore
+          - --config
+          - "{{ $refDir }}/burrow.toml"
+          - --genesis
+          - "{{ $refDir }}/genesis.json"
           - dumpFile
+          - --validator-address
+          - {{ (index $.Values.validatorAddresses ( printf "Validator_%d" $nodeIndex )).Address | quote }}
+          - --validator-moniker
+          - {{ printf "%s-validator-%s" $.Values.organization $nodeNumber | quote }}
           volumeMounts:
             - mountPath: {{ $workDir }}
               name: work-dir
+            - mountPath: {{ $refDir }}
+              name: ref-dir
 {{- end }}
       containers:
-        - name: burrow
+        - name: node
           image: "{{ $.Values.image.repository }}:{{ $.Values.image.tag }}"
           imagePullPolicy: {{ $.Values.image.pullPolicy }}
           workingDir: {{ $workDir }}
