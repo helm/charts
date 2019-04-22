@@ -1,4 +1,4 @@
-{{- if .Values.rbac.clusterRole.create -}}
+{{- if .Values.rbac.create -}}
 kind: ClusterRole
 apiVersion: {{ template "instana-agent.rbacApiVersion" . }}
 metadata:

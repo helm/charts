@@ -113,10 +113,9 @@ The following table lists the configurable parameters of the Instana chart and t
 | `agent.pod.requests.cpu`           | Container cpu requests in cpu cores                                     | `0.5`                                        |
 | `agent.pod.limits.memory`          | Container memory limits in MiB                                          | `512`                                        |
 | `agent.pod.limits.cpu`             | Container cpu limits in cpu cores                                       | `1.5`                                        |
-| `rbac.clusterRole.create`          | Whether RBAC ClusterRole should be created by this chart                | `true`                                       |
-| `rbac.roleBinding.create`          | Whether RBAC ClusterRoleBinding should be created by this chart         | `true`                                       |
-| `rbac.serviceAccount.create`       | Whether RBAC ServiceAccount should be created by this chart             | `true`                                       |
-| `rbac.serviceAccount.name`         | Name of RBAC ServiceAccount                                             | `instana-agent`                              |
+| `rbac.create`                      | Whether RBAC resources should be created                                | `true`                                       |
+| `serviceAccount.create`            | Whether a ServiceAccount should be created                              | `true`                                       |
+| `serviceAccount.name`              | Name of the ServiceAccount to use                                       | `instana-agent`                              |
 
 ### Agent
 

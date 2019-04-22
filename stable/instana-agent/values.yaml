@@ -63,14 +63,12 @@ agent:
   # proxyUseDNS: null
 
 rbac:
-  clusterRole:
-    # rbac.clusterRole.create indicates whether RBAC ClusterRole should be created by this chart.
-    create: true
-  roleBinding:
-    # rbac.roleBinding.create indicates whether RBAC ClusterRoleBinding should be created by this chart.
-    create: true
-  serviceAccount:
-    # rbac.serviceAccount.create indicates whether RBAC ServiceAccount should be created by this chart.
-    create: true
-    # rbac.serviceAccount.name indicates what RBAC ServiceAccount name to use (whether created by this chart or not).
-    name: instana-agent
+  # Specifies whether RBAC resources should be created
+  create: true
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: instana-agent

@@ -41,8 +41,12 @@ The version of the RBAC API to use.
 {{/*
 The name of the ServiceAccount used.
 */}}
-{{- define "instana-agent.serviceAccount" -}}
-{{ default "instana-agent" .Values.rbac.serviceAccount.name -}}
+{{- define "instana-agent.serviceAccountName" -}}
+{{- if .Values.serviceAccount.create -}}
+    {{ default (include "instana-agent.fullname" .) .Values.serviceAccount.name }}
+{{- else -}}
+    {{ default "default" .Values.serviceAccount.name }}
+{{- end -}}
 {{- end -}}
 
 {{/*

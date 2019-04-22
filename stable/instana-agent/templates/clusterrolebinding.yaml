@@ -1,4 +1,4 @@
-{{- if .Values.rbac.roleBinding.create -}}
+{{- if .Values.rbac.create -}}
 kind: ClusterRoleBinding
 apiVersion: {{ template "instana-agent.rbacApiVersion" . }}
 metadata:
@@ -7,7 +7,7 @@ metadata:
     {{- include "instana-agent.helmChartLabels" . | nindent 4 }}
 subjects:
 - kind: ServiceAccount
-  name: {{ template "instana-agent.serviceAccount" . }}
+  name: {{ template "instana-agent.serviceAccountName" . }}
   namespace: {{ .Release.Namespace }}
 roleRef:
   kind: ClusterRole
