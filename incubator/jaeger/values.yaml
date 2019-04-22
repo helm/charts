@@ -6,7 +6,7 @@ provisionDataStore:
   cassandra: true
   elasticsearch: false
 
-tag: 1.10.0
+tag: 1.11.0
 
 nameOverride: ""
 fullnameOverride: ""
