@@ -44,7 +44,7 @@ The following table lists the configurable parameters of the jaeger-operator cha
 Parameter | Description | Default
 --- | --- | ---
 `image.repository` | Controller container image repository | `jaegertracing/jaeger-operator`
-`image.tag` | Controller container image tag | `1.10.0`
+`image.tag` | Controller container image tag | `1.11.0`
 `image.pullPolicy` | Controller container image pull policy | `IfNotPresent`
 `rbac.create` | All required roles and rolebindings will be created | `true`
 `serviceAccount.create` | Service account to use | `true`
@@ -69,7 +69,7 @@ $ helm install stable/jaeger-operator --name my-release \
 The simplest possible way to install is by creating a YAML file like the following:
 
 ```YAML
-apiVersion: io.jaegertracing/v1alpha1
+apiVersion: jaegertracing.io/v1
 kind: Jaeger
 metadata:
   name: simplest
@@ -89,7 +89,7 @@ After that just deploy the following manifest:
 
 ```YAML
 # setup an elasticsearch with `make es`
-apiVersion: io.jaegertracing/v1alpha1
+apiVersion: jaegertracing.io/v1
 kind: Jaeger
 metadata:
   name: simple-prod
