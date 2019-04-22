@@ -51,7 +51,9 @@ Parameter | Description | Default
 `keycloak.image.pullSecrets` | Image pull secrets | `[]`
 `keycloak.basepath` | Path keycloak is hosted at | `auth`
 `keycloak.username` | Username for the initial Keycloak admin user | `keycloak`
-`keycloak.password` | Password for the initial Keycloak admin user. If not set, a random 10 characters password is created | `""`
+`keycloak.password` | Password for the initial Keycloak admin user (if `keycloak.existingSecret=""`). If not set, a random 10 characters password is created | `""`
+`keycloak.existingSecret` | Specifies an existing secret to be used for the admin password | `""`
+`keycloak.existingSecretKey` |  The key in `keycloak.existingSecret` that stores the admin password | `password`
 `keycloak.extraInitContainers` | Additional init containers, e. g. for providing themes, etc. Passed through the `tpl` function and thus to be configured a string | `""`
 `keycloak.extraContainers` | Additional sidecar containers, e. g. for a database proxy, such as Google's cloudsql-proxy. Passed through the `tpl` function and thus to be configured a string | `""`
 `keycloak.extraEnv` | Allows the specification of additional environment variables for Keycloak. Passed through the `tpl` function and thus to be configured a string | `""`
@@ -69,6 +71,7 @@ Parameter | Description | Default
 `keycloak.hostAliases` | Mapping between IP and hostnames that will be injected as entries in the pod's hosts files | `[]`
 `keycloak.securityContext` | Security context for the pod | `{runAsUser: 1000, fsGroup: 1000, runAsNonRoot: true}`
 `keycloak.preStartScript` | Custom script to run before Keycloak starts up | ``
+`keycloak.lifecycleHooks` | Container lifecycle hooks. Passed through the `tpl` function and thus to be configured a string | ``
 `keycloak.extraArgs` | Additional arguments to the start command | ``
 `keycloak.livenessProbe.initialDelaySeconds` | Liveness Probe `initialDelaySeconds` | `120`
 `keycloak.livenessProbe.timeoutSeconds` | Liveness Probe `timeoutSeconds` | `5`

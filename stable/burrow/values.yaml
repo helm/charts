@@ -1,6 +1,6 @@
 image:
   repository: hyperledger/burrow
-  tag: 0.24.3
+  tag: 0.25.0
   pullPolicy: IfNotPresent
 
 chain:
@@ -8,6 +8,9 @@ chain:
   logLevel: info
   extraSeeds: []
   testing: false
+  restore:
+    enabled: false
+    dumpURL: ""
 
 config:
   Logging:
@@ -23,8 +26,17 @@ validatorAddresses:
     Address: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
     NodeAddress: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 
-env: {}
+contracts:
+  # wait required to ensure chain readiness
+  enabled: false
+  image: ""
+  tag: ""
+  deploy: ""
+
 extraArgs: {}
+environment:
+  inline: {}
+  secrets: []
 
 organization: "user"
 

@@ -41,7 +41,7 @@ The following table lists the configurable parameters of the cerebro chart and t
 |-------------------------------------|-------------------------------------|-------------------------------------------|
 | `replicaCount`                      | Number of replicas                  | `1`                                       |
 | `image.repository`                  | The image to run                    | `lmenezes/cerebro`                        |
-| `image.tag`                         | The image tag to pull               | `0.8.1`                                   |
+| `image.tag`                         | The image tag to pull               | `0.8.2`                                   |
 | `image.pullPolicy`                  | Image pull policy                   | `IfNotPresent`                            |
 | `init.image.repository`             | The image to run                    | `docker.io/busybox`                       |
 | `init.image.tag`                    | The image tag to pull               | `musl`                                    |
