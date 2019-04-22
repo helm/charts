@@ -19,7 +19,7 @@ spec:
         app.kubernetes.io/instance: {{ .Release.Name }}
     {{- with .Values.podAnnotations }}
       annotations:
-    {{ toYaml . | indent 8 }}
+    {{ toYaml . | nindent 8 }}
     {{- end }}
     spec:
       serviceAccountName: {{ template "goldpinger.serviceAccountName" . }}
