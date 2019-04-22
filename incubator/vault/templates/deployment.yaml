@@ -133,6 +133,29 @@ spec:
               -join={{- .Values.consulAgent.join }} \
               -data-dir=/etc/consul
       {{- end }}
+      {{- if .Values.vaultExporter.enabled }}
+      - name: {{ .Chart.Name }}-exporter
+        image: "{{ .Values.vaultExporter.repository }}:{{ .Values.vaultExporter.tag }}"
+        imagePullPolicy: {{ .Values.vaultExporter.pullPolicy }}
+        securityContext:
+          readOnlyRootFilesystem: true
+        env:
+          - name: VAULT_ADDR
+            {{- if .Values.vault.config.listener.tcp.tls_disable }}
+            value: "http://{{ .Values.vaultExporter.vaultAddress }}"
+            {{- else }}
+            value: "https://{{ .Values.vaultExporter.vaultAddress }}"
+            {{- end }}
+          {{- if .Values.vaultExporter.tlsCAFile }}
+          - name: VAULT_CACERT
+            value: {{ .Values.vaultExporter.tlsCAFile | quote }}
+          {{- end }}
+        {{- range .Values.vault.customSecrets }}
+        volumeMounts:
+        - name: {{ .secretName | replace "." "-"}}
+          mountPath: {{ .mountPath }}
+        {{- end }}
+      {{- end }}
       {{- if .Values.affinity }}
       affinity:
 {{ tpl .Values.affinity . | indent 8 }}
