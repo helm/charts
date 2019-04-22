@@ -40,6 +40,7 @@ The following table lists the configurable parameters of the filebeat chart and 
 | `config.output.file.number_of_files`                     |                                                                                                          | `5`                                                |
 | `config.http.enabled`                                    |                                                                                                          | `false`                                            |
 | `config.http.port`                                       |                                                                                                          | `5066`                                             |
+| `overrideConfig`                                         | If overrideConfig is not empty, filebeat chart's default config won't be used at all.                    | `{}`                                               |
 | `indexTemplateLoad`                                      | List of Elasticsearch hosts to load index template, when logstash output is used                         | `[]`                                               |
 | `command`                                                | Custom command (Docker Entrypoint)                                                                       | `[]`                                               |
 | `args`                                                   | Custom args (Docker Cmd)                                                                                 | `[]`                                               |
@@ -59,6 +60,7 @@ The following table lists the configurable parameters of the filebeat chart and 
 | `serviceAccount.name`                                    | the name of the ServiceAccount to use                                                                     | `""`                                               |
 | `podSecurityPolicy.enabled`                              | Should the PodSecurityPolicy be created. Depends on `rbac.create` being set to `true`.                                                                     | `false`                                               |
 | `podSecurityPolicy.annotations`                                    | Annotations to be added to the created PodSecurityPolicy:                                                                    | `""`                                               |
+| `privileged`                                             | Specifies wheter to run as privileged                                                                    | `false`                                            |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 

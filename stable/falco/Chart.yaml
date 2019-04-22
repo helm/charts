@@ -1,7 +1,7 @@
 apiVersion: v1
 name: falco
-version: 0.5.6
-appVersion: 0.13.0
+version: 0.7.1
+appVersion: 0.14.0
 description: Sysdig Falco
 keywords:
   - monitoring
