@@ -82,6 +82,10 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.ingress.labels`           | Ingress labels                       | `{}`                                      |
 | `master.ingress.path`             | Ingress path                         | Not set                                   |
 | `master.ingress.tls`              | Ingress TLS configuration            | `[]`                                      |
+| `master.route.enabled`            | Enables openshift route              | `false`                                   |
+| `master.route.annotations`        | Route annotations                    | `{}`                                      |
+| `master.route.labels`             | Route labels                         | `{}`                                      |
+| `master.route.path`               | Route path                           | Not set                                   |
 | `master.jenkinsUrlProtocol`       | Set protocol for JenkinsLocationConfiguration.xml | Set to `https` if `Master.ingress.tls`, `http` otherwise |
 | `master.JCasC.enabled`            | Wheter Jenkins Configuration as Code is enabled or not | `false`                 |
 | `master.JCasC.configScripts`      | List of Jenkins Config as Code scripts | False                                   |
