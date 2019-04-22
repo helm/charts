@@ -22,5 +22,7 @@ rbac:
 secretName: "sealed-secrets-key"
 
 crd:
+  # crd.create: `true` if the crd resources should be created
+  create: true
   # crd.keep: `true` if the sealed secret CRD should be kept when the chart is deleted
   keep: true
