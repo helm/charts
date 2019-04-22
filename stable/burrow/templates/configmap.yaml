@@ -9,6 +9,7 @@ metadata:
   name: {{ template "burrow.fullname" . }}-config
 data:
   burrow.toml: |-
+    BurrowDir = ".burrow"
     [Tendermint]
       Seeds = ""
       SeedMode = false
@@ -16,7 +17,6 @@ data:
       ListenAddress = "tcp://0.0.0.0:{{ .Values.peer.service.port }}"
       ExternalAddress = ""
       Moniker = ""
-      TendermintRoot = ".burrow"
     [Execution]
     [Keys]
       GRPCServiceEnabled = true
