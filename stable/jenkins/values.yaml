@@ -285,6 +285,14 @@ master:
     # - secretName: jenkins.cluster.local
     #   hosts:
     #     - jenkins.cluster.local
+
+  # Openshift route
+  route:
+    enabled: false
+    labels: {}
+    annotations: {}
+    # path: "/jenkins"
+
   additionalConfig: {}
 
   # master.hostAliases allows for adding entries to Pod /etc/hosts:
