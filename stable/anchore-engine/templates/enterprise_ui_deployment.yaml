@@ -44,13 +44,11 @@ spec:
         image: {{ .Values.anchoreEnterpriseUi.image }}
         imagePullPolicy: {{ .Values.anchoreEnterpriseUi.imagePullPolicy }}
         env:
-        {{- range $key, $value := .Values.anchoreGlobal.extraEnv }}
-        - name: {{ $key }}
-          value: {{ $value }}
+        {{- with .Values.anchoreGlobal.extraEnv }}
+        {{- toYaml . | nindent 8 }}
         {{- end }}
-        {{- range $key, $value := .Values.anchoreEnterpriseUi.extraEnv }}
-        - name: {{ $key }}
-          value: {{ $value }}
+        {{- with .Values.anchoreEnterpriseUi.extraEnv }}
+        {{- toYaml . | nindent 8 }}
         {{- end }}
         {{- if and (index .Values "anchore-ui-redis" "externalEndpoint") (not (index .Values "anchore-ui-redis" "enabled")) }}
         - name: ANCHORE_REDIS_URI
