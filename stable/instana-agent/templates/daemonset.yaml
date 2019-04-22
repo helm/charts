@@ -1,6 +1,6 @@
 {{- if .Values.agent.key -}}
 {{- if .Values.zone.name -}}
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1beta2
 kind: DaemonSet
 metadata:
   name: {{ template "instana-agent.name" . }}
