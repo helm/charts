@@ -24,6 +24,7 @@ goldpinger:
 service:
   type: LoadBalancer
   port: 80
+  annotations: {}
 
 ingress:
   enabled: false
@@ -50,7 +51,7 @@ resources: {}
   #  cpu: 100m
   #  memory: 128Mi
 
-annotations: {}
+podAnnotations: {}
 
 ## Node labels for pod assignment
 ## Ref: https://kubernetes.io/docs/user-guide/node-selection/

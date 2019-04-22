@@ -44,20 +44,22 @@ The following table lists the configurable parameters of the Goldpinger chart an
 
 | Parameter                            | Description                                 | Default                                                    |
 | -------------------------------      | -------------------------------             | ---------------------------------------------------------- |
-| `image.repository`                   | Goldpinger image                                | `okgolove/goldpinger`                                           |
-| `image.tag`                          | Goldpinger image tag                            | `1.2.0`                                                      |
+| `image.repository`                   | Goldpinger image                            | `okgolove/goldpinger`                                      |
+| `image.tag`                          | Goldpinger image tag                        | `1.2.0`                                                    |
 | `pullPolicy`                         | Image pull policy                           | `IfNotPresent`                                             |
 | `rbac.create`                        | Install required rbac clusterrole           | `true`                                                     |
-| `serviceAccount.create`              | Enable ServiceAccount creation              | `true`                                                  |
+| `serviceAccount.create`              | Enable ServiceAccount creation              | `true`                                                     |
 | `serviceAccount.name`                | ServiceAccount for Goldpinger pods          | `default`                                                  |
 | `goldpinger.port`                    | Goldpinger app port listen to               | `80`                                                       |
 | `service.type`                       | Kubernetes service type                     | `LoadBalancer`                                             |
 | `service.port`                       | Service HTTP port                           | `80`                                                       |
+| `service.annotations`                | Service annotations                         | `{}`                                                       |
 | `ingress.enabled`                    | Enable ingress controller resource          | `false`                                                    |
 | `ingress.annotations`                | Ingress annotations                         | `{}`                                                       |
-| `ingress.path`                       | Ingress path                                | `/`                                         |
+| `ingress.path`                       | Ingress path                                | `/`                                                        |
 | `ingress.hosts`                      | URLs to address your Goldpinger installation| `goldpinger.local`                                         |
 | `ingress.tls`                        | Ingress TLS configuration                   | `[]`                                                       |
+| `podAnnotations`                     | Pod annotations                             | `{}`                                                       |
 | `nodeSelector`                       | Node labels for pod assignment              | `{}`                                                       |
 | `tolerations`                        | List of node taints to tolerate             | `[]`                                                       |
 | `affinity`                           | Map of node/pod affinities                  | `{}`                                                       |
