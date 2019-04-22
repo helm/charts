@@ -1,12 +1,8 @@
 {{/*
-Get the version of the RBAC API to use based on the version of Kubernetes used.
+The version of the RBAC API to use.
 */}}
 {{- define "instana-agent.rbacApiVersion" -}}
-{{- if ge .Capabilities.KubeVersion.Minor "8" -}}
 "rbac.authorization.k8s.io/v1"
-{{- else -}}
-"rbac.authorization.k8s.io/v1beta1"
-{{- end -}}
 {{- end -}}
 
 {{/*
