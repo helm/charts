@@ -7,10 +7,13 @@ metadata:
   labels:
     {{- include "instana-agent.helmChartLabels" . | nindent 4 }}
 spec:
+  selector:
+    matchLabels:
+      {{- include "instana-agent.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        k8s.instana.io/name: {{ template "instana-agent.name" . }}
+        {{- include "instana-agent.helmChartLabels" . | nindent 8 }}
       {{- if .Values.agent.pod.annotations }}
       annotations:
         {{ toYaml .Values.agent.pod.annotations | nindent 8}}

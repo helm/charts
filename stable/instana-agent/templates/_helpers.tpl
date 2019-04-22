@@ -53,7 +53,17 @@ The name of the ServiceAccount used.
 Add Helm metadata to resource labels.
 */}}
 {{- define "instana-agent.helmChartLabels" -}}
-helm.sh/chart: {{ printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
-helm.sh/release: {{ .Release.Name }}
-helm.sh/managed-by: {{ .Release.Service }}
+app.kubernetes.io/name: {{ include "instana-agent.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+app.kubernetes.io/component: {{ include "instana-agent.name" . }}
+helm.sh/chart: {{ include "instana-agent.chart" . }}
+{{- end -}}
+
+{{/*
+Add Helm metadata to selector labels specifically for deployments/daemonsets/statefulsets.
+*/}}
+{{- define "instana-agent.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "instana-agent.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
