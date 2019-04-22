@@ -4,7 +4,7 @@
 terminationGracePeriodSeconds: 30
 image:
   repository: arilot/docker-bitcoind
-  tag: 0.15.1
+  tag: 0.17.1
   pullPolicy: IfNotPresent
 
 service:
