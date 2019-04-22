@@ -35,6 +35,10 @@ spec:
       serviceAccountName: {{ template "dex.serviceAccountName" . }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 10 }}
+{{- if .Values.affinity }}
+      affinity:
+{{ tpl .Values.affinity | indent 8 }}
+{{- end }}
       containers:
       - name: main
         image: "{{ .Values.image }}:{{ .Values.imageTag }}"
