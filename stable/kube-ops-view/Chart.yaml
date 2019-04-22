@@ -1,6 +1,6 @@
 name: kube-ops-view
-version: 0.7.0
-appVersion: 0.9
+version: 0.8.0
+appVersion: 0.11
 description: Kubernetes Operational View - read-only system dashboard for multiple
   K8s clusters
 keywords:
