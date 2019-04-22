@@ -44,8 +44,8 @@ The following table lists the configurable parameters of the Goldpinger chart an
 
 | Parameter                            | Description                                 | Default                                                    |
 | -------------------------------      | -------------------------------             | ---------------------------------------------------------- |
-| `image.repository`                   | Goldpinger image                            | `okgolove/goldpinger`                                      |
-| `image.tag`                          | Goldpinger image tag                        | `1.2.0`                                                    |
+| `image.repository`                   | Goldpinger image                            | `bloomberg/goldpinger`                                      |
+| `image.tag`                          | Goldpinger image tag                        | `1.5.0`                                                    |
 | `pullPolicy`                         | Image pull policy                           | `IfNotPresent`                                             |
 | `rbac.create`                        | Install required rbac clusterrole           | `true`                                                     |
 | `serviceAccount.create`              | Enable ServiceAccount creation              | `true`                                                     |
