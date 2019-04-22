@@ -125,15 +125,6 @@ vault:
   # https://www.vaultproject.io/intro/getting-started/dev-server.html for more
   # information.
   dev: true
-  # Allows the mounting of various custom secrets th enable production vault
-  # configurations. The comments show an example usage for mounting a TLS
-  # secret. The two fields required are a secretName indicating the name of
-  # the Kubernetes secret (created outside of this chart), and the mountPath
-  # at which it should be mounted in the Vault container.
-  customSecrets: []
-    # - secretName: vault-tls
-    #   mountPath: /vault/tls
-  #
   # Configure additional environment variables for the Vault containers
   extraEnv: {}
   #   - name: VAULT_API_ADDR
@@ -145,7 +136,19 @@ vault:
   #   volumeMounts:
   #   - name: some-mount
   #     mountPath: /some/path
+  # Extra volumes to mount to the Vault pod. The comments show an example usage
+  # for mounting a TLS secret. In this example, the volume name must match
+  # the volumeMount name. The two other fields required are the name of the
+  # Kubernetes secret (created outside of this chart), and the mountPath
+  # at which it should be mounted in the Vault container.
   extraVolumes: {}
+  #   - name: vault-tls
+  #     secret:
+  #       secretName: vault-tls-secret
+  extraVolumeMounts: {}
+  #   - name: vault-tls
+  #     mountPath: /vault/tls
+  #     readOnly: true
   extraInitContainers: {}
   ## Init containers to be added
   # - name: do-something
