@@ -1,7 +1,23 @@
 {{/* vim: set filetype=mustache: */}}
+
 {{/*Expand the name of the chart.*/}}
 {{- define "pomerium.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{/*Expand the name of the proxy-service.*/}}
+{{- define "pomerium.proxy.name" -}}
+{{- default (printf "%s-proxy" .Chart.Name) .Values.proxy.nameOverride | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{/*Expand the name of the authenticate-service.*/}}
+{{- define "pomerium.authenticate.name" -}}
+{{- default (printf "%s-authenticate" .Chart.Name) .Values.authenticate.nameOverride | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{/*Expand the name of the authorize-service.*/}}
+{{- define "pomerium.authorize.name" -}}
+{{- default (printf "%s-authorize" .Chart.Name) .Values.authorize.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{/*
@@ -22,6 +38,47 @@ If release name contains chart name it will be used as a full name.
 {{- end -}}
 {{- end -}}
 
+{{/* Proxy services fully qualified name. Truncated at 63 chars. */}}
+{{- define "pomerium.proxy.fullname" -}}
+{{- if .Values.proxy.fullnameOverride -}}
+{{- .Values.proxy.fullnameOverride | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- $name := default .Chart.Name .Values.nameOverride -}}
+{{- if contains $name .Release.Name -}}
+{{- .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- printf "%s-%s-proxy" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{/* authorize services fully qualified name. Truncated at 63 chars. */}}
+{{- define "pomerium.authorize.fullname" -}}
+{{- if .Values.authorize.fullnameOverride -}}
+{{- .Values.authorize.fullnameOverride | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- $name := default .Chart.Name .Values.nameOverride -}}
+{{- if contains $name .Release.Name -}}
+{{- .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- printf "%s-%s-authorize" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{/* authenticate services fully qualified name. Truncated at 63 chars. */}}
+{{- define "pomerium.authenticate.fullname" -}}
+{{- if .Values.authenticate.fullnameOverride -}}
+{{- .Values.authenticate.fullnameOverride | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- $name := default .Chart.Name .Values.nameOverride -}}
+{{- if contains $name .Release.Name -}}
+{{- .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- printf "%s-%s-authenticate" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
 
 {{/*Create chart name and version as used by the chart label.*/}}
 {{- define "pomerium.chart" -}}

@@ -32,7 +32,8 @@ config:
       - admins
 
 authenticate:
-  name: authenticate
+  # fullnameOverride: authenticate
+  # nameOverride: authenticate
   redirectUrl: ""
   # see https://www.pomerium.io/docs/identity-providers.html
   idp:
@@ -48,7 +49,8 @@ authenticate:
     defaultIPList: []
 
 authorize:
-  name: authorize
+  # fullnameOverride: authorize
+  # nameOverride: authorize
   tls:
     cert: ""
     key: ""
@@ -56,7 +58,8 @@ authorize:
     defaultIPList: []
 
 proxy:
-  name: proxy
+  # fullnameOverride: proxy
+  # nameOverride: proxy
   tls:
     cert: ""
     key: ""
@@ -130,4 +133,4 @@ extraVolumes: {}
 image:
   repository: "pomerium/pomerium"
   tag: "v0.0.3"
-  pullPolicy: "Always"
+  pullPolicy: "IfNotPresent"

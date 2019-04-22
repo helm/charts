@@ -4,11 +4,12 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: {{ template "pomerium.name" . }}-{{ .Values.proxy.name }}
-    chart: {{ template "pomerium.chart" . }}
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
-  name: {{ template "pomerium.fullname" . }}-{{ .Values.proxy.name }}
+    app.kubernetes.io/name: {{ template "pomerium.proxy.name" . }}
+    helm.sh/chart: {{ template "pomerium.chart" . }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: proxy
+  name: {{ template "pomerium.proxy.fullname" . }}
 {{- if .Values.annotations }}
   annotations:
 {{ toYaml .Values.annotations | indent 4 }}
@@ -16,9 +17,9 @@ metadata:
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
-    matchLabels:
-      app: {{ template "pomerium.name" . }}-{{ .Values.proxy.name }}
-      release: {{ .Release.Name }}
+    matchLabels:  
+      app.kubernetes.io/name: {{ template "pomerium.proxy.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
 {{- if .Values.podAnnotations }}
@@ -26,10 +27,10 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
 {{- end }}
       labels:
-        app: {{ template "pomerium.name" . }}-{{ .Values.proxy.name }}
-        chart: {{ template "pomerium.chart" . }}
-        heritage: {{ .Release.Service }}
-        release: {{ .Release.Name }}
+        app.kubernetes.io/name: {{ template "pomerium.proxy.name" . }}
+        helm.sh/chart: {{ template "pomerium.chart" . }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
 {{- if .Values.podLabels }}
 {{ toYaml .Values.podLabels | indent 8 }}
 {{- end }}
@@ -63,13 +64,13 @@ spec:
               name: {{ $secretName }}
               key: shared-secret
         - name: AUTHENTICATE_SERVICE_URL
-          value: {{ default (printf "https://%s.%s" .Values.authenticate.name .Values.config.rootDomain ) .Values.proxy.authenticateServiceUrl }}
+          value: {{ default (printf "https://authenticate.%s" .Values.config.rootDomain ) .Values.proxy.authenticateServiceUrl }}
         - name: AUTHORIZE_SERVICE_URL
-          value: {{ default (printf "https://%s.%s" .Values.authorize.name .Values.config.rootDomain ) .Values.proxy.authorizeServiceUrl }}
+          value: {{ default (printf "https://authorize.%s" .Values.config.rootDomain ) .Values.proxy.authorizeServiceUrl }}
         - name: AUTHENTICATE_INTERNAL_URL
-          value: {{ default (printf "%s-%s.%s.svc.cluster.local" (include "pomerium.fullname" .) .Values.authenticate.name .Release.Namespace ) .Values.proxy.authenticateInternalUrl}}
+          value: {{ default (printf "%s.%s.svc.cluster.local" (include "pomerium.authenticate.fullname" .) .Release.Namespace ) .Values.proxy.authenticateInternalUrl}}
         - name: AUTHORIZE_INTERNAL_URL
-          value: {{ default (printf "%s-%s.%s.svc.cluster.local" (include "pomerium.fullname" .) .Values.authorize.name .Release.Namespace ) .Values.proxy.authorizeInternalUrl}}
+          value: {{ default (printf "%s.%s.svc.cluster.local" (include "pomerium.authorize.fullname" .) .Release.Namespace ) .Values.proxy.authorizeInternalUrl}}
 {{- if or .Values.config.existingConfig .Values.config.policyFile}}
         - name: POLICY_FILE
           value: /etc/pomerium/policy.yaml

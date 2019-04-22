@@ -17,28 +17,28 @@ spec:
     - secretName: {{ default .Values.ingress.secretName .Values.ingress.secret.name}}
       hosts:
         - '*.{{ .Values.config.rootDomain }}'
-        - {{ .Values.authorize.name }}.{{ .Values.config.rootDomain }}
-        - {{ .Values.authenticate.name }}.{{ .Values.config.rootDomain }}
+        - {{ include "pomerium.authorize.name" .}}.{{ .Values.config.rootDomain }}
+        - {{ include "pomerium.authenticate.name" .}}.{{ .Values.config.rootDomain }}
   rules:
     - host: '*.{{ .Values.config.rootDomain }}'
       http:
         paths:
           - paths:
             backend:
-              serviceName: {{ include "pomerium.fullname" .}}-{{ .Values.proxy.name }}
+              serviceName: {{ include "pomerium.proxy.fullname" .}}
               servicePort: https
-    - host: {{ .Values.authorize.name }}.{{ .Values.config.rootDomain }}
+    - host: {{ include "pomerium.authorize.name" .}}.{{ .Values.config.rootDomain }}
       http:
         paths:
           - paths:
             backend:
-              serviceName: {{ include "pomerium.fullname" .}}-{{ .Values.authorize.name }}
+              serviceName: {{ include "pomerium.authorize.fullname" .}}
               servicePort: https
-    - host: {{ .Values.authenticate.name }}.{{ .Values.config.rootDomain }}
+    - host: {{ include "pomerium.authenticate.name" .}}.{{ .Values.config.rootDomain }}
       http:
         paths:
           - paths:
             backend:
-              serviceName: {{ include "pomerium.fullname" .}}-{{ .Values.authenticate.name }}
+              serviceName: {{ include "pomerium.authenticate.fullname" .}}
               servicePort: https
 {{- end }}

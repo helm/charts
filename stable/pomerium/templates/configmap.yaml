@@ -4,10 +4,10 @@ kind: ConfigMap
 metadata:
   name: {{ template "pomerium.fullname" . }}
   labels:
-    app: {{ template "pomerium.name" . }}
-    chart: {{ template "pomerium.chart" . }}
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    app.kubernetes.io/name: {{ template "pomerium.name" . }}
+    helm.sh/chart: {{ template "pomerium.chart" . }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
 data:
   policy.yaml: {{toYaml .Values.config.policyFile | indent 4}}
 {{- end }}

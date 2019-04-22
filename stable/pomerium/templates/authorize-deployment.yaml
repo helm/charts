@@ -4,11 +4,12 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: {{ template "pomerium.name" . }}-{{ .Values.authorize.name }}
-    chart: {{ template "pomerium.chart" . }}
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
-  name: {{ template "pomerium.fullname" . }}-{{ .Values.authorize.name }}
+    app.kubernetes.io/name: {{ template "pomerium.authorize.name" . }}
+    helm.sh/chart: {{ template "pomerium.chart" . }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: authorize
+  name: {{ template "pomerium.authorize.fullname" . }}
 {{- if .Values.annotations }}
   annotations:
 {{ toYaml .Values.annotations | indent 4 }}
@@ -17,8 +18,8 @@ spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ template "pomerium.name" . }}-{{ .Values.authorize.name }}
-      release: {{ .Release.Name }}
+      app.kubernetes.io/name: {{ template "pomerium.authorize.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
 {{- if .Values.podAnnotations }}
@@ -26,10 +27,10 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
 {{- end }}
       labels:
-        app: {{ template "pomerium.name" . }}-{{ .Values.authorize.name }}
-        chart: {{ template "pomerium.chart" . }}
-        heritage: {{ .Release.Service }}
-        release: {{ .Release.Name }}
+        app.kubernetes.io/name: {{ template "pomerium.authorize.name" . }}
+        helm.sh/chart: {{ template "pomerium.chart" . }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
 {{- if .Values.podLabels }}
 {{ toYaml .Values.podLabels | indent 8 }}
 {{- end }}

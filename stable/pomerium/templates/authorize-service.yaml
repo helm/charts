@@ -1,12 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "pomerium.fullname" . }}-{{ .Values.authorize.name }}
+  name: {{ template "pomerium.authorize.fullname" . }}
   labels:
-    app: {{ template "pomerium.name" . }}-{{ .Values.authorize.name }}
-    chart: {{ template "pomerium.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ template "pomerium.authorize.name" . }}
+    helm.sh/chart: {{ template "pomerium.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/component: authorize
 {{- if .Values.service.labels }}
 {{ toYaml .Values.service.labels | indent 4 }}
 {{- end }}
@@ -26,5 +27,5 @@ spec:
     nodePort: {{ .Values.service.nodePort }}
 {{- end }}
   selector:
-    app: {{ template "pomerium.name" . }}-{{ .Values.authorize.name }}
-    release: {{ .Release.Name }}
+    app.kubernetes.io/name: {{ template "pomerium.authorize.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
