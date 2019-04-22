@@ -86,7 +86,7 @@ and their default values.
 | proxy.ingress.tls              | Name of secret resource, containing TLS secret                                   |                     |
 | proxy.ingress.hosts            | List of ingress hosts.                                                           | `[]`                |
 | proxy.ingress.path             | Ingress path.                                                                    | `/`                 |
-| proxy.ingress.annotations      | Ingress annotations. See documentation for your ingress controller for details   | `{}`                |
+| proxy.annotations      | Ingress annotations. See documentation for your ingress controller for details   | `{}`                |
 | env                            | Additional [Kong configurations](https://getkong.org/docs/latest/configuration/) |                     |
 | runMigrations                  | Run Kong migrations job                                                          | `true`              |
 | readinessProbe                 | Kong readiness probe                                                             |                     |
