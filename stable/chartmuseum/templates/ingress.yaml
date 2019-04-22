@@ -1,6 +1,7 @@
+{{- if .Values.ingress.enabled }}
 {{- $servicePort := .Values.service.externalPort -}}
 {{- $serviceName := include "chartmuseum.fullname" . -}}
-{{- if .Values.ingress.enabled }}
+{{- $ingressExtraPaths := .Values.ingress.extraPaths -}}
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
@@ -19,6 +20,12 @@ spec:
   - host: {{ .name }}
     http:
       paths:
+      {{- range $ingressExtraPaths }}
+      - path: {{ default "/" .path | quote }}
+        backend:
+          serviceName: {{ default $serviceName .service }}
+          servicePort: {{ default $servicePort .port }}
+      {{- end }}
       - path: {{ default "/" .path | quote }}
         backend:
           serviceName: {{ default $serviceName .serviceName }}
