@@ -9,6 +9,13 @@ image:
   tag:
   pullPolicy: IfNotPresent
 
+vaultExporter:
+  enabled: false
+  repository: grapeshot/vault_exporter
+  tag: v0.1.2
+  pullPolicy: IfNotPresent
+  vaultAddress: 127.0.0.1:8200
+  # tlsCAFile: /vault/tls/ca.crt
 consulAgent:
   repository: consul
   tag: 1.4.0
@@ -71,6 +78,13 @@ resources: {}
   # requests:
   #   cpu: 100m
   #   memory: 128Mi
+
+## Node selector
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+nodeSelector: {}
+
+## Affinity
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
 affinity: |
   podAntiAffinity:
     preferredDuringSchedulingIgnoredDuringExecution:
@@ -79,8 +93,12 @@ affinity: |
         topologyKey: kubernetes.io/hostname
         labelSelector:
           matchLabels:
-            app: {{ template "vault.fullname" . }}
+            app: {{ template "vault.name" . }}
             release: {{ .Release.Name }}
+
+## Tolerations
+## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+tolerations: []
 
 ## Deployment annotations
 annotations: {}
@@ -107,15 +125,6 @@ vault:
   # https://www.vaultproject.io/intro/getting-started/dev-server.html for more
   # information.
   dev: true
-  # Allows the mounting of various custom secrets th enable production vault
-  # configurations. The comments show an example usage for mounting a TLS
-  # secret. The two fields required are a secretName indicating the name of
-  # the Kubernetes secret (created outside of this chart), and the mountPath
-  # at which it should be mounted in the Vault container.
-  customSecrets: []
-    # - secretName: vault-tls
-    #   mountPath: /vault/tls
-  #
   # Configure additional environment variables for the Vault containers
   extraEnv: {}
   #   - name: VAULT_API_ADDR
@@ -127,7 +136,24 @@ vault:
   #   volumeMounts:
   #   - name: some-mount
   #     mountPath: /some/path
+  # Extra volumes to mount to the Vault pod. The comments show an example usage
+  # for mounting a TLS secret. In this example, the volume name must match
+  # the volumeMount name. The two other fields required are the name of the
+  # Kubernetes secret (created outside of this chart), and the mountPath
+  # at which it should be mounted in the Vault container.
   extraVolumes: {}
+  #   - name: vault-tls
+  #     secret:
+  #       secretName: vault-tls-secret
+  extraVolumeMounts: {}
+  #   - name: vault-tls
+  #     mountPath: /vault/tls
+  #     readOnly: true
+  extraInitContainers: {}
+  ## Init containers to be added
+  # - name: do-something
+  #   image: busybox
+  #   command: ['do', 'something']
   # Log level
   # https://www.vaultproject.io/docs/commands/server.html#log-level
   logLevel: "info"
@@ -135,10 +161,19 @@ vault:
   # - name: extra-volume
   #   secret:
   #     secretName: some-secret
+  liveness:
+    aliveIfUninitialized: true
+    aliveIfSealed: true
+    initialDelaySeconds: 30
+    periodSeconds: 10
   readiness:
     readyIfSealed: false
     readyIfStandby: true
     readyIfUninitialized: true
+    initialDelaySeconds: 10
+    periodSeconds: 10
+  ## Use an existing config in a named ConfigMap
+  # existingConfigName: vault-cm
   config:
     # A YAML representation of a final vault config.json file.
     # See https://www.vaultproject.io/docs/configuration/ for more information.

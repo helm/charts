@@ -2,17 +2,43 @@ replicaCount: 1
 
 image:
   repository: quay.io/monax/hoard
-  tag: 1.1.5
+  tag: 3.0.1
   pullPolicy: IfNotPresent
 
-storage:
-  type: local   # s3 | gcs | local
-  region: ""
-  bucket: ""
-  prefix: hoard
-  credentialsSecret: ""
+config:
+  listenaddress: tcp://:53431
+  storage:
+    # aws | azure | filesystem | gcp | ipfs
+    storagetype: filesystem
+    addressencoding: base64
+    filesystemconfig:
+      rootdirectory: "/data"
+    cloudconfig:
+      bucket: ""
+      prefix: ""
+      region: ""
+    ipfsconfig:
+      remoteapi: ""
+  logging:
+    loggingtype: json
+    channels:
+    - info
+    - trace
+  secrets:
+    symmetric: []
+    openpgp:
+      privateid: ""
+      file: "keyring"
 
-# only local
+controller:
+  enabled: true
+  keep: true
+
+secrets:
+  creds: "cloud-credentials"
+  keyring: "private-keyring"
+
+# only filesystem
 persistence:
   size: 10Gi
   storageClass: standard
@@ -28,22 +54,21 @@ service:
 ingress:
   enabled: false
   annotations: {}
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
   path: /
   hosts:
-    - chart-example.local
+    - hoard.local
   tls: []
-  #  - secretName: chart-example-tls
+  #  - secretName: hoard-tls
   #    hosts:
-  #      - chart-example.local
+  #      - hoard.local
 
 resources: {}
-  #  cpu: 100m
-  #  memory: 128Mi
-  # requests:
-  #  cpu: 100m
-  #  memory: 128Mi
+#   limits:
+#     cpu: 500m
+#     memory: 1Gi
+#   requests:
+#     cpu: 100m
+#     memory: 256Mi
 
 nodeSelector: {}
 

@@ -3,28 +3,63 @@
 This file documents all notable changes to Sysdig Falco Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v0.7.1
+
+* Add Google Pub/Sub Output integration
+
+## v0.7.0
+
+### Major Changes
+
+* Disable eBPF by default on Falco. We activated eBPF by default to make the
+  CI pass, but now we found a better method to make the CI pass without
+  bothering our users.
+
+## v0.6.0
+
+### Major Changes
+
+* Upgrade to Falco 0.14.0
+* Upgrade rules to Falco 0.14.0
+* Enable eBPF by default on Falco
+* Allow to download Falco images from different registries than `docker.io`
+* Use rollingUpdate strategy by default
+* Provide sane defauls for falco resource management
+
 ## v0.5.6
+
+### Minor Changes
 
 * Allow extra container args
 
 ## v0.5.5
 
+### Minor Changes
+
 * Update correct slack example
 
 ## v0.5.4
+
+### Minor Changes
 
 * Using Falco version 0.13.0 instead of latest.
 
 ## v0.5.3
 
+### Minor Changes
+
 * Update falco_rules.yaml file to use the same rules that Falco 0.13.0
 
 ## v0.5.2
+
+### Minor Changes
 
 * Falco was accepted as a CNCF project. Fix references and download image from
   falcosecurity organization.
 
 ## v0.5.1
+
+### Minor Changes
 
 * Allow falco to resolve cluster hostnames when running with ebpf.hostNetwork: true
 

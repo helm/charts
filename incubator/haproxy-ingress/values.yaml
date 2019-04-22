@@ -1,6 +1,8 @@
 # Enable RBAC
 rbac:
   create: true
+  security:
+    enable: false
 
 # Create ServiceAccount
 serviceAccount:
@@ -14,7 +16,7 @@ controller:
   name: controller
   image:
     repository: quay.io/jcmoraisjr/haproxy-ingress
-    tag: "v0.7-beta.5"
+    tag: "v0.7.1"
     pullPolicy: IfNotPresent
 
   ## Additional command line arguments to pass to haproxy-ingress-controller
@@ -32,6 +34,9 @@ controller:
   #       secretKeyRef:
   #         key: FOO
   #         name: secret-resource
+
+  ## Additional containers that can initialize the pod.
+  initContainers: []
 
   # custom haproxy template
   template: ""
@@ -75,6 +80,14 @@ controller:
   ##
   podLabels: {}
 
+  ## Affinity to be added to controller pods
+  ##
+  podAffinity: {}
+
+  ## Priority Class to be used
+  ##
+  priorityClassName: ""
+
   ## Security context settings to be added to the controller pods
   ##
   securityContext: {}
@@ -104,6 +117,9 @@ controller:
   # https://github.com/jcmoraisjr/haproxy-ingress/tree/v0.6#tcp-services-configmap
   tcp: {}
   #  8080: "default/example-tcp-svc:9000"
+
+  # optionally disable static ports, including the default 80 and 443
+  enableStaticPorts: true
 
   ## Use host ports 80 and 443
   daemonset:
