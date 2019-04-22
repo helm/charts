@@ -11,8 +11,6 @@ spec:
 {{- with .Values.configuration }}
 {{- with .volumeSnapshotLocation }}
   provider: {{ .name  }}
-  objectStorage:
-    bucket: {{ .bucket  }}
 {{ with .config }}
   config:
   {{- with .region }}
