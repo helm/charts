@@ -21,6 +21,10 @@ rules:
   # delete is required only for 'patronictl remove'
   - delete
 - apiGroups: [""]
+  resources: ["services"]
+  verbs:
+  - create
+- apiGroups: [""]
   resources: ["endpoints"]
   verbs:
   - create
