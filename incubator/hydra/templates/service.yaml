@@ -7,9 +7,12 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     helm.sh/chart: {{ include "hydra.chart" . }}
+{{- if .Values.serviceLabels }}
+{{ toYaml .Values.serviceLabels | indent 4 }}
+{{- end }}
 {{- if .Values.serviceAnnotations }}
   annotations:
-{{ toYaml .Values.serviceAnnotations | indent 4}}
+{{ toYaml .Values.serviceAnnotations | indent 4 }}
 {{- end }}
 spec:
   type: {{ .Values.service.type }}
