@@ -2,13 +2,13 @@
 apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
-{{- if .Values.master.route.labels }}
   labels:
     app: {{ template "jenkins.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
     component: "{{ .Release.Name }}-{{ .Values.master.componentName }}"
+{{- if .Values.master.route.labels }}
 {{ toYaml .Values.master.route.labels | indent 4 }}
 {{- end }}
 {{- if .Values.master.route.annotations }}
