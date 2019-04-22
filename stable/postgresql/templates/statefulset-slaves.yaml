@@ -73,6 +73,7 @@ spec:
         volumeMounts:
         - name: data
           mountPath: {{ .Values.persistence.mountPath }}
+          subPath: {{ .Values.persistence.subPath }}
       {{- end }}
       containers:
       - name: {{ template "postgresql.fullname" . }}
@@ -125,9 +126,9 @@ spec:
             - sh
             - -c
            {{- if (include "postgresql.database" .) }}
-            - exec pg_isready -U {{ include "postgresql.username" . | quote }} -d {{ (include "postgresql.database" .) | quote }} -h localhost
+            - exec pg_isready -U {{ include "postgresql.username" . | quote }} -d {{ (include "postgresql.database" .) | quote }} -h 127.0.0.1
            {{- else }}
-            - exec pg_isready -U {{ include "postgresql.username" . | quote }} -h localhost
+            - exec pg_isready -U {{ include "postgresql.username" . | quote }} -h 127.0.0.1
            {{- end }}
           initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
           periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
@@ -142,9 +143,9 @@ spec:
             - sh
             - -c
            {{- if (include "postgresql.database" .) }}
-            - exec pg_isready -U {{ include "postgresql.username" . | quote }} -d {{ (include "postgresql.database" .) | quote }} -h localhost
+            - exec pg_isready -U {{ include "postgresql.username" . | quote }} -d {{ (include "postgresql.database" .) | quote }} -h 127.0.0.1
            {{- else }}
-            - exec pg_isready -U {{ include "postgresql.username" . | quote }} -h localhost
+            - exec pg_isready -U {{ include "postgresql.username" . | quote }} -h 127.0.0.1
            {{- end }}
           initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
           periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
@@ -160,6 +161,7 @@ spec:
         {{- if .Values.persistence.enabled }}
         - name: data
           mountPath: {{ .Values.persistence.mountPath }}
+          subPath: {{ .Values.persistence.subPath }}
         {{ end }}
         {{- if or (.Files.Glob "files/conf.d/*.conf") .Values.postgresqlExtendedConf .Values.extendedConfConfigMap }}
         - name: postgresql-extended-config

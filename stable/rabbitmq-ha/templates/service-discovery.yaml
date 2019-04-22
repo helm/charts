@@ -9,7 +9,7 @@ metadata:
   name: {{ printf "%s-discovery" (include "rabbitmq-ha.fullname" .) | trunc 63 | trimSuffix "-" }}
   labels:
     app: {{ template "rabbitmq-ha.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    chart: {{ template "rabbitmq-ha.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
