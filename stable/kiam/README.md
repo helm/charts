@@ -26,7 +26,7 @@ In order for the chart to configure kiam correctly during the installation proce
 {"level":"warning","msg":"error finding role for pod: rpc error: code = Unavailable desc = there is no connection available","pod.ip":"100.120.0.2","time":"2018-05-24T04:11:25Z"}
 ```
 
-Define values `agent.tlsFiles.ca`, `agent.tlsFiles.cert`, `agent.tlsFiles.key`, `server.tlsFiles.ca`, `server.tlsFiles.cert` and `agent.tlsFiles.key` to be the base64-encoded contents (.e.g. using the `base64` command) of the generated PEM files.
+Define values `agent.tlsFiles.ca`, `agent.tlsFiles.cert`, `agent.tlsFiles.key`, `server.tlsFiles.ca`, `server.tlsFiles.cert` and `server.tlsFiles.key` to be the base64-encoded contents (.e.g. using the `base64` command) of the generated PEM files.
 For example
 
 ```yaml
