@@ -150,7 +150,7 @@ postgresqlDataDir: /bitnami/postgresql
 ## Alternatively, you can put your scripts under the files/docker-entrypoint-initdb.d directory
 ##
 # initdbScripts:
-#   my_init_script.sh:|
+#   my_init_script.sh: |
 #      #!/bin/sh
 #      echo "Do something."
 
