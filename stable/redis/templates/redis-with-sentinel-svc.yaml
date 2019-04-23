@@ -1,8 +1,8 @@
-{{- if not .Values.sentinel.enabled }}
+{{- if .Values.sentinel.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "redis.fullname" . }}-master
+  name: {{ template "redis.fullname" . }}
   labels:
     app: {{ template "redis.name" . }}
     chart: {{ template "redis.chart" . }}
@@ -20,13 +20,18 @@ spec:
   {{- end -}}
   ports:
   - name: redis
-    port: {{ .Values.master.service.port }}
+    port: {{ .Values.sentinel.service.redisPort }}
     targetPort: redis
-    {{- if .Values.master.service.nodePort }}
-    nodePort: {{ .Values.master.service.nodePort }}
+    {{- if .Values.sentinel.service.redisNodePort }}
+    nodePort: {{ .Values.sentinel.service.redisNodePort }}
+    {{- end }}
+  - name: redis-sentinel
+    port: {{ .Values.sentinel.service.sentinelPort }}
+    targetPort: redis-sentinel
+    {{- if .Values.sentinel.service.sentinelNodePort }}
+    nodePort: {{ .Values.sentinel.service.sentinelNodePort }}
     {{- end }}
   selector:
     app: {{ template "redis.name" . }}
     release: "{{ .Release.Name }}"
-    role: master
 {{- end }}
