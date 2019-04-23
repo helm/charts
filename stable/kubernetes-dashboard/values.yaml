@@ -155,3 +155,7 @@ livenessProbe:
   initialDelaySeconds: 30
   # Number of seconds to wait for probe response
   timeoutSeconds: 30
+
+# The values to set in the PodDisruptionBudget spec (minAvailable/maxUnavailable)
+# If not set then a PodDisruptionBudget will not be created
+podDisruptionBudget:
