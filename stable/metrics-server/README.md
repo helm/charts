@@ -31,3 +31,4 @@ Parameter | Description | Default
 `service.annotations` | Annotations to add to the service | `{}`
 `service.port` | Service port to expose | `443`
 `service.type` | Type of service to create | `ClusterIP`
+`podDisruptionBudget` | If set, create a PodDisruptionBudget with the items in this map set in the spec | ``
