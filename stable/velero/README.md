@@ -31,10 +31,12 @@ Parameter | Description | Default | Required
 `configuration.provider` | The name of the cloud provider where you are deploying velero to (`aws`, `azure`, `gcp`) | none | yes
 `configuration.backupStorageLocation.name` | The name of the cloud provider that will be used to actually store the backups (`aws`, `azure`, `gcp`) | none | yes
 `configuration.backupStorageLocation.bucket` | The storage bucket where backups are to be uploaded | none | yes
-`configuration.backupStorageLocation.config.region` | The cloud provider region (`aws` only) | none | yes, if using AWS
+`configuration.backupStorageLocation.config.region` | The cloud provider region (AWS only) | none | yes, if using AWS
+`configuration.backupStorageLocation.config.resourceGroup` | The resource group containing the storage account (Azure only) | none | yes, if using Azure
+`configuration.backupStorageLocation.config.storageAccount` | The storage account containing the blob container (Azure only) | none | yes, if using Azure
 `configuration.volumeSnapshotLocation.name` | The name of the cloud provider the cluster is using for persistent volumes, if any | none | yes, if using PV snapshots
-`configuration.volumeSnapshotLocation.config.region` | The cloud provider region (`aws` only) | none | yes, if using AWS
-`configuration.volumeSnapshotLocation.config.apiTimeout` | The API timeout (`azure` only) | none | yes, if using Azure
+`configuration.volumeSnapshotLocation.config.region` | The cloud provider region (AWS only) | none | yes, if using AWS
+`configuration.volumeSnapshotLocation.config.apiTimeout` | The API timeout (Azure only) | none | yes, if using Azure
 `credentials.useSecret` | Whether a secret should be used for IAM credentials. Set this to `false` when using `kube2iam` | `true` | yes
 `credentials.existingSecret` | If specified and `useSecret` is `true`, uses an existing secret with this name instead of creating one | none | yes, if `useSecret` is `true` and `secretContents` is empty
 `credentials.secretContents` | If specified and `useSecret` is `true`, contents for the credentials secret | none | yes, if `useSecret` is `true` and `existingSecret` is empty
@@ -59,6 +61,8 @@ Parameter | Description | Default
 `configuration.backupStorageLocation.config.s3ForcePathStyle` | Set to `true` for a local storage service like Minio | ``
 `configuration.backupStorageLocation.config.s3Url` | S3 url (primarily used for local storage services like Minio) | ``
 `configuration.backupStorageLocation.config.kmsKeyId` | KMS key for encryption (AWS only) | ``
+`configuration.backupStorageLocation.config.resourceGroup` | The resource group containing the storage account (Azure only) | ``
+`configuration.backupStorageLocation.config.storageAccount` | The storage account containing the blob container (Azure only) | ``
 `configuration.backupStorageLocation.prefix` | The directory inside a storage bucket where backups are to be uploaded | ``
 `configuration.backupSyncPeriod` | How frequently Velero queries the object storage to make sure that the appropriate Backup resources have been created for existing backup files | `1m`
 `configuration.extraEnvVars` | Key/values for extra environment variables such as AWS_CLUSTER_NAME, etc | `{}`

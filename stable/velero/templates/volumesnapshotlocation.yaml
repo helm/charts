@@ -16,7 +16,7 @@ spec:
   {{- with .region }}
     region: {{ . }}
   {{- end }}
-  {{- with .apitimeout }}
+  {{- with .apiTimeout }}
     apiTimeout: {{ . }}
   {{- end }}
 {{- end }}
