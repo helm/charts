@@ -18,6 +18,8 @@ replicaCount: 1
 ## Schema Registry Settings Overrides
 ## Configuration Options can be found here: https://docs.confluent.io/current/schema-registry/docs/config.html
 configurationOverrides: {}
+  ## The default master.eligiblity is true
+  # master.eligibility: false
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
