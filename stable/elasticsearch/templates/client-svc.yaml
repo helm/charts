@@ -21,6 +21,11 @@ spec:
       nodePort: {{ .Values.client.httpNodePort }}
 {{- end }}
       targetPort: http
+{{- if .Values.client.exposeTransportPort }}
+    - name: transport
+      port: 9300
+      targetPort: transport
+{{- end }}
   selector:
     app: {{ template "elasticsearch.name" . }}
     component: "{{ .Values.client.name }}"
