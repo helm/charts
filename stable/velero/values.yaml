@@ -54,23 +54,25 @@ metrics:
 
 
 ##
-## Parameters for the ' default' Config resource
-## See https://heptio.github.io/velero/v0.11.0/config-definition
+## Parameters for the `default` BackupStorageLocation and VolumeSnapshotLocation,
+## and additional server settings.
 ##
 configuration:
   # Cloud provider being used (e.g. aws, azure, gcp).
   provider:
 
-  volumeSnapshotLocation: {}
-  #  name:
-  #  config:
-  #    region:
-  #    apiTimeout:
-
+  # Parameters for the `default` BackupStorageLocation. See
+  # https://heptio.github.io/velero/v0.11.0/api-types/backupstoragelocation.html
   backupStorageLocation:
+    # Cloud provider where backups should be stored. Usually should
+    # match `configuration.provider`. Required.
     name:
+    # Bucket to store backups in. Required.
     bucket:
-    # prefix:
+    # Prefix within bucket under which to store backups. Optional. 
+    prefix:
+    # Additional provider-specific configuration. See link above
+    # for details of required/optional fields for your provider.
     config: {}
     #  region:
     #  s3ForcePathStyle:
@@ -79,6 +81,18 @@ configuration:
     #  resourceGroup:
     #  storageAccount:
     #  publicUrl:
+  
+  # Parameters for the `default` VolumeSnapshotLocation. See
+  # https://heptio.github.io/velero/v0.11.0/api-types/volumesnapshotlocation.html
+  volumeSnapshotLocation:
+    # Cloud provider where volume snapshots are being taken. Usually
+    # should match `configuration.provider`. Required.,
+    name:
+    # Additional provider-specific configuration. See link above
+    # for details of required/optional fields for your provider.
+    config: {}
+  #    region:
+  #    apiTimeout:
 
   # These are server-level settings passed as CLI flags to the `velero server` command. Velero
   # uses default values if they're not passed in, so they only need to be explicitly specified
