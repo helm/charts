@@ -36,7 +36,7 @@ Parameter | Description | Default | Required
 `configuration.backupStorageLocation.config.storageAccount` | The storage account containing the blob container (Azure only) | none | yes, if using Azure
 `configuration.volumeSnapshotLocation.name` | The name of the cloud provider the cluster is using for persistent volumes, if any | none | yes, if using PV snapshots
 `configuration.volumeSnapshotLocation.config.region` | The cloud provider region (AWS only) | none | yes, if using AWS
-`configuration.volumeSnapshotLocation.config.apiTimeout` | The API timeout (Azure only) | none | yes, if using Azure
+`configuration.volumeSnapshotLocation.config.apitimeout` | The API timeout (Azure only) | none | yes, if using Azure
 `credentials.useSecret` | Whether a secret should be used for IAM credentials. Set this to `false` when using `kube2iam` | `true` | yes
 `credentials.existingSecret` | If specified and `useSecret` is `true`, uses an existing secret with this name instead of creating one | none | yes, if `useSecret` is `true` and `secretContents` is empty
 `credentials.secretContents` | If specified and `useSecret` is `true`, contents for the credentials secret | none | yes, if `useSecret` is `true` and `existingSecret` is empty
@@ -72,7 +72,7 @@ Parameter | Description | Default
 `configuration.restoreOnlyMode` | When RestoreOnly mode is on, functionality for backups, schedules, and expired backup deletion is turned off. Restores are made from existing backup files in object storage | (uses `velero server` default)
 `configuration.volumeSnapshotLocation.name` | The name of the cloud provider the cluster is using for persistent volumes, if any | `{}`
 `configuration.volumeSnapshotLocation.config.region` | The cloud provider region (AWS only) | ``
-`configuration.volumeSnapshotLocation.config.apiTimeout` | The API timeout (`azure` only) |
+`configuration.volumeSnapshotLocation.config.apitimeout` | The API timeout (`azure` only) |
 `credentials.existingSecret` | If specified and `useSecret` is `true`, uses an existing secret with this name instead of creating one | ``
 `credentials.useSecret` | Whether a secret should be used. Set this to `false` when using `kube2iam` | `true`
 `credentials.secretContents` | Contents for the credentials secret | `{}`
