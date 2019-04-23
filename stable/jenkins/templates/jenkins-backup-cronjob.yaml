@@ -57,7 +57,7 @@ spec:
                 - key: "app.kubernetes.io/name"
                   operator: In
                   values:
-                  - '{{ template "jenkins.name" .}}'
+                  - "{{ template "jenkins.name" . }}"
                 - key: "app.kubernetes.io/instance"
                   operator: In
                   values:
