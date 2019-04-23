@@ -58,6 +58,7 @@ metrics:
 ## See https://heptio.github.io/velero/v0.11.0/config-definition
 ##
 configuration:
+  # Cloud provider being used (e.g. aws, azure, gcp).
   provider:
 
   volumeSnapshotLocation: {}

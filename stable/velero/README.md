@@ -25,14 +25,21 @@ kubectl create secret generic cloud-credentials --namespace <VELERO_NAMESPACE> -
 Please change the values.yaml according to your setup
 See here for the official documentation https://heptio.github.io/velero/v0.11.0/install-overview
 
+#### Required Parameters
 Parameter | Description | Default | Required
 --- | --- | --- | ---
-`cloudprovider` | Cloud provider  | `nil` | yes
-`bucket` | Object storage where to store backups  | `nil` | yes
-`region` | AWS region  | `nil` | only if using AWS
-`apitimeout` | Api Timeout  | `nil` | only if using Azure
-`credentials` | Credentials  | `nil` | Yes (not required for kube2iam)
+`configuration.provider` | The name of the cloud provider where you are deploying velero to (`aws`, `azure`, `gcp`) | none | yes
+`configuration.backupStorageLocation.name` | The name of the cloud provider that will be used to actually store the backups (`aws`, `azure`, `gcp`) | none | yes
+`configuration.backupStorageLocation.bucket` | The storage bucket where backups are to be uploaded | none | yes
+`configuration.backupStorageLocation.config.region` | The cloud provider region (`aws` only) | none | yes, if using AWS
+`configuration.volumeSnapshotLocation.name` | The name of the cloud provider the cluster is using for persistent volumes, if any | none | yes, if using PV snapshots
+`configuration.volumeSnapshotLocation.config.region` | The cloud provider region (`aws` only) | none | yes, if using AWS
+`configuration.volumeSnapshotLocation.config.apiTimeout` | The API timeout (`azure` only) | none | yes, if using Azure
+`credentials.useSecret` | Whether a secret should be used for IAM credentials. Set this to `false` when using `kube2iam` | `true` | yes
+`credentials.existingSecret` | If specified and `useSecret` is `true`, uses an existing secret with this name instead of creating one | none | yes, if `useSecret` is `true` and `secretContents` is empty
+`credentials.secretContents` | If specified and `useSecret` is `true`, contents for the credentials secret | none | yes, if `useSecret` is `true` and `existingSecret` is empty
 
+#### All Parameters
 Parameter | Description | Default
 --- | --- | ---
 `image.repository` | Image repository | `gcr.io/heptio-images/velero`
