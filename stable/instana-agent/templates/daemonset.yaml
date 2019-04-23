@@ -3,7 +3,7 @@
 apiVersion: apps/v1beta2
 kind: DaemonSet
 metadata:
-  name: {{ template "instana-agent.name" . }}
+  name: {{ template "instana-agent.fullname" . }}
   labels:
     {{- include "instana-agent.helmChartLabels" . | nindent 4 }}
 spec:
@@ -39,7 +39,7 @@ spec:
             - name: INSTANA_AGENT_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "instana-agent.name" . }}-agent-secret
+                  name: {{ template "instana-agent.fullname" . }}-agent-secret
                   key: key
             {{- if .Values.agent.mode }}
             - name: INSTANA_AGENT_MODE
@@ -49,7 +49,7 @@ spec:
             - name: INSTANA_DOWNLOAD_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "instana-agent.name" . }}-download-secret
+                  name: {{ template "instana-agent.fullname" . }}-download-secret
                   key: key
             {{- end }}
             {{- if .Values.agent.proxyHost }}
@@ -159,6 +159,6 @@ spec:
             path: /etc/machine-id
         - name: configuration
           configMap:
-            name: {{ template "instana-agent.name" . }}-configuration
+            name: {{ template "instana-agent.fullname" . }}
 {{- end -}}
 {{- end -}}

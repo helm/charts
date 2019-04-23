@@ -2,7 +2,7 @@
 kind: ClusterRole
 apiVersion: {{ template "instana-agent.rbacApiVersion" . }}
 metadata:
-  name: {{ template "instana-agent.name" . }}-role
+  name: {{ template "instana-agent.fullname" . }}
   labels:
     {{- include "instana-agent.helmChartLabels" . | nindent 4 }}
 rules:

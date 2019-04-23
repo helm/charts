@@ -2,7 +2,7 @@
 kind: ClusterRoleBinding
 apiVersion: {{ template "instana-agent.rbacApiVersion" . }}
 metadata:
-  name: {{ template "instana-agent.name" . }}-role-binding
+  name: {{ template "instana-agent.fullname" . }}
   labels:
     {{- include "instana-agent.helmChartLabels" . | nindent 4 }}
 subjects:
@@ -11,6 +11,6 @@ subjects:
   namespace: {{ .Release.Namespace }}
 roleRef:
   kind: ClusterRole
-  name: {{ template "instana-agent.name" . }}-role
+  name: {{ template "instana-agent.fullname" . }}
   apiGroup: rbac.authorization.k8s.io
 {{- end -}}
