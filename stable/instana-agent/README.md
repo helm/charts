@@ -93,7 +93,7 @@ The following table lists the configurable parameters of the Instana chart and t
 | `agent.key`                        | Your Instana Agent key                                                  | `nil` You must provide your own key          |
 | `zone.name`                        | Instana zone/cluster name                                               | `nil` You must provide your own zone name    |
 | `agent.image.name`                 | The image name to pull                                                  | `instana/agent`                              |
-| `agent.image.tag`                  | The image tag to pull                                                   | `latest`                                     |
+| `agent.image.tag`                  | The image tag to pull                                                   | `1.0.17`                                     |
 | `agent.image.pullPolicy`           | Image pull policy                                                       | `IfNotPresent`                               |
 | `agent.leaderElectorPort`          | Instana leader elector sidecar port                                     | `42655`                                      |
 | `agent.endpointHost`               | Instana agent backend endpoint host                                     | `saas-us-west-2.instana.io`                  |
