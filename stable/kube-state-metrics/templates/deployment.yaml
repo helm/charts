@@ -19,9 +19,7 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
 {{- end }}
     spec:
-{{ if .Values.rbac.create }}
       serviceAccountName: {{ template "kube-state-metrics.serviceAccountName" . }}
-{{ end }}
       {{- if .Values.securityContext.enabled }}
       securityContext:
         fsGroup: {{ .Values.securityContext.fsGroup }}
