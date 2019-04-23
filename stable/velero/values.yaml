@@ -1,8 +1,8 @@
-## 
+##
 ## Configuration settings that directly affect the Velero deployment YAML.
 ##
 
-# Details of the container image to use in the Velero deployment & daemonset (if 
+# Details of the container image to use in the Velero deployment & daemonset (if
 # enabling restic). Required.
 image:
   repository: gcr.io/heptio-images/velero
@@ -69,7 +69,7 @@ configuration:
     name:
     # Bucket to store backups in. Required.
     bucket:
-    # Prefix within bucket under which to store backups. Optional. 
+    # Prefix within bucket under which to store backups. Optional.
     prefix:
     # Additional provider-specific configuration. See link above
     # for details of required/optional fields for your provider.
@@ -81,7 +81,7 @@ configuration:
     #  resourceGroup:
     #  storageAccount:
     #  publicUrl:
-  
+
   # Parameters for the `default` VolumeSnapshotLocation. See
   # https://heptio.github.io/velero/v0.11.0/api-types/volumesnapshotlocation.html
   volumeSnapshotLocation:
@@ -99,11 +99,15 @@ configuration:
   # here if using a non-default value. The `velero server` default values are shown in the
   # comments below.
   # --------------------
-  backupSyncPeriod: # 1m
-  resticTimeout: # 1h
-  restoreResourcePriorities: # namespaces,persistentvolumes,persistentvolumeclaims,secrets,configmaps,serviceaccounts,limitranges,pods
-  restoreOnlyMode: # false
-  
+  # `velero server` default: 1m
+  backupSyncPeriod:
+  # `velero server` default: 1h
+  resticTimeout:
+  # `velero server` default: namespaces,persistentvolumes,persistentvolumeclaims,secrets,configmaps,serviceaccounts,limitranges,pods
+  restoreResourcePriorities:
+  # `velero server` default: false
+  restoreOnlyMode:
+
   # additional key/value pairs to be used as environment variables such as "AWS_CLUSTER_NAME: 'yourcluster.domain.tld'"
   extraEnvVars: {}
 
@@ -113,7 +117,7 @@ configuration:
 
 
 ##
-## Settings for additional Velero resources. 
+## Settings for additional Velero resources.
 ##
 
 # Whether to create the Velero cluster role binding.
@@ -127,7 +131,7 @@ serviceAccount:
     name:
 
 # Info about the secret to be used by the Velero deployment, which
-# should contain credentials for the cloud provider IAM account you've 
+# should contain credentials for the cloud provider IAM account you've
 # set up for Velero.
 credentials:
   # Whether a secret should be used as the source of IAM account
@@ -137,7 +141,7 @@ credentials:
   # Name of a pre-existing secret (if any) in the Velero namespace
   # that should be used to get IAM account credentials. Optional.
   existingSecret:
-  # Data to be stored in the Velero secret, if `useSecret` is 
+  # Data to be stored in the Velero secret, if `useSecret` is
   # true and `existingSecret` is empty. This should be the contents
   # of your IAM credentials file.
   secretContents: {}
@@ -145,7 +149,7 @@ credentials:
 # Whether to deploy the restic daemonset.
 deployRestic: false
 
-# Backup schedules to create. 
+# Backup schedules to create.
 # Eg:
 # schedules:
 #   mybackup:
@@ -157,5 +161,5 @@ deployRestic: false
 schedules: {}
 
 ##
-## End of additional Velero resource settings. 
+## End of additional Velero resource settings.
 ##
