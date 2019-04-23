@@ -1,35 +1,43 @@
+{{- if .Values.cluster.enabled }}
 apiVersion: apps/v1beta2
 kind: StatefulSet
 metadata:
-  name: {{ template "redis.fullname" . }}-master
+  name: {{ template "redis.fullname" . }}-slave
   labels:
     app: {{ template "redis.name" . }}
     chart: {{ template "redis.chart" . }}
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
+{{- if .Values.slave.updateStrategy }}
+  strategy:
+{{ toYaml .Values.slave.updateStrategy | indent 4 }}
+{{- end }}
+{{- if .Values.cluster.slaveCount }}
+  replicas: {{ .Values.cluster.slaveCount }}
+{{- end }}
+  serviceName: {{ template "redis.fullname" . }}-headless
   selector:
     matchLabels:
-      release: "{{ .Release.Name }}"
-      role: master
-      app: {{ template "redis.name" . }}
-  serviceName: {{ template "redis.fullname" . }}-headless
+        release: "{{ .Release.Name }}"
+        role: slave
+        app: {{ template "redis.name" . }}
   template:
     metadata:
       labels:
         release: "{{ .Release.Name }}"
         chart: {{ template "redis.chart" . }}
-        role: master
+        role: slave
         app: {{ template "redis.name" . }}
-{{- if .Values.master.podLabels }}
-{{ toYaml .Values.master.podLabels | indent 8 }}
-{{- end }}
+      {{- if .Values.slave.podLabels }}
+{{ toYaml .Values.slave.podLabels | indent 8 }}
+      {{- end }}
       annotations:
         checksum/health: {{ include (print $.Template.BasePath "/health-configmap.yaml") . | sha256sum }}
         checksum/configmap: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
         checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
-      {{- if .Values.master.podAnnotations }}
-{{ toYaml .Values.master.podAnnotations | indent 8 }}
+      {{- if .Values.slave.podAnnotations }}
+{{ toYaml .Values.slave.podAnnotations | indent 8 }}
       {{- end }}
     spec:
 {{- include "redis.imagePullSecrets" . | indent 6 }}
@@ -38,27 +46,27 @@ spec:
         fsGroup: {{ .Values.securityContext.fsGroup }}
       {{- end }}
       serviceAccountName: "{{ template "redis.serviceAccountName" . }}"
-      {{- if .Values.master.priorityClassName }}
-      priorityClassName: "{{ .Values.master.priorityClassName }}"
+      {{- if .Values.slave.priorityClassName }}
+      priorityClassName: "{{ .Values.slave.priorityClassName }}"
       {{- end }}
-      {{- with .Values.master.affinity }}
+      {{- if .Values.slave.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.slave.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.slave.tolerations }}
+      tolerations:
+{{ toYaml .Values.slave.tolerations | indent 8 }}
+      {{- end }}
+      {{- if .Values.slave.schedulerName }}
+      schedulerName: "{{ .Values.slave.schedulerName }}"
+      {{- end }}
+    {{- with .Values.slave.affinity }}
       affinity:
 {{ tpl (toYaml .) $ | indent 8 }}
-      {{- end }}
-      {{- if .Values.master.nodeSelector }}
-      nodeSelector:
-{{ toYaml .Values.master.nodeSelector | indent 8 }}
-      {{- end }}
-      {{- if .Values.master.tolerations }}
-      tolerations:
-{{ toYaml .Values.master.tolerations | indent 8 }}
-      {{- end }}
-      {{- if .Values.master.schedulerName }}
-      schedulerName: "{{ .Values.master.schedulerName }}"
-      {{- end }}
+    {{- end }}
       containers:
       - name: {{ template "redis.fullname" . }}
-        image: "{{ template "redis.image" . }}"
+        image: {{ template "redis.image" . }}
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         {{- if .Values.securityContext.enabled }}
         securityContext:
@@ -72,8 +80,12 @@ spec:
             password_aux=`cat ${REDIS_PASSWORD_FILE}`
             export REDIS_PASSWORD=$password_aux
           fi
-          if [[ ! -f /opt/bitnami/redis/etc/master.conf ]];then
-            cp /opt/bitnami/redis/mounted-etc/master.conf /opt/bitnami/redis/etc/master.conf
+          if [[ -n $REDIS_MASTER_PASSWORD_FILE ]]; then
+            password_aux=`cat ${REDIS_MASTER_PASSWORD_FILE}`
+            export REDIS_MASTER_PASSWORD=$password_aux
+          fi
+          if [[ ! -f /opt/bitnami/redis/etc/replica.conf ]];then
+            cp /opt/bitnami/redis/mounted-etc/replica.conf /opt/bitnami/redis/etc/replica.conf
           fi
           if [[ ! -f /opt/bitnami/redis/etc/redis.conf ]];then
             cp /opt/bitnami/redis/mounted-etc/redis.conf /opt/bitnami/redis/etc/redis.conf
@@ -81,25 +93,40 @@ spec:
           ARGS=("--port" "${REDIS_PORT}")
           {{- if .Values.usePassword }}
           ARGS+=("--requirepass" "${REDIS_PASSWORD}")
+          ARGS+=("--slaveof" "${REDIS_MASTER_HOST}" "${REDIS_MASTER_PORT_NUMBER}")
+          ARGS+=("--masterauth" "${REDIS_MASTER_PASSWORD}")
           {{- else }}
           ARGS+=("--protected-mode" "no")
           {{- end }}
           ARGS+=("--include" "/opt/bitnami/redis/etc/redis.conf")
-          ARGS+=("--include" "/opt/bitnami/redis/etc/master.conf")
-          {{- if .Values.master.command }}
-          {{ .Values.master.command }} ${ARGS[@]}
+          ARGS+=("--include" "/opt/bitnami/redis/etc/replica.conf")
+          {{- if .Values.slave.command }}
+          {{ .Values.slave.command }} "${ARGS[@]}"
           {{- else }}
           redis-server "${ARGS[@]}"
           {{- end }}
         env:
         - name: REDIS_REPLICATION_MODE
-          value: master
+          value: slave
+        - name: REDIS_MASTER_HOST
+          value: {{ template "redis.fullname" . }}-master-0.{{ template "redis.fullname" . }}-headless.{{ .Release.Namespace }}.svc.cluster.local
+        - name: REDIS_PORT
+          value: {{ .Values.redisPort | quote }}
+        - name: REDIS_MASTER_PORT_NUMBER
+          value: {{ .Values.redisPort | quote }}
         {{- if .Values.usePassword }}
         {{- if .Values.usePasswordFile }}
         - name: REDIS_PASSWORD_FILE
           value: "/opt/bitnami/redis/secrets/redis-password"
+        - name: REDIS_MASTER_PASSWORD_FILE
+          value: "/opt/bitnami/redis/secrets/redis-password"
         {{- else }}
         - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "redis.secretName" . }}
+              key: redis-password
+        - name: REDIS_MASTER_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "redis.secretName" . }}
@@ -109,39 +136,46 @@ spec:
         - name: ALLOW_EMPTY_PASSWORD
           value: "yes"
         {{- end }}
-        - name: REDIS_PORT
-          value: {{ .Values.redisPort | quote }}
         ports:
         - name: redis
           containerPort: {{ .Values.redisPort }}
-        {{- if .Values.master.livenessProbe.enabled }}
+        {{- if .Values.slave.livenessProbe.enabled }}
         livenessProbe:
-          initialDelaySeconds: {{ .Values.master.livenessProbe.initialDelaySeconds }}
-          periodSeconds: {{ .Values.master.livenessProbe.periodSeconds }}
-          timeoutSeconds: {{ .Values.master.livenessProbe.timeoutSeconds }}
-          successThreshold: {{ .Values.master.livenessProbe.successThreshold }}
-          failureThreshold: {{ .Values.master.livenessProbe.failureThreshold }}
+          initialDelaySeconds: {{ .Values.slave.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.slave.livenessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.slave.livenessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.slave.livenessProbe.successThreshold }}
+          failureThreshold: {{ .Values.slave.livenessProbe.failureThreshold}}
           exec:
             command:
             - sh
             - -c
-            - /health/ping_local.sh {{ .Values.master.livenessProbe.timeoutSeconds }}
+            {{- if .Values.sentinel.enabled }}
+            - /health/ping_local.sh {{ .Values.slave.livenessProbe.timeoutSeconds }}
+            {{- else }}
+            - /health/ping_local_and_master.sh {{ .Values.slave.livenessProbe.timeoutSeconds }}
+            {{- end }}
         {{- end }}
-        {{- if .Values.master.readinessProbe.enabled}}
+
+        {{- if .Values.slave.readinessProbe.enabled }}
         readinessProbe:
-          initialDelaySeconds: {{ .Values.master.readinessProbe.initialDelaySeconds }}
-          periodSeconds: {{ .Values.master.readinessProbe.periodSeconds }}
-          timeoutSeconds: {{ .Values.master.readinessProbe.timeoutSeconds }}
-          successThreshold: {{ .Values.master.readinessProbe.successThreshold }}
-          failureThreshold: {{ .Values.master.readinessProbe.failureThreshold }}
+          initialDelaySeconds: {{ .Values.slave.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.slave.readinessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.slave.readinessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.slave.readinessProbe.successThreshold }}
+          failureThreshold: {{ .Values.slave.readinessProbe.failureThreshold }}
           exec:
             command:
             - sh
             - -c
-            - /health/ping_local.sh {{ .Values.master.livenessProbe.timeoutSeconds }}
+            {{- if .Values.sentinel.enabled }}
+            - /health/ping_local.sh {{ .Values.slave.livenessProbe.timeoutSeconds }}
+            {{- else }}
+            - /health/ping_local_and_master.sh {{ .Values.slave.livenessProbe.timeoutSeconds }}
+            {{- end }}
         {{- end }}
         resources:
-{{ toYaml .Values.master.resources | indent 10 }}
+{{ toYaml .Values.slave.resources | indent 10 }}
         volumeMounts:
         - name: health
           mountPath: /health
@@ -150,12 +184,11 @@ spec:
           mountPath: /opt/bitnami/redis/secrets/
         {{- end }}
         - name: redis-data
-          mountPath: {{ .Values.master.persistence.path }}
-          subPath: {{ .Values.master.persistence.subPath }}
+          mountPath: /data
         - name: config
           mountPath: /opt/bitnami/redis/mounted-etc
         - name: redis-tmp-conf
-          mountPath: /opt/bitnami/redis/etc/
+          mountPath: /opt/bitnami/redis/etc
       {{- if and .Values.cluster.enabled .Values.sentinel.enabled }}
       - name: sentinel
         image: "{{ template "sentinel.image" . }}"
@@ -246,24 +279,24 @@ spec:
         - name: config
           mountPath: /opt/bitnami/redis-sentinel/mounted-etc
         - name: sentinel-tmp-conf
-          mountPath: /opt/bitnami/redis-sentinel/etc/
+          mountPath: /opt/bitnami/redis-sentinel/etc
       {{- end }}
-      {{- $needsVolumePermissions := and .Values.volumePermissions.enabled (and ( and .Values.master.persistence.enabled (not .Values.persistence.existingClaim) ) .Values.securityContext.enabled) }}
+      {{- $needsVolumePermissions := and .Values.volumePermissions.enabled (and .Values.slave.persistence.enabled .Values.securityContext.enabled) }}
       {{- if or $needsVolumePermissions .Values.sysctlImage.enabled }}
       initContainers:
       {{- if $needsVolumePermissions }}
       - name: volume-permissions
         image: "{{ template "redis.volumePermissions.image" . }}"
         imagePullPolicy: {{ .Values.volumePermissions.image.pullPolicy | quote }}
-        command: ["/bin/chown", "-R", "{{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.fsGroup }}", "{{ .Values.master.persistence.path }}"]
+        command: ["/bin/chown", "-R", "{{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.fsGroup }}", "{{ .Values.slave.persistence.path }}"]
         securityContext:
           runAsUser: 0
         resources:
 {{ toYaml .Values.volumePermissions.resources | indent 10 }}
         volumeMounts:
         - name: redis-data
-          mountPath: {{ .Values.master.persistence.path }}
-          subPath: {{ .Values.master.persistence.subPath }}
+          mountPath: {{ .Values.slave.persistence.path }}
+          subPath: {{ .Values.slave.persistence.subPath }}
       {{- end }}
       {{- if .Values.sysctlImage.enabled }}
       - name: init-sysctl
@@ -296,59 +329,48 @@ spec:
       - name: config
         configMap:
           name: {{ template "redis.fullname" . }}
-      {{- if not .Values.master.persistence.enabled }}
-      - name: "redis-data"
-        emptyDir: {}
-      {{- else }}
-      {{- if .Values.persistence.existingClaim }}
-      - name: "redis-data"
-        persistentVolumeClaim:
-          claimName: {{ .Values.persistence.existingClaim }}
-      {{- end }}
-      {{- end }}
       {{- if .Values.sysctlImage.mountHostSys }}
       - name: host-sys
         hostPath:
           path: /sys
       {{- end }}
-      - name: redis-tmp-conf
-        emptyDir: {}
-      {{- if and .Values.cluster.enabled .Values.sentinel.enabled }}
       - name: sentinel-tmp-conf
         emptyDir: {}
-      {{- end }}
-  {{- if and .Values.master.persistence.enabled (not .Values.persistence.existingClaim) }}
+      - name: redis-tmp-conf
+        emptyDir: {}
+  {{- if and .Values.slave.persistence.enabled }}
   volumeClaimTemplates:
     - metadata:
         name: redis-data
         labels:
           app: "{{ template "redis.name" . }}"
-          component: "master"
+          component: "slave"
           release: {{ .Release.Name | quote }}
           heritage: {{ .Release.Service | quote }}
       spec:
         accessModes:
-        {{- range .Values.master.persistence.accessModes }}
+        {{- range .Values.slave.persistence.accessModes }}
           - {{ . | quote }}
         {{- end }}
         resources:
           requests:
-            storage: {{ .Values.master.persistence.size | quote }}
-      {{- if .Values.master.persistence.storageClass }}
-      {{- if (eq "-" .Values.master.persistence.storageClass) }}
+            storage: {{ .Values.slave.persistence.size | quote }}
+      {{- if .Values.slave.persistence.storageClass }}
+      {{- if (eq "-" .Values.slave.persistence.storageClass) }}
         storageClassName: ""
       {{- else }}
-        storageClassName: {{ .Values.master.persistence.storageClass | quote }}
+        storageClassName: {{ .Values.slave.persistence.storageClass | quote }}
       {{- end }}
       {{- end }}
   {{- end }}
   updateStrategy:
-    type: {{ .Values.master.statefulset.updateStrategy }}
-    {{- if .Values.master.statefulset.rollingUpdatePartition }}
-    {{- if (eq "Recreate" .Values.master.statefulset.updateStrategy) }}
+    type: {{ .Values.slave.statefulset.updateStrategy }}
+    {{- if .Values.slave.statefulset.rollingUpdatePartition }}
+    {{- if (eq "Recreate" .Values.slave.statefulset.updateStrategy) }}
     rollingUpdate: null
     {{- else }}
     rollingUpdate:
-      partition: {{ .Values.master.statefulset.rollingUpdatePartition }}
+      partition: {{ .Values.slave.statefulset.rollingUpdatePartition }}
     {{- end }}
     {{- end }}
+{{- end }}
