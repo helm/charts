@@ -87,6 +87,7 @@ rules:
   - apiGroups:
     - apps
     resources:
+    - daemonsets
     - replicasets
     - statefulsets
     verbs:

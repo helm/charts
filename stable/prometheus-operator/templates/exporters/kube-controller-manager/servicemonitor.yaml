@@ -26,4 +26,12 @@ spec:
     tlsConfig:
       caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
     {{- end }}
+{{- if .Values.kubeControllerManager.serviceMonitor.metricRelabelings }}
+    metricRelabelings:
+{{ toYaml .Values.kubeControllerManager.serviceMonitor.metricRelabelings | indent 4 }}
+{{- end }}
+{{- if .Values.kubeControllerManager.serviceMonitor.relabelings }}
+    relabelings:
+{{ toYaml .Values.kubeControllerManager.serviceMonitor.relabelings | indent 4 }}
+{{- end }}
 {{- end }}
