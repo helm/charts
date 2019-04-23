@@ -61,6 +61,11 @@ image: openpolicyagent/opa
 imageTag: 0.10.5
 imagePullPolicy: IfNotPresent
 
+# Port to which opa pod will bind itself
+# NOTE IF you use a different port make sure it maches the ones in the readinessProbe 
+# and livenessProbe
+port: 443
+
 mgmt:
   enabled: true
   image: openpolicyagent/kube-mgmt
