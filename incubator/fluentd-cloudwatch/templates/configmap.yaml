@@ -1,3 +1,4 @@
+{{- if and (.Values.useCustomFluentConfig) -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -9,3 +10,4 @@ metadata:
     release: {{ .Release.Name | quote }}
 data:
   fluent.conf: {{ toYaml .Values.fluentdConfig | indent 2 }}
+{{- end -}}

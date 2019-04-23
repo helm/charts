@@ -62,6 +62,7 @@ The following table lists the configurable parameters of the Fluentd Cloudwatch 
 | `awsRole`                    | AWS IAM Role To Use                                                       | `nil`                                 |
 | `awsAccessKeyId`             | AWS Access Key Id of a AWS user with a policy to access Cloudwatch        | `nil`                                 |
 | `awsSecretAccessKey`         | AWS Secret Access Key of a AWS user with a policy to access Cloudwatch    | `nil`                                 |
+| `useCustomFluentConfig`      | Use the default config in the image or not. By default use fluentdConfig  | `true`                                |
 | `fluentdConfig`              | Fluentd configuration                                                     | `example configuration`               |
 | `logGroupName`               | AWS Cloudwatch log group                                                  | `kubernetes`                          |
 | `rbac.create`                | If true, create & use RBAC resources                                      | `false`                               |

@@ -65,6 +65,8 @@ extraVars: []
 updateStrategy:
   type: OnDelete
 
+useCustomFluentConfig: true
+
 fluentdConfig: |
   <match fluent.**>
     type null

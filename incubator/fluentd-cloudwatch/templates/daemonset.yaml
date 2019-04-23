@@ -23,6 +23,7 @@ spec:
       securityContext:
 {{ toYaml .Values.podSecurityContext | indent 8 }}
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "fluentd-cloudwatch.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+{{- if and (.Values.useCustomFluentConfig)}}
       initContainers:
         - name: copy-fluentd-config
           image: busybox
@@ -32,6 +33,7 @@ spec:
               mountPath: /config-volume
             - name: config
               mountPath: /etc/fluentd
+{{- end}}
       containers:
       - name: {{ template "fluentd-cloudwatch.fullname" . }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -69,8 +71,10 @@ spec:
         - name: varlibdockercontainers
           mountPath: /var/lib/docker/containers
           readOnly: true
+{{- if and (.Values.useCustomFluentConfig)}}
         - name: config
           mountPath: /fluentd/etc
+{{- end }}
       terminationGracePeriodSeconds: 30
       volumes:
       - name: varlog
@@ -79,11 +83,13 @@ spec:
       - name: varlibdockercontainers
         hostPath:
           path: /var/lib/docker/containers
+{{- if and (.Values.useCustomFluentConfig)}}
       - name: config
         emptyDir: {}
       - name: config-volume
         configMap:
           name: {{ template "fluentd-cloudwatch.fullname" . }}
+{{- end }}
 {{- if .Values.tolerations }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 6 }}
