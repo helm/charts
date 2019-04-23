@@ -21,7 +21,7 @@ image:
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
   ##
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
@@ -29,15 +29,21 @@ image:
   # pullSecrets:
   #   - myRegistryKeySecretName
 
+## Redis pod Security Context
+securityContext:
+  enabled: true
+  fsGroup: 1001
+  runAsUser: 1001
+
 ## Cluster settings
 cluster:
   enabled: true
-  slaveCount: 2
+  slaveCount: 3
 
 ## Use redis sentinel in the redis pod. This will disable the master and slave services and
 ## create one redis service with ports to the sentinel and the redis instances
 sentinel:
-  enabled: false
+  enabled: true
   ## Bitnami Redis Sentintel image version
   ## ref: https://hub.docker.com/r/bitnami/redis-sentinel/tags/
   ##
@@ -112,7 +118,7 @@ sentinel:
 networkPolicy:
   ## Specifies whether a NetworkPolicy should be created
   ##
-  enabled: false
+  enabled: true
 
   ## The Policy model to apply. When set to false, only pods with the correct
   ## client label will have network access to the port Redis is listening
@@ -147,11 +153,6 @@ rbac:
     #      - gce.unprivileged
     rules: []
 
-## Redis pod Security Context
-securityContext:
-  enabled: true
-  fsGroup: 1001
-  runAsUser: 1001
 
 ## Use password authentication
 usePassword: true
@@ -166,7 +167,7 @@ password:
 ## Mount secrets as files instead of environment variables
 usePasswordFile: false
 
-## Persist data to a persistent volume (Redis Master)
+## Persist data to a persistent volume
 persistence: {}
   ## A manually managed Persistent Volume and Claim
   ## Requires persistence.enabled: true
@@ -326,6 +327,7 @@ slave:
 
   ## Redis slave port
   port: 6379
+
   ## Can be used to specify command line arguments, for example:
   ##
   command: "/run.sh"
@@ -364,22 +366,6 @@ slave:
   #     memory: 256Mi
   #     cpu: 100m
 
-  ## Redis slave selectors and tolerations for pod assignment
-  # nodeSelector: {"beta.kubernetes.io/arch": "amd64"}
-  # tolerations: []
-
-  ## Use an alternate scheduler, e.g. "stork".
-  ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
-  ##
-  # schedulerName:
-
-  ## Redis slave pod Annotation and Labels
-  podLabels: {}
-  podAnnotations: {}
-
-  ## Redis slave pod priorityClassName
-  # priorityClassName: {}
-
   ## Enable persistence using Persistent Volume Claims
   ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
   ##
@@ -411,10 +397,26 @@ slave:
     ## https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#partitions
     # rollingUpdatePartition:
 
+  ## Redis slave selectors and tolerations for pod assignment
+  # nodeSelector: {"beta.kubernetes.io/arch": "amd64"}
+  # tolerations: []
+
+  ## Use an alternate scheduler, e.g. "stork".
+  ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+  ##
+  # schedulerName:
+
+  ## Redis slave pod Annotation and Labels
+  podLabels: {}
+  podAnnotations: {}
+
+  ## Redis slave pod priorityClassName
+  # priorityClassName: {}
+
 ## Prometheus Exporter / Metrics
 ##
 metrics:
-  enabled: false
+  enabled: true
 
   image:
     registry: docker.io
