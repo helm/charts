@@ -141,6 +141,7 @@ The following table lists the configurable parameters of the Cassandra chart and
 | `exporter.image.tag`                 | Exporter image tag                              | `2.0.2`                                                    |
 | `exporter.port`                      | Exporter port                                   | `5556`                                                     |
 | `exporter.jvmOpts`                   | Exporter additional JVM options                 |                                                            |
+| `exporter.resources`                 | Exporter CPU/Memory resource requests/limits    | `{}`                                                       |
 | `affinity`                           | Kubernetes node affinity                        | `{}`                                                       |
 | `tolerations`                        | Kubernetes node tolerations                     | `[]`                                                       |
 

@@ -26,7 +26,7 @@ In order for the chart to configure kiam correctly during the installation proce
 {"level":"warning","msg":"error finding role for pod: rpc error: code = Unavailable desc = there is no connection available","pod.ip":"100.120.0.2","time":"2018-05-24T04:11:25Z"}
 ```
 
-Define values `agent.tlsFiles.ca`, `agent.tlsFiles.cert`, `agent.tlsFiles.key`, `server.tlsFiles.ca`, `server.tlsFiles.cert` and `agent.tlsFiles.key` to be the base64-encoded contents (.e.g. using the `base64` command) of the generated PEM files.
+Define values `agent.tlsFiles.ca`, `agent.tlsFiles.cert`, `agent.tlsFiles.key`, `server.tlsFiles.ca`, `server.tlsFiles.cert` and `server.tlsFiles.key` to be the base64-encoded contents (.e.g. using the `base64` command) of the generated PEM files.
 For example
 
 ```yaml
@@ -94,7 +94,7 @@ Parameter | Description | Default
 `agent.enabled` | If true, create agent | `true`
 `agent.name` | Agent container name | `agent`
 `agent.image.repository` | Agent image | `quay.io/uswitch/kiam`
-`agent.image.tag` | Agent image tag | `v3.0`
+`agent.image.tag` | Agent image tag | `v3.2`
 `agent.image.pullPolicy` | Agent image pull policy | `IfNotPresent`
 `agent.dnsPolicy` | Agent pod DNS policy | `ClusterFirstWithHostNet`
 `agent.extraArgs` | Additional agent container arguments | `{}`
@@ -125,7 +125,7 @@ Parameter | Description | Default
 `server.name` | Server container name | `server`
 `server.gatewayTimeoutCreation` | Server's timeout when creating the kiam gateway | `50ms`
 `server.image.repository` | Server image | `quay.io/uswitch/kiam`
-`server.image.tag` | Server image tag | `v3.0`
+`server.image.tag` | Server image tag | `v3.2`
 `server.image.pullPolicy` | Server image pull policy | `Always`
 `server.assumeRoleArn` | IAM role for the server to assume before processing requests | `null`
 `server.cache.syncInterval` | Pod cache synchronization interval | `1m`
