@@ -77,9 +77,9 @@ spec:
         {{- toYaml .Values.master.hostAliases | nindent 8 }}
       {{- end }}
       initContainers:
-        {{- if .Values.master.customInitContainers }}
-          {{ toYaml .Values.master.customInitContainers | indent 8 }}
-        {{- end }}
+{{- if .Values.master.customInitContainers }}
+{{ toYaml .Values.master.customInitContainers | indent 8 }}
+{{- end }}
         - name: "copy-default-config"
           image: "{{ .Values.master.image }}:{{ .Values.master.imageTag }}"
           imagePullPolicy: "{{ .Values.master.imagePullPolicy }}"
@@ -153,7 +153,7 @@ spec:
           {{- end }}
           {{- if .Values.master.lifecycle }}
           lifecycle:
-            {{ toYaml .Values.master.lifecycle | indent 12 }}
+{{ toYaml .Values.master.lifecycle | indent 12 }}
           {{- end }}
           env:
             - name: JAVA_OPTS
