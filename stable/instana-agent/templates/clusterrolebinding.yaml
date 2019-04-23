@@ -4,7 +4,7 @@ apiVersion: {{ template "instana-agent.rbacApiVersion" . }}
 metadata:
   name: {{ template "instana-agent.fullname" . }}
   labels:
-    {{- include "instana-agent.helmChartLabels" . | nindent 4 }}
+    {{- include "instana-agent.commonLabels" . | nindent 4 }}
 subjects:
 - kind: ServiceAccount
   name: {{ template "instana-agent.serviceAccountName" . }}

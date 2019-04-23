@@ -52,11 +52,10 @@ The name of the ServiceAccount used.
 {{/*
 Add Helm metadata to resource labels.
 */}}
-{{- define "instana-agent.helmChartLabels" -}}
+{{- define "instana-agent.commonLabels" -}}
 app.kubernetes.io/name: {{ include "instana-agent.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
-app.kubernetes.io/component: {{ include "instana-agent.name" . }}
 helm.sh/chart: {{ include "instana-agent.chart" . }}
 {{- end -}}
 

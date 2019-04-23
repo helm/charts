@@ -5,7 +5,7 @@ kind: DaemonSet
 metadata:
   name: {{ template "instana-agent.fullname" . }}
   labels:
-    {{- include "instana-agent.helmChartLabels" . | nindent 4 }}
+    {{- include "instana-agent.commonLabels" . | nindent 4 }}
 spec:
   selector:
     matchLabels:
@@ -13,7 +13,7 @@ spec:
   template:
     metadata:
       labels:
-        {{- include "instana-agent.helmChartLabels" . | nindent 8 }}
+        {{- include "instana-agent.commonLabels" . | nindent 8 }}
       {{- if .Values.agent.pod.annotations }}
       annotations:
         {{ toYaml .Values.agent.pod.annotations | nindent 8}}
