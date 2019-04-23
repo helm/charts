@@ -16,7 +16,7 @@ spec:
         {{- include "instana-agent.commonLabels" . | nindent 8 }}
       {{- if .Values.agent.pod.annotations }}
       annotations:
-        {{ toYaml .Values.agent.pod.annotations | nindent 8}}
+        {{- toYaml .Values.agent.pod.annotations | nindent 8 }}
       {{- end }}
     spec:
       serviceAccount: {{ template "instana-agent.serviceAccountName" . }}
@@ -29,13 +29,13 @@ spec:
           imagePullPolicy: {{ .Values.agent.image.pullPolicy }}
           env:
             - name: INSTANA_AGENT_LEADER_ELECTOR_PORT
-              value: {{ int .Values.agent.leaderElectorPort | quote }}
+              value: {{ .Values.agent.leaderElectorPort | quote }}
             - name: INSTANA_ZONE
               value: {{ .Values.zone.name | quote }}
             - name: INSTANA_AGENT_ENDPOINT
               value: {{ .Values.agent.endpointHost | quote }}
             - name: INSTANA_AGENT_ENDPOINT_PORT
-              value: {{ int .Values.agent.endpointPort | quote }}
+              value: {{ .Values.agent.endpointPort | quote }}
             - name: INSTANA_AGENT_KEY
               valueFrom:
                 secretKeyRef:
@@ -43,7 +43,7 @@ spec:
                   key: key
             {{- if .Values.agent.mode }}
             - name: INSTANA_AGENT_MODE
-              value: {{ int .Values.agent.mode | quote }}
+              value: {{ .Values.agent.mode | quote }}
             {{- end }}
             {{- if .Values.agent.downloadKey }}
             - name: INSTANA_DOWNLOAD_KEY
@@ -139,7 +139,7 @@ spec:
             - containerPort: {{ .Values.agent.leaderElectorPort }}
       {{- if .Values.agent.pod.tolerations }}
       tolerations:
-        {{ toYaml .Values.agent.pod.tolerations | nindent 8 }}
+        {{- toYaml .Values.agent.pod.tolerations | nindent 8 }}
       {{- end }}
       volumes:
         - name: dev
