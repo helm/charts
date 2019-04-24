@@ -384,8 +384,10 @@ sidecar:
     enabled: false
     # label that the configmaps with dashboards are marked with
     label: grafana_dashboard
-    # folder in the pod that should hold the collected dashboards
+    # folder in the pod that should hold the collected dashboards (unless `defaultFolderName` is set)
     folder: /tmp/dashboards
+    # The default folder name, it will create a subfolder under the `folder` and put dashboards in there instead
+    defaultFolderName: null
     # If specified, the sidecar will search for dashboard config-maps inside this namespace.
     # Otherwise the namespace in which the sidecar is running will be used.
     # It's also possible to specify ALL to search in all namespaces
