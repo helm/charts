@@ -22,5 +22,5 @@ data:
       type: file
       disableDeletion: false
       options:
-        path: {{ .Values.sidecar.dashboards.folder }}
+        path: {{ .Values.sidecar.dashboards.folder }}{{- with .Values.sidecar.dashboards.defaultFolderName }}/{{ . }}{{- end }}
 {{- end}}
