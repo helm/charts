@@ -517,6 +517,9 @@ kubeControllerManager:
     #   replacement: $1
     #   action: replace
 
+    # The name of the label on the target service to use as the job name in prometheus.
+    jobLabel: jobLabel
+
 ## Component scraping coreDns. Use either this or kubeDns
 ##
 coreDns:
@@ -548,6 +551,9 @@ coreDns:
     #   replacement: $1
     #   action: replace
 
+    # The name of the label on the target service to use as the job name in prometheus.
+    jobLabel: jobLabel
+
 ## Component scraping kubeDns. Use either this or coreDns
 ##
 kubeDns:
@@ -576,6 +582,9 @@ kubeDns:
     #   target_label: nodename
     #   replacement: $1
     #   action: replace
+
+    # The name of the label on the target service to use as the job name in prometheus.
+    jobLabel: jobLabel
 
 ## Component scraping etcd
 ##
@@ -636,6 +645,8 @@ kubeEtcd:
     #   replacement: $1
     #   action: replace
 
+    # The name of the label on the target service to use as the job name in prometheus.
+    jobLabel: jobLabel
 
 ## Component scraping kube scheduler
 ##
@@ -683,6 +694,9 @@ kubeScheduler:
     #   replacement: $1
     #   action: replace
 
+    # The name of the label on the target service to use as the job name in prometheus.
+    jobLabel: jobLabel
+
 ## Component scraping kube state metrics
 ##
 kubeStateMetrics:
@@ -708,6 +722,9 @@ kubeStateMetrics:
     #   target_label: nodename
     #   replacement: $1
     #   action: replace
+
+    # The name of the label on the target service to use as the job name in prometheus.
+    jobLabel: app
 
 ## Configuration for kube-state-metrics subchart
 ##
