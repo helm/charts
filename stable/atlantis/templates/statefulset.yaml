@@ -74,9 +74,6 @@ spec:
           {{- end}}
           args:
             - server
-          {{- if .Values.repoConfig }}
-            - --repo-config=/etc/atlantis/repos.yaml
-          {{- end }}
           ports:
           - name: atlantis
             containerPort: 4141
@@ -101,6 +98,10 @@ spec:
             value: {{ toYaml .Values.orgWhitelist }}
           - name: ATLANTIS_PORT
             value: "4141"
+          {{- if .Values.repoConfig }}
+          - name: ATLANTIS_REPO_CONFIG
+            value: /etc/atlantis/repos.yaml
+          {{- end }}
           {{- if .Values.atlantisUrl }}
           - name: ATLANTIS_ATLANTIS_URL
             value: {{ .Values.atlantisUrl }}

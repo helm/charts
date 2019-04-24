@@ -88,20 +88,20 @@ image:
 ## Use Server Side Repo Config,
 ## ref: https://www.runatlantis.io/docs/server-side-repo-config.html
 ## Example default configuration
-repoConfig: |
-  ---
-  repos:
-  - id: /.*/
-    apply_requirements: []
-    workflow: default
-    allowed_overrides: []
-    allow_custom_workflows: false
-  workflows:
-    default:
-      plan:
-        steps: [init, plan]
-      apply:
-        steps: [apply]
+#repoConfig: |
+#  ---
+#  repos:
+#  - id: /.*/
+#    apply_requirements: []
+#    workflow: default
+#    allowed_overrides: []
+#    allow_custom_workflows: false
+#  workflows:
+#    default:
+#      plan:
+#        steps: [init, plan]
+#      apply:
+#        steps: [apply]
 
 # We only need to check every 60s since Atlantis is not a high-throughput service.
 livenessProbe:
