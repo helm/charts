@@ -100,6 +100,10 @@ The following table lists the configurable parameters of the Nexus chart and the
 | `nexusProxy.env.nexusDockerHost`            | Containers url to be used with docker | `nil`                                 |
 | `nexusProxy.env.enforceHttps`               | Allow only https access or not      | `false`                                 |
 | `nexusProxy.env.cloudIamAuthEnabled`        | Enable GCP IAM authentication in Nexus proxy  | `false`                       |
+| `nexusProxyRoute.enabled`     | Set to true to create route for additional service | false |
+| `nexusProxyRoute.labels`      | Labels to be added to proxy route            | false |
+| `nexusProxyRoute.annotations` | Annotations to be added to proxy route       | false |
+| `nexusProxyRoute.path`        | Host name of Route                           | false |
 | `persistence.enabled`                       | Create a volume for storage         | `true`                                  |
 | `persistence.accessMode`                    | ReadWriteOnce or ReadOnly           | `ReadWriteOnce`                         |
 | `persistence.storageClass`                  | Storage class of Nexus PVC          | `nil`                                   |
@@ -143,6 +147,13 @@ The following table lists the configurable parameters of the Nexus chart and the
 | `service.annotations`                       | Service annotations              | `nil`                                      |
 | `service.targetPort`                        | Service port                     | `nil`                                      |
 | `service.port`                              | Port for exposing service        | `nil`                                      |
+| `route.enabled`         | Set to true to create route for additional service | false |
+| `route.name`            | Name of route                                      | false |
+| `route.portName`        | Target port name of service                        | false |
+| `route.labels`          | Labels to be added to route                        | false |
+| `route.annotations`     | Annotations to be added to route                   | false |
+| `route.path`            | Host name of Route                                 | false |
+
 
 If `nexusProxy.env.cloudIamAuthEnabled` is set to `true` the following variables need to be configured
 
