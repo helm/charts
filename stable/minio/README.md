@@ -100,6 +100,7 @@ The following table lists the configurable parameters of the Minio chart and the
 | `mcImage.pullPolicy`       | mc Image pull policy                | `IfNotPresent`                                          |
 | `ingress.enabled`          | Enables Ingress                     | `false`                                                 |
 | `ingress.annotations`      | Ingress annotations                 | `{}`                                                    |
+| `ingress.customlabels`     | Ingress custom labels               | `{}`                                                    |
 | `ingress.hosts`            | Ingress accepted hostnames          | `[]`                                                    |
 | `ingress.tls`              | Ingress TLS configuration           | `[]`                                                    |
 | `mode`                     | Minio server mode (`standalone` or `distributed`)| `standalone`                               |
