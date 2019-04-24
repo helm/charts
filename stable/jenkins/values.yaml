@@ -353,6 +353,11 @@ agent:
   containerCap: 10
   # Pod name
   podName: "default"
+  # Allows the Pod to remain active for reuse until the configured number of
+  # minutes has passed since the last step was executed on it.
+  idleMinutes: 0
+  # The service account of the agent pods
+  # serviceAccount: jenkins-agent
 
 persistence:
   enabled: true

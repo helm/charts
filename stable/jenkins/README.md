@@ -142,6 +142,8 @@ Some third-party systems, e.g. GitHub, use HTML-formatted data in their payload 
 | `agent.TTYEnabled`         | Allocate pseudo tty to the side container       | false                  |
 | `agent.containerCap`       | Maximum number of agent                         | 10                     |
 | `agent.podName`            | slave Pod base name                             | Not set                |
+| `agent.idleMinutes`        | Allows the Pod to remain active for reuse       | 0                      |
+| `agent.serviceAccount`     | The service account to use for agent pods       | Not set                |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
