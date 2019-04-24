@@ -110,7 +110,7 @@ spec:
             - sh
             - -c
             - |
-              curl --silent  http://127.0.0.1:8500/v1/health/node/$(hostname) |grep alive >> /dev/null
+              curl --silent  http://127.0.0.1:{{ .Values.HttpPort }}/v1/health/node/$(hostname) |grep alive >> /dev/null
               node_status=$(echo $?)
               if [ "$node_status" != "0" ]; then
                  echo "$(hostname) node is not healthy, pod is going to be restarted";
