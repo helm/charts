@@ -53,19 +53,21 @@ The complete set of configuration options are documented and available in the de
 
 # Installing Code Dx
 
+> If you've previously installed a different Code Dx version in your cluster and uninstalled it using `helm delete`: You should first manually delete the Persistent Volume Claims left over by the old MariaDB installation, or install Code Dx under a different name/namespace. These left over PVCs _can_ cause conflicts, though this usually isn't an issue.
+
 With your `values.yaml` file in your current directory, run the command:
 
 ```bash
 $ helm install codedx/codedx --name codedx -f values.yaml
 ```
 
-_Note - The file does not specifically need to be named `values.yaml`, so long as the correct file name is passed to the `-f` parameter._
+> Note: The file does not specifically need to be named `values.yaml`, so long as the correct file name is passed to the `-f` parameter.
 
-_Note - You can install Code Dx to a specific namespace with the `--namespace {...}` flag._
+> Note: You can install Code Dx to a specific namespace with the `--namespace "..."` flag.
 
-_Note - `--name codedx` is not required, but makes it simpler to refer to this specific installation instance later on. If omitted, a random name will be selected and output to your console._
+> Note: `--name codedx` is not required, but makes it simpler to refer to this specific installation instance later on. If omitted, a random name will be selected and output to your console.
 
-Running this command will create various resources, output the list of generated resources to the console, and also provide instructions for Code Dx based on your configuration. If installation fails due to a configuration issue, you may need to run `helm del --purge codedx` to remove the previous, failed installation before trying again.
+Running this command will create various resources, output the list of generated resources to the console, and also provide instructions for Code Dx based on your configuration. If installation fails due to a configuration issue, you may need to run `helm del --purge "name"` to remove the previous, failed installation before trying again.
 
 ## Retrieve Auto-Generated Credentials
 
@@ -80,7 +82,7 @@ Copy this password somewhere temporarily. This is required for accessing Code Dx
 
 ## Wait for Code Dx Startup
 
-Monitor the Code Dx installation with `kubectl get pods --watch` and wait for the status of the Code Dx pod to reach 1/1 READY. When complete, you can access the web portal by either ingress or load balancer IP depending on your configuration. In both cases, Code Dx will be available at the `/codedx` endpoint.
+Monitor the Code Dx installation with `kubectl get pods --watch` and wait for the status of the Code Dx pod to reach `1/1 READY`. When complete, you can access the web portal by either ingress or load balancer IP depending on your configuration. In both cases, Code Dx will be available at the `/codedx` endpoint.
 
 ## Change the Admin Password
 
@@ -90,15 +92,19 @@ Navigate to Code Dx and sign in with the user `admin` and the password that was 
 
 # Updating Code Dx
 
+This section applies both for modifying your Code Dx configuration, and for upgrading to a new Code Dx version. The Code Dx version is specified by docker image name in the property `codedxTomcatImage`. The available Docker images can be found in [Docker Hub](https://hub.docker.com/r/codedx/codedx-tomcat/tags).
+
 Modify your YAML file as necessary, and run `helm upgrade` to apply your changes:
 
 ```bash
 $ helm upgrade codedx codedx/codedx -f values.yaml
 ```
 
-_Note - The standalone "codedx" part of the command will be the name of your existing installation._
+> Note: The standalone "codedx" part of the command will be the name of your existing installation.
 
-_Note - The namespace does not need to be specified again when using `helm upgrade`._
+> Note: The namespace does not need to be specified again when using `helm upgrade`.
+
+> Note: If a new Code Dx version is released and you have not manually assigned a Code Dx version, this will automatically update your installation to the new version. We recommend setting `codedxTomcatImage` in your `values.yaml` to prevent accidental version upgrades.
 
 Certain configuration changes will not automatically restart Code Dx. In this case, restart Code Dx manually with `kubectl delete`.
 
