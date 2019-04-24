@@ -1,7 +1,7 @@
 {{- if .Values.checkDeprecation }}
     {{- if .Values.Master }}
 
-    {{- if .Values.Master.Name }}
+        {{- if .Values.Master.Name }}
            {{ fail "`Master.Name` does no longer exist. It has been renamed to `master.componentName`" }}
         {{- end }}
 
@@ -149,12 +149,14 @@
            {{ fail "`Master.DisabledAgentProtocols` does no longer exist. It has been renamed to `master.disabledAgentProtocols`" }}
         {{- end }}
 
-        {{- if .Values.CSRF.DefaultCrumbIssuer.Enabled }}
-           {{ fail "`CSRF.DefaultCrumbIssuer.Enabled` does no longer exist. It has been renamed to `master.csrf.defaultCrumbIssuer.enabled`" }}
-        {{- end }}
+        {{- if .Values.Master.CSRF }}
+            {{- if .Values.Master.CSRF.DefaultCrumbIssuer.Enabled }}
+               {{ fail "`Master.CSRF.DefaultCrumbIssuer.Enabled` does no longer exist. It has been renamed to `master.csrf.defaultCrumbIssuer.enabled`" }}
+            {{- end }}
 
-        {{- if .Values.CSRF.DefaultCrumbIssuer.ProxyCompatability }}
-           {{ fail "`CSRF.DefaultCrumbIssuer.ProxyCompatability` does no longer exist. It has been renamed to `master.csrf.defaultCrumbIssuer.proxyCompatability`" }}
+            {{- if .Values.Master.CSRF.DefaultCrumbIssuer.ProxyCompatability }}
+               {{ fail "`Master.CSRF.DefaultCrumbIssuer.ProxyCompatability` does no longer exist. It has been renamed to `master.csrf.defaultCrumbIssuer.proxyCompatability`" }}
+            {{- end }}
         {{- end }}
 
         {{- if .Values.Master.CLI }}
@@ -181,12 +183,16 @@
            {{ fail "`Master.OverwriteConfig` does no longer exist. It has been renamed to `master.JCasC.configScripts`" }}
         {{- end }}
 
-        {{- if .Values.JCasC.ConfigScripts }}
-           {{ fail "`Master.JCasC.ConfigScripts` does no longer exist. It has been renamed to `master.loadBalancerSourceRanges`" }}
+        {{- if .Values.JCasC }}
+            {{- if .Values.JCasC.ConfigScripts }}
+               {{ fail "`Master.JCasC.ConfigScripts` does no longer exist. It has been renamed to `master.loadBalancerSourceRanges`" }}
+            {{- end }}
         {{- end }}
 
-        {{- if .Values.Master.Sidecars.configAutoReload }}
-           {{ fail "`Master.Sidecars.configAutoReload` does no longer exist. It has been renamed to `master.sidecars.configAutoReload`" }}
+        {{- if .Values.Master.Sidecars }}
+            {{- if .Values.Master.Sidecars.configAutoReload }}
+               {{ fail "`Master.Sidecars.configAutoReload` does no longer exist. It has been renamed to `master.sidecars.configAutoReload`" }}
+            {{- end }}
         {{- end }}
 
         {{- if .Values.Master.InitScripts }}
