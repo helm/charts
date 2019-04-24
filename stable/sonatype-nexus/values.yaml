@@ -167,6 +167,7 @@ deployment:
     command:    # '["/bin/sh", "-c", "ls"]'
   additionalContainers:
   additionalVolumes:
+  additionalVolumeMounts:
 
 # # To use an additional secret, set enable to true and add data
 secret:
