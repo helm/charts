@@ -90,3 +90,9 @@ service:
   annotations: {}
   port: 443
   type: ClusterIP
+
+podDisruptionBudget:
+  # https://kubernetes.io/docs/tasks/run-application/configure-pdb/
+  enabled: false
+  minAvailable: 1
+  maxUnavailable: 1
