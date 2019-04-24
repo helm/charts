@@ -16,9 +16,6 @@ spec:
       labels:
         app: {{ template "datadog.fullname" . }}
         type: deployment
-{{- if .Values.podLabels }}
-{{ toYaml .Values.podLabels | indent 8 }}
-{{- end }}
       name: {{ template "datadog.fullname" . }}
       annotations:
         checksum/autoconf-config: {{ tpl (toYaml .Values.datadog.autoconf) . | sha256sum }}

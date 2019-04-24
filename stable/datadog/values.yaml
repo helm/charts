@@ -360,7 +360,6 @@ rbac:
   serviceAccountName: default
 
 tolerations: []
-podLabels: {}
 
 kubeStateMetrics:
 
@@ -454,6 +453,11 @@ daemonset:
   ## Sets PriorityClassName if defined.
   #
   # priorityClassName:
+
+  ## @param podLabels - object - optional
+  ## Sets podLabels if defined.
+  #
+  # podLabels: {}
 
 deployment:
   ## @param enabled - boolean - required

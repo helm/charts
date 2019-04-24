@@ -226,7 +226,7 @@ helm install --name <RELEASE_NAME> \
 | `fullnameOverride`                       | Override full name of app                                                                 | `nil`                                       |
 | `rbac.create`                            | If true, create & use RBAC resources                                                      | `true`                                      |
 | `rbac.serviceAccount`                    | existing ServiceAccount to use (ignored if rbac.create=true)                              | `default`                                   |
-| `podLabels`                              | labels to add to each pod                                                                 | `{}`                                        |
+| `podLabels`                              | labels to add to each pod                                                                 | `nil`                                       |
 | `datadog.name`                           | Container name if Daemonset or Deployment                                                 | `datadog`                                   |
 | `datadog.site`                           | Site ('datadoghq.com' or 'datadoghq.eu')                                                  | `nil`                                       |
 | `datadog.dd_url`                         | Datadog intake server                                                                     | `nil`                                       |
