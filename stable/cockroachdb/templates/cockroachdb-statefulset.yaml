@@ -283,6 +283,10 @@ spec:
           value: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}.{{ .Release.Namespace }}.svc.{{ .Values.ClusterDomain }}"
         - name: COCKROACH_CHANNEL
           value: kubernetes-helm
+{{- if .Values.MaxSyncDuration }}
+        - name: COCKROACH_ENGINE_MAX_SYNC_DURATION
+          value: {{ .Values.MaxSyncDuration | quote }}
+{{- end }}
         volumeMounts:
         - name: datadir
           mountPath: /cockroach/cockroach-data
