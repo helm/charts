@@ -156,6 +156,8 @@ livenessProbe:
   # Number of seconds to wait for probe response
   timeoutSeconds: 30
 
-# The values to set in the PodDisruptionBudget spec (minAvailable/maxUnavailable)
-# If not set then a PodDisruptionBudget will not be created
 podDisruptionBudget:
+  # https://kubernetes.io/docs/tasks/run-application/configure-pdb/
+  enabled: false
+  minAvailable: 1
+  maxUnavailable: 1
