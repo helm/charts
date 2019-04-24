@@ -32,10 +32,10 @@ airflow:
   ##   secretKey: kubernetesGitPassword
   ## - envVar: POSTGRES_USER
   ##   secretName: postgres
-  ##   secretKey: postgresUser
+  ##   secretKey: postgresqlUsername
   ## - envVar: POSTGRES_PASSWORD
   ##   secretName: postgres
-  ##   secretKey: postgresPassword
+  ##   secretKey: postgresqlPassword
   ## - envVar: REDIS_PASSWORD
   ##   secretName: redis
   ##   secretKey: redisPassword
@@ -46,9 +46,9 @@ airflow:
   ## a secret will be created with a default name and the following mapping.
   defaultSecretsMapping:
   - envVar: POSTGRES_USER
-    secretKey: postgresUser
+    secretKey: postgresqlUsername
   - envVar: POSTGRES_PASSWORD
-    secretKey: postgresPassword
+    secretKey: postgresqlPassword
   - envVar: REDIS_PASSWORD
     secretKey: redisPassword
 
@@ -81,7 +81,7 @@ airflow:
     repository: puckel/docker-airflow
     ##
     ## image tag
-    tag: 1.10.0-4
+    tag: 1.10.2
     ##
     ## Image pull policy
     ## values: Always or IfNotPresent
@@ -468,14 +468,14 @@ postgresql:
   service:
     port: 5432
   ## PostgreSQL User to create.
-  postgresUser: postgres
+  postgresqlUsername: postgres
   ##
   ## PostgreSQL Password for the new user.
   ## If not set, a random 10 characters password will be used.
-  postgresPassword: airflow
+  postgresqlPassword: airflow
   ##
   ## PostgreSQL Database to create.
-  postgresDatabase: airflow
+  postgresqlDatabase: airflow
   ##
   ## Persistent Volume Storage configuration.
   ## ref: https://kubernetes.io/docs/user-guide/persistent-volumes
