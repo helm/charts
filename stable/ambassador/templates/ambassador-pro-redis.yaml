@@ -1,0 +1,33 @@
+{{- if .Values.pro.enabled -}}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ambassador-pro-redis
+spec:
+  type: ClusterIP
+  ports:
+  - port: 6379
+    targetPort: 6379
+  selector:
+    service: ambassador-pro-redis
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ambassador-pro-redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: ambassador-pro-redis
+  template:
+    metadata:
+      labels:
+        service: ambassador-pro-redis
+    spec:
+      containers:
+      - name: redis
+        image: redis:5.0.1
+      restartPolicy: Always
+{{- end -}}

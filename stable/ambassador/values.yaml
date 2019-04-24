@@ -136,3 +136,12 @@ prometheusExporter:
   #       cluster_name: "$1"
 
 ambassadorConfig: ""
+
+pro:
+  enabled: false
+  image: quay.io/datawire/ambassador_pro:amb-sidecar-0.4.0
+  ports:
+    auth: 8500
+    ratelimit: 8501
+    ratelimitDebug: 8502
+  licenseKey: 
