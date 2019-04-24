@@ -1,0 +1,19 @@
+apiVersion: v1
+description: k8up Operator
+name: k8up
+home: https://vshn.github.io/k8up/
+keywords:
+  - backup
+  - operator
+  - appuio
+version: 0.1.0
+appVersion: v0.1.4
+sources:
+  - https://github.com/vshn/k8up
+maintainers:
+  - name: janPhil
+    email: jan.heinrich@vshn.ch
+  - name: srueg
+    email: simon.ruegg@vshn.ch
+  - name: kidswiss
+    email: simon.beck@vshn.ch

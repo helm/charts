@@ -1,0 +1,20 @@
+{{- if .Values.rbac.create }}
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  labels:
+    app: {{ template "k8up-operator.fullname" $ }}
+    chart: {{ template "k8up-operator.chart" $ }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  name: {{ template "k8up-operator.fullname" $ }}
+subjects:
+- kind: ServiceAccount
+  name: {{ template "k8up-operator.fullname" $ }}
+  namespace: {{ .Release.Namespace }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  name: {{ template "k8up-operator.fullname" $ }}
+  kind: ClusterRole
+{{- end }}

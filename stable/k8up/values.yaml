@@ -1,0 +1,15 @@
+---
+k8up_operator:
+  image: docker.io/vshn/k8up:v0.1.4
+  ## Allows the specification of additional environment variables
+  envVars:
+    - name: BACKUP_IMAGE
+      value: docker.io/vshn/wrestic:v0.0.10
+    # - name: BACKUP_GLOBALACCESSKEYID
+    #   valueFrom:
+    #     secretKeyRef:
+    #       name: global-s3-credentials
+    #       key: access-key-id
+
+rbac:
+  create: true

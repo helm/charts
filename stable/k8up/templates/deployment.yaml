@@ -1,0 +1,35 @@
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "k8up-operator.fullname" $ }}
+  labels:
+    app: {{ template "k8up-operator.name" $ }}
+    chart: {{ template "k8up-operator.chart" $ }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ template "k8up-operator.name" $ }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "k8up-operator.name" $ }}
+    spec:
+      containers:
+        - name: k8up-operator
+          image: {{ .Values.k8up_operator.image }}
+          imagePullPolicy: Always
+          env:
+{{- if .Values.k8up_operator.envVars }}
+{{ toYaml .Values.k8up_operator.envVars | indent 10 }}
+{{- end }}
+{{- if .Values.k8up_operator.extraEnvVars}}
+{{ toYaml .Values.k8up_operator.extraEnvVars | indent 10 }}
+{{- end }}
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+      serviceAccountName: {{ template "k8up-operator.fullname" $ }}
