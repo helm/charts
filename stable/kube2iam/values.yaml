@@ -30,6 +30,8 @@ image:
   repository: jtblin/kube2iam
   tag: 0.10.4
   pullPolicy: IfNotPresent
+  # pullSecrets:
+  # - name: regcred
 
 # AWS Access keys to inject as environment variables
 aws:
