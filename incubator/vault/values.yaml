@@ -9,6 +9,13 @@ image:
   tag:
   pullPolicy: IfNotPresent
 
+vaultExporter:
+  enabled: false
+  repository: grapeshot/vault_exporter
+  tag: v0.1.2
+  pullPolicy: IfNotPresent
+  vaultAddress: 127.0.0.1:8200
+  # tlsCAFile: /vault/tls/ca.crt
 consulAgent:
   repository: consul
   tag: 1.4.0
@@ -117,21 +124,20 @@ podLabels: {}
 #     exec:
 #       command: ["./unseal -s my-unseal-keys"]
 
+serviceAccount:
+  ## Specifies whether a ServiceAccount should be created
+  ##
+  create: false
+  ## The name of the ServiceAccount to use.
+  ## If not set and create is true, a name is generated using the fullname template
+  name:
+
 vault:
   # Only used to enable dev mode. When in dev mode, the rest of this config
   # section below is not used to configure Vault. See
   # https://www.vaultproject.io/intro/getting-started/dev-server.html for more
   # information.
   dev: true
-  # Allows the mounting of various custom secrets th enable production vault
-  # configurations. The comments show an example usage for mounting a TLS
-  # secret. The two fields required are a secretName indicating the name of
-  # the Kubernetes secret (created outside of this chart), and the mountPath
-  # at which it should be mounted in the Vault container.
-  customSecrets: []
-    # - secretName: vault-tls
-    #   mountPath: /vault/tls
-  #
   # Configure additional environment variables for the Vault containers
   extraEnv: {}
   #   - name: VAULT_API_ADDR
@@ -143,7 +149,19 @@ vault:
   #   volumeMounts:
   #   - name: some-mount
   #     mountPath: /some/path
+  # Extra volumes to mount to the Vault pod. The comments show an example usage
+  # for mounting a TLS secret. In this example, the volume name must match
+  # the volumeMount name. The two other fields required are the name of the
+  # Kubernetes secret (created outside of this chart), and the mountPath
+  # at which it should be mounted in the Vault container.
   extraVolumes: {}
+  #   - name: vault-tls
+  #     secret:
+  #       secretName: vault-tls-secret
+  extraVolumeMounts: {}
+  #   - name: vault-tls
+  #     mountPath: /vault/tls
+  #     readOnly: true
   extraInitContainers: {}
   ## Init containers to be added
   # - name: do-something
@@ -157,7 +175,8 @@ vault:
   #   secret:
   #     secretName: some-secret
   liveness:
-    aliveIfUninitialized: false
+    aliveIfUninitialized: true
+    aliveIfSealed: true
     initialDelaySeconds: 30
     periodSeconds: 10
   readiness:

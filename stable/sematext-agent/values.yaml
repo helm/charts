@@ -43,7 +43,7 @@ infraToken: null
 # determines the token for the container app (container metrics are delivered here)
 containerToken: null
 # logsene token to send logs
-logsToken: null
+logseneToken: null
 
 # for private images
 # imagePullSecrets:
@@ -52,9 +52,9 @@ region: US
 
 # support for custom URLs
 customUrl: {}
-  # metricsServer: https://metrics-receiver.apps.test.sematext.com
-  # eventServer: https://event-receiver.apps.test.sematext.com
-  # logsServer: https://logs-token-receiver.apps.test.sematext.com
+  # serverBaseUrl: https://metrics-receiver.apps.test.sematext.com
+  # eventsRecieverUrl: https://event-receiver.apps.test.sematext.com
+  # logsReceiverUrl: https://logs-token-receiver.apps.test.sematext.com
 
 tolerations: []
 
