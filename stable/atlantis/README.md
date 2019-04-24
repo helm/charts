@@ -63,11 +63,40 @@ The following options are supported.  See [values.yaml](values.yaml) for more de
 
 
 ## Upgrading
-### From 2.0.1 to 2.0.2
+### From 2.* to 3.*
 * The following value names have been removed. They are replaced by [Server Side Repo Configuration](https://www.runatlantis.io/docs/server-side-repo-config.html)
   * `requireApproval`
   * `requireMergeable`
   * `allowRepoConfig`
+
+To replicate your previous configuration, run Atlantis locally with your previous flags and Atlantis will print out the equivalent repo-config, for example:
+
+```
+$ atlantis server --allow-repo-config --require-approval --require-mergeable --gh-user=foo --gh-token=bar --repo-whitelist='*'
+WARNING: Flags --require-approval, --require-mergeable and --allow-repo-config have been deprecated.
+Create a --repo-config file with the following config instead:
+
+---
+repos:
+- id: /.*/
+  apply_requirements: [approved, mergeable]
+  allowed_overrides: [apply_requirements, workflow]
+  allow_custom_workflows: true
+
+or use --repo-config-json='{"repos":[{"id":"/.*/", "apply_requirements":["approved", "mergeable"], "allowed_overrides":["apply_requirements","workflow"], "allow_custom_workflows":true}]}'
+```
+
+Then use this YAML in the new repoConfig value:
+
+```
+repoConfig: |
+  ---
+  repos:
+  - id: /.*/
+    apply_requirements: [approved, mergeable]
+    allowed_overrides: [apply_requirements, workflow]
+    allow_custom_workflows: true
+```
 
 ### From 1.* to 2.*
 * The following value names have changed:

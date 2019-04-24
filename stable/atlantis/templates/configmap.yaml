@@ -1,8 +1,8 @@
-{{- if .Values.serverSideConfig.enabled -}}
+{{- if .Values.repoConfig -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "atlantis.fullname" . }}
+  name: {{ template "atlantis.fullname" . }}-repo-config
   labels:
     app: {{ template "atlantis.name" . }}
     chart: {{ template "atlantis.chart" . }}
@@ -10,5 +10,5 @@ metadata:
     heritage: {{ .Release.Service }}
 data:
   repos.yaml: |
-{{ .Values.serverSideConfig.config | indent 4 }}
+{{ .Values.repoConfig | indent 4 }}
 {{- end -}}
