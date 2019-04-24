@@ -29,7 +29,12 @@ data:
         Name             tail
         Path             {{ .Values.input.tail.path }}
         Parser           {{ .Values.input.tail.parser }}
+{{- if .Values.input.tail.formatTag }}
+        Tag               {{ .Values.filter.kubeTag }}.<namespace>.<pod>.<container>
+        Tag_Regex         /var/log/containers/(?<pod>.+)_(?<namespace>.+)_(?<container>.+)-(?<docker_id>[a-f0-9]{64})\.log
+{{- else }}
         Tag              {{ .Values.filter.kubeTag }}.*
+{{- end }}
         Refresh_Interval 5
         Mem_Buf_Limit    {{ .Values.input.tail.memBufLimit }}
         Skip_Long_Lines  On
@@ -64,6 +69,9 @@ data:
 {{- end }}
 {{- if .Values.filter.enableExclude }}
         K8S-Logging.Exclude On
+{{- end }}
+{{- if .Values.input.tail.formatTag }}
+        Regex_Parser        kubernetes-tag
 {{- end }}
 {{ .Values.extraEntries.filter | indent 8 }}
 
@@ -153,6 +161,12 @@ data:
 {{ .Values.rawConfig | indent 4 }}
 
   parsers.conf: |-
+{{- if .Values.input.tail.formatTag }}
+    [PARSER]
+        Name        kubernetes-tag
+        Format      regex
+        Regex       ^{{ .Values.filter.kubeTag }}\.[^.]+\.(?<namespace_name>[^.]+)\.(?<pod_name>[^.]+)\.(?<container_name>[^.]+)$
+{{- end }}
 {{- if .Values.parsers.regex }}
 {{- range .Values.parsers.regex }}
     [PARSER]

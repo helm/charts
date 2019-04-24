@@ -194,6 +194,7 @@ input:
     memBufLimit: 5MB
     parser: docker
     path: /var/log/containers/*.log
+    formatTag: false
   systemd:
     enabled: false
     filters:
