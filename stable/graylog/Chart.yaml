@@ -1,6 +1,6 @@
 name: graylog
 home: https://www.graylog.org
-version: 0.1.4
+version: 0.1.5
 appVersion: 3.0.1
 description: Graylog is the centralized log management solution built to open standards for capturing, storing, and enabling real-time analysis of terabytes of machine data.
 keywords:
