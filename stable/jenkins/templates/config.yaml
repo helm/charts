@@ -45,7 +45,7 @@ data:
               <name>{{ .Values.agent.podName }}</name>
               <instanceCap>2147483647</instanceCap>
               <idleMinutes>0</idleMinutes>
-              <label>{{ .Release.Name }}-{{ .Values.agent.co }} {{ .Values.agent.customJenkinsLabels  | join " " }}</label>
+              <label>{{ .Release.Name }}-{{ .Values.agent.componentName }} {{ .Values.agent.customJenkinsLabels  | join " " }}</label>
               <nodeSelector>
                 {{- $local := dict "first" true }}
                 {{- range $key, $value := .Values.agent.nodeSelector }}

@@ -6,7 +6,7 @@ keywords:
 - opa
 - admission control
 - policy
-version: 1.3.2
+version: 1.4.1
 home: https://www.openpolicyagent.org
 icon: https://raw.githubusercontent.com/open-policy-agent/opa/master/logo/logo.png
 sources:
