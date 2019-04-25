@@ -1008,9 +1008,13 @@ concourse:
     volumeSweeperMaxInFlight: 5
 
     tsa:
-      ## TSA host to forward the worker through. Can be specified multiple times.
+      ## TSA host to forward the worker through.
       ##
       host:
+
+      ## TSA port to forward the worker through.
+      ##
+      port: 2222
 
       ## File containing a public key to expect from the TSA.
       ##
@@ -1096,6 +1100,11 @@ concourse:
 ## Concourse Web nodes, see https://concourse-ci.org/concourse-web.html.
 ##
 web:
+
+  ## Enable or disable the web component.
+  ## This allows the creation of worker-only releases by setting this to false.
+  ##
+  enabled: true
 
   ## Override the components name (defaults to web).
   ##
@@ -1324,6 +1333,12 @@ web:
 ## Concourse Workers, see https://concourse-ci.org/concourse-worker.html
 ##
 worker:
+
+  ## Enable or disable the worker component.
+  ## This can allow users to create web only releases by setting this to false
+  ##
+  enabled: true
+
   ## Override the components name (defaults to worker).
   ##
   nameOverride:
@@ -1530,6 +1545,7 @@ postgresql:
 
   ## Use the PostgreSQL chart dependency.
   ## Set to false if bringing your own PostgreSQL, and set secret value postgresql-uri.
+  ## Should be set to false if using the chart as a worker only deployment.
   ##
   enabled: true
 
