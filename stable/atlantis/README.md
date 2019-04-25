@@ -24,7 +24,6 @@ The following options are supported.  See [values.yaml](values.yaml) for more de
 
 | Parameter                                   | Description                                                                                                                                                                                                                                                                                               | Default |
 |---------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------|
-| `allowRepoConfig`                           | Whether to allow the use of [atlantis.yaml files](https://www.runatlantis.io/docs/atlantis-yaml-reference.html).                                                                                                                                                                                          | `false` |
 | `dataStorage`                               | Amount of storage available for Atlantis' data directory (mostly used to check out git repositories).                                                                                                                                                                                                     | `5Gi`   |
 | `aws.config`                                | Contents of a file to be mounted to `~/.aws/config`.                                                                                                                                                                                                                                                      | n/a     |
 | `aws.credentials`                           | Contents of a file to be mounted to `~/.aws/credentials`.                                                                                                                                                                                                                                                 | n/a     |
@@ -46,8 +45,7 @@ The following options are supported.  See [values.yaml](values.yaml) for more de
 | `podTemplate.annotations`                   | Additional annotations to use for the StatefulSet.                                                                                                                                                                                                                                                        | n/a     |
 | `logLevel`                                  | Level to use for logging. Either debug, info, warn, or error.                                                                                                                                                                                                                                             | n/a     |
 | `orgWhiteList`                              | Whitelist of repositories from which Atlantis will accept webhooks. **This value must be set for Atlantis to function correctly.** Accepts wildcard characters (`*`). Multiple values may be comma-separated.                                                                                             | none    |
-| `requireApproval`                           | Whether to require pull request approval prior to applies. See [Approved Requirement](https://www.runatlantis.io/docs/apply-requirements.html#approved).                                                                                                                                                  | `false` |
-| `requireMergeable`                          | Whether to require pull request to be mergeable prior to applies. See [Mergeable Requirement](https://www.runatlantis.io/docs/apply-requirements.html#mergeable).                                                                                                                                         | `false` |
+| `repoConfig`                                | [Server Side Repo Configuration](https://www.runatlantis.io/docs/server-side-repo-config.html) as a raw YAML string. Configuration is stored in ConfigMap.                                                                                                                                                | n/a     |
 | `serviceAccount.create`                     | Whether to create a Kubernetes ServiceAccount if no account matching `serviceAccount.name` exists.                                                                                                                                                                                                        | `true`  |
 | `serviceAccount.name`                       | Name of the Kubernetes ServiceAccount under which Atlantis should run. If no value is specified and `serviceAccount.create` is `true`, Atlantis will be run under a ServiceAccount whose name is the FullName of the Helm chart's instance, else Atlantis will be run under the `default` ServiceAccount. | n/a     |
 | `serviceAccountSecrets.credentials`         | JSON string representing secrets for a Google Cloud Platform production service account. Only applicable if hosting Atlantis on GKE.                                                                                                                                                                      | n/a     |
@@ -64,6 +62,41 @@ The following options are supported.  See [values.yaml](values.yaml) for more de
 
 
 ## Upgrading
+### From 2.* to 3.*
+* The following value names have been removed. They are replaced by [Server Side Repo Configuration](https://www.runatlantis.io/docs/server-side-repo-config.html)
+  * `requireApproval`
+  * `requireMergeable`
+  * `allowRepoConfig`
+
+To replicate your previous configuration, run Atlantis locally with your previous flags and Atlantis will print out the equivalent repo-config, for example:
+
+```
+$ atlantis server --allow-repo-config --require-approval --require-mergeable --gh-user=foo --gh-token=bar --repo-whitelist='*'
+WARNING: Flags --require-approval, --require-mergeable and --allow-repo-config have been deprecated.
+Create a --repo-config file with the following config instead:
+
+---
+repos:
+- id: /.*/
+  apply_requirements: [approved, mergeable]
+  allowed_overrides: [apply_requirements, workflow]
+  allow_custom_workflows: true
+
+or use --repo-config-json='{"repos":[{"id":"/.*/", "apply_requirements":["approved", "mergeable"], "allowed_overrides":["apply_requirements","workflow"], "allow_custom_workflows":true}]}'
+```
+
+Then use this YAML in the new repoConfig value:
+
+```
+repoConfig: |
+  ---
+  repos:
+  - id: /.*/
+    apply_requirements: [approved, mergeable]
+    allowed_overrides: [apply_requirements, workflow]
+    allow_custom_workflows: true
+```
+
 ### From 1.* to 2.*
 * The following value names have changed:
   * `allow_repo_config` => `allowRepoConfig`
