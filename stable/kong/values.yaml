@@ -90,6 +90,10 @@ runMigrations: true
 # Kong configurations guide https://getkong.org/docs/latest/configuration/
 env:
   database: postgres
+  proxy_access_log: /dev/stdout
+  admin_access_log: /dev/stdout
+  proxy_error_log: /dev/stderr
+  admin_error_log: /dev/stderr
 
 # If you want to specify resources, uncomment the following
 # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
