@@ -133,7 +133,7 @@ spec:
           env:
             - name: GRAYLOG_SERVER_JAVA_OPTS
               {{- $javaOpts := "-Djava.net.preferIPv4Stack=true -XX:NewRatio=1 -server -XX:+ResizeTLAB -XX:+UseConcMarkSweepGC -XX:+CMSConcurrentMTEnabled -XX:+CMSClassUnloadingEnabled -XX:+UseParNewGC -XX:-OmitStackTraceInFastThrow" }}
-              {{- if .Values.graylog.heapSize -}}
+              {{- if .Values.graylog.heapSize }}
               value: "{{ $javaOpts }} {{ printf "-Xms%s -Xmx%s" .Values.graylog.heapSize .Values.graylog.heapSize}}"
               {{- else }}
               value: "{{ $javaOpts }} -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap"
