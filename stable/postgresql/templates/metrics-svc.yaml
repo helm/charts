@@ -8,6 +8,7 @@ metadata:
     chart: {{ template "postgresql.chart" . }}
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
+    prometheus: {{ template "postgresql.fullname" . }}-metrics
   annotations:
 {{ toYaml .Values.metrics.service.annotations | indent 4 }}
 spec:
