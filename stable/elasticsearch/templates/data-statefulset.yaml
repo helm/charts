@@ -65,6 +65,7 @@ spec:
       tolerations:
 {{ toYaml .Values.data.tolerations | indent 8 }}
 {{- end }}
+{{- if or .Values.extraInitContainers .Values.sysctlInitContainer.enabled .Values.chownInitContainer.enabled .Values.cluster.plugins }}
       initContainers:
 {{- if .Values.sysctlInitContainer.enabled }}
       # see https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html
@@ -78,6 +79,7 @@ spec:
         securityContext:
           privileged: true
 {{- end }}
+{{- if .Values.chownInitContainer.enabled }}
       - name: "chown"
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
@@ -102,11 +104,13 @@ spec:
         volumeMounts:
         - mountPath: /usr/share/elasticsearch/data
           name: data
+{{- end }}
 {{- if .Values.extraInitContainers }}
 {{ tpl .Values.extraInitContainers . | indent 6 }}
 {{- end }}
 {{- if .Values.cluster.plugins }}
 {{ include "plugin-installer" . | indent 6 }}
+{{- end }}
 {{- end }}
       containers:
       - name: elasticsearch
