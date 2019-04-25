@@ -136,6 +136,8 @@ spec:
               $AGENT_TOKEN \
               -join={{- .Values.consulAgent.join }} \
               -data-dir=/etc/consul
+        resources:
+{{ toYaml .Values.consulAgent.resources | indent 10 }}
       {{- end }}
       {{- if .Values.vaultExporter.enabled }}
       - name: {{ .Chart.Name }}-exporter
