@@ -23,6 +23,7 @@ spec:
 {{ toYaml .Values.master.podAnnotations | indent 8 }}
         {{- end }}
     spec:
+      serviceName: {{ template "elasticsearch.master.fullname" . }}
       serviceAccountName: {{ template "elasticsearch.serviceAccountName.master" . }}
 {{- if .Values.master.priorityClassName }}
       priorityClassName: "{{ .Values.master.priorityClassName }}"
@@ -167,6 +168,15 @@ spec:
           mountPath: "/usr/share/elasticsearch/config/elasticsearch.keystore"
           subPath: elasticsearch.keystore
           readOnly: true
+{{- end }}
+{{- if hasPrefix "7." .Values.appVersion }}
+        - name: config
+          mountPath: /pre-stop-hook.sh
+          subPath: master-pre-stop-hook.sh
+        lifecycle:
+          preStop:
+            exec:
+              command: ["/bin/bash","/pre-stop-hook.sh"]
 {{- end }}
 {{- if .Values.image.pullSecrets }}
       imagePullSecrets:

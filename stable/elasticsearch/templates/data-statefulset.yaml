@@ -167,10 +167,10 @@ spec:
 {{- if .Values.data.hooks.drain.enabled }}
         - name: config
           mountPath: /pre-stop-hook.sh
-          subPath: pre-stop-hook.sh
+          subPath: data-pre-stop-hook.sh
         - name: config
           mountPath: /post-start-hook.sh
-          subPath: post-start-hook.sh
+          subPath: data-post-start-hook.sh
         lifecycle:
           preStop:
             exec:
