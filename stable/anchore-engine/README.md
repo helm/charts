@@ -404,3 +404,9 @@ To use this Helm chart with the enterprise services enabled, perform these steps
   anchore-ui-redis:
     password: <PASSWORD>
   ```
+
+## Custom Secret
+Can be used to override the default secrets.yaml provided
+```
+anchoreGlobal:
+  existingSecret: "foo-bar"
