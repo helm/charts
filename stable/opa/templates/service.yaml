@@ -10,5 +10,5 @@ spec:
   ports:
   - name: https
     protocol: TCP
-    port: {{ .Values.port }}
+    port: 443
     targetPort: {{ .Values.port }}
