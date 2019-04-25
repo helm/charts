@@ -67,3 +67,10 @@ tolerations: []
 ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
 ##
 affinity: {}
+
+## Enable this if pod security policy enabled in your cluster
+## It will bind ServiceAccount with unrestricted podSecurityPolicy
+## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/
+podSecurityPolicy:
+  enabled: false
+  policyName: unrestricted-psp
