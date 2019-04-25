@@ -1,3 +1,4 @@
+{{- if .Values.web.enabled -}}
 {{- if .Values.web.ingress.enabled -}}
 {{- $releaseName := .Release.Name -}}
 {{- $serviceName := default "web" .Values.web.nameOverride -}}
@@ -29,4 +30,5 @@ spec:
   tls:
 {{ toYaml .Values.web.ingress.tls | indent 4 }}
   {{- end -}}
+{{- end -}}
 {{- end -}}
