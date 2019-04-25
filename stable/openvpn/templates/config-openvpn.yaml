@@ -135,7 +135,7 @@ data:
       user nobody
       group nogroup
 
-      push "route NETWORK 255.255.240.0"
+      push "route NETWORK NETMASK"
 {{ if (.Values.openvpn.OVPN_K8S_POD_NETWORK) (.Values.openvpn.OVPN_K8S_POD_SUBNET) }}
       push "route {{ .Values.openvpn.OVPN_K8S_POD_NETWORK }} {{ .Values.openvpn.OVPN_K8S_POD_SUBNET }}"
 {{ end }}
