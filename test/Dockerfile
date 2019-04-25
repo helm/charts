@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM quay.io/helmpack/chart-testing:v2.2.0
+FROM quay.io/helmpack/chart-testing:v2.3.3
 
 ENV PATH /google-cloud-sdk/bin:$PATH
 ARG CLOUD_SDK_VERSION=212.0.0
