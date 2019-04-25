@@ -97,6 +97,9 @@ requireApproval: false
 # Require all pull requests to meet repository mergeability requirements prior to apply.
 requireMergeable: false
 
+# Use server side repo config JSON
+repoConfigJSON: ''
+
 # We only need to check every 60s since Atlantis is not a high-throughput service.
 livenessProbe:
   enabled: true

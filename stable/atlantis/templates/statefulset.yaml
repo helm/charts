@@ -75,6 +75,9 @@ spec:
           {{- if .Values.allowForkPRs }}
             - --allow-fork-prs
           {{- end }}
+          {{- if .Values.repoConfigJSON }}
+            - --repo-config-json={{ .Values.repoConfigJSON }}
+          {{- end }}
           ports:
           - name: atlantis
             containerPort: 4141
