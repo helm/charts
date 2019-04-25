@@ -44,6 +44,24 @@ The recommended way to install the Anchore Engine Chart is with a customized val
     defaultAdminEmail: <EMAIL>
   ```
 
+#### Install using Google CloudSQL
+  ```
+  ## anchore_values.yaml
+  postgresql:
+    enabled: false
+    postgresPassword: <CLOUDSQL-PASSWORD>
+    postgresUser: <CLOUDSQL-USER>
+    postgresDatabase: <CLOUDSQL-DATABASE>
+
+  cloudsql:
+    enabled: true
+    instance: "project:zone:cloudsqlinstancename"
+    image:
+      repository: gcr.io/cloudsql-docker/gce-proxy
+      tag: 1.12
+      pullPolicy: IfNotPresent
+  ```
+
 ## Upgrading to Chart version 0.12.0
 Redis dependency chart major version updated to v6.1.3 - check redis chart readme for instructions for upgrade.
 
@@ -386,3 +404,9 @@ To use this Helm chart with the enterprise services enabled, perform these steps
   anchore-ui-redis:
     password: <PASSWORD>
   ```
+
+## Custom Secret
+Can be used to override the default secrets.yaml provided
+```
+anchoreGlobal:
+  existingSecret: "foo-bar"

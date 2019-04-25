@@ -136,17 +136,6 @@ spec:
               value: {{ .Values.concourse.web.externalUrl | quote }}
             {{- end }}
             {{- end }}
-            {{- if .Values.concourse.web.peerUrl }}
-            - name: CONCOURSE_PEER_URL
-              value: {{ .Values.concourse.web.peerUrl | quote }}
-            {{- else }}
-            - name: POD_IP
-              valueFrom:
-                fieldRef:
-                  fieldPath: status.podIP
-            - name: CONCOURSE_PEER_URL
-              value: "http://$(POD_IP):$(CONCOURSE_BIND_PORT)"
-            {{- end }}
             {{- if .Values.concourse.web.encryption.enabled }}
             - name: CONCOURSE_ENCRYPTION_KEY
               valueFrom:
@@ -295,6 +284,7 @@ spec:
             {{- end }}
             {{- end }}
             {{- if .Values.concourse.web.awsSecretsManager.enabled }}
+            {{- if .Values.concourse.web.awsSecretsManager.keyAuth.enabled }}
             - name: CONCOURSE_AWS_SECRETSMANAGER_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
@@ -305,12 +295,13 @@ spec:
                 secretKeyRef:
                   name: {{ template "concourse.concourse.fullname" . }}
                   key: aws-secretsmanager-secret-key
-            {{- if .Values.secrets.awsSecretsManagerSessionToken }}
+            {{- if .Values.concourse.web.awsSecretsManager.keyAuth.useSessionToken }}
             - name: CONCOURSE_AWS_SECRETSMANAGER_SESSION_TOKEN
               valueFrom:
                 secretKeyRef:
                   name: {{ template "concourse.concourse.fullname" . }}
                   key: aws-secretsmanager-session-token
+            {{- end }}
             {{- end }}
             {{- if .Values.concourse.web.awsSecretsManager.pipelineSecretTemplate }}
             - name: CONCOURSE_AWS_SECRETSMANAGER_PIPELINE_SECRET_TEMPLATE
@@ -322,6 +313,7 @@ spec:
             {{- end }}
             {{- end }}
             {{- if .Values.concourse.web.awsSsm.enabled }}
+            {{- if .Values.concourse.web.awsSsm.keyAuth.enabled }}
             - name: CONCOURSE_AWS_SSM_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
@@ -332,12 +324,13 @@ spec:
                 secretKeyRef:
                   name: {{ template "concourse.concourse.fullname" . }}
                   key: aws-ssm-secret-key
-            {{- if .Values.secrets.awsSsmSessionToken }}
+            {{- if .Values.concourse.web.awsSsm.keyAuth.useSessionToken }}
             - name: CONCOURSE_AWS_SSM_SESSION_TOKEN
               valueFrom:
                 secretKeyRef:
                   name: {{ template "concourse.concourse.fullname" . }}
                   key: aws-ssm-session-token
+            {{- end }}
             {{- end }}
             {{- if .Values.concourse.web.awsSsm.pipelineSecretTemplate }}
             - name: CONCOURSE_AWS_SSM_PIPELINE_SECRET_TEMPLATE
@@ -353,6 +346,10 @@ spec:
               value: {{ .Values.concourse.web.vault.url | quote }}
             - name: CONCOURSE_VAULT_PATH_PREFIX
               value: {{ .Values.concourse.web.vault.pathPrefix | quote }}
+            {{- if.Values.concourse.web.vault.sharedPath }}
+            - name: CONCOURSE_VAULT_SHARED_PATH
+              value: {{ .Values.concourse.web.vault.sharedPath | quote }}
+            {{- end }}
             - name: CONCOURSE_VAULT_AUTH_BACKEND
               value: {{ .Values.concourse.web.vault.authBackend | quote }}
             {{- if .Values.concourse.web.vault.useCaCert }}
@@ -810,6 +807,14 @@ spec:
             - name: CONCOURSE_OAUTH_SKIP_SSL_VALIDATION
               value: {{ .Values.concourse.web.auth.oauth.skipSslValidation | quote }}
             {{- end }}
+            {{- if .Values.concourse.web.auth.oauth.userNameKey }}
+            - name: CONCOURSE_OAUTH_USER_NAME_KEY
+              value: {{ .Values.concourse.web.auth.oauth.userNameKey | quote }}
+            {{- end }}
+            {{- if .Values.concourse.web.auth.oauth.userIdKey }}
+            - name: CONCOURSE_OAUTH_USER_ID_KEY
+              value: {{ .Values.concourse.web.auth.oauth.userIdKey | quote }}
+            {{- end }}
             {{- end }}
             {{- if .Values.concourse.web.auth.oidc.enabled }}
             {{- if .Values.concourse.web.auth.oidc.displayName }}
@@ -850,6 +855,21 @@ spec:
             - name: CONCOURSE_OIDC_SKIP_SSL_VALIDATION
               value: {{ .Values.concourse.web.auth.oidc.skipSslValidation | quote }}
             {{- end }}
+            {{- if .Values.concourse.web.auth.oidc.userNameKey }}
+            - name: CONCOURSE_OIDC_USER_NAME_KEY
+              value: {{ .Values.concourse.web.auth.oidc.userNameKey | quote }}
+            {{- end }}
+            {{- end }}
+            {{- if .Values.concourse.web.peerAddress }}
+            - name: CONCOURSE_PEER_ADDRESS
+              value: {{ .Values.concourse.web.peerAddress | quote }}
+            {{- else }}
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: CONCOURSE_PEER_ADDRESS
+              value: "$(POD_IP)"
             {{- end }}
             {{- if .Values.concourse.web.tsa.logLevel }}
             - name: CONCOURSE_TSA_LOG_LEVEL
@@ -869,17 +889,13 @@ spec:
             - name: CONCOURSE_TSA_DEBUG_BIND_PORT
               value: {{ .Values.concourse.web.tsa.debugBindPort | quote }}
             {{- end }}
-            {{- if .Values.concourse.web.tsa.peerIp }}
-            - name: CONCOURSE_TSA_PEER_IP
-              value: {{ .Values.concourse.web.tsa.peerIp | quote }}
-            {{- end }}
             - name: CONCOURSE_TSA_HOST_KEY
               value: "{{ .Values.web.keySecretsPath }}/host_key"
             - name: CONCOURSE_TSA_AUTHORIZED_KEYS
               value: "{{ .Values.web.keySecretsPath }}/worker_key.pub"
-            {{- if .Values.concourse.web.tsa.teamAuthorizedKeys }}
+            {{- if .Values.secrets.teamAuthorizedKeys }}
             - name: CONCOURSE_TSA_TEAM_AUTHORIZED_KEYS
-              value: {{ .Values.concourse.web.tsa.teamAuthorizedKeys | quote }}
+              value: "{{- $root := . -}}{{- range $i, $v := .Values.secrets.teamAuthorizedKeys }}{{- if $i}},{{- end}}{{ $v.team }}:{{ $root.Values.web.teamSecretsPath }}/{{ $v.team }}-authorized-key.pub{{- end }}"
             {{- end }}
             {{- if .Values.concourse.web.tsa.atcUrl }}
             - name: CONCOURSE_TSA_ATC_URL
@@ -936,6 +952,11 @@ spec:
             - name: concourse-keys
               mountPath: {{ .Values.web.keySecretsPath | quote }}
               readOnly: true
+            {{- if .Values.secrets.teamAuthorizedKeys }}
+            - name: team-authorized-keys
+              mountPath: {{ .Values.web.teamSecretsPath | quote }}
+              readOnly: true
+            {{- end }}
             {{- if .Values.concourse.web.tls.enabled }}
             - name: web-tls
               mountPath: {{ .Values.web.tlsSecretsPath | quote }}
@@ -978,6 +999,17 @@ spec:
                 path: session_signing_key
               - key: worker-key-pub
                 path: worker_key.pub
+        {{- if .Values.secrets.teamAuthorizedKeys }}
+        - name: team-authorized-keys
+          secret:
+            secretName: {{ template "concourse.concourse.fullname" . }}
+            defaultMode: 0400
+            items:
+            {{- range .Values.secrets.teamAuthorizedKeys }}
+            - key: {{ .team }}-team-authorized-key
+              path: {{ .team }}-authorized-key.pub
+            {{- end }}
+        {{- end }}
         {{- if .Values.concourse.web.tls.enabled }}
         - name: web-tls
           secret:

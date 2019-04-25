@@ -17,6 +17,7 @@ $ helm install stable/kube-state-metrics
 | `image.repository`                    | The image repository to pull from                       | k8s.gcr.io/kube-state-metrics               |
 | `image.tag`                           | The image tag to pull from                              | `v1.5.0`                                    |
 | `image.pullPolicy`                    | Image pull policy                                       | IfNotPresent                                |
+| `replicas`                            | Number of replicas                                      | 1                                           |
 | `service.port`                        | The port of the container                               | 8080                                        |
 | `prometheusScrape`                    | Whether or not enable prom scrape                       | true                                        |
 | `rbac.create`                         | If true, create & use RBAC resources                    | true                                        |
@@ -53,3 +54,6 @@ $ helm install stable/kube-state-metrics
 | `collectors.secrets`                  | Enable the secrets collector.                           | true                                        |
 | `collectors.services`                 | Enable the services collector.                          | true                                        |
 | `collectors.statefulsets`             | Enable the statefulsets collector.                      | true                                        |
+| `prometheus.monitor.enabled`          | Set this to `true` to create ServiceMonitor for Prometheus operator | `false` |
+| `prometheus.monitor.additionalLabels` | Additional labels that can be used so ServiceMonitor will be discovered by Prometheus | `{}` |
+| `prometheus.monitor.namespace`        | namespace where servicemonitor resource should be created | `the same namespace as kube-state-metrics` |

@@ -12,9 +12,13 @@ spec:
   replicas: {{ .Values.replicaCount }}
   updateStrategy:
     type: {{ .Values.statefulset.updateStrategy }}
+    {{- if (eq "Recreate" .Values.statefulset.updateStrategy) }}
+    rollingUpdate: null
+    {{- else }}
     {{- if .Values.statefulset.rollingUpdatePartition }}
     rollingUpdate:
       partition: {{ .Values.statefulset.rollingUpdatePartition }}
+    {{- end }}
     {{- end }}
   selector:
     matchLabels:
@@ -44,6 +48,9 @@ spec:
       securityContext:
         fsGroup: {{ .Values.securityContext.fsGroup }}
         runAsUser: {{ .Values.securityContext.runAsUser }}
+      {{- end }}
+      {{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName | quote }}
       {{- end }}
       {{- if .Values.nodeSelector }}
       nodeSelector:

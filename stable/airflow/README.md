@@ -267,6 +267,13 @@ This is controlled by the `logsPersistence.enabled` setting.
 
 Refer to the `Mount a Shared Persistent Volume` section above for details on using persistent volumes.
 
+## Service monitor
+
+The service monitor is something introduced by the [CoresOS prometheus operator](https://github.com/coreos/prometheus-operator).
+To be able to expose metrics to prometheus you need install a plugin, this can be added to the docker image. A good one is: https://github.com/epoch8/airflow-exporter.
+This exposes dag and task based metrics from Airflow.
+For service monitor configuration see the generic [Helm chart Configuration](#helm-chart-configuration).
+
 ## Helm chart Configuration
 
 The following table lists the configurable parameters of the Airflow chart and their default values.
@@ -293,6 +300,8 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `airflow.extraVolumes`                   | additional volumes for the scheduler, worker & web pods | `[]`                      |
 | `flower.resources`                       | custom resource configuration for flower pod            | `{}`                      |
 | `web.resources`                          | custom resource configuration for web pod               | `{}`                      |
+| `web.initialStartupDelay`                | amount of time webserver pod should sleep before initializing webserver             | `60`  |
+| `web.initialDelaySeconds`                | initial delay on livenessprobe before checking if webserver is available    | `360` |
 | `scheduler.resources`                    | custom resource configuration for scheduler pod         | `{}`                      |
 | `workers.enabled`                        | enable workers                                          | `true`                    |
 | `workers.replicas`                       | number of workers pods to launch                        | `1`                       |
@@ -302,6 +311,9 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `workers.secretsDir`                     | directory in which to mount secrets on worker nodes     | /var/airflow/secrets      |
 | `workers.secrets`                        | secrets to mount as volumes on worker nodes             | []                        |
 | `existingAirflowSecret`                  | secret to use for postgres and redis connection         |                           |
+| `nodeSelector`                           | Node labels for pod assignment                          | `{}`                      |
+| `affinity`                               | Affinity labels for pod assignment                      | `{}`                      |
+| `tolerations`                            | Toleration labels for pod assignment                    | `[]`                      |
 | `ingress.enabled`                        | enable ingress                                          | `false`                   |
 | `ingress.web.host`                       | hostname for the webserver ui                           | ""                        |
 | `ingress.web.path`                       | path of the werbserver ui (read `values.yaml`)          | ``                        |
@@ -351,6 +363,10 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `redis.password`                         | Redis password                                          | `airflow`                 |
 | `redis.master.persistence.enabled`       | Enable Redis PVC                                        | `false`                   |
 | `redis.cluster.enabled`                  | enable master-slave cluster                             | `false`                   |
+| `serviceMonitor.enabled`                 | enable service monitor                                  | `false`                   |
+| `serviceMonitor.interval`                | Interval at which metrics should be scraped             | `30s`                     |
+| `serviceMonitor.path`                    | The path at which the metrics should be scraped         | `/admin/metrics`          |
+| `serviceMonitor.selector`                | label Selector for Prometheus to find ServiceMonitors   | `prometheus: kube-prometheus` |
 
 
 Full and up-to-date documentation can be found in the comments of the `values.yaml` file.
