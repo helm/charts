@@ -43,6 +43,7 @@ The following table lists the configurable parameters of the cerebro chart and t
 | `image.repository`                  | The image to run                    | `lmenezes/cerebro`                        |
 | `image.tag`                         | The image tag to pull               | `0.8.2`                                   |
 | `image.pullPolicy`                  | Image pull policy                   | `IfNotPresent`                            |
+| `image.pullSecrets`                 | Specify image pull secrets          | `nil` (does not add image pull secrets to deployed pods) |
 | `init.image.repository`             | The image to run                    | `docker.io/busybox`                       |
 | `init.image.tag`                    | The image tag to pull               | `musl`                                    |
 | `init.image.pullPolicy`             | Image pull policy                   | `IfNotPresent`                            |

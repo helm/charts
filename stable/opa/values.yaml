@@ -12,6 +12,10 @@ opa:
     name: "helm-kubernetes-quickstart"
   default_decision: "/helm_kubernetes_quickstart/main"
 
+# Setup the webhook using cert-manager
+certManager:
+  enabled: false
+
 # To enforce mutating policies, change to MutatingWebhookConfiguration.
 admissionControllerKind: ValidatingWebhookConfiguration
 
