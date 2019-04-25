@@ -3,10 +3,10 @@ kind: ConfigMap
 metadata:
   name: {{ template "rabbitmq.fullname" . }}-config
   labels:
-    app: {{ template "rabbitmq.name" . }}
-    chart: {{ template "rabbitmq.chart" .  }}
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app.kubernetes.io/name: {{ template "rabbitmq.name" . }}
+    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app.kubernetes.io/instance: "{{ .Release.Name }}"
+    app.kubernetes.io/managed-by: "{{ .Release.Service }}"
 data:
   enabled_plugins: |-
 {{ template "rabbitmq.plugins" . }}

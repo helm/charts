@@ -3,10 +3,10 @@ kind: StatefulSet
 metadata:
   name: {{ template "rabbitmq.fullname" . }}
   labels:
-    app: {{ template "rabbitmq.name" . }}
-    chart: {{ template "rabbitmq.chart" .  }}
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app.kubernetes.io/name: {{ template "rabbitmq.name" . }}
+    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app.kubernetes.io/instance: "{{ .Release.Name }}"
+    app.kubernetes.io/managed-by: "{{ .Release.Service }}"
 spec:
   serviceName: {{ template "rabbitmq.fullname" . }}-headless
   podManagementPolicy: {{ .Values.podManagementPolicy }}
@@ -18,14 +18,14 @@ spec:
     {{- end }}
   selector:
     matchLabels:
-      app: {{ template "rabbitmq.name" . }}
-      release: "{{ .Release.Name }}"
+      app.kubernetes.io/name: {{ template "rabbitmq.name" . }}
+      app.kubernetes.io/instance: "{{ .Release.Name }}"
   template:
     metadata:
       labels:
-        app: {{ template "rabbitmq.name" . }}
-        release: "{{ .Release.Name }}"
-        chart: {{ template "rabbitmq.chart" .  }}
+        app.kubernetes.io/name: {{ template "rabbitmq.name" . }}
+        app.kubernetes.io/instance: "{{ .Release.Name }}"
+        helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
       {{- if .Values.podLabels }}
 {{ toYaml .Values.podLabels | indent 8 }}
       {{- end }}
@@ -278,9 +278,9 @@ spec:
     - metadata:
         name: data
         labels:
-          app: {{ template "rabbitmq.name" . }}
-          release: "{{ .Release.Name }}"
-          heritage: "{{ .Release.Service }}"
+          app.kubernetes.io/name: {{ template "rabbitmq.name" . }}
+          app.kubernetes.io/instance: "{{ .Release.Name }}"
+          app.kubernetes.io/managed-by: "{{ .Release.Service }}"
       spec:
         accessModes:
           - {{ .Values.persistence.accessMode | quote }}

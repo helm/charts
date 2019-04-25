@@ -3,10 +3,10 @@ kind: Service
 metadata:
   name: {{ template "rabbitmq.fullname" . }}-headless
   labels:
-    app: {{ template "rabbitmq.name" . }}
-    chart: {{ template "rabbitmq.chart" .  }}
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app.kubernetes.io/name: {{ template "rabbitmq.name" . }}
+    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app.kubernetes.io/instance: "{{ .Release.Name }}"
+    app.kubernetes.io/managed-by: "{{ .Release.Service }}"
 spec:
   clusterIP: None
   ports:
@@ -23,5 +23,5 @@ spec:
     port: {{ .Values.service.managerPort }}
     targetPort: stats
   selector:
-    app: {{ template "rabbitmq.name" . }}
-    release: "{{ .Release.Name }}"
+    app.kubernetes.io/name: {{ template "rabbitmq.name" . }}
+    app.kubernetes.io/instance: "{{ .Release.Name }}"
