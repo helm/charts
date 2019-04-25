@@ -1,0 +1,45 @@
+{{- if .Values.rbac.enabled }}
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  name: {{ template "nginx.fullname" . }}
+---
+kind: Role 
+{{- if semverCompare "^1.8-0" .Capabilities.KubeVersion.GitVersion }}
+apiVersion: rbac.authorization.k8s.io/v1
+{{- else }}
+apiVersion: rbac.authorization.k8s.io/v1beta1
+{{- end }}
+metadata:
+  name: {{ template "nginx.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - pods
+      - services
+      - configmaps
+      - secrets
+    verbs:
+      - get
+      - list
+      - watch
+---
+kind: RoleBinding
+{{- if semverCompare "^1.8-0" .Capabilities.KubeVersion.GitVersion }}
+apiVersion: rbac.authorization.k8s.io/v1
+{{- else }}
+apiVersion: rbac.authorization.k8s.io/v1beta1
+{{- end }}
+metadata:
+  name: {{ template "nginx.fullname" . }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ template "nginx.fullname" . }}
+subjects:
+- kind: ServiceAccount
+  name: {{ template "nginx.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+{{- end }}

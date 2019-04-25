@@ -1,0 +1,15 @@
+---
+name: nginx
+version: 0.1.0
+appVersion: 1.15.12
+home: https://hub.docker.com/_/nginx
+description: A Helm chart for NGINX
+keywords:
+  - nginx
+  - server
+sources:
+  - https://github.com/nginxinc/docker-nginx
+  - https://github.com/nginx/nginx
+maintainers:
+  - name: joejulian
+    email: me@joejulian.name

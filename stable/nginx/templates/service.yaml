@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "nginx.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "nginx.name" . }}
+    helm.sh/chart: {{ include "nginx.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+  {{- range .Values.service.httpPorts }}
+    - name: "{{ .port }}-http"
+      port: {{ .port }}
+      protocol: TCP
+      targetPort: "{{ .port }}-http"
+      {{- if (not (empty .nodePort)) }}
+      nodePort: {{ .nodePort }}
+      {{- end }}
+  {{- end }}
+  {{- range .Values.service.httpsPorts }}
+    - name: "{{ .port }}-https"
+      port: {{ .port }}
+      protocol: TCP
+      targetPort: "{{ .port }}-https"
+      {{- if (not (empty .nodePort)) }}
+      nodePort: {{ .nodePort }}
+      {{- end }}
+  {{- end }}
+  selector:
+    app.kubernetes.io/name: {{ include "nginx.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}

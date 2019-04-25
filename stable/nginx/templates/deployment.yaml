@@ -1,0 +1,89 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "nginx.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "nginx.name" . }}
+    helm.sh/chart: {{ include "nginx.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.deployment.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "nginx.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "nginx.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+    {{- if .Values.deployment.initContainers }}
+      initContainers:
+{{ toYaml .Values.deployment.initControllers | indent 8 }}
+    {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.deployment.image.repository }}:{{ .Values.deployment.image.tag }}"
+          imagePullPolicy: {{ .Values.deployment.image.pullPolicy }}
+          args:
+          {{- range $key, $value := .Values.deployment.extraArgs }}
+            - --{{ $key }}={{ $value }}
+          {{- end }}
+          env:
+          {{- range $key, $value := .Values.deployment.extraEnvs }}
+            - name: {{ $key }}
+              value: "{{ $value }}"
+          {{- end }}
+          ports:
+          {{- range .Values.service.httpPorts }}
+            - name: "{{ .port }}-http"
+              containerPort: {{ .port }}
+              protocol: TCP
+          {{- end }}
+          {{- range .Values.service.httpsPorts }}
+            - name: "{{ .port }}-https"
+              containerPort: {{ .port }}
+              protocol: TCP
+          {{- end }}
+          {{- with (.Values.service.httpPorts | first) }}
+          livenessProbe:
+            httpGet:
+              path: /
+              port: {{ .port }}
+          readinessProbe:
+            httpGet:
+              path: /
+              port: {{ .port }}
+          {{- end }}
+          volumeMounts:
+            - name: content
+              mountPath: /usr/share/nginx/html
+          {{- if .Values.config }}
+            - name: config
+              mountPath: /etc/nginx
+          {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+        - name: content
+          configMap:
+            name: {{ include "nginx.content" . }}
+      {{- if .Values.config }}
+        - name: config
+          configMap:
+            name: {{ include "nginx.config" . }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}

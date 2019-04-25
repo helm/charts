@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "nginx.content" . }}
+data:
+{{- if .Values.content.fromDir }}
+{{- (.Files.Glob ".Values.content.fromDir").AsConfig | nindent 2 }}
+{{- end }}
+{{- if .Values.content.data }}
+{{- range $key, $value := .Values.content.data}}
+  {{ $key }}: "{{ $value }}"
+{{- end }}
+{{- end }}
+
