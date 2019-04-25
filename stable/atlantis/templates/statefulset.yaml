@@ -78,6 +78,9 @@ spec:
           {{- if .Values.repoConfigJSON }}
             - --repo-config-json={{ .Values.repoConfigJSON }}
           {{- end }}
+          {{- if .Values.defaultTFVersion}}
+            - --default-tf-version={{ .Values.defaultTFVersion }}
+          {{- end }}
           ports:
           - name: atlantis
             containerPort: 4141

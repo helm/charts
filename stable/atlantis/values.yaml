@@ -100,6 +100,9 @@ requireMergeable: false
 # Use server side repo config JSON
 repoConfigJSON: ''
 
+# Default Terraform Version
+defaultTFVersion: ''
+
 # We only need to check every 60s since Atlantis is not a high-throughput service.
 livenessProbe:
   enabled: true
