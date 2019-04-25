@@ -38,14 +38,6 @@ spec:
       - name: wait-for-db
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         env:
-        - name: KONG_PROXY_ACCESS_LOG
-          value: "/dev/stdout"
-        - name: KONG_ADMIN_ACCESS_LOG
-          value: "/dev/stdout"
-        - name: KONG_PROXY_ERROR_LOG
-          value: "/dev/stderr"
-        - name: KONG_ADMIN_ERROR_LOG
-          value: "/dev/stderr"
         {{- include "kong.env" .  | indent 8 }}
         {{- if .Values.postgresql.enabled }}
         - name: KONG_PG_HOST
@@ -70,10 +62,6 @@ spec:
         env:
         - name: KONG_PROXY_LISTEN
           value: 'off'
-        - name: KONG_ADMIN_ACCESS_LOG
-          value: "/dev/stdout"
-        - name: KONG_ADMIN_ERROR_LOG
-          value: "/dev/stderr"
         {{- include "kong.env" .  | indent 8 }}
         {{- if .Values.admin.useTLS }}
         - name: KONG_ADMIN_LISTEN
