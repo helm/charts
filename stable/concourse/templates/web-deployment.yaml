@@ -52,6 +52,10 @@ spec:
           args:
             - web
           env:
+            {{- if .Values.concourse.web.clusterName }}
+            - name: CONCOURSE_CLUSTER_NAME
+              value: {{ .Values.concourse.web.clusterName | quote }}
+            {{- end }}
             {{- if .Values.concourse.web.enableGlobalResources }}
             - name: CONCOURSE_ENABLE_GLOBAL_RESOURCES
               value: {{ .Values.concourse.web.enableGlobalResources | quote }}

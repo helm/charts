@@ -52,6 +52,10 @@ concourse:
   ## through the `concourse web` command.
   ##
   web:
+    ## A name for this Concourse cluster, to be displayed on the dashboard page.
+    ##
+    clusterName:
+
     ## Enable equivalent resources across pipelines and teams to share a single version history.
     ## Ref: https://concourse-ci.org/global-resources.html
     ##
