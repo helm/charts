@@ -91,11 +91,7 @@ data:
                   <envVars>
                     <org.csanchez.jenkins.plugins.kubernetes.ContainerEnvVar>
                       <key>JENKINS_URL</key>
-{{- if .Values.master.slaveKubernetesNamespace }}
-                      <value>http://{{ template "jenkins.fullname" . }}.{{.Release.Namespace}}:{{.Values.master.servicePort}}{{ default "" .Values.master.jenkinsUriPrefix }}</value>
-{{- else }}
-                      <value>http://{{ template "jenkins.fullname" . }}:{{.Values.master.servicePort}}{{ default "" .Values.master.jenkinsUriPrefix }}</value>
-{{- end }}
+                      <value>http://{{ template "jenkins.fullname" . }}.{{.Release.Namespace}}.svc.cluster.local:{{.Values.master.servicePort}}{{ default "" .Values.master.jenkinsUriPrefix }}</value>
                     </org.csanchez.jenkins.plugins.kubernetes.ContainerEnvVar>
                   </envVars>
                 </org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
