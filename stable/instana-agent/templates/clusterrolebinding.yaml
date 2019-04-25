@@ -1,6 +1,6 @@
 {{- if .Values.rbac.create -}}
 kind: ClusterRoleBinding
-apiVersion: {{ template "instana-agent.rbacApiVersion" . }}
+apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: {{ template "instana-agent.fullname" . }}
   labels:

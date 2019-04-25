@@ -32,13 +32,6 @@ Create chart name and version as used by the chart label.
 {{- end -}}
 
 {{/*
-The version of the RBAC API to use.
-*/}}
-{{- define "instana-agent.rbacApiVersion" -}}
-"rbac.authorization.k8s.io/v1"
-{{- end -}}
-
-{{/*
 The name of the ServiceAccount used.
 */}}
 {{- define "instana-agent.serviceAccountName" -}}
