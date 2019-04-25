@@ -67,7 +67,7 @@ imageTag: 0.10.7
 imagePullPolicy: IfNotPresent
 
 # Port to which the opa pod will bind itself
-# NOTE IF you use a different port make sure it maches the ones in the readinessProbe 
+# NOTE IF you use a different port make sure it maches the ones in the readinessProbe
 # and livenessProbe
 port: 443
 
