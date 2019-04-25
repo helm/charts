@@ -17,6 +17,8 @@ spec:
       app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
+      annotations:
+        {{- toYaml .Values.podAnnotations | nindent 8 }}
       labels:
         app.kubernetes.io/name: {{ include "prometheus-mongodb-exporter.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
@@ -33,11 +35,12 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         args:
-        - -mongodb.uri={{ required "A MongoDB URI is required" .Values.mongodb.uri }}
+        - --mongodb.uri={{ required "A MongoDB URI is required" .Values.mongodb.uri }}
+        - --web.listen-address={{ printf ":%s" .Values.port }}
         {{- toYaml .Values.extraArgs | nindent 8 }}
         ports:
         - name: metrics
-          containerPort: 9216
+          containerPort: {{ .Values.port }}
           protocol: TCP
         livenessProbe:
           {{- toYaml .Values.livenessProbe | nindent 10 }}
