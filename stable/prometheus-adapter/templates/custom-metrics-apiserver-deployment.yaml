@@ -25,9 +25,6 @@ spec:
         checksum/config: {{ include (print $.Template.BasePath "/custom-metrics-configmap.yaml") . | sha256sum }}
     spec:
       securityContext:
-        allowPrivilegeEscalation: false
-        capabilities:
-          drop: ["all"]
         runAsNonRoot: true
         runAsUser: 10001
       serviceAccountName: {{ template "k8s-prometheus-adapter.serviceAccountName" . }}
@@ -69,6 +66,9 @@ spec:
 {{- end }}
         securityContext:
           readOnlyRootFilesystem: true
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: ["all"]
         volumeMounts:
         - mountPath: /etc/adapter/
           name: config
