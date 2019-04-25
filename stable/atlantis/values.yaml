@@ -75,7 +75,7 @@ serviceAccountSecrets:
 
 image:
   repository: runatlantis/atlantis
-  tag: v0.6.0
+  tag: v0.7.1
   pullPolicy: IfNotPresent
 
 ## Optionally specify an array of imagePullSecrets.
