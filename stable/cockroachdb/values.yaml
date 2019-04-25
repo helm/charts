@@ -72,3 +72,5 @@ Locality: ""
 ExtraArgs: []
 # ExtraSecretMounts is a list of names from secrets in the same namespace as the cockroachdb cluster, which shall be mounted into /etc/cockroach/secrets/ for every cluster member.
 ExtraSecretMounts: []
+# ExtraEnvArgs is a list of name,value tuples providing extra ENV variables
+ExtraEnvArgs: []
