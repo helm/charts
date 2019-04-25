@@ -37,5 +37,5 @@ tolerations: []
 affinity: {}
 
 annotations: {}
-  # Specify which annotations must be added to kube-slack pods 
+  # Specify which annotations must be added to kube-slack pods
   # fluentbit.io/exclude: true
