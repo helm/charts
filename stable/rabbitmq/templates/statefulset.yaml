@@ -6,6 +6,7 @@ metadata:
     app.kubernetes.io/name: {{ template "rabbitmq.name" . }}
     helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     app.kubernetes.io/instance: "{{ .Release.Name }}"
+    release: "{{ .Release.Name }}"
     app.kubernetes.io/managed-by: "{{ .Release.Service }}"
 spec:
   serviceName: {{ template "rabbitmq.fullname" . }}-headless
@@ -26,6 +27,8 @@ spec:
         app.kubernetes.io/name: {{ template "rabbitmq.name" . }}
         app.kubernetes.io/instance: "{{ .Release.Name }}"
         helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        release: "{{ .Release.Name }}"
+        app.kubernetes.io/managed-by: "{{ .Release.Service }}"
       {{- if .Values.podLabels }}
 {{ toYaml .Values.podLabels | indent 8 }}
       {{- end }}

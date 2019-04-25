@@ -4,10 +4,11 @@ kind: Ingress
 metadata:
   name: "{{ template "rabbitmq.fullname" . }}"
   labels:
-    app: "{{ template "rabbitmq.name" . }}"
-    chart: "{{ template "rabbitmq.chart" .  }}"
+    app.kubernetes.io/name: "{{ template "rabbitmq.name" . }}"
+    helm.sh/chart: "{{ template "rabbitmq.chart" .  }}"
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
     release: {{ .Release.Name | quote }}
-    heritage: {{ .Release.Service | quote }}
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
   annotations:
     {{- if .Values.ingress.tls }}
     ingress.kubernetes.io/secure-backends: "true"
