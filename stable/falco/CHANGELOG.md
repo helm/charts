@@ -3,7 +3,22 @@
 This file documents all notable changes to Sysdig Falco Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v0.7.3
+
+### Minor Changes
+
+* Remove the toJson pipeline when storing Google Credentials. It makes strange
+ stuff with double quotes and does not allow to use base64 encoded credentials
+
+## v0.7.2
+
+### Minor Changes
+
+* Fix typos in README.md
+
 ## v0.7.1
+
+### Minor Changes
 
 * Add Google Pub/Sub Output integration
 
