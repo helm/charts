@@ -70,6 +70,7 @@ Reference](https://www.openpolicyagent.org/docs/configuration.html).
 | `podDisruptionBudget.maxUnavailable` | Sets the maximum number of pods to be unavailable. Cannot be set at the same time as minAvailable. | Unset |
 | `image` | OPA image to deploy. | `openpolicyagent/opa` |
 | `imageTag` | OPA image tag to deploy. | See [values.yaml](values.yaml) |
+| `port` | Port in the pod to which OPA will bind itself. | `443` |
 | `logLevel` | Log level that OPA outputs at, (`debug`, `info` or `error`) | `info` |
 | `logFormat` | Log format that OPA produces (`text` or `json`) | `text` |
 | `replicas` | Number of admission controller replicas to deploy. | `1` |
