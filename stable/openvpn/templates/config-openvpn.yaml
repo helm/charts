@@ -72,7 +72,6 @@ data:
               if [ $i -le $(( mask / 8)) ]; then
                   netOctets="$netOctets.$octet"
               elif [ $i -eq  $(( mask / 8 +1 )) ]; then
-                  echo $octet
                   netOctets="$netOctets.$((((octet / ((256 / ((2**((mask % 8)))))))) * ((256 / ((2**((mask % 8))))))))"
               else
                   netOctets="$netOctets.0"
@@ -98,8 +97,6 @@ data:
       intAndIP="$(ip route get 8.8.8.8 | awk '/8.8.8.8/ {print $5 "-" $7}')"
       int="${intAndIP%-*}"
       ip="${intAndIP#*-}"
-
-      echo $int "and" $ip
       cidr="$(ip addr show dev "$int" | awk -vip="$ip" '($2 ~ ip) {print $2}')"
 
       NETWORK="$(cidr2net $cidr)"
