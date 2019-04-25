@@ -7,6 +7,7 @@ engine designed for cloud-native environments.
 
 - Kubernetes 1.9 (or newer) for validating and mutating webhook admission
   controller support.
+- Optional, cert-manager (https://docs.cert-manager.io/en/latest/)
 
 ## Overview
 
@@ -56,6 +57,7 @@ Reference](https://www.openpolicyagent.org/docs/configuration.html).
 
 | Parameter | Description | Default |
 | --- | --- | --- |
+| `certManager.enabled` | Setup the Webhook using cert-manager | `false` |
 | `admissionControllerKind` | Type of admission controller to install. | `ValidatingWebhookConfiguration` |
 | `admissionControllerFailurePolicy` | Fail-open (`Ignore`) or fail-closed (`Fail`)? | `Ignore` |
 | `admissionControllerRules` | Types of operations resources to check. | `*` |

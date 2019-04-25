@@ -104,7 +104,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.scriptApproval`           | List of groovy functions to approve  | Not set                                   |
 | `master.nodeSelector`             | Node labels for pod assignment       | `{}`                                      |
 | `master.affinity`                 | Affinity settings                    | `{}`                                      |
-| `master.tolerations`              | Toleration labels for pod assignment | `{}`                                      |
+| `master.tolerations`              | Toleration labels for pod assignment | `[]`                                      |
 | `master.podAnnotations`           | Annotations for master pod           | `{}`                                      |
 | `master.customConfigMap`          | Deprecated: Use a custom ConfigMap   | `false`                                   |
 | `master.additionalConfig`         | Deprecated: Add additional config files | `{}`                                   |
@@ -271,7 +271,7 @@ configScripts:
 ```
 
 Further JCasC examples can be found [here.](https://github.com/jenkinsci/configuration-as-code-plugin/tree/master/demos)
-### Config as Code with and without auto-reload 
+### Config as Code with and without auto-reload
 Config as Code changes (to master.JCasC.configScripts) can either force a new pod to be created and only be applied at next startup, or can be auto-reloaded on-the-fly.  If you choose `master.sidecars.autoConfigReload.enabled: true`, a second, auxiliary container will be installed into the Jenkins master pod, known as a "sidecar".  This watches for changes to configScripts, copies the content onto the Jenkins file-system and issues a CLI command via SSH to reload configuration.  The admin user (or account you specify in master.adminUser) will have a random SSH private key (RSA 4096) assigned unless you specify a key in `master.adminSshKey`.  This will be saved to a k8s secret.  You can monitor this sidecar's logs using command `kubectl logs <master_pod> -c jenkins-sc-config -f`
 If you want to enable auto-reload then you also need to configure rbac as the container which triggers the reload needs to watch the config maps.
 
